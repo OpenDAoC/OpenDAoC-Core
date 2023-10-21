@@ -1,5 +1,6 @@
 using System.Reflection;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Commands;
@@ -20,7 +21,7 @@ public abstract class ACommandHandler
 	/// <returns></returns>
 	public bool IsSpammingCommand(GamePlayer player, string commandName)
 	{
-		return IsSpammingCommand(player, commandName, ServerProperties.Properties.COMMAND_SPAM_DELAY);
+		return IsSpammingCommand(player, commandName, ServerProperty.COMMAND_SPAM_DELAY);
 	}
 
 	/// <summary>

@@ -8,6 +8,7 @@ using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.Scripts;
 
@@ -74,7 +75,7 @@ public class ElroTheAncient : GameEpicBoss
 		this.Size = 150;
 		this.Level = 65;
 		this.Realm = ERealm.None;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 		base.AddToWorld();
 		return true;
 	}

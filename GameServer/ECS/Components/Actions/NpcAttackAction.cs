@@ -5,7 +5,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.ECS;
 
@@ -29,7 +29,7 @@ public class NpcAttackAction : AttackAction
         _npcOwner = npcOwner;
         _isGuardArcher = _npcOwner is GuardArcher;
 
-        if (Properties.ALWAYS_CHECK_PET_LOS && npcOwner.Brain is IControlledBrain npcOwnerBrain)
+        if (ServerProperty.ALWAYS_CHECK_PET_LOS && npcOwner.Brain is IControlledBrain npcOwnerBrain)
         {
             _npcOwnerOwner = npcOwnerBrain.GetPlayerOwner();
             new EcsGameTimer(_npcOwner, new EcsGameTimer.EcsTimerCallback(CheckLos), 1);

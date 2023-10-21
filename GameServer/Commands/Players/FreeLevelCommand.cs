@@ -1,7 +1,7 @@
 using System;
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -41,13 +41,13 @@ public class FreeLevelCommand : ACommandHandler, ICommandHandler
 		switch (client.Player.Realm)
 		{
 			case ERealm.Albion:
-				t = client.Player.LastFreeLeveled.AddDays(Properties.FREELEVEL_DAYS_ALBION) - DateTime.Now;
+				t = client.Player.LastFreeLeveled.AddDays(ServerProperty.FREELEVEL_DAYS_ALBION) - DateTime.Now;
 				break;
 			case ERealm.Midgard:
-				t = client.Player.LastFreeLeveled.AddDays(Properties.FREELEVEL_DAYS_MIDGARD) - DateTime.Now;
+				t = client.Player.LastFreeLeveled.AddDays(ServerProperty.FREELEVEL_DAYS_MIDGARD) - DateTime.Now;
 				break;
 			case ERealm.Hibernia:
-				t = client.Player.LastFreeLeveled.AddDays(Properties.FREELEVEL_DAYS_HIBERNIA) - DateTime.Now;
+				t = client.Player.LastFreeLeveled.AddDays(ServerProperty.FREELEVEL_DAYS_HIBERNIA) - DateTime.Now;
 				Console.WriteLine("derp");
 				break;
 		}

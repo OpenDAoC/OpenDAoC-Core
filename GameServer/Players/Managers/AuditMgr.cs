@@ -6,6 +6,7 @@ using Core.Base;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.Players.Managers;
 
@@ -146,7 +147,7 @@ public static class AuditMgr
 
 	public static void AddAuditEntry(int type, int subType, string oldValue, string newValue)
 	{
-        if (!ServerProperties.Properties.ENABLE_AUDIT_LOG)
+        if (!ServerProperty.ENABLE_AUDIT_LOG)
             return;
 
 		// create the transaction
@@ -179,7 +180,7 @@ public static class AuditMgr
 
 	public static void AddAuditEntry(GameClient client, int type, int subType, string oldValue, string newValue)
 	{
-        if(!ServerProperties.Properties.ENABLE_AUDIT_LOG)
+        if(!ServerProperty.ENABLE_AUDIT_LOG)
             return;
 
 		// create the transaction

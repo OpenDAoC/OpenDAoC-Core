@@ -1,5 +1,6 @@
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -22,7 +23,7 @@ public class SiegecraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SiegecraftingMaster.GuildOrder");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SiegecraftingMaster.GuildOrder");
         }
 	}
 
@@ -30,7 +31,7 @@ public class SiegecraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SiegecraftingMaster.AcceptedByOrderName");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SiegecraftingMaster.AcceptedByOrderName");
         }
 	}
 
@@ -49,7 +50,7 @@ public class SiegecraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SiegecraftingMaster.InitialEntersentence");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SiegecraftingMaster.InitialEntersentence");
         }
 	}
 }

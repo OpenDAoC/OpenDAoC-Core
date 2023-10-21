@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
+using Core.GS.Server;
 
 namespace Core.GS.GameUtils;
 
@@ -83,13 +84,13 @@ public class LootGeneratorAurulite : LootGeneratorBase
 			if (!mob.Name.ToLower().Equals(mob.Name))
 			{
 				//Named mob, more cash !
-				maxcount = (int)Math.Round(maxcount*ServerProperties.Properties.LOOTGENERATOR_AURULITE_NAMED_COUNT);
+				maxcount = (int)Math.Round(maxcount*ServerProperty.LOOTGENERATOR_AURULITE_NAMED_COUNT);
 			}
 			
 			// add to loot
-			if(maxcount > 0 && Util.Chance(ServerProperties.Properties.LOOTGENERATOR_AURULITE_BASE_CHANCE+Math.Max(10, killedcon))) {
+			if(maxcount > 0 && Util.Chance(ServerProperty.LOOTGENERATOR_AURULITE_BASE_CHANCE+Math.Max(10, killedcon))) {
 				// Add to fixed to prevent overrides with loottemplate
-				loot.AddFixed(aurulite, (int)Math.Ceiling(maxcount*ServerProperties.Properties.LOOTGENERATOR_AURULITE_AMOUNT_RATIO));
+				loot.AddFixed(aurulite, (int)Math.Ceiling(maxcount*ServerProperty.LOOTGENERATOR_AURULITE_AMOUNT_RATIO));
 			}
 			
 		}

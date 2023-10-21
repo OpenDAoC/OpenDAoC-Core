@@ -6,6 +6,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Database;
 using Core.GS.Events;
+using Core.GS.Server;
 
 namespace Core.GS.GameEvents
 {
@@ -21,7 +22,7 @@ namespace Core.GS.GameEvents
 			ushort model;
 			NpcTemplate zp;
 			try{
-				model = (ushort)ServerProperties.Properties.ZONEPOINT_NPCTEMPLATE;
+				model = (ushort)ServerProperty.ZONEPOINT_NPCTEMPLATE;
 				zp = new NpcTemplate(CoreDb<DbNpcTemplate>.SelectObjects(DB.Column("TemplateId").IsEqualTo(model)).FirstOrDefault());
 				if (model <= 0 || zp == null) throw new ArgumentNullException();
 			}

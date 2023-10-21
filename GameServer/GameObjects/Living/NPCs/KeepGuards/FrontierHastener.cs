@@ -1,7 +1,7 @@
 using System.Collections;
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps
 {
@@ -14,7 +14,7 @@ namespace Core.GS.Keeps
 
 		protected override void SetModel()
 		{
-			if (!ServerProperties.Properties.AUTOMODEL_GUARDS_LOADED_FROM_DB && !LoadedFromScript)
+			if (!ServerProperty.AUTOMODEL_GUARDS_LOADED_FROM_DB && !LoadedFromScript)
 			{
 				return;
 			}
@@ -80,7 +80,7 @@ namespace Core.GS.Keeps
 
 		protected override void SetName()
 		{
-			Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Hastener");
+			Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Hastener");
 			return;
 		}
 	}

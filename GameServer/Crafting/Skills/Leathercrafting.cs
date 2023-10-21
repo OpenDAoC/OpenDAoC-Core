@@ -1,6 +1,7 @@
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Crafting;
 
@@ -10,7 +11,7 @@ public class Leathercrafting : ACraftingSkill
 	public Leathercrafting()
 	{
 		Icon = 0x07;
-		Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "Crafting.Name.Leathercrafting");
+		Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "Crafting.Name.Leathercrafting");
 		eSkill = ECraftingSkill.LeatherCrafting;
 	}
 

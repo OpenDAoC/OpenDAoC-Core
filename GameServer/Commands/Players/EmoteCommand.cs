@@ -1,6 +1,7 @@
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Commands
 {
@@ -106,7 +107,7 @@ namespace Core.GS.Commands
 			}
 			
 			long changeTime = client.Player.CurrentRegion.Time - Tick;
-			if (changeTime < ServerProperties.Properties.EMOTE_DELAY && Tick > 0)
+			if (changeTime < ServerProperty.EMOTE_DELAY && Tick > 0)
 			{
 				string message = LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Emotes.Message" + Util.Random(1,4).ToString());
 				client.Player.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);

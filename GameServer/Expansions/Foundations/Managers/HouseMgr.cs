@@ -12,7 +12,7 @@ using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Expansions.Foundations
@@ -24,7 +24,7 @@ namespace Core.GS.Expansions.Foundations
 		private static AuxEcsGameTimer CheckRentTimer = null;
 		private static Dictionary<ushort, Dictionary<int, House>> _houseList;
 		private static Dictionary<ushort, int> _idList;
-		private static int TimerInterval = Properties.RENT_CHECK_INTERVAL * 60 * 1000;
+		private static int TimerInterval = ServerProperty.RENT_CHECK_INTERVAL * 60 * 1000;
 
 		protected enum eLotSpawnType
 		{
@@ -731,22 +731,22 @@ namespace Core.GS.Expansions.Foundations
 				switch (model % 4)
 				{
 					case 0:
-						return Properties.HOUSING_RENT_MANSION;
+						return ServerProperty.HOUSING_RENT_MANSION;
 					case 1:
-						return Properties.HOUSING_RENT_COTTAGE;
+						return ServerProperty.HOUSING_RENT_COTTAGE;
 					case 2:
-						return Properties.HOUSING_RENT_HOUSE;
+						return ServerProperty.HOUSING_RENT_HOUSE;
 					case 3:
-						return Properties.HOUSING_RENT_VILLA;
+						return ServerProperty.HOUSING_RENT_VILLA;
 				}
 			}
 
-			return Properties.HOUSING_RENT_COTTAGE;
+			return ServerProperty.HOUSING_RENT_COTTAGE;
 		}
 
 		public static int CheckRents(AuxEcsGameTimer timer)
 		{
-			if (Properties.RENT_DUE_DAYS == 0)
+			if (ServerProperty.RENT_DUE_DAYS == 0)
 				return 0;
 
 			Console.WriteLine("[Housing] Starting timed rent check");
@@ -772,7 +772,7 @@ namespace Core.GS.Expansions.Foundations
 					long rent = GetRentByModel(house.Model);
 
 					// Does this house need to pay rent?
-					if (rent > 0L && diff.Days >= Properties.RENT_DUE_DAYS)
+					if (rent > 0L && diff.Days >= ServerProperty.RENT_DUE_DAYS)
 					{					
 						long lockboxAmount = house.KeptMoney;
 						long consignmentAmount = 0;

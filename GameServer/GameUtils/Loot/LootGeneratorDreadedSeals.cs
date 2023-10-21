@@ -3,6 +3,7 @@ using System.Reflection;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Keeps;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameUtils;
@@ -47,14 +48,14 @@ public class LootGeneratorDreadedSeals : LootGeneratorBase
                 default:
                     if (mob.Name.ToUpper() == "LORD AGRAMON")
                         loot.AddFixed(m_SanguineDreadedSeal, 10);
-                    else if (mob.Level >= ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_STARTING_LEVEL)
+                    else if (mob.Level >= ServerProperty.LOOTGENERATOR_DREADEDSEALS_STARTING_LEVEL)
                     {
-                    int iPercentDrop = (mob.Level - ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_STARTING_LEVEL)
-	                    * ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_DROP_CHANCE_PER_LEVEL
-	                    + ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_BASE_CHANCE;
+                    int iPercentDrop = (mob.Level - ServerProperty.LOOTGENERATOR_DREADEDSEALS_STARTING_LEVEL)
+	                    * ServerProperty.LOOTGENERATOR_DREADEDSEALS_DROP_CHANCE_PER_LEVEL
+	                    + ServerProperty.LOOTGENERATOR_DREADEDSEALS_BASE_CHANCE;
 
                     if (!mob.Name.ToLower().Equals(mob.Name)) // Named mobs are more likely to drop a seal
-	                    iPercentDrop = (int)Math.Round(iPercentDrop * ServerProperties.Properties.LOOTGENERATOR_DREADEDSEALS_NAMED_CHANCE);
+	                    iPercentDrop = (int)Math.Round(iPercentDrop * ServerProperty.LOOTGENERATOR_DREADEDSEALS_NAMED_CHANCE);
 
                     if (Util.Random(9999) < iPercentDrop)
 	                    loot.AddFixed(m_GlowingDreadedSeal, 1);

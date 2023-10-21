@@ -2,7 +2,7 @@ using System;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Quests;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.AI.Brains;
 
@@ -118,7 +118,7 @@ public class MorganaBrain : StandardMobBrain
 				player.Out.SendSpellEffectAnimation(Body, Body, 9103, 0, false, 1);
 		}
 		CanRemoveMorgana = true;
-		int resetTimer = Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1h to reset encounter
+		int resetTimer = ServerProperty.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1h to reset encounter
 		new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(RestartMorgana), resetTimer);//reset whole encounter here
 		return 0;
     }

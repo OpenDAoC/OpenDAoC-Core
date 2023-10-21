@@ -6,6 +6,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Movement;
+using Core.GS.Server;
 
 namespace Core.GS.ECS
 {
@@ -43,7 +44,7 @@ namespace Core.GS.ECS
         public bool IsMovingOnPath => IsSet(MovementType.ON_PATH);
         public bool IsNearSpawn => Owner.IsWithinRadius(Owner.SpawnPoint, 25);
         public bool IsAtTargetPosition => IsTargetPositionValid && TargetPosition.X == Owner.X && TargetPosition.Y == Owner.Y && TargetPosition.Z == Owner.Z;
-        public bool CanRoam => ServerProperties.Properties.ALLOW_ROAM && RoamingRange != 0 && string.IsNullOrWhiteSpace(PathID);
+        public bool CanRoam => ServerProperty.ALLOW_ROAM && RoamingRange != 0 && string.IsNullOrWhiteSpace(PathID);
 
         public NpcMovementComponent(GameNpc npcOwner) : base(npcOwner)
         {
@@ -330,7 +331,7 @@ namespace Core.GS.ECS
                 if (IsMoving)
                     StopMoving();
 
-                return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
+                return ServerProperty.GAMENPC_FOLLOWCHECK_TIME;
             }
 
             GameLiving followLiving = FollowTarget as GameLiving;
@@ -390,7 +391,7 @@ namespace Core.GS.ECS
                         targetPosition = new(newX, newY, newZ);
                         double followSpeed = Math.Max(Math.Min(MaxSpeed, Owner.GetDistance(targetPosition) * FOLLOW_SPEED_SCALAR), 50);
                         PathTo(targetPosition, (short) followSpeed);
-                        return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
+                        return ServerProperty.GAMENPC_FOLLOWCHECK_TIME;
                     }
                 }
             }
@@ -408,7 +409,7 @@ namespace Core.GS.ECS
                     UpdateMovement(null, 0);
 
                 TurnTo(FollowTarget);
-                return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
+                return ServerProperty.GAMENPC_FOLLOWCHECK_TIME;
             }
 
             diffX = diffX / distance * minAllowedFollowDistance;
@@ -423,7 +424,7 @@ namespace Core.GS.ECS
             else
                 PathTo(targetPosition, MaxSpeed);
 
-            return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
+            return ServerProperty.GAMENPC_FOLLOWCHECK_TIME;
         }
 
         private void OnArrival()

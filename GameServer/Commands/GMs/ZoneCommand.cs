@@ -6,6 +6,7 @@ using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 
 namespace Core.GS.Commands
 {
@@ -34,7 +35,7 @@ namespace Core.GS.Commands
 					info.Add(" Mid: " + client.Player.CurrentZone.GetNPCsOfZone(ERealm.Midgard).Count);
 					info.Add(" None: " + client.Player.CurrentZone.GetNPCsOfZone(ERealm.None).Count);
 					info.Add(" ");
-					info.Add(string.Format(" Objects in zone: {0}, Total allowed for region: {1}", client.Player.CurrentZone.ObjectCount, ServerProperties.Properties.REGION_MAX_OBJECTS));
+					info.Add(string.Format(" Objects in zone: {0}, Total allowed for region: {1}", client.Player.CurrentZone.ObjectCount, ServerProperty.REGION_MAX_OBJECTS));
 					info.Add(" ");
 					info.Add(" Zone Description: " + client.Player.CurrentZone.Description);
 					info.Add(" Zone Realm: " + GlobalConstants.RealmToName(client.Player.CurrentZone.Realm));

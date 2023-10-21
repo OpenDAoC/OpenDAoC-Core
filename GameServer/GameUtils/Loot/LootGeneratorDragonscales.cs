@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameUtils;
@@ -48,7 +49,7 @@ public class LootGeneratorDragonscales : LootGeneratorBase
 				case "myrddraxis":
 				case "nosdoden":
 				case "xanxicar":
-					iScaleCount = 10 * ServerProperties.Properties.LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT;
+					iScaleCount = 10 * ServerProperty.LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT;
 					break;
 				// Named Dragons
 				case "asiintath":
@@ -63,7 +64,7 @@ public class LootGeneratorDragonscales : LootGeneratorBase
 				case "runicaath":
 				case "tollabarth":
 				case "varrkorith":
-					iScaleCount = 5 * ServerProperties.Properties.LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT;
+					iScaleCount = 5 * ServerProperty.LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT;
 					break;
 				// Dragon Spawn
 				case "glimmer dragon spawn":
@@ -75,12 +76,12 @@ public class LootGeneratorDragonscales : LootGeneratorBase
 					// Mobs range from 55 to 75, and we want an up to 10% bonus to drop chance based on that
 					// I dislike losing accuracy rounding things, and it's a lot faster to do this in 1/10ths 
 					//	of a percent than to convert to doubles and to multiply rather than divide.
-					if (Util.Random(1000) < (10 * ServerProperties.Properties.LOOTGENERATOR_DRAGONSCALES_BASE_CHANCE 
+					if (Util.Random(1000) < (10 * ServerProperty.LOOTGENERATOR_DRAGONSCALES_BASE_CHANCE 
 						+ 5 * (mob.Level - 55)))
 					{
 						if (mob.Name.ToLower() != mob.Name)
 							// Named critter
-							iScaleCount = ServerProperties.Properties.LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT;
+							iScaleCount = ServerProperty.LOOTGENERATOR_DRAGONSCALES_NAMED_COUNT;
 						else
 							iScaleCount = 1;
 					}

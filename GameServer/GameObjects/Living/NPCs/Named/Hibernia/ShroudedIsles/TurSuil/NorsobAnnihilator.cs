@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -105,7 +106,7 @@ public class NorsobAnnihilator : GameEpicBoss
 		MaxSpeedBase = 250;
 		MaxDistance = 2500;
 		TetherRange = 1800;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 		template.AddNPCEquipment(EInventorySlot.RightHandWeapon, 446, 0, 0, 0);

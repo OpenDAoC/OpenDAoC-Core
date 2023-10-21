@@ -9,6 +9,7 @@ using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Quests;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.WeeklyQuest.Hibernia
@@ -62,7 +63,7 @@ namespace Core.GS.WeeklyQuest.Hibernia
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			if (!ServerProperties.Properties.LOAD_QUESTS)
+			if (!ServerProperty.LOAD_QUESTS)
 				return;
 			
 
@@ -354,7 +355,7 @@ namespace Core.GS.WeeklyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			int reward = ServerProperties.Properties.WEEKLY_RVR_REWARD;
+			int reward = ServerProperty.WEEKLY_RVR_REWARD;
 			
 			m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
 			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");

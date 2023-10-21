@@ -1,5 +1,6 @@
 using System.Collections;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps;
 
@@ -82,9 +83,9 @@ public class GameKeep : AGameKeep
 			player.Out.SendMessage("You must be in a group to claim.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return false;
 		}
-		if (player.Group.MemberCount < ServerProperties.Properties.CLAIM_NUM)
+		if (player.Group.MemberCount < ServerProperty.CLAIM_NUM)
 		{
-			player.Out.SendMessage("You need " + ServerProperties.Properties.CLAIM_NUM + " players to claim.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("You need " + ServerProperty.CLAIM_NUM + " players to claim.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return false;
 		}
 
@@ -97,7 +98,7 @@ public class GameKeep : AGameKeep
 	/// <returns></returns>
 	public override int CalculRP()
 	{
-		return ServerProperties.Properties.KEEP_RP_CLAIM_MULTIPLIER * DifficultyLevel;
+		return ServerProperty.KEEP_RP_CLAIM_MULTIPLIER * DifficultyLevel;
 	}
 
 	/// <summary>

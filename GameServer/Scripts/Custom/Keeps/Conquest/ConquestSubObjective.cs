@@ -5,14 +5,15 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.Keeps;
+using Core.GS.Server;
 
 namespace Core.GS;
 
 public class ConquestSubObjective
 {
-    private ushort FlagCaptureRadius = ServerProperties.Properties.FLAG_CAPTURE_RADIUS; //how far away can we capture flag from
-    private static int FlagCaptureTime = ServerProperties.Properties.FLAG_CAPTURE_TIME; //how long to capture flag
-    uint fullCycleTime = (uint) ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION;
+    private ushort FlagCaptureRadius = ServerProperty.FLAG_CAPTURE_RADIUS; //how far away can we capture flag from
+    private static int FlagCaptureTime = ServerProperty.FLAG_CAPTURE_TIME; //how long to capture flag
+    uint fullCycleTime = (uint) ServerProperty.MAX_CONQUEST_TASK_DURATION;
 
     private int ObjectiveNumber = 0;
     

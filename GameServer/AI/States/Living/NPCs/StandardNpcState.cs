@@ -5,7 +5,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.AI.States;
@@ -190,7 +190,7 @@ public class StandardNpcStateRoaming : StandardNpcState
 
         if (!_brain.Body.IsCasting)
         {
-            if (_lastRoamTick + ROAM_COOLDOWN <= GameLoopMgr.GameLoopTime && Util.Chance(Properties.GAMENPC_RANDOMWALK_CHANCE))
+            if (_lastRoamTick + ROAM_COOLDOWN <= GameLoopMgr.GameLoopTime && Util.Chance(ServerProperty.GAMENPC_RANDOMWALK_CHANCE))
             {
                 _brain.Body.Roam(NpcMovementComponent.DEFAULT_WALK_SPEED);
                 _brain.Body.FireAmbientSentence(EAmbientNpcTrigger.roaming, _brain.Body);

@@ -5,6 +5,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Players.Managers;
+using Core.GS.Server;
 
 namespace Core.GS.Commands
 {
@@ -29,7 +30,7 @@ namespace Core.GS.Commands
     {
         public void OnCommand(GameClient client, string[] args)
         {
-            if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+            if (ServerProperty.DISABLE_APPEALSYSTEM)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;

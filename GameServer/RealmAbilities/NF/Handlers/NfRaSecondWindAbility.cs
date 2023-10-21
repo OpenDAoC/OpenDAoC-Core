@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -26,7 +27,7 @@ public class NfRaSecondWindAbility : TimedRealmAbility
 
 	public override int GetReUseDelay(int level)
 	{
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (level)
 			{
@@ -52,17 +53,17 @@ public class NfRaSecondWindAbility : TimedRealmAbility
     public override void AddEffectsInfo(IList<string> list)
     {
         //TODO Translate
-        if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+        if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
         {
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info1"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info4"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info5"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info1"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info4"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info5"));
         }
         else
         {
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info1"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info4"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info5"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info1"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info4"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SecondWindAbility.AddEffectsInfo.Info5"));
         }
     }
 }

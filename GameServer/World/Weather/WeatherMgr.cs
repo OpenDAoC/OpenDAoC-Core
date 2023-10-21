@@ -7,6 +7,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Scheduler;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS
@@ -34,17 +35,17 @@ namespace Core.GS
 		/// <summary>
 		/// Default Weather Check Timer Interval
 		/// </summary>
-		private int DefaultTimerInterval { get { return Math.Max(1000, ServerProperties.Properties.WEATHER_CHECK_INTERVAL); } }
+		private int DefaultTimerInterval { get { return Math.Max(1000, ServerProperty.WEATHER_CHECK_INTERVAL); } }
 		
 		/// <summary>
 		/// Default Weather Chance
 		/// </summary>
-		private int DefaultWeatherChance { get { return Math.Min(99, ServerProperties.Properties.WEATHER_CHANCE); } }
+		private int DefaultWeatherChance { get { return Math.Min(99, ServerProperty.WEATHER_CHANCE); } }
 		
 		/// <summary>
 		/// Log Weather Change to Info Logger
 		/// </summary>
-		private bool EventLogWeather { get { return ServerProperties.Properties.WEATHER_LOG_EVENTS; } }
+		private bool EventLogWeather { get { return ServerProperty.WEATHER_LOG_EVENTS; } }
 		
 		/// <summary>
 		/// Dictionary of Regions to be handled.

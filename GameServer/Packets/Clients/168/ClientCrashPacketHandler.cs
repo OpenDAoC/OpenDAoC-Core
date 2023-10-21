@@ -2,7 +2,7 @@ using System.Reflection;
 using Core.Base;
 using Core.GS.Enums;
 using Core.GS.Packets.Server;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Clients;
@@ -25,7 +25,7 @@ public class ClientCrashPacketHandler : IPacketHandler
 
         if (log.IsDebugEnabled)
         {
-            if (Properties.SAVE_PACKETS)
+            if (ServerProperty.SAVE_PACKETS)
             {
                 log.Debug("Last client sent/received packets (from older to newer):");
 
@@ -33,7 +33,7 @@ public class ClientCrashPacketHandler : IPacketHandler
                     log.Info(prevPak.ToHumanReadable());
             }
             else
-                log.Info($"Enable the server property {nameof(Properties.SAVE_PACKETS)} to see the last few sent/received packets.");
+                log.Info($"Enable the server property {nameof(ServerProperty.SAVE_PACKETS)} to see the last few sent/received packets.");
         }
 
         client.Out.SendPlayerQuit(true);

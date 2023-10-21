@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -18,7 +19,7 @@ public class NfRaIgnorePainAbility : TimedRealmAbility
 
 		int heal = 0;
 
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (Level)
 			{
@@ -62,7 +63,7 @@ public class NfRaIgnorePainAbility : TimedRealmAbility
 
 	public override void AddEffectsInfo(IList<string> list)
 	{
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			list.Add("Level 1: Value: 20%");
 			list.Add("Level 2: Value: 35%");

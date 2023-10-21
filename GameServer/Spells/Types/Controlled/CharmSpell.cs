@@ -11,6 +11,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Spells
 {
@@ -238,7 +239,7 @@ namespace Core.GS.Spells
                 }
 
                 // If the target has an uppercase first letter in the name
-                if (ServerProperties.Properties.SPELL_CHARM_NAMED_CHECK != 0 && char.IsUpper(charmMob.Name[0]))
+                if (ServerProperty.SPELL_CHARM_NAMED_CHECK != 0 && char.IsUpper(charmMob.Name[0]))
                 {
                     // Message: {0) can't be charmed!
                     MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CantBeCharmed", charmMob.GetName(0, true)), EChatType.CT_SpellResisted);

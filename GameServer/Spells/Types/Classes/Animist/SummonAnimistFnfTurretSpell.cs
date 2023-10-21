@@ -9,7 +9,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Spells
 {
@@ -49,20 +49,20 @@ namespace Core.GS.Spells
 				}
 			}
 
-			foreach (GameNpc npc in Caster.CurrentRegion.GetNPCsInRadius(Caster.GroundTarget, (ushort) Properties.TURRET_AREA_CAP_RADIUS))
+			foreach (GameNpc npc in Caster.CurrentRegion.GetNPCsInRadius(Caster.GroundTarget, (ushort) ServerProperty.TURRET_AREA_CAP_RADIUS))
 			{
 				if (npc.Brain is TurretFnfBrain)
 					nCount++;
 			}
 
-			if (nCount >= Properties.TURRET_AREA_CAP_COUNT)
+			if (nCount >= ServerProperty.TURRET_AREA_CAP_COUNT)
 			{
                 if (Caster is GamePlayer)
                     MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.TurretAreaCap"), EChatType.CT_SpellResisted);
                 return false;
 			}
 
-			if (Caster.PetCount >= Properties.TURRET_PLAYER_CAP_COUNT)
+			if (Caster.PetCount >= ServerProperty.TURRET_PLAYER_CAP_COUNT)
 			{
                 if (Caster is GamePlayer)
                     MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.TurretPlayerCap"), EChatType.CT_SpellResisted);

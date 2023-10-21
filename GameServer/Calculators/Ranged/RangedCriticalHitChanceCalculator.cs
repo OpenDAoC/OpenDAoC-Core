@@ -1,6 +1,7 @@
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.Calculators;
 
@@ -32,9 +33,9 @@ public class RangedCriticalHitChanceCalculator : PropertyCalculator
 		}
 		if (living is GameSummonedPet gamePet)
 		{
-			if (ServerProperties.Properties.EXPAND_WILD_MINION && gamePet.Brain is IControlledBrain playerBrain
-				&& playerBrain.GetPlayerOwner() is GamePlayer player
-				&& player.GetAbility<RealmAbilities.OfRaWildMinionAbility>() is RealmAbilities.OfRaWildMinionAbility ab)
+			if (ServerProperty.EXPAND_WILD_MINION && gamePet.Brain is IControlledBrain playerBrain
+			                                  && playerBrain.GetPlayerOwner() is GamePlayer player
+			                                  && player.GetAbility<RealmAbilities.OfRaWildMinionAbility>() is RealmAbilities.OfRaWildMinionAbility ab)
 				chance += ab.Amount;
 		}
 		else // not a pet

@@ -5,6 +5,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.GameEvents
 {
@@ -41,7 +42,7 @@ namespace Core.GS.GameEvents
 		/// <param name="arguments"></param>
 		private static void PlayerEntered(CoreEvent e, object sender, EventArgs arguments)
 		{
-			if (!ServerProperties.Properties.SHOW_LOGINS || sender is not GamePlayer player || player.IsAnonymous)
+			if (!ServerProperty.SHOW_LOGINS || sender is not GamePlayer player || player.IsAnonymous)
 				return;
 
 			foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
@@ -67,8 +68,8 @@ namespace Core.GS.GameEvents
 
 				EChatType chatType = EChatType.CT_System;
 
-				if (Enum.IsDefined(typeof(EChatType), ServerProperties.Properties.SHOW_LOGINS_CHANNEL))
-					chatType = (EChatType)ServerProperties.Properties.SHOW_LOGINS_CHANNEL;
+				if (Enum.IsDefined(typeof(EChatType), ServerProperty.SHOW_LOGINS_CHANNEL))
+					chatType = (EChatType)ServerProperty.SHOW_LOGINS_CHANNEL;
 
 				otherPlayer.Out.SendMessage(message, chatType, EChatLoc.CL_SystemWindow);
 			}
@@ -82,7 +83,7 @@ namespace Core.GS.GameEvents
 		/// <param name="arguments"></param>
 		private static void PlayerQuit(CoreEvent e, object sender, EventArgs arguments)
 		{
-			if (ServerProperties.Properties.SHOW_LOGINS == false)
+			if (ServerProperty.SHOW_LOGINS == false)
 				return;
 
 			GamePlayer player = sender as GamePlayer;
@@ -112,8 +113,8 @@ namespace Core.GS.GameEvents
 
 				EChatType chatType = EChatType.CT_System;
 
-				if (Enum.IsDefined(typeof(EChatType), ServerProperties.Properties.SHOW_LOGINS_CHANNEL))
-					chatType = (EChatType)ServerProperties.Properties.SHOW_LOGINS_CHANNEL;
+				if (Enum.IsDefined(typeof(EChatType), ServerProperty.SHOW_LOGINS_CHANNEL))
+					chatType = (EChatType)ServerProperty.SHOW_LOGINS_CHANNEL;
 
 				otherPlayer.Out.SendMessage(message, chatType, EChatLoc.CL_SystemWindow);
 			}

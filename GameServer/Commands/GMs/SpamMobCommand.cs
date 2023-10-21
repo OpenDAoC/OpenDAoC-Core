@@ -6,6 +6,7 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -427,7 +428,7 @@ public class SpamMobBrain : StandardMobBrain
                 if (spell.Target == ESpellTarget.SELF)
                 {
                     // if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
-                    if (Body.HealthPercent < ServerProperties.Properties.NPC_HEAL_THRESHOLD)
+                    if (Body.HealthPercent < ServerProperty.NPC_HEAL_THRESHOLD)
                     {
                         Body.TargetObject = Body;
                     }
@@ -435,7 +436,7 @@ public class SpamMobBrain : StandardMobBrain
                 }
 
                 // Chance to heal self when dropping below 30%, do NOT spam it.
-                if (Body.HealthPercent < (ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2.0)
+                if (Body.HealthPercent < (ServerProperty.NPC_HEAL_THRESHOLD / 2.0)
                     && Util.Chance(10) && spell.Target != ESpellTarget.PET)
                 {
                     Body.TargetObject = Body;
@@ -444,7 +445,7 @@ public class SpamMobBrain : StandardMobBrain
 
                 if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null
                                                  && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range
-                                                 && Body.ControlledBrain.Body.HealthPercent < ServerProperties.Properties.NPC_HEAL_THRESHOLD
+                                                 && Body.ControlledBrain.Body.HealthPercent < ServerProperty.NPC_HEAL_THRESHOLD
                                                  && spell.Target != ESpellTarget.SELF)
                 {
                     Body.TargetObject = Body.ControlledBrain.Body;

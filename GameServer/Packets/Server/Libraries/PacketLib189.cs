@@ -6,6 +6,7 @@ using Core.GS.Crafting;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Server;
@@ -98,19 +99,19 @@ public class PacketLib189 : PacketLib188
 		if (updateItems == null)
 			updateItems = new Dictionary<int, DbInventoryItem>();
 
-		if (updateItems.Count <= ServerProperties.Properties.MAX_ITEMS_PER_PACKET)
+		if (updateItems.Count <= ServerProperty.MAX_ITEMS_PER_PACKET)
 		{
 			SendInventoryItemsPartialUpdate(updateItems, windowType);
 			return;
 		}
 
-		var items = new Dictionary<int, DbInventoryItem>(ServerProperties.Properties.MAX_ITEMS_PER_PACKET);
+		var items = new Dictionary<int, DbInventoryItem>(ServerProperty.MAX_ITEMS_PER_PACKET);
 
 		foreach (var item in updateItems)
 		{
 			items.Add(item.Key, item.Value);
 
-			if (items.Count >= ServerProperties.Properties.MAX_ITEMS_PER_PACKET)
+			if (items.Count >= ServerProperty.MAX_ITEMS_PER_PACKET)
 			{
 				SendInventoryItemsPartialUpdate(items, windowType);
 				items.Clear();
@@ -386,7 +387,7 @@ public class PacketLib189 : PacketLib188
 
         if (item.SellPrice > 0)
         {
-			if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
+			if (ServerProperty.CONSIGNMENT_USE_BP)
                 name += "[" + item.SellPrice.ToString() + " BP]";
             else
                 name += "[" + MoneyMgr.GetShortString(item.SellPrice) + "]";

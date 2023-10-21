@@ -1,7 +1,7 @@
 using System.Linq;
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -18,7 +18,7 @@ public class LanguageCommand : ACommandHandler, ICommandHandler
             return;
 
         if (client.Account.PrivLevel == (uint)EPrivLevel.Player &&
-            !Properties.ALLOW_CHANGE_LANGUAGE)
+            !ServerProperty.ALLOW_CHANGE_LANGUAGE)
         {
             DisplayMessage(client, "This server does not support changing languages.");
             return;

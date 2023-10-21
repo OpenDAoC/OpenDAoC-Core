@@ -9,6 +9,7 @@ using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
+using Core.GS.Server;
 
 namespace Core.GS.Scripts
 {
@@ -67,7 +68,7 @@ namespace Core.GS.Scripts
     public class OldFrontierTeleporter : GameNpc
     {
         //Re-Port every 45 seconds.
-        private int ReportInterval = ServerProperties.Properties.OF_REPORT_INTERVAL;
+        private int ReportInterval = ServerProperty.OF_REPORT_INTERVAL;
 
         //RvR medallions
         private const string HadrianID = "hadrian_necklace";

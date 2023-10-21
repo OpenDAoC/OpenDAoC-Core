@@ -1,4 +1,5 @@
 using Core.GS.GameLoop;
+using Core.GS.Server;
 
 namespace Core.GS.ECS;
 
@@ -9,7 +10,7 @@ public class BountyService
     private static BountyMgr BountyManager = new();
 
     // private static long _updateInterval = 10000; // 10secs
-    private static long _updateInterval = ServerProperties.Properties.BOUNTY_CHECK_INTERVAL * 1000;
+    private static long _updateInterval = ServerProperty.BOUNTY_CHECK_INTERVAL * 1000;
 
     private static long _lastUpdate;
 

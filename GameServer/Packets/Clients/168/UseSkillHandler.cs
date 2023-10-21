@@ -5,7 +5,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Packets.Server;
 using Core.GS.Players.Specializations;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using Core.GS.Styles;
 using log4net;
 
@@ -149,11 +149,11 @@ public class UseSkillHandler : IPacketHandler
 				}
 				else if (sk is Style style)
 				{
-					if (player.styleComponent.AwaitingBackupInput && Properties.ALLOW_AUTO_BACKUP_STYLES)
+					if (player.styleComponent.AwaitingBackupInput && ServerProperty.ALLOW_AUTO_BACKUP_STYLES)
 					{
 						player.styleComponent.AwaitingBackupInput = false;
 						
-						if (!Properties.ALLOW_NON_ANYTIME_BACKUP_STYLES && (style.AttackResultRequirement != Style.eAttackResultRequirement.Any || style.OpeningRequirementType == Style.eOpening.Positional))
+						if (!ServerProperty.ALLOW_NON_ANYTIME_BACKUP_STYLES && (style.AttackResultRequirement != Style.eAttackResultRequirement.Any || style.OpeningRequirementType == Style.eOpening.Positional))
 						{
 							player.Out.SendMessage($"You must use an anytime style as your backup.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return;

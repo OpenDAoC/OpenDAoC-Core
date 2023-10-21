@@ -16,7 +16,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.Packets.Server;
 using Core.GS.Players.Managers;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Clients;
@@ -280,7 +280,7 @@ public class LoginRequestHandler : IPacketHandler
 					{
 						//check autocreate ...
 
-						if (GameServer.Instance.Configuration.AutoAccountCreation && Properties.ALLOW_AUTO_ACCOUNT_CREATION)
+						if (GameServer.Instance.Configuration.AutoAccountCreation && ServerProperty.ALLOW_AUTO_ACCOUNT_CREATION)
 						{
 							// autocreate account
 							if (string.IsNullOrEmpty(password))
@@ -301,7 +301,7 @@ public class LoginRequestHandler : IPacketHandler
 							foreach (DbAccount ac in allAccByIp)
 							{
 								ts = DateTime.Now - ac.CreationDate;
-								if (ts.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION_SAMEIP && totalacc > 1)
+								if (ts.TotalMinutes < ServerProperty.TIME_BETWEEN_ACCOUNT_CREATION_SAMEIP && totalacc > 1)
 								{
 									Log.Warn("Account creation: too many from same IP within set minutes - " + userName + " : " + ipAddress);
 									client.Out.SendLoginDenied(ELoginError.PersonalAccountIsOutOfTime);
@@ -311,7 +311,7 @@ public class LoginRequestHandler : IPacketHandler
 
 								totalacc++;
 							}
-							if (totalacc >= Properties.TOTAL_ACCOUNTS_ALLOWED_SAMEIP)
+							if (totalacc >= ServerProperty.TOTAL_ACCOUNTS_ALLOWED_SAMEIP)
 							{
 								Log.Warn("Account creation: too many accounts created from same ip - " + userName + " : " + ipAddress);
 								client.Out.SendLoginDenied(ELoginError.AccountNoAccessThisGame);
@@ -320,10 +320,10 @@ public class LoginRequestHandler : IPacketHandler
 							}
 
 							// per timeslice - for preventing account bombing via different ip
-							if (Properties.TIME_BETWEEN_ACCOUNT_CREATION > 0)
+							if (ServerProperty.TIME_BETWEEN_ACCOUNT_CREATION > 0)
 							{
 								ts = DateTime.Now - m_lastAccountCreateTime;
-								if (ts.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION)
+								if (ts.TotalMinutes < ServerProperty.TIME_BETWEEN_ACCOUNT_CREATION)
 								{
 									Log.Warn("Account creation: time between account creation too small - " + userName + " : " + ipAddress);
 									client.Out.SendLoginDenied(ELoginError.PersonalAccountIsOutOfTime);
@@ -342,7 +342,7 @@ public class LoginRequestHandler : IPacketHandler
 							playerAccount.LastLogin = DateTime.Now;
 							playerAccount.LastLoginIP = ipAddress;
 							playerAccount.LastClientVersion = ((int)client.Version).ToString();
-							playerAccount.Language = Properties.SERV_LANGUAGE;
+							playerAccount.Language = ServerProperty.SERV_LANGUAGE;
 							playerAccount.PrivLevel = 1;
 
 							if (Log.IsInfoEnabled)
@@ -385,14 +385,14 @@ public class LoginRequestHandler : IPacketHandler
 						}
 
 						// QUEUE SERVICE :^)
-						if (!playerAccount.IsTester && playerAccount.PrivLevel == 1 && !string.IsNullOrEmpty(Properties.QUEUE_API_URI))
+						if (!playerAccount.IsTester && playerAccount.PrivLevel == 1 && !string.IsNullOrEmpty(ServerProperty.QUEUE_API_URI))
                         {
 							var data = new Dictionary<string, string>()
                             {
 								{ "name", playerAccount.Name }
                             };
 							var payload = new FormUrlEncodedContent(data);
-							var webRequest = new HttpRequestMessage(HttpMethod.Post, Properties.QUEUE_API_URI + "/api/v1/whitelist/check")
+							var webRequest = new HttpRequestMessage(HttpMethod.Post, ServerProperty.QUEUE_API_URI + "/api/v1/whitelist/check")
 							{
 								Content = payload
 							};
@@ -416,7 +416,7 @@ public class LoginRequestHandler : IPacketHandler
 						playerAccount.LastClientVersion = ((int)client.Version).ToString();
 						if (string.IsNullOrEmpty(playerAccount.Language))
 						{
-							playerAccount.Language = Properties.SERV_LANGUAGE;
+							playerAccount.Language = ServerProperty.SERV_LANGUAGE;
 						}
 
 						GameServer.Database.SaveObject(playerAccount);

@@ -4,6 +4,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.Keeps;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -13,7 +14,7 @@ public class ConquestObjective
     public long LastRolloverTick = 0;
     public long StartTick;
 
-    private int _realmPointTickAward = ServerProperties.Properties.SUBTICK_RP_AWARD;
+    private int _realmPointTickAward = ServerProperty.SUBTICK_RP_AWARD;
 
     public ConquestSubObjective ObjectiveOne;
     public ConquestSubObjective ObjectiveTwo;

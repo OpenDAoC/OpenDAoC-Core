@@ -1,4 +1,5 @@
 using Core.Database.Tables;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -8,7 +9,7 @@ public class L5RealmAbility : RealmAbility
 
 	public override int CostForUpgrade(int level)
 	{
-		if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+		if (ServerProperty.USE_NEW_PASSIVES_RAS_SCALING)
 		{
 			switch (level)
 			{
@@ -40,7 +41,7 @@ public class L5RealmAbility : RealmAbility
 
 	public override bool CheckRequirement(GamePlayer player)
 	{
-		if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+		if (ServerProperty.USE_NEW_PASSIVES_RAS_SCALING)
 		{
 			return Level <= 9;
 		}
@@ -54,7 +55,7 @@ public class L5RealmAbility : RealmAbility
 	{
 		get
 		{
-			if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+			if (ServerProperty.USE_NEW_PASSIVES_RAS_SCALING)
 			{
 				return 9;
 			}

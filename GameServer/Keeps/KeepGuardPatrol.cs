@@ -5,6 +5,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.GameUtils;
 using Core.GS.Movement;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps;
 
@@ -125,7 +126,7 @@ public class KeepGuardPatrol
 		Component.Keep.Guards.Add(IdGenerator.GenerateID(), guard);
 		guard.AddToWorld();
 
-		if (ServerProperties.Properties.ENABLE_DEBUG)
+		if (ServerProperty.ENABLE_DEBUG)
 		{
 			guard.Name += " PatrolID " + PatrolID;
 		}

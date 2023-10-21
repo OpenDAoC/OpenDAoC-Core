@@ -2,6 +2,7 @@ using System;
 using Core.Database.Tables;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Server;
 using Core.GS.Spells;
 
 namespace Core.GS.RealmAbilities;
@@ -19,7 +20,7 @@ public class NfRaWrathOfChampionsAbility : TimedRealmAbility
 			return;
 
 		Int32 dmgValue = 0;
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (Level)
 			{

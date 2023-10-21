@@ -7,7 +7,7 @@ using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Players.Classes;
 using Core.GS.Quests;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps
 {
@@ -269,8 +269,8 @@ namespace Core.GS.Keeps
 			GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP))
 			{
 				// In PvE & PvP servers, lords are really just mobs farmed for seals.
-				int iVariance = 1000 * Math.Abs(ServerProperties.Properties.GUARD_RESPAWN_VARIANCE);
-				int iRespawn = 60 * ((Math.Abs(ServerProperties.Properties.GUARD_RESPAWN) * 1000) +
+				int iVariance = 1000 * Math.Abs(ServerProperty.GUARD_RESPAWN_VARIANCE);
+				int iRespawn = 60 * ((Math.Abs(ServerProperty.GUARD_RESPAWN) * 1000) +
 					(Util.Random(-iVariance, iVariance)));
 
 				RespawnInterval = (iRespawn > 1000) ? iRespawn : 1000; // Make sure we don't end up with an impossibly low respawn interval.
@@ -290,19 +290,19 @@ namespace Core.GS.Keeps
 			{
 				case ERealm.None:
 				case ERealm.Albion:
-					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.CaptainCommander");
+					Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.CaptainCommander");
 					break;
 				case ERealm.Midgard:
-					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.HersirCommander");
+					Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.HersirCommander");
 					break;
 				case ERealm.Hibernia:
-					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.ChampionCommander");
+					Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.ChampionCommander");
 					break;
 			}
 
 			if (Realm == ERealm.None)
 			{
-				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
+				Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
 			}
 		}
 	}

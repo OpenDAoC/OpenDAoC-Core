@@ -2,7 +2,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Scripts.discord;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -34,7 +34,7 @@ public class AdviceTeamCommand : ACommandHandler, ICommandHandler
             ChatUtil.SendAdviceMessage(otherPlayer, "Social.SendAdvice.Msg.Channel", GetRealmString(client.Player.Realm), name, msg);
         }
 
-        if (Properties.DISCORD_ACTIVE)
+        if (ServerProperty.DISCORD_ACTIVE)
             WebhookMessage.LogChatMessage(client.Player, EChatType.CT_Advise, msg);
     }
 

@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -57,7 +58,7 @@ public class WretchOfWinterScorp : GameEpicBoss
     public override short Strength { get => base.Strength; set => base.Strength = 300; }
     public override bool AddToWorld()
 	{
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		Model = 470;
 		Name = "Wretch of Winter";
 		Size = 250;
@@ -169,7 +170,7 @@ public class WretchOfWinterSpider : GameEpicBoss
 	public override short Strength { get => base.Strength; set => base.Strength = 300; }
 	public override bool AddToWorld()
 	{
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		Model = 453;
 		Name = "Wretch of Winter";
 		Size = 250;
@@ -281,7 +282,7 @@ public class WretchOfWinterCrab : GameEpicBoss
 	public override short Strength { get => base.Strength; set => base.Strength = 330; }
 	public override bool AddToWorld()
 	{
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		Model = 577;
 		Name = "Wretch of Winter";
 		Size = 250;
@@ -393,7 +394,7 @@ public class WretchOfWinterJotun : GameEpicBoss
 	public override short Strength { get => base.Strength; set => base.Strength = 330; }
 	public override bool AddToWorld()
 	{
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		Model = 1770;
 		Name = "Wretch of Winter";
 		Size = 250;
@@ -497,7 +498,7 @@ public class WretchOfWinterOgre : GameEpicBoss
 	public override short Strength { get => base.Strength; set => base.Strength = 300; }
 	public override bool AddToWorld()
 	{
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		Model = 460;
 		Name = "Wretch of Winter";
 		Size = 250;
@@ -601,7 +602,7 @@ public class WretchOfWinterIce : GameEpicBoss
 	public override short Strength { get => base.Strength; set => base.Strength = 300; }
 	public override bool AddToWorld()
 	{
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		Model = 126;
 		Name = "Wretch of Winter";
 		Size = 250;
@@ -705,7 +706,7 @@ public class WretchOfWinterRaumarik : GameEpicBoss
 	public override short Strength { get => base.Strength; set => base.Strength = 300; }
 	public override bool AddToWorld()
 	{
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		Model = 440;
 		Name = "Wretch of Winter";
 		Size = 250;
@@ -809,7 +810,7 @@ public class WretchOfWinterLich : GameEpicBoss
 	public override short Strength { get => base.Strength; set => base.Strength = 400; }
 	public override bool AddToWorld()
 	{
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		Model = 441;
 		Name = "Wretch of Winter";
 		Size = 250;
@@ -913,7 +914,7 @@ public class WretchOfWinterArachite : GameEpicBoss
 	public override short Strength { get => base.Strength; set => base.Strength = 400; }
 	public override bool AddToWorld()
 	{
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		Model = 466;
 		Name = "Wretch of Winter";
 		Size = 250;

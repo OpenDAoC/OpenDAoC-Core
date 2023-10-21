@@ -10,6 +10,7 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Players.Realms;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -244,7 +245,7 @@ public class ConquestMgr
     {
         foreach (var player in ContributedPlayers?.ToList()?.Where(player => player.Realm == realmToAward))
         {
-            int awardBase = ServerProperties.Properties.CONQUEST_CAPTURE_AWARD;
+            int awardBase = ServerProperty.CONQUEST_CAPTURE_AWARD;
             if (!primaryObjective) awardBase = (int)(awardBase * 0.75);
             int numFlags = ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
             player.GainRealmPoints((long)(awardBase + (numFlags * 200)), false);
@@ -654,7 +655,7 @@ public class ConquestMgr
         temp.Add("" );
         temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Hours + "h " +
                  TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
-                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s elapsed | " + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max");
+                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s elapsed | " + ServerProperty.MAX_CONQUEST_TASK_DURATION + "m Max");
         temp.Add("" + TimeSpan.FromMilliseconds(timeUntilReset).Minutes + "m " +
                    TimeSpan.FromMilliseconds(timeUntilReset).Seconds + "s contribution reset");
         temp.Add("" + TimeSpan.FromMilliseconds(timeUntilAward).Minutes + "m " +

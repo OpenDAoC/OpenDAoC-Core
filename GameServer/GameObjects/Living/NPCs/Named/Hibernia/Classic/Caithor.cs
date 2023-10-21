@@ -8,6 +8,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -178,7 +179,7 @@ public class GhostOfCaithor : GameEpicNPC
 		GhostOfCaithorBrain sbrain = new GhostOfCaithorBrain();
 		SetOwnBrain(sbrain);
 		LoadedFromScript = false;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		SaveIntoDatabase();
 		base.AddToWorld();
 		return true;

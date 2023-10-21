@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.Events;
 
@@ -99,7 +100,7 @@ public class PlayerStatisticsEvent
 
     public static uint RPsEarnedFromKill(GamePlayer killer, GamePlayer killedPlayer)
     {
-        long noExpSeconds = ServerProperties.Properties.RP_WORTH_SECONDS;
+        long noExpSeconds = ServerProperty.RP_WORTH_SECONDS;
 
         if (killedPlayer.DeathTime + noExpSeconds > killedPlayer.PlayedTime)
             return 0;

@@ -2,6 +2,7 @@ using System;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Crafting;
 
@@ -18,7 +19,7 @@ public class Fletching : AProfession
 	public Fletching()
 	{
 		Icon = 0x0C;
-		Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, 
+		Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, 
             "Crafting.Name.Fletching");
 		eSkill = ECraftingSkill.Fletching;
 	}
@@ -35,7 +36,7 @@ public class Fletching : AProfession
 			}
 
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Crafting.CheckTool.NotHaveTools", recipe.Product.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-			player.Out.SendMessage(LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "Crafting.CheckTool.FindLathe"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "Crafting.CheckTool.FindLathe"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			if (player.Client.Account.PrivLevel > 1)
 				return true;

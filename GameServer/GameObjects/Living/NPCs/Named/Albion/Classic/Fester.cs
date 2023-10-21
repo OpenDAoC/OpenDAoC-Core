@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -70,7 +71,7 @@ public class Fester : GameEpicBoss
 		Piety = npcTemplate.Piety;
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		Faction = FactionMgr.GetFactionByID(18);
 		Faction.AddFriendFaction(FactionMgr.GetFactionByID(18));

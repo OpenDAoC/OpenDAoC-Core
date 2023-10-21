@@ -2,6 +2,7 @@ using System;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -78,7 +79,7 @@ public class NfRaArrowSummoningAbility : TimedRealmAbility
 	[ScriptLoadedEvent]
 	public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 	{
-        if (!ServerProperties.Properties.LOAD_ARROW_SUMMONING)
+        if (!ServerProperty.LOAD_ARROW_SUMMONING)
             return;            
         
         DbItemTemplate arrow_summoning1 = GameServer.Database.FindObjectByKey<DbItemTemplate>("arrow_summoning1");

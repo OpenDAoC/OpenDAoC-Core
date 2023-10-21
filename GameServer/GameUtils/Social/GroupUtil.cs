@@ -9,6 +9,7 @@ using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.Server;
 
 namespace Core.GS.GameUtils;
 
@@ -33,7 +34,7 @@ public class GroupUtil
 	public GroupUtil(GameLiving leader)
 	{
 		LivingLeader = leader;
-		m_groupMembers = new ReaderWriterList<GameLiving>(ServerProperties.Properties.GROUP_MAX_MEMBER);
+		m_groupMembers = new ReaderWriterList<GameLiving>(ServerProperty.GROUP_MAX_MEMBER);
 	}
 	
 	/// <summary>
@@ -171,7 +172,7 @@ public class GroupUtil
 	/// <returns>true if added successfully</returns>
 	public virtual bool AddMember(GameLiving living) 
 	{
-		if (!m_groupMembers.FreezeWhile<bool>(l => { if (l.Count >= ServerProperties.Properties.GROUP_MAX_MEMBER || l.Count >= (byte.MaxValue - 1))
+		if (!m_groupMembers.FreezeWhile<bool>(l => { if (l.Count >= ServerProperty.GROUP_MAX_MEMBER || l.Count >= (byte.MaxValue - 1))
 														return false;
 												
 													if (l.Contains(living))

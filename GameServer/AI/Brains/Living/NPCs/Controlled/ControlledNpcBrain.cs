@@ -11,6 +11,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.RealmAbilities;
+using Core.GS.Server;
 using Core.GS.SkillHandler;
 using Core.GS.Spells;
 using log4net;
@@ -104,7 +105,7 @@ namespace Core.GS.AI.Brains
 		/// </summary>
 		public override int ThinkInterval
 		{
-			get { return GS.ServerProperties.Properties.PET_THINK_INTERVAL; }
+			get { return ServerProperty.PET_THINK_INTERVAL; }
 		}
 
 		#region Control
@@ -760,11 +761,11 @@ namespace Core.GS.AI.Brains
                 case ESpellType.SpreadHeal:
 					int bodyPercent = Body.HealthPercent;
 					//underhill ally heals at half the normal threshold 'will heal seriously injured groupmates'
-					int healThreshold = this.Body.Name.Contains("underhill") ? GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2 : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
+					int healThreshold = this.Body.Name.Contains("underhill") ? ServerProperty.NPC_HEAL_THRESHOLD / 2 : ServerProperty.NPC_HEAL_THRESHOLD;
 
 					if (Body.Name.Contains("empyrean"))
 					{
-						healThreshold = this.Body.Name.Contains("empyrean") ? GS.ServerProperties.Properties.CHARMED_NPC_HEAL_THRESHOLD : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
+						healThreshold = this.Body.Name.Contains("empyrean") ? ServerProperty.CHARMED_NPC_HEAL_THRESHOLD : ServerProperty.NPC_HEAL_THRESHOLD;
 					}
 
 					if (spell.Target == ESpellTarget.SELF)

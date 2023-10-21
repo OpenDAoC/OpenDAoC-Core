@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using Core.GS.Styles;
 
 namespace Core.GS;
@@ -97,7 +98,7 @@ public class EpicJuggernaut : GameEpicBoss
 
 		VisibleActiveWeaponSlots = 34;
 		MeleeDamageType = EDamageType.Slash;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		EpicJuggernautBrain sbrain = new EpicJuggernautBrain();
 		SetOwnBrain(sbrain);
 		LoadedFromScript = false;//load from database

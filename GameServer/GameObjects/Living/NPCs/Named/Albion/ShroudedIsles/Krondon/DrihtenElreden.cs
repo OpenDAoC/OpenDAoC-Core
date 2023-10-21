@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using Core.GS.Styles;
 
 namespace Core.GS;
@@ -130,7 +131,7 @@ public class DrihtenElreden : GameEpicBoss
 		MaxSpeedBase = 250;
 		MaxDistance = 3500;
 		TetherRange = 3800;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		Faction = FactionMgr.GetFactionByID(8);
 		Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));

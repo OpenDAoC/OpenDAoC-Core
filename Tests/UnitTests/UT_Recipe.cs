@@ -22,6 +22,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
 using Core.GS.Crafting;
+using Core.GS.Server;
 
 namespace Core.Tests.Unit.Gameserver
 {
@@ -84,7 +85,7 @@ namespace Core.Tests.Unit.Gameserver
             var material = new DbItemTemplate() { Price = 100 };
             var ingredients = new List<IngredientDb>() { new IngredientDb(count, material) };
             var recipe = new RecipeMgr(product, ingredients);
-            GS.ServerProperties.Properties.CRAFTING_SELLBACK_PERCENT = 95;
+            ServerProperty.CRAFTING_SELLBACK_PERCENT = 95;
 
             recipe.SetRecommendedProductPriceInDB();
 

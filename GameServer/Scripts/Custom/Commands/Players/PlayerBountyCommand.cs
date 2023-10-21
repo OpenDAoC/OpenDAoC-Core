@@ -1,7 +1,7 @@
 ﻿using Core.GS.Commands;
 using Core.GS.Enums;
 using Core.GS.Players.Realms;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Scripts
 {
@@ -16,9 +16,9 @@ namespace Core.GS.Scripts
         private int amount;
         private GamePlayer killerPlayer;
 
-        private int minBountyReward = Properties.BOUNTY_MIN_REWARD;
-        private int maxBountyReward = Properties.BOUNTY_MAX_REWARD;
-        private int minLoyalty = Properties.BOUNTY_MIN_LOYALTY;
+        private int minBountyReward = ServerProperty.BOUNTY_MIN_REWARD;
+        private int maxBountyReward = ServerProperty.BOUNTY_MAX_REWARD;
+        private int minLoyalty = ServerProperty.BOUNTY_MIN_LOYALTY;
 
         public void OnCommand(GameClient client, string[] args)
         {

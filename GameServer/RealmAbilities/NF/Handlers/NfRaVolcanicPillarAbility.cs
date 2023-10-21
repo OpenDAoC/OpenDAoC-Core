@@ -1,6 +1,7 @@
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -30,7 +31,7 @@ public class NfRaVolcanicPillarAbility : TimedRealmAbility
 			return;
 		}
 
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (Level)
 			{

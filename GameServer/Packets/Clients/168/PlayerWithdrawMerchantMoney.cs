@@ -3,6 +3,7 @@ using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Clients;
@@ -44,7 +45,7 @@ public class PlayerWithdrawMerchantMoney : IPacketHandler
 
 			if (totalConMoney > 0)
 			{
-				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
+				if (ServerProperty.CONSIGNMENT_USE_BP)
 				{
 					client.Player.Out.SendMessage("You withdraw " + totalConMoney.ToString() + " BountyPoints from your Merchant.", EChatType.CT_Important, EChatLoc.CL_ChatWindow);
 					client.Player.BountyPoints += totalConMoney;
@@ -59,7 +60,7 @@ public class PlayerWithdrawMerchantMoney : IPacketHandler
 
 				conMerchant.TotalMoney -= totalConMoney;
 
-				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+				if (ServerProperty.MARKET_ENABLE_LOG)
 				{
 					log.DebugFormat("CM: [{0}:{1}] withdraws {2} from CM on lot {3}.", client.Player.Name, client.Account.Name, totalConMoney, conMerchant.HouseNumber);
 				}

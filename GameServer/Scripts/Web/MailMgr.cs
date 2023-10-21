@@ -11,7 +11,7 @@ using Core.Base;
 using Core.Config;
 using Core.GS;
 using Core.GS.GameUtils;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.Mail
@@ -149,8 +149,8 @@ namespace Core.Mail
 			SmtpClient.EnableSsl = m_ssl;
 			SmtpClient.Credentials = new NetworkCredential(m_username, m_password);
 
-			if (Properties.LOG_EMAIL_ADDRESSES != "")
-				SendLogs(Properties.LOG_EMAIL_ADDRESSES);
+			if (ServerProperty.LOG_EMAIL_ADDRESSES != "")
+				SendLogs(ServerProperty.LOG_EMAIL_ADDRESSES);
 
 			if (m_enable)
 			{

@@ -3,6 +3,7 @@ using System.Reflection;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Clients;
@@ -147,7 +148,7 @@ public class PlayerMarketSearchRequestHandler : IPacketHandler
 
 		Console.WriteLine(search);
 
-		if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+		if (ServerProperty.MARKET_ENABLE_LOG)
 		{
 		
 			log.DebugFormat(" ");

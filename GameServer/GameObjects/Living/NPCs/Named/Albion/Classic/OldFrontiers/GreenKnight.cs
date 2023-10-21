@@ -10,6 +10,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -74,7 +75,7 @@ public class GreenKnight : GameEpicBoss
         Empathy = npcTemplate.Empathy;
         Faction = FactionMgr.GetFactionByID(236); // fellwoods
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(236));
-        RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
         template.AddNPCEquipment(EInventorySlot.TorsoArmor, 46, 0, 0, 0); //Slot,model,color,effect,extension
@@ -135,7 +136,7 @@ public class GreenKnight : GameEpicBoss
             OF.Size = 120;
             OF.CurrentRegionID = 1; //albion Forest sauvage
             OF.MeleeDamageType = EDamageType.Slash;
-            OF.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            OF.RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             OF.Faction = FactionMgr.GetFactionByID(236);
             OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(236));
             OF.BodyType = (ushort) EBodyType.Humanoid;

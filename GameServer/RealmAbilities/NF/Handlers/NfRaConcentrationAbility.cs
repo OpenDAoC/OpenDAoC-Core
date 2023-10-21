@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -28,7 +29,7 @@ public class NfRaConcentrationAbility : TimedRealmAbility
 
     public override int GetReUseDelay(int level)
 	{
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (level)
 			{
@@ -74,7 +75,7 @@ public class NfRaConcentrationAbility : TimedRealmAbility
             list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "ConcentrationAbility.AddEffectsInfo.Info5"));
 		}*/
 		
-		list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "ConcentrationAbility.AddEffectsInfo.Info4"));
-		list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "ConcentrationAbility.AddEffectsInfo.Info5"));
+		list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "ConcentrationAbility.AddEffectsInfo.Info4"));
+		list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "ConcentrationAbility.AddEffectsInfo.Info5"));
 	}
 }

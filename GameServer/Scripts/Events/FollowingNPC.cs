@@ -4,6 +4,7 @@ using System.Timers;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameEvents
@@ -140,7 +141,7 @@ namespace Core.GS.GameEvents
 		[ScriptLoadedEvent]
 		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 		{
-			if (!ServerProperties.Properties.LOAD_EXAMPLES)
+			if (!ServerProperty.LOAD_EXAMPLES)
 				return;
 			m_myFollowTimer = new Timer(1500);
 			m_myFollowTimer.AutoReset = true;
@@ -163,7 +164,7 @@ namespace Core.GS.GameEvents
 		[ScriptUnloadedEvent]
 		public static void OnScriptUnload(CoreEvent e, object sender, EventArgs args)
 		{
-			if (!ServerProperties.Properties.LOAD_EXAMPLES)
+			if (!ServerProperty.LOAD_EXAMPLES)
 				return;
 			//To stop this event, we simply delete
 			//(remove from world completly) the npc

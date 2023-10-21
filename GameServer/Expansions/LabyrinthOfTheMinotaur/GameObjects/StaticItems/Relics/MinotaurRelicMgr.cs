@@ -5,6 +5,7 @@ using System.Threading;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Events;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Expansions.LabyrinthOfTheMinotaur;
@@ -38,7 +39,7 @@ public sealed class MinotaurRelicMgr
     [ScriptLoadedEvent]
     public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
     {
-        if (ServerProperties.Properties.ENABLE_MINOTAUR_RELICS)
+        if (ServerProperty.ENABLE_MINOTAUR_RELICS)
         {
             if (log.IsDebugEnabled)
                 log.Debug("Minotaur Relics manager initialized");

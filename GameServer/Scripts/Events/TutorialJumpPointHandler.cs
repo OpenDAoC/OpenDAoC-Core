@@ -1,6 +1,6 @@
 using Core.Database;
 using Core.Database.Tables;
-using Core.GS.ServerRules;
+using Core.GS.Server;
 
 namespace Core.GS.GameEvents
 {

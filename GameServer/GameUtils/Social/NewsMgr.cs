@@ -7,6 +7,7 @@ using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.Server;
 
 namespace Core.GS.GameUtils;
 
@@ -20,7 +21,7 @@ public class NewsMgr
                 player.Out.SendMessage(message, EChatType.CT_System, EChatLoc.CL_SystemWindow);
         }
 
-        if (ServerProperties.Properties.RECORD_NEWS)
+        if (ServerProperty.RECORD_NEWS)
         {
             DbNews news = new()
             {

@@ -7,6 +7,7 @@ using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Quests;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Server;
@@ -380,13 +381,13 @@ public class PacketLib171 : PacketLib170
 			switch (player.Realm)
 			{
 				case ERealm.Albion:
-					time = (ushort)((ServerProperties.Properties.FREELEVEL_DAYS_ALBION * 24 * 60) - t.TotalMinutes);
+					time = (ushort)((ServerProperty.FREELEVEL_DAYS_ALBION * 24 * 60) - t.TotalMinutes);
 					break;
 				case ERealm.Midgard:
-					time = (ushort)((ServerProperties.Properties.FREELEVEL_DAYS_MIDGARD * 24 * 60) - t.TotalMinutes);
+					time = (ushort)((ServerProperty.FREELEVEL_DAYS_MIDGARD * 24 * 60) - t.TotalMinutes);
 					break;
 				case ERealm.Hibernia:
-					time = (ushort)((ServerProperties.Properties.FREELEVEL_DAYS_HIBERNIA * 24 * 60) - t.TotalMinutes);
+					time = (ushort)((ServerProperty.FREELEVEL_DAYS_HIBERNIA * 24 * 60) - t.TotalMinutes);
 					break;
 			}
 

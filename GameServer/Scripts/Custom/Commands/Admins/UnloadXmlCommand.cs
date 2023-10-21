@@ -5,7 +5,7 @@ using System.Reflection;
 using Core.Database;
 using Core.GS.Commands;
 using Core.GS.Enums;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.DatabaseUpdate
@@ -24,7 +24,7 @@ namespace Core.GS.DatabaseUpdate
 		/// <summary>
 		/// Set Default Path for Unloading XML Package Directory
 		/// </summary>
-		[Properties("xmlautoload", "xml_unload_db_directory", "Enforce directory path where the XML Packages are Unloaded From Database (Relative to Scripts or Absolute...)", "dbupdater/unload")]
+		[ServerProperty("xmlautoload", "xml_unload_db_directory", "Enforce directory path where the XML Packages are Unloaded From Database (Relative to Scripts or Absolute...)", "dbupdater/unload")]
 		public static string XML_UNLOAD_DB_DIRECTORY;
 		#endregion
 

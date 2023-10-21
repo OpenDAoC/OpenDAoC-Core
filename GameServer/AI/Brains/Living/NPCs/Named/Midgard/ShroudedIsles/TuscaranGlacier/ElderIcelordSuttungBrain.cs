@@ -3,6 +3,7 @@ using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.AI.Brains;
 
@@ -170,7 +171,7 @@ public class HjalmarSuttungControllerBrain : APlayerVicinityBrain
     public static bool Spawn_Boss = false;
     public override void Think()
     {
-        int respawn = GS.ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;
+        int respawn = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;
         if (Body.IsAlive)
         {
             if (ElderIcelordSuttung.SuttungCount == 1 || ElderIcelordHjalmar.HjalmarCount == 1)//one of them is up

@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -19,7 +20,7 @@ public class NfRaPurgeAbility : TimedRealmAbility
     {
         if (CheckPreconditions(living, DEAD | SITTING)) return;
         
-        if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+        if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
         {
             int seconds = 0;
             switch(Level)
@@ -179,7 +180,7 @@ public class NfRaPurgeAbility : TimedRealmAbility
 
     public override int GetReUseDelay(int level)
     {
-        if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+        if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
         {
         	switch(level)
         	{
@@ -201,9 +202,9 @@ public class NfRaPurgeAbility : TimedRealmAbility
 
     public override void AddEffectsInfo(IList<string> list)
     {
-        list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info1"));
+        list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info1"));
         list.Add("");
-        list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info2"));
-        list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info3"));
+        list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info2"));
+        list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info3"));
     }
 }

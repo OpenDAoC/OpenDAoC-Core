@@ -6,6 +6,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Keeps;
+using Core.GS.Server;
 using Core.GS.Spells;
 
 namespace Core.GS
@@ -73,9 +74,9 @@ namespace Core.GS
 			// the level of the player, so let's deal with that first.
 			if (text.ToLower() == "battlegrounds")
 			{
-				if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
+				if (!ServerProperty.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
 				{
-					SayTo(player, ServerProperties.Properties.BG_ZONES_CLOSED_MESSAGE);
+					SayTo(player, ServerProperty.BG_ZONES_CLOSED_MESSAGE);
 				}
 				else
 				{

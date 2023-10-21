@@ -3,6 +3,7 @@ using Core.AI.Brain;
 using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.Spells
 {
@@ -46,7 +47,7 @@ namespace Core.GS.Spells
 		/// </summary>
 		public override bool CheckBeginCast(GameLiving selectedTarget)
 		{
-			if (Caster.PetCount >= ServerProperties.Properties.THEURGIST_PET_CAP)
+			if (Caster.PetCount >= ServerProperty.THEURGIST_PET_CAP)
 			{
 				MessageToCaster("You have too many controlled creatures!", EChatType.CT_SpellResisted);
 				return false;

@@ -1,6 +1,7 @@
 using Core.AI.Brain;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.AI.Brains
 {
@@ -248,7 +249,7 @@ namespace Core.GS.AI.Brains
 			// TODO: Move 'CommanderPet.Taunting' to the brain.
 			if (Body is CommanderPet commanderPet)
 			{
-				int tauntScale = GS.ServerProperties.Properties.PET_BD_COMMANDER_TAUNT_VALUE;
+				int tauntScale = ServerProperty.PET_BD_COMMANDER_TAUNT_VALUE;
 
 				if (commanderPet.Taunting && tauntScale > 100)
 					damage = (int)(damage * tauntScale / 100.0);

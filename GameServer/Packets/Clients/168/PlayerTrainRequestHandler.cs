@@ -7,7 +7,7 @@ using Core.GS.Enums;
 using Core.GS.Packets.Server;
 using Core.GS.Players.Specializations;
 using Core.GS.RealmAbilities;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Clients;
@@ -26,7 +26,7 @@ public class PlayerTrainRequestHandler : IPacketHandler
 
 	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
-        if (!Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
+        if (!ServerProperty.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
         {
             GameTrainer trainer = client.Player.TargetObject as GameTrainer;
             if (trainer == null || (trainer.CanTrain(client.Player) == false && trainer.CanTrainChampionLevels(client.Player) == false))
@@ -182,7 +182,7 @@ public class PlayerTrainHandler : IPacketHandler
 {
 	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
-        if (!Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
+        if (!ServerProperty.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
         {
             // A trainer of the appropriate class must be around (or global trainer, with TrainedClass = eCharacterClass.Unknow
             GameTrainer trainer = client.Player.TargetObject as GameTrainer;
@@ -332,7 +332,7 @@ public class PlayerTrainHandler : IPacketHandler
 	{
 		public void HandlePacket(GameClient client, GsPacketIn packet)
 		{
-			if (!Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
+			if (!ServerProperty.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player)
             {
                 GameTrainer trainer = client.Player.TargetObject as GameTrainer;
                 if (trainer == null || (trainer.CanTrain(client.Player) == false && trainer.CanTrainChampionLevels(client.Player) == false))

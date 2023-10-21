@@ -5,6 +5,7 @@ using Core.Database.Tables;
 using Core.GS.Crafting;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Players.Clients;
@@ -421,7 +422,7 @@ public class PlayerTradeWindow : ITradeWindow
 			// Check if the tradepartner has also agreed to the trade
 			if (!m_partnerWindow.m_tradeAccept) return false;
 
-			bool logTrade = ServerProperties.Properties.LOG_TRADES;
+			bool logTrade = ServerProperty.LOG_TRADES;
 			if (m_owner.Client.Account.PrivLevel > 1 || partner.Client.Account.PrivLevel > 1)
 				logTrade = true;
 

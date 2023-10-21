@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Quests;
@@ -29,7 +30,7 @@ public class ATask
     /// </summary>
     protected static int
         CHECK_TASK_DELAY =
-            ServerProperties.Properties.TASK_PAUSE_TICKS; // moved to server properties to avoid tasks overruns...
+            ServerProperty.TASK_PAUSE_TICKS; // moved to server properties to avoid tasks overruns...
 
     /// <summary>
     /// Chance of npc having task for player

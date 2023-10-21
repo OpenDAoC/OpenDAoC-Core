@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.ECS
@@ -13,14 +14,14 @@ namespace Core.GS.ECS
 
         private static Dictionary<EEntityType, object> _entityArrays = new()
         {
-            { EEntityType.Client, new EntityArray<GameClient>(ServerProperties.Properties.MAX_PLAYERS) },
-            { EEntityType.Brain, new EntityArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
+            { EEntityType.Client, new EntityArray<GameClient>(ServerProperty.MAX_PLAYERS) },
+            { EEntityType.Brain, new EntityArray<ABrain>(ServerProperty.MAX_ENTITIES) },
             { EEntityType.Effect, new EntityArray<EcsGameEffect>(250) },
             { EEntityType.AttackComponent, new EntityArray<AttackComponent>(1250) },
             { EEntityType.CastingComponent, new EntityArray<CastingComponent>(1250) },
             { EEntityType.EffectListComponent, new EntityArray<EffectListComponent>(3000) },
             { EEntityType.CraftComponent, new EntityArray<CraftComponent>(100) },
-            { EEntityType.ObjectChangingSubZone, new EntityArray<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) },
+            { EEntityType.ObjectChangingSubZone, new EntityArray<ObjectChangingSubZone>(ServerProperty.MAX_ENTITIES) },
             { EEntityType.LivingBeingKilled, new EntityArray<LivingBeingKilled>(200) },
             { EEntityType.Timer, new EntityArray<EcsGameTimer>(500) },
             { EEntityType.AuxTimer, new EntityArray<AuxEcsGameTimer>(500) }

@@ -9,7 +9,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Players.Titles;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -72,7 +72,7 @@ public class Olcasgean : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int MaxHealth
     {
@@ -128,13 +128,13 @@ public class Olcasgean : GameEpicBoss
         String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
         NewsMgr.CreateNews(message, killer.Realm, ENewsType.PvE, true);
 
-        if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+        if (ServerProperty.GUILD_MERIT_ON_DRAGON_KILL > 0)
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 if (player.IsEligibleToGiveMeritPoints)
                 {
-                    GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
+                    GuildEventHandler.MeritForNPCKilled(player, this, ServerProperty.GUILD_MERIT_ON_DRAGON_KILL);
                 }
             }
         }
@@ -214,7 +214,7 @@ public class Olcasgean : GameEpicBoss
         CurrentRegionID = 191;         
 
         Flags = (ENpcFlags)156;
-        RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
         OIBrain.startevent = false;
         OIBrain.DeadPrimalsCount = 0;
         OlcasgeanBrain.setbossflags = false;
@@ -304,7 +304,7 @@ public class Olcasgean2 : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int MaxHealth
     {
@@ -360,13 +360,13 @@ public class Olcasgean2 : GameEpicBoss
         String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
         NewsMgr.CreateNews(message, killer.Realm, ENewsType.PvE, true);
 
-        if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+        if (ServerProperty.GUILD_MERIT_ON_DRAGON_KILL > 0)
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 if (player.IsEligibleToGiveMeritPoints)
                 {
-                    GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
+                    GuildEventHandler.MeritForNPCKilled(player, this, ServerProperty.GUILD_MERIT_ON_DRAGON_KILL);
                 }
             }
         }
@@ -626,7 +626,7 @@ public class WaterPrimal : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override bool HasAbility(string keyName)
     {
@@ -757,7 +757,7 @@ public class FirePrimal : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override bool HasAbility(string keyName)
     {
@@ -987,7 +987,7 @@ public class EarthPrimal : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override bool HasAbility(string keyName)
     {
@@ -1481,7 +1481,7 @@ public class Vortex : GameNpc
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 250 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 250 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override bool AddToWorld()
     {

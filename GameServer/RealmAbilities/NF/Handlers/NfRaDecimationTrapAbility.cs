@@ -5,6 +5,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -35,7 +36,7 @@ public class NfRaDecimationTrapAbility : TimedRealmAbility
 		effectiveness = 0;
 		owner = living;
 
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (Level)
 			{
@@ -207,7 +208,7 @@ public class NfRaDecimationTrapAbility : TimedRealmAbility
 
 	public override void AddEffectsInfo(IList<string> list)
 	{
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			list.Add("Trap that deals the following damage in an 350 radius");
 			list.Add("Level 1: 300 Damage");

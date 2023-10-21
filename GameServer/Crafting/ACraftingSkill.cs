@@ -8,7 +8,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Players.Realms;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Crafting
@@ -696,7 +696,7 @@ namespace Core.GS.Crafting
 
 			craftingTime = (int)(craftingTime * mod);
 
-			var maxCraftingTime = Properties.MAX_CRAFT_TIME;
+			var maxCraftingTime = ServerProperty.MAX_CRAFT_TIME;
 
 			if (craftingTime < 1)
 				craftingTime = 1;

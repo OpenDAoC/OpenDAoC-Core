@@ -9,7 +9,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Packets.Server;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Packets.Clients;
 
@@ -28,7 +28,7 @@ public class DoorRequestHandler : IPacketHandler
 		var doorState = (byte) packet.ReadByte();
 		int doorType = doorID / 100000000;
 
-		int radius = Properties.WORLD_PICKUP_DISTANCE * 4;
+		int radius = ServerProperty.WORLD_PICKUP_DISTANCE * 4;
 		int zoneDoor = doorID / 1000000;
 
 		string debugText = "";
@@ -49,7 +49,7 @@ public class DoorRequestHandler : IPacketHandler
 		}
 
 		// debug text
-		if (client.Account.PrivLevel > 1 || Properties.ENABLE_DEBUG)
+		if (client.Account.PrivLevel > 1 || ServerProperty.ENABLE_DEBUG)
 		{
 			if (doorType == 7)
 			{

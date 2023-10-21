@@ -6,6 +6,7 @@ using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Players.Titles;
 using Core.GS.PlayerTitles;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Server;
@@ -506,7 +507,7 @@ public class PacketLib175 : PacketLib174
     {
         //[Freya] Nidel: Can use realm button in character selection screen
 
-        if (ServerProperties.Properties.ALLOW_ALL_REALMS || m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player)
+        if (ServerProperty.ALLOW_ALL_REALMS || m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player)
         {
             SendLoginGranted(1);
         }

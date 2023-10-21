@@ -6,7 +6,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Scripts;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -15,7 +15,7 @@ namespace Core.GS
         public GameEpicBoss() : base()
         {
             ScalingFactor = 80;
-            OrbsReward = Properties.EPICBOSS_ORBS;
+            OrbsReward = ServerProperty.EPICBOSS_ORBS;
         }
         public override void ReturnToSpawnPoint(short speed)
         {
@@ -58,10 +58,10 @@ namespace Core.GS
                     OrbsReward = 3000;
 
                 if (MaxHealth <= 40000 && MaxHealth > 30000)// 750 orbs for normal nameds
-                    OrbsReward = Properties.EPICBOSS_ORBS / 2;
+                    OrbsReward = ServerProperty.EPICBOSS_ORBS / 2;
 
                 if (MaxHealth <= 30000 && MaxHealth >= 10000)// 375 orbs for normal nameds
-                    OrbsReward = Properties.EPICBOSS_ORBS / 4;
+                    OrbsReward = ServerProperty.EPICBOSS_ORBS / 4;
 
                 // debug
                 log.Debug($"{Name} killed by {killer.Name}");

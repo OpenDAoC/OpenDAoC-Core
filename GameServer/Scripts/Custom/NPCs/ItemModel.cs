@@ -6,6 +6,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -15,7 +16,7 @@ namespace Core.GS
         public string TempModelID = "TempModelID";
         public string TempModelPrice = "TempModelPrice";
         public string currencyName = "Orbs";
-        private string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
+        private string _currencyID = ServerProperty.ALT_CURRENCY_ID;
         private int Chance;
         private Random rnd = new Random();
 

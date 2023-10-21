@@ -9,7 +9,7 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Players.Classes;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Keeps
@@ -38,7 +38,7 @@ namespace Core.GS.Keeps
 
                 long duration = (GameLoopMgr.GameLoopTime - m_lastSpawnTime) / 1000L;
 
-                if (duration < Properties.LORD_RP_WORTH_SECONDS)
+                if (duration < ServerProperty.LORD_RP_WORTH_SECONDS)
                 {
                     return 0;
                 }
@@ -63,7 +63,7 @@ namespace Core.GS.Keeps
                     return 0;
 
                 long duration = (GameLoopMgr.GameLoopTime - m_lastSpawnTime) / 1000L;
-                if (duration < Properties.LORD_RP_WORTH_SECONDS)
+                if (duration < ServerProperty.LORD_RP_WORTH_SECONDS)
                 {
                     return 0;
                 }
@@ -82,7 +82,7 @@ namespace Core.GS.Keeps
             get
             {
                 long duration = (GameLoopMgr.GameLoopTime - m_lastSpawnTime) / 1000L;
-                if (duration < Properties.LORD_RP_WORTH_SECONDS)
+                if (duration < ServerProperty.LORD_RP_WORTH_SECONDS)
                 {
                     return 0;
                 }
@@ -114,7 +114,7 @@ namespace Core.GS.Keeps
             get
             {
                 long duration = (GameLoopMgr.GameLoopTime - m_lastSpawnTime) / 1000L;
-                if (duration < Properties.LORD_RP_WORTH_SECONDS)
+                if (duration < ServerProperty.LORD_RP_WORTH_SECONDS)
                 {
                     return 0;
                 }
@@ -150,7 +150,7 @@ namespace Core.GS.Keeps
                 this.isDeadOrDying = true;
                 m_lastRealm = ERealm.None;
 
-                if (Properties.LOG_KEEP_CAPTURES)
+                if (ServerProperty.LOG_KEEP_CAPTURES)
                 {
                     try
                     {
@@ -367,11 +367,11 @@ namespace Core.GS.Keeps
 
         public override void AutoSetStats(DbMob dbMob = null)
         {
-            Strength = (short) (Properties.LORD_AUTOSET_STR_BASE + Level * Properties.LORD_AUTOSET_STR_MULTIPLIER);
-            Constitution = (short) (Properties.LORD_AUTOSET_CON_BASE + Level * Properties.LORD_AUTOSET_CON_MULTIPLIER);
-            Dexterity = (short) (Properties.LORD_AUTOSET_DEX_BASE + Level * Properties.LORD_AUTOSET_DEX_MULTIPLIER);
-            Quickness = (short) (Properties.LORD_AUTOSET_QUI_BASE + Level * Properties.LORD_AUTOSET_QUI_MULTIPLIER);
-            Intelligence = (short) (Properties.LORD_AUTOSET_INT_BASE + Level * Properties.LORD_AUTOSET_INT_MULTIPLIER);
+            Strength = (short) (ServerProperty.LORD_AUTOSET_STR_BASE + Level * ServerProperty.LORD_AUTOSET_STR_MULTIPLIER);
+            Constitution = (short) (ServerProperty.LORD_AUTOSET_CON_BASE + Level * ServerProperty.LORD_AUTOSET_CON_MULTIPLIER);
+            Dexterity = (short) (ServerProperty.LORD_AUTOSET_DEX_BASE + Level * ServerProperty.LORD_AUTOSET_DEX_MULTIPLIER);
+            Quickness = (short) (ServerProperty.LORD_AUTOSET_QUI_BASE + Level * ServerProperty.LORD_AUTOSET_QUI_MULTIPLIER);
+            Intelligence = (short) (ServerProperty.LORD_AUTOSET_INT_BASE + Level * ServerProperty.LORD_AUTOSET_INT_MULTIPLIER);
         }
 
         protected override void SetRespawnTime()
@@ -386,8 +386,8 @@ namespace Core.GS.Keeps
                     || GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
                 {
                     // In PvE & PvP servers, lords are really just mobs farmed for seals.
-                    int iVariance = 1000 * Math.Abs(Properties.GUARD_RESPAWN_VARIANCE);
-                    int iRespawn = 60 * ((Math.Abs(Properties.GUARD_RESPAWN) * 1000) +
+                    int iVariance = 1000 * Math.Abs(ServerProperty.GUARD_RESPAWN_VARIANCE);
+                    int iRespawn = 60 * ((Math.Abs(ServerProperty.GUARD_RESPAWN) * 1000) +
                         (Util.Random(-iVariance, iVariance)));
 
                     RespawnInterval = (iRespawn > 1000) ? iRespawn : 1000; // Make sure we don't end up with an impossibly low respawn interval.
@@ -450,12 +450,12 @@ namespace Core.GS.Keeps
         {
             if (Component == null)
             {
-                Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Commander", CurrentZone.Description);
+                Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Commander", CurrentZone.Description);
                 return;
             }
             else if (IsTowerGuard)
             {
-                Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.TowerCaptain");
+                Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.TowerCaptain");
                 return;
             }
 
@@ -464,22 +464,22 @@ namespace Core.GS.Keeps
                 case ERealm.None:
                 case ERealm.Albion:
                     if (Gender == EGender.Male)
-                        Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Lord", GetKeepShortName(Component.Keep.Name));
-                    else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Lady", GetKeepShortName(Component.Keep.Name));
+                        Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Lord", GetKeepShortName(Component.Keep.Name));
+                    else Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Lady", GetKeepShortName(Component.Keep.Name));
                     break;
                 case ERealm.Midgard:
-                    Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Jarl", GetKeepShortName(Component.Keep.Name));
+                    Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Jarl", GetKeepShortName(Component.Keep.Name));
                     break;
                 case ERealm.Hibernia:
                     if (Gender == EGender.Male)
-                        Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Chieftain", GetKeepShortName(Component.Keep.Name));
-                    else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Chieftess", GetKeepShortName(Component.Keep.Name));
+                        Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Chieftain", GetKeepShortName(Component.Keep.Name));
+                    else Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Chieftess", GetKeepShortName(Component.Keep.Name));
                     break;
             }
 
             if (Realm == ERealm.None)
             {
-                Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
+                Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
             }
         }
     }

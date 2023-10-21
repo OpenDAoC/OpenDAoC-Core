@@ -1,4 +1,5 @@
 using Core.GS.GameLoop;
+using Core.GS.Server;
 
 namespace Core.GS.ECS;
 
@@ -20,8 +21,8 @@ public class ConquestService
         GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-        long fullCycle = ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000; //ServerProperties.Properties.MAX_CONQUEST_INTERVAL
-        long tallyCycle = ServerProperties.Properties.CONQUEST_TALLY_INTERVAL * 1000; //multiply by 000 to accomodate for second input
+        long fullCycle = ServerProperty.MAX_CONQUEST_TASK_DURATION * 60000; //ServerProperties.Properties.MAX_CONQUEST_INTERVAL
+        long tallyCycle = ServerProperty.CONQUEST_TALLY_INTERVAL * 1000; //multiply by 000 to accomodate for second input
         long subCycle = fullCycle / 6;
 
         var ActiveObjective = ConquestManager.ActiveObjective;
@@ -52,17 +53,17 @@ public class ConquestService
 
     public static bool IsOverHalfwayDone()
     {
-        long fullCycle = ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000; //ServerProperties.Properties.MAX_CONQUEST_INTERVAL
+        long fullCycle = ServerProperty.MAX_CONQUEST_TASK_DURATION * 60000; //ServerProperties.Properties.MAX_CONQUEST_INTERVAL
         return (ConquestManager.LastConquestStartTime + (fullCycle / 2)) < GameLoopMgr.GameLoopTime;
     }
 
     public static long GetTicksUntilContributionReset()
     {
-        return ConquestManager.LastConquestWindowStart + (ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION * 60000 / 6) - GameLoopMgr.GameLoopTime;
+        return ConquestManager.LastConquestWindowStart + (ServerProperty.MAX_CONQUEST_TASK_DURATION * 60000 / 6) - GameLoopMgr.GameLoopTime;
     }
 
     public static long GetTicksUntilNextAward()
     {
-        return ConquestManager.ActiveObjective.LastRolloverTick + ServerProperties.Properties.CONQUEST_TALLY_INTERVAL * 1000 - GameLoopMgr.GameLoopTime;
+        return ConquestManager.ActiveObjective.LastRolloverTick + ServerProperty.CONQUEST_TALLY_INTERVAL * 1000 - GameLoopMgr.GameLoopTime;
     }
 }

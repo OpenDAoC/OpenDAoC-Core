@@ -4,7 +4,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Scripts.discord;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -39,12 +39,12 @@ public class AdviceCommand : ACommandHandler, ICommandHandler
             return;
 
         long lastAdviceTick = client.Player.TempProperties.GetProperty<long>(advTimeoutString);
-        int slowModeLength = Properties.ADVICE_SLOWMODE_LENGTH * 1000;
+        int slowModeLength = ServerProperty.ADVICE_SLOWMODE_LENGTH * 1000;
 
         if ((GameLoopMgr.GameLoopTime - lastAdviceTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
         {
             // Message: You must wait {0} seconds before using this command again.
-            ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Wait", Properties.ADVICE_SLOWMODE_LENGTH - (GameLoopMgr.GameLoopTime - lastAdviceTick) / 1000);
+            ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Wait", ServerProperty.ADVICE_SLOWMODE_LENGTH - (GameLoopMgr.GameLoopTime - lastAdviceTick) / 1000);
             return;
         }
 
@@ -96,7 +96,7 @@ public class AdviceCommand : ACommandHandler, ICommandHandler
             ChatUtil.SendAdviceMessage(otherPlayer, "Social.SendAdvice.Msg.Channel", GetRealmString(client.Player.Realm), client.Player.Name, msg);
         }
 
-        if (Properties.DISCORD_ACTIVE)
+        if (ServerProperty.DISCORD_ACTIVE)
             WebhookMessage.LogChatMessage(client.Player, EChatType.CT_Advise, msg);
 
         if (client.Account.PrivLevel == 1)

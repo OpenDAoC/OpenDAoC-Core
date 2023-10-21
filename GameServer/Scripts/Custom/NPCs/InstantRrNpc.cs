@@ -1,5 +1,6 @@
 using System.Reflection;
 using Core.GS.Enums;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS
@@ -117,7 +118,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR2 && freeRR == 2)
                         {
-                            player.GainRealmPoints((long)(double)(RR2 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR2 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -125,7 +126,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR3 && freeRR == 3)
                         {
-                            player.GainRealmPoints((long)(double)(RR3 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR3 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -133,7 +134,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR4 && freeRR == 4)
                         {
-                            player.GainRealmPoints((long)(double)(RR4 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR4 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -141,7 +142,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR5 && freeRR == 5)
                         {
-                            player.GainRealmPoints((long)(double)(RR5 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR5 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -149,7 +150,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR6 && freeRR == 6)
                         {
-                            player.GainRealmPoints((long)(double)(RR6 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR6 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -157,7 +158,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR7 && freeRR == 7)
                         {
-                            player.GainRealmPoints((long)(double)(RR3 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR3 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -165,7 +166,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR8 && freeRR == 8)
                         {
-                            player.GainRealmPoints((long)(double)(RR8 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR8 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -173,7 +174,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR9 && freeRR == 9)
                         {
-                            player.GainRealmPoints((long)(double)(RR9 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR9 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -181,7 +182,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR10 && freeRR == 10)
                         {
-                            player.GainRealmPoints((long)(double)(RR10 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR10 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -189,7 +190,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR11 && freeRR == 11)
                         {
-                            player.GainRealmPoints((long)(double)(RR11 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR11 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -197,7 +198,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR12 && freeRR == 12)
                         {
-                            player.GainRealmPoints((long)(double)(RR12 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR12 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;
@@ -205,7 +206,7 @@ namespace Core.GS
                     {
                         if (player.RealmPoints < RR13 && freeRR == 13)
                         {
-                            player.GainRealmPoints((long)(double)(RR13 - player.RealmPoints / ServerProperties.Properties.RP_RATE));
+                            player.GainRealmPoints((long)(double)(RR13 - player.RealmPoints / ServerProperty.RP_RATE));
                         }
                     }
                     break;

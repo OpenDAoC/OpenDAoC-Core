@@ -22,7 +22,7 @@ using System.Threading;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Server
@@ -79,7 +79,7 @@ namespace Core.Tests.Integration.Server
 //					Console.Out.WriteLine("add "+i);
 					GameNpc mob = mobs[i];
 					Assert.IsTrue(mob.AddToWorld(), "failed to add {0} to the world", mob.Name);
-					Assert.IsTrue(mob.ObjectID > 0 && mob.ObjectID <= Properties.REGION_MAX_OBJECTS, "{0} oid={1}", mob.Name, mob.ObjectID);
+					Assert.IsTrue(mob.ObjectID > 0 && mob.ObjectID <= ServerProperty.REGION_MAX_OBJECTS, "{0} oid={1}", mob.Name, mob.ObjectID);
 				}
 				
 				for (int i = count-x; i >= 0; i--)

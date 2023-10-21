@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Quests;
@@ -86,7 +87,7 @@ public class VikingLvl50EpicMidQuest : BaseQuest
 	[ScriptLoadedEvent]
 	public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 	{
-		if (!ServerProperties.Properties.LOAD_QUESTS)
+		if (!ServerProperty.LOAD_QUESTS)
 			return;
 		
 

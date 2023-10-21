@@ -8,6 +8,7 @@ using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Commands;
@@ -99,7 +100,7 @@ public class BattleGroupCommand : ACommandHandler, ICommandHandler
                         return;
                     }
 
-                    StringBuilder text = new StringBuilder(ServerProperties.Properties.BATTLEGROUP_MAX_MEMBER); //create the string builder
+                    StringBuilder text = new StringBuilder(ServerProperty.BATTLEGROUP_MAX_MEMBER); //create the string builder
                     ArrayList curBattleGroupGrouped = new ArrayList(); //create the arraylist
                     ArrayList curBattleGroupNotGrouped = new ArrayList();
                     int i = 1; //This will list each group in the battle group.
@@ -176,7 +177,7 @@ public class BattleGroupCommand : ACommandHandler, ICommandHandler
                         return;
                     }
 
-                    var text = new StringBuilder(ServerProperties.Properties.BATTLEGROUP_MAX_MEMBER); //create the string builder
+                    var text = new StringBuilder(ServerProperty.BATTLEGROUP_MAX_MEMBER); //create the string builder
                     var curBattleGroupGrouped = new ArrayList(); //create the arraylist
                     var i = 1; //This will list each group in the battle group.
                     text.Length = 0;
@@ -234,7 +235,7 @@ public class BattleGroupCommand : ACommandHandler, ICommandHandler
                         return;
                     }
 
-                    var text = new StringBuilder(ServerProperties.Properties.BATTLEGROUP_MAX_MEMBER); //create the string builder
+                    var text = new StringBuilder(ServerProperty.BATTLEGROUP_MAX_MEMBER); //create the string builder
                     var curBattleGroupNotGrouped = new ArrayList();
                     var i = 1; //This will list each group in the battle group.
                     text.Length = 0;
@@ -291,7 +292,7 @@ public class BattleGroupCommand : ACommandHandler, ICommandHandler
                     }
 
                     int i = 0;
-                    StringBuilder text = new StringBuilder(ServerProperties.Properties.BATTLEGROUP_MAX_MEMBER);
+                    StringBuilder text = new StringBuilder(ServerProperty.BATTLEGROUP_MAX_MEMBER);
                     text.Length = 0;
                     text.Append("Players currently in Battle Group:");
                     client.Out.SendMessage(text.ToString(), EChatType.CT_System, EChatLoc.CL_SystemWindow);

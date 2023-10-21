@@ -10,6 +10,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Keeps
@@ -239,8 +240,8 @@ namespace Core.GS.Keeps
 					GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP))
 				{
 					// In PvE & PvP servers, lords are really just mobs farmed for seals.
-					int iVariance = 1000 * Math.Abs(ServerProperties.Properties.GUARD_RESPAWN_VARIANCE);
-					int iRespawn = 60 * ((Math.Abs(ServerProperties.Properties.GUARD_RESPAWN) * 1000) +
+					int iVariance = 1000 * Math.Abs(ServerProperty.GUARD_RESPAWN_VARIANCE);
+					int iRespawn = 60 * ((Math.Abs(ServerProperty.GUARD_RESPAWN) * 1000) +
 						(Util.Random(-iVariance, iVariance)));
 
 					return (iRespawn > 1000) ? iRespawn : 1000; // Make sure we don't end up with an impossibly low respawn interval.
@@ -325,7 +326,7 @@ namespace Core.GS.Keeps
 				{
 					string name = DBKeep.Name;
 
-					if (ServerProperties.Properties.ENABLE_DEBUG)
+					if (ServerProperty.ENABLE_DEBUG)
 					{
 						name += string.Format(" KID: {0}", KeepID);
 					}
@@ -539,10 +540,10 @@ namespace Core.GS.Keeps
 					StartDeductionTimer();
 				}
 			}
-			if (Level < ServerProperties.Properties.MAX_KEEP_LEVEL && Guild != null)
-				StartChangeLevel((byte)ServerProperties.Properties.MAX_KEEP_LEVEL);
-			else if (Level <= ServerProperties.Properties.MAX_KEEP_LEVEL && Level > ServerProperties.Properties.STARTING_KEEP_LEVEL && Guild == null)
-				StartChangeLevel((byte)ServerProperties.Properties.STARTING_KEEP_LEVEL);
+			if (Level < ServerProperty.MAX_KEEP_LEVEL && Guild != null)
+				StartChangeLevel((byte)ServerProperty.MAX_KEEP_LEVEL);
+			else if (Level <= ServerProperty.MAX_KEEP_LEVEL && Level > ServerProperty.STARTING_KEEP_LEVEL && Guild == null)
+				StartChangeLevel((byte)ServerProperty.STARTING_KEEP_LEVEL);
 		}
 
 		/// <summary>
@@ -596,7 +597,7 @@ namespace Core.GS.Keeps
 			}
 			
 			// Disabled check on DBKeep.BaseLevel to allow claiming of BG keeps
-			if (this.DBKeep.BaseLevel != 50 && !ServerProperties.Properties.ALLOW_BG_CLAIM)
+			if (this.DBKeep.BaseLevel != 50 && !ServerProperty.ALLOW_BG_CLAIM)
 			{
 			 	player.Out.SendMessage("This keep is not able to be claimed.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			 	return false;
@@ -617,7 +618,7 @@ namespace Core.GS.Keeps
 				player.Out.SendMessage("The keep is already claimed.",EChatType.CT_System,EChatLoc.CL_SystemWindow);
 				return false;
 			}
-			switch (ServerProperties.Properties.GUILDS_CLAIM_LIMIT)
+			switch (ServerProperty.GUILDS_CLAIM_LIMIT)
 			{
 				case 0:
 					{
@@ -635,9 +636,9 @@ namespace Core.GS.Keeps
 					}
 				default:
 					{
-						if (player.Guild.ClaimedKeeps.Count >= ServerProperties.Properties.GUILDS_CLAIM_LIMIT)
+						if (player.Guild.ClaimedKeeps.Count >= ServerProperty.GUILDS_CLAIM_LIMIT)
 						{
-							player.Out.SendMessage("Your guild already owns the limit of keeps (" + ServerProperties.Properties.GUILDS_CLAIM_LIMIT + ")", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+							player.Out.SendMessage("Your guild already owns the limit of keeps (" + ServerProperty.GUILDS_CLAIM_LIMIT + ")", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 							return false;
 						}
 						break;
@@ -654,7 +655,7 @@ namespace Core.GS.Keeps
 						count++;
 				}
 
-				int needed = ServerProperties.Properties.CLAIM_NUM;
+				int needed = ServerProperty.CLAIM_NUM;
 				if (this is GameKeepTower)
 					needed = needed / 2;
 				if (player.Client.Account.PrivLevel > 1)
@@ -676,10 +677,10 @@ namespace Core.GS.Keeps
 		{
 			Guild = player.Guild;
 			
-			if (ServerProperties.Properties.GUILDS_CLAIM_LIMIT > 1)
-				player.Guild.SendMessageToGuildMembers("Your guild has currently claimed " + player.Guild.ClaimedKeeps.Count + " keeps of a maximum of " + ServerProperties.Properties.GUILDS_CLAIM_LIMIT, EChatType.CT_Guild, EChatLoc.CL_ChatWindow);
+			if (ServerProperty.GUILDS_CLAIM_LIMIT > 1)
+				player.Guild.SendMessageToGuildMembers("Your guild has currently claimed " + player.Guild.ClaimedKeeps.Count + " keeps of a maximum of " + ServerProperty.GUILDS_CLAIM_LIMIT, EChatType.CT_Guild, EChatLoc.CL_ChatWindow);
 
-			ChangeLevel((byte)ServerProperties.Properties.STARTING_KEEP_CLAIM_LEVEL);
+			ChangeLevel((byte)ServerProperty.STARTING_KEEP_CLAIM_LEVEL);
 
 			PlayerMgr.BroadcastClaim(this);
 
@@ -783,7 +784,7 @@ namespace Core.GS.Keeps
 			Guild = null;
 			StopDeductionTimer();
 			StopChangeLevelTimer();
-			ChangeLevel((byte)ServerProperties.Properties.STARTING_KEEP_LEVEL);
+			ChangeLevel((byte)ServerProperty.STARTING_KEEP_LEVEL);
 
 			foreach (GameKeepGuard guard in Guards.Values)
 			{
@@ -875,7 +876,7 @@ namespace Core.GS.Keeps
 			else
 			{
 				int bonusLevel = 0;
-				double multiplier = ServerProperties.Properties.KEEP_GUARD_LEVEL_MULTIPLIER;
+				double multiplier = ServerProperty.KEEP_GUARD_LEVEL_MULTIPLIER;
 
 				if (guard.Component != null)
 				{
@@ -883,7 +884,7 @@ namespace Core.GS.Keeps
 					bonusLevel = guard.Component.Keep.Level;
 
 					if (guard.Component.Keep is GameKeepTower)
-						multiplier = ServerProperties.Properties.TOWER_GUARD_LEVEL_MULTIPLIER;
+						multiplier = ServerProperty.TOWER_GUARD_LEVEL_MULTIPLIER;
 				}
 
 				guard.Level = (byte)(GetBaseLevel(guard) + (bonusLevel * multiplier));
@@ -899,7 +900,7 @@ namespace Core.GS.Keeps
 		/// <param name="targetLevel">The target level</param>
 		public void StartChangeLevel(byte targetLevel)
 		{
-			if (ServerProperties.Properties.ENABLE_KEEP_UPGRADE_TIMER)
+			if (ServerProperty.ENABLE_KEEP_UPGRADE_TIMER)
 			{
 				if (this.Level == targetLevel)
 					return;
@@ -1002,9 +1003,9 @@ namespace Core.GS.Keeps
 			}
             byte maxlevel = 0;
             if (Guild != null)
-                maxlevel = (byte)ServerProperties.Properties.MAX_KEEP_LEVEL;
+                maxlevel = (byte)ServerProperty.MAX_KEEP_LEVEL;
             else
-                maxlevel = (byte)ServerProperties.Properties.STARTING_KEEP_LEVEL;
+                maxlevel = (byte)ServerProperty.STARTING_KEEP_LEVEL;
 
 
             if (Level < maxlevel && Guild != null)
@@ -1059,7 +1060,7 @@ namespace Core.GS.Keeps
 
 			PlayerMgr.BroadcastCapture(this);
 
-            Level = (byte)ServerProperties.Properties.STARTING_KEEP_LEVEL;
+            Level = (byte)ServerProperty.STARTING_KEEP_LEVEL;
 
 			//if a guild holds the keep, we release it
 			if (Guild != null)
@@ -1109,11 +1110,11 @@ namespace Core.GS.Keeps
 			}
 
 			//update guard level for every keep
-			if (!IsPortalKeep && ServerProperties.Properties.USE_KEEP_BALANCING)
+			if (!IsPortalKeep && ServerProperty.USE_KEEP_BALANCING)
 				GameServer.KeepManager.UpdateBaseLevels();
 
 			//update the counts of keeps for the bonuses
-			if (ServerProperties.Properties.USE_LIVE_KEEP_BONUSES)
+			if (ServerProperty.USE_LIVE_KEEP_BONUSES)
 				KeepBonusMgr.UpdateCounts();
 
 			SaveIntoDatabase();

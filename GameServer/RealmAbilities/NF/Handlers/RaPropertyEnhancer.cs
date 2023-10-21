@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -33,7 +34,7 @@ public abstract class RaPropertyEnhancer : L5RealmAbility
 			list.Add("");
 			for (int i = 1; i <= MaxLevel; i++)
 			{
-                list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "RAPropertyEnhancer.DelveInfo.Info1", i, GetAmountForLevel(i), ValueUnit));
+                list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "RAPropertyEnhancer.DelveInfo.Info1", i, GetAmountForLevel(i), ValueUnit));
             }
 			return list;
 		}
@@ -134,7 +135,7 @@ public abstract class L3RaPropertyEnhancer : RaPropertyEnhancer
 
 	public override int CostForUpgrade(int level)
 	{
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch(level)
 			{
@@ -156,7 +157,7 @@ public abstract class L3RaPropertyEnhancer : RaPropertyEnhancer
 	{
 		get
 		{
-			if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+			if (ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 			{
 				return 5;
 			}

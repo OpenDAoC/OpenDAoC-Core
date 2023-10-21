@@ -1,6 +1,7 @@
 ﻿using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Server;
 
 namespace Core.GS.Commands
 {
@@ -13,7 +14,7 @@ namespace Core.GS.Commands
     {
         public void OnCommand(GameClient client, string[] args)
         {
-            if (!ServerProperties.Properties.ENABLE_CORPSESUMONNER)
+            if (!ServerProperty.ENABLE_CORPSESUMONNER)
             {
                 client.Player.Out.SendMessage("This command is currently disable!", EChatType.CT_System,
                     EChatLoc.CL_ChatWindow);

@@ -14,6 +14,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Quests;
+using Core.GS.Server;
 using Core.GS.Spells;
 using log4net;
 
@@ -1007,7 +1008,7 @@ public class PacketLib1124 : PacketLib1123
 			name = item.Count + " " + name;
 		if (item.SellPrice > 0)
 		{
-			if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
+			if (ServerProperty.CONSIGNMENT_USE_BP)
 				name += "[" + item.SellPrice.ToString() + " BP]";
 			else
 				name += "[" + MoneyMgr.GetString(item.SellPrice) + "]";

@@ -5,6 +5,7 @@ using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -206,7 +207,7 @@ namespace Core.GS
                     EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 				//Changed by Apo 9. August 2010: Areas never send an screen description, but we will support it with an server property
-                if (ServerProperties.Properties.DISPLAY_AREA_ENTER_SCREEN_DESC)
+                if (ServerProperty.DISPLAY_AREA_ENTER_SCREEN_DESC)
                     player.Out.SendMessage(screenDescription, EChatType.CT_ScreenCenterSmaller, EChatLoc.CL_SystemWindow);
 			}
 			if (Sound != 0)

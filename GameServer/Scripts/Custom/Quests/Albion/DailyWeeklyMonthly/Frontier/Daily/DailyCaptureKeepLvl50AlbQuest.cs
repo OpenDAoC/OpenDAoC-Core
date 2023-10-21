@@ -9,6 +9,7 @@ using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Quests;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.DailyQuest.Albion
@@ -60,7 +61,7 @@ namespace Core.GS.DailyQuest.Albion
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			if (!ServerProperties.Properties.LOAD_QUESTS)
+			if (!ServerProperty.LOAD_QUESTS)
 				return;
 			
 
@@ -347,7 +348,7 @@ namespace Core.GS.DailyQuest.Albion
 
 		public override void FinishQuest()
 		{
-			int reward = ServerProperties.Properties.DAILY_RVR_REWARD;
+			int reward = ServerProperty.DAILY_RVR_REWARD;
 			
 			m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/5);
 			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,m_questPlayer.Level*2,0,Util.Random(50)), "You receive {0} as a reward.");

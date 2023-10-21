@@ -8,7 +8,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameEvents
@@ -26,7 +26,7 @@ namespace Core.GS.GameEvents
 		/// <summary>
 		/// Enable Starter Guilds
 		/// </summary>
-		[Properties("startup", "starting_guild", "Starter Guild - Edit this to enable/disable the starter guilds", true)]
+		[ServerProperty("startup", "starting_guild", "Starter Guild - Edit this to enable/disable the starter guilds", true)]
 		public static bool STARTING_GUILD;
 
 		/// <summary>
@@ -57,7 +57,7 @@ namespace Core.GS.GameEvents
 				if (currentRealm == ERealm.None || currentRealm == ERealm.Door)
 					continue;
 				
-				CheckGuild(currentRealm,LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName(currentRealm))));
+				CheckGuild(currentRealm,LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName(currentRealm))));
 			}
 		}
 		
@@ -94,7 +94,7 @@ namespace Core.GS.GameEvents
 			DbAccount account = chArgs.GameClient.Account;
 			
 
-			var guildname = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName((ERealm)ch.Realm)));
+			var guildname = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName((ERealm)ch.Realm)));
 			ch.GuildID = GuildMgr.GuildNameToGuildID(guildname);
 
 			if (ch.GuildID != "")
@@ -114,11 +114,11 @@ namespace Core.GS.GameEvents
 			{
 				GuildUtil newguild = GuildMgr.CreateGuild(currentRealm, guildName);
 				newguild.Ranks[8].OcHear = true;
-				newguild.Motd = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Motd");
-				newguild.Omotd = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Omotd");
+				newguild.Motd = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE,"Guild.StartupGuild.Motd");
+				newguild.Omotd = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE,"Guild.StartupGuild.Omotd");
 				newguild.BonusType = EGuildBonusType.Experience;
 				newguild.BonusStartTime = DateTime.Now;
-				newguild.Ranks[8].Title =  LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE,"Guild.StartupGuild.Title");
+				newguild.Ranks[8].Title =  LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE,"Guild.StartupGuild.Title");
 				newguild.Ranks[8].Invite = true;
 				newguild.IsStartingGuild = true;
 			}

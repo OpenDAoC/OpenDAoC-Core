@@ -31,8 +31,7 @@ using Core.GS.Players.Clients;
 using Core.GS.Players.Titles;
 using Core.GS.PlayerTitles;
 using Core.GS.Quests;
-using Core.GS.ServerProperties;
-using Core.GS.ServerRules;
+using Core.GS.Server;
 using Core.Mail;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
@@ -602,7 +601,7 @@ namespace Core.GS
 
 				//---------------------------------------------------------------
 				//Try to init Server Properties
-				if (!InitComponent(Properties.InitProperties, "Server Properties Lookup"))
+				if (!InitComponent(ServerProperty.InitProperties, "Server Properties Lookup"))
 					return false;
 
 				//---------------------------------------------------------------
@@ -783,14 +782,14 @@ namespace Core.GS
 					return false;
 
 				//Load the quest managers if enabled
-				if (Properties.LOAD_QUESTS)
+				if (ServerProperty.LOAD_QUESTS)
 				{
 					if (!InitComponent(QuestMgr.Init(), "Quest Manager"))
 						return false;
 				}
 				else
 				{
-					log.InfoFormat("Not Loading Quest Manager : Obeying Server Property <load_quests> - {0}", Properties.LOAD_QUESTS);
+					log.InfoFormat("Not Loading Quest Manager : Obeying Server Property <load_quests> - {0}", ServerProperty.LOAD_QUESTS);
 				}
 
 				//---------------------------------------------------------------
@@ -831,10 +830,10 @@ namespace Core.GS
 				m_status = EGameServerStatus.GSS_Open;
 				StartupTime = DateTime.Now;
 
-				if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+				if (ServerProperty.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperty.DISCORD_WEBHOOK_ID)))
 				{
 
-					var client = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+					var client = new DiscordWebhookClient(ServerProperty.DISCORD_WEBHOOK_ID);
 					
  					var message = new DiscordMessage(
  						"",
@@ -857,7 +856,7 @@ namespace Core.GS
 				if (log.IsInfoEnabled)
 					log.Info("GameServer is now open for connections!");
 
-				if (Properties.ATLAS_API)
+				if (ServerProperty.ATLAS_API)
 				{
 					var webserver = new ApiHost();
 					log.Info("Game WebAPI open for connections.");
@@ -884,7 +883,7 @@ namespace Core.GS
 			try
 			{
 				using var newsClient = new HttpClient();
-				var url = Properties.PATCH_NOTES_URL;
+				var url = ServerProperty.PATCH_NOTES_URL;
 				var newsResult = await newsClient.GetStringAsync(url);
 				news.Add(newsResult);
 				log.Debug("Patch notes updated.");

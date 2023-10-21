@@ -103,9 +103,9 @@ public class PlayerInitRequestHandler : IPacketHandler
 				SendGuildMessagesToPlayer(player);
 			}
 			SendHouseRentRemindersToPlayer(player);
-			if (player.Level > 1 && ServerProperties.Properties.MOTD != "")
+			if (player.Level > 1 && GS.Server.ServerProperty.MOTD != "")
 			{
-				player.Out.SendMessage(ServerProperties.Properties.MOTD, EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(GS.Server.ServerProperty.MOTD, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			else if (player.Level == 1)
 			{
@@ -115,7 +115,7 @@ public class PlayerInitRequestHandler : IPacketHandler
 			
 
 
-			if (ServerProperties.Properties.ENABLE_DEBUG)
+			if (GS.Server.ServerProperty.ENABLE_DEBUG)
 				player.Out.SendMessage("Server is running in DEBUG mode!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
 			// player.Out.SendPlayerFreeLevelUpdate();
@@ -130,7 +130,7 @@ public class PlayerInitRequestHandler : IPacketHandler
 			//                        eChatLoc.CL_SystemWindow);
 
 
-			if (ServerProperties.Properties.TELEPORT_LOGIN_NEAR_ENEMY_KEEP)
+			if (GS.Server.ServerProperty.TELEPORT_LOGIN_NEAR_ENEMY_KEEP)
 			{
 				CheckIfPlayerLogsNearEnemyKeepAndMoveIfNecessary(player);
 
@@ -138,7 +138,7 @@ public class PlayerInitRequestHandler : IPacketHandler
 				CheckIfPlayerLogsNearKeepUnderAttackAndMoveIfNecessary(player);
 			}
 
-			if (ServerProperties.Properties.TELEPORT_LOGIN_BG_LEVEL_EXCEEDED)
+			if (GS.Server.ServerProperty.TELEPORT_LOGIN_BG_LEVEL_EXCEEDED)
 			{
 				CheckBGLevelCapForPlayerAndMoveIfNecessary(player);
 			}
@@ -165,7 +165,7 @@ public class PlayerInitRequestHandler : IPacketHandler
 
 			if (updateTempProperties)
 			{
-				if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP)
+				if (GS.Server.ServerProperty.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP)
 				{
 					try
 					{
@@ -178,7 +178,7 @@ public class PlayerInitRequestHandler : IPacketHandler
 							{
 								player.TempProperties.SetProperty(container.TempPropString, longresult);
 
-								if (ServerProperties.Properties.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
+								if (GS.Server.ServerProperty.ACTIVATE_TEMP_PROPERTIES_MANAGER_CHECKUP_DEBUG)
 									Log.Debug("Container " + container.TempPropString + " with value " + container.Value + " for player " + player.Name + " was removed from container list, tempproperties added");
 							}
 								TempPropertiesMgr.TempPropContainerList.TryRemove(container);
@@ -240,7 +240,7 @@ public class PlayerInitRequestHandler : IPacketHandler
 			}
 
 			int gracePeriodInMinutes = 0;
-			Int32.TryParse(ServerProperties.Properties.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out gracePeriodInMinutes);
+			Int32.TryParse(GS.Server.ServerProperty.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out gracePeriodInMinutes);
 			AGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
 			if (keep != null && player.Client.Account.PrivLevel == 1 && GameServer.KeepManager.IsEnemy(keep, player))
 			{
@@ -272,7 +272,7 @@ public class PlayerInitRequestHandler : IPacketHandler
 		private static void CheckIfPlayerLogsNearKeepUnderAttackAndMoveIfNecessary(GamePlayer player)
 		{
 			int gracePeriodInMinutes = 0;
-			Int32.TryParse(ServerProperties.Properties.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out gracePeriodInMinutes);
+			Int32.TryParse(GS.Server.ServerProperty.RVR_LINK_DEATH_RELOG_GRACE_PERIOD, out gracePeriodInMinutes);
 			AGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
 			if (keep != null && keep.InCombat && player.Client.Account.PrivLevel == 1 && !GameServer.KeepManager.IsEnemy(keep, player))
 			{
@@ -306,8 +306,8 @@ public class PlayerInitRequestHandler : IPacketHandler
 
 			if (house != null)
 			{
-				TimeSpan due = (house.LastPaid.AddDays(ServerProperties.Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
-				if ((due.Days <= 0 || due.Days < ServerProperties.Properties.RENT_DUE_DAYS) && house.KeptMoney < HouseMgr.GetRentByModel(house.Model))
+				TimeSpan due = (house.LastPaid.AddDays(GS.Server.ServerProperty.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
+				if ((due.Days <= 0 || due.Days < GS.Server.ServerProperty.RENT_DUE_DAYS) && house.KeptMoney < HouseMgr.GetRentByModel(house.Model))
 				{
 					//Sending reminder as Text Window as the Help window wasnt properly popping up on the client
 					var message = new List<string>();
@@ -322,8 +322,8 @@ public class PlayerInitRequestHandler : IPacketHandler
 				House ghouse = HouseMgr.GetGuildHouseByPlayer(player);
 				if (ghouse != null)
 				{
-					TimeSpan due = (ghouse.LastPaid.AddDays(ServerProperties.Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
-					if ((due.Days <= 0 || due.Days < ServerProperties.Properties.RENT_DUE_DAYS) && ghouse.KeptMoney < HouseMgr.GetRentByModel(ghouse.Model))
+					TimeSpan due = (ghouse.LastPaid.AddDays(GS.Server.ServerProperty.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
+					if ((due.Days <= 0 || due.Days < GS.Server.ServerProperty.RENT_DUE_DAYS) && ghouse.KeptMoney < HouseMgr.GetRentByModel(ghouse.Model))
 					{
 						//Sending reminder as Text Window as the Help window wasnt properly popping up on the client
 						var guildmessage = new List<string>();

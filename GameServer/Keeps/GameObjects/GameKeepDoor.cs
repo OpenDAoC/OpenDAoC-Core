@@ -7,7 +7,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Keeps;
@@ -221,7 +221,7 @@ public class GameKeepDoor : GameDoorBase, IKeepItem
 				name = "Postern Door";
 			}
 
-			if (ServerProperties.Properties.ENABLE_DEBUG)
+			if (ServerProperty.ENABLE_DEBUG)
 			{
 				name += " ( C:" + ComponentID + " T:" + TemplateID + ")";
 
@@ -326,7 +326,7 @@ public class GameKeepDoor : GameDoorBase, IKeepItem
 			player.Out.SendMessage(message, EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 
-		if (Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(Properties.DISCORD_RVR_WEBHOOK_ID))
+		if (ServerProperty.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperty.DISCORD_RVR_WEBHOOK_ID))
 			GameRelicPad.BroadcastDiscordRelic(message, Realm, Component.Keep.Name);
 	}
 
@@ -336,7 +336,7 @@ public class GameKeepDoor : GameDoorBase, IKeepItem
 		if (attackData.DamageType == EDamageType.GM)
 			return;
 
-		int toughness = Properties.SET_KEEP_DOOR_TOUGHNESS;
+		int toughness = ServerProperty.SET_KEEP_DOOR_TOUGHNESS;
 		int baseDamage = attackData.Damage;
 		int styleDamage = attackData.StyleDamage;
 		int criticalDamage = 0;
@@ -345,7 +345,7 @@ public class GameKeepDoor : GameDoorBase, IKeepItem
 
 		if (Component.Keep is GameKeepTower)
 		{
-			toughness = Properties.SET_TOWER_DOOR_TOUGHNESS;
+			toughness = ServerProperty.SET_TOWER_DOOR_TOUGHNESS;
 		}
 
 		if (Component.Keep.KeepID == 11) //Reduce toughness for Thid CK
@@ -360,7 +360,7 @@ public class GameKeepDoor : GameDoorBase, IKeepItem
 		}
 		else if (source is GameNpc)
 		{
-			if (!Properties.DOORS_ALLOWPETATTACK)
+			if (!ServerProperty.DOORS_ALLOWPETATTACK)
 			{
 				baseDamage = 0;
 				styleDamage = 0;
@@ -379,13 +379,13 @@ public class GameKeepDoor : GameDoorBase, IKeepItem
 						// special considerations for pet spam classes
 						if (player.PlayerClass.ID == (int)EPlayerClass.Theurgist || player.PlayerClass.ID == (int)EPlayerClass.Animist)
 						{
-							baseDamage = (int)(baseDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
-							styleDamage = (int)(styleDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
+							baseDamage = (int)(baseDamage * ServerProperty.PET_SPAM_DAMAGE_MULTIPLIER);
+							styleDamage = (int)(styleDamage * ServerProperty.PET_SPAM_DAMAGE_MULTIPLIER);
 						}
 						else
 						{
-							baseDamage = (int)(baseDamage * Properties.PET_DAMAGE_MULTIPLIER);
-							styleDamage = (int)(styleDamage * Properties.PET_DAMAGE_MULTIPLIER);
+							baseDamage = (int)(baseDamage * ServerProperty.PET_DAMAGE_MULTIPLIER);
+							styleDamage = (int)(styleDamage * ServerProperty.PET_DAMAGE_MULTIPLIER);
 						}
 					}
 				}

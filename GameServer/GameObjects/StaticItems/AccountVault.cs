@@ -4,7 +4,7 @@ using Core.Database.Tables;
 using Core.GS;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 public class AccountVault : GameHouseVault
 {
@@ -197,7 +197,7 @@ public class AccountVault : GameHouseVault
         // block placing untradables into housing vaults from any source - Tolakram
         if (toAccountVault && itemInFromSlot != null && itemInFromSlot.IsTradable == false)
         {
-            if (itemInFromSlot.Id_nb != Properties.ALT_CURRENCY_ID)
+            if (itemInFromSlot.Id_nb != ServerProperty.ALT_CURRENCY_ID)
             {
                 player.Out.SendMessage("You can not put this item into an Account Vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 player.Out.SendInventoryItemsUpdate(null);

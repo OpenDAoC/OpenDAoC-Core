@@ -23,6 +23,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -153,7 +154,7 @@ namespace Core.GS
 		public static bool IsExpansionEnabled(int expansion)
 		{
 			bool enabled = true;
-			foreach (string ex in Util.SplitCSV(ServerProperties.Properties.DISABLED_EXPANSIONS, true))
+			foreach (string ex in Util.SplitCSV(ServerProperty.DISABLED_EXPANSIONS, true))
 			{
 				int exNum = 0;
 				if (int.TryParse(ex, out exNum))

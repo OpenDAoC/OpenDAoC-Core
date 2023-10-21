@@ -1,6 +1,7 @@
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.RealmAbilities;
+using Core.GS.Server;
 
 namespace Core.GS.Calculators;
 
@@ -98,8 +99,8 @@ public class EnduranceRegenerationRateCalculator : PropertyCalculator
 		if (regen < 0)
 			regen = 0;
 
-		if (regen != 0 && ServerProperties.Properties.ENDURANCE_REGEN_RATE != 1)
-			regen *= ServerProperties.Properties.ENDURANCE_REGEN_RATE;
+		if (regen != 0 && ServerProperty.ENDURANCE_REGEN_RATE != 1)
+			regen *= ServerProperty.ENDURANCE_REGEN_RATE;
 
 		double decimals = regen - (int)regen;
 		if (Util.ChanceDouble(decimals))

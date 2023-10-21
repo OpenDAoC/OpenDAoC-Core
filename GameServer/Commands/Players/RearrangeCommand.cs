@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Commands;
@@ -16,7 +17,7 @@ public class RearrangeCommand : ACommandHandler, ICommandHandler
 
     public void OnCommand(GameClient client, string[] args)
     {
-        if (ServerProperties.Properties.DISABLED_COMMANDS.Contains("/rearrange"))
+        if (ServerProperty.DISABLED_COMMANDS.Contains("/rearrange"))
             return;
 
         if (IsSpammingCommand(client.Player, "rearrange"))

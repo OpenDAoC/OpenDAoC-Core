@@ -1,4 +1,5 @@
 using Core.Database.Tables;
+using Core.GS.Server;
 
 namespace Core.GS.GameUtils;
 
@@ -7,8 +8,8 @@ namespace Core.GS.GameUtils;
 /// </summary>
 public class LootGeneratorChest : LootGeneratorBase
 {	
-	int SMALLCHEST_CHANCE = ServerProperties.Properties.BASE_SMALLCHEST_CHANCE;
-	int LARGECHEST_CHANCE = ServerProperties.Properties.BASE_LARGECHEST_CHANCE;
+	int SMALLCHEST_CHANCE = ServerProperty.BASE_SMALLCHEST_CHANCE;
+	int LARGECHEST_CHANCE = ServerProperty.BASE_LARGECHEST_CHANCE;
 	public override LootList GenerateLoot(GameNpc mob, GameObject killer)
 	{
 		LootList loot = base.GenerateLoot(mob, killer);
@@ -18,9 +19,9 @@ public class LootGeneratorChest : LootGeneratorBase
 		{
 			int lvl = mob.Level + 1;
 			if (lvl < 1) lvl = 1;
-			int minLoot = ServerProperties.Properties.SMALLCHEST_MULTIPLIER * (lvl * lvl); 
+			int minLoot = ServerProperty.SMALLCHEST_MULTIPLIER * (lvl * lvl); 
 			long moneyCount = minLoot + Util.Random(minLoot >> 1);
-			moneyCount = (long)((double)moneyCount * ServerProperties.Properties.MONEY_DROP);
+			moneyCount = (long)((double)moneyCount * ServerProperty.MONEY_DROP);
 			DbItemTemplate money = new DbItemTemplate();
 			money.Model = 488;
 			money.Name = "small chest";
@@ -32,9 +33,9 @@ public class LootGeneratorChest : LootGeneratorBase
 		{
 			int lvl = mob.Level + 1;
 			if (lvl < 1) lvl = 1;
-			int minLoot = ServerProperties.Properties.LARGECHEST_MULTIPLIER * (lvl * lvl); 
+			int minLoot = ServerProperty.LARGECHEST_MULTIPLIER * (lvl * lvl); 
 			long moneyCount = minLoot + Util.Random(minLoot >> 1);
-			moneyCount = (long)((double)moneyCount * ServerProperties.Properties.MONEY_DROP);
+			moneyCount = (long)((double)moneyCount * ServerProperty.MONEY_DROP);
 			DbItemTemplate money = new DbItemTemplate();
 			money.Model = 488;
 			money.Name = "large chest";

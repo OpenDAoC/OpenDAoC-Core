@@ -9,7 +9,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Players.Classes;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS
@@ -45,7 +45,7 @@ namespace Core.GS
         /// </summary>
         public override int RealmPointsValue
         {
-            get { return Properties.DOPPELGANGER_REALM_POINTS; }
+            get { return ServerProperty.DOPPELGANGER_REALM_POINTS; }
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Core.GS
         /// </summary>
         public override int BountyPointsValue
         {
-            get { return Properties.DOPPELGANGER_BOUNTY_POINTS; }
+            get { return ServerProperty.DOPPELGANGER_BOUNTY_POINTS; }
         }
 
         protected const ushort doppelModel = 2248;

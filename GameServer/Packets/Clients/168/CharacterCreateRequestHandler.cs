@@ -12,7 +12,7 @@ using Core.GS.Packets.Server;
 using Core.GS.Players.Classes;
 using Core.GS.Players.Clients;
 using Core.GS.Players.Managers;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Clients;
@@ -59,7 +59,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
             {
                 if ((EPrivLevel)client.Account.PrivLevel == EPrivLevel.Player)
                 {
-                    if (Properties.BAN_HACKERS)
+                    if (ServerProperty.BAN_HACKERS)
                     {
                         client.BanAccount(string.Format("Autoban bad CharName '{0}'", pakdata.CharName));
                     }
@@ -121,7 +121,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
 
         if (!accountName.StartsWith(client.Account.Name)) // TODO more correctly check, client send accountName as account-S, -N, -H (if it not fit in 20, then only account)
         {
-            if (Properties.BAN_HACKERS)
+            if (ServerProperty.BAN_HACKERS)
             {
                 client.BanAccount($"Autoban wrong Account '{accountName}'");
             }
@@ -158,7 +158,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
             {
                 if ((EPrivLevel)client.Account.PrivLevel == EPrivLevel.Player)
                 {
-                    if (Properties.BAN_HACKERS)
+                    if (ServerProperty.BAN_HACKERS)
                     {
                         client.BanAccount($"Autoban bad CharName '{pakdata.CharName}'");
                     }
@@ -470,7 +470,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
         }
 
         // Is class disabled ?
-        List<string> disabledClasses = Util.SplitCSV(Properties.DISABLED_CLASSES);
+        List<string> disabledClasses = Util.SplitCSV(ServerProperty.DISABLED_CLASSES);
         var occurences =
             (from j in disabledClasses
                 where j == ch.Class.ToString()
@@ -488,7 +488,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
         }
 
         // check if race disabled
-        List<string> disabledRaces = Util.SplitCSV(Properties.DISABLED_RACES);
+        List<string> disabledRaces = Util.SplitCSV(ServerProperty.DISABLED_RACES);
         occurences =
             (from j in disabledRaces
                 where j == ch.Race.ToString()
@@ -513,7 +513,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
                 log.Error($"{client.Account.Name} tried to create a character with wrong class ID: {ch.Class}, realm:{ch.Realm}");
             }
 
-            if (Properties.BAN_HACKERS)
+            if (ServerProperty.BAN_HACKERS)
             {
                 client.BanAccount($"Autoban character create class: id:{ch.Class} realm:{ch.Realm} name:{ch.Name} account:{account.Name}");
                 client.Disconnect();
@@ -573,7 +573,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
 
         if (pdata.CustomMode == 1 || pdata.CustomMode == 2 || pdata.CustomMode == 3)
         {
-            if (Properties.ALLOW_CUSTOMIZE_FACE_AFTER_CREATION)
+            if (ServerProperty.ALLOW_CUSTOMIZE_FACE_AFTER_CREATION)
             {
                 character.EyeSize = (byte)pdata.EyeSize;
                 character.LipSize = (byte)pdata.LipSize;
@@ -622,7 +622,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
                         {
                             if ((EPrivLevel)client.Account.PrivLevel == EPrivLevel.Player)
                             {
-                                if (Properties.BAN_HACKERS)
+                                if (ServerProperty.BAN_HACKERS)
                                 {
                                     client.BanAccount($"Autoban Hack char update : Wrong allowed points:{points}");
                                 }
@@ -638,7 +638,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
                             return true;
                         }
 
-                        if (Properties.ALLOW_CUSTOMIZE_STATS_AFTER_CREATION)
+                        if (ServerProperty.ALLOW_CUSTOMIZE_STATS_AFTER_CREATION)
                         {
                             // Set Stats, valid is ok.
                             character.Strength = stats[EStat.STR];
@@ -680,7 +680,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
             {
                 if (client.Account.PrivLevel == 1 && ((pdata.CreationModel >> 11) & 3) == 0)
                 {
-                    if (Properties.BAN_HACKERS) // Player size must be > 0 (from 1 to 3)
+                    if (ServerProperty.BAN_HACKERS) // Player size must be > 0 (from 1 to 3)
                     {
                         client.BanAccount($"Autoban Hack char update : zero character size in model:{newModel}");
                         client.Disconnect();
@@ -692,7 +692,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
 
                 character.CustomisationStep = 2; // disable config button
 
-                if (Properties.ALLOW_CUSTOMIZE_FACE_AFTER_CREATION)
+                if (ServerProperty.ALLOW_CUSTOMIZE_FACE_AFTER_CREATION)
                 {
                     if (pdata.CreationModel != character.CreationModel)
                     {
@@ -728,7 +728,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
 
             if (type == 1 || type == 3) // face changes
             {
-                if (Properties.ALLOW_CUSTOMIZE_FACE_AFTER_CREATION || character.CustomisationStep == 3)
+                if (ServerProperty.ALLOW_CUSTOMIZE_FACE_AFTER_CREATION || character.CustomisationStep == 3)
                 {
                     character.EyeSize = (byte)pdata.EyeSize;
                     character.LipSize = (byte)pdata.LipSize;
@@ -780,7 +780,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
                                 log.InfoFormat("Stats above MaxStartingBonusPoints for {0}", character.Name);
                                 if ((EPrivLevel)client.Account.PrivLevel == EPrivLevel.Player && character.Level == 1)
                                 {
-                                    if (Properties.BAN_HACKERS)
+                                    if (ServerProperty.BAN_HACKERS)
                                     {
                                         client.BanAccount(string.Format("Autoban Hack char update : Wrong allowed points:{0}", points));
                                     }
@@ -796,7 +796,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
                                 return true;
                             }
 
-                            if (Properties.ALLOW_CUSTOMIZE_STATS_AFTER_CREATION || character.CustomisationStep == 3)
+                            if (ServerProperty.ALLOW_CUSTOMIZE_STATS_AFTER_CREATION || character.CustomisationStep == 3)
                             {
                                 // Set Stats, valid is ok.
                                 character.Strength = stats[EStat.STR];
@@ -840,7 +840,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
             {
                 if (client.Account.PrivLevel == 1 && ((pdata.CreationModel >> 11) & 3) == 0)
                 {
-                    if (Properties.BAN_HACKERS) // Player size must be > 0 (from 1 to 3)
+                    if (ServerProperty.BAN_HACKERS) // Player size must be > 0 (from 1 to 3)
                     {
                         client.BanAccount(string.Format("Autoban Hack char update : zero character size in model:{0}", newModel));
                         client.Disconnect();
@@ -851,7 +851,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
 
                 character.CustomisationStep = 2; // disable config button
 
-                if (Properties.ALLOW_CUSTOMIZE_FACE_AFTER_CREATION)
+                if (ServerProperty.ALLOW_CUSTOMIZE_FACE_AFTER_CREATION)
                 {
                     if (pdata.CreationModel != character.CreationModel)
                     {
@@ -919,7 +919,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
 
                     GameEventMgr.Notify(DatabaseEvent.CharacterDeleted, null, new CharacterEventArgs(character, client));
 
-					if (Properties.BACKUP_DELETED_CHARACTERS)
+					if (ServerProperty.BACKUP_DELETED_CHARACTERS)
 					{
 						var backupCharacter = new DbCoreCharacterBackup(character);
 						Util.ForEach(backupCharacter.CustomParams, param => GameServer.Database.AddObject(param));

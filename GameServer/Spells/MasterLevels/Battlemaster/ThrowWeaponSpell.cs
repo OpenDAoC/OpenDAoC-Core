@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.RealmAbilities;
+using Core.GS.Server;
 
 namespace Core.GS.Spells
 {
@@ -259,7 +260,7 @@ namespace Core.GS.Spells
 
                     string hitWeapon = "";
 
-                    switch (ServerProperties.Properties.SERV_LANGUAGE)
+                    switch (ServerProperty.SERV_LANGUAGE)
                     {
                         case "EN":
                             if (weapon != null)
@@ -440,7 +441,7 @@ namespace Core.GS.Spells
                 ad.Damage = (int)damage;
                 ad.Damage = Math.Min(ad.Damage,
                     (int)(player.attackComponent.AttackDamage(weapon, out _) * Effectiveness));
-                ad.Damage = (int)(ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
+                ad.Damage = (int)(ad.Damage * ServerProperty.PVP_MELEE_DAMAGE);
                 if (ad.Damage == 0)
                     ad.AttackResult = EAttackResult.Missed;
                 else

@@ -19,7 +19,7 @@ using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Players.Managers;
 using Core.GS.Players.Specializations;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS
@@ -585,11 +585,11 @@ namespace Core.GS
 
 		public void LoadPlayer(int accountindex)
 		{
-			LoadPlayer(accountindex, Properties.PLAYER_CLASS);
+			LoadPlayer(accountindex, ServerProperty.PLAYER_CLASS);
 		} 
 		public void LoadPlayer(DbCoreCharacter dolChar)
 		{
-			LoadPlayer(dolChar, Properties.PLAYER_CLASS);
+			LoadPlayer(dolChar, ServerProperty.PLAYER_CLASS);
 		}
 
 		public void LoadPlayer(int accountindex, string playerClass)
@@ -666,7 +666,7 @@ namespace Core.GS
 				if (m_player != null)
 				{
 					//<**loki**>
-					if (Properties.KICK_IDLE_PLAYER_STATUS)
+					if (ServerProperty.KICK_IDLE_PLAYER_STATUS)
 					{
 						//Time playing
 						var connectedtime = DateTime.Now.Subtract(m_account.LastLogin).TotalMinutes;
@@ -681,7 +681,7 @@ namespace Core.GS
 						//If match
 						if (check)
 						{
-							if (connectedtime > Properties.KICK_IDLE_PLAYER_TIME)
+							if (connectedtime > ServerProperty.KICK_IDLE_PLAYER_TIME)
 							{
 								//Kick player
 								m_player.Out.SendPlayerQuit(true);

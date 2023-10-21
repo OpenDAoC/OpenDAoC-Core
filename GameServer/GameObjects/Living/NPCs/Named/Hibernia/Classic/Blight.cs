@@ -9,6 +9,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -126,7 +127,7 @@ public class Blight : GameEpicBoss
 
 	public override void Die(GameObject killer)
     {
-		int respawnTime = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;
+		int respawnTime = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;
 		new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(SpawnFireBlight), respawnTime);
         base.Die(killer);
     }

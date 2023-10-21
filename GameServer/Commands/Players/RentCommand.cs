@@ -2,6 +2,7 @@ using System;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -65,7 +66,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                         return;
                     }
 
-                    if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
+                    if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.AlreadyMaxMoney"),
                             EChatType.CT_System, EChatLoc.CL_SystemWindow);
@@ -73,7 +74,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                         return;
                     }
 
-                    if (house.KeptMoney + goldToAdd > (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
+                    if (house.KeptMoney + goldToAdd > (HouseMgr.GetRentByModel(house.Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.TooMuchMoney"),
                             EChatType.CT_System, EChatLoc.CL_SystemWindow);
@@ -121,7 +122,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                                 return;
                             }
 
-                            if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
+                            if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS))
                             {
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.AlreadyMaxMoney"),
                                     EChatType.CT_System, EChatLoc.CL_SystemWindow);
@@ -129,7 +130,7 @@ public class RentCommand : ACommandHandler, ICommandHandler
                                 return;
                             }
 
-                            if (house.KeptMoney + goldToAdd > (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
+                            if (house.KeptMoney + goldToAdd > (HouseMgr.GetRentByModel(house.Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS))
                             {
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.TooMuchMoney"),
                                     EChatType.CT_System, EChatLoc.CL_SystemWindow);

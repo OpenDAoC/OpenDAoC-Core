@@ -11,6 +11,7 @@ using Core.GS.Languages;
 using Core.GS.Movement;
 using Core.GS.Players.Clients;
 using Core.GS.Quests;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -139,7 +140,7 @@ namespace Core.GS
 
                             foreach (GameNpc npc in GetNPCsInRadius(400))
                             { 
-                                if (npc.Name == LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameStableMaster.ReceiveItem.HorseName"))
+                                if (npc.Name == LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameStableMaster.ReceiveItem.HorseName"))
                                 {
                                     mount.Model = npc.Model;
                                     mount.Name = npc.Name;

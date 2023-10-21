@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -19,7 +20,7 @@ public class NfRaFirstAidAbility : TimedRealmAbility
 
 		int heal = 0;
 		
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (Level)
 			{
@@ -87,28 +88,28 @@ public class NfRaFirstAidAbility : TimedRealmAbility
 
 	public override void AddEffectsInfo(IList<string> list)
 	{
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			//TODO Translate new descriptions
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info1"));
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info2"));
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info3"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info1"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info2"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info3"));
 			list.Add("");
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info4"));
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info5"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info4"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info5"));
 			list.Add("");
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info6"));				
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info6"));				
 		}
 		else
 		{
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info1"));
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info2"));
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info3"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info1"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info2"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info3"));
 			list.Add("");
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info4"));
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info5"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info4"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info5"));
 			list.Add("");
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info6"));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info6"));
 		}
 	}
 }

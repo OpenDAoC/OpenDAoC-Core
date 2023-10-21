@@ -1,7 +1,7 @@
 using System;
 using Core.Base.Enums;
 
-namespace Core.GS.ServerRules;
+namespace Core.GS.Server;
 
 /// <summary>
 /// Denotes a class as a server rules handler for a given server type

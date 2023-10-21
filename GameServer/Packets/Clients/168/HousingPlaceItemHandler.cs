@@ -10,7 +10,7 @@ using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Packets.Server;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Clients;
@@ -280,7 +280,7 @@ public class HousingPlaceItemHandler : IPacketHandler
 
 
 						// garden is already full, return
-						if (house.OutdoorItems.Count >= Properties.MAX_OUTDOOR_HOUSE_ITEMS)
+						if (house.OutdoorItems.Count >= ServerProperty.MAX_OUTDOOR_HOUSE_ITEMS)
 						{
 							ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.GardenMaxObjects", null);
 							client.Out.SendInventorySlotsUpdate(new[] { slot });
@@ -312,7 +312,7 @@ public class HousingPlaceItemHandler : IPacketHandler
 						house.OutdoorItems.Add(pos, oitem);
 
 						ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.GardenItemPlaced",
-												   Properties.MAX_OUTDOOR_HOUSE_ITEMS - house.OutdoorItems.Count);
+												   ServerProperty.MAX_OUTDOOR_HOUSE_ITEMS - house.OutdoorItems.Count);
 						ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.GardenItemPlacedName", orgitem.Name);
 
 						// update all nearby players
@@ -809,9 +809,9 @@ public class HousingPlaceItemHandler : IPacketHandler
 
 	private static int GetMaxIndoorItemsForHouse(int model)
 	{
-		int maxitems = Properties.MAX_INDOOR_HOUSE_ITEMS;
+		int maxitems = ServerProperty.MAX_INDOOR_HOUSE_ITEMS;
 
-		if (Properties.INDOOR_ITEMS_DEPEND_ON_SIZE)
+		if (ServerProperty.INDOOR_ITEMS_DEPEND_ON_SIZE)
 		{
 			switch (model)
 			{

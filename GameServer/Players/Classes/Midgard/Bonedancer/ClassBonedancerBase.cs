@@ -1,7 +1,7 @@
 using Core.GS.AI.Brains;
 using Core.GS.Events;
 using Core.GS.Players.Specializations;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Players.Classes;
 
@@ -35,8 +35,8 @@ public class ClassBonedancerBase : ClassMystic
 
 		// BD subpet spells can be scaled with the BD's spec as a cap, so when a BD
 		//	trains, we have to re-scale spells for subpets from that spec.
-		if (Properties.PET_SCALE_SPELL_MAX_LEVEL > 0
-			&& Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
+		if (ServerProperty.PET_SCALE_SPELL_MAX_LEVEL > 0
+			&& ServerProperty.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
 			&& player.ControlledBrain != null && player.ControlledBrain.Body is GameSummonedPet pet
 			&& pet.ControlledNpcList != null)
 				foreach (ABrain subBrain in pet.ControlledNpcList)

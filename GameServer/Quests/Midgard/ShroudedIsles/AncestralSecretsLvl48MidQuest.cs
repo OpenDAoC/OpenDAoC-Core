@@ -7,6 +7,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Quests;
@@ -58,7 +59,7 @@ public class AncestralSecretsLvl48MidQuest : BaseQuest
 	[ScriptLoadedEvent]
 	public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 	{
-		if (!ServerProperties.Properties.LOAD_QUESTS)
+		if (!ServerProperty.LOAD_QUESTS)
 			return;
 
 		#region defineNPCs
@@ -327,7 +328,7 @@ public class AncestralSecretsLvl48MidQuest : BaseQuest
 		AncestralKeeper.CurrentRegionID = 151;
 		AncestralKeeper.Size = 140;
 		AncestralKeeper.Level = 65;
-		AncestralKeeper.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
+		AncestralKeeper.ScalingFactor = ServerProperty.NECK_BOSS_SCALING;
 		AncestralKeeper.X = player.X;
 		AncestralKeeper.Y = player.Y;
 		AncestralKeeper.Z = player.Z;

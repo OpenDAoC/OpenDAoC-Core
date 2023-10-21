@@ -12,6 +12,7 @@ using Core.GS.Languages;
 using Core.GS.Packets.Server;
 using Core.GS.Players.Realms;
 using Core.GS.RealmAbilities;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Clients;
@@ -240,7 +241,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 		client.Player.LastPositionUpdatePoint.Y = realY;
 		client.Player.LastPositionUpdatePoint.Z = realZ;
 
-		int tolerance = ServerProperties.Properties.CPS_TOLERANCE;
+		int tolerance = ServerProperty.CPS_TOLERANCE;
 
 		if (client.Player.Steed != null && client.Player.Steed.MaxSpeed > 0)
 			tolerance += client.Player.Steed.MaxSpeed;
@@ -254,7 +255,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 			client.Player.IsJumping = false;
 		}
 
-		if (client.Player.IsAllowedToFly == false && (coordsPerSec > tolerance || jumpDetect > ServerProperties.Properties.JUMP_TOLERANCE))
+		if (client.Player.IsAllowedToFly == false && (coordsPerSec > tolerance || jumpDetect > ServerProperty.JUMP_TOLERANCE))
 		{
 			bool isHackDetected = true;
 
@@ -263,7 +264,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 				// check to see if CPS time tolerance is exceeded
 				int lastCPSTick = client.Player.TempProperties.GetProperty<int>(LASTCPSTICK, 0);
 
-				if (environmentTick - lastCPSTick > ServerProperties.Properties.CPS_TIME_TOLERANCE)
+				if (environmentTick - lastCPSTick > ServerProperty.CPS_TIME_TOLERANCE)
 				{
 					isHackDetected = false;
 				}
@@ -289,9 +290,9 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 				{
 					GameServer.Instance.LogCheatAction(builder.ToString());
 
-					if (ServerProperties.Properties.ENABLE_MOVEDETECT)
+					if (ServerProperty.ENABLE_MOVEDETECT)
 					{
-						if (ServerProperties.Properties.BAN_HACKERS && false) // banning disabled until this technique is proven accurate
+						if (ServerProperty.BAN_HACKERS && false) // banning disabled until this technique is proven accurate
 						{
 							DbBans b = new DbBans();
 							b.Author = "SERVER";
@@ -454,13 +455,13 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 						{
 							client.Out.SendMessage("SH: Logging SH cheat.", EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 
-							if (SHcount >= ServerProperties.Properties.SPEEDHACK_TOLERANCE)
+							if (SHcount >= ServerProperty.SPEEDHACK_TOLERANCE)
 								client.Out.SendMessage("SH: Player would have been banned!", EChatType.CT_Damaged, EChatLoc.CL_SystemWindow);
 						}
 
-						if ((client.Account.PrivLevel == 1) && SHcount >= ServerProperties.Properties.SPEEDHACK_TOLERANCE)
+						if ((client.Account.PrivLevel == 1) && SHcount >= ServerProperty.SPEEDHACK_TOLERANCE)
 						{
-							if (ServerProperties.Properties.BAN_HACKERS)
+							if (ServerProperty.BAN_HACKERS)
 							{
 								DbBans b = new DbBans();
 								b.Author = "SERVER";
@@ -532,7 +533,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 			builder.Append(client.TcpEndpointAddress);
 			GameServer.Instance.LogCheatAction(builder.ToString());
 			{
-				if (ServerProperties.Properties.BAN_HACKERS)
+				if (ServerProperty.BAN_HACKERS)
 				{
 					DbBans b = new DbBans();
 					b.Author = "SERVER";
@@ -944,7 +945,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 		client.Player.Y = (int)newPlayerY;
 		client.Player.Z = (int)newPlayerZ;
 
-		int tolerance = ServerProperties.Properties.CPS_TOLERANCE;
+		int tolerance = ServerProperty.CPS_TOLERANCE;
 
 		if (client.Player.Steed != null && client.Player.Steed.MaxSpeed > 0)
 		{
@@ -962,7 +963,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 			client.Player.IsJumping = false;
 		}
 
-		if (!client.Player.IsAllowedToFly && (coordsPerSec > tolerance || jumpDetect > ServerProperties.Properties.JUMP_TOLERANCE))
+		if (!client.Player.IsAllowedToFly && (coordsPerSec > tolerance || jumpDetect > ServerProperty.JUMP_TOLERANCE))
 		{
 			bool isHackDetected = true;
 
@@ -971,7 +972,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 				// check to see if CPS time tolerance is exceeded
 				int lastCPSTick = client.Player.TempProperties.GetProperty<int>(LASTCPSTICK, 0);
 
-				if (environmentTick - lastCPSTick > ServerProperties.Properties.CPS_TIME_TOLERANCE)
+				if (environmentTick - lastCPSTick > ServerProperty.CPS_TIME_TOLERANCE)
 				{
 					isHackDetected = false;
 				}
@@ -997,9 +998,9 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 				{
 					GameServer.Instance.LogCheatAction(builder.ToString());
 
-					if (ServerProperties.Properties.ENABLE_MOVEDETECT)
+					if (ServerProperty.ENABLE_MOVEDETECT)
 					{
-						if (ServerProperties.Properties.BAN_HACKERS && false) // banning disabled until this technique is proven accurate
+						if (ServerProperty.BAN_HACKERS && false) // banning disabled until this technique is proven accurate
 						{
 							DbBans b = new DbBans();
 							b.Author = "SERVER";
@@ -1138,7 +1139,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 			builder.Append(client.TcpEndpointAddress);
 			GameServer.Instance.LogCheatAction(builder.ToString());
 			{
-				if (ServerProperties.Properties.BAN_HACKERS)
+				if (ServerProperty.BAN_HACKERS)
 				{
 					DbBans b = new DbBans();
 					b.Author = "SERVER";

@@ -4,7 +4,7 @@ using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameEvents
@@ -22,7 +22,7 @@ namespace Core.GS.GameEvents
 		/// <summary>
 		/// What levels did we allow a DOL respec ? serialized
 		/// </summary>
-		[Properties("startup", "give_dol_respec_at_level", "What levels does we give a DOL respec ? separated by a semi-colon or a range with a dash (ie 1-5;7;9)", "0")]
+		[ServerProperty("startup", "give_dol_respec_at_level", "What levels does we give a DOL respec ? separated by a semi-colon or a range with a dash (ie 1-5;7;9)", "0")]
 		public static string GIVE_DOL_RESPEC_AT_LEVEL;
 		
 		[ScriptLoadedEvent]

@@ -4,7 +4,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.ServerRules;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -122,7 +122,7 @@ public class RealmCommand : ACommandHandler, ICommandHandler
 		realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.HibKeeps") + ":");
 		realmInfo.Add(hibKeeps);
 
-		if (ServerProperties.Properties.ALLOW_ALL_REALMS_DF)
+		if (ServerProperty.ALLOW_ALL_REALMS_DF)
 		{
 			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.DarknessFalls") + ": All Realms");
 		}

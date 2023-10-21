@@ -1,5 +1,6 @@
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -24,7 +25,7 @@ public class AlchemistsMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AlchemistsMaster.GuildOrder");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AlchemistsMaster.GuildOrder");
         }
 	}
 
@@ -32,7 +33,7 @@ public class AlchemistsMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AlchemistsMaster.AcceptedByOrderName");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AlchemistsMaster.AcceptedByOrderName");
         }
 	}
 	public override ECraftingSkill TheCraftingSkill
@@ -43,7 +44,7 @@ public class AlchemistsMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AlchemistsMaster.InitialEntersentence");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AlchemistsMaster.InitialEntersentence");
         }
 	}
 }

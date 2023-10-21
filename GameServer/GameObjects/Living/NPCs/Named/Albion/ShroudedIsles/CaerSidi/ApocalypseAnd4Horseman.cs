@@ -11,6 +11,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Players.Titles;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -173,7 +174,7 @@ public class ApocalypseInitializer : GameNpc
             {
                 RandomTarget = null;//reset picked player
                 PlayersInRoom.Clear();
-                int time = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000miliseconds 
+                int time = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000miliseconds 
                 new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoRespawnNow), time);
                 log.Debug("Starting respawn time for final caer sidi encounter, will respawn in " + time / 60000 + " minutes!");
                 start_respawn_check = true;
@@ -361,7 +362,7 @@ public class FamesHorseman : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int AttackRange
     {

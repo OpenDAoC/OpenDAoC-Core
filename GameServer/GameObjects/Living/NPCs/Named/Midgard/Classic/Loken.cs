@@ -5,6 +5,7 @@ using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -96,7 +97,7 @@ namespace Core.GS
 			Empathy = npcTemplate.Empathy;
 			SpawnWolfs();
 
-			RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+			RespawnInterval = ServerProperty.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			LokenBrain sbrain = new LokenBrain();
 			SetOwnBrain(sbrain);
 			base.AddToWorld();

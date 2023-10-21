@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Crafting
 {
@@ -78,7 +79,7 @@ namespace Core.GS.Crafting
 		public Spellcrafting()
 		{
 			Icon = 0x0D;
-			Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, 
+			Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, 
 				"Crafting.Name.Evocation");
 			eSkill = ECraftingSkill.SpellCrafting;
 		}

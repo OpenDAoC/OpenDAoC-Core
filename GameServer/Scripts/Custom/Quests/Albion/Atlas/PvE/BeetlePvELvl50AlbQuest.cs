@@ -10,6 +10,7 @@ using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Quests;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.AtlasQuest.Albion
@@ -71,7 +72,7 @@ namespace Core.GS.AtlasQuest.Albion
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			if (!ServerProperties.Properties.LOAD_QUESTS)
+			if (!ServerProperty.LOAD_QUESTS)
 				return;
 			
 			#region defineNPCs

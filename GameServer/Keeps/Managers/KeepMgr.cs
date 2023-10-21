@@ -7,6 +7,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Keeps;
@@ -74,7 +75,7 @@ public class KeepMgr : IKeepMgr
 		//Dinberg - moved this here, battlegrounds must be loaded before keepcomponents are.
 		LoadBattlegroundCaps();
 
-		if (!ServerProperties.Properties.LOAD_KEEPS)
+		if (!ServerProperty.LOAD_KEEPS)
 			return true;
 
 		lock (m_keepList.SyncRoot)
@@ -126,15 +127,15 @@ public class KeepMgr : IKeepMgr
 			// 		}
 			// 	}
 			// }
-			if (ServerProperties.Properties.USE_NEW_KEEPS == 2)
+			if (ServerProperty.USE_NEW_KEEPS == 2)
 				log.ErrorFormat("ServerProperty USE_NEW_KEEPS is actually set to 2 but it is no longer used. Loading as if he were 0 but please set to 0 or 1 !");
 			    
 			// var keepcomponents = default(IList<DBKeepComponent>); Why was this done this way rather than being strictly typed?
 			IList<DbKeepComponent> keepcomponents = null;
 
-			if (ServerProperties.Properties.USE_NEW_KEEPS == 0 || ServerProperties.Properties.USE_NEW_KEEPS == 2)
+			if (ServerProperty.USE_NEW_KEEPS == 0 || ServerProperty.USE_NEW_KEEPS == 2)
 				keepcomponents = CoreDb<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsLessThan(20));
-			else if (ServerProperties.Properties.USE_NEW_KEEPS == 1)
+			else if (ServerProperty.USE_NEW_KEEPS == 1)
 				keepcomponents = CoreDb<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsGreatherThan(20));
 
 			if (keepcomponents != null)
@@ -178,10 +179,10 @@ public class KeepMgr : IKeepMgr
 			log.Info("Loaded " + m_keepList.Count + " keeps successfully");
 		}
 
-		if (ServerProperties.Properties.USE_KEEP_BALANCING)
+		if (ServerProperty.USE_KEEP_BALANCING)
 			UpdateBaseLevels();
 
-		if (ServerProperties.Properties.USE_LIVE_KEEP_BONUSES)
+		if (ServerProperty.USE_LIVE_KEEP_BONUSES)
 			KeepBonusMgr.UpdateCounts();
 
 		return true;
@@ -199,7 +200,7 @@ public class KeepMgr : IKeepMgr
 
 	protected virtual void LoadHookPoints()
 	{
-		if (!ServerProperties.Properties.LOAD_KEEPS || !ServerProperties.Properties.LOAD_HOOKPOINTS)
+		if (!ServerProperty.LOAD_KEEPS || !ServerProperty.LOAD_HOOKPOINTS)
 			return;
 
 		Dictionary<string, List<DbKeepHookPoint>> hookPointList = new Dictionary<string, List<DbKeepHookPoint>>();
@@ -595,7 +596,7 @@ public class KeepMgr : IKeepMgr
 		if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_PvP)
 		{
 			if (keep.Guild == null)
-				return ServerProperties.Properties.PVP_UNCLAIMED_KEEPS_ENEMY;
+				return ServerProperty.PVP_UNCLAIMED_KEEPS_ENEMY;
 
 			//friendly player in group
 			if (checkGroup && target.Group != null)
@@ -763,13 +764,13 @@ public class KeepMgr : IKeepMgr
 	public virtual int GetRealmKeepBonusLevel(ERealm realm)
 	{
 		int keep = 7 - GetKeepCountByRealm(realm);
-		return (int)(keep * ServerProperties.Properties.KEEP_BALANCE_MULTIPLIER);
+		return (int)(keep * ServerProperty.KEEP_BALANCE_MULTIPLIER);
 	}
 
 	public virtual int GetRealmTowerBonusLevel(ERealm realm)
 	{
 		int tower = 28 - GetTowerCountByRealm(realm);
-		return (int)(tower * ServerProperties.Properties.TOWER_BALANCE_MULTIPLIER);
+		return (int)(tower * ServerProperty.TOWER_BALANCE_MULTIPLIER);
 	}
 
 	public virtual void UpdateBaseLevels()
@@ -783,7 +784,7 @@ public class KeepMgr : IKeepMgr
 
 				byte newLevel = keep.BaseLevel;
 
-				if (ServerProperties.Properties.BALANCE_TOWERS_SEPARATE)
+				if (ServerProperty.BALANCE_TOWERS_SEPARATE)
 				{
 					if (keep is GameKeepTower)
 						newLevel = (byte)(keep.DBKeep.BaseLevel + GameServer.KeepManager.GetRealmTowerBonusLevel((ERealm)keep.Realm));

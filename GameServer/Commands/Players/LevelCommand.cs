@@ -5,6 +5,7 @@ using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Players.Titles;
 using Core.GS.Scripts;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -18,7 +19,7 @@ public class LevelCommand : ACommandHandler, ICommandHandler
 
 	public void OnCommand(GameClient client, string[] args)
 	{
-		var targetLevel = ServerProperties.Properties.SLASH_LEVEL_TARGET;
+		var targetLevel = ServerProperty.SLASH_LEVEL_TARGET;
 
 		if (args.Length < 2)
 		{
@@ -125,7 +126,7 @@ public class LevelCommand : ACommandHandler, ICommandHandler
 	{
 		if (response == 1)
 		{
-			int targetLevel = ServerProperties.Properties.SLASH_LEVEL_TARGET;
+			int targetLevel = ServerProperty.SLASH_LEVEL_TARGET;
 
 			if( targetLevel < 1 || targetLevel > 50 )
 				targetLevel = 20;

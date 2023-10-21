@@ -9,7 +9,7 @@ using Core.GS.Commands;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameEvents
@@ -23,7 +23,7 @@ namespace Core.GS.GameEvents
 		/// <summary>
 		/// Enable the Free Starter Equipment Gift.
 		/// </summary>
-		[Properties("startup", "enable_free_starter_equipment", "Enable Startup Free Equipment gifts imported from StarterEquipment Table", true)]
+		[ServerProperty("startup", "enable_free_starter_equipment", "Enable Startup Free Equipment gifts imported from StarterEquipment Table", true)]
 		public static bool ENABLE_FREE_STARTER_EQUIPMENT;
 		#endregion
 

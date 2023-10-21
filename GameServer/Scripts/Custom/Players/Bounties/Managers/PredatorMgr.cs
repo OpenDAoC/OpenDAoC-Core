@@ -7,7 +7,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -54,8 +54,8 @@ public class PredatorMgr
 
     private static int minPredatorReward;
     private static int maxPredatorReward;
-    private static double rewardScalar = Properties.PREDATOR_REWARD_MULTIPLIER;
-    private static long OutOfBoundsTimeout = Properties.OUT_OF_BOUNDS_TIMEOUT;
+    private static double rewardScalar = ServerProperty.PREDATOR_REWARD_MULTIPLIER;
+    private static long OutOfBoundsTimeout = ServerProperty.OUT_OF_BOUNDS_TIMEOUT;
 
     private static string TimeoutTickKey = "TimeoutStartTick";
 
@@ -112,10 +112,10 @@ public class PredatorMgr
         
         if (DisqualifiedPlayers.Keys.Contains(player))
         {
-            if (DisqualifiedPlayers[player] + Properties.PREDATOR_ABUSE_TIMEOUT * 60000 >=
+            if (DisqualifiedPlayers[player] + ServerProperty.PREDATOR_ABUSE_TIMEOUT * 60000 >=
                 GameLoopMgr.GameLoopTime)
             {
-                long timeLeft = Math.Abs(Properties.PREDATOR_ABUSE_TIMEOUT * 60000 + DisqualifiedPlayers[player] -
+                long timeLeft = Math.Abs(ServerProperty.PREDATOR_ABUSE_TIMEOUT * 60000 + DisqualifiedPlayers[player] -
                                          GameLoopMgr.GameLoopTime);
                 player.Out.SendMessage("You recently abandoned the hunt. " +
                                        "Your body needs " + TimeSpan.FromMilliseconds(timeLeft).Minutes + "m "
@@ -174,7 +174,7 @@ public class PredatorMgr
         player.PredatorTimeoutTimer.Callback = new EcsGameTimer.EcsTimerCallback(TimeoutTimerCallback);
         player.PredatorTimeoutTimer.Start(1000);
         
-        player.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {Properties.OUT_OF_BOUNDS_TIMEOUT} seconds.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+        player.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {ServerProperty.OUT_OF_BOUNDS_TIMEOUT} seconds.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
     }
     
     public static void StopTimeoutCountdownFor(GamePlayer player)

@@ -2,6 +2,7 @@ using System;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -13,7 +14,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
 {
 	public void OnCommand(GameClient client, string[] args)
 	{
-        long bpWorth = ServerProperties.Properties.RENT_BOUNTY_POINT_TO_GOLD;
+        long bpWorth = ServerProperty.RENT_BOUNTY_POINT_TO_GOLD;
 
 		if (args.Length < 2)
 		{
@@ -73,7 +74,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
 						return;
 					}
 
-                    if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
+                    if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.AlreadyMaxMoney"),
                             EChatType.CT_System, EChatLoc.CL_SystemWindow);
@@ -81,7 +82,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
                         return;
                     }
 
-                    if ((house.KeptMoney + (BPsToAdd * bpWorth)) > (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
+                    if ((house.KeptMoney + (BPsToAdd * bpWorth)) > (HouseMgr.GetRentByModel(house.Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS))
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.ToManyMoney"),
                             EChatType.CT_System, EChatLoc.CL_SystemWindow);
@@ -112,7 +113,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
                                 return;
                             }
 
-                            if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
+                            if (house.KeptMoney >= (HouseMgr.GetRentByModel(house.Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS))
                             {
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.AlreadyMaxMoney"),
                                     EChatType.CT_System, EChatLoc.CL_SystemWindow);
@@ -120,7 +121,7 @@ public class BountyRentCommand : ACommandHandler, ICommandHandler
                                 return;
                             }
 
-                            if ((house.KeptMoney + (BPsToAdd * bpWorth)) > (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS))
+                            if ((house.KeptMoney + (BPsToAdd * bpWorth)) > (HouseMgr.GetRentByModel(house.Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS))
                             {
                                 client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Bountyrent.ToManyMoney"),
                                     EChatType.CT_System, EChatLoc.CL_SystemWindow);

@@ -5,6 +5,7 @@ using System.Reflection;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Server;
@@ -307,7 +308,7 @@ public class PacketLib172 : PacketLib171
 						name = item.Count + " " + name;
                     if (item.SellPrice > 0)
                     {
-						if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
+						if (ServerProperty.CONSIGNMENT_USE_BP)
                             name += "[" + item.SellPrice.ToString() + " BP]";
                         else
                             name += "[" + MoneyMgr.GetString(item.SellPrice) + "]";

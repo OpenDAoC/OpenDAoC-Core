@@ -3,6 +3,7 @@ using System.Reflection;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Quests;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Server;
@@ -61,10 +62,10 @@ public class PacketLib187 : PacketLib186
 
 			if (offer)
 			{
-				if (quest.Story.Length > (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
+				if (quest.Story.Length > (ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
 				{
-					pak.WriteShort((ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
-					pak.WriteStringBytes(quest.Story.Substring(0, (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
+					pak.WriteShort((ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
+					pak.WriteStringBytes(quest.Story.Substring(0, (ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
 				}
 				else
 				{
@@ -74,10 +75,10 @@ public class PacketLib187 : PacketLib186
 			}
 			else
 			{
-				if (quest.Conclusion.Length > (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
+				if (quest.Conclusion.Length > (ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
 				{
-					pak.WriteShort((ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
-					pak.WriteStringBytes(quest.Conclusion.Substring(0, (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
+					pak.WriteShort((ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
+					pak.WriteStringBytes(quest.Conclusion.Substring(0, (ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
 				}
 				else
 				{

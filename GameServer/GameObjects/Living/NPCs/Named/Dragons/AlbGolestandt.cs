@@ -5,7 +5,6 @@ using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
-using Core.GS.ServerProperties;
 using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
@@ -13,6 +12,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Players.Titles;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -97,13 +97,13 @@ public class AlbGolestandt : GameEpicBoss
 		String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
 		NewsMgr.CreateNews(message, killer.Realm, ENewsType.PvE, true);
 
-		if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+		if (ServerProperty.GUILD_MERIT_ON_DRAGON_KILL > 0)
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				if (player.IsEligibleToGiveMeritPoints)
 				{
-					GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
+					GuildEventHandler.MeritForNPCKilled(player, this, ServerProperty.GUILD_MERIT_ON_DRAGON_KILL);
 				}
 			}
 		}
@@ -229,7 +229,7 @@ public class AlbGolestandt : GameEpicBoss
 		Piety = npcTemplate.Piety;
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
-		RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		#region All bools here
 		AlbGolestandtBrain.ResetChecks = false;
 		AlbGolestandtBrain.IsRestless = false;

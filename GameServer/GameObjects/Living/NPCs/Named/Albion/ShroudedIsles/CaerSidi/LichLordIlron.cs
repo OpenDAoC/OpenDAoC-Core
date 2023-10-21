@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.Scripts;
 
@@ -40,7 +41,7 @@ public class LichLordIlron : GameEpicBoss
     
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
 
     public override int AttackRange
@@ -63,7 +64,7 @@ public class LichLordIlron : GameEpicBoss
         MaxDistance = 1500;
         TetherRange = 2000;
         RoamingRange = 400;
-        RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
         Faction = FactionMgr.GetFactionByID(64);
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 

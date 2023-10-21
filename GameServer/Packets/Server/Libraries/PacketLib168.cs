@@ -21,7 +21,7 @@ using Core.GS.Players.Titles;
 using Core.GS.PlayerTitles;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using Core.GS.Spells;
 using Core.GS.Styles;
 using log4net;
@@ -57,7 +57,7 @@ public class PacketLib168 : APacketLib, IPacketLib
 		using (var pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CryptKey)))
 		{
 			//Enable encryption
-			pak.WriteByte((byte)(Properties.CLIENT_ENABLE_ENCRYPTION_RC4 ? 0x01 : 0x00));
+			pak.WriteByte((byte)(ServerProperty.CLIENT_ENABLE_ENCRYPTION_RC4 ? 0x01 : 0x00));
 
 			//if(is_si)
 			pak.WriteByte(0x32);
@@ -1687,17 +1687,17 @@ public class PacketLib168 : APacketLib, IPacketLib
 
 		// clients crash if too long packet is sent
 		// so we send big updates in parts
-		if (slots == null || slots.Count <= ServerProperties.Properties.MAX_ITEMS_PER_PACKET)
+		if (slots == null || slots.Count <= ServerProperty.MAX_ITEMS_PER_PACKET)
 		{
 			SendInventorySlotsUpdateRange(slots, 0);
 		}
 		else
 		{
-			var updateSlots = new List<int>(ServerProperties.Properties.MAX_ITEMS_PER_PACKET);
+			var updateSlots = new List<int>(ServerProperty.MAX_ITEMS_PER_PACKET);
 			foreach (int slot in slots)
 			{
 				updateSlots.Add(slot);
-				if (updateSlots.Count >= ServerProperties.Properties.MAX_ITEMS_PER_PACKET)
+				if (updateSlots.Count >= ServerProperty.MAX_ITEMS_PER_PACKET)
 				{
 					SendInventorySlotsUpdateRange(updateSlots, 0);
 					updateSlots.Clear();
@@ -1733,14 +1733,14 @@ public class PacketLib168 : APacketLib, IPacketLib
 
 		// clients crash if too long packet is sent
 		// so we send big updates in parts
-		var slotsToUpdate = new List<int>(Math.Min(ServerProperties.Properties.MAX_ITEMS_PER_PACKET, itemsToUpdate.Count));
+		var slotsToUpdate = new List<int>(Math.Min(ServerProperty.MAX_ITEMS_PER_PACKET, itemsToUpdate.Count));
 		foreach (DbInventoryItem item in itemsToUpdate)
 		{
 			if (item == null)
 				continue;
 
 			slotsToUpdate.Add(item.SlotPosition);
-			if (slotsToUpdate.Count >= ServerProperties.Properties.MAX_ITEMS_PER_PACKET)
+			if (slotsToUpdate.Count >= ServerProperty.MAX_ITEMS_PER_PACKET)
 			{
 				SendInventorySlotsUpdateRange(slotsToUpdate, windowType);
 				slotsToUpdate.Clear();
@@ -2916,13 +2916,13 @@ public class PacketLib168 : APacketLib, IPacketLib
 
 	public virtual void SendDebugMessage(string format, params object[] parameters)
 	{
-		if (m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player || ServerProperties.Properties.ENABLE_DEBUG)
+		if (m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player || ServerProperty.ENABLE_DEBUG)
 			SendMessage(String.Format("[DEBUG] " + format, parameters), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 	}
 
 	public virtual void SendDebugPopupMessage(string format, params object[] parameters)
 	{
-		if (m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player || ServerProperties.Properties.ENABLE_DEBUG)
+		if (m_gameClient.Account.PrivLevel > (int)EPrivLevel.Player || ServerProperty.ENABLE_DEBUG)
 			SendMessage(String.Format("[DEBUG] " + format, parameters), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 	}
 
@@ -3731,7 +3731,7 @@ public class PacketLib168 : APacketLib, IPacketLib
 				pak.WriteShort(item.OwnerLot);//lot
 				pak.WriteInt((uint)item.SellPrice);
 
-				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
+				if (ServerProperty.CONSIGNMENT_USE_BP)
 				{
 					string bpPrice = "";
 					if (item.SellPrice > 0)
@@ -4120,7 +4120,7 @@ public class PacketLib168 : APacketLib, IPacketLib
 						name = item.Count + " " + name;
 					if (item.SellPrice > 0)
 					{
-						if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
+						if (ServerProperty.CONSIGNMENT_USE_BP)
 							name += "[" + item.SellPrice + " BP]";
 						else
 							name += "[" + MoneyMgr.GetString(item.SellPrice) + "]";

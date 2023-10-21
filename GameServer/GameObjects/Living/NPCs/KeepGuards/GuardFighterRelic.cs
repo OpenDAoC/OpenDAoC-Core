@@ -2,6 +2,7 @@ using Core.AI.Brain;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps
 {
@@ -43,7 +44,7 @@ namespace Core.GS.Keeps
         public static void GuardRelicSpam(GameKeepGuard guard)
         {
             int inArea = guard.GetEnemyCountInArea();
-            string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameKeepGuard.GuardRelicSpam.Killed", guard.Component.Keep.Name, guard.Name, inArea);
+            string message = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "GameKeepGuard.GuardRelicSpam.Killed", guard.Component.Keep.Name, guard.Name, inArea);
             PlayerMgr.BroadcastMessage(message, guard.Realm);
         }
 

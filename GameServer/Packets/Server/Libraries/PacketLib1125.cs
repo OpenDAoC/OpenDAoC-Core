@@ -11,6 +11,7 @@ using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Players;
 using Core.GS.Players.Clients;
+using Core.GS.Server;
 using Core.GS.Spells;
 using log4net;
 
@@ -580,7 +581,7 @@ public class PacketLib1125 : PacketLib1124
 				pak.WriteShortLowEndian(item.OwnerLot);//lot
 				pak.WriteIntLowEndian((uint)item.SellPrice);
 
-				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
+				if (ServerProperty.CONSIGNMENT_USE_BP)
 				{
 					string bpPrice = "";
 					if (item.SellPrice > 0)

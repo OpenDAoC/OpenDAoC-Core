@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -18,7 +19,7 @@ public class NfRaVehementRenewalAbility : TimedRealmAbility
 
 		int heal = 0;
 		
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (Level)
 			{
@@ -78,7 +79,7 @@ public class NfRaVehementRenewalAbility : TimedRealmAbility
 
 	public override void AddEffectsInfo(IList<string> list)
 	{
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			list.Add("Level 1: Value: 375");
 			list.Add("Level 2: Value: 525");

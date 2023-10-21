@@ -2,6 +2,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps
 {
@@ -565,7 +566,7 @@ namespace Core.GS.Keeps
 		/// <param name="guard">The guard object</param>
 		public static void EquipGuard(GameKeepGuard guard)
 		{
-			if(!ServerProperties.Properties.AUTOEQUIP_GUARDS_LOADED_FROM_DB && !guard.LoadedFromScript)
+			if(!ServerProperty.AUTOEQUIP_GUARDS_LOADED_FROM_DB && !guard.LoadedFromScript)
 			{
 				return;
 			}

@@ -9,6 +9,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -149,9 +150,9 @@ namespace Core.GS
 				// proper name
 
 				if (firstLetterUppercase)
-					return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameStaticItem.GetName.Article1", Name);
+					return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameStaticItem.GetName.Article1", Name);
 				else
-					return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameStaticItem.GetName.Article2", Name);
+					return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameStaticItem.GetName.Article2", Name);
 			}
 			else
 			{

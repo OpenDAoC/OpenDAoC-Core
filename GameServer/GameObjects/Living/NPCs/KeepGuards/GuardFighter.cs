@@ -1,7 +1,7 @@
 using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.Players.Classes;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps
 {
@@ -36,30 +36,30 @@ namespace Core.GS.Keeps
 				case ERealm.Albion:
 					if (IsPortalKeepGuard)
 					{
-						Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.KnightCommander");
+						Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.KnightCommander");
 					}
 					else
 					{
 						if (Gender == EGender.Male)
-							Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Armsman");
-						else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Armswoman");
+							Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Armsman");
+						else Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Armswoman");
 					}
 					break;
 				case ERealm.Midgard:
 					if (IsPortalKeepGuard)
-						Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.NordicJarl");
-					else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Huscarl");
+						Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.NordicJarl");
+					else Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Huscarl");
 					break;
 				case ERealm.Hibernia:
 					if (IsPortalKeepGuard)
-						Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Champion");
-					else Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Guardian");
+						Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Champion");
+					else Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Guardian");
 					break;
 			}
 
 			if (Realm == ERealm.None)
 			{
-				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
+				Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
 			}
 		}
 	}

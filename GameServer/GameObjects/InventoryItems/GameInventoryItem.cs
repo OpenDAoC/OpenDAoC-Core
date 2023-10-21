@@ -7,6 +7,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Server;
 using Core.GS.Spells;
 using log4net;
 
@@ -264,7 +265,7 @@ namespace Core.GS
             {
                 GamePlayer player = owner as GamePlayer;
 
-                if (ConditionPercent > 70 && Util.Chance(ServerProperties.Properties.ITEM_CONDITION_LOSS_CHANCE))
+                if (ConditionPercent > 70 && Util.Chance(ServerProperty.ITEM_CONDITION_LOSS_CHANCE))
                 {
                     int oldPercent = ConditionPercent;
                     double con = GamePlayer.GetConLevel(player.Level, Level);
@@ -308,7 +309,7 @@ namespace Core.GS
             {
                 GamePlayer player = owner as GamePlayer;
 
-                if (ConditionPercent > 70 && Util.Chance(ServerProperties.Properties.ITEM_CONDITION_LOSS_CHANCE))
+                if (ConditionPercent > 70 && Util.Chance(ServerProperty.ITEM_CONDITION_LOSS_CHANCE))
                 {
                     int oldPercent = ConditionPercent;
                     double con = GamePlayer.GetConLevel(player.Level, Level);
@@ -1785,7 +1786,7 @@ namespace Core.GS
             }
 
             delve.Add("");
-            delve.Add("   Value/Price: " + MoneyMgr.GetShortString(Price) + " / " + MoneyMgr.GetShortString((long)(Price * (long)ServerProperties.Properties.ITEM_SELL_RATIO * .01)));
+            delve.Add("   Value/Price: " + MoneyMgr.GetShortString(Price) + " / " + MoneyMgr.GetShortString((long)(Price * (long)ServerProperty.ITEM_SELL_RATIO * .01)));
             delve.Add("Count/MaxCount: " + Count + " / " + MaxCount);
             delve.Add("        Weight: " + (Weight / 10.0f) + "lbs");
             delve.Add("       Quality: " + Quality + "%");

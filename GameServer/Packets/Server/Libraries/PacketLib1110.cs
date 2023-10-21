@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.Packets.Clients;
 using Core.GS.Players.Specializations;
 using Core.GS.RealmAbilities;
+using Core.GS.Server;
 using Core.GS.Spells;
 using Core.GS.Styles;
 using log4net;
@@ -33,7 +34,7 @@ public class PacketLib1110 : PacketLib1109
     /// This can be controlled through server propertiers !
     /// </summary>
 	public virtual bool ForceTooltipUpdate {
-		get { return ServerProperties.Properties.USE_NEW_TOOLTIP_FORCEDUPDATE; }
+		get { return ServerProperty.USE_NEW_TOOLTIP_FORCEDUPDATE; }
 	}
 
     /// <summary>

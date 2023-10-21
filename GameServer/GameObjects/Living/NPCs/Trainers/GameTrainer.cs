@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Players.Classes;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -424,12 +425,12 @@ namespace Core.GS
 		/// <returns></returns>
 		public override bool AddToWorld()
 		{
-			if (!string.IsNullOrEmpty(ServerProperties.Properties.DISABLED_CLASSES))
+			if (!string.IsNullOrEmpty(ServerProperty.DISABLED_CLASSES))
 			{
 				if (disabled_classes == null)
 				{
 					// creation of disabled_classes list.
-					disabled_classes = Util.SplitCSV(ServerProperties.Properties.DISABLED_CLASSES).ToList();
+					disabled_classes = Util.SplitCSV(ServerProperty.DISABLED_CLASSES).ToList();
 				}
 
 				if (disabled_classes.Contains(TrainedClass.ToString()))

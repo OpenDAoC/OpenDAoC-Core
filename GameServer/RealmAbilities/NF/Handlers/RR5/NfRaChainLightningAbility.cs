@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.GS.ServerRules;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 

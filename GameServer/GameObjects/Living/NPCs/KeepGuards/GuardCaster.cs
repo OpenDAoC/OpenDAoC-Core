@@ -3,7 +3,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.Players.Classes;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps
 {
@@ -39,34 +39,34 @@ namespace Core.GS.Keeps
                 case ERealm.Albion:
                 {
                     if (IsPortalKeepGuard)
-                        Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.MasterWizard");
+                        Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.MasterWizard");
                     else
-                        Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Wizard");
+                        Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Wizard");
 
                     break;
                 }
                 case ERealm.Midgard:
                 {
                     if (IsPortalKeepGuard)
-                        Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.MasterRunes");
+                        Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.MasterRunes");
                     else
-                        Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Runemaster");
+                        Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Runemaster");
 
                     break;
                 }
                 case ERealm.Hibernia:
                 {
                     if (IsPortalKeepGuard)
-                        Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.MasterEldritch");
+                        Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.MasterEldritch");
                     else
-                        Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Eldritch");
+                        Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Eldritch");
 
                     break;
                 }
             }
 
             if (Realm == ERealm.None)
-                Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
+                Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
         }
     }
 }

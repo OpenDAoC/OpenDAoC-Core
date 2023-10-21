@@ -5,7 +5,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.RealmAbilities;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using Core.GS.Spells;
 
 namespace Core.GS.ECS;
@@ -15,13 +15,13 @@ public abstract class ACrowdControlEcsSpellEffect : EcsGameSpellEffect
     public ACrowdControlEcsSpellEffect(EcsGameEffectInitParams initParams)
         : base(initParams)
     {
-        if (Properties.IMMUNITY_TIMER_USE_ADAPTIVE)
+        if (ServerProperty.IMMUNITY_TIMER_USE_ADAPTIVE)
         {
-            ImmunityDuration = Math.Min(60000, (int) (Duration * Properties.IMMUNITY_TIMER_ADAPTIVE_LENGTH)); //cap at 60s
+            ImmunityDuration = Math.Min(60000, (int) (Duration * ServerProperty.IMMUNITY_TIMER_ADAPTIVE_LENGTH)); //cap at 60s
         }
         else
         {
-            ImmunityDuration = Properties.IMMUNITY_TIMER_FLAT_LENGTH * 1000; // *1000 to convert to gameloop time
+            ImmunityDuration = ServerProperty.IMMUNITY_TIMER_FLAT_LENGTH * 1000; // *1000 to convert to gameloop time
         }
     }
 

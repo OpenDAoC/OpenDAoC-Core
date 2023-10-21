@@ -1,4 +1,5 @@
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps;
 
@@ -16,7 +17,7 @@ public class KeepBonusMgr
 	/// <returns>true if the realm has the required amount of keeps</returns>
 	public static bool RealmHasBonus(EKeepBonusType type, ERealm realm)
 	{
-		if (!ServerProperties.Properties.USE_LIVE_KEEP_BONUSES)
+		if (!ServerProperty.USE_LIVE_KEEP_BONUSES)
 			return false;
 
 		if (realm == ERealm.None)

@@ -5,7 +5,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using Core.GS.Styles;
 
 namespace Core.GS.ECS
@@ -174,7 +174,7 @@ namespace Core.GS.ECS
                         && p.CheckStyleStun(s)) // Make sure we don't spam stun styles like Brutalize
                         return s;
 
-            if (Util.Chance(Properties.GAMENPC_CHANCES_TO_STYLE))
+            if (Util.Chance(ServerProperty.GAMENPC_CHANCES_TO_STYLE))
             {
                 // All of the remaining lists are randomly picked from,
                 // as this creates more variety with each combat result.

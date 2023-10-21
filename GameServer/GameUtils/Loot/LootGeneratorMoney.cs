@@ -1,4 +1,5 @@
 using Core.Database.Tables;
+using Core.GS.Server;
 
 namespace Core.GS.GameUtils;
 
@@ -22,7 +23,7 @@ public class LootGeneratorMoney : LootGeneratorBase
 		int minLoot = 2 + ((lvl * lvl * lvl) >> 3);
 
 		long moneyCount = minLoot + Util.Random(minLoot >> 1);
-		moneyCount = (long)((double)moneyCount * ServerProperties.Properties.MONEY_DROP);
+		moneyCount = (long)((double)moneyCount * ServerProperty.MONEY_DROP);
 
 		DbItemTemplate money = new DbItemTemplate();
 		money.Model = 488;

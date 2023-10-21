@@ -1,5 +1,6 @@
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -15,7 +16,7 @@ public class NfRaWildPowerAbility : RaPropertyEnhancer
 	public override int GetAmountForLevel(int level)
 	{
 		if (level < 1) return 0;
-		if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+		if (ServerProperty.USE_NEW_PASSIVES_RAS_SCALING)
 		{
 			switch (level)
 			{
@@ -62,7 +63,7 @@ public class MasteryOfMageryAbility : RaPropertyEnhancer
 	public override int GetAmountForLevel(int level)
 	{
 		if (level < 1) return 0;
-		if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+		if (ServerProperty.USE_NEW_PASSIVES_RAS_SCALING)
 		{
 			switch (level)
 			{
@@ -109,7 +110,7 @@ public class WildHealingAbility : RaPropertyEnhancer
 	public override int GetAmountForLevel(int level)
 	{
 		if (level < 1) return 0;
-		if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+		if (ServerProperty.USE_NEW_PASSIVES_RAS_SCALING)
 		{
 			switch (level)
 			{
@@ -155,7 +156,7 @@ public class MasteryOfHealingAbility : RaPropertyEnhancer
 	public override int GetAmountForLevel(int level)
 	{
 		if (level < 1) return 0;
-		if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+		if (ServerProperty.USE_NEW_PASSIVES_RAS_SCALING)
 		{
 			switch (level)
 			{
@@ -196,7 +197,7 @@ public class MasteryOfFocusAbility : RaPropertyEnhancer
 	public override int GetAmountForLevel(int level)
 	{
 		if (level < 1) return 0;
-		if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+		if (ServerProperty.USE_NEW_PASSIVES_RAS_SCALING)
 		{
 			switch (level)
 			{

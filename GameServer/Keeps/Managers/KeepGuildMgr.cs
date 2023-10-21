@@ -1,6 +1,7 @@
 using System;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps;
 
@@ -33,8 +34,8 @@ public class KeepGuildMgr
 	public static void SendLevelChangeMessage(AGameKeep keep)
 	{
 		string message = "Your guild's keep " + keep.Name + " is now level " + keep.Level;
-		if (keep.Level != ServerProperties.Properties.MAX_KEEP_LEVEL)
-			message += ", it is on the way to level " + ServerProperties.Properties.MAX_KEEP_LEVEL.ToString();
+		if (keep.Level != ServerProperty.MAX_KEEP_LEVEL)
+			message += ", it is on the way to level " + ServerProperty.MAX_KEEP_LEVEL.ToString();
 		SendMessageToGuild(message, keep.Guild);
 	}
 
@@ -44,7 +45,7 @@ public class KeepGuildMgr
         string changeleveltext = "";
         int nextlevel = 0;
 
-        byte maxlevel = (byte)ServerProperties.Properties.MAX_KEEP_LEVEL;
+        byte maxlevel = (byte)ServerProperty.MAX_KEEP_LEVEL;
 
         if (keep.Level < maxlevel)
         {

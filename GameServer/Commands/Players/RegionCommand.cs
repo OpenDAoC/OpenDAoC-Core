@@ -2,7 +2,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.Scripts.discord;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -57,7 +57,7 @@ public class RegionCommand : ACommandHandler, ICommandHandler
                 otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Region.Message", player.Name, message), EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
         }
 
-        if (Properties.DISCORD_ACTIVE)
+        if (ServerProperty.DISCORD_ACTIVE)
             WebhookMessage.LogChatMessage(player, EChatType.CT_Broadcast, message);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
+using Core.GS.Server;
 
 namespace Core.GS.GameUtils;
 
@@ -83,10 +84,10 @@ public class LootGeneratorAtlanteanGlass : LootGeneratorBase
 			if (!mob.Name.ToLower().Equals(mob.Name))
 			{
 				//Named mob, more cash !
-				maxcount = (int)Math.Round(maxcount*ServerProperties.Properties.LOOTGENERATOR_ATLANTEANGLASS_NAMED_COUNT);
+				maxcount = (int)Math.Round(maxcount*ServerProperty.LOOTGENERATOR_ATLANTEANGLASS_NAMED_COUNT);
 			}
 			
-			if(maxcount > 0 && Util.Chance(ServerProperties.Properties.LOOTGENERATOR_ATLANTEANGLASS_BASE_CHANCE+Math.Max(10, killedcon)))
+			if(maxcount > 0 && Util.Chance(ServerProperty.LOOTGENERATOR_ATLANTEANGLASS_BASE_CHANCE+Math.Max(10, killedcon)))
 				loot.AddFixed(atlanteanGlass, maxcount);
 		}
 		catch

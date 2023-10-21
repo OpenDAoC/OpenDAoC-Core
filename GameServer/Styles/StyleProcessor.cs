@@ -10,7 +10,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.RealmAbilities;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using Core.GS.Spells;
 
 namespace Core.GS.Styles
@@ -190,7 +190,7 @@ namespace Core.GS.Styles
 				}
 
 				bool automaticStyleUsed = false;
-				if (Properties.AUTO_SELECT_OPENING_STYLE && style.OpeningRequirementType != Style.eOpening.Positional)
+				if (ServerProperty.AUTO_SELECT_OPENING_STYLE && style.OpeningRequirementType != Style.eOpening.Positional)
 				{
 					AttackData lastAttackData = player.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
 					Style styleToUse = style;
@@ -217,7 +217,7 @@ namespace Core.GS.Styles
 
 				Style preRequireStyle = null;
 
-				if (!Properties.AUTO_SELECT_OPENING_STYLE && style.OpeningRequirementType == Style.eOpening.Offensive && style.AttackResultRequirement == Style.eAttackResultRequirement.Style)
+				if (!ServerProperty.AUTO_SELECT_OPENING_STYLE && style.OpeningRequirementType == Style.eOpening.Offensive && style.AttackResultRequirement == Style.eAttackResultRequirement.Style)
 					preRequireStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, player.PlayerClass.ID);
 
 				// We have not set any primary style yet?

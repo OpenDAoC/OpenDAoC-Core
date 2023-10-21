@@ -7,7 +7,7 @@ using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Core.GS.APIs;
@@ -29,7 +29,7 @@ public class ApiUtils
 
         if (!_cache.TryGetValue(_discordRequiredKey, out bool discordRequired))
         {
-            discordRequired = Properties.FORCE_DISCORD_LINK;
+            discordRequired = ServerProperty.FORCE_DISCORD_LINK;
             _cache.Set(_discordRequiredKey, discordRequired, DateTime.Now.AddMinutes(1));
         }
 

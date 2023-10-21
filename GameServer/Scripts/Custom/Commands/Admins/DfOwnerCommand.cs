@@ -1,6 +1,6 @@
 using System;
 using Core.GS.Enums;
-using Core.GS.ServerRules;
+using Core.GS.Server;
 
 namespace Core.GS.Commands
 {

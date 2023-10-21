@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -61,12 +62,12 @@ public class OfRaFirstAidAbility : NfRaFirstAidAbility
 	public override void AddEffectsInfo(IList<string> list)
 	{
 		
-		list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info1"));
-		list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info2"));
-		list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info3"));
+		list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info1"));
+		list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info2"));
+		list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info3"));
 		list.Add("");
-		list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info4"));
-		list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info5"));
+		list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info4"));
+		list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FirstAidAbility.AddEffectsInfo.Info5"));
 
 	}
 }

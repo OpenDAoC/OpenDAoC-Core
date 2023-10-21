@@ -4,7 +4,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Events;
 using Core.GS.GameUtils;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.GameEvents
 {
@@ -18,25 +18,25 @@ namespace Core.GS.GameEvents
 		/// <summary>
 		/// The amount of Bounty Points a player starts with
 		/// </summary>
-		[Properties("startup", "starting_bps", "Starting Bounty Points - Edit this to change the amount of Bounty Points the new characters start the game with", 0)]
+		[ServerProperty("startup", "starting_bps", "Starting Bounty Points - Edit this to change the amount of Bounty Points the new characters start the game with", 0)]
 		public static long STARTING_BPS;
 		
 		/// <summary>
 		/// The amount of copper a player starts with
 		/// </summary>
-		[Properties("startup", "starting_money", "Starting Money - Edit this to change the amount in copper of money new characters start the game with, max 214 plat", 0)]
+		[ServerProperty("startup", "starting_money", "Starting Money - Edit this to change the amount in copper of money new characters start the game with, max 214 plat", 0)]
 		public static long STARTING_MONEY;
 		
 		/// <summary>
 		/// The message players get when they enter the game at level 1
 		/// </summary>
-		[Properties("startup", "starting_realm_level", "Starting Realm level - Edit this to set which realm level a new player starts the game with", 0)]
+		[ServerProperty("startup", "starting_realm_level", "Starting Realm level - Edit this to set which realm level a new player starts the game with", 0)]
 		public static int STARTING_REALM_LEVEL;
 		
 		/// <summary>
 		/// The level of experience a player should start with
 		/// </summary>
-		[Properties("startup", "starting_level", "Starting Level - Edit this to set which levels experience a new player start the game with", 1)]
+		[ServerProperty("startup", "starting_level", "Starting Level - Edit this to set which levels experience a new player start the game with", 1)]
 		public static int STARTING_LEVEL;
 		#endregion
 		

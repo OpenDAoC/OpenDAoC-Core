@@ -10,6 +10,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Scripts;
+using Core.GS.Server;
 
 namespace Core.GS.AI.Brains;
 
@@ -44,7 +45,7 @@ public class MistressOfRunesBrain : StandardMobBrain
 	/// </summary>
 	public virtual int MistressDifficulty
 	{
-		get { return GS.ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
+		get { return ServerProperty.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
 	}
 
 	public override void Think()

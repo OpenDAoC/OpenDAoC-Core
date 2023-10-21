@@ -3,6 +3,7 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Calculators;
 using Core.GS.Effects;
+using Core.GS.Server;
 using Core.GS.Spells;
 
 namespace Core.GS.RealmAbilities;
@@ -23,7 +24,7 @@ public class NfRaVanishAbility : TimedRealmAbility
 		int duration = 0;
 		double speedBonus = 1;
 
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (Level)
 			{
@@ -93,7 +94,7 @@ public class NfRaVanishAbility : TimedRealmAbility
 
 	public override void AddEffectsInfo(IList<string> list)
 	{
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			list.Add("Level 1: Normal Speed");
 			list.Add("Level 2: Speed 1");

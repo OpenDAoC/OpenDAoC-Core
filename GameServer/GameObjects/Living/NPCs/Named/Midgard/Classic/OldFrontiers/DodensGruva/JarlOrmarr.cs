@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.Scripts;
 
@@ -34,7 +35,7 @@ public class JarlOrmarr : GameEpicBoss
 		BodyType = 6;
 		MeleeDamageType = EDamageType.Slash;
 		Faction = FactionMgr.GetFactionByID(779);
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		// right hand
 		VisibleActiveWeaponSlots = (byte) EActiveWeaponSlot.Standard;			

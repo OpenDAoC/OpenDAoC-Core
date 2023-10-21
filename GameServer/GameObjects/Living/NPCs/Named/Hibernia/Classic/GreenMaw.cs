@@ -8,6 +8,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -95,7 +96,7 @@ public class GreenMaw : GameEpicNPC
 		GreenMawAdd.GreenMawRedCount = 0;
 		GreenMawAdd2.GreenMawOrangeCount = 0;
 
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		GreenMawBrain sbrain = new GreenMawBrain();
 		SetOwnBrain(sbrain);
 		LoadedFromScript = false;//load from database

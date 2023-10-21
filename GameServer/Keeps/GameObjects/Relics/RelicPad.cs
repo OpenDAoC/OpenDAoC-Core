@@ -1,4 +1,5 @@
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.Keeps;
 
@@ -39,7 +40,7 @@ public class RelicPad : GameObject
 
 			m_playersOnPad = value;
 
-			if (m_playersOnPad >= ServerProperties.Properties.RELIC_PLAYERS_REQUIRED_ON_PAD &&
+			if (m_playersOnPad >= ServerProperty.RELIC_PLAYERS_REQUIRED_ON_PAD &&
 				m_relicPillar.State == EDoorState.Closed)
 				m_relicPillar.Open();
 			else if (m_relicPillar.State == EDoorState.Open && m_playersOnPad <= 0)

@@ -3,6 +3,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.Players.Managers;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -22,7 +23,7 @@ public class CheckAppealCommand : ACommandHandler, ICommandHandler
 		if (IsSpammingCommand(client.Player, "checkappeal"))
 			return;
 
-		if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+		if (ServerProperty.DISABLE_APPEALSYSTEM)
 		{
 			//AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
 			client.Out.SendMessage("The /appeal system has moved to Discord. Use the #appeal channel on our Discord to be assisted on urgent matters.",EChatType.CT_Staff,EChatLoc.CL_SystemWindow);

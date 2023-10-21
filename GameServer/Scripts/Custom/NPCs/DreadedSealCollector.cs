@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -15,8 +16,8 @@ namespace Core.GS
         private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         protected static List<Tuple<int, int>> m_levelMultipliers = ParseMultipliers();
-        protected static Dictionary<string, float> m_BPMultipliers = ParseValues(ServerProperties.Properties.DREADEDSEALS_BP_VALUES);
-        protected static Dictionary<string, float> m_RPMultipliers = ParseValues(ServerProperties.Properties.DREADEDSEALS_RP_VALUES);
+        protected static Dictionary<string, float> m_BPMultipliers = ParseValues(ServerProperty.DREADEDSEALS_BP_VALUES);
+        protected static Dictionary<string, float> m_RPMultipliers = ParseValues(ServerProperty.DREADEDSEALS_RP_VALUES);
 
         /// <summary>
         /// Parse a server property string level multiplier values
@@ -27,7 +28,7 @@ namespace Core.GS
         {
             List<Tuple<int, int>> list = new List<Tuple<int, int>>();
 
-            foreach (string entry in ServerProperties.Properties.DREADEDSEALS_LEVEL_MULTIPLIER.Split(';'))
+            foreach (string entry in ServerProperty.DREADEDSEALS_LEVEL_MULTIPLIER.Split(';'))
             {
                 string[] asVal = entry.Split('|');
 

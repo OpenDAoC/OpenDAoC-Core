@@ -96,7 +96,7 @@ Update databasename.itemtemplate set Extension = 3 where Id_nb like "%superior_w
 using System.Text.RegularExpressions;
 using Core.Database.Tables;
 using Core.GS.Enums;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Crafting
 {
@@ -2279,7 +2279,7 @@ namespace Core.GS.Crafting
                         break;
                 }
 
-                Yield.Count = (int) (Yield.Count * Properties.SALVAGE_YIELD_MULTIPLIER);
+                Yield.Count = (int) (Yield.Count * ServerProperty.SALVAGE_YIELD_MULTIPLIER);
 
                 #region AtlasROGs
                 

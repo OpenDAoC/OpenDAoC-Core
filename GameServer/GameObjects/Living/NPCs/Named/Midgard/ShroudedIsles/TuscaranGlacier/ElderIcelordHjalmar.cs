@@ -6,6 +6,7 @@ using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using Core.GS.Styles;
 
 namespace Core.GS;
@@ -38,7 +39,7 @@ public class ElderIcelordHjalmar : GameEpicBoss
 
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
 
     public override int AttackRange
@@ -166,7 +167,7 @@ public class Morkimma : GameNpc
 
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 50 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 50 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
 
     protected int Show_Effect(EcsGameTimer timer)

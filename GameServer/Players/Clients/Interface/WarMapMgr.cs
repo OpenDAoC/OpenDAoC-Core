@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Players.Clients;
@@ -47,7 +48,7 @@ public class WarMapMgr
     
     public static bool AddFight(byte zoneid, int x, int y, byte realm1, byte realm2)
     {
-        if (!ServerProperties.Properties.ENABLE_WARMAPMGR)
+        if (!ServerProperty.ENABLE_WARMAPMGR)
             return false;
 
         Zone zone = WorldMgr.GetZone(zoneid);
@@ -69,7 +70,7 @@ public class WarMapMgr
 
     public static bool AddGroup(byte zoneid, int x, int y, string name, byte realm)
     {
-        if (!ServerProperties.Properties.ENABLE_WARMAPMGR)
+        if (!ServerProperty.ENABLE_WARMAPMGR)
             return false;
 
         lock (m_groups)
@@ -245,7 +246,7 @@ public class WarMapMgr
     
     public static void SendFightInfo(GameClient client)
     {
-        if (!ServerProperties.Properties.ENABLE_WARMAPMGR)
+        if (!ServerProperty.ENABLE_WARMAPMGR)
             return;
 
         if (client == null || client.Player == null) return;

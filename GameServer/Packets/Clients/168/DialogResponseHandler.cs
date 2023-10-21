@@ -121,7 +121,7 @@ public class DialogResponseHandler : IPacketHandler
 								                       EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return 0;
 							}
-							if (!ServerProperties.Properties.ALLOW_GUILD_INVITE_IN_RVR && (guildLeader.CurrentZone.IsRvR || player.CurrentZone.IsRvR))
+							if (!GS.Server.ServerProperty.ALLOW_GUILD_INVITE_IN_RVR && (guildLeader.CurrentZone.IsRvR || player.CurrentZone.IsRvR))
 							{
 								player.Out.SendMessage("You can't join a guild while in a RvR zone.",
 									EChatType.CT_System, EChatLoc.CL_SystemWindow);
@@ -218,7 +218,7 @@ public class DialogResponseHandler : IPacketHandler
 							if (groupLeader.Group != null)
 							{
 								if (groupLeader.Group.Leader != groupLeader) return 0;
-                                if (groupLeader.Group.MemberCount >= ServerProperties.Properties.GROUP_MAX_MEMBER)
+                                if (groupLeader.Group.MemberCount >= GS.Server.ServerProperty.GROUP_MAX_MEMBER)
 								{
 									player.Out.SendMessage("The group is full.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									return 0;
@@ -296,8 +296,8 @@ public class DialogResponseHandler : IPacketHandler
 						{
 							// if we're giving money and already have some in the lockbox, make sure we don't
 							// take more than what would cover 4 weeks of rent.
-							if (moneyToAdd + house.KeptMoney > HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)
-								moneyToAdd = (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS) - house.KeptMoney;
+							if (moneyToAdd + house.KeptMoney > HouseMgr.GetRentByModel(house.Model) * GS.Server.ServerProperty.RENT_LOCKBOX_PAYMENTS)
+								moneyToAdd = (HouseMgr.GetRentByModel(house.Model) * GS.Server.ServerProperty.RENT_LOCKBOX_PAYMENTS) - house.KeptMoney;
 
 							// take the money from the player
 							if (!player.RemoveMoney(moneyToAdd))
@@ -323,8 +323,8 @@ public class DialogResponseHandler : IPacketHandler
 						}
 						else
 						{
-							if (bpsToMoney + house.KeptMoney > HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)
-								bpsToMoney = (HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS) - house.KeptMoney;
+							if (bpsToMoney + house.KeptMoney > HouseMgr.GetRentByModel(house.Model) * GS.Server.ServerProperty.RENT_LOCKBOX_PAYMENTS)
+								bpsToMoney = (HouseMgr.GetRentByModel(house.Model) * GS.Server.ServerProperty.RENT_LOCKBOX_PAYMENTS) - house.KeptMoney;
 
 							if (!player.RemoveBountyPoints(MoneyMgr.GetGold(bpsToMoney)))
 								return 0;

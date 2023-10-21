@@ -3,6 +3,7 @@ using System.Reflection;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameEvents
@@ -136,7 +137,7 @@ namespace Core.GS.GameEvents
 		[ScriptLoadedEvent]
 		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 		{
-			if (!ServerProperties.Properties.LOAD_EXAMPLES)
+			if (!ServerProperty.LOAD_EXAMPLES)
 				return;
 			//Here we create an instance of our talking NPC
 			m_npc = new TalkingNPC();
@@ -154,7 +155,7 @@ namespace Core.GS.GameEvents
 		[ScriptUnloadedEvent]
 		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 		{
-			if (!ServerProperties.Properties.LOAD_EXAMPLES)
+			if (!ServerProperty.LOAD_EXAMPLES)
 				return;
 			//To stop this event, we simply delete
 			//(remove from world completly) the npc

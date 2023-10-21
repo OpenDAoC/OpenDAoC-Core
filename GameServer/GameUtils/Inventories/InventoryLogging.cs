@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameUtils;
@@ -161,17 +162,17 @@ public static class InventoryLogging
 
 	private static bool _IsLoggingEnabled(EInventoryActionType type)
 	{
-		if (!ServerProperties.Properties.LOG_INVENTORY)
+		if (!ServerProperty.LOG_INVENTORY)
 			return false;
 
 		switch (type)
 		{
-			case EInventoryActionType.Trade: return ServerProperties.Properties.LOG_INVENTORY_TRADE;
-			case EInventoryActionType.Loot: return ServerProperties.Properties.LOG_INVENTORY_LOOT;
-			case EInventoryActionType.Craft: return ServerProperties.Properties.LOG_INVENTORY_CRAFT;
-			case EInventoryActionType.Merchant: return ServerProperties.Properties.LOG_INVENTORY_MERCHANT;
-			case EInventoryActionType.Quest: return ServerProperties.Properties.LOG_INVENTORY_QUEST;
-			case EInventoryActionType.Other: return ServerProperties.Properties.LOG_INVENTORY_OTHER;
+			case EInventoryActionType.Trade: return ServerProperty.LOG_INVENTORY_TRADE;
+			case EInventoryActionType.Loot: return ServerProperty.LOG_INVENTORY_LOOT;
+			case EInventoryActionType.Craft: return ServerProperty.LOG_INVENTORY_CRAFT;
+			case EInventoryActionType.Merchant: return ServerProperty.LOG_INVENTORY_MERCHANT;
+			case EInventoryActionType.Quest: return ServerProperty.LOG_INVENTORY_QUEST;
+			case EInventoryActionType.Other: return ServerProperty.LOG_INVENTORY_OTHER;
 		}
 		return false;
 	}

@@ -6,6 +6,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS
@@ -113,7 +114,7 @@ namespace Core.GS
                     string error = string.Empty;
   
                     // Default Classtype
-                    string classtype = ServerProperties.Properties.GAMENPC_DEFAULT_CLASSTYPE;
+                    string classtype = ServerProperty.GAMENPC_DEFAULT_CLASSTYPE;
                     
                     // load template if any
                     INpcTemplate template = null;

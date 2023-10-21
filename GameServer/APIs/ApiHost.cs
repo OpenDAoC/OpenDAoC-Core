@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Core.GS.Enums;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -178,7 +178,7 @@ namespace Core.GS.APIs
 
             #region Misc
 
-            api.MapGet("/bread", () => Properties.BREAD);
+            api.MapGet("/bread", () => ServerProperty.BREAD);
 
             api.MapGet("/utils/discordstatus/{accountName}", (string accountName) =>
             {
@@ -190,7 +190,7 @@ namespace Core.GS.APIs
             {
                 var dict = new Dictionary<string, int>()
                 {
-                    { "max_players", Properties.MAX_PLAYERS }
+                    { "max_players", ServerProperty.MAX_PLAYERS }
                 };
                 return Results.Ok(dict);
             });

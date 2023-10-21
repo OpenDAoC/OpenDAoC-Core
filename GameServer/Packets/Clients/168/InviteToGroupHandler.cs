@@ -51,7 +51,7 @@ public class InviteToGroupHandler : IPacketHandler
 				return 0;
 			}
 
-			if (player.Group != null && player.Group.MemberCount >= ServerProperties.Properties.GROUP_MAX_MEMBER)
+			if (player.Group != null && player.Group.MemberCount >= GS.Server.ServerProperty.GROUP_MAX_MEMBER)
 			{
 				ChatUtil.SendSystemMessage(player, "The group is full.");
 				return 0;

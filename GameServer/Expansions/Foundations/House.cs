@@ -9,6 +9,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Players.Clients;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Expansions.Foundations
@@ -443,7 +444,7 @@ namespace Core.GS.Expansions.Foundations
 		public void SendHouseInfo(GamePlayer player)
 		{
 			int level = Model - ((Model - 1) / 4) * 4;
-			TimeSpan due = (LastPaid.AddDays(ServerProperties.Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
+			TimeSpan due = (LastPaid.AddDays(ServerProperty.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
 			var text = new List<string>();
 
 			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.Owner", Name));
@@ -457,8 +458,8 @@ namespace Core.GS.Expansions.Foundations
 			text.Add(" ");
 			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.Lockbox", MoneyMgr.GetString(KeptMoney)));
 			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentalPrice", MoneyMgr.GetString(HouseMgr.GetRentByModel(Model))));
-			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.MaxLockbox", MoneyMgr.GetString(HouseMgr.GetRentByModel(Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)));
-			if (ServerProperties.Properties.RENT_DUE_DAYS > 0)
+			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.MaxLockbox", MoneyMgr.GetString(HouseMgr.GetRentByModel(Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS)));
+			if (ServerProperty.RENT_DUE_DAYS > 0)
 				text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentDueIn", due.Days, due.Hours));
 			else
 				text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentDueIn", "No Rent! 0", "0"));

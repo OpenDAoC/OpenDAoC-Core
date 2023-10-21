@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -23,7 +24,7 @@ namespace Core.GS
         public string DisplayedItem = "EffectDisplay";
         public string TempEffectId = "TempEffectID";
         public string TempColorId = "TempColorID";
-        private string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
+        private string _currencyID = ServerProperty.ALT_CURRENCY_ID;
 
 
 

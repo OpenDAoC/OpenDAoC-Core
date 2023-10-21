@@ -10,6 +10,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.Scripts;
 
@@ -24,7 +25,7 @@ public abstract class GameEpicAros : GameEpicBoss
     /// </summary>
     public virtual int ArosDifficulty
     {
-        get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
+        get { return ServerProperty.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
     }
     /// <summary>
     /// Announcements for Bomb, BigBomb, Debuff and Death.

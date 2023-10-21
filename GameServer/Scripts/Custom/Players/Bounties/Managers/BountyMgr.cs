@@ -8,7 +8,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;
 using Core.GS.Players.Realms;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -24,8 +24,8 @@ public class BountyMgr
     private static int minBountyReward;
     private static int maxBountyReward;
 
-    private static long bountyDuration = Properties.BOUNTY_DURATION * 60000; // 60000ms = 1 minute
-    private static double bountyRate = Properties.BOUNTY_PAYOUT_RATE;
+    private static long bountyDuration = ServerProperty.BOUNTY_DURATION * 60000; // 60000ms = 1 minute
+    private static double bountyRate = ServerProperty.BOUNTY_PAYOUT_RATE;
 
     [ScriptLoadedEvent]
     public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
@@ -37,8 +37,8 @@ public class BountyMgr
 
     public BountyMgr()
     {
-        minBountyReward = Properties.BOUNTY_MIN_REWARD;
-        maxBountyReward = Properties.BOUNTY_MAX_REWARD;
+        minBountyReward = ServerProperty.BOUNTY_MIN_REWARD;
+        maxBountyReward = ServerProperty.BOUNTY_MAX_REWARD;
         ActiveBounties = new HybridDictionary();
         PlayerBounties = new List<BountyPoster>();
         ResetBounty();

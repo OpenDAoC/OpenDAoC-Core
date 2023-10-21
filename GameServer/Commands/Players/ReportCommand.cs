@@ -1,5 +1,6 @@
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -14,7 +15,7 @@ public class ReportCommand : ACommandHandler, ICommandHandler
 	
 	public void OnCommand(GameClient client, string[] args)
 	{
-		if (ServerProperties.Properties.DISABLE_BUG_REPORTS)
+		if (ServerProperty.DISABLE_BUG_REPORTS)
 		{
 			DisplayMessage(client, "Bug reporting has been disabled for this server!");
 			return;
@@ -38,12 +39,12 @@ public class ReportCommand : ACommandHandler, ICommandHandler
 		string message = string.Join(" ", args, 1, args.Length - 1);
 		DbBugReport report = new DbBugReport();
 
-		if (ServerProperties.Properties.MAX_BUGREPORT_QUEUE > 0)
+		if (ServerProperty.MAX_BUGREPORT_QUEUE > 0)
 		{
 			//Andraste
 			var reports = GameServer.Database.SelectAllObjects<DbBugReport>();
 			bool found = false; int i = 0;
-			for (i = 0; i < ServerProperties.Properties.MAX_BUGREPORT_QUEUE; i++)
+			for (i = 0; i < ServerProperty.MAX_BUGREPORT_QUEUE; i++)
 			{
 				found = false;
 				foreach (DbBugReport rep in reports) if (rep.ID == i) found = true;
@@ -68,13 +69,13 @@ public class ReportCommand : ACommandHandler, ICommandHandler
 		GameServer.Database.AddObject(report);
 		client.Player.Out.SendMessage("Report submitted, if this is not a bug report it will be ignored!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 
-		if (ServerProperties.Properties.BUG_REPORT_EMAIL_ADDRESSES.Trim() != "")
+		if (ServerProperty.BUG_REPORT_EMAIL_ADDRESSES.Trim() != "")
 		{
 			if (client.Account.Mail == "")
 				client.Player.Out.SendMessage("If you enter your email address for your account with /email command, your bug reports will send an email to the staff!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			else
 			{
-				Mail.MailMgr.SendMail(ServerProperties.Properties.BUG_REPORT_EMAIL_ADDRESSES, GameServer.Instance.Configuration.ServerName + " bug report " + report.ID, report.Message, report.Submitter, client.Account.Mail);
+				Mail.MailMgr.SendMail(ServerProperty.BUG_REPORT_EMAIL_ADDRESSES, GameServer.Instance.Configuration.ServerName + " bug report " + report.ID, report.Message, report.Submitter, client.Account.Mail);
 			}
 		}
 	}

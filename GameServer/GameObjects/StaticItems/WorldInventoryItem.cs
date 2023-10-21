@@ -4,6 +4,7 @@ using Core.Database.Enums;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -36,7 +37,7 @@ namespace Core.GS
 		/// Constructs an empty GameInventoryItem
 		/// that will disappear from the world after a certain amount of time
 		/// </summary>
-		public WorldInventoryItem() : base(ServerProperties.Properties.WORLD_ITEM_DECAY_TIME)
+		public WorldInventoryItem() : base(ServerProperty.WORLD_ITEM_DECAY_TIME)
 		{
 		}
 

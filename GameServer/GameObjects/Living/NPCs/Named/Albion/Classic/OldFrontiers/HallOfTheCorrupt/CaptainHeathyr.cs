@@ -9,6 +9,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -121,7 +122,7 @@ public class CaptainHeathyr : GameEpicBoss
         Empathy = npcTemplate.Empathy;
         Faction = FactionMgr.GetFactionByID(187);
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
-        RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
         BodyType = (ushort)EBodyType.Humanoid;
 
         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -165,7 +166,7 @@ public class CaptainHeathyr : GameEpicBoss
             HOC.Level = 65;
             HOC.Size = 50;
             HOC.CurrentRegionID = 277; //hall of the corrupt
-            HOC.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            HOC.RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             HOC.Faction = FactionMgr.GetFactionByID(187);
             HOC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 using Core.GS.Spells;
 using Core.GS.Styles;
 
@@ -265,7 +266,7 @@ public class AttackData
 			double fumbleChance = Attacker.ChanceToFumble;
 			double fumbleRoll;
 
-			if (!ServerProperties.Properties.OVERRIDE_DECK_RNG && playerAttacker != null)
+			if (!ServerProperty.OVERRIDE_DECK_RNG && playerAttacker != null)
 				fumbleRoll = playerAttacker.RandomNumberDeck.GetPseudoDouble();
 			else
 				fumbleRoll = Util.CryptoNextDouble();

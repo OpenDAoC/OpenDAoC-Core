@@ -1,6 +1,6 @@
 using Core.GS.Enums;
 using Core.GS.Packets.Server;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Packets.Clients;
 
@@ -40,7 +40,7 @@ public class CryptKeyRequestHandler : IPacketHandler
 			// if the DataSize is above 7 then the RC4 key is bundled
 			if (packet.DataSize > 7)
 			{
-				if (Properties.CLIENT_ENABLE_ENCRYPTION_RC4)
+				if (ServerProperty.CLIENT_ENABLE_ENCRYPTION_RC4)
 				{
 					var length = packet.ReadIntLowEndian();
 					var key = new byte[length];

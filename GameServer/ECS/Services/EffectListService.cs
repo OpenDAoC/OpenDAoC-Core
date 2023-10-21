@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
+using Core.GS.Server;
 using Core.GS.Spells;
 using log4net;
 
@@ -163,7 +164,7 @@ public static class EffectListService
 
                 if (effect.IsConcentrationEffect() && tick > effect.NextTick)
                 {
-                    int radiusToCheck = effect.SpellHandler.Spell.SpellType != ESpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500;
+                    int radiusToCheck = effect.SpellHandler.Spell.SpellType != ESpellType.EnduranceRegenBuff ? ServerProperty.BUFF_RANGE > 0 ? ServerProperty.BUFF_RANGE : 5000 : 1500;
                     bool isWithinRadius = effect.SpellHandler.Caster.IsWithinRadius(effect.Owner, radiusToCheck);
 
                     // Check if player is too far away from Caster for Concentration buff, or back in range.

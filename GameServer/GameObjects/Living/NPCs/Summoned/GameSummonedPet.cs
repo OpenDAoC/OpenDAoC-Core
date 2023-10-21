@@ -7,7 +7,7 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -121,7 +121,7 @@ namespace Core.GS
 
 			base.SortSpells();
 
-			if (Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
+			if (ServerProperty.PET_SCALE_SPELL_MAX_LEVEL > 0)
 				ScaleSpells(Level);
 		}
 
@@ -136,8 +136,8 @@ namespace Core.GS
 
 			// Need to make copies of spells to scale or else it will affect every other pet with the same spell on the server.
 			// Enchanter, Cabalist, Spiritmaster and Theurgist pets need to have their spells scaled.
-			if (Properties.PET_LEVELS_WITH_OWNER || 
-				(this is SubPet && Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC) ||
+			if (ServerProperty.PET_LEVELS_WITH_OWNER || 
+				(this is SubPet && ServerProperty.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC) ||
 				Name.Contains("underhill") || Name.Contains("simulacrum") || Name.Contains("spirit") || this is TheurgistPet)
 			{
 				if (CanCastHarmfulSpells)
@@ -203,13 +203,13 @@ namespace Core.GS
 		/// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
 		public virtual void ScalePetSpell(Spell spell, int casterLevel = 0)
 		{
-			if (Properties.PET_SCALE_SPELL_MAX_LEVEL < 1 || spell == null || Level < 1 || spell.ScaledToPetLevel)
+			if (ServerProperty.PET_SCALE_SPELL_MAX_LEVEL < 1 || spell == null || Level < 1 || spell.ScaledToPetLevel)
 				return;
 
 			if (casterLevel < 1)
 				casterLevel = Level;
 
-			double scalingFactor = (double) casterLevel / Properties.PET_SCALE_SPELL_MAX_LEVEL;
+			double scalingFactor = (double) casterLevel / ServerProperty.PET_SCALE_SPELL_MAX_LEVEL;
 
 			switch (spell.SpellType)
 			{
@@ -298,22 +298,22 @@ namespace Core.GS
 		/// </summary>
 		public override void AutoSetStats(DbMob dbMob = null)
 		{
-			Strength = Properties.PET_AUTOSET_STR_BASE;
-			Constitution = Properties.PET_AUTOSET_CON_BASE;
-			Quickness = Properties.PET_AUTOSET_QUI_BASE;
-			Dexterity = Properties.PET_AUTOSET_DEX_BASE;
-			Intelligence = Properties.PET_AUTOSET_INT_BASE;
+			Strength = ServerProperty.PET_AUTOSET_STR_BASE;
+			Constitution = ServerProperty.PET_AUTOSET_CON_BASE;
+			Quickness = ServerProperty.PET_AUTOSET_QUI_BASE;
+			Dexterity = ServerProperty.PET_AUTOSET_DEX_BASE;
+			Intelligence = ServerProperty.PET_AUTOSET_INT_BASE;
 			Empathy = 30;
 			Piety = 30;
 			Charisma = 30;
 			if (Level > 1)
 			{
 				int levelMinusOne = Level - 1;
-				Strength += (short) Math.Round(levelMinusOne * Properties.PET_AUTOSET_STR_MULTIPLIER);
-				Constitution += (short) Math.Round(levelMinusOne * Properties.PET_AUTOSET_CON_MULTIPLIER);
-				Quickness += (short) Math.Round(levelMinusOne * Properties.PET_AUTOSET_QUI_MULTIPLIER);
-				Dexterity += (short) Math.Round(levelMinusOne * Properties.PET_AUTOSET_DEX_MULTIPLIER);
-				Intelligence += (short) Math.Round(levelMinusOne * Properties.PET_AUTOSET_INT_MULTIPLIER);
+				Strength += (short) Math.Round(levelMinusOne * ServerProperty.PET_AUTOSET_STR_MULTIPLIER);
+				Constitution += (short) Math.Round(levelMinusOne * ServerProperty.PET_AUTOSET_CON_MULTIPLIER);
+				Quickness += (short) Math.Round(levelMinusOne * ServerProperty.PET_AUTOSET_QUI_MULTIPLIER);
+				Dexterity += (short) Math.Round(levelMinusOne * ServerProperty.PET_AUTOSET_DEX_MULTIPLIER);
+				Intelligence += (short) Math.Round(levelMinusOne * ServerProperty.PET_AUTOSET_INT_MULTIPLIER);
 			}
 
 			// Stats are scaled using the current template.

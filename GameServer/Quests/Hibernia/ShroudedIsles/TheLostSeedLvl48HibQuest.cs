@@ -7,6 +7,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Quests;
@@ -56,7 +57,7 @@ public class TheLostSeedLvl48HibQuest : BaseQuest
 	[ScriptLoadedEvent]
 	public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 	{
-		if (!ServerProperties.Properties.LOAD_QUESTS)
+		if (!ServerProperty.LOAD_QUESTS)
 			return;
 
 		#region defineNPCs
@@ -300,7 +301,7 @@ public class TheLostSeedLvl48HibQuest : BaseQuest
 		Feairna_Athar.CurrentRegionID = 181;
 		Feairna_Athar.Size = 100;
 		Feairna_Athar.Level = 65;
-		Feairna_Athar.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
+		Feairna_Athar.ScalingFactor = ServerProperty.NECK_BOSS_SCALING;
 		Feairna_Athar.X = 288348;
 		Feairna_Athar.Y = 319950;
 		Feairna_Athar.Z = 2328;

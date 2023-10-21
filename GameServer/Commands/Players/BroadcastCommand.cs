@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -57,7 +58,7 @@ public class BroadcastCommand : ACommandHandler, ICommandHandler
     private List<GamePlayer> GetTargets(GamePlayer player)
     {
         List<GamePlayer> players = new();
-        EBroadcastType type = (EBroadcastType) ServerProperties.Properties.BROADCAST_TYPE;
+        EBroadcastType type = (EBroadcastType) ServerProperty.BROADCAST_TYPE;
 
         switch (type)
         {

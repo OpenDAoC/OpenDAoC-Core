@@ -1,5 +1,6 @@
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -14,7 +15,7 @@ public class NfRaWildMinionAbility : RaPropertyEnhancer
 
 	public override int GetAmountForLevel(int level)
 	{
-        if (ServerProperties.Properties.USE_NEW_PASSIVES_RAS_SCALING)
+        if (ServerProperty.USE_NEW_PASSIVES_RAS_SCALING)
         {
             if (level < 1) return 0;
             switch (level)

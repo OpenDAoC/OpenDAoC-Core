@@ -7,6 +7,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Quests;
@@ -88,7 +89,7 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
     [ScriptLoadedEvent]
     public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
     {
-        if (!ServerProperties.Properties.LOAD_QUESTS)
+        if (!ServerProperty.LOAD_QUESTS)
             return;
 
 
@@ -321,7 +322,7 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
         Nyaegha.CurrentRegionID = 51;
         Nyaegha.Size = 150;
         Nyaegha.Level = 65;
-        Nyaegha.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
+        Nyaegha.ScalingFactor = ServerProperty.NECK_BOSS_SCALING;
         Nyaegha.X = 348381;
         Nyaegha.Y = 479838;
         Nyaegha.Z = 3320;

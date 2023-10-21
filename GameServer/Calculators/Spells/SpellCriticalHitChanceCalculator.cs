@@ -1,6 +1,7 @@
 using System;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.Calculators;
 
@@ -34,7 +35,7 @@ public class SpellCriticalHitChanceCalculator : PropertyCalculator
 			chance += necroPet.Owner.AbilityBonus[(int)property];
 		}
         // Summoned or Charmed pet.
-        else if (living is GameNpc npc && ServerProperties.Properties.EXPAND_WILD_MINION)
+        else if (living is GameNpc npc && ServerProperty.EXPAND_WILD_MINION)
         {
             if (npc.Brain is IControlledBrain petBrain && petBrain.GetPlayerOwner() is GamePlayer playerOwner)
                 chance += playerOwner.GetAbility<RealmAbilities.OfRaWildMinionAbility>()?.Amount ?? 0;

@@ -17,7 +17,7 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Players.Classes;
 using Core.GS.RealmAbilities;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using Core.GS.SkillHandler;
 using Core.GS.Spells;
 using Core.GS.Styles;
@@ -356,7 +356,7 @@ namespace Core.GS.ECS
 
                 if (bowWeapon)
                 {
-                    if (Properties.ALLOW_OLD_ARCHERY)
+                    if (ServerProperty.ALLOW_OLD_ARCHERY)
                     {
                         //Draw Time formulas, there are very many ...
                         //Formula 2: y = iBowDelay * ((100 - ((iQuickness - 50) / 5 + iMasteryofArcheryLevel * 3)) / 100)
@@ -422,7 +422,7 @@ namespace Core.GS.ECS
                     if (owner.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
                     {
                         // Old archery uses archery speed, but new archery uses casting speed
-                        if (Properties.ALLOW_OLD_ARCHERY)
+                        if (ServerProperty.ALLOW_OLD_ARCHERY)
                             speed *= 1.0 - owner.GetModified(EProperty.ArcherySpeed) * 0.01;
                         else
                             speed *= 1.0 - owner.GetModified(EProperty.CastingSpeed) * 0.01;
@@ -492,7 +492,7 @@ namespace Core.GS.ECS
 
                     if (weapon.Object_Type is ((int) EObjectType.Longbow) or ((int) EObjectType.RecurvedBow) or ((int) EObjectType.CompositeBow))
                     {
-                        if (Properties.ALLOW_OLD_ARCHERY)
+                        if (ServerProperty.ALLOW_OLD_ARCHERY)
                             effectiveness += player.GetModified(EProperty.RangedDamage) * 0.01;
                         else
                         {
@@ -520,7 +520,7 @@ namespace Core.GS.ECS
             }
             else
             {
-                double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed() * 0.1;
+                double damage = (1.0 + owner.Level / ServerProperty.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / ServerProperty.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed() * 0.1;
 
                 if (weapon == null ||
                     weapon.SlotPosition == Slot.RIGHTHAND ||
@@ -533,7 +533,7 @@ namespace Core.GS.ECS
                 {
                     if (weapon.Object_Type is ((int) EObjectType.Longbow) or ((int) EObjectType.RecurvedBow) or ((int) EObjectType.CompositeBow))
                     {
-                        if (Properties.ALLOW_OLD_ARCHERY)
+                        if (ServerProperty.ALLOW_OLD_ARCHERY)
                             effectiveness += owner.GetModified(EProperty.RangedDamage) * 0.01;
                         else
                         {
@@ -548,7 +548,7 @@ namespace Core.GS.ECS
                 damage *= effectiveness;
 
                 if (owner is GameEpicBoss epicBoss)
-                    damageCap = damage + epicBoss.Empathy / 100.0 * Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+                    damageCap = damage + epicBoss.Empathy / 100.0 * ServerProperty.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
                 else
                     damageCap = damage * 3;
 
@@ -678,7 +678,7 @@ namespace Core.GS.ECS
 
                 if (player.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
                 {
-                    if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
+                    if (ServerProperty.ALLOW_OLD_ARCHERY == false)
                     {
                         if ((EPlayerClass) player.PlayerClass.ID == EPlayerClass.Scout ||
                             (EPlayerClass) player.PlayerClass.ID == EPlayerClass.Hunter ||
@@ -1077,7 +1077,7 @@ namespace Core.GS.ECS
                                     weaponAction.Execute();
                                 }
                                 else
-                                    LivingMakeAttack(action, extraTarget, attackWeapon, null, 1, Properties.SPELL_INTERRUPT_DURATION, false);
+                                    LivingMakeAttack(action, extraTarget, attackWeapon, null, 1, ServerProperty.SPELL_INTERRUPT_DURATION, false);
                             }
                         }
 
@@ -1254,7 +1254,7 @@ namespace Core.GS.ECS
                         weaponForSpecModifier.Object_Type = weapon.Object_Type;
                         weaponForSpecModifier.SlotPosition = weapon.SlotPosition;
 
-                        if (owner is GamePlayer && owner.Realm == ERealm.Albion && Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC &&
+                        if (owner is GamePlayer && owner.Realm == ERealm.Albion && ServerProperty.ENABLE_ALBION_ADVANCED_WEAPON_SPEC &&
                             (GameServer.ServerRules.IsObjectTypesEqual((EObjectType) weapon.Object_Type, EObjectType.TwoHandedWeapon) ||
                             GameServer.ServerRules.IsObjectTypesEqual((EObjectType) weapon.Object_Type, EObjectType.PolearmWeapon)))
                         {
@@ -1309,9 +1309,9 @@ namespace Core.GS.ECS
                     if (owner is GamePlayer || (owner is GameNpc npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0))
                     {
                         if (target is GamePlayer)
-                            damage = (int) (damage * Properties.PVP_MELEE_DAMAGE);
+                            damage = (int) (damage * ServerProperty.PVP_MELEE_DAMAGE);
                         else if (target is GameNpc)
-                            damage = (int) (damage * Properties.PVE_MELEE_DAMAGE);
+                            damage = (int) (damage * ServerProperty.PVE_MELEE_DAMAGE);
                     }
 
                     damage *= damageMod;
@@ -1849,7 +1849,7 @@ namespace Core.GS.ECS
             ad.BlockChance = blockChance;
             double blockRoll;
 
-            if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
+            if (!ServerProperty.OVERRIDE_DECK_RNG && owner is GamePlayer player)
                 blockRoll = player.RandomNumberDeck.GetPseudoDouble();
             else
                 blockRoll = Util.CryptoNextDouble();
@@ -1935,8 +1935,8 @@ namespace Core.GS.ECS
 
             if (guardChance < 0.01)
                 guardChance = 0.01;
-            else if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
-                guardChance = Properties.BLOCK_CAP;
+            else if (guardChance > ServerProperty.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+                guardChance = ServerProperty.BLOCK_CAP;
 
             // Possibly intended to be applied in RvR only.
             if (shieldSize == 1 && guardChance > 0.8)
@@ -1951,7 +1951,7 @@ namespace Core.GS.ECS
 
             double guardRoll;
 
-            if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
+            if (!ServerProperty.OVERRIDE_DECK_RNG && owner is GamePlayer player)
                 guardRoll = player.RandomNumberDeck.GetPseudoDouble();
             else
                 guardRoll = Util.CryptoNextDouble();
@@ -2127,7 +2127,7 @@ namespace Core.GS.ECS
                 {
                     int interceptRoll;
 
-                    if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
+                    if (!ServerProperty.OVERRIDE_DECK_RNG && playerOwner != null)
                         interceptRoll = playerOwner.RandomNumberDeck.GetInt();
                     else
                         interceptRoll = Util.Random(100);
@@ -2206,7 +2206,7 @@ namespace Core.GS.ECS
                 ad.EvadeChance = evadeChance;
                 double evadeRoll;
 
-                if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
+                if (!ServerProperty.OVERRIDE_DECK_RNG && playerOwner != null)
                     evadeRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
                 else
                     evadeRoll = Util.CryptoNextDouble();
@@ -2229,7 +2229,7 @@ namespace Core.GS.ECS
                     ad.ParryChance = parryChance;
                     double parryRoll;
 
-                    if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
+                    if (!ServerProperty.OVERRIDE_DECK_RNG && playerOwner != null)
                         parryRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
                     else
                         parryRoll = Util.CryptoNextDouble();
@@ -2273,7 +2273,7 @@ namespace Core.GS.ECS
             {
                 double missRoll;
 
-                if (!Properties.OVERRIDE_DECK_RNG && playerAttacker != null)
+                if (!ServerProperty.OVERRIDE_DECK_RNG && playerAttacker != null)
                     missRoll = playerAttacker.RandomNumberDeck.GetPseudoDouble();
                 else
                     missRoll = Util.CryptoNextDouble();
@@ -2720,7 +2720,7 @@ namespace Core.GS.ECS
 
             // Experimental miss rate adjustment for number of attackers.
             if ((owner is GamePlayer && ad.Attacker is GamePlayer) == false)
-                missChance -= Math.Max(0, Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+                missChance -= Math.Max(0, Attackers.Count - 1) * ServerProperty.MISSRATE_REDUCTION_PER_ATTACKERS;
 
             // Weapon and armor bonuses.
             int armorBonus = 0;

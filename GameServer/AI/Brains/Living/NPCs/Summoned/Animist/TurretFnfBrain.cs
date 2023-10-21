@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 
 namespace Core.GS.AI.Brains;
 
@@ -42,7 +43,7 @@ public class TurretFnfBrain : TurretBrain
             if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
                 continue;
 
-            if (GS.ServerProperties.Properties.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
+            if (ServerProperty.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
                 player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
             else
                 AddToAggroList(player, 0);
@@ -60,7 +61,7 @@ public class TurretFnfBrain : TurretBrain
             if (npc is GameTaxi or GameTrainingDummy)
                 continue;
 
-            if (GS.ServerProperties.Properties.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
+            if (ServerProperty.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
             {
                 if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
                 {

@@ -6,6 +6,7 @@ using Core.GS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Players.Classes;
+using Core.GS.Server;
 using Core.GS.Spells;
 using NUnit.Framework;
 
@@ -461,7 +462,7 @@ namespace Core.Tests.Unit.Gameserver
         [Test]
         public void CalculateToHitChance_TargetIsNPCLevel50SourceIsLevel50PlayerAndSpellLevelIs40_Return80()
         {
-            GS.ServerProperties.Properties.PVE_SPELL_CONHITPERCENT = 10;
+            ServerProperty.PVE_SPELL_CONHITPERCENT = 10;
             var spell = NewFakeSpell();
             spell.Level = 40;
             var source = NewFakePlayer();

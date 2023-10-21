@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using Core.Database;
 using Core.GS.Database;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.DatabaseUpdate
@@ -25,19 +25,19 @@ namespace Core.GS.DatabaseUpdate
 		/// <summary>
 		/// Enable or Disable the Auto XML Database Update Script
 		/// </summary>
-		[Properties("xmlautoload", "xml_autoload_update_enable", "Enable or disable Auto XML Dataase Update Packages (Should be enabled for first run...)", true)]
+		[ServerProperty("xmlautoload", "xml_autoload_update_enable", "Enable or disable Auto XML Dataase Update Packages (Should be enabled for first run...)", true)]
 		public static bool XML_AUTOLOAD_UPDATE_ENABLE;
 
 		/// <summary>
 		/// Set Default Path for Loading "Insert" XML Package Directory
 		/// </summary>
-		[Properties("xmlautoload", "xml_load_insert_directory", "Enforce directory path where the XML Insert Packages are Loaded To Database (Relative to Scripts or Absolute...)", "dbupdater/insert")]
+		[ServerProperty("xmlautoload", "xml_load_insert_directory", "Enforce directory path where the XML Insert Packages are Loaded To Database (Relative to Scripts or Absolute...)", "dbupdater/insert")]
 		public static string XML_LOAD_INSERT_DIRECTORY;
 
 		/// <summary>
 		/// Set Default Path for Loading "Replace" XML Package Directory
 		/// </summary>
-		[Properties("xmlautoload", "xml_load_replace_directory", "Enforce directory path to where the XML Replace Packages are Loaded To Database (Relative to Scripts or Absolute...)", "dbupdater/replace")]
+		[ServerProperty("xmlautoload", "xml_load_replace_directory", "Enforce directory path to where the XML Replace Packages are Loaded To Database (Relative to Scripts or Absolute...)", "dbupdater/replace")]
 		public static string XML_LOAD_REPLACE_DIRECTORY;
 		#endregion
 		

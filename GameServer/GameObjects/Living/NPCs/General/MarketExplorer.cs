@@ -4,6 +4,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -29,7 +30,7 @@ namespace Core.GS
 				player.ActiveInventoryObject = null;
 			}
 
-			if (ServerProperties.Properties.MARKET_ENABLE)
+			if (ServerProperty.MARKET_ENABLE)
 			{
 				player.ActiveInventoryObject = this;
 				player.Out.SendMarketExplorerWindow();
@@ -139,7 +140,7 @@ namespace Core.GS
                     {
 						if (GetRealmOfLot(item.OwnerLot) != player.Realm)
                         {
-							if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+							if (ServerProperty.MARKET_ENABLE_LOG)
 							{
 								log.DebugFormat("Not adding item '{0}' to the return search since its from different realm.", item.Name);
 							}
@@ -154,7 +155,7 @@ namespace Core.GS
 					index++;
 				}
 
-				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+				if (ServerProperty.MARKET_ENABLE_LOG)
 				{
 					log.DebugFormat("Current list find size is '{0}'.", list.Count);
 				}
@@ -178,7 +179,7 @@ namespace Core.GS
 				player.TempProperties.SetProperty(EXPLORER_ITEM_LIST, list);
 			} else
             {
-				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+				if (ServerProperty.MARKET_ENABLE_LOG)
 				{
 					log.DebugFormat("There is something wrong with the returned search ...");
 				}

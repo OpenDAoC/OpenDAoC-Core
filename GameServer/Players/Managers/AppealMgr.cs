@@ -9,6 +9,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Languages;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Players.Managers;
@@ -29,7 +30,7 @@ public static class AppealMgr
 	[ScriptLoadedEvent]
 	public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
 	{
-		if (!ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+		if (!ServerProperty.DISABLE_APPEALSYSTEM)
 		{
 
 			//Register and load the DB.
@@ -45,7 +46,7 @@ public static class AppealMgr
 	[ScriptUnloadedEvent]
 	public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 	{
-		if (!ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+		if (!ServerProperty.DISABLE_APPEALSYSTEM)
 		{
 			GameEventMgr.RemoveHandler(GamePlayerEvent.GameEntered, new CoreEventHandler(PlayerEnter));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.Quit, new CoreEventHandler(PlayerQuit));

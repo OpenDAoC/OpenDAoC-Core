@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -62,7 +63,7 @@ public class Ydenia : GameEpicNPC
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
 
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		YdeniaBrain sbrain = new YdeniaBrain();
 		SetOwnBrain(sbrain);
 		base.AddToWorld();

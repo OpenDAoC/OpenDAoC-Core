@@ -3,7 +3,7 @@ using System.Collections;
 using System.Text.RegularExpressions;
 using Core.GS.GameUtils;
 using Core.GS.Players.Realms;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -41,7 +41,7 @@ namespace Core.GS
                 GamePlayer playerKiller = killer as GamePlayer;
                 int amount = Util.Random(Level / 10, Level * 2 / 10);
                 int baseChance = 80;
-                double carapaceChance = Properties.CARAPACE_DROPCHANCE;
+                double carapaceChance = ServerProperty.CARAPACE_DROPCHANCE;
                 int realmLoyalty = 0;
                 double numCurrentLoyalDays = RealmLoyaltyMgr.GetPlayerRealmLoyalty(playerKiller)?.Days ?? 0;
 

@@ -5,6 +5,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Commands
 {
@@ -126,7 +127,7 @@ namespace Core.GS.Commands
 						keep.DBKeep = new DbKeep(createInfo);
 						keep.Name = keepName;
 						keep.KeepID = (ushort)keepID;
-						keep.Level = (byte)ServerProperties.Properties.STARTING_KEEP_LEVEL;
+						keep.Level = (byte)ServerProperty.STARTING_KEEP_LEVEL;
 						keep.BaseLevel = 50;
 						keep.Realm = client.Player.Realm;
 						keep.Region = client.Player.CurrentRegionID;

@@ -11,6 +11,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.AI.Brains
 {
@@ -514,7 +515,7 @@ namespace Core.GS.AI.Brains
         /// </summary>
         private void DebugMessageToOwner(string message)
         {
-            if (GS.ServerProperties.Properties.ENABLE_DEBUG)
+            if (ServerProperty.ENABLE_DEBUG)
             {
                 long tick = GameLoopMgr.GetCurrentTime();
                 long seconds = tick / 1000;

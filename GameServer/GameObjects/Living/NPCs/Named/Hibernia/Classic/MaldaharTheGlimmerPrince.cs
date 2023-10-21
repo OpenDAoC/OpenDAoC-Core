@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -41,7 +42,7 @@ public class MaldaharTheGlimmerPrince : GameEpicBoss
     }
     public virtual int MaldaharTheGlimmerPrinceDifficulty
     {
-        get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
+        get { return ServerProperty.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
@@ -76,7 +77,7 @@ public class MaldaharTheGlimmerPrince : GameEpicBoss
         BodyType = 8;
         Faction = FactionMgr.GetFactionByID(83);
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(83));
-        RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
         MaldaharTheGlimmerPrinceBrain sBrain = new MaldaharTheGlimmerPrinceBrain();
         SetOwnBrain(sBrain);

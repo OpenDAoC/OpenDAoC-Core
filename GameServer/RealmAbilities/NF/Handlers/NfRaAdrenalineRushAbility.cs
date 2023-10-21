@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -29,7 +30,7 @@ public class NfRaAdrenalineRushAbility : TimedRealmAbility
     }
     public override int GetReUseDelay(int level)
     {
-        if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+        if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
         {
             switch (level)
             {
@@ -56,23 +57,23 @@ public class NfRaAdrenalineRushAbility : TimedRealmAbility
     public override void AddEffectsInfo(IList<string> list)
     {
         // TODO translate
-        if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+        if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
         {
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info1"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info2"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info3"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info1"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info2"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info3"));
             list.Add("");
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info4"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info5"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info4"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info5"));
         }
         else
         {
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info1"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info2"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info3"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info1"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info2"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info3"));
             list.Add("");
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info4"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info5"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info4"));
+            list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "AdrenalineRushAbility.AddEffectsInfo.Info5"));
         }
     }
 }

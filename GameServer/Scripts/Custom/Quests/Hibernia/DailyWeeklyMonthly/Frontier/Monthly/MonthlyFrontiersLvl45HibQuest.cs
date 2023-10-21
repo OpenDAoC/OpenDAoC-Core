@@ -9,6 +9,7 @@ using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Quests;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.MonthlyQuest.Hibernia
@@ -62,7 +63,7 @@ namespace Core.GS.MonthlyQuest.Hibernia
 		[ScriptLoadedEvent]
 		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 		{
-			if (!ServerProperties.Properties.LOAD_QUESTS)
+			if (!ServerProperty.LOAD_QUESTS)
 				return;
 
 			#region defineNPCs
@@ -369,7 +370,7 @@ namespace Core.GS.MonthlyQuest.Hibernia
 
 		public override void FinishQuest()
 		{
-			int reward = ServerProperties.Properties.MONTHLY_RVR_REWARD;
+			int reward = ServerProperty.MONTHLY_RVR_REWARD;
 			
 			if (m_questPlayer.Inventory.IsSlotsFree(3, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{

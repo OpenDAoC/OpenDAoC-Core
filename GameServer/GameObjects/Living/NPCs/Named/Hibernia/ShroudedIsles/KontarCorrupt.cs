@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -82,7 +83,7 @@ public class KontarCorrupt : GameEpicBoss
 		Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 		MaxSpeedBase = 280;
 
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		KontarCorruptBrain sbrain = new KontarCorruptBrain();
 		SetOwnBrain(sbrain);
 		LoadedFromScript = false;//load from database

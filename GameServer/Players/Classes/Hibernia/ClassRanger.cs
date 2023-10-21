@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Players.Races;
 using Core.GS.Players.Specializations;
+using Core.GS.Server;
 
 namespace Core.GS.Players.Classes;
 
@@ -49,7 +50,7 @@ public class ClassRanger : ClassStalker
 		switch (skill.KeyName)
 		{
 			case Specs.RecurveBow:
-				if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == true)
+				if (ServerProperty.ALLOW_OLD_ARCHERY == true)
 				{
 					if (skill.Level < 3)
 					{

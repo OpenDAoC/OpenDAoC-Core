@@ -5,7 +5,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Crafting;
@@ -69,9 +69,9 @@ public class RecipeMgr
             };
 
             if (secondaryCraftingSkills.Contains(RequiredCraftingSkill))
-                pricetoset = Math.Abs((long)(totalPrice * 2 * Properties.CRAFTING_SECONDARYCRAFT_SELLBACK_PERCENT) / 100);
+                pricetoset = Math.Abs((long)(totalPrice * 2 * ServerProperty.CRAFTING_SECONDARYCRAFT_SELLBACK_PERCENT) / 100);
             else
-                pricetoset = Math.Abs(totalPrice * 2 * Properties.CRAFTING_SELLBACK_PERCENT / 100);
+                pricetoset = Math.Abs(totalPrice * 2 * ServerProperty.CRAFTING_SELLBACK_PERCENT / 100);
 
             if (pricetoset > 0 && product.Price != pricetoset)
             {
@@ -135,7 +135,7 @@ public class RecipeDb
         }
         finally
         {
-            if (Properties.CRAFTING_ADJUST_PRODUCT_PRICE)
+            if (ServerProperty.CRAFTING_ADJUST_PRODUCT_PRICE)
                 recipe.SetRecommendedProductPriceInDB();
             recipeCache[recipeDatabaseID] = recipe;
         }

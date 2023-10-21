@@ -2,6 +2,7 @@
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.DatabaseUpdate
@@ -82,7 +83,7 @@ namespace Core.GS.DatabaseUpdate
         {
             log.Info("Updating the LanguageSystem table (this can take a few minutes)...");
 
-            if (GameServer.Database.GetObjectCount<DbLanguageSystem>() < 1 && ServerProperties.Properties.USE_DBLANGUAGE)
+            if (GameServer.Database.GetObjectCount<DbLanguageSystem>() < 1 && ServerProperty.USE_DBLANGUAGE)
             {
                 var objs = GameServer.Database.SelectAllObjects<language>();
                 if (objs.Count > 0)

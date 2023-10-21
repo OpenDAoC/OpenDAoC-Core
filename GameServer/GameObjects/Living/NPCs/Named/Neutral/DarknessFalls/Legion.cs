@@ -9,7 +9,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Players.Titles;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Scripts;
     
@@ -92,7 +92,7 @@ public override bool AddToWorld()
 
     // demon
     BodyType = 2;
-    RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+    RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
     Faction = FactionMgr.GetFactionByID(191);
     Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
 
@@ -105,7 +105,7 @@ public override bool AddToWorld()
 
 public override double AttackDamage(DbInventoryItem weapon)
 {
-    return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+    return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
 }
 public override int AttackRange
 {
@@ -277,12 +277,12 @@ private void ReportNews(GameObject killer)
     String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
     NewsMgr.CreateNews(message, killer.Realm, ENewsType.PvE, true);
 
-    if (Properties.GUILD_MERIT_ON_LEGION_KILL <= 0) return;
+    if (ServerProperty.GUILD_MERIT_ON_LEGION_KILL <= 0) return;
     foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
     {
         if (player.IsEligibleToGiveMeritPoints)
         {
-            GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_LEGION_KILL);
+            GuildEventHandler.MeritForNPCKilled(player, this, ServerProperty.GUILD_MERIT_ON_LEGION_KILL);
         }
     }
 }

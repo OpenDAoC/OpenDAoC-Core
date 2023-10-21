@@ -5,6 +5,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Keeps;
@@ -21,7 +22,7 @@ public class HookPointInventory
 	[GameServerStartedEvent]
 	public static void OnServerStarted(CoreEvent e, object sender, EventArgs args)
 	{
-		if (ServerProperties.Properties.LOAD_HOOKPOINTS)
+		if (ServerProperty.LOAD_HOOKPOINTS)
 		{
 			/*string name,byte gold,byte silver,byte copper,ushort icon,string objectType,ushort flag*/
 			HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Melee Guard", 67, 2624, "DOL.GS.Keeps.GuardFighter", 0));
@@ -322,7 +323,7 @@ public class HookPointItem
 			(hookPointObj as GameKeepGuard).RefreshTemplate();
 		}
 
-		if (ServerProperties.Properties.ENABLE_DEBUG)
+		if (ServerProperty.ENABLE_DEBUG)
 			hookPointObj.Name += " hookpoint " + hookpoint.ID.ToString();
 
 		if (hookPointObj is GameNpc)

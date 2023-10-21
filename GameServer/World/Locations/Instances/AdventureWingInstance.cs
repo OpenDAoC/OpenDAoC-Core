@@ -1,6 +1,7 @@
 ﻿using Core.Database;
 using Core.Database.Tables;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS
@@ -177,8 +178,8 @@ namespace Core.GS
             	foreach (GameNpc mob in GetMobsInsideInstance(true))
             	{
             		// there is still something => standard autoclosure + break;
-	            	log.Warn("Instance now empty, will destroy instance " + Description + ", ID: " + ID + ", type=" + GetType().ToString() + ". In " + ServerProperties.Properties.ADVENTUREWING_TIME_TO_DESTROY + " min.");
-	            	this.BeginAutoClosureCountdown(ServerProperties.Properties.ADVENTUREWING_TIME_TO_DESTROY);
+	            	log.Warn("Instance now empty, will destroy instance " + Description + ", ID: " + ID + ", type=" + GetType().ToString() + ". In " + ServerProperty.ADVENTUREWING_TIME_TO_DESTROY + " min.");
+	            	this.BeginAutoClosureCountdown(ServerProperty.ADVENTUREWING_TIME_TO_DESTROY);
                 	
                 	return;
             	}

@@ -9,7 +9,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameLoop;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.ECS
@@ -70,7 +70,7 @@ namespace Core.GS.ECS
                         {
                             try
                             {
-                                if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
+                                if (player.LastWorldUpdate + ServerProperty.WORLD_PLAYER_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                                 {
                                     long startTick = GameLoopMgr.GetCurrentTime();
                                     UpdateWorld(player);
@@ -570,7 +570,7 @@ namespace Core.GS.ECS
 
                 if (!npcUpdateCache.TryGetValue(objectInRange, out CachedNpcValues cachedNpcValues))
                     UpdateObjectForPlayer(player, objectInRange);
-                else if (cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
+                else if (cachedNpcValues.Time + ServerProperty.WORLD_NPC_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                     UpdateObjectForPlayer(player, objectInRange);
                 else if (cachedNpcValues.Time + 250 < GameLoopMgr.GameLoopTime)
                 {
@@ -643,7 +643,7 @@ namespace Core.GS.ECS
                     CreateObjectForPlayer(player, doorInRange);
                     player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange);
                 }
-                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
+                else if (lastUpdate + ServerProperty.WORLD_OBJECT_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                     UpdateObjectForPlayer(player, doorInRange);
             }
         }
@@ -674,7 +674,7 @@ namespace Core.GS.ECS
                     player.Client.Out.SendGarden(house);
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
                 }
-                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
+                else if (lastUpdate + ServerProperty.WORLD_OBJECT_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
 
                 AddHouseToPlayerCache(player, house);

@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Quests;
@@ -56,7 +57,7 @@ public class ChurchLvl50EpicAlbQuest : BaseQuest
 	[ScriptLoadedEvent]
 	public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
 	{
-		if (!ServerProperties.Properties.LOAD_QUESTS)
+		if (!ServerProperty.LOAD_QUESTS)
 			return;
 		
 
@@ -719,7 +720,7 @@ public class ChurchLvl50EpicAlbQuest : BaseQuest
 	[ScriptUnloadedEvent]
 	public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
 	{
-		if (!ServerProperties.Properties.LOAD_QUESTS)
+		if (!ServerProperty.LOAD_QUESTS)
 			return;
 		//if not loaded, don't worry
 		if (Roben == null)

@@ -1,6 +1,7 @@
 using Core.Database.Tables;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Server;
 using Core.GS.Spells;
 
 namespace Core.GS.RealmAbilities;
@@ -71,7 +72,7 @@ public class NfRaJuggernautAbility : TimedRealmAbility
 
 		#endregion
 
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (this.Level)
 			{

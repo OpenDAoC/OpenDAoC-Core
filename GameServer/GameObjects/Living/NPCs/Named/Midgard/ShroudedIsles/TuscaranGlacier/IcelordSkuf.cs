@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -28,7 +29,7 @@ public class IcelordSkuf : GameEpicBoss
 
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
 
     public override int AttackRange
@@ -75,7 +76,7 @@ public class IcelordSkuf : GameEpicBoss
         Empathy = npcTemplate.Empathy;
         Faction = FactionMgr.GetFactionByID(140);
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-        RespawnInterval =ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval =ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
         BodyType = (ushort)EBodyType.Giant;
 
         IcelordSkufBrain sbrain = new IcelordSkufBrain();
@@ -105,7 +106,7 @@ public class IcelordSkuf : GameEpicBoss
             TG.CurrentRegionID = 160; //tuscaran glacier
             TG.MeleeDamageType = EDamageType.Crush;
             TG.RespawnInterval =
-                ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
+                ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL *
                 60000; //1min is 60000 miliseconds
             TG.Faction = FactionMgr.GetFactionByID(140);
             TG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));

@@ -8,6 +8,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Crafting
@@ -739,7 +740,7 @@ namespace Core.GS.Crafting
 			if (rawMaterial == null)
 				return 0;
 
-			if (ServerProperties.Properties.USE_NEW_SALVAGE)
+			if (ServerProperty.USE_NEW_SALVAGE)
 			{
 				maxCount = GetCountForSalvage(item, rawMaterial);
 			}

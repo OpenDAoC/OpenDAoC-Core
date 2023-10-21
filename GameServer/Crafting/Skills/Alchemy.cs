@@ -3,6 +3,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Crafting;
 
@@ -11,7 +12,7 @@ public class Alchemy : AdvancedCraftingSkill
 	public Alchemy()
 	{
 		Icon = 0x04;
-		Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, 
+		Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, 
             "Crafting.Name.Alchemy");
 		eSkill = ECraftingSkill.Alchemy;
 	}

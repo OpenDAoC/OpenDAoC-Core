@@ -1,6 +1,7 @@
 using System.Collections;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -19,7 +20,7 @@ public class NfRaStrikePredictionAbility : TimedRealmAbility
             player.Out.SendMessage("You already have an effect of that type!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
         }
 		
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
             switch (Level)
             {

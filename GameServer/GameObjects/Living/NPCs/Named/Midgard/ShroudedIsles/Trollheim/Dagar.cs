@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -68,7 +69,7 @@ public class Dagar : GameEpicNPC
 		template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 956, 0);
 		Inventory = template.CloseTemplate();
 		SwitchWeapon(EActiveWeaponSlot.TwoHanded);
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		VisibleActiveWeaponSlots = 34;
 		MeleeDamageType = EDamageType.Crush;

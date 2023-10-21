@@ -5,6 +5,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Spells
 {
@@ -45,7 +46,7 @@ namespace Core.GS.Spells
                 list.Add("Power cost: " + Spell.Power.ToString("0;0'%'"));
 
                 //Cast
-                list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
+                list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
                 return list;
             }
         }
@@ -93,7 +94,7 @@ namespace Core.GS.Spells
                 list.Add("Power cost: " + Spell.Power.ToString("0;0'%'"));
                 
                 //Cast
-                list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
+                list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
                 return list;
             }
         }
@@ -174,7 +175,7 @@ namespace Core.GS.Spells
                 list.Add("Power cost: " + Spell.Power.ToString("0;0'%'"));
 
                 //Cast
-                list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
+                list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
                 return list;
             }
         }

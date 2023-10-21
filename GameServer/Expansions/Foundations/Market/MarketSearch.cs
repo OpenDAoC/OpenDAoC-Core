@@ -2,6 +2,7 @@
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Expansions.Foundations
@@ -504,7 +505,7 @@ namespace Core.GS.Expansions.Foundations
 			int count = 0;
 			m_searchHasError = false;
 
-			if (ServerProperties.Properties.MARKET_ENABLE_LOG && search.page == 0)
+			if (ServerProperty.MARKET_ENABLE_LOG && search.page == 0)
 			{
 				log.DebugFormat("MarketSearch: [{0}:{1}] SEARCHING MARKET: {2}", m_searchPlayer.Name, m_searchPlayer.Client.Account.Name, search);
 			}
@@ -512,7 +513,7 @@ namespace Core.GS.Expansions.Foundations
 			foreach (DbInventoryItem item in inventoryItems)
 			{
 				
-				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+				if (ServerProperty.MARKET_ENABLE_LOG)
 				{
 					log.DebugFormat("Analyzing cached item {0} to see if it fits search criteria.", item.Name);
 				}
@@ -635,18 +636,18 @@ namespace Core.GS.Expansions.Foundations
 				if (search.damageType > 0 && CheckForDamageType(item, search.damageType) == false)
 					continue;
 
-				if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+				if (ServerProperty.MARKET_ENABLE_LOG)
 				{
 					log.DebugFormat("Adding item '{0}' to the list of search ...", item.Name);
 				}
 				
 				items.Add(item);
 
-				if (++count >= ServerProperties.Properties.MARKET_SEARCH_LIMIT)
+				if (++count >= ServerProperty.MARKET_SEARCH_LIMIT)
 					break;
 			}
 
-			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+			if (ServerProperty.MARKET_ENABLE_LOG)
 			{
 				log.DebugFormat("Returning '{0}' items from search.", items.Count);
 			}
@@ -657,7 +658,7 @@ namespace Core.GS.Expansions.Foundations
 		protected virtual bool CheckSlot(DbInventoryItem item, int slot)
 		{
 		
-			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+			if (ServerProperty.MARKET_ENABLE_LOG)
 			{
 				log.DebugFormat("Market Explorer Search for items on slot '{0}' and for item '{1}'", slot, item.Name);
 				log.DebugFormat("Market Explorer Search current item '{0}' as itemType '{1}' comparing with '{2}'.", item.Name, item.Item_Type, (int)EInventorySlot.ArmsArmor);

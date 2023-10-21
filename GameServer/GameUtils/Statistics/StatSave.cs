@@ -7,6 +7,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.PerformanceStatistics;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameUtils;
@@ -26,7 +27,7 @@ public class StatSave
     [GameServerStartedEvent]
     public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
     {
-        if (ServerProperties.Properties.STATSAVE_INTERVAL <= 0)
+        if (ServerProperty.STATSAVE_INTERVAL <= 0)
             return;
 
         lock (_lock)
@@ -93,7 +94,7 @@ public class StatSave
         {
             lock (_lock)
             {
-                _timer?.Change(60 * 1000 * ServerProperties.Properties.STATSAVE_INTERVAL, Timeout.Infinite);
+                _timer?.Change(60 * 1000 * ServerProperty.STATSAVE_INTERVAL, Timeout.Infinite);
             }
         }
     }

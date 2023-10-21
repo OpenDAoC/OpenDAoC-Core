@@ -12,7 +12,7 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Commands
 {
@@ -64,9 +64,9 @@ namespace Core.GS.Commands
 			}
 			#endregion
 			#region Enough members to form Check - Ensure our group still has enough players in to form
-			if (group.MemberCount < Properties.GUILD_NUM)
+			if (group.MemberCount < ServerProperty.GUILD_NUM)
 			{
-				leader.Out.SendMessage(LanguageMgr.GetTranslation(leader.Client.Account.Language, "Scripts.Player.Guild.FormNoMembers" + Properties.GUILD_NUM), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				leader.Out.SendMessage(LanguageMgr.GetTranslation(leader.Client.Account.Language, "Scripts.Player.Guild.FormNoMembers" + ServerProperty.GUILD_NUM), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return false;
 			}
 			#endregion
@@ -104,7 +104,7 @@ namespace Core.GS.Commands
 
 			if (!GuildFormCheck(player) || memnum != player.Group.MemberCount) return;
 
-			if (Properties.GUILD_NUM > 1)
+			if (ServerProperty.GUILD_NUM > 1)
 			{
 				GroupUtil group = player.Group;
 				lock (group)
@@ -623,7 +623,7 @@ namespace Core.GS.Commands
 								{
 									TimeSpan lostTime = DateTime.Now.Subtract(client.Player.Guild.GuildBannerLostTime);
 
-									if (lostTime.TotalMinutes < Properties.GUILD_BANNER_LOST_TIME)
+									if (lostTime.TotalMinutes < ServerProperty.GUILD_BANNER_LOST_TIME)
 									{
 										client.Out.SendMessage("Banner lost to the enemy", EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 									}
@@ -735,12 +735,12 @@ namespace Core.GS.Commands
 
 							TimeSpan lostTime = DateTime.Now.Subtract(client.Player.Guild.GuildBannerLostTime);
 
-							if (lostTime.TotalMinutes < Properties.GUILD_BANNER_LOST_TIME)
+							if (lostTime.TotalMinutes < ServerProperty.GUILD_BANNER_LOST_TIME)
 							{
-								int hoursLeft = (int)((Properties.GUILD_BANNER_LOST_TIME - lostTime.TotalMinutes + 30) / 60);
+								int hoursLeft = (int)((ServerProperty.GUILD_BANNER_LOST_TIME - lostTime.TotalMinutes + 30) / 60);
 								if (hoursLeft < 2)
 								{
-									int minutesLeft = (int)(Properties.GUILD_BANNER_LOST_TIME - lostTime.TotalMinutes + 1);
+									int minutesLeft = (int)(ServerProperty.GUILD_BANNER_LOST_TIME - lostTime.TotalMinutes + 1);
 									client.Out.SendMessage("Your guild banner was lost to the enemy. You must wait " + minutesLeft + " minutes before you can purchase another one.", EChatType.CT_Guild, EChatLoc.CL_ChatWindow);
 								}
 								else
@@ -849,7 +849,7 @@ namespace Core.GS.Commands
 							{
 								if (args[2] == "rps")
 								{
-									if (Properties.GUILD_BUFF_RP > 0)
+									if (ServerProperty.GUILD_BUFF_RP > 0)
 									{
 										client.Player.TempProperties.SetProperty(GUILD_BUFF_TYPE, EGuildBonusType.RealmPoints);
 										client.Out.SendCustomDialog("Are you sure you want to activate a guild RP buff for 1000 merit points?", ConfirmBuffBuy);
@@ -862,7 +862,7 @@ namespace Core.GS.Commands
 								}
 								else if (args[2] == "bps")
 								{
-									if (Properties.GUILD_BUFF_BP > 0)
+									if (ServerProperty.GUILD_BUFF_BP > 0)
 									{
 										client.Player.TempProperties.SetProperty(GUILD_BUFF_TYPE, EGuildBonusType.BountyPoints);
 										client.Out.SendCustomDialog("Are you sure you want to activate a guild BP buff for 1000 merit points?", ConfirmBuffBuy);
@@ -875,7 +875,7 @@ namespace Core.GS.Commands
 								}
 								else if (args[2] == "crafting")
 								{
-									if (Properties.GUILD_BUFF_CRAFTING > 0)
+									if (ServerProperty.GUILD_BUFF_CRAFTING > 0)
 									{
 										client.Player.TempProperties.SetProperty(GUILD_BUFF_TYPE, EGuildBonusType.CraftingHaste);
 										client.Out.SendCustomDialog("Are you sure you want to activate a guild Crafting Haste buff for 1000 merit points?", ConfirmBuffBuy);
@@ -888,7 +888,7 @@ namespace Core.GS.Commands
 								}
 								else if (args[2] == "xp")
 								{
-									if (Properties.GUILD_BUFF_XP > 0)
+									if (ServerProperty.GUILD_BUFF_XP > 0)
 									{
 										client.Player.TempProperties.SetProperty(GUILD_BUFF_TYPE, EGuildBonusType.Experience);
 										client.Out.SendCustomDialog("Are you sure you want to activate a guild XP buff for 1000 merit points?", ConfirmBuffBuy);
@@ -901,7 +901,7 @@ namespace Core.GS.Commands
 								}
 								else if (args[2] == "artifact")
 								{
-									if (Properties.GUILD_BUFF_ARTIFACT_XP > 0)
+									if (ServerProperty.GUILD_BUFF_ARTIFACT_XP > 0)
 									{
 										client.Player.TempProperties.SetProperty(GUILD_BUFF_TYPE, EGuildBonusType.ArtifactXP);
 										client.Out.SendCustomDialog("Are you sure you want to activate a guild Artifact XP buff for 1000 merit points?", ConfirmBuffBuy);
@@ -914,7 +914,7 @@ namespace Core.GS.Commands
 								}
 								else if (args[2] == "mlxp")
 								{
-									if (Properties.GUILD_BUFF_MASTERLEVEL_XP > 0)
+									if (ServerProperty.GUILD_BUFF_MASTERLEVEL_XP > 0)
 									{
 										client.Out.SendMessage("This buff type has not been implemented.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 										return;
@@ -968,20 +968,20 @@ namespace Core.GS.Commands
 							//if (ServerProperties.Properties.GUILD_BUFF_ARTIFACT_XP > 0)
 							//	client.Out.SendMessage(string.Format("{0}: {1}%", Guild.BonusTypeToName(Guild.eBonusType.ArtifactXP), ServerProperties.Properties.GUILD_BUFF_ARTIFACT_XP), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
-							if (ServerProperties.Properties.GUILD_BUFF_BP > 0 && client.Player.Guild.BonusType == EGuildBonusType.None)
-								client.Out.SendMessage(string.Format("{0}: {1}%", GuildUtil.BonusTypeToName(EGuildBonusType.BountyPoints), ServerProperties.Properties.GUILD_BUFF_BP), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
+							if (ServerProperty.GUILD_BUFF_BP > 0 && client.Player.Guild.BonusType == EGuildBonusType.None)
+								client.Out.SendMessage(string.Format("{0}: {1}%", GuildUtil.BonusTypeToName(EGuildBonusType.BountyPoints), ServerProperty.GUILD_BUFF_BP), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 
-							if (ServerProperties.Properties.GUILD_BUFF_CRAFTING > 0 && client.Player.Guild.BonusType == EGuildBonusType.None)
-								client.Out.SendMessage(string.Format("{0}: {1}%", GuildUtil.BonusTypeToName(EGuildBonusType.CraftingHaste), ServerProperties.Properties.GUILD_BUFF_CRAFTING), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
+							if (ServerProperty.GUILD_BUFF_CRAFTING > 0 && client.Player.Guild.BonusType == EGuildBonusType.None)
+								client.Out.SendMessage(string.Format("{0}: {1}%", GuildUtil.BonusTypeToName(EGuildBonusType.CraftingHaste), ServerProperty.GUILD_BUFF_CRAFTING), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 
-							if (ServerProperties.Properties.GUILD_BUFF_XP > 0 && client.Player.Guild.BonusType == EGuildBonusType.None)
-								client.Out.SendMessage(string.Format("{0}: {1}%", GuildUtil.BonusTypeToName(EGuildBonusType.Experience), ServerProperties.Properties.GUILD_BUFF_XP), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
+							if (ServerProperty.GUILD_BUFF_XP > 0 && client.Player.Guild.BonusType == EGuildBonusType.None)
+								client.Out.SendMessage(string.Format("{0}: {1}%", GuildUtil.BonusTypeToName(EGuildBonusType.Experience), ServerProperty.GUILD_BUFF_XP), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 
 							//if (ServerProperties.Properties.GUILD_BUFF_MASTERLEVEL_XP > 0)
 							//    client.Out.SendMessage(string.Format("{0}: {1}%", Guild.BonusTypeToName(Guild.eBonusType.MasterLevelXP), ServerProperties.Properties.GUILD_BUFF_MASTERLEVEL_XP), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 
-							if (ServerProperties.Properties.GUILD_BUFF_RP > 0 && client.Player.Guild.BonusType == EGuildBonusType.None)
-								client.Out.SendMessage(string.Format("{0}: {1}%", GuildUtil.BonusTypeToName(EGuildBonusType.RealmPoints), ServerProperties.Properties.GUILD_BUFF_RP), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
+							if (ServerProperty.GUILD_BUFF_RP > 0 && client.Player.Guild.BonusType == EGuildBonusType.None)
+								client.Out.SendMessage(string.Format("{0}: {1}%", GuildUtil.BonusTypeToName(EGuildBonusType.RealmPoints), ServerProperty.GUILD_BUFF_RP), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
 
 							return;
 						}
@@ -1184,9 +1184,9 @@ namespace Core.GS.Commands
 							}
 							#endregion
 							#region Enough members to form Check
-							if (group.MemberCount < Properties.GUILD_NUM)
+							if (group.MemberCount < ServerProperty.GUILD_NUM)
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.FormNoMembers" + Properties.GUILD_NUM), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.FormNoMembers" + ServerProperty.GUILD_NUM), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return;
 							}
 							#endregion
@@ -1199,7 +1199,7 @@ namespace Core.GS.Commands
 									client.Player.Group.SendMessageToGroupMembers(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AlreadyInGuildName", ply.Name), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									return;
 								}
-								if (ply.Realm != client.Player.Realm && ServerProperties.Properties.ALLOW_CROSS_REALM_GUILDS == false)
+								if (ply.Realm != client.Player.Realm && ServerProperty.ALLOW_CROSS_REALM_GUILDS == false)
 								{
 									client.Out.SendMessage("All group members must be of the same realm in order to create a guild.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 									return;
@@ -1650,7 +1650,7 @@ namespace Core.GS.Commands
 										mesg = ind.ToString() + ") " + ply.Name + " <" + ply.GuildRank.Title + "> the Level " + ply.Level.ToString() + " " + ply.PlayerClass.Name + " in " + zoneName;
 									else
 										mesg = ind.ToString() + ") " + ply.Name + " <" + ply.GuildRank.RankLevel.ToString() + "> the Level " + ply.Level.ToString() + " " + ply.PlayerClass.Name + " in " + zoneName;
-									if (ServerProperties.Properties.ALLOW_CHANGE_LANGUAGE)
+									if (ServerProperty.ALLOW_CHANGE_LANGUAGE)
 										mesg += " <" + ply.Client.Account.Language + ">";
 									if (ind >= startInd)
 										client.Out.SendMessage(mesg, EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
@@ -1981,16 +1981,16 @@ namespace Core.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceAlreadyOther"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return;
 							}
-							if (ServerProperties.Properties.ALLIANCE_MAX == 0)
+							if (ServerProperty.ALLIANCE_MAX == 0)
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceDisabled"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 								return;
 							}
-							if (ServerProperties.Properties.ALLIANCE_MAX != -1)
+							if (ServerProperty.ALLIANCE_MAX != -1)
 							{
 								if (client.Player.Guild.alliance != null)
 								{
-									if (client.Player.Guild.alliance.Guilds.Count + 1 > ServerProperties.Properties.ALLIANCE_MAX)
+									if (client.Player.Guild.alliance.Guilds.Count + 1 > ServerProperty.ALLIANCE_MAX)
 									{
 										client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceMax"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 										return;
@@ -2459,7 +2459,7 @@ namespace Core.GS.Commands
 							else if (amount > 0 && amount <= 25)
 							{
 								client.Player.Guild.SetGuildDues(true);
-								if (ServerProperties.Properties.NEW_GUILD_DUES)
+								if (ServerProperty.NEW_GUILD_DUES)
 								{
 									client.Player.Guild.SetGuildDuesPercent(amount);
 									client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.DuesOn", amount), EChatType.CT_Guild, EChatLoc.CL_SystemWindow);
@@ -2564,7 +2564,7 @@ namespace Core.GS.Commands
 			}
 			catch (Exception e)
 			{
-				if (ServerProperties.Properties.ENABLE_DEBUG)
+				if (ServerProperty.ENABLE_DEBUG)
 				{
 					log.Debug("Error in /gc script, " + args[1] + " command: " + e.ToString());
 				}

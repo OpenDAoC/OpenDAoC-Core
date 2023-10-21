@@ -7,6 +7,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Keeps;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -100,7 +101,7 @@ namespace Core.GS
 					return true;
 				case "ALBION MAINLAND":
 					sRet.Append("Where in Albion would you like to go?\n");
-					if (!ServerProperties.Properties.DISABLE_TUTORIAL && player.Level <= 15)
+					if (!ServerProperty.DISABLE_TUTORIAL && player.Level <= 15)
 						sRet.Append("[Holtham] (Levels 1-9)\n");
 					sRet.Append("[Cotswold Village] (Levels 10-14)\n[Prydwen Keep] (Levels 15-19)\n");
 					sRet.Append("[Caer Ulfwych] (Levels 20-24)\n[Campacorentin Station] (Levels 25-29)\n[Adribard's Retreat] (Levels 30-34)\n");
@@ -128,7 +129,7 @@ namespace Core.GS
 					return true;
 				case "MIDGARD MAINLAND":
 					sRet.Append("Where in Midgard would you like to go?\n");
-					if (!ServerProperties.Properties.DISABLE_TUTORIAL && player.Level <= 15)
+					if (!ServerProperty.DISABLE_TUTORIAL && player.Level <= 15)
 						sRet.Append("[Hafheim] (Levels 1-9)\n");
 					sRet.Append("[Mularn] (Levels 10-14)\n[Fort Veldon] (Levels 15-19)\n");
 					sRet.Append("[Audliten] (Levels 20-24)\n[Huginfell] (Levels 25-29)\n[Fort Atla] (Levels 30-34)\n");
@@ -156,7 +157,7 @@ namespace Core.GS
 					return true;
 				case "HIBERNIA MAINLAND":
 					sRet.Append("Where in Hibernia would you like to go?\n");
-					if (!ServerProperties.Properties.DISABLE_TUTORIAL && player.Level <= 15)
+					if (!ServerProperty.DISABLE_TUTORIAL && player.Level <= 15)
 						sRet.Append("[Fintain] (Levels 1-9)\n");
 					sRet.Append("[Mag Mell] (Levels 10-14)\n[Tir na mBeo] (Levels 15-19)\n");
 					sRet.Append("[Ardagh] (Levels 20-24)\n[Howth] (Levels 25-29)\n[Connla] (Levels 30-34)\n");
@@ -218,7 +219,7 @@ namespace Core.GS
 					realmTarget = ERealm.Albion;
 					break;
 				case "ALBION OCEANUS":
-					if (player.Client.Account.PrivLevel < ServerProperties.Properties.ATLANTIS_TELEPORT_PLVL)
+					if (player.Client.Account.PrivLevel < ServerProperty.ATLANTIS_TELEPORT_PLVL)
 					{
 						SayTo(player, "I'm sorry, but you are not authorized to enter Atlantis at this time.");
 						return true;
@@ -285,7 +286,7 @@ namespace Core.GS
 					realmTarget = ERealm.Albion;
 					break;
 				case "HOLTHAM":
-					if (ServerProperties.Properties.DISABLE_TUTORIAL)
+					if (ServerProperty.DISABLE_TUTORIAL)
 						SayTo(player, "Sorry, this place is not available for now !");
 					else if (player.Level > 15)
 						SayTo(player, "Sorry, you are far too experienced to enjoy this place !");
@@ -302,7 +303,7 @@ namespace Core.GS
 					realmTarget = ERealm.Midgard;
 					break;
 				case "MIDGARD OCEANUS":
-					if (player.Client.Account.PrivLevel < ServerProperties.Properties.ATLANTIS_TELEPORT_PLVL)
+					if (player.Client.Account.PrivLevel < ServerProperty.ATLANTIS_TELEPORT_PLVL)
 					{
 						SayTo(player, "I'm sorry, but you are not authorized to enter Atlantis at this time.");
 						return true;
@@ -368,7 +369,7 @@ namespace Core.GS
 					realmTarget = ERealm.Midgard;
 					break;
 				case "HAFHEIM":
-					if (ServerProperties.Properties.DISABLE_TUTORIAL)
+					if (ServerProperty.DISABLE_TUTORIAL)
 						SayTo(player, "Sorry, this place is not available for now !");
 					else if (player.Level > 15)
 						SayTo(player, "Sorry, you are far too experienced to enjoy this place !");
@@ -385,7 +386,7 @@ namespace Core.GS
 					realmTarget = ERealm.Hibernia;
 					break;
 				case "HIBERNIA OCEANUS":
-					if (player.Client.Account.PrivLevel < ServerProperties.Properties.ATLANTIS_TELEPORT_PLVL)
+					if (player.Client.Account.PrivLevel < ServerProperty.ATLANTIS_TELEPORT_PLVL)
 					{
 						SayTo(player, "I'm sorry, but you are not authorized to enter Atlantis at this time.");
 						return true;
@@ -451,7 +452,7 @@ namespace Core.GS
 					realmTarget = ERealm.Hibernia;
 					break;
 				case "FINTAIN":
-					if (ServerProperties.Properties.DISABLE_TUTORIAL)
+					if (ServerProperty.DISABLE_TUTORIAL)
 						SayTo(player, "Sorry, this place is not available for now !");
 					else if (player.Level > 15)
 						SayTo(player, "Sorry, you are far too experienced to enjoy this place !");
@@ -464,9 +465,9 @@ namespace Core.GS
 					return true;
 				// All realms
 				case "BATTLEGROUNDS":
-					if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
+					if (!ServerProperty.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
 					{
-						SayTo(player, ServerProperties.Properties.BG_ZONES_CLOSED_MESSAGE);
+						SayTo(player, ServerProperty.BG_ZONES_CLOSED_MESSAGE);
 						return true;
 					}
 
@@ -497,9 +498,9 @@ namespace Core.GS
 			// the level of the player, so let's deal with that first.
 			if (text.ToLower() == "battlegrounds")
 			{
-				if (!ServerProperties.Properties.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
+				if (!ServerProperty.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
 				{
-					SayTo(player, ServerProperties.Properties.BG_ZONES_CLOSED_MESSAGE);
+					SayTo(player, ServerProperty.BG_ZONES_CLOSED_MESSAGE);
 				}
 				else
 				{

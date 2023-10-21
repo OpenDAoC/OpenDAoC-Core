@@ -5,6 +5,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS.Quests;
 
@@ -137,7 +138,7 @@ public class KillTask : ATask
 		{
 			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs)args;
 			GameLiving target = gArgs.Target;
-			if (ServerProperties.Properties.TASK_GIVE_RANDOM_ITEM == false)
+			if (ServerProperty.TASK_GIVE_RANDOM_ITEM == false)
 			{
 				if (((KillTask)player.Task).MobName == target.Name)
 				{
@@ -250,7 +251,7 @@ public class KillTask : ATask
 				}
 			}
 		}
-		else if (e == GamePlayerEvent.GiveItem && ServerProperties.Properties.TASK_GIVE_RANDOM_ITEM == true)
+		else if (e == GamePlayerEvent.GiveItem && ServerProperty.TASK_GIVE_RANDOM_ITEM == true)
 		{
 			GiveItemEventArgs gArgs = (GiveItemEventArgs)args;
 			GameLiving target = gArgs.Target as GameLiving;

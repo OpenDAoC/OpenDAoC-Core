@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Core.GS.ECS;
 using Core.GS.Enums;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -13,7 +13,7 @@ public class ChainActionsCommand : ACommandHandler, ICommandHandler
         if (IsSpammingCommand(client.Player, "chainactions"))
             return;
 
-        if (!Properties.ALLOW_CHAINED_ACTIONS)
+        if (!ServerProperty.ALLOW_CHAINED_ACTIONS)
         {
             client.Out.SendMessage("This command is not enabled on this server.", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
             return;

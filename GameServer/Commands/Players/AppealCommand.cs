@@ -1,6 +1,7 @@
 ﻿using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.Players.Managers;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -24,7 +25,7 @@ public class AppealCommand : ACommandHandler, ICommandHandler
 		if (IsSpammingCommand(client.Player, "appeal"))
 			return;
 
-		if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+		if (ServerProperty.DISABLE_APPEALSYSTEM)
         {
             //AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
             client.Out.SendMessage("The /appeal system has moved to Discord. Use the #appeal channel on our Discord to be assisted on urgent matters.",EChatType.CT_Staff,EChatLoc.CL_SystemWindow);
@@ -122,7 +123,7 @@ public class ReportBugCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)
     {
-        if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+        if (ServerProperty.DISABLE_APPEALSYSTEM)
         {
             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
             return;
@@ -167,7 +168,7 @@ public class ReportHarassCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)
     {
-        if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+        if (ServerProperty.DISABLE_APPEALSYSTEM)
         {
             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
             return;
@@ -214,7 +215,7 @@ public class ReportTosCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)
     {
-        if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+        if (ServerProperty.DISABLE_APPEALSYSTEM)
         {
             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
             return;
@@ -289,7 +290,7 @@ public class ReportStuckCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)
     {
-        if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+        if (ServerProperty.DISABLE_APPEALSYSTEM)
         {
             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
             return;
@@ -336,7 +337,7 @@ public class EmergencyAppealCommand : ACommandHandler, ICommandHandler
 {
     public void OnCommand(GameClient client, string[] args)
     {
-        if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+        if (ServerProperty.DISABLE_APPEALSYSTEM)
         {
             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
             return;

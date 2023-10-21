@@ -2,6 +2,7 @@ using System.Collections;
 using Core.Database.Tables;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -29,7 +30,7 @@ public class NfRaSpeedOfSoundAbility : TimedRealmAbility
 			return;
 		}
 
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch (Level)
 			{

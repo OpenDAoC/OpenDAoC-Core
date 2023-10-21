@@ -7,6 +7,7 @@ using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Commands
 {
@@ -1546,7 +1547,7 @@ namespace Core.GS.Commands
 								calculated = false;
 							}
 
-							if (ServerProperties.Properties.USE_SALVAGE_PER_REALM)
+							if (ServerProperty.USE_SALVAGE_PER_REALM)
 							{
 								whereClause = whereClause.And(DB.Column("Realm").IsEqualTo((int)ERealm.None).Or(DB.Column("Realm").IsEqualTo(item.Realm)));
 							}
@@ -1566,7 +1567,7 @@ namespace Core.GS.Commands
 								{
 									list.Add("SalvageYield ID " + item.SalvageYieldID + " specified but not found!");
 								}
-								else if (ServerProperties.Properties.USE_NEW_SALVAGE)
+								else if (ServerProperty.USE_NEW_SALVAGE)
 								{
 									list.Add("Calculated Values (USE_NEW_SALVAGE = True)");
 								}

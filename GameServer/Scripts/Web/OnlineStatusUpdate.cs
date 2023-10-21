@@ -6,6 +6,7 @@ using System.Threading;
 using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Events;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameEvents
@@ -15,12 +16,12 @@ namespace Core.GS.GameEvents
 		/// <summary>
         /// Gets the DAoCPortal UserName to authenticate with - Add your server username
 		/// </summary>
-		protected static string UserName = ServerProperties.Properties.SERVER_LIST_UPDATE_USER;
+		protected static string UserName = ServerProperty.SERVER_LIST_UPDATE_USER;
 
 		/// <summary>
 		/// Gets the DAoCPortal Password to authenticate with - Add your server password
 		/// </summary>
-		protected static string Password = ServerProperties.Properties.SERVER_LIST_UPDATE_PASS;
+		protected static string Password = ServerProperty.SERVER_LIST_UPDATE_PASS;
 
 		/// <summary>
 		/// Gets player count - Don't edit this one.
@@ -70,7 +71,7 @@ namespace Core.GS.GameEvents
         [ScriptLoadedEvent]
         public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
         {
-            if(ServerProperties.Properties.SERVERLISTUPDATE_ENABLED)
+            if(ServerProperty.SERVERLISTUPDATE_ENABLED)
             {
                 Init();
                 

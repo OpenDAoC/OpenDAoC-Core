@@ -11,6 +11,7 @@ using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Players.Titles;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -22,7 +23,7 @@ public class AchievementReskinVendor : GameNpc
     public string TempModelPrice = "TempModelPrice";
     public string currencyName = "Orbs";
     
-    private string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
+    private string _currencyID = ServerProperty.ALT_CURRENCY_ID;
 
     private int Chance;
     private Random rnd = new Random();

@@ -539,7 +539,7 @@ namespace Core.GS.Spells
 			    m_effect == null)
 				return 0;
 
-			if ( !m_caster.IsWithinRadius( m_owner, ServerProperties.Properties.BUFF_RANGE ) )
+			if ( !m_caster.IsWithinRadius( m_owner, Server.ServerProperty.BUFF_RANGE ) )
 				m_effect.Cancel(false);
 			else
 				return BUFFCHECKINTERVAL;

@@ -24,7 +24,7 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using Core.GS.SkillHandler;
 using Core.GS.Spells;
 
@@ -1134,12 +1134,12 @@ namespace Core.GS
 		/// <summary>
 		/// How long does an interrupt last?
 		/// </summary>
-		public virtual int SpellInterruptDuration => Properties.SPELL_INTERRUPT_DURATION;
+		public virtual int SpellInterruptDuration => ServerProperty.SPELL_INTERRUPT_DURATION;
 
 		/// <summary>
 		/// Additional interrupt time if interrupted again
 		/// </summary>
-		public virtual int SpellInterruptRecastAgain => Properties.SPELL_INTERRUPT_AGAIN;
+		public virtual int SpellInterruptRecastAgain => ServerProperty.SPELL_INTERRUPT_AGAIN;
 
 		public virtual bool InterruptChance(GameLiving attacker)
 		{
@@ -1415,8 +1415,8 @@ namespace Core.GS
 
 				if (evadeChance < 0.01)
 					evadeChance = 0.01;
-				else if (evadeChance > Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
-					evadeChance = Properties.EVADE_CAP; // 50% evade cap RvR only. http://www.camelotherald.com/more/664.shtml
+				else if (evadeChance > ServerProperty.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+					evadeChance = ServerProperty.EVADE_CAP; // 50% evade cap RvR only. http://www.camelotherald.com/more/664.shtml
 
 				if (evadeChance > 0.995)
 					evadeChance = 0.995;
@@ -1515,8 +1515,8 @@ namespace Core.GS
 
 					if (parryChance < 0.01)
 						parryChance = 0.01;
-					else if (parryChance > Properties.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
-						parryChance = Properties.PARRY_CAP;
+					else if (parryChance > ServerProperty.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+						parryChance = ServerProperty.PARRY_CAP;
 
 					if (parryChance > 0.995)
 						parryChance = 0.995;
@@ -1600,8 +1600,8 @@ namespace Core.GS
 
 				if (blockChance < 0.01)
 					blockChance = 0.01;
-				else if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
-					blockChance = Properties.BLOCK_CAP;
+				else if (blockChance > ServerProperty.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+					blockChance = ServerProperty.BLOCK_CAP;
 
 				// Possibly intended to be applied in RvR only.
 				if (shieldSize == 1 && blockChance > 0.8)

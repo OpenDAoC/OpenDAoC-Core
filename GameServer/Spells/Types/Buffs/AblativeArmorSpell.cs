@@ -6,6 +6,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Spells
 {
@@ -117,7 +118,7 @@ namespace Core.GS.Spells
 				else if (Spell.CastTime > 0)
 					list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
 
-				if (ServerProperties.Properties.SERV_LANGUAGE != "DE")
+				if (ServerProperty.SERV_LANGUAGE != "DE")
 				{
 					//SpellType
 					list.Add(GetAblativeType());

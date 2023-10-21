@@ -4,7 +4,7 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Scripts.discord;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -33,12 +33,12 @@ public class LfgCommand : ACommandHandler, ICommandHandler
 
         string message = string.Join(" ", args, 1, args.Length - 1);
         long lastLfgTick = client.Player.TempProperties.GetProperty<long>(LFG_TIMEOUT_KEY);
-        int slowModeLength = Properties.LFG_SLOWMODE_LENGTH * 1000;
+        int slowModeLength = ServerProperty.LFG_SLOWMODE_LENGTH * 1000;
 
         if ((GameLoopMgr.GameLoopTime - lastLfgTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
         {
             // Message: You must wait {0} seconds before using this command again.
-            ChatUtil.SendSystemMessage(client, "PLCommands.LFG.List.Wait", Properties.LFG_SLOWMODE_LENGTH - (GameLoopMgr.GameLoopTime - lastLfgTick) / 1000);
+            ChatUtil.SendSystemMessage(client, "PLCommands.LFG.List.Wait", ServerProperty.LFG_SLOWMODE_LENGTH - (GameLoopMgr.GameLoopTime - lastLfgTick) / 1000);
             return;
         }
 
@@ -50,7 +50,7 @@ public class LfgCommand : ACommandHandler, ICommandHandler
         foreach (GamePlayer otherPlayer in ClientService.GetPlayersForRealmWideChatMessage(player))
             otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.LFG.Message", $"{player.Name} ({player.Level}, {player.PlayerClass.Name})", message), EChatType.CT_LFG, EChatLoc.CL_ChatWindow);
 
-        if (Properties.DISCORD_ACTIVE)
+        if (ServerProperty.DISCORD_ACTIVE)
             WebhookMessage.LogChatMessage(player, EChatType.CT_LFG, message);
 
         if (player.Client.Account.PrivLevel == 1)

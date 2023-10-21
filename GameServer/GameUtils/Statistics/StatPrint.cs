@@ -6,6 +6,7 @@ using Core.Base;
 using Core.GS.ECS;
 using Core.GS.Events;
 using Core.GS.PerformanceStatistics;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.GameUtils;
@@ -29,7 +30,7 @@ public class StatPrint
     [GameServerStartedEvent]
     public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
     {
-        if (ServerProperties.Properties.STATPRINT_FREQUENCY <= 0)
+        if (ServerProperty.STATPRINT_FREQUENCY <= 0)
             return;
 
         lock (_lock)
@@ -117,7 +118,7 @@ public class StatPrint
         {
             lock (_lock)
             {
-                _timer?.Change(ServerProperties.Properties.STATPRINT_FREQUENCY, 0);
+                _timer?.Change(ServerProperty.STATPRINT_FREQUENCY, 0);
             }
         }
     }

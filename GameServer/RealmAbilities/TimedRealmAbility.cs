@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.Packets;
+using Core.GS.Server;
 
 namespace Core.GS.RealmAbilities;
 
@@ -14,7 +15,7 @@ public class TimedRealmAbility : RealmAbility
 
 	public override int CostForUpgrade(int level)
 	{
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			switch(level)
 			{
@@ -61,7 +62,7 @@ public class TimedRealmAbility : RealmAbility
 		for (int i = 1; i <= MaxLevel; i++)
 		{
 			int reUseTime = GetReUseDelay(i);
-			list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "RealmAbility.AddReUseDelayInfo.Every", i, ((reUseTime == 0) ? "always" : FormatTimespan(reUseTime))));
+			list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "RealmAbility.AddReUseDelayInfo.Every", i, ((reUseTime == 0) ? "always" : FormatTimespan(reUseTime))));
 		}
 	}
 
@@ -73,7 +74,7 @@ public class TimedRealmAbility : RealmAbility
 	{
 		get
 		{
-			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+			if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 			{
 				return 5;
 			}

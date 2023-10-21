@@ -13,6 +13,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Players.Clients;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS
@@ -1235,7 +1236,7 @@ namespace Core.GS.Items
 		[GameServerStartedEvent]
 		public static void OnServerStartup(CoreEvent e, object sender, EventArgs args)
 		{
-			if (!ServerProperties.Properties.LOAD_BUFF_TOKENS)
+			if (!ServerProperty.LOAD_BUFF_TOKENS)
 				return;
 			
 			DbItemTemplate item;
@@ -1593,7 +1594,7 @@ namespace Core.GS.Items
 		[GameServerStartedEvent]
 		public static void OnServerStartup(CoreEvent e, object sender, EventArgs args)
 		{
-			if (!ServerProperties.Properties.LOAD_BUFF_TOKENS)
+			if (!ServerProperty.LOAD_BUFF_TOKENS)
 				return;
 			
 			DbItemTemplate item;

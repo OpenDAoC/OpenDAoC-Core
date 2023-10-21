@@ -3,6 +3,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.GameUtils;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -13,7 +14,7 @@ namespace Core.GS
     public class LootGeneratorExpOrb : LootGeneratorBase
     {
 
-        private static string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
+        private static string _currencyID = ServerProperty.ALT_CURRENCY_ID;
         private static DbItemTemplate m_token_many = GameServer.Database.FindObjectByKey<DbItemTemplate>(_currencyID);
 
         /// <summary>

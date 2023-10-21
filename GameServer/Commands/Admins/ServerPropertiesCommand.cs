@@ -1,6 +1,7 @@
 using Core.Database.Enums;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS.Commands;
 
@@ -18,7 +19,7 @@ public class ServerPropertiesCommand : ACommandHandler, ICommandHandler
 			DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.ServerProperties.DataBaseXML"));
 			return;
 		}
-		ServerProperties.Properties.Refresh();
+		ServerProperty.Refresh();
 		DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.ServerProperties.PropertiesRefreshed"));
 	}
 }

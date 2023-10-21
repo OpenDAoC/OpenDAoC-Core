@@ -11,6 +11,7 @@ using Core.GS.Events;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.RealmAbilities;
+using Core.GS.Server;
 
 namespace Core.GS.Spells
 {
@@ -156,8 +157,8 @@ namespace Core.GS.Spells
 
 			if ((Caster is GamePlayer && target is GamePlayer) == false)
 			{
-				hitchance -= (int)(Caster.GetConLevel(target) * ServerProperties.Properties.PVE_SPELL_CONHITPERCENT);
-				hitchance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+				hitchance -= (int)(Caster.GetConLevel(target) * ServerProperty.PVE_SPELL_CONHITPERCENT);
+				hitchance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * ServerProperty.MISSRATE_REDUCTION_PER_ATTACKERS;
 			}
 
 			return hitchance;

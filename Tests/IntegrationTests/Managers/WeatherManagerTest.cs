@@ -20,7 +20,7 @@
 using System;
 using Core.GS;
 using Core.GS.Scheduler;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Managers
@@ -51,8 +51,8 @@ namespace Core.Tests.Integration.Managers
 		
 		Region FakeRegion()
 		{
-			Properties.DISABLED_REGIONS = string.Empty;
-			Properties.DISABLED_EXPANSIONS = string.Empty;
+			ServerProperty.DISABLED_REGIONS = string.Empty;
+			ServerProperty.DISABLED_EXPANSIONS = string.Empty;
 			var region = Region.Create(new RegionData { Id = 1 });
 			region.Zones.Add(new Zone(region, 1, string.Empty, 0, 0, 65535, 65535, 1, false, 0, false, 0, 0, 0, 0, 1));
 			return region;

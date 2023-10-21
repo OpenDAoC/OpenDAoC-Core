@@ -13,7 +13,7 @@ using Core.Base;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 using Timer = System.Timers.Timer;
 
@@ -104,7 +104,7 @@ public class PacketProcessor
     /// <param name="pak">The sent packet</param>
     protected void SavePacket(IPacket pak)
     {
-        if (!Properties.SAVE_PACKETS)
+        if (!ServerProperty.SAVE_PACKETS)
             return;
 
         lock (((ICollection)m_lastPackets).SyncRoot)
@@ -122,7 +122,7 @@ public class PacketProcessor
     /// <returns></returns>
     public IPacket[] GetLastPackets()
     {
-        if (!Properties.SAVE_PACKETS)
+        if (!ServerProperty.SAVE_PACKETS)
             return Array.Empty<IPacket>();
 
         lock (((ICollection)m_lastPackets).SyncRoot)
@@ -315,7 +315,7 @@ public class PacketProcessor
                 string desc = $"Sending packets longer than 2048 cause client to crash, check Log for stacktrace. Packet code: 0x{buf[2]:X2}, account: {(m_client.Account != null ? m_client.Account.Name : m_client.TcpEndpoint)}, packet size: {buf.Length}.";
                 log.Error(Marshal.ToHexDump(desc, buf) + "\n" + Environment.StackTrace);
 
-                if (Properties.IGNORE_TOO_LONG_OUTCOMING_PACKET)
+                if (ServerProperty.IGNORE_TOO_LONG_OUTCOMING_PACKET)
                 {
                     log.Error("ALERT: Oversize packet detected and discarded.");
                     m_client.Out.SendMessage("ALERT: Error sending an update to your client. Oversize packet detected and discarded. Please /report this issue!", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
@@ -674,7 +674,7 @@ public class PacketProcessor
 
                     if (log.IsInfoEnabled)
                     {
-                        if (Properties.SAVE_PACKETS)
+                        if (ServerProperty.SAVE_PACKETS)
                         {
                             log.Info("Last client sent/received packets (from older to newer):");
 
@@ -682,7 +682,7 @@ public class PacketProcessor
                                 log.Info(prevPak.ToHumanReadable());
                         }
                         else
-                            log.Info($"Enable the server property {nameof(Properties.SAVE_PACKETS)} to see the last few sent/received packets.");
+                            log.Info($"Enable the server property {nameof(ServerProperty.SAVE_PACKETS)} to see the last few sent/received packets.");
 
                         log.Info(Marshal.ToHexDump("Last received bytes: ", buffer));
                     }

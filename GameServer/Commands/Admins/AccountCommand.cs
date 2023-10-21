@@ -7,6 +7,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Packets.Clients;
+using Core.GS.Server;
 
 namespace Core.GS.Commands
 {
@@ -116,7 +117,7 @@ namespace Core.GS.Commands
 	                            PrivLevel = (uint)EPrivLevel.Player,
 	                            Realm = (int)ERealm.None,
 	                            CreationDate = DateTime.Now,
-	                            Language = ServerProperties.Properties.SERV_LANGUAGE
+	                            Language = ServerProperty.SERV_LANGUAGE
 	                        };
 	                        
 	                        GameServer.Database.AddObject(account);

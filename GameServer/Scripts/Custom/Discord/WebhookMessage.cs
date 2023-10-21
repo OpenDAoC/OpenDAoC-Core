@@ -1,6 +1,6 @@
 using System;
 using Core.GS.Enums;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using JNogueira.Discord.Webhook.Client;
 
 namespace Core.GS.Scripts.discord
@@ -59,24 +59,24 @@ namespace Core.GS.Scripts.discord
             switch (player.Realm)
             {
                 case ERealm.Albion:
-                    if (!string.IsNullOrEmpty(Properties.DISCORD_ALBCHAT_WEBHOOK_ID))
+                    if (!string.IsNullOrEmpty(ServerProperty.DISCORD_ALBCHAT_WEBHOOK_ID))
                     {
                         avatar = "";
-                        SendMessage(Properties.DISCORD_ALBCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
+                        SendMessage(ServerProperty.DISCORD_ALBCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;
                 case ERealm.Hibernia:
-                    if (!string.IsNullOrEmpty(Properties.DISCORD_HIBCHAT_WEBHOOK_ID))
+                    if (!string.IsNullOrEmpty(ServerProperty.DISCORD_HIBCHAT_WEBHOOK_ID))
                     {
                         avatar = "";
-                        SendMessage(Properties.DISCORD_HIBCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
+                        SendMessage(ServerProperty.DISCORD_HIBCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;
                 case ERealm.Midgard:
-                    if (!string.IsNullOrEmpty(Properties.DISCORD_MIDCHAT_WEBHOOK_ID))
+                    if (!string.IsNullOrEmpty(ServerProperty.DISCORD_MIDCHAT_WEBHOOK_ID))
                     {
                         avatar = "";
-                        SendMessage(Properties.DISCORD_MIDCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
+                        SendMessage(ServerProperty.DISCORD_MIDCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;
             }

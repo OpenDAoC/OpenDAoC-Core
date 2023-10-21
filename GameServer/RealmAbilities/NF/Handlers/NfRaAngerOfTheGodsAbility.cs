@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Server;
 using Core.GS.Spells;
 
 namespace Core.GS.RealmAbilities;
@@ -65,7 +66,7 @@ public class NfRaAngerOfTheGodsAbility : TimedRealmAbility
 
 	public override void AddEffectsInfo(IList<string> list)
 	{
-		if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
 			list.Add("Level 1: Adds 10 DPS");
 			list.Add("Level 2: Adds 15 DPS");
@@ -96,7 +97,7 @@ public class NfRaAngerOfTheGodsAbility : TimedRealmAbility
 
     protected virtual double GetDamageAddAmount()
     {
-        if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+        if (ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
         {
             switch (Level)
             {

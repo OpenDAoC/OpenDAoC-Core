@@ -8,7 +8,7 @@ using Core.Database;
 using Core.Database.Enums;
 using Core.Database.Tables;
 using Core.GS.GameUtils;
-using Core.GS.ServerProperties;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Languages;
@@ -106,7 +106,7 @@ public class LanguageMgr
     /// <summary>
     /// Returns the default language.
     /// </summary>
-    public static string DefaultLanguage => GS.ServerProperties.Properties.SERV_LANGUAGE;
+    public static string DefaultLanguage => ServerProperty.SERV_LANGUAGE;
 
     /// <summary>
     /// Returns all registered languages.
@@ -184,14 +184,14 @@ public class LanguageMgr
             return false;
         }
 
-        if (Properties.USE_DBLANGUAGE)
+        if (ServerProperty.USE_DBLANGUAGE)
         {
             int newEntries = 0;
             int updatedEntries = 0;
 
             IList<DbLanguageSystem> dbos = GameServer.Database.SelectAllObjects<DbLanguageSystem>();
 
-            if (GS.ServerProperties.Properties.UPDATE_EXISTING_DB_SYSTEM_SENTENCES_FROM_FILES)
+            if (ServerProperty.UPDATE_EXISTING_DB_SYSTEM_SENTENCES_FROM_FILES)
             {
                 foreach (string[] sentence in fileSentences)
                 {

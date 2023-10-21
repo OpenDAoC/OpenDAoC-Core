@@ -5,6 +5,7 @@ using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 using Core.GS.Spells;
 
 namespace Core.GS.RealmAbilities;
@@ -216,7 +217,7 @@ public class NfRaPerfectRecoveryAbility : TimedRealmAbility
 
     protected virtual Int32 GetResurrectValue()
     {
-        if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+        if (ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
         {
             switch (Level)
             {

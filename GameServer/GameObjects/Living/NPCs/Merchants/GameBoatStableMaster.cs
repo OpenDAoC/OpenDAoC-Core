@@ -7,6 +7,7 @@ using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Movement;
 using Core.GS.Players.Clients;
+using Core.GS.Server;
 
 namespace Core.GS
 {
@@ -96,7 +97,7 @@ namespace Core.GS
 			{
 				GamePlayer player = (GamePlayer)source;
 
-                if (item.Name.ToLower().StartsWith(LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameStableMaster.ReceiveItem.TicketTo")) && item.Item_Type == 40)
+                if (item.Name.ToLower().StartsWith(LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameStableMaster.ReceiveItem.TicketTo")) && item.Item_Type == 40)
 				{
 					foreach (GameNpc npc in GetNPCsInRadius(1500))
 					{
@@ -107,7 +108,7 @@ namespace Core.GS
 						}
 					}
 
-                    String destination = item.Name.Substring(LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameStableMaster.ReceiveItem.TicketTo").Length);
+                    String destination = item.Name.Substring(LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameStableMaster.ReceiveItem.TicketTo").Length);
 					PathPoint path = MovementMgr.LoadPath(item.Id_nb);
 					//PathPoint path = MovementMgr.Instance.LoadPath(this.Name + "=>" + destination);
                     if ((path != null) && ((Math.Abs(path.X - this.X)) < 500) && ((Math.Abs(path.Y - this.Y)) < 500))

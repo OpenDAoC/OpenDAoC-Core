@@ -5,6 +5,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Packets.Server;
+using Core.GS.Server;
 using Core.GS.Trainer;
 using log4net;
 
@@ -51,7 +52,7 @@ public class WildWildernessLvl1HibQuest : BaseQuest
     [ScriptLoadedEvent]
     public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
     {
-        if (!ServerProperties.Properties.LOAD_QUESTS)
+        if (!ServerProperty.LOAD_QUESTS)
             return;
 
         #region initialize NPC

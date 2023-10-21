@@ -1,5 +1,6 @@
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Server;
 
 namespace Core.GS;
 
@@ -28,7 +29,7 @@ public class FletchingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FletchingMaster.GuildOrder");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FletchingMaster.GuildOrder");
         }
 	}
 
@@ -36,7 +37,7 @@ public class FletchingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FletchingMaster.AcceptedByOrderName");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FletchingMaster.AcceptedByOrderName");
         }
 	}
 
@@ -49,7 +50,7 @@ public class FletchingMaster : CraftMasterNpc
 	{
 		get 
 		{ 
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "FletchingMaster.InitialEntersentence");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "FletchingMaster.InitialEntersentence");
         }
 	}
 }

@@ -5,6 +5,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Quests;
+using Core.GS.Server;
 using log4net;
 
 namespace Core.GS.Packets.Server;
@@ -163,7 +164,7 @@ public class PacketLib170 : PacketLib169
 			pak.WriteShort((ushort)keep.KeepID);
 			pak.WriteByte(flag);//0-Info,1-KeepTargetLevel,2-KeepLordType,4-Release
 			pak.WriteByte((byte)1); //Keep Lord Type: always melee, type is no longer used
-			pak.WriteByte((byte)ServerProperties.Properties.MAX_KEEP_LEVEL);
+			pak.WriteByte((byte)ServerProperty.MAX_KEEP_LEVEL);
 			pak.WriteByte((byte)keep.Level);
 			SendTCP(pak);
 		}
@@ -178,7 +179,7 @@ public class PacketLib170 : PacketLib169
 			pak.WriteByte(component.HealthPercent);
 
 			pak.WriteByte(component.Keep.EffectiveLevel(component.Keep.Level));
-			pak.WriteByte(component.Keep.EffectiveLevel((byte)ServerProperties.Properties.MAX_KEEP_LEVEL));
+			pak.WriteByte(component.Keep.EffectiveLevel((byte)ServerProperty.MAX_KEEP_LEVEL));
 			//guild
 			pak.WriteByte((byte)1); //Keep Type: always melee here, type is no longer used
 
