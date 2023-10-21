@@ -7,7 +7,7 @@ using DOL.Database.Connection;
 using DOL.GS;
 using MySql.Data.MySqlClient;
 
-namespace DOLConfig
+namespace Core.Config
 {
 	public partial class DolConfig : Form
 	{

@@ -1,6 +1,6 @@
 ﻿<Project>
     <PropertyGroup>
-        <BaseIntermediateOutputPath>..\build\DOLConfig\$(Configuration)\</BaseIntermediateOutputPath>
+        <BaseIntermediateOutputPath>..\build\CoreConfig\$(Configuration)\</BaseIntermediateOutputPath>
     </PropertyGroup>
     <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
     <PropertyGroup>
@@ -9,7 +9,7 @@
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <OutputType>WinExe</OutputType>
-        <AssemblyName>DOLConfig</AssemblyName>
+        <AssemblyName>CoreConfig</AssemblyName>
         <ApplicationIcon>icon.ico</ApplicationIcon>
         <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
         <MapFileExtensions>true</MapFileExtensions>
@@ -17,7 +17,7 @@
         <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
         <UseApplicationTrust>false</UseApplicationTrust>
         <OutputPath>..\$(Configuration)\</OutputPath>
-        <IntermediateOutputPath>..\build\DOLConfig\$(Configuration)\obj</IntermediateOutputPath>
+        <IntermediateOutputPath>..\build\CoreConfig\$(Configuration)\obj</IntermediateOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <Deterministic>false</Deterministic>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -46,7 +46,7 @@
         <ProjectReference Include="..\CoreDatabase\CoreDatabase.csproj" Name="CoreDatabase" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Update="DOLConfig.cs" />
+        <Compile Update="CoreConfig.cs" />
         <Compile Update="ExtraPropertiesEditor.cs" />
         <Compile Update="RegExTextBox.cs" />
         <Compile Update="ServerProperties.cs" />
@@ -54,7 +54,7 @@
             <CopyToOutputDirectory>Never</CopyToOutputDirectory>
         </None>
         <Content Include="icon.ico" />
-        <None Include="DOLConfig.exe.config">
+        <None Include="CoreConfig.exe.config">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DOLConfig {
+namespace Core.Config {
     using System;
     
     

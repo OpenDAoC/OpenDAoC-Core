@@ -1,6 +1,6 @@
 ﻿namespace DOLConfig
 {
-	partial class DolConfig
+	partial class Core.Config
 	{
 		/// <summary>
 		/// Erforderliche Designervariable.

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Windows.Forms;
 using DOL.Database;
 
-namespace DOLConfig
+namespace Core.Config
 {
-	public partial class DolConfig : Form
+	public partial class CoreConfig : Form
 	{
 		IList<DbServerProperty> sp = new List<DbServerProperty>();
 		IList<DbServerPropertyCategory> sc = new List<DbServerPropertyCategory>();
