@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
-using Core.Base;
 
 namespace Core.GS.Commands;
 

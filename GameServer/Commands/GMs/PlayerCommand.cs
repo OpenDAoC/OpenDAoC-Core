@@ -6,10 +6,10 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Effects;
+using Core.GS.Friends;
 using Core.GS.Housing;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;
-using Core.GS.Friends;
 
 namespace Core.GS.Commands
 {

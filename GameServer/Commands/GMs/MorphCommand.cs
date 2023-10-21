@@ -1,4 +1,3 @@
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Spells;
 

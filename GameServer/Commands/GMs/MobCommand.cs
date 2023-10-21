@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Core.AI;
-using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;

@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 using Core.GS.PacketHandler;
 using Core.Language;

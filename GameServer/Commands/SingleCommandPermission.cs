@@ -1,7 +1,7 @@
 using Core.Database;
 using Core.Database.Tables;
 
-namespace Core.GS;
+namespace Core.GS.Commands;
 
 /// <summary>
 /// SinglePermission is special permission of command for player
