@@ -1,4 +1,4 @@
-namespace Core.GS;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Used for that formation type if a GameNPC has a formation

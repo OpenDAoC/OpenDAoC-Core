@@ -4,6 +4,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Behaviors;
 using Core.GS.Behaviour;
+using Core.GS.Enums;
 using Core.GS.Quests;
 using log4net;
 

@@ -1,8 +1,10 @@
-﻿namespace Core.GS.AI.States;
+﻿using Core.GS.Enums;
+
+namespace Core.GS.AI.States;
 
 public abstract class FsmState
 {
-    public EFSMStateType StateType { get; protected set; }
+    public EFsmStateType StateType { get; protected set; }
 
     public FsmState() { }
 

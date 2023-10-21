@@ -1,5 +1,6 @@
 using System;
 using Core.Events;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 
 namespace Core.GS.GameEvents

@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Commands;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;

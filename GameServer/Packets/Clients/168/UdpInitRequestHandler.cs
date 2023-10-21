@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.UDP, EClientPackets.UDPInitRequest, "Handles UDP init", EClientStatus.None)]

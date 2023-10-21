@@ -9,6 +9,7 @@ using Core.GS.ServerProperties;
 using Core.GS.Styles;
 using Core.GS;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 
 namespace Core.GS
 {

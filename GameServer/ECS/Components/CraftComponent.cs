@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core.GS.Crafting;
+using Core.GS.Enums;
 
 namespace Core.GS.ECS;
 

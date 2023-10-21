@@ -2,6 +2,7 @@ using System;
 using Core.Events;
 using Core.GS.Behaviors;
 using Core.GS.Behaviour;
+using Core.GS.Enums;
 
 namespace Core.GS.Quests.Actions
 {

@@ -1,4 +1,4 @@
-﻿namespace Core.GS;
+﻿namespace Core.GS.Enums;
 
 /// <summary>
 /// The possible results for prechecks for range attacks

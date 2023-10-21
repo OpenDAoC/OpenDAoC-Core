@@ -1,4 +1,4 @@
-namespace Core.GS.Housing;
+namespace Core.GS.Enums;
 
 public enum EPermissionType
 {

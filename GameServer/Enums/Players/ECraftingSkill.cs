@@ -1,4 +1,4 @@
-namespace Core.GS;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Enum of all crafting skill (related to client file)

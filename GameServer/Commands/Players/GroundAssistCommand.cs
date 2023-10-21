@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.Commands;
 
 [Command("&groundassist", //command to handle

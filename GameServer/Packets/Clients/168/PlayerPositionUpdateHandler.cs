@@ -5,6 +5,7 @@ using System.Text;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using Core.GS.Utils;
 using Core.Language;
 using log4net;

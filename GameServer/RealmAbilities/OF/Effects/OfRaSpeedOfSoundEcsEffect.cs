@@ -1,6 +1,7 @@
 using System.Linq;
 using Core.GS.Calculators;
 using Core.GS.ECS;
+using Core.GS.Enums;
 
 namespace Core.GS.Effects
 {

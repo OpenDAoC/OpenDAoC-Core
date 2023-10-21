@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Core.Database.Tables;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 
 namespace Core.GS.Commands;

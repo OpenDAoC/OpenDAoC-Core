@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Core.Events;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;
@@ -94,7 +95,7 @@ public class CharmEcsSpellEffect : EcsGameSpellEffect
                     SpellHandler.Caster.IsAlive &&
                     !SpellHandler.Caster.IsStealthed)
                 {
-                    newBrain.FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+                    newBrain.FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
                     newBrain.AddToAggroList(SpellHandler.Caster, SpellHandler.Caster.Level * 10);
                     charmMob.StartAttack(SpellHandler.Caster);
                     charmMob.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;

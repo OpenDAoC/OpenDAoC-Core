@@ -1,5 +1,6 @@
 using System;
 using Core.Database.Tables;
+using Core.GS.Enums;
 using Core.Language;
 
 namespace Core.GS.Commands;

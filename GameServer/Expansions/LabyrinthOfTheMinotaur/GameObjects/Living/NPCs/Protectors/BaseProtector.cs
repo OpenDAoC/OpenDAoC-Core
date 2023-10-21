@@ -2,13 +2,15 @@
  * [NOTE:StephenxPimentel] The Die/AddToWorld functions are just an example.
  * Although this is a great base for individual Relic Protector Classes, and
  * it would be a very good idea for new classes to be derived from this
- * 
+ *
  * e.g. Lab_Center_Relic : BaseProtector.
  * This way you can call the Locking/Unlocking Methods!
- * 
+ *
  * Make sure that in your scripts u define "Relic" as the correct relic so
  * the Unlock/Lock Functions work properly!
  */
+
+using Core.GS.Enums;
 
 namespace Core.GS
 {

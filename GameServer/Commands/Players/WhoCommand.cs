@@ -4,6 +4,7 @@ using System.Text;
 using Core.Base.Enums;
 using Core.GS.Crafting;
 using Core.GS.ECS;
+using Core.GS.Enums;
 
 namespace Core.GS.Commands;
 

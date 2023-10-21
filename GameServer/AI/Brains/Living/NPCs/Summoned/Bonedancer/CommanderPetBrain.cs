@@ -1,4 +1,5 @@
 using Core.AI.Brain;
+using Core.GS.Enums;
 
 namespace Core.GS.AI.Brains
 {
@@ -52,8 +53,8 @@ namespace Core.GS.AI.Brains
 					break;
 			}
 
-			if (FiniteStateMachine.GetState(EFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState())
-				FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+			if (FiniteStateMachine.GetState(EFsmStateType.AGGRO) != FiniteStateMachine.GetCurrentState())
+				FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
 
 			AttackMostWanted();
 		}

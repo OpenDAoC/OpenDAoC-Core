@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 
 namespace Core.GS.Spells
@@ -14,7 +15,7 @@ namespace Core.GS.Spells
         {
             if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon)
             {
-			    MessageToCaster("You cannot use siege weapons here!", PacketHandler.EChatType.CT_SpellResisted);
+			    MessageToCaster("You cannot use siege weapons here!", EChatType.CT_SpellResisted);
 			    return false;
 		    }
 
@@ -25,7 +26,7 @@ namespace Core.GS.Spells
 	            var area = (AbstractArea) area1;
 	            if (area is KeepArea {Keep: {IsPortalKeep: true}})
 	            {
-		            MessageToCaster("You cannot use siege weapons here (PK)!", PacketHandler.EChatType.CT_SpellResisted);
+		            MessageToCaster("You cannot use siege weapons here (PK)!", EChatType.CT_SpellResisted);
 		            return false;
 	            }
             }
@@ -36,7 +37,7 @@ namespace Core.GS.Spells
 			{
 				if (npc is GameSiegeCatapult)
 				{
-					MessageToCaster("You are too close to another trebuchet or catapult and cannot summon here!", PacketHandler.EChatType.CT_SpellResisted);
+					MessageToCaster("You are too close to another trebuchet or catapult and cannot summon here!", EChatType.CT_SpellResisted);
                     return false;
 				}
 			}
@@ -47,7 +48,7 @@ namespace Core.GS.Spells
 	    public override void ApplyEffectOnTarget(GameLiving target)
         {
 	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
-		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.EChatType.CT_SpellResisted);
+		        MessageToCaster("You cannot use siege weapons here!", EChatType.CT_SpellResisted);
 		        return;
 	        }
 	        
@@ -71,7 +72,7 @@ namespace Core.GS.Spells
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
 	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
-		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.EChatType.CT_SpellResisted);
+		        MessageToCaster("You cannot use siege weapons here!", EChatType.CT_SpellResisted);
 		        return false;
 	        }
 

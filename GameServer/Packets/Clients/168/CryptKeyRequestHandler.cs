@@ -1,3 +1,4 @@
+using Core.GS.Enums;
 using Core.GS.ServerProperties;
 
 namespace Core.GS.PacketHandler.Client.v168

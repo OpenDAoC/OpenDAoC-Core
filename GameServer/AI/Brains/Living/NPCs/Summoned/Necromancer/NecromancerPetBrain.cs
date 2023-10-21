@@ -7,6 +7,7 @@ using Core.GS.AI.States;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Effects.Old;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -24,7 +25,7 @@ namespace Core.GS.AI.Brains
             FiniteStateMachine.Add(new NecromancerPetStatePassive(this));
             FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-            FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.WAKING_UP);
         }
 
         public override int ThinkInterval => 500;

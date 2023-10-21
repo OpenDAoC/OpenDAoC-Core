@@ -1,4 +1,4 @@
-namespace Core.GS.Quests;
+namespace Core.GS.Enums;
 
 public enum ECaptureType : int
 { 

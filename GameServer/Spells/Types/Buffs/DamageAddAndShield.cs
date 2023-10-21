@@ -8,6 +8,7 @@ using Core.Database;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Effects;
+using Core.GS.Enums;
 
 namespace Core.GS.Spells
 {

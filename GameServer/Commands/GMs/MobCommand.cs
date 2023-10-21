@@ -9,6 +9,7 @@ using Core.GS.AI.Brains;
 using Core.GS.AI.States;
 using Core.GS.Database;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.Housing;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;

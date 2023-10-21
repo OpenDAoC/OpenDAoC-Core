@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.GS.Calculators;
+using Core.GS.Enums;
 using Core.GS.PlayerClass;
 using Core.GS.Spells;
 

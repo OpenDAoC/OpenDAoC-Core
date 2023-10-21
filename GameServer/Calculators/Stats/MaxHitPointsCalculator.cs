@@ -1,5 +1,6 @@
 using System;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.RealmAbilities;
 using Core.GS.ServerProperties;

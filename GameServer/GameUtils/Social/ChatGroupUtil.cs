@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Specialized;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 
 namespace Core.GS

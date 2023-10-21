@@ -5,6 +5,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.Quests;
 using Core.GS.ServerRules;
 using log4net;

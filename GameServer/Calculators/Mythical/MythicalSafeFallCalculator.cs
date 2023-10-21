@@ -1,4 +1,6 @@
-﻿namespace Core.GS.Calculators;
+﻿using Core.GS.Enums;
+
+namespace Core.GS.Calculators;
 
 [PropertyCalculator(EProperty.MythicalSafeFall)]
 public class MythicalSafeFallCalculator : PropertyCalculator

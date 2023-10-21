@@ -1,5 +1,6 @@
 using Core.Database.Tables;
 using Core.GS.ECS;
+using Core.GS.Enums;
 
 namespace Core.GS.AI.Brains;
 
@@ -23,7 +24,7 @@ public class BlueLadyBrain : StandardMobBrain
         {
             Body.Health = Body.MaxHealth;
             CanSpawnAdds = false;
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             if (!RemoveAdds)
             {
                 foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))

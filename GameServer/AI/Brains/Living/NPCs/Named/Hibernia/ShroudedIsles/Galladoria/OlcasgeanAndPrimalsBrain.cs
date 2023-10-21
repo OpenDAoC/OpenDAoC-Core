@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.AI.Brains;
@@ -350,7 +351,7 @@ public class OlcasgeanBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             teleport_player = false;
             cast1 = true;
             spawn_antipass = false;
@@ -590,7 +591,7 @@ public class OlcasgeanBrain2 : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
         }
 
         if (Body.IsAlive)
@@ -1376,7 +1377,7 @@ public class EarthPrimalBrain : StandardMobBrain
         }
         if (Body.IsOutOfTetherRange && !HasAggro)
         {
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
         }
         base.Think();
     }

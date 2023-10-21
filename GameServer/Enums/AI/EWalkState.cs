@@ -1,4 +1,4 @@
-namespace Core.AI.Brain;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Defines walk state when brain is not in combat

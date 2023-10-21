@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.Spells
 {
     //shared timer 3

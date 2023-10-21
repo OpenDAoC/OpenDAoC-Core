@@ -1,5 +1,6 @@
 using System;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using Core.GS.Spells;
 using Core.Language;
 

@@ -8,6 +8,7 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Database;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;

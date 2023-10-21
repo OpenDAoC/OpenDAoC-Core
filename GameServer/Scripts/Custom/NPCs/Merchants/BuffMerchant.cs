@@ -10,6 +10,7 @@ using Core.GS.Spells;
 using Core.Language;
 using Core.GS;
 using Core.GS.Database;
+using Core.GS.Enums;
 using log4net;
 
 namespace Core.GS

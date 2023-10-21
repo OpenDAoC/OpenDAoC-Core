@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Commands;

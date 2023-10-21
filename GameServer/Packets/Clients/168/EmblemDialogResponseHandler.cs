@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.EmblemDialogResponse, "Handles when a player chooses a guild emblem", EClientStatus.PlayerInGame)]

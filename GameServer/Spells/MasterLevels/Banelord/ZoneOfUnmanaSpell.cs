@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.Spells
 {
     //http://www.camelotherald.com/masterlevels/ma.php?ml=Banelord

@@ -7,6 +7,7 @@ using Core.Events;
 using Core.GS.AI.States;
 using Core.GS.Effects;
 using Core.GS.Effects.Old;
+using Core.GS.Enums;
 using Core.GS.Scripts;
 using log4net;
 
@@ -36,7 +37,7 @@ namespace Core.GS.AI.Brains
             FiniteStateMachine.Add(new ArosTheSpiritmasterStateAggro(this));
             FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-            FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.WAKING_UP);
         }
 
         /// <summary>

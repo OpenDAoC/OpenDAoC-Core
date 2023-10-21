@@ -7,6 +7,7 @@ using Core.GS.PacketHandler;
 using Core.GS.Styles;
 using Core.GS;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 
 namespace Core.GS;
 

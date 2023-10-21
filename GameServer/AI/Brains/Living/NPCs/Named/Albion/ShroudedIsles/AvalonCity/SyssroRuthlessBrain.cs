@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core.GS.ECS;
+using Core.GS.Enums;
 
 namespace Core.GS.AI.Brains;
 
@@ -62,7 +63,7 @@ public class SyssroRuthlessBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			IsTargetPicked = false;
 			IsPulled = false;

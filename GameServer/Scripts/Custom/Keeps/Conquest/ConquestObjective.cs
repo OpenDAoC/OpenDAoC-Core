@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Core.Database.Tables;
+using Core.GS.Enums;
 using Core.GS.Styles;
 
 namespace Core.GS.ECS

@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.AI.Brains;
 
 public class FlameBrain : StandardMobBrain
@@ -15,7 +17,7 @@ public class FlameBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
         }
         base.Think();
@@ -37,7 +39,7 @@ public class LuriquayBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
         }
         base.Think();
     }
@@ -58,7 +60,7 @@ public class FlameNormalBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
         }
         if (Body.InCombatInLast(60 * 1000) == false && this.Body.InCombatInLast(65 * 1000))
             Body.RemoveFromWorld();

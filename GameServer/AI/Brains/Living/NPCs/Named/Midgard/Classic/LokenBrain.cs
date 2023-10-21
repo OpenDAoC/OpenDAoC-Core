@@ -1,4 +1,5 @@
 using Core.Database.Tables;
+using Core.GS.Enums;
 
 namespace Core.GS.AI.Brains;
 
@@ -23,7 +24,7 @@ public class LokenBrain : StandardMobBrain
 		}
 		if(!CheckProximityAggro())
         {
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163372);
 			Body.MaxSpeedBase = npcTemplate.MaxSpeed;

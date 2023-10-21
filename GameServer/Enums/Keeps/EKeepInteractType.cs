@@ -1,4 +1,4 @@
-namespace Core.GS.Keeps;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// The type of interaction we check for to handle lord permission checks

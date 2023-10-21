@@ -1,6 +1,7 @@
 using System.Collections;
 using Core.AI.Brain;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.Language;
 

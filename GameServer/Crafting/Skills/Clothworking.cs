@@ -1,3 +1,4 @@
+using Core.GS.Enums;
 using Core.Language;
 
 namespace Core.GS.Crafting;

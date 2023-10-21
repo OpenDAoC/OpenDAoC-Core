@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.ECS;
+using Core.GS.Enums;
 
 namespace Core.GS.AI.Brains;
 
@@ -39,7 +40,7 @@ public class SpindlerBroodmotherBrain : StandardMobBrain
             {
                 Enemys_To_Mezz.Clear();
             }
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             if (!RemoveAdds)
             {
                 foreach (GameNpc npc in Body.GetNPCsInRadius(4000))

@@ -1,5 +1,6 @@
 using System.Reflection;
 using Core.AI.Brain;
+using Core.GS.Enums;
 using log4net;
 
 namespace Core.GS.AI.Brains

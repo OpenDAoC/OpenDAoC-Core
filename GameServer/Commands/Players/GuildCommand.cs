@@ -6,6 +6,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
@@ -2037,7 +2038,7 @@ namespace Core.GS.Commands
 							client.Player.Guild.alliance.Dballiance.AllianceName = obj.Guild.Name;
 							client.Player.Guild.alliance.Dballiance.LeaderGuildID = obj.Guild.GuildID;
 							GameServer.Database.SaveObject(client.Player.Guild.alliance.Dballiance);
-							client.Player.Guild.alliance.SendMessageToAllianceMembers(obj.Guild.Name + " is the new leader of the alliance", PacketHandler.EChatType.CT_Alliance, PacketHandler.EChatLoc.CL_SystemWindow);
+							client.Player.Guild.alliance.SendMessageToAllianceMembers(obj.Guild.Name + " is the new leader of the alliance", EChatType.CT_Alliance, EChatLoc.CL_SystemWindow);
 							
 							// client.Player.Guild.alliance.PromoteGuild(obj.Guild);
 

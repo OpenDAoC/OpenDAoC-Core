@@ -2,6 +2,7 @@ using System.Collections;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.Spells;
 
 namespace Core.GS.RealmAbilities;

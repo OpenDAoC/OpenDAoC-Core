@@ -1,4 +1,5 @@
 using Core.AI.Brain;
+using Core.GS.Enums;
 
 namespace Core.GS.AI.Brains
 {

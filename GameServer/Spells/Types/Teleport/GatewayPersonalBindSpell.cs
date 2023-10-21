@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Base.Enums;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.Language;
 

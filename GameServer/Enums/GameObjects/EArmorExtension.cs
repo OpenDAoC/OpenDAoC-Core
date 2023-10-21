@@ -1,4 +1,4 @@
-namespace Core.GS.Keeps;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// This enum is used to tell us what extension level we want the armor to be

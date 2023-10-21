@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.PacketHandler.Client.v168
 {
     [PacketHandler(EPacketHandlerType.TCP, EClientPackets.RemoveQuestRequest, "Quest Remove request Handler.", EClientStatus.PlayerInGame)]

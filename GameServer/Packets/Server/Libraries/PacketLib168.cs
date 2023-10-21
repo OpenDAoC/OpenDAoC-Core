@@ -10,6 +10,7 @@ using Core.Database.Tables;
 using Core.GS.Crafting;
 using Core.GS.Database;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using Core.GS.Housing;
 using Core.GS.Keeps;
 using Core.GS.PlayerTitles;

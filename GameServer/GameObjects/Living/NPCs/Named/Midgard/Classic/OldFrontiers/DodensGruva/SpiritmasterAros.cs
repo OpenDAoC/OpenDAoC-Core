@@ -7,6 +7,7 @@ using Core.Events;
 using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 
 namespace Core.GS
@@ -159,7 +160,7 @@ namespace Core.AI.Brain
 			if (!CheckProximityAggro())
 			{
 				//set state to RETURN TO SPAWN
-				FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+				FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 				Body.Health = Body.MaxHealth;
 				DebuffTarget = null;
 				CanCastDebuff = false;

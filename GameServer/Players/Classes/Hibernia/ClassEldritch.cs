@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Core.GS.Enums;
 using Core.GS.Realm;
 
 namespace Core.GS.PlayerClass

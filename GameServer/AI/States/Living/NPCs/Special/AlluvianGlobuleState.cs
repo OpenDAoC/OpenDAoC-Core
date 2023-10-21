@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 
 namespace Core.GS.AI.States;
 
@@ -7,7 +8,7 @@ public class AlluvianGlobuleStateIdle : StandardNpcStateIdle
 {
     public AlluvianGlobuleStateIdle(AlluvianGlobuleBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.IDLE;
+        StateType = EFsmStateType.IDLE;
     }
 
     public override void Enter()
@@ -32,7 +33,7 @@ public class AlluvianGlobuleStateRoaming : StandardNpcStateRoaming
 {
     public AlluvianGlobuleStateRoaming(AlluvianGlobuleBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.ROAMING;
+        StateType = EFsmStateType.ROAMING;
     }
 
     public override void Enter()

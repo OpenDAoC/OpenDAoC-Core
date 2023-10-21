@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.GS;
+using Core.GS.Enums;
 using Core.GS.PlayerTitles;
 using Core.Language;
 

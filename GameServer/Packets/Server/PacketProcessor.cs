@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Timers;
 using Core.Base;
+using Core.GS.Enums;
 using Core.GS.ServerProperties;
 using log4net;
 using Timer = System.Timers.Timer;

@@ -4,6 +4,7 @@ using Core.AI;
 using Core.Events;
 using Core.GS.AI.States;
 using Core.GS.ECS;
+using Core.GS.Enums;
 
 namespace Core.GS.AI.Brains;
 

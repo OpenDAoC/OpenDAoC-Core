@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.AI.Brain;
 using Core.Events;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.Language;
 

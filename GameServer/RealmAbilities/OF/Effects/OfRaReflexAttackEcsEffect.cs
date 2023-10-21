@@ -1,4 +1,5 @@
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Effects

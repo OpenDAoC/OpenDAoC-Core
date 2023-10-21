@@ -1,4 +1,4 @@
-namespace Core.GS.Appeal;
+namespace Core.GS.Enums;
 
 public enum EAppealSeverity
 {

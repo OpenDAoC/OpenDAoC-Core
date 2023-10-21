@@ -4,6 +4,7 @@ using Core.GS.PacketHandler;
 using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Effects.Old;
+using Core.GS.Enums;
 
 namespace Core.GS.Spells
 {

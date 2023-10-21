@@ -1,4 +1,4 @@
-namespace Core.GS.PacketHandler;
+namespace Core.GS.Enums;
 
 public enum ESoundType : ushort
 {

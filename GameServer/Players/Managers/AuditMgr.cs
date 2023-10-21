@@ -5,6 +5,7 @@ using System.Timers;
 using Core.Base;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Enums;
 
 namespace Core.GS
 {

@@ -10,6 +10,7 @@ using Core.Events;
 using Core.GS.Behaviors;
 using Core.GS.Behaviour;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.Language;
 using log4net;

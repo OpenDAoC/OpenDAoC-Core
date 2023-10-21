@@ -1,5 +1,6 @@
 ﻿using Core.AI;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 
 namespace Core.GS.Scripts
 {

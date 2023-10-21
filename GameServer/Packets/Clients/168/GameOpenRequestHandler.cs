@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.GameOpenRequest, "Checks if UDP is working for the client", EClientStatus.None)]

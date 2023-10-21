@@ -1,4 +1,4 @@
-namespace Core.GS.Behaviour;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Type of textoutput this one is used for general text messages within questpart.   

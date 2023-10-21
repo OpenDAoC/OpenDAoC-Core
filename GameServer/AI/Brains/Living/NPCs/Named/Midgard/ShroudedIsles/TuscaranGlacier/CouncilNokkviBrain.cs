@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.AI.Brains
 {
     public class CouncilNokkviBrain : StandardMobBrain
@@ -32,7 +34,7 @@ namespace Core.GS.AI.Brains
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
                 IsPulled2 = false;
             }

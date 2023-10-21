@@ -9,6 +9,7 @@ using Core.GS.AI.States;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Effects.Old;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
@@ -43,7 +44,7 @@ namespace Core.GS.AI.Brains
             FiniteStateMachine.Add(new StandardNpcStateRoaming(this));
             FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-            FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.WAKING_UP);
         }
 
         /// <summary>
@@ -597,15 +598,15 @@ namespace Core.GS.AI.Brains
             if (!Body.IsAlive || Body.ObjectState != GameObject.eObjectState.Active)
                 return;
 
-            if (FiniteStateMachine.GetCurrentState() == FiniteStateMachine.GetState(EFSMStateType.PASSIVE))
+            if (FiniteStateMachine.GetCurrentState() == FiniteStateMachine.GetState(EFsmStateType.PASSIVE))
                 return;
 
             int damage = ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier);
             ConvertDamageToAggroAmount(ad.Attacker, Math.Max(1, damage));
 
-            if (!Body.attackComponent.AttackState && FiniteStateMachine.GetCurrentState() != FiniteStateMachine.GetState(EFSMStateType.AGGRO))
+            if (!Body.attackComponent.AttackState && FiniteStateMachine.GetCurrentState() != FiniteStateMachine.GetState(EFsmStateType.AGGRO))
             {
-                FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+                FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
                 Think();
             }
         }

@@ -7,6 +7,7 @@ using Core.Events;
 using Core.GS.AI.States;
 using Core.GS.ECS;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.RealmAbilities;
 using Core.GS.SkillHandler;
@@ -79,7 +80,7 @@ namespace Core.GS.AI.Brains
 			FiniteStateMachine.Add(new ControlledNpcStateAggro(this));
 			FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-			FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.WAKING_UP);
 		}
 
 		protected bool m_isMainPet = true;
@@ -242,7 +243,7 @@ namespace Core.GS.AI.Brains
 				return;
 
 			m_orderAttackTarget = target as GameLiving;
-			FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
 
 			if (target != Body.TargetObject && Body.IsCasting)
 				Body.StopCurrentSpellcast();
@@ -1043,7 +1044,7 @@ namespace Core.GS.AI.Brains
 
 		public virtual void OnOwnerAttacked(AttackData ad)
 		{
-			if(FiniteStateMachine.GetState(EFSMStateType.PASSIVE) == FiniteStateMachine.GetCurrentState()) { return; }
+			if(FiniteStateMachine.GetState(EFsmStateType.PASSIVE) == FiniteStateMachine.GetCurrentState()) { return; }
 
 			// Theurgist pets don't help their owner.
 			if (Owner is GamePlayer && ((GamePlayer)Owner).PlayerClass.ID == (int)EPlayerClass.Theurgist)
@@ -1065,7 +1066,7 @@ namespace Core.GS.AI.Brains
 					break;
 			}
 
-			if (FiniteStateMachine.GetState(EFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO); }
+			if (FiniteStateMachine.GetState(EFsmStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO); }
 			AttackMostWanted();
 		}
 

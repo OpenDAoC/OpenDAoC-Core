@@ -4,6 +4,7 @@ using System.Reflection;
 using Core.Database;
 using Core.Database.Enums;
 using Core.Database.Tables;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;

@@ -24,6 +24,7 @@ using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
+using Core.GS.Enums;
 using Core.GS.Housing;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;

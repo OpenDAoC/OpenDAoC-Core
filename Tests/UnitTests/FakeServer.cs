@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Database;
 using Core.GS;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 
 namespace Core.Tests.Unit.Gameserver

@@ -2,6 +2,7 @@ using System;
 using Core.AI.Brain;
 using Core.Base.Enums;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 using Core.GS.PlayerClass;
 using Core.GS.Quests;
 using Core.GS.ServerProperties;

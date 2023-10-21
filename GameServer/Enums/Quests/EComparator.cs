@@ -1,4 +1,4 @@
-namespace Core.GS.Behaviour;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Comparator enume used within some of the requirement checks.

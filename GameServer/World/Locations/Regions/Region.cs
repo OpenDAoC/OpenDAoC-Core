@@ -9,6 +9,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Database;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.ServerProperties;
 using log4net;

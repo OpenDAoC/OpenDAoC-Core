@@ -1,4 +1,4 @@
-﻿namespace Core.GS;
+﻿namespace Core.GS.Enums;
 
 /// <summary>
 /// all available and buffable/bonusable properties on livings

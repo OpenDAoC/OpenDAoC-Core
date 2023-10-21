@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Core.AI.Brain;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 using Core.Language;
 
 namespace Core.GS

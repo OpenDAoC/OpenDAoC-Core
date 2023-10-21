@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Core.Events;
 using Core.GS.Behaviour;
+using Core.GS.Enums;
 using log4net;
 
 namespace Core.GS.Behaviors;

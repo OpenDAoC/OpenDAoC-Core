@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using log4net;
 

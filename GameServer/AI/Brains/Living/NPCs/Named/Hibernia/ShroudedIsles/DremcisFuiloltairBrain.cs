@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.AI.Brains;
 
 #region Dremcis Fuiloltair
@@ -19,7 +21,7 @@ public class DremcisFuiloltairBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			CanSpawnBlobs = false;
 			if (!RemoveAdds)
@@ -117,7 +119,7 @@ public class BeomarbhanBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 		}
 		base.Think();

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.RealmAbilities

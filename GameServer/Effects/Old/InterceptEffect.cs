@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.Events;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.SkillHandler;
 using Core.Language;

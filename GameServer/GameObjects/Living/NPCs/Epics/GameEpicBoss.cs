@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.Scripts;
 using Core.GS.ServerProperties;
 

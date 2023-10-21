@@ -5,6 +5,7 @@ using System.Reflection;
 using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.Language;
@@ -625,7 +626,7 @@ namespace Core.GS
 				if (removername == member.Name)
 					member.Out.SendMessage("You leave the guild.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				else
-					member.Out.SendMessage(removername + " removed you from " + this.Name, PacketHandler.EChatType.CT_System, PacketHandler.EChatLoc.CL_SystemWindow);
+					member.Out.SendMessage(removername + " removed you from " + this.Name, EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			}
 			catch (Exception e)
 			{
@@ -805,7 +806,7 @@ namespace Core.GS
 		/// <param name="msg">message string</param>
 		/// <param name="type">message type</param>
 		/// <param name="loc">message location</param>
-		public void SendMessageToGuildMembers(string msg, PacketHandler.EChatType type, PacketHandler.EChatLoc loc)
+		public void SendMessageToGuildMembers(string msg, EChatType type, EChatLoc loc)
 		{
 			List<GamePlayer> guildPlayers = new List<GamePlayer>();
 			lock (m_memberListLock)

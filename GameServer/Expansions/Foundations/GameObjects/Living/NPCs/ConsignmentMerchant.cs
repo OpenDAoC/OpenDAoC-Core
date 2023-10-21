@@ -4,6 +4,7 @@ using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
+using Core.GS.Enums;
 using Core.GS.Housing;
 using Core.GS.PacketHandler;
 using log4net;
@@ -657,7 +658,7 @@ namespace Core.GS
 				// The above code is suspect, it seems to work 80% of the time, so let's make sure we update the player doing the move - Tolakram
 				if (hasUpdatedPlayer == false)
 				{
-					player.Client.Out.SendInventoryItemsUpdate(updateItems, PacketHandler.EInventoryWindowType.Update);
+					player.Client.Out.SendInventoryItemsUpdate(updateItems, EInventoryWindowType.Update);
 				}
 			}
 

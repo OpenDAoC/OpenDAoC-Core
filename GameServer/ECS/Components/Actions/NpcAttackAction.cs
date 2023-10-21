@@ -1,4 +1,5 @@
 ﻿using Core.GS.AI.Brains;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;

@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Core.GS.Enums;
 
 namespace Core.GS
 {

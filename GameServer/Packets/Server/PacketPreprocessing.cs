@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.GS.Enums;
 using log4net;
 
 namespace Core.GS.PacketHandler

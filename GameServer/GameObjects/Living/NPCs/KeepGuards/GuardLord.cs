@@ -4,6 +4,7 @@ using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.PlayerClass;
 using Core.GS.ServerProperties;

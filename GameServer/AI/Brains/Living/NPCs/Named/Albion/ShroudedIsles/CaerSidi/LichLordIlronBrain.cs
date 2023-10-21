@@ -1,4 +1,5 @@
 using Core.Database.Tables;
+using Core.GS.Enums;
 using Core.GS.Scripts;
 
 namespace Core.GS.AI.Brains;
@@ -16,7 +17,7 @@ public class LichLordIlronBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             spawnimages = true;
             foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
             {

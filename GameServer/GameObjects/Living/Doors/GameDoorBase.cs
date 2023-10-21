@@ -1,4 +1,6 @@
-﻿namespace Core.GS
+﻿using Core.GS.Enums;
+
+namespace Core.GS
 {
     public abstract class GameDoorBase : GameLiving
     {

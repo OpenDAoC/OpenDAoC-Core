@@ -1,4 +1,6 @@
-﻿namespace Core.GS.Quests
+﻿using Core.GS.Enums;
+
+namespace Core.GS.Quests
 {
 	public interface IDataQuestStep
 	{

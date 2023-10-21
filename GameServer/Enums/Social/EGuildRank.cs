@@ -1,4 +1,4 @@
-namespace Core.GS;
+namespace Core.GS.Enums;
 
 public enum EGuildRank : int
 {

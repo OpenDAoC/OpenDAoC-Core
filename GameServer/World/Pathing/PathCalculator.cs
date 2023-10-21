@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
 using System.Threading;
+using Core.GS.Enums;
 using log4net;
 
 namespace Core.GS

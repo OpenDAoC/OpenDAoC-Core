@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.GS;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Various flags for this npc

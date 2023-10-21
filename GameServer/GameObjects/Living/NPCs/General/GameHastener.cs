@@ -1,5 +1,6 @@
 using System.Collections;
 using Core.Events;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.Language;
 

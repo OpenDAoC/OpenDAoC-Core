@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.RealmAbilities;
 

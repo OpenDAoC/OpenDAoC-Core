@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.GS;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// All property types for check using SkillBase.CheckPropertyType. Must be unique bits set.

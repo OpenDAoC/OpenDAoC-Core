@@ -5,6 +5,7 @@ using Core.Base;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
+using Core.GS.Enums;
 using Core.GS.Housing;
 using Core.GS.ServerProperties;
 using Core.Language;

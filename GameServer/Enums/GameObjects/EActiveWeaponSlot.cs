@@ -1,4 +1,4 @@
-﻿namespace Core.GS;
+﻿namespace Core.GS.Enums;
 
 /// <summary>
 /// Holds the possible activeWeaponSlot values

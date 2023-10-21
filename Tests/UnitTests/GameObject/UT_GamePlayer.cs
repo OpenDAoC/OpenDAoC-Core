@@ -1,4 +1,5 @@
 ﻿using Core.GS;
+using Core.GS.Enums;
 using NUnit.Framework;
 
 namespace Core.Tests.Unit.Gameserver

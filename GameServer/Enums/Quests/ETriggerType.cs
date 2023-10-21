@@ -1,4 +1,4 @@
-namespace Core.GS.Behaviour;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Triggertype defines a list of available triggers to use within questparts.

@@ -7,6 +7,7 @@ using Core.Database;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 
 namespace Core.GS.Spells

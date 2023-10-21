@@ -1,3 +1,4 @@
+using Core.GS.Enums;
 using Core.GS.PlayerClass;
 using Core.GS.ServerProperties;
 using Core.Language;

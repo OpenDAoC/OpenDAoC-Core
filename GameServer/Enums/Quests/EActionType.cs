@@ -1,4 +1,4 @@
-namespace Core.GS.Behaviour;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Actiontype defines a list of actiontypes to be used qith questparts.

@@ -1,4 +1,6 @@
-﻿namespace Core.GS.AI.Brains;
+﻿using Core.GS.Enums;
+
+namespace Core.GS.AI.Brains;
 
 public class TheurgistIcePetBrain : TheurgistPetBrain
 {

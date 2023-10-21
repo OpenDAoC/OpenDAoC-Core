@@ -1,4 +1,5 @@
 using System.Reflection;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using log4net;
 
@@ -20,7 +21,7 @@ public class PrinceAsmoienBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
         }
         else

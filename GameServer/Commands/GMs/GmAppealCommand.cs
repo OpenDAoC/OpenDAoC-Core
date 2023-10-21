@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Appeal;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.Language;
 

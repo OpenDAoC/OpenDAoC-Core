@@ -6,6 +6,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Database;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;

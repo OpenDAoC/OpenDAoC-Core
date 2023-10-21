@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.RealmAbilities;
 

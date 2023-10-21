@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 
 namespace Core.AI.Brain;
@@ -30,7 +31,7 @@ public class YdeniaBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			canPort = false;
 			var throwPlayer = Body.TempProperties.GetProperty<EcsGameTimer>("ydenia_teleport");//cancel teleport

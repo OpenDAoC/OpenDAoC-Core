@@ -1,4 +1,5 @@
 using System.Reflection;
+using Core.GS.Enums;
 using log4net;
 
 namespace Core.GS.AI.Brains;
@@ -28,7 +29,7 @@ public class BufferSubPetBrain : SubPetBrain
 			return;
 
 		m_orderAttackTarget = target as GameLiving;
-		FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+		FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
 	}
 
 	#region AI

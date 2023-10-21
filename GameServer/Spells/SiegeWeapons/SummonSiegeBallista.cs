@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 
 namespace Core.GS.Spells
@@ -14,7 +15,7 @@ namespace Core.GS.Spells
         {
             if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon)
             {
-			    MessageToCaster("You cannot use siege weapons here!", PacketHandler.EChatType.CT_SpellResisted);
+			    MessageToCaster("You cannot use siege weapons here!", EChatType.CT_SpellResisted);
 			    return false;
 		    }
             
@@ -24,7 +25,7 @@ namespace Core.GS.Spells
 	            {
 		            if (((KeepArea)area).Keep.IsPortalKeep)
 		            {
-			            MessageToCaster("You cannot use siege weapons here (PK)!", PacketHandler.EChatType.CT_SpellResisted);
+			            MessageToCaster("You cannot use siege weapons here (PK)!", EChatType.CT_SpellResisted);
 			            return false;
 		            }
 	            }
@@ -36,7 +37,7 @@ namespace Core.GS.Spells
         {
 	        
 	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
-		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.EChatType.CT_SpellResisted);
+		        MessageToCaster("You cannot use siege weapons here!", EChatType.CT_SpellResisted);
 		        return;
 	        }
 	        
@@ -60,7 +61,7 @@ namespace Core.GS.Spells
         public override bool CheckBeginCast(GameLiving selectedTarget)
         {
 	        if (!Caster.CurrentZone.IsOF || Caster.CurrentRegion.IsDungeon){
-		        MessageToCaster("You cannot use siege weapons here!", PacketHandler.EChatType.CT_SpellResisted);
+		        MessageToCaster("You cannot use siege weapons here!", EChatType.CT_SpellResisted);
 		        return false;
 	        }
 

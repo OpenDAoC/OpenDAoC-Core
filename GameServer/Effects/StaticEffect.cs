@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core.Database.Tables;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.Language;
 

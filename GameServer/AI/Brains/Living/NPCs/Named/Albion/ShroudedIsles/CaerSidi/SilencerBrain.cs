@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.AI.Brains;
 
 public class SilencerBrain : StandardMobBrain
@@ -19,7 +21,7 @@ public class SilencerBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             Silencer.attackers_count = 0;
             //Silencer silencer = new Silencer();
@@ -36,7 +38,7 @@ public class SilencerBrain : StandardMobBrain
             ClearAttackers = false;
         if (Body.IsOutOfTetherRange)
         {
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             ClearAggroList();
         }

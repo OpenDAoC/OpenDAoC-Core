@@ -1,4 +1,4 @@
-namespace Core.AI.Brain;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Defines aggression level of the brain

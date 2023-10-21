@@ -1,5 +1,6 @@
 using System.Reflection;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using Core.GS.Spells;
 using log4net;
 

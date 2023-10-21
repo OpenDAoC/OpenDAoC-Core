@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core.Database.Tables;
+using Core.GS.Enums;
 
 namespace Core.GS.AI.Brains;
 
@@ -78,7 +79,7 @@ public class HrimthursaIcetouchBrain : StandardMobBrain
 							Body.TargetObject = null;
 							ResetNoTarget = true;
 						}
-						FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+						FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 					}
 				}
 			}

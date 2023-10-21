@@ -2,6 +2,7 @@
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Crafting;
+using Core.GS.Enums;
 
 namespace Core.GS.PacketHandler
 {

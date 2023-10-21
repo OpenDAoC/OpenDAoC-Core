@@ -4,6 +4,7 @@ using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Crafting;
+using Core.GS.Enums;
 using Core.GS.Housing;
 using log4net;
 

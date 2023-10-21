@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.Commands;
 
 [Command("&stand", EPrivLevel.Player, "Stands up when sitting", "/stand")]

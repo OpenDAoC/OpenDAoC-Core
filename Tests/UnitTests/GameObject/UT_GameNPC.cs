@@ -1,4 +1,5 @@
 ﻿using Core.GS;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 using NUnit.Framework;
 

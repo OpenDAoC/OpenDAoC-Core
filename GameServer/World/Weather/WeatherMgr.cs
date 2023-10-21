@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Core.Events;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.Scheduler;
 using log4net;

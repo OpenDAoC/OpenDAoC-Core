@@ -1,4 +1,4 @@
-namespace Core.GS.Spells;
+namespace Core.GS.Enums;
 
 public enum EShotType
 {

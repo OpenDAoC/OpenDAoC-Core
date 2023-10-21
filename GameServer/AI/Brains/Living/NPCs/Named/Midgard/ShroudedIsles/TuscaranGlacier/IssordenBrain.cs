@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.AI.Brains;
@@ -32,7 +33,7 @@ public class IssordenBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             BafMobs = false;
             PrepareBolt = false;

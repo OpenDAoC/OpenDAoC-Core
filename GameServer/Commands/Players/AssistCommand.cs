@@ -1,4 +1,5 @@
 using Core.Base.Enums;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.Language;

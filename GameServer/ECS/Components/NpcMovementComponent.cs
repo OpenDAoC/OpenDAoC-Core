@@ -2,6 +2,7 @@
 using System.Numerics;
 using Core.Database.Enums;
 using Core.GS.AI.Brains;
+using Core.GS.Enums;
 using Core.GS.Movement;
 
 namespace Core.GS.ECS
@@ -369,7 +370,7 @@ namespace Core.GS.ECS
                         {
                             Owner.LastAttackedByEnemyTickPvE = 0;
                             Owner.LastAttackedByEnemyTickPvP = 0;
-                            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+                            brain.FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
                             return 0;
                         }
                     }

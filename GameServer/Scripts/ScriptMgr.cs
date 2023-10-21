@@ -13,6 +13,7 @@ using Core.Config;
 using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Commands;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.ServerRules;
 using Core.GS.Spells;

@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.GS.Housing;
+namespace Core.GS.Enums;
 
 [Flags]
 public enum EVaultPermissions : byte

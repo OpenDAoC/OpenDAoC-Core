@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Crafting;
+using Core.GS.Enums;
 using Core.Language;
 
 namespace Core.GS.Commands

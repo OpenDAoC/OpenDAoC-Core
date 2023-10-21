@@ -1,3 +1,5 @@
+using Core.GS.Enums;
+
 namespace Core.GS.Calculators;
 
 [PropertyCalculator(EProperty.Skill_First, EProperty.Skill_Last)]

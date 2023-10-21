@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.Events;
+using Core.GS.Enums;
 using Core.GS.Keeps;
 
 namespace Core.GS.Quests

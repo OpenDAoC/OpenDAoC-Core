@@ -1,4 +1,4 @@
-﻿namespace Core.GS;
+﻿namespace Core.GS.Enums;
 
 /// <summary>
 /// Object type sets the type of object, for example sword or shield

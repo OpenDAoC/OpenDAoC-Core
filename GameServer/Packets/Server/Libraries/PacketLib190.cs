@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using log4net;
 
 namespace Core.GS.PacketHandler

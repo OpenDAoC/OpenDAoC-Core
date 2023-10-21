@@ -20,6 +20,7 @@
 using System;
 using Core.Events;
 using Core.GS;
+using Core.GS.Enums;
 
 namespace GameServerScripts.Titles
 {

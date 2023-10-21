@@ -1,4 +1,4 @@
-﻿namespace Core.GS;
+﻿namespace Core.GS.Enums;
 
 /// <summary>
 /// This enumeration holds all slots that can wear attackable armor

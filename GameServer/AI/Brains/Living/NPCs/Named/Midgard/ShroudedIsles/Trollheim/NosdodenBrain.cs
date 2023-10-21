@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Core.Database.Tables;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.Styles;
 
@@ -183,7 +184,7 @@ public class NosdodenBrain : StandardMobBrain
 	{
 		if (!CheckProximityAggro())
 		{
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
             #region Checks
             StartCastDOT = false;

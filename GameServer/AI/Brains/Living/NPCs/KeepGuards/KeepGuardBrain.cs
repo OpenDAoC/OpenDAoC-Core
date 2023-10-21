@@ -1,3 +1,4 @@
+using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 
@@ -56,7 +57,7 @@ namespace Core.GS.AI.Brains
 				// Drop aggro and disengage if the target is out of range
 				if (Body.IsAttacking && !Body.IsWithinRadius(target, AggroRange, false))
 				{
-					FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+					FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 
 					if (target is GameLiving livingTarget && livingTarget != null)
 						RemoveFromAggroList(livingTarget);
@@ -148,7 +149,7 @@ namespace Core.GS.AI.Brains
 
 				if (gameObject is GameLiving gameLiving)
 				{
-					FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+					FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 					RemoveFromAggroList(gameLiving);
 				}
 			}

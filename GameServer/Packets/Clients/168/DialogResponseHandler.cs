@@ -1,5 +1,6 @@
 using Core.Events;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.Housing;
 using Core.GS.Keeps;
 

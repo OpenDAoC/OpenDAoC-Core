@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Core.Events;
 using Core.GS.Effects;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.Language;
 

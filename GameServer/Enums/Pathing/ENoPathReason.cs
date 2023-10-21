@@ -1,4 +1,4 @@
-namespace Core.GS
+namespace Core.GS.Enums
 {
   /// <summary>
   /// Reason for why no path was found

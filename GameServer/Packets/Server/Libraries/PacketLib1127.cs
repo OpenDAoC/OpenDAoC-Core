@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Core.GS.Enums;
 using log4net;
 
 namespace Core.GS.PacketHandler

@@ -9,6 +9,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
+using Core.GS.Enums;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.Language;
@@ -540,7 +541,7 @@ namespace Core.GS.Keeps
 				default:
 					{
 						// Subjective
-						if (Gender == GS.EGender.Male)
+						if (Gender == EGender.Male)
 							s = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameKeepGuard.GetPronoun.He");
 						else s = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameKeepGuard.GetPronoun.She");
 						if (!firstLetterUppercase)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Core.GS.Enums;
 using Core.GS.ServerProperties;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
