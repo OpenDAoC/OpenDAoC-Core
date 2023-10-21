@@ -22,6 +22,7 @@ using Core.GS.PlayerTitles;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
+using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.Styles;
 using log4net;
@@ -2243,7 +2244,7 @@ public class PacketLib168 : APacketLib, IPacketLib
 
 						// spec index for this Spell - Special for Song and Unknown Indexes...
 						int spin = 0;
-						if (spell.SkillType == eSkillPage.Songs)
+						if (spell.SkillType == ESkillPage.Songs)
 						{
 							spin = 0xFF;
 						}

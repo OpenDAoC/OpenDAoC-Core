@@ -1,5 +1,6 @@
 using Core.Database.Tables;
 using Core.GS.Effects;
+using Core.GS.Skills;
 
 namespace Core.GS.RealmAbilities;
 
@@ -14,7 +15,7 @@ public class NfRaResoluteMinionAbility : Rr5RealmAbility
 		if (player == null) return;
 		if (player.ControlledBrain == null) return;
 		if (player.ControlledBrain.Body == null) return;
-		player.ControlledBrain.Body.AddAbility(SkillBase.GetAbility(Abilities.CCImmunity));
+		player.ControlledBrain.Body.AddAbility(SkillBase.GetAbility(AbilityConstants.CCImmunity));
 		new ResoluteMinionEffect().Start(player.ControlledBrain.Body);
 		foreach (GamePlayer visPlayer in player.GetPlayersInRadius((ushort)WorldMgr.VISIBILITY_DISTANCE))
 			visPlayer.Out.SendSpellEffectAnimation(player, player.ControlledBrain.Body, 7047, 0, false, 0x01);
@@ -33,7 +34,7 @@ public class ResoluteMinionEffect : TimedEffect
 		if (m_pet != null)
 		{
 			if (m_pet.EffectList.GetOfType<ResoluteMinionEffect>() != null) m_pet.EffectList.Remove(this);
-			if (m_pet.HasAbility(Abilities.CCImmunity)) m_pet.RemoveAbility("CCImmunity");
+			if (m_pet.HasAbility(AbilityConstants.CCImmunity)) m_pet.RemoveAbility("CCImmunity");
 		}
 		base.Stop();
 	}

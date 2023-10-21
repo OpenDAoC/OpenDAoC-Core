@@ -1,4 +1,5 @@
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -16,7 +17,7 @@ namespace Core.GS.Spells
 			int speclevel = 1;
 			if (Caster is GamePlayer)
 			{
-				speclevel = ((GamePlayer)Caster).GetModifiedSpecLevel(Specs.Stealth);
+				speclevel = ((GamePlayer)Caster).GetModifiedSpecLevel(SpecConstants.Stealth);
 				if (speclevel > ((GamePlayer)Caster).Level)
 					speclevel = ((GamePlayer)Caster).Level;
 			}

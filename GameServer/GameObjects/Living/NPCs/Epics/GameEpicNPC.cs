@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Core.GS.GameUtils;
 using Core.GS.Players.Realms;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS
 {
@@ -16,10 +17,10 @@ namespace Core.GS
 
         public override bool HasAbility(string keyName)
         {
-            if (IsAlive && keyName == GS.Abilities.ConfusionImmunity)
+            if (IsAlive && keyName == AbilityConstants.ConfusionImmunity)
                 return true;
 
-            if (IsAlive && keyName == GS.Abilities.NSImmunity)
+            if (IsAlive && keyName == AbilityConstants.NSImmunity)
                 return true;
 
             return base.HasAbility(keyName);

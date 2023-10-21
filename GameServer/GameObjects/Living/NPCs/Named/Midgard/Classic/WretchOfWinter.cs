@@ -5,6 +5,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS;
 
@@ -34,7 +35,7 @@ public class WretchOfWinterScorp : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -146,7 +147,7 @@ public class WretchOfWinterSpider : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -258,7 +259,7 @@ public class WretchOfWinterCrab : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -370,7 +371,7 @@ public class WretchOfWinterJotun : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -474,7 +475,7 @@ public class WretchOfWinterOgre : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -578,7 +579,7 @@ public class WretchOfWinterIce : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -682,7 +683,7 @@ public class WretchOfWinterRaumarik : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -786,7 +787,7 @@ public class WretchOfWinterLich : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -890,7 +891,7 @@ public class WretchOfWinterArachite : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);

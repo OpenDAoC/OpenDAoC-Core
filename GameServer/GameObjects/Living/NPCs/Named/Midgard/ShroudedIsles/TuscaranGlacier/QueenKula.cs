@@ -12,6 +12,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Players.Titles;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS
 {
@@ -123,7 +124,7 @@ namespace Core.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (IsAlive && keyName == GS.Abilities.CCImmunity)
+            if (IsAlive && keyName == AbilityConstants.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);

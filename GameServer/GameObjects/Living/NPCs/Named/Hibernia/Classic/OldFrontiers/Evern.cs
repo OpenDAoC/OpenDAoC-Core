@@ -9,6 +9,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS;
 
@@ -52,9 +53,9 @@ public class Evern : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
-        if (IsReturningToSpawnPoint && keyName == GS.Abilities.DamageImmunity)
+        if (IsReturningToSpawnPoint && keyName == AbilityConstants.DamageImmunity)
             return true;
         return base.HasAbility(keyName);
     }

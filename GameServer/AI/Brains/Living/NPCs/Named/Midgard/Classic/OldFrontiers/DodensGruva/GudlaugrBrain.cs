@@ -3,6 +3,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.Skills;
 
 namespace Core.GS.AI.Brains;
 

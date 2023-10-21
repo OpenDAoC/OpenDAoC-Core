@@ -12,6 +12,7 @@ using Core.GS.Events;
 using Core.GS.GameLoop;
 using Core.GS.Languages;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS.AI.Brains
 {

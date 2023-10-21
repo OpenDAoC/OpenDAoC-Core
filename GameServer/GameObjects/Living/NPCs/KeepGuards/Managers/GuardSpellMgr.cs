@@ -5,6 +5,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.Skills;
 
 namespace Core.GS.Keeps
 {

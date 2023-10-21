@@ -12,6 +12,7 @@ using Core.GS.Players.Clients;
 using Core.GS.Players.Specializations;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
+using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.Styles;
 using log4net;
@@ -800,7 +801,7 @@ public class DetailDisplayHandler : IPacketHandler
 					// Search Id
 					Style style = client.TrainerSkillCache?
 						.SelectMany(el => el.Item2)
-						.Where(e => e.Item2 == objectId && e.Item3.SkillType == eSkillPage.Styles)
+						.Where(e => e.Item2 == objectId && e.Item3.SkillType == ESkillPage.Styles)
 						.FirstOrDefault()
 						?.Item3 as Style;
 					if (style == null)

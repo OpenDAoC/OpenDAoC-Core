@@ -7,6 +7,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -95,7 +96,7 @@ namespace Core.GS.Spells
 			{
 				if (m_spellLine.KeyName == GlobalSpellsLines.Mundane_Poisons)
 				{
-					speclevel = ((GamePlayer)m_caster).GetModifiedSpecLevel(Specs.Envenom);
+					speclevel = ((GamePlayer)m_caster).GetModifiedSpecLevel(SpecConstants.Envenom);
 					min = 1;
 					max = 1;
 

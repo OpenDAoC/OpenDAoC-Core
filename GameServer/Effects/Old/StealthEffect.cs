@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Skills;
 
 namespace Core.GS.Effects.Old;
 
@@ -26,7 +27,7 @@ public class StealthEffect : StaticEffect, IGameEffect
 	/// </summary>
 	public override void Stop()
 	{
-		if (m_player.HasAbility(Abilities.Camouflage))
+		if (m_player.HasAbility(AbilityConstants.Camouflage))
 		{
 			CamouflageEcsAbilityEffect camouflage = (CamouflageEcsAbilityEffect)EffectListService.GetAbilityEffectOnTarget(m_player, EEffect.Camouflage);
 			if (camouflage!=null)

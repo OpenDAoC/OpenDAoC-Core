@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
+using Core.GS.Skills;
 using Core.GS.Styles;
 
 namespace Core.GS.ECS
@@ -274,7 +275,7 @@ namespace Core.GS.ECS
             // Calculate Penetrating Arrow damage reduction.
             if (_target is GameLiving livingTarget)
             {
-                int PALevel = _owner.GetAbilityLevel(Abilities.PenetratingArrow);
+                int PALevel = _owner.GetAbilityLevel(AbilityConstants.PenetratingArrow);
 
                 if ((PALevel > 0) && (_owner.rangeAttackComponent.RangedAttackType != ERangedAttackType.Long))
                 {

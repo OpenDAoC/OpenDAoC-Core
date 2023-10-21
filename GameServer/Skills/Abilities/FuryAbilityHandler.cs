@@ -1,21 +1,20 @@
-namespace Core.GS.SkillHandler
+namespace Core.GS.Skills;
+
+[SkillHandler(AbilityConstants.Fury)]
+public class FuryAbilityHandler : SpellCastingAbilityHandler
 {
-    [SkillHandler(Abilities.Fury)]
-    public class FuryAbilityHandler : SpellCastingAbilityHandler
-    {
-		public override long Preconditions
+	public override long Preconditions
+	{
+		get
 		{
-			get
-			{
-				return DEAD | SITTING | MEZZED | STUNNED;
-			}
+			return DEAD | SITTING | MEZZED | STUNNED;
 		}
-		public override int SpellID
+	}
+	public override int SpellID
+	{
+		get
 		{
-			get
-			{
-				return 14374;
-			}
-		}     
-    }
+			return 14374;
+		}
+	}     
 }

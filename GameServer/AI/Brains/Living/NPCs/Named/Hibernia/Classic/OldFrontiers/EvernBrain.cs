@@ -2,6 +2,7 @@ using Core.AI.Brain;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.GameUtils;
+using Core.GS.Skills;
 
 namespace Core.GS.AI.Brains;
 

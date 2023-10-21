@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core.GS.Packets.Clients;
+using Core.GS.Skills;
 using Core.GS.Styles;
 
 namespace Core.GS.Spells

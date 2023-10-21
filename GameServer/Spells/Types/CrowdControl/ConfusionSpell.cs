@@ -2,6 +2,7 @@ using System.Collections;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -29,7 +30,7 @@ namespace Core.GS.Spells
 
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			if (target.HasAbility(Abilities.ConfusionImmunity))
+			if (target.HasAbility(AbilityConstants.ConfusionImmunity))
 			{
 				MessageToCaster(target.Name + " can't be confused!", EChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);

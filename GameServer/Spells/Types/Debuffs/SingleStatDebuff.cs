@@ -2,6 +2,7 @@ using System;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

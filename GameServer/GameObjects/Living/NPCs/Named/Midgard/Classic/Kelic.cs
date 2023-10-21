@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS;
 
@@ -60,7 +61,7 @@ public class Kelic : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);

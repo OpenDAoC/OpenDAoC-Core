@@ -11,6 +11,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS.Scripts;
 
@@ -88,7 +89,7 @@ public abstract class GameEpicAros : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsReturningToSpawnPoint && keyName == GS.Abilities.CCImmunity)
+        if (IsReturningToSpawnPoint && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

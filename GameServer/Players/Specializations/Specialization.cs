@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Core.GS.Enums;
+using Core.GS.Skills;
 using Core.GS.Styles;
 
 namespace Core.GS.Players.Specializations;
@@ -51,9 +53,9 @@ public class Specialization : NamedSkill
 	/// <summary>
 	/// type of skill
 	/// </summary>
-	public override eSkillPage SkillType {
+	public override ESkillPage SkillType {
 		get {
-			return eSkillPage.Specialization;
+			return ESkillPage.Specialization;
 		}
 	}
 	

@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.Skills;
 using Core.GS.Styles;
 
 namespace Core.GS;
@@ -112,7 +113,7 @@ public class ChieftainCaimheul : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

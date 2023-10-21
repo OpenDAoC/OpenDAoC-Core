@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Skills;
 
 namespace Core.GS;
 
@@ -91,7 +92,7 @@ public class AncientBlackOak : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (this.IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

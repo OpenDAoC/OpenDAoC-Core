@@ -12,6 +12,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Players.Titles;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS;
 
@@ -376,7 +377,7 @@ public class FamesHorseman : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -473,7 +474,7 @@ public class BellumHorseman : GameEpicBoss
     public BellumHorseman() : base() { }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -869,7 +870,7 @@ public class MorbusHorseman : GameEpicBoss
     public MorbusHorseman() : base() { }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -1251,7 +1252,7 @@ public class FunusHorseman : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -1404,7 +1405,7 @@ public class Apocalypse : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

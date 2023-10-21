@@ -4,7 +4,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.RealmAbilities;
-using Core.GS.SkillHandler;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -174,7 +174,7 @@ namespace Core.GS.Spells
 						return false;
 					}
 				}
-				if (Target.HasAbility(Abilities.DamageImmunity))
+				if (Target.HasAbility(AbilityConstants.DamageImmunity))
 				{
 					MessageToCaster(Target.Name + " is immune to this effect!", EChatType.CT_SpellResisted);
 					return false;
@@ -264,7 +264,7 @@ namespace Core.GS.Spells
 				if (quickcast != null && Spell.CastTime > 0)
 				{
 					m_caster.TempProperties.SetProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, m_caster.CurrentRegion.Time);
-					m_caster.DisableSkill(SkillBase.GetAbility(Abilities.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
+					m_caster.DisableSkill(SkillBase.GetAbility(AbilityConstants.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
 					quickcast.Cancel(false);
 				}
 			}

@@ -9,6 +9,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS;
 
@@ -64,9 +65,9 @@ public class DraargusMighty : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
-		if (DraugynSphere.SphereCount > 0 && IsAlive && keyName == GS.Abilities.DamageImmunity)
+		if (DraugynSphere.SphereCount > 0 && IsAlive && keyName == AbilityConstants.DamageImmunity)
 			return true;
 		return base.HasAbility(keyName);
 	}
@@ -133,7 +134,7 @@ public class DraugynSphere : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);

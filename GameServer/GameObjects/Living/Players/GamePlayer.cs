@@ -41,7 +41,7 @@ using Core.GS.PlayerTitles;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
-using Core.GS.SkillHandler;
+using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.Styles;
 using JNogueira.Discord.Webhook.Client;
@@ -2983,7 +2983,7 @@ namespace Core.GS
             if (fallDamagePercent <= 0)
                 return 0;
 
-            int safeFallLevel = GetAbilityLevel(Abilities.SafeFall);
+            int safeFallLevel = GetAbilityLevel(AbilityConstants.SafeFall);
             int mythSafeFall = GetModified(EProperty.MythicalSafeFall);
 
             if (mythSafeFall > 0 & mythSafeFall < fallDamagePercent)
@@ -3596,9 +3596,9 @@ namespace Core.GS
             get
             {
                 int bestLevel = -1;
-                bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.AlbArmor));
-                bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.HibArmor));
-                bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.MidArmor));
+                bestLevel = Math.Max(bestLevel, GetAbilityLevel(AbilityConstants.AlbArmor));
+                bestLevel = Math.Max(bestLevel, GetAbilityLevel(AbilityConstants.HibArmor));
+                bestLevel = Math.Max(bestLevel, GetAbilityLevel(AbilityConstants.MidArmor));
                 return bestLevel;
             }
         }
@@ -3738,11 +3738,11 @@ namespace Core.GS
                     if (keyName == GlobalSpellsLines.Combat_Styles_Effect)
                     {
                         if (PlayerClass.ID == (int)EPlayerClass.Reaver || PlayerClass.ID == (int)EPlayerClass.Heretic)
-                            level = GetModifiedSpecLevel(Specs.Flexible);
+                            level = GetModifiedSpecLevel(SpecConstants.Flexible);
                         if (PlayerClass.ID == (int)EPlayerClass.Valewalker)
-                            level = GetModifiedSpecLevel(Specs.Scythe);
+                            level = GetModifiedSpecLevel(SpecConstants.Scythe);
                         if (PlayerClass.ID == (int)EPlayerClass.Savage)
-                            level = GetModifiedSpecLevel(Specs.Savagery);
+                            level = GetModifiedSpecLevel(SpecConstants.Savagery);
                     }
 
                     level = 0;
@@ -6416,7 +6416,7 @@ namespace Core.GS
             #endregion PVP DAMAGE
 
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
-            if(this.HasAbility(Abilities.DefensiveCombatPowerRegeneration))
+            if(this.HasAbility(AbilityConstants.DefensiveCombatPowerRegeneration))
             {
                 this.Mana += (int)((damageAmount + criticalAmount) * 0.25);
             }
@@ -6498,9 +6498,9 @@ namespace Core.GS
 
                 // Overall AF CAP = 10 * level * (1 + abs%/100)
                 int bestLevel = -1;
-                bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.AlbArmor));
-                bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.HibArmor));
-                bestLevel = Math.Max(bestLevel, GetAbilityLevel(Abilities.MidArmor));
+                bestLevel = Math.Max(bestLevel, GetAbilityLevel(AbilityConstants.AlbArmor));
+                bestLevel = Math.Max(bestLevel, GetAbilityLevel(AbilityConstants.HibArmor));
+                bestLevel = Math.Max(bestLevel, GetAbilityLevel(AbilityConstants.MidArmor));
                 switch (bestLevel)
                 {
                     default: abs = 0; break; // cloth etc
@@ -8483,7 +8483,7 @@ namespace Core.GS
         public bool ApplyPoison(DbInventoryItem poisonPotion, DbInventoryItem toItem)
         {
             if (poisonPotion == null || toItem == null) return false;
-            int envenomSpec = GetModifiedSpecLevel(Specs.Envenom);
+            int envenomSpec = GetModifiedSpecLevel(SpecConstants.Envenom);
             if (envenomSpec < 1)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ApplyPoison.CantUsePoisons"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
@@ -12362,11 +12362,11 @@ namespace Core.GS
                         continue;
 
                     double npcLevel = Math.Max(npc.Level, 1.0);
-                    double stealthLevel = player.GetModifiedSpecLevel(Specs.Stealth);
+                    double stealthLevel = player.GetModifiedSpecLevel(SpecConstants.Stealth);
                     double detectRadius = 125.0 + ((npcLevel - stealthLevel) * 20.0);
 
                     // we have detect hidden and enemy don't = higher range
-                    if (npc.HasAbility(Abilities.DetectHidden) && EffectListService.GetAbilityEffectOnTarget(player, EEffect.Camouflage) == null)
+                    if (npc.HasAbility(AbilityConstants.DetectHidden) && EffectListService.GetAbilityEffectOnTarget(player, EEffect.Camouflage) == null)
                         detectRadius += 125;
 
                     if (detectRadius < 126) detectRadius = 126;
@@ -12474,7 +12474,7 @@ namespace Core.GS
              * -See Hidden range = 2700 - (38 * your stealth spec)
              */
 
-            int EnemyStealthLevel = enemy.GetModifiedSpecLevel(Specs.Stealth);
+            int EnemyStealthLevel = enemy.GetModifiedSpecLevel(SpecConstants.Stealth);
             if (EnemyStealthLevel > 50)
                 EnemyStealthLevel = 50;
             int levelDiff = this.Level - EnemyStealthLevel;
@@ -12483,7 +12483,7 @@ namespace Core.GS
             int range = 0;
             bool enemyHasCamouflage = EffectListService.GetAbilityEffectOnTarget(enemy, EEffect.Camouflage) != null;
             bool enemyHasVanish = EffectListService.GetAbilityEffectOnTarget(enemy, EEffect.Vanish) != null;
-            if (HasAbility(Abilities.DetectHidden) && !enemyHasVanish && !enemyHasCamouflage)
+            if (HasAbility(AbilityConstants.DetectHidden) && !enemyHasVanish && !enemyHasCamouflage)
             {
                 // we have detect hidden and enemy don't = higher range
                 range = levelDiff * 50 + 250; // Detect Hidden advantage
@@ -15185,9 +15185,9 @@ namespace Core.GS
             //	evade = SpellHandler.FindEffectOnTarget(this, "SavageEvadeBuff");
             EcsGameEffect evade = EffectListService.GetEffectOnTarget(this, EEffect.SavageBuff, ESpellType.SavageEvadeBuff);
 
-            if (HasAbility(Abilities.Advanced_Evade) || HasAbility(Abilities.Enhanced_Evade) || EffectList.GetOfType<NfRaCombatAwarenessEffect>() != null || EffectList.GetOfType<NfRaRuneOfUtterAgilityEffect>() != null)
+            if (HasAbility(AbilityConstants.Advanced_Evade) || HasAbility(AbilityConstants.Enhanced_Evade) || EffectList.GetOfType<NfRaCombatAwarenessEffect>() != null || EffectList.GetOfType<NfRaRuneOfUtterAgilityEffect>() != null)
                 evadeChance = GetModified(EProperty.EvadeChance);
-            else if (evade != null || HasAbility(Abilities.Evade))
+            else if (evade != null || HasAbility(AbilityConstants.Evade))
             {
                 int res = GetModified(EProperty.EvadeChance);
                 if (res > 0)
@@ -15209,7 +15209,7 @@ namespace Core.GS
         {
             double blockChance = 0;
             DbInventoryItem lefthand = null;
-            if (HasAbility(Abilities.Shield))
+            if (HasAbility(AbilityConstants.Shield))
             {
                 lefthand = Inventory.GetItem(EInventorySlot.LeftHandWeapon);
                 if (lefthand != null && (ActiveWeapon == null || ActiveWeapon.Item_Type == Slot.RIGHTHAND || ActiveWeapon.Item_Type == Slot.LEFTHAND))
@@ -15241,7 +15241,7 @@ namespace Core.GS
             //	parry = SpellHandler.FindEffectOnTarget(this, "SavageParryBuff");
             EcsGameEffect parry = EffectListService.GetEffectOnTarget(this, EEffect.SavageBuff, ESpellType.SavageParryBuff);
 
-            if ((HasSpecialization(Specs.Parry) || parry != null) && (ActiveWeapon != null))
+            if ((HasSpecialization(SpecConstants.Parry) || parry != null) && (ActiveWeapon != null))
                 parryChance = GetModified(EProperty.ParryChance);
             else if (EffectList.GetOfType<NfRaBladeBarrierEffect>() != null)
                 parryChance = GetModified(EProperty.ParryChance);

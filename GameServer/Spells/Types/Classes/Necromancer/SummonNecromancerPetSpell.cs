@@ -7,6 +7,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.RealmAbilities;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

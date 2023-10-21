@@ -2,45 +2,44 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Languages;
 
-namespace Core.GS.SkillHandler
+namespace Core.GS.Skills;
+
+[SkillHandler(AbilityConstants.BolsteringRoar)]
+public class BolsteringRoarAbilityHandler : SpellCastingAbilityHandler
 {
-    [SkillHandler(Abilities.BolsteringRoar)]
-    public class BolsteringRoarAbilityHandler : SpellCastingAbilityHandler
-    {
-		public override long Preconditions
+	public override long Preconditions
+	{
+		get
 		{
-			get
-			{
-				return DEAD | SITTING | MEZZED | STUNNED | NOTINGROUP;
-			}
+			return DEAD | SITTING | MEZZED | STUNNED | NOTINGROUP;
 		}
- 		public override int SpellID
+	}
+ 	public override int SpellID
+	{
+		get
 		{
-			get
-			{
-				return 14376;
-			}
-		}  
- 		public override bool CheckPreconditions(GameLiving living, long bitmask)
- 		{ 			 
-             lock (living.EffectList)
-             {
-                foreach (IGameEffect effect in living.EffectList)
+			return 14376;
+		}
+	}  
+ 	public override bool CheckPreconditions(GameLiving living, long bitmask)
+ 	{ 			 
+         lock (living.EffectList)
+         {
+            foreach (IGameEffect effect in living.EffectList)
+            {
+                if (effect is GameSpellEffect)
                 {
-                    if (effect is GameSpellEffect)
-                    {
-                        GameSpellEffect oEffect = (GameSpellEffect)effect;
-                        if (oEffect.Spell.SpellType.ToString().ToLower().IndexOf("speeddecrease") != -1 && oEffect.Spell.Value != 99)
-                        {            
-                        	GamePlayer player = living as GamePlayer;
-                            if (player != null)
-                                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseSnared"), EChatType.CT_System, EChatLoc.CL_SystemWindow);      
-                            return true;
-                        }
+                    GameSpellEffect oEffect = (GameSpellEffect)effect;
+                    if (oEffect.Spell.SpellType.ToString().ToLower().IndexOf("speeddecrease") != -1 && oEffect.Spell.Value != 99)
+                    {            
+                        GamePlayer player = living as GamePlayer;
+                        if (player != null)
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseSnared"), EChatType.CT_System, EChatLoc.CL_SystemWindow);      
+                        return true;
                     }
                 }
             }
-             return base.CheckPreconditions(living, bitmask);
- 		}
-    }
+        }
+         return base.CheckPreconditions(living, bitmask);
+ 	}
 }

@@ -8,6 +8,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -46,7 +47,7 @@ namespace Core.GS.Spells
 				target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;
 				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
 			}
-            if (target.HasAbility(Abilities.CCImmunity))
+            if (target.HasAbility(AbilityConstants.CCImmunity))
             {
                 MessageToCaster(target.Name + " is immune to this effect!", EChatType.CT_SpellResisted);
                 return;

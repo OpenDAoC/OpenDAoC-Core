@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Players.Races;
+using Core.GS.Skills;
 
 namespace Core.GS.Players.Classes;
 
 [PlayerClass((int)EPlayerClass.Mercenary, "Mercenary", "Fighter")]
 public class ClassMercenary : ClassFighter
 {
-	private static readonly string[] AutotrainableSkills = new[] { Specs.Slash, Specs.Thrust };
+	private static readonly string[] AutotrainableSkills = new[] { SpecConstants.Slash, SpecConstants.Thrust };
 
 	public ClassMercenary()
 		: base()

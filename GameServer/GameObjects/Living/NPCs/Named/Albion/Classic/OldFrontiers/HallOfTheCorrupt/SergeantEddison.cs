@@ -8,6 +8,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Skills;
 using Core.GS.Styles;
 
 namespace Core.GS
@@ -137,7 +138,7 @@ namespace Core.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
+            if (this.IsAlive && keyName == AbilityConstants.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);

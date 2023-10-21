@@ -1,11 +1,10 @@
-namespace Core.GS.SkillHandler
+namespace Core.GS.Skills;
+
+[SkillHandler(AbilityConstants.Sprint)]
+public class SprintAbilityHandler : IAbilityActionHandler
 {
-	[SkillHandler(Abilities.Sprint)]
-	public class SprintAbilityHandler : IAbilityActionHandler
+	public void Execute(Ability ab, GamePlayer player)
 	{
-		public void Execute(Ability ab, GamePlayer player)
-		{
-			player.Sprint(!player.IsSprinting);
-		}
+		player.Sprint(!player.IsSprinting);
 	}
 }

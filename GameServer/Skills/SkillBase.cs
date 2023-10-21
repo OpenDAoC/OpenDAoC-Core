@@ -17,7 +17,7 @@ using Core.GS.Server;
 using Core.GS.Styles;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.Skills
 {
 	public class SkillBase
 	{
@@ -950,73 +950,73 @@ namespace Core.GS
 		/// </summary>
 		private static void InitializeObjectTypeToSpec()
 		{
-			m_objectTypeToSpec.Add(EObjectType.Staff, Specs.Staff);
-			m_objectTypeToSpec.Add(EObjectType.Fired, Specs.ShortBow);
+			m_objectTypeToSpec.Add(EObjectType.Staff, SpecConstants.Staff);
+			m_objectTypeToSpec.Add(EObjectType.Fired, SpecConstants.ShortBow);
 
-			m_objectTypeToSpec.Add(EObjectType.FistWraps, Specs.Fist_Wraps);
-			m_objectTypeToSpec.Add(EObjectType.MaulerStaff, Specs.Mauler_Staff);
+			m_objectTypeToSpec.Add(EObjectType.FistWraps, SpecConstants.Fist_Wraps);
+			m_objectTypeToSpec.Add(EObjectType.MaulerStaff, SpecConstants.Mauler_Staff);
 
 			//alb
-			m_objectTypeToSpec.Add(EObjectType.CrushingWeapon, Specs.Crush);
-			m_objectTypeToSpec.Add(EObjectType.SlashingWeapon, Specs.Slash);
-			m_objectTypeToSpec.Add(EObjectType.ThrustWeapon, Specs.Thrust);
-			m_objectTypeToSpec.Add(EObjectType.TwoHandedWeapon, Specs.Two_Handed);
-			m_objectTypeToSpec.Add(EObjectType.PolearmWeapon, Specs.Polearms);
-			m_objectTypeToSpec.Add(EObjectType.Flexible, Specs.Flexible);
-			m_objectTypeToSpec.Add(EObjectType.Crossbow, Specs.Crossbow);
+			m_objectTypeToSpec.Add(EObjectType.CrushingWeapon, SpecConstants.Crush);
+			m_objectTypeToSpec.Add(EObjectType.SlashingWeapon, SpecConstants.Slash);
+			m_objectTypeToSpec.Add(EObjectType.ThrustWeapon, SpecConstants.Thrust);
+			m_objectTypeToSpec.Add(EObjectType.TwoHandedWeapon, SpecConstants.Two_Handed);
+			m_objectTypeToSpec.Add(EObjectType.PolearmWeapon, SpecConstants.Polearms);
+			m_objectTypeToSpec.Add(EObjectType.Flexible, SpecConstants.Flexible);
+			m_objectTypeToSpec.Add(EObjectType.Crossbow, SpecConstants.Crossbow);
 
 			// RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
 			if (ServerProperty.ALLOW_OLD_ARCHERY == true)
 			{
-				m_objectTypeToSpec.Add(EObjectType.Longbow, Specs.Longbow);
+				m_objectTypeToSpec.Add(EObjectType.Longbow, SpecConstants.Longbow);
 			}
 			// RDSandersJR: If we are NOT using old archery it should be SpellDamage
 			else if (ServerProperty.ALLOW_OLD_ARCHERY == false)
 			{
-				m_objectTypeToSpec.Add(EObjectType.Longbow, Specs.Archery);
+				m_objectTypeToSpec.Add(EObjectType.Longbow, SpecConstants.Archery);
 			}
 
 			//TODO: case 5: abilityCheck = Abilities.Weapon_Thrown); break);
 
 			//mid
-			m_objectTypeToSpec.Add(EObjectType.Hammer, Specs.Hammer);
-			m_objectTypeToSpec.Add(EObjectType.Sword, Specs.Sword);
-			m_objectTypeToSpec.Add(EObjectType.LeftAxe, Specs.Left_Axe);
-			m_objectTypeToSpec.Add(EObjectType.Axe, Specs.Axe);
-			m_objectTypeToSpec.Add(EObjectType.HandToHand, Specs.HandToHand);
-			m_objectTypeToSpec.Add(EObjectType.Spear, Specs.Spear);
-			m_objectTypeToSpec.Add(EObjectType.Thrown, Specs.Thrown_Weapons);
+			m_objectTypeToSpec.Add(EObjectType.Hammer, SpecConstants.Hammer);
+			m_objectTypeToSpec.Add(EObjectType.Sword, SpecConstants.Sword);
+			m_objectTypeToSpec.Add(EObjectType.LeftAxe, SpecConstants.Left_Axe);
+			m_objectTypeToSpec.Add(EObjectType.Axe, SpecConstants.Axe);
+			m_objectTypeToSpec.Add(EObjectType.HandToHand, SpecConstants.HandToHand);
+			m_objectTypeToSpec.Add(EObjectType.Spear, SpecConstants.Spear);
+			m_objectTypeToSpec.Add(EObjectType.Thrown, SpecConstants.Thrown_Weapons);
 
 			// RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
 			if (ServerProperty.ALLOW_OLD_ARCHERY == true)
 			{
-				m_objectTypeToSpec.Add(EObjectType.CompositeBow, Specs.CompositeBow);
+				m_objectTypeToSpec.Add(EObjectType.CompositeBow, SpecConstants.CompositeBow);
 			}
 			// RDSandersJR: If we are NOT using old archery it should be SpellDamage
 			else if (ServerProperty.ALLOW_OLD_ARCHERY == false)
 			{
-				m_objectTypeToSpec.Add(EObjectType.CompositeBow, Specs.Archery);
+				m_objectTypeToSpec.Add(EObjectType.CompositeBow, SpecConstants.Archery);
 			}
 
 			//hib
-			m_objectTypeToSpec.Add(EObjectType.Blunt, Specs.Blunt);
-			m_objectTypeToSpec.Add(EObjectType.Blades, Specs.Blades);
-			m_objectTypeToSpec.Add(EObjectType.Piercing, Specs.Piercing);
-			m_objectTypeToSpec.Add(EObjectType.LargeWeapons, Specs.Large_Weapons);
-			m_objectTypeToSpec.Add(EObjectType.CelticSpear, Specs.Celtic_Spear);
-			m_objectTypeToSpec.Add(EObjectType.Scythe, Specs.Scythe);
-			m_objectTypeToSpec.Add(EObjectType.Shield, Specs.Shields);
-			m_objectTypeToSpec.Add(EObjectType.Poison, Specs.Envenom);
+			m_objectTypeToSpec.Add(EObjectType.Blunt, SpecConstants.Blunt);
+			m_objectTypeToSpec.Add(EObjectType.Blades, SpecConstants.Blades);
+			m_objectTypeToSpec.Add(EObjectType.Piercing, SpecConstants.Piercing);
+			m_objectTypeToSpec.Add(EObjectType.LargeWeapons, SpecConstants.Large_Weapons);
+			m_objectTypeToSpec.Add(EObjectType.CelticSpear, SpecConstants.Celtic_Spear);
+			m_objectTypeToSpec.Add(EObjectType.Scythe, SpecConstants.Scythe);
+			m_objectTypeToSpec.Add(EObjectType.Shield, SpecConstants.Shields);
+			m_objectTypeToSpec.Add(EObjectType.Poison, SpecConstants.Envenom);
 
 			// RDSandersJR: Check to see if we are using old archery if so, use RangedDamge
 			if (ServerProperty.ALLOW_OLD_ARCHERY == true)
 			{
-				m_objectTypeToSpec.Add(EObjectType.RecurvedBow, Specs.RecurveBow);
+				m_objectTypeToSpec.Add(EObjectType.RecurvedBow, SpecConstants.RecurveBow);
 			}
 			// RDSandersJR: If we are NOT using old archery it should be SpellDamage
 			else if (ServerProperty.ALLOW_OLD_ARCHERY == false)
 			{
-				m_objectTypeToSpec.Add(EObjectType.RecurvedBow, Specs.Archery);
+				m_objectTypeToSpec.Add(EObjectType.RecurvedBow, SpecConstants.Archery);
 			}
 		}
 
@@ -1029,34 +1029,34 @@ namespace Core.GS
 
 			//Weapon specs
 			//Alb
-			m_specToSkill.Add(Specs.Thrust, EProperty.Skill_Thrusting);
-			m_specToSkill.Add(Specs.Slash, EProperty.Skill_Slashing);
-			m_specToSkill.Add(Specs.Crush, EProperty.Skill_Crushing);
-			m_specToSkill.Add(Specs.Polearms, EProperty.Skill_Polearms);
-			m_specToSkill.Add(Specs.Two_Handed, EProperty.Skill_Two_Handed);
-			m_specToSkill.Add(Specs.Staff, EProperty.Skill_Staff);
-			m_specToSkill.Add(Specs.Dual_Wield, EProperty.Skill_Dual_Wield);
-			m_specToSkill.Add(Specs.Flexible, EProperty.Skill_Flexible_Weapon);
-			m_specToSkill.Add(Specs.Longbow, EProperty.Skill_Long_bows);
-			m_specToSkill.Add(Specs.Crossbow, EProperty.Skill_Cross_Bows);
+			m_specToSkill.Add(SpecConstants.Thrust, EProperty.Skill_Thrusting);
+			m_specToSkill.Add(SpecConstants.Slash, EProperty.Skill_Slashing);
+			m_specToSkill.Add(SpecConstants.Crush, EProperty.Skill_Crushing);
+			m_specToSkill.Add(SpecConstants.Polearms, EProperty.Skill_Polearms);
+			m_specToSkill.Add(SpecConstants.Two_Handed, EProperty.Skill_Two_Handed);
+			m_specToSkill.Add(SpecConstants.Staff, EProperty.Skill_Staff);
+			m_specToSkill.Add(SpecConstants.Dual_Wield, EProperty.Skill_Dual_Wield);
+			m_specToSkill.Add(SpecConstants.Flexible, EProperty.Skill_Flexible_Weapon);
+			m_specToSkill.Add(SpecConstants.Longbow, EProperty.Skill_Long_bows);
+			m_specToSkill.Add(SpecConstants.Crossbow, EProperty.Skill_Cross_Bows);
 			//Mid
-			m_specToSkill.Add(Specs.Sword, EProperty.Skill_Sword);
-			m_specToSkill.Add(Specs.Axe, EProperty.Skill_Axe);
-			m_specToSkill.Add(Specs.Hammer, EProperty.Skill_Hammer);
-			m_specToSkill.Add(Specs.Left_Axe, EProperty.Skill_Left_Axe);
-			m_specToSkill.Add(Specs.Spear, EProperty.Skill_Spear);
-			m_specToSkill.Add(Specs.CompositeBow, EProperty.Skill_Composite);
-			m_specToSkill.Add(Specs.Thrown_Weapons, EProperty.Skill_Thrown_Weapons);
-			m_specToSkill.Add(Specs.HandToHand, EProperty.Skill_HandToHand);
+			m_specToSkill.Add(SpecConstants.Sword, EProperty.Skill_Sword);
+			m_specToSkill.Add(SpecConstants.Axe, EProperty.Skill_Axe);
+			m_specToSkill.Add(SpecConstants.Hammer, EProperty.Skill_Hammer);
+			m_specToSkill.Add(SpecConstants.Left_Axe, EProperty.Skill_Left_Axe);
+			m_specToSkill.Add(SpecConstants.Spear, EProperty.Skill_Spear);
+			m_specToSkill.Add(SpecConstants.CompositeBow, EProperty.Skill_Composite);
+			m_specToSkill.Add(SpecConstants.Thrown_Weapons, EProperty.Skill_Thrown_Weapons);
+			m_specToSkill.Add(SpecConstants.HandToHand, EProperty.Skill_HandToHand);
 			//Hib
-			m_specToSkill.Add(Specs.Blades, EProperty.Skill_Blades);
-			m_specToSkill.Add(Specs.Blunt, EProperty.Skill_Blunt);
-			m_specToSkill.Add(Specs.Piercing, EProperty.Skill_Piercing);
-			m_specToSkill.Add(Specs.Large_Weapons, EProperty.Skill_Large_Weapon);
-			m_specToSkill.Add(Specs.Celtic_Dual, EProperty.Skill_Celtic_Dual);
-			m_specToSkill.Add(Specs.Celtic_Spear, EProperty.Skill_Celtic_Spear);
-			m_specToSkill.Add(Specs.RecurveBow, EProperty.Skill_RecurvedBow);
-			m_specToSkill.Add(Specs.Scythe, EProperty.Skill_Scythe);
+			m_specToSkill.Add(SpecConstants.Blades, EProperty.Skill_Blades);
+			m_specToSkill.Add(SpecConstants.Blunt, EProperty.Skill_Blunt);
+			m_specToSkill.Add(SpecConstants.Piercing, EProperty.Skill_Piercing);
+			m_specToSkill.Add(SpecConstants.Large_Weapons, EProperty.Skill_Large_Weapon);
+			m_specToSkill.Add(SpecConstants.Celtic_Dual, EProperty.Skill_Celtic_Dual);
+			m_specToSkill.Add(SpecConstants.Celtic_Spear, EProperty.Skill_Celtic_Spear);
+			m_specToSkill.Add(SpecConstants.RecurveBow, EProperty.Skill_RecurvedBow);
+			m_specToSkill.Add(SpecConstants.Scythe, EProperty.Skill_Scythe);
 
 			#endregion
 
@@ -1064,84 +1064,84 @@ namespace Core.GS
 
 			//Magic specs
 			//Alb
-			m_specToSkill.Add(Specs.Matter_Magic, EProperty.Skill_Matter);
-			m_specToSkill.Add(Specs.Body_Magic, EProperty.Skill_Body);
-			m_specToSkill.Add(Specs.Spirit_Magic, EProperty.Skill_Spirit);
-			m_specToSkill.Add(Specs.Rejuvenation, EProperty.Skill_Rejuvenation);
-			m_specToSkill.Add(Specs.Enhancement, EProperty.Skill_Enhancement);
-			m_specToSkill.Add(Specs.Smite, EProperty.Skill_Smiting);
-			m_specToSkill.Add(Specs.Instruments, EProperty.Skill_Instruments);
-			m_specToSkill.Add(Specs.Deathsight, EProperty.Skill_DeathSight);
-			m_specToSkill.Add(Specs.Painworking, EProperty.Skill_Pain_working);
-			m_specToSkill.Add(Specs.Death_Servant, EProperty.Skill_Death_Servant);
-			m_specToSkill.Add(Specs.Chants, EProperty.Skill_Chants);
-			m_specToSkill.Add(Specs.Mind_Magic, EProperty.Skill_Mind);
-			m_specToSkill.Add(Specs.Earth_Magic, EProperty.Skill_Earth);
-			m_specToSkill.Add(Specs.Cold_Magic, EProperty.Skill_Cold);
-			m_specToSkill.Add(Specs.Fire_Magic, EProperty.Skill_Fire);
-			m_specToSkill.Add(Specs.Wind_Magic, EProperty.Skill_Wind);
-			m_specToSkill.Add(Specs.Soulrending, EProperty.Skill_SoulRending);
+			m_specToSkill.Add(SpecConstants.Matter_Magic, EProperty.Skill_Matter);
+			m_specToSkill.Add(SpecConstants.Body_Magic, EProperty.Skill_Body);
+			m_specToSkill.Add(SpecConstants.Spirit_Magic, EProperty.Skill_Spirit);
+			m_specToSkill.Add(SpecConstants.Rejuvenation, EProperty.Skill_Rejuvenation);
+			m_specToSkill.Add(SpecConstants.Enhancement, EProperty.Skill_Enhancement);
+			m_specToSkill.Add(SpecConstants.Smite, EProperty.Skill_Smiting);
+			m_specToSkill.Add(SpecConstants.Instruments, EProperty.Skill_Instruments);
+			m_specToSkill.Add(SpecConstants.Deathsight, EProperty.Skill_DeathSight);
+			m_specToSkill.Add(SpecConstants.Painworking, EProperty.Skill_Pain_working);
+			m_specToSkill.Add(SpecConstants.Death_Servant, EProperty.Skill_Death_Servant);
+			m_specToSkill.Add(SpecConstants.Chants, EProperty.Skill_Chants);
+			m_specToSkill.Add(SpecConstants.Mind_Magic, EProperty.Skill_Mind);
+			m_specToSkill.Add(SpecConstants.Earth_Magic, EProperty.Skill_Earth);
+			m_specToSkill.Add(SpecConstants.Cold_Magic, EProperty.Skill_Cold);
+			m_specToSkill.Add(SpecConstants.Fire_Magic, EProperty.Skill_Fire);
+			m_specToSkill.Add(SpecConstants.Wind_Magic, EProperty.Skill_Wind);
+			m_specToSkill.Add(SpecConstants.Soulrending, EProperty.Skill_SoulRending);
 			//Mid
-			m_specToSkill.Add(Specs.Darkness, EProperty.Skill_Darkness);
-			m_specToSkill.Add(Specs.Suppression, EProperty.Skill_Suppression);
-			m_specToSkill.Add(Specs.Runecarving, EProperty.Skill_Runecarving);
-			m_specToSkill.Add(Specs.Summoning, EProperty.Skill_Summoning);
-			m_specToSkill.Add(Specs.BoneArmy, EProperty.Skill_BoneArmy);
-			m_specToSkill.Add(Specs.Mending, EProperty.Skill_Mending);
-			m_specToSkill.Add(Specs.Augmentation, EProperty.Skill_Augmentation);
-			m_specToSkill.Add(Specs.Pacification, EProperty.Skill_Pacification);
-			m_specToSkill.Add(Specs.Subterranean, EProperty.Skill_Subterranean);
-			m_specToSkill.Add(Specs.Beastcraft, EProperty.Skill_BeastCraft);
-			m_specToSkill.Add(Specs.Stormcalling, EProperty.Skill_Stormcalling);
-			m_specToSkill.Add(Specs.Battlesongs, EProperty.Skill_Battlesongs);
-			m_specToSkill.Add(Specs.Savagery, EProperty.Skill_Savagery);
-			m_specToSkill.Add(Specs.OdinsWill, EProperty.Skill_OdinsWill);
-			m_specToSkill.Add(Specs.Cursing, EProperty.Skill_Cursing);
-			m_specToSkill.Add(Specs.Hexing, EProperty.Skill_Hexing);
-			m_specToSkill.Add(Specs.Witchcraft, EProperty.Skill_Witchcraft);
+			m_specToSkill.Add(SpecConstants.Darkness, EProperty.Skill_Darkness);
+			m_specToSkill.Add(SpecConstants.Suppression, EProperty.Skill_Suppression);
+			m_specToSkill.Add(SpecConstants.Runecarving, EProperty.Skill_Runecarving);
+			m_specToSkill.Add(SpecConstants.Summoning, EProperty.Skill_Summoning);
+			m_specToSkill.Add(SpecConstants.BoneArmy, EProperty.Skill_BoneArmy);
+			m_specToSkill.Add(SpecConstants.Mending, EProperty.Skill_Mending);
+			m_specToSkill.Add(SpecConstants.Augmentation, EProperty.Skill_Augmentation);
+			m_specToSkill.Add(SpecConstants.Pacification, EProperty.Skill_Pacification);
+			m_specToSkill.Add(SpecConstants.Subterranean, EProperty.Skill_Subterranean);
+			m_specToSkill.Add(SpecConstants.Beastcraft, EProperty.Skill_BeastCraft);
+			m_specToSkill.Add(SpecConstants.Stormcalling, EProperty.Skill_Stormcalling);
+			m_specToSkill.Add(SpecConstants.Battlesongs, EProperty.Skill_Battlesongs);
+			m_specToSkill.Add(SpecConstants.Savagery, EProperty.Skill_Savagery);
+			m_specToSkill.Add(SpecConstants.OdinsWill, EProperty.Skill_OdinsWill);
+			m_specToSkill.Add(SpecConstants.Cursing, EProperty.Skill_Cursing);
+			m_specToSkill.Add(SpecConstants.Hexing, EProperty.Skill_Hexing);
+			m_specToSkill.Add(SpecConstants.Witchcraft, EProperty.Skill_Witchcraft);
 
 			//Hib
-			m_specToSkill.Add(Specs.Arboreal_Path, EProperty.Skill_Arboreal);
-			m_specToSkill.Add(Specs.Creeping_Path, EProperty.Skill_Creeping);
-			m_specToSkill.Add(Specs.Verdant_Path, EProperty.Skill_Verdant);
-			m_specToSkill.Add(Specs.Regrowth, EProperty.Skill_Regrowth);
-			m_specToSkill.Add(Specs.Nurture, EProperty.Skill_Nurture);
-			m_specToSkill.Add(Specs.Music, EProperty.Skill_Music);
-			m_specToSkill.Add(Specs.Valor, EProperty.Skill_Valor);
-			m_specToSkill.Add(Specs.Nature, EProperty.Skill_Nature);
-			m_specToSkill.Add(Specs.Light, EProperty.Skill_Light);
-			m_specToSkill.Add(Specs.Void, EProperty.Skill_Void);
-			m_specToSkill.Add(Specs.Mana, EProperty.Skill_Mana);
-			m_specToSkill.Add(Specs.Enchantments, EProperty.Skill_Enchantments);
-			m_specToSkill.Add(Specs.Mentalism, EProperty.Skill_Mentalism);
-			m_specToSkill.Add(Specs.Nightshade_Magic, EProperty.Skill_Nightshade);
-			m_specToSkill.Add(Specs.Pathfinding, EProperty.Skill_Pathfinding);
-			m_specToSkill.Add(Specs.Dementia, EProperty.Skill_Dementia);
-			m_specToSkill.Add(Specs.ShadowMastery, EProperty.Skill_ShadowMastery);
-			m_specToSkill.Add(Specs.VampiiricEmbrace, EProperty.Skill_VampiiricEmbrace);
-			m_specToSkill.Add(Specs.EtherealShriek, EProperty.Skill_EtherealShriek);
-			m_specToSkill.Add(Specs.PhantasmalWail, EProperty.Skill_PhantasmalWail);
-			m_specToSkill.Add(Specs.SpectralForce, EProperty.Skill_SpectralForce);
-			m_specToSkill.Add(Specs.SpectralGuard, EProperty.Skill_SpectralGuard);
+			m_specToSkill.Add(SpecConstants.Arboreal_Path, EProperty.Skill_Arboreal);
+			m_specToSkill.Add(SpecConstants.Creeping_Path, EProperty.Skill_Creeping);
+			m_specToSkill.Add(SpecConstants.Verdant_Path, EProperty.Skill_Verdant);
+			m_specToSkill.Add(SpecConstants.Regrowth, EProperty.Skill_Regrowth);
+			m_specToSkill.Add(SpecConstants.Nurture, EProperty.Skill_Nurture);
+			m_specToSkill.Add(SpecConstants.Music, EProperty.Skill_Music);
+			m_specToSkill.Add(SpecConstants.Valor, EProperty.Skill_Valor);
+			m_specToSkill.Add(SpecConstants.Nature, EProperty.Skill_Nature);
+			m_specToSkill.Add(SpecConstants.Light, EProperty.Skill_Light);
+			m_specToSkill.Add(SpecConstants.Void, EProperty.Skill_Void);
+			m_specToSkill.Add(SpecConstants.Mana, EProperty.Skill_Mana);
+			m_specToSkill.Add(SpecConstants.Enchantments, EProperty.Skill_Enchantments);
+			m_specToSkill.Add(SpecConstants.Mentalism, EProperty.Skill_Mentalism);
+			m_specToSkill.Add(SpecConstants.Nightshade_Magic, EProperty.Skill_Nightshade);
+			m_specToSkill.Add(SpecConstants.Pathfinding, EProperty.Skill_Pathfinding);
+			m_specToSkill.Add(SpecConstants.Dementia, EProperty.Skill_Dementia);
+			m_specToSkill.Add(SpecConstants.ShadowMastery, EProperty.Skill_ShadowMastery);
+			m_specToSkill.Add(SpecConstants.VampiiricEmbrace, EProperty.Skill_VampiiricEmbrace);
+			m_specToSkill.Add(SpecConstants.EtherealShriek, EProperty.Skill_EtherealShriek);
+			m_specToSkill.Add(SpecConstants.PhantasmalWail, EProperty.Skill_PhantasmalWail);
+			m_specToSkill.Add(SpecConstants.SpectralForce, EProperty.Skill_SpectralForce);
+			m_specToSkill.Add(SpecConstants.SpectralGuard, EProperty.Skill_SpectralGuard);
 
 			#endregion
 
 			#region Other
 
 			//Other
-			m_specToSkill.Add(Specs.Critical_Strike, EProperty.Skill_Critical_Strike);
-			m_specToSkill.Add(Specs.Stealth, EProperty.Skill_Stealth);
-			m_specToSkill.Add(Specs.Shields, EProperty.Skill_Shields);
-			m_specToSkill.Add(Specs.Envenom, EProperty.Skill_Envenom);
-			m_specToSkill.Add(Specs.Parry, EProperty.Skill_Parry);
-			m_specToSkill.Add(Specs.ShortBow, EProperty.Skill_ShortBow);
-			m_specToSkill.Add(Specs.Mauler_Staff, EProperty.Skill_MaulerStaff);
-			m_specToSkill.Add(Specs.Fist_Wraps, EProperty.Skill_FistWraps);
-			m_specToSkill.Add(Specs.Aura_Manipulation, EProperty.Skill_Aura_Manipulation);
-			m_specToSkill.Add(Specs.Magnetism, EProperty.Skill_Magnetism);
-			m_specToSkill.Add(Specs.Power_Strikes, EProperty.Skill_Power_Strikes);
+			m_specToSkill.Add(SpecConstants.Critical_Strike, EProperty.Skill_Critical_Strike);
+			m_specToSkill.Add(SpecConstants.Stealth, EProperty.Skill_Stealth);
+			m_specToSkill.Add(SpecConstants.Shields, EProperty.Skill_Shields);
+			m_specToSkill.Add(SpecConstants.Envenom, EProperty.Skill_Envenom);
+			m_specToSkill.Add(SpecConstants.Parry, EProperty.Skill_Parry);
+			m_specToSkill.Add(SpecConstants.ShortBow, EProperty.Skill_ShortBow);
+			m_specToSkill.Add(SpecConstants.Mauler_Staff, EProperty.Skill_MaulerStaff);
+			m_specToSkill.Add(SpecConstants.Fist_Wraps, EProperty.Skill_FistWraps);
+			m_specToSkill.Add(SpecConstants.Aura_Manipulation, EProperty.Skill_Aura_Manipulation);
+			m_specToSkill.Add(SpecConstants.Magnetism, EProperty.Skill_Magnetism);
+			m_specToSkill.Add(SpecConstants.Power_Strikes, EProperty.Skill_Power_Strikes);
 
-			m_specToSkill.Add(Specs.Archery, EProperty.Skill_Archery);
+			m_specToSkill.Add(SpecConstants.Archery, EProperty.Skill_Archery);
 
 			#endregion
 		}
@@ -1151,38 +1151,38 @@ namespace Core.GS
 		/// </summary>
 		private static void InitializeSpecToFocus()
 		{
-			m_specToFocus.Add(Specs.Darkness, EProperty.Focus_Darkness);
-			m_specToFocus.Add(Specs.Suppression, EProperty.Focus_Suppression);
-			m_specToFocus.Add(Specs.Runecarving, EProperty.Focus_Runecarving);
-			m_specToFocus.Add(Specs.Spirit_Magic, EProperty.Focus_Spirit);
-			m_specToFocus.Add(Specs.Fire_Magic, EProperty.Focus_Fire);
-			m_specToFocus.Add(Specs.Wind_Magic, EProperty.Focus_Air);
-			m_specToFocus.Add(Specs.Cold_Magic, EProperty.Focus_Cold);
-			m_specToFocus.Add(Specs.Earth_Magic, EProperty.Focus_Earth);
-			m_specToFocus.Add(Specs.Light, EProperty.Focus_Light);
-			m_specToFocus.Add(Specs.Body_Magic, EProperty.Focus_Body);
-			m_specToFocus.Add(Specs.Mind_Magic, EProperty.Focus_Mind);
-			m_specToFocus.Add(Specs.Matter_Magic, EProperty.Focus_Matter);
-			m_specToFocus.Add(Specs.Void, EProperty.Focus_Void);
-			m_specToFocus.Add(Specs.Mana, EProperty.Focus_Mana);
-			m_specToFocus.Add(Specs.Enchantments, EProperty.Focus_Enchantments);
-			m_specToFocus.Add(Specs.Mentalism, EProperty.Focus_Mentalism);
-			m_specToFocus.Add(Specs.Summoning, EProperty.Focus_Summoning);
+			m_specToFocus.Add(SpecConstants.Darkness, EProperty.Focus_Darkness);
+			m_specToFocus.Add(SpecConstants.Suppression, EProperty.Focus_Suppression);
+			m_specToFocus.Add(SpecConstants.Runecarving, EProperty.Focus_Runecarving);
+			m_specToFocus.Add(SpecConstants.Spirit_Magic, EProperty.Focus_Spirit);
+			m_specToFocus.Add(SpecConstants.Fire_Magic, EProperty.Focus_Fire);
+			m_specToFocus.Add(SpecConstants.Wind_Magic, EProperty.Focus_Air);
+			m_specToFocus.Add(SpecConstants.Cold_Magic, EProperty.Focus_Cold);
+			m_specToFocus.Add(SpecConstants.Earth_Magic, EProperty.Focus_Earth);
+			m_specToFocus.Add(SpecConstants.Light, EProperty.Focus_Light);
+			m_specToFocus.Add(SpecConstants.Body_Magic, EProperty.Focus_Body);
+			m_specToFocus.Add(SpecConstants.Mind_Magic, EProperty.Focus_Mind);
+			m_specToFocus.Add(SpecConstants.Matter_Magic, EProperty.Focus_Matter);
+			m_specToFocus.Add(SpecConstants.Void, EProperty.Focus_Void);
+			m_specToFocus.Add(SpecConstants.Mana, EProperty.Focus_Mana);
+			m_specToFocus.Add(SpecConstants.Enchantments, EProperty.Focus_Enchantments);
+			m_specToFocus.Add(SpecConstants.Mentalism, EProperty.Focus_Mentalism);
+			m_specToFocus.Add(SpecConstants.Summoning, EProperty.Focus_Summoning);
 			// SI
-			m_specToFocus.Add(Specs.BoneArmy, EProperty.Focus_BoneArmy);
-			m_specToFocus.Add(Specs.Painworking, EProperty.Focus_PainWorking);
-			m_specToFocus.Add(Specs.Deathsight, EProperty.Focus_DeathSight);
-			m_specToFocus.Add(Specs.Death_Servant, EProperty.Focus_DeathServant);
-			m_specToFocus.Add(Specs.Verdant_Path, EProperty.Focus_Verdant);
-			m_specToFocus.Add(Specs.Creeping_Path, EProperty.Focus_CreepingPath);
-			m_specToFocus.Add(Specs.Arboreal_Path, EProperty.Focus_Arboreal);
+			m_specToFocus.Add(SpecConstants.BoneArmy, EProperty.Focus_BoneArmy);
+			m_specToFocus.Add(SpecConstants.Painworking, EProperty.Focus_PainWorking);
+			m_specToFocus.Add(SpecConstants.Deathsight, EProperty.Focus_DeathSight);
+			m_specToFocus.Add(SpecConstants.Death_Servant, EProperty.Focus_DeathServant);
+			m_specToFocus.Add(SpecConstants.Verdant_Path, EProperty.Focus_Verdant);
+			m_specToFocus.Add(SpecConstants.Creeping_Path, EProperty.Focus_CreepingPath);
+			m_specToFocus.Add(SpecConstants.Arboreal_Path, EProperty.Focus_Arboreal);
 			// Catacombs
-			m_specToFocus.Add(Specs.EtherealShriek, EProperty.Focus_EtherealShriek);
-			m_specToFocus.Add(Specs.PhantasmalWail, EProperty.Focus_PhantasmalWail);
-			m_specToFocus.Add(Specs.SpectralForce, EProperty.Focus_SpectralForce);
-			m_specToFocus.Add(Specs.Cursing, EProperty.Focus_Cursing);
-			m_specToFocus.Add(Specs.Hexing, EProperty.Focus_Hexing);
-			m_specToFocus.Add(Specs.Witchcraft, EProperty.Focus_Witchcraft);
+			m_specToFocus.Add(SpecConstants.EtherealShriek, EProperty.Focus_EtherealShriek);
+			m_specToFocus.Add(SpecConstants.PhantasmalWail, EProperty.Focus_PhantasmalWail);
+			m_specToFocus.Add(SpecConstants.SpectralForce, EProperty.Focus_SpectralForce);
+			m_specToFocus.Add(SpecConstants.Cursing, EProperty.Focus_Cursing);
+			m_specToFocus.Add(SpecConstants.Hexing, EProperty.Focus_Hexing);
+			m_specToFocus.Add(SpecConstants.Witchcraft, EProperty.Focus_Witchcraft);
 		}
 
 		/// <summary>

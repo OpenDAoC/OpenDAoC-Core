@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS;
 
@@ -70,7 +71,7 @@ public class ScurceolHyrde : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -186,7 +187,7 @@ public class LyftMihtOne : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -257,7 +258,7 @@ public class LyftMihtTwo : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -328,7 +329,7 @@ public class LyftMihtThree : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -399,7 +400,7 @@ public class LyftMihtFour : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);

@@ -10,6 +10,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS;
 
@@ -52,9 +53,9 @@ public class Blight : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
-		if (BlightBrain.canGrowth && IsAlive && keyName == GS.Abilities.DamageImmunity)
+		if (BlightBrain.canGrowth && IsAlive && keyName == AbilityConstants.DamageImmunity)
 			return true;
 		return base.HasAbility(keyName);
 	}

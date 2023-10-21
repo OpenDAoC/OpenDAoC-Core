@@ -4,6 +4,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.RealmAbilities;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -22,7 +23,7 @@ namespace Core.GS.Spells
         {
 			target.StartInterruptTimer(target.SpellInterruptDuration, EAttackType.Spell, Caster);
 			//Nearsight Immunity check
-			if (target.HasAbility(Abilities.NSImmunity))
+			if (target.HasAbility(AbilityConstants.NSImmunity))
 			{
 				MessageToCaster(target.Name + " can't be nearsighted!", EChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);

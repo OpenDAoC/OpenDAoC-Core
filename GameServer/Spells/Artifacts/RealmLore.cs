@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Players.Specializations;
 using Core.GS.RealmAbilities;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

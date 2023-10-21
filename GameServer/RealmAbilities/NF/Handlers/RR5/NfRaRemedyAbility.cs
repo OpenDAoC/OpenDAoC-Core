@@ -1,6 +1,8 @@
+using Core.GS.Skills;
+
 namespace Core.GS.RealmAbilities;
 
-[SkillHandler(Abilities.Remedy)]
+[SkillHandler(AbilityConstants.Remedy)]
 public class NfRaRemedyAbility : IAbilityActionHandler
 {
 	/// <summary>

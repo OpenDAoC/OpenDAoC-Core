@@ -1,4 +1,5 @@
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -27,8 +28,8 @@ namespace Core.GS.Spells
 	{
         public override void ApplyEffectOnTarget(GameLiving target)
         {
-            if (target.HasAbility(Abilities.VampiirStrength)
-        	   || target.HasAbility(Abilities.VampiirConstitution))
+            if (target.HasAbility(AbilityConstants.VampiirStrength)
+        	   || target.HasAbility(AbilityConstants.VampiirConstitution))
             {
                 MessageToCaster("Your target already has an effect of that type!", EChatType.CT_Spell);
                 return;
@@ -50,8 +51,8 @@ namespace Core.GS.Spells
 	{
         public override void ApplyEffectOnTarget(GameLiving target)
         {
-            if (target.HasAbility(Abilities.VampiirDexterity)
-        	   || target.HasAbility(Abilities.VampiirQuickness))
+            if (target.HasAbility(AbilityConstants.VampiirDexterity)
+        	   || target.HasAbility(AbilityConstants.VampiirQuickness))
             {
                 MessageToCaster("Your target already has an effect of that type!", EChatType.CT_Spell);
                 return;

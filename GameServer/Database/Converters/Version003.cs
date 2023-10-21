@@ -2,6 +2,7 @@ using System.Collections;
 using Core.Database;
 using Core.Database.Enums;
 using Core.Database.Tables;
+using Core.GS.Skills;
 using log4net;
 
 namespace Core.GS.Database;

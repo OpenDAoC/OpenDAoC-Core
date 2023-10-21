@@ -12,6 +12,7 @@ using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Players.Clients;
 using Core.GS.Server;
+using Core.GS.Skills;
 using Core.GS.Spells;
 using log4net;
 

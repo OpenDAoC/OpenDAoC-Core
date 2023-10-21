@@ -9,6 +9,7 @@ using Core.GS.Keeps;
 using Core.GS.Players.Clients;
 using Core.GS.Players.Specializations;
 using Core.GS.Quests;
+using Core.GS.Skills;
 
 namespace Core.GS.Packets.Server;
 

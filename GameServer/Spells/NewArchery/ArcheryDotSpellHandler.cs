@@ -1,4 +1,6 @@
-﻿namespace Core.GS.Spells
+﻿using Core.GS.Skills;
+
+namespace Core.GS.Spells
 {
     [SpellHandler("ArcheryDoT")]
     public class ArcheryDotSpellHandler : DamageOverTimeSpell
@@ -21,7 +23,7 @@
 			int speclevel = 1;
 			if (m_caster is GamePlayer)
 			{
-				speclevel = ((GamePlayer)m_caster).GetModifiedSpecLevel(Specs.Archery);
+				speclevel = ((GamePlayer)m_caster).GetModifiedSpecLevel(SpecConstants.Archery);
 			}
 
 			min = 1.25;

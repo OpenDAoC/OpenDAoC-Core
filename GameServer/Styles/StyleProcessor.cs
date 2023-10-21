@@ -11,6 +11,7 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
+using Core.GS.Skills;
 using Core.GS.Spells;
 
 namespace Core.GS.Styles
@@ -505,7 +506,7 @@ namespace Core.GS.Styles
 			if (ValhallasBlessing != null && Util.Chance(75)) return 0;
 
             //Camelot Herald 1.90 : Battlemaster styles will now cost a flat amount of Endurance, regardless of weapon speed
-            if (style.Spec == Specs.Battlemaster)
+            if (style.Spec == SpecConstants.Battlemaster)
                 return Math.Max(1, (int)Math.Ceiling((30 * style.EnduranceCost / 40) * living.GetModified(EProperty.FatigueConsumption) * 0.01));
             
             int fatCost = weaponSpd * style.EnduranceCost / 40;
@@ -542,9 +543,9 @@ namespace Core.GS.Styles
 					if (rightHand == null || leftHand == null || (rightHand.Item_Type != Slot.RIGHTHAND && rightHand.Item_Type != Slot.LEFTHAND))
 						return false;
 
-					if (style.Spec == Specs.HandToHand && (rightHand.Object_Type != (int)EObjectType.HandToHand || leftHand.Object_Type != (int)EObjectType.HandToHand))
+					if (style.Spec == SpecConstants.HandToHand && (rightHand.Object_Type != (int)EObjectType.HandToHand || leftHand.Object_Type != (int)EObjectType.HandToHand))
 						return false;
-					else if (style.Spec == Specs.Fist_Wraps && (rightHand.Object_Type != (int)EObjectType.FistWraps || leftHand.Object_Type != (int)EObjectType.FistWraps))
+					else if (style.Spec == SpecConstants.Fist_Wraps && (rightHand.Object_Type != (int)EObjectType.FistWraps || leftHand.Object_Type != (int)EObjectType.FistWraps))
 						return false;
 
 					return leftHand.Object_Type != (int)EObjectType.Shield;

@@ -32,6 +32,7 @@ using Core.GS.Players.Titles;
 using Core.GS.PlayerTitles;
 using Core.GS.Quests;
 using Core.GS.Server;
+using Core.GS.Skills;
 using Core.Mail;
 using JNogueira.Discord.Webhook.Client;
 using log4net;

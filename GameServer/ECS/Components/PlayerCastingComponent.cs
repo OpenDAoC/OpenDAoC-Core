@@ -1,5 +1,6 @@
 ﻿using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Skills;
 
 namespace Core.GS.ECS;
 

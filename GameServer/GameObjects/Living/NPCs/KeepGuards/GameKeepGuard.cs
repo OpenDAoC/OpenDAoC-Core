@@ -18,6 +18,7 @@ using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Players.Classes;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS.Keeps
 {

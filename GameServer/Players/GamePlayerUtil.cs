@@ -6,6 +6,7 @@ using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Players.Specializations;
+using Core.GS.Skills;
 
 namespace Core.GS.Players;
 

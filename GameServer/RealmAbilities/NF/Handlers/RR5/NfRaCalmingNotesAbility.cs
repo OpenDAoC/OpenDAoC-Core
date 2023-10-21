@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
+using Core.GS.Skills;
 
 namespace Core.GS.RealmAbilities;
 

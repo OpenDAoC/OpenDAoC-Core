@@ -1,85 +1,83 @@
-﻿using Core.Database;
-using Core.Database.Tables;
+﻿using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Spells;
 
-namespace Core.GS
+namespace Core.GS.Skills;
+
+/// <summary>
+/// SpellLinePassiveAbility is a Specific Ability that Will trigger Self-Buff when activated based on Attached Spell Line
+/// Level Change should trigger cast of higher level spells, and cancel previous ones
+/// </summary>
+public class SpellLinePassiveAbility : SpellLineAbstractAbility
 {
-	/// <summary>
-	/// SpellLinePassiveAbility is a Specific Ability that Will trigger Self-Buff when activated based on Attached Spell Line
-	/// Level Change should trigger cast of higher level spells, and cancel previous ones
-	/// </summary>
-	public class SpellLinePassiveAbility : SpellLineAbstractAbility
+	
+	public override void Activate(GameLiving living, bool sendUpdates)
 	{
+		base.Activate(living, sendUpdates);
 		
-		public override void Activate(GameLiving living, bool sendUpdates)
+		var spell = Spell;
+		var line = SpellLine;
+		
+		if (line != null && spell != null && spell.Target == ESpellTarget.SELF)
 		{
-			base.Activate(living, sendUpdates);
+			living.CastSpell(this);
+		}
+	}
+	
+	public override void OnLevelChange(int oldLevel, int newLevel = 0)
+	{
+		base.OnLevelChange(oldLevel, newLevel);
+		
+		// deactivate old spell and activate new one
+		if (m_activeLiving != null)
+		{
+			var oldSpell = GetSpellForLevel(oldLevel);
 			
+			if (oldSpell != null)
+			{
+				var pulsing = m_activeLiving.FindPulsingSpellOnTarget(oldSpell);
+
+				if (pulsing != null)
+					pulsing.Cancel(false);
+				
+				var effect = m_activeLiving.FindEffectOnTarget(oldSpell);
+
+				if (effect != null)
+					effect.Cancel(false);
+			}
+
 			var spell = Spell;
 			var line = SpellLine;
-			
+
 			if (line != null && spell != null && spell.Target == ESpellTarget.SELF)
 			{
-				living.CastSpell(this);
+				m_activeLiving.CastSpell(this);
 			}
 		}
-		
-		public override void OnLevelChange(int oldLevel, int newLevel = 0)
+	}
+	
+	public override void Deactivate(GameLiving living, bool sendUpdates)
+	{
+		var spell = Spell;
+		var line = SpellLine;
+
+		// deactivate spell
+		if (m_activeLiving != null && line != null && spell != null)
 		{
-			base.OnLevelChange(oldLevel, newLevel);
-			
-			// deactivate old spell and activate new one
-			if (m_activeLiving != null)
-			{
-				var oldSpell = GetSpellForLevel(oldLevel);
+				var pulsing = m_activeLiving.FindPulsingSpellOnTarget(spell);
+				if (pulsing != null)
+					pulsing.Cancel(false);
 				
-				if (oldSpell != null)
-				{
-					var pulsing = m_activeLiving.FindPulsingSpellOnTarget(oldSpell);
-
-					if (pulsing != null)
-						pulsing.Cancel(false);
-					
-					var effect = m_activeLiving.FindEffectOnTarget(oldSpell);
-
-					if (effect != null)
-						effect.Cancel(false);
-				}
-
-				var spell = Spell;
-				var line = SpellLine;
-
-				if (line != null && spell != null && spell.Target == ESpellTarget.SELF)
-				{
-					m_activeLiving.CastSpell(this);
-				}
-			}
+				var effect = m_activeLiving.FindEffectOnTarget(spell);
+				if (effect != null)
+					effect.Cancel(false);
 		}
-		
-		public override void Deactivate(GameLiving living, bool sendUpdates)
-		{
-			var spell = Spell;
-			var line = SpellLine;
 
-			// deactivate spell
-			if (m_activeLiving != null && line != null && spell != null)
-			{
-					var pulsing = m_activeLiving.FindPulsingSpellOnTarget(spell);
-					if (pulsing != null)
-						pulsing.Cancel(false);
-					
-					var effect = m_activeLiving.FindEffectOnTarget(spell);
-					if (effect != null)
-						effect.Cancel(false);
-			}
-
-			base.Deactivate(living, sendUpdates);
-		}
-		
-		public SpellLinePassiveAbility(DbAbility dba, int level)
-			: base(dba, level)
-		{
-		}
+		base.Deactivate(living, sendUpdates);
+	}
+	
+	public SpellLinePassiveAbility(DbAbility dba, int level)
+		: base(dba, level)
+	{
 	}
 }

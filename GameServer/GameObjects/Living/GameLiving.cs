@@ -25,7 +25,7 @@ using Core.GS.Languages;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
-using Core.GS.SkillHandler;
+using Core.GS.Skills;
 using Core.GS.Spells;
 
 namespace Core.GS
@@ -1384,12 +1384,12 @@ namespace Core.GS
 
 			if (player != null)
 			{
-				if (player.HasAbility(Abilities.Advanced_Evade) ||
-					player.HasAbility(Abilities.Enhanced_Evade) ||
+				if (player.HasAbility(AbilityConstants.Advanced_Evade) ||
+					player.HasAbility(AbilityConstants.Enhanced_Evade) ||
 					player.EffectList.GetOfType<NfRaCombatAwarenessEffect>() != null ||
 					player.EffectList.GetOfType<NfRaRuneOfUtterAgilityEffect>() != null)
 					evadeChance = GetModified(EProperty.EvadeChance);
-				else if (IsObjectInFront(ad.Attacker, 180) && (evadeBuff != null || player.HasAbility(Abilities.Evade)))
+				else if (IsObjectInFront(ad.Attacker, 180) && (evadeBuff != null || player.HasAbility(AbilityConstants.Evade)))
 					evadeChance = Math.Max(GetModified(EProperty.EvadeChance), 0);
 			}
 			else if (this is GameNpc && IsObjectInFront(ad.Attacker, 180))
@@ -1425,7 +1425,7 @@ namespace Core.GS
 					evadeChance = Math.Max(evadeChance * 0.5, 0.01);
 			
 				if (IsObjectInFront(ad.Attacker, 180) &&
-					(evadeBuff != null || (player != null && player.HasAbility(Abilities.Evade))) &&
+					(evadeBuff != null || (player != null && player.HasAbility(AbilityConstants.Evade))) &&
 					evadeChance < 0.05 &&
 					ad.AttackType != EAttackType.Ranged)
 				{
@@ -1481,7 +1481,7 @@ namespace Core.GS
 						parryChance = 0.90;
 					else if (IsObjectInFront(ad.Attacker, 120))
 					{
-						if ((player.HasSpecialization(Specs.Parry) || parryBuff != null) && ActiveWeapon != null &&
+						if ((player.HasSpecialization(SpecConstants.Parry) || parryBuff != null) && ActiveWeapon != null &&
 							ActiveWeapon.Object_Type != (int)EObjectType.RecurvedBow &&
 							ActiveWeapon.Object_Type != (int)EObjectType.Longbow &&
 							ActiveWeapon.Object_Type != (int)EObjectType.CompositeBow &&
@@ -1572,7 +1572,7 @@ namespace Core.GS
 			{
 				if (player != null)
 				{
-					if (player.HasAbility(Abilities.Shield) && leftHand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND))
+					if (player.HasAbility(AbilityConstants.Shield) && leftHand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND))
 						blockChance = GetModified(EProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
 				}
 				else

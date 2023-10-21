@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Players.Races;
+using Core.GS.Skills;
 
 namespace Core.GS.Players.Classes;
 
 [PlayerClass((int)EPlayerClass.Paladin, "Paladin", "Fighter")]
 public class ClassPaladin : ClassFighter
 {
-	private static readonly string[] AutotrainableSkills = new[] { Specs.Slash, Specs.Chants };
+	private static readonly string[] AutotrainableSkills = new[] { SpecConstants.Slash, SpecConstants.Chants };
 
 	public ClassPaladin()
 		: base()

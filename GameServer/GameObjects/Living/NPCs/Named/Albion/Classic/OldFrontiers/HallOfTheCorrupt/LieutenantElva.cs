@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Skills;
 using Core.GS.Styles;
 
 namespace Core.GS;
@@ -121,7 +122,7 @@ public class LieutenantElva : GameNpc
     }
     public override bool HasAbility(string keyName)
     {
-        if (this.IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (this.IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

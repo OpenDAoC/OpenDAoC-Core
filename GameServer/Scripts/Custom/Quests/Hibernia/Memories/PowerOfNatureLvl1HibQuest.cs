@@ -14,6 +14,7 @@ using Core.GS.Packets.Server;
 using Core.GS.Players.Titles;
 using Core.GS.PlayerTitles;
 using Core.GS.Server;
+using Core.GS.Skills;
 using log4net;
 
 namespace Core.GS.Quests.Hibernia

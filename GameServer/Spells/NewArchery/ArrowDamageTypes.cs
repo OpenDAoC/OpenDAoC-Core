@@ -1,3 +1,5 @@
+using Core.GS.Skills;
+
 namespace Core.GS.Spells
 {
 	[SpellHandler("ArrowDamageTypes")]

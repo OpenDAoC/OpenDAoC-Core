@@ -21,7 +21,7 @@ using Core.GS.Packets;
 using Core.GS.Players.Classes;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
-using Core.GS.SkillHandler;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -1592,7 +1592,7 @@ namespace Core.GS.Spells
 				if (quickcast != null && Spell.CastTime > 0)
 				{
 					m_caster.TempProperties.SetProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, m_caster.CurrentRegion.Time);
-					((GamePlayer)m_caster).DisableSkill(SkillBase.GetAbility(Abilities.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
+					((GamePlayer)m_caster).DisableSkill(SkillBase.GetAbility(AbilityConstants.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
 					//EffectService.RequestImmediateCancelEffect(quickcast, false);
 					quickcast.Cancel(false);
 				}
@@ -2361,7 +2361,7 @@ namespace Core.GS.Spells
 				//(m_spellLine.KeyName == GlobalSpellsLines.Item_Effects ||
 				(m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || 
 				//m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || 
-				m_spellLine.KeyName == Specs.Savagery || 
+				m_spellLine.KeyName == SpecConstants.Savagery || 
 				m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || 
 				m_spellLine.KeyName == "OffensiveProc"))
 				Effectiveness = 1.0; // TODO player.PlayerEffectiveness

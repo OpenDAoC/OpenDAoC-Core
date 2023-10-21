@@ -13,6 +13,7 @@ using Core.GS.Packets.Server;
 using Core.GS.Players.Realms;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
+using Core.GS.Skills;
 using log4net;
 
 namespace Core.GS.Packets.Clients;
@@ -593,7 +594,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 			/* Are we on the ground? */
 			if ((flyingflag >> 15) != 0)
 			{
-				int safeFallLevel = client.Player.GetAbilityLevel(Abilities.SafeFall);
+				int safeFallLevel = client.Player.GetAbilityLevel(AbilityConstants.SafeFall);
 				fallSpeed = (flyingflag & 0xFFF) - 100 * safeFallLevel; // 0x7FF fall speed and 0x800 bit = fall speed overcaped
 				int fallMinSpeed = 400;
 				int fallDivide = 6;
@@ -1192,7 +1193,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 				// Are we on the ground?
 				if ((fallingDMG >> 15) != 0)
 				{
-					int safeFallLevel = client.Player.GetAbilityLevel(Abilities.SafeFall);
+					int safeFallLevel = client.Player.GetAbilityLevel(AbilityConstants.SafeFall);
 
 					var fallSpeed = (newPlayerZSpeed * -1) - (100 * safeFallLevel);
 

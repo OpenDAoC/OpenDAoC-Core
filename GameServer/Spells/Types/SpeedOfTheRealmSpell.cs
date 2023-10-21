@@ -1,6 +1,7 @@
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Effects;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

@@ -3,6 +3,7 @@ using Core.GS.Effects;
 using Core.GS.ECS;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -104,7 +105,7 @@ namespace Core.GS.Spells
                 }
             }
 
-            if (target.effectListComponent.Effects.ContainsKey(EEffect.MezImmunity) || target.HasAbility(Abilities.MezzImmunity))
+            if (target.effectListComponent.Effects.ContainsKey(EEffect.MezImmunity) || target.HasAbility(AbilityConstants.MezzImmunity))
             {
                 MessageToCaster(target.Name + " is immune to this effect!", EChatType.CT_SpellResisted);
                 SendEffectAnimation(target, 0, false, 0);

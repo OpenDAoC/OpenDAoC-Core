@@ -4,6 +4,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.RealmAbilities;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -14,7 +15,7 @@ namespace Core.GS.Spells
     {
         public override void ApplyEffectOnTarget(GameLiving target)
         {
-            if (target.HasAbility(Abilities.CCImmunity))
+            if (target.HasAbility(AbilityConstants.CCImmunity))
             {
                 MessageToCaster(target.Name + " is immune to this effect!", EChatType.CT_SpellResisted);
                 return;

@@ -9,6 +9,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
+using Core.GS.Skills;
 
 namespace Core.GS.ECS;
 
@@ -337,7 +338,7 @@ public class CharStatsCommandHandler : ACommandHandler, ICommandHandler
         DbInventoryItem lefthand = player.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 
         // Block chance.
-        if (player.HasAbility(Abilities.Shield))
+        if (player.HasAbility(AbilityConstants.Shield))
         {
             if (lefthand == null)
                 messages.Add($"Block Chance: No Shield Equipped!");
@@ -349,14 +350,14 @@ public class CharStatsCommandHandler : ACommandHandler, ICommandHandler
         }
 
         // Parry chance.
-        if (player.HasSpecialization(Specs.Parry))
+        if (player.HasSpecialization(SpecConstants.Parry))
         {
             double parryChance = player.GetParryChance();
             messages.Add($"Parry Chance: {parryChance}%");
         }
 
         // Evade chance.
-        if (player.HasAbility(Abilities.Evade))
+        if (player.HasAbility(AbilityConstants.Evade))
         {
             double evadeChance = player.GetEvadeChance();
             messages.Add($"Evade Chance: {evadeChance}%");
@@ -379,12 +380,12 @@ public class CharStatsCommandHandler : ACommandHandler, ICommandHandler
         messages.Add($"Heal Crit Chance: {healCritChance}%");
 
         // Archery crit chance.
-        if (player.HasSpecialization(Specs.Archery)
-            || player.HasSpecialization(Specs.CompositeBow)
-            || player.HasSpecialization(Specs.RecurveBow)
-            || player.HasSpecialization(Specs.ShortBow)
-            || player.HasSpecialization(Specs.Crossbow)
-            || player.HasSpecialization(Specs.Longbow))
+        if (player.HasSpecialization(SpecConstants.Archery)
+            || player.HasSpecialization(SpecConstants.CompositeBow)
+            || player.HasSpecialization(SpecConstants.RecurveBow)
+            || player.HasSpecialization(SpecConstants.ShortBow)
+            || player.HasSpecialization(SpecConstants.Crossbow)
+            || player.HasSpecialization(SpecConstants.Longbow))
         {
             int archeryCritChance = player.GetModified(EProperty.CriticalArcheryHitChance);
             messages.Add($"Archery Crit Chance: {archeryCritChance}%");

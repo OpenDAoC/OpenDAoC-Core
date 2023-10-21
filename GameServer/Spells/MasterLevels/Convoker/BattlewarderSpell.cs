@@ -5,6 +5,7 @@ using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

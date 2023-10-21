@@ -1,4 +1,5 @@
 using Core.GS.Effects;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -12,7 +13,7 @@ namespace Core.GS.Spells
 			gp = effect.Owner as GamePlayer;
 			if (gp != null)
 			{
-				gp.AddAbility(SkillBase.GetAbility(Abilities.Climbing));
+				gp.AddAbility(SkillBase.GetAbility(AbilityConstants.Climbing));
 				gp.Out.SendUpdatePlayerSkills();
 			}
 		}
@@ -22,7 +23,7 @@ namespace Core.GS.Spells
 			gp = effect.Owner as GamePlayer;
 			if (gp != null)
 			{
-				gp.RemoveAbility(Abilities.Climbing);
+				gp.RemoveAbility(AbilityConstants.Climbing);
 				gp.Out.SendUpdatePlayerSkills();
 			}
 			return 0;

@@ -28,6 +28,7 @@ using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Quests;
 using Core.GS.Server;
+using Core.GS.Skills;
 using Core.GS.Styles;
 
 namespace Core.GS

@@ -5,6 +5,7 @@ using System.Reflection;
 using Core.GS.Enums;
 using Core.GS.Players.Specializations;
 using Core.GS.RealmAbilities;
+using Core.GS.Skills;
 using Core.GS.Styles;
 using log4net;
 
@@ -222,7 +223,7 @@ public class PacketLib1105 : PacketLib1104
 						pakskill.WriteShort(sp.InternalIconID > 0 ? sp.InternalIconID : sp.Icon); // icon
 						pakskill.WriteByte((byte)sk.Item1); // skill page
 						pakskill.WriteByte((byte)0); //
-						pakskill.WriteByte((byte)(sp.SkillType == eSkillPage.Songs ? 0xFF : 0xFE)); // line
+						pakskill.WriteByte((byte)(sp.SkillType == ESkillPage.Songs ? 0xFF : 0xFE)); // line
 						pakskill.WriteShort((ushort)sk.Item2); // ID
 					}
 					else if (sk.Item3 is Style)

@@ -3,13 +3,14 @@ using Core.GS.Enums;
 using Core.GS.Players.Races;
 using Core.GS.Players.Specializations;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS.Players.Classes;
 
 [PlayerClass((int)EPlayerClass.Ranger, "Ranger", "Stalker")]
 public class ClassRanger : ClassStalker
 {
-	private static readonly string[] AutotrainableSkills = new[] { Specs.Archery, Specs.RecurveBow };
+	private static readonly string[] AutotrainableSkills = new[] { SpecConstants.Archery, SpecConstants.RecurveBow };
 
 	public ClassRanger()
 		: base()
@@ -49,7 +50,7 @@ public class ClassRanger : ClassStalker
 
 		switch (skill.KeyName)
 		{
-			case Specs.RecurveBow:
+			case SpecConstants.RecurveBow:
 				if (ServerProperty.ALLOW_OLD_ARCHERY == true)
 				{
 					if (skill.Level < 3)
@@ -58,66 +59,66 @@ public class ClassRanger : ClassStalker
 					}
 					else if (skill.Level < 6)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.Critical_Shot, 1));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.Critical_Shot, 1));
 					}
 					else if (skill.Level < 9)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.Critical_Shot, 2));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.Critical_Shot, 2));
 					}
 					else if (skill.Level < 12)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.Critical_Shot, 3));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.Critical_Shot, 3));
 					}
 					else if (skill.Level < 15)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.Critical_Shot, 4));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.Critical_Shot, 4));
 					}
 					else if (skill.Level < 18)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.Critical_Shot, 5));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.Critical_Shot, 5));
 					}
 					else if (skill.Level < 21)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.Critical_Shot, 6));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.Critical_Shot, 6));
 					}
 					else if (skill.Level < 24)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.Critical_Shot, 7));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.Critical_Shot, 7));
 					}
 					else if (skill.Level < 27)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.Critical_Shot, 8));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.Critical_Shot, 8));
 					}
 					else if (skill.Level >= 27)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.Critical_Shot, 9));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.Critical_Shot, 9));
 					}
 
 					if (skill.Level >= 45)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.RapidFire, 2));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.RapidFire, 2));
 					}
 					else if (skill.Level >= 35)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.RapidFire, 1));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.RapidFire, 1));
 					}
 
 					if (skill.Level >= 45)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.SureShot));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.SureShot));
 					}
 
 					if (skill.Level >= 50)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.PenetratingArrow, 3));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.PenetratingArrow, 3));
 					}
 					else if (skill.Level >= 40)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.PenetratingArrow, 2));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.PenetratingArrow, 2));
 					}
 					else if (skill.Level >= 30)
 					{
-						player.AddAbility(SkillBase.GetAbility(Abilities.PenetratingArrow, 1));
+						player.AddAbility(SkillBase.GetAbility(AbilityConstants.PenetratingArrow, 1));
 					}
 				}
 				break;

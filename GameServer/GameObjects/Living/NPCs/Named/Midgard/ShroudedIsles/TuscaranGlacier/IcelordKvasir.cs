@@ -7,6 +7,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS;
 
@@ -58,7 +59,7 @@ public class IcelordKvasir : GameEpicBoss
 
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

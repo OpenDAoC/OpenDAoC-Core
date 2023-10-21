@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Core.GS.Skills;
 
 namespace Core.GS.Players.Specializations;
 

@@ -14,6 +14,7 @@ using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
 using Core.GS.Movement;
 using Core.GS.Quests;
+using Core.GS.Skills;
 
 namespace Core.GS.Commands
 {

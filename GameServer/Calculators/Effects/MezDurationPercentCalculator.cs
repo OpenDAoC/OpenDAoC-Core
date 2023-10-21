@@ -1,5 +1,6 @@
 using System;
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.Calculators;
 
@@ -23,7 +24,7 @@ public class MezDurationPercentCalculator : PropertyCalculator
 			-living.ItemBonus[(int)property]
 			- living.AbilityBonus[(int)property];
 
-		if (living.HasAbility(Abilities.Stoicism))
+		if (living.HasAbility(AbilityConstants.Stoicism))
 			percent -= 25;
 
 		return Math.Max(1, percent);

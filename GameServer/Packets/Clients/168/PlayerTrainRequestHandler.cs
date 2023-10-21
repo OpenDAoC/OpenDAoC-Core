@@ -8,6 +8,7 @@ using Core.GS.Packets.Server;
 using Core.GS.Players.Specializations;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
+using Core.GS.Skills;
 using log4net;
 
 namespace Core.GS.Packets.Clients;

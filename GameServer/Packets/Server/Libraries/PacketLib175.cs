@@ -7,6 +7,7 @@ using Core.GS.Expansions.Foundations;
 using Core.GS.Players.Titles;
 using Core.GS.PlayerTitles;
 using Core.GS.Server;
+using Core.GS.Skills;
 using log4net;
 
 namespace Core.GS.Packets.Server;

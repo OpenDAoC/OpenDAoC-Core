@@ -1,6 +1,7 @@
 using System.Reflection;
 using Core.GS.Enums;
 using Core.GS.RealmAbilities;
+using Core.GS.Skills;
 using log4net;
 
 namespace Core.GS.AI.Brains;
@@ -32,7 +33,7 @@ public class MeleeSubPetBrain : SubPetBrain
 			{
 				switch (ab.KeyName)
 				{
-					case Abilities.ChargeAbility:
+					case AbilityConstants.ChargeAbility:
 						if (Body.TargetObject != null && !Body.IsWithinRadius(Body.TargetObject, 500 ))
 						{
 							NfRaChargeAbility charge = Body.GetAbility<NfRaChargeAbility>();

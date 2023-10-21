@@ -18,7 +18,7 @@ using Core.GS.Languages;
 using Core.GS.Players.Classes;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
-using Core.GS.SkillHandler;
+using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.Styles;
 
@@ -374,7 +374,7 @@ namespace Core.GS.ECS
                         //log.Debug("speed = " + speed + " percent = " + percent + " eProperty.archeryspeed = " + GetModified(eProperty.ArcherySpeed));
 
                         if (owner.rangeAttackComponent.RangedAttackType == ERangedAttackType.Critical) 
-                            speed = speed * 2 - (player.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
+                            speed = speed * 2 - (player.GetAbilityLevel(AbilityConstants.Critical_Shot) - 1) * speed / 10;
                     }
                     else
                     {
@@ -736,7 +736,7 @@ namespace Core.GS.ECS
                     {
                         // -Chance to unstealth while nocking an arrow = stealth spec / level
                         // -Chance to unstealth nocking a crit = stealth / level  0.20
-                        int stealthSpec = player.GetModifiedSpecLevel(Specs.Stealth);
+                        int stealthSpec = player.GetModifiedSpecLevel(SpecConstants.Stealth);
                         int stayStealthed = stealthSpec * 100 / player.Level;
                         if (player.rangeAttackComponent?.RangedAttackType == ERangedAttackType.Critical)
                             stayStealthed -= 20;
@@ -997,7 +997,7 @@ namespace Core.GS.ECS
                             weaponItem.OnStrikeTarget(playerOwner, target);
 
                         // Camouflage will be disabled only when attacking a GamePlayer or ControlledNPC of a GamePlayer.
-                        if ((target is GamePlayer && playerOwner.HasAbility(Abilities.Camouflage)) ||
+                        if ((target is GamePlayer && playerOwner.HasAbility(AbilityConstants.Camouflage)) ||
                             (target is GameNpc targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain && targetNpcBrain.GetPlayerOwner() != null))
                         {
                             CamouflageEcsAbilityEffect camouflage = (CamouflageEcsAbilityEffect) EffectListService.GetAbilityEffectOnTarget(playerOwner, EEffect.Camouflage);
@@ -1005,7 +1005,7 @@ namespace Core.GS.ECS
                             if (camouflage != null)
                                 EffectService.RequestImmediateCancelEffect(camouflage, false);
 
-                            playerOwner.DisableSkill(SkillBase.GetAbility(Abilities.Camouflage), CamouflageSpecHandler.DISABLE_DURATION);
+                            playerOwner.DisableSkill(SkillBase.GetAbility(AbilityConstants.Camouflage), CamouflageSpecHandler.DISABLE_DURATION);
                         }
 
                         // Multiple Hit check.
@@ -1212,7 +1212,7 @@ namespace Core.GS.ECS
             }
 
             // DamageImmunity Ability.
-            if ((GameLiving) target != null && ((GameLiving) target).HasAbility(Abilities.DamageImmunity))
+            if ((GameLiving) target != null && ((GameLiving) target).HasAbility(AbilityConstants.DamageImmunity))
             {
                 //if (ad.Attacker is GamePlayer) ((GamePlayer)ad.Attacker).Out.SendMessage(string.Format("{0} can't be attacked!", ad.Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
                 ad.AttackResult = EAttackResult.NoValidTarget;
@@ -1906,7 +1906,7 @@ namespace Core.GS.ECS
                 return false;
 
             // TODO: Insert actual formula for guarding here, this is just a guessed one based on block.
-            int guardLevel = guard.GuardSource.GetAbilityLevel(Abilities.Guard);
+            int guardLevel = guard.GuardSource.GetAbilityLevel(AbilityConstants.Guard);
             double guardChance;
 
             if (guard.GuardSource is GameNpc)
@@ -1997,7 +1997,7 @@ namespace Core.GS.ECS
 
             if ((rightHand == null || rightHand.Hand != 1) && leftHand != null && leftHand.Object_Type == (int) EObjectType.Shield)
             {
-                int guardLevel = dashing.GuardSource.GetAbilityLevel(Abilities.Guard);
+                int guardLevel = dashing.GuardSource.GetAbilityLevel(AbilityConstants.Guard);
                 double guardchance = dashing.GuardSource.GetModified(EProperty.BlockChance) * leftHand.Quality * 0.00001;
                 guardchance *= guardLevel * 0.25 + 0.05;
                 guardchance += attackerConLevel * 0.05;
@@ -2318,7 +2318,7 @@ namespace Core.GS.ECS
                     return EAttackResult.HitUnstyled; // Exit early for stealth to prevent breaking bubble but still register a hit.
 
                 if (action.RangedAttackType == ERangedAttackType.Long ||
-                    (ad.AttackType == EAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && playerAttacker?.HasAbility(Abilities.PenetratingArrow) == true))
+                    (ad.AttackType == EAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && playerAttacker?.HasAbility(AbilityConstants.PenetratingArrow) == true))
                     penetrate = true;
 
                 if (ad.IsMeleeAttack && !Util.ChanceDouble(bladeturn.SpellHandler.Caster.Level / ad.Attacker.Level))
@@ -2659,7 +2659,7 @@ namespace Core.GS.ECS
 
                 if (berserk != null)
                 {
-                    int level = owner.GetAbilityLevel(Abilities.Berserk);
+                    int level = owner.GetAbilityLevel(AbilityConstants.Berserk);
                     // According to : http://daoc.catacombs.com/forum.cfm?ThreadKey=10833&DefMessage=922046&forum=37
                     // Zerk 1 = 1-25%
                     // Zerk 2 = 1-50%
@@ -2841,11 +2841,11 @@ namespace Core.GS.ECS
             if (CanUseLefthandedWeapon == false)
                 return 0;
 
-            if (owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)
+            if (owner.GetBaseSpecLevel(SpecConstants.Left_Axe) > 0)
             {
                 if (owner is GamePlayer player && player.UseDetailedCombatLog)
                 {
-                    int spec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+                    int spec = owner.GetModifiedSpecLevel(SpecConstants.Left_Axe);
                     double effectiveness = CalculateLeftAxeModifier();
 ;
                     player.Out.SendMessage($"{Math.Round(effectiveness * 100, 2)}% dmg (after LA penalty) \n", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
@@ -2854,20 +2854,20 @@ namespace Core.GS.ECS
                 return 1; // always use left axe
             }
 
-            int specLevel = Math.Max(owner.GetModifiedSpecLevel(Specs.Celtic_Dual), owner.GetModifiedSpecLevel(Specs.Dual_Wield));
-            specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Fist_Wraps));
+            int specLevel = Math.Max(owner.GetModifiedSpecLevel(SpecConstants.Celtic_Dual), owner.GetModifiedSpecLevel(SpecConstants.Dual_Wield));
+            specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(SpecConstants.Fist_Wraps));
 
             decimal tmpOffhandChance = 25 + (specLevel - 1) * 68 / 100;
             tmpOffhandChance += owner.GetModified(EProperty.OffhandChance) + owner.GetModified(EProperty.OffhandDamageAndChance);
 
-            if (owner is GamePlayer p && p.UseDetailedCombatLog && owner.GetModifiedSpecLevel(Specs.HandToHand) <= 0)
+            if (owner is GamePlayer p && p.UseDetailedCombatLog && owner.GetModifiedSpecLevel(SpecConstants.HandToHand) <= 0)
                 p.Out.SendMessage($"OH swing%: {Math.Round(tmpOffhandChance, 2)} ({owner.GetModified(EProperty.OffhandChance) + owner.GetModified(EProperty.OffhandDamageAndChance)}% from RAs) \n", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
                 
             if (specLevel > 0)
                 return Util.Chance((int) tmpOffhandChance) ? 1 : 0;
 
             // HtH chance
-            specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
+            specLevel = owner.GetModifiedSpecLevel(SpecConstants.HandToHand);
             DbInventoryItem attackWeapon = owner.ActiveWeapon;
             DbInventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 
@@ -2899,7 +2899,7 @@ namespace Core.GS.ECS
 
         public double CalculateLeftAxeModifier()
         {
-            int LeftAxeSpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+            int LeftAxeSpec = owner.GetModifiedSpecLevel(SpecConstants.Left_Axe);
 
             if (LeftAxeSpec == 0)
                 return 1.0;

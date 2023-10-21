@@ -4,6 +4,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.RealmAbilities;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -23,7 +24,7 @@ namespace Core.GS.Spells
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			var effect = EffectListService.GetSpellEffectOnTarget(target, EEffect.MovementSpeedDebuff);
-			if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.RootImmunity) || 
+			if (target.HasAbility(AbilityConstants.CCImmunity)||target.HasAbility(AbilityConstants.RootImmunity) || 
 				EffectListService.GetEffectOnTarget(target, EEffect.SnareImmunity) != null ||
 				EffectListService.GetEffectOnTarget(target, EEffect.SpeedOfSound) != null || 
 				(effect != null && effect.SpellHandler.Spell.Value == 99)

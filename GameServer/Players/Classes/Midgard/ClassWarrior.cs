@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Players.Races;
+using Core.GS.Skills;
 
 namespace Core.GS.Players.Classes;
 
 [PlayerClass((int)EPlayerClass.Warrior, "Warrior", "Viking")]
 public class ClassWarrior : ClassViking
 {
-	private static readonly string[] AutotrainableSkills = new[] { Specs.Axe, Specs.Hammer, Specs.Sword };
+	private static readonly string[] AutotrainableSkills = new[] { SpecConstants.Axe, SpecConstants.Hammer, SpecConstants.Sword };
 
 	public ClassWarrior()
 		: base()

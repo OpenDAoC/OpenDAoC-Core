@@ -19,6 +19,7 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Players.Clients;
 using Core.GS.Players.Titles;
+using Core.GS.Skills;
 using log4net;
 
 namespace Core.GS.Server;
@@ -726,9 +727,9 @@ public abstract class AServerRules : IServerRules
 			{
 				switch (player.Realm) // Choose based on player rather than item region
 				{
-					case ERealm.Albion: armorAbility = living.GetAbilityLevel(Abilities.AlbArmor); break;
-					case ERealm.Hibernia: armorAbility = living.GetAbilityLevel(Abilities.HibArmor); break;
-					case ERealm.Midgard: armorAbility =  living.GetAbilityLevel(Abilities.MidArmor); break;
+					case ERealm.Albion: armorAbility = living.GetAbilityLevel(AbilityConstants.AlbArmor); break;
+					case ERealm.Hibernia: armorAbility = living.GetAbilityLevel(AbilityConstants.HibArmor); break;
+					case ERealm.Midgard: armorAbility =  living.GetAbilityLevel(AbilityConstants.MidArmor); break;
 					default: break;
 				}
 			}
@@ -736,13 +737,13 @@ public abstract class AServerRules : IServerRules
 			{
 				switch ((ERealm)item.Realm)
 				{
-					case ERealm.Albion: armorAbility = living.GetAbilityLevel(Abilities.AlbArmor); break;
-					case ERealm.Hibernia: armorAbility = living.GetAbilityLevel(Abilities.HibArmor); break;
-					case ERealm.Midgard: armorAbility = living.GetAbilityLevel(Abilities.MidArmor); break;
+					case ERealm.Albion: armorAbility = living.GetAbilityLevel(AbilityConstants.AlbArmor); break;
+					case ERealm.Hibernia: armorAbility = living.GetAbilityLevel(AbilityConstants.HibArmor); break;
+					case ERealm.Midgard: armorAbility = living.GetAbilityLevel(AbilityConstants.MidArmor); break;
 					default: // use old system
-						armorAbility = Math.Max(armorAbility, living.GetAbilityLevel(Abilities.AlbArmor));
-						armorAbility = Math.Max(armorAbility, living.GetAbilityLevel(Abilities.HibArmor));
-						armorAbility = Math.Max(armorAbility, living.GetAbilityLevel(Abilities.MidArmor));
+						armorAbility = Math.Max(armorAbility, living.GetAbilityLevel(AbilityConstants.AlbArmor));
+						armorAbility = Math.Max(armorAbility, living.GetAbilityLevel(AbilityConstants.HibArmor));
+						armorAbility = Math.Max(armorAbility, living.GetAbilityLevel(AbilityConstants.MidArmor));
 						break;
 				}
 			}
@@ -770,61 +771,61 @@ public abstract class AServerRules : IServerRules
 			case EObjectType.GenericItem: return true;
 			case EObjectType.GenericArmor: return true;
 			case EObjectType.GenericWeapon: return true;
-			case EObjectType.Staff: abilityCheck = Abilities.Weapon_Staves; break;
-			case EObjectType.Fired: abilityCheck = Abilities.Weapon_Shortbows; break;
-			case EObjectType.FistWraps: abilityCheck = Abilities.Weapon_FistWraps; break;
-			case EObjectType.MaulerStaff: abilityCheck = Abilities.Weapon_MaulerStaff; break;
+			case EObjectType.Staff: abilityCheck = AbilityConstants.Weapon_Staves; break;
+			case EObjectType.Fired: abilityCheck = AbilityConstants.Weapon_Shortbows; break;
+			case EObjectType.FistWraps: abilityCheck = AbilityConstants.Weapon_FistWraps; break;
+			case EObjectType.MaulerStaff: abilityCheck = AbilityConstants.Weapon_MaulerStaff; break;
 
 			//alb
 			case EObjectType.CrushingWeapon:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS)
 					switch (living.Realm)
 					{
-						case ERealm.Albion: abilityCheck = Abilities.Weapon_Crushing; break;
-						case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blunt; break;
-						case ERealm.Midgard: abilityCheck = Abilities.Weapon_Hammers; break;
+						case ERealm.Albion: abilityCheck = AbilityConstants.Weapon_Crushing; break;
+						case ERealm.Hibernia: abilityCheck = AbilityConstants.Weapon_Blunt; break;
+						case ERealm.Midgard: abilityCheck = AbilityConstants.Weapon_Hammers; break;
 						default: break;
 					} 
-				else abilityCheck = Abilities.Weapon_Crushing;
+				else abilityCheck = AbilityConstants.Weapon_Crushing;
 				break;
 			case EObjectType.SlashingWeapon:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS)
 					switch (living.Realm)
 					{
-						case ERealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
-						case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
-						case ERealm.Midgard: abilityCheck = Abilities.Weapon_Swords; break;
+						case ERealm.Albion: abilityCheck = AbilityConstants.Weapon_Slashing; break;
+						case ERealm.Hibernia: abilityCheck = AbilityConstants.Weapon_Blades; break;
+						case ERealm.Midgard: abilityCheck = AbilityConstants.Weapon_Swords; break;
 						default: break;
 					}
-				else abilityCheck = Abilities.Weapon_Slashing;
+				else abilityCheck = AbilityConstants.Weapon_Slashing;
 				break;
 			case EObjectType.ThrustWeapon:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS && living.Realm == ERealm.Hibernia)
-					abilityCheck = Abilities.Weapon_Piercing;
+					abilityCheck = AbilityConstants.Weapon_Piercing;
 				else
-					abilityCheck = Abilities.Weapon_Thrusting;
+					abilityCheck = AbilityConstants.Weapon_Thrusting;
 				break;
 			case EObjectType.TwoHandedWeapon:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS && living.Realm == ERealm.Hibernia)
-					abilityCheck = Abilities.Weapon_LargeWeapons;
-				else abilityCheck = Abilities.Weapon_TwoHanded;
+					abilityCheck = AbilityConstants.Weapon_LargeWeapons;
+				else abilityCheck = AbilityConstants.Weapon_TwoHanded;
 				break;
 			case EObjectType.PolearmWeapon:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS)
 					switch (living.Realm)
 					{
-						case ERealm.Albion: abilityCheck = Abilities.Weapon_Polearms; break;
-						case ERealm.Hibernia: abilityCheck = Abilities.Weapon_CelticSpear; break;
-						case ERealm.Midgard: abilityCheck = Abilities.Weapon_Spears; break;
+						case ERealm.Albion: abilityCheck = AbilityConstants.Weapon_Polearms; break;
+						case ERealm.Hibernia: abilityCheck = AbilityConstants.Weapon_CelticSpear; break;
+						case ERealm.Midgard: abilityCheck = AbilityConstants.Weapon_Spears; break;
 						default: break;
 					}
-				else abilityCheck = Abilities.Weapon_Polearms;
+				else abilityCheck = AbilityConstants.Weapon_Polearms;
 				break;
 			case EObjectType.Longbow:
-				otherCheck = new string[] { Abilities.Weapon_Longbows, Abilities.Weapon_Archery };
+				otherCheck = new string[] { AbilityConstants.Weapon_Longbows, AbilityConstants.Weapon_Archery };
 				break;
-			case EObjectType.Crossbow: abilityCheck = Abilities.Weapon_Crossbow; break;
-			case EObjectType.Flexible: abilityCheck = Abilities.Weapon_Flexible; break;
+			case EObjectType.Crossbow: abilityCheck = AbilityConstants.Weapon_Crossbow; break;
+			case EObjectType.Flexible: abilityCheck = AbilityConstants.Weapon_Flexible; break;
 			//TODO: case 5: abilityCheck = Abilities.Weapon_Thrown;break;
 
 			//mid
@@ -832,108 +833,108 @@ public abstract class AServerRules : IServerRules
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS)
 					switch (living.Realm)
 					{
-						case ERealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
-						case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
-						case ERealm.Midgard: abilityCheck = Abilities.Weapon_Swords; break;
+						case ERealm.Albion: abilityCheck = AbilityConstants.Weapon_Slashing; break;
+						case ERealm.Hibernia: abilityCheck = AbilityConstants.Weapon_Blades; break;
+						case ERealm.Midgard: abilityCheck = AbilityConstants.Weapon_Swords; break;
 						default: break;
 					}
-				else abilityCheck = Abilities.Weapon_Swords; 
+				else abilityCheck = AbilityConstants.Weapon_Swords; 
 				break;
 			case EObjectType.Hammer:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS)
 					switch (living.Realm)
 					{
-						case ERealm.Albion: abilityCheck = Abilities.Weapon_Crushing; break;
-						case ERealm.Midgard: abilityCheck = Abilities.Weapon_Hammers; break;
-						case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blunt; break;
+						case ERealm.Albion: abilityCheck = AbilityConstants.Weapon_Crushing; break;
+						case ERealm.Midgard: abilityCheck = AbilityConstants.Weapon_Hammers; break;
+						case ERealm.Hibernia: abilityCheck = AbilityConstants.Weapon_Blunt; break;
 						default: break;
 					}
-				else abilityCheck = Abilities.Weapon_Hammers; 
+				else abilityCheck = AbilityConstants.Weapon_Hammers; 
 				break;
 			case EObjectType.LeftAxe:
 			case EObjectType.Axe:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS)
 					switch (living.Realm)
 					{
-						case ERealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
-						case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
-						case ERealm.Midgard: abilityCheck = Abilities.Weapon_Axes; break;
+						case ERealm.Albion: abilityCheck = AbilityConstants.Weapon_Slashing; break;
+						case ERealm.Hibernia: abilityCheck = AbilityConstants.Weapon_Blades; break;
+						case ERealm.Midgard: abilityCheck = AbilityConstants.Weapon_Axes; break;
 						default: break;
 					}
-				else abilityCheck = Abilities.Weapon_Axes; 
+				else abilityCheck = AbilityConstants.Weapon_Axes; 
 				break;
 			case EObjectType.Spear:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS)
 					switch (living.Realm)
 					{
-						case ERealm.Albion: abilityCheck = Abilities.Weapon_Polearms; break;
-						case ERealm.Hibernia: abilityCheck = Abilities.Weapon_CelticSpear; break;
-						case ERealm.Midgard: abilityCheck = Abilities.Weapon_Spears; break;
+						case ERealm.Albion: abilityCheck = AbilityConstants.Weapon_Polearms; break;
+						case ERealm.Hibernia: abilityCheck = AbilityConstants.Weapon_CelticSpear; break;
+						case ERealm.Midgard: abilityCheck = AbilityConstants.Weapon_Spears; break;
 						default: break;
 					}
-				else abilityCheck = Abilities.Weapon_Spears; 
+				else abilityCheck = AbilityConstants.Weapon_Spears; 
 				break;
 			case EObjectType.CompositeBow:
-				otherCheck = new string[] { Abilities.Weapon_CompositeBows, Abilities.Weapon_Archery };
+				otherCheck = new string[] { AbilityConstants.Weapon_CompositeBows, AbilityConstants.Weapon_Archery };
 				break;
-			case EObjectType.Thrown: abilityCheck = Abilities.Weapon_Thrown; break;
-			case EObjectType.HandToHand: abilityCheck = Abilities.Weapon_HandToHand; break;
+			case EObjectType.Thrown: abilityCheck = AbilityConstants.Weapon_Thrown; break;
+			case EObjectType.HandToHand: abilityCheck = AbilityConstants.Weapon_HandToHand; break;
 
 			//hib
 			case EObjectType.RecurvedBow:
-				otherCheck = new string[] { Abilities.Weapon_RecurvedBows, Abilities.Weapon_Archery };
+				otherCheck = new string[] { AbilityConstants.Weapon_RecurvedBows, AbilityConstants.Weapon_Archery };
 				break;
 			case EObjectType.Blades:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS)
 					switch (living.Realm)
 					{
-						case ERealm.Albion: abilityCheck = Abilities.Weapon_Slashing; break;
-						case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blades; break;
-						case ERealm.Midgard: abilityCheck = Abilities.Weapon_Swords; break;
+						case ERealm.Albion: abilityCheck = AbilityConstants.Weapon_Slashing; break;
+						case ERealm.Hibernia: abilityCheck = AbilityConstants.Weapon_Blades; break;
+						case ERealm.Midgard: abilityCheck = AbilityConstants.Weapon_Swords; break;
 						default: break;
 					}
-				else abilityCheck = Abilities.Weapon_Blades; 
+				else abilityCheck = AbilityConstants.Weapon_Blades; 
 				break;
 			case EObjectType.Blunt:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS)
 					switch (living.Realm)
 					{
-						case ERealm.Albion: abilityCheck = Abilities.Weapon_Crushing; break;
-						case ERealm.Hibernia: abilityCheck = Abilities.Weapon_Blunt; break;
-						case ERealm.Midgard: abilityCheck = Abilities.Weapon_Hammers; break;
+						case ERealm.Albion: abilityCheck = AbilityConstants.Weapon_Crushing; break;
+						case ERealm.Hibernia: abilityCheck = AbilityConstants.Weapon_Blunt; break;
+						case ERealm.Midgard: abilityCheck = AbilityConstants.Weapon_Hammers; break;
 						default: break;
 					}
-				else abilityCheck = Abilities.Weapon_Blunt;
+				else abilityCheck = AbilityConstants.Weapon_Blunt;
 				break;
 			case EObjectType.Piercing:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS && living.Realm == ERealm.Albion)
-					abilityCheck = Abilities.Weapon_Thrusting;
-				else abilityCheck = Abilities.Weapon_Piercing;
+					abilityCheck = AbilityConstants.Weapon_Thrusting;
+				else abilityCheck = AbilityConstants.Weapon_Piercing;
 				break;
 			case EObjectType.LargeWeapons:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS && living.Realm == ERealm.Albion)
-					abilityCheck = Abilities.Weapon_TwoHanded;
-				else abilityCheck = Abilities.Weapon_LargeWeapons; break;
+					abilityCheck = AbilityConstants.Weapon_TwoHanded;
+				else abilityCheck = AbilityConstants.Weapon_LargeWeapons; break;
 			case EObjectType.CelticSpear:
 				if (ServerProperty.ALLOW_CROSS_REALM_ITEMS)
 					switch (living.Realm)
 					{
-						case ERealm.Albion: abilityCheck = Abilities.Weapon_Polearms; break;
-						case ERealm.Hibernia: abilityCheck = Abilities.Weapon_CelticSpear; break;
-						case ERealm.Midgard: abilityCheck = Abilities.Weapon_Spears; break;
+						case ERealm.Albion: abilityCheck = AbilityConstants.Weapon_Polearms; break;
+						case ERealm.Hibernia: abilityCheck = AbilityConstants.Weapon_CelticSpear; break;
+						case ERealm.Midgard: abilityCheck = AbilityConstants.Weapon_Spears; break;
 						default: break;
 					}
-				else abilityCheck = Abilities.Weapon_CelticSpear;
+				else abilityCheck = AbilityConstants.Weapon_CelticSpear;
 				break;
-			case EObjectType.Scythe: abilityCheck = Abilities.Weapon_Scythe; break;
+			case EObjectType.Scythe: abilityCheck = AbilityConstants.Weapon_Scythe; break;
 
 			//misc
 			case EObjectType.Magical: return true;
-			case EObjectType.Shield: return living.GetAbilityLevel(Abilities.Shield) >= item.Type_Damage;
-			case EObjectType.Bolt: abilityCheck = Abilities.Weapon_Crossbow; break;
-			case EObjectType.Arrow: otherCheck = new string[] { Abilities.Weapon_CompositeBows, Abilities.Weapon_Longbows, Abilities.Weapon_RecurvedBows, Abilities.Weapon_Shortbows }; break;
-			case EObjectType.Poison: return living.GetModifiedSpecLevel(Specs.Envenom) > 0;
-			case EObjectType.Instrument: return living.HasAbility(Abilities.Weapon_Instruments);
+			case EObjectType.Shield: return living.GetAbilityLevel(AbilityConstants.Shield) >= item.Type_Damage;
+			case EObjectType.Bolt: abilityCheck = AbilityConstants.Weapon_Crossbow; break;
+			case EObjectType.Arrow: otherCheck = new string[] { AbilityConstants.Weapon_CompositeBows, AbilityConstants.Weapon_Longbows, AbilityConstants.Weapon_RecurvedBows, AbilityConstants.Weapon_Shortbows }; break;
+			case EObjectType.Poison: return living.GetModifiedSpecLevel(SpecConstants.Envenom) > 0;
+			case EObjectType.Instrument: return living.HasAbility(AbilityConstants.Weapon_Instruments);
 				//TODO: different shield sizes
 		}
 

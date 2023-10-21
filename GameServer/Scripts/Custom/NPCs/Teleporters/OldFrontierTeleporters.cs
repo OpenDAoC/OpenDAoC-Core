@@ -10,6 +10,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS.Scripts
 {

@@ -1,5 +1,6 @@
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.RealmAbilities;
 

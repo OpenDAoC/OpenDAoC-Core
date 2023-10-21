@@ -5,6 +5,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Expansions.LabyrinthOfTheMinotaur;
 using Core.GS.Languages;
+using Core.GS.Skills;
 
 namespace Core.GS.Commands
 {

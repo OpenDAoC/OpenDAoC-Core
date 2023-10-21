@@ -3,6 +3,7 @@ using Core.AI.Brain;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

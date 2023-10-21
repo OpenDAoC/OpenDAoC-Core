@@ -4,6 +4,7 @@ using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS.Calculators;
 
@@ -37,7 +38,7 @@ public class MaxHitPointsCalculator : PropertyCalculator
 					  Math.Min(living.ItemBonus[(int)EProperty.MaxHealthCapBonus], player.Level * 4);
 			itemBonus = Math.Min(itemBonus, cap);
 
-			if (player.HasAbility(Abilities.ScarsOfBattle) && player.Level >= 40)
+			if (player.HasAbility(AbilityConstants.ScarsOfBattle) && player.Level >= 40)
 			{
 				int levelbonus = Math.Min(player.Level - 40, 10);
 				hpBase = (int)(hpBase * (100 + levelbonus) * 0.01);

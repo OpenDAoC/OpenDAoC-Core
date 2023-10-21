@@ -1,4 +1,6 @@
-﻿namespace Core.GS.Spells
+﻿using Core.GS.Skills;
+
+namespace Core.GS.Spells
 {
     [SpellHandler("NaturesShield")]
     public class NaturesShieldSpell : SpellHandler

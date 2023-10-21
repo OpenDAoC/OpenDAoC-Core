@@ -3,6 +3,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

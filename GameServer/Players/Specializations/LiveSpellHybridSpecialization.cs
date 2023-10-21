@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.Players.Specializations;
 
@@ -129,23 +130,23 @@ public class LiveSpellHybridSpecialization : Specialization
 
 		switch (line.Spec)
 		{
-			case Specs.Augmentation:
+			case SpecConstants.Augmentation:
 				allow = true;
 				break;
 
-			case Specs.Enhancement:
+			case SpecConstants.Enhancement:
 				if ((line.IsBaseLine || player.PlayerClass.ID == (int)EPlayerClass.Cleric) && player.PlayerClass.ID != (int)EPlayerClass.Heretic)
 					allow = true;
 
 				break;
 
-			case Specs.Nurture:
+			case SpecConstants.Nurture:
 				if (line.IsBaseLine || player.PlayerClass.ID == (int)EPlayerClass.Druid)
 					allow = true;
 
 				break;
 
-			case Specs.Soulrending:
+			case SpecConstants.Soulrending:
 				allow = true;
 				break;
 		}

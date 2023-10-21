@@ -3,6 +3,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Players.Specializations;
+using Core.GS.Skills;
 
 namespace Core.GS.Styles
 {
@@ -193,7 +194,7 @@ namespace Core.GS.Styles
         /// <summary>
         /// (readonly) The type of this skill, always returns eSkillPage.Styles
         /// </summary>
-        public override eSkillPage SkillType => eSkillPage.Styles;
+        public override ESkillPage SkillType => ESkillPage.Styles;
 
         /// <summary>
         /// (readonly) The animation ID for 2h weapon styles

@@ -1,5 +1,7 @@
 using Core.Database.Tables;
+using Core.GS.Enums;
 using Core.GS.Packets;
+using Core.GS.Skills;
 
 namespace Core.GS.RealmAbilities;
 
@@ -64,11 +66,11 @@ public class RealmAbility : Ability
 		}
 	}
 	
-	public override eSkillPage SkillType
+	public override ESkillPage SkillType
 	{
 		get
 		{
-			return eSkillPage.RealmAbilities;
+			return ESkillPage.RealmAbilities;
 		}
 	}
 }

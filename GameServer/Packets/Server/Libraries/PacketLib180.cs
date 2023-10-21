@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Core.GS.Enums;
 using Core.GS.Players.Specializations;
+using Core.GS.Skills;
 using Core.GS.Styles;
 using log4net;
 
@@ -288,7 +289,7 @@ public class PacketLib180 : PacketLib179
 
 						// spec index for this Spell - Special for Song and Unknown Indexes...
 						int spin = 0;
-						if (spell.SkillType == eSkillPage.Songs)
+						if (spell.SkillType == ESkillPage.Songs)
 						{
 							spin = 0xFF;
 						}

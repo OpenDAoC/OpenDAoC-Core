@@ -4,6 +4,7 @@ using Core.AI.Brain;
 using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

@@ -4,6 +4,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Skills;
 
 namespace Core.GS.ECS;
 
@@ -197,7 +198,7 @@ public class RangeAttackComponent
 
         if (RangedAttackType == ERangedAttackType.Critical)
             m_owner.Endurance -= CRITICAL_SHOT_ENDURANCE_COST;
-        else if (RangedAttackType == ERangedAttackType.RapidFire && m_owner.GetAbilityLevel(Abilities.RapidFire) == 2)
+        else if (RangedAttackType == ERangedAttackType.RapidFire && m_owner.GetAbilityLevel(AbilityConstants.RapidFire) == 2)
             m_owner.Endurance -= (int)Math.Ceiling(DEFAULT_ENDURANCE_COST / 2.0);
         else if (RangedAttackType == ERangedAttackType.Volley)
             m_owner.Endurance -= VOLLEY_ENDURANCE_COST;

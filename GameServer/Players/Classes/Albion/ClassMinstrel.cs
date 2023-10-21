@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Players.Races;
+using Core.GS.Skills;
 
 namespace Core.GS.Players.Classes;
 
 [PlayerClass((int)EPlayerClass.Minstrel, "Minstrel", "Rogue")]
 public class ClassMinstrel : ClassAlbionRogue
 {
-	private static readonly string[] AutotrainableSkills = new[] { Specs.Instruments };
+	private static readonly string[] AutotrainableSkills = new[] { SpecConstants.Instruments };
 
 	public ClassMinstrel()
 		: base()

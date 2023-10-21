@@ -8,7 +8,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
-using Core.GS.SkillHandler;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {
@@ -177,7 +177,7 @@ namespace Core.GS.Spells
 						if (target.IsObjectInFront(caster, 180) && lefthand.Object_Type == (int)EObjectType.Shield)
 						{
 							// TODO: shield size vs number of attackers not calculated
-							double shield = 0.5 * player.GetModifiedSpecLevel(Specs.Shields);
+							double shield = 0.5 * player.GetModifiedSpecLevel(SpecConstants.Shields);
 							double blockchance = ((player.Dexterity * 2) - 100) / 40.0 + shield + (0 * 3) + 5;
 							blockchance += 30;
 							blockchance -= target.GetConLevel(caster) * 5;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.AI.Brain;
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

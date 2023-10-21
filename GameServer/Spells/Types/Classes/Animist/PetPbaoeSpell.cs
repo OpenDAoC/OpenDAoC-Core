@@ -1,4 +1,5 @@
 using Core.GS.GameUtils;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

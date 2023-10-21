@@ -5,6 +5,7 @@ using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS.Calculators;
 
@@ -75,7 +76,7 @@ public class MaxMovementSpeedCalculator : PropertyCalculator
                 OfRaMasteryOfStealthAbility mos = player.GetAbility<OfRaMasteryOfStealthAbility>();
                 //GameSpellEffect bloodrage = SpellHandler.FindEffectOnTarget(player, "BloodRage");
                 //VanishEffect vanish = player.EffectList.GetOfType<VanishEffect>();
-                double stealthSpec = player.GetModifiedSpecLevel(Specs.Stealth);
+                double stealthSpec = player.GetModifiedSpecLevel(SpecConstants.Stealth);
 
                 if (stealthSpec > player.Level)
                     stealthSpec = player.Level;

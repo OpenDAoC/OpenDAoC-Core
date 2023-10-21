@@ -16,7 +16,7 @@ using Core.GS.Languages;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Server;
-using Core.GS.SkillHandler;
+using Core.GS.Skills;
 using Core.GS.Spells;
 
 namespace Core.GS.AI.Brains
@@ -353,7 +353,7 @@ namespace Core.GS.AI.Brains
                     // P II: prevents 20% of aggro amount
                     // P III: prevents 30% of aggro amount
                     // guessed percentages, should never be higher than or equal to 50%
-                    int abilityLevel = protectSource.GetAbilityLevel(Abilities.Protect);
+                    int abilityLevel = protectSource.GetAbilityLevel(AbilityConstants.Protect);
                     int protectAmount = (int) (abilityLevel * 0.10 * aggroAmount);
 
                     if (protectAmount > 0)

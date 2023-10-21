@@ -12,6 +12,7 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS.Spells
 {

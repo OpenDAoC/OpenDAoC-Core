@@ -1,4 +1,5 @@
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.Commands;
 
@@ -11,7 +12,7 @@ public class SprintCommand : ACommandHandler, ICommandHandler
 {
 	public void OnCommand(GameClient client, string[] args)
 	{
-		if (client.Player.HasAbility(Abilities.Sprint))
+		if (client.Player.HasAbility(AbilityConstants.Sprint))
 		{
 			client.Player.Sprint(!client.Player.IsSprinting);
 		}

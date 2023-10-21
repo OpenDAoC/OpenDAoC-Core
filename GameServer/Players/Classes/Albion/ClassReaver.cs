@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Players.Races;
+using Core.GS.Skills;
 
 namespace Core.GS.Players.Classes;
 
 [PlayerClass((int)EPlayerClass.Reaver, "Reaver", "Fighter")]
 public class ClassReaver : ClassFighter
 {
-	private static readonly string[] AutotrainableSkills = new[] { Specs.Slash, Specs.Flexible };
+	private static readonly string[] AutotrainableSkills = new[] { SpecConstants.Slash, SpecConstants.Flexible };
 
 	public ClassReaver()
 		: base()

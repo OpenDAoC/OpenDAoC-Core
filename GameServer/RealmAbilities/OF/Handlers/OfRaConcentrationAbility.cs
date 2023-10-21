@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Skills;
 
 namespace Core.GS.RealmAbilities;
 
@@ -60,21 +61,21 @@ public class OfRaConcentrationAbility : NfRaConcentrationAbility
             }
             else
             {
-                Ability QuickcastAbility = player.GetAbility(Abilities.Quickcast);
+                Ability QuickcastAbility = player.GetAbility(AbilityConstants.Quickcast);
 
                 if (QuickcastAbility == null)
                     return;
 
                 // Is Quickcast's cooldown actually active?
-                if (player.GetSkillDisabledDuration(player.GetAbility(Abilities.Quickcast)) > 0)
+                if (player.GetSkillDisabledDuration(player.GetAbility(AbilityConstants.Quickcast)) > 0)
                 {
                     player.TempProperties.SetProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, 0);
-                    player.RemoveDisabledSkill(SkillBase.GetAbility(Abilities.Quickcast));
+                    player.RemoveDisabledSkill(SkillBase.GetAbility(AbilityConstants.Quickcast));
                     DisableSkill(living);
 
                     // Force the icon in the client to re-enable by updating its disabled time to 1ms
                     var disables = new List<Tuple<Skill, int>>();
-                    disables.Add(new Tuple<Skill, int>(player.GetAbility(Abilities.Quickcast), 1));
+                    disables.Add(new Tuple<Skill, int>(player.GetAbility(AbilityConstants.Quickcast), 1));
                     player.Out.SendDisableSkill(disables);
 
                     SendCasterSpellEffectAndCastMessage(living, 7006, true);

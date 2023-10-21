@@ -10,6 +10,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Players.Titles;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS;
 
@@ -85,7 +86,7 @@ public class Olcasgean : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -317,7 +318,7 @@ public class Olcasgean2 : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -531,7 +532,7 @@ public class AirPrimal : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -630,7 +631,7 @@ public class WaterPrimal : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -761,7 +762,7 @@ public class FirePrimal : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -839,7 +840,7 @@ public class TrailOfFire : GameNpc
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -991,7 +992,7 @@ public class EarthPrimal : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -1089,7 +1090,7 @@ public class GuardianEarthmender : GameNpc
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -1187,7 +1188,7 @@ public class MagicalEarthmender : GameNpc
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -1287,7 +1288,7 @@ public class NaturalEarthmender : GameNpc
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -1385,7 +1386,7 @@ public class ShadowyEarthmender : GameNpc
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

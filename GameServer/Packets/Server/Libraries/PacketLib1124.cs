@@ -15,6 +15,7 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Quests;
 using Core.GS.Server;
+using Core.GS.Skills;
 using Core.GS.Spells;
 using log4net;
 

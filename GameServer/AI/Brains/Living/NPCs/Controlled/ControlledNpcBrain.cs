@@ -12,7 +12,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
-using Core.GS.SkillHandler;
+using Core.GS.Skills;
 using Core.GS.Spells;
 using log4net;
 
@@ -412,7 +412,7 @@ namespace Core.GS.AI.Brains
 			{
 				switch (ab.KeyName)
 				{
-					case Abilities.Intercept:
+					case AbilityConstants.Intercept:
 					{
 						// The pet should intercept even if a player is still intercepting for the owner.
 						GamePlayer playerOwner = GetPlayerOwner();
@@ -422,7 +422,7 @@ namespace Core.GS.AI.Brains
 
 						break;
 					}
-					case Abilities.Guard:
+					case AbilityConstants.Guard:
 					{
 						GamePlayer playerOwner = GetPlayerOwner();
 
@@ -439,7 +439,7 @@ namespace Core.GS.AI.Brains
 
 						break;
 					}
-					case Abilities.Protect:
+					case AbilityConstants.Protect:
 					{
 						GamePlayer playerOwner = GetPlayerOwner();
 
@@ -448,7 +448,7 @@ namespace Core.GS.AI.Brains
 
 						break;
 					}
-					case Abilities.ChargeAbility:
+					case AbilityConstants.ChargeAbility:
 					{
 						if (Body.TargetObject is GameLiving target &&
 							GameServer.ServerRules.IsAllowedToAttack(Body, target, true) &&

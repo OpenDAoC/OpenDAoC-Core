@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Players.Races;
+using Core.GS.Skills;
 
 namespace Core.GS.Players.Classes;
 
 [PlayerClass((int)EPlayerClass.Infiltrator, "Infiltrator", "Rogue")]
 public class ClassInfiltrator : ClassAlbionRogue
 {
-	private static readonly string[] AutotrainableSkills = new[] { Specs.Stealth };
+	private static readonly string[] AutotrainableSkills = new[] { SpecConstants.Stealth };
 
 	public ClassInfiltrator()
 		: base()

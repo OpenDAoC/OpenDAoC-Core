@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Languages;
 using Core.GS.Server;
+using Core.GS.Skills;
 
 namespace Core.GS.RealmAbilities;
 
@@ -22,7 +23,7 @@ public class NfRaConcentrationAbility : TimedRealmAbility
         GamePlayer player = living as GamePlayer;
         if (player != null)
         {
-            player.RemoveDisabledSkill(SkillBase.GetAbility(Abilities.Quickcast));
+            player.RemoveDisabledSkill(SkillBase.GetAbility(AbilityConstants.Quickcast));
         }
         DisableSkill(living);
     }

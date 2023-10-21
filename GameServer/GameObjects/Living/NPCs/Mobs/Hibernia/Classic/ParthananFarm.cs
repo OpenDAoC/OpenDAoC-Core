@@ -3,6 +3,7 @@ using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Skills;
 
 #region Amalgamate Parthanan
 namespace Core.GS;
@@ -107,22 +108,22 @@ public class AmalgamateParthanan : GameNpc
     }
     public override bool HasAbility(string keyName)//immune to cc and dmg(in certain situation only)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
         #region Lough Derg
-        if (ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg" && IsAlive && keyName == GS.Abilities.DamageImmunity)
+        if (ParthananFarmController1Brain.SacrificeParthanan1 && PackageID == "ParthananBossLoughDerg" && IsAlive && keyName == AbilityConstants.DamageImmunity)
 			return true;
         #endregion
         #region Connacht
-        if (ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht" && IsAlive && keyName == GS.Abilities.DamageImmunity)
+        if (ParthananFarmController2Brain.SacrificeParthanan2 && PackageID == "ParthananBossConnacht" && IsAlive && keyName == AbilityConstants.DamageImmunity)
 			return true;
-		if (ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2" && IsAlive && keyName == GS.Abilities.DamageImmunity)
+		if (ParthananFarmController2bBrain.SacrificeParthanan2b && PackageID == "ParthananBossConnacht2" && IsAlive && keyName == AbilityConstants.DamageImmunity)
 			return true;
         #endregion
         #region Lough Gur
-        if (ParthananFarmController3Brain.SacrificeParthanan3 && PackageID == "ParthananBossLoughGur" && IsAlive && keyName == GS.Abilities.DamageImmunity)
+        if (ParthananFarmController3Brain.SacrificeParthanan3 && PackageID == "ParthananBossLoughGur" && IsAlive && keyName == AbilityConstants.DamageImmunity)
 			return true;
-		if (ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2" && IsAlive && keyName == GS.Abilities.DamageImmunity)
+		if (ParthananFarmController3bBrain.SacrificeParthanan3b && PackageID == "ParthananBossLoughGur2" && IsAlive && keyName == AbilityConstants.DamageImmunity)
 			return true;
         #endregion
         return base.HasAbility(keyName);

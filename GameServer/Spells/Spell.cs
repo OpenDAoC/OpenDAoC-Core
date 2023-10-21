@@ -6,6 +6,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Skills;
 
 namespace Core.GS
 {
@@ -239,9 +240,9 @@ namespace Core.GS
 		public string Message3 { get { return m_message3; } }
 		public string Message4 { get { return m_message4; } }
 
-		public override eSkillPage SkillType
+		public override ESkillPage SkillType
 		{
-			get { return NeedInstrument ? eSkillPage.Songs : eSkillPage.Spells; }
+			get { return NeedInstrument ? ESkillPage.Songs : ESkillPage.Spells; }
 		}
 
 		public int InstrumentRequirement
