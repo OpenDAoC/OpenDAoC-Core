@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.Expansions.Foundations
 {
 	public class MarketSearch
 	{

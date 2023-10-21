@@ -13,7 +13,7 @@ using Core.GS.ServerProperties;
 using Core.Language;
 using log4net;
 
-namespace Core.GS.Housing
+namespace Core.GS.Expansions.Foundations
 {
 	public class HouseMgr
 	{

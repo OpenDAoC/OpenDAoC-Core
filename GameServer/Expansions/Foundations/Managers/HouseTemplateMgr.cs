@@ -8,7 +8,7 @@ using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.ServerProperties;
 
-namespace Core.GS.Housing
+namespace Core.GS.Expansions.Foundations
 {
     public sealed class HouseTemplateMgr
     {

@@ -5,7 +5,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 
 namespace Core.GS
 {

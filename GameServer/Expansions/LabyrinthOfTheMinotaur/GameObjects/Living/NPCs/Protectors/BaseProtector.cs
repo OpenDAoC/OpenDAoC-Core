@@ -12,7 +12,7 @@
 
 using Core.GS.Enums;
 
-namespace Core.GS
+namespace Core.GS.Expansions.LabyrinthOfTheMinotaur
 {
     public class BaseProtector : GameNpc
     {

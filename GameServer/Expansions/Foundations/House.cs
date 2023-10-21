@@ -9,7 +9,7 @@ using Core.GS.Enums;
 using Core.Language;
 using log4net;
 
-namespace Core.GS.Housing
+namespace Core.GS.Expansions.Foundations
 {
 	public class House : Point3D, IGameLocation
 	{

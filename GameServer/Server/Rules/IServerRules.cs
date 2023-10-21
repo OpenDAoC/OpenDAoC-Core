@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 
@@ -444,7 +444,7 @@ namespace Core.GS.ServerRules
 		/// </summary>
 		/// <param name="house"></param>
 		/// <returns></returns>
-		GameConsignmentMerchant CreateHousingConsignmentMerchant(GS.Housing.House house);
+		GameConsignmentMerchant CreateHousingConsignmentMerchant(House house);
 		
 		/// <summary>
 		/// Enable Handling Custom Player Level Up

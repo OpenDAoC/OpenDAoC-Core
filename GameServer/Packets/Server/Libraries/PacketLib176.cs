@@ -3,7 +3,7 @@ using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 using Core.Language;
 using log4net;
 

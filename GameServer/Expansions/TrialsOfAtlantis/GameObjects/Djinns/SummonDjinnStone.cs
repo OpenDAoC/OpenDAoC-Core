@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.GS;
+namespace Core.GS.Expansions.TrialsOfAtlantis;
 
 public class SummonDjinnStone : DjinnStone
 {

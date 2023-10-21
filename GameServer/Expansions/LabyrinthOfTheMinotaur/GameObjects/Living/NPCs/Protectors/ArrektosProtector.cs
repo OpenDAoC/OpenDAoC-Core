@@ -17,7 +17,7 @@
  * 
  */
 
-namespace Core.GS;
+namespace Core.GS.Expansions.LabyrinthOfTheMinotaur;
 
 //all classes should inherit from BaseProtector.
 public class ArrektosProtector : BaseProtector

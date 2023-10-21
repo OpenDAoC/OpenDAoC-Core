@@ -1,11 +1,9 @@
-namespace Core.GS
+namespace Core.GS;
+
+public class HeadScholar : Researcher
 {
-    /// <summary>
-    /// Head scholar class.
-    /// </summary>
-    public class HeadScholar : Researcher
+    public HeadScholar()
+        : base()
     {
-        public HeadScholar()
-            : base() { }
     }
 }

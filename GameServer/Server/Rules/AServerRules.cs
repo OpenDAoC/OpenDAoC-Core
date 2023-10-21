@@ -14,7 +14,7 @@ using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.Scripts;

@@ -1,6 +1,6 @@
 using System;
 using Core.GS.Enums;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 using Core.GS.PacketHandler;
 using Core.Language;
 

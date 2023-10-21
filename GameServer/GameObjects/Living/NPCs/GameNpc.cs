@@ -18,7 +18,7 @@ using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 using Core.GS.Keeps;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;

@@ -25,7 +25,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
 using Core.GS.Enums;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;

@@ -1,7 +1,6 @@
-using Core.Database;
 using Core.Database.Tables;
 
-namespace Core.GS.Housing;
+namespace Core.GS.Expansions.Foundations;
 
 public class OutdoorItem
 {

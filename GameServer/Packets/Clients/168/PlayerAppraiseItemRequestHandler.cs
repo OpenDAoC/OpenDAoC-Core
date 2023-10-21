@@ -2,7 +2,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 
 namespace Core.GS.PacketHandler.Client.v168
 {

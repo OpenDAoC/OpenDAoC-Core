@@ -26,6 +26,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
 using Core.GS.PacketHandler;
 using log4net;
 
@@ -579,7 +580,7 @@ namespace Core.GS
 
 				if (player.Guild.GuildOwnsHouse && player.Guild.GuildHouseNumber > 0)
 				{
-					Housing.House guildHouse = Housing.HouseMgr.GetHouse(player.Guild.GuildHouseNumber);
+					House guildHouse = HouseMgr.GetHouse(player.Guild.GuildHouseNumber);
 
 					if (guildHouse != null)
 					{

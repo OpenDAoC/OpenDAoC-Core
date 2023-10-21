@@ -1,4 +1,4 @@
-﻿namespace Core.GS;
+﻿namespace Core.GS.Expansions.TrialsOfAtlantis;
 
 /// <summary>
 /// Djinn stone (spawns ancient bound djinn).

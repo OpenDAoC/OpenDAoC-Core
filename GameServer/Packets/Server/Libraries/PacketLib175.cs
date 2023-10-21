@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Core.GS.Crafting;
 using Core.GS.Enums;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 using Core.GS.PlayerTitles;
 using log4net;
 

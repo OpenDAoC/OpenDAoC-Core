@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using Core.GS.Enums;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 
 namespace Core.GS.Commands;
 

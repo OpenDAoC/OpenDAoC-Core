@@ -8,7 +8,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;
 using Core.Language;

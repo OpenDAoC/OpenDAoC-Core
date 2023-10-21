@@ -8,7 +8,7 @@ using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
-using Core.GS.Housing;
+using Core.GS.Expansions.Foundations;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler.Client.v168;
 using Core.Language;
