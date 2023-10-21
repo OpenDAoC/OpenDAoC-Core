@@ -1,4 +1,5 @@
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Housing;
 
 namespace Core.GS.PacketHandler.Client.v168

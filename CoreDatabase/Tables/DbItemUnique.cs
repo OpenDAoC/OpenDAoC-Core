@@ -1,6 +1,4 @@
-using Core.Database.Attributes;
-
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	[DataTable(TableName = "ItemUnique", PreCache = false)]
 	public class DbItemUnique : DbItemTemplate
@@ -10,7 +8,7 @@ namespace Core.Database
 		public DbItemUnique()
 			: base()
 		{
-			m_id_nb = "Unique_" + UniqueID.IdGenerator.GenerateID();
+			m_id_nb = "Unique_" + Database.IdGenerator.GenerateID();
 			m_name = "(blank item)";
 		}
 
@@ -18,11 +16,11 @@ namespace Core.Database
 		{
 			if (template is DbItemUnique)
 			{
-				m_id_nb = "Unique_" + UniqueID.IdGenerator.GenerateID();
+				m_id_nb = "Unique_" + Database.IdGenerator.GenerateID();
 			}
 			else
 			{
-				m_id_nb = template.Id_nb + UNIQUE_SEPARATOR + UniqueID.IdGenerator.GenerateID();
+				m_id_nb = template.Id_nb + UNIQUE_SEPARATOR + Database.IdGenerator.GenerateID();
 			}
 			Name = template.Name;
 			Bonus = template.Bonus;

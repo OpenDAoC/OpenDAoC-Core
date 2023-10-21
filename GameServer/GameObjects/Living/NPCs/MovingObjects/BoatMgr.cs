@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.PacketHandler;
 using log4net;
 

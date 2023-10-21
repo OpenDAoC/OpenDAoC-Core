@@ -1,4 +1,5 @@
-using Core.Database.Connection;
+using Core.Database;
+using Core.Database.Enums;
 using Core.Language;
 
 namespace Core.GS.Commands;

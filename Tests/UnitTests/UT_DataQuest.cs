@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS;
 using Core.GS.PlayerClass;
 using Core.GS.Quests;

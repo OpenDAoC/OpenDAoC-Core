@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Core.Base;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Housing;
 using Core.GS.ServerProperties;
 using Core.Language;

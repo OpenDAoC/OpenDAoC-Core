@@ -19,7 +19,6 @@
 using System;
 using System.Linq;
 using Core.Database;
-using Core.Database.UniqueID;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Database

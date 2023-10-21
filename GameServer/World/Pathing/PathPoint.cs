@@ -1,4 +1,5 @@
 using Core.Database;
+using Core.Database.Enums;
 
 namespace Core.GS.Movement
 {

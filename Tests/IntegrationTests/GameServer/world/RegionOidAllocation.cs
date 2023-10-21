@@ -20,6 +20,7 @@
 using System;
 using System.Threading;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS;
 using Core.GS.ServerProperties;
 using NUnit.Framework;

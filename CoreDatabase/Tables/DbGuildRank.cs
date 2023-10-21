@@ -1,6 +1,4 @@
-using Core.Database.Attributes;
-
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Rank rules in guild

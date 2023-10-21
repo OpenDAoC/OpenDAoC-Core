@@ -3,9 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-using Core.Database.Attributes;
-using Core.Database.Connection;
-using Core.Database.Handlers;
+using Core.Database.Enums;
 using log4net;
 
 namespace Core.Database
@@ -841,7 +839,7 @@ namespace Core.Database
 		/// <param name="parameters">Parameters for filtering</param>
 		/// <param name="isolation">Isolation Level</param>
 		/// <returns>Collection of DataObjects Sets matching Parametrized Where Expression</returns>
-		protected abstract IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.EIsolationLevel isolation);
+		protected abstract IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, EIsolationLevel isolation);
 
 		protected abstract IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereClauseBatch);
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.AI.Brain;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Effects;
 using Core.GS.PropertyCalc;
 using Core.GS.Spells;

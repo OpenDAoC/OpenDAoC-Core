@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using Core.Database;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.PacketHandler;
 

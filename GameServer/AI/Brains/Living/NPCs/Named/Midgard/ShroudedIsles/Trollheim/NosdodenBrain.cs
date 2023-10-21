@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS;
 using Core.GS.PacketHandler;
 using Core.GS.Styles;

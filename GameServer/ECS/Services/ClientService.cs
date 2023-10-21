@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.Base;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Housing;
 using Core.GS.ServerProperties;
 using ECS.Debug;

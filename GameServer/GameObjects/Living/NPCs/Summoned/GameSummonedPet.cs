@@ -2,6 +2,7 @@ using System;
 using Core.AI;
 using Core.AI.Brain;
 using Core.Database;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.ServerProperties;
 

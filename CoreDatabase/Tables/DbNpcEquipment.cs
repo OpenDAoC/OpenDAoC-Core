@@ -1,6 +1,4 @@
-using Core.Database.Attributes;
-
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// The NPCEqupment table holds standard equipment

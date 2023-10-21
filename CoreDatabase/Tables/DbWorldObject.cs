@@ -1,6 +1,4 @@
-using Core.Database.Attributes;
-
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Objects as Tables, Lights, Bags non static in Game.

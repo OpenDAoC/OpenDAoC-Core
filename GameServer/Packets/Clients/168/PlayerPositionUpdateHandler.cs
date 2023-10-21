@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Effects;
 using Core.GS.Utils;
 using Core.Language;

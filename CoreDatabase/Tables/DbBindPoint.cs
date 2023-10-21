@@ -1,6 +1,4 @@
-using Core.Database.Attributes;
-
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Table of BindPoint where player pop when they die and released

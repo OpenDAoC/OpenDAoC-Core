@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Base.Enums;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Keeps;
 using Core.GS.ServerProperties;
 using Core.Language;

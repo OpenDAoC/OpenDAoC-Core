@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.Text;
 using Core.Database;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Behaviour;
 using Core.GS.PacketHandler;

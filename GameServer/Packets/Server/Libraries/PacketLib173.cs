@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Effects;
 using Core.GS.Keeps;
 using Core.GS.Quests;

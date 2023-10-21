@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;

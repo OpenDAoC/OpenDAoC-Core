@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Housing;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;

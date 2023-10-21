@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Core.Database;
+using Core.Database.Tables;
 using log4net;
 
 namespace Core.GS

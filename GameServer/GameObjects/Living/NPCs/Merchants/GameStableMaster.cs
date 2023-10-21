@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Core.Database;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;

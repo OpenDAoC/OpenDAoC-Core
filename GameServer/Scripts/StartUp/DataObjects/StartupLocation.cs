@@ -1,5 +1,4 @@
 ﻿using Core.Database;
-using Core.Database.Attributes;
 
 namespace Core.GS.GameEvents
 {

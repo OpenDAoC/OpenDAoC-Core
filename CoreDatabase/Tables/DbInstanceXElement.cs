@@ -1,6 +1,4 @@
-﻿using Core.Database.Attributes;
-
-namespace Core.Database
+﻿namespace Core.Database.Tables
 {
 	/// <summary>
 	/// This table represents instances, with an entry for each element (instance type, objects, mobs, entrances, etc) in an instance.

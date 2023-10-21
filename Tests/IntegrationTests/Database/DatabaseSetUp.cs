@@ -20,7 +20,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using Core.Database;
-using Core.Database.Connection;
+using Core.Database.Enums;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Database

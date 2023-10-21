@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.Database.Attributes
+namespace Core.Database
 {
 	/// <summary>
 	/// Attribute to mark a Derived Class of DataObject as Table

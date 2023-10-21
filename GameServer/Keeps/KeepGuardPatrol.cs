@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Core.Database;
-using Core.Database.UniqueID;
+using Core.Database.Tables;
 using Core.GS.Movement;
 
 namespace Core.GS.Keeps
@@ -121,7 +121,7 @@ namespace Core.GS.Keeps
 			GuardPositionMgr.LoadGuardPosition(SpawnPosition, guard);
 			guard.RefreshTemplate();
 			PatrolGuards.Add(guard);
-			Component.Keep.Guards.Add(Database.UniqueID.IdGenerator.GenerateID(), guard);
+			Component.Keep.Guards.Add(Database.IdGenerator.GenerateID(), guard);
 			guard.AddToWorld();
 
 			if (ServerProperties.Properties.ENABLE_DEBUG)

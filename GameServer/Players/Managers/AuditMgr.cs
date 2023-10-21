@@ -4,7 +4,7 @@ using System.Text;
 using System.Timers;
 using Core.Base;
 using Core.Database;
-using Core.Database.Attributes;
+using Core.Database.Tables;
 
 namespace Core.GS
 {

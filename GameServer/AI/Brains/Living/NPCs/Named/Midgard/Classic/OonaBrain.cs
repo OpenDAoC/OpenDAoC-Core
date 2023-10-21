@@ -1,6 +1,7 @@
 using Core.Database;
 using Core.GS;
 using Core.AI.Brain;
+using Core.Database.Tables;
 
 namespace Core.AI.Brain;
 

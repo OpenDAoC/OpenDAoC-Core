@@ -1,6 +1,4 @@
-﻿using Core.Database.Attributes;
-
-namespace Core.Database
+﻿namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Cross Reference Table Between character Class and Specialization Careers.

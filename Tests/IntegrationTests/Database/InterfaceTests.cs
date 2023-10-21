@@ -21,7 +21,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Core.Database;
-using Core.Database.UniqueID;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Database

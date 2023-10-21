@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS;
 using Core.GS.PacketHandler;
 using NUnit.Framework;

@@ -2,6 +2,7 @@
 using System.Numerics;
 using Core.AI.Brain;
 using Core.Database;
+using Core.Database.Enums;
 using Core.GS.Movement;
 
 namespace Core.GS

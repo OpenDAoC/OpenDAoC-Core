@@ -18,8 +18,7 @@
  */
 
 using Core.Database;
-using Core.Database.Attributes;
-using Core.Database.Connection;
+using Core.Database.Enums;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Database.MySQL

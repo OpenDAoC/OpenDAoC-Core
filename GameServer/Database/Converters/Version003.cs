@@ -1,6 +1,7 @@
 using System.Collections;
 using Core.Database;
-using Core.Database.Connection;
+using Core.Database.Enums;
+using Core.Database.Tables;
 using log4net;
 
 namespace Core.GS.DatabaseConverters;

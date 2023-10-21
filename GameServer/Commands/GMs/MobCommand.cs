@@ -6,6 +6,7 @@ using System.Reflection;
 using Core.AI;
 using Core.AI.Brain;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Housing;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;

@@ -1,9 +1,8 @@
 using System;
 using System.Reflection;
-using Core.Database.Attributes;
 using log4net;
 
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// The InventoryItem table holds all values from the

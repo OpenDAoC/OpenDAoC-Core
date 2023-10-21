@@ -1,6 +1,4 @@
-﻿using Core.Database.Attributes;
-
-namespace Core.Database
+﻿namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Stores the triggers with corresponding text for a mob, for example if the mob should say something when it dies.

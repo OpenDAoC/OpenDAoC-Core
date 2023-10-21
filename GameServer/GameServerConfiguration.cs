@@ -24,7 +24,8 @@ using System.Reflection;
 using System.Linq;
 using Core.Base;
 using Core.Base.Enums;
-using Core.Database.Connection;
+using Core.Database;
+using Core.Database.Enums;
 
 namespace Core.GS
 {

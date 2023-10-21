@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Database;
+using Core.Database.Tables;
 
 namespace Core.GS;
 

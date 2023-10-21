@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using Core.Base;
 using Core.Database;
+using Core.Database.Enums;
+using Core.Database.Tables;
 using Core.Events;
 using Core.Language;
 
@@ -69,9 +71,9 @@ namespace Core.GS
 			}
 		}
 
-        public virtual LanguageDataObject.eTranslationIdentifier TranslationIdentifier
+        public virtual ETranslationIdType TranslationIdentifier
         {
-            get { return LanguageDataObject.eTranslationIdentifier.eObject; }
+            get { return ETranslationIdType.eObject; }
         }
 
         /// <summary>

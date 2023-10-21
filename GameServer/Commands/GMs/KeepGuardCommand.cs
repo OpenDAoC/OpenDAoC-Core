@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
 using Core.Database;
-using Core.Database.UniqueID;
+using Core.Database.Enums;
+using Core.Database.Tables;
 using Core.GS.Keeps;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using Core.Base;
 using Core.Database;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;

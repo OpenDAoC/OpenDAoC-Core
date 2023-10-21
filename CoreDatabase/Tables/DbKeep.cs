@@ -1,6 +1,6 @@
-using Core.Database.Attributes;
+using Core.Database.Enums;
 
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// DB Keep is database of keep

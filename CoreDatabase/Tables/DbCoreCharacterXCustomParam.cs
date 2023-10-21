@@ -1,6 +1,4 @@
-using Core.Database.Attributes;
-
-namespace Core.Database
+namespace Core.Database.Tables
 {
     /// <summary>
     /// DOL Characters (Player) Custom Params linked to Character Entry

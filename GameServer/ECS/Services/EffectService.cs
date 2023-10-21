@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Core.AI.Brain;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using Core.Base.Enums;
 using Core.Database;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.ServerProperties;
 using log4net;

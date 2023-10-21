@@ -1,6 +1,4 @@
-using Core.Database.Attributes;
-
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	[DataTable(TableName = "Area")]
 	public class DbArea : DataObject

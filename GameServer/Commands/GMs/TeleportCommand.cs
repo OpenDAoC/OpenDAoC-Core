@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.PacketHandler;
 using log4net;
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.Database.Attributes
+namespace Core.Database
 {
 	/// <summary>
 	/// Attribute to indicate an Relationship to another DatabaseObject.

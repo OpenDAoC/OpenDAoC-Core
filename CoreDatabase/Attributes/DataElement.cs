@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.Database.Attributes
+namespace Core.Database
 {
 	/// <summary>
 	/// Attribute that Marks a Property or Field as Column of the Table

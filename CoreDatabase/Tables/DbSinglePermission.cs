@@ -1,6 +1,4 @@
-using Core.Database.Attributes;
-
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	[DataTable(TableName="SinglePermission")]
 	public class DbSinglePermission : DataObject

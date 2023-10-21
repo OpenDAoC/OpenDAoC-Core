@@ -1,4 +1,4 @@
-namespace Core.Database;
+namespace Core.Database.Enums;
 
 public enum EPathType : int
 {

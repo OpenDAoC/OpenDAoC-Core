@@ -1,4 +1,6 @@
 using Core.Database;
+using Core.Database.Enums;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.PacketHandler;
 using Core.Language;
@@ -91,9 +93,9 @@ namespace Core.GS
 			set { m_ID = value; }
 		}
 
-        public virtual LanguageDataObject.eTranslationIdentifier TranslationIdentifier
+        public virtual ETranslationIdType TranslationIdentifier
         {
-            get { return LanguageDataObject.eTranslationIdentifier.eArea; }
+            get { return ETranslationIdType.eArea; }
         }
 
         /// <summary>

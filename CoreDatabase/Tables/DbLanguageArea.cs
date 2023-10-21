@@ -1,6 +1,6 @@
-﻿using Core.Database.Attributes;
+﻿using Core.Database.Enums;
 
-namespace Core.Database
+namespace Core.Database.Tables
 {
     [DataTable(TableName = "LanguageArea")]
     public class DbLanguageArea : LanguageDataObject
@@ -14,9 +14,9 @@ namespace Core.Database
             : base() { }
 
         #region Properties
-        public override eTranslationIdentifier TranslationIdentifier
+        public override ETranslationIdType TranslationIdentifier
         {
-            get { return eTranslationIdentifier.eArea; }
+            get { return ETranslationIdType.eArea; }
         }
 
         /// <summary>

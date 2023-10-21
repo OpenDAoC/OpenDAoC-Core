@@ -1,7 +1,6 @@
 using System;
-using Core.Database.Attributes;
 
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Bonuses for artifacts.
@@ -12,30 +11,6 @@ namespace Core.Database
 		private String m_artifactID;
 		private int m_bonusID;
 		private int m_level;
-
-		public enum ID
-		{
-			Min = 0,
-			MinStat = 0,
-			Bonus1 = 0,
-			Bonus2 = 1,
-			Bonus3 = 2,
-			Bonus4 = 3,
-			Bonus5 = 4,
-			Bonus6 = 5,
-			Bonus7 = 6,
-			Bonus8 = 7,
-			Bonus9 = 8,
-			Bonus10 = 9,
-			MaxStat = 9,
-			MinSpell = 10,
-			Spell = 10,
-			Spell1 = 11,
-			ProcSpell = 12,
-			ProcSpell1 = 13,
-			MaxSpell = 13,
-			Max = 13
-		};
 
 		/// <summary>
 		/// Create a new artifact bonus.

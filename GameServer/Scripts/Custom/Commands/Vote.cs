@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Core.Database;
-using Core.Database.Attributes;
 using Core.Events;
 using Core.GS.PacketHandler;
 using Core.GS.Scripts;

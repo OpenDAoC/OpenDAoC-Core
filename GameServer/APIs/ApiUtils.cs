@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.ServerProperties;
 using Microsoft.Extensions.Caching.Memory;
 

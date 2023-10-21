@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Xml;
 using System.Xml.Serialization;
 using Core.Database;
-using Core.Database.Attributes;
 using log4net;
 
 namespace Core.GS.DatabaseUpdate

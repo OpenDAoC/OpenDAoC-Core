@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Database;
+using Core.Database.Tables;
 
 namespace Core.GS;
 

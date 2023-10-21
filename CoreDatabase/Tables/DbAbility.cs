@@ -1,6 +1,4 @@
-using Core.Database.Attributes;
-
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	/*
 	 * 	public static readonly Dictionary<string, ushort> AbilitiesClientHardcodedIDs = new Dictionary<string, ushort>()

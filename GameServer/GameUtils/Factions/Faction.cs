@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.PacketHandler;
 
 namespace Core.GS

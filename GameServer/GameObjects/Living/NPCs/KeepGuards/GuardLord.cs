@@ -2,6 +2,7 @@ using System;
 using Core.AI.Brain;
 using Core.Base.Enums;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.PacketHandler;
 using Core.GS.PlayerClass;
 using Core.GS.ServerProperties;
@@ -152,7 +153,7 @@ namespace Core.GS.Keeps
                     {
                         if (this.Component != null)
                         {
-                            Database.DbKeepCaptureLog keeplog = new Database.DbKeepCaptureLog();
+                            DbKeepCaptureLog keeplog = new DbKeepCaptureLog();
                             keeplog.KeepName = Component.Keep.Name;
 
                             if (Component.Keep is GameKeep)

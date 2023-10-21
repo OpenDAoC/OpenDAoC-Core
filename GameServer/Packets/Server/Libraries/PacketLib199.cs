@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Core.Database;
+using Core.Database.Tables;
 using log4net;
 
 namespace Core.GS.PacketHandler

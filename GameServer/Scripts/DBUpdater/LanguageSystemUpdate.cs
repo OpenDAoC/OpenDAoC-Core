@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core.Database;
-using Core.Database.Attributes;
+using Core.Database.Tables;
 using log4net;
 
 namespace Core.GS.DatabaseUpdate

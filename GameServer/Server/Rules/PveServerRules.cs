@@ -1,6 +1,7 @@
 using Core.AI.Brain;
 using Core.Base.Enums;
 using Core.Database;
+using Core.Database.Tables;
 
 namespace Core.GS.ServerRules
 {

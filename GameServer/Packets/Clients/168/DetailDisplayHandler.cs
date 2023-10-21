@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
 using Core.GS.Spells;

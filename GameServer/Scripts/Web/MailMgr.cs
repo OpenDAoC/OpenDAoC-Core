@@ -7,6 +7,7 @@ using System.Net.Mail;
 using System.Reflection;
 using System.Threading;
 using System.Xml;
+using Core.Base;
 using Core.Config;
 using Core.GS;
 using Core.GS.ServerProperties;

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Core.AI.Brain;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Spells;
 using log4net;
 

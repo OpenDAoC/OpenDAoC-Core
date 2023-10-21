@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.PacketHandler;
 using log4net;
@@ -283,7 +284,7 @@ namespace Core.GS.Keeps
 			hookpoint.Object = hookPointObj;
 
 			//create the db entry
-			Database.DbKeepHookPointItem item = new Database.DbKeepHookPointItem(component.Keep.KeepID, component.ID, hookpoint.ID, GameObjectType);
+			DbKeepHookPointItem item = new DbKeepHookPointItem(component.Keep.KeepID, component.ID, hookpoint.ID, GameObjectType);
 			GameServer.Database.AddObject(item);
 		}
 

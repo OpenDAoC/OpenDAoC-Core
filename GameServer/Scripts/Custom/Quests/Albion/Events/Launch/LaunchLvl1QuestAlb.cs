@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text;
 using Core.Database;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;

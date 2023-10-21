@@ -1,5 +1,6 @@
 using System.Collections;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Effects;
 
 namespace Core.GS.RealmAbilities

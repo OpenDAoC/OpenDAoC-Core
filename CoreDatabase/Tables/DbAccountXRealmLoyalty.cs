@@ -1,7 +1,6 @@
 using System;
-using Core.Database.Attributes;
 
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Table that holds the different characters and guilds that have been given permissions to a house.

@@ -1,5 +1,6 @@
 using System.Collections;
 using Core.Database;
+using Core.Database.Tables;
 using Core.Language;
 
 namespace Core.GS;

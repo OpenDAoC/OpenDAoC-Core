@@ -1,5 +1,7 @@
 using System;
 using Core.Database;
+using Core.Database.Enums;
+using Core.Database.Tables;
 using Core.GS.PacketHandler;
 
 namespace Core.GS
@@ -23,9 +25,9 @@ namespace Core.GS
 		/// </summary>
 		private bool m_isRemoved = false;
 
-        public override LanguageDataObject.eTranslationIdentifier TranslationIdentifier
+        public override ETranslationIdType TranslationIdentifier
         {
-            get { return LanguageDataObject.eTranslationIdentifier.eItem; }
+            get { return ETranslationIdType.eItem; }
         }
 
 

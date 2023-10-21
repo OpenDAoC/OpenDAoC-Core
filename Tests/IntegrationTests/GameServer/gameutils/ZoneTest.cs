@@ -19,6 +19,7 @@
 
 using System;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS;
 using NUnit.Framework;
 

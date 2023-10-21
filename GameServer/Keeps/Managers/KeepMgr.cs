@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Core.Base.Enums;
 using Core.Database;
+using Core.Database.Tables;
 using log4net;
 
 namespace Core.GS.Keeps

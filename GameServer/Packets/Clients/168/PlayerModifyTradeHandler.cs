@@ -1,5 +1,6 @@
 using System.Collections;
 using Core.Database;
+using Core.Database.Tables;
 
 namespace Core.GS.PacketHandler.Client.v168
 {

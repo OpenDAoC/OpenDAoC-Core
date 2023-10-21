@@ -1,6 +1,4 @@
-﻿using Core.Database.Attributes;
-
-namespace Core.Database
+﻿namespace Core.Database.Tables
 {
     /// <summary>
     /// DB KeepdoorTeleport is database of keepdoor teleport

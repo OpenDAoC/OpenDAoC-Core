@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.ServerProperties;
 using log4net;
 

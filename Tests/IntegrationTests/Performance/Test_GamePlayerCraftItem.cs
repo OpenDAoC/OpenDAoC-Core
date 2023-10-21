@@ -18,6 +18,7 @@
  */
 using System.Diagnostics;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS;
 using Core.Tests.Unit.Gameserver;
 using NUnit.Framework;

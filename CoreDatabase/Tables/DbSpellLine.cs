@@ -1,6 +1,4 @@
-using Core.Database.Attributes;
-
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Spell Lines Tables Referencing Spell from Base or Spec Lines, Attach to Specialization using Spec KeyName

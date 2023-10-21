@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.PacketHandler;
 using Core.GS.SalvageCalc;
 using Core.Language;

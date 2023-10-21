@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Core.Database.Attributes;
+using Core.Database;
 using Core.GS.Commands;
 using Core.GS.ServerProperties;
 using log4net;

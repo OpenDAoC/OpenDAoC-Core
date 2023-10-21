@@ -1,8 +1,7 @@
 using System;
 using System.Linq;
-using Core.Database.Attributes;
 
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	[DataTable(TableName = "DOLCharactersBackup")]
 	public class DbCoreCharacterBackup : DbCoreCharacter

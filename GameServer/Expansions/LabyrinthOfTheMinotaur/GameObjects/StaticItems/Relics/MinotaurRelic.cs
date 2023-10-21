@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using Core.Database;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;

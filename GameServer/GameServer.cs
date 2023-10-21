@@ -11,7 +11,6 @@ using Core.Base;
 using Core.Base.Enums;
 using Core.Config;
 using Core.Database;
-using Core.Database.Attributes;
 using Core.Events;
 using Core.GS.API;
 using Core.GS.Behaviour;

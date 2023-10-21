@@ -1,19 +1,18 @@
 using System;
 
-namespace Core.Database.UniqueID
+namespace Core.Database;
+
+/// <summary>
+/// Generates a unique ID for every object.
+/// </summary>
+public static class IdGenerator
 {
 	/// <summary>
-	/// Generates an UniqeID for every Object.
+	/// Generate a new GUID String
 	/// </summary>
-	public static class IdGenerator
+	/// <returns>a new unique Key</returns>
+	public static string GenerateID()
 	{
-		/// <summary>
-		/// Generate a new GUID String
-		/// </summary>
-		/// <returns>a new unique Key</returns>
-		public static string GenerateID()
-		{
-			return Guid.NewGuid().ToString();
-		}
+		return Guid.NewGuid().ToString();
 	}
 }

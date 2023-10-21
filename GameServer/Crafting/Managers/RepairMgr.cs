@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.PacketHandler;
 using Core.Language;
 using log4net;

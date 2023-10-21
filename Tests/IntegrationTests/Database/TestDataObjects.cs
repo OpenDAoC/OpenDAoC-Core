@@ -18,7 +18,6 @@
  */
 
 using Core.Database;
-using Core.Database.Attributes;
 
 namespace Core.Tests.Integration.Database
 {

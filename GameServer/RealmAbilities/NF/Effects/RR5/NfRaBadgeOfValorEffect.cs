@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Core.Database.Tables;
 using Core.Events;
 
 namespace Core.GS.Effects
@@ -46,7 +47,7 @@ namespace Core.GS.Effects
                 return;
             GamePlayer target = afea.AttackData.Target as GamePlayer;
             
-            Database.DbInventoryItem armor = target.Inventory.GetItem((EInventorySlot)((int)afea.AttackData.ArmorHitLocation));
+            DbInventoryItem armor = target.Inventory.GetItem((EInventorySlot)((int)afea.AttackData.ArmorHitLocation));
             
             if (armor == null || armor.SPD_ABS == 0)
                 return;

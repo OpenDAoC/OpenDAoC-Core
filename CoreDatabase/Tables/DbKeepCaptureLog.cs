@@ -1,7 +1,6 @@
 using System;
-using Core.Database.Attributes;
 
-namespace Core.Database
+namespace Core.Database.Tables
 {
 	[DataTable(TableName = "KeepCaptureLog")]
 	public class DbKeepCaptureLog : DataObject

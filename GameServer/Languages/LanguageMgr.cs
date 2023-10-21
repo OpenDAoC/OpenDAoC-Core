@@ -5,6 +5,8 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Core.Database;
+using Core.Database.Enums;
+using Core.Database.Tables;
 using Core.GS;
 using Core.GS.ServerProperties;
 using log4net;
@@ -28,7 +30,7 @@ namespace Core.Language
             if (string.IsNullOrEmpty(language))
                 language = DefaultLanguage;
 
-            LanguageDataObject result = GetLanguageDataObject(language, translationId, LanguageDataObject.eTranslationIdentifier.eSystem);
+            LanguageDataObject result = GetLanguageDataObject(language, translationId, ETranslationIdType.eSystem);
 
             if (result == null)
             {
@@ -123,7 +125,7 @@ namespace Core.Language
         /// <summary>
         /// Returns the translations collection. MODIFY AT YOUR OWN RISK!!!
         /// </summary>
-        public static Dictionary<string, Dictionary<LanguageDataObject.eTranslationIdentifier, Dictionary<string, LanguageDataObject>>> Translations { get; private set; }
+        public static Dictionary<string, Dictionary<ETranslationIdType, Dictionary<string, LanguageDataObject>>> Translations { get; private set; }
         #endregion Properties
 
         #region Initialization
@@ -391,7 +393,7 @@ namespace Core.Language
         #endregion Initialization
 
         #region GetLanguageDataObject
-        public static LanguageDataObject GetLanguageDataObject(string language, string translationId, LanguageDataObject.eTranslationIdentifier translationIdentifier)
+        public static LanguageDataObject GetLanguageDataObject(string language, string translationId, ETranslationIdType translationIdentifier)
         {
             if (string.IsNullOrEmpty(translationId))
                 return null;

@@ -3,9 +3,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using Core.Database.Attributes;
-using Core.Database.Connection;
-using Core.Database.UniqueID;
+using System.Transactions;
+using Core.Database;
+using Core.Database.Enums;
 
 namespace Core.Database
 {
@@ -380,7 +380,7 @@ namespace Core.Database
 		/// <param name="parameters">Parameters for filtering</param>
 		/// <param name="isolation">Isolation Level</param>
 		/// <returns>Collection of DataObjects Sets matching Parametrized Where Expression</returns>
-		protected override IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.EIsolationLevel isolation)
+		protected override IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, EIsolationLevel isolation)
 		{
 			var columns = tableHandler.FieldElementBindings.ToArray();
 			

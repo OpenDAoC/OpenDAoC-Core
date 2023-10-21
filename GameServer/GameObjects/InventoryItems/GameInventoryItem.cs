@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Core.Database;
+using Core.Database.Enums;
+using Core.Database.Tables;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;
@@ -36,9 +38,9 @@ namespace Core.GS
             ObjectId = item.ObjectId;
         }
 
-        public virtual LanguageDataObject.eTranslationIdentifier TranslationIdentifier
+        public virtual ETranslationIdType TranslationIdentifier
         {
-            get { return LanguageDataObject.eTranslationIdentifier.eItem; }
+            get { return ETranslationIdType.eItem; }
         }
 
         /// <summary>

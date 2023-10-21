@@ -9,6 +9,8 @@ using Core.AI;
 using Core.AI.Brain;
 using Core.Base.Enums;
 using Core.Database;
+using Core.Database.Enums;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Effects;
 using Core.GS.Housing;
@@ -96,9 +98,9 @@ namespace Core.GS
 			}
 		}
 
-		public virtual LanguageDataObject.eTranslationIdentifier TranslationIdentifier
+		public virtual ETranslationIdType TranslationIdentifier
 		{
-			get { return LanguageDataObject.eTranslationIdentifier.eNPC; }
+			get { return ETranslationIdType.eNPC; }
 		}
 
 		/// <summary>

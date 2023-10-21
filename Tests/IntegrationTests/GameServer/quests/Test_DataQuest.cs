@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.Quests;
 using Core.Tests.Unit.Gameserver;
 

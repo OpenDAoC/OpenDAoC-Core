@@ -1,6 +1,4 @@
-﻿using Core.Database.Attributes;
-
-namespace Core.Database
+﻿namespace Core.Database.Tables
 {
     [DataTable(TableName = "Regions")]
     public class DbRegion : DataObject

@@ -1,5 +1,5 @@
 using System;
-using Core.Database.Attributes;
+using Core.Database;
 using Core.Events;
 using Core.GS;
 

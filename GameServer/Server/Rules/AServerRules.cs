@@ -7,6 +7,7 @@ using System.Reflection;
 using Core.AI.Brain;
 using Core.Base.Enums;
 using Core.Database;
+using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Housing;
 using Core.GS.Keeps;

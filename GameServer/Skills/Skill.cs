@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Core.Database;
+using Core.Database.Tables;
 
 namespace Core.GS
 {

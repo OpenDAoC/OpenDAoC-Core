@@ -1,4 +1,4 @@
-﻿namespace Core.Database.Connection
+﻿namespace Core.Database
 {
 	/// <summary>
 	/// Existing Table Row Binding

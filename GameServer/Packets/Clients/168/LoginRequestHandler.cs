@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using Core.Base.Enums;
 using Core.Database;
+using Core.Database.Tables;
 using Core.GS.ServerProperties;
 using log4net;
 

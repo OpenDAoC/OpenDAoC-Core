@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.Database.Attributes
+namespace Core.Database
 {
 	/// <summary>
 	/// Attribute to indicate the PrimaryKey of an DatabaseObject.

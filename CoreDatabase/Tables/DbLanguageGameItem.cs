@@ -1,11 +1,12 @@
-﻿namespace Core.Database
+﻿using Core.Database.Enums;
+
+namespace Core.Database.Tables;
+
+// data table attribute not set until item translations are supported.
+class DbLanguageGameItem : LanguageDataObject
 {
-    // data table attribute not set until item translations are supported.
-    class DbLanguageGameItem : LanguageDataObject
+    public override ETranslationIdType TranslationIdentifier
     {
-        public override eTranslationIdentifier TranslationIdentifier
-        {
-            get { return eTranslationIdentifier.eItem; }
-        }
+        get { return ETranslationIdType.eItem; }
     }
 }
