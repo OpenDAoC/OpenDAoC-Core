@@ -3,9 +3,9 @@ using System;
 using System.Reflection;
 using System.IO;
 using System.ServiceProcess;
-using DOL.GS;
+using Core.GS;
 
-namespace DOL.DOLServer
+namespace Core.Server
 {
 	/// <summary>
 	/// DOL System Service

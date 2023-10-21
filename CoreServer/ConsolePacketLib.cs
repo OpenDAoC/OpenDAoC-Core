@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
 using Core.GS.Housing;
@@ -12,7 +11,7 @@ using Core.GS.PacketHandler;
 using Core.GS.Quests;
 using log4net;
 
-namespace DOLGameServerConsole
+namespace Core.Server
 {
 	/// <summary>
 	/// The packetlib for dummy console clients for /commands

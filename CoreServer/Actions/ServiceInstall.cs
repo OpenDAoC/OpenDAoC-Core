@@ -5,7 +5,7 @@ using System.Configuration.Install;
 using System.Reflection;
 using System.Text;
 
-namespace DOL.DOLServer.Actions
+namespace Core.Server
 {
 	/// <summary>
 	/// Handles service install requests of the gameserver
