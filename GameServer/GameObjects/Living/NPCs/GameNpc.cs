@@ -25,6 +25,7 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;
+using Core.GS.Packets;
 using Core.GS.Quests;
 using Core.GS.ServerProperties;
 using Core.GS.Styles;

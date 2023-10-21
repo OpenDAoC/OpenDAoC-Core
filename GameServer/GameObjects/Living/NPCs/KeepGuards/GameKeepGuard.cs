@@ -15,6 +15,7 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.PacketHandler;
+using Core.GS.Packets;
 using Core.GS.ServerProperties;
 
 namespace Core.GS.Keeps

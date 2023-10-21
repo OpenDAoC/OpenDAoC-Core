@@ -4,7 +4,6 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.PacketHandler;
 
 namespace Core.GS.Spells
 {

@@ -7,6 +7,7 @@ using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
+using Core.GS.Packets;
 using log4net;
 
 namespace Core.GS.Expansions.Foundations;

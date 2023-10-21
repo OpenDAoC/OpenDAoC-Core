@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 
 namespace Core.GS;
 

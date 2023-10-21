@@ -9,7 +9,6 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.GS.Spells;
 

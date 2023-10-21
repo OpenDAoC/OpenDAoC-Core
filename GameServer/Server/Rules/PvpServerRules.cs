@@ -11,7 +11,6 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.PacketHandler;
 
 namespace Core.GS.ServerRules
 {

@@ -10,6 +10,7 @@ using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
+using Core.GS.Packets;
 using Core.GS.Quests;
 using log4net;
 
@@ -202,8 +203,8 @@ namespace Core.Server
 		public void SendWarmapUpdate(ICollection<IGameKeep> list) { }
 		public void SendWarmapDetailUpdate(List<List<byte>> fights, List<List<byte>> groups) { }
 		public void SendWarmapBonuses() { }
-		public void SendCheckLOS(GameObject Checker, GameObject Target, Core.GS.PacketHandler.CheckLOSResponse callback) { }
-		public void SendCheckLOS(GameObject source, GameObject target, Core.GS.PacketHandler.CheckLOSMgrResponse callback) { }
+		public void SendCheckLOS(GameObject Checker, GameObject Target, CheckLOSResponse callback) { }
+		public void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback) { }
 		public void SendLivingDataUpdate(GameLiving living, bool updateStrings) { }
 		public void SendPlayerTitles() { }
 		public void SendPlayerTitleUpdate(GamePlayer player) { }

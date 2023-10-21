@@ -1,7 +1,6 @@
 using System;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
-using Core.GS.PacketHandler.Client.v168;
+using Core.GS.Packets.Clients;
 
 namespace Core.GS.Commands;
 

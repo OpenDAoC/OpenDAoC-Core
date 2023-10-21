@@ -2,45 +2,44 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 
-namespace Core.GS.PacketHandler.Client.v168
+namespace Core.GS.Packets.Clients;
+
+[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerDismountRequest, "Handles Player Dismount Request.", EClientStatus.PlayerInGame)]
+public class PlayerDismountRequestHandler : IPacketHandler
 {
-	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerDismountRequest, "Handles Player Dismount Request.", EClientStatus.PlayerInGame)]
-	public class PlayerDismountRequestHandler : IPacketHandler
+	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
-		public void HandlePacket(GameClient client, GsPacketIn packet)
+		new DismountRequestHandler(client.Player).Start(1);
+	}
+
+	/// <summary>
+	/// Handles player dismount requests
+	/// </summary>
+	protected class DismountRequestHandler : EcsGameTimerWrapperBase
+	{
+		/// <summary>
+		/// Constructs a new DismountRequestHandler
+		/// </summary>
+		/// <param name="actionSource"></param>
+		public DismountRequestHandler(GamePlayer actionSource) : base(actionSource)
 		{
-			new DismountRequestHandler(client.Player).Start(1);
 		}
 
 		/// <summary>
-		/// Handles player dismount requests
+		/// Called on every timer tick
 		/// </summary>
-		protected class DismountRequestHandler : EcsGameTimerWrapperBase
+		protected override int OnTick(EcsGameTimer timer)
 		{
-			/// <summary>
-			/// Constructs a new DismountRequestHandler
-			/// </summary>
-			/// <param name="actionSource"></param>
-			public DismountRequestHandler(GamePlayer actionSource) : base(actionSource)
+			GamePlayer player = (GamePlayer) timer.Owner;
+
+			if (!player.IsRiding)
 			{
-			}
-
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override int OnTick(EcsGameTimer timer)
-			{
-				GamePlayer player = (GamePlayer) timer.Owner;
-
-				if (!player.IsRiding)
-				{
-					ChatUtil.SendSystemMessage(player, "You are not riding any steed!");
-					return 0;
-				}
-
-				player.DismountSteed(false);
+				ChatUtil.SendSystemMessage(player, "You are not riding any steed!");
 				return 0;
 			}
+
+			player.DismountSteed(false);
+			return 0;
 		}
 	}
 }

@@ -1,7 +1,6 @@
 using System.Linq;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
-using Core.GS.PacketHandler;
 
 namespace Core.GS.ECS;
 

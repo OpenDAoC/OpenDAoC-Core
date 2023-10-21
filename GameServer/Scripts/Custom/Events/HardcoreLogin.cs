@@ -7,7 +7,6 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Database;
 using Core.GS.Events;
-using Core.GS.PacketHandler;
 using Core.GS.PlayerTitles;
 using log4net;
 

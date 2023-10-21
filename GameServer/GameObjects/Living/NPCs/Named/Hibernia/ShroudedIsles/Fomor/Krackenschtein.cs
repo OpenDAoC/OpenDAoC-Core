@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Core.AI.Brain;
-using Core.GS.PacketHandler;
 using Core.Database;
 using Core.Events;
 using Core.GS;

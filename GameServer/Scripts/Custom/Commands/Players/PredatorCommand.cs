@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Core.GS.Commands;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 
 namespace Core.GS.Scripts

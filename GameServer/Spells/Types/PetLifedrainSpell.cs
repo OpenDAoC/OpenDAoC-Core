@@ -3,7 +3,6 @@ using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.GS.PacketHandler;
 using Core.GS.Spells;
 
 namespace Core.spells

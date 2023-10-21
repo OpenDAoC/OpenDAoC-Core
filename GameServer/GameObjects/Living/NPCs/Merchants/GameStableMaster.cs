@@ -9,7 +9,6 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Movement;
-using Core.GS.PacketHandler;
 using Core.GS.Quests;
 
 namespace Core.GS

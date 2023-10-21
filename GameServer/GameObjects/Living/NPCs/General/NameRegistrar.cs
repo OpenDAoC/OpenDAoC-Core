@@ -5,7 +5,6 @@ using System.Collections;
 using Core.GS.Commands;
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.PacketHandler;
 
 namespace Core.GS
 {

@@ -3,6 +3,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
+using Core.GS.Packets;
 
 /*1,Ballista,1,ammo,0.46,1
 2,Catapult,2,ammo,0.39,1

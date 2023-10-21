@@ -3,7 +3,6 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
-using Core.GS.PacketHandler;
 using Core.GS.Scripts.discord;
 using Core.GS.ServerProperties;
 

@@ -6,7 +6,7 @@ using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.GS.PacketHandler.Client.v168;
+using Core.GS.Packets.Clients;
 
 namespace Core.GS.Commands
 {

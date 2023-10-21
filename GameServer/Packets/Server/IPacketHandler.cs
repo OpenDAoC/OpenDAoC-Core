@@ -1,4 +1,4 @@
-namespace Core.GS.PacketHandler;
+namespace Core.GS.Packets;
 
 /// <summary>
 /// The interface for all received packets

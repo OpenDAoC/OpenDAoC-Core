@@ -1,6 +1,5 @@
 using System;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using JNogueira.Discord.Webhook.Client;
 

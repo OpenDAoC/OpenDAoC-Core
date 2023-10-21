@@ -1,10 +1,7 @@
 using Core.Base;
 
-namespace Core.GS.PacketHandler;
+namespace Core.GS.Packets;
 
-/// <summary>
-/// Outgoing game server UDP packet
-/// </summary>
 public class GsUdpPacketOut : PacketOut
 {
 	private byte m_packetCode;

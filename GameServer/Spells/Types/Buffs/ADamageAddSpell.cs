@@ -1,7 +1,6 @@
 using System;
 using Core.Database;
 using Core.GS.Effects;
-using Core.GS.PacketHandler;
 using Core.AI.Brain;
 using Core.Database.Tables;
 using Core.Events;

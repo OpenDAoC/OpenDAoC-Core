@@ -1,6 +1,5 @@
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.GS.PacketHandler;
 using Core.GS.Scripts;
 
 namespace Core.GS.AI.Brains;

@@ -4,7 +4,6 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.PacketHandler;
 
 namespace Core.GS.Spells
 {

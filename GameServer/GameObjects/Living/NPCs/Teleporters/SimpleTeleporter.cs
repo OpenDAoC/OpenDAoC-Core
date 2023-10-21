@@ -4,7 +4,6 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 
 namespace Core.GS
 {

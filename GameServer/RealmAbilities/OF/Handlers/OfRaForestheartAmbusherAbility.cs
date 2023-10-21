@@ -6,6 +6,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.PacketHandler;
+using Core.GS.Packets;
 
 namespace Core.GS.RealmAbilities
 {

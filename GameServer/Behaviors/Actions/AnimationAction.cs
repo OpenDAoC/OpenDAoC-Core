@@ -3,7 +3,6 @@ using Core.Events;
 using Core.GS.Behaviour;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.PacketHandler;
 
 namespace Core.GS.Behaviors;
 

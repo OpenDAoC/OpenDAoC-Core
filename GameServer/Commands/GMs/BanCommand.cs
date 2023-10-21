@@ -6,7 +6,6 @@ using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.PacketHandler;
 using log4net;
 
 namespace Core.GS.Commands;

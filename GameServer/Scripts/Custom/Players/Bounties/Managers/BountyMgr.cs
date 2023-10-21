@@ -7,7 +7,6 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;
-using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 
 namespace Core.GS;
