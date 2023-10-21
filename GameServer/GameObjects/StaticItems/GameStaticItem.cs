@@ -5,6 +5,7 @@ using Core.Database;
 using Core.Database.Enums;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.ECS;
 using Core.Language;
 
 namespace Core.GS
@@ -343,7 +344,7 @@ namespace Core.GS
 		/// <summary>
 		/// Timer used to respawn this object
 		/// </summary>
-		protected AuxECSGameTimer m_respawnTimer = null;
+		protected AuxEcsGameTimer m_respawnTimer = null;
 
 		/// <summary>
 		/// The sync object for respawn timer modifications
@@ -359,8 +360,8 @@ namespace Core.GS
 			{
 				if (m_respawnTimer == null)
 				{
-					m_respawnTimer = new AuxECSGameTimer(this);
-					m_respawnTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RespawnTimerCallback);
+					m_respawnTimer = new AuxEcsGameTimer(this);
+					m_respawnTimer.Callback = new AuxEcsGameTimer.AuxECSTimerCallback(RespawnTimerCallback);
 					m_respawnTimer.Start(respawnSeconds * 1000);
 				}
 			}
@@ -371,7 +372,7 @@ namespace Core.GS
 		/// </summary>
 		/// <param name="respawnTimer">the timer calling this callback</param>
 		/// <returns>the new interval</returns>
-		protected virtual int RespawnTimerCallback(AuxECSGameTimer respawnTimer)
+		protected virtual int RespawnTimerCallback(AuxEcsGameTimer respawnTimer)
 		{
 			lock (m_respawnTimerLock)
 			{

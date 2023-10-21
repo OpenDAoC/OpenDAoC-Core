@@ -2,29 +2,28 @@
 using System.Reflection;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.ECS;
+
+public static class ServiceUtil
 {
-    public static class ServiceUtil
+    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+    public static void HandleServiceException<T>(Exception exception, string serviceName, T entity, GameObject entityOwner) where T : class, IManagedEntity
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        log.Error($"Critical error encountered in {serviceName}: {exception}");
+        EntityMgr.Remove(entity);
 
-        public static void HandleServiceException<T>(Exception exception, string serviceName, T entity, GameObject entityOwner) where T : class, IManagedEntity
+        if (entityOwner is GamePlayer player)
         {
-            log.Error($"Critical error encountered in {serviceName}: {exception}");
-            EntityManager.Remove(entity);
+            if (player.PlayerClass.ID == (int) EPlayerClass.Necromancer && player.IsShade)
+                player.Shade(false);
 
-            if (entityOwner is GamePlayer player)
-            {
-                if (player.PlayerClass.ID == (int) EPlayerClass.Necromancer && player.IsShade)
-                    player.Shade(false);
-
-                player.Out.SendPlayerQuit(false);
-                player.Quit(true);
-                CraftingProgressMgr.FlushAndSaveInstance(player);
-                player.SaveIntoDatabase();
-            }
-            else
-                entityOwner?.RemoveFromWorld();
+            player.Out.SendPlayerQuit(false);
+            player.Quit(true);
+            CraftingProgressMgr.FlushAndSaveInstance(player);
+            player.SaveIntoDatabase();
         }
+        else
+            entityOwner?.RemoveFromWorld();
     }
 }

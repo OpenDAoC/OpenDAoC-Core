@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Core.Events;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.Language;
 using JNogueira.Discord.Webhook.Client;

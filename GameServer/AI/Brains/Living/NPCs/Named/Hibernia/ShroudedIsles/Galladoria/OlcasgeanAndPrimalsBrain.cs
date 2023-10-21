@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.AI.Brains;
@@ -977,7 +978,7 @@ public class WaterPrimalBrain : StandardMobBrain
             return;
         else
         {
-            if (ECS.Debug.Diagnostics.AggroDebugEnabled)
+            if (Diagnostics.AggroDebugEnabled)
             {
                 PrintAggroTable();
             }

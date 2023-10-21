@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.ECS;
 using Core.GS.Effects;
 
 namespace Core.GS.Spells

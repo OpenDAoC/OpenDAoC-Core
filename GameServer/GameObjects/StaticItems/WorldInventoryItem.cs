@@ -2,6 +2,7 @@ using System;
 using Core.Database;
 using Core.Database.Enums;
 using Core.Database.Tables;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 
 namespace Core.GS

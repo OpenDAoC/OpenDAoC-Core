@@ -1,3 +1,5 @@
+using Core.GS.ECS;
+
 namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.CheckLOSRequest, "Handles a LoS Check Response", EClientStatus.PlayerInGame)]

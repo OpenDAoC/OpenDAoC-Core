@@ -2,8 +2,8 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using Core.GS.ECS;
 using Core.GS.Scripts;
-using ECS.Debug;
 using log4net;
 
 namespace Core.GS

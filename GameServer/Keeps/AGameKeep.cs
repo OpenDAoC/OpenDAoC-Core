@@ -6,6 +6,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Database;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using log4net;
 
@@ -47,7 +48,7 @@ namespace Core.GS.Keeps
 		/// <summary>
 		/// Timerto upgrade the keep level
 		/// </summary>
-		protected AuxECSGameTimer m_changeLevelTimer;
+		protected AuxEcsGameTimer m_changeLevelTimer;
 
 		protected long m_lastAttackedByEnemyTick = 0;
 		public long LastAttackedByEnemyTick
@@ -716,8 +717,8 @@ namespace Core.GS.Keeps
 
 		protected void InitialiseTimers()
 		{
-			m_changeLevelTimer = new AuxECSGameTimer(new GameNpc());
-			m_changeLevelTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(ChangeLevelTimerCallback);
+			m_changeLevelTimer = new AuxEcsGameTimer(new GameNpc());
+			m_changeLevelTimer.Callback = new AuxEcsGameTimer.AuxECSTimerCallback(ChangeLevelTimerCallback);
 
 			//Commenting out claimTimer as we dont give RPs to guilds for holding onto claimed keeps currently.
 			// m_claimTimer = new ECSGameTimer(new GameNPC());
@@ -982,7 +983,7 @@ namespace Core.GS.Keeps
 		/// </summary>
 		/// <param name="timer"></param>
 		/// <returns></returns>
-		public int ChangeLevelTimerCallback(AuxECSGameTimer timer)
+		public int ChangeLevelTimerCallback(AuxEcsGameTimer timer)
 		{
 			if (this is GameKeepTower)
 			{

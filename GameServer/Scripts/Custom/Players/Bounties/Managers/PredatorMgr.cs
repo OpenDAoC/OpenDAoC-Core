@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Events;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 

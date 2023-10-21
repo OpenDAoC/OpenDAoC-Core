@@ -6,6 +6,7 @@ using Core.Database.Tables;
 using Core.GS.PacketHandler;
 using Core.GS;
 using Core.GS.AI.Brains;
+using Core.GS.ECS;
 
 namespace Core.GS;
 

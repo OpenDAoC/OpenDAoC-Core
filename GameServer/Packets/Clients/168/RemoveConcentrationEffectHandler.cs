@@ -1,3 +1,4 @@
+using Core.GS.ECS;
 using Core.GS.Effects;
 
 namespace Core.GS.PacketHandler.Client.v168

@@ -2,46 +2,44 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using ECS.Debug;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.ECS;
+
+public static class CastingService
 {
-    public static class CastingService
+    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    private const string SERVICE_NAME = nameof(CastingService);
+
+    public static void Tick(long tick)
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = nameof(CastingService);
+        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-        public static void Tick(long tick)
+        List<CastingComponent> list = EntityMgr.UpdateAndGetAll<CastingComponent>(EEntityType.CastingComponent, out int lastValidIndex);
+
+        Parallel.For(0, lastValidIndex + 1, i =>
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            CastingComponent castingComponent = list[i];
 
-            List<CastingComponent> list = EntityManager.UpdateAndGetAll<CastingComponent>(EEntityType.CastingComponent, out int lastValidIndex);
-
-            Parallel.For(0, lastValidIndex + 1, i =>
+            try
             {
-                CastingComponent castingComponent = list[i];
+                if (castingComponent?.EntityManagerId.IsSet != true)
+                    return;
 
-                try
-                {
-                    if (castingComponent?.EntityManagerId.IsSet != true)
-                        return;
+                long startTick = GameLoop.GetCurrentTime();
+                castingComponent.Tick(tick);
+                long stopTick = GameLoop.GetCurrentTime();
 
-                    long startTick = GameLoop.GetCurrentTime();
-                    castingComponent.Tick(tick);
-                    long stopTick = GameLoop.GetCurrentTime();
+                if (stopTick - startTick > 25)
+                    log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for: {castingComponent.Owner.Name}({castingComponent.Owner.ObjectID}) Spell: {castingComponent.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
+            }
+            catch (Exception e)
+            {
+                ServiceUtil.HandleServiceException(e, SERVICE_NAME, castingComponent, castingComponent.Owner);
+            }
+        });
 
-                    if (stopTick - startTick > 25)
-                        log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for: {castingComponent.Owner.Name}({castingComponent.Owner.ObjectID}) Spell: {castingComponent.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
-                }
-                catch (Exception e)
-                {
-                    ServiceUtil.HandleServiceException(e, SERVICE_NAME, castingComponent, castingComponent.Owner);
-                }
-            });
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
-        }
+        Diagnostics.StopPerfCounter(SERVICE_NAME);
     }
 }

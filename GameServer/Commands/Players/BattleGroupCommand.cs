@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Text;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.Language;
 using log4net;

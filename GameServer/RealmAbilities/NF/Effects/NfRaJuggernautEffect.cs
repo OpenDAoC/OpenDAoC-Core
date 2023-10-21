@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Core.GS.ECS;
 
 namespace Core.GS.Effects
 {

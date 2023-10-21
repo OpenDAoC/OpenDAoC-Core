@@ -1,6 +1,7 @@
 using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.ECS;
 using log4net;
 
 namespace Core.GS.PacketHandler.Client.v168
@@ -62,7 +63,7 @@ namespace Core.GS.PacketHandler.Client.v168
         /// <summary>
         /// Handles player world init requests
         /// </summary>
-        protected class WorldInitAction : AuxECSGameTimerWrapperBase
+        protected class WorldInitAction : AuxEcsGameTimerWrapperBase
         {
             /// <summary>
             /// Constructs a new WorldInitAction
@@ -73,7 +74,7 @@ namespace Core.GS.PacketHandler.Client.v168
             /// <summary>
             /// Called on every timer tick
             /// </summary>
-            protected override int OnTick(AuxECSGameTimer timer)
+            protected override int OnTick(AuxEcsGameTimer timer)
             {
                 GamePlayer player = (GamePlayer) timer.Owner;
 

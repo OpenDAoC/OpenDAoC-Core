@@ -1,4 +1,5 @@
 using Core.Database.Tables;
+using Core.GS.ECS;
 
 namespace Core.GS.AI.Brains;
 

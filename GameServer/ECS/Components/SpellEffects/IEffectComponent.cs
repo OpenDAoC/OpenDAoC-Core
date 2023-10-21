@@ -1,8 +1,7 @@
-namespace Core.GS.SpellEffects
+namespace Core.GS.ECS;
+
+public interface IEffectComponent
 {
-    public interface IEffectComponent
-    {
-        ESpellEffect Type { get; set; }
-        ushort SpellEffectId { get; set; }
-    }
+    ESpellEffect Type { get; set; }
+    ushort SpellEffectId { get; set; }
 }

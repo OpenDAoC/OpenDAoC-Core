@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.AI.Brains;

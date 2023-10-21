@@ -1,5 +1,6 @@
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.ECS;
 
 namespace Core.GS
 {
@@ -12,7 +13,7 @@ namespace Core.GS
         private string m_boatName;
         private ushort m_boatModel;
         private short m_boatMaxSpeedBase;
-        private AuxECSGameTimer m_removeTimer = null;
+        private AuxEcsGameTimer m_removeTimer = null;
 
         public GameBoat(byte type) : base()
         {
@@ -118,7 +119,7 @@ namespace Core.GS
             if (CurrentRiders.Length == 0)
             {
                 if (m_removeTimer == null)
-                    m_removeTimer = new AuxECSGameTimer(this, new AuxECSGameTimer.AuxECSTimerCallback(RemoveCallback));
+                    m_removeTimer = new AuxEcsGameTimer(this, new AuxEcsGameTimer.AuxECSTimerCallback(RemoveCallback));
                 else if (m_removeTimer.IsAlive)
                     m_removeTimer.Stop();
 
@@ -128,7 +129,7 @@ namespace Core.GS
             return true;
         }
 
-        protected int RemoveCallback(AuxECSGameTimer timer)
+        protected int RemoveCallback(AuxEcsGameTimer timer)
         {
             m_removeTimer.Stop();
             m_removeTimer = null;

@@ -1,7 +1,7 @@
 ﻿using Core.GS.PacketHandler;
 using Core.Language;
 
-namespace Core.GS
+namespace Core.GS.ECS
 {
     public class PlayerAttackAction : AttackAction
     {

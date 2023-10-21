@@ -1,4 +1,5 @@
 using System.Reflection;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.Language;
 using log4net;

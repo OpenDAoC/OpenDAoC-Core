@@ -3,6 +3,7 @@ using System.Text;
 using Core.AI;
 using Core.Events;
 using Core.GS.AI.States;
+using Core.GS.ECS;
 
 namespace Core.GS.AI.Brains;
 
@@ -38,7 +39,7 @@ public abstract class ABrain : IManagedEntity
     /// <returns>true if started</returns>
     public virtual bool Start()
     {
-        return EntityManager.Add(this);
+        return EntityMgr.Add(this);
     }
 
     /// <summary>
@@ -47,7 +48,7 @@ public abstract class ABrain : IManagedEntity
     /// <returns>true if stopped</returns>
     public virtual bool Stop()
     {
-        return EntityManager.Remove(this);
+        return EntityMgr.Remove(this);
     }
 
     /// <summary>

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
+using Core.GS.ECS;
 using log4net;
 
 namespace Core.Events
@@ -467,7 +468,7 @@ namespace Core.Events
 				throw new ArgumentNullException("e", "No event type given!");
 
 			/// [Takii - Atlas] Start Record cost of event for profiling.
-			ECS.Debug.Diagnostics.BeginGameEventMgrNotify();
+			Diagnostics.BeginGameEventMgrNotify();
 
 			// notify handlers bounded specifically to the sender
 			if (sender != null)
@@ -499,7 +500,7 @@ namespace Core.Events
 
 
             /// [Takii - Atlas] Stop Record cost of event for profiling.
-            ECS.Debug.Diagnostics.EndGameEventMgrNotify(e);
+            Diagnostics.EndGameEventMgrNotify(e);
         }
     }
 }

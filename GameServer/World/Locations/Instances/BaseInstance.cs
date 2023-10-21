@@ -4,6 +4,7 @@ using System.Linq;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.ECS;
 
 namespace Core.GS
 {

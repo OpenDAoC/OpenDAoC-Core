@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Core.Events;
+using Core.GS.ECS;
 using Core.GS.Housing;
 using Core.GS.Keeps;
 using Core.GS.Utils;
@@ -27,7 +28,7 @@ namespace Core.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player init requests
 		/// </summary>
-		protected class PlayerInitRequestAction : AuxECSGameTimerWrapperBase
+		protected class PlayerInitRequestAction : AuxEcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Constructs a new PlayerInitRequestHandler
@@ -40,7 +41,7 @@ namespace Core.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(AuxECSGameTimer timer)
+			protected override int OnTick(AuxEcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 

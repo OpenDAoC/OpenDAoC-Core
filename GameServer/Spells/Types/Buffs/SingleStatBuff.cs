@@ -1,4 +1,5 @@
 using System;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.GS.PlayerClass;
 

@@ -5,6 +5,7 @@ using System.Threading;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
@@ -28,7 +29,7 @@ namespace Core.GS
 		#region Declarations
 		DbMinotaurRelic m_dbRelic;
 		Timer timer = null;
-		public AuxECSGameTimer respawntimer = null;
+		public AuxEcsGameTimer respawntimer = null;
 		protected int m_spawny;
 		protected int m_spawnx;
 		protected int m_spawnz;
@@ -486,7 +487,7 @@ namespace Core.GS
 				respawntimer.Stop();
 				respawntimer = null;
 			}
-			respawntimer = new AuxECSGameTimer(this, new AuxECSGameTimer.AuxECSTimerCallback(RespawnTimerCallback),
+			respawntimer = new AuxEcsGameTimer(this, new AuxEcsGameTimer.AuxECSTimerCallback(RespawnTimerCallback),
 			                               Util.Random(MinotaurRelicMgr.MIN_RESPAWN_TIMER, MinotaurRelicMgr.MAX_RESPAWN_TIMER));
 		}
 
@@ -495,7 +496,7 @@ namespace Core.GS
 		/// </summary>
 		/// <param name="respawnTimer"></param>
 		/// <returns></returns>
-		protected override int RespawnTimerCallback(AuxECSGameTimer respawnTimer)
+		protected override int RespawnTimerCallback(AuxEcsGameTimer respawnTimer)
 		{
 			if (respawntimer != null)
 			{

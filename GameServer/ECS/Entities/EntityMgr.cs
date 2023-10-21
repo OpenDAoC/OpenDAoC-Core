@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Core.AI;
 using Core.GS.AI.Brains;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.ECS
 {
-    public static class EntityManager
+    public static class EntityMgr
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -23,7 +22,7 @@ namespace Core.GS
             { EEntityType.ObjectChangingSubZone, new EntityArray<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) },
             { EEntityType.LivingBeingKilled, new EntityArray<LivingBeingKilled>(200) },
             { EEntityType.Timer, new EntityArray<EcsGameTimer>(500) },
-            { EEntityType.AuxTimer, new EntityArray<AuxECSGameTimer>(500) }
+            { EEntityType.AuxTimer, new EntityArray<AuxEcsGameTimer>(500) }
         };
 
         public static bool Add<T>(T entity) where T : class, IManagedEntity
@@ -214,7 +213,7 @@ namespace Core.GS
     {
         private const int UNSET_ID = -1;
         private int _value = UNSET_ID;
-        private PendingState _pendingState = PendingState.NONE;
+        private EPendingState _pendingState = EPendingState.NONE;
 
         public int Value
         {
@@ -222,14 +221,14 @@ namespace Core.GS
             set
             {
                 _value = value;
-                _pendingState = PendingState.NONE;
+                _pendingState = EPendingState.NONE;
             }
         }
         public EEntityType Type { get; private set; }
         public bool AllowReuseByEntityManager { get; private set; }
         public bool IsSet => _value > UNSET_ID;
-        public bool IsPendingAddition => _pendingState == PendingState.ADDITION;
-        public bool IsPendingRemoval => _pendingState == PendingState.REMOVAL;
+        public bool IsPendingAddition => _pendingState == EPendingState.ADDITION;
+        public bool IsPendingRemoval => _pendingState == EPendingState.REMOVAL;
 
         public EntityManagerId(EEntityType type, bool allowReuseByEntityManager)
         {
@@ -239,12 +238,12 @@ namespace Core.GS
 
         public void OnPreAdd()
         {
-            _pendingState = PendingState.ADDITION;
+            _pendingState = EPendingState.ADDITION;
         }
 
         public void OnPreRemove()
         {
-            _pendingState = PendingState.REMOVAL;
+            _pendingState = EPendingState.REMOVAL;
         }
 
         public void Unset()
@@ -252,7 +251,7 @@ namespace Core.GS
             Value = UNSET_ID;
         }
 
-        private enum PendingState
+        private enum EPendingState
         {
             NONE,
             ADDITION,

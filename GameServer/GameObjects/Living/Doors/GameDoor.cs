@@ -1,6 +1,7 @@
 using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -14,8 +15,8 @@ namespace Core.GS
         private bool _openDead = false;
         private EDoorState _state;
         private object _lock = new();
-        private AuxECSGameTimer _closeDoorAction;
-        private AuxECSGameTimer _repairTimer;
+        private AuxEcsGameTimer _closeDoorAction;
+        private AuxEcsGameTimer _repairTimer;
 
         public int Locked { get; set; }
         public override int DoorID { get; set; }
@@ -184,13 +185,13 @@ namespace Core.GS
             if ((_repairTimer != null && _repairTimer.IsAlive) || Health >= MaxHealth)
                 return;
 
-            _repairTimer = new AuxECSGameTimer(this);
-            _repairTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RepairTimerCallback);
+            _repairTimer = new AuxEcsGameTimer(this);
+            _repairTimer.Callback = new AuxEcsGameTimer.AuxECSTimerCallback(RepairTimerCallback);
             _repairTimer.Start(REPAIR_INTERVAL);
             _repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL; // Skip the first tick to avoid repairing on server start.
         }
 
-        private int RepairTimerCallback(AuxECSGameTimer timer)
+        private int RepairTimerCallback(AuxEcsGameTimer timer)
         {
             if (HealthPercent != 100 && !InCombat)
             {
@@ -250,11 +251,11 @@ namespace Core.GS
             }
         }
 
-        private class CloseDoorAction : AuxECSGameTimerWrapperBase
+        private class CloseDoorAction : AuxEcsGameTimerWrapperBase
         {
             public CloseDoorAction(GameDoor door) : base(door) { }
 
-            protected override int OnTick(AuxECSGameTimer timer)
+            protected override int OnTick(AuxEcsGameTimer timer)
             {
                 GameDoor door = (GameDoor) timer.Owner;
                 door.Close();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 
 namespace Core.GS;

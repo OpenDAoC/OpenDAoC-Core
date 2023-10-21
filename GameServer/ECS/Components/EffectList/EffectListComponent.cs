@@ -4,7 +4,7 @@ using System.Linq;
 using Core.GS.Effects;
 using Core.GS.Spells;
 
-namespace Core.GS
+namespace Core.GS.ECS
 {
     // Component for holding persistent effects on the player.
     public class EffectListComponent : IManagedEntity
@@ -34,7 +34,7 @@ namespace Core.GS
                     if (!Owner.IsAlive)
                         return false;
 
-                    EntityManager.Add(this);
+                    EntityMgr.Add(this);
 
                     // Check to prevent crash from holding sprint button down.
                     if (effect is EcsGameAbilityEffect)

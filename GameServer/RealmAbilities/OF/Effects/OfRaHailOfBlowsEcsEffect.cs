@@ -1,3 +1,5 @@
+using Core.GS.ECS;
+
 namespace Core.GS.Effects
 {
     public class OfRaHailOfBlowsEcsEffect : StatBuffEcsSpellEffect

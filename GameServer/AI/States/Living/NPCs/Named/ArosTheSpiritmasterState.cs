@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.GS.AI.Brains;
+using Core.GS.ECS;
 
 namespace Core.GS.AI.States;
 
@@ -22,7 +23,7 @@ public class ArosTheSpiritmasterStateIdle : ArosTheSpiritmasterState
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
         {
             Console.WriteLine($"Aros the Spiritmaster {_brain.Body} has entered IDLE");
         }
@@ -79,7 +80,7 @@ public class ArosTheSpiritmasterStateAggro : ArosTheSpiritmasterState
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
         {
             Console.WriteLine($"Aros the Spiritmaster {_brain.Body} has entered AGGRO on target {_brain.Body.TargetObject}");
         }
@@ -110,7 +111,7 @@ public class ArosTheSpiritmasterStateReturnToSpawn : ArosTheSpiritmasterState
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
         {
             Console.WriteLine($"Aros the Spiritmaster {_brain.Body} is returning to spawn");
         }

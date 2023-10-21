@@ -1,6 +1,7 @@
 using System;
 using Core.Base.Enums;
 using Core.Events;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.Language;
 

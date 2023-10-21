@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
@@ -12,10 +11,9 @@ using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;
-using ECS.Debug;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.ECS
 {
     public static class EffectService
     {
@@ -27,7 +25,7 @@ namespace Core.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<EcsGameEffect> list = EntityManager.UpdateAndGetAll<EcsGameEffect>(EEntityType.Effect, out int lastValidIndex);
+            List<EcsGameEffect> list = EntityMgr.UpdateAndGetAll<EcsGameEffect>(EEntityType.Effect, out int lastValidIndex);
 
             Parallel.For(0, lastValidIndex + 1, i =>
             {
@@ -45,7 +43,7 @@ namespace Core.GS
                     else
                         HandlePropertyModification(effect);
 
-                    EntityManager.Remove(effect);
+                    EntityMgr.Remove(effect);
 
                     long stopTick = GameLoop.GetCurrentTime();
 
@@ -288,7 +286,7 @@ namespace Core.GS
 
             effect.CancelEffect = true;
             effect.ExpireTick = GameLoop.GameLoopTime - 1;
-            EntityManager.Add(effect);
+            EntityMgr.Add(effect);
         }
 
         /// <summary>

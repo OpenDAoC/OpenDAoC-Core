@@ -6,6 +6,7 @@ using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
+using Core.GS.ECS;
 using Core.GS.Housing;
 using Core.GS.Spells;
 using log4net;

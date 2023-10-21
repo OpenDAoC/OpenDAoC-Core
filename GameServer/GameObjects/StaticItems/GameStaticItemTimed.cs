@@ -1,3 +1,5 @@
+using Core.GS.ECS;
+
 namespace Core.GS
 {
 	/// <summary>
@@ -77,7 +79,7 @@ namespace Core.GS
 		/// <summary>
 		/// The callback function that will remove this bag after some time
 		/// </summary>
-		protected class RemoveItemAction : AuxECSGameTimerWrapperBase
+		protected class RemoveItemAction : AuxEcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// Constructs a new remove action
@@ -88,7 +90,7 @@ namespace Core.GS
 			/// <summary>
 			/// The callback function that will remove this bag after some time
 			/// </summary>
-			protected override int OnTick(AuxECSGameTimer timer)
+			protected override int OnTick(AuxEcsGameTimer timer)
 			{
 				GameStaticItem item = (GameStaticItem) timer.Owner;
 				//remove this object from the world after some time

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Styles;
 
-namespace Core.GS
+namespace Core.GS.ECS
 {
     public abstract class AttackAction
     {

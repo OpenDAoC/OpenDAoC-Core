@@ -1,4 +1,6 @@
-﻿namespace Core.GS.Systems
+﻿using Core.GS.ECS;
+
+namespace Core.GS.Systems
 {
     class DamageSystem
     {

@@ -1,4 +1,6 @@
-﻿namespace Core.GS.Effects
+﻿using Core.GS.ECS;
+
+namespace Core.GS.Effects
 {
     public class OfRaRainOfBaseEcsEffect : DamageAddEcsSpellEffect
     {

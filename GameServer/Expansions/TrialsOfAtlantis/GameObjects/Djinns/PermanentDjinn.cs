@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Events;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 
 namespace Core.GS

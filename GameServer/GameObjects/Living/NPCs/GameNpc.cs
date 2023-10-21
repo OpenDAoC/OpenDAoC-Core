@@ -13,6 +13,7 @@ using Core.Database.Enums;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS.AI.Brains;
+using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Housing;
 using Core.GS.Keeps;
@@ -22,7 +23,6 @@ using Core.GS.Quests;
 using Core.GS.ServerProperties;
 using Core.GS.Styles;
 using Core.Language;
-using ECS.Debug;
 
 namespace Core.GS
 {
@@ -3000,7 +3000,7 @@ namespace Core.GS
 		/// <summary>
 		/// A timer that will respawn this mob
 		/// </summary>
-		protected AuxECSGameTimer m_respawnTimer;
+		protected AuxEcsGameTimer m_respawnTimer;
 		/// <summary>
 		/// The sync object for respawn timer modifications
 		/// </summary>
@@ -3095,8 +3095,8 @@ namespace Core.GS
 				{
 					if (m_respawnTimer == null)
 					{
-						m_respawnTimer = new AuxECSGameTimer(this);
-						m_respawnTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RespawnTimerCallback);
+						m_respawnTimer = new AuxEcsGameTimer(this);
+						m_respawnTimer.Callback = new AuxEcsGameTimer.AuxECSTimerCallback(RespawnTimerCallback);
 					}
 					else if (m_respawnTimer.IsAlive)
 					{
@@ -3115,7 +3115,7 @@ namespace Core.GS
 		/// </summary>
 		/// <param name="respawnTimer">the timer calling this callback</param>
 		/// <returns>the new interval</returns>
-		protected virtual int RespawnTimerCallback(AuxECSGameTimer respawnTimer)
+		protected virtual int RespawnTimerCallback(AuxEcsGameTimer respawnTimer)
 		{
 			CurrentRegion.MobsRespawning.TryRemove(this, out _);
 

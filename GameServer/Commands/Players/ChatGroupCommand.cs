@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.Language;
 

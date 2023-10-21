@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Core.GS.AI.Brains;
+using Core.GS.ECS;
 using Core.GS.ServerProperties;
 using log4net;
 
@@ -31,7 +32,7 @@ public class StandardNpcStateIdle : StandardNpcState
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is entering IDLE");
 
         base.Enter();
@@ -113,7 +114,7 @@ public class StandardNpcStateAggro : StandardNpcState
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is entering AGGRO");
 
         _aggroTime = GameLoop.GameLoopTime;
@@ -164,7 +165,7 @@ public class StandardNpcStateRoaming : StandardNpcState
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is entering ROAM");
 
         base.Enter();
@@ -208,7 +209,7 @@ public class StandardNpcStateReturnToSpawn : StandardNpcState
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is entering RETURN_TO_SPAWN");
 
         if (_brain.Body.WasStealthed)
@@ -251,7 +252,7 @@ public class StandardNpcStatePatrolling : StandardNpcState
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is PATROLLING");
 
         _brain.Body.MoveOnPath(_brain.Body.MaxSpeed);
@@ -285,7 +286,7 @@ public class StandardNpcStateDead : StandardNpcState
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} has entered DEAD state");
 
         _brain.ClearAggroList();

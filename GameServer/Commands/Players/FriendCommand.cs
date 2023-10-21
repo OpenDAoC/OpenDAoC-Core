@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Core.GS.ECS;
 using Core.GS.Friends;
 
 namespace Core.GS.Commands;

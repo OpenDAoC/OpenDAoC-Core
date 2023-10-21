@@ -1,3 +1,4 @@
+using Core.GS.ECS;
 using Core.GS.Spells;
 
 namespace Core.GS.Effects

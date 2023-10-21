@@ -6,6 +6,7 @@ using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.Language;
@@ -17,7 +18,7 @@ namespace Core.GS.Housing
 	{
 		public static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static AuxECSGameTimer CheckRentTimer = null;
+		private static AuxEcsGameTimer CheckRentTimer = null;
 		private static Dictionary<ushort, Dictionary<int, House>> _houseList;
 		private static Dictionary<ushort, int> _idList;
 		private static int TimerInterval = Properties.RENT_CHECK_INTERVAL * 60 * 1000;
@@ -92,7 +93,7 @@ namespace Core.GS.Housing
 			if (CheckRentTimer == null)
 			{
 				CheckRentTimer =
-					new AuxECSGameTimer(null, CheckRents, TimerInterval);
+					new AuxEcsGameTimer(null, CheckRents, TimerInterval);
 			}
 
 			return true;
@@ -740,7 +741,7 @@ namespace Core.GS.Housing
 			return Properties.HOUSING_RENT_COTTAGE;
 		}
 
-		public static int CheckRents(AuxECSGameTimer timer)
+		public static int CheckRents(AuxEcsGameTimer timer)
 		{
 			if (Properties.RENT_DUE_DAYS == 0)
 				return 0;

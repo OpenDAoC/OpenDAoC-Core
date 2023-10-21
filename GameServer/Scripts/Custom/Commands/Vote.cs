@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using Core.Database;
 using Core.Events;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.GS.Scripts;
 

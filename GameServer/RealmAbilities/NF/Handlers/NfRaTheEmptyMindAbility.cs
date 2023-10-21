@@ -1,5 +1,6 @@
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 

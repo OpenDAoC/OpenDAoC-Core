@@ -4,7 +4,7 @@ using Core.GS.PacketHandler;
 using Core.Language;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.ECS
 {
     public class CraftAction
     {

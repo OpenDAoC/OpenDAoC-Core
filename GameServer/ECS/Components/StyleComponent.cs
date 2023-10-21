@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.GS.Styles;
 using Core.Language;
 
-namespace Core.GS
+namespace Core.GS.ECS
 {
     public class StyleComponent
     {

@@ -2,6 +2,7 @@ using System;
 using Core.AI.Brain;
 using Core.Events;
 using Core.GS.AI.Brains;
+using Core.GS.ECS;
 using Core.GS.Effects;
 
 namespace Core.GS.Spells

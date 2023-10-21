@@ -5,6 +5,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Database;
+using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Housing;
 using Core.GS.Keeps;

@@ -5,6 +5,7 @@ using System.Threading;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.ECS;
 using log4net;
 
 namespace Core.GS

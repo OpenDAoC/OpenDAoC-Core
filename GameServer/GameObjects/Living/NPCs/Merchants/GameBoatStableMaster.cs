@@ -1,6 +1,7 @@
 using System;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.ECS;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;
 using Core.Language;

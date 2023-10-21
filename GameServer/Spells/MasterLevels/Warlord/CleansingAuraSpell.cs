@@ -1,3 +1,5 @@
+using Core.GS.ECS;
+
 namespace Core.GS.Spells
 {
     //shared timer 3

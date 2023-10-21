@@ -1,3 +1,5 @@
+using Core.GS.ECS;
+
 namespace Core.GS.Commands;
 
 // See the comments above 'using' about SendMessage translation IDs

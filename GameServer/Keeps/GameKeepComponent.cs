@@ -9,6 +9,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Database;
+using Core.GS.ECS;
 using Core.GS.ServerProperties;
 using log4net;
 

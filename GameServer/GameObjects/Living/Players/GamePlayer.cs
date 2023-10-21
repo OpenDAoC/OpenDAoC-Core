@@ -17,6 +17,7 @@ using Core.GS.Calculators;
 using Core.GS.Commands;
 using Core.GS.Crafting;
 using Core.GS.Database;
+using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Housing;
 using Core.GS.Keeps;
@@ -783,14 +784,14 @@ namespace Core.GS
         /// <summary>
         /// quit timer
         /// </summary>
-        protected AuxECSGameTimer m_quitTimer;
+        protected AuxEcsGameTimer m_quitTimer;
 
         /// <summary>
         /// Timer callback for quit
         /// </summary>
         /// <param name="callingTimer">the calling timer</param>
         /// <returns>the new intervall</returns>
-        protected virtual int QuitTimerCallback(AuxECSGameTimer callingTimer)
+        protected virtual int QuitTimerCallback(AuxEcsGameTimer callingTimer)
         {
             if (!IsAlive || ObjectState != eObjectState.Active)
             {
@@ -876,7 +877,7 @@ namespace Core.GS
         /// </summary>
         /// <param name="callingTimer">the timer</param>
         /// <returns>0</returns>
-        protected int LinkdeathTimerCallback(AuxECSGameTimer callingTimer)
+        protected int LinkdeathTimerCallback(AuxEcsGameTimer callingTimer)
         {
             // Other clients will forget about us if we don't keep sending them packets
             // Doesn't work well with dead characters
@@ -958,7 +959,7 @@ namespace Core.GS
                 log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, SECONDS_TO_QUIT_ON_LINKDEATH);
 
             // Keep link-dead characters in game.
-            new AuxECSGameTimer(this, LinkdeathTimerCallback, 1750);
+            new AuxEcsGameTimer(this, LinkdeathTimerCallback, 1750);
 
             if (TradeWindow != null)
                 TradeWindow.CloseTrade();
@@ -1178,8 +1179,8 @@ namespace Core.GS
 
                 if (m_quitTimer == null)
                 {
-                    m_quitTimer = new AuxECSGameTimer(this);
-                    m_quitTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(QuitTimerCallback);
+                    m_quitTimer = new AuxEcsGameTimer(this);
+                    m_quitTimer.Callback = new AuxEcsGameTimer.AuxECSTimerCallback(QuitTimerCallback);
                     m_quitTimer.Start();
                 }
 

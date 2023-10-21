@@ -1,3 +1,4 @@
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -35,12 +36,12 @@ namespace Core.GS.AI.Brains
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.Out.SendSpellCastAnimation(Body, 4321, 30);
-                new AuxECSGameTimer(player, new AuxECSGameTimer.AuxECSTimerCallback(ShowEffect), 3000);
+                new AuxEcsGameTimer(player, new AuxEcsGameTimer.AuxECSTimerCallback(ShowEffect), 3000);
             }
         }
 
 
-        public int ShowEffect(AuxECSGameTimer timer)
+        public int ShowEffect(AuxEcsGameTimer timer)
         {
             if (!Body.IsAlive)
                 return 0;

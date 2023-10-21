@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Effects;
@@ -19,7 +18,7 @@ using Core.GS.Spells;
 using Core.GS.Styles;
 using Core.Language;
 
-namespace Core.GS
+namespace Core.GS.ECS
 {
     public class AttackComponent : IManagedEntity
     {
@@ -103,7 +102,7 @@ namespace Core.GS
                 weaponAction = null;
 
             if (weaponAction is null && attackAction is null && !owner.InCombat)
-                EntityManager.Remove(this);
+                EntityMgr.Remove(this);
         }
 
         /// <summary>
@@ -564,7 +563,7 @@ namespace Core.GS
             {
                 m_startAttackTarget = attackTarget;
                 StartAttackRequested = true;
-                EntityManager.Add(this);
+                EntityMgr.Add(this);
             }
         }
 
@@ -2259,7 +2258,7 @@ namespace Core.GS
             int missChance = GetMissChance(action, ad, lastAttackData, attackerWeapon);
 
             // Check for dirty trick fumbles before misses.
-            DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, EEffect.DirtyTricksDetrimental);
+            DirtyTricksDetrimentalEcsGameEffect dt = (DirtyTricksDetrimentalEcsGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, EEffect.DirtyTricksDetrimental);
 
             if (dt != null && ad.IsRandomFumble)
                 return EAttackResult.Fumbled;

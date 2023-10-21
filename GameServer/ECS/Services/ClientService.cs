@@ -5,14 +5,12 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Core.Base;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Housing;
 using Core.GS.ServerProperties;
-using ECS.Debug;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.ECS
 {
     public static class ClientService
     {
@@ -35,7 +33,7 @@ namespace Core.GS
 
             using (_lock.GetWrite())
             {
-                _clients = EntityManager.UpdateAndGetAll<GameClient>(EEntityType.Client, out _lastValidIndex);
+                _clients = EntityMgr.UpdateAndGetAll<GameClient>(EEntityType.Client, out _lastValidIndex);
             }
 
             Parallel.For(0, _lastValidIndex + 1, i =>
@@ -117,14 +115,14 @@ namespace Core.GS
 
         public static void OnClientConnect(GameClient client)
         {
-            EntityManager.Add(client);
+            EntityMgr.Add(client);
             Interlocked.Increment(ref _clientCount);
         }
 
         public static void OnClientDisconnect(GameClient client)
         {
             Interlocked.Decrement(ref _clientCount);
-            EntityManager.Remove(client);
+            EntityMgr.Remove(client);
         }
 
         public static GamePlayer GetPlayer<T>(CheckPlayerAction<T> action)

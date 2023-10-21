@@ -1,3 +1,5 @@
+using Core.GS.ECS;
+
 namespace Core.GS.AI.Brains;
 
 public class ChieftainCaimheulBrain : StandardMobBrain

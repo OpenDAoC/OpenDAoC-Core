@@ -1,5 +1,6 @@
 using System;
 using Core.GS.AI.Brains;
+using Core.GS.ECS;
 
 namespace Core.GS.Calculators;
 

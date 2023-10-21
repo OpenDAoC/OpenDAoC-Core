@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using Core.AI.Brain;
 using Core.Events;
 using Core.GS.AI.States;
+using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using Core.Language;

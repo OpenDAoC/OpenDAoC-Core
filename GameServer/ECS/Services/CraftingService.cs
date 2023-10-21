@@ -2,41 +2,39 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using ECS.Debug;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.ECS;
+
+public static class CraftingService
 {
-    public static class CraftingService
+    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    private const string SERVICE_NAME = nameof(CraftingService);
+
+    public static void Tick(long tick)
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = nameof(CraftingService);
+        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-        public static void Tick(long tick)
+        List<CraftComponent> list = EntityMgr.UpdateAndGetAll<CraftComponent>(EEntityType.CraftComponent, out int lastValidIndex);
+
+        Parallel.For(0, lastValidIndex + 1, i =>
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            CraftComponent craftComponent = list[i];
 
-            List<CraftComponent> list = EntityManager.UpdateAndGetAll<CraftComponent>(EEntityType.CraftComponent, out int lastValidIndex);
-
-            Parallel.For(0, lastValidIndex + 1, i =>
+            try
             {
-                CraftComponent craftComponent = list[i];
+                if (craftComponent?.EntityManagerId.IsSet != true)
+                    return;
 
-                try
-                {
-                    if (craftComponent?.EntityManagerId.IsSet != true)
-                        return;
+                craftComponent.Tick(tick);
+            }
+            catch (Exception e)
+            {
+                ServiceUtil.HandleServiceException(e, SERVICE_NAME, craftComponent, craftComponent.Owner);
+            }
+        });
 
-                    craftComponent.Tick(tick);
-                }
-                catch (Exception e)
-                {
-                    ServiceUtil.HandleServiceException(e, SERVICE_NAME, craftComponent, craftComponent.Owner);
-                }
-            });
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
-        }
+        Diagnostics.StopPerfCounter(SERVICE_NAME);
     }
 }

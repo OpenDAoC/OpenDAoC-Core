@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using Core.Database;
 using Core.Database.Enums;
+using Core.GS.ECS;
 using Core.Language;
 using log4net;
 

@@ -1,3 +1,5 @@
+using Core.GS.ECS;
+
 namespace Core.GS.PacketHandler.Client.v168
 {
 	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.ObjectInteractRequest, "Handles Client Interact Request", EClientStatus.PlayerInGame)]
@@ -18,7 +20,7 @@ namespace Core.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Handles player interact actions
 		/// </summary>
-		protected class InteractActionHandler : AuxECSGameTimerWrapperBase
+		protected class InteractActionHandler : AuxEcsGameTimerWrapperBase
 		{
 			/// <summary>
 			/// The interact target OID
@@ -38,7 +40,7 @@ namespace Core.GS.PacketHandler.Client.v168
 			/// <summary>
 			/// Called on every timer tick
 			/// </summary>
-			protected override int OnTick(AuxECSGameTimer timer)
+			protected override int OnTick(AuxEcsGameTimer timer)
 			{
 				GamePlayer player = (GamePlayer) timer.Owner;
 				Region region = player.CurrentRegion;

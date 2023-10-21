@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Core.Base.Enums;
 using Core.Events;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.Language;

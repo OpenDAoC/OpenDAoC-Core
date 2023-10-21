@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Core.GS.ECS;
 using Core.GS.Effects;
 using log4net;
 

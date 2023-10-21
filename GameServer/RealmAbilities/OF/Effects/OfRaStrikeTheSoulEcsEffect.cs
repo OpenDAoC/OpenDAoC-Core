@@ -1,3 +1,4 @@
+using Core.GS.ECS;
 
 namespace Core.GS.Effects
 {

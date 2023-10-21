@@ -2,78 +2,76 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using ECS.Debug;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.ECS;
+
+public class ReaperService
 {
-    public class ReaperService
+    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    private const string SERVICE_NAME = nameof(ReaperService);
+
+    public static void Tick()
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = nameof(ReaperService);
+        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-        public static void Tick()
+        List<LivingBeingKilled> list = EntityMgr.UpdateAndGetAll<LivingBeingKilled>(EEntityType.LivingBeingKilled, out int lastValidIndex);
+
+        // Remove objects from one sub zone, and add them to another.
+        Parallel.For(0, lastValidIndex + 1, i =>
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            LivingBeingKilled livingBeingKilled = list[i];
 
-            List<LivingBeingKilled> list = EntityManager.UpdateAndGetAll<LivingBeingKilled>(EEntityType.LivingBeingKilled, out int lastValidIndex);
+            if (livingBeingKilled?.EntityManagerId.IsSet != true)
+                return;
 
-            // Remove objects from one sub zone, and add them to another.
-            Parallel.For(0, lastValidIndex + 1, i =>
+            try
             {
-                LivingBeingKilled livingBeingKilled = list[i];
+                livingBeingKilled.Killed.ProcessDeath(livingBeingKilled.Killer);
+                EntityMgr.Remove(livingBeingKilled);
+            }
+            catch (Exception e)
+            {
+                ServiceUtil.HandleServiceException(e, SERVICE_NAME, livingBeingKilled, livingBeingKilled.Killed);
+            }
+        });
 
-                if (livingBeingKilled?.EntityManagerId.IsSet != true)
-                    return;
+        Diagnostics.StopPerfCounter(SERVICE_NAME);
+    }
 
-                try
-                {
-                    livingBeingKilled.Killed.ProcessDeath(livingBeingKilled.Killer);
-                    EntityManager.Remove(livingBeingKilled);
-                }
-                catch (Exception e)
-                {
-                    ServiceUtil.HandleServiceException(e, SERVICE_NAME, livingBeingKilled, livingBeingKilled.Killed);
-                }
-            });
+    public static void KillLiving(GameLiving killed, GameObject killer)
+    {
+        LivingBeingKilled.Create(killed, killer);
+    }
+}
 
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
-        }
+// Temporary objects to be added to 'EntityManager' and consumed by 'ReaperService', representing a living object being killed and waiting to be processed.
+public class LivingBeingKilled : IManagedEntity
+{
+    public GameLiving Killed { get; private set; }
+    public GameObject Killer { get; private set; }
+    public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.LivingBeingKilled, true);
 
-        public static void KillLiving(GameLiving killed, GameObject killer)
+    private LivingBeingKilled(GameLiving killed, GameObject killer)
+    {
+        Initialize(killed, killer);
+    }
+
+    public static void Create(GameLiving killed, GameObject killer)
+    {
+        if (EntityMgr.TryReuse(EEntityType.LivingBeingKilled, out LivingBeingKilled livingBeingKilled))
+            livingBeingKilled.Initialize(killed, killer);
+        else
         {
-            LivingBeingKilled.Create(killed, killer);
+            livingBeingKilled = new(killed, killer);
+            EntityMgr.Add(livingBeingKilled);
         }
     }
 
-    // Temporary objects to be added to 'EntityManager' and consumed by 'ReaperService', representing a living object being killed and waiting to be processed.
-    public class LivingBeingKilled : IManagedEntity
+    private void Initialize(GameLiving killed, GameObject killer)
     {
-        public GameLiving Killed { get; private set; }
-        public GameObject Killer { get; private set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.LivingBeingKilled, true);
-
-        private LivingBeingKilled(GameLiving killed, GameObject killer)
-        {
-            Initialize(killed, killer);
-        }
-
-        public static void Create(GameLiving killed, GameObject killer)
-        {
-            if (EntityManager.TryReuse(EEntityType.LivingBeingKilled, out LivingBeingKilled livingBeingKilled))
-                livingBeingKilled.Initialize(killed, killer);
-            else
-            {
-                livingBeingKilled = new(killed, killer);
-                EntityManager.Add(livingBeingKilled);
-            }
-        }
-
-        private void Initialize(GameLiving killed, GameObject killer)
-        {
-            Killed = killed;
-            Killer = killer;
-        }
+        Killed = killed;
+        Killer = killer;
     }
 }

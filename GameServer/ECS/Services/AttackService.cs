@@ -2,45 +2,43 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
-using ECS.Debug;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.ECS;
+
+public static class AttackService
 {
-    public static class AttackService
+    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    private const string SERVICE_NAME = nameof(AttackService);
+
+    public static void Tick(long tick)
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = nameof(AttackService);
+        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-        public static void Tick(long tick)
+        List<AttackComponent> list = EntityMgr.UpdateAndGetAll<AttackComponent>(EEntityType.AttackComponent, out int lastValidIndex);
+
+        Parallel.For(0, lastValidIndex + 1, i =>
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            AttackComponent attackComponent = list[i];
 
-            List<AttackComponent> list = EntityManager.UpdateAndGetAll<AttackComponent>(EEntityType.AttackComponent, out int lastValidIndex);
-
-            Parallel.For(0, lastValidIndex + 1, i =>
+            try
             {
-                AttackComponent attackComponent = list[i];
+                if (attackComponent?.EntityManagerId.IsSet != true)
+                    return;
+                long startTick = GameLoop.GetCurrentTime();
+                attackComponent.Tick(tick);
+                long stopTick = GameLoop.GetCurrentTime();
 
-                try
-                {
-                    if (attackComponent?.EntityManagerId.IsSet != true)
-                        return;
-                    long startTick = GameLoop.GetCurrentTime();
-                    attackComponent.Tick(tick);
-                    long stopTick = GameLoop.GetCurrentTime();
+                if (stopTick - startTick > 25)
+                    log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {attackComponent.owner.Name}({attackComponent.owner.ObjectID}) Time: {stopTick - startTick}ms");
+            }
+            catch (Exception e)
+            {
+                ServiceUtil.HandleServiceException(e, SERVICE_NAME, attackComponent, attackComponent.owner);
+            }
+        });
 
-                    if (stopTick - startTick > 25)
-                        log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {attackComponent.owner.Name}({attackComponent.owner.ObjectID}) Time: {stopTick - startTick}ms");
-                }
-                catch (Exception e)
-                {
-                    ServiceUtil.HandleServiceException(e, SERVICE_NAME, attackComponent, attackComponent.owner);
-                }
-            });
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
-        }
+        Diagnostics.StopPerfCounter(SERVICE_NAME);
     }
 }

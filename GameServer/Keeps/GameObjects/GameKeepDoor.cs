@@ -3,6 +3,7 @@ using System.Collections;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using log4net;
@@ -568,8 +569,8 @@ namespace Core.GS.Keeps
 			if ((m_repairTimer != null && m_repairTimer.IsAlive) || Health >= MaxHealth)
 				return;
 
-			m_repairTimer = new AuxECSGameTimer(this);
-			m_repairTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RepairTimerCallback);
+			m_repairTimer = new AuxEcsGameTimer(this);
+			m_repairTimer.Callback = new AuxEcsGameTimer.AuxECSTimerCallback(RepairTimerCallback);
 			m_repairTimer.Start(REPAIR_INTERVAL);
 			m_repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL; // Skip the first tick to avoid repairing on server start.
 		}
@@ -800,10 +801,10 @@ namespace Core.GS.Keeps
 			}
 		}
 
-		protected AuxECSGameTimer m_repairTimer;
+		protected AuxEcsGameTimer m_repairTimer;
 		protected const int REPAIR_INTERVAL = 30 * 60 * 1000;
 
-		public int RepairTimerCallback(AuxECSGameTimer timer)
+		public int RepairTimerCallback(AuxEcsGameTimer timer)
 		{
 			if (Component == null || Component.Keep == null)
 				return 0;

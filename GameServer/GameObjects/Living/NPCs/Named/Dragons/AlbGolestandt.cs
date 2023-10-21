@@ -9,6 +9,7 @@ using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.GS;
 using Core.GS.AI.Brains;
+using Core.GS.ECS;
 
 namespace Core.GS;
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Concurrent;
-using Core.AI.Brain;
 using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Commands;
@@ -8,7 +7,7 @@ using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;
 
-namespace Core.GS
+namespace Core.GS.ECS
 {
     // This component will hold all data related to casting spells.
     public class CastingComponent : IManagedEntity
@@ -40,14 +39,14 @@ namespace Core.GS
             ProcessStartCastSpellRequests();
 
             if (SpellHandler == null && QueuedSpellHandler == null && _startCastSpellRequests.IsEmpty)
-                EntityManager.Remove(this);
+                EntityMgr.Remove(this);
         }
 
         public virtual bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
         {
             if (RequestStartCastSpellInternal(new StartCastSpellRequest(spell, spellLine, spellCastingAbilityHandler, target)))
             {
-                EntityManager.Add(this);
+                EntityMgr.Add(this);
                 return true;
             }
 

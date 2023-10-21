@@ -6,6 +6,7 @@ using System.Text;
 using Core.AI;
 using Core.AI.Brain;
 using Core.GS.AI.States;
+using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
@@ -437,7 +438,7 @@ namespace Core.GS.AI.Brains
             if (!IsActive)
                 return;
 
-            if (ECS.Debug.Diagnostics.AggroDebugEnabled)
+            if (Diagnostics.AggroDebugEnabled)
                 PrintAggroTable();
 
             Body.TargetObject = CalculateNextAttackTarget();

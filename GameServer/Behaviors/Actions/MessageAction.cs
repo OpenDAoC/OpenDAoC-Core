@@ -1,6 +1,7 @@
 using System;
 using Core.Events;
 using Core.GS.Behaviour;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.Language;
 

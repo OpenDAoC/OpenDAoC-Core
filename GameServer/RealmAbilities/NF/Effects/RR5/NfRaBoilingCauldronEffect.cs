@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Core.Events;
+using Core.GS.ECS;
 
 namespace Core.GS.Effects
 {

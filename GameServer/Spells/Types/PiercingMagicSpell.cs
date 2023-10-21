@@ -1,4 +1,6 @@
-﻿namespace Core.GS.Spells
+﻿using Core.GS.ECS;
+
+namespace Core.GS.Spells
 {
     [SpellHandler("PiercingMagic")]
     public class PiercingMagicSpell : SpellHandler

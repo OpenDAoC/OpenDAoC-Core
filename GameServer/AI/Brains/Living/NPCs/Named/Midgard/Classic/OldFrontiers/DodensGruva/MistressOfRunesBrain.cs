@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using Core.GS.Scripts;

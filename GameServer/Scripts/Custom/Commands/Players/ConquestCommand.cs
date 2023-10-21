@@ -1,4 +1,5 @@
 ﻿using Core.GS.Commands;
+using Core.GS.ECS;
 
 namespace Core.GS.Scripts
 {

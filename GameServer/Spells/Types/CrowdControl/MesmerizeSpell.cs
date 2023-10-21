@@ -2,6 +2,7 @@ using System;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
 using Core.Events;
+using Core.GS.ECS;
 
 namespace Core.GS.Spells
 {

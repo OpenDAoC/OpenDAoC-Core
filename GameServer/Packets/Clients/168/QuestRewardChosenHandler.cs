@@ -1,4 +1,5 @@
 using Core.Events;
+using Core.GS.ECS;
 
 namespace Core.GS.PacketHandler.Client.v168
 {

@@ -8,6 +8,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS.AI.Brains;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.Language;
@@ -488,7 +489,7 @@ namespace Core.GS.Keeps
 		/// </summary>
 		/// <param name="respawnTimer"></param>
 		/// <returns></returns>
-		protected override int RespawnTimerCallback(AuxECSGameTimer respawnTimer)
+		protected override int RespawnTimerCallback(AuxEcsGameTimer respawnTimer)
 		{
 			int temp = base.RespawnTimerCallback(respawnTimer);
 			RefreshTemplate();

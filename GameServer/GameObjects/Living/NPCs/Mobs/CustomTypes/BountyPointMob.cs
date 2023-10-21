@@ -1,4 +1,5 @@
-﻿using Core.GS.PacketHandler;
+﻿using Core.GS.ECS;
+using Core.GS.PacketHandler;
 
 namespace Core.GS.Scripts;
 

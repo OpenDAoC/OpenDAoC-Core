@@ -7,6 +7,7 @@ using System.Threading;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
+using Core.GS.ECS;
 using Core.GS.PacketHandler;
 using log4net;
 

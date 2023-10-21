@@ -1,5 +1,6 @@
 ﻿using Core.AI.Brain;
 using Core.GS.AI.Brains;
+using Core.GS.ECS;
 
 namespace Core.GS.Keeps
 {
@@ -46,13 +47,13 @@ namespace Core.GS.Keeps
                         m_respawnTimer = null;
                     }
 
-                    m_respawnTimer = new AuxECSGameTimer(this);
-                    m_respawnTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(ModdedRespawnTimerCallback);
+                    m_respawnTimer = new AuxEcsGameTimer(this);
+                    m_respawnTimer.Callback = new AuxEcsGameTimer.AuxECSTimerCallback(ModdedRespawnTimerCallback);
                     m_respawnTimer.Start(reloadrespawntimer > 0 ? reloadrespawntimer : respawnInt);
                 }
             }
         }
-        protected virtual int ModdedRespawnTimerCallback(AuxECSGameTimer respawnTimer)
+        protected virtual int ModdedRespawnTimerCallback(AuxEcsGameTimer respawnTimer)
         {
             lock (m_respawnTimerLock)
             {

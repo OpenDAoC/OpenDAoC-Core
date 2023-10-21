@@ -1,6 +1,7 @@
 using System.Collections;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.ECS;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 
