@@ -1,6 +1,5 @@
 using Core.Database;
 using Core.Database.Tables;
-using Core.GS.PacketHandler;
 using Core.GS.Packets;
 
 namespace Core.GS.RealmAbilities

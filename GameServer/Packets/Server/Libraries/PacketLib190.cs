@@ -4,10 +4,9 @@ using System.IO;
 using System.Reflection;
 using Core.GS.Effects;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(190, GameClient.eClientVersion.Version190)]
 public class PacketLib190 : PacketLib189

@@ -4,8 +4,8 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
-using Core.GS.PacketHandler;
 using Core.GS.Packets;
+using Core.GS.Packets.Server;
 
 namespace Core.GS.Commands;
 

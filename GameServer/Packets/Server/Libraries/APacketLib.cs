@@ -1,10 +1,9 @@
 using System;
 using System.Reflection;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 public abstract class APacketLib
 {

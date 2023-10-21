@@ -5,8 +5,8 @@ using System.Net.Sockets;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
-using Core.GS.PacketHandler;
 using Core.GS.Packets;
+using Core.GS.Packets.Server;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Server

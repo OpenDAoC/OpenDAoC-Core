@@ -9,11 +9,10 @@ using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
-using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(1125, GameClient.eClientVersion.Version1125)]
 public class PacketLib1125 : PacketLib1124

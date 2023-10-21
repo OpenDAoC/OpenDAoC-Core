@@ -1,10 +1,9 @@
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.GS.PacketHandler;
 using Core.GS.Spells;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(169, GameClient.eClientVersion.Version169)]
 public class PacketLib169 : PacketLib168

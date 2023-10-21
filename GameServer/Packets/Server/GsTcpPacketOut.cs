@@ -1,6 +1,6 @@
 using Core.Base;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 public class GsTcpPacketOut : PacketOut
 {

@@ -8,6 +8,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Packets.Server;
 using Core.GS.ServerProperties;
 using log4net;
 

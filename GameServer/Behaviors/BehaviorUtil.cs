@@ -4,8 +4,8 @@ using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Movement;
-using Core.GS.PacketHandler;
 using Core.GS.Packets;
+using Core.GS.Packets.Server;
 using Core.GS.Quests;
 
 namespace Core.GS.Behaviors;

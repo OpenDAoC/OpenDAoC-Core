@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using Core.GS.RealmAbilities;
 using Core.GS.Styles;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(1105, GameClient.eClientVersion.Version1105)]
 public class PacketLib1105 : PacketLib1104

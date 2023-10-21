@@ -17,7 +17,7 @@ using Core.GS.ServerProperties;
 using log4net;
 using Timer = System.Timers.Timer;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 /// <summary>
 /// This class handles the packets, receiving and sending

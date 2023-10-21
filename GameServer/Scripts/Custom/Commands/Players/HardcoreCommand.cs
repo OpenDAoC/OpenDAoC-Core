@@ -5,8 +5,8 @@ using System.Reflection;
 using Core.GS.PlayerTitles;
 using Core.Database;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using Core.GS.Packets;
+using Core.GS.Packets.Server;
 using log4net;
 
 namespace Core.GS.Commands

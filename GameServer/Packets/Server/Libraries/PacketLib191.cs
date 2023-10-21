@@ -1,11 +1,10 @@
 using System.Reflection;
 using Core.GS.Effects;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(191, GameClient.eClientVersion.Version191)]
 public class PacketLib191 : PacketLib190

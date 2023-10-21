@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
+using Core.GS.Packets.Server;
 
 namespace Core.GS.Packets.Clients;
 

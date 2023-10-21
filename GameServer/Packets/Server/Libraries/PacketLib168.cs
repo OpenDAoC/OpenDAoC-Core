@@ -14,7 +14,6 @@ using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.PacketHandler;
 using Core.GS.PlayerTitles;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
@@ -23,7 +22,7 @@ using Core.GS.Spells;
 using Core.GS.Styles;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(168, GameClient.eClientVersion.Version168)]
 public class PacketLib168 : APacketLib, IPacketLib

@@ -8,8 +8,8 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
-using Core.GS.PacketHandler;
 using Core.GS.Packets;
+using Core.GS.Packets.Server;
 using log4net;
 
 namespace Core.GS.Quests.Albion

@@ -3,11 +3,10 @@ using System.Reflection;
 using Core.Database.Tables;
 using Core.GS.Behaviors;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using Core.GS.Quests;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(194, GameClient.eClientVersion.Version194)]
 public class PacketLib194 : PacketLib193

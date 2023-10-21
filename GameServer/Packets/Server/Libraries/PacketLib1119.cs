@@ -3,9 +3,8 @@ using Core.Database.Tables;
 using Core.GS.Crafting;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.GS.PacketHandler;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(1119, GameClient.eClientVersion.Version1119)]
 public class PacketLib1119 : PacketLib1118

@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 public class CryptLib168
 {

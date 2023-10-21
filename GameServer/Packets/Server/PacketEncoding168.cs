@@ -3,7 +3,7 @@ using System.Reflection;
 using Core.GS.Enums;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 public class PacketEncoding168 : IPacketEncoding
 {

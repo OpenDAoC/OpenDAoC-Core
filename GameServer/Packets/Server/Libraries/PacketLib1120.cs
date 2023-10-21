@@ -1,4 +1,4 @@
-﻿namespace Core.GS.Packets;
+﻿namespace Core.GS.Packets.Server;
 
 [PacketLib(1120, GameClient.eClientVersion.Version1120)]
 public class PacketLib1120 : PacketLib1119

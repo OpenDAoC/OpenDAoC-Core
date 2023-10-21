@@ -2,7 +2,7 @@ using System.Reflection;
 using Core.Base;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 public class GsPacketIn : PacketIn
 {

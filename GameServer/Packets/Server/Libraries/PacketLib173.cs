@@ -11,12 +11,11 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.PacketHandler;
 using Core.GS.Quests;
 using Core.GS.Spells;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(173, GameClient.eClientVersion.Version173)]
 public class PacketLib173 : PacketLib172

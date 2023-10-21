@@ -1,6 +1,6 @@
 using Core.GS.Enums;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 public interface IPacketEncoding
 {

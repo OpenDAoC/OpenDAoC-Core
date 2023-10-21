@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 /// <summary>
 /// Denotes a class as a packet lib.

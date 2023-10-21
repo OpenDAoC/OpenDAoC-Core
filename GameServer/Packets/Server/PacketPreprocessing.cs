@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Core.GS.Enums;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 /// <summary>
 /// Handles preprocessing for incoming game packets.

@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using Core.GS.Styles;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(180, GameClient.eClientVersion.Version180)]
 public class PacketLib180 : PacketLib179

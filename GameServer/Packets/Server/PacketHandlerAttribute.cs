@@ -1,7 +1,7 @@
 using System;
 using Core.GS.Enums;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 /// <summary>
 /// Denotes a class as a packet handler

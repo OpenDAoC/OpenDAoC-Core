@@ -1,7 +1,6 @@
 ﻿using Core.GS.Enums;
-using Core.GS.PacketHandler;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(1128, GameClient.eClientVersion.Version1128)]
 public class PacketLib1128 : PacketLib1127

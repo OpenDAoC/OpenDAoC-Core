@@ -7,10 +7,9 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(1126, GameClient.eClientVersion.Version1126)]
 public class PacketLib1126 : PacketLib1125

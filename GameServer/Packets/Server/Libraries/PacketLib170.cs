@@ -4,11 +4,10 @@ using System.Reflection;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
-using Core.GS.PacketHandler;
 using Core.GS.Quests;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(170, GameClient.eClientVersion.Version170)]
 public class PacketLib170 : PacketLib169

@@ -5,14 +5,13 @@ using System.Linq;
 using System.Reflection;
 using Core.GS.ECS;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using Core.GS.Packets.Clients;
 using Core.GS.RealmAbilities;
 using Core.GS.Spells;
 using Core.GS.Styles;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(1110, GameClient.eClientVersion.Version1110)]
 public class PacketLib1110 : PacketLib1109

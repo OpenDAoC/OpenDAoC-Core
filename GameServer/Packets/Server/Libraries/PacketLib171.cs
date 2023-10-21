@@ -6,11 +6,10 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.PacketHandler;
 using Core.GS.Quests;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(171, GameClient.eClientVersion.Version171)]
 public class PacketLib171 : PacketLib170

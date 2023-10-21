@@ -5,10 +5,9 @@ using System.Reflection;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.GS.PacketHandler;
 using log4net;
 
-namespace Core.GS.Packets;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(172, GameClient.eClientVersion.Version172)]
 public class PacketLib172 : PacketLib171

@@ -6,11 +6,10 @@ using Core.Database.Tables;
 using Core.GS.Crafting;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.GS.Packets;
 using Core.GS.Styles;
 using log4net;
 
-namespace Core.GS.PacketHandler;
+namespace Core.GS.Packets.Server;
 
 [PacketLib(1112, GameClient.eClientVersion.Version1112)]
 public class PacketLib1112 : PacketLib1111
