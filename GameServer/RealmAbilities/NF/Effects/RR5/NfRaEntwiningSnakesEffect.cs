@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.Events;
 using Core.GS.Enums;
+using Core.GS.Events;
 
 namespace Core.GS.Effects
 {

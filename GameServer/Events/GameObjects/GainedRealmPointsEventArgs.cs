@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the GainedRealmPoints event of GameLivings

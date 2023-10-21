@@ -19,6 +19,7 @@ using Core.GS.Crafting;
 using Core.GS.Database;
 using Core.GS.DatabaseUpdate;
 using Core.GS.ECS;
+using Core.GS.Events;
 using Core.GS.Housing;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;

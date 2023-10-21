@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using Core.GS.ECS;
+using Core.GS.Events;
 using Core.GS.Scripts;
 using log4net;
 

@@ -1,7 +1,6 @@
 using System;
-using Core.GS;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 public class SourceEventArgs : EventArgs
 {

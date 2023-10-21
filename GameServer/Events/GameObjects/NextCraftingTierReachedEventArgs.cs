@@ -1,7 +1,6 @@
-﻿using Core.GS;
-using Core.GS.Enums;
+﻿using Core.GS.Enums;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 public class NextCraftingTierReachedEventArgs : System.EventArgs
 {

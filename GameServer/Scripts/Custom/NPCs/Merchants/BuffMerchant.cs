@@ -11,6 +11,7 @@ using Core.Language;
 using Core.GS;
 using Core.GS.Database;
 using Core.GS.Enums;
+using Core.GS.Events;
 using log4net;
 
 namespace Core.GS

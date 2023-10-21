@@ -19,6 +19,7 @@
 using System;
 using Core.Events;
 using Core.GS;
+using Core.GS.Events;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Server

@@ -8,6 +8,7 @@ using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
+using Core.GS.Events;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -132,17 +133,17 @@ namespace Core.GS.AI.Brains
                 // Tell owner why cast has failed.
                 switch ((args as CastFailedEventArgs).Reason)
                 {
-                    case CastFailedEventArgs.Reasons.TargetTooFarAway:
+                    case CastFailedEventArgs.ECastFailedReasons.TargetTooFarAway:
                         MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, 
                             "AI.Brain.Necromancer.ServantFarAwayToCast"), EChatType.CT_SpellResisted, Owner as GamePlayer);
                         break;
 
-                    case CastFailedEventArgs.Reasons.TargetNotInView:
+                    case CastFailedEventArgs.ECastFailedReasons.TargetNotInView:
                         MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, 
                             "AI.Brain.Necromancer.PetCantSeeTarget", Body.Name), EChatType.CT_SpellResisted, Owner as GamePlayer);
                         break;
 
-                    case CastFailedEventArgs.Reasons.NotEnoughPower:
+                    case CastFailedEventArgs.ECastFailedReasons.NotEnoughPower:
                         RemoveSpellFromQueue();
                         MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
                             "AI.Brain.Necromancer.NoPower", Body.Name), EChatType.CT_SpellResisted, Owner as GamePlayer);

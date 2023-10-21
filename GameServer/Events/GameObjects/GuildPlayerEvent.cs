@@ -2,10 +2,9 @@ using System;
 using System.Threading;
 using Core.Events;
 using Core.GS.Enums;
-using Core.GS.PacketHandler;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.Events
 {
 	public class GuildPlayerEvent : GamePlayerEvent
 	{

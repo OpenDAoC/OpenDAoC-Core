@@ -2,6 +2,7 @@ using System;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Enums;
+using Core.GS.Events;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;

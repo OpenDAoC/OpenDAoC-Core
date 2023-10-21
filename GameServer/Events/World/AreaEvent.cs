@@ -1,6 +1,6 @@
-using Core.GS;
+using Core.Events;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// This class holds all possible Area events.

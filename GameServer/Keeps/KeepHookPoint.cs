@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Database;
 using Core.GS.ECS;
+using Core.GS.Events;
 
 namespace Core.GS.Keeps
 {

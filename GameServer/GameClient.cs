@@ -12,6 +12,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.Events;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using log4net;

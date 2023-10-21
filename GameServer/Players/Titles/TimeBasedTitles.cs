@@ -1,5 +1,6 @@
 ﻿using System;
 using Core.Events;
+using Core.GS.Events;
 
 namespace GameServerScripts.Titles
 {

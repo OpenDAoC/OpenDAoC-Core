@@ -10,6 +10,7 @@ using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.Events;
 
 //Mob with packageid="HostBaf" in same region as bosss will come if he is pulled/aggroed
 //Make sure to add that packageid to Host rooms, unless it will not bring a friends!

@@ -20,6 +20,7 @@
 using System;
 using System.Linq;
 using Core.Events;
+using Core.GS.Events;
 using Core.Language;
 
 namespace Core.GS.PlayerTitles

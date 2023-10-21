@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// This attribute can be applied to static methods to automatically

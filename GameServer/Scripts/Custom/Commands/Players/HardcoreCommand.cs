@@ -5,7 +5,6 @@ using System.Reflection;
 using Core.GS.PacketHandler;
 using Core.GS.PlayerTitles;
 using Core.Database;
-using Core.Events;
 using Core.GS.Enums;
 using log4net;
 

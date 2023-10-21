@@ -9,6 +9,7 @@ using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Events;
 using Core.GS.Friends;
 using Core.GS.Housing;
 using Core.GS.PacketHandler;

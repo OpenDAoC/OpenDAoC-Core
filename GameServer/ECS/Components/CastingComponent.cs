@@ -4,6 +4,7 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Commands;
 using Core.GS.Enums;
+using Core.GS.Events;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;
@@ -57,7 +58,7 @@ namespace Core.GS.ECS
         protected bool RequestStartCastSpellInternal(StartCastSpellRequest startCastSpellRequest)
         {
             if (Owner.IsStunned || Owner.IsMezzed)
-                Owner.Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.CrowdControlled));
+                Owner.Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.ECastFailedReasons.CrowdControlled));
 
             if (!CanCastSpell())
                 return false;

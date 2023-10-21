@@ -17,6 +17,7 @@ using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
+using Core.GS.Events;
 using Core.GS.Housing;
 using Core.GS.Keeps;
 using Core.GS.Movement;
@@ -3821,7 +3822,7 @@ namespace Core.GS
 				else
 				{
 					m_spellCastedFromLosCheck = false;
-					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
+					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.ECastFailedReasons.TargetNotInView));
 				}
 			}
 		}

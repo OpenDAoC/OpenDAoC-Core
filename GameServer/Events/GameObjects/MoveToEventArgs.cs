@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 public class MoveToEventArgs : EventArgs
 {

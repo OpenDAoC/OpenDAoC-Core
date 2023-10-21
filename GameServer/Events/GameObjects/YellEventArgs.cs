@@ -1,4 +1,4 @@
-namespace Core.Events;
+namespace Core.GS.Events;
 
 public class YellEventArgs : SayEventArgs
 {

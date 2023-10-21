@@ -7,6 +7,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Enums;
+using Core.GS.Events;
 using Core.GS.PacketHandler;
 using log4net;
 

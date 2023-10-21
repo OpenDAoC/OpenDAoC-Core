@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Core.Events;
+using Core.GS.Events;
 using Core.GS.RealmAbilities;
 
 namespace Core.GS.Effects

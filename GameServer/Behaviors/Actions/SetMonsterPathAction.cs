@@ -4,6 +4,7 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Behaviour;
 using Core.GS.Enums;
+using Core.GS.Events;
 using Core.GS.Movement;
 using log4net;
 

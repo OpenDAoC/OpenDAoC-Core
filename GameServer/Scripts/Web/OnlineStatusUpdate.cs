@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using Core.Events;
 using Core.GS.ECS;
+using Core.GS.Events;
 using log4net;
 
 namespace Core.GS.GameEvents

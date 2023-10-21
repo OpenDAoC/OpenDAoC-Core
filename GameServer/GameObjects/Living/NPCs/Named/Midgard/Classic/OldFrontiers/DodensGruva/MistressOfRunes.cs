@@ -10,6 +10,7 @@ using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Events;
 using Core.GS.Scripts;
 
 namespace Core.GS.Scripts

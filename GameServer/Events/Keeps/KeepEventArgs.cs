@@ -1,9 +1,8 @@
 using System;
-using Core.GS;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the Keep event

@@ -1,4 +1,6 @@
-namespace Core.Events;
+using Core.Events;
+
+namespace Core.GS.Events;
 
 /// <summary>
 /// This class holds all possible player group events.

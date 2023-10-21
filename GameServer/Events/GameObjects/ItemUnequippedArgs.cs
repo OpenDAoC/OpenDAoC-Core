@@ -1,10 +1,8 @@
 using System;
-using Core.Database;
 using Core.Database.Tables;
-using Core.GS;
 using Core.GS.Enums;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 public class ItemUnequippedArgs : EventArgs
 {

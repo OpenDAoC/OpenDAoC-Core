@@ -8,7 +8,6 @@ namespace Core.Events;
 /// </summary>
 public class RegionPlayerEventArgs : EventArgs
 {
-
 	/// <summary>
 	/// The player who enter or leave region
 	/// </summary>

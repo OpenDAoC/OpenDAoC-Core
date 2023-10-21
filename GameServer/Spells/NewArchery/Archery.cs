@@ -7,6 +7,7 @@ using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Events;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Spells
@@ -100,14 +101,14 @@ namespace Core.GS.Spells
 					if (m_caster.IsObjectInFront(selectedTarget, 180) == false)
 					{
 						MessageToCaster("Your target is not in view!", EChatType.CT_SpellResisted);
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.ECastFailedReasons.TargetNotInView));
 						return false;
 					}
 
 					if (m_caster.TargetInView == false)
 					{
 						MessageToCaster("Your target is not visible!", EChatType.CT_SpellResisted);
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.ECastFailedReasons.TargetNotInView));
 						return false;
 					}
 

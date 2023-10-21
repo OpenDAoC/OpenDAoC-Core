@@ -2,6 +2,7 @@ using System;
 using Core.Database;
 using Core.Events;
 using Core.GS;
+using Core.GS.Events;
 
 namespace Core.Database
 {

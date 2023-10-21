@@ -1,8 +1,7 @@
 using System;
-using Core.GS;
 using Core.GS.Spells;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the CastSpell event of GameLivings

@@ -1,6 +1,7 @@
+using Core.GS.Enums;
 using Core.GS.Spells;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Arguments for a cast failed event, stating the reason
@@ -8,30 +9,21 @@ namespace Core.Events;
 /// </summary>
 public class CastFailedEventArgs : CastingEventArgs
 {
-	public enum Reasons
-	{
-		TargetTooFarAway,
-		TargetNotInView,
-		AlreadyCasting,
-		CrowdControlled,
-		NotEnoughPower,
-	};
-			
 	/// <summary>
 	/// Constructs arguments for a cast failed event.
 	/// </summary>
-	public CastFailedEventArgs(ISpellHandler handler, Reasons reason) 
+	public CastFailedEventArgs(ISpellHandler handler, ECastFailedReasons reason) 
 		: base(handler)
 	{
 		this.m_reason = reason;
 	}
 
-	private Reasons m_reason;
+	private ECastFailedReasons m_reason;
 
 	/// <summary>
 	/// The reason why the spell cast failed.
 	/// </summary>
-	public Reasons Reason
+	public ECastFailedReasons Reason
 	{
 		get { return m_reason; }
 	}

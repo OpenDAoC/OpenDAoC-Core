@@ -2,6 +2,7 @@ using System;
 using Core.Events;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Events;
 
 namespace Core.GS.Spells
 {

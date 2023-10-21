@@ -1,8 +1,6 @@
-using Core.Database;
 using Core.Database.Tables;
-using Core.GS;
 
-namespace Core.Events;
+namespace Core.GS.Events;
 
 public class ReceiveItemEventArgs : SourceEventArgs
 {
