@@ -1,48 +1,48 @@
 using System;
+using Core.GS.Behaviour;
 
-namespace Core.GS.Behaviour.Attributes
+namespace Core.GS.Behaviors;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class RequirementAttribute :Attribute
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class RequirementAttribute :Attribute
+    private ERequirementType requirementType;
+
+    public ERequirementType RequirementType
     {
-        private ERequirementType requirementType;
+        get { return requirementType; }
+        set { requirementType = value; }
+    }        
 
-        public ERequirementType RequirementType
-        {
-            get { return requirementType; }
-            set { requirementType = value; }
-        }        
+    private bool isNullableN;
 
-        private bool isNullableN;
+    public bool IsNullableN
+    {
+        get { return isNullableN; }
+        set { isNullableN = value; }
+    }
 
-        public bool IsNullableN
-        {
-            get { return isNullableN; }
-            set { isNullableN = value; }
-        }
+    private bool isNullableV;
 
-        private bool isNullableV;
+    public bool IsNullableV
+    {
+        get { return isNullableV; }
+        set { isNullableV = value; }
+    }
 
-        public bool IsNullableV
-        {
-            get { return isNullableV; }
-            set { isNullableV = value; }
-        }
+    private Object defaultValueN;
 
-        private Object defaultValueN;
+    public Object DefaultValueN
+    {
+        get { return defaultValueN; }
+        set { defaultValueN = value; }
+    }
 
-        public Object DefaultValueN
-        {
-            get { return defaultValueN; }
-            set { defaultValueN = value; }
-        }
+    private Object defaultValueV;
 
-        private Object defaultValueV;
-
-        public Object DefaultValueV
-        {
-            get { return defaultValueV; }
-            set { defaultValueV = value; }
-        }
+    public Object DefaultValueV
+    {
+        get { return defaultValueV; }
+        set { defaultValueV = value; }
     }
 }

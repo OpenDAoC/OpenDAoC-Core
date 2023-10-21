@@ -20,8 +20,8 @@
 using System;
 using System.Reflection;
 using Core.Events;
+using Core.GS.Behaviors;
 using Core.GS.Behaviour;
-using Core.GS.Behaviour.Attributes;
 using log4net;
 
 namespace Core.GS.Quests.Requirements

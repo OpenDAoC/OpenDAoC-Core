@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Core.Events;
+using Core.GS.Behaviors;
 using Core.GS.Behaviour;
 using log4net;
 

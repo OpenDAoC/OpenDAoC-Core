@@ -1,29 +1,28 @@
 using System;
 using Core.Events;
-using Core.GS.Behaviour.Attributes;
+using Core.GS.Behaviour;
 
-namespace Core.GS.Behaviour.Actions
-{
-    [Action(ActionType = EActionType.GiveGold)]
-    public class GiveGoldAction : AAction<long,Unused>
-    {               
+namespace Core.GS.Behaviors;
 
-        public GiveGoldAction(GameNpc defaultNPC,  Object p, Object q)
-            : base(defaultNPC, EActionType.GiveGold, p, q)
-        {                
-        }
+[Action(ActionType = EActionType.GiveGold)]
+public class GiveGoldAction : AAction<long,Unused>
+{               
 
-
-        public GiveGoldAction(GameNpc defaultNPC, long p)
-            : this(defaultNPC,  (object)p,(object) null) { }
-        
+    public GiveGoldAction(GameNpc defaultNPC,  Object p, Object q)
+        : base(defaultNPC, EActionType.GiveGold, p, q)
+    {                
+    }
 
 
-        public override void Perform(CoreEvent e, object sender, EventArgs args)
-        {
-            GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
-            player.AddMoney(P);
-            InventoryLogging.LogInventoryAction(NPC, player, EInventoryActionType.Quest, P);
-        }
+    public GiveGoldAction(GameNpc defaultNPC, long p)
+        : this(defaultNPC,  (object)p,(object) null) { }
+    
+
+
+    public override void Perform(CoreEvent e, object sender, EventArgs args)
+    {
+        GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
+        player.AddMoney(P);
+        InventoryLogging.LogInventoryAction(NPC, player, EInventoryActionType.Quest, P);
     }
 }

@@ -1,23 +1,22 @@
 using System;
 using Core.Events;
-using Core.GS.Behaviour.Attributes;
+using Core.GS.Behaviour;
 
-namespace Core.GS.Behaviour.Actions
-{
-    [Action(ActionType = EActionType.SetGuildName,DefaultValueQ=EDefaultValueConstants.NPC)]
-    public class SetGuildNameAction : AAction<string,GameNpc>
-    {               
-                
-        public SetGuildNameAction(GameNpc defautNPC,  Object p, Object q)
-            : base(defautNPC, EActionType.SetGuildName, p, q)
-        { }
+namespace Core.GS.Behaviors;
 
-        public SetGuildNameAction(GameNpc defaultNPC, string guildName, GameNpc npc)
-            : this(defaultNPC, (object)guildName, (object)npc) { }
+[Action(ActionType = EActionType.SetGuildName,DefaultValueQ=EDefaultValueConstants.NPC)]
+public class SetGuildNameAction : AAction<string,GameNpc>
+{               
+            
+    public SetGuildNameAction(GameNpc defautNPC,  Object p, Object q)
+        : base(defautNPC, EActionType.SetGuildName, p, q)
+    { }
 
-        public override void Perform(CoreEvent e, object sender, EventArgs args)
-        {            
-            Q.GuildName = P;
-        }
+    public SetGuildNameAction(GameNpc defaultNPC, string guildName, GameNpc npc)
+        : this(defaultNPC, (object)guildName, (object)npc) { }
+
+    public override void Perform(CoreEvent e, object sender, EventArgs args)
+    {            
+        Q.GuildName = P;
     }
 }

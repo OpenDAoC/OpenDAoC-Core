@@ -1,7 +1,7 @@
 using System;
 using Core.Events;
+using Core.GS.Behaviors;
 using Core.GS.Behaviour;
-using Core.GS.Behaviour.Attributes;
 
 namespace Core.GS.Quests.Actions
 {
