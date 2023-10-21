@@ -5,6 +5,7 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Database;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.PlayerClass;
 using Core.GS.ServerProperties;

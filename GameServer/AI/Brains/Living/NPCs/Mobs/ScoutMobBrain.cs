@@ -5,6 +5,7 @@ using Core.Events;
 using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 using log4net;
 
 namespace Core.GS.AI.Brains

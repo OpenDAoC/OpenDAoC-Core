@@ -10,6 +10,7 @@ using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 
 namespace Core.GS;
 

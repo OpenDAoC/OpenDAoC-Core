@@ -1,3 +1,5 @@
+using Core.GS.GameUtils;
+
 namespace Core.GS.AI.Brains;
 
 public class AniliusBrain : StandardMobBrain

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.Language;
 
 namespace Core.GS.Expansions.TrialsOfAtlantis;

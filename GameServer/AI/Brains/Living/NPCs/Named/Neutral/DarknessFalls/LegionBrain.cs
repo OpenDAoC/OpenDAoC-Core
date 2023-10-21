@@ -6,6 +6,7 @@ using Core.AI.Brain;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
 using Core.GS.Scripts;
 using log4net;

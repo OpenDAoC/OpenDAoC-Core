@@ -6,6 +6,7 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 
 namespace Core.GS.Scripts;
 
@@ -113,7 +114,7 @@ public class JarlOrmarr : GameEpicBoss
 		if (playerKiller?.Group != null)
 		{
 			foreach (GamePlayer groupPlayer in playerKiller.Group.GetPlayersInTheGroup())
-				CoreRoGMgr.GenerateReward(groupPlayer,OrbsReward);
+				CoreRogMgr.GenerateReward(groupPlayer,OrbsReward);
 		}
 
 		base.Die(killer);

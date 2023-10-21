@@ -2,6 +2,7 @@
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 
 namespace Core.GS.Expansions.TrialsOfAtlantis;
 

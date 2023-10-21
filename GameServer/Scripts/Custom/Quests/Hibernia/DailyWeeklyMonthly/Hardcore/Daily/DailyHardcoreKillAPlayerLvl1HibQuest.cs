@@ -5,6 +5,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;
 using log4net;
@@ -363,7 +364,7 @@ namespace Core.GS.DailyQuest
 			
 			m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel)/2);
 			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,m_questPlayer.Level*2,32,Util.Random(50)), "You receive {0} as a reward.");
-			CoreRoGMgr.GenerateReward(m_questPlayer, 250);
+			CoreRogMgr.GenerateReward(m_questPlayer, 250);
 			PlayerKilled = 0;
 			
 			if (reward > 0)

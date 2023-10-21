@@ -1,4 +1,6 @@
-﻿namespace Core.GS
+﻿using Core.GS.GameUtils;
+
+namespace Core.GS
 {
 	public class Steinolf : GameNpc
 	{

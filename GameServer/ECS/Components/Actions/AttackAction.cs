@@ -3,6 +3,7 @@ using System.Linq;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using Core.GS.Styles;
 
 namespace Core.GS.ECS

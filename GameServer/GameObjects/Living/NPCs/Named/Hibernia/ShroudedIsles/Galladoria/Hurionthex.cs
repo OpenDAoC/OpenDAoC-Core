@@ -6,6 +6,7 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 
 // Boss Mechanics
 // Changes form every ~20 seconds

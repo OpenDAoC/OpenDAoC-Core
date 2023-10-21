@@ -7,6 +7,7 @@ using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 
@@ -247,7 +248,7 @@ public class ConquestMgr
             if (!primaryObjective) awardBase = (int)(awardBase * 0.75);
             int numFlags = ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
             player.GainRealmPoints((long)(awardBase + (numFlags * 200)), false);
-            CoreRoGMgr.GenerateReward(player, (int)(awardBase + (numFlags * 200)));
+            CoreRogMgr.GenerateReward(player, (int)(awardBase + (numFlags * 200)));
         }
     }
     

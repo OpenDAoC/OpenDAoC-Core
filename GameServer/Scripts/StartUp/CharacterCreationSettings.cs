@@ -3,6 +3,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 using Core.GS.ServerProperties;
 
 namespace Core.GS.GameEvents

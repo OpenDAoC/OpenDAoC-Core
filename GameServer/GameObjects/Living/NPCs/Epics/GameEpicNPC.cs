@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Text.RegularExpressions;
+using Core.GS.GameUtils;
 using Core.GS.ServerProperties;
 
 namespace Core.GS
@@ -71,10 +72,10 @@ namespace Core.GS
                                     continue;
 
                                 if (Util.Chance(baseChance + realmLoyalty))
-                                    CoreRoGMgr.GenerateReward(bgPlayer, amount);
+                                    CoreRogMgr.GenerateReward(bgPlayer, amount);
 
                                 if (Util.ChanceDouble(carapaceChance))
-                                    CoreRoGMgr.GenerateBeetleCarapace(bgPlayer);
+                                    CoreRogMgr.GenerateBeetleCarapace(bgPlayer);
 
                                 bgPlayer.Achieve($"{achievementMob}-Credit");
                             }
@@ -91,10 +92,10 @@ namespace Core.GS
                                 continue;
 
                             if (Util.Chance(baseChance + realmLoyalty))
-                                CoreRoGMgr.GenerateReward(groupPlayer, amount);
+                                CoreRogMgr.GenerateReward(groupPlayer, amount);
 
                             if (Util.ChanceDouble(carapaceChance))
-                                CoreRoGMgr.GenerateBeetleCarapace(groupPlayer);
+                                CoreRogMgr.GenerateBeetleCarapace(groupPlayer);
 
                             groupPlayer.Achieve($"{achievementMob}-Credit");
                         }
@@ -105,10 +106,10 @@ namespace Core.GS
                     if (playerKiller.Level >= 45)
                     {
                         if (Util.Chance(baseChance + realmLoyalty))
-                            CoreRoGMgr.GenerateReward(playerKiller, amount);
+                            CoreRogMgr.GenerateReward(playerKiller, amount);
 
                         if (Util.ChanceDouble(carapaceChance))
-                            CoreRoGMgr.GenerateBeetleCarapace(playerKiller);
+                            CoreRogMgr.GenerateBeetleCarapace(playerKiller);
 
                         playerKiller.Achieve($"{achievementMob}-Credit");
                     }

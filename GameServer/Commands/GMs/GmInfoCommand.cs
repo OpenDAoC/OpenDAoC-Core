@@ -10,6 +10,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler.Client.v168;
 using Core.Language;

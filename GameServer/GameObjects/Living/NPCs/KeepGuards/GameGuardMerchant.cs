@@ -9,6 +9,7 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;

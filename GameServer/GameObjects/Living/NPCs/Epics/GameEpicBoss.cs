@@ -4,6 +4,7 @@ using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.GS.Scripts;
 using Core.GS.ServerProperties;
 
@@ -82,8 +83,8 @@ namespace Core.GS
                             if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                             {
                                 if (bgPlayer.Level < 45) continue;
-                                CoreRoGMgr.GenerateReward(bgPlayer,OrbsReward);
-                                CoreRoGMgr.GenerateBeetleCarapace(bgPlayer);
+                                CoreRogMgr.GenerateReward(bgPlayer,OrbsReward);
+                                CoreRogMgr.GenerateBeetleCarapace(bgPlayer);
                                 bgPlayer.Achieve($"{achievementMob}-Credit");
                             }
                         } 
@@ -96,8 +97,8 @@ namespace Core.GS
                         if (groupPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                         {
                             if (groupPlayer.Level < 45) continue;
-                            CoreRoGMgr.GenerateReward(groupPlayer,OrbsReward);
-                            CoreRoGMgr.GenerateBeetleCarapace(groupPlayer);
+                            CoreRogMgr.GenerateReward(groupPlayer,OrbsReward);
+                            CoreRogMgr.GenerateBeetleCarapace(groupPlayer);
                             groupPlayer.Achieve($"{achievementMob}-Credit");
                         }
                     }
@@ -106,8 +107,8 @@ namespace Core.GS
                 {
                     if (playerKiller.Level >= 45)
                     {
-                        CoreRoGMgr.GenerateReward(playerKiller,OrbsReward);
-                        CoreRoGMgr.GenerateBeetleCarapace(playerKiller);
+                        CoreRogMgr.GenerateReward(playerKiller,OrbsReward);
+                        CoreRogMgr.GenerateBeetleCarapace(playerKiller);
                         playerKiller.Achieve($"{achievementMob}-Credit");;
                     }
                 }

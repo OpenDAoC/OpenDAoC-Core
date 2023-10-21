@@ -6,6 +6,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
 using Core.GS.Spells;

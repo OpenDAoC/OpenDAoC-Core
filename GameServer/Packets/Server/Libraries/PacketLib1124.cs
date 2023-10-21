@@ -11,6 +11,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Crafting;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Quests;
 using Core.GS.Spells;

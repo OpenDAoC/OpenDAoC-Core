@@ -2,6 +2,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 
 namespace Core.GS {
     public class DisplayModel : GameNpc

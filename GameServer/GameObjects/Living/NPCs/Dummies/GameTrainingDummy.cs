@@ -5,6 +5,7 @@ using Core.GS.Calculators;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 
 namespace Core.GS
 {

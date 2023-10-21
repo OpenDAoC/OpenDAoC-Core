@@ -8,6 +8,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Expansions.LabyrinthOfTheMinotaur;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using Core.GS.Utils;
 using Core.Language;
 using log4net;

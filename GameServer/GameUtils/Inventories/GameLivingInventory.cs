@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 
-namespace Core.GS
+namespace Core.GS.GameUtils
 {
 	public abstract class GameLivingInventory : IGameInventory
 	{

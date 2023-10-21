@@ -1,5 +1,6 @@
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
+using Core.GS.GameUtils;
 
 namespace Core.GS.PacketHandler.Client.v168
 {

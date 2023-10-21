@@ -20,6 +20,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;
@@ -416,11 +417,11 @@ namespace Core.GS
 			}
 		}
 
-		private Faction m_faction = null;
+		private FactionUtil m_faction = null;
 		/// <summary>
 		/// Gets the Faction of the NPC
 		/// </summary>
-		public Faction Faction
+		public FactionUtil Faction
 		{
 			get { return m_faction; }
 			set

@@ -4,6 +4,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
+using Core.GS.GameUtils;
 using Core.Language;
 using log4net;
 

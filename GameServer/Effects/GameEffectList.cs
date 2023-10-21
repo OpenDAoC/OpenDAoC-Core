@@ -7,6 +7,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Database;
+using Core.GS.GameUtils;
 using Core.GS.Spells;
 using log4net;
 

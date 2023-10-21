@@ -10,6 +10,7 @@ using System.Xml;
 using Core.Base;
 using Core.Config;
 using Core.GS;
+using Core.GS.GameUtils;
 using Core.GS.ServerProperties;
 using log4net;
 

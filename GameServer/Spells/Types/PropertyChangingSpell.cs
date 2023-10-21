@@ -7,6 +7,7 @@ using Core.GS.Calculators;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Spells

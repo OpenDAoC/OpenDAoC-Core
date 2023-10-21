@@ -1,5 +1,6 @@
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 
 namespace Core.GS.Spells
 {

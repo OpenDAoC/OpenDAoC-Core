@@ -4,6 +4,7 @@ using Core.Database.Enums;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using Core.GS.Movement;
 
 namespace Core.GS.ECS

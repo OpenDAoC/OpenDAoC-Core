@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.AI.Brain;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 
 namespace Core.GS.AI.Brains;
 

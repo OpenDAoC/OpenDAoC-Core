@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 
 namespace Core.GS
 {

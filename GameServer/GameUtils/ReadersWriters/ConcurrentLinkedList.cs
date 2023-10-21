@@ -2,100 +2,99 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Core.GS
+namespace Core.GS.GameUtils;
+
+public class ConcurrentLinkedList<T> where T : class
 {
-    public class ConcurrentLinkedList<T> where T : class
+    private LinkedList<T> _list = new();
+    private ReaderWriterLockSlim _lock = new();
+    public int Count => _list.Count;
+
+    public void AddLast(LinkedListNode<T> node)
     {
-        private LinkedList<T> _list = new();
-        private ReaderWriterLockSlim _lock = new();
-        public int Count => _list.Count;
+        _list.AddLast(node);
+    }
 
-        public void AddLast(LinkedListNode<T> node)
+    public void Remove(LinkedListNode<T> node)
+    {
+        _list.Remove(node);
+    }
+
+    public Reader GetReader()
+    {
+        return new Reader(this);
+    }
+
+    public Writer GetWriter()
+    {
+        return new Writer(this);
+    }
+
+    // A disposable iterator-like class taking care of the locking. Only iterations from first to last nodes are allowed, and the lock can't be upgraded.
+    public sealed class Reader : IDisposable
+    {
+        LinkedListNode<T> _current;
+        ConcurrentLinkedList<T> _list;
+        private bool _hasLock;
+
+        public Reader(ConcurrentLinkedList<T> list)
         {
-            _list.AddLast(node);
+            _list = list;
+            _list._lock.EnterReadLock();
+            _hasLock = true;
+            _current = _list._list.First;
         }
 
-        public void Remove(LinkedListNode<T> node)
+        public LinkedListNode<T> Current()
         {
-            _list.Remove(node);
+            return _current;
         }
 
-        public Reader GetReader()
+        public LinkedListNode<T> Next()
         {
-            return new Reader(this);
+            _current = _current.Next;
+            return _current ?? null;
         }
 
-        public Writer GetWriter()
+        public void MoveTo(LinkedListNode<T> node)
         {
-            return new Writer(this);
+            _current = node;
         }
 
-        // A disposable iterator-like class taking care of the locking. Only iterations from first to last nodes are allowed, and the lock can't be upgraded.
-        public sealed class Reader : IDisposable
+        public void Dispose()
         {
-            LinkedListNode<T> _current;
-            ConcurrentLinkedList<T> _list;
-            private bool _hasLock;
+            if (_hasLock)
+                _list._lock.ExitReadLock();
+        }
+    }
 
-            public Reader(ConcurrentLinkedList<T> list)
-            {
-                _list = list;
-                _list._lock.EnterReadLock();
-                _hasLock = true;
-                _current = _list._list.First;
-            }
+    // A disposable class taking care of acquiring and disposing a write lock.
+    public sealed class Writer : IDisposable
+    {
+        private ConcurrentLinkedList<T> _list;
+        private bool _hasLock;
 
-            public LinkedListNode<T> Current()
-            {
-                return _current;
-            }
-
-            public LinkedListNode<T> Next()
-            {
-                _current = _current.Next;
-                return _current ?? null;
-            }
-
-            public void MoveTo(LinkedListNode<T> node)
-            {
-                _current = node;
-            }
-
-            public void Dispose()
-            {
-                if (_hasLock)
-                    _list._lock.ExitReadLock();
-            }
+        public Writer(ConcurrentLinkedList<T> list)
+        {
+            _list = list;
         }
 
-        // A disposable class taking care of acquiring and disposing a write lock.
-        public sealed class Writer : IDisposable
+        public void Lock()
         {
-            private ConcurrentLinkedList<T> _list;
-            private bool _hasLock;
+            _list._lock.EnterWriteLock();
+            _hasLock = true;
+        }
 
-            public Writer(ConcurrentLinkedList<T> list)
-            {
-                _list = list;
-            }
+        public bool TryLock()
+        {
+            _hasLock = _list._lock.TryEnterWriteLock(0);
+            return _hasLock;
+        }
 
-            public void Lock()
-            {
-                _list._lock.EnterWriteLock();
-                _hasLock = true;
-            }
-
-            public bool TryLock()
-            {
-                _hasLock = _list._lock.TryEnterWriteLock(0);
-                return _hasLock;
-            }
-
-            public void Dispose()
-            {
-                if (_hasLock)
-                    _list._lock.ExitWriteLock();
-            }
+        public void Dispose()
+        {
+            if (_hasLock)
+                _list._lock.ExitWriteLock();
         }
     }
 }

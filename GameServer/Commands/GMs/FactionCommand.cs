@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
 using Core.Language;
 
@@ -28,7 +29,7 @@ namespace Core.GS.Commands
 				DisplaySyntax(client);
 				return;
 			}
-			Faction myfaction = client.Player.TempProperties.GetProperty<Faction>(TEMP_FACTION_LAST, null);
+			FactionUtil myfaction = client.Player.TempProperties.GetProperty<FactionUtil>(TEMP_FACTION_LAST, null);
 			switch (args[1])
 			{
 				#region Create
@@ -71,7 +72,7 @@ namespace Core.GS.Commands
 						//Log.Info("add obj to db with id :" + dbfaction.ID);
 						GameServer.Database.AddObject(dbfaction);
 						//Log.Info("add obj to db");
-						myfaction = new Faction();
+						myfaction = new FactionUtil();
 						myfaction.LoadFromDatabase(dbfaction);
 						FactionMgr.Factions.Add(dbfaction.ID, myfaction);
 						client.Player.TempProperties.SetProperty(TEMP_FACTION_LAST, myfaction);
@@ -122,7 +123,7 @@ namespace Core.GS.Commands
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.IndexMustBeNumber"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 							return;
 						}
-						Faction linkedfaction = FactionMgr.GetFactionByID(id);
+						FactionUtil linkedfaction = FactionMgr.GetFactionByID(id);
 						if (linkedfaction == null)
 						{
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);
@@ -160,7 +161,7 @@ namespace Core.GS.Commands
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.IndexMustBeNumber"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 							return;
 						}
-						Faction linkedfaction = FactionMgr.GetFactionByID(id);
+						FactionUtil linkedfaction = FactionMgr.GetFactionByID(id);
 						if (linkedfaction == null)
 						{
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);
@@ -178,7 +179,7 @@ namespace Core.GS.Commands
 				#region List
 				case "list":
 					{
-						foreach (Faction faction in FactionMgr.Factions.Values)
+						foreach (FactionUtil faction in FactionMgr.Factions.Values)
 							client.Player.Out.SendMessage("#" + faction.Id.ToString() + ": " + faction.Name + " (" + faction._baseAggroLevel + ")", EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 						return;
 					}
@@ -201,7 +202,7 @@ namespace Core.GS.Commands
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.IndexMustBeNumber"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);
 							return;
 						}
-						Faction tempfaction = FactionMgr.GetFactionByID(id);
+						FactionUtil tempfaction = FactionMgr.GetFactionByID(id);
 						if (tempfaction == null)
 						{
 							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), EChatType.CT_Say, EChatLoc.CL_SystemWindow);

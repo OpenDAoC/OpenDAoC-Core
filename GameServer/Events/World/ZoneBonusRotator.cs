@@ -7,6 +7,7 @@ using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using Core.GS.Scheduler;
 
 namespace Core.GS.Events;

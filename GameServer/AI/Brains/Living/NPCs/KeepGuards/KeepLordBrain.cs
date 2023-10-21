@@ -1,6 +1,7 @@
 using System;
 using Core.Base.Enums;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 
 namespace Core.GS.AI.Brains

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
 using Core.GS.RealmAbilities;
 

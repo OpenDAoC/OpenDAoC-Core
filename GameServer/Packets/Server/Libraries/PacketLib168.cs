@@ -12,6 +12,7 @@ using Core.GS.Database;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.PlayerTitles;
 using Core.GS.Quests;

@@ -6,6 +6,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
 
 namespace Core.GS {
@@ -163,7 +164,7 @@ namespace Core.GS {
                                            EChatType.CT_System, EChatLoc.CL_SystemWindow);
                     deadPlayer.Notify(GamePlayerEvent.Revive, deadPlayer);
 
-                    CoreRoGMgr.GenerateROG(deadPlayer, true);
+                    CoreRogMgr.GenerateROG(deadPlayer, true);
 
                     playersToRez.Remove(deadPlayer);
                 }

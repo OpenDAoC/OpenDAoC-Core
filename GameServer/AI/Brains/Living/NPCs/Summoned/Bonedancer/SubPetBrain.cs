@@ -3,6 +3,7 @@ using Core.AI.Brain;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 
 namespace Core.GS.AI.Brains
 {

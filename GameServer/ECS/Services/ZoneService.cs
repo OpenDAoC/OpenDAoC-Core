@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using log4net;
 
 namespace Core.GS.ECS;

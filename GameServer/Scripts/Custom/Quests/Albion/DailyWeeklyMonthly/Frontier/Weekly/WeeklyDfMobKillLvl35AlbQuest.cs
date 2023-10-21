@@ -5,6 +5,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;
 using log4net;
@@ -383,7 +384,7 @@ namespace Core.GS.WeeklyQuest.Albion
 		{
 			m_questPlayer.ForceGainExperience((m_questPlayer.ExperienceForNextLevel - m_questPlayer.ExperienceForCurrentLevel));
 			m_questPlayer.AddMoney(MoneyMgr.GetMoney(0,0,m_questPlayer.Level * 5,32,Util.Random(50)), "You receive {0} as a reward.");
-			CoreRoGMgr.GenerateReward(m_questPlayer, 1500);
+			CoreRogMgr.GenerateReward(m_questPlayer, 1500);
 			_mobsKilled = 0;
 			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
 		}

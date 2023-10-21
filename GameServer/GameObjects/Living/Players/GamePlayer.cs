@@ -24,6 +24,7 @@ using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Expansions.LabyrinthOfTheMinotaur;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.PacketHandler.Client.v168;
@@ -5576,7 +5577,7 @@ namespace Core.GS
                     HCFlag = false;
                     HCCompleted = true;
                     Out.SendMessage("You have reached Level 50! Your Hardcore flag has been disabled.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
-                    CoreRoGMgr.GenerateReward(this, 5000);
+                    CoreRogMgr.GenerateReward(this, 5000);
                 }
 
                 // Creates a TimeXLevel to track the levelling time to 50

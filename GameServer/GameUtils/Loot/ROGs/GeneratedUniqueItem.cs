@@ -3,13 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.ServerProperties;
 
-namespace Core.GS 
+namespace Core.GS.GameUtils 
 {
     /// <summary>
     /// GeneratedUniqueItem is a subclass of UniqueItem used to create RoG object

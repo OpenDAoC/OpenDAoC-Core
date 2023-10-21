@@ -1,16 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
-using Core.GS.PacketHandler;
 
-namespace Core.GS
+namespace Core.GS.GameUtils
 {
     /// <summary>
     /// This implementation uses LootTemplates to relate loots to a specific mob type.

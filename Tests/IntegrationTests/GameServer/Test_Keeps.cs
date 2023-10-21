@@ -20,6 +20,7 @@
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.Tests.Unit.Gameserver;
 using NUnit.Framework;

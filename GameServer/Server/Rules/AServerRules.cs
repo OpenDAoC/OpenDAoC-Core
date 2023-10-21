@@ -16,6 +16,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameLoop;
+using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
 using Core.GS.Scripts;
@@ -1217,7 +1218,7 @@ namespace Core.GS.ServerRules
 						max *= 5;
 					}
 
-					CoreRoGMgr.GenerateReward(living, Util.Random(min, max));
+					CoreRogMgr.GenerateReward(living, Util.Random(min, max));
 				}
 			}
 
@@ -2140,7 +2141,7 @@ namespace Core.GS.ServerRules
                 
                 if (GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvP)
                 {
-	                CoreRoGMgr.GenerateOrbAmount(player, Util.Random(50, 150));
+	                CoreRogMgr.GenerateOrbAmount(player, Util.Random(50, 150));
                 }
 
                 int bonusRegion = 0;
@@ -2160,12 +2161,12 @@ namespace Core.GS.ServerRules
                 if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(10))
                 {
 	                var RRMod = (int)Math.Floor(killedPlayer.RealmLevel / 10d) * 3;
-	                CoreRoGMgr.GenerateROG(player, (byte)(player.Level + RRMod));
+	                CoreRogMgr.GenerateROG(player, (byte)(player.Level + RRMod));
                 }
 
                 if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(1))
                 {
-	                CoreRoGMgr.GenerateBeetleCarapace(player);
+	                CoreRogMgr.GenerateBeetleCarapace(player);
                 }
             }
 

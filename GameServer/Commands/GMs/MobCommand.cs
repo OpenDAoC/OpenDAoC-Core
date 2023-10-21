@@ -11,6 +11,7 @@ using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
+using Core.GS.GameUtils;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;

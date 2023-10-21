@@ -21,6 +21,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Server

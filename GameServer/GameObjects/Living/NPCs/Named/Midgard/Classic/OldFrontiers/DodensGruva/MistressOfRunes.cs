@@ -11,6 +11,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 using Core.GS.Scripts;
 
 namespace Core.GS.Scripts

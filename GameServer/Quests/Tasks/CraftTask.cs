@@ -6,6 +6,7 @@ using Core.Events;
 using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Quests

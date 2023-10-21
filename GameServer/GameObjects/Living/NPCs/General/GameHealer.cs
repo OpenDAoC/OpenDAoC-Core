@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Core.GS.PacketHandler;
 using Core.Language;
 
