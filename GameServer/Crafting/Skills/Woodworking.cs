@@ -1,6 +1,6 @@
 using Core.Language;
 
-namespace Core.GS;
+namespace Core.GS.Crafting;
 
 public class Woodworking : ACraftingSkill
 {

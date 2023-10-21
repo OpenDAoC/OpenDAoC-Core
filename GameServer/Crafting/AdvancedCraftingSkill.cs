@@ -1,9 +1,8 @@
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.PacketHandler;
 using Core.Language;
 
-namespace Core.GS
+namespace Core.GS.Crafting
 {
 	/// <summary>
 	/// AdvancedCraftingSkill is the skill for alchemy and spellcrafting whitch add all combine system

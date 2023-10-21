@@ -1,7 +1,7 @@
 using System;
 using Core.Language;
 
-namespace Core.GS;
+namespace Core.GS.Crafting;
 
 public class Siegecrafting : AProfession
 {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Crafting;
 using Core.GS.Housing;
 using log4net;
 

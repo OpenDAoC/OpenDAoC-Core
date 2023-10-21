@@ -15,6 +15,7 @@ using Core.Events;
 using Core.GS.APIs;
 using Core.GS.Behaviors;
 using Core.GS.Behaviour;
+using Core.GS.Crafting;
 using Core.GS.DatabaseUpdate;
 using Core.GS.Housing;
 using Core.GS.Keeps;

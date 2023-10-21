@@ -1,13 +1,10 @@
 using System;
 using Core.Language;
 
-namespace Core.GS;
+namespace Core.GS.Crafting;
 
 public class BasicCrafting : AProfession
 {
-	/// <summary>
-	/// Constructor
-	/// </summary>
 	public BasicCrafting()
 	{
 		Icon = 0x0F;

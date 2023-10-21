@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
@@ -10,7 +9,7 @@ using Core.GS.ServerProperties;
 using Core.Language;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.Crafting
 {
 	/// <summary>
 	/// AbstractCraftingSkill is the base class for all crafting skill

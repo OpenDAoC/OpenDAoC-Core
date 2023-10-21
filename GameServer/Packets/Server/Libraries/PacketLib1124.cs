@@ -8,6 +8,7 @@ using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
+using Core.GS.Crafting;
 using Core.GS.Keeps;
 using Core.GS.Quests;
 using Core.GS.Spells;

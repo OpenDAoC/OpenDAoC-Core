@@ -1,6 +1,6 @@
 using Core.Database.Tables;
+using Core.GS.Crafting;
 using Core.GS.PacketHandler;
-using Core.GS.SalvageCalc;
 using Core.Language;
 
 namespace Core.GS.Commands;

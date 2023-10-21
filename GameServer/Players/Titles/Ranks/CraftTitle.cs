@@ -17,6 +17,7 @@
  *
  */
 
+using Core.GS.Crafting;
 using Core.Language;
 
 namespace Core.GS.PlayerTitles

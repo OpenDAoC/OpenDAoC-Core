@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Core.GS.Crafting;
 using Core.GS.Housing;
 using Core.GS.PlayerTitles;
 using log4net;

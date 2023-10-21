@@ -94,11 +94,10 @@ Update databasename.itemtemplate set Extension = 3 where Id_nb like "%superior_w
  */
 
 using System.Text.RegularExpressions;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ServerProperties;
 
-namespace Core.GS.SalvageCalc
+namespace Core.GS.Crafting
 {
     public struct SalvageReturn
     {
