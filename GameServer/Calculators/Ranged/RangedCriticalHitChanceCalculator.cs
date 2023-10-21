@@ -1,7 +1,6 @@
-using Core.AI.Brain;
 using Core.GS.AI.Brains;
 
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The critical hit chance calculator. Returns 0 .. 100 chance.

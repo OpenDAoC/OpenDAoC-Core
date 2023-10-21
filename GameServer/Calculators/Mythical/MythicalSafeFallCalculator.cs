@@ -1,8 +1,5 @@
-﻿namespace Core.GS.PropertyCalc;
+﻿namespace Core.GS.Calculators;
 
-/// <summary>
-/// Calculator for Mythical Safe Fall
-/// </summary>
 [PropertyCalculator(EProperty.MythicalSafeFall)]
 public class MythicalSafeFallCalculator : PropertyCalculator
 {

@@ -1,13 +1,13 @@
 using System;
 
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
-[PropertyCalculator(EProperty.DebuffEffectivness)]
-public class DebuffEffectivenessPercentCalculator : PropertyCalculator
+[PropertyCalculator(EProperty.SpellDuration)]
+public class SpellDurationPercentCalculator : PropertyCalculator
 {
     public override int CalcValue(GameLiving living, EProperty property)
     {
-        // Hardcap at 25%
+        //hardcap at 25%
         return Math.Min(25, living.ItemBonus[(int)property] - living.DebuffCategory[(int)property]);
     }
 }

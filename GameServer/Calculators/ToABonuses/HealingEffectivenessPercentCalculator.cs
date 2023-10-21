@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 [PropertyCalculator(EProperty.HealingEffectiveness)]
 public class HealingEffectivenessPercentCalculator : PropertyCalculator

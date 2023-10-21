@@ -1,10 +1,7 @@
 ﻿using System;
 
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
-/// <summary>
-/// Calculator for RP % bonus
-/// </summary>
 [PropertyCalculator(EProperty.RealmPoints)]
 public class RealmPointsCalculator : PropertyCalculator
 {

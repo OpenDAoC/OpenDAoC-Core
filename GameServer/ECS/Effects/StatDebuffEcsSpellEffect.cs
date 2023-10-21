@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Core.GS.Calculators;
 using Core.GS.PlayerClass;
-using Core.GS.PropertyCalc;
 using Core.GS.Spells;
 
 namespace Core.GS

@@ -1,4 +1,4 @@
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The Archery Speed bonus percent calculator

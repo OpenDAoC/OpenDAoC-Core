@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Specialized;
+using Core.GS.Calculators;
 using Core.GS.Effects;
 using Core.GS.PacketHandler;
-using Core.GS.PropertyCalc;
 
 namespace Core.GS.Spells
 {

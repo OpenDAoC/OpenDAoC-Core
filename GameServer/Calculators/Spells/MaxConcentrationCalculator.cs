@@ -1,4 +1,4 @@
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The Concentration point calculator

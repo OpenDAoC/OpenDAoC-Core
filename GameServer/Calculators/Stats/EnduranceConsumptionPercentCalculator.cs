@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The Fatigue Consumption bonus percent calculator

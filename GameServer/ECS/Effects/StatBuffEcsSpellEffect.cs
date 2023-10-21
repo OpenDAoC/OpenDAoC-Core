@@ -1,4 +1,4 @@
-using Core.GS.PropertyCalc;
+using Core.GS.Calculators;
 using Core.GS.Spells;
 
 namespace Core.GS

@@ -1,4 +1,4 @@
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// Purpose of a property calculator is to serve

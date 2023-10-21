@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Core.Events;
+using Core.GS.Calculators;
 
 namespace Core.GS.Effects
 {
@@ -27,7 +28,7 @@ namespace Core.GS.Effects
 			living.TempProperties.SetProperty("Charging", true);
 			GameEventMgr.AddHandler(living, GameLivingEvent.AttackFinished, m_attackFinished);
 			GameEventMgr.AddHandler(living, GameLivingEvent.CastFinished, m_attackFinished);
-			living.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, this, PropertyCalc.MaxMovementSpeedCalculator.SPEED4);		
+			living.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, this, MaxMovementSpeedCalculator.SPEED4);		
 			if (living is GamePlayer)
 				(living as GamePlayer).Out.SendUpdateMaxSpeed();
 		}

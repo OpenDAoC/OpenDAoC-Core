@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The melee damage bonus percent calculator

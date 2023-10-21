@@ -1,4 +1,5 @@
 using System.Linq;
+using Core.GS.Calculators;
 
 namespace Core.GS.Effects
 {
@@ -81,7 +82,7 @@ namespace Core.GS.Effects
                 EffectService.RequestDisableEffect(OwnerPlayer.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == EEffect.Ichor));
             
             OwnerPlayer.BuffBonusMultCategory1.Set((int) EProperty.MaxSpeed, this,
-                PropertyCalc.MaxMovementSpeedCalculator.SPEED4);
+                MaxMovementSpeedCalculator.SPEED4);
             OwnerPlayer.Out.SendUpdateMaxSpeed();
         }
 

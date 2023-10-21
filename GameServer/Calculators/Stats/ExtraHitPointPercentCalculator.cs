@@ -1,4 +1,4 @@
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 [PropertyCalculator(EProperty.ExtraHP)]
 public class ExtraHitPointPercentCalculator : PropertyCalculator

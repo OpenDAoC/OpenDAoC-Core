@@ -1,6 +1,6 @@
 using Core.GS.Keeps;
 
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The health regen rate calculator

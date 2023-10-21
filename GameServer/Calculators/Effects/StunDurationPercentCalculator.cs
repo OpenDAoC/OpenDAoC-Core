@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// BuffBonusCategory1 is used for buffs

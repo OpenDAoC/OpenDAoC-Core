@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Core.AI.Brain;
 using Core.GS.AI.Brains;
+using Core.GS.Calculators;
 using Core.GS.PacketHandler;
 
 namespace Core.GS.Effects
@@ -58,7 +59,7 @@ namespace Core.GS.Effects
 			}
 			foreach (GameSpellEffect spell in speedSpells)
 				spell.Cancel(false);
-			m_living.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, this, PropertyCalc.MaxMovementSpeedCalculator.SPEED3);
+			m_living.BuffBonusMultCategory1.Set((int)EProperty.MaxSpeed, this, MaxMovementSpeedCalculator.SPEED3);
 			m_living.TempProperties.SetProperty("Charging", true);
 			if (m_living is GamePlayer)
 				((GamePlayer)m_living).Out.SendUpdateMaxSpeed();

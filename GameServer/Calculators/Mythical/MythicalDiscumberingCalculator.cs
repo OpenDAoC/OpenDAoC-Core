@@ -1,4 +1,4 @@
-﻿namespace Core.GS.PropertyCalc;
+﻿namespace Core.GS.Calculators;
 
 [PropertyCalculator(EProperty.MythicalDiscumbering)]
 public class MythicalDiscumberingCalculator : PropertyCalculator

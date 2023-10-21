@@ -3,8 +3,8 @@ using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
+using Core.GS.Calculators;
 using Core.GS.Effects;
-using Core.GS.PropertyCalc;
 using Core.GS.Spells;
 
 namespace Core.GS.RealmAbilities

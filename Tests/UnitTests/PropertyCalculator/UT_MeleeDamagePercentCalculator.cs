@@ -1,5 +1,5 @@
 ﻿using Core.GS;
-using Core.GS.PropertyCalc;
+using Core.GS.Calculators;
 using NUnit.Framework;
 
 namespace Core.Tests.Unit.Gameserver.PropertyCalc
