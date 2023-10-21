@@ -34,10 +34,19 @@
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cclassic_005Coldfrontiers/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cclassic_005Coldfrontiers_005Challofthecorrupt/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cshroudedisles/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cshroudedisles_005Cavaloncity/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cshroudedisles_005Cavaloncity_005Ccrystalcave/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cshroudedisles_005Ccaersidi/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cshroudedisles_005Ckrondon/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Cdragons/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Chibernia/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Chibernia_005Cclassic/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Chibernia_005Cclassic_005Coldfrontiers/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Chibernia_005Cclassic_005Coldfrontiers_005Cmarfachcaverns/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Chibernia_005Cshroudedisles/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Chibernia_005Cshroudedisles_005Cfomor/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Chibernia_005Cshroudedisles_005Cgalladoria/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Chibernia_005Cshroudedisles_005Ctursuil/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Cmidgard/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Cmidgard_005Cclassic/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=ai_005Cbrains_005Cliving_005Cnpcs_005Cnamed_005Cmidgard_005Cclassic_005Coldfrontiers/@EntryIndexedValue">True</s:Boolean>
@@ -195,6 +204,10 @@
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=gameobjects_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cclassic_005Coldfrontiers/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=gameobjects_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cclassic_005Coldfrontiers_005Challofthecorrupt/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=gameobjects_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cshroudedisles/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=gameobjects_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cshroudedisles_005Cavaloncity/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=gameobjects_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cshroudedisles_005Cavaloncity_005Ccrystalcave/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=gameobjects_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cshroudedisles_005Ccaersidi/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=gameobjects_005Cliving_005Cnpcs_005Cnamed_005Calbion_005Cshroudedisles_005Ckrondon/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=gameobjects_005Cliving_005Cnpcs_005Cnamed_005Cdragons/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=gameobjects_005Cliving_005Cnpcs_005Cnamed_005Chibernia/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=gameobjects_005Cliving_005Cnpcs_005Cnamed_005Chibernia_005Cclassic/@EntryIndexedValue">True</s:Boolean>
