@@ -1,7 +1,6 @@
-﻿namespace Core.GS.PerformanceStatistics
+﻿namespace Core.GS.PerformanceStatistics;
+
+public interface IPerformanceStatistic
 {
-    public interface IPerformanceStatistic
-    {
-        public double GetNextValue();
-    }
+    public double GetNextValue();
 }
