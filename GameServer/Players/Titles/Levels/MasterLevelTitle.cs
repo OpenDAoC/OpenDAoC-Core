@@ -1,12 +1,51 @@
 using System;
+using System.Linq;
 using Core.GS.Events;
 using Core.GS.Languages;
+using Core.GS.Players.Specializations;
 using Core.GS.PlayerTitles;
 
 namespace Core.GS.Players.Titles;
 
-public class Level20Title : EventPlayerTitle
+public class MasterLevelTitle : EventPlayerTitle
 {
+	/// <summary>
+	/// Map ML Spec on ML Translate ID
+	/// </summary>
+	/// <param name="player"></param>
+	/// <returns></returns>
+	private int GetPlayerMLLine(GamePlayer player)
+	{
+		var mlspec = player.GetSpecList().FirstOrDefault(spec => spec is IMasterLevelsSpecialization);
+		
+		if(mlspec != null)
+		{
+			switch(mlspec.KeyName)
+			{
+				case "Banelord":
+					return 1;
+				case "Battlemaster":
+					return 2;
+				case "Convoker":
+					return 3;
+				case "Perfecter":
+					return 4;
+				case "Sojourner":
+					return 5;
+				case "Spymaster":
+					return 6;
+				case "Stormlord":
+					return 7;
+				case "Warlord":
+					return 8;
+				default:
+					return 0;
+			}
+		}
+		
+		return 0;
+	}
+	
 	/// <summary>
 	/// The title description, shown in "Titles" window.
 	/// </summary>
@@ -14,7 +53,7 @@ public class Level20Title : EventPlayerTitle
 	/// <returns>The title description.</returns>
 	public override string GetDescription(GamePlayer player)
 	{
-		return LanguageMgr.TryTranslateOrDefault(player, "!Level 20+!", "Titles.Level.Level20Info");
+		return GetValue(player, player);
 	}
 
 	/// <summary>
@@ -25,7 +64,14 @@ public class Level20Title : EventPlayerTitle
 	/// <returns>The title value.</returns>
 	public override string GetValue(GamePlayer source, GamePlayer player)
 	{
-		return LanguageMgr.TryTranslateOrDefault(source, "!Level {0}!", "Titles.Level.Level20", player.Level);
+		if (player.MLGranted && player.MLLevel > 0)
+		{
+			// try get player ML Number
+			int mlline = GetPlayerMLLine(player);
+			return LanguageMgr.TryTranslateOrDefault(source, string.Format("!ML Title {0}!", mlline), string.Format("Titles.ML.Line{0}", mlline));
+		}
+		
+		return LanguageMgr.TryTranslateOrDefault(source, "!None!", "DetailDisplayHandler.HandlePacket.None");
 	}
 	
 	/// <summary>
@@ -33,7 +79,7 @@ public class Level20Title : EventPlayerTitle
 	/// </summary>
 	public override CoreEvent Event
 	{
-		get { return GamePlayerEvent.LevelUp; }
+		get { return GamePlayerEvent.BecomeML; }
 	}
 	
 	/// <summary>
@@ -43,7 +89,7 @@ public class Level20Title : EventPlayerTitle
 	/// <returns>true if the player is suitable for this title.</returns>
 	public override bool IsSuitable(GamePlayer player)
 	{
-		return player.Level >= 20;
+		return player.MLGranted && player.MLLevel > 0;
 	}
 	
 	/// <summary>

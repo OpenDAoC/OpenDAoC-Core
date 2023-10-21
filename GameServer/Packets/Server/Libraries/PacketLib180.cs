@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Core.GS.Enums;
+using Core.GS.Players.Specializations;
 using Core.GS.Styles;
 using log4net;
 

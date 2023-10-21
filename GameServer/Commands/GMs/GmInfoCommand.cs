@@ -14,6 +14,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Packets.Clients;
+using Core.GS.Players.Specializations;
 
 namespace Core.GS.Commands
 {

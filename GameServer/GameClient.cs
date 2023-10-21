@@ -17,6 +17,8 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.Players.Managers;
+using Core.GS.Players.Specializations;
 using Core.GS.ServerProperties;
 using log4net;
 

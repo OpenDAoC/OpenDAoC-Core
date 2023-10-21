@@ -11,6 +11,8 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.Players.Clients;
+using Core.GS.Players.Specializations;
 using Core.GS.Quests;
 using log4net;
 

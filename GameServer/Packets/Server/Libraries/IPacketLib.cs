@@ -6,6 +6,8 @@ using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Players.Clients;
+using Core.GS.Players.Specializations;
 using Core.GS.Quests;
 
 namespace Core.GS.Packets.Server;

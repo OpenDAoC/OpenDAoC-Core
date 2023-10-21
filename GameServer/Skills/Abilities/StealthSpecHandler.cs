@@ -4,6 +4,7 @@ using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Players.Specializations;
 
 namespace Core.GS.SkillHandler
 {

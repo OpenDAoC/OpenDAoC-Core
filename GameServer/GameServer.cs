@@ -27,6 +27,8 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.Players.Clients;
+using Core.GS.Players.Titles;
 using Core.GS.PlayerTitles;
 using Core.GS.Quests;
 using Core.GS.ServerProperties;
@@ -36,6 +38,7 @@ using JNogueira.Discord.Webhook.Client;
 using log4net;
 using log4net.Config;
 using log4net.Core;
+using PlayerMgr = Core.GS.Players.Managers.PlayerMgr;
 
 namespace Core.GS
 {

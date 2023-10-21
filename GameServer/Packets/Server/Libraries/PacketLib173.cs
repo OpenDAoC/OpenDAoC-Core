@@ -11,6 +11,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.Players;
 using Core.GS.Quests;
 using Core.GS.Spells;
 using log4net;

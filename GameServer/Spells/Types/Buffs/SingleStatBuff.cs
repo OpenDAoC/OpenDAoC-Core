@@ -2,7 +2,7 @@ using System;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.GS.PlayerClass;
+using Core.GS.Players.Classes;
 
 namespace Core.GS.Spells
 {

@@ -18,6 +18,7 @@
  */
 
 using Core.GS;
+using Core.GS.Players.Managers;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Managers

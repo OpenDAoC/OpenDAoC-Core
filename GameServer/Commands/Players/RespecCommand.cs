@@ -4,6 +4,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.Players.Specializations;
 
 namespace Core.GS.Commands;
 

@@ -19,6 +19,8 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.Players.Clients;
+using Core.GS.Players.Titles;
 using Core.GS.Scripts;
 using Core.GS.ServerProperties;
 using log4net;

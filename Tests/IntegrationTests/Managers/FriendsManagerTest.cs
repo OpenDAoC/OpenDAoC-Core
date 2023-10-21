@@ -4,7 +4,7 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS;
 using Core.GS.Events;
-using Core.GS.Friends;
+using Core.GS.Players.Friends;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Server

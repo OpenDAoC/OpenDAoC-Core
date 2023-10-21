@@ -1,63 +1,62 @@
 using System;
 
-namespace Core.GS
+namespace Core.GS.Players.Classes;
+
+/// <summary>
+/// Denotes a class as a player class
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public class PlayerClassAttribute : Attribute
 {
-	/// <summary>
-	/// Denotes a class as a player class
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-	public class PlayerClassAttribute : Attribute
+	protected string m_name;
+	protected string m_femaleName;
+	protected string m_basename;
+	protected int m_id;
+
+	public PlayerClassAttribute(int id, string name, string basename, string femalename)
 	{
-		protected string m_name;
-		protected string m_femaleName;
-		protected string m_basename;
-		protected int m_id;
+		m_basename = basename;
+		m_name = name;
+		m_id = id;
+		m_femaleName = femalename;
+	}
 
-		public PlayerClassAttribute(int id, string name, string basename, string femalename)
+	public PlayerClassAttribute(int id, string name, string basename)
+	{
+		m_basename = basename;
+		m_name = name;
+		m_id = id;
+	}
+
+	public int ID
+	{
+		get
 		{
-			m_basename = basename;
-			m_name = name;
-			m_id = id;
-			m_femaleName = femalename;
+			return m_id;
 		}
+	}
 
-		public PlayerClassAttribute(int id, string name, string basename)
+	public string Name
+	{
+		get
 		{
-			m_basename = basename;
-			m_name = name;
-			m_id = id;
+			return m_name;
 		}
+	}
 
-		public int ID
+	public string BaseName
+	{
+		get
 		{
-			get
-			{
-				return m_id;
-			}
+			return m_basename;
 		}
+	}
 
-		public string Name
+	public string FemaleName
+	{
+		get
 		{
-			get
-			{
-				return m_name;
-			}
-		}
-
-		public string BaseName
-		{
-			get
-			{
-				return m_basename;
-			}
-		}
-
-		public string FemaleName
-		{
-			get
-			{
-				return m_femaleName;
-			}
+			return m_femaleName;
 		}
 	}
 }

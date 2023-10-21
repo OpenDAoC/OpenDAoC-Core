@@ -10,6 +10,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.Players.Titles;
 using Core.GS.PlayerTitles;
 using log4net;
 

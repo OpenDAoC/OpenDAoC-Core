@@ -1,3 +1,5 @@
+using Core.GS.Players.Clients;
+
 namespace Core.GS.Enums;
 
 public enum EMerchantWindowSlot : int

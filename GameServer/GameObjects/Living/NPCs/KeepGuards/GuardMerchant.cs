@@ -1,7 +1,8 @@
 ﻿using Core.AI.Brain;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
-using Core.GS.PlayerClass;
+using Core.GS.Players.Classes;
+using Core.GS.Players.Clients;
 
 namespace Core.GS.Keeps
 {

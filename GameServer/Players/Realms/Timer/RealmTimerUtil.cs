@@ -1,16 +1,14 @@
 using System;
 using System.Linq;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 
-namespace Core.GS.Utils;
+namespace Core.GS.Players.Realms;
 
 //Utility class for checking realmtimer of a character/account and acting accordingly 
 public class RealmTimerUtil
 {
-
     public static bool CanPvP(GamePlayer player)
     {
         if (ServerProperties.Properties.PVP_REALM_TIMER_MINUTES == 0) return true;

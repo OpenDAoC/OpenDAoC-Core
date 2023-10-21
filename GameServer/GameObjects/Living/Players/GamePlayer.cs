@@ -30,7 +30,13 @@ using Core.GS.Languages;
 using Core.GS.Packets;
 using Core.GS.Packets.Clients;
 using Core.GS.Packets.Server;
-using Core.GS.PlayerClass;
+using Core.GS.Players;
+using Core.GS.Players.Classes;
+using Core.GS.Players.Clients;
+using Core.GS.Players.Managers;
+using Core.GS.Players.Realms;
+using Core.GS.Players.Specializations;
+using Core.GS.Players.Titles;
 using Core.GS.PlayerTitles;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
@@ -38,7 +44,6 @@ using Core.GS.ServerProperties;
 using Core.GS.SkillHandler;
 using Core.GS.Spells;
 using Core.GS.Styles;
-using Core.GS.Utils;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
 
@@ -6289,7 +6294,7 @@ namespace Core.GS
                 }
             }
             // vampiir
-            if (PlayerClass is PlayerClass.ClassVampiir)
+            if (PlayerClass is ClassVampiir)
             {
                 GameSpellEffect removeEffect = SpellHandler.FindEffectOnTarget(this, "VampiirSpeedEnhancement");
                 if (removeEffect != null)
@@ -14553,7 +14558,7 @@ namespace Core.GS
         {
             get
             {
-                var title = m_titles.FirstOrDefault(ttl => ttl is ChampionlevelTitle);
+                var title = m_titles.FirstOrDefault(ttl => ttl is ChampionLevelTitle);
 
                 if (title != null && title.IsSuitable(this))
                     return title;
@@ -15002,7 +15007,7 @@ namespace Core.GS
         {
             get
             {
-                var title = m_titles.FirstOrDefault(ttl => ttl is MasterlevelTitle);
+                var title = m_titles.FirstOrDefault(ttl => ttl is MasterLevelTitle);
 
                 if (title != null && title.IsSuitable(this))
                     return title;

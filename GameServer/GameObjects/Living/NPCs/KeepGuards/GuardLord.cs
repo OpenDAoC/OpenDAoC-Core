@@ -8,7 +8,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
-using Core.GS.PlayerClass;
+using Core.GS.Players.Classes;
 using Core.GS.ServerProperties;
 using log4net;
 

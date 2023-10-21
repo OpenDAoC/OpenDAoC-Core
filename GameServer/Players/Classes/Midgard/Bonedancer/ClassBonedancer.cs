@@ -1,39 +1,38 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
-using Core.GS.Realm;
+using Core.GS.Players.Races;
 
-namespace Core.GS.PlayerClass
+namespace Core.GS.Players.Classes;
+
+[PlayerClass((int)EPlayerClass.Bonedancer, "Bonedancer", "Mystic")]
+public class ClassBonedancer : ClassBonedancerBase
 {
-	[PlayerClass((int)EPlayerClass.Bonedancer, "Bonedancer", "Mystic")]
-	public class ClassBonedancer : ClassBonedancerBase
+	public ClassBonedancer()
+		: base()
 	{
-		public ClassBonedancer()
-			: base()
-		{
-			m_specializationMultiplier = 10;
-			m_wsbase = 280;
-			m_baseHP = 560;
-			m_manaStat = EStat.PIE;
+		m_specializationMultiplier = 10;
+		m_wsbase = 280;
+		m_baseHP = 560;
+		m_manaStat = EStat.PIE;
 
-			m_profession = "PlayerClass.Profession.HouseofBodgar";
-			m_primaryStat = EStat.PIE;
-			m_secondaryStat = EStat.DEX;
-			m_tertiaryStat = EStat.QUI;
-		}
-
-		public override EPlayerClassType ClassType
-		{
-			get { return EPlayerClassType.ListCaster; }
-		}
-
-		public override bool HasAdvancedFromBaseClass()
-		{
-			return true;
-		}
-
-		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
-		{
-			 PlayerRace.Kobold, PlayerRace.Troll, PlayerRace.Valkyn,
-		};
+		m_profession = "PlayerClass.Profession.HouseofBodgar";
+		m_primaryStat = EStat.PIE;
+		m_secondaryStat = EStat.DEX;
+		m_tertiaryStat = EStat.QUI;
 	}
+
+	public override EPlayerClassType ClassType
+	{
+		get { return EPlayerClassType.ListCaster; }
+	}
+
+	public override bool HasAdvancedFromBaseClass()
+	{
+		return true;
+	}
+
+	public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+	{
+		 PlayerRace.Kobold, PlayerRace.Troll, PlayerRace.Valkyn,
+	};
 }

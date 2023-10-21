@@ -4,6 +4,7 @@ using System.Reflection;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Packets.Server;
+using Core.GS.Players.Specializations;
 using Core.GS.ServerProperties;
 using Core.GS.Styles;
 using log4net;

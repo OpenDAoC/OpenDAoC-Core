@@ -1,4 +1,5 @@
 using System;
+using Core.GS.Players.Classes;
 
 namespace Core.GS.Events;
 

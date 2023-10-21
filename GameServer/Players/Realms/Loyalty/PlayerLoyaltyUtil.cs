@@ -1,4 +1,4 @@
-namespace Core.GS;
+namespace Core.GS.Players.Realms;
 
 public class PlayerLoyaltyUtil
 {

@@ -15,6 +15,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Commands;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.Players.Classes;
 using Core.GS.ServerRules;
 using Core.GS.Spells;
 using log4net;

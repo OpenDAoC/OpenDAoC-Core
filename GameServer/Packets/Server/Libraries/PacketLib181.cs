@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.Players.Titles;
 using Core.GS.PlayerTitles;
 using log4net;
 

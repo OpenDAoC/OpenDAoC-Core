@@ -9,7 +9,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
-using Core.GS.PlayerClass;
+using Core.GS.Players.Classes;
 using Core.GS.Quests;
 using log4net;
 

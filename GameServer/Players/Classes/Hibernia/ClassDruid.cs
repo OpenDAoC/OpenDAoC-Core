@@ -1,32 +1,31 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
-using Core.GS.Realm;
+using Core.GS.Players.Races;
 
-namespace Core.GS.PlayerClass
+namespace Core.GS.Players.Classes;
+
+[PlayerClass((int)EPlayerClass.Druid, "Druid", "Naturalist")]
+public class ClassDruid : ClassNaturalist
 {
-	[PlayerClass((int)EPlayerClass.Druid, "Druid", "Naturalist")]
-	public class ClassDruid : ClassNaturalist
+	public ClassDruid()
+		: base()
 	{
-		public ClassDruid()
-			: base()
-		{
-			m_profession = "PlayerClass.Profession.PathofHarmony";
-			m_specializationMultiplier = 10;
-			m_primaryStat = EStat.EMP;
-			m_secondaryStat = EStat.CON;
-			m_tertiaryStat = EStat.STR;
-			m_manaStat = EStat.EMP;
-			m_wsbase = 320;
-		}
-
-		public override bool HasAdvancedFromBaseClass()
-		{
-			return true;
-		}
-
-		public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
-		{
-			 PlayerRace.Celt, PlayerRace.Firbolg, PlayerRace.Sylvan,
-		};
+		m_profession = "PlayerClass.Profession.PathofHarmony";
+		m_specializationMultiplier = 10;
+		m_primaryStat = EStat.EMP;
+		m_secondaryStat = EStat.CON;
+		m_tertiaryStat = EStat.STR;
+		m_manaStat = EStat.EMP;
+		m_wsbase = 320;
 	}
+
+	public override bool HasAdvancedFromBaseClass()
+	{
+		return true;
+	}
+
+	public override List<PlayerRace> EligibleRaces => new List<PlayerRace>()
+	{
+		 PlayerRace.Celt, PlayerRace.Firbolg, PlayerRace.Sylvan,
+	};
 }

@@ -1,6 +1,6 @@
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.PlayerClass;
+using Core.GS.Players.Classes;
 using Core.GS.ServerProperties;
 
 namespace Core.GS.Keeps

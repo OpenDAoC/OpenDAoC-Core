@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Players.Specializations;
 
 namespace Core.GS.Styles
 {

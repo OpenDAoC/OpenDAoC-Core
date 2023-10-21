@@ -9,6 +9,9 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Packets.Server;
+using Core.GS.Players.Classes;
+using Core.GS.Players.Clients;
+using Core.GS.Players.Managers;
 using Core.GS.ServerProperties;
 using log4net;
 

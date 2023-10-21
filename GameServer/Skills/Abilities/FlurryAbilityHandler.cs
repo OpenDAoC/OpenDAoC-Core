@@ -3,6 +3,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.Players.Classes;
 using log4net;
 
 namespace Core.GS.SkillHandler
@@ -100,7 +101,7 @@ namespace Core.GS.SkillHandler
 
 			GameLiving target = (GameLiving)player.TargetObject;
 			int damage = 0;
-			int specc = (player.PlayerClass is PlayerClass.ClassBlademaster) ?
+			int specc = (player.PlayerClass is ClassBlademaster) ?
 				player.GetModifiedSpecLevel(Specs.Celtic_Dual) : player.GetModifiedSpecLevel(Specs.Dual_Wield);
 
 			//damage = base HP / 100 * DWspec / 2.7 that would be the original calculation

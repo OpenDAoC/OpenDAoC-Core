@@ -15,6 +15,7 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.Players.Classes;
 using Core.GS.RealmAbilities;
 using Core.GS.ServerProperties;
 using Core.GS.SkillHandler;
@@ -968,7 +969,7 @@ namespace Core.GS.ECS
                         }
 
                         // Vampiir.
-                        if (playerOwner.PlayerClass is PlayerClass.ClassVampiir &&
+                        if (playerOwner.PlayerClass is ClassVampiir &&
                             target is not GameKeepComponent and not GameKeepDoor and not GameSiegeWeapon)
                         {
                             int perc = Convert.ToInt32((double) (ad.Damage + ad.CriticalDamage) / 100 * (55 - playerOwner.Level));

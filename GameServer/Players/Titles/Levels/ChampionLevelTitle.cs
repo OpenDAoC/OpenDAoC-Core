@@ -5,7 +5,7 @@ using Core.GS.PlayerTitles;
 
 namespace Core.GS.Players.Titles;
 
-public class Level20Title : EventPlayerTitle
+public class ChampionLevelTitle : EventPlayerTitle
 {
 	/// <summary>
 	/// The title description, shown in "Titles" window.
@@ -14,7 +14,7 @@ public class Level20Title : EventPlayerTitle
 	/// <returns>The title description.</returns>
 	public override string GetDescription(GamePlayer player)
 	{
-		return LanguageMgr.TryTranslateOrDefault(player, "!Level 20+!", "Titles.Level.Level20Info");
+		return GetValue(player, player);
 	}
 
 	/// <summary>
@@ -25,7 +25,10 @@ public class Level20Title : EventPlayerTitle
 	/// <returns>The title value.</returns>
 	public override string GetValue(GamePlayer source, GamePlayer player)
 	{
-		return LanguageMgr.TryTranslateOrDefault(source, "!Level {0}!", "Titles.Level.Level20", player.Level);
+		if (player.Champion && player.ChampionLevel > 0)
+			return LanguageMgr.TryTranslateOrDefault(source, string.Format("!CL Title {0}!", player.ChampionLevel), string.Format("Titles.CL.Level{0}", player.ChampionLevel));
+			
+		return string.Empty;
 	}
 	
 	/// <summary>
@@ -33,7 +36,7 @@ public class Level20Title : EventPlayerTitle
 	/// </summary>
 	public override CoreEvent Event
 	{
-		get { return GamePlayerEvent.LevelUp; }
+		get { return GamePlayerEvent.ChampionLevelUp; }
 	}
 	
 	/// <summary>
@@ -43,7 +46,7 @@ public class Level20Title : EventPlayerTitle
 	/// <returns>true if the player is suitable for this title.</returns>
 	public override bool IsSuitable(GamePlayer player)
 	{
-		return player.Level >= 20;
+		return player.Champion && player.ChampionLevel > 0;
 	}
 	
 	/// <summary>

@@ -12,6 +12,9 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.Players;
+using Core.GS.Players.Clients;
+using Core.GS.Players.Titles;
 using Core.GS.Quests;
 
 namespace Core.GS

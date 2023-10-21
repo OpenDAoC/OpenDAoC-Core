@@ -6,6 +6,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.Players.Titles;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
 

@@ -3,6 +3,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
+using Core.GS.Players.Titles;
 using Core.GS.Scripts;
 
 namespace Core.GS.Commands;

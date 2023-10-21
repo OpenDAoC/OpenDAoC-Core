@@ -1,5 +1,6 @@
 using System;
 using Core.GS.Enums;
+using Core.GS.Players.Classes;
 
 namespace Core.GS.Spells
 {
@@ -28,10 +29,10 @@ namespace Core.GS.Spells
 			{
 				if (healTarget is GamePlayer 
 				    && (
-				    ((GamePlayer)healTarget).PlayerClass is PlayerClass.ClassVampiir
-					|| ((GamePlayer)healTarget).PlayerClass is PlayerClass.ClassMaulerAlb
-					|| ((GamePlayer)healTarget).PlayerClass is PlayerClass.ClassMaulerHib
-					|| ((GamePlayer)healTarget).PlayerClass is PlayerClass.ClassMaulerMid))
+				    ((GamePlayer)healTarget).PlayerClass is ClassVampiir
+					|| ((GamePlayer)healTarget).PlayerClass is ClassMaulerAlb
+					|| ((GamePlayer)healTarget).PlayerClass is ClassMaulerHib
+					|| ((GamePlayer)healTarget).PlayerClass is ClassMaulerMid))
 					continue;
 
 				if (Spell.Value < 0)

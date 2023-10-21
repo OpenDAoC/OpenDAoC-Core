@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Core.GS.Enums;
+using Core.GS.Players.Specializations;
 using Core.GS.RealmAbilities;
 
 namespace Core.GS.Spells
