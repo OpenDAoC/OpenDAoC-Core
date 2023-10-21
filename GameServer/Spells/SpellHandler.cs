@@ -710,7 +710,7 @@ namespace Core.GS.Spells
 						if (Caster is GamePlayer && !quiet)
 							MessageToCaster("That target is too far away!", EChatType.CT_SpellResisted);
 
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.ECastFailedReasons.TargetTooFarAway));
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, ECastFailedReasons.TargetTooFarAway));
 
 						if (Caster is GameNpc npc)
 							npc.Follow(Target, Spell.Range - 100, GameNpc.STICK_MAXIMUM_RANGE);
@@ -750,7 +750,7 @@ namespace Core.GS.Spells
 								if (!quiet)
 									MessageToCaster("Your target is not visible!", EChatType.CT_SpellResisted);
 
-								Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.ECastFailedReasons.TargetNotInView));
+								Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, ECastFailedReasons.TargetNotInView));
 								return false;
 							}
 
@@ -785,7 +785,7 @@ namespace Core.GS.Spells
 						if (!quiet)
 							MessageToCaster("Your target is not visible!", EChatType.CT_SpellResisted);
 
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.ECastFailedReasons.TargetNotInView));
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, ECastFailedReasons.TargetNotInView));
 						return false;
 					}
 

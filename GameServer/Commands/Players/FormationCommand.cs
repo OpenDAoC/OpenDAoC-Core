@@ -1,3 +1,4 @@
+using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.PacketHandler;
 
@@ -40,7 +41,7 @@ public class FormationCommand : ACommandHandler, ICommandHandler
 			return;
 		}
 		bool haveminion = false;
-		foreach (AI.Brain.IControlledBrain icb in player.ControlledBrain.Body.ControlledNpcList)
+		foreach (IControlledBrain icb in player.ControlledBrain.Body.ControlledNpcList)
 		{
 			if (icb != null)
 			{

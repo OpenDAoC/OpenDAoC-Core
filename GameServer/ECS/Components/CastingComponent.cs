@@ -58,7 +58,7 @@ namespace Core.GS.ECS
         protected bool RequestStartCastSpellInternal(StartCastSpellRequest startCastSpellRequest)
         {
             if (Owner.IsStunned || Owner.IsMezzed)
-                Owner.Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.ECastFailedReasons.CrowdControlled));
+                Owner.Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, ECastFailedReasons.CrowdControlled));
 
             if (!CanCastSpell())
                 return false;

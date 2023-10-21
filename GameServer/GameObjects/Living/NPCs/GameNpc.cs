@@ -3822,11 +3822,10 @@ namespace Core.GS
 				else
 				{
 					m_spellCastedFromLosCheck = false;
-					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.ECastFailedReasons.TargetNotInView));
+					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, ECastFailedReasons.TargetNotInView));
 				}
 			}
 		}
-
 		#endregion
 
 		#region Styles

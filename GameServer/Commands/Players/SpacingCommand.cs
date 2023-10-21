@@ -1,3 +1,4 @@
+using Core.GS.AI.Brains;
 using Core.GS.Enums;
 
 namespace Core.GS.Commands;
@@ -39,7 +40,7 @@ public class SpacingCommand : ACommandHandler, ICommandHandler
 			return;
 		}
 		bool haveminion = false;
-		foreach (AI.Brain.IControlledBrain icb in player.ControlledBrain.Body.ControlledNpcList)
+		foreach (IControlledBrain icb in player.ControlledBrain.Body.ControlledNpcList)
 		{
 			if (icb != null)
 				haveminion = true;

@@ -121,7 +121,7 @@ namespace Core.GS.Keeps
 			GuardPositionMgr.LoadGuardPosition(SpawnPosition, guard);
 			guard.RefreshTemplate();
 			PatrolGuards.Add(guard);
-			Component.Keep.Guards.Add(Database.IdGenerator.GenerateID(), guard);
+			Component.Keep.Guards.Add(IdGenerator.GenerateID(), guard);
 			guard.AddToWorld();
 
 			if (ServerProperties.Properties.ENABLE_DEBUG)

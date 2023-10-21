@@ -101,14 +101,14 @@ namespace Core.GS.Spells
 					if (m_caster.IsObjectInFront(selectedTarget, 180) == false)
 					{
 						MessageToCaster("Your target is not in view!", EChatType.CT_SpellResisted);
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.ECastFailedReasons.TargetNotInView));
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, ECastFailedReasons.TargetNotInView));
 						return false;
 					}
 
 					if (m_caster.TargetInView == false)
 					{
 						MessageToCaster("Your target is not visible!", EChatType.CT_SpellResisted);
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.ECastFailedReasons.TargetNotInView));
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, ECastFailedReasons.TargetNotInView));
 						return false;
 					}
 
