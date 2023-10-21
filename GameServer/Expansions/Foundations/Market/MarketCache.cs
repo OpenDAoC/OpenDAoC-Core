@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Database;
 using log4net;
 
 namespace Core.GS

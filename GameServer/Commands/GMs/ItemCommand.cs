@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Crafting;
+using Core.GS.Database;
 using Core.GS.PacketHandler;
 using Core.Language;
 

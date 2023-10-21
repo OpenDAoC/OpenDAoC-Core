@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using Core.Database;
+using Core.GS.Database;
 using Core.GS.ServerProperties;
 using log4net;
 

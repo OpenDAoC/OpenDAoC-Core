@@ -8,6 +8,7 @@ using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Crafting;
+using Core.GS.Database;
 using Core.GS.Effects;
 using Core.GS.Housing;
 using Core.GS.Keeps;

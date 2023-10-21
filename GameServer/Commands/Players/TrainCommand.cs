@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Database;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 

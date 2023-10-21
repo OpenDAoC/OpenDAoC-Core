@@ -24,6 +24,7 @@ using System.Linq;
 using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Database;
 using Core.GS.PacketHandler;
 using log4net;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Database;
 
 namespace Core.GS {
     public static class CraftingProgressMgr {

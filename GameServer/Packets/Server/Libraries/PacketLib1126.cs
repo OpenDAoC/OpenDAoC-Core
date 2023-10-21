@@ -5,6 +5,7 @@ using System.Net;
 using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Database;
 using log4net;
 
 namespace Core.GS.PacketHandler

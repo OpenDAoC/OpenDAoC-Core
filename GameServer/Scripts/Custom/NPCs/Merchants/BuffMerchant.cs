@@ -9,6 +9,7 @@ using Core.GS.PacketHandler;
 using Core.GS.Spells;
 using Core.Language;
 using Core.GS;
+using Core.GS.Database;
 using log4net;
 
 namespace Core.GS

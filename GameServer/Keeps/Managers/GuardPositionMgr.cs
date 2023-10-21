@@ -5,6 +5,7 @@ using System.Linq;
 using Core.Database;
 using Core.Database.Enums;
 using Core.Database.Tables;
+using Core.GS.Database;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;
 

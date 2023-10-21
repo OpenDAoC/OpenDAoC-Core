@@ -5,6 +5,7 @@ using System.Linq;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
+using Core.GS.Database;
 using Core.GS.Effects;
 using Core.GS.Friends;
 using Core.GS.Housing;

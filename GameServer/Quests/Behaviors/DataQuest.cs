@@ -8,6 +8,7 @@ using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Behaviors;
 using Core.GS.Behaviour;
+using Core.GS.Database;
 using Core.GS.PacketHandler;
 using Core.Language;
 using log4net;

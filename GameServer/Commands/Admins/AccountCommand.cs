@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Database;
 using Core.GS.PacketHandler.Client.v168;
 
 namespace Core.GS.Commands

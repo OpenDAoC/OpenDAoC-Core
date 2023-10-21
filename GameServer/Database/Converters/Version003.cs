@@ -4,7 +4,7 @@ using Core.Database.Enums;
 using Core.Database.Tables;
 using log4net;
 
-namespace Core.GS.DatabaseConverters;
+namespace Core.GS.Database;
 
 /// <summary>
 /// Converts the database format to the version 3
