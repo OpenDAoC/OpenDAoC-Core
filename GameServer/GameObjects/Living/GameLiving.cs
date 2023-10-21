@@ -13,6 +13,7 @@ using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
+using DOL.GS.Quests;
 using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
@@ -3875,7 +3876,7 @@ namespace DOL.GS
 				
 				player.TempProperties.SetProperty("WHISPERDELAY", GameLoop.GameLoopTime);
 
-				foreach (DOL.GS.Quests.DataQuest q in DataQuestList)
+				foreach (DataQuest q in DataQuestList)
 				{
 					q.Notify(GamePlayerEvent.WhisperReceive, this, new WhisperReceiveEventArgs(player, this, str));
 				}
