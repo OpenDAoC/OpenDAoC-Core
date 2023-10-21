@@ -3072,39 +3072,39 @@ namespace Core.GS.Commands
 			client.Player.TempProperties.SetProperty("SOCIALSHOWOFFLINE", showOffline);
 
 			//The type of sorting we will be sending
-			GuildMgr.GuildMemberDisplay.ESocialWindowSort sortOrder = (GuildMgr.GuildMemberDisplay.ESocialWindowSort)sort;
+			ESocialWindowSort sortOrder = (ESocialWindowSort)sort;
 
 			//Let's sort the sorted list - we don't need to sort if sort = name
 			SortedList<string, GuildMgr.GuildMemberDisplay> sortedWindowList = null;
 
-			GuildMgr.GuildMemberDisplay.ESocialWindowSortColumn sortColumn = GuildMgr.GuildMemberDisplay.ESocialWindowSortColumn.Name;
+			ESocialWindowSortColumn sortColumn = ESocialWindowSortColumn.Name;
 
 			#region Determine Sort
 			switch (sortOrder)
 			{
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.ClassAsc:
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.ClassDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.ESocialWindowSortColumn.ClassID;
+				case ESocialWindowSort.ClassAsc:
+				case ESocialWindowSort.ClassDesc:
+					sortColumn = ESocialWindowSortColumn.ClassID;
 					break;
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.GroupAsc:
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.GroupDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.ESocialWindowSortColumn.Group;
+				case ESocialWindowSort.GroupAsc:
+				case ESocialWindowSort.GroupDesc:
+					sortColumn = ESocialWindowSortColumn.Group;
 					break;
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.LevelAsc:
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.LevelDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.ESocialWindowSortColumn.Level;
+				case ESocialWindowSort.LevelAsc:
+				case ESocialWindowSort.LevelDesc:
+					sortColumn = ESocialWindowSortColumn.Level;
 					break;
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.NoteAsc:
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.NoteDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.ESocialWindowSortColumn.Note;
+				case ESocialWindowSort.NoteAsc:
+				case ESocialWindowSort.NoteDesc:
+					sortColumn = ESocialWindowSortColumn.Note;
 					break;
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.RankAsc:
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.RankDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.ESocialWindowSortColumn.Rank;
+				case ESocialWindowSort.RankAsc:
+				case ESocialWindowSort.RankDesc:
+					sortColumn = ESocialWindowSortColumn.Rank;
 					break;
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.ZoneOrOnlineAsc:
-				case GuildMgr.GuildMemberDisplay.ESocialWindowSort.ZoneOrOnlineDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.ESocialWindowSortColumn.ZoneOrOnline;
+				case ESocialWindowSort.ZoneOrOnlineAsc:
+				case ESocialWindowSort.ZoneOrOnlineDesc:
+					sortColumn = ESocialWindowSortColumn.ZoneOrOnline;
 					break;
 			}
 			#endregion
