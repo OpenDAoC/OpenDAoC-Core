@@ -1,7 +1,7 @@
 using System.Collections;
 using Core.GS.Enums;
+using Core.GS.Languages;
 using Core.GS.ServerProperties;
-using Core.Language;
 
 namespace Core.GS.Keeps
 {

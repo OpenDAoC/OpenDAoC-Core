@@ -4,8 +4,8 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
-using Core.Language;
 
 namespace Core.GS.RealmAbilities
 {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Core.Language;
+using Core.GS.Languages;
 
 namespace Core.GS.Effects.Old;
 

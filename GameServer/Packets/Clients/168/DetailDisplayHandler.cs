@@ -7,11 +7,11 @@ using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
 using Core.GS.Spells;
 using Core.GS.Styles;
-using Core.Language;
 using log4net;
 
 namespace Core.GS.PacketHandler.Client.v168

@@ -17,7 +17,7 @@
  *
  */
 using System;
-using Core.Language;
+using Core.GS.Languages;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Server

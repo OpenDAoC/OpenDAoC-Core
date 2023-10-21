@@ -22,12 +22,12 @@ using Core.GS.Expansions.Foundations;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Languages;
 using Core.GS.Movement;
 using Core.GS.PacketHandler;
 using Core.GS.Quests;
 using Core.GS.ServerProperties;
 using Core.GS.Styles;
-using Core.Language;
 
 namespace Core.GS
 {

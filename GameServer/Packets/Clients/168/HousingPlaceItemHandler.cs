@@ -8,8 +8,8 @@ using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 using Core.GS.ServerProperties;
-using Core.Language;
 using log4net;
 
 namespace Core.GS.PacketHandler.Client.v168

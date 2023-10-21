@@ -1,6 +1,6 @@
 using System.Text;
+using Core.GS.Languages;
 using Core.GS.ServerProperties;
-using Core.Language;
 
 namespace Core.GS.GameUtils;
 

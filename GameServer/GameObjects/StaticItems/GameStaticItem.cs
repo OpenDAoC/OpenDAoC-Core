@@ -8,7 +8,7 @@ using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.Language;
+using Core.GS.Languages;
 
 namespace Core.GS
 {

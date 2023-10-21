@@ -14,13 +14,13 @@ using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Languages;
 using Core.GS.PlayerTitles;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
 using Core.GS.ServerProperties;
 using Core.GS.Spells;
 using Core.GS.Styles;
-using Core.Language;
 using log4net;
 
 namespace Core.GS.PacketHandler

@@ -9,10 +9,10 @@ using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
 using Core.GS.RealmAbilities;
 using Core.GS.ServerProperties;
-using Core.Language;
 
 namespace Core.GS
 {

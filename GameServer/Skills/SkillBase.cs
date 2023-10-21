@@ -10,9 +10,9 @@ using Core.Database.Tables;
 using Core.GS.Commands;
 using Core.GS.Database;
 using Core.GS.Enums;
+using Core.GS.Languages;
 using Core.GS.RealmAbilities;
 using Core.GS.Styles;
-using Core.Language;
 using log4net;
 
 namespace Core.GS

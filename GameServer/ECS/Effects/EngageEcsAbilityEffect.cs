@@ -1,6 +1,6 @@
 ﻿using Core.GS.Enums;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
-using Core.Language;
 
 namespace Core.GS.ECS;
 

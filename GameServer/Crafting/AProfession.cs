@@ -1,5 +1,5 @@
 ﻿using System;
-using Core.Language;
+using Core.GS.Languages;
 
 namespace Core.GS.Crafting
 {

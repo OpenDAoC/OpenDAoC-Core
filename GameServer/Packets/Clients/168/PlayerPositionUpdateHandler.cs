@@ -9,8 +9,8 @@ using Core.GS.Enums;
 using Core.GS.Expansions.LabyrinthOfTheMinotaur;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 using Core.GS.Utils;
-using Core.Language;
 using log4net;
 
 namespace Core.GS.PacketHandler.Client.v168

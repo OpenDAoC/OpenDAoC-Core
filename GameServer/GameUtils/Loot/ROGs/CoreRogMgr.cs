@@ -3,7 +3,7 @@ using Core.Base.Enums;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Keeps;
-using Core.Language;
+using Core.GS.Languages;
 
 namespace Core.GS.GameUtils;
 

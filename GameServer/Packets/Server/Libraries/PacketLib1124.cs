@@ -13,9 +13,9 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Languages;
 using Core.GS.Quests;
 using Core.GS.Spells;
-using Core.Language;
 using log4net;
 
 namespace Core.GS.PacketHandler

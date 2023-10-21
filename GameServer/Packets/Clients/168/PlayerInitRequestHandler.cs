@@ -9,8 +9,8 @@ using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Languages;
 using Core.GS.Utils;
-using Core.Language;
 using log4net;
 
 namespace Core.GS.PacketHandler.Client.v168

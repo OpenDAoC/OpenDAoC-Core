@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
 using Core.GS.SkillHandler;
-using Core.Language;
 
 namespace Core.GS.ECS;
 

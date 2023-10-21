@@ -3,8 +3,8 @@ using System.Collections;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
-using Core.Language;
 
 namespace Core.GS.Commands
 {

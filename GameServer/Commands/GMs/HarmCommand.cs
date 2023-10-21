@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Core.GS.Enums;
-using Core.Language;
+using Core.GS.Languages;
 
 namespace Core.GS.Commands;
 

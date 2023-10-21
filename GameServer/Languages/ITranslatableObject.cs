@@ -1,7 +1,6 @@
-﻿using Core.Database;
-using Core.Database.Enums;
+﻿using Core.Database.Enums;
 
-namespace Core.Language;
+namespace Core.GS.Languages;
 
 public interface ITranslatableObject
 {

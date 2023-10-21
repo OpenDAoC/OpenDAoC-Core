@@ -6,7 +6,7 @@ using Core.Base.Enums;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Keeps;
-using Core.Language;
+using Core.GS.Languages;
 using log4net;
 
 namespace Core.GS.GameUtils;

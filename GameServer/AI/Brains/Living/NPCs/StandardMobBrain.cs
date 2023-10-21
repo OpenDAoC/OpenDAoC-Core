@@ -12,11 +12,11 @@ using Core.GS.Effects.Old;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
 using Core.GS.ServerProperties;
 using Core.GS.SkillHandler;
 using Core.GS.Spells;
-using Core.Language;
 
 namespace Core.GS.AI.Brains
 {

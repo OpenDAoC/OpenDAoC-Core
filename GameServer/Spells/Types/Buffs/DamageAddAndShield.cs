@@ -2,7 +2,6 @@ using System;
 using Core.AI.Brain;
 using Core.GS.Keeps;
 using Core.GS.PacketHandler;
-using Core.Language;
 using Core.Database;
 using Core.Events;
 using Core.GS.AI.Brains;
@@ -11,6 +10,7 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 
 namespace Core.GS.Spells
 {

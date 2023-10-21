@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Core.Language;
+using Core.GS.Languages;
 using log4net;
 
 namespace Core.GS

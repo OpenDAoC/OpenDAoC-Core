@@ -6,8 +6,8 @@ using Core.GS.Behaviour;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
-using Core.Language;
 
 namespace Core.GS.Behaviors;
 

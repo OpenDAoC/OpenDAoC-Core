@@ -12,8 +12,8 @@ using Core.GS.Expansions.Foundations;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Languages;
 using Core.GS.PacketHandler.Client.v168;
-using Core.Language;
 
 namespace Core.GS.Commands
 {

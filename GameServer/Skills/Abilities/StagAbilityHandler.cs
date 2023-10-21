@@ -1,8 +1,8 @@
 using System.Reflection;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
-using Core.Language;
 using log4net;
 
 namespace Core.GS.SkillHandler

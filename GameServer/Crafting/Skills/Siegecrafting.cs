@@ -1,7 +1,7 @@
 using System;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.Language;
+using Core.GS.Languages;
 
 namespace Core.GS.Crafting;
 

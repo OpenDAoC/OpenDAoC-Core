@@ -5,7 +5,7 @@ using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
-using Core.Language;
+using Core.GS.Languages;
 using log4net;
 
 namespace Core.GS.PacketHandler.Client.v168

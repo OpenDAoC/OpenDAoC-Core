@@ -5,9 +5,9 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
 using Core.GS.SkillHandler;
-using Core.Language;
 
 namespace Core.GS.Effects.Old;
 

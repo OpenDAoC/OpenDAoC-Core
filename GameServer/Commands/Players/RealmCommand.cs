@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.Keeps;
+using Core.GS.Languages;
 using Core.GS.ServerRules;
-using Core.Language;
 
 namespace Core.GS.Commands;
 

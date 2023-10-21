@@ -1,8 +1,8 @@
 using System;
 using Core.GS.Effects;
 using Core.GS.Enums;
+using Core.GS.Languages;
 using Core.GS.Spells;
-using Core.Language;
 
 namespace Core.GS.Commands;
 

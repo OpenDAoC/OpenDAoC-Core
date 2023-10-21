@@ -1,6 +1,6 @@
 using System;
 using Core.GS.Enums;
-using Core.Language;
+using Core.GS.Languages;
 
 namespace Core.GS.Commands;
 

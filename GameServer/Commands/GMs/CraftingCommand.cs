@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Core.Database.Tables;
 using Core.GS.Crafting;
 using Core.GS.Enums;
-using Core.Language;
+using Core.GS.Languages;
 
 namespace Core.GS.Commands
 {

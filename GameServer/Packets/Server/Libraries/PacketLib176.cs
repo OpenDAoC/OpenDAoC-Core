@@ -5,7 +5,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
-using Core.Language;
+using Core.GS.Languages;
 using log4net;
 
 namespace Core.GS.PacketHandler

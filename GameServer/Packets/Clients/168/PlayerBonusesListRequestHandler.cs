@@ -2,7 +2,7 @@ using System.Linq;
 using System.Reflection;
 using Core.GS.ECS;
 using Core.GS.Enums;
-using Core.Language;
+using Core.GS.Languages;
 using log4net;
 
 namespace Core.GS.PacketHandler.Client.v168

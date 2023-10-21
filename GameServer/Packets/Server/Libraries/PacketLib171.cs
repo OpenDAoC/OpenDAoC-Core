@@ -6,8 +6,8 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Keeps;
+using Core.GS.Languages;
 using Core.GS.Quests;
-using Core.Language;
 using log4net;
 
 namespace Core.GS.PacketHandler

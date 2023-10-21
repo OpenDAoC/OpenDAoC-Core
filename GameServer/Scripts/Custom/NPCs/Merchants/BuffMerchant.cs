@@ -7,12 +7,12 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
-using Core.Language;
 using Core.GS;
 using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 using log4net;
 
 namespace Core.GS

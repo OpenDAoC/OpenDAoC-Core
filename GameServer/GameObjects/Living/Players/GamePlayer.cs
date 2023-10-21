@@ -26,6 +26,7 @@ using Core.GS.Expansions.LabyrinthOfTheMinotaur;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
 using Core.GS.PacketHandler.Client.v168;
 using Core.GS.PlayerClass;
@@ -37,7 +38,6 @@ using Core.GS.SkillHandler;
 using Core.GS.Spells;
 using Core.GS.Styles;
 using Core.GS.Utils;
-using Core.Language;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
 

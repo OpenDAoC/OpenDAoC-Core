@@ -4,9 +4,9 @@ using System.Reflection;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
+using Core.GS.Languages;
 using Core.GS.PacketHandler;
 using Core.GS.Spells;
-using Core.Language;
 using log4net;
 
 namespace Core.GS.Effects

@@ -1,7 +1,7 @@
 using Core.GS.ECS;
 using Core.GS.GameUtils;
+using Core.GS.Languages;
 using Core.GS.RealmAbilities;
-using Core.Language;
 
 namespace Core.GS.Effects.Old;
 

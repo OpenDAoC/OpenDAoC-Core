@@ -27,7 +27,7 @@
 using System;
 using Core.Events;
 using Core.GS.Events;
-using Core.Language;
+using Core.GS.Languages;
 
 namespace Core.GS.PlayerTitles
 {
