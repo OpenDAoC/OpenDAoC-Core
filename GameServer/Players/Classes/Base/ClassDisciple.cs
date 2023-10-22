@@ -26,9 +26,9 @@ public class ClassDisciple : PlayerClassBase
 		get { return EPlayerClassType.ListCaster; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Disciple;
+		return GameTrainer.EChampionTrainerType.Disciple;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

@@ -12,7 +12,7 @@ public class MysticTrainer : GameTrainer
 
 	public const string PRACTICE_WEAPON_ID = "trimmed_branch";
 	
-	public MysticTrainer() : base(eChampionTrainerType.Mystic)
+	public MysticTrainer() : base(EChampionTrainerType.Mystic)
 	{
 	}
 

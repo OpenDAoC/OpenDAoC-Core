@@ -19,7 +19,7 @@ public class SeerTrainer : GameTrainer
 	/// </summary>
 	public const string PRACTICE_SHIELD_ID = "small_training_shield";
 
-	public SeerTrainer() : base(eChampionTrainerType.Seer)
+	public SeerTrainer() : base(EChampionTrainerType.Seer)
 	{
 	}
 	

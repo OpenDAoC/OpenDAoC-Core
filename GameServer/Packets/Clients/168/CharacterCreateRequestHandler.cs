@@ -12,6 +12,7 @@ using Core.GS.Packets.Server;
 using Core.GS.Players.Classes;
 using Core.GS.Players.Clients;
 using Core.GS.Players.Managers;
+using Core.GS.Scripts;
 using Core.GS.Server;
 using log4net;
 

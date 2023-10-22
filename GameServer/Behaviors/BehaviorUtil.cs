@@ -6,6 +6,7 @@ using Core.GS.Events;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Quests;
+using Core.GS.Scripts;
 using Core.GS.World;
 
 namespace Core.GS.Behaviors;

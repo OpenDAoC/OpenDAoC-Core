@@ -26,9 +26,9 @@ public class ClassMage : PlayerClassBase
 		get { return EPlayerClassType.ListCaster; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Mage;
+		return GameTrainer.EChampionTrainerType.Mage;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

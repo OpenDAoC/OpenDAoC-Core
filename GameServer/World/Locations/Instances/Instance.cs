@@ -4,6 +4,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.GameUtils;
+using Core.GS.Scripts;
 
 namespace Core.GS.World;
 

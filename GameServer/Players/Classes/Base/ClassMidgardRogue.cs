@@ -25,9 +25,9 @@ public class ClassMidgardRogue : PlayerClassBase
 		get { return EPlayerClassType.PureTank; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.MidgardRogue;
+		return GameTrainer.EChampionTrainerType.MidgardRogue;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

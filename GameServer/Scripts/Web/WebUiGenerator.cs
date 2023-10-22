@@ -2,232 +2,339 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using log4net;
 
-namespace Core.GS.Scripts
+namespace Core.GS.Scripts;
+
+/// <summary>
+/// Summary description for DefWebUIGenerator. This is a self contained script within the scripts assembly.
+/// </summary>
+public class WebUiGenerator
 {
 	/// <summary>
-	/// Summary description for DefWebUIGenerator. This is a self contained script within the scripts assembly.
+	/// Defines a logger for this class.
 	/// </summary>
-	public class WebUiGenerator
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	[ScriptLoadedEvent]
+	public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		//Uncomment the following line to enable the WebUI
+		//Start();
+	}
 
-		[ScriptLoadedEvent]
-		public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
+	[ScriptUnloadedEvent]
+	public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
+	{
+		//Uncomment the following line to enable the WebUI
+		//Stop();
+	}
+
+	/// <summary>
+	/// Generates the DOL web ui
+	/// </summary>
+	public class WebUIDir
+	{
+		public string m_path;
+		public string[] m_files;
+		public ArrayList m_dirs = new ArrayList();
+	}
+
+	private static System.Text.StringBuilder m_js = null;
+	private static System.Timers.Timer m_timer = null;
+
+	/// <summary>
+	/// Parses a directory for all source files
+	/// </summary>
+	/// <param name="parent"></param>
+	private static void ParseDirectory(WebUIDir parent)
+	{
+		string[] dirs = Directory.GetDirectories(parent.m_path);
+		IEnumerator iter = dirs.GetEnumerator();
+		while (iter.MoveNext())
 		{
-			//Uncomment the following line to enable the WebUI
-			//Start();
+			WebUIDir dir = new WebUIDir();
+			dir.m_path = (string) (iter.Current);
+			ParseDirectory(dir);
+			parent.m_dirs.Add(dir);
 		}
 
-		[ScriptUnloadedEvent]
-		public static void OnScriptUnloaded(CoreEvent e, object sender, EventArgs args)
+		parent.m_files = Directory.GetFiles(parent.m_path, "*.*");
+	}
+
+	/// <summary>
+	/// Copies all files from .\webui\template to .\webui\generated
+	/// </summary>
+	/// <param name="dir">Parent directory</param>
+	private static void CopyFromTemplate(WebUIDir dir)
+	{
+		string path = dir.m_path.Replace("."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"template", "."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"generated");
+
+		if (!Directory.Exists(path))
 		{
-			//Uncomment the following line to enable the WebUI
-			//Stop();
+			Directory.CreateDirectory(path);
 		}
 
-		/// <summary>
-		/// Generates the DOL web ui
-		/// </summary>
-		public class WebUIDir
+		foreach (WebUIDir d in dir.m_dirs)
 		{
-			public string m_path;
-			public string[] m_files;
-			public ArrayList m_dirs = new ArrayList();
+			CopyFromTemplate(d);
 		}
 
-		private static System.Text.StringBuilder m_js = null;
-		private static System.Timers.Timer m_timer = null;
-
-		/// <summary>
-		/// Parses a directory for all source files
-		/// </summary>
-		/// <param name="parent"></param>
-		private static void ParseDirectory(WebUIDir parent)
+		foreach (string s in dir.m_files)
 		{
-			string[] dirs = Directory.GetDirectories(parent.m_path);
-			IEnumerator iter = dirs.GetEnumerator();
-			while (iter.MoveNext())
+			FileInfo fi = new FileInfo(s);
+			string fpath = s.Replace("."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"template", "."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"generated");
+
+			if (fi.Extension.IndexOf("html") != -1 || fi.Extension.IndexOf("htm") != -1)
 			{
-				WebUIDir dir = new WebUIDir();
-				dir.m_path = (string) (iter.Current);
-				ParseDirectory(dir);
-				parent.m_dirs.Add(dir);
-			}
-
-			parent.m_files = Directory.GetFiles(parent.m_path, "*.*");
-		}
-
-		/// <summary>
-		/// Copies all files from .\webui\template to .\webui\generated
-		/// </summary>
-		/// <param name="dir">Parent directory</param>
-		private static void CopyFromTemplate(WebUIDir dir)
-		{
-			string path = dir.m_path.Replace("."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"template", "."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"generated");
-
-			if (!Directory.Exists(path))
-			{
-				Directory.CreateDirectory(path);
-			}
-
-			foreach (WebUIDir d in dir.m_dirs)
-			{
-				CopyFromTemplate(d);
-			}
-
-			foreach (string s in dir.m_files)
-			{
-				FileInfo fi = new FileInfo(s);
-				string fpath = s.Replace("."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"template", "."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"generated");
-
-				if (fi.Extension.IndexOf("html") != -1 || fi.Extension.IndexOf("htm") != -1)
-				{
-					GenerateJS(s);
-				}
-				else
-				{
-					fi.CopyTo(fpath, true);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Insert the javascript stuff into an html file
-		/// </summary>
-		/// <param name="fname">The template file name</param>
-		private static void GenerateJS(string fname)
-		{
-			string path = fname.Replace(Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"template", Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"generated");
-			string buf = "";
-
-			using (StreamReader rdr = File.OpenText(fname))
-			{
-				buf = rdr.ReadToEnd();
-
-				rdr.Close();
-			}
-
-			int pos = buf.IndexOf("<head>");
-
-			if (pos == -1)
-			{
-				throw new Exception("Invalid HTML file, could not locate <head> tag");
+				GenerateJS(s);
 			}
 			else
 			{
-				pos += "<head>".Length;
-			}
-
-			buf = buf.Insert(pos, m_js.ToString());
-
-			using (StreamWriter wrtr = File.CreateText(path))
-			{
-				wrtr.WriteLine(buf);
-				wrtr.Flush();
-				wrtr.Close();
+				fi.CopyTo(fpath, true);
 			}
 		}
+	}
 
-		/// <summary>
-		/// Builds the javascript block
-		/// </summary>
-		private static void InitJS()
+	/// <summary>
+	/// Insert the javascript stuff into an html file
+	/// </summary>
+	/// <param name="fname">The template file name</param>
+	private static void GenerateJS(string fname)
+	{
+		string path = fname.Replace(Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"template", Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"generated");
+		string buf = "";
+
+		using (StreamReader rdr = File.OpenText(fname))
 		{
-			m_js = new System.Text.StringBuilder();
-			StreamWriter nl = new StreamWriter(new MemoryStream());
+			buf = rdr.ReadToEnd();
 
-			m_js.Append(nl.NewLine);
-			m_js.Append("<script type=\"text/javascript\">");
-			m_js.Append(nl.NewLine);
-			m_js.Append(nl.NewLine);
+			rdr.Close();
+		}
 
-			m_js.AppendFormat("var dateTime = \"{0}\"", DateTime.Now.ToString());
-			m_js.Append(nl.NewLine);
+		int pos = buf.IndexOf("<head>");
 
-			m_js.AppendFormat("var srvrName = \"{0}\"", GameServer.Instance.Configuration.ServerName);
-			m_js.Append(nl.NewLine);
+		if (pos == -1)
+		{
+			throw new Exception("Invalid HTML file, could not locate <head> tag");
+		}
+		else
+		{
+			pos += "<head>".Length;
+		}
 
-			int gm = 0;
-			int admin = 0;
+		buf = buf.Insert(pos, m_js.ToString());
 
-			foreach (GamePlayer player in ClientService.GetPlayers())
-			{
-				if (player.Client.Account.PrivLevel == (int) EPrivLevel.GM)
-					gm++;
+		using (StreamWriter wrtr = File.CreateText(path))
+		{
+			wrtr.WriteLine(buf);
+			wrtr.Flush();
+			wrtr.Close();
+		}
+	}
 
-				if (player.Client.Account.PrivLevel == (int) EPrivLevel.Admin)
-					admin++;
-			}
+	/// <summary>
+	/// Builds the javascript block
+	/// </summary>
+	private static void InitJS()
+	{
+		m_js = new System.Text.StringBuilder();
+		StreamWriter nl = new StreamWriter(new MemoryStream());
 
-			m_js.AppendFormat("var numClientsConnected = {0}", ClientService.ClientCount);
-			m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+		m_js.Append("<script type=\"text/javascript\">");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numGMsConnected = {0}", gm);
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var dateTime = \"{0}\"", DateTime.Now.ToString());
+		m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numAdminsConnected = {0}", admin);
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var srvrName = \"{0}\"", GameServer.Instance.Configuration.ServerName);
+		m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numAccts = {0}", GameServer.Database.GetObjectCount<DbAccount>());
-			m_js.Append(nl.NewLine);
+		int gm = 0;
+		int admin = 0;
 
-			m_js.AppendFormat("var numMobs = {0}", GameServer.Database.GetObjectCount<DbMob>());
-			m_js.Append(nl.NewLine);
+		foreach (GamePlayer player in ClientService.GetPlayers())
+		{
+			if (player.Client.Account.PrivLevel == (int) EPrivLevel.GM)
+				gm++;
 
-			m_js.AppendFormat("var numInvItems = {0}", GameServer.Database.GetObjectCount<DbInventoryItem>());
-			m_js.Append(nl.NewLine);
+			if (player.Client.Account.PrivLevel == (int) EPrivLevel.Admin)
+				admin++;
+		}
 
-			m_js.AppendFormat("var numPlrChars = {0}", GameServer.Database.GetObjectCount<DbCoreCharacter>());
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var numClientsConnected = {0}", ClientService.ClientCount);
+		m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numMerchantItems = {0}", GameServer.Database.GetObjectCount<DbMerchantItem>());
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var numGMsConnected = {0}", gm);
+		m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numItemTemplates = {0}", GameServer.Database.GetObjectCount<DbItemTemplate>());
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var numAdminsConnected = {0}", admin);
+		m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var numWorldObjects = {0}", GameServer.Database.GetObjectCount<DbWorldObject>());
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var numAccts = {0}", GameServer.Database.GetObjectCount<DbAccount>());
+		m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var srvrType = \"{0}\"", GameServer.Instance.Configuration.ServerType.ToString());
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var numMobs = {0}", GameServer.Database.GetObjectCount<DbMob>());
+		m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var aac = \"{0}\"", GameServer.Instance.Configuration.AutoAccountCreation ? "enabled" : "disabled");
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var numInvItems = {0}", GameServer.Database.GetObjectCount<DbInventoryItem>());
+		m_js.Append(nl.NewLine);
 
-			m_js.AppendFormat("var srvrStatus = \"{0}\"", GameServer.Instance.ServerStatus.ToString());
-			m_js.Append(nl.NewLine);
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var numPlrChars = {0}", GameServer.Database.GetObjectCount<DbCoreCharacter>());
+		m_js.Append(nl.NewLine);
 
-			//begin function
-			m_js.Append("function WritePlrTable()");
-			m_js.Append(nl.NewLine);
-			m_js.Append("{");
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var numMerchantItems = {0}", GameServer.Database.GetObjectCount<DbMerchantItem>());
+		m_js.Append(nl.NewLine);
 
-			//begin table
-			m_js.Append("document.write(\"<table width=\\\"100%\\\" border=\\\"0\\\" cellpadding=\\\"4\\\">\")");
-			m_js.Append(nl.NewLine);
+		m_js.AppendFormat("var numItemTemplates = {0}", GameServer.Database.GetObjectCount<DbItemTemplate>());
+		m_js.Append(nl.NewLine);
 
-			//first row
+		m_js.AppendFormat("var numWorldObjects = {0}", GameServer.Database.GetObjectCount<DbWorldObject>());
+		m_js.Append(nl.NewLine);
+
+		m_js.AppendFormat("var srvrType = \"{0}\"", GameServer.Instance.Configuration.ServerType.ToString());
+		m_js.Append(nl.NewLine);
+
+		m_js.AppendFormat("var aac = \"{0}\"", GameServer.Instance.Configuration.AutoAccountCreation ? "enabled" : "disabled");
+		m_js.Append(nl.NewLine);
+
+		m_js.AppendFormat("var srvrStatus = \"{0}\"", GameServer.Instance.ServerStatus.ToString());
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//begin function
+		m_js.Append("function WritePlrTable()");
+		m_js.Append(nl.NewLine);
+		m_js.Append("{");
+		m_js.Append(nl.NewLine);
+
+		//begin table
+		m_js.Append("document.write(\"<table width=\\\"100%\\\" border=\\\"0\\\" cellpadding=\\\"4\\\">\")");
+		m_js.Append(nl.NewLine);
+
+		//first row
+		m_js.Append("document.write(\"<tr>\")");
+		m_js.Append(nl.NewLine);
+
+		//name column
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"Name\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//last name column
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"Last Name\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//Class
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"Class\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//Race
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"Race\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//Guild
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"Guild\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//Level
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"Level\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//Alive
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"Alive\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//Realm
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"Realm\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//Current Region
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"Current Region\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//X
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"X\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//Y
+		m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"Y\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append("document.write(\"</td>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		//end row
+		m_js.Append("document.write(\"</tr>\")");
+		m_js.Append(nl.NewLine);
+		m_js.Append(nl.NewLine);
+
+		foreach (GamePlayer player in ClientService.GetPlayers())
+		{
 			m_js.Append("document.write(\"<tr>\")");
 			m_js.Append(nl.NewLine);
 
 			//name column
 			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"Name\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.Name);
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
@@ -236,7 +343,7 @@ namespace Core.GS.Scripts
 			//last name column
 			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"Last Name\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.LastName);
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
@@ -245,7 +352,7 @@ namespace Core.GS.Scripts
 			//Class
 			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"Class\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.PlayerClass.Name);
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
@@ -254,7 +361,7 @@ namespace Core.GS.Scripts
 			//Race
 			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"Race\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.RaceName);
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
@@ -263,16 +370,16 @@ namespace Core.GS.Scripts
 			//Guild
 			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"Guild\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.GuildName);
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
 			m_js.Append(nl.NewLine);
 
 			//Level
-			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+			m_js.Append("document.write(\"<td align=\\\"center\\\" bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"Level\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.Level);
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
@@ -281,7 +388,7 @@ namespace Core.GS.Scripts
 			//Alive
 			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"Alive\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.IsAlive ? "yes" : "no");
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
@@ -290,7 +397,7 @@ namespace Core.GS.Scripts
 			//Realm
 			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"Realm\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.Realm.ToString());
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
@@ -299,234 +406,124 @@ namespace Core.GS.Scripts
 			//Current Region
 			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"Current Region\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.CurrentRegion.Description);
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
 			m_js.Append(nl.NewLine);
 
 			//X
-			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+			m_js.Append("document.write(\"<td align=\\\"center\\\" bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"X\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.X);
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
 			m_js.Append(nl.NewLine);
 
 			//Y
-			m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
+			m_js.Append("document.write(\"<td align=\\\"center\\\" bgcolor=\\\"#333333\\\">\")");
 			m_js.Append(nl.NewLine);
-			m_js.Append("document.write(\"Y\")");
+			m_js.AppendFormat("document.write(\"{0}\")", player.Y);
 			m_js.Append(nl.NewLine);
 			m_js.Append("document.write(\"</td>\")");
 			m_js.Append(nl.NewLine);
 			m_js.Append(nl.NewLine);
 
-			//end row
 			m_js.Append("document.write(\"</tr>\")");
 			m_js.Append(nl.NewLine);
 			m_js.Append(nl.NewLine);
-
-			foreach (GamePlayer player in ClientService.GetPlayers())
-			{
-				m_js.Append("document.write(\"<tr>\")");
-				m_js.Append(nl.NewLine);
-
-				//name column
-				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.Name);
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				//last name column
-				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.LastName);
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				//Class
-				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.PlayerClass.Name);
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				//Race
-				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.RaceName);
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				//Guild
-				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.GuildName);
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				//Level
-				m_js.Append("document.write(\"<td align=\\\"center\\\" bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.Level);
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				//Alive
-				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.IsAlive ? "yes" : "no");
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				//Realm
-				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.Realm.ToString());
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				//Current Region
-				m_js.Append("document.write(\"<td bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.CurrentRegion.Description);
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				//X
-				m_js.Append("document.write(\"<td align=\\\"center\\\" bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.X);
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				//Y
-				m_js.Append("document.write(\"<td align=\\\"center\\\" bgcolor=\\\"#333333\\\">\")");
-				m_js.Append(nl.NewLine);
-				m_js.AppendFormat("document.write(\"{0}\")", player.Y);
-				m_js.Append(nl.NewLine);
-				m_js.Append("document.write(\"</td>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-
-				m_js.Append("document.write(\"</tr>\")");
-				m_js.Append(nl.NewLine);
-				m_js.Append(nl.NewLine);
-			}
-
-			m_js.Append("document.write(\"</table>\")");
-			m_js.Append(nl.NewLine);
-
-			m_js.Append("}");
-			m_js.Append(nl.NewLine);
-
-			m_js.Append("</script>");
-			m_js.Append(nl.NewLine);
 		}
 
-		/// <summary>
-		/// Reads in the template and generates the appropriate html
-		/// </summary>
-		public static void Generate()
+		m_js.Append("document.write(\"</table>\")");
+		m_js.Append(nl.NewLine);
+
+		m_js.Append("}");
+		m_js.Append(nl.NewLine);
+
+		m_js.Append("</script>");
+		m_js.Append(nl.NewLine);
+	}
+
+	/// <summary>
+	/// Reads in the template and generates the appropriate html
+	/// </summary>
+	public static void Generate()
+	{
+		try
 		{
-			try
+			InitJS();
+
+			WebUIDir root = new WebUIDir();
+			root.m_path = "."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"template";
+
+			if (!Directory.Exists("."+Path.DirectorySeparatorChar+"webui"))
 			{
-				InitJS();
-
-				WebUIDir root = new WebUIDir();
-				root.m_path = "."+Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"template";
-
-				if (!Directory.Exists("."+Path.DirectorySeparatorChar+"webui"))
-				{
-					Directory.CreateDirectory("."+Path.DirectorySeparatorChar+"webui");
-				}
-
-				ParseDirectory(root);
-
-				CopyFromTemplate(root);
-
-				if (log.IsInfoEnabled)
-					if (log.IsInfoEnabled)
-						log.Info("WebUI Generation initialized!");
-			}
-			catch (Exception e)
-			{
-				if (log.IsErrorEnabled)
-					log.Error("WebUI Generation", e);
-			}
-		}
-
-		/// <summary>
-		/// Starts the timer to generate the web ui
-		/// </summary>
-		public static void Start()
-		{
-			if (m_timer != null)
-			{
-				Stop();
+				Directory.CreateDirectory("."+Path.DirectorySeparatorChar+"webui");
 			}
 
-			m_timer = new System.Timers.Timer(60000.0); //1 minute
-			m_timer.Elapsed += new System.Timers.ElapsedEventHandler(m_timer_Elapsed);
-			m_timer.AutoReset = true;
-			m_timer.Start();
+			ParseDirectory(root);
+
+			CopyFromTemplate(root);
 
 			if (log.IsInfoEnabled)
 				if (log.IsInfoEnabled)
-					log.Info("Web UI generation started...");
+					log.Info("WebUI Generation initialized!");
+		}
+		catch (Exception e)
+		{
+			if (log.IsErrorEnabled)
+				log.Error("WebUI Generation", e);
+		}
+	}
+
+	/// <summary>
+	/// Starts the timer to generate the web ui
+	/// </summary>
+	public static void Start()
+	{
+		if (m_timer != null)
+		{
+			Stop();
 		}
 
-		/// <summary>
-		/// Stops the timer that generates the web ui
-		/// </summary>
-		public static void Stop()
-		{
-			if (m_timer != null)
-			{
-				m_timer.Stop();
-				m_timer.Close();
-				m_timer.Elapsed -= new System.Timers.ElapsedEventHandler(m_timer_Elapsed);
-				m_timer = null;
-			}
+		m_timer = new System.Timers.Timer(60000.0); //1 minute
+		m_timer.Elapsed += new System.Timers.ElapsedEventHandler(m_timer_Elapsed);
+		m_timer.AutoReset = true;
+		m_timer.Start();
 
-			Generate();
-
+		if (log.IsInfoEnabled)
 			if (log.IsInfoEnabled)
-				if (log.IsInfoEnabled)
-					log.Info("Web UI generation stopped...");
+				log.Info("Web UI generation started...");
+	}
+
+	/// <summary>
+	/// Stops the timer that generates the web ui
+	/// </summary>
+	public static void Stop()
+	{
+		if (m_timer != null)
+		{
+			m_timer.Stop();
+			m_timer.Close();
+			m_timer.Elapsed -= new System.Timers.ElapsedEventHandler(m_timer_Elapsed);
+			m_timer = null;
 		}
 
-		/// <summary>
-		/// The timer proc that generates the web ui every X milliseconds
-		/// </summary>
-		/// <param name="sender">Caller of this function</param>
-		/// <param name="e">Info about the timer</param>
-		private static void m_timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-		{
-			Generate();
-		}
+		Generate();
+
+		if (log.IsInfoEnabled)
+			if (log.IsInfoEnabled)
+				log.Info("Web UI generation stopped...");
+	}
+
+	/// <summary>
+	/// The timer proc that generates the web ui every X milliseconds
+	/// </summary>
+	/// <param name="sender">Caller of this function</param>
+	/// <param name="e">Info about the timer</param>
+	private static void m_timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+	{
+		Generate();
 	}
 }

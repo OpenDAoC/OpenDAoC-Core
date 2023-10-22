@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Commands;
 using Core.GS.Enums;
 
-namespace Core.GS.Commands;
+namespace Core.GS.Scripts.Custom;
 
 [Command(
 		"&sololadder",

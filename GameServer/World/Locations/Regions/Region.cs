@@ -13,6 +13,7 @@ using Core.GS.Events;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Scripts;
 using Core.GS.Server;
 using log4net;
 

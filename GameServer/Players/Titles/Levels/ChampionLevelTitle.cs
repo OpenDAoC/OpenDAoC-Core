@@ -1,7 +1,6 @@
 using System;
 using Core.GS.Events;
 using Core.GS.Languages;
-using Core.GS.PlayerTitles;
 
 namespace Core.GS.Players.Titles;
 

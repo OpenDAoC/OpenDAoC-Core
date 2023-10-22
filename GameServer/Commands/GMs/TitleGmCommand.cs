@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Players.Titles;
-using Core.GS.PlayerTitles;
 
 namespace Core.GS.Commands
 {

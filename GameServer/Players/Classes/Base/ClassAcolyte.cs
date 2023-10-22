@@ -26,9 +26,9 @@ public class ClassAcolyte : PlayerClassBase
 		get { return EPlayerClassType.Hybrid; }
 	}
 
-    public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+    public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Acolyte;
+		return GameTrainer.EChampionTrainerType.Acolyte;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

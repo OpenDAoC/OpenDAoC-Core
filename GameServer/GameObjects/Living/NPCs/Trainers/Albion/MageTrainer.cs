@@ -12,7 +12,7 @@ public class MageTrainer : GameTrainer
 
 	public const string PRACTICE_WEAPON_ID = "trimmed_branch";
 	
-	public MageTrainer() : base(eChampionTrainerType.Mage)
+	public MageTrainer() : base(EChampionTrainerType.Mage)
 	{
 	}
 

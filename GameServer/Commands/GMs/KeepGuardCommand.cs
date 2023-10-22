@@ -6,6 +6,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.Scripts.Custom;
 using Core.GS.World;
 
 namespace Core.GS.Commands

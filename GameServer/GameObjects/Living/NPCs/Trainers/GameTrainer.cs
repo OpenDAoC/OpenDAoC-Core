@@ -7,6 +7,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Players.Classes;
+using Core.GS.Scripts;
 using Core.GS.Server;
 
 namespace Core.GS;
@@ -20,7 +21,7 @@ public class GameTrainer : GameNpc
 	private static List<string> disabled_classes = null;
 	
 	// Values from live servers
-	public enum eChampionTrainerType : int
+	public enum EChampionTrainerType : int
 	{
 		Acolyte = 4,
 		AlbionRogue = 2,
@@ -41,7 +42,7 @@ public class GameTrainer : GameNpc
 	}
 	
 	// What kind of Champion trainer is this
-	protected eChampionTrainerType m_championTrainerType = eChampionTrainerType.None;
+	protected EChampionTrainerType m_championTrainerType = EChampionTrainerType.None;
 
 	public virtual EPlayerClass TrainedClass
 	{
@@ -56,7 +57,7 @@ public class GameTrainer : GameNpc
 	/// <summary>
 	/// Constructs a new GameTrainer that will also train Champion levels
 	/// </summary>
-	public GameTrainer(eChampionTrainerType championTrainerType)
+	public GameTrainer(EChampionTrainerType championTrainerType)
 	{
 		m_championTrainerType = championTrainerType;
 	}
@@ -163,7 +164,7 @@ public class GameTrainer : GameNpc
 	/// <returns></returns>
 	public virtual bool CanTrainChampionLevels(GamePlayer player)
 	{
-		return player.Level >= player.MaxLevel && player.Champion && m_championTrainerType != eChampionTrainerType.None && m_championTrainerType != player.PlayerClass.ChampionTrainerType();
+		return player.Level >= player.MaxLevel && player.Champion && m_championTrainerType != EChampionTrainerType.None && m_championTrainerType != player.PlayerClass.ChampionTrainerType();
 	}
 
 	/// <summary>

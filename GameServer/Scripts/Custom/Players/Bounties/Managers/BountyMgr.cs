@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -10,7 +9,7 @@ using Core.GS.GameLoop;
 using Core.GS.Players.Realms;
 using Core.GS.Server;
 
-namespace Core.GS;
+namespace Core.GS.Scripts.Custom;
 
 public class BountyMgr
 {

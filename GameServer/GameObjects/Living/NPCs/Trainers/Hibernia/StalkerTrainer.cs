@@ -15,7 +15,7 @@ public class StalkerTrainer : GameTrainer
 	/// </summary>
 	public const string PRACTICE_WEAPON_ID = "training_dirk";
 
-	public StalkerTrainer() : base(eChampionTrainerType.Stalker)
+	public StalkerTrainer() : base(EChampionTrainerType.Stalker)
 	{
 	}
 	

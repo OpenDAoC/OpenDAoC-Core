@@ -250,9 +250,9 @@ public abstract class PlayerClassBase : IPlayerClass
 	/// What Champion trainer does this class use?
 	/// </summary>
 	/// <returns></returns>
-	public virtual GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public virtual GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.None;
+		return GameTrainer.EChampionTrainerType.None;
 	}
 
 	/// <summary>

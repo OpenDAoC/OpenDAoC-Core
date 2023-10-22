@@ -18,7 +18,6 @@ using Core.GS.Players;
 using Core.GS.Players.Clients;
 using Core.GS.Players.Specializations;
 using Core.GS.Players.Titles;
-using Core.GS.PlayerTitles;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;

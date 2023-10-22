@@ -26,9 +26,9 @@ public class ClassElementalist : PlayerClassBase
 		get { return EPlayerClassType.ListCaster; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Elementalist;
+		return GameTrainer.EChampionTrainerType.Elementalist;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

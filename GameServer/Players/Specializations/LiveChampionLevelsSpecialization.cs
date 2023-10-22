@@ -230,7 +230,7 @@ public class LiveChampionLevelsSpecialization : CareerSpecialization
 	/// <returns></returns>
 	public virtual Type RetrieveTypeForIndex(int index)
 	{
-		var enumName = Enum.GetName(typeof(GameTrainer.eChampionTrainerType), index);
+		var enumName = Enum.GetName(typeof(GameTrainer.EChampionTrainerType), index);
 		return Type.GetType(string.Format("DOL.GS.LiveCL{0}Spec", enumName));
 	}
 	

@@ -30,9 +30,9 @@ public class ClassMaulerHib : ClassGuardian
 		get { return EPlayerClassType.Hybrid; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Guardian;
+		return GameTrainer.EChampionTrainerType.Guardian;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

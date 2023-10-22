@@ -26,9 +26,9 @@ public class ClassForester : PlayerClassBase
 		get { return EPlayerClassType.ListCaster; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Forester;
+		return GameTrainer.EChampionTrainerType.Forester;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

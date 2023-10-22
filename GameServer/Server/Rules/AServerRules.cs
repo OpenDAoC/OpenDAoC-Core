@@ -19,6 +19,8 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Players.Clients;
 using Core.GS.Players.Titles;
+using Core.GS.Scripts;
+using Core.GS.Scripts.Custom;
 using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.World;

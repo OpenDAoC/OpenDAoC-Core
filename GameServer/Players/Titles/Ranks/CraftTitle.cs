@@ -1,7 +1,6 @@
 using Core.GS.Crafting;
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.PlayerTitles;
 
 namespace Core.GS.Players.Titles;
 

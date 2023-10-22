@@ -2,7 +2,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.World;
 
-namespace Core.GS;
+namespace Core.GS.Scripts.Custom;
 
 public class BountyPoster
 {

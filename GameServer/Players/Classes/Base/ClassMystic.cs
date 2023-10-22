@@ -26,9 +26,9 @@ public class ClassMystic : PlayerClassBase
 		get { return EPlayerClassType.ListCaster; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Mystic;
+		return GameTrainer.EChampionTrainerType.Mystic;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

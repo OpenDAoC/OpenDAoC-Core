@@ -25,9 +25,9 @@ public class ClassViking : PlayerClassBase
 		get { return EPlayerClassType.PureTank; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Viking;
+		return GameTrainer.EChampionTrainerType.Viking;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

@@ -25,9 +25,9 @@ public class ClassGuardian : PlayerClassBase
 		get { return EPlayerClassType.PureTank; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Guardian;
+		return GameTrainer.EChampionTrainerType.Guardian;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

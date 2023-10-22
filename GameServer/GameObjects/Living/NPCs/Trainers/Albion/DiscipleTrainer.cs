@@ -11,7 +11,7 @@ public class DiscipleTrainer : GameTrainer
 	}
 	public const string PRACTICE_WEAPON_ID = "trimmed_branch";
 	
-	public DiscipleTrainer() : base(eChampionTrainerType.Disciple)
+	public DiscipleTrainer() : base(EChampionTrainerType.Disciple)
 	{
 	}
 

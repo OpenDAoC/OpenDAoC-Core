@@ -26,9 +26,9 @@ public class ClassNaturalist : PlayerClassBase
 		get { return EPlayerClassType.Hybrid; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Naturalist;
+		return GameTrainer.EChampionTrainerType.Naturalist;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

@@ -25,9 +25,9 @@ public class ClassFighter : PlayerClassBase
 		get { return EPlayerClassType.PureTank; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Fighter;
+		return GameTrainer.EChampionTrainerType.Fighter;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

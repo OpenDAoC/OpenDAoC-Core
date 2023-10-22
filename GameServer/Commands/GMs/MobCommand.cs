@@ -13,6 +13,7 @@ using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
 using Core.GS.Quests;
+using Core.GS.Scripts;
 using Core.GS.Skills;
 using Core.GS.World;
 

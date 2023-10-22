@@ -1,5 +1,6 @@
 using System.Reflection;
 using Core.GS.GameLoop;
+using Core.GS.Scripts;
 using Core.GS.Skills;
 using Core.GS.Spells;
 using log4net;

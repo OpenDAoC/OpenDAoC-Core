@@ -6,6 +6,7 @@ using Core.Base.Enums;
 using Core.GS;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.Scripts;
 using log4net;
 
 namespace Core.Server;

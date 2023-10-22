@@ -17,7 +17,7 @@ public class MasterTrainer : GameTrainer
     /// <summary>
     /// Constructs a new GameTrainer that will also train Champion levels
     /// </summary>
-    public MasterTrainer(eChampionTrainerType championTrainerType)
+    public MasterTrainer(EChampionTrainerType championTrainerType)
     {
         m_championTrainerType = championTrainerType;
     }

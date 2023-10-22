@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -13,7 +12,7 @@ using Core.GS.Players.Realms;
 using Core.GS.Server;
 using Core.GS.World;
 
-namespace Core.GS;
+namespace Core.GS.Scripts.Custom;
 
 public class ConquestMgr
 {

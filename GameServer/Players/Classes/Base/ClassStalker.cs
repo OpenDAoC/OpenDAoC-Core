@@ -25,9 +25,9 @@ public class ClassStalker : PlayerClassBase
 		get { return EPlayerClassType.PureTank; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Stalker;
+		return GameTrainer.EChampionTrainerType.Stalker;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

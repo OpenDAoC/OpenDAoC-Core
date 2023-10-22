@@ -26,9 +26,9 @@ public class ClassSeer : PlayerClassBase
 		get { return EPlayerClassType.Hybrid; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.Seer;
+		return GameTrainer.EChampionTrainerType.Seer;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

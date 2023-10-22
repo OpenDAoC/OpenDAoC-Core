@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
+using Core.GS.Scripts;
 using Core.GS.Skills;
 
 namespace Core.GS.Spells;

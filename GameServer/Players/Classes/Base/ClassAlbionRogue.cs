@@ -25,9 +25,9 @@ public class ClassAlbionRogue : PlayerClassBase
 		get { return EPlayerClassType.PureTank; }
 	}
 
-	public override GameTrainer.eChampionTrainerType ChampionTrainerType()
+	public override GameTrainer.EChampionTrainerType ChampionTrainerType()
 	{
-		return GameTrainer.eChampionTrainerType.AlbionRogue;
+		return GameTrainer.EChampionTrainerType.AlbionRogue;
 	}
 
 	public override bool HasAdvancedFromBaseClass()

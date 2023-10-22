@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Scripts;
 
 namespace Core.GS.Commands
 {

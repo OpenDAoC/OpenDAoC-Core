@@ -1,14 +1,13 @@
 using System;
 using Core.Database;
 using Core.Database.Tables;
+using Core.GS.Commands;
 using Core.GS.Database;
 using Core.GS.Enums;
-using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Players.Titles;
-using Core.GS.PlayerTitles;
 
-namespace Core.GS.Commands;
+namespace Core.GS.Scripts.Custom;
 
 [Command(
 	"&nohelp",

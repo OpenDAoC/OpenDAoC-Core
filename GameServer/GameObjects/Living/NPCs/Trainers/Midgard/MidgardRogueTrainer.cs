@@ -12,7 +12,7 @@ public class MidgardRogueTrainer : GameTrainer
 
 	public const string PRACTICE_WEAPON_ID = "training_sword_mid";
 	
-	public MidgardRogueTrainer() : base(eChampionTrainerType.MidgardRogue)
+	public MidgardRogueTrainer() : base(EChampionTrainerType.MidgardRogue)
 	{
 	}
 

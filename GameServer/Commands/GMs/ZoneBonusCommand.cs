@@ -1,6 +1,5 @@
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Scripts;
 
 namespace Core.GS.Commands;
 

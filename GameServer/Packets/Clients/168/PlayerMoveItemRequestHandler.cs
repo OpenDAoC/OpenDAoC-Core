@@ -5,6 +5,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Packets.Server;
+using Core.GS.Scripts.Custom;
 using Core.GS.World;
 using log4net;
 

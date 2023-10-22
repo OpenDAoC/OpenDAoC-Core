@@ -13,7 +13,7 @@ public class NaturalistTrainer : GameTrainer
 	public const string PRACTICE_WEAPON_ID = "training_club";
 	public const string PRACTICE_SHIELD_ID = "training_shield";
 
-	public NaturalistTrainer() : base(eChampionTrainerType.Naturalist)
+	public NaturalistTrainer() : base(EChampionTrainerType.Naturalist)
 	{
 	}
 

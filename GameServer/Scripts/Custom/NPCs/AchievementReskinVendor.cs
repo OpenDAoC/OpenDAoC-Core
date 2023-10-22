@@ -2,19 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
-using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Players.Titles;
 using Core.GS.Server;
 using Core.GS.World;
 
-namespace Core.GS;
+namespace Core.GS.Scripts.Custom;
 
 public class AchievementReskinVendor : GameNpc
 {

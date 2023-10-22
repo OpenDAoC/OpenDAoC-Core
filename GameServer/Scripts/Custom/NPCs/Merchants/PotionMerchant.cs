@@ -2,8 +2,8 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Players.Clients;
 
-namespace Core.GS.Scripts
-{
+namespace Core.GS.Scripts.Custom;
+
     public class PotionMerchant : GameBountyMerchant
     {
         #region Constructor
@@ -42,6 +42,4 @@ namespace Core.GS.Scripts
             player.Out.SendMerchantWindow(TradeItems, EMerchantWindowType.Normal);
             return true;
         }
-    }  
- }
-
+    }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core.Database.Tables;
+using Core.GS.Scripts;
 using Core.GS.Skills;
 using Core.GS.Spells;
 

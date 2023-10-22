@@ -1,6 +1,7 @@
 using System.Linq;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
+using Core.GS.Scripts.Custom;
 using Core.GS.Server;
 using Core.GS.World;
 

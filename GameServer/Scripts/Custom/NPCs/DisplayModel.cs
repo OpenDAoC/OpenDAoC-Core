@@ -1,67 +1,64 @@
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 
-namespace Core.GS {
-    public class DisplayModel : GameNpc
+namespace Core.GS.Scripts.Custom;
+
+public class DisplayModel : GameNpc
+{
+    private GamePlayer m_displayedPlayer;
+    
+    public DisplayModel(GamePlayer player, DbInventoryItem item)
     {
-        private GamePlayer m_displayedPlayer;
+        m_displayedPlayer = player;
+        //player model contains 5 bits of extra data that causes issues if used
+        //for an NPC model. we do this to drop the first 5 bits and fill w/ 0s
+        ushort tmpModel =  (ushort) (player.Model << 5);
+        tmpModel = (ushort) (tmpModel >> 5);
+
+        //Fill the object variables
+        this.Level = player.Level;
+        this.Realm = player.Realm;
+        this.Model = tmpModel;
+        //mob.Model = 8;
+        this.Name = player.Name + "'s Reflection";
+
+        this.CurrentSpeed = 0;
+        this.MaxSpeedBase = 200;
+        this.GuildName = "A Faded You";
+        this.Size = 50;
         
-        public DisplayModel(GamePlayer player, DbInventoryItem item)
+        var template = new GameNpcInventoryTemplate();
+        foreach (var invItem in player.Inventory.EquippedItems)
         {
-            m_displayedPlayer = player;
-            //player model contains 5 bits of extra data that causes issues if used
-            //for an NPC model. we do this to drop the first 5 bits and fill w/ 0s
-            ushort tmpModel =  (ushort) (player.Model << 5);
-            tmpModel = (ushort) (tmpModel >> 5);
-
-            //Fill the object variables
-            this.Level = player.Level;
-            this.Realm = player.Realm;
-            this.Model = tmpModel;
-            //mob.Model = 8;
-            this.Name = player.Name + "'s Reflection";
-
-            this.CurrentSpeed = 0;
-            this.MaxSpeedBase = 200;
-            this.GuildName = "A Faded You";
-            this.Size = 50;
-            
-            var template = new GameNpcInventoryTemplate();
-            foreach (var invItem in player.Inventory.EquippedItems)
-            {
-                template.AddNPCEquipment((EInventorySlot)invItem.Item_Type, invItem.Model, invItem.Color, invItem.Effect, invItem.Extension);
-            }
-
-            if (item != null)
-            {
-                if(template.GetItem((EInventorySlot)item.Item_Type) != null)
-                    template.RemoveNPCEquipment((EInventorySlot)item.Item_Type);
-                template.AddNPCEquipment((EInventorySlot)item.Item_Type, item.Model, item.Color, item.Effect, item.Extension);
-            }
-            
-            this.Inventory = template.CloseTemplate();
+            template.AddNPCEquipment((EInventorySlot)invItem.Item_Type, invItem.Model, invItem.Color, invItem.Effect, invItem.Extension);
         }
 
-        public override bool Interact(GamePlayer player)
+        if (item != null)
         {
-            player.Out.SendLivingEquipmentUpdate(this);
-            return true;
+            if(template.GetItem((EInventorySlot)item.Item_Type) != null)
+                template.RemoveNPCEquipment((EInventorySlot)item.Item_Type);
+            template.AddNPCEquipment((EInventorySlot)item.Item_Type, item.Model, item.Color, item.Effect, item.Extension);
         }
+        
+        this.Inventory = template.CloseTemplate();
+    }
 
-        public override bool AddToWorld()
-        {
-            ObjectState = eObjectState.Active;
-            m_spawnTick = GameLoopMgr.GameLoopTime + 120*1000;
-            
-            m_displayedPlayer.Out.SendNPCCreate(this);
-            m_displayedPlayer.Out.SendLivingEquipmentUpdate(this);
-            
-            return true;
-        }
+    public override bool Interact(GamePlayer player)
+    {
+        player.Out.SendLivingEquipmentUpdate(this);
+        return true;
+    }
+
+    public override bool AddToWorld()
+    {
+        ObjectState = eObjectState.Active;
+        m_spawnTick = GameLoopMgr.GameLoopTime + 120*1000;
         
+        m_displayedPlayer.Out.SendNPCCreate(this);
+        m_displayedPlayer.Out.SendLivingEquipmentUpdate(this);
         
+        return true;
     }
 }

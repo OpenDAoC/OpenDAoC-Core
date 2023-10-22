@@ -19,7 +19,7 @@ public class FighterTrainer : GameTrainer
 	/// </summary>
 	public const string PRACTICE_SHIELD_ID = "small_training_shield";
 
-	public FighterTrainer() : base(eChampionTrainerType.Fighter)
+	public FighterTrainer() : base(EChampionTrainerType.Fighter)
 	{
 	}
 	

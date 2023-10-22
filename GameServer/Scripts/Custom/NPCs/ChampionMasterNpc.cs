@@ -3,7 +3,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 
-namespace Core.GS;
+namespace Core.GS.Scripts.Custom;
 
 // This class has to be completed and may be inherited for scripting purpose
 public class ChampionMasterNpc : GameNpc

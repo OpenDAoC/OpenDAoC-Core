@@ -1,15 +1,13 @@
 using System;
 using System.Collections;
 using Core.Base;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 
-namespace Core.GS;
+namespace Core.GS.Scripts.Custom;
 
 [NpcGuildScript("Recharger")]
 public class RechargerNpc : GameNpc

@@ -1,4 +1,5 @@
 using Core.GS.GameLoop;
+using Core.GS.Scripts.Custom;
 using Core.GS.Server;
 
 namespace Core.GS.ECS;

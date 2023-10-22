@@ -1,5 +1,6 @@
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.Scripts;
 using Core.GS.Server;
 
 namespace Core.GS.Commands;
@@ -75,7 +76,7 @@ public class ReportCommand : ACommandHandler, ICommandHandler
 				client.Player.Out.SendMessage("If you enter your email address for your account with /email command, your bug reports will send an email to the staff!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 			else
 			{
-				Mail.MailMgr.SendMail(ServerProperty.BUG_REPORT_EMAIL_ADDRESSES, GameServer.Instance.Configuration.ServerName + " bug report " + report.ID, report.Message, report.Submitter, client.Account.Mail);
+				MailMgr.SendMail(ServerProperty.BUG_REPORT_EMAIL_ADDRESSES, GameServer.Instance.Configuration.ServerName + " bug report " + report.ID, report.Message, report.Submitter, client.Account.Mail);
 			}
 		}
 	}

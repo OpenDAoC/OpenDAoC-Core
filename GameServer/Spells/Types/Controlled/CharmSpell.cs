@@ -9,6 +9,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.Scripts.Custom;
 using Core.GS.Server;
 using Core.GS.Skills;
 

@@ -12,7 +12,7 @@ public class AlbionRogueTrainer : GameTrainer
 
 	public const string PRACTICE_WEAPON_ID = "practice_dirk";
 	
-	public AlbionRogueTrainer() : base(eChampionTrainerType.AlbionRogue)
+	public AlbionRogueTrainer() : base(EChampionTrainerType.AlbionRogue)
 	{
 	}
 

@@ -128,6 +128,6 @@ public interface IPlayerClass
 	void Die(GameObject killer);
 	void Notify(CoreEvent e, object sender, EventArgs args);
 	bool CanChangeCastingSpeed(SpellLine line, Spell spell);
-	GameTrainer.eChampionTrainerType ChampionTrainerType();
+	GameTrainer.EChampionTrainerType ChampionTrainerType();
 	List<PlayerRace> EligibleRaces { get; }
 }

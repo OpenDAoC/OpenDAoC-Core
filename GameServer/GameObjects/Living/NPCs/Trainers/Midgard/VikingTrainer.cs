@@ -12,7 +12,7 @@ public class VikingTrainer : GameTrainer
 		get { return EPlayerClass.Viking; }
 	}
 
-	public VikingTrainer() : base(eChampionTrainerType.Viking)
+	public VikingTrainer() : base(EChampionTrainerType.Viking)
 	{
 	}
 	

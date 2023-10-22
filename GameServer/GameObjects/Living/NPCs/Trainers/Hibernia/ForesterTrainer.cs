@@ -12,7 +12,7 @@ public class ForesterTrainer : GameTrainer
 
 	public const string PRACTICE_WEAPON_ID = "training_staff";
 	
-	public ForesterTrainer() : base(eChampionTrainerType.Forester)
+	public ForesterTrainer() : base(EChampionTrainerType.Forester)
 	{
 	}
 

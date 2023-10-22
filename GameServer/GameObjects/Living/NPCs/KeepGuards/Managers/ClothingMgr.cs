@@ -2,6 +2,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.Scripts.Custom;
 using Core.GS.Server;
 
 namespace Core.GS

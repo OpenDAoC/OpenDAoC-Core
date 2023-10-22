@@ -1,7 +1,7 @@
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.Scripts.discord;
+using Core.GS.Scripts.Custom;
 using Core.GS.Server;
 
 namespace Core.GS.Commands;

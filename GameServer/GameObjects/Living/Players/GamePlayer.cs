@@ -36,6 +36,8 @@ using Core.GS.Players.Specializations;
 using Core.GS.Players.Titles;
 using Core.GS.Quests;
 using Core.GS.RealmAbilities;
+using Core.GS.Scripts;
+using Core.GS.Scripts.Custom;
 using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Spells;
@@ -12027,7 +12029,7 @@ namespace Core.GS
                     if (quest is LaunchLvl1MidQuest lqm)
                         lqm.SaveQuestParameters();
 
-                    if (quest is Quests.CoreQuest aq)
+                    if (quest is CoreQuest aq)
                         aq.SaveQuestParameters();
                 }
 
@@ -12653,7 +12655,7 @@ namespace Core.GS
                 if (quest is LaunchLvl1MidQuest lqm)
                     lqm.LoadQuestParameters();
 
-                if (quest is Quests.CoreQuest aq)
+                if (quest is CoreQuest aq)
                     aq.LoadQuestParameters();
             }
 

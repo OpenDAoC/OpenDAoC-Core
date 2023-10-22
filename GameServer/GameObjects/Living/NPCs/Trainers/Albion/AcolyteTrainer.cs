@@ -14,7 +14,7 @@ public class AcolyteTrainer : GameTrainer
 	public const string PRACTICE_SHIELD_ID = "small_training_shield";
 
 	public AcolyteTrainer()
-		: base(eChampionTrainerType.Acolyte)
+		: base(EChampionTrainerType.Acolyte)
 	{
 	}
 
