@@ -25,6 +25,7 @@ using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.Styles;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.Packets.Server;

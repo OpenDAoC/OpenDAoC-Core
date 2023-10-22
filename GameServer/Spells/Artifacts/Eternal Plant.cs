@@ -2,6 +2,7 @@
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Skills;
+using Core.GS.World;
 
 namespace Core.GS.Spells
 {

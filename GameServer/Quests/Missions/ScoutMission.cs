@@ -5,6 +5,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.World;
 
 namespace Core.GS.Quests;
 
@@ -54,7 +55,7 @@ public class ScoutMission : AMission
 			if (m_owner is GamePlayer && kargs.GameObject != m_owner)
 				return;
 
-			foreach (AbstractArea area in kargs.GameObject.CurrentAreas)
+			foreach (AArea area in kargs.GameObject.CurrentAreas)
 			{
 				if (area is KeepArea && (area as KeepArea).Keep == m_keep)
 				{

@@ -3,10 +3,10 @@ using Core.Database.Tables;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Movement;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Quests;
+using Core.GS.World;
 
 namespace Core.GS.Behaviors;
 

@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.RealmAbilities;
 using Core.GS.Skills;
+using Core.GS.World;
 
 namespace Core.GS.Spells
 {

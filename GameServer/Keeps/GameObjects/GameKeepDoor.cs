@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.Keeps;
@@ -658,7 +659,7 @@ public class GameKeepDoor : GameDoorBase, IKeepItem
 
 		AddToWorld();
 
-		foreach (AbstractArea area in CurrentAreas)
+		foreach (AArea area in CurrentAreas)
 		{
 			if (area is KeepArea keepArea)
 			{

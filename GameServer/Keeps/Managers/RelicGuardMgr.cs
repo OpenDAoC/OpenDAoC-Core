@@ -1,6 +1,7 @@
 using System;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.World;
 
 namespace Core.GS.Keeps;
 
@@ -82,7 +83,7 @@ public class RelicGuardMgr
         RenaCE.CurrentRegionID = 1;
         RenaCE.Name = "Renaris Knight";
         RenaCE.TranslationId = "Chevalier.de.Caer.Renaris";
-        foreach (AbstractArea area in RenaCE.CurrentAreas)
+        foreach (AArea area in RenaCE.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -103,7 +104,7 @@ public class RelicGuardMgr
         HurbuCM.CurrentRegionID = 1;
         HurbuCM.Name = "Hurbury Knight";
         HurbuCM.TranslationId = "Chevalier.de.Caer.Hurbury";
-        foreach (AbstractArea area in HurbuCM.CurrentAreas)
+        foreach (AArea area in HurbuCM.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -124,7 +125,7 @@ public class RelicGuardMgr
         BercCE.CurrentRegionID = 1;
         BercCE.Name = "Berckstead Knight";
         BercCE.TranslationId = "Chevalier.de.Caer.Berckstead";
-        foreach (AbstractArea area in BercCE.CurrentAreas)
+        foreach (AArea area in BercCE.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -145,7 +146,7 @@ public class RelicGuardMgr
         BercCM.CurrentRegionID = 1;
         BercCM.Name = "Berckstead Knight";
         BercCM.TranslationId = "Chevalier.de.Caer.Berckstead";
-        foreach (AbstractArea area in BercCM.CurrentAreas)
+        foreach (AArea area in BercCM.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -166,7 +167,7 @@ public class RelicGuardMgr
         SursCE.CurrentRegionID = 1;
         SursCE.Name = "Sursbrooke Knight";
         SursCE.TranslationId = "Chevalier.de.Caer.Sursbrooke";
-        foreach (AbstractArea area in SursCE.CurrentAreas)
+        foreach (AArea area in SursCE.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -187,7 +188,7 @@ public class RelicGuardMgr
         SursCM.CurrentRegionID = 1;
         SursCM.Name = "Sursbrooke Knight";
         SursCM.TranslationId = "Chevalier.de.Caer.Sursbrooke";
-        foreach (AbstractArea area in SursCM.CurrentAreas)
+        foreach (AArea area in SursCM.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -208,7 +209,7 @@ public class RelicGuardMgr
         BoldCE.CurrentRegionID = 1;
         BoldCE.Name = "Boldiam Knight";
         BoldCE.TranslationId = "Chevalier.de.Caer.Boldiam";
-        foreach (AbstractArea area in BoldCE.CurrentAreas)
+        foreach (AArea area in BoldCE.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -229,7 +230,7 @@ public class RelicGuardMgr
         BoldCM.CurrentRegionID = 1;
         BoldCM.Name = "Boldiam Knight";
         BoldCM.TranslationId = "Chevalier.de.Caer.Boldiam";
-        foreach (AbstractArea area in BoldCM.CurrentAreas)
+        foreach (AArea area in BoldCM.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -250,7 +251,7 @@ public class RelicGuardMgr
         ErasCE.CurrentRegionID = 1;
         ErasCE.Name = "Erasleigh Knight";
         ErasCE.TranslationId = "Chevalier.de.Caer.Erasleigh";
-        foreach (AbstractArea area in ErasCE.CurrentAreas)
+        foreach (AArea area in ErasCE.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -271,7 +272,7 @@ public class RelicGuardMgr
         ErasCM.CurrentRegionID = 1;
         ErasCM.Name = "Erasleigh Knight";
         ErasCM.TranslationId = "Chevalier.de.Caer.Erasleigh";
-        foreach (AbstractArea area in ErasCM.CurrentAreas)
+        foreach (AArea area in ErasCM.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -292,7 +293,7 @@ public class RelicGuardMgr
         BenoCE.CurrentRegionID = 1;
         BenoCE.Name = "Benowyc Knight";
         BenoCE.TranslationId = "Chevalier.de.Caer.Benowyc";
-        foreach (AbstractArea area in BenoCE.CurrentAreas)
+        foreach (AArea area in BenoCE.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -313,7 +314,7 @@ public class RelicGuardMgr
         BenoCM.CurrentRegionID = 1;
         BenoCM.Name = "Benowyc Knight";
         BenoCM.TranslationId = "Chevalier.de.Caer.Benowyc";
-        foreach (AbstractArea area in BenoCM.CurrentAreas)
+        foreach (AArea area in BenoCM.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -334,7 +335,7 @@ public class RelicGuardMgr
         FensMF.CurrentRegionID = 100;
         FensMF.Name = "Fensalir Jarl";
         FensMF.TranslationId = "Jarl.de.Fensalir.Faste";
-        foreach (AbstractArea area in FensMF.CurrentAreas)
+        foreach (AArea area in FensMF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -355,7 +356,7 @@ public class RelicGuardMgr
         ArvaGF.CurrentRegionID = 100;
         ArvaGF.Name = "Arvakr Jarl";
         ArvaGF.TranslationId = "Jarl.de.Arvakr.Faste";
-        foreach (AbstractArea area in ArvaGF.CurrentAreas)
+        foreach (AArea area in ArvaGF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -376,7 +377,7 @@ public class RelicGuardMgr
         GlenGF.CurrentRegionID = 100;
         GlenGF.Name = "Glenlock Jarl";
         GlenGF.TranslationId = "Jarl.de.Glenlock.Faste";
-        foreach (AbstractArea area in GlenGF.CurrentAreas)
+        foreach (AArea area in GlenGF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -397,7 +398,7 @@ public class RelicGuardMgr
         GlenMF.CurrentRegionID = 100;
         GlenMF.Name = "Glenlock Jarl";
         GlenMF.TranslationId = "Jarl.de.Glenlock.Faste";
-        foreach (AbstractArea area in GlenMF.CurrentAreas)
+        foreach (AArea area in GlenMF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -418,7 +419,7 @@ public class RelicGuardMgr
         BlendGF.CurrentRegionID = 100;
         BlendGF.Name = "Blendrake Jarl";
         BlendGF.TranslationId = "Jarl.de.Blendrake.Faste";
-        foreach (AbstractArea area in BlendGF.CurrentAreas)
+        foreach (AArea area in BlendGF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -439,7 +440,7 @@ public class RelicGuardMgr
         BlendMF.CurrentRegionID = 100;
         BlendMF.Name = "Blendrake Jarl";
         BlendMF.TranslationId = "Jarl.de.Blendrake.Faste";
-        foreach (AbstractArea area in BlendMF.CurrentAreas)
+        foreach (AArea area in BlendMF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -460,7 +461,7 @@ public class RelicGuardMgr
         HlidGF.CurrentRegionID = 100;
         HlidGF.Name = "Hlidskialf Jarl";
         HlidGF.TranslationId = "Jarl.de.Hlidskialf.Faste";
-        foreach (AbstractArea area in HlidGF.CurrentAreas)
+        foreach (AArea area in HlidGF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -481,7 +482,7 @@ public class RelicGuardMgr
         HlidMF.CurrentRegionID = 100;
         HlidMF.Name = "Hlidskialf Jarl";
         HlidMF.TranslationId = "Jarl.de.Hlidskialf.Faste";
-        foreach (AbstractArea area in HlidMF.CurrentAreas)
+        foreach (AArea area in HlidMF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -502,7 +503,7 @@ public class RelicGuardMgr
         NottGF.CurrentRegionID = 100;
         NottGF.Name = "Nottmoor Jarl";
         NottGF.TranslationId = "Jarl.de.Nottmoor.Faste";
-        foreach (AbstractArea area in NottGF.CurrentAreas)
+        foreach (AArea area in NottGF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -522,7 +523,7 @@ public class RelicGuardMgr
         NottMF.CurrentRegionID = 100;
         NottMF.Name = "Nottmoor Jarl";
         NottMF.TranslationId = "Jarl.de.Nottmoor.Faste";
-        foreach (AbstractArea area in NottMF.CurrentAreas)
+        foreach (AArea area in NottMF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -543,7 +544,7 @@ public class RelicGuardMgr
         BledGF.CurrentRegionID = 100;
         BledGF.Name = "Bledmeer Jarl";
         BledGF.TranslationId = "Jarl.de.Bledmeer.Faste";
-        foreach (AbstractArea area in BledGF.CurrentAreas)
+        foreach (AArea area in BledGF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -564,7 +565,7 @@ public class RelicGuardMgr
         BledMF.CurrentRegionID = 100;
         BledMF.Name = "Bledmeer Jarl";
         BledMF.TranslationId = "Jarl.de.Bledmeer.Faste";
-        foreach (AbstractArea area in BledMF.CurrentAreas)
+        foreach (AArea area in BledMF.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -585,7 +586,7 @@ public class RelicGuardMgr
         AiliDL.CurrentRegionID = 200;
         AiliDL.Name = "Ailinne Sentinel";
         AiliDL.TranslationId = "Sentinelle.de.Dun.Ailinne";
-        foreach (AbstractArea area in AiliDL.CurrentAreas)
+        foreach (AArea area in AiliDL.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -606,7 +607,7 @@ public class RelicGuardMgr
         ScatDL.CurrentRegionID = 200;
         ScatDL.Name = "Scathaig Sentinel";
         ScatDL.TranslationId = "Sentinelle.de.Dun.Scathaig";
-        foreach (AbstractArea area in ScatDL.CurrentAreas)
+        foreach (AArea area in ScatDL.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -627,7 +628,7 @@ public class RelicGuardMgr
         nGedDL.CurrentRegionID = 200;
         nGedDL.Name = "nGed Sentinel";
         nGedDL.TranslationId = "Sentinelle.de.Dun.nGed";
-        foreach (AbstractArea area in nGedDL.CurrentAreas)
+        foreach (AArea area in nGedDL.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -648,7 +649,7 @@ public class RelicGuardMgr
         nGedDD.CurrentRegionID = 200;
         nGedDD.Name = "nGed Sentinel";
         nGedDD.TranslationId = "Sentinelle.de.Dun.nGed";
-        foreach (AbstractArea area in nGedDD.CurrentAreas)
+        foreach (AArea area in nGedDD.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -669,7 +670,7 @@ public class RelicGuardMgr
         BolgDL.CurrentRegionID = 200;
         BolgDL.Name = "Bolg Sentinel";
         BolgDL.TranslationId = "Sentinelle.de.Dun.Bolg";
-        foreach (AbstractArea area in BolgDL.CurrentAreas)
+        foreach (AArea area in BolgDL.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -690,7 +691,7 @@ public class RelicGuardMgr
         BolgDD.CurrentRegionID = 200;
         BolgDD.Name = "Bolg Sentinel";
         BolgDD.TranslationId = "Sentinelle.de.Dun.Bolg";
-        foreach (AbstractArea area in BolgDD.CurrentAreas)
+        foreach (AArea area in BolgDD.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -711,7 +712,7 @@ public class RelicGuardMgr
         BehnDL.CurrentRegionID = 200;
         BehnDL.Name = "Behnn Sentinel";
         BehnDL.TranslationId = "Sentinelle.de.Dun.Behnn";
-        foreach (AbstractArea area in BehnDL.CurrentAreas)
+        foreach (AArea area in BehnDL.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -732,7 +733,7 @@ public class RelicGuardMgr
         BehnDD.CurrentRegionID = 200;
         BehnDD.Name = "Behnn Sentinel";
         BehnDD.TranslationId = "Sentinelle.de.Dun.Behnn";
-        foreach (AbstractArea area in BehnDD.CurrentAreas)
+        foreach (AArea area in BehnDD.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -753,7 +754,7 @@ public class RelicGuardMgr
         CrimDL.CurrentRegionID = 200;
         CrimDL.Name = "Crimthain Sentinel";
         CrimDL.TranslationId = "Sentinelle.de.Dun.Crimthain";
-        foreach (AbstractArea area in CrimDL.CurrentAreas)
+        foreach (AArea area in CrimDL.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -774,7 +775,7 @@ public class RelicGuardMgr
         CrimDD.CurrentRegionID = 200;
         CrimDD.Name = "Crimthain Sentinel";
         CrimDD.TranslationId = "Sentinelle.de.Dun.Crimthain";
-        foreach (AbstractArea area in CrimDD.CurrentAreas)
+        foreach (AArea area in CrimDD.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -795,7 +796,7 @@ public class RelicGuardMgr
         CrauDL.CurrentRegionID = 200;
         CrauDL.Name = "Crauchon Sentinel";
         CrauDL.TranslationId = "Sentinelle.de.Dun.Crauchon";
-        foreach (AbstractArea area in CrauDL.CurrentAreas)
+        foreach (AArea area in CrauDL.CurrentAreas)
         {
             if (area is KeepArea)
             {
@@ -816,7 +817,7 @@ public class RelicGuardMgr
         CrauDD.CurrentRegionID = 200;
         CrauDD.Name = "Crauchon Sentinel";
         CrauDD.TranslationId = "Sentinelle.de.Dun.Crauchon";
-        foreach (AbstractArea area in CrauDD.CurrentAreas)
+        foreach (AArea area in CrauDD.CurrentAreas)
         {
             if (area is KeepArea)
             {

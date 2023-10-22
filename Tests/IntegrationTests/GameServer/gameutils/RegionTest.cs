@@ -20,6 +20,7 @@ using System;
 using Core.Events;
 using Core.GS;
 using Core.GS.Events;
+using Core.GS.World;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Server

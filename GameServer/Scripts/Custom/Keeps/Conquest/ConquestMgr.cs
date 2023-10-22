@@ -11,6 +11,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Players.Realms;
 using Core.GS.Server;
+using Core.GS.World;
 
 namespace Core.GS;
 
@@ -277,8 +278,8 @@ public class ConquestMgr
 
         if (!nearby) return nearby; //bail early to skip the GetAreas call if unneeded
         
-        AbstractArea area = player.CurrentZone.GetAreasOfSpot(player.X, player.Y, player.Z)
-            .FirstOrDefault() as AbstractArea;
+        AArea area = player.CurrentZone.GetAreasOfSpot(player.X, player.Y, player.Z)
+            .FirstOrDefault() as AArea;
 
         if (((!player.CurrentZone.IsRvR && area is not {Description: "Druim Ligen"}) || player.CurrentZone.ID == 249))
             nearby = false;
@@ -288,8 +289,8 @@ public class ConquestMgr
     
     public bool IsPlayerInSafeZone(GamePlayer player)
     {
-        AbstractArea area = player.CurrentZone.GetAreasOfSpot(player.X, player.Y, player.Z)
-            .FirstOrDefault() as AbstractArea;
+        AArea area = player.CurrentZone.GetAreasOfSpot(player.X, player.Y, player.Z)
+            .FirstOrDefault() as AArea;
 
         if (area?.Description is "Druim Ligen" or "Druim Cain" or "Svasud Faste" or "Vindsaul Faste" or "Castle Sauvage" or "Snowdonia Fortress" || !player.CurrentZone.IsOF)
         {

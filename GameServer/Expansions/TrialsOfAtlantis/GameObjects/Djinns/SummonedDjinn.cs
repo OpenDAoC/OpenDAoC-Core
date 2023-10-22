@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.GS.ECS;
 using Core.GS.Events;
+using Core.GS.World;
 
 namespace Core.GS.Expansions.TrialsOfAtlantis;
 

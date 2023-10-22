@@ -3,6 +3,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Server;
 using Core.GS.Spells;
+using Core.GS.World;
 
 namespace Core.GS.RealmAbilities;
 

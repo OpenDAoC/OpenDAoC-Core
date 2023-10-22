@@ -12,9 +12,9 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
-using Core.GS.Movement;
 using Core.GS.Quests;
 using Core.GS.Skills;
+using Core.GS.World;
 
 namespace Core.GS.Commands
 {

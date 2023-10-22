@@ -10,6 +10,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Skills;
 using Core.GS.Styles;
+using Core.GS.World;
 
 namespace Core.GS
 {

@@ -5,6 +5,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;
+using Core.GS.World;
 using JNogueira.Discord.Webhook.Client;
 
 namespace Core.GS.Server;

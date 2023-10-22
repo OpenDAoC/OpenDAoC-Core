@@ -4,6 +4,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
+using Core.GS.World;
 
 /*1,Ballista,1,ammo,0.46,1
 2,Catapult,2,ammo,0.39,1

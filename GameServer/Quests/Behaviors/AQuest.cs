@@ -11,6 +11,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.Quests;
@@ -213,7 +214,7 @@ public abstract class AQuest
             m_searchAreas.Add(searchArea);
     }
 
-    public virtual bool Command(GamePlayer player, EQuestCommand command, AbstractArea area = null)
+    public virtual bool Command(GamePlayer player, EQuestCommand command, AArea area = null)
     {
         if (m_searchAreas == null || m_searchAreas.Count == 0)
             return false;
@@ -223,7 +224,7 @@ public abstract class AQuest
 
         if (command == EQuestCommand.SEARCH)
         {
-            foreach (AbstractArea playerArea in player.CurrentAreas)
+            foreach (AArea playerArea in player.CurrentAreas)
             {
                 if (playerArea is not QuestSearchArea)
                     continue;

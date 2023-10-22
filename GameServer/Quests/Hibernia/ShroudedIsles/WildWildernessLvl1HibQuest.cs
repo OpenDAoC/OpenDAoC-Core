@@ -7,6 +7,7 @@ using Core.GS.GameUtils;
 using Core.GS.Packets.Server;
 using Core.GS.Server;
 using Core.GS.Trainer;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.Quests;

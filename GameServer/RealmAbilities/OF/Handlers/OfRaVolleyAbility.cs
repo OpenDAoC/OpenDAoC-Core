@@ -8,6 +8,7 @@ using Core.GS.Effects.Old;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.World;
 
 namespace Core.GS.RealmAbilities;
 
@@ -154,7 +155,7 @@ public class OfRaVolleyAbility : TimedRealmAbility
         // Can't use Volley inside portal and border keeps on a RvR server.
         if (GameServer.Instance.Configuration.ServerType == EGameServerType.GST_Normal)
         {
-            foreach (AbstractArea area in region.GetAreasOfSpot(_player.GroundTarget).Where(x => x is AbstractArea))
+            foreach (AArea area in region.GetAreasOfSpot(_player.GroundTarget).Where(x => x is AArea))
             {
                 if (area is Area.Circle)
                 {

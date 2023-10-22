@@ -3,6 +3,7 @@ using System.Linq;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Skills;
+using Core.GS.World;
 
 namespace Core.GS.Spells
 {
@@ -24,7 +25,7 @@ namespace Core.GS.Spells
             
             foreach (var area1 in currentAreas)
             {
-	            var area = (AbstractArea) area1;
+	            var area = (AArea) area1;
 	            if (area is KeepArea {Keep: {IsPortalKeep: true}})
 	            {
 		            MessageToCaster("You cannot use siege weapons here (PK)!", EChatType.CT_SpellResisted);

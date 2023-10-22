@@ -2,6 +2,7 @@ using System;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.World;
 
 namespace Core.GS.AI.Brains;
 

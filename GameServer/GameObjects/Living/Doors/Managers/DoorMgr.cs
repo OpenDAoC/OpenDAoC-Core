@@ -4,6 +4,7 @@ using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Keeps;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS
@@ -72,7 +73,7 @@ namespace Core.GS
 			if (currentZone == null) return false;
 			
 			//check if the door is a keep door
-			foreach (AbstractArea area in currentZone.GetAreasOfSpot(door.X, door.Y, door.Z))
+			foreach (AArea area in currentZone.GetAreasOfSpot(door.X, door.Y, door.Z))
 			{
 				if (area is KeepArea)
 				{

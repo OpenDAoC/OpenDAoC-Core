@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.Quests;
@@ -30,7 +31,7 @@ public class LostStoneOfArawnLvl48AlbQuest : BaseQuest
 
     private static readonly GameLocation demonLocation = new("Nyaegha", 51, 348381, 479838, 3320);
 
-    private static AbstractArea demonArea;
+    private static AArea demonArea;
 
     private static DbItemTemplate ancient_copper_necklace;
     private static DbItemTemplate scroll_wearyall_loststone;

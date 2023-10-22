@@ -8,6 +8,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Packets.Server;
 using Core.GS.Server;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.Quests;
@@ -29,7 +30,7 @@ public class AncestralSecretsLvl48MidQuest : BaseQuest
 	
 	private static readonly GameLocation keeperLocation = new("Ancestral Keeper", 151, 363016, 310849, 3933);
 	
-	private static AbstractArea keeperArea;
+	private static AArea keeperArea;
 
 	private static DbItemTemplate beaded_resisting_stone;
 	private static DbItemTemplate stone_pendant;

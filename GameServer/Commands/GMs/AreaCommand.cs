@@ -5,6 +5,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
+using Core.GS.World;
 
 namespace Core.GS.Commands;
 
@@ -88,7 +89,7 @@ public class AreaCommand : ACommandHandler, ICommandHandler
 				area.Z = client.Player.Z;
 
 				Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
-				AbstractArea newArea = (AbstractArea)gasm.CreateInstance(area.ClassType, false);
+				AArea newArea = (AArea)gasm.CreateInstance(area.ClassType, false);
 				newArea.LoadFromDatabase(area);
 
 				newArea.Sound = area.Sound;

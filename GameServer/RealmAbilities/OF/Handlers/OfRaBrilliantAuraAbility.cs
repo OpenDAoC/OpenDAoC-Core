@@ -4,6 +4,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Skills;
 using Core.GS.Spells;
+using Core.GS.World;
 
 namespace Core.GS.RealmAbilities;
 

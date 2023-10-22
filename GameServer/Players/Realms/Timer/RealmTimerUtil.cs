@@ -4,6 +4,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.Server;
+using Core.GS.World;
 
 namespace Core.GS.Players.Realms;
 
@@ -41,7 +42,7 @@ public class RealmTimerUtil
         bool playerInRVRZone = false;
         if (player.CurrentZone.IsRvR)
         {
-            AbstractArea area = player.CurrentZone?.GetAreasOfSpot(player.X, player.Y, player.Z).FirstOrDefault() as AbstractArea;
+            AArea area = player.CurrentZone?.GetAreasOfSpot(player.X, player.Y, player.Z).FirstOrDefault() as AArea;
 
             //forest sauvage
             if (player.CurrentZone.ID == 11)

@@ -2,6 +2,7 @@
 using Core.GS.Commands;
 using Core.GS.Enums;
 using Core.GS.Server;
+using Core.GS.World;
 
 namespace Core.GS.Scripts
 {
@@ -73,8 +74,8 @@ namespace Core.GS.Scripts
                     return;
                 }
 
-                AbstractArea area = client.Player.CurrentZone.GetAreasOfSpot(client.Player.X, client.Player.Y, client.Player.Z)
-                    .FirstOrDefault() as AbstractArea;
+                AArea area = client.Player.CurrentZone.GetAreasOfSpot(client.Player.X, client.Player.Y, client.Player.Z)
+                    .FirstOrDefault() as AArea;
 
                 //if user is not in an RvR zone, or is in DF
                 if ((!client.Player.CurrentZone.IsRvR 

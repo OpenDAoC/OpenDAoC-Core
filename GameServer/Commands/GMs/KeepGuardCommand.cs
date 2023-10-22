@@ -6,7 +6,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.Movement;
+using Core.GS.World;
 
 namespace Core.GS.Commands
 {
@@ -245,7 +245,7 @@ namespace Core.GS.Commands
                             guard.LoadedFromScript = false;
                             guard.SaveIntoDatabase();
 							
-							foreach (AbstractArea area in guard.CurrentAreas)
+							foreach (AArea area in guard.CurrentAreas)
 							{
 								if (area is KeepArea)
 								{

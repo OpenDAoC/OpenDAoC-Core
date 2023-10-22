@@ -10,6 +10,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.Quests;
@@ -2754,7 +2755,7 @@ public class DataQuest : AQuest
     /// <param name="command"></param>
     /// <param name="area"></param>
     /// <returns></returns>
-    public override bool Command(GamePlayer player, EQuestCommand command, AbstractArea area)
+    public override bool Command(GamePlayer player, EQuestCommand command, AArea area)
     {
         if (player == null || command == EQuestCommand.NONE)
             return false;
@@ -2767,7 +2768,7 @@ public class DataQuest : AQuest
             {
                 // see if the player is in our search area
 
-                foreach (AbstractArea playerArea in player.CurrentAreas)
+                foreach (AArea playerArea in player.CurrentAreas)
                 {
                     if (playerArea is QuestSearchArea && (playerArea as QuestSearchArea).DataQuest != null && (playerArea as QuestSearchArea).DataQuest.ID == ID)
                     {

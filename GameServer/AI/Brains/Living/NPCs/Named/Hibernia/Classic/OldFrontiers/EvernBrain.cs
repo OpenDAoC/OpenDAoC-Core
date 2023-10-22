@@ -3,6 +3,7 @@ using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.GameUtils;
 using Core.GS.Skills;
+using Core.GS.World;
 
 namespace Core.GS.AI.Brains;
 

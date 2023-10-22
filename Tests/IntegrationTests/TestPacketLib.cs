@@ -34,6 +34,7 @@ using Core.GS.Players.Clients;
 using Core.GS.Players.Specializations;
 using Core.GS.Quests;
 using Core.GS.Skills;
+using Core.GS.World;
 
 namespace Core.Tests
 {

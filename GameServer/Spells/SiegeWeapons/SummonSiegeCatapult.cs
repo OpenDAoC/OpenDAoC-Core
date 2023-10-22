@@ -2,6 +2,7 @@
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Skills;
+using Core.GS.World;
 
 namespace Core.GS.Spells
 {
@@ -19,7 +20,7 @@ namespace Core.GS.Spells
 			    return false;
 		    }
             
-            foreach (AbstractArea area in Caster.CurrentAreas)
+            foreach (AArea area in Caster.CurrentAreas)
             {
 	            if (area is KeepArea)
 	            {

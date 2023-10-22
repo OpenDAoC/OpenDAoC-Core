@@ -10,6 +10,7 @@ using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameLoop;
 using Core.GS.Server;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.ECS

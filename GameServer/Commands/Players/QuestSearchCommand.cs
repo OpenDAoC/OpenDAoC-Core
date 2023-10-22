@@ -1,5 +1,6 @@
 using Core.GS.Enums;
 using Core.GS.Quests;
+using Core.GS.World;
 
 namespace Core.GS.Commands;
 
@@ -34,7 +35,7 @@ public class QuestSearchCommand : ACommandHandler, ICommandHandler
 
         if (searched == false)
         {
-            foreach (AbstractArea area in player.CurrentAreas)
+            foreach (AArea area in player.CurrentAreas)
             {
                 if (area is QuestSearchArea && (area as QuestSearchArea).DataQuest != null && (area as QuestSearchArea).Step == 0)
                 {

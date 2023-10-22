@@ -12,6 +12,7 @@ using Core.GS.Packets.Server;
 using Core.GS.Players.Classes;
 using Core.GS.Quests;
 using Core.GS.Server;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.DailyQuest.Hibernia

@@ -1,21 +1,23 @@
 ﻿/*
  * Please make note of the AddToWorld function,
  * aswell as the Die function.
- * 
+ *
  * Add To World:
  * - you MUST set the mobs spawn location
  * - you MUST name your mob
  * - you MUST set the Relic associated by Relic ID, or Relic InternalID.
  * - you MUST call the LockRelic(); method.
- * 
+ *
  * Die:
  * - you MUST call the UnlockRelic(); method.
- * 
- * 
+ *
+ *
  * Other than these things, you are free to do whatever you want.
  * Classes should inherit from "BaseProtector"
- * 
+ *
  */
+
+using Core.GS.World;
 
 namespace Core.GS.Expansions.LabyrinthOfTheMinotaur;
 

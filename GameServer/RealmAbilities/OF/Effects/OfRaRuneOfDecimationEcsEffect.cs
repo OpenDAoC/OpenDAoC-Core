@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.World;
 
 namespace Core.GS.RealmAbilities;
 

@@ -4,6 +4,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.World;
 
 namespace Core.GS
 {
@@ -57,7 +58,7 @@ namespace Core.GS
 				return false;
 
 			List<String> playerAreaList = new List<String>();
-			foreach (AbstractArea area in player.CurrentAreas)
+			foreach (AArea area in player.CurrentAreas)
 				playerAreaList.Add(area.Description);
 
 			SayTo(player, "Greetings. Where can I send you?");
@@ -79,7 +80,7 @@ namespace Core.GS
 			// Not porting to where we already are.
 
 			List<String> playerAreaList = new List<String>();
-			foreach (AbstractArea area in player.CurrentAreas)
+			foreach (AArea area in player.CurrentAreas)
 				playerAreaList.Add(area.Description);
 
 			if (playerAreaList.Contains(destination.TeleportID))

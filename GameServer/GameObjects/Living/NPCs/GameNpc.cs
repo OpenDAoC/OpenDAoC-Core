@@ -23,13 +23,13 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.Movement;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Quests;
 using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Styles;
+using Core.GS.World;
 
 namespace Core.GS
 {
@@ -3265,7 +3265,7 @@ namespace Core.GS
 						{
 							long amount = (long)(zoneBonus * ServerProperty.MONEY_DROP);
 							killerPlayer.AddMoney(amount,
-												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperty.MONEY_DROP), ZoneBonus.eZoneBonusType.COIN),
+												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperty.MONEY_DROP), ZoneBonus.EZoneBonusType.COIN),
 												  EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 							InventoryLogging.LogInventoryAction(this, killerPlayer, EInventoryActionType.Loot, amount);
 						}

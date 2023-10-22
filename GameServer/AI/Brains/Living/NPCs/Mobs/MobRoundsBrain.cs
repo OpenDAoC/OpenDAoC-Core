@@ -1,4 +1,4 @@
-using Core.GS.Movement;
+using Core.GS.World;
 
 namespace Core.GS.AI.Brains
 {

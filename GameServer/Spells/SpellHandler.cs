@@ -23,6 +23,7 @@ using Core.GS.RealmAbilities;
 using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Styles;
+using Core.GS.World;
 
 namespace Core.GS.Spells
 {

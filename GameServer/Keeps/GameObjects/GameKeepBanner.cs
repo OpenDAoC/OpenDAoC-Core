@@ -1,6 +1,7 @@
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
+using Core.GS.World;
 
 namespace Core.GS.Keeps;
 
@@ -85,7 +86,7 @@ public class GameKeepBanner : GameStaticItem , IKeepItem
 		base.LoadFromDatabase(obj);
 		string sKey = this.InternalID; // InternalID is set to obj.ObjectID by base.LoadFromDatabase()
 
-		foreach (AbstractArea area in this.CurrentAreas)
+		foreach (AArea area in this.CurrentAreas)
 		{
 			if (area is KeepArea keepArea && keepArea.Keep is AGameKeep keep)
 			{
@@ -112,7 +113,7 @@ public class GameKeepBanner : GameStaticItem , IKeepItem
 	public override void DeleteFromDatabase()
 	{
 		string sKey = this.InternalID;
-		foreach (AbstractArea area in this.CurrentAreas)
+		foreach (AArea area in this.CurrentAreas)
 		{
 			if (area is KeepArea)
 			{

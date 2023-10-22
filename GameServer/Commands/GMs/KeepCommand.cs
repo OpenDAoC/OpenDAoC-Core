@@ -6,6 +6,7 @@ using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Server;
+using Core.GS.World;
 
 namespace Core.GS.Commands
 {
@@ -2180,7 +2181,7 @@ namespace Core.GS.Commands
 				case "remove":
 					{
 						KeepArea karea = null;
-						foreach (AbstractArea area in client.Player.CurrentAreas)
+						foreach (AArea area in client.Player.CurrentAreas)
 						{
 							if (area is KeepArea)
 							{
@@ -2457,7 +2458,7 @@ namespace Core.GS.Commands
 							banner.Heading = client.Player.Heading;
 							banner.SaveIntoDatabase();
 
-							foreach (AbstractArea area in banner.CurrentAreas)
+							foreach (AArea area in banner.CurrentAreas)
 							{
 								if (area is KeepArea)
 								{

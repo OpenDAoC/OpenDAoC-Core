@@ -19,6 +19,7 @@ using Core.GS.Packets.Server;
 using Core.GS.Players.Classes;
 using Core.GS.Server;
 using Core.GS.Skills;
+using Core.GS.World;
 
 namespace Core.GS.Keeps
 {
@@ -588,7 +589,7 @@ namespace Core.GS.Keeps
         public override void LoadFromDatabase(DataObject mobobject)
 		{
 			base.LoadFromDatabase(mobobject);
-			foreach (AbstractArea area in this.CurrentAreas)
+			foreach (AArea area in this.CurrentAreas)
 			{
 				if (area is KeepArea)
 				{
@@ -655,7 +656,7 @@ namespace Core.GS.Keeps
 
 		public override void DeleteFromDatabase()
 		{
-			foreach (AbstractArea area in this.CurrentAreas)
+			foreach (AArea area in this.CurrentAreas)
 			{
 				if (area is KeepArea && Component != null)
 				{

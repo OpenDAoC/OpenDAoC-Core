@@ -1,6 +1,7 @@
 ﻿using System;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
+using Core.GS.World;
 
 namespace Core.GS.ECS;
 

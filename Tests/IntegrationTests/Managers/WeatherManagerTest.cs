@@ -21,6 +21,7 @@ using System;
 using Core.GS;
 using Core.GS.Scheduler;
 using Core.GS.Server;
+using Core.GS.World;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Managers

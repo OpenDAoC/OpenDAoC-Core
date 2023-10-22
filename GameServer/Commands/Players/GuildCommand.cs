@@ -13,6 +13,7 @@ using Core.GS.Languages;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Server;
+using Core.GS.World;
 
 namespace Core.GS.Commands
 {
@@ -2264,7 +2265,7 @@ namespace Core.GS.Commands
 							}
 							else
 							{
-								foreach (AbstractArea area in client.Player.CurrentAreas)
+								foreach (AArea area in client.Player.CurrentAreas)
 								{
 									if (area is KeepArea && ((KeepArea)area).Keep.Guild == client.Player.Guild)
 									{

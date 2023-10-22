@@ -2,6 +2,7 @@ using System.Linq;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.Server;
+using Core.GS.World;
 
 namespace Core.GS.ECS;
 
@@ -32,8 +33,8 @@ public class PredatorService
                 
                 if (activePlayer == null) continue;
 
-                AbstractArea area = activePlayer.CurrentZone?.GetAreasOfSpot(activePlayer.X, activePlayer.Y, activePlayer.Z)
-                    .FirstOrDefault() as AbstractArea;
+                AArea area = activePlayer.CurrentZone?.GetAreasOfSpot(activePlayer.X, activePlayer.Y, activePlayer.Z)
+                    .FirstOrDefault() as AArea;
                 
                 //if user is not in an RvR zone, or is in DF
                 if (ConquestService.ConquestManager.IsPlayerInSafeZone(activePlayer))

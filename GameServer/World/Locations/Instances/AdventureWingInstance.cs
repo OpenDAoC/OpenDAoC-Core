@@ -1,193 +1,191 @@
-﻿using Core.Database;
-using Core.Database.Tables;
+﻿using Core.Database.Tables;
 using Core.GS.GameUtils;
 using Core.GS.Server;
 using log4net;
 
-namespace Core.GS
+namespace Core.GS.World;
+
+/// <summary>
+/// Description of AdventureWingInstance. Based on Catacombs Instances Implementation
+/// Used to create personal or group dungeon instance so player can play in there without being annoyed
+/// will try to maintain owner ship of the instance so player or group can get back to it
+/// The Instance should destroy 5 min after nobody is inside or when all mobs are down
+/// Other manager are needed to prevent too much instance spawning (using JumpPoint for example)
+/// </summary>
+public class AdventureWingInstance : RegionInstance
 {
 	/// <summary>
-	/// Description of AdventureWingInstance. Based on Catacombs Instances Implementation
-	/// Used to create personal or group dungeon instance so player can play in there without being annoyed
-	/// will try to maintain owner ship of the instance so player or group can get back to it
-	/// The Instance should destroy 5 min after nobody is inside or when all mobs are down
-	/// Other manager are needed to prevent too much instance spawning (using JumpPoint for example)
+	/// Console Logger
 	/// </summary>
-	public class AdventureWingInstance : RegionInstance
+	private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+	
+	/// <summary>
+	/// Group Owner
+	/// </summary>
+	private GroupUtil m_group;
+	
+	/// <summary>
+	/// Group Owner
+	/// </summary>
+	public GroupUtil Group
+    {
+        get { return m_group; }
+        set { m_group = value; }
+    }
+
+	/// <summary>
+	/// Player Owner or Group Leader
+	/// </summary>
+	private GamePlayer m_player;
+	
+	/// <summary>
+	/// Player Owner or Group Leader
+	/// </summary>
+	public GamePlayer Player
+    {
+        get { return m_player; }
+        set { m_player = value; }
+    }
+
+			
+	/// <summary>
+	/// AdventureWingInstance Constructor
+	/// </summary>
+	public AdventureWingInstance(ushort ID, RegionData dat) : base(ID, dat) { }
+
+	/// <summary>
+	/// Update Instance Owner based on population still inside.
+	/// </summary>
+	public void UpdateInstanceOwner()
 	{
-		/// <summary>
-		/// Console Logger
-		/// </summary>
-		private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		
-		/// <summary>
-		/// Group Owner
-		/// </summary>
-		private GroupUtil m_group;
-		
-		/// <summary>
-		/// Group Owner
-		/// </summary>
-		public GroupUtil Group
-        {
-            get { return m_group; }
-            set { m_group = value; }
-        }
-
-		/// <summary>
-		/// Player Owner or Group Leader
-		/// </summary>
-		private GamePlayer m_player;
-		
-		/// <summary>
-		/// Player Owner or Group Leader
-		/// </summary>
-		public GamePlayer Player
-        {
-            get { return m_player; }
-            set { m_player = value; }
-        }
-
-				
-		/// <summary>
-		/// AdventureWingInstance Constructor
-		/// </summary>
-		public AdventureWingInstance(ushort ID, RegionData dat) : base(ID, dat) { }
-
-		/// <summary>
-		/// Update Instance Owner based on population still inside.
-		/// </summary>
-		public void UpdateInstanceOwner()
+		if(this.NumPlayers < 1) 
 		{
-			if(this.NumPlayers < 1) 
-			{
-				return;	
-			}
-			
-			//there is still player inside search for owner or any change.
-        	
-        	//search vars
-        	GamePlayer arbitraryplayer = null;
-            GroupUtil arbitrarygroup = null;
-            bool stillOwner = false;
-            
-            // group instance
-            if(m_group != null) 
-            {
-            	// check if group still inside
-				foreach(GamePlayer ininstance in this.PlayersInside) 
-				{
-					if(ininstance.Group != null && m_group == ininstance.Group) 
-					{
-						m_player = ininstance.Group.Leader;
-						stillOwner = true;
-						break;
-					}
-					else if(ininstance.Group != null) 
-					{
-						arbitrarygroup = ininstance.Group;
-						arbitraryplayer = ininstance.Group.Leader;
-					}
-				}
-            }
-            
-            // check if player owner is still inside
-            if(!stillOwner && m_player != null)
-            {
-            	foreach(GamePlayer ininstance in this.PlayersInside) 
-				{
-					if(ininstance == m_player)
-					{
-						if(m_player.Group != null)
-						{
-							m_group = m_player.Group;
-							m_player = m_player.Group.Leader;
-						}
-						stillOwner = true;
-						break;
-					}
-            		else
-            		{
-            			arbitraryplayer = ininstance;
-            		}
-				}
-            }
-            
-            // if no owner found
-            if(!stillOwner) 
-            {
-            	//give ownership arbitrarly
-            	if(arbitrarygroup != null)
-            	{
-            		m_group = arbitrarygroup;
-            		m_player = arbitrarygroup.Leader;
-            	}
-            	else if(arbitraryplayer != null)
-            	{
-            		m_group = null;
-					m_player = arbitraryplayer;
-            	}
-            	
-            }
+			return;	
 		}
 		
-		/// <summary>
-		/// Override because mobs shouldn't respawn in Adventure wings.
-		/// </summary>
-		public override void LoadFromDatabase(DbMob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
-		{
-			base.LoadFromDatabase(mobObjs, ref mobCount, ref merchantCount, ref itemCount, ref bindCount);
-			
-			// Set respawn to false
-			foreach(GameNpc mob in GetMobsInsideInstance(true))
-			{
-				mob.RespawnInterval = -1;
-			}
-		}
-		
-		/// <summary>
-		/// Player Leaving instance, start destroy timer if needed
-		/// </summary>
-		/// <param name="player">The Player exiting</param>
-		public override void OnPlayerLeaveInstance(GamePlayer player)
+		//there is still player inside search for owner or any change.
+        
+        //search vars
+        GamePlayer arbitraryplayer = null;
+        GroupUtil arbitrarygroup = null;
+        bool stillOwner = false;
+        
+        // group instance
+        if(m_group != null) 
         {
-			// last player going out
-			if(this.NumPlayers == 1) 
+            // check if group still inside
+			foreach(GamePlayer ininstance in this.PlayersInside) 
 			{
-				if(player.Group != null) 
+				if(ininstance.Group != null && m_group == ininstance.Group) 
 				{
-					this.m_group = player.Group;
-					this.m_player = player.Group.Leader;
+					m_player = ininstance.Group.Leader;
+					stillOwner = true;
+					break;
 				}
-				else {
-					this.m_group = null;
-					this.m_player = player;
+				else if(ininstance.Group != null) 
+				{
+					arbitrarygroup = ininstance.Group;
+					arbitraryplayer = ininstance.Group.Leader;
 				}
 			}
-			
-            //Decrease the amount of players
-            base.OnPlayerLeaveInstance(player);
-            	
-            if(this.NumPlayers > 0) 
-            {
-            	UpdateInstanceOwner();
-            }
-            else
-            {
-            	// check if there is still alive mobs
-            	foreach (GameNpc mob in GetMobsInsideInstance(true))
+        }
+        
+        // check if player owner is still inside
+        if(!stillOwner && m_player != null)
+        {
+            foreach(GamePlayer ininstance in this.PlayersInside) 
+			{
+				if(ininstance == m_player)
+				{
+					if(m_player.Group != null)
+					{
+						m_group = m_player.Group;
+						m_player = m_player.Group.Leader;
+					}
+					stillOwner = true;
+					break;
+				}
+            	else
             	{
-            		// there is still something => standard autoclosure + break;
-	            	log.Warn("Instance now empty, will destroy instance " + Description + ", ID: " + ID + ", type=" + GetType().ToString() + ". In " + ServerProperty.ADVENTUREWING_TIME_TO_DESTROY + " min.");
-	            	this.BeginAutoClosureCountdown(ServerProperty.ADVENTUREWING_TIME_TO_DESTROY);
-                	
-                	return;
+            		arbitraryplayer = ininstance;
             	}
-            	
-        	    //destroy
-        		log.Warn("Instance now empty, will destroy instance " + Description + ", ID: " + ID + ", type=" + GetType().ToString() + ". Now !");
-            	WorldMgr.RemoveInstance(this);
+			}
+        }
+        
+        // if no owner found
+        if(!stillOwner) 
+        {
+            //give ownership arbitrarly
+            if(arbitrarygroup != null)
+            {
+            	m_group = arbitrarygroup;
+            	m_player = arbitrarygroup.Leader;
             }
+            else if(arbitraryplayer != null)
+            {
+            	m_group = null;
+				m_player = arbitraryplayer;
+            }
+            
         }
 	}
+	
+	/// <summary>
+	/// Override because mobs shouldn't respawn in Adventure wings.
+	/// </summary>
+	public override void LoadFromDatabase(DbMob[] mobObjs, ref long mobCount, ref long merchantCount, ref long itemCount, ref long bindCount)
+	{
+		base.LoadFromDatabase(mobObjs, ref mobCount, ref merchantCount, ref itemCount, ref bindCount);
+		
+		// Set respawn to false
+		foreach(GameNpc mob in GetMobsInsideInstance(true))
+		{
+			mob.RespawnInterval = -1;
+		}
+	}
+	
+	/// <summary>
+	/// Player Leaving instance, start destroy timer if needed
+	/// </summary>
+	/// <param name="player">The Player exiting</param>
+	public override void OnPlayerLeaveInstance(GamePlayer player)
+    {
+		// last player going out
+		if(this.NumPlayers == 1) 
+		{
+			if(player.Group != null) 
+			{
+				this.m_group = player.Group;
+				this.m_player = player.Group.Leader;
+			}
+			else {
+				this.m_group = null;
+				this.m_player = player;
+			}
+		}
+		
+        //Decrease the amount of players
+        base.OnPlayerLeaveInstance(player);
+            
+        if(this.NumPlayers > 0) 
+        {
+            UpdateInstanceOwner();
+        }
+        else
+        {
+            // check if there is still alive mobs
+            foreach (GameNpc mob in GetMobsInsideInstance(true))
+            {
+            	// there is still something => standard autoclosure + break;
+	            log.Warn("Instance now empty, will destroy instance " + Description + ", ID: " + ID + ", type=" + GetType().ToString() + ". In " + ServerProperty.ADVENTUREWING_TIME_TO_DESTROY + " min.");
+	            this.BeginAutoClosureCountdown(ServerProperty.ADVENTUREWING_TIME_TO_DESTROY);
+                
+                return;
+            }
+            
+            //destroy
+        	log.Warn("Instance now empty, will destroy instance " + Description + ", ID: " + ID + ", type=" + GetType().ToString() + ". Now !");
+            WorldMgr.RemoveInstance(this);
+        }
+    }
 }

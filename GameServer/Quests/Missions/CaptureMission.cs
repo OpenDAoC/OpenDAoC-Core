@@ -5,6 +5,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
+using Core.GS.World;
 
 namespace Core.GS.Quests;
 
@@ -102,7 +103,7 @@ public class CaptureMission : AMission
 
 		if (testPlayer != null)
 		{
-			foreach (AbstractArea area in testPlayer.CurrentAreas)
+			foreach (AArea area in testPlayer.CurrentAreas)
 			{
 				if (area is KeepArea && (area as KeepArea).Keep == m_keep)
 				{

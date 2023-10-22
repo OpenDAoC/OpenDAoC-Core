@@ -3,6 +3,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.Server;
+using Core.GS.World;
 
 namespace Core.GS.Commands;
 
@@ -66,7 +67,7 @@ public class BroadcastCommand : ACommandHandler, ICommandHandler
             {
                 bool found = false;
 
-                foreach (AbstractArea area in player.CurrentAreas)
+                foreach (AArea area in player.CurrentAreas)
                 {
                     if (area.CanBroadcast)
                     {

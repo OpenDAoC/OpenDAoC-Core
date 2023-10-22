@@ -5,7 +5,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Behaviour;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Movement;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.Behaviors;

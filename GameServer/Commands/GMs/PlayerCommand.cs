@@ -16,6 +16,7 @@ using Core.GS.Players.Friends;
 using Core.GS.Players.Managers;
 using Core.GS.Players.Specializations;
 using Core.GS.Quests;
+using Core.GS.World;
 
 namespace Core.GS.Commands
 {
@@ -2178,7 +2179,7 @@ namespace Core.GS.Commands
 
                         List<string> areaList = new List<string>();
 
-                        foreach (AbstractArea area in targetPlayer.CurrentAreas)
+                        foreach (AArea area in targetPlayer.CurrentAreas)
                         {
                             string areaInfo = area.GetType().Name + ", ID:" + area.ID;
                             if (area is QuestSearchArea)

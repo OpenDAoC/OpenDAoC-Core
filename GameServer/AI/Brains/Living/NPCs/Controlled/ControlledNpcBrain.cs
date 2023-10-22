@@ -14,6 +14,7 @@ using Core.GS.RealmAbilities;
 using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Spells;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.AI.Brains

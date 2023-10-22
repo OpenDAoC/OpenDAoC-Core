@@ -7,6 +7,7 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Spells;
+using Core.GS.World;
 
 namespace Core.GS.ECS;
 

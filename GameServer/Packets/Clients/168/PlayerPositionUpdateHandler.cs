@@ -14,6 +14,7 @@ using Core.GS.Players.Realms;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
 using Core.GS.Skills;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.Packets.Clients;
@@ -380,7 +381,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 						area.OnPlayerLeave(client.Player);
 						
 						//Check if leaving Border Keep areas so we can check RealmTimer
-						AbstractArea checkrvrarea = area as AbstractArea;
+						AArea checkrvrarea = area as AArea;
 						if (checkrvrarea != null && (checkrvrarea.Description.Equals("Castle Sauvage") || 
 							checkrvrarea.Description.Equals("Snowdonia Fortress") || 
 							checkrvrarea.Description.Equals("Svasud Faste") ||
@@ -1085,7 +1086,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 						area.OnPlayerLeave(client.Player);
 
 						//Check if leaving Border Keep areas so we can check RealmTimer
-						AbstractArea checkrvrarea = area as AbstractArea;
+						AArea checkrvrarea = area as AArea;
 						if (checkrvrarea != null && (checkrvrarea.Description.Equals("Castle Sauvage") || 
 							checkrvrarea.Description.Equals("Snowdonia Fortress") || 
 							checkrvrarea.Description.Equals("Svasud Faste") ||

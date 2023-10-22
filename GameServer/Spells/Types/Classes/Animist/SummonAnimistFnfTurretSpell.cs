@@ -11,6 +11,7 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Server;
 using Core.GS.Skills;
+using Core.GS.World;
 
 namespace Core.GS.Spells
 {
@@ -36,7 +37,7 @@ namespace Core.GS.Spells
 			}
 
 			//Limit the height of FnF Shrooms if in a keep area
-			foreach (AbstractArea area in rgn.GetAreasOfSpot(Caster.GroundTarget))
+			foreach (AArea area in rgn.GetAreasOfSpot(Caster.GroundTarget))
 			{
 				if (area is KeepArea)
 				{

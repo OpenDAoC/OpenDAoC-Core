@@ -11,6 +11,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Server;
+using Core.GS.World;
 using log4net;
 
 namespace Core.GS.Keeps
@@ -447,7 +448,7 @@ namespace Core.GS.Keeps
 			GameEventMgr.AddHandler(CurrentRegion, RegionEvent.PlayerEnter, new CoreEventHandler(SendKeepInit));
 			KeepArea area = null;
 			//see if any keep areas for this keep have already been added via DBArea
-			foreach (AbstractArea a in CurrentRegion.GetAreasOfSpot(keep.X, keep.Y, keep.Z))
+			foreach (AArea a in CurrentRegion.GetAreasOfSpot(keep.X, keep.Y, keep.Z))
 			{
 				if (a is KeepArea && a.Description == keep.Name)
 				{

@@ -44,6 +44,7 @@ using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.Styles;
+using Core.GS.World;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
 
@@ -4332,7 +4333,7 @@ namespace Core.GS
                     int zoneBonus = (((int)amount * ZoneBonus.GetRPBonus(this)) / 100);
                     if (zoneBonus > 0)
                     {
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperty.RP_RATE), ZoneBonus.eZoneBonusType.RP),
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperty.RP_RATE), ZoneBonus.EZoneBonusType.RP),
                             EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                         GainRealmPoints((long)(zoneBonus * ServerProperty.RP_RATE), false, false, false);
                     }
@@ -4492,7 +4493,7 @@ namespace Core.GS
                     int zoneBonus = (((int)amount * ZoneBonus.GetBPBonus(this)) / 100);
                     if (zoneBonus > 0)
                     {
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperty.BP_RATE), ZoneBonus.eZoneBonusType.BP),
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperty.BP_RATE), ZoneBonus.EZoneBonusType.BP),
                             EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                         GainBountyPoints((long)(zoneBonus * ServerProperty.BP_RATE), false, false, false);
                     }
@@ -5237,7 +5238,7 @@ namespace Core.GS
                     if (zoneBonus > 0)
                     {
                         long tmpBonus = (long)(zoneBonus * ServerProperty.XP_RATE);
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)tmpBonus, ZoneBonus.eZoneBonusType.XP),
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)tmpBonus, ZoneBonus.EZoneBonusType.XP),
                             EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                         GainExperience(EXpSource.Other, tmpBonus, 0, 0, 0, false, false, false);
                     }
@@ -6873,7 +6874,7 @@ namespace Core.GS
 
             string location = "";
             if (CurrentAreas.Count > 0 && (CurrentAreas[0] is Area.BindArea) == false)
-                location = (CurrentAreas[0] as AbstractArea).Description;
+                location = (CurrentAreas[0] as AArea).Description;
             else
                 location = CurrentZone.Description;
 

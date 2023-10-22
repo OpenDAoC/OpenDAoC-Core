@@ -7,6 +7,7 @@ using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Players.Specializations;
 using Core.GS.Skills;
+using Core.GS.World;
 
 namespace Core.GS.Players;
 
@@ -36,7 +37,7 @@ public static class GamePlayerUtil
 	{
 		if (reg != null)
 		{
-			var area = reg.GetAreasOfSpot(x, y, z).OfType<AbstractArea>().FirstOrDefault(a => a.DisplayMessage && !string.IsNullOrEmpty(a.Description));
+			var area = reg.GetAreasOfSpot(x, y, z).OfType<AArea>().FirstOrDefault(a => a.DisplayMessage && !string.IsNullOrEmpty(a.Description));
 			
 			if (area != null)
 				return area.Description;
@@ -77,7 +78,7 @@ public static class GamePlayerUtil
 	{
 		if (reg != null)
 		{
-			var area = reg.GetAreasOfSpot(x, y, z).OfType<AbstractArea>().FirstOrDefault(a => a.DisplayMessage);
+			var area = reg.GetAreasOfSpot(x, y, z).OfType<AArea>().FirstOrDefault(a => a.DisplayMessage);
 			
 			// Try Translate Area First
 			if (area != null)
