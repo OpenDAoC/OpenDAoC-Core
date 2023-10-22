@@ -3,6 +3,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Server;
 using Core.GS.Skills;
+using Core.GS.Spells;
 
 namespace Core.GS.Commands;
 

@@ -12,6 +12,7 @@ using Core.GS.GameUtils;
 using Core.GS.Players.Titles;
 using Core.GS.Server;
 using Core.GS.Skills;
+using Core.GS.Spells;
 using Core.GS.Styles;
 using Core.GS.World;
 

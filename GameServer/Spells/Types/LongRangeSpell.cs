@@ -1,12 +1,11 @@
 ﻿using Core.GS.Skills;
 
-namespace Core.GS.Spells
+namespace Core.GS.Spells;
+
+[SpellHandler("StyleRange")]
+public class LongRangeSpell : SpellHandler
 {
-    [SpellHandler("StyleRange")]
-    public class LongRangeSpell : SpellHandler
+    public LongRangeSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine)
     {
-        public LongRangeSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine)
-        {
-        }
     }
 }

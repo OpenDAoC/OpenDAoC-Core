@@ -1,10 +1,9 @@
 using Core.GS.Skills;
 
-namespace Core.GS.Spells
+namespace Core.GS.Spells;
+
+[SpellHandler("Rampage")]
+public class RampageBuffSpell : SpellHandler
 {
-    [SpellHandler("Rampage")]
-    public class RampageBuffSpell : SpellHandler
-    {
-        public RampageBuffSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
-    }
+    public RampageBuffSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 }

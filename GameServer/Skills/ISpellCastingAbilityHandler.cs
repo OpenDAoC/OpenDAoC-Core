@@ -1,4 +1,6 @@
-﻿namespace Core.GS.Skills;
+﻿using Core.GS.Spells;
+
+namespace Core.GS.Skills;
 
 /// <summary>
 /// ISpellCastingAbilityHandler is an Interface for Providing Basic access to an Ability Casting a Spell

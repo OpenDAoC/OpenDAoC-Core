@@ -1,5 +1,6 @@
 ﻿using Core.GS.AI.Brains;
 using Core.GS.Skills;
+using Core.GS.Spells;
 
 namespace Core.GS;
 

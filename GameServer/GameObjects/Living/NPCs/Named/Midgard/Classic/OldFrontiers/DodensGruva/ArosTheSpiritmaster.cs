@@ -8,6 +8,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Skills;
+using Core.GS.Spells;
 
 namespace Core.GS.Scripts;
 

@@ -1,12 +1,11 @@
 ﻿using Core.GS.Skills;
 
-namespace Core.GS.Spells
+namespace Core.GS.Spells;
+
+[SpellHandler("MultiTarget")]
+public class SavageMultiTargetSpell : SpellHandler
 {
-    [SpellHandler("MultiTarget")]
-    public class SavageMultiTargetSpell : SpellHandler
+    public SavageMultiTargetSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine)
     {
-        public SavageMultiTargetSpell(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine)
-        {
-        }
     }
 }

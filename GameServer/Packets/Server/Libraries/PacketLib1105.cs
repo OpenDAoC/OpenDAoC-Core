@@ -6,6 +6,7 @@ using Core.GS.Enums;
 using Core.GS.Players.Specializations;
 using Core.GS.RealmAbilities;
 using Core.GS.Skills;
+using Core.GS.Spells;
 using Core.GS.Styles;
 using log4net;
 

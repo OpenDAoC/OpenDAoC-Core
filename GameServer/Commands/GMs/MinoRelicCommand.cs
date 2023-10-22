@@ -6,6 +6,7 @@ using Core.GS.Enums;
 using Core.GS.Expansions.LabyrinthOfTheMinotaur;
 using Core.GS.Languages;
 using Core.GS.Skills;
+using Core.GS.Spells;
 
 namespace Core.GS.Commands
 {

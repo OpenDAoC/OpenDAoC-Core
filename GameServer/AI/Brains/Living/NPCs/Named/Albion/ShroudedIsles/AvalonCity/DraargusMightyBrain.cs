@@ -1,6 +1,7 @@
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Skills;
+using Core.GS.Spells;
 
 namespace Core.GS.AI.Brains;
 

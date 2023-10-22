@@ -1,26 +1,25 @@
 using Core.GS.Skills;
 
-namespace Core.GS.Spells
+namespace Core.GS.Spells;
+
+[SpellHandler("ArrowDamageTypes")]
+public class ArrowDamageTypes : SpellHandler
 {
-	[SpellHandler("ArrowDamageTypes")]
-	public class ArrowDamageTypes : SpellHandler
+	/// <summary>
+	/// Does this spell break stealth on finish?
+	/// </summary>
+	public override bool UnstealthCasterOnFinish
 	{
-		/// <summary>
-		/// Does this spell break stealth on finish?
-		/// </summary>
-		public override bool UnstealthCasterOnFinish
-		{
-			get { return false; }
-		}
-
-		/// <summary>
-		/// Does this spell break stealth on start?
-		/// </summary>
-		public override bool UnstealthCasterOnStart
-		{
-			get { return false; }
-		}
-
-		public ArrowDamageTypes(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+		get { return false; }
 	}
+
+	/// <summary>
+	/// Does this spell break stealth on start?
+	/// </summary>
+	public override bool UnstealthCasterOnStart
+	{
+		get { return false; }
+	}
+
+	public ArrowDamageTypes(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 }

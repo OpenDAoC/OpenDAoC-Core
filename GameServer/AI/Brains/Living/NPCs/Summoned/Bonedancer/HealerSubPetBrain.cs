@@ -2,6 +2,7 @@ using System.Reflection;
 using Core.AI.Brain;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Spells;
 using log4net;
 
 namespace Core.GS.AI.Brains

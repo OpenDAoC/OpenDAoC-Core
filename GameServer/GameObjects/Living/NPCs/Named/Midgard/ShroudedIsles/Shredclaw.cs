@@ -9,6 +9,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Server;
 using Core.GS.Skills;
+using Core.GS.Spells;
 
 namespace Core.GS;
 

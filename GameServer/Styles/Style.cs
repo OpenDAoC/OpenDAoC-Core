@@ -3,6 +3,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Players.Specializations;
 using Core.GS.Skills;
+using Core.GS.Spells;
 
 namespace Core.GS.Styles;
 

@@ -8,6 +8,7 @@ using Core.GS.Languages;
 using Core.GS.Players.Races;
 using Core.GS.Players.Specializations;
 using Core.GS.Skills;
+using Core.GS.Spells;
 
 namespace Core.GS.Players.Classes;
 

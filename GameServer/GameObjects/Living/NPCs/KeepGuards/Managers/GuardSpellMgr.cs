@@ -6,6 +6,7 @@ using Core.GS.Enums;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Skills;
+using Core.GS.Spells;
 using Core.GS.World;
 
 namespace Core.GS.Keeps

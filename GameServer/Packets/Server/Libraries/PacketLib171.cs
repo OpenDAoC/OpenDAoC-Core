@@ -4,6 +4,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
+using Core.GS.Expansions.TrialsOfAtlantis;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Quests;

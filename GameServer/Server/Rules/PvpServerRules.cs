@@ -5,10 +5,12 @@ using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
+using Core.GS.Expansions.TrialsOfAtlantis;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Skills;
+using Core.GS.Spells;
 using Core.GS.World;
 
 namespace Core.GS.Server;

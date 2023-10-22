@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Core.Database.Tables;
+using Core.GS.Spells;
 
 namespace Core.GS.Skills;
 

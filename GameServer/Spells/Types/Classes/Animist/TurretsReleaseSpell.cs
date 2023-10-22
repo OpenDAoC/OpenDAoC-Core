@@ -2,66 +2,65 @@ using Core.GS.Enums;
 using Core.GS.Languages;
 using Core.GS.Skills;
 
-namespace Core.GS.Spells
+namespace Core.GS.Spells;
+
+[SpellHandler("TurretsRelease")]
+public class TurretsReleaseSpell : SpellHandler
 {
-    [SpellHandler("TurretsRelease")]
-    public class TurretsReleaseSpell : SpellHandler
+    public TurretsReleaseSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
+    public override bool CheckBeginCast(GameLiving selectedTarget)
     {
-        public TurretsReleaseSpell(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        if (Caster is not GamePlayer)
+            return false;
 
-        public override bool CheckBeginCast(GameLiving selectedTarget)
+        // The main pet is automatically selected by 'SpellHandler.Tick()' and overwrites any target the player may have.
+        // But we want to make Release Clump useable even when there is no main pet to target.
+        if (Caster.TargetObject is TurretPet turret && turret.Owner == Caster)
         {
-            if (Caster is not GamePlayer)
+            Target = turret;
+            selectedTarget = turret;
+        }
+        else
+        {
+            if (selectedTarget == null)
+            {
+                if (Caster is GamePlayer)
+                    MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "TurretsRelease.CheckBeginCast.NoSelectedTarget"), EChatType.CT_SpellResisted);
+
                 return false;
-
-            // The main pet is automatically selected by 'SpellHandler.Tick()' and overwrites any target the player may have.
-            // But we want to make Release Clump useable even when there is no main pet to target.
-            if (Caster.TargetObject is TurretPet turret && turret.Owner == Caster)
-            {
-                Target = turret;
-                selectedTarget = turret;
-            }
-            else
-            {
-                if (selectedTarget == null)
-                {
-                    if (Caster is GamePlayer)
-                        MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "TurretsRelease.CheckBeginCast.NoSelectedTarget"), EChatType.CT_SpellResisted);
-
-                    return false;
-                }
-
-                if (selectedTarget is not TurretPet target || target.Owner != Caster)
-                {
-                    if (Caster is GamePlayer)
-                        MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "TurretsRelease.CheckBeginCast.NoSelectedTarget"), EChatType.CT_SpellResisted);
-
-                    return false;
-                }
             }
 
-            return base.CheckBeginCast(selectedTarget);
+            if (selectedTarget is not TurretPet target || target.Owner != Caster)
+            {
+                if (Caster is GamePlayer)
+                    MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "TurretsRelease.CheckBeginCast.NoSelectedTarget"), EChatType.CT_SpellResisted);
+
+                return false;
+            }
         }
 
-        public override void FinishSpellCast(GameLiving target)
+        return base.CheckBeginCast(selectedTarget);
+    }
+
+    public override void FinishSpellCast(GameLiving target)
+    {
+        m_caster.Mana -= PowerCost(target);
+        base.FinishSpellCast(target);
+    }
+
+    public override void ApplyEffectOnTarget(GameLiving target)
+    {
+        if (target == null || target.CurrentRegion == null)
+            return;
+
+        foreach (GameNpc npc in target.GetNPCsInRadius((ushort) Spell.Radius))
         {
-            m_caster.Mana -= PowerCost(target);
-            base.FinishSpellCast(target);
-        }
+            if (npc is not TurretPet || !npc.IsAlive)
+                continue;
 
-        public override void ApplyEffectOnTarget(GameLiving target)
-        {
-            if (target == null || target.CurrentRegion == null)
-                return;
-
-            foreach (GameNpc npc in target.GetNPCsInRadius((ushort) Spell.Radius))
-            {
-                if (npc is not TurretPet || !npc.IsAlive)
-                    continue;
-
-                if (Caster.IsControlledNPC(npc))
-                    npc.Die(Caster);
-            }
+            if (Caster.IsControlledNPC(npc))
+                npc.Die(Caster);
         }
     }
 }

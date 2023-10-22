@@ -13,6 +13,7 @@ using Core.GS.GameLoop;
 using Core.GS.Languages;
 using Core.GS.Server;
 using Core.GS.Skills;
+using Core.GS.Spells;
 
 namespace Core.GS.AI.Brains
 {

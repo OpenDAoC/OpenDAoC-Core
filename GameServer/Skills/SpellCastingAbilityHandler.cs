@@ -1,5 +1,6 @@
 using Core.GS.Enums;
 using Core.GS.Languages;
+using Core.GS.Spells;
 
 namespace Core.GS.Skills;
 

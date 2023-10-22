@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Core.GS.Enums;
 using Core.GS.Players.Races;
 using Core.GS.Skills;
+using Core.GS.Spells;
 
 namespace Core.GS.Players.Classes;
 

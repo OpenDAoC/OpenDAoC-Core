@@ -1,4 +1,5 @@
 using System;
+using Core.GS.Spells;
 
 namespace Core.GS.Events;
 

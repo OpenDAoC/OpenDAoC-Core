@@ -14,6 +14,7 @@ using Core.GS.GameUtils;
 using Core.GS.Languages;
 using Core.GS.Quests;
 using Core.GS.Server;
+using Core.GS.Spells;
 using Core.GS.World;
 
 namespace Core.GS

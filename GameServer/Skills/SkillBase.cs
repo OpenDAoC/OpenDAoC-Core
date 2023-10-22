@@ -14,6 +14,7 @@ using Core.GS.Languages;
 using Core.GS.Players.Specializations;
 using Core.GS.RealmAbilities;
 using Core.GS.Server;
+using Core.GS.Spells;
 using Core.GS.Styles;
 using log4net;
 

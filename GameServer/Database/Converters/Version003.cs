@@ -3,6 +3,7 @@ using Core.Database;
 using Core.Database.Enums;
 using Core.Database.Tables;
 using Core.GS.Skills;
+using Core.GS.Spells;
 using log4net;
 
 namespace Core.GS.Database;
