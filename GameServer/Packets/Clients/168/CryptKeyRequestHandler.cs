@@ -10,12 +10,12 @@ public class CryptKeyRequestHandler : IPacketHandler
 	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
 		// for 1.115c+ The First client packet Changes.
-		if (client.Version < GameClient.eClientVersion.Version1115)
+		if (client.Version < EClientVersion.Version1115)
 		{
 			int rc4 = packet.ReadByte();
 			byte clientType = (byte)packet.ReadByte();
-			client.ClientType = (GameClient.eClientType)(clientType & 0x0F);
-			client.ClientAddons = (GameClient.eClientAddons)(clientType & 0xF0);
+			client.ClientType = (EClientType)(clientType & 0x0F);
+			client.ClientAddons = (EClientAddons)(clientType & 0xF0);
 			client.MajorBuild = (byte)packet.ReadByte();
 			client.MinorBuild = (byte)packet.ReadByte();
 			client.MinorRev = packet.ReadString(1);
@@ -53,8 +53,8 @@ public class CryptKeyRequestHandler : IPacketHandler
 
 			// register client type
 			byte clientType = (byte)packet.ReadByte();
-			client.ClientType = (GameClient.eClientType)(clientType & 0x0F);
-			client.ClientAddons = (GameClient.eClientAddons)(clientType & 0xF0);
+			client.ClientType = (EClientType)(clientType & 0x0F);
+			client.ClientAddons = (EClientAddons)(clientType & 0xF0);
 			// the next 4 bytes are the game.dll version but not in string form
 			// ie: 01 01 19 61 = 1.125a
 			// this version is handled elsewhere before being sent here.

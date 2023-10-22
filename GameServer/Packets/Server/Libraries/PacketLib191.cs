@@ -6,7 +6,7 @@ using log4net;
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(191, GameClient.eClientVersion.Version191)]
+[PacketLib(191, EClientVersion.Version191)]
 public class PacketLib191 : PacketLib190
 {
 	/// <summary>
@@ -44,7 +44,7 @@ public class PacketLib191 : PacketLib190
 				playerStatus |= 0x08;
 			if (living is GamePlayer)
 			{
-				if ((living as GamePlayer).Client.ClientState == GameClient.eClientState.Linkdead)
+				if ((living as GamePlayer).Client.ClientState == EClientState.Linkdead)
 					playerStatus |= 0x10;
 			}
 			if (!sameRegion)

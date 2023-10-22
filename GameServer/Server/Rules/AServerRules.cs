@@ -84,8 +84,8 @@ public abstract class AServerRules : IServerRules
 			return false;
 		}
 
-		GameClient.eClientVersion min = (GameClient.eClientVersion)ServerProperty.CLIENT_VERSION_MIN;
-		if (min != GameClient.eClientVersion.VersionNotChecked && client.Version < min)
+		EClientVersion min = (EClientVersion)ServerProperty.CLIENT_VERSION_MIN;
+		if (min != EClientVersion.VersionNotChecked && client.Version < min)
 		{
 			client.Out.SendLoginDenied(ELoginError.ClientVersionTooLow);
 			log.Debug("IsAllowedToConnect deny access to client version (too low) " + client.Version);
@@ -93,8 +93,8 @@ public abstract class AServerRules : IServerRules
 			return false;
 		}
 
-		GameClient.eClientVersion max = (GameClient.eClientVersion)ServerProperty.CLIENT_VERSION_MAX;
-		if (max != GameClient.eClientVersion.VersionNotChecked && client.Version > max)
+		EClientVersion max = (EClientVersion)ServerProperty.CLIENT_VERSION_MAX;
+		if (max != EClientVersion.VersionNotChecked && client.Version > max)
 		{
 			client.Out.SendLoginDenied(ELoginError.NotAuthorizedToUseExpansionVersion);
 			log.Debug("IsAllowedToConnect deny access to client version (too high) " + client.Version);
@@ -104,7 +104,7 @@ public abstract class AServerRules : IServerRules
 
 		if (ServerProperty.CLIENT_TYPE_MAX > -1)
 		{
-			GameClient.eClientType type = (GameClient.eClientType)ServerProperty.CLIENT_TYPE_MAX;
+			EClientType type = (EClientType)ServerProperty.CLIENT_TYPE_MAX;
 			if ((int)client.ClientType > (int)type)
 			{
 				client.Out.SendLoginDenied(ELoginError.ExpansionPacketNotAllowed);
@@ -340,7 +340,7 @@ public abstract class AServerRules : IServerRules
 			if ((attacker as GameNpc).Brain is IControlledBrain)
 				playerAttacker = ((attacker as GameNpc).Brain as IControlledBrain).GetPlayerOwner();
 
-		if (playerDefender != null && (playerDefender.Client.ClientState == GameClient.eClientState.WorldEnter || playerDefender.IsInvulnerableToAttack))
+		if (playerDefender != null && (playerDefender.Client.ClientState == EClientState.WorldEnter || playerDefender.IsInvulnerableToAttack))
 		{
 			if (!quiet)
 				MessageToLiving(attacker, defender.Name + " is entering the game and is temporarily immune to PvP attacks!");

@@ -20,7 +20,7 @@ public class WorldInitRequestHandler : IPacketHandler
     public void HandlePacket(GameClient client, GsPacketIn packet)
     {
         // Instantiate 'GamePlayer'. Previous versions are handled in 'CharacterSelectRequestHandler'.
-        if (client.Version >= GameClient.eClientVersion.Version1124)
+        if (client.Version >= EClientVersion.Version1124)
             HandlePacket1124(client, packet);
 
         if (client.Player == null)
@@ -35,7 +35,7 @@ public class WorldInitRequestHandler : IPacketHandler
         byte charIndex = (byte)packet.ReadByte(); // character account location
 
         // some funkyness going on below here. Could use some safeguards to ensure a character is loaded correctly
-        if (client.Player == null && client.Account.Characters != null && client.ClientState == GameClient.eClientState.CharScreen)
+        if (client.Player == null && client.Account.Characters != null && client.ClientState == EClientState.CharScreen)
         {
             bool charFound = false;
             string selectedChar = "";
@@ -114,7 +114,7 @@ public class WorldInitRequestHandler : IPacketHandler
                 }
             }
 
-            player.Client.ClientState = GameClient.eClientState.WorldEnter;
+            player.Client.ClientState = EClientState.WorldEnter;
             // 0x88 - Position
             // 0x6D - FriendList
             // 0x15 - Encumberance update

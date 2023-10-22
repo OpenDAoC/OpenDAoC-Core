@@ -1422,7 +1422,7 @@ namespace Core.GS
                         if (player == null)
                             return;
 
-                        if ((int)player.Client.Version < (int)GameClient.eClientVersion.Version187)
+                        if ((int)player.Client.Version < (int)EClientVersion.Version187)
                             player.Out.SendEmoteAnimation(this, EEmote.Bind);
                         else
                             player.Out.SendEmoteAnimation(this, bindEmote);
@@ -2596,7 +2596,7 @@ namespace Core.GS
         protected override int HealthRegenerationTimerCallback(EcsGameTimer callingTimer)
         {
             // I'm not sure what the point of this is.
-            if (Client.ClientState != GameClient.eClientState.Playing)
+            if (Client.ClientState != EClientState.Playing)
                 return HealthRegenerationPeriod;
 
             // adjust timer based on Live testing of player
@@ -2660,7 +2660,7 @@ namespace Core.GS
         /// <returns>the new time</returns>
         protected override int PowerRegenerationTimerCallback(EcsGameTimer selfRegenerationTimer)
         {
-            if (Client.ClientState != GameClient.eClientState.Playing)
+            if (Client.ClientState != EClientState.Playing)
                 return PowerRegenerationPeriod;
             if (IsSitting)
             {
@@ -2679,7 +2679,7 @@ namespace Core.GS
         /// <returns>the new time</returns>
         protected override int EnduranceRegenerationTimerCallback(EcsGameTimer selfRegenerationTimer)
         {
-            if (Client.ClientState != GameClient.eClientState.Playing)
+            if (Client.ClientState != EClientState.Playing)
                 return EnduranceRegenerationPeriod;
 
             LastEnduTick = GameLoopMgr.GameLoopTime;
@@ -4333,7 +4333,7 @@ namespace Core.GS
                     int zoneBonus = (((int)amount * ZoneBonus.GetRPBonus(this)) / 100);
                     if (zoneBonus > 0)
                     {
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperty.RP_RATE), ZoneBonus.EZoneBonusType.RP),
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperty.RP_RATE), EZoneBonusType.RP),
                             EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                         GainRealmPoints((long)(zoneBonus * ServerProperty.RP_RATE), false, false, false);
                     }
@@ -4493,7 +4493,7 @@ namespace Core.GS
                     int zoneBonus = (((int)amount * ZoneBonus.GetBPBonus(this)) / 100);
                     if (zoneBonus > 0)
                     {
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperty.BP_RATE), ZoneBonus.EZoneBonusType.BP),
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperty.BP_RATE), EZoneBonusType.BP),
                             EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                         GainBountyPoints((long)(zoneBonus * ServerProperty.BP_RATE), false, false, false);
                     }
@@ -5238,7 +5238,7 @@ namespace Core.GS
                     if (zoneBonus > 0)
                     {
                         long tmpBonus = (long)(zoneBonus * ServerProperty.XP_RATE);
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)tmpBonus, ZoneBonus.EZoneBonusType.XP),
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)tmpBonus, EZoneBonusType.XP),
                             EChatType.CT_Important, EChatLoc.CL_SystemWindow);
                         GainExperience(EXpSource.Other, tmpBonus, 0, 0, 0, false, false, false);
                     }

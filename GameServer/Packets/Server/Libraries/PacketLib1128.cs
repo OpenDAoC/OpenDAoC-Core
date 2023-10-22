@@ -2,7 +2,7 @@
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(1128, GameClient.eClientVersion.Version1128)]
+[PacketLib(1128, EClientVersion.Version1128)]
 public class PacketLib1128 : PacketLib1127
 {
     public PacketLib1128(GameClient client) : base(client) { }

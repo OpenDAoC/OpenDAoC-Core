@@ -8,7 +8,7 @@ using Core.GS.Skills;
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(1119, GameClient.eClientVersion.Version1119)]
+[PacketLib(1119, EClientVersion.Version1119)]
 public class PacketLib1119 : PacketLib1118
 {
 	/// <summary>

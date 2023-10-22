@@ -30,134 +30,6 @@ namespace Core.GS
 	/// </summary>
 	public class GameClient : BaseClient, ICustomParamsValuable, IManagedEntity
 	{
-		#region eClientAddons enum
-
-		/// <summary>
-		/// The client addons enum
-		/// </summary>
-		[Flags]
-		public enum eClientAddons
-		{
-			bit4 = 0x10,
-			NewNewFrontiers = 0x20,
-			Foundations = 0x40,
-			NewFrontiers = 0x80,
-		}
-
-		#endregion
-
-		#region eClientState enum
-
-		/// <summary>
-		/// Current state of the client
-		/// </summary>
-		public enum eClientState
-		{
-			NotConnected = 0x00,
-			Connecting = 0x01,
-			CharScreen = 0x02,
-			WorldEnter = 0x03,
-			Playing = 0x04,
-			Linkdead = 0x05,
-			Disconnected = 0x06,
-		} ;
-
-		#endregion
-
-		#region eClientType enum
-
-		/// <summary>
-		/// The client software type enum
-		/// </summary>
-		public enum eClientType
-		{
-			Unknown = -1,
-			Classic = 1,
-			ShroudedIsles = 2,
-			TrialsOfAtlantis = 3,
-			Catacombs = 4,
-			DarknessRising = 5,
-			LabyrinthOfTheMinotaur = 6,
-		}
-
-		#endregion
-
-		#region eClientVersion enum
-
-		/// <summary>
-		/// the version enum
-		/// </summary>
-		public enum eClientVersion
-		{
-			VersionNotChecked = -1,
-			VersionUnknown = 0,
-			_FirstVersion = 168,
-			Version168 = 168,
-			Version169 = 169,
-			Version170 = 170,
-			Version171 = 171,
-			Version172 = 172,
-			Version173 = 173,
-			Version174 = 174,
-			Version175 = 175,
-			Version176 = 176,
-			Version177 = 177,
-			Version178 = 178,
-			Version179 = 179,
-			Version180 = 180,
-			Version181 = 181,
-			Version182 = 182,
-			Version183 = 183,
-			Version184 = 184,
-			Version185 = 185,
-			Version186 = 186,
-			Version187 = 187,
-			Version188 = 188,
-			Version189 = 189,
-			Version190 = 190,
-			Version191 = 191,
-			Version192 = 192,
-			Version193 = 193,
-			Version194 = 194,
-			Version195 = 195,
-			Version196 = 196,
-			Version197 = 197,
-			Version198 = 198,
-			Version199 = 199,
-			Version1100 = 1100,
-			Version1101 = 1101,
-			Version1102 = 1102,
-			Version1103 = 1103,
-			Version1104 = 1104,
-			Version1105 = 1105,
-			Version1106 = 1106,
-			Version1107 = 1107,
-			Version1108 = 1108,
-			Version1109 = 1109,
-			Version1110 = 1110,
-			Version1111 = 1111,
-			Version1112 = 1112,
-			Version1113 = 1113,
-			Version1114 = 1114,
-			Version1115 = 1115,
-			Version1116 = 1116,
-			Version1117 = 1117,
-			Version1118 = 1118,
-			Version1119 = 1119,
-			Version1120 = 1120,
-			Version1121 = 1121,
-			Version1122 = 1122,
-			Version1123 = 1123,
-			Version1124 = 1124,
-			Version1125 = 1125,
-			Version1126 = 1126,
-			Version1127 = 1127,
-			Version1128 = 1128,
-			_LastVersion = 1128
-		}
-
-		#endregion
-
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
@@ -176,19 +48,19 @@ namespace Core.GS
 		/// <summary>
 		/// Holds installed client addons
 		/// </summary>
-		protected eClientAddons m_clientAddons;
+		protected EClientAddons m_clientAddons;
 
 		/// <summary>
 		/// Holds the current clientstate
 		/// </summary>
-		protected volatile eClientState m_clientState = eClientState.NotConnected;
+		protected volatile EClientState m_clientState = EClientState.NotConnected;
 
 		/// <summary>
 		/// Holds client software type
 		/// </summary>
-		protected eClientType m_clientType = eClientType.Unknown;
+		protected EClientType m_clientType = EClientType.Unknown;
 
-		protected eClientVersion m_clientVersion = eClientVersion.VersionNotChecked;
+		protected EClientVersion m_clientVersion = EClientVersion.VersionNotChecked;
 
 		/// <summary>
 		/// Holds the time of the last UDP ping
@@ -285,16 +157,16 @@ namespace Core.GS
 		/// <summary>
 		/// Gets or sets the client state
 		/// </summary>
-		public eClientState ClientState
+		public EClientState ClientState
 		{
 			get { return m_clientState; }
 			set
 			{
-				eClientState oldState = m_clientState;
+				EClientState oldState = m_clientState;
 
 				// refresh ping timeouts immediately when we change into playing state or charscreen
-				if ((oldState != eClientState.Playing && value == eClientState.Playing) ||
-				    (oldState != eClientState.CharScreen && value == eClientState.CharScreen))
+				if ((oldState != EClientState.Playing && value == EClientState.Playing) ||
+				    (oldState != EClientState.CharScreen && value == EClientState.CharScreen))
 				{
 					PingTime = GameLoopMgr.GetCurrentTime();
 				}
@@ -323,7 +195,7 @@ namespace Core.GS
 			get
 			{
 				//Linkdead players also count as playing :)
-				return m_clientState == eClientState.Playing || m_clientState == eClientState.Linkdead;
+				return m_clientState == EClientState.Playing || m_clientState == EClientState.Linkdead;
 			}
 		}
 
@@ -431,7 +303,7 @@ namespace Core.GS
 		/// <summary>
 		/// the version of this client
 		/// </summary>
-		public eClientVersion Version
+		public EClientVersion Version
 		{
 			get { return m_clientVersion; }
 			set { m_clientVersion = value; }
@@ -440,7 +312,7 @@ namespace Core.GS
 		/// <summary>
 		/// Gets/sets client software type (classic/SI/ToA/Catacombs)
 		/// </summary>
-		public eClientType ClientType
+		public EClientType ClientType
 		{
 			get { return m_clientType; }
 			set { m_clientType = value; }
@@ -453,7 +325,7 @@ namespace Core.GS
 		/// <summary>
 		/// Gets/sets installed client addons (housing/new frontiers)
 		/// </summary>
-		public eClientAddons ClientAddons
+		public EClientAddons ClientAddons
 		{
 			get { return m_clientAddons; }
 			set { m_clientAddons = value; }
@@ -480,7 +352,7 @@ namespace Core.GS
 		protected override void OnReceive(int numBytes)
 		{
 			//This is the first received packet ...
-			if (Version == eClientVersion.VersionNotChecked)
+			if (Version == EClientVersion.VersionNotChecked)
 			{
 				//Disconnect if the packet seems wrong
 				if (numBytes < 17) // 17 is correct bytes count for 0xF4 packet
@@ -519,12 +391,12 @@ namespace Core.GS
 					version = _pBuf[11] * 1000 + _pBuf[12] * 100 + _pBuf[13];
 				}
 
-				eClientVersion ver;
+				EClientVersion ver;
 				IPacketLib lib = APacketLib.CreatePacketLibForVersion(version, this, out ver);
 
 				if (lib == null)
 				{
-					Version = eClientVersion.VersionUnknown;
+					Version = EClientVersion.VersionUnknown;
 					if (log.IsWarnEnabled)
 						log.Warn(TcpEndpointAddress + " client Version " + version + " not handled on this server!");
 					GameServer.Instance.Disconnect(this);
@@ -538,7 +410,7 @@ namespace Core.GS
 				}
 			}
 
-			if (Version != eClientVersion.VersionUnknown)
+			if (Version != EClientVersion.VersionUnknown)
 			{
 				m_packetProcessor.ReceiveBytes(numBytes);
 			}
@@ -553,13 +425,13 @@ namespace Core.GS
 			{
 				//If we went linkdead and we were inside the game
 				//we don't let the player disappear!
-				if (ClientState == eClientState.Playing)
+				if (ClientState == EClientState.Playing)
 				{
 					OnLinkdeath();
 					return;
 				}
 
-				if (ClientState == eClientState.WorldEnter && Player != null)
+				if (ClientState == EClientState.WorldEnter && Player != null)
 					Player.SaveIntoDatabase();
 			}
 			catch (Exception e)
@@ -570,7 +442,7 @@ namespace Core.GS
 			finally
 			{
 				// Make sure the client is disconnected even on errors but only if OnLinkDeath() wasn't called.
-				if (ClientState != eClientState.Linkdead)
+				if (ClientState != EClientState.Linkdead)
 					Quit();
 			}
 		}
@@ -730,7 +602,7 @@ namespace Core.GS
 			}
 			else
 			{
-				ClientState = eClientState.Linkdead;
+				ClientState = EClientState.Linkdead;
 				LinkDeathTime = GameLoopMgr.GameLoopTime;
 				// If we have a good sessionid, we won't remove the client yet!
 				// OnLinkdeath() can start a timer to remove the client "a bit later"
@@ -747,11 +619,11 @@ namespace Core.GS
 			{
 				try
 				{
-					eClientState oldClientState = ClientState;
+					EClientState oldClientState = ClientState;
 
 					if (SessionID != 0)
 					{
-						if (oldClientState is eClientState.Playing or eClientState.WorldEnter or eClientState.Linkdead)
+						if (oldClientState is EClientState.Playing or EClientState.WorldEnter or EClientState.Linkdead)
 						{
 							try
 							{
@@ -773,7 +645,7 @@ namespace Core.GS
 						}
 					}
 
-					ClientState = eClientState.Disconnected;
+					ClientState = EClientState.Disconnected;
 					GameEventMgr.Notify(GameClientEvent.Disconnected, this);
 
 					if (Account != null)

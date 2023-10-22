@@ -13,7 +13,7 @@ public class CharacterSelectRequestHandler : IPacketHandler
     {
         // 'GamePlayer' instantiation was moved to 'WorldInitRequestHandler' for game versions superior to 1124, because it didn't prevent multiple instantation correctly.
         // Prior versions are still handled here because they're untested.
-        if (client.Version >= GameClient.eClientVersion.Version1124)
+        if (client.Version >= EClientVersion.Version1124)
         {
             client.Out.SendLoginGranted();
             client.Out.SendSessionID();
@@ -38,7 +38,7 @@ public class CharacterSelectRequestHandler : IPacketHandler
             // packet is sent on every region change (and twice after "play" was pressed)
             if (((client.Player == null && client.Account.Characters != null) ||
                  (client.Player != null && client.Player.Name.ToLower() != charName.ToLower())) &&
-                client.ClientState == GameClient.eClientState.CharScreen)
+                client.ClientState == EClientState.CharScreen)
             {
                 bool charFound = false;
                 for (int i = 0; i < client.Account.Characters.Length; i++)

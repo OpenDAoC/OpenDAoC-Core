@@ -3,6 +3,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.Events;
 using Core.GS;
+using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Players.Friends;
 using NUnit.Framework;
@@ -214,7 +215,7 @@ namespace Core.Tests.Integration.Server
 			var gameplayer = new GamePlayer(client, client.Account.Characters[0]);
 			client.Player = gameplayer;
 			
-			client.ClientState = GameClient.eClientState.WorldEnter;
+			client.ClientState = EClientState.WorldEnter;
 					
 			CollectionAssert.IsEmpty(received);
 			GameServer.Instance.PlayerManager.Friends.RemovePlayerFriendsListFromCache(gameplayer);
@@ -239,7 +240,7 @@ namespace Core.Tests.Integration.Server
 
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayerMate);
 			
-			client.ClientState = GameClient.eClientState.WorldEnter;
+			client.ClientState = EClientState.WorldEnter;
 					
 			CollectionAssert.AreEquivalent(new[] { "mate" }, received);
 			GameServer.Instance.PlayerManager.Friends.RemovePlayerFriendsListFromCache(gameplayer);
@@ -273,7 +274,7 @@ namespace Core.Tests.Integration.Server
 			
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayerBuddy);
 			
-			client.ClientState = GameClient.eClientState.WorldEnter;
+			client.ClientState = EClientState.WorldEnter;
 					
 			CollectionAssert.AreEquivalent(new[] { "mate" }, received);
 			GameServer.Instance.PlayerManager.Friends.RemovePlayerFriendsListFromCache(gameplayer);

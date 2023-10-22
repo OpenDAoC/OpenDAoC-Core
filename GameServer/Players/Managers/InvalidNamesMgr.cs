@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Core.Config;
 using log4net;
 
 namespace Core.GS.Players.Managers;

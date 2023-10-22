@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
+using Core.GS.Enums;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using NUnit.Framework;
@@ -31,7 +32,7 @@ namespace Core.Tests.Integration.Server
 			Assert.IsNotNull(character);
 			
 			var client = new GameClient(GameServer.Instance);
-			client.Version = GameClient.eClientVersion.Version1105;
+			client.Version = EClientVersion.Version1105;
 			client.Socket = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);
 			client.Account = account;
 			client.PacketProcessor = new PacketProcessor(client);

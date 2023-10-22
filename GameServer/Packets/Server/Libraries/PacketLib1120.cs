@@ -1,6 +1,8 @@
-﻿namespace Core.GS.Packets.Server;
+﻿using Core.GS.Enums;
 
-[PacketLib(1120, GameClient.eClientVersion.Version1120)]
+namespace Core.GS.Packets.Server;
+
+[PacketLib(1120, EClientVersion.Version1120)]
 public class PacketLib1120 : PacketLib1119
 {
 	/// <summary>

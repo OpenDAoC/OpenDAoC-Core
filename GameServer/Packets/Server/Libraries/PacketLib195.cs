@@ -1,9 +1,10 @@
 using System.Reflection;
+using Core.GS.Enums;
 using log4net;
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(195, GameClient.eClientVersion.Version195)]
+[PacketLib(195, EClientVersion.Version195)]
 public class PacketLib195 : PacketLib194
 {
 	/// <summary>

@@ -1,4 +1,5 @@
 using System;
+using Core.GS.Enums;
 
 namespace Core.GS.Packets.Server;
 
@@ -15,14 +16,14 @@ public class PacketLibAttribute : Attribute
 	/// <summary>
 	/// PacketLib client version.
 	/// </summary>
-	GameClient.eClientVersion m_clientVersion;
+	EClientVersion m_clientVersion;
 
 	/// <summary>
 	/// Constructs a new PacketLibAttribute.
 	/// </summary>
 	/// <param name="rawVersion">The version Id sent by the client.</param>
 	/// <param name="clientVersion">PacketLib client version.</param>
-	public PacketLibAttribute(int rawVersion, GameClient.eClientVersion clientVersion)
+	public PacketLibAttribute(int rawVersion, EClientVersion clientVersion)
 	{
 		m_rawVersion = rawVersion;
 		m_clientVersion = clientVersion;
@@ -39,7 +40,7 @@ public class PacketLibAttribute : Attribute
 	/// <summary>
 	/// Gets the client version for which PacketLib is built.
 	/// </summary>
-	public GameClient.eClientVersion ClientVersion
+	public EClientVersion ClientVersion
 	{
 		get { return m_clientVersion; }
 	}

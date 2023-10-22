@@ -25,7 +25,7 @@ public class UseSpellHandler : ACommandHandler, IPacketHandler
 		int flagSpeedData;
 		int spellLevel;
 		int spellLineIndex;
-		if (client.Version >= GameClient.eClientVersion.Version1124)
+		if (client.Version >= EClientVersion.Version1124)
 		{
 			client.Player.X = (int)packet.ReadFloatLowEndian();
 			client.Player.Y = (int)packet.ReadFloatLowEndian();
@@ -42,7 +42,7 @@ public class UseSpellHandler : ACommandHandler, IPacketHandler
 			flagSpeedData = packet.ReadShort();
 			int heading = packet.ReadShort();
 
-			if (client.Version > GameClient.eClientVersion.Version171)
+			if (client.Version > EClientVersion.Version171)
 			{
 				int xOffsetInZone = packet.ReadShort();
 				int yOffsetInZone = packet.ReadShort();

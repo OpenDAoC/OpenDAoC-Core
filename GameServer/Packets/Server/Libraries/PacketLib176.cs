@@ -11,7 +11,7 @@ using log4net;
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(176, GameClient.eClientVersion.Version176)]
+[PacketLib(176, EClientVersion.Version176)]
 public class PacketLib176 : PacketLib175
 {
 	/// <summary>

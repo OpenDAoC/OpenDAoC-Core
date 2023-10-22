@@ -3265,7 +3265,7 @@ namespace Core.GS
 						{
 							long amount = (long)(zoneBonus * ServerProperty.MONEY_DROP);
 							killerPlayer.AddMoney(amount,
-												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperty.MONEY_DROP), ZoneBonus.EZoneBonusType.COIN),
+												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperty.MONEY_DROP), EZoneBonusType.COIN),
 												  EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 							InventoryLogging.LogInventoryAction(this, killerPlayer, EInventoryActionType.Loot, amount);
 						}

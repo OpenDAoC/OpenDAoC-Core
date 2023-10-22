@@ -28,7 +28,7 @@ public class PlayerHeadingUpdateHandler : IPacketHandler
 			return; // client hack
 		}
 
-		if (client.Version >= GameClient.eClientVersion.Version1127)
+		if (client.Version >= EClientVersion.Version1127)
 			packet.ReadShort(); // target
 
 		ushort head = packet.ReadShort();
@@ -120,9 +120,9 @@ public class PlayerHeadingUpdateHandler : IPacketHandler
 			{
 				if (client.Player.IsStealthed && !player.CanDetect(client.Player))
 					return;
-				if (player.Client.Version >= GameClient.eClientVersion.Version1127)
+				if (player.Client.Version >= EClientVersion.Version1127)
 					player.Out.SendUDP(outpak1127);
-				else if (player.Client.Version >= GameClient.eClientVersion.Version1124)
+				else if (player.Client.Version >= EClientVersion.Version1124)
 					player.Out.SendUDP(outpak1124);
 				else
 					player.Out.SendUDP(outpak190);

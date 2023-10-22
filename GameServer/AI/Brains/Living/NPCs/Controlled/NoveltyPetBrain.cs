@@ -45,7 +45,7 @@ namespace Core.GS.AI.Brains
 
 			if (m_owner == null || 
 				m_owner.IsAlive == false || 
-				m_owner.Client.ClientState != GameClient.eClientState.Playing || 
+				m_owner.Client.ClientState != EClientState.Playing || 
 				Body.IsWithinRadius(m_owner, WorldMgr.VISIBILITY_DISTANCE) == false)
 			{
 				Body.Delete();

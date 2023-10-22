@@ -4,7 +4,7 @@ using log4net;
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(1111, GameClient.eClientVersion.Version1111)]
+[PacketLib(1111, EClientVersion.Version1111)]
 public class PacketLib1111 : PacketLib1110
 {
     private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

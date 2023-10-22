@@ -83,7 +83,7 @@ public class LoginRequestHandler : IPacketHandler
 		/// Packet Format Change above 1.115
 		/// </summary>
 		
-		if (client.Version < GameClient.eClientVersion.Version1115)
+		if (client.Version < EClientVersion.Version1115)
 		{
 			packet.Skip(2); //Skip the client_type byte
 			
@@ -98,12 +98,12 @@ public class LoginRequestHandler : IPacketHandler
 			//bool loggerUsing = false;
 			switch (client.Version)
 			{
-				case GameClient.eClientVersion.Version168:
-				case GameClient.eClientVersion.Version169:
-				case GameClient.eClientVersion.Version170:
-				case GameClient.eClientVersion.Version171:
-				case GameClient.eClientVersion.Version172:
-				case GameClient.eClientVersion.Version173:
+				case EClientVersion.Version168:
+				case EClientVersion.Version169:
+				case EClientVersion.Version170:
+				case EClientVersion.Version171:
+				case EClientVersion.Version172:
+				case EClientVersion.Version173:
 					v174 = false;
 					break;
 				default:
@@ -135,7 +135,7 @@ public class LoginRequestHandler : IPacketHandler
 
 			userName = packet.ReadString(20);
 		}
-		else if (client.Version < GameClient.eClientVersion.Version1126) // 1.125+ only // we support 1.109 and 1.125+ only
+		else if (client.Version < EClientVersion.Version1126) // 1.125+ only // we support 1.109 and 1.125+ only
 		{
 			// client type
 			packet.Skip(1);
@@ -150,7 +150,7 @@ public class LoginRequestHandler : IPacketHandler
 			// build
 			packet.Skip(2);
 
-			if (client.Version <= GameClient.eClientVersion.Version1124)
+			if (client.Version <= EClientVersion.Version1124)
 			{
 				userName = packet.ReadShortPascalStringLowEndian();
 				password = packet.ReadShortPascalStringLowEndian();
@@ -210,8 +210,8 @@ public class LoginRequestHandler : IPacketHandler
 			// Make sure that client won't quit
 			lock (client)
 			{
-				GameClient.eClientState state = client.ClientState;
-				if (state != GameClient.eClientState.NotConnected)
+				EClientState state = client.ClientState;
+				if (state != EClientState.NotConnected)
 				{
 					Log.DebugFormat("wrong client state on connect {0} {1}", userName, state.ToString());
 					return;
@@ -226,7 +226,7 @@ public class LoginRequestHandler : IPacketHandler
 
 				if (otherClient != null)
 				{
-					if (otherClient.ClientState == GameClient.eClientState.Connecting)
+					if (otherClient.ClientState == EClientState.Connecting)
 					{
 						if (Log.IsInfoEnabled)
 							Log.Info("User is already connecting, ignored.");
@@ -236,7 +236,7 @@ public class LoginRequestHandler : IPacketHandler
 						return;
 					} // in login
 
-					if (otherClient.ClientState == GameClient.eClientState.Linkdead)
+					if (otherClient.ClientState == EClientState.Linkdead)
 					{
 						if (Log.IsInfoEnabled)
 							Log.Info("User is still being logged out from linkdeath!");
@@ -438,7 +438,7 @@ public class LoginRequestHandler : IPacketHandler
 				}
 
 				client.Out.SendLoginGranted();
-				client.ClientState = GameClient.eClientState.Connecting;
+				client.ClientState = EClientState.Connecting;
 				
 				GameServer.Database.FillObjectRelations(client.Account);
 

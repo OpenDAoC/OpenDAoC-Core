@@ -10,7 +10,7 @@ public class UdpInitRequestHandler : IPacketHandler
 	{
 		string localIP;
 		ushort localPort;
-		if (client.Version >= GameClient.eClientVersion.Version1124)
+		if (client.Version >= EClientVersion.Version1124)
 		{
 			localIP = packet.ReadString(20);
 			localPort = packet.ReadShort();

@@ -160,7 +160,7 @@ public class PlayerInitRequestHandler : IPacketHandler
 			{
 				player.IsDiving = true;
 			}
-			player.Client.ClientState = GameClient.eClientState.Playing;
+			player.Client.ClientState = EClientState.Playing;
 
 			#region TempPropertiesManager LookUp
 

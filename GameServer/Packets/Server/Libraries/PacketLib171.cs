@@ -13,7 +13,7 @@ using log4net;
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(171, GameClient.eClientVersion.Version171)]
+[PacketLib(171, EClientVersion.Version171)]
 public class PacketLib171 : PacketLib170
 {
 	/// <summary>
@@ -186,7 +186,7 @@ public class PacketLib171 : PacketLib170
 			string add = "";
 			byte flags2 = 0x00;
 			IControlledBrain brain = npc.Brain as IControlledBrain;
-			if (m_gameClient.Version >= GameClient.eClientVersion.Version187)
+			if (m_gameClient.Version >= EClientVersion.Version187)
 			{
 				if (brain != null)
 				{

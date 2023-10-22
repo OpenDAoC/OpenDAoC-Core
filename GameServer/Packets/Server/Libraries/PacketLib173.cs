@@ -19,7 +19,7 @@ using log4net;
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(173, GameClient.eClientVersion.Version173)]
+[PacketLib(173, EClientVersion.Version173)]
 public class PacketLib173 : PacketLib172
 {
 	/// <summary>
@@ -520,7 +520,7 @@ public class PacketLib173 : PacketLib172
 
 	public override void SendMessage(string msg, EChatType type, EChatLoc loc)
 	{
-		if (m_gameClient.ClientState == GameClient.eClientState.CharScreen)
+		if (m_gameClient.ClientState == EClientState.CharScreen)
 			return;
 
 		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Message)))

@@ -16,7 +16,7 @@ public class PlayerCreationRequestHandler : IPacketHandler
 
     public void HandlePacket(GameClient client, GsPacketIn packet)
     {
-        ushort id = client.Version >= GameClient.eClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
+        ushort id = client.Version >= EClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
         GameClient target = ClientService.GetClientFromId(id);
 
         if (target == null)

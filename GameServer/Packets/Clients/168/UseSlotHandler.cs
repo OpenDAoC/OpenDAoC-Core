@@ -12,7 +12,7 @@ public class UseSlotHandler : IPacketHandler
 {
 	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
-		if (client.Version >= GameClient.eClientVersion.Version1124)
+		if (client.Version >= EClientVersion.Version1124)
 		{
 			client.Player.X = (int)packet.ReadFloatLowEndian();
 			client.Player.Y = (int)packet.ReadFloatLowEndian();

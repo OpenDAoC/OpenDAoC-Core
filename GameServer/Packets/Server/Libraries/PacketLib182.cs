@@ -10,7 +10,7 @@ using log4net;
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(182, GameClient.eClientVersion.Version182)]
+[PacketLib(182, EClientVersion.Version182)]
 public class PacketLib182 : PacketLib181
 {
 	/// <summary>

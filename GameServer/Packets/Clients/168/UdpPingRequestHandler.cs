@@ -18,7 +18,7 @@ public class UdpPingRequestHandler : IPacketHandler
 	/// <returns>Non zero if function was successful</returns>
 	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
-		if (client.Version < GameClient.eClientVersion.Version1124)
+		if (client.Version < EClientVersion.Version1124)
 		{
 			string localIP = packet.ReadString(22);
 			ushort localPort = packet.ReadShort();

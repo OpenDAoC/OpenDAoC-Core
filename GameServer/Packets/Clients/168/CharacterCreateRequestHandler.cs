@@ -49,7 +49,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
     {
         bool needRefresh = false;
 
-        if (client.Version > GameClient.eClientVersion.Version1124) // 1125 support
+        if (client.Version > EClientVersion.Version1124) // 1125 support
         {
             var pakdata = new CreationCharacterData(packet, client);
 
@@ -276,7 +276,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
         /// <param name="client"></param>
         public CreationCharacterData(GsPacketIn packet, GameClient client)
         {
-            if (client.Version > GameClient.eClientVersion.Version1124) // 1125+ support
+            if (client.Version > EClientVersion.Version1124) // 1125+ support
             {
                 CharacterSlot = packet.ReadByte();
                 CharName = packet.ReadIntPascalStringLowEndian();
@@ -299,7 +299,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
                 packet.Skip(5); //Skip class name
                 packet.Skip(5); //Skip race name
 
-                if (client.Version >= GameClient.eClientVersion.Version1126)
+                if (client.Version >= EClientVersion.Version1126)
                 {
                     Class = packet.ReadByte();
                     Realm = packet.ReadByte();
@@ -321,7 +321,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
                 //SIStartLocation = ((startRaceGender1 >> 7) != 0);
                 CreationModel = packet.ReadShortLowEndian();
 
-                if (client.Version == GameClient.eClientVersion.Version1125)
+                if (client.Version == EClientVersion.Version1125)
                 {
                     Region = packet.ReadByte();
                     packet.Skip(5);                       
@@ -879,7 +879,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
     public static bool CheckForDeletedCharacter(string accountName, GameClient client, int slot)
     {
         int charSlot = slot;
-        if (client.Version > GameClient.eClientVersion.Version1124) // 1125 support
+        if (client.Version > EClientVersion.Version1124) // 1125 support
         {
             charSlot = client.Account.Realm * 100 + (slot - (client.Account.Realm - 1) * 10);
         }
@@ -905,7 +905,7 @@ public class CharacterCreateRequestHandler : IPacketHandler
         {
             foreach (DbCoreCharacter character in allChars.ToArray())
             {
-                if (character.AccountSlot == charSlot && client.ClientState == GameClient.eClientState.CharScreen)
+                if (character.AccountSlot == charSlot && client.ClientState == EClientState.CharScreen)
                 {
                     if (log.IsWarnEnabled)
                     {

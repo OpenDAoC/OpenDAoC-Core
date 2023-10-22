@@ -531,7 +531,7 @@ namespace Core.GS.Keeps
 		public override void Die(GameObject killer)
 		{
 			base.Die(killer);
-			if (Keep is GameKeepTower && ServerProperty.CLIENT_VERSION_MIN >= (int)GameClient.eClientVersion.Version175)
+			if (Keep is GameKeepTower && ServerProperty.CLIENT_VERSION_MIN >= (int)EClientVersion.Version175)
 			{
 				if (IsRaized == false)
 				{

@@ -18,7 +18,7 @@ using log4net;
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(1125, GameClient.eClientVersion.Version1125)]
+[PacketLib(1125, EClientVersion.Version1125)]
 public class PacketLib1125 : PacketLib1124
 {
 
@@ -457,7 +457,7 @@ public class PacketLib1125 : PacketLib1124
 			playerStatus |= 0x04;
 		if (SpellHelper.FindEffectOnTarget(living, "DamageOverTime") != null)
 			playerStatus |= 0x08;
-		if (player?.Client?.ClientState == GameClient.eClientState.Linkdead)
+		if (player?.Client?.ClientState == EClientState.Linkdead)
 			playerStatus |= 0x10;
 		if (living.DebuffCategory[(int)EProperty.SpellRange] != 0 || living.DebuffCategory[(int)EProperty.ArcheryRange] != 0)
 			playerStatus |= 0x40;

@@ -52,7 +52,7 @@ public class HousingMenuRequestHandler : IPacketHandler
 		client.Player.CurrentHouse = house;
 
 		var menu = _menu168;
-		if (client.Version >= GameClient.eClientVersion.Version1127)
+		if (client.Version >= EClientVersion.Version1127)
 			menu = _menu1127;
 
 		if (menu.TryGetValue(menuid, out var type))

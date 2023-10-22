@@ -14,7 +14,7 @@ public class DupNameCheckRequestHandler : IPacketHandler
 	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
 		string name;
-		if (client.Version >= GameClient.eClientVersion.Version1126)
+		if (client.Version >= EClientVersion.Version1126)
 			name = packet.ReadString(24);
 		else
 			name = packet.ReadString(30);

@@ -161,7 +161,7 @@ public class HousingPickupItemHandler : IPacketHandler
 				house.IndoorItems.Remove(position);
 
 				var pak = new GsTcpPacketOut(client.Out.GetPacketCode(EServerPackets.HousingItem));
-				if (client.Version >= GameClient.eClientVersion.Version1125)
+				if (client.Version >= EClientVersion.Version1125)
                 {
                     pak.WriteShortLowEndian((ushort)housenumber);
                     pak.WriteByte(0x01);

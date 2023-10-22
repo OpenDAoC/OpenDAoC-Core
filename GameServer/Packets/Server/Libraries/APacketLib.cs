@@ -107,7 +107,7 @@ public abstract class APacketLib
 	/// <param name="client">The client for which to create packet lib.</param>
 	/// <param name="version">The client version of packetlib.</param>
 	/// <returns>null if not found or new packetlib instance.</returns>
-	public static IPacketLib CreatePacketLibForVersion(int rawVersion, GameClient client, out GameClient.eClientVersion version)
+	public static IPacketLib CreatePacketLibForVersion(int rawVersion, GameClient client, out EClientVersion version)
 	{
 		foreach (Type t in ScriptMgr.GetDerivedClasses(typeof (IPacketLib)))
 		{
@@ -130,7 +130,7 @@ public abstract class APacketLib
 			}
 		}
 		
-		version = GameClient.eClientVersion.VersionUnknown;
+		version = EClientVersion.VersionUnknown;
 		return null;
 	}
 	

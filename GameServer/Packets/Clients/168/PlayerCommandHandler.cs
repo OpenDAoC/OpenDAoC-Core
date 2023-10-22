@@ -9,7 +9,7 @@ public class PlayerCommandHandler : IPacketHandler
 	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
 		packet.Skip(1);
-		if (client.Version < GameClient.eClientVersion.Version1127)
+		if (client.Version < EClientVersion.Version1127)
 			packet.Skip(7);
 		string cmdLine = packet.ReadString(255);
 		if(!ScriptMgr.HandleCommand(client, cmdLine))

@@ -1,9 +1,10 @@
 ﻿using System.Reflection;
+using Core.GS.Enums;
 using log4net;
 
 namespace Core.GS.Packets.Server;
 
-[PacketLib(198, GameClient.eClientVersion.Version198)]
+[PacketLib(198, EClientVersion.Version198)]
 public class PacketLib198 : PacketLib197
 {
 	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);

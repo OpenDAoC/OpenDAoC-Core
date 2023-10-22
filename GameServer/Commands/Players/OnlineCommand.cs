@@ -127,17 +127,17 @@ public class OnlineCommand : ACommandHandler, ICommandHandler
         foreach (GameClient c in clients)
         {
             #region count GMs, and different client states
-            if (c.ClientState == GameClient.eClientState.Connecting)
+            if (c.ClientState == EClientState.Connecting)
                 ++connecting;
-            else if (c.ClientState == GameClient.eClientState.Disconnected)
+            else if (c.ClientState == EClientState.Disconnected)
                 ++disconnecting;
-            else if (c.ClientState == GameClient.eClientState.CharScreen)
+            else if (c.ClientState == EClientState.CharScreen)
                 ++charscreen;
-            else if (c.ClientState == GameClient.eClientState.Linkdead)
+            else if (c.ClientState == EClientState.Linkdead)
                 ++linkdeath;
-            else if (c.ClientState == GameClient.eClientState.WorldEnter)
+            else if (c.ClientState == EClientState.WorldEnter)
                 ++enterworld;
-            else if (c.ClientState == GameClient.eClientState.Playing)
+            else if (c.ClientState == EClientState.Playing)
                 ++playing;
             else
                 continue;

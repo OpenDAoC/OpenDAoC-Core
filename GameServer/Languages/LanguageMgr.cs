@@ -7,6 +7,7 @@ using System.Text;
 using Core.Database;
 using Core.Database.Enums;
 using Core.Database.Tables;
+using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Server;
 using log4net;
@@ -501,7 +502,7 @@ public class LanguageMgr
         {
             if (client.Account.PrivLevel > 1 && client.Player != null && result)
             {
-                if (client.ClientState == GameClient.eClientState.Playing)
+                if (client.ClientState == EClientState.Playing)
                 {
                     if (client.Player.TempProperties.GetProperty("LANGUAGEMGR-DEBUG", false))
                         translation = "Id is " + translationId + " " + translation;

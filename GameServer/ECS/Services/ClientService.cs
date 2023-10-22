@@ -48,21 +48,21 @@ namespace Core.GS.ECS
 
                 switch (client.ClientState)
                 {
-                    case GameClient.eClientState.Disconnected:
+                    case EClientState.Disconnected:
                     {
                         OnClientDisconnect(client);
                         client.PacketProcessor?.OnDisconnect();
                         return;
                     }
-                    case GameClient.eClientState.NotConnected:
-                    case GameClient.eClientState.Linkdead:
+                    case EClientState.NotConnected:
+                    case EClientState.Linkdead:
                         return;
-                    case GameClient.eClientState.CharScreen:
+                    case EClientState.CharScreen:
                     {
                         CheckPingTimeout(client);
                         break;
                     }
-                    case GameClient.eClientState.Playing:
+                    case EClientState.Playing:
                     {
                         CheckPingTimeout(client);
                         GamePlayer player = client.Player;

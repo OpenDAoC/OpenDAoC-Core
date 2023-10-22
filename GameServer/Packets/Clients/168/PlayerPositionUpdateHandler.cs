@@ -41,7 +41,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
 		//Tiv: in very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
-		if ((client.Player.ObjectState != GameObject.eObjectState.Active) || (client.ClientState != GameClient.eClientState.Playing))
+		if ((client.Player.ObjectState != GameObject.eObjectState.Active) || (client.ClientState != EClientState.Playing))
 			return;
 
 		// Don't allow movement if the player isn't close to the NPC they're supposed to be riding.
@@ -65,7 +65,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 			}
 		}
 
-		if (client.Version >= GameClient.eClientVersion.Version1124)
+		if (client.Version >= EClientVersion.Version1124)
 		{
 			_HandlePacket1124(client, packet);
 			return;
@@ -599,7 +599,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 				fallSpeed = (flyingflag & 0xFFF) - 100 * safeFallLevel; // 0x7FF fall speed and 0x800 bit = fall speed overcaped
 				int fallMinSpeed = 400;
 				int fallDivide = 6;
-				if (client.Version >= GameClient.eClientVersion.Version188)
+				if (client.Version >= EClientVersion.Version188)
 				{
 					fallMinSpeed = 500;
 					fallDivide = 15;
@@ -769,11 +769,11 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 			if (!client.Player.IsStealthed || player.CanDetect(client.Player))
 			{
 				//forward the position packet like normal!
-				if (player.Client.Version >= GameClient.eClientVersion.Version1124)
+				if (player.Client.Version >= EClientVersion.Version1124)
 					player.Out.SendUDP(outpak1124);
-				else if (player.Client.Version >= GameClient.eClientVersion.Version1112)
+				else if (player.Client.Version >= EClientVersion.Version1112)
 					player.Out.SendUDP(outpak1112);
-				else if (player.Client.Version >= GameClient.eClientVersion.Version190)
+				else if (player.Client.Version >= EClientVersion.Version190)
 					player.Out.SendUDP(outpak190);
 			}
 			else
@@ -802,7 +802,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 	{
 		//Tiv: in very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
 		if ((client.Player.ObjectState != GameObject.eObjectState.Active) ||
-			(client.ClientState != GameClient.eClientState.Playing))
+			(client.ClientState != EClientState.Playing))
 			return;
 
 		long environmentTick = GameLoopMgr.GameLoopTime;
@@ -814,7 +814,7 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 		var newPlayerSpeed = packet.ReadFloatLowEndian();
 		var newPlayerZSpeed = packet.ReadFloatLowEndian();
 		ushort sessionID = packet.ReadShort();
-		if (client.Version >= GameClient.eClientVersion.Version1127)
+		if (client.Version >= EClientVersion.Version1127)
 			packet.ReadShort(); // object ID
 		ushort currentZoneID = packet.ReadShort();
 		ushort playerState = packet.ReadShort();
@@ -1317,11 +1317,11 @@ public class PlayerPositionUpdateHandler : IPacketHandler
 
 			if (!client.Player.IsStealthed || player.CanDetect(client.Player))
 			{
-				if (player.Client.Version >= GameClient.eClientVersion.Version1127)
+				if (player.Client.Version >= EClientVersion.Version1127)
 					player.Out.SendUDP(outpak1127);
-				else if (player.Client.Version >= GameClient.eClientVersion.Version1124)
+				else if (player.Client.Version >= EClientVersion.Version1124)
 					player.Out.SendUDP(outpak1124);
-				else if (player.Client.Version >= GameClient.eClientVersion.Version1112)
+				else if (player.Client.Version >= EClientVersion.Version1112)
 					player.Out.SendUDP(outpak1112);
 				else
 					player.Out.SendUDP(outpak190);

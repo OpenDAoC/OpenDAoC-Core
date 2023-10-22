@@ -16,7 +16,7 @@ public class NpcCreationRequestHandler : IPacketHandler
 			return;
 
 		ushort id;
-		if (client.Version >= GameClient.eClientVersion.Version1126)
+		if (client.Version >= EClientVersion.Version1126)
 			id = packet.ReadShortLowEndian(); // Dre: disassembled game.dll show a write of uint, is it a wip in the game.dll?
 		else
 			id = packet.ReadShort();

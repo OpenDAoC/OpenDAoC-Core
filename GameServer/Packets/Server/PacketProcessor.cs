@@ -498,7 +498,7 @@ public class PacketProcessor
     /// <param name="isForced">Force UDP packet if <code>true</code>, else packet can be sent over TCP</param>
     public void SendUDP(byte[] buffer, bool isForced)
     {
-        if (m_client.ClientState == GameClient.eClientState.Playing)
+        if (m_client.ClientState == EClientState.Playing)
         {
             // Would previously timeout after 50 seconds, but clients (1.127) send 'UDPInitRequestHandler' every 65 seconds.
             // May vary depending on the client version.

@@ -30,7 +30,7 @@ public class PlayerRegionChangeRequestHandler : IPacketHandler
 
 	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
-		ushort zonePointId = client.Version >= GameClient.eClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
+		ushort zonePointId = client.Version >= EClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
 		ERealm playerRealm = client.Player.Realm;
 
 		// If we are in TrialsOfAtlantis then base the target jump on the current region realm instead of the players realm.
