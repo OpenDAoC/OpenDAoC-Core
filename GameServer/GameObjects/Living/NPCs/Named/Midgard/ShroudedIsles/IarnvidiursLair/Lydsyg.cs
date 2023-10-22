@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -13,7 +10,7 @@ using Core.GS.Spells;
 
 namespace Core.GS;
 
-public class Lydsyg : GameEpicNPC
+public class Lydsyg : GameEpicNpc
 {
 	public Lydsyg() : base() { }
 

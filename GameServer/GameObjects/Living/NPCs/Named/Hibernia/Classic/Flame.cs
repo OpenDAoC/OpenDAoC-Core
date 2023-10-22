@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -15,7 +12,7 @@ using Core.GS.Spells;
 namespace Core.GS;
 
 #region Flame
-public class Flame : GameEpicNPC
+public class Flame : GameEpicNpc
 {
 	public Flame() : base() { }
 
@@ -120,7 +117,7 @@ public class Flame : GameEpicNPC
 #endregion Flame
 
 #region Luriquay
-public class Luriquay : GameEpicNPC
+public class Luriquay : GameEpicNpc
 {
 	public Luriquay() : base() { }
 
@@ -212,7 +209,7 @@ public class Luriquay : GameEpicNPC
 #endregion Luriquay
 
 #region Flame Normal mob for quest
-public class FlameNormal : GameEpicNPC
+public class FlameNormal : GameEpicNpc
 {
 	public FlameNormal() : base() { }
 

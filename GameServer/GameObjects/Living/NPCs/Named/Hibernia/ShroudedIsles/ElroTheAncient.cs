@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Core.AI;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
@@ -11,7 +8,7 @@ using Core.GS.GameUtils;
 using Core.GS.Server;
 using Core.GS.Skills;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
 public class ElroTheAncient : GameEpicBoss
 {

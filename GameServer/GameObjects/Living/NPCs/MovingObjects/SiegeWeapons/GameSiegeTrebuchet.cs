@@ -5,7 +5,6 @@ namespace Core.GS;
 
 public class GameSiegeTrebuchet : GameSiegeCatapult
 {
-
 	public GameSiegeTrebuchet()
 		: base()
 	{

@@ -1,6 +1,6 @@
 using Core.GS.Enums;
 
-namespace Core.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Blademaster Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Blademaster Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class BlademasterTrainer : GameTrainer

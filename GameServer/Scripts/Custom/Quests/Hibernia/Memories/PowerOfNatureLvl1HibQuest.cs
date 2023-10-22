@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
 using Core.Events;

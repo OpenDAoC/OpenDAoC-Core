@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
-using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -17,6 +13,7 @@ using Core.GS.World;
 //Mob with packageid="HostBaf" in same region as bosss will come if he is pulled/aggroed
 //Make sure to add that packageid to Host rooms, unless it will not bring a friends!
 //DO NOT REMOVE Host Initializator from ingame or encounter will  not work!
+
 namespace Core.GS;
 
 #region Host Initializer

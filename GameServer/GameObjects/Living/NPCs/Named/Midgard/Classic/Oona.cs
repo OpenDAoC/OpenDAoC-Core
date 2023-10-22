@@ -1,6 +1,4 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
@@ -12,7 +10,7 @@ using Core.GS.World;
 namespace Core.GS;
 
 #region Oona
-public class Oona : GameEpicNPC
+public class Oona : GameEpicNpc
 {
 	public Oona() : base() { }
 	public override int GetResist(EDamageType damageType)

@@ -1,175 +1,85 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using Core.Database;
-using Core.Database.Tables;
 using Core.GS.Enums;
-using Core.GS.GameUtils;
 using Core.GS.Languages;
 
-namespace Core.GS
+namespace Core.GS;
+
+// This class has to be completed and may be inherited for scripting purpose (like quests)
+public class KingNPC : GameNpc
 {
-	// This class has to be completed and may be inherited for scripting purpose (like quests)
-	public class KingNPC : GameNpc
+	private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+	public KingNPC()
+		: base()
 	{
-		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-		public KingNPC()
-			: base()
-		{
-		}
-
-		public override bool Interact(GamePlayer player)
-		{
-			if (!base.Interact(player))
-				return false;
-
-			TurnTo(player, 5000);
-			if (!player.Champion && player.Level == 50)
-			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "KingNPC.WhisperReceive.AskForChampion"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
-			}
-
-			if (player.Champion)
-			{
-				bool cllevel = false;
-
-				while (player.ChampionLevel < player.ChampionMaxLevel && player.ChampionExperience >= player.ChampionExperienceForNextLevel)
-				{
-					player.ChampionLevelUp();
-					cllevel = true;
-				}
-
-				if ( cllevel )
-				{
-					player.Out.SendMessage( "You reached champion level " + player.ChampionLevel + "!", EChatType.CT_System, EChatLoc.CL_PopupWindow );
-				}
-
-				if (player.ChampionLevel >= 5)
-				{
-					player.Out.SendMessage("I can [respecialize] your champion skills if you so desire.", EChatType.CT_System, EChatLoc.CL_PopupWindow);
-				}
-
-			}
-
-			return true;
-		}
-
-		public override bool WhisperReceive(GameLiving source, string str)
-		{
-			if (!base.WhisperReceive(source, str))
-				return false;
-
-			GamePlayer player = source as GamePlayer;
-			if (player == null) return false;
-
-			if (str == "Champions" && player.Level == 50)
-			{
-				if (player.Champion == true)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "KingNPC.WhisperReceive.AlreadyChampion"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
-					return false;
-				}
-
-				player.RemoveChampionLevels();
-				player.Champion = true;
-				player.Out.SendUpdatePlayer();
-				player.SaveIntoDatabase();
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "KingNPC.WhisperReceive.IsNowChampion"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
-				return true;
-			}
-
-			if (str.ToLower() == "respecialize" && player.Champion && player.ChampionLevel >= 5)
-			{
-				player.RespecChampionSkills();
-				player.SaveIntoDatabase();
-				player.Out.SendMessage("I have reset your champion skills!", EChatType.CT_Important, EChatLoc.CL_PopupWindow);
-			}
-
-			return true;
-		}
 	}
 
-	// This class has to be completed and may be inherited for scripting purpose
-	public class CLWeaponNPC : GameNpc
+	public override bool Interact(GamePlayer player)
 	{
-		public CLWeaponNPC()
-			: base()
+		if (!base.Interact(player))
+			return false;
+
+		TurnTo(player, 5000);
+		if (!player.Champion && player.Level == 50)
 		{
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "KingNPC.WhisperReceive.AskForChampion"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 		}
-		/// <summary>
-		/// Talk to trainer
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="text"></param>
-		/// <returns></returns>
-		public override bool WhisperReceive(GameLiving source, string text)
+
+		if (player.Champion)
 		{
-			if (!base.WhisperReceive(source, text)) return false;
-			GamePlayer player = source as GamePlayer;
-			if (player == null) return false;
+			bool cllevel = false;
 
-			switch (text)
+			while (player.ChampionLevel < player.ChampionMaxLevel && player.ChampionExperience >= player.ChampionExperienceForNextLevel)
 			{
-				//level respec for players
-				case "respecialize":
-					if (player.Champion && player.ChampionLevel >= 5)
-					{
-						player.RespecChampionSkills();
-						player.Out.SendMessage("I have reset your Champion skills!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
-
-					}
-					break;
+				player.ChampionLevelUp();
+				cllevel = true;
 			}
 
-			//Now we turn the npc into the direction of the person
-			TurnTo(player, 10000);
+			if ( cllevel )
+			{
+				player.Out.SendMessage( "You reached champion level " + player.ChampionLevel + "!", EChatType.CT_System, EChatLoc.CL_PopupWindow );
+			}
+
+			if (player.ChampionLevel >= 5)
+			{
+				player.Out.SendMessage("I can [respecialize] your champion skills if you so desire.", EChatType.CT_System, EChatLoc.CL_PopupWindow);
+			}
+
+		}
+
+		return true;
+	}
+
+	public override bool WhisperReceive(GameLiving source, string str)
+	{
+		if (!base.WhisperReceive(source, str))
+			return false;
+
+		GamePlayer player = source as GamePlayer;
+		if (player == null) return false;
+
+		if (str == "Champions" && player.Level == 50)
+		{
+			if (player.Champion == true)
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "KingNPC.WhisperReceive.AlreadyChampion"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
+				return false;
+			}
+
+			player.RemoveChampionLevels();
+			player.Champion = true;
+			player.Out.SendUpdatePlayer();
+			player.SaveIntoDatabase();
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "KingNPC.WhisperReceive.IsNowChampion"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
 			return true;
 		}
 
-		/// <summary>
-		/// For Recieving CL Respec Stone.
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
+		if (str.ToLower() == "respecialize" && player.Champion && player.ChampionLevel >= 5)
 		{
-			if (source == null || item == null) return false;
-
-			GamePlayer player = source as GamePlayer;
-			if (player != null)
-			{
-				switch (item.Id_nb)
-				{
-					case "respec_cl":
-						{
-							player.Inventory.RemoveCountFromStack(item, 1);
-                            InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Other, item.Template);
-							player.RespecAmountChampionSkill++;
-							player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "CLWeaponNPC.ReceiveItem.RespecCL"), EChatType.CT_System, EChatLoc.CL_PopupWindow);
-							return true;
-						}
-				}
-			}
-
-			return base.ReceiveItem(source, item);
+			player.RespecChampionSkills();
+			player.SaveIntoDatabase();
+			player.Out.SendMessage("I have reset your champion skills!", EChatType.CT_Important, EChatLoc.CL_PopupWindow);
 		}
+
+		return true;
 	}
 }

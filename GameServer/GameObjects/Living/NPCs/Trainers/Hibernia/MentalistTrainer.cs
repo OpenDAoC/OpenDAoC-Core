@@ -2,7 +2,7 @@ using System;
 using Core.GS.Enums;
 using Core.GS.Languages;
 
-namespace Core.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Mentalist Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Mentalist Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class MentalistTrainer : GameTrainer

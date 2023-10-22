@@ -1,7 +1,4 @@
-﻿using Core.AI.Brain;
-using Core.Database;
-using Core.Database.Tables;
-using Core.GS;
+﻿using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
@@ -134,7 +131,7 @@ public class GiantSporiteCluster : GameEpicBoss
 #endregion Giant Sporite Cluster
 
 #region Giant Sporite Cluster adds
-public class SporiteClusterAdds : GameEpicNPC
+public class SporiteClusterAdds : GameEpicNpc
 {
     public SporiteClusterAdds() : base()
     {

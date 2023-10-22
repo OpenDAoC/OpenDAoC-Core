@@ -1,9 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
-using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -15,7 +11,7 @@ using Core.GS.World;
 namespace Core.GS;
 
 #region Green Maw
-public class GreenMaw : GameEpicNPC
+public class GreenMaw : GameEpicNpc
 {
 	public GreenMaw() : base() { }
 

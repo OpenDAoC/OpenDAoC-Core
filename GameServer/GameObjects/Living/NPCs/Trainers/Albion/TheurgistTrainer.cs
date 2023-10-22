@@ -1,6 +1,6 @@
 using Core.GS.Enums;
 
-namespace Core.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Theurgist Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Theurgist Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class TheurgistTrainer : GameTrainer

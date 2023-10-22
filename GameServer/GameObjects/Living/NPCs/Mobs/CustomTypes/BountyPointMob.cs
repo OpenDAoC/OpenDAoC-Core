@@ -2,7 +2,7 @@
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
 public class BountyPointMob : GameNpc
 {

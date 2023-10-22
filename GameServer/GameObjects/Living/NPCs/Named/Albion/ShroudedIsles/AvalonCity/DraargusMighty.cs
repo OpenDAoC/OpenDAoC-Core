@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -113,7 +110,7 @@ public class DraargusMighty : GameEpicBoss
 #endregion Dra'argus the Mighty
 
 #region Draugyn Sphere
-public class DraugynSphere : GameEpicNPC
+public class DraugynSphere : GameEpicNpc
 {
 	public DraugynSphere() : base() { }
 

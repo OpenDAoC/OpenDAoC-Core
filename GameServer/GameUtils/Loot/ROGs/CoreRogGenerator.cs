@@ -66,7 +66,7 @@ public class CoreRogGenerator : LootGeneratorBase {
             {
                 var maxDropCap = bg.PlayerCount / 50;
                 if (maxDropCap < 1) maxDropCap = 1;
-                if (mob is GameEpicNPC)
+                if (mob is GameEpicNpc)
                     maxDropCap *= 2;
                 chance = 2;
 

@@ -2,10 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -18,270 +16,113 @@ using Core.GS.Players.Titles;
 using Core.GS.Quests;
 using Core.GS.Server;
 
-namespace Core.GS
+namespace Core.GS;
+
+public class GameMerchant : GameNpc
 {
-	public class GameMerchant : GameNpc
+    #region GetExamineMessages / Interact
+
+    /// <summary>
+	/// Adds messages to ArrayList which are sent when object is targeted
+	/// </summary>
+	/// <param name="player">GamePlayer that is examining this object</param>
+	/// <returns>list with string messages</returns>
+	public override IList GetExamineMessages(GamePlayer player)
 	{
-        #region GetExamineMessages / Interact
+		IList list = base.GetExamineMessages(player);
+		list.RemoveAt(list.Count - 1);
+        list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.YouExamine", 
+                                            GetName(0, false, player.Client.Account.Language, this), GetPronoun(0, true, player.Client.Account.Language),
+                                            GetAggroLevelString(player, false)));
+		list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.RightClick")); 
+		return list;
+	}
 
-        /// <summary>
-		/// Adds messages to ArrayList which are sent when object is targeted
-		/// </summary>
-		/// <param name="player">GamePlayer that is examining this object</param>
-		/// <returns>list with string messages</returns>
-		public override IList GetExamineMessages(GamePlayer player)
+	/// <summary>
+	/// Called when a player right clicks on the merchant
+	/// </summary>
+	/// <param name="player">Player that interacted with the merchant</param>
+	/// <returns>True if succeeded</returns>
+	public override bool Interact(GamePlayer player)
+	{
+		if (!base.Interact(player))
+			return false;
+		TurnTo(player, 10000);
+		SendMerchantWindow(player);
+		return true;
+	}
+
+	/// <summary>
+	/// send the merchants item offer window to a player
+	/// </summary>
+	/// <param name="player"></param>
+	public virtual void SendMerchantWindow(GamePlayer player)
+	{
+		ThreadPool.QueueUserWorkItem(new WaitCallback(SendMerchantWindowCallback), player);
+	}
+
+	/// <summary>
+	/// Sends merchant window from threadpool thread
+	/// </summary>
+	/// <param name="state">The game player to send to</param>
+	protected virtual void SendMerchantWindowCallback(object state)
+	{
+		((GamePlayer)state).Out.SendMerchantWindow(m_tradeItems, EMerchantWindowType.Normal);
+	}
+	#endregion
+
+	#region Items List
+
+	/// <summary>
+	/// Items available for sale
+	/// </summary>
+	protected MerchantTradeItems m_tradeItems;
+
+	/// <summary>
+	/// Gets the items available from this merchant
+	/// </summary>
+	public MerchantTradeItems TradeItems
+	{
+		get { return m_tradeItems; }
+		set { m_tradeItems = value; }
+	}
+
+	#endregion
+
+	#region Buy / Sell / Apparaise
+
+	/// <summary>
+	/// Called when a player buys an item
+	/// </summary>
+	/// <param name="player">The player making the purchase</param>
+	/// <param name="item_slot">slot of the item to be bought</param>
+	/// <param name="number">Number to be bought</param>
+	/// <returns>true if buying is allowed, false if buying should be prevented</returns>
+	public virtual void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+	{
+		//Get the template
+		int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+		int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+
+		DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
+		if (template == null) return;
+
+		//Calculate the amout of items
+		int amountToBuy = number;
+		if (template.PackSize > 0)
+			amountToBuy *= template.PackSize;
+
+		if (amountToBuy <= 0) return;
+
+		//Calculate the value of items
+		long totalValue = number * template.Price;
+
+		lock (player.Inventory)
 		{
-			IList list = base.GetExamineMessages(player);
-			list.RemoveAt(list.Count - 1);
-            list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.YouExamine", 
-                                                GetName(0, false, player.Client.Account.Language, this), GetPronoun(0, true, player.Client.Account.Language),
-                                                GetAggroLevelString(player, false)));
-			list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.RightClick")); 
-			return list;
-		}
 
-		/// <summary>
-		/// Called when a player right clicks on the merchant
-		/// </summary>
-		/// <param name="player">Player that interacted with the merchant</param>
-		/// <returns>True if succeeded</returns>
-		public override bool Interact(GamePlayer player)
-		{
-			if (!base.Interact(player))
-				return false;
-			TurnTo(player, 10000);
-			SendMerchantWindow(player);
-			return true;
-		}
-
-		/// <summary>
-		/// send the merchants item offer window to a player
-		/// </summary>
-		/// <param name="player"></param>
-		public virtual void SendMerchantWindow(GamePlayer player)
-		{
-			ThreadPool.QueueUserWorkItem(new WaitCallback(SendMerchantWindowCallback), player);
-		}
-
-		/// <summary>
-		/// Sends merchant window from threadpool thread
-		/// </summary>
-		/// <param name="state">The game player to send to</param>
-		protected virtual void SendMerchantWindowCallback(object state)
-		{
-			((GamePlayer)state).Out.SendMerchantWindow(m_tradeItems, EMerchantWindowType.Normal);
-		}
-		#endregion
-
-		#region Items List
-
-		/// <summary>
-		/// Items available for sale
-		/// </summary>
-		protected MerchantTradeItems m_tradeItems;
-
-		/// <summary>
-		/// Gets the items available from this merchant
-		/// </summary>
-		public MerchantTradeItems TradeItems
-		{
-			get { return m_tradeItems; }
-			set { m_tradeItems = value; }
-		}
-
-		#endregion
-
-		#region Buy / Sell / Apparaise
-
-		/// <summary>
-		/// Called when a player buys an item
-		/// </summary>
-		/// <param name="player">The player making the purchase</param>
-		/// <param name="item_slot">slot of the item to be bought</param>
-		/// <param name="number">Number to be bought</param>
-		/// <returns>true if buying is allowed, false if buying should be prevented</returns>
-		public virtual void OnPlayerBuy(GamePlayer player, int item_slot, int number)
-		{
-			//Get the template
-			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
-			if (template == null) return;
-
-			//Calculate the amout of items
-			int amountToBuy = number;
-			if (template.PackSize > 0)
-				amountToBuy *= template.PackSize;
-
-			if (amountToBuy <= 0) return;
-
-			//Calculate the value of items
-			long totalValue = number * template.Price;
-
-			lock (player.Inventory)
+			if (player.GetCurrentMoney() < totalValue)
 			{
-
-				if (player.GetCurrentMoney() < totalValue)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-
-				if (!this.IsWithinRadius(player, ServerProperty.WORLD_PICKUP_DISTANCE)) // tested
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.TooFarAway", GetName(0, true)), EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-					return;
-				}
-
-				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
-				//Generate the buy message
-				string message;
-				if (amountToBuy > 1)
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), MoneyMgr.GetString(totalValue));
-				else
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), MoneyMgr.GetString(totalValue));
-
-				// Check if player has enough money and subtract the money
-				if (!player.RemoveMoney(totalValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
-				{
-					throw new Exception("Money amount changed while adding items.");
-				}
-				InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, totalValue);
-			}
-		}
-		
-		public virtual void OnPlayerBuy(GamePlayer player, int item_slot, int pagenumber, int number)
-		{
-			//Get the template
-			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
-			if (template == null) return;
-
-			//Calculate the amout of items
-			int amountToBuy = number;
-			if (template.PackSize > 0)
-				amountToBuy *= template.PackSize;
-
-			if (amountToBuy <= 0) return;
-
-			//Calculate the value of items
-			long totalValue = number * template.Price;
-
-			lock (player.Inventory)
-			{
-
-				if (player.GetCurrentMoney() < totalValue)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-
-				if (!this.IsWithinRadius(player, ServerProperty.WORLD_PICKUP_DISTANCE)) // tested
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.TooFarAway", GetName(0, true)), EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-					return;
-				}
-
-				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
-				//Generate the buy message
-				string message;
-				if (amountToBuy > 1)
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), MoneyMgr.GetString(totalValue));
-				else
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), MoneyMgr.GetString(totalValue));
-
-				// Check if player has enough money and subtract the money
-				if (!player.RemoveMoney(totalValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
-				{
-					throw new Exception("Money amount changed while adding items.");
-				}
-				InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, totalValue);
-			}
-		}
-
-
-		/// <summary>
-		/// Called when a player buys an item
-		/// </summary>
-		/// <param name="player">The player making the purchase</param>
-		/// <param name="item_slot">slot of the item to be bought</param>
-		/// <param name="number">Number to be bought</param>
-		/// <param name="TradeItems"></param>
-		/// <returns>true if buying is allowed, false if buying should be prevented</returns>
-		public static void OnPlayerBuy(GamePlayer player, int item_slot, int number, MerchantTradeItems TradeItems)
-		{
-			//Get the template
-			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-
-			DbItemTemplate template = TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
-			if (template == null) return;
-
-			//Calculate the amout of items
-			int amountToBuy = number;
-			if (template.PackSize > 0)
-				amountToBuy *= template.PackSize;
-
-			if (amountToBuy <= 0) return;
-
-			//Calculate the value of items
-			long totalValue = number * template.Price;
-
-			lock (player.Inventory)
-			{
-
-				if (player.GetCurrentMoney() < totalValue)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-
-				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-				InventoryLogging.LogInventoryAction("(TRADEITEMS;" + TradeItems.ItemsListID + ")", player, EInventoryActionType.Merchant, template, amountToBuy);
-				//Generate the buy message
-				string message;
-				if (amountToBuy > 1)
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), MoneyMgr.GetString(totalValue));
-				else
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), MoneyMgr.GetString(totalValue));
-
-				// Check if player has enough money and subtract the money
-				if (!player.RemoveMoney(totalValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
-				{
-					throw new Exception("Money amount changed while adding items.");
-				}
-				InventoryLogging.LogInventoryAction(player, "(TRADEITEMS;" + TradeItems.ItemsListID + ")", EInventoryActionType.Merchant, totalValue);
-			}
-		}
-		
-		/// <summary>
-		/// Called when a player sells something
-		/// </summary>
-		/// <param name="player">Player making the sale</param>
-		/// <param name="item">The InventoryItem to be sold</param>
-		/// <returns>true if selling is allowed, false if it should be prevented</returns>
-		public virtual void OnPlayerSell(GamePlayer player, DbInventoryItem item)
-		{
-			if(item==null || player==null) return;
-			if (!item.IsDropable)
-			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.CantBeSold"), EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -291,769 +132,925 @@ namespace Core.GS
 				return;
 			}
 
-			long itemValue = OnPlayerAppraise(player, item, true);
-
-			if (itemValue == 0)
+			if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 			{
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.IsntInterested", GetName(0, true), item.GetName(0, false)), EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				return;
+			}
+			InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
+			//Generate the buy message
+			string message;
+			if (amountToBuy > 1)
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), MoneyMgr.GetString(totalValue));
+			else
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), MoneyMgr.GetString(totalValue));
+
+			// Check if player has enough money and subtract the money
+			if (!player.RemoveMoney(totalValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
+			{
+				throw new Exception("Money amount changed while adding items.");
+			}
+			InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, totalValue);
+		}
+	}
+	
+	public virtual void OnPlayerBuy(GamePlayer player, int item_slot, int pagenumber, int number)
+	{
+		//Get the template
+		int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+
+		DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
+		if (template == null) return;
+
+		//Calculate the amout of items
+		int amountToBuy = number;
+		if (template.PackSize > 0)
+			amountToBuy *= template.PackSize;
+
+		if (amountToBuy <= 0) return;
+
+		//Calculate the value of items
+		long totalValue = number * template.Price;
+
+		lock (player.Inventory)
+		{
+
+			if (player.GetCurrentMoney() < totalValue)
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
 			}
 
-			if (player.Inventory.RemoveItem(item))
+			if (!this.IsWithinRadius(player, ServerProperty.WORLD_PICKUP_DISTANCE)) // tested
 			{
-				string message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.GivesYou", GetName(0, true), MoneyMgr.GetString(itemValue), item.GetName(0, false));
-				player.AddMoney(itemValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-				InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template, item.Count);
-				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, itemValue);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.TooFarAway", GetName(0, true)), EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 				return;
 			}
+
+			if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				return;
+			}
+			InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
+			//Generate the buy message
+			string message;
+			if (amountToBuy > 1)
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), MoneyMgr.GetString(totalValue));
 			else
-				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.CantBeSold"), EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-		}
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), MoneyMgr.GetString(totalValue));
 
-		/// <summary>
-		/// Called to appraise the value of an item
-		/// </summary>
-		/// <param name="player">The player whose item needs appraising</param>
-		/// <param name="item">The item to be appraised</param>
-		/// <param name="silent"></param>
-		/// <returns>The price this merchant will pay for the offered items</returns>
-		public virtual long OnPlayerAppraise(GamePlayer player, DbInventoryItem item, bool silent)
-		{
-			if (item == null)
-				return 0;
-
-			int itemCount = Math.Max(1, item.Count);
-			int packSize = Math.Max(1, item.PackSize);
-
-			long val = item.Price * itemCount / packSize * ServerProperty.ITEM_SELL_RATIO / 100;
-
-			if (item.Price == 1 && val == 0)
-				val = item.Price * itemCount / packSize;
-			
-			if (!item.IsDropable)
+			// Check if player has enough money and subtract the money
+			if (!player.RemoveMoney(totalValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
 			{
-				val = 0;
+				throw new Exception("Money amount changed while adding items.");
 			}
-
-			if (!silent)
-			{
-				string message;
-				if (val == 0)
-				{
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.IsntInterested", GetName(0, true), item.GetName(0, false));
-				}
-				else
-				{
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerAppraise.Offers", GetName(0, true), MoneyMgr.GetString(val), item.GetName(0, false));
-				}
-				player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-			}
-			return val;
-		}
-
-		#endregion
-
-		#region NPCTemplate
-		public override void LoadTemplate(INpcTemplate template)
-		{
-			base.LoadTemplate(template);
-
-			if (template != null && string.IsNullOrEmpty(template.ItemsListTemplateID) == false)
-			{
-				TradeItems = new MerchantTradeItems(template.ItemsListTemplateID);
-			}
-		}
-		#endregion NPCTemplate
-
-		#region Database
-
-		/// <summary>
-		/// Loads a merchant from the DB
-		/// </summary>
-		/// <param name="merchantobject">The merchant DB object</param>
-		public override void LoadFromDatabase(DataObject merchantobject)
-		{
-			base.LoadFromDatabase(merchantobject);
-			if (!(merchantobject is DbMob)) return;
-			DbMob merchant = (DbMob)merchantobject;
-			if (merchant.ItemsListTemplateID != null && merchant.ItemsListTemplateID.Length > 0)
-				m_tradeItems = new MerchantTradeItems(merchant.ItemsListTemplateID);
-		}
-
-		/// <summary>
-		/// Saves a merchant into the DB
-		/// </summary>
-		public override void SaveIntoDatabase()
-		{
-			DbMob merchant = null;
-			if (InternalID != null)
-				merchant = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
-			if (merchant == null)
-				merchant = new DbMob();
-
-			merchant.Name = Name;
-			merchant.Guild = GuildName;
-			merchant.X = X;
-			merchant.Y = Y;
-			merchant.Z = Z;
-			merchant.Heading = Heading;
-			merchant.Speed = MaxSpeedBase;
-			merchant.Region = CurrentRegionID;
-            merchant.Realm = (byte)Realm;
-            merchant.RoamingRange = RoamingRange;
-			merchant.Model = Model;
-			merchant.Size = Size;
-			merchant.Level = Level;
-            merchant.Gender = (byte)Gender;
-			merchant.Flags = (uint)Flags;
-			merchant.PathID = PathID;
-			merchant.PackageID = PackageID;
-			merchant.OwnerID = OwnerID;
-
-			IOldAggressiveBrain aggroBrain = Brain as IOldAggressiveBrain;
-			if (aggroBrain != null)
-			{
-				merchant.AggroLevel = aggroBrain.AggroLevel;
-				merchant.AggroRange = aggroBrain.AggroRange;
-			}
-			merchant.ClassType = this.GetType().ToString();
-			merchant.EquipmentTemplateID = EquipmentTemplateID;
-			if (m_tradeItems == null)
-			{
-				merchant.ItemsListTemplateID = null;
-			}
-			else
-			{
-				merchant.ItemsListTemplateID = m_tradeItems.ItemsListID;
-			}
-
-			if (InternalID == null)
-			{
-				GameServer.Database.AddObject(merchant);
-				InternalID = merchant.ObjectId;
-			}
-			else
-			{
-				GameServer.Database.SaveObject(merchant);
-			}
-		}
-
-		/// <summary>
-		/// Deletes a merchant from the DB
-		/// </summary>
-		public override void DeleteFromDatabase()
-		{
-			if (InternalID != null)
-			{
-				DbMob merchant = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
-				if (merchant != null)
-					GameServer.Database.DeleteObject(merchant);
-			}
-			InternalID = null;
-		}
-
-		#endregion
-	}
-
-	/* 
- * Author:   Avithan 
- * Date:   22.12.2005 
- * Bounty merchant 
- */
-
-	public class GameBountyMerchant : GameMerchant
-	{
-		protected readonly static Dictionary<string, int> m_currencyValues = null;
-
-		/// <summary>
-		/// Populate bp conversion rates
-		/// </summary>
-		static GameBountyMerchant()
-        {
-			if (ServerProperty.BP_EXCHANGE_ALLOW && m_currencyValues == null)
-				foreach (string sCurrencyValue in ServerProperty.BP_EXCHANGE_VALUES.Split(';'))
-				{
-					string[] asVal = sCurrencyValue.Split('|');
-
-					if (asVal.Length > 1 && int.TryParse(asVal[1], out int currencyValue) && currencyValue > 0)
-					{
-						// Don't create a dictionary until there is at least one valid value
-						if (m_currencyValues == null)
-							m_currencyValues = new Dictionary<string, int>(1);
-
-						m_currencyValues[asVal[0]] = currencyValue;
-					}
-				} // foreach
-		}
-
-		/// <summary>
-		/// Exchange special currency for BPs
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
-		{
-			if (source is GamePlayer player && item != null && m_currencyValues != null
-				&& m_currencyValues.TryGetValue(item.Id_nb, out int value) && value > 0)
-			{
-				player.GainBountyPoints(item.Count * value);
-				player.Inventory.RemoveItem(item);
-				return true;
-			}
-			if (this.DataQuestList.Count > 0)
-			{
-				foreach (DataQuest quest in DataQuestList)
-				{
-					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(source, this, item));
-				}
-			}
-
-			return base.ReceiveItem(source, item);
-		}
-
-		protected override void SendMerchantWindowCallback(object state)
-		{
-			((GamePlayer)state).Out.SendMerchantWindow(m_tradeItems, EMerchantWindowType.Bp);
-		}
-
-		public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
-		{
-			//Get the template
-			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
-			if (template == null) return;
-
-			//Calculate the amout of items
-			int amountToBuy = number;
-			if (template.PackSize > 0)
-				amountToBuy *= template.PackSize;
-
-			if (amountToBuy <= 0) return;
-
-			//Calculate the value of items
-			long totalValue = number * template.Price;
-
-			lock (player.Inventory)
-			{
-				if (player.BountyPoints < totalValue)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeedBP", totalValue), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
-				//Generate the buy message
-				string message;
-				if (number > 1)
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPiecesBP", totalValue, template.GetName(1, false));
-				else
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtBP", template.GetName(1, false), totalValue);
-				player.BountyPoints -= totalValue;
-				player.Out.SendUpdatePoints();
-				player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-			}
-
+			InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, totalValue);
 		}
 	}
 
-	public class GameChampionMerchant : GameMerchant
+
+	/// <summary>
+	/// Called when a player buys an item
+	/// </summary>
+	/// <param name="player">The player making the purchase</param>
+	/// <param name="item_slot">slot of the item to be bought</param>
+	/// <param name="number">Number to be bought</param>
+	/// <param name="TradeItems"></param>
+	/// <returns>true if buying is allowed, false if buying should be prevented</returns>
+	public static void OnPlayerBuy(GamePlayer player, int item_slot, int number, MerchantTradeItems TradeItems)
 	{
-		public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+		//Get the template
+		int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+		int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+
+		DbItemTemplate template = TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
+		if (template == null) return;
+
+		//Calculate the amout of items
+		int amountToBuy = number;
+		if (template.PackSize > 0)
+			amountToBuy *= template.PackSize;
+
+		if (amountToBuy <= 0) return;
+
+		//Calculate the value of items
+		long totalValue = number * template.Price;
+
+		lock (player.Inventory)
 		{
-			/*
-			int page = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-			if (player.ChampionLevel >= page + 2)
-				return base.OnPlayerBuy(player, item_slot, number);
-			else
+
+			if (player.GetCurrentMoney() < totalValue)
 			{
-				player.Out.SendMessage("You must be Champion Level " + (page + 2) + " or higher to be able to buy this horse!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-				return false;
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				return;
 			}
-			 */
+
+			if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				return;
+			}
+			InventoryLogging.LogInventoryAction("(TRADEITEMS;" + TradeItems.ItemsListID + ")", player, EInventoryActionType.Merchant, template, amountToBuy);
+			//Generate the buy message
+			string message;
+			if (amountToBuy > 1)
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), MoneyMgr.GetString(totalValue));
+			else
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), MoneyMgr.GetString(totalValue));
+
+			// Check if player has enough money and subtract the money
+			if (!player.RemoveMoney(totalValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
+			{
+				throw new Exception("Money amount changed while adding items.");
+			}
+			InventoryLogging.LogInventoryAction(player, "(TRADEITEMS;" + TradeItems.ItemsListID + ")", EInventoryActionType.Merchant, totalValue);
+		}
+	}
+	
+	/// <summary>
+	/// Called when a player sells something
+	/// </summary>
+	/// <param name="player">Player making the sale</param>
+	/// <param name="item">The InventoryItem to be sold</param>
+	/// <returns>true if selling is allowed, false if it should be prevented</returns>
+	public virtual void OnPlayerSell(GamePlayer player, DbInventoryItem item)
+	{
+		if(item==null || player==null) return;
+		if (!item.IsDropable)
+		{
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.CantBeSold"), EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+			return;
 		}
 
+		if (!this.IsWithinRadius(player, ServerProperty.WORLD_PICKUP_DISTANCE)) // tested
+		{
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.TooFarAway", GetName(0, true)), EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+			return;
+		}
+
+		long itemValue = OnPlayerAppraise(player, item, true);
+
+		if (itemValue == 0)
+		{
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.IsntInterested", GetName(0, true), item.GetName(0, false)), EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+			return;
+		}
+
+		if (player.Inventory.RemoveItem(item))
+		{
+			string message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.GivesYou", GetName(0, true), MoneyMgr.GetString(itemValue), item.GetName(0, false));
+			player.AddMoney(itemValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+			InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template, item.Count);
+			InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, itemValue);
+			return;
+		}
+		else
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.CantBeSold"), EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 	}
 
 	/// <summary>
-	/// A merchant that uses an item as currency instead of money
+	/// Called to appraise the value of an item
 	/// </summary>
-	public abstract class GameItemCurrencyMerchant : GameMerchant
+	/// <param name="player">The player whose item needs appraising</param>
+	/// <param name="item">The item to be appraised</param>
+	/// <param name="silent"></param>
+	/// <returns>The price this merchant will pay for the offered items</returns>
+	public virtual long OnPlayerAppraise(GamePlayer player, DbInventoryItem item, bool silent)
 	{
-		public virtual string MoneyKey { get { return null; } }
-		protected DbItemTemplate m_itemTemplate = null;
-		protected WorldInventoryItem m_moneyItem = null;
-		protected static readonly Dictionary<String, int> m_currencyValues = null;
+		if (item == null)
+			return 0;
 
-		/// <summary>
-		/// The item to use as currency
-		/// </summary>
-		public virtual WorldInventoryItem MoneyItem
+		int itemCount = Math.Max(1, item.Count);
+		int packSize = Math.Max(1, item.PackSize);
+
+		long val = item.Price * itemCount / packSize * ServerProperty.ITEM_SELL_RATIO / 100;
+
+		if (item.Price == 1 && val == 0)
+			val = item.Price * itemCount / packSize;
+		
+		if (!item.IsDropable)
 		{
-			get { return m_moneyItem; }
+			val = 0;
 		}
 
-		/// <summary>
-		/// The name of the money item.  Defaults to Item Name
-		/// </summary>
-		public virtual string MoneyItemName
+		if (!silent)
 		{
-			get
+			string message;
+			if (val == 0)
 			{
-				if (m_moneyItem != null)
-					return m_moneyItem.Name;
-
-				return "not found";
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerSell.IsntInterested", GetName(0, true), item.GetName(0, false));
 			}
-		}
-
-		/// <summary>
-		/// Assign templates based on MoneyKey
-		/// </summary>
-		public GameItemCurrencyMerchant() : base() 
-		{
-			if (MoneyKey != null)
+			else
 			{
-				m_itemTemplate = GameServer.Database.FindObjectByKey<DbItemTemplate>(MoneyKey);
-
-				if (m_itemTemplate != null)
-					m_moneyItem = WorldInventoryItem.CreateFromTemplate(m_itemTemplate);
-
-				// Don't waste memory on an item template we won't use.
-				if (ServerProperty.BP_EXCHANGE_ALLOW == false)
-					m_itemTemplate = null;
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerAppraise.Offers", GetName(0, true), MoneyMgr.GetString(val), item.GetName(0, false));
 			}
+			player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+		}
+		return val;
+	}
+
+	#endregion
+
+	#region NPCTemplate
+	public override void LoadTemplate(INpcTemplate template)
+	{
+		base.LoadTemplate(template);
+
+		if (template != null && string.IsNullOrEmpty(template.ItemsListTemplateID) == false)
+		{
+			TradeItems = new MerchantTradeItems(template.ItemsListTemplateID);
+		}
+	}
+	#endregion NPCTemplate
+
+	#region Database
+
+	/// <summary>
+	/// Loads a merchant from the DB
+	/// </summary>
+	/// <param name="merchantobject">The merchant DB object</param>
+	public override void LoadFromDatabase(DataObject merchantobject)
+	{
+		base.LoadFromDatabase(merchantobject);
+		if (!(merchantobject is DbMob)) return;
+		DbMob merchant = (DbMob)merchantobject;
+		if (merchant.ItemsListTemplateID != null && merchant.ItemsListTemplateID.Length > 0)
+			m_tradeItems = new MerchantTradeItems(merchant.ItemsListTemplateID);
+	}
+
+	/// <summary>
+	/// Saves a merchant into the DB
+	/// </summary>
+	public override void SaveIntoDatabase()
+	{
+		DbMob merchant = null;
+		if (InternalID != null)
+			merchant = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
+		if (merchant == null)
+			merchant = new DbMob();
+
+		merchant.Name = Name;
+		merchant.Guild = GuildName;
+		merchant.X = X;
+		merchant.Y = Y;
+		merchant.Z = Z;
+		merchant.Heading = Heading;
+		merchant.Speed = MaxSpeedBase;
+		merchant.Region = CurrentRegionID;
+        merchant.Realm = (byte)Realm;
+        merchant.RoamingRange = RoamingRange;
+		merchant.Model = Model;
+		merchant.Size = Size;
+		merchant.Level = Level;
+        merchant.Gender = (byte)Gender;
+		merchant.Flags = (uint)Flags;
+		merchant.PathID = PathID;
+		merchant.PackageID = PackageID;
+		merchant.OwnerID = OwnerID;
+
+		IOldAggressiveBrain aggroBrain = Brain as IOldAggressiveBrain;
+		if (aggroBrain != null)
+		{
+			merchant.AggroLevel = aggroBrain.AggroLevel;
+			merchant.AggroRange = aggroBrain.AggroRange;
+		}
+		merchant.ClassType = this.GetType().ToString();
+		merchant.EquipmentTemplateID = EquipmentTemplateID;
+		if (m_tradeItems == null)
+		{
+			merchant.ItemsListTemplateID = null;
+		}
+		else
+		{
+			merchant.ItemsListTemplateID = m_tradeItems.ItemsListID;
 		}
 
-		/// <summary>
-		/// Populate the currency exchange table
-		/// </summary>
-		static GameItemCurrencyMerchant()
-        {
-			if (ServerProperty.CURRENCY_EXCHANGE_ALLOW == true)
-				foreach (string sCurrencyValue in ServerProperty.CURRENCY_EXCHANGE_VALUES.Split(';'))
+		if (InternalID == null)
+		{
+			GameServer.Database.AddObject(merchant);
+			InternalID = merchant.ObjectId;
+		}
+		else
+		{
+			GameServer.Database.SaveObject(merchant);
+		}
+	}
+
+	/// <summary>
+	/// Deletes a merchant from the DB
+	/// </summary>
+	public override void DeleteFromDatabase()
+	{
+		if (InternalID != null)
+		{
+			DbMob merchant = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
+			if (merchant != null)
+				GameServer.Database.DeleteObject(merchant);
+		}
+		InternalID = null;
+	}
+
+	#endregion
+}
+
+/* 
+* Author:   Avithan 
+* Date:   22.12.2005 
+* Bounty merchant 
+*/
+
+public class GameBountyMerchant : GameMerchant
+{
+	protected readonly static Dictionary<string, int> m_currencyValues = null;
+
+	/// <summary>
+	/// Populate bp conversion rates
+	/// </summary>
+	static GameBountyMerchant()
+    {
+		if (ServerProperty.BP_EXCHANGE_ALLOW && m_currencyValues == null)
+			foreach (string sCurrencyValue in ServerProperty.BP_EXCHANGE_VALUES.Split(';'))
+			{
+				string[] asVal = sCurrencyValue.Split('|');
+
+				if (asVal.Length > 1 && int.TryParse(asVal[1], out int currencyValue) && currencyValue > 0)
 				{
-					string[] asVal = sCurrencyValue.Split('|');
+					// Don't create a dictionary until there is at least one valid value
+					if (m_currencyValues == null)
+						m_currencyValues = new Dictionary<string, int>(1);
 
-					if (asVal.Length > 1 && int.TryParse(asVal[1], out int currencyValue) && currencyValue > 0)
-					{
-						// Don't create a dictionary until there is at least one valid value
-						if (m_currencyValues == null)
-							m_currencyValues = new Dictionary<string, int>(1);
+					m_currencyValues[asVal[0]] = currencyValue;
+				}
+			} // foreach
+	}
 
-						m_currencyValues[asVal[0]] = currencyValue;
-					}
-				} // foreach
-		}
-
-		public override bool Interact(GamePlayer player)
+	/// <summary>
+	/// Exchange special currency for BPs
+	/// </summary>
+	/// <param name="source"></param>
+	/// <param name="item"></param>
+	/// <returns></returns>
+	public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
+	{
+		if (source is GamePlayer player && item != null && m_currencyValues != null
+			&& m_currencyValues.TryGetValue(item.Id_nb, out int value) && value > 0)
 		{
-			if (!base.Interact(player))
-				return false;
-
-			TurnTo(player, 10000);
-			SendInteractMessage(player);
+			player.GainBountyPoints(item.Count * value);
+			player.Inventory.RemoveItem(item);
 			return true;
 		}
-
-		protected virtual void SendInteractMessage(GamePlayer player)
+		if (this.DataQuestList.Count > 0)
 		{
-			string text = "";
-			if (m_moneyItem == null || m_moneyItem.Item == null)
+			foreach (DataQuest quest in DataQuestList)
 			{
-				text = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.Nothing");
-				ChatUtil.SendDebugMessage(player, "MoneyItem is null!");
+				quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(source, this, item));
 			}
-			else
-			{
-				text = MoneyItemName + "s";
-			}
-
-			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.BuyItemsFor", this.Name, text), EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 		}
 
-		protected override void SendMerchantWindowCallback(object state)
-		{
-			((GamePlayer)state).Out.SendMerchantWindow(m_tradeItems, EMerchantWindowType.Count);
-		}
+		return base.ReceiveItem(source, item);
+	}
 
-		public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+	protected override void SendMerchantWindowCallback(object state)
+	{
+		((GamePlayer)state).Out.SendMerchantWindow(m_tradeItems, EMerchantWindowType.Bp);
+	}
+
+	public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+	{
+		//Get the template
+		int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+		int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+
+		DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
+		if (template == null) return;
+
+		//Calculate the amout of items
+		int amountToBuy = number;
+		if (template.PackSize > 0)
+			amountToBuy *= template.PackSize;
+
+		if (amountToBuy <= 0) return;
+
+		//Calculate the value of items
+		long totalValue = number * template.Price;
+
+		lock (player.Inventory)
 		{
-			if (m_moneyItem == null || m_moneyItem.Item == null)
+			if (player.BountyPoints < totalValue)
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeedBP", totalValue), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 				return;
-			//Get the template
-			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
-			if (template == null) return;
-
-			//Calculate the amout of items
-			int amountToBuy = number;
-			if (template.PackSize > 0)
-				amountToBuy *= template.PackSize;
-
-			if (amountToBuy <= 0) return;
-
-			//Calculate the value of items
-			long totalValue = number * template.Price;
-
-			lock (player.Inventory)
-			{
-				if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) < totalValue)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed2", totalValue, MoneyItemName), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-
-					return;
-				}
-				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
-				//Generate the buy message
-				string message;
-				if (amountToBuy > 1)
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces2", amountToBuy, template.GetName(1, false), totalValue, MoneyItemName);
-				else
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought2", template.GetName(1, false), totalValue, MoneyItemName);
-
-				var items = player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
-				int removed = 0;
-
-				foreach (DbInventoryItem item in items)
-				{
-					if (item.Id_nb != m_moneyItem.Item.Id_nb)
-						continue;
-					int remFromStack = Math.Min(item.Count, (int)(totalValue - removed));
-					player.Inventory.RemoveCountFromStack(item, remFromStack);
-					InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template, remFromStack);
-					removed += remFromStack;
-					if (removed == totalValue)
-						break;
-				}
-
-				player.Out.SendInventoryItemsUpdate(items);
-				player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 			}
+			if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				return;
+			}
+			InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
+			//Generate the buy message
+			string message;
+			if (number > 1)
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPiecesBP", totalValue, template.GetName(1, false));
+			else
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtBP", template.GetName(1, false), totalValue);
+			player.BountyPoints -= totalValue;
+			player.Out.SendUpdatePoints();
+			player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 		}
 
-		/// <summary>
-		/// Exchange special currency for merchant currency type
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="item"></param>
-		/// <returns></returns>
-		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
+	}
+}
+
+public class GameChampionMerchant : GameMerchant
+{
+	public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+	{
+		/*
+		int page = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+		if (player.ChampionLevel >= page + 2)
+			return base.OnPlayerBuy(player, item_slot, number);
+		else
 		{
-			
-			GamePlayer t = source as GamePlayer;
-			if (t == null || item == null)
-				return false;
-			
-			if (DataQuestList.Count > 0)
-			{
-				foreach (DataQuest quest in DataQuestList)
-				{
-					quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(t, this, item));
-					return true;
-				}
-			}
+			player.Out.SendMessage("You must be Champion Level " + (page + 2) + " or higher to be able to buy this horse!", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 			return false;
-			
-			// if (source is GamePlayer player && item != null && m_currencyValues != null
-			// 	&& m_currencyValues.TryGetValue(item.Id_nb, out int receiveCost)
-			// 	&& m_currencyValues.TryGetValue(MoneyKey, out int giveCost))
-			// {
-			// 	int giveCount = item.Count * receiveCost / giveCost;
-			//
-			// 	if (giveCount > 0)
-			// 	{
-			// 		// Create and give new item to player
-			// 		InventoryItem newItem = GameInventoryItem.Create(m_itemTemplate);
-			// 		newItem.OwnerID = player.InternalID;
-			// 		newItem.Count = giveCount;
-			//
-			// 		if (!player.Inventory.AddTemplate(newItem, newItem.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
-			// 			player.CreateItemOnTheGround(newItem);
-			//
-			// 		// Remove received items
-			// 		InventoryItem playerItem = player.Inventory.GetItem((eInventorySlot)item.SlotPosition);
-			// 		playerItem.Count -= giveCount * giveCost;
-			//
-			// 		if (playerItem.Count < 1)
-			// 			player.Inventory.RemoveItem(item);
-			//
-			// 		return true;
-			// 	}
-			// }
-			//
-			// return base.ReceiveItem(source, item);
 		}
+		 */
 	}
 
-	public class GameBloodSealsMerchant : GameItemCurrencyMerchant
+}
+
+/// <summary>
+/// A merchant that uses an item as currency instead of money
+/// </summary>
+public abstract class GameItemCurrencyMerchant : GameMerchant
+{
+	public virtual string MoneyKey { get { return null; } }
+	protected DbItemTemplate m_itemTemplate = null;
+	protected WorldInventoryItem m_moneyItem = null;
+	protected static readonly Dictionary<String, int> m_currencyValues = null;
+
+	/// <summary>
+	/// The item to use as currency
+	/// </summary>
+	public virtual WorldInventoryItem MoneyItem
 	{
-		public override string MoneyKey { get { return "BloodSeal"; } }
+		get { return m_moneyItem; }
 	}
 
-	public class GameDiamondSealsMerchant : GameItemCurrencyMerchant
+	/// <summary>
+	/// The name of the money item.  Defaults to Item Name
+	/// </summary>
+	public virtual string MoneyItemName
 	{
-		public override string MoneyKey { get { return "DiamondSeal"; } }
-	}
-
-	public class GameSapphireSealsMerchant : GameItemCurrencyMerchant
-	{
-		public override string MoneyKey { get { return "SapphireSeal"; } }
-	}
-
-	public class GameEmeraldSealsMerchant : GameItemCurrencyMerchant
-	{
-		public override string MoneyKey { get { return "EmeraldSeal"; } }
-	}
-
-	public class GameAuruliteMerchant : GameItemCurrencyMerchant
-	{
-		public override string MoneyKey { get { return "aurulite"; } }
-	}
-	
-	public class GameAtlanteanGlassMerchant : GameItemCurrencyMerchant
-	{
-		public override string MoneyKey { get { return "atlanteanglass"; } }
-	}
-	
-	public class GameDragonMerchant : GameItemCurrencyMerchant
-	{
-		public override string MoneyKey { get { return "dragonscales"; } }
-	}
-
-	// checks for achievement completion at realm level
-	public class GameAtlasMerchant : GameItemCurrencyMerchant
-	{
-		public override string MoneyKey { get; } = ServerProperty.ALT_CURRENCY_ID; // remember to set this in server properties
-
-		public override void OnPlayerBuy(GamePlayer player, int itemSlot, int number)
+		get
 		{
-			if (m_moneyItem == null || m_moneyItem.Item == null)
-				return;
-			//Get the template
-			int pagenumber = itemSlot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-			int slotnumber = itemSlot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+			if (m_moneyItem != null)
+				return m_moneyItem.Name;
 
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
-			if (template == null) return;
-
-			//Calculate the amout of items
-			int amountToBuy = number;
-			if (template.PackSize > 0)
-				amountToBuy *= template.PackSize;
-
-			if (amountToBuy <= 0) return;
-
-			//Calculate the value of items
-			long totalValue;
-
-			if (ServerProperty.ORBS_FIRE_SALE)
-			{
-				totalValue = 0;
-			}
-			else
-			{
-				totalValue = number * template.Price;
-			}
-
-			var mobRequirement = KillCreditUtil.GetRequiredKillMob(template.Id_nb);
-
-			if (mobRequirement != null && player.Client.Account.PrivLevel == 1)
-			{
-				var hasCredit = AchievementUtil.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
-
-				if (!hasCredit)
-				{
-					player.Out.SendMessage($"You have not defeated {mobRequirement} at least once, and will be charged twice the normal rate for the purchase.", EChatType.CT_Merchant,EChatLoc.CL_SystemWindow);
-					totalValue *= 2;
-				}
-			}
-
-			var loyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
-			if (loyalty.Days > 0)
-			{
-				var discountAmount = (.25 * (loyalty.Days > 30 ? 30 : loyalty.Days) / 30);
-				player.Out.SendMessage($"Your loyalty to your realm grants you a {discountAmount * 100}% discount on item purchases.", EChatType.CT_Merchant,EChatLoc.CL_SystemWindow);
-				Console.WriteLine($"Total Val {totalValue} discount {(1 - discountAmount)} after {(int)(totalValue * (1 - discountAmount))}");
-				totalValue = (int)(totalValue * (1 - discountAmount));
-			}
-			
-			lock (player.Inventory)
-			{
-				if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) < totalValue)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed2", totalValue, MoneyItemName), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-
-					return;
-				}
-				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
-				//Generate the buy message
-				string message;
-				if (amountToBuy > 1)
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces2", amountToBuy, template.GetName(1, false), totalValue, MoneyItemName);
-				else
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought2", template.GetName(1, false), totalValue, MoneyItemName);
-
-				var items = player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
-				int removed = 0;
-
-				foreach (DbInventoryItem item in items)
-				{
-					if (item.Id_nb != m_moneyItem.Item.Id_nb)
-						continue;
-					int remFromStack = Math.Min(item.Count, (int)(totalValue - removed));
-					player.Inventory.RemoveCountFromStack(item, remFromStack);
-					InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template, remFromStack);
-					removed += remFromStack;
-					if (removed == totalValue)
-						break;
-				}
-
-				player.Out.SendInventoryItemsUpdate(items);
-				player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-			}
+			return "not found";
 		}
 	}
-	
-	// checks for achievement completion at account level
-	public class AtlasAchievementMerchant : GameItemCurrencyMerchant
-	{
-		public override string MoneyKey { get; } = ServerProperty.ALT_CURRENCY_ID; // remember to set this in server properties
 
-		public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+	/// <summary>
+	/// Assign templates based on MoneyKey
+	/// </summary>
+	public GameItemCurrencyMerchant() : base() 
+	{
+		if (MoneyKey != null)
 		{
-			if (m_moneyItem == null || m_moneyItem.Item == null)
-				return;
-			//Get the template
-			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+			m_itemTemplate = GameServer.Database.FindObjectByKey<DbItemTemplate>(MoneyKey);
 
-			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
-			if (template == null) return;
+			if (m_itemTemplate != null)
+				m_moneyItem = WorldInventoryItem.CreateFromTemplate(m_itemTemplate);
 
-			//Calculate the amout of items
-			int amountToBuy = number;
-			if (template.PackSize > 0)
-				amountToBuy *= template.PackSize;
-
-			if (amountToBuy <= 0) return;
-
-			//Calculate the value of items
-			long totalValue;
-
-			if (ServerProperty.ORBS_FIRE_SALE)
-			{
-				totalValue = 0;
-			}
-			else
-			{
-				totalValue = number * template.Price;
-			}
-
-			var mobRequirement = KillCreditUtil.GetRequiredKillMob(template.Id_nb);
-
-			if (mobRequirement != null && player.Client.Account.PrivLevel == 1)
-			{
-				var hasCredit = AchievementUtil.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
-
-				if (!hasCredit)
-				{
-					player.Out.SendMessage($"You have not defeated {mobRequirement} at least once, and will be charged twice the normal rate for the purchase.", EChatType.CT_Merchant,EChatLoc.CL_SystemWindow);
-					totalValue *= 2;
-				}
-			}
-
-			var loyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
-			if (loyalty.Days > 0)
-			{
-				var discountAmount = (.25 * (loyalty.Days > 30 ? 30 : loyalty.Days) / 30);
-				player.Out.SendMessage($"Your loyalty to your realm grants you a {discountAmount * 100}% discount on item purchases.", EChatType.CT_Merchant,EChatLoc.CL_SystemWindow);
-				Console.WriteLine($"Total Val {totalValue} discount {(1 - discountAmount)} after {(int)(totalValue * (1 - discountAmount))}");
-				totalValue = (int)(totalValue * (1 - discountAmount));
-			}
-			
-			lock (player.Inventory)
-			{
-				if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) < totalValue)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed2", totalValue, MoneyItemName), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					return;
-				}
-				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-
-					return;
-				}
-				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
-				//Generate the buy message
-				string message;
-				if (amountToBuy > 1)
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces2", amountToBuy, template.GetName(1, false), totalValue, MoneyItemName);
-				else
-					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought2", template.GetName(1, false), totalValue, MoneyItemName);
-
-				var items = player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
-				int removed = 0;
-
-				foreach (DbInventoryItem item in items)
-				{
-					if (item.Id_nb != m_moneyItem.Item.Id_nb)
-						continue;
-					int remFromStack = Math.Min(item.Count, (int)(totalValue - removed));
-					player.Inventory.RemoveCountFromStack(item, remFromStack);
-					InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template, remFromStack);
-					removed += remFromStack;
-					if (removed == totalValue)
-						break;
-				}
-
-				player.Out.SendInventoryItemsUpdate(items);
-				player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-			}
+			// Don't waste memory on an item template we won't use.
+			if (ServerProperty.BP_EXCHANGE_ALLOW == false)
+				m_itemTemplate = null;
 		}
 	}
-	public class L20RewardsMerchant : GameItemCurrencyMerchant
-	{
-		public override string MoneyKey { get { return "L20RewardToken"; } }
+
+	/// <summary>
+	/// Populate the currency exchange table
+	/// </summary>
+	static GameItemCurrencyMerchant()
+    {
+		if (ServerProperty.CURRENCY_EXCHANGE_ALLOW == true)
+			foreach (string sCurrencyValue in ServerProperty.CURRENCY_EXCHANGE_VALUES.Split(';'))
+			{
+				string[] asVal = sCurrencyValue.Split('|');
+
+				if (asVal.Length > 1 && int.TryParse(asVal[1], out int currencyValue) && currencyValue > 0)
+				{
+					// Don't create a dictionary until there is at least one valid value
+					if (m_currencyValues == null)
+						m_currencyValues = new Dictionary<string, int>(1);
+
+					m_currencyValues[asVal[0]] = currencyValue;
+				}
+			} // foreach
 	}
-	
-	public class L25RewardsMerchant : GameItemCurrencyMerchant
+
+	public override bool Interact(GamePlayer player)
 	{
-		public override string MoneyKey { get { return "L25RewardToken"; } }
+		if (!base.Interact(player))
+			return false;
+
+		TurnTo(player, 10000);
+		SendInteractMessage(player);
+		return true;
 	}
-	
-	public class L30RewardsMerchant : GameItemCurrencyMerchant
+
+	protected virtual void SendInteractMessage(GamePlayer player)
 	{
-		public override string MoneyKey { get { return "L30RewardToken"; } }
+		string text = "";
+		if (m_moneyItem == null || m_moneyItem.Item == null)
+		{
+			text = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.Nothing");
+			ChatUtil.SendDebugMessage(player, "MoneyItem is null!");
+		}
+		else
+		{
+			text = MoneyItemName + "s";
+		}
+
+		player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.BuyItemsFor", this.Name, text), EChatType.CT_Say, EChatLoc.CL_ChatWindow);
 	}
-	
-	public class L35RewardsMerchant : GameItemCurrencyMerchant
+
+	protected override void SendMerchantWindowCallback(object state)
 	{
-		public override string MoneyKey { get { return "L35RewardToken"; } }
+		((GamePlayer)state).Out.SendMerchantWindow(m_tradeItems, EMerchantWindowType.Count);
 	}
-	
-	public class L40RewardsMerchant : GameItemCurrencyMerchant
+
+	public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
 	{
-		public override string MoneyKey { get { return "L40RewardToken"; } }
+		if (m_moneyItem == null || m_moneyItem.Item == null)
+			return;
+		//Get the template
+		int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+		int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+
+		DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
+		if (template == null) return;
+
+		//Calculate the amout of items
+		int amountToBuy = number;
+		if (template.PackSize > 0)
+			amountToBuy *= template.PackSize;
+
+		if (amountToBuy <= 0) return;
+
+		//Calculate the value of items
+		long totalValue = number * template.Price;
+
+		lock (player.Inventory)
+		{
+			if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) < totalValue)
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed2", totalValue, MoneyItemName), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				return;
+			}
+			if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+
+				return;
+			}
+			InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
+			//Generate the buy message
+			string message;
+			if (amountToBuy > 1)
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces2", amountToBuy, template.GetName(1, false), totalValue, MoneyItemName);
+			else
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought2", template.GetName(1, false), totalValue, MoneyItemName);
+
+			var items = player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
+			int removed = 0;
+
+			foreach (DbInventoryItem item in items)
+			{
+				if (item.Id_nb != m_moneyItem.Item.Id_nb)
+					continue;
+				int remFromStack = Math.Min(item.Count, (int)(totalValue - removed));
+				player.Inventory.RemoveCountFromStack(item, remFromStack);
+				InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template, remFromStack);
+				removed += remFromStack;
+				if (removed == totalValue)
+					break;
+			}
+
+			player.Out.SendInventoryItemsUpdate(items);
+			player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+		}
 	}
+
+	/// <summary>
+	/// Exchange special currency for merchant currency type
+	/// </summary>
+	/// <param name="source"></param>
+	/// <param name="item"></param>
+	/// <returns></returns>
+	public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
+	{
+		
+		GamePlayer t = source as GamePlayer;
+		if (t == null || item == null)
+			return false;
+		
+		if (DataQuestList.Count > 0)
+		{
+			foreach (DataQuest quest in DataQuestList)
+			{
+				quest.Notify(GameLivingEvent.ReceiveItem, this, new ReceiveItemEventArgs(t, this, item));
+				return true;
+			}
+		}
+		return false;
+		
+		// if (source is GamePlayer player && item != null && m_currencyValues != null
+		// 	&& m_currencyValues.TryGetValue(item.Id_nb, out int receiveCost)
+		// 	&& m_currencyValues.TryGetValue(MoneyKey, out int giveCost))
+		// {
+		// 	int giveCount = item.Count * receiveCost / giveCost;
+		//
+		// 	if (giveCount > 0)
+		// 	{
+		// 		// Create and give new item to player
+		// 		InventoryItem newItem = GameInventoryItem.Create(m_itemTemplate);
+		// 		newItem.OwnerID = player.InternalID;
+		// 		newItem.Count = giveCount;
+		//
+		// 		if (!player.Inventory.AddTemplate(newItem, newItem.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+		// 			player.CreateItemOnTheGround(newItem);
+		//
+		// 		// Remove received items
+		// 		InventoryItem playerItem = player.Inventory.GetItem((eInventorySlot)item.SlotPosition);
+		// 		playerItem.Count -= giveCount * giveCost;
+		//
+		// 		if (playerItem.Count < 1)
+		// 			player.Inventory.RemoveItem(item);
+		//
+		// 		return true;
+		// 	}
+		// }
+		//
+		// return base.ReceiveItem(source, item);
+	}
+}
+
+public class GameBloodSealsMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "BloodSeal"; } }
+}
+
+public class GameDiamondSealsMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "DiamondSeal"; } }
+}
+
+public class GameSapphireSealsMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "SapphireSeal"; } }
+}
+
+public class GameEmeraldSealsMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "EmeraldSeal"; } }
+}
+
+public class GameAuruliteMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "aurulite"; } }
+}
+
+public class GameAtlanteanGlassMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "atlanteanglass"; } }
+}
+
+public class GameDragonMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "dragonscales"; } }
+}
+
+// checks for achievement completion at realm level
+public class GameAtlasMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get; } = ServerProperty.ALT_CURRENCY_ID; // remember to set this in server properties
+
+	public override void OnPlayerBuy(GamePlayer player, int itemSlot, int number)
+	{
+		if (m_moneyItem == null || m_moneyItem.Item == null)
+			return;
+		//Get the template
+		int pagenumber = itemSlot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+		int slotnumber = itemSlot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+
+		DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
+		if (template == null) return;
+
+		//Calculate the amout of items
+		int amountToBuy = number;
+		if (template.PackSize > 0)
+			amountToBuy *= template.PackSize;
+
+		if (amountToBuy <= 0) return;
+
+		//Calculate the value of items
+		long totalValue;
+
+		if (ServerProperty.ORBS_FIRE_SALE)
+		{
+			totalValue = 0;
+		}
+		else
+		{
+			totalValue = number * template.Price;
+		}
+
+		var mobRequirement = KillCreditUtil.GetRequiredKillMob(template.Id_nb);
+
+		if (mobRequirement != null && player.Client.Account.PrivLevel == 1)
+		{
+			var hasCredit = AchievementUtil.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
+
+			if (!hasCredit)
+			{
+				player.Out.SendMessage($"You have not defeated {mobRequirement} at least once, and will be charged twice the normal rate for the purchase.", EChatType.CT_Merchant,EChatLoc.CL_SystemWindow);
+				totalValue *= 2;
+			}
+		}
+
+		var loyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
+		if (loyalty.Days > 0)
+		{
+			var discountAmount = (.25 * (loyalty.Days > 30 ? 30 : loyalty.Days) / 30);
+			player.Out.SendMessage($"Your loyalty to your realm grants you a {discountAmount * 100}% discount on item purchases.", EChatType.CT_Merchant,EChatLoc.CL_SystemWindow);
+			Console.WriteLine($"Total Val {totalValue} discount {(1 - discountAmount)} after {(int)(totalValue * (1 - discountAmount))}");
+			totalValue = (int)(totalValue * (1 - discountAmount));
+		}
+		
+		lock (player.Inventory)
+		{
+			if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) < totalValue)
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed2", totalValue, MoneyItemName), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				return;
+			}
+			if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+
+				return;
+			}
+			InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
+			//Generate the buy message
+			string message;
+			if (amountToBuy > 1)
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces2", amountToBuy, template.GetName(1, false), totalValue, MoneyItemName);
+			else
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought2", template.GetName(1, false), totalValue, MoneyItemName);
+
+			var items = player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
+			int removed = 0;
+
+			foreach (DbInventoryItem item in items)
+			{
+				if (item.Id_nb != m_moneyItem.Item.Id_nb)
+					continue;
+				int remFromStack = Math.Min(item.Count, (int)(totalValue - removed));
+				player.Inventory.RemoveCountFromStack(item, remFromStack);
+				InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template, remFromStack);
+				removed += remFromStack;
+				if (removed == totalValue)
+					break;
+			}
+
+			player.Out.SendInventoryItemsUpdate(items);
+			player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+		}
+	}
+}
+
+// checks for achievement completion at account level
+public class AtlasAchievementMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get; } = ServerProperty.ALT_CURRENCY_ID; // remember to set this in server properties
+
+	public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+	{
+		if (m_moneyItem == null || m_moneyItem.Item == null)
+			return;
+		//Get the template
+		int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+		int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+
+		DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
+		if (template == null) return;
+
+		//Calculate the amout of items
+		int amountToBuy = number;
+		if (template.PackSize > 0)
+			amountToBuy *= template.PackSize;
+
+		if (amountToBuy <= 0) return;
+
+		//Calculate the value of items
+		long totalValue;
+
+		if (ServerProperty.ORBS_FIRE_SALE)
+		{
+			totalValue = 0;
+		}
+		else
+		{
+			totalValue = number * template.Price;
+		}
+
+		var mobRequirement = KillCreditUtil.GetRequiredKillMob(template.Id_nb);
+
+		if (mobRequirement != null && player.Client.Account.PrivLevel == 1)
+		{
+			var hasCredit = AchievementUtil.CheckPlayerCredit(mobRequirement, player, (int) player.Realm);
+
+			if (!hasCredit)
+			{
+				player.Out.SendMessage($"You have not defeated {mobRequirement} at least once, and will be charged twice the normal rate for the purchase.", EChatType.CT_Merchant,EChatLoc.CL_SystemWindow);
+				totalValue *= 2;
+			}
+		}
+
+		var loyalty = RealmLoyaltyMgr.GetPlayerRealmLoyalty(player);
+		if (loyalty.Days > 0)
+		{
+			var discountAmount = (.25 * (loyalty.Days > 30 ? 30 : loyalty.Days) / 30);
+			player.Out.SendMessage($"Your loyalty to your realm grants you a {discountAmount * 100}% discount on item purchases.", EChatType.CT_Merchant,EChatLoc.CL_SystemWindow);
+			Console.WriteLine($"Total Val {totalValue} discount {(1 - discountAmount)} after {(int)(totalValue * (1 - discountAmount))}");
+			totalValue = (int)(totalValue * (1 - discountAmount));
+		}
+		
+		lock (player.Inventory)
+		{
+			if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack) < totalValue)
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed2", totalValue, MoneyItemName), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				return;
+			}
+			if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
+			{
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+
+				return;
+			}
+			InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
+			//Generate the buy message
+			string message;
+			if (amountToBuy > 1)
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces2", amountToBuy, template.GetName(1, false), totalValue, MoneyItemName);
+			else
+				message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought2", template.GetName(1, false), totalValue, MoneyItemName);
+
+			var items = player.Inventory.GetItemRange(EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack);
+			int removed = 0;
+
+			foreach (DbInventoryItem item in items)
+			{
+				if (item.Id_nb != m_moneyItem.Item.Id_nb)
+					continue;
+				int remFromStack = Math.Min(item.Count, (int)(totalValue - removed));
+				player.Inventory.RemoveCountFromStack(item, remFromStack);
+				InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, item.Template, remFromStack);
+				removed += remFromStack;
+				if (removed == totalValue)
+					break;
+			}
+
+			player.Out.SendInventoryItemsUpdate(items);
+			player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+		}
+	}
+}
+public class L20RewardsMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "L20RewardToken"; } }
+}
+
+public class L25RewardsMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "L25RewardToken"; } }
+}
+
+public class L30RewardsMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "L30RewardToken"; } }
+}
+
+public class L35RewardsMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "L35RewardToken"; } }
+}
+
+public class L40RewardsMerchant : GameItemCurrencyMerchant
+{
+	public override string MoneyKey { get { return "L40RewardToken"; } }
 }

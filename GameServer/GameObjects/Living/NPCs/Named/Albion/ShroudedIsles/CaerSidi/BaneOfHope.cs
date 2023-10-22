@@ -1,13 +1,10 @@
-﻿using Core.AI.Brain;
-using Core.Database;
-using Core.Database.Tables;
-using Core.GS;
+﻿using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Server;
 using Core.GS.Skills;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
 public class BaneOfHope : GameEpicBoss
 {

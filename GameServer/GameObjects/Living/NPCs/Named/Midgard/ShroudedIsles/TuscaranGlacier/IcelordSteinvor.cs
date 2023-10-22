@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -153,7 +150,7 @@ public class IcelordSteinvor : GameEpicBoss
 #endregion Icelord Steinvor
 
 #region Mob adds
-public class HrimthursaSeer : GameEpicNPC
+public class HrimthursaSeer : GameEpicNpc
 {
     public HrimthursaSeer() : base()
     {
@@ -230,7 +227,7 @@ public class HrimthursaSeer : GameEpicNPC
 #endregion Mob adds
 
 #region Effect Mob
-public class EffectMob : GameEpicNPC
+public class EffectMob : GameEpicNpc
 {
     public EffectMob() : base()
     {

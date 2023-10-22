@@ -1,6 +1,5 @@
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.Packets;
 using Core.GS.Packets.Server;
 
 namespace Core.GS;

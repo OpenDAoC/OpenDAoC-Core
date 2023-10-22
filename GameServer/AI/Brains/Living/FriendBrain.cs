@@ -1,4 +1,3 @@
-using Core.AI.Brain;
 using Core.GS.Spells;
 
 namespace Core.GS.AI.Brains;

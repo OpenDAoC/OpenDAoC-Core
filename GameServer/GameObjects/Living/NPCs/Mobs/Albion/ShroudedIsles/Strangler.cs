@@ -1,7 +1,6 @@
-﻿using Core.AI.Brain;
-using Core.GS.AI.Brains;
+﻿using Core.GS.AI.Brains;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
 public class Strangler : GameNpc
 {

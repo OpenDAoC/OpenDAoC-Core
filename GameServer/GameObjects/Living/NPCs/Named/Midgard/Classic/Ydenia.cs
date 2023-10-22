@@ -1,6 +1,4 @@
-﻿using Core.AI.Brain;
-using Core.Database;
-using Core.Database.Tables;
+﻿using Core.Database.Tables;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
@@ -9,7 +7,7 @@ using Core.GS.Skills;
 
 namespace Core.GS;
 
-public class Ydenia : GameEpicNPC
+public class Ydenia : GameEpicNpc
 {
 	public Ydenia() : base() { }
 

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Core.AI.Brain;
 using Core.Database.Tables;
 using Core.GS;
 using Core.GS.Enums;

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -559,7 +556,7 @@ public class BellumHorseman : GameEpicBoss
     public void SpawnFateBearer()
     {
         INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
-        GameEpicNPC Add = new GameEpicNPC();
+        GameEpicNpc Add = new GameEpicNpc();
         Add.LoadTemplate(npcTemplate);
         Add.X = X - 100;
         Add.Y = Y;
@@ -980,7 +977,7 @@ public class MorbusHorseman : GameEpicBoss
     public void SpawnFateBearer()
     {
         INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
-        GameEpicNPC Add = new GameEpicNPC();
+        GameEpicNpc Add = new GameEpicNpc();
         Add.LoadTemplate(npcTemplate);
         Add.X = X - 100;
         Add.Y = Y;
@@ -1300,7 +1297,7 @@ public class FunusHorseman : GameEpicBoss
     public void SpawnFateBearer()
     {
         INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
-        GameEpicNPC Add = new GameEpicNPC();
+        GameEpicNpc Add = new GameEpicNpc();
         Add.LoadTemplate(npcTemplate);
         Add.X = X - 100;
         Add.Y = Y;
@@ -1533,7 +1530,7 @@ public class Apocalypse : GameEpicBoss
 #endregion Apocalypse
 
 #region Harbinger of Fate
-public class HarbringerOfFate : GameEpicNPC
+public class HarbringerOfFate : GameEpicNpc
 {
     public HarbringerOfFate() : base() { }
     public override double AttackDamage(DbInventoryItem weapon)
@@ -1622,7 +1619,7 @@ public class HarbringerOfFate : GameEpicNPC
 #endregion Harbringer of Fate
 
 #region Rain of Fire
-public class RainOfFire : GameEpicNPC
+public class RainOfFire : GameEpicNpc
 {
     public RainOfFire() : base() { }
     public override double AttackDamage(DbInventoryItem weapon)

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
-using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -332,7 +327,7 @@ public class SummonedDemon : GameNpc
 #endregion Summoned Demon
 
 #region Shade of Aelfgar
-public class ShadeOfAelfgar : GameEpicNPC
+public class ShadeOfAelfgar : GameEpicNpc
 {
 	public override int MaxHealth
 	{

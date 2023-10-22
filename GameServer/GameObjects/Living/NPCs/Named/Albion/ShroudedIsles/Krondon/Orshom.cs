@@ -1,8 +1,5 @@
 using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -101,7 +98,7 @@ public class Orshom : GameEpicBoss
 #endregion Orshom
 
 #region Fire Pit Mob
-public class OrshomFire : GameEpicNPC
+public class OrshomFire : GameEpicNpc
 {
 	public OrshomFire() : base() { }
 

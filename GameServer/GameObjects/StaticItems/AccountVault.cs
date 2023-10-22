@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
-using Core.GS;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Server;
+
+namespace Core.GS;
 
 public class AccountVault : GameHouseVault
 {

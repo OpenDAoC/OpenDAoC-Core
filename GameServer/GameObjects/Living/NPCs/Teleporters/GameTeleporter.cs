@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
@@ -11,307 +10,311 @@ using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.World;
 
-namespace Core.GS
+namespace Core.GS;
+
+public class GameTeleporter : GameNpc
 {
-	public class GameTeleporter : GameNpc
+	public GameTeleporter()
+		: base()
 	{
-		public GameTeleporter()
-			: base() { }
+	}
 
-        /// <summary>
-        /// The type of teleporter; this is used in order to be able to handle
-        /// identical TeleportIDs differently, depending on the actual teleporter.
-        /// </summary>
-        protected virtual String Type
-        {
-            get { return ""; }
-        }
+	/// <summary>
+	/// The type of teleporter; this is used in order to be able to handle
+	/// identical TeleportIDs differently, depending on the actual teleporter.
+	/// </summary>
+	protected virtual String Type
+	{
+		get { return ""; }
+	}
 
-        /// <summary>
-        /// The destination realm. 
-        /// </summary>
-        protected virtual ERealm DestinationRealm
-        {
-            get { return Realm; }
-        }
+	/// <summary>
+	/// The destination realm. 
+	/// </summary>
+	protected virtual ERealm DestinationRealm
+	{
+		get { return Realm; }
+	}
 
-		/// <summary>
-		/// Turn the teleporter to face the player.
-		/// </summary>
-		/// <param name="player"></param>
-		/// <returns></returns>
-		public override bool Interact(GamePlayer player)
+	/// <summary>
+	/// Turn the teleporter to face the player.
+	/// </summary>
+	/// <param name="player"></param>
+	/// <returns></returns>
+	public override bool Interact(GamePlayer player)
+	{
+		if (!base.Interact(player) || GameRelic.IsPlayerCarryingRelic(player))
+			return false;
+
+		TurnTo(player, 10000);
+		return true;
+	}
+
+	/// <summary>
+	/// Talk to the teleporter.
+	/// </summary>
+	/// <param name="source"></param>
+	/// <param name="text"></param>
+	/// <returns></returns>
+	public override bool WhisperReceive(GameLiving source, string text)
+	{
+		if (!base.WhisperReceive(source, text))
+			return false;
+
+		GamePlayer player = source as GamePlayer;
+		if (player == null)
+			return false;
+
+		if (GameRelic.IsPlayerCarryingRelic(player))
+			return false;
+
+		return GetTeleportLocation(player, text);
+	}
+
+	protected virtual bool GetTeleportLocation(GamePlayer player, string text)
+	{
+		// Battlegrounds are specials, as the teleport location depends on
+		// the level of the player, so let's deal with that first.
+		if (text.ToLower() == "battlegrounds")
 		{
-			if (!base.Interact(player) || GameRelic.IsPlayerCarryingRelic(player))
-				return false;
-
-			TurnTo(player, 10000);
-			return true;
-		}
-
-		/// <summary>
-		/// Talk to the teleporter.
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="text"></param>
-		/// <returns></returns>
-		public override bool WhisperReceive(GameLiving source, string text)
-		{
-			if (!base.WhisperReceive(source, text))
-				return false;
-
-			GamePlayer player = source as GamePlayer;
-			if (player == null)
-				return false;
-
-			if (GameRelic.IsPlayerCarryingRelic(player))
-				return false;
-
-			return GetTeleportLocation(player, text);
-		}
-
-		protected virtual bool GetTeleportLocation(GamePlayer player, string text)
-		{
-			// Battlegrounds are specials, as the teleport location depends on
-			// the level of the player, so let's deal with that first.
-			if (text.ToLower() == "battlegrounds")
+			if (!ServerProperty.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
 			{
-				if (!ServerProperty.BG_ZONES_OPENED && player.Client.Account.PrivLevel == (uint)EPrivLevel.Player)
-				{
-					SayTo(player, ServerProperty.BG_ZONES_CLOSED_MESSAGE);
-				}
-				else
-				{
-					AGameKeep portalKeep = GameServer.KeepManager.GetBGPK(player);
-					if (portalKeep != null)
-					{
-						DbTeleport teleport = new DbTeleport();
-						teleport.TeleportID = "battlegrounds";
-						teleport.Realm = (byte)portalKeep.Realm;
-						teleport.RegionID = portalKeep.Region;
-						teleport.X = portalKeep.X;
-						teleport.Y = portalKeep.Y;
-						teleport.Z = portalKeep.Z;
-						teleport.Heading = 0;
-						OnDestinationPicked(player, teleport);
-						return true;
-					}
-					else
-					{
-						if (player.Client.Account.PrivLevel > (uint)EPrivLevel.Player)
-						{
-							player.Out.SendMessage("No portal keep found.", EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
-						}
-						return true;
-					}
-				}
+				SayTo(player, ServerProperty.BG_ZONES_CLOSED_MESSAGE);
 			}
-
-			if (text == "Entrance") text = text.ToLower();
-
-			// Another special case is personal house, as there is no location
-			// that will work for every player.
-			if (text.ToLower() == "personal")
+			else
 			{
-				House house = HouseMgr.GetHouseByPlayer(player);
-
-				if(house == null)
+				AGameKeep portalKeep = GameServer.KeepManager.GetBGPK(player);
+				if (portalKeep != null)
 				{
-					text = "entrance";	// Fall through, port to housing entrance.
-				}
-				else
-				{
-					IGameLocation location = house.OutdoorJumpPoint;
 					DbTeleport teleport = new DbTeleport();
-					teleport.TeleportID = "personal";
-					teleport.Realm = (int)DestinationRealm;
-					teleport.RegionID = location.RegionID;
-					teleport.X = location.X;
-					teleport.Y = location.Y;
-					teleport.Z = location.Z;
-					teleport.Heading = location.Heading;
+					teleport.TeleportID = "battlegrounds";
+					teleport.Realm = (byte)portalKeep.Realm;
+					teleport.RegionID = portalKeep.Region;
+					teleport.X = portalKeep.X;
+					teleport.Y = portalKeep.Y;
+					teleport.Z = portalKeep.Z;
+					teleport.Heading = 0;
 					OnDestinationPicked(player, teleport);
 					return true;
 				}
-			}
-
-			// Yet another special case the port to the 'hearth' what means
-			// that the player will be ported to the defined house bindstone
-			if (text.ToLower() == "hearth")
-			{
-				// Check if player has set a house bind
-				if (!(player.BindHouseRegion > 0))
+				else
 				{
-					SayTo(player, "Sorry, you haven't set any house bind point yet.");
-					return false;
-				}
-
-				// Check if the house at the player's house bind location still exists
-				ArrayList houses = (ArrayList)HouseMgr.GetHousesCloseToSpot((ushort)player.
-					BindHouseRegion, player.BindHouseXpos, player.
-					BindHouseYpos, 700);
-				if (houses.Count == 0)
-				{
-					SayTo(player, "I'm afraid I can't teleport you to your hearth since the house at your " + 
-						"house bind location has been torn down.");
-					return false;
-				}
-
-				// Check if the house at the player's house bind location contains a bind stone
-				House targetHouse = (House)houses[0];
-				IDictionary<uint, DbHouseHookPointItem> hookpointItems = targetHouse.HousepointItems;
-				Boolean hasBindstone = false;
-
-				foreach (KeyValuePair<uint, DbHouseHookPointItem> targetHouseItem in hookpointItems)
-				{
-					if (((GameObject)targetHouseItem.Value.GameObject).GetName(0, false).ToLower().EndsWith("bindstone"))
+					if (player.Client.Account.PrivLevel > (uint)EPrivLevel.Player)
 					{
-						hasBindstone = true;
-						break;
+						player.Out.SendMessage("No portal keep found.", EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
 					}
-				}
 
-				if (!hasBindstone)
-				{
-					SayTo(player, "I'm sorry to tell that the bindstone of your current house bind location " + 
-						"has been removed, so I'm not able to teleport you there.");
-					return false;
+					return true;
 				}
+			}
+		}
 
-				// Check if the player has the permission to bind at the house bind stone
-				if (!targetHouse.CanBindInHouse(player))
-				{
-					SayTo(player, "You're no longer allowed to bind at the house bindstone you've previously " + 
-						"chosen, hence I'm not allowed to teleport you there.");
-					return false;
-				}
+		if (text == "Entrance") text = text.ToLower();
 
+		// Another special case is personal house, as there is no location
+		// that will work for every player.
+		if (text.ToLower() == "personal")
+		{
+			House house = HouseMgr.GetHouseByPlayer(player);
+
+			if (house == null)
+			{
+				text = "entrance"; // Fall through, port to housing entrance.
+			}
+			else
+			{
+				IGameLocation location = house.OutdoorJumpPoint;
 				DbTeleport teleport = new DbTeleport();
-				teleport.TeleportID = "hearth";
+				teleport.TeleportID = "personal";
 				teleport.Realm = (int)DestinationRealm;
-				teleport.RegionID = player.BindHouseRegion;
-				teleport.X = player.BindHouseXpos;
-				teleport.Y = player.BindHouseYpos;
-				teleport.Z = player.BindHouseZpos;
-				teleport.Heading = player.BindHouseHeading;
+				teleport.RegionID = location.RegionID;
+				teleport.X = location.X;
+				teleport.Y = location.Y;
+				teleport.Z = location.Z;
+				teleport.Heading = location.Heading;
 				OnDestinationPicked(player, teleport);
 				return true;
 			}
+		}
 
-			if (text.ToLower() == "guild")
+		// Yet another special case the port to the 'hearth' what means
+		// that the player will be ported to the defined house bindstone
+		if (text.ToLower() == "hearth")
+		{
+			// Check if player has set a house bind
+			if (!(player.BindHouseRegion > 0))
 			{
-				House house = HouseMgr.GetGuildHouseByPlayer(player);
-
-				if (house == null)
-				{
-					return false;  // no teleport when guild house not found
-				}
-				else
-				{
-					IGameLocation location = house.OutdoorJumpPoint;
-					DbTeleport teleport = new DbTeleport();
-					teleport.TeleportID = "guild house";
-					teleport.Realm = (int)DestinationRealm;
-					teleport.RegionID = location.RegionID;
-					teleport.X = location.X;
-					teleport.Y = location.Y;
-					teleport.Z = location.Z;
-					teleport.Heading = location.Heading;
-					OnDestinationPicked(player, teleport);
-					return true;
-				}
-			}
-
-			// Find the teleport location in the database.
-			DbTeleport port = WorldMgr.GetTeleportLocation(DestinationRealm, String.Format("{0}:{1}", Type, text));
-			if (port != null)
-			{
-				if (port.RegionID == 0 && port.X == 0 && port.Y == 0 && port.Z == 0)
-				{
-					OnSubSelectionPicked(player, port);
-				}
-				else
-				{
-					OnDestinationPicked(player, port);
-				}
+				SayTo(player, "Sorry, you haven't set any house bind point yet.");
 				return false;
 			}
 
-			return true;	// Needs further processing.
-		}
-
-		/// <summary>
-		/// Player has picked a destination.
-		/// Override if you need the teleporter to say something to the player
-		/// before porting him.
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="destination"></param>
-		protected virtual void OnDestinationPicked(GamePlayer player, DbTeleport destination)
-		{
-			Region region = WorldMgr.GetRegion((ushort)destination.RegionID);
-
-			if (region == null || region.IsDisabled)
+			// Check if the house at the player's house bind location still exists
+			ArrayList houses = (ArrayList)HouseMgr.GetHousesCloseToSpot((ushort)player.BindHouseRegion,
+				player.BindHouseXpos, player.BindHouseYpos, 700);
+			if (houses.Count == 0)
 			{
-				player.Out.SendMessage("This destination is not available.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
-				return;
+				SayTo(player, "I'm afraid I can't teleport you to your hearth since the house at your " +
+				              "house bind location has been torn down.");
+				return false;
 			}
 
-			OnTeleport(player, destination);
-		}
+			// Check if the house at the player's house bind location contains a bind stone
+			House targetHouse = (House)houses[0];
+			IDictionary<uint, DbHouseHookPointItem> hookpointItems = targetHouse.HousepointItems;
+			Boolean hasBindstone = false;
 
-		/// <summary>
-		/// Player has picked a subselection.
-		/// Override to pass teleport options on to the player.
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="subSelection"></param>
-		protected virtual void OnSubSelectionPicked(GamePlayer player, DbTeleport subSelection)
-		{
-		}
-
-		/// <summary>
-		/// Teleport the player to the designated coordinates using the
-		/// portal spell.
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="destination"></param>
-		protected virtual void OnTeleportSpell(GamePlayer player, DbTeleport destination)
-		{
-			SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
-			List<Spell> spellList = SkillBase.GetSpellList(GlobalSpellsLines.Mob_Spells);
-			Spell spell = SkillBase.GetSpellByID(5999);	// UniPortal spell.
-
-			if (spell != null)
+			foreach (KeyValuePair<uint, DbHouseHookPointItem> targetHouseItem in hookpointItems)
 			{
-				UniPortalSpell portalHandler = new UniPortalSpell(this, spell, spellLine, destination);
-				portalHandler.StartSpell(player);
-				return;
+				if (((GameObject)targetHouseItem.Value.GameObject).GetName(0, false).ToLower().EndsWith("bindstone"))
+				{
+					hasBindstone = true;
+					break;
+				}
 			}
 
-			// Spell not found in the database, fall back on default procedure.
+			if (!hasBindstone)
+			{
+				SayTo(player, "I'm sorry to tell that the bindstone of your current house bind location " +
+				              "has been removed, so I'm not able to teleport you there.");
+				return false;
+			}
 
-			if (player.Client.Account.PrivLevel > 1)
-				player.Out.SendMessage("Uni-Portal spell not found.",
-					EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
-			
-			this.OnTeleport(player, destination);
+			// Check if the player has the permission to bind at the house bind stone
+			if (!targetHouse.CanBindInHouse(player))
+			{
+				SayTo(player, "You're no longer allowed to bind at the house bindstone you've previously " +
+				              "chosen, hence I'm not allowed to teleport you there.");
+				return false;
+			}
+
+			DbTeleport teleport = new DbTeleport();
+			teleport.TeleportID = "hearth";
+			teleport.Realm = (int)DestinationRealm;
+			teleport.RegionID = player.BindHouseRegion;
+			teleport.X = player.BindHouseXpos;
+			teleport.Y = player.BindHouseYpos;
+			teleport.Z = player.BindHouseZpos;
+			teleport.Heading = player.BindHouseHeading;
+			OnDestinationPicked(player, teleport);
+			return true;
 		}
 
-		/// <summary>
-		/// Teleport the player to the designated coordinates. 
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="destination"></param>
-		protected virtual void OnTeleport(GamePlayer player, DbTeleport destination)
+		if (text.ToLower() == "guild")
 		{
-			if (player.InCombat == false && GameRelic.IsPlayerCarryingRelic(player) == false)
+			House house = HouseMgr.GetGuildHouseByPlayer(player);
+
+			if (house == null)
 			{
-				player.LeaveHouse();
-				GameLocation currentLocation = new GameLocation("TeleportStart", player.CurrentRegionID, player.X, player.Y, player.Z);
-				player.MoveTo((ushort)destination.RegionID, destination.X, destination.Y, destination.Z, (ushort)destination.Heading);
-				GameServer.ServerRules.OnPlayerTeleport(player, currentLocation, destination);
+				return false; // no teleport when guild house not found
 			}
+			else
+			{
+				IGameLocation location = house.OutdoorJumpPoint;
+				DbTeleport teleport = new DbTeleport();
+				teleport.TeleportID = "guild house";
+				teleport.Realm = (int)DestinationRealm;
+				teleport.RegionID = location.RegionID;
+				teleport.X = location.X;
+				teleport.Y = location.Y;
+				teleport.Z = location.Z;
+				teleport.Heading = location.Heading;
+				OnDestinationPicked(player, teleport);
+				return true;
+			}
+		}
+
+		// Find the teleport location in the database.
+		DbTeleport port = WorldMgr.GetTeleportLocation(DestinationRealm, String.Format("{0}:{1}", Type, text));
+		if (port != null)
+		{
+			if (port.RegionID == 0 && port.X == 0 && port.Y == 0 && port.Z == 0)
+			{
+				OnSubSelectionPicked(player, port);
+			}
+			else
+			{
+				OnDestinationPicked(player, port);
+			}
+
+			return false;
+		}
+
+		return true; // Needs further processing.
+	}
+
+	/// <summary>
+	/// Player has picked a destination.
+	/// Override if you need the teleporter to say something to the player
+	/// before porting him.
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="destination"></param>
+	protected virtual void OnDestinationPicked(GamePlayer player, DbTeleport destination)
+	{
+		Region region = WorldMgr.GetRegion((ushort)destination.RegionID);
+
+		if (region == null || region.IsDisabled)
+		{
+			player.Out.SendMessage("This destination is not available.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			return;
+		}
+
+		OnTeleport(player, destination);
+	}
+
+	/// <summary>
+	/// Player has picked a subselection.
+	/// Override to pass teleport options on to the player.
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="subSelection"></param>
+	protected virtual void OnSubSelectionPicked(GamePlayer player, DbTeleport subSelection)
+	{
+	}
+
+	/// <summary>
+	/// Teleport the player to the designated coordinates using the
+	/// portal spell.
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="destination"></param>
+	protected virtual void OnTeleportSpell(GamePlayer player, DbTeleport destination)
+	{
+		SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);
+		List<Spell> spellList = SkillBase.GetSpellList(GlobalSpellsLines.Mob_Spells);
+		Spell spell = SkillBase.GetSpellByID(5999); // UniPortal spell.
+
+		if (spell != null)
+		{
+			UniPortalSpell portalHandler = new UniPortalSpell(this, spell, spellLine, destination);
+			portalHandler.StartSpell(player);
+			return;
+		}
+
+		// Spell not found in the database, fall back on default procedure.
+
+		if (player.Client.Account.PrivLevel > 1)
+			player.Out.SendMessage("Uni-Portal spell not found.",
+				EChatType.CT_Skill, EChatLoc.CL_SystemWindow);
+
+		this.OnTeleport(player, destination);
+	}
+
+	/// <summary>
+	/// Teleport the player to the designated coordinates. 
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="destination"></param>
+	protected virtual void OnTeleport(GamePlayer player, DbTeleport destination)
+	{
+		if (player.InCombat == false && GameRelic.IsPlayerCarryingRelic(player) == false)
+		{
+			player.LeaveHouse();
+			GameLocation currentLocation =
+				new GameLocation("TeleportStart", player.CurrentRegionID, player.X, player.Y, player.Z);
+			player.MoveTo((ushort)destination.RegionID, destination.X, destination.Y, destination.Z,
+				(ushort)destination.Heading);
+			GameServer.ServerRules.OnPlayerTeleport(player, currentLocation, destination);
 		}
 	}
 }

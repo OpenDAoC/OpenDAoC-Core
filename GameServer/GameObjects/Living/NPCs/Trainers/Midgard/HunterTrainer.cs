@@ -1,6 +1,6 @@
 using Core.GS.Enums;
 
-namespace Core.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Hunter Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Hunter Trainer" NPC's in Midgard (multiple guilds are possible for one script)
 public class HunterTrainer : GameTrainer

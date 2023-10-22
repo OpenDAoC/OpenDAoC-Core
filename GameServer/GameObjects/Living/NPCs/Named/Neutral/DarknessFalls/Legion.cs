@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -13,7 +10,7 @@ using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.World;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
     
 #region Legion
 public class Legion : GameEpicBoss

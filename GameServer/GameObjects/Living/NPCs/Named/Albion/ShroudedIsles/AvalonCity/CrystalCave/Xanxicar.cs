@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -178,7 +175,7 @@ public class Xanxicar : GameEpicBoss
 #endregion Xanxicar
 
 #region Xanxicarian Champion
-public class XanxicarianChampion : GameEpicNPC
+public class XanxicarianChampion : GameEpicNpc
 {
 	public XanxicarianChampion() : base() { }
 

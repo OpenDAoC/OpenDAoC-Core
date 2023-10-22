@@ -1,11 +1,9 @@
 ﻿using System;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
 public class BrotherDon : GameNpc
 {

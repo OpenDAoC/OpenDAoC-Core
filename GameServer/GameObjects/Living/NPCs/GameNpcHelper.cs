@@ -9,7 +9,6 @@ namespace Core.GS;
 /// </summary>
 public static class GameNpcHelper
 {
-
 	#region GameNPC cast methods
 	/// <summary>
 	/// Cast a spell on player and its pets/subpets if available.

@@ -73,7 +73,7 @@ public class FamesHorsemanBrain : StandardMobBrain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "FamesBaf" && npc is GameEpicNPC)
+                        if (npc.IsAlive && npc.PackageID == "FamesBaf" && npc is GameEpicNpc)
                         {
                             AddAggroListTo(npc.Brain as StandardMobBrain);// add to aggro mobs with FamesBaf PackageID
                             BafMobs = true;
@@ -87,7 +87,7 @@ public class FamesHorsemanBrain : StandardMobBrain
     public void SpawnFateBearer()
     {
         INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
-        GameEpicNPC Add = new GameEpicNPC();
+        GameEpicNpc Add = new GameEpicNpc();
         Add.LoadTemplate(npcTemplate);
         Add.X = Body.X - 100;
         Add.Y = Body.Y;
@@ -731,7 +731,7 @@ public class FunusHorsemanBrain : StandardMobBrain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "FunusBaf" && npc is GameEpicNPC)
+                        if (npc.IsAlive && npc.PackageID == "FunusBaf" && npc is GameEpicNpc)
                         {
                             AddAggroListTo(npc.Brain as StandardMobBrain);// add to aggro mobs with FamesBaf PackageID
                             BafMobs4 = true;

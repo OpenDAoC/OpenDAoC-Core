@@ -1,9 +1,8 @@
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.World;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
 public class BountyPointPortMob : GameNpc
 {

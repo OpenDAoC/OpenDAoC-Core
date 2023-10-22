@@ -1,15 +1,12 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.Server;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
 #region Lich Lord Ilron
 public class LichLordIlron : GameEpicBoss

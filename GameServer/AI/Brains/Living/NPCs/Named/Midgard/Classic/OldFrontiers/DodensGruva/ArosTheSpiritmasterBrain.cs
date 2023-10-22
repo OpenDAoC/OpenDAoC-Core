@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Core.AI.Brain;
 using Core.Events;
 using Core.GS.AI.States;
 using Core.GS.Effects;

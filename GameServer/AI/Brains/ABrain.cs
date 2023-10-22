@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using Core.AI;
 using Core.Events;
 using Core.GS.AI.States;
 using Core.GS.ECS;

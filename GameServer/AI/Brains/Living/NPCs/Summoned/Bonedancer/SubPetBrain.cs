@@ -1,5 +1,4 @@
 using System;
-using Core.AI.Brain;
 using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;

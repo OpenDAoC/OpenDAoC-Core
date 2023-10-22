@@ -1,11 +1,3 @@
-using Core.Database;
-using Core.Database.Tables;
-using Core.GS.Enums;
-using Core.GS.GameUtils;
-using Core.GS.Packets;
-using Core.GS.Packets.Server;
-using Core.GS.World;
-
 /*1,Ballista,1,ammo,0.46,1
 2,Catapult,2,ammo,0.39,1
 3,Trebuchet,2,ammo,1.03,1
@@ -23,6 +15,13 @@ using Core.GS.World;
 9,Ram High,0,12,13,80,
 10,Ram Mid,0,12,13,80,
 11,Ram Low,0,12,13,80,*/
+
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Packets.Server;
+using Core.GS.World;
+
 namespace Core.GS;
 
 public class GameSiegeBallista : GameSiegeWeapon

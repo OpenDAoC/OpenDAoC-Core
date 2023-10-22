@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -109,7 +106,7 @@ public class KrevoRicik : GameEpicBoss
 #endregion Krevo Ricik
 
 #region Krevo adds
-public class KrevolAdd : GameEpicNPC
+public class KrevolAdd : GameEpicNpc
 {
 	public KrevolAdd() : base() { }
 

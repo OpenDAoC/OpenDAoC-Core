@@ -2,7 +2,7 @@ using System;
 using Core.GS.Enums;
 using Core.GS.Languages;
 
-namespace Core.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Mauler Trainer", ERealm.Hibernia)]
 public class HiberniaMaulerTrainer : GameTrainer

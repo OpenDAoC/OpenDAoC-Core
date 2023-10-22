@@ -1,41 +1,39 @@
-using Core.AI.Brain;
 using Core.GS.AI.Brains;
 
-namespace Core.GS
-{
-	public class GameTaxi : GameNpc
-	{
-		public GameTaxi() : base()
-		{
-			Model = 449;
-			MaxSpeedBase = 650;
-			Size = 50;
-			Level = 55;
-			Name = "horse";
-			BlankBrain brain = new BlankBrain();
-			SetOwnBrain(brain);
-		}
-		
-		public GameTaxi(INpcTemplate templateid) : base(templateid)
-		{
-			BlankBrain brain = new BlankBrain();
-			SetOwnBrain(brain);
-		}
-		
-		public override int MAX_PASSENGERS
-		{
-			get
-			{
-				return 1;
-			}
-		}
+namespace Core.GS;
 
-		public override int SLOT_OFFSET
+public class GameTaxi : GameNpc
+{
+	public GameTaxi() : base()
+	{
+		Model = 449;
+		MaxSpeedBase = 650;
+		Size = 50;
+		Level = 55;
+		Name = "horse";
+		BlankBrain brain = new BlankBrain();
+		SetOwnBrain(brain);
+	}
+	
+	public GameTaxi(INpcTemplate templateid) : base(templateid)
+	{
+		BlankBrain brain = new BlankBrain();
+		SetOwnBrain(brain);
+	}
+	
+	public override int MAX_PASSENGERS
+	{
+		get
 		{
-			get
-			{
-				return 0;
-			}
+			return 1;
+		}
+	}
+
+	public override int SLOT_OFFSET
+	{
+		get
+		{
+			return 0;
 		}
 	}
 }

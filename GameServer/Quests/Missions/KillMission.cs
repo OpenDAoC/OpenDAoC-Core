@@ -28,7 +28,7 @@ public class KillMission : AMission
 
 		//we don't want mission masters to be considered realm guards because they are insta respawn
 		//in addition do not count realm 0 guards
-		if (eargs.Target is Keeps.MissionMaster || eargs.Target.Realm == ERealm.None)
+		if (eargs.Target is MissionMaster || eargs.Target.Realm == ERealm.None)
 			return;
 
 		if (m_targetType.IsInstanceOfType(eargs.Target) == false)
@@ -74,7 +74,7 @@ public class KillMission : AMission
 	{
 		get
 		{
-			if (m_targetType == typeof(Keeps.GameKeepGuard))
+			if (m_targetType == typeof(GameKeepGuard))
 				return 500;
 			else if (m_targetType == typeof(GamePlayer))
 				return 750;

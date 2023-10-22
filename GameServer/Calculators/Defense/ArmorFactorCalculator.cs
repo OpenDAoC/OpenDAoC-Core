@@ -27,7 +27,7 @@ public class ArmorFactorCalculator : PropertyCalculator
             case GameKeepDoor:
             case GameKeepComponent:
                 return CalculateKeepComponentArmorFactor(living);
-            case GameEpicNPC:
+            case GameEpicNpc:
             case GameEpicBoss:
             {
                 double epicScaleFactor = CalculateEpicScaleFactor(living);

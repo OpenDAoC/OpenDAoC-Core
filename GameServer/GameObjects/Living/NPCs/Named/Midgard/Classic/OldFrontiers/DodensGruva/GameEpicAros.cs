@@ -1,10 +1,6 @@
 using System;
 using System.Reflection;
-using Core.AI;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -15,7 +11,7 @@ using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.World;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
 public abstract class GameEpicAros : GameEpicBoss
 {

@@ -248,7 +248,7 @@ public class MaxHitPointsCalculator : PropertyCalculator
 
 			if(living is GameEpicBoss)
 				hp = (int)(hp * 1.5); //epic bosses get 50% extra hp
-			else if (living is GameEpicNPC)
+			else if (living is GameEpicNpc)
 				hp = (int)( hp * 1.25); //epic NPCs get 25% extra hp
 
 			return hp;

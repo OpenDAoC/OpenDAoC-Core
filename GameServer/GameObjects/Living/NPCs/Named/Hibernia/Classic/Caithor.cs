@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -14,7 +11,7 @@ using Core.GS.Skills;
 namespace Core.GS;
 
 #region Caithor
-public class Caithor : GameEpicNPC
+public class Caithor : GameEpicNpc
 {
 	public Caithor() : base() { }
 
@@ -117,7 +114,7 @@ public class Caithor : GameEpicNPC
 #endregion Caithor
 
 #region Ghost of Caithor
-public class GhostOfCaithor : GameEpicNPC
+public class GhostOfCaithor : GameEpicNpc
 {
 	public GhostOfCaithor() : base() { }
 	public override int GetResist(EDamageType damageType)

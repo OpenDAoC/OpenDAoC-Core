@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -11,7 +8,7 @@ using Core.GS.Server;
 
 namespace Core.GS;
 
-public class Dagar : GameEpicNPC
+public class Dagar : GameEpicNpc
 {
 	public Dagar() : base() { }
 

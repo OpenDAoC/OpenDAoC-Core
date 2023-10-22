@@ -1,10 +1,10 @@
-using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
+using Core.GS.Keeps;
 using Core.GS.Server;
 
-namespace Core.GS.Keeps
+namespace Core.GS
 {
 	/// <summary>
 	/// Class to manage the clothing of the guards

@@ -1,8 +1,5 @@
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
-/// <summary>
-/// Represents an in-game GameHealer NPC
-/// </summary>
 public class BountyPointHighMob : GameNpc
 {
     public override void Die(GameObject killer)

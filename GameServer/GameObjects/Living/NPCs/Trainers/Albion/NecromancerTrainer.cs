@@ -1,7 +1,7 @@
 using System;
 using Core.GS.Enums;
 
-namespace Core.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Necromancer Trainer", ERealm.Albion)]
 public class NecromancerTrainer : GameTrainer

@@ -1,6 +1,6 @@
 using Core.GS.Enums;
 
-namespace Core.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Healer Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Healer Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class HealerTrainer : GameTrainer

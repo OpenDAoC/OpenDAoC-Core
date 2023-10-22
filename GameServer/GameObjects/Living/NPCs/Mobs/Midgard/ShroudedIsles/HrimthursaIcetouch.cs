@@ -1,9 +1,8 @@
-﻿using Core.AI.Brain;
-using Core.GS.AI.Brains;
+﻿using Core.GS.AI.Brains;
 
 namespace Core.GS;
 
-public class HrimthursaIcetouch : GameEpicNPC
+public class HrimthursaIcetouch : GameEpicNpc
 {
 	public HrimthursaIcetouch() : base() { }
 

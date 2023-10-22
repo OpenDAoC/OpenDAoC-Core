@@ -1,6 +1,6 @@
 using Core.GS.Enums;
 
-namespace Core.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Mauler Trainer", ERealm.Midgard)]
 public class MidgardMaulerTrainer : GameTrainer

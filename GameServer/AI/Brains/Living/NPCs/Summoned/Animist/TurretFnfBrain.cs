@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Core.AI.Brain;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Effects.Old;

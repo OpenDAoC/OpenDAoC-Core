@@ -1,9 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
-using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -14,7 +10,7 @@ using Core.GS.Skills;
 namespace Core.GS;
 
 #region Cailean
-public class Cailean : GameEpicNPC
+public class Cailean : GameEpicNpc
 {
 	public Cailean() : base() { }
 

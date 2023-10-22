@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Core.AI.Brain;
 using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
-using Core.GS;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;

@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -97,7 +94,7 @@ public class DebenSeGecynde : GameEpicBoss
 #endregion Deben se Gecynde
 
 #region Deben Soldiers
-public class DebenFighter : GameEpicNPC
+public class DebenFighter : GameEpicNpc
 {
 	public DebenFighter() : base() { }
 
@@ -163,7 +160,7 @@ public class DebenFighter : GameEpicNPC
 #endregion Deben Soldiers
 
 #region Deben Mages
-public class DebenMage : GameEpicNPC
+public class DebenMage : GameEpicNpc
 {
 	public DebenMage() : base() { }
 

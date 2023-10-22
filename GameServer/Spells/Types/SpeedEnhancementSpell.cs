@@ -105,7 +105,7 @@ public class SpeedEnhancementSpell : SpellHandler
 		if (target is GamePlayer && (target as GamePlayer).IsRiding)
 			return;
 
-		if (target is Keeps.GameKeepGuard)
+		if (target is GameKeepGuard)
 			return;
 
 		// Graveen: archery speed shot

@@ -225,7 +225,7 @@ public class CharmSpell : SpellHandler
                     isCharmable = false;
                 if (charmMob is RechargerNpc) // Item recharge NPCs
                     isCharmable = false;
-                if (charmMob is GameEpicBoss or GameEpicNPC) // Any epic mobs or bosses
+                if (charmMob is GameEpicBoss or GameEpicNpc) // Any epic mobs or bosses
                     isCharmable = false;
 
                 // If the mob's ClassType matches any of the above, it cannot be charmed

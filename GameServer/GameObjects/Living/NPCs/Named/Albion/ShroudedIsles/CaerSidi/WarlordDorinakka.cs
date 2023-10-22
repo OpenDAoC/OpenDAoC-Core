@@ -1,12 +1,10 @@
-﻿using Core.AI.Brain;
-using Core.Database;
-using Core.Database.Tables;
+﻿using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Server;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
 public class WarlordDorinakka : GameEpicBoss
 {

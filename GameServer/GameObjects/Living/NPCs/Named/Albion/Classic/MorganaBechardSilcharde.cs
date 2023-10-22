@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -55,7 +52,7 @@ public class Morgana : GameNpc
 #endregion Morgana
 
 #region Bechard
-public class Bechard : GameEpicNPC
+public class Bechard : GameEpicNpc
 {
 	public Bechard() : base() { }
 	public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
@@ -182,7 +179,7 @@ public class Bechard : GameEpicNPC
 #endregion Bechard
 
 #region Silcharde
-public class Silcharde : GameEpicNPC
+public class Silcharde : GameEpicNpc
 {
 	public Silcharde() : base() { }
 	public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)

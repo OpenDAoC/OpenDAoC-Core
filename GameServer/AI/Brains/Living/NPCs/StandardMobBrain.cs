@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Core.AI;
-using Core.AI.Brain;
 using Core.GS.AI.States;
 using Core.GS.ECS;
 using Core.GS.Effects;

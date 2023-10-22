@@ -1,8 +1,5 @@
 ﻿using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -171,7 +168,7 @@ public class ScurceolHyrde : GameEpicBoss
 #endregion Scurceol Hyrde
 
 #region 1st Orb (Lyft Miht)
-public class LyftMihtOne : GameEpicNPC
+public class LyftMihtOne : GameEpicNpc
 {
 	public LyftMihtOne() : base() { }
 
@@ -242,7 +239,7 @@ public class LyftMihtOne : GameEpicNPC
 #endregion 1st Orb (Lyft Miht)
 
 #region 2nd Orb (Lyft Miht)
-public class LyftMihtTwo : GameEpicNPC
+public class LyftMihtTwo : GameEpicNpc
 {
 	public LyftMihtTwo() : base() { }
 
@@ -313,7 +310,7 @@ public class LyftMihtTwo : GameEpicNPC
 #endregion 2nd Orb (Lyft Miht)
 
 #region 3rd Orb (Lyft Miht)
-public class LyftMihtThree : GameEpicNPC
+public class LyftMihtThree : GameEpicNpc
 {
 	public LyftMihtThree() : base() { }
 
@@ -384,7 +381,7 @@ public class LyftMihtThree : GameEpicNPC
 #endregion 3rd Orb (Lyft Miht)
 
 #region 4th Orb (Lyft Miht)
-public class LyftMihtFour : GameEpicNPC
+public class LyftMihtFour : GameEpicNpc
 {
 	public LyftMihtFour() : base() { }
 

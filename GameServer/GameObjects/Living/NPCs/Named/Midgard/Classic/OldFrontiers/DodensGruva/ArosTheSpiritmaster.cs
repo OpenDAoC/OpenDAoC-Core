@@ -1,8 +1,5 @@
 using System;
-using Core.AI.Brain;
-using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -10,7 +7,7 @@ using Core.GS.GameUtils;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Scripts;
+namespace Core.GS;
 
 public class ArosTheSpiritmaster : GameEpicAros
 {

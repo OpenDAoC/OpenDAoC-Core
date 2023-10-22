@@ -1,6 +1,4 @@
-﻿using Core.AI.Brain;
-using Core.Database;
-using Core.Database.Tables;
+﻿using Core.Database.Tables;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
@@ -9,7 +7,7 @@ using Core.GS.Spells;
 
 namespace Core.GS;
 
-public class CrusadersAntithesis : GameEpicDungeonNPC
+public class CrusadersAntithesis : GameEpicDungeonNpc
 {
 	public CrusadersAntithesis() : base()
 	{
