@@ -1,0 +1,67 @@
+﻿version: "3.3"
+
+networks:
+  opendaoc-network:
+    driver: bridge
+
+services:
+  db:
+    image: mariadb:10.6
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1 --character-set-server=utf8mb3 --collation-server=utf8mb3_general_ci --innodb_large_prefix=1 --innodb_file_format=Barracuda --innodb_file_per_table=1
+    restart: always
+    environment:
+      MYSQL_DATABASE: opendaoc
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+    volumes:
+      - opendaoc-db-data:/var/lib/mysql
+      - base-db:/docker-entrypoint-initdb.d
+    networks:
+      - opendaoc-network
+
+  gameserver:
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    #image: claitz/opendaoc:latest
+    image: opendaoc:test
+    ports:
+      - "10300:10300"
+      - "10400:10400"
+    depends_on:
+      - db
+    environment:
+      DB_CONNECTION_STRING: "server=db;port=3306;database=opendaoc;userid=root;password=my-secret-pw;treattinyasboolean=true"
+      SERVER_PORT: "10300"
+      SERVER_IP: "0.0.0.0"
+      REGION_IP: "0.0.0.0"
+      REGION_PORT: "10400"
+      UDP_IP: "0.0.0.0"
+      UDP_PORT: "10400"
+      ENABLE_UPNP: "False"
+      DETECT_REGION_IP: "True"
+      SERVER_NAME: "OpenDAoC"
+      SERVER_NAME_SHORT: "OPENDAOC"
+      LOG_CONFIG_FILE: "./config/logconfig.xml"
+      SCRIPT_COMPILATION_TARGET: "./lib/GameServerScripts.dll"
+      SCRIPT_ASSEMBLIES: ""
+      ENABLE_COMPILATION: "True"
+      AUTO_ACCOUNT_CREATION: "True"
+      GAME_TYPE: "Normal"
+      CHEAT_LOGGER_NAME: "cheats"
+      GM_ACTION_LOGGER_NAME: "gmactions"
+      INVALID_NAMES_FILE: "./config/invalidnames.txt"
+      DB_TYPE: "MYSQL"
+      DB_AUTOSAVE: "True"
+      DB_AUTOSAVE_INTERVAL: "10"
+      CPU_USE: "8"
+
+    volumes:
+      - base-db:/tmp/opendaoc-db
+
+    networks:
+      - opendaoc-network
+
+volumes:
+  opendaoc-db-data:
+  base-db:
