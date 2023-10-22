@@ -26,4 +26,3 @@ public class DaySpawnMob : GameNpc
             log.Info("Day mobs initialising...");
     }
 }
-}
