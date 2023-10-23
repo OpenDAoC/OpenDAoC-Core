@@ -8,7 +8,7 @@ using Core.GS.Database;
 using Core.GS.Enums;
 using log4net;
 
-namespace Core.GS.Players.Clients;
+namespace Core.GS.Players;
 
 /// <summary>
 /// This class represents a full merchant item list

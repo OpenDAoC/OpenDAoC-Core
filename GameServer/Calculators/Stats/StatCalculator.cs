@@ -1,6 +1,6 @@
 using System;
 using Core.GS.Enums;
-using Core.GS.Players.Classes;
+using Core.GS.Players;
 
 namespace Core.GS.Calculators;
 

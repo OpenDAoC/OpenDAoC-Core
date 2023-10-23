@@ -2,7 +2,7 @@
 using Core.GS.Enums;
 using Core.GS.Languages;
 
-namespace Core.GS.Players.Titles;
+namespace Core.GS.Players;
 
 /// <summary>
 /// GenericEventPlayerTitle Allow to Implement easily custom event based player title

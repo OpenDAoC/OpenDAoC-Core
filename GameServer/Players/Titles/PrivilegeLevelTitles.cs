@@ -2,7 +2,7 @@
 using Core.GS.Enums;
 using Core.GS.Events;
 
-namespace Core.GS.Players.Titles;
+namespace Core.GS.Players;
 
 /// <summary>
 /// Administrator

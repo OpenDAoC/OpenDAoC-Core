@@ -2,7 +2,7 @@ using System.Reflection;
 using Core.GS.Crafting;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
-using Core.GS.Players.Titles;
+using Core.GS.Players;
 using log4net;
 
 namespace Core.GS.Packets.Server;

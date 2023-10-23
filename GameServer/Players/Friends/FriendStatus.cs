@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Core.GS.Players.Friends;
+namespace Core.GS.Players;
 
 /// <summary>
 /// Offline Friend Status Object to display in Social Windows

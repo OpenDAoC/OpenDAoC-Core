@@ -6,7 +6,7 @@ using Core.Database.Tables;
 using Core.GS.Crafting;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
-using Core.GS.Players.Specializations;
+using Core.GS.Players;
 using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Spells;

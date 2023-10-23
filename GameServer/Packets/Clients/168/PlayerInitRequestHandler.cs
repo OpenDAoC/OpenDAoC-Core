@@ -11,7 +11,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Packets.Server;
-using Core.GS.Players.Realms;
+using Core.GS.Players;
 using Core.GS.World;
 using log4net;
 

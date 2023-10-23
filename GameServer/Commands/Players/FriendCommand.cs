@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Core.GS.ECS;
 using Core.GS.Enums;
-using Core.GS.Players.Friends;
+using Core.GS.Players;
 
 namespace Core.GS.Commands;
 

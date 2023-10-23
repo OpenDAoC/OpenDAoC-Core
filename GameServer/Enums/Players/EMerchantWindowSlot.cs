@@ -1,4 +1,4 @@
-using Core.GS.Players.Clients;
+using Core.GS.Players;
 
 namespace Core.GS.Enums;
 

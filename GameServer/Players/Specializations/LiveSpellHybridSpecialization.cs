@@ -4,7 +4,7 @@ using Core.GS.Enums;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Players.Specializations;
+namespace Core.GS.Players;
 
 /// <summary>
 /// This is used for a Hybrid Spec Spell Line (Not List Caster)

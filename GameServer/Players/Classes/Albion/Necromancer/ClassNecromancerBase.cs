@@ -4,7 +4,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 
-namespace Core.GS.Players.Classes;
+namespace Core.GS.Players;
 
 public class ClassNecromancerBase : ClassDisciple
 {

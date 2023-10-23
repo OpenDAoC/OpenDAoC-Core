@@ -1,7 +1,7 @@
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Packets.Server;
-using Core.GS.Players.Managers;
+using Core.GS.Players;
 
 namespace Core.GS.Packets.Clients;
 

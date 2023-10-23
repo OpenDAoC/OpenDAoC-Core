@@ -8,7 +8,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using log4net;
 
-namespace Core.GS.Players.Friends;
+namespace Core.GS.Players;
 
 public sealed class FriendsMgr
 {

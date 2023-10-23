@@ -10,7 +10,6 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
 using Core.GS.Players;
-using Core.GS.Players.Clients;
 using Core.GS.Server;
 using Core.GS.Spells;
 using Core.GS.World;

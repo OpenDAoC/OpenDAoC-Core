@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Core.GS.Enums;
-using Core.GS.Players.Specializations;
+using Core.GS.Players;
 using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.Styles;

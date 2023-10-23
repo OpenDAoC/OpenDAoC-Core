@@ -3,7 +3,7 @@ using System.Linq;
 using Core.GS.Skills;
 using Core.GS.Styles;
 
-namespace Core.GS.Players.Specializations;
+namespace Core.GS.Players;
 
 /// <summary>
 /// LiveRealmAbilitiesSpecialization is targeted at Realm Ability Granting through RP's awarding.

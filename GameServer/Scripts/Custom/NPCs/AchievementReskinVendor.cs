@@ -8,7 +8,7 @@ using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Packets.Server;
-using Core.GS.Players.Titles;
+using Core.GS.Players;
 using Core.GS.Server;
 using Core.GS.World;
 

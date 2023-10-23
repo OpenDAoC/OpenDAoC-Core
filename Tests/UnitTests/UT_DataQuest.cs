@@ -4,7 +4,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS;
 using Core.GS.Enums;
-using Core.GS.Players.Classes;
+using Core.GS.Players;
 using Core.GS.Quests;
 using NUnit.Framework;
 

@@ -1,6 +1,6 @@
 ﻿using Core.GS;
 using Core.GS.Enums;
-using Core.GS.Players.Classes;
+using Core.GS.Players;
 using NUnit.Framework;
 
 namespace Core.Tests.Unit.Gameserver

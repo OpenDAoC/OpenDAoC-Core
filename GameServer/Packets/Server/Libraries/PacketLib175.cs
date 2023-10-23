@@ -4,7 +4,7 @@ using System.Reflection;
 using Core.GS.Crafting;
 using Core.GS.Enums;
 using Core.GS.Expansions.Foundations;
-using Core.GS.Players.Titles;
+using Core.GS.Players;
 using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.World;

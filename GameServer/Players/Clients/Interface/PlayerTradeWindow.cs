@@ -8,7 +8,7 @@ using Core.GS.GameUtils;
 using Core.GS.Server;
 using log4net;
 
-namespace Core.GS.Players.Clients;
+namespace Core.GS.Players;
 
 /// <summary>
 /// TradeWindow is the object for tradewindow from the side of one trader 

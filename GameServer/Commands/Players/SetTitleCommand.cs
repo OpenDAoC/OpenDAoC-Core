@@ -1,6 +1,6 @@
 using System.Linq;
 using Core.GS.Enums;
-using Core.GS.Players.Titles;
+using Core.GS.Players;
 
 namespace Core.GS.Commands;
 

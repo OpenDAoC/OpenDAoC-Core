@@ -5,12 +5,11 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Languages;
-using Core.GS.Players.Races;
-using Core.GS.Players.Specializations;
+using Core.GS.Players;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Players.Classes;
+namespace Core.GS.Players;
 
 /// <summary>
 /// The Base class for all player Classes in OpenDAoC

@@ -12,7 +12,7 @@ using Core.GS.Languages;
 using Core.GS.Server;
 using log4net;
 
-namespace Core.GS.Players.Managers;
+namespace Core.GS.Players;
 
 public static class AppealMgr
 {

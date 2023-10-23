@@ -1,7 +1,7 @@
 ﻿using System;
-using Core.GS.Players.Friends;
+using Core.GS.Players;
 
-namespace Core.GS.Players.Managers;
+namespace Core.GS.Players;
 
 /// <summary>
 /// GameServer Manager to Handle Player Data and restriction for this GameServer.

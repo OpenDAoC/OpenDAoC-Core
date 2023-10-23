@@ -2,7 +2,7 @@ using Core.GS.Crafting;
 using Core.GS.Enums;
 using Core.GS.Languages;
 
-namespace Core.GS.Players.Titles;
+namespace Core.GS.Players;
 
 public class CraftTitle : APlayerTitle
 {

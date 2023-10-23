@@ -1,7 +1,7 @@
 using Core.GS.AI.Brains;
 using Core.GS.Events;
 
-namespace Core.GS.Players.Classes;
+namespace Core.GS.Players;
 
 public class ClassAnimistBase : ClassForester
 {

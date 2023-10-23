@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
-using Core.GS.Players.Races;
-using Core.GS.Players.Specializations;
+using Core.GS.Players;
 using Core.GS.Server;
 using Core.GS.Skills;
 
-namespace Core.GS.Players.Classes;
+namespace Core.GS.Players;
 
 [PlayerClass((int)EPlayerClass.Scout, "Scout", "Rogue")]
 public class ClassScout : ClassAlbionRogue

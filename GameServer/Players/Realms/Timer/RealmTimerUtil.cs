@@ -6,7 +6,7 @@ using Core.GS.GameLoop;
 using Core.GS.Server;
 using Core.GS.World;
 
-namespace Core.GS.Players.Realms;
+namespace Core.GS.Players;
 
 //Utility class for checking realmtimer of a character/account and acting accordingly 
 public class RealmTimerUtil

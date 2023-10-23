@@ -2,7 +2,7 @@ using System.Reflection;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.Players.Classes;
+using Core.GS.Players;
 using Core.GS.RealmAbilities;
 using Core.GS.World;
 using log4net;

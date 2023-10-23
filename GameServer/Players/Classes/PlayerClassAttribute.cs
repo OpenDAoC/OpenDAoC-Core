@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.GS.Players.Classes;
+namespace Core.GS.Players;
 
 /// <summary>
 /// Denotes a class as a player class

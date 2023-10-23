@@ -1,7 +1,6 @@
 ﻿using Core.GS.AI.Brains;
 using Core.GS.Enums;
-using Core.GS.Players.Classes;
-using Core.GS.Players.Clients;
+using Core.GS.Players;
 
 namespace Core.GS.Scripts.Custom;
 

@@ -7,7 +7,7 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.Players.Classes;
+using Core.GS.Players;
 using Core.GS.Server;
 using log4net;
 

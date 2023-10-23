@@ -1,4 +1,4 @@
-﻿namespace Core.GS.Players.Friends;
+﻿namespace Core.GS.Players;
 
 public static class FriendsMgrExtensions
 {

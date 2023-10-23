@@ -6,7 +6,7 @@ using System.Reflection;
 using Core.GS.Scripts;
 using log4net;
 
-namespace Core.GS.Players.Titles;
+namespace Core.GS.Players;
 
 public static class PlayerTitleMgr
 {

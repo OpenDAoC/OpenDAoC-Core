@@ -12,9 +12,7 @@ using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
 using Core.GS.GameUtils;
-using Core.GS.Players.Friends;
-using Core.GS.Players.Managers;
-using Core.GS.Players.Specializations;
+using Core.GS.Players;
 using Core.GS.Quests;
 using Core.GS.World;
 

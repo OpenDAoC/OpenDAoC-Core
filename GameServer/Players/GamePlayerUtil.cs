@@ -5,7 +5,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
-using Core.GS.Players.Specializations;
+using Core.GS.Players;
 using Core.GS.Skills;
 using Core.GS.World;
 

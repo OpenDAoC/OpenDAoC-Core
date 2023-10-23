@@ -6,7 +6,7 @@ using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Players.Clients;
+using Core.GS.Players;
 
 namespace Core.GS.GameUtils
 {

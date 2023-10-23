@@ -1,6 +1,6 @@
 ﻿using Core.GS.Commands;
 using Core.GS.Enums;
-using Core.GS.Players.Realms;
+using Core.GS.Players;
 using Core.GS.Server;
 
 namespace Core.GS.Scripts.Custom;

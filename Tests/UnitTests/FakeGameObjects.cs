@@ -6,7 +6,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
-using Core.GS.Players.Classes;
+using Core.GS.Players;
 using Core.GS.World;
 
 namespace Core.Tests.Unit.Gameserver

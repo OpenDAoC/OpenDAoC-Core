@@ -4,7 +4,7 @@ using System.Linq;
 using Core.GS.Skills;
 using Core.GS.Styles;
 
-namespace Core.GS.Players.Specializations;
+namespace Core.GS.Players;
 
 /// <summary>
 /// MiniLineSpecialization are "Mini-Spec" Used to match Sub-Spec (CL ~ Subclass) Skills

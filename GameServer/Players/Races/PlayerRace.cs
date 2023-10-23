@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Core.GS.Enums;
 
-namespace Core.GS.Players.Races;
+namespace Core.GS.Players;
 
 public class PlayerRace
 {

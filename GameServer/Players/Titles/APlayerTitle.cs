@@ -1,4 +1,4 @@
-namespace Core.GS.Players.Titles;
+namespace Core.GS.Players;
 
 public abstract class APlayerTitle : IPlayerTitle
 {

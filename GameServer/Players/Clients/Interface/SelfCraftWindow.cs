@@ -6,7 +6,7 @@ using Core.GS.Crafting;
 using Core.GS.Enums;
 using log4net;
 
-namespace Core.GS.Players.Clients;
+namespace Core.GS.Players;
 
 /// <summary>
 /// SelfCraftWindow is the object used to cambine item alone

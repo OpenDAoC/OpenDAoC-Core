@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
-using Core.GS.Players.Races;
+using Core.GS.Players;
 
-namespace Core.GS.Players.Classes;
+namespace Core.GS.Players;
 
 [PlayerClass((int)EPlayerClass.Druid, "Druid", "Naturalist")]
 public class ClassDruid : ClassNaturalist

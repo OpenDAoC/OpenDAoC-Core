@@ -11,7 +11,7 @@ using Core.GS.Commands;
 using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.Players.Specializations;
+using Core.GS.Players;
 using Core.GS.RealmAbilities;
 using Core.GS.Scripts;
 using Core.GS.Server;

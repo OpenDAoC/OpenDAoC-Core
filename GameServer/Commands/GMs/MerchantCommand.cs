@@ -5,7 +5,7 @@ using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.Players.Clients;
+using Core.GS.Players;
 using Core.GS.Scripts;
 using Core.GS.Server;
 

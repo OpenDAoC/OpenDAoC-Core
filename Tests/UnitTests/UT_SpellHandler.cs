@@ -5,7 +5,7 @@ using Core.Events;
 using Core.GS;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Players.Classes;
+using Core.GS.Players;
 using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Spells;

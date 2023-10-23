@@ -5,7 +5,7 @@ using Core.Events;
 using Core.GS;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Players.Friends;
+using Core.GS.Players;
 using NUnit.Framework;
 
 namespace Core.Tests.Integration.Server

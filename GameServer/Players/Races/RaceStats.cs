@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.GS.Players.Races;
+namespace Core.GS.Players;
 
 public class RaceStats
 {

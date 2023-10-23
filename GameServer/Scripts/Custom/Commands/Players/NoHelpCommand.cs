@@ -5,7 +5,7 @@ using Core.GS.Commands;
 using Core.GS.Database;
 using Core.GS.Enums;
 using Core.GS.Packets.Server;
-using Core.GS.Players.Titles;
+using Core.GS.Players;
 
 namespace Core.GS.Scripts.Custom;
 

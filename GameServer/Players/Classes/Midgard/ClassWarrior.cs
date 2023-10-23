@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using Core.GS.Enums;
-using Core.GS.Players.Races;
+using Core.GS.Players;
 using Core.GS.Skills;
 
-namespace Core.GS.Players.Classes;
+namespace Core.GS.Players;
 
 [PlayerClass((int)EPlayerClass.Warrior, "Warrior", "Viking")]
 public class ClassWarrior : ClassViking

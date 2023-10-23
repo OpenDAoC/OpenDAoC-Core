@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Core.GS.Styles;
 
-namespace Core.GS.Players.Specializations;
+namespace Core.GS.Players;
 
 /// <summary>
 /// This is a Live Spell Line Specialization, used for list caster, with baseline spell and specline spell appart

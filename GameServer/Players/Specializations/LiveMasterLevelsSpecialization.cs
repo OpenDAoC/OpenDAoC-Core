@@ -2,7 +2,7 @@
 using System.Linq;
 using Core.GS.Skills;
 
-namespace Core.GS.Players.Specializations;
+namespace Core.GS.Players;
 
 public interface IMasterLevelsSpecialization
 {

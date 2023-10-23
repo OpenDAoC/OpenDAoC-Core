@@ -1,4 +1,4 @@
-﻿namespace Core.GS.Players.Specializations;
+﻿namespace Core.GS.Players;
 
 public class LiveCareerSpecialization : CareerSpecialization
 {

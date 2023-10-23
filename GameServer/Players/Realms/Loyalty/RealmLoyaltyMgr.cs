@@ -6,7 +6,7 @@ using Core.Database.Tables;
 using Core.GS.Database;
 using Core.GS.Enums;
 
-namespace Core.GS.Players.Realms;
+namespace Core.GS.Players;
 
 public class RealmLoyaltyMgr
 {

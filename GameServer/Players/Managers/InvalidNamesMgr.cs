@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using log4net;
 
-namespace Core.GS.Players.Managers;
+namespace Core.GS.Players;
 
 /// <summary>
 /// InvalidNamesManager Check for In-Game Player Names/LastNames/GuildName/AllianceName restriction Policy.

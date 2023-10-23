@@ -8,7 +8,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Server;
 
-namespace Core.GS.Players.Managers;
+namespace Core.GS.Players;
 
 /// <summary>
 /// Manages all audit entries.

@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Players.Races;
+using Core.GS.Players;
 
-namespace Core.GS.Players.Classes;
+namespace Core.GS.Players;
 
 [PlayerClass((int)EPlayerClass.Theurgist, "Theurgist", "Elementalist")]
 public class ClassTheurgist : ClassElementalist

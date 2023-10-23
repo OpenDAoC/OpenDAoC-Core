@@ -1,7 +1,7 @@
 using System.Collections;
 using Core.Database.Tables;
 
-namespace Core.GS.Players.Clients;
+namespace Core.GS.Players;
 
 public interface ITradeWindow
 {

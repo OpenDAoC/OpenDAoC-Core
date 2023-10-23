@@ -4,7 +4,7 @@ using Core.GS.AI.Brains;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Languages;
-using Core.GS.Players.Classes;
+using Core.GS.Players;
 using Core.GS.Quests;
 using Core.GS.Server;
 

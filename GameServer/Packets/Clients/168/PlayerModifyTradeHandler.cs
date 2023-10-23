@@ -3,7 +3,7 @@ using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Packets.Server;
-using Core.GS.Players.Clients;
+using Core.GS.Players;
 
 namespace Core.GS.Packets.Clients;
 

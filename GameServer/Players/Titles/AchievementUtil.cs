@@ -5,7 +5,7 @@ using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Database;
 
-namespace Core.GS.Players.Titles;
+namespace Core.GS.Players;
 
 public class AchievementUtil
 {

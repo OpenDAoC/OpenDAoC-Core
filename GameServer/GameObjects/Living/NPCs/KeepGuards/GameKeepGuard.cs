@@ -14,7 +14,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.Languages;
 using Core.GS.Packets.Server;
-using Core.GS.Players.Classes;
+using Core.GS.Players;
 using Core.GS.Scripts.Custom;
 using Core.GS.Server;
 using Core.GS.Skills;

@@ -1,7 +1,7 @@
 ﻿using System;
 using Core.GS.Events;
 
-namespace Core.GS.Players.Titles;
+namespace Core.GS.Players;
 
 #region keep
 /// <summary>

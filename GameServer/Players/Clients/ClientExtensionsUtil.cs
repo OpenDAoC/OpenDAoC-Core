@@ -1,7 +1,7 @@
 ﻿using System;
 using Core.Database.Tables;
 
-namespace Core.GS.Players.Clients;
+namespace Core.GS.Players;
 
 public static class ClientExtensionsUtil
 {

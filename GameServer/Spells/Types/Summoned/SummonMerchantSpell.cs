@@ -3,7 +3,7 @@ using System.Reflection;
 using Core.GS.AI.Brains;
 using Core.GS.ECS;
 using Core.GS.Enums;
-using Core.GS.Players.Clients;
+using Core.GS.Players;
 using Core.GS.Skills;
 using Core.GS.World;
 

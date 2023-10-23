@@ -5,7 +5,7 @@ using Core.GS.Server;
 using Core.GS.World;
 using log4net;
 
-namespace Core.GS.Players.Clients;
+namespace Core.GS.Players;
 
 public class WarMapMgr
 {   

@@ -2,7 +2,7 @@ using System;
 using Core.GS.Events;
 using Core.GS.Languages;
 
-namespace Core.GS.Players.Titles;
+namespace Core.GS.Players;
 
 public class Level20Title : EventPlayerTitle
 {

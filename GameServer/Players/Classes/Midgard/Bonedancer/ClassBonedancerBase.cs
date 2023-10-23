@@ -1,9 +1,9 @@
 using Core.GS.AI.Brains;
 using Core.GS.Events;
-using Core.GS.Players.Specializations;
+using Core.GS.Players;
 using Core.GS.Server;
 
-namespace Core.GS.Players.Classes;
+namespace Core.GS.Players;
 
 public class ClassBonedancerBase : ClassMystic
 {

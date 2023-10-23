@@ -2,7 +2,7 @@
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Languages;
-using Core.GS.Players.Managers;
+using Core.GS.Players;
 using Core.GS.Server;
 
 namespace Core.GS.Commands;

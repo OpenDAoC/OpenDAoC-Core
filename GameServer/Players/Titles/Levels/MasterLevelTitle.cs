@@ -2,9 +2,9 @@ using System;
 using System.Linq;
 using Core.GS.Events;
 using Core.GS.Languages;
-using Core.GS.Players.Specializations;
+using Core.GS.Players;
 
-namespace Core.GS.Players.Titles;
+namespace Core.GS.Players;
 
 public class MasterLevelTitle : EventPlayerTitle
 {

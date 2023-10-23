@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Players.Races;
+using Core.GS.Players;
 
-namespace Core.GS.Players.Classes;
+namespace Core.GS.Players;
 
 [PlayerClass((int)EPlayerClass.Bainshee, "Bainshee", "Magician")]
 public class ClassBainshee : ClassMagician

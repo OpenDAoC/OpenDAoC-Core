@@ -6,7 +6,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;
-using Core.GS.Players.Realms;
+using Core.GS.Players;
 using Core.GS.Server;
 
 namespace Core.GS.Scripts.Custom;

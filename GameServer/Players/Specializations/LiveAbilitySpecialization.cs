@@ -2,7 +2,7 @@
 using Core.GS.Skills;
 using Core.GS.Styles;
 
-namespace Core.GS.Players.Specializations;
+namespace Core.GS.Players;
 
 public class LiveAbilitySpecialization : Specialization
 {
