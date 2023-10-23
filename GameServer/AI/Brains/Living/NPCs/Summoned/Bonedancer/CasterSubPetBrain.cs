@@ -2,7 +2,7 @@ using System.Reflection;
 using Core.GS.Spells;
 using log4net;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class CasterSubPetBrain : SubPetBrain
 {

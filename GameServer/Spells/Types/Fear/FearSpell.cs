@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Effects;
 using Core.GS.Skills;
 

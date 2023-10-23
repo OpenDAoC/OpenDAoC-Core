@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Keeps;
 using Core.GS.Server;
 using log4net;

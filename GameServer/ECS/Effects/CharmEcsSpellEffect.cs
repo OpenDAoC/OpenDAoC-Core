@@ -1,6 +1,5 @@
 ﻿using System.Linq;
-using Core.Events;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameLoop;

@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Core.Events;
-using Core.GS.AI.States;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Enums;
@@ -16,7 +14,7 @@ using Core.GS.Spells;
 using Core.GS.World;
 using log4net;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
 	/// <summary>
 	/// A brain that can be controlled

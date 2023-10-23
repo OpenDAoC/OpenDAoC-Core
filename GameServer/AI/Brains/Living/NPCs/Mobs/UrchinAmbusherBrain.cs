@@ -1,6 +1,6 @@
 ﻿using Core.GS.GameUtils;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class UrchinAmbusherBrain : StandardMobBrain
 {

@@ -1,12 +1,10 @@
 using System;
 using System.Text;
-using Core.Events;
-using Core.GS.AI.States;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 /// <summary>
 /// This class is the base of all artificial intelligence in game objects

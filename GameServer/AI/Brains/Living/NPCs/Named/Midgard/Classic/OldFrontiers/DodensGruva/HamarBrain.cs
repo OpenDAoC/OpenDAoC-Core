@@ -1,10 +1,9 @@
 using System;
-using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class HamarBrain : StandardMobBrain
 {

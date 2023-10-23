@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Core.GS.AI.States;
+using Core.GS.AI;
 using Core.GS.ECS;
 using Core.GS.Effects;
 using Core.GS.Effects.Old;
@@ -17,7 +17,7 @@ using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
     /// <summary>
     /// Standard brain for standard mobs

@@ -1,4 +1,3 @@
-using Core.Events;
 
 namespace Core.GS.Events;
 

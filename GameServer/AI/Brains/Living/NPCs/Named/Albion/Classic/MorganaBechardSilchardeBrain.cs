@@ -4,7 +4,7 @@ using Core.GS.Enums;
 using Core.GS.Quests;
 using Core.GS.Server;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region Morgana
 public class MorganaBrain : StandardMobBrain

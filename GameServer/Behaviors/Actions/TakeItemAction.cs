@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Core.Database.Tables;
-using Core.Events;
-using Core.GS.Behaviour;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;

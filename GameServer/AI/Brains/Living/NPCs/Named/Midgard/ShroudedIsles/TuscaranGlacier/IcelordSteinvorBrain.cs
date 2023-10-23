@@ -6,7 +6,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region Icelord Steinvor
 public class IcelordSteinvorBrain : StandardMobBrain

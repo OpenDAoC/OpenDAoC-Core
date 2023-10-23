@@ -2,7 +2,7 @@ using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region Initializer Brain
 public class BeliathanInitBrain : StandardMobBrain

@@ -5,7 +5,7 @@ using Core.GS.GameUtils;
 using Core.GS.Keeps;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
 	/// <summary>
 	/// The Brain for the Area Lord

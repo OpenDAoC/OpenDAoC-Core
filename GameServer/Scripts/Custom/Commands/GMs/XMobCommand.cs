@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Commands;
 using Core.GS.Enums;
 using Core.GS.GameUtils;

@@ -1,5 +1,4 @@
 using System;
-using Core.Events;
 using Core.GS.Events;
 
 namespace Core.GS.Behaviors;

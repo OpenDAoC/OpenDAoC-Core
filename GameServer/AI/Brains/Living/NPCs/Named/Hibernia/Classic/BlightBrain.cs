@@ -2,7 +2,7 @@ using System;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class BlightBrain : StandardMobBrain
 {

@@ -1,4 +1,4 @@
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 /// <summary>
 /// Caster Guards Brain

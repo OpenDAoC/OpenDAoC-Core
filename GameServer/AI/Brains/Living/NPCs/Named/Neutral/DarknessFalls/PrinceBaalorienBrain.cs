@@ -3,7 +3,7 @@ using Core.GS.Enums;
 using Core.GS.World;
 using log4net;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class PrinceBaalorienBrain : StandardMobBrain
 {

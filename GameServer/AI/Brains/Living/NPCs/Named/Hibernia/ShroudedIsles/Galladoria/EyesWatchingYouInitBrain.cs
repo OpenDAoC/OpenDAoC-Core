@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Core.GS.ECS;
 using Core.GS.GameUtils;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region Eyes Watching You
 public class EyesWatchingYouInitBrain : APlayerVicinityBrain

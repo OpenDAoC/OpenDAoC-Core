@@ -3,7 +3,7 @@ using Core.GS.GameUtils;
 using Core.GS.Server;
 using Core.GS.Spells;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
 	public class CommanderPetBrain : ControlledNpcBrain
 	{

@@ -4,7 +4,7 @@ using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class WrathOfMordredBrain : StandardMobBrain
 {

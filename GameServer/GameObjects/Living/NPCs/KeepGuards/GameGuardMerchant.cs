@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Core.Database;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;

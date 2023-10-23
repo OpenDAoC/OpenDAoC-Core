@@ -6,7 +6,7 @@ using System.Text;
 using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -537,7 +537,7 @@ namespace Core.GS.Keeps
 				if (IsRaized == false)
 				{
 					Notify(KeepEvent.TowerRaized, Keep, new KeepEventArgs(Keep, killer.Realm));
-					PlayerMgr.BroadcastRaize(Keep, killer.Realm);
+					KeepPlayerMgr.BroadcastRaize(Keep, killer.Realm);
 					IsRaized = true;
 
 					foreach (var guard in Keep.Guards.Values)

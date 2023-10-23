@@ -12,7 +12,7 @@ namespace Core.GS.Keeps;
 /// <summary>
 /// Class to manage all the dealings with Players
 /// </summary>
-public class PlayerMgr
+public class KeepPlayerMgr
 {
 	private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

@@ -2,7 +2,7 @@ using Core.GS.Enums;
 using Core.GS.Packets;
 using Core.GS.Packets.Server;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class RealmGuardBrain : StandardMobBrain
 {

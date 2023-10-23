@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
@@ -8,7 +8,7 @@ using Core.GS.GameUtils;
 using Core.GS.Server;
 using log4net;
 
-namespace Core.GS.AI.States;
+namespace Core.GS.AI;
 
 public class StandardNpcState : FsmState
 {

@@ -9,7 +9,7 @@ using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Server;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class TurretFnfBrain : TurretBrain
 {

@@ -9,7 +9,7 @@ using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Enums;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.ECS;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;

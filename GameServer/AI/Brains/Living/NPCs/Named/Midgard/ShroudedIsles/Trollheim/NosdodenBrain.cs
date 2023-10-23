@@ -10,7 +10,7 @@ using Core.GS.Spells;
 using Core.GS.Styles;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region Nosdoden
 public class NosdodenBrain : StandardMobBrain

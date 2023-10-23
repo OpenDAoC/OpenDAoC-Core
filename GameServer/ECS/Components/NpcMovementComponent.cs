@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 using Core.Database.Enums;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;

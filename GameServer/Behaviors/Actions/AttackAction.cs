@@ -1,8 +1,6 @@
 using System;
 using System.Reflection;
-using Core.Events;
-using Core.GS.AI.Brains;
-using Core.GS.Behaviour;
+using Core.GS.AI;
 using Core.GS.Enums;
 using Core.GS.Events;
 using log4net;

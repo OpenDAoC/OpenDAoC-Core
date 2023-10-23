@@ -7,7 +7,7 @@ using System.Reflection;
 using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -2518,7 +2518,7 @@ public abstract class AServerRules : IServerRules
 	/// <param name="killer">The lord's killer</param>
 	public virtual void ResetKeep(GuardLord lord, GameObject killer)
 	{
-		Keeps.PlayerMgr.UpdateStats(lord);
+		Keeps.KeepPlayerMgr.UpdateStats(lord);
 	}
 
 	/// <summary>

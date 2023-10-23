@@ -1,5 +1,5 @@
 using System;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.ECS;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;

@@ -17,7 +17,7 @@
  *
  */
 
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using NUnit.Framework;
 
 namespace Core.Tests.Unit.Gameserver

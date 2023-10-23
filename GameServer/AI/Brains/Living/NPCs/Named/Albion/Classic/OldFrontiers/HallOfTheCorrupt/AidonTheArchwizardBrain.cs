@@ -7,7 +7,7 @@ using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region Aidon The Archwizard
 public class AidonTheArchwizardBrain : StandardMobBrain

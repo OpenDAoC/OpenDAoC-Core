@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Skills;
 using Core.GS.Spells;
 

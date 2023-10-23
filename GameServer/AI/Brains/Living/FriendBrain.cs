@@ -1,6 +1,6 @@
 using Core.GS.Spells;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class FriendBrain : StandardMobBrain
 {

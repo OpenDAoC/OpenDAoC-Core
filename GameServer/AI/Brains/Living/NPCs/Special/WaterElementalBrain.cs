@@ -2,7 +2,7 @@
 using Core.GS.Scheduler;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 /// <summary>
 /// This class contains the brain for water elementals in Albion SI.

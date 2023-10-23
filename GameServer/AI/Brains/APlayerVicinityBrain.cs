@@ -1,4 +1,4 @@
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 /// <summary>
 /// <p>This class is the base brain of all npc's that only stay active when players are close</p>

@@ -1,7 +1,7 @@
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region Council Otrygg
 public class CouncilOtryggBrain : StandardMobBrain

@@ -11,7 +11,7 @@ using Core.GS.Spells;
 using Core.GS.World;
 using log4net;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region Legion
 public class LegionBrain : EpicBossBrain

@@ -1,11 +1,10 @@
 using System;
-using Core.Events;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.GameUtils;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
     public abstract class SubPetBrain : ControlledNpcBrain
     {

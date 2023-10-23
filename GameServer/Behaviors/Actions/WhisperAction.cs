@@ -1,10 +1,8 @@
 using System;
-using Core.Events;
-using Core.GS.Behaviors;
 using Core.GS.Enums;
 using Core.GS.Events;
 
-namespace Core.GS.Behaviour.Actions;
+namespace Core.GS.Behaviors;
 
 [Action(ActionType = EActionType.Whisper,DefaultValueQ=EDefaultValueConstants.NPC)]
 public class WhisperAction : AAction<string,GameNpc>

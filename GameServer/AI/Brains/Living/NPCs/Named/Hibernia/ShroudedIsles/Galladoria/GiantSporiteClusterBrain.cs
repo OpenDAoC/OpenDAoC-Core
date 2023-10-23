@@ -5,7 +5,7 @@ using Core.GS.GameUtils;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region Giant Sporite Cluster
 public class GiantSporiteClusterBrain : StandardMobBrain

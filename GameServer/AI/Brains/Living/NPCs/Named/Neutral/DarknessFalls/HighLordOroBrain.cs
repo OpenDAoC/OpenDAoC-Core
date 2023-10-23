@@ -3,7 +3,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using log4net;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region High Lord Oro
 public class HighLordOroBrain : StandardMobBrain

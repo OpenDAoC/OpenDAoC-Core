@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
-using Core.Events;
-using Core.GS.AI.States;
 using Core.GS.ECS;
-using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -14,7 +11,7 @@ using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
     public class NecromancerPetBrain : ControlledNpcBrain
     {

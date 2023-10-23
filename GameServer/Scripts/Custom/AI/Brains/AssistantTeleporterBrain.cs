@@ -1,4 +1,4 @@
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 
 namespace Core.GS.Scripts.Custom;
 

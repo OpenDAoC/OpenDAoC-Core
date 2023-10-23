@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using Core.Events;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.Server;

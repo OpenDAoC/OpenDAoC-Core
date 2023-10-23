@@ -1,10 +1,10 @@
 ﻿using System;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.World;
 
-namespace Core.GS.AI.States;
+namespace Core.GS.AI;
 
 public class AlluvianGlobuleStateIdle : StandardNpcStateIdle
 {

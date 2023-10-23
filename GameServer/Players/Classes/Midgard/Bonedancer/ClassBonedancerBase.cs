@@ -1,4 +1,4 @@
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Events;
 using Core.GS.Players;
 using Core.GS.Server;

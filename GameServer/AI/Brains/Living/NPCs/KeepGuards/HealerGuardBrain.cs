@@ -1,7 +1,6 @@
-using Core.Events;
 using Core.GS.Events;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
 	/// <summary>
 	/// Healer Guard Brain

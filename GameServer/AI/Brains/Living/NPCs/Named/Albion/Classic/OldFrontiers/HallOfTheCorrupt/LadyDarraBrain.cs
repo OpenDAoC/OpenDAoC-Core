@@ -4,7 +4,7 @@ using Core.GS.Enums;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 #region Lady Darra
 public class LadyDarraBrain : StandardMobBrain

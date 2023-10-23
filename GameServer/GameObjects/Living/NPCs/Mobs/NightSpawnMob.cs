@@ -1,5 +1,5 @@
 ﻿using System;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Events;
 
 namespace Core.GS;

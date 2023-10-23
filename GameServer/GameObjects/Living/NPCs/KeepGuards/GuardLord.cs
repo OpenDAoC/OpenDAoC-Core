@@ -1,7 +1,7 @@
 using System;
 using Core.Base.Enums;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Enums;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
@@ -318,7 +318,7 @@ public class GuardLord : GameKeepGuard
         {
             case "Claim Keep":
                 {
-                    if (PlayerMgr.IsAllowedToInteract(player, Component.Keep, EKeepInteractType.Claim))
+                    if (KeepPlayerMgr.IsAllowedToInteract(player, Component.Keep, EKeepInteractType.Claim))
                     {
                         player.Out.SendDialogBox(EDialogCode.KeepClaim, (ushort)player.ObjectID, 0, 0, 0, EDialogType.YesNo, false, "Do you wish to claim\n" + Component.Keep.Name + "?");
                         return true;
@@ -327,7 +327,7 @@ public class GuardLord : GameKeepGuard
                 }
             case "Release Keep":
                 {
-                    if (PlayerMgr.IsAllowedToInteract(player, Component.Keep, EKeepInteractType.Release))
+                    if (KeepPlayerMgr.IsAllowedToInteract(player, Component.Keep, EKeepInteractType.Release))
                     {
                         flag += 4;
                     }

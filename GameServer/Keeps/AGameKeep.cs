@@ -4,7 +4,6 @@ using System.Reflection;
 using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.Database;
 using Core.GS.ECS;
 using Core.GS.Enums;
@@ -683,7 +682,7 @@ namespace Core.GS.Keeps
 
 			ChangeLevel((byte)ServerProperty.STARTING_KEEP_CLAIM_LEVEL);
 
-			PlayerMgr.BroadcastClaim(this);
+			KeepPlayerMgr.BroadcastClaim(this);
 
 			foreach (GameKeepGuard guard in Guards.Values)
 			{
@@ -781,7 +780,7 @@ namespace Core.GS.Keeps
 		public virtual void Release()
 		{
 			Guild.ClaimedKeeps.Remove(this);
-			PlayerMgr.BroadcastRelease(this);
+			KeepPlayerMgr.BroadcastRelease(this);
 			Guild = null;
 			StopDeductionTimer();
 			StopChangeLevelTimer();
@@ -1059,7 +1058,7 @@ namespace Core.GS.Keeps
 
 			Realm = realm;
 
-			PlayerMgr.BroadcastCapture(this);
+			KeepPlayerMgr.BroadcastCapture(this);
 
             Level = (byte)ServerProperty.STARTING_KEEP_LEVEL;
 

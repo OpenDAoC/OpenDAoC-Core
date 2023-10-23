@@ -1,4 +1,4 @@
-﻿namespace Core.GS.AI.Brains;
+﻿namespace Core.GS.AI;
 
 /// <summary>
 /// The brains for alluvian mobs. No need to manually assign this.

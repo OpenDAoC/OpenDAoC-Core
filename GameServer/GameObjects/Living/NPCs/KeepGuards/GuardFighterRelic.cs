@@ -1,4 +1,4 @@
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Enums;
 using Core.GS.Keeps;
 using Core.GS.Languages;
@@ -42,7 +42,7 @@ public class GuardFighterRelic : GameKeepGuard
     {
         int inArea = guard.GetEnemyCountInArea();
         string message = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "GameKeepGuard.GuardRelicSpam.Killed", guard.Component.Keep.Name, guard.Name, inArea);
-        PlayerMgr.BroadcastMessage(message, guard.Realm);
+        KeepPlayerMgr.BroadcastMessage(message, guard.Realm);
     }
 
     #endregion

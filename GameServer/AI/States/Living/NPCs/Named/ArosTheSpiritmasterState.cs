@@ -1,9 +1,9 @@
 ﻿using System;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.ECS;
 using Core.GS.Enums;
 
-namespace Core.GS.AI.States;
+namespace Core.GS.AI;
 
 public class ArosTheSpiritmasterState : StandardNpcState
 {

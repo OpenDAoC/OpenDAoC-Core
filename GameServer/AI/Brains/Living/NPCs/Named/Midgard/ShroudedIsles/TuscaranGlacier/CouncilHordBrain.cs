@@ -1,6 +1,5 @@
 using System;
 using Core.Database.Tables;
-using Core.Events;
 using Core.GS.ECS;
 using Core.GS.Enums;
 using Core.GS.Events;
@@ -9,7 +8,7 @@ using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class CouncilHordBrain : StandardMobBrain
 {

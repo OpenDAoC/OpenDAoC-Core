@@ -6,7 +6,7 @@ using System.Reflection;
 using Core.Base.Enums;
 using Core.Database;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Crafting;
 using Core.GS.ECS;
 using Core.GS.Enums;

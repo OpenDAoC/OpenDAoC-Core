@@ -1,6 +1,6 @@
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
 	/// <summary>
 	/// A brain that make npc walk on rounds with way point

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Core.Database;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Database;
 using Core.GS.GameUtils;
 using Core.GS.Scripts;

@@ -1,6 +1,6 @@
 using System;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class AntipassBrain : StandardMobBrain
 {

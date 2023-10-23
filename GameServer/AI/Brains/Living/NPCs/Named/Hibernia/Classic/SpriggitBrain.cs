@@ -6,7 +6,7 @@ using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class SpriggitBrain : StandardMobBrain
 {

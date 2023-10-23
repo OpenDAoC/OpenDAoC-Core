@@ -1,4 +1,4 @@
-﻿using Core.GS.AI.Brains;
+﻿using Core.GS.AI;
 using Core.GS.Enums;
 using Core.GS.Players;
 

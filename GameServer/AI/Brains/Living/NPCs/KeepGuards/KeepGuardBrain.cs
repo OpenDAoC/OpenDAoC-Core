@@ -4,7 +4,7 @@ using Core.GS.Packets;
 using Core.GS.Packets.Server;
 using Core.GS.Players;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
 	/// <summary>
 	/// Brain Class for Area Capture Guards

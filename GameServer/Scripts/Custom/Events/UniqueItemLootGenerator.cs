@@ -14,7 +14,7 @@
 using System;
 using System.Collections.Generic;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Commands;
 using Core.GS.Enums;
 using Core.GS.GameUtils;

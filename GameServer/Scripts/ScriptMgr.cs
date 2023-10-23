@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using Core.Base;
 using Core.Base.Enums;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Commands;
 using Core.GS.Enums;
 using Core.GS.Events;

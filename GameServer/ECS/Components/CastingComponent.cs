@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
-using Core.Events;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Commands;
 using Core.GS.Enums;
 using Core.GS.Events;

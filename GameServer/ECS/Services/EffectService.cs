@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Core.Database;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Database;
 using Core.GS.Effects;
 using Core.GS.Enums;

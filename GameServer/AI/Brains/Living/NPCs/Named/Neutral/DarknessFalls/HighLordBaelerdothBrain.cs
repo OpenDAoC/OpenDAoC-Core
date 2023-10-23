@@ -2,7 +2,7 @@ using System.Reflection;
 using Core.GS.Enums;
 using log4net;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
     public class HighLordBaelerdothBrain : StandardMobBrain
     {

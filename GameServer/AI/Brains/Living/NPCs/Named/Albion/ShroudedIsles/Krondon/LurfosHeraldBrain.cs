@@ -3,7 +3,7 @@ using Core.GS.Enums;
 using Core.GS.GameUtils;
 using Core.GS.World;
 
-namespace Core.GS.AI.Brains;
+namespace Core.GS.AI;
 
 public class LurfosHeraldBrain : StandardMobBrain
 {

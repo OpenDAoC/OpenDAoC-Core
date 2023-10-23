@@ -1,5 +1,5 @@
 ﻿using System;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Effects;
 using Core.GS.Events;
 using Core.GS.Expansions.TrialsOfAtlantis;

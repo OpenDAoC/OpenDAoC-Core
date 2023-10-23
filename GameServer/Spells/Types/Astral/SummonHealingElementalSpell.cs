@@ -1,4 +1,4 @@
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Expansions.TrialsOfAtlantis.Spells.MasterLevels;

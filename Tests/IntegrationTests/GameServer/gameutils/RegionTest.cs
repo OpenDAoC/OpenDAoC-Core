@@ -17,7 +17,6 @@
  *
  */
 using System;
-using Core.Events;
 using Core.GS;
 using Core.GS.Events;
 using Core.GS.World;

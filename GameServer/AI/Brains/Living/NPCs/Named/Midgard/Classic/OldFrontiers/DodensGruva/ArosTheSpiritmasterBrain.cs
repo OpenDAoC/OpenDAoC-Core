@@ -2,8 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Core.Events;
-using Core.GS.AI.States;
+using Core.GS.AI;
 using Core.GS.Effects;
 using Core.GS.Effects.Old;
 using Core.GS.Enums;
@@ -11,7 +10,7 @@ using Core.GS.Events;
 using Core.GS.GameUtils;
 using log4net;
 
-namespace Core.GS.AI.Brains
+namespace Core.GS.AI
 {
     public class ArosTheSpiritmasterBrain : StandardMobBrain
     {

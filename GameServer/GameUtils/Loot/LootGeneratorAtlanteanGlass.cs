@@ -1,6 +1,6 @@
 ﻿using System;
 using Core.Database.Tables;
-using Core.GS.AI.Brains;
+using Core.GS.AI;
 using Core.GS.Server;
 
 namespace Core.GS.GameUtils;
