@@ -170,11 +170,11 @@ namespace DOL.GS.Spells
 
     //no shared timer
     #region Convoker-4
-    [SpellHandlerAttribute("SpeedWrapWard")]
-    public class SpeedWrapWardSpellHandler : FontSpellHandler
+    [SpellHandlerAttribute("SpeedWarpWard")]
+    public class SpeedWarpWardSpellHandler : FontSpellHandler
     {
         // constructor
-        public SpeedWrapWardSpellHandler(GameLiving caster, Spell spell, SpellLine line)
+        public SpeedWarpWardSpellHandler(GameLiving caster, Spell spell, SpellLine line)
 : base(caster, spell, line)
         {
             ApplyOnCombat = true;
@@ -202,7 +202,7 @@ namespace DOL.GS.Spells
             dbs.DamageType = (int)spell.DamageType;
             dbs.Target = "Enemy";
             dbs.Radius = 0;
-            dbs.Type = eSpellType.SpeedWrap.ToString();
+            dbs.Type = eSpellType.SpeedWarp.ToString();
             dbs.Value = spell.Value;
             dbs.Duration = spell.ResurrectHealth;
             dbs.Frequency = spell.ResurrectMana;
@@ -219,8 +219,8 @@ namespace DOL.GS.Spells
             fontSpell = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
         }
     }
-    [SpellHandlerAttribute("SpeedWrap")]
-    public class SpeedWrapSpellHandler : SpellHandler
+    [SpellHandlerAttribute("SpeedWarp")]
+    public class SpeedWarpSpellHandler : SpellHandler
     {
         public override void CreateECSEffect(ECSGameEffectInitParams initParams)
         {
@@ -230,7 +230,7 @@ namespace DOL.GS.Spells
         {
             return 0;
         }
-        public SpeedWrapSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        public SpeedWarpSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 
     public class SpeedWarpECSGameEffect : ECSGameSpellEffect
