@@ -492,7 +492,7 @@ namespace DOL.GS
                 case eSpellType.SpeedDecrease:
                 case eSpellType.UnbreakableSpeedDecrease:
                     return eEffect.MovementSpeedDebuff;
-                case eSpellType.SpeedWrap:
+                case eSpellType.SpeedWarp:
                     return eEffect.SpeedWarp;
                 case eSpellType.MeleeDamageDebuff:
                     return eEffect.MeleeDamageDebuff;
