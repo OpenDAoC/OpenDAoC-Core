@@ -2093,7 +2093,6 @@ namespace DOL.GS
             // ML effects
             GameSpellEffect phaseshift = null;
             GameSpellEffect grapple = null;
-            GameSpellEffect brittleguard = null;
 
             AttackData lastAttackData = owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
             bool defenseDisabled = ad.Target.IsMezzed | ad.Target.IsStunned | ad.Target.IsSitting;
@@ -2141,7 +2140,6 @@ namespace DOL.GS
                 stealthStyle = true;
                 defenseDisabled = true;
                 intercept = null;
-                brittleguard = null;
             }
 
             if (playerOwner != null)
@@ -2174,13 +2172,6 @@ namespace DOL.GS
             if (grapple != null)
                 return eAttackResult.Grappled;
 
-            if (brittleguard != null)
-            {
-                playerOwner?.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowIntercepted"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                playerAttacker?.Out.SendMessage(LanguageMgr.GetTranslation(playerAttacker.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.StrikeIntercepted"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                brittleguard.Cancel(false);
-                return eAttackResult.Missed;
-            }
 
             if (intercept != null && !stealthStyle)
             {

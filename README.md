@@ -12,8 +12,11 @@ Artifacts
 - Flask
 
 Master Levels
+- Convoker 1-4,7-10
 
 PARTIALLY WORKING:
+- Convoker 5 needs a db change to make work and some testing.
+- Convoker 6 Functional, but effect icon on caster lasts too long
 
 Artifacts
 - Bracer of Zo'Arkat
@@ -79,7 +82,6 @@ Artifacts
 Master Levels
 - Banelord
 - Battlemaster
-- Convoker
 - Perfecter
 - Sojourner
 - Stormlord

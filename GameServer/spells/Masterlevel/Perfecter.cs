@@ -80,7 +80,7 @@ namespace DOL.GS.Spells
             sRadius = 350;
             s = new Spell(dbs, 1);
             sl = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);
-            heal = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
+            fontSpell = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
         }
     }
     #endregion
@@ -136,7 +136,7 @@ namespace DOL.GS.Spells
             sRadius = 350;
             s = new Spell(dbs, 1);
             sl = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);
-            heal = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
+            fontSpell = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
         }
     }
     #endregion
@@ -187,7 +187,7 @@ namespace DOL.GS.Spells
             sRadius = 350;
             s = new Spell(dbs, 1);
             sl = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);
-            heal = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
+            fontSpell = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
         }
     }
     #endregion
@@ -256,7 +256,7 @@ namespace DOL.GS.Spells
             sRadius = 350;
             s = new Spell(dbs, 1);
             sl = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);
-            heal = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
+            fontSpell = ScriptMgr.CreateSpellHandler(m_caster, s, sl);
         }
     }	
     #endregion

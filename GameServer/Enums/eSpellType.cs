@@ -376,6 +376,7 @@ namespace DOL.GS
         Null = 370,
         HealFlask = 371,
         DeadFlask = 372,
-        AtlantisTabletMorph = 373
+        AtlantisTabletMorph = 373,
+        SummonTitan = 374
     }
 }

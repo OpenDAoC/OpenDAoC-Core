@@ -1,8 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using DOL.AI.Brain;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.Scripts;
 
 namespace DOL.GS.Spells
 {
@@ -464,18 +468,21 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Fontbase
-    public class FontSpellHandler : DoTSpellHandler
+    public class FontSpellHandler : SpellHandler
     {
         protected GameFont font;
         protected DbSpell dbs;
         protected Spell s;
         protected SpellLine sl;
-        protected ISpellHandler heal;
+        protected ISpellHandler fontSpell;
         protected bool ApplyOnNPC = false;
         protected bool ApplyOnCombat = false;
         protected bool Friendly = true;
         protected ushort sRadius = 350;
 
+        protected uint m_pulseFrequency;
+        int currentTick = 0;
+        int currentPulse = 0;
         public override bool IsOverwritable(ECSGameSpellEffect compare)
         {
             return false;
@@ -488,44 +495,80 @@ namespace DOL.GS.Spells
             {
                 font.AddToWorld();
                 neweffect.Start(font);
+                new ECSGameTimer(font, new ECSGameTimer.ECSTimerCallback(PulseTimer), 1000);
+                GameEventMgr.AddHandler(m_caster, GamePlayerEvent.RemoveFromWorld, new DOLEventHandler(PlayerLeftWorld));
+            }
+        }
+        protected virtual int PulseTimer(ECSGameTimer timer)
+        {
+            if (currentTick >= Spell.Duration/1000 || m_caster == null || font == null || font.ObjectState == GameObject.eObjectState.Deleted)
+            {
+                font.RemoveFromWorld();
+                font.Delete();
+                timer.Stop();
+                timer = null;
+                return 0;
+            }
+            if (currentTick % 3 == 0)
+            {
+                currentPulse++;
+                foreach (GamePlayer target in font.GetPlayersInRadius(sRadius))
+                {
+                    if (fontSpell.HasPositiveEffect)
+                    {
+                        if (!GameServer.ServerRules.IsAllowedToAttack(font, target, true))
+                        {
+                            CastSpell(target);
+
+                        }
+                    }
+                    else
+                    {
+                        if (GameServer.ServerRules.IsAllowedToAttack(font, target, true))
+                        {
+                            CastSpell(target);
+                        }
+                    }
+                }
+                if (ApplyOnNPC)
+                {
+                    foreach (GameNPC npc in font.GetNPCsInRadius(sRadius))
+                    {
+                        if (fontSpell.HasPositiveEffect)
+                        {
+                            if (!GameServer.ServerRules.IsAllowedToAttack(font, npc, true))
+                            {
+                                CastSpell(npc);
+
+                            }
+                        }
+                        else
+                        {
+                            if (GameServer.ServerRules.IsAllowedToAttack(font, npc, true))
+                            {
+                                CastSpell(npc);
+                            }
+                        }
+                    }
+                }
+            }
+
+            currentTick++;
+            return 1000;
+        }
+        protected virtual void PlayerLeftWorld(DOLEvent e, object sender, EventArgs args)
+        {
+            GamePlayer player = (GamePlayer)sender;
+            if (this.m_caster == player)
+            {
+                currentTick = Spell.Duration;
             }
         }
 
-        public override void OnEffectPulse(GameSpellEffect effect)
+        protected virtual void CastSpell(GameLiving target)
         {
-            if (font == null || font.ObjectState == GameObject.eObjectState.Deleted)
-            {
-                effect.Cancel(false);
-                return;
-            }
-
-            if (heal == null || s == null) return;
-            foreach (GamePlayer player in font.GetPlayersInRadius(sRadius))
-            {
-                if (!Friendly
-                    && player.IsAlive
-                    && GameServer.ServerRules.IsAllowedToAttack(Caster, player, true)
-                    && (!player.InCombat
-                    || ApplyOnCombat))
-                        heal.StartSpell((GameLiving)player);
-                else if (Friendly && player.IsAlive && (!player.InCombat || ApplyOnCombat))
-                    heal.StartSpell((GameLiving)player);
-            }
-            if (!ApplyOnNPC) return;
-            foreach (GameNPC npc in font.GetNPCsInRadius(sRadius))
-            {
-                if (!Friendly && npc.IsAlive && GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true) && (!npc.InCombat || ApplyOnCombat))
-                    heal.StartSpell((GameLiving)npc);
-                if (Friendly && npc.IsAlive && (!npc.InCombat || ApplyOnCombat))
-                    heal.StartSpell((GameLiving)npc);
-            }
-        }
-
-        public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
-        {
-            if (font != null) font.Delete();
-            effect.Owner.EffectList.Remove(effect);
-            return base.OnEffectExpires(effect, noMessages);
+            fontSpell.Target = target;
+            fontSpell.StartSpell(target);
         }
 
         // constructor
@@ -534,7 +577,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Trapbase
-    public class MineSpellHandler : DoTSpellHandler
+    public class MineSpellHandler : SpellHandler
     {
         protected GameMine mine;
         protected ISpellHandler trap;
@@ -545,41 +588,87 @@ namespace DOL.GS.Spells
         protected bool Unstealth = true;
         protected bool DestroyOnEffect = true;
         protected ushort sRadius = 350;
-        
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
-        {
-            return false;
-        }
-        public override void OnEffectPulse(GameSpellEffect effect)
-        {
-            if (mine == null || mine.ObjectState == GameObject.eObjectState.Deleted)
-            {
-                effect.Cancel(false);
-                return;
-            }
+		private Area.Circle traparea;
+		private ECSGameTimer ticktimer;
+		private ushort region;
 
-            if (trap == null || s == null) return;
-            bool wasstealthed = ((GamePlayer)Caster).IsStealthed;
-            foreach (GamePlayer player in mine.GetPlayersInRadius(sRadius))
-            {
-                if (player.IsAlive && GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
-                {
-                    trap.StartSpell((GameLiving)player);
-                    if (!Unstealth) 
-                        ((GamePlayer)Caster).Stealth(wasstealthed);
-                    if (DestroyOnEffect) 
-                        OnEffectExpires(effect, true);
-                    return;
-                }
-            }
-        }
 
-        public override void ApplyEffectOnTarget(GameLiving target)
+		private int onTick(ECSGameTimer timer)
+		{
+			removeHandlers();
+			return 0;
+		}
+
+		protected void EventHandler(DOLEvent e, Object sender, EventArgs arguments)
+		{
+			AreaEventArgs args = arguments as AreaEventArgs;
+			if (args == null)
+				return;
+			GameLiving living = args.GameObject as GameLiving;
+			if (living == null)
+				return;
+			if (!GameServer.ServerRules.IsAllowedToAttack(Caster, living, true))
+				return;
+			getTargets();
+		}
+
+
+		private void removeHandlers()
+		{
+			mine.CurrentRegion.RemoveArea(traparea);
+			if (mine != null) mine.Delete();
+			GameEventMgr.RemoveHandler(traparea, AreaEvent.PlayerEnter, new DOLEventHandler(EventHandler));
+		}
+
+
+		private void getTargets()
+		{
+			foreach (GamePlayer target in WorldMgr.GetPlayersCloseToSpot(region, traparea.X, traparea.Y, traparea.Z, sRadius))
+			{
+				if (GameServer.ServerRules.IsAllowedToAttack(mine, target, true))
+				{
+					triggerSpell(target);
+				}
+			}
+		}
+
+		private void triggerSpell(GameLiving target)
+		{
+			if (!GameServer.ServerRules.IsAllowedToAttack(mine, target, true))
+				return;
+			if (!target.IsAlive)
+				return;
+			if (ticktimer.IsAlive)
+			{
+				ticktimer.Stop();
+				removeHandlers();
+			}
+			bool wasstealthed = ((GamePlayer)Caster).IsStealthed;
+
+
+			trap.StartSpell((GameLiving)target);
+			if (!Unstealth)
+				((GamePlayer)Caster).Stealth(wasstealthed);
+			if (DestroyOnEffect)
+				removeHandlers();
+			return;
+		}
+
+		public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
             mine.AddToWorld();
-            neweffect.Start(mine);
-        }
+
+			traparea = new Area.Circle(s.Name, Caster.X, Caster.Y, Caster.Z, 75);
+
+			Caster.CurrentRegion.AddArea(traparea);
+			region = Caster.CurrentRegionID;
+
+			GameEventMgr.AddHandler(traparea, AreaEvent.PlayerEnter, new DOLEventHandler(EventHandler));
+			ticktimer = new ECSGameTimer(Caster);
+			ticktimer.Callback = new ECSGameTimer.ECSTimerCallback(onTick);
+			ticktimer.Start(600000);
+			getTargets();
+		}
 
         public override void OnEffectStart(GameSpellEffect effect)
         {
