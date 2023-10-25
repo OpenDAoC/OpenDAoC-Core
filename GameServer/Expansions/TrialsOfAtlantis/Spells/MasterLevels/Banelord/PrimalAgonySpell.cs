@@ -4,7 +4,7 @@ using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.World;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.MasterLevels;
+namespace Core.GS.Expansions.TrialsOfAtlantis.MasterLevels;
 
 //shared timer 5 for ml2 - shared timer 3 for ml8
 

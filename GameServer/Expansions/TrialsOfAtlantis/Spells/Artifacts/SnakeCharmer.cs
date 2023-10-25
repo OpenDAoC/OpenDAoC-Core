@@ -3,7 +3,7 @@ using Core.GS.GameUtils;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.Artifacts;
+namespace Core.GS.Expansions.TrialsOfAtlantis.Artifacts;
 
 [SpellHandler("SnakeCharmer")]
 public class SnakeCharmer : LifedrainSpell

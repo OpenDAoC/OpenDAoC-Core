@@ -2,7 +2,7 @@ using Core.GS.Enums;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.Artifacts;
+namespace Core.GS.Expansions.TrialsOfAtlantis.Artifacts;
 
 /// <summary>
 /// They have less chance of landing melee attacks, and spells have a greater chance of affecting them.

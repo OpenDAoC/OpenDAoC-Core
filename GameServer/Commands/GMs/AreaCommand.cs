@@ -42,18 +42,18 @@ public class AreaCommand : ACommandHandler, ICommandHandler
 				switch (args[3].ToLower())
 				{
 					case "circle":
-						area.ClassType = "DOL.GS.Area+Circle";
+						area.ClassType = "Core.GS.Area+Circle";
 						break;
 					case "square":
-						area.ClassType = "DOL.GS.Area+Square";
+						area.ClassType = "Core.GS.Area+Square";
 						break;
 					case "safe":
 					case "safearea":
-						area.ClassType = "DOL.GS.Area+SafeArea";
+						area.ClassType = "Core.GS.Area+SafeArea";
 						break;
 					case "bind":
 					case "bindarea":
-						area.ClassType = "DOL.GS.Area+BindArea";
+						area.ClassType = "Core.GS.Area+BindArea";
 						break;
 					default:
 					{

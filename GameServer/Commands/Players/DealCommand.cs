@@ -1,6 +1,6 @@
 // using DOL.GS;
 //
-// namespace DOL.GS.Commands
+// namespace Core.GS.Commands
 // {
 // 	[CmdAttribute(
 // 		"&deal",

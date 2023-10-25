@@ -7,7 +7,7 @@ using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.World;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.Artifacts;
+namespace Core.GS.Expansions.TrialsOfAtlantis.Artifacts;
 
 [SpellHandler("ZoSummon")]
 public class BracerOfZo : SpellHandler

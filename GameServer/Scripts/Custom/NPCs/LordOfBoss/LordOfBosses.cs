@@ -126,47 +126,47 @@ public class LordOfBosses : GameTrainingDummy {
 
 			case "skeletal sacristan":
 				if (t.Realm != ERealm.Albion) return false;
-				SummonBoss(t,"DOL.GS.Scripts.SkeletalSacristan");
+				SummonBoss(t,"Core.GS.SkeletalSacristan");
 				break;
 			
 			case "spectral provisioner":
 				if (t.Realm != ERealm.Albion) return false;
-				SummonBoss(t,"DOL.GS.Scripts.SpectralProvisioner");
+				SummonBoss(t,"Core.GS.SpectralProvisioner");
 				break;
 			
 			case "lich lord ilron":
 				if (t.Realm != ERealm.Albion) return false;
-				SummonBoss(t,"DOL.GS.Scripts.LichLordIlron");
+				SummonBoss(t,"Core.GS.LichLordIlron");
 				break;
 			
 			case "warlord dorinakka":
 				if (t.Realm != ERealm.Albion) return false;
-				SummonBoss(t,"DOL.GS.Scripts.WarlordDorinakka");
+				SummonBoss(t,"Core.GS.WarlordDorinakka");
 				break;
 			
 			case "soul reckoner":
 				if (t.Realm != ERealm.Albion) return false;
-				SummonBoss(t,"DOL.GS.SoulReckoner");
+				SummonBoss(t,"Core.GS.SoulReckoner");
 				break;
 			
 			case "crypt lord":
 				if (t.Realm != ERealm.Albion) return false;
-				SummonBoss(t,"DOL.GS.CryptLord");
+				SummonBoss(t,"Core.GS.CryptLord");
 				break;
 			
 			case "silencer":
 				if (t.Realm != ERealm.Albion) return false;
-				SummonBoss(t,"DOL.GS.Silencer");
+				SummonBoss(t,"Core.GS.Silencer");
 				break;
 			
 			case "lord sanguis":
 				if (t.Realm != ERealm.Albion) return false;
-				SummonBoss(t,"DOL.GS.LordSanguis");
+				SummonBoss(t,"Core.GS.LordSanguis");
 				break;
 			
 			case "bane of hope":
 				if (t.Realm != ERealm.Albion) return false;
-				SummonBoss(t,"DOL.GS.Scripts.BaneOfHope");
+				SummonBoss(t,"Core.GS.BaneOfHope");
 				break;
 			#endregion
 			
@@ -181,56 +181,56 @@ public class LordOfBosses : GameTrainingDummy {
 				                  "5. [Xaga]\n" +
 				                  "6. [Spindler Broodmother]\n" +
 				                  "7. [Olcasar Geomancer]\n" +
-				                  "8. [Aroon the Urlamhai]\n" +
+				                  "8. [Aroon the Uriamhai]\n" +
 				                  "8. [Hurionthex]\n"
 					, EChatType.CT_Say, EChatLoc.CL_PopupWindow);
 				break;
 
 			case "easmarach":
 				if (t.Realm != ERealm.Hibernia) return false;
-				SummonBoss(t,"DOL.GS.Easmarach");
+				SummonBoss(t,"Core.GS.Easmarach");
 				break;
 			
 			case "organic energy mechanism":
 				if (t.Realm != ERealm.Hibernia) return false;
-				SummonBoss(t,"DOL.GS.OrganicEnergyMechanism");
+				SummonBoss(t,"Core.GS.OrganicEnergyMechanism");
 				break;
 			
 			case "giant sporite cluster":
 				if (t.Realm != ERealm.Hibernia) return false;
-				SummonBoss(t,"DOL.GS.GiantSporiteCluster");
+				SummonBoss(t,"Core.GS.GiantSporiteCluster");
 				break;
 			
 			case "conservator":
 				if (t.Realm != ERealm.Hibernia) return false;
-				SummonBoss(t,"DOL.GS.Conservator");
+				SummonBoss(t,"Core.GS.Conservator");
 				break;
 			
 			case "xaga":
 				if (t.Realm != ERealm.Hibernia) return false;
-				SummonBoss(t,"DOL.GS.Xaga");
-				SummonBoss(t,"DOL.GS.Beatha");
-				SummonBoss(t,"DOL.GS.Tine");
+				SummonBoss(t,"Core.GS.Xaga");
+				SummonBoss(t,"Core.GS.Beatha");
+				SummonBoss(t,"Core.GS.Tine");
 				break;
 			
 			case "spindler broodmother":
 				if (t.Realm != ERealm.Hibernia) return false;
-				SummonBoss(t,"DOL.GS.SpindlerBroodmother");
+				SummonBoss(t,"Core.GS.SpindlerBroodmother");
 				break;
 			
 			case "olcasar geomancer":
 				if (t.Realm != ERealm.Hibernia) return false;
-				SummonBoss(t,"DOL.GS.OlcasarGeomancer");
+				SummonBoss(t,"Core.GS.OlcasarGeomancer");
 				break;
 			
 			case "aroon the urlamhai":
 				if (t.Realm != ERealm.Hibernia) return false;
-				SummonBoss(t,"DOL.GS.Aroon");
+				SummonBoss(t,"Core.GS.AroonUriamhai");
 				break;
 			
 			case "hurionthex":
 				if (t.Realm != ERealm.Hibernia) return false;
-				SummonBoss(t,"DOL.GS.Hurionthex");
+				SummonBoss(t,"Core.GS.Hurionthex");
 				break;
 			
 			#endregion

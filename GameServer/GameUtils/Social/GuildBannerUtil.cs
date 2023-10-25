@@ -265,7 +265,7 @@ public class GuildBannerUtil
 				m_guildBannerTemplate.Object_Type = (int)EObjectType.HouseWallObject;
 				m_guildBannerTemplate.Realm = 0;
 				m_guildBannerTemplate.Quality = 100;
-				m_guildBannerTemplate.ClassType = "DOL.GS.GuildBannerItem";
+				m_guildBannerTemplate.ClassType = "Core.GS.GuildBannerItem";
 				m_guildBannerTemplate.PackageID = "GuildBanner";
             }
 

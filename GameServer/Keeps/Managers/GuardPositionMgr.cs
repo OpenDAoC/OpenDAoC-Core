@@ -23,7 +23,7 @@ public class GuardPositionMgr
 	/// <returns>The position object</returns>
 	public static DbKeepPosition GetUsablePosition(GameKeepGuard guard)
 	{
-		var filterClassType = DB.Column("ClassType").IsNotEqualTo("DOL.GS.Keeps.Banner");
+		var filterClassType = DB.Column("ClassType").IsNotEqualTo("Core.GS.Keeps.GameKeepBanner");
 		var filterTemplateID = DB.Column("TemplateID").IsEqualTo(guard.TemplateID);
 		var filterComponentSkin = DB.Column("ComponentSkin").IsEqualTo(guard.Component.Skin);
 		var filterHeight = DB.Column("Height").IsLessOrEqualTo(guard.Component.Height);
@@ -38,7 +38,7 @@ public class GuardPositionMgr
 	/// <returns>The position object</returns>
 	public static DbKeepPosition GetUsablePosition(GameKeepBanner b)
 	{
-		var filterClassType = DB.Column("ClassType").IsNotEqualTo("DOL.GS.Keeps.Banner");
+		var filterClassType = DB.Column("ClassType").IsNotEqualTo("Core.GS.Keeps.GameKeepBanner");
 		var filterTemplateID = DB.Column("TemplateID").IsEqualTo(b.TemplateID);
 		var filterComponentSkin = DB.Column("ComponentSkin").IsEqualTo(b.Component.Skin);
 		var filterHeight = DB.Column("Height").IsLessOrEqualTo(b.Component.Height);
@@ -212,7 +212,7 @@ public class GuardPositionMgr
 	{
 		DbKeepPosition pos = CreatePosition(guardID, component, player);
 		pos.Height = 0;
-		pos.ClassType = "DOL.GS.Keeps.Patrol";
+		pos.ClassType = "Core.GS.Keeps.KeepGuardPatrol";
 		pos.KeepType = (int)keepType;
 		GameServer.Database.AddObject(pos);
 		return pos;
@@ -417,7 +417,7 @@ public class GuardPositionMgr
 			return;
 		}
 		DbKeepPosition pos = new DbKeepPosition();
-		pos.ClassType = "DOL.GS.Keeps.GameKeepDoor";
+		pos.ClassType = "Core.GS.Keeps.GameKeepDoor";
 		pos.TemplateType = doorIndex;
 		pos.ComponentSkin = component.Skin;
 		pos.ComponentRotation = component.ComponentHeading;

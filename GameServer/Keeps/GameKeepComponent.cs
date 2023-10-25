@@ -244,7 +244,7 @@ namespace Core.GS.Keeps
 			if (bg != null && GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvE)
 			{
 				// Battlegrounds, ignore all but GameKeepDoor
-				whereClause = whereClause.And(DB.Column("ClassType").IsEqualTo("DOL.GS.Keeps.GameKeepDoor"));
+				whereClause = whereClause.And(DB.Column("ClassType").IsEqualTo("Core.GS.Keeps.GameKeepDoor"));
 			}
 			var DBPositions = CoreDb<DbKeepPosition>.SelectObjects(whereClause);
 
@@ -277,19 +277,19 @@ namespace Core.GS.Keeps
 
 						switch (position.ClassType)
 						{
-							case "DOL.GS.Keeps.GameKeepBanner":
+							case "Core.GS.Keeps.GameKeepBanner":
 								if (Keep.Banners.ContainsKey(sKey) == false)
 									create = true;
 								break;
-							case "DOL.GS.Keeps.GameKeepDoor":
+							case "Core.GS.Keeps.GameKeepDoor":
 								if (Keep.Doors.ContainsKey(sKey) == false)
 									create = true;
 								break;
-							case "DOL.GS.Keeps.FrontierTeleportStone":
+							case "Core.GS.Keeps.FrontierTeleportStone":
 								if (Keep.TeleportStone == null)
 									create = true;
 								break;
-							case "DOL.GS.Keeps.Patrol":
+							case "Core.GS.Keeps.KeepGuardPatrol":
 								if ((position.KeepType == (int)AGameKeep.eKeepType.Any || position.KeepType == (int)Keep.KeepType)
 									&& Keep.Patrols.ContainsKey(sKey) == false)
 								{
@@ -299,7 +299,7 @@ namespace Core.GS.Keeps
 									p.InitialiseGuards();
 								}
 								continue;
-							case "DOL.GS.Keeps.FrontierHastener":
+							case "Core.GS.FrontierHastener":
 								if (Keep.HasHastener && log.IsWarnEnabled)
 									log.Warn($"FillPositions(): KeepComponent_ID {InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {Keep.KeepID}");
 
@@ -309,7 +309,7 @@ namespace Core.GS.Keeps
 									create = true;
 								}
 								break;
-							case "DOL.GS.Keeps.MissionMaster":
+							case "Core.GS.MissionMaster":
 								if (Keep.HasCommander && log.IsWarnEnabled)
 									log.Warn($"FillPositions(): KeepComponent_ID {InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {Keep.KeepID}");
 
@@ -319,7 +319,7 @@ namespace Core.GS.Keeps
 									create = true;
 								}
 								break;
-							case "DOL.GS.Keeps.GuardLord":
+							case "Core.GS.GuardLord":
 								if (Keep.HasLord && log.IsWarnEnabled)
 									log.Warn($"FillPositions(): KeepComponent_ID {InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {Keep.KeepID}");
 
@@ -365,12 +365,12 @@ namespace Core.GS.Keeps
 							//move the object
 							switch (position.ClassType)
 							{
-								case "DOL.GS.Keeps.GameKeepBanner":
+								case "Core.GS.Keeps.GameKeepBanner":
 									if (this.AbstractKeep.Banners[position.TemplateID] is IKeepItem banner && banner.Position != position)
 										banner.MoveToPosition(position);
 									break;
-								case "DOL.GS.Keeps.GameKeepDoor":
-								case "DOL.GS.Keeps.FrontierPortalStone":
+								case "Core.GS.Keeps.GameKeepDoor":
+								case "Core.GS.Keeps.FrontierPortalStone":
 									break;  // these dont move
 								default:
 									if (this.AbstractKeep.Guards[position.TemplateID] is IKeepItem guard)

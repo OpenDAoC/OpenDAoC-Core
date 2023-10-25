@@ -64,7 +64,7 @@ public class Instance : BaseInstance
 				continue; //an odd error, but experience knows best.
 
 			GameObject obj = null;
-			string theType = "DOL.GS.GameNPC";
+			string theType = "Core.GS.GameNpc";
 
 			//Switch the classtype to see what we are making.
 			switch (entry.ClassType)
@@ -77,7 +77,7 @@ public class Instance : BaseInstance
 						continue;
 					}
 					case "region": continue; //This is used to save the regionID as NPCTemplate.
-					case "DOL.GS.GameNPC": break;
+					case "Core.GS.GameNpc": break;
 					default: theType = entry.ClassType; break;
 			}
 

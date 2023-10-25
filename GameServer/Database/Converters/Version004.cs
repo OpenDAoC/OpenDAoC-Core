@@ -34,7 +34,7 @@ public class Version004 : IDbConverter
 		int count = 0;
 		foreach (DbMob mob in mobs)
 		{
-			mob.ClassType = "DOL.GS.GameNPC";
+			mob.ClassType = "Core.GS.GameNpc";
 			GameServer.Database.SaveObject(mob);
 			count++;
 		}

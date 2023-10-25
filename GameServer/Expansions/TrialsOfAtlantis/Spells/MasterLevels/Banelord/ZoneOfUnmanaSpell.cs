@@ -2,7 +2,7 @@ using Core.GS.Enums;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.MasterLevels;
+namespace Core.GS.Expansions.TrialsOfAtlantis.MasterLevels;
 
 //http://www.camelotherald.com/masterlevels/ma.php?ml=Banelord
 //shared timer 1

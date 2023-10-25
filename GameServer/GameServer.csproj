@@ -312,7 +312,9 @@
     <Folder Include="AAA\Enums*\Spells\" />
     <Folder Include="AAA\Enums*\Stats\" />
     <Folder Include="AI\Brains\Living\NPCs\Epics\" />
+    <Folder Include="Expansions\Catacombs\" />
     <Folder Include="Expansions\Classic\" />
+    <Folder Include="Expansions\LabyrinthOfTheMinotaur\" />
     <Folder Include="Expansions\NewFrontiers\" />
     <Folder Include="Expansions\ShroudedIsles\" />
     <Folder Include="GameObjects\Living\Doors\Managers\" />

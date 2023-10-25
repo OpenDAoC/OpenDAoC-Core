@@ -23,7 +23,7 @@ namespace Core.Database.Tables
 
 		public DbWorldObject()
 		{
-			m_type = "DOL.GS.GameItem";
+			m_type = "Core.GS.GameItem";
 		}
 
 		[DataElement(AllowDbNull = true)]

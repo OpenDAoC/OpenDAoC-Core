@@ -107,7 +107,7 @@ namespace Core.GS.Commands
 					}
 				case "create":
 					{
-						string theType = "DOL.GS.GameStaticItem";
+						string theType = "Core.GS.GameStaticItem";
 						if (args.Length > 2)
 							theType = args[2];
 

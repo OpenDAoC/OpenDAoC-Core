@@ -6,7 +6,7 @@ using Core.GS.RealmAbilities;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.Artifacts;
+namespace Core.GS.Expansions.TrialsOfAtlantis.Artifacts;
 
 [SpellHandler("RealmLore")]
 public class RealmLore : SpellHandler

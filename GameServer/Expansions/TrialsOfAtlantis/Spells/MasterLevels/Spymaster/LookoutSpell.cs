@@ -2,11 +2,11 @@ using System;
 using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Expansions.TrialsOfAtlantis.Effects;
+using Core.GS.Expansions.TrialsOfAtlantis;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.MasterLevels;
+namespace Core.GS.Expansions.TrialsOfAtlantis.MasterLevels;
 
 [SpellHandler("Loockout")]
 public class LookoutSpell : SpellHandler

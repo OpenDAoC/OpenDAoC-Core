@@ -56,7 +56,7 @@ namespace Core.GS.Commands
 				#region Create
 				case "create":
 					{
-						string theType = "DOL.GS.GameMerchant";
+						string theType = "Core.GS.GameMerchant";
 						if (args.Length > 2)
 							theType = args[2];
 

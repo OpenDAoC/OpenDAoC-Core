@@ -8,7 +8,7 @@ using Core.GS.Server;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.Artifacts;
+namespace Core.GS.Expansions.TrialsOfAtlantis.Artifacts;
 
 [SpellHandler("EfficientHealing")]
 public class EfficientHealing : SpellHandler

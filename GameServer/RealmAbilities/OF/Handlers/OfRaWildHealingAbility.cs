@@ -2,7 +2,7 @@ using Core.Database.Tables;
 
 namespace Core.GS.RealmAbilities;
 
-public class OfRaWildHealingAbility : WildHealingAbility
+public class OfRaWildHealingAbility : NfRaWildHealingAbility
 {
     public OfRaWildHealingAbility(DbAbility dba, int level) : base(dba, level) { }
     public override bool CheckRequirement(GamePlayer player) { return OfRaHelpers.GetAugAcuityLevel(player) >= 2; }

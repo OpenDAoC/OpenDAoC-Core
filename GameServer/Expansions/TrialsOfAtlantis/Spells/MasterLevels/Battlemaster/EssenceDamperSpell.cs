@@ -4,7 +4,7 @@ using Core.GS.Enums;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.MasterLevels;
+namespace Core.GS.Expansions.TrialsOfAtlantis.MasterLevels;
 
 //for ML9 in the database u have to add  EssenceDampenHandler  in type (its a new method customly made) 
 #region Battlemaster-9

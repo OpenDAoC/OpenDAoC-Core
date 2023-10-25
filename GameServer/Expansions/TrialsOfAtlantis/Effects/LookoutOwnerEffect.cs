@@ -1,9 +1,9 @@
-//to show an Icon & informations to the caster
+// To show an icon & information to the caster
 
 using System.Collections.Generic;
 using Core.GS.Effects;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Effects;
+namespace Core.GS.Expansions.TrialsOfAtlantis;
 
 public class LookoutOwnerEffect : StaticEffect, IGameEffect
 {

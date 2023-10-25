@@ -1,7 +1,7 @@
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.Artifacts;
+namespace Core.GS.Expansions.TrialsOfAtlantis.Artifacts;
 
 [SpellHandler("HealFlask")]
 public class HealFlaskSpell : SpellHandler

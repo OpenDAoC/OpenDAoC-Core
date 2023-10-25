@@ -158,7 +158,7 @@ public abstract class ServerProperty
 	/// <summary>
 	/// What class should the server use for players
 	/// </summary>
-	[ServerProperty("system", "player_class", "What class should the server use for players", "DOL.GS.GamePlayer")]
+	[ServerProperty("system", "player_class", "What class should the server use for players?", "Core.GS.GamePlayer")]
 	public static string PLAYER_CLASS;
 
 	/// <summary>
@@ -1451,9 +1451,9 @@ public abstract class ServerProperty
 	public static int GAMENPC_FOLLOWCHECK_TIME;
 
 	/// <summary>
-	/// Override the classtype of any npc with a classtype of DOL.GS.GameNPC
+	/// Override the classtype of any npc with a classtype of Core.GS.GameNpc
 	/// </summary>
-	[ServerProperty("npc", "gamenpc_default_classtype", "Change the classtype of any npc of classtype DOL.GS.GameNPC to this.", "DOL.GS.GameNPC")]
+	[ServerProperty("npc", "gamenpc_default_classtype", "Change the classtype of any npc of classtype Core.GS.GameNpc to this.", "Core.GS.GameNpc")]
 	public static string GAMENPC_DEFAULT_CLASSTYPE;
 
 	/// <summary>

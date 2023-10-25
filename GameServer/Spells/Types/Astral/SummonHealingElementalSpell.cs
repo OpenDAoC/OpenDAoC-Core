@@ -1,7 +1,7 @@
 using Core.GS.AI;
 using Core.GS.Effects;
 using Core.GS.Enums;
-using Core.GS.Expansions.TrialsOfAtlantis.Spells.MasterLevels;
+using Core.GS.Expansions.TrialsOfAtlantis.MasterLevels;
 using Core.GS.Skills;
 using Core.GS.World;
 

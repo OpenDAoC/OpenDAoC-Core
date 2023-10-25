@@ -171,7 +171,7 @@ public class ScriptMgr
 			{
 				// Pick up a class
 				if (type.IsClass != true) continue;
-				if (type.GetInterface("DOL.GS.Commands.ICommandHandler") == null) continue;
+				if (type.GetInterface("Core.GS.Commands.ICommandHandler") == null) continue;
 
 				try
 				{
@@ -610,7 +610,7 @@ public class ScriptMgr
 			{
 				if (!type.IsClass)
 					continue;
-				if (type.GetInterface("DOL.GS.IAbilityActionHandler") == null)
+				if (type.GetInterface("Core.GS.Skills.IAbilityActionHandler") == null)
 					continue;
 				if (type.IsAbstract)
 					continue;
@@ -645,7 +645,7 @@ public class ScriptMgr
 			{
 				if (!type.IsClass)
 					continue;
-				if (type.GetInterface("DOL.GS.ISpecActionHandler") == null)
+				if (type.GetInterface("Core.GS.Players.ISpecActionHandler") == null)
 					continue;
 				if (type.IsAbstract)
 					continue;
@@ -681,7 +681,7 @@ public class ScriptMgr
 				// Pick up a class
 				if (type.IsClass != true) continue;
 				if (type.IsAbstract) continue;
-				if (type.GetInterface("DOL.GS.ICharacterClass") == null) continue;
+				if (type.GetInterface("Core.GS.Players.IPlayerClass") == null) continue;
 
 				try
 				{
@@ -878,7 +878,7 @@ public class ScriptMgr
 			{
 				foreach (Type type in script.GetTypes())
 				{
-					if (type.IsClass != true || type.GetInterface("DOL.GS.Spells.ISpellHandler") == null)
+					if (type.IsClass != true || type.GetInterface("Core.GS.Spells.ISpellHandler") == null)
 						continue;
 
 					// look for attribute
@@ -962,7 +962,7 @@ public class ScriptMgr
 			foreach (Type type in script.GetTypes())
 			{
 				if (type.IsClass == false) continue;
-				if (type.GetInterface("DOL.GS.ServerRules.IServerRules") == null) continue;
+				if (type.GetInterface("Core.GS.Server.IServerRules") == null) continue;
 
 				// look for attribute
 				try
@@ -994,7 +994,7 @@ public class ScriptMgr
 			foreach (Type type in Assembly.GetAssembly(typeof(GameServer)).GetTypes())
 			{
 				if (type.IsClass == false) continue;
-				if (type.GetInterface("DOL.GS.ServerRules.IServerRules") == null) continue;
+				if (type.GetInterface("Core.GS.Server.IServerRules") == null) continue;
 
 				// look for attribute
 				try

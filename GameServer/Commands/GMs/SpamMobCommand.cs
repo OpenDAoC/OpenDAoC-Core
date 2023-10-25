@@ -34,7 +34,7 @@ public class SpamMobCommand : ACommandHandler, ICommandHandler
         // if (args.Length == 2)
         // {
         //     //create one mob
-        //     string theType = "DOL.GS.SpamMob.SpamMobNPC";
+        //     string theType = "Core.GS.SpamMob.SpamMobNPC";
         //     byte realm = 0;
         //
         //     //Create a new mob
@@ -149,7 +149,7 @@ public class SpamMobCommand : ACommandHandler, ICommandHandler
     {
         for (int i = 0; i < number; i++)
         {
-            string theType = "DOL.GS.SpamMob.SpamMobNPC";
+            string theType = "Core.GS.SpamMobNpc";
             byte realm = 0;
 
             //Create a new mob

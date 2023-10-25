@@ -20,7 +20,7 @@ namespace Core.Database.Tables
 		private int m_locked;
 		private int m_health;
 		private bool m_isPostern;
-		private int m_state; // DOL.GS.eDoorState
+		private int m_state; // Core.GS.Enums.EDoorState
 
 		/// <summary>
 		/// Name of door

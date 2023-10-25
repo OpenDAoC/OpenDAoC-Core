@@ -1,0 +1,300 @@
+using System;
+using System.Collections.Generic;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.Server;
+
+namespace Core.GS;
+
+public class MarketExplorer : GameNpc, IGameInventoryObject
+{
+	private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+    public const string EXPLORER_ITEM_LIST = "MarketExplorerItems";
+
+	public object LockObject()
+	{
+		return new object(); // not applicable for a Market Explorer
+	}
+
+    public override bool Interact(GamePlayer player)
+    {
+        if (!base.Interact(player))
+            return false;
+
+		if (player.ActiveInventoryObject != null)
+		{
+			player.ActiveInventoryObject.RemoveObserver(player);
+			player.ActiveInventoryObject = null;
+		}
+
+		if (ServerProperty.MARKET_ENABLE)
+		{
+			player.ActiveInventoryObject = this;
+			player.Out.SendMarketExplorerWindow();
+		}
+		else
+		{
+			player.Out.SendMessage("Sorry, the market is not available at this time.", EChatType.CT_Staff, EChatLoc.CL_SystemWindow);
+		}
+        return true;
+    }
+
+	public virtual string GetOwner(GamePlayer player)
+	{
+		return player.InternalID;
+	}
+
+	public virtual Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player)
+	{
+		return null; // we don't have any inventory
+	}
+
+	/// <summary>
+	/// List of items in this objects inventory
+	/// </summary>
+	public virtual IList<DbInventoryItem> DBItems(GamePlayer player = null)
+	{
+		return MarketCache.Items;
+	}
+
+	/// <summary>
+	/// First slot of the client window that shows this inventory
+	/// </summary>
+	public virtual int FirstClientSlot
+	{
+		get { return (int)EInventorySlot.MarketExplorerFirst; }
+	}
+
+	/// <summary>
+	/// Last slot of the client window that shows this inventory
+	/// </summary>
+	public virtual int LastClientSlot
+	{
+		get { return (int)EInventorySlot.MarketExplorerFirst + 39; } // not really sure
+	}
+
+	/// <summary>
+	/// First slot in the DB.
+	/// </summary>
+	public virtual int FirstDBSlot
+	{
+		get { return (int)EInventorySlot.Consignment_First; } // not used
+	}
+
+	/// <summary>
+	/// Last slot in the DB.
+	/// </summary>
+	public virtual int LastDBSlot
+	{
+		get { return (int)EInventorySlot.Consignment_Last; } // not used
+	}
+	
+	public ERealm GetRealmOfLot(ushort houseNumber)
+	{
+		if (houseNumber <= 1382)
+		{
+			return ERealm.Albion;
+		}
+
+		if (houseNumber <= 2573)
+		{
+			return ERealm.Midgard;
+		}
+
+		if (houseNumber <= 4398)
+		{
+			return ERealm.Hibernia;
+		}
+
+		return ERealm.None;
+	}
+
+
+	/// <summary>
+	/// Search the MarketCache
+	/// </summary>
+	public virtual bool SearchInventory(GamePlayer player, MarketSearch.SearchData searchData)
+	{
+		MarketSearch marketSearch = new MarketSearch(player);
+
+		// [
+		//if (marketSearch.FindItemsInList(DBItems(), searchData).Where(
+		//	item => item.OwnerLot != 0 && GetRealmOfLot(item.OwnerLot) == player.Realm) is List<InventoryItem> items)
+		//	{
+		if (marketSearch.FindItemsInList(DBItems(), searchData) is List<DbInventoryItem> items)
+		{
+			
+			int maxPerPage = 20;
+			byte maxPages = (byte)(Math.Ceiling((double)items.Count / (double)maxPerPage) - 1);
+			int first = (searchData.page) * maxPerPage;
+			int last = first + maxPerPage;
+			List<DbInventoryItem> list = new List<DbInventoryItem>();
+			int index = 0;
+			
+			foreach (DbInventoryItem item in items)
+			{
+				if (index >= first && index <= last)
+                {
+					if (GetRealmOfLot(item.OwnerLot) != player.Realm)
+                    {
+						if (ServerProperty.MARKET_ENABLE_LOG)
+						{
+							log.DebugFormat("Not adding item '{0}' to the return search since its from different realm.", item.Name);
+						}
+						
+					} else
+                    {
+						list.Add(item);
+					}
+					
+				} 
+					
+				index++;
+			}
+
+			if (ServerProperty.MARKET_ENABLE_LOG)
+			{
+				log.DebugFormat("Current list find size is '{0}'.", list.Count);
+			}
+			
+			if ((int)searchData.page == 0)
+			{
+				player.Out.SendMessage("Items returned: " + items.Count + ".", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+			}
+
+			if (items.Count == 0)	// No items returned, let the client know
+			{
+				player.Out.SendMarketExplorerWindow(list, 0, 0);
+			}
+			else if ((int)searchData.page <= (int)maxPages)	//Don't let us tell the client about any more than the max pages
+			{
+				player.Out.SendMessage("Moving to page " + ((int)(searchData.page + 1)) + ".", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+				player.Out.SendMarketExplorerWindow(list, searchData.page, maxPages);
+			}
+
+			// Save the last search list in case we buy an item from it
+			player.TempProperties.SetProperty(EXPLORER_ITEM_LIST, list);
+		} else
+        {
+			if (ServerProperty.MARKET_ENABLE_LOG)
+			{
+				log.DebugFormat("There is something wrong with the returned search ...");
+			}
+        }
+
+
+		return true;
+	}
+
+	/// <summary>
+	/// Is this a move request for a market explorer
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="fromClientSlot"></param>
+	/// <param name="toClientSlot"></param>
+	/// <returns></returns>
+	public virtual bool CanHandleMove(GamePlayer player, ushort fromClientSlot, ushort toClientSlot)
+	{
+		if (player == null || player.ActiveInventoryObject != this)
+			return false;
+
+		bool canHandle = false;
+
+		if (fromClientSlot >= FirstClientSlot && toClientSlot >= (int)EInventorySlot.FirstBackpack && toClientSlot <= (ushort)EInventorySlot.LastBackpack)
+		{
+			// buy request
+			canHandle = true;
+		}
+
+		return canHandle;
+	}
+
+	/// <summary>
+	/// Move Item from MarketExplorer
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="fromClientSlot"></param>
+	/// <param name="toClientSlot"></param>
+	/// <returns></returns>
+	public virtual bool MoveItem(GamePlayer player, ushort fromClientSlot, ushort toClientSlot)
+	{
+		// this move represents a buy item request
+		if (fromClientSlot >= (ushort)EInventorySlot.MarketExplorerFirst && 
+			toClientSlot >= (ushort)EInventorySlot.FirstBackpack && 
+			toClientSlot <= (ushort)EInventorySlot.LastBackpack &&
+			player.ActiveInventoryObject == this)
+		{
+			var list = player.TempProperties.GetProperty<List<DbInventoryItem>>(EXPLORER_ITEM_LIST, null);
+			if (list == null)
+			{
+				return false;
+			}
+
+			int itemSlot = fromClientSlot - (int)EInventorySlot.MarketExplorerFirst;
+
+			DbInventoryItem item = list[itemSlot];
+
+			BuyItem(item, player);
+			return true;
+		}
+
+		return false;
+	}
+
+	/// <summary>
+	/// Add an item to this object
+	/// </summary>
+	public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Not applicable
+	/// </summary>
+	public virtual bool SetSellPrice(GamePlayer player, ushort clientSlot, uint price)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Remove an item from this object
+	/// </summary>
+	public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItem item)
+	{
+		return false;
+	}
+
+	public virtual void BuyItem(DbInventoryItem item, GamePlayer player)
+    {
+		GameConsignmentMerchant cm = HouseMgr.GetConsignmentByHouseNumber((int)item.OwnerLot);
+
+		if (cm == null)
+		{
+			player.Out.SendMessage("I can't find the consigmnent merchant for this item!", EChatType.CT_Merchant, EChatLoc.CL_ChatWindow);
+			log.ErrorFormat("ME: Error finding consignment merchant for lot {0}; {1}:{2} trying to buy {3}", item.OwnerLot, player.Name, player.Client.Account.Name, item.Name);
+			return;
+		}
+
+		if (player.ActiveInventoryObject != null)
+		{
+			player.ActiveInventoryObject.RemoveObserver(player);
+		}
+
+		player.ActiveInventoryObject = cm; // activate the target con merchant
+		player.Out.SendInventoryItemsUpdate(cm.GetClientInventory(player), EInventoryWindowType.ConsignmentViewer);
+		cm.AddObserver(player);
+	}
+
+	public virtual void AddObserver(GamePlayer player)
+	{
+		// not applicable
+	}
+
+	public virtual void RemoveObserver(GamePlayer player)
+	{
+		// not applicable
+	}
+}

@@ -94,7 +94,7 @@ namespace Core.GS.Commands
                     MMerchantTemplate = new NpcTemplate();
                     MMerchantTemplate.Flags += (byte) ENpcFlags.GHOST + (byte) ENpcFlags.PEACE;
                     MMerchantTemplate.Name = "Merchant";
-                    MMerchantTemplate.ClassType = "DOL.GS.Scripts.SummonedMerchant";
+                    MMerchantTemplate.ClassType = "Core.GS.Scripts.Custom.SummonedMerchant";
                     MMerchantTemplate.Model = "50";
                     MMerchantTemplate.TemplateId = 93049;
                     NpcTemplateMgr.AddTemplate(MMerchantTemplate);

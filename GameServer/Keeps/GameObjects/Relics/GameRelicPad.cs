@@ -48,7 +48,7 @@ public class GameRelicPad : GameStaticItem
 				<[RF][BF]Cerian> Castle Myrddin (magic)
 				<[RF][BF]Cerian> Hib: Dun Lamfhota (str), Dun Dagda (magic)
 			 */
-			//Name = GlobalConstants.RealmToName((DOL.GS.PacketHandler.eRealm)Realm)+ " Relic Pad";
+			//Name = GlobalConstants.RealmToName((Core.GS.Enums.ERealm)Realm)+ " Relic Pad";
 			RelicMgr.AddRelicPad(this);
 		}
 

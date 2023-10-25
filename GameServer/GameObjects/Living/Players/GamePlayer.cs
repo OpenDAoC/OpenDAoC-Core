@@ -19,7 +19,6 @@ using Core.GS.Effects;
 using Core.GS.Enums;
 using Core.GS.Events;
 using Core.GS.Expansions.Foundations;
-using Core.GS.Expansions.LabyrinthOfTheMinotaur;
 using Core.GS.GameLoop;
 using Core.GS.GameUtils;
 using Core.GS.Keeps;

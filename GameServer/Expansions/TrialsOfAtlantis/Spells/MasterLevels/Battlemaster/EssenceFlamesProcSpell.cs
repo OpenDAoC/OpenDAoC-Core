@@ -7,7 +7,7 @@ using Core.GS.Scripts;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.MasterLevels;
+namespace Core.GS.Expansions.TrialsOfAtlantis.MasterLevels;
 
 //ml5 in database Target shood be Group if PvP..Realm if RvR..Value = spell proc'd (a.k the 80value dd proc)
 

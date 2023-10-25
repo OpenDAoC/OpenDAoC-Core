@@ -11,7 +11,7 @@ namespace Core.GS.Scripts.Custom;
 
 [NpcGuildScript("Effect Master")]
 public class EffectNpc : GameNpc {
-    private string EFFECTNPC_ITEM_WEAK = "DOL.GS.Scripts.EffectNPC_Item_Manipulation";//used to store the item in the player
+    private string EFFECTNPC_ITEM_WEAK = "Core.GS.Scripts.EffectNPC_Item_Manipulation";//used to store the item in the player
     private ushort spell = 7215;//The spell which is casted
     private ushort duration = 3000;//3s, the duration the spell is cast
     private EEmote Emotes = EEmote.Raise;//The Emote the NPC does when Interacted

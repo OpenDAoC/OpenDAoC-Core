@@ -1042,7 +1042,7 @@ public class GameServer : BaseServer
 			foreach (Type type in script.GetTypes())
 			{
 				if (type.IsClass == false) continue;
-				if (type.GetInterface("DOL.GS.Keeps.IKeepManager") == null) continue;
+				if (type.GetInterface("Core.GS.Keeps.IKeepManager") == null) continue;
 
 				// look for attribute
 				try
@@ -1070,7 +1070,7 @@ public class GameServer : BaseServer
 			foreach (Type type in Assembly.GetAssembly(typeof(GameServer)).GetTypes())
 			{
 				if (type.IsClass == false) continue;
-				if (type.GetInterface("DOL.GS.Keeps.IKeepManager") == null) continue;
+				if (type.GetInterface("Core.GS.Keeps.IKeepManager") == null) continue;
 
 				// look for attribute
 				try

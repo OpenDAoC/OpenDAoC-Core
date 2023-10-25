@@ -536,7 +536,7 @@ public class GameRelic : GameStaticItem
 		m_itemTemp.Weight = 1000;
 		m_itemTemp.Id_nb = "GameRelic";
 		m_itemTemp.IsTradable = false;
-		m_itemTemp.ClassType = "DOL.GS.GameInventoryRelic";
+		m_itemTemp.ClassType = "Core.GS.Keeps.GameInventoryRelic";
 		m_item = GameInventoryItem.Create(m_itemTemp);
 	}
 	/// <summary>

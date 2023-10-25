@@ -6,7 +6,7 @@ using Core.GS.GameUtils;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.Artifacts;
+namespace Core.GS.Expansions.TrialsOfAtlantis.Artifacts;
 
 /// <summary>
 /// Lore debuff spell handler (Magic resist debuff)

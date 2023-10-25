@@ -1,11 +1,11 @@
 ﻿// using System;
-// using DOL.AI.Brain;
-// using DOL.GS;
-// using DOL.GS.PacketHandler;
-// using DOL.GS.Effects;
-// using DOL.Events;
+// using Core.GS.AI;
+// using Core.GS;
+// using Core.GS.Packets.Server;
+// using Core.GS.Effects;
+// using Core.GS.Events;
 //
-// namespace DOL.GS.Spells
+// namespace Core.GS.Spells
 // {
 //     [SpellHandlerAttribute("Ereine")]
 //     public class Ereine : AllStatsBuff
@@ -102,4 +102,4 @@
 // 	}
 // }
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.Artifacts;
+namespace Core.GS.Expansions.TrialsOfAtlantis.Artifacts;

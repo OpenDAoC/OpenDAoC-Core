@@ -22,7 +22,7 @@ namespace Core.GS.Commands
 	     EPrivLevel.GM, //minimum privelege level
 	     "Mob creation and modification commands.", //command description
 	     // usage
-	     "'/mob create [ClassName(DOL.GS.GameNPC)] [eRealm(0)]' to create a new mob.",
+	     "'/mob create [ClassName(Core.GS.GameNpc)] [eRealm(0)]' to create a new mob.",
 	     "'/mob fastcreate <ModelID> <level> [save(default = 0; use 1 to save)] <name>' to create mob with specified info.",
 	     "'/mob nfastcreate <ModelID> <level> <number> [radius(10)] [name]' to create multiple mobs within radius.",
 	     "'/mob nrandcreate <number> [radius(50)]' to create multiple random mobs within radius.",
@@ -278,7 +278,7 @@ namespace Core.GS.Commands
 
         private void create(GameClient client, string[] args)
 		{
-			string theType = "DOL.GS.GameNPC";
+			string theType = "Core.GS.GameNpc";
 			byte realm = 0;
 
 			if (args.Length > 2)

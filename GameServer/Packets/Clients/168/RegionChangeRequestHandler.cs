@@ -108,7 +108,7 @@ public class PlayerRegionChangeRequestHandler : IPacketHandler
 			if (customHandler == null)
 			{
 				// Instances need to use a special handler. This is because some instances will result in duplicated zonepoints, such as if Tir Na Nog were to be instanced for a quest.
-				string typeName = client.Player.CurrentRegion.IsInstance ? "DOL.GS.ServerRules.InstanceDoorJumpPoint" : zonePoint.ClassType;
+				string typeName = client.Player.CurrentRegion.IsInstance ? "Core.GS.Server.InstanceDoorJumpPoint" : zonePoint.ClassType;
 				Type type = ScriptMgr.GetType(typeName);
 
 				if (type == null)

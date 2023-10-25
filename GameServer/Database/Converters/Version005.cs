@@ -27,12 +27,12 @@ public class Version005 : IDbConverter
 		foreach (DbArea area in objs)
 		{
 			string orig = area.ClassType;
-			if (area.ClassType == "DOL.GS.Area.Circle")
-				area.ClassType = "DOL.GS.Area+Circle";
-			else if (area.ClassType == "DOL.GS.Area.Square")
-				area.ClassType = "DOL.GS.Area+Square";
-			else if (area.ClassType == "DOL.GS.Area.BindArea")
-				area.ClassType = "DOL.GS.Area+BindArea";
+			if (area.ClassType == "Core.GS.Area.Circle")
+				area.ClassType = "Core.GS.Area+Circle";
+			else if (area.ClassType == "Core.GS.Area.Square")
+				area.ClassType = "Core.GS.Area+Square";
+			else if (area.ClassType == "Core.GS.Area.BindArea")
+				area.ClassType = "Core.GS.Area+BindArea";
 			if (area.ClassType != orig)
 			{
 				count++;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Core.Database;
 using Core.Database.Tables;
 using Core.GS.Enums;
-using Core.GS.Expansions.LabyrinthOfTheMinotaur;
 using Core.GS.Languages;
 using Core.GS.Skills;
 using Core.GS.Spells;

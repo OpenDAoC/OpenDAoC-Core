@@ -6,7 +6,7 @@ namespace Core.GS;
 
 /// <summary>
 /// Items of this class will proc on GameKeepComponent and GameKeepDoors, checked for in GameLiving-CheckWeaponMagicalEffect
-/// Used for Bruiser, or any other item that can fire a proc on keep components.  Itemtemplates must be set to DOL.GS.GameSiegeItem
+/// Used for Bruiser, or any other item that can fire a proc on keep components.  Itemtemplates must be set to Core.GS.GameSiegeItem
 /// in the classtype field
 /// </summary>
 public class GameSiegeItem : GameInventoryItem

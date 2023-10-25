@@ -2,11 +2,11 @@ using System;
 using Core.Database.Tables;
 using Core.GS.Enums;
 using Core.GS.Events;
-using Core.GS.Expansions.TrialsOfAtlantis.Spells.MasterLevels;
+using Core.GS.Expansions.TrialsOfAtlantis.MasterLevels;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.Artifacts;
+namespace Core.GS.Expansions.TrialsOfAtlantis.Artifacts;
 
 /// <summary>
 /// NOTE: PLEASE CHECK YOUR SPELL ID FOR JAVELIN OR CREATE YOUR OWN ITEM

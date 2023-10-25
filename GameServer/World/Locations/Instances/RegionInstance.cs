@@ -267,7 +267,7 @@ public class RegionInstance : BaseInstance
         foreach(DbArea area in areaObjs) 
         {
             // Don't bind in instance.
-            if(area.ClassType.Equals("DOL.GS.Area+BindArea"))
+            if(area.ClassType.Equals("Core.GS.Area+BindArea"))
             	continue;
             
             // clone DB object.

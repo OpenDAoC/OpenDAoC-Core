@@ -78,7 +78,7 @@ class TestKeeps
         AddDatabaseEntry(keepPosition);
     }
 
-    private string GuardFighter => "DOL.GS.Keeps.GuardFighter";
+    private string GuardFighter => "Core.GS.GuardFighter";
     private DbKeepPosition GuardPositionAtKeepWallTemplate
     {
         get

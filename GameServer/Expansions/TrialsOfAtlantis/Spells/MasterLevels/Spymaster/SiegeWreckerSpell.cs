@@ -6,7 +6,7 @@ using Core.GS.Skills;
 using Core.GS.Spells;
 using Core.GS.World;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.MasterLevels;
+namespace Core.GS.Expansions.TrialsOfAtlantis.MasterLevels;
 
 //shared timer 1
 

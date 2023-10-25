@@ -5,7 +5,7 @@ using Core.GS.GameLoop;
 using Core.GS.Skills;
 using Core.GS.Spells;
 
-namespace Core.GS.Expansions.TrialsOfAtlantis.Spells.Artifacts;
+namespace Core.GS.Expansions.TrialsOfAtlantis.Artifacts;
 
 [SpellHandler("AllStatsDebuff")]
 public class AllStatsDebuffSpell : SpellHandler

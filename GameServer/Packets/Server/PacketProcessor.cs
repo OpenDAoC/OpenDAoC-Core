@@ -245,7 +245,7 @@ public class PacketProcessor
             if (type.IsClass != true)
                 continue;
 
-            if (type.GetInterface("DOL.GS.PacketHandler.IPacketHandler") == null)
+            if (type.GetInterface("Core.GS.Packets.Server.IPacketHandler") == null)
                 continue;
 
             if (!type.Namespace.ToLower().EndsWith(version.ToLower()))
