@@ -1,8 +1,8 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Mauler Trainer", ERealm.Hibernia)]
 public class HiberniaMaulerTrainer : GameTrainer

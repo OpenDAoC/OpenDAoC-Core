@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace DOL.Database.Attributes
+namespace Core.Database
 {
 	/// <summary>
 	/// Utils Method for Handling DOL Database Attributes

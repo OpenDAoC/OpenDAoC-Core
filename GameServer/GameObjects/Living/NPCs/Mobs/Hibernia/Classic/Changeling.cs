@@ -1,6 +1,6 @@
-﻿using DOL.AI.Brain;
+﻿using Core.GS.AI;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS;
 
 public class Changeling : GameNpc
 {

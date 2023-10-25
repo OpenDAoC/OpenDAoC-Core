@@ -1,13 +1,12 @@
 using System.Reflection;
-using DOL.GS;
-using DOL.GS.RealmAbilities;
+using Core.GS.Enums;
+using Core.GS.RealmAbilities;
+using Core.GS.Skills;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
-/// <summary>
-/// A brain that can be controlled
-/// </summary>
 public class MeleeSubPetBrain : SubPetBrain
 {
 	/// <summary>
@@ -35,7 +34,7 @@ public class MeleeSubPetBrain : SubPetBrain
 			{
 				switch (ab.KeyName)
 				{
-					case Abilities.ChargeAbility:
+					case AbilityConstants.ChargeAbility:
 						if (Body.TargetObject != null && !Body.IsWithinRadius(Body.TargetObject, 500 ))
 						{
 							NfRaChargeAbility charge = Body.GetAbility<NfRaChargeAbility>();

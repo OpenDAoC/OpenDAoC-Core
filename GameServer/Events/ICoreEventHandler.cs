@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
-/// Objects Able to handle Notifications from DOLEvents.
+/// Objects Able to handle Notifications from CoreEvent.
 /// </summary>
 public interface ICoreEventHandler
 {

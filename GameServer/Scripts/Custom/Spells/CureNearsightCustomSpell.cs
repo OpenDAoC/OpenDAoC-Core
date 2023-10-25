@@ -1,30 +1,27 @@
 ﻿using System.Collections.Generic;
-using DOL.GS.Spells;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts.Custom;
+
+[SpellHandler("CureNearsightCustom")]
+public class CureNearsightCustomSpell : RemoveSpellEffectHandler
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    [SpellHandler("CureNearsightCustom")]
-    public class CureNearsightCustomSpell : RemoveSpellEffectHandler
+    private Spell spell;
+    // constructor
+    public CureNearsightCustomSpell(GameLiving caster, Spell spell, SpellLine line)
+        : base(caster, spell, line)
     {
-        private Spell spell;
-        // constructor
-        public CureNearsightCustomSpell(GameLiving caster, Spell spell, SpellLine line)
-            : base(caster, spell, line)
-        {
-            // RR4: now it's a list
-            m_spellTypesToRemove = new List<string>();
-            m_spellTypesToRemove.Add("Nearsight");
-            m_spellTypesToRemove.Add("Silence");
+        // RR4: now it's a list
+        m_spellTypesToRemove = new List<string>();
+        m_spellTypesToRemove.Add("Nearsight");
+        m_spellTypesToRemove.Add("Silence");
 
-            this.spell = spell;
-        }
+        this.spell = spell;
+    }
 
-        public override int CalculateCastingTime()
-        {
-            return spell.CastTime;
-        }
+    public override int CalculateCastingTime()
+    {
+        return spell.CastTime;
     }
 }

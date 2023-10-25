@@ -1,10 +1,10 @@
-﻿using DOL.GS;
+﻿using Core.GS.Enums;
 
-namespace DOL.AI;
+namespace Core.GS.AI;
 
 public abstract class FsmState
 {
-    public EFSMStateType StateType { get; protected set; }
+    public EFsmStateType StateType { get; protected set; }
 
     public FsmState() { }
 

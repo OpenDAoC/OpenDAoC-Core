@@ -1,6 +1,6 @@
-using DOL.GS;
+using Core.GS.GameUtils;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class AniliusBrain : StandardMobBrain
 {

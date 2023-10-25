@@ -1,4 +1,4 @@
-namespace DOL.GS.Keeps;
+namespace Core.GS.Enums;
 
 public enum EBannerType : int 
 {

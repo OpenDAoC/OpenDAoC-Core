@@ -1,11 +1,13 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Beliathan Inizializator
 public class BeliathanInit : GameNpc
@@ -80,7 +82,7 @@ public class Beliathan : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int AttackSpeed(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon = null)
     {

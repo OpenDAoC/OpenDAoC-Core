@@ -1,4 +1,6 @@
-namespace DOL.GS.Commands;
+using Core.GS.Enums;
+
+namespace Core.GS.Commands;
 
 [Command("&stand", EPrivLevel.Player, "Stands up when sitting", "/stand")]
 public class StandCommand : ACommandHandler, ICommandHandler

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.GS.Keeps;
-using DOL.GS.ServerRules;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.Keeps;
+using Core.GS.Languages;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
    "&realm",
@@ -120,16 +122,16 @@ public class RealmCommand : ACommandHandler, ICommandHandler
 		realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.HibKeeps") + ":");
 		realmInfo.Add(hibKeeps);
 
-		if (ServerProperties.Properties.ALLOW_ALL_REALMS_DF)
+		if (ServerProperty.ALLOW_ALL_REALMS_DF)
 		{
 			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.DarknessFalls") + ": All Realms");
 		}
 		else
 		{
 			realmInfo.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Realm.DarknessFalls") + ": " + GlobalConstants.RealmToName(DfEnterJumpPoint.DarknessFallOwner));
-			if (DfEnterJumpPoint.LastRealmSwapTick + DfEnterJumpPoint.GracePeriod >= GameLoop.GameLoopTime)
+			if (DfEnterJumpPoint.LastRealmSwapTick + DfEnterJumpPoint.GracePeriod >= GameLoopMgr.GameLoopTime)
 			{
-				var pve = DfEnterJumpPoint.LastRealmSwapTick + DfEnterJumpPoint.GracePeriod - GameLoop.GameLoopTime;
+				var pve = DfEnterJumpPoint.LastRealmSwapTick + DfEnterJumpPoint.GracePeriod - GameLoopMgr.GameLoopTime;
 				string realmName = "";
 				if (DfEnterJumpPoint.PreviousOwner == ERealm._LastPlayerRealm || 
 				    DfEnterJumpPoint.PreviousOwner == ERealm.Hibernia)

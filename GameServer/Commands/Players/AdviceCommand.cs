@@ -1,9 +1,12 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts.discord;
-using DOL.GS.ServerProperties;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Scripts.Custom;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&advice",
@@ -36,12 +39,12 @@ public class AdviceCommand : ACommandHandler, ICommandHandler
             return;
 
         long lastAdviceTick = client.Player.TempProperties.GetProperty<long>(advTimeoutString);
-        int slowModeLength = Properties.ADVICE_SLOWMODE_LENGTH * 1000;
+        int slowModeLength = ServerProperty.ADVICE_SLOWMODE_LENGTH * 1000;
 
-        if ((GameLoop.GameLoopTime - lastAdviceTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
+        if ((GameLoopMgr.GameLoopTime - lastAdviceTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
         {
             // Message: You must wait {0} seconds before using this command again.
-            ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Wait", Properties.ADVICE_SLOWMODE_LENGTH - (GameLoop.GameLoopTime - lastAdviceTick) / 1000);
+            ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.Wait", ServerProperty.ADVICE_SLOWMODE_LENGTH - (GameLoopMgr.GameLoopTime - lastAdviceTick) / 1000);
             return;
         }
 
@@ -93,11 +96,11 @@ public class AdviceCommand : ACommandHandler, ICommandHandler
             ChatUtil.SendAdviceMessage(otherPlayer, "Social.SendAdvice.Msg.Channel", GetRealmString(client.Player.Realm), client.Player.Name, msg);
         }
 
-        if (Properties.DISCORD_ACTIVE)
+        if (ServerProperty.DISCORD_ACTIVE)
             WebhookMessage.LogChatMessage(client.Player, EChatType.CT_Advise, msg);
 
         if (client.Account.PrivLevel == 1)
-            client.Player.TempProperties.SetProperty(advTimeoutString, GameLoop.GameLoopTime);
+            client.Player.TempProperties.SetProperty(advTimeoutString, GameLoopMgr.GameLoopTime);
 
         static bool Predicate(GamePlayer player, (ERealm realm, bool isGm) args)
         {

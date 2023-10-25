@@ -1,48 +1,49 @@
 using System.Reflection;
-using DOL.GS.ServerProperties;
-using DOL.Network;
+using Core.Base;
+using Core.GS.Enums;
+using Core.GS.Packets.Server;
+using Core.GS.Server;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.Packets.Clients;
+
+[PacketHandler(EPacketHandlerType.TCP, EClientPackets.ClientCrash, "Handles client crash packets", EClientStatus.None)]
+public class ClientCrashPacketHandler : IPacketHandler
 {
-    [PacketHandler(EPacketHandlerType.TCP, EClientPackets.ClientCrash, "Handles client crash packets", EClientStatus.None)]
-    public class ClientCrashPacketHandler : IPacketHandler
+    /// <summary>
+    /// Defines a logger for this class.
+    /// </summary>
+    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+    public void HandlePacket(GameClient client, GsPacketIn packet)
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        string dllName = packet.ReadString(16);
+        packet.Position = 0x50;
+        uint upTime = packet.ReadInt();
+        string text = $"Client crash ({client}) dll:{dllName} clientUptime:{upTime}sec";
+        log.Info(text);
 
-        public void HandlePacket(GameClient client, GsPacketIn packet)
+        if (log.IsDebugEnabled)
         {
-            string dllName = packet.ReadString(16);
-            packet.Position = 0x50;
-            uint upTime = packet.ReadInt();
-            string text = $"Client crash ({client}) dll:{dllName} clientUptime:{upTime}sec";
-            log.Info(text);
-
-            if (log.IsDebugEnabled)
+            if (ServerProperty.SAVE_PACKETS)
             {
-                if (Properties.SAVE_PACKETS)
-                {
-                    log.Debug("Last client sent/received packets (from older to newer):");
+                log.Debug("Last client sent/received packets (from older to newer):");
 
-                    foreach (IPacket prevPak in client.PacketProcessor.GetLastPackets())
-                        log.Info(prevPak.ToHumanReadable());
-                }
-                else
-                    log.Info($"Enable the server property {nameof(Properties.SAVE_PACKETS)} to see the last few sent/received packets.");
+                foreach (IPacket prevPak in client.PacketProcessor.GetLastPackets())
+                    log.Info(prevPak.ToHumanReadable());
             }
-
-            client.Out.SendPlayerQuit(true);
-
-            if (client.Player != null)
-            {
-                client.Player.SaveIntoDatabase();
-                client.Player.Quit(true);
-            }
-
-            client.Disconnect();
+            else
+                log.Info($"Enable the server property {nameof(ServerProperty.SAVE_PACKETS)} to see the last few sent/received packets.");
         }
+
+        client.Out.SendPlayerQuit(true);
+
+        if (client.Player != null)
+        {
+            client.Player.SaveIntoDatabase();
+            client.Player.Quit(true);
+        }
+
+        client.Disconnect();
     }
 }

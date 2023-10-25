@@ -1,4 +1,4 @@
-namespace DOL.GS.Keeps;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Bonus for owning certain amount of keeps

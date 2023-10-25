@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Skills;
 
-namespace DOL.GS.Spells;
+namespace Core.GS.Spells;
 
 /// <summary>
 /// Base class for all resist debuffs, needed to set effectiveness and duration
@@ -95,13 +99,13 @@ public abstract class AResistDebuff : PropertyChangingSpell
 
 		if (target.Realm == 0 || Caster.Realm == 0)
 		{
-			target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-			Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+			target.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+			Caster.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 		}
 		else
 		{
-			target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-			Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+			target.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+			Caster.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 		}
 		if(target is GameNpc)
 		{

@@ -1,14 +1,19 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Green Knight
-public class OFGreenKnightBrain : EpicBossBrain
+public class GreenKnightBrain : EpicBossBrain
 {
     private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-    public OFGreenKnightBrain() : base()
+    public GreenKnightBrain() : base()
     {
         AggroLevel = 100;
         AggroRange = 600;
@@ -408,7 +413,7 @@ public class GreenKnightTreeBrain : StandardMobBrain
     public override void Think()
     {
         if (!CheckProximityAggro())
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 
         base.Think();
     }

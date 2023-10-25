@@ -1,6 +1,4 @@
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Spell Table containing entry for each game SpellHandler behavior.

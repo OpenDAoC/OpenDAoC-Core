@@ -1,10 +1,11 @@
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
+using Core.Database.Enums;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		"&path",

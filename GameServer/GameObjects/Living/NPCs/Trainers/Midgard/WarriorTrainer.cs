@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Warrior Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Warrior Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class WarriorTrainer : GameTrainer

@@ -1,34 +1,34 @@
 using System;
-using DOL.Events;
-using DOL.GS.Behaviour.Attributes;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.World;
 
-namespace DOL.GS.Behaviour.Actions
+namespace Core.GS.Behaviors;
+
+[Action(ActionType = EActionType.MoveTo)]
+public class MoveToAction : AAction<GameLocation,GameLiving>
 {
-	[Action(ActionType = EActionType.MoveTo)]
-	public class MoveToAction : AAction<GameLocation,GameLiving>
+
+	public MoveToAction(GameNpc defaultNPC,  Object p, Object q)
+		: base(defaultNPC, EActionType.MoveTo, p, q)
+	{ }
+
+	public MoveToAction(GameNpc defaultNPC, GameLocation location, GameLiving npc)
+		: this(defaultNPC, (object)location,(object) npc) { }
+	
+	public override void Perform(CoreEvent e, object sender, EventArgs args)
 	{
+		GameLiving npc = Q;
 
-		public MoveToAction(GameNpc defaultNPC,  Object p, Object q)
-			: base(defaultNPC, EActionType.MoveTo, p, q)
-		{ }
-
-		public MoveToAction(GameNpc defaultNPC, GameLocation location, GameLiving npc)
-			: this(defaultNPC, (object)location,(object) npc) { }
-		
-		public override void Perform(CoreEvent e, object sender, EventArgs args)
+		if (P is GameLocation)
 		{
-			GameLiving npc = Q;
-
-			if (P is GameLocation)
-			{
-				GameLocation location = (GameLocation)P;
-				npc.MoveTo(location.RegionID, location.X, location.Y, location.Z, location.Heading);
-			}
-			else
-			{
-				GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
-				npc.MoveTo(player.CurrentRegionID, player.X, player.Y, player.Z, (ushort)player.Heading);
-			}
+			GameLocation location = (GameLocation)P;
+			npc.MoveTo(location.RegionID, location.X, location.Y, location.Z, location.Heading);
+		}
+		else
+		{
+			GamePlayer player = BehaviorUtil.GuessGamePlayerFromNotify(e, sender, args);
+			npc.MoveTo(player.CurrentRegionID, player.X, player.Y, player.Z, (ushort)player.Heading);
 		}
 	}
 }

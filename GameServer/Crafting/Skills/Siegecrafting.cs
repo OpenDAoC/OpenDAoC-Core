@@ -1,7 +1,10 @@
 using System;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Server;
 
-namespace DOL.GS;
+namespace Core.GS.Crafting;
 
 public class Siegecrafting : AProfession
 {
@@ -9,7 +12,7 @@ public class Siegecrafting : AProfession
 		: base()
 	{
 		Icon = 0x03;
-		Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "Crafting.Name.Siegecraft");
+		Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "Crafting.Name.Siegecraft");
 		eSkill = ECraftingSkill.SiegeCrafting;
 	}
 	public override string CRAFTER_TITLE_PREFIX

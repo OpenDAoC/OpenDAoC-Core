@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&chainactions", EPrivLevel.Player, "Chain multiple actions.", "/chainactions <create|save|clear>")]
 public class ChainActionsCommand : ACommandHandler, ICommandHandler
@@ -12,7 +15,7 @@ public class ChainActionsCommand : ACommandHandler, ICommandHandler
         if (IsSpammingCommand(client.Player, "chainactions"))
             return;
 
-        if (!Properties.ALLOW_CHAINED_ACTIONS)
+        if (!ServerProperty.ALLOW_CHAINED_ACTIONS)
         {
             client.Out.SendMessage("This command is not enabled on this server.", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
             return;

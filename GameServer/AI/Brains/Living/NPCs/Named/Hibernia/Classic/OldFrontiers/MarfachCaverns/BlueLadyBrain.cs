@@ -1,7 +1,12 @@
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Blue Lady
 public class BlueLadyBrain : StandardMobBrain
@@ -23,7 +28,7 @@ public class BlueLadyBrain : StandardMobBrain
         {
             Body.Health = Body.MaxHealth;
             CanSpawnAdds = false;
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             if (!RemoveAdds)
             {
                 foreach (GameNpc npc in WorldMgr.GetNPCsFromRegion(Body.CurrentRegionID))

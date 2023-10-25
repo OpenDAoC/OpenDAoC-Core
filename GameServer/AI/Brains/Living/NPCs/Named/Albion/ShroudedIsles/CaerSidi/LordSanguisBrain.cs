@@ -1,8 +1,9 @@
 using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Lord Sanguis
 public class LordSanguisBrain : StandardMobBrain
@@ -22,7 +23,7 @@ public class LordSanguisBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             BloodMage.MageCount = 0;
             if (!RemoveAdds)
@@ -87,7 +88,7 @@ public class LichLordSanguisBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             Body.Flags = ENpcFlags.GHOST;
             set_flag = false;

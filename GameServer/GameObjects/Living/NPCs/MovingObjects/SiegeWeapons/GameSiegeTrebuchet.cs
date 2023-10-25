@@ -1,10 +1,10 @@
-using DOL.GS.Keeps;
+using Core.GS.Enums;
+using Core.GS.Keeps;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class GameSiegeTrebuchet : GameSiegeCatapult
 {
-
 	public GameSiegeTrebuchet()
 		: base()
 	{

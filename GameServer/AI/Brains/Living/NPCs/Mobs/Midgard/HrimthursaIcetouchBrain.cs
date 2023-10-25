@@ -1,8 +1,11 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class HrimthursaIcetouchBrain : StandardMobBrain
 {
@@ -79,7 +82,7 @@ public class HrimthursaIcetouchBrain : StandardMobBrain
 							Body.TargetObject = null;
 							ResetNoTarget = true;
 						}
-						FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+						FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 					}
 				}
 			}

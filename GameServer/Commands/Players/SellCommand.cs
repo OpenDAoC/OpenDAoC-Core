@@ -1,8 +1,9 @@
 ﻿using System.Linq;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
+using Core.GS.Keeps;
+using Core.GS.Scripts.Custom;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&sell",

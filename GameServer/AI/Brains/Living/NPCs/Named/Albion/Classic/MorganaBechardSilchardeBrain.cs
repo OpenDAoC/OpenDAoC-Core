@@ -1,9 +1,10 @@
 using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Quests;
+using Core.GS.Server;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Morgana
 public class MorganaBrain : StandardMobBrain
@@ -46,7 +47,7 @@ public class MorganaBrain : StandardMobBrain
 			{
 				if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
 				{
-					GS.Quests.Albion.AcademyLvl50EpicAlbQuest quest = player.IsDoingQuest(typeof(GS.Quests.Albion.AcademyLvl50EpicAlbQuest)) as GS.Quests.Albion.AcademyLvl50EpicAlbQuest;
+					AcademyLvl50EpicAlbQuest quest = player.IsDoingQuest(typeof(AcademyLvl50EpicAlbQuest)) as AcademyLvl50EpicAlbQuest;
 					if (quest != null && quest.Step == 1)
 					{
 						SpawnDemons = true;
@@ -117,7 +118,7 @@ public class MorganaBrain : StandardMobBrain
 				player.Out.SendSpellEffectAnimation(Body, Body, 9103, 0, false, 1);
 		}
 		CanRemoveMorgana = true;
-		int resetTimer = Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1h to reset encounter
+		int resetTimer = ServerProperty.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1h to reset encounter
 		new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(RestartMorgana), resetTimer);//reset whole encounter here
 		return 0;
     }
@@ -192,7 +193,7 @@ public class BechardBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 		}
 		if (HasAggro && Body.TargetObject != null)
@@ -227,7 +228,7 @@ public class SilchardeBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 		}
 		if (HasAggro && Body.TargetObject != null)

@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using System.Data.Common;
-
+using Core.Database.Enums;
 using MySqlConnector;
 
-using DOL.Database.Connection;
-
-namespace DOL.Database.Handlers
+namespace Core.Database
 {
 	public class MySqlObjectDatabase : SqlObjectDatabase
 	{

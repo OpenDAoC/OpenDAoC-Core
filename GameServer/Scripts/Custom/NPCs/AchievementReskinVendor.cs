@@ -2,10 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Packets.Server;
+using Core.GS.Players;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS.Scripts.Custom;
 
 public class AchievementReskinVendor : GameNpc
 {
@@ -15,7 +22,7 @@ public class AchievementReskinVendor : GameNpc
     public string TempModelPrice = "TempModelPrice";
     public string currencyName = "Orbs";
     
-    private string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
+    private string _currencyID = ServerProperty.ALT_CURRENCY_ID;
 
     private int Chance;
     private Random rnd = new Random();
@@ -471,11 +478,11 @@ public class AchievementReskinVendor : GameNpc
     private void LoopAnimation(GamePlayer player, DbInventoryItem item, GameNpc display, AttackData ad)
     {
         var _lastAnimation = 0l;
-        while (GameLoop.GameLoopTime < display.SpawnTick)
+        while (GameLoopMgr.GameLoopTime < display.SpawnTick)
         {
-            if (GameLoop.GameLoopTime - _lastAnimation > 2000)
+            if (GameLoopMgr.GameLoopTime - _lastAnimation > 2000)
             {
-                _lastAnimation = GameLoop.GameLoopTime;
+                _lastAnimation = GameLoopMgr.GameLoopTime;
             }
         }
     }

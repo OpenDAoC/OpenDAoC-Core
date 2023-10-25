@@ -1,4 +1,4 @@
-﻿namespace DOL.GS;
+﻿namespace Core.GS.Enums;
 
 /// <summary>
 /// Defines the realms for various packets and search functions etc.

@@ -1,16 +1,15 @@
-using DOL.Database;
+using Core.Database.Tables;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class OfRaMysticCrystalLoreAbility : NfRaMysticCrystalLoreAbility
 {
-	public class OfRaMysticCrystalLoreAbility : NfRaMysticCrystalLoreAbility
-	{
-		public OfRaMysticCrystalLoreAbility(DbAbility dba, int level) : base(dba, level) { }
+	public OfRaMysticCrystalLoreAbility(DbAbility dba, int level) : base(dba, level) { }
 
-        public override int CostForUpgrade(int currentLevel) { return OfRaHelpers.GetCommonUpgradeCostFor3LevelsRA(currentLevel); }
-        
-        public override int GetReUseDelay(int level)
-        {
-	        return 300;
-        }
+    public override int CostForUpgrade(int currentLevel) { return OfRaHelpers.GetCommonUpgradeCostFor3LevelsRA(currentLevel); }
+    
+    public override int GetReUseDelay(int level)
+    {
+        return 300;
     }
 }

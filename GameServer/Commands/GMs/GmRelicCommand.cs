@@ -1,6 +1,9 @@
-using DOL.Database;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&gmrelic",

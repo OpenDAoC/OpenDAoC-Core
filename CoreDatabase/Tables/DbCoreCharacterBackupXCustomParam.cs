@@ -1,6 +1,4 @@
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database.Tables
 {
     /// <summary>
     /// DOL Characters Backup Custom Params linked to Character Backup Entry

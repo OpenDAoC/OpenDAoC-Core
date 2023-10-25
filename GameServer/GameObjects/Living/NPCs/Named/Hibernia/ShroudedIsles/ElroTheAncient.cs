@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Reflection;
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS;
 
 public class ElroTheAncient : GameEpicBoss
 {
@@ -35,7 +38,7 @@ public class ElroTheAncient : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -70,7 +73,7 @@ public class ElroTheAncient : GameEpicBoss
 		this.Size = 150;
 		this.Level = 65;
 		this.Realm = ERealm.None;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 		base.AddToWorld();
 		return true;
 	}

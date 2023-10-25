@@ -1,10 +1,10 @@
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI
 {
-	/// <summary>
-	/// A brain for the commanders
-	/// </summary>
 	public class CommanderPetBrain : ControlledNpcBrain
 	{
 		public CommanderPetBrain(GameLiving owner) : base(owner) { }
@@ -55,8 +55,8 @@ namespace DOL.AI.Brain
 					break;
 			}
 
-			if (FiniteStateMachine.GetState(EFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState())
-				FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+			if (FiniteStateMachine.GetState(EFsmStateType.AGGRO) != FiniteStateMachine.GetCurrentState())
+				FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
 
 			AttackMostWanted();
 		}
@@ -249,7 +249,7 @@ namespace DOL.AI.Brain
 			// TODO: Move 'CommanderPet.Taunting' to the brain.
 			if (Body is CommanderPet commanderPet)
 			{
-				int tauntScale = GS.ServerProperties.Properties.PET_BD_COMMANDER_TAUNT_VALUE;
+				int tauntScale = ServerProperty.PET_BD_COMMANDER_TAUNT_VALUE;
 
 				if (commanderPet.Taunting && tauntScale > 100)
 					damage = (int)(damage * tauntScale / 100.0);

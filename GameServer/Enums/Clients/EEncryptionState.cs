@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler;
+namespace Core.GS.Enums;
 
 public enum EEncryptionState
 {

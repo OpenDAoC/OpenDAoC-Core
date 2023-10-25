@@ -1,7 +1,6 @@
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 public class ReceiveItemEventArgs : SourceEventArgs
 {

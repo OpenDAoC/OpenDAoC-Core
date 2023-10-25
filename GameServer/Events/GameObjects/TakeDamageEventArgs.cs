@@ -1,7 +1,7 @@
 using System;
-using DOL.GS;
+using Core.GS.Enums;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the TakeDamage event of GameObjects

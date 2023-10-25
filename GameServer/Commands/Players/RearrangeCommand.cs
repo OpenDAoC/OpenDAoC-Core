@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Server;
 using log4net;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&rearrange", EPrivLevel.Player, "Allows you to rearrange your character overview.",
     "/rearrange list - Shows a list with all to this account assigned characters and their slots.",
@@ -16,7 +17,7 @@ public class RearrangeCommand : ACommandHandler, ICommandHandler
 
     public void OnCommand(GameClient client, string[] args)
     {
-        if (ServerProperties.Properties.DISABLED_COMMANDS.Contains("/rearrange"))
+        if (ServerProperty.DISABLED_COMMANDS.Contains("/rearrange"))
             return;
 
         if (IsSpammingCommand(client.Player, "rearrange"))

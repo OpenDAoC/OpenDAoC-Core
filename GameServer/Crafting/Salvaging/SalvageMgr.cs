@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.SalvageCalc;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Server;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS.Crafting
 {
 	/// <summary>
 	/// The class holding all salvage functions
@@ -736,7 +740,7 @@ namespace DOL.GS
 			if (rawMaterial == null)
 				return 0;
 
-			if (ServerProperties.Properties.USE_NEW_SALVAGE)
+			if (ServerProperty.USE_NEW_SALVAGE)
 			{
 				maxCount = GetCountForSalvage(item, rawMaterial);
 			}

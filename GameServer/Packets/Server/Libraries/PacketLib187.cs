@@ -1,242 +1,243 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Quests;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Quests;
+using Core.GS.Server;
 using log4net;
 
-namespace DOL.GS.PacketHandler
+namespace Core.GS.Packets.Server;
+
+[PacketLib(187, EClientVersion.Version187)]
+public class PacketLib187 : PacketLib186
 {
-	[PacketLib(187, GameClient.eClientVersion.Version187)]
-	public class PacketLib187 : PacketLib186
+	/// <summary>
+	/// Defines a logger for this class.
+	/// </summary>
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	/// <summary>
+	/// Constructs a new PacketLib for Version 1.87 clients
+	/// </summary>
+	/// <param name="client">the gameclient this lib is associated with</param>
+	public PacketLib187(GameClient client)
+		: base(client)
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+	}
 
-		/// <summary>
-		/// Constructs a new PacketLib for Version 1.87 clients
-		/// </summary>
-		/// <param name="client">the gameclient this lib is associated with</param>
-		public PacketLib187(GameClient client)
-			: base(client)
-		{
-		}
+	public override void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
+	{
+		SendQuestWindow(questNPC, player, quest, true);
+	}
 
-		public override void SendQuestOfferWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
-		{
-			SendQuestWindow(questNPC, player, quest, true);
-		}
+	public override void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
+	{
+		SendQuestWindow(questNPC, player, quest, false);
+	}
 
-		public override void SendQuestRewardWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest)
+	protected override void SendQuestWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest,	bool offer)
+	{
+		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Dialog)))
 		{
-			SendQuestWindow(questNPC, player, quest, false);
-		}
+			ushort QuestID = QuestMgr.GetIDForQuestType(quest.GetType());
+			pak.WriteShort((offer) ? (byte)0x22 : (byte)0x21); // Dialog
+			pak.WriteShort(QuestID);
+			pak.WriteShort((ushort)questNPC.ObjectID);
+			pak.WriteByte(0x00); // unknown
+			pak.WriteByte(0x00); // unknown
+			pak.WriteByte(0x00); // unknown
+			pak.WriteByte(0x00); // unknown
+			pak.WriteByte((offer) ? (byte)0x02 : (byte)0x01); // Accept/Decline or Finish/Not Yet
+			pak.WriteByte(0x01); // Wrap
+			pak.WritePascalString(quest.Name);
 
-		protected override void SendQuestWindow(GameNpc questNPC, GamePlayer player, RewardQuest quest,	bool offer)
-		{
-			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.Dialog)))
+			if (quest.Summary.Length > 255)
 			{
-				ushort QuestID = QuestMgr.GetIDForQuestType(quest.GetType());
-				pak.WriteShort((offer) ? (byte)0x22 : (byte)0x21); // Dialog
-				pak.WriteShort(QuestID);
-				pak.WriteShort((ushort)questNPC.ObjectID);
-				pak.WriteByte(0x00); // unknown
-				pak.WriteByte(0x00); // unknown
-				pak.WriteByte(0x00); // unknown
-				pak.WriteByte(0x00); // unknown
-				pak.WriteByte((offer) ? (byte)0x02 : (byte)0x01); // Accept/Decline or Finish/Not Yet
-				pak.WriteByte(0x01); // Wrap
-				pak.WritePascalString(quest.Name);
+				pak.WritePascalString(quest.Summary.Substring(0, 255));
+			}
+			else
+			{
+				pak.WritePascalString(quest.Summary);
+			}
 
-				if (quest.Summary.Length > 255)
+			if (offer)
+			{
+				if (quest.Story.Length > (ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
 				{
-					pak.WritePascalString(quest.Summary.Substring(0, 255));
+					pak.WriteShort((ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
+					pak.WriteStringBytes(quest.Story.Substring(0, (ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
 				}
 				else
 				{
-					pak.WritePascalString(quest.Summary);
+					pak.WriteShort((ushort)quest.Story.Length);
+					pak.WriteStringBytes(quest.Story);
 				}
-
-				if (offer)
+			}
+			else
+			{
+				if (quest.Conclusion.Length > (ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
 				{
-					if (quest.Story.Length > (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
-					{
-						pak.WriteShort((ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
-						pak.WriteStringBytes(quest.Story.Substring(0, (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
-					}
-					else
-					{
-						pak.WriteShort((ushort)quest.Story.Length);
-						pak.WriteStringBytes(quest.Story);
-					}
+					pak.WriteShort((ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
+					pak.WriteStringBytes(quest.Conclusion.Substring(0, (ushort)ServerProperty.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
 				}
 				else
 				{
-					if (quest.Conclusion.Length > (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH)
-					{
-						pak.WriteShort((ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH);
-						pak.WriteStringBytes(quest.Conclusion.Substring(0, (ushort)ServerProperties.Properties.MAX_REWARDQUEST_DESCRIPTION_LENGTH));
-					}
-					else
-					{
-						pak.WriteShort((ushort)quest.Conclusion.Length);
-						pak.WriteStringBytes(quest.Conclusion);
-					}
+					pak.WriteShort((ushort)quest.Conclusion.Length);
+					pak.WriteStringBytes(quest.Conclusion);
 				}
-
-				pak.WriteShort(QuestID);
-				pak.WriteByte((byte)quest.Goals.Count); // #goals count
-				foreach (RewardQuest.QuestGoal goal in quest.Goals)
-				{
-					pak.WritePascalString(String.Format("{0}\r", goal.Description));
-				}
-				pak.WriteByte((byte)quest.Level);
-				pak.WriteByte((byte)quest.Rewards.MoneyPercent);
-				pak.WriteByte((byte)quest.Rewards.ExperiencePercent(player));
-				pak.WriteByte((byte)quest.Rewards.BasicItems.Count);
-				foreach (DbItemTemplate reward in quest.Rewards.BasicItems)
-					WriteTemplateData(pak, reward, 1);
-				pak.WriteByte((byte)quest.Rewards.ChoiceOf);
-				pak.WriteByte((byte)quest.Rewards.OptionalItems.Count);
-				foreach (DbItemTemplate reward in quest.Rewards.OptionalItems)
-					WriteTemplateData(pak, reward, 1);
-				SendTCP(pak);
 			}
+
+			pak.WriteShort(QuestID);
+			pak.WriteByte((byte)quest.Goals.Count); // #goals count
+			foreach (RewardQuest.QuestGoal goal in quest.Goals)
+			{
+				pak.WritePascalString(String.Format("{0}\r", goal.Description));
+			}
+			pak.WriteByte((byte)quest.Level);
+			pak.WriteByte((byte)quest.Rewards.MoneyPercent);
+			pak.WriteByte((byte)quest.Rewards.ExperiencePercent(player));
+			pak.WriteByte((byte)quest.Rewards.BasicItems.Count);
+			foreach (DbItemTemplate reward in quest.Rewards.BasicItems)
+				WriteTemplateData(pak, reward, 1);
+			pak.WriteByte((byte)quest.Rewards.ChoiceOf);
+			pak.WriteByte((byte)quest.Rewards.OptionalItems.Count);
+			foreach (DbItemTemplate reward in quest.Rewards.OptionalItems)
+				WriteTemplateData(pak, reward, 1);
+			SendTCP(pak);
+		}
+	}
+
+	protected virtual void WriteTemplateData(GsTcpPacketOut pak, DbItemTemplate template, int count)
+	{
+		if (template == null)
+		{
+			pak.Fill(0x00, 19);
+			return;
 		}
 
-		protected virtual void WriteTemplateData(GsTcpPacketOut pak, DbItemTemplate template, int count)
+		pak.WriteByte((byte)template.Level);
+
+		int value1;
+		int value2;
+
+		switch (template.Object_Type)
 		{
-			if (template == null)
-			{
-				pak.Fill(0x00, 19);
-				return;
-			}
+			case (int)EObjectType.Arrow:
+			case (int)EObjectType.Bolt:
+			case (int)EObjectType.Poison:
+			case (int)EObjectType.GenericItem:
+				value1 = count; // Count
+				value2 = template.SPD_ABS;
+				break;
+			case (int)EObjectType.Thrown:
+				value1 = template.DPS_AF;
+				value2 = count; // Count
+				break;
+			case (int)EObjectType.Instrument:
+				value1 = (template.DPS_AF == 2 ? 0 : template.DPS_AF);
+				value2 = 0;
+				break;
+			case (int)EObjectType.Shield:
+				value1 = template.Type_Damage;
+				value2 = template.DPS_AF;
+				break;
+			case (int)EObjectType.AlchemyTincture:
+			case (int)EObjectType.SpellcraftGem:
+				value1 = 0;
+				value2 = 0;
+				/*
+				must contain the quality of gem for spell craft and think same for tincture
+				*/
+				break;
+			case (int)EObjectType.GardenObject:
+				value1 = 0;
+				value2 = template.SPD_ABS;
+				/*
+				Value2 byte sets the width, only lower 4 bits 'seem' to be used (so 1-15 only)
 
-			pak.WriteByte((byte)template.Level);
+				The byte used for "Hand" (IE: Mini-delve showing a weapon as Left-Hand
+				usabe/TwoHanded), the lower 4 bits store the height (1-15 only)
+				*/
+				break;
 
-			int value1;
-			int value2;
+			default:
+				value1 = template.DPS_AF;
+				value2 = template.SPD_ABS;
+				break;
+		}
+		pak.WriteByte((byte)value1);
+		pak.WriteByte((byte)value2);
 
-			switch (template.Object_Type)
-			{
-				case (int)EObjectType.Arrow:
-				case (int)EObjectType.Bolt:
-				case (int)EObjectType.Poison:
-				case (int)EObjectType.GenericItem:
-					value1 = count; // Count
-					value2 = template.SPD_ABS;
-					break;
-				case (int)EObjectType.Thrown:
-					value1 = template.DPS_AF;
-					value2 = count; // Count
-					break;
-				case (int)EObjectType.Instrument:
-					value1 = (template.DPS_AF == 2 ? 0 : template.DPS_AF);
-					value2 = 0;
-					break;
-				case (int)EObjectType.Shield:
-					value1 = template.Type_Damage;
-					value2 = template.DPS_AF;
-					break;
-				case (int)EObjectType.AlchemyTincture:
-				case (int)EObjectType.SpellcraftGem:
-					value1 = 0;
-					value2 = 0;
-					/*
-					must contain the quality of gem for spell craft and think same for tincture
-					*/
-					break;
-				case (int)EObjectType.GardenObject:
-					value1 = 0;
-					value2 = template.SPD_ABS;
-					/*
-					Value2 byte sets the width, only lower 4 bits 'seem' to be used (so 1-15 only)
+		if (template.Object_Type == (int)EObjectType.GardenObject)
+			pak.WriteByte((byte)(template.DPS_AF));
+		else
+			pak.WriteByte((byte)(template.Hand << 6));
+		pak.WriteByte((byte)((template.Type_Damage > 3
+			? 0
+			: template.Type_Damage << 6) | template.Object_Type));
+		pak.WriteShort((ushort)template.Weight);
+		pak.WriteByte(template.BaseConditionPercent);
+		pak.WriteByte(template.BaseDurabilityPercent);
+		pak.WriteByte((byte)template.Quality);
+		pak.WriteByte((byte)template.Bonus);
+		pak.WriteShort((ushort)template.Model);
+		pak.WriteByte((byte)template.Extension);
+		if (template.Emblem != 0)
+			pak.WriteShort((ushort)template.Emblem);
+		else
+			pak.WriteShort((ushort)template.Color);
+		pak.WriteByte((byte)0); // Flag
+		pak.WriteByte((byte)template.Effect);
+		if (count > 1)
+			pak.WritePascalString(String.Format("{0} {1}", count, template.Name));
+		else
+			pak.WritePascalString(template.Name);
+	}
 
-					The byte used for "Hand" (IE: Mini-delve showing a weapon as Left-Hand
-					usabe/TwoHanded), the lower 4 bits store the height (1-15 only)
-					*/
-					break;
-
-				default:
-					value1 = template.DPS_AF;
-					value2 = template.SPD_ABS;
-					break;
-			}
-			pak.WriteByte((byte)value1);
-			pak.WriteByte((byte)value2);
-
-			if (template.Object_Type == (int)EObjectType.GardenObject)
-				pak.WriteByte((byte)(template.DPS_AF));
-			else
-				pak.WriteByte((byte)(template.Hand << 6));
-			pak.WriteByte((byte)((template.Type_Damage > 3
-				? 0
-				: template.Type_Damage << 6) | template.Object_Type));
-			pak.WriteShort((ushort)template.Weight);
-			pak.WriteByte(template.BaseConditionPercent);
-			pak.WriteByte(template.BaseDurabilityPercent);
-			pak.WriteByte((byte)template.Quality);
-			pak.WriteByte((byte)template.Bonus);
-			pak.WriteShort((ushort)template.Model);
-			pak.WriteByte((byte)template.Extension);
-			if (template.Emblem != 0)
-				pak.WriteShort((ushort)template.Emblem);
-			else
-				pak.WriteShort((ushort)template.Color);
-			pak.WriteByte((byte)0); // Flag
-			pak.WriteByte((byte)template.Effect);
-			if (count > 1)
-				pak.WritePascalString(String.Format("{0} {1}", count, template.Name));
-			else
-				pak.WritePascalString(template.Name);
+	protected override void SendQuestPacket(AQuest quest, byte index)
+	{
+		if (quest == null || quest is not RewardQuest)
+		{
+			base.SendQuestPacket(quest, index);
+			return;
 		}
 
-		protected override void SendQuestPacket(AQuest quest, byte index)
+		RewardQuest rewardQuest = quest as RewardQuest;
+		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
 		{
-			if (quest == null || quest is not RewardQuest)
+			pak.WriteByte(index);
+			pak.WriteByte((byte)rewardQuest.Name.Length);
+			pak.WriteShort(0x00); // unknown
+			pak.WriteByte((byte)rewardQuest.Goals.Count);
+			pak.WriteByte((byte)rewardQuest.Level);
+			pak.WriteStringBytes(rewardQuest.Name);
+			pak.WritePascalString(rewardQuest.Description);
+			int goalindex = 0;
+			foreach (RewardQuest.QuestGoal goal in rewardQuest.Goals)
 			{
-				base.SendQuestPacket(quest, index);
-				return;
-			}
-
-			RewardQuest rewardQuest = quest as RewardQuest;
-			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.QuestEntry)))
-			{
-				pak.WriteByte(index);
-				pak.WriteByte((byte)rewardQuest.Name.Length);
-				pak.WriteShort(0x00); // unknown
-				pak.WriteByte((byte)rewardQuest.Goals.Count);
-				pak.WriteByte((byte)rewardQuest.Level);
-				pak.WriteStringBytes(rewardQuest.Name);
-				pak.WritePascalString(rewardQuest.Description);
-				int goalindex = 0;
-				foreach (RewardQuest.QuestGoal goal in rewardQuest.Goals)
+				goalindex++;
+				String goalDesc = String.Format("{0}\r", goal.Description);
+				pak.WriteShortLowEndian((ushort)goalDesc.Length);
+				pak.WriteStringBytes(goalDesc);
+				pak.WriteShortLowEndian((ushort)goal.ZoneID2);
+				pak.WriteShortLowEndian((ushort)goal.XOffset2);
+				pak.WriteShortLowEndian((ushort)goal.YOffset2);
+				pak.WriteShortLowEndian(0x00);	// unknown
+				pak.WriteShortLowEndian((ushort)goal.Type);
+				pak.WriteShortLowEndian(0x00);	// unknown
+				pak.WriteShortLowEndian((ushort)goal.ZoneID1);
+				pak.WriteShortLowEndian((ushort)goal.XOffset1);
+				pak.WriteShortLowEndian((ushort)goal.YOffset1);
+				pak.WriteByte((byte)((goal.IsAchieved) ? 0x01 : 0x00));
+				if (goal.QuestItem == null)
+					pak.WriteByte(0x00);
+				else
 				{
-					goalindex++;
-					String goalDesc = String.Format("{0}\r", goal.Description);
-					pak.WriteShortLowEndian((ushort)goalDesc.Length);
-					pak.WriteStringBytes(goalDesc);
-					pak.WriteShortLowEndian((ushort)goal.ZoneID2);
-					pak.WriteShortLowEndian((ushort)goal.XOffset2);
-					pak.WriteShortLowEndian((ushort)goal.YOffset2);
-					pak.WriteShortLowEndian(0x00);	// unknown
-					pak.WriteShortLowEndian((ushort)goal.Type);
-					pak.WriteShortLowEndian(0x00);	// unknown
-					pak.WriteShortLowEndian((ushort)goal.ZoneID1);
-					pak.WriteShortLowEndian((ushort)goal.XOffset1);
-					pak.WriteShortLowEndian((ushort)goal.YOffset1);
-					pak.WriteByte((byte)((goal.IsAchieved) ? 0x01 : 0x00));
-					if (goal.QuestItem == null)
-						pak.WriteByte(0x00);
-					else
-					{
-						pak.WriteByte((byte)goalindex);
-						WriteTemplateData(pak, goal.QuestItem, 1);
-					}
+					pak.WriteByte((byte)goalindex);
+					WriteTemplateData(pak, goal.QuestItem, 1);
 				}
-				SendTCP(pak);
 			}
+			SendTCP(pak);
 		}
 	}
 }

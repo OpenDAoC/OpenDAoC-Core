@@ -1,7 +1,8 @@
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Scurceol Hyrde
 public class ScurceolHyrdeBrain : StandardMobBrain
@@ -18,7 +19,7 @@ public class ScurceolHyrdeBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
         }
         if (HasAggro && Body.TargetObject != null)

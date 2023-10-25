@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Keeps;
+using Core.GS.Languages;
+using Core.GS.World;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&area",
@@ -40,18 +42,18 @@ public class AreaCommand : ACommandHandler, ICommandHandler
 				switch (args[3].ToLower())
 				{
 					case "circle":
-						area.ClassType = "DOL.GS.Area+Circle";
+						area.ClassType = "Core.GS.Area+Circle";
 						break;
 					case "square":
-						area.ClassType = "DOL.GS.Area+Square";
+						area.ClassType = "Core.GS.Area+Square";
 						break;
 					case "safe":
 					case "safearea":
-						area.ClassType = "DOL.GS.Area+SafeArea";
+						area.ClassType = "Core.GS.Area+SafeArea";
 						break;
 					case "bind":
 					case "bindarea":
-						area.ClassType = "DOL.GS.Area+BindArea";
+						area.ClassType = "Core.GS.Area+BindArea";
 						break;
 					default:
 					{
@@ -87,7 +89,7 @@ public class AreaCommand : ACommandHandler, ICommandHandler
 				area.Z = client.Player.Z;
 
 				Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
-				AbstractArea newArea = (AbstractArea)gasm.CreateInstance(area.ClassType, false);
+				AArea newArea = (AArea)gasm.CreateInstance(area.ClassType, false);
 				newArea.LoadFromDatabase(area);
 
 				newArea.Sound = area.Sound;

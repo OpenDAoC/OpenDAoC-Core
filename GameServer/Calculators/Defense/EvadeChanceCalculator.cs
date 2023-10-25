@@ -1,4 +1,7 @@
-namespace DOL.GS.PropertyCalc;
+using Core.GS.Enums;
+using Core.GS.Skills;
+
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The evade chance calculator. Returns 0 .. 1000 chance.
@@ -18,8 +21,8 @@ public class EvadeChanceCalculator : PropertyCalculator
 
         if (living is GamePlayer player)
         {
-            if (player.HasAbility(Abilities.Evade))
-                chance += (int) ((((player.Dexterity + player.Quickness) / 2 - 50) * 0.05 + player.GetAbilityLevel(Abilities.Evade) * 5) * 10);
+            if (player.HasAbility(AbilityConstants.Evade))
+                chance += (int) ((((player.Dexterity + player.Quickness) / 2 - 50) * 0.05 + player.GetAbilityLevel(AbilityConstants.Evade) * 5) * 10);
 
             chance += player.BaseBuffBonusCategory[(int) property] * 10;
             chance += player.SpecBuffBonusCategory[(int) property] * 10;

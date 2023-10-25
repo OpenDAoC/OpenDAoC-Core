@@ -1,4 +1,4 @@
-namespace DOL.GS;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// The possible ambient triggers for GameNPC actions (e.g., killing, roaming, dying)

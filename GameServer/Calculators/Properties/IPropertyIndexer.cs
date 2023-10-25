@@ -1,4 +1,6 @@
-namespace DOL.GS.PropertyCalc;
+using Core.GS.Enums;
+
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// Interface for properties that are added to get final value

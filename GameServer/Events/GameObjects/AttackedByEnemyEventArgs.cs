@@ -1,7 +1,7 @@
 using System;
-using DOL.GS;
+using Core.GS.GameUtils;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the AttackedByEnemy event of GameLivings

@@ -1,4 +1,4 @@
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 /// <summary>
 /// Caster Guards Brain

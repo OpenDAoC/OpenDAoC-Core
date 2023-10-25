@@ -2,13 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
+using Core.GS.Languages;
+using Core.GS.Players;
+using Core.GS.Server;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS.Crafting
 {
 	/// <summary>
 	/// AbstractCraftingSkill is the base class for all crafting skill
@@ -659,9 +662,9 @@ namespace DOL.GS
 			craftingTime = (int)(craftingTime * (1 - (.05 * RelicMgr.GetRelicCount(player.Realm))));
 
 			//keep bonuses reduction in crafting time
-			if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.EKeepBonusType.Craft_Timers_5, (ERealm)player.Realm))
+			if (Keeps.KeepBonusMgr.RealmHasBonus(EKeepBonusType.Craft_Timers_5, (ERealm)player.Realm))
 				craftingTime = (int)(craftingTime / 1.05);
-			else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.EKeepBonusType.Craft_Timers_3, (ERealm)player.Realm))
+			else if (Keeps.KeepBonusMgr.RealmHasBonus(EKeepBonusType.Craft_Timers_3, (ERealm)player.Realm))
 				craftingTime = (int)(craftingTime / 1.03);
 
 			int con = GetItemCon(player.GetCraftingSkillValue(m_eskill), recipe.Level);
@@ -693,7 +696,7 @@ namespace DOL.GS
 
 			craftingTime = (int)(craftingTime * mod);
 
-			var maxCraftingTime = Properties.MAX_CRAFT_TIME;
+			var maxCraftingTime = ServerProperty.MAX_CRAFT_TIME;
 
 			if (craftingTime < 1)
 				craftingTime = 1;

@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.Keeps;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS.Scripts.Custom;
 
 public class ConquestObjective
 {
@@ -11,7 +15,7 @@ public class ConquestObjective
     public long LastRolloverTick = 0;
     public long StartTick;
 
-    private int _realmPointTickAward = ServerProperties.Properties.SUBTICK_RP_AWARD;
+    private int _realmPointTickAward = ServerProperty.SUBTICK_RP_AWARD;
 
     public ConquestSubObjective ObjectiveOne;
     public ConquestSubObjective ObjectiveTwo;
@@ -28,7 +32,7 @@ public class ConquestObjective
     public void StartConquest()
     {
         InitializeFlags(Keep);
-        StartTick = GameLoop.GameLoopTime;
+        StartTick = GameLoopMgr.GameLoopTime;
         LastRolloverTick = StartTick;
     }
 
@@ -250,7 +254,7 @@ public class ConquestObjective
     public void DoPeriodicReward()
     {
         AwardContributors();
-        LastRolloverTick = GameLoop.GameLoopTime;
+        LastRolloverTick = GameLoopMgr.GameLoopTime;
     }
 
     public void ConquestCapture()

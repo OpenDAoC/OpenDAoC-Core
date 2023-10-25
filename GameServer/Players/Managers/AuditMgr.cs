@@ -2,236 +2,238 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Timers;
-using DOL.Database;
-using DOL.Database.Attributes;
+using Core.Base;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Server;
 
-namespace DOL.GS
+namespace Core.GS.Players;
+
+/// <summary>
+/// Manages all audit entries.
+/// </summary>
+/// <remarks>
+/// An audit entry can include events like an account log in, or a private chat message, or character 
+/// deletion.  The idea is to track certain events to have an audit log to be able to go back and see 
+/// exactly when, and in what order, events occured.
+/// </remarks>
+public static class AuditMgr
 {
-	/// <summary>
-	/// Manages all audit entries.
-	/// </summary>
-	/// <remarks>
-	/// An audit entry can include events like an account log in, or a private chat message, or character 
-	/// deletion.  The idea is to track certain events to have an audit log to be able to go back and see 
-	/// exactly when, and in what order, events occured.
-	/// </remarks>
-	public static class AuditMgr
+	private const int EventsPerInsertLimit = 1000; // 1000 events max per insert query
+	private const int PushUpdatesInterval = 5*1000; // 5 seconds (time in milliseconds)
+	private static readonly Timer PushTimer;
+	private static List<DbAuditEntry> _queuedAuditEntries;
+	private static SpinWaitLock _updateLock;
+
+	static AuditMgr()
 	{
-		private const int EventsPerInsertLimit = 1000; // 1000 events max per insert query
-		private const int PushUpdatesInterval = 5*1000; // 5 seconds (time in milliseconds)
-		private static readonly Timer PushTimer;
-		private static List<DbAuditEntry> _queuedAuditEntries;
-		private static SpinWaitLock _updateLock;
+		_queuedAuditEntries = new List<DbAuditEntry>();
 
-		static AuditMgr()
+		PushTimer = new Timer(PushUpdatesInterval);
+		PushTimer.Elapsed += OnPushTimerElapsed;
+		PushTimer.AutoReset = false;
+
+		// tobz: this is not ready for prime-time yet.
+		// PushTimer.Start();
+
+		// Graveen: indeed, AuditMgr is not activated. Nowadays GMActions.log is preferred, and Audit is not scaling correctly under heavy load
+		// it makes sense in some situation, eg querying by GM from ingame, or remove the need of Inventories.log.
+		// Not to mention GMActions is not covering the whole scope of Audit, so this legacy code will stay as is
+
+		_updateLock = new SpinWaitLock();
+	}
+
+	private static void OnPushTimerElapsed(object sender, ElapsedEventArgs e)
+	{
+		// push out the updates.
+		// todo: do these as a batch operation to speed it up/make it more efficient
+
+		List<DbAuditEntry> oldQueue;
+
+		// swap out the queue
+		_updateLock.Enter();
+
+		try
 		{
+			// grab the old queue
+			oldQueue = _queuedAuditEntries;
+
+			// swap in a new queue
 			_queuedAuditEntries = new List<DbAuditEntry>();
-
-			PushTimer = new Timer(PushUpdatesInterval);
-			PushTimer.Elapsed += OnPushTimerElapsed;
-			PushTimer.AutoReset = false;
-
-			// tobz: this is not ready for prime-time yet.
-			// PushTimer.Start();
-
-			// Graveen: indeed, AuditMgr is not activated. Nowadays GMActions.log is preferred, and Audit is not scaling correctly under heavy load
-			// it makes sense in some situation, eg querying by GM from ingame, or remove the need of Inventories.log.
-			// Not to mention GMActions is not covering the whole scope of Audit, so this legacy code will stay as is
-
-			_updateLock = new SpinWaitLock();
+		}
+		finally
+		{
+			_updateLock.Exit();
 		}
 
-		private static void OnPushTimerElapsed(object sender, ElapsedEventArgs e)
+		// here we're doing some custom query generation to batch insert all of these entries.
+		// normally this would be something that goes in the DB layer, but since we don't want
+		// to push hundreds of rows at a time, trying to do reflection on all of them before
+		// insertion, we instead hard-code it here.  not the cleanest way but this will change
+		// with a switch to a better DB layer.
+
+		StringBuilder queryBuilder = GetEntryQueryBuilder();
+		int currentQueryCount = 0;
+
+		foreach (DbAuditEntry entry in oldQueue)
 		{
-			// push out the updates.
-			// todo: do these as a batch operation to speed it up/make it more efficient
-
-			List<DbAuditEntry> oldQueue;
-
-			// swap out the queue
-			_updateLock.Enter();
-
-			try
+			// we limit the number of items per insert query.
+			if (currentQueryCount > EventsPerInsertLimit)
 			{
-				// grab the old queue
-				oldQueue = _queuedAuditEntries;
+				// reset item count
+				currentQueryCount = 0;
 
-				// swap in a new queue
-				_queuedAuditEntries = new List<DbAuditEntry>();
-			}
-			finally
-			{
-				_updateLock.Exit();
-			}
+				// close query, remove previous `,` and add `;`
+				queryBuilder.Remove(queryBuilder.Length - 1, 1);
+				queryBuilder.Append(';');
 
-			// here we're doing some custom query generation to batch insert all of these entries.
-			// normally this would be something that goes in the DB layer, but since we don't want
-			// to push hundreds of rows at a time, trying to do reflection on all of them before
-			// insertion, we instead hard-code it here.  not the cleanest way but this will change
-			// with a switch to a better DB layer.
+				// build query string and execute
+				string queryString = queryBuilder.ToString();
 
-			StringBuilder queryBuilder = GetEntryQueryBuilder();
-			int currentQueryCount = 0;
+				// Graveen: if AuditMgr is debuggued one day, this should be in ORM format: GS.Database.AddObject<AuditEntry> ...
+				//GameServer.Database.ExecuteNonQuery(queryString);
 
-			foreach (DbAuditEntry entry in oldQueue)
-			{
-				// we limit the number of items per insert query.
-				if (currentQueryCount > EventsPerInsertLimit)
-				{
-					// reset item count
-					currentQueryCount = 0;
-
-					// close query, remove previous `,` and add `;`
-					queryBuilder.Remove(queryBuilder.Length - 1, 1);
-					queryBuilder.Append(';');
-
-					// build query string and execute
-					string queryString = queryBuilder.ToString();
-
-					// Graveen: if AuditMgr is debuggued one day, this should be in ORM format: GS.Database.AddObject<AuditEntry> ...
-					//GameServer.Database.ExecuteNonQuery(queryString);
-
-					// get new query builder
-					queryBuilder = GetEntryQueryBuilder();
-				}
-
-				// add entry to the query
-				queryBuilder.AppendFormat("({0},{1},{2},{3},{4},{5},{6},{7}),", entry.ObjectId, entry.AuditTime,
-				                          entry.AccountID, entry.RemoteHost, entry.AuditType, entry.AuditSubtype,
-				                          entry.OldValue, entry.NewValue);
-
-				currentQueryCount++;
+				// get new query builder
+				queryBuilder = GetEntryQueryBuilder();
 			}
 
-			// close query, remove previous `,` and add `;`
-			queryBuilder.Remove(queryBuilder.Length - 1, 1);
-			queryBuilder.Append(';');
+			// add entry to the query
+			queryBuilder.AppendFormat("({0},{1},{2},{3},{4},{5},{6},{7}),", entry.ObjectId, entry.AuditTime,
+			                          entry.AccountID, entry.RemoteHost, entry.AuditType, entry.AuditSubtype,
+			                          entry.OldValue, entry.NewValue);
 
-			/* Graveen: if AuditMgr is debuggued one day, this should be in ORM format: GS.Database.AddObject<AuditEntry> ...
-			
-			// build query string and execute
-			string entryQuery = queryBuilder.ToString();
-			
-			GameServer.Database.ExecuteNonQuery(entryQuery);
-			*/
-
-			// restart timer
-			PushTimer.Start();
+			currentQueryCount++;
 		}
 
-		private static StringBuilder GetEntryQueryBuilder()
+		// close query, remove previous `,` and add `;`
+		queryBuilder.Remove(queryBuilder.Length - 1, 1);
+		queryBuilder.Append(';');
+
+		/* Graveen: if AuditMgr is debuggued one day, this should be in ORM format: GS.Database.AddObject<AuditEntry> ...
+		
+		// build query string and execute
+		string entryQuery = queryBuilder.ToString();
+		
+		GameServer.Database.ExecuteNonQuery(entryQuery);
+		*/
+
+		// restart timer
+		PushTimer.Start();
+	}
+
+	private static StringBuilder GetEntryQueryBuilder()
+	{
+		var queryBuilder = new StringBuilder();
+
+		// generate insert query
+		queryBuilder.Append("INSERT INTO ");
+
+		// get proper table name
+		string tableName = AttributeUtil.GetTableOrViewName(typeof (DbAuditEntry));
+
+		if (string.IsNullOrEmpty(tableName))
 		{
-			var queryBuilder = new StringBuilder();
-
-			// generate insert query
-			queryBuilder.Append("INSERT INTO ");
-
-			// get proper table name
-			string tableName = AttributeUtil.GetTableOrViewName(typeof (DbAuditEntry));
-
-			if (string.IsNullOrEmpty(tableName))
-			{
-				// this should never, ever happen.
-				throw new DatabaseException("Audit table does not exist!");
-			}
-
-			queryBuilder.Append(tableName);
-			queryBuilder.Append(
-				" (`AuditEntry_ID`,`AuditTime`,`AccountID`,`RemoteHost`,`AuditType`,`AuditSubtype`,`OldValue`,`NewValue`) VALUES");
-
-			return queryBuilder;
+			// this should never, ever happen.
+			throw new DatabaseException("Audit table does not exist!");
 		}
 
-		public static void AddAuditEntry(int type, int subType, string oldValue, string newValue)
+		queryBuilder.Append(tableName);
+		queryBuilder.Append(
+			" (`AuditEntry_ID`,`AuditTime`,`AccountID`,`RemoteHost`,`AuditType`,`AuditSubtype`,`OldValue`,`NewValue`) VALUES");
+
+		return queryBuilder;
+	}
+
+	public static void AddAuditEntry(int type, int subType, string oldValue, string newValue)
+	{
+        if (!ServerProperty.ENABLE_AUDIT_LOG)
+            return;
+
+		// create the transaction
+		var transactionHistory = new DbAuditEntry
+			                        {
+			                         	AuditTime = DateTime.Now,
+			                         	AuditType = type,
+			                         	AuditSubtype = subType,
+			                         	OldValue = oldValue,
+			                         	NewValue = newValue
+			                        };
+
+		_updateLock.Enter();
+
+		try
 		{
-            if (!ServerProperties.Properties.ENABLE_AUDIT_LOG)
-                return;
-
-			// create the transaction
-			var transactionHistory = new DbAuditEntry
-			                         	{
-			                         		AuditTime = DateTime.Now,
-			                         		AuditType = type,
-			                         		AuditSubtype = subType,
-			                         		OldValue = oldValue,
-			                         		NewValue = newValue
-			                         	};
-
-			_updateLock.Enter();
-
-			try
-			{
-				// add it to the queue
-				_queuedAuditEntries.Add(transactionHistory);
-			}
-			finally
-			{
-				_updateLock.Exit();
-			}
+			// add it to the queue
+			_queuedAuditEntries.Add(transactionHistory);
 		}
-
-		public static void AddAuditEntry(EAuditType type, EAuditSubType subType, string oldValue, string newValue)
+		finally
 		{
-			AddAuditEntry((int) type, (int) subType, oldValue, newValue);
+			_updateLock.Exit();
 		}
+	}
 
-		public static void AddAuditEntry(GameClient client, int type, int subType, string oldValue, string newValue)
+	public static void AddAuditEntry(EAuditType type, EAuditSubType subType, string oldValue, string newValue)
+	{
+		AddAuditEntry((int) type, (int) subType, oldValue, newValue);
+	}
+
+	public static void AddAuditEntry(GameClient client, int type, int subType, string oldValue, string newValue)
+	{
+        if(!ServerProperty.ENABLE_AUDIT_LOG)
+            return;
+
+		// create the transaction
+		var transactionHistory = new DbAuditEntry
+			                        {
+			                         	AuditTime = DateTime.Now,
+			                         	AuditType = type,
+			                         	AuditSubtype = subType,
+			                         	OldValue = oldValue,
+			                         	NewValue = newValue
+			                        };
+
+		// make sure account isn't null (no idea why it'd be)
+		if (client.Account != null)
 		{
-            if(!ServerProperties.Properties.ENABLE_AUDIT_LOG)
-                return;
-
-			// create the transaction
-			var transactionHistory = new DbAuditEntry
-			                         	{
-			                         		AuditTime = DateTime.Now,
-			                         		AuditType = type,
-			                         		AuditSubtype = subType,
-			                         		OldValue = oldValue,
-			                         		NewValue = newValue
-			                         	};
-
-			// make sure account isn't null (no idea why it'd be)
-			if (client.Account != null)
-			{
-				transactionHistory.AccountID = client.Account.ObjectId;
-			}
-
-			// set the remote host
-			transactionHistory.RemoteHost = client.TcpEndpointAddress;
-
-			_updateLock.Enter();
-
-			try
-			{
-				// add it to the queue
-				_queuedAuditEntries.Add(transactionHistory);
-			}
-			finally
-			{
-				_updateLock.Exit();
-			}
+			transactionHistory.AccountID = client.Account.ObjectId;
 		}
 
-		public static void AddAuditEntry(GameClient client, EAuditType type, EAuditSubType subType)
+		// set the remote host
+		transactionHistory.RemoteHost = client.TcpEndpointAddress;
+
+		_updateLock.Enter();
+
+		try
 		{
-			AddAuditEntry(client, (int) type, (int) subType, "", "");
+			// add it to the queue
+			_queuedAuditEntries.Add(transactionHistory);
 		}
-
-		public static void AddAuditEntry(GameClient client, EAuditType type, EAuditSubType subType, string oldValue,
-		                                 string newValue)
+		finally
 		{
-			AddAuditEntry(client, (int) type, (int) subType, oldValue, newValue);
+			_updateLock.Exit();
 		}
+	}
 
-		public static void AddAuditEntry(GamePlayer player, int type, int subType, string oldValue, string newValue)
-		{
-			AddAuditEntry(player.Client, type, subType, oldValue, newValue);
-		}
+	public static void AddAuditEntry(GameClient client, EAuditType type, EAuditSubType subType)
+	{
+		AddAuditEntry(client, (int) type, (int) subType, "", "");
+	}
 
-		public static void AddAuditEntry(GamePlayer player, EAuditType type, EAuditSubType subType, string oldValue,
-		                                 string newValue)
-		{
-			AddAuditEntry(player.Client, type, subType, oldValue, newValue);
-		}
+	public static void AddAuditEntry(GameClient client, EAuditType type, EAuditSubType subType, string oldValue,
+	                                 string newValue)
+	{
+		AddAuditEntry(client, (int) type, (int) subType, oldValue, newValue);
+	}
+
+	public static void AddAuditEntry(GamePlayer player, int type, int subType, string oldValue, string newValue)
+	{
+		AddAuditEntry(player.Client, type, subType, oldValue, newValue);
+	}
+
+	public static void AddAuditEntry(GamePlayer player, EAuditType type, EAuditSubType subType, string oldValue,
+	                                 string newValue)
+	{
+		AddAuditEntry(player.Client, type, subType, oldValue, newValue);
 	}
 }

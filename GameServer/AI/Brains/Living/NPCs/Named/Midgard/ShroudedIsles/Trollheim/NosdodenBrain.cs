@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.Styles;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Nosdoden
 public class NosdodenBrain : StandardMobBrain
@@ -183,7 +187,7 @@ public class NosdodenBrain : StandardMobBrain
 	{
 		if (!CheckProximityAggro())
 		{
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
             #region Checks
             StartCastDOT = false;

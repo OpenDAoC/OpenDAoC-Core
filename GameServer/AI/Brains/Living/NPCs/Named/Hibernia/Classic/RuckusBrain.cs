@@ -1,8 +1,11 @@
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class RuckusBrain : StandardMobBrain
 {

@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using DOL.Database;
+using Core.Database.Tables;
+using Core.GS.Enums;
 
-namespace DOL.GS
+namespace Core.GS.GameUtils
 {
 	public abstract class GameLivingInventory : IGameInventory
 	{

@@ -1,21 +1,20 @@
 using System;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells;
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+public class SpellHandlerAttribute : Attribute
 {
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-	public class SpellHandlerAttribute : Attribute
-	{
-		string m_type;
+	string m_type;
 
-		public SpellHandlerAttribute(string spellType) {
-			m_type = spellType;
-		}
+	public SpellHandlerAttribute(string spellType) {
+		m_type = spellType;
+	}
 
-		/// <summary>
-		/// Spell type name of the denoted handler
-		/// </summary>
-		public string SpellType {
-			get { return m_type; }
-		}
+	/// <summary>
+	/// Spell type name of the denoted handler
+	/// </summary>
+	public string SpellType {
+		get { return m_type; }
 	}
 }

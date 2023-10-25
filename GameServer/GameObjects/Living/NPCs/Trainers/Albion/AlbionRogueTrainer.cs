@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Rogue Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Rogue Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class AlbionRogueTrainer : GameTrainer
@@ -12,7 +12,7 @@ public class AlbionRogueTrainer : GameTrainer
 
 	public const string PRACTICE_WEAPON_ID = "practice_dirk";
 	
-	public AlbionRogueTrainer() : base(eChampionTrainerType.AlbionRogue)
+	public AlbionRogueTrainer() : base(EChampionTrainerType.AlbionRogue)
 	{
 	}
 

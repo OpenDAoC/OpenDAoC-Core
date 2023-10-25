@@ -1,6 +1,8 @@
-using DOL.GS;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class ChieftainCaimheulBrain : StandardMobBrain
 {
@@ -23,7 +25,7 @@ public class ChieftainCaimheulBrain : StandardMobBrain
         {
             //set state to RETURN TO SPAWN
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(8821);
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             Phase2 = false;
             CanWalk = false;

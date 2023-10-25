@@ -2,13 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Legion
 public class LegionBrain : EpicBossBrain

@@ -1,10 +1,13 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&Reload",
 		EPrivLevel.Admin,

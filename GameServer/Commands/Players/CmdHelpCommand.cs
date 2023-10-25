@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Scripts;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&cmdhelp", //command to handle
 	EPrivLevel.Player, //minimum privelege level

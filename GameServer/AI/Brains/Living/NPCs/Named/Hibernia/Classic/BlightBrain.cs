@@ -1,8 +1,8 @@
 using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class BlightBrain : StandardMobBrain
 {
@@ -41,7 +41,7 @@ public class BlightBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
         }
         base.Think();

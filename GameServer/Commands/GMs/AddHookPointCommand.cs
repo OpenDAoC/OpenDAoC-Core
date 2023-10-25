@@ -1,9 +1,10 @@
 using System;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Keeps;
+using Core.GS.Languages;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	 "&addhookpoint",

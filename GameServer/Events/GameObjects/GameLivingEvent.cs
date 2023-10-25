@@ -1,6 +1,4 @@
-using DOL.GS;
-
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// This class holds all possible GameLiving events.

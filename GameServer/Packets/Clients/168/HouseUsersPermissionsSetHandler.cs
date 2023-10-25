@@ -1,38 +1,39 @@
-using DOL.GS.Housing;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.Packets.Server;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.Packets.Clients;
+
+[PacketHandler(EPacketHandlerType.TCP, EClientPackets.HouseUserPermissionSet, "Handles housing Users permissions requests", EClientStatus.PlayerInGame)]
+public class HouseUsersPermissionsSetHandler : IPacketHandler
 {
-	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.HouseUserPermissionSet, "Handles housing Users permissions requests", EClientStatus.PlayerInGame)]
-	public class HouseUsersPermissionsSetHandler : IPacketHandler
+	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
-		public void HandlePacket(GameClient client, GsPacketIn packet)
+		int permissionSlot = packet.ReadByte();
+		int newPermissionLevel = packet.ReadByte();
+		ushort houseNumber = packet.ReadShort();
+
+		// house is null, return
+		var house = HouseMgr.GetHouse(houseNumber);
+		if (house == null)
+			return;
+
+		// player is null, return
+		if (client.Player == null)
+			return;
+
+		// can't set permissions unless you're the owner.
+		if (!house.HasOwnerPermissions(client.Player) && client.Account.PrivLevel <= 1)
+			return;
+
+		// check if we're setting or removing permissions
+		if (newPermissionLevel == 100)
 		{
-			int permissionSlot = packet.ReadByte();
-			int newPermissionLevel = packet.ReadByte();
-			ushort houseNumber = packet.ReadShort();
-
-			// house is null, return
-			var house = HouseMgr.GetHouse(houseNumber);
-			if (house == null)
-				return;
-
-			// player is null, return
-			if (client.Player == null)
-				return;
-
-			// can't set permissions unless you're the owner.
-			if (!house.HasOwnerPermissions(client.Player) && client.Account.PrivLevel <= 1)
-				return;
-
-			// check if we're setting or removing permissions
-			if (newPermissionLevel == 100)
-			{
-				house.RemovePermission(permissionSlot);
-			}
-			else
-			{
-				house.AdjustPermissionSlot(permissionSlot, newPermissionLevel);
-			}
+			house.RemovePermission(permissionSlot);
+		}
+		else
+		{
+			house.AdjustPermissionSlot(permissionSlot, newPermissionLevel);
 		}
 	}
 }

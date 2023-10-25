@@ -1,4 +1,4 @@
-﻿namespace DOL.GS;
+﻿namespace Core.GS;
 
 public class TheurgistIcePet : TheurgistPet
 {

@@ -1,4 +1,7 @@
-namespace DOL.GS.Commands;
+using Core.GS.ECS;
+using Core.GS.Enums;
+
+namespace Core.GS.Commands;
 
 [Command(
     "&ignore",

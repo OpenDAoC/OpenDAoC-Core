@@ -2,11 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Players;
+using Core.GS.Server;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS.Housing
+namespace Core.GS.Expansions.Foundations
 {
 	public class House : Point3D, IGameLocation
 	{
@@ -438,7 +445,7 @@ namespace DOL.GS.Housing
 		public void SendHouseInfo(GamePlayer player)
 		{
 			int level = Model - ((Model - 1) / 4) * 4;
-			TimeSpan due = (LastPaid.AddDays(ServerProperties.Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
+			TimeSpan due = (LastPaid.AddDays(ServerProperty.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
 			var text = new List<string>();
 
 			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.Owner", Name));
@@ -452,8 +459,8 @@ namespace DOL.GS.Housing
 			text.Add(" ");
 			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.Lockbox", MoneyMgr.GetString(KeptMoney)));
 			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentalPrice", MoneyMgr.GetString(HouseMgr.GetRentByModel(Model))));
-			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.MaxLockbox", MoneyMgr.GetString(HouseMgr.GetRentByModel(Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)));
-			if (ServerProperties.Properties.RENT_DUE_DAYS > 0)
+			text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.MaxLockbox", MoneyMgr.GetString(HouseMgr.GetRentByModel(Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS)));
+			if (ServerProperty.RENT_DUE_DAYS > 0)
 				text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentDueIn", due.Days, due.Hours));
 			else
 				text.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "House.SendHouseInfo.RentDueIn", "No Rent! 0", "0"));

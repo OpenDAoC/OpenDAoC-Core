@@ -1,7 +1,7 @@
 using System;
-using DOL.GS;
+using Core.GS.Spells;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the Revived event of GamePlayer

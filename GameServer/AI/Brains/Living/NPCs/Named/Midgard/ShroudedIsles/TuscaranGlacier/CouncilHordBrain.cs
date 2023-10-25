@@ -1,10 +1,14 @@
 using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class CouncilHordBrain : StandardMobBrain
 {
@@ -38,7 +42,7 @@ public class CouncilHordBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
         }
         base.Think();

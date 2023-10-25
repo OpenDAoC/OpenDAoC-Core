@@ -1,6 +1,6 @@
-using DOL.Database;
+using Core.Database.Tables;
 
-namespace DOL.GS.Housing;
+namespace Core.GS.Expansions.Foundations;
 
 public class OutdoorItem
 {

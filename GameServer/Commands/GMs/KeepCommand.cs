@@ -1,9 +1,14 @@
 using System;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.Language;
+using Core.Database.Enums;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Keeps;
+using Core.GS.Languages;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		"&keep",
@@ -123,7 +128,7 @@ namespace DOL.GS.Commands
 						keep.DBKeep = new DbKeep(createInfo);
 						keep.Name = keepName;
 						keep.KeepID = (ushort)keepID;
-						keep.Level = (byte)ServerProperties.Properties.STARTING_KEEP_LEVEL;
+						keep.Level = (byte)ServerProperty.STARTING_KEEP_LEVEL;
 						keep.BaseLevel = 50;
 						keep.Realm = client.Player.Realm;
 						keep.Region = client.Player.CurrentRegionID;
@@ -2176,7 +2181,7 @@ namespace DOL.GS.Commands
 				case "remove":
 					{
 						KeepArea karea = null;
-						foreach (AbstractArea area in client.Player.CurrentAreas)
+						foreach (AArea area in client.Player.CurrentAreas)
 						{
 							if (area is KeepArea)
 							{
@@ -2453,7 +2458,7 @@ namespace DOL.GS.Commands
 							banner.Heading = client.Player.Heading;
 							banner.SaveIntoDatabase();
 
-							foreach (AbstractArea area in banner.CurrentAreas)
+							foreach (AArea area in banner.CurrentAreas)
 							{
 								if (area is KeepArea)
 								{

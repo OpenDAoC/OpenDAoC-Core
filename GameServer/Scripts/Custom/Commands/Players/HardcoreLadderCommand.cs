@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Commands;
+using Core.GS.Database;
+using Core.GS.Enums;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Scripts.Custom;
 
 [Command(
         "&hcladder",

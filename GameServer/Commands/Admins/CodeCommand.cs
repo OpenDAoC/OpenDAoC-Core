@@ -2,10 +2,11 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Scripts;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		"&code",
@@ -39,7 +40,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            var methodinf = compiledAssembly.GetType("DynCode").GetMethod("DynMethod");
+            var methodinf = compiledAssembly.GetType("CodeCommand").GetMethod("DynMethod");
 
             try
             {
@@ -77,21 +78,34 @@ namespace DOL.GS.Commands
             text.Append("using System.Reflection;\n");
             text.Append("using System.Collections;\n");
             text.Append("using System.Threading;\n");
-            text.Append("using DOL;\n");
-            text.Append("using DOL.AI;\n");
-            text.Append("using DOL.AI.Brain;\n");
-            text.Append("using DOL.Database;\n");
-            text.Append("using DOL.GS;\n");
-            text.Append("using DOL.GS.Movement;\n");
-            text.Append("using DOL.GS.Housing;\n");
-            text.Append("using DOL.GS.Keeps;\n");
-            text.Append("using DOL.GS.Quests;\n");
-            text.Append("using DOL.GS.Commands;\n");
-            text.Append("using DOL.GS.Scripts;\n");
-            text.Append("using DOL.GS.PacketHandler;\n");
-            text.Append("using DOL.Events;\n");
+            text.Append("using Core;\n");
+            text.Append("using Core.GS.AI;\n");
+            text.Append("using Core.Database;\n");
+            text.Append("using Core.GS;\n");
+            text.Append("using Core.GS.Movement;\n");
+            text.Append("using Core.GS.Expansions.Foundations;\n");
+            text.Append("using Core.GS.Behaviors;\n");
+            text.Append("using Core.GS.Calculators;\n");
+            text.Append("using Core.GS.Crafting;\n");
+            text.Append("using Core.GS.ECS;\n");
+            text.Append("using Core.GS.Effects;\n");
+            text.Append("using Core.GS.Keeps;\n");
+            text.Append("using Core.GS.Quests;\n");
+            text.Append("using Core.GS.Commands;\n");
+            text.Append("using Core.GS.Scripts;\n");
+            text.Append("using Core.GS.Scripts.Custom;\n");
+            text.Append("using Core.GS.Packets;\n");
+            text.Append("using Core.GS.Events;\n");
+            text.Append("using Core.GS.GameUtils;\n");
+            text.Append("using Core.GS.Players;\n");
+            text.Append("using Core.GS.RealmAbilities;\n");
+            text.Append("using Core.GS.Server;\n");
+            text.Append("using Core.GS.Skills;\n");
+            text.Append("using Core.GS.Spells;\n");
+            text.Append("using Core.GS.Styles;\n");
+            text.Append("using Core.GS.World;\n");
             text.Append("using log4net;\n");
-            text.Append("public class DynCode {\n");
+            text.Append("public class CodeCommand {\n");
             text.Append("private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);\n");
             text.Append("public static GameClient Client = null;\n");
             text.Append("public static void print(object obj) {\n");

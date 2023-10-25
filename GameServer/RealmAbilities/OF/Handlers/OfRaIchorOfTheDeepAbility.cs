@@ -1,13 +1,12 @@
-using DOL.Database;
+using Core.Database.Tables;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class OfRaIchorOfTheDeepAbility : NfRaIchorOfTheDeepAbility
 {
-    public class OfRaIchorOfTheDeepAbility : NfRaIchorOfTheDeepAbility
-    {
-        public OfRaIchorOfTheDeepAbility(DbAbility dba, int level) : base(dba, level) { }
+    public OfRaIchorOfTheDeepAbility(DbAbility dba, int level) : base(dba, level) { }
 
-        public override int MaxLevel { get { return 1; } }
-        public override int CostForUpgrade(int level) { return 14; }
-        public override int GetReUseDelay(int level) { return 900; } // 15 mins
-    }
+    public override int MaxLevel { get { return 1; } }
+    public override int CostForUpgrade(int level) { return 14; }
+    public override int GetReUseDelay(int level) { return 900; } // 15 mins
 }

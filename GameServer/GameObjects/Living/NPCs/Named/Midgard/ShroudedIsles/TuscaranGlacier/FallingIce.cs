@@ -1,7 +1,8 @@
-﻿using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+﻿using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class FallingIce : GameNpc
 {

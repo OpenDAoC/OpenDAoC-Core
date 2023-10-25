@@ -3,14 +3,10 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
-
-using DOL.Database.Attributes;
-using DOL.Database.Connection;
-using DOL.Database.Handlers;
-
+using Core.Database.Enums;
 using log4net;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Default Object Database Base Implementation
@@ -843,7 +839,7 @@ namespace DOL.Database
 		/// <param name="parameters">Parameters for filtering</param>
 		/// <param name="isolation">Isolation Level</param>
 		/// <returns>Collection of DataObjects Sets matching Parametrized Where Expression</returns>
-		protected abstract IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.EIsolationLevel isolation);
+		protected abstract IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, EIsolationLevel isolation);
 
 		protected abstract IList<IList<DataObject>> MultipleSelectObjectsImpl(DataTableHandler tableHandler, IEnumerable<WhereClause> whereClauseBatch);
 

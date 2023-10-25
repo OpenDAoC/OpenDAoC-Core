@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
 
-namespace DOL.GS;
+namespace Core.GS.Database;
 
 public class CoreDb<T> where T : DataObject
 {

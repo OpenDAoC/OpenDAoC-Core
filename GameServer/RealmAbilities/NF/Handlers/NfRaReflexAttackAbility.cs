@@ -1,39 +1,40 @@
-using DOL.Database;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Server;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class NfRaReflexAttackAbility : L3RaPropertyEnhancer
 {
-	public class NfRaReflexAttackAbility : L3RaPropertyEnhancer
+	public NfRaReflexAttackAbility(DbAbility dba, int level)
+		: base(dba, level, EProperty.Undefined)
 	{
-		public NfRaReflexAttackAbility(DbAbility dba, int level)
-			: base(dba, level, EProperty.Undefined)
-		{
-		}
+	}
 
-		protected override string ValueUnit { get { return "%"; } }
+	protected override string ValueUnit { get { return "%"; } }
 
-		public override int GetAmountForLevel(int level)
+	public override int GetAmountForLevel(int level)
+	{
+		if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
 		{
-			if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+			switch (level)
 			{
-				switch (level)
-				{
-					case 1: return 10;
-					case 2: return 20;
-					case 3: return 30;
-					case 4: return 40;
-					case 5: return 50;
-					default: return 0;
-				}
+				case 1: return 10;
+				case 2: return 20;
+				case 3: return 30;
+				case 4: return 40;
+				case 5: return 50;
+				default: return 0;
 			}
-			else
+		}
+		else
+		{
+			switch (level)
 			{
-				switch (level)
-				{
-					case 1: return 5;
-					case 2: return 15;
-					case 3: return 30;
-					default: return 0;
-				}
+				case 1: return 5;
+				case 2: return 15;
+				case 3: return 30;
+				default: return 0;
 			}
 		}
 	}

@@ -1,7 +1,8 @@
 using System;
-using DOL.AI.Brain;
+using Core.GS.AI;
+using Core.GS.Enums;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The critical hit chance calculator. Returns 0 .. 100 chance.

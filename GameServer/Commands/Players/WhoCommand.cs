@@ -1,8 +1,14 @@
 using System;
 using System.Collections;
 using System.Text;
+using Core.Base.Enums;
+using Core.GS.Crafting;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&who",
@@ -302,7 +308,7 @@ public class WhoCommand : ACommandHandler, ICommandHandler
 		{
 			result.Append(" <Admin>");
 		}
-		if (ServerProperties.Properties.ALLOW_CHANGE_LANGUAGE)
+		if (ServerProperty.ALLOW_CHANGE_LANGUAGE)
 		{
 			result.Append(" <" + player.Client.Account.Language + ">");
 		}

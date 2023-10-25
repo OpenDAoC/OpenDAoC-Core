@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Numerics;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Movement;
+using Core.Database.Enums;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS
+namespace Core.GS.ECS
 {
     public class NpcMovementComponent : MovementComponent
     {
@@ -40,7 +44,7 @@ namespace DOL.GS
         public bool IsMovingOnPath => IsSet(MovementType.ON_PATH);
         public bool IsNearSpawn => Owner.IsWithinRadius(Owner.SpawnPoint, 25);
         public bool IsAtTargetPosition => IsTargetPositionValid && TargetPosition.X == Owner.X && TargetPosition.Y == Owner.Y && TargetPosition.Z == Owner.Z;
-        public bool CanRoam => ServerProperties.Properties.ALLOW_ROAM && RoamingRange != 0 && string.IsNullOrWhiteSpace(PathID);
+        public bool CanRoam => ServerProperty.ALLOW_ROAM && RoamingRange != 0 && string.IsNullOrWhiteSpace(PathID);
 
         public NpcMovementComponent(GameNpc npcOwner) : base(npcOwner)
         {
@@ -111,7 +115,7 @@ namespace DOL.GS
                     TurnTo(targetPosition.X, targetPosition.Y);
 
                 _movementType |= MovementType.WALK_TO;
-                _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
+                _walkingToEstimatedArrivalTime = GameLoopMgr.GameLoopTime + ticksToArrive;
             }
             else
                 OnArrival();
@@ -327,7 +331,7 @@ namespace DOL.GS
                 if (IsMoving)
                     StopMoving();
 
-                return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
+                return ServerProperty.GAMENPC_FOLLOWCHECK_TIME;
             }
 
             GameLiving followLiving = FollowTarget as GameLiving;
@@ -363,13 +367,13 @@ namespace DOL.GS
                         long lastAttackTick = Owner.LastAttackTick;
                         long lastAttackedTick = Owner.LastAttackedByEnemyTick;
 
-                        if (GameLoop.GameLoopTime - lastAttackTick > duration &&
-                            GameLoop.GameLoopTime - lastAttackedTick > duration &&
+                        if (GameLoopMgr.GameLoopTime - lastAttackTick > duration &&
+                            GameLoopMgr.GameLoopTime - lastAttackedTick > duration &&
                             lastAttackedTick != 0)
                         {
                             Owner.LastAttackedByEnemyTickPvE = 0;
                             Owner.LastAttackedByEnemyTickPvP = 0;
-                            brain.FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+                            brain.FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
                             return 0;
                         }
                     }
@@ -387,7 +391,7 @@ namespace DOL.GS
                         targetPosition = new(newX, newY, newZ);
                         double followSpeed = Math.Max(Math.Min(MaxSpeed, Owner.GetDistance(targetPosition) * FOLLOW_SPEED_SCALAR), 50);
                         PathTo(targetPosition, (short) followSpeed);
-                        return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
+                        return ServerProperty.GAMENPC_FOLLOWCHECK_TIME;
                     }
                 }
             }
@@ -405,7 +409,7 @@ namespace DOL.GS
                     UpdateMovement(null, 0);
 
                 TurnTo(FollowTarget);
-                return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
+                return ServerProperty.GAMENPC_FOLLOWCHECK_TIME;
             }
 
             diffX = diffX / distance * minAllowedFollowDistance;
@@ -420,7 +424,7 @@ namespace DOL.GS
             else
                 PathTo(targetPosition, MaxSpeed);
 
-            return ServerProperties.Properties.GAMENPC_FOLLOWCHECK_TIME;
+            return ServerProperty.GAMENPC_FOLLOWCHECK_TIME;
         }
 
         private void OnArrival()
@@ -450,7 +454,7 @@ namespace DOL.GS
                     else
                     {
                         _movementType |= MovementType.AT_WAYPOINT;
-                        _stopAtWaypointUntil = GameLoop.GameLoopTime + CurrentWaypoint.WaitTime * 100;
+                        _stopAtWaypointUntil = GameLoopMgr.GameLoopTime + CurrentWaypoint.WaitTime * 100;
                     }
                 }
                 else
@@ -513,7 +517,7 @@ namespace DOL.GS
             Owner.X = Owner.X;
             Owner.Y = Owner.Y;
             Owner.Z = Owner.Z;
-            MovementStartTick = GameLoop.GameLoopTime;
+            MovementStartTick = GameLoopMgr.GameLoopTime;
 
             if (targetPosition == null)
                 IsTargetPositionValid = false;

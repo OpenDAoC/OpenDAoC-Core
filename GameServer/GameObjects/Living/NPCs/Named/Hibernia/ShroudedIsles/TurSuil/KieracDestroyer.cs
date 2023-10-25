@@ -1,10 +1,14 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Kierac the Destroyer
 public class KieracDestroyer : GameEpicBoss
@@ -78,7 +82,7 @@ public class KieracDestroyer : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -102,7 +106,7 @@ public class KieracDestroyer : GameEpicBoss
 		MaxSpeedBase = 250;
 		MaxDistance = 2500;
 		TetherRange = 1800;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 		template.AddNPCEquipment(EInventorySlot.TwoHandWeapon, 841, 0, 0, 0);
@@ -231,7 +235,7 @@ public class MasterOfPain : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -247,7 +251,7 @@ public class MasterOfPain : GameEpicBoss
 		Piety = npcTemplate.Piety;
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		Faction = FactionMgr.GetFactionByID(93);
 		Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));

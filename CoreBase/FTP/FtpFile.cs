@@ -1,13 +1,12 @@
-namespace DOL.FTP
+namespace Core.Base;
+
+/// <summary>
+/// This class represents a FTP file
+/// </summary>
+public class FtpFile
 {
 	/// <summary>
-	/// This class represents a FTP file
+	/// Sets the name of the file
 	/// </summary>
-	public class FtpFile
-	{
-		/// <summary>
-		/// Sets the name of the file
-		/// </summary>
-		public string Name { get; set; }
-	}
+	public string Name { get; set; }
 }

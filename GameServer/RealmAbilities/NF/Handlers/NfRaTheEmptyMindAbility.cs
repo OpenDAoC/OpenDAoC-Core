@@ -1,95 +1,98 @@
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class NfRaTheEmptyMindAbility : TimedRealmAbility
 {
-	public class NfRaTheEmptyMindAbility : TimedRealmAbility
+	public NfRaTheEmptyMindAbility(DbAbility dba, int level) : base(dba, level) { }
+
+	public override void Execute(GameLiving living)
 	{
-		public NfRaTheEmptyMindAbility(DbAbility dba, int level) : base(dba, level) { }
+		if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
-		public override void Execute(GameLiving living)
+		foreach (GamePlayer t_player in living.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 		{
-			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-
-			foreach (GamePlayer t_player in living.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
+			if (t_player == living && living is GamePlayer)
 			{
-				if (t_player == living && living is GamePlayer)
-				{
-					(living as GamePlayer).Out.SendMessage("You clear your mind and become more resistant to magic damage!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-				}
-				else
-				{
-					t_player.Out.SendMessage(living.Name + " casts a spell!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-				}
+				(living as GamePlayer).Out.SendMessage("You clear your mind and become more resistant to magic damage!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 			}
-
-            int effectiveness = GetEffectiveness();
-
-			//new TheEmptyMindEffect(effectiveness, GetDuration()).Start(living);
-			new StatBuffEcsSpellEffect(new EcsGameEffectInitParams(living, 30000, 1, CreateSpell(living)));
-			DisableSkill(living);
+			else
+			{
+				t_player.Out.SendMessage(living.Name + " casts a spell!", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+			}
 		}
 
-		public override int GetReUseDelay(int level)
-		{
-			return 600;
-		}
+        int effectiveness = GetEffectiveness();
 
-        protected virtual int GetDuration()
-        {
-            return 45000;
-        }
+		//new TheEmptyMindEffect(effectiveness, GetDuration()).Start(living);
+		new StatBuffEcsSpellEffect(new EcsGameEffectInitParams(living, 30000, 1, CreateSpell(living)));
+		DisableSkill(living);
+	}
 
-        protected virtual int GetEffectiveness()
+	public override int GetReUseDelay(int level)
+	{
+		return 600;
+	}
+
+    protected virtual int GetDuration()
+    {
+        return 45000;
+    }
+
+    protected virtual int GetEffectiveness()
+    {
+		if (ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
         {
-			if (ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+            switch (Level)
             {
-                switch (Level)
-                {
-                    case 1: return 10;
-                    case 2: return 15;
-                    case 3: return 20;
-                    case 4: return 25;
-                    case 5: return 30;
-                    default: return 0;
-                }
-            }
-            else
-            {
-                switch (Level)
-                {
-                    case 1: return 0;
-                    case 2: return 20;
-                    case 3: return 30;
-                    default: return 0;
-                }
+                case 1: return 10;
+                case 2: return 15;
+                case 3: return 20;
+                case 4: return 25;
+                case 5: return 30;
+                default: return 0;
             }
         }
-        
-        private SpellHandler CreateSpell(GameLiving caster)
+        else
         {
-	        DbSpell dbspell = new DbSpell();
-	        dbspell.Name = "The Empty Mind";
-	        dbspell.Icon = 7122;
-	        dbspell.ClientEffect = 7122;
-	        dbspell.Damage = 0;
-	        dbspell.DamageType = 0;
-	        dbspell.Target = "Self";
-	        dbspell.Radius = 0;
-	        dbspell.Type = ESpellType.AllMagicResistBuff.ToString();
-	        dbspell.Value = GetEffectiveness();
-	        dbspell.Duration = 30;
-	        dbspell.Pulse = 0;
-	        dbspell.PulsePower = 0;
-	        dbspell.Power = 0;
-	        dbspell.CastTime = 0;
-	        dbspell.EffectGroup = 0;
-	        dbspell.Frequency = 0;
-	        dbspell.Range = 1500;
-	        Spell spell = new Spell(dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
-	        SpellLine line = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
-	        return new SpellHandler(caster, spell, line);
+            switch (Level)
+            {
+                case 1: return 0;
+                case 2: return 20;
+                case 3: return 30;
+                default: return 0;
+            }
         }
+    }
+    
+    private SpellHandler CreateSpell(GameLiving caster)
+    {
+        DbSpell dbspell = new DbSpell();
+        dbspell.Name = "The Empty Mind";
+        dbspell.Icon = 7122;
+        dbspell.ClientEffect = 7122;
+        dbspell.Damage = 0;
+        dbspell.DamageType = 0;
+        dbspell.Target = "Self";
+        dbspell.Radius = 0;
+        dbspell.Type = ESpellType.AllMagicResistBuff.ToString();
+        dbspell.Value = GetEffectiveness();
+        dbspell.Duration = 30;
+        dbspell.Pulse = 0;
+        dbspell.PulsePower = 0;
+        dbspell.Power = 0;
+        dbspell.CastTime = 0;
+        dbspell.EffectGroup = 0;
+        dbspell.Frequency = 0;
+        dbspell.Range = 1500;
+        Spell spell = new Spell(dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
+        SpellLine line = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
+        return new SpellHandler(caster, spell, line);
     }
 }

@@ -3,16 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Effects;
+using Core.GS.Effects.Old;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
+using Core.GS.Languages;
+using Core.GS.Packets;
+using Core.GS.Packets.Server;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI
 {
     /// <summary>
     /// Standard brain for standard mobs
@@ -39,7 +44,7 @@ namespace DOL.AI.Brain
             FiniteStateMachine.Add(new StandardNpcStateRoaming(this));
             FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-            FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.WAKING_UP);
         }
 
         /// <summary>
@@ -129,7 +134,7 @@ namespace DOL.AI.Brain
                 if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
                     continue;
 
-                if (Properties.ALWAYS_CHECK_LOS)
+                if (ServerProperty.ALWAYS_CHECK_LOS)
                     // We don't know if the LoS check will be positive, so we have to ask other players
                     player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
                 else
@@ -153,7 +158,7 @@ namespace DOL.AI.Brain
                 if (npc is GameTaxi or GameTrainingDummy)
                     continue;
 
-                if (Properties.ALWAYS_CHECK_LOS)
+                if (ServerProperty.ALWAYS_CHECK_LOS)
                 {
                     // Check LoS if either the target or the current mob is a pet
                     if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
@@ -346,7 +351,7 @@ namespace DOL.AI.Brain
                     // P II: prevents 20% of aggro amount
                     // P III: prevents 30% of aggro amount
                     // guessed percentages, should never be higher than or equal to 50%
-                    int abilityLevel = protectSource.GetAbilityLevel(Abilities.Protect);
+                    int abilityLevel = protectSource.GetAbilityLevel(AbilityConstants.Protect);
                     int protectAmount = (int) (abilityLevel * 0.10 * aggroAmount);
 
                     if (protectAmount > 0)
@@ -435,7 +440,7 @@ namespace DOL.AI.Brain
             if (!IsActive)
                 return;
 
-            if (ECS.Debug.Diagnostics.AggroDebugEnabled)
+            if (Diagnostics.AggroDebugEnabled)
                 PrintAggroTable();
 
             Body.TargetObject = CalculateNextAttackTarget();
@@ -593,15 +598,15 @@ namespace DOL.AI.Brain
             if (!Body.IsAlive || Body.ObjectState != GameObject.eObjectState.Active)
                 return;
 
-            if (FiniteStateMachine.GetCurrentState() == FiniteStateMachine.GetState(EFSMStateType.PASSIVE))
+            if (FiniteStateMachine.GetCurrentState() == FiniteStateMachine.GetState(EFsmStateType.PASSIVE))
                 return;
 
             int damage = ad.Damage + ad.CriticalDamage + Math.Abs(ad.Modifier);
             ConvertDamageToAggroAmount(ad.Attacker, Math.Max(1, damage));
 
-            if (!Body.attackComponent.AttackState && FiniteStateMachine.GetCurrentState() != FiniteStateMachine.GetState(EFSMStateType.AGGRO))
+            if (!Body.attackComponent.AttackState && FiniteStateMachine.GetCurrentState() != FiniteStateMachine.GetState(EFsmStateType.AGGRO))
             {
-                FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+                FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
                 Think();
             }
         }
@@ -711,12 +716,12 @@ namespace DOL.AI.Brain
             // Check group first to minimize the number of HashSet.Add() calls
             if (puller.Group is GroupUtil group)
             {
-                if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && bg != null)
+                if (ServerProperty.BAF_MOBS_COUNT_BG_MEMBERS && bg != null)
                     countedAttackers = new HashSet<string>(); // We have to check for duplicates when counting attackers
 
-                if (!Properties.BAF_MOBS_ATTACK_PULLER)
+                if (!ServerProperty.BAF_MOBS_ATTACK_PULLER)
                 {
-                    if (Properties.BAF_MOBS_ATTACK_BG_MEMBERS && bg != null)
+                    if (ServerProperty.BAF_MOBS_ATTACK_BG_MEMBERS && bg != null)
                     {
                         // We need a large enough victims list for group and BG, and also need to check for duplicate victims
                         victims = new List<GamePlayer>(group.MemberCount + bg.PlayerCount - 1);
@@ -743,9 +748,9 @@ namespace DOL.AI.Brain
             }
 
             // Do we have to count BG members, or add them to victims list?
-            if (bg != null && (Properties.BAF_MOBS_COUNT_BG_MEMBERS || (Properties.BAF_MOBS_ATTACK_BG_MEMBERS && !Properties.BAF_MOBS_ATTACK_PULLER)))
+            if (bg != null && (ServerProperty.BAF_MOBS_COUNT_BG_MEMBERS || (ServerProperty.BAF_MOBS_ATTACK_BG_MEMBERS && !ServerProperty.BAF_MOBS_ATTACK_PULLER)))
             {
-                if (victims == null && Properties.BAF_MOBS_ATTACK_BG_MEMBERS && !Properties.BAF_MOBS_ATTACK_PULLER)
+                if (victims == null && ServerProperty.BAF_MOBS_ATTACK_BG_MEMBERS && !ServerProperty.BAF_MOBS_ATTACK_PULLER)
                     // Puller isn't in a group, so we have to create the victims list for the BG
                     victims = new List<GamePlayer>(bg.PlayerCount);
 
@@ -753,7 +758,7 @@ namespace DOL.AI.Brain
                 {
                     if (player2 != null && (player2.InternalID == puller.InternalID || player2.IsWithinRadius(puller, BAFPlayerRange, true)))
                     {
-                        if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && (countedAttackers == null || !countedAttackers.Contains(player2.InternalID)))
+                        if (ServerProperty.BAF_MOBS_COUNT_BG_MEMBERS && (countedAttackers == null || !countedAttackers.Contains(player2.InternalID)))
                             numAttackers++;
 
                         if (victims != null && (countedVictims == null || !countedVictims.Contains(player2.InternalID)))
@@ -766,8 +771,8 @@ namespace DOL.AI.Brain
                 // Player is alone
                 numAttackers = 1;
 
-            int percentBAF = Properties.BAF_INITIAL_CHANCE
-                + ((numAttackers - 1) * Properties.BAF_ADDITIONAL_CHANCE);
+            int percentBAF = ServerProperty.BAF_INITIAL_CHANCE
+                + ((numAttackers - 1) * ServerProperty.BAF_ADDITIONAL_CHANCE);
 
             int maxAdds = percentBAF / 100; // Multiple of 100 are guaranteed BAFs
 
@@ -850,7 +855,7 @@ namespace DOL.AI.Brain
                             Body.ControlledBrain != null &&
                             spell.SpellType == ESpellType.Heal &&
                             Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range &&
-                            Body.ControlledBrain.Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD &&
+                            Body.ControlledBrain.Body.HealthPercent < ServerProperty.NPC_HEAL_THRESHOLD &&
                             spell.Target != ESpellTarget.SELF)
                         {
                             spellsToCast.Add(spell);
@@ -1073,7 +1078,7 @@ namespace DOL.AI.Brain
                     if (spell.Target == ESpellTarget.SELF)
                     {
                         // if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
-                        if (Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD)
+                        if (Body.HealthPercent < ServerProperty.NPC_HEAL_THRESHOLD)
                         {
                             Body.TargetObject = Body;
                         }
@@ -1082,7 +1087,7 @@ namespace DOL.AI.Brain
                     }
 
                     // Chance to heal self when dropping below 30%, do NOT spam it.
-                    if (Body.HealthPercent < (Properties.NPC_HEAL_THRESHOLD / 2.0)
+                    if (Body.HealthPercent < (ServerProperty.NPC_HEAL_THRESHOLD / 2.0)
                         && Util.Chance(10) && spell.Target != ESpellTarget.PET)
                     {
                         Body.TargetObject = Body;
@@ -1091,7 +1096,7 @@ namespace DOL.AI.Brain
 
                     if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null
                         && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range
-                        && Body.ControlledBrain.Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD
+                        && Body.ControlledBrain.Body.HealthPercent < ServerProperty.NPC_HEAL_THRESHOLD
                         && spell.Target != ESpellTarget.SELF)
                     {
                         Body.TargetObject = Body.ControlledBrain.Body;

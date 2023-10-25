@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Reflection;
-using DOL.GS;
-using DOL.GS.ServerProperties;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class StandardNpcState : FsmState
 {
@@ -26,12 +30,12 @@ public class StandardNpcStateIdle : StandardNpcState
 {
     public StandardNpcStateIdle(StandardMobBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.IDLE;
+        StateType = EFsmStateType.IDLE;
     }
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is entering IDLE");
 
         base.Enter();
@@ -41,25 +45,25 @@ public class StandardNpcStateIdle : StandardNpcState
     {
         if (_brain.HasPatrolPath())
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.PATROLLING);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.PATROLLING);
             return;
         }
 
         if (_brain.Body.CanRoam)
         {
-            _brain.FiniteStateMachine.SetCurrentState( EFSMStateType.ROAMING);
+            _brain.FiniteStateMachine.SetCurrentState( EFsmStateType.ROAMING);
             return;
         }
 
         if (_brain.IsBeyondTetherRange())
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             return;
         }
 
         if (_brain.CheckProximityAggro())
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
             return;
         }
 
@@ -72,30 +76,30 @@ public class StandardNpcStateWakingUp : StandardNpcState
 {
     public StandardNpcStateWakingUp(StandardMobBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.WAKING_UP;
+        StateType = EFsmStateType.WAKING_UP;
     }
 
     public override void Think()
     {
         if (!_brain.Body.attackComponent.AttackState && _brain.Body.CanRoam)
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.ROAMING);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.ROAMING);
             return;
         }
 
         if (_brain.HasPatrolPath())
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.PATROLLING);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.PATROLLING);
             return;
         }
 
         if (_brain.CheckProximityAggro())
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
             return;
         }
 
-        _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.IDLE);
+        _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.IDLE);
         base.Think();
     }
 }
@@ -104,19 +108,19 @@ public class StandardNpcStateAggro : StandardNpcState
 {
     private const int LEAVE_WHEN_OUT_OF_COMBAT_FOR = 25000;
 
-    private long _aggroTime = GameLoop.GameLoopTime; // Used to prevent leaving on the first think tick, due to `InCombatInLast` returning false.
+    private long _aggroTime = GameLoopMgr.GameLoopTime; // Used to prevent leaving on the first think tick, due to `InCombatInLast` returning false.
 
     public StandardNpcStateAggro(StandardMobBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.AGGRO;
+        StateType = EFsmStateType.AGGRO;
     }
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is entering AGGRO");
 
-        _aggroTime = GameLoop.GameLoopTime;
+        _aggroTime = GameLoopMgr.GameLoopTime;
         base.Enter();
     }
 
@@ -131,14 +135,14 @@ public class StandardNpcStateAggro : StandardNpcState
 
     public override void Think()
     {
-        if (!_brain.HasAggro || (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && _aggroTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR <= GameLoop.GameLoopTime))
+        if (!_brain.HasAggro || (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && _aggroTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR <= GameLoopMgr.GameLoopTime))
         {
             if (!_brain.Body.IsMezzed && !_brain.Body.IsStunned)
             {
                 if (_brain.Body.CurrentWaypoint != null)
-                    _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.PATROLLING);
+                    _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.PATROLLING);
                 else
-                    _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+                    _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             }
 
             return;
@@ -159,12 +163,12 @@ public class StandardNpcStateRoaming : StandardNpcState
 
     public StandardNpcStateRoaming(StandardMobBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.ROAMING;
+        StateType = EFsmStateType.ROAMING;
     }
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is entering ROAM");
 
         base.Enter();
@@ -174,23 +178,23 @@ public class StandardNpcStateRoaming : StandardNpcState
     {
         if (_brain.IsBeyondTetherRange())
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             return;
         }
 
         if (_brain.CheckProximityAggro())
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
             return;
         }
 
         if (!_brain.Body.IsCasting)
         {
-            if (_lastRoamTick + ROAM_COOLDOWN <= GameLoop.GameLoopTime && Util.Chance(Properties.GAMENPC_RANDOMWALK_CHANCE))
+            if (_lastRoamTick + ROAM_COOLDOWN <= GameLoopMgr.GameLoopTime && Util.Chance(ServerProperty.GAMENPC_RANDOMWALK_CHANCE))
             {
                 _brain.Body.Roam(NpcMovementComponent.DEFAULT_WALK_SPEED);
                 _brain.Body.FireAmbientSentence(EAmbientNpcTrigger.roaming, _brain.Body);
-                _lastRoamTick = GameLoop.GameLoopTime;
+                _lastRoamTick = GameLoopMgr.GameLoopTime;
             }
         }
 
@@ -203,12 +207,12 @@ public class StandardNpcStateReturnToSpawn : StandardNpcState
 {
     public StandardNpcStateReturnToSpawn(StandardMobBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.RETURN_TO_SPAWN;
+        StateType = EFsmStateType.RETURN_TO_SPAWN;
     }
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is entering RETURN_TO_SPAWN");
 
         if (_brain.Body.WasStealthed)
@@ -226,14 +230,14 @@ public class StandardNpcStateReturnToSpawn : StandardNpcState
             (!_brain.Body.IsReturningToSpawnPoint) &&
             _brain.Body.CurrentSpeed == 0)
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.WAKING_UP);
             _brain.Body.TurnTo(_brain.Body.SpawnHeading);
             return;
         }
 
         if (_brain.Body.IsNearSpawn)
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.WAKING_UP);
             _brain.Body.TurnTo(_brain.Body.SpawnHeading);
             return;
         }
@@ -246,12 +250,12 @@ public class StandardNpcStatePatrolling : StandardNpcState
 {
     public StandardNpcStatePatrolling(StandardMobBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.PATROLLING;
+        StateType = EFsmStateType.PATROLLING;
     }
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} is PATROLLING");
 
         _brain.Body.MoveOnPath(_brain.Body.MaxSpeed);
@@ -263,12 +267,12 @@ public class StandardNpcStatePatrolling : StandardNpcState
     {
         if (_brain.IsBeyondTetherRange())
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
         }
 
         if (_brain.CheckProximityAggro())
         {
-            _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+            _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
             return;
         }
 
@@ -280,12 +284,12 @@ public class StandardNpcStateDead : StandardNpcState
 {
     public StandardNpcStateDead(StandardMobBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.DEAD;
+        StateType = EFsmStateType.DEAD;
     }
 
     public override void Enter()
     {
-        if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+        if (Diagnostics.StateMachineDebugEnabled)
             Console.WriteLine($"{_brain.Body} has entered DEAD state");
 
         _brain.ClearAggroList();
@@ -294,7 +298,7 @@ public class StandardNpcStateDead : StandardNpcState
 
     public override void Think()
     {
-        _brain.FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
+        _brain.FiniteStateMachine.SetCurrentState(EFsmStateType.WAKING_UP);
         base.Think();
     }
 }

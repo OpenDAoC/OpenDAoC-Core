@@ -1,6 +1,4 @@
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// DBalliance is table for alliance of guild

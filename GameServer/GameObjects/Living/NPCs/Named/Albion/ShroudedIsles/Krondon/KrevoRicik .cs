@@ -1,9 +1,15 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Krevo Ricik
 public class KrevoRicik : GameEpicBoss
@@ -37,7 +43,7 @@ public class KrevoRicik : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -74,7 +80,7 @@ public class KrevoRicik : GameEpicBoss
 		MaxSpeedBase = 250;
 		MaxDistance = 3500;
 		TetherRange = 3800;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		Faction = FactionMgr.GetFactionByID(8);
 		Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
@@ -100,7 +106,7 @@ public class KrevoRicik : GameEpicBoss
 #endregion Krevo Ricik
 
 #region Krevo adds
-public class KrevolAdd : GameEpicNPC
+public class KrevolAdd : GameEpicNpc
 {
 	public KrevolAdd() : base() { }
 
@@ -149,7 +155,7 @@ public class KrevolAdd : GameEpicNPC
 		Name = "forgoten ghost";
 		Size = (byte)(Util.Random(50, 70));
 		MaxSpeedBase = 250;
-		RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		Faction = FactionMgr.GetFactionByID(8);
 		Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));

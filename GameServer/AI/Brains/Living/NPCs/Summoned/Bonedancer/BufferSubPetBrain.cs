@@ -1,133 +1,130 @@
 using System.Reflection;
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI;
+
+public class BufferSubPetBrain : SubPetBrain
 {
 	/// <summary>
-	/// A brain that can be controlled
+	/// Defines a logger for this class.
 	/// </summary>
-	public class BufferSubPetBrain : SubPetBrain
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	/// <summary>
+	/// Constructs new controlled npc brain
+	/// </summary>
+	/// <param name="owner"></param>
+	public BufferSubPetBrain(GameLiving owner) : base(owner) { }
+
+	/// <summary>
+	/// Attack the target on command
+	/// </summary>
+	/// <param name="target"></param>
+	public override void Attack(GameObject target)
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		// Don't stop casting. Buffers should prioritize buffing.
+		// 'AttackMostWanted()' will be called automatically once the pet is done buffing.
+		if (m_orderAttackTarget == target)
+			return;
 
-		/// <summary>
-		/// Constructs new controlled npc brain
-		/// </summary>
-		/// <param name="owner"></param>
-		public BufferSubPetBrain(GameLiving owner) : base(owner) { }
+		m_orderAttackTarget = target as GameLiving;
+		FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
+	}
 
-		/// <summary>
-		/// Attack the target on command
-		/// </summary>
-		/// <param name="target"></param>
-		public override void Attack(GameObject target)
+	#region AI
+
+	/// <summary>
+	/// Checks the Abilities
+	/// </summary>
+	public override void CheckAbilities() { }
+
+	/// <summary>
+	/// Checks the Positive Spells.  Handles buffs, heals, etc.
+	/// </summary>
+	protected override bool CheckDefensiveSpells(Spell spell)
+	{
+		if (!CanCastDefensiveSpell(spell))
+			return false;
+
+		Body.TargetObject = null;
+		GamePlayer player;
+		GameLiving owner;
+
+		switch (spell.SpellType)
 		{
-			// Don't stop casting. Buffers should prioritize buffing.
-			// 'AttackMostWanted()' will be called automatically once the pet is done buffing.
-			if (m_orderAttackTarget == target)
-				return;
-
-			m_orderAttackTarget = target as GameLiving;
-			FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
-		}
-
-		#region AI
-
-		/// <summary>
-		/// Checks the Abilities
-		/// </summary>
-		public override void CheckAbilities() { }
-
-		/// <summary>
-		/// Checks the Positive Spells.  Handles buffs, heals, etc.
-		/// </summary>
-		protected override bool CheckDefensiveSpells(Spell spell)
-		{
-			if (!CanCastDefensiveSpell(spell))
-				return false;
-
-			Body.TargetObject = null;
-			GamePlayer player;
-			GameLiving owner;
-
-			switch (spell.SpellType)
-			{
-				#region Buffs
-				case ESpellType.CombatSpeedBuff:
-				case ESpellType.DamageShield:
-				case ESpellType.Bladeturn:
+			#region Buffs
+			case ESpellType.CombatSpeedBuff:
+			case ESpellType.DamageShield:
+			case ESpellType.Bladeturn:
+				{
+					if (!Body.IsAttacking)
 					{
-						if (!Body.IsAttacking)
+						//Buff self
+						if (!LivingHasEffect(Body, spell))
 						{
-							//Buff self
-							if (!LivingHasEffect(Body, spell))
-							{
-								Body.TargetObject = Body;
-								break;
-							}
+							Body.TargetObject = Body;
+							break;
+						}
 
-							if (spell.Target != ESpellTarget.SELF)
-							{
-								owner = (this as IControlledBrain).Owner;
+						if (spell.Target != ESpellTarget.SELF)
+						{
+							owner = (this as IControlledBrain).Owner;
 
-								//Buff owner
-								if (owner != null)
+							//Buff owner
+							if (owner != null)
+							{
+								player = GetPlayerOwner();
+
+								//Buff player
+								if (player != null)
 								{
-									player = GetPlayerOwner();
-
-									//Buff player
-									if (player != null)
+									if (!LivingHasEffect(player, spell))
 									{
-										if (!LivingHasEffect(player, spell))
-										{
-											Body.TargetObject = player;
-											break;
-										}
-									}
-
-									if (!LivingHasEffect(owner, spell))
-									{
-										Body.TargetObject = owner;
+										Body.TargetObject = player;
 										break;
 									}
-
-									//Buff other minions
-									foreach (IControlledBrain icb in ((GameNpc)owner).ControlledNpcList)
-									{
-										if (icb == null)
-											continue;
-										if (!LivingHasEffect(icb.Body, spell))
-										{
-											Body.TargetObject = icb.Body;
-											break;
-										}
-									}
-
 								}
+
+								if (!LivingHasEffect(owner, spell))
+								{
+									Body.TargetObject = owner;
+									break;
+								}
+
+								//Buff other minions
+								foreach (IControlledBrain icb in ((GameNpc)owner).ControlledNpcList)
+								{
+									if (icb == null)
+										continue;
+									if (!LivingHasEffect(icb.Body, spell))
+									{
+										Body.TargetObject = icb.Body;
+										break;
+									}
+								}
+
 							}
 						}
-						break;
 					}
-				#endregion
-			}
-
-			bool casted = false;
-
-			if (Body.TargetObject != null)
-				casted = Body.CastSpell(spell, m_mobSpellLine, true);
-
-			return casted;
+					break;
+				}
+			#endregion
 		}
 
-		/// <summary>
-		/// Checks Instant Spells.  Handles Taunts, shouts, stuns, etc.
-		/// </summary>
-		protected override bool CheckInstantSpells(Spell spell) { return false; }
+		bool casted = false;
 
-		#endregion
+		if (Body.TargetObject != null)
+			casted = Body.CastSpell(spell, m_mobSpellLine, true);
+
+		return casted;
 	}
+
+	/// <summary>
+	/// Checks Instant Spells.  Handles Taunts, shouts, stuns, etc.
+	/// </summary>
+	protected override bool CheckInstantSpells(Spell spell) { return false; }
+
+	#endregion
 }

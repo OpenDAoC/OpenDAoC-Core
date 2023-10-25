@@ -1,7 +1,11 @@
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Evern
 public class EvernBrain : EpicBossBrain

@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameLoop;
+using Core.GS.Players;
+using Core.GS.Server;
 
-namespace DOL.GS;
+namespace Core.GS.Scripts.Custom;
 
 public class BountyMgr
 {
@@ -20,8 +23,8 @@ public class BountyMgr
     private static int minBountyReward;
     private static int maxBountyReward;
 
-    private static long bountyDuration = Properties.BOUNTY_DURATION * 60000; // 60000ms = 1 minute
-    private static double bountyRate = Properties.BOUNTY_PAYOUT_RATE;
+    private static long bountyDuration = ServerProperty.BOUNTY_DURATION * 60000; // 60000ms = 1 minute
+    private static double bountyRate = ServerProperty.BOUNTY_PAYOUT_RATE;
 
     [ScriptLoadedEvent]
     public static void OnScriptLoaded(CoreEvent e, object sender, EventArgs args)
@@ -33,8 +36,8 @@ public class BountyMgr
 
     public BountyMgr()
     {
-        minBountyReward = Properties.BOUNTY_MIN_REWARD;
-        maxBountyReward = Properties.BOUNTY_MAX_REWARD;
+        minBountyReward = ServerProperty.BOUNTY_MIN_REWARD;
+        maxBountyReward = ServerProperty.BOUNTY_MAX_REWARD;
         ActiveBounties = new HybridDictionary();
         PlayerBounties = new List<BountyPoster>();
         ResetBounty();
@@ -207,7 +210,7 @@ public class BountyMgr
 
                     bp.Reward += amount;
                     bp.LastSeenZone = killed.CurrentZone;
-                    bp.PostedTime = GameLoop.GameLoopTime;
+                    bp.PostedTime = GameLoopMgr.GameLoopTime;
                     playerBountyFound = true;
                 }
 
@@ -410,7 +413,7 @@ public class BountyMgr
         
                 foreach (var bounty in activePosters)
                 {
-                    timeLeft = bountyDuration - (GameLoop.GameLoopTime - bounty.PostedTime);
+                    timeLeft = bountyDuration - (GameLoopMgr.GameLoopTime - bounty.PostedTime);
                     temp.Add(
                         $"{GlobalConstants.RealmToName(bounty.BountyRealm)} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
                 }
@@ -430,7 +433,7 @@ public class BountyMgr
                 if (bounty.BountyRealm != player.Realm) continue;
                 count++;
                 bountyAvailable = true;
-                timeLeft = bountyDuration - (GameLoop.GameLoopTime - bounty.PostedTime);
+                timeLeft = bountyDuration - (GameLoopMgr.GameLoopTime - bounty.PostedTime);
                 temp.Add(
                     $"{count} - {bounty.Target.Name} the {bounty.Target.PlayerClass.Name}, last seen in {bounty.LastSeenZone.Description} [{bounty.Reward}g - {TimeSpan.FromMilliseconds(timeLeft).Minutes}m {TimeSpan.FromMilliseconds(timeLeft).Seconds}s]");
             }

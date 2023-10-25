@@ -1,4 +1,7 @@
-namespace DOL.GS.Commands;
+using Core.GS.Enums;
+using Core.GS.Players;
+
+namespace Core.GS.Commands;
 
 [Command(
 	"&hascredit",

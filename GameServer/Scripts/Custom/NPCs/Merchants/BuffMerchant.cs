@@ -2,662 +2,668 @@
 using System.Collections;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Players;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS.Scripts.Custom;
+
+public class BuffMerchant : GameMerchant
 {
-	public class BuffMerchant : GameMerchant
+	#region BuffMerchant attrib/spells/casting
+	public BuffMerchant()
+		: base()
 	{
-		#region BuffMerchant attrib/spells/casting
-		public BuffMerchant()
-			: base()
-		{
-			Flags |= ENpcFlags.PEACE;
-		}
+		Flags |= ENpcFlags.PEACE;
+	}
 
-		public override int Concentration
+	public override int Concentration
+	{
+		get
 		{
-			get
-			{
-				return 10000;
-			}
+			return 10000;
 		}
+	}
 
-		public override int Mana
+	public override int Mana
+	{
+		get
 		{
-			get
-			{
-				return 10000;
-			}
+			return 10000;
 		}
+	}
 
-		private Queue m_buffs = new Queue();
-		private const int BUFFS_SPELL_DURATION = 7200;
-		private const bool BUFFS_PLAYER_PET = true;
+	private Queue m_buffs = new Queue();
+	private const int BUFFS_SPELL_DURATION = 7200;
+	private const bool BUFFS_PLAYER_PET = true;
 
-		public override bool AddToWorld()
-		{
-			Level = 50;
-			return base.AddToWorld();
-		}
-		public void BuffPlayer(GamePlayer player, Spell spell, SpellLine spellLine)
-		{
-			if (m_buffs == null) m_buffs = new Queue();
+	public override bool AddToWorld()
+	{
+		Level = 50;
+		return base.AddToWorld();
+	}
+	public void BuffPlayer(GamePlayer player, Spell spell, SpellLine spellLine)
+	{
+		if (m_buffs == null) m_buffs = new Queue();
 			
-			m_buffs.Enqueue(new Container(spell, spellLine, player));
+		m_buffs.Enqueue(new Container(spell, spellLine, player));
 
-			//don't forget his pet !
-			if(BUFFS_PLAYER_PET && player.ControlledBrain != null) 
-			{
-				if(player.ControlledBrain.Body != null) 
-				{
-					m_buffs.Enqueue(new Container(spell, spellLine, player.ControlledBrain.Body));
-				}
-			}
-
-			CastBuffs();
-
-		}
-		public void CastBuffs()
+		//don't forget his pet !
+		if(BUFFS_PLAYER_PET && player.ControlledBrain != null) 
 		{
-			Container con = null;
-			while (m_buffs.Count > 0)
+			if(player.ControlledBrain.Body != null) 
 			{
-				con = (Container)m_buffs.Dequeue();
-
-				ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(con.Target, con.Spell, con.SpellLine);
-
-				if (spellHandler != null)
-				{
-					spellHandler.StartSpell(con.Target);
-				}
+				m_buffs.Enqueue(new Container(spell, spellLine, player.ControlledBrain.Body));
 			}
 		}
 
-		#region SpellCasting
+		CastBuffs();
 
-		private static SpellLine m_MerchBaseSpellLine;
-		private static SpellLine m_MerchSpecSpellLine;
-		private static SpellLine m_MerchOtherSpellLine;
-
-		/// <summary>
-		/// Spell line used by Merchs
-		/// </summary>
-		public static SpellLine MerchBaseSpellLine
+	}
+	public void CastBuffs()
+	{
+		Container con = null;
+		while (m_buffs.Count > 0)
 		{
-			get
-			{
-				if (m_MerchBaseSpellLine == null)
-					m_MerchBaseSpellLine = new SpellLine("MerchBaseSpellLine", "BuffMerch Spells", "unknown", true);
+			con = (Container)m_buffs.Dequeue();
 
-				return m_MerchBaseSpellLine;
+			ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(con.Target, con.Spell, con.SpellLine);
+
+			if (spellHandler != null)
+			{
+				spellHandler.StartSpell(con.Target);
 			}
 		}
-		public static SpellLine MerchSpecSpellLine
-		{
-			get
-			{
-				if (m_MerchSpecSpellLine == null)
-					m_MerchSpecSpellLine = new SpellLine("MerchSpecSpellLine", "BuffMerch Spells", "unknown", false);
+	}
 
-				return m_MerchSpecSpellLine;
-			}
-		}
-		public static SpellLine MerchOtherSpellLine
+	#region SpellCasting
+
+	private static SpellLine m_MerchBaseSpellLine;
+	private static SpellLine m_MerchSpecSpellLine;
+	private static SpellLine m_MerchOtherSpellLine;
+
+	/// <summary>
+	/// Spell line used by Merchs
+	/// </summary>
+	public static SpellLine MerchBaseSpellLine
+	{
+		get
 		{
-			get
-			{
-				if (m_MerchOtherSpellLine == null)
-					m_MerchOtherSpellLine = new SpellLine("MerchOtherSpellLine", "BuffMerch Spells", "unknown", true);
+			if (m_MerchBaseSpellLine == null)
+				m_MerchBaseSpellLine = new SpellLine("MerchBaseSpellLine", "BuffMerch Spells", "unknown", true);
+
+			return m_MerchBaseSpellLine;
+		}
+	}
+	public static SpellLine MerchSpecSpellLine
+	{
+		get
+		{
+			if (m_MerchSpecSpellLine == null)
+				m_MerchSpecSpellLine = new SpellLine("MerchSpecSpellLine", "BuffMerch Spells", "unknown", false);
+
+			return m_MerchSpecSpellLine;
+		}
+	}
+	public static SpellLine MerchOtherSpellLine
+	{
+		get
+		{
+			if (m_MerchOtherSpellLine == null)
+				m_MerchOtherSpellLine = new SpellLine("MerchOtherSpellLine", "BuffMerch Spells", "unknown", true);
 				
-				return m_MerchOtherSpellLine;
-			}
+			return m_MerchOtherSpellLine;
 		}
+	}
 
-		private static Spell m_baseaf;
-		private static Spell m_basestr;
-		private static Spell m_basecon;
-		private static Spell m_basedex;
-		private static Spell m_strcon;
-		private static Spell m_dexqui;
-		private static Spell m_acuity;
-		private static Spell m_specaf;
-		private static Spell m_casterbaseaf;
-		private static Spell m_casterbasestr;
-		private static Spell m_casterbasecon;
-		private static Spell m_casterbasedex;
-		private static Spell m_casterstrcon;
-		private static Spell m_casterdexqui;
-		private static Spell m_casteracuity;
-		private static Spell m_casterspecaf;
-		private static Spell m_haste;
-		#region Non-live (commented out)
-		//private static Spell m_powereg;
-		//private static Spell m_dmgadd;
-		//private static Spell m_hpRegen;
-		//private static Spell m_heal;
-		#endregion None-live (commented out)
+	private static Spell m_baseaf;
+	private static Spell m_basestr;
+	private static Spell m_basecon;
+	private static Spell m_basedex;
+	private static Spell m_strcon;
+	private static Spell m_dexqui;
+	private static Spell m_acuity;
+	private static Spell m_specaf;
+	private static Spell m_casterbaseaf;
+	private static Spell m_casterbasestr;
+	private static Spell m_casterbasecon;
+	private static Spell m_casterbasedex;
+	private static Spell m_casterstrcon;
+	private static Spell m_casterdexqui;
+	private static Spell m_casteracuity;
+	private static Spell m_casterspecaf;
+	private static Spell m_haste;
+	#region Non-live (commented out)
+	//private static Spell m_powereg;
+	//private static Spell m_dmgadd;
+	//private static Spell m_hpRegen;
+	//private static Spell m_heal;
+	#endregion None-live (commented out)
 
-		#region Spells
+	#region Spells
 
-		/// <summary>
-		/// Merch Base AF buff (VERIFIED)
-		/// </summary>
-		public static Spell MerchBaseAFBuff
+	/// <summary>
+	/// Merch Base AF buff (VERIFIED)
+	/// </summary>
+	public static Spell MerchBaseAFBuff
+	{
+		get
 		{
-			get
+			if (m_baseaf == null)
 			{
-				if (m_baseaf == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1467;
-					spell.Icon = 1467;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 78; //Effective buff 58
-					spell.Name = "Armor of the Realm";
-					spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection againts some forms of attack. It acts in addition to any armor the target is wearing.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 88001;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.ArmorFactorBuff.ToString();
-					spell.EffectGroup = 1;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1467;
+				spell.Icon = 1467;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 78; //Effective buff 58
+				spell.Name = "Armor of the Realm";
+				spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection againts some forms of attack. It acts in addition to any armor the target is wearing.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 88001;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.ArmorFactorBuff.ToString();
+				spell.EffectGroup = 1;
 
-					m_baseaf = new Spell(spell, 50);
-				}
-				return m_baseaf;
+				m_baseaf = new Spell(spell, 50);
 			}
+			return m_baseaf;
 		}
-		/// <summary>
-		/// Merch Caster Base AF buff (VERIFIED)
-		/// </summary>
-		public static Spell casterMerchBaseAFBuff
+	}
+	/// <summary>
+	/// Merch Caster Base AF buff (VERIFIED)
+	/// </summary>
+	public static Spell casterMerchBaseAFBuff
+	{
+		get
 		{
-			get
+			if (m_casterbaseaf == null)
 			{
-				if (m_casterbaseaf == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1467;
-					spell.Icon = 1467;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 58; //Effective buff 58
-					spell.Name = "Armor of the Realm";
-					spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection againts some forms of attack. It acts in addition to any armor the target is wearing.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 89001;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.ArmorFactorBuff.ToString();
-					spell.EffectGroup = 1;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1467;
+				spell.Icon = 1467;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 58; //Effective buff 58
+				spell.Name = "Armor of the Realm";
+				spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection againts some forms of attack. It acts in addition to any armor the target is wearing.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 89001;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.ArmorFactorBuff.ToString();
+				spell.EffectGroup = 1;
 
-					m_casterbaseaf = new Spell(spell, 50);
-				}
-				return m_casterbaseaf;
+				m_casterbaseaf = new Spell(spell, 50);
 			}
+			return m_casterbaseaf;
 		}
-		/// <summary>
-		/// Merch Base Str buff (VERIFIED)
-		/// </summary>
-		public static Spell MerchStrBuff
+	}
+	/// <summary>
+	/// Merch Base Str buff (VERIFIED)
+	/// </summary>
+	public static Spell MerchStrBuff
+	{
+		get
 		{
-			get
+			if (m_basestr == null)
 			{
-				if (m_basestr == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1457;
-					spell.Icon = 1457;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 74; //effective buff 55
-					spell.Name = "Strength of the Realm";
-					spell.Description = "Increases target's Strength.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 88002;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.StrengthBuff.ToString();
-					spell.EffectGroup = 4;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1457;
+				spell.Icon = 1457;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 74; //effective buff 55
+				spell.Name = "Strength of the Realm";
+				spell.Description = "Increases target's Strength.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 88002;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.StrengthBuff.ToString();
+				spell.EffectGroup = 4;
 
-					m_basestr = new Spell(spell, 50);
-				}
-				return m_basestr;
+				m_basestr = new Spell(spell, 50);
 			}
+			return m_basestr;
 		}
-		/// <summary>
-		/// Merch Caster Base Str buff (VERIFIED)
-		/// </summary>
-		public static Spell casterMerchStrBuff
+	}
+	/// <summary>
+	/// Merch Caster Base Str buff (VERIFIED)
+	/// </summary>
+	public static Spell casterMerchStrBuff
+	{
+		get
 		{
-			get
+			if (m_casterbasestr == null)
 			{
-				if (m_casterbasestr == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1457;
-					spell.Icon = 1457;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 55; //effective buff 55
-					spell.Name = "Strength of the Realm";
-					spell.Description = "Increases target's Strength.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 89002;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.StrengthBuff.ToString();
-					spell.EffectGroup = 4;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1457;
+				spell.Icon = 1457;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 55; //effective buff 55
+				spell.Name = "Strength of the Realm";
+				spell.Description = "Increases target's Strength.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 89002;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.StrengthBuff.ToString();
+				spell.EffectGroup = 4;
 
-					m_casterbasestr = new Spell(spell, 50);
-				}
-				return m_casterbasestr;
+				m_casterbasestr = new Spell(spell, 50);
 			}
+			return m_casterbasestr;
 		}
-		/// <summary>
-		/// Merch Base Con buff (VERIFIED)
-		/// </summary>
-		public static Spell MerchConBuff
+	}
+	/// <summary>
+	/// Merch Base Con buff (VERIFIED)
+	/// </summary>
+	public static Spell MerchConBuff
+	{
+		get
 		{
-			get
+			if (m_basecon == null)
 			{
-				if (m_basecon == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1486;
-					spell.Icon = 1486;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 74; //effective buff 55
-					spell.Name = "Fortitude of the Realm";
-					spell.Description = "Increases target's Constitution.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 88003;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.ConstitutionBuff.ToString();
-					spell.EffectGroup = 201;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1486;
+				spell.Icon = 1486;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 74; //effective buff 55
+				spell.Name = "Fortitude of the Realm";
+				spell.Description = "Increases target's Constitution.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 88003;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.ConstitutionBuff.ToString();
+				spell.EffectGroup = 201;
 
-					m_basecon = new Spell(spell, 50);
-				}
-				return m_basecon;
+				m_basecon = new Spell(spell, 50);
 			}
+			return m_basecon;
 		}
-		/// <summary>
-		/// Merch Caster Base Con buff (VERIFIED)
-		/// </summary>
-		public static Spell casterMerchConBuff
+	}
+	/// <summary>
+	/// Merch Caster Base Con buff (VERIFIED)
+	/// </summary>
+	public static Spell casterMerchConBuff
+	{
+		get
 		{
-			get
+			if (m_casterbasecon == null)
 			{
-				if (m_casterbasecon == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1486;
-					spell.Icon = 1486;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 55; //effective buff 55
-					spell.Name = "Fortitude of the Realm";
-					spell.Description = "Increases target's Constitution.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 89003;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.ConstitutionBuff.ToString();
-					spell.EffectGroup = 201;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1486;
+				spell.Icon = 1486;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 55; //effective buff 55
+				spell.Name = "Fortitude of the Realm";
+				spell.Description = "Increases target's Constitution.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 89003;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.ConstitutionBuff.ToString();
+				spell.EffectGroup = 201;
 
-					m_casterbasecon = new Spell(spell, 50);
-				}
-				return m_casterbasecon;
+				m_casterbasecon = new Spell(spell, 50);
 			}
+			return m_casterbasecon;
 		}
-		/// <summary>
-		/// Merch Base Dex buff (VERIFIED)
-		/// </summary>
-		public static Spell MerchDexBuff
+	}
+	/// <summary>
+	/// Merch Base Dex buff (VERIFIED)
+	/// </summary>
+	public static Spell MerchDexBuff
+	{
+		get
 		{
-			get
+			if (m_basedex == null)
 			{
-				if (m_basedex == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1476;
-					spell.Icon = 1476;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 74; //effective buff 55
-					spell.Name = "Dexterity of the Realm";
-					spell.Description = "Increases Dexterity for a character.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 88004;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.DexterityBuff.ToString();
-					spell.EffectGroup = 202;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1476;
+				spell.Icon = 1476;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 74; //effective buff 55
+				spell.Name = "Dexterity of the Realm";
+				spell.Description = "Increases Dexterity for a character.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 88004;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.DexterityBuff.ToString();
+				spell.EffectGroup = 202;
 
-					m_basedex = new Spell(spell, 50);
-				}
-				return m_basedex;
+				m_basedex = new Spell(spell, 50);
 			}
+			return m_basedex;
 		}
-		/// <summary>
-		/// Merch Caster Base Dex buff (VERIFIED)
-		/// </summary>
-		public static Spell casterMerchDexBuff
+	}
+	/// <summary>
+	/// Merch Caster Base Dex buff (VERIFIED)
+	/// </summary>
+	public static Spell casterMerchDexBuff
+	{
+		get
 		{
-			get
+			if (m_casterbasedex == null)
 			{
-				if (m_casterbasedex == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1476;
-					spell.Icon = 1476;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 55; //effective buff 55
-					spell.Name = "Dexterity of the Realm";
-					spell.Description = "Increases Dexterity for a character.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 89004;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.DexterityBuff.ToString();
-					spell.EffectGroup = 202;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1476;
+				spell.Icon = 1476;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 55; //effective buff 55
+				spell.Name = "Dexterity of the Realm";
+				spell.Description = "Increases Dexterity for a character.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 89004;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.DexterityBuff.ToString();
+				spell.EffectGroup = 202;
 
-					m_casterbasedex = new Spell(spell, 50);
-				}
-				return m_casterbasedex;
+				m_casterbasedex = new Spell(spell, 50);
 			}
+			return m_casterbasedex;
 		}
-		/// <summary>
-		/// Merch Spec Str/Con buff (VERIFIED)
-		/// </summary>
-		public static Spell MerchStrConBuff
+	}
+	/// <summary>
+	/// Merch Spec Str/Con buff (VERIFIED)
+	/// </summary>
+	public static Spell MerchStrConBuff
+	{
+		get
 		{
-			get
+			if (m_strcon == null)
 			{
-				if (m_strcon == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1517;
-					spell.Icon = 1517;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 114; //effective buff 85
-					spell.Name = "Might of the Realm";
-					spell.Description = "Increases Str/Con for a character";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 88005;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.StrengthConstitutionBuff.ToString();
-					spell.EffectGroup = 204;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1517;
+				spell.Icon = 1517;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 114; //effective buff 85
+				spell.Name = "Might of the Realm";
+				spell.Description = "Increases Str/Con for a character";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 88005;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.StrengthConstitutionBuff.ToString();
+				spell.EffectGroup = 204;
 
-					m_strcon = new Spell(spell, 50);
-				}
-				return m_strcon;
+				m_strcon = new Spell(spell, 50);
 			}
+			return m_strcon;
 		}
-		/// <summary>
-		/// Merch Caster Spec Str/Con buff (VERIFIED)
-		/// </summary>
-		public static Spell casterMerchStrConBuff
+	}
+	/// <summary>
+	/// Merch Caster Spec Str/Con buff (VERIFIED)
+	/// </summary>
+	public static Spell casterMerchStrConBuff
+	{
+		get
 		{
-			get
+			if (m_casterstrcon == null)
 			{
-				if (m_casterstrcon == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1517;
-					spell.Icon = 1517;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 85; //effective buff 85
-					spell.Name = "Might of the Realm";
-					spell.Description = "Increases Str/Con for a character";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 89005;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.StrengthConstitutionBuff.ToString();
-					spell.EffectGroup = 204;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1517;
+				spell.Icon = 1517;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 85; //effective buff 85
+				spell.Name = "Might of the Realm";
+				spell.Description = "Increases Str/Con for a character";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 89005;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.StrengthConstitutionBuff.ToString();
+				spell.EffectGroup = 204;
 
-					m_casterstrcon = new Spell(spell, 50);
-				}
-				return m_casterstrcon;
+				m_casterstrcon = new Spell(spell, 50);
 			}
+			return m_casterstrcon;
 		}
-		/// <summary>
-		/// Merch Spec Dex/Qui buff (VERIFIED)
-		/// </summary>
-		public static Spell MerchDexQuiBuff
+	}
+	/// <summary>
+	/// Merch Spec Dex/Qui buff (VERIFIED)
+	/// </summary>
+	public static Spell MerchDexQuiBuff
+	{
+		get
 		{
-			get
+			if (m_dexqui == null)
 			{
-				if (m_dexqui == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1526;
-					spell.Icon = 1526;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 114; //effective buff 85
-					spell.Name = "Deftness of the Realm";
-					spell.Description = "Increases Dexterity and Quickness for a character.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 88006;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.DexterityQuicknessBuff.ToString();
-					spell.EffectGroup = 203;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1526;
+				spell.Icon = 1526;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 114; //effective buff 85
+				spell.Name = "Deftness of the Realm";
+				spell.Description = "Increases Dexterity and Quickness for a character.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 88006;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.DexterityQuicknessBuff.ToString();
+				spell.EffectGroup = 203;
 
-					m_dexqui = new Spell(spell, 50);
-				}
-				return m_dexqui;
+				m_dexqui = new Spell(spell, 50);
 			}
+			return m_dexqui;
 		}
-		/// <summary>
-		/// Merch Caster Spec Dex/Qui buff (VERIFIED)
-		/// </summary>
-		public static Spell casterMerchDexQuiBuff
+	}
+	/// <summary>
+	/// Merch Caster Spec Dex/Qui buff (VERIFIED)
+	/// </summary>
+	public static Spell casterMerchDexQuiBuff
+	{
+		get
 		{
-			get
+			if (m_casterdexqui == null)
 			{
-				if (m_casterdexqui == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1526;
-					spell.Icon = 1526;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 85; //effective buff 85
-					spell.Name = "Deftness of the Realm";
-					spell.Description = "Increases Dexterity and Quickness for a character.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 89006;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.DexterityQuicknessBuff.ToString();
-					spell.EffectGroup = 203;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1526;
+				spell.Icon = 1526;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 85; //effective buff 85
+				spell.Name = "Deftness of the Realm";
+				spell.Description = "Increases Dexterity and Quickness for a character.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 89006;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.DexterityQuicknessBuff.ToString();
+				spell.EffectGroup = 203;
 
-					m_casterdexqui = new Spell(spell, 50);
-				}
-				return m_casterdexqui;
+				m_casterdexqui = new Spell(spell, 50);
 			}
+			return m_casterdexqui;
 		}
-		/// <summary>
-		/// Merch Spec Acuity buff (VERIFIED)
-		/// </summary>
-		public static Spell MerchAcuityBuff
+	}
+	/// <summary>
+	/// Merch Spec Acuity buff (VERIFIED)
+	/// </summary>
+	public static Spell MerchAcuityBuff
+	{
+		get
 		{
-			get
+			if (m_acuity == null)
 			{
-				if (m_acuity == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1538;
-					spell.Icon = 1538;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 96; //effective buff 72;
-					spell.Name = "Acuity of the Realm";
-					spell.Description = "Increases Acuity (casting attribute) for a character.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 88007;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.AcuityBuff.ToString();
-					spell.EffectGroup = 200;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1538;
+				spell.Icon = 1538;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 96; //effective buff 72;
+				spell.Name = "Acuity of the Realm";
+				spell.Description = "Increases Acuity (casting attribute) for a character.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 88007;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.AcuityBuff.ToString();
+				spell.EffectGroup = 200;
 
-					m_acuity = new Spell(spell, 50);
-				}
-				return m_acuity;
+				m_acuity = new Spell(spell, 50);
 			}
+			return m_acuity;
 		}
-		/// <summary>
-		/// Merch Caster Spec Acuity buff (VERIFIED)
-		/// </summary>
-		public static Spell casterMerchAcuityBuff
+	}
+	/// <summary>
+	/// Merch Caster Spec Acuity buff (VERIFIED)
+	/// </summary>
+	public static Spell casterMerchAcuityBuff
+	{
+		get
 		{
-			get
+			if (m_casteracuity == null)
 			{
-				if (m_casteracuity == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1538;
-					spell.Icon = 1538;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 72; //effective buff 72;
-					spell.Name = "Acuity of the Realm";
-					spell.Description = "Increases Acuity (casting attribute) for a character.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 89007;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.AcuityBuff.ToString();
-					spell.EffectGroup = 200;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1538;
+				spell.Icon = 1538;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 72; //effective buff 72;
+				spell.Name = "Acuity of the Realm";
+				spell.Description = "Increases Acuity (casting attribute) for a character.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 89007;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.AcuityBuff.ToString();
+				spell.EffectGroup = 200;
 
-					m_casteracuity = new Spell(spell, 50);
-				}
-				return m_casteracuity;
+				m_casteracuity = new Spell(spell, 50);
 			}
+			return m_casteracuity;
 		}
-		/// <summary>
-		/// Merch Spec Af buff (VERIFIED)
-		/// </summary>
-		public static Spell MerchSpecAFBuff
+	}
+	/// <summary>
+	/// Merch Spec Af buff (VERIFIED)
+	/// </summary>
+	public static Spell MerchSpecAFBuff
+	{
+		get
 		{
-			get
+			if (m_specaf == null)
 			{
-				if (m_specaf == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1506;
-					spell.Icon = 1506;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 90; //effective buff 67
-					spell.Name = "Armor of the Realm";
-					spell.Description = "Adds to the recipient's Armor Factor (AF), resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 88014;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.ArmorFactorBuff.ToString();
-					spell.EffectGroup = 2;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1506;
+				spell.Icon = 1506;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 90; //effective buff 67
+				spell.Name = "Armor of the Realm";
+				spell.Description = "Adds to the recipient's Armor Factor (AF), resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 88014;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.ArmorFactorBuff.ToString();
+				spell.EffectGroup = 2;
 
-					m_specaf = new Spell(spell, 50);
-				}
-				return m_specaf;
+				m_specaf = new Spell(spell, 50);
 			}
+			return m_specaf;
 		}
-		/// <summary>
-		/// Merch Caster Spec Af buff (VERIFIED)
-		/// </summary>
-		public static Spell casterMerchSpecAFBuff
+	}
+	/// <summary>
+	/// Merch Caster Spec Af buff (VERIFIED)
+	/// </summary>
+	public static Spell casterMerchSpecAFBuff
+	{
+		get
 		{
-			get
+			if (m_casterspecaf == null)
 			{
-				if (m_casterspecaf == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 1506;
-					spell.Icon = 1506;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 67; //effective buff 67
-					spell.Name = "Armor of the Realm";
-					spell.Description = "Adds to the recipient's Armor Factor (AF), resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 89014;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.ArmorFactorBuff.ToString();
-					spell.EffectGroup = 2;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 1506;
+				spell.Icon = 1506;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 67; //effective buff 67
+				spell.Name = "Armor of the Realm";
+				spell.Description = "Adds to the recipient's Armor Factor (AF), resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 89014;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.ArmorFactorBuff.ToString();
+				spell.EffectGroup = 2;
 
-					m_casterspecaf = new Spell(spell, 50);
-				}
-				return m_casterspecaf;
+				m_casterspecaf = new Spell(spell, 50);
 			}
+			return m_casterspecaf;
 		}
-		/// <summary>
-		/// Merch Haste buff (VERIFIED)
-		/// </summary>
-		public static Spell MerchHasteBuff
+	}
+	/// <summary>
+	/// Merch Haste buff (VERIFIED)
+	/// </summary>
+	public static Spell MerchHasteBuff
+	{
+		get
 		{
-			get
+			if (m_haste == null)
 			{
-				if (m_haste == null)
-				{
-					DbSpell spell = new DbSpell();
-					spell.AllowAdd = false;
-					spell.CastTime = 0;
-					spell.Concentration = 1;
-					spell.ClientEffect = 407;
-					spell.Icon = 407;
-					spell.Duration = BUFFS_SPELL_DURATION;
-					spell.Value = 15;
-					spell.Name = "Haste of the Realm";
-					spell.Description = "Increases the target's combat speed.";
-					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
-					spell.SpellID = 88010;
-					spell.Target = "Realm";
-					spell.Type = ESpellType.CombatSpeedBuff.ToString();
-					spell.EffectGroup = 100;
+				DbSpell spell = new DbSpell();
+				spell.AllowAdd = false;
+				spell.CastTime = 0;
+				spell.Concentration = 1;
+				spell.ClientEffect = 407;
+				spell.Icon = 407;
+				spell.Duration = BUFFS_SPELL_DURATION;
+				spell.Value = 15;
+				spell.Name = "Haste of the Realm";
+				spell.Description = "Increases the target's combat speed.";
+				spell.Range = WorldMgr.VISIBILITY_DISTANCE;
+				spell.SpellID = 88010;
+				spell.Target = "Realm";
+				spell.Type = ESpellType.CombatSpeedBuff.ToString();
+				spell.EffectGroup = 100;
 					
-					m_haste = new Spell(spell, 50);
-				}
-				return m_haste;
+				m_haste = new Spell(spell, 50);
 			}
+			return m_haste;
 		}
-		#region Non-live (commented out)
-		/*
+	}
+	#region Non-live (commented out)
+	/*
 		/// <summary>
 		/// Merch Power Reg buff
 		/// </summary>
@@ -773,394 +779,394 @@ namespace DOL.GS
 			}
 		}
 		 */
-		#endregion Non-live (commented out)
+	#endregion Non-live (commented out)
 
-		#endregion Spells
+	#endregion Spells
 
-		#endregion SpellCasting
+	#endregion SpellCasting
 
-		private void SendReply(GamePlayer target, string msg)
+	private void SendReply(GamePlayer target, string msg)
+	{
+		target.Out.SendMessage(msg, EChatType.CT_System, EChatLoc.CL_PopupWindow);
+	}
+
+	public class Container
+	{
+		private Spell m_spell;
+		public Spell Spell
 		{
-			target.Out.SendMessage(msg, EChatType.CT_System, EChatLoc.CL_PopupWindow);
+			get { return m_spell; }
 		}
 
-		public class Container
+		private SpellLine m_spellLine;
+		public SpellLine SpellLine
 		{
-			private Spell m_spell;
-			public Spell Spell
-			{
-				get { return m_spell; }
-			}
-
-			private SpellLine m_spellLine;
-			public SpellLine SpellLine
-			{
-				get { return m_spellLine; }
-			}
-
-			private GameLiving m_target;
-			public GameLiving Target
-			{
-				get { return m_target; }
-				set { m_target = value; }
-			}
-			public Container(Spell spell, SpellLine spellLine, GameLiving target)
-			{
-				m_spell = spell;
-				m_spellLine = spellLine;
-				m_target = target;
-			}
+			get { return m_spellLine; }
 		}
 
-		public override EQuestIndicator GetQuestIndicator(GamePlayer player)
+		private GameLiving m_target;
+		public GameLiving Target
 		{
-			return EQuestIndicator.Lore;
+			get { return m_target; }
+			set { m_target = value; }
 		}
-		#endregion
+		public Container(Spell spell, SpellLine spellLine, GameLiving target)
+		{
+			m_spell = spell;
+			m_spellLine = spellLine;
+			m_target = target;
+		}
+	}
 
-		private bool isBounty;
+	public override EQuestIndicator GetQuestIndicator(GamePlayer player)
+	{
+		return EQuestIndicator.Lore;
+	}
+	#endregion
+
+	private bool isBounty;
 		
-		public override bool Interact(GamePlayer player)
-		{
-			TradeItems = new MerchantTradeItems("BuffTokens");
-			if (!base.Interact(player)) return false;
-			TurnTo(player, 10000);
-			player.Out.SendMessage("Greetings, " + player.Name + ". The King has instructed me to strengthen you so that you may defend the lands with valor. Simply hand me the token for the enhancement you desire, and I will empower you accordingly. Do you wish to purchase tokens with [Gold] or [Bounty Points]?", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-			isBounty = false;
-			SendMerchantWindow(player);
-			return true;
-		}
+	public override bool Interact(GamePlayer player)
+	{
+		TradeItems = new MerchantTradeItems("BuffTokens");
+		if (!base.Interact(player)) return false;
+		TurnTo(player, 10000);
+		player.Out.SendMessage("Greetings, " + player.Name + ". The King has instructed me to strengthen you so that you may defend the lands with valor. Simply hand me the token for the enhancement you desire, and I will empower you accordingly. Do you wish to purchase tokens with [Gold] or [Bounty Points]?", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+		isBounty = false;
+		SendMerchantWindow(player);
+		return true;
+	}
 
-		public override bool WhisperReceive(GameLiving source, string str)
-		{
-			if (!base.WhisperReceive(source, str))
-				return false;
-			GamePlayer player = source as GamePlayer;
-			if (player == null) return false;
+	public override bool WhisperReceive(GameLiving source, string str)
+	{
+		if (!base.WhisperReceive(source, str))
+			return false;
+		GamePlayer player = source as GamePlayer;
+		if (player == null) return false;
 
-			switch (str)
+		switch (str)
+		{
+			case "Gold":
 			{
-				case "Gold":
-					{
-						TurnTo(player, 10000);
-						isBounty = false;
-						TradeItems = new MerchantTradeItems("BuffTokens");
-						SendMerchantWindow(player);
-					}
-					break;
-				case "Bounty Points":
-					{
-						TurnTo(player, 10000);
-						isBounty = true;
-						TradeItems = new MerchantTradeItems("BPBuffTokens");
-						player.Out.SendMerchantWindow(TradeItems, EMerchantWindowType.Bp);
-					}
-					break;
+				TurnTo(player, 10000);
+				isBounty = false;
+				TradeItems = new MerchantTradeItems("BuffTokens");
+				SendMerchantWindow(player);
 			}
-			return true;
-		}
-
-		public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
-		{
-			if (isBounty == true) //...pay with Bounty Points.
+				break;
+			case "Bounty Points":
 			{
-				int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-				int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+				TurnTo(player, 10000);
+				isBounty = true;
+				TradeItems = new MerchantTradeItems("BPBuffTokens");
+				player.Out.SendMerchantWindow(TradeItems, EMerchantWindowType.Bp);
+			}
+				break;
+		}
+		return true;
+	}
 
-				DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
-				if (template == null) return;
+	public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+	{
+		if (isBounty == true) //...pay with Bounty Points.
+		{
+			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 
-				int amountToBuy = number;
-				if (template.PackSize > 0)
-					amountToBuy *= template.PackSize;
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
+			if (template == null) return;
 
-				if (amountToBuy <= 0) return;
+			int amountToBuy = number;
+			if (template.PackSize > 0)
+				amountToBuy *= template.PackSize;
 
-				long totalValue = number * (template.Price);
+			if (amountToBuy <= 0) return;
 
-				lock (player.Inventory)
+			long totalValue = number * (template.Price);
+
+			lock (player.Inventory)
+			{
+				if (player.BountyPoints < totalValue)
 				{
-					if (player.BountyPoints < totalValue)
-					{
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeedBP", totalValue), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-						return;
-					}
-					if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
-					{
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-						return;
-					}
-					InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
-
-					string message;
-					if (number > 1)
-						message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPiecesBP", totalValue, template.GetName(1, false));
-					else
-						message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtBP", template.GetName(1, false), totalValue);
-					player.BountyPoints -= totalValue;
-					player.Out.SendUpdatePoints();
-					player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeedBP", totalValue), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					return;
 				}
-			}
-			if (isBounty == false) //...pay with Money.
-			{
-				int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-				int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-
-				DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
-				if (template == null) return;
-
-				int amountToBuy = number;
-				if (template.PackSize > 0)
-					amountToBuy *= template.PackSize;
-
-				if (amountToBuy <= 0) return;
-
-				long totalValue = number * template.Price;
-
-				lock (player.Inventory)
+				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
 				{
-
-					if (player.GetCurrentMoney() < totalValue)
-					{
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-						return;
-					}
-
-					if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
-					{
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-						return;
-					}
-					InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
-
-					string message;
-					if (amountToBuy > 1)
-						message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), MoneyMgr.GetString(totalValue));
-					else
-						message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), MoneyMgr.GetString(totalValue));
-
-					if (!player.RemoveMoney(totalValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
-					{
-						throw new Exception("Money amount changed while adding items.");
-					}
-					InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, totalValue);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					return;
 				}
-			}
-			return;
-		}
+				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
 
-		#region GiveTokens
-		public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
+				string message;
+				if (number > 1)
+					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPiecesBP", totalValue, template.GetName(1, false));
+				else
+					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtBP", template.GetName(1, false), totalValue);
+				player.BountyPoints -= totalValue;
+				player.Out.SendUpdatePoints();
+				player.Out.SendMessage(message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+			}
+		}
+		if (isBounty == false) //...pay with Money.
 		{
-			GamePlayer t = source as GamePlayer;
+			int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+			int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
+
+			DbItemTemplate template = this.TradeItems.GetItem(pagenumber, (EMerchantWindowSlot)slotnumber);
+			if (template == null) return;
+
+			int amountToBuy = number;
+			if (template.PackSize > 0)
+				amountToBuy *= template.PackSize;
+
+			if (amountToBuy <= 0) return;
+
+			long totalValue = number * template.Price;
+
+			lock (player.Inventory)
+			{
+
+				if (player.GetCurrentMoney() < totalValue)
+				{
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", MoneyMgr.GetString(totalValue)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					return;
+				}
+
+				if (!player.Inventory.AddTemplate(GameInventoryItem.Create(template), amountToBuy, EInventorySlot.FirstBackpack, EInventorySlot.LastBackpack))
+				{
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.NotInventorySpace"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+					return;
+				}
+				InventoryLogging.LogInventoryAction(this, player, EInventoryActionType.Merchant, template, amountToBuy);
+
+				string message;
+				if (amountToBuy > 1)
+					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), MoneyMgr.GetString(totalValue));
+				else
+					message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), MoneyMgr.GetString(totalValue));
+
+				if (!player.RemoveMoney(totalValue, message, EChatType.CT_Merchant, EChatLoc.CL_SystemWindow))
+				{
+					throw new Exception("Money amount changed while adding items.");
+				}
+				InventoryLogging.LogInventoryAction(player, this, EInventoryActionType.Merchant, totalValue);
+			}
+		}
+		return;
+	}
+
+	#region GiveTokens
+	public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
+	{
+		GamePlayer t = source as GamePlayer;
 			
-			if (GetDistanceTo(t) > WorldMgr.INTERACT_DISTANCE)
+		if (GetDistanceTo(t) > WorldMgr.INTERACT_DISTANCE)
+		{
+			((GamePlayer)source).Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			return false;
+		}
+		if (t != null && item != null)
+		{
+			if (item.Id_nb == "Full_Buffs_Token" || item.Id_nb == "BPFull_Buffs_Token")
 			{
-				((GamePlayer)source).Out.SendMessage("You are too far away to give anything to " + GetName(0, false) + ".", EChatType.CT_System, EChatLoc.CL_SystemWindow);
-				return false;
-			}
-			if (t != null && item != null)
-			{
-				if (item.Id_nb == "Full_Buffs_Token" || item.Id_nb == "BPFull_Buffs_Token")
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
 				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchBaseAFBuff, MerchBaseSpellLine);
-						BuffPlayer(t, casterMerchStrBuff, MerchBaseSpellLine);
-						BuffPlayer(t, casterMerchDexBuff, MerchBaseSpellLine);
-						BuffPlayer(t, casterMerchConBuff, MerchBaseSpellLine);
-						BuffPlayer(t, casterMerchSpecAFBuff, MerchSpecSpellLine);
-						BuffPlayer(t, casterMerchStrConBuff, MerchSpecSpellLine);
-						BuffPlayer(t, casterMerchDexQuiBuff, MerchSpecSpellLine);
-						BuffPlayer(t, casterMerchAcuityBuff, MerchSpecSpellLine);
-						BuffPlayer(t, MerchHasteBuff, MerchSpecSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchBaseAFBuff, MerchBaseSpellLine);
-						BuffPlayer(t, MerchStrBuff, MerchBaseSpellLine);
-						BuffPlayer(t, MerchDexBuff, MerchBaseSpellLine);
-						BuffPlayer(t, MerchConBuff, MerchBaseSpellLine);
-						BuffPlayer(t, MerchSpecAFBuff, MerchSpecSpellLine);
-						BuffPlayer(t, MerchStrConBuff, MerchSpecSpellLine);
-						BuffPlayer(t, MerchDexQuiBuff, MerchSpecSpellLine);
-						BuffPlayer(t, MerchAcuityBuff, MerchSpecSpellLine);
-						BuffPlayer(t, MerchHasteBuff, MerchSpecSpellLine);
-					}
-					#region Non-live (commented out)
-					//BuffPlayer(t, MerchPoweregBuff, MerchSpecSpellLine);
-					//BuffPlayer(t, MerchDmgaddBuff, MerchSpecSpellLine);
-					//BuffPlayer(t, MerchHPRegenBuff, MerchSpecSpellLine);
-					//BuffPlayer(t, MerchEndRegenBuff, MerchSpecSpellLine);
-					//BuffPlayer(t, MerchHealBuff, MerchSpecSpellLine);
-					#endregion Non-live (commented out)
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-				}
-				if (item.Id_nb == "Specialization_Buffs_Token" || item.Id_nb == "BPSpecialization_Buffs_Token")
-				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchSpecAFBuff, MerchSpecSpellLine);
-						BuffPlayer(t, casterMerchStrConBuff, MerchSpecSpellLine);
-						BuffPlayer(t, casterMerchDexQuiBuff, MerchSpecSpellLine);
-						BuffPlayer(t, casterMerchAcuityBuff, MerchSpecSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchSpecAFBuff, MerchSpecSpellLine);
-						BuffPlayer(t, MerchStrConBuff, MerchSpecSpellLine);
-						BuffPlayer(t, MerchDexQuiBuff, MerchSpecSpellLine);
-						BuffPlayer(t, MerchAcuityBuff, MerchSpecSpellLine);
-					}
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-
-				}
-				if (item.Id_nb == "Baseline_Buffs_Token" || item.Id_nb == "BPBaseline_Buffs_Token")
-				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchBaseAFBuff, MerchBaseSpellLine);
-						BuffPlayer(t, casterMerchStrBuff, MerchBaseSpellLine);
-						BuffPlayer(t, casterMerchDexBuff, MerchBaseSpellLine);
-						BuffPlayer(t, casterMerchConBuff, MerchBaseSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchBaseAFBuff, MerchBaseSpellLine);
-						BuffPlayer(t, MerchStrBuff, MerchBaseSpellLine);
-						BuffPlayer(t, MerchDexBuff, MerchBaseSpellLine);
-						BuffPlayer(t, MerchConBuff, MerchBaseSpellLine);
-					}
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-				}
-				if (item.Id_nb == "Strength_Buff_Token" || item.Id_nb == "BPStrength_Buff_Token")
-				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchStrBuff, MerchBaseSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchStrBuff, MerchBaseSpellLine);
-					}
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-				}
-				if (item.Id_nb == "Fortification_Buff_Token" || item.Id_nb == "BPFortification_Buff_Token")
-				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchConBuff, MerchBaseSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchConBuff, MerchBaseSpellLine);
-					}
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-				}
-				if (item.Id_nb == "Dexterity_Buff_Token" || item.Id_nb == "BPDexterity_Buff_Token")
-				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchDexBuff, MerchBaseSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchDexBuff, MerchBaseSpellLine);
-					}
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-				}
-				if (item.Id_nb == "Armor_Buff_Token" || item.Id_nb == "BPArmor_Buff_Token")
-				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchBaseAFBuff, MerchBaseSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchBaseAFBuff, MerchBaseSpellLine);
-					}
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-				}
-				if (item.Id_nb == "StrCon_Buff_Token" || item.Id_nb == "BPStrCon_Buff_Token")
-				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchStrConBuff, MerchSpecSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchStrConBuff, MerchSpecSpellLine);
-					}
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-				}
-				if (item.Id_nb == "DexQui_Buff_Token" || item.Id_nb == "BPDexQui_Buff_Token")
-				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchDexQuiBuff, MerchSpecSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchDexQuiBuff, MerchSpecSpellLine);
-					}
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-				}
-				if (item.Id_nb == "Acu_Buff_Token" || item.Id_nb == "BPAcu_Buff_Token")
-				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchAcuityBuff, MerchSpecSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchAcuityBuff, MerchSpecSpellLine);
-					}
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-				}
-				if (item.Id_nb == "SpecAF_Buff_Token" || item.Id_nb == "BPSpecAF_Buff_Token")
-				{
-					if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
-					{
-						BuffPlayer(t, casterMerchSpecAFBuff, MerchSpecSpellLine);
-					}
-					else
-					{
-						BuffPlayer(t, MerchSpecAFBuff, MerchSpecSpellLine);
-					}
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
-				}
-				if (item.Id_nb == "Haste_Buff_Token" || item.Id_nb == "BPHaste_Buff_Token")
-				{
+					BuffPlayer(t, casterMerchBaseAFBuff, MerchBaseSpellLine);
+					BuffPlayer(t, casterMerchStrBuff, MerchBaseSpellLine);
+					BuffPlayer(t, casterMerchDexBuff, MerchBaseSpellLine);
+					BuffPlayer(t, casterMerchConBuff, MerchBaseSpellLine);
+					BuffPlayer(t, casterMerchSpecAFBuff, MerchSpecSpellLine);
+					BuffPlayer(t, casterMerchStrConBuff, MerchSpecSpellLine);
+					BuffPlayer(t, casterMerchDexQuiBuff, MerchSpecSpellLine);
+					BuffPlayer(t, casterMerchAcuityBuff, MerchSpecSpellLine);
 					BuffPlayer(t, MerchHasteBuff, MerchSpecSpellLine);
-					t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-					t.Inventory.RemoveItem(item);
-					return true;
+				}
+				else
+				{
+					BuffPlayer(t, MerchBaseAFBuff, MerchBaseSpellLine);
+					BuffPlayer(t, MerchStrBuff, MerchBaseSpellLine);
+					BuffPlayer(t, MerchDexBuff, MerchBaseSpellLine);
+					BuffPlayer(t, MerchConBuff, MerchBaseSpellLine);
+					BuffPlayer(t, MerchSpecAFBuff, MerchSpecSpellLine);
+					BuffPlayer(t, MerchStrConBuff, MerchSpecSpellLine);
+					BuffPlayer(t, MerchDexQuiBuff, MerchSpecSpellLine);
+					BuffPlayer(t, MerchAcuityBuff, MerchSpecSpellLine);
+					BuffPlayer(t, MerchHasteBuff, MerchSpecSpellLine);
 				}
 				#region Non-live (commented out)
-				/*
+				//BuffPlayer(t, MerchPoweregBuff, MerchSpecSpellLine);
+				//BuffPlayer(t, MerchDmgaddBuff, MerchSpecSpellLine);
+				//BuffPlayer(t, MerchHPRegenBuff, MerchSpecSpellLine);
+				//BuffPlayer(t, MerchEndRegenBuff, MerchSpecSpellLine);
+				//BuffPlayer(t, MerchHealBuff, MerchSpecSpellLine);
+				#endregion Non-live (commented out)
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			if (item.Id_nb == "Specialization_Buffs_Token" || item.Id_nb == "BPSpecialization_Buffs_Token")
+			{
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+				{
+					BuffPlayer(t, casterMerchSpecAFBuff, MerchSpecSpellLine);
+					BuffPlayer(t, casterMerchStrConBuff, MerchSpecSpellLine);
+					BuffPlayer(t, casterMerchDexQuiBuff, MerchSpecSpellLine);
+					BuffPlayer(t, casterMerchAcuityBuff, MerchSpecSpellLine);
+				}
+				else
+				{
+					BuffPlayer(t, MerchSpecAFBuff, MerchSpecSpellLine);
+					BuffPlayer(t, MerchStrConBuff, MerchSpecSpellLine);
+					BuffPlayer(t, MerchDexQuiBuff, MerchSpecSpellLine);
+					BuffPlayer(t, MerchAcuityBuff, MerchSpecSpellLine);
+				}
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+
+			}
+			if (item.Id_nb == "Baseline_Buffs_Token" || item.Id_nb == "BPBaseline_Buffs_Token")
+			{
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+				{
+					BuffPlayer(t, casterMerchBaseAFBuff, MerchBaseSpellLine);
+					BuffPlayer(t, casterMerchStrBuff, MerchBaseSpellLine);
+					BuffPlayer(t, casterMerchDexBuff, MerchBaseSpellLine);
+					BuffPlayer(t, casterMerchConBuff, MerchBaseSpellLine);
+				}
+				else
+				{
+					BuffPlayer(t, MerchBaseAFBuff, MerchBaseSpellLine);
+					BuffPlayer(t, MerchStrBuff, MerchBaseSpellLine);
+					BuffPlayer(t, MerchDexBuff, MerchBaseSpellLine);
+					BuffPlayer(t, MerchConBuff, MerchBaseSpellLine);
+				}
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			if (item.Id_nb == "Strength_Buff_Token" || item.Id_nb == "BPStrength_Buff_Token")
+			{
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+				{
+					BuffPlayer(t, casterMerchStrBuff, MerchBaseSpellLine);
+				}
+				else
+				{
+					BuffPlayer(t, MerchStrBuff, MerchBaseSpellLine);
+				}
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			if (item.Id_nb == "Fortification_Buff_Token" || item.Id_nb == "BPFortification_Buff_Token")
+			{
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+				{
+					BuffPlayer(t, casterMerchConBuff, MerchBaseSpellLine);
+				}
+				else
+				{
+					BuffPlayer(t, MerchConBuff, MerchBaseSpellLine);
+				}
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			if (item.Id_nb == "Dexterity_Buff_Token" || item.Id_nb == "BPDexterity_Buff_Token")
+			{
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+				{
+					BuffPlayer(t, casterMerchDexBuff, MerchBaseSpellLine);
+				}
+				else
+				{
+					BuffPlayer(t, MerchDexBuff, MerchBaseSpellLine);
+				}
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			if (item.Id_nb == "Armor_Buff_Token" || item.Id_nb == "BPArmor_Buff_Token")
+			{
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+				{
+					BuffPlayer(t, casterMerchBaseAFBuff, MerchBaseSpellLine);
+				}
+				else
+				{
+					BuffPlayer(t, MerchBaseAFBuff, MerchBaseSpellLine);
+				}
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			if (item.Id_nb == "StrCon_Buff_Token" || item.Id_nb == "BPStrCon_Buff_Token")
+			{
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+				{
+					BuffPlayer(t, casterMerchStrConBuff, MerchSpecSpellLine);
+				}
+				else
+				{
+					BuffPlayer(t, MerchStrConBuff, MerchSpecSpellLine);
+				}
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			if (item.Id_nb == "DexQui_Buff_Token" || item.Id_nb == "BPDexQui_Buff_Token")
+			{
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+				{
+					BuffPlayer(t, casterMerchDexQuiBuff, MerchSpecSpellLine);
+				}
+				else
+				{
+					BuffPlayer(t, MerchDexQuiBuff, MerchSpecSpellLine);
+				}
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			if (item.Id_nb == "Acu_Buff_Token" || item.Id_nb == "BPAcu_Buff_Token")
+			{
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+				{
+					BuffPlayer(t, casterMerchAcuityBuff, MerchSpecSpellLine);
+				}
+				else
+				{
+					BuffPlayer(t, MerchAcuityBuff, MerchSpecSpellLine);
+				}
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			if (item.Id_nb == "SpecAF_Buff_Token" || item.Id_nb == "BPSpecAF_Buff_Token")
+			{
+				if (t.PlayerClass.ClassType == EPlayerClassType.ListCaster)
+				{
+					BuffPlayer(t, casterMerchSpecAFBuff, MerchSpecSpellLine);
+				}
+				else
+				{
+					BuffPlayer(t, MerchSpecAFBuff, MerchSpecSpellLine);
+				}
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			if (item.Id_nb == "Haste_Buff_Token" || item.Id_nb == "BPHaste_Buff_Token")
+			{
+				BuffPlayer(t, MerchHasteBuff, MerchSpecSpellLine);
+				t.Out.SendMessage("Fight well, " + t.RaceName + ".", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+				t.Inventory.RemoveItem(item);
+				return true;
+			}
+			#region Non-live (commented out)
+			/*
 				if (item.Id_nb == "PowerReg_Buff_Token")
 				{
 					BuffPlayer(t, MerchPoweregBuff, MerchSpecSpellLine);
@@ -1183,10 +1189,10 @@ namespace DOL.GS
 					return true;
 				}
 				 */
-				#endregion Non-live (commented out)
-			}
-			#region Non-live (commented out)
-			/*if (item.Id_nb == "EnduReg_Buff_Token")
+			#endregion Non-live (commented out)
+		}
+		#region Non-live (commented out)
+		/*if (item.Id_nb == "EnduReg_Buff_Token")
 			{
 				BuffPlayer(t, MerchEndRegenBuff, MerchSpecSpellLine);
 				t.Out.SendMessage("Fight well, " + t.RaceName + ".", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
@@ -1213,257 +1219,256 @@ namespace DOL.GS
 				return true;
 			}
 			 */
-			#endregion Non-live (commented out)
-			return base.ReceiveItem(source, item);
-		}
+		#endregion Non-live (commented out)
+		return base.ReceiveItem(source, item);
 	}
 }
+
 #endregion
 
 #region Tokens
-namespace DOL.GS.Items
+
+public class BuffTokens
 {
-	public class BuffTokens
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	[GameServerStartedEvent]
+	public static void OnServerStartup(CoreEvent e, object sender, EventArgs args)
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-		[GameServerStartedEvent]
-		public static void OnServerStartup(CoreEvent e, object sender, EventArgs args)
+		if (!ServerProperty.LOAD_BUFF_TOKENS)
+			return;
+			
+		DbItemTemplate item;
+			
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Full_Buffs_Token");
+		if (item == null)
 		{
-			if (!ServerProperties.Properties.LOAD_BUFF_TOKENS)
-				return;
+			item = new DbItemTemplate();
+			item.Id_nb = "Full_Buffs_Token";
+			item.Name = "Full Buffs Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 320000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 			
-			DbItemTemplate item;
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Specialization_Buffs_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "Specialization_Buffs_Token";
+			item.Name = "Specialization Buffs Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 240000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 			
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Full_Buffs_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "Full_Buffs_Token";
-				item.Name = "Full Buffs Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 320000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Baseline_Buffs_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "Baseline_Buffs_Token";
+			item.Name = "Baseline Buffs Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 80000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 			
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Specialization_Buffs_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "Specialization_Buffs_Token";
-				item.Name = "Specialization Buffs Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 240000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-			
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Baseline_Buffs_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "Baseline_Buffs_Token";
-				item.Name = "Baseline Buffs Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 80000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-			
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Strength_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "Strength_Buff_Token";
-				item.Name = "Strength Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 20000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Strength_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "Strength_Buff_Token";
+			item.Name = "Strength Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 20000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Fortification_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "Fortification_Buff_Token";
-				item.Name = "Fortification Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 20000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Fortification_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "Fortification_Buff_Token";
+			item.Name = "Fortification Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 20000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 			
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Dexterity_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "Dexterity_Buff_Token";
-				item.Name = "Dexertity Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 20000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Dexterity_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "Dexterity_Buff_Token";
+			item.Name = "Dexertity Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 20000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Armor_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "Armor_Buff_Token";
-				item.Name = "Armor Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 20000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Armor_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "Armor_Buff_Token";
+			item.Name = "Armor Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 20000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("StrCon_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "StrCon_Buff_Token";
-				item.Name = "Might Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 40000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("StrCon_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "StrCon_Buff_Token";
+			item.Name = "Might Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 40000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 			
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("DexQui_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "DexQui_Buff_Token";
-				item.Name = "Deftness Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 40000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("DexQui_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "DexQui_Buff_Token";
+			item.Name = "Deftness Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 40000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 			
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Acu_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "Acu_Buff_Token";
-				item.Name = "Enlightenment Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 40000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Acu_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "Acu_Buff_Token";
+			item.Name = "Enlightenment Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 40000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 			
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("SpecAF_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "SpecAF_Buff_Token";
-				item.Name = "Barrier Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 60000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("SpecAF_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "SpecAF_Buff_Token";
+			item.Name = "Barrier Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 60000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
 
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Haste_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "Haste_Buff_Token";
-				item.Name = "Haste Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 60000;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-			#region Non-live (commented out)
-			/*
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("Haste_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "Haste_Buff_Token";
+			item.Name = "Haste Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 60000;
+			item.Weight = 1;
+			item.PackageID = "BuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+		#region Non-live (commented out)
+		/*
 			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Otherline_Buffs_Token");
 			if (item == null)
 			{
@@ -1578,368 +1583,368 @@ namespace DOL.GS.Items
 					log.Debug("Added " + item.Id_nb);
 			}
 			 */
-			#endregion Non-live (commented out)
-		}
-	}
-	public class BPBuffTokens
-	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-		[GameServerStartedEvent]
-		public static void OnServerStartup(CoreEvent e, object sender, EventArgs args)
-		{
-			if (!ServerProperties.Properties.LOAD_BUFF_TOKENS)
-				return;
-			
-			DbItemTemplate item;
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPFull_Buffs_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPFull_Buffs_Token";
-				item.Name = "Full Buffs Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 32;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPSpecialization_Buffs_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPSpecialization_Buffs_Token";
-				item.Name = "Specialization Buffs Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 24;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPBaseline_Buffs_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPBaseline_Buffs_Token";
-				item.Name = "Baseline Buffs Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 8;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPStrength_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPStrength_Buff_Token";
-				item.Name = "Strength Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 2;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPFortification_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPFortification_Buff_Token";
-				item.Name = "Fortification Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 2;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPDexterity_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPDexterity_Buff_Token";
-				item.Name = "Dexertity Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 2;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPArmor_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPArmor_Buff_Token";
-				item.Name = "Armor Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 2;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPStrCon_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPStrCon_Buff_Token";
-				item.Name = "Might Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 4;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPDexQui_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPDexQui_Buff_Token";
-				item.Name = "Deftness Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 4;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPAcu_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPAcu_Buff_Token";
-				item.Name = "Enlightenment Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 4;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPSpecAF_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPSpecAF_Buff_Token";
-				item.Name = "Barrier Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 6;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPHaste_Buff_Token");
-			if (item == null)
-			{
-				item = new DbItemTemplate();
-				item.Id_nb = "BPHaste_Buff_Token";
-				item.Name = "Haste Buff Token";
-				item.Level = 1;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 6;
-				item.Weight = 1;
-				item.PackageID = "BPBuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-			#region Non-live (commented out)
-			/*
-			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Otherline_Buffs_Token");
-			if (item == null)
-			{
-				item = new ItemTemplate();
-				item.Id_nb = "Otherline_Buffs_Token";
-				item.Name = "Extended Buffs Token";
-				item.Level = 50;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 0; // Change to your pricing
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-			
-			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("DmgAdd_Buff_Token");
-			if (item == null)
-			{
-				item = new ItemTemplate();
-				item.Id_nb = "DmgAdd_Buff_Token";
-				item.Name = "Damage Add Buff Token";
-				item.Level = 50;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 0; // Change to your pricing
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-			
-			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("PowerReg_Buff_Token");
-			if (item == null)
-			{
-				item = new ItemTemplate();
-				item.Id_nb = "PowerReg_Buff_Token";
-				item.Name = "Power Regen Buff Token";
-				item.Level = 50;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 0; // Change to your pricing
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-			
-			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("HPReg_Buff_Token");
-			if (item == null)
-			{
-				item = new ItemTemplate();
-				item.Id_nb = "HPReg_Buff_Token";
-				item.Name = "HP Regen Buff Token";
-				item.Level = 50;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 0; // Change to your pricing
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
- 
-			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("EnduReg_Buff_Token");
-			if (item == null)
-			{
-				item = new ItemTemplate();
-				item.Id_nb = "EnduReg_Buff_Token";
-				item.Name = "Endurance Regen Buff Token";
-				item.Level = 50;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 0; // Change to your pricing
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-
-			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Heal_Buff_Token");
-			if (item == null)
-			{
-				item = new ItemTemplate();
-				item.Id_nb = "Heal_Buff_Token";
-				item.Name = "Heal Buff Token";
-				item.Level = 50;
-				item.Item_Type = 40;
-				item.Model = 485;
-				item.IsDropable = false;
-				item.IsPickable = true;
-				item.Price = 0;
-				item.Weight = 1;
-				item.PackageID = "BuffTokens";
-				GameServer.Database.AddObject(item);
-				if (log.IsDebugEnabled)
-					log.Debug("Added " + item.Id_nb);
-			}
-			 */
-			#endregion Non-live (commented out)
-		}
+		#endregion Non-live (commented out)
 	}
 }
+public class BPBuffTokens
+{
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	[GameServerStartedEvent]
+	public static void OnServerStartup(CoreEvent e, object sender, EventArgs args)
+	{
+		if (!ServerProperty.LOAD_BUFF_TOKENS)
+			return;
+			
+		DbItemTemplate item;
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPFull_Buffs_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPFull_Buffs_Token";
+			item.Name = "Full Buffs Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 32;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPSpecialization_Buffs_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPSpecialization_Buffs_Token";
+			item.Name = "Specialization Buffs Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 24;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPBaseline_Buffs_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPBaseline_Buffs_Token";
+			item.Name = "Baseline Buffs Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 8;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPStrength_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPStrength_Buff_Token";
+			item.Name = "Strength Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 2;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPFortification_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPFortification_Buff_Token";
+			item.Name = "Fortification Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 2;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPDexterity_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPDexterity_Buff_Token";
+			item.Name = "Dexertity Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 2;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPArmor_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPArmor_Buff_Token";
+			item.Name = "Armor Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 2;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPStrCon_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPStrCon_Buff_Token";
+			item.Name = "Might Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 4;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPDexQui_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPDexQui_Buff_Token";
+			item.Name = "Deftness Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 4;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPAcu_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPAcu_Buff_Token";
+			item.Name = "Enlightenment Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 4;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPSpecAF_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPSpecAF_Buff_Token";
+			item.Name = "Barrier Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 6;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+
+		item = (DbItemTemplate)GameServer.Database.FindObjectByKey<DbItemTemplate>("BPHaste_Buff_Token");
+		if (item == null)
+		{
+			item = new DbItemTemplate();
+			item.Id_nb = "BPHaste_Buff_Token";
+			item.Name = "Haste Buff Token";
+			item.Level = 1;
+			item.Item_Type = 40;
+			item.Model = 485;
+			item.IsDropable = false;
+			item.IsPickable = true;
+			item.Price = 6;
+			item.Weight = 1;
+			item.PackageID = "BPBuffTokens";
+			GameServer.Database.AddObject(item);
+			if (log.IsDebugEnabled)
+				log.Debug("Added " + item.Id_nb);
+		}
+		#region Non-live (commented out)
+		/*
+			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Otherline_Buffs_Token");
+			if (item == null)
+			{
+				item = new ItemTemplate();
+				item.Id_nb = "Otherline_Buffs_Token";
+				item.Name = "Extended Buffs Token";
+				item.Level = 50;
+				item.Item_Type = 40;
+				item.Model = 485;
+				item.IsDropable = false;
+				item.IsPickable = true;
+				item.Price = 0; // Change to your pricing
+				item.Weight = 1;
+				item.PackageID = "BuffTokens";
+				GameServer.Database.AddObject(item);
+				if (log.IsDebugEnabled)
+					log.Debug("Added " + item.Id_nb);
+			}
+			
+			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("DmgAdd_Buff_Token");
+			if (item == null)
+			{
+				item = new ItemTemplate();
+				item.Id_nb = "DmgAdd_Buff_Token";
+				item.Name = "Damage Add Buff Token";
+				item.Level = 50;
+				item.Item_Type = 40;
+				item.Model = 485;
+				item.IsDropable = false;
+				item.IsPickable = true;
+				item.Price = 0; // Change to your pricing
+				item.Weight = 1;
+				item.PackageID = "BuffTokens";
+				GameServer.Database.AddObject(item);
+				if (log.IsDebugEnabled)
+					log.Debug("Added " + item.Id_nb);
+			}
+			
+			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("PowerReg_Buff_Token");
+			if (item == null)
+			{
+				item = new ItemTemplate();
+				item.Id_nb = "PowerReg_Buff_Token";
+				item.Name = "Power Regen Buff Token";
+				item.Level = 50;
+				item.Item_Type = 40;
+				item.Model = 485;
+				item.IsDropable = false;
+				item.IsPickable = true;
+				item.Price = 0; // Change to your pricing
+				item.Weight = 1;
+				item.PackageID = "BuffTokens";
+				GameServer.Database.AddObject(item);
+				if (log.IsDebugEnabled)
+					log.Debug("Added " + item.Id_nb);
+			}
+			
+			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("HPReg_Buff_Token");
+			if (item == null)
+			{
+				item = new ItemTemplate();
+				item.Id_nb = "HPReg_Buff_Token";
+				item.Name = "HP Regen Buff Token";
+				item.Level = 50;
+				item.Item_Type = 40;
+				item.Model = 485;
+				item.IsDropable = false;
+				item.IsPickable = true;
+				item.Price = 0; // Change to your pricing
+				item.Weight = 1;
+				item.PackageID = "BuffTokens";
+				GameServer.Database.AddObject(item);
+				if (log.IsDebugEnabled)
+					log.Debug("Added " + item.Id_nb);
+			}
+ 
+			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("EnduReg_Buff_Token");
+			if (item == null)
+			{
+				item = new ItemTemplate();
+				item.Id_nb = "EnduReg_Buff_Token";
+				item.Name = "Endurance Regen Buff Token";
+				item.Level = 50;
+				item.Item_Type = 40;
+				item.Model = 485;
+				item.IsDropable = false;
+				item.IsPickable = true;
+				item.Price = 0; // Change to your pricing
+				item.Weight = 1;
+				item.PackageID = "BuffTokens";
+				GameServer.Database.AddObject(item);
+				if (log.IsDebugEnabled)
+					log.Debug("Added " + item.Id_nb);
+			}
+
+			item = (ItemTemplate)GameServer.Database.FindObjectByKey<ItemTemplate>("Heal_Buff_Token");
+			if (item == null)
+			{
+				item = new ItemTemplate();
+				item.Id_nb = "Heal_Buff_Token";
+				item.Name = "Heal Buff Token";
+				item.Level = 50;
+				item.Item_Type = 40;
+				item.Model = 485;
+				item.IsDropable = false;
+				item.IsPickable = true;
+				item.Price = 0;
+				item.Weight = 1;
+				item.PackageID = "BuffTokens";
+				GameServer.Database.AddObject(item);
+				if (log.IsDebugEnabled)
+					log.Debug("Added " + item.Id_nb);
+			}
+			 */
+		#endregion Non-live (commented out)
+	}
+}
+
 #endregion
 
 #region MerchantList
@@ -2014,4 +2019,3 @@ public class BPBuffTokensList
 	}
 }
 #endregion
-

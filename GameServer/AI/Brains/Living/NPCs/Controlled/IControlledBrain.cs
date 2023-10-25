@@ -1,6 +1,6 @@
-using DOL.GS;
+using Core.GS.Enums;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 /// <summary>
 /// Interface for controllable brains

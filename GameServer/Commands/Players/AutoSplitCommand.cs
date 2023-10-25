@@ -1,7 +1,7 @@
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&autosplit",
 	 EPrivLevel.Player,

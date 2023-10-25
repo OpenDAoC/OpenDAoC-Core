@@ -1,4 +1,4 @@
-namespace DOL.GS;
+namespace Core.GS.Players;
 
 public class RealmLoyaltyUtil
 {

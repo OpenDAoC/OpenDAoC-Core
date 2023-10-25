@@ -1,6 +1,6 @@
 // using System;
 //
-// namespace DOL.GS.Commands
+// namespace Core.GS.Commands
 // {
 // 	[CmdAttribute(
 // 		"&shuffle",
@@ -29,3 +29,5 @@
 // 		}
 // 	}
 // }
+
+namespace Core.GS.Commands;

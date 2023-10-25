@@ -1,21 +1,20 @@
-namespace DOL.GS.SkillHandler
+namespace Core.GS.Skills;
+
+[SkillHandler(AbilityConstants.MetalGuard)]
+public class MetalGuardAbilityHandler : SpellCastingAbilityHandler
 {
-    [SkillHandler(Abilities.MetalGuard)]
-    public class MetalGuardAbilityHandler : SpellCastingAbilityHandler
-    {
-		public override long Preconditions
+	public override long Preconditions
+	{
+		get
 		{
-			get
-			{
-				return DEAD | SITTING | MEZZED | STUNNED | NOTINGROUP;
-			}
+			return DEAD | SITTING | MEZZED | STUNNED | NOTINGROUP;
 		}
- 		public override int SpellID
+	}
+ 	public override int SpellID
+	{
+		get
 		{
-			get
-			{
-				return 14375;
-			}
-		}     
-    }
+			return 14375;
+		}
+	}     
 }

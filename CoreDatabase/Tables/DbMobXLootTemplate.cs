@@ -1,6 +1,4 @@
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Database Storage of Mob LootTemplate Relation

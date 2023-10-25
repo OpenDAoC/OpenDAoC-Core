@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.ServerProperties;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.World;
 
 //Mob with packageid="HostBaf" in same region as bosss will come if he is pulled/aggroed
 //Make sure to add that packageid to Host rooms, unless it will not bring a friends!
 //DO NOT REMOVE Host Initializator from ingame or encounter will  not work!
-namespace DOL.GS;
+
+namespace Core.GS;
 
 #region Host Initializer
 public class HostInitializer : GameNpc
@@ -118,7 +122,7 @@ public class HostInitializer : GameNpc
             {
                 GameNpc RealHost = ChooseHost[Util.Random(0, ChooseHost.Count - 1)];
                 RealHost.PackageID = "HostReal";
-                RealHost.OrbsReward = Properties.EPICBOSS_ORBS;
+                RealHost.OrbsReward = ServerProperty.EPICBOSS_ORBS;
                 set_realhost = true;
             }
         }
@@ -136,7 +140,7 @@ public class HostInitializer : GameNpc
 
     public void RespawnChecker()
     {
-        int time = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000miliseconds        
+        int time = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000miliseconds        
         new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(RespawnTime), time);
     }
 
@@ -205,7 +209,7 @@ public class Host : GameEpicBoss
 
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 150  * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 150  * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
 
     public override int AttackRange

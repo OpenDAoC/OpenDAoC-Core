@@ -1,6 +1,6 @@
-using DOL.GS;
+using Core.GS.Enums;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class BehemothBrain : StandardMobBrain
 {
@@ -17,7 +17,7 @@ public class BehemothBrain : StandardMobBrain
     {
         if (!CheckProximityAggro())
         {
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
         }
         base.Think();

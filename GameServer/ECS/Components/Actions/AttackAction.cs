@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.Styles;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Styles;
+using Core.GS.World;
 
-namespace DOL.GS
+namespace Core.GS.ECS
 {
     public abstract class AttackAction
     {
@@ -30,7 +35,7 @@ namespace DOL.GS
         public long StartTime
         {
             get => _startTime;
-            set => _startTime = value + GameLoop.GameLoopTime;
+            set => _startTime = value + GameLoopMgr.GameLoopTime;
         }
 
         protected AttackAction(GameLiving owner)
@@ -157,7 +162,7 @@ namespace DOL.GS
 
             int mainHandAttackSpeed = _attackComponent.AttackSpeed(_weapon);
 
-            if (clearOldStyles || _styleComponent.NextCombatStyleTime + mainHandAttackSpeed < GameLoop.GameLoopTime)
+            if (clearOldStyles || _styleComponent.NextCombatStyleTime + mainHandAttackSpeed < GameLoopMgr.GameLoopTime)
             {
                 // Cancel the styles if they were registered too long ago.
                 // Nature's Shield stays active forever and falls back to a non-backup style.
@@ -256,7 +261,7 @@ namespace DOL.GS
                     // and the resulting interrupt will last 1.5 seconds."
 
                     long rapidFireMaxDuration = _attackComponent.AttackSpeed(_weapon);
-                    long elapsedTime = GameLoop.GameLoopTime - _owner.TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START); // elapsed time before ready to fire
+                    long elapsedTime = GameLoopMgr.GameLoopTime - _owner.TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START); // elapsed time before ready to fire
 
                     if (elapsedTime < rapidFireMaxDuration)
                     {
@@ -271,7 +276,7 @@ namespace DOL.GS
             // Calculate Penetrating Arrow damage reduction.
             if (_target is GameLiving livingTarget)
             {
-                int PALevel = _owner.GetAbilityLevel(Abilities.PenetratingArrow);
+                int PALevel = _owner.GetAbilityLevel(AbilityConstants.PenetratingArrow);
 
                 if ((PALevel > 0) && (_owner.rangeAttackComponent.RangedAttackType != ERangedAttackType.Long))
                 {
@@ -327,7 +332,7 @@ namespace DOL.GS
                 _interval = TICK_INTERVAL_FOR_NON_ATTACK;
 
                 if (RoundWithNoAttackTime == 0)
-                    RoundWithNoAttackTime = GameLoop.GameLoopTime;
+                    RoundWithNoAttackTime = GameLoopMgr.GameLoopTime;
 
                 return false;
             }

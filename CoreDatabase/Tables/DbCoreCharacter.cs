@@ -1,7 +1,6 @@
 using System;
-using DOL.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// The player character. Stores GamePlayer in DB
@@ -808,7 +807,7 @@ namespace DOL.Database
 		}
 
 		/// <summary>
-		/// The character's active weapon slot and quiver slot - <see cref="T:DOL.GS.eActiveWeaponSlot" /> ORed with <see cref="T:DOL.GS.GameLiving.eActiveQuiverSlot" />
+		/// The character's active weapon slot and quiver slot - <see cref="T:Core.GS.Enums.EActiveWeaponSlot" /> ORed with <see cref="T:Core.GS.Enums.EActiveQuiverSlot" />
 		/// </summary>
 		[DataElement(AllowDbNull = false)]
 		public byte ActiveWeaponSlot

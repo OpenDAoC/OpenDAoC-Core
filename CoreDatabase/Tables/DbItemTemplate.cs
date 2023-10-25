@@ -1,9 +1,9 @@
 using System;
 using System.Reflection;
-using DOL.Database.Attributes;
+using Core.Database.Enums;
 using log4net;
 
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	[DataTable(TableName = "ItemTemplate", PreCache = true)]
 	public class DbItemTemplate : DataObject
@@ -1009,7 +1009,7 @@ namespace DOL.Database
 		/// </summary>
 		/// <param name="bonusID"></param>
 		/// <returns></returns>
-		public int GetBonusAmount(DbArtifactBonus.ID bonusID)
+		public int GetBonusAmount(EItemStatSlots bonusID)
 		{
 			switch ((int)bonusID)
 			{
@@ -1043,7 +1043,7 @@ namespace DOL.Database
 		/// </summary>
 		/// <param name="bonusID"></param>
 		/// <returns></returns>
-		public int GetBonusType(DbArtifactBonus.ID bonusID)
+		public int GetBonusType(EItemStatSlots bonusID)
 		{
 			switch ((int)bonusID)
 			{
@@ -1085,7 +1085,7 @@ namespace DOL.Database
 		/// </summary>
 		/// <param name="bonusID"></param>
 		/// <returns></returns>
-		public void SetBonusAmount(DbArtifactBonus.ID bonusID, int bonusAmount)
+		public void SetBonusAmount(EItemStatSlots bonusID, int bonusAmount)
 		{
 			switch ((int)bonusID)
 			{
@@ -1127,7 +1127,7 @@ namespace DOL.Database
 		/// </summary>
 		/// <param name="bonusID"></param>
 		/// <returns></returns>
-		public void SetBonusType(DbArtifactBonus.ID bonusID, int bonusType)
+		public void SetBonusType(EItemStatSlots bonusID, int bonusType)
 		{
 			switch ((int)bonusID)
 			{

@@ -1,11 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Icelord Hakr
 public class IcelordHakrBrain : StandardMobBrain
@@ -119,7 +123,7 @@ public class IcelordHakrBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             IsPulled = false;
             spam_message1 = false;
@@ -175,7 +179,7 @@ public class HakrAddBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             IsPulled = false;
         }
         if (HasAggro)

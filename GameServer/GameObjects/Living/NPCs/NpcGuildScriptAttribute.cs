@@ -1,9 +1,10 @@
 using System;
+using Core.GS.Enums;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 /// <summary>
-/// Marks a class as a guild wide npc script
+/// Marks a class as a guild-wide NPC script
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class NpcGuildScriptAttribute : Attribute

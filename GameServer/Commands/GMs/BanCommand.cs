@@ -1,11 +1,14 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Languages;
 using log4net;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&ban",

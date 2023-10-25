@@ -1,6 +1,7 @@
-﻿using DOL.Database;
+﻿using Core.Database.Tables;
+using Core.GS.Enums;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&switch", EPrivLevel.Player,
     "Equip Weapons from bag. (/switch 1h 1, will replace your mainhand weapon with the first slot in your backpack)",

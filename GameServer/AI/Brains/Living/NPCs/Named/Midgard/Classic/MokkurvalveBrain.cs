@@ -1,8 +1,10 @@
 using System;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class MokkurvalveBrain : StandardMobBrain
 {
@@ -27,7 +29,7 @@ public class MokkurvalveBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             CanSpawnShard = false;
             if (!RemoveAdds)

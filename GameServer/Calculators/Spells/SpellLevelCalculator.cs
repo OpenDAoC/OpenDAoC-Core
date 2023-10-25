@@ -1,6 +1,7 @@
 using System;
+using Core.GS.Enums;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// BuffBonusCategory1 is used for all single stat buffs

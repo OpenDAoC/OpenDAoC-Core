@@ -1,14 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Effects.Old;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class MistressOfRunesBrain : StandardMobBrain
 {
@@ -41,7 +45,7 @@ public class MistressOfRunesBrain : StandardMobBrain
 	/// </summary>
 	public virtual int MistressDifficulty
 	{
-		get { return GS.ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
+		get { return ServerProperty.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
 	}
 
 	public override void Think()

@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Crafting;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Scripts;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace DOL.GS.API;
+namespace Core.GS.APIs;
 
 public class ApiPlayer
 {

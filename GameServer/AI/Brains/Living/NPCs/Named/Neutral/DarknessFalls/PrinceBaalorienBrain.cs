@@ -1,8 +1,9 @@
 using System.Reflection;
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class PrinceBaalorienBrain : StandardMobBrain
 {
@@ -20,7 +21,7 @@ public class PrinceBaalorienBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
         }
         else

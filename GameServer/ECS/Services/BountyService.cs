@@ -1,30 +1,31 @@
-using ECS.Debug;
+using Core.GS.GameLoop;
+using Core.GS.Scripts.Custom;
+using Core.GS.Server;
 
-namespace DOL.GS
+namespace Core.GS.ECS;
+
+public class BountyService
 {
-    public class BountyService
+    private const string SERVICE_NAME = "BountyService";
+
+    private static BountyMgr BountyManager = new();
+
+    // private static long _updateInterval = 10000; // 10secs
+    private static long _updateInterval = ServerProperty.BOUNTY_CHECK_INTERVAL * 1000;
+
+    private static long _lastUpdate;
+
+    public static void Tick(long tick)
     {
-        private const string SERVICE_NAME = "BountyService";
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
+        Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-        private static BountyMgr BountyManager = new();
-
-        // private static long _updateInterval = 10000; // 10secs
-        private static long _updateInterval = ServerProperties.Properties.BOUNTY_CHECK_INTERVAL * 1000;
-
-        private static long _lastUpdate;
-
-        public static void Tick(long tick)
+        if (tick - _lastUpdate > _updateInterval)
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-            if (tick - _lastUpdate > _updateInterval)
-            {
-                _lastUpdate = tick;
-                BountyMgr.CheckExpiringBounty(tick);
-            }
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
+            _lastUpdate = tick;
+            BountyMgr.CheckExpiringBounty(tick);
         }
+
+        Diagnostics.StopPerfCounter(SERVICE_NAME);
     }
 }

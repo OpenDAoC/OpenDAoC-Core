@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Players;
 using log4net;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
         "&achievement",

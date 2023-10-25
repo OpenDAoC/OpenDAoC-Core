@@ -1,8 +1,7 @@
-using System;
-using DOL.AI.Brain;
-using DOL.GS;
+using Core.GS.AI;
+using Core.GS.Enums;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS;
 
 public class AntipassGuard : GameNpc
 {

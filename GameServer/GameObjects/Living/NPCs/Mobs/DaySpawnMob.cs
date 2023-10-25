@@ -1,77 +1,28 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS;
+using Core.GS.AI;
+using Core.GS.Events;
 
-namespace DOL.GS
+namespace Core.GS;
+
+public class DaySpawnMob : GameNpc
 {
-    public class DaySpawnMob : GameNpc
+    public override bool AddToWorld()
     {
-        public override bool AddToWorld()
+        DaySpawnBrain sBrain = new DaySpawnBrain();
+        if (NPCTemplate != null)
         {
-            DaySpawnBrain sBrain = new DaySpawnBrain();
-            if (NPCTemplate != null)
-            {
-                sBrain.AggroLevel = NPCTemplate.AggroLevel;
-                sBrain.AggroRange = NPCTemplate.AggroRange;
-            }
-            SetOwnBrain(sBrain);
-            base.AddToWorld();
-            return true;
+            sBrain.AggroLevel = NPCTemplate.AggroLevel;
+            sBrain.AggroRange = NPCTemplate.AggroRange;
         }
-
-        [ScriptLoadedEvent]
-        public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
-        {
-            if (log.IsInfoEnabled)
-                log.Info("Day mobs initialising...");
-        }
+        SetOwnBrain(sBrain);
+        base.AddToWorld();
+        return true;
     }
-}
 
-namespace DOL.AI.Brain
-{
-    public class DaySpawnBrain : StandardMobBrain
+    [ScriptLoadedEvent]
+    public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        ushort oldModel;
-        ENpcFlags oldFlags;
-        bool changed;
-
-        public override void Think()
-        {
-            if (Body.CurrentRegion.IsNightTime)
-            {
-                if (changed == false)
-                {
-                    oldFlags = Body.Flags;
-                    Body.Flags ^= ENpcFlags.CANTTARGET;
-                    Body.Flags ^= ENpcFlags.DONTSHOWNAME;
-                    Body.Flags ^= ENpcFlags.PEACE;
-
-                    if (oldModel == 0)
-                    {
-                        oldModel = Body.Model;
-                    }
-
-                    Body.Model = 1;
-
-                    changed = true;
-                }
-            }
-            if (Body.CurrentRegion.IsNightTime == false)
-            {
-                if (changed)
-                {
-                    Body.Flags = oldFlags;
-                    Body.Model = oldModel;
-                    changed = false;
-                }
-            }
-
-            base.Think();
-        }
+        if (log.IsInfoEnabled)
+            log.Info("Day mobs initialising...");
     }
 }

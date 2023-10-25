@@ -1,9 +1,10 @@
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
-#region Initializator Brain
+#region Initializer Brain
 public class BeliathanInitBrain : StandardMobBrain
 {
     private static readonly log4net.ILog log =
@@ -67,7 +68,7 @@ public class BeliathanInitBrain : StandardMobBrain
             player.Out.SendMessage(message, EChatType.CT_Broadcast, EChatLoc.CL_SystemWindow);
     }
 }
-#endregion Initializator Brain
+#endregion Initializer Brain
 
 #region Beliathan
 public class BeliathanBrain : StandardMobBrain
@@ -81,7 +82,7 @@ public class BeliathanBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             if (!RemoveAdds)
             {
                 foreach (GameNpc npc in Body.GetNPCsInRadius(4000))

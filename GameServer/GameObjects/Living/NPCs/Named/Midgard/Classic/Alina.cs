@@ -1,8 +1,8 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Events;
+using Core.GS.AI;
+using Core.GS.Events;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Alina : GameNpc
 {

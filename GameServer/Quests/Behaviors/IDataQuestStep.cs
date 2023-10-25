@@ -1,7 +1,8 @@
-﻿namespace DOL.GS.Quests
+﻿using Core.GS.Enums;
+
+namespace Core.GS.Quests;
+
+public interface IDataQuestStep
 {
-	public interface IDataQuestStep
-	{
-		bool Execute(DataQuest dataQuest, GamePlayer player, int step, EStepCheckType stepCheckType);
-	}
+	bool Execute(DataQuest dataQuest, GamePlayer player, int step, EStepCheckType stepCheckType);
 }

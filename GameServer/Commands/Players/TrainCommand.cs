@@ -1,8 +1,12 @@
 ﻿using System.Text;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.Players;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&train",
@@ -32,9 +36,9 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 		}
 
 		// no longer used since 1.105, except if we explicitely want
-		if (client.Version >= GameClient.eClientVersion.Version1105)
+		if (client.Version >= EClientVersion.Version1105)
 		{
-			if (!ServerProperties.Properties.CUSTOM_TRAIN)
+			if (!ServerProperty.CUSTOM_TRAIN)
 			{
 				client.Out.SendTrainerWindow();
 				return;
@@ -43,7 +47,7 @@ public class TrainCommand : ACommandHandler, ICommandHandler
 
 		GameTrainer trainer = client.Player.TargetObject as GameTrainer;
 		// Make sure the player is at a trainer.
-		if (!DOL.GS.ServerProperties.Properties.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player && (trainer == null || trainer.CanTrain(client.Player) == false))
+		if (!ServerProperty.ALLOW_TRAIN_ANYWHERE && client.Account.PrivLevel == (int)EPrivLevel.Player && (trainer == null || trainer.CanTrain(client.Player) == false))
 		{
 			client.Out.SendMessage("You have to be at your trainer to use this command.", EChatType.CT_System, EChatLoc.CL_SystemWindow);
 			return;

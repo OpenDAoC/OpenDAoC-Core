@@ -1,13 +1,16 @@
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Server;
 
-namespace DOL.GS;
+namespace Core.GS.Crafting;
 
 public class Woodworking : ACraftingSkill
 {
 	public Woodworking()
 	{
 		Icon = 0x0E;
-		Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "Crafting.Name.Woodworking");
+		Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "Crafting.Name.Woodworking");
 		eSkill = ECraftingSkill.WoodWorking;
 	}
 

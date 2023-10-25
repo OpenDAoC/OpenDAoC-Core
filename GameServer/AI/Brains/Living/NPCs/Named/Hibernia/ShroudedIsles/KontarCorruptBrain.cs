@@ -1,7 +1,10 @@
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Kontar
 public class KontarCorruptBrain : StandardMobBrain
@@ -20,7 +23,7 @@ public class KontarCorruptBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             spawnAdds = false;
             if (!RemoveAdds)

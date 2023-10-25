@@ -1,8 +1,11 @@
 using System.Collections;
-using DOL.Database;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Skills;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class GameHousingHastener : GameMerchant
 {

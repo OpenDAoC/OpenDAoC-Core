@@ -1,7 +1,13 @@
 using System;
-using DOL.GS.PacketHandler;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Packets;
+using Core.GS.Packets.Server;
+using Core.GS.Players;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&respec",
@@ -21,7 +27,7 @@ public class RespecCommand : ACommandHandler, ICommandHandler
 	{
 		if (args.Length < 2)
 		{
-			if (ServerProperties.Properties.FREE_RESPEC || client.Player.Level < 50)
+			if (ServerProperty.FREE_RESPEC || client.Player.Level < 50)
 			{
 				DisplayMessage(client, "Target any trainer and use:");
 				DisplayMessage(client, "/respec ALL to respec all skills");
@@ -104,7 +110,7 @@ public class RespecCommand : ACommandHandler, ICommandHandler
                     {
                         // Check for full respecs.
                         if ( client.Player.RespecAmountAllSkill < 1
-                            && !ServerProperties.Properties.FREE_RESPEC)
+                            && !ServerProperty.FREE_RESPEC)
                         {
                             DisplayMessage(client, "You don't seem to have any full skill respecs available.");
                             return;
@@ -135,7 +141,7 @@ public class RespecCommand : ACommandHandler, ICommandHandler
                     if (/*client.Player.Level >= 50 || */TimeSpan.FromSeconds(client.Player.PlayedTimeSinceLevel).Hours > 24)
                     {
                         if (client.Player.RespecAmountRealmSkill < 1
-                            && !ServerProperties.Properties.FREE_RESPEC)
+                            && !ServerProperty.FREE_RESPEC)
                         {
                             DisplayMessage(client, "You don't seem to have any realm skill respecs available.");
                             return;
@@ -161,7 +167,7 @@ public class RespecCommand : ACommandHandler, ICommandHandler
 					{
 						// Check for single-line respecs.
 						if (client.Player.RespecAmountSingleSkill < 1
-						&& !ServerProperties.Properties.FREE_RESPEC)
+						&& !ServerProperty.FREE_RESPEC)
 						{
 							DisplayMessage(client, "You don't seem to have any single-line respecs available.");
 							return;

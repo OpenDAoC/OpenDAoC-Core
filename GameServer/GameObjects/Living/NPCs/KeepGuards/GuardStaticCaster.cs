@@ -1,18 +1,17 @@
-using DOL.AI.Brain;
+using Core.GS.AI;
 
-namespace DOL.GS.Keeps
+namespace Core.GS;
+
+public class GuardStaticCaster : GuardCaster
 {
-	public class GuardStaticCaster : GuardCaster
+	protected override void SetAggression()
 	{
-		protected override void SetAggression()
-		{
-			(Brain as KeepGuardBrain).SetAggression(99, 1850);
-		}
+		(Brain as KeepGuardBrain).SetAggression(99, 1850);
+	}
 
-		protected override void SetSpeed()
-		{
-			base.SetSpeed();
-			MaxSpeedBase = 0;
-		}
+	protected override void SetSpeed()
+	{
+		base.SetSpeed();
+		MaxSpeedBase = 0;
 	}
 }

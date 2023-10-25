@@ -1,9 +1,13 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+﻿using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
 
-namespace DOL.GS;
+namespace Core.GS;
 
-public class Ydenia : GameEpicNPC
+public class Ydenia : GameEpicNpc
 {
 	public Ydenia() : base() { }
 
@@ -28,7 +32,7 @@ public class Ydenia : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -58,7 +62,7 @@ public class Ydenia : GameEpicNPC
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
 
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		YdeniaBrain sbrain = new YdeniaBrain();
 		SetOwnBrain(sbrain);
 		base.AddToWorld();

@@ -1,4 +1,4 @@
-namespace DOL.GS.PacketHandler;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// The type of inventory window to show the client.  

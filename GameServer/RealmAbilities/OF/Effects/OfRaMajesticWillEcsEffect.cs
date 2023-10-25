@@ -1,19 +1,20 @@
-using DOL.GS.Spells;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Spells;
 
-namespace DOL.GS.Effects
+namespace Core.GS.RealmAbilities;
+
+public class OfRaMajesticWillEcsEffect : EcsGameAbilityEffect
 {
-    public class OfRaMajesticWillEcsEffect : EcsGameAbilityEffect
+    public new SpellHandler SpellHandler;
+    public OfRaMajesticWillEcsEffect(EcsGameEffectInitParams initParams)
+        : base(initParams)
     {
-        public new SpellHandler SpellHandler;
-        public OfRaMajesticWillEcsEffect(EcsGameEffectInitParams initParams)
-            : base(initParams)
-        {
-            EffectType = EEffect.MajesticWill;
-            EffectService.RequestStartEffect(this);
-        }
-
-        public override ushort Icon { get { return 4239; } }
-        public override string Name { get { return "Majestic Will"; } }
-        public override bool HasPositiveEffect { get { return true; } }
+        EffectType = EEffect.MajesticWill;
+        EffectService.RequestStartEffect(this);
     }
+
+    public override ushort Icon { get { return 4239; } }
+    public override string Name { get { return "Majestic Will"; } }
+    public override bool HasPositiveEffect { get { return true; } }
 }

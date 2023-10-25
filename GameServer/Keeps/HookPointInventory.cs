@@ -1,465 +1,468 @@
 using System;
 using System.Collections;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Scripts;
+using Core.GS.Server;
 using log4net;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps;
+
+public class HookPointInventory
 {
-	public class HookPointInventory
+	/// <summary>
+	/// Code to call when the server is started
+	/// Here we add the items to the hookpoint inventory
+	/// </summary>
+	/// <param name="e">the event</param>
+	/// <param name="sender">the object sender</param>
+	/// <param name="args">the event arguments</param>
+	[GameServerStartedEvent]
+	public static void OnServerStarted(CoreEvent e, object sender, EventArgs args)
 	{
-		/// <summary>
-		/// Code to call when the server is started
-		/// Here we add the items to the hookpoint inventory
-		/// </summary>
-		/// <param name="e">the event</param>
-		/// <param name="sender">the object sender</param>
-		/// <param name="args">the event arguments</param>
-		[GameServerStartedEvent]
-		public static void OnServerStarted(CoreEvent e, object sender, EventArgs args)
+		if (ServerProperty.LOAD_HOOKPOINTS)
 		{
-			if (ServerProperties.Properties.LOAD_HOOKPOINTS)
-			{
-				/*string name,byte gold,byte silver,byte copper,ushort icon,string objectType,ushort flag*/
-				HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Melee Guard", 67, 2624, "DOL.GS.Keeps.GuardFighter", 0));
-				HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Ranged Guard", 67, 2623, "DOL.GS.Keeps.GuardStaticArcher", 0));
-				HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Healer Guard", 67, 2628, "DOL.GS.Keeps.GuardHealer", 0));
-				HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Caster Guard", 67, 2625, "DOL.GS.Keeps.GuardStaticCaster", 0));
-				HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Stealther Guard", 67, 2627, "DOL.GS.Keeps.GuardStealther", 0));
+			/*string name,byte gold,byte silver,byte copper,ushort icon,string objectType,ushort flag*/
+			HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Melee Guard", 67, 2624, "Core.GS.GuardFighter", 0));
+			HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Ranged Guard", 67, 2623, "Core.GS.GuardStaticArcher", 0));
+			HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Healer Guard", 67, 2628, "Core.GS.GuardHealer", 0));
+			HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Caster Guard", 67, 2625, "Core.GS.GuardStaticCaster", 0));
+			HookPointInventory.RedHPInventory.AddFirstFreeSlot(new HookPointItem("Stealther Guard", 67, 2627, "Core.GS.GuardStealther", 0));
 
-				HookPointInventory.GreenHPInventory.AddFirstFreeSlot(new HookPointItem("Palintone", 50, 0x0A2C, "DOL.GS.GameSiegeCatapult", 0x4100));
-				HookPointInventory.GreenHPInventory.AddFirstFreeSlot(new HookPointItem("Trebuchet", 20, 0x0A22, "DOL.GS.GameSiegeTrebuchet", 0x4B00));
+			HookPointInventory.GreenHPInventory.AddFirstFreeSlot(new HookPointItem("Palintone", 50, 0x0A2C, "Core.GS.GameSiegeCatapult", 0x4100));
+			HookPointInventory.GreenHPInventory.AddFirstFreeSlot(new HookPointItem("Trebuchet", 20, 0x0A22, "Core.GS.GameSiegeTrebuchet", 0x4B00));
 
-				HookPointInventory.LightGreenHPInventory.AddFirstFreeSlot(new HookPointItem("Ballista", 20, 0x0A2C, "DOL.GS.GameSiegeBallista", 0x4b00));
+			HookPointInventory.LightGreenHPInventory.AddFirstFreeSlot(new HookPointItem("Ballista", 20, 0x0A2C, "Core.GS.GameSiegeBallista", 0x4b00));
 
-				HookPointInventory.YellowHPInventory.AddFirstFreeSlot(new HookPointItem("Boiling Oil", 70, 0x0A40, "DOL.GS.GameSiegeCauldron", 0x2800));
+			HookPointInventory.YellowHPInventory.AddFirstFreeSlot(new HookPointItem("Boiling Oil", 70, 0x0A40, "Core.GS.GameSiegeCauldron", 0x2800));
 
-				/*
-				HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Healer", 10, 0x0A40, "DOL.GS.GameHealer", 0));
-				HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Hastener", 10, 0x0A40, "DOL.GS.GameHastener", 0));
-				HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("BlackSmith", 1, 0x0A40, "DOL.GS.Blacksmith", 0));
-				HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Dye Master", 1, 0x0A40, "DOL.GS.GameKeepGuard", 0));
-				HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Arrow Merchant", 1, 0x0A40, "DOL.GS.GameKeepGuard", 0));
-				HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Poison Merchant", 1, 0x0A40, "DOL.GS.GameKeepGuard", 0));
-				*/
-			}
+			/*
+			HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Healer", 10, 0x0A40, "Core.GS.GameHealer", 0));
+			HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Hastener", 10, 0x0A40, "Core.GS.GameHastener", 0));
+			HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("BlackSmith", 1, 0x0A40, "Core.GS.Blacksmith", 0));
+			HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Dye Master", 1, 0x0A40, "Core.GS.GameKeepGuard", 0));
+			HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Arrow Merchant", 1, 0x0A40, "Core.GS.GameKeepGuard", 0));
+			HookPointInventory.BlueHPInventory.AddFirstFreeSlot(new HookPointItem("Poison Merchant", 1, 0x0A40, "Core.GS.GameKeepGuard", 0));
+			*/
 		}
+	}
 
-		public HookPointInventory()
+	public HookPointInventory()
+	{
+		hookpointItemList = new ArrayList(MAX_ITEM);
+	}
+	/// <summary>
+	/// Defines a logger for this class.
+	/// </summary>
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	private ArrayList hookpointItemList;
+	private const int MAX_ITEM = 10;
+	public static HookPointInventory BlueHPInventory = new HookPointInventory();
+	public static HookPointInventory RedHPInventory = new HookPointInventory();
+	public static HookPointInventory GreenHPInventory = new HookPointInventory();
+	public static HookPointInventory LightGreenHPInventory = new HookPointInventory();
+	public static HookPointInventory YellowHPInventory = new HookPointInventory();
+
+	/// <summary>
+	/// Get the item the slot
+	/// </summary>
+	/// <param name="slot">The item slot</param>
+	/// <returns>Item template or null</returns>
+	public virtual HookPointItem GetItem(int slot)
+	{
+		if (slot >= hookpointItemList.Count)
+			return null;
+
+		if (slot > MAX_ITEM)
 		{
-			hookpointItemList = new ArrayList(MAX_ITEM);
-		}
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-		private ArrayList hookpointItemList;
-		private const int MAX_ITEM = 10;
-		public static HookPointInventory BlueHPInventory = new HookPointInventory();
-		public static HookPointInventory RedHPInventory = new HookPointInventory();
-		public static HookPointInventory GreenHPInventory = new HookPointInventory();
-		public static HookPointInventory LightGreenHPInventory = new HookPointInventory();
-		public static HookPointInventory YellowHPInventory = new HookPointInventory();
-
-		/// <summary>
-		/// Get the item the slot
-		/// </summary>
-		/// <param name="slot">The item slot</param>
-		/// <returns>Item template or null</returns>
-		public virtual HookPointItem GetItem(int slot)
-		{
-			if (slot >= hookpointItemList.Count)
-				return null;
-
-			if (slot > MAX_ITEM)
-			{
-				if (log.IsErrorEnabled)
-					log.Error("item add to slot already used");
-				return null;
-			}
-			return hookpointItemList[slot] as HookPointItem;
-		}
-
-		public virtual HookPointItem GetItem(string classType)
-		{
-			foreach (HookPointItem item in hookpointItemList)
-			{
-				if (item.GameObjectType == classType)
-					return item;
-			}
-
+			if (log.IsErrorEnabled)
+				log.Error("item add to slot already used");
 			return null;
 		}
-
-		/// <summary>
-		/// add the item to the slot
-		/// </summary>
-		/// <param name="item"></param>
-		/// <param name="slot">The item slot</param>
-		/// <returns>Item template or null</returns>
-		public virtual void AddItem(HookPointItem item, int slot)
-		{
-			if (hookpointItemList[slot] != null)
-			{
-				if (log.IsErrorEnabled)
-					log.Error("item add to slot already used");
-				return;
-			}
-			if ((slot > MAX_ITEM) || (slot < 0))
-			{
-				if (log.IsErrorEnabled)
-					log.Error("slot out of the inventory");
-				return;
-			}
-			hookpointItemList[slot] = item;
-		}
-
-		/// <summary>
-		/// add the item to the first free slot
-		/// </summary>
-		/// <returns>Item template or null</returns>
-		public virtual void AddFirstFreeSlot(HookPointItem item)
-		{
-			if (hookpointItemList.Count < 10)
-				hookpointItemList.Add(item);
-
-			else if (log.IsErrorEnabled)
-				log.Error("inventory is full");
-		}
-
-		/// <summary>
-		/// Gets a copy of all intems
-		/// </summary>
-		/// <returns>A list where key is the slot position and value is the ItemTemplate</returns>
-		public virtual ArrayList GetAllItems()
-		{
-			return hookpointItemList;
-		}
-
+		return hookpointItemList[slot] as HookPointItem;
 	}
-	public class HookPointItem
+
+	public virtual HookPointItem GetItem(string classType)
 	{
-		public HookPointItem()
+		foreach (HookPointItem item in hookpointItemList)
 		{
+			if (item.GameObjectType == classType)
+				return item;
 		}
 
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		return null;
+	}
 
-		public HookPointItem(string name, byte gold, ushort icon, string objectType, ushort flag)
+	/// <summary>
+	/// add the item to the slot
+	/// </summary>
+	/// <param name="item"></param>
+	/// <param name="slot">The item slot</param>
+	/// <returns>Item template or null</returns>
+	public virtual void AddItem(HookPointItem item, int slot)
+	{
+		if (hookpointItemList[slot] != null)
 		{
-			m_name = name;
-			m_gold = gold;
-			m_icon = icon;
-			m_objectType = objectType;
-			m_flag = flag;
+			if (log.IsErrorEnabled)
+				log.Error("item add to slot already used");
+			return;
 		}
-
-		protected short m_gold;
-		protected byte m_silver;
-		protected byte m_copper;
-		private ushort m_icon;
-		private string m_objectType;
-		private string m_name;
-		private ushort m_flag;
-
-		public short Gold
+		if ((slot > MAX_ITEM) || (slot < 0))
 		{
-			get { return m_gold; }
-			set { m_gold = value; }
+			if (log.IsErrorEnabled)
+				log.Error("slot out of the inventory");
+			return;
 		}
+		hookpointItemList[slot] = item;
+	}
 
-		public ushort Icon
+	/// <summary>
+	/// add the item to the first free slot
+	/// </summary>
+	/// <returns>Item template or null</returns>
+	public virtual void AddFirstFreeSlot(HookPointItem item)
+	{
+		if (hookpointItemList.Count < 10)
+			hookpointItemList.Add(item);
+
+		else if (log.IsErrorEnabled)
+			log.Error("inventory is full");
+	}
+
+	/// <summary>
+	/// Gets a copy of all intems
+	/// </summary>
+	/// <returns>A list where key is the slot position and value is the ItemTemplate</returns>
+	public virtual ArrayList GetAllItems()
+	{
+		return hookpointItemList;
+	}
+
+}
+public class HookPointItem
+{
+	public HookPointItem()
+	{
+	}
+
+	/// <summary>
+	/// Defines a logger for this class.
+	/// </summary>
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	public HookPointItem(string name, byte gold, ushort icon, string objectType, ushort flag)
+	{
+		m_name = name;
+		m_gold = gold;
+		m_icon = icon;
+		m_objectType = objectType;
+		m_flag = flag;
+	}
+
+	protected short m_gold;
+	protected byte m_silver;
+	protected byte m_copper;
+	private ushort m_icon;
+	private string m_objectType;
+	private string m_name;
+	private ushort m_flag;
+
+	public short Gold
+	{
+		get { return m_gold; }
+		set { m_gold = value; }
+	}
+
+	public ushort Icon
+	{
+		get { return m_icon; }
+		set { m_icon = value; }
+	}
+
+	public string GameObjectType
+	{
+		get { return m_objectType; }
+		set { m_objectType = value; }
+	}
+
+	public string Name
+	{
+		get { return m_name; }
+		set { m_name = value; }
+	}
+
+	public ushort Flag
+	{
+		get { return m_flag; }
+		set { m_flag = value; }
+	}
+
+	public void Invoke(GamePlayer player, int payType, GameKeepHookPoint hookpoint, GameKeepComponent component)
+	{
+		if (!hookpoint.IsFree)
 		{
-			get { return m_icon; }
-			set { m_icon = value; }
+			player.Out.SendMessage("The hookpoint is already used!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+			return;
 		}
-
-		public string GameObjectType
+		//1=or 2=BP 3=GuildBP 4=contract
+		//todo enum
+		switch (payType)
 		{
-			get { return m_objectType; }
-			set { m_objectType = value; }
-		}
-
-		public string Name
-		{
-			get { return m_name; }
-			set { m_name = value; }
-		}
-
-		public ushort Flag
-		{
-			get { return m_flag; }
-			set { m_flag = value; }
-		}
-
-		public void Invoke(GamePlayer player, int payType, GameKeepHookPoint hookpoint, GameKeepComponent component)
-		{
-			if (!hookpoint.IsFree)
-			{
-				player.Out.SendMessage("The hookpoint is already used!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-				return;
-			}
-			//1=or 2=BP 3=GuildBP 4=contract
-			//todo enum
-			switch (payType)
-			{
-				case 1:
+			case 1:
+				{
+					if (!player.RemoveMoney(Gold * 100 * 100, "You buy " + this.GetName(1, false) + "."))
 					{
-						if (!player.RemoveMoney(Gold * 100 * 100, "You buy " + this.GetName(1, false) + "."))
-						{
-                            InventoryLogging.LogInventoryAction(player, "(keep)", EInventoryActionType.Merchant, Gold * 10000);
-							player.Out.SendMessage("You dont have enough money!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-							return;
-						}
-					} break;
-				case 2:
-					{
-						if (!player.RemoveBountyPoints(Gold, "You buy " + this.GetName(1, false) + "."))
-						{
-							player.Out.SendMessage("You dont have enough bounty point!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-							return;
-						}
-					} break;
-				case 3:
-					{
-						if (player.Guild == null) return;
-						if (!player.Guild.RemoveBountyPoints(Gold))
-						{
-							player.Out.SendMessage("You dont have enough bounty point!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-							return;
-						}
-						else
-							player.Out.SendMessage("You buy " + this.GetName(1, false) + ".", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
-
-					} break;
-				case 4:
-					{
-						player.Out.SendMessage("NOT IMPLEMENTED YET, SORRY", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+                        InventoryLogging.LogInventoryAction(player, "(keep)", EInventoryActionType.Merchant, Gold * 10000);
+						player.Out.SendMessage("You dont have enough money!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 						return;
 					}
+				} break;
+			case 2:
+				{
+					if (!player.RemoveBountyPoints(Gold, "You buy " + this.GetName(1, false) + "."))
+					{
+						player.Out.SendMessage("You dont have enough bounty point!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+						return;
+					}
+				} break;
+			case 3:
+				{
+					if (player.Guild == null) return;
+					if (!player.Guild.RemoveBountyPoints(Gold))
+					{
+						player.Out.SendMessage("You dont have enough bounty point!", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+						return;
+					}
+					else
+						player.Out.SendMessage("You buy " + this.GetName(1, false) + ".", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
 
-			}
+				} break;
+			case 4:
+				{
+					player.Out.SendMessage("NOT IMPLEMENTED YET, SORRY", EChatType.CT_Merchant, EChatLoc.CL_SystemWindow);
+					return;
+				}
 
-			GameLiving hookPointObj = CreateHPInstance(this.GameObjectType);
-			if (hookPointObj == null) return;
-			//use default value so no need to load
-			//hookPointObj.LoadFromDatabase(this.ObjectTemplate);
-			hookPointObj.CurrentRegion = player.CurrentRegion;
-			hookPointObj.Realm = hookpoint.Component.Keep.Realm;
-
-			if (hookPointObj is GameSiegeWeapon)
-				((GameSiegeWeapon)hookPointObj).EnableToMove = false;
-			hookPointObj.X = hookpoint.X;
-			hookPointObj.Y = hookpoint.Y;
-			hookPointObj.Z = hookpoint.Z;
-			hookPointObj.Heading = hookpoint.Heading;
-
-			if (hookPointObj is GameSiegeWeapon)
-				(hookPointObj as GameSiegeWeapon).HookPoint = hookpoint;
-			if (hookPointObj is IKeepItem)
-				(hookPointObj as IKeepItem).Component = component;
-			if (hookPointObj is GameSiegeCauldron)
-				(hookPointObj as GameSiegeCauldron).Component = component;
-			if (hookPointObj is GameKeepGuard)
-			{
-				(hookPointObj as GameKeepGuard).HookPoint = hookpoint;
-				(hookPointObj as GameKeepGuard).RefreshTemplate();
-			}
-			if (hookPointObj is GameNpc)
-			{
-				((GameNpc)hookPointObj).RespawnInterval = -1;//do not respawn
-			}
-			hookPointObj.AddToWorld();
-			if (hookPointObj is GameKeepGuard guard)
-			{
-				guard.Component.Keep.Guards.Add(hookPointObj.ObjectID.ToString(), guard);
-				guard.RespawnInterval = Util.Random(10, 30) * 60 * 1000;
-			}
-			hookpoint.Object = hookPointObj;
-
-			//create the db entry
-			Database.DbKeepHookPointItem item = new Database.DbKeepHookPointItem(component.Keep.KeepID, component.ID, hookpoint.ID, GameObjectType);
-			GameServer.Database.AddObject(item);
 		}
 
-		public static void Invoke(GameKeepHookPoint hookpoint, string objectType)
+		GameLiving hookPointObj = CreateHPInstance(this.GameObjectType);
+		if (hookPointObj == null) return;
+		//use default value so no need to load
+		//hookPointObj.LoadFromDatabase(this.ObjectTemplate);
+		hookPointObj.CurrentRegion = player.CurrentRegion;
+		hookPointObj.Realm = hookpoint.Component.Keep.Realm;
+
+		if (hookPointObj is GameSiegeWeapon)
+			((GameSiegeWeapon)hookPointObj).EnableToMove = false;
+		hookPointObj.X = hookpoint.X;
+		hookPointObj.Y = hookpoint.Y;
+		hookPointObj.Z = hookpoint.Z;
+		hookPointObj.Heading = hookpoint.Heading;
+
+		if (hookPointObj is GameSiegeWeapon)
+			(hookPointObj as GameSiegeWeapon).HookPoint = hookpoint;
+		if (hookPointObj is IKeepItem)
+			(hookPointObj as IKeepItem).Component = component;
+		if (hookPointObj is GameSiegeCauldron)
+			(hookPointObj as GameSiegeCauldron).Component = component;
+		if (hookPointObj is GameKeepGuard)
 		{
-			if (!hookpoint.IsFree)
-				return;
+			(hookPointObj as GameKeepGuard).HookPoint = hookpoint;
+			(hookPointObj as GameKeepGuard).RefreshTemplate();
+		}
+		if (hookPointObj is GameNpc)
+		{
+			((GameNpc)hookPointObj).RespawnInterval = -1;//do not respawn
+		}
+		hookPointObj.AddToWorld();
+		if (hookPointObj is GameKeepGuard guard)
+		{
+			guard.Component.Keep.Guards.Add(hookPointObj.ObjectID.ToString(), guard);
+			guard.RespawnInterval = Util.Random(10, 30) * 60 * 1000;
+		}
+		hookpoint.Object = hookPointObj;
 
-			GameLiving hookPointObj = CreateHPInstance(objectType);
-			if (hookPointObj == null) return;
+		//create the db entry
+		DbKeepHookPointItem item = new DbKeepHookPointItem(component.Keep.KeepID, component.ID, hookpoint.ID, GameObjectType);
+		GameServer.Database.AddObject(item);
+	}
 
-			//use default value so no need to load
-			//hookPointObj.LoadFromDatabase(this.ObjectTemplate);
-			hookPointObj.CurrentRegion = hookpoint.Component.CurrentRegion;
-			hookPointObj.Realm = hookpoint.Component.Keep.Realm;
+	public static void Invoke(GameKeepHookPoint hookpoint, string objectType)
+	{
+		if (!hookpoint.IsFree)
+			return;
 
-			if (hookPointObj is GameSiegeWeapon)
-				((GameSiegeWeapon)hookPointObj).EnableToMove = false;
+		GameLiving hookPointObj = CreateHPInstance(objectType);
+		if (hookPointObj == null) return;
 
-			hookPointObj.X = hookpoint.X;
-			hookPointObj.Y = hookpoint.Y;
-			hookPointObj.Z = hookpoint.Z;
-			hookPointObj.Heading = hookpoint.Heading;
+		//use default value so no need to load
+		//hookPointObj.LoadFromDatabase(this.ObjectTemplate);
+		hookPointObj.CurrentRegion = hookpoint.Component.CurrentRegion;
+		hookPointObj.Realm = hookpoint.Component.Keep.Realm;
 
-			if (hookPointObj is GameSiegeWeapon)
-				(hookPointObj as GameSiegeWeapon).HookPoint = hookpoint;
-			if (hookPointObj is IKeepItem)
-				(hookPointObj as IKeepItem).Component = hookpoint.Component;
-			if (hookPointObj is GameSiegeCauldron)
-				(hookPointObj as GameSiegeCauldron).Component = hookpoint.Component;
-			if (hookPointObj is GameKeepGuard)
-			{
-				(hookPointObj as GameKeepGuard).HookPoint = hookpoint;
-				(hookPointObj as GameKeepGuard).RefreshTemplate();
-			}
+		if (hookPointObj is GameSiegeWeapon)
+			((GameSiegeWeapon)hookPointObj).EnableToMove = false;
 
-			if (ServerProperties.Properties.ENABLE_DEBUG)
-				hookPointObj.Name += " hookpoint " + hookpoint.ID.ToString();
+		hookPointObj.X = hookpoint.X;
+		hookPointObj.Y = hookpoint.Y;
+		hookPointObj.Z = hookpoint.Z;
+		hookPointObj.Heading = hookpoint.Heading;
 
-			if (hookPointObj is GameNpc)
-			{
-				((GameNpc)hookPointObj).RespawnInterval = -1;//do not respawn
-			}
-			hookPointObj.AddToWorld();
-			if (hookPointObj is GameKeepGuard guard)
-			{
-				guard.Component.Keep.Guards.Add(hookPointObj.ObjectID.ToString(), guard);
-				guard.RespawnInterval = Util.Random(10, 30) * 60 * 1000;
-			}
-			hookpoint.Object = hookPointObj;
+		if (hookPointObj is GameSiegeWeapon)
+			(hookPointObj as GameSiegeWeapon).HookPoint = hookpoint;
+		if (hookPointObj is IKeepItem)
+			(hookPointObj as IKeepItem).Component = hookpoint.Component;
+		if (hookPointObj is GameSiegeCauldron)
+			(hookPointObj as GameSiegeCauldron).Component = hookpoint.Component;
+		if (hookPointObj is GameKeepGuard)
+		{
+			(hookPointObj as GameKeepGuard).HookPoint = hookpoint;
+			(hookPointObj as GameKeepGuard).RefreshTemplate();
 		}
 
-		private static GameLiving CreateHPInstance(string objTypeName)
-		{
-			if (objTypeName != "")
-			{
-				GameLiving hookPointObj = null;
-				Type objType = null;
-				foreach (Assembly asm in ScriptMgr.Scripts)
-				{
-					objType = asm.GetType(objTypeName);
-					if (objType != null)
-						break;
-				}
-				if (objType == null)
-					objType = Assembly.GetAssembly(typeof(GameServer)).GetType(objTypeName);
-				if (objType == null)
-				{
-					if (log.IsErrorEnabled)
-						log.Error("Could not find keepobject: " + objTypeName + "!!!");
-					return null;
-				}
-				try
-				{
-					hookPointObj = (Activator.CreateInstance(objType)) as GameLiving;
-				}
-				catch (Exception e)
-				{
-					if (log.IsWarnEnabled)
-						log.Warn("Hookpoint object can not been instanciate :" + e.ToString());
-				}
+		if (ServerProperty.ENABLE_DEBUG)
+			hookPointObj.Name += " hookpoint " + hookpoint.ID.ToString();
 
-				if (hookPointObj == null)
-				{
-					if (log.IsWarnEnabled)
-						log.Warn("Hookpoint object have a wrong class type which must inherite from GameLiving.");
-				}
-				return hookPointObj;
+		if (hookPointObj is GameNpc)
+		{
+			((GameNpc)hookPointObj).RespawnInterval = -1;//do not respawn
+		}
+		hookPointObj.AddToWorld();
+		if (hookPointObj is GameKeepGuard guard)
+		{
+			guard.Component.Keep.Guards.Add(hookPointObj.ObjectID.ToString(), guard);
+			guard.RespawnInterval = Util.Random(10, 30) * 60 * 1000;
+		}
+		hookpoint.Object = hookPointObj;
+	}
+
+	private static GameLiving CreateHPInstance(string objTypeName)
+	{
+		if (objTypeName != "")
+		{
+			GameLiving hookPointObj = null;
+			Type objType = null;
+			foreach (Assembly asm in ScriptMgr.Scripts)
+			{
+				objType = asm.GetType(objTypeName);
+				if (objType != null)
+					break;
 			}
-			else
+			if (objType == null)
+				objType = Assembly.GetAssembly(typeof(GameServer)).GetType(objTypeName);
+			if (objType == null)
+			{
+				if (log.IsErrorEnabled)
+					log.Error("Could not find keepobject: " + objTypeName + "!!!");
+				return null;
+			}
+			try
+			{
+				hookPointObj = (Activator.CreateInstance(objType)) as GameLiving;
+			}
+			catch (Exception e)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn("Hookpoint object can not been instanciate :" + e.ToString());
+			}
+
+			if (hookPointObj == null)
 			{
 				if (log.IsWarnEnabled)
 					log.Warn("Hookpoint object have a wrong class type which must inherite from GameLiving.");
-				return null;
 			}
-
+			return hookPointObj;
+		}
+		else
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Hookpoint object have a wrong class type which must inherite from GameLiving.");
+			return null;
 		}
 
-		private const string m_vowels = "aeuio";
-		/// <summary>
-		/// Returns name with article for nouns
-		/// </summary>
-		/// <param name="article">0=definite, 1=indefinite</param>
-		/// <param name="firstLetterUppercase"></param>
-		/// <returns>name of this object (includes article if needed)</returns>
-		public virtual string GetName(int article, bool firstLetterUppercase)
+	}
+
+	private const string m_vowels = "aeuio";
+	/// <summary>
+	/// Returns name with article for nouns
+	/// </summary>
+	/// <param name="article">0=definite, 1=indefinite</param>
+	/// <param name="firstLetterUppercase"></param>
+	/// <returns>name of this object (includes article if needed)</returns>
+	public virtual string GetName(int article, bool firstLetterUppercase)
+	{
+		/*
+		 * http://www.camelotherald.com/more/888.shtml
+		 * - All monsters names whose names begin with a vowel should now use the article 'an' instead of 'a'.
+		 * 
+		 * http://www.camelotherald.com/more/865.shtml
+		 * - Instances where objects that began with a vowel but were prefixed by the article "a" (a orb of animation) have been corrected.
+		 */
+
+
+		// actually this should be only for Named mobs (like dragon, legion) but there is no way to find that out
+		if (char.IsUpper(Name[0])) // proper noun
 		{
-			/*
-			 * http://www.camelotherald.com/more/888.shtml
-			 * - All monsters names whose names begin with a vowel should now use the article 'an' instead of 'a'.
-			 * 
-			 * http://www.camelotherald.com/more/865.shtml
-			 * - Instances where objects that began with a vowel but were prefixed by the article "a" (a orb of animation) have been corrected.
-			 */
-
-
-			// actually this should be only for Named mobs (like dragon, legion) but there is no way to find that out
-			if (char.IsUpper(Name[0])) // proper noun
+			return Name;
+		}
+		else // common noun
+			if (article == 0)
 			{
-				return Name;
+				if (firstLetterUppercase)
+					return "The " + Name;
+				else
+					return "the " + Name;
 			}
-			else // common noun
-				if (article == 0)
+			else
+			{
+				// if first letter is a vowel
+				if (m_vowels.IndexOf(Name[0]) != -1)
 				{
 					if (firstLetterUppercase)
-						return "The " + Name;
+						return "An " + Name;
 					else
-						return "the " + Name;
+						return "an " + Name;
 				}
 				else
 				{
-					// if first letter is a vowel
-					if (m_vowels.IndexOf(Name[0]) != -1)
-					{
-						if (firstLetterUppercase)
-							return "An " + Name;
-						else
-							return "an " + Name;
-					}
+					if (firstLetterUppercase)
+						return "A " + Name;
 					else
-					{
-						if (firstLetterUppercase)
-							return "A " + Name;
-						else
-							return "a " + Name;
-					}
+						return "a " + Name;
 				}
-		}
-
-		/// <summary>
-		/// Pronoun of this object in case you need to refer it in 3rd person
-		/// http://webster.commnet.edu/grammar/cases.htm
-		/// </summary>
-		/// <param name="firstLetterUppercase"></param>
-		/// <param name="form">0=Subjective, 1=Possessive, 2=Objective</param>
-		/// <returns>pronoun of this object</returns>
-		public virtual string GetPronoun(int form, bool firstLetterUppercase)
-		{
-			switch (form)
-			{
-				default: // Subjective
-					if (firstLetterUppercase)
-						return "It";
-					else
-						return "it";
-				case 1: // Possessive
-					if (firstLetterUppercase)
-						return "Its";
-					else
-						return "its";
-				case 2: // Objective
-					if (firstLetterUppercase)
-						return "It";
-					else
-						return "it";
 			}
+	}
+
+	/// <summary>
+	/// Pronoun of this object in case you need to refer it in 3rd person
+	/// http://webster.commnet.edu/grammar/cases.htm
+	/// </summary>
+	/// <param name="firstLetterUppercase"></param>
+	/// <param name="form">0=Subjective, 1=Possessive, 2=Objective</param>
+	/// <returns>pronoun of this object</returns>
+	public virtual string GetPronoun(int form, bool firstLetterUppercase)
+	{
+		switch (form)
+		{
+			default: // Subjective
+				if (firstLetterUppercase)
+					return "It";
+				else
+					return "it";
+			case 1: // Possessive
+				if (firstLetterUppercase)
+					return "Its";
+				else
+					return "its";
+			case 2: // Objective
+				if (firstLetterUppercase)
+					return "It";
+				else
+					return "it";
 		}
 	}
 }

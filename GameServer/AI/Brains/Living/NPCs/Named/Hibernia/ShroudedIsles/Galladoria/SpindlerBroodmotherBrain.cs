@@ -1,8 +1,12 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Spindler Broodmother
 public class SpindlerBroodmotherBrain : StandardMobBrain
@@ -39,7 +43,7 @@ public class SpindlerBroodmotherBrain : StandardMobBrain
             {
                 Enemys_To_Mezz.Clear();
             }
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             if (!RemoveAdds)
             {
                 foreach (GameNpc npc in Body.GetNPCsInRadius(4000))

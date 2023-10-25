@@ -1,6 +1,4 @@
-using DOL.GS;
-
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class RunilBrain : StandardMobBrain
 {

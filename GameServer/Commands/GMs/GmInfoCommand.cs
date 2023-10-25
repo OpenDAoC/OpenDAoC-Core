@@ -1,15 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler.Client.v168;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Database;
+using Core.GS.ECS;
+using Core.GS.Effects;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
+using Core.GS.Languages;
+using Core.GS.Packets.Clients;
+using Core.GS.Players;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&GMinfo", EPrivLevel.GM, "Various Information", "'/GMinfo (select a target or not)")]
 	public class GmInfoCommand : ACommandHandler, ICommandHandler
@@ -269,11 +278,11 @@ namespace DOL.GS.Commands
 
 					if (target.InCombat || target.attackComponent.AttackState)
 					{
-						info.Add("RegionTick: " + GameLoop.GameLoopTime);
+						info.Add("RegionTick: " + GameLoopMgr.GameLoopTime);
 						if(target.attackComponent.attackAction != null)
 						{
 							info.Add("AttackAction StartTime " + target.attackComponent.attackAction.StartTime);
-							info.Add("AttackAction TimeUntilStart " + (target.attackComponent.attackAction.StartTime - GameLoop.GameLoopTime));
+							info.Add("AttackAction TimeUntilStart " + (target.attackComponent.attackAction.StartTime - GameLoopMgr.GameLoopTime));
 						}
 					}
 
@@ -717,7 +726,7 @@ namespace DOL.GS.Commands
 					name = house.Name;
 		
 					int level = house.Model - ((house.Model - 1)/4)*4;
-					TimeSpan due = (house.LastPaid.AddDays(ServerProperties.Properties.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
+					TimeSpan due = (house.LastPaid.AddDays(ServerProperty.RENT_DUE_DAYS).AddHours(1) - DateTime.Now);
 					
 					info.Add("  ------- HOUSE ------\n");
 					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.Owner", name));
@@ -760,7 +769,7 @@ namespace DOL.GS.Commands
 					info.Add(" ");
 					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.Lockbox", MoneyMgr.GetString(house.KeptMoney)));
 					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.RentalPrice", MoneyMgr.GetString(HouseMgr.GetRentByModel(house.Model))));
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.MaxLockbox", MoneyMgr.GetString(HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)));
+					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.MaxLockbox", MoneyMgr.GetString(HouseMgr.GetRentByModel(house.Model) * ServerProperty.RENT_LOCKBOX_PAYMENTS)));
 					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.RentDueIn", due.Days, due.Hours));
 
 					#endregion House

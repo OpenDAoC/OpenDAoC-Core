@@ -1,7 +1,6 @@
 using System;
-using DOL.GS;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the FollowLostTarget event of GameNpc

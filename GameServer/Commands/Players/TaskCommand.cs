@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.GS.Enums;
+using Core.GS.Quests;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&task", EPrivLevel.Player, "Show the actual task", "/task")]
 public class TaskCommand : ACommandHandler, ICommandHandler

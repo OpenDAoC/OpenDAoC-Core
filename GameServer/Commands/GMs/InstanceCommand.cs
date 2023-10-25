@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Scripts;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
         "&instance",

@@ -1,4 +1,4 @@
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// Interface for properties that are multiplied to get final value (like max speed)

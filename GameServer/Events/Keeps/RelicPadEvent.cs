@@ -1,6 +1,6 @@
-using DOL.GS;
+using Core.GS.Keeps;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// This class holds all possible relic events.

@@ -1,7 +1,8 @@
 using System;
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
+using Core.GS.World;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&facegloc",

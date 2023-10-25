@@ -1,63 +1,63 @@
 using System;
 using System.Reflection;
-using DOL.Database;
+using Core.Database.Tables;
+using Core.GS.Scripts;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS.World;
+
+public class AreaMgr
 {
-	public class AreaMgr
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	public static bool LoadAllAreas()
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-		public static bool LoadAllAreas()
+		try
 		{
-			try
+			Assembly gasm = Assembly.GetExecutingAssembly();
+			var DBAreas = GameServer.Database.SelectAllObjects<DbArea>();
+			foreach (DbArea thisArea in DBAreas)
 			{
-				Assembly gasm = Assembly.GetExecutingAssembly();
-				var DBAreas = GameServer.Database.SelectAllObjects<DbArea>();
-				foreach (DbArea thisArea in DBAreas)
+				AArea area = (AArea)gasm.CreateInstance(thisArea.ClassType, false);
+				if (area == null)
 				{
-					AbstractArea area = (AbstractArea)gasm.CreateInstance(thisArea.ClassType, false);
-					if (area == null)
+					foreach (Assembly asm in ScriptMgr.Scripts)
 					{
-						foreach (Assembly asm in ScriptMgr.Scripts)
+						try
 						{
-							try
-							{
-								area = (AbstractArea)asm.CreateInstance(thisArea.ClassType, false);
-								
-								if (area != null) 
-									break;
-							}
-							catch (Exception e)
-							{
-								if (log.IsErrorEnabled)
-									log.Error("LoadAllAreas", e);
-							}
+							area = (AArea)asm.CreateInstance(thisArea.ClassType, false);
+							
+							if (area != null) 
+								break;
 						}
-
-						if (area == null)
+						catch (Exception e)
 						{
-							log.Debug("area type " + thisArea.ClassType + " cannot be created, skipping");
-							continue;
+							if (log.IsErrorEnabled)
+								log.Error("LoadAllAreas", e);
 						}
 					}
-					area.LoadFromDatabase(thisArea);
-					area.Sound = thisArea.Sound;
-					area.CanBroadcast = thisArea.CanBroadcast;
-					Region region = WorldMgr.GetRegion(thisArea.Region);
-					if (region == null)
+
+					if (area == null)
+					{
+						log.Debug("area type " + thisArea.ClassType + " cannot be created, skipping");
 						continue;
-					region.AddArea(area);
-					log.Info("Area added: " + thisArea.Description);
+					}
 				}
-				return true;
+				area.LoadFromDatabase(thisArea);
+				area.Sound = thisArea.Sound;
+				area.CanBroadcast = thisArea.CanBroadcast;
+				Region region = WorldMgr.GetRegion(thisArea.Region);
+				if (region == null)
+					continue;
+				region.AddArea(area);
+				log.Info("Area added: " + thisArea.Description);
 			}
-			catch (Exception ex)
-			{
-				log.Error("Loading all areas failed", ex);
-				return false;
-			}
+			return true;
+		}
+		catch (Exception ex)
+		{
+			log.Error("Loading all areas failed", ex);
+			return false;
 		}
 	}
 }

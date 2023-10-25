@@ -1,4 +1,6 @@
-namespace DOL.GS;
+using Core.GS.GameUtils;
+
+namespace Core.GS;
 
 public class ElementalPet : GameSummonedPet
 {

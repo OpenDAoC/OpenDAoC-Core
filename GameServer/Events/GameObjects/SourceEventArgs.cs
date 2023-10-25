@@ -1,7 +1,6 @@
 using System;
-using DOL.GS;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 public class SourceEventArgs : EventArgs
 {

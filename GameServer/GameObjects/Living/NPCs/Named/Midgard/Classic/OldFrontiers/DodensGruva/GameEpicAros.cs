@@ -1,12 +1,17 @@
 using System;
 using System.Reflection;
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS;
 
 public abstract class GameEpicAros : GameEpicBoss
 {
@@ -19,7 +24,7 @@ public abstract class GameEpicAros : GameEpicBoss
     /// </summary>
     public virtual int ArosDifficulty
     {
-        get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
+        get { return ServerProperty.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
     }
     /// <summary>
     /// Announcements for Bomb, BigBomb, Debuff and Death.
@@ -82,7 +87,7 @@ public abstract class GameEpicAros : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsReturningToSpawnPoint && keyName == GS.Abilities.CCImmunity)
+        if (IsReturningToSpawnPoint && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

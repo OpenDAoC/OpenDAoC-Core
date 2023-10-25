@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Scripts;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&object", //command to handle
 	              EPrivLevel.GM, //minimum privelege level
@@ -104,7 +107,7 @@ namespace DOL.GS.Commands
 					}
 				case "create":
 					{
-						string theType = "DOL.GS.GameStaticItem";
+						string theType = "Core.GS.GameStaticItem";
 						if (args.Length > 2)
 							theType = args[2];
 

@@ -1,7 +1,8 @@
 ﻿using System;
-using DOL.GS.Utils;
+using Core.GS.Enums;
+using Core.GS.Players;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
    "&realmtimer",

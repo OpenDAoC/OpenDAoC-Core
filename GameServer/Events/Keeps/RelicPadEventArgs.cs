@@ -1,7 +1,7 @@
 using System;
-using DOL.GS;
+using Core.GS.Keeps;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the RelicPad event

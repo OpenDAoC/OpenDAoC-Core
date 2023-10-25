@@ -1,50 +1,49 @@
 using System;
+using Core.GS.Enums;
 
-namespace DOL.GS.Behaviour.Attributes
-{    
-    [AttributeUsage(AttributeTargets.Class)]
-    public class ActionAttribute :Attribute
+namespace Core.GS.Behaviors;
+
+[AttributeUsage(AttributeTargets.Class)]
+public class ActionAttribute :Attribute
+{
+
+    private EActionType actionType;
+
+    public EActionType ActionType
     {
+        get { return actionType; }
+        set { actionType = value; }
+    }
 
-        private EActionType actionType;
+    private bool isNullableP;
 
-        public EActionType ActionType
-        {
-            get { return actionType; }
-            set { actionType = value; }
-        }
+    public bool IsNullableP
+    {
+        get { return isNullableP; }
+        set { isNullableP = value; }
+    }
 
-        private bool isNullableP;
+    private bool isNullableQ;
 
-        public bool IsNullableP
-        {
-            get { return isNullableP; }
-            set { isNullableP = value; }
-        }
+    public bool IsNullableQ
+    {
+        get { return isNullableQ; }
+        set { isNullableQ = value; }
+    }
 
-        private bool isNullableQ;
+    private Object defaultValueP;
 
-        public bool IsNullableQ
-        {
-            get { return isNullableQ; }
-            set { isNullableQ = value; }
-        }
+    public Object DefaultValueP
+    {
+        get { return defaultValueP; }
+        set { defaultValueP = value; }
+    }
 
-        private Object defaultValueP;
+    private Object defaultValueQ;
 
-        public Object DefaultValueP
-        {
-            get { return defaultValueP; }
-            set { defaultValueP = value; }
-        }
-
-        private Object defaultValueQ;
-
-        public Object DefaultValueQ
-        {
-            get { return defaultValueQ; }
-            set { defaultValueQ = value; }
-        }
-        
+    public Object DefaultValueQ
+    {
+        get { return defaultValueQ; }
+        set { defaultValueQ = value; }
     }
 }

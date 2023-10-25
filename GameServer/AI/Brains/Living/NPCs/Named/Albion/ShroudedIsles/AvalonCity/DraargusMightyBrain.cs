@@ -1,7 +1,9 @@
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Dra'argus the Mighty
 public class DraargusMightyBrain : StandardMobBrain
@@ -18,7 +20,7 @@ public class DraargusMightyBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
         }
         if (Body.InCombat && Body.IsAlive && HasAggro)
@@ -77,7 +79,7 @@ public class DraugynSphereBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
         }
         if (HasAggro && Body.IsAlive)

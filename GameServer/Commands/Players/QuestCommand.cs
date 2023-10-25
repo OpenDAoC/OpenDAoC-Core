@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using DOL.GS.Quests;
+using Core.GS.Enums;
+using Core.GS.Quests;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&quest",

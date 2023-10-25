@@ -1,6 +1,6 @@
-using DOL.GS;
+using Core.GS.Enums;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI
 {
     public class LieutenantSaxeBrain : StandardMobBrain
     {
@@ -19,7 +19,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
                 this.Body.Health = this.Body.MaxHealth;
             }
             if (Body.InCombat && HasAggro)

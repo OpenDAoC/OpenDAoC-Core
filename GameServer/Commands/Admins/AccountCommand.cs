@@ -1,9 +1,15 @@
 using System;
 using System.Text.RegularExpressions;
-using DOL.Database;
-using DOL.GS.PacketHandler.Client.v168;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Packets.Clients;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
 	[Command(
@@ -111,7 +117,7 @@ namespace DOL.GS.Commands
 	                            PrivLevel = (uint)EPrivLevel.Player,
 	                            Realm = (int)ERealm.None,
 	                            CreationDate = DateTime.Now,
-	                            Language = ServerProperties.Properties.SERV_LANGUAGE
+	                            Language = ServerProperty.SERV_LANGUAGE
 	                        };
 	                        
 	                        GameServer.Database.AddObject(account);

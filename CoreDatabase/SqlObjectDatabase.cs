@@ -3,11 +3,11 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using DOL.Database.Connection;
-using DOL.Database.Attributes;
-using DOL.Database.UniqueID;
+using System.Transactions;
+using Core.Database;
+using Core.Database.Enums;
 
-namespace DOL.Database
+namespace Core.Database
 {
 	/// <summary>
 	/// Abstract Base Class for SQL based Database Connector
@@ -380,7 +380,7 @@ namespace DOL.Database
 		/// <param name="parameters">Parameters for filtering</param>
 		/// <param name="isolation">Isolation Level</param>
 		/// <returns>Collection of DataObjects Sets matching Parametrized Where Expression</returns>
-		protected override IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, Transaction.EIsolationLevel isolation)
+		protected override IList<IList<DataObject>> SelectObjectsImpl(DataTableHandler tableHandler, string whereExpression, IEnumerable<IEnumerable<QueryParameter>> parameters, EIsolationLevel isolation)
 		{
 			var columns = tableHandler.FieldElementBindings.ToArray();
 			

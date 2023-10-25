@@ -1,1154 +1,1156 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Packets.Server;
+using Core.GS.Server;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS.Quests.Midgard
+namespace Core.GS.Quests;
+
+public class RogueLvl50EpicMidQuest : BaseQuest
 {
-	public class RogueLvl50EpicMidQuest : BaseQuest
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	protected const string questTitle = "War Concluded";
+	protected const int minimumLevel = 50;
+	protected const int maximumLevel = 50;
+
+	private static GameNpc Masrim = null; // Start NPC
+	private static Oona Oona = null; // Mob to kill
+	private static GameNpc MorlinCaan = null; // Trainer for reward
+
+	private static DbItemTemplate oona_head = null; //ball of flame
+	private static DbItemTemplate sealed_pouch = null; //sealed pouch
+	private static DbItemTemplate HunterEpicBoots = null; //Call of the Hunt Boots 
+	private static DbItemTemplate HunterEpicHelm = null; //Call of the Hunt Coif 
+	private static DbItemTemplate HunterEpicGloves = null; //Call of the Hunt Gloves 
+	private static DbItemTemplate HunterEpicVest = null; //Call of the Hunt Hauberk 
+	private static DbItemTemplate HunterEpicLegs = null; //Call of the Hunt Legs 
+	private static DbItemTemplate HunterEpicArms = null; //Call of the Hunt Sleeves 
+	private static DbItemTemplate ShadowbladeEpicBoots = null; //Shadow Shrouded Boots 
+	private static DbItemTemplate ShadowbladeEpicHelm = null; //Shadow Shrouded Coif 
+	private static DbItemTemplate ShadowbladeEpicGloves = null; //Shadow Shrouded Gloves 
+	private static DbItemTemplate ShadowbladeEpicVest = null; //Shadow Shrouded Hauberk 
+	private static DbItemTemplate ShadowbladeEpicLegs = null; //Shadow Shrouded Legs 
+	private static DbItemTemplate ShadowbladeEpicArms = null; //Shadow Shrouded Sleeves         
+
+	// Constructors
+	public RogueLvl50EpicMidQuest() : base()
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+	}
 
-		protected const string questTitle = "War Concluded";
-		protected const int minimumLevel = 50;
-		protected const int maximumLevel = 50;
+	public RogueLvl50EpicMidQuest(GamePlayer questingPlayer) : base(questingPlayer)
+	{
+	}
 
-		private static GameNpc Masrim = null; // Start NPC
-		private static Oona Oona = null; // Mob to kill
-		private static GameNpc MorlinCaan = null; // Trainer for reward
+	public RogueLvl50EpicMidQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
+	{
+	}
 
-		private static DbItemTemplate oona_head = null; //ball of flame
-		private static DbItemTemplate sealed_pouch = null; //sealed pouch
-		private static DbItemTemplate HunterEpicBoots = null; //Call of the Hunt Boots 
-		private static DbItemTemplate HunterEpicHelm = null; //Call of the Hunt Coif 
-		private static DbItemTemplate HunterEpicGloves = null; //Call of the Hunt Gloves 
-		private static DbItemTemplate HunterEpicVest = null; //Call of the Hunt Hauberk 
-		private static DbItemTemplate HunterEpicLegs = null; //Call of the Hunt Legs 
-		private static DbItemTemplate HunterEpicArms = null; //Call of the Hunt Sleeves 
-		private static DbItemTemplate ShadowbladeEpicBoots = null; //Shadow Shrouded Boots 
-		private static DbItemTemplate ShadowbladeEpicHelm = null; //Shadow Shrouded Coif 
-		private static DbItemTemplate ShadowbladeEpicGloves = null; //Shadow Shrouded Gloves 
-		private static DbItemTemplate ShadowbladeEpicVest = null; //Shadow Shrouded Hauberk 
-		private static DbItemTemplate ShadowbladeEpicLegs = null; //Shadow Shrouded Legs 
-		private static DbItemTemplate ShadowbladeEpicArms = null; //Shadow Shrouded Sleeves         
+	public RogueLvl50EpicMidQuest(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
+	{
+	}
 
-		// Constructors
-		public RogueLvl50EpicMidQuest() : base()
+	[ScriptLoadedEvent]
+	public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
+	{
+		if (!ServerProperty.LOAD_QUESTS)
+			return;
+		
+
+		#region defineNPCs
+
+		GameNpc[] npcs = WorldMgr.GetNPCsByName("Masrim", ERealm.Midgard);
+
+		if (npcs.Length > 0)
+			foreach (GameNpc npc in npcs)
+				if (npc.CurrentRegionID == 100 && npc.X == 749099 && npc.Y == 813104)
+				{
+					Masrim = npc;
+					break;
+				}
+
+		if (Masrim == null)
 		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Masrim , creating it ...");
+			Masrim = new GameNpc();
+			Masrim.Model = 177;
+			Masrim.Name = "Masrim";
+			Masrim.GuildName = "";
+			Masrim.Realm = ERealm.Midgard;
+			Masrim.CurrentRegionID = 100;
+			Masrim.Size = 52;
+			Masrim.Level = 40;
+			Masrim.X = 749099;
+			Masrim.Y = 813104;
+			Masrim.Z = 4437;
+			Masrim.Heading = 2605;
+			Masrim.AddToWorld();
+			if (SAVE_INTO_DATABASE)
+			{
+				Masrim.SaveIntoDatabase();
+			}
+		}
+		// end npc
+
+		npcs = WorldMgr.GetNPCsByName("Oona", ERealm.None);
+
+		if (npcs.Length > 0)
+			foreach (GameNpc npc in npcs)
+				if (npc.CurrentRegionID == 100 && npc.X == 607233 && npc.Y == 786850)
+				{
+					Oona = npc as Oona;
+					break;
+				}
+
+		if (Oona == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Oona , creating it ...");
+			Oona = new Oona();
+			Oona.Model = 356;
+			Oona.Name = "Oona";
+			Oona.GuildName = "";
+			Oona.Realm = ERealm.None;
+			Oona.CurrentRegionID = 100;
+			Oona.Size = 50;
+			Oona.Level = 65;
+			Oona.X = 607233;
+			Oona.Y = 786850;
+			Oona.Z = 4384;
+			Oona.Heading = 3891;
+			Oona.Flags ^= ENpcFlags.GHOST;
+			Oona.AddToWorld();
+			if (SAVE_INTO_DATABASE)
+			{
+				Oona.SaveIntoDatabase();
+			}
+		}
+		// end npc
+
+		npcs = WorldMgr.GetNPCsByName("Morlin Caan", ERealm.Midgard);
+
+		if (npcs.Length > 0)
+			foreach (GameNpc npc in npcs)
+				if (npc.CurrentRegionID == 101 && npc.X == 33400 && npc.Y == 33620)
+				{
+					MorlinCaan = npc;
+					break;
+				}
+
+		if (MorlinCaan == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Morlin Caan , creating it ...");
+			MorlinCaan = new GameNpc();
+			MorlinCaan.Model = 235;
+			MorlinCaan.Name = "Morlin Caan";
+			MorlinCaan.GuildName = "Smith";
+			MorlinCaan.Realm = ERealm.Midgard;
+			MorlinCaan.CurrentRegionID = 101;
+			MorlinCaan.Size = 50;
+			MorlinCaan.Level = 54;
+			MorlinCaan.X = 33400;
+			MorlinCaan.Y = 33620;
+			MorlinCaan.Z = 8023;
+			MorlinCaan.Heading = 523;
+			MorlinCaan.AddToWorld();
+			if (SAVE_INTO_DATABASE)
+			{
+				MorlinCaan.SaveIntoDatabase();
+			}
+		}
+		// end npc
+
+		#endregion
+
+		#region defineItems
+
+		oona_head = GameServer.Database.FindObjectByKey<DbItemTemplate>("oona_head");
+		if (oona_head == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Oona's Head , creating it ...");
+			oona_head = new DbItemTemplate();
+			oona_head.Id_nb = "oona_head";
+			oona_head.Name = "Oona's Head";
+			oona_head.Level = 8;
+			oona_head.Item_Type = 29;
+			oona_head.Model = 503;
+			oona_head.IsDropable = true;
+			oona_head.IsPickable = true;
+			oona_head.DPS_AF = 0;
+			oona_head.SPD_ABS = 0;
+			oona_head.Object_Type = 41;
+			oona_head.Hand = 0;
+			oona_head.Type_Damage = 0;
+			oona_head.Quality = 100;
+			oona_head.Weight = 12;
+			if (SAVE_INTO_DATABASE)
+			{
+				GameServer.Database.AddObject(oona_head);
+			}
+
 		}
 
-		public RogueLvl50EpicMidQuest(GamePlayer questingPlayer) : base(questingPlayer)
+		sealed_pouch = GameServer.Database.FindObjectByKey<DbItemTemplate>("sealed_pouch");
+		if (sealed_pouch == null)
 		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Sealed Pouch , creating it ...");
+			sealed_pouch = new DbItemTemplate();
+			sealed_pouch.Id_nb = "sealed_pouch";
+			sealed_pouch.Name = "Sealed Pouch";
+			sealed_pouch.Level = 8;
+			sealed_pouch.Item_Type = 29;
+			sealed_pouch.Model = 488;
+			sealed_pouch.IsDropable = false;
+			sealed_pouch.IsPickable = false;
+			sealed_pouch.DPS_AF = 0;
+			sealed_pouch.SPD_ABS = 0;
+			sealed_pouch.Object_Type = 41;
+			sealed_pouch.Hand = 0;
+			sealed_pouch.Type_Damage = 0;
+			sealed_pouch.Quality = 100;
+			sealed_pouch.Weight = 12;
+			if (SAVE_INTO_DATABASE)
+			{
+				GameServer.Database.AddObject(sealed_pouch);
+			}
+
 		}
-
-		public RogueLvl50EpicMidQuest(GamePlayer questingPlayer, int step) : base(questingPlayer, step)
-		{
-		}
-
-		public RogueLvl50EpicMidQuest(GamePlayer questingPlayer, DbQuest dbQuest) : base(questingPlayer, dbQuest)
-		{
-		}
-
-		[ScriptLoadedEvent]
-		public static void ScriptLoaded(CoreEvent e, object sender, EventArgs args)
-		{
-			if (!ServerProperties.Properties.LOAD_QUESTS)
-				return;
-			
-
-			#region defineNPCs
-
-			GameNpc[] npcs = WorldMgr.GetNPCsByName("Masrim", ERealm.Midgard);
-
-			if (npcs.Length > 0)
-				foreach (GameNpc npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 749099 && npc.Y == 813104)
-					{
-						Masrim = npc;
-						break;
-					}
-
-			if (Masrim == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Masrim , creating it ...");
-				Masrim = new GameNpc();
-				Masrim.Model = 177;
-				Masrim.Name = "Masrim";
-				Masrim.GuildName = "";
-				Masrim.Realm = ERealm.Midgard;
-				Masrim.CurrentRegionID = 100;
-				Masrim.Size = 52;
-				Masrim.Level = 40;
-				Masrim.X = 749099;
-				Masrim.Y = 813104;
-				Masrim.Z = 4437;
-				Masrim.Heading = 2605;
-				Masrim.AddToWorld();
-				if (SAVE_INTO_DATABASE)
-				{
-					Masrim.SaveIntoDatabase();
-				}
-			}
-			// end npc
-
-			npcs = WorldMgr.GetNPCsByName("Oona", ERealm.None);
-
-			if (npcs.Length > 0)
-				foreach (GameNpc npc in npcs)
-					if (npc.CurrentRegionID == 100 && npc.X == 607233 && npc.Y == 786850)
-					{
-						Oona = npc as Oona;
-						break;
-					}
-
-			if (Oona == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Oona , creating it ...");
-				Oona = new Oona();
-				Oona.Model = 356;
-				Oona.Name = "Oona";
-				Oona.GuildName = "";
-				Oona.Realm = ERealm.None;
-				Oona.CurrentRegionID = 100;
-				Oona.Size = 50;
-				Oona.Level = 65;
-				Oona.X = 607233;
-				Oona.Y = 786850;
-				Oona.Z = 4384;
-				Oona.Heading = 3891;
-				Oona.Flags ^= ENpcFlags.GHOST;
-				Oona.AddToWorld();
-				if (SAVE_INTO_DATABASE)
-				{
-					Oona.SaveIntoDatabase();
-				}
-			}
-			// end npc
-
-			npcs = WorldMgr.GetNPCsByName("Morlin Caan", ERealm.Midgard);
-
-			if (npcs.Length > 0)
-				foreach (GameNpc npc in npcs)
-					if (npc.CurrentRegionID == 101 && npc.X == 33400 && npc.Y == 33620)
-					{
-						MorlinCaan = npc;
-						break;
-					}
-
-			if (MorlinCaan == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Morlin Caan , creating it ...");
-				MorlinCaan = new GameNpc();
-				MorlinCaan.Model = 235;
-				MorlinCaan.Name = "Morlin Caan";
-				MorlinCaan.GuildName = "Smith";
-				MorlinCaan.Realm = ERealm.Midgard;
-				MorlinCaan.CurrentRegionID = 101;
-				MorlinCaan.Size = 50;
-				MorlinCaan.Level = 54;
-				MorlinCaan.X = 33400;
-				MorlinCaan.Y = 33620;
-				MorlinCaan.Z = 8023;
-				MorlinCaan.Heading = 523;
-				MorlinCaan.AddToWorld();
-				if (SAVE_INTO_DATABASE)
-				{
-					MorlinCaan.SaveIntoDatabase();
-				}
-			}
-			// end npc
-
-			#endregion
-
-			#region defineItems
-
-			oona_head = GameServer.Database.FindObjectByKey<DbItemTemplate>("oona_head");
-			if (oona_head == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Oona's Head , creating it ...");
-				oona_head = new DbItemTemplate();
-				oona_head.Id_nb = "oona_head";
-				oona_head.Name = "Oona's Head";
-				oona_head.Level = 8;
-				oona_head.Item_Type = 29;
-				oona_head.Model = 503;
-				oona_head.IsDropable = true;
-				oona_head.IsPickable = true;
-				oona_head.DPS_AF = 0;
-				oona_head.SPD_ABS = 0;
-				oona_head.Object_Type = 41;
-				oona_head.Hand = 0;
-				oona_head.Type_Damage = 0;
-				oona_head.Quality = 100;
-				oona_head.Weight = 12;
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(oona_head);
-				}
-
-			}
-
-			sealed_pouch = GameServer.Database.FindObjectByKey<DbItemTemplate>("sealed_pouch");
-			if (sealed_pouch == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Sealed Pouch , creating it ...");
-				sealed_pouch = new DbItemTemplate();
-				sealed_pouch.Id_nb = "sealed_pouch";
-				sealed_pouch.Name = "Sealed Pouch";
-				sealed_pouch.Level = 8;
-				sealed_pouch.Item_Type = 29;
-				sealed_pouch.Model = 488;
-				sealed_pouch.IsDropable = false;
-				sealed_pouch.IsPickable = false;
-				sealed_pouch.DPS_AF = 0;
-				sealed_pouch.SPD_ABS = 0;
-				sealed_pouch.Object_Type = 41;
-				sealed_pouch.Hand = 0;
-				sealed_pouch.Type_Damage = 0;
-				sealed_pouch.Quality = 100;
-				sealed_pouch.Weight = 12;
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(sealed_pouch);
-				}
-
-			}
 // end item
 
-			HunterEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicBoots");
-			if (HunterEpicBoots == null)
+		HunterEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicBoots");
+		if (HunterEpicBoots == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Hunters Epic Boots , creating it ...");
+			HunterEpicBoots = new DbItemTemplate();
+			HunterEpicBoots.Id_nb = "HunterEpicBoots";
+			HunterEpicBoots.Name = "Call of the Hunt Boots";
+			HunterEpicBoots.Level = 50;
+			HunterEpicBoots.Item_Type = 23;
+			HunterEpicBoots.Model = 760;
+			HunterEpicBoots.IsDropable = true;
+			HunterEpicBoots.IsPickable = true;
+			HunterEpicBoots.DPS_AF = 100;
+			HunterEpicBoots.SPD_ABS = 19;
+			HunterEpicBoots.Object_Type = 34;
+			HunterEpicBoots.Quality = 100;
+			HunterEpicBoots.Weight = 22;
+			HunterEpicBoots.Bonus = 35;
+			HunterEpicBoots.MaxCondition = 50000;
+			HunterEpicBoots.MaxDurability = 50000;
+			HunterEpicBoots.Condition = 50000;
+			HunterEpicBoots.Durability = 50000;
+
+			HunterEpicBoots.Bonus1 = 19;
+			HunterEpicBoots.Bonus1Type = (int) EStat.CON;
+
+			HunterEpicBoots.Bonus2 = 19;
+			HunterEpicBoots.Bonus2Type = (int) EStat.DEX;
+
+			HunterEpicBoots.Bonus3 = 10;
+			HunterEpicBoots.Bonus3Type = (int) EResist.Thrust;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Hunters Epic Boots , creating it ...");
-				HunterEpicBoots = new DbItemTemplate();
-				HunterEpicBoots.Id_nb = "HunterEpicBoots";
-				HunterEpicBoots.Name = "Call of the Hunt Boots";
-				HunterEpicBoots.Level = 50;
-				HunterEpicBoots.Item_Type = 23;
-				HunterEpicBoots.Model = 760;
-				HunterEpicBoots.IsDropable = true;
-				HunterEpicBoots.IsPickable = true;
-				HunterEpicBoots.DPS_AF = 100;
-				HunterEpicBoots.SPD_ABS = 19;
-				HunterEpicBoots.Object_Type = 34;
-				HunterEpicBoots.Quality = 100;
-				HunterEpicBoots.Weight = 22;
-				HunterEpicBoots.Bonus = 35;
-				HunterEpicBoots.MaxCondition = 50000;
-				HunterEpicBoots.MaxDurability = 50000;
-				HunterEpicBoots.Condition = 50000;
-				HunterEpicBoots.Durability = 50000;
-
-				HunterEpicBoots.Bonus1 = 19;
-				HunterEpicBoots.Bonus1Type = (int) EStat.CON;
-
-				HunterEpicBoots.Bonus2 = 19;
-				HunterEpicBoots.Bonus2Type = (int) EStat.DEX;
-
-				HunterEpicBoots.Bonus3 = 10;
-				HunterEpicBoots.Bonus3Type = (int) EResist.Thrust;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(HunterEpicBoots);
-				}
-
+				GameServer.Database.AddObject(HunterEpicBoots);
 			}
+
+		}
 //end item
-			//Call of the Hunt Coif 
-			HunterEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicHelm");
-			if (HunterEpicHelm == null)
+		//Call of the Hunt Coif 
+		HunterEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicHelm");
+		if (HunterEpicHelm == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Hunters Epic Helm , creating it ...");
+			HunterEpicHelm = new DbItemTemplate();
+			HunterEpicHelm.Id_nb = "HunterEpicHelm";
+			HunterEpicHelm.Name = "Call of the Hunt Coif";
+			HunterEpicHelm.Level = 50;
+			HunterEpicHelm.Item_Type = 21;
+			HunterEpicHelm.Model = 829; //NEED TO WORK ON..
+			HunterEpicHelm.IsDropable = true;
+			HunterEpicHelm.IsPickable = true;
+			HunterEpicHelm.DPS_AF = 100;
+			HunterEpicHelm.SPD_ABS = 19;
+			HunterEpicHelm.Object_Type = 34;
+			HunterEpicHelm.Quality = 100;
+			HunterEpicHelm.Weight = 22;
+			HunterEpicHelm.Bonus = 35;
+			HunterEpicHelm.MaxCondition = 50000;
+			HunterEpicHelm.MaxDurability = 50000;
+			HunterEpicHelm.Condition = 50000;
+			HunterEpicHelm.Durability = 50000;
+
+			HunterEpicHelm.Bonus1 = 3;
+			HunterEpicHelm.Bonus1Type = (int) EProperty.Skill_Spear;
+
+			HunterEpicHelm.Bonus2 = 3;
+			HunterEpicHelm.Bonus2Type = (int) EProperty.Skill_Stealth;
+
+			HunterEpicHelm.Bonus3 = 3;
+			HunterEpicHelm.Bonus3Type = (int) EProperty.Skill_Composite;
+
+			HunterEpicHelm.Bonus4 = 19;
+			HunterEpicHelm.Bonus4Type = (int) EStat.DEX;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Hunters Epic Helm , creating it ...");
-				HunterEpicHelm = new DbItemTemplate();
-				HunterEpicHelm.Id_nb = "HunterEpicHelm";
-				HunterEpicHelm.Name = "Call of the Hunt Coif";
-				HunterEpicHelm.Level = 50;
-				HunterEpicHelm.Item_Type = 21;
-				HunterEpicHelm.Model = 829; //NEED TO WORK ON..
-				HunterEpicHelm.IsDropable = true;
-				HunterEpicHelm.IsPickable = true;
-				HunterEpicHelm.DPS_AF = 100;
-				HunterEpicHelm.SPD_ABS = 19;
-				HunterEpicHelm.Object_Type = 34;
-				HunterEpicHelm.Quality = 100;
-				HunterEpicHelm.Weight = 22;
-				HunterEpicHelm.Bonus = 35;
-				HunterEpicHelm.MaxCondition = 50000;
-				HunterEpicHelm.MaxDurability = 50000;
-				HunterEpicHelm.Condition = 50000;
-				HunterEpicHelm.Durability = 50000;
-
-				HunterEpicHelm.Bonus1 = 3;
-				HunterEpicHelm.Bonus1Type = (int) EProperty.Skill_Spear;
-
-				HunterEpicHelm.Bonus2 = 3;
-				HunterEpicHelm.Bonus2Type = (int) EProperty.Skill_Stealth;
-
-				HunterEpicHelm.Bonus3 = 3;
-				HunterEpicHelm.Bonus3Type = (int) EProperty.Skill_Composite;
-
-				HunterEpicHelm.Bonus4 = 19;
-				HunterEpicHelm.Bonus4Type = (int) EStat.DEX;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(HunterEpicHelm);
-				}
-
+				GameServer.Database.AddObject(HunterEpicHelm);
 			}
+
+		}
 //end item
-			//Call of the Hunt Gloves 
-			HunterEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicGloves");
-			if (HunterEpicGloves == null)
+		//Call of the Hunt Gloves 
+		HunterEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicGloves");
+		if (HunterEpicGloves == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Hunters Epic Gloves , creating it ...");
+			HunterEpicGloves = new DbItemTemplate();
+			HunterEpicGloves.Id_nb = "HunterEpicGloves";
+			HunterEpicGloves.Name = "Call of the Hunt Gloves ";
+			HunterEpicGloves.Level = 50;
+			HunterEpicGloves.Item_Type = 22;
+			HunterEpicGloves.Model = 759;
+			HunterEpicGloves.IsDropable = true;
+			HunterEpicGloves.IsPickable = true;
+			HunterEpicGloves.DPS_AF = 100;
+			HunterEpicGloves.SPD_ABS = 19;
+			HunterEpicGloves.Object_Type = 34;
+			HunterEpicGloves.Quality = 100;
+			HunterEpicGloves.Weight = 22;
+			HunterEpicGloves.Bonus = 35;
+			HunterEpicGloves.MaxCondition = 50000;
+			HunterEpicGloves.MaxDurability = 50000;
+			HunterEpicGloves.Condition = 50000;
+			HunterEpicGloves.Durability = 50000;
+
+			HunterEpicGloves.Bonus1 = 5;
+			HunterEpicGloves.Bonus1Type = (int) EProperty.Skill_Composite;
+
+			HunterEpicGloves.Bonus2 = 15;
+			HunterEpicGloves.Bonus2Type = (int) EStat.QUI;
+
+			HunterEpicGloves.Bonus3 = 33;
+			HunterEpicGloves.Bonus3Type = (int) EProperty.MaxHealth;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Hunters Epic Gloves , creating it ...");
-				HunterEpicGloves = new DbItemTemplate();
-				HunterEpicGloves.Id_nb = "HunterEpicGloves";
-				HunterEpicGloves.Name = "Call of the Hunt Gloves ";
-				HunterEpicGloves.Level = 50;
-				HunterEpicGloves.Item_Type = 22;
-				HunterEpicGloves.Model = 759;
-				HunterEpicGloves.IsDropable = true;
-				HunterEpicGloves.IsPickable = true;
-				HunterEpicGloves.DPS_AF = 100;
-				HunterEpicGloves.SPD_ABS = 19;
-				HunterEpicGloves.Object_Type = 34;
-				HunterEpicGloves.Quality = 100;
-				HunterEpicGloves.Weight = 22;
-				HunterEpicGloves.Bonus = 35;
-				HunterEpicGloves.MaxCondition = 50000;
-				HunterEpicGloves.MaxDurability = 50000;
-				HunterEpicGloves.Condition = 50000;
-				HunterEpicGloves.Durability = 50000;
-
-				HunterEpicGloves.Bonus1 = 5;
-				HunterEpicGloves.Bonus1Type = (int) EProperty.Skill_Composite;
-
-				HunterEpicGloves.Bonus2 = 15;
-				HunterEpicGloves.Bonus2Type = (int) EStat.QUI;
-
-				HunterEpicGloves.Bonus3 = 33;
-				HunterEpicGloves.Bonus3Type = (int) EProperty.MaxHealth;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(HunterEpicGloves);
-				}
-
+				GameServer.Database.AddObject(HunterEpicGloves);
 			}
-			//Call of the Hunt Hauberk 
-			HunterEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicVest");
-			if (HunterEpicVest == null)
+
+		}
+		//Call of the Hunt Hauberk 
+		HunterEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicVest");
+		if (HunterEpicVest == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Hunters Epic Vest , creating it ...");
+			HunterEpicVest = new DbItemTemplate();
+			HunterEpicVest.Id_nb = "HunterEpicVest";
+			HunterEpicVest.Name = "Call of the Hunt Jerkin";
+			HunterEpicVest.Level = 50;
+			HunterEpicVest.Item_Type = 25;
+			HunterEpicVest.Model = 756;
+			HunterEpicVest.IsDropable = true;
+			HunterEpicVest.IsPickable = true;
+			HunterEpicVest.DPS_AF = 100;
+			HunterEpicVest.SPD_ABS = 19;
+			HunterEpicVest.Object_Type = 34;
+			HunterEpicVest.Quality = 100;
+			HunterEpicVest.Weight = 22;
+			HunterEpicVest.Bonus = 35;
+			HunterEpicVest.MaxCondition = 50000;
+			HunterEpicVest.MaxDurability = 50000;
+			HunterEpicVest.Condition = 50000;
+			HunterEpicVest.Durability = 50000;
+
+			HunterEpicVest.Bonus1 = 13;
+			HunterEpicVest.Bonus1Type = (int) EStat.STR;
+
+			HunterEpicVest.Bonus2 = 15;
+			HunterEpicVest.Bonus2Type = (int) EStat.CON;
+
+			HunterEpicVest.Bonus3 = 13;
+			HunterEpicVest.Bonus3Type = (int) EStat.DEX;
+
+			HunterEpicVest.Bonus4 = 6;
+			HunterEpicVest.Bonus4Type = (int) EResist.Cold;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Hunters Epic Vest , creating it ...");
-				HunterEpicVest = new DbItemTemplate();
-				HunterEpicVest.Id_nb = "HunterEpicVest";
-				HunterEpicVest.Name = "Call of the Hunt Jerkin";
-				HunterEpicVest.Level = 50;
-				HunterEpicVest.Item_Type = 25;
-				HunterEpicVest.Model = 756;
-				HunterEpicVest.IsDropable = true;
-				HunterEpicVest.IsPickable = true;
-				HunterEpicVest.DPS_AF = 100;
-				HunterEpicVest.SPD_ABS = 19;
-				HunterEpicVest.Object_Type = 34;
-				HunterEpicVest.Quality = 100;
-				HunterEpicVest.Weight = 22;
-				HunterEpicVest.Bonus = 35;
-				HunterEpicVest.MaxCondition = 50000;
-				HunterEpicVest.MaxDurability = 50000;
-				HunterEpicVest.Condition = 50000;
-				HunterEpicVest.Durability = 50000;
-
-				HunterEpicVest.Bonus1 = 13;
-				HunterEpicVest.Bonus1Type = (int) EStat.STR;
-
-				HunterEpicVest.Bonus2 = 15;
-				HunterEpicVest.Bonus2Type = (int) EStat.CON;
-
-				HunterEpicVest.Bonus3 = 13;
-				HunterEpicVest.Bonus3Type = (int) EStat.DEX;
-
-				HunterEpicVest.Bonus4 = 6;
-				HunterEpicVest.Bonus4Type = (int) EResist.Cold;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(HunterEpicVest);
-				}
-
+				GameServer.Database.AddObject(HunterEpicVest);
 			}
-			//Call of the Hunt Legs 
-			HunterEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicLegs");
-			if (HunterEpicLegs == null)
+
+		}
+		//Call of the Hunt Legs 
+		HunterEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicLegs");
+		if (HunterEpicLegs == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Hunters Epic Legs , creating it ...");
+			HunterEpicLegs = new DbItemTemplate();
+			HunterEpicLegs.Id_nb = "HunterEpicLegs";
+			HunterEpicLegs.Name = "Call of the Hunt Legs";
+			HunterEpicLegs.Level = 50;
+			HunterEpicLegs.Item_Type = 27;
+			HunterEpicLegs.Model = 757;
+			HunterEpicLegs.IsDropable = true;
+			HunterEpicLegs.IsPickable = true;
+			HunterEpicLegs.DPS_AF = 100;
+			HunterEpicLegs.SPD_ABS = 19;
+			HunterEpicLegs.Object_Type = 34;
+			HunterEpicLegs.Quality = 100;
+			HunterEpicLegs.Weight = 22;
+			HunterEpicLegs.Bonus = 35;
+			HunterEpicLegs.MaxCondition = 50000;
+			HunterEpicLegs.MaxDurability = 50000;
+			HunterEpicLegs.Condition = 50000;
+			HunterEpicLegs.Durability = 50000;
+
+			HunterEpicLegs.Bonus1 = 15;
+			HunterEpicLegs.Bonus1Type = (int) EStat.CON;
+
+			HunterEpicLegs.Bonus2 = 15;
+			HunterEpicLegs.Bonus2Type = (int) EStat.DEX;
+
+			HunterEpicLegs.Bonus3 = 7;
+			HunterEpicLegs.Bonus3Type = (int) EStat.QUI;
+
+			HunterEpicLegs.Bonus4 = 12;
+			HunterEpicLegs.Bonus4Type = (int) EResist.Matter;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Hunters Epic Legs , creating it ...");
-				HunterEpicLegs = new DbItemTemplate();
-				HunterEpicLegs.Id_nb = "HunterEpicLegs";
-				HunterEpicLegs.Name = "Call of the Hunt Legs";
-				HunterEpicLegs.Level = 50;
-				HunterEpicLegs.Item_Type = 27;
-				HunterEpicLegs.Model = 757;
-				HunterEpicLegs.IsDropable = true;
-				HunterEpicLegs.IsPickable = true;
-				HunterEpicLegs.DPS_AF = 100;
-				HunterEpicLegs.SPD_ABS = 19;
-				HunterEpicLegs.Object_Type = 34;
-				HunterEpicLegs.Quality = 100;
-				HunterEpicLegs.Weight = 22;
-				HunterEpicLegs.Bonus = 35;
-				HunterEpicLegs.MaxCondition = 50000;
-				HunterEpicLegs.MaxDurability = 50000;
-				HunterEpicLegs.Condition = 50000;
-				HunterEpicLegs.Durability = 50000;
-
-				HunterEpicLegs.Bonus1 = 15;
-				HunterEpicLegs.Bonus1Type = (int) EStat.CON;
-
-				HunterEpicLegs.Bonus2 = 15;
-				HunterEpicLegs.Bonus2Type = (int) EStat.DEX;
-
-				HunterEpicLegs.Bonus3 = 7;
-				HunterEpicLegs.Bonus3Type = (int) EStat.QUI;
-
-				HunterEpicLegs.Bonus4 = 12;
-				HunterEpicLegs.Bonus4Type = (int) EResist.Matter;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(HunterEpicLegs);
-				}
-
+				GameServer.Database.AddObject(HunterEpicLegs);
 			}
-			//Call of the Hunt Sleeves 
-			HunterEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicArms");
-			if (HunterEpicArms == null)
+
+		}
+		//Call of the Hunt Sleeves 
+		HunterEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("HunterEpicArms");
+		if (HunterEpicArms == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Hunter Epic Arms , creating it ...");
+			HunterEpicArms = new DbItemTemplate();
+			HunterEpicArms.Id_nb = "HunterEpicArms";
+			HunterEpicArms.Name = "Call of the Hunt Sleeves";
+			HunterEpicArms.Level = 50;
+			HunterEpicArms.Item_Type = 28;
+			HunterEpicArms.Model = 758;
+			HunterEpicArms.IsDropable = true;
+			HunterEpicArms.IsPickable = true;
+			HunterEpicArms.DPS_AF = 100;
+			HunterEpicArms.SPD_ABS = 19;
+			HunterEpicArms.Object_Type = 34;
+			HunterEpicArms.Quality = 100;
+			HunterEpicArms.Weight = 22;
+			HunterEpicArms.Bonus = 35;
+			HunterEpicArms.MaxCondition = 50000;
+			HunterEpicArms.MaxDurability = 50000;
+			HunterEpicArms.Condition = 50000;
+			HunterEpicArms.Durability = 50000;
+
+			HunterEpicArms.Bonus1 = 15;
+			HunterEpicArms.Bonus1Type = (int) EStat.STR;
+
+			HunterEpicArms.Bonus2 = 15;
+			HunterEpicArms.Bonus2Type = (int) EStat.QUI;
+
+			HunterEpicArms.Bonus3 = 10;
+			HunterEpicArms.Bonus3Type = (int) EResist.Crush;
+
+			HunterEpicArms.Bonus4 = 10;
+			HunterEpicArms.Bonus4Type = (int) EResist.Slash;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Hunter Epic Arms , creating it ...");
-				HunterEpicArms = new DbItemTemplate();
-				HunterEpicArms.Id_nb = "HunterEpicArms";
-				HunterEpicArms.Name = "Call of the Hunt Sleeves";
-				HunterEpicArms.Level = 50;
-				HunterEpicArms.Item_Type = 28;
-				HunterEpicArms.Model = 758;
-				HunterEpicArms.IsDropable = true;
-				HunterEpicArms.IsPickable = true;
-				HunterEpicArms.DPS_AF = 100;
-				HunterEpicArms.SPD_ABS = 19;
-				HunterEpicArms.Object_Type = 34;
-				HunterEpicArms.Quality = 100;
-				HunterEpicArms.Weight = 22;
-				HunterEpicArms.Bonus = 35;
-				HunterEpicArms.MaxCondition = 50000;
-				HunterEpicArms.MaxDurability = 50000;
-				HunterEpicArms.Condition = 50000;
-				HunterEpicArms.Durability = 50000;
-
-				HunterEpicArms.Bonus1 = 15;
-				HunterEpicArms.Bonus1Type = (int) EStat.STR;
-
-				HunterEpicArms.Bonus2 = 15;
-				HunterEpicArms.Bonus2Type = (int) EStat.QUI;
-
-				HunterEpicArms.Bonus3 = 10;
-				HunterEpicArms.Bonus3Type = (int) EResist.Crush;
-
-				HunterEpicArms.Bonus4 = 10;
-				HunterEpicArms.Bonus4Type = (int) EResist.Slash;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(HunterEpicArms);
-				}
-
+				GameServer.Database.AddObject(HunterEpicArms);
 			}
-			//Shadow Shrouded Boots 
-			ShadowbladeEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicBoots");
-			if (ShadowbladeEpicBoots == null)
+
+		}
+		//Shadow Shrouded Boots 
+		ShadowbladeEpicBoots = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicBoots");
+		if (ShadowbladeEpicBoots == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Shadowblade Epic Boots , creating it ...");
+			ShadowbladeEpicBoots = new DbItemTemplate();
+			ShadowbladeEpicBoots.Id_nb = "ShadowbladeEpicBoots";
+			ShadowbladeEpicBoots.Name = "Shadow Shrouded Boots";
+			ShadowbladeEpicBoots.Level = 50;
+			ShadowbladeEpicBoots.Item_Type = 23;
+			ShadowbladeEpicBoots.Model = 765;
+			ShadowbladeEpicBoots.IsDropable = true;
+			ShadowbladeEpicBoots.IsPickable = true;
+			ShadowbladeEpicBoots.DPS_AF = 100;
+			ShadowbladeEpicBoots.SPD_ABS = 10;
+			ShadowbladeEpicBoots.Object_Type = 33;
+			ShadowbladeEpicBoots.Quality = 100;
+			ShadowbladeEpicBoots.Weight = 22;
+			ShadowbladeEpicBoots.Bonus = 35;
+			ShadowbladeEpicBoots.MaxCondition = 50000;
+			ShadowbladeEpicBoots.MaxDurability = 50000;
+			ShadowbladeEpicBoots.Condition = 50000;
+			ShadowbladeEpicBoots.Durability = 50000;
+
+			ShadowbladeEpicBoots.Bonus1 = 5;
+			ShadowbladeEpicBoots.Bonus1Type = (int) EProperty.Skill_Stealth;
+
+			ShadowbladeEpicBoots.Bonus2 = 13;
+			ShadowbladeEpicBoots.Bonus2Type = (int) EStat.DEX;
+
+			ShadowbladeEpicBoots.Bonus3 = 13;
+			ShadowbladeEpicBoots.Bonus3Type = (int) EStat.QUI;
+
+			ShadowbladeEpicBoots.Bonus4 = 6;
+			ShadowbladeEpicBoots.Bonus4Type = (int) EResist.Heat;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Shadowblade Epic Boots , creating it ...");
-				ShadowbladeEpicBoots = new DbItemTemplate();
-				ShadowbladeEpicBoots.Id_nb = "ShadowbladeEpicBoots";
-				ShadowbladeEpicBoots.Name = "Shadow Shrouded Boots";
-				ShadowbladeEpicBoots.Level = 50;
-				ShadowbladeEpicBoots.Item_Type = 23;
-				ShadowbladeEpicBoots.Model = 765;
-				ShadowbladeEpicBoots.IsDropable = true;
-				ShadowbladeEpicBoots.IsPickable = true;
-				ShadowbladeEpicBoots.DPS_AF = 100;
-				ShadowbladeEpicBoots.SPD_ABS = 10;
-				ShadowbladeEpicBoots.Object_Type = 33;
-				ShadowbladeEpicBoots.Quality = 100;
-				ShadowbladeEpicBoots.Weight = 22;
-				ShadowbladeEpicBoots.Bonus = 35;
-				ShadowbladeEpicBoots.MaxCondition = 50000;
-				ShadowbladeEpicBoots.MaxDurability = 50000;
-				ShadowbladeEpicBoots.Condition = 50000;
-				ShadowbladeEpicBoots.Durability = 50000;
-
-				ShadowbladeEpicBoots.Bonus1 = 5;
-				ShadowbladeEpicBoots.Bonus1Type = (int) EProperty.Skill_Stealth;
-
-				ShadowbladeEpicBoots.Bonus2 = 13;
-				ShadowbladeEpicBoots.Bonus2Type = (int) EStat.DEX;
-
-				ShadowbladeEpicBoots.Bonus3 = 13;
-				ShadowbladeEpicBoots.Bonus3Type = (int) EStat.QUI;
-
-				ShadowbladeEpicBoots.Bonus4 = 6;
-				ShadowbladeEpicBoots.Bonus4Type = (int) EResist.Heat;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(ShadowbladeEpicBoots);
-				}
-
+				GameServer.Database.AddObject(ShadowbladeEpicBoots);
 			}
-			//Shadow Shrouded Coif 
-			ShadowbladeEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicHelm");
-			if (ShadowbladeEpicHelm == null)
+
+		}
+		//Shadow Shrouded Coif 
+		ShadowbladeEpicHelm = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicHelm");
+		if (ShadowbladeEpicHelm == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Shadowblade Epic Helm , creating it ...");
+			ShadowbladeEpicHelm = new DbItemTemplate();
+			ShadowbladeEpicHelm.Id_nb = "ShadowbladeEpicHelm";
+			ShadowbladeEpicHelm.Name = "Shadow Shrouded Coif";
+			ShadowbladeEpicHelm.Level = 50;
+			ShadowbladeEpicHelm.Item_Type = 21;
+			ShadowbladeEpicHelm.Model = 335; //NEED TO WORK ON..
+			ShadowbladeEpicHelm.IsDropable = true;
+			ShadowbladeEpicHelm.IsPickable = true;
+			ShadowbladeEpicHelm.DPS_AF = 100;
+			ShadowbladeEpicHelm.SPD_ABS = 10;
+			ShadowbladeEpicHelm.Object_Type = 33;
+			ShadowbladeEpicHelm.Quality = 100;
+			ShadowbladeEpicHelm.Weight = 22;
+			ShadowbladeEpicHelm.Bonus = 35;
+			ShadowbladeEpicHelm.MaxCondition = 50000;
+			ShadowbladeEpicHelm.MaxDurability = 50000;
+			ShadowbladeEpicHelm.Condition = 50000;
+			ShadowbladeEpicHelm.Durability = 50000;
+
+			ShadowbladeEpicHelm.Bonus1 = 10;
+			ShadowbladeEpicHelm.Bonus1Type = (int) EStat.STR;
+
+			ShadowbladeEpicHelm.Bonus2 = 12;
+			ShadowbladeEpicHelm.Bonus2Type = (int) EStat.CON;
+
+			ShadowbladeEpicHelm.Bonus3 = 10;
+			ShadowbladeEpicHelm.Bonus3Type = (int) EStat.DEX;
+
+			ShadowbladeEpicHelm.Bonus4 = 10;
+			ShadowbladeEpicHelm.Bonus4Type = (int) EStat.QUI;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Shadowblade Epic Helm , creating it ...");
-				ShadowbladeEpicHelm = new DbItemTemplate();
-				ShadowbladeEpicHelm.Id_nb = "ShadowbladeEpicHelm";
-				ShadowbladeEpicHelm.Name = "Shadow Shrouded Coif";
-				ShadowbladeEpicHelm.Level = 50;
-				ShadowbladeEpicHelm.Item_Type = 21;
-				ShadowbladeEpicHelm.Model = 335; //NEED TO WORK ON..
-				ShadowbladeEpicHelm.IsDropable = true;
-				ShadowbladeEpicHelm.IsPickable = true;
-				ShadowbladeEpicHelm.DPS_AF = 100;
-				ShadowbladeEpicHelm.SPD_ABS = 10;
-				ShadowbladeEpicHelm.Object_Type = 33;
-				ShadowbladeEpicHelm.Quality = 100;
-				ShadowbladeEpicHelm.Weight = 22;
-				ShadowbladeEpicHelm.Bonus = 35;
-				ShadowbladeEpicHelm.MaxCondition = 50000;
-				ShadowbladeEpicHelm.MaxDurability = 50000;
-				ShadowbladeEpicHelm.Condition = 50000;
-				ShadowbladeEpicHelm.Durability = 50000;
-
-				ShadowbladeEpicHelm.Bonus1 = 10;
-				ShadowbladeEpicHelm.Bonus1Type = (int) EStat.STR;
-
-				ShadowbladeEpicHelm.Bonus2 = 12;
-				ShadowbladeEpicHelm.Bonus2Type = (int) EStat.CON;
-
-				ShadowbladeEpicHelm.Bonus3 = 10;
-				ShadowbladeEpicHelm.Bonus3Type = (int) EStat.DEX;
-
-				ShadowbladeEpicHelm.Bonus4 = 10;
-				ShadowbladeEpicHelm.Bonus4Type = (int) EStat.QUI;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(ShadowbladeEpicHelm);
-				}
-
+				GameServer.Database.AddObject(ShadowbladeEpicHelm);
 			}
-			//Shadow Shrouded Gloves 
-			ShadowbladeEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicGloves");
-			if (ShadowbladeEpicGloves == null)
+
+		}
+		//Shadow Shrouded Gloves 
+		ShadowbladeEpicGloves = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicGloves");
+		if (ShadowbladeEpicGloves == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Shadowblade Epic Gloves , creating it ...");
+			ShadowbladeEpicGloves = new DbItemTemplate();
+			ShadowbladeEpicGloves.Id_nb = "ShadowbladeEpicGloves";
+			ShadowbladeEpicGloves.Name = "Shadow Shrouded Gloves";
+			ShadowbladeEpicGloves.Level = 50;
+			ShadowbladeEpicGloves.Item_Type = 22;
+			ShadowbladeEpicGloves.Model = 764;
+			ShadowbladeEpicGloves.IsDropable = true;
+			ShadowbladeEpicGloves.IsPickable = true;
+			ShadowbladeEpicGloves.DPS_AF = 100;
+			ShadowbladeEpicGloves.SPD_ABS = 10;
+			ShadowbladeEpicGloves.Object_Type = 33;
+			ShadowbladeEpicGloves.Quality = 100;
+			ShadowbladeEpicGloves.Weight = 22;
+			ShadowbladeEpicGloves.Bonus = 35;
+			ShadowbladeEpicGloves.MaxCondition = 50000;
+			ShadowbladeEpicGloves.MaxDurability = 50000;
+			ShadowbladeEpicGloves.Condition = 50000;
+			ShadowbladeEpicGloves.Durability = 50000;
+
+			ShadowbladeEpicGloves.Bonus1 = 2;
+			ShadowbladeEpicGloves.Bonus1Type = (int) EProperty.Skill_Critical_Strike;
+
+			ShadowbladeEpicGloves.Bonus2 = 12;
+			ShadowbladeEpicGloves.Bonus2Type = (int) EStat.QUI;
+
+			ShadowbladeEpicGloves.Bonus3 = 33;
+			ShadowbladeEpicGloves.Bonus3Type = (int) EProperty.MaxHealth;
+
+			ShadowbladeEpicGloves.Bonus4 = 4;
+			ShadowbladeEpicGloves.Bonus4Type = (int) EProperty.Skill_Envenom;
+
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Shadowblade Epic Gloves , creating it ...");
-				ShadowbladeEpicGloves = new DbItemTemplate();
-				ShadowbladeEpicGloves.Id_nb = "ShadowbladeEpicGloves";
-				ShadowbladeEpicGloves.Name = "Shadow Shrouded Gloves";
-				ShadowbladeEpicGloves.Level = 50;
-				ShadowbladeEpicGloves.Item_Type = 22;
-				ShadowbladeEpicGloves.Model = 764;
-				ShadowbladeEpicGloves.IsDropable = true;
-				ShadowbladeEpicGloves.IsPickable = true;
-				ShadowbladeEpicGloves.DPS_AF = 100;
-				ShadowbladeEpicGloves.SPD_ABS = 10;
-				ShadowbladeEpicGloves.Object_Type = 33;
-				ShadowbladeEpicGloves.Quality = 100;
-				ShadowbladeEpicGloves.Weight = 22;
-				ShadowbladeEpicGloves.Bonus = 35;
-				ShadowbladeEpicGloves.MaxCondition = 50000;
-				ShadowbladeEpicGloves.MaxDurability = 50000;
-				ShadowbladeEpicGloves.Condition = 50000;
-				ShadowbladeEpicGloves.Durability = 50000;
-
-				ShadowbladeEpicGloves.Bonus1 = 2;
-				ShadowbladeEpicGloves.Bonus1Type = (int) EProperty.Skill_Critical_Strike;
-
-				ShadowbladeEpicGloves.Bonus2 = 12;
-				ShadowbladeEpicGloves.Bonus2Type = (int) EStat.QUI;
-
-				ShadowbladeEpicGloves.Bonus3 = 33;
-				ShadowbladeEpicGloves.Bonus3Type = (int) EProperty.MaxHealth;
-
-				ShadowbladeEpicGloves.Bonus4 = 4;
-				ShadowbladeEpicGloves.Bonus4Type = (int) EProperty.Skill_Envenom;
-
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(ShadowbladeEpicGloves);
-				}
-
+				GameServer.Database.AddObject(ShadowbladeEpicGloves);
 			}
-			//Shadow Shrouded Hauberk 
-			ShadowbladeEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicVest");
-			if (ShadowbladeEpicVest == null)
+
+		}
+		//Shadow Shrouded Hauberk 
+		ShadowbladeEpicVest = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicVest");
+		if (ShadowbladeEpicVest == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Shadowblade Epic Vest , creating it ...");
+			ShadowbladeEpicVest = new DbItemTemplate();
+			ShadowbladeEpicVest.Id_nb = "ShadowbladeEpicVest";
+			ShadowbladeEpicVest.Name = "Shadow Shrouded Jerkin";
+			ShadowbladeEpicVest.Level = 50;
+			ShadowbladeEpicVest.Item_Type = 25;
+			ShadowbladeEpicVest.Model = 761;
+			ShadowbladeEpicVest.IsDropable = true;
+			ShadowbladeEpicVest.IsPickable = true;
+			ShadowbladeEpicVest.DPS_AF = 100;
+			ShadowbladeEpicVest.SPD_ABS = 10;
+			ShadowbladeEpicVest.Object_Type = 33;
+			ShadowbladeEpicVest.Quality = 100;
+			ShadowbladeEpicVest.Weight = 22;
+			ShadowbladeEpicVest.Bonus = 35;
+			ShadowbladeEpicVest.MaxCondition = 50000;
+			ShadowbladeEpicVest.MaxDurability = 50000;
+			ShadowbladeEpicVest.Condition = 50000;
+			ShadowbladeEpicVest.Durability = 50000;
+
+			ShadowbladeEpicVest.Bonus1 = 13;
+			ShadowbladeEpicVest.Bonus1Type = (int) EStat.STR;
+
+			ShadowbladeEpicVest.Bonus2 = 13;
+			ShadowbladeEpicVest.Bonus2Type = (int) EStat.DEX;
+
+			ShadowbladeEpicVest.Bonus3 = 30;
+			ShadowbladeEpicVest.Bonus3Type = (int) EProperty.MaxHealth;
+
+			ShadowbladeEpicVest.Bonus4 = 6;
+			ShadowbladeEpicVest.Bonus4Type = (int) EResist.Heat;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Shadowblade Epic Vest , creating it ...");
-				ShadowbladeEpicVest = new DbItemTemplate();
-				ShadowbladeEpicVest.Id_nb = "ShadowbladeEpicVest";
-				ShadowbladeEpicVest.Name = "Shadow Shrouded Jerkin";
-				ShadowbladeEpicVest.Level = 50;
-				ShadowbladeEpicVest.Item_Type = 25;
-				ShadowbladeEpicVest.Model = 761;
-				ShadowbladeEpicVest.IsDropable = true;
-				ShadowbladeEpicVest.IsPickable = true;
-				ShadowbladeEpicVest.DPS_AF = 100;
-				ShadowbladeEpicVest.SPD_ABS = 10;
-				ShadowbladeEpicVest.Object_Type = 33;
-				ShadowbladeEpicVest.Quality = 100;
-				ShadowbladeEpicVest.Weight = 22;
-				ShadowbladeEpicVest.Bonus = 35;
-				ShadowbladeEpicVest.MaxCondition = 50000;
-				ShadowbladeEpicVest.MaxDurability = 50000;
-				ShadowbladeEpicVest.Condition = 50000;
-				ShadowbladeEpicVest.Durability = 50000;
-
-				ShadowbladeEpicVest.Bonus1 = 13;
-				ShadowbladeEpicVest.Bonus1Type = (int) EStat.STR;
-
-				ShadowbladeEpicVest.Bonus2 = 13;
-				ShadowbladeEpicVest.Bonus2Type = (int) EStat.DEX;
-
-				ShadowbladeEpicVest.Bonus3 = 30;
-				ShadowbladeEpicVest.Bonus3Type = (int) EProperty.MaxHealth;
-
-				ShadowbladeEpicVest.Bonus4 = 6;
-				ShadowbladeEpicVest.Bonus4Type = (int) EResist.Heat;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(ShadowbladeEpicVest);
-				}
-
+				GameServer.Database.AddObject(ShadowbladeEpicVest);
 			}
-			//Shadow Shrouded Legs 
-			ShadowbladeEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicLegs");
-			if (ShadowbladeEpicLegs == null)
+
+		}
+		//Shadow Shrouded Legs 
+		ShadowbladeEpicLegs = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicLegs");
+		if (ShadowbladeEpicLegs == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Shadowblade Epic Legs , creating it ...");
+			ShadowbladeEpicLegs = new DbItemTemplate();
+			ShadowbladeEpicLegs.Id_nb = "ShadowbladeEpicLegs";
+			ShadowbladeEpicLegs.Name = "Shadow Shrouded Legs";
+			ShadowbladeEpicLegs.Level = 50;
+			ShadowbladeEpicLegs.Item_Type = 27;
+			ShadowbladeEpicLegs.Model = 762;
+			ShadowbladeEpicLegs.IsDropable = true;
+			ShadowbladeEpicLegs.IsPickable = true;
+			ShadowbladeEpicLegs.DPS_AF = 100;
+			ShadowbladeEpicLegs.SPD_ABS = 10;
+			ShadowbladeEpicLegs.Object_Type = 33;
+			ShadowbladeEpicLegs.Quality = 100;
+			ShadowbladeEpicLegs.Weight = 22;
+			ShadowbladeEpicLegs.Bonus = 35;
+			ShadowbladeEpicLegs.MaxCondition = 50000;
+			ShadowbladeEpicLegs.MaxDurability = 50000;
+			ShadowbladeEpicLegs.Condition = 50000;
+			ShadowbladeEpicLegs.Durability = 50000;
+
+			ShadowbladeEpicLegs.Bonus1 = 12;
+			ShadowbladeEpicLegs.Bonus1Type = (int) EStat.STR;
+
+			ShadowbladeEpicLegs.Bonus2 = 15;
+			ShadowbladeEpicLegs.Bonus2Type = (int) EStat.CON;
+
+			ShadowbladeEpicLegs.Bonus3 = 12;
+			ShadowbladeEpicLegs.Bonus3Type = (int) EStat.QUI;
+
+			ShadowbladeEpicLegs.Bonus4 = 10;
+			ShadowbladeEpicLegs.Bonus4Type = (int) EResist.Slash;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Shadowblade Epic Legs , creating it ...");
-				ShadowbladeEpicLegs = new DbItemTemplate();
-				ShadowbladeEpicLegs.Id_nb = "ShadowbladeEpicLegs";
-				ShadowbladeEpicLegs.Name = "Shadow Shrouded Legs";
-				ShadowbladeEpicLegs.Level = 50;
-				ShadowbladeEpicLegs.Item_Type = 27;
-				ShadowbladeEpicLegs.Model = 762;
-				ShadowbladeEpicLegs.IsDropable = true;
-				ShadowbladeEpicLegs.IsPickable = true;
-				ShadowbladeEpicLegs.DPS_AF = 100;
-				ShadowbladeEpicLegs.SPD_ABS = 10;
-				ShadowbladeEpicLegs.Object_Type = 33;
-				ShadowbladeEpicLegs.Quality = 100;
-				ShadowbladeEpicLegs.Weight = 22;
-				ShadowbladeEpicLegs.Bonus = 35;
-				ShadowbladeEpicLegs.MaxCondition = 50000;
-				ShadowbladeEpicLegs.MaxDurability = 50000;
-				ShadowbladeEpicLegs.Condition = 50000;
-				ShadowbladeEpicLegs.Durability = 50000;
-
-				ShadowbladeEpicLegs.Bonus1 = 12;
-				ShadowbladeEpicLegs.Bonus1Type = (int) EStat.STR;
-
-				ShadowbladeEpicLegs.Bonus2 = 15;
-				ShadowbladeEpicLegs.Bonus2Type = (int) EStat.CON;
-
-				ShadowbladeEpicLegs.Bonus3 = 12;
-				ShadowbladeEpicLegs.Bonus3Type = (int) EStat.QUI;
-
-				ShadowbladeEpicLegs.Bonus4 = 10;
-				ShadowbladeEpicLegs.Bonus4Type = (int) EResist.Slash;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(ShadowbladeEpicLegs);
-				}
-
+				GameServer.Database.AddObject(ShadowbladeEpicLegs);
 			}
-			//Shadow Shrouded Sleeves 
-			ShadowbladeEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicArms");
-			if (ShadowbladeEpicArms == null)
+
+		}
+		//Shadow Shrouded Sleeves 
+		ShadowbladeEpicArms = GameServer.Database.FindObjectByKey<DbItemTemplate>("ShadowbladeEpicArms");
+		if (ShadowbladeEpicArms == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("Could not find Shadowblade Epic Arms , creating it ...");
+			ShadowbladeEpicArms = new DbItemTemplate();
+			ShadowbladeEpicArms.Id_nb = "ShadowbladeEpicArms";
+			ShadowbladeEpicArms.Name = "Shadow Shrouded Sleeves";
+			ShadowbladeEpicArms.Level = 50;
+			ShadowbladeEpicArms.Item_Type = 28;
+			ShadowbladeEpicArms.Model = 763;
+			ShadowbladeEpicArms.IsDropable = true;
+			ShadowbladeEpicArms.IsPickable = true;
+			ShadowbladeEpicArms.DPS_AF = 100;
+			ShadowbladeEpicArms.SPD_ABS = 10;
+			ShadowbladeEpicArms.Object_Type = 33;
+			ShadowbladeEpicArms.Quality = 100;
+			ShadowbladeEpicArms.Weight = 22;
+			ShadowbladeEpicArms.Bonus = 35;
+			ShadowbladeEpicArms.MaxCondition = 50000;
+			ShadowbladeEpicArms.MaxDurability = 50000;
+			ShadowbladeEpicArms.Condition = 50000;
+			ShadowbladeEpicArms.Durability = 50000;
+
+			ShadowbladeEpicArms.Bonus1 = 15;
+			ShadowbladeEpicArms.Bonus1Type = (int) EStat.CON;
+
+			ShadowbladeEpicArms.Bonus2 = 16;
+			ShadowbladeEpicArms.Bonus2Type = (int) EStat.DEX;
+
+			ShadowbladeEpicArms.Bonus3 = 10;
+			ShadowbladeEpicArms.Bonus3Type = (int) EResist.Crush;
+
+			ShadowbladeEpicArms.Bonus4 = 10;
+			ShadowbladeEpicArms.Bonus4Type = (int) EResist.Thrust;
+
+			if (SAVE_INTO_DATABASE)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not find Shadowblade Epic Arms , creating it ...");
-				ShadowbladeEpicArms = new DbItemTemplate();
-				ShadowbladeEpicArms.Id_nb = "ShadowbladeEpicArms";
-				ShadowbladeEpicArms.Name = "Shadow Shrouded Sleeves";
-				ShadowbladeEpicArms.Level = 50;
-				ShadowbladeEpicArms.Item_Type = 28;
-				ShadowbladeEpicArms.Model = 763;
-				ShadowbladeEpicArms.IsDropable = true;
-				ShadowbladeEpicArms.IsPickable = true;
-				ShadowbladeEpicArms.DPS_AF = 100;
-				ShadowbladeEpicArms.SPD_ABS = 10;
-				ShadowbladeEpicArms.Object_Type = 33;
-				ShadowbladeEpicArms.Quality = 100;
-				ShadowbladeEpicArms.Weight = 22;
-				ShadowbladeEpicArms.Bonus = 35;
-				ShadowbladeEpicArms.MaxCondition = 50000;
-				ShadowbladeEpicArms.MaxDurability = 50000;
-				ShadowbladeEpicArms.Condition = 50000;
-				ShadowbladeEpicArms.Durability = 50000;
-
-				ShadowbladeEpicArms.Bonus1 = 15;
-				ShadowbladeEpicArms.Bonus1Type = (int) EStat.CON;
-
-				ShadowbladeEpicArms.Bonus2 = 16;
-				ShadowbladeEpicArms.Bonus2Type = (int) EStat.DEX;
-
-				ShadowbladeEpicArms.Bonus3 = 10;
-				ShadowbladeEpicArms.Bonus3Type = (int) EResist.Crush;
-
-				ShadowbladeEpicArms.Bonus4 = 10;
-				ShadowbladeEpicArms.Bonus4Type = (int) EResist.Thrust;
-
-				if (SAVE_INTO_DATABASE)
-				{
-					GameServer.Database.AddObject(ShadowbladeEpicArms);
-				}
-
+				GameServer.Database.AddObject(ShadowbladeEpicArms);
 			}
+
+		}
 //Shadowblade Epic Sleeves End
 //Item Descriptions End
 
-			#endregion
+		#endregion
 
-			GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
-			GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
+		GameEventMgr.AddHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+		GameEventMgr.AddHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
 
-			GameEventMgr.AddHandler(Masrim, GameObjectEvent.Interact, new CoreEventHandler(TalkToMasrim));
-			GameEventMgr.AddHandler(Masrim, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMasrim));
+		GameEventMgr.AddHandler(Masrim, GameObjectEvent.Interact, new CoreEventHandler(TalkToMasrim));
+		GameEventMgr.AddHandler(Masrim, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMasrim));
 
-			GameEventMgr.AddHandler(MorlinCaan, GameObjectEvent.Interact, new CoreEventHandler(TalkToMorlinCaan));
-			GameEventMgr.AddHandler(MorlinCaan, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMorlinCaan));
+		GameEventMgr.AddHandler(MorlinCaan, GameObjectEvent.Interact, new CoreEventHandler(TalkToMorlinCaan));
+		GameEventMgr.AddHandler(MorlinCaan, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMorlinCaan));
 
-			/* Now we bring to Masrim the possibility to give this quest to players */
-			Masrim.AddQuestToGive(typeof (RogueLvl50EpicMidQuest));
+		/* Now we bring to Masrim the possibility to give this quest to players */
+		Masrim.AddQuestToGive(typeof (RogueLvl50EpicMidQuest));
 
-			if (log.IsInfoEnabled)
-				log.Info("Quest \"" + questTitle + "\" initialized");
-		}
+		if (log.IsInfoEnabled)
+			log.Info("Quest \"" + questTitle + "\" initialized");
+	}
 
-		[ScriptUnloadedEvent]
-		public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
+	[ScriptUnloadedEvent]
+	public static void ScriptUnloaded(CoreEvent e, object sender, EventArgs args)
+	{
+		//if not loaded, don't worry
+		if (Masrim == null || MorlinCaan == null)
+			return;
+		// remove handlers
+		GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
+		GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
+
+		GameEventMgr.RemoveHandler(Masrim, GameObjectEvent.Interact, new CoreEventHandler(TalkToMasrim));
+		GameEventMgr.RemoveHandler(Masrim, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMasrim));
+
+		GameEventMgr.RemoveHandler(MorlinCaan, GameObjectEvent.Interact, new CoreEventHandler(TalkToMorlinCaan));
+		GameEventMgr.RemoveHandler(MorlinCaan, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMorlinCaan));
+
+		/* Now we remove to Masrim the possibility to give this quest to players */
+		Masrim.RemoveQuestToGive(typeof (RogueLvl50EpicMidQuest));
+	}
+
+	protected static void TalkToMasrim(CoreEvent e, object sender, EventArgs args)
+	{
+		//We get the player from the event arguments and check if he qualifies		
+		GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+		if (player == null)
+			return;
+
+		if(Masrim.CanGiveQuest(typeof (RogueLvl50EpicMidQuest), player)  <= 0)
+			return;
+
+		//We also check if the player is already doing the quest
+		RogueLvl50EpicMidQuest quest = player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) as RogueLvl50EpicMidQuest;
+
+		if (e == GameObjectEvent.Interact)
 		{
-			//if not loaded, don't worry
-			if (Masrim == null || MorlinCaan == null)
-				return;
-			// remove handlers
-			GameEventMgr.RemoveHandler(GamePlayerEvent.AcceptQuest, new CoreEventHandler(SubscribeQuest));
-			GameEventMgr.RemoveHandler(GamePlayerEvent.DeclineQuest, new CoreEventHandler(SubscribeQuest));
-
-			GameEventMgr.RemoveHandler(Masrim, GameObjectEvent.Interact, new CoreEventHandler(TalkToMasrim));
-			GameEventMgr.RemoveHandler(Masrim, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMasrim));
-
-			GameEventMgr.RemoveHandler(MorlinCaan, GameObjectEvent.Interact, new CoreEventHandler(TalkToMorlinCaan));
-			GameEventMgr.RemoveHandler(MorlinCaan, GameLivingEvent.WhisperReceive, new CoreEventHandler(TalkToMorlinCaan));
-
-			/* Now we remove to Masrim the possibility to give this quest to players */
-			Masrim.RemoveQuestToGive(typeof (RogueLvl50EpicMidQuest));
-		}
-
-		protected static void TalkToMasrim(CoreEvent e, object sender, EventArgs args)
-		{
-			//We get the player from the event arguments and check if he qualifies		
-			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
-			if (player == null)
-				return;
-
-			if(Masrim.CanGiveQuest(typeof (RogueLvl50EpicMidQuest), player)  <= 0)
-				return;
-
-			//We also check if the player is already doing the quest
-			RogueLvl50EpicMidQuest quest = player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) as RogueLvl50EpicMidQuest;
-
-			if (e == GameObjectEvent.Interact)
+			// Nag to finish quest
+			if (quest != null)
 			{
-				// Nag to finish quest
-				if (quest != null)
-				{
-					switch (quest.Step)
-					{
-						case 1:
-							Masrim.SayTo(player, "Seek out Oona in Raumarik and kill her! When you get into Raumarik, go west to the river and follow the river south until the river divides.");
-							break;
-						case 2:
-							Masrim.SayTo(player, "Hey, you are back! Please give me the head of Oona and visit "+MorlinCaan.Name+" and bring him the [sealed pouch]!");
-							break;
-						case 3:
-							Masrim.SayTo(player, $"Hello {player.Name}, have you visited "+MorlinCaan.Name+" already?");
-							break;
-					}
-				}
-				else
-				{
-					Masrim.SayTo(player, "Midgard needs your [services]");
-				}
-			}
-				// The player whispered to the NPC
-			else if (e == GameLivingEvent.WhisperReceive)
-			{
-				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
-				//Check player is already doing quest
-				if (quest == null)
-				{
-					switch (wArgs.Text)
-					{
-						case "services":
-							player.Out.SendQuestSubscribeCommand(Masrim, QuestMgr.GetIDForQuestType(typeof(RogueLvl50EpicMidQuest)), "Will you help Masrim [Rogue Level 50 Epic]?");
-							break;
-					}
-				}
-				else
-				{
-					switch (wArgs.Text)
-					{
-						case "sealed pouch":
-							if (quest.Step == 2)
-							{
-								RemoveItem(player, oona_head);
-								Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
-								GiveItem(player, sealed_pouch);
-								quest.Step = 3;
-							}
-							break;
-						case "abort":
-							player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
-							break;
-					}
-				}
-			}
-			else if (e == GameObjectEvent.ReceiveItem)
-			{
-				ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
-				if (quest != null)
-					if (rArgs.Item.Id_nb == oona_head.Id_nb)
-					{
-						Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
-						GiveItem(player, sealed_pouch);
-						quest.Step = 3;
-					}
-			}
-		}
-
-		protected static void TalkToMorlinCaan(CoreEvent e, object sender, EventArgs args)
-		{
-			//We get the player from the event arguments and check if he qualifies		
-			GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
-			if (player == null)
-				return;
-
-			if(Masrim.CanGiveQuest(typeof (RogueLvl50EpicMidQuest), player)  <= 0)
-				return;
-			
-			//We also check if the player is already doing the quest
-			RogueLvl50EpicMidQuest quest = player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) as RogueLvl50EpicMidQuest;
-
-			if (e == GameObjectEvent.Interact)
-			{
-				if (quest != null)
-				{
-					if (quest.Step == 3)
-					{
-						MorlinCaan.SayTo(player, "Were you able to [fulfill] your given task?");
-					}
-				}
-				
-			}
-			else if (e == GameLivingEvent.WhisperReceive)
-			{
-				WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
-				//Check player is already doing quest
-				if (quest == null)
-				{
-				}
-				else
-				{
-					switch (wArgs.Text)
-					{
-						case "fulfill":
-							if (quest.Step == 3)
-							{
-								RemoveItem(player, sealed_pouch);
-								if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
-									    EInventorySlot.LastBackpack))
-								{
-									MorlinCaan.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
-									quest.FinishQuest();
-								}
-								else
-									player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
-							}
-							break;
-					}
-				}
-			}
-			else if (e == GameObjectEvent.ReceiveItem)
-			{
-				var rArgs = (ReceiveItemEventArgs) args;
-				if (quest != null)
-					if (rArgs.Item.Id_nb == sealed_pouch.Id_nb && quest.Step == 3)
-					{
-						if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
-							    EInventorySlot.LastBackpack))
-						{
-							MorlinCaan.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
-							quest.FinishQuest();
-						}
-						else
-							player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
-					}
-			}
-		}
-
-		public override bool CheckQuestQualification(GamePlayer player)
-		{
-			// if the player is already doing the quest his level is no longer of relevance
-			if (player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) != null)
-				return true;
-
-			if (player.PlayerClass.ID != (byte) EPlayerClass.Shadowblade &&
-				player.PlayerClass.ID != (byte) EPlayerClass.Hunter)
-				return false;
-
-			// This checks below are only performed is player isn't doing quest already
-
-			//if (player.HasFinishedQuest(typeof(Academy_47)) == 0) return false;
-
-			//if (!CheckPartAccessible(player,typeof(CityOfCamelot)))
-			//	return false;
-
-			if (player.Level < minimumLevel || player.Level > maximumLevel)
-				return false;
-
-			return true;
-		}
-
-		/* This is our callback hook that will be called when the player clicks
-		 * on any button in the quest offer dialog. We check if he accepts or
-		 * declines here...
-		 */
-
-		private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
-		{
-			RogueLvl50EpicMidQuest quest = player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) as RogueLvl50EpicMidQuest;
-
-			if (quest == null)
-				return;
-
-			if (response == 0x00)
-			{
-				SendSystemMessage(player, "Good, no go out there and finish your work!");
-			}
-			else
-			{
-				SendSystemMessage(player, "Aborting Quest " + questTitle + ". You can start over again if you want.");
-				quest.AbortQuest();
-			}
-		}
-
-		protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
-		{
-			QuestEventArgs qargs = args as QuestEventArgs;
-			if (qargs == null)
-				return;
-
-			if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(RogueLvl50EpicMidQuest)))
-				return;
-
-			if (e == GamePlayerEvent.AcceptQuest)
-				CheckPlayerAcceptQuest(qargs.Player, 0x01);
-			else if (e == GamePlayerEvent.DeclineQuest)
-				CheckPlayerAcceptQuest(qargs.Player, 0x00);
-		}
-
-		private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
-		{
-			if(Masrim.CanGiveQuest(typeof (RogueLvl50EpicMidQuest), player)  <= 0)
-				return;
-
-			if (player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) != null)
-				return;
-
-			if (response == 0x00)
-			{
-				player.Out.SendMessage("Our God forgives your laziness, just look out for stray lightning bolts.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
-			}
-			else
-			{
-				//Check if we can add the quest!
-				if (!Masrim.GiveQuest(typeof (RogueLvl50EpicMidQuest), player, 1))
-					return;
-
-				player.Out.SendMessage("Kill Oona in Raumarik!", EChatType.CT_System, EChatLoc.CL_PopupWindow);
-			}
-		}
-
-		//Set quest name
-		public override string Name
-		{
-			get { return "War Concluded (Level 50 Rogue Epic)"; }
-		}
-
-		// Define Steps
-		public override string Description
-		{
-			get
-			{
-				switch (Step)
+				switch (quest.Step)
 				{
 					case 1:
-						return "Seek out Oona in Raumarik and kill her! When you get into Raumarik, go west to the river and follow the river south until the river divides.";
+						Masrim.SayTo(player, "Seek out Oona in Raumarik and kill her! When you get into Raumarik, go west to the river and follow the river south until the river divides.");
+						break;
 					case 2:
-						return "Return to Masrim and give her Oona's Head!";
+						Masrim.SayTo(player, "Hey, you are back! Please give me the head of Oona and visit "+MorlinCaan.Name+" and bring him the [sealed pouch]!");
+						break;
 					case 3:
-						return "Go to Morlin Caan in Jordheim and give him the Sealed Pouch for your reward!";
+						Masrim.SayTo(player, $"Hello {player.Name}, have you visited "+MorlinCaan.Name+" already?");
+						break;
 				}
-				return base.Description;
+			}
+			else
+			{
+				Masrim.SayTo(player, "Midgard needs your [services]");
 			}
 		}
-
-		public override void Notify(CoreEvent e, object sender, EventArgs args)
+			// The player whispered to the NPC
+		else if (e == GameLivingEvent.WhisperReceive)
 		{
-			GamePlayer player = sender as GamePlayer;
-
-			if (player==null || player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) == null)
-				return;
-
-			if (sender != m_questPlayer)
-				return;
-			
-			if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+			WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+			//Check player is already doing quest
+			if (quest == null)
 			{
-				EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
-				if (gArgs.Target.Name == Oona.Name)
+				switch (wArgs.Text)
 				{
-					m_questPlayer.Out.SendMessage("You collect Oona's Head", EChatType.CT_System, EChatLoc.CL_SystemWindow);
-					GiveItem(player, oona_head);
-					Step = 2;
+					case "services":
+						player.Out.SendQuestSubscribeCommand(Masrim, QuestMgr.GetIDForQuestType(typeof(RogueLvl50EpicMidQuest)), "Will you help Masrim [Rogue Level 50 Epic]?");
+						break;
 				}
 			}
-			if (Step == 2 && e == GamePlayerEvent.GiveItem)
+			else
 			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == Masrim.Name && gArgs.Item.Id_nb == oona_head.Id_nb)
+				switch (wArgs.Text)
 				{
-					RemoveItem(Masrim, player, oona_head);
+					case "sealed pouch":
+						if (quest.Step == 2)
+						{
+							RemoveItem(player, oona_head);
+							Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
+							GiveItem(player, sealed_pouch);
+							quest.Step = 3;
+						}
+						break;
+					case "abort":
+						player.Out.SendCustomDialog("Do you really want to abort this quest, \nall items gained during quest will be lost?", new CustomDialogResponse(CheckPlayerAbortQuest));
+						break;
+				}
+			}
+		}
+		else if (e == GameObjectEvent.ReceiveItem)
+		{
+			ReceiveItemEventArgs rArgs = (ReceiveItemEventArgs) args;
+			if (quest != null)
+				if (rArgs.Item.Id_nb == oona_head.Id_nb)
+				{
 					Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
 					GiveItem(player, sealed_pouch);
-					Step = 3;
-					return;
+					quest.Step = 3;
+				}
+		}
+	}
+
+	protected static void TalkToMorlinCaan(CoreEvent e, object sender, EventArgs args)
+	{
+		//We get the player from the event arguments and check if he qualifies		
+		GamePlayer player = ((SourceEventArgs) args).Source as GamePlayer;
+		if (player == null)
+			return;
+
+		if(Masrim.CanGiveQuest(typeof (RogueLvl50EpicMidQuest), player)  <= 0)
+			return;
+		
+		//We also check if the player is already doing the quest
+		RogueLvl50EpicMidQuest quest = player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) as RogueLvl50EpicMidQuest;
+
+		if (e == GameObjectEvent.Interact)
+		{
+			if (quest != null)
+			{
+				if (quest.Step == 3)
+				{
+					MorlinCaan.SayTo(player, "Were you able to [fulfill] your given task?");
 				}
 			}
-
-			if (Step == 3 && e == GamePlayerEvent.GiveItem)
+			
+		}
+		else if (e == GameLivingEvent.WhisperReceive)
+		{
+			WhisperReceiveEventArgs wArgs = (WhisperReceiveEventArgs) args;
+			//Check player is already doing quest
+			if (quest == null)
 			{
-				GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
-				if (gArgs.Target.Name == MorlinCaan.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
+			}
+			else
+			{
+				switch (wArgs.Text)
+				{
+					case "fulfill":
+						if (quest.Step == 3)
+						{
+							RemoveItem(player, sealed_pouch);
+							if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+								    EInventorySlot.LastBackpack))
+							{
+								MorlinCaan.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+								quest.FinishQuest();
+							}
+							else
+								player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+						}
+						break;
+				}
+			}
+		}
+		else if (e == GameObjectEvent.ReceiveItem)
+		{
+			var rArgs = (ReceiveItemEventArgs) args;
+			if (quest != null)
+				if (rArgs.Item.Id_nb == sealed_pouch.Id_nb && quest.Step == 3)
 				{
 					if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
 						    EInventorySlot.LastBackpack))
 					{
-						RemoveItem(MorlinCaan, player, sealed_pouch);
 						MorlinCaan.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
-						FinishQuest();
+						quest.FinishQuest();
 					}
 					else
 						player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 				}
-			}
 		}
-
-		public override void AbortQuest()
-		{
-			base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-			RemoveItem(m_questPlayer, sealed_pouch, false);
-		}
-
-		public override void FinishQuest()
-		{
-			RemoveItem(MorlinCaan, m_questPlayer, sealed_pouch);
-
-			base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
-
-			if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Shadowblade)
-			{
-				GiveItem(m_questPlayer, ShadowbladeEpicArms);
-				GiveItem(m_questPlayer, ShadowbladeEpicBoots);
-				GiveItem(m_questPlayer, ShadowbladeEpicGloves);
-				GiveItem(m_questPlayer, ShadowbladeEpicHelm);
-				GiveItem(m_questPlayer, ShadowbladeEpicLegs);
-				GiveItem(m_questPlayer, ShadowbladeEpicVest);
-			}
-			else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Hunter)
-			{
-				GiveItem(m_questPlayer, HunterEpicArms);
-				GiveItem(m_questPlayer, HunterEpicBoots);
-				GiveItem(m_questPlayer, HunterEpicGloves);
-				GiveItem(m_questPlayer, HunterEpicHelm);
-				GiveItem(m_questPlayer, HunterEpicLegs);
-				GiveItem(m_questPlayer, HunterEpicVest);
-			}
-
-			m_questPlayer.GainExperience(EXpSource.Quest, 1937768448, true);
-			//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
-		}
-
-		#region Allakhazam Epic Source
-
-		/*
-        *#25 talk to Masrim
-        *#26 seek out Loken in Raumarik Loc 47k, 25k, 4k, and kill him purp and 2 blue adds 
-        *#27 return to Masrim 
-        *#28 give her the ball of flame
-        *#29 talk with Masrim about Loken�s demise
-        *#30 go to MorlinCaan in Jordheim 
-        *#31 give her the sealed pouch
-        *#32 you get your epic armor as a reward
-        */
-
-		/*
-            *Call of the Hunt Boots 
-            *Call of the Hunt Coif
-            *Call of the Hunt Gloves
-            *Call of the Hunt Hauberk
-            *Call of the Hunt Legs
-            *Call of the Hunt Sleeves
-            *Shadow Shrouded Boots
-            *Shadow Shrouded Coif
-            *Shadow Shrouded Gloves
-            *Shadow Shrouded Hauberk
-            *Shadow Shrouded Legs
-            *Shadow Shrouded Sleeves
-        */
-
-		#endregion
 	}
+
+	public override bool CheckQuestQualification(GamePlayer player)
+	{
+		// if the player is already doing the quest his level is no longer of relevance
+		if (player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) != null)
+			return true;
+
+		if (player.PlayerClass.ID != (byte) EPlayerClass.Shadowblade &&
+			player.PlayerClass.ID != (byte) EPlayerClass.Hunter)
+			return false;
+
+		// This checks below are only performed is player isn't doing quest already
+
+		//if (player.HasFinishedQuest(typeof(Academy_47)) == 0) return false;
+
+		//if (!CheckPartAccessible(player,typeof(CityOfCamelot)))
+		//	return false;
+
+		if (player.Level < minimumLevel || player.Level > maximumLevel)
+			return false;
+
+		return true;
+	}
+
+	/* This is our callback hook that will be called when the player clicks
+	 * on any button in the quest offer dialog. We check if he accepts or
+	 * declines here...
+	 */
+
+	private static void CheckPlayerAbortQuest(GamePlayer player, byte response)
+	{
+		RogueLvl50EpicMidQuest quest = player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) as RogueLvl50EpicMidQuest;
+
+		if (quest == null)
+			return;
+
+		if (response == 0x00)
+		{
+			SendSystemMessage(player, "Good, no go out there and finish your work!");
+		}
+		else
+		{
+			SendSystemMessage(player, "Aborting Quest " + questTitle + ". You can start over again if you want.");
+			quest.AbortQuest();
+		}
+	}
+
+	protected static void SubscribeQuest(CoreEvent e, object sender, EventArgs args)
+	{
+		QuestEventArgs qargs = args as QuestEventArgs;
+		if (qargs == null)
+			return;
+
+		if (qargs.QuestID != QuestMgr.GetIDForQuestType(typeof(RogueLvl50EpicMidQuest)))
+			return;
+
+		if (e == GamePlayerEvent.AcceptQuest)
+			CheckPlayerAcceptQuest(qargs.Player, 0x01);
+		else if (e == GamePlayerEvent.DeclineQuest)
+			CheckPlayerAcceptQuest(qargs.Player, 0x00);
+	}
+
+	private static void CheckPlayerAcceptQuest(GamePlayer player, byte response)
+	{
+		if(Masrim.CanGiveQuest(typeof (RogueLvl50EpicMidQuest), player)  <= 0)
+			return;
+
+		if (player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) != null)
+			return;
+
+		if (response == 0x00)
+		{
+			player.Out.SendMessage("Our God forgives your laziness, just look out for stray lightning bolts.", EChatType.CT_Say, EChatLoc.CL_PopupWindow);
+		}
+		else
+		{
+			//Check if we can add the quest!
+			if (!Masrim.GiveQuest(typeof (RogueLvl50EpicMidQuest), player, 1))
+				return;
+
+			player.Out.SendMessage("Kill Oona in Raumarik!", EChatType.CT_System, EChatLoc.CL_PopupWindow);
+		}
+	}
+
+	//Set quest name
+	public override string Name
+	{
+		get { return "War Concluded (Level 50 Rogue Epic)"; }
+	}
+
+	// Define Steps
+	public override string Description
+	{
+		get
+		{
+			switch (Step)
+			{
+				case 1:
+					return "Seek out Oona in Raumarik and kill her! When you get into Raumarik, go west to the river and follow the river south until the river divides.";
+				case 2:
+					return "Return to Masrim and give her Oona's Head!";
+				case 3:
+					return "Go to Morlin Caan in Jordheim and give him the Sealed Pouch for your reward!";
+			}
+			return base.Description;
+		}
+	}
+
+	public override void Notify(CoreEvent e, object sender, EventArgs args)
+	{
+		GamePlayer player = sender as GamePlayer;
+
+		if (player==null || player.IsDoingQuest(typeof (RogueLvl50EpicMidQuest)) == null)
+			return;
+
+		if (sender != m_questPlayer)
+			return;
+		
+		if (Step == 1 && e == GameLivingEvent.EnemyKilled)
+		{
+			EnemyKilledEventArgs gArgs = (EnemyKilledEventArgs) args;
+			if (gArgs.Target.Name == Oona.Name)
+			{
+				m_questPlayer.Out.SendMessage("You collect Oona's Head", EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				GiveItem(player, oona_head);
+				Step = 2;
+			}
+		}
+		if (Step == 2 && e == GamePlayerEvent.GiveItem)
+		{
+			GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+			if (gArgs.Target.Name == Masrim.Name && gArgs.Item.Id_nb == oona_head.Id_nb)
+			{
+				RemoveItem(Masrim, player, oona_head);
+				Masrim.SayTo(player, "Take this sealed pouch to Morlin Caan in Jordheim for your reward!");
+				GiveItem(player, sealed_pouch);
+				Step = 3;
+				return;
+			}
+		}
+
+		if (Step == 3 && e == GamePlayerEvent.GiveItem)
+		{
+			GiveItemEventArgs gArgs = (GiveItemEventArgs) args;
+			if (gArgs.Target.Name == MorlinCaan.Name && gArgs.Item.Id_nb == sealed_pouch.Id_nb)
+			{
+				if (player.Inventory.IsSlotsFree(6, EInventorySlot.FirstBackpack,
+					    EInventorySlot.LastBackpack))
+				{
+					RemoveItem(MorlinCaan, player, sealed_pouch);
+					MorlinCaan.SayTo(player, "You have earned this Epic Armor, wear it with honor!");
+					FinishQuest();
+				}
+				else
+					player.Out.SendMessage("You do not have enough free space in your inventory!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+			}
+		}
+	}
+
+	public override void AbortQuest()
+	{
+		base.AbortQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+		RemoveItem(m_questPlayer, sealed_pouch, false);
+	}
+
+	public override void FinishQuest()
+	{
+		RemoveItem(MorlinCaan, m_questPlayer, sealed_pouch);
+
+		base.FinishQuest(); //Defined in Quest, changes the state, stores in DB etc ...
+
+		if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Shadowblade)
+		{
+			GiveItem(m_questPlayer, ShadowbladeEpicArms);
+			GiveItem(m_questPlayer, ShadowbladeEpicBoots);
+			GiveItem(m_questPlayer, ShadowbladeEpicGloves);
+			GiveItem(m_questPlayer, ShadowbladeEpicHelm);
+			GiveItem(m_questPlayer, ShadowbladeEpicLegs);
+			GiveItem(m_questPlayer, ShadowbladeEpicVest);
+		}
+		else if (m_questPlayer.PlayerClass.ID == (byte)EPlayerClass.Hunter)
+		{
+			GiveItem(m_questPlayer, HunterEpicArms);
+			GiveItem(m_questPlayer, HunterEpicBoots);
+			GiveItem(m_questPlayer, HunterEpicGloves);
+			GiveItem(m_questPlayer, HunterEpicHelm);
+			GiveItem(m_questPlayer, HunterEpicLegs);
+			GiveItem(m_questPlayer, HunterEpicVest);
+		}
+
+		m_questPlayer.GainExperience(EXpSource.Quest, 1937768448, true);
+		//m_questPlayer.AddMoney(Money.GetMoney(0,0,0,2,Util.Random(50)), "You recieve {0} as a reward.");		
+	}
+
+	#region Allakhazam Epic Source
+
+	/*
+    *#25 talk to Masrim
+    *#26 seek out Loken in Raumarik Loc 47k, 25k, 4k, and kill him purp and 2 blue adds 
+    *#27 return to Masrim 
+    *#28 give her the ball of flame
+    *#29 talk with Masrim about Loken�s demise
+    *#30 go to MorlinCaan in Jordheim 
+    *#31 give her the sealed pouch
+    *#32 you get your epic armor as a reward
+    */
+
+	/*
+        *Call of the Hunt Boots 
+        *Call of the Hunt Coif
+        *Call of the Hunt Gloves
+        *Call of the Hunt Hauberk
+        *Call of the Hunt Legs
+        *Call of the Hunt Sleeves
+        *Shadow Shrouded Boots
+        *Shadow Shrouded Coif
+        *Shadow Shrouded Gloves
+        *Shadow Shrouded Hauberk
+        *Shadow Shrouded Legs
+        *Shadow Shrouded Sleeves
+    */
+
+	#endregion
 }

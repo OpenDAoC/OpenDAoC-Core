@@ -1,6 +1,8 @@
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Server;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 [NpcGuildScript("Siegecrafting Master")]
 public class SiegecraftingMaster : CraftMasterNpc
@@ -21,7 +23,7 @@ public class SiegecraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SiegecraftingMaster.GuildOrder");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SiegecraftingMaster.GuildOrder");
         }
 	}
 
@@ -29,7 +31,7 @@ public class SiegecraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SiegecraftingMaster.AcceptedByOrderName");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SiegecraftingMaster.AcceptedByOrderName");
         }
 	}
 
@@ -48,7 +50,7 @@ public class SiegecraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SiegecraftingMaster.InitialEntersentence");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SiegecraftingMaster.InitialEntersentence");
         }
 	}
 }

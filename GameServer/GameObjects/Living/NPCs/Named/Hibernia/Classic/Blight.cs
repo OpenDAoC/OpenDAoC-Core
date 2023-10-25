@@ -1,11 +1,16 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Blight
 public class Blight : GameEpicBoss
@@ -46,9 +51,9 @@ public class Blight : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
-		if (BlightBrain.canGrowth && IsAlive && keyName == GS.Abilities.DamageImmunity)
+		if (BlightBrain.canGrowth && IsAlive && keyName == AbilityConstants.DamageImmunity)
 			return true;
 		return base.HasAbility(keyName);
 	}
@@ -121,7 +126,7 @@ public class Blight : GameEpicBoss
 
 	public override void Die(GameObject killer)
     {
-		int respawnTime = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;
+		int respawnTime = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;
 		new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(SpawnFireBlight), respawnTime);
         base.Die(killer);
     }

@@ -1,8 +1,10 @@
 using System;
-using DOL.Database;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.World;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&addbind",

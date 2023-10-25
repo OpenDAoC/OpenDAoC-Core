@@ -1,10 +1,16 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Crafting;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Server;
+using Core.GS.Skills;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&item",
 	     EPrivLevel.GM,
@@ -1542,7 +1548,7 @@ namespace DOL.GS.Commands
 								calculated = false;
 							}
 
-							if (ServerProperties.Properties.USE_SALVAGE_PER_REALM)
+							if (ServerProperty.USE_SALVAGE_PER_REALM)
 							{
 								whereClause = whereClause.And(DB.Column("Realm").IsEqualTo((int)ERealm.None).Or(DB.Column("Realm").IsEqualTo(item.Realm)));
 							}
@@ -1562,7 +1568,7 @@ namespace DOL.GS.Commands
 								{
 									list.Add("SalvageYield ID " + item.SalvageYieldID + " specified but not found!");
 								}
-								else if (ServerProperties.Properties.USE_NEW_SALVAGE)
+								else if (ServerProperty.USE_NEW_SALVAGE)
 								{
 									list.Add("Calculated Values (USE_NEW_SALVAGE = True)");
 								}

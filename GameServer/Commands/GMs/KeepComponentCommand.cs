@@ -1,10 +1,14 @@
 using System;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Keeps;
+using Core.GS.Languages;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		 "&keepcomponent",

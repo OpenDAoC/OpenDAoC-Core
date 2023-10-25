@@ -1,6 +1,8 @@
 using System;
+using Core.GS.Enums;
+using Core.GS.Skills;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// BuffBonusCategory1 is used for buffs
@@ -20,7 +22,7 @@ public class StunDurationPercentCalculator : PropertyCalculator
 			- living.ItemBonus[(int)property]
 			- living.AbilityBonus[(int)property];
 
-		if (living.HasAbility(Abilities.Stoicism))
+		if (living.HasAbility(AbilityConstants.Stoicism))
 			percent -= 25;
 
 		return Math.Max(1, percent);

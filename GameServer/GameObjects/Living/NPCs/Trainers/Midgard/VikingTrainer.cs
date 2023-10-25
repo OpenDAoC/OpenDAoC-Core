@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Viking Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Acolyte Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class VikingTrainer : GameTrainer
@@ -12,7 +12,7 @@ public class VikingTrainer : GameTrainer
 		get { return EPlayerClass.Viking; }
 	}
 
-	public VikingTrainer() : base(eChampionTrainerType.Viking)
+	public VikingTrainer() : base(EChampionTrainerType.Viking)
 	{
 	}
 	

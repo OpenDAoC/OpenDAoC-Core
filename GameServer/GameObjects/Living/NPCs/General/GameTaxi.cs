@@ -1,40 +1,39 @@
-using DOL.AI.Brain;
+using Core.GS.AI;
 
-namespace DOL.GS
+namespace Core.GS;
+
+public class GameTaxi : GameNpc
 {
-	public class GameTaxi : GameNpc
+	public GameTaxi() : base()
 	{
-		public GameTaxi() : base()
+		Model = 449;
+		MaxSpeedBase = 650;
+		Size = 50;
+		Level = 55;
+		Name = "horse";
+		BlankBrain brain = new BlankBrain();
+		SetOwnBrain(brain);
+	}
+	
+	public GameTaxi(INpcTemplate templateid) : base(templateid)
+	{
+		BlankBrain brain = new BlankBrain();
+		SetOwnBrain(brain);
+	}
+	
+	public override int MAX_PASSENGERS
+	{
+		get
 		{
-			Model = 449;
-			MaxSpeedBase = 650;
-			Size = 50;
-			Level = 55;
-			Name = "horse";
-			BlankBrain brain = new BlankBrain();
-			SetOwnBrain(brain);
+			return 1;
 		}
-		
-		public GameTaxi(INpcTemplate templateid) : base(templateid)
-		{
-			BlankBrain brain = new BlankBrain();
-			SetOwnBrain(brain);
-		}
-		
-		public override int MAX_PASSENGERS
-		{
-			get
-			{
-				return 1;
-			}
-		}
+	}
 
-		public override int SLOT_OFFSET
+	public override int SLOT_OFFSET
+	{
+		get
 		{
-			get
-			{
-				return 0;
-			}
+			return 0;
 		}
 	}
 }

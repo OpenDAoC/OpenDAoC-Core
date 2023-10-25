@@ -1,11 +1,14 @@
-namespace DOL.GS.PacketHandler.Client.v168
+using Core.GS.Enums;
+using Core.GS.Packets.Server;
+
+namespace Core.GS.Packets.Clients;
+
+[PacketHandler(EPacketHandlerType.TCP, EClientPackets.WarmapBonusRequest, "Show warmap bonuses",
+	EClientStatus.PlayerInGame)]
+public class WarmapBonusesRequestHandler : IPacketHandler
 {
-	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.WarmapBonusRequest, "Show warmap bonuses", EClientStatus.PlayerInGame)]
-	public class WarmapBonusesRequestHandler : IPacketHandler
+	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
-		public void HandlePacket(GameClient client, GsPacketIn packet)
-		{
-			client.Out.SendWarmapBonuses();
-		}
+		client.Out.SendWarmapBonuses();
 	}
 }

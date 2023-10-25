@@ -1,7 +1,7 @@
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&knock", //command to handle
 	EPrivLevel.Player, //minimum privelege level

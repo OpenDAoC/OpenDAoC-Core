@@ -1,7 +1,7 @@
-﻿using DOL.GS.Commands;
+﻿using Core.GS.Commands;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace DOL.GS.API;
+namespace Core.GS.APIs;
 
 public class ApiShutdown
 {

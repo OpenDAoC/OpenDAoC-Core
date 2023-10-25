@@ -1,8 +1,10 @@
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.Languages;
+using Core.GS.World;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI
 {
     public class CasterGuardBrain : KeepGuardBrain
     {
@@ -28,20 +30,20 @@ namespace DOL.AI.Brain
 
         private void CheckForAnimation()
         {
-            if (_lastAnimationTick + ANIMATION_INTERVAL > GameLoop.GameLoopTime)
+            if (_lastAnimationTick + ANIMATION_INTERVAL > GameLoopMgr.GameLoopTime)
                 return;
 
-            _lastAnimationTick = GameLoop.GameLoopTime;
+            _lastAnimationTick = GameLoopMgr.GameLoopTime;
 
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.Out.SendSpellCastAnimation(Body, 4321, 30);
-                new AuxECSGameTimer(player, new AuxECSGameTimer.AuxECSTimerCallback(ShowEffect), 3000);
+                new AuxEcsGameTimer(player, new AuxEcsGameTimer.AuxECSTimerCallback(ShowEffect), 3000);
             }
         }
 
 
-        public int ShowEffect(AuxECSGameTimer timer)
+        public int ShowEffect(AuxEcsGameTimer timer)
         {
             if (!Body.IsAlive)
                 return 0;

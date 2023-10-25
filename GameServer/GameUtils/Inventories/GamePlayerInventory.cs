@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Players;
 
-namespace DOL.GS
+namespace Core.GS.GameUtils
 {
 	/// <summary>
 	/// This class represents a full player inventory

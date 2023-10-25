@@ -1,6 +1,6 @@
-﻿using DOL.AI.Brain;
+﻿using Core.GS.AI;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Dramacus : GameNpc
 {

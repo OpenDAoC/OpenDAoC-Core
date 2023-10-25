@@ -1,7 +1,9 @@
 using System;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.World;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"]jump",

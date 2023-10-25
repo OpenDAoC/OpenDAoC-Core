@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects
 {
 	/// <summary>
 	/// Spell Effect assists SpellHandler with duration spells

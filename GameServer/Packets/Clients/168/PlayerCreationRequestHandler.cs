@@ -1,36 +1,38 @@
 using System.Reflection;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Packets.Server;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.Packets.Clients;
+
+[PacketHandler(EPacketHandlerType.TCP, EClientPackets.CreatePlayerRequest, "Handles requests for players(0x7C) in game", EClientStatus.PlayerInGame)]
+public class PlayerCreationRequestHandler : IPacketHandler
 {
-    [PacketHandler(EPacketHandlerType.TCP, EClientPackets.CreatePlayerRequest, "Handles requests for players(0x7C) in game", EClientStatus.PlayerInGame)]
-    public class PlayerCreationRequestHandler : IPacketHandler
+    /// <summary>
+    /// Defines a logger for this class.
+    /// </summary>
+    private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+    public void HandlePacket(GameClient client, GsPacketIn packet)
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        ushort id = client.Version >= EClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
+        GameClient target = ClientService.GetClientFromId(id);
 
-        public void HandlePacket(GameClient client, GsPacketIn packet)
+        if (target == null)
         {
-            ushort id = client.Version >= GameClient.eClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
-            GameClient target = ClientService.GetClientFromId(id);
+            if (Log.IsWarnEnabled)
+                Log.Warn($"Client {client.SessionID}:{client.TcpEndpointAddress} account {(client.Account == null ? "null" : client.Account.Name)} requested invalid client {id} --- disconnecting");
 
-            if (target == null)
-            {
-                if (Log.IsWarnEnabled)
-                    Log.Warn($"Client {client.SessionID}:{client.TcpEndpointAddress} account {(client.Account == null ? "null" : client.Account.Name)} requested invalid client {id} --- disconnecting");
+            client.Disconnect();
+            return;
+        }
 
-                client.Disconnect();
-                return;
-            }
-
-            // DOLConsole.WriteLine("player creation request "+target.Player.Name);
-            if (target.IsPlaying && target.Player != null && target.Player.ObjectState == GameObject.eObjectState.Active)
-            {
-                client.Out.SendPlayerCreate(target.Player);
-                client.Out.SendLivingEquipmentUpdate(target.Player);
-            }
+        // DOLConsole.WriteLine("player creation request "+target.Player.Name);
+        if (target.IsPlaying && target.Player != null && target.Player.ObjectState == GameObject.eObjectState.Active)
+        {
+            client.Out.SendPlayerCreate(target.Player);
+            client.Out.SendLivingEquipmentUpdate(target.Player);
         }
     }
 }

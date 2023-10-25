@@ -1,6 +1,8 @@
-using DOL.AI.Brain;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Skills;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The parry chance calculator. Returns 0 .. 1000 chance.
@@ -20,8 +22,8 @@ public class ParryChanceCalculator : PropertyCalculator
 
         if (living is GamePlayer player)
         {
-            if (player.HasSpecialization(Specs.Parry))
-                chance += (player.Dexterity * 2 - 100) / 4 + (player.GetModifiedSpecLevel(Specs.Parry) - 1) * (10 / 2) + 50;
+            if (player.HasSpecialization(SpecConstants.Parry))
+                chance += (player.Dexterity * 2 - 100) / 4 + (player.GetModifiedSpecLevel(SpecConstants.Parry) - 1) * (10 / 2) + 50;
 
             chance += player.BaseBuffBonusCategory[(int) property] * 10;
             chance += player.SpecBuffBonusCategory[(int) property] * 10;

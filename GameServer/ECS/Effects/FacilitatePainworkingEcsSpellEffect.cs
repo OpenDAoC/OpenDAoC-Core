@@ -1,11 +1,10 @@
-﻿namespace DOL.GS
+﻿namespace Core.GS.ECS;
+
+public class FacilitatePainworkingEcsSpellEffect : EcsGameSpellEffect
 {
-    public class FacilitatePainworkingEcsSpellEffect : EcsGameSpellEffect
-    {
-        public FacilitatePainworkingEcsSpellEffect(EcsGameEffectInitParams initParams) : base(initParams) { }
+    public FacilitatePainworkingEcsSpellEffect(EcsGameEffectInitParams initParams) : base(initParams) { }
 
-        public override void OnStartEffect() { }
+    public override void OnStartEffect() { }
 
-        public override void OnStopEffect() { }
-    }
+    public override void OnStopEffect() { }
 }

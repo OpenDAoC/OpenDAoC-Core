@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Players;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Cuuldurach
 public class HibCuuldurach : GameEpicBoss
@@ -88,13 +94,13 @@ public class HibCuuldurach : GameEpicBoss
 		String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
 		NewsMgr.CreateNews(message, killer.Realm, ENewsType.PvE, true);
 
-		if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+		if (ServerProperty.GUILD_MERIT_ON_DRAGON_KILL > 0)
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				if (player.IsEligibleToGiveMeritPoints)
 				{
-					GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
+					GuildEventHandler.MeritForNPCKilled(player, this, ServerProperty.GUILD_MERIT_ON_DRAGON_KILL);
 				}
 			}
 		}
@@ -167,7 +173,7 @@ public class HibCuuldurach : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -222,7 +228,7 @@ public class HibCuuldurach : GameEpicBoss
 		Piety = npcTemplate.Piety;
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
-		RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		#region All bools here
 		HibCuuldurachBrain.ResetChecks = false;
 		HibCuuldurachBrain.IsRestless = false;

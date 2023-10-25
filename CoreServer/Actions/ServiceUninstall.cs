@@ -4,7 +4,7 @@ using System.Collections;
 using System.Configuration.Install;
 using System.Reflection;
 
-namespace DOL.DOLServer.Actions
+namespace Core.Server
 {
 	/// <summary>
 	/// Handles service uninstall requests of the gameserver

@@ -1,10 +1,14 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Appeal;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Players;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
         "&gmappeal",
@@ -27,7 +31,7 @@ namespace DOL.GS.Commands
     {
         public void OnCommand(GameClient client, string[] args)
         {
-            if (ServerProperties.Properties.DISABLE_APPEALSYSTEM)
+            if (ServerProperty.DISABLE_APPEALSYSTEM)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;

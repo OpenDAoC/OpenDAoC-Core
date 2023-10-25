@@ -1,15 +1,16 @@
-﻿namespace DOL.GS.PacketHandler
+﻿using Core.GS.Enums;
+
+namespace Core.GS.Packets.Server;
+
+[PacketLib(1122, EClientVersion.Version1122)]
+public class PacketLib1122 : PacketLib1121
 {
-	[PacketLib(1122, GameClient.eClientVersion.Version1122)]
-	public class PacketLib1122 : PacketLib1121
+	/// <summary>
+	/// Constructs a new PacketLib for Client Version 1.122
+	/// </summary>
+	/// <param name="client">the gameclient this lib is associated with</param>
+	public PacketLib1122(GameClient client)
+		: base(client)
 	{
-		/// <summary>
-		/// Constructs a new PacketLib for Client Version 1.122
-		/// </summary>
-		/// <param name="client">the gameclient this lib is associated with</param>
-		public PacketLib1122(GameClient client)
-			: base(client)
-		{
-		}
 	}
 }

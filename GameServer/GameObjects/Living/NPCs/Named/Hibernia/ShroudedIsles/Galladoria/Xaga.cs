@@ -1,10 +1,14 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Xaga
 public class Xaga : GameEpicBoss
@@ -55,7 +59,7 @@ public class Xaga : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int MaxHealth
     {
@@ -68,7 +72,7 @@ public class Xaga : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -133,7 +137,7 @@ public class Xaga : GameEpicBoss
         Charisma = npcTemplate.Charisma;
         Empathy = npcTemplate.Empathy;
 
-        RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
         Faction = FactionMgr.GetFactionByID(96);
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
         XagaBrain sBrain = new XagaBrain();
@@ -246,7 +250,7 @@ public class Beatha : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -328,7 +332,7 @@ public class Tine : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

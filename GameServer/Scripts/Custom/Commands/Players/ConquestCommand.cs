@@ -1,19 +1,20 @@
-﻿using DOL.GS.Commands;
+﻿using Core.GS.Commands;
+using Core.GS.ECS;
+using Core.GS.Enums;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts.Custom;
+
+[Command(
+   "&conquest",
+   EPrivLevel.Player,
+     "Displays the current conqust status.", "/conquest")]
+public class ConquestCommand : ACommandHandler, ICommandHandler
 {
-    [Command(
-       "&conquest",
-       EPrivLevel.Player,
-         "Displays the current conqust status.", "/conquest")]
-    public class ConquestCommand : ACommandHandler, ICommandHandler
+    public void OnCommand(GameClient client, string[] args)
     {
-        public void OnCommand(GameClient client, string[] args)
+        if (!IsSpammingCommand(client.Player, "task"))
         {
-            if (!IsSpammingCommand(client.Player, "task"))
-            {
-                client.Out.SendCustomTextWindow("Conquest Information", ConquestService.ConquestManager.GetTextList(client.Player));
-            }
+            client.Out.SendCustomTextWindow("Conquest Information", ConquestService.ConquestManager.GetTextList(client.Player));
         }
     }
 }

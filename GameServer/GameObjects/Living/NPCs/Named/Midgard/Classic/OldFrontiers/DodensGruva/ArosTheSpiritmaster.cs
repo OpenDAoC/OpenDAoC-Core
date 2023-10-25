@@ -1,9 +1,13 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS;
 
 public class ArosTheSpiritmaster : GameEpicAros
 {

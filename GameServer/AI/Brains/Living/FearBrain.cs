@@ -1,7 +1,7 @@
 using System;
-using DOL.GS;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class FearBrain : StandardMobBrain
 {

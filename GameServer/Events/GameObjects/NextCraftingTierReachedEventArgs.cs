@@ -1,6 +1,6 @@
-﻿using DOL.GS;
+﻿using Core.GS.Enums;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 public class NextCraftingTierReachedEventArgs : System.EventArgs
 {

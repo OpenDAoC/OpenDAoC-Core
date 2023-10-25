@@ -1,22 +1,21 @@
-namespace DOL.GS.SkillHandler
-{
-	[SkillHandler(Abilities.VampiirBolt)]
-	public class VampiirBoltAbilityHandler : SpellCastingAbilityHandler
-	{
-		public override long Preconditions
-		{
-			get
-			{
-				return DEAD | SITTING | MEZZED | STUNNED | TARGET;
-			}
-		}
+namespace Core.GS.Skills;
 
-		public override int SpellID
+[SkillHandler(AbilityConstants.VampiirBolt)]
+public class VampiirBoltAbilityHandler : SpellCastingAbilityHandler
+{
+	public override long Preconditions
+	{
+		get
 		{
-			get
-			{
-				return 13200 + m_ability.Level;
-			}
+			return DEAD | SITTING | MEZZED | STUNNED | TARGET;
+		}
+	}
+
+	public override int SpellID
+	{
+		get
+		{
+			return 13200 + m_ability.Level;
 		}
 	}
 }

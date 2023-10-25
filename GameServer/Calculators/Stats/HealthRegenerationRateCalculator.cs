@@ -1,6 +1,9 @@
-using DOL.GS.Keeps;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
+using Core.GS.Server;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The health regen rate calculator
@@ -55,8 +58,8 @@ public class HealthRegenerationRateCalculator : PropertyCalculator
 				regen /= 2.0;
 		}
         
-		if (regen != 0 && ServerProperties.Properties.HEALTH_REGEN_RATE != 1)
-			regen *= ServerProperties.Properties.HEALTH_REGEN_RATE;
+		if (regen != 0 && ServerProperty.HEALTH_REGEN_RATE != 1)
+			regen *= ServerProperty.HEALTH_REGEN_RATE;
 
 		if (living.IsSitting && living is GamePlayer)
 			regen *= 1.75;

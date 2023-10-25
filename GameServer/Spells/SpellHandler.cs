@@ -3,17 +3,28 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerClass;
-using DOL.GS.ServerProperties;
-using DOL.GS.SkillHandler;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Effects;
+using Core.GS.Effects.Old;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Expansions.TrialsOfAtlantis;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
+using Core.GS.Languages;
+using Core.GS.Packets;
+using Core.GS.Players;
+using Core.GS.RealmAbilities;
+using Core.GS.Scripts;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Styles;
+using Core.GS.World;
 
-namespace DOL.GS.Spells
+namespace Core.GS.Spells
 {
 	public class SpellHandler : ISpellHandler
 	{
@@ -414,7 +425,7 @@ namespace DOL.GS.Spells
 				return false;
 
 			// Only interrupt if we're under 50% of the way through the cast.
-			if (IsInCastingPhase && (GameLoop.GameLoopTime < _castStartTick + _calculatedCastTime * 0.5))
+			if (IsInCastingPhase && (GameLoopMgr.GameLoopTime < _castStartTick + _calculatedCastTime * 0.5))
 			{
 				if (Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
 				{
@@ -532,7 +543,7 @@ namespace DOL.GS.Spells
 			var quickCast = EffectListService.GetAbilityEffectOnTarget(m_caster, EEffect.QuickCast);
 
 			if (quickCast != null)
-				quickCast.ExpireTick = GameLoop.GameLoopTime + quickCast.Duration;
+				quickCast.ExpireTick = GameLoopMgr.GameLoopTime + quickCast.Duration;
 
 			if (m_caster is GamePlayer playerCaster)
 			{
@@ -619,7 +630,7 @@ namespace DOL.GS.Spells
 						!m_caster.effectListComponent.ContainsEffectForEffectType(EEffect.MasteryOfConcentration))
 					{
 						if (!quiet)
-							MessageToCaster($"You must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", EChatType.CT_SpellResisted);
+							MessageToCaster($"You must wait {(Caster.InterruptTime - GameLoopMgr.GameLoopTime) / 1000 + 1} seconds to cast a spell!", EChatType.CT_SpellResisted);
 
 						return false;
 					}
@@ -629,7 +640,7 @@ namespace DOL.GS.Spells
 					if (!necroPet.effectListComponent.ContainsEffectForEffectType(EEffect.FacilitatePainworking))
 					{
 						if (!quiet)
-							MessageToCaster($"Your {necroPet.Name} must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", EChatType.CT_SpellResisted);
+							MessageToCaster($"Your {necroPet.Name} must wait {(Caster.InterruptTime - GameLoopMgr.GameLoopTime) / 1000 + 1} seconds to cast a spell!", EChatType.CT_SpellResisted);
 
 						return false;
 					}
@@ -704,7 +715,7 @@ namespace DOL.GS.Spells
 						if (Caster is GamePlayer && !quiet)
 							MessageToCaster("That target is too far away!", EChatType.CT_SpellResisted);
 
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, ECastFailedReasons.TargetTooFarAway));
 
 						if (Caster is GameNpc npc)
 							npc.Follow(Target, Spell.Range - 100, GameNpc.STICK_MAXIMUM_RANGE);
@@ -744,7 +755,7 @@ namespace DOL.GS.Spells
 								if (!quiet)
 									MessageToCaster("Your target is not visible!", EChatType.CT_SpellResisted);
 
-								Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
+								Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, ECastFailedReasons.TargetNotInView));
 								return false;
 							}
 
@@ -779,7 +790,7 @@ namespace DOL.GS.Spells
 						if (!quiet)
 							MessageToCaster("Your target is not visible!", EChatType.CT_SpellResisted);
 
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, ECastFailedReasons.TargetNotInView));
 						return false;
 					}
 
@@ -852,7 +863,7 @@ namespace DOL.GS.Spells
 			
 			HasLos = (response & 0x100) == 0x100;
 
-			if (!HasLos && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
+			if (!HasLos && ServerProperty.CHECK_LOS_DURING_CAST_INTERRUPT)
 			{
 				if (IsInCastingPhase)
 					MessageToCaster("You can't see your target from here!", EChatType.CT_SpellResisted);
@@ -868,7 +879,7 @@ namespace DOL.GS.Spells
 
 			HasLos = (response & 0x100) == 0x100;
 
-			if (!HasLos && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
+			if (!HasLos && ServerProperty.CHECK_LOS_DURING_CAST_INTERRUPT)
 				InterruptCasting();
 		}
 
@@ -958,10 +969,10 @@ namespace DOL.GS.Spells
 								{
 									MesmerizeSpell mesmerizeSpellHandler = this as MesmerizeSpell;
 
-									if (GameLoop.GameLoopTime - mesmerizeSpellHandler.FluteMezLastEndOfCastMessage < MesmerizeSpell.FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL)
+									if (GameLoopMgr.GameLoopTime - mesmerizeSpellHandler.FluteMezLastEndOfCastMessage < MesmerizeSpell.FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL)
 										return false;
 
-									mesmerizeSpellHandler.FluteMezLastEndOfCastMessage = GameLoop.GameLoopTime;
+									mesmerizeSpellHandler.FluteMezLastEndOfCastMessage = GameLoopMgr.GameLoopTime;
 								}
 								
 								MessageToCaster("You can't see your target from here!", EChatType.CT_SpellResisted);
@@ -1101,9 +1112,9 @@ namespace DOL.GS.Spells
 						return false;
 					}
 
-					if (Properties.CHECK_LOS_DURING_CAST && GameLoop.GameLoopTime > _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
+					if (ServerProperty.CHECK_LOS_DURING_CAST && GameLoopMgr.GameLoopTime > _lastDuringCastLosCheckTime + ServerProperty.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
 					{
-						_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
+						_lastDuringCastLosCheckTime = GameLoopMgr.GameLoopTime;
 
 						if (Caster is GameNpc npc && npc.Brain is IControlledBrain npcBrain)
 							npcBrain.GetPlayerOwner()?.Out.SendCheckLOS(npc, target, CheckPetLosDuringCastCallback);
@@ -1215,7 +1226,7 @@ namespace DOL.GS.Spells
 					}
 					else
 					{
-						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoopMgr.GameLoopTime)
 							CastState = ECastState.Interrupted;
 						else
 							CastState = ECastState.Cleanup;
@@ -1582,7 +1593,7 @@ namespace DOL.GS.Spells
 				if (quickcast != null && Spell.CastTime > 0)
 				{
 					m_caster.TempProperties.SetProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, m_caster.CurrentRegion.Time);
-					((GamePlayer)m_caster).DisableSkill(SkillBase.GetAbility(Abilities.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
+					((GamePlayer)m_caster).DisableSkill(SkillBase.GetAbility(AbilityConstants.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
 					//EffectService.RequestImmediateCancelEffect(quickcast, false);
 					quickcast.Cancel(false);
 				}
@@ -2351,7 +2362,7 @@ namespace DOL.GS.Spells
 				//(m_spellLine.KeyName == GlobalSpellsLines.Item_Effects ||
 				(m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || 
 				//m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || 
-				m_spellLine.KeyName == Specs.Savagery || 
+				m_spellLine.KeyName == SpecConstants.Savagery || 
 				m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || 
 				m_spellLine.KeyName == "OffensiveProc"))
 				Effectiveness = 1.0; // TODO player.PlayerEffectiveness
@@ -2586,8 +2597,8 @@ namespace DOL.GS.Spells
 				if (target is GameNpc)
 				{
 					double mobScalar = m_caster.GetConLevel(target) > 3 ? 3 : m_caster.GetConLevel(target);
-					hitChance -= (int)(mobScalar * Properties.PVE_SPELL_CONHITPERCENT);
-					hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+					hitChance -= (int)(mobScalar * ServerProperty.PVE_SPELL_CONHITPERCENT);
+					hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * ServerProperty.MISSRATE_REDUCTION_PER_ATTACKERS;
 				}
 			}
 
@@ -2641,7 +2652,7 @@ namespace DOL.GS.Spells
 			{
 				int spellResistRoll;
 				
-				if (!Properties.OVERRIDE_DECK_RNG && Caster is GamePlayer player)
+				if (!ServerProperty.OVERRIDE_DECK_RNG && Caster is GamePlayer player)
 					spellResistRoll = player.RandomNumberDeck.GetInt();
 				else
 					spellResistRoll = Util.CryptoNextInt(100);
@@ -2679,13 +2690,13 @@ namespace DOL.GS.Spells
 			{
 				if (Caster.Realm == 0 || target.Realm == 0)
 				{
-					target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-					Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+					target.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+					Caster.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 				}
 				else
 				{
-					target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-					Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+					target.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+					Caster.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 				}
 			}
 		}
@@ -2759,13 +2770,13 @@ namespace DOL.GS.Spells
 		{
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
-				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+				target.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+				Caster.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 			}
 			else
 			{
-				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+				target.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+				Caster.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 			}
 		}
 		
@@ -2902,39 +2913,39 @@ namespace DOL.GS.Spells
 				list.Add(Spell.Description);
 				list.Add(" "); //empty line
 				if (Spell.InstrumentRequirement != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.InstrumentRequire", GlobalConstants.InstrumentTypeToName(Spell.InstrumentRequirement)) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.InstrumentRequire", GlobalConstants.InstrumentTypeToName(Spell.InstrumentRequirement)));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.InstrumentRequire", GlobalConstants.InstrumentTypeToName(Spell.InstrumentRequirement)) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.InstrumentRequire", GlobalConstants.InstrumentTypeToName(Spell.InstrumentRequirement)));
 				if (Spell.Damage != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Damage", Spell.Damage.ToString("0.###;0.###'%'")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Damage", Spell.Damage.ToString("0.###;0.###'%'")));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Damage", Spell.Damage.ToString("0.###;0.###'%'")) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Damage", Spell.Damage.ToString("0.###;0.###'%'")));
 				if (Spell.LifeDrainReturn != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.HealthReturned", Spell.LifeDrainReturn) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.HealthReturned", Spell.LifeDrainReturn));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.HealthReturned", Spell.LifeDrainReturn) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.HealthReturned", Spell.LifeDrainReturn));
 				else if (Spell.Value != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Value", Spell.Value.ToString("0.###;0.###'%'")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Value", Spell.Value.ToString("0.###;0.###'%'")));
-				list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Target", Spell.Target) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Target", Spell.Target));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Value", Spell.Value.ToString("0.###;0.###'%'")) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Value", Spell.Value.ToString("0.###;0.###'%'")));
+				list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Target", Spell.Target) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Target", Spell.Target));
 				if (Spell.Range != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Range", Spell.Range) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Range", Spell.Range));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Range", Spell.Range) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Range", Spell.Range));
 				if (Spell.Duration >= ushort.MaxValue * 1000)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Duration") + " Permanent." : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Duration") + " Permanent.");
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Duration") + " Permanent." : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Duration") + " Permanent.");
 				else if (Spell.Duration > 60000)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Duration") + " " + Spell.Duration / 60000 + ":" + (Spell.Duration % 60000 / 1000).ToString("00") + " min" : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Duration") + " " + Spell.Duration / 60000 + ":" + (Spell.Duration % 60000 / 1000).ToString("00") + " min");
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Duration") + " " + Spell.Duration / 60000 + ":" + (Spell.Duration % 60000 / 1000).ToString("00") + " min" : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Duration") + " " + Spell.Duration / 60000 + ":" + (Spell.Duration % 60000 / 1000).ToString("00") + " min");
 				else if (Spell.Duration != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Duration") + " " + (Spell.Duration / 1000).ToString("0' sec';'Permanent.';'Permanent.'") : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Duration") + " " + (Spell.Duration / 1000).ToString("0' sec';'Permanent.';'Permanent.'"));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Duration") + " " + (Spell.Duration / 1000).ToString("0' sec';'Permanent.';'Permanent.'") : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Duration") + " " + (Spell.Duration / 1000).ToString("0' sec';'Permanent.';'Permanent.'"));
 				if (Spell.Frequency != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Frequency", (Spell.Frequency * 0.001).ToString("0.0")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Frequency", (Spell.Frequency * 0.001).ToString("0.0")));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Frequency", (Spell.Frequency * 0.001).ToString("0.0")) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Frequency", (Spell.Frequency * 0.001).ToString("0.0")));
 				if (Spell.Power != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.PowerCost", Spell.Power.ToString("0;0'%'")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.PowerCost", Spell.Power.ToString("0;0'%'")));
-				list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.PowerCost", Spell.Power.ToString("0;0'%'")) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.PowerCost", Spell.Power.ToString("0;0'%'")));
+				list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
 				if (Spell.RecastDelay > 60000)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 60000).ToString() + ":" + (Spell.RecastDelay % 60000 / 1000).ToString("00") + " min" : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 60000).ToString() + ":" + (Spell.RecastDelay % 60000 / 1000).ToString("00") + " min");
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 60000).ToString() + ":" + (Spell.RecastDelay % 60000 / 1000).ToString("00") + " min" : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 60000).ToString() + ":" + (Spell.RecastDelay % 60000 / 1000).ToString("00") + " min");
 				else if (Spell.RecastDelay > 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 1000).ToString() + " sec" : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 1000).ToString() + " sec");
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 1000).ToString() + " sec" : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.RecastTime") + " " + (Spell.RecastDelay / 1000).ToString() + " sec");
 				if (Spell.Concentration != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.ConcentrationCost", Spell.Concentration) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.ConcentrationCost", Spell.Concentration));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.ConcentrationCost", Spell.Concentration) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.ConcentrationCost", Spell.Concentration));
 				if (Spell.Radius != 0)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Radius", Spell.Radius) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Radius", Spell.Radius));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Radius", Spell.Radius) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Radius", Spell.Radius));
 				if (Spell.DamageType != EDamageType.Natural)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)) : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)) : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
 				if (Spell.IsFocus)
-					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Focus") : LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "DelveInfo.Focus"));
+					list.Add(p != null ? LanguageMgr.GetTranslation(p.Client, "DelveInfo.Focus") : LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "DelveInfo.Focus"));
 
 				return list;
 			}
@@ -3269,7 +3280,7 @@ namespace DOL.GS.Spells
 				if (Caster is GameSummonedPet pet)
 				{
 					// There is no reason to cap pet spell damage if it's being scaled anyway.
-					if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
+					if (ServerProperty.PET_SCALE_SPELL_MAX_LEVEL <= 0)
 						spellDamage = CapPetSpellDamage(spellDamage, player);
 
 					if (pet is NecromancerPet nPet)
@@ -3363,7 +3374,7 @@ namespace DOL.GS.Spells
 			int adjustedDamage = damage;
 
 			if (hitChance < 55)
-				adjustedDamage += (int) (adjustedDamage * (hitChance - 55) * Properties.SPELL_HITCHANCE_DAMAGE_REDUCTION_MULTIPLIER * 0.01);
+				adjustedDamage += (int) (adjustedDamage * (hitChance - 55) * ServerProperty.SPELL_HITCHANCE_DAMAGE_REDUCTION_MULTIPLIER * 0.01);
 
 			return Math.Max(adjustedDamage, 1);
 		}
@@ -3406,9 +3417,9 @@ namespace DOL.GS.Spells
 			if (m_caster is GamePlayer || (m_caster is GameNpc && (m_caster as GameNpc).Brain is IControlledBrain && m_caster.Realm != 0))
 			{
 				if (target is GamePlayer)
-					finalDamage = (int) (finalDamage * Properties.PVP_SPELL_DAMAGE);
+					finalDamage = (int) (finalDamage * ServerProperty.PVP_SPELL_DAMAGE);
 				else if (target is GameNpc)
-					finalDamage = (int) (finalDamage * Properties.PVE_SPELL_DAMAGE);
+					finalDamage = (int) (finalDamage * ServerProperty.PVE_SPELL_DAMAGE);
 			}
 
 			// Calculate resistances and conversion.
@@ -3554,13 +3565,13 @@ namespace DOL.GS.Spells
 				{
 					if (Caster.Realm == 0 || ad.Target.Realm == 0)
 					{
-						ad.Target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-						Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+						ad.Target.LastAttackedByEnemyTickPvE = GameLoopMgr.GameLoopTime;
+						Caster.LastAttackTickPvE = GameLoopMgr.GameLoopTime;
 					}
 					else
 					{
-						ad.Target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-						Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
+						ad.Target.LastAttackedByEnemyTickPvP = GameLoopMgr.GameLoopTime;
+						Caster.LastAttackTickPvP = GameLoopMgr.GameLoopTime;
 					}
 				}
 			}

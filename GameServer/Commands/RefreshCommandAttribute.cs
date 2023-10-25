@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DOL.GS;
+namespace Core.GS.Commands;
 
 /// <summary>
 /// Marks a class Method as Static Refresh Command.

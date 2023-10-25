@@ -1,12 +1,13 @@
-﻿using DOL.GS;
+﻿using Core.GS.AI;
+using Core.GS.Enums;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class NecromancerPetStateWakingUp : ControlledNpcStateWakingUp
 {
     public NecromancerPetStateWakingUp(NecromancerPetBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.WAKING_UP;
+        StateType = EFsmStateType.WAKING_UP;
     }
 
     public override void Think()
@@ -19,7 +20,7 @@ public class NecromancerPetStateDefensive : ControlledNpcStateDefensive
 {
     public NecromancerPetStateDefensive(NecromancerPetBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.IDLE;
+        StateType = EFsmStateType.IDLE;
     }
 
     public override void Think()
@@ -38,7 +39,7 @@ public class NecromancerPetStateAggro : ControlledNpcStateAggro
 {
     public NecromancerPetStateAggro(NecromancerPetBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.AGGRO;
+        StateType = EFsmStateType.AGGRO;
     }
 
     public override void Think()
@@ -57,7 +58,7 @@ public class NecromancerPetStatePassive : ControlledNpcStatePassive
 {
     public NecromancerPetStatePassive(NecromancerPetBrain brain) : base(brain)
     {
-        StateType = EFSMStateType.PASSIVE;
+        StateType = EFsmStateType.PASSIVE;
     }
 
     public override void Think()

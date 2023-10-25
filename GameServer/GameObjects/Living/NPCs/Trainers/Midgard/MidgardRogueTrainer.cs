@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Rogue Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Rogue Trainer" NPC's in Midgard (multiple guilds are possible for one script)
 public class MidgardRogueTrainer : GameTrainer
@@ -12,7 +12,7 @@ public class MidgardRogueTrainer : GameTrainer
 
 	public const string PRACTICE_WEAPON_ID = "training_sword_mid";
 	
-	public MidgardRogueTrainer() : base(eChampionTrainerType.MidgardRogue)
+	public MidgardRogueTrainer() : base(EChampionTrainerType.MidgardRogue)
 	{
 	}
 

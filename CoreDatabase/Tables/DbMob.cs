@@ -1,6 +1,4 @@
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// The database side of GameMob
@@ -55,7 +53,7 @@ namespace DOL.Database
 		private string m_packageID;
 		private byte m_visibleWeaponSlots;
 
-		public static readonly string DEFAULT_NPC_CLASSTYPE = "DOL.GS.GameNPC";
+		public static readonly string DEFAULT_NPC_CLASSTYPE = "Core.GS.GameNpc";
         #endregion Variables
 
         /// <summary>

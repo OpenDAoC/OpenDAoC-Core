@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.Base.Enums;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Server;
 using JNogueira.Discord.Webhook.Client;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	// See the comments above 'using' about SendMessage translation IDs
 	[Command(
@@ -71,14 +74,14 @@ namespace DOL.GS.Commands
 			}
 
 			// At least 1 hour
-			if (Properties.HOURS_UPTIME_BETWEEN_SHUTDOWN <= 0) return;
+			if (ServerProperty.HOURS_UPTIME_BETWEEN_SHUTDOWN <= 0) return;
 			
 			if (m_shuttingDown)
 				return;
 
 			TimeSpan uptime = TimeSpan.FromMilliseconds(GameServer.Instance.TickCount);
 
-			if (uptime.TotalHours >= Properties.HOURS_UPTIME_BETWEEN_SHUTDOWN && DateTime.Now.Hour == AUTOMATEDSHUTDOWN_HOURTOSHUTDOWN)
+			if (uptime.TotalHours >= ServerProperty.HOURS_UPTIME_BETWEEN_SHUTDOWN && DateTime.Now.Hour == AUTOMATEDSHUTDOWN_HOURTOSHUTDOWN)
 			{
 				m_counter = AUTOMATEDSHUTDOWN_SHUTDOWNWARNINGMINUTES * 60;
 
@@ -98,7 +101,7 @@ namespace DOL.GS.Commands
 				log.Warn(msg);
 			}
 			else
-				log.Info($"Uptime = {uptime.TotalHours:N1}, restart uptime = {Properties.HOURS_UPTIME_BETWEEN_SHUTDOWN} | current hour = {DateTime.Now.Hour}, restart hour = {AUTOMATEDSHUTDOWN_HOURTOSHUTDOWN}");
+				log.Info($"Uptime = {uptime.TotalHours:N1}, restart uptime = {ServerProperty.HOURS_UPTIME_BETWEEN_SHUTDOWN} | current hour = {DateTime.Now.Hour}, restart hour = {AUTOMATEDSHUTDOWN_HOURTOSHUTDOWN}");
 		}
 		
 		public static void CountDown(int seconds)
@@ -257,9 +260,9 @@ namespace DOL.GS.Commands
 					}
 				}
 				
-				if (secs == 119 && GameServer.Instance.ServerStatus != EGameServerStatus.GSS_Closed && Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID))) // 2 mins remaining
+				if (secs == 119 && GameServer.Instance.ServerStatus != EGameServerStatus.GSS_Closed && ServerProperty.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperty.DISCORD_WEBHOOK_ID))) // 2 mins remaining
 				{
-						var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+						var discordClient = new DiscordWebhookClient(ServerProperty.DISCORD_WEBHOOK_ID);
 
 						var message = new DiscordMessage(
 							"",
@@ -436,9 +439,9 @@ namespace DOL.GS.Commands
 					}
 				}
 				
-				if (secs == 119 && GameServer.Instance.ServerStatus != EGameServerStatus.GSS_Closed && Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID))) // 2 mins remaining
+				if (secs == 119 && GameServer.Instance.ServerStatus != EGameServerStatus.GSS_Closed && ServerProperty.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperty.DISCORD_WEBHOOK_ID))) // 2 mins remaining
 				{
-						var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+						var discordClient = new DiscordWebhookClient(ServerProperty.DISCORD_WEBHOOK_ID);
 
 						var message = new DiscordMessage(
 							"",
@@ -557,10 +560,10 @@ namespace DOL.GS.Commands
 							log.Info("Shutdown aborted. Server still accepting incoming connections!");
 						}
 						
-						if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+						if (ServerProperty.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperty.DISCORD_WEBHOOK_ID)))
 						{
 
-							var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+							var discordClient = new DiscordWebhookClient(ServerProperty.DISCORD_WEBHOOK_ID);
 							// var discordClient = new DiscordWebhookClient("https://discord.com/api/webhooks/928723074898075708/cyZbVefc0gc__9c2wq3DwVxOBFIT45VyK-1-z7tT_uXDd--WcHrY1lw1y9H6wPg6SEyM");
 
 							var message = new DiscordMessage(
@@ -740,10 +743,10 @@ namespace DOL.GS.Commands
 				ChatUtil.SendServerMessage(player.Client, "AdminCommands.Shutdown.Msg.AttentionShutdown", m_counter / 60, date.ToString("HH:mm \"GMT\" zzz"));
 			}
 
-			if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
+			if (ServerProperty.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperty.DISCORD_WEBHOOK_ID)))
 			{
 
-				var discordClient = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
+				var discordClient = new DiscordWebhookClient(ServerProperty.DISCORD_WEBHOOK_ID);
 
 				var message = new DiscordMessage(
 					"",

@@ -1,6 +1,4 @@
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// List of characters and the one time drops they have received.

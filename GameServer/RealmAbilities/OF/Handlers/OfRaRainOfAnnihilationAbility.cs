@@ -1,14 +1,13 @@
-using DOL.Database;
+using Core.Database.Tables;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class OfRaRainOfAnnihilationAbility : OfRaRainOfBaseAbility
 {
-    public class OfRaRainOfAnnihilationAbility : OfRaRainOfBaseAbility
-    {
-        public OfRaRainOfAnnihilationAbility(DbAbility ability, int level) : base(ability, level) { }
+    public OfRaRainOfAnnihilationAbility(DbAbility ability, int level) : base(ability, level) { }
 
-        public override void Execute(GameLiving living)
-        {
-            Execute("Rain Of Annihilation", 7127, 7127, 15, living);
-        }
+    public override void Execute(GameLiving living)
+    {
+        Execute("Rain Of Annihilation", 7127, 7127, 15, living);
     }
 }

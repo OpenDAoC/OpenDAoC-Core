@@ -1,7 +1,7 @@
 using System;
-using DOL.Database;
+using Core.Database.Tables;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the account events

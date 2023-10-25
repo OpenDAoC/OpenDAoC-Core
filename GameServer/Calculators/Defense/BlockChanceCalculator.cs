@@ -1,4 +1,7 @@
-namespace DOL.GS.PropertyCalc;
+using Core.GS.Enums;
+using Core.GS.Skills;
+
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The block chance calculator. Returns 0 .. 1000 chance.
@@ -18,7 +21,7 @@ public class BlockChanceCalculator : PropertyCalculator
 
         if (living is GamePlayer player)
         {
-            chance += (player.Dexterity * 2 - 100) / 4 + (player.GetModifiedSpecLevel(Specs.Shields) - 1) * (10 / 2) + 50;
+            chance += (player.Dexterity * 2 - 100) / 4 + (player.GetModifiedSpecLevel(SpecConstants.Shields) - 1) * (10 / 2) + 50;
             chance += player.AbilityBonus[(int) property] * 10;
         }
         else if (living is GameNpc npc)

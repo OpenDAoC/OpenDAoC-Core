@@ -1,30 +1,29 @@
-﻿namespace DOL.GS
+﻿namespace Core.GS.ECS;
+
+public class RezSicknessEcsSpellEffect : EcsGameSpellEffect
 {
-    public class RezSicknessEcsSpellEffect : EcsGameSpellEffect
+    public RezSicknessEcsSpellEffect(EcsGameEffectInitParams initParams)
+        : base(initParams) { }
+
+    public override void OnStartEffect()
     {
-        public RezSicknessEcsSpellEffect(EcsGameEffectInitParams initParams)
-            : base(initParams) { }
-
-        public override void OnStartEffect()
+        GamePlayer gPlayer = Owner as GamePlayer;
+        if (gPlayer != null)
         {
-            GamePlayer gPlayer = Owner as GamePlayer;
-            if (gPlayer != null)
-            {
-                gPlayer.Effectiveness -= SpellHandler.Spell.Value * 0.01;
-                gPlayer.Out.SendUpdateWeaponAndArmorStats();
-                gPlayer.Out.SendStatusUpdate();
-            }
+            gPlayer.Effectiveness -= SpellHandler.Spell.Value * 0.01;
+            gPlayer.Out.SendUpdateWeaponAndArmorStats();
+            gPlayer.Out.SendStatusUpdate();
         }
+    }
 
-        public override void OnStopEffect()
+    public override void OnStopEffect()
+    {
+        GamePlayer gPlayer = Owner as GamePlayer;
+        if (gPlayer != null)
         {
-            GamePlayer gPlayer = Owner as GamePlayer;
-            if (gPlayer != null)
-            {
-                gPlayer.Effectiveness += SpellHandler.Spell.Value * 0.01;
-                gPlayer.Out.SendUpdateWeaponAndArmorStats();
-                gPlayer.Out.SendStatusUpdate();
-            }
+            gPlayer.Effectiveness += SpellHandler.Spell.Value * 0.01;
+            gPlayer.Out.SendUpdateWeaponAndArmorStats();
+            gPlayer.Out.SendStatusUpdate();
         }
     }
 }

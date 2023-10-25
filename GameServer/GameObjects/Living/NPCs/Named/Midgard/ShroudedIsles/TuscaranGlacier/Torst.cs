@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+﻿using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Torst
 public class Torst : GameEpicBoss
@@ -25,7 +28,7 @@ public class Torst : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int AttackRange
     {
@@ -34,7 +37,7 @@ public class Torst : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -75,7 +78,7 @@ public class Torst : GameEpicBoss
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
         MaxSpeedBase = 250;
         Flags = ENpcFlags.FLYING;
-        RespawnInterval =ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval =ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
         TorstBrain sbrain = new TorstBrain();
         SetOwnBrain(sbrain);
@@ -152,7 +155,7 @@ public class TorstEddies : GameNpc
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int MaxHealth
     {

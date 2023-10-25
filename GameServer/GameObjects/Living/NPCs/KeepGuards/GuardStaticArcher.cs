@@ -1,18 +1,17 @@
-using DOL.AI.Brain;
+using Core.GS.AI;
 
-namespace DOL.GS.Keeps
+namespace Core.GS;
+
+public class GuardStaticArcher : GuardArcher
 {
-	public class GuardStaticArcher : GuardArcher
+	protected override void SetAggression()
 	{
-		protected override void SetAggression()
-		{
-			(Brain as KeepGuardBrain).SetAggression(99, 2100);
-		}
+		(Brain as KeepGuardBrain).SetAggression(99, 2100);
+	}
 
-		protected override void SetSpeed()
-		{
-			base.SetSpeed();
-			MaxSpeedBase = 0;
-		}
+	protected override void SetSpeed()
+	{
+		base.SetSpeed();
+		MaxSpeedBase = 0;
 	}
 }

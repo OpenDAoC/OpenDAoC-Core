@@ -1,12 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Timers;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Players;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Apocalypse Initializer
 public class ApocalypseInitializer : GameNpc
@@ -167,7 +173,7 @@ public class ApocalypseInitializer : GameNpc
             {
                 RandomTarget = null;//reset picked player
                 PlayersInRoom.Clear();
-                int time = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000miliseconds 
+                int time = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000miliseconds 
                 new EcsGameTimer(this, new EcsGameTimer.EcsTimerCallback(DoRespawnNow), time);
                 log.Debug("Starting respawn time for final caer sidi encounter, will respawn in " + time / 60000 + " minutes!");
                 start_respawn_check = true;
@@ -355,7 +361,7 @@ public class FamesHorseman : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int AttackRange
     {
@@ -369,7 +375,7 @@ public class FamesHorseman : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -466,7 +472,7 @@ public class BellumHorseman : GameEpicBoss
     public BellumHorseman() : base() { }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -550,7 +556,7 @@ public class BellumHorseman : GameEpicBoss
     public void SpawnFateBearer()
     {
         INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
-        GameEpicNPC Add = new GameEpicNPC();
+        GameEpicNpc Add = new GameEpicNpc();
         Add.LoadTemplate(npcTemplate);
         Add.X = X - 100;
         Add.Y = Y;
@@ -862,7 +868,7 @@ public class MorbusHorseman : GameEpicBoss
     public MorbusHorseman() : base() { }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -971,7 +977,7 @@ public class MorbusHorseman : GameEpicBoss
     public void SpawnFateBearer()
     {
         INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
-        GameEpicNPC Add = new GameEpicNPC();
+        GameEpicNpc Add = new GameEpicNpc();
         Add.LoadTemplate(npcTemplate);
         Add.X = X - 100;
         Add.Y = Y;
@@ -1244,7 +1250,7 @@ public class FunusHorseman : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -1291,7 +1297,7 @@ public class FunusHorseman : GameEpicBoss
     public void SpawnFateBearer()
     {
         INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
-        GameEpicNPC Add = new GameEpicNPC();
+        GameEpicNpc Add = new GameEpicNpc();
         Add.LoadTemplate(npcTemplate);
         Add.X = X - 100;
         Add.Y = Y;
@@ -1397,7 +1403,7 @@ public class Apocalypse : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -1524,7 +1530,7 @@ public class Apocalypse : GameEpicBoss
 #endregion Apocalypse
 
 #region Harbinger of Fate
-public class HarbringerOfFate : GameEpicNPC
+public class HarbringerOfFate : GameEpicNpc
 {
     public HarbringerOfFate() : base() { }
     public override double AttackDamage(DbInventoryItem weapon)
@@ -1613,7 +1619,7 @@ public class HarbringerOfFate : GameEpicNPC
 #endregion Harbringer of Fate
 
 #region Rain of Fire
-public class RainOfFire : GameEpicNPC
+public class RainOfFire : GameEpicNpc
 {
     public RainOfFire() : base() { }
     public override double AttackDamage(DbInventoryItem weapon)

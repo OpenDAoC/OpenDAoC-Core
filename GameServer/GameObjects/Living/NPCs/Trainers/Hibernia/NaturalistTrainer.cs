@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Naturalist Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Naturalist Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class NaturalistTrainer : GameTrainer
@@ -13,7 +13,7 @@ public class NaturalistTrainer : GameTrainer
 	public const string PRACTICE_WEAPON_ID = "training_club";
 	public const string PRACTICE_SHIELD_ID = "training_shield";
 
-	public NaturalistTrainer() : base(eChampionTrainerType.Naturalist)
+	public NaturalistTrainer() : base(EChampionTrainerType.Naturalist)
 	{
 	}
 

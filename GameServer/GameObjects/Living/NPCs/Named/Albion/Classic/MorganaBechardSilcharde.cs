@@ -1,10 +1,13 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Morgana
 public class Morgana : GameNpc
@@ -49,7 +52,7 @@ public class Morgana : GameNpc
 #endregion Morgana
 
 #region Bechard
-public class Bechard : GameEpicNPC
+public class Bechard : GameEpicNpc
 {
 	public Bechard() : base() { }
 	public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
@@ -102,7 +105,7 @@ public class Bechard : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -176,7 +179,7 @@ public class Bechard : GameEpicNPC
 #endregion Bechard
 
 #region Silcharde
-public class Silcharde : GameEpicNPC
+public class Silcharde : GameEpicNpc
 {
 	public Silcharde() : base() { }
 	public override void TakeDamage(GameObject source, EDamageType damageType, int damageAmount, int criticalAmount)
@@ -229,7 +232,7 @@ public class Silcharde : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);

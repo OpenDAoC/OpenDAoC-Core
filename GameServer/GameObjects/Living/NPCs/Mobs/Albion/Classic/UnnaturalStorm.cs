@@ -1,8 +1,11 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class UnnaturalStorm : GameNpc
 {

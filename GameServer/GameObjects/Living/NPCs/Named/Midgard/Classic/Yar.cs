@@ -1,7 +1,11 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+﻿using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Yar : GameEpicBoss
 {
@@ -13,7 +17,7 @@ public class Yar : GameEpicBoss
     }
     public virtual int YarDifficulty
     {
-        get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS / 100; }
+        get { return ServerProperty.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS / 100; }
     }
     public override int GetResist(EDamageType damageType)
     {
@@ -55,7 +59,7 @@ public class Yar : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -75,7 +79,7 @@ public class Yar : GameEpicBoss
         
         Faction = FactionMgr.GetFactionByID(154);
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(154));
-        RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
         YarBrain sBrain = new YarBrain();
         SetOwnBrain(sBrain);

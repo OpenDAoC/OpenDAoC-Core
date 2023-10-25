@@ -1,6 +1,4 @@
-using DOL.GS;
-
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 public class SayReceiveEventArgs : SourceEventArgs
 {

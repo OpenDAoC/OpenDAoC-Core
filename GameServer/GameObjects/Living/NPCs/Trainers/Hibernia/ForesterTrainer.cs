@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Forester Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Forester Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class ForesterTrainer : GameTrainer
@@ -12,7 +12,7 @@ public class ForesterTrainer : GameTrainer
 
 	public const string PRACTICE_WEAPON_ID = "training_staff";
 	
-	public ForesterTrainer() : base(eChampionTrainerType.Forester)
+	public ForesterTrainer() : base(EChampionTrainerType.Forester)
 	{
 	}
 

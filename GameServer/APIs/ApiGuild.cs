@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace DOL.GS.API;
+namespace Core.GS.APIs;
 
 public class ApiGuild
 {

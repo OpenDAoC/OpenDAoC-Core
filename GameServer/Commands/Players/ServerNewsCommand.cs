@@ -1,6 +1,7 @@
 ﻿using System;
+using Core.GS.Enums;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&servernews",

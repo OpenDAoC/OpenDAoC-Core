@@ -2,7 +2,7 @@
 using System.Collections;
 using System.ServiceProcess;
 
-namespace DOL.DOLServer.Actions
+namespace Core.Server
 {
 	/// <summary>
 	/// Handles starting of the service, internal action, can't be used from commandline!

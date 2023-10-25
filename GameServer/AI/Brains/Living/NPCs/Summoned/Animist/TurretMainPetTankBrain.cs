@@ -1,6 +1,7 @@
-﻿using DOL.GS;
+﻿using Core.GS.Enums;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class TurretMainPetTankBrain : TurretBrain
 {

@@ -1,8 +1,12 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Events;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Eyes Watching You Effect
 public class EyesWatchingYouInit : GameNpc

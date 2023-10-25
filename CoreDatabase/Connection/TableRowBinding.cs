@@ -1,4 +1,4 @@
-﻿namespace DOL.Database.Connection
+﻿namespace Core.Database
 {
 	/// <summary>
 	/// Existing Table Row Binding

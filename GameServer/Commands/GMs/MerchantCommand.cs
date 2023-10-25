@@ -1,10 +1,15 @@
 using System;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Players;
+using Core.GS.Scripts;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&merchant",
 		 EPrivLevel.GM,
@@ -51,7 +56,7 @@ namespace DOL.GS.Commands
 				#region Create
 				case "create":
 					{
-						string theType = "DOL.GS.GameMerchant";
+						string theType = "Core.GS.GameMerchant";
 						if (args.Length > 2)
 							theType = args[2];
 
@@ -84,12 +89,12 @@ namespace DOL.GS.Commands
 						merchant.Heading = client.Player.Heading;
 						merchant.Level = 1;
 						merchant.Realm = client.Player.Realm;
-						merchant.Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GMCommands.Merchant.NewName");
+						merchant.Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "GMCommands.Merchant.NewName");
 						merchant.Model = 9;
 						//Fill the living variables
 						merchant.CurrentSpeed = 0;
 						merchant.MaxSpeedBase = 200;
-						merchant.GuildName = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GMCommands.Merchant.NewGuildName");
+						merchant.GuildName = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "GMCommands.Merchant.NewGuildName");
 						merchant.Size = 50;
 						merchant.AddToWorld();
 						merchant.SaveIntoDatabase();

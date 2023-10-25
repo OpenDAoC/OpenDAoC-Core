@@ -2,16 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
-using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
+using Core.GS.ECS;
+using Core.GS.Effects;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.RealmAbilities;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI
 {
 	/// <summary>
 	/// A brain that can be controlled
@@ -77,7 +80,7 @@ namespace DOL.AI.Brain
 			FiniteStateMachine.Add(new ControlledNpcStateAggro(this));
 			FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-			FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.WAKING_UP);
 		}
 
 		protected bool m_isMainPet = true;
@@ -100,7 +103,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public override int ThinkInterval
 		{
-			get { return GS.ServerProperties.Properties.PET_THINK_INTERVAL; }
+			get { return ServerProperty.PET_THINK_INTERVAL; }
 		}
 
 		#region Control
@@ -240,7 +243,7 @@ namespace DOL.AI.Brain
 				return;
 
 			m_orderAttackTarget = target as GameLiving;
-			FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO);
 
 			if (target != Body.TargetObject && Body.IsCasting)
 				Body.StopCurrentSpellcast();
@@ -407,7 +410,7 @@ namespace DOL.AI.Brain
 			{
 				switch (ab.KeyName)
 				{
-					case Abilities.Intercept:
+					case AbilityConstants.Intercept:
 					{
 						// The pet should intercept even if a player is still intercepting for the owner.
 						GamePlayer playerOwner = GetPlayerOwner();
@@ -417,7 +420,7 @@ namespace DOL.AI.Brain
 
 						break;
 					}
-					case Abilities.Guard:
+					case AbilityConstants.Guard:
 					{
 						GamePlayer playerOwner = GetPlayerOwner();
 
@@ -434,7 +437,7 @@ namespace DOL.AI.Brain
 
 						break;
 					}
-					case Abilities.Protect:
+					case AbilityConstants.Protect:
 					{
 						GamePlayer playerOwner = GetPlayerOwner();
 
@@ -443,7 +446,7 @@ namespace DOL.AI.Brain
 
 						break;
 					}
-					case Abilities.ChargeAbility:
+					case AbilityConstants.ChargeAbility:
 					{
 						if (Body.TargetObject is GameLiving target &&
 							GameServer.ServerRules.IsAllowedToAttack(Body, target, true) &&
@@ -756,11 +759,11 @@ namespace DOL.AI.Brain
                 case ESpellType.SpreadHeal:
 					int bodyPercent = Body.HealthPercent;
 					//underhill ally heals at half the normal threshold 'will heal seriously injured groupmates'
-					int healThreshold = this.Body.Name.Contains("underhill") ? GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2 : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
+					int healThreshold = this.Body.Name.Contains("underhill") ? ServerProperty.NPC_HEAL_THRESHOLD / 2 : ServerProperty.NPC_HEAL_THRESHOLD;
 
 					if (Body.Name.Contains("empyrean"))
 					{
-						healThreshold = this.Body.Name.Contains("empyrean") ? GS.ServerProperties.Properties.CHARMED_NPC_HEAL_THRESHOLD : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
+						healThreshold = this.Body.Name.Contains("empyrean") ? ServerProperty.CHARMED_NPC_HEAL_THRESHOLD : ServerProperty.NPC_HEAL_THRESHOLD;
 					}
 
 					if (spell.Target == ESpellTarget.SELF)
@@ -1041,7 +1044,7 @@ namespace DOL.AI.Brain
 
 		public virtual void OnOwnerAttacked(AttackData ad)
 		{
-			if(FiniteStateMachine.GetState(EFSMStateType.PASSIVE) == FiniteStateMachine.GetCurrentState()) { return; }
+			if(FiniteStateMachine.GetState(EFsmStateType.PASSIVE) == FiniteStateMachine.GetCurrentState()) { return; }
 
 			// Theurgist pets don't help their owner.
 			if (Owner is GamePlayer && ((GamePlayer)Owner).PlayerClass.ID == (int)EPlayerClass.Theurgist)
@@ -1063,7 +1066,7 @@ namespace DOL.AI.Brain
 					break;
 			}
 
-			if (FiniteStateMachine.GetState(EFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO); }
+			if (FiniteStateMachine.GetState(EFsmStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO); }
 			AttackMostWanted();
 		}
 

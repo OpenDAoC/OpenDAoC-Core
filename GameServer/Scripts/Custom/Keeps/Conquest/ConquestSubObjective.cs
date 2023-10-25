@@ -1,16 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.Keeps;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS.Scripts.Custom;
 
 public class ConquestSubObjective
 {
-    private ushort FlagCaptureRadius = ServerProperties.Properties.FLAG_CAPTURE_RADIUS; //how far away can we capture flag from
-    private static int FlagCaptureTime = ServerProperties.Properties.FLAG_CAPTURE_TIME; //how long to capture flag
-    uint fullCycleTime = (uint) ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION;
+    private ushort FlagCaptureRadius = ServerProperty.FLAG_CAPTURE_RADIUS; //how far away can we capture flag from
+    private static int FlagCaptureTime = ServerProperty.FLAG_CAPTURE_TIME; //how long to capture flag
+    uint fullCycleTime = (uint) ServerProperty.MAX_CONQUEST_TASK_DURATION;
 
     private int ObjectiveNumber = 0;
     
@@ -31,7 +35,7 @@ public class ConquestSubObjective
         FlagObject.Y = y;
         FlagObject.Z = z;
         FlagObject.CurrentRegion = WorldMgr.GetRegion(keep.Region);
-        FlagObject.SpawnTick = GameLoop.GameLoopTime;
+        FlagObject.SpawnTick = GameLoopMgr.GameLoopTime;
         FlagObject.Realm = keep.Realm;
         FlagObject.AddToWorld();
 

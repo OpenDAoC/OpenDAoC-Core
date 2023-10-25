@@ -1,209 +1,211 @@
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class NfRaPurgeAbility : TimedRealmAbility
 {
-    public class NfRaPurgeAbility : TimedRealmAbility
-    {
-        public NfRaPurgeAbility(DbAbility dba, int level) : base(dba, level) { }
+    public NfRaPurgeAbility(DbAbility dba, int level) : base(dba, level) { }
 
-        /// <summary>
-        /// Action
-        /// </summary>
-        /// <param name="living"></param>
-        public override void Execute(GameLiving living)
+    /// <summary>
+    /// Action
+    /// </summary>
+    /// <param name="living"></param>
+    public override void Execute(GameLiving living)
+    {
+        if (CheckPreconditions(living, DEAD | SITTING)) return;
+        
+        if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
         {
-            if (CheckPreconditions(living, DEAD | SITTING)) return;
-            
-            if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+            int seconds = 0;
+            switch(Level)
             {
-            	int seconds = 0;
-            	switch(Level)
-            	{
-            		case 1:
-            			seconds = 5;
-            		break;
-            	}
-            	
-            	if(seconds > 0)
-            	{
-	                PurgeTimer timer = new PurgeTimer(living, this, seconds);
-	                timer.Interval = 1000;
-	                timer.Start(1);
-	                DisableSkill(living);            		
-            	}
-            	else
-            	{
-	                SendCastMessage(living);
-	                if (RemoveNegativeEffects(living, this))
-	                {
-	                    DisableSkill(living);
-	                }            		
-            	}
+            	case 1:
+            		seconds = 5;
+            	break;
+            }
+            
+            if(seconds > 0)
+            {
+                PurgeTimer timer = new PurgeTimer(living, this, seconds);
+                timer.Interval = 1000;
+                timer.Start(1);
+                DisableSkill(living);            		
             }
             else
             {
-	            if (Level < 2)
-	            {
-	                PurgeTimer timer = new PurgeTimer(living, this, 5);
-	                timer.Interval = 1000;
-	                timer.Start(1);
-	                DisableSkill(living);
-	            }
-	            else
-	            {
-	                SendCastMessage(living);
-	                if (RemoveNegativeEffects(living, this))
-	                {
-	                    DisableSkill(living);
-	                }
-	            }
+                SendCastMessage(living);
+                if (RemoveNegativeEffects(living, this))
+                {
+                    DisableSkill(living);
+                }            		
             }
         }
-
-        protected static bool RemoveNegativeEffects(GameLiving living, NfRaPurgeAbility purge, bool isFromGroupPurge = false)
+        else
         {
-            bool removed = false;
-            ArrayList effectsToRemove = new ArrayList();
-
-            GamePlayer player = (GamePlayer)living;
-
-            if (player == null)
-                return false;
-
-            EffectListComponent effectListComponent = null;
-
-            if (player.PlayerClass.ID == (int)EPlayerClass.Necromancer)
+            if (Level < 2)
             {
-                NecromancerPet necroPet = (NecromancerPet)player.ControlledBrain.Body;
+                PurgeTimer timer = new PurgeTimer(living, this, 5);
+                timer.Interval = 1000;
+                timer.Start(1);
+                DisableSkill(living);
+            }
+            else
+            {
+                SendCastMessage(living);
+                if (RemoveNegativeEffects(living, this))
+                {
+                    DisableSkill(living);
+                }
+            }
+        }
+    }
 
-                if (necroPet != null)
-                {
-                    effectListComponent = necroPet.effectListComponent;
-                }
-                else
-                {
-                    effectListComponent = player.effectListComponent;
-                }
+    protected static bool RemoveNegativeEffects(GameLiving living, NfRaPurgeAbility purge, bool isFromGroupPurge = false)
+    {
+        bool removed = false;
+        ArrayList effectsToRemove = new ArrayList();
+
+        GamePlayer player = (GamePlayer)living;
+
+        if (player == null)
+            return false;
+
+        EffectListComponent effectListComponent = null;
+
+        if (player.PlayerClass.ID == (int)EPlayerClass.Necromancer)
+        {
+            NecromancerPet necroPet = (NecromancerPet)player.ControlledBrain.Body;
+
+            if (necroPet != null)
+            {
+                effectListComponent = necroPet.effectListComponent;
             }
             else
             {
                 effectListComponent = player.effectListComponent;
             }
-
-            if (effectListComponent == null)
-                return false;
-
-            // Gather effects to cancel
-            foreach (EcsGameEffect e in effectListComponent.GetAllEffects())
-            {
-                if (e.HasPositiveEffect)
-                    continue;
-
-                if (e is EcsImmunityEffect)
-                    continue;
-
-                effectsToRemove.Add(e);
-            }
-
-            // Cancel effects
-            foreach (EcsGameEffect e in effectsToRemove)
-            {
-                EffectService.RequestCancelEffect(e);
-                removed = true;
-            }
-
-            // Show spell effect
-            foreach (GamePlayer rangePlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            {
-                rangePlayer.Out.SendSpellEffectAnimation(effectListComponent.Owner, effectListComponent.Owner, 7011, 0, false, (byte)(removed ? 1 : 0));
-            }
-
-            // Disable purge if an effect was purged
-            if (removed)
-            {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PurgeAbility.RemoveNegativeEffects.FallFromYou"), EChatType.CT_Advise, EChatLoc.CL_SystemWindow);
-                player.Stealth(false);
-            }
-            else if (!isFromGroupPurge)
-            {
-                player.DisableSkill(purge, 5);
-            }
-
-            return removed;
+        }
+        else
+        {
+            effectListComponent = player.effectListComponent;
         }
 
-        protected class PurgeTimer : EcsGameTimerWrapperBase
-        {
-            GameLiving m_caster;
-            NfRaPurgeAbility m_purge;
-            int counter;
+        if (effectListComponent == null)
+            return false;
 
-            public PurgeTimer(GameLiving caster, NfRaPurgeAbility purge, int count) : base(caster)
+        // Gather effects to cancel
+        foreach (EcsGameEffect e in effectListComponent.GetAllEffects())
+        {
+            if (e.HasPositiveEffect)
+                continue;
+
+            if (e is EcsImmunityEffect)
+                continue;
+
+            effectsToRemove.Add(e);
+        }
+
+        // Cancel effects
+        foreach (EcsGameEffect e in effectsToRemove)
+        {
+            EffectService.RequestCancelEffect(e);
+            removed = true;
+        }
+
+        // Show spell effect
+        foreach (GamePlayer rangePlayer in player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+        {
+            rangePlayer.Out.SendSpellEffectAnimation(effectListComponent.Owner, effectListComponent.Owner, 7011, 0, false, (byte)(removed ? 1 : 0));
+        }
+
+        // Disable purge if an effect was purged
+        if (removed)
+        {
+            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PurgeAbility.RemoveNegativeEffects.FallFromYou"), EChatType.CT_Advise, EChatLoc.CL_SystemWindow);
+            player.Stealth(false);
+        }
+        else if (!isFromGroupPurge)
+        {
+            player.DisableSkill(purge, 5);
+        }
+
+        return removed;
+    }
+
+    protected class PurgeTimer : EcsGameTimerWrapperBase
+    {
+        GameLiving m_caster;
+        NfRaPurgeAbility m_purge;
+        int counter;
+
+        public PurgeTimer(GameLiving caster, NfRaPurgeAbility purge, int count) : base(caster)
+        {
+            m_caster = caster;
+            m_purge = purge;
+            counter = count;
+        }
+        protected override int OnTick(EcsGameTimer timer)
+        {
+            if (!m_caster.IsAlive)
             {
-                m_caster = caster;
-                m_purge = purge;
-                counter = count;
-            }
-            protected override int OnTick(EcsGameTimer timer)
-            {
-                if (!m_caster.IsAlive)
-                {
-                    Stop();
-                    if (m_caster is GamePlayer)
-                    {
-                        ((GamePlayer)m_caster).DisableSkill(m_purge, 0);
-                    }
-                    return 0;
-                }
-                if (counter > 0)
-                {
-                    GamePlayer player = m_caster as GamePlayer;
-                    if (player != null)
-                    {
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PurgeAbility.OnTick.PurgeActivate", counter), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-                    }
-                    counter--;
-                    return Interval;
-                }
-                m_purge.SendCastMessage(m_caster);
-                RemoveNegativeEffects(m_caster, m_purge);
                 Stop();
+                if (m_caster is GamePlayer)
+                {
+                    ((GamePlayer)m_caster).DisableSkill(m_purge, 0);
+                }
                 return 0;
             }
+            if (counter > 0)
+            {
+                GamePlayer player = m_caster as GamePlayer;
+                if (player != null)
+                {
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PurgeAbility.OnTick.PurgeActivate", counter), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+                }
+                counter--;
+                return Interval;
+            }
+            m_purge.SendCastMessage(m_caster);
+            RemoveNegativeEffects(m_caster, m_purge);
+            Stop();
+            return 0;
         }
+    }
 
-        public override int GetReUseDelay(int level)
+    public override int GetReUseDelay(int level)
+    {
+        if(ServerProperty.USE_NEW_ACTIVES_RAS_SCALING)
         {
-        	if(ServerProperties.Properties.USE_NEW_ACTIVES_RAS_SCALING)
+        	switch(level)
         	{
-        		switch(level)
-        		{
-					case 3 :
-						return 600;
-        			case 4 :
-        				return 450;
-        			case 5 :
-        				return 300;
-        			default :
-        				return 900;        				
-        		}
-        	}
-        	else 
-        	{
-            	return (level < 3) ? 900 : 300;
+				case 3 :
+					return 600;
+        		case 4 :
+        			return 450;
+        		case 5 :
+        			return 300;
+        		default :
+        			return 900;        				
         	}
         }
+        else 
+        {
+            return (level < 3) ? 900 : 300;
+        }
+    }
 
-        public override void AddEffectsInfo(IList<string> list)
-        {
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info1"));
-            list.Add("");
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info2"));
-            list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info3"));
-        }
+    public override void AddEffectsInfo(IList<string> list)
+    {
+        list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info1"));
+        list.Add("");
+        list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info2"));
+        list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "PurgeAbility.AddEffectsInfo.Info3"));
     }
 }

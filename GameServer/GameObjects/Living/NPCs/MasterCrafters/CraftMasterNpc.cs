@@ -1,7 +1,8 @@
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Packets.Server;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public abstract class CraftMasterNpc : GameNpc
 {

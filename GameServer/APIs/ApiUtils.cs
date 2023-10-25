@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Server;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace DOL.GS.API;
+namespace Core.GS.APIs;
 
 public class ApiUtils
 {
@@ -25,7 +29,7 @@ public class ApiUtils
 
         if (!_cache.TryGetValue(_discordRequiredKey, out bool discordRequired))
         {
-            discordRequired = Properties.FORCE_DISCORD_LINK;
+            discordRequired = ServerProperty.FORCE_DISCORD_LINK;
             _cache.Set(_discordRequiredKey, discordRequired, DateTime.Now.AddMinutes(1));
         }
 

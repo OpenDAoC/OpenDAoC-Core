@@ -1,4 +1,6 @@
-namespace DOL.AI.Brain;
+using Core.GS.World;
+
+namespace Core.GS.AI;
 
 #region Host Initializer
 public class HostInitializerBrain : StandardMobBrain

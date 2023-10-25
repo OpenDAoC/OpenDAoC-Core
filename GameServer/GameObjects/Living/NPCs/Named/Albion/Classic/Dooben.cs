@@ -1,7 +1,11 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+﻿using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Dooben : GameNpc
 {

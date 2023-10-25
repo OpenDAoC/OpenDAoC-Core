@@ -1,6 +1,7 @@
-using DOL.GS;
+using Core.GS.ECS;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class VetustaAbbeyBellBrain : APlayerVicinityBrain
 {

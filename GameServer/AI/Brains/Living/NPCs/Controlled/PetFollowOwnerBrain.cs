@@ -1,7 +1,7 @@
 ﻿using System;
-using DOL.GS;
+using Core.GS.Enums;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 /// <summary>
 /// Dummy Controlled Brain to provide a Following Pet. 

@@ -1,7 +1,6 @@
-using DOL.GS;
-using DOL.GS.Spells;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class FriendBrain : StandardMobBrain
 {

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.Languages;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&jump",
 		EPrivLevel.GM,

@@ -1,6 +1,7 @@
-using DOL.GS.Housing;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
   "&housepoints",

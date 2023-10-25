@@ -1,91 +1,89 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.Enums;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class NfRaEpiphanyAbility : Rr5RealmAbility
 {
-	public class NfRaEpiphanyAbility : Rr5RealmAbility
+	public NfRaEpiphanyAbility(DbAbility dba, int level) : base(dba, level) { }
+
+	/// <summary>
+	/// Action
+	/// </summary>
+	/// <param name="living"></param>
+	public override void Execute(GameLiving living)
 	{
-		public NfRaEpiphanyAbility(DbAbility dba, int level) : base(dba, level) { }
+		if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED )) return;
 
-		/// <summary>
-		/// Action
-		/// </summary>
-		/// <param name="living"></param>
-		public override void Execute(GameLiving living)
+		bool deactivate = false;
+
+		GamePlayer player = living as GamePlayer;
+		if (player != null)
 		{
-			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED )) return;
-
-			bool deactivate = false;
-
-			GamePlayer player = living as GamePlayer;
-			if (player != null)
+			if (player.Group != null)
 			{
-				if (player.Group != null)
+				SendCasterSpellEffectAndCastMessage(living, 7066, true);
+				foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
 				{
-					SendCasterSpellEffectAndCastMessage(living, 7066, true);
-					foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
+					if (!CheckPreconditions(member, DEAD) && living.IsWithinRadius(member, 2000))
 					{
-						if (!CheckPreconditions(member, DEAD) && living.IsWithinRadius(member, 2000))
-						{
-							if (restoreMana(member, player))
-								deactivate = true;
-						}
-					}
-				}
-				else
-				{
-					if (!CheckPreconditions(player, DEAD))
-					{
-						if (restoreMana(player, player))
+						if (restoreMana(member, player))
 							deactivate = true;
 					}
 				}
-
-				if (deactivate)
-					DisableSkill(living);
 			}
+			else
+			{
+				if (!CheckPreconditions(player, DEAD))
+				{
+					if (restoreMana(player, player))
+						deactivate = true;
+				}
+			}
+
+			if (deactivate)
+				DisableSkill(living);
 		}
+	}
+	
+
+	private bool restoreMana(GameLiving target, GamePlayer owner)
+	{
+		int mana = (int)(target.MaxMana * 0.25);
+		int modheal = target.MaxMana - target.Mana;
+		if (modheal < 1)
+			return false;
+		if (modheal > mana)
+			modheal = mana;
+		if (target is GamePlayer && target != owner)
+			((GamePlayer)target).Out.SendMessage(owner.Name + " restores you " + modheal + " points of mana, and 50% of your endurance.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+		if (target != owner)
+			owner.Out.SendMessage("You restore" + target.Name + " " + modheal + " points of mana, and 50% of their endurance.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
+		if (target == owner)
+			owner.Out.SendMessage("You restore yourself " + modheal + " points of mana, and 50% of your endurance.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
 		
+        target.Mana += modheal;
 
-		private bool restoreMana(GameLiving target, GamePlayer owner)
-		{
-			int mana = (int)(target.MaxMana * 0.25);
-			int modheal = target.MaxMana - target.Mana;
-			if (modheal < 1)
-				return false;
-			if (modheal > mana)
-				modheal = mana;
-			if (target is GamePlayer && target != owner)
-				((GamePlayer)target).Out.SendMessage(owner.Name + " restores you " + modheal + " points of mana, and 50% of your endurance.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-			if (target != owner)
-				owner.Out.SendMessage("You restore" + target.Name + " " + modheal + " points of mana, and 50% of their endurance.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-			if (target == owner)
-				owner.Out.SendMessage("You restore yourself " + modheal + " points of mana, and 50% of your endurance.", EChatType.CT_Spell, EChatLoc.CL_SystemWindow);
-			
-            target.Mana += modheal;
+        //[StephenxPimentel]
+        //1.108 - Now Heals 50% Endurance.
+        target.Endurance += (target.MaxEndurance / 2);
 
-            //[StephenxPimentel]
-            //1.108 - Now Heals 50% Endurance.
-            target.Endurance += (target.MaxEndurance / 2);
+		return true;
 
-			return true;
+	}
 
-		}
-
-		public override int GetReUseDelay(int level)
-		{
-			return 600;
-		}
+	public override int GetReUseDelay(int level)
+	{
+		return 600;
+	}
 
 
-		public override void AddEffectsInfo(IList<string> list)
-		{
-			list.Add("25% Group power refresh.");
-			list.Add("");
-			list.Add("Target: Group");
-			list.Add("Casting time: instant");
-		}
-
+	public override void AddEffectsInfo(IList<string> list)
+	{
+		list.Add("25% Group power refresh.");
+		list.Add("");
+		list.Add("Target: Group");
+		list.Add("Casting time: instant");
 	}
 }

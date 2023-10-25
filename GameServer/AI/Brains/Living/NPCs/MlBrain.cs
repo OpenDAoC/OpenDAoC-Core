@@ -1,5 +1,6 @@
-using DOL.AI.Brain;
-using DOL.GS;
+using Core.GS.Enums;
+
+namespace Core.GS.AI;
 
 public class MlBrain : RealmGuardBrain
 {

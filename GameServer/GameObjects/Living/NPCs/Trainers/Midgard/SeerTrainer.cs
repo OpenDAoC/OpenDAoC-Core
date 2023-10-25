@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Seer Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Acolyte Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class SeerTrainer : GameTrainer
@@ -19,7 +19,7 @@ public class SeerTrainer : GameTrainer
 	/// </summary>
 	public const string PRACTICE_SHIELD_ID = "small_training_shield";
 
-	public SeerTrainer() : base(eChampionTrainerType.Seer)
+	public SeerTrainer() : base(EChampionTrainerType.Seer)
 	{
 	}
 	

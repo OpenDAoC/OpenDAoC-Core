@@ -1,461 +1,463 @@
 using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Realm;
-using DOL.Language;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Languages;
+using Core.GS.Players;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS
+namespace Core.GS.Players;
+
+/// <summary>
+/// The Base class for all player Classes in OpenDAoC
+/// </summary>
+public abstract class PlayerClassBase : IPlayerClass
 {
+	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 	/// <summary>
-	/// The Base class for all player Classes in OpenDAoC
+	/// id of class in Client
 	/// </summary>
-	public abstract class PlayerClassBase : IPlayerClass
+	protected int m_id;
+
+	/// <summary>
+	/// Name of class
+	/// </summary>
+	protected string m_name;
+
+	/// <summary>
+	/// Female name of class
+	/// </summary>
+	protected string m_femaleName;
+
+	/// <summary>
+	/// Base of this class
+	/// </summary>
+	protected string m_basename;
+
+	/// <summary>
+	/// Profession of character, e.g. Defenders of Albion
+	/// </summary>
+	protected string m_profession;
+
+	/// <summary>
+	/// multiplier for specialization points per level in 10th
+	/// </summary>
+	protected int m_specializationMultiplier = 10;
+
+	/// <summary>
+	/// BaseHP for hp calculation
+	/// </summary>
+	protected int m_baseHP = 700;
+
+	/// <summary>
+	/// Stat gained every level.
+	///	see eStat consts
+	/// </summary>
+	protected EStat m_primaryStat = EStat.UNDEFINED;
+
+	/// <summary>
+	/// Stat gained every second level.
+	/// see eStat consts
+	/// </summary>
+	protected EStat m_secondaryStat = EStat.UNDEFINED;
+
+	/// <summary>
+	/// Stat gained every third level.
+	/// see eStat consts
+	/// </summary>
+	protected EStat m_tertiaryStat = EStat.UNDEFINED;
+
+	/// <summary>
+	/// Stat that affects the power/mana pool.
+	/// Do not set if they do not have a power pool/spells
+	/// </summary>
+	protected EStat m_manaStat = EStat.UNDEFINED;
+
+	/// <summary>
+	/// Weapon Skill Base value to influence weapon skill calc
+	/// </summary>
+	protected int m_wsbase = 400;
+
+	/// <summary>
+	/// Weapon Skill Base value to influence ranged weapon skill calc
+	/// </summary>
+	protected int m_wsbaseRanged = 440;
+
+	/// <summary>
+	/// The GamePlayer for this character
+	/// </summary>
+	public GamePlayer Player { get; private set; }
+
+	private static readonly string[] AutotrainableSkills = new string[0];
+
+	public PlayerClassBase()
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		m_id = 0;
+		m_name = "Unknown Class";
+		m_basename = "Unknown Base Class";
+		m_profession = "";
 
-		/// <summary>
-		/// id of class in Client
-		/// </summary>
-		protected int m_id;
-
-		/// <summary>
-		/// Name of class
-		/// </summary>
-		protected string m_name;
-
-		/// <summary>
-		/// Female name of class
-		/// </summary>
-		protected string m_femaleName;
-
-		/// <summary>
-		/// Base of this class
-		/// </summary>
-		protected string m_basename;
-
-		/// <summary>
-		/// Profession of character, e.g. Defenders of Albion
-		/// </summary>
-		protected string m_profession;
-
-		/// <summary>
-		/// multiplier for specialization points per level in 10th
-		/// </summary>
-		protected int m_specializationMultiplier = 10;
-
-		/// <summary>
-		/// BaseHP for hp calculation
-		/// </summary>
-		protected int m_baseHP = 700;
-
-		/// <summary>
-		/// Stat gained every level.
-		///	see eStat consts
-		/// </summary>
-		protected EStat m_primaryStat = EStat.UNDEFINED;
-
-		/// <summary>
-		/// Stat gained every second level.
-		/// see eStat consts
-		/// </summary>
-		protected EStat m_secondaryStat = EStat.UNDEFINED;
-
-		/// <summary>
-		/// Stat gained every third level.
-		/// see eStat consts
-		/// </summary>
-		protected EStat m_tertiaryStat = EStat.UNDEFINED;
-
-		/// <summary>
-		/// Stat that affects the power/mana pool.
-		/// Do not set if they do not have a power pool/spells
-		/// </summary>
-		protected EStat m_manaStat = EStat.UNDEFINED;
-
-		/// <summary>
-		/// Weapon Skill Base value to influence weapon skill calc
-		/// </summary>
-		protected int m_wsbase = 400;
-
-		/// <summary>
-		/// Weapon Skill Base value to influence ranged weapon skill calc
-		/// </summary>
-		protected int m_wsbaseRanged = 440;
-
-		/// <summary>
-		/// The GamePlayer for this character
-		/// </summary>
-		public GamePlayer Player { get; private set; }
-
-		private static readonly string[] AutotrainableSkills = new string[0];
-
-		public PlayerClassBase()
+		// initialize members from attributes
+		Attribute[] attrs = Attribute.GetCustomAttributes(this.GetType(), typeof(PlayerClassAttribute));
+		foreach (Attribute attr in attrs)
 		{
-			m_id = 0;
-			m_name = "Unknown Class";
-			m_basename = "Unknown Base Class";
-			m_profession = "";
-
-			// initialize members from attributes
-			Attribute[] attrs = Attribute.GetCustomAttributes(this.GetType(), typeof(PlayerClassAttribute));
-			foreach (Attribute attr in attrs)
+			if (attr is PlayerClassAttribute)
 			{
-				if (attr is PlayerClassAttribute)
-				{
-					m_id = ((PlayerClassAttribute)attr).ID;
-					m_name = ((PlayerClassAttribute)attr).Name;
-					m_basename = ((PlayerClassAttribute)attr).BaseName;
-					if (!string.IsNullOrEmpty(((PlayerClassAttribute)attr).FemaleName))
-						m_femaleName = ((PlayerClassAttribute)attr).FemaleName;
-					break;
-				}
+				m_id = ((PlayerClassAttribute)attr).ID;
+				m_name = ((PlayerClassAttribute)attr).Name;
+				m_basename = ((PlayerClassAttribute)attr).BaseName;
+				if (!string.IsNullOrEmpty(((PlayerClassAttribute)attr).FemaleName))
+					m_femaleName = ((PlayerClassAttribute)attr).FemaleName;
+				break;
+			}
+		}
+	}
+
+	public virtual void Init(GamePlayer player)
+	{
+		// TODO : Should Throw Exception Here.
+		if (Player != null && log.IsWarnEnabled)
+			log.WarnFormat("Character Class initializing Player when it was already initialized ! Old Player : {0} New Player : {1}", Player, player);
+		
+		Player = player;
+	}
+
+	public abstract List<PlayerRace> EligibleRaces { get; }
+
+	public string FemaleName
+	{
+		get { return m_femaleName; }
+	}
+
+	public int BaseHP
+	{
+		get { return m_baseHP; }
+	}
+
+	public int ID
+	{
+		get { return m_id; }
+	}
+
+	public string Name
+	{
+		get { return (Player != null && Player.Gender == EGender.Female && !string.IsNullOrEmpty(m_femaleName)) ? m_femaleName : m_name; }
+	}
+
+	public string BaseName
+	{
+		get { return m_basename; }
+	}
+
+	/// <summary>
+	/// Return Translated Profession
+	/// </summary>
+	public string Profession
+	{
+		get
+		{
+			return LanguageMgr.TryTranslateOrDefault(Player, m_profession, m_profession);
+		}
+	}
+
+	public int SpecPointsMultiplier
+	{
+		get { return m_specializationMultiplier; }
+	}
+
+	/// <summary>
+	/// This is specifically used for adjusting spec points as needed for new training window
+	/// For standard DOL classes this will simply return the standard spec multiplier
+	/// </summary>
+	public int AdjustedSpecPointsMultiplier
+	{
+		get { return m_specializationMultiplier; }
+	}
+
+	public EStat PrimaryStat
+	{
+		get { return m_primaryStat; }
+	}
+
+	public EStat SecondaryStat
+	{
+		get { return m_secondaryStat; }
+	}
+
+	public EStat TertiaryStat
+	{
+		get { return m_tertiaryStat; }
+	}
+
+	public EStat ManaStat
+	{
+		get { return m_manaStat; }
+	}
+
+	public int WeaponSkillBase
+	{
+		get { return m_wsbase; }
+	}
+
+	public int WeaponSkillRangedBase
+	{
+		get { return m_wsbaseRanged; }
+	}
+
+	/// <summary>
+	/// Maximum number of pulsing spells that can be active simultaneously
+	/// </summary>
+	public virtual ushort MaxPulsingSpells
+	{
+		get { return 1; }
+	}
+
+	public virtual string GetTitle(GamePlayer player, int level)
+	{
+		
+		// Clamp level in 5 by 5 steps - 50 is the max available translation for now
+		int clamplevel = Math.Min(50, (level / 5) * 5);
+		
+		string none = LanguageMgr.TryTranslateOrDefault(player, "!None!", "PlayerClass.GetTitle.none");
+		
+		if (clamplevel > 0)
+			return LanguageMgr.TryTranslateOrDefault(player, string.Format("!{0}!", m_name), string.Format("PlayerClass.{0}.GetTitle.{1}", m_name, clamplevel));
+
+		return none;
+	}
+
+	public virtual EPlayerClassType ClassType
+	{
+		get { return EPlayerClassType.ListCaster; }
+	}
+
+	/// <summary>
+	/// Return the base list of Realm abilities that the class
+	/// can train in.  Added by Echostorm for RAs
+	/// </summary>
+	/// <returns></returns>
+	public virtual IList<string> GetAutotrainableSkills()
+	{
+		return AutotrainableSkills;
+	}
+
+	/// <summary>
+	/// What Champion trainer does this class use?
+	/// </summary>
+	/// <returns></returns>
+	public virtual GameTrainer.EChampionTrainerType ChampionTrainerType()
+	{
+		return GameTrainer.EChampionTrainerType.None;
+	}
+
+	/// <summary>
+	/// Add things that are required for current level
+	/// Skills and other things are handled through player specs... (on Refresh Specs)
+	/// </summary>
+	/// <param name="player">player to modify</param>
+	/// <param name="previousLevel">the previous level of the player</param>
+	public virtual void OnLevelUp(GamePlayer player, int previousLevel)
+	{
+	}
+
+	/// <summary>
+	/// Add various skills as the player levels his realm rank up
+	/// </summary>
+	/// <param name="player">player to modify</param>
+	public virtual void OnRealmLevelUp(GamePlayer player)
+	{
+		//we dont want to add things when players arent using their advanced class
+		if (player.PlayerClass.BaseName == player.PlayerClass.Name)
+			return;
+	}
+
+	/// <summary>
+	/// Add all spell-lines and other things that are new when this skill is trained
+	/// </summary>
+	/// <param name="player">player to modify</param>
+	/// <param name="skill">The skill that is trained</param>
+	public virtual void OnSkillTrained(GamePlayer player, Specialization skill)
+	{
+	}
+
+	/// <summary>
+	/// Checks whether player has ability to use lefthanded weapons
+	/// </summary>
+	public virtual bool CanUseLefthandedWeapon
+	{
+		get { return false; }
+	}
+
+	public virtual bool HasAdvancedFromBaseClass()
+	{
+		return true;
+	}
+
+	public virtual void SetControlledBrain(IControlledBrain controlledBrain)
+	{
+		if (controlledBrain == Player.ControlledBrain) return;
+		if (controlledBrain == null)
+		{
+			Player.Out.SendPetWindow(null, EPetWindowAction.Close, 0, 0);
+			// Message: You lose control of {0}!
+			Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.GamePet.SpellEnd.YouLoseControl", Player.ControlledBrain.Body.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			// Message: You release control of your controlled target.
+			Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.GamePet.SpellEnd.YouReleaseControl"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+		}
+		else
+		{
+			if (controlledBrain.Owner != Player)
+				throw new ArgumentException("ControlledNpc with wrong owner is set (player=" + Player.Name + ", owner=" + controlledBrain.Owner.Name + ")", "controlledNpc");
+			if (Player.ControlledBrain == null)
+				Player.InitControlledBrainArray(1);
+			Player.Out.SendPetWindow(controlledBrain.Body, EPetWindowAction.Open, controlledBrain.AggressionState, controlledBrain.WalkState);
+			if (controlledBrain.Body != null)
+			{
+				Player.Out.SendNPCCreate(controlledBrain.Body); // after open pet window again send creation NPC packet
+				if (controlledBrain.Body.Inventory != null)
+					Player.Out.SendLivingEquipmentUpdate(controlledBrain.Body);
 			}
 		}
 
-		public virtual void Init(GamePlayer player)
+		Player.ControlledBrain = controlledBrain;
+
+	}
+
+	/// <summary>
+	/// Releases controlled object
+	/// </summary>
+	public virtual void CommandNpcRelease()
+	{
+		IControlledBrain controlledBrain = Player.ControlledBrain;
+
+		if (controlledBrain == null)
+			return;
+
+		(controlledBrain as ControlledNpcBrain)?.StripCastedBuffs();
+
+		GameNpc npc = controlledBrain.Body;
+
+		if (npc == null)
+			return;
+
+		Player.Notify(GameLivingEvent.PetReleased, npc);
+	}
+
+	/// <summary>
+	/// Invoked when pet is released.
+	/// </summary>
+	public virtual void OnPetReleased() { }
+
+	/// <summary>
+	/// Can this character start an attack?
+	/// </summary>
+	/// <param name="attackTarget"></param>
+	/// <returns></returns>
+	public virtual bool StartAttack(GameObject attackTarget)
+	{
+		return true;
+	}
+
+
+	/// <summary>
+	/// Return the health percent of this character
+	/// </summary>
+	public virtual byte HealthPercentGroupWindow
+	{
+		get
 		{
-			// TODO : Should Throw Exception Here.
-			if (Player != null && log.IsWarnEnabled)
-				log.WarnFormat("Character Class initializing Player when it was already initialized ! Old Player : {0} New Player : {1}", Player, player);
-			
-			Player = player;
+			return Player.HealthPercent;
+		}
+	}
+
+
+	/// <summary>
+	/// Create a shade effect for this player.
+	/// </summary>
+	/// <returns></returns>
+	public virtual ShadeEcsAbilityEffect CreateShadeEffect()
+	{
+		return new ShadeEcsAbilityEffect(new EcsGameEffectInitParams(Player, 0, 1));
+	}
+
+	/// <summary>
+	/// Changes shade state of the player.
+	/// </summary>
+	/// <param name="state">The new state.</param>
+	public virtual void Shade(bool makeShade)
+	{
+		if (Player.IsShade == makeShade)
+		{
+			if (makeShade && (Player.ObjectState == GameObject.eObjectState.Active))
+				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.Shade.AlreadyShade"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+			return;
 		}
 
-		public abstract List<PlayerRace> EligibleRaces { get; }
-
-		public string FemaleName
+		if (makeShade)
 		{
-			get { return m_femaleName; }
+			// Turn into a shade.
+			Player.Model = Player.ShadeModel;
+			Player.ShadeEffect = CreateShadeEffect();
 		}
-
-		public int BaseHP
+		else
 		{
-			get { return m_baseHP; }
-		}
-
-		public int ID
-		{
-			get { return m_id; }
-		}
-
-		public string Name
-		{
-			get { return (Player != null && Player.Gender == EGender.Female && !string.IsNullOrEmpty(m_femaleName)) ? m_femaleName : m_name; }
-		}
-
-		public string BaseName
-		{
-			get { return m_basename; }
-		}
-
-		/// <summary>
-		/// Return Translated Profession
-		/// </summary>
-		public string Profession
-		{
-			get
+			if (Player.ShadeEffect != null)
 			{
-				return LanguageMgr.TryTranslateOrDefault(Player, m_profession, m_profession);
-			}
-		}
-
-		public int SpecPointsMultiplier
-		{
-			get { return m_specializationMultiplier; }
-		}
-
-		/// <summary>
-		/// This is specifically used for adjusting spec points as needed for new training window
-		/// For standard DOL classes this will simply return the standard spec multiplier
-		/// </summary>
-		public int AdjustedSpecPointsMultiplier
-		{
-			get { return m_specializationMultiplier; }
-		}
-
-		public EStat PrimaryStat
-		{
-			get { return m_primaryStat; }
-		}
-
-		public EStat SecondaryStat
-		{
-			get { return m_secondaryStat; }
-		}
-
-		public EStat TertiaryStat
-		{
-			get { return m_tertiaryStat; }
-		}
-
-		public EStat ManaStat
-		{
-			get { return m_manaStat; }
-		}
-
-		public int WeaponSkillBase
-		{
-			get { return m_wsbase; }
-		}
-
-		public int WeaponSkillRangedBase
-		{
-			get { return m_wsbaseRanged; }
-		}
-
-		/// <summary>
-		/// Maximum number of pulsing spells that can be active simultaneously
-		/// </summary>
-		public virtual ushort MaxPulsingSpells
-		{
-			get { return 1; }
-		}
-
-		public virtual string GetTitle(GamePlayer player, int level)
-		{
-			
-			// Clamp level in 5 by 5 steps - 50 is the max available translation for now
-			int clamplevel = Math.Min(50, (level / 5) * 5);
-			
-			string none = LanguageMgr.TryTranslateOrDefault(player, "!None!", "PlayerClass.GetTitle.none");
-			
-			if (clamplevel > 0)
-				return LanguageMgr.TryTranslateOrDefault(player, string.Format("!{0}!", m_name), string.Format("PlayerClass.{0}.GetTitle.{1}", m_name, clamplevel));
-
-			return none;
-		}
-
-		public virtual EPlayerClassType ClassType
-		{
-			get { return EPlayerClassType.ListCaster; }
-		}
-
-		/// <summary>
-		/// Return the base list of Realm abilities that the class
-		/// can train in.  Added by Echostorm for RAs
-		/// </summary>
-		/// <returns></returns>
-		public virtual IList<string> GetAutotrainableSkills()
-		{
-			return AutotrainableSkills;
-		}
-
-		/// <summary>
-		/// What Champion trainer does this class use?
-		/// </summary>
-		/// <returns></returns>
-		public virtual GameTrainer.eChampionTrainerType ChampionTrainerType()
-		{
-			return GameTrainer.eChampionTrainerType.None;
-		}
-
-		/// <summary>
-		/// Add things that are required for current level
-		/// Skills and other things are handled through player specs... (on Refresh Specs)
-		/// </summary>
-		/// <param name="player">player to modify</param>
-		/// <param name="previousLevel">the previous level of the player</param>
-		public virtual void OnLevelUp(GamePlayer player, int previousLevel)
-		{
-		}
-
-		/// <summary>
-		/// Add various skills as the player levels his realm rank up
-		/// </summary>
-		/// <param name="player">player to modify</param>
-		public virtual void OnRealmLevelUp(GamePlayer player)
-		{
-			//we dont want to add things when players arent using their advanced class
-			if (player.PlayerClass.BaseName == player.PlayerClass.Name)
-				return;
-		}
-
-		/// <summary>
-		/// Add all spell-lines and other things that are new when this skill is trained
-		/// </summary>
-		/// <param name="player">player to modify</param>
-		/// <param name="skill">The skill that is trained</param>
-		public virtual void OnSkillTrained(GamePlayer player, Specialization skill)
-		{
-		}
-
-		/// <summary>
-		/// Checks whether player has ability to use lefthanded weapons
-		/// </summary>
-		public virtual bool CanUseLefthandedWeapon
-		{
-			get { return false; }
-		}
-
-		public virtual bool HasAdvancedFromBaseClass()
-		{
-			return true;
-		}
-
-		public virtual void SetControlledBrain(IControlledBrain controlledBrain)
-		{
-			if (controlledBrain == Player.ControlledBrain) return;
-			if (controlledBrain == null)
-			{
-				Player.Out.SendPetWindow(null, EPetWindowAction.Close, 0, 0);
-				// Message: You lose control of {0}!
-				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.GamePet.SpellEnd.YouLoseControl", Player.ControlledBrain.Body.GetName(0, false)), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-				// Message: You release control of your controlled target.
-				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.GamePet.SpellEnd.YouReleaseControl"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-			}
-			else
-			{
-				if (controlledBrain.Owner != Player)
-					throw new ArgumentException("ControlledNpc with wrong owner is set (player=" + Player.Name + ", owner=" + controlledBrain.Owner.Name + ")", "controlledNpc");
-				if (Player.ControlledBrain == null)
-					Player.InitControlledBrainArray(1);
-				Player.Out.SendPetWindow(controlledBrain.Body, EPetWindowAction.Open, controlledBrain.AggressionState, controlledBrain.WalkState);
-				if (controlledBrain.Body != null)
-				{
-					Player.Out.SendNPCCreate(controlledBrain.Body); // after open pet window again send creation NPC packet
-					if (controlledBrain.Body.Inventory != null)
-						Player.Out.SendLivingEquipmentUpdate(controlledBrain.Body);
-				}
-			}
-
-			Player.ControlledBrain = controlledBrain;
-
-		}
-
-		/// <summary>
-		/// Releases controlled object
-		/// </summary>
-		public virtual void CommandNpcRelease()
-		{
-			IControlledBrain controlledBrain = Player.ControlledBrain;
-
-			if (controlledBrain == null)
-				return;
-
-			(controlledBrain as ControlledNpcBrain)?.StripCastedBuffs();
-
-			GameNpc npc = controlledBrain.Body;
-
-			if (npc == null)
-				return;
-
-			Player.Notify(GameLivingEvent.PetReleased, npc);
-		}
-
-		/// <summary>
-		/// Invoked when pet is released.
-		/// </summary>
-		public virtual void OnPetReleased() { }
-
-		/// <summary>
-		/// Can this character start an attack?
-		/// </summary>
-		/// <param name="attackTarget"></param>
-		/// <returns></returns>
-		public virtual bool StartAttack(GameObject attackTarget)
-		{
-			return true;
-		}
-
-
-		/// <summary>
-		/// Return the health percent of this character
-		/// </summary>
-		public virtual byte HealthPercentGroupWindow
-		{
-			get
-			{
-				return Player.HealthPercent;
-			}
-		}
-
-
-		/// <summary>
-		/// Create a shade effect for this player.
-		/// </summary>
-		/// <returns></returns>
-		public virtual ShadeEcsAbilityEffect CreateShadeEffect()
-		{
-			return new ShadeEcsAbilityEffect(new EcsGameEffectInitParams(Player, 0, 1));
-		}
-
-		/// <summary>
-		/// Changes shade state of the player.
-		/// </summary>
-		/// <param name="state">The new state.</param>
-		public virtual void Shade(bool makeShade)
-		{
-			if (Player.IsShade == makeShade)
-			{
-				if (makeShade && (Player.ObjectState == GameObject.eObjectState.Active))
-					Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.Shade.AlreadyShade"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
-				return;
-			}
-
-			if (makeShade)
-			{
-				// Turn into a shade.
-				Player.Model = Player.ShadeModel;
-				Player.ShadeEffect = CreateShadeEffect();
-			}
-			else
-			{
-				if (Player.ShadeEffect != null)
-				{
-					// Drop shade form.
-					EffectService.RequestImmediateCancelEffect(Player.ShadeEffect);
-					Player.ShadeEffect = null;
-				}
 				// Drop shade form.
-				Player.Model = Player.CreationModel;
-				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.Shade.NoLongerShade"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
+				EffectService.RequestImmediateCancelEffect(Player.ShadeEffect);
+				Player.ShadeEffect = null;
 			}
-		}
-
-		/// <summary>
-		/// Called when player is removed from world.
-		/// </summary>
-		/// <returns></returns>
-		public virtual bool RemoveFromWorld()
-		{
-			return true;
-		}
-
-		/// <summary>
-		/// What to do when this character dies
-		/// </summary>
-		/// <param name="killer"></param>
-		public virtual void Die(GameObject killer)
-		{
-		}
-
-		public virtual void Notify(CoreEvent e, object sender, EventArgs args)
-		{
-		}
-
-		public virtual bool CanChangeCastingSpeed(SpellLine line, Spell spell)
-		{
-			return true;
+			// Drop shade form.
+			Player.Model = Player.CreationModel;
+			Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.Shade.NoLongerShade"), EChatType.CT_System, EChatLoc.CL_SystemWindow);
 		}
 	}
 
 	/// <summary>
-	/// Usable default Character Class, if not other can be found or used
-	/// just for getting things valid in problematic situations
+	/// Called when player is removed from world.
 	/// </summary>
-	public class DefaultPlayerClass : PlayerClassBase
+	/// <returns></returns>
+	public virtual bool RemoveFromWorld()
 	{
-		public DefaultPlayerClass()
-			: base()
-		{
-			m_id = 0;
-			m_name = "Unknown";
-			m_basename = "Unknown Class";
-			m_profession = "None";
-		}
+		return true;
+	}
 
-        public override List<PlayerRace> EligibleRaces => PlayerRace.AllRaces;
-    }
+	/// <summary>
+	/// What to do when this character dies
+	/// </summary>
+	/// <param name="killer"></param>
+	public virtual void Die(GameObject killer)
+	{
+	}
+
+	public virtual void Notify(CoreEvent e, object sender, EventArgs args)
+	{
+	}
+
+	public virtual bool CanChangeCastingSpeed(SpellLine line, Spell spell)
+	{
+		return true;
+	}
+}
+
+/// <summary>
+/// Usable default Character Class, if not other can be found or used
+/// just for getting things valid in problematic situations
+/// </summary>
+public class DefaultPlayerClass : PlayerClassBase
+{
+	public DefaultPlayerClass()
+		: base()
+	{
+		m_id = 0;
+		m_name = "Unknown";
+		m_basename = "Unknown Class";
+		m_profession = "None";
+	}
+
+    public override List<PlayerRace> EligibleRaces => PlayerRace.AllRaces;
 }

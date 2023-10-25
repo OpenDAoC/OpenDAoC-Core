@@ -1,10 +1,13 @@
 using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Packets;
+using Core.GS.Packets.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 /// <summary>
 /// command handler for /boat command

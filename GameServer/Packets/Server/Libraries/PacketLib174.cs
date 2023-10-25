@@ -1,572 +1,576 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.Keeps;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.Keeps;
+using Core.GS.Players;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS.PacketHandler
-{
-	[PacketLib(174, GameClient.eClientVersion.Version174)]
-	public class PacketLib174 : PacketLib173
-	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+namespace Core.GS.Packets.Server;
 
-		/// <summary>
-		/// Constructs a new PacketLib for Version 1.74 clients
-		/// </summary>
-		/// <param name="client">the gameclient this lib is associated with</param>
-		public PacketLib174(GameClient client)
-			: base(client)
+[PacketLib(174, EClientVersion.Version174)]
+public class PacketLib174 : PacketLib173
+{
+	/// <summary>
+	/// Defines a logger for this class.
+	/// </summary>
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	/// <summary>
+	/// Constructs a new PacketLib for Version 1.74 clients
+	/// </summary>
+	/// <param name="client">the gameclient this lib is associated with</param>
+	public PacketLib174(GameClient client)
+		: base(client)
+	{
+	}
+
+	public override void SendCharacterOverview(ERealm realm)
+	{
+		int firstAccountSlot;
+		switch (realm)
 		{
+			case ERealm.Albion: firstAccountSlot = 100; break;
+			case ERealm.Midgard: firstAccountSlot = 200; break;
+			case ERealm.Hibernia: firstAccountSlot = 300; break;
+			default: throw new Exception("CharacterOverview requested for unknown realm " + realm);
 		}
 
-		public override void SendCharacterOverview(ERealm realm)
+		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CharacterOverview)))
 		{
-			int firstAccountSlot;
-			switch (realm)
+			pak.FillString(m_gameClient.Account.Name, 24);
+			IList<DbInventoryItem> items;
+			DbCoreCharacter[] characters = m_gameClient.Account.Characters;
+			if (characters == null)
 			{
-				case ERealm.Albion: firstAccountSlot = 100; break;
-				case ERealm.Midgard: firstAccountSlot = 200; break;
-				case ERealm.Hibernia: firstAccountSlot = 300; break;
-				default: throw new Exception("CharacterOverview requested for unknown realm " + realm);
+				pak.Fill(0x0, 1840);
 			}
-
-			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.CharacterOverview)))
+			else
 			{
-				pak.FillString(m_gameClient.Account.Name, 24);
-				IList<DbInventoryItem> items;
-				DbCoreCharacter[] characters = m_gameClient.Account.Characters;
-				if (characters == null)
+				for (int i = firstAccountSlot; i < firstAccountSlot + 10; i++)
 				{
-					pak.Fill(0x0, 1840);
-				}
-				else
-				{
-					for (int i = firstAccountSlot; i < firstAccountSlot + 10; i++)
-					{
-						bool written = false;
-						for (int j = 0; j < characters.Length && written == false; j++)
-							if (characters[j].AccountSlot == i)
+					bool written = false;
+					for (int j = 0; j < characters.Length && written == false; j++)
+						if (characters[j].AccountSlot == i)
+						{
+							pak.FillString(characters[j].Name, 24);
+							items = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
+							byte ExtensionTorso = 0;
+							byte ExtensionGloves = 0;
+							byte ExtensionBoots = 0;
+							foreach (DbInventoryItem item in items)
 							{
-								pak.FillString(characters[j].Name, 24);
-								items = CoreDb<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(characters[j].ObjectId).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(10)).And(DB.Column("SlotPosition").IsLessOrEqualTo(37)));
-								byte ExtensionTorso = 0;
-								byte ExtensionGloves = 0;
-								byte ExtensionBoots = 0;
+								switch (item.SlotPosition)
+								{
+									case 22:
+										ExtensionGloves = item.Extension;
+										break;
+									case 23:
+										ExtensionBoots = item.Extension;
+										break;
+									case 25:
+										ExtensionTorso = item.Extension;
+										break;
+									default:
+										break;
+								}
+							}
+
+							pak.WriteByte(0x01);
+							pak.WriteByte((byte)characters[j].EyeSize);
+							pak.WriteByte((byte)characters[j].LipSize);
+							pak.WriteByte((byte)characters[j].EyeColor);
+							pak.WriteByte((byte)characters[j].HairColor);
+							pak.WriteByte((byte)characters[j].FaceType);
+							pak.WriteByte((byte)characters[j].HairStyle);
+							pak.WriteByte((byte)((ExtensionBoots << 4) | ExtensionGloves));
+							pak.WriteByte((byte)((ExtensionTorso << 4) | (characters[j].IsCloakHoodUp ? 0x1 : 0x0)));
+							pak.WriteByte((byte)characters[j].CustomisationStep); //1 = auto generate config, 2= config ended by player, 3= enable config to player
+							pak.WriteByte((byte)characters[j].MoodType);
+							pak.Fill(0x0, 13); //0 String
+
+
+							Region reg = WorldMgr.GetRegion((ushort)characters[j].Region);
+							if (reg != null)
+							{
+								var description = m_gameClient.GetTranslatedSpotDescription(reg, characters[j].Xpos, characters[j].Ypos, characters[j].Zpos);
+								pak.FillString(description, 24);
+							}
+							else
+								pak.Fill(0x0, 24); //No known location
+
+							if (characters[j].Class == 0)
+								pak.FillString("", 24); //Class name
+							else
+								pak.FillString(((EPlayerClass)characters[j].Class).ToString(), 24); //Class name
+
+							//pak.FillString(GamePlayer.RACENAMES[characters[j].Race], 24);
+                            pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
+							pak.WriteByte((byte)characters[j].Level);
+							pak.WriteByte((byte)characters[j].Class);
+							pak.WriteByte((byte)characters[j].Realm);
+							pak.WriteByte((byte)((((characters[j].Race & 0x10) << 2) + (characters[j].Race & 0x0F)) | (characters[j].Gender << 4))); // race max value can be 0x1F
+							pak.WriteShortLowEndian((ushort)characters[j].CurrentModel);
+							pak.WriteByte((byte)characters[j].Region);
+							if (reg == null || (int)m_gameClient.ClientType > reg.Expansion)
+								pak.WriteByte(0x00);
+							else
+								pak.WriteByte((byte)(reg.Expansion + 1)); //0x04-Cata zone, 0x05 - DR zone
+							pak.WriteInt(0x0); // Internal database ID
+							pak.WriteByte((byte)characters[j].Strength);
+							pak.WriteByte((byte)characters[j].Dexterity);
+							pak.WriteByte((byte)characters[j].Constitution);
+							pak.WriteByte((byte)characters[j].Quickness);
+							pak.WriteByte((byte)characters[j].Intelligence);
+							pak.WriteByte((byte)characters[j].Piety);
+							pak.WriteByte((byte)characters[j].Empathy);
+							pak.WriteByte((byte)characters[j].Charisma);
+
+							int found = 0;
+							//16 bytes: armor model
+							for (int k = 0x15; k < 0x1D; k++)
+							{
+								found = 0;
 								foreach (DbInventoryItem item in items)
 								{
-									switch (item.SlotPosition)
+									if (item.SlotPosition == k && found == 0)
 									{
-										case 22:
-											ExtensionGloves = item.Extension;
-											break;
-										case 23:
-											ExtensionBoots = item.Extension;
-											break;
-										case 25:
-											ExtensionTorso = item.Extension;
-											break;
-										default:
-											break;
+										pak.WriteShortLowEndian((ushort)item.Model);
+										found = 1;
 									}
 								}
-
-								pak.WriteByte(0x01);
-								pak.WriteByte((byte)characters[j].EyeSize);
-								pak.WriteByte((byte)characters[j].LipSize);
-								pak.WriteByte((byte)characters[j].EyeColor);
-								pak.WriteByte((byte)characters[j].HairColor);
-								pak.WriteByte((byte)characters[j].FaceType);
-								pak.WriteByte((byte)characters[j].HairStyle);
-								pak.WriteByte((byte)((ExtensionBoots << 4) | ExtensionGloves));
-								pak.WriteByte((byte)((ExtensionTorso << 4) | (characters[j].IsCloakHoodUp ? 0x1 : 0x0)));
-								pak.WriteByte((byte)characters[j].CustomisationStep); //1 = auto generate config, 2= config ended by player, 3= enable config to player
-								pak.WriteByte((byte)characters[j].MoodType);
-								pak.Fill(0x0, 13); //0 String
-
-
-								Region reg = WorldMgr.GetRegion((ushort)characters[j].Region);
-								if (reg != null)
-								{
-									var description = m_gameClient.GetTranslatedSpotDescription(reg, characters[j].Xpos, characters[j].Ypos, characters[j].Zpos);
-									pak.FillString(description, 24);
-								}
-								else
-									pak.Fill(0x0, 24); //No known location
-
-								if (characters[j].Class == 0)
-									pak.FillString("", 24); //Class name
-								else
-									pak.FillString(((EPlayerClass)characters[j].Class).ToString(), 24); //Class name
-
-								//pak.FillString(GamePlayer.RACENAMES[characters[j].Race], 24);
-	                            pak.FillString(m_gameClient.RaceToTranslatedName(characters[j].Race, characters[j].Gender), 24);
-								pak.WriteByte((byte)characters[j].Level);
-								pak.WriteByte((byte)characters[j].Class);
-								pak.WriteByte((byte)characters[j].Realm);
-								pak.WriteByte((byte)((((characters[j].Race & 0x10) << 2) + (characters[j].Race & 0x0F)) | (characters[j].Gender << 4))); // race max value can be 0x1F
-								pak.WriteShortLowEndian((ushort)characters[j].CurrentModel);
-								pak.WriteByte((byte)characters[j].Region);
-								if (reg == null || (int)m_gameClient.ClientType > reg.Expansion)
-									pak.WriteByte(0x00);
-								else
-									pak.WriteByte((byte)(reg.Expansion + 1)); //0x04-Cata zone, 0x05 - DR zone
-								pak.WriteInt(0x0); // Internal database ID
-								pak.WriteByte((byte)characters[j].Strength);
-								pak.WriteByte((byte)characters[j].Dexterity);
-								pak.WriteByte((byte)characters[j].Constitution);
-								pak.WriteByte((byte)characters[j].Quickness);
-								pak.WriteByte((byte)characters[j].Intelligence);
-								pak.WriteByte((byte)characters[j].Piety);
-								pak.WriteByte((byte)characters[j].Empathy);
-								pak.WriteByte((byte)characters[j].Charisma);
-
-								int found = 0;
-								//16 bytes: armor model
-								for (int k = 0x15; k < 0x1D; k++)
-								{
-									found = 0;
-									foreach (DbInventoryItem item in items)
-									{
-										if (item.SlotPosition == k && found == 0)
-										{
-											pak.WriteShortLowEndian((ushort)item.Model);
-											found = 1;
-										}
-									}
-									if (found == 0)
-										pak.WriteShort(0x00);
-								}
-								//16 bytes: armor color
-								for (int k = 0x15; k < 0x1D; k++)
-								{
-									int l;
-									if (k == 0x15 + 3)
-										//shield emblem
-										l = (int)EInventorySlot.LeftHandWeapon;
-									else
-										l = k;
-
-									found = 0;
-									foreach (DbInventoryItem item in items)
-									{
-										if (item.SlotPosition == l && found == 0)
-										{
-											if (item.Emblem != 0)
-												pak.WriteShortLowEndian((ushort)item.Emblem);
-											else
-												pak.WriteShortLowEndian((ushort)item.Color);
-											found = 1;
-										}
-									}
-									if (found == 0)
-										pak.WriteShort(0x00);
-								}
-								//8 bytes: weapon model
-								for (int k = 0x0A; k < 0x0E; k++)
-								{
-									found = 0;
-									foreach (DbInventoryItem item in items)
-									{
-										if (item.SlotPosition == k && found == 0)
-										{
-											pak.WriteShortLowEndian((ushort)item.Model);
-											found = 1;
-										}
-									}
-									if (found == 0)
-										pak.WriteShort(0x00);
-								}
-								if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
-								{
-									pak.WriteByte(0x02);
-									pak.WriteByte(0x02);
-								}
-								else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
-								{
-									pak.WriteByte(0x03);
-									pak.WriteByte(0x03);
-								}
-								else
-								{
-									byte righthand = 0xFF;
-									byte lefthand = 0xFF;
-									foreach (DbInventoryItem item in items)
-									{
-										if (item.SlotPosition == (int)EInventorySlot.RightHandWeapon)
-											righthand = 0x00;
-										if (item.SlotPosition == (int)EInventorySlot.LeftHandWeapon)
-											lefthand = 0x01;
-									}
-									if (righthand == lefthand)
-									{
-										if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
-											righthand = lefthand = 0x02;
-										else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
-											righthand = lefthand = 0x03;
-									}
-									pak.WriteByte(righthand);
-									pak.WriteByte(lefthand);
-								}
-								if (reg == null || reg.Expansion != 1)
-									pak.WriteByte(0x00);
-								else
-									pak.WriteByte(0x01); //0x01=char in ShroudedIsles zone, classic client can't "play"
-								//pak.WriteByte(0x00); // unk2
-	                            pak.WriteByte((byte)characters[j].Constitution);
-								written = true;
+								if (found == 0)
+									pak.WriteShort(0x00);
 							}
-						if (written == false)
-							pak.Fill(0x0, 184);
-					}
-					//				pak.Fill(0x0,184); //Slot 9
-					//				pak.Fill(0x0,184); //Slot 10
-				}
-				pak.Fill(0x0, 0x82); //Don't know why so many trailing 0's | Corillian: Cuz they're stupid like that ;)
+							//16 bytes: armor color
+							for (int k = 0x15; k < 0x1D; k++)
+							{
+								int l;
+								if (k == 0x15 + 3)
+									//shield emblem
+									l = (int)EInventorySlot.LeftHandWeapon;
+								else
+									l = k;
 
-				SendTCP(pak);
+								found = 0;
+								foreach (DbInventoryItem item in items)
+								{
+									if (item.SlotPosition == l && found == 0)
+									{
+										if (item.Emblem != 0)
+											pak.WriteShortLowEndian((ushort)item.Emblem);
+										else
+											pak.WriteShortLowEndian((ushort)item.Color);
+										found = 1;
+									}
+								}
+								if (found == 0)
+									pak.WriteShort(0x00);
+							}
+							//8 bytes: weapon model
+							for (int k = 0x0A; k < 0x0E; k++)
+							{
+								found = 0;
+								foreach (DbInventoryItem item in items)
+								{
+									if (item.SlotPosition == k && found == 0)
+									{
+										pak.WriteShortLowEndian((ushort)item.Model);
+										found = 1;
+									}
+								}
+								if (found == 0)
+									pak.WriteShort(0x00);
+							}
+							if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
+							{
+								pak.WriteByte(0x02);
+								pak.WriteByte(0x02);
+							}
+							else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
+							{
+								pak.WriteByte(0x03);
+								pak.WriteByte(0x03);
+							}
+							else
+							{
+								byte righthand = 0xFF;
+								byte lefthand = 0xFF;
+								foreach (DbInventoryItem item in items)
+								{
+									if (item.SlotPosition == (int)EInventorySlot.RightHandWeapon)
+										righthand = 0x00;
+									if (item.SlotPosition == (int)EInventorySlot.LeftHandWeapon)
+										lefthand = 0x01;
+								}
+								if (righthand == lefthand)
+								{
+									if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.TwoHanded)
+										righthand = lefthand = 0x02;
+									else if (characters[j].ActiveWeaponSlot == (byte)EActiveWeaponSlot.Distance)
+										righthand = lefthand = 0x03;
+								}
+								pak.WriteByte(righthand);
+								pak.WriteByte(lefthand);
+							}
+							if (reg == null || reg.Expansion != 1)
+								pak.WriteByte(0x00);
+							else
+								pak.WriteByte(0x01); //0x01=char in ShroudedIsles zone, classic client can't "play"
+							//pak.WriteByte(0x00); // unk2
+                            pak.WriteByte((byte)characters[j].Constitution);
+							written = true;
+						}
+					if (written == false)
+						pak.Fill(0x0, 184);
+				}
+				//				pak.Fill(0x0,184); //Slot 9
+				//				pak.Fill(0x0,184); //Slot 10
 			}
+			pak.Fill(0x0, 0x82); //Don't know why so many trailing 0's | Corillian: Cuz they're stupid like that ;)
+
+			SendTCP(pak);
+		}
+	}
+
+	public override void SendPlayerCreate(GamePlayer playerToCreate)
+	{
+		Region playerRegion = playerToCreate.CurrentRegion;
+		if (playerRegion == null)
+		{
+			if (log.IsWarnEnabled)
+				log.Warn("SendPlayerCreate: playerRegion == null");
+			return;
 		}
 
-		public override void SendPlayerCreate(GamePlayer playerToCreate)
+		Zone playerZone = playerToCreate.CurrentZone;
+		if (playerZone == null)
 		{
-			Region playerRegion = playerToCreate.CurrentRegion;
-			if (playerRegion == null)
+			if (log.IsWarnEnabled)
+				log.Warn("SendPlayerCreate: playerZone == null");
+			return;
+		}
+
+		if (m_gameClient.Player == null || playerToCreate.IsVisibleTo(m_gameClient.Player) == false)
+			return;
+
+		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PlayerCreate172)))
+		{
+			pak.WriteShort((ushort)playerToCreate.Client.SessionID);
+			pak.WriteShort((ushort)playerToCreate.ObjectID);
+			pak.WriteShort(playerToCreate.Model);
+			pak.WriteShort((ushort)playerToCreate.Z);
+            //Dinberg:Instances - zoneSkinID for object positioning clientside (as zones are hardcoded).
+			pak.WriteShort(playerZone.ZoneSkinID);
+			pak.WriteShort((ushort)playerRegion.GetXOffInZone(playerToCreate.X, playerToCreate.Y));
+			pak.WriteShort((ushort)playerRegion.GetYOffInZone(playerToCreate.X, playerToCreate.Y));
+			pak.WriteShort(playerToCreate.Heading);
+
+			pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
+			pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
+			pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
+			pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
+			pak.WriteByte(playerToCreate.GetDisplayLevel(m_gameClient.Player));
+			pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
+			pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
+			pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
+
+			int flags = (GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, playerToCreate) & 0x03) << 2;
+			if (playerToCreate.IsAlive == false) flags |= 0x01;
+			if (playerToCreate.IsUnderwater) flags |= 0x02; //swimming
+			if (playerToCreate.IsStealthed) flags |= 0x10;
+			if (playerToCreate.IsWireframe) flags |= 0x20;
+			pak.WriteByte((byte)flags);
+			pak.WriteByte(0x00); // new in 1.74
+			if (playerToCreate.PlayerClass.ID == (int)EPlayerClass.Vampiir) flags |= 0x40; //Vamp fly
+			pak.WritePascalString(GameServer.ServerRules.GetPlayerName(m_gameClient.Player, playerToCreate));
+			pak.WritePascalString(GameServer.ServerRules.GetPlayerGuildName(m_gameClient.Player, playerToCreate));
+			pak.WritePascalString(GameServer.ServerRules.GetPlayerLastName(m_gameClient.Player, playerToCreate));
+            //RR 12 / 13
+            pak.WritePascalString(GameServer.ServerRules.GetPlayerPrefixName(m_gameClient.Player, playerToCreate));
+            pak.WritePascalString(GameServer.ServerRules.GetPlayerTitle(m_gameClient.Player, playerToCreate)); // new in 1.74, NewTitle
+			SendTCP(pak);
+		}
+
+		SendObjectGuildID(playerToCreate, playerToCreate.Guild); //used for nearest friendly/enemy object buttons and name colors on PvP server
+	}
+
+	public override void SendPlayerPositionAndObjectID()
+	{
+		if (m_gameClient.Player == null) return;
+
+		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PositionAndObjectID)))
+		{
+			pak.WriteShort((ushort)m_gameClient.Player.ObjectID); //This is the player's objectid not Sessionid!!!
+			pak.WriteShort((ushort)m_gameClient.Player.Z);
+			pak.WriteInt((uint)m_gameClient.Player.X);
+			pak.WriteInt((uint)m_gameClient.Player.Y);
+			pak.WriteShort(m_gameClient.Player.Heading);
+
+			int flags = 0;
+			Zone zone = m_gameClient.Player.CurrentZone;
+			if (zone == null) return;
+
+			if (m_gameClient.Player.CurrentZone.IsDivingEnabled)
+				flags = 0x80 | (m_gameClient.Player.IsUnderwater ? 0x01 : 0x00);
+
+			pak.WriteByte((byte)(flags));
+
+			pak.WriteByte(0x00);	//TODO Unknown (Instance ID: 0xB0-0xBA, 0xAA-0xAF)
+
+			if (zone.IsDungeon)
 			{
-				if (log.IsWarnEnabled)
-					log.Warn("SendPlayerCreate: playerRegion == null");
+				pak.WriteShort((ushort)(zone.XOffset / 0x2000));
+				pak.WriteShort((ushort)(zone.YOffset / 0x2000));
+			}
+			else
+			{
+				pak.WriteShort(0);
+				pak.WriteShort(0);
+			}
+            //Dinberg - Changing to allow instances...
+            pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
+			pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); // new in 1.74, same as in SendLoginGranted
+			pak.WriteByte(0x00); //TODO: unknown, new in 1.74
+			SendTCP(pak);
+		}
+	}
+
+	protected override void WriteGroupMemberUpdate(GsTcpPacketOut pak, bool updateIcons, GameLiving living)
+	{
+		base.WriteGroupMemberUpdate(pak, updateIcons, living);
+		WriteGroupMemberMapUpdate(pak, living);
+	}
+
+	protected virtual void WriteGroupMemberMapUpdate(GsTcpPacketOut pak, GameLiving living)
+	{
+		bool sameRegion = living.CurrentRegion == m_gameClient.Player.CurrentRegion;
+		if (sameRegion && living.CurrentSpeed != 0)//todo : find a better way to detect when player change coord
+		{
+			Zone zone = living.CurrentZone;
+			if (zone == null)
 				return;
-			}
-
-			Zone playerZone = playerToCreate.CurrentZone;
-			if (playerZone == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("SendPlayerCreate: playerZone == null");
-				return;
-			}
-
-			if (m_gameClient.Player == null || playerToCreate.IsVisibleTo(m_gameClient.Player) == false)
-				return;
-
-			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PlayerCreate172)))
-			{
-				pak.WriteShort((ushort)playerToCreate.Client.SessionID);
-				pak.WriteShort((ushort)playerToCreate.ObjectID);
-				pak.WriteShort(playerToCreate.Model);
-				pak.WriteShort((ushort)playerToCreate.Z);
-	            //Dinberg:Instances - zoneSkinID for object positioning clientside (as zones are hardcoded).
-				pak.WriteShort(playerZone.ZoneSkinID);
-				pak.WriteShort((ushort)playerRegion.GetXOffInZone(playerToCreate.X, playerToCreate.Y));
-				pak.WriteShort((ushort)playerRegion.GetYOffInZone(playerToCreate.X, playerToCreate.Y));
-				pak.WriteShort(playerToCreate.Heading);
-
-				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeSize)); //1-4 = Eye Size / 5-8 = Nose Size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.LipSize)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.MoodType)); //1-4 = Ear size / 5-8 = Kin size
-				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.EyeColor)); //1-4 = Skin Color / 5-8 = Eye Color
-				pak.WriteByte(playerToCreate.GetDisplayLevel(m_gameClient.Player));
-				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairColor)); //Hair: 1-4 = Color / 5-8 = unknown
-				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.FaceType)); //1-4 = Unknown / 5-8 = Face type
-				pak.WriteByte(playerToCreate.GetFaceAttribute(ECharFacePart.HairStyle)); //1-4 = Unknown / 5-8 = Hair Style
-
-				int flags = (GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, playerToCreate) & 0x03) << 2;
-				if (playerToCreate.IsAlive == false) flags |= 0x01;
-				if (playerToCreate.IsUnderwater) flags |= 0x02; //swimming
-				if (playerToCreate.IsStealthed) flags |= 0x10;
-				if (playerToCreate.IsWireframe) flags |= 0x20;
-				pak.WriteByte((byte)flags);
-				pak.WriteByte(0x00); // new in 1.74
-				if (playerToCreate.PlayerClass.ID == (int)EPlayerClass.Vampiir) flags |= 0x40; //Vamp fly
-				pak.WritePascalString(GameServer.ServerRules.GetPlayerName(m_gameClient.Player, playerToCreate));
-				pak.WritePascalString(GameServer.ServerRules.GetPlayerGuildName(m_gameClient.Player, playerToCreate));
-				pak.WritePascalString(GameServer.ServerRules.GetPlayerLastName(m_gameClient.Player, playerToCreate));
-	            //RR 12 / 13
-	            pak.WritePascalString(GameServer.ServerRules.GetPlayerPrefixName(m_gameClient.Player, playerToCreate));
-	            pak.WritePascalString(GameServer.ServerRules.GetPlayerTitle(m_gameClient.Player, playerToCreate)); // new in 1.74, NewTitle
-				SendTCP(pak);
-			}
-
-			SendObjectGuildID(playerToCreate, playerToCreate.Guild); //used for nearest friendly/enemy object buttons and name colors on PvP server
+			pak.WriteByte((byte)(0x40 | living.GroupIndex));
+            //Dinberg - ZoneSkinID for group members aswell.
+			pak.WriteShort(zone.ZoneSkinID);
+			pak.WriteShort((ushort)(living.X - zone.XOffset));
+			pak.WriteShort((ushort)(living.Y - zone.YOffset));
 		}
+	}
 
-		public override void SendPlayerPositionAndObjectID()
+	public override void SendRegionChanged()
+	{
+		if (m_gameClient.Player == null)
+			return;
+		SendRegions(m_gameClient.Player.CurrentRegion.Skin);
+		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.RegionChanged)))
 		{
-			if (m_gameClient.Player == null) return;
+			//Dinberg - Changing to allow instances...
+			pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
+			//Dinberg:Instances - also need to continue the bluff here, with zoneSkinID, for
+			//clientside positions of objects.
+			if(m_gameClient.Player.CurrentZone != null)
+				pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
+			else
+				pak.WriteShort(0x00);
 
-			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.PositionAndObjectID)))
+			pak.WriteShort(0x00); // ?
+			pak.WriteShort(0x01); // cause region change ?
+			pak.WriteByte(0x0C); //Server ID
+			pak.WriteByte(0); // ?
+			pak.WriteShort(0xFFBF); // ?
+			SendTCP(pak);
+		}
+	}
+
+	public override void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid, ushort boltTime, bool noSound, byte success)
+	{
+		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.SpellEffectAnimation)))
+		{
+			pak.WriteShort((ushort)spellCaster.ObjectID);
+			pak.WriteShort(spellid);
+			pak.WriteShort((ushort)(spellTarget == null ? 0 : spellTarget.ObjectID));
+			pak.WriteShort(boltTime);
+			pak.WriteByte((byte)(noSound ? 1 : 0));
+			pak.WriteByte(success);
+			SendTCP(pak);
+		}
+	}
+
+	public override void CheckLengthHybridSkillsPacket(ref GsTcpPacketOut pak, ref int maxSkills, ref int first)
+	{
+		if (pak.Length > 1000)
+		{
+			pak.Position = 4;
+			pak.WriteByte((byte)(maxSkills - first));
+			pak.WriteByte(0x03); //subtype
+			pak.WriteByte((byte)first);
+			SendTCP(pak);
+			pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate));
+			pak.WriteByte(0x01); //subcode
+			pak.WriteByte((byte)maxSkills); //number of entry
+			pak.WriteByte(0x03); //subtype
+			pak.WriteByte((byte)first);
+			first = maxSkills;
+		}
+		maxSkills++;
+	}
+
+	public override void SendWarmapBonuses()
+	{
+		if (m_gameClient.Player == null) return;
+		int AlbTowers = 0;
+		int MidTowers = 0;
+		int HibTowers = 0;
+		int AlbKeeps = 0;
+		int MidKeeps = 0;
+		int HibKeeps = 0;
+		int OwnerDFTowers = 0;
+		ERealm OwnerDF = ERealm.None;
+		foreach (AGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
+		{
+
+			switch ((ERealm)keep.Realm)
 			{
-				pak.WriteShort((ushort)m_gameClient.Player.ObjectID); //This is the player's objectid not Sessionid!!!
-				pak.WriteShort((ushort)m_gameClient.Player.Z);
-				pak.WriteInt((uint)m_gameClient.Player.X);
-				pak.WriteInt((uint)m_gameClient.Player.Y);
-				pak.WriteShort(m_gameClient.Player.Heading);
+				case ERealm.Albion:
+					if (keep is GameKeep)
+						AlbKeeps++;
+					else
+						AlbTowers++;
+					break;
+				case ERealm.Midgard:
+					if (keep is GameKeep)
+						MidKeeps++;
+					else
+						MidTowers++;
+					break;
+				case ERealm.Hibernia:
+					if (keep is GameKeep)
+						HibKeeps++;
+					else
+						HibTowers++;
+					break;
+				default:
+					break;
+			}
+		}
+		if (AlbTowers > MidTowers && AlbTowers > HibTowers)
+		{
+			OwnerDF = ERealm.Albion;
+			OwnerDFTowers = AlbTowers;
+		}
+		else if (MidTowers > AlbTowers && MidTowers > HibTowers)
+		{
+			OwnerDF = ERealm.Midgard;
+			OwnerDFTowers = MidTowers;
+		}
+		else if (HibTowers > AlbTowers && HibTowers > MidTowers)
+		{
+			OwnerDF = ERealm.Hibernia;
+			OwnerDFTowers = HibTowers;
+		}
+		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.WarmapBonuses)))
+		{
+			int RealmKeeps = 0;
+			int RealmTowers = 0;
+			switch ((ERealm)m_gameClient.Player.Realm)
+			{
+				case ERealm.Albion:
+					RealmKeeps = AlbKeeps;
+					RealmTowers = AlbTowers;
+					break;
+				case ERealm.Midgard:
+					RealmKeeps = MidKeeps;
+					RealmTowers = MidTowers;
+					break;
+				case ERealm.Hibernia:
+					RealmKeeps = HibKeeps;
+					RealmTowers = HibTowers;
+					break;
+				default:
+					break;
+			}
+			pak.WriteByte((byte)RealmKeeps);
+			pak.WriteByte((byte)(((byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Magic)) << 4 | (byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Strength)));
+			pak.WriteByte((byte)OwnerDF);
+			pak.WriteByte((byte)RealmTowers);
+			pak.WriteByte((byte)OwnerDFTowers);
+			SendTCP(pak);
+		}
+	}
 
-				int flags = 0;
-				Zone zone = m_gameClient.Player.CurrentZone;
-				if (zone == null) return;
+	public override void SendLivingEquipmentUpdate(GameLiving living)
+	{
+		if (m_gameClient.Player == null || living.IsVisibleTo(m_gameClient.Player) == false)
+			return;
 
-				if (m_gameClient.Player.CurrentZone.IsDivingEnabled)
-					flags = 0x80 | (m_gameClient.Player.IsUnderwater ? 0x01 : 0x00);
+		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.EquipmentUpdate)))
+		{
 
-				pak.WriteByte((byte)(flags));
+			ICollection<DbInventoryItem> items = null;
+			if (living.Inventory != null)
+				items = living.Inventory.VisibleItems;
 
-				pak.WriteByte(0x00);	//TODO Unknown (Instance ID: 0xB0-0xBA, 0xAA-0xAF)
+			pak.WriteShort((ushort)living.ObjectID);
+			pak.WriteByte((byte)((living.IsCloakHoodUp ? 0x01 : 0x00) | (int)living.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
 
-				if (zone.IsDungeon)
+			pak.WriteByte((byte)living.VisibleActiveWeaponSlots);
+			if (items != null)
+			{
+				pak.WriteByte((byte)items.Count);
+				foreach (DbInventoryItem item in items)
 				{
-					pak.WriteShort((ushort)(zone.XOffset / 0x2000));
-					pak.WriteShort((ushort)(zone.YOffset / 0x2000));
-				}
-				else
-				{
-					pak.WriteShort(0);
-					pak.WriteShort(0);
-				}
-	            //Dinberg - Changing to allow instances...
-	            pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
-				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); // new in 1.74, same as in SendLoginGranted
-				pak.WriteByte(0x00); //TODO: unknown, new in 1.74
-				SendTCP(pak);
-			}
-		}
+					pak.WriteByte((byte)item.SlotPosition);
 
-		protected override void WriteGroupMemberUpdate(GsTcpPacketOut pak, bool updateIcons, GameLiving living)
-		{
-			base.WriteGroupMemberUpdate(pak, updateIcons, living);
-			WriteGroupMemberMapUpdate(pak, living);
-		}
+					ushort model = (ushort)(item.Model & 0x1FFF);
+					int texture = (item.Emblem != 0) ? item.Emblem : item.Color;
 
-		protected virtual void WriteGroupMemberMapUpdate(GsTcpPacketOut pak, GameLiving living)
-		{
-			bool sameRegion = living.CurrentRegion == m_gameClient.Player.CurrentRegion;
-			if (sameRegion && living.CurrentSpeed != 0)//todo : find a better way to detect when player change coord
-			{
-				Zone zone = living.CurrentZone;
-				if (zone == null)
-					return;
-				pak.WriteByte((byte)(0x40 | living.GroupIndex));
-                //Dinberg - ZoneSkinID for group members aswell.
-				pak.WriteShort(zone.ZoneSkinID);
-				pak.WriteShort((ushort)(living.X - zone.XOffset));
-				pak.WriteShort((ushort)(living.Y - zone.YOffset));
-			}
-		}
+					if ((texture & ~0xFF) != 0)
+						model |= 0x8000;
+					else if ((texture & 0xFF) != 0)
+						model |= 0x4000;
+					if (item.Effect != 0)
+						model |= 0x2000;
 
-		public override void SendRegionChanged()
-		{
-			if (m_gameClient.Player == null)
-				return;
-			SendRegions(m_gameClient.Player.CurrentRegion.Skin);
-			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.RegionChanged)))
-			{
-				//Dinberg - Changing to allow instances...
-				pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
-				//Dinberg:Instances - also need to continue the bluff here, with zoneSkinID, for
-				//clientside positions of objects.
-				if(m_gameClient.Player.CurrentZone != null)
-					pak.WriteShort(m_gameClient.Player.CurrentZone.ZoneSkinID); // Zone ID?
-				else
-					pak.WriteShort(0x00);
+					pak.WriteShort(model);
 
-				pak.WriteShort(0x00); // ?
-				pak.WriteShort(0x01); // cause region change ?
-				pak.WriteByte(0x0C); //Server ID
-				pak.WriteByte(0); // ?
-				pak.WriteShort(0xFFBF); // ?
-				SendTCP(pak);
-			}
-		}
+					if (item.SlotPosition > Slot.RANGED || item.SlotPosition < Slot.RIGHTHAND)
+						pak.WriteByte((byte)item.Extension);
 
-		public override void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid, ushort boltTime, bool noSound, byte success)
-		{
-			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.SpellEffectAnimation)))
-			{
-				pak.WriteShort((ushort)spellCaster.ObjectID);
-				pak.WriteShort(spellid);
-				pak.WriteShort((ushort)(spellTarget == null ? 0 : spellTarget.ObjectID));
-				pak.WriteShort(boltTime);
-				pak.WriteByte((byte)(noSound ? 1 : 0));
-				pak.WriteByte(success);
-				SendTCP(pak);
-			}
-		}
-
-		public override void CheckLengthHybridSkillsPacket(ref GsTcpPacketOut pak, ref int maxSkills, ref int first)
-		{
-			if (pak.Length > 1000)
-			{
-				pak.Position = 4;
-				pak.WriteByte((byte)(maxSkills - first));
-				pak.WriteByte(0x03); //subtype
-				pak.WriteByte((byte)first);
-				SendTCP(pak);
-				pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VariousUpdate));
-				pak.WriteByte(0x01); //subcode
-				pak.WriteByte((byte)maxSkills); //number of entry
-				pak.WriteByte(0x03); //subtype
-				pak.WriteByte((byte)first);
-				first = maxSkills;
-			}
-			maxSkills++;
-		}
-
-		public override void SendWarmapBonuses()
-		{
-			if (m_gameClient.Player == null) return;
-			int AlbTowers = 0;
-			int MidTowers = 0;
-			int HibTowers = 0;
-			int AlbKeeps = 0;
-			int MidKeeps = 0;
-			int HibKeeps = 0;
-			int OwnerDFTowers = 0;
-			ERealm OwnerDF = ERealm.None;
-			foreach (AGameKeep keep in GameServer.KeepManager.GetFrontierKeeps())
-			{
-
-				switch ((ERealm)keep.Realm)
-				{
-					case ERealm.Albion:
-						if (keep is GameKeep)
-							AlbKeeps++;
-						else
-							AlbTowers++;
-						break;
-					case ERealm.Midgard:
-						if (keep is GameKeep)
-							MidKeeps++;
-						else
-							MidTowers++;
-						break;
-					case ERealm.Hibernia:
-						if (keep is GameKeep)
-							HibKeeps++;
-						else
-							HibTowers++;
-						break;
-					default:
-						break;
+					if ((texture & ~0xFF) != 0)
+						pak.WriteShort((ushort)texture);
+					else if ((texture & 0xFF) != 0)
+						pak.WriteByte((byte)texture);
+					if (item.Effect != 0)
+						pak.WriteShort((ushort)item.Effect);
 				}
 			}
-			if (AlbTowers > MidTowers && AlbTowers > HibTowers)
+			else
 			{
-				OwnerDF = ERealm.Albion;
-				OwnerDFTowers = AlbTowers;
+				pak.WriteByte(0x00);
 			}
-			else if (MidTowers > AlbTowers && MidTowers > HibTowers)
-			{
-				OwnerDF = ERealm.Midgard;
-				OwnerDFTowers = MidTowers;
-			}
-			else if (HibTowers > AlbTowers && HibTowers > MidTowers)
-			{
-				OwnerDF = ERealm.Hibernia;
-				OwnerDFTowers = HibTowers;
-			}
-			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.WarmapBonuses)))
-			{
-				int RealmKeeps = 0;
-				int RealmTowers = 0;
-				switch ((ERealm)m_gameClient.Player.Realm)
-				{
-					case ERealm.Albion:
-						RealmKeeps = AlbKeeps;
-						RealmTowers = AlbTowers;
-						break;
-					case ERealm.Midgard:
-						RealmKeeps = MidKeeps;
-						RealmTowers = MidTowers;
-						break;
-					case ERealm.Hibernia:
-						RealmKeeps = HibKeeps;
-						RealmTowers = HibTowers;
-						break;
-					default:
-						break;
-				}
-				pak.WriteByte((byte)RealmKeeps);
-				pak.WriteByte((byte)(((byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Magic)) << 4 | (byte)RelicMgr.GetRelicCount(m_gameClient.Player.Realm, ERelicType.Strength)));
-				pak.WriteByte((byte)OwnerDF);
-				pak.WriteByte((byte)RealmTowers);
-				pak.WriteByte((byte)OwnerDFTowers);
-				SendTCP(pak);
-			}
+			SendTCP(pak);
 		}
+	}
 
-		public override void SendLivingEquipmentUpdate(GameLiving living)
+	public override void SendVampireEffect(GameLiving living, bool show)
+	{
+		if (m_gameClient.Player == null || living == null)
+			return;
+
+		using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VisualEffect)))
 		{
-			if (m_gameClient.Player == null || living.IsVisibleTo(m_gameClient.Player) == false)
-				return;
 
-			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.EquipmentUpdate)))
-			{
+			pak.WriteShort((ushort)living.ObjectID);
+			pak.WriteByte(0x4); // Vampire (can fly)
+			pak.WriteByte((byte)(show ? 0 : 1)); // 0-enable, 1-disable
+			pak.WriteInt(0);
 
-				ICollection<DbInventoryItem> items = null;
-				if (living.Inventory != null)
-					items = living.Inventory.VisibleItems;
-
-				pak.WriteShort((ushort)living.ObjectID);
-				pak.WriteByte((byte)((living.IsCloakHoodUp ? 0x01 : 0x00) | (int)living.rangeAttackComponent.ActiveQuiverSlot)); //bit0 is hood up bit4 to 7 is active quiver
-
-				pak.WriteByte((byte)living.VisibleActiveWeaponSlots);
-				if (items != null)
-				{
-					pak.WriteByte((byte)items.Count);
-					foreach (DbInventoryItem item in items)
-					{
-						pak.WriteByte((byte)item.SlotPosition);
-
-						ushort model = (ushort)(item.Model & 0x1FFF);
-						int texture = (item.Emblem != 0) ? item.Emblem : item.Color;
-
-						if ((texture & ~0xFF) != 0)
-							model |= 0x8000;
-						else if ((texture & 0xFF) != 0)
-							model |= 0x4000;
-						if (item.Effect != 0)
-							model |= 0x2000;
-
-						pak.WriteShort(model);
-
-						if (item.SlotPosition > Slot.RANGED || item.SlotPosition < Slot.RIGHTHAND)
-							pak.WriteByte((byte)item.Extension);
-
-						if ((texture & ~0xFF) != 0)
-							pak.WriteShort((ushort)texture);
-						else if ((texture & 0xFF) != 0)
-							pak.WriteByte((byte)texture);
-						if (item.Effect != 0)
-							pak.WriteShort((ushort)item.Effect);
-					}
-				}
-				else
-				{
-					pak.WriteByte(0x00);
-				}
-				SendTCP(pak);
-			}
-		}
-
-		public override void SendVampireEffect(GameLiving living, bool show)
-		{
-			if (m_gameClient.Player == null || living == null)
-				return;
-
-			using (GsTcpPacketOut pak = new GsTcpPacketOut(GetPacketCode(EServerPackets.VisualEffect)))
-			{
-
-				pak.WriteShort((ushort)living.ObjectID);
-				pak.WriteByte(0x4); // Vampire (can fly)
-				pak.WriteByte((byte)(show ? 0 : 1)); // 0-enable, 1-disable
-				pak.WriteInt(0);
-
-				SendTCP(pak);
-			}
+			SendTCP(pak);
 		}
 	}
 }

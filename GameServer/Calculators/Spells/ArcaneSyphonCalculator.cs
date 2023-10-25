@@ -1,6 +1,7 @@
 ﻿using System;
+using Core.GS.Enums;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The ArcaneSyphon calculator: 25% cap like live server: http://www.camelotherald.com/more/3202.shtml

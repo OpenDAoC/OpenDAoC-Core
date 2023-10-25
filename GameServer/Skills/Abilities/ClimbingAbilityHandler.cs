@@ -1,41 +1,42 @@
-﻿using DOL.Database;
+﻿using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
 
-namespace DOL.GS.SkillHandler
+namespace Core.GS.Skills;
+
+[SkillHandler(AbilityConstants.ClimbSpikes)]
+public class ClimbingAbilityHandler : SpellCastingAbilityHandler
 {
-	[SkillHandler(Abilities.ClimbSpikes)]
-	public class ClimbingAbilityHandler : SpellCastingAbilityHandler
+	private static int spellid = -1;
+	
+	public override long Preconditions
 	{
-		private static int spellid = -1;
-		
-		public override long Preconditions
+		get
 		{
-			get
-			{
-				return DEAD | SITTING | MEZZED | STUNNED;
-			}
+			return DEAD | SITTING | MEZZED | STUNNED;
 		}
-		public override int SpellID
+	}
+	public override int SpellID
+	{
+		get
 		{
-			get
-			{
-				return spellid;
-			}
+			return spellid;
 		}
+	}
 
-		public ClimbingAbilityHandler()
+	public ClimbingAbilityHandler()
+	{
+		// Graveen: crappy, but not hardcoded. if we except by the ability name ofc...
+		// problems are: 
+		// 		- matching vs ability name / spell name needed
+		//		- spell name is not indexed
+		// perhaps a basis to think about, but definitively not the design we want.
+		if (spellid == -1)
 		{
-			// Graveen: crappy, but not hardcoded. if we except by the ability name ofc...
-			// problems are: 
-			// 		- matching vs ability name / spell name needed
-			//		- spell name is not indexed
-			// perhaps a basis to think about, but definitively not the design we want.
-			if (spellid == -1)
-			{
-				spellid=0;
-				DbSpell climbSpell = CoreDb<DbSpell>.SelectObject(DB.Column("Name").IsEqualTo(Abilities.ClimbSpikes));
-				if (climbSpell != null)
-					spellid = climbSpell.SpellID;
-			}
+			spellid=0;
+			DbSpell climbSpell = CoreDb<DbSpell>.SelectObject(DB.Column("Name").IsEqualTo(AbilityConstants.ClimbSpikes));
+			if (climbSpell != null)
+				spellid = climbSpell.SpellID;
 		}
 	}
 }

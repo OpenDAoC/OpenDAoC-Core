@@ -1,8 +1,7 @@
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class GnatBrain : StandardMobBrain
 {

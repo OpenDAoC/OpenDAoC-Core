@@ -1,18 +1,17 @@
-namespace DOL.FTP
+namespace Core.Base.Enums;
+
+/// <summary>
+/// FTP Modes
+/// </summary>
+public enum EFtpMode
 {
 	/// <summary>
-	/// FTP Modes
+	/// Ftp connection in passive mode
 	/// </summary>
-	public enum EFtpMode
-	{
-		/// <summary>
-		/// Ftp connection in passive mode
-		/// </summary>
-		Passive = 1,
+	Passive = 1,
 
-		/// <summary>
-		/// Ftp connection in active mode
-		/// </summary>
-		Active = 2
-	}
+	/// <summary>
+	/// Ftp connection in active mode
+	/// </summary>
+	Active = 2
 }

@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Stalker Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Stalker Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class StalkerTrainer : GameTrainer
@@ -15,7 +15,7 @@ public class StalkerTrainer : GameTrainer
 	/// </summary>
 	public const string PRACTICE_WEAPON_ID = "training_dirk";
 
-	public StalkerTrainer() : base(eChampionTrainerType.Stalker)
+	public StalkerTrainer() : base(EChampionTrainerType.Stalker)
 	{
 	}
 	

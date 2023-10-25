@@ -1,6 +1,10 @@
-using DOL.GS;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class WrathOfMordredBrain : StandardMobBrain
 {
@@ -17,7 +21,7 @@ public class WrathOfMordredBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			CanWalk = false;
 		}
@@ -36,7 +40,7 @@ public class WrathOfMordredBrain : StandardMobBrain
 				{
 					AttackAction attackAction = Body.attackComponent.attackAction;
 
-					if (attackAction != null && attackAction.StartTime - GameLoop.GameLoopTime <= 800 && CanWalk == false)
+					if (attackAction != null && attackAction.StartTime - GameLoopMgr.GameLoopTime <= 800 && CanWalk == false)
 					{
 						Body.styleComponent.NextCombatStyle = null;
 						Body.styleComponent.NextCombatBackupStyle = null;

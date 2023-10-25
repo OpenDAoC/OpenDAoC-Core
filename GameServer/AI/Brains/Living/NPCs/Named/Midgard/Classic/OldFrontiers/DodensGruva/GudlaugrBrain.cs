@@ -1,9 +1,11 @@
 using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class GudlaugrBrain : StandardMobBrain
 {

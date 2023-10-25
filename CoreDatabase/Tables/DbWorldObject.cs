@@ -1,6 +1,4 @@
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Objects as Tables, Lights, Bags non static in Game.
@@ -25,7 +23,7 @@ namespace DOL.Database
 
 		public DbWorldObject()
 		{
-			m_type = "DOL.GS.GameItem";
+			m_type = "Core.GS.GameItem";
 		}
 
 		[DataElement(AllowDbNull = true)]

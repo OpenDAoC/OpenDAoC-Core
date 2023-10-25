@@ -1,7 +1,8 @@
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.World;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS;
 
 public class BountyPointPortMob : GameNpc
 {

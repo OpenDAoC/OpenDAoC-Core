@@ -1,4 +1,4 @@
-namespace DOL.GS.Commands;
+namespace Core.GS.Enums;
 
 public enum EBroadcastType : int
 {

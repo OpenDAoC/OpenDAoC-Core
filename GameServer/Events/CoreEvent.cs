@@ -1,7 +1,7 @@
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
-/// This class defines an abstract event in DOL
+/// This class defines an abstract event in OpenDAoC
 /// It needs to be overridden in order to create
 /// custom events.
 /// </summary>

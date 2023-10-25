@@ -1,7 +1,8 @@
-﻿using DOL.GS.PacketHandler;
-using DOL.Language;
+﻿using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.Languages;
 
-namespace DOL.GS
+namespace Core.GS.ECS
 {
     public class PlayerAttackAction : AttackAction
     {
@@ -101,7 +102,7 @@ namespace DOL.GS
 
             if (base.FinalizeRangedAttack())
             {
-                _playerOwner.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
+                _playerOwner.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoopMgr.GameLoopTime);
                 return true;
             }
 

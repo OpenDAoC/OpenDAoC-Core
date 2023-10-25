@@ -1,6 +1,4 @@
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	[DataTable(TableName = "househookpointoffset")]
 	public class DbHouseHookPointOffset : DataObject

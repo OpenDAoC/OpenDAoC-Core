@@ -1,128 +1,126 @@
 using System;
-using DOL.Database.Attributes;
-using DOL.Events;
-using DOL.GS;
+using Core.Database;
+using Core.GS.Events;
 
-namespace DOL.Database
+namespace Core.GS.Server;
+
+[DataTable(TableName = "JumpPoint")]
+public class DbJumpPoint : DataObject
 {
-    [DataTable(TableName = "JumpPoint")]
-    public class DbJumpPoint : DataObject
+    private string m_name;
+    private int m_xpos;
+    private int m_ypos;
+    private int m_zpos;
+    private ushort m_region;
+    private ushort m_heading;       
+
+    /// <summary>
+    /// Name of this JP
+    /// </summary>
+    [DataElement(AllowDbNull = false, Unique = true)]
+    public string Name
     {
-        private string m_name;
-        private int m_xpos;
-        private int m_ypos;
-        private int m_zpos;
-        private ushort m_region;
-        private ushort m_heading;       
-
-        /// <summary>
-        /// Name of this JP
-        /// </summary>
-        [DataElement(AllowDbNull = false, Unique = true)]
-        public string Name
+        get
         {
-            get
-            {
-                return m_name;
-            }
-            set
-            {
-                Dirty = true;
-                m_name = value;
-            }
+            return m_name;
         }
-
-        /// <summary>
-        /// The region of this JP
-        /// </summary>
-        [DataElement(AllowDbNull = false)]
-        public ushort Region
+        set
         {
-            get
-            {
-                return m_region;
-            }
-            set
-            {
-                Dirty = true;
-                m_region = value;
-            }
+            Dirty = true;
+            m_name = value;
         }
+    }
 
-        /// <summary>
-        /// The X position of this JP
-        /// </summary>
-        [DataElement(AllowDbNull = false)]
-        public int Xpos
+    /// <summary>
+    /// The region of this JP
+    /// </summary>
+    [DataElement(AllowDbNull = false)]
+    public ushort Region
+    {
+        get
         {
-            get
-            {
-                return m_xpos;
-            }
-            set
-            {
-                Dirty = true;
-                m_xpos = value;
-            }
+            return m_region;
         }
-
-        /// <summary>
-        /// The Y position of this JP
-        /// </summary>
-        [DataElement(AllowDbNull = false)]
-        public int Ypos
+        set
         {
-            get
-            {
-                return m_ypos;
-            }
-            set
-            {
-                Dirty = true;
-                m_ypos = value;
-            }
+            Dirty = true;
+            m_region = value;
         }
+    }
 
-        /// <summary>
-        /// The Z position of this JP
-        /// </summary>
-        [DataElement(AllowDbNull = false)]
-        public int Zpos
+    /// <summary>
+    /// The X position of this JP
+    /// </summary>
+    [DataElement(AllowDbNull = false)]
+    public int Xpos
+    {
+        get
         {
-            get
-            {
-                return m_zpos;
-            }
-            set
-            {
-                Dirty = true;
-                m_zpos = value;
-            }
+            return m_xpos;
         }
-
-        /// <summary>
-        /// Heading of this JP
-        /// </summary>
-        [DataElement(AllowDbNull = false)]
-        public ushort Heading
+        set
         {
-            get
-            {
-                return m_heading;
-            }
-            set
-            {
-                Dirty = true;
-                m_heading = value;
-            }
-        }        
-
-        [ScriptLoadedEvent]
-		public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
-        {           
-        	GameServer.Database.RegisterDataObject(typeof (DbJumpPoint));                
-                               
-			Console.WriteLine("JumpPoints DB registered!");
+            Dirty = true;
+            m_xpos = value;
         }
+    }
+
+    /// <summary>
+    /// The Y position of this JP
+    /// </summary>
+    [DataElement(AllowDbNull = false)]
+    public int Ypos
+    {
+        get
+        {
+            return m_ypos;
+        }
+        set
+        {
+            Dirty = true;
+            m_ypos = value;
+        }
+    }
+
+    /// <summary>
+    /// The Z position of this JP
+    /// </summary>
+    [DataElement(AllowDbNull = false)]
+    public int Zpos
+    {
+        get
+        {
+            return m_zpos;
+        }
+        set
+        {
+            Dirty = true;
+            m_zpos = value;
+        }
+    }
+
+    /// <summary>
+    /// Heading of this JP
+    /// </summary>
+    [DataElement(AllowDbNull = false)]
+    public ushort Heading
+    {
+        get
+        {
+            return m_heading;
+        }
+        set
+        {
+            Dirty = true;
+            m_heading = value;
+        }
+    }        
+
+    [ScriptLoadedEvent]
+	public static void OnScriptCompiled(CoreEvent e, object sender, EventArgs args)
+    {           
+        GameServer.Database.RegisterDataObject(typeof (DbJumpPoint));                
+                           
+		Console.WriteLine("JumpPoints DB registered!");
     }
 }

@@ -1,7 +1,7 @@
 using System;
-using DOL.GS;
+using Core.GS.World;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 public class WalkToEventArgs : EventArgs
 {

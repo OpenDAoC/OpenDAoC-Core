@@ -1,6 +1,8 @@
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Server;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 [NpcGuildScript("Tailors Master")]
 public class TailoringMaster : CraftMasterNpc
@@ -27,7 +29,7 @@ public class TailoringMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "TailorsMaster.GuildOrder");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "TailorsMaster.GuildOrder");
         }
 	}
 
@@ -35,7 +37,7 @@ public class TailoringMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "TailorsMaster.AcceptedByOrderName");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "TailorsMaster.AcceptedByOrderName");
         }
 	}
 
@@ -48,7 +50,7 @@ public class TailoringMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "TailorsMaster.InitialEntersentence");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "TailorsMaster.InitialEntersentence");
         }
 	}
 }

@@ -1,13 +1,12 @@
-namespace DOL.GS
+namespace Core.GS.World;
+
+/// <summary>
+/// interface for classes that represent a point in 3d space
+/// </summary>
+public interface IPoint3D : IPoint2D
 {
 	/// <summary>
-	/// interface for classes that represent a point in 3d space
+	/// Height Position
 	/// </summary>
-	public interface IPoint3D : IPoint2D
-	{
-		/// <summary>
-		/// Height Position
-		/// </summary>
-		int Z { get; set; }
-	}
+	int Z { get; set; }
 }

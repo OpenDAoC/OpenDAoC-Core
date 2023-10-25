@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Acolyte Trainer", ERealm.Albion)]		// this attribute instructs DOL to use this script for all "Acolyte Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class AcolyteTrainer : GameTrainer
@@ -14,7 +14,7 @@ public class AcolyteTrainer : GameTrainer
 	public const string PRACTICE_SHIELD_ID = "small_training_shield";
 
 	public AcolyteTrainer()
-		: base(eChampionTrainerType.Acolyte)
+		: base(EChampionTrainerType.Acolyte)
 	{
 	}
 

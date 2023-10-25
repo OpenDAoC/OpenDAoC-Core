@@ -1,6 +1,8 @@
 using System;
+using Core.GS.ECS;
+using Core.GS.Enums;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The Archery Range bonus percent calculator

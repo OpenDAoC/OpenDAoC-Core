@@ -1,8 +1,10 @@
-using DOL.GS;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
+using Core.GS.Keeps;
+using Core.GS.Packets;
+using Core.GS.Packets.Server;
+using Core.GS.Players;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI
 {
 	/// <summary>
 	/// Brain Class for Area Capture Guards
@@ -57,7 +59,7 @@ namespace DOL.AI.Brain
 				// Drop aggro and disengage if the target is out of range
 				if (Body.IsAttacking && !Body.IsWithinRadius(target, AggroRange, false))
 				{
-					FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+					FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 
 					if (target is GameLiving livingTarget && livingTarget != null)
 						RemoveFromAggroList(livingTarget);
@@ -149,7 +151,7 @@ namespace DOL.AI.Brain
 
 				if (gameObject is GameLiving gameLiving)
 				{
-					FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+					FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 					RemoveFromAggroList(gameLiving);
 				}
 			}

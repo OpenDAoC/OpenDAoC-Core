@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using DOL.GS;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the Dying event of GameLivings

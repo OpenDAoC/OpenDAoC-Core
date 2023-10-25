@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Core.GS.Enums;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	/// <summary>
 	/// Refresh Command Handler to handle resetting Object using Static Cache.

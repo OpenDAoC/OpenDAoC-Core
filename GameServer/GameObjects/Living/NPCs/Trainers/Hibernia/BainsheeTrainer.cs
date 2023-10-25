@@ -1,8 +1,8 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Bainshee Trainer", ERealm.Hibernia)]		// this attribute instructs DOL to use this script for all "Bainshee Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class BainsheeTrainer : GameTrainer

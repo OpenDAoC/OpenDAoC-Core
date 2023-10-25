@@ -1,4 +1,4 @@
-namespace DOL.Database;
+namespace Core.Database.Enums;
 
 /// <summary>
 /// Skin types to use for this keep

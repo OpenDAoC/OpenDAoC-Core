@@ -1,9 +1,10 @@
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts.discord;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Scripts.Custom;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
      "&region",
@@ -56,7 +57,7 @@ public class RegionCommand : ACommandHandler, ICommandHandler
                 otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Region.Message", player.Name, message), EChatType.CT_Broadcast, EChatLoc.CL_ChatWindow);
         }
 
-        if (Properties.DISCORD_ACTIVE)
+        if (ServerProperty.DISCORD_ACTIVE)
             WebhookMessage.LogChatMessage(player, EChatType.CT_Broadcast, message);
     }
 }

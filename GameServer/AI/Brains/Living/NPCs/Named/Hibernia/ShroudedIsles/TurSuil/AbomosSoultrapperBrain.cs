@@ -1,6 +1,7 @@
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Abomos Soultrapper
 public class AbomosSoultrapperBrain : StandardMobBrain
@@ -18,7 +19,7 @@ public class AbomosSoultrapperBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             if (!RemoveAdds)
             {

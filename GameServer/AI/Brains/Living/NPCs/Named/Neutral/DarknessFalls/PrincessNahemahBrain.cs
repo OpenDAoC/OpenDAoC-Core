@@ -1,6 +1,7 @@
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class PrincessNahemahBrain : StandardMobBrain
 {
@@ -14,7 +15,7 @@ public class PrincessNahemahBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             spawnMinions = true;
             if (!RemoveAdds)
             {

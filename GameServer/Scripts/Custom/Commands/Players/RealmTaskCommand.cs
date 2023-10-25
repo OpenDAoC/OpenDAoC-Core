@@ -1,19 +1,20 @@
-﻿using DOL.GS.Commands;
+﻿using Core.GS.Commands;
+using Core.GS.Enums;
+using Core.GS.Events;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts.Custom;
+
+[Command(
+   "&realmtask",
+   EPrivLevel.Player,
+     "Displays the current realm bonuses status.", "/realmtask")]
+public class RealmTaskCommand : ACommandHandler, ICommandHandler
 {
-    [Command(
-       "&realmtask",
-       EPrivLevel.Player,
-         "Displays the current realm bonuses status.", "/realmtask")]
-    public class RealmTaskCommand : ACommandHandler, ICommandHandler
+    public void OnCommand(GameClient client, string[] args)
     {
-        public void OnCommand(GameClient client, string[] args)
+        if (!IsSpammingCommand(client.Player, "task"))
         {
-            if (!IsSpammingCommand(client.Player, "task"))
-            {
-                client.Out.SendCustomTextWindow("Task Bonuses", ZoneBonusRotator.GetTextList());
-            }
+            client.Out.SendCustomTextWindow("Task Bonuses", ZoneBonusRotator.GetTextList());
         }
     }
 }

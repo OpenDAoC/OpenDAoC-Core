@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
      "&minorelic",

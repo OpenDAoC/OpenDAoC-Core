@@ -1,10 +1,13 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Scurceol Hyrde
 public class ScurceolHyrde : GameEpicBoss
@@ -65,7 +68,7 @@ public class ScurceolHyrde : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -103,7 +106,7 @@ public class ScurceolHyrde : GameEpicBoss
 		MaxSpeedBase = 250;
 		MaxDistance = 3500;
 		TetherRange = 3800;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		SpawnOrbs();
 		Faction = FactionMgr.GetFactionByID(8);
@@ -165,7 +168,7 @@ public class ScurceolHyrde : GameEpicBoss
 #endregion Scurceol Hyrde
 
 #region 1st Orb (Lyft Miht)
-public class LyftMihtOne : GameEpicNPC
+public class LyftMihtOne : GameEpicNpc
 {
 	public LyftMihtOne() : base() { }
 
@@ -181,7 +184,7 @@ public class LyftMihtOne : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -236,7 +239,7 @@ public class LyftMihtOne : GameEpicNPC
 #endregion 1st Orb (Lyft Miht)
 
 #region 2nd Orb (Lyft Miht)
-public class LyftMihtTwo : GameEpicNPC
+public class LyftMihtTwo : GameEpicNpc
 {
 	public LyftMihtTwo() : base() { }
 
@@ -252,7 +255,7 @@ public class LyftMihtTwo : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -307,7 +310,7 @@ public class LyftMihtTwo : GameEpicNPC
 #endregion 2nd Orb (Lyft Miht)
 
 #region 3rd Orb (Lyft Miht)
-public class LyftMihtThree : GameEpicNPC
+public class LyftMihtThree : GameEpicNpc
 {
 	public LyftMihtThree() : base() { }
 
@@ -323,7 +326,7 @@ public class LyftMihtThree : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -378,7 +381,7 @@ public class LyftMihtThree : GameEpicNPC
 #endregion 3rd Orb (Lyft Miht)
 
 #region 4th Orb (Lyft Miht)
-public class LyftMihtFour : GameEpicNPC
+public class LyftMihtFour : GameEpicNpc
 {
 	public LyftMihtFour() : base() { }
 
@@ -394,7 +397,7 @@ public class LyftMihtFour : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);

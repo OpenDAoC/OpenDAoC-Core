@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Server;
 
-namespace DOL.GS;
+namespace Core.GS.Scripts.Custom;
 
 /*
  * Predator
@@ -50,8 +53,8 @@ public class PredatorMgr
 
     private static int minPredatorReward;
     private static int maxPredatorReward;
-    private static double rewardScalar = Properties.PREDATOR_REWARD_MULTIPLIER;
-    private static long OutOfBoundsTimeout = Properties.OUT_OF_BOUNDS_TIMEOUT;
+    private static double rewardScalar = ServerProperty.PREDATOR_REWARD_MULTIPLIER;
+    private static long OutOfBoundsTimeout = ServerProperty.OUT_OF_BOUNDS_TIMEOUT;
 
     private static string TimeoutTickKey = "TimeoutStartTick";
 
@@ -108,11 +111,11 @@ public class PredatorMgr
         
         if (DisqualifiedPlayers.Keys.Contains(player))
         {
-            if (DisqualifiedPlayers[player] + Properties.PREDATOR_ABUSE_TIMEOUT * 60000 >=
-                GameLoop.GameLoopTime)
+            if (DisqualifiedPlayers[player] + ServerProperty.PREDATOR_ABUSE_TIMEOUT * 60000 >=
+                GameLoopMgr.GameLoopTime)
             {
-                long timeLeft = Math.Abs(Properties.PREDATOR_ABUSE_TIMEOUT * 60000 + DisqualifiedPlayers[player] -
-                                         GameLoop.GameLoopTime);
+                long timeLeft = Math.Abs(ServerProperty.PREDATOR_ABUSE_TIMEOUT * 60000 + DisqualifiedPlayers[player] -
+                                         GameLoopMgr.GameLoopTime);
                 player.Out.SendMessage("You recently abandoned the hunt. " +
                                        "Your body needs " + TimeSpan.FromMilliseconds(timeLeft).Minutes + "m "
                                        + TimeSpan.FromMilliseconds(timeLeft).Seconds + "s" +
@@ -138,11 +141,11 @@ public class PredatorMgr
         RemoveActivePlayer(player);
         if (DisqualifiedPlayers.ContainsKey(player))
         {
-            DisqualifiedPlayers[player] = GameLoop.GameLoopTime;
+            DisqualifiedPlayers[player] = GameLoopMgr.GameLoopTime;
         }
         else
         {
-            DisqualifiedPlayers.Add(player, GameLoop.GameLoopTime);
+            DisqualifiedPlayers.Add(player, GameLoopMgr.GameLoopTime);
         }
 
         if (PlayerKillTallyDict.ContainsKey(player))
@@ -166,11 +169,11 @@ public class PredatorMgr
     {
         if (player.PredatorTimeoutTimer.IsAlive) return;
         player.PredatorTimeoutTimer = new EcsGameTimer(player);
-        player.PredatorTimeoutTimer.Properties.SetProperty(TimeoutTickKey, GameLoop.GameLoopTime);
+        player.PredatorTimeoutTimer.Properties.SetProperty(TimeoutTickKey, GameLoopMgr.GameLoopTime);
         player.PredatorTimeoutTimer.Callback = new EcsGameTimer.EcsTimerCallback(TimeoutTimerCallback);
         player.PredatorTimeoutTimer.Start(1000);
         
-        player.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {Properties.OUT_OF_BOUNDS_TIMEOUT} seconds.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
+        player.Out.SendMessage($"You are outside of a valid hunting zone and will be removed from the pool in {ServerProperty.OUT_OF_BOUNDS_TIMEOUT} seconds.", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
     }
     
     public static void StopTimeoutCountdownFor(GamePlayer player)
@@ -604,7 +607,7 @@ public class PredatorMgr
             
             long TimerStartTime = timer.Properties.GetProperty<long>(TimeoutTickKey);
 
-            long secondsleft = OutOfBoundsTimeout - (GameLoop.GameLoopTime - TimerStartTime + 500) / 1000; // 500 is for rounding
+            long secondsleft = OutOfBoundsTimeout - (GameLoopMgr.GameLoopTime - TimerStartTime + 500) / 1000; // 500 is for rounding
             if (secondsleft > 0)
             {
                 if (secondsleft == 120 || secondsleft == 90 || secondsleft == 60 || secondsleft == 30 || secondsleft == 10 || secondsleft < 5)

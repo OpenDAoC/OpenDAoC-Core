@@ -1,6 +1,9 @@
-using DOL.Language;
+using Core.Database.Enums;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&serverproperties",
@@ -11,12 +14,12 @@ public class ServerPropertiesCommand : ACommandHandler, ICommandHandler
 {
 	public void OnCommand(GameClient client, string[] args)
 	{
-		if (GameServer.Instance.Configuration.DBType == DOL.Database.Connection.EConnectionType.DATABASE_XML)
+		if (GameServer.Instance.Configuration.DBType == EConnectionType.DATABASE_XML)
 		{
 			DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.ServerProperties.DataBaseXML"));
 			return;
 		}
-		ServerProperties.Properties.Refresh();
+		ServerProperty.Refresh();
 		DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "AdminCommands.ServerProperties.PropertiesRefreshed"));
 	}
 }

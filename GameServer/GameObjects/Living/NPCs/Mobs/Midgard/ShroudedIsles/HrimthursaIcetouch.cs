@@ -1,8 +1,8 @@
-﻿using DOL.AI.Brain;
+﻿using Core.GS.AI;
 
-namespace DOL.GS;
+namespace Core.GS;
 
-public class HrimthursaIcetouch : GameEpicNPC
+public class HrimthursaIcetouch : GameEpicNpc
 {
 	public HrimthursaIcetouch() : base() { }
 

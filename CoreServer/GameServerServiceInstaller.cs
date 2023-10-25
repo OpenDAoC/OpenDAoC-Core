@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Configuration.Install;
 using System.ServiceProcess;
 
-namespace DOL.DOLServer
+namespace Core.Server
 {
 	/// <summary>
 	/// Zusammenfassung f�r GameServerServiceInstaller.

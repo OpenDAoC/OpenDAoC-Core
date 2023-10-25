@@ -1,10 +1,8 @@
-﻿using DOL.GS;
-
-namespace DOL.AI.Brain;
+﻿namespace Core.GS.AI;
 
 /// <summary>
 /// The brains for alluvian mobs. No need to manually assign this.
-/// /mob create DOL.GS.Alluvian and this will be attached automatically.
+/// /mob create Core.GS.Alluvian and this will be attached automatically.
 /// </summary>
 public class AlluvianBrain : StandardMobBrain
 {

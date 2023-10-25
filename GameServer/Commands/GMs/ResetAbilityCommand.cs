@@ -1,6 +1,8 @@
-﻿using DOL.GS.PacketHandler;
+﻿using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Players;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		"&resetability",

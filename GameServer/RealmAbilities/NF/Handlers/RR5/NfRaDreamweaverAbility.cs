@@ -1,44 +1,41 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS.Effects;
+using Core.Database.Tables;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class NfRaDreamweaverAbility : Rr5RealmAbility
 {
-	public class NfRaDreamweaverAbility : Rr5RealmAbility
+	public NfRaDreamweaverAbility(DbAbility dba, int level) : base(dba, level) { }
+
+	/// <summary>
+	/// Action
+	/// </summary>
+	/// <param></param>
+	public override void Execute(GameLiving living)
 	{
-		public NfRaDreamweaverAbility(DbAbility dba, int level) : base(dba, level) { }
+		if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
 
-		/// <summary>
-		/// Action
-		/// </summary>
-		/// <param></param>
-		public override void Execute(GameLiving living)
+		GamePlayer player = living as GamePlayer;
+		if (player != null)
 		{
-			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-
-			GamePlayer player = living as GamePlayer;
-			if (player != null)
-			{
-				SendCasterSpellEffectAndCastMessage(player, 7052, true);
-				NfRaDreamweaverEffect effect = new NfRaDreamweaverEffect();
-				effect.Start(player);
-			}
-			DisableSkill(living);
+			SendCasterSpellEffectAndCastMessage(player, 7052, true);
+			NfRaDreamweaverEffect effect = new NfRaDreamweaverEffect();
+			effect.Start(player);
 		}
+		DisableSkill(living);
+	}
 
-		public override int GetReUseDelay(int level)
-		{
-			return 420;
-		}
+	public override int GetReUseDelay(int level)
+	{
+		return 420;
+	}
 
-		public override void AddEffectsInfo(IList<string> list)
-		{
-			list.Add("Dreamweaver.");
-			list.Add("");
-			list.Add("Target: Self");
-			list.Add("Duration: 5 min");
-			list.Add("Casting time: instant");
-		}
-
+	public override void AddEffectsInfo(IList<string> list)
+	{
+		list.Add("Dreamweaver.");
+		list.Add("");
+		list.Add("Target: Self");
+		list.Add("Duration: 5 min");
+		list.Add("Casting time: instant");
 	}
 }

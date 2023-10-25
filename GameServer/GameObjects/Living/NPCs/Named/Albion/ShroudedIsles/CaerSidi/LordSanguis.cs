@@ -1,10 +1,15 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Lord Sanguis
 public class LordSanguis : GameEpicBoss
@@ -26,7 +31,7 @@ public class LordSanguis : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100  * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100  * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int MaxHealth
     {
@@ -46,7 +51,7 @@ public class LordSanguis : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -84,7 +89,7 @@ public class LordSanguis : GameEpicBoss
         Intelligence = npcTemplate.Intelligence;
         Empathy = npcTemplate.Empathy;
 
-        RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
         LordSanguisBrain sbrain = new LordSanguisBrain();
         SetOwnBrain(sbrain);
         base.AddToWorld();
@@ -153,7 +158,7 @@ public class LordSanguis : GameEpicBoss
             CO.MeleeDamageType = EDamageType.Crush;
             CO.Faction = FactionMgr.GetFactionByID(64);
             CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
-            CO.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            CO.RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             CO.X = 34080;
             CO.Y = 32919;
@@ -195,7 +200,7 @@ public class LichLordSanguis : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

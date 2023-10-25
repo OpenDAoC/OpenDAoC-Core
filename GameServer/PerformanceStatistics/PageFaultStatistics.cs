@@ -4,51 +4,50 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
-namespace DOL.GS.PerformanceStatistics
+namespace Core.GS.PerformanceStatistics;
+
+public class PageFaultsPerSecondStatistic : IPerformanceStatistic
 {
-    public class PageFaultsPerSecondStatistic : IPerformanceStatistic
+    IPerformanceStatistic _performanceStatistic;
+
+    public PageFaultsPerSecondStatistic()
     {
-        IPerformanceStatistic _performanceStatistic;
-
-        public PageFaultsPerSecondStatistic()
-        {
-            _performanceStatistic = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
-                                    new PerformanceCounterStatistic("Memory", "Pages/sec", null) :
-                                    new LinuxPageFaultsPerSecondStatistic();
-        }
-
-        public double GetNextValue()
-        {
-            return _performanceStatistic.GetNextValue();
-        }
+        _performanceStatistic = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
+                                new PerformanceCounterStatistic("Memory", "Pages/sec", null) :
+                                new LinuxPageFaultsPerSecondStatistic();
     }
 
-#if NET
-    [UnsupportedOSPlatform("Windows")]
-#endif
-    public class LinuxPageFaultsPerSecondStatistic : IPerformanceStatistic
+    public double GetNextValue()
     {
-        private IPerformanceStatistic _memoryFaultsPerSecondStatistic;
+        return _performanceStatistic.GetNextValue();
+    }
+}
 
-        public LinuxPageFaultsPerSecondStatistic()
-        {
-            _memoryFaultsPerSecondStatistic = new PerSecondStatistic(new LinuxTotalPageFaults());
-        }
+#if NET
+[UnsupportedOSPlatform("Windows")]
+#endif
+public class LinuxPageFaultsPerSecondStatistic : IPerformanceStatistic
+{
+    private IPerformanceStatistic _memoryFaultsPerSecondStatistic;
 
-        public double GetNextValue()
-        {
-            return _memoryFaultsPerSecondStatistic.GetNextValue();
-        }
+    public LinuxPageFaultsPerSecondStatistic()
+    {
+        _memoryFaultsPerSecondStatistic = new PerSecondStatistic(new LinuxTotalPageFaults());
     }
 
-#if NET
-    [UnsupportedOSPlatform("Windows")]
-#endif
-    public class LinuxTotalPageFaults : IPerformanceStatistic
+    public double GetNextValue()
     {
-        public double GetNextValue()
-        {
-            return Convert.ToInt64(File.ReadAllText("/proc/vmstat").Split(Environment.NewLine).Where(s => s.StartsWith("pgfault")).First().Split(' ')[1]);
-        }
+        return _memoryFaultsPerSecondStatistic.GetNextValue();
+    }
+}
+
+#if NET
+[UnsupportedOSPlatform("Windows")]
+#endif
+public class LinuxTotalPageFaults : IPerformanceStatistic
+{
+    public double GetNextValue()
+    {
+        return Convert.ToInt64(File.ReadAllText("/proc/vmstat").Split(Environment.NewLine).Where(s => s.StartsWith("pgfault")).First().Split(' ')[1]);
     }
 }

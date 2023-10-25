@@ -3,22 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Packets;
+using Core.GS.Packets.Server;
+using Core.GS.Server;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS.Housing
+namespace Core.GS.Expansions.Foundations
 {
 	public class HouseMgr
 	{
 		public static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static AuxECSGameTimer CheckRentTimer = null;
+		private static AuxEcsGameTimer CheckRentTimer = null;
 		private static Dictionary<ushort, Dictionary<int, House>> _houseList;
 		private static Dictionary<ushort, int> _idList;
-		private static int TimerInterval = Properties.RENT_CHECK_INTERVAL * 60 * 1000;
+		private static int TimerInterval = ServerProperty.RENT_CHECK_INTERVAL * 60 * 1000;
 
 		protected enum eLotSpawnType
 		{
@@ -90,7 +97,7 @@ namespace DOL.GS.Housing
 			if (CheckRentTimer == null)
 			{
 				CheckRentTimer =
-					new AuxECSGameTimer(null, CheckRents, TimerInterval);
+					new AuxEcsGameTimer(null, CheckRents, TimerInterval);
 			}
 
 			return true;
@@ -725,22 +732,22 @@ namespace DOL.GS.Housing
 				switch (model % 4)
 				{
 					case 0:
-						return Properties.HOUSING_RENT_MANSION;
+						return ServerProperty.HOUSING_RENT_MANSION;
 					case 1:
-						return Properties.HOUSING_RENT_COTTAGE;
+						return ServerProperty.HOUSING_RENT_COTTAGE;
 					case 2:
-						return Properties.HOUSING_RENT_HOUSE;
+						return ServerProperty.HOUSING_RENT_HOUSE;
 					case 3:
-						return Properties.HOUSING_RENT_VILLA;
+						return ServerProperty.HOUSING_RENT_VILLA;
 				}
 			}
 
-			return Properties.HOUSING_RENT_COTTAGE;
+			return ServerProperty.HOUSING_RENT_COTTAGE;
 		}
 
-		public static int CheckRents(AuxECSGameTimer timer)
+		public static int CheckRents(AuxEcsGameTimer timer)
 		{
-			if (Properties.RENT_DUE_DAYS == 0)
+			if (ServerProperty.RENT_DUE_DAYS == 0)
 				return 0;
 
 			Console.WriteLine("[Housing] Starting timed rent check");
@@ -766,7 +773,7 @@ namespace DOL.GS.Housing
 					long rent = GetRentByModel(house.Model);
 
 					// Does this house need to pay rent?
-					if (rent > 0L && diff.Days >= Properties.RENT_DUE_DAYS)
+					if (rent > 0L && diff.Days >= ServerProperty.RENT_DUE_DAYS)
 					{					
 						long lockboxAmount = house.KeptMoney;
 						long consignmentAmount = 0;

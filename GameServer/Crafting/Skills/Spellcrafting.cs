@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Server;
+using Core.GS.Skills;
 
-namespace DOL.GS
+namespace Core.GS.Crafting
 {
 	public class Spellcrafting : AdvancedCraftingSkill
 	{
@@ -77,7 +80,7 @@ namespace DOL.GS
 		public Spellcrafting()
 		{
 			Icon = 0x0D;
-			Name = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, 
+			Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, 
 				"Crafting.Name.Evocation");
 			eSkill = ECraftingSkill.SpellCrafting;
 		}

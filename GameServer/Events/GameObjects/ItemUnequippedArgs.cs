@@ -1,8 +1,8 @@
 using System;
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.Enums;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 public class ItemUnequippedArgs : EventArgs
 {

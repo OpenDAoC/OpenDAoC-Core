@@ -1,138 +1,138 @@
 using System;
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Skills;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects.Old;
+
+public class StagEffect : TimedEffect, IGameEffect
 {
-	public class StagEffect : TimedEffect, IGameEffect
+	/*
+    1.42
+    Hibernian Heroes have receieved a new ability - "Spirit of the Hunt".
+    Whenever this ability is used, the Hero will shapeshift into a fearsome
+    stag-headed Huntsman from Celtic Lore, and will receive bonus hit points.
+    There are four different levels of of this ability: Initiate(15th level),
+    Member(25th level), Leader(35th level), and Master(45th level).
+    While in this form, the hero has increased hit points - +20% for the
+    15th level ability up to +50% for the 45th level ability. The ability
+    lasts for thirty seconds - at the end of this time, the hero's
+    maximum hits will return to normal, but he keeps any hit point
+    gain from the ability in his current hits (but he cannot exceed his
+    pre-buffed maximum). The ability can be used once every 30 minutes
+    played. Please note that there is only one Huntsman creature -
+    male and female Heroes will both shapeshift into the same creature.
+    */
+
+	// some time after a lurikeen model was added for luri's
+
+	/// <summary>
+	/// The amount of max health gained
+	/// </summary>
+	protected int m_amount;
+
+	protected ushort m_originalModel;
+
+	protected int m_level;
+
+	/// <summary>
+	/// Creates a new stag effect
+	/// </summary>
+	public StagEffect(int level)
+		: base(StagAbilityHandler.DURATION)
 	{
-		/*
-        1.42
-        Hibernian Heroes have receieved a new ability - "Spirit of the Hunt".
-        Whenever this ability is used, the Hero will shapeshift into a fearsome
-        stag-headed Huntsman from Celtic Lore, and will receive bonus hit points.
-        There are four different levels of of this ability: Initiate(15th level),
-        Member(25th level), Leader(35th level), and Master(45th level).
-        While in this form, the hero has increased hit points - +20% for the
-        15th level ability up to +50% for the 45th level ability. The ability
-        lasts for thirty seconds - at the end of this time, the hero's
-        maximum hits will return to normal, but he keeps any hit point
-        gain from the ability in his current hits (but he cannot exceed his
-        pre-buffed maximum). The ability can be used once every 30 minutes
-        played. Please note that there is only one Huntsman creature -
-        male and female Heroes will both shapeshift into the same creature.
-        */
+		m_level = level;
+	}
 
-		// some time after a lurikeen model was added for luri's
+	/// <summary>
+	/// Start the stag on player
+	/// </summary>
+	/// <param name="living">The living object the effect is being started on</param>
+	public override void Start(GameLiving living)
+	{
+		base.Start(living);
 
-		/// <summary>
-		/// The amount of max health gained
-		/// </summary>
-		protected int m_amount;
+		m_originalModel = living.Model;
 
-		protected ushort m_originalModel;
-
-		protected int m_level;
-
-		/// <summary>
-		/// Creates a new stag effect
-		/// </summary>
-		public StagEffect(int level)
-			: base(StagAbilityHandler.DURATION)
+		//TODO differentiate model between Lurikeens and other races
+		if (living is GamePlayer)
 		{
-			m_level = level;
+			if ((living as GamePlayer).Race == (int)ERace.Lurikeen)
+				living.Model = 13;
+			else living.Model = 4;
+		}			
+
+
+		double m_amountPercent = (m_level + 0.5 + Util.RandomDouble()) / 10; //+-5% random
+		if (living is GamePlayer)
+			m_amount = (int)((living as GamePlayer).CalculateMaxHealth(living.Level, living.GetModified(EProperty.Constitution)) * m_amountPercent);
+		else m_amount = (int)(living.MaxHealth * m_amountPercent);
+
+		living.BaseBuffBonusCategory[(int)EProperty.MaxHealth] += m_amount;
+		living.Health += (int)(living.GetModified(EProperty.MaxHealth) * m_amountPercent);
+		if (living.Health > living.MaxHealth) living.Health = living.MaxHealth;
+
+		living.Emote(EEmote.StagFrenzy);
+
+		if (living is GamePlayer)
+		{
+			(living as GamePlayer).Out.SendUpdatePlayer();
+			(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.StagEffect.HuntsSpiritChannel"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 		}
+	}
 
-		/// <summary>
-		/// Start the stag on player
-		/// </summary>
-		/// <param name="living">The living object the effect is being started on</param>
-		public override void Start(GameLiving living)
+	public override void Stop()
+	{
+		base.Stop();
+		m_owner.Model = m_originalModel;
+
+		double m_amountPercent = m_amount / m_owner.GetModified(EProperty.MaxHealth);
+		int playerHealthPercent = m_owner.HealthPercent;
+		m_owner.BaseBuffBonusCategory[(int)EProperty.MaxHealth] -= m_amount;
+		if (m_owner.IsAlive)
+			m_owner.Health = (int)Math.Max(1, 0.01 * m_owner.MaxHealth * playerHealthPercent);
+
+		if (m_owner is GamePlayer)
 		{
-			base.Start(living);
-
-			m_originalModel = living.Model;
-
-			//TODO differentiate model between Lurikeens and other races
-			if (living is GamePlayer)
-			{
-				if ((living as GamePlayer).Race == (int)ERace.Lurikeen)
-					living.Model = 13;
-				else living.Model = 4;
-			}			
-
-
-			double m_amountPercent = (m_level + 0.5 + Util.RandomDouble()) / 10; //+-5% random
-			if (living is GamePlayer)
-				m_amount = (int)((living as GamePlayer).CalculateMaxHealth(living.Level, living.GetModified(EProperty.Constitution)) * m_amountPercent);
-			else m_amount = (int)(living.MaxHealth * m_amountPercent);
-
-			living.BaseBuffBonusCategory[(int)EProperty.MaxHealth] += m_amount;
-			living.Health += (int)(living.GetModified(EProperty.MaxHealth) * m_amountPercent);
-			if (living.Health > living.MaxHealth) living.Health = living.MaxHealth;
-
-			living.Emote(EEmote.StagFrenzy);
-
-			if (living is GamePlayer)
-			{
-				(living as GamePlayer).Out.SendUpdatePlayer();
-				(living as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((living as GamePlayer).Client, "Effects.StagEffect.HuntsSpiritChannel"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
-			}
+			(m_owner as GamePlayer).Out.SendUpdatePlayer();
+			// there is no animation on end of the effect
+			(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.StagEffect.YourHuntsSpiritEnds"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
 		}
+	}
 
-		public override void Stop()
+	/// <summary>
+	/// Name of the effect
+	/// </summary>
+	public override string Name { get { return LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.StagEffect.Name"); } }
+
+	/// <summary>
+	/// Icon to show on players, can be id
+	/// </summary>
+	public override ushort Icon { get { return 480; } }
+
+	/// <summary>
+	/// Delve Info
+	/// </summary>
+	public override IList<string> DelveInfo
+	{
+		get
 		{
-			base.Stop();
-			m_owner.Model = m_originalModel;
+			var delveInfoList = new List<string>(4);
+			delveInfoList.Add(LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.StagEffect.InfoEffect"));
 
-			double m_amountPercent = m_amount / m_owner.GetModified(EProperty.MaxHealth);
-			int playerHealthPercent = m_owner.HealthPercent;
-			m_owner.BaseBuffBonusCategory[(int)EProperty.MaxHealth] -= m_amount;
-			if (m_owner.IsAlive)
-				m_owner.Health = (int)Math.Max(1, 0.01 * m_owner.MaxHealth * playerHealthPercent);
-
-			if (m_owner is GamePlayer)
+			int seconds = RemainingTime / 1000;
+			if (seconds > 0)
 			{
-				(m_owner as GamePlayer).Out.SendUpdatePlayer();
-				// there is no animation on end of the effect
-				(m_owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((m_owner as GamePlayer).Client, "Effects.StagEffect.YourHuntsSpiritEnds"), EChatType.CT_YouHit, EChatLoc.CL_SystemWindow);
+				delveInfoList.Add(" "); //empty line
+				if (seconds > 60)
+					delveInfoList.Add(LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.DelveInfo.MinutesRemaining", (seconds / 60), (seconds % 60).ToString("00")));
+				else
+					delveInfoList.Add(LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.DelveInfo.SecondsRemaining", seconds));
 			}
-		}
 
-		/// <summary>
-		/// Name of the effect
-		/// </summary>
-		public override string Name { get { return LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.StagEffect.Name"); } }
-
-		/// <summary>
-		/// Icon to show on players, can be id
-		/// </summary>
-		public override ushort Icon { get { return 480; } }
-
-		/// <summary>
-		/// Delve Info
-		/// </summary>
-		public override IList<string> DelveInfo
-		{
-			get
-			{
-				var delveInfoList = new List<string>(4);
-				delveInfoList.Add(LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.StagEffect.InfoEffect"));
-
-				int seconds = RemainingTime / 1000;
-				if (seconds > 0)
-				{
-					delveInfoList.Add(" "); //empty line
-					if (seconds > 60)
-						delveInfoList.Add(LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.DelveInfo.MinutesRemaining", (seconds / 60), (seconds % 60).ToString("00")));
-					else
-						delveInfoList.Add(LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.DelveInfo.SecondsRemaining", seconds));
-				}
-
-				return delveInfoList;
-			}
+			return delveInfoList;
 		}
 	}
 }

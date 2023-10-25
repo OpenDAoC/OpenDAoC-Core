@@ -1,6 +1,7 @@
-﻿using DOL.AI.Brain;
+﻿using Core.GS.AI;
+using Core.GS.GameUtils;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Jari : GameNpc
 {

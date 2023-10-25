@@ -1,9 +1,9 @@
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.SalvageCalc;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.Crafting;
+using Core.GS.Enums;
+using Core.GS.Languages;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&setsalvage",
      EPrivLevel.GM,

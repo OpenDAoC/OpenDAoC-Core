@@ -1,4 +1,4 @@
-namespace DOL.GS;
+namespace Core.GS.Enums;
 
 /// <summary>
 /// Proc IDs for various pet weapons.

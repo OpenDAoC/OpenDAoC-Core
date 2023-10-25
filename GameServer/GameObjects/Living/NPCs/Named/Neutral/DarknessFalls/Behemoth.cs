@@ -1,8 +1,11 @@
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Behemoth : GameEpicBoss
 {
@@ -25,14 +28,14 @@ public class Behemoth : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int MaxHealth
     {
@@ -74,7 +77,7 @@ public class Behemoth : GameEpicBoss
         Intelligence = npcTemplate.Intelligence;
 
         BehemothBrain sBrain = new BehemothBrain();
-        RespawnInterval = Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
         SetOwnBrain(sBrain);
         sBrain.AggroLevel = 100;
         sBrain.AggroRange = 500;

@@ -1,60 +1,62 @@
-using DOL.Database;
-using DOL.GS.Housing;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.Packets.Server;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.Packets.Clients;
+
+[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerAppraiseItemRequest, "Player Appraise Item Request handler.", EClientStatus.PlayerInGame)]
+public class PlayerAppraiseItemRequestHandler : IPacketHandler
 {
-	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.PlayerAppraiseItemRequest, "Player Appraise Item Request handler.", EClientStatus.PlayerInGame)]
-	public class PlayerAppraiseItemRequestHandler : IPacketHandler
+	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
-		public void HandlePacket(GameClient client, GsPacketIn packet)
-		{
-			uint X = packet.ReadInt();
-			uint Y = packet.ReadInt();
-			ushort id = packet.ReadShort();
-			ushort item_slot = packet.ReadShort();
+		uint X = packet.ReadInt();
+		uint Y = packet.ReadInt();
+		ushort id = packet.ReadShort();
+		ushort item_slot = packet.ReadShort();
 
-			new AppraiseActionHandler(client.Player, item_slot).Start(1);
+		new AppraiseActionHandler(client.Player, item_slot).Start(1);
+	}
+
+	/// <summary>
+	/// Handles item apprise actions
+	/// </summary>
+	protected class AppraiseActionHandler : EcsGameTimerWrapperBase
+	{
+		/// <summary>
+		/// The item slot
+		/// </summary>
+		protected readonly int m_slot;
+
+		/// <summary>
+		/// Constructs a new AppraiseAction
+		/// </summary>
+		/// <param name="actionSource">The action source</param>
+		/// <param name="slot">The item slot</param>
+		public AppraiseActionHandler(GamePlayer actionSource, int slot) : base(actionSource)
+		{
+			m_slot = slot;
 		}
 
 		/// <summary>
-		/// Handles item apprise actions
+		/// Called on every timer tick
 		/// </summary>
-		protected class AppraiseActionHandler : EcsGameTimerWrapperBase
+		protected override int OnTick(EcsGameTimer timer)
 		{
-			/// <summary>
-			/// The item slot
-			/// </summary>
-			protected readonly int m_slot;
+			GamePlayer player = (GamePlayer) timer.Owner;
 
-			/// <summary>
-			/// Constructs a new AppraiseAction
-			/// </summary>
-			/// <param name="actionSource">The action source</param>
-			/// <param name="slot">The item slot</param>
-			public AppraiseActionHandler(GamePlayer actionSource, int slot) : base(actionSource)
-			{
-				m_slot = slot;
-			}
-
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override int OnTick(EcsGameTimer timer)
-			{
-				GamePlayer player = (GamePlayer) timer.Owner;
-
-				if (player.TargetObject == null)
-					return 0;
-
-				DbInventoryItem item = player.Inventory.GetItem((EInventorySlot) m_slot);
-
-				if (player.TargetObject is GameMerchant merchant)
-					merchant.OnPlayerAppraise(player, item, false);
-				else if (player.TargetObject is GameLotMarker lot)
-					lot.OnPlayerAppraise(player, item, false);
-
+			if (player.TargetObject == null)
 				return 0;
-			}
+
+			DbInventoryItem item = player.Inventory.GetItem((EInventorySlot) m_slot);
+
+			if (player.TargetObject is GameMerchant merchant)
+				merchant.OnPlayerAppraise(player, item, false);
+			else if (player.TargetObject is GameLotMarker lot)
+				lot.OnPlayerAppraise(player, item, false);
+
+			return 0;
 		}
 	}
 }

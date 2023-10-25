@@ -1,24 +1,22 @@
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.PlayerClass;
+using Core.GS.AI;
+using Core.GS.Events;
 
-namespace DOL.GS
+namespace Core.GS.Players;
+
+public class ClassAnimistBase : ClassForester
 {
-	public class ClassAnimistBase : ClassForester
+	/// <summary>
+	/// Releases controlled object
+	/// </summary>
+	public override void CommandNpcRelease()
 	{
-		/// <summary>
-		/// Releases controlled object
-		/// </summary>
-		public override void CommandNpcRelease()
+		TurretPet turretFnF = Player.TargetObject as TurretPet;
+		if (turretFnF != null && turretFnF.Brain is TurretFnfBrain && Player.IsControlledNPC(turretFnF))
 		{
-			TurretPet turretFnF = Player.TargetObject as TurretPet;
-			if (turretFnF != null && turretFnF.Brain is TurretFnfBrain && Player.IsControlledNPC(turretFnF))
-			{
-				Player.Notify(GameLivingEvent.PetReleased, turretFnF);
-				return;
-			}
-
-			base.CommandNpcRelease();
+			Player.Notify(GameLivingEvent.PetReleased, turretFnF);
+			return;
 		}
+
+		base.CommandNpcRelease();
 	}
 }

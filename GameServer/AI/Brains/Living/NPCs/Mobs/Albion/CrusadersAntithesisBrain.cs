@@ -1,6 +1,7 @@
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class CrusadersAntithesisBrain : StandardMobBrain
 {

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using DOL.GS.ServerProperties;
+using Core.GS.Enums;
+using Core.GS.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 
-namespace DOL.GS.API
+namespace Core.GS.APIs
 {
     internal class ApiHost
     {
@@ -177,7 +178,7 @@ namespace DOL.GS.API
 
             #region Misc
 
-            api.MapGet("/bread", () => Properties.BREAD);
+            api.MapGet("/bread", () => ServerProperty.BREAD);
 
             api.MapGet("/utils/discordstatus/{accountName}", (string accountName) =>
             {
@@ -189,7 +190,7 @@ namespace DOL.GS.API
             {
                 var dict = new Dictionary<string, int>()
                 {
-                    { "max_players", Properties.MAX_PLAYERS }
+                    { "max_players", ServerProperty.MAX_PLAYERS }
                 };
                 return Results.Ok(dict);
             });

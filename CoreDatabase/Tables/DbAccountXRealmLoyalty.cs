@@ -1,7 +1,6 @@
 using System;
-using DOL.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// Table that holds the different characters and guilds that have been given permissions to a house.

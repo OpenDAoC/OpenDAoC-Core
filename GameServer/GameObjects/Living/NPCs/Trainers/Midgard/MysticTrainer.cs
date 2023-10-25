@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Mystic Trainer", ERealm.Midgard)]		// this attribute instructs DOL to use this script for all "Mystic Trainer" NPC's in Albion (multiple guilds are possible for one script)
 public class MysticTrainer : GameTrainer
@@ -12,7 +12,7 @@ public class MysticTrainer : GameTrainer
 
 	public const string PRACTICE_WEAPON_ID = "trimmed_branch";
 	
-	public MysticTrainer() : base(eChampionTrainerType.Mystic)
+	public MysticTrainer() : base(EChampionTrainerType.Mystic)
 	{
 	}
 

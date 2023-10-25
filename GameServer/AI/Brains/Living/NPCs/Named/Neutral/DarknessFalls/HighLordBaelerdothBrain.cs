@@ -1,8 +1,8 @@
 using System.Reflection;
-using DOL.GS;
+using Core.GS.Enums;
 using log4net;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI
 {
     public class HighLordBaelerdothBrain : StandardMobBrain
     {
@@ -19,7 +19,7 @@ namespace DOL.AI.Brain
             if (!CheckProximityAggro())
             {
                 //set state to RETURN TO SPAWN
-                FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+                FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
                 Body.Health = Body.MaxHealth;
             }
             base.Think();

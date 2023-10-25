@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
+using Core.Database;
+using Core.Database.Tables;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 /// <summary>
 /// MobAmbientBehaviourManager handles Mob Ambient Behaviour Lazy Loading

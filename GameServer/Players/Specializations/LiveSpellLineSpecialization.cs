@@ -1,28 +1,27 @@
 ﻿using System.Collections.Generic;
-using DOL.GS.Styles;
+using Core.GS.Styles;
 
-namespace DOL.GS
+namespace Core.GS.Players;
+
+/// <summary>
+/// This is a Live Spell Line Specialization, used for list caster, with baseline spell and specline spell appart
+/// Purely rely on base Specialization implementation only disabling weapon style (not applicable here)
+/// </summary>
+public class LiveSpellLineSpecialization : Specialization
 {
-	/// <summary>
-	/// This is a Live Spell Line Specialization, used for list caster, with baseline spell and specline spell appart
-	/// Purely rely on base Specialization implementation only disabling weapon style (not applicable here)
-	/// </summary>
-	public class LiveSpellLineSpecialization : Specialization
+	public LiveSpellLineSpecialization(string keyname, string displayname, ushort icon, int ID)
+		: base(keyname, displayname, icon, ID)
 	{
-		public LiveSpellLineSpecialization(string keyname, string displayname, ushort icon, int ID)
-			: base(keyname, displayname, icon, ID)
-		{
-		}
-		
-		/// <summary>
-		/// No Styles for Spell Specs.
-		/// </summary>
-		/// <param name="living"></param>
-		/// <returns></returns>
-		protected override List<Style> GetStylesForLiving(GameLiving living, int level)
-		{
-			return new List<Style>();
-		}
-
 	}
+	
+	/// <summary>
+	/// No Styles for Spell Specs.
+	/// </summary>
+	/// <param name="living"></param>
+	/// <returns></returns>
+	protected override List<Style> GetStylesForLiving(GameLiving living, int level)
+	{
+		return new List<Style>();
+	}
+
 }

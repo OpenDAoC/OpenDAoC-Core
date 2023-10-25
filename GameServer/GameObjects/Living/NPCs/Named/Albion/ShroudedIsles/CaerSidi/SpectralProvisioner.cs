@@ -1,10 +1,11 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Server;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS;
 
 #region Spectral Provisioner
 public class SpectralProvisioner : GameEpicBoss
@@ -51,7 +52,7 @@ public SpectralProvisioner()
 	
 	public override double AttackDamage(DbInventoryItem weapon)
 	{
-		return base.AttackDamage(weapon) * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+		return base.AttackDamage(weapon) * ServerProperty.EPICS_DMG_MULTIPLIER;
 	}
 	public override bool HasAbility(string keyName)
 	{
@@ -85,7 +86,7 @@ public SpectralProvisioner()
 		MaxSpeedBase = 300;
 		CurrentSpeed = 300;
 
-		RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 		INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60166427);
 		LoadTemplate(npcTemplate);
 		SpectralProvisionerBrain.point1check = false;

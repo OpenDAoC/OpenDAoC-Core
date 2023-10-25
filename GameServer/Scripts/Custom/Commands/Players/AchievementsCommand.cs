@@ -1,35 +1,36 @@
-﻿using DOL.GS.Commands;
+﻿using Core.GS.Commands;
+using Core.GS.Enums;
+using Core.GS.Players;
 
-namespace DOL.GS.Scripts
+namespace Core.GS.Scripts.Custom;
+
+[Command(
+    "&achievements",
+    EPrivLevel.Player,
+    "View your progress towards various achievements", "/achievements list")]
+public class AchievementsCommand : ACommandHandler, ICommandHandler
 {
-    [Command(
-        "&achievements",
-        EPrivLevel.Player,
-        "View your progress towards various achievements", "/achievements list")]
-    public class AchievementsCommand : ACommandHandler, ICommandHandler
+    public void OnCommand(GameClient client, string[] args)
     {
-        public void OnCommand(GameClient client, string[] args)
+        
+        if (IsSpammingCommand(client.Player, "Achievement"))
         {
-            
-            if (IsSpammingCommand(client.Player, "Achievement"))
-            {
-                return;
-            }
+            return;
+        }
 
-            if (args.Length < 2)
-            {
-                DisplaySyntax(client);
-                return;
-            }
-            
-            if (args[1] == "list")
-            {
-                client.Out.SendCustomTextWindow("Achievements", AchievementUtil.GetAchievementInfoForPlayer(client.Player));
-            }
-            else
-            {
-                DisplaySyntax(client);
-            }
+        if (args.Length < 2)
+        {
+            DisplaySyntax(client);
+            return;
+        }
+        
+        if (args[1] == "list")
+        {
+            client.Out.SendCustomTextWindow("Achievements", AchievementUtil.GetAchievementInfoForPlayer(client.Player));
+        }
+        else
+        {
+            DisplaySyntax(client);
         }
     }
 }

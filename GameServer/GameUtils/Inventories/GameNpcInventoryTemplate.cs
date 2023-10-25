@@ -4,530 +4,532 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using DOL.Database;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.Enums;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS.GameUtils;
+
+public class GameNpcInventoryTemplate : GameLivingInventory
 {
-	public class GameNpcInventoryTemplate : GameLivingInventory
+	/// <summary>
+	/// Defines a logger for this class.
+	/// </summary>
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+	/// <summary>
+	/// Holds inventory item instances already used in inventory templates
+	/// </summary>
+	protected static readonly Hashtable m_usedInventoryItems = new Hashtable(1024);
+
+	/// <summary>
+	/// Holds already used inventory template instances
+	/// </summary>
+	protected static readonly Hashtable m_usedInventoryTemplates = new Hashtable(256);
+
+	/// <summary>
+	/// Holds an empty invenotory template instance
+	/// </summary>
+	public static readonly GameNpcInventoryTemplate EmptyTemplate;
+
+	/// <summary>
+	/// Static constructor
+	/// </summary>
+	static GameNpcInventoryTemplate()
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		GameNpcInventoryTemplate temp = new GameNpcInventoryTemplate().CloseTemplate();
+		Thread.MemoryBarrier();
+		EmptyTemplate = temp;
+	}
 
-		/// <summary>
-		/// Holds inventory item instances already used in inventory templates
-		/// </summary>
-		protected static readonly Hashtable m_usedInventoryItems = new Hashtable(1024);
+	/// <summary>
+	/// Holds the closed flag, if true template cannot be modified
+	/// </summary>
+	protected bool m_isClosed;
 
-		/// <summary>
-		/// Holds already used inventory template instances
-		/// </summary>
-		protected static readonly Hashtable m_usedInventoryTemplates = new Hashtable(256);
+	/// <summary>
+	/// Gets the closed flag
+	/// </summary>
+	public bool IsClosed
+	{
+		get { return m_isClosed; }
+	}
 
-		/// <summary>
-		/// Holds an empty invenotory template instance
-		/// </summary>
-		public static readonly GameNpcInventoryTemplate EmptyTemplate;
+	/// <summary>
+	/// Check if the slot is valid in the inventory
+	/// </summary>
+	/// <param name="slot">SlotPosition to check</param>
+	/// <returns>the slot if it's valid or eInventorySlot.Invalid if not</returns>
+	protected override EInventorySlot GetValidInventorySlot(EInventorySlot slot)
+	{
+		foreach (EInventorySlot visibleSlot in VISIBLE_SLOTS)
+			if (visibleSlot == slot)
+				return slot;
+		return EInventorySlot.Invalid;
+	}
 
-		/// <summary>
-		/// Static constructor
-		/// </summary>
-		static GameNpcInventoryTemplate()
+	#region AddNPCEquipment/RemoveNPCEquipment/CloseTemplate/CloneTemplate
+
+	/// <summary>
+	/// Adds item to template reusing inventory item instances from other templates.
+	/// </summary>
+	/// <param name="slot">The equipment slot</param>
+	/// <param name="model">The equipment model</param>
+	/// <returns>true if added</returns>
+	public bool AddNPCEquipment(EInventorySlot slot, int model)
+	{
+		return AddNPCEquipment(slot, model, 0, 0, 0);
+	}
+
+	/// <summary>
+	/// Adds item to template reusing inventory item instances from other templates.
+	/// </summary>
+	/// <param name="slot">The equipment slot</param>
+	/// <param name="model">The equipment model</param>
+	/// <param name="color">The equipment color</param>
+	/// <returns>true if added</returns>
+	public bool AddNPCEquipment(EInventorySlot slot, int model, int color)
+	{
+		return AddNPCEquipment(slot, model, color, 0, 0);
+	}
+
+	/// <summary>
+	/// Adds item to template reusing inventory item instances from other templates.
+	/// </summary>
+	/// <param name="slot">The equipment slot</param>
+	/// <param name="model">The equipment model</param>
+	/// <param name="color">The equipment color</param>
+	/// <param name="effect">The equipment effect</param>
+	/// <returns>true if added</returns>
+	public bool AddNPCEquipment(EInventorySlot slot, int model, int color, int effect)
+	{
+		return AddNPCEquipment(slot, model, color, effect, 0);
+	}
+
+	/// <summary>
+	/// Adds item to template reusing iventory  item instances from other templates.
+	/// </summary>
+	/// <param name="slot">The equipment slot</param>
+	/// <param name="model">The equipment model</param>
+	/// <param name="color">The equipment color</param>
+	/// <param name="effect">The equipment effect</param>
+	/// <param name="extension">The equipment extension</param>
+	/// <returns>true if added</returns>
+	public bool AddNPCEquipment(EInventorySlot slot, int model, int color, int effect, int extension, int emblem = 0)
+	{
+		lock (m_items)
 		{
-			GameNpcInventoryTemplate temp = new GameNpcInventoryTemplate().CloseTemplate();
-			Thread.MemoryBarrier();
-			EmptyTemplate = temp;
+			lock (m_usedInventoryItems.SyncRoot)
+			{
+				if (m_isClosed)
+					return false;
+				slot = GetValidInventorySlot(slot);
+				if (slot == EInventorySlot.Invalid)
+					return false;
+				//Changed to support randomization of slots - if we try to load a weapon in the same spot with a different model,
+				//let's make it random 50% chance to either overwrite the item or leave it be
+				if (m_items.ContainsKey(slot))
+				{
+					//50% chance to keep the item we have
+					if (Util.Chance(50))
+						return false;
+					//Let's remove the old item!
+					m_items.Remove(slot);
+				}
+				string itemID = string.Format("{0}:{1},{2},{3},{4}", slot, model, color, effect, extension);
+				DbInventoryItem item = null;
+
+				if (!m_usedInventoryItems.ContainsKey(itemID))
+				{
+					item = new GameInventoryItem();
+					item.Template = new DbItemTemplate();
+					item.Template.Id_nb = itemID;
+					item.Model = model;
+					item.Color = color;
+					item.Effect = effect;
+					item.Extension = (byte)extension;
+					item.Emblem = emblem;
+					item.SlotPosition = (int)slot;
+				}
+				else
+					return false;
+
+				m_items.Add(slot, item);
+			}
 		}
+		return true;
+	}
 
-		/// <summary>
-		/// Holds the closed flag, if true template cannot be modified
-		/// </summary>
-		protected bool m_isClosed;
-
-		/// <summary>
-		/// Gets the closed flag
-		/// </summary>
-		public bool IsClosed
+	/// <summary>
+	/// Removes item from slot if template is not closed.
+	/// </summary>
+	/// <param name="slot">The slot to remove</param>
+	/// <returns>true if removed</returns>
+	public bool RemoveNPCEquipment(EInventorySlot slot)
+	{
+		lock (m_items)
 		{
-			get { return m_isClosed; }
+			slot = GetValidInventorySlot(slot);
+
+			if (slot == EInventorySlot.Invalid)
+				return false;
+
+			if (m_isClosed)
+				return false;
+
+			if (!m_items.ContainsKey(slot))
+				return false;
+
+			m_items.Remove(slot);
+
+			return true;
 		}
+	}
 
-		/// <summary>
-		/// Check if the slot is valid in the inventory
-		/// </summary>
-		/// <param name="slot">SlotPosition to check</param>
-		/// <returns>the slot if it's valid or eInventorySlot.Invalid if not</returns>
-		protected override EInventorySlot GetValidInventorySlot(EInventorySlot slot)
+	/// <summary>
+	/// Closes this template and searches for other identical templates.
+	/// Template cannot be modified after it was closed, clone it instead.
+	/// </summary>
+	/// <returns>Invetory template instance that should be used</returns>
+	public GameNpcInventoryTemplate CloseTemplate()
+	{
+		lock (m_items)
 		{
-			foreach (EInventorySlot visibleSlot in VISIBLE_SLOTS)
-				if (visibleSlot == slot)
-					return slot;
-			return EInventorySlot.Invalid;
-		}
-
-		#region AddNPCEquipment/RemoveNPCEquipment/CloseTemplate/CloneTemplate
-
-		/// <summary>
-		/// Adds item to template reusing inventory item instances from other templates.
-		/// </summary>
-		/// <param name="slot">The equipment slot</param>
-		/// <param name="model">The equipment model</param>
-		/// <returns>true if added</returns>
-		public bool AddNPCEquipment(EInventorySlot slot, int model)
-		{
-			return AddNPCEquipment(slot, model, 0, 0, 0);
-		}
-
-		/// <summary>
-		/// Adds item to template reusing inventory item instances from other templates.
-		/// </summary>
-		/// <param name="slot">The equipment slot</param>
-		/// <param name="model">The equipment model</param>
-		/// <param name="color">The equipment color</param>
-		/// <returns>true if added</returns>
-		public bool AddNPCEquipment(EInventorySlot slot, int model, int color)
-		{
-			return AddNPCEquipment(slot, model, color, 0, 0);
-		}
-
-		/// <summary>
-		/// Adds item to template reusing inventory item instances from other templates.
-		/// </summary>
-		/// <param name="slot">The equipment slot</param>
-		/// <param name="model">The equipment model</param>
-		/// <param name="color">The equipment color</param>
-		/// <param name="effect">The equipment effect</param>
-		/// <returns>true if added</returns>
-		public bool AddNPCEquipment(EInventorySlot slot, int model, int color, int effect)
-		{
-			return AddNPCEquipment(slot, model, color, effect, 0);
-		}
-
-		/// <summary>
-		/// Adds item to template reusing iventory  item instances from other templates.
-		/// </summary>
-		/// <param name="slot">The equipment slot</param>
-		/// <param name="model">The equipment model</param>
-		/// <param name="color">The equipment color</param>
-		/// <param name="effect">The equipment effect</param>
-		/// <param name="extension">The equipment extension</param>
-		/// <returns>true if added</returns>
-		public bool AddNPCEquipment(EInventorySlot slot, int model, int color, int effect, int extension, int emblem = 0)
-		{
-			lock (m_items)
+			lock (m_usedInventoryTemplates.SyncRoot)
 			{
 				lock (m_usedInventoryItems.SyncRoot)
 				{
-					if (m_isClosed)
-						return false;
-					slot = GetValidInventorySlot(slot);
-					if (slot == EInventorySlot.Invalid)
-						return false;
-					//Changed to support randomization of slots - if we try to load a weapon in the same spot with a different model,
-					//let's make it random 50% chance to either overwrite the item or leave it be
-					if (m_items.ContainsKey(slot))
+					m_isClosed = true;
+					StringBuilder templateID = new StringBuilder(m_items.Count * 16);
+					foreach (DbInventoryItem item in new SortedList(m_items).Values)
 					{
-						//50% chance to keep the item we have
-						if (Util.Chance(50))
-							return false;
-						//Let's remove the old item!
-						m_items.Remove(slot);
+						if (templateID.Length > 0)
+							templateID.Append(";");
+						templateID.Append(item.Id_nb);
 					}
-					string itemID = string.Format("{0}:{1},{2},{3},{4}", slot, model, color, effect, extension);
-					DbInventoryItem item = null;
 
-					if (!m_usedInventoryItems.ContainsKey(itemID))
+					GameNpcInventoryTemplate finalTemplate = m_usedInventoryTemplates[templateID.ToString()] as GameNpcInventoryTemplate;
+					if (finalTemplate == null)
 					{
-						item = new GameInventoryItem();
-						item.Template = new DbItemTemplate();
-						item.Template.Id_nb = itemID;
-						item.Model = model;
-						item.Color = color;
-						item.Effect = effect;
-						item.Extension = (byte)extension;
-						item.Emblem = emblem;
-						item.SlotPosition = (int)slot;
-					}
-					else
-						return false;
-
-					m_items.Add(slot, item);
-				}
-			}
-			return true;
-		}
-
-		/// <summary>
-		/// Removes item from slot if template is not closed.
-		/// </summary>
-		/// <param name="slot">The slot to remove</param>
-		/// <returns>true if removed</returns>
-		public bool RemoveNPCEquipment(EInventorySlot slot)
-		{
-			lock (m_items)
-			{
-				slot = GetValidInventorySlot(slot);
-
-				if (slot == EInventorySlot.Invalid)
-					return false;
-
-				if (m_isClosed)
-					return false;
-
-				if (!m_items.ContainsKey(slot))
-					return false;
-
-				m_items.Remove(slot);
-
-				return true;
-			}
-		}
-
-		/// <summary>
-		/// Closes this template and searches for other identical templates.
-		/// Template cannot be modified after it was closed, clone it instead.
-		/// </summary>
-		/// <returns>Invetory template instance that should be used</returns>
-		public GameNpcInventoryTemplate CloseTemplate()
-		{
-			lock (m_items)
-			{
-				lock (m_usedInventoryTemplates.SyncRoot)
-				{
-					lock (m_usedInventoryItems.SyncRoot)
-					{
-						m_isClosed = true;
-						StringBuilder templateID = new StringBuilder(m_items.Count * 16);
-						foreach (DbInventoryItem item in new SortedList(m_items).Values)
+						finalTemplate = this;
+						m_usedInventoryTemplates[templateID.ToString()] = this;
+						foreach (var de in m_items)
 						{
-							if (templateID.Length > 0)
-								templateID.Append(";");
-							templateID.Append(item.Id_nb);
+							if (!m_usedInventoryItems.Contains(de.Key))
+								m_usedInventoryItems.Add(de.Key, de.Value);
 						}
-
-						GameNpcInventoryTemplate finalTemplate = m_usedInventoryTemplates[templateID.ToString()] as GameNpcInventoryTemplate;
-						if (finalTemplate == null)
-						{
-							finalTemplate = this;
-							m_usedInventoryTemplates[templateID.ToString()] = this;
-							foreach (var de in m_items)
-							{
-								if (!m_usedInventoryItems.Contains(de.Key))
-									m_usedInventoryItems.Add(de.Key, de.Value);
-							}
-						}
-
-						return finalTemplate;
 					}
+
+					return finalTemplate;
 				}
 			}
 		}
+	}
 
-		/// <summary>
-		/// Creates a copy of the GameNpcInventoryTemplate.
-		/// </summary>
-		/// <returns>Open copy of this template</returns>
-		public GameNpcInventoryTemplate CloneTemplate()
+	/// <summary>
+	/// Creates a copy of the GameNpcInventoryTemplate.
+	/// </summary>
+	/// <returns>Open copy of this template</returns>
+	public GameNpcInventoryTemplate CloneTemplate()
+	{
+		lock (m_items)
 		{
-			lock (m_items)
+			var clone = new GameNpcInventoryTemplate();
+			clone.m_changedSlots = new List<EInventorySlot>(m_changedSlots);
+			clone.m_changesCounter = m_changesCounter;
+
+			foreach (var de in m_items)
 			{
-				var clone = new GameNpcInventoryTemplate();
-				clone.m_changedSlots = new List<EInventorySlot>(m_changedSlots);
-				clone.m_changesCounter = m_changesCounter;
+				DbInventoryItem oldItem = de.Value;
 
-				foreach (var de in m_items)
-				{
-					DbInventoryItem oldItem = de.Value;
-
-					DbInventoryItem item = new GameInventoryItem();
-					item.Template = new DbItemTemplate();
-					item.Template.Id_nb = oldItem.Id_nb;
-					item.Model = oldItem.Model;
-					item.Color = oldItem.Color;
-					item.Effect = oldItem.Effect;
-					item.Extension = oldItem.Extension;
-					item.Emblem = oldItem.Emblem;
-					item.SlotPosition = oldItem.SlotPosition;
-					clone.m_items.Add(de.Key, item);
-				}
-
-				clone.m_isClosed = false;
-
-				return clone;
+				DbInventoryItem item = new GameInventoryItem();
+				item.Template = new DbItemTemplate();
+				item.Template.Id_nb = oldItem.Id_nb;
+				item.Model = oldItem.Model;
+				item.Color = oldItem.Color;
+				item.Effect = oldItem.Effect;
+				item.Extension = oldItem.Extension;
+				item.Emblem = oldItem.Emblem;
+				item.SlotPosition = oldItem.SlotPosition;
+				clone.m_items.Add(de.Key, item);
 			}
+
+			clone.m_isClosed = false;
+
+			return clone;
 		}
+	}
 
-		#endregion
+	#endregion
 
-		#region LoadFromDatabase/SaveIntoDatabase
+	#region LoadFromDatabase/SaveIntoDatabase
 
-		/// <summary>
-		/// Cache for fast loading of npc equipment
-		/// </summary>
-		protected static Dictionary<string, List<DbNpcEquipment>> m_npcEquipmentCache = null;
+	/// <summary>
+	/// Cache for fast loading of npc equipment
+	/// </summary>
+	protected static Dictionary<string, List<DbNpcEquipment>> m_npcEquipmentCache = null;
 
-		/// <summary>
-		/// Loads the inventory template from the Database
-		/// </summary>
-		/// <returns>success</returns>
-		public override bool LoadFromDatabase(string templateID)
+	/// <summary>
+	/// Loads the inventory template from the Database
+	/// </summary>
+	/// <returns>success</returns>
+	public override bool LoadFromDatabase(string templateID)
+	{
+		if (string.IsNullOrEmpty(templateID))
+			return false;
+
+		lock (m_items)
 		{
-			if (string.IsNullOrEmpty(templateID))
+			IList<DbNpcEquipment> npcEquip;
+			
+			if (m_npcEquipmentCache.ContainsKey(templateID))
+				npcEquip = m_npcEquipmentCache[templateID];
+			else
+				npcEquip = CoreDb<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
+
+			if (npcEquip == null || npcEquip.Count == 0)
+			{
+				if (log.IsWarnEnabled)
+					log.Warn(string.Format("Failed loading NPC inventory template: {0}", templateID));
 				return false;
-
-			lock (m_items)
+			}
+			
+			foreach (DbNpcEquipment npcItem in npcEquip)
 			{
-				IList<DbNpcEquipment> npcEquip;
-				
-				if (m_npcEquipmentCache.ContainsKey(templateID))
-					npcEquip = m_npcEquipmentCache[templateID];
-				else
-					npcEquip = CoreDb<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
-
-				if (npcEquip == null || npcEquip.Count == 0)
+				if (!AddNPCEquipment((EInventorySlot)npcItem.Slot, npcItem.Model, npcItem.Color, npcItem.Effect, npcItem.Extension, npcItem.Emblem))
 				{
 					if (log.IsWarnEnabled)
-						log.Warn(string.Format("Failed loading NPC inventory template: {0}", templateID));
-					return false;
+						log.Warn("Error adding NPC equipment for templateID " + templateID + ", ModelID=" + npcItem.Model + ", slot=" + npcItem.Slot);
 				}
-				
-				foreach (DbNpcEquipment npcItem in npcEquip)
+			}
+		}
+		return true;
+	}
+
+	/// <summary>
+	/// Create the hash table
+	/// </summary>
+	public static bool Init()
+	{
+		try
+		{
+			m_npcEquipmentCache = new Dictionary<string, List<DbNpcEquipment>>(1000);
+			foreach (DbNpcEquipment equip in GameServer.Database.SelectAllObjects<DbNpcEquipment>())
+			{
+				List<DbNpcEquipment> list;
+				if (m_npcEquipmentCache.ContainsKey(equip.TemplateID))
 				{
-					if (!AddNPCEquipment((EInventorySlot)npcItem.Slot, npcItem.Model, npcItem.Color, npcItem.Effect, npcItem.Extension, npcItem.Emblem))
-					{
-						if (log.IsWarnEnabled)
-							log.Warn("Error adding NPC equipment for templateID " + templateID + ", ModelID=" + npcItem.Model + ", slot=" + npcItem.Slot);
-					}
+					list = m_npcEquipmentCache[equip.TemplateID];
 				}
+				else
+				{
+					list = new List<DbNpcEquipment>();
+					m_npcEquipmentCache[equip.TemplateID] = list;
+				}
+
+				list.Add(equip);
 			}
 			return true;
 		}
+		catch (Exception e)
+		{
+			log.Error(e);
+		}
+		return false;
+	}
 
-		/// <summary>
-		/// Create the hash table
-		/// </summary>
-		public static bool Init()
+	/// <summary>
+	/// Save the inventory template to Database
+	/// </summary>
+	/// <returns>success</returns>
+	public override bool SaveIntoDatabase(string templateID)
+	{
+		lock (m_items)
 		{
 			try
 			{
-				m_npcEquipmentCache = new Dictionary<string, List<DbNpcEquipment>>(1000);
-				foreach (DbNpcEquipment equip in GameServer.Database.SelectAllObjects<DbNpcEquipment>())
+				if (templateID == null)
+					throw new ArgumentNullException("templateID");
+
+				var npcEquipment = CoreDb<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
+
+				// delete removed item templates
+				foreach (DbNpcEquipment npcItem in npcEquipment)
 				{
-					List<DbNpcEquipment> list;
-					if (m_npcEquipmentCache.ContainsKey(equip.TemplateID))
+					if (!m_items.ContainsKey((EInventorySlot)npcItem.Slot))
+						GameServer.Database.DeleteObject(npcItem);
+				}
+
+				// save changed item templates
+				foreach (DbInventoryItem item in m_items.Values)
+				{
+					bool foundInDB = false;
+					foreach (DbNpcEquipment npcItem in npcEquipment)
 					{
-						list = m_npcEquipmentCache[equip.TemplateID];
-					}
-					else
-					{
-						list = new List<DbNpcEquipment>();
-						m_npcEquipmentCache[equip.TemplateID] = list;
+						if (item.SlotPosition != npcItem.Slot)
+							continue;
+
+						if (item.Model != npcItem.Model || item.Color != npcItem.Color || item.Effect != npcItem.Effect || item.Emblem != npcItem.Emblem)
+						{
+							npcItem.Model = item.Model;
+							npcItem.Color = item.Color;
+							npcItem.Effect = item.Effect;
+							npcItem.Extension = item.Extension;
+							npcItem.Emblem = item.Emblem;
+							GameServer.Database.SaveObject(npcItem);
+						}
+
+						foundInDB = true;
+
+						break;
 					}
 
-					list.Add(equip);
+					if (!foundInDB)
+					{
+						DbNpcEquipment npcItem = new DbNpcEquipment();
+						npcItem.Slot = item.SlotPosition;
+						npcItem.Model = item.Model;
+						npcItem.Color = item.Color;
+						npcItem.Effect = item.Effect;
+						npcItem.TemplateID = templateID;
+						npcItem.Extension = item.Extension;
+						npcItem.Emblem = item.Emblem;
+						GameServer.Database.AddObject(npcItem);
+					}
 				}
+
 				return true;
 			}
 			catch (Exception e)
 			{
-				log.Error(e);
-			}
-			return false;
-		}
+				if (log.IsErrorEnabled)
+					log.Error("Error saving NPC inventory template, templateID=" + templateID, e);
 
-		/// <summary>
-		/// Save the inventory template to Database
-		/// </summary>
-		/// <returns>success</returns>
-		public override bool SaveIntoDatabase(string templateID)
-		{
-			lock (m_items)
-			{
-				try
-				{
-					if (templateID == null)
-						throw new ArgumentNullException("templateID");
-
-					var npcEquipment = CoreDb<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
-
-					// delete removed item templates
-					foreach (DbNpcEquipment npcItem in npcEquipment)
-					{
-						if (!m_items.ContainsKey((EInventorySlot)npcItem.Slot))
-							GameServer.Database.DeleteObject(npcItem);
-					}
-
-					// save changed item templates
-					foreach (DbInventoryItem item in m_items.Values)
-					{
-						bool foundInDB = false;
-						foreach (DbNpcEquipment npcItem in npcEquipment)
-						{
-							if (item.SlotPosition != npcItem.Slot)
-								continue;
-
-							if (item.Model != npcItem.Model || item.Color != npcItem.Color || item.Effect != npcItem.Effect || item.Emblem != npcItem.Emblem)
-							{
-								npcItem.Model = item.Model;
-								npcItem.Color = item.Color;
-								npcItem.Effect = item.Effect;
-								npcItem.Extension = item.Extension;
-								npcItem.Emblem = item.Emblem;
-								GameServer.Database.SaveObject(npcItem);
-							}
-
-							foundInDB = true;
-
-							break;
-						}
-
-						if (!foundInDB)
-						{
-							DbNpcEquipment npcItem = new DbNpcEquipment();
-							npcItem.Slot = item.SlotPosition;
-							npcItem.Model = item.Model;
-							npcItem.Color = item.Color;
-							npcItem.Effect = item.Effect;
-							npcItem.TemplateID = templateID;
-							npcItem.Extension = item.Extension;
-							npcItem.Emblem = item.Emblem;
-							GameServer.Database.AddObject(npcItem);
-						}
-					}
-
-					return true;
-				}
-				catch (Exception e)
-				{
-					if (log.IsErrorEnabled)
-						log.Error("Error saving NPC inventory template, templateID=" + templateID, e);
-
-					return false;
-				}
+				return false;
 			}
 		}
-
-		#endregion
-
-		#region methods not allowed in inventory template
-
-		/// <summary>
-		/// Overridden. Inventory template cannot be modified.
-		/// </summary>
-		/// <param name="slot"></param>
-		/// <param name="item"></param>
-		/// <returns>false</returns>
-		public override bool AddItem(EInventorySlot slot, DbInventoryItem item)
-		{
-			return false;
-		}
-
-		/// <summary>
-		/// Overridden. Inventory template cannot be modified.
-		/// </summary>
-		/// <param name="item">the item to remove</param>
-		/// <returns>false</returns>
-		public override bool RemoveItem(DbInventoryItem item)
-		{
-			return false;
-		}
-
-		/// <summary>
-		/// Overridden. Inventory template cannot be modified.
-		/// </summary>
-		/// <param name="item"></param>
-		/// <param name="count"></param>
-		/// <returns>false</returns>
-		public override bool AddCountToStack(DbInventoryItem item, int count)
-		{
-			return false;
-		}
-
-		/// <summary>
-		/// Overridden. Inventory template cannot be modified.
-		/// </summary>
-		/// <param name="item">the item to remove</param>
-		/// <param name="count">the count of items to be removed from the stack</param>
-		/// <returns>false</returns>
-		public override bool RemoveCountFromStack(DbInventoryItem item, int count)
-		{
-			return false;
-		}
-
-		/// <summary>
-		/// Overridden. Inventory template cannot be modified.
-		/// </summary>
-		/// <param name="fromSlot"></param>
-		/// <param name="toSlot"></param>
-		/// <param name="itemCount"></param>
-		/// <returns></returns>
-		public override bool MoveItem(EInventorySlot fromSlot, EInventorySlot toSlot, int itemCount)
-		{
-			return false;
-		}
-
-		/// <summary>
-		/// Overridden. Inventory template cannot be modified.
-		/// </summary>
-		/// <param name="fromItem">First Item</param>
-		/// <param name="toItem">Second Item</param>
-		/// <returns>false</returns>
-		protected override bool CombineItems(DbInventoryItem fromItem, DbInventoryItem toItem)
-		{
-			return false;
-		}
-
-		/// <summary>
-		/// Overridden. Inventory template cannot be modified.
-		/// </summary>
-		/// <param name="fromSlot">First SlotPosition</param>
-		/// <param name="toSlot">Second SlotPosition</param>
-		/// <param name="itemCount">How many items to move</param>
-		/// <returns>false</returns>
-		protected override bool StackItems(EInventorySlot fromSlot, EInventorySlot toSlot, int itemCount)
-		{
-			return false;
-		}
-
-		/// <summary>
-		/// Overridden. Inventory template cannot be modified.
-		/// </summary>
-		/// <param name="fromSlot">First SlotPosition</param>
-		/// <param name="toSlot">Second SlotPosition</param>
-		/// <returns>false</returns>
-		protected override bool ExchangeItems(EInventorySlot fromSlot, EInventorySlot toSlot)
-		{
-			return false;
-		}
-
-		/// <summary>
-		/// Overridden. Inventory template cannot be modified.
-		/// </summary>
-		/// <param name="template">The ItemTemplate</param>
-		/// <param name="count">The count of items to add</param>
-		/// <param name="minSlot">The first slot</param>
-		/// <param name="maxSlot">The last slot</param>
-		/// <returns>false</returns>
-		public override bool AddTemplate(DbInventoryItem template, int count, EInventorySlot minSlot, EInventorySlot maxSlot)
-		{
-			return false;
-		}
-
-		/// <summary>
-		/// Overridden. Inventory template cannot be modified.
-		/// </summary>
-		/// <param name="templateID">The ItemTemplate ID</param>
-		/// <param name="count">The count of items to add</param>
-		/// <param name="minSlot">The first slot</param>
-		/// <param name="maxSlot">The last slot</param>
-		/// <returns>false</returns>
-		public override bool RemoveTemplate(string templateID, int count, EInventorySlot minSlot, EInventorySlot maxSlot)
-		{
-			return false;
-		}
-
-		#endregion
 	}
+
+	#endregion
+
+	#region methods not allowed in inventory template
+
+	/// <summary>
+	/// Overridden. Inventory template cannot be modified.
+	/// </summary>
+	/// <param name="slot"></param>
+	/// <param name="item"></param>
+	/// <returns>false</returns>
+	public override bool AddItem(EInventorySlot slot, DbInventoryItem item)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Overridden. Inventory template cannot be modified.
+	/// </summary>
+	/// <param name="item">the item to remove</param>
+	/// <returns>false</returns>
+	public override bool RemoveItem(DbInventoryItem item)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Overridden. Inventory template cannot be modified.
+	/// </summary>
+	/// <param name="item"></param>
+	/// <param name="count"></param>
+	/// <returns>false</returns>
+	public override bool AddCountToStack(DbInventoryItem item, int count)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Overridden. Inventory template cannot be modified.
+	/// </summary>
+	/// <param name="item">the item to remove</param>
+	/// <param name="count">the count of items to be removed from the stack</param>
+	/// <returns>false</returns>
+	public override bool RemoveCountFromStack(DbInventoryItem item, int count)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Overridden. Inventory template cannot be modified.
+	/// </summary>
+	/// <param name="fromSlot"></param>
+	/// <param name="toSlot"></param>
+	/// <param name="itemCount"></param>
+	/// <returns></returns>
+	public override bool MoveItem(EInventorySlot fromSlot, EInventorySlot toSlot, int itemCount)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Overridden. Inventory template cannot be modified.
+	/// </summary>
+	/// <param name="fromItem">First Item</param>
+	/// <param name="toItem">Second Item</param>
+	/// <returns>false</returns>
+	protected override bool CombineItems(DbInventoryItem fromItem, DbInventoryItem toItem)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Overridden. Inventory template cannot be modified.
+	/// </summary>
+	/// <param name="fromSlot">First SlotPosition</param>
+	/// <param name="toSlot">Second SlotPosition</param>
+	/// <param name="itemCount">How many items to move</param>
+	/// <returns>false</returns>
+	protected override bool StackItems(EInventorySlot fromSlot, EInventorySlot toSlot, int itemCount)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Overridden. Inventory template cannot be modified.
+	/// </summary>
+	/// <param name="fromSlot">First SlotPosition</param>
+	/// <param name="toSlot">Second SlotPosition</param>
+	/// <returns>false</returns>
+	protected override bool ExchangeItems(EInventorySlot fromSlot, EInventorySlot toSlot)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Overridden. Inventory template cannot be modified.
+	/// </summary>
+	/// <param name="template">The ItemTemplate</param>
+	/// <param name="count">The count of items to add</param>
+	/// <param name="minSlot">The first slot</param>
+	/// <param name="maxSlot">The last slot</param>
+	/// <returns>false</returns>
+	public override bool AddTemplate(DbInventoryItem template, int count, EInventorySlot minSlot, EInventorySlot maxSlot)
+	{
+		return false;
+	}
+
+	/// <summary>
+	/// Overridden. Inventory template cannot be modified.
+	/// </summary>
+	/// <param name="templateID">The ItemTemplate ID</param>
+	/// <param name="count">The count of items to add</param>
+	/// <param name="minSlot">The first slot</param>
+	/// <param name="maxSlot">The last slot</param>
+	/// <returns>false</returns>
+	public override bool RemoveTemplate(string templateID, int count, EInventorySlot minSlot, EInventorySlot maxSlot)
+	{
+		return false;
+	}
+
+	#endregion
 }

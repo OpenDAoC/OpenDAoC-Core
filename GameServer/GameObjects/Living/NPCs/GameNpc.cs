@@ -5,21 +5,29 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.Housing;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
-using DOL.GS.ServerProperties;
-using DOL.GS.Styles;
-using DOL.Language;
-using ECS.Debug;
+using Core.Base.Enums;
+using Core.Database;
+using Core.Database.Enums;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Effects.Old;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Expansions.Foundations;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Packets.Server;
+using Core.GS.Quests;
+using Core.GS.Scripts;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.Styles;
+using Core.GS.World;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// This class is the baseclass for all Non Player Characters like
@@ -94,9 +102,9 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual LanguageDataObject.eTranslationIdentifier TranslationIdentifier
+		public virtual ETranslationIdType TranslationIdentifier
 		{
-			get { return LanguageDataObject.eTranslationIdentifier.eNPC; }
+			get { return ETranslationIdType.eNPC; }
 		}
 
 		/// <summary>
@@ -227,19 +235,19 @@ namespace DOL.GS
 			int levelMinusOne = Level - 1;
 
 			if (Strength < 1)
-				Strength = (short) (Properties.MOB_AUTOSET_STR_BASE + levelMinusOne * Properties.MOB_AUTOSET_STR_MULTIPLIER);
+				Strength = (short) (ServerProperty.MOB_AUTOSET_STR_BASE + levelMinusOne * ServerProperty.MOB_AUTOSET_STR_MULTIPLIER);
 
 			if (Constitution < 1)
-				Constitution = (short) (Properties.MOB_AUTOSET_CON_BASE + levelMinusOne * Properties.MOB_AUTOSET_CON_MULTIPLIER);
+				Constitution = (short) (ServerProperty.MOB_AUTOSET_CON_BASE + levelMinusOne * ServerProperty.MOB_AUTOSET_CON_MULTIPLIER);
 
 			if (Quickness < 1)
-				Quickness = (short) (Properties.MOB_AUTOSET_QUI_BASE + levelMinusOne * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
+				Quickness = (short) (ServerProperty.MOB_AUTOSET_QUI_BASE + levelMinusOne * ServerProperty.MOB_AUTOSET_QUI_MULTIPLIER);
 
 			if (Dexterity < 1)
-				Dexterity = (short) (Properties.MOB_AUTOSET_DEX_BASE + levelMinusOne * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
+				Dexterity = (short) (ServerProperty.MOB_AUTOSET_DEX_BASE + levelMinusOne * ServerProperty.MOB_AUTOSET_DEX_MULTIPLIER);
 
 			if (Intelligence < 1)
-				Intelligence = (short) (Properties.MOB_AUTOSET_INT_BASE + levelMinusOne * Properties.MOB_AUTOSET_INT_MULTIPLIER);
+				Intelligence = (short) (ServerProperty.MOB_AUTOSET_INT_BASE + levelMinusOne * ServerProperty.MOB_AUTOSET_INT_MULTIPLIER);
 
 			if (Empathy < 1)
 				Empathy = (short) (30 + levelMinusOne);
@@ -407,11 +415,11 @@ namespace DOL.GS
 			}
 		}
 
-		private Faction m_faction = null;
+		private FactionUtil m_faction = null;
 		/// <summary>
 		/// Gets the Faction of the NPC
 		/// </summary>
-		public Faction Faction
+		public FactionUtil Faction
 		{
 			get { return m_faction; }
 			set
@@ -637,7 +645,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool IsVisibleToPlayers
 		{
-			get { return GameLoop.GameLoopTime - m_lastVisibleToPlayerTick < VISIBLE_TO_PLAYER_SPAN; }
+			get { return GameLoopMgr.GameLoopTime - m_lastVisibleToPlayerTick < VISIBLE_TO_PLAYER_SPAN; }
 		}
 
 		/// <summary>
@@ -1860,7 +1868,7 @@ namespace DOL.GS
 
 		public override void OnUpdateByPlayerService()
 		{
-			m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
+			m_lastVisibleToPlayerTick = GameLoopMgr.GameLoopTime;
 
 			if (Brain != null && !Brain.EntityManagerId.IsSet)
 				Brain.Start();
@@ -1894,7 +1902,7 @@ namespace DOL.GS
 			}
 
 			if (anyPlayer)
-				m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
+				m_lastVisibleToPlayerTick = GameLoopMgr.GameLoopTime;
 
 			m_spawnPoint.X = X;
 			m_spawnPoint.Y = Y;
@@ -2295,7 +2303,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override string GetPronoun(int form, bool capitalize)
 		{
-			String language = ServerProperties.Properties.DB_LANGUAGE;
+			String language = ServerProperty.DB_LANGUAGE;
 
 			switch (Gender)
 			{
@@ -2611,7 +2619,7 @@ namespace DOL.GS
 			FireAmbientSentence(EAmbientNpcTrigger.fighting, target);
 		}
 
-		private int scalingFactor = Properties.GAMENPC_SCALING;
+		private int scalingFactor = ServerProperty.GAMENPC_SCALING;
 		private int orbsReward = 0;
 		
 		public override double GetWeaponSkill(DbInventoryItem weapon)
@@ -2623,9 +2631,9 @@ namespace DOL.GS
 		public void SetLastMeleeAttackTick()
 		{
 			if (TargetObject?.Realm == 0 || Realm == 0)
-				m_lastAttackTickPvE = GameLoop.GameLoopTime;
+				m_lastAttackTickPvE = GameLoopMgr.GameLoopTime;
 			else
-				m_lastAttackTickPvP = GameLoop.GameLoopTime;
+				m_lastAttackTickPvP = GameLoopMgr.GameLoopTime;
 		}
 
 		/// <summary>
@@ -2995,7 +3003,7 @@ namespace DOL.GS
 		/// <summary>
 		/// A timer that will respawn this mob
 		/// </summary>
-		protected AuxECSGameTimer m_respawnTimer;
+		protected AuxEcsGameTimer m_respawnTimer;
 		/// <summary>
 		/// The sync object for respawn timer modifications
 		/// </summary>
@@ -3011,7 +3019,7 @@ namespace DOL.GS
 				if (m_respawnInterval > 0 || m_respawnInterval < 0)
 					return m_respawnInterval;
 
-				int minutes = Util.Random(ServerProperties.Properties.NPC_MIN_RESPAWN_INTERVAL, ServerProperties.Properties.NPC_MIN_RESPAWN_INTERVAL + 5);
+				int minutes = Util.Random(ServerProperty.NPC_MIN_RESPAWN_INTERVAL, ServerProperty.NPC_MIN_RESPAWN_INTERVAL + 5);
 
 				if (Name != Name.ToLower())
 				{
@@ -3029,7 +3037,7 @@ namespace DOL.GS
 				}
 				else
 				{
-					int add = (Level - 65) + ServerProperties.Properties.NPC_MIN_RESPAWN_INTERVAL;
+					int add = (Level - 65) + ServerProperty.NPC_MIN_RESPAWN_INTERVAL;
 					return (minutes + add) * 60000;
 				}
 			}
@@ -3090,8 +3098,8 @@ namespace DOL.GS
 				{
 					if (m_respawnTimer == null)
 					{
-						m_respawnTimer = new AuxECSGameTimer(this);
-						m_respawnTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RespawnTimerCallback);
+						m_respawnTimer = new AuxEcsGameTimer(this);
+						m_respawnTimer.Callback = new AuxEcsGameTimer.AuxECSTimerCallback(RespawnTimerCallback);
 					}
 					else if (m_respawnTimer.IsAlive)
 					{
@@ -3110,7 +3118,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="respawnTimer">the timer calling this callback</param>
 		/// <returns>the new interval</returns>
-		protected virtual int RespawnTimerCallback(AuxECSGameTimer respawnTimer)
+		protected virtual int RespawnTimerCallback(AuxEcsGameTimer respawnTimer)
 		{
 			CurrentRegion.MobsRespawning.TryRemove(this, out _);
 
@@ -3134,7 +3142,7 @@ namespace DOL.GS
 				this.Level = (byte)  Util.Random(minBound, maxBound);
 			}*/
 
-			SpawnTick = GameLoop.GameLoopTime;
+			SpawnTick = GameLoopMgr.GameLoopTime;
 
 			// Heal this NPC and move it to the spawn location.
 			Health = MaxHealth;
@@ -3153,7 +3161,7 @@ namespace DOL.GS
 
 			// Delay the first think tick a bit to prevent clients from sending positive LoS check
 			// when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
-			Brain.LastThinkTick = GameLoop.GameLoopTime + 1250;
+			Brain.LastThinkTick = GameLoopMgr.GameLoopTime + 1250;
 			return 0;
 		}
 
@@ -3238,7 +3246,7 @@ namespace DOL.GS
 					//GamePlayer killerPlayer = killer as GamePlayer;
 
 					//[StephenxPimentel] - Zone Bonus XP Support
-					if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
+					if (ServerProperty.ENABLE_ZONE_BONUSES)
 					{
 						GamePlayer killerPlayer = killer as GamePlayer;
 						if (killer is GameNpc)
@@ -3251,17 +3259,17 @@ namespace DOL.GS
 						int zoneBonus = (((int)value * ZoneBonus.GetCoinBonus(killerPlayer) / 100));
 						if (zoneBonus > 0)
 						{
-							long amount = (long)(zoneBonus * ServerProperties.Properties.MONEY_DROP);
+							long amount = (long)(zoneBonus * ServerProperty.MONEY_DROP);
 							killerPlayer.AddMoney(amount,
-												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperties.Properties.MONEY_DROP), ZoneBonus.eZoneBonusType.COIN),
+												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperty.MONEY_DROP), EZoneBonusType.COIN),
 												  EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 							InventoryLogging.LogInventoryAction(this, killerPlayer, EInventoryActionType.Loot, amount);
 						}
 					}
 
-					if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.EKeepBonusType.Coin_Drop_5, (ERealm)killer.Realm))
+					if (Keeps.KeepBonusMgr.RealmHasBonus(EKeepBonusType.Coin_Drop_5, (ERealm)killer.Realm))
 						value += (value / 100) * 5;
-					else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.EKeepBonusType.Coin_Drop_3, (ERealm)killer.Realm))
+					else if (Keeps.KeepBonusMgr.RealmHasBonus(EKeepBonusType.Coin_Drop_3, (ERealm)killer.Realm))
 						value += (value / 100) * 3;
 
 					//this will need to be changed when the ML for increasing money is added
@@ -3734,7 +3742,7 @@ namespace DOL.GS
 			{
 				var element = m_castSpellLosChecks.ElementAt(i);
 
-				if (GameLoop.GameLoopTime - element.Value.Item3 >= 3000)
+				if (GameLoopMgr.GameLoopTime - element.Value.Item3 >= 3000)
 					m_castSpellLosChecks.TryRemove(element.Key, out _);
 			}
 
@@ -3783,7 +3791,7 @@ namespace DOL.GS
 			if (spellCastedFromLosCheck)
 				m_spellCastedFromLosCheck = false;
 
-			if (m_castSpellLosChecks.TryAdd(TargetObject, new(spellToCast, line, GameLoop.GameLoopTime)))
+			if (m_castSpellLosChecks.TryAdd(TargetObject, new(spellToCast, line, GameLoopMgr.GameLoopTime)))
 				LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(CastSpellLosCheckReply));
 
 			return spellCastedFromLosCheck;
@@ -3814,11 +3822,10 @@ namespace DOL.GS
 				else
 				{
 					m_spellCastedFromLosCheck = false;
-					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
+					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, ECastFailedReasons.TargetNotInView));
 				}
 			}
 		}
-
 		#endregion
 
 		#region Styles

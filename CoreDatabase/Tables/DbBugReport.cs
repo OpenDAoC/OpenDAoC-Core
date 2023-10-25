@@ -1,7 +1,6 @@
 using System;
-using DOL.Database.Attributes;
 
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	[DataTable(TableName = "BugReport")]
 	public class DbBugReport : DataObject

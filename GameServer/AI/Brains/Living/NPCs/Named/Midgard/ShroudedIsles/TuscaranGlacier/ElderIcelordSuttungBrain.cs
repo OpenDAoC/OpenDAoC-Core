@@ -1,9 +1,14 @@
 using System;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Elder Icelord Suttung
 public class ElderIcelordSuttungBrain : StandardMobBrain
@@ -80,7 +85,7 @@ public class ElderIcelordSuttungBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             AggroText = false;
         }
@@ -169,7 +174,7 @@ public class HjalmarSuttungControllerBrain : APlayerVicinityBrain
     public static bool Spawn_Boss = false;
     public override void Think()
     {
-        int respawn = GS.ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;
+        int respawn = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;
         if (Body.IsAlive)
         {
             if (ElderIcelordSuttung.SuttungCount == 1 || ElderIcelordHjalmar.HjalmarCount == 1)//one of them is up

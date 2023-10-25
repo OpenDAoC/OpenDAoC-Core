@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Concurrent;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.Commands;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.GS.AI;
+using Core.GS.Commands;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameLoop;
+using Core.GS.Languages;
+using Core.GS.Scripts;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS
+namespace Core.GS.ECS
 {
     // This component will hold all data related to casting spells.
     public class CastingComponent : IManagedEntity
@@ -39,14 +43,14 @@ namespace DOL.GS
             ProcessStartCastSpellRequests();
 
             if (SpellHandler == null && QueuedSpellHandler == null && _startCastSpellRequests.IsEmpty)
-                EntityManager.Remove(this);
+                EntityMgr.Remove(this);
         }
 
         public virtual bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
         {
             if (RequestStartCastSpellInternal(new StartCastSpellRequest(spell, spellLine, spellCastingAbilityHandler, target)))
             {
-                EntityManager.Add(this);
+                EntityMgr.Add(this);
                 return true;
             }
 
@@ -56,7 +60,7 @@ namespace DOL.GS
         protected bool RequestStartCastSpellInternal(StartCastSpellRequest startCastSpellRequest)
         {
             if (Owner.IsStunned || Owner.IsMezzed)
-                Owner.Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.CrowdControlled));
+                Owner.Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, ECastFailedReasons.CrowdControlled));
 
             if (!CanCastSpell())
                 return false;
@@ -94,15 +98,15 @@ namespace DOL.GS
                 if (SpellHandler.Spell?.IsFocus == true)
                 {
                     if (newSpellHandler.Spell.IsInstantCast)
-                        newSpellHandler.Tick(GameLoop.GameLoopTime);
+                        newSpellHandler.Tick(GameLoopMgr.GameLoopTime);
                     else
                     {
                         SpellHandler = newSpellHandler;
-                        SpellHandler.Tick(GameLoop.GameLoopTime);
+                        SpellHandler.Tick(GameLoopMgr.GameLoopTime);
                     }
                 }
                 else if (newSpellHandler.Spell.IsInstantCast)
-                    newSpellHandler.Tick(GameLoop.GameLoopTime);
+                    newSpellHandler.Tick(GameLoopMgr.GameLoopTime);
                 else
                 {
                     if (Owner is GamePlayer player)
@@ -114,7 +118,7 @@ namespace DOL.GS
                                 if (newSpellHandler.Spell.InstrumentRequirement != 0)
                                     player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
                                 else
-                                    player.Out.SendMessage("You must wait " + ((SpellHandler.CastStartTick + SpellHandler.Spell.CastTime - GameLoop.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
+                                    player.Out.SendMessage("You must wait " + ((SpellHandler.CastStartTick + SpellHandler.Spell.CastTime - GameLoopMgr.GameLoopTime) / 1000 + 1).ToString() + " seconds to cast a spell!", EChatType.CT_SpellResisted, EChatLoc.CL_SystemWindow);
 
                                 return;
                             }
@@ -135,11 +139,11 @@ namespace DOL.GS
             else
             {
                 if (newSpellHandler.Spell.IsInstantCast)
-                    newSpellHandler.Tick(GameLoop.GameLoopTime);
+                    newSpellHandler.Tick(GameLoopMgr.GameLoopTime);
                 else
                 {
                     SpellHandler = newSpellHandler;
-                    SpellHandler.Tick(GameLoop.GameLoopTime);
+                    SpellHandler.Tick(GameLoopMgr.GameLoopTime);
                 }
             }
         }

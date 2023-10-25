@@ -2,3 +2,4 @@
 /DOLServer.xml
 /obj
 /*.user
+/config/serverconfig.xml

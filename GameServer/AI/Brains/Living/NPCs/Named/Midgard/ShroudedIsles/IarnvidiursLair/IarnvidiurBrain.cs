@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class IarnvidiurBrain : StandardMobBrain
 {
@@ -168,7 +172,7 @@ public class IarnvidiurBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			IsTargetPicked = false;
 			RandomTarget = null;

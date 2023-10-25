@@ -2,11 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
+using Core.GS.Players;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS.Scripts.Custom;
 
 public class ConquestMgr
 {
@@ -180,7 +186,7 @@ public class ConquestMgr
     
     public void ResetConquestWindow()
     {
-        LastConquestWindowStart = GameLoop.GameLoopTime;
+        LastConquestWindowStart = GameLoopMgr.GameLoopTime;
         ResetContributors();
         ActiveObjective.ResetConquestWindow();
     }
@@ -239,11 +245,11 @@ public class ConquestMgr
     {
         foreach (var player in ContributedPlayers?.ToList()?.Where(player => player.Realm == realmToAward))
         {
-            int awardBase = ServerProperties.Properties.CONQUEST_CAPTURE_AWARD;
+            int awardBase = ServerProperty.CONQUEST_CAPTURE_AWARD;
             if (!primaryObjective) awardBase = (int)(awardBase * 0.75);
             int numFlags = ActiveObjective.GetNumFlagsOwnedByRealm(player.Realm);
             player.GainRealmPoints((long)(awardBase + (numFlags * 200)), false);
-            CoreRoGMgr.GenerateReward(player, (int)(awardBase + (numFlags * 200)));
+            CoreRogMgr.GenerateReward(player, (int)(awardBase + (numFlags * 200)));
         }
     }
     
@@ -271,8 +277,8 @@ public class ConquestMgr
 
         if (!nearby) return nearby; //bail early to skip the GetAreas call if unneeded
         
-        AbstractArea area = player.CurrentZone.GetAreasOfSpot(player.X, player.Y, player.Z)
-            .FirstOrDefault() as AbstractArea;
+        AArea area = player.CurrentZone.GetAreasOfSpot(player.X, player.Y, player.Z)
+            .FirstOrDefault() as AArea;
 
         if (((!player.CurrentZone.IsRvR && area is not {Description: "Druim Ligen"}) || player.CurrentZone.ID == 249))
             nearby = false;
@@ -282,8 +288,8 @@ public class ConquestMgr
     
     public bool IsPlayerInSafeZone(GamePlayer player)
     {
-        AbstractArea area = player.CurrentZone.GetAreasOfSpot(player.X, player.Y, player.Z)
-            .FirstOrDefault() as AbstractArea;
+        AArea area = player.CurrentZone.GetAreasOfSpot(player.X, player.Y, player.Z)
+            .FirstOrDefault() as AArea;
 
         if (area?.Description is "Druim Ligen" or "Druim Cain" or "Svasud Faste" or "Vindsaul Faste" or "Castle Sauvage" or "Snowdonia Fortress" || !player.CurrentZone.IsOF)
         {
@@ -402,13 +408,13 @@ public class ConquestMgr
         SetDefensiveKeepForRealm(ERealm.Midgard);
 
         ActiveObjective.StartConquest();
-        LastConquestStartTime = GameLoop.GameLoopTime;
+        LastConquestStartTime = GameLoopMgr.GameLoopTime;
         BroadcastConquestMessageToRvRPlayers($"A new Conquest has begun!");
     }
 
     public void StopConquest()
     {
-        LastConquestStopTime = GameLoop.GameLoopTime;
+        LastConquestStopTime = GameLoopMgr.GameLoopTime;
     }
 
     private static void BroadcastConquestMessageToRvRPlayers(string message)
@@ -645,11 +651,11 @@ public class ConquestMgr
         long timeUntilReset = ConquestService.GetTicksUntilContributionReset();
         long timeUntilAward = ConquestService.GetTicksUntilNextAward();
 
-        long timeSinceTaskStart = GameLoop.GameLoopTime - ConquestService.ConquestManager.LastConquestStartTime;
+        long timeSinceTaskStart = GameLoopMgr.GameLoopTime - ConquestService.ConquestManager.LastConquestStartTime;
         temp.Add("" );
         temp.Add("" + TimeSpan.FromMilliseconds(timeSinceTaskStart).Hours + "h " +
                  TimeSpan.FromMilliseconds(timeSinceTaskStart).Minutes + "m " +
-                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s elapsed | " + ServerProperties.Properties.MAX_CONQUEST_TASK_DURATION + "m Max");
+                 TimeSpan.FromMilliseconds(timeSinceTaskStart).Seconds + "s elapsed | " + ServerProperty.MAX_CONQUEST_TASK_DURATION + "m Max");
         temp.Add("" + TimeSpan.FromMilliseconds(timeUntilReset).Minutes + "m " +
                    TimeSpan.FromMilliseconds(timeUntilReset).Seconds + "s contribution reset");
         temp.Add("" + TimeSpan.FromMilliseconds(timeUntilAward).Minutes + "m " +

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
-using DOL.Database.Connection;
+using Core.Database.Enums;
 
-namespace DOL.Database.Handlers
+namespace Core.Database
 {
 	public class SqliteObjectDatabase : SqlObjectDatabase
 	{

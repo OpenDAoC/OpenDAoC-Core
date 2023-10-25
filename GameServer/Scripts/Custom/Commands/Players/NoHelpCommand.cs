@@ -1,9 +1,13 @@
 using System;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.PlayerTitles;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Commands;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.Packets.Server;
+using Core.GS.Players;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Scripts.Custom;
 
 [Command(
 	"&nohelp",

@@ -1,12 +1,11 @@
-using DOL.Database;
+using Core.Database.Tables;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class OfRaWildPowerAbility : NfRaWildPowerAbility
 {
-    public class OfRaWildPowerAbility : NfRaWildPowerAbility
-    {
-        public OfRaWildPowerAbility(DbAbility dba, int level) : base(dba, level) { }
-        public override bool CheckRequirement(GamePlayer player) { return OfRaHelpers.GetAugAcuityLevel(player) >= 2; }
-        public override int GetAmountForLevel(int level) { return OfRaHelpers.GetPropertyEnhancer5AmountForLevel(level); }
-        public override int CostForUpgrade(int level) { return OfRaHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
-    }
+    public OfRaWildPowerAbility(DbAbility dba, int level) : base(dba, level) { }
+    public override bool CheckRequirement(GamePlayer player) { return OfRaHelpers.GetAugAcuityLevel(player) >= 2; }
+    public override int GetAmountForLevel(int level) { return OfRaHelpers.GetPropertyEnhancer5AmountForLevel(level); }
+    public override int CostForUpgrade(int level) { return OfRaHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
 }

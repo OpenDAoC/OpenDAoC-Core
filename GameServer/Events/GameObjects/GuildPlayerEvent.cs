@@ -1,10 +1,11 @@
 using System;
 using System.Threading;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS.Events
 {
 	public class GuildPlayerEvent : GamePlayerEvent
 	{
@@ -189,7 +190,7 @@ namespace DOL.GS
 
 			if (player.Guild != null && !player.Guild.IsStartingGuild && player.Guild.BonusType == EGuildBonusType.Experience && xpArgs.XPSource == EXpSource.NPC)
 			{
-				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 100);
+				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperty.GUILD_BUFF_XP / 100);
 
 				player.GainExperience(EXpSource.Other, bonusXP, 0, 0, 0, false);
 				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your guild's buff!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
@@ -198,7 +199,7 @@ namespace DOL.GS
 			
 			if (player.Guild != null && player.Guild.IsStartingGuild && xpArgs.XPSource == EXpSource.NPC)
 			{
-				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 200);
+				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperty.GUILD_BUFF_XP / 200);
 
 				player.GainExperience(EXpSource.Other, bonusXP, 0, 0, 0, false);
 				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your starting guild's buff!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
@@ -223,7 +224,7 @@ namespace DOL.GS
 				if (player.Guild.BonusType == EGuildBonusType.RealmPoints)
 				{
 					long oldGuildRealmPoints = player.Guild.RealmPoints;
-					long bonusRealmPoints = (long)Math.Ceiling((double)rpsArgs.RealmPoints * ServerProperties.Properties.GUILD_BUFF_RP / 100);
+					long bonusRealmPoints = (long)Math.Ceiling((double)rpsArgs.RealmPoints * ServerProperty.GUILD_BUFF_RP / 100);
 
 					player.GainRealmPoints(bonusRealmPoints, false, false, false);
 					player.Out.SendMessage("You get an additional " + bonusRealmPoints + " realm points due to your guild's buff!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
@@ -257,7 +258,7 @@ namespace DOL.GS
 			{
 				if (player.Guild.BonusType == EGuildBonusType.BountyPoints)
 				{
-					long bonusBountyPoints = (long)Math.Ceiling((double)bpsArgs.BountyPoints * ServerProperties.Properties.GUILD_BUFF_BP / 100);
+					long bonusBountyPoints = (long)Math.Ceiling((double)bpsArgs.BountyPoints * ServerProperty.GUILD_BUFF_BP / 100);
 					player.GainBountyPoints(bonusBountyPoints, false, false, false);
 					player.Guild.BountyPoints += bonusBountyPoints;
 					player.Out.SendMessage("You get an additional " + bonusBountyPoints + " bounty points due to your guild's buff!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);

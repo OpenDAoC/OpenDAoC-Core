@@ -1,9 +1,13 @@
 using System;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class HurionthexBrain : StandardMobBrain
 {
@@ -351,7 +355,7 @@ public class HurionthexBrain : StandardMobBrain
         // Reset boss encounter in the event of a party wipe or people running away
         if (!CheckProximityAggro())
         {
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             IsBaseForm = false;
             IsSaiyanForm = false;

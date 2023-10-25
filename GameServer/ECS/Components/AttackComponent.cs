@@ -5,19 +5,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
-using DOL.GS.ServerProperties;
-using DOL.GS.SkillHandler;
-using DOL.GS.Spells;
-using DOL.GS.Styles;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Effects;
+using Core.GS.Effects.Old;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
+using Core.GS.Languages;
+using Core.GS.Players;
+using Core.GS.RealmAbilities;
+using Core.GS.Scripts;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.Styles;
+using Core.GS.World;
 
-namespace DOL.GS
+namespace Core.GS.ECS
 {
     public class AttackComponent : IManagedEntity
     {
@@ -50,7 +56,7 @@ namespace DOL.GS
                 }
             }
 
-            long until = GameLoop.GameLoopTime + 5000; // Use interrupt duration instead?
+            long until = GameLoopMgr.GameLoopTime + 5000; // Use interrupt duration instead?
             Attackers.AddOrUpdate(target, until, (key, oldValue) => until);
         }
 
@@ -58,7 +64,7 @@ namespace DOL.GS
         {
             foreach (var pair in Attackers)
             {
-                if (pair.Value < GameLoop.GameLoopTime)
+                if (pair.Value < GameLoopMgr.GameLoopTime)
                     Attackers.TryRemove(pair);
             }
 
@@ -101,7 +107,7 @@ namespace DOL.GS
                 weaponAction = null;
 
             if (weaponAction is null && attackAction is null && !owner.InCombat)
-                EntityManager.Remove(this);
+                EntityMgr.Remove(this);
         }
 
         /// <summary>
@@ -351,7 +357,7 @@ namespace DOL.GS
 
                 if (bowWeapon)
                 {
-                    if (Properties.ALLOW_OLD_ARCHERY)
+                    if (ServerProperty.ALLOW_OLD_ARCHERY)
                     {
                         //Draw Time formulas, there are very many ...
                         //Formula 2: y = iBowDelay * ((100 - ((iQuickness - 50) / 5 + iMasteryofArcheryLevel * 3)) / 100)
@@ -369,7 +375,7 @@ namespace DOL.GS
                         //log.Debug("speed = " + speed + " percent = " + percent + " eProperty.archeryspeed = " + GetModified(eProperty.ArcherySpeed));
 
                         if (owner.rangeAttackComponent.RangedAttackType == ERangedAttackType.Critical) 
-                            speed = speed * 2 - (player.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
+                            speed = speed * 2 - (player.GetAbilityLevel(AbilityConstants.Critical_Shot) - 1) * speed / 10;
                     }
                     else
                     {
@@ -417,7 +423,7 @@ namespace DOL.GS
                     if (owner.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
                     {
                         // Old archery uses archery speed, but new archery uses casting speed
-                        if (Properties.ALLOW_OLD_ARCHERY)
+                        if (ServerProperty.ALLOW_OLD_ARCHERY)
                             speed *= 1.0 - owner.GetModified(EProperty.ArcherySpeed) * 0.01;
                         else
                             speed *= 1.0 - owner.GetModified(EProperty.CastingSpeed) * 0.01;
@@ -487,7 +493,7 @@ namespace DOL.GS
 
                     if (weapon.Object_Type is ((int) EObjectType.Longbow) or ((int) EObjectType.RecurvedBow) or ((int) EObjectType.CompositeBow))
                     {
-                        if (Properties.ALLOW_OLD_ARCHERY)
+                        if (ServerProperty.ALLOW_OLD_ARCHERY)
                             effectiveness += player.GetModified(EProperty.RangedDamage) * 0.01;
                         else
                         {
@@ -515,7 +521,7 @@ namespace DOL.GS
             }
             else
             {
-                double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed() * 0.1;
+                double damage = (1.0 + owner.Level / ServerProperty.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / ServerProperty.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed() * 0.1;
 
                 if (weapon == null ||
                     weapon.SlotPosition == Slot.RIGHTHAND ||
@@ -528,7 +534,7 @@ namespace DOL.GS
                 {
                     if (weapon.Object_Type is ((int) EObjectType.Longbow) or ((int) EObjectType.RecurvedBow) or ((int) EObjectType.CompositeBow))
                     {
-                        if (Properties.ALLOW_OLD_ARCHERY)
+                        if (ServerProperty.ALLOW_OLD_ARCHERY)
                             effectiveness += owner.GetModified(EProperty.RangedDamage) * 0.01;
                         else
                         {
@@ -543,7 +549,7 @@ namespace DOL.GS
                 damage *= effectiveness;
 
                 if (owner is GameEpicBoss epicBoss)
-                    damageCap = damage + epicBoss.Empathy / 100.0 * Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+                    damageCap = damage + epicBoss.Empathy / 100.0 * ServerProperty.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
                 else
                     damageCap = damage * 3;
 
@@ -562,7 +568,7 @@ namespace DOL.GS
             {
                 m_startAttackTarget = attackTarget;
                 StartAttackRequested = true;
-                EntityManager.Add(this);
+                EntityMgr.Add(this);
             }
         }
 
@@ -611,17 +617,17 @@ namespace DOL.GS
                 }
 
                 long vanishTimeout = player.TempProperties.GetProperty<long>(NfRaVanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
-                if (vanishTimeout > 0 && vanishTimeout > GameLoop.GameLoopTime)
+                if (vanishTimeout > 0 && vanishTimeout > GameLoopMgr.GameLoopTime)
                 {
                     player.Out.SendMessage(
                         LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouMustWaitAgain",
-                            (vanishTimeout - GameLoop.GameLoopTime + 1000) / 1000), EChatType.CT_YouHit,
+                            (vanishTimeout - GameLoopMgr.GameLoopTime + 1000) / 1000), EChatType.CT_YouHit,
                         EChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 long VanishTick = player.TempProperties.GetProperty<long>(NfRaVanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
-                long changeTime = GameLoop.GameLoopTime - VanishTick;
+                long changeTime = GameLoopMgr.GameLoopTime - VanishTick;
                 if (changeTime < 30000 && VanishTick > 0)
                 {
                     player.Out.SendMessage(
@@ -673,7 +679,7 @@ namespace DOL.GS
 
                 if (player.ActiveWeaponSlot == EActiveWeaponSlot.Distance)
                 {
-                    if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
+                    if (ServerProperty.ALLOW_OLD_ARCHERY == false)
                     {
                         if ((EPlayerClass) player.PlayerClass.ID == EPlayerClass.Scout ||
                             (EPlayerClass) player.PlayerClass.ID == EPlayerClass.Hunter ||
@@ -731,7 +737,7 @@ namespace DOL.GS
                     {
                         // -Chance to unstealth while nocking an arrow = stealth spec / level
                         // -Chance to unstealth nocking a crit = stealth / level  0.20
-                        int stealthSpec = player.GetModifiedSpecLevel(Specs.Stealth);
+                        int stealthSpec = player.GetModifiedSpecLevel(SpecConstants.Stealth);
                         int stayStealthed = stealthSpec * 100 / player.Level;
                         if (player.rangeAttackComponent?.RangedAttackType == ERangedAttackType.Critical)
                             stayStealthed -= 20;
@@ -788,7 +794,7 @@ namespace DOL.GS
                         player.Out.SendAttackMode(AttackState);
                     else
                     {
-                        player.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
+                        player.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoopMgr.GameLoopTime);
 
                         string typeMsg = "shot";
                         if (attackWeapon.Object_Type == (int) EObjectType.Thrown)
@@ -964,7 +970,7 @@ namespace DOL.GS
                         }
 
                         // Vampiir.
-                        if (playerOwner.PlayerClass is PlayerClass.ClassVampiir &&
+                        if (playerOwner.PlayerClass is ClassVampiir &&
                             target is not GameKeepComponent and not GameKeepDoor and not GameSiegeWeapon)
                         {
                             int perc = Convert.ToInt32((double) (ad.Damage + ad.CriticalDamage) / 100 * (55 - playerOwner.Level));
@@ -992,7 +998,7 @@ namespace DOL.GS
                             weaponItem.OnStrikeTarget(playerOwner, target);
 
                         // Camouflage will be disabled only when attacking a GamePlayer or ControlledNPC of a GamePlayer.
-                        if ((target is GamePlayer && playerOwner.HasAbility(Abilities.Camouflage)) ||
+                        if ((target is GamePlayer && playerOwner.HasAbility(AbilityConstants.Camouflage)) ||
                             (target is GameNpc targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain && targetNpcBrain.GetPlayerOwner() != null))
                         {
                             CamouflageEcsAbilityEffect camouflage = (CamouflageEcsAbilityEffect) EffectListService.GetAbilityEffectOnTarget(playerOwner, EEffect.Camouflage);
@@ -1000,7 +1006,7 @@ namespace DOL.GS
                             if (camouflage != null)
                                 EffectService.RequestImmediateCancelEffect(camouflage, false);
 
-                            playerOwner.DisableSkill(SkillBase.GetAbility(Abilities.Camouflage), CamouflageSpecHandler.DISABLE_DURATION);
+                            playerOwner.DisableSkill(SkillBase.GetAbility(AbilityConstants.Camouflage), CamouflageSpecHandler.DISABLE_DURATION);
                         }
 
                         // Multiple Hit check.
@@ -1072,7 +1078,7 @@ namespace DOL.GS
                                     weaponAction.Execute();
                                 }
                                 else
-                                    LivingMakeAttack(action, extraTarget, attackWeapon, null, 1, Properties.SPELL_INTERRUPT_DURATION, false);
+                                    LivingMakeAttack(action, extraTarget, attackWeapon, null, 1, ServerProperty.SPELL_INTERRUPT_DURATION, false);
                             }
                         }
 
@@ -1177,7 +1183,7 @@ namespace DOL.GS
                 }
             }
 
-            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, attackAction != null && GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500))
+            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, attackAction != null && GameLoopMgr.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500))
             {
                 ad.AttackResult = EAttackResult.NotAllowed_ServerRules;
                 SendAttackingCombatMessages(action, ad);
@@ -1207,7 +1213,7 @@ namespace DOL.GS
             }
 
             // DamageImmunity Ability.
-            if ((GameLiving) target != null && ((GameLiving) target).HasAbility(Abilities.DamageImmunity))
+            if ((GameLiving) target != null && ((GameLiving) target).HasAbility(AbilityConstants.DamageImmunity))
             {
                 //if (ad.Attacker is GamePlayer) ((GamePlayer)ad.Attacker).Out.SendMessage(string.Format("{0} can't be attacked!", ad.Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
                 ad.AttackResult = EAttackResult.NoValidTarget;
@@ -1249,7 +1255,7 @@ namespace DOL.GS
                         weaponForSpecModifier.Object_Type = weapon.Object_Type;
                         weaponForSpecModifier.SlotPosition = weapon.SlotPosition;
 
-                        if (owner is GamePlayer && owner.Realm == ERealm.Albion && Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC &&
+                        if (owner is GamePlayer && owner.Realm == ERealm.Albion && ServerProperty.ENABLE_ALBION_ADVANCED_WEAPON_SPEC &&
                             (GameServer.ServerRules.IsObjectTypesEqual((EObjectType) weapon.Object_Type, EObjectType.TwoHandedWeapon) ||
                             GameServer.ServerRules.IsObjectTypesEqual((EObjectType) weapon.Object_Type, EObjectType.PolearmWeapon)))
                         {
@@ -1304,9 +1310,9 @@ namespace DOL.GS
                     if (owner is GamePlayer || (owner is GameNpc npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0))
                     {
                         if (target is GamePlayer)
-                            damage = (int) (damage * Properties.PVP_MELEE_DAMAGE);
+                            damage = (int) (damage * ServerProperty.PVP_MELEE_DAMAGE);
                         else if (target is GameNpc)
-                            damage = (int) (damage * Properties.PVE_MELEE_DAMAGE);
+                            damage = (int) (damage * ServerProperty.PVE_MELEE_DAMAGE);
                     }
 
                     damage *= damageMod;
@@ -1844,7 +1850,7 @@ namespace DOL.GS
             ad.BlockChance = blockChance;
             double blockRoll;
 
-            if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
+            if (!ServerProperty.OVERRIDE_DECK_RNG && owner is GamePlayer player)
                 blockRoll = player.RandomNumberDeck.GetPseudoDouble();
             else
                 blockRoll = Util.CryptoNextDouble();
@@ -1901,7 +1907,7 @@ namespace DOL.GS
                 return false;
 
             // TODO: Insert actual formula for guarding here, this is just a guessed one based on block.
-            int guardLevel = guard.GuardSource.GetAbilityLevel(Abilities.Guard);
+            int guardLevel = guard.GuardSource.GetAbilityLevel(AbilityConstants.Guard);
             double guardChance;
 
             if (guard.GuardSource is GameNpc)
@@ -1930,8 +1936,8 @@ namespace DOL.GS
 
             if (guardChance < 0.01)
                 guardChance = 0.01;
-            else if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
-                guardChance = Properties.BLOCK_CAP;
+            else if (guardChance > ServerProperty.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+                guardChance = ServerProperty.BLOCK_CAP;
 
             // Possibly intended to be applied in RvR only.
             if (shieldSize == 1 && guardChance > 0.8)
@@ -1946,7 +1952,7 @@ namespace DOL.GS
 
             double guardRoll;
 
-            if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
+            if (!ServerProperty.OVERRIDE_DECK_RNG && owner is GamePlayer player)
                 guardRoll = player.RandomNumberDeck.GetPseudoDouble();
             else
                 guardRoll = Util.CryptoNextDouble();
@@ -1992,7 +1998,7 @@ namespace DOL.GS
 
             if ((rightHand == null || rightHand.Hand != 1) && leftHand != null && leftHand.Object_Type == (int) EObjectType.Shield)
             {
-                int guardLevel = dashing.GuardSource.GetAbilityLevel(Abilities.Guard);
+                int guardLevel = dashing.GuardSource.GetAbilityLevel(AbilityConstants.Guard);
                 double guardchance = dashing.GuardSource.GetModified(EProperty.BlockChance) * leftHand.Quality * 0.00001;
                 guardchance *= guardLevel * 0.25 + 0.05;
                 guardchance += attackerConLevel * 0.05;
@@ -2122,7 +2128,7 @@ namespace DOL.GS
                 {
                     int interceptRoll;
 
-                    if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
+                    if (!ServerProperty.OVERRIDE_DECK_RNG && playerOwner != null)
                         interceptRoll = playerOwner.RandomNumberDeck.GetInt();
                     else
                         interceptRoll = Util.Random(100);
@@ -2201,7 +2207,7 @@ namespace DOL.GS
                 ad.EvadeChance = evadeChance;
                 double evadeRoll;
 
-                if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
+                if (!ServerProperty.OVERRIDE_DECK_RNG && playerOwner != null)
                     evadeRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
                 else
                     evadeRoll = Util.CryptoNextDouble();
@@ -2224,7 +2230,7 @@ namespace DOL.GS
                     ad.ParryChance = parryChance;
                     double parryRoll;
 
-                    if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
+                    if (!ServerProperty.OVERRIDE_DECK_RNG && playerOwner != null)
                         parryRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
                     else
                         parryRoll = Util.CryptoNextDouble();
@@ -2257,7 +2263,7 @@ namespace DOL.GS
             int missChance = GetMissChance(action, ad, lastAttackData, attackerWeapon);
 
             // Check for dirty trick fumbles before misses.
-            DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, EEffect.DirtyTricksDetrimental);
+            DirtyTricksDetrimentalEcsGameEffect dt = (DirtyTricksDetrimentalEcsGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, EEffect.DirtyTricksDetrimental);
 
             if (dt != null && ad.IsRandomFumble)
                 return EAttackResult.Fumbled;
@@ -2268,7 +2274,7 @@ namespace DOL.GS
             {
                 double missRoll;
 
-                if (!Properties.OVERRIDE_DECK_RNG && playerAttacker != null)
+                if (!ServerProperty.OVERRIDE_DECK_RNG && playerAttacker != null)
                     missRoll = playerAttacker.RandomNumberDeck.GetPseudoDouble();
                 else
                     missRoll = Util.CryptoNextDouble();
@@ -2313,7 +2319,7 @@ namespace DOL.GS
                     return EAttackResult.HitUnstyled; // Exit early for stealth to prevent breaking bubble but still register a hit.
 
                 if (action.RangedAttackType == ERangedAttackType.Long ||
-                    (ad.AttackType == EAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && playerAttacker?.HasAbility(Abilities.PenetratingArrow) == true))
+                    (ad.AttackType == EAttackType.Ranged && ad.Target != bladeturn.SpellHandler.Caster && playerAttacker?.HasAbility(AbilityConstants.PenetratingArrow) == true))
                     penetrate = true;
 
                 if (ad.IsMeleeAttack && !Util.ChanceDouble(bladeturn.SpellHandler.Caster.Level / ad.Attacker.Level))
@@ -2380,7 +2386,7 @@ namespace DOL.GS
                     and not EAttackResult.Blocked
                     and not EAttackResult.Parried)
                 {
-                    if (GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500)
+                    if (GameLoopMgr.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500)
                         return;
 
                     attackAction.RoundWithNoAttackTime = 0;
@@ -2654,7 +2660,7 @@ namespace DOL.GS
 
                 if (berserk != null)
                 {
-                    int level = owner.GetAbilityLevel(Abilities.Berserk);
+                    int level = owner.GetAbilityLevel(AbilityConstants.Berserk);
                     // According to : http://daoc.catacombs.com/forum.cfm?ThreadKey=10833&DefMessage=922046&forum=37
                     // Zerk 1 = 1-25%
                     // Zerk 2 = 1-50%
@@ -2715,7 +2721,7 @@ namespace DOL.GS
 
             // Experimental miss rate adjustment for number of attackers.
             if ((owner is GamePlayer && ad.Attacker is GamePlayer) == false)
-                missChance -= Math.Max(0, Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+                missChance -= Math.Max(0, Attackers.Count - 1) * ServerProperty.MISSRATE_REDUCTION_PER_ATTACKERS;
 
             // Weapon and armor bonuses.
             int armorBonus = 0;
@@ -2836,11 +2842,11 @@ namespace DOL.GS
             if (CanUseLefthandedWeapon == false)
                 return 0;
 
-            if (owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)
+            if (owner.GetBaseSpecLevel(SpecConstants.Left_Axe) > 0)
             {
                 if (owner is GamePlayer player && player.UseDetailedCombatLog)
                 {
-                    int spec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+                    int spec = owner.GetModifiedSpecLevel(SpecConstants.Left_Axe);
                     double effectiveness = CalculateLeftAxeModifier();
 ;
                     player.Out.SendMessage($"{Math.Round(effectiveness * 100, 2)}% dmg (after LA penalty) \n", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
@@ -2849,20 +2855,20 @@ namespace DOL.GS
                 return 1; // always use left axe
             }
 
-            int specLevel = Math.Max(owner.GetModifiedSpecLevel(Specs.Celtic_Dual), owner.GetModifiedSpecLevel(Specs.Dual_Wield));
-            specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Fist_Wraps));
+            int specLevel = Math.Max(owner.GetModifiedSpecLevel(SpecConstants.Celtic_Dual), owner.GetModifiedSpecLevel(SpecConstants.Dual_Wield));
+            specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(SpecConstants.Fist_Wraps));
 
             decimal tmpOffhandChance = 25 + (specLevel - 1) * 68 / 100;
             tmpOffhandChance += owner.GetModified(EProperty.OffhandChance) + owner.GetModified(EProperty.OffhandDamageAndChance);
 
-            if (owner is GamePlayer p && p.UseDetailedCombatLog && owner.GetModifiedSpecLevel(Specs.HandToHand) <= 0)
+            if (owner is GamePlayer p && p.UseDetailedCombatLog && owner.GetModifiedSpecLevel(SpecConstants.HandToHand) <= 0)
                 p.Out.SendMessage($"OH swing%: {Math.Round(tmpOffhandChance, 2)} ({owner.GetModified(EProperty.OffhandChance) + owner.GetModified(EProperty.OffhandDamageAndChance)}% from RAs) \n", EChatType.CT_DamageAdd, EChatLoc.CL_SystemWindow);
                 
             if (specLevel > 0)
                 return Util.Chance((int) tmpOffhandChance) ? 1 : 0;
 
             // HtH chance
-            specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
+            specLevel = owner.GetModifiedSpecLevel(SpecConstants.HandToHand);
             DbInventoryItem attackWeapon = owner.ActiveWeapon;
             DbInventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(EInventorySlot.LeftHandWeapon);
 
@@ -2894,7 +2900,7 @@ namespace DOL.GS
 
         public double CalculateLeftAxeModifier()
         {
-            int LeftAxeSpec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+            int LeftAxeSpec = owner.GetModifiedSpecLevel(SpecConstants.Left_Axe);
 
             if (LeftAxeSpec == 0)
                 return 1.0;

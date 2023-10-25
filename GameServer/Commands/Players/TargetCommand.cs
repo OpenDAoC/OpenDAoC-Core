@@ -1,6 +1,8 @@
-using DOL.GS.PacketHandler;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.World;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&target", EPrivLevel.Player, "target a player by name", "/target <playerName>")]
 public class TargetCommand : ACommandHandler, ICommandHandler

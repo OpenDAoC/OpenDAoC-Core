@@ -1,6 +1,11 @@
-using DOL.Database;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
+using Core.GS.Scripts.Custom;
+using Core.GS.Server;
 
-namespace DOL.GS.Keeps
+namespace Core.GS
 {
 	/// <summary>
 	/// Class to manage the clothing of the guards
@@ -562,7 +567,7 @@ namespace DOL.GS.Keeps
 		/// <param name="guard">The guard object</param>
 		public static void EquipGuard(GameKeepGuard guard)
 		{
-			if(!ServerProperties.Properties.AUTOEQUIP_GUARDS_LOADED_FROM_DB && !guard.LoadedFromScript)
+			if(!ServerProperty.AUTOEQUIP_GUARDS_LOADED_FROM_DB && !guard.LoadedFromScript)
 			{
 				return;
 			}

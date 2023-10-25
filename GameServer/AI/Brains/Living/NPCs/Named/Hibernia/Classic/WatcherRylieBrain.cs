@@ -1,7 +1,10 @@
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class WatcherRylieBrain : StandardMobBrain
 {

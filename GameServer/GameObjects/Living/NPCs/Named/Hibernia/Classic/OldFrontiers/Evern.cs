@@ -1,11 +1,14 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Evern
 public class Evern : GameEpicBoss
@@ -47,9 +50,9 @@ public class Evern : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
-        if (IsReturningToSpawnPoint && keyName == GS.Abilities.DamageImmunity)
+        if (IsReturningToSpawnPoint && keyName == AbilityConstants.DamageImmunity)
             return true;
         return base.HasAbility(keyName);
     }
@@ -94,7 +97,7 @@ public class Evern : GameEpicBoss
         Piety = npcTemplate.Piety;
         Intelligence = npcTemplate.Intelligence;
         Empathy = npcTemplate.Empathy;
-        RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
         EvernBrain.spawnfairy = false;
         //Idle = false;
         MaxSpeedBase = 300;

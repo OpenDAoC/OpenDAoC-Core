@@ -1,9 +1,13 @@
 ﻿using System;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameLoop;
+using Core.GS.Scripts;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command(
         "&summonmerchant",
@@ -26,7 +30,7 @@ namespace DOL.GS.Commands
         {
             var player = client.Player;
             var merchTick = player.TempProperties.GetProperty(SummonMerch, 0L);
-            var changeTime = GameLoop.GameLoopTime - merchTick;
+            var changeTime = GameLoopMgr.GameLoopTime - merchTick;
             if (changeTime < 30000)
             {
                 player.Out.SendMessage(
@@ -34,7 +38,7 @@ namespace DOL.GS.Commands
                     EChatType.CT_System, EChatLoc.CL_ChatWindow);
                 return;
             }
-            player.TempProperties.SetProperty(SummonMerch, GameLoop.GameLoopTime);
+            player.TempProperties.SetProperty(SummonMerch, GameLoopMgr.GameLoopTime);
 
             #endregion Command timer
             
@@ -90,7 +94,7 @@ namespace DOL.GS.Commands
                     MMerchantTemplate = new NpcTemplate();
                     MMerchantTemplate.Flags += (byte) ENpcFlags.GHOST + (byte) ENpcFlags.PEACE;
                     MMerchantTemplate.Name = "Merchant";
-                    MMerchantTemplate.ClassType = "DOL.GS.Scripts.SummonedMerchant";
+                    MMerchantTemplate.ClassType = "Core.GS.Scripts.Custom.SummonedMerchant";
                     MMerchantTemplate.Model = "50";
                     MMerchantTemplate.TemplateId = 93049;
                     NpcTemplateMgr.AddTemplate(MMerchantTemplate);

@@ -1,31 +1,32 @@
 using System.Reflection;
+using Core.GS.Enums;
+using Core.GS.Packets.Server;
 using log4net;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.Packets.Clients;
+
+[PacketHandler(EPacketHandlerType.TCP, EClientPackets.SetMarketPrice, "Set Market/Consignment Merchant Price.", EClientStatus.PlayerInGame)]
+public class PlayerSetMarketPriceHandler : IPacketHandler
 {
-    [PacketHandler(EPacketHandlerType.TCP, EClientPackets.SetMarketPrice, "Set Market/Consignment Merchant Price.", EClientStatus.PlayerInGame)]
-    public class PlayerSetMarketPriceHandler : IPacketHandler
+    /// <summary>
+    /// Defines a logger for this class.
+    /// </summary>
+    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+    public void HandlePacket(GameClient client, GsPacketIn packet)
     {
-        /// <summary>
-        /// Defines a logger for this class.
-        /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        if (client == null || client.Player == null)
+            return;
 
-        public void HandlePacket(GameClient client, GsPacketIn packet)
-        {
-            if (client == null || client.Player == null)
-                return;
+		int slot = packet.ReadByte();
+		int unk1 = packet.ReadByte();
+		ushort unk2 = packet.ReadShort();
+		uint price = packet.ReadInt();
 
-			int slot = packet.ReadByte();
-			int unk1 = packet.ReadByte();
-			ushort unk2 = packet.ReadShort();
-			uint price = packet.ReadInt();
+		// only IGameInventoryObjects can handle set price commands
+		if (client.Player.TargetObject == null || (client.Player.TargetObject is IGameInventoryObject) == false)
+			return;
 
-			// only IGameInventoryObjects can handle set price commands
-			if (client.Player.TargetObject == null || (client.Player.TargetObject is IGameInventoryObject) == false)
-				return;
-
-			(client.Player.TargetObject as IGameInventoryObject).SetSellPrice(client.Player, (ushort)slot, price);
-        }
+		(client.Player.TargetObject as IGameInventoryObject).SetSellPrice(client.Player, (ushort)slot, price);
     }
 }

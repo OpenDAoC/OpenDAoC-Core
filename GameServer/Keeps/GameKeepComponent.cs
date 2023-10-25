@@ -3,12 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.ServerProperties;
+using Core.Base.Enums;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Database;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Spells;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps
 {
 	//TODO : find all skin of keep door to load it from here
 	public class GameKeepComponent : GameLiving, IComparable, IGameKeepComponent
@@ -68,7 +77,7 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
-				if (Properties.ALLOW_TOWER_CLIMB)
+				if (ServerProperty.ALLOW_TOWER_CLIMB)
 				{
 					if (Skin == (int)eComponentSkin.Wall || Skin == (int)eComponentSkin.NewSkinClimbingWall || Skin == (int)eComponentSkin.Tower || Skin == (int)eComponentSkin.NewSkinTower && !Keep.IsPortalKeep) return true;
 				}
@@ -235,7 +244,7 @@ namespace DOL.GS.Keeps
 			if (bg != null && GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvE)
 			{
 				// Battlegrounds, ignore all but GameKeepDoor
-				whereClause = whereClause.And(DB.Column("ClassType").IsEqualTo("DOL.GS.Keeps.GameKeepDoor"));
+				whereClause = whereClause.And(DB.Column("ClassType").IsEqualTo("Core.GS.Keeps.GameKeepDoor"));
 			}
 			var DBPositions = CoreDb<DbKeepPosition>.SelectObjects(whereClause);
 
@@ -268,19 +277,19 @@ namespace DOL.GS.Keeps
 
 						switch (position.ClassType)
 						{
-							case "DOL.GS.Keeps.GameKeepBanner":
+							case "Core.GS.Keeps.GameKeepBanner":
 								if (Keep.Banners.ContainsKey(sKey) == false)
 									create = true;
 								break;
-							case "DOL.GS.Keeps.GameKeepDoor":
+							case "Core.GS.Keeps.GameKeepDoor":
 								if (Keep.Doors.ContainsKey(sKey) == false)
 									create = true;
 								break;
-							case "DOL.GS.Keeps.FrontierTeleportStone":
+							case "Core.GS.Keeps.FrontierTeleportStone":
 								if (Keep.TeleportStone == null)
 									create = true;
 								break;
-							case "DOL.GS.Keeps.Patrol":
+							case "Core.GS.Keeps.KeepGuardPatrol":
 								if ((position.KeepType == (int)AGameKeep.eKeepType.Any || position.KeepType == (int)Keep.KeepType)
 									&& Keep.Patrols.ContainsKey(sKey) == false)
 								{
@@ -290,7 +299,7 @@ namespace DOL.GS.Keeps
 									p.InitialiseGuards();
 								}
 								continue;
-							case "DOL.GS.Keeps.FrontierHastener":
+							case "Core.GS.FrontierHastener":
 								if (Keep.HasHastener && log.IsWarnEnabled)
 									log.Warn($"FillPositions(): KeepComponent_ID {InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {Keep.KeepID}");
 
@@ -300,7 +309,7 @@ namespace DOL.GS.Keeps
 									create = true;
 								}
 								break;
-							case "DOL.GS.Keeps.MissionMaster":
+							case "Core.GS.MissionMaster":
 								if (Keep.HasCommander && log.IsWarnEnabled)
 									log.Warn($"FillPositions(): KeepComponent_ID {InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {Keep.KeepID}");
 
@@ -310,7 +319,7 @@ namespace DOL.GS.Keeps
 									create = true;
 								}
 								break;
-							case "DOL.GS.Keeps.GuardLord":
+							case "Core.GS.GuardLord":
 								if (Keep.HasLord && log.IsWarnEnabled)
 									log.Warn($"FillPositions(): KeepComponent_ID {InternalID}, KeepPosition_ID {position.ObjectId}: There is already a {position.ClassType} on Keep {Keep.KeepID}");
 
@@ -336,7 +345,7 @@ namespace DOL.GS.Keeps
 								if (obj != null)
 									obj.LoadFromPosition(position, this);
 
-								if (ServerProperties.Properties.ENABLE_DEBUG)
+								if (ServerProperty.ENABLE_DEBUG)
 								{
 									if (obj is GameLiving living)
 										living.Name += " is living, component " + obj.Component.ID;
@@ -356,12 +365,12 @@ namespace DOL.GS.Keeps
 							//move the object
 							switch (position.ClassType)
 							{
-								case "DOL.GS.Keeps.GameKeepBanner":
+								case "Core.GS.Keeps.GameKeepBanner":
 									if (this.AbstractKeep.Banners[position.TemplateID] is IKeepItem banner && banner.Position != position)
 										banner.MoveToPosition(position);
 									break;
-								case "DOL.GS.Keeps.GameKeepDoor":
-								case "DOL.GS.Keeps.FrontierPortalStone":
+								case "Core.GS.Keeps.GameKeepDoor":
+								case "Core.GS.Keeps.FrontierPortalStone":
 									break;  // these dont move
 								default:
 									if (this.AbstractKeep.Guards[position.TemplateID] is IKeepItem guard)
@@ -469,7 +478,7 @@ namespace DOL.GS.Keeps
 			if (attackData.DamageType == EDamageType.GM)
 				return;
 
-			int toughness = Properties.SET_STRUCTURES_TOUGHNESS;
+			int toughness = ServerProperty.SET_STRUCTURES_TOUGHNESS;
 			int baseDamage = attackData.Damage;
 			int styleDamage = attackData.StyleDamage;
 			int criticalDamage = 0;
@@ -483,7 +492,7 @@ namespace DOL.GS.Keeps
 			}
 			else if (source is GameNpc)
 			{
-				if (!Properties.STRUCTURES_ALLOWPETATTACK)
+				if (!ServerProperty.STRUCTURES_ALLOWPETATTACK)
 				{
 					baseDamage = 0;
 					styleDamage = 0;
@@ -494,21 +503,21 @@ namespace DOL.GS.Keeps
 					baseDamage = (baseDamage - (baseDamage * 5 * Keep.Level / 100)) * toughness / 100;
 					styleDamage = (styleDamage - (styleDamage * 5 * Keep.Level / 100)) * toughness / 100;
 
-					if (((GameNpc)source).Brain is AI.Brain.IControlledBrain)
+					if (((GameNpc)source).Brain is IControlledBrain)
 					{
-						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNpc)source).Brain).Owner as GamePlayer);
+						GamePlayer player = (((IControlledBrain)((GameNpc)source).Brain).Owner as GamePlayer);
 						if (player != null)
 						{
 							// special considerations for pet spam classes
 							if (player.PlayerClass.ID == (int)EPlayerClass.Theurgist || player.PlayerClass.ID == (int)EPlayerClass.Animist)
 							{
-								baseDamage = (int)(baseDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
-								styleDamage = (int)(styleDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
+								baseDamage = (int)(baseDamage * ServerProperty.PET_SPAM_DAMAGE_MULTIPLIER);
+								styleDamage = (int)(styleDamage * ServerProperty.PET_SPAM_DAMAGE_MULTIPLIER);
 							}
 							else
 							{
-								baseDamage = (int)(baseDamage * Properties.PET_DAMAGE_MULTIPLIER);
-								styleDamage = (int)(styleDamage * Properties.PET_DAMAGE_MULTIPLIER);
+								baseDamage = (int)(baseDamage * ServerProperty.PET_DAMAGE_MULTIPLIER);
+								styleDamage = (int)(styleDamage * ServerProperty.PET_DAMAGE_MULTIPLIER);
 							}
 						}
 					}
@@ -523,12 +532,12 @@ namespace DOL.GS.Keeps
 		public override void Die(GameObject killer)
 		{
 			base.Die(killer);
-			if (Keep is GameKeepTower && Properties.CLIENT_VERSION_MIN >= (int)GameClient.eClientVersion.Version175)
+			if (Keep is GameKeepTower && ServerProperty.CLIENT_VERSION_MIN >= (int)EClientVersion.Version175)
 			{
 				if (IsRaized == false)
 				{
 					Notify(KeepEvent.TowerRaized, Keep, new KeepEventArgs(Keep, killer.Realm));
-					PlayerMgr.BroadcastRaize(Keep, killer.Realm);
+					KeepPlayerMgr.BroadcastRaize(Keep, killer.Realm);
 					IsRaized = true;
 
 					foreach (var guard in Keep.Guards.Values)

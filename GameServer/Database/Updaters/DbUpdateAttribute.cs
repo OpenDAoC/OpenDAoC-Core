@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.GS.DatabaseUpdate;
+namespace Core.GS.Database;
 
 /// <summary>
 /// Attribute that denotes a class as a database converter

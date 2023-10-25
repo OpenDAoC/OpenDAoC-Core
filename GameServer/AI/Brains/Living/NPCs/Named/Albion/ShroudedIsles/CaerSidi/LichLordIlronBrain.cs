@@ -1,8 +1,10 @@
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.Scripts;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Lich Lord Ilron
 public class LichLordIlronBrain : StandardMobBrain
@@ -17,7 +19,7 @@ public class LichLordIlronBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             spawnimages = true;
             foreach (GameNpc npc in Body.GetNPCsInRadius(4000))
             {

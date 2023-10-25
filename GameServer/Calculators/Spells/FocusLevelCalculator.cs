@@ -1,6 +1,8 @@
 using System;
+using Core.GS.Enums;
+using Core.GS.Skills;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The Focus Level calculator

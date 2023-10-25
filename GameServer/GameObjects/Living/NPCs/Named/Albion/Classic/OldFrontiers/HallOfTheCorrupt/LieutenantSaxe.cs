@@ -1,11 +1,14 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Styles;
+using Core.GS.World;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class LieutenantSaxe : GameNpc
     {
@@ -97,7 +100,7 @@ namespace DOL.GS
         }
         public override bool HasAbility(string keyName)
         {
-            if (this.IsAlive && keyName == DOL.GS.Abilities.CCImmunity)
+            if (this.IsAlive && keyName == AbilityConstants.CCImmunity)
                 return true;
 
             return base.HasAbility(keyName);

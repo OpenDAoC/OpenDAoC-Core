@@ -2,15 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Effects;
-using DOL.GS.Friends;
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.ECS;
+using Core.GS.Effects;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Expansions.Foundations;
+using Core.GS.GameUtils;
+using Core.GS.Players;
+using Core.GS.Quests;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		"&player",
@@ -2171,7 +2176,7 @@ namespace DOL.GS.Commands
 
                         List<string> areaList = new List<string>();
 
-                        foreach (AbstractArea area in targetPlayer.CurrentAreas)
+                        foreach (AArea area in targetPlayer.CurrentAreas)
                         {
                             string areaInfo = area.GetType().Name + ", ID:" + area.ID;
                             if (area is QuestSearchArea)

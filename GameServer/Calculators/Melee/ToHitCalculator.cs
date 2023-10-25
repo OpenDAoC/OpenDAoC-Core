@@ -1,4 +1,6 @@
-namespace DOL.GS.PropertyCalc;
+using Core.GS.Enums;
+
+namespace Core.GS.Calculators;
 
 [PropertyCalculator(EProperty.ToHitBonus)]
 public class ToHitBonusCalculator : PropertyCalculator

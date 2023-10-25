@@ -1,6 +1,6 @@
-using DOL.Database.Attributes;
+using Core.Database.Enums;
 
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// DB Keep is database of keep

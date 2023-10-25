@@ -1,4 +1,6 @@
-namespace DOL.GS;
+using Core.GS.Players;
+
+namespace Core.GS.Enums;
 
 public enum EMerchantWindowSlot : int
 {

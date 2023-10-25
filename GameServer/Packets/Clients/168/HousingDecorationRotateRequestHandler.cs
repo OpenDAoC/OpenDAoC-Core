@@ -1,38 +1,39 @@
-using DOL.GS.Housing;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.Packets.Server;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.Packets.Clients;
+
+[PacketHandler(EPacketHandlerType.TCP, EClientPackets.HouseDecorationRequest, "Handles housing decoration request", EClientStatus.PlayerInGame)]
+public class HousingDecorationRotateRequestHandler : IPacketHandler
 {
-	[PacketHandler(EPacketHandlerType.TCP, EClientPackets.HouseDecorationRequest, "Handles housing decoration request", EClientStatus.PlayerInGame)]
-	public class HousingDecorationRotateRequestHandler : IPacketHandler
+	public void HandlePacket(GameClient client, GsPacketIn packet)
 	{
-		public void HandlePacket(GameClient client, GsPacketIn packet)
-		{
-			ushort housenumber = packet.ReadShort();
-			var index = (byte) packet.ReadByte();
-			var unk1 = (byte) packet.ReadByte();
+		ushort housenumber = packet.ReadShort();
+		var index = (byte) packet.ReadByte();
+		var unk1 = (byte) packet.ReadByte();
 
-			// house is null, return
-			var house = HouseMgr.GetHouse(housenumber);
-			if (house == null)
-				return;
+		// house is null, return
+		var house = HouseMgr.GetHouse(housenumber);
+		if (house == null)
+			return;
 
-			// player is null, return
-			if (client.Player == null)
-				return;
+		// player is null, return
+		if (client.Player == null)
+			return;
 
-			// rotation only works for inside items
-			if (!client.Player.InHouse)
-				return;
+		// rotation only works for inside items
+		if (!client.Player.InHouse)
+			return;
 
-			// no permission to change the interior, return
-			if (!house.CanChangeInterior(client.Player, EDecorationPermissions.Add))
-				return;
+		// no permission to change the interior, return
+		if (!house.CanChangeInterior(client.Player, EDecorationPermissions.Add))
+			return;
 
-			var pak = new GsTcpPacketOut(client.Out.GetPacketCode(EServerPackets.HouseDecorationRotate));
-			pak.WriteShort(housenumber);
-			pak.WriteByte(index);
-			pak.WriteByte(0x01);
-			client.Out.SendTCP(pak);
-		}
+		var pak = new GsTcpPacketOut(client.Out.GetPacketCode(EServerPackets.HouseDecorationRotate));
+		pak.WriteShort(housenumber);
+		pak.WriteByte(index);
+		pak.WriteByte(0x01);
+		client.Out.SendTCP(pak);
 	}
 }

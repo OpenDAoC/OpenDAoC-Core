@@ -1,6 +1,8 @@
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Server;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 [NpcGuildScript("Spellcrafters Master")]
 public class SpellCraftingMaster : CraftMasterNpc
@@ -23,7 +25,7 @@ public class SpellCraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SpellCraftingMaster.GuildOrder");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SpellCraftingMaster.GuildOrder");
         }
 	}
 
@@ -31,7 +33,7 @@ public class SpellCraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SpellCraftingMaster.AcceptedByOrderName");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SpellCraftingMaster.AcceptedByOrderName");
         }
 	}
 
@@ -44,7 +46,7 @@ public class SpellCraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "SpellCraftingMaster.InitialEntersentence");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SpellCraftingMaster.InitialEntersentence");
         }
 	}
 }

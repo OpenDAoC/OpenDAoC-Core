@@ -1,7 +1,8 @@
 using System;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&groupsort",
 	 EPrivLevel.Player,

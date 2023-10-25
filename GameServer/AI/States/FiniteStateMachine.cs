@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using DOL.GS;
+using Core.GS.Enums;
 
-namespace DOL.AI;
+namespace Core.GS.AI;
 
 public class FiniteStateMachine
 {
-    protected Dictionary<EFSMStateType, FsmState> _states = new();
+    protected Dictionary<EFsmStateType, FsmState> _states = new();
     protected FsmState _state;
 
     public FiniteStateMachine() { }
@@ -20,13 +20,13 @@ public class FiniteStateMachine
         _states.Clear();
     }
 
-    public virtual FsmState GetState(EFSMStateType stateType)
+    public virtual FsmState GetState(EFsmStateType stateType)
     {
         _states.TryGetValue(stateType, out FsmState state);
         return state;
     }
 
-    public virtual void SetCurrentState(EFSMStateType stateType)
+    public virtual void SetCurrentState(EFsmStateType stateType)
     {
         if (_state != null)
             _state.Exit();

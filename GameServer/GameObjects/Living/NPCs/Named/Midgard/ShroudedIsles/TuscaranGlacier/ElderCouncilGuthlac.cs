@@ -1,7 +1,14 @@
-using DOL.AI.Brain;
-using DOL.Database;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Elder Council Guthlac
 public class ElderCouncilGuthlac : GameEpicBoss
@@ -21,7 +28,7 @@ public class ElderCouncilGuthlac : GameEpicBoss
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override int AttackRange
     {
@@ -30,7 +37,7 @@ public class ElderCouncilGuthlac : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -74,7 +81,7 @@ public class ElderCouncilGuthlac : GameEpicBoss
         Empathy = npcTemplate.Empathy;
         Faction = FactionMgr.GetFactionByID(140);
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
-        RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
         BodyType = (ushort)EBodyType.Giant;
 
         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -122,7 +129,7 @@ public class FrozenBomb : GameNpc
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);

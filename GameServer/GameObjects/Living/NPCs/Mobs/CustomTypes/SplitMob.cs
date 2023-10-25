@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+using Core.GS.AI;
+using Core.GS.Enums;
 
-namespace DOL.GS.Scripts;
+namespace Core.GS;
 
 public class SplitMob : GameNpc
 {

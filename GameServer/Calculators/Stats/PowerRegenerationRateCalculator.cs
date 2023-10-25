@@ -1,4 +1,8 @@
-namespace DOL.GS.PropertyCalc;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The power regen rate calculator
@@ -29,8 +33,8 @@ public class PowerRegenerationRateCalculator : PropertyCalculator
 
 		// tolakram - there is no difference per tic between combat and non combat
 
-		if (regen != 0 && ServerProperties.Properties.MANA_REGEN_RATE != 1)
-			regen *= ServerProperties.Properties.MANA_REGEN_RATE;
+		if (regen != 0 && ServerProperty.MANA_REGEN_RATE != 1)
+			regen *= ServerProperty.MANA_REGEN_RATE;
 
 		double decimals = regen - (int)regen;
 		if (Util.ChanceDouble(decimals)) 

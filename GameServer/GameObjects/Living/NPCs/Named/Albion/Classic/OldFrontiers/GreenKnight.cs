@@ -1,13 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.Styles;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Green Knight
 public class GreenKnight : GameEpicBoss
@@ -52,7 +55,7 @@ public class GreenKnight : GameEpicBoss
     }
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -70,7 +73,7 @@ public class GreenKnight : GameEpicBoss
         Empathy = npcTemplate.Empathy;
         Faction = FactionMgr.GetFactionByID(236); // fellwoods
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(236));
-        RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
         GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
         template.AddNPCEquipment(EInventorySlot.TorsoArmor, 46, 0, 0, 0); //Slot,model,color,effect,extension
@@ -85,28 +88,28 @@ public class GreenKnight : GameEpicBoss
         Styles.Add(taunt);
         MaxSpeedBase = 400;
 
-        OFGreenKnightBrain.walk1 = false;
-        OFGreenKnightBrain.walk2 = false;
-        OFGreenKnightBrain.walk3 = false;
-        OFGreenKnightBrain.walk4 = false;
-        OFGreenKnightBrain.walk5 = false;
-        OFGreenKnightBrain.Pick_healer = false;
-        OFGreenKnightBrain.walk6 = false;
-        OFGreenKnightBrain.IsSpawningTrees = false;
-        OFGreenKnightBrain.walk7 = false;
-        OFGreenKnightBrain.IsWalking = false;
-        OFGreenKnightBrain.walk8 = false;
-        OFGreenKnightBrain.walk9 = false;
-        OFGreenKnightBrain.CanHeal1 = false;
-        OFGreenKnightBrain.CanHeal2 = false;
-        OFGreenKnightBrain.CanHeal3 = false;
-        OFGreenKnightBrain.CanHeal4 = false;
-        OFGreenKnightBrain.PickPortPoint = false;
+        GreenKnightBrain.walk1 = false;
+        GreenKnightBrain.walk2 = false;
+        GreenKnightBrain.walk3 = false;
+        GreenKnightBrain.walk4 = false;
+        GreenKnightBrain.walk5 = false;
+        GreenKnightBrain.Pick_healer = false;
+        GreenKnightBrain.walk6 = false;
+        GreenKnightBrain.IsSpawningTrees = false;
+        GreenKnightBrain.walk7 = false;
+        GreenKnightBrain.IsWalking = false;
+        GreenKnightBrain.walk8 = false;
+        GreenKnightBrain.walk9 = false;
+        GreenKnightBrain.CanHeal1 = false;
+        GreenKnightBrain.CanHeal2 = false;
+        GreenKnightBrain.CanHeal3 = false;
+        GreenKnightBrain.CanHeal4 = false;
+        GreenKnightBrain.PickPortPoint = false;
 
         Flags = ENpcFlags.PEACE;
         VisibleActiveWeaponSlots = 34;
         MeleeDamageType = EDamageType.Slash;
-        OFGreenKnightBrain sbrain = new OFGreenKnightBrain();
+        GreenKnightBrain sbrain = new GreenKnightBrain();
         SetOwnBrain(sbrain);
         LoadedFromScript = false; //load from database
         SaveIntoDatabase();
@@ -131,7 +134,7 @@ public class GreenKnight : GameEpicBoss
             OF.Size = 120;
             OF.CurrentRegionID = 1; //albion Forest sauvage
             OF.MeleeDamageType = EDamageType.Slash;
-            OF.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+            OF.RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             OF.Faction = FactionMgr.GetFactionByID(236);
             OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(236));
             OF.BodyType = (ushort) EBodyType.Humanoid;
@@ -141,7 +144,7 @@ public class GreenKnight : GameEpicBoss
             OF.Y = 418687;
             OF.Z = 5012;
             OF.Heading = 3331;
-            OFGreenKnightBrain ubrain = new OFGreenKnightBrain();
+            GreenKnightBrain ubrain = new GreenKnightBrain();
             OF.SetOwnBrain(ubrain);
             OF.AddToWorld();
             OF.SaveIntoDatabase();

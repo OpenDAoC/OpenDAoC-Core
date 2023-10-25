@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
-using DOL.GS.Styles;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Styles;
 
-namespace DOL.GS
+namespace Core.GS.ECS
 {
     public class StyleComponent
     {
@@ -173,7 +175,7 @@ namespace DOL.GS
                         && p.CheckStyleStun(s)) // Make sure we don't spam stun styles like Brutalize
                         return s;
 
-            if (Util.Chance(Properties.GAMENPC_CHANCES_TO_STYLE))
+            if (Util.Chance(ServerProperty.GAMENPC_CHANCES_TO_STYLE))
             {
                 // All of the remaining lists are randomly picked from,
                 // as this creates more variety with each combat result.

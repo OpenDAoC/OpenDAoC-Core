@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Apocalypse Initializer
 public class ApocalypseInitializerBrain : StandardMobBrain
@@ -41,7 +45,7 @@ public class FamesHorsemanBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             BafMobs = false;
             StartedFames = false;
@@ -69,7 +73,7 @@ public class FamesHorsemanBrain : StandardMobBrain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "FamesBaf" && npc is GameEpicNPC)
+                        if (npc.IsAlive && npc.PackageID == "FamesBaf" && npc is GameEpicNpc)
                         {
                             AddAggroListTo(npc.Brain as StandardMobBrain);// add to aggro mobs with FamesBaf PackageID
                             BafMobs = true;
@@ -83,7 +87,7 @@ public class FamesHorsemanBrain : StandardMobBrain
     public void SpawnFateBearer()
     {
         INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160741);
-        GameEpicNPC Add = new GameEpicNPC();
+        GameEpicNpc Add = new GameEpicNpc();
         Add.LoadTemplate(npcTemplate);
         Add.X = Body.X - 100;
         Add.Y = Body.Y;
@@ -118,7 +122,7 @@ public class BellumHorsemanBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             StartedBellum = false;
             SpawnWeapons = false;
@@ -503,7 +507,7 @@ public class MorbusHorsemanBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             StartedMorbus = false;
             BafMobs3 = false;
@@ -704,7 +708,7 @@ public class FunusHorsemanBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
             StartedFunus = false;
             BafMobs4 = false;
@@ -727,7 +731,7 @@ public class FunusHorsemanBrain : StandardMobBrain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "FunusBaf" && npc is GameEpicNPC)
+                        if (npc.IsAlive && npc.PackageID == "FunusBaf" && npc is GameEpicNpc)
                         {
                             AddAggroListTo(npc.Brain as StandardMobBrain);// add to aggro mobs with FamesBaf PackageID
                             BafMobs4 = true;

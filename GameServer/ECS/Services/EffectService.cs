@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
-using ECS.Debug;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Database;
+using Core.GS.Effects;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Scripts;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS.ECS
 {
     public static class EffectService
     {
@@ -21,10 +27,10 @@ namespace DOL.GS
 
         public static void Tick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
+            GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            List<EcsGameEffect> list = EntityManager.UpdateAndGetAll<EcsGameEffect>(EEntityType.Effect, out int lastValidIndex);
+            List<EcsGameEffect> list = EntityMgr.UpdateAndGetAll<EcsGameEffect>(EEntityType.Effect, out int lastValidIndex);
 
             Parallel.For(0, lastValidIndex + 1, i =>
             {
@@ -35,16 +41,16 @@ namespace DOL.GS
                     if (effect?.EntityManagerId.IsSet != true)
                         return;
 
-                    long startTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoopMgr.GetCurrentTime();
 
                     if (effect.CancelEffect || effect.IsDisabled)
                         HandleCancelEffect(effect);
                     else
                         HandlePropertyModification(effect);
 
-                    EntityManager.Remove(effect);
+                    EntityMgr.Remove(effect);
 
-                    long stopTick = GameLoop.GetCurrentTime();
+                    long stopTick = GameLoopMgr.GetCurrentTime();
 
                     if (stopTick - startTick > 25)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Effect: {effect}  Owner: {effect.OwnerName} Time: {stopTick - startTick}ms");
@@ -284,8 +290,8 @@ namespace DOL.GS
             }
 
             effect.CancelEffect = true;
-            effect.ExpireTick = GameLoop.GameLoopTime - 1;
-            EntityManager.Add(effect);
+            effect.ExpireTick = GameLoopMgr.GameLoopTime - 1;
+            EntityMgr.Add(effect);
         }
 
         /// <summary>
@@ -321,7 +327,7 @@ namespace DOL.GS
 
             // playerCanceled param isn't used but it's there in case we eventually want to...
             effect.CancelEffect = true;
-            effect.ExpireTick = GameLoop.GameLoopTime - 1;
+            effect.ExpireTick = GameLoopMgr.GameLoopTime - 1;
             HandleCancelEffect(effect);
         }
 

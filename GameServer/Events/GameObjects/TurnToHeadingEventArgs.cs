@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 public class TurnToHeadingEventArgs : EventArgs
 {

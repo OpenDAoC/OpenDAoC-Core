@@ -1,4 +1,8 @@
-namespace DOL.GS.Commands;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+
+namespace Core.GS.Commands;
 
 // See the comments above 'using' about SendMessage translation IDs
 [Command( 

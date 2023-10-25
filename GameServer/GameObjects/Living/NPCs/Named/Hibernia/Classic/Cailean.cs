@@ -1,14 +1,16 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Cailean
-public class Cailean : GameEpicNPC
+public class Cailean : GameEpicNpc
 {
 	public Cailean() : base() { }
 
@@ -69,7 +71,7 @@ public class Cailean : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -104,7 +106,7 @@ public class Cailean : GameEpicNPC
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
 
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		CaileanBrain sbrain = new CaileanBrain();
 		SetOwnBrain(sbrain);
 		LoadedFromScript = false;//load from database

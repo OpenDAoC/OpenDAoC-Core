@@ -1,44 +1,44 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerRules;
+using Core.GS.Commands;
+using Core.GS.Enums;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Scripts.Custom;
+
+[Command("&dfowner", EPrivLevel.Admin,
+    "Changes the Realm owning access to Darkness Falls", "&dfowner <Realm>")]
+
+public class DfOwnerCommand : ACommandHandler, ICommandHandler
 {
-    [Command("&dfowner", EPrivLevel.Admin,
-        "Changes the Realm owning access to Darkness Falls", "&dfowner <Realm>")]
+    private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    public class DfOwnerCommand : ACommandHandler, ICommandHandler
+    public void OnCommand(GameClient client, string[] args)
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        public void OnCommand(GameClient client, string[] args)
+        if (args.Length == 2)
         {
-            if (args.Length == 2)
+            try
             {
-                try
+                byte newRealm = Convert.ToByte(args[1]);
+                var player = client.Player;
+
+                if (newRealm < 0 || newRealm > 3)
                 {
-                    byte newRealm = Convert.ToByte(args[1]);
-                    var player = client.Player;
-
-                    if (newRealm < 0 || newRealm > 3)
-                    {
-                        if (client != null && player != null) 
-                            client.Out.SendMessage(player.Name + "'s realm can only be set to numbers 0-3!", EChatType.CT_Important,
-                                EChatLoc.CL_SystemWindow);
-                        return;
-                    }
-                    DfEnterJumpPoint.SetDFOwner(player, (ERealm)newRealm);
-
+                    if (client != null && player != null) 
+                        client.Out.SendMessage(player.Name + "'s realm can only be set to numbers 0-3!", EChatType.CT_Important,
+                            EChatLoc.CL_SystemWindow);
+                    return;
                 }
+                DfEnterJumpPoint.SetDFOwner(player, (ERealm)newRealm);
 
-                catch (Exception)
-                {
-                    DisplaySyntax(client);
-                }
             }
-            else
-                DisplaySyntax(client);
-        }
 
+            catch (Exception)
+            {
+                DisplaySyntax(client);
+            }
+        }
+        else
+            DisplaySyntax(client);
     }
+
 }

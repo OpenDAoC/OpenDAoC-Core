@@ -1,4 +1,4 @@
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 public class YellEventArgs : SayEventArgs
 {

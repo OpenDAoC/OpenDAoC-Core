@@ -1,4 +1,4 @@
-namespace DOL.GS.Housing;
+namespace Core.GS.Enums;
 
 public enum EPermissionType
 {

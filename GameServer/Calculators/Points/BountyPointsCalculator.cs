@@ -1,6 +1,7 @@
 ﻿using System;
+using Core.GS.Enums;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 [PropertyCalculator(EProperty.BountyPoints)]
 public class BountyPointsCalculator : PropertyCalculator

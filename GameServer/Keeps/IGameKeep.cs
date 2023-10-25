@@ -1,31 +1,32 @@
 using System.Collections.Generic;
-using DOL.Database;
+using Core.Database;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.World;
 
-namespace DOL.GS.Keeps
+namespace Core.GS.Keeps;
+
+public interface IGameKeep
 {
-	public interface IGameKeep
-	{
-		List<IGameKeepComponent> SentKeepComponents { get; }
-		
-		Dictionary<string, GameKeepGuard> Guards { get; }
-		Dictionary<string, GameKeepBanner> Banners { get; }
+	List<IGameKeepComponent> SentKeepComponents { get; }
+	
+	Dictionary<string, GameKeepGuard> Guards { get; }
+	Dictionary<string, GameKeepBanner> Banners { get; }
 
-		void LoadFromDatabase(DataObject keep);
-		void SaveIntoDatabase();
-		
-		
-		ushort KeepID { get; }
-		
-		int X { get; }
-		int Y { get; }
-		int Z { get; }
-		ushort Heading { get; }
-		Region CurrentRegion { get; }
-		
-		GuildUtil Guild { get; }
-		ERealm Realm { get; }
-		byte Level { get; }
-		
-		byte EffectiveLevel(byte level);		
-	}
+	void LoadFromDatabase(DataObject keep);
+	void SaveIntoDatabase();
+	
+	ushort KeepID { get; }
+	
+	int X { get; }
+	int Y { get; }
+	int Z { get; }
+	ushort Heading { get; }
+	Region CurrentRegion { get; }
+	
+	GuildUtil Guild { get; }
+	ERealm Realm { get; }
+	byte Level { get; }
+	
+	byte EffectiveLevel(byte level);		
 }

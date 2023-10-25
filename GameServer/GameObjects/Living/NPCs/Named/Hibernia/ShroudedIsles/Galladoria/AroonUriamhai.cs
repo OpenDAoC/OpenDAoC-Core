@@ -1,10 +1,14 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Aroon the Uriamhai
 public class AroonUriamhai : GameEpicBoss
@@ -277,7 +281,7 @@ public class AroonUriamhai : GameEpicBoss
 
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
 
     public override int MaxHealth
@@ -302,7 +306,7 @@ public class AroonUriamhai : GameEpicBoss
     }*/
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -331,7 +335,7 @@ public class AroonUriamhai : GameEpicBoss
         Intelligence = npcTemplate.Intelligence;
         Charisma = npcTemplate.Charisma;
         Empathy = npcTemplate.Empathy;
-        RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
         Faction = FactionMgr.GetFactionByID(96);
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
@@ -433,7 +437,7 @@ public class CorpScaith : GameNpc
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
 
     public override int AttackRange
@@ -515,7 +519,7 @@ public class SpioradScaith : GameNpc //thrust resist
     public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
 
     public override int AttackRange
@@ -619,7 +623,7 @@ public class RopadhScaith : GameNpc //crush resist
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override short Strength { get => base.Strength; set => base.Strength = 200; }
     public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -724,7 +728,7 @@ public class DamhnaScaith : GameNpc //Body resist
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override short Strength { get => base.Strength; set => base.Strength = 200; }
     public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -829,7 +833,7 @@ public class FuinneamgScaith : GameNpc //Cold resist
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override short Strength { get => base.Strength; set => base.Strength = 200; }
     public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -935,7 +939,7 @@ public class BruScaith : GameNpc //Energy resist
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override short Strength { get => base.Strength; set => base.Strength = 200; }
     public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -1041,7 +1045,7 @@ public class FuarScaith : GameNpc //Heat resist
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override short Strength { get => base.Strength; set => base.Strength = 200; }
     public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -1147,7 +1151,7 @@ public class TaesScaith : GameNpc //Matter resist
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override short Strength { get => base.Strength; set => base.Strength = 200; }
     public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
@@ -1254,7 +1258,7 @@ public class ScorScaith : GameNpc //Spirit resist
     }
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
     public override short Strength { get => base.Strength; set => base.Strength = 200; }
     public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }

@@ -1,8 +1,8 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
+using Core.GS.AI;
+using Core.GS.Enums;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class HighPriestAndania : GameNpc
 {

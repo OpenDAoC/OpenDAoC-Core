@@ -1,20 +1,19 @@
-using DOL.GS.Spells;
+using Core.GS.Spells;
 
-namespace DOL.GS.Effects
+namespace Core.GS.Effects;
+
+public class FocusShellEffect : GameSpellEffect
 {
-	public class FocusShellEffect : GameSpellEffect
-	{
-		public FocusShellEffect(ISpellHandler handler, int duration, int pulseFreq, double effectiveness) : base(handler, duration, pulseFreq, effectiveness) { }
+	public FocusShellEffect(ISpellHandler handler, int duration, int pulseFreq, double effectiveness) : base(handler, duration, pulseFreq, effectiveness) { }
 
-		/// <summary>
-		/// There is no duration!
-		/// </summary>
-		public new int RemainingTime
+	/// <summary>
+	/// There is no duration!
+	/// </summary>
+	public new int RemainingTime
+	{
+		get
 		{
-			get
-			{
-				return 1;
-			}
+			return 1;
 		}
 	}
 }

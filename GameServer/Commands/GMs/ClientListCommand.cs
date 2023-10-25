@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using Core.GS.ECS;
+using Core.GS.Enums;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&clientlist",

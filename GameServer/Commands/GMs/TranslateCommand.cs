@@ -1,7 +1,10 @@
-﻿using DOL.Database;
-using DOL.Language;
+﻿using Core.Database;
+using Core.Database.Enums;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Languages;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
     [Command("&translate", EPrivLevel.GM,
          "Use '/translate add [Language] [TranslationId] [Text]' to add a new translation.",
@@ -46,7 +49,7 @@ namespace DOL.GS.Commands
                                 return;
                             }
 
-                            LanguageDataObject translation = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], LanguageDataObject.eTranslationIdentifier.eSystem);
+                            LanguageDataObject translation = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], ETranslationIdType.eSystem);
                             if (translation != null)
                             {
                                 DisplayMessage(client, "[Language-Manager] This translation id is already in use by the given language! ( Language <" + args[2].ToUpper() + "> - TranslationId <" + args[3] + "> )");
@@ -97,7 +100,7 @@ namespace DOL.GS.Commands
                                 DisplayMessage(client, "[Language-Manager] Can't add language object, there is already another one!");
                             else
                             {
-                                lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], LanguageDataObject.eTranslationIdentifier.eSystem);
+                                lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], ETranslationIdType.eSystem);
 
                                 if (lngObj != null)
                                     DisplayMessage(client, "[Language-Manager] The combination of the given TranslationId <" + args[3] + "> and Language <" + args[2].ToUpper() + "> is already in use!");
@@ -190,7 +193,7 @@ namespace DOL.GS.Commands
                             DisplayMessage(client, "[Language-Manager] Usage: '/translate refresh [Language] [TranslationId] [Text]'");
                         else
                         {
-                            LanguageDataObject lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], LanguageDataObject.eTranslationIdentifier.eSystem);
+                            LanguageDataObject lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], ETranslationIdType.eSystem);
 
                             if (lngObj == null)
                                 DisplayMessage(client, "[Language-Manager] Can't find TranslationId <" + args[3] + "> (Language <" + args[2].ToUpper() + "> !");
@@ -222,7 +225,7 @@ namespace DOL.GS.Commands
                             }
                             else
                             {
-                                lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], LanguageDataObject.eTranslationIdentifier.eSystem);
+                                lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], ETranslationIdType.eSystem);
 
                                 if (lngObj == null)
                                 {
@@ -314,7 +317,7 @@ namespace DOL.GS.Commands
                             DisplayMessage(client, "[Language-Manager] Usage: '/translate show [Language] [TranslationId]'");
                         else
                         {
-                            LanguageDataObject lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], LanguageDataObject.eTranslationIdentifier.eSystem);
+                            LanguageDataObject lngObj = LanguageMgr.GetLanguageDataObject(args[2].ToUpper(), args[3], ETranslationIdType.eSystem);
 
                             if (lngObj == null)
                                 DisplayMessage(client, "[Language-Manager] Can't find language object. ( Language <" + args[2].ToUpper() +

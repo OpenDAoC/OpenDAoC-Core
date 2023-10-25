@@ -1,7 +1,9 @@
-using DOL.Database;
+using Core.Database;
+using Core.Database.Enums;
+using Core.Database.Tables;
 using log4net;
 
-namespace DOL.GS.DatabaseConverters;
+namespace Core.GS.Database;
 
 /// <summary>
 /// Converts the database format to the version 3
@@ -21,7 +23,7 @@ public class Version004 : IDbConverter
 	{
 		log.Info("Database Version 4 Convert Started");
 
-		if (GameServer.Instance.Configuration.DBType == DOL.Database.Connection.EConnectionType.DATABASE_XML)
+		if (GameServer.Instance.Configuration.DBType == EConnectionType.DATABASE_XML)
 		{
 			log.Info("You have an XML database loaded, this converter will only work with MySQL, skipping");
 			return;
@@ -32,7 +34,7 @@ public class Version004 : IDbConverter
 		int count = 0;
 		foreach (DbMob mob in mobs)
 		{
-			mob.ClassType = "DOL.GS.GameNPC";
+			mob.ClassType = "Core.GS.GameNpc";
 			GameServer.Database.SaveObject(mob);
 			count++;
 		}

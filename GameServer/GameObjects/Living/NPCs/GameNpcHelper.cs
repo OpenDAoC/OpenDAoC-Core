@@ -1,11 +1,14 @@
-﻿namespace DOL.GS;
+﻿using Core.GS.AI;
+using Core.GS.Skills;
+using Core.GS.Spells;
+
+namespace Core.GS;
 
 /// <summary>
 /// GameNPC Helper Class is a collection of (static) GameNPC methods to avoid clutter in the GameNPC class itself.
 /// </summary>
 public static class GameNpcHelper
 {
-
 	#region GameNPC cast methods
 	/// <summary>
 	/// Cast a spell on player and its pets/subpets if available.
@@ -26,7 +29,7 @@ public static class GameNpcHelper
 			if (sourceNPC.IsWithinRadius(player.ControlledBrain.Body, spell.Range))
 				sourceNPC.CastSpell(spell, line, checkLOS);
 			if (player.ControlledBrain.Body.ControlledNpcList != null)
-				foreach (AI.Brain.IControlledBrain subpet in player.ControlledBrain.Body.ControlledNpcList)
+				foreach (IControlledBrain subpet in player.ControlledBrain.Body.ControlledNpcList)
 					if (subpet != null && sourceNPC.IsWithinRadius(subpet.Body, spell.Range))
 					{
 						sourceNPC.TargetObject = subpet.Body;

@@ -1,6 +1,8 @@
-﻿using DOL.Language;
+﻿using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Server;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 [NpcGuildScript("Basic Crafters Master")]
 public class BasicCraftingMaster: CraftMasterNpc
@@ -35,12 +37,12 @@ public class BasicCraftingMaster: CraftMasterNpc
 
 	public override string GUILD_ORDER
 	{
-        get { return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "BasicCraftingMaster.GuildOrder"); }
+        get { return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "BasicCraftingMaster.GuildOrder"); }
 	}
 
 	public override string ACCEPTED_BY_ORDER_NAME
 	{
-        get { return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "BasicCraftingMaster.AcceptedByOrderName"); }
+        get { return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "BasicCraftingMaster.AcceptedByOrderName"); }
 	}
 	public override string InitialEntersentence
 	{

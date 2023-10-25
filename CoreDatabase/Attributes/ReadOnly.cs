@@ -1,6 +1,6 @@
 using System;
 
-namespace DOL.Database.Attributes
+namespace Core.Database
 {
 	/// <summary>
 	/// Attribute to indicate the column is read only once created

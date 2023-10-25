@@ -1,8 +1,11 @@
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
      "&broadcast",
@@ -56,7 +59,7 @@ public class BroadcastCommand : ACommandHandler, ICommandHandler
     private List<GamePlayer> GetTargets(GamePlayer player)
     {
         List<GamePlayer> players = new();
-        EBroadcastType type = (EBroadcastType) ServerProperties.Properties.BROADCAST_TYPE;
+        EBroadcastType type = (EBroadcastType) ServerProperty.BROADCAST_TYPE;
 
         switch (type)
         {
@@ -64,7 +67,7 @@ public class BroadcastCommand : ACommandHandler, ICommandHandler
             {
                 bool found = false;
 
-                foreach (AbstractArea area in player.CurrentAreas)
+                foreach (AArea area in player.CurrentAreas)
                 {
                     if (area.CanBroadcast)
                     {

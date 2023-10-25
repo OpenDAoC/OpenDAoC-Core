@@ -1,8 +1,14 @@
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class SubPet : BonedancerPet
 {
@@ -83,12 +89,12 @@ public class SubPet : BonedancerPet
 
         base.SortSpells();
 
-        if (Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
+        if (ServerProperty.PET_SCALE_SPELL_MAX_LEVEL > 0)
         {
             int scaleLevel = Level;
 
             // Some minions have multiple spells, so only grab their owner's spec once per pet.
-            if (Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
+            if (ServerProperty.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
                 && Brain is IControlledBrain brain && brain.GetPlayerOwner() is GamePlayer BD)
             {
                 int spec = BD.GetModifiedSpecLevel(PetSpecLine);
@@ -108,7 +114,7 @@ public class SubPet : BonedancerPet
     /// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
     public override void ScalePetSpell(Spell spell, int casterLevel = 0)
     {
-        if (Properties.PET_SCALE_SPELL_MAX_LEVEL < 1 || spell == null || Level < 1)
+        if (ServerProperty.PET_SCALE_SPELL_MAX_LEVEL < 1 || spell == null || Level < 1)
             return;
 
         if (casterLevel < 1)
@@ -116,7 +122,7 @@ public class SubPet : BonedancerPet
             casterLevel = Level;
 
             // Style procs and subspells can't be scaled in advance, so we need to check BD spec here as well.
-            if (Properties.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
+            if (ServerProperty.PET_CAP_BD_MINION_SPELL_SCALING_BY_SPEC
                 && Brain is IControlledBrain brain && brain.GetPlayerOwner() is GamePlayer BD)
             {
                 int spec = BD.GetModifiedSpecLevel(PetSpecLine);

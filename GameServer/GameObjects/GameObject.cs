@@ -3,14 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Expansions.Foundations;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Quests;
+using Core.GS.Server;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS
+namespace Core.GS
 {
 	/// <summary>
 	/// This class holds all information that
@@ -492,9 +498,9 @@ namespace DOL.GS
 			if (article == 0)
 			{
 				if (firstLetterUppercase)
-					return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetName.Article1", Name);
+					return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetName.Article1", Name);
 				else
-					return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetName.Article2", Name);
+					return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetName.Article2", Name);
 			}
 			else
 			{
@@ -502,16 +508,16 @@ namespace DOL.GS
 				if (m_vowels.IndexOf(Name[0]) != -1)
 				{
 					if (firstLetterUppercase)
-						return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetName.Article3", Name);
+						return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetName.Article3", Name);
 					else
-						return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetName.Article4", Name);
+						return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetName.Article4", Name);
 				}
 				else
 				{
 					if (firstLetterUppercase)
-						return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetName.Article5", Name);
+						return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetName.Article5", Name);
 					else
-						return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetName.Article6", Name);
+						return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetName.Article6", Name);
 				}
 			}
 		}
@@ -540,19 +546,19 @@ namespace DOL.GS
 			{
 				default: // Subjective
 					if (firstLetterUppercase)
-						return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun1");
+						return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun1");
 					else
-						return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun2");
+						return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun2");
 				case 1: // Possessive
 					if (firstLetterUppercase)
-						return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun3");
+						return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun3");
 					else
-						return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun4");
+						return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun4");
 				case 2: // Objective
 					if (firstLetterUppercase)
-						return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun5");
+						return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun5");
 					else
-						return LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun6");
+						return LanguageMgr.GetTranslation(ServerProperty.DB_LANGUAGE, "GameObject.GetPronoun.Pronoun6");
 			}
 		}
 
@@ -695,7 +701,7 @@ namespace DOL.GS
 
 			Notify(GameObjectEvent.AddToWorld, this);
 			ObjectState = eObjectState.Active;
-			m_spawnTick = GameLoop.GameLoopTime;
+			m_spawnTick = GameLoopMgr.GameLoopTime;
 
 			if (m_isDataQuestsLoaded == false)
 			{
@@ -1090,7 +1096,7 @@ namespace DOL.GS
 
 			var cachedValues = _objectsInRadiusCache[objectType];
 
-			if (cachedValues.Item3 >= GameLoop.GameLoopTime)
+			if (cachedValues.Item3 >= GameLoopMgr.GameLoopTime)
 			{
 				if (cachedValues.Item2 <= radiusToCheck)
 				{
@@ -1110,7 +1116,7 @@ namespace DOL.GS
 			}
 
 			result = CurrentRegion.GetInRadius<T>(this, objectType, radiusToCheck);
-			_objectsInRadiusCache[objectType] = (result, radiusToCheck, GameLoop.GameLoopTime + 500);
+			_objectsInRadiusCache[objectType] = (result, radiusToCheck, GameLoopMgr.GameLoopTime + 500);
 			return result;
 		}
 

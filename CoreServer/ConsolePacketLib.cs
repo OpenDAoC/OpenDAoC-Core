@@ -2,16 +2,21 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.Housing;
-using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.Database.Tables;
+using Core.GS;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
+using Core.GS.Packets;
+using Core.GS.Packets.Server;
+using Core.GS.Players;
+using Core.GS.Quests;
+using Core.GS.Skills;
+using Core.GS.World;
 using log4net;
 
-namespace DOLGameServerConsole
+namespace Core.Server
 {
 	/// <summary>
 	/// The packetlib for dummy console clients for /commands
@@ -200,8 +205,8 @@ namespace DOLGameServerConsole
 		public void SendWarmapUpdate(ICollection<IGameKeep> list) { }
 		public void SendWarmapDetailUpdate(List<List<byte>> fights, List<List<byte>> groups) { }
 		public void SendWarmapBonuses() { }
-		public void SendCheckLOS(GameObject Checker, GameObject Target, DOL.GS.PacketHandler.CheckLOSResponse callback) { }
-		public void SendCheckLOS(GameObject source, GameObject target, DOL.GS.PacketHandler.CheckLOSMgrResponse callback) { }
+		public void SendCheckLOS(GameObject Checker, GameObject Target, CheckLOSResponse callback) { }
+		public void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback) { }
 		public void SendLivingDataUpdate(GameLiving living, bool updateStrings) { }
 		public void SendPlayerTitles() { }
 		public void SendPlayerTitleUpdate(GamePlayer player) { }

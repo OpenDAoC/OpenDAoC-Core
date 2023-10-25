@@ -1,9 +1,10 @@
 using System;
 using System.Text;
-using DOL.Events;
-using DOL.GS;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
 
-namespace DOL.AI;
+namespace Core.GS.AI;
 
 /// <summary>
 /// This class is the base of all artificial intelligence in game objects
@@ -37,7 +38,7 @@ public abstract class ABrain : IManagedEntity
     /// <returns>true if started</returns>
     public virtual bool Start()
     {
-        return EntityManager.Add(this);
+        return EntityMgr.Add(this);
     }
 
     /// <summary>
@@ -46,7 +47,7 @@ public abstract class ABrain : IManagedEntity
     /// <returns>true if stopped</returns>
     public virtual bool Stop()
     {
-        return EntityManager.Remove(this);
+        return EntityMgr.Remove(this);
     }
 
     /// <summary>

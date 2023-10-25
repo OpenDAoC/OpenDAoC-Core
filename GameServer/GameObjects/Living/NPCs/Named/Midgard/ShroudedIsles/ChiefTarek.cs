@@ -1,9 +1,12 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Server;
+using Core.GS.Skills;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class ChiefTarek : GameEpicBoss
 {
@@ -36,7 +39,7 @@ public class ChiefTarek : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -66,7 +69,7 @@ public class ChiefTarek : GameEpicBoss
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
 
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		ChiefTarekBrain sbrain = new ChiefTarekBrain();
 		SetOwnBrain(sbrain);
 		LoadedFromScript = false;//load from database

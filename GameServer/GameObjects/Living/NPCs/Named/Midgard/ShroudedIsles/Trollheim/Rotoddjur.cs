@@ -1,12 +1,16 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Rotoddjur
-public class Rotoddjur : GameEpicNPC
+public class Rotoddjur : GameEpicNpc
 {
 	public Rotoddjur() : base() { }
 
@@ -73,7 +77,7 @@ public class Rotoddjur : GameEpicNPC
 		Piety = npcTemplate.Piety;
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 		Faction = FactionMgr.GetFactionByID(150);
 		Faction.AddFriendFaction(FactionMgr.GetFactionByID(150));

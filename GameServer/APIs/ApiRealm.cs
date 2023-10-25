@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.GS.Keeps;
-using DOL.GS.ServerRules;
+using Core.GS.Enums;
+using Core.GS.Keeps;
+using Core.GS.Server;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace DOL.GS.API;
+namespace Core.GS.APIs;
 
 public class ApiRealm
 {

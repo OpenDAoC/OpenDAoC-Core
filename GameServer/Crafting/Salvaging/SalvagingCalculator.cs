@@ -94,10 +94,11 @@ Update databasename.itemtemplate set Extension = 3 where Id_nb like "%superior_w
  */
 
 using System.Text.RegularExpressions;
-using DOL.Database;
-using DOL.GS.ServerProperties;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Server;
 
-namespace DOL.GS.SalvageCalc
+namespace Core.GS.Crafting
 {
     public struct SalvageReturn
     {
@@ -2278,7 +2279,7 @@ namespace DOL.GS.SalvageCalc
                         break;
                 }
 
-                Yield.Count = (int) (Yield.Count * Properties.SALVAGE_YIELD_MULTIPLIER);
+                Yield.Count = (int) (Yield.Count * ServerProperty.SALVAGE_YIELD_MULTIPLIER);
 
                 #region AtlasROGs
                 

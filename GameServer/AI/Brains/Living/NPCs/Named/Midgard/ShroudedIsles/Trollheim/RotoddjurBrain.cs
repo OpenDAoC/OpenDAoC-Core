@@ -1,7 +1,11 @@
-using DOL.Database;
-using DOL.GS;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class RotoddjurBrain : StandardMobBrain
 {
@@ -17,7 +21,7 @@ public class RotoddjurBrain : StandardMobBrain
 	{
 		if(!CheckProximityAggro())
         {
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			IsPulled = false;
 			if (!RemoveAdds)

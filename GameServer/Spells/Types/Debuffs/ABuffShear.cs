@@ -1,9 +1,10 @@
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
+using Core.GS.AI;
+using Core.GS.Effects;
+using Core.GS.Enums;
+using Core.GS.Skills;
 
-namespace DOL.GS.Spells;
+namespace Core.GS.Spells;
 
 /// <summary>
 /// Base class for all buff shearing spells

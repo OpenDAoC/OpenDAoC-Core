@@ -1,4 +1,4 @@
-﻿namespace DOL.GS;
+﻿namespace Core.GS.Enums;
 
 public enum EPrivLevel : uint
 {

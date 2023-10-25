@@ -1,12 +1,18 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Flame
-public class Flame : GameEpicNPC
+public class Flame : GameEpicNpc
 {
 	public Flame() : base() { }
 
@@ -37,7 +43,7 @@ public class Flame : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -67,7 +73,7 @@ public class Flame : GameEpicNPC
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
 
-		RespawnInterval = ServerProperties.Properties.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_EPIC_QUEST_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		FlameBrain sbrain = new FlameBrain();
 		SetOwnBrain(sbrain);
 		LoadedFromScript = false;//load from database
@@ -111,7 +117,7 @@ public class Flame : GameEpicNPC
 #endregion Flame
 
 #region Luriquay
-public class Luriquay : GameEpicNPC
+public class Luriquay : GameEpicNpc
 {
 	public Luriquay() : base() { }
 
@@ -142,7 +148,7 @@ public class Luriquay : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -203,7 +209,7 @@ public class Luriquay : GameEpicNPC
 #endregion Luriquay
 
 #region Flame Normal mob for quest
-public class FlameNormal : GameEpicNPC
+public class FlameNormal : GameEpicNpc
 {
 	public FlameNormal() : base() { }
 
@@ -228,7 +234,7 @@ public class FlameNormal : GameEpicNPC
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);

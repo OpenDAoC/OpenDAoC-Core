@@ -1,12 +1,15 @@
 using System;
 using System.Collections;
-using DOL.Database;
-using DOL.GS.Keeps;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database;
+using Core.Database.Enums;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Keeps;
+using Core.GS.Languages;
+using Core.GS.Scripts.Custom;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	/// <summary>
 	/// Various keep guard commands
@@ -243,7 +246,7 @@ namespace DOL.GS.Commands
                             guard.LoadedFromScript = false;
                             guard.SaveIntoDatabase();
 							
-							foreach (AbstractArea area in guard.CurrentAreas)
+							foreach (AArea area in guard.CurrentAreas)
 							{
 								if (area is KeepArea)
 								{
@@ -258,7 +261,7 @@ namespace DOL.GS.Commands
 							guard.AddToWorld();
 
 							if (guard.Component != null && guard.Component.Keep != null)
-								guard.Component.Keep.Guards.Add(DOL.Database.UniqueID.IdGenerator.GenerateID(), guard);
+								guard.Component.Keep.Guards.Add(IdGenerator.GenerateID(), guard);
 						}
 
 						GuardPositionMgr.FillPositions();

@@ -1,13 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.Database.Enums;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Scripts;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS
 {
     public class GameInventoryItem : DbInventoryItem, IGameInventoryItem, ITranslatableObject {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
@@ -36,9 +42,9 @@ namespace DOL.GS
             ObjectId = item.ObjectId;
         }
 
-        public virtual LanguageDataObject.eTranslationIdentifier TranslationIdentifier
+        public virtual ETranslationIdType TranslationIdentifier
         {
-            get { return LanguageDataObject.eTranslationIdentifier.eItem; }
+            get { return ETranslationIdType.eItem; }
         }
 
         /// <summary>
@@ -261,7 +267,7 @@ namespace DOL.GS
             {
                 GamePlayer player = owner as GamePlayer;
 
-                if (ConditionPercent > 70 && Util.Chance(ServerProperties.Properties.ITEM_CONDITION_LOSS_CHANCE))
+                if (ConditionPercent > 70 && Util.Chance(ServerProperty.ITEM_CONDITION_LOSS_CHANCE))
                 {
                     int oldPercent = ConditionPercent;
                     double con = GamePlayer.GetConLevel(player.Level, Level);
@@ -305,7 +311,7 @@ namespace DOL.GS
             {
                 GamePlayer player = owner as GamePlayer;
 
-                if (ConditionPercent > 70 && Util.Chance(ServerProperties.Properties.ITEM_CONDITION_LOSS_CHANCE))
+                if (ConditionPercent > 70 && Util.Chance(ServerProperty.ITEM_CONDITION_LOSS_CHANCE))
                 {
                     int oldPercent = ConditionPercent;
                     double con = GamePlayer.GetConLevel(player.Level, Level);
@@ -1782,7 +1788,7 @@ namespace DOL.GS
             }
 
             delve.Add("");
-            delve.Add("   Value/Price: " + MoneyMgr.GetShortString(Price) + " / " + MoneyMgr.GetShortString((long)(Price * (long)ServerProperties.Properties.ITEM_SELL_RATIO * .01)));
+            delve.Add("   Value/Price: " + MoneyMgr.GetShortString(Price) + " / " + MoneyMgr.GetShortString((long)(Price * (long)ServerProperty.ITEM_SELL_RATIO * .01)));
             delve.Add("Count/MaxCount: " + Count + " / " + MaxCount);
             delve.Add("        Weight: " + (Weight / 10.0f) + "lbs");
             delve.Add("       Quality: " + Quality + "%");

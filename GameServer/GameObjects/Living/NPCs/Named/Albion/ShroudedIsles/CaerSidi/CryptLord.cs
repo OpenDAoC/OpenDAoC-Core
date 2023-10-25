@@ -1,7 +1,11 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+﻿using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class CryptLord : GameEpicBoss
 {
@@ -24,12 +28,12 @@ public class CryptLord : GameEpicBoss
     }
     public virtual int COifficulty
     {
-        get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
+        get { return ServerProperty.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
     }
 
     public override double AttackDamage(DbInventoryItem weapon)
     {
-        return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
+        return base.AttackDamage(weapon) * Strength / 100 * ServerProperty.EPICS_DMG_MULTIPLIER;
     }
 
     public override int MaxHealth
@@ -45,7 +49,7 @@ public class CryptLord : GameEpicBoss
 
     public override bool HasAbility(string keyName)
     {
-        if (IsAlive && keyName == GS.Abilities.CCImmunity)
+        if (IsAlive && keyName == AbilityConstants.CCImmunity)
             return true;
 
         return base.HasAbility(keyName);
@@ -78,7 +82,7 @@ public class CryptLord : GameEpicBoss
         Piety = npcTemplate.Piety;
         Intelligence = npcTemplate.Intelligence;
         Empathy = npcTemplate.Empathy;
-        RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
+        RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
         Faction = FactionMgr.GetFactionByID(64);
         Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 

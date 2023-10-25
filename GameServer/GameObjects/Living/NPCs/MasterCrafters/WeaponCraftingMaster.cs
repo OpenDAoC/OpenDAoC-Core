@@ -1,6 +1,8 @@
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Server;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 [NpcGuildScript("Weaponsmiths Master")]
 public class WeaponCraftingMaster : CraftMasterNpc
@@ -27,7 +29,7 @@ public class WeaponCraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "WeaponCraftingMaster.GuildOrder");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "WeaponCraftingMaster.GuildOrder");
         }
 	}
 
@@ -35,7 +37,7 @@ public class WeaponCraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "WeaponCraftingMaster.AcceptedByOrderName");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "WeaponCraftingMaster.AcceptedByOrderName");
         }
 	}
 
@@ -48,7 +50,7 @@ public class WeaponCraftingMaster : CraftMasterNpc
 	{
 		get
 		{
-            return LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "WeaponCraftingMaster.InitialEntersentence");
+            return LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "WeaponCraftingMaster.InitialEntersentence");
         }
 	}
 }

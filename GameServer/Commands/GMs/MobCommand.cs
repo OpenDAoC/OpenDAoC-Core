@@ -3,21 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.AI;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.Movement;
-using DOL.GS.PacketHandler;
-using DOL.GS.Quests;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Database;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.GameUtils;
+using Core.GS.Quests;
+using Core.GS.Scripts;
+using Core.GS.Skills;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&mob", //command to handle
 	     EPrivLevel.GM, //minimum privelege level
 	     "Mob creation and modification commands.", //command description
 	     // usage
-	     "'/mob create [ClassName(DOL.GS.GameNPC)] [eRealm(0)]' to create a new mob.",
+	     "'/mob create [ClassName(Core.GS.GameNpc)] [eRealm(0)]' to create a new mob.",
 	     "'/mob fastcreate <ModelID> <level> [save(default = 0; use 1 to save)] <name>' to create mob with specified info.",
 	     "'/mob nfastcreate <ModelID> <level> <number> [radius(10)] [name]' to create multiple mobs within radius.",
 	     "'/mob nrandcreate <number> [radius(50)]' to create multiple random mobs within radius.",
@@ -273,7 +278,7 @@ namespace DOL.GS.Commands
 
         private void create(GameClient client, string[] args)
 		{
-			string theType = "DOL.GS.GameNPC";
+			string theType = "Core.GS.GameNpc";
 			byte realm = 0;
 
 			if (args.Length > 2)
@@ -519,8 +524,8 @@ namespace DOL.GS.Commands
 				GameNpc mob = new GameNpc();
 
 				//Fill the object variables
-				int x = client.Player.X + DOL.GS.Util.Random(-radius, radius);
-				int y = client.Player.Y + DOL.GS.Util.Random(-radius, radius);
+				int x = client.Player.X + Util.Random(-radius, radius);
+				int y = client.Player.Y + Util.Random(-radius, radius);
 				mob.X = Math.Abs(x);
 				mob.Y = Math.Abs(y);
 				mob.Z = client.Player.Z;

@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
+using Core.GS.ECS;
+using Core.GS.Enums;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&heal",

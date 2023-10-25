@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DOL.Database;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.Enums;
 
-namespace DOL.GS;
+namespace Core.GS.Players;
 
 public class RealmLoyaltyMgr
-
 {
     private static Dictionary<GamePlayer, PlayerLoyaltyUtil> _CachedPlayerLoyaltyDict;
 

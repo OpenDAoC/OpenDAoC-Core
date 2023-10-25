@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command(
 		"&npc",

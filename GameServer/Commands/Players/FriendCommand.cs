@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
-using DOL.GS.Friends;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Players;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&friend",

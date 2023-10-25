@@ -1,6 +1,6 @@
-using DOL.GS.PacketHandler;
+using Core.GS.Enums;
 
-namespace DOL.GS.Trainer;
+namespace Core.GS;
 
 [NpcGuildScript("Mauler Trainer", ERealm.Midgard)]
 public class MidgardMaulerTrainer : GameTrainer

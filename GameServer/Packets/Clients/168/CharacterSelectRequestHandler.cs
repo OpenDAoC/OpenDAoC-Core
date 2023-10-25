@@ -1,69 +1,76 @@
-using DOL.Events;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.Packets.Server;
+using Core.GS.Players;
 
-namespace DOL.GS.PacketHandler.Client.v168
+namespace Core.GS.Packets.Clients;
+
+[PacketHandler(EPacketHandlerType.TCP, EClientPackets.CharacterSelectRequest, "Handles setting SessionID",
+    EClientStatus.LoggedIn)]
+public class CharacterSelectRequestHandler : IPacketHandler
 {
-    [PacketHandler(EPacketHandlerType.TCP, EClientPackets.CharacterSelectRequest, "Handles setting SessionID", EClientStatus.LoggedIn)]
-    public class CharacterSelectRequestHandler : IPacketHandler
+    public void HandlePacket(GameClient client, GsPacketIn packet)
     {
-        public void HandlePacket(GameClient client, GsPacketIn packet)
+        // 'GamePlayer' instantiation was moved to 'WorldInitRequestHandler' for game versions superior to 1124, because it didn't prevent multiple instantation correctly.
+        // Prior versions are still handled here because they're untested.
+        if (client.Version >= EClientVersion.Version1124)
         {
-            // 'GamePlayer' instantiation was moved to 'WorldInitRequestHandler' for game versions superior to 1124, because it didn't prevent multiple instantation correctly.
-            // Prior versions are still handled here because they're untested.
-            if (client.Version >= GameClient.eClientVersion.Version1124)
-            {
-                client.Out.SendLoginGranted();
-                client.Out.SendSessionID();
-                return;
-            }
+            client.Out.SendLoginGranted();
+            client.Out.SendSessionID();
+            return;
+        }
 
-            packet.Skip(4); // Skip the first 4 bytes
-            packet.Skip(1);
+        packet.Skip(4); // Skip the first 4 bytes
+        packet.Skip(1);
 
-            string charName = packet.ReadString(28);
+        string charName = packet.ReadString(28);
 
-            // TODO Character handling
-            if (charName.Equals("noname"))
+        // TODO Character handling
+        if (charName.Equals("noname"))
+        {
+            client.Out.SendLoginGranted();
+            client.Out.SendSessionID();
+        }
+        else
+        {
+            // SH: Also load the player if client player is NOT null but their charnames differ!!!
+            // only load player when on charscreen and player is not loaded yet
+            // packet is sent on every region change (and twice after "play" was pressed)
+            if (((client.Player == null && client.Account.Characters != null) ||
+                 (client.Player != null && client.Player.Name.ToLower() != charName.ToLower())) &&
+                client.ClientState == EClientState.CharScreen)
             {
-                client.Out.SendLoginGranted();
-                client.Out.SendSessionID();
-            }
-            else
-            {
-                // SH: Also load the player if client player is NOT null but their charnames differ!!!
-                // only load player when on charscreen and player is not loaded yet
-                // packet is sent on every region change (and twice after "play" was pressed)
-                if (((client.Player == null && client.Account.Characters != null) || (client.Player != null && client.Player.Name.ToLower() != charName.ToLower())) && client.ClientState == GameClient.eClientState.CharScreen)
+                bool charFound = false;
+                for (int i = 0; i < client.Account.Characters.Length; i++)
                 {
-                    bool charFound = false;
-                    for (int i = 0; i < client.Account.Characters.Length; i++)
+                    if (client.Account.Characters[i] != null
+                        && client.Account.Characters[i].Name == charName)
                     {
-                        if (client.Account.Characters[i] != null
-                            && client.Account.Characters[i].Name == charName)
-                        {
-                            charFound = true;
+                        charFound = true;
 
-                            // Notify Character Selection Event, last hope to fix any bad data before Loading.
-                            GameEventMgr.Notify(DatabaseEvent.CharacterSelected, new CharacterEventArgs(client.Account.Characters[i], client));
-                            client.LoadPlayer(i);
-                            break;
-                        }
-                    }
-
-                    if (charFound == false)
-                    {
-                        client.Player = null;
-                        client.ActiveCharIndex = -1;
-                    }
-                    else
-                    {
-                        // Log character play
-                        AuditMgr.AddAuditEntry(client, EAuditType.Character, EAuditSubType.CharacterLogin, string.Empty, charName);
+                        // Notify Character Selection Event, last hope to fix any bad data before Loading.
+                        GameEventMgr.Notify(DatabaseEvent.CharacterSelected,
+                            new CharacterEventArgs(client.Account.Characters[i], client));
+                        client.LoadPlayer(i);
+                        break;
                     }
                 }
 
-                client.Out.SendLoginGranted();
-                client.Out.SendSessionID();
+                if (charFound == false)
+                {
+                    client.Player = null;
+                    client.ActiveCharIndex = -1;
+                }
+                else
+                {
+                    // Log character play
+                    AuditMgr.AddAuditEntry(client, EAuditType.Character, EAuditSubType.CharacterLogin, string.Empty,
+                        charName);
+                }
             }
+
+            client.Out.SendLoginGranted();
+            client.Out.SendSessionID();
         }
     }
 }

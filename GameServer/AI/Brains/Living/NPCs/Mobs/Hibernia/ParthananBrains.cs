@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class AmalgamateParthananBrain : StandardMobBrain
 {

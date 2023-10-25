@@ -1,4 +1,6 @@
-namespace DOL.GS.Commands;
+using Core.GS.Enums;
+
+namespace Core.GS.Commands;
 
 [Command("&helm", //command to handle
 	EPrivLevel.Player, //minimum privelege level

@@ -1,64 +1,65 @@
 ﻿using System.Collections.Generic;
+using Core.GS.Crafting;
+using Core.GS.Enums;
 
-namespace DOL.GS
+namespace Core.GS.ECS;
+
+public class CraftComponent : IManagedEntity
 {
-    public class CraftComponent : IManagedEntity
+    public GamePlayer Owner { get; private set; }
+    public CraftAction CraftAction { get; set; }
+    public bool CraftState { get; set; }
+    public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.CraftComponent, false);
+    public List<RecipeMgr> Recipes { get; private set; } = new();
+    private object _recipesLock = new();
+
+    public CraftComponent(GamePlayer owner)
     {
-        public GamePlayer Owner { get; private set; }
-        public CraftAction CraftAction { get; set; }
-        public bool CraftState { get; set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EEntityType.CraftComponent, false);
-        public List<RecipeMgr> Recipes { get; private set; } = new();
-        private object _recipesLock = new();
+        Owner = owner;
+    }
 
-        public CraftComponent(GamePlayer owner)
+    public void AddRecipe(RecipeMgr recipe)
+    {
+        lock (_recipesLock)
         {
-            Owner = owner;
-        }
+            if (recipe == null)
+                return;
 
-        public void AddRecipe(RecipeMgr recipe)
+            if (Recipes.Contains(recipe))
+                return;
+
+            Recipes.Add(recipe);
+        }
+    }
+
+    public void RemoveRecipe(RecipeMgr recipe)
+    {
+        lock (_recipesLock)
         {
-            lock (_recipesLock)
-            {
-                if (recipe == null)
-                    return;
-
-                if (Recipes.Contains(recipe))
-                    return;
-
-                Recipes.Add(recipe);
-            }
+            if (Recipes.Contains(recipe))
+                Recipes.Remove(recipe);
         }
+    }
 
-        public void RemoveRecipe(RecipeMgr recipe)
+    public void Tick(long time)
+    {
+        CraftAction?.Tick(time);
+
+        if (CraftAction == null)
+            EntityMgr.Remove(this);
+    }
+
+    public void StartCraft(RecipeMgr recipe, ACraftingSkill skill, int craftingTime)
+    {
+        if (CraftAction == null)
         {
-            lock (_recipesLock)
-            {
-                if (Recipes.Contains(recipe))
-                    Recipes.Remove(recipe);
-            }
+            CraftAction = new CraftAction(Owner, craftingTime, recipe, skill);
+            EntityMgr.Add(this);
         }
+    }
 
-        public void Tick(long time)
-        {
-            CraftAction?.Tick(time);
-
-            if (CraftAction == null)
-                EntityManager.Remove(this);
-        }
-
-        public void StartCraft(RecipeMgr recipe, ACraftingSkill skill, int craftingTime)
-        {
-            if (CraftAction == null)
-            {
-                CraftAction = new CraftAction(Owner, craftingTime, recipe, skill);
-                EntityManager.Add(this);
-            }
-        }
-
-        public void StopCraft()
-        {
-            CraftAction?.CleanupCraftAction();
-        }
+    public void StopCraft()
+    {
+        CraftAction?.CleanupCraftAction();
     }
 }

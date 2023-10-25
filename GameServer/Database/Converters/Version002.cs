@@ -1,7 +1,10 @@
-using DOL.Database;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS.DatabaseConverters;
+namespace Core.GS.Database;
 
 /// <summary>
 /// Converts the database format to the version 2

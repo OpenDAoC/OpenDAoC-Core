@@ -1,6 +1,7 @@
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Ulfketill
 public class UlfketillBrain : StandardMobBrain
@@ -18,7 +19,7 @@ public class UlfketillBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             Body.Health = Body.MaxHealth;
         }
         if (UlfketillAdds.JotunsCount < 3 && !HasAggro)

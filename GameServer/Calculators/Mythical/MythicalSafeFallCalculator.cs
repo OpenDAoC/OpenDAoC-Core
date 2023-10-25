@@ -1,8 +1,7 @@
-﻿namespace DOL.GS.PropertyCalc;
+﻿using Core.GS.Enums;
 
-/// <summary>
-/// Calculator for Mythical Safe Fall
-/// </summary>
+namespace Core.GS.Calculators;
+
 [PropertyCalculator(EProperty.MythicalSafeFall)]
 public class MythicalSafeFallCalculator : PropertyCalculator
 {

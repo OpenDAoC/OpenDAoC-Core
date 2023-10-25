@@ -1,11 +1,12 @@
-﻿namespace DOL.Database
+﻿using Core.Database.Enums;
+
+namespace Core.Database.Tables;
+
+// data table attribute not set until door translations are supported.
+class DbLanguageGameDoor : LanguageDataObject
 {
-    // data table attribute not set until door translations are supported.
-    class DbLanguageGameDoor : LanguageDataObject
+    public override ETranslationIdType TranslationIdentifier
     {
-        public override eTranslationIdentifier TranslationIdentifier
-        {
-            get { return eTranslationIdentifier.eDoor; }
-        }
+        get { return ETranslationIdType.eDoor; }
     }
 }

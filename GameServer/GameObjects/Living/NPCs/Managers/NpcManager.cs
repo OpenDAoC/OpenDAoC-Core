@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 /// <summary>
 /// GameServer Manager to handle Npc Data and Other Behavior for the whole Instance.

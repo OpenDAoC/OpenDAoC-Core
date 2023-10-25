@@ -1,37 +1,39 @@
-﻿namespace DOL.GS
+﻿using Core.GS.GameUtils;
+
+namespace Core.GS;
+
+public class HitbackDummy : GameTrainingDummy 
 {
-    public class HitbackDummy : GameTrainingDummy {
-        public override short MaxSpeedBase => 0;
+    public override short MaxSpeedBase => 0;
 
-        public override ushort Heading
-        {
-            get => base.Heading;
-            set => base.Heading = SpawnHeading;
-        }
+    public override ushort Heading
+    {
+        get => base.Heading;
+        set => base.Heading = SpawnHeading;
+    }
 
-        public override bool Interact(GamePlayer player)
-        {
-            if (!base.Interact(player))
-                return false;
+    public override bool Interact(GamePlayer player)
+    {
+        if (!base.Interact(player))
+            return false;
 
-            StopAttack();
-            return true;
-        }
+        StopAttack();
+        return true;
+    }
 
-        public override void OnAttackedByEnemy(AttackData ad)
-        {
-            if (!attackComponent.AttackState)
-                attackComponent.RequestStartAttack(ad.Attacker);
-        }
+    public override void OnAttackedByEnemy(AttackData ad)
+    {
+        if (!attackComponent.AttackState)
+            attackComponent.RequestStartAttack(ad.Attacker);
+    }
 
-        public override bool AddToWorld()
-        {
-            Name = "Hitback Dummy - Right Click to Reset";
-            Model = 34;
-            Strength = 10;
-            ScalingFactor = 4;
-            FixedSpeed = true;
-            return base.AddToWorld();
-        }
+    public override bool AddToWorld()
+    {
+        Name = "Hitback Dummy - Right Click to Reset";
+        Model = 34;
+        Strength = 10;
+        ScalingFactor = 4;
+        FixedSpeed = true;
+        return base.AddToWorld();
     }
 }

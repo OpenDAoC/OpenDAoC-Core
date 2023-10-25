@@ -1,6 +1,4 @@
-﻿using DOL.Database.Attributes;
-
-namespace DOL.Database
+﻿namespace Core.Database.Tables
 {
 	[DataTable(TableName = "serverproperty_category")]
 	public class DbServerPropertyCategory: DataObject

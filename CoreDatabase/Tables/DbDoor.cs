@@ -1,6 +1,4 @@
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database.Tables
 {
 	/// <summary>
 	/// DBDoor is database of door with state of door and X,Y,Z
@@ -22,7 +20,7 @@ namespace DOL.Database
 		private int m_locked;
 		private int m_health;
 		private bool m_isPostern;
-		private int m_state; // DOL.GS.eDoorState
+		private int m_state; // Core.GS.Enums.EDoorState
 
 		/// <summary>
 		/// Name of door

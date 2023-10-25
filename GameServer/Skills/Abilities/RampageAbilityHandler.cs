@@ -1,21 +1,20 @@
-namespace DOL.GS.SkillHandler
+namespace Core.GS.Skills;
+
+[SkillHandler(AbilityConstants.Rampage)]
+public class RampageAbilityHandler : SpellCastingAbilityHandler
 {
-    [SkillHandler(Abilities.Rampage)]
-    public class RampageAbilityHandler : SpellCastingAbilityHandler
-    {
-		public override long Preconditions
+	public override long Preconditions
+	{
+		get
 		{
-			get
-			{
-				return DEAD | SITTING | MEZZED | STUNNED;
-			}
+			return DEAD | SITTING | MEZZED | STUNNED;
 		}
- 		public override int SpellID
+	}
+ 	public override int SpellID
+	{
+		get
 		{
-			get
-			{
-				return 14373;
-			}
-		}      
-    }
+			return 14373;
+		}
+	}      
 }

@@ -1,8 +1,10 @@
 ﻿using System;
-using DOL.Database;
-using DOL.GS.PacketHandler;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.Enums;
 
-namespace DOL.GS.Commands
+namespace Core.GS.Commands
 {
 	[Command("&offlinejump",
 		EPrivLevel.GM,

@@ -1,9 +1,13 @@
 using System;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
-using DOL.Language;
+using Core.GS.Effects;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Scripts;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&cast",

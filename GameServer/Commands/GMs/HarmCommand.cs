@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&harm",

@@ -1,6 +1,7 @@
 using System;
+using Core.GS.Enums;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 [PropertyCalculator(EProperty.ResIllnessReduction)]
 public class RezSicknessPercentCalculator : PropertyCalculator

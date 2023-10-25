@@ -1,175 +1,176 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Server;
 
-namespace DOL.GS.RealmAbilities
+namespace Core.GS.RealmAbilities;
+
+public class RaStatEnhancer : L5RealmAbility
 {
-	public class RaStatEnhancer : L5RealmAbility
+	private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+	EProperty m_property = EProperty.Undefined;
+
+	public EProperty Property
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		get { return m_property; }
+	}
 
-		EProperty m_property = EProperty.Undefined;
+	public RaStatEnhancer(DbAbility dba, int level, EProperty property)
+		: base(dba, level)
+	{
+		m_property = property;
+	}
 
-		public EProperty Property
+	public override IList<string> DelveInfo
+	{
+		get
 		{
-			get { return m_property; }
-		}
-
-		public RaStatEnhancer(DbAbility dba, int level, EProperty property)
-			: base(dba, level)
-		{
-			m_property = property;
-		}
-
-		public override IList<string> DelveInfo
-		{
-			get
+			var list = new List<string>();
+			list.Add(m_description);
+			list.Add("");
+			for (int i = 1; i <= MaxLevel; i++)
 			{
-				var list = new List<string>();
-				list.Add(m_description);
-				list.Add("");
-				for (int i = 1; i <= MaxLevel; i++)
-				{
-					list.Add(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "RAStatEnhancer.DelveInfo.Info1", i, GetAmountForLevel(i)));
-				}
-				return list;
+				list.Add(LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "RAStatEnhancer.DelveInfo.Info1", i, GetAmountForLevel(i)));
 			}
+			return list;
 		}
-		public override int CostForUpgrade(int level)
-		{
-				switch (level)
-				{
-					case 0: return 1;
-					case 1: return 3;
-					case 2: return 6;
-					case 3: return 10;
-					case 4: return 14;
-					default: return 1000;
-				}
-		}
-		public virtual int GetAmountForLevel(int level)
-		{
-			if (level < 1) return 0;
-
-				switch (level)
-				{
-						case 1: return 6;
-						case 2: return 12;
-						case 3: return 18;
-						case 4: return 24;
-						case 5: return 30;
-						default: return 30;
-				}
-		}
-
-		/// <summary>
-		/// send updates about the changes
-		/// </summary>
-		/// <param name="target"></param>
-		public virtual void SendUpdates(GameLiving target)
-		{
-			GamePlayer player = target as GamePlayer;	// need new prop system to not worry about updates
-			if (player != null)
+	}
+	public override int CostForUpgrade(int level)
+	{
+			switch (level)
 			{
-				player.Out.SendCharStatsUpdate();
-				player.Out.SendUpdateWeaponAndArmorStats();
-				player.UpdateEncumberance();
-				player.UpdatePlayerStatus();
+				case 0: return 1;
+				case 1: return 3;
+				case 2: return 6;
+				case 3: return 10;
+				case 4: return 14;
+				default: return 1000;
 			}
+	}
+	public virtual int GetAmountForLevel(int level)
+	{
+		if (level < 1) return 0;
 
-			if (target.IsAlive)
+			switch (level)
 			{
-				if (target.Health < target.MaxHealth) target.StartHealthRegeneration();
-				else if (target.Health > target.MaxHealth) target.Health = target.MaxHealth;
-
-				if (target.Mana < target.MaxMana) target.StartPowerRegeneration();
-				else if (target.Mana > target.MaxMana) target.Mana = target.MaxMana;
-
-				if (target.Endurance < target.MaxEndurance) target.StartEnduranceRegeneration();
-				else if (target.Endurance > target.MaxEndurance) target.Endurance = target.MaxEndurance;
+					case 1: return 6;
+					case 2: return 12;
+					case 3: return 18;
+					case 4: return 24;
+					case 5: return 30;
+					default: return 30;
 			}
-		}
+	}
 
-		public override void Activate(GameLiving living, bool sendUpdates)
+	/// <summary>
+	/// send updates about the changes
+	/// </summary>
+	/// <param name="target"></param>
+	public virtual void SendUpdates(GameLiving target)
+	{
+		GamePlayer player = target as GamePlayer;	// need new prop system to not worry about updates
+		if (player != null)
 		{
-			if (m_activeLiving == null)
-			{
-				living.AbilityBonus[(int)m_property] += GetAmountForLevel(Level);
-				m_activeLiving = living;
-				if (sendUpdates) SendUpdates(living);
-			}
-			else
-			{
-				log.Warn("ability " + Name + " already activated on " + living.Name);
-			}
+			player.Out.SendCharStatsUpdate();
+			player.Out.SendUpdateWeaponAndArmorStats();
+			player.UpdateEncumberance();
+			player.UpdatePlayerStatus();
 		}
 
-		public override void Deactivate(GameLiving living, bool sendUpdates)
+		if (target.IsAlive)
 		{
-			if (m_activeLiving != null)
-			{
-				living.AbilityBonus[(int)m_property] -= GetAmountForLevel(Level);
-				if (sendUpdates) SendUpdates(living);
-				m_activeLiving = null;
-			}
-			else
-			{
-				log.Warn("ability " + Name + " already deactivated on " + living.Name);
-			}
-		}
+			if (target.Health < target.MaxHealth) target.StartHealthRegeneration();
+			else if (target.Health > target.MaxHealth) target.Health = target.MaxHealth;
 
-		public override void OnLevelChange(int oldLevel, int newLevel = 0)
+			if (target.Mana < target.MaxMana) target.StartPowerRegeneration();
+			else if (target.Mana > target.MaxMana) target.Mana = target.MaxMana;
+
+			if (target.Endurance < target.MaxEndurance) target.StartEnduranceRegeneration();
+			else if (target.Endurance > target.MaxEndurance) target.Endurance = target.MaxEndurance;
+		}
+	}
+
+	public override void Activate(GameLiving living, bool sendUpdates)
+	{
+		if (m_activeLiving == null)
 		{
-			if (newLevel == 0)
-				newLevel = Level;
-
-			m_activeLiving.AbilityBonus[(int)m_property] += GetAmountForLevel(newLevel) - GetAmountForLevel(oldLevel);
-			SendUpdates(m_activeLiving);
+			living.AbilityBonus[(int)m_property] += GetAmountForLevel(Level);
+			m_activeLiving = living;
+			if (sendUpdates) SendUpdates(living);
 		}
-	}
-
-	public class NfRaStrengthEnhancer : RaStatEnhancer
-	{
-		public NfRaStrengthEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.Strength) { }
-	}
-
-	public class NfRaConstitutionEnhancer : RaStatEnhancer
-	{
-		public NfRaConstitutionEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.Constitution) { }
-	}
-
-	public class NfRaQuicknessEnhancer : RaStatEnhancer
-	{
-		public NfRaQuicknessEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.Quickness) { }
-	}
-
-	public class NfRaDexterityEnhancer : RaStatEnhancer
-	{
-		public NfRaDexterityEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.Dexterity) { }
-	}
-
-	public class NfRaAcuityEnhancer : RaStatEnhancer
-	{
-		public NfRaAcuityEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.Acuity) { }
-	}
-
-	public class NfRaMaxPowerEnhancer : RaStatEnhancer
-	{
-		public NfRaMaxPowerEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.MaxMana) { }
-	}
-
-	public class NfRaMaxHealthEnhancer : RaStatEnhancer
-	{
-		public NfRaMaxHealthEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.MaxHealth) { }
-
-		public override bool CheckRequirement(GamePlayer player)
+		else
 		{
-			return player.Level >= 40;
+			log.Warn("ability " + Name + " already activated on " + living.Name);
 		}
 	}
-	
-	public class NfRaEndRegenEnhancer : RaStatEnhancer
+
+	public override void Deactivate(GameLiving living, bool sendUpdates)
 	{
-		public NfRaEndRegenEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.EnduranceRegenerationRate) { }
+		if (m_activeLiving != null)
+		{
+			living.AbilityBonus[(int)m_property] -= GetAmountForLevel(Level);
+			if (sendUpdates) SendUpdates(living);
+			m_activeLiving = null;
+		}
+		else
+		{
+			log.Warn("ability " + Name + " already deactivated on " + living.Name);
+		}
 	}
+
+	public override void OnLevelChange(int oldLevel, int newLevel = 0)
+	{
+		if (newLevel == 0)
+			newLevel = Level;
+
+		m_activeLiving.AbilityBonus[(int)m_property] += GetAmountForLevel(newLevel) - GetAmountForLevel(oldLevel);
+		SendUpdates(m_activeLiving);
+	}
+}
+
+public class NfRaStrengthEnhancer : RaStatEnhancer
+{
+	public NfRaStrengthEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.Strength) { }
+}
+
+public class NfRaConstitutionEnhancer : RaStatEnhancer
+{
+	public NfRaConstitutionEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.Constitution) { }
+}
+
+public class NfRaQuicknessEnhancer : RaStatEnhancer
+{
+	public NfRaQuicknessEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.Quickness) { }
+}
+
+public class NfRaDexterityEnhancer : RaStatEnhancer
+{
+	public NfRaDexterityEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.Dexterity) { }
+}
+
+public class NfRaAcuityEnhancer : RaStatEnhancer
+{
+	public NfRaAcuityEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.Acuity) { }
+}
+
+public class NfRaMaxPowerEnhancer : RaStatEnhancer
+{
+	public NfRaMaxPowerEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.MaxMana) { }
+}
+
+public class NfRaMaxHealthEnhancer : RaStatEnhancer
+{
+	public NfRaMaxHealthEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.MaxHealth) { }
+
+	public override bool CheckRequirement(GamePlayer player)
+	{
+		return player.Level >= 40;
+	}
+}
+
+public class NfRaEndRegenEnhancer : RaStatEnhancer
+{
+	public NfRaEndRegenEnhancer(DbAbility dba, int level) : base(dba, level, EProperty.EnduranceRegenerationRate) { }
 }

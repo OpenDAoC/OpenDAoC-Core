@@ -2,13 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.Effects;
-using DOL.GS.Scripts;
+using Core.GS.AI;
+using Core.GS.Effects;
+using Core.GS.Effects.Old;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
 using log4net;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI
 {
     public class ArosTheSpiritmasterBrain : StandardMobBrain
     {
@@ -34,7 +36,7 @@ namespace DOL.AI.Brain
             FiniteStateMachine.Add(new ArosTheSpiritmasterStateAggro(this));
             FiniteStateMachine.Add(new StandardNpcStateDead(this));
 
-            FiniteStateMachine.SetCurrentState(EFSMStateType.WAKING_UP);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.WAKING_UP);
         }
 
         /// <summary>
@@ -168,7 +170,7 @@ namespace DOL.AI.Brain
         /// <param name="e">The event that occured.</param>
         /// <param name="sender">The source of the event.</param>
         /// <param name="args">The event details.</param>
-        public override void Notify(DOL.Events.CoreEvent e, object sender, EventArgs args)
+        public override void Notify(CoreEvent e, object sender, EventArgs args)
         {
             base.Notify(e, sender, args);
             if (sender == Body)

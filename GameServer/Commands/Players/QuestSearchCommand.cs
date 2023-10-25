@@ -1,6 +1,8 @@
-using DOL.GS.Quests;
+using Core.GS.Enums;
+using Core.GS.Quests;
+using Core.GS.World;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&search",
@@ -33,7 +35,7 @@ public class QuestSearchCommand : ACommandHandler, ICommandHandler
 
         if (searched == false)
         {
-            foreach (AbstractArea area in player.CurrentAreas)
+            foreach (AArea area in player.CurrentAreas)
             {
                 if (area is QuestSearchArea && (area as QuestSearchArea).DataQuest != null && (area as QuestSearchArea).Step == 0)
                 {
@@ -47,7 +49,7 @@ public class QuestSearchCommand : ACommandHandler, ICommandHandler
 
 		if (searched == false)
 		{
-			player.Out.SendMessage("You can't do that here!", DOL.GS.PacketHandler.EChatType.CT_Important, DOL.GS.PacketHandler.EChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("You can't do that here!", EChatType.CT_Important, EChatLoc.CL_SystemWindow);
 		}
 	}
 }

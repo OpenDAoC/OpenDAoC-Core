@@ -1,8 +1,9 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.GS.PacketHandler.Client.v168;
+using Core.GS.Enums;
+using Core.GS.Packets.Clients;
+using Core.GS.Players;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&password", EPrivLevel.Player,
 	"Changes your account password",

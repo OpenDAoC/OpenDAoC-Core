@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
+using Core.GS.Enums;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// helper class for memory efficient usage of property fields

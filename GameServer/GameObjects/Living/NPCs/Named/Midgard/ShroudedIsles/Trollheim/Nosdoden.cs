@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 public class Nosdoden : GameEpicBoss
 {
@@ -30,13 +34,13 @@ public class Nosdoden : GameEpicBoss
 		String message = String.Format("{0} has been slain by a force of {1} warriors!", Name, numPlayers);
 		NewsMgr.CreateNews(message, killer.Realm, ENewsType.PvE, true);
 
-		if (Properties.GUILD_MERIT_ON_DRAGON_KILL > 0)
+		if (ServerProperty.GUILD_MERIT_ON_DRAGON_KILL > 0)
 		{
 			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
 				if (player.IsEligibleToGiveMeritPoints)
 				{
-					GuildEventHandler.MeritForNPCKilled(player, this, Properties.GUILD_MERIT_ON_DRAGON_KILL);
+					GuildEventHandler.MeritForNPCKilled(player, this, ServerProperty.GUILD_MERIT_ON_DRAGON_KILL);
 				}
 			}
 		}
@@ -152,7 +156,7 @@ public class Nosdoden : GameEpicBoss
 
 		Faction = FactionMgr.GetFactionByID(150);
 		Faction.AddFriendFaction(FactionMgr.GetFactionByID(150));
-		RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		NosdodenBrain sbrain = new NosdodenBrain();
 		SetOwnBrain(sbrain);
 		LoadedFromScript = false;//load from database

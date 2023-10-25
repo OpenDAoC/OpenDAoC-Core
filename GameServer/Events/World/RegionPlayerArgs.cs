@@ -1,14 +1,13 @@
 using System;
-using DOL.GS;
+using Core.GS;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 /// <summary>
 /// Holds the arguments for the player enter or leave region event
 /// </summary>
 public class RegionPlayerEventArgs : EventArgs
 {
-
 	/// <summary>
 	/// The player who enter or leave region
 	/// </summary>

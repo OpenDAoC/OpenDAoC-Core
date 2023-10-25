@@ -1,7 +1,7 @@
 ﻿using System;
-using DOL.Language;
+using Core.GS.Languages;
 
-namespace DOL.GS
+namespace Core.GS.Crafting
 {
     /// <summary>
     /// Tradeskills that earn the crafter a title.

@@ -1,10 +1,10 @@
-﻿using DOL.Database;
+﻿using Core.Database.Enums;
 
-namespace DOL.Language;
+namespace Core.GS.Languages;
 
 public interface ITranslatableObject
 {
     string TranslationId { get; set; }
 
-    LanguageDataObject.eTranslationIdentifier TranslationIdentifier { get; }
+    ETranslationIdType TranslationIdentifier { get; }
 }

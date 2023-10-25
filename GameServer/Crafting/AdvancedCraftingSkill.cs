@@ -1,8 +1,8 @@
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.Language;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Languages;
 
-namespace DOL.GS
+namespace Core.GS.Crafting
 {
 	/// <summary>
 	/// AdvancedCraftingSkill is the skill for alchemy and spellcrafting whitch add all combine system

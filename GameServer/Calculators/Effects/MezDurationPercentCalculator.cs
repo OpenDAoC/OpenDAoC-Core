@@ -1,6 +1,8 @@
 using System;
+using Core.GS.Enums;
+using Core.GS.Skills;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The melee damage bonus percent calculator
@@ -22,7 +24,7 @@ public class MezDurationPercentCalculator : PropertyCalculator
 			-living.ItemBonus[(int)property]
 			- living.AbilityBonus[(int)property];
 
-		if (living.HasAbility(Abilities.Stoicism))
+		if (living.HasAbility(AbilityConstants.Stoicism))
 			percent -= 25;
 
 		return Math.Max(1, percent);

@@ -1,9 +1,12 @@
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts.discord;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
+using Core.GS.Scripts.Custom;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
      "&trade",
@@ -29,12 +32,12 @@ public class TradeChannelCommand : ACommandHandler, ICommandHandler
         }
 
         long lastTradeTick = client.Player.TempProperties.GetProperty<long>(tradeTimeoutString);
-        int slowModeLength = Properties.TRADE_SLOWMODE_LENGTH * 1000;
+        int slowModeLength = ServerProperty.TRADE_SLOWMODE_LENGTH * 1000;
 
-        if ((GameLoop.GameLoopTime - lastTradeTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
+        if ((GameLoopMgr.GameLoopTime - lastTradeTick) < slowModeLength && client.Account.PrivLevel == 1) // 60 secs
         {
             // Message: You must wait {0} seconds before using this command again.
-            ChatUtil.SendSystemMessage(client, "PLCommands.Trade.List.Wait", Properties.TRADE_SLOWMODE_LENGTH - (GameLoop.GameLoopTime - lastTradeTick) / 1000);
+            ChatUtil.SendSystemMessage(client, "PLCommands.Trade.List.Wait", ServerProperty.TRADE_SLOWMODE_LENGTH - (GameLoopMgr.GameLoopTime - lastTradeTick) / 1000);
             return;
         }
 
@@ -47,10 +50,10 @@ public class TradeChannelCommand : ACommandHandler, ICommandHandler
         foreach (GamePlayer otherPlayer in ClientService.GetPlayersForRealmWideChatMessage(player))
             otherPlayer.Out.SendMessage($"[Trade] {player.Name}: {message}", EChatType.CT_Trade, EChatLoc.CL_ChatWindow);
 
-        if (Properties.DISCORD_ACTIVE)
+        if (ServerProperty.DISCORD_ACTIVE)
             WebhookMessage.LogChatMessage(player, EChatType.CT_Trade, message);
 
         if (player.Client.Account.PrivLevel == 1)
-            player.Client.Player.TempProperties.SetProperty(tradeTimeoutString, GameLoop.GameLoopTime);
+            player.Client.Player.TempProperties.SetProperty(tradeTimeoutString, GameLoopMgr.GameLoopTime);
     }
 }

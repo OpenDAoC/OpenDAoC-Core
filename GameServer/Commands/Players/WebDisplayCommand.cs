@@ -1,4 +1,6 @@
-﻿namespace DOL.GS.Commands;
+﻿using Core.GS.Enums;
+
+namespace Core.GS.Commands;
 
 [Command(
 	"&webdisplay",
@@ -18,19 +20,19 @@ public class WebDisplayCommand : ACommandHandler, ICommandHandler
 		}
 		
 		if (args[1].ToLower() == "position")
-			WdChange(GlobalConstants.eWebDisplay.position, client.Player, args.Length==3?args[2].ToLower():null);
+			WdChange(GlobalConstants.EWebDisplay.position, client.Player, args.Length==3?args[2].ToLower():null);
 		if (args[1].ToLower() == "equipment")
-			WdChange(GlobalConstants.eWebDisplay.equipment, client.Player, args.Length==3?args[2].ToLower():null);
+			WdChange(GlobalConstants.EWebDisplay.equipment, client.Player, args.Length==3?args[2].ToLower():null);
 		if (args[1].ToLower() == "template")
-			WdChange(GlobalConstants.eWebDisplay.template, client.Player, args.Length==3?args[2].ToLower():null);
+			WdChange(GlobalConstants.EWebDisplay.template, client.Player, args.Length==3?args[2].ToLower():null);
 		if (args[1].ToLower() == "craft")
-			WdChange(GlobalConstants.eWebDisplay.craft, client.Player, args.Length==3?args[2].ToLower():null);
+			WdChange(GlobalConstants.EWebDisplay.craft, client.Player, args.Length==3?args[2].ToLower():null);
 		
 		DisplayInformations(client);
 	}
 
 	// Set the eWebDisplay status
-	private void WdChange(GlobalConstants.eWebDisplay category, GamePlayer player, string state)
+	private void WdChange(GlobalConstants.EWebDisplay category, GamePlayer player, string state)
 	{
 		if (string.IsNullOrEmpty(state))
 			player.NotDisplayedInHerald ^= (byte)category;
@@ -54,25 +56,25 @@ public class WebDisplayCommand : ACommandHandler, ICommandHandler
 
 		string state = "/webdisplay <position|template|equipment|craft> [on|off]\n";
 		
-		webDisplayFlag = (byte)GlobalConstants.eWebDisplay.equipment;
+		webDisplayFlag = (byte)GlobalConstants.EWebDisplay.equipment;
 		if ((webDisplay & webDisplayFlag) == webDisplayFlag)
 			state += "Your equipment is not displayed.\n";
 		else
 			state += "Your equipment is displayed.\n";
 		
-		webDisplayFlag = (byte)GlobalConstants.eWebDisplay.position;
+		webDisplayFlag = (byte)GlobalConstants.EWebDisplay.position;
 		if ((webDisplay & webDisplayFlag) == webDisplayFlag)
 			state += "Your position is not displayed.\n";
 		else
 			state += "Your position is displayed.\n";
 		
-		webDisplayFlag = (byte)GlobalConstants.eWebDisplay.template;
+		webDisplayFlag = (byte)GlobalConstants.EWebDisplay.template;
 		if ((webDisplay & webDisplayFlag) == webDisplayFlag)
 			state += "Your template is not displayed.\n";
 		else
 			state += "Your template is displayed.\n";
 
-		webDisplayFlag = (byte)GlobalConstants.eWebDisplay.craft;
+		webDisplayFlag = (byte)GlobalConstants.EWebDisplay.craft;
 		if ((webDisplay & webDisplayFlag) == webDisplayFlag)
 			state += "Your crafting skill is not displayed.\n";
 		else

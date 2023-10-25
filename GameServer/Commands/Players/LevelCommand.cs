@@ -1,9 +1,12 @@
 using System;
-using DOL.Database;
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Database;
+using Core.GS.Enums;
+using Core.GS.Players;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command("&level", //command to handle
 EPrivLevel.Player, //minimum privelege level
@@ -15,7 +18,7 @@ public class LevelCommand : ACommandHandler, ICommandHandler
 
 	public void OnCommand(GameClient client, string[] args)
 	{
-		var targetLevel = ServerProperties.Properties.SLASH_LEVEL_TARGET;
+		var targetLevel = ServerProperty.SLASH_LEVEL_TARGET;
 
 		if (args.Length < 2)
 		{
@@ -122,7 +125,7 @@ public class LevelCommand : ACommandHandler, ICommandHandler
 	{
 		if (response == 1)
 		{
-			int targetLevel = ServerProperties.Properties.SLASH_LEVEL_TARGET;
+			int targetLevel = ServerProperty.SLASH_LEVEL_TARGET;
 
 			if( targetLevel < 1 || targetLevel > 50 )
 				targetLevel = 20;

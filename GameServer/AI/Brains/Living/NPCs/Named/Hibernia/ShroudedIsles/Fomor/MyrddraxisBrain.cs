@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Myrddraxis
 public class MyrddraxisBrain : StandardMobBrain
@@ -178,7 +182,7 @@ public class MyrddraxisBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			IsPulled = false;
 			StartCastDD = false;
@@ -538,7 +542,7 @@ public class MyrddraxisSecondHeadBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			IsPulled1 = false;
 		}
@@ -646,7 +650,7 @@ public class MyrddraxisThirdHeadBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			IsPulled2 = false;
 		}
@@ -754,7 +758,7 @@ public class MyrddraxisFourthHeadBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			IsPulled3 = false;
 		}
@@ -862,7 +866,7 @@ public class MyrddraxisFifthHeadBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			IsPulled4 = false;
 		}

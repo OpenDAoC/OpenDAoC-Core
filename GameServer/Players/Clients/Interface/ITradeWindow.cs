@@ -1,34 +1,33 @@
 using System.Collections;
-using DOL.Database;
+using Core.Database.Tables;
 
-namespace DOL.GS
+namespace Core.GS.Players;
+
+public interface ITradeWindow
 {
-	public interface ITradeWindow
-	{
-		ArrayList TradeItems { get; set;}
-		ArrayList PartnerTradeItems { get; }
+	ArrayList TradeItems { get; set;}
+	ArrayList PartnerTradeItems { get; }
 
-		long TradeMoney { get; set; }
-		long PartnerTradeMoney { get; }
+	long TradeMoney { get; set; }
+	long PartnerTradeMoney { get; }
 
-		GamePlayer Owner { get; }
-		GamePlayer Partner { get; }
+	GamePlayer Owner { get; }
+	GamePlayer Partner { get; }
 
-		int ItemsCount { get; }
-		int PartnerItemsCount { get; }
+	int ItemsCount { get; }
+	int PartnerItemsCount { get; }
 
-		bool Repairing { get; set; }
-		bool Combine { get; set; }
-		
-		bool AddItemToTrade(DbInventoryItem itemForTrade);
-		void RemoveItemToTrade(DbInventoryItem itemToRemove);
-		void AddMoneyToTrade(long money);
-		
-		bool AcceptTrade();
-		void TradeUpdate();
+	bool Repairing { get; set; }
+	bool Combine { get; set; }
 	
-		object Sync { get; }
+	bool AddItemToTrade(DbInventoryItem itemForTrade);
+	void RemoveItemToTrade(DbInventoryItem itemToRemove);
+	void AddMoneyToTrade(long money);
+	
+	bool AcceptTrade();
+	void TradeUpdate();
 
-		void CloseTrade();
-	}
+	object Sync { get; }
+
+	void CloseTrade();
 }

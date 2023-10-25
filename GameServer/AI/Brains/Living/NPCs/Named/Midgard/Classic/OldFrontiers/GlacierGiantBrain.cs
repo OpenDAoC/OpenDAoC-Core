@@ -1,8 +1,9 @@
 using System.Collections.Generic;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class GlacierGiantBrain : EpicBossBrain
 {
@@ -19,7 +20,7 @@ public class GlacierGiantBrain : EpicBossBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			Clear_List = false;
 			RandomTarget = null;

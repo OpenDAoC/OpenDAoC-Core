@@ -1,8 +1,10 @@
-using DOL.GS.PacketHandler;
-using DOL.GS.Scripts.discord;
-using DOL.GS.ServerProperties;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Scripts.Custom;
+using Core.GS.Server;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
     "&adviceteam",
@@ -32,7 +34,7 @@ public class AdviceTeamCommand : ACommandHandler, ICommandHandler
             ChatUtil.SendAdviceMessage(otherPlayer, "Social.SendAdvice.Msg.Channel", GetRealmString(client.Player.Realm), name, msg);
         }
 
-        if (Properties.DISCORD_ACTIVE)
+        if (ServerProperty.DISCORD_ACTIVE)
             WebhookMessage.LogChatMessage(client.Player, EChatType.CT_Advise, msg);
     }
 

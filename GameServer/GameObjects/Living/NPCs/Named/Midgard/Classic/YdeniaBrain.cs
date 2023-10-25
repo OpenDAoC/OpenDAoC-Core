@@ -1,9 +1,14 @@
 using System;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS;
 
 public class YdeniaBrain : StandardMobBrain
 {
@@ -27,7 +32,7 @@ public class YdeniaBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			canPort = false;
 			var throwPlayer = Body.TempProperties.GetProperty<EcsGameTimer>("ydenia_teleport");//cancel teleport

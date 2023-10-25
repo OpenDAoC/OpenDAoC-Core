@@ -1,4 +1,7 @@
-namespace DOL.GS.Commands;
+using Core.GS.Enums;
+using Core.GS.World;
+
+namespace Core.GS.Commands;
 
 [Command("&gloc", //command to handle
 	EPrivLevel.Player, //minimum privelege level

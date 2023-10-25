@@ -1,12 +1,10 @@
 using System.Reflection;
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.Spells;
 using log4net;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
-/// <summary>
-/// A brain that can be controlled
-/// </summary>
 public class ArcherSubPetBrain : SubPetBrain
 {
 	/// <summary>

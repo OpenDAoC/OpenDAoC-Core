@@ -1,8 +1,10 @@
 using System;
-using DOL.Events;
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.World;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI
 {
     public abstract class SubPetBrain : ControlledNpcBrain
     {
@@ -34,7 +36,7 @@ namespace DOL.AI.Brain
                     break;
             }
 
-            if (FiniteStateMachine.GetState(EFSMStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(EFSMStateType.AGGRO); }
+            if (FiniteStateMachine.GetState(EFsmStateType.AGGRO) != FiniteStateMachine.GetCurrentState()) { FiniteStateMachine.SetCurrentState(EFsmStateType.AGGRO); }
             AttackMostWanted();
         }
 

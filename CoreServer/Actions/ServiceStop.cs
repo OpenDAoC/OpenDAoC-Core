@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.ServiceProcess;
 
-namespace DOL.DOLServer.Actions
+namespace Core.Server
 {
 	/// <summary>
 	/// Handles service stop requests of the gameserver

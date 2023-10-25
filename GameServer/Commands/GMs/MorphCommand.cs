@@ -1,7 +1,10 @@
-using DOL.Database;
-using DOL.GS.Spells;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Scripts;
+using Core.GS.Skills;
+using Core.GS.Spells;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&morph", //command to handle

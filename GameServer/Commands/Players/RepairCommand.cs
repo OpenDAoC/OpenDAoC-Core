@@ -1,9 +1,13 @@
 using System;
 using System.Linq;
-using DOL.Database;
-using DOL.GS.Keeps;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
+using Core.GS.Keeps;
+using Core.GS.World;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
 	"&repair",

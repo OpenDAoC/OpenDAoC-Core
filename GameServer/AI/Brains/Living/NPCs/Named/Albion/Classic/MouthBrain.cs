@@ -1,6 +1,8 @@
-using DOL.GS;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.GameUtils;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 public class MouthBrain : StandardMobBrain
 {
@@ -18,7 +20,7 @@ public class MouthBrain : StandardMobBrain
 		if (!CheckProximityAggro())
 		{
 			//set state to RETURN TO SPAWN
-			FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+			FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
 			Body.Health = Body.MaxHealth;
 			SpawnAdd = false;
 			if (!RemoveAdds)

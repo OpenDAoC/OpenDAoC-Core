@@ -1,6 +1,9 @@
-using DOL.AI.Brain;
+using Core.GS.AI;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Server;
 
-namespace DOL.GS.PropertyCalc;
+namespace Core.GS.Calculators;
 
 /// <summary>
 /// The critical hit chance calculator. Returns 0 .. 100 chance.
@@ -30,9 +33,9 @@ public class RangedCriticalHitChanceCalculator : PropertyCalculator
 		}
 		if (living is GameSummonedPet gamePet)
 		{
-			if (ServerProperties.Properties.EXPAND_WILD_MINION && gamePet.Brain is IControlledBrain playerBrain
-				&& playerBrain.GetPlayerOwner() is GamePlayer player
-				&& player.GetAbility<RealmAbilities.OfRaWildMinionAbility>() is RealmAbilities.OfRaWildMinionAbility ab)
+			if (ServerProperty.EXPAND_WILD_MINION && gamePet.Brain is IControlledBrain playerBrain
+			                                  && playerBrain.GetPlayerOwner() is GamePlayer player
+			                                  && player.GetAbility<RealmAbilities.OfRaWildMinionAbility>() is RealmAbilities.OfRaWildMinionAbility ab)
 				chance += ab.Amount;
 		}
 		else // not a pet

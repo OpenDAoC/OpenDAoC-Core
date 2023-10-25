@@ -1,8 +1,11 @@
 using System.Linq;
-using DOL.GS.PacketHandler;
-using ECS.Debug;
+using Core.GS.Enums;
+using Core.GS.GameLoop;
+using Core.GS.Scripts.Custom;
+using Core.GS.Server;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS.ECS;
 
 public class PredatorService
 {
@@ -10,7 +13,7 @@ public class PredatorService
 
     private static long _updateInterval = 3000; // 3secs
     private static long _messageBroadcastInterval = 15000; // 15secs
-    private static long _insertInterval = ServerProperties.Properties.QUEUED_PLAYER_INSERT_INTERVAL * 1000;
+    private static long _insertInterval = ServerProperty.QUEUED_PLAYER_INSERT_INTERVAL * 1000;
 
     private static long _lastUpdate;
     private static long _lastInsert;
@@ -18,7 +21,7 @@ public class PredatorService
 
     public static void Tick(long tick)
     {
-        GameLoop.CurrentServiceTick = SERVICE_NAME;
+        GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
         if (tick - _lastUpdate > _updateInterval)
@@ -31,8 +34,8 @@ public class PredatorService
                 
                 if (activePlayer == null) continue;
 
-                AbstractArea area = activePlayer.CurrentZone?.GetAreasOfSpot(activePlayer.X, activePlayer.Y, activePlayer.Z)
-                    .FirstOrDefault() as AbstractArea;
+                AArea area = activePlayer.CurrentZone?.GetAreasOfSpot(activePlayer.X, activePlayer.Y, activePlayer.Z)
+                    .FirstOrDefault() as AArea;
                 
                 //if user is not in an RvR zone, or is in DF
                 if (ConquestService.ConquestManager.IsPlayerInSafeZone(activePlayer))

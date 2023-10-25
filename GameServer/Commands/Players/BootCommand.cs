@@ -1,7 +1,9 @@
-using DOL.GS.Housing;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.GameUtils;
+using Core.GS.Languages;
 
-namespace DOL.GS.Commands;
+namespace Core.GS.Commands;
 
 [Command(
   "&boot",

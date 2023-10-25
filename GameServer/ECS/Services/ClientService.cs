@@ -4,13 +4,16 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using DOL.Database;
-using DOL.GS.Housing;
-using DOL.GS.ServerProperties;
-using ECS.Debug;
+using Core.Base;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.GameLoop;
+using Core.GS.Server;
+using Core.GS.World;
 using log4net;
 
-namespace DOL.GS
+namespace Core.GS.ECS
 {
     public static class ClientService
     {
@@ -28,12 +31,12 @@ namespace DOL.GS
 
         public static void Tick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
+            GameLoopMgr.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
             using (_lock.GetWrite())
             {
-                _clients = EntityManager.UpdateAndGetAll<GameClient>(EEntityType.Client, out _lastValidIndex);
+                _clients = EntityMgr.UpdateAndGetAll<GameClient>(EEntityType.Client, out _lastValidIndex);
             }
 
             Parallel.For(0, _lastValidIndex + 1, i =>
@@ -45,21 +48,21 @@ namespace DOL.GS
 
                 switch (client.ClientState)
                 {
-                    case GameClient.eClientState.Disconnected:
+                    case EClientState.Disconnected:
                     {
                         OnClientDisconnect(client);
                         client.PacketProcessor?.OnDisconnect();
                         return;
                     }
-                    case GameClient.eClientState.NotConnected:
-                    case GameClient.eClientState.Linkdead:
+                    case EClientState.NotConnected:
+                    case EClientState.Linkdead:
                         return;
-                    case GameClient.eClientState.CharScreen:
+                    case EClientState.CharScreen:
                     {
                         CheckPingTimeout(client);
                         break;
                     }
-                    case GameClient.eClientState.Playing:
+                    case EClientState.Playing:
                     {
                         CheckPingTimeout(client);
                         GamePlayer player = client.Player;
@@ -68,17 +71,17 @@ namespace DOL.GS
                         {
                             try
                             {
-                                if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                                if (player.LastWorldUpdate + ServerProperty.WORLD_PLAYER_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                                 {
-                                    long startTick = GameLoop.GetCurrentTime();
+                                    long startTick = GameLoopMgr.GetCurrentTime();
                                     UpdateWorld(player);
-                                    long stopTick = GameLoop.GetCurrentTime();
+                                    long stopTick = GameLoopMgr.GetCurrentTime();
 
                                     if (stopTick - startTick > 25)
                                         log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
                                 }
 
-                                player.movementComponent.Tick(GameLoop.GameLoopTime);
+                                player.movementComponent.Tick(GameLoopMgr.GameLoopTime);
                             }
                             catch (Exception e)
                             {
@@ -97,9 +100,9 @@ namespace DOL.GS
 
                 try
                 {
-                    long startTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoopMgr.GetCurrentTime();
                     client.PacketProcessor.ProcessTcpQueue();
-                    long stopTick = GameLoop.GetCurrentTime();
+                    long stopTick = GameLoopMgr.GetCurrentTime();
 
                     if (stopTick - startTick > 25)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(client.PacketProcessor.ProcessTcpQueue)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
@@ -115,14 +118,14 @@ namespace DOL.GS
 
         public static void OnClientConnect(GameClient client)
         {
-            EntityManager.Add(client);
+            EntityMgr.Add(client);
             Interlocked.Increment(ref _clientCount);
         }
 
         public static void OnClientDisconnect(GameClient client)
         {
             Interlocked.Decrement(ref _clientCount);
-            EntityManager.Remove(client);
+            EntityMgr.Remove(client);
         }
 
         public static GamePlayer GetPlayer<T>(CheckPlayerAction<T> action)
@@ -440,26 +443,26 @@ namespace DOL.GS
         {
             if (player.NpcUpdateCache.TryGetValue(npc, out CachedNpcValues cachedNpcValues))
             {
-                cachedNpcValues.Time = GameLoop.GameLoopTime;
+                cachedNpcValues.Time = GameLoopMgr.GameLoopTime;
                 cachedNpcValues.HealthPercent =  npc.HealthPercent;
             }
             else
-                player.NpcUpdateCache[npc] = new CachedNpcValues(GameLoop.GameLoopTime, npc.HealthPercent);
+                player.NpcUpdateCache[npc] = new CachedNpcValues(GameLoopMgr.GameLoopTime, npc.HealthPercent);
         }
 
         private static void AddItemToPlayerCache(GamePlayer player, GameStaticItem item)
         {
-            player.ItemUpdateCache[item] = GameLoop.GameLoopTime;
+            player.ItemUpdateCache[item] = GameLoopMgr.GameLoopTime;
         }
 
         private static void AddDoorToPlayerCache(GamePlayer player, GameDoorBase door)
         {
-            player.DoorUpdateCache[door] = GameLoop.GameLoopTime;
+            player.DoorUpdateCache[door] = GameLoopMgr.GameLoopTime;
         }
 
         private static void AddHouseToPlayerCache(GamePlayer player, House house)
         {
-            player.HouseUpdateCache[house] = GameLoop.GameLoopTime;
+            player.HouseUpdateCache[house] = GameLoopMgr.GameLoopTime;
         }
 
         private static void AddObjectToPlayerCache(GamePlayer player, GameObject gameObject)
@@ -513,7 +516,7 @@ namespace DOL.GS
 
         private static void CheckPingTimeout(GameClient client)
         {
-            if (client.PingTime + PING_TIMEOUT < GameLoop.GetCurrentTime())
+            if (client.PingTime + PING_TIMEOUT < GameLoopMgr.GetCurrentTime())
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Ping timeout for client {client}");
@@ -524,7 +527,7 @@ namespace DOL.GS
 
         private static void CheckHardTimeout(GameClient client)
         {
-            if (client.PingTime + HARD_TIMEOUT < GameLoop.GetCurrentTime())
+            if (client.PingTime + HARD_TIMEOUT < GameLoopMgr.GetCurrentTime())
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Hard timeout for client {client}");
@@ -540,7 +543,7 @@ namespace DOL.GS
             UpdateItems(player);
             UpdateDoors(player);
             UpdateHouses(player);
-            player.LastWorldUpdate = GameLoop.GameLoopTime;
+            player.LastWorldUpdate = GameLoopMgr.GameLoopTime;
         }
 
         private static void UpdateNpcs(GamePlayer player)
@@ -568,9 +571,9 @@ namespace DOL.GS
 
                 if (!npcUpdateCache.TryGetValue(objectInRange, out CachedNpcValues cachedNpcValues))
                     UpdateObjectForPlayer(player, objectInRange);
-                else if (cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (cachedNpcValues.Time + ServerProperty.WORLD_NPC_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                     UpdateObjectForPlayer(player, objectInRange);
-                else if (cachedNpcValues.Time + 250 < GameLoop.GameLoopTime)
+                else if (cachedNpcValues.Time + 250 < GameLoopMgr.GameLoopTime)
                 {
                     // `GameNPC.HealthPercent` is a bit of an expensive call. Do it last.
                     if (objectInRange == targetObject)
@@ -641,7 +644,7 @@ namespace DOL.GS
                     CreateObjectForPlayer(player, doorInRange);
                     player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange);
                 }
-                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (lastUpdate + ServerProperty.WORLD_OBJECT_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                     UpdateObjectForPlayer(player, doorInRange);
             }
         }
@@ -672,7 +675,7 @@ namespace DOL.GS
                     player.Client.Out.SendGarden(house);
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
                 }
-                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (lastUpdate + ServerProperty.WORLD_OBJECT_UPDATE_INTERVAL < GameLoopMgr.GameLoopTime)
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
 
                 AddHouseToPlayerCache(player, house);

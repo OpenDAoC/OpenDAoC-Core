@@ -1,7 +1,7 @@
 using System;
-using DOL.GS;
+using Core.GS.Players;
 
-namespace DOL.Events;
+namespace Core.GS.Events;
 
 public class PlayerPromotedEventArgs : EventArgs
 {

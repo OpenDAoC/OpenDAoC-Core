@@ -1,6 +1,4 @@
-using DOL.Database.Attributes;
-
-namespace DOL.Database
+namespace Core.Database.Tables
 {
     /// <summary>
     /// Spell Custom Values Table containing entries linked to spellID.

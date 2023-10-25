@@ -1,6 +1,6 @@
-﻿using DOL.Database.Attributes;
+﻿using Core.Database.Enums;
 
-namespace DOL.Database
+namespace Core.Database.Tables
 {
     [DataTable(TableName = "LanguageGameObject")]
     public class DbLanguageGameObject : LanguageDataObject
@@ -14,9 +14,9 @@ namespace DOL.Database
             : base() { }
 
         #region Properties
-        public override eTranslationIdentifier TranslationIdentifier
+        public override ETranslationIdType TranslationIdentifier
         {
-            get { return eTranslationIdentifier.eObject; }
+            get { return ETranslationIdType.eObject; }
         }
 
         /// <summary>

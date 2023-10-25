@@ -139,22 +139,22 @@
 	</appender>
 
 	<!-- We set the log level for some lowlevel loggers so it won't clutter our output -->
-	<logger name="DOL.GS.PacketHandler.PacketProcessor">
+	<logger name="Core.GS.Packets.PacketProcessor">
 		<level value="WARN" />
 	</logger>
-	<logger name="DOL.Database.ObjectDatabase">
+	<logger name="Core.Database.ObjectDatabase">
 		<level value="WARN" />
 	</logger>
-	<logger name="DOL.GS.GameObject">
+	<logger name="Core.GS.GameObject">
 		<level value="WARN" />
 	</logger>
-	<logger name="DOL.Database.Handlers">
+	<logger name="Core.Database.Handlers">
 		<level value="WARN" />
 	</logger>
-	<logger name="DOL.GS.Zone">
+	<logger name="Core.GS.Zone">
 		<level value="WARN" />
 	</logger>
-	<logger name="DOL.GS.GameTimer">
+	<logger name="Core.GS.GameTimer">
 		<level value="INFO" />
 	</logger>
 </log4net>

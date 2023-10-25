@@ -1,12 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.ECS;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.AI.Brain;
+namespace Core.GS.AI;
 
 #region Olcasgean Initializor
 public class OIBrain : StandardMobBrain
@@ -350,7 +354,7 @@ public class OlcasgeanBrain : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
             teleport_player = false;
             cast1 = true;
             spawn_antipass = false;
@@ -590,7 +594,7 @@ public class OlcasgeanBrain2 : StandardMobBrain
         if (!CheckProximityAggro())
         {
             //set state to RETURN TO SPAWN
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
         }
 
         if (Body.IsAlive)
@@ -978,7 +982,7 @@ public class WaterPrimalBrain : StandardMobBrain
             return;
         else
         {
-            if (ECS.Debug.Diagnostics.AggroDebugEnabled)
+            if (Diagnostics.AggroDebugEnabled)
             {
                 PrintAggroTable();
             }
@@ -1376,7 +1380,7 @@ public class EarthPrimalBrain : StandardMobBrain
         }
         if (Body.IsOutOfTetherRange && !HasAggro)
         {
-            FiniteStateMachine.SetCurrentState(EFSMStateType.RETURN_TO_SPAWN);
+            FiniteStateMachine.SetCurrentState(EFsmStateType.RETURN_TO_SPAWN);
         }
         base.Think();
     }

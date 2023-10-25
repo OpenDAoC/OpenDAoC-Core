@@ -1,12 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.Events;
-using DOL.GS;
-using DOL.GS.PacketHandler;
+using Core.Database.Tables;
+using Core.GS.AI;
+using Core.GS.Enums;
+using Core.GS.Events;
+using Core.GS.GameUtils;
+using Core.GS.Server;
+using Core.GS.Skills;
+using Core.GS.Spells;
+using Core.GS.World;
 
-namespace DOL.GS;
+namespace Core.GS;
 
 #region Grand Summoner Govannon
 public class GrandSummonerGovannon : GameEpicBoss
@@ -73,7 +76,7 @@ public class GrandSummonerGovannon : GameEpicBoss
 	}
 	public override bool HasAbility(string keyName)
 	{
-		if (IsAlive && keyName == GS.Abilities.CCImmunity)
+		if (IsAlive && keyName == AbilityConstants.CCImmunity)
 			return true;
 
 		return base.HasAbility(keyName);
@@ -113,7 +116,7 @@ public class GrandSummonerGovannon : GameEpicBoss
 		Piety = npcTemplate.Piety;
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
-		RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
+		RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 		Faction = FactionMgr.GetFactionByID(206);
 		Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 		GrandSummonerGovannonBrain.SpawnSacrifices1 = false;
@@ -324,7 +327,7 @@ public class SummonedDemon : GameNpc
 #endregion Summoned Demon
 
 #region Shade of Aelfgar
-public class ShadeOfAelfgar : GameEpicNPC
+public class ShadeOfAelfgar : GameEpicNpc
 {
 	public override int MaxHealth
 	{

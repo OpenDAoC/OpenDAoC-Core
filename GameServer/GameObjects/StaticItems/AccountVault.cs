@@ -1,9 +1,11 @@
 using System.Collections.Generic;
-using DOL.Database;
-using DOL.GS;
-using DOL.GS.Housing;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
+using Core.Database;
+using Core.Database.Tables;
+using Core.GS.Enums;
+using Core.GS.Expansions.Foundations;
+using Core.GS.Server;
+
+namespace Core.GS;
 
 public class AccountVault : GameHouseVault
 {
@@ -196,7 +198,7 @@ public class AccountVault : GameHouseVault
         // block placing untradables into housing vaults from any source - Tolakram
         if (toAccountVault && itemInFromSlot != null && itemInFromSlot.IsTradable == false)
         {
-            if (itemInFromSlot.Id_nb != Properties.ALT_CURRENCY_ID)
+            if (itemInFromSlot.Id_nb != ServerProperty.ALT_CURRENCY_ID)
             {
                 player.Out.SendMessage("You can not put this item into an Account Vault!", EChatType.CT_System, EChatLoc.CL_SystemWindow);
                 player.Out.SendInventoryItemsUpdate(null);

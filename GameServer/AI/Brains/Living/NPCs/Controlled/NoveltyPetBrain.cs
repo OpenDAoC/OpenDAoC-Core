@@ -1,6 +1,7 @@
-using DOL.GS;
+using Core.GS.Enums;
+using Core.GS.World;
 
-namespace DOL.AI.Brain
+namespace Core.GS.AI
 {
 	public class NoveltyPetBrain : ABrain, IControlledBrain
 	{
@@ -43,7 +44,7 @@ namespace DOL.AI.Brain
 
 			if (m_owner == null || 
 				m_owner.IsAlive == false || 
-				m_owner.Client.ClientState != GameClient.eClientState.Playing || 
+				m_owner.Client.ClientState != EClientState.Playing || 
 				Body.IsWithinRadius(m_owner, WorldMgr.VISIBILITY_DISTANCE) == false)
 			{
 				Body.Delete();

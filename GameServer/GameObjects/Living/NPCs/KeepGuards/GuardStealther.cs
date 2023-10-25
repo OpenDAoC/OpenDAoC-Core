@@ -1,50 +1,50 @@
-using DOL.GS.PlayerClass;
-using DOL.GS.ServerProperties;
-using DOL.Language;
+using Core.GS.Enums;
+using Core.GS.Languages;
+using Core.GS.Players;
+using Core.GS.Server;
 
-namespace DOL.GS.Keeps
+namespace Core.GS;
+
+public class GuardStealther : GameKeepGuard
 {
-	public class GuardStealther : GameKeepGuard
+    public GuardStealther() : base()
+    {
+        Flags = ENpcFlags.STEALTH;
+    }
+
+	protected override IPlayerClass GetClass()
 	{
-        public GuardStealther() : base()
-        {
-            Flags = ENpcFlags.STEALTH;
-        }
+		if (ModelRealm == ERealm.Albion) return new ClassInfiltrator();
+		else if (ModelRealm == ERealm.Midgard) return new ClassShadowblade();
+		else if (ModelRealm == ERealm.Hibernia) return new ClassNightshade();
+		return new DefaultPlayerClass();
+	}
 
-		protected override IPlayerClass GetClass()
+	protected override void SetBlockEvadeParryChance()
+	{
+		base.SetBlockEvadeParryChance();
+		EvadeChance = 30;
+	}
+
+	protected override void SetName()
+	{
+		switch (ModelRealm)
 		{
-			if (ModelRealm == ERealm.Albion) return new ClassInfiltrator();
-			else if (ModelRealm == ERealm.Midgard) return new ClassShadowblade();
-			else if (ModelRealm == ERealm.Hibernia) return new ClassNightshade();
-			return new DefaultPlayerClass();
+			case ERealm.None:
+			case ERealm.Albion:
+				Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Infiltrator");
+				break;
+			case ERealm.Midgard:
+				Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Shadowblade");
+				break;
+			case ERealm.Hibernia:
+				Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Nightshade");
+				break;
 		}
 
-		protected override void SetBlockEvadeParryChance()
+		if (Realm == ERealm.None)
 		{
-			base.SetBlockEvadeParryChance();
-			EvadeChance = 30;
-		}
-
-		protected override void SetName()
-		{
-			switch (ModelRealm)
-			{
-				case ERealm.None:
-				case ERealm.Albion:
-					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Infiltrator");
-					break;
-				case ERealm.Midgard:
-					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Shadowblade");
-					break;
-				case ERealm.Hibernia:
-					Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Nightshade");
-					break;
-			}
-
-			if (Realm == ERealm.None)
-			{
-				Name = LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
-			}
+			Name = LanguageMgr.GetTranslation(ServerProperty.SERV_LANGUAGE, "SetGuardName.Renegade", Name);
 		}
 	}
 }
