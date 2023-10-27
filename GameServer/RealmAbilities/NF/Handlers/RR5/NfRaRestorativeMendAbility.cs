@@ -3,9 +3,9 @@ using Core.Database.Tables;
 
 namespace Core.GS.RealmAbilities;
 
-public class NfRaRestorativeMindAbility : Rr5RealmAbility
+public class NfRaRestorativeMendAbility : Rr5RealmAbility
 {
-	public NfRaRestorativeMindAbility(DbAbility dba, int level) : base(dba, level) { }
+	public NfRaRestorativeMendAbility(DbAbility dba, int level) : base(dba, level) { }
 
 	/// <summary>
 	/// Action
@@ -27,11 +27,11 @@ public class NfRaRestorativeMindAbility : Rr5RealmAbility
 				SendCasterSpellEffectAndCastMessage(living, 7071, true);
 				foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
 				{
-					NfRaRestorativeMindEffect aog = member.EffectList.GetOfType<NfRaRestorativeMindEffect>();
+					NfRaRestorativeMendEffect aog = member.EffectList.GetOfType<NfRaRestorativeMendEffect>();
 					if (!CheckPreconditions(member, DEAD) && aog == null
 						&& living.IsWithinRadius( member, 2000 ))
 					{
-						NfRaRestorativeMindEffect effect = new NfRaRestorativeMindEffect();
+						NfRaRestorativeMendEffect effect = new NfRaRestorativeMendEffect();
 						effect.Start(member);
 						deactivate = true;
 					}
@@ -39,10 +39,10 @@ public class NfRaRestorativeMindAbility : Rr5RealmAbility
 			}
 			else
 			{
-				NfRaRestorativeMindEffect aog = player.EffectList.GetOfType<NfRaRestorativeMindEffect>();
+				NfRaRestorativeMendEffect aog = player.EffectList.GetOfType<NfRaRestorativeMendEffect>();
 				if (!CheckPreconditions(player, DEAD) && aog == null)
 				{
-					NfRaRestorativeMindEffect effect = new NfRaRestorativeMindEffect();
+					NfRaRestorativeMendEffect effect = new NfRaRestorativeMendEffect();
 					effect.Start(player);
 					deactivate = true;
 				}

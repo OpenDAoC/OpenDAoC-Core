@@ -5,12 +5,12 @@ using Core.GS.World;
 
 namespace Core.GS.RealmAbilities;
 
-public class NfRaRestorativeMindEffect : TimedEffect
+public class NfRaRestorativeMendEffect : TimedEffect
 {
 	private GamePlayer m_playerOwner;
 	private EcsGameTimer m_tickTimer;
 	
-	public NfRaRestorativeMindEffect()
+	public NfRaRestorativeMendEffect()
 		: base(30000)
 	{
 	}
