@@ -2,9 +2,9 @@
 
 namespace Core.GS;
 
-public class SgtCosworth : GameNpc
+public class SergeantCosworth : GameNpc
 {
-	public SgtCosworth() : base() { }
+	public SergeantCosworth() : base() { }
 
 	public override bool AddToWorld()
 	{
@@ -18,7 +18,7 @@ public class SgtCosworth : GameNpc
 		Intelligence = npcTemplate.Intelligence;
 		Empathy = npcTemplate.Empathy;
 
-		SgtCosworthBrain sbrain = new SgtCosworthBrain();
+		SergeantCosworthBrain sbrain = new SergeantCosworthBrain();
 		SetOwnBrain(sbrain);
 		LoadedFromScript = false;//load from database
 		SaveIntoDatabase();

@@ -5,7 +5,7 @@ namespace Core.GS.AI
 	/// <summary>
 	/// Healer Guard Brain
 	/// </summary>
-	public class HealerGuardBrain : KeepGuardBrain
+	public class GuardHealerBrain : KeepGuardBrain
 	{
 		/// <summary>
 		/// Brain Think Method

@@ -1356,7 +1356,7 @@ public class GuardTemplateMgr
             else if (guard is GuardCaster)
                 brain = new CasterGuardBrain();
             else if (guard is GuardHealer)
-                brain = new HealerGuardBrain();
+                brain = new GuardHealerBrain();
             else if (guard is GuardLord)
                 brain = new KeepLordBrain();
             else if (guard is GuardCorpseSummoner)

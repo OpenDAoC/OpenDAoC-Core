@@ -55,11 +55,11 @@ public class OldFrontierMerchant : GameMerchant
 
 }
 
-public class OFMerchantHome : GameMerchant
+public class OldFrontierMerchantHome : GameMerchant
 {
     #region Constructor
 
-    public OFMerchantHome()
+    public OldFrontierMerchantHome()
         : base()
     {
         SetOwnBrain(new BlankBrain());

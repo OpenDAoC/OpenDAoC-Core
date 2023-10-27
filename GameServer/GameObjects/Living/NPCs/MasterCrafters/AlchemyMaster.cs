@@ -5,7 +5,7 @@ using Core.GS.Server;
 namespace Core.GS;
 
 [NpcGuildScript("Alchemists Master")]
-public class AlchemistsMaster : CraftMasterNpc
+public class AlchemyMaster : CraftMasterNpc
 {
 	private static readonly ECraftingSkill[] m_trainedSkills = 
 	{

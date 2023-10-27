@@ -14,9 +14,9 @@ using Core.GS.World;
 namespace Core.GS;
 
 #region Olcasgean Initializor
-public class OlcasgeanInitializator : GameNpc
+public class OlcasgeanInitializer : GameNpc
 {
-    public OlcasgeanInitializator() : base() { }
+    public OlcasgeanInitializer() : base() { }
     public static GameNpc Olcasgean_Initializator = new GameNpc();
     public override int MaxHealth
     {
@@ -44,7 +44,7 @@ public class OlcasgeanInitializator : GameNpc
         X = 41116;
         Y = 64419;
         Z = 12746;
-        OIBrain ubrain = new OIBrain();
+        OlcasgeanInitializerBrain ubrain = new OlcasgeanInitializerBrain();
         SetOwnBrain(ubrain);
         base.AddToWorld();
         return true;
@@ -172,7 +172,7 @@ public class Olcasgean : GameEpicBoss
                 }
             }
         }
-        OIBrain.DeadPrimalsCount = 0;
+        OlcasgeanInitializerBrain.DeadPrimalsCount = 0;
 
         bool canReportNews = true;
         // due to issues with attackers the following code will send a notify to all in area in order to force quest credit
@@ -215,8 +215,8 @@ public class Olcasgean : GameEpicBoss
 
         Flags = (ENpcFlags)156;
         RespawnInterval = ServerProperty.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
-        OIBrain.startevent = false;
-        OIBrain.DeadPrimalsCount = 0;
+        OlcasgeanInitializerBrain.startevent = false;
+        OlcasgeanInitializerBrain.DeadPrimalsCount = 0;
         OlcasgeanBrain.setbossflags = false;
         OlcasgeanBrain.wake_up_boss = false;
         OlcasgeanBrain.Spawn_Copy = false;
@@ -572,7 +572,7 @@ public class AirPrimal : GameEpicBoss
     }      
     public override void Die(GameObject killer)
     {
-        ++OIBrain.DeadPrimalsCount;
+        ++OlcasgeanInitializerBrain.DeadPrimalsCount;
         base.Die(killer);
     }
     public override bool AddToWorld()
@@ -621,7 +621,7 @@ public class WaterPrimal : GameEpicBoss
     }
     public override void Die(GameObject killer)
     {
-        ++OIBrain.DeadPrimalsCount;
+        ++OlcasgeanInitializerBrain.DeadPrimalsCount;
         base.Die(killer);
     }
     public override double AttackDamage(DbInventoryItem weapon)
@@ -752,7 +752,7 @@ public class FirePrimal : GameEpicBoss
     }
     public override void Die(GameObject killer)
     {
-        ++OIBrain.DeadPrimalsCount;
+        ++OlcasgeanInitializerBrain.DeadPrimalsCount;
         base.Die(killer);
     }
     public override double AttackDamage(DbInventoryItem weapon)
@@ -971,7 +971,7 @@ public class EarthPrimal : GameEpicBoss
     }
     public override void Die(GameObject killer)
     {
-        ++OIBrain.DeadPrimalsCount;
+        ++OlcasgeanInitializerBrain.DeadPrimalsCount;
         foreach (GameNpc npc in GetNPCsInRadius(8000))
         {
             if (npc != null)

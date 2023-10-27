@@ -1,6 +1,4 @@
-using Core.GS.AI;
-
-namespace Core.GS.Scripts.Custom;
+namespace Core.GS.AI;
 
 public class AssistantTeleporterBrain : StandardMobBrain
 {

@@ -13,10 +13,10 @@ using Core.GS.World;
 namespace Core.GS.AI;
 
 #region Olcasgean Initializor
-public class OIBrain : StandardMobBrain
+public class OlcasgeanInitializerBrain : StandardMobBrain
 {
     private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-    public OIBrain()
+    public OlcasgeanInitializerBrain()
         : base()
     {
         ThinkInterval = 1000;
@@ -378,7 +378,7 @@ public class OlcasgeanBrain : StandardMobBrain
                 SpawnCopy();
                 Spawn_Copy = true;
             }
-            if (OIBrain.DeadPrimalsCount >= 4 && !wake_up_boss)
+            if (OlcasgeanInitializerBrain.DeadPrimalsCount >= 4 && !wake_up_boss)
             {
                 new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(WakeUpBoss), 25000);
                 wake_up_boss = true;
@@ -599,7 +599,7 @@ public class OlcasgeanBrain2 : StandardMobBrain
 
         if (Body.IsAlive)
         {
-            if (OIBrain.DeadPrimalsCount >= 4 && !wake_up_boss2)
+            if (OlcasgeanInitializerBrain.DeadPrimalsCount >= 4 && !wake_up_boss2)
             {
                 new EcsGameTimer(Body, new EcsGameTimer.EcsTimerCallback(WakeUpBoss), 25000);
                 wake_up_boss2 = true;

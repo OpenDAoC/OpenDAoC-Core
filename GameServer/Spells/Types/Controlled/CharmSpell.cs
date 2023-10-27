@@ -204,7 +204,7 @@ public class CharmSpell : SpellHandler
                     isCharmable = false;
                 if (charmMob is GameStableMaster) // Horse route NPCs
                     isCharmable = false;
-                if (charmMob is AlchemistsMaster or FletchingMaster or ArmorCraftingMaster or WeaponCraftingMaster or SpellCraftingMaster or TailoringMaster or BasicCraftingMaster or SiegecraftingMaster) // Any Craft Master NPCs
+                if (charmMob is AlchemyMaster or FletchingMaster or ArmorCraftingMaster or WeaponCraftingMaster or SpellCraftingMaster or TailoringMaster or BasicCraftingMaster or SiegecraftingMaster) // Any Craft Master NPCs
                     isCharmable = false;
                 if (charmMob is GameTrainer) // Class trainers
                     isCharmable = false;

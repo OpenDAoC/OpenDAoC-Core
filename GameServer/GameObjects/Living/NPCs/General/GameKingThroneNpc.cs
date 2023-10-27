@@ -4,11 +4,11 @@ using Core.GS.Languages;
 namespace Core.GS;
 
 // This class has to be completed and may be inherited for scripting purpose (like quests)
-public class KingNPC : GameNpc
+public class GameKingThroneNpc : GameNpc
 {
 	private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-	public KingNPC()
+	public GameKingThroneNpc()
 		: base()
 	{
 	}

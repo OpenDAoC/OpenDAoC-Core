@@ -1,9 +1,9 @@
 namespace Core.GS.AI;
 
-public class SgtCosworthBrain : StandardMobBrain
+public class SergeantCosworthBrain : StandardMobBrain
 {
     private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-    public SgtCosworthBrain() : base()
+    public SergeantCosworthBrain() : base()
     {
         AggroLevel = 40;
         AggroRange = 400;

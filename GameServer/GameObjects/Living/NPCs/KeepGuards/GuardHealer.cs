@@ -22,7 +22,7 @@ public class GuardHealer : GameKeepGuard
 		BlockChance = 5;
 	}
 
-	protected override KeepGuardBrain GetBrain() => new HealerGuardBrain();
+	protected override KeepGuardBrain GetBrain() => new GuardHealerBrain();
 
 	protected override void SetName()
 	{
