@@ -144,7 +144,6 @@ public class CoreRogGenerator : LootGeneratorBase {
                 chance += 10; //solo drop bonus
                 
                 DbItemTemplate item = null;
-
                 if (Util.Chance(chance))
                 {
                     GeneratedUniqueItem tmp = CoreRogMgr.GenerateMonsterLootROG(player.Realm, classForLoot, (byte)(mob.Level + 1), player.CurrentZone?.IsOF ?? false);
