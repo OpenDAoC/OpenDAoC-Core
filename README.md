@@ -31,7 +31,7 @@ The following sections outline the process of preparing your machine to develop,
       3. [Adding `DummyDB.sql`](#adding-dummydbsql-win)
       4. [Cloning OpenDAoC's Repos](#cloning-the-repository-win)
       5. [Altering `serverconfig.xml`](#altering-serverconfigxml-win)
-4. [Building Your OpenDAoC Server Locally](#building-your-dol-server-locally)
+4. [Building Your OpenDAoC Server Locally](#building-your-opendaoc-server-locally)
 5. [Accessing Local Servers](#accessing-local-servers)
 6. [Testing](#testing)
    1. [In-Game Testing](#in-game-testing)
@@ -159,7 +159,7 @@ With the repo on your local hard drive, you need to alter the `serverconfig.xml`
    3. To test outside your network, [enter your public IP address](https://api.ipify.org).
 4. Configure the database access as per your own configuration.
    
-Now you're ready to [run your own instance of OpenDAoC](#building-your-dol-server-locally)!
+Now you're ready to [run your own instance of OpenDAoC](#building-your-opendaoc-server-locally)!
 
 ## Setting Up on Windows
 
@@ -257,13 +257,13 @@ With the repos on your local hard drive, you need to alter the `serverconfig.xml
    3. To test outside your network, [enter your public IP address](https://api.ipify.org).
 4. Configure the database access as per your own configuration.
 
-Now you're ready to [run your own instance of OpenDAoC](#building-your-dol-server-locally)!
+Now you're ready to [run your own instance of OpenDAoC](#building-your-opendaoc-server-locally)!
 
 ## Building Your OpenDAoC Server Locally
 
 This section provides the commands necessary for both building and running an OpenDAoC server locally.
 
-1. Launch the Terminal or PowerShell, navigate to the `/OpenDAoC-Core/` directory and type `dotnet build DOLLinux.sln`. This builds the OpenDAoC server on your machine. <!-- This may take several minutes to complete. -->
+1. Launch Terminal or PowerShell, navigate to the `/OpenDAoC-Core/` directory and type `dotnet build DOLLinux.sln`. This builds the OpenDAoC server on your machine. <!-- This may take several minutes to complete. -->
 2. If the build was successful, now enter the command `dotnet run --project CoreServer` to launch the server, making it accessible to player logins. <!-- This may take several minutes to complete. -->
 
 Congratulations! You're now running an instance of OpenDAoC on your machine.
@@ -329,7 +329,14 @@ _**NOTE:** Currently, not all tests run reliably during a full suite run. This i
 
 Logging is controlled by the `/OpenDAoC-Core/Debug/config/logconfig.xml` file. The default configuration may not be verbose enough for the purposes of development, so make any changes here as needed for logging.
 
+## Project Credit
+
+OpenDAoC is based upon a 2021 fork of the Dawn of Light DAoC emulator project. Without the work of the Dawn of Light team, this project would not have been possible. Likewise, we give thanks for those who have since worked on the OpenDAoC project in all its iterations, including Clait, Fenyn Ro, Knutters, Glimmer, Kelteen, and many others.
 
 ## License
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 [GNU General Public License v3.0](https://choosealicense.com/licenses/gpl-3.0/)
