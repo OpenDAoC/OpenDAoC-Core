@@ -101,13 +101,6 @@ public class CoreRogGenerator : LootGeneratorBase {
                 if (mob.Level > 40)
                     chance -= 3;
                 
-                if (mob.Level < 5)
-                {
-                    chance += 75;
-                }
-                else if (mob.Level < 10)
-                    chance += (100 - mob.Level * 10);
-
                 int numDrops = 0;
                 //roll for an item for each player in the group
                 foreach (var groupPlayer in player.Group.GetNearbyPlayersInTheGroup(player))
