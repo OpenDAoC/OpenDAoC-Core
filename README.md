@@ -1,5 +1,47 @@
-# Docker
-[![Build and Push Docker Image](https://github.com/OpenDAoC/OpenDAoC-Core/actions/workflows/build-docker-image.yml/badge.svg)](https://github.com/OpenDAoC/OpenDAoC-Core/actions/workflows/build-docker-image.yml)
+This fork focuses on having bots that are treated as players as far as having player classes, give and take damage as players do, have player abilities, player specs, and can be grouped with for PvE or in RvR. RvR currently only includes Thidranki. As this is still being tested, some commands are available to players that normally shouldn't be.
+
+The bots can have roles set, which currently are MainTank, MainCC, MainPuller. The roles are set with the /mrole command or via right-click interaction and only apply when a camp point is set with the /mcamp set command. Without a /mcamp set or removed via /mccamp remove, bots will only attack targets you go into attack mode against or cast a spell at. Basically:
+
+I will go over this again when I am sober. Unfortunately I am not of a sound mind. Nevertheless this should make sense:
+
+For PvE: 
+
+   Use the command "/mlfg" to see a list of potential groupmembers. It's currently very single-player focused, so the list and level of bots will be based on the first person to call it until some time          passes. Integration for more players will be implemented eventually. They might not join if they are higher level than you.
+   
+   By default, anyone in your group will follow you, and attack or begin casting based on your target. This is useful for small groups or when you want to be more precise with targeting. 
+   
+   "/mcamp set" to set a point with a ground target and the command and the grouped bots will stay at this point and attack anything in a small range, adjustable with the /mcamp aggrorange command.  Any bot          set to the "puller" role will seek a target to pull into the camp. Currently limited to classes that can use a bow/crossbow. They will wait for everyone to finish "sitting", which is shown by the             "Drink" emote. When they are ready, they will perform the "LetsGo" emote. Anyone set to the CC role with the appropriate spells will root or mez adds. The bot set with the tank role will focus                on taunts to make them targeted provided the target isn't CC'd. This all works outside dungeons provided the puller isn't set. A puller in dungeons isn't tested. I suspect it's crazy.
+
+For PvP:
+
+   More testing needed as far as players. At the moment, I don't think any "roles" are considered. Any group member will aggro enemies if you as a player is attacked, and group members will attack if you do     or cast against enemies.
+
+Commands explained below:
+   
+/mlfg (index) - Shows a list of available bots. It is currently based on the level of the player calling it. Multiple players being able to call is yet to be implemented.
+   index - Attempts to add the bot of the index given to your group. They may decline if they are higher level than the player.
+
+/mcamp [set/remove/aggrorange/filter]
+   set - Sets the spot the group will wait at and return to after battle based on your ground target. They aggro anything around this point.
+   remove - Returns the group to follow the leader. They will attack anything the leader is attacking or casting towards.
+   aggrorange [1-VisibilityRange] - Sets the range the group will attack anything around their camp point. Default is 550 to prevent attacking mobs the puller pulls. Visibility range is 6000.
+   filter [green/blue/yellow/orange/red/purple] - Sets the minimum con level the puller will pull.
+   
+/mrole [leader/puller/tank/cc/assist]
+   leader - The group member everyone follows.
+   puller - Only avaible for classes that can use a bow/crossbow currentely. The puller will run pull mobs to the point set with /mcamp set.
+   tank - Will only use taunt styles and defensive styles. Ensures every mob is attacking themselves.
+   cc - Will attempt to CC any adds from the puller.
+   assist - Not implemented yet. Will provide a target everyone should focus on.
+
+Commands for testing:
+
+/m [classname] (level)
+   classname - summons a mimic with a level equal to the caller.
+
+# Dock
+[![B/mrole [puller/tank/cc/assist]
+   puller - Currently only works for classes that have a bow/crossnbow. They will attack anything in range based on the /mcamp filter, and return to the ponit set with /mcamp setd and Push Docker Image](https://github.com/OpenDAoC/OpenDAoC-Core/actions/workflows/build-docker-image.yml/badge.svg)](https://github.com/OpenDAoC/OpenDAoC-Core/actions/workflows/build-docker-image.yml)
 
 The easiest way to get started with OpenDAoC is to use Docker. This will allow you to run a server without having to install any dependencies on your machine.
 
