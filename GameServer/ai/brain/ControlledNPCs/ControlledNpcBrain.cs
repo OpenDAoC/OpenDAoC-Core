@@ -380,9 +380,10 @@ namespace DOL.AI.Brain
 		/// <returns>true if stopped</returns>
 		public override bool Stop()
 		{
-			if (!base.Stop()) return false;
-			//GameEventMgr.RemoveHandler(Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnOwnerAttacked));
+			if (!base.Stop())
+				return false;
 
+			StripCastedBuffs();
 			GameEventMgr.Notify(GameLivingEvent.PetReleased, Body);
 			return true;
 		}

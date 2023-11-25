@@ -380,13 +380,11 @@ namespace DOL.GS
 		{
 			try
 			{
-				(Brain as ControlledNpcBrain)?.StripCastedBuffs();
 				GameEventMgr.Notify(GameLivingEvent.PetReleased, this);
 			}
 			finally
 			{
 				base.Die(killer);
-				//CurrentRegion = null;
 			}
 		}
 
