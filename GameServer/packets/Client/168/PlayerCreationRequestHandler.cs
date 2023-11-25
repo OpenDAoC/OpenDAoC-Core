@@ -19,9 +19,10 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (target == null)
             {
                 if (Log.IsWarnEnabled)
-                    Log.Warn($"Client {client.SessionID}:{client.TcpEndpointAddress} account {(client.Account == null ? "null" : client.Account.Name)} requested invalid client {id} --- disconnecting");
+                    Log.Warn($"Client {client.SessionID}:{client.TcpEndpointAddress} account {(client.Account == null ? "null" : client.Account.Name)} requested invalid client {id}");
 
-                client.Disconnect();
+                // Uncomment if this is spammed, but try not to disconnect if id == 0.
+                // client.Disconnect();
                 return;
             }
 
