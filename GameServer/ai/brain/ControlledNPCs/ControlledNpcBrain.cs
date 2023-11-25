@@ -1084,7 +1084,7 @@ namespace DOL.AI.Brain
 			{
 				foreach (GameLiving living in m_buffedTargets)
 				{
-					foreach (ECSGameEffect effect in living.effectListComponent.GetAllEffects().Where(x => x.SpellHandler.Caster == Body))
+					foreach (ECSGameEffect effect in living.effectListComponent.GetAllEffects().Where(x => x.SpellHandler != null && x.SpellHandler.Caster == Body))
 						EffectService.RequestCancelEffect(effect);
 				}
 
