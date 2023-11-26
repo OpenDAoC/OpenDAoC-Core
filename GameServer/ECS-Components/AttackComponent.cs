@@ -2324,7 +2324,7 @@ namespace DOL.GS
                         penetrate = true;
                     }
                 }
-                else if (ad.IsMeleeAttack && !Util.ChanceDouble(bladeturn.SpellHandler.Caster.Level / ad.Attacker.Level))
+                else if (ad.IsMeleeAttack && !Util.ChanceDouble(bladeturn.SpellHandler.Caster.Level / (double) ad.Attacker.Level))
                     penetrate = true;
 
                 if (penetrate)
