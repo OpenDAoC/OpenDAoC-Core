@@ -7194,36 +7194,6 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// Easy method to get the resist of a certain damage type
-        /// Good for when we add RAs
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        public override int GetDamageResist(eProperty property)
-        {
-            int res = 0;
-            int classResist = 0;
-            int secondResist = 0;
-
-            //Q: Do the Magic resist bonuses from Bedazzling Aura and Empty Mind stack with each other?
-            //A: Nope.
-            switch ((eResist)property)
-            {
-                case eResist.Body:
-                case eResist.Cold:
-                case eResist.Energy:
-                case eResist.Heat:
-                case eResist.Matter:
-                case eResist.Spirit:
-                    res += BaseBuffBonusCategory[(int)eProperty.MagicAbsorption];
-                    break;
-                default:
-                    break;
-            }
-            return (int)((res + classResist) - 0.01 * secondResist * (res + classResist) + secondResist);
-        }
-
         #endregion
 
         #region Duel

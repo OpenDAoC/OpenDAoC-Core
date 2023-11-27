@@ -603,7 +603,7 @@ namespace DOL.GS.Spells
 
                 damage += ad.Modifier;
 
-                int resist = (int)(damage * ad.Target.GetDamageResist(target.GetResistTypeForDamage(ad.DamageType)) * -0.01);
+                int resist = (int)(damage * GetDamageResist(target, (eResist) target.GetResistTypeForDamage(ad.DamageType)) * -0.01);
                 eProperty property = ad.Target.GetResistTypeForDamage(ad.DamageType);
                 int secondaryResistModifier = ad.Target.SpecBuffBonusCategory[(int)property];
                 int resistModifier = 0;
@@ -618,6 +618,30 @@ namespace DOL.GS.Spells
                     ad.AttackResult = eAttackResult.Missed;
                 else
                     ad.CriticalDamage = player.attackComponent.CalculateMeleeCriticalDamage(ad, null, weapon);
+
+                static int GetDamageResist(GameLiving living, eResist resistType)
+                {
+                    int res = 0;
+                    int classResist = 0;
+                    int secondResist = 0;
+
+                    //Q: Do the Magic resist bonuses from Bedazzling Aura and Empty Mind stack with each other?
+                    //A: Nope.
+                    switch (resistType)
+                    {
+                        case eResist.Body:
+                        case eResist.Cold:
+                        case eResist.Energy:
+                        case eResist.Heat:
+                        case eResist.Matter:
+                        case eResist.Spirit:
+                            res += living.BaseBuffBonusCategory[(int)eProperty.MagicAbsorption];
+                            break;
+                        default:
+                            break;
+                    }
+                    return (int)((res + classResist) - 0.01 * secondResist * (res + classResist) + secondResist);
+                }
             }
             else
             {

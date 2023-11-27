@@ -1335,31 +1335,17 @@ namespace DOL.GS.Commands
 
 			info.Add(" ");
 
-			info.Add("Race Resists:");
-			info.Add(" +  -- Crush/Slash/Thrust:  " + targetMob.GetDamageResist(eProperty.Resist_Crush)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Slash)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Thrust));
-			info.Add(" +  -- Heat/Cold/Matter:  " + targetMob.GetDamageResist(eProperty.Resist_Heat)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Cold)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Matter));
-			info.Add(" +  -- Body/Spirit/Energy:  " + targetMob.GetDamageResist(eProperty.Resist_Body)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Spirit)
-			         + " / " + targetMob.GetDamageResist(eProperty.Resist_Energy));
-			info.Add(" +  -- Natural:  " + targetMob.GetDamageResist(eProperty.Resist_Natural));
-
-			info.Add(" ");
-
 			info.Add("Current Resists:");
-			info.Add(" +  -- Crush/Slash/Thrust:  " + targetMob.GetModified(eProperty.Resist_Crush)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Slash)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Thrust));
-			info.Add(" +  -- Heat/Cold/Matter:  " + targetMob.GetModified(eProperty.Resist_Heat)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Cold)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Matter));
-			info.Add(" +  -- Body/Spirit/Energy:  " + targetMob.GetModified(eProperty.Resist_Body)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Spirit)
-			         + " / " + targetMob.GetModified(eProperty.Resist_Energy));
-			info.Add(" +  -- Natural:  " + targetMob.GetModified(eProperty.Resist_Natural));
+			info.Add(" +  Crush / Slash / Thrust:  " + targetMob.GetResist(eDamageType.Crush)
+			         + " / " + targetMob.GetResist(eDamageType.Slash)
+			         + " / " + targetMob.GetResist(eDamageType.Thrust));
+			info.Add(" +  Heat / Cold / Matter:  " + targetMob.GetResist(eDamageType.Heat)
+			         + " / " + targetMob.GetResist(eDamageType.Cold)
+			         + " / " + targetMob.GetResist(eDamageType.Matter));
+			info.Add(" +  Body / Spirit / Energy:  " + targetMob.GetResist(eDamageType.Body)
+			         + " / " + targetMob.GetResist(eDamageType.Spirit)
+			         + " / " + targetMob.GetResist(eDamageType.Energy));
+			info.Add(" +  Natural:  " + targetMob.GetResist(eDamageType.Natural));
 
 			info.Add(" ");
 

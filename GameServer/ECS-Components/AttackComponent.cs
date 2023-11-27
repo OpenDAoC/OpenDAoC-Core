@@ -1790,16 +1790,8 @@ namespace DOL.GS
 
         public static double CalculateTargetResistance(GameLiving target, eDamageType damageType, DbInventoryItem armor)
         {
-            eProperty resistType = target.GetResistTypeForDamage(damageType);
             double damageModifier = 1.0;
-
-            // Against NPC targets this just doubles the resists. Applying only to player targets as a fix.
-            // TODO: Figure out why and fix the mess that resists are.
-            if (target is GamePlayer)
-                damageModifier *= 1.0 - (target.GetResist(damageType) + SkillBase.GetArmorResist(armor, damageType)) * 0.01;
-
-            damageModifier *= 1.0 - target.GetDamageResist(resistType) * 0.01;
-            damageModifier *= 1.0 - target.SpecBuffBonusCategory[(int) resistType];
+            damageModifier *= 1.0 - (target.GetResist(damageType) + SkillBase.GetArmorResist(armor, damageType)) * 0.01;
             return damageModifier;
         }
 

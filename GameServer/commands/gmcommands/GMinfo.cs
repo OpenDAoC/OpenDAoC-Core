@@ -209,27 +209,31 @@ namespace DOL.GS.Commands
 						
 					if (target.BodyType > 0)
 						info.Add(" + Body Type:  " + target.BodyType);
-						
-					if (target.GetDamageResist(eProperty.Resist_Crush) > 0)
-				    	info.Add(" + Resist Crush:  " + target.GetDamageResist(eProperty.Resist_Crush));
-					if (target.GetDamageResist(eProperty.Resist_Slash) > 0)
-				    	info.Add(" + Resist Slash:  " + target.GetDamageResist(eProperty.Resist_Slash));
-					if (target.GetDamageResist(eProperty.Resist_Thrust) > 0)
-				    	info.Add(" + Resist Thrust:  " + target.GetDamageResist(eProperty.Resist_Thrust));
-					if (target.GetDamageResist(eProperty.Resist_Heat) > 0)
-				    	info.Add(" + Resist Heat:  " + target.GetDamageResist(eProperty.Resist_Heat));
-					if (target.GetDamageResist(eProperty.Resist_Cold) > 0)
-				    	info.Add(" + Resist Cold:  " + target.GetDamageResist(eProperty.Resist_Cold));
-					if (target.GetDamageResist(eProperty.Resist_Matter) > 0)
-				    	info.Add(" + Resist Matter:  " + target.GetDamageResist(eProperty.Resist_Matter));
-					if (target.GetDamageResist(eProperty.Resist_Natural) > 0)
-				    	info.Add(" + Resist Natural:  " + target.GetDamageResist(eProperty.Resist_Natural));
-					if (target.GetDamageResist(eProperty.Resist_Body) > 0)
-				    	info.Add(" + Resist Body:  " + target.GetDamageResist(eProperty.Resist_Body));
-					if (target.GetDamageResist(eProperty.Resist_Spirit) > 0)
-				    	info.Add(" + Resist Spirit:  " + target.GetDamageResist(eProperty.Resist_Spirit));
-					if (target.GetDamageResist(eProperty.Resist_Energy) > 0)
-				    	info.Add(" + Resist Energy:  " + target.GetDamageResist(eProperty.Resist_Energy));
+
+					info.Add(" ");
+					info.Add(" ------ Resists ------");
+					if (target.GetResist(eDamageType.Thrust) != 0)
+						info.Add(" + Thrust:  " + target.GetResist(eDamageType.Thrust));
+					if (target.GetResist(eDamageType.Crush) != 0)
+						info.Add(" + Crush:  " + target.GetResist(eDamageType.Crush));
+					if (target.GetResist(eDamageType.Slash) != 0)
+						info.Add(" + Slash:  " + target.GetResist(eDamageType.Slash));
+					if (target.GetResist(eDamageType.Heat) != 0)
+						info.Add(" + Heat:  " + target.GetResist(eDamageType.Heat));
+					if (target.GetResist(eDamageType.Cold) != 0)
+						info.Add(" + Cold:  " + target.GetResist(eDamageType.Cold));
+					if (target.GetResist(eDamageType.Matter) != 0)
+						info.Add(" + Matter:  " + target.GetResist(eDamageType.Matter));
+					if (target.GetResist(eDamageType.Energy) != 0)
+						info.Add(" + Energy:  " + target.GetResist(eDamageType.Energy));
+					if (target.GetResist(eDamageType.Spirit) != 0)
+						info.Add(" + Spirit:  " + target.GetResist(eDamageType.Spirit));
+					if (target.GetResist(eDamageType.Body) != 0)
+						info.Add(" + Body:  " + target.GetResist(eDamageType.Body));
+					if (target.GetResist(eDamageType.Natural) != 0)
+						info.Add(" + Natural:  " + target.GetResist(eDamageType.Natural));
+
+					info.Add(" ");
 					info.Add(" + Active weapon slot: " + target.ActiveWeaponSlot);
 					info.Add(" + Visible weapon slot: " + target.VisibleActiveWeaponSlots);
 					
@@ -438,6 +442,7 @@ namespace DOL.GS.Commands
 					info.Add("  - Maximum Health : " + target.MaxHealth);
 					info.Add("  - Current AF : " + target.GetModified(eProperty.ArmorFactor));
 					info.Add("  - Current ABS : " + target.GetModified(eProperty.ArmorAbsorption));
+					info.Add("  -");
 
 					for (eProperty stat = eProperty.Stat_First; stat <= eProperty.Stat_Last; stat++, cnt++)
 					{
@@ -448,6 +453,8 @@ namespace DOL.GS.Commands
 						sCurrent = "";
 						sTitle = "";
 					}
+
+					info.Add("  -");
 
 					sCurrent = "";
 					sTitle = "";
@@ -461,8 +468,7 @@ namespace DOL.GS.Commands
 						sTitle = "";
 					}
 
-					info.Add(" ");
-					info.Add(" ");
+					info.Add("  -");
 					info.Add("  - Respecs dol : " + target.RespecAmountDOL);
 					info.Add("  - Respecs single : " + target.RespecAmountSingleSkill);
 					info.Add("  - Respecs full : " + target.RespecAmountAllSkill);

@@ -2906,26 +2906,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Get the resistance to damage by resist type
-		/// </summary>
-		/// <param name="property">one of the Resist_XXX properties</param>
-		/// <returns>the resist value</returns>
-		public virtual int GetDamageResist(eProperty property)
-		{
-			return SkillBase.GetRaceResist( m_race, (eResist)property );
-		}
-
-		/// <summary>
-		/// Gets the Damage Resist for a damage type
-		/// </summary>
-		/// <param name="damageType"></param>
-		/// <returns></returns>
-		public virtual int GetDamageResist(eDamageType damageType)
-		{
-			return GetDamageResist(GetResistTypeForDamage(damageType));
-		}
-
-		/// <summary>
 		/// Stores temporary properties on this living.
 		/// Beware to use unique keys so they do not interfere
 		/// </summary>
