@@ -1522,17 +1522,26 @@ namespace DOL.GS.Spells
 			// Messages
 			if (Spell.InstrumentRequirement == 0 && Spell.ClientEffect != 0)
 			{
-				if (Spell.SpellType != eSpellType.PveResurrectionIllness && Spell.SpellType != eSpellType.RvrResurrectionIllness)
+				if (Spell.SpellType is not eSpellType.PveResurrectionIllness and not eSpellType.RvrResurrectionIllness)
 				{
+					GameLiving toExclude = null;
+
 					if (playerCaster != null)
+					{
 						// Message: You cast a {0} spell!
 						MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouCastSpell", Spell.Name), eChatType.CT_Spell);
-					if (Caster is NecromancerPet {Owner: GamePlayer casterOwner})
+						toExclude = playerCaster;
+					}
+					else if (Caster is NecromancerPet pet && pet.Owner is GamePlayer casterOwner)
+					{
 						// Message: {0} cast a {1} spell!
 						casterOwner.Out.SendMessage(LanguageMgr.GetTranslation(casterOwner.Client.Account.Language, "SpellHandler.CastSpell.Msg.PetCastSpell", Caster.GetName(0, true), Spell.Name), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+						toExclude = casterOwner;
+					}
+
 					foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 					{
-						if (player != m_caster)
+						if (player != toExclude)
 							// Message: {0} casts a spell!
 							player.MessageFromArea(m_caster, LanguageMgr.GetTranslation(player.Client, "SpellHandler.CastSpell.Msg.LivingCastsSpell", Caster.GetName(0, true)), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 					}
