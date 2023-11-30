@@ -100,7 +100,7 @@ namespace DOL.GS
                     StackItems(player, fromClientSlot, toClientSlot, fromItem, toItem, updatedItems);
                 }
                 else
-                    SwitchItems(thisObject, player, fromClientSlot, toClientSlot, fromItem, toItem, updatedItems);
+                    SwapItems(thisObject, player, fromClientSlot, toClientSlot, fromItem, toItem, updatedItems);
 
                 return updatedItems;
             }
@@ -318,7 +318,7 @@ namespace DOL.GS
 
         private static void StackItems(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, DbInventoryItem fromItem, DbInventoryItem toItem, Dictionary<int, DbInventoryItem> updatedItems)
         {
-            // Assumes that neither stacks are full. If that's the case, `SwitchItems` should be called instead.
+            // Assumes that neither stacks are full. If that's the case, `SwapItems` should be called instead.
             int count = fromItem.Count + toItem.Count > fromItem.MaxCount ? toItem.MaxCount - toItem.Count : fromItem.Count;
 
             if (IsHousingInventorySlot(fromClientSlot))
@@ -399,7 +399,7 @@ namespace DOL.GS
             updatedItems.Add((int) toClientSlot, toItem);
         }
 
-        private static void SwitchItems(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, DbInventoryItem fromItem, DbInventoryItem toItem, Dictionary<int, DbInventoryItem> updatedItems)
+        private static void SwapItems(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, DbInventoryItem fromItem, DbInventoryItem toItem, Dictionary<int, DbInventoryItem> updatedItems)
         {
             if (IsHousingInventorySlot(fromClientSlot))
             {
@@ -411,13 +411,13 @@ namespace DOL.GS
 
                     if (!GameServer.Database.SaveObject(fromItem))
                     {
-                        SendErrorMessage(player, nameof(SwitchItems), fromClientSlot, toClientSlot, fromItem, toItem, 0);
+                        SendErrorMessage(player, nameof(SwapItems), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                         return;
                     }
 
                     if (!GameServer.Database.SaveObject(toItem))
                     {
-                        SendErrorMessage(player, nameof(SwitchItems), fromClientSlot, toClientSlot, fromItem, toItem, 0);
+                        SendErrorMessage(player, nameof(SwapItems), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                         return;
                     }
 
@@ -429,7 +429,7 @@ namespace DOL.GS
                 if (IsBackpackSlot(toClientSlot))
                 {
                     // From housing inventory to backpack.
-                    SwitchItemsFromOrToBackpack(fromClientSlot, toClientSlot, fromItem, toItem);
+                    SwapItemsFromOrToBackpack(fromClientSlot, toClientSlot, fromItem, toItem);
                     return;
                 }
 
@@ -442,7 +442,7 @@ namespace DOL.GS
                 if (IsHousingInventorySlot(toClientSlot))
                 {
                     // From backpack to housing inventory.
-                    SwitchItemsFromOrToBackpack(toClientSlot, fromClientSlot, toItem, fromItem);
+                    SwapItemsFromOrToBackpack(toClientSlot, fromClientSlot, toItem, fromItem);
                     return;
                 }
 
@@ -452,17 +452,17 @@ namespace DOL.GS
 
             SendUnsupportedActionMessage(player);
 
-            void SwitchItemsFromOrToBackpack(eInventorySlot vaultSlot, eInventorySlot backpackSlot, DbInventoryItem vaultItem, DbInventoryItem backpackItem)
+            void SwapItemsFromOrToBackpack(eInventorySlot vaultSlot, eInventorySlot backpackSlot, DbInventoryItem vaultItem, DbInventoryItem backpackItem)
             {
                 if (!thisObject.OnAddItem(player, backpackItem))
                 {
-                    SendErrorMessage(player, nameof(SwitchItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
+                    SendErrorMessage(player, nameof(SwapItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
                 }
 
                 if (!player.Inventory.RemoveTradeItem(backpackItem))
                 {
-                    SendErrorMessage(player, nameof(SwitchItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
+                    SendErrorMessage(player, nameof(SwapItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
                 }
 
@@ -471,25 +471,25 @@ namespace DOL.GS
 
                 if (!GameServer.Database.SaveObject(backpackItem))
                 {
-                    SendErrorMessage(player, nameof(SwitchItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
+                    SendErrorMessage(player, nameof(SwapItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
                 }
 
                 if (!thisObject.OnRemoveItem(player, vaultItem))
                 {
-                    SendErrorMessage(player, nameof(SwitchItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
+                    SendErrorMessage(player, nameof(SwapItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
                 }
 
                 if (!player.Inventory.AddTradeItem(backpackSlot, vaultItem))
                 {
-                    SendErrorMessage(player, nameof(SwitchItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
+                    SendErrorMessage(player, nameof(SwapItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
                 }
 
                 if (!GameServer.Database.SaveObject(vaultItem))
                 {
-                    SendErrorMessage(player, nameof(SwitchItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
+                    SendErrorMessage(player, nameof(SwapItemsFromOrToBackpack), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
                 }
 
@@ -522,4 +522,3 @@ namespace DOL.GS
         }
     }
 }
-
