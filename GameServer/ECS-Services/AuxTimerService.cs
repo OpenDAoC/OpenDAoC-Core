@@ -60,7 +60,7 @@ namespace DOL.GS
         public long StartTick { get; set; }
         public long NextTick => StartTick + Interval;
         public bool IsAlive { get; set; }
-        public int TimeUntilElapsed => (int) (StartTick + Interval - AuxGameLoop.GameLoopTime);
+        public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.AuxTimer, false);
         private PropertyCollection _properties;
 
@@ -91,7 +91,7 @@ namespace DOL.GS
 
         public void Start(int interval)
         {
-            StartTick = AuxGameLoop.GameLoopTime;
+            StartTick = GameLoop.GameLoopTime;
             Interval = interval;
 
             if (EntityManager.Add(this))
@@ -106,7 +106,7 @@ namespace DOL.GS
 
         public void Tick()
         {
-            StartTick = AuxGameLoop.GameLoopTime;
+            StartTick = GameLoop.GameLoopTime;
 
             if (Callback != null)
                 Interval = Callback.Invoke(this);

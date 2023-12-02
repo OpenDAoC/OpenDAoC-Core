@@ -798,17 +798,8 @@ namespace DOL.GS
 				if (!InitComponent(base.Start(), "base.Start()"))
 					return false;
 
-				//This is stupid and odd
 				if (!InitComponent(GameLoop.Init(), "GameLoop Init"))
-				{
 					return false;
-				}
-
-				//Start Aux GameLoop
-				if (!InitComponent(AuxGameLoop.Init(), "AuxGameLoop Init"))
-				{
-					return false;
-				}
 
 				GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
@@ -1299,7 +1290,7 @@ namespace DOL.GS
 
 			WorldMgr.Exit();
 			GameLoop.Exit();
-			AuxGameLoop.Exit();
+
 			//Save the database
 			// 2008-01-29 Kakuri - Obsolete
 			/*if ( m_database != null )

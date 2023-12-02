@@ -56,6 +56,7 @@ namespace DOL.GS
 
             try
             {
+                ClientService.Tick();
                 NpcService.Tick(GameLoopTime);
                 AttackService.Tick(GameLoopTime);
                 CastingService.Tick(GameLoopTime);
@@ -64,6 +65,7 @@ namespace DOL.GS
                 ZoneService.Tick();
                 CraftingService.Tick(GameLoopTime);
                 TimerService.Tick(GameLoopTime);
+                AuxTimerService.Tick(GameLoopTime);
                 ReaperService.Tick();
                 DailyQuestService.Tick();
                 WeeklyQuestService.Tick();
