@@ -545,7 +545,7 @@ namespace DOL.GS
                 damage *= effectiveness;
 
                 if (owner is GameEpicBoss epicBoss)
-                    damageCap = damage + epicBoss.Empathy / 100.0 * Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
+                    damageCap = damage * epicBoss.Empathy / 100.0 * Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
                 else
                     damageCap = damage * 3;
 
