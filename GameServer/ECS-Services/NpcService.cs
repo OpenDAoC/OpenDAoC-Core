@@ -75,7 +75,7 @@ namespace DOL.GS
                             brain.NextThinkTick += Util.Random(-2, 2) * GameLoop.TICK_RATE;
                     }
 
-                    npc.movementComponent.Tick(GameLoop.GameLoopTime);
+                    npc.movementComponent.Tick();
 
                     if (npc.NeedsBroadcastUpdate)
                     {

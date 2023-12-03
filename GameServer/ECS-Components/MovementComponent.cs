@@ -7,7 +7,7 @@ namespace DOL.GS
     {
         private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 500;
 
-        private long _lastSubZoneRelocationCheckTick;
+        private long _nextSubZoneRelocationCheckTick;
         private Point3D _positionDuringLastSubZoneRelocationCheck = new();
         private int _turningDisabledCount;
         private AuxECSGameTimer _resetHeadingAction;
@@ -38,12 +38,12 @@ namespace DOL.GS
                 return new MovementComponent(gameLiving);
         }
 
-        public virtual void Tick(long tick)
+        public virtual void Tick()
         {
-            // Check for subzone relocation only if we're moving.
-            if (!Owner.IsWithinRadius(_positionDuringLastSubZoneRelocationCheck, 0) && _lastSubZoneRelocationCheckTick + SUBZONE_RELOCATION_CHECK_INTERVAL < tick)
+            // Only check for subzone relocation if we moved.
+            if (!Owner.IsWithinRadius(_positionDuringLastSubZoneRelocationCheck, 0) && ServiceUtils.ShouldTickAdjust(ref _nextSubZoneRelocationCheckTick))
             {
-                _lastSubZoneRelocationCheckTick = tick;
+                _nextSubZoneRelocationCheckTick += SUBZONE_RELOCATION_CHECK_INTERVAL;
                 _positionDuringLastSubZoneRelocationCheck = new Point3D(Owner.X, Owner.Y, Owner.Z);
                 Owner.SubZoneObject.CheckForRelocation();
             }

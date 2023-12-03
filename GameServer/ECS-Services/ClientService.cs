@@ -78,7 +78,7 @@ namespace DOL.GS
                                         log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
                                 }
 
-                                player.movementComponent.Tick(GameLoop.GameLoopTime);
+                                player.movementComponent.Tick();
                             }
                             catch (Exception e)
                             {
