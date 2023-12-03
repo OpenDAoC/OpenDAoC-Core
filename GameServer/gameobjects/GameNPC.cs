@@ -3237,7 +3237,7 @@ namespace DOL.GS
 
 			// Delay the first think tick a bit to prevent clients from sending positive LoS check
 			// when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
-			Brain.LastThinkTick = GameLoop.GameLoopTime + 1250;
+			Brain.NextThinkTick = GameLoop.GameLoopTime + 1250;
 			return 0;
 		}
 

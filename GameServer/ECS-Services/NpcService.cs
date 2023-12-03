@@ -21,7 +21,7 @@ namespace DOL.GS
         public static int DebugTickCount { get; set; } // Will print active brain count/array size info for debug purposes if superior to 0.
         private static bool Debug => DebugTickCount > 0;
 
-        public static void Tick(long tick)
+        public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
@@ -53,7 +53,7 @@ namespace DOL.GS
                 {
                     GameNPC npc = brain.Body;
 
-                    if (brain.LastThinkTick + brain.ThinkInterval < tick)
+                    if (ServiceUtils.ShouldTickAdjust(ref brain.NextThinkTick))
                     {
                         if (!brain.IsActive)
                         {
@@ -68,14 +68,14 @@ namespace DOL.GS
                         if (stopTick - startTick > 25)
                             log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
 
-                        brain.LastThinkTick = tick;
+                        brain.NextThinkTick += brain.ThinkInterval;
 
                         // Offset LastThinkTick for non-controlled mobs so that 'Think' ticks are not all "grouped" in one server tick.
                         if (brain is not ControlledNpcBrain)
-                            brain.LastThinkTick += Util.Random(-2, 2) * GameLoop.TICK_RATE;
+                            brain.NextThinkTick += Util.Random(-2, 2) * GameLoop.TICK_RATE;
                     }
 
-                    npc.movementComponent.Tick(tick);
+                    npc.movementComponent.Tick(GameLoop.GameLoopTime);
 
                     if (npc.NeedsBroadcastUpdate)
                     {
