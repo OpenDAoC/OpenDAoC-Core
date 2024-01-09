@@ -12,7 +12,7 @@ namespace DOL.GS
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(AttackService);
 
-        public static void Tick(long tick)
+        public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
@@ -27,8 +27,9 @@ namespace DOL.GS
                 {
                     if (attackComponent?.EntityManagerId.IsSet != true)
                         return;
+
                     long startTick = GameLoop.GetCurrentTime();
-                    attackComponent.Tick(tick);
+                    attackComponent.Tick();
                     long stopTick = GameLoop.GetCurrentTime();
 
                     if (stopTick - startTick > 25)

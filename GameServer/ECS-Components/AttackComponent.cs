@@ -89,7 +89,7 @@ namespace DOL.GS
             _attackersCheckTimer = new(owner, CheckAttackers);
         }
 
-        public void Tick(long time)
+        public void Tick()
         {
             if (StartAttackRequested)
             {
@@ -97,7 +97,7 @@ namespace DOL.GS
                 StartAttack();
             }
 
-            attackAction?.Tick(time);
+            attackAction?.Tick();
 
             if (weaponAction?.AttackFinished == true)
                 weaponAction = null;

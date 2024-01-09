@@ -9626,13 +9626,8 @@ namespace DOL.GS
                     AttackData ad = TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
                     if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
                     {
-                        //Does the target can be attacked ?
-                        //if (ad.Target != null && IsObjectInFront(ad.Target, 120) && this.IsWithinRadius(ad.Target, AttackRange) && m_attackAction != null)
                         if (ad.Target != null && IsObjectInFront(ad.Target, 120) && this.IsWithinRadius(ad.Target, attackComponent.AttackRange) && attackComponent.attackAction != null)
-                        {
-                            //m_attackAction.Start(1);
-                            attackComponent.attackAction.StartTime = 1;
-                        }
+                            attackComponent.attackAction.StartTime = 0;
                     }
                 }
             }
@@ -10003,7 +9998,7 @@ namespace DOL.GS
                     if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
                     {
                         if (ad.Target != null && IsObjectInFront(ad.Target, 120) && IsWithinRadius(ad.Target, attackComponent.AttackRange) && attackComponent.attackAction != null)
-                            attackComponent.attackAction.StartTime = 1;
+                            attackComponent.attackAction.StartTime = 0;
                     }
                 }
             }

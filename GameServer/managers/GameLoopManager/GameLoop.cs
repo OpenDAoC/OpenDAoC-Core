@@ -76,7 +76,7 @@ namespace DOL.GS
             {
                 ECS.Debug.Diagnostics.StartPerfCounter(THREAD_NAME);
                 NpcService.Tick();
-                AttackService.Tick(GameLoopTime);
+                AttackService.Tick();
                 CastingService.Tick(GameLoopTime);
                 EffectService.Tick();
                 EffectListService.Tick(GameLoopTime);

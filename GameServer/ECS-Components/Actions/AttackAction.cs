@@ -28,12 +28,7 @@ namespace DOL.GS
 
         // Set to current time when a round doesn't result in an attack. Used to prevent combat log spam and kept until reset in AttackComponent.SendAttackingCombatMessages().
         public long RoundWithNoAttackTime { get; set; }
-
-        public long StartTime
-        {
-            get => _startTime;
-            set => _startTime = value + GameLoop.GameLoopTime;
-        }
+        public ref long StartTime => ref _startTime;
 
         protected AttackAction(GameLiving owner)
         {
@@ -52,9 +47,9 @@ namespace DOL.GS
             return null;
         }
 
-        public void Tick(long time)
+        public void Tick()
         {
-            if (time <= StartTime)
+            if (!ServiceUtils.ShouldTickAdjust(ref StartTime))
                 return;
 
             if (!CheckAttackState())
@@ -91,7 +86,7 @@ namespace DOL.GS
                 }
             }
 
-            StartTime = _interval;
+            StartTime += _interval;
         }
 
         public virtual bool CheckInterruptTimer()
