@@ -16,108 +16,19 @@ namespace DOL.GS
 	/// </summary>
 	public class Util
 	{
-		private static Util soleInstance = new Util();
-		private int lastRandomInt = 0;
-		private double lastRandomDouble = 0.0;
-
-		public static void LoadTestDouble(Util testDouble) { soleInstance = testDouble; }
-
-		protected virtual double RandomDoubleImpl()
-		{
-			double rand = RandomGen.NextDouble();
-			return rand;
-			//if (lastRandomDouble == 0)
-			//{
-			//	lastRandomDouble = rand;
-			//	return rand;
-			//}
-			//else
-			//{
-			//	while (lastRandomDouble == rand)
-			//	{
-			//		rand = RandomGen.NextDouble();
-			//	}
-			//	lastRandomDouble = rand;
-			//	return rand;
-			//}
-			//return RandomGen.NextDouble();
-		}
-
-		protected virtual int RandomImpl(int min, int max)
-		{
-			int rand = RandomGen.Next(min, max + 1);
-			return rand;
-			//if (lastRandomInt == 0)
-			//{				
-			//	lastRandomInt = rand;
-			//	return rand;
-			//}
-			//else
-			//{				
-			//	while (lastRandomInt == rand)
-   //             {
-			//		rand = RandomGen.Next(min, max + 1);
-			//	}
-			//	lastRandomInt = rand;
-			//	return rand;
-			//}
-		}
-
 		#region Random
-		/// <summary>
-		/// Holds the random number generator instance
-		/// </summary>
-		[ThreadStatic]
-		private static Random m_random = null;
+		private static Random m_random = System.Random.Shared;
 
 		[ThreadStatic]
-		private static RNGCryptoServiceProvider m_cryptoRandom = null;
+		private static RandomNumberGenerator m_cryptoRandom;
 
-		/// <summary>
-		/// Gets the random number generator
-		/// </summary>
-		public static Random RandomGen
+		private static RandomNumberGenerator CryptoRandom
 		{
 			get
 			{
-				if (m_random == null)
-				{
-					m_random = new Random();
-				}
-
-				return m_random;
-			}
-		}
-
-		/// <summary>
-		/// Gets the Crypto Service Random Generator
-		/// </summary>
-		public static RNGCryptoServiceProvider CryptoRandom
-		{
-			get
-			{
-				if (m_cryptoRandom == null)
-				{
-					m_cryptoRandom = new RNGCryptoServiceProvider();
-				}
-
+				m_cryptoRandom ??= RandomNumberGenerator.Create();
 				return m_cryptoRandom;
 			}
-			set
-			{
-			}
-		}
-
-		/// <summary>
-		/// Get a Crypto Strength Random Int
-		/// </summary>
-		/// <returns></returns>
-		public static int CryptoNextInt()
-		{
-			byte[] buffer = new byte[4];
-
-			CryptoRandom.GetBytes(buffer);
-			return BitConverter.ToInt32(buffer, 0) & 0x7FFFFFFF;
 		}
 
 		/// <summary>
@@ -159,15 +70,12 @@ namespace DOL.GS
 				counter++;
 				CryptoRandom.GetBytes(buffer);
 				uint rand = BitConverter.ToUInt32(buffer, 0);
-				long max = (1 + (long)int.MaxValue);
-
+				long max = 1 + (long) int.MaxValue;
 				long remainder = max % diff;
 
 				// very low chance of getting an endless loop
 				if (rand < max - remainder || counter > 10)
-				{
-					return (int)(minValue + (rand % diff));
-				}
+					return (int) (minValue + rand % diff);
 			}
 		}
 
@@ -182,8 +90,7 @@ namespace DOL.GS
 		{
 			byte[] buffer = new byte[4];
 			CryptoRandom.GetBytes(buffer);
-			uint rand = BitConverter.ToUInt32(buffer, 0);
-			return rand / (1.0 + uint.MaxValue);
+			return BitConverter.ToUInt32(buffer, 0) / (1.0 + uint.MaxValue);
 		}
 
 		public static bool RandomBool()
@@ -192,25 +99,24 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Generates a random number between 0..max inclusive 0 AND max
+		/// Generates a random number between 0..max, inclusive 0 AND max
 		/// </summary>
 		/// <param name="max"></param>
 		/// <returns></returns>
 		public static int Random(int max)
 		{
-			//return RandomGen.Next(max + 1);
-			return soleInstance.RandomImpl(0, max);
+			return m_random.Next(0, max + 1);
 		}
 
 		/// <summary>
-		/// Generates a random number between min..max inclusive min AND max
+		/// Generates a random number between min..max, inclusive min AND max
 		/// </summary>
 		/// <param name="min"></param>
 		/// <param name="max"></param>
 		/// <returns></returns>
 		public static int Random(int min, int max)
 		{
-			return soleInstance.RandomImpl(min, max);
+			return m_random.Next(min, max + 1);
 		}
 
 		/// <summary>
@@ -222,7 +128,7 @@ namespace DOL.GS
 		/// </returns>
 		public static double RandomDouble()
 		{
-			return soleInstance.RandomDoubleImpl();
+			return m_random.NextDouble();
 		}
 
 		/// <summary>
@@ -232,8 +138,6 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool Chance(int chancePercent)
 		{
-			//return chancePercent >= Random(1, 100);
-			//return chancePercent >= soleInstance.RandomImpl(1, 100);
 			return chancePercent > CryptoNextInt(0, 100);
 		}
 
@@ -244,8 +148,6 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool ChanceDouble(double chancePercent)
 		{
-			//return chancePercent > RandomDouble();
-			//return chancePercent > soleInstance.RandomDoubleImpl();
 			return chancePercent > CryptoNextDouble();
 		}
 

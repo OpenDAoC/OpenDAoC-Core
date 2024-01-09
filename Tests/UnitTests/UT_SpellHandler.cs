@@ -57,7 +57,6 @@ namespace DOL.Tests.Unit.Gameserver
             spell.Duration = 20;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
-            UtilChanceIsHundredPercent.Enable();
 
             spellHandler.StartSpell(target);
 
@@ -78,7 +77,6 @@ namespace DOL.Tests.Unit.Gameserver
             spell.Duration = 20;
             var spellHandler = new SpellHandler(caster, spell, NewSpellLine());
             var gameEventMgrSpy = GameEventMgrSpy.LoadAndReturn();
-            UtilChanceIsHundredPercent.Enable();
 
             spellHandler.StartSpell(target);
             caster.OnPlayerMove();

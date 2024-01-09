@@ -71,14 +71,4 @@ namespace DOL.Tests.Unit.Gameserver
         public bool UpdateInCache<TObject>(object key) where TObject : DataObject => false;
         public bool UpdateObjsInCache<TObject>(IEnumerable<object> keys) where TObject : DataObject => throw new NotImplementedException();
     }
-
-    public class UtilChanceIsHundredPercent : Util
-    {
-        protected override int RandomImpl(int min, int max) => 100;
-
-        public static void Enable()
-        {
-            Util.LoadTestDouble(new UtilChanceIsHundredPercent());
-        }
-    }
 }

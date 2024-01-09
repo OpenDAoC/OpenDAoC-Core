@@ -25,7 +25,6 @@ namespace DOL.Tests.Unit.Gameserver
             var spellLine = NewGenericSpellLine();
             var damageFocus = new RampingDamageFocus(source, spell, spellLine);
 
-            Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnDirectEffect(target);
 
             var actual = source.LastDamageDealt;
@@ -44,7 +43,6 @@ namespace DOL.Tests.Unit.Gameserver
             var spellLine = NewGenericSpellLine();
             var damageFocus = new RampingDamageFocus(source, spell, spellLine);
 
-            Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnSpellPulse(null);
             damageFocus.OnSpellPulse(null);
             damageFocus.OnDirectEffect(target);
@@ -65,7 +63,6 @@ namespace DOL.Tests.Unit.Gameserver
             var spellLine = NewGenericSpellLine();
             var damageFocus = new RampingDamageFocus(source, spell, spellLine);
 
-            Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnSpellPulse(null);
             damageFocus.OnDirectEffect(target);
 
@@ -86,7 +83,6 @@ namespace DOL.Tests.Unit.Gameserver
             var spellLine = NewGenericSpellLine();
             var damageFocus = new RampingDamageFocus(source, spell, spellLine);
 
-            Util.LoadTestDouble(new ChanceAlwaysHundredPercent());
             damageFocus.OnSpellPulse(null);
             damageFocus.OnSpellPulse(null);
             damageFocus.OnDirectEffect(target);
@@ -125,14 +121,6 @@ namespace DOL.Tests.Unit.Gameserver
             player.fakeCharacterClass = new DefaultCharacterClass();
             player.Level = 50;
             return player;
-        }
-
-        private class ChanceAlwaysHundredPercent : Util
-        {
-            protected override int RandomImpl(int min, int max)
-            {
-                return 100;
-            }
         }
 
         private static FakeNPC NewFakeNPC() => new FakeNPC();
