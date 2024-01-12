@@ -1306,9 +1306,9 @@ namespace DOL.GS
                     if (owner is GamePlayer || (owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain && owner.Realm != 0))
                     {
                         if (target is GamePlayer)
-                            damage = (int) (damage * Properties.PVP_MELEE_DAMAGE);
+                            damage *= Properties.PVP_MELEE_DAMAGE;
                         else if (target is GameNPC)
-                            damage = (int) (damage * Properties.PVE_MELEE_DAMAGE);
+                            damage *= Properties.PVE_MELEE_DAMAGE;
                     }
 
                     damage *= damageMod;
@@ -1333,7 +1333,7 @@ namespace DOL.GS
 
                     damage = preConversionDamage * conversionMod;
                     ad.Modifier = (int) (damage - preResistDamage);
-                    damage = (int) Math.Min(damage, damageCap);
+                    damage = Math.Min(damage, damageCap);
 
                     if (conversionMod < 1)
                     {
@@ -1341,7 +1341,7 @@ namespace DOL.GS
                         ApplyTargetConversionRegen(ad.Target, (int) conversionAmount);
                     }
 
-                    ad.Damage = (int) Math.Min(damage, damageCap);
+                    ad.Damage = (int) damage;
                     ad.CriticalDamage = CalculateMeleeCriticalDamage(ad, action, weapon);
                     break;
                 }
