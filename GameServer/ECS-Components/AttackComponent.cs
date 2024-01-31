@@ -1332,7 +1332,7 @@ namespace DOL.GS
                     }
 
                     damage = preConversionDamage * conversionMod;
-                    ad.Modifier = (int) (damage - preResistDamage);
+                    ad.Modifier = (int) Math.Floor(damage - preResistDamage);
                     damage = Math.Min(damage, damageCap);
 
                     if (conversionMod < 1)
