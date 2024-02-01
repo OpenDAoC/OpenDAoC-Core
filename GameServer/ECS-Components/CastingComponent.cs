@@ -33,9 +33,9 @@ namespace DOL.GS
                 return new CastingComponent(owner);
         }
 
-        public void Tick(long time)
+        public void Tick()
         {
-            SpellHandler?.Tick(time);
+            SpellHandler?.Tick();
             ProcessStartCastSpellRequests();
 
             if (SpellHandler == null && QueuedSpellHandler == null && _startCastSpellRequests.IsEmpty)
@@ -94,15 +94,15 @@ namespace DOL.GS
                 if (SpellHandler.Spell?.IsFocus == true)
                 {
                     if (newSpellHandler.Spell.IsInstantCast)
-                        newSpellHandler.Tick(GameLoop.GameLoopTime);
+                        newSpellHandler.Tick();
                     else
                     {
                         SpellHandler = newSpellHandler;
-                        SpellHandler.Tick(GameLoop.GameLoopTime);
+                        SpellHandler.Tick();
                     }
                 }
                 else if (newSpellHandler.Spell.IsInstantCast)
-                    newSpellHandler.Tick(GameLoop.GameLoopTime);
+                    newSpellHandler.Tick();
                 else
                 {
                     if (Owner is GamePlayer player)
@@ -135,11 +135,11 @@ namespace DOL.GS
             else
             {
                 if (newSpellHandler.Spell.IsInstantCast)
-                    newSpellHandler.Tick(GameLoop.GameLoopTime);
+                    newSpellHandler.Tick();
                 else
                 {
                     SpellHandler = newSpellHandler;
-                    SpellHandler.Tick(GameLoop.GameLoopTime);
+                    SpellHandler.Tick();
                 }
             }
         }

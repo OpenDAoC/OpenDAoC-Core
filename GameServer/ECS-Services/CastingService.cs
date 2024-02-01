@@ -12,7 +12,7 @@ namespace DOL.GS
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(CastingService);
 
-        public static void Tick(long tick)
+        public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
@@ -29,7 +29,7 @@ namespace DOL.GS
                         return;
 
                     long startTick = GameLoop.GetCurrentTime();
-                    castingComponent.Tick(tick);
+                    castingComponent.Tick();
                     long stopTick = GameLoop.GetCurrentTime();
 
                     if (stopTick - startTick > 25)
