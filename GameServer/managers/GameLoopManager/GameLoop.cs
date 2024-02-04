@@ -31,7 +31,6 @@ namespace DOL.GS
         {
             _gameLoopThread = new Thread(new ThreadStart(Run))
             {
-                Priority = ThreadPriority.AboveNormal,
                 Name = THREAD_NAME,
                 IsBackground = true
             };
