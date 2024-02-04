@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Numerics;
 
@@ -34,9 +16,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Constructs a new 3D point object
 		/// </summary>
-		public Point3D() : base(0, 0)
-		{
-		}
+		public Point3D() : base(0, 0) { }
 
 		/// <summary>
 		/// Constructs a new 3D point object
@@ -49,27 +29,20 @@ namespace DOL.GS
 			m_z = z;
 		}
 
-		public Point3D(float x, float y, float z) : this((int)x, (int)y, (int)z)
-		{
-
-		}
+		public Point3D(float x, float y, float z) : this((int) x, (int) y, (int) z) { }
 
 		/// <summary>
 		/// Constructs a new 3D point object
 		/// </summary>
 		/// <param name="point">2D point</param>
 		/// <param name="z">Z coord</param>
-		public Point3D(IPoint2D point, int z) : this(point.X, point.Y, z)
-		{
-		}
+		public Point3D(IPoint2D point, int z) : this(point.X, point.Y, z) { }
 
 		/// <summary>
 		/// Constructs a new 3D point object
 		/// </summary>
 		/// <param name="point">3D point</param>
-		public Point3D(IPoint3D point) : this(point.X, point.Y, point.Z)
-		{
-		}
+		public Point3D(IPoint3D point) : this(point.X, point.Y, point.Z) { }
 
 		#region IPoint3D Members
 
@@ -78,8 +51,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual int Z
 		{
-			get { return m_z; }
-			set { m_z = value; }
+			get => m_z;
+			set => m_z = value;
 		}
 
 		public override void Clear()
@@ -96,7 +69,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return string.Format("({0}, {1}, {2})", m_x.ToString(), m_y.ToString(), m_z.ToString());
+			return $"({m_x}, {m_y}, {m_z})";
 		}
 
 		/// <summary>
@@ -110,27 +83,27 @@ namespace DOL.GS
 		/// <returns>Distance to point</returns>
 		public virtual int GetDistanceTo(IPoint3D point)
 		{
-			if (point == null) return Int32.MaxValue;
+			if (point == null)
+				return int.MaxValue;
+
 			double dx = (double) X - point.X;
 			double dy = (double) Y - point.Y;
 			double dz = (double) Z - point.Z;
-
-			return (int) Math.Sqrt(dx*dx + dy*dy + dz*dz);
+			return (int) Math.Sqrt(dx * dx + dy * dy + dz * dz);
 		}
 
 		/// <summary>
 		/// Get the distance to a point (with z-axis adjustment)
 		/// </summary>
 		/// <param name="point">Target point</param>
-		/// <param name="zfactor">Z-axis factor - use values between 0 and 1 to decrease influence of Z-axis</param>
+		/// <param name="zFactor">Z-axis factor - use values between 0 and 1 to decrease influence of Z-axis</param>
 		/// <returns>Adjusted distance to point</returns>
-		public virtual int GetDistanceTo(IPoint3D point, double zfactor)
+		public virtual int GetDistanceTo(IPoint3D point, double zFactor)
 		{
 			double dx = (double) X - point.X;
 			double dy = (double) Y - point.Y;
-			var dz = (double) ((Z - point.Z)*zfactor);
-
-			return (int) Math.Sqrt(dx*dx + dy*dy + dz*dz);
+			double dz = (double) ((Z - point.Z) * zFactor);
+			return (int) Math.Sqrt(dx * dx + dy * dy + dz * dz);
 		}
 
 		public virtual float GetDistanceTo(Vector3 point)
@@ -149,7 +122,6 @@ namespace DOL.GS
 			return IsWithinRadius(point, radius, false);
 		}
 
-
 		/// <summary>
 		/// Determine if another point is within a given radius, optionally ignoring Z values
 		/// </summary>
@@ -160,29 +132,20 @@ namespace DOL.GS
 		public bool IsWithinRadius(IPoint3D point, int radius, bool ignoreZ)
 		{
 			if (radius > ushort.MaxValue)
-			{
 				return GetDistanceTo(point, ignoreZ ? 0.0 : 1.0) <= radius;
-			}
 
-			uint rsquared = (uint) radius*(uint) radius;
-
+			uint rSquared = (uint) radius * (uint) radius;
 			int dx = X - point.X;
+			long dist = (long) dx * dx;
 
-			long dist = ((long) dx)*dx;
-
-			if (dist > rsquared)
-			{
+			if (dist > rSquared)
 				return false;
-			}
 
 			int dy = Y - point.Y;
+			dist += (long) dy * dy;
 
-			dist += ((long) dy)*dy;
-
-			if (dist > rsquared)
-			{
+			if (dist > rSquared)
 				return false;
-			}
 
 			//SH: Removed Z checks when one of the two Z values is zero (on ground)
 			// Tolakram - again, no ... 0 is not the ground, we really don't know where the ground is. 
@@ -191,13 +154,10 @@ namespace DOL.GS
 			if (!ignoreZ)
 			{
 				int dz = Z - point.Z;
+				dist += (long) dz * dz;
 
-				dist += ((long) dz)*dz;
-
-				if (dist > rsquared)
-				{
+				if (dist > rSquared)
 					return false;
-				}
 			}
 
 			return true;
@@ -207,35 +167,27 @@ namespace DOL.GS
 		{
 			if (ignoreZ || point.Z == 0 || Z == 0)
 				return Vector2.DistanceSquared(new Vector2(X, Y), point.ToVector2()) <= radius * radius;
+
 			return Vector3.DistanceSquared(new Vector3(X, Y, Z), point) <= radius * radius;
 		}
+
+		public bool IsSamePosition(Point3D point)
+		{
+			return X == point.X && Y == point.Y && Z == point.Z;
+		}
 	}
+
 	public class Point3DFloat
 	{
-		private float z;
-		public float Z
-		{
-			get { return z; }
-			set { z = value; }
-		}
-		private float x;
-		public float X
-		{
-			get { return x; }
-			set { x = value; }
-		}
-		private float y;
-		public float Y
-		{
-			get { return y; }
-			set { y = value; }
-		}
+		public float Z { get; set; }
+		public float X { get; set; }
+		public float Y { get; set; }
 
 		public Point3DFloat(float x, float y, float z)
 		{
-			this.x = x;
-			this.y = y;
-			this.z = z;
+			X = x;
+			Y = y;
+			Z = z;
 		}
 	}
 }
