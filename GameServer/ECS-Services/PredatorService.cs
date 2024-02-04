@@ -12,18 +12,18 @@ public class PredatorService
     private static long _messageBroadcastInterval = 15000; // 15secs
     private static long _insertInterval = ServerProperties.Properties.QUEUED_PLAYER_INSERT_INTERVAL * 1000;
 
-    private static long _lastUpdate;
-    private static long _lastInsert;
-    private static long _lastMessage;
+    private static long _nextUpdate;
+    private static long _nextInsert;
+    private static long _nextMessage;
 
-    public static void Tick(long tick)
+    public static void Tick()
     {
         GameLoop.CurrentServiceTick = SERVICE_NAME;
         Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-        if (tick - _lastUpdate > _updateInterval)
+        if (ServiceUtils.ShouldTickAdjust(ref _nextUpdate))
         {
-            _lastUpdate = tick;
+            _nextUpdate += _updateInterval;
             //Console.WriteLine($"Predator || Queued Players: {PredatorManager.QueuedPlayers.Count} | Active Players: {PredatorManager.ActivePredators.Count}");
             foreach (var activePreds in PredatorManager.ActiveBounties.ToList())
             {
@@ -47,9 +47,9 @@ public class PredatorService
             }
         }
         
-        if (tick - _lastMessage > _messageBroadcastInterval)
+        if (ServiceUtils.ShouldTickAdjust(ref _nextMessage))
         {
-            _lastMessage = tick;
+            _nextMessage += _messageBroadcastInterval;
             foreach (var activePreds in PredatorManager.ActiveBounties.ToList())
             {
                 if (activePreds.Predator != null && activePreds.Prey != null &&
@@ -70,9 +70,9 @@ public class PredatorService
             }
         }
         
-        if (tick - _lastInsert > _insertInterval)
+        if (ServiceUtils.ShouldTickAdjust(ref _nextInsert))
         {
-            _lastInsert = tick;
+            _nextInsert += _insertInterval;
             PredatorManager.InsertQueuedPlayers();
             PredatorManager.InsertFreshKillers();
             PredatorManager.TryFillEmptyPrey();

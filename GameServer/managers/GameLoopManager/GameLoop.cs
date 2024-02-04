@@ -90,7 +90,7 @@ namespace DOL.GS
                 WeeklyQuestService.Tick();
                 ConquestService.Tick();
                 BountyService.Tick();
-                PredatorService.Tick(GameLoopTime);
+                PredatorService.Tick();
                 ECS.Debug.Diagnostics.Tick();
                 CurrentServiceTick = "";
                 ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
