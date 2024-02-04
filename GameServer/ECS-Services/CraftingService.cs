@@ -12,7 +12,7 @@ namespace DOL.GS
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(CraftingService);
 
-        public static void Tick(long tick)
+        public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
@@ -28,7 +28,7 @@ namespace DOL.GS
                     if (craftComponent?.EntityManagerId.IsSet != true)
                         return;
 
-                    craftComponent.Tick(tick);
+                    craftComponent.Tick();
                 }
                 catch (Exception e)
                 {

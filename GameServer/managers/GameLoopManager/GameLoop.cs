@@ -81,7 +81,7 @@ namespace DOL.GS
                 EffectService.Tick();
                 EffectListService.Tick();
                 ZoneService.Tick();
-                CraftingService.Tick(GameLoopTime);
+                CraftingService.Tick();
                 TimerService.Tick(GameLoopTime);
                 AuxTimerService.Tick(GameLoopTime);
                 ReaperService.Tick();

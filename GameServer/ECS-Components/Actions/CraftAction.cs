@@ -28,11 +28,8 @@ namespace DOL.GS
             owner.craftComponent.CraftState = true;
         }
 
-        public void Tick(long time)
+        public void Tick()
         {
-            if (time <= _startTick)
-                return;
-
             if (_owner.IsMezzed || _owner.IsStunned)
             {
                 CleanupCraftAction();
@@ -52,7 +49,7 @@ namespace DOL.GS
                 return;
             }
 
-            if (time > EndTime)
+            if (ServiceUtils.ShouldTick(EndTime))
                 MakeItem();
 
             if (_finishedCraft)

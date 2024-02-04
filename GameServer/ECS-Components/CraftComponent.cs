@@ -39,9 +39,9 @@ namespace DOL.GS
             }
         }
 
-        public void Tick(long time)
+        public void Tick()
         {
-            CraftAction?.Tick(time);
+            CraftAction?.Tick();
 
             if (CraftAction == null)
                 EntityManager.Remove(this);
