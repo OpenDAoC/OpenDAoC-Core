@@ -45,11 +45,6 @@ namespace DOL.GS
         {
             return _objects[(byte) node.Value.GameObjectType].GetWriter();
         }
-
-        public void CheckForRelocation(LinkedListNode<GameObject> node)
-        {
-            ParentZone.CheckForRelocation(node);
-        }
     }
 
     // A wrapper for a 'LinkedListNode<GameObject>'.
@@ -73,7 +68,7 @@ namespace DOL.GS
 
         public void CheckForRelocation()
         {
-            CurrentSubZone?.CheckForRelocation(Node);
+            Node.Value.CurrentZone?.CheckForRelocation(Node);
         }
     }
 }
