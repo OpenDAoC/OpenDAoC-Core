@@ -19,7 +19,7 @@ namespace DOL.GS
         public static int DebugTickCount { get; set; } // Will print active brain count/array size info for debug purposes if superior to 0.
         private static bool Debug => DebugTickCount > 0;
 
-        public static void Tick(long tick)
+        public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
@@ -49,7 +49,7 @@ namespace DOL.GS
 
                 try
                 {
-                    if (timer.NextTick < tick)
+                    if (ServiceUtils.ShouldTickAdjust(ref timer.NextTick))
                     {
                         long startTick = GameLoop.GetCurrentTime();
                         timer.Tick();
@@ -80,13 +80,14 @@ namespace DOL.GS
     {
         public delegate int ECSTimerCallback(ECSGameTimer timer);
 
+        private long _nextTick;
+
         public GameObject Owner { get; set; }
         public ECSTimerCallback Callback { get; set; }
         public int Interval { get; set; }
-        public long StartTick { get; set; }
-        public long NextTick => StartTick + Interval;
-        public bool IsAlive { get; set; }
-        public int TimeUntilElapsed => (int) (StartTick + Interval - GameLoop.GameLoopTime);
+        public ref long NextTick => ref _nextTick;
+        public bool IsAlive { get; private set; }
+        public int TimeUntilElapsed => (int) (_nextTick - GameLoop.GameLoopTime);
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Timer, false);
         private PropertyCollection _properties;
 
@@ -117,8 +118,8 @@ namespace DOL.GS
 
         public void Start(int interval)
         {
-            StartTick = GameLoop.GameLoopTime;
             Interval = interval;
+            _nextTick = GameLoop.GameLoopTime + interval;
 
             if (EntityManager.Add(this))
                 IsAlive = true;
@@ -132,13 +133,16 @@ namespace DOL.GS
 
         public void Tick()
         {
-            StartTick = GameLoop.GameLoopTime;
-
             if (Callback != null)
                 Interval = Callback.Invoke(this);
 
             if (Interval == 0)
+            {
                 Stop();
+                return;
+            }
+
+            _nextTick += Interval;
         }
 
         public PropertyCollection Properties

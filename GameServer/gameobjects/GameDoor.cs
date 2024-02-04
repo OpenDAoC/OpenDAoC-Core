@@ -207,7 +207,7 @@ namespace DOL.GS
             _repairTimer = new AuxECSGameTimer(this);
             _repairTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RepairTimerCallback);
             _repairTimer.Start(REPAIR_INTERVAL);
-            _repairTimer.StartTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL; // Skip the first tick to avoid repairing on server start.
+            _repairTimer.NextTick = GameLoop.GetCurrentTime() + REPAIR_INTERVAL; // Skip the first tick to avoid repairing on server start.
         }
 
         private int RepairTimerCallback(AuxECSGameTimer timer)

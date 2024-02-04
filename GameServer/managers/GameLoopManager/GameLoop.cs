@@ -82,14 +82,14 @@ namespace DOL.GS
                 EffectListService.Tick();
                 ZoneService.Tick();
                 CraftingService.Tick();
-                TimerService.Tick(GameLoopTime);
-                AuxTimerService.Tick(GameLoopTime);
+                TimerService.Tick();
+                AuxTimerService.Tick();
                 ReaperService.Tick();
                 ClientService.Tick();
                 DailyQuestService.Tick();
                 WeeklyQuestService.Tick();
                 ConquestService.Tick();
-                BountyService.Tick(GameLoopTime);
+                BountyService.Tick();
                 PredatorService.Tick(GameLoopTime);
                 ECS.Debug.Diagnostics.Tick();
                 CurrentServiceTick = "";

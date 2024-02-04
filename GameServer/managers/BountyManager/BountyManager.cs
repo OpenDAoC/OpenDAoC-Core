@@ -242,7 +242,7 @@ public class BountyManager
         }
     }
 
-    public static void CheckExpiringBounty(long tick)
+    public static void CheckExpiringBounty()
     {
         long expireTime = 0;
 
@@ -258,7 +258,7 @@ public class BountyManager
                     if (bP.PostedTime + bountyDuration >= expireTime && expireTime != 0) continue;
                     expireTime = bP.PostedTime + bountyDuration;
                     m_nextPosterToExpire = bP;
-                    if (tick <= expireTime) continue;
+                    if (!ServiceUtils.ShouldTick(expireTime)) continue;
                 
                     GamePlayer playerToReimburse = bP.Ganked;
                 
