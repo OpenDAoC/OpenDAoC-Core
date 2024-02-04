@@ -20,9 +20,9 @@ namespace DOL.GS.Spells
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
-			new ProcECSGameEffect(initParams);
+			return new ProcECSGameEffect(initParams);
 		}
 
 		/// <summary>

@@ -115,20 +115,8 @@ namespace DOL.GS
                     Owner.LastAttackTickPvP = GameLoop.GameLoopTime;
             }
 
-            if (LastTick == 0)
-            {
-                LastTick = GameLoop.GameLoopTime;
-                NextTick = LastTick + PulseFreq;
-            }
-            else
-            {
-                LastTick += PulseFreq;
-                NextTick = LastTick + PulseFreq;
-            }
-            
-            if(SpellHandler.Caster is GameSummonedPet)
+            if (SpellHandler.Caster is GameSummonedPet)
                 Owner.StartInterruptTimer(SpellHandler.Caster.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
-                
         }
     }
 }

@@ -28,7 +28,6 @@ namespace DOL.GS
         //Based on GameLoop expire tick
         public long ExpireTick;
         public long StartTick;
-        public long LastTick;
         public long Duration;
         public long PulseFreq;
         public double Effectiveness;
@@ -95,7 +94,6 @@ namespace DOL.GS
             IsBuffActive = false;
             ExpireTick = Duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
-            LastTick = 0;
             NextTick = 0;
             SpellHandler = initParams.SpellHandler;
         }

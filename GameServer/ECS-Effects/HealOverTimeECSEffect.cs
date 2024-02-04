@@ -26,7 +26,6 @@ namespace DOL.GS
         public override void OnEffectPulse()
         {
             ((HoTSpellHandler)SpellHandler).OnDirectEffect(Owner);
-            NextTick += PulseFreq;
         }
     }
 }

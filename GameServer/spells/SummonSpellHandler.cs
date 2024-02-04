@@ -39,9 +39,9 @@ namespace DOL.GS.Spells
 
 		public SummonSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-		public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
-			new PetECSGameEffect(initParams);
+			return new PetECSGameEffect(initParams);
 		}
 
 		/// <summary>

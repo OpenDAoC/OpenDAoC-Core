@@ -17,9 +17,9 @@ namespace DOL.GS.Spells
             target.UpdateHealthManaEndu();
         }
 
-        public override void CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
         {
-            new StatBuffECSEffect(initParams);
+            return new StatBuffECSEffect(initParams);
         }
 
         public override void ApplyEffectOnTarget(GameLiving target)

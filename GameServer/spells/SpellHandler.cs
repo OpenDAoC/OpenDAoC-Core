@@ -334,17 +334,15 @@ namespace DOL.GS.Spells
 
 		#endregion
 
-		public virtual void CreateECSEffect(ECSGameEffectInitParams initParams)
+		public virtual ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
-			// Base function should be empty once all effects are moved to their own effect class.
-			new ECSGameSpellEffect(initParams);
+			return new ECSGameSpellEffect(initParams);
 		}
 
-		public virtual void CreateECSPulseEffect(GameLiving target, double effectiveness)
+		public virtual ECSPulseEffect CreateECSPulseEffect(GameLiving target, double effectiveness)
 		{
 			int freq = Spell != null ? Spell.Frequency : 0;
-
-			new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
+			return new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
 		}
 
 		/// <summary>
@@ -1552,7 +1550,7 @@ namespace DOL.GS.Spells
 
 				if (m_spell.SpellType != eSpellType.Mesmerize)
 				{
-					CreateECSPulseEffect(Caster, Caster.Effectiveness);
+					PulseEffect = CreateECSPulseEffect(Caster, Caster.Effectiveness);
 					Caster.ActivePulseSpells.AddOrUpdate(m_spell.SpellType, m_spell, (x, y) => m_spell);
 				}
 			}
@@ -1580,13 +1578,13 @@ namespace DOL.GS.Spells
 
 			//the quick cast is unallowed whenever you miss the spell
 			//set the time when casting to can not quickcast during a minimum time
-			if (m_caster is GamePlayer)
+			if (playerCaster != null)
 			{
 				QuickCastECSGameEffect quickcast = (QuickCastECSGameEffect)EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast);
 				if (quickcast != null && Spell.CastTime > 0)
 				{
 					m_caster.TempProperties.SetProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, m_caster.CurrentRegion.Time);
-					((GamePlayer)m_caster).DisableSkill(SkillBase.GetAbility(Abilities.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
+					playerCaster.DisableSkill(SkillBase.GetAbility(Abilities.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
 					//EffectService.RequestImmediateCancelEffect(quickcast, false);
 					quickcast.Cancel(false);
 				}
@@ -2474,7 +2472,7 @@ namespace DOL.GS.Spells
 			return false;
 		}
 
-		public virtual void OnDurationEffectApply(GameLiving target)
+		public void OnDurationEffectApply(GameLiving target)
 		{
 			if (!target.IsAlive || target.effectListComponent == null)
 				return;
@@ -2485,7 +2483,10 @@ namespace DOL.GS.Spells
 			if (_distanceFallOff > 0 && Spell.Damage == 0 && (target is GamePlayer || (target is GameNPC npcTarget && npcTarget.Brain is IControlledBrain)))
 				durationEffectiveness *= 1 - _distanceFallOff / 2;
 
-			CreateECSEffect(new ECSGameEffectInitParams(target, CalculateEffectDuration(target, durationEffectiveness), Effectiveness, this));
+			ECSGameSpellEffect effect = CreateECSEffect(new ECSGameEffectInitParams(target, CalculateEffectDuration(target, durationEffectiveness), Effectiveness, this));
+
+			if (PulseEffect != null)
+				PulseEffect.ChildEffects[target] = effect;
 		}
 		
 		/// <summary>
@@ -2876,6 +2877,8 @@ namespace DOL.GS.Spells
 		{
 			get { return false; }
 		}
+
+		public virtual ECSPulseEffect PulseEffect { get; private set; }
 
 		/// <summary>
 		/// Current depth of delve info
