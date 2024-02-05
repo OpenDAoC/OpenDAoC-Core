@@ -48,6 +48,12 @@ namespace DOL.AI
         /// <returns>true if stopped</returns>
         public virtual bool Stop()
         {
+            if (Body.IsReturningToSpawnPoint)
+            {
+                Body.StopMoving();
+                Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading);
+            }
+
             return EntityManager.Remove(this);
         }
 
