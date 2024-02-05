@@ -11,17 +11,17 @@ namespace DOL.GS
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public const long TICK_RATE = 50;
-        private const int BUSY_WAIT_THRESHOLD = 10; // Set to 0 to disable busy waiting.
+        private const bool DYNAMIC_BUSY_WAIT_THRESHOLD = true; // Setting it to false disables busy waiting completely unless a default value is given to '_busyWaitThreshold'.
         private const string THREAD_NAME = "GameLoop";
 
         public static long GameLoopTime;
         public static string CurrentServiceTick;
         private static Thread _gameLoopThread;
-        private static Stopwatch _stopwatch = new();
-        private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
-        private static int _sleepFor;
+        private static Thread _busyWaitThresholdThread;
+        private static int _busyWaitThreshold;
+        private static readonly long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
 
-        // Previously in 'GameTimer'. Not sure where this should be moved to.
+        // This is unrelated to the game loop and should probably be moved elsewhere.
         public static long GetCurrentTime()
         {
             return Stopwatch.GetTimestamp() / _stopwatchFrequencyMilliseconds;
@@ -29,12 +29,27 @@ namespace DOL.GS
 
         public static bool Init()
         {
+            if (_gameLoopThread != null)
+                return false;
+
             _gameLoopThread = new Thread(new ThreadStart(Run))
             {
                 Name = THREAD_NAME,
                 IsBackground = true
             };
             _gameLoopThread.Start();
+
+            if (DYNAMIC_BUSY_WAIT_THRESHOLD)
+            {
+                _busyWaitThresholdThread = new Thread(new ThreadStart(UpdateBusyWaitThreshold))
+                {
+                    Name = "BusyWaitThreshold",
+                    Priority = ThreadPriority.AboveNormal,
+                    IsBackground = true
+                };
+                _busyWaitThresholdThread.Start();
+            }
+
             return true;
         }
 
@@ -44,23 +59,32 @@ namespace DOL.GS
                 return;
 
             _gameLoopThread.Interrupt();
+            _gameLoopThread.Join();
             _gameLoopThread = null;
+            _busyWaitThresholdThread.Interrupt();
+            _busyWaitThresholdThread.Join();
+            _busyWaitThresholdThread = null;
         }
 
         private static void Run()
         {
-            _stopwatch.Start();
+            double gameLoopTime = 0;
+            Stopwatch stopwatch = new();
+            stopwatch.Start();
 
             while (true)
             {
                 try
                 {
                     TickServices();
-                    Sleep();
+                    Sleep(stopwatch);
+                    gameLoopTime += stopwatch.Elapsed.TotalMilliseconds;
+                    GameLoopTime = (long) Math.Round(gameLoopTime);
+                    stopwatch.Restart();
                 }
                 catch (ThreadInterruptedException)
                 {
-                    log.Info($"Game loop was interrupted");
+                    log.Info($"Thread \"{_gameLoopThread.Name}\" was interrupted");
                     return;
                 }
                 catch (Exception e)
@@ -95,32 +119,52 @@ namespace DOL.GS
                 ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
             }
 
-            static void Sleep()
+            static void Sleep(Stopwatch stopwatch)
             {
-                _sleepFor = (int) (TICK_RATE - _stopwatch.Elapsed.TotalMilliseconds);
+                int sleepFor = (int) (TICK_RATE - stopwatch.Elapsed.TotalMilliseconds);
+                int busyWaitThreshold = _busyWaitThreshold;
 
-                if (_sleepFor >= BUSY_WAIT_THRESHOLD)
-                {
-                    Thread.Sleep(_sleepFor - BUSY_WAIT_THRESHOLD);
-
-                    while (ShouldBusyWait())
-                        Thread.Yield();
-                }
+                if (sleepFor >= busyWaitThreshold)
+                    Thread.Sleep(sleepFor - busyWaitThreshold);
                 else
+                    Thread.Yield();
+
+                if (busyWaitThreshold > 0)
+                    while (TICK_RATE > stopwatch.Elapsed.TotalMilliseconds) { }
+            }
+        }
+
+        private static void UpdateBusyWaitThreshold()
+        {
+            Stopwatch stopwatch = new();
+            stopwatch.Start();
+
+            try
+            {
+                while (true)
                 {
-                    do
+                    double start;
+                    double overSleptFor;
+                    double highest = 0;
+
+                    for (int i = 0; i < 20; i++)
                     {
-                        Thread.Yield();
-                    } while (ShouldBusyWait());
-                }
+                        start = stopwatch.Elapsed.TotalMilliseconds;
+                        Thread.Sleep(1);
+                        overSleptFor = stopwatch.Elapsed.TotalMilliseconds - start - 1;
 
-                GameLoopTime += (long) _stopwatch.Elapsed.TotalMilliseconds;
-                _stopwatch.Restart();
+                        if (highest < overSleptFor)
+                            highest = overSleptFor;
+                    }
 
-                static bool ShouldBusyWait()
-                {
-                    return TICK_RATE >= _stopwatch.Elapsed.TotalMilliseconds;
+                    _busyWaitThreshold = Math.Max(0, (int) highest);
+                    Thread.Sleep(20000);
                 }
+            }
+            catch (ThreadInterruptedException)
+            {
+                log.Info($"Thread \"{_busyWaitThresholdThread.Name}\" was interrupted");
+                return;
             }
         }
     }
