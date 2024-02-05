@@ -99,13 +99,6 @@ namespace DOL.GS
                         charmMob.StartAttack(SpellHandler.Caster);
                         charmMob.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
                     }
-                    else if (charmMob.IsWithinRadius(charmMob.SpawnPoint, 5000))
-                        charmMob.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
-                    else
-                    {
-                        newBrain.Stop();
-                        charmMob.Die(null);
-                    }
                 }
 
                 // remove NPC with new brain from all attackers aggro list
