@@ -792,20 +792,17 @@ namespace DOL.GS
                     {
                         player.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
 
-                        string typeMsg = "shot";
-                        if (attackWeapon.Object_Type == (int) eObjectType.Thrown)
-                            typeMsg = "throw";
+                        string typeMsg = attackWeapon.Object_Type == (int) eObjectType.Thrown ? "throw" : "shot";
+                        string targetMsg;
 
-                        string targetMsg = "";
                         if (m_startAttackTarget != null)
                         {
-                            if (player.IsWithinRadius(m_startAttackTarget, AttackRange))
-                                targetMsg = LanguageMgr.GetTranslation(player.Client.Account.Language,
-                                    "GamePlayer.StartAttack.TargetInRange");
-                            else
-                                targetMsg = LanguageMgr.GetTranslation(player.Client.Account.Language,
-                                    "GamePlayer.StartAttack.TargetOutOfRange");
+                            targetMsg = player.IsWithinRadius(m_startAttackTarget, AttackRange)
+                                ? LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TargetInRange")
+                                : LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TargetOutOfRange");
                         }
+                        else
+                            targetMsg = string.Empty;
 
                         int speed = AttackSpeed(attackWeapon) / 100;
                         if (player.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
@@ -1370,7 +1367,7 @@ namespace DOL.GS
             // Attacked living may modify the attack data. Primarily used for keep doors and components.
             ad.Target.ModifyAttack(ad);
 
-            string message = "";
+            string message = string.Empty;
             bool broadcast = true;
 
             ArrayList excludes = new()
@@ -1444,8 +1441,8 @@ namespace DOL.GS
                             GamePlayer player = owner as GamePlayer;
 
                             string damageAmount = (ad.StyleDamage > 0)
-                                ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")"
-                                : "";
+                                ? $" (+{ad.StyleDamage}, GR: {ad.Style.GrowthRate})"
+                                : string.Empty;
                             player.Out.SendMessage(
                                 LanguageMgr.GetTranslation(player.Client.Account.Language,
                                     "StyleProcessor.ExecuteStyle.PerformPerfectly", ad.Style.Name, damageAmount),
@@ -1461,8 +1458,8 @@ namespace DOL.GS
                                 if (player != null)
                                 {
                                     string damageAmount = (ad.StyleDamage > 0)
-                                        ? " (+" + ad.StyleDamage + ", GR: " + ad.Style.GrowthRate + ")"
-                                        : "";
+                                        ? $" (+{ad.StyleDamage}, GR: {ad.Style.GrowthRate})"
+                                        : string.Empty;
                                     player.Out.SendMessage(
                                         LanguageMgr.GetTranslation(player.Client.Account.Language,
                                             "StyleProcessor.ExecuteStyle.PerformsPerfectly", owner.Name, ad.Style.Name,
@@ -1571,12 +1568,14 @@ namespace DOL.GS
                             case eAttackResult.HitStyle:
                             case eAttackResult.HitUnstyled:
                             {
-                                string modmessage = "";
+                                string modMessage;
 
                                 if (ad.Modifier > 0)
-                                    modmessage = $" (+{ad.Modifier})";
+                                    modMessage = $" (+{ad.Modifier})";
                                 else if (ad.Modifier < 0)
-                                    modmessage = $" ({ad.Modifier})";
+                                    modMessage = $" ({ad.Modifier})";
+                                else
+                                    modMessage = string.Empty;
 
                                 string attackTypeMsg;
 
@@ -1586,7 +1585,7 @@ namespace DOL.GS
                                     attackTypeMsg = "attacks";
 
                                 owner.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GameLiving.AttackData.YourHits"),
-                                    ad.Attacker.Name, attackTypeMsg, ad.Target.GetName(0, false), ad.Damage, modmessage),
+                                    ad.Attacker.Name, attackTypeMsg, ad.Target.GetName(0, false), ad.Damage, modMessage),
                                     eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 
                                 if (ad.CriticalDamage > 0)
@@ -1663,14 +1662,20 @@ namespace DOL.GS
                             case eAttackResult.HitStyle:
                             case eAttackResult.HitUnstyled:
                             {
-                                string modmessage = "";
-                                if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
-                                if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
+                                string modMessage;
+
+                                if (ad.Modifier > 0)
+                                    modMessage = $" (+{ad.Modifier})";
+                                else if (ad.Modifier < 0)
+                                    modMessage = $" ({ad.Modifier})";
+                                else
+                                    modMessage = string.Empty;
+
                                 owner.Out.SendMessage(
                                     string.Format(
                                         LanguageMgr.GetTranslation(owner.Client.Account.Language,
                                             "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true),
-                                        ad.Target.Name, ad.Damage, modmessage), eChatType.CT_Damaged,
+                                        ad.Target.Name, ad.Damage, modMessage), eChatType.CT_Damaged,
                                     eChatLoc.CL_SystemWindow);
                                 if (ad.CriticalDamage > 0)
                                 {
@@ -2458,34 +2463,42 @@ namespace DOL.GS
                             break;
                         case eAttackResult.HitStyle:
                         case eAttackResult.HitUnstyled:
-                            string modmessage = "";
-                            if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
-                            if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
+                            string modMessage;
 
-                            string hitWeapon = "";
+                            if (ad.Modifier > 0)
+                                modMessage = $" (+{ad.Modifier})";
+                            else if (ad.Modifier < 0)
+                                modMessage = $" ({ad.Modifier})";
+                            else
+                                modMessage = string.Empty;
 
-                            switch (p.Client.Account.Language)
+                            string hitWeapon;
+
+                            if (weapon != null)
                             {
-                                case "DE":
-                                    if (weapon != null)
-                                        hitWeapon = weapon.Name;
-                                    break;
-                                default:
-                                    if (weapon != null)
-                                        hitWeapon = GlobalConstants.NameToShortName(weapon.Name);
-                                    break;
+                                switch (p.Client.Account.Language)
+                                {
+                                    case "DE":
+                                    {
+                                        hitWeapon = $"{LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {weapon.Name}";
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        hitWeapon = $"{LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {GlobalConstants.NameToShortName(weapon.Name)}";
+                                        break;
+                                    }
+                                }
                             }
+                            else
+                                hitWeapon = string.Empty;
 
-                            if (hitWeapon.Length > 0)
-                                hitWeapon = " " +
-                                            LanguageMgr.GetTranslation(p.Client.Account.Language,
-                                                "GamePlayer.Attack.WithYour") + " " + hitWeapon;
+                            string attackTypeMsg;
 
-                            string attackTypeMsg = LanguageMgr.GetTranslation(p.Client.Account.Language,
-                                "GamePlayer.Attack.YouAttack");
                             if (action.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                                attackTypeMsg = LanguageMgr.GetTranslation(p.Client.Account.Language,
-                                    "GamePlayer.Attack.YouShot");
+                                attackTypeMsg = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.YouShot");
+                            else
+                                attackTypeMsg = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.YouAttack");
 
                             // intercept messages
                             if (target != null && target != ad.Target)
@@ -2497,14 +2510,14 @@ namespace DOL.GS
                                 p.Out.SendMessage(
                                     LanguageMgr.GetTranslation(p.Client.Account.Language,
                                         "GamePlayer.Attack.InterceptedHit", attackTypeMsg, target.GetName(0, false),
-                                        hitWeapon, ad.Target.GetName(0, false), ad.Damage, modmessage),
+                                        hitWeapon, ad.Target.GetName(0, false), ad.Damage, modMessage),
                                     eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                             }
                             else
                                 p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                     "GamePlayer.Attack.InterceptHit", attackTypeMsg,
                                     ad.Target.GetName(0, false, p.Client.Account.Language, (ad.Target as GameNPC)),
-                                    hitWeapon, ad.Damage, modmessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                                    hitWeapon, ad.Damage, modMessage), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 
                             // critical hit
                             if (ad.CriticalDamage > 0)
@@ -2575,28 +2588,35 @@ namespace DOL.GS
                             break;
                         case eAttackResult.HitStyle:
                         case eAttackResult.HitUnstyled:
-                            string modmessage = "";
-                            if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
-                            if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
+                            string modMessage;
 
-                            string hitWeapon = "";
+                            if (ad.Modifier > 0)
+                                modMessage = $" (+{ad.Modifier})";
+                            else if (ad.Modifier < 0)
+                                modMessage = $" ({ad.Modifier})";
+                            else
+                                modMessage = string.Empty;
 
-                            switch (p.Client.Account.Language)
+                            string hitWeapon;
+
+                            if (weapon != null)
                             {
-                                case "DE":
-                                    if (weapon != null)
-                                        hitWeapon = weapon.Name;
-                                    break;
-                                default:
-                                    if (weapon != null)
-                                        hitWeapon = GlobalConstants.NameToShortName(weapon.Name);
-                                    break;
+                                switch (p.Client.Account.Language)
+                                {
+                                    case "DE":
+                                    {
+                                        hitWeapon = $"{LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {weapon.Name}";
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        hitWeapon = $"{LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {GlobalConstants.NameToShortName(weapon.Name)}";
+                                        break;
+                                    }
+                                }
                             }
-
-                            if (hitWeapon.Length > 0)
-                                hitWeapon = " " +
-                                            LanguageMgr.GetTranslation(p.Client.Account.Language,
-                                                "GamePlayer.Attack.WithYour") + " " + hitWeapon;
+                            else
+                                hitWeapon = string.Empty;
 
                             string attackTypeMsg = LanguageMgr.GetTranslation(p.Client.Account.Language,
                                 "GamePlayer.Attack.YouAttack");
@@ -2614,14 +2634,14 @@ namespace DOL.GS
                                 p.Out.SendMessage(
                                     LanguageMgr.GetTranslation(p.Client.Account.Language,
                                         "GamePlayer.Attack.InterceptedHit", attackTypeMsg, target.GetName(0, false),
-                                        hitWeapon, ad.Target.GetName(0, false), ad.Damage, modmessage),
+                                        hitWeapon, ad.Target.GetName(0, false), ad.Damage, modMessage),
                                     eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                             }
                             else
                                 p.Out.SendMessage(
                                     LanguageMgr.GetTranslation(p.Client.Account.Language,
                                         "GamePlayer.Attack.InterceptHit", attackTypeMsg, ad.Target.GetName(0, false),
-                                        hitWeapon, ad.Damage, modmessage), eChatType.CT_YouHit,
+                                        hitWeapon, ad.Damage, modMessage), eChatType.CT_YouHit,
                                     eChatLoc.CL_SystemWindow);
 
                             // critical hit
