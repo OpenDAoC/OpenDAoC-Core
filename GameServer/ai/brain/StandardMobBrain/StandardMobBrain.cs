@@ -326,10 +326,10 @@ namespace DOL.AI.Brain
                     if (aggroAmount <= 0)
                         break;
 
-                    if (protect.ProtectTarget != living)
+                    if (protect.Target != living)
                         continue;
 
-                    GamePlayer protectSource = protect.ProtectSource;
+                    GameLiving protectSource = protect.Source;
 
                     if (protectSource.IsStunned
                         || protectSource.IsMezzed
@@ -352,8 +352,12 @@ namespace DOL.AI.Brain
                     if (protectAmount > 0)
                     {
                         aggroAmount -= protectAmount;
-                        protectSource.Out.SendMessage(LanguageMgr.GetTranslation(protectSource.Client.Account.Language, "AI.Brain.StandardMobBrain.YouProtDist", player.GetName(0, false),
-                                                                                 Body.GetName(0, false, protectSource.Client.Account.Language, Body)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                        if (protectSource is GamePlayer playerProtectSource)
+                        {
+                            playerProtectSource.Out.SendMessage(LanguageMgr.GetTranslation(playerProtectSource.Client.Account.Language, "AI.Brain.StandardMobBrain.YouProtDist", player.GetName(0, false),
+                                Body.GetName(0, false, playerProtectSource.Client.Account.Language, Body)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        }
 
                         lock ((AggroTable as ICollection).SyncRoot)
                         {

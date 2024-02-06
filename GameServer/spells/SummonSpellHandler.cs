@@ -211,8 +211,8 @@ namespace DOL.GS.Spells
 
 			foreach (var ability in pet.effectListComponent.GetAbilityEffects())
 			{
-				if (ability is InterceptECSGameEffect interceptEffect && interceptEffect.InterceptSource == pet && interceptEffect.InterceptTarget == petOwner)
-					interceptEffect.Cancel(false);
+				if (ability is InterceptECSGameEffect interceptEffect && interceptEffect.Source == pet && interceptEffect.Target == petOwner)
+					EffectService.RequestCancelEffect(interceptEffect);
 			}
 
 			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));

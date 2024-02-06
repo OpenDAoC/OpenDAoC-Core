@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using DOL.GS.PacketHandler;
+﻿using DOL.GS.PacketHandler;
 using DOL.GS.SkillHandler;
 using DOL.Language;
 
@@ -7,133 +6,84 @@ namespace DOL.GS
 {
     public class GuardECSGameEffect : ECSGameAbilityEffect
     {
-        public GuardECSGameEffect(ECSGameEffectInitParams initParams, GameLiving guardSource, GameLiving guardTarget) : base(initParams)
-        {
-            m_guardSource = guardSource;
-            m_guardTarget = guardTarget;
-            EffectType = eEffect.Guard;
-            EffectService.RequestStartEffect(this);
-        }
-
-        /// <summary>
-        /// Holds guarder
-        /// </summary>
-        private GameLiving m_guardSource;
-
-        /// <summary>
-        /// Gets guarder
-        /// </summary>
-        public GameLiving GuardSource => m_guardSource;
-
-        /// <summary>
-        /// Holds guarded player
-        /// </summary>
-        private GameLiving m_guardTarget;
-
-        /// <summary>
-        /// Gets guarded player
-        /// </summary>
-        public GameLiving GuardTarget => m_guardTarget;
-
-        /// <summary>
-        /// Holds player group
-        /// </summary>
-        private Group m_playerGroup;
-
+        public GameLiving Source { get; private set; }
+        public GameLiving Target { get; private set; }
+        public GuardECSGameEffect PairedEffect { get; private set; }
         public override ushort Icon => Owner is GameNPC ? (ushort) 1001 : (ushort) 412;
-
         public override string Name
         {
             get
             {
                 if (Owner is GamePlayer playerOwner)
                 {
-                    if (m_guardSource != null && m_guardTarget != null)
-                        return LanguageMgr.GetTranslation(playerOwner.Client, "Effects.GuardEffect.GuardedByName", m_guardTarget.GetName(0, false), m_guardSource.GetName(0, false));
-
-                    return LanguageMgr.GetTranslation(playerOwner.Client, "Effects.GuardEffect.Name");
+                    return Source != null && Target != null
+                        ? LanguageMgr.GetTranslation(playerOwner.Client, "Effects.GuardEffect.GuardedByName", Target.GetName(0, false), Source.GetName(0, false))
+                        : LanguageMgr.GetTranslation(playerOwner.Client, "Effects.GuardEffect.Name");
                 }
 
-                return "";
+                return string.Empty;
             }
         }
-
         public override bool HasPositiveEffect => true;
+
+        public GuardECSGameEffect(ECSGameEffectInitParams initParams, GameLiving source, GameLiving target) : base(initParams)
+        {
+            Source = source;
+            Target = target;
+            EffectType = eEffect.Guard;
+            EffectService.RequestStartEffect(this);
+        }
 
         public override void OnStartEffect()
         {
-            if (m_guardSource == null || m_guardTarget == null)
+            if (Source == null || Target == null)
                 return;
 
-            GamePlayer playerSource = GuardSource as GamePlayer;
-            GamePlayer playerTarget = GuardTarget as GamePlayer;
+            GamePlayer playerSource = Source as GamePlayer;
+            GamePlayer playerTarget = Target as GamePlayer;
 
             if (playerSource != null && playerTarget != null)
             {
-                m_playerGroup = GuardSource.Group;
+                Group group = playerSource.Group;
 
-                if (m_playerGroup == null)
+                if (group == null)
                     return;
 
-                if (m_playerGroup != GuardTarget.Group)
+                if (group != playerTarget.Group)
                     return;
             }
 
-            if (Owner == GuardSource)
+            if (Owner == Source)
             {
-                if (!GuardSource.IsWithinRadius(GuardTarget, GuardAbilityHandler.GUARD_DISTANCE))
+                if (!Source.IsWithinRadius(Target, GuardAbilityHandler.GUARD_DISTANCE))
                 {
-                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YouAreNowGuardingYBut", GuardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XIsNowGuardingYouBut", GuardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YouAreNowGuardingYBut", Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XIsNowGuardingYouBut", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
                 else
                 {
-                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YouAreNowGuardingY", GuardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XIsNowGuardingYou", GuardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YouAreNowGuardingY", Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XIsNowGuardingYou", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
 
-                new GuardECSGameEffect(new ECSGameEffectInitParams(GuardTarget, 0, 1, null), GuardSource, GuardTarget);
+                PairedEffect = new GuardECSGameEffect(new ECSGameEffectInitParams(Target, 0, 1, null), Source, Target);
+                PairedEffect.PairedEffect = this;
             }
+
+            base.OnStartEffect();
         }
 
         public override void OnStopEffect()
         {
-            ECSGameEffect otherGuard = null;
-
-            if (GuardSource == Owner)
+            if (Source == Owner)
             {
-                foreach (GuardECSGameEffect guard in GuardTarget.effectListComponent.GetAllEffects().Where(x => x.EffectType == eEffect.Guard))
-                {
-                    if (guard.GuardSource == Owner)
-                    {
-                        otherGuard = guard;
-                        break;
-                    }
-                }
-            }
-            else if (GuardTarget == Owner)
-            {
-                foreach (GuardECSGameEffect guard in GuardSource.effectListComponent.GetAllEffects().Where(x => x.EffectType == eEffect.Guard))
-                {
-                    if (guard.GuardTarget == Owner)
-                    {
-                        otherGuard = guard;
-                        break;
-                    }
-                }
+                GamePlayer playerSource = Source as GamePlayer;
+                GamePlayer playerTarget = Target as GamePlayer;
+                playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YourNoLongerGuardingY", Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XNoLongerGuardingYoy", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            if (otherGuard != null)
-            {
-                EffectService.RequestImmediateCancelEffect(otherGuard);
-
-                GamePlayer playerSource = GuardSource as GamePlayer;
-                GamePlayer playerTarget = GuardTarget as GamePlayer;
-
-                playerSource?.Out.SendMessage(LanguageMgr.GetTranslation(playerSource.Client, "Effects.GuardEffect.YourNoLongerGuardingY", m_guardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XNoLongerGuardingYoy", m_guardSource.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            }
-
+            EffectService.RequestCancelEffect(PairedEffect);
             base.OnStopEffect();
         }
     }

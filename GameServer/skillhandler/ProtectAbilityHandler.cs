@@ -1,107 +1,97 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System.Reflection;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using log4net;
-using DOL.Language;
 using System.Linq;
+using System.Reflection;
+using DOL.GS.PacketHandler;
+using DOL.Language;
+using log4net;
 
 namespace DOL.GS.SkillHandler
 {
-	/// <summary>
-	/// Handler for protect ability clicks
-	/// </summary>
-	[SkillHandlerAttribute(Abilities.Protect)]
-	public class ProtectAbilityHandler : IAbilityActionHandler
-	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    [SkillHandlerAttribute(Abilities.Protect)]
+    public class ProtectAbilityHandler : IAbilityActionHandler
+    {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		/// <summary>
-		/// The Protect Distance
-		/// </summary>
-		public const int PROTECT_DISTANCE = 1000;
+        public const int PROTECT_DISTANCE = 1000;
 
-		public void Execute(Ability ab, GamePlayer player)
-		{
-			if (player == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not retrieve player in ProtectAbilityHandler.");
-				return;
-			}
+        public void Execute(Ability ab, GamePlayer player)
+        {
+            if (player == null)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn("Could not retrieve player in ProtectAbilityHandler.");
 
-			GameObject targetObject = player.TargetObject;
-			if (targetObject == null)
-			{
-				foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
-				{
-					if (protect.ProtectSource == player)
-						protect.Cancel(false);
-				}
+                return;
+            }
+
+            if (player.TargetObject is not GameLiving target)
+            {
+                foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+                {
+                    if (protect.Source == player)
+                        EffectService.RequestCancelEffect(protect);
+                }
+
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CancelTargetNull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
-			}
+            }
 
-			// You cannot protect attacks on yourself            
-			GamePlayer protectTarget = player.TargetObject as GamePlayer;
-			if (protectTarget == player)
-			{
+            if (target == player)
+            {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.CantProtectYourself"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
+                return;
+            }
 
-			// Only attacks on other players may be protected. 
-			// protect may only be used on other players in group
-			Group group = player.Group;
-			if (protectTarget == null || group == null || !group.IsInTheGroup(protectTarget))
-			{
+            Group group = player.Group;
+
+            if (group == null || !group.IsInTheGroup(target))
+            {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.NotInGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
+                return;
+            }
 
-			// check if someone is protecting the target
-			foreach (ProtectECSGameEffect protect in protectTarget.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
-			{
-				if (protect.ProtectTarget != protectTarget)
-					continue;
-				if (protect.ProtectSource == player)
-				{
-					protect.Cancel(false);
-					return;
-				}
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.ProtectTargetAlreadyProtectEffect", protect.ProtectSource.GetName(0, true), protect.ProtectTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
+            CheckExistingEffectsOnTarget(player, target, true, out bool foundOurEffect, out ProtectECSGameEffect existingEffectFromAnotherSource);
 
-			// cancel all guard effects by this player before adding a new one
-			foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
-			{
-				if (protect.ProtectSource == player)
-					protect.Cancel(false);
-			}
+            if (foundOurEffect)
+                return;
 
-			//new ProtectEffect().Start(player, protectTarget);
-			new ProtectECSGameEffect(new ECSGameEffectInitParams(player, 0, 1), player, protectTarget);
-		}
-	}
+            if (existingEffectFromAnotherSource != null)
+            {
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Protect.CannotUse.ProtectTargetAlreadyProtectEffect", existingEffectFromAnotherSource.Source.GetName(0, true), existingEffectFromAnotherSource.Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+
+            CancelOurEffectThenAddOnTarget(player, target);
+        }
+
+        public static void CheckExistingEffectsOnTarget(GameLiving source, GameLiving target, bool cancelOurs, out bool foundOurEffect, out ProtectECSGameEffect effectFromAnotherSource)
+        {
+            foundOurEffect = false;
+            effectFromAnotherSource = null;
+
+            foreach (ProtectECSGameEffect protect in target.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+            {
+                if (protect.Source == source)
+                {
+                    foundOurEffect = true;
+
+                    if (cancelOurs)
+                        EffectService.RequestCancelEffect(protect);
+                }
+
+                if (protect.Target == target)
+                    effectFromAnotherSource = protect;
+            }
+        }
+
+        public static void CancelOurEffectThenAddOnTarget(GameLiving source, GameLiving target)
+        {
+            foreach (ProtectECSGameEffect protect in source.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+            {
+                if (protect.Source == source)
+                    EffectService.RequestCancelEffect(protect);
+            }
+
+            new ProtectECSGameEffect(new ECSGameEffectInitParams(source, 0, 1, null), source, target);
+        }
+    }
 }

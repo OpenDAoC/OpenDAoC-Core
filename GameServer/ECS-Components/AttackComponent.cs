@@ -1877,36 +1877,36 @@ namespace DOL.GS
         {
             GuardECSGameEffect guard = EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Guard) as GuardECSGameEffect;
 
-            if (guard?.GuardTarget != owner)
+            if (guard?.Target != owner)
                 return false;
 
-            GameLiving guardSource = guard.GuardSource;
+            GameLiving source = guard.Source;
 
-            if (guardSource == null ||
-                guardSource.ObjectState != eObjectState.Active ||
-                guardSource.IsStunned != false ||
-                guardSource.IsMezzed != false ||
-                guardSource.ActiveWeaponSlot == eActiveWeaponSlot.Distance ||
-                !guardSource.IsAlive ||
-                guardSource.IsSitting ||
+            if (source == null ||
+                source.ObjectState != eObjectState.Active ||
+                source.IsStunned != false ||
+                source.IsMezzed != false ||
+                source.ActiveWeaponSlot == eActiveWeaponSlot.Distance ||
+                !source.IsAlive ||
+                source.IsSitting ||
                 stealthStyle ||
-                !guard.GuardSource.IsWithinRadius(guard.GuardTarget, GuardAbilityHandler.GUARD_DISTANCE))
+                !guard.Source.IsWithinRadius(guard.Target, GuardAbilityHandler.GUARD_DISTANCE))
                 return false;
 
-            DbInventoryItem leftHand = guard.GuardSource.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-            DbInventoryItem rightHand = guard.GuardSource.ActiveWeapon;
+            DbInventoryItem leftHand = source.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem rightHand = source.ActiveWeapon;
 
-            if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || leftHand.Object_Type != (int) eObjectType.Shield) && guard.GuardSource is not GameNPC)
+            if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || leftHand.Object_Type != (int) eObjectType.Shield) && source is not GameNPC)
                 return false;
 
             // TODO: Insert actual formula for guarding here, this is just a guessed one based on block.
-            int guardLevel = guard.GuardSource.GetAbilityLevel(Abilities.Guard);
+            int guardLevel = source.GetAbilityLevel(Abilities.Guard);
             double guardChance;
 
-            if (guard.GuardSource is GameNPC)
-                guardChance = guard.GuardSource.GetModified(eProperty.BlockChance);
+            if (source is GameNPC)
+                guardChance = source.GetModified(eProperty.BlockChance);
             else
-                guardChance = guard.GuardSource.GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
+                guardChance = source.GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
 
             guardChance *= 0.001;
             guardChance += guardLevel * 5 * 0.01; // 5% additional chance to guard with each Guard level.
@@ -1917,7 +1917,7 @@ namespace DOL.GS
             {
                 shieldSize = Math.Max(leftHand.Type_Damage, 1);
 
-                if (guardSource is GamePlayer)
+                if (source is GamePlayer)
                     guardChance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
             }
 
@@ -1952,15 +1952,15 @@ namespace DOL.GS
 
             bool success = guardChance > guardRoll;
 
-            if (guard.GuardSource is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
+            if (source is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                 blockAttk.Out.SendMessage($"Chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##} success? {success}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-            if (guard.GuardTarget is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
+            if (guard.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
                 blockTarg.Out.SendMessage($"Chance to be guarded: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##} success? {success}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
             if (success)
             {
-                ad.Target = guard.GuardSource;
+                ad.Target = source;
                 return true;
             }
 
@@ -2115,9 +2115,9 @@ namespace DOL.GS
             // We check if interceptor can intercept.
             if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Intercept) is InterceptECSGameEffect inter)
             {
-                if (intercept == null && inter != null && inter.InterceptTarget == owner && !inter.InterceptSource.IsStunned && !inter.InterceptSource.IsMezzed
-                    && !inter.InterceptSource.IsSitting && inter.InterceptSource.ObjectState == eObjectState.Active && inter.InterceptSource.IsAlive
-                    && owner.IsWithinRadius(inter.InterceptSource, InterceptAbilityHandler.INTERCEPT_DISTANCE)) // && Util.Chance(inter.InterceptChance))
+                if (intercept == null && inter != null && inter.Target == owner && !inter.Source.IsStunned && !inter.Source.IsMezzed
+                    && !inter.Source.IsSitting && inter.Source.ObjectState == eObjectState.Active && inter.Source.IsAlive
+                    && owner.IsWithinRadius(inter.Source, InterceptAbilityHandler.INTERCEPT_DISTANCE)) // && Util.Chance(inter.InterceptChance))
                 {
                     int interceptRoll;
 
@@ -2181,10 +2181,10 @@ namespace DOL.GS
 
             if (intercept != null && !stealthStyle)
             {
-                ad.Target = intercept.InterceptSource;
+                ad.Target = intercept.Source;
 
-                if (intercept.InterceptSource is GamePlayer)
-                    intercept.Cancel(false);
+                if (intercept.Source is GamePlayer)
+                    EffectService.RequestCancelEffect(intercept);
 
                 return eAttackResult.HitUnstyled;
             }

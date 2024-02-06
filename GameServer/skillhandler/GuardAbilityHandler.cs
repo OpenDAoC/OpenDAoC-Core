@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Linq;
 using System.Reflection;
 using DOL.GS.PacketHandler;
@@ -25,9 +6,6 @@ using log4net;
 
 namespace DOL.GS.SkillHandler
 {
-    /// <summary>
-    /// Handler for Guard ability clicks
-    /// </summary>
     [SkillHandler(Abilities.Guard)]
     public class GuardAbilityHandler : IAbilityActionHandler
     {
@@ -45,21 +23,19 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 
-            if (player.TargetObject == null)
+            if (player.TargetObject is not GameLiving target)
             {
                 foreach (GuardECSGameEffect guard in player.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
                 {
-                    if (guard.GuardSource == player)
-                        EffectService.RequestImmediateCancelEffect(guard);
+                    if (guard.Source == player)
+                        EffectService.RequestCancelEffect(guard);
                 }
 
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CancelTargetNull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            GamePlayer guardTarget = player.TargetObject as GamePlayer;
-
-            if (guardTarget == player)
+            if (target == player)
             {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetIsGuardSource"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -67,57 +43,55 @@ namespace DOL.GS.SkillHandler
 
             Group group = player.Group;
 
-            if (guardTarget == null || group == null || !group.IsInTheGroup(guardTarget))
+            if (group == null || !group.IsInTheGroup(target))
             {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.NotInGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            // Cancel our effect if it exists and check if someone is already guarding the target.
-            CheckExistingEffectsOnTarget(player, guardTarget, true, out bool foundOurEffect, out GuardECSGameEffect existingEffectFromAnotherSource);
+            CheckExistingEffectsOnTarget(player, target, true, out bool foundOurEffect, out GuardECSGameEffect existingEffectFromAnotherSource);
 
             if (foundOurEffect)
                 return;
 
             if (existingEffectFromAnotherSource != null)
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetAlreadyGuarded", existingEffectFromAnotherSource.GuardSource.GetName(0, true), existingEffectFromAnotherSource.GuardTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Guard.CannotUse.GuardTargetAlreadyGuarded", existingEffectFromAnotherSource.Source.GetName(0, true), existingEffectFromAnotherSource.Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
-            // Cancel other guard effects by this player before adding a new one.
-            CancelOurEffectThenAddOnTarget(player, guardTarget);
+            CancelOurEffectThenAddOnTarget(player, target);
         }
 
-        public static void CheckExistingEffectsOnTarget(GameLiving guardSource, GameLiving guardTarget, bool cancelOurs, out bool foundOurEffect, out GuardECSGameEffect effectFromAnotherSource)
+        public static void CheckExistingEffectsOnTarget(GameLiving source, GameLiving target, bool cancelOurs, out bool foundOurEffect, out GuardECSGameEffect effectFromAnotherSource)
         {
             foundOurEffect = false;
             effectFromAnotherSource = null;
 
-            foreach (GuardECSGameEffect guard in guardTarget.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
+            foreach (GuardECSGameEffect guard in target.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Guard))
             {
-                if (guard.GuardSource == guardSource)
+                if (guard.Source == source)
                 {
                     foundOurEffect = true;
 
                     if (cancelOurs)
-                        EffectService.RequestImmediateCancelEffect(guard);
+                        EffectService.RequestCancelEffect(guard);
                 }
 
-                if (guard.GuardTarget == guardTarget)
+                if (guard.Target == target)
                     effectFromAnotherSource = guard;
             }
         }
 
-        public static void CancelOurEffectThenAddOnTarget(GameLiving guardSource, GameLiving guardTarget)
+        public static void CancelOurEffectThenAddOnTarget(GameLiving source, GameLiving target)
         {
-            foreach (GuardECSGameEffect guard in guardSource.effectListComponent.GetAllEffects().Where(e => e.EffectType == eEffect.Guard))
+            foreach (GuardECSGameEffect guard in source.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Guard))
             {
-                if (guard.GuardSource == guardSource)
-                    EffectService.RequestImmediateCancelEffect(guard);
+                if (guard.Source == source)
+                    EffectService.RequestCancelEffect(guard);
             }
 
-            new GuardECSGameEffect(new ECSGameEffectInitParams(guardSource, 0, 1, null), guardSource, guardTarget);
+            new GuardECSGameEffect(new ECSGameEffectInitParams(source, 0, 1, null), source, target);
         }
     }
 }

@@ -1,115 +1,99 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System.Reflection;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using log4net;
-using DOL.Language;
 using System.Linq;
+using System.Reflection;
+using DOL.GS.PacketHandler;
+using DOL.Language;
+using log4net;
 
 namespace DOL.GS.SkillHandler
 {
-	/// <summary>
-	/// Handler for Intercept ability clicks
-	/// </summary>
-	[SkillHandlerAttribute(Abilities.Intercept)]
-	public class InterceptAbilityHandler : IAbilityActionHandler
-	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    [SkillHandlerAttribute(Abilities.Intercept)]
+    public class InterceptAbilityHandler : IAbilityActionHandler
+    {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		/// <summary>
-		/// The intercept distance
-		/// </summary>
-		public const int INTERCEPT_DISTANCE = 128;
+        public const int INTERCEPT_DISTANCE = 128;
+        public const int REUSE_TIMER = 60 * 1000;
 
-		/// <summary>
-		/// Intercept reuse timer in milliseconds
-		/// </summary>
-		public const int REUSE_TIMER = 60 * 1000;
+        public void Execute(Ability ab, GamePlayer player)
+        {
+            if (player == null)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn("Could not retrieve player in InterceptAbilityHandler.");
 
-		/// <summary>
-		/// Executes the ability
-		/// </summary>
-		/// <param name="ab">The ability used</param>
-		/// <param name="player">The player that used the ability</param>
-		public void Execute(Ability ab, GamePlayer player)
-		{
-			if (player == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("Could not retrieve player in InterceptAbilityHandler.");
-				return;
-			}
+                return;
+            }
 
-			GameObject targetObject = player.TargetObject;
-			if (targetObject == null)
-			{
-				//foreach (InterceptEffect intercept in player.EffectList.GetAllOfType<InterceptEffect>())
-				foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
-				{
-					if (intercept.InterceptSource != player)
-						continue;
-					intercept.Cancel(false);
-				}
+            if (player.TargetObject is not GameLiving target)
+            {
+                foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
+                {
+                    if (intercept.Source == player)
+                        EffectService.RequestCancelEffect(intercept);
+                }
+
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CancelTargetNull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
-			}
+            }
 
-			// Only attacks on other players may be intercepted. 
-			// You cannot intercept attacks on yourself            
-			Group group = player.Group;
-			GamePlayer interceptTarget = targetObject as GamePlayer;
-			if (interceptTarget == null || group == null || !group.IsInTheGroup(interceptTarget) || interceptTarget == player)
-			{
+            if (target == player)
+            {
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CannotUse.CantInterceptYourself"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
+
+            Group group = player.Group;
+
+            if (group == null || !group.IsInTheGroup(target))
+            {
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CannotUse.NotInGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
-			}
+            }
 
-			// check if someone is already intercepting for that target
-			//foreach (InterceptEffect intercept in interceptTarget.EffectList.GetAllOfType<InterceptEffect>())
-			foreach (InterceptECSGameEffect intercept in interceptTarget.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
-			{
-				if (intercept.InterceptTarget != interceptTarget)
-					continue;
-				if (intercept.InterceptSource != player && !(intercept.InterceptSource is GameNPC))
-				{
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CannotUse.InterceptTargetAlreadyInterceptedEffect", intercept.InterceptSource.GetName(0, true), intercept.InterceptTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    return;
-				}
-			}
+            CheckExistingEffectsOnTarget(player, target, true, out bool foundOurEffect, out InterceptECSGameEffect existingEffectFromAnotherSource);
 
-			// cancel all intercepts by this player
-			//foreach (InterceptEffect intercept in player.EffectList.GetAllOfType<InterceptEffect>())
-			foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
-			{
-				if (intercept.InterceptSource != player)
-					continue;
-				intercept.Cancel(false);
-			}
+            if (foundOurEffect)
+                return;
 
-			player.DisableSkill(ab, REUSE_TIMER);
+            if (existingEffectFromAnotherSource != null)
+            {
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Intercept.CannotUse.InterceptTargetAlreadyInterceptedEffect", existingEffectFromAnotherSource.Source.GetName(0, true), existingEffectFromAnotherSource.Target.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return;
+            }
 
-			//new InterceptEffect().Start(player, interceptTarget);
-			new InterceptECSGameEffect(new ECSGameEffectInitParams(player, 0, 1), player, (GameLiving)player.TargetObject);
-		}
-	}
+            CancelOurEffectThenAddOnTarget(player, target);
+            player.DisableSkill(ab, REUSE_TIMER);
+        }
+
+        public static void CheckExistingEffectsOnTarget(GameLiving source, GameLiving target, bool cancelOurs, out bool foundOurEffect, out InterceptECSGameEffect effectFromAnotherSource)
+        {
+            foundOurEffect = false;
+            effectFromAnotherSource = null;
+
+            foreach (InterceptECSGameEffect intercept in target.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
+            {
+                if (intercept.Source == source)
+                {
+                    foundOurEffect = true;
+
+                    if (cancelOurs)
+                        EffectService.RequestCancelEffect(intercept);
+                }
+
+                if (intercept.Target == target)
+                    effectFromAnotherSource = intercept;
+            }
+        }
+
+        public static void CancelOurEffectThenAddOnTarget(GameLiving source, GameLiving target)
+        {
+            foreach (InterceptECSGameEffect intercept in source.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Intercept))
+            {
+                if (intercept.Source == source)
+                    EffectService.RequestCancelEffect(intercept);
+            }
+
+            new InterceptECSGameEffect(new ECSGameEffectInitParams(source, 0, 1, null), source, target);
+        }
+    }
 }
