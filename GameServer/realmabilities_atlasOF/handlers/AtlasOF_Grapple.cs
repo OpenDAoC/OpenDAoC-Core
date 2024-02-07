@@ -1,17 +1,10 @@
-using System;
-using System.Collections;
-using System.Reflection;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
-using DOL.Events;
 using DOL.Database;
-using DOL.GS.API;
+using DOL.GS.PacketHandler;
+using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities
 {
-	public class AtlasOF_Grapple : TimedRealmAbility, ISpellCastingAbilityHandler
+    public class AtlasOF_Grapple : TimedRealmAbility, ISpellCastingAbilityHandler
     {
 		public AtlasOF_Grapple(DbAbility dba, int level) : base(dba, level) { }
 
@@ -71,10 +64,10 @@ namespace DOL.GS.RealmAbilities
 
 			CreateSpell(caster);
 
-			foreach (GamePlayer pl in caster.GetPlayersInRadius(m_range))
+			foreach (GamePlayer playerInRadius in caster.GetPlayersInRadius(m_range))
 			{
-				if(pl.Realm != caster.Realm || caster.DuelTarget == pl)
-					CastSpellOn(pl, caster);
+				if (playerInRadius.Realm != caster.Realm || caster.IsDuelPartner(playerInRadius))
+					CastSpellOn(playerInRadius, caster);
 			}
 
 			foreach (GameNPC npc in caster.GetNPCsInRadius(m_range))
@@ -97,6 +90,5 @@ namespace DOL.GS.RealmAbilities
 		        dd.StartSpell(target);
 	        }
         }
-
 	}
 }

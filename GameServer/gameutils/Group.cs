@@ -182,15 +182,16 @@ namespace DOL.GS
 														return true; }))
 				return false;
 
-			if (living is GamePlayer p && p.DuelTarget != null) 
-				p.DuelStop();
+			GamePlayer player = living as GamePlayer;
+
+			if (player?.Duel != null)
+				player.Duel.Stop();
 			
 			UpdateGroupWindow();
 			// update icons of joined player to everyone in the group
 			UpdateMember(living, true, false);
 			
 			// update all icons for just joined player
-			var player = living as GamePlayer;
 			if (player != null)
 				player.Out.SendGroupMembersUpdate(true, true);
 
