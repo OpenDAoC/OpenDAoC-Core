@@ -6907,7 +6907,7 @@ namespace DOL.GS
 
             KillStreak = 0;
 
-            Duel.Stop();
+            Duel?.Stop();
 
             eChatType messageType;
             if (m_releaseType == eReleaseType.Duel)
