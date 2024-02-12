@@ -386,7 +386,7 @@ namespace DOL.GS
                 maxLine = SUBZONE_NBR_ON_ZONE_SIDE - 1;
 
             int subZoneIndex;
-            ConcurrentLinkedList<GameObject> objects;
+            SubZone subZone;
             bool ignoreDistance;
 
             for (int line = minLine; line <= maxLine; ++line)
@@ -394,9 +394,9 @@ namespace DOL.GS
                 for (int column = minColumn; column <= maxColumn; ++column)
                 {
                     subZoneIndex = GetSubZoneOffset(line, column);
-                    objects = _subZones[subZoneIndex].GetObjects(objectType);
+                    subZone = _subZones[subZoneIndex];
 
-                    if (objects.Count == 0)
+                    if (!subZone.Any(objectType))
                         continue;
 
                     if (subZoneIndex != referenceSubZoneIndex)
@@ -416,9 +416,10 @@ namespace DOL.GS
                     else
                         ignoreDistance = false;
 
-                    using ConcurrentLinkedList<GameObject>.Reader reader = objects.GetReader();
+                    using ConcurrentLinkedList<GameObject>.IteratorLock iteratorLock = subZone.GetIteratorLock(objectType);
+                    iteratorLock.LockRead();
 
-                    for (LinkedListNode<GameObject> node = reader.Current(); node != null; node = reader.Next())
+                    for (LinkedListNode<GameObject> node = iteratorLock.Current(); node != null; node = iteratorLock.Next())
                     {
                         GameObject gameObject = node.Value;
 
@@ -688,9 +689,10 @@ namespace DOL.GS
             {
                 foreach (SubZone subZone in _subZones)
                 {
-                    using ConcurrentLinkedList<GameObject>.Reader reader = subZone.GetObjects(eGameObjectType.NPC).GetReader();
+                    using ConcurrentLinkedList<GameObject>.IteratorLock iteratorLock = subZone.GetIteratorLock(eGameObjectType.NPC);
+                    iteratorLock.LockRead();
 
-                    for (LinkedListNode<GameObject> node = reader.Current(); node != null; node = reader.Next())
+                    for (LinkedListNode<GameObject> node = iteratorLock.Current(); node != null; node = iteratorLock.Next())
                     {
                         currentNPC = (GameNPC) node.Value;
 

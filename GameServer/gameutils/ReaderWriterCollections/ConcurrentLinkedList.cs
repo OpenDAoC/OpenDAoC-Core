@@ -9,6 +9,7 @@ namespace DOL.GS
         private LinkedList<T> _list = new();
         private ReaderWriterLockSlim _lock = new();
         public int Count => _list.Count;
+        public bool Any => _list.Count > 0;
 
         public void AddLast(LinkedListNode<T> node)
         {
@@ -20,28 +21,21 @@ namespace DOL.GS
             _list.Remove(node);
         }
 
-        public Reader GetReader()
+        public IteratorLock GetIteratorLock()
         {
-            return new Reader(this);
-        }
-
-        public Writer GetWriter()
-        {
-            return new Writer(this);
+            return new IteratorLock(this);
         }
 
         // A disposable iterator-like class taking care of the locking. Only iterations from first to last nodes are allowed, and the lock can't be upgraded.
-        public sealed class Reader : IDisposable
+        public sealed class IteratorLock : IDisposable
         {
-            LinkedListNode<T> _current;
-            ConcurrentLinkedList<T> _list;
-            private bool _hasLock;
+            private LinkedListNode<T> _current;
+            private ConcurrentLinkedList<T> _list;
+            private LockState _lockState;
 
-            public Reader(ConcurrentLinkedList<T> list)
+            public IteratorLock(ConcurrentLinkedList<T> list)
             {
                 _list = list;
-                _list._lock.EnterReadLock();
-                _hasLock = true;
                 _current = _list._list.First;
             }
 
@@ -53,7 +47,7 @@ namespace DOL.GS
             public LinkedListNode<T> Next()
             {
                 _current = _current.Next;
-                return _current ?? null;
+                return _current;
             }
 
             public void MoveTo(LinkedListNode<T> node)
@@ -61,40 +55,49 @@ namespace DOL.GS
                 _current = node;
             }
 
-            public void Dispose()
+            public void LockRead()
             {
-                if (_hasLock)
-                    _list._lock.ExitReadLock();
-            }
-        }
-
-        // A disposable class taking care of acquiring and disposing a write lock.
-        public sealed class Writer : IDisposable
-        {
-            private ConcurrentLinkedList<T> _list;
-            private bool _hasLock;
-
-            public Writer(ConcurrentLinkedList<T> list)
-            {
-                _list = list;
+                _list._lock.EnterReadLock();
+                _lockState = LockState.READ;
             }
 
-            public void Lock()
+            public void LockWrite()
             {
                 _list._lock.EnterWriteLock();
-                _hasLock = true;
+                _lockState = LockState.WRITE;
             }
 
-            public bool TryLock()
+            public bool TryLockWrite()
             {
-                _hasLock = _list._lock.TryEnterWriteLock(0);
-                return _hasLock;
+                bool hasLock = _list._lock.TryEnterWriteLock(0);
+
+                if (hasLock)
+                    _lockState = LockState.WRITE;
+
+                return hasLock;
             }
 
             public void Dispose()
             {
-                if (_hasLock)
+                if (IsSet(LockState.READ))
+                    _list._lock.ExitReadLock();
+                else if (IsSet(LockState.WRITE))
                     _list._lock.ExitWriteLock();
+
+                _lockState = LockState.NONE;
+            }
+
+            private bool IsSet(LockState flag)
+            {
+                return (_lockState & flag) == flag;
+            }
+
+            [Flags]
+            private enum LockState
+            {
+                NONE = 0,
+                READ = 1,
+                WRITE = 2,
             }
         }
     }

@@ -5,13 +5,10 @@ using System.Threading;
 namespace DOL.GS
 {
     // A 'SubZone' inside a 'Zone', holding linked lists of 'GameObject'.
-    // To preserve thread safety, the list returned by 'GetObjects' must be iterated with 'ConcurrentLinkedList.Reader'.
-    // 'ConcurrentLinkedList.Writer' must be acquired before calling `AddObjectNode` or `RemoveObjectNode`.
-    // Modification during iteration on the same thread isn't supported.
     public class SubZone
     {
-        public Zone ParentZone { get; private set; }
         private ConcurrentLinkedList<GameObject>[] _objects = new ConcurrentLinkedList<GameObject>[Enum.GetValues(typeof(eGameObjectType)).Length];
+        public Zone ParentZone { get; private set; }
 
         public SubZone(Zone parentZone)
         {
@@ -21,29 +18,24 @@ namespace DOL.GS
                 _objects[i] = new();
         }
 
-        public void AddObjectNode(LinkedListNode<GameObject> node)
+        public void AddObjectNode(eGameObjectType objectType, LinkedListNode<GameObject> node)
         {
-            _objects[(byte) node.Value.GameObjectType].AddLast(node);
+            _objects[(byte) objectType].AddLast(node);
         }
 
-        public void RemoveObjectNode(LinkedListNode<GameObject> node)
+        public void RemoveObjectNode(eGameObjectType objectType, LinkedListNode<GameObject> node)
         {
-            _objects[(byte) node.Value.GameObjectType].Remove(node);
+            _objects[(byte) objectType].Remove(node);
         }
 
-        public ConcurrentLinkedList<GameObject> GetObjects(eGameObjectType objectType)
+        public ConcurrentLinkedList<GameObject>.IteratorLock GetIteratorLock(eGameObjectType objectType)
         {
-            return _objects[(byte) objectType];
+            return _objects[(byte) objectType].GetIteratorLock();
         }
 
-        public ConcurrentLinkedList<GameObject>.Reader GetObjectReader(LinkedListNode<GameObject> node)
+        public bool Any(eGameObjectType objectType)
         {
-            return _objects[(byte) node.Value.GameObjectType].GetReader();
-        }
-
-        public ConcurrentLinkedList<GameObject>.Writer GetObjectWriter(LinkedListNode<GameObject> node)
-        {
-            return _objects[(byte) node.Value.GameObjectType].GetWriter();
+            return _objects[(int) objectType].Any;
         }
     }
 
