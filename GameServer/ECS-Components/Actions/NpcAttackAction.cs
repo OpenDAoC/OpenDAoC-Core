@@ -56,7 +56,7 @@ namespace DOL.GS
                 !_npcOwner.IsWithinRadius(_target, 500))
             {
                 _npcOwner.SwitchToRanged(_target);
-                _interval = _attackComponent.AttackSpeed(_weapon);
+                _interval = 0;
                 return false;
             }
 

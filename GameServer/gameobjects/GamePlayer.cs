@@ -5984,25 +5984,13 @@ namespace DOL.GS
         /// <param name="slot">the new eActiveWeaponSlot</param>
         public override void SwitchWeapon(eActiveWeaponSlot slot)
         {
-            //When switching weapons, attackmode is removed!
             if (attackComponent != null && attackComponent.AttackState && ActiveWeapon != null)
-            {
-                if (ActiveWeapon.Item_Type == (int)eInventorySlot.DistanceWeapon 
-                    && rangeAttackComponent.RangedAttackState != eRangedAttackState.None 
-                    && GameLoop.GameLoopTime - this.TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START) > 100
-                    && attackComponent.attackAction != null)
-                {
-                    attackComponent.attackAction.StartTime = 1000;
-                }
                 attackComponent.StopAttack();
-            }
 
             if (effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
             {
-                AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, eEffect.Volley);
-
-                if (volley != null)
-                    volley.OnPlayerSwitchedWeapon();
+                AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect) EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+                volley?.OnPlayerSwitchedWeapon();
             }
 
             if (CurrentSpellHandler != null)
@@ -9608,10 +9596,11 @@ namespace DOL.GS
                 if (attackComponent.AttackState && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                 {
                     AttackData ad = TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
+
                     if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
                     {
-                        if (ad.Target != null && IsObjectInFront(ad.Target, 120) && this.IsWithinRadius(ad.Target, attackComponent.AttackRange) && attackComponent.attackAction != null)
-                            attackComponent.attackAction.StartTime = 0;
+                        if (ad.Target != null && IsObjectInFront(ad.Target, 120) && IsWithinRadius(ad.Target, attackComponent.AttackRange) && attackComponent.attackAction != null)
+                            attackComponent.attackAction.ResetNextTick();
                     }
                 }
             }
@@ -9982,7 +9971,7 @@ namespace DOL.GS
                     if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
                     {
                         if (ad.Target != null && IsObjectInFront(ad.Target, 120) && IsWithinRadius(ad.Target, attackComponent.AttackRange) && attackComponent.attackAction != null)
-                            attackComponent.attackAction.StartTime = 0;
+                            attackComponent.attackAction.ResetNextTick();
                     }
                 }
             }

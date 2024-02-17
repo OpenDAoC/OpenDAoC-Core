@@ -553,11 +553,6 @@ namespace DOL.GS
             }
         }
 
-        //public double AttackDamage(InventoryItem weapon)
-        //{
-        //    return AttackDamage(weapon, out _);
-        //}
-
         public void RequestStartAttack(GameObject attackTarget)
         {
             if (!StartAttackRequested)
@@ -790,8 +785,6 @@ namespace DOL.GS
                         player.Out.SendAttackMode(AttackState);
                     else
                     {
-                        player.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
-
                         string typeMsg = attackWeapon.Object_Type == (int) eObjectType.Thrown ? "throw" : "shot";
                         string targetMsg;
 
@@ -830,12 +823,6 @@ namespace DOL.GS
                 owner.CancelEngageEffect();
 
             AttackState = true;
-            DbInventoryItem attackWeapon = owner.ActiveWeapon;
-
-            int speed = AttackSpeed(attackWeapon);
-
-            if (speed <= 0)
-                return false;
 
             // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
             if (owner is GameNPC npcOwner && owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
@@ -850,23 +837,11 @@ namespace DOL.GS
 
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
-                // Only start another attack action if we aren't already aiming to shoot.
-                if (owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.Aim)
-                {
-                    if (attackAction.CheckInterruptTimer())
-                        return false;
+                if (owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.Aim && attackAction.CheckInterruptTimer())
+                    return false;
 
-                    owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
-
-                    if (owner is not GamePlayer || !owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
-                    {
-                        // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
-                        foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                            player.Out.SendCombatAnimation(owner, null, (ushort)(attackWeapon != null ? attackWeapon.Model : 0), 0, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
-                    }
-
-                    attackAction.StartTime = owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire ? Math.Max(1500, speed / 2) : speed;
-                }
+                Console.WriteLine(GameLoop.GameLoopTime - attackAction.NextTick);
+                owner.rangeAttackComponent.AttackStartTime = GameLoop.GameLoopTime;
             }
 
             return true;
@@ -878,9 +853,9 @@ namespace DOL.GS
             npc.TargetObject = attackTarget;
             npc.StopMovingOnPath();
 
-            if (npc.Brain != null && npc.Brain is IControlledBrain)
+            if (npc.Brain is IControlledBrain brain)
             {
-                if ((npc.Brain as IControlledBrain).AggressionState == eAggressionState.Passive)
+                if (brain.AggressionState == eAggressionState.Passive)
                     return;
             }
 
@@ -898,6 +873,9 @@ namespace DOL.GS
 
         public void StopAttack()
         {
+            AttackAction attackAction = owner.attackComponent.attackAction;
+            attackAction?.ResetNextTick();
+
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
                 // Only cancel the animation if the ranged ammo isn't released already.
@@ -907,8 +885,14 @@ namespace DOL.GS
                         player.Out.SendInterruptAnimation(owner);
                 }
 
-                owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
-                owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
+                RangeAttackComponent rangeAttackComponent = owner.rangeAttackComponent;
+                rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
+
+                if (rangeAttackComponent.RangedAttackState != eRangedAttackState.None)
+                {
+                    attackAction.DelayNextTick(500);
+                    rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
+                }
             }
 
             AttackState = false;

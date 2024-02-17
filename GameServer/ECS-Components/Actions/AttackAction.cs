@@ -24,17 +24,18 @@ namespace DOL.GS
         protected int _interruptDuration;
         protected int _interval;
         private GameLiving _owner;
-        private long _startTime;
+        private long _nextTick;
 
         // Set to current time when a round doesn't result in an attack. Used to prevent combat log spam and kept until reset in AttackComponent.SendAttackingCombatMessages().
         public long RoundWithNoAttackTime { get; set; }
-        public ref long StartTime => ref _startTime;
+        public long NextTick => _nextTick;
 
         protected AttackAction(GameLiving owner)
         {
             _owner = owner;
             _attackComponent = _owner.attackComponent;
             _styleComponent = _owner.styleComponent;
+            _nextTick = GameLoop.GameLoopTime;
         }
 
         public static AttackAction Create(GameLiving gameLiving)
@@ -49,7 +50,7 @@ namespace DOL.GS
 
         public void Tick()
         {
-            if (!ServiceUtils.ShouldTickAdjust(ref StartTime))
+            if (!ServiceUtils.ShouldTickAdjust(ref _nextTick))
                 return;
 
             if (!CheckAttackState())
@@ -86,7 +87,17 @@ namespace DOL.GS
                 }
             }
 
-            StartTime += _interval;
+            _nextTick += _interval;
+        }
+
+        public void ResetNextTick()
+        {
+            _nextTick = GameLoop.GameLoopTime;
+        }
+
+        public void DelayNextTick(int amount)
+        {
+            _nextTick += amount;
         }
 
         public virtual bool CheckInterruptTimer()
@@ -183,21 +194,39 @@ namespace DOL.GS
 
         protected virtual bool PrepareRangedAttack()
         {
-            eCheckRangeAttackStateResult rangeCheckresult = _owner.rangeAttackComponent.CheckRangeAttackState(_target);
+            int attackSpeed = _owner.attackComponent.AttackSpeed(_weapon);
 
-            if (rangeCheckresult == eCheckRangeAttackStateResult.Hold)
+            if (_owner.rangeAttackComponent.RangedAttackState == eRangedAttackState.None)
+            {
+                _owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
+
+                if (_owner is not GamePlayer || !_owner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+                {
+                    // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
+                    foreach (GamePlayer player in _owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        player.Out.SendCombatAnimation(_owner, null, (ushort) (_weapon != null ? _weapon.Model : 0), 0, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
+
+                    _interval = _owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire ? Math.Max(1500, attackSpeed / 2) : attackSpeed;
+                }
+
+                return false;
+            }
+
+            eCheckRangeAttackStateResult rangeCheckResult = _owner.rangeAttackComponent.CheckRangeAttackState(_target);
+
+            if (rangeCheckResult == eCheckRangeAttackStateResult.Hold)
             {
                 _interval = TICK_INTERVAL_FOR_NON_ATTACK;
                 return false;
             }
-            else if (rangeCheckresult == eCheckRangeAttackStateResult.Stop || _target == null)
+            else if (rangeCheckResult == eCheckRangeAttackStateResult.Stop || _target == null)
             {
                 _attackComponent.StopAttack();
                 _attackComponent.attackAction?.CleanUp();
                 return false;
             }
 
-            _interval = _attackComponent.AttackSpeed(_weapon);
+            _interval = attackSpeed;
             _interruptDuration = _interval;
             _ticksToTarget = _owner.GetDistanceTo(_target) * 1000 / RangeAttackComponent.PROJECTILE_FLIGHT_SPEED;
             int model = _weapon == null ? 0 : _weapon.Model;
@@ -253,7 +282,7 @@ namespace DOL.GS
                     // and the resulting interrupt will last 1.5 seconds."
 
                     long rapidFireMaxDuration = _attackComponent.AttackSpeed(_weapon);
-                    long elapsedTime = GameLoop.GameLoopTime - _owner.TempProperties.GetProperty<long>(RangeAttackComponent.RANGED_ATTACK_START); // elapsed time before ready to fire
+                    long elapsedTime = GameLoop.GameLoopTime - _owner.rangeAttackComponent.AttackStartTime;
 
                     if (elapsedTime < rapidFireMaxDuration)
                     {
@@ -301,7 +330,7 @@ namespace DOL.GS
             {
                 new ECSGameTimer(_owner, new ECSGameTimer.ECSTimerCallback(_attackComponent.weaponAction.Execute), _ticksToTarget);
 
-                // This is done in weaponAction.Execute(), but we musn't wait for the attack to reach our target.
+                // This is done in weaponAction.Execute(), but we must not wait for the attack to reach our target.
                 _attackComponent.weaponAction.AttackFinished = true;
             }
             else
@@ -342,28 +371,29 @@ namespace DOL.GS
             if (CheckInterruptTimer())
                 return false;
 
-            // Need to find a way to not have to call 'AttackSpeed()' again (currently needed
+            // Need to find a way to not have to call 'AttackSpeed' again.
             _interval = _attackComponent.AttackSpeed(_weapon);
+            _owner.rangeAttackComponent.AttackStartTime = GameLoop.GameLoopTime;
             _owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
 
             if (_owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long)
             {
                 _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
-                if (EffectListService.GetAbilityEffectOnTarget(_owner, eEffect.SureShot) != null)
+                if (_owner.effectListComponent.ContainsEffectForEffectType(eEffect.SureShot))
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-                if (EffectListService.GetAbilityEffectOnTarget(_owner, eEffect.RapidFire) != null)
+                else if (_owner.effectListComponent.ContainsEffectForEffectType(eEffect.RapidFire))
                 {
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
                     _interval = Math.Max(1500, _interval /= 2);
                 }
-                if (EffectListService.GetAbilityEffectOnTarget(_owner, eEffect.TrueShot) != null)
+                else if (_owner.effectListComponent.ContainsEffectForEffectType(eEffect.SureShot))
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
             }
 
             // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
             foreach (GamePlayer player in _owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                player.Out.SendCombatAnimation(_owner, null, (ushort)(_weapon != null ? _weapon.Model : 0), 0x00, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
+                player.Out.SendCombatAnimation(_owner, null, (ushort) (_weapon != null ? _weapon.Model : 0), 0x00, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
 
             return true;
         }

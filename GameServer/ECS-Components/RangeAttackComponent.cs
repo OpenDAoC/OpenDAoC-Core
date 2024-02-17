@@ -14,7 +14,6 @@ namespace DOL.GS
             m_owner = owner;
         }
 
-        internal const string RANGED_ATTACK_START = "RangedAttackStart";
         public const int DEFAULT_ENDURANCE_COST = 5;
         public const int CRITICAL_SHOT_ENDURANCE_COST = 10;
         public const int VOLLEY_ENDURANCE_COST = 15;
@@ -24,6 +23,7 @@ namespace DOL.GS
         public eRangedAttackState RangedAttackState { get; set; }
         public eRangedAttackType RangedAttackType { get; set; }
         public eActiveQuiverSlot ActiveQuiverSlot { get; set; }
+        public long AttackStartTime { get; set; }
         public DbInventoryItem Ammo { get; private set; }
         public bool IsAmmoCompatible { get; private set; }
 
@@ -80,18 +80,13 @@ namespace DOL.GS
         /// </summary>
         public eCheckRangeAttackStateResult CheckRangeAttackState(GameObject target)
         {
+            // Failsafe, but it should never happen.
+            if (AttackStartTime == 0)
+                AttackStartTime = GameLoop.GameLoopTime;
+
             if (m_owner is GamePlayer playerOwner)
             {
-                long attackStart = m_owner.TempProperties.GetProperty<long>(RANGED_ATTACK_START);
-
-                // Failsafe, but it should never happen.
-                if (attackStart == 0)
-                {
-                    attackStart = GameLoop.GameLoopTime;
-                    playerOwner.TempProperties.SetProperty(RANGED_ATTACK_START, attackStart);
-                }
-
-                if ((GameLoop.GameLoopTime - attackStart) > MAX_DRAW_DURATION && playerOwner.ActiveWeapon.Object_Type != (int)eObjectType.Crossbow)
+                if ((GameLoop.GameLoopTime - AttackStartTime) > MAX_DRAW_DURATION && playerOwner.ActiveWeapon.Object_Type != (int)eObjectType.Crossbow)
                 {
                     playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GamePlayer.Attack.TooTired"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return eCheckRangeAttackStateResult.Stop;

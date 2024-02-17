@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using DOL.GS.PacketHandler;
+﻿using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS
@@ -100,13 +99,7 @@ namespace DOL.GS
                 return false;
             }
 
-            if (base.FinalizeRangedAttack())
-            {
-                _playerOwner.TempProperties.SetProperty(RangeAttackComponent.RANGED_ATTACK_START, GameLoop.GameLoopTime);
-                return true;
-            }
-
-            return false;
+            return base.FinalizeRangedAttack();
         }
     }
 }
