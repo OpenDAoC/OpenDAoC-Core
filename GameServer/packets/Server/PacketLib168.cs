@@ -834,6 +834,9 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendPlayerQuit(bool totalOut)
 		{
+			// Prevents the client from entering the game when this is called when the player is changing region.
+			m_gameClient.PacketProcessor.ClearPacketQueues();
+
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Quit)))
 			{
 				pak.WriteByte((byte)(totalOut ? 0x01 : 0x00));
