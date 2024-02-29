@@ -159,7 +159,7 @@ namespace DOL.GS.PacketHandler
 		DoorRequest = 0x99,					// 0x31 ^ 168
 		DisbandFromGroup = 0x9F,			// 0x37 ^ 168
 		DialogResponse = 0x82,				// 0x2A ^ 168
-		CheckLOSRequest = 0xD0,				// 0x78 ^ 168
+		CheckLosRequest = 0xD0,				// 0x78 ^ 168
 		UseSpell = 0x7D,					// 0xD5 ^ 168
 		UseSlot = 0x71,						// 0xD9 ^ 168
 		UseSkill = 0xBB,					// 0x13 ^ 168
@@ -523,8 +523,15 @@ namespace DOL.GS.PacketHandler
 
 	public delegate void CustomDialogResponse(GamePlayer player, byte response);
 
-	public delegate void CheckLOSResponse(GamePlayer player, ushort response, ushort targetOID);
-	public delegate void CheckLOSMgrResponse(GamePlayer player, ushort response, ushort sourceOID, ushort targetOID);
+	public delegate void CheckLosResponse(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID);
+
+	public enum eLosCheckResponse
+	{
+		NONE,
+		TRUE,
+		FALSE,
+		TIMEOUT
+	}
 
 	public enum eSoundType : ushort
 	{
@@ -687,8 +694,7 @@ namespace DOL.GS.PacketHandler
 		                   bool autoWrapText, string message);
 
 		void SendCustomDialog(string msg, CustomDialogResponse callback);
-		void SendCheckLOS(GameObject Checker, GameObject Target, CheckLOSResponse callback);
-		void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback);
+		void SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback);
 		void SendGuildLeaveCommand(GamePlayer invitingPlayer, string inviteMessage);
 		void SendGuildInviteCommand(GamePlayer invitingPlayer, string inviteMessage);
 		void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest);

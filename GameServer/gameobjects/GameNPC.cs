@@ -3871,16 +3871,13 @@ namespace DOL.GS
 				m_spellCastedFromLosCheck = false;
 
 			if (m_castSpellLosChecks.TryAdd(TargetObject, new(spellToCast, line, GameLoop.GameLoopTime)))
-				LosChecker.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(CastSpellLosCheckReply));
+				LosChecker.Out.SendCheckLos(this, TargetObject, new CheckLosResponse(CastSpellLosCheckReply));
 
 			return spellCastedFromLosCheck;
 		}
 
-		public void CastSpellLosCheckReply(GamePlayer player, ushort response, ushort targetOID)
+		public void CastSpellLosCheckReply(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
-			if (targetOID == 0)
-				return;
-
 			GameObject target = CurrentRegion.GetObject(targetOID);
 
 			if (target == null)
@@ -3891,7 +3888,7 @@ namespace DOL.GS
 				Spell spell = value.Item1;
 				SpellLine line = value.Item2;
 
-				if ((response & 0x100) == 0x100 && line != null && spell != null)
+				if (response is eLosCheckResponse.TRUE && line != null && spell != null)
 				{
 					if (target is GameLiving livingTarget && livingTarget.EffectList.GetOfType<NecromancerShadeEffect>() != null)
 						target = livingTarget.ControlledBrain?.Body;

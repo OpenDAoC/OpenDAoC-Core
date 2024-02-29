@@ -285,16 +285,13 @@ namespace DOL.GS.Spells
             {
                 //Calculate random target
                 m_loc = GetTargetLoc();
-				playerCaster.Out.SendCheckLOS(playerCaster, m_npc, new CheckLOSResponse(ZephyrCheckLOS));
+                playerCaster.Out.SendCheckLos(playerCaster, m_npc, new CheckLosResponse(ZephyrCheckLos));
             }
         }
 
-        public void ZephyrCheckLOS(GamePlayer player, ushort response, ushort targetOID)
+        public void ZephyrCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
-            if (targetOID == 0)
-                return;
-
-            if ((response & 0x100) == 0x100)
+            if (response is eLosCheckResponse.TRUE)
                 m_npc.WalkTo(m_loc, 100);
         }
 

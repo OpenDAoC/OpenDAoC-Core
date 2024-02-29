@@ -165,9 +165,9 @@ namespace DOL.GS.Keeps
 
 		#region Combat
 
-		public void GuardStartSpellHealCheckLOS(GamePlayer player, ushort response, ushort targetOID)
+		public void GuardStartSpellHealCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
-			if ((response & 0x100) == 0x100 && HealTarget != null)
+			if (response is eLosCheckResponse.TRUE && HealTarget != null)
 			{
 				Spell healSpell = GetGuardHealSmallSpell(Realm);
 
@@ -246,7 +246,7 @@ namespace DOL.GS.Keeps
 				if (!target.IsAlive) return;
 
 				HealTarget = target;
-				LOSChecker.Out.SendCheckLOS(this, target, new CheckLOSResponse(GuardStartSpellHealCheckLOS));
+				LOSChecker.Out.SendCheckLos(this, target, new CheckLosResponse(GuardStartSpellHealCheckLos));
 			}
 		}
 
@@ -268,12 +268,12 @@ namespace DOL.GS.Keeps
 				}
 			}
 			if (LOSChecker == null) return;
-			LOSChecker.Out.SendCheckLOS(this, target, new CheckLOSResponse(GuardStartSpellNukeCheckLOS));
+			LOSChecker.Out.SendCheckLos(this, target, new CheckLosResponse(GuardStartSpellNukeCheckLos));
 		}
 
-		public void GuardStartSpellNukeCheckLOS(GamePlayer player, ushort response, ushort targetOID)
+		public void GuardStartSpellNukeCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
-			if ((response & 0x100) == 0x100)
+			if (response is eLosCheckResponse.TRUE)
 			{
 				switch (Realm)
 				{

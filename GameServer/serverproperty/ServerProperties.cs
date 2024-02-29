@@ -748,7 +748,10 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("world", "always_check_pet_los", "Should we perform LOS checks between controlled NPC's and players?", false)]
 		public static bool ALWAYS_CHECK_PET_LOS;
-		
+
+		[ServerProperty("world", "los_check_timeout", "After how long (milliseconds) should a los check timeout. If less than 0, the default ECS timer interval will be used.", 1500)]
+		public static int LOS_CHECK_TIMEOUT;
+
 		/// HPs gained per champion's level
 		/// </summary>
 		[ServerProperty("world", "hps_per_championlevel", "The amount of extra HPs gained each time you reach a new Champion's Level", 40)]

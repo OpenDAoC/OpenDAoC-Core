@@ -351,6 +351,8 @@ namespace DOL.GS
             set { m_wasmovedbycorpsesummoner = value; }
         }
 
+        public ConcurrentDictionary<(ushort, ushort), CheckLosResponseHandler.TimeoutTimer> LosCheckTimers { get; private set; } = new();
+
         #region Object Caches
         public ConcurrentDictionary<GameNPC, ClientService.CachedNpcValues> NpcUpdateCache { get; private set; } = new();
         public ConcurrentDictionary<GameStaticItem, long> ItemUpdateCache { get; private set; } = new();
@@ -12330,7 +12332,7 @@ namespace DOL.GS
                     if (Util.ChanceDouble(chanceToUncover))
                     {
                         if (canSeePlayer)
-                            player.Out.SendCheckLOS(player, npc, new CheckLOSResponse(player.UncoverLOSHandler));
+                            player.Out.SendCheckLos(player, npc, new CheckLosResponse(player.UncoverLosHandler));
                         else
                             npc.TurnTo(player, 10000);
                     }
@@ -12342,14 +12344,14 @@ namespace DOL.GS
         /// <summary>
         /// This handler is called by the unstealth check of mobs
         /// </summary>
-        public void UncoverLOSHandler(GamePlayer player, ushort response, ushort targetOID)
+        public void UncoverLosHandler(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
             GameObject target = CurrentRegion.GetObject(targetOID);
 
             if ((target == null) || (player.IsStealthed == false))
                 return;
 
-            if ((response & 0x100) == 0x100)
+            if (response is eLosCheckResponse.TRUE)
             {
                 player.Out.SendMessage(target.GetName(0, true) + " uncovers you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 player.Stealth(false);

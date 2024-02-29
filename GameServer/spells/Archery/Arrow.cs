@@ -58,9 +58,9 @@ namespace DOL.GS.Spells
 			return true;
 		}
 
-		private void DealDamageCheckLOS(GamePlayer player, ushort response, ushort targetOID)
+		private void DealDamageCheckLOS(GamePlayer player, bool response, ushort targetOID)
 		{
-			if ((response & 0x100) == 0x100)
+			if (response)
 			{
 				GameLiving target = (GameLiving)(Caster.CurrentRegion.GetObject(targetOID));
 				if (target != null)

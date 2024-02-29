@@ -102,7 +102,7 @@ namespace DOL.GS
         public void Stop()
         {
             if (EntityManager.Remove(this))
-               IsAlive = false;
+                IsAlive = false;
         }
 
         public void Tick()

@@ -38,7 +38,7 @@ namespace DOL.AI.Brain
 				if (player.IsStealthed || player.Steed != null)
 					continue;
 
-				player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
+				player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
 				// We don't know if the LoS check will be positive, so we have to ask other players
 			}
 		}

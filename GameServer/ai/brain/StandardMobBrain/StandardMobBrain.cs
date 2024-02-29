@@ -131,7 +131,7 @@ namespace DOL.AI.Brain
 
                 if (Properties.ALWAYS_CHECK_LOS)
                     // We don't know if the LoS check will be positive, so we have to ask other players
-                    player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
+                    player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
                 else
                 {
                     AddToAggroList(player, 0);
@@ -158,12 +158,12 @@ namespace DOL.AI.Brain
                     // Check LoS if either the target or the current mob is a pet
                     if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
                     {
-                        theirOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
+                        theirOwner.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
                         continue;
                     }
                     else if (this is ControlledNpcBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
                     {
-                        ourOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
+                        ourOwner.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
                         continue;
                     }
                 }
@@ -453,13 +453,13 @@ namespace DOL.AI.Brain
             }
         }
 
-        protected virtual void LosCheckForAggroCallback(GamePlayer player, ushort response, ushort targetOID)
+        protected virtual void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
             // If we kept adding to the aggro list it would make mobs go from one target immediately to another.
-            if (HasAggro || targetOID == 0)
+            if (HasAggro)
                 return;
 
-            if ((response & 0x100) == 0x100)
+            if (response is eLosCheckResponse.TRUE)
             {
                 GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
 

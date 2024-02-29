@@ -650,7 +650,7 @@ namespace DOL.GS
 			}
 
 			// Everything start here
-			player.Out.SendCheckLOS(source, target, new CheckLOSMgrResponse(LosResponseHandler));
+			player.Out.SendCheckLos(source, target, new CheckLosResponse(LosResponseHandler));
 			
 			// Then wait for notify...
 		}
@@ -665,17 +665,14 @@ namespace DOL.GS
 		/// <param name="player">Player replying</param>
 		/// <param name="response">Client response</param>
 		/// <param name="targetOID">Target OID to which the Check was made</param>
-		private void LosResponseHandler(GamePlayer player, ushort response, ushort sourceOID, ushort targetOID) 
+		private void LosResponseHandler(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID) 
 		{
-			if(player == null || sourceOID == 0 || targetOID == 0)
-				return;
-			
 			// get time
 			long sent = GameLoop.GetCurrentTime();
 			long time = sent;
 			
 			// Check result
-			bool losOK = (response & 0x100) == 0x100;
+			bool losOK = response is eLosCheckResponse.TRUE;
 			
 			// key for pending
 			Tuple<GamePlayer, ushort, ushort> checkerKey = new Tuple<GamePlayer, ushort, ushort>(player, sourceOID, targetOID);			

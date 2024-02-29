@@ -9,6 +9,7 @@ using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
+using DOL.GS.PacketHandler.Client.v168;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using DOL.GS.RealmAbilities;
@@ -1485,59 +1486,48 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		[Obsolete("Shouldn't be used in favor of new LoS Check Manager")]
-		public virtual void SendCheckLOS(GameObject Checker, GameObject Target, CheckLOSResponse callback)
+		public virtual void SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback)
 		{
-			if (m_gameClient.Player == null)
+			if (m_gameClient.Player == null || source == null || target == null)
 				return;
 
-			int TargetOID = Target != null ? Target.ObjectID : 0;
-			string key = string.Format("LOS C:0x{0} T:0x{1}", Checker.ObjectID, TargetOID);
-			CheckLOSResponse old_callback = null;
+			ushort sourceObjectId = (ushort) source.ObjectID;
+			ushort targetObjectId = (ushort) target.ObjectID;
+			bool result = false;
 
-			lock (m_gameClient.Player.TempProperties)
+			CheckLosResponseHandler.TimeoutTimer timer = m_gameClient.Player.LosCheckTimers.GetOrAdd((sourceObjectId, targetObjectId), AddFactory, (m_gameClient.Player, callback, result));
+
+			static CheckLosResponseHandler.TimeoutTimer AddFactory((ushort sourceObjectId, ushort targetObjectId) key, (GamePlayer player, CheckLosResponse callback, bool result) args)
 			{
-				old_callback = m_gameClient.Player.TempProperties.GetProperty<CheckLOSResponse>(key, null);
-				m_gameClient.Player.TempProperties.SetProperty(key, callback);
+				return new(args.player, args.callback, key.sourceObjectId, key.targetObjectId);
 			}
-			if (old_callback != null)
-				old_callback(m_gameClient.Player, 0, 0);
+
+			// If there's already a timer running, keep it and don't send a new packet. Instead, update the callback and wait for the reply or for it to timeout.
+			if (timer.IsAlive)
+			{
+				timer.LosCheckCallback = callback;
+				return;
+			}
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CheckLOSRequest)))
 			{
-				pak.WriteShort((ushort)Checker.ObjectID);
-				pak.WriteShort((ushort)TargetOID);
+				pak.WriteShort(sourceObjectId);
+				pak.WriteShort(targetObjectId);
 				pak.WriteShort(0x00); // ?
 				pak.WriteShort(0x00); // ?
 				SendTCP(pak);
 			}
+
+			timer.Start();
 		}
 
-		public virtual void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback)
+		private class AddArgumentsFactory
 		{
-			if (m_gameClient.Player == null)
-				return;
+			public bool Result { get; private set; }
 
-			int TargetOID = target != null ? target.ObjectID : 0;
-			int SourceOID = source != null ? source.ObjectID : 0;
-			string key = string.Format("LOSMGR C:0x{0} T:0x{1}", SourceOID, TargetOID);
-			CheckLOSMgrResponse old_callback = null;
-
-			lock (m_gameClient.Player.TempProperties)
+			public AddArgumentsFactory()
 			{
-				old_callback = m_gameClient.Player.TempProperties.GetProperty<CheckLOSMgrResponse>(key, null);
-				m_gameClient.Player.TempProperties.SetProperty(key, callback);
-			}
-			if (old_callback != null)
-				old_callback(m_gameClient.Player, 0, 0, 0);
 
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CheckLOSRequest)))
-			{
-				pak.WriteShort((ushort) SourceOID);
-				pak.WriteShort((ushort) TargetOID);
-				pak.WriteShort(0x00); // ?
-				pak.WriteShort(0x00); // ?
-				SendTCP(pak);
 			}
 		}
 

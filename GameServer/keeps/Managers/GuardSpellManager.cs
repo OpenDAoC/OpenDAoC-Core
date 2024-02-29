@@ -76,7 +76,7 @@ namespace DOL.GS.Keeps
 
 				guard.TargetObject = target;
 
-				losChecker.Out.SendCheckLOS(guard, target, new CheckLOSResponse(guard.GuardStartSpellHealCheckLOS));
+				losChecker.Out.SendCheckLos(guard, target, new CheckLosResponse(guard.GuardStartSpellHealCheckLos));
 			}
 		}
 

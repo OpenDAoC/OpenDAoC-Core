@@ -11,7 +11,7 @@ namespace DOL.Tests.Unit.Gameserver
     {
         public FakePacketLib() : base(null) { }
 
-        public override void SendCheckLOS(GameObject Checker, GameObject Target, CheckLOSResponse callback) { }
+        public override void SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback) { }
         public override void SendMessage(string msg, eChatType type, eChatLoc loc) { }
         public override void SendUpdateIcons(System.Collections.IList changedEffects, ref int lastUpdateEffectsCount) { }
         public override void SendConcentrationList() { }

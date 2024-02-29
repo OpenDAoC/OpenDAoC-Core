@@ -27,6 +27,7 @@ using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DOL.Tests
 {
@@ -348,15 +349,10 @@ namespace DOL.Tests
 		{
 			if (SendCustomDialogMethod != null) SendCustomDialogMethod(this, msg, callback);
 		}
-		public Action<TestPacketLib, GameObject, GameObject, CheckLOSResponse> SendCheckLOSMethod { get; set; }
-		public void SendCheckLOS(GameObject Checker, GameObject Target, CheckLOSResponse callback)
+		public Action<TestPacketLib, GameObject, GameObject, CheckLosResponse> SendCheckLOSMethod { get; set; }
+		public void SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback)
 		{
-			if (SendCheckLOSMethod != null) SendCheckLOSMethod(this, Checker, Target, callback);
-		}
-		public Action<TestPacketLib, GameObject, GameObject, CheckLOSMgrResponse> SendCheckLOSMgrMethod { get; set; }
-		public void SendCheckLOS(GameObject source, GameObject target, CheckLOSMgrResponse callback)
-		{
-			if (SendCheckLOSMgrMethod != null) SendCheckLOSMgrMethod(this, source, target, callback);
+			if (SendCheckLOSMethod != null) SendCheckLOSMethod(this, source, target, callback);
 		}
 		public Action<TestPacketLib, GamePlayer, string> SendGuildLeaveCommandMethod { get; set; }
 		public void SendGuildLeaveCommand(GamePlayer invitingPlayer, string inviteMessage)

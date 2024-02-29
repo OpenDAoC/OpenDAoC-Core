@@ -56,7 +56,7 @@ namespace DOL.AI.Brain
                     continue;
 
                 if (GS.ServerProperties.Properties.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
-                    player.Out.SendCheckLOS(Body, player, new CheckLOSResponse(LosCheckForAggroCallback));
+                    player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
                 else
                     AddToAggroList(player, 0);
             }
@@ -77,12 +77,12 @@ namespace DOL.AI.Brain
                 {
                     if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
                     {
-                        theirOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
+                        theirOwner.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
                         continue;
                     }
                     else if (this is ControlledNpcBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
                     {
-                        ourOwner.Out.SendCheckLOS(Body, npc, new CheckLOSResponse(LosCheckForAggroCallback));
+                        ourOwner.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
                         continue;
                     }
                 }
@@ -91,13 +91,10 @@ namespace DOL.AI.Brain
             }
         }
 
-        protected override void LosCheckForAggroCallback(GamePlayer player, ushort response, ushort targetOID)
+        protected override void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
             // Copy paste of 'base.LosCheckForAggroCallback()' except we don't care if we already have aggro.
-            if (targetOID == 0)
-                return;
-
-            if ((response & 0x100) == 0x100)
+            if (response is eLosCheckResponse.TRUE)
             {
                 GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
 

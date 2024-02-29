@@ -175,19 +175,16 @@ namespace DOL.GS
                                               _targetNpc.Brain is IControlledBrain _targetNpcBrain &&
                                               _targetNpcBrain.GetPlayerOwner() != null))
                 // Target is either a player or a pet owned by a player.
-                _npcOwnerOwner.Out.SendCheckLOS(_npcOwner, _target, new CheckLOSResponse(LosCheckCallback));
+                _npcOwnerOwner.Out.SendCheckLos(_npcOwner, _target, new CheckLosResponse(LosCheckCallback));
             else
                 _hasLos = true;
 
             return _petLosCheckInterval;
         }
 
-        private void LosCheckCallback(GamePlayer player, ushort response, ushort targetOID)
+        private void LosCheckCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
-            if (targetOID == 0)
-                return;
-
-            _hasLos = (response & 0x100) == 0x100;
+            _hasLos = response is eLosCheckResponse.TRUE;
         }
     }
 }

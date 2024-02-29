@@ -84,32 +84,20 @@ namespace DOL.GS
 
 		public override void Fire()
 		{
-			if (TargetObject == null) return;
-			// if (TargetObject is GamePlayer) //Try check of LOS from target if target is a player
-			// {
-			// 	GamePlayer player = TargetObject as GamePlayer;
-			// 	player.Out.SendCheckLOS(this, player, new CheckLOSResponse(FireCheckLOS));
-			// }
-			else if (Owner is GamePlayer)
-			{
-				//Owner.Out.SendCheckLOS(this, TargetObject, new CheckLOSResponse(FireCheckLOS));
-				Owner.Out.SendCheckLOS(Owner, TargetObject, new CheckLOSResponse(FireCheckLOS)); //Have to use owner as "source" for now as checking with ballista the client always returns LOS of true
-			}
+			if (TargetObject == null)
+				return;
+
+			Owner?.Out.SendCheckLos(Owner, TargetObject, new CheckLosResponse(FireCheckLos)); //Have to use owner as "source" for now as checking with ballista the client always returns LOS of true
 		}
 		/// <summary>
 		/// FireCheckLOS is called after Fire method. Will check for LOS between siege and target
 		/// </summary>
-		private void FireCheckLOS(GamePlayer player, ushort response, ushort targetOID)
+		private void FireCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
-			if ((response & 0x100) == 0x100)
-			{
+			if (response is eLosCheckResponse.TRUE)
 				base.Fire();
-			} 
-			else
-			{
-				if (Owner!=null)
-					Owner.Out.SendMessage("Target is not in view!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-			}
+
+			Owner?.Out.SendMessage("Target is not in view!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
 		}
 
 		public override void DoDamage()

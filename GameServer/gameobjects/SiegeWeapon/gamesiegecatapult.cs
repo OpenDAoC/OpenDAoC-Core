@@ -134,15 +134,15 @@ namespace DOL.GS
 			{
 				ClientService.UpdateObjectForPlayer(Owner, tempLOSSkyChecker);
 				ClientService.UpdateObjectForPlayer(Owner, tempLOSGTChecker);
-				Owner.Out.SendCheckLOS(tempLOSSkyChecker, tempLOSGTChecker, new CheckLOSResponse(this.CheckGTLOSCallback));
+				Owner.Out.SendCheckLos(tempLOSSkyChecker, tempLOSGTChecker, new CheckLosResponse(CheckGTLosCallback));
 			}
 		}
 
-		private void CheckGTLOSCallback(GamePlayer player, ushort response, ushort targetOID)
+		private void CheckGTLosCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
 			log.Debug($"LOSCallback {player} {response} {targetOID}");
-			if(response == 0 && targetOID ==0) return;
-			if ((response & 0x100) == 0x100)
+
+			if (response is eLosCheckResponse.TRUE)
 			{
 				log.Debug($"LOSCheck Succeeded {response} GroundTarget set to: {tempLOSGTChecker.X} {tempLOSGTChecker.Y} {tempLOSGTChecker.Z}");
 				loschecks=0;
@@ -159,7 +159,7 @@ namespace DOL.GS
 				if (Owner is GamePlayer)
 				{
 					ClientService.UpdateObjectForPlayer(Owner, tempLOSGTChecker);
-					Owner.Out.SendCheckLOS(tempLOSSkyChecker, tempLOSGTChecker, new CheckLOSResponse(this.CheckGTLOSCallback));
+					Owner.Out.SendCheckLos(tempLOSSkyChecker, tempLOSGTChecker, new CheckLosResponse(CheckGTLosCallback));
 				}
 			}
 			else
