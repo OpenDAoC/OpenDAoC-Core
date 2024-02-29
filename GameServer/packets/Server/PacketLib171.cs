@@ -144,14 +144,15 @@ namespace DOL.GS.PacketHandler
 
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.NPCCreate)))
 			{
+				// Vertical movement may not be shown properly. See `PacketLib1124.SendNPCCreate`.
 				short speed = 0;
 				ushort speedZ = 0;
 				if (npc == null)
 					return;
-				if (!npc.IsAtTargetPosition)
+				if (!npc.IsAtDestination)
 				{
 					speed = npc.CurrentSpeed;
-					speedZ = (ushort) npc.movementComponent.TickSpeedZ;
+					speedZ = (ushort) npc.movementComponent.Velocity.Z;
 				}
 				pak.WriteShort((ushort)npc.ObjectID);
 				pak.WriteShort((ushort)speed);

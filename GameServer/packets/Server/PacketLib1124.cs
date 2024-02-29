@@ -125,73 +125,88 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || npc.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			//Added by Suncheck - Mines are not shown to enemy players
+			// Mines are not shown to enemy players.
 			if (npc is GameMine)
 			{
 				if (GameServer.ServerRules.IsAllowedToAttack((npc as GameMine).Owner, m_gameClient.Player, true))
-				{
 					return;
-				}
 			}
 
 			if (npc is GameMovingObject)
-			{
 				SendMovingObjectCreate(npc as GameMovingObject);
-			}
 			else
 			{
 				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.NPCCreate)))
 				{
-					short speed = 0;
-					ushort speedZ = 0;
-					if (npc == null)
-						return;
-					if (!npc.IsAtTargetPosition)
+					ushort speed = (ushort) npc.movementComponent.HorizontalVelocityForClient;
+					int zSpeed = (int) (npc.movementComponent.Velocity.Z / 4);
+					ushort heading = npc.Heading;
+
+					if (zSpeed < 0)
 					{
-						speed = npc.CurrentSpeed;
-						speedZ = (ushort)npc.movementComponent.TickSpeedZ;
+						zSpeed = -zSpeed;
+						speed |= 0x8000;
 					}
-					pak.WriteShort((ushort)npc.ObjectID);
-					pak.WriteShort((ushort)speed);
-					pak.WriteShort(npc.Heading);
-					pak.WriteShort((ushort)npc.Z);
-					pak.WriteInt((uint)npc.X);
-					pak.WriteInt((uint)npc.Y);
-					pak.WriteShort(speedZ);
+
+					speed |= (ushort) ((zSpeed & 0x70) << 8);
+					heading = (ushort) (((zSpeed & 0x0F) << 12) | (npc.Heading & 0xFFF));
+
+					pak.WriteShort((ushort) npc.ObjectID);
+					pak.WriteShort(speed);
+					pak.WriteShort(heading);
+					pak.WriteShort((ushort) npc.Z);
+					pak.WriteInt((uint) npc.X);
+					pak.WriteInt((uint) npc.Y);
+					pak.WriteShort((ushort) zSpeed);
 					pak.WriteShort(npc.Model);
 					pak.WriteByte(npc.Size);
 					byte level = npc.GetDisplayLevel(m_gameClient.Player);
-					if ((npc.Flags & GameNPC.eFlags.STATUE) != 0)
-					{
-						level |= 0x80;
-					}
-					pak.WriteByte(level);
 
-					byte flags = (byte)(GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, npc) << 6);
-					if ((npc.Flags & GameNPC.eFlags.GHOST) != 0) flags |= 0x01;
-					if (npc.Inventory != null) flags |= 0x02; //If mob has equipment, then only show it after the client gets the 0xBD packet
-					if ((npc.Flags & GameNPC.eFlags.PEACE) != 0) flags |= 0x10;
-					if ((npc.Flags & GameNPC.eFlags.FLYING) != 0) flags |= 0x20;
-					if ((npc.Flags & GameNPC.eFlags.TORCH) != 0) flags |= 0x04;
+					if ((npc.Flags & GameNPC.eFlags.STATUE) != 0)
+						level |= 0x80;
+
+					pak.WriteByte(level);
+					byte flags = (byte) (GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, npc) << 6);
+
+					if ((npc.Flags & GameNPC.eFlags.GHOST) != 0)
+						flags |= 0x01;
+
+					if (npc.Inventory != null)
+						flags |= 0x02; // If mob has equipment, then only show it after the client gets the 0xBD packet.
+
+					if ((npc.Flags & GameNPC.eFlags.PEACE) != 0)
+						flags |= 0x10;
+
+					if ((npc.Flags & GameNPC.eFlags.FLYING) != 0)
+						flags |= 0x20;
+
+					if ((npc.Flags & GameNPC.eFlags.TORCH) != 0)
+						flags |= 0x04;
 
 					pak.WriteByte(flags);
 					pak.WriteByte(0x20); //TODO this is the default maxstick distance
 
 					string add = "";
 					byte flags2 = 0x00;
-					IControlledBrain brain = npc.Brain as IControlledBrain;
 
-					if (brain != null)
-					{
-						flags2 |= 0x80; // have Owner
-					}
+					if (npc.Brain is IControlledBrain)
+						flags2 |= 0x80;
 
 					if ((npc.Flags & GameNPC.eFlags.CANTTARGET) != 0)
-						if (m_gameClient.Account.PrivLevel > 1) add += "-DOR"; // indicates DOR flag for GMs
-						else flags2 |= 0x01;
+					{
+						if (m_gameClient.Account.PrivLevel > 1)
+							add += "-DOR";
+						else
+							flags2 |= 0x01;
+					}
+
 					if ((npc.Flags & GameNPC.eFlags.DONTSHOWNAME) != 0)
-						if (m_gameClient.Account.PrivLevel > 1) add += "-NON"; // indicates NON flag for GMs
-						else flags2 |= 0x02;
+					{
+						if (m_gameClient.Account.PrivLevel > 1)
+							add += "-NON";
+						else
+							flags2 |= 0x02;
+					}
 
 					if ((npc.Flags & GameNPC.eFlags.STEALTH) > 0)
 						flags2 |= 0x04;
@@ -199,41 +214,46 @@ namespace DOL.GS.PacketHandler
 					eQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);
 
 					if (questIndicator == eQuestIndicator.Available)
-						flags2 |= 0x08;//hex 8 - quest available
+						flags2 |= 0x08;
+
 					if (questIndicator == eQuestIndicator.Finish)
-						flags2 |= 0x10;//hex 16 - quest finish
-									   //flags2 |= 0x20;//hex 32 - water mob?
-									   //flags2 |= 0x40;//hex 64 - unknown
-									   //flags2 |= 0x80;//hex 128 - has owner
+						flags2 |= 0x10;
 
+					//flags2 |= 0x20;//hex 32 - water mob?
+					//flags2 |= 0x40;//hex 64 - unknown
+					//flags2 |= 0x80;//hex 128 - has owner
 
-					pak.WriteByte(flags2); // flags 2
+					pak.WriteByte(flags2);
 
 					byte flags3 = 0x00;
+
 					if (questIndicator == eQuestIndicator.Lesson)
 						flags3 |= 0x01;
+
 					if (questIndicator == eQuestIndicator.Lore)
 						flags3 |= 0x02;
-					if (questIndicator == eQuestIndicator.Pending) // new? patch 0031
+
+					if (questIndicator == eQuestIndicator.Pending)
 						flags3 |= 0x20;
+
 					pak.WriteByte(flags3); // new in 1.71 (region instance ID from StoC_0x20) OR flags 3?
 					pak.WriteShort(0x00); // new in 1.71 unknown
 
 					string name = npc.Name;
 					string guildName = npc.GuildName;
 
-					LanguageDataObject translation = LanguageMgr.GetTranslation(m_gameClient, npc);
-					if (translation != null)
+					if (LanguageMgr.GetTranslation(m_gameClient, npc) is DbLanguageGameNpc translation)
 					{
-						if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).Name))
-							name = ((DbLanguageGameNpc)translation).Name;
+						if (!string.IsNullOrEmpty(translation.Name))
+							name = translation.Name;
 
-						if (!string.IsNullOrEmpty(((DbLanguageGameNpc)translation).GuildName))
-							guildName = ((DbLanguageGameNpc)translation).GuildName;
+						if (!string.IsNullOrEmpty(translation.GuildName))
+							guildName = translation.GuildName;
 					}
 
-					if (name.Length + add.Length + 2 > 47) // clients crash with too long names
-						name = name.Substring(0, 47 - add.Length - 2);
+					if (name.Length + add.Length + 2 > 47) // Clients crash with too long names.
+						name = name[..(47 - add.Length - 2)];
+
 					if (add.Length > 0)
 						name = string.Format("[{0}]{1}", name, add);
 
@@ -241,7 +261,8 @@ namespace DOL.GS.PacketHandler
 
 					if (guildName.Length > 47)
 						pak.WritePascalString(guildName.Substring(0, 47));
-					else pak.WritePascalString(guildName);
+					else
+						pak.WritePascalString(guildName);
 
 					pak.WriteByte(0x00);
 					SendTCP(pak);

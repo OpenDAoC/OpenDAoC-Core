@@ -50,7 +50,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 					rider.Y = steed.Y;
 					rider.Z = steed.Z;
 					rider.Heading = steed.Heading;
-					rider.MovementStartTick = GameLoop.GameLoopTime;
 					rider.Out.SendPlayerJump(false);
 					return;
 				}
@@ -348,10 +347,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 			// update client zone information for waterlevel and diving
 			if (zoneChange)
 				client.Out.SendPlayerPositionAndObjectID();
-
-			// used to predict current position, should be before
-			// any calculation (like fall damage)
-			client.Player.MovementStartTick = GameLoop.GameLoopTime;
 
 			// Begin ---------- New Area System -----------
 			if (client.Player.CurrentRegion.Time > client.Player.AreaUpdateTick) // check if update is needed
@@ -1052,10 +1047,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 			client.Player.Y = (int)newPlayerY;
 			client.Player.Z = (int)newPlayerZ;
 			client.Player.Heading = (ushort)(newHeading & 0xFFF);
-
-			// used to predict current position, should be before
-			// any calculation (like fall damage)
-			client.Player.MovementStartTick = GameLoop.GameLoopTime; // experimental 0024
 
 			// Begin ---------- New Area System -----------
 			if (client.Player.CurrentRegion.Time > client.Player.AreaUpdateTick) // check if update is needed

@@ -76,12 +76,6 @@ namespace DOL.GS
                     }
 
                     npc.movementComponent.Tick();
-
-                    if (npc.NeedsBroadcastUpdate)
-                    {
-                        ClientService.UpdateObjectForPlayers(npc);
-                        npc.NeedsBroadcastUpdate = false;
-                    }
                 }
                 catch (Exception e)
                 {

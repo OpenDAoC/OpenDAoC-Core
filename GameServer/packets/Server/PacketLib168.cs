@@ -714,74 +714,87 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendObjectUpdate(GameObject obj)
 		{
-			Zone z = obj.CurrentZone;
-
-			if (z == null ||
-				m_gameClient.Player == null ||
-				m_gameClient.Player.IsVisibleTo(obj) == false)
-			{
+			if (m_gameClient.Player == null || !m_gameClient.Player.IsVisibleTo(obj))
 				return;
-			}
 
-			var xOffsetInZone = (ushort)(obj.X - z.XOffset);
-			var yOffsetInZone = (ushort)(obj.Y - z.YOffset);
+			Zone zone = obj.CurrentZone;
+
+			if (zone == null)
+				return;
+
+			ushort xOffsetInZone;
+			ushort yOffsetInZone;
+			ushort z;
 			ushort xOffsetInTargetZone = 0;
 			ushort yOffsetInTargetZone = 0;
 			ushort zOffsetInTargetZone = 0;
 
-			int speed = 0;
-			ushort targetZone = 0;
+			ushort speed = 0;
+			ushort heading;
+			ushort targetZoneSkinId = 0;
 			byte flags = 0;
 			int targetOID = 0;
-			if (obj is GameNPC)
+
+			if (obj is not GameNPC npc)
 			{
-				var npc = obj as GameNPC;
-				flags = (byte)(GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, npc) << 6);
+				xOffsetInZone = (ushort) (obj.X - zone.XOffset);
+				yOffsetInZone = (ushort) (obj.Y - zone.YOffset);
+				z = (ushort) obj.Z;
+				heading = obj.Heading;
+			}
+			else
+			{
+				xOffsetInZone = (ushort) (npc.movementComponent.PositionForClient.X - zone.XOffset);
+				yOffsetInZone = (ushort) (npc.movementComponent.PositionForClient.Y - zone.YOffset);
+				z = (ushort) npc.movementComponent.PositionForClient.Z;
+				flags = (byte) (GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, npc) << 6);
 
 				if (m_gameClient.Account.PrivLevel < 2)
 				{
-					// no name only if normal player
 					if ((npc.Flags & GameNPC.eFlags.CANTTARGET) != 0)
 						flags |= 0x01;
+
 					if ((npc.Flags & GameNPC.eFlags.DONTSHOWNAME) != 0)
 						flags |= 0x02;
 				}
+
 				if ((npc.Flags & GameNPC.eFlags.STATUE) != 0)
-				{
 					flags |= 0x01;
-				}
+
 				if (npc.IsUnderwater)
-				{
 					flags |= 0x10;
-				}
+
 				if ((npc.Flags & GameNPC.eFlags.FLYING) != 0)
-				{
 					flags |= 0x20;
-				}
 
-				if (npc.IsMoving && !npc.IsAtTargetPosition)
+				if (!npc.IsMoving || npc.IsAtDestination)
+					heading = npc.Heading;
+				else
 				{
-					speed = npc.CurrentSpeed;
-					if (npc.IsTargetPositionValid)
+					speed = (ushort) npc.movementComponent.HorizontalVelocityForClient;
+					int zSpeed = (int) (npc.movementComponent.Velocity.Z / 4);
+
+					if (zSpeed < 0)
 					{
-						Zone tz = npc.CurrentRegion.GetZone(npc.TargetPosition.X, npc.TargetPosition.Y);
-						if (tz != null)
-						{
-							xOffsetInTargetZone = (ushort)(npc.TargetPosition.X - tz.XOffset);
-							yOffsetInTargetZone = (ushort)(npc.TargetPosition.Y - tz.YOffset);
-							zOffsetInTargetZone = (ushort)(npc.TargetPosition.Z);
-							//Dinberg:Instances - zoneSkinID for object positioning clientside.
-							targetZone = tz.ZoneSkinID;
-						}
+						zSpeed = -zSpeed;
+						speed |= 0x8000;
 					}
 
-					if (speed > 0x07FF)
+					speed |= (ushort) ((zSpeed & 0x70) << 8);
+					heading = (ushort) (((zSpeed & 0xF) << 12) | (npc.Heading & 0xFFF));
+
+					if (npc.IsDestinationValid)
 					{
-						speed = 0x07FF;
-					}
-					else if (speed < 0)
-					{
-						speed = 0;
+						Zone targetZone = npc.CurrentRegion.GetZone(npc.movementComponent.DestinationForClient.X, npc.movementComponent.DestinationForClient.Y);
+
+						if (targetZone != null)
+						{
+							xOffsetInTargetZone = (ushort) (npc.movementComponent.DestinationForClient.X - targetZone.XOffset);
+							yOffsetInTargetZone = (ushort) (npc.movementComponent.DestinationForClient.Y - targetZone.YOffset);
+							zOffsetInTargetZone = (ushort) npc.movementComponent.DestinationForClient.Z;
+							//Dinberg:Instances - zoneSkinID for object positioning clientside.
+							targetZoneSkinId = targetZone.ZoneSkinID;
+						}
 					}
 				}
 
@@ -796,39 +809,28 @@ namespace DOL.GS.PacketHandler
 
 			using (GSUDPPacketOut pak = new GSUDPPacketOut(GetPacketCode(eServerPackets.ObjectUpdate)))
 			{
-				pak.WriteShort((ushort) speed);
-
-				if (obj is GameNPC)
-				{
-					pak.WriteShort((ushort)(obj.Heading & 0xFFF));
-				}
-				else
-				{
-					pak.WriteShort(obj.Heading);
-				}
+				pak.WriteShort(speed);
+				pak.WriteShort(heading);
 				pak.WriteShort(xOffsetInZone);
 				pak.WriteShort(xOffsetInTargetZone);
 				pak.WriteShort(yOffsetInZone);
 				pak.WriteShort(yOffsetInTargetZone);
-				pak.WriteShort((ushort) obj.Z);
+				pak.WriteShort(z);
 				pak.WriteShort(zOffsetInTargetZone);
 				pak.WriteShort((ushort) obj.ObjectID);
 				pak.WriteShort((ushort) targetOID);
-				//health
+
 				if (obj is GameLiving)
-				{
 					pak.WriteByte((obj as GameLiving).HealthPercent);
-				}
 				else
-				{
 					pak.WriteByte(0);
-				}
+
 				//Dinberg:Instances - zoneskinID for positioning of objects clientside.
-				flags |= (byte) (((z.ZoneSkinID & 0x100) >> 6) | ((targetZone & 0x100) >> 5));
+				flags |= (byte) (((zone.ZoneSkinID & 0x100) >> 6) | ((targetZoneSkinId & 0x100) >> 5));
 				pak.WriteByte(flags);
-				pak.WriteByte((byte) z.ZoneSkinID);
+				pak.WriteByte((byte) zone.ZoneSkinID);
 				//Dinberg:Instances - targetZone already accomodates for this feat.
-				pak.WriteByte((byte) targetZone);
+				pak.WriteByte((byte) targetZoneSkinId);
 				SendUDP(pak);
 			}
 		}
@@ -996,12 +998,13 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.NPCCreate)))
 			{
+				// Vertical movement may not be shown properly. See `PacketLib1124.SendNPCCreate`.
 				short speed = 0;
 				ushort speedZ = 0;
-				if (npc.IsMoving && !npc.IsAtTargetPosition)
+				if (npc.IsMoving && !npc.IsAtDestination)
 				{
 					speed = npc.CurrentSpeed;
-					speedZ = (ushort) npc.movementComponent.TickSpeedZ;
+					speedZ = (ushort) npc.movementComponent.Velocity.Z;
 				}
 				pak.WriteShort((ushort) npc.ObjectID);
 				pak.WriteShort((ushort) speed);

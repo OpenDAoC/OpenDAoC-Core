@@ -3581,13 +3581,13 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual bool IsTurningDisabled => movementComponent.IsTurningDisabled;
-
 		public virtual short CurrentSpeed
 		{
 			get => movementComponent.CurrentSpeed;
 			set => movementComponent.CurrentSpeed = value;
 		}
+
+		public virtual bool IsTurningDisabled => movementComponent.IsTurningDisabled;
 
 		public virtual short MaxSpeed => movementComponent.MaxSpeed;
 
@@ -3597,65 +3597,11 @@ namespace DOL.GS
 			set => movementComponent.MaxSpeedBase = value;
 		}
 
-		public virtual bool FixedSpeed
-		{
-			set => movementComponent.FixedSpeed = value;
-		}
-
 		public virtual bool IsMoving => movementComponent.IsMoving;
-
-		public long MovementElapsedTicks => movementComponent.MovementElapsedTicks;
-
-		public long MovementStartTick
-		{
-			set => movementComponent.MovementStartTick = value;
-		}
 
 		public virtual void DisableTurning(bool add)
 		{
 			movementComponent.DisableTurning(add);
-		}
-
-		public virtual void TurnTo(ushort heading, int duration = 0)
-		{
-			movementComponent.TurnTo(heading, duration);
-		}
-
-		public virtual void TurnTo(int x, int y, int duration = 0)
-		{
-			movementComponent.TurnTo(x, y, duration);
-		}
-
-		public virtual void TurnTo(GameObject target, int duration = 0)
-		{
-			movementComponent.TurnTo(target, duration);
-		}
-
-		/// <summary>
-		/// The current X position of this living.
-		/// </summary>
-		public override int X
-		{
-			get => IsMoving ? (int) (base.X + MovementElapsedTicks * movementComponent.TickSpeedX) : base.X;
-			set => base.X = value;
-		}
-
-		/// <summary>
-		/// The current Y position of this living.
-		/// </summary>
-		public override int Y
-		{
-			get => IsMoving ? (int) (base.Y + MovementElapsedTicks * movementComponent.TickSpeedY) : base.Y;
-			set => base.Y = value;
-		}
-
-		/// <summary>
-		/// The current Z position of this living.
-		/// </summary>
-		public override int Z
-		{
-			get => IsMoving ? (int) (base.Z + MovementElapsedTicks * movementComponent.TickSpeedZ) : base.Z;
-			set => base.Z = value;
 		}
 
 		/// <summary>

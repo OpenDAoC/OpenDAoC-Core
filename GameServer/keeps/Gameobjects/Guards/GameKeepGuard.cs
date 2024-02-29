@@ -758,7 +758,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Adding special handling for walking to a point for patrol guards to be in a formation
 		/// </summary>
-		public override void WalkTo(IPoint3D target, short speed)
+		public override void WalkTo(Point3D target, short speed)
 		{
 			int offX = 0;
 			int offY = 0;

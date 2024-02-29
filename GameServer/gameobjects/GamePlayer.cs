@@ -9121,7 +9121,6 @@ namespace DOL.GS
             List<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
             CurrentSpeed = 0;
-            movementComponent.MovementStartTick = GameLoop.GameLoopTime;
             Point3D originalPoint = new(X, Y, Z);
             X = x;
             Y = y;

@@ -34,7 +34,6 @@ namespace DOL.GS
 		private int m_databaseLevel;
 
 		public override eGameObjectType GameObjectType => eGameObjectType.NPC;
-		public bool NeedsBroadcastUpdate { get; set; }
 
 		#region Formations/Spacing
 
@@ -160,11 +159,7 @@ namespace DOL.GS
 				if (IsTurningDisabled)
 					return;
 
-				ushort oldHeading = base.Heading;
 				base.Heading = value;
-
-				if (base.Heading != oldHeading)
-					NeedsBroadcastUpdate = true;
 			}
 		}
 
@@ -765,13 +760,13 @@ namespace DOL.GS
 				if (!IsMoving)
 					return m_x;
 
-				double movementAmount = MovementElapsedTicks * movementComponent.TickSpeedX;
+				double movementAmount = MovementElapsedTicks * movementComponent.Velocity.X * 0.001;
 
-				if (!IsTargetPositionValid)
+				if (!IsDestinationValid)
 					return (int) (m_x + movementAmount);
 
 				double absMovementAmount = Math.Abs(movementAmount);
-				return Math.Abs(TargetPosition.X - m_x) < absMovementAmount ? TargetPosition.X : (int) (m_x + movementAmount);
+				return Math.Abs(Destination.X - m_x) < absMovementAmount ? Destination.X : (int) (m_x + movementAmount);
 			}
 		}
 
@@ -789,13 +784,13 @@ namespace DOL.GS
 				if (!IsMoving)
 					return m_y;
 
-				double movementAmount = MovementElapsedTicks * movementComponent.TickSpeedY;
+				double movementAmount = MovementElapsedTicks * movementComponent.Velocity.Y * 0.001;
 
-				if (!IsTargetPositionValid)
+				if (!IsDestinationValid)
 					return (int) (m_y + movementAmount);
 
 				double absMovementAmount = Math.Abs(movementAmount);
-				return Math.Abs(TargetPosition.Y - m_y) < absMovementAmount ? TargetPosition.Y : (int) (m_y + movementAmount);
+				return Math.Abs(Destination.Y - m_y) < absMovementAmount ? Destination.Y : (int) (m_y + movementAmount);
 			}
 		}
 
@@ -813,13 +808,13 @@ namespace DOL.GS
 				if (!IsMoving)
 					return m_z;
 
-				double movementAmount = MovementElapsedTicks * movementComponent.TickSpeedZ;
+				double movementAmount = MovementElapsedTicks * movementComponent.Velocity.Z * 0.001;
 
-				if (!IsTargetPositionValid)
+				if (!IsDestinationValid)
 					return (int) (m_z + movementAmount);
 
 				double absMovementAmount = Math.Abs(movementAmount);
-				return Math.Abs(TargetPosition.Z - m_z) < absMovementAmount ? TargetPosition.Z : (int) (m_z + movementAmount);
+				return Math.Abs(Destination.Z - m_z) < absMovementAmount ? Destination.Z : (int) (m_z + movementAmount);
 			}
 		}
 
@@ -889,7 +884,7 @@ namespace DOL.GS
 
 		public long LastVisibleToPlayersTickCount => m_lastVisibleToPlayerTick;
 
-		public IPoint3D TargetPosition => movementComponent.TargetPosition;
+		public IPoint3D Destination => movementComponent.Destination;
 		public GameObject FollowTarget => movementComponent.FollowTarget;
 		public string PathID
 		{
@@ -909,16 +904,16 @@ namespace DOL.GS
 		}
 		public bool IsMovingOnPath => movementComponent.IsMovingOnPath;
 		public bool IsNearSpawn => movementComponent.IsNearSpawn;
-		public bool IsTargetPositionValid => movementComponent.IsTargetPositionValid;
-		public bool IsAtTargetPosition => movementComponent.IsAtTargetPosition;
+		public bool IsDestinationValid => movementComponent.IsDestinationValid;
+		public bool IsAtDestination => movementComponent.IsAtDestination;
 		public bool CanRoam => movementComponent.CanRoam;
 
-		public virtual void WalkTo(IPoint3D target, short speed)
+		public virtual void WalkTo(Point3D target, short speed)
 		{
 			movementComponent.WalkTo(target, speed);
 		}
 
-		public virtual void PathTo(IPoint3D target, short speed)
+		public virtual void PathTo(Point3D target, short speed)
 		{
 			movementComponent.PathTo(target, speed);
 		}
@@ -930,7 +925,7 @@ namespace DOL.GS
 
 		public virtual void Follow(GameObject target, int minDistance, int maxDistance)
 		{
-			movementComponent.Follow(target, minDistance, maxDistance);
+			movementComponent.Follow(target as GameLiving, minDistance, maxDistance);
 		}
 
 		public virtual void StopFollowing()
@@ -961,6 +956,33 @@ namespace DOL.GS
 		public virtual void Roam(short speed)
 		{
 			movementComponent.Roam(speed);
+		}
+
+		public virtual bool FixedSpeed
+		{
+			set => movementComponent.FixedSpeed = value;
+		}
+
+		public long MovementElapsedTicks => movementComponent.MovementElapsedTicks;
+
+		public long MovementStartTick
+		{
+			set => movementComponent.MovementStartTick = value;
+		}
+
+		public virtual void TurnTo(ushort heading, int duration = 0)
+		{
+			movementComponent.TurnTo(heading, duration);
+		}
+
+		public virtual void TurnTo(int x, int y, int duration = 0)
+		{
+			movementComponent.TurnTo(x, y, duration);
+		}
+
+		public virtual void TurnTo(GameObject target, int duration = 0)
+		{
+			movementComponent.TurnTo(target, duration);
 		}
 
 		#endregion
@@ -2691,7 +2713,7 @@ namespace DOL.GS
 			if (FollowTarget != target)
 			{
 				StopFollowing();
-				Follow(target, movementComponent.FollowMinDistance, movementComponent.FollowMaxDistance);
+				Follow(target as GameLiving, movementComponent.FollowMinDistance, movementComponent.FollowMaxDistance);
 			}
 
 			FireAmbientSentence(eAmbientTrigger.fighting, target);
@@ -3241,26 +3263,6 @@ namespace DOL.GS
 			// when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
 			Brain.NextThinkTick = GameLoop.GameLoopTime + 1250;
 			return 0;
-		}
-
-		/// <summary>
-		/// Callback timer for health regeneration
-		/// </summary>
-		/// <param name="selfRegenerationTimer">the regeneration timer</param>
-		/// <returns>the new interval</returns>
-		protected override int HealthRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
-		{
-			int period = base.HealthRegenerationTimerCallback(selfRegenerationTimer);
-
-			if (!InCombat)
-			{
-				int oldPercent = HealthPercent;
-
-				if (oldPercent != HealthPercent)
-					NeedsBroadcastUpdate = true;
-			}
-
-			return period;
 		}
 
 		/// <summary>
@@ -3846,12 +3848,12 @@ namespace DOL.GS
 
 			GamePlayer LosChecker = TargetObject as GamePlayer;
 
-			if (LosChecker == null && Brain is IControlledBrain brain)
-				LosChecker = brain.GetPlayerOwner();
+			if (LosChecker == null && Brain is IControlledBrain controlledBrain)
+				LosChecker = controlledBrain.GetPlayerOwner();
 
-			if (LosChecker == null)
+			if (LosChecker == null && Brain is StandardMobBrain brain)
 			{
-				foreach (GamePlayer playerInRange in GetPlayersInRadius(350))
+				foreach (GamePlayer playerInRange in GetPlayersInRadius((ushort) brain.AggroRange))
 				{
 					if (playerInRange != null)
 					{
