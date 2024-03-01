@@ -11,39 +11,39 @@ namespace DOL.GS
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(AuxTimerService);
+        private static List<AuxECSGameTimer> _list;
 
         public static void Tick()
         {
             // Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-            List<AuxECSGameTimer> list = EntityManager.UpdateAndGetAll<AuxECSGameTimer>(EntityManager.EntityType.AuxTimer, out int lastValidIndex);
-
-            Parallel.For(0, lastValidIndex + 1, i =>
-            {
-                AuxECSGameTimer timer = list[i];
-
-                try
-                {
-                    if (timer?.EntityManagerId.IsSet != true)
-                        return;
-
-                    if (ServiceUtils.ShouldTickAdjust(ref timer.NextTick))
-                    {
-                        long startTick = GameLoop.GetCurrentTime();
-                        timer.Tick();
-                        long stopTick = GameLoop.GetCurrentTime();
-
-                        if (stopTick - startTick > 25)
-                            log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
-                    }
-                }
-                catch (Exception e)
-                {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, timer, timer.Owner);
-                }
-            });
-
+            _list = EntityManager.UpdateAndGetAll<AuxECSGameTimer>(EntityManager.EntityType.AuxTimer, out int lastValidIndex);
+            Parallel.For(0, lastValidIndex + 1, TickInternal);
             // Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
+
+        private static void TickInternal(int index)
+        {
+            AuxECSGameTimer timer = _list[index];
+
+            try
+            {
+                if (timer?.EntityManagerId.IsSet != true)
+                    return;
+
+                if (ServiceUtils.ShouldTickAdjust(ref timer.NextTick))
+                {
+                    long startTick = GameLoop.GetCurrentTime();
+                    timer.Tick();
+                    long stopTick = GameLoop.GetCurrentTime();
+
+                    if (stopTick - startTick > 25)
+                        log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
+                }
+            }
+            catch (Exception e)
+            {
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME, timer, timer.Owner);
+            }
         }
     }
 

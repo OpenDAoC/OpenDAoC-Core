@@ -18,44 +18,44 @@ namespace DOL.GS
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(EffectService);
+        private static List<ECSGameEffect> _list;
 
         public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-            List<ECSGameEffect> list = EntityManager.UpdateAndGetAll<ECSGameEffect>(EntityManager.EntityType.Effect, out int lastValidIndex);
-
-            Parallel.For(0, lastValidIndex + 1, i =>
-            {
-                ECSGameEffect effect = list[i];
-
-                try
-                {
-                    if (effect?.EntityManagerId.IsSet != true)
-                        return;
-
-                    long startTick = GameLoop.GetCurrentTime();
-
-                    if (effect.CancelEffect || effect.IsDisabled)
-                        HandleCancelEffect(effect);
-                    else
-                        HandlePropertyModification(effect);
-
-                    EntityManager.Remove(effect);
-
-                    long stopTick = GameLoop.GetCurrentTime();
-
-                    if (stopTick - startTick > 25)
-                        log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Effect: {effect}  Owner: {effect.OwnerName} Time: {stopTick - startTick}ms");
-                }
-                catch (Exception e)
-                {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, effect, effect.Owner);
-                }
-            });
-
+            _list = EntityManager.UpdateAndGetAll<ECSGameEffect>(EntityManager.EntityType.Effect, out int lastValidIndex);
+            Parallel.For(0, lastValidIndex + 1, TickInternal);
             Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
+
+        private static void TickInternal(int index)
+        {
+            ECSGameEffect effect = _list[index];
+
+            try
+            {
+                if (effect?.EntityManagerId.IsSet != true)
+                    return;
+
+                long startTick = GameLoop.GetCurrentTime();
+
+                if (effect.CancelEffect || effect.IsDisabled)
+                    HandleCancelEffect(effect);
+                else
+                    HandlePropertyModification(effect);
+
+                EntityManager.Remove(effect);
+
+                long stopTick = GameLoop.GetCurrentTime();
+
+                if (stopTick - startTick > 25)
+                    log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Effect: {effect}  Owner: {effect.OwnerName} Time: {stopTick - startTick}ms");
+            }
+            catch (Exception e)
+            {
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME, effect, effect.Owner);
+            }
         }
 
         private static void HandlePropertyModification(ECSGameEffect e)

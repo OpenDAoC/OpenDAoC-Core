@@ -13,6 +13,7 @@ namespace DOL.GS
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(TimerService);
 
+        private static List<ECSGameTimer> _list;
         private static int _nonNullTimerCount;
         private static int _nullTimerCount;
 
@@ -30,49 +31,49 @@ namespace DOL.GS
                 _nullTimerCount = 0;
             }
 
-            List<ECSGameTimer> list = EntityManager.UpdateAndGetAll<ECSGameTimer>(EntityManager.EntityType.Timer, out int lastValidIndex);
+            _list = EntityManager.UpdateAndGetAll<ECSGameTimer>(EntityManager.EntityType.Timer, out int lastValidIndex);
+            Parallel.For(0, lastValidIndex + 1, TickInternal);
 
-            Parallel.For(0, lastValidIndex + 1, i =>
-            {
-                ECSGameTimer timer = list[i];
-
-                if (timer?.EntityManagerId.IsSet != true)
-                {
-                    if (Debug)
-                        Interlocked.Increment(ref _nullTimerCount);
-
-                    return;
-                }
-
-                if (Debug)
-                    Interlocked.Increment(ref _nonNullTimerCount);
-
-                try
-                {
-                    if (ServiceUtils.ShouldTickAdjust(ref timer.NextTick))
-                    {
-                        long startTick = GameLoop.GetCurrentTime();
-                        timer.Tick();
-                        long stopTick = GameLoop.GetCurrentTime();
-
-                        if (stopTick - startTick > 25)
-                            log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
-                    }
-                }
-                catch (Exception e)
-                {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, timer, timer.Owner);
-                }
-            });
-
-            // Output debug info.
             if (Debug)
             {
-                log.Debug($"==== Non-null timers in EntityManager array: {_nonNullTimerCount} | Null timers: {_nullTimerCount} | Total size: {list.Count} ====");
+                log.Debug($"==== Non-null timers in EntityManager array: {_nonNullTimerCount} | Null timers: {_nullTimerCount} | Total size: {_list.Count} ====");
                 DebugTickCount--;
             }
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
+
+        private static void TickInternal(int index)
+        {
+            ECSGameTimer timer = _list[index];
+
+            if (timer?.EntityManagerId.IsSet != true)
+            {
+                if (Debug)
+                    Interlocked.Increment(ref _nullTimerCount);
+
+                return;
+            }
+
+            if (Debug)
+                Interlocked.Increment(ref _nonNullTimerCount);
+
+            try
+            {
+                if (ServiceUtils.ShouldTickAdjust(ref timer.NextTick))
+                {
+                    long startTick = GameLoop.GetCurrentTime();
+                    timer.Tick();
+                    long stopTick = GameLoop.GetCurrentTime();
+
+                    if (stopTick - startTick > 25)
+                        log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Timer Callback: {timer.Callback?.Method?.DeclaringType}:{timer.Callback?.Method?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
+                }
+            }
+            catch (Exception e)
+            {
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME, timer, timer.Owner);
+            }
         }
     }
 

@@ -14,37 +14,37 @@ namespace DOL.GS
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(EffectListService);
+        private static List<EffectListComponent> _list;
 
         public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-            List<EffectListComponent> list = EntityManager.UpdateAndGetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent, out int lastValidIndex);
-
-            Parallel.For(0, lastValidIndex + 1, i =>
-            {
-                EffectListComponent effectListComponent = list[i];
-
-                try
-                {
-                    if (effectListComponent?.EntityManagerId.IsSet != true)
-                        return;
-
-                    long startTick = GameLoop.GetCurrentTime();
-                    HandleEffects(effectListComponent);
-                    long stopTick = GameLoop.GetCurrentTime();
-
-                    if (stopTick - startTick > 25)
-                        log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
-                }
-                catch (Exception e)
-                {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, effectListComponent, effectListComponent.Owner);
-                }
-            });
-
+            _list = EntityManager.UpdateAndGetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent, out int lastValidIndex);
+            Parallel.For(0, lastValidIndex + 1, TickInternal);
             Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
+
+        private static void TickInternal(int index)
+        {
+            EffectListComponent effectListComponent = _list[index];
+
+            try
+            {
+                if (effectListComponent?.EntityManagerId.IsSet != true)
+                    return;
+
+                long startTick = GameLoop.GetCurrentTime();
+                HandleEffects(effectListComponent);
+                long stopTick = GameLoop.GetCurrentTime();
+
+                if (stopTick - startTick > 25)
+                    log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+            }
+            catch (Exception e)
+            {
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME, effectListComponent, effectListComponent.Owner);
+            }
         }
 
         private static void HandleEffects(EffectListComponent effectListComponent)

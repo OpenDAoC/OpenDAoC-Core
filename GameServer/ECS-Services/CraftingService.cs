@@ -11,32 +11,32 @@ namespace DOL.GS
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(CraftingService);
+        private static List<CraftComponent> _list;
 
         public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-            List<CraftComponent> list = EntityManager.UpdateAndGetAll<CraftComponent>(EntityManager.EntityType.CraftComponent, out int lastValidIndex);
-
-            Parallel.For(0, lastValidIndex + 1, i =>
-            {
-                CraftComponent craftComponent = list[i];
-
-                try
-                {
-                    if (craftComponent?.EntityManagerId.IsSet != true)
-                        return;
-
-                    craftComponent.Tick();
-                }
-                catch (Exception e)
-                {
-                    ServiceUtils.HandleServiceException(e, SERVICE_NAME, craftComponent, craftComponent.Owner);
-                }
-            });
-
+            _list = EntityManager.UpdateAndGetAll<CraftComponent>(EntityManager.EntityType.CraftComponent, out int lastValidIndex);
+            Parallel.For(0, lastValidIndex + 1, TickInternal);
             Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
+
+        private static void TickInternal(int index)
+        {
+            CraftComponent craftComponent = _list[index];
+
+            try
+            {
+                if (craftComponent?.EntityManagerId.IsSet != true)
+                    return;
+
+                craftComponent.Tick();
+            }
+            catch (Exception e)
+            {
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME, craftComponent, craftComponent.Owner);
+            }
         }
     }
 }
