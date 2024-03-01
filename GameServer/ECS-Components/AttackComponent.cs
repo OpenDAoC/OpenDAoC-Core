@@ -560,8 +560,9 @@ namespace DOL.GS
             {
                 m_startAttackTarget = attackTarget;
                 StartAttackRequested = true;
-                EntityManager.Add(this);
             }
+
+            EntityManager.Add(this);
         }
 
         private void StartAttack()
