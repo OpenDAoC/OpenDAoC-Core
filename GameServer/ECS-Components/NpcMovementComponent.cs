@@ -23,7 +23,7 @@ namespace DOL.GS
         private short _moveOnPathSpeed;
         private long _stopAtWaypointUntil;
         private long _walkingToEstimatedArrivalTime;
-        private Action _movementRequestCallback;
+        private MovementRequest _movementRequest;
         private PathCalculator _pathCalculator;
         private AuxECSGameTimer _resetHeadingAction;
         private int _firstMove;
@@ -65,7 +65,7 @@ namespace DOL.GS
             if (IsSet(MovementState.REQUEST))
             {
                 _movementState &= ~MovementState.REQUEST;
-                _movementRequestCallback();
+                _movementRequest.Execute();
             }
 
             if (IsSet(MovementState.FOLLOW))
@@ -112,7 +112,7 @@ namespace DOL.GS
         {
             // The copy is intentional. `Point3D` can be moving objects.
             destination = new Point3D(destination.X, destination.Y, destination.Z);
-            _movementRequestCallback = () => WalkToInternal(destination, speed);
+            _movementRequest = new(destination, speed, WalkToInternal);
             _movementState |= MovementState.REQUEST;
         }
 
@@ -120,7 +120,7 @@ namespace DOL.GS
         {
             // The copy is intentional. `Point3D` can be moving objects.
             destination = new Point3D(destination.X, destination.Y, destination.Z);
-            _movementRequestCallback = () => PathToInternal(destination, speed);
+            _movementRequest = new(destination, speed, PathToInternal);
             _movementState |= MovementState.REQUEST;
         }
 
@@ -357,14 +357,14 @@ namespace DOL.GS
                 UpdateMovement(null, 0.0, 0);
         }
 
-        private bool PathToInternal(Point3D destination, short speed)
+        private void PathToInternal(Point3D destination, short speed)
         {
             // Pathing with no target position isn't currently supported.
             if (_pathCalculator == null || destination == null)
             {
                 _movementState &= ~MovementState.PATHING;
                 WalkToInternal(destination, speed);
-                return false;
+                return;
             }
 
             Vector3 destinationForPathCalculator = new(destination.X, destination.Y, destination.Z);
@@ -373,7 +373,7 @@ namespace DOL.GS
             {
                 _movementState &= ~MovementState.PATHING;
                 WalkToInternal(destination, speed);
-                return false;
+                return;
             }
 
             Tuple<Vector3?, NoPathReason> res = _pathCalculator.CalculateNextTarget(destinationForPathCalculator);
@@ -386,14 +386,14 @@ namespace DOL.GS
             {
                 _movementState &= ~MovementState.PATHING;
                 WalkToInternal(destination, speed);
-                return false;
+                return;
             }
 
             // Do the actual pathing bit: Walk towards the next pathing node
+            _movementRequest = new(destination, speed, PathToInternal);
             _movementState |= MovementState.PATHING;
-            _movementRequestCallback = () => PathToInternal(destination, speed);
             WalkToInternal(new Point3D(nextNode.Value.X, nextNode.Value.Y, nextNode.Value.Z), speed);
-            return true;
+            return;
         }
 
         private int FollowTick()
@@ -496,7 +496,7 @@ namespace DOL.GS
         {
             if (IsSet(MovementState.PATHING))
             {
-                _movementRequestCallback();
+                _movementRequest.Execute();
                 return;
             }
 
@@ -652,6 +652,27 @@ namespace DOL.GS
         private bool IsSet(MovementState flag)
         {
             return (_movementState & flag) == flag;
+        }
+
+        private delegate void MovementRequestAction(Point3D destination, short speed);
+
+        private class MovementRequest
+        {
+            public Point3D Destination { get; private set; }
+            public short Speed { get; private set; }
+            public MovementRequestAction Action { get; private set; }
+
+            public MovementRequest(Point3D destination, short speed, MovementRequestAction action)
+            {
+                Destination = destination;
+                Speed = speed;
+                Action = action;
+            }
+
+            public void Execute()
+            {
+                Action(Destination, Speed);
+            }
         }
 
         private class ResetHeadingAction : AuxECSGameTimerWrapperBase
