@@ -1521,16 +1521,6 @@ namespace DOL.GS.PacketHandler
 			timer.Start();
 		}
 
-		private class AddArgumentsFactory
-		{
-			public bool Result { get; private set; }
-
-			public AddArgumentsFactory()
-			{
-
-			}
-		}
-
 		public virtual void SendQuestListUpdate()
 		{
 			HashSet<byte> sentIndexes = new();
