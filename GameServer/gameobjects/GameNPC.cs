@@ -1496,13 +1496,15 @@ namespace DOL.GS
 			if (ActiveWeaponSlot == slot)
 				return;
 
+			if (attackComponent.AttackState)
+				attackComponent.StopAttack();
+
 			base.SwitchWeapon(slot);
+
 			if (ObjectState == eObjectState.Active)
-			{
-				// Update active weapon appearence
 				BroadcastLivingEquipmentUpdate();
-			}
 		}
+
 		/// <summary>
 		/// Equipment templateID
 		/// </summary>
@@ -3065,7 +3067,7 @@ namespace DOL.GS
 			bool interrupted = base.CheckRangedAttackInterrupt(attacker, attackType);
 
 			if (interrupted)
-				attackComponent.attackAction?.OnAimInterrupt(attacker);
+				attackComponent.attackAction.OnAimInterrupt(attacker);
 
 			return interrupted;
 		}

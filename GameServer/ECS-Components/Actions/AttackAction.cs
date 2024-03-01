@@ -11,31 +11,32 @@ namespace DOL.GS
     {
         // Next tick interval for when the current tick doesn't result in an attack.
         protected const int TICK_INTERVAL_FOR_NON_ATTACK = 100;
+        private const int MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK = 500;
 
-        protected AttackComponent _attackComponent;
         protected AttackData _lastAttackData;
         protected DbInventoryItem _weapon;
         protected DbInventoryItem _leftWeapon;
         protected Style _combatStyle;
-        protected StyleComponent _styleComponent;
         protected GameObject _target;
         protected double _effectiveness;
         protected int _ticksToTarget;
         protected int _interruptDuration;
         protected int _interval;
         private GameLiving _owner;
-        private long _nextTick;
+        private long _nextTickMelee;
+        private long _nextTickRanged;
 
         // Set to current time when a round doesn't result in an attack. Used to prevent combat log spam and kept until reset in AttackComponent.SendAttackingCombatMessages().
         public long RoundWithNoAttackTime { get; set; }
-        public long NextTick => _nextTick;
+        public long NextTick => _owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance ? _nextTickMelee : _nextTickRanged;
+        protected AttackComponent AttackComponent => _owner.attackComponent;
+        protected StyleComponent StyleComponent => _owner.styleComponent;
 
         protected AttackAction(GameLiving owner)
         {
             _owner = owner;
-            _attackComponent = _owner.attackComponent;
-            _styleComponent = _owner.styleComponent;
-            _nextTick = GameLoop.GameLoopTime;
+            _nextTickMelee = GameLoop.GameLoopTime;
+            _nextTickRanged = GameLoop.GameLoopTime;
         }
 
         public static AttackAction Create(GameLiving gameLiving)
@@ -50,10 +51,7 @@ namespace DOL.GS
 
         public void Tick()
         {
-            if (!ServiceUtils.ShouldTickAdjust(ref _nextTick))
-                return;
-
-            if (!CheckAttackState())
+            if (!ShouldTick())
                 return;
 
             if (!CanPerformAction())
@@ -62,6 +60,7 @@ namespace DOL.GS
                 return;
             }
 
+            _lastAttackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
             _weapon = _owner.ActiveWeapon;
             _leftWeapon = _owner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
             _effectiveness = _owner.Effectiveness;
@@ -75,6 +74,8 @@ namespace DOL.GS
                     PerformMeleeAttack();
                     FinalizeMeleeAttack();
                 }
+
+                _nextTickMelee += _interval;
             }
             else
             {
@@ -85,19 +86,27 @@ namespace DOL.GS
                     PerformRangedAttack();
                     FinalizeRangedAttack();
                 }
+
+                _nextTickRanged += _interval;
             }
-
-            _nextTick += _interval;
         }
 
-        public void ResetNextTick()
+        public void OnRangedAttackStop()
         {
-            _nextTick = GameLoop.GameLoopTime;
+            if (GameLoop.GameLoopTime - _nextTickMelee > MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK)
+                _nextTickMelee = GameLoop.GameLoopTime + MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK;
+
+            _nextTickRanged = GameLoop.GameLoopTime;
         }
 
-        public void DelayNextTick(int amount)
+        public void OnWeaponSwitch()
         {
-            _nextTick += amount;
+            _nextTickRanged = GameLoop.GameLoopTime;
+        }
+
+        public void OnEnterMeleeRange()
+        {
+            _nextTickMelee = GameLoop.GameLoopTime;
         }
 
         public virtual bool CheckInterruptTimer()
@@ -107,18 +116,17 @@ namespace DOL.GS
 
         public virtual void OnAimInterrupt(GameObject attacker) { }
 
-        protected virtual bool CheckAttackState()
+        private bool ShouldTick()
         {
-            _lastAttackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
-
-            if (!_attackComponent.AttackState || _owner.ObjectState != eObjectState.Active)
+            if (!AttackComponent.AttackState || _owner.ObjectState != eObjectState.Active)
             {
-                _owner.TempProperties.RemoveProperty(LAST_ATTACK_DATA);
-                _attackComponent.attackAction.CleanUp();
+                CleanUp();
                 return false;
             }
 
-            return true;
+            return _owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance
+                ? ServiceUtils.ShouldTickAdjust(ref _nextTickMelee)
+                : ServiceUtils.ShouldTickAdjust(ref _nextTickRanged);
         }
 
         protected virtual bool CanPerformAction()
@@ -143,10 +151,10 @@ namespace DOL.GS
                     case eAttackResult.Fumbled:
                     {
                         // Skip this attack if the last one fumbled.
-                        _styleComponent.NextCombatStyle = null;
-                        _styleComponent.NextCombatBackupStyle = null;
+                        StyleComponent.NextCombatStyle = null;
+                        StyleComponent.NextCombatBackupStyle = null;
                         _lastAttackData.AttackResult = eAttackResult.Missed;
-                        _interval = _attackComponent.AttackSpeed(_weapon) * 2;
+                        _interval = AttackComponent.AttackSpeed(_weapon) * 2;
                         return false;
                     }
                     case eAttackResult.OutOfRange:
@@ -163,18 +171,18 @@ namespace DOL.GS
             if (_combatStyle != null && _combatStyle.WeaponTypeRequirement == (int) eObjectType.Shield)
                 _weapon = _leftWeapon;
 
-            int mainHandAttackSpeed = _attackComponent.AttackSpeed(_weapon);
+            int mainHandAttackSpeed = AttackComponent.AttackSpeed(_weapon);
 
-            if (clearOldStyles || _styleComponent.NextCombatStyleTime + mainHandAttackSpeed < GameLoop.GameLoopTime)
+            if (clearOldStyles || StyleComponent.NextCombatStyleTime + mainHandAttackSpeed < GameLoop.GameLoopTime)
             {
                 // Cancel the styles if they were registered too long ago.
                 // Nature's Shield stays active forever and falls back to a non-backup style.
-                if (_styleComponent.NextCombatBackupStyle?.ID == 394)
-                    _styleComponent.NextCombatStyle = _styleComponent.NextCombatBackupStyle;
-                else if (_styleComponent.NextCombatStyle?.ID != 394)
-                    _styleComponent.NextCombatStyle = null;
+                if (StyleComponent.NextCombatBackupStyle?.ID == 394)
+                    StyleComponent.NextCombatStyle = StyleComponent.NextCombatBackupStyle;
+                else if (StyleComponent.NextCombatStyle?.ID != 394)
+                    StyleComponent.NextCombatStyle = null;
 
-                _styleComponent.NextCombatBackupStyle = null;
+                StyleComponent.NextCombatBackupStyle = null;
             }
 
             // Styles must be checked before the target.
@@ -221,8 +229,8 @@ namespace DOL.GS
             }
             else if (rangeCheckResult == eCheckRangeAttackStateResult.Stop || _target == null)
             {
-                _attackComponent.StopAttack();
-                _attackComponent.attackAction?.CleanUp();
+                AttackComponent.StopAttack();
+                AttackComponent.attackAction.CleanUp();
                 return false;
             }
 
@@ -281,7 +289,7 @@ namespace DOL.GS
                     // stat bonuses, I fire that bow at 3.0 seconds. The resulting interrupt on the caster will last 3.0 seconds. If I rapid fire that same bow, I will fire at 1.5 seconds,
                     // and the resulting interrupt will last 1.5 seconds."
 
-                    long rapidFireMaxDuration = _attackComponent.AttackSpeed(_weapon);
+                    long rapidFireMaxDuration = AttackComponent.AttackSpeed(_weapon);
                     long elapsedTime = GameLoop.GameLoopTime - _owner.rangeAttackComponent.AttackStartTime;
 
                     if (elapsedTime < rapidFireMaxDuration)
@@ -313,14 +321,14 @@ namespace DOL.GS
 
         protected virtual void PerformMeleeAttack()
         {
-            _attackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _leftWeapon, _effectiveness, _interruptDuration, _combatStyle);
-            _attackComponent.weaponAction.Execute();
+            AttackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _leftWeapon, _effectiveness, _interruptDuration, _combatStyle);
+            AttackComponent.weaponAction.Execute();
             _lastAttackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
         }
 
         protected virtual void PerformRangedAttack()
         {
-            _attackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _effectiveness, _interruptDuration, _owner.rangeAttackComponent.RangedAttackType);
+            AttackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _effectiveness, _interruptDuration, _owner.rangeAttackComponent.RangedAttackType);
 
             if (_owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
                 _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
@@ -328,13 +336,13 @@ namespace DOL.GS
             // A positive ticksToTarget means the effects of our attack will be delayed. Typically used for ranged attacks.
             if (_ticksToTarget > 0)
             {
-                new ECSGameTimer(_owner, new ECSGameTimer.ECSTimerCallback(_attackComponent.weaponAction.Execute), _ticksToTarget);
+                new ECSGameTimer(_owner, new ECSGameTimer.ECSTimerCallback(AttackComponent.weaponAction.Execute), _ticksToTarget);
 
                 // This is done in weaponAction.Execute(), but we must not wait for the attack to reach our target.
-                _attackComponent.weaponAction.AttackFinished = true;
+                AttackComponent.weaponAction.AttackFinished = true;
             }
             else
-                _attackComponent.weaponAction.Execute();
+                AttackComponent.weaponAction.Execute();
 
             _lastAttackData = _owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
         }
@@ -359,9 +367,9 @@ namespace DOL.GS
             }
             else
             {
-                _interval = _attackComponent.AttackSpeed(_weapon, _leftWeapon);
-                _styleComponent.NextCombatStyle = null;
-                _styleComponent.NextCombatBackupStyle = null;
+                _interval = AttackComponent.AttackSpeed(_weapon, _leftWeapon);
+                StyleComponent.NextCombatStyle = null;
+                StyleComponent.NextCombatBackupStyle = null;
                 return true;
             }
         }
@@ -372,7 +380,7 @@ namespace DOL.GS
                 return false;
 
             // Need to find a way to not have to call 'AttackSpeed' again.
-            _interval = _attackComponent.AttackSpeed(_weapon);
+            _interval = AttackComponent.AttackSpeed(_weapon);
             _owner.rangeAttackComponent.AttackStartTime = GameLoop.GameLoopTime;
             _owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
 
@@ -400,7 +408,7 @@ namespace DOL.GS
 
         public virtual void CleanUp()
         {
-            _owner.attackComponent.attackAction = null;
+            _owner.TempProperties.RemoveProperty(LAST_ATTACK_DATA);
         }
     }
 }

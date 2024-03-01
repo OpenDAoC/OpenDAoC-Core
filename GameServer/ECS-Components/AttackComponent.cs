@@ -86,6 +86,7 @@ namespace DOL.GS
         public AttackComponent(GameLiving owner)
         {
             this.owner = owner;
+            attackAction = AttackAction.Create(owner);
             _attackersCheckTimer = new(owner, CheckAttackers);
         }
 
@@ -97,12 +98,12 @@ namespace DOL.GS
                 StartAttack();
             }
 
-            attackAction?.Tick();
+            attackAction.Tick();
 
             if (weaponAction?.AttackFinished == true)
                 weaponAction = null;
 
-            if (weaponAction is null && attackAction is null && !owner.InCombat)
+            if (weaponAction is null && !AttackState)
                 EntityManager.Remove(this);
         }
 
@@ -833,14 +834,11 @@ namespace DOL.GS
                     npcOwner.StopMoving();
             }
 
-            attackAction = owner.CreateAttackAction();
-
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
                 if (owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.Aim && attackAction.CheckInterruptTimer())
                     return false;
 
-                Console.WriteLine(GameLoop.GameLoopTime - attackAction.NextTick);
                 owner.rangeAttackComponent.AttackStartTime = GameLoop.GameLoopTime;
             }
 
@@ -873,9 +871,6 @@ namespace DOL.GS
 
         public void StopAttack()
         {
-            AttackAction attackAction = owner.attackComponent.attackAction;
-            attackAction?.ResetNextTick();
-
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
                 // Only cancel the animation if the ranged ammo isn't released already.
@@ -890,7 +885,7 @@ namespace DOL.GS
 
                 if (rangeAttackComponent.RangedAttackState != eRangedAttackState.None)
                 {
-                    attackAction.DelayNextTick(500);
+                    attackAction.OnRangedAttackStop();
                     rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
                 }
             }
@@ -1160,7 +1155,7 @@ namespace DOL.GS
                 }
             }
 
-            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, attackAction != null && GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500))
+            if (!GameServer.ServerRules.IsAllowedToAttack(ad.Attacker, ad.Target, GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500))
             {
                 ad.AttackResult = eAttackResult.NotAllowed_ServerRules;
                 SendAttackingCombatMessages(action, ad);
@@ -2360,20 +2355,17 @@ namespace DOL.GS
             // A null attackAction means it was cleared up before we had a chance to send combat messages.
             // This typically happens when a ranged weapon is shot once without auto reloading.
             // In this case, we simply assume the last round should show a combat message.
-            if (attackAction != null)
+            if (ad.AttackResult is not eAttackResult.Missed
+                and not eAttackResult.HitUnstyled
+                and not eAttackResult.HitStyle
+                and not eAttackResult.Evaded
+                and not eAttackResult.Blocked
+                and not eAttackResult.Parried)
             {
-                if (ad.AttackResult is not eAttackResult.Missed
-                    and not eAttackResult.HitUnstyled
-                    and not eAttackResult.HitStyle
-                    and not eAttackResult.Evaded
-                    and not eAttackResult.Blocked
-                    and not eAttackResult.Parried)
-                {
-                    if (GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500)
-                        return;
+                if (GameLoop.GameLoopTime - attackAction.RoundWithNoAttackTime <= 1500)
+                    return;
 
-                    attackAction.RoundWithNoAttackTime = 0;
-                }
+                attackAction.RoundWithNoAttackTime = 0;
             }
 
             if (owner is GamePlayer)
@@ -2812,11 +2804,6 @@ namespace DOL.GS
         {
             return 1.1 + (owner.WeaponSpecLevel(weapon) - 1) * 0.005;
         }
-
-        /// <summary>
-        /// Whether the living is actually attacking something.
-        /// </summary>
-        public virtual bool IsAttacking => AttackState && (attackAction != null);
 
         /// <summary>
         /// Checks whether Living has ability to use lefthanded weapons

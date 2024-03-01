@@ -274,11 +274,8 @@ namespace DOL.GS.Commands
 					if (target.InCombat || target.attackComponent.AttackState)
 					{
 						info.Add("RegionTick: " + GameLoop.GameLoopTime);
-						if(target.attackComponent.attackAction != null)
-						{
-							info.Add("AttackAction NextTick " + target.attackComponent.attackAction.NextTick);
-							info.Add("AttackAction TimeUntilStart " + (target.attackComponent.attackAction.NextTick - GameLoop.GameLoopTime));
-						}
+						info.Add("AttackAction NextTick " + target.attackComponent.attackAction.NextTick);
+						info.Add("AttackAction TimeUntilStart " + (target.attackComponent.attackAction.NextTick - GameLoop.GameLoopTime));
 					}
 
 					info.Add("");

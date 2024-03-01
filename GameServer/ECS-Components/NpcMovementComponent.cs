@@ -322,7 +322,7 @@ namespace DOL.GS
         private int FollowTick()
         {
             // Stop moving if the NPC is casting or attacking with a ranged weapon.
-            if (Owner.IsCasting || (Owner.attackComponent.IsAttacking && Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance))
+            if (Owner.IsCasting || (Owner.IsAttacking && Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance))
             {
                 TurnTo(FollowTarget);
 

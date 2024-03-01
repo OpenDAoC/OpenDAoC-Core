@@ -644,8 +644,7 @@ namespace DOL.GS
         /// </summary>
         public virtual bool IsAttacking
         {
-            //get { return (AttackState && (m_attackAction != null) && m_attackAction.IsAlive); }
-            get { return (attackComponent.AttackState && (attackComponent.attackAction != null)); }
+            get { return attackComponent.AttackState; }
         }
 
         /// <summary>
@@ -1178,15 +1177,6 @@ namespace DOL.GS
 
 			attackComponent.StopAttack();
 			return true;
-		}
-
-		/// <summary>
-		/// Creates an attack action for this living
-		/// </summary>
-		/// <returns></returns>
-		public virtual AttackAction CreateAttackAction()
-		{
-			return attackComponent.attackAction ?? AttackAction.Create(this);
 		}
 
 		/// <summary>
@@ -2554,59 +2544,62 @@ namespace DOL.GS
 
 			// simple active slot logic:
 			// 0=right hand, 1=left hand, 2=two-hand, 3=range, F=none
-			int rightHand = (VisibleActiveWeaponSlots & 0x0F);
+			int rightHand = VisibleActiveWeaponSlots & 0x0F;
 			int leftHand = (VisibleActiveWeaponSlots & 0xF0) >> 4;
 
 			// set new active weapon slot
 			switch (slot)
 			{
 				case eActiveWeaponSlot.Standard:
-					{
-						if (rightHandSlot == null)
-							rightHand = 0xFF;
-						else
-							rightHand = 0x00;
+				{
+					if (rightHandSlot == null)
+						rightHand = 0xFF;
+					else
+						rightHand = 0x00;
 
-						if (leftHandSlot == null)
-							leftHand = 0xFF;
-						else
-							leftHand = 0x01;
-					}
+					if (leftHandSlot == null)
+						leftHand = 0xFF;
+					else
+						leftHand = 0x01;
+
 					break;
+				}
 
 				case eActiveWeaponSlot.TwoHanded:
+				{
+					if (twoHandSlot != null && (twoHandSlot.Hand == 1 || this is GameNPC)) // 2h
 					{
-						if (twoHandSlot != null && (twoHandSlot.Hand == 1 || this is GameNPC)) // 2h
-						{
-							rightHand = leftHand = 0x02;
-							break;
-						}
-
-						// 1h weapon in 2h slot
-						if (twoHandSlot == null)
-							rightHand = 0xFF;
-						else
-							rightHand = 0x02;
-
-						if (leftHandSlot == null)
-							leftHand = 0xFF;
-						else
-							leftHand = 0x01;
+						rightHand = leftHand = 0x02;
+						break;
 					}
+
+					// 1h weapon in 2h slot
+					if (twoHandSlot == null)
+						rightHand = 0xFF;
+					else
+						rightHand = 0x02;
+
+					if (leftHandSlot == null)
+						leftHand = 0xFF;
+					else
+						leftHand = 0x01;
+
 					break;
+				}
 
 				case eActiveWeaponSlot.Distance:
-					{
-						leftHand = 0xFF; // cannot use left-handed weapons if ranged slot active
+				{
+					leftHand = 0xFF; // cannot use left-handed weapons if ranged slot active
 
-						if (distanceSlot == null)
-							rightHand = 0xFF;
-						else if (distanceSlot.Hand == 1 || this is GameNPC) // NPC equipment does not have hand so always assume 2 handed bow
-							rightHand = leftHand = 0x03; // bows use 2 hands, throwing axes 1h
-						else
-							rightHand = 0x03;
-					}
+					if (distanceSlot == null)
+						rightHand = 0xFF;
+					else if (distanceSlot.Hand == 1 || this is GameNPC) // NPC equipment does not have hand so always assume 2 handed bow
+						rightHand = leftHand = 0x03; // bows use 2 hands, throwing axes 1h
+					else
+						rightHand = 0x03;
+
 					break;
+				}
 			}
 
 			m_activeWeaponSlot = slot;
@@ -2614,7 +2607,9 @@ namespace DOL.GS
 			// pack active weapon slots value back
 			m_visibleActiveWeaponSlots = (byte)(((leftHand & 0x0F) << 4) | (rightHand & 0x0F));
 		}
+
 		#endregion
+
 		#region Property/Bonus/Buff/PropertyCalculator fields
 		/// <summary>
 		/// Array for property boni for abilities
@@ -4370,7 +4365,7 @@ namespace DOL.GS
 			StopHealthRegeneration();
 			StopPowerRegeneration();
 			StopEnduranceRegeneration();
-			attackComponent.attackAction?.CleanUp();
+			attackComponent.attackAction.CleanUp();
 			m_healthRegenerationTimer?.Stop();
 			m_powerRegenerationTimer?.Stop();
 			m_enduRegenerationTimer?.Stop();

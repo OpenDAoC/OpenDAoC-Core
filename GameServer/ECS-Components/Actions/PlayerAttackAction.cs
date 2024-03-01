@@ -43,7 +43,7 @@ namespace DOL.GS
 
         protected override bool PrepareMeleeAttack()
         {
-            _combatStyle = _styleComponent.GetStyleToUse();
+            _combatStyle = StyleComponent.GetStyleToUse();
             return base.PrepareMeleeAttack();
         }
 
@@ -94,8 +94,8 @@ namespace DOL.GS
 
             if (stopAttack)
             {
-                _attackComponent.StopAttack();
-                _attackComponent.attackAction?.CleanUp();
+                AttackComponent.StopAttack();
+                AttackComponent.attackAction.CleanUp();
                 return false;
             }
 

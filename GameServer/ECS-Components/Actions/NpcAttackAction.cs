@@ -60,7 +60,7 @@ namespace DOL.GS
                 return false;
             }
 
-            _combatStyle = _styleComponent.NPCGetStyleToUse();
+            _combatStyle = StyleComponent.NPCGetStyleToUse();
 
             if (!base.PrepareMeleeAttack())
                 return false;
@@ -70,13 +70,13 @@ namespace DOL.GS
                 _npcOwner.Brain is not IControlledBrain &&
                 _npcOwner.Brain is StandardMobBrain npcBrain &&
                 npcBrain.AggroTable.Count > 0 &&
-                !_npcOwner.IsWithinRadius(_target, _attackComponent.AttackRange))
+                !_npcOwner.IsWithinRadius(_target, AttackComponent.AttackRange))
             {
                 GameLiving possibleTarget = null;
                 long maxaggro = 0;
                 long aggro;
 
-                foreach (GamePlayer playerInRadius in _npcOwner.GetPlayersInRadius((ushort)_attackComponent.AttackRange))
+                foreach (GamePlayer playerInRadius in _npcOwner.GetPlayersInRadius((ushort)AttackComponent.AttackRange))
                 {
                     if (npcBrain.AggroTable.ContainsKey(playerInRadius))
                     {
@@ -99,7 +99,7 @@ namespace DOL.GS
                     // Set the next check for NPCs. Will be in a range from 100ms -> NPC_VICINITY_CHECK_DELAY.
                     _nextVicinityCheck = GameLoop.GameLoopTime + Util.Random(100, NPC_VICINITY_CHECK_INTERVAL);
 
-                    foreach (GameNPC npcInRadius in _npcOwner.GetNPCsInRadius((ushort)_attackComponent.AttackRange))
+                    foreach (GameNPC npcInRadius in _npcOwner.GetNPCsInRadius((ushort)AttackComponent.AttackRange))
                     {
                         if (npcBrain.AggroTable.ContainsKey(npcInRadius))
                         {

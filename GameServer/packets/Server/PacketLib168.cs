@@ -785,7 +785,7 @@ namespace DOL.GS.PacketHandler
 					}
 				}
 
-				if (npc.attackComponent.IsAttacking && !npc.IsTurningDisabled)
+				if (npc.IsAttacking && !npc.IsTurningDisabled)
 				{
 					GameObject target = npc.TargetObject;
 
