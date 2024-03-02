@@ -1518,9 +1518,11 @@ namespace DOL.GS
 			if (attackComponent.AttackState)
 				attackComponent.StopAttack();
 
+			bool differentSlot = ActiveWeaponSlot != slot;
+
 			base.SwitchWeapon(slot);
 
-			if (ObjectState == eObjectState.Active && ActiveWeaponSlot != slot)
+			if (ObjectState == eObjectState.Active && differentSlot)
 				BroadcastLivingEquipmentUpdate();
 		}
 
