@@ -17,7 +17,6 @@ namespace DOL.GS
         // Next check for NPCs in attack range to hit while on the way to main target.
         private long _nextVicinityCheck = 0;
         private GamePlayer _npcOwnerOwner;
-        private int _petLosCheckInterval = PET_LOS_CHECK_INTERVAL;
         private bool _hasLos;
 
         public NpcAttackAction(GameNPC npcOwner) : base(npcOwner)
@@ -157,8 +156,6 @@ namespace DOL.GS
 
         public override void CleanUp()
         {
-            _petLosCheckInterval = 0;
-
             if (_npcOwner.Brain is NecromancerPetBrain necromancerPetBrain)
                 necromancerPetBrain.ClearAttackSpellQueue();
 
@@ -179,7 +176,7 @@ namespace DOL.GS
             else
                 _hasLos = true;
 
-            return _petLosCheckInterval;
+            return PET_LOS_CHECK_INTERVAL;
         }
 
         private void LosCheckCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
