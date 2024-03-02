@@ -824,25 +824,27 @@ namespace DOL.GS
             if (owner.IsEngaging)
                 owner.CancelEngageEffect();
 
-            AttackState = true;
-
-            // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
-            if (owner is GameNPC npcOwner && owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-            {
-                if (!npcOwner.IsWithinRadius(npcOwner.TargetObject, npcOwner.attackComponent.AttackRange))
-                    return false;
-                else if (npcOwner.IsMoving)
-                    npcOwner.StopMoving();
-            }
-
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
+                // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
+                if (owner is GameNPC npcOwner)
+                {
+                    if (!npcOwner.IsWithinRadius(npcOwner.TargetObject, npcOwner.attackComponent.AttackRange - 30))
+                    {
+                        StopAttack();
+                        return false;
+                    }
+                    else if (npcOwner.IsMoving)
+                        npcOwner.StopMoving();
+                }
+
                 if (owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.Aim && attackAction.CheckInterruptTimer())
                     return false;
 
                 owner.rangeAttackComponent.AttackStartTime = GameLoop.GameLoopTime;
             }
 
+            AttackState = true;
             return true;
         }
 
