@@ -323,7 +323,7 @@ namespace DOL.GS
             // It's possible for the object to already have a `subZoneObject` at this point (a NPC respawning for example).
             if (subZoneObject != null)
             {
-                if (subZoneObject.StartSubZoneChange)
+                if (subZoneObject.CurrentSubZone != subZone && subZoneObject.StartSubZoneChange)
                     ObjectChangingSubZone.Create(subZoneObject, this, subZone);
             }
             else
