@@ -31,9 +31,10 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
-            using (_lock.GetWrite())
+            using (_lock)
             {
-                _clients = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out _lastValidIndex);
+                _lock.LockWrite();
+                 _clients = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out _lastValidIndex);
             }
 
             Parallel.For(0, _lastValidIndex + 1, TickInternal);
@@ -133,8 +134,10 @@ namespace DOL.GS
 
         public static GamePlayer GetPlayer<T>(CheckPlayerAction<T> action, T actionArgument)
         {
-            using (_lock.GetRead())
+            using (_lock)
             {
+                _lock.LockRead();
+
                 foreach (GameClient client in _clients)
                 {
                     if (client == null || !client.IsPlaying)
@@ -164,8 +167,10 @@ namespace DOL.GS
         {
             List<GamePlayer> players = new();
 
-            using (_lock.GetRead())
+            using (_lock)
             {
+                _lock.LockRead();
+
                 foreach (GameClient client in _clients)
                 {
                     if (client == null)
@@ -192,8 +197,10 @@ namespace DOL.GS
 
         public static GameClient GetClient<T>(CheckClientAction<T> action, T actionArgument)
         {
-            using (_lock.GetRead())
+            using (_lock)
             {
+                _lock.LockRead();
+
                 foreach (GameClient client in _clients)
                 {
                     if (client?.Account == null)
@@ -221,8 +228,10 @@ namespace DOL.GS
         {
             List<GameClient> players = new();
 
-            using (_lock.GetRead())
+            using (_lock)
             {
+                _lock.LockRead();
+
                 foreach (GameClient client in _clients)
                 {
                     if (client?.Account == null)
@@ -383,8 +392,11 @@ namespace DOL.GS
             // This should be fine unless for some reason a client keeps sending wrong IDs.
             try
             {
-                using (_lock.GetRead())
-                return _clients[id - 1];
+                using (_lock)
+                {
+                    _lock.LockRead();
+                    return _clients[id - 1];
+                }
             }
             catch
             {
@@ -426,8 +438,10 @@ namespace DOL.GS
         {
             int savedCount = 0;
 
-            using (_lock.GetRead())
+            using (_lock)
             {
+                _lock.LockRead();
+
                 Parallel.ForEach(_clients, client =>
                 {
                     if (client?.EntityManagerId.IsSet != true)

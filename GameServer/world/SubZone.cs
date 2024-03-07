@@ -28,15 +28,17 @@ namespace DOL.GS
             _objects[(byte) objectType].Remove(node);
         }
 
-        public ConcurrentLinkedList<GameObject>.IteratorLock GetIteratorLock(eGameObjectType objectType)
+        public SimpleDisposableLock GetLock(eGameObjectType objectType)
         {
-            return _objects[(byte) objectType].GetIteratorLock();
+            return _objects[(byte) objectType].GetLock();
         }
 
         public bool Any(eGameObjectType objectType)
         {
             return _objects[(int) objectType].Any;
         }
+        
+        public ConcurrentLinkedList<GameObject> this[eGameObjectType objectType] => _objects[(byte) objectType];
     }
 
     // A wrapper for a 'LinkedListNode<GameObject>'.

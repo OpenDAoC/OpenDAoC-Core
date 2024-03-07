@@ -1,10 +1,10 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace DOL.GS
 {
-    public class ConcurrentLinkedList<T> where T : class
+    public class ConcurrentLinkedList<T> : IEnumerable<LinkedListNode<T>> where T : class
     {
         private LinkedList<T> _list = new();
         private ReaderWriterLockSlim _lock = new();
@@ -13,91 +13,95 @@ namespace DOL.GS
 
         public void AddLast(LinkedListNode<T> node)
         {
-            _list.AddLast(node);
+            if (_lock.IsWriteLockHeld)
+            {
+                _list.AddLast(node);
+                return;
+            }
+
+            _lock.EnterWriteLock();
+
+            try
+            {
+                _list.AddLast(node);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         public void Remove(LinkedListNode<T> node)
         {
-            _list.Remove(node);
+            if (_lock.IsWriteLockHeld)
+            {
+                _list.Remove(node);
+                return;
+            }
+
+            _lock.EnterWriteLock();
+
+            try
+            {
+                _list.Remove(node);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
-        public IteratorLock GetIteratorLock()
+        public SimpleDisposableLock GetLock()
         {
-            return new IteratorLock(this);
+            return new SimpleDisposableLock(_lock);
         }
 
-        // A disposable iterator-like class taking care of the locking. Only iterations from first to last nodes are allowed, and the lock can't be upgraded.
-        public sealed class IteratorLock : IDisposable
+        public Enumerator GetEnumerator()
         {
-            private LinkedListNode<T> _current;
-            private ConcurrentLinkedList<T> _list;
-            private LockState _lockState;
+            return new Enumerator(_list, _lock);
+        }
 
-            public IteratorLock(ConcurrentLinkedList<T> list)
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        IEnumerator<LinkedListNode<T>> IEnumerable<LinkedListNode<T>>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public sealed class Enumerator : IEnumerator<LinkedListNode<T>>
+        {
+            private LinkedList<T> _list;
+            private SimpleDisposableLock _lock;
+
+            public LinkedListNode<T> Current { get; private set; }
+            object IEnumerator.Current => Current;
+
+            public Enumerator(LinkedList<T> list, ReaderWriterLockSlim @lock)
             {
                 _list = list;
-                _current = _list._list.First;
+                _lock = new(@lock);
+                _lock.LockRead();
             }
 
-            public LinkedListNode<T> Current()
+            public bool MoveNext()
             {
-                return _current;
+                // Unsafe.
+                Current = Current == null ? _list.First : Current.Next;
+                return Current != null;
             }
 
-            public LinkedListNode<T> Next()
+            public void Reset()
             {
-                _current = _current.Next;
-                return _current;
-            }
-
-            public void MoveTo(LinkedListNode<T> node)
-            {
-                _current = node;
-            }
-
-            public void LockRead()
-            {
-                _list._lock.EnterReadLock();
-                _lockState = LockState.READ;
-            }
-
-            public void LockWrite()
-            {
-                _list._lock.EnterWriteLock();
-                _lockState = LockState.WRITE;
-            }
-
-            public bool TryLockWrite()
-            {
-                bool hasLock = _list._lock.TryEnterWriteLock(0);
-
-                if (hasLock)
-                    _lockState = LockState.WRITE;
-
-                return hasLock;
+                Current = null;
+                _lock.Dispose();
             }
 
             public void Dispose()
             {
-                if (IsSet(LockState.READ))
-                    _list._lock.ExitReadLock();
-                else if (IsSet(LockState.WRITE))
-                    _list._lock.ExitWriteLock();
-
-                _lockState = LockState.NONE;
-            }
-
-            private bool IsSet(LockState flag)
-            {
-                return (_lockState & flag) == flag;
-            }
-
-            [Flags]
-            private enum LockState
-            {
-                NONE = 0,
-                READ = 1,
-                WRITE = 2,
+                _lock.Dispose();
             }
         }
     }

@@ -3,53 +3,68 @@ using System.Threading;
 
 namespace DOL
 {
-    // A wrapper for a `ReaderWriterLockSlim`.
-    // Call `GetRead` or `GetWrite` with the using keyword.
-    // Recursion, upgrades, tries are not supported.
-    public class SimpleDisposableLock
+    // A wrapper for a `ReaderWriterLockSlim` implementing `IDisposable`.
+    // Recursion and upgrades are not supported.
+    public class SimpleDisposableLock : IDisposable
     {
-        private ReaderWriterLockSlim _lock = new();
+        private ReaderWriterLockSlim _lock;
+        private LockState _lockState;
 
-        public Read GetRead()
+        public SimpleDisposableLock()
         {
-            return new Read(_lock);
+            _lock = new();
         }
 
-        public Write GetWrite()
+        public SimpleDisposableLock(ReaderWriterLockSlim @lock)
         {
-            return new Write(_lock);
+            _lock = @lock;
         }
 
-        public sealed class Read : IDisposable
+        public void LockRead()
         {
-            private ReaderWriterLockSlim _lock;
+            _lock.EnterReadLock();
+            _lockState = LockState.READ;
+        }
 
-            public Read(ReaderWriterLockSlim @lock)
-            {
-                _lock = @lock;
-                _lock.EnterReadLock();
-            }
+        public void LockWrite()
+        {
+            _lock.EnterWriteLock();
+            _lockState = LockState.WRITE;
+        }
 
-            public void Dispose()
-            {
+        public bool TryLockWrite()
+        {
+            bool hasLock = _lock.TryEnterWriteLock(0);
+
+            if (hasLock)
+                _lockState = LockState.WRITE;
+
+            return hasLock;
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+
+            if (IsSet(LockState.READ))
                 _lock.ExitReadLock();
-            }
+            else if (IsSet(LockState.WRITE))
+                _lock.ExitWriteLock();
+
+            _lockState = LockState.NONE;
         }
 
-        public sealed class Write : IDisposable
+        protected bool IsSet(LockState flag)
         {
-            private ReaderWriterLockSlim _lock;
+            return (_lockState & flag) == flag;
+        }
 
-            public Write(ReaderWriterLockSlim @lock)
-            {
-                _lock = @lock;
-                _lock.EnterWriteLock();
-            }
-
-            public void Dispose()
-            {
-                _lock.ExitWriteLock();
-            }
+        [Flags]
+        protected enum LockState
+        {
+            NONE = 0,
+            READ = 1,
+            WRITE = 2,
         }
     }
 }
