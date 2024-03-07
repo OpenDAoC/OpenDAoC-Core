@@ -61,15 +61,15 @@ namespace DOL.GS
                 {
                     if (destinationSubZoneLock != null)
                     {
-                        currentSubZoneLock.LockWrite();
+                        currentSubZoneLock.EnterWriteLock();
 
                         // Spin until we can acquire a lock on the other subzone.
-                        while (!destinationSubZoneLock.TryLockWrite())
+                        while (!destinationSubZoneLock.TryEnterWriteLock())
                         {
                             // Relinquish then reacquire our current lock to prevent dead-locks.
                             currentSubZoneLock.Dispose();
                             Thread.Sleep(0);
-                            currentSubZoneLock.LockWrite();
+                            currentSubZoneLock.EnterWriteLock();
                         }
 
                         RemoveObjectFromCurrentSubZone();

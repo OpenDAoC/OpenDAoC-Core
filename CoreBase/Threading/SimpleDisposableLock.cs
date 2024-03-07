@@ -4,11 +4,13 @@ using System.Threading;
 namespace DOL
 {
     // A wrapper for a `ReaderWriterLockSlim` implementing `IDisposable`.
-    // Recursion and upgrades are not supported.
+    // `Dispose` only takes care of the unlocking; it doesn't invalidate the underlying lock.
+    // Recursions are not supported even if the passed down lock was created with `LockRecursionPolicy.SupportsRecursion`.
+    // Upgrades are not allowed.
+    // This class' instances aren't meant to be shared by multiple threads.
     public class SimpleDisposableLock : IDisposable
     {
         private ReaderWriterLockSlim _lock;
-        private LockState _lockState;
 
         public SimpleDisposableLock()
         {
@@ -20,51 +22,39 @@ namespace DOL
             _lock = @lock;
         }
 
-        public void LockRead()
+        public void EnterReadLock()
         {
             _lock.EnterReadLock();
-            _lockState = LockState.READ;
         }
 
-        public void LockWrite()
+        public void ExitReadLock()
+        {
+            _lock.ExitReadLock();
+        }
+
+        public void EnterWriteLock()
         {
             _lock.EnterWriteLock();
-            _lockState = LockState.WRITE;
         }
 
-        public bool TryLockWrite()
+        public bool TryEnterWriteLock()
         {
-            bool hasLock = _lock.TryEnterWriteLock(0);
+            return _lock.TryEnterWriteLock(0);
+        }
 
-            if (hasLock)
-                _lockState = LockState.WRITE;
-
-            return hasLock;
+        public void ExitWriteLock()
+        {
+            _lock.ExitWriteLock();
         }
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
 
-            if (IsSet(LockState.READ))
+            if (_lock.IsReadLockHeld)
                 _lock.ExitReadLock();
-            else if (IsSet(LockState.WRITE))
+            else if (_lock.IsWriteLockHeld)
                 _lock.ExitWriteLock();
-
-            _lockState = LockState.NONE;
-        }
-
-        protected bool IsSet(LockState flag)
-        {
-            return (_lockState & flag) == flag;
-        }
-
-        [Flags]
-        protected enum LockState
-        {
-            NONE = 0,
-            READ = 1,
-            WRITE = 2,
         }
     }
 }

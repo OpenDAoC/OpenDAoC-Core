@@ -33,7 +33,7 @@ namespace DOL.GS
 
             using (_lock)
             {
-                _lock.LockWrite();
+                _lock.EnterWriteLock();
                  _clients = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out _lastValidIndex);
             }
 
@@ -136,7 +136,7 @@ namespace DOL.GS
         {
             using (_lock)
             {
-                _lock.LockRead();
+                _lock.EnterReadLock();
 
                 foreach (GameClient client in _clients)
                 {
@@ -169,7 +169,7 @@ namespace DOL.GS
 
             using (_lock)
             {
-                _lock.LockRead();
+                _lock.EnterReadLock();
 
                 foreach (GameClient client in _clients)
                 {
@@ -199,7 +199,7 @@ namespace DOL.GS
         {
             using (_lock)
             {
-                _lock.LockRead();
+                _lock.EnterReadLock();
 
                 foreach (GameClient client in _clients)
                 {
@@ -230,7 +230,7 @@ namespace DOL.GS
 
             using (_lock)
             {
-                _lock.LockRead();
+                _lock.EnterReadLock();
 
                 foreach (GameClient client in _clients)
                 {
@@ -394,7 +394,7 @@ namespace DOL.GS
             {
                 using (_lock)
                 {
-                    _lock.LockRead();
+                    _lock.EnterReadLock();
                     return _clients[id - 1];
                 }
             }
@@ -440,7 +440,7 @@ namespace DOL.GS
 
             using (_lock)
             {
-                _lock.LockRead();
+                _lock.EnterReadLock();
 
                 Parallel.ForEach(_clients, client =>
                 {

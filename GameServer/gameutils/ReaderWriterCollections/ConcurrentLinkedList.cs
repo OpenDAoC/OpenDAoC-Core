@@ -83,7 +83,7 @@ namespace DOL.GS
             {
                 _list = list;
                 _lock = new(@lock);
-                _lock.LockRead();
+                _lock.EnterReadLock();
             }
 
             public bool MoveNext()
