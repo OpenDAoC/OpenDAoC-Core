@@ -416,10 +416,8 @@ namespace DOL.GS
                     else
                         ignoreDistance = false;
 
-                    foreach (LinkedListNode<GameObject> node in subZone[objectType])
+                    foreach (GameObject gameObject in subZone[objectType])
                     {
-                        GameObject gameObject = node.Value;
-
                         // Inactive or deleted objects can't remove themselves.
                         if (gameObject.ObjectState != GameObject.eObjectState.Active || gameObject.CurrentRegion != ZoneRegion)
                         {
@@ -679,36 +677,33 @@ namespace DOL.GS
                 InitializeZone();
 
             List<GameNPC> list = new();
-            GameNPC currentNPC;
             bool addToList;
 
             try
             {
                 foreach (SubZone subZone in _subZones)
                 {
-                    foreach (LinkedListNode<GameObject> node in subZone[eGameObjectType.NPC])
+                    foreach (GameNPC npc in subZone[eGameObjectType.NPC])
                     {
-                        currentNPC = (GameNPC) node.Value;
-
                         for (int i = 0; i < realms.Length; i++)
                         {
-                            if (currentNPC.Realm == realms[i])
+                            if (npc.Realm == realms[i])
                             {
                                 addToList = true;
 
                                 if (compareLevel > 0 && conLevel > 0)
-                                    addToList = (int)GameObject.GetConLevel(compareLevel, currentNPC.Level) == conLevel;
+                                    addToList = (int)GameObject.GetConLevel(compareLevel, npc.Level) == conLevel;
                                 else
                                 {
-                                    if (minLevel > 0 && currentNPC.Level < minLevel)
+                                    if (minLevel > 0 && npc.Level < minLevel)
                                         addToList = false;
-                                    if (maxLevel > 0 && currentNPC.Level > maxLevel)
+                                    if (maxLevel > 0 && npc.Level > maxLevel)
                                         addToList = false;
                                 }
 
                                 if (addToList)
                                 {
-                                    list.Add(currentNPC);
+                                    list.Add(npc);
 
                                     if (firstOnly)
                                         return list;
