@@ -164,8 +164,6 @@ namespace DOL.AI.Brain
 
         public override void Follow(GameObject target) { }
 
-        protected override void OnFollowLostTarget(GameObject target) { }
-
         public override void Goto(GameObject target) { }
 
         public override void ComeHere() { }

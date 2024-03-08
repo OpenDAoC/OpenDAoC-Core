@@ -164,21 +164,6 @@ namespace DOL.AI.Brain
         }
 
         /// <summary>
-        /// Lost follow target event
-        /// </summary>
-        /// <param name="target"></param>
-        protected override void OnFollowLostTarget(GameObject target)
-        {
-            if (target == Owner)
-            {
-                GameEventMgr.Notify(GameLivingEvent.PetReleased, Body);
-                return;
-            }
-
-            FollowOwner();
-        }
-
-        /// <summary>
         /// Standard think method for all the pets
         /// </summary>
         public override void Think()

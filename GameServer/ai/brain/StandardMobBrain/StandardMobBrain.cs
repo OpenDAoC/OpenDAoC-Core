@@ -584,14 +584,6 @@ namespace DOL.AI.Brain
             return (Body.Realm != eRealm.None || realTarget is not GameNPC) && AggroLevel > 0;
         }
 
-        protected virtual void OnFollowLostTarget(GameObject target)
-        {
-            AttackMostWanted();
-
-            if (!Body.attackComponent.AttackState)
-                Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
-        }
-
         public virtual void OnAttackedByEnemy(AttackData ad)
         {
             if (!Body.IsAlive || Body.ObjectState != GameObject.eObjectState.Active)

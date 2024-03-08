@@ -887,21 +887,6 @@ namespace DOL.AI.Brain
 			return base.CheckOffensiveSpells(spell);
 		}
 
-		/// <summary>
-		/// Lost follow target event
-		/// </summary>
-		/// <param name="target"></param>
-		protected override void OnFollowLostTarget(GameObject target)
-		{
-			if (target == Owner)
-			{
-				GameEventMgr.Notify(GameLivingEvent.PetReleased, Body);
-				return;
-			}
-
-			FollowOwner();
-		}
-
 		public override bool CanAggroTarget(GameLiving target)
 		{
 			// Only attack if target (or target's owner) is green+ to our owner
