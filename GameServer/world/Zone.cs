@@ -396,7 +396,7 @@ namespace DOL.GS
                     subZoneIndex = GetSubZoneOffset(line, column);
                     subZone = _subZones[subZoneIndex];
 
-                    if (!subZone.Any(objectType))
+                    if (!subZone[objectType].Any)
                         continue;
 
                     if (subZoneIndex != referenceSubZoneIndex)

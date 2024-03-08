@@ -54,8 +54,8 @@ namespace DOL.GS
                 eGameObjectType objectType = node.Value.GameObjectType;
 
                 // Acquire locks on both subzones. We want the removal and addition to happen at the same time from a reader's point of view.
-                using SimpleDisposableLock currentSubZoneLock = currentSubZone?.GetLock(objectType);
-                using SimpleDisposableLock destinationSubZoneLock = destinationSubZone?.GetLock(objectType);
+                using SimpleDisposableLock currentSubZoneLock = currentSubZone?[objectType].GetLock();
+                using SimpleDisposableLock destinationSubZoneLock = destinationSubZone?[objectType].GetLock();
 
                 if (currentSubZoneLock != null)
                 {
@@ -83,7 +83,7 @@ namespace DOL.GS
 
                 void AddObjectToDestinationSubZone()
                 {
-                    destinationSubZone.AddObjectNode(objectType, node);
+                    destinationSubZone[objectType].AddLast(node);
                     subZoneObject.CurrentSubZone = destinationSubZone;
 
                     if (changingZone)
@@ -92,7 +92,7 @@ namespace DOL.GS
 
                 void RemoveObjectFromCurrentSubZone()
                 {
-                    currentSubZone.RemoveObjectNode(objectType, node);
+                    destinationSubZone[objectType].Remove(node);
 
                     if (changingZone)
                         currentZone.OnObjectRemovedFromZone();
