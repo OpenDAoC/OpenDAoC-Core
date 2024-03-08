@@ -80,6 +80,7 @@ namespace DOL.AI.Brain
 		public GameLiving Owner { get { return m_owner; } }
 		public void Attack(GameObject target) { }
 		public void Disengage() { }
+		public void CheckAggressionStateOnPlayerOrder() { }
 		public void Follow(GameObject target) { }
 		public void FollowOwner() { }
 		public void Stay() { }

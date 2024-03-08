@@ -248,7 +248,7 @@ namespace DOL.AI.Brain
 			AttackMostWanted();
 		}
 
-		public virtual void Disengage()
+		public virtual void CheckAggressionStateOnPlayerOrder()
 		{
 			// We switch to defensive mode if we're in aggressive and have a target, so that we don't immediately aggro back
 			if (AggressionState == eAggressionState.Aggressive && Body.TargetObject != null)
@@ -256,7 +256,10 @@ namespace DOL.AI.Brain
 				AggressionState = eAggressionState.Defensive;
 				UpdatePetWindow();
 			}
+		}
 
+		public virtual void Disengage()
+		{
 			m_orderAttackTarget = null;
 			ClearAggroList();
 			Body.StopAttack();
@@ -324,8 +327,7 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public virtual void UpdatePetWindow()
 		{
-			if (m_owner is GamePlayer)
-				((GamePlayer)m_owner).Out.SendPetWindow(Body, ePetWindowAction.Update, m_aggressionState, m_walkState);
+			(m_owner as GamePlayer)?.Out.SendPetWindow(Body, ePetWindowAction.Update, m_aggressionState, m_walkState);
 		}
 
 		/// <summary>
@@ -334,8 +336,8 @@ namespace DOL.AI.Brain
 		public virtual void FollowOwner()
 		{
 			if (Body.IsAttacking)
-				Body.StopAttack();
-				
+				Disengage();
+
 			if (Owner is GamePlayer
 			    && IsMainPet
 			    && ((GamePlayer)Owner).CharacterClass.ID != (int)eCharacterClass.Animist
@@ -1009,10 +1011,8 @@ namespace DOL.AI.Brain
 			}
 			else
 			{
-				Body.TargetObject = null;
-
 				if (Body.IsAttacking)
-					Body.StopAttack();
+					Disengage();
 
 				if (WalkState == eWalkState.Follow)
 					FollowOwner();
