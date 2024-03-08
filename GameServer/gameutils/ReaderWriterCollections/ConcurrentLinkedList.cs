@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace DOL.GS
 {
-    public class ConcurrentLinkedList<T> : IEnumerable<T> where T : class
+    public class ConcurrentLinkedList<T> : IEnumerable<LinkedListNode<T>> where T : class
     {
         private LinkedList<T> _list = new();
         private ReaderWriterLockSlim _lock = new();
@@ -56,15 +56,53 @@ namespace DOL.GS
             return new SimpleDisposableLock(_lock);
         }
 
-        public IEnumerator<T> GetEnumerator()
+        public Enumerator GetEnumerator()
         {
-            _lock.EnterReadLock();
-            return _list.GetEnumerator();
+            return new Enumerator(_list, _lock);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        IEnumerator<LinkedListNode<T>> IEnumerable<LinkedListNode<T>>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public sealed class Enumerator : IEnumerator<LinkedListNode<T>>
+        {
+            private LinkedList<T> _list;
+            private SimpleDisposableLock _lock;
+
+            public LinkedListNode<T> Current { get; private set; }
+            object IEnumerator.Current => Current;
+
+            public Enumerator(LinkedList<T> list, ReaderWriterLockSlim @lock)
+            {
+                _list = list;
+                _lock = new(@lock);
+                _lock.EnterReadLock();
+            }
+
+            public bool MoveNext()
+            {
+                // Unsafe.
+                Current = Current == null ? _list.First : Current.Next;
+                return Current != null;
+            }
+
+            public void Reset()
+            {
+                Current = null;
+                _lock.Dispose();
+            }
+
+            public void Dispose()
+            {
+                _lock.Dispose();
+            }
         }
     }
 }
