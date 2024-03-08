@@ -429,43 +429,19 @@ namespace DOL.GS
 
             Point3D destination;
 
-            if (Owner.Brain is StandardMobBrain brain)
+            if (Owner.Brain is StandardMobBrain brain && Owner.FollowTarget.Realm == Owner.Realm)
             {
-                // If the npc hasn't hit or been hit in a while, stop following and return home.
-                if (brain is not IControlledBrain)
-                {
-                    if (Owner.attackComponent.AttackState)
-                    {
-                        long duration = 25000 + brain.GetAggroAmountForLiving(FollowTarget) / (Owner.MaxHealth + 1) * 100;
-                        long lastAttackTick = Owner.LastAttackTick;
-                        long lastAttackedTick = Owner.LastAttackedByEnemyTick;
-
-                        if (GameLoop.GameLoopTime - lastAttackTick > duration &&
-                            GameLoop.GameLoopTime - lastAttackedTick > duration &&
-                            lastAttackedTick != 0)
-                        {
-                            Owner.LastAttackedByEnemyTickPvE = 0;
-                            Owner.LastAttackedByEnemyTickPvP = 0;
-                            brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                            return 0;
-                        }
-                    }
-                }
-
                 // If we're part of a formation, we can get out early.
-                if (Owner.FollowTarget.Realm == Owner.Realm)
-                {
-                    int newX = FollowTarget.X;
-                    int newY = FollowTarget.Y;
-                    int newZ = FollowTarget.Z;
+                int newX = FollowTarget.X;
+                int newY = FollowTarget.Y;
+                int newZ = FollowTarget.Z;
 
-                    if (brain.CheckFormation(ref newX, ref newY, ref newZ))
-                    {
-                        destination = new(newX, newY, newZ);
-                        double followSpeed = Math.Max(Math.Min(MaxSpeed, Owner.GetDistance(destination) * FOLLOW_SPEED_SCALAR), 50);
-                        PathToInternal(destination, (short) followSpeed);
-                        return Properties.GAMENPC_FOLLOWCHECK_TIME;
-                    }
+                if (brain.CheckFormation(ref newX, ref newY, ref newZ))
+                {
+                    destination = new(newX, newY, newZ);
+                    double followSpeed = Math.Max(Math.Min(MaxSpeed, Owner.GetDistance(destination) * FOLLOW_SPEED_SCALAR), 50);
+                    PathToInternal(destination, (short) followSpeed);
+                    return Properties.GAMENPC_FOLLOWCHECK_TIME;
                 }
             }
 
