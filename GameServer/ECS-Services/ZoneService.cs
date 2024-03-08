@@ -92,7 +92,7 @@ namespace DOL.GS
 
                 void RemoveObjectFromCurrentSubZone()
                 {
-                    destinationSubZone[objectType].Remove(node);
+                    currentSubZone[objectType].Remove(node);
 
                     if (changingZone)
                         currentZone.OnObjectRemovedFromZone();
