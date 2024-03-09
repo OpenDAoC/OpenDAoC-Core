@@ -895,7 +895,7 @@ namespace DOL.AI.Brain
 			if (target is GameNPC npc && npc.Brain is IControlledBrain controlledBrain && controlledBrain.Owner != null)
 				target = controlledBrain.Owner;
 
-			if (!GameServer.ServerRules.IsAllowedToAttack(Body, target, true) || Owner.IsObjectGreyCon(target))
+			if (!GameServer.ServerRules.IsAllowedToAttack(Body, target, true) || GetPlayerOwner().IsObjectGreyCon(target))
 				return false;
 
 			return AggroLevel > 0;
