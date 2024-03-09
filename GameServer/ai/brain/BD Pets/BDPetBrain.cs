@@ -169,7 +169,6 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             CheckAbilities();
-            CheckSpells(eCheckSpellType.Defensive);
             base.Think();
         }
 
