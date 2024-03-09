@@ -116,13 +116,13 @@ namespace DOL.AI.Brain
 		public override void Follow(GameObject target)
 		{
 			base.Follow(target);
-			SubpetFollow();
+			SubPetFollow();
 		}
 
 		/// <summary>
 		/// Direct all the sub pets to follow the commander
 		/// </summary>
-		private void SubpetFollow()
+		private void SubPetFollow(bool force = true)
 		{
 			if (Body.ControlledNpcList != null)
 			{
@@ -130,7 +130,10 @@ namespace DOL.AI.Brain
 				{
 					foreach (BDPetBrain icb in Body.ControlledNpcList)
 					{
-						if (icb != null)
+						if (icb == null)
+							continue;
+
+						if (force || !icb.Body.IsAttacking)
 							icb.FollowOwner();
 					}
 				}
@@ -143,7 +146,7 @@ namespace DOL.AI.Brain
 		public override void Stay()
 		{
 			base.Stay();
-			SubpetFollow();
+			SubPetFollow();
 		}
 
 		/// <summary>
@@ -152,7 +155,7 @@ namespace DOL.AI.Brain
 		public override void ComeHere()
 		{
 			base.ComeHere();
-			SubpetFollow();
+			SubPetFollow();
 		}
 
 		/// <summary>
@@ -162,7 +165,7 @@ namespace DOL.AI.Brain
 		public override void Goto(GameObject target)
 		{
 			base.Goto(target);
-			SubpetFollow();
+			SubPetFollow();
 		}
 
 		public override void SetAggressionState(eAggressionState state)
@@ -179,6 +182,12 @@ namespace DOL.AI.Brain
 					}
 				}
 			}
+		}
+
+		public override void FollowOwner()
+		{
+			base.FollowOwner();
+			SubPetFollow(false);
 		}
 
 		/// <summary>
