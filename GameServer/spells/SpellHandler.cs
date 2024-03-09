@@ -491,7 +491,6 @@ namespace DOL.GS.Spells
 				}
 			}
 
-
 			// Initial LoS state.
 			HasLos = Caster.TargetInView;
 

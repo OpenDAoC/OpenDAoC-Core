@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 
@@ -30,20 +29,8 @@ namespace DOL.GS.Spells
 
 		public override bool CheckBeginCast(GameLiving selectedTarget)
 		{
-			if (m_caster.ObjectState != GameLiving.eObjectState.Active)	return false;
-			if (!m_caster.IsAlive)
-			{
-				MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
+			if (!base.CheckBeginCast(selectedTarget))
 				return false;
-			}
-			
-			// Is PS ?
-			GameSpellEffect Phaseshift = SpellHandler.FindEffectOnTarget(Caster, "Phaseshift");
-			if (Phaseshift != null && (Spell.InstrumentRequirement == 0 || Spell.SpellType == eSpellType.Mesmerize))
-			{
-				MessageToCaster("You're phaseshifted and can't cast a spell", eChatType.CT_System);
-				return false;
-			}
 
 			// Is Shield Disarm ?
 			ShieldTripDisarmEffect shieldDisarm = Caster.EffectList.GetOfType<ShieldTripDisarmEffect>();
@@ -53,77 +40,9 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			// Is Mentalist RA5L ?
-			SelectiveBlindnessEffect SelectiveBlindness = Caster.EffectList.GetOfType<SelectiveBlindnessEffect>();
-			if (SelectiveBlindness != null)
+			if (Caster is GamePlayer && Caster.ActiveWeapon != null && GlobalConstants.IsBowWeapon((eObjectType) Caster.ActiveWeapon.Object_Type))
 			{
-				GameLiving EffectOwner = SelectiveBlindness.EffectSource;
-				if(EffectOwner==selectedTarget)
-				{
-					if (m_caster is GamePlayer)
-						((GamePlayer)m_caster).Out.SendMessage(string.Format("{0} is invisible to you!", selectedTarget.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-					
-					return false;
-				}
-			}
-			
-			// Is immune ?
-			if (selectedTarget!=null&&selectedTarget.HasAbility("DamageImmunity"))
-			{
-				MessageToCaster(selectedTarget.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
-				return false;
-			}
-			
-			if (m_caster.IsSitting)
-			{
-				MessageToCaster("You can't cast while sitting!", eChatType.CT_SpellResisted);
-				return false;
-			}
-			if (m_spell.RecastDelay > 0)
-			{
-				int left = m_caster.GetSkillDisabledDuration(m_spell);
-				if (left > 0)
-				{
-					MessageToCaster("You must wait " + (left / 1000 + 1).ToString() + " seconds to use this spell!", eChatType.CT_System);
-					return false;
-                }
-            }
-
-			switch (m_spell.Target)
-			{
-				case eSpellTarget.AREA:
-				{
-					if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
-					{
-						MessageToCaster("Your area target is out of range.  Select a closer target.", eChatType.CT_SpellResisted);
-						return false;
-					}
-
-					break;
-				}
-				case eSpellTarget.ENEMY:
-				{
-					if (m_caster.IsObjectInFront(selectedTarget, 180) == false)
-					{
-						MessageToCaster("Your target is not in view!", eChatType.CT_SpellResisted);
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
-						return false;
-					}
-
-					if (m_caster.TargetInView == false)
-					{
-						MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
-						return false;
-					}
-
-					break;
-				}
-			}
-
-			if (Caster != null && Caster is GamePlayer && Caster.ActiveWeapon != null && GlobalConstants.IsBowWeapon((eObjectType)Caster.ActiveWeapon.Object_Type))
-			{
-				if (Spell.LifeDrainReturn == (int)eShotType.Critical && (!(Caster.IsStealthed)))
+				if (Spell.LifeDrainReturn == (int) eShotType.Critical && !Caster.IsStealthed)
 				{
 					MessageToCaster("You must be stealthed and wielding a bow to use this ability!", eChatType.CT_SpellResisted);
 					return false;
@@ -133,7 +52,7 @@ namespace DOL.GS.Spells
 			}
 			else
 			{
-				if (Spell.LifeDrainReturn == (int)eShotType.Critical)
+				if (Spell.LifeDrainReturn == (int) eShotType.Critical)
 				{
 					MessageToCaster("You must be stealthed and wielding a bow to use this ability!", eChatType.CT_SpellResisted);
 					return false;
@@ -165,7 +84,6 @@ namespace DOL.GS.Spells
 
 			return hitchance;
 		}
-
 
 		/// <summary>
 		/// Adjust damage based on chance to hit.
