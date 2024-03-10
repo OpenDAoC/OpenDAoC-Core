@@ -1,70 +1,41 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using DOL.AI.Brain;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Style taunt effect spell handler
-	/// </summary>
-	[SpellHandler("StyleTaunt")]
-	public class StyleTaunt : SpellHandler 
-	{
-		public override int CalculateSpellResistChance(GameLiving target)
-		{
-			return 0;
-		}
-
-		/// <summary>
-		/// Determines wether this spell is compatible with given spell
-		/// and therefore overwritable by better versions
-		/// spells that are overwritable cannot stack
-		/// </summary>
-		/// <param name="compare"></param>
-		/// <returns></returns>
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
-		{
-            return false;
-		}
-
-        public override void OnDirectEffect(GameLiving target)
+    /// <summary>
+    /// Style taunt effect spell handler
+    /// </summary>
+    [SpellHandler("StyleTaunt")]
+    public class StyleTaunt : SpellHandler
+    {
+        public override int CalculateSpellResistChance(GameLiving target)
         {
-            if (target is GameNPC)
-            {
-                AttackData ad = Caster.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
-                if (ad != null)
-                {
-                    IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
-					if (aggroBrain != null)
-					{
-						int aggro = Convert.ToInt32(ad.Damage * Spell.Value);
-						aggroBrain.AddToAggroList(Caster, aggro);
-
-						//log.DebugFormat("Damage: {0}, Taunt Value: {1}, (de)Taunt Amount {2}", ad.Damage, Spell.Value, aggro.ToString());
-					}
-                }
-            }
+            return 0;
         }
 
-		// constructor
         public StyleTaunt(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
-	}
+
+        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        {
+            return false;
+        }
+        public override void OnDirectEffect(GameLiving target)
+        {
+            if (target is not GameNPC npc || npc.Brain is not IOldAggressiveBrain brain)
+                return;
+
+            // Style taunt and style detaunt default values are 17 and -19 respectively. The old formula multiplied that value to the (non-critical) damage, which resulted in excessively high threat changes.
+            // It's unknown what the formula should actually be, or even if these value are correct.
+            // Tooltips seem to indicate these are flat values, but that would make them close to useless at high level, so some kind of scaling is needed.
+            // The value could scale based on the attack damage or user level.
+            // If level scaling is chosen, attack speed normalization is something that could become necessary to prevent slow weapons from being penalized.
+            // If damage scaling is chosen, stats, gear, and the target's armor would affect the result.
+            // Detaunts are weirder in the sense that basing it on the damage would always lower the total threat, but basing it on the user level may lower total threat only if the damage is low enough.
+            // This is a bit problematic because that would mean not attacking at all could sometimes be better to lose aggro, but this isn’t something the player could tell.
+            // Long story short, keeping the damage based scaling seems easier and more intuitive from a player’s perspective, but with only a tenth of the spell value, and while taking critical damage into account.
+            AttackData attackData = Caster.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+            brain.AddToAggroList(Caster, (long) Math.Floor((attackData.Damage + attackData.CriticalDamage) * Spell.Value * 0.1));
+        }
+    }
 }
