@@ -309,18 +309,11 @@ namespace DOL.GS.PacketHandler
             {
                 if (log.IsErrorEnabled)
                 {
-                    string desc = $"Sending packets longer than 2048 cause client to crash, check Log for stacktrace. Packet code: 0x{buf[2]:X2}, account: {(m_client.Account != null ? m_client.Account.Name : m_client.TcpEndpoint)}, packet size: {buf.Length}.";
-                    log.Error(Marshal.ToHexDump(desc, buf) + "\n" + Environment.StackTrace);
-
-                    if (Properties.IGNORE_TOO_LONG_OUTCOMING_PACKET)
-                    {
-                        log.Error("ALERT: Oversize packet detected and discarded.");
-                        m_client.Out.SendMessage("ALERT: Error sending an update to your client. Oversize packet detected and discarded. Please /report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                    }
-                    else
-                        GameServer.Instance.Disconnect(m_client);
+                    string desc = $"Discarding oversized packet. Packet code: 0x{buf[2]:X2}, account: {(m_client.Account != null ? m_client.Account.Name : m_client.TcpEndpoint)}, packet size: {buf.Length}.";
+                    log.Error($"{Marshal.ToHexDump(desc, buf)}\n{Environment.StackTrace}");
                 }
 
+                m_client.Out.SendMessage($"Oversized packet detected and discarded (code: 0x{buf[2]:X2}) (size: {buf.Length}). Please report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
                 return;
             }
 
