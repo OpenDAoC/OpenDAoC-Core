@@ -2,7 +2,6 @@
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
-using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace DOL.GS
 {

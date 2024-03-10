@@ -291,11 +291,6 @@ namespace DOL.AI.Brain
             if (Body.IsConfused || !Body.IsAlive || living == null)
                 return;
 
-            BringFriends(living);
-
-            if (AggroList.IsEmpty)
-                Body.FireAmbientSentence(GameNPC.eAmbientTrigger.aggroing, living);
-
             // Only protect if gameplayer and aggroAmount > 0
             if (living is GamePlayer player && aggroAmount > 0)
             {
@@ -406,15 +401,23 @@ namespace DOL.AI.Brain
             if (!IsActive)
                 return;
 
-            Body.TargetObject = CalculateNextAttackTarget();
+            GameLiving newTarget = CalculateNextAttackTarget();
 
-            if (Body.TargetObject != null)
+            if (newTarget == null)
+                return;
+
+            if (Body.TargetObject == null)
             {
-                if (CheckSpells(eCheckSpellType.Offensive))
-                    Body.StopAttack();
-                else
-                    Body.StartAttack(Body.TargetObject);
+                BringFriends(newTarget);
+                Body.FireAmbientSentence(GameNPC.eAmbientTrigger.aggroing, newTarget);
             }
+
+            Body.TargetObject = newTarget;
+
+            if (CheckSpells(eCheckSpellType.Offensive))
+                Body.StopAttack();
+            else
+                Body.StartAttack(newTarget);
         }
 
         protected virtual void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
@@ -455,10 +458,6 @@ namespace DOL.AI.Brain
             // It isn't built here because ordering all entities in the aggro list can be expensive, and we typically don't need it.
             // It's built on demand, when `GetOrderedAggroList` is called.
             OrderedAggroList.Clear();
-
-            if (AggroList.IsEmpty)
-                return null;
-
             int attackRange = Body.AttackRange;
             GameLiving highestThreat = null;
             long highestEffectiveAggro = -1; // Assumes that negative aggro amounts aren't allowed in the list.
