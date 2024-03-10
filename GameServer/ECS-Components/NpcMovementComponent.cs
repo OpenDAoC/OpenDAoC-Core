@@ -272,19 +272,17 @@ namespace DOL.GS
 
         public void TurnTo(ushort heading, int duration = 0)
         {
-            if (Owner.IsStunned || Owner.IsMezzed)
+            if (Owner.Heading == heading || Owner.IsStunned || Owner.IsMezzed || IsTurningDisabled)
                 return;
 
-            if (Owner.Heading != heading)
+            if (duration > 0 && _resetHeadingAction == null)
             {
-                if (duration > 0 && _resetHeadingAction == null)
-                {
-                    _resetHeadingAction = new ResetHeadingAction(Owner, this, () => _resetHeadingAction = null);
-                    _resetHeadingAction.Start(duration);
-                }
-
-                Owner.Heading = heading;
+                _resetHeadingAction = new ResetHeadingAction(Owner, this, () => _resetHeadingAction = null);
+                _resetHeadingAction.Start(duration);
             }
+
+            _needsBroadcastUpdate = true;
+            Owner.Heading = heading;
         }
 
         private void UpdateVelocity(double distanceToTarget)

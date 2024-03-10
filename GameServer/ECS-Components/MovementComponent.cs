@@ -13,7 +13,7 @@
         public short MaxSpeedBase { get; set; } // Currently unused for players.
         public virtual short MaxSpeed => (short) Owner.GetModified(eProperty.MaxSpeed);
         public bool IsMoving => CurrentSpeed > 0;
-        public bool IsTurningDisabled => !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound) && _turningDisabledCount > 0;
+        public bool IsTurningDisabled => _turningDisabledCount > 0 && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound);
 
         protected MovementComponent(GameLiving owner)
         {
