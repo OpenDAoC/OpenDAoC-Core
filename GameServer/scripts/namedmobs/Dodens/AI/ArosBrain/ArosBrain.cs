@@ -1,11 +1,5 @@
-/*
-AI for Aros The Spiritmaster like NPCs.
-<author>Kelt</author>
- */
-
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using DOL.Events;
 using DOL.GS;
@@ -154,7 +148,7 @@ namespace DOL.AI.Brain
                 if (!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
                     continue;
 
-                if (AggroTable.ContainsKey(npc))
+                if (AggroList.ContainsKey(npc))
                     continue; // add only new NPCs
 
                 if (npc.Brain != null && npc.Brain is IControlledBrain)
@@ -212,29 +206,28 @@ namespace DOL.AI.Brain
         public bool PickDebuffTarget()
         {
             GameEpicAros aros = Body as GameEpicAros;
-            if (aros == null) return false;
+
+            if (aros == null)
+                return false;
 
             ArrayList inRangeLiving = new ArrayList();
 
-            lock ((AggroTable as ICollection).SyncRoot)
+            foreach (var pair in AggroList)
             {
-                Dictionary<GameLiving, long>.Enumerator enumerator = AggroTable.GetEnumerator();
-                while (enumerator.MoveNext())
+                GameLiving living = pair.Key;
+
+                if (living != null &&
+                    living.IsAlive &&
+                    living.EffectList.GetOfType<NecromancerShadeEffect>() == null &&
+                    !aros.IsWithinRadius(living, aros.AttackRange))
                 {
-                    GameLiving living = enumerator.Current.Key;
-                    if (living != null &&
-                        living.IsAlive &&
-                        living.EffectList.GetOfType<NecromancerShadeEffect>() == null &&
-                        !aros.IsWithinRadius(living, aros.AttackRange))
-                    {
-                        inRangeLiving.Add(living);
-                    }
+                    inRangeLiving.Add(living);
                 }
             }
+
             if (inRangeLiving.Count > 0)
-            {
                 return aros.CheckDebuff((GameLiving)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
-            }
+
             return false;
         }
         #endregion

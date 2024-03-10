@@ -2434,8 +2434,8 @@ namespace DOL.AI.Brain
                 {
                     foreach(GamePlayer player in Body.GetPlayersInRadius(1800))
                     {
-                        if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1 && !AggroTable.ContainsKey(player))
-                            AggroTable.Add(player, 200);
+                        if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
+                            AggroList.TryAdd(player, new(200));
                     }
                     Body.SetGroundTarget(Body.X, Body.Y, Body.Z - 750);
                     if (!Body.IsCasting)

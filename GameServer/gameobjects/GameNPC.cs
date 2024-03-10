@@ -3504,11 +3504,12 @@ namespace DOL.GS
 			if (!IsAlive)
 				return;
 
-			var attackerLiving = healSource as GameLiving;
-			if (attackerLiving == null)
+			GameLiving healSourceLiving = healSource as GameLiving;
+
+			if (healSourceLiving == null)
 				return;
 
-			Group attackerGroup = attackerLiving.Group;
+			Group attackerGroup = healSourceLiving.Group;
 			if (attackerGroup != null)
 			{
 				// collect "helping" group players in range
@@ -3528,16 +3529,11 @@ namespace DOL.GS
 				this.AddXPGainer(healSource, (float)healAmount);
 			}
 
-			if (Brain is StandardMobBrain mobBrain)
+			if (healSource is GamePlayer || (healSource is GameNPC healSourceNpc && (healSourceNpc.Flags & eFlags.PEACE) == 0))
 			{
 				// first check to see if the healer is in our aggrolist so we don't go attacking anyone who heals
-				if (mobBrain.AggroTable.ContainsKey(healSource as GameLiving))
-				{
-					if (healSource is GamePlayer || (healSource is GameNPC && (((GameNPC)healSource).Flags & eFlags.PEACE) == 0))
-					{
-						mobBrain.AddToAggroList((GameLiving)healSource, healAmount);
-					}
-				}
+				if (Brain is StandardMobBrain mobBrain && mobBrain.GetBaseAggroAmount(healSourceLiving) > 0)
+					mobBrain.AddToAggroList(healSourceLiving, healAmount);
 			}
 
 			//DealDamage needs to be called after addxpgainer!

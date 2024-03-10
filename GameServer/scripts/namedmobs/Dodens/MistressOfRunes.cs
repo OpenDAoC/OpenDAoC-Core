@@ -198,7 +198,7 @@ namespace DOL.AI.Brain
 				if (!GameServer.ServerRules.IsAllowedToAttack(Body, npc, true))
 					continue;
 
-				if (AggroTable.ContainsKey(npc))
+				if (AggroList.ContainsKey(npc))
 					continue; // add only new NPCs
 
 				if (npc.Brain != null && npc.Brain is IControlledBrain)
@@ -230,30 +230,25 @@ namespace DOL.AI.Brain
 		public bool PickNearsightTarget()
 		{
 			MistressOfRunes mistress = Body as MistressOfRunes;
-			if (mistress == null) return false;
+
+			if (mistress == null)
+				return false;
 
 			ArrayList inRangeLiving = new ArrayList();
 
-			lock ((AggroTable as ICollection).SyncRoot)
+			foreach (GameLiving living in AggroList.Keys)
 			{
-				Dictionary<GameLiving, long>.Enumerator enumerator = AggroTable.GetEnumerator();
-				while (enumerator.MoveNext())
+				if (living != null &&
+					living.IsAlive &&
+					living.EffectList.GetOfType<NecromancerShadeEffect>() == null &&
+					!mistress.IsWithinRadius(living, mistress.AttackRange))
 				{
-					GameLiving living = enumerator.Current.Key;
-					if (living != null &&
-						living.IsAlive &&
-						living.EffectList.GetOfType<NecromancerShadeEffect>() == null &&
-						!mistress.IsWithinRadius(living, mistress.AttackRange))
-					{
-						inRangeLiving.Add(living);
-					}
+					inRangeLiving.Add(living);
 				}
 			}
 
 			if (inRangeLiving.Count > 0)
-			{
 				return CheckNearsight((GameLiving)(inRangeLiving[Util.Random(1, inRangeLiving.Count) - 1]));
-			}
 
 			return false;
 		}

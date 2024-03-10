@@ -1,12 +1,12 @@
 ﻿using System;
-using DOL.AI.Brain;
-using DOL.Database;
-using DOL.GS;
-using DOL.Events;
-using DOL.GS.ServerProperties;
-using DOL.GS.PacketHandler;
 using System.Collections.Generic;
 using System.Linq;
+using DOL.AI.Brain;
+using DOL.Database;
+using DOL.Events;
+using DOL.GS;
+using DOL.GS.PacketHandler;
+using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
@@ -670,8 +670,8 @@ namespace DOL.AI.Brain
 					{
 						if (!GlareRoam_Enemys.Contains(player))
 							GlareRoam_Enemys.Add(player);
-						if (!AggroTable.ContainsKey(player))
-							AggroTable.Add(player, 100);
+
+						AggroList.TryAdd(player, new(100));
 					}
 				}
 				if (GlareRoam_Enemys.Count > 0)

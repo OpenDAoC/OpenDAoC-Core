@@ -129,10 +129,6 @@ namespace DOL.GS.Scripts
         /// </summary>
         public override void ReturnToSpawnPoint(short speed)
         {
-            UaimhLairmasterBrain brain = new UaimhLairmasterBrain();
-            StopAttack();
-            StopFollowing();
-            brain.AggroTable.Clear();
             base.ReturnToSpawnPoint(MaxSpeed);
         }
 

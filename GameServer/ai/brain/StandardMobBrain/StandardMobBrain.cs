@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.Keeps;
@@ -21,6 +21,7 @@ namespace DOL.AI.Brain
     {
         public const int MAX_AGGRO_DISTANCE = 3600;
         public const int MAX_AGGRO_LIST_DISTANCE = 6000;
+        private const int EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD = 500;
 
         // Used for AmbientBehaviour "Seeing" - maintains a list of GamePlayer in range
         public List<GamePlayer> PlayersSeen = new();
@@ -126,7 +127,7 @@ namespace DOL.AI.Brain
                 if (player.IsStealthed || player.Steed != null)
                     continue;
 
-                if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
+                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Shade))
                     continue;
 
                 if (Properties.ALWAYS_CHECK_LOS)
@@ -253,24 +254,25 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual int AggroLevel { get; set; }
 
-        /// <summary>
-        /// List of livings that this npc has aggro on, living => aggroAmount
-        /// </summary>
-        public Dictionary<GameLiving, long> AggroTable { get; private set; } = new Dictionary<GameLiving, long>();
+        protected ConcurrentDictionary<GameLiving, AggroAmount> AggroList { get; private set; } = new();
+        protected List<(GameLiving, long)> OrderedAggroList { get; private set; } = new();
+        public GameLiving LastHighestThreatInAttackRange { get; private set; }
+
+        public class AggroAmount
+        {
+            public long Base { get; set; }
+            public long Effective { get; set; }
+
+            public AggroAmount(long @base = 0)
+            {
+                Base = @base;
+            }
+        }
 
         /// <summary>
         /// Checks whether living has someone on its aggrolist
         /// </summary>
-        public virtual bool HasAggro
-        {
-            get
-            {
-                lock ((AggroTable as ICollection).SyncRoot)
-                {
-                    return AggroTable.Count > 0;
-                }
-            }
-        }
+        public virtual bool HasAggro => !AggroList.IsEmpty;
 
         /// <summary>
         /// Add aggro table of this brain to that of another living.
@@ -280,29 +282,18 @@ namespace DOL.AI.Brain
             if (!brain.Body.IsAlive)
                 return;
 
-            KeyValuePair<GameLiving, long>[] aggroTable = Array.Empty<KeyValuePair<GameLiving, long>>();
-
-            lock ((AggroTable as ICollection).SyncRoot)
-                aggroTable = AggroTable.ToArray();
-
-            foreach (var aggro in aggroTable)
-                brain.AddToAggroList(aggro.Key, Body.MaxHealth);
+            foreach (var pair in AggroList)
+                brain.AddToAggroList(pair.Key, pair.Value.Base);
         }
 
-        /// <summary>
-        /// Add living to the aggrolist
-        /// aggroAmount can be negative to lower amount of aggro
-        /// </summary>
-        public virtual void AddToAggroList(GameLiving living, int aggroAmount)
+        public virtual void AddToAggroList(GameLiving living, long aggroAmount)
         {
-            // tolakram - duration spell effects will attempt to add to aggro after npc is dead
             if (Body.IsConfused || !Body.IsAlive || living == null)
                 return;
 
             BringFriends(living);
 
-            // Handle trigger to say sentance on first aggro.
-            if (AggroTable.Count < 1)
+            if (AggroList.IsEmpty)
                 Body.FireAmbientSentence(GameNPC.eAmbientTrigger.aggroing, living);
 
             // Only protect if gameplayer and aggroAmount > 0
@@ -311,21 +302,12 @@ namespace DOL.AI.Brain
                 // If player is in group, add whole group to aggro list
                 if (player.Group != null)
                 {
-                    lock ((AggroTable as ICollection).SyncRoot)
-                    {
-                        foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
-                        {
-                            if (!AggroTable.ContainsKey(p))
-                                AggroTable[p] = 1L; // Add the missing group member on aggro table
-                        }
-                    }
+                    foreach (GamePlayer playerInGroup in player.Group.GetPlayersInTheGroup())
+                        AggroList.TryAdd(playerInGroup, new());
                 }
 
                 foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
                 {
-                    if (aggroAmount <= 0)
-                        break;
-
                     if (protect.Target != living)
                         continue;
 
@@ -347,7 +329,7 @@ namespace DOL.AI.Brain
                     // P III: prevents 30% of aggro amount
                     // guessed percentages, should never be higher than or equal to 50%
                     int abilityLevel = protectSource.GetAbilityLevel(Abilities.Protect);
-                    int protectAmount = (int) (abilityLevel * 0.10 * aggroAmount);
+                    long protectAmount = (long) (abilityLevel * 0.1 * aggroAmount);
 
                     if (protectAmount > 0)
                     {
@@ -359,63 +341,45 @@ namespace DOL.AI.Brain
                                 Body.GetName(0, false, playerProtectSource.Client.Account.Language, Body)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         }
 
-                        lock ((AggroTable as ICollection).SyncRoot)
-                        {
-                            if (AggroTable.ContainsKey(protectSource))
-                                AggroTable[protectSource] += protectAmount;
-                            else
-                                AggroTable[protectSource] = protectAmount;
-                        }
+                        AggroList.AddOrUpdate(protectSource, Add, Update, protectAmount);
                     }
                 }
             }
 
-            lock ((AggroTable as ICollection).SyncRoot)
+            AggroList.AddOrUpdate(living, Add, Update, aggroAmount);
+
+            static AggroAmount Add(GameLiving key, long arg)
             {
-                if (AggroTable.ContainsKey(living))
-                {
-                    long amount = AggroTable[living];
-                    amount += aggroAmount;
+                return new(Math.Max(0, arg));
+            }
 
-                    // can't be removed this way, set to minimum
-                    if (amount <= 0)
-                        amount = 1L;
-
-                    AggroTable[living] = amount;
-                }
-                else
-                    AggroTable[living] = aggroAmount > 0 ? aggroAmount : 1L;
+            static AggroAmount Update(GameLiving key, AggroAmount oldValue, long arg)
+            {
+                oldValue.Base = Math.Max(0, oldValue.Base + arg);
+                return oldValue;
             }
         }
 
-        public void PrintAggroTable()
-        {
-            StringBuilder sb = new();
-
-            foreach (GameLiving living in AggroTable.Keys)
-                sb.AppendLine($"Living: {living.Name}, aggro: {AggroTable[living].ToString()}");
-
-            Console.WriteLine(sb.ToString());
-        }
-
-        /// <summary>
-        /// Get current amount of aggro on aggrotable.
-        /// </summary>
-        public virtual long GetAggroAmountForLiving(GameLiving living)
-        {
-            lock ((AggroTable as ICollection).SyncRoot)
-            {
-                return AggroTable.ContainsKey(living) ? AggroTable[living] : 0;
-            }
-        }
-
-        /// <summary>
-        /// Remove one living from aggro list.
-        /// </summary>
         public virtual void RemoveFromAggroList(GameLiving living)
         {
-            lock ((AggroTable as ICollection).SyncRoot)
-                AggroTable.Remove(living);
+            AggroList.TryRemove(living, out _);
+        }
+
+        public List<(GameLiving, long)> GetOrderedAggroList()
+        {
+            // Potentially slow, so we cache the result.
+            lock (((ICollection) OrderedAggroList).SyncRoot)
+            {
+                if (!OrderedAggroList.Any())
+                    OrderedAggroList = AggroList.OrderByDescending(x => x.Value.Effective).Select(x => (x.Key, x.Value.Effective)).ToList();
+
+                return OrderedAggroList.ToList();
+            }
+        }
+
+        public long GetBaseAggroAmount(GameLiving living)
+        {
+            return AggroList.TryGetValue(living, out AggroAmount aggroAmount) ? aggroAmount.Base : 0;
         }
 
         /// <summary>
@@ -423,12 +387,15 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual void ClearAggroList()
         {
-            CanBAF = true; // Mobs that drop out of combat can BAF again
+            CanBAF = true; // Mobs that drop out of combat can BAF again.
+            AggroList.Clear();
 
-            lock ((AggroTable as ICollection).SyncRoot)
+            lock (((ICollection) OrderedAggroList).SyncRoot)
             {
-                AggroTable.Clear();
+                OrderedAggroList.Clear();
             }
+
+            LastHighestThreatInAttackRange = null;
         }
 
         /// <summary>
@@ -438,9 +405,6 @@ namespace DOL.AI.Brain
         {
             if (!IsActive)
                 return;
-
-            if (ECS.Debug.Diagnostics.AggroDebugEnabled)
-                PrintAggroTable();
 
             Body.TargetObject = CalculateNextAttackTarget();
 
@@ -468,70 +432,83 @@ namespace DOL.AI.Brain
             }
         }
 
-        /// <summary>
-        /// Returns whether or not 'living' is still a valid target.
-        /// </summary>
-        protected virtual bool ShouldThisLivingBeFilteredOutFromAggroList(GameLiving living)
+        protected virtual bool ShouldBeRemovedFromAggroList(GameLiving living)
         {
+            // Keep Necromancer shades so that we can attack them if their pets die.
             return !living.IsAlive ||
                    living.ObjectState != GameObject.eObjectState.Active ||
                    living.IsStealthed ||
                    living.CurrentRegion != Body.CurrentRegion ||
                    !Body.IsWithinRadius(living, MAX_AGGRO_LIST_DISTANCE) ||
-                   !GameServer.ServerRules.IsAllowedToAttack(Body, living, true);
+                   (!GameServer.ServerRules.IsAllowedToAttack(Body, living, true) && !living.effectListComponent.ContainsEffectForEffectType(eEffect.Shade));
         }
 
-        /// <summary>
-        /// Returns a copy of 'aggroList' ordered by aggro amount (descending), modified by range.
-        /// </summary>
-        protected virtual List<KeyValuePair<GameLiving, long>> OrderAggroListByModifiedAggroAmount(Dictionary<GameLiving, long> aggroList)
+        protected virtual bool ShouldBeIgnoredFromAggroList(GameLiving living)
         {
-            return aggroList.OrderByDescending(x => x.Value * Math.Min(500.0 / Body.GetDistanceTo(x.Key), 1)).ToList();
+            // We're keeping shades in the aggro list so that mobs attack them after their pet dies, so they need to be filtered out here.
+            return living.effectListComponent.ContainsEffectForEffectType(eEffect.Shade);
         }
 
-        /// <summary>
-        /// Filters out invalid targets from the current aggro list and returns a copy.
-        /// </summary>
-        protected virtual Dictionary<GameLiving, long> FilterOutInvalidLivingsFromAggroList()
+        protected virtual GameLiving CleanUpAggroListAndGetHighestModifiedThreat()
         {
-            Dictionary<GameLiving, long> tempAggroList;
-            bool modified = false;
+            // Clear cached ordered aggro list.
+            // It isn't built here because ordering all entities in the aggro list can be expensive, and we typically don't need it.
+            // It's built on demand, when `GetOrderedAggroList` is called.
+            OrderedAggroList.Clear();
 
-            lock ((AggroTable as ICollection).SyncRoot)
-            {
-                tempAggroList = new Dictionary<GameLiving, long>(AggroTable);
-            }
+            if (AggroList.IsEmpty)
+                return null;
 
-            foreach (KeyValuePair<GameLiving, long> pair in tempAggroList.ToList())
+            int attackRange = Body.AttackRange;
+            GameLiving highestThreat = null;
+            long highestEffectiveAggro = -1; // Assumes that negative aggro amounts aren't allowed in the list.
+            long highestEffectiveAggroInAttackRange = -1; // Assumes that negative aggro amounts aren't allowed in the list.
+
+            foreach (var pair in AggroList)
             {
                 GameLiving living = pair.Key;
 
-                if (living == null)
+                if (ShouldBeRemovedFromAggroList(living))
+                {
+                    AggroList.TryRemove(living, out _);
+                    continue;
+                }
+
+                if (ShouldBeIgnoredFromAggroList(living))
                     continue;
 
-                // Check to make sure this living is still a valid target.
-                if (ShouldThisLivingBeFilteredOutFromAggroList(living))
-                {
-                    // Keep Necromancer shades so that we can attack them if their pets die.
-                    if (EffectListService.GetEffectOnTarget(living, eEffect.Shade) != null)
-                        continue;
+                // Livings further than `EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD` units away have a reduced effective aggro amount.
+                AggroAmount aggroAmount = pair.Value;
+                double distance = Body.GetDistanceTo(living);
+                aggroAmount.Effective = distance > EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD ?
+                                        (long) Math.Floor(aggroAmount.Base * (EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD / distance)) :
+                                        aggroAmount.Base;
 
-                    modified = true;
-                    tempAggroList.Remove(living);
+                if (aggroAmount.Effective > highestEffectiveAggroInAttackRange)
+                {
+                    if (distance <= attackRange)
+                    {
+                        highestEffectiveAggroInAttackRange = aggroAmount.Effective;
+                        LastHighestThreatInAttackRange = living;
+                    }
+
+                    if (aggroAmount.Effective > highestEffectiveAggro)
+                    {
+                        highestEffectiveAggro = aggroAmount.Effective;
+                        highestThreat = living;
+                    }
                 }
             }
 
-            if (modified)
+            if (highestThreat == null)
             {
-                // Body.attackComponent.RemoveAttacker(removable.Key); ???
-
-                lock ((AggroTable as ICollection).SyncRoot)
-                {
-                    AggroTable = tempAggroList.ToDictionary(x => x.Key, x => x.Value);
-                }
+                // The list seems to be full of shades. It could mean we added a shade to the aggro list instead of its pet.
+                // Ideally, this should never happen, but it currently can be caused by the way `AddToAggroList` propagates aggro to group members.
+                // When that happens, don't bother checking aggro amount and simply return the first pet in the list.
+                return AggroList.FirstOrDefault().Key?.ControlledBrain?.Body;
             }
 
-            return tempAggroList;
+            return highestThreat;
         }
 
         /// <summary>
@@ -539,21 +516,7 @@ namespace DOL.AI.Brain
         /// </summary>
         protected virtual GameLiving CalculateNextAttackTarget()
         {
-            // Filter out invalid entities (updates the list), then order the returned copy by (modified) aggro amount.
-            List<KeyValuePair<GameLiving, long>> aggroList = OrderAggroListByModifiedAggroAmount(FilterOutInvalidLivingsFromAggroList());
-
-            // We keep shades in aggro lists so that mobs attack them after their pet dies, but we must never return one.
-            GameLiving nextTarget = aggroList.Find(x => EffectListService.GetEffectOnTarget(x.Key, eEffect.Shade) == null).Key;
-
-            if (nextTarget != null)
-                return nextTarget;
-
-            // The list is either empty or full of shades.
-            // If it's empty, return null.
-            // If we found a shade, return the pet instead (if there's one). Ideally this should never happen.
-            // If it does, it means we added the shade to the aggro list instead of the pet.
-            // Which is currently the case due to the way 'AddToAggroList' propagates aggro to group members, and maybe other places.
-            return aggroList.FirstOrDefault().Key?.ControlledBrain?.Body;
+            return CleanUpAggroListAndGetHighestModifiedThreat();
         }
 
         public virtual bool CanAggroTarget(GameLiving target)
@@ -599,7 +562,7 @@ namespace DOL.AI.Brain
                 FSM.SetCurrentState(eFSMStateType.AGGRO);
                 Think();
             }
-        } 
+        }
 
         /// <summary>
         /// Converts a damage amount into an aggro amount, and splits it between the pet and its owner if necessary.

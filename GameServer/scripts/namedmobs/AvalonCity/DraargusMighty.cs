@@ -287,7 +287,7 @@ namespace DOL.AI.Brain
                 {
 					if(player != null)
                     {
-						if(player.IsAlive && AggroTable.ContainsKey(player) && player.Client.Account.PrivLevel == 1)
+						if(player.IsAlive && AggroList.ContainsKey(player) && player.Client.Account.PrivLevel == 1)
                         {
 							if(!player.IsWithinRadius(Body,200))
                             {

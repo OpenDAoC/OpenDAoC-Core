@@ -667,8 +667,8 @@ namespace DOL.AI.Brain
 					{
 						if (!GlareRoam_Enemys.Contains(player))
 							GlareRoam_Enemys.Add(player);
-						if (!AggroTable.ContainsKey(player))
-							AggroTable.Add(player, 100);
+
+						AggroList.TryAdd(player, new(100));
 					}
 				}
 				if (GlareRoam_Enemys.Count > 0)

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -1250,7 +1250,7 @@ namespace DOL.AI.Brain
         List<GamePlayer> inRangeLiving;
         public void PickRandomTarget()
         {
-            IList enemies = new ArrayList(AggroTable.Keys);
+            List<GameLiving> enemies = AggroList.Keys.ToList();
 
             foreach (GamePlayer player in Body.GetPlayersInRadius(1100))
             {
@@ -1259,15 +1259,9 @@ namespace DOL.AI.Brain
                     if (player.IsAlive && player.Client.Account.PrivLevel == 1)
                     {
                         if (player.GetDistanceTo(Body) < 1100 && player.IsVisibleTo(Body))
-                        {
-                            if (!AggroTable.ContainsKey(player))
-                                AggroTable.Add(player, 1);
-                        }
+                            AggroList.TryAdd(player, new());
                         else
-                        {
-                            if (AggroTable.ContainsKey(player))
-                                AggroTable.Remove(player);
-                        }
+                            AggroList.TryRemove(RandomTarget, out _);
                     }
                 }
             }
@@ -1305,16 +1299,12 @@ namespace DOL.AI.Brain
                             if (!RandomTarget.effectListComponent.ContainsEffectForEffectType(eEffect.Mez))
                             {
                                 Body.CastSpell(Mezz, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                                AggroTable.Remove(RandomTarget);
-                                AggroTable.Remove(RandomTarget);
+                                AggroList.TryRemove(RandomTarget, out _);
                             }
                         }
                     }
                     else
-                    {
-                        AggroTable.Remove(RandomTarget);
-                        AggroTable.Remove(RandomTarget);
-                    }
+                        AggroList.TryRemove(RandomTarget, out _);
                 }
             }
         }
@@ -1327,8 +1317,7 @@ namespace DOL.AI.Brain
             if (Body.TargetObject != null)
             {
                 Body.CastSpell(AirDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-                AggroTable.Remove(RandomTarget);
-                AggroTable.Remove(RandomTarget);
+                AggroList.TryRemove(RandomTarget, out _);
             }
             RandomTarget = null;
             if (oldTarget != null) Body.TargetObject = oldTarget;
@@ -1358,10 +1347,7 @@ namespace DOL.AI.Brain
                 if (player != null)
                 {
                     if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                    {
-                        if (!AggroTable.ContainsKey(player))
-                            AggroTable.Add(player, 100);
-                    }
+                        AggroList.TryAdd(player, new(100));
                 }
             }
             Point3D point1 = new Point3D();
@@ -1730,11 +1716,6 @@ namespace DOL.AI.Brain
                 return;
             else
             {
-                if (ECS.Debug.Diagnostics.AggroDebugEnabled)
-                {
-                    PrintAggroTable();
-                }
-
                 Body.TargetObject = CalculateNextAttackTarget();
 
                 if (Body.TargetObject != null)
@@ -2041,10 +2022,7 @@ namespace DOL.AI.Brain
                     if (player != null)
                     {
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                        {
-                            if (!AggroTable.ContainsKey(player))
-                                AggroTable.Add(player, 100);
-                        }
+                            AggroList.TryAdd(player, new(100));
                     }
                 }
                 if (CanSpawnFire == false)
@@ -2417,11 +2395,13 @@ namespace DOL.AI.Brain
                 {
                     Point3D spawn = new Point3D(Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z);
                     GameLiving target = Body.TargetObject as GameLiving;
-                    if (!target.IsWithinRadius(spawn, 900) && AggroTable.ContainsKey(target) && target != null && target.IsAlive)
+                    if (!target.IsWithinRadius(spawn, 900) && target != null && target.IsAlive)
                     {
-                        AggroTable.Remove(target);
-                        CalculateNextAttackTarget();
-                        CanSwitchTarget = false;
+                        if (AggroList.TryRemove(target, out _))
+                        {
+                            CalculateNextAttackTarget();
+                            CanSwitchTarget = false;
+                        }
                     }
                 }
             }

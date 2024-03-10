@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-
 
 namespace DOL.GS
 {
@@ -739,8 +738,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroTable.Clear();
-                AggroTable.Add(RandomTarget, 500);
+                AggroList.Clear();
+                AggroList.TryAdd(RandomTarget, new(500));
                 switch_target = false;
             }
 
@@ -938,8 +937,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroTable.Clear();
-                AggroTable.Add(RandomTarget, 500);
+                AggroList.Clear();
+                AggroList.TryAdd(RandomTarget, new(500));
                 switch_target = false;
             }
             return 0;
@@ -1136,8 +1135,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroTable.Clear();
-                AggroTable.Add(RandomTarget, 500);
+                AggroList.Clear();
+                AggroList.TryAdd(RandomTarget, new(500));
                 switch_target = false;
             }
 
@@ -1337,8 +1336,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroTable.Clear();
-                AggroTable.Add(RandomTarget, 500);
+                AggroList.Clear();
+                AggroList.TryAdd(RandomTarget, new(500));
                 switch_target = false;
             }
 
@@ -1539,8 +1538,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroTable.Clear();
-                AggroTable.Add(RandomTarget, 500);
+                AggroList.Clear();
+                AggroList.TryAdd(RandomTarget, new(500));
                 switch_target = false;
             }
 
@@ -1742,8 +1741,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroTable.Clear();
-                AggroTable.Add(RandomTarget, 500);
+                AggroList.Clear();
+                AggroList.TryAdd(RandomTarget, new(500));
                 switch_target = false;
             }
 
@@ -1945,8 +1944,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroTable.Clear();
-                AggroTable.Add(RandomTarget, 500);
+                AggroList.Clear();
+                AggroList.TryAdd(RandomTarget, new(500));
                 switch_target = false;
             }
 
@@ -2149,8 +2148,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroTable.Clear();
-                AggroTable.Add(RandomTarget, 500);
+                AggroList.Clear();
+                AggroList.TryAdd(RandomTarget, new(500));
                 switch_target = false;
             }
 
@@ -2353,8 +2352,8 @@ namespace DOL.AI.Brain
             else
             {
                 RandomTarget = PlayersToAttack[Util.Random(0, PlayersToAttack.Count - 1)];
-                AggroTable.Clear();
-                AggroTable.Add(RandomTarget, 500);
+                AggroList.Clear();
+                AggroList.TryAdd(RandomTarget, new(500));
                 switch_target = false;
             }
 

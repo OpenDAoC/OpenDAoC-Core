@@ -363,19 +363,13 @@ namespace DOL.AI.Brain
                     if(player.IsAlive && player.IsVisibleTo(Body) && player.Client.Account.PrivLevel == 1 && (player.CharacterClass.ID == 6 || player.CharacterClass.ID == 10 || player.CharacterClass.ID == 48
                     || player.CharacterClass.ID == 46 || player.CharacterClass.ID == 47 || player.CharacterClass.ID == 42 || player.CharacterClass.ID == 28 || player.CharacterClass.ID == 26))
                     {
-                        if(!AggroTable.ContainsKey(player))
-                        {
-                            AggroTable.Add(player, 150);
+                        if (AggroList.TryAdd(player, new(150)))
                             Body.StartAttack(player);
-                        }
                     }
                     else
                     {
-                        if (!AggroTable.ContainsKey(player))
-                        {
-                            AggroTable.Add(player, 10);
+                        if (AggroList.TryAdd(player, new(10)))
                             Body.StartAttack(player);
-                        }
                     }
                 }
             }

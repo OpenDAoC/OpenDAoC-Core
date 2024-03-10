@@ -90,23 +90,19 @@ namespace DOL.AI.Brain
         {
             foreach(GamePlayer ppls in Body.GetPlayersInRadius(800))
             {
-                if (ppls != null && ppls.IsAlive && ppls.Client.Account.PrivLevel == 1 && !AggroTable.ContainsKey(ppls) && !isDisabled)
-                    AggroTable.Add(ppls,100);
-            }
-            foreach (GamePlayer player in Body.GetPlayersInRadius(200))
-            {
-                if (player != null)
+                if (ppls == null || !ppls.IsAlive || ppls.Client.Account.PrivLevel != 1 || isDisabled)
+                    continue;
+
+                AggroList.TryAdd(ppls, new(100));
+
+                if (ppls.IsWithinRadius(Body, 200))
                 {
-                    if (player.IsAlive)
-                    {
-                        if (player.Client.Account.PrivLevel == 1 && !Announcetext && !isDisabled)
-                        {
-                            BroadcastMessage("A terrifying cracking sound echoes in the caves! Falling ice slams into " + player.Name + "'s head!");                                                    
-                            Announcetext = true;
-                        }
-                    }
+
+                        BroadcastMessage($"A terrifying cracking sound echoes in the caves! Falling ice slams into {ppls.Name}'s head!");
+                        Announcetext = true;
                 }
             }
+
             if(Announcetext && !CanCast)
             {
                 new ECSGameTimer(Body, new ECSGameTimer.ECSTimerCallback(DealIceDD), 200);

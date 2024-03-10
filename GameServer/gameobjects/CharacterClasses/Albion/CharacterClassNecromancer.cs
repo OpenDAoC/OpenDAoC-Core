@@ -134,7 +134,7 @@ namespace DOL.GS
 								if (npcAttacker.Brain is IOldAggressiveBrain npcAttackerBrain)
 								{
 									npcAttacker.StopAttack();
-									npcAttackerBrain.AddToAggroList(pet, (int) (npcAttackerBrain.GetAggroAmountForLiving(Player) + 1));
+									npcAttackerBrain.AddToAggroList(pet, npcAttackerBrain.GetBaseAggroAmount(Player));
 								}
 							}
 						}

@@ -87,7 +87,11 @@ namespace DOL.AI.Brain
 			{
 				if (!CanAggroTarget(player))
 					continue;
+
 				if (Body is not GuardStealther && player.IsStealthed)
+					continue;
+
+				if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Shade))
 					continue;
 
 				WarMapMgr.AddGroup((byte) player.CurrentZone.ID, player.X, player.Y, player.Name, (byte) player.Realm);

@@ -82,7 +82,7 @@ namespace DOL.AI.Brain
 					}
 					if (player == null || !player.IsAlive || player.Client.Account.PrivLevel != 1)
 					{
-						if (AggroTable.Count > 0)
+						if (HasAggro)
 							ClearAggroList();//clear list if it contain any aggroed players
 					}
 				}

@@ -366,10 +366,10 @@ namespace DOL.AI.Brain
                     if (target.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedDebuff)) //if target got root
                     {
                         Body.StopAttack();
-                        AggroTable.Clear(); //clear aggro list
+                        AggroList.Clear(); //clear aggro list
                         if (RandomTarget != null && RandomTarget.IsAlive)
                         {
-                            AggroTable.Add(RandomTarget, 50); //add to aggro list our new random target
+                            AggroList.TryAdd(RandomTarget, new(50)); //add to aggro list our new random target
                             Body.StartAttack(RandomTarget);
                         }
                     }

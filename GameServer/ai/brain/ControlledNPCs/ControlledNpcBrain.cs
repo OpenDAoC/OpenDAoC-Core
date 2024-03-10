@@ -901,7 +901,7 @@ namespace DOL.AI.Brain
 			return AggroLevel > 0;
 		}
 
-		protected override bool ShouldThisLivingBeFilteredOutFromAggroList(GameLiving living)
+		protected override bool ShouldBeRemovedFromAggroList(GameLiving living)
 		{
 			if (living.IsMezzed ||
 				!living.IsAlive ||
@@ -909,16 +909,12 @@ namespace DOL.AI.Brain
 				living.CurrentRegion != Body.CurrentRegion ||
 				!Body.IsWithinRadius(living, MAX_AGGRO_LIST_DISTANCE) ||
 				!GameServer.ServerRules.IsAllowedToAttack(Body, living, true))
-				return true;
-			else
 			{
-				ECSGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
-
-				if (root != null && root.SpellHandler.Spell.Value == 99)
-					return true;
+				return true;
 			}
-			
-			return false;
+
+			ECSGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
+			return root != null && root.SpellHandler.Spell.Value == 99;
 		}
 
 		/// <summary>

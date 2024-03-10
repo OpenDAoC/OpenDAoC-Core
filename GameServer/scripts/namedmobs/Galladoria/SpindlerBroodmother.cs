@@ -513,13 +513,13 @@ namespace DOL.AI.Brain
                     {
                         if (Body.TargetObject != player)
                         {
-                            if (!AggroTable.ContainsKey(player))
+                            if (!AggroList.ContainsKey(player))
                                 AddToAggroList(player, 400);
                         }
                     }
                     else
                     {
-                        if (!AggroTable.ContainsKey(player))
+                        if (!AggroList.ContainsKey(player))
                             AddToAggroList(player, 10);
                     }
                 }

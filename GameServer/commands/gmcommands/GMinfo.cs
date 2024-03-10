@@ -286,17 +286,17 @@ namespace DOL.GS.Commands
 						info.Add("InView: " + target.TargetInView);
 					}
 
-					if (target.Brain != null && target.Brain is StandardMobBrain)
+					if (target.Brain is StandardMobBrain brain)
 					{
-						Dictionary<GameLiving, long> aggroList = (target.Brain as StandardMobBrain).AggroTable;
+						List<(GameLiving, long)> aggroList = brain.GetOrderedAggroList();
 
 						if (aggroList.Count > 0)
 						{
 							info.Add("");
 							info.Add("Aggro List:");
 
-							foreach (GameLiving living in aggroList.Keys)
-								info.Add(living.Name + ": " + aggroList[living]);
+							foreach ((GameLiving, long) pair in aggroList)
+								info.Add($"{pair.Item1.Name}: {pair.Item2}");
 						}
 					}
 

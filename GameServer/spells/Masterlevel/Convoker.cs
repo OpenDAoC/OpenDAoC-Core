@@ -875,7 +875,7 @@ public class MLBrain : GuardBrain
 
 		foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
 		{
-			if (AggroTable.ContainsKey(npc))
+			if (AggroList.ContainsKey(npc))
 				continue; // add only new npcs
 			if ((npc.Flags & GameNPC.eFlags.FLYING) != 0)
 				continue; // let's not try to attack flying mobs

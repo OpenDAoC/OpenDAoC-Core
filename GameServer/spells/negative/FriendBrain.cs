@@ -23,7 +23,7 @@ namespace DOL.AI.Brain
 			{
 				foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
 				{
-					if (AggroTable.ContainsKey(player))
+					if (AggroList.ContainsKey(player))
 						continue; // add only new players
 					if (!player.IsAlive || player.ObjectState != GameObject.eObjectState.Active || player.IsStealthed)
 						continue;

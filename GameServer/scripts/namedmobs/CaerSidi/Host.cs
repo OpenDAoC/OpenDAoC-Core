@@ -4060,10 +4060,8 @@ namespace DOL.AI.Brain
                 {
                     if (player != null)
                     {
-                        if (player.IsAlive && player.Client.Account.PrivLevel == 1 && !AggroTable.ContainsKey(player))
-                        {
+                        if (player.IsAlive && player.Client.Account.PrivLevel == 1 && !AggroList.ContainsKey(player))
                             AddToAggroList(player, 10);
-                        }
                     }
                 }
             }

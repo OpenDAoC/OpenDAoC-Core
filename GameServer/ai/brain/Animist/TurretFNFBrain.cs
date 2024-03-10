@@ -1,31 +1,14 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System.Collections.Generic;
 using System.Linq;
 using DOL.GS;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 
 namespace DOL.AI.Brain
 {
     public class TurretFNFBrain : TurretBrain
     {
+        private List<GameLiving> _filteredAggroList = new();
+
         public TurretFNFBrain(GameLiving owner) : base(owner)
         {
             // Forced to aggressive, otherwise 'CheckProximityAggro()' won't be called.
@@ -34,10 +17,9 @@ namespace DOL.AI.Brain
 
         public override bool CheckProximityAggro()
         {
-            // FnF turrets need to add all players and NPCs to their aggro list to be able to switch target randomnly and effectively.
+            // FnF turrets need to add all players and NPCs to their aggro list to be able to switch target randomly and effectively.
             CheckPlayerAggro();
             CheckNPCAggro();
-
             return HasAggro;
         }
 
@@ -52,7 +34,7 @@ namespace DOL.AI.Brain
                 if (player.IsStealthed || player.Steed != null)
                     continue;
 
-                if (player.EffectList.GetOfType<NecromancerShadeEffect>() != null)
+                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Shade))
                     continue;
 
                 if (GS.ServerProperties.Properties.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
@@ -103,24 +85,44 @@ namespace DOL.AI.Brain
             }
         }
 
+        protected override bool ShouldBeIgnoredFromAggroList(GameLiving living)
+        {
+            // We always return true because we don't care about what `CleanUpAggroListAndGetHighestModifiedThreat` returns.
+            // This is just an opportunity to build a filtered aggro list, to be used by `CalculateNextAttackTarget`.
+            if (LivingHasEffect(living, ((TurretPet) Body).TurretSpell) ||
+                living.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) ||
+                base.ShouldBeIgnoredFromAggroList(living))
+            {
+                return true;
+            }
+
+            _filteredAggroList.Add(living);
+            return true; 
+        }
+
+        protected override GameLiving CleanUpAggroListAndGetHighestModifiedThreat()
+        {
+            _filteredAggroList.Clear();
+            return base.CleanUpAggroListAndGetHighestModifiedThreat();
+        }
+
         protected override GameLiving CalculateNextAttackTarget()
         {
-            Dictionary<GameLiving, long> tempAggroList = FilterOutInvalidLivingsFromAggroList();
-            List<GameLiving> livingsWithoutEffect = tempAggroList.Where(IsLivingWithoutEffect).Select(x => x.Key).ToList();
+            CleanUpAggroListAndGetHighestModifiedThreat();
 
             // Prioritize targets that don't already have our effect and aren't immune to it.
             // If there's none, allow them to be attacked again but only if our spell does damage.
-            if (livingsWithoutEffect.Any())
-                return livingsWithoutEffect[Util.Random(livingsWithoutEffect.Count - 1)];
-            else if (tempAggroList.Count > 0 && ((TurretPet)Body).TurretSpell.Damage > 0)
-                return tempAggroList.ElementAt(Util.Random(tempAggroList.Count - 1)).Key;
+            if (_filteredAggroList.Any())
+                return _filteredAggroList[Util.Random(_filteredAggroList.Count - 1)];
+            else if (((TurretPet) Body).TurretSpell.Damage > 0)
+            {
+                List<GameLiving> tempAggroList = AggroList.Keys.ToList();
+
+                if (tempAggroList.Any())
+                    return tempAggroList[Util.Random(tempAggroList.Count - 1)];
+            }
 
             return null;
-
-            bool IsLivingWithoutEffect(KeyValuePair<GameLiving, long> livingPair)
-            {
-                return !LivingHasEffect(livingPair.Key, ((TurretPet)Body).TurretSpell) && EffectListService.GetEffectOnTarget(livingPair.Key, eEffect.SnareImmunity) == null;
-            }
         }
 
         public override void UpdatePetWindow() { }

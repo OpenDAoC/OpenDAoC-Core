@@ -284,7 +284,7 @@ namespace DOL.AI.Brain
                 {
                     if (npc != null)
                     {
-                        if (npc.IsAlive && npc.PackageID == "CryptLordBaf" && AggroTable.Count > 0 && npc.Brain is StandardMobBrain brain)
+                        if (npc.IsAlive && npc.PackageID == "CryptLordBaf" && AggroList.Count > 0 && npc.Brain is StandardMobBrain brain)
                         {
                             if (brain != null && !brain.HasAggro && target != null && target.IsAlive)
                                 brain.AddToAggroList(target, 10);

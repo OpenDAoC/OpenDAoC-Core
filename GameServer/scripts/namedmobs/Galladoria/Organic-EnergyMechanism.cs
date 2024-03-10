@@ -209,10 +209,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             if (Body.InCombatInLast(40 * 1000) == false && Body.InCombatInLast(45 * 1000))
-            {
-                if(AggroTable.Count>0)
-                    ClearAggroList();
-            }
+                ClearAggroList();
             if (!CheckProximityAggro())
             {
                 Body.Health = Body.MaxHealth;

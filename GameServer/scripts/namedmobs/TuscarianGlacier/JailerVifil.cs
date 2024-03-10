@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
-
 
 namespace DOL.GS
 {
@@ -147,16 +146,13 @@ namespace DOL.AI.Brain
 
         public void TeleportPlayer()
         {
-            IList enemies = new ArrayList(AggroTable.Keys);
+            List<GameLiving> enemies = AggroList.Keys.ToList();
             foreach (GamePlayer player in Body.GetPlayersInRadius(1100))
             {
                 if (player != null)
                 {
                     if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                    {
-                        if (!AggroTable.ContainsKey(player))
-                            AggroTable.Add(player, 1);
-                    }
+                        AggroList.TryAdd(player, new());
                 }
             }
             if (enemies.Count == 0)
@@ -184,8 +180,7 @@ namespace DOL.AI.Brain
                     GamePlayer PortTarget = (GamePlayer) damage_enemies[Util.Random(0, damage_enemies.Count - 1)];
                     if (PortTarget.IsVisibleTo(Body) && Body.TargetInView && PortTarget != null && PortTarget.IsAlive)
                     {
-                        AggroTable.Remove(PortTarget);
-                        AggroTable.Remove(PortTarget);
+                        AggroList.TryRemove(PortTarget, out _);
                         PortTarget.MoveTo(Body.CurrentRegionID, 16631, 58683, 10858, 2191);
                         PortTarget = null;
                     }

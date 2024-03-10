@@ -1,6 +1,5 @@
 ﻿using System;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
@@ -160,10 +159,6 @@ namespace DOL.AI.Brain
                 return;
             else
             {
-                if (ECS.Debug.Diagnostics.AggroDebugEnabled)
-                {
-                    PrintAggroTable();
-                }
                 Body.TargetObject = CalculateNextAttackTarget();
                 if (Body.TargetObject != null)
                 {

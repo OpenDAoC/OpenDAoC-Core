@@ -656,9 +656,9 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive && HasAggro)
             {
-                IDictionary<GameLiving, long> aggroList = (Body.Brain as LegionBrain).AggroTable;
-                IOrderedEnumerable<KeyValuePair<GameLiving, long>> tempAggroTable = aggroList.OrderByDescending(x => x.Value).Skip(topPlayersToIngore).OrderBy(x => random.Next());
-                foreach(KeyValuePair<GameLiving,long> items in tempAggroTable)
+                IDictionary<GameLiving, AggroAmount> aggroList = (Body.Brain as LegionBrain).AggroList;
+                IOrderedEnumerable<KeyValuePair<GameLiving, AggroAmount>> tempAggroTable = aggroList.OrderByDescending(x => x.Value.Effective).Skip(topPlayersToIngore).OrderBy(x => random.Next());
+                foreach(KeyValuePair<GameLiving, AggroAmount> items in tempAggroTable)
                 {
                     if (items.Key != null && items.Key.IsAlive && items.Key is GamePlayer player)
                     {

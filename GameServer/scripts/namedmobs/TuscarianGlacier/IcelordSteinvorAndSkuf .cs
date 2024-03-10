@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -243,16 +243,13 @@ namespace DOL.AI.Brain
         {
             if (Body.IsAlive)
             {
-                IList enemies = new ArrayList(AggroTable.Keys);
+                List<GameLiving> enemies = AggroList.Keys.ToList();
                 foreach (GamePlayer player in Body.GetPlayersInRadius(1100))
                 {
                     if (player != null)
                     {
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                        {
-                            if (!AggroTable.ContainsKey(player))
-                                AggroTable.Add(player, 1);
-                        }
+                            AggroList.TryAdd(player, new());
                     }
                 }
                 if (enemies.Count == 0)
@@ -759,10 +756,7 @@ namespace DOL.AI.Brain
                     if (player != null)
                     {
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                        {
-                            if (!AggroTable.ContainsKey(player))
-                                AggroTable.Add(player, 100);
-                        }
+                            AggroList.TryAdd(player, new(100));
                     }
                 }
             }

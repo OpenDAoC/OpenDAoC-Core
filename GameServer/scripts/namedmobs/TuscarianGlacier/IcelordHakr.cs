@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
@@ -188,16 +188,13 @@ namespace DOL.AI.Brain
         {
             if (HakrAdd.IceweaverCount > 0)
             {
-                IList enemies = new ArrayList(AggroTable.Keys);
+                List<GameLiving> enemies = AggroList.Keys.ToList();
                 foreach (GamePlayer player in Body.GetPlayersInRadius(1100))
                 {
                     if (player != null)
                     {
                         if (player.IsAlive && player.Client.Account.PrivLevel == 1)
-                        {
-                            if (!AggroTable.ContainsKey(player))
-                                AggroTable.Add(player, 1);
-                        }
+                            AggroList.TryAdd(player, new());
                     }
                 }
                 if (enemies.Count == 0)

@@ -162,13 +162,13 @@ namespace DOL.AI.Brain
             {
                 foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
                 {
-                    if (player != null && player.IsAlive && !AggroTable.ContainsKey(player) && player.Client.Account.PrivLevel == 1)
-                        AggroTable.Add(player, 10);
+                    if (player != null && player.IsAlive && player.Client.Account.PrivLevel == 1)
+                        AggroList.TryAdd(player, new(10));
                 }
                 foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
                 {
-                    if (npc != null && npc.IsAlive && npc.Realm != Body.Realm && !AggroTable.ContainsKey(npc))
-                        AggroTable.Add(npc, 10);
+                    if (npc != null && npc.IsAlive && npc.Realm != Body.Realm)
+                        AggroList.TryAdd(npc, new(10));
                 }
             }
             base.Think();
