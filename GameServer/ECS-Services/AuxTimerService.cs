@@ -56,7 +56,7 @@ namespace DOL.GS
 
         private long _nextTick;
 
-        public GameObject Owner { get; set; }
+        public GameObject Owner { get; private set; }
         public AuxECSTimerCallback Callback { get; set; }
         public int Interval { get; set; }
         public ref long NextTick => ref _nextTick;
@@ -145,7 +145,6 @@ namespace DOL.GS
     {
         public AuxECSGameTimerWrapperBase(GameObject owner) : base(owner)
         {
-            Owner = owner;
             Callback = new AuxECSTimerCallback(OnTick);
         }
 

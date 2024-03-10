@@ -1,24 +1,4 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
-using System.Linq;
 using DOL.GS.Keeps;
 
 namespace DOL.GS.PropertyCalc
@@ -46,12 +26,8 @@ namespace DOL.GS.PropertyCalc
                 case GameKeepDoor:
                 case GameKeepComponent:
                     return CalculateKeepComponentArmorFactor(living);
-                case GameEpicNPC:
-                case GameEpicBoss:
-                {
-                    double epicScaleFactor = CalculateEpicScaleFactor(living);
-                    return CalculateLivingArmorFactor(living, property, 12.0 * epicScaleFactor, 50.0, false);
-                }
+                case IGameEpicNpc:
+                    return CalculateLivingArmorFactor(living, property, 12.0 * (living as IGameEpicNpc).ArmorFactorScalingFactor, 50.0, false);
                 case GameSummonedPet:
                     return CalculateLivingArmorFactor(living, property, 12.0, living is NecromancerPet ? 121.0 : 175.0, true);
                 default:
@@ -99,45 +75,6 @@ namespace DOL.GS.PropertyCalc
             double keepLevelMod = 1 + component.Keep.Level * 0.1;
             int typeMod = component.Keep is GameKeep ? 4 : 2;
             return Math.Max(1, (int) (component.Keep.BaseLevel * keepLevelMod * typeMod));
-        }
-
-        private static double CalculateEpicScaleFactor(GameLiving living)
-        {
-            double epicScaleFactor;
-            int petCap;
-
-            if (living is GameEpicBoss)
-            {
-                epicScaleFactor = 1.6;
-                petCap = 24;
-            }
-            else
-            {
-                epicScaleFactor = 0.8;
-                petCap = 16;
-            }
-
-            int petCount = 0;
-
-            // TODO: Find a way to remove `ToList` call.
-            foreach (GameLiving attacker in living.attackComponent.Attackers.Keys)
-            {
-                if (attacker is GamePlayer)
-                    epicScaleFactor -= 0.04;
-                else if (attacker is GameSummonedPet && petCount <= petCap)
-                {
-                    epicScaleFactor -= 0.01;
-                    petCount++;
-                }
-
-                if (epicScaleFactor < 0.4)
-                {
-                    epicScaleFactor = 0.4;
-                    break;
-                }
-            }
-
-            return epicScaleFactor;
         }
     }
 }

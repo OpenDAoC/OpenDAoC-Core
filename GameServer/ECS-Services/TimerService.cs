@@ -83,7 +83,7 @@ namespace DOL.GS
 
         private long _nextTick;
 
-        public GameObject Owner { get; set; }
+        public GameObject Owner { get; private set; }
         public ECSTimerCallback Callback { get; set; }
         public int Interval { get; set; }
         public ref long NextTick => ref _nextTick;
@@ -172,7 +172,6 @@ namespace DOL.GS
     {
         public ECSGameTimerWrapperBase(GameObject owner) : base(owner)
         {
-            Owner = owner;
             Callback = new ECSTimerCallback(OnTick);
         }
 

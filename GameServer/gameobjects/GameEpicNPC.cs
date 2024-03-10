@@ -5,11 +5,16 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS
 {
-    public class GameEpicNPC : GameNPC
+    public class GameEpicNPC : GameNPC, IGameEpicNpc
     {
+        public double DefaultArmorFactorScalingFactor => 0.8;
+        public int ArmorFactorScalingFactorPetCap => 16;
+        public double ArmorFactorScalingFactor { get; set; }
+
         public GameEpicNPC() : base()
         {
             ScalingFactor = 60;
+            ArmorFactorScalingFactor = DefaultArmorFactorScalingFactor;
         }
 
         public override bool HasAbility(string keyName)

@@ -35,15 +35,14 @@ namespace DOL.GS
         /// </summary>
         public ConcurrentDictionary<GameLiving, long> Attackers { get; private set; } = new();
 
-        private ECSGameTimer _attackersCheckTimer;
-        private object _attackersCheckTimerLock = new();
+        private AttackersCheckTimer _attackersCheckTimer;
 
         public void AddAttacker(GameLiving target)
         {
             if (target == owner)
                 return;
 
-            lock (_attackersCheckTimerLock)
+            lock (_attackersCheckTimer.LockObject)
             {
                 if (!_attackersCheckTimer.IsAlive)
                 {
@@ -52,19 +51,17 @@ namespace DOL.GS
                 }
             }
 
-            long until = GameLoop.GameLoopTime + 5000; // Use interrupt duration instead?
-            Attackers.AddOrUpdate(target, until, (key, oldValue) => until);
-        }
+            Attackers.AddOrUpdate(target, Add, Update, GameLoop.GameLoopTime + 5000); // Use interrupt duration instead?
 
-        private int CheckAttackers(ECSGameTimer timer)
-        {
-            foreach (var pair in Attackers)
+            static long Add(GameLiving key, long arg)
             {
-                if (pair.Value < GameLoop.GameLoopTime)
-                    Attackers.TryRemove(pair);
+                return arg;
             }
 
-            return Attackers.IsEmpty ? 0 : CHECK_ATTACKERS_INTERVAL;
+            static long Update(GameLiving key, long oldValue, long arg)
+            {
+                return arg;
+            }
         }
 
         /// <summary>
@@ -87,7 +84,7 @@ namespace DOL.GS
         {
             this.owner = owner;
             attackAction = AttackAction.Create(owner);
-            _attackersCheckTimer = new(owner, CheckAttackers);
+            _attackersCheckTimer = AttackersCheckTimer.Create(owner);
         }
 
         public void Tick()
@@ -2836,7 +2833,7 @@ namespace DOL.GS
                 {
                     int spec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
                     double effectiveness = CalculateLeftAxeModifier();
-;
+
                     player.Out.SendMessage($"{Math.Round(effectiveness * 100, 2)}% dmg (after LA penalty) \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
@@ -2899,6 +2896,85 @@ namespace DOL.GS
                 return modifier + owner.GetModified(eProperty.OffhandDamageAndChance) * 0.01;
 
             return modifier;
+        }
+
+        public class StandardAttackersCheckTimer : AttackersCheckTimer
+        {
+            public StandardAttackersCheckTimer(GameObject owner) : base(owner) { }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                foreach (var pair in _owner.attackComponent.Attackers)
+                    TryRemoveAttacker(pair);
+
+                return base.OnTick(timer);
+            }
+        }
+
+        public class EpicNpcAttackersCheckTimer : AttackersCheckTimer
+        {
+            private IGameEpicNpc _epicNpc;
+
+            public EpicNpcAttackersCheckTimer(GameObject owner) : base(owner)
+            {
+                _epicNpc = owner as IGameEpicNpc;
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                // Update `ArmorFactorScalingFactor`.
+                double armorFactorScalingFactor = _epicNpc.DefaultArmorFactorScalingFactor;
+                int petCount = 0;
+
+                foreach (var pair in _owner.attackComponent.Attackers)
+                {
+                    if (TryRemoveAttacker(pair))
+                        continue;
+
+                    if (pair.Key is GamePlayer)
+                        armorFactorScalingFactor -= 0.04;
+                    else if (pair.Key is GameSummonedPet && petCount <= _epicNpc.ArmorFactorScalingFactorPetCap)
+                    {
+                        armorFactorScalingFactor -= 0.01;
+                        petCount++;
+                    }
+
+                    if (armorFactorScalingFactor < 0.4)
+                    {
+                        armorFactorScalingFactor = 0.4;
+                        break;
+                    }
+                }
+
+                _epicNpc.ArmorFactorScalingFactor = armorFactorScalingFactor;
+                return base.OnTick(timer);
+            }
+        }
+
+        public abstract class AttackersCheckTimer : ECSGameTimerWrapperBase
+        {
+            protected GameLiving _owner;
+            public object LockObject { get; } = new();
+
+            public AttackersCheckTimer(GameObject owner) : base(owner)
+            {
+                _owner = owner as GameLiving;
+            }
+
+            public static AttackersCheckTimer Create(GameLiving owner)
+            {
+                return owner is IGameEpicNpc ? new EpicNpcAttackersCheckTimer(owner) : new StandardAttackersCheckTimer(owner);
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                return _owner.attackComponent.Attackers.IsEmpty ? 0 : CHECK_ATTACKERS_INTERVAL;
+            }
+
+            protected bool TryRemoveAttacker(in KeyValuePair<GameLiving, long> pair)
+            {
+                return pair.Value < GameLoop.GameLoopTime && _owner.attackComponent.Attackers.TryRemove(pair);
+            }
         }
     }
 }
