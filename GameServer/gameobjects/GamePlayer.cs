@@ -867,81 +867,24 @@ namespace DOL.GS
         #endregion
 
         #region Player Linking Dead
-        /// <summary>
-        /// Callback method, called when the player went linkdead
-        /// </summary>
-        /// <param name="callingTimer">the timer</param>
-        /// <returns>0</returns>
-        protected int LinkdeathTimerCallback(AuxECSGameTimer callingTimer)
+
+        private LinkDeathTimer _linkDeathTimer;
+
+        public bool HasLinkDeathTimerActive => _linkDeathTimer?.IsAlive == true;
+
+        public void OnUpdatePosition()
         {
-            // Other clients will forget about us if we don't keep sending them packets
-            // Doesn't work well with dead characters
-            if (IsAlive && ObjectState == eObjectState.Active)
-            {
-                foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                {
-                    player.Client.Out.SendPlayerForgedPosition(this);
-                }
-            }
+            if (_linkDeathTimer == null)
+                return;
 
-            // Keep the callback alive until SECONDS_TO_QUIT_ON_LINKDEATH has passed
-            if (Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000 >= GameLoop.GameLoopTime && IsAlive)
-                return callingTimer.Interval;
-
-            // If we died during our callback time we release
-            try
-            {
-                if (!IsAlive)
-                {
-                    Release(m_releaseType, true);
-
-                    if (log.IsInfoEnabled)
-                        log.InfoFormat("Linkdead player {0}({1}) was auto-released from death!", Name, Client.Account.Name);
-                }
-
-                CraftingProgressMgr.FlushAndSaveInstance(this);
-                SaveIntoDatabase();
-            }
-            finally
-            {
-                Client.Quit();
-            }
-
-            return 0;
+            _linkDeathTimer.Stop();
+            MoveTo(_linkDeathTimer.LocationAtLinkDeath);
+            _linkDeathTimer = null;
         }
 
-        public void OnLinkdeath()
+        public void OnLinkDeath()
         {
-            if (log.IsInfoEnabled)
-                log.InfoFormat("Player {0}({1}) went linkdead!", Name, Client.Account.Name);
-
-            // Unshade necromancers.
-            if (Client.Player.CharacterClass.Player.IsShade)
-                Client.Player.CharacterClass.Player.Shade(false);
-
-            // Dead link-dead players release on live servers.
-            if (!IsAlive)
-            {
-                Release(m_releaseType, true);
-
-                if (log.IsInfoEnabled)
-                    log.InfoFormat("Linkdead player {0}({1}) was auto-released from death!", Name, Client.Account.Name);
-
-                SaveIntoDatabase();
-                Client.Quit();
-                return;
-            }
-
-            // Stop player if he's running.
-            CurrentSpeed = 0;
-
-            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            {
-                if (player == this || player.ObjectState != eObjectState.Active)
-                    continue;
-            }
-
-            UpdateEquipmentAppearance();
+            CurrentSpeed = 0; // Stop player if he's running.
             LeaveHouse();
 
             if (m_quitTimer != null)
@@ -951,19 +894,19 @@ namespace DOL.GS
             }
 
             if (log.IsInfoEnabled)
-                log.InfoFormat("Linkdead player {0}({1}) will quit in {2}", Name, Client.Account.Name, SECONDS_TO_QUIT_ON_LINKDEATH);
+                log.InfoFormat("Linkdead player {0}({1}) will quit in {2} seconds", Name, Client.Account.Name, SECONDS_TO_QUIT_ON_LINKDEATH);
 
             // Keep link-dead characters in game.
-            new AuxECSGameTimer(this, LinkdeathTimerCallback, 1750);
+            _linkDeathTimer = new(this);
 
             if (TradeWindow != null)
                 TradeWindow.CloseTrade();
 
             // Notify players in close proximity.
-            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
+            foreach (GamePlayer playerInRadius in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
             {
-                if (GameServer.ServerRules.IsAllowedToUnderstand(this, player))
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.OnLinkdeath.Linkdead", Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                if (playerInRadius != this && GameServer.ServerRules.IsAllowedToUnderstand(this, playerInRadius))
+                    playerInRadius.Out.SendMessage(LanguageMgr.GetTranslation(playerInRadius.Client.Account.Language, "GamePlayer.OnLinkdeath.Linkdead", Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
             // Notify other group members.
@@ -1191,6 +1134,53 @@ namespace DOL.GS
             }
 
             return true;
+        }
+
+        public class LinkDeathTimer : ECSGameTimerWrapperBase
+        {
+            private GamePlayer _playerOwner;
+            public GameLocation LocationAtLinkDeath { get; private set; }
+
+            public LinkDeathTimer(GameObject owner) : base(owner)
+            {
+                _playerOwner = owner as GamePlayer;
+                LocationAtLinkDeath = new(string.Empty, _playerOwner.CurrentRegionID, _playerOwner.X, _playerOwner.Y, _playerOwner.Z, _playerOwner.Heading);
+                Start(1750);
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                if (_playerOwner.ObjectState == eObjectState.Active)
+                {
+                    foreach (GamePlayer playerInRadius in _playerOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        playerInRadius.Out.SendPlayerForgedPosition(_playerOwner);
+                }
+
+                if (_playerOwner.Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000 >= GameLoop.GameLoopTime)
+                    return Interval;
+
+                if (!IsAlive)
+                {
+                    _playerOwner.Release(_playerOwner.ReleaseType, true);
+
+                    if (log.IsInfoEnabled)
+                        log.InfoFormat($"Linkdead player {_playerOwner.Name}({_playerOwner.Client.Account.Name}) was auto-released from death!");
+                }
+
+                try
+                {
+                    CraftingProgressMgr.FlushAndSaveInstance(_playerOwner);
+                    _playerOwner.SaveIntoDatabase();
+                }
+                finally
+                {
+                    // We may still be playing if this was a soft LD, so we change the state here too.
+                    _playerOwner.Client.ClientState = GameClient.eClientState.Linkdead;
+                    GameServer.Instance.Disconnect(_playerOwner.Client);
+                }
+
+                return 0;
+            }
         }
 
         #endregion

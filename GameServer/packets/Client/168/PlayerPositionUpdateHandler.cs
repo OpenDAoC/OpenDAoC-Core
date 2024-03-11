@@ -31,6 +31,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 		//static int lastZ=int.MinValue;
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
+			client.OnUpdatePosition();
+
 			//Tiv: in very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
 			if ((client.Player.ObjectState != GameObject.eObjectState.Active) || (client.ClientState != GameClient.eClientState.Playing))
 				return;
@@ -61,7 +63,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				return;
 			}
 
-			long environmentTick = GameLoop.GameLoopTime; 
+			long environmentTick = GameLoop.GameLoopTime;
 			int oldSpeed = client.Player.CurrentSpeed;
 
 			//read the state of the player

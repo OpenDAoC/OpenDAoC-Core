@@ -287,11 +287,11 @@ namespace DOL.GS
 				    (oldState != eClientState.CharScreen && value == eClientState.CharScreen))
 				{
 					PingTime = GameLoop.GetCurrentTime();
+					PositionUpdateTime = GameLoop.GetCurrentTime();
 				}
 
 				m_clientState = value;
 				GameEventMgr.Notify(GameClientEvent.StateChanged, this);
-				//DOLConsole.WriteSystem("New State="+value.ToString());
 			}
 		}
 
@@ -299,6 +299,8 @@ namespace DOL.GS
 		/// When the linkdeath occured. 0 if there wasn't any
 		/// </summary>
 		public long LinkDeathTime { get; set; }
+
+		public long PositionUpdateTime { get; set; }
 
 		/// <summary>
 		/// Variable is false if account/player is Ban, for a wrong password, if server is closed etc ... 
@@ -539,13 +541,16 @@ namespace DOL.GS
 		/// </summary>
 		public override void OnDisconnect()
 		{
+			bool wasPlaying = false;
+
 			try
 			{
 				//If we went linkdead and we were inside the game
 				//we don't let the player disappear!
 				if (ClientState == eClientState.Playing)
 				{
-					OnLinkdeath();
+					wasPlaying = true;
+					OnLinkDeath(false);
 					return;
 				}
 
@@ -560,7 +565,7 @@ namespace DOL.GS
 			finally
 			{
 				// Make sure the client is disconnected even on errors but only if OnLinkDeath() wasn't called.
-				if (ClientState != eClientState.Linkdead)
+				if (!wasPlaying)
 					Quit();
 			}
 		}
@@ -704,13 +709,19 @@ namespace DOL.GS
 			}
 		}
 
+		public void OnUpdatePosition()
+		{
+			PositionUpdateTime = GameLoop.GetCurrentTime();
+			m_player.OnUpdatePosition();
+		}
+
 		/// <summary>
 		/// Called when a player goes linkdead
 		/// </summary>
-		protected void OnLinkdeath()
+		public void OnLinkDeath(bool soft)
 		{
 			if (log.IsDebugEnabled)
-				log.Debug("Linkdeath called (" + Account.Name + ")  client state=" + ClientState);
+				log.Debug($"OnLinkDeath called (Account: {Account.Name}) (State: {ClientState}) (Soft: {soft})");
 
 			//If we have no sessionid we simply disconnect
 			GamePlayer curPlayer = Player;
@@ -720,11 +731,13 @@ namespace DOL.GS
 			}
 			else
 			{
-				ClientState = eClientState.Linkdead;
+				if (!soft)
+					ClientState = eClientState.Linkdead;
+
 				LinkDeathTime = GameLoop.GameLoopTime;
 				// If we have a good sessionid, we won't remove the client yet!
 				// OnLinkdeath() can start a timer to remove the client "a bit later"
-				curPlayer.OnLinkdeath();
+				curPlayer.OnLinkDeath();
 			}
 		}
 

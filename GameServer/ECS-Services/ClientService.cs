@@ -18,6 +18,7 @@ namespace DOL.GS
         private const string SERVICE_NAME = nameof(ClientService);
         private const int PING_TIMEOUT = 60000;
         private const int HARD_TIMEOUT = 600000;
+        private const int POSITION_UPDATE_TIMEOUT = 5000;
 
         private static List<GameClient> _clients = new();
         private static SimpleDisposableLock _lock = new();
@@ -66,7 +67,7 @@ namespace DOL.GS
                 }
                 case GameClient.eClientState.Playing:
                 {
-                    CheckPingTimeout(client);
+                    CheckPositionUpdateTimeout(client);
                     GamePlayer player = client.Player;
 
                     if (player?.ObjectState == GameObject.eObjectState.Active)
@@ -549,6 +550,17 @@ namespace DOL.GS
                     log.Warn($"Hard timeout for client {client}");
 
                 GameServer.Instance.Disconnect(client);
+            }
+        }
+
+        private static void CheckPositionUpdateTimeout(GameClient client)
+        {
+            if (client.PositionUpdateTime + POSITION_UPDATE_TIMEOUT < GameLoop.GetCurrentTime() && !client.Player.HasLinkDeathTimerActive)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Position update timeout for client {client}");
+
+                client.OnLinkDeath(true);
             }
         }
 
