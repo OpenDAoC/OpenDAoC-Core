@@ -664,44 +664,20 @@ namespace DOL.GS
 					//<**loki**>
 					if (Properties.KICK_IDLE_PLAYER_STATUS)
 					{
-						//Time playing
-						var connectedtime = DateTime.Now.Subtract(m_account.LastLogin).TotalMinutes;
-						//Lets get our player from DB.
-						var getp = GameServer.Database.FindObjectByKey<DbCoreCharacter>(m_player.InternalID);
-						//Let get saved poistion from DB.
-						int[] oldloc = { getp.Xpos, getp.Ypos, getp.Zpos, getp.Direction, getp.Region };
-						//Lets get current player Gloc.
-						int[] currentloc = { m_player.X, m_player.Y, m_player.Z, m_player.Heading, m_player.CurrentRegionID };
-						//Compapre Old and Current.
-						bool check = oldloc.SequenceEqual(currentloc);
-						//If match
-						if (check)
+						if (ServiceUtils.ShouldTickNoEarly(PositionUpdateTime + Properties.KICK_IDLE_PLAYER_TIME))
 						{
-							if (connectedtime > Properties.KICK_IDLE_PLAYER_TIME)
-							{
-								//Kick player
-								m_player.Out.SendPlayerQuit(true);
-								m_player.SaveIntoDatabase();
-								m_player.Quit(true);
-								//log
-								if (log.IsErrorEnabled)
-									log.Debug("Player " + m_player.Name + " Kicked due to Inactivity ");
-							}
+							ServiceUtils.KickPlayerToCharScreen(m_player);
+
+							if (log.IsInfoEnabled)
+								log.Info($"Player " + m_player.Name + " kicked due to inactivity.");
 						}
 						else
-						{
 							m_player.SaveIntoDatabase();
-						}
 					}
-
 					else
-					{
 						m_player.SaveIntoDatabase();
-					}
-
 				}
 			}
-
 			catch (Exception e)
 			{
 				if (log.IsErrorEnabled)
