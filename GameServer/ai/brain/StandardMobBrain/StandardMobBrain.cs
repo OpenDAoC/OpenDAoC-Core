@@ -294,7 +294,7 @@ namespace DOL.AI.Brain
 
             if (living is GamePlayer player)
             {
-                // If player is in group, add whole group to aggro list
+                // Add the whole group to the aggro list.
                 if (player.Group != null)
                 {
                     foreach (GamePlayer playerInGroup in player.Group.GetPlayersInTheGroup())
@@ -749,6 +749,9 @@ namespace DOL.AI.Brain
                     {
                         if (numAdds >= maxAdds)
                             break;
+
+                        if (npc == Body)
+                            continue;
 
                         // If it's a friend, have it attack
                         if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable && npc.Brain is StandardMobBrain brain)
