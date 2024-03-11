@@ -71,6 +71,8 @@ namespace DOL.GS
             if (player.Client.ClientState != GameClient.eClientState.Playing)
                 return;
 
+            player.Client.ClientState = GameClient.eClientState.CharScreen;
+
             if (player.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.IsShade)
                 player.Shade(false);
 
@@ -78,7 +80,6 @@ namespace DOL.GS
             player.Quit(true);
             CraftingProgressMgr.FlushAndSaveInstance(player);
             player.SaveIntoDatabase();
-            player.Client.ClientState = GameClient.eClientState.CharScreen;
         }
     }
 }
