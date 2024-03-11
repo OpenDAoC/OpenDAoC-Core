@@ -636,30 +636,17 @@ namespace DOL.AI.Brain
             if (!CanBAF)
                 return;
 
-            GamePlayer puller;  // player that triggered the BAF
-            GameLiving actualPuller;
+            GamePlayer playerPuller;
 
             // Only BAF on players and pets of players
             if (attacker is GamePlayer)
-            {
-                puller = (GamePlayer) attacker;
-                actualPuller = puller;
-            }
-            else if (attacker is GameSummonedPet pet && pet.Owner is GamePlayer owner)
-            {
-                puller = owner;
-                actualPuller = attacker;
-            }
-            else if (attacker is BDSubPet bdSubPet && bdSubPet.Owner is GameSummonedPet bdPet && bdPet.Owner is GamePlayer bdOwner)
-            {
-                puller = bdOwner;
-                actualPuller = bdPet;
-            }
+                playerPuller = (GamePlayer) attacker;
+            else if (attacker is GameNPC pet && pet.Brain is ControlledNpcBrain brain)
+                playerPuller = brain.GetPlayerOwner();
             else
                 return;
 
             CanBAF = false; // Mobs only BAF once per fight
-
             int numAttackers = 0;
 
             List<GamePlayer> victims = null; // Only instantiated if we're tracking potential victims
@@ -668,10 +655,10 @@ namespace DOL.AI.Brain
             HashSet<string> countedVictims = null;
             HashSet<string> countedAttackers = null;
 
-            BattleGroup bg = puller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            BattleGroup bg = playerPuller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
 
             // Check group first to minimize the number of HashSet.Add() calls
-            if (puller.Group is Group group)
+            if (playerPuller.Group is Group group)
             {
                 if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && bg != null)
                     countedAttackers = new HashSet<string>(); // We have to check for duplicates when counting attackers
@@ -690,7 +677,7 @@ namespace DOL.AI.Brain
 
                 foreach (GamePlayer player in group.GetPlayersInTheGroup())
                 {
-                    if (player != null && (player.InternalID == puller.InternalID || player.IsWithinRadius(puller, BAFPlayerRange, true)))
+                    if (player != null && (player.InternalID == playerPuller.InternalID || player.IsWithinRadius(playerPuller, BAFPlayerRange, true)))
                     {
                         numAttackers++;
                         countedAttackers?.Add(player.InternalID);
@@ -713,7 +700,7 @@ namespace DOL.AI.Brain
 
                 foreach (GamePlayer player2 in bg.Members.Keys)
                 {
-                    if (player2 != null && (player2.InternalID == puller.InternalID || player2.IsWithinRadius(puller, BAFPlayerRange, true)))
+                    if (player2 != null && (player2.InternalID == playerPuller.InternalID || player2.IsWithinRadius(playerPuller, BAFPlayerRange, true)))
                     {
                         if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && (countedAttackers == null || !countedAttackers.Contains(player2.InternalID)))
                             numAttackers++;
@@ -762,7 +749,7 @@ namespace DOL.AI.Brain
                             if (victims != null && victims.Count > 0)
                                 target = victims[Util.Random(0, victims.Count - 1)];
                             else
-                                target = actualPuller;
+                                target = attacker;
 
                             brain.AddToAggroList(target, 1);
                             brain.AttackMostWanted();
