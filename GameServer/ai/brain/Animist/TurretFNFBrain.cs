@@ -40,7 +40,7 @@ namespace DOL.AI.Brain
                 if (GS.ServerProperties.Properties.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
                     player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
                 else
-                    AddToAggroList(player, 0);
+                    AddToAggroList(player, 1);
             }
         }
 
@@ -69,7 +69,7 @@ namespace DOL.AI.Brain
                     }
                 }
 
-                AddToAggroList(npc, 0);
+                AddToAggroList(npc, 1);
             }
         }
 
@@ -81,7 +81,7 @@ namespace DOL.AI.Brain
                 GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
 
                 if (gameObject is GameLiving gameLiving)
-                    AddToAggroList(gameLiving, 0);
+                    AddToAggroList(gameLiving, 1);
             }
         }
 

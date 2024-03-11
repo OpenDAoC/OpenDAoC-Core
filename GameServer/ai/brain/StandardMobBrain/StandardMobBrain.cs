@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.Keeps;
@@ -135,7 +136,7 @@ namespace DOL.AI.Brain
                     player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
                 else
                 {
-                    AddToAggroList(player, 0);
+                    AddToAggroList(player, 1);
                     return;
                 }
             }
@@ -169,7 +170,7 @@ namespace DOL.AI.Brain
                     }
                 }
 
-                AddToAggroList(npc, 0);
+                AddToAggroList(npc, 1);
                 return;
             }
         }
@@ -291,8 +292,7 @@ namespace DOL.AI.Brain
             if (Body.IsConfused || !Body.IsAlive || living == null)
                 return;
 
-            // Only protect if gameplayer and aggroAmount > 0
-            if (living is GamePlayer player && aggroAmount > 0)
+            if (living is GamePlayer player)
             {
                 // If player is in group, add whole group to aggro list
                 if (player.Group != null)
@@ -301,37 +301,41 @@ namespace DOL.AI.Brain
                         AggroList.TryAdd(playerInGroup, new());
                 }
 
-                foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+                // Only protect if `aggroAmount` is positive.
+                if (aggroAmount > 0)
                 {
-                    if (protect.Target != living)
-                        continue;
-
-                    GameLiving protectSource = protect.Source;
-
-                    if (protectSource.IsIncapacitated || protectSource.IsSitting)
-                        continue;
-
-                    if (!living.IsWithinRadius(protectSource, ProtectAbilityHandler.PROTECT_DISTANCE))
-                        continue;
-
-                    // P I: prevents 10% of aggro amount
-                    // P II: prevents 20% of aggro amount
-                    // P III: prevents 30% of aggro amount
-                    // guessed percentages, should never be higher than or equal to 50%
-                    int abilityLevel = protectSource.GetAbilityLevel(Abilities.Protect);
-                    long protectAmount = (long) (abilityLevel * 0.1 * aggroAmount);
-
-                    if (protectAmount > 0)
+                    foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
                     {
-                        aggroAmount -= protectAmount;
+                        if (protect.Target != living)
+                            continue;
 
-                        if (protectSource is GamePlayer playerProtectSource)
+                        GameLiving protectSource = protect.Source;
+
+                        if (protectSource.IsIncapacitated || protectSource.IsSitting)
+                            continue;
+
+                        if (!living.IsWithinRadius(protectSource, ProtectAbilityHandler.PROTECT_DISTANCE))
+                            continue;
+
+                        // P I: prevents 10% of aggro amount
+                        // P II: prevents 20% of aggro amount
+                        // P III: prevents 30% of aggro amount
+                        // guessed percentages, should never be higher than or equal to 50%
+                        int abilityLevel = protectSource.GetAbilityLevel(Abilities.Protect);
+                        long protectAmount = (long) (abilityLevel * 0.1 * aggroAmount);
+
+                        if (protectAmount > 0)
                         {
-                            playerProtectSource.Out.SendMessage(LanguageMgr.GetTranslation(playerProtectSource.Client.Account.Language, "AI.Brain.StandardMobBrain.YouProtDist", player.GetName(0, false),
-                                Body.GetName(0, false, playerProtectSource.Client.Account.Language, Body)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        }
+                            aggroAmount -= protectAmount;
 
-                        AggroList.AddOrUpdate(protectSource, Add, Update, protectAmount);
+                            if (protectSource is GamePlayer playerProtectSource)
+                            {
+                                playerProtectSource.Out.SendMessage(LanguageMgr.GetTranslation(playerProtectSource.Client.Account.Language, "AI.Brain.StandardMobBrain.YouProtDist", player.GetName(0, false),
+                                    Body.GetName(0, false, playerProtectSource.Client.Account.Language, Body)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            }
+
+                            AggroList.AddOrUpdate(protectSource, Add, Update, protectAmount);
+                        }
                     }
                 }
             }
@@ -415,18 +419,24 @@ namespace DOL.AI.Brain
                 Body.StartAttack(newTarget);
         }
 
+        private long _isHandlingAdditionToAggroListFromLosCheck;
+        private bool StartAddToAggroListFromLosCheck => Interlocked.Exchange(ref _isHandlingAdditionToAggroListFromLosCheck, 1) == 0; // Returns true the first time it's called.
+
         protected virtual void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
-            // If we kept adding to the aggro list it would make mobs go from one target immediately to another.
-            if (HasAggro)
-                return;
-
-            if (response is eLosCheckResponse.TRUE)
+            // Make sure only one thread can enter this block to prevent multiple entities from being added to the aggro list.
+            // Otherwise mobs could kill one player and immediately go for another one.
+            if (response is eLosCheckResponse.TRUE && StartAddToAggroListFromLosCheck)
             {
-                GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
+                if (!HasAggro)
+                {
+                    GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
 
-                if (gameObject is GameLiving gameLiving)
-                    AddToAggroList(gameLiving, 0);
+                    if (gameObject is GameLiving gameLiving)
+                        AddToAggroList(gameLiving, 1);
+                }
+
+                _isHandlingAdditionToAggroListFromLosCheck = 0;
             }
         }
 
@@ -751,7 +761,7 @@ namespace DOL.AI.Brain
                             else
                                 target = actualPuller;
 
-                            brain.AddToAggroList(target, 0);
+                            brain.AddToAggroList(target, 1);
                             brain.AttackMostWanted();
                             numAdds++;
                         }
