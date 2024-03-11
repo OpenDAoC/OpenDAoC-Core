@@ -748,13 +748,14 @@ namespace DOL.GS
 		{
 			lock (this)
 			{
+				if (ClientState is eClientState.Disconnected)
+					return;
+
 				try
 				{
-					eClientState oldClientState = ClientState;
-
 					if (SessionID != 0)
 					{
-						if (oldClientState is eClientState.Playing or eClientState.WorldEnter or eClientState.Linkdead)
+						if (ClientState is eClientState.Playing or eClientState.WorldEnter or eClientState.Linkdead)
 						{
 							try
 							{
@@ -764,15 +765,6 @@ namespace DOL.GS
 							{
 								log.Error("player cleanup on client quit", e);
 							}
-						}
-
-						try
-						{
-							Player?.Delete();
-						}
-						catch (Exception e)
-						{
-							log.Error("client cleanup on quit", e);
 						}
 					}
 
