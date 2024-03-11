@@ -15,7 +15,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
             packet.Skip(4); //Skip the first 4 bytes
-            client.PingTime = GameLoop.GetCurrentTime();
+            client.PingTime = GameLoop.GameLoopTime;
             ulong timestamp = packet.ReadInt();
             client.Out.SendPingReply(timestamp, packet.Sequence);
         }

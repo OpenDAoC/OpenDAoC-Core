@@ -471,7 +471,7 @@ namespace DOL.GS
 				}
 
 				m_dayIncrement = Math.Max(0, Math.Min(1000, ServerProperties.Properties.WORLD_DAY_INCREMENT)); // increments > 1000 do not render smoothly on clients
-				m_dayStartTick = (int)GameLoop.GetCurrentTime() - (int)(DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
+				m_dayStartTick = (int) (GameLoop.GameLoopTime - DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
 				m_dayResetTimer = new Timer(new TimerCallback(DayReset), null, DAY / Math.Max(1, m_dayIncrement) / 2, DAY / Math.Max(1, m_dayIncrement));
 			}
 			catch (Exception e)
@@ -497,7 +497,7 @@ namespace DOL.GS
 		/// <param name="sender"></param>
 		private static void DayReset(object sender)
 		{
-			m_dayStartTick = (int)GameLoop.GetCurrentTime();
+			m_dayStartTick = (int) GameLoop.GameLoopTime;
 
 			foreach (GamePlayer player in ClientService.GetPlayers<object>(Predicate))
 				player.Out.SendTime();
@@ -526,7 +526,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				m_dayStartTick = (int)GameLoop.GetCurrentTime() - (int)(dayStart / m_dayIncrement); // set start time to ...
+				m_dayStartTick = (int) (GameLoop.GameLoopTime - dayStart / m_dayIncrement); // set start time to ...
 				m_dayResetTimer.Change((DAY - dayStart) / m_dayIncrement, Timeout.Infinite);
 			}
 
@@ -564,7 +564,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				long diff = GameLoop.GetCurrentTime() - m_dayStartTick;
+				long diff = GameLoop.GameLoopTime - m_dayStartTick;
 				long curTime = diff * m_dayIncrement;
 				return (uint)(curTime % DAY);
 			}

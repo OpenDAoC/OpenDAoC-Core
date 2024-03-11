@@ -498,7 +498,7 @@ namespace DOL.GS.PacketHandler
             {
                 // Would previously timeout after 50 seconds, but clients (1.127) send 'UDPInitRequestHandler' every 65 seconds.
                 // May vary depending on the client version.
-                if (GameLoop.GetCurrentTime() - m_client.UdpPingTime > 70000)
+                if (GameLoop.GameLoopTime - m_client.UdpPingTime > 70000)
                     m_client.UdpConfirm = false;
             }
 

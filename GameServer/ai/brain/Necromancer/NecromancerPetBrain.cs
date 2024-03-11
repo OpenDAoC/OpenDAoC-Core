@@ -515,7 +515,7 @@ namespace DOL.AI.Brain
         {
             if (GS.ServerProperties.Properties.ENABLE_DEBUG)
             {
-                long tick = GameLoop.GetCurrentTime();
+                long tick = GameLoop.GameLoopTime;
                 long seconds = tick / 1000;
                 long minutes = seconds / 60;
 

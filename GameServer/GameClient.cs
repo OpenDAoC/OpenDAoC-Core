@@ -198,7 +198,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the time of the last ping
 		/// </summary>
-		protected long m_pingTime = GameLoop.GetCurrentTime(); // give ping time on creation
+		protected long m_pingTime = GameLoop.GameLoopTime;
 
 		/// <summary>
 		/// This variable holds all info about the active player
@@ -218,7 +218,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the time of the last UDP ping
 		/// </summary>
-		protected long m_udpPingTime = GameLoop.GetCurrentTime();
+		protected long m_udpPingTime = GameLoop.GameLoopTime;
 
 		/// <summary>
 		/// Custom Account Params
@@ -245,7 +245,7 @@ namespace DOL.GS
 			m_tooltipRequestTimes.TryAdd(type, new());
 
 			// Queries cleanup
-			foreach (Tuple<int, int> keys in m_tooltipRequestTimes.SelectMany(e => e.Value.Where(it => it.Value < GameLoop.GetCurrentTime()).Select(el => new Tuple<int, int>(e.Key, el.Key))))
+			foreach (Tuple<int, int> keys in m_tooltipRequestTimes.SelectMany(e => e.Value.Where(it => it.Value < GameLoop.GameLoopTime).Select(el => new Tuple<int, int>(e.Key, el.Key))))
 				m_tooltipRequestTimes[keys.Item1].TryRemove(keys.Item2, out _);
 			
 			// Query hit ?
@@ -253,7 +253,7 @@ namespace DOL.GS
 				return false;
 		
 			// Query register
-			m_tooltipRequestTimes[type].TryAdd(id, GameLoop.GetCurrentTime()+3600000);
+			m_tooltipRequestTimes[type].TryAdd(id, GameLoop.GameLoopTime + 3600000);
 			return true;
 		}
 
@@ -286,8 +286,8 @@ namespace DOL.GS
 				if ((oldState != eClientState.Playing && value == eClientState.Playing) ||
 				    (oldState != eClientState.CharScreen && value == eClientState.CharScreen))
 				{
-					PingTime = GameLoop.GetCurrentTime();
-					PositionUpdateTime = GameLoop.GetCurrentTime();
+					PingTime = GameLoop.GameLoopTime;
+					PositionUpdateTime = GameLoop.GameLoopTime;
 				}
 
 				m_clientState = value;
@@ -687,7 +687,7 @@ namespace DOL.GS
 
 		public void OnUpdatePosition()
 		{
-			PositionUpdateTime = GameLoop.GetCurrentTime();
+			PositionUpdateTime = GameLoop.GameLoopTime;
 			m_player.OnUpdatePosition();
 		}
 

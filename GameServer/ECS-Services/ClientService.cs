@@ -533,7 +533,7 @@ namespace DOL.GS
 
         private static void CheckPingTimeout(GameClient client)
         {
-            if (client.PingTime + PING_TIMEOUT < GameLoop.GetCurrentTime())
+            if (ServiceUtils.ShouldTickNoEarly(client.PingTime + PING_TIMEOUT))
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Ping timeout for client {client}");
@@ -544,7 +544,7 @@ namespace DOL.GS
 
         private static void CheckHardTimeout(GameClient client)
         {
-            if (client.PingTime + HARD_TIMEOUT < GameLoop.GetCurrentTime())
+            if (ServiceUtils.ShouldTickNoEarly(client.PingTime + HARD_TIMEOUT))
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Hard timeout for client {client}");
@@ -555,7 +555,7 @@ namespace DOL.GS
 
         private static void CheckPositionUpdateTimeout(GameClient client)
         {
-            if (client.PositionUpdateTime + POSITION_UPDATE_TIMEOUT < GameLoop.GetCurrentTime() && !client.Player.HasLinkDeathTimerActive)
+            if (ServiceUtils.ShouldTickNoEarly(client.PositionUpdateTime + POSITION_UPDATE_TIMEOUT) && !client.Player.HasLinkDeathTimerActive)
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Position update timeout for client {client}");
