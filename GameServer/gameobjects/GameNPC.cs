@@ -2859,11 +2859,11 @@ namespace DOL.GS
 				if (ControlledBrain != null)
 					ControlledNPC_Release();
 
+				if (killer is GameNPC pet && pet.Brain is IControlledBrain petBrain)
+					killer = petBrain.GetPlayerOwner();
+
 				if (killer != null)
 				{
-					if (killer is GameNPC pet && pet.Brain is IControlledBrain petBrain)
-						killer = petBrain.GetPlayerOwner();
-
 					Diagnostics.StartPerfCounter($"ReaperService-NPC-ProcessDeath-DropLoot-NPC({hashCode})");
 
 					if (IsWorthReward)
@@ -3325,18 +3325,23 @@ namespace DOL.GS
 				if (GameMoney.IsItemMoney(lootTemplate.Name))
 				{
 					long value = lootTemplate.Price;
-					//GamePlayer killerPlayer = killer as GamePlayer;
 
 					//[StephenxPimentel] - Zone Bonus XP Support
-					if (ServerProperties.Properties.ENABLE_ZONE_BONUSES)
+					if (Properties.ENABLE_ZONE_BONUSES)
 					{
-						GamePlayer killerPlayer = killer as GamePlayer;
-						if (killer is GameNPC)
+						GamePlayer killerPlayer;
+
+						if (killer is GamePlayer player)
+							killerPlayer = player;
+						else if (killer is GameNPC npc)
 						{
-							if (killer is GameNPC && ((killer as GameNPC).Brain is IControlledBrain))
-								killerPlayer = ((killer as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-							else return;
+							if (npc.Brain is IControlledBrain brain)
+								killerPlayer = brain.GetPlayerOwner();
+							else
+								return;
 						}
+						else
+							return;
 
 						int zoneBonus = (((int)value * ZoneBonus.GetCoinBonus(killerPlayer) / 100));
 						if (zoneBonus > 0)

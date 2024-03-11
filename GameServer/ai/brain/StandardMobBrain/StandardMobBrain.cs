@@ -532,7 +532,12 @@ namespace DOL.AI.Brain
             GameLiving realTarget = target;
 
             if (realTarget is GameNPC npcTarget && npcTarget.Brain is IControlledBrain npcTargetBrain)
-                realTarget = npcTargetBrain.GetPlayerOwner();
+            {
+                GamePlayer realTargetOwner = npcTargetBrain.GetPlayerOwner();
+
+                if (realTargetOwner != null)
+                    realTarget = realTargetOwner;
+            }
 
             // Only attack if green+ to target
             if (realTarget.IsObjectGreyCon(Body))
@@ -642,7 +647,12 @@ namespace DOL.AI.Brain
             if (attacker is GamePlayer)
                 playerPuller = (GamePlayer) attacker;
             else if (attacker is GameNPC pet && pet.Brain is ControlledNpcBrain brain)
+            {
                 playerPuller = brain.GetPlayerOwner();
+
+                if (playerPuller == null)
+                    return;
+            }
             else
                 return;
 

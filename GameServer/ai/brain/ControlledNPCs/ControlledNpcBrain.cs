@@ -700,7 +700,7 @@ namespace DOL.AI.Brain
 
 					player = GetPlayerOwner();
 
-					if (player.Group != null)
+					if (player?.Group != null)
 					{
 						foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
 						{
@@ -732,7 +732,7 @@ namespace DOL.AI.Brain
 
 					player = GetPlayerOwner();
 
-					if (player.Group != null)
+					if (player?.Group != null)
 					{
 						foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
 						{
@@ -797,7 +797,7 @@ namespace DOL.AI.Brain
 					// Heal group
 					player = GetPlayerOwner();
 					ICollection<GamePlayer> playerGroup = null;
-					if (player.Group != null && (spell.Target is eSpellTarget.REALM or eSpellTarget.GROUP))
+					if (player?.Group != null && (spell.Target is eSpellTarget.REALM or eSpellTarget.GROUP))
 					{
 						playerGroup = player.Group.GetPlayersInTheGroup();
 
@@ -895,7 +895,10 @@ namespace DOL.AI.Brain
 			if (target is GameNPC npc && npc.Brain is IControlledBrain controlledBrain && controlledBrain.Owner != null)
 				target = controlledBrain.Owner;
 
-			if (!GameServer.ServerRules.IsAllowedToAttack(Body, target, true) || GetPlayerOwner().IsObjectGreyCon(target))
+			GameLiving ownerToCheck = GetPlayerOwner();
+			ownerToCheck ??= Owner;
+
+			if (!GameServer.ServerRules.IsAllowedToAttack(Body, target, true) || ownerToCheck.IsObjectGreyCon(target))
 				return false;
 
 			return AggroLevel > 0;

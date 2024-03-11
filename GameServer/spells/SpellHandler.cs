@@ -2782,8 +2782,7 @@ namespace DOL.GS.Spells
 					 && (type is eChatType.CT_YouHit or eChatType.CT_SpellResisted or eChatType.CT_Spell))
 			{
 				GamePlayer playerOwner = npcCasterBrain.GetPlayerOwner();
-				if (npcCasterBrain.GetPlayerOwner() != null)
-					playerOwner.MessageToSelf(message, type);
+				playerOwner?.MessageToSelf(message, type);
 			}
 		}
 

@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Linq;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
@@ -126,17 +107,18 @@ namespace DOL.GS.PropertyCalc
             }
             else if (living is GameNPC npc)
             {
-                IControlledBrain brain = npc.Brain as IControlledBrain;
-
-                if (!living.InCombat)
+                if (npc.Brain is IControlledBrain brain)
                 {
-                    if (brain?.Body != null)
+                    GameLiving owner = brain.Owner;
+
+                    if (owner != null && owner == brain.Body.FollowTarget)
                     {
-                        GameLiving owner = brain.Owner;
-                        if (owner != null && owner == brain.Body.FollowTarget)
+                        GamePlayer playerOwner = brain.GetPlayerOwner();
+
+                        if (!living.InCombat)
                         {
-                            if (owner is GameNPC)
-                                owner = brain.GetPlayerOwner();
+                            if (playerOwner != null)
+                                owner = playerOwner;
 
                             int distance = brain.Body.GetDistanceTo(owner);
 
@@ -151,7 +133,7 @@ namespace DOL.GS.PropertyCalc
                             if (ownerSpeedAdjust > 1.0)
                                 speed *= ownerSpeedAdjust;
 
-                            if (owner is GamePlayer playerOwner)
+                            if (playerOwner != null)
                             {
                                 if (playerOwner.IsOnHorse)
                                     speed *= 3.0;
@@ -160,18 +142,7 @@ namespace DOL.GS.PropertyCalc
                                     speed *= 1.4;
                             }
                         }
-                    }
-                }
-                else
-                {
-                    GameLiving owner = brain?.Owner;
-
-                    if (owner != null && owner == brain.Body.FollowTarget)
-                    {
-                        if (owner is GameNPC)
-                            owner = brain.GetPlayerOwner();
-
-                        if (owner is GamePlayer playerOwner && playerOwner.IsSprinting)
+                        else if (playerOwner != null && playerOwner.IsSprinting)
                             speed *= 1.3;
                     }
                 }
