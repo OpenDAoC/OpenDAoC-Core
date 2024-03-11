@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
+﻿using System;
 using DOL.Events;
 
 namespace DOL.GS
@@ -59,7 +40,7 @@ namespace DOL.GS
                     m_timer = new SummonTimer(this);
 
                 m_summoned = true;
-                m_timer.Start(1, 100, true, DjinnEvent.Summoning);
+                OnTimerStep(DjinnEvent.Summoning);
             }
         }
 
@@ -104,11 +85,7 @@ namespace DOL.GS
             return base.WhisperReceive(source, text);
         }
 
-        /// <summary>
-        /// Processes events coming from the timer.
-        /// </summary>
-        /// <param name="e"></param>
-        public override void Notify(DOLEvent e)
+        public void OnTimerStep(DOLEvent e)
         {
             if (e == DjinnEvent.Summoning)
             {
@@ -161,12 +138,11 @@ namespace DOL.GS
                 {
                     this.RemoveFromWorld();
                     m_summoned = false;
+                    m_timer.Stop();
                 }
 
                 return;
             }
-
-            base.Notify(e); // Not handled here.
         }
 
         /// <summary>
@@ -174,7 +150,7 @@ namespace DOL.GS
         /// </summary>
         private class SummonTimer : ECSGameTimerWrapperBase
         {
-            private GameObject m_owner;
+            private SummonedDjinn m_owner;
             private int m_maxTicks = 0;
             private int m_ticks = 0;
             private bool m_smoke = false;
@@ -186,7 +162,7 @@ namespace DOL.GS
             /// <param name="owner">The owner of this timer (the djinn).</param>
             public SummonTimer(GameObject owner) : base(owner)
             {
-                m_owner = owner;
+                m_owner = owner as SummonedDjinn;
             }
 
             private bool m_isRunning = false;
@@ -208,7 +184,7 @@ namespace DOL.GS
                 if (IsRunning)
                 {
                     m_ticks = 0;
-                    Start(100);
+                    Start();
                 }
             }
 
@@ -226,8 +202,9 @@ namespace DOL.GS
                 m_smoke = smoke;
                 m_event = e;
                 m_ticks = 0;
-                Start(100);
+                Start();
                 IsRunning = true;
+                OnTick(this);
             }
 
             /// <summary>
@@ -235,9 +212,7 @@ namespace DOL.GS
             /// </summary>
             protected override int OnTick(ECSGameTimer timer)
             {
-                m_ticks++;
-
-                if (m_ticks < m_maxTicks)
+                if (m_ticks++ < m_maxTicks)
                 {
                     if (m_smoke)
                     {
@@ -246,15 +221,15 @@ namespace DOL.GS
                         foreach (GamePlayer player in m_owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                             player.Out.SendSpellEffectAnimation(m_owner, m_owner, SummonSpellEffect, 0, false, 0x01);
                     }
-                    return Interval;
                 }
                 else
                 {
                     // We're done, stop the timer and notify owner.
                     IsRunning = false;
-                    m_owner.Notify(m_event);
-                    return 0;
+                    m_owner.OnTimerStep(m_event);
                 }
+
+                return Interval;
             }
         }
 
