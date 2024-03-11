@@ -308,12 +308,7 @@ namespace DOL.AI.Brain
 
                     GameLiving protectSource = protect.Source;
 
-                    if (protectSource.IsStunned
-                        || protectSource.IsMezzed
-                        || protectSource.IsSitting
-                        || protectSource.ObjectState != GameObject.eObjectState.Active
-                        || !protectSource.IsAlive
-                        || !protectSource.InCombat)
+                    if (protectSource.IsIncapacitated || protectSource.IsSitting)
                         continue;
 
                     if (!living.IsWithinRadius(protectSource, ProtectAbilityHandler.PROTECT_DISTANCE))

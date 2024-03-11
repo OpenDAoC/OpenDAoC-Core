@@ -1862,11 +1862,8 @@ namespace DOL.GS
             GameLiving source = guard.Source;
 
             if (source == null ||
-                source.ObjectState != eObjectState.Active ||
-                source.IsStunned != false ||
-                source.IsMezzed != false ||
+                source.IsIncapacitated ||
                 source.ActiveWeaponSlot == eActiveWeaponSlot.Distance ||
-                !source.IsAlive ||
                 source.IsSitting ||
                 stealthStyle ||
                 !guard.Source.IsWithinRadius(guard.Target, GuardAbilityHandler.GUARD_DISTANCE))
@@ -2094,9 +2091,7 @@ namespace DOL.GS
             // We check if interceptor can intercept.
             if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Intercept) is InterceptECSGameEffect inter)
             {
-                if (intercept == null && inter != null && inter.Target == owner && !inter.Source.IsStunned && !inter.Source.IsMezzed
-                    && !inter.Source.IsSitting && inter.Source.ObjectState == eObjectState.Active && inter.Source.IsAlive
-                    && owner.IsWithinRadius(inter.Source, InterceptAbilityHandler.INTERCEPT_DISTANCE)) // && Util.Chance(inter.InterceptChance))
+                if (inter.Target == owner && !inter.Source.IsIncapacitated && !inter.Source.IsSitting && owner.IsWithinRadius(inter.Source, InterceptAbilityHandler.INTERCEPT_DISTANCE))
                 {
                     int interceptRoll;
 

@@ -20,6 +20,7 @@ namespace DOL.GS.Spells
         {
             return false;
         }
+
         public override void OnDirectEffect(GameLiving target)
         {
             if (target is not GameNPC npc || npc.Brain is not IOldAggressiveBrain brain)
