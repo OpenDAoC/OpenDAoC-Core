@@ -21,7 +21,7 @@ namespace DOL.GS
         private const int POSITION_UPDATE_TIMEOUT = 5000;
 
         private static List<GameClient> _clients = new();
-        private static SimpleDisposableLock _lock = new();
+        private static SimpleDisposableLock _lock = new(LockRecursionPolicy.SupportsRecursion);
         private static int _lastValidIndex;
         private static int _clientCount;
 

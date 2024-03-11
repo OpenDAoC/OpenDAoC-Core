@@ -5,16 +5,15 @@ namespace DOL
 {
     // A wrapper for a `ReaderWriterLockSlim` implementing `IDisposable`.
     // `Dispose` only takes care of the unlocking; it doesn't invalidate the underlying lock.
-    // Recursions are not supported even if the passed down lock was created with `LockRecursionPolicy.SupportsRecursion`.
     // Upgrades are not allowed.
     // This class' instances aren't meant to be shared by multiple threads.
     public class SimpleDisposableLock : IDisposable
     {
         private ReaderWriterLockSlim _lock;
 
-        public SimpleDisposableLock()
+        public SimpleDisposableLock(LockRecursionPolicy recursionPolicy)
         {
-            _lock = new();
+            _lock = new(recursionPolicy);
         }
 
         public SimpleDisposableLock(ReaderWriterLockSlim @lock)
