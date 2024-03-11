@@ -61,17 +61,24 @@ namespace DOL.GS
             EntityManager.Remove(entity);
 
             if (entityOwner is GamePlayer player)
-            {
-                if (player.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.IsShade)
-                    player.Shade(false);
-
-                player.Out.SendPlayerQuit(false);
-                player.Quit(true);
-                CraftingProgressMgr.FlushAndSaveInstance(player);
-                player.SaveIntoDatabase();
-            }
+                KickPlayerToCharScreen(player);
             else
                 entityOwner?.RemoveFromWorld();
+        }
+
+        public static void KickPlayerToCharScreen(GamePlayer player)
+        {
+            if (player.Client.ClientState != GameClient.eClientState.Playing)
+                return;
+
+            if (player.CharacterClass.ID == (int) eCharacterClass.Necromancer && player.IsShade)
+                player.Shade(false);
+
+            player.Out.SendPlayerQuit(false);
+            player.Quit(true);
+            CraftingProgressMgr.FlushAndSaveInstance(player);
+            player.SaveIntoDatabase();
+            player.Client.ClientState = GameClient.eClientState.CharScreen;
         }
     }
 }
