@@ -436,18 +436,6 @@ namespace DOL.GS.PacketHandler
 				SendRvRGuildBanner(playerToCreate, true);
 		}
 
-		/// <summary>
-		/// This is used to build a server side "Position Object"
-		/// Usually Position Packet Should only be relayed
-		/// This method can be used to refresh postion when there is lag or during a linkdeath to prevent models from disappearing
-		/// </summary>
-		public override void SendPlayerForgedPosition(GamePlayer player)
-		{
-			// Doesn't work in 1.124+
-			// 1.127's implementation might work but is untested with earlier versions.
-			return;
-		}
-
 		public override void SendPlayerPositionAndObjectID()
 		{
 			if (m_gameClient.Player == null) return;

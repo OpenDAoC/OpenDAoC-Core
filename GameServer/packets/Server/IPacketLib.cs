@@ -716,7 +716,6 @@ namespace DOL.GS.PacketHandler
 		void SendCloseTradeWindow();
 		void SendPlayerDied(GamePlayer killedPlayer, GameObject killer);
 		void SendPlayerRevive(GamePlayer revivedPlayer);
-		void SendPlayerForgedPosition(GamePlayer player);
 		void SendUpdatePlayer();
 		void SendUpdatePlayerSkills();
 		void SendUpdateWeaponAndArmorStats();

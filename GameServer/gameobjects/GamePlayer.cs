@@ -872,14 +872,15 @@ namespace DOL.GS
 
         public bool HasLinkDeathTimerActive => _linkDeathTimer?.IsAlive == true;
 
-        public void OnUpdatePosition()
+        public bool OnUpdatePosition()
         {
             if (_linkDeathTimer == null)
-                return;
+                return true;
 
             _linkDeathTimer.Stop();
             MoveTo(_linkDeathTimer.LocationAtLinkDeath);
             _linkDeathTimer = null;
+            return false;
         }
 
         public void OnLinkDeath()
@@ -1083,7 +1084,7 @@ namespace DOL.GS
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.CantQuitMount"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return false;
                 }
-                if (IsMoving && !ServerProperties.Properties.DISABLE_QUIT_TIMER)
+                if (IsMoving && !Properties.DISABLE_QUIT_TIMER)
                 {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.CantQuitStanding"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return false;
@@ -1145,18 +1146,16 @@ namespace DOL.GS
             {
                 _playerOwner = owner as GamePlayer;
                 LocationAtLinkDeath = new(string.Empty, _playerOwner.CurrentRegionID, _playerOwner.X, _playerOwner.Y, _playerOwner.Z, _playerOwner.Heading);
-                Start(1750);
+                Start(1000);
+                OnTick(this);
             }
 
             protected override int OnTick(ECSGameTimer timer)
             {
                 if (_playerOwner.ObjectState == eObjectState.Active)
-                {
-                    foreach (GamePlayer playerInRadius in _playerOwner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                        playerInRadius.Out.SendPlayerForgedPosition(_playerOwner);
-                }
+                    PlayerPositionUpdateHandler.BroadcastLastReceivedPacket(_playerOwner.Client);
 
-                if (_playerOwner.Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000 >= GameLoop.GameLoopTime)
+                if (!ServiceUtils.ShouldTick(_playerOwner.Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000))
                     return Interval;
 
                 if (!IsAlive)

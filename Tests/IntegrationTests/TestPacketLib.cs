@@ -459,11 +459,6 @@ namespace DOL.Tests
 		{
 			if (SendPlayerReviveMethod != null) SendPlayerReviveMethod(this, revivedPlayer);
 		}
-		public Action<TestPacketLib, GamePlayer> SendPlayerForgedPositionMethod { get; set; }
-		public void SendPlayerForgedPosition(GamePlayer player)
-		{
-			if (SendPlayerForgedPositionMethod != null) SendPlayerForgedPositionMethod(this, player);
-		}
 		public Action<TestPacketLib> SendUpdatePlayerMethod { get; set; }
 		public void SendUpdatePlayer()
 		{

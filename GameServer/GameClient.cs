@@ -302,6 +302,8 @@ namespace DOL.GS
 
 		public long PositionUpdateTime { get; set; }
 
+		public GSPacketIn LastPositionUpdatePacketReceived { get; set; }
+
 		/// <summary>
 		/// Variable is false if account/player is Ban, for a wrong password, if server is closed etc ... 
 		/// </summary>
@@ -669,7 +671,7 @@ namespace DOL.GS
 							ServiceUtils.KickPlayerToCharScreen(m_player);
 
 							if (log.IsInfoEnabled)
-								log.Info($"Player " + m_player.Name + " kicked due to inactivity.");
+								log.Info($"Player {m_player.Name} kicked due to inactivity.");
 						}
 						else
 							m_player.SaveIntoDatabase();
@@ -685,10 +687,10 @@ namespace DOL.GS
 			}
 		}
 
-		public void OnUpdatePosition()
+		public bool OnUpdatePosition()
 		{
 			PositionUpdateTime = GameLoop.GameLoopTime;
-			m_player.OnUpdatePosition();
+			return m_player.OnUpdatePosition();
 		}
 
 		/// <summary>

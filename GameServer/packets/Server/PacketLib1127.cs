@@ -1,24 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
-using System.Reflection;
+﻿using System.Reflection;
 using log4net;
 
 namespace DOL.GS.PacketHandler
@@ -98,60 +78,6 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			//}
 
-		}
-
-		/// <summary>
-		/// This is used to build a server side "Position Object"
-		/// Usually Position Packet Should only be relayed
-		/// This method can be used to refresh postion when there is lag or during a linkdeath to prevent models from disappearing
-		/// </summary>
-		public override void SendPlayerForgedPosition(GamePlayer player)
-		{
-			using (GSUDPPacketOut pak = new GSUDPPacketOut(GetPacketCode(eServerPackets.PlayerPosition)))
-			{
-				ushort newHeading = player.Heading;
-				ushort steedSeatPosition = 0;
-
-				if (player.Steed != null && player.Steed.ObjectState == GameObject.eObjectState.Active)
-				{
-					newHeading = (ushort)player.Steed.ObjectID;
-					steedSeatPosition = (ushort)player.Steed.RiderSlot(player);
-				}
-
-				byte playerOutAction = 0x00;
-				if (player.IsDiving)
-					playerOutAction |= 0x04;
-				if (player.TargetInView)
-					playerOutAction |= 0x30;
-				if (player.GroundTargetInView)
-					playerOutAction |= 0x08;
-				if (player.IsTorchLighted)
-					playerOutAction |= 0x80;
-				if (player.IsStealthed)
-					playerOutAction |= 0x02;
-
-				pak.WriteFloatLowEndian(player.X);
-				pak.WriteFloatLowEndian(player.Y);
-				pak.WriteFloatLowEndian(player.Z);
-				pak.WriteFloatLowEndian(player.CurrentSpeed);
-				pak.WriteFloatLowEndian(0); // z speed
-				pak.WriteShort((ushort)player.Client.SessionID);
-				pak.WriteShort((ushort)player.ObjectID);
-				pak.WriteShort(player.CurrentZone.ZoneSkinID);
-				pak.WriteShort(0); // player state
-				pak.WriteShort(steedSeatPosition);
-				pak.WriteShort(newHeading);
-				pak.WriteByte(playerOutAction);
-				pak.WriteByte((byte)(player.RPFlag ? 1 : 0));
-				pak.WriteByte(0);
-				pak.WriteByte((byte)(player.HealthPercent + (player.attackComponent.AttackState ? 0x80 : 0)));
-				pak.WriteByte(player.ManaPercent);
-				pak.WriteByte(player.EndurancePercent);
-				pak.WriteByte(0);
-				pak.WritePacketLength();
-
-				SendUDP(pak);
-			}
 		}
 	}
 }
