@@ -62,12 +62,12 @@ namespace DOL.GS
                     return;
                 case GameClient.eClientState.CharScreen:
                 {
-                    CheckPingTimeout(client);
+                    CheckCharScreenTimeout(client);
                     break;
                 }
                 case GameClient.eClientState.Playing:
                 {
-                    CheckPositionUpdateTimeout(client);
+                    CheckInGameTimeout(client);
                     GamePlayer player = client.Player;
 
                     if (player?.ObjectState == GameObject.eObjectState.Active)
@@ -531,17 +531,16 @@ namespace DOL.GS
                 CreateObjectForPlayer(player, gameObject);
         }
 
-        private static void CheckPingTimeout(GameClient client)
+        private static void CheckCharScreenTimeout(GameClient client)
         {
             if (ServiceUtils.ShouldTickNoEarly(client.PingTime + PING_TIMEOUT))
             {
-                if (log.IsWarnEnabled)
-                    log.Warn($"Ping timeout for client {client}");
+                if (log.IsInfoEnabled)
+                    log.Info($"Ping timeout on client. Disconnecting. ({client})");
 
                 GameServer.Instance.Disconnect(client);
             }
         }
-
         private static void CheckHardTimeout(GameClient client)
         {
             if (ServiceUtils.ShouldTickNoEarly(client.PingTime + HARD_TIMEOUT))
@@ -553,14 +552,26 @@ namespace DOL.GS
             }
         }
 
-        private static void CheckPositionUpdateTimeout(GameClient client)
+        private static void CheckInGameTimeout(GameClient client)
         {
-            if (ServiceUtils.ShouldTickNoEarly(client.PositionUpdateTime + POSITION_UPDATE_TIMEOUT) && !client.Player.HasLinkDeathTimerActive)
+            if (client.Player.HasLinkDeathTimerActive)
+                return;
+
+            if (ServiceUtils.ShouldTickNoEarly(client.Player.LastPositionUpdateTime + POSITION_UPDATE_TIMEOUT))
             {
-                if (log.IsWarnEnabled)
-                    log.Warn($"Position update timeout for client {client}");
+                if (log.IsInfoEnabled)
+                    log.Info($"Position update timeout on client. Calling link death. ({client})");
 
                 client.OnLinkDeath(true);
+            }
+            else if (Properties.KICK_IDLE_PLAYER_STATUS &&
+                     ServiceUtils.ShouldTickNoEarly(client.Player.LastPlayerActivityTime + Properties.KICK_IDLE_PLAYER_TIME * 60000) &&
+                     client.Account.PrivLevel == 1)
+            {
+                if (log.IsInfoEnabled)
+                    log.Info($"Kicking inactive client to char screen. ({client})");
+
+                ServiceUtils.KickPlayerToCharScreen(client.Player);
             }
         }
 

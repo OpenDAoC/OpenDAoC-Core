@@ -31,7 +31,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
-            if (!client.OnUpdatePosition())
+            if (!client.Player.OnUpdatePosition())
                 return;
 
             //Tiv: in very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
@@ -84,8 +84,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         private static void HandlePacketSince1124(GameClient client, GSPacketIn packet)
         {
             //Tiv: in very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
-            if ((client.Player.ObjectState != GameObject.eObjectState.Active) ||
-                (client.ClientState != GameClient.eClientState.Playing))
+            if ((client.Player.ObjectState != GameObject.eObjectState.Active) || (client.ClientState != GameClient.eClientState.Playing))
                 return;
 
             long environmentTick = GameLoop.GameLoopTime;
@@ -203,7 +202,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             int coordsPerSec = 0;
             int jumpDetect = 0;
-            long timediff = GameLoop.GameLoopTime - client.Player.LastPositionUpdateTick;
+            long timediff = GameLoop.GameLoopTime - client.Player.LastPositionUpdateTime;
             int distance = 0;
 
             if (timediff > 0)
@@ -216,7 +215,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                     jumpDetect = (int) (z - client.Player.LastPositionUpdatePoint.Z);
             }
 
-            client.Player.LastPositionUpdateTick = GameLoop.GameLoopTime;
+            if (distance > 0)
+                client.Player.LastPlayerActivityTime = GameLoop.GameLoopTime;
+
+            client.Player.LastPositionUpdateTime = GameLoop.GameLoopTime;
             client.Player.LastPositionUpdatePoint.X = x;
             client.Player.LastPositionUpdatePoint.Y = y;
             client.Player.LastPositionUpdatePoint.Z = z;
@@ -736,7 +738,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             int coordsPerSec = 0;
             int jumpDetect = 0;
-            int timediff = (int) (GameLoop.GameLoopTime - client.Player.LastPositionUpdateTick);
+            int timediff = (int) (GameLoop.GameLoopTime - client.Player.LastPositionUpdateTime);
             int distance = 0;
 
             if (timediff > 0)
@@ -749,7 +751,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                     jumpDetect = realZ - (int) client.Player.LastPositionUpdatePoint.Z;
             }
 
-            client.Player.LastPositionUpdateTick = GameLoop.GameLoopTime;
+            if (distance > 0)
+                client.Player.LastPlayerActivityTime = GameLoop.GameLoopTime;
+
+            client.Player.LastPositionUpdateTime = GameLoop.GameLoopTime;
             client.Player.LastPositionUpdatePoint.X = realX;
             client.Player.LastPositionUpdatePoint.Y = realY;
             client.Player.LastPositionUpdatePoint.Z = realZ;

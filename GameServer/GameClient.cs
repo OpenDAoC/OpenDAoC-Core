@@ -287,7 +287,6 @@ namespace DOL.GS
 				    (oldState != eClientState.CharScreen && value == eClientState.CharScreen))
 				{
 					PingTime = GameLoop.GameLoopTime;
-					PositionUpdateTime = GameLoop.GameLoopTime;
 				}
 
 				m_clientState = value;
@@ -299,8 +298,6 @@ namespace DOL.GS
 		/// When the linkdeath occured. 0 if there wasn't any
 		/// </summary>
 		public long LinkDeathTime { get; set; }
-
-		public long PositionUpdateTime { get; set; }
 
 		public GSPacketIn LastPositionUpdatePacketReceived { get; set; }
 
@@ -661,36 +658,13 @@ namespace DOL.GS
 		{
 			try
 			{
-				if (m_player != null)
-				{
-					//<**loki**>
-					if (Properties.KICK_IDLE_PLAYER_STATUS)
-					{
-						if (ServiceUtils.ShouldTickNoEarly(PositionUpdateTime + Properties.KICK_IDLE_PLAYER_TIME))
-						{
-							ServiceUtils.KickPlayerToCharScreen(m_player);
-
-							if (log.IsInfoEnabled)
-								log.Info($"Player {m_player.Name} kicked due to inactivity.");
-						}
-						else
-							m_player.SaveIntoDatabase();
-					}
-					else
-						m_player.SaveIntoDatabase();
-				}
+				m_player?.SaveIntoDatabase();
 			}
 			catch (Exception e)
 			{
 				if (log.IsErrorEnabled)
 					log.Error("SavePlayer", e);
 			}
-		}
-
-		public bool OnUpdatePosition()
-		{
-			PositionUpdateTime = GameLoop.GameLoopTime;
-			return m_player.OnUpdatePosition();
 		}
 
 		/// <summary>
