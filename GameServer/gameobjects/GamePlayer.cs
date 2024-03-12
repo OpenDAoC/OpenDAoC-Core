@@ -6109,6 +6109,12 @@ namespace DOL.GS
             }
         }
 
+        public override void OnAttackEnemy(AttackData ad)
+        {
+            LastPlayerActivityTime = GameLoop.GameLoopTime;
+            base.OnAttackEnemy(ad);
+        }
+
         /// <summary>
         /// This method is called at the end of the attack sequence to
         /// notify objects if they have been attacked/hit by an attack
@@ -6277,11 +6283,7 @@ namespace DOL.GS
                 CraftTimer = null;
                 Out.SendCloseTimerWindow();
             }
-
-
-
         }
-
 
         /// <summary>
         /// Launch any reactive effect on an item
@@ -8961,17 +8963,15 @@ namespace DOL.GS
 
             RefreshItemBonuses();
 
-            var playerDeck = DOLDB<DbCoreCharacterXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
-            if (playerDeck != null)
-            {
-                this.RandomNumberDeck.LoadDeckFromJSON((playerDeck.Deck));
-                //Console.WriteLine($"loaded deck. first card: {this.RandomNumberDeck.GetInt()}");
-            }
-            else
-            {
-                this.RandomNumberDeck = new PlayerDeck();
-            }
+            DbCoreCharacterXDeck playerDeck = DOLDB<DbCoreCharacterXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(ObjectId));
 
+            if (playerDeck != null)
+                RandomNumberDeck.LoadDeckFromJSON(playerDeck.Deck);
+            else
+                RandomNumberDeck = new PlayerDeck();
+
+            LastPositionUpdateTime = GameLoop.GameLoopTime;
+            LastPlayerActivityTime = GameLoop.GameLoopTime;
             return true;
         }
 
@@ -9098,8 +9098,6 @@ namespace DOL.GS
             }
 
             bool hasPetToMove = false;
-            // Remove the last update tick property to prevent speedhack messages during zoning and teleporting.
-            LastPositionUpdateTick = 0;
 
             if (ControlledBrain != null && ControlledBrain.WalkState != eWalkState.Stay)
             {
@@ -9508,42 +9506,10 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// Holds the zone player was in after last position update
-        /// </summary>
-        private Zone m_lastPositionUpdateZone;
-
-        /// <summary>
-        /// Gets or sets the zone after last position update
-        /// </summary>
-        public Zone LastPositionUpdateZone
-        {
-            get { return m_lastPositionUpdateZone; }
-            set { m_lastPositionUpdateZone = value; }
-        }
-
-
-        private long m_lastPositionUpdateTick = 0;
-
-        /// <summary>
-        /// The environment tick count when this players position was last updated
-        /// </summary>
-        public long LastPositionUpdateTick
-        {
-            get { return m_lastPositionUpdateTick; }
-            set { m_lastPositionUpdateTick = value; }
-        }
-
-        private Point3DFloat m_lastPositionUpdatePoint = new Point3DFloat(0, 0, 0);
-
-        /// <summary>
-        /// The last recorded position of this player
-        /// </summary>
-        public Point3DFloat LastPositionUpdatePoint
-        {
-            get { return m_lastPositionUpdatePoint; }
-            set { m_lastPositionUpdatePoint = value; }
-        }
+        public Zone LastPositionUpdateZone { get; set; }
+        public long LastPositionUpdateTime { get; set; }
+        public long LastPlayerActivityTime { get; set; }
+        public Point3DFloat LastPositionUpdatePoint { get; set; } = new(0, 0, 0);
 
         /// <summary>
         /// Holds the players max Z for fall damage
