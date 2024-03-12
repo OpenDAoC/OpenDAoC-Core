@@ -74,7 +74,7 @@ namespace DOL.GS
                     {
                         try
                         {
-                            if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                            if (ServiceUtils.ShouldTick(player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL))
                             {
                                 long startTick = GameLoop.GetCurrentTime();
                                 UpdateWorld(player);
@@ -610,9 +610,9 @@ namespace DOL.GS
 
                 if (!npcUpdateCache.TryGetValue(objectInRange, out CachedNpcValues cachedNpcValues))
                     UpdateObjectForPlayer(player, objectInRange);
-                else if (cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL))
                     UpdateObjectForPlayer(player, objectInRange);
-                else if (cachedNpcValues.Time + 250 < GameLoop.GameLoopTime)
+                else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + 250))
                 {
                     // `GameNPC.HealthPercent` is a bit of an expensive call. Do it last.
                     if (objectInRange == targetObject)
@@ -683,7 +683,7 @@ namespace DOL.GS
                     CreateObjectForPlayer(player, doorInRange);
                     player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange);
                 }
-                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (ServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
                     UpdateObjectForPlayer(player, doorInRange);
             }
         }
@@ -714,7 +714,7 @@ namespace DOL.GS
                     player.Client.Out.SendGarden(house);
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
                 }
-                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (ServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
 
                 AddHouseToPlayerCache(player, house);
