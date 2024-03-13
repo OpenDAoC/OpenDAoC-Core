@@ -2637,18 +2637,20 @@ namespace DOL.GS.Spells
 
 			if (spellResistChance > 0)
 			{
-				int spellResistRoll;
-				
+				double spellResistRoll;
+
 				if (!Properties.OVERRIDE_DECK_RNG && Caster is GamePlayer player)
-					spellResistRoll = player.RandomNumberDeck.GetInt();
+					spellResistRoll = player.RandomNumberDeck.GetPseudoDouble();
 				else
-					spellResistRoll = Util.CryptoNextInt(100);
+					spellResistRoll = Util.CryptoNextDouble();
+
+				spellResistRoll *= 100;
 
 				if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
-					playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {spellResistRoll}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
 				if (target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
-					playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {spellResistRoll}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
 				if (spellResistChance > spellResistRoll)
 				{

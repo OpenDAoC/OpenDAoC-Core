@@ -2093,12 +2093,14 @@ namespace DOL.GS
             {
                 if (inter.Target == owner && !inter.Source.IsIncapacitated && !inter.Source.IsSitting && owner.IsWithinRadius(inter.Source, InterceptAbilityHandler.INTERCEPT_DISTANCE))
                 {
-                    int interceptRoll;
+                    double interceptRoll;
 
                     if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
-                        interceptRoll = playerOwner.RandomNumberDeck.GetInt();
+                        interceptRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
                     else
-                        interceptRoll = Util.Random(100);
+                        interceptRoll = Util.CryptoNextDouble();
+
+                    interceptRoll *= 100;
 
                     if (inter.InterceptChance > interceptRoll)
                         intercept = inter;
