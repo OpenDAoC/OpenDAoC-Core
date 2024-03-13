@@ -389,13 +389,13 @@ namespace DOL.GS.PacketHandler.Client.v168
             // if player has a pet summoned, player action is sent by client as 0x04, but sending to other players this is skipped
             client.Player.IsDiving = (action & 0x02) != 0;
 
-            state = (ushort) ((state >> 10) & 7);
-            client.Player.IsClimbing = state == 7;
-            client.Player.IsSwimming = state == 1;
+            int state2 = (state >> 10) & 7;
+            client.Player.IsClimbing = state2 == 7;
+            client.Player.IsSwimming = state2 == 1;
 
             //int status = (data & 0x1FF ^ data) >> 8;
             //int fly = (flyingflag & 0x1FF ^ flyingflag) >> 8;
-            if (state == 3 && client.Player.TempProperties.GetProperty(GamePlayer.DEBUG_MODE_PROPERTY, false) == false && !client.Player.IsAllowedToFly) //debugFly on, but player not do /debug on (hack)
+            if (state2 == 3 && client.Player.TempProperties.GetProperty(GamePlayer.DEBUG_MODE_PROPERTY, false) == false && !client.Player.IsAllowedToFly) //debugFly on, but player not do /debug on (hack)
             {
                 StringBuilder builder = new();
                 builder.Append("HACK_FLY");
