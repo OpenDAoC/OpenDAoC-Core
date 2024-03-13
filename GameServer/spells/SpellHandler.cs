@@ -837,6 +837,9 @@ namespace DOL.GS.Spells
 					engage.Cancel(false, false);
 			}
 
+			if (UnstealthCasterOnStart && Caster.IsStealthed)
+				Caster.Stealth(false);
+
 			if (Caster is NecromancerPet necromancerPet && necromancerPet.Brain is NecromancerPetBrain necromancerPetBrain)
 				necromancerPetBrain.OnPetBeginCast(Spell, SpellLine);
 

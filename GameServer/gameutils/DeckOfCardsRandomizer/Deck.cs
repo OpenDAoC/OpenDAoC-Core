@@ -75,8 +75,7 @@ namespace DOL.GS.Utils
         {
             lock (_lock)
             {
-                string json = JsonConvert.SerializeObject(_cards.Reverse());
-                return json;
+                return JsonConvert.SerializeObject(_cards.Reverse());
             }
         }
 

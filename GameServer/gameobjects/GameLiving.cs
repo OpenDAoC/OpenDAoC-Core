@@ -3604,30 +3604,11 @@ namespace DOL.GS
 			movementComponent.DisableTurning(add);
 		}
 
-		/// <summary>
-		/// Moves the item from one spot to another spot, possible even
-		/// over region boundaries
-		/// </summary>
-		/// <param name="regionID">new regionid</param>
-		/// <param name="x">new x</param>
-		/// <param name="y">new y</param>
-		/// <param name="z">new z</param>
-		/// <param name="heading">new heading</param>
-		/// <returns>true if moved</returns>
-		public override bool MoveTo(ushort regionID, int x, int y, int z, ushort heading)
-		{
-			// if (regionID != CurrentRegionID)
-			// 	CancelAllConcentrationEffects();
+		public virtual bool IsStealthed => false;
 
-			return base.MoveTo(regionID, x, y, z, heading);
-		}
-
-		/// <summary>
-		/// The stealth state of this living
-		/// </summary>
-		public virtual bool IsStealthed
+		public virtual void Stealth(bool goStealth)
 		{
-			get { return false; }
+			// Not implemented.
 		}
 
 		#endregion

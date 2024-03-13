@@ -85,7 +85,7 @@ namespace DOL.GS
             return spellHandler;
         }
 
-        protected virtual void StartCastSpell(StartCastSpellRequest startCastSpellRequest)
+        protected void StartCastSpell(StartCastSpellRequest startCastSpellRequest)
         {
             SpellHandler newSpellHandler = CreateSpellHandler(startCastSpellRequest);
 

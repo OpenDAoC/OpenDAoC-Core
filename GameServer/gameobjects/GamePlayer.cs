@@ -12114,29 +12114,13 @@ namespace DOL.GS
         /// Property that holds tick when stealth state was changed last time
         /// </summary>
         public const string STEALTH_CHANGE_TICK = "StealthChangeTick";
+
         /// <summary>
         /// The stealth state of this player
         /// </summary>
-        public override bool IsStealthed
-        {
-            get { return effectListComponent.ContainsEffectForEffectType(eEffect.Stealth); }
-        }
+        public override bool IsStealthed => effectListComponent.ContainsEffectForEffectType(eEffect.Stealth);
 
-        public static void Unstealth(DOLEvent ev, object sender, EventArgs args)
-        {
-            AttackedByEnemyEventArgs atkArgs = args as AttackedByEnemyEventArgs;
-            GamePlayer player = sender as GamePlayer;
-            if (player == null || atkArgs == null) return;
-            if (atkArgs.AttackData.AttackResult != eAttackResult.HitUnstyled && atkArgs.AttackData.AttackResult != eAttackResult.HitStyle) return;
-            if (atkArgs.AttackData.Damage == -1) return;
-
-            player.Stealth(false);
-        }
-        /// <summary>
-        /// Set player's stealth state
-        /// </summary>
-        /// <param name="goStealth">true is stealthing, false if unstealthing</param>
-        public virtual void Stealth(bool goStealth)
+        public override void Stealth(bool goStealth)
         {
             if (IsStealthed == goStealth)
                 return;
@@ -12147,7 +12131,7 @@ namespace DOL.GS
                 return;
             }
 
-            if (this.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse) )
+            if (effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
             {
                 Out.SendMessage("You currently have an active, pulsing spell effect and cannot hide!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -12157,16 +12141,13 @@ namespace DOL.GS
                 IsOnHorse = false;
 
             if (goStealth)
-            {
                 new StealthECSGameEffect(new ECSGameEffectInitParams(this, 0, 1));
-            }
             else
             {
                 if (effectListComponent.ContainsEffectForEffectType(eEffect.Stealth))
-                {
                     EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
-                }
-                if(effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+
+                if (effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
                     EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
             }
         }
