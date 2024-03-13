@@ -4372,16 +4372,16 @@ namespace DOL.GS
 			castingComponent.InterruptCasting();
 		}
 
-		public virtual bool CastSpell(Spell spell, SpellLine line)
+		public virtual bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
 		{
-			return castingComponent.RequestStartCastSpell(spell, line, null, TargetObject as GameLiving);
+			return castingComponent.RequestStartCastSpell(spell, line, spellCastingAbilityHandler, TargetObject as GameLiving);
 		}
 
-		// Should only be used when the target of the spell is different than the currenctly selected one.
+		// Should only be used when the target of the spell is different than the currently selected one.
 		// Which can happen during LoS checks, since we're not waiting for the check to complete to perform other actions.
-		protected bool CastSpell(Spell spell, SpellLine line, GameLiving target)
+		protected bool CastSpell(Spell spell, SpellLine line, GameLiving target, ISpellCastingAbilityHandler spellCastingAbilityHandle = null)
 		{
-			return castingComponent.RequestStartCastSpell(spell, line, null, target);
+			return castingComponent.RequestStartCastSpell(spell, line, spellCastingAbilityHandle, target);
 		}
 
 		public virtual bool CastSpell(ISpellCastingAbilityHandler ab)

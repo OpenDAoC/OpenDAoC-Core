@@ -62,7 +62,7 @@ namespace DOL.GS.RealmAbilities
 
             m_tauntValue = GetTauntValue();
             CreateSpell(caster);
-            caster.castingComponent.RequestStartCastSpell(m_spell, m_spellline, this);
+            caster.CastSpell(m_spell, m_spellline, this);
 
             // We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.
             // The spell casting code will disable this ability in SpellHandler's FinishSpellcast().

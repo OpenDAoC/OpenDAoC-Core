@@ -160,7 +160,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					else if (sk is Spell spell)
 					{
 						if (sksib is SpellLine spellLine)
-							player.castingComponent.RequestStartCastSpell(spell, spellLine);
+							player.CastSpell(spell, spellLine);
 					}
 					else if (sk is Style style)
 					{
