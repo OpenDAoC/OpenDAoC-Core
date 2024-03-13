@@ -254,8 +254,8 @@ namespace DOL.GS
 					}
 				}
 			}
-			if (player.IsStealthed)
-				player.Stealth(false);
+
+			player.Stealth(false);
 			PlayerTakesRelic(player);
 			return true;
 		}

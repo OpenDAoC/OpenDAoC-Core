@@ -545,11 +545,12 @@ namespace DOL.GS.Spells
         protected bool Unstealth = true;
         protected bool DestroyOnEffect = true;
         protected ushort sRadius = 350;
-        
+
         public override bool IsOverwritable(ECSGameSpellEffect compare)
         {
             return false;
         }
+
         public override void OnEffectPulse(GameSpellEffect effect)
         {
             if (mine == null || mine.ObjectState == GameObject.eObjectState.Deleted)
@@ -558,17 +559,21 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (trap == null || s == null) return;
-            bool wasstealthed = ((GamePlayer)Caster).IsStealthed;
+            if (trap == null || s == null)
+                return;
+
             foreach (GamePlayer player in mine.GetPlayersInRadius(sRadius))
             {
                 if (player.IsAlive && GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
                 {
-                    trap.StartSpell((GameLiving)player);
-                    if (!Unstealth) 
-                        ((GamePlayer)Caster).Stealth(wasstealthed);
-                    if (DestroyOnEffect) 
+                    trap.StartSpell(player);
+
+                    if (Unstealth)
+                        player.Stealth(false);
+
+                    if (DestroyOnEffect)
                         OnEffectExpires(effect, true);
+
                     return;
                 }
             }

@@ -1,26 +1,6 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerRules;
 
@@ -91,23 +71,16 @@ namespace DOL.GS.RealmAbilities
         private void DamageTarget(GameLiving target, GameLiving caster, double counter)
         {
             int level = caster.GetModifiedSpecLevel("Stormcalling");
+
             if (level > 50)
                 level = 50;
+
             modifier = 0.5 + (level * 0.01) * Math.Pow(0.75, counter);
             basedamage = (int)(450 * modifier);
             resist = basedamage * target.GetResist(eDamageType.Energy) / -100;
             damage = basedamage + resist;
-
-            GamePlayer player = caster as GamePlayer;
-            if (player != null)
-                player.Out.SendMessage("You hit " + target.Name + " for " + damage + "(" + resist + ") points of damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-
-            GamePlayer targetPlayer = target as GamePlayer;
-            if (targetPlayer != null)
-            {
-                if (targetPlayer.IsStealthed)
-                    targetPlayer.Stealth(false);
-            }
+            (caster as GamePlayer)?.Out.SendMessage($"You hit {target.Name} for {damage}({resist}) points of damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+            target.Stealth(false);
 
             foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
@@ -137,6 +110,5 @@ namespace DOL.GS.RealmAbilities
             list.Add("Target: Realm Enemy");
             list.Add("Casting time: instant");
         }
-
     }
 }

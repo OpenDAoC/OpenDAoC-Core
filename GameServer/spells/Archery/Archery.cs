@@ -232,8 +232,7 @@ namespace DOL.GS.Spells
 			if (Caster == null)
 				return;
 
-			if (Caster is GamePlayer playerCaster && Caster.IsStealthed)
-				playerCaster.Stealth(false);
+			Caster.Stealth(false);
 
 			if (Spell.Target == eSpellTarget.AREA)
 			{

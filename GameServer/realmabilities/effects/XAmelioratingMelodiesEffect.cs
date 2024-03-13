@@ -80,26 +80,29 @@ namespace DOL.GS.RealmAbilities
 			{
 				m_countdown--;
 				GamePlayer player = Owner as GamePlayer;
-				if (player == null) return 0;
-				if (player.Group == null) return 3000;
+
+				if (player == null)
+					return 0;
+
+				if (player.Group == null)
+					return 3000;
+
 				foreach (GamePlayer p in player.Group.GetPlayersInTheGroup())
 				{
 					if ((p != player) && (p.Health < p.MaxHealth) && player.IsWithinRadius(p, m_range) && (p.IsAlive))
 					{
-						if (player.IsStealthed)
-						{
-							player.Stealth(false);
-						}
-
+						player.Stealth(false);
 						int heal = m_heal;
 						if (p.Health + heal > p.MaxHealth) heal = p.MaxHealth - p.Health;
 						p.ChangeHealth(player, eHealthChangeType.Regenerate, heal);
-						player.Out.SendMessage("You heal " + p.Name + " for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-						p.Out.SendMessage(player.Name + " heals you for " + heal.ToString() + " hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage($"You heal {p.Name} for {heal} hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+						p.Out.SendMessage($"{player.Name} heals you for {heal} hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 					}
 				}
+
 				return 3000;
 			}
+
 			return 0;
 		}
 

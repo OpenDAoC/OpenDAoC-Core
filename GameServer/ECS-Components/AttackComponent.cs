@@ -669,11 +669,9 @@ namespace DOL.GS
 
                 if (player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 {
-                    if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
+                    if (Properties.ALLOW_OLD_ARCHERY == false)
                     {
-                        if ((eCharacterClass) player.CharacterClass.ID == eCharacterClass.Scout ||
-                            (eCharacterClass) player.CharacterClass.ID == eCharacterClass.Hunter ||
-                            (eCharacterClass) player.CharacterClass.ID == eCharacterClass.Ranger)
+                        if ((eCharacterClass) player.CharacterClass.ID is eCharacterClass.Scout or eCharacterClass.Hunter or eCharacterClass.Ranger)
                         {
                             // There is no feedback on live when attempting to fire a bow with arrows
                             return;
@@ -729,6 +727,7 @@ namespace DOL.GS
                         // -Chance to unstealth nocking a crit = stealth / level  0.20
                         int stealthSpec = player.GetModifiedSpecLevel(Specs.Stealth);
                         int stayStealthed = stealthSpec * 100 / player.Level;
+
                         if (player.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                             stayStealthed -= 20;
 

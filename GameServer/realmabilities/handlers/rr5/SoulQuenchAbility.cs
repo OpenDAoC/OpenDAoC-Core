@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.RealmAbilities
@@ -53,22 +51,21 @@ namespace DOL.GS.RealmAbilities
 			int damage = basedamage + resist;
 			int heal = (int)(damage * 0.75);
 			int modheal = caster.MaxHealth - caster.Health;
+
 			if (modheal > heal)
 				modheal = heal;
+
 			caster.Health += modheal;
 
-			GamePlayer player = caster as GamePlayer;
-			if (player != null)
-				player.Out.SendMessage("You hit " + target.Name + " for " + damage + "(" + resist + ") points of damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-			if (caster is GamePlayer && modheal > 0)
-				((GamePlayer)caster).Out.SendMessage("Your Soul Quench returns " + modheal + " lifepoints to you", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-
-			GamePlayer targetPlayer = target as GamePlayer;
-			if (targetPlayer != null)
+			if (caster is GamePlayer playerCaster)
 			{
-				if (targetPlayer.IsStealthed)
-					targetPlayer.Stealth(false);
+				playerCaster.Out.SendMessage($"You hit {target.Name} for {damage}({resist}) points of damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+
+				if (modheal > 0)
+					playerCaster.Out.SendMessage($"Your Soul Quench returns {modheal} hit points to you", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 			}
+
+			target.Stealth(false);
 
 			foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
@@ -85,8 +82,6 @@ namespace DOL.GS.RealmAbilities
 			ad.Damage = damage;
 			target.OnAttackedByEnemy(ad);
 			caster.DealDamage(ad);
-
-
 		}
 
 		public override int GetReUseDelay(int level)

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Events;
 
@@ -170,20 +169,8 @@ namespace DOL.GS.RealmAbilities
 			int basedamage = (int)(effectiveness * mod);
 			int resist = (int)(basedamage * target.GetModified(eProperty.Resist_Energy) * -0.01);
 			int damage = basedamage + resist;
-
-
-			GamePlayer player = owner as GamePlayer;
-			if (player != null)
-			{
-				player.Out.SendMessage("You hit " + target.Name + " for " + damage + "(" + resist + ") points of damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-			}
-
-			GamePlayer targetPlayer = target as GamePlayer;
-			if (targetPlayer != null)
-			{
-				if (targetPlayer.IsStealthed)
-					targetPlayer.Stealth(false);
-			}
+			(owner as GamePlayer)?.Out.SendMessage($"You hit {target.Name} for {damage}({resist}) points of damage!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+			target.Stealth(false);
 
 			foreach (GamePlayer p in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{

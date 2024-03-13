@@ -6168,14 +6168,14 @@ namespace DOL.GS
                     if (ad.Damage == -1)
                         break;
 
-                    // If attacked by a non-damaging spell, we should not show damage numbers.
-                    // We need to check the damage on the spell here, not in the AD, since this could in theory be a damaging spell that had its damage modified to 0.
-                    if (ad.AttackType == AttackData.eAttackType.Spell && ad.SpellHandler.Spell?.Damage == 0)
-                        break;
-
-                    if (IsStealthed && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+                    if (ad.AttackType == AttackData.eAttackType.Spell)
                     {
-                        if (!(ad.AttackType == AttackData.eAttackType.Spell && ad.SpellHandler.Spell.SpellType == eSpellType.DamageOverTime))
+                        // If attacked by a non-damaging spell, we should not show damage numbers.
+                        // We need to check the damage on the spell here, not in the AD, since this could in theory be a damaging spell that had its damage modified to 0.
+                        if (ad.SpellHandler.Spell.Damage == 0)
+                            break;
+
+                        if (ad.SpellHandler.Spell.SpellType != eSpellType.DamageOverTime && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
                             Stealth(false);
                     }
 
@@ -9142,7 +9142,7 @@ namespace DOL.GS
                     {
                         if (player != this)
                         {
-                            if (IsStealthed == false || player.CanDetect(this))
+                            if (!IsStealthed || player.CanDetect(this))
                                 player.Out.SendPlayerCreate(this);
                         }
                     }
@@ -9199,12 +9199,10 @@ namespace DOL.GS
             {
                 if (player != null && player != this)
                 {
-                    if (IsStealthed == false || player.CanDetect(this))
-                    {
+                    if (!IsStealthed || player.CanDetect(this))
                         player.Out.SendPlayerCreate(this);
-                    }
 
-                    if (player.IsStealthed == false || CanDetect(player))
+                    if (!player.IsStealthed || CanDetect(player))
                     {
                         Out.SendPlayerCreate(player);
                         Out.SendLivingEquipmentUpdate(player);
@@ -12125,31 +12123,32 @@ namespace DOL.GS
             if (IsStealthed == goStealth)
                 return;
 
-            if (goStealth && CraftTimer != null && CraftTimer.IsAlive)
-            {
-                Out.SendMessage("You can't stealth while crafting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
-            if (effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
-            {
-                Out.SendMessage("You currently have an active, pulsing spell effect and cannot hide!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
-            if (IsOnHorse || IsSummoningMount)
-                IsOnHorse = false;
-
             if (goStealth)
-                new StealthECSGameEffect(new ECSGameEffectInitParams(this, 0, 1));
-            else
             {
-                if (effectListComponent.ContainsEffectForEffectType(eEffect.Stealth))
-                    EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
+                if (CraftTimer != null && CraftTimer.IsAlive)
+                {
+                    Out.SendMessage("You can't stealth while crafting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
 
-                if (effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
-                    EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
+                if (effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
+                {
+                    Out.SendMessage("You currently have an active, pulsing spell effect and cannot hide!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                if (IsOnHorse || IsSummoningMount)
+                    IsOnHorse = false;
+
+                new StealthECSGameEffect(new ECSGameEffectInitParams(this, 0, 1));
+                return;
             }
+
+            if (effectListComponent.ContainsEffectForEffectType(eEffect.Stealth))
+                EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
+
+            if (effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+                EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
         }
 
         // UncoverStealthAction is what unstealths player if they are too close to mobs.
@@ -12276,7 +12275,7 @@ namespace DOL.GS
         {
             GameObject target = CurrentRegion.GetObject(targetOID);
 
-            if ((target == null) || (player.IsStealthed == false))
+            if (target == null || !player.IsStealthed)
                 return;
 
             if (response is eLosCheckResponse.TRUE)
