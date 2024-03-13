@@ -429,8 +429,6 @@ namespace DOL.GS
             // Stop moving if the NPC is casting or attacking with a ranged weapon.
             if (Owner.IsCasting || (Owner.IsAttacking && Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance))
             {
-                TurnTo(FollowTarget);
-
                 if (IsMoving)
                     StopMoving();
 
