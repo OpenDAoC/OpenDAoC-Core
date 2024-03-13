@@ -32,7 +32,7 @@ namespace DOL.GS.Utils
                     tempCards[j + i * CARDS_PER_DECK_COUNT] = j;
             }
 
-            //Fisher-Yates shuffle algorithm
+            // Fisher-Yates shuffle algorithm.
             // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
             for (int i = tempCards.Length - 1; i > 0; i--)
             {
@@ -67,11 +67,8 @@ namespace DOL.GS.Utils
 
         public double GetPseudoDouble()
         {
-            int first = Pop();
-            int second = Util.CryptoNextInt(100); //just use a simple random for the .XX values
-            double result = first + second / 100.0;
-            result /= 100.0;
-            return result;
+            // Just use a simple random for the fractional digits.
+            return (Pop() + Util.CryptoNextDouble()) / 100.0;
         }
 
         public string SaveDeckToJSON()
