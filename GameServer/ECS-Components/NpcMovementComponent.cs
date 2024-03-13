@@ -26,7 +26,6 @@ namespace DOL.GS
         private MovementRequest _movementRequest;
         private PathCalculator _pathCalculator;
         private AuxECSGameTimer _resetHeadingAction;
-        private int _firstMove;
         private Point3D _positionForUpdatePackets;
         private bool _needsBroadcastUpdate;
 
@@ -288,13 +287,11 @@ namespace DOL.GS
         private void UpdateVelocity(double distanceToTarget)
         {
             MovementStartTick = GameLoop.GameLoopTime;
-            _needsBroadcastUpdate = true;
 
             if (!IsMoving || distanceToTarget < 1)
             {
                 Velocity = Vector3.Zero;
                 HorizontalVelocityForClient = 0.0;
-                _firstMove = 0;
                 return;
             }
 
@@ -318,7 +315,6 @@ namespace DOL.GS
 
             Velocity = new(velocityX, velocityY, velocityZ);
             HorizontalVelocityForClient = Math.Sqrt(velocityX * velocityX + velocityY * velocityY);
-            _firstMove++;
             return;
         }
 
@@ -497,11 +493,9 @@ namespace DOL.GS
                         MoveToNextWaypoint();
                         return;
                     }
-                    else
-                    {
-                        _movementState |= MovementState.AT_WAYPOINT;
-                        _stopAtWaypointUntil = GameLoop.GameLoopTime + CurrentWaypoint.WaitTime * 100;
-                    }
+
+                    _movementState |= MovementState.AT_WAYPOINT;
+                    _stopAtWaypointUntil = GameLoop.GameLoopTime + CurrentWaypoint.WaitTime * 100;
                 }
                 else
                     StopMovingOnPath();
@@ -610,9 +604,17 @@ namespace DOL.GS
             Owner.Z = Owner.Z;
 
             if (destination == null || distanceToTarget < 1)
+            {
+                if (!IsAtDestination)
+                    _needsBroadcastUpdate = true;
+
                 IsDestinationValid = false;
+            }
             else
             {
+                if (CurrentSpeed != speed || !Destination.IsSamePosition(destination))
+                    _needsBroadcastUpdate = true;
+
                 Destination = destination;
                 IsDestinationValid = true;
             }
