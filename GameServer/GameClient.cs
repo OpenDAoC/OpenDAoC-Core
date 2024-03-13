@@ -287,6 +287,9 @@ namespace DOL.GS
 				    (oldState != eClientState.CharScreen && value == eClientState.CharScreen))
 				{
 					PingTime = GameLoop.GameLoopTime;
+
+					if (m_player != null)
+						m_player.LastPositionUpdateTime = GameLoop.GameLoopTime;
 				}
 
 				m_clientState = value;
