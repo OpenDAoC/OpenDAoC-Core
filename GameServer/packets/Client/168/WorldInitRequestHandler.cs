@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Reflection;
 using DOL.Database;
 using log4net;
@@ -40,7 +21,12 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (client.Player == null)
                 return;
 
-            client.UdpConfirm = false;
+            if (client.ClientState is not GameClient.eClientState.CharScreen and not GameClient.eClientState.Playing)
+                return;
+
+            if (client.Player.ObjectState != GameObject.eObjectState.Inactive)
+                return;
+
             new WorldInitAction(client.Player).Start(1);
         }
 
@@ -93,7 +79,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             /// </summary>
             protected override int OnTick(AuxECSGameTimer timer)
             {
-                GamePlayer player = (GamePlayer) timer.Owner;
+                GamePlayer player = timer.Owner as GamePlayer;
 
                 //check emblems at world load before any updates
                 if (player.Inventory != null) 
