@@ -538,7 +538,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                 outpak1124.WriteByte((byte) (client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
                 outpak1124.WriteByte(client.Player.ManaPercent);
                 outpak1124.WriteByte(client.Player.EndurancePercent);
-                outpak1124.WritePacketLength();
 
                 GSUDPPacketOut outpak1127 = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
                 outpak1127.Write(outpak1124.GetBuffer(), 5, 22); // from position X to sessionID
@@ -554,7 +553,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                 outpak1127.WriteByte(client.Player.ManaPercent);
                 outpak1127.WriteByte(client.Player.EndurancePercent);
                 outpak1127.WriteShort(0);
-                outpak1127.WritePacketLength();
 
                 GSUDPPacketOut outpak190 = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
                 outpak190.WriteShort((ushort) client.SessionID);
@@ -576,12 +574,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                 outpak1112.Write(outpak190.GetBuffer(), 5, (int) outpak190.Length - 5);
                 outpak1112.WriteByte((byte) (client.Player.RPFlag ? 1 : 0));
                 outpak1112.WriteByte(0);
-                outpak1112.WritePacketLength();
 
                 outpak190.FillString(client.Player.CharacterClass.Name, 32);
                 outpak190.WriteByte((byte) (client.Player.RPFlag ? 1 : 0));
                 outpak190.WriteByte(0);
-                outpak190.WritePacketLength();
 
                 foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
@@ -1259,13 +1255,11 @@ namespace DOL.GS.PacketHandler.Client.v168
                 outpak190.FillString(client.Player.CharacterClass.Name, 32);
                 outpak190.WriteByte((byte)(client.Player.RPFlag ? 1 : 0)); // roleplay flag, if == 1, show name (RP) with gray color
                 outpak190.WriteByte(0); // send last byte for 190+ packets
-                outpak190.WritePacketLength();
 
                 GSUDPPacketOut outpak1112 = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
                 outpak1112.Write(outpakArr, 5, outpakArr.Length - 5);
                 outpak1112.WriteByte((byte) (client.Player.RPFlag ? 1 : 0));
                 outpak1112.WriteByte(0); //outpak1112.WriteByte((con168.Length == 22) ? con168[21] : (byte)0);
-                outpak1112.WritePacketLength();
 
                 GSUDPPacketOut outpak1124 = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
                 byte playerAction = 0x00;
@@ -1298,7 +1292,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                 outpak1124.WriteByte((byte) (client.Player.HealthPercent + (client.Player.attackComponent.AttackState ? 0x80 : 0)));
                 outpak1124.WriteByte(client.Player.ManaPercent);
                 outpak1124.WriteByte(client.Player.EndurancePercent);
-                outpak1124.WritePacketLength();
 
                 foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {

@@ -1,25 +1,4 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System;
-using System.Collections;
 using System.Reflection;
-using DOL.GS;
 using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -103,7 +82,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak190.WriteByte(state);
 			outpak190.WriteByte(client.Player.ManaPercent);
 			outpak190.WriteByte(client.Player.EndurancePercent);
-			outpak190.WritePacketLength();
 
 			GSUDPPacketOut outpak1124 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerHeading));
 			outpak1124.WriteShort((ushort)client.SessionID);
@@ -116,7 +94,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1124.WriteByte(client.Player.ManaPercent);
 			outpak1124.WriteByte(client.Player.EndurancePercent);
 			outpak1124.WriteByte(0); // unknown
-			outpak1124.WritePacketLength();
 
 			GSUDPPacketOut outpak1127 = new GSUDPPacketOut(client.Out.GetPacketCode(eServerPackets.PlayerHeading));
 			outpak1127.WriteShort((ushort)client.SessionID);
@@ -130,7 +107,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 			outpak1127.WriteByte(client.Player.ManaPercent);
 			outpak1127.WriteByte(client.Player.EndurancePercent);
 			outpak1127.WriteByte(0); // unknown
-			outpak1127.WritePacketLength();
 
 			foreach (GamePlayer player in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			{
