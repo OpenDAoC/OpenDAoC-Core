@@ -870,7 +870,7 @@ namespace DOL.GS
 
         private LinkDeathTimer _linkDeathTimer;
 
-        public bool HasLinkDeathTimerActive => _linkDeathTimer?.IsAlive == true;
+        public bool IsLinkDeathTimerRunning => _linkDeathTimer?.IsAlive == true;
 
         public bool OnUpdatePosition()
         {
@@ -1173,9 +1173,7 @@ namespace DOL.GS
                 }
                 finally
                 {
-                    // We may still be playing if this was a soft LD, so we change the state here too.
-                    _playerOwner.Client.ClientState = GameClient.eClientState.Linkdead;
-                    GameServer.Instance.Disconnect(_playerOwner.Client);
+                    _playerOwner.Client.LinkDeathQuit();
                 }
 
                 return 0;

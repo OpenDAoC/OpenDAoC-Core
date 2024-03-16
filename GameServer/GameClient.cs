@@ -538,37 +538,47 @@ namespace DOL.GS
 			}
 		}
 
+		private object _disconnectLock = new();
+
 		/// <summary>
 		/// Called when this client has been disconnected
 		/// </summary>
 		public override void OnDisconnect()
 		{
-			bool wasPlaying = false;
-
-			try
+			lock (_disconnectLock)
 			{
-				//If we went linkdead and we were inside the game
-				//we don't let the player disappear!
-				if (ClientState == eClientState.Playing)
+				if (ClientState == eClientState.Disconnected)
+					return;
+
+				if (SessionID == 0 || Player == null)
 				{
-					wasPlaying = true;
-					OnLinkDeath(false);
+					Quit();
 					return;
 				}
 
-				if (ClientState == eClientState.WorldEnter && Player != null)
-					Player.SaveIntoDatabase();
-			}
-			catch (Exception e)
-			{
-				if (log.IsErrorEnabled)
-					log.Error("OnDisconnect", e);
-			}
-			finally
-			{
-				// Make sure the client is disconnected even on errors but only if OnLinkDeath() wasn't called.
-				if (!wasPlaying)
-					Quit();
+				try
+				{
+					if (ClientState == eClientState.Playing)
+					{
+						if (!Player.IsLinkDeathTimerRunning)
+							OnLinkDeath(false);
+
+						return;
+					}
+					else if (ClientState == eClientState.WorldEnter)
+						Player.SaveIntoDatabase();
+				}
+				catch (Exception e)
+				{
+					if (log.IsErrorEnabled)
+						log.Error("OnDisconnect", e);
+				}
+				finally
+				{
+					// Make sure the client is disconnected even on errors, but only if there is no link death timer running.
+					if (!Player.IsLinkDeathTimerRunning)
+						Quit();
+				}
 			}
 		}
 
@@ -675,81 +685,85 @@ namespace DOL.GS
 		/// </summary>
 		public void OnLinkDeath(bool soft)
 		{
-			if (log.IsDebugEnabled)
-				log.Debug($"OnLinkDeath called (Account: {Account.Name}) (State: {ClientState}) (Soft: {soft})");
+			lock (_disconnectLock)
+			{
+				if (SessionID == 0 || Player == null)
+				{
+					Quit();
+					return;
+				}
 
-			//If we have no sessionid we simply disconnect
-			GamePlayer curPlayer = Player;
-			if (SessionID == 0 || curPlayer == null)
-			{
-				Quit();
-			}
-			else
-			{
+				if (ClientState == eClientState.Disconnected || Player.IsLinkDeathTimerRunning)
+					return;
+
+				if (log.IsDebugEnabled)
+					log.Debug($"OnLinkDeath called (Account: {Account.Name}) (State: {ClientState}) (Soft: {soft})");
+
 				if (!soft)
 					ClientState = eClientState.Linkdead;
 
 				LinkDeathTime = GameLoop.GameLoopTime;
-				// If we have a good sessionid, we won't remove the client yet!
-				// OnLinkdeath() can start a timer to remove the client "a bit later"
-				curPlayer.OnLinkDeath();
+				Player.OnLinkDeath();
+			}
+		}
+
+		public void LinkDeathQuit()
+		{
+			lock (_disconnectLock)
+			{
+				Quit();
+
+				if (ClientState == eClientState.Playing)
+					CloseConnections();
 			}
 		}
 
 		/// <summary>
 		/// Quits a client from the world
 		/// </summary>
-		protected internal void Quit()
+		private void Quit()
 		{
-			lock (this)
+			try
 			{
-				if (ClientState is eClientState.Disconnected)
-					return;
-
-				try
+				if (SessionID != 0 && Player != null)
 				{
-					if (SessionID != 0)
+					if (ClientState is eClientState.Playing or eClientState.WorldEnter or eClientState.Linkdead)
 					{
-						if (ClientState is eClientState.Playing or eClientState.WorldEnter or eClientState.Linkdead)
+						try
 						{
-							try
-							{
-								Player?.Quit(true); // Calls delete.
-							}
-							catch (Exception e)
-							{
-								log.Error("player cleanup on client quit", e);
-							}
+							Player.Quit(true); // Calls delete.
+						}
+						catch (Exception e)
+						{
+							log.Error("player cleanup on client quit", e);
 						}
 					}
-
-					ClientState = eClientState.Disconnected;
-					GameEventMgr.Notify(GameClientEvent.Disconnected, this);
-
-					if (Account != null)
-					{
-						if (log.IsInfoEnabled)
-						{
-							if (m_udpEndpoint != null)
-							{
-								log.Info($"({m_udpEndpoint.Address}) {Account.Name} just disconnected.");
-							}
-							else
-							{
-								log.Info($"({TcpEndpoint}) {Account.Name} just disconnected.");
-							}
-						}
-
-						Account.LastDisconnected = DateTime.Now;
-						GameServer.Database.SaveObject(Account);
-						AuditMgr.AddAuditEntry(this, AuditType.Account, AuditSubtype.AccountLogout, "", Account.Name);
-					}
 				}
-				catch (Exception e)
+
+				ClientState = eClientState.Disconnected;
+				PacketProcessor?.OnDisconnect();
+				ClientService.OnClientDisconnect(this);
+				GameEventMgr.Notify(GameClientEvent.Disconnected, this);
+
+				if (Account != null)
 				{
-					if (log.IsErrorEnabled)
-						log.Error("Quit", e);
+					if (log.IsInfoEnabled)
+					{
+						if (m_udpEndpoint != null)
+							log.Info($"({m_udpEndpoint.Address}) {Account.Name} just disconnected.");
+						else
+							log.Info($"({TcpEndpoint}) {Account.Name} just disconnected.");
+					}
+
+					Account.LastDisconnected = DateTime.Now;
+					GameServer.Database.SaveObject(Account);
+					AuditMgr.AddAuditEntry(this, AuditType.Account, AuditSubtype.AccountLogout, "", Account.Name);
 				}
+			}
+			catch (Exception e)
+			{
+				if (log.IsErrorEnabled)
+					log.Error("Quit", e);
 			}
 		}
 

@@ -470,10 +470,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				client.PacketProcessor?.ProcessTcpQueue();
 
 				if (client.IsConnected == false)
-				{
 					client.Disconnect();
-					ClientService.OnClientDisconnect(client);
-				}
 
 				ExitLock(userName);
 			}

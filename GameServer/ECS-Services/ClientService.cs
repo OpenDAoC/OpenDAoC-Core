@@ -52,11 +52,6 @@ namespace DOL.GS
             switch (client.ClientState)
             {
                 case GameClient.eClientState.Disconnected:
-                {
-                    OnClientDisconnect(client);
-                    client.PacketProcessor?.OnDisconnect();
-                    return;
-                }
                 case GameClient.eClientState.NotConnected:
                 case GameClient.eClientState.Linkdead:
                     return;
@@ -554,7 +549,7 @@ namespace DOL.GS
 
         private static void CheckInGameTimeout(GameClient client)
         {
-            if (client.Player.HasLinkDeathTimerActive)
+            if (client.Player.IsLinkDeathTimerRunning)
                 return;
 
             if (ServiceUtils.ShouldTickNoEarly(client.Player.LastPositionUpdateTime + POSITION_UPDATE_TIMEOUT))
