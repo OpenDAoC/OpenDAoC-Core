@@ -1158,7 +1158,7 @@ namespace DOL.GS
                 if (!ServiceUtils.ShouldTick(_playerOwner.Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000))
                     return Interval;
 
-                if (!IsAlive)
+                if (!_playerOwner.IsAlive)
                 {
                     _playerOwner.Release(_playerOwner.ReleaseType, true);
 
