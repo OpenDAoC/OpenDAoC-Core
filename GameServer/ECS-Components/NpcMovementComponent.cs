@@ -318,6 +318,14 @@ namespace DOL.GS
             Owner.Heading = heading;
         }
 
+        public override void DisableTurning(bool add)
+        {
+            // Trigger an update to make sure the NPC properly starts or stops auto facing client side.
+            // May technically be only necessary if the count is going from 0 to 1 or 1 to 0, but we're skipping that because it would needs to be thread safe.
+            _needsBroadcastUpdate = true;
+            base.DisableTurning(add);
+        }
+
         private void UpdateVelocity(double distanceToTarget)
         {
             MovementStartTick = GameLoop.GameLoopTime;
