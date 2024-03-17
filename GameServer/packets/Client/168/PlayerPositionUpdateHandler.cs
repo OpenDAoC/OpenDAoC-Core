@@ -84,7 +84,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         private static void HandlePacketSince1124(GameClient client, GSPacketIn packet)
         {
             //Tiv: in very rare cases client send 0xA9 packet before sending S<=C 0xE8 player world initialize
-            if ((client.Player.ObjectState != GameObject.eObjectState.Active) || (client.ClientState != GameClient.eClientState.Playing))
+            if (client.Player.ObjectState != GameObject.eObjectState.Active || client.ClientState is not GameClient.eClientState.Playing and not GameClient.eClientState.Linkdead)
                 return;
 
             long environmentTick = GameLoop.GameLoopTime;
