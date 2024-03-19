@@ -8,20 +8,19 @@ namespace DOL.Network
 	/// </summary>
 	public class PacketOut : MemoryStream, IPacket
 	{
+		public byte PacketCode { get; protected set; }
+		public bool IsSizeSet { get; private set; }
+
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
-		protected PacketOut()
-		{
-		}
+		protected PacketOut() { }
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="size">Size of the internal buffer</param>
-		public PacketOut(int size) : base(size)
-		{
-		}
+		public PacketOut(int size) : base(size) { }
 
 		#region IPacket Members
 
@@ -152,18 +151,19 @@ namespace DOL.Network
 		}
 
 		/// <summary>
-		/// Writes the length of the patcket at the beginning of the stream
+		/// Writes the length of the packet at the beginning of the stream
 		/// </summary>
 		/// <returns>Length of the packet</returns>
-		public virtual ushort WritePacketLength()
+		public virtual void WritePacketLength()
 		{
+			// Intended to be overridden.
+			throw new NotImplementedException();
+		}
+
+		protected void OnStartWritePacketLength()
+		{
+			IsSizeSet = true;
 			Position = 0;
-
-			WriteShort((ushort) (Length - 3));
-
-			Capacity = (int) Length;
-
-			return (ushort) (Length - 3);
 		}
 
 		/// <summary>
@@ -178,7 +178,7 @@ namespace DOL.Network
 				return;
 			}
 
-			byte[] bytes = Constants.DefaultEncoding.GetBytes(str);
+			byte[] bytes = BaseServer.defaultEncoding.GetBytes(str);
 			WriteByte((byte) bytes.Length);
 			Write(bytes, 0, bytes.Length);
 		}
@@ -191,7 +191,7 @@ namespace DOL.Network
 				return;
 			}
 
-			byte[] bytes = Constants.DefaultEncoding.GetBytes(str);
+			byte[] bytes = BaseServer.defaultEncoding.GetBytes(str);
 			WriteIntLowEndian((uint)bytes.Length + 1);
 			Write(bytes, 0, bytes.Length);
 			WriteByte(0);
@@ -217,7 +217,7 @@ namespace DOL.Network
 			if (str.Length <= 0)
 				return;
 
-			byte[] bytes = Constants.DefaultEncoding.GetBytes(str);
+			byte[] bytes = BaseServer.defaultEncoding.GetBytes(str);
 			Write(bytes, 0, bytes.Length);
 		}
 
@@ -231,7 +231,7 @@ namespace DOL.Network
 			if (str.Length <= 0)
 				return;
 
-			byte[] bytes = Constants.DefaultEncoding.GetBytes(str);
+			byte[] bytes = BaseServer.defaultEncoding.GetBytes(str);
 			Write(bytes, 0, bytes.Length < maxlen ? bytes.Length : maxlen);
 		}
 
@@ -257,17 +257,23 @@ namespace DOL.Network
 				return;
 			}
 
-			byte[] bytes = Constants.DefaultEncoding.GetBytes(str);
+			byte[] bytes = BaseServer.defaultEncoding.GetBytes(str);
 			Write(bytes, 0, len > bytes.Length ? bytes.Length : len);
 			Position = pos + len;
 		}
 
 		/// <summary>
 		/// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
-		/// </summary>		
+		/// </summary>
 		public override string ToString()
 		{
 			return GetType().Name;
+		}
+
+		public override void Close()
+		{
+			// Called by Dispose and normally invalidates the stream.
+			// But this is both pointless (`MemoryStream` doesn't have any unmanaged resource) and undesirable (we always want the buffer to remain accessible)
 		}
 	}
 }

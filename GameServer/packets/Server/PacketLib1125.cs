@@ -12,7 +12,6 @@ namespace DOL.GS.PacketHandler
 	[PacketLib(1125, GameClient.eClientVersion.Version1125)]
 	public class PacketLib1125 : PacketLib1124
 	{
-
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
@@ -37,7 +36,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(m_gameClient.MajorBuild); // last seen : 0x2A 0x07
 				pak.WriteByte(m_gameClient.MinorBuild);
 				SendTCP(pak);
-				m_gameClient.PacketProcessor.ProcessTcpQueue();
+				m_gameClient.PacketProcessor.SendPendingPackets();
 			}
 		}
 

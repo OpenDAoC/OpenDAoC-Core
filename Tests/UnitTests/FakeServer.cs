@@ -37,7 +37,6 @@ namespace DOL.Tests.Unit.Gameserver
 
         protected override IObjectDatabase DataBaseImpl => database;
         protected override void CheckAndInitDB() { }
-        public override byte[] AcquirePacketBuffer() => new byte[] { };
         public void SetDatabase(IObjectDatabase database) { this.database = database; }
 
         public static void Load() => LoadTestDouble(new FakeServer());

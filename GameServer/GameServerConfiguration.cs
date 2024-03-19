@@ -1,28 +1,8 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
 using System.Linq;
-
+using System.Net;
+using System.Reflection;
 using DOL.Config;
 using DOL.Database.Connection;
 
@@ -507,7 +487,7 @@ namespace DOL.GS
 			get { return m_cheatLoggerName; }
 			set { m_cheatLoggerName = value; }
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the cheat logger name
 		/// </summary>
@@ -517,10 +497,10 @@ namespace DOL.GS
 			set { m_dualIPLoggerName = value; }
 		}
 
-        /// <summary>
-        /// Gets or sets the trade logger name
-        /// </summary>
-        public string InventoryLoggerName { get; set; }
+		/// <summary>
+		/// Gets or sets the trade logger name
+		/// </summary>
+		public string InventoryLoggerName { get; set; }
 
 		/// <summary>
 		/// Gets or sets the invalid name filename
@@ -581,7 +561,7 @@ namespace DOL.GS
 			get { return m_cpuCount; }
 			set { m_cpuCount = value; }
 		}
-		
+
 		/// <summary>
 		/// Gets or sets the max cout of clients allowed
 		/// </summary>
@@ -589,16 +569,6 @@ namespace DOL.GS
 		{
 			get { return m_maxClientCount; }
 			set { m_maxClientCount = value; }
-		}
-		
-		/// <summary>
-		/// Gets or sets UDP address and port to send UDP packets from.
-		/// If <code>null</code> then <see cref="Socket"/> decides where to bind.
-		/// </summary>
-		public IPEndPoint UDPOutEndpoint
-		{
-			get { return m_udpOutEndpoint; }
-			set { m_udpOutEndpoint = value; }
 		}
 
 		private int m_cpuUse;

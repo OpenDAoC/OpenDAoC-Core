@@ -72,7 +72,7 @@ namespace DOL.GS.PacketHandler
 				#endif
 
 				SendTCP(pak);
-				m_gameClient.PacketProcessor.ProcessTcpQueue();
+				m_gameClient.PacketProcessor.SendPendingPackets();
 			}
 		}
 
@@ -838,7 +838,7 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendPlayerQuit(bool totalOut)
 		{
 			// Prevents the client from entering the game when this is called when the player is changing region.
-			m_gameClient.PacketProcessor.ClearPacketQueues();
+			m_gameClient.PacketProcessor.ClearPendingOutboundPackets();
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Quit)))
 			{

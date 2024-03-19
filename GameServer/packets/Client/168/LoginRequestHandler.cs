@@ -365,7 +365,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							if (!CryptPassword(password).Equals(playerAccount.Password))
 							{
 								if (Log.IsInfoEnabled)
-									Log.Info("(" + client.TcpEndpoint + ") Wrong password!");
+									Log.Info("(" + client.TcpEndpointAddress + ") Wrong password!");
 
 								client.Out.SendLoginDenied(eLoginError.WrongPassword);
 								client.IsConnected = false;
@@ -430,7 +430,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					client.Out.SendLoginGranted();
 					client.ClientState = GameClient.eClientState.Connecting;
-					
 					GameServer.Database.FillObjectRelations(client.Account);
 
 					// var clIP = ((IPEndPoint) client.Socket.RemoteEndPoint)?.Address.ToString();
@@ -467,7 +466,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 			finally
 			{
-				client.PacketProcessor?.ProcessTcpQueue();
+				client.PacketProcessor?.SendPendingPackets();
 
 				if (client.IsConnected == false)
 					client.Disconnect();

@@ -1,4 +1,5 @@
 using System.Text;
+using DOL.Network;
 
 namespace DOL
 {
@@ -20,9 +21,9 @@ namespace DOL
 			for (int i = 0; i < cstyle.Length; i++)
 			{
 				if (cstyle[i] == 0)
-					return Constants.DefaultEncoding.GetString(cstyle, 0, i);
+					return BaseServer.defaultEncoding.GetString(cstyle, 0, i);
 			}
-			return Constants.DefaultEncoding.GetString(cstyle);
+			return BaseServer.defaultEncoding.GetString(cstyle);
 		}
 
 		/// <summary>

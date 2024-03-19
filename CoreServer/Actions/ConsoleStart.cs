@@ -3,7 +3,6 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOLGameServerConsole;
 using log4net;
 
@@ -95,52 +94,56 @@ namespace DOL.DOLServer.Actions
 			}
 
 			bool run = true;
+
 			while (run)
 			{
 				Console.Write("> ");
 				string line = Console.ReadLine();
 
-				if (line != null)
+				if (line == null)
+					continue;
+
+				switch (line.ToLower())
 				{
-					switch (line.ToLower())
+					case "exit":
+						run = false;
+						break;
+					case "clear":
+						Console.Clear();
+						break;
+					default:
 					{
-						case "exit":
-							run = false;
+						if (line.Length <= 0)
 							break;
-						case "stacktrace":
-							log.Debug(PacketProcessor.GetConnectionThreadpoolStacks());
-							break;
-						case "clear":
-							Console.Clear();
-							break;
-						default:
-							if (line.Length <= 0)
-								break;
-							if (line[0] == '/')
+
+						if (line[0] == '/')
+						{
+							line = line.Remove(0, 1);
+							line = line.Insert(0, "&");
+						}
+
+						GameClient client = new(null, null);
+						client.Out = new ConsolePacketLib();
+
+						try
+						{
+							bool res = ScriptMgr.HandleCommandNoPlvl(client, line);
+							if (!res)
 							{
-								line = line.Remove(0, 1);
-								line = line.Insert(0, "&");
+								Console.WriteLine("Unknown command: " + line);
 							}
-							GameClient client = new GameClient(null);
-							client.Out = new ConsolePacketLib();
-							try
-							{
-								bool res = ScriptMgr.HandleCommandNoPlvl(client, line);
-								if (!res)
-								{
-									Console.WriteLine("Unknown command: " + line);
-								}
-							}
-							catch (Exception e)
-							{
-								Console.WriteLine(e.ToString());
-							}
-							break;
+						}
+						catch (Exception e)
+						{
+							Console.WriteLine(e.ToString());
+						}
+
+						break;
 					}
 				}
 			}
-			if (GameServer.Instance != null)
-				GameServer.Instance.Stop();
+
+			GameServer.Instance?.Stop();
 		}
 	}
 }

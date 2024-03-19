@@ -27,7 +27,7 @@ namespace DOL.GS
 
         public static int ClientCount => _clientCount; // `_clients` contains null objects.
 
-        public static void Tick()
+        public static void BeginTick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
@@ -38,73 +38,122 @@ namespace DOL.GS
                 _clients = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out _lastValidIndex);
             }
 
-            Parallel.For(0, _lastValidIndex + 1, TickInternal);
+            Parallel.For(0, _lastValidIndex + 1, BeginTickInternal);
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
-        private static void TickInternal(int index)
+        public static void EndTick()
         {
-            GameClient client = _clients[index]; // Read lock unneeded.
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
+            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            Parallel.For(0, _lastValidIndex + 1, EndTickInternal);
+            Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
+
+        private static void BeginTickInternal(int index)
+        {
+            GameClient client = _clients[index];
 
             if (client?.EntityManagerId.IsSet != true)
                 return;
-
-            long startTick;
-            long stopTick;
 
             try
             {
                 switch (client.ClientState)
                 {
-                    case GameClient.eClientState.Disconnected:
                     case GameClient.eClientState.NotConnected:
-                    case GameClient.eClientState.Linkdead:
-                        return;
+                    case GameClient.eClientState.Connecting:
                     case GameClient.eClientState.CharScreen:
+                    case GameClient.eClientState.WorldEnter:
                     {
-                        CheckCharScreenTimeout(client);
+                        Receive(client);
+                        CheckHardTimeout(client);
                         break;
                     }
                     case GameClient.eClientState.Playing:
                     {
-                        CheckInGameTimeout(client);
+                        Receive(client);
+
                         GamePlayer player = client.Player;
 
-                        if (player?.ObjectState is GameObject.eObjectState.Active)
+                        if (player == null)
+                            break;
+
+                        CheckInGameTimeout(client);
+
+                        if (player.ObjectState is not GameObject.eObjectState.Active)
+                            break;
+
+                        if (ServiceUtils.ShouldTick(player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL))
                         {
-                            if (ServiceUtils.ShouldTick(player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL))
-                            {
-                                startTick = GameLoop.GetCurrentTime();
-                                UpdateWorld(player);
-                                stopTick = GameLoop.GetCurrentTime();
+                            long startTick = GameLoop.GetCurrentTime();
+                            UpdateWorld(player);
+                            long stopTick = GameLoop.GetCurrentTime();
 
-                                if (stopTick - startTick > 25)
-                                    log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
-                            }
-
-                            player.movementComponent.Tick();
+                            if (stopTick - startTick > 25)
+                                log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
                         }
 
+                        player.movementComponent.Tick();
                         break;
                     }
                     default:
-                    {
-                        CheckHardTimeout(client);
-                        break;
-                    }
+                        return;
                 }
-
-                startTick = GameLoop.GetCurrentTime();
-                client.PacketProcessor.ProcessTcpQueue();
-                stopTick = GameLoop.GetCurrentTime();
-
-                if (stopTick - startTick > 25)
-                    log.Warn($"Long {SERVICE_NAME}.{nameof(client.PacketProcessor.ProcessTcpQueue)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
             }
             catch (Exception e)
             {
                 ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, client.Player);
             }
+        }
+
+        private static void EndTickInternal(int index)
+        {
+            GameClient client = _clients[index];
+
+            if (client?.EntityManagerId.IsSet != true)
+                return;
+
+            try
+            {
+                switch (client.ClientState)
+                {
+                    case GameClient.eClientState.Connecting:
+                    case GameClient.eClientState.CharScreen:
+                    case GameClient.eClientState.WorldEnter:
+                    case GameClient.eClientState.Playing:
+                    {
+                        Send(client);
+                        break;
+                    }
+                    default:
+                        return;
+                }
+            }
+            catch (Exception e)
+            {
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, client.Player);
+            }
+        }
+
+        private static void Receive(GameClient client)
+        {
+            long startTick = GameLoop.GetCurrentTime();
+            client.Receive();
+            long stopTick = GameLoop.GetCurrentTime();
+
+            if (stopTick - startTick > 25)
+                log.Warn($"Long {SERVICE_NAME}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+        }
+
+        private static void Send(GameClient client)
+        {
+            long startTick = GameLoop.GetCurrentTime();
+            client.PacketProcessor.SendPendingPackets();
+            long stopTick = GameLoop.GetCurrentTime();
+
+            if (stopTick - startTick > 25)
+                log.Warn($"Long {SERVICE_NAME}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
         }
 
         public static void OnClientConnect(GameClient client)
@@ -620,7 +669,7 @@ namespace DOL.GS
             if (ServiceUtils.ShouldTickNoEarly(client.PingTime + HARD_TIMEOUT))
             {
                 if (log.IsWarnEnabled)
-                    log.Warn($"Hard timeout for client {client}");
+                    log.Warn($"Hard timeout on client. Disconnecting. ({client})");
 
                 GameServer.Instance.Disconnect(client);
             }
@@ -642,11 +691,16 @@ namespace DOL.GS
         private static void UpdateWorld(GamePlayer player)
         {
             // Players aren't updated here on purpose.
+            long startTick = GameLoop.GetCurrentTime();
             UpdateNpcs(player);
             UpdateItems(player);
             UpdateDoors(player);
             UpdateHouses(player);
             player.LastWorldUpdate = GameLoop.GameLoopTime;
+            long stopTick = GameLoop.GetCurrentTime();
+
+            if (stopTick - startTick > 25)
+                log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
         }
 
         private static void UpdateNpcs(GamePlayer player)

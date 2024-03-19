@@ -2,301 +2,186 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Threading;
 using log4net;
 
 namespace DOL.Network
 {
-	/// <summary>
-	/// Base class representing a game client.
-	/// </summary>
-	public class BaseClient
-	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    public class BaseClient
+    {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		/// <summary>
-		/// The callback when the client receives data.
-		/// </summary>
-		private static readonly AsyncCallback ReceiveCallback = OnReceiveHandler;
+        // This is mostly important for outbound UDP packets since the client seems to discard some content if its internal buffer is full.
+        // Thus if some UDP packets appear to be ignored, try lowering `SEND_UDP_BUFFER_SIZE`.
+        // Outbound TCP packets on the other hand seem to always be processed.
+        // Inbound TCP packets are generally small and the buffer size irrelevant.
+        public const int SEND_BUFFER_SIZE = 8192;
+        public const int RECEIVE_BUFFER_SIZE = 1024;
+        private const int SOCKET_SEND_BUFFER_SIZE = 8192;
+        private const int SOCKET_RECEIVE_BUFFER_SIZE = 1024;
 
-		/// <summary>
-		/// Receive buffer for the client.
-		/// </summary>
-		protected byte[] _pBuf;
+        private BaseServer _server;
+        private SocketAsyncEventArgs _receiveArgs = new();
+        private bool _isReceivingAsync;
+        private long _isReceivingAsyncCompleted; // Use `ReceivingAsyncCompleted` instead.
 
-		/// <summary>
-		/// The current offset into the receive buffer.
-		/// </summary>
-		protected int _pBufOffset;
+        public Socket Socket { get; }
+        public byte[] ReceiveBuffer { get; }
+        public int ReceiveBufferOffset { get; set; }
 
-		/// <summary>
-		/// The socket for the client's connection to the server.
-		/// </summary>
-		protected Socket _socket;
-
-		/// <summary>
-		/// The current server instance that is servicing this client.
-		/// </summary>
-		protected BaseServer _srvr;
-
-        /// <summary>
-        /// Has this client received any bytes yet
-        /// </summary>
-        protected bool _hasReceivedBytes = false;
-
-		/// <summary>
-		/// Creates a new client.
-		/// </summary>
-		/// <param name="srvr">the server that is servicing this client</param>
-		public BaseClient(BaseServer srvr)
-		{
-			_srvr = srvr;
-
-			if (srvr != null)
-				_pBuf = srvr.AcquirePacketBuffer();
-
-			_pBufOffset = 0;
-		}
-
-		/// <summary>
-		/// Gets the current server instance that is servicing this client.
-		/// </summary>
-		public BaseServer Server
-		{
-			get { return _srvr; }
-		}
-
-		/// <summary>
-		/// Gets/sets the socket for the client's connection to the server.
-		/// </summary>
-		public Socket Socket
-		{
-			get { return _socket; }
-			set { _socket = value; }
-		}
-
-		/// <summary>
-		/// Gets the receive buffer for the client.
-		/// </summary>
-		public byte[] ReceiveBuffer
-		{
-			get { return _pBuf; }
-		}
-
-		/// <summary>
-		/// Gets/sets the offset into the receive buffer.
-		/// </summary>
-		public int ReceiveBufferOffset
-		{
-			get { return _pBufOffset; }
-			set { _pBufOffset = value; }
-		}
-
-        /// <summary>
-        /// Has this client received bytes
-        /// </summary>
-        public bool HasReceivedBytes
+        private bool ReceivingAsyncCompleted
         {
-            get { return _hasReceivedBytes; }
-            set { _hasReceivedBytes = value; }
+            get => Interlocked.Read(ref _isReceivingAsyncCompleted) == 1;
+            set => Interlocked.Exchange(ref _isReceivingAsyncCompleted, Convert.ToInt64(value));
         }
 
-		/// <summary>
-		/// Gets the client's TCP endpoint address, if connected.
-		/// </summary>
-		public string TcpEndpointAddress
-		{
-			get
-			{
-				Socket s = _socket;
-				if (s != null && s.Connected && s.RemoteEndPoint != null)
-					return ((IPEndPoint) s.RemoteEndPoint).Address.ToString();
+        public string TcpEndpointAddress
+        {
+            get
+            {
+                if (Socket != null && Socket.Connected && Socket.RemoteEndPoint is IPEndPoint ipEndPoint)
+                    return ipEndPoint.Address.ToString();
 
-				return "not connected";
-			}
-		}
+                return "[not connected]";
+            }
+        }
 
-		/// <summary>
-		/// Gets the client's TCP endpoint, if connected.
-		/// </summary>
-		public string TcpEndpoint
-		{
-			get
-			{
-				Socket s = _socket;
-				if (s != null && s.Connected && s.RemoteEndPoint != null)
-					return s.RemoteEndPoint.ToString();
+        public BaseClient(BaseServer server, Socket socket)
+        {
+            _server = server;
 
-				return "not connected";
-			}
-		}
+            if (socket != null)
+            {
+                socket.SendBufferSize = SOCKET_SEND_BUFFER_SIZE;
+                socket.ReceiveBufferSize = SOCKET_RECEIVE_BUFFER_SIZE;
+                socket.NoDelay = true;
+                Socket = socket;
+            }
 
-		/// <summary>
-		/// Called when the client has received data.
-		/// </summary>
-		/// <param name="numBytes">number of bytes received in _pBuf</param>
-		protected virtual void OnReceive(int numBytes)
-		{
-		}
+            ReceiveBuffer = new byte[RECEIVE_BUFFER_SIZE];
+            _receiveArgs.SetBuffer(ReceiveBuffer, 0, ReceiveBuffer.Length);
+            _receiveArgs.Completed += OnAsyncReceiveCompletion;
 
-		/// <summary>
-		/// Called after the client connection has been accepted.
-		/// </summary>
-		public virtual void OnConnect()
-		{
-		}
+            void OnAsyncReceiveCompletion(object sender, SocketAsyncEventArgs tcpReceiveArgs)
+            {
+                ReceivingAsyncCompleted = true;
+            }
+        }
 
-		/// <summary>
-		/// Called right after the client has been disconnected.
-		/// </summary>
-		public virtual void OnDisconnect()
-		{
-		}
+        protected virtual void OnReceive(int size) { }
 
-		/// <summary>
-		/// Starts listening for incoming data.
-		/// </summary>
-		public void BeginReceive()
-		{
-			if (_socket != null && _socket.Connected)
-			{
-				int bufSize = _pBuf.Length;
+        public virtual void OnConnect() { }
 
-				if (_pBufOffset >= bufSize) //Do we have space to receive?
-				{
-					if (Log.IsErrorEnabled)
-					{
-						Log.Error(TcpEndpoint + " disconnected because of buffer overflow!");
-						Log.Error("_pBufOffset=" + _pBufOffset + "; buf size=" + bufSize);
-						Log.Error(_pBuf);
-					}
+        public virtual void OnDisconnect() { }
 
-					_srvr.Disconnect(this);
-				}
-				else
-				{
-					_socket.BeginReceive(_pBuf, _pBufOffset, bufSize - _pBufOffset, SocketFlags.None, ReceiveCallback, this);
-				}
-			}
-		}
+        public void Receive()
+        {
+            if (!Socket.Connected)
+                return;
 
-		/// <summary>
-		/// Called when the client has received data or the connection has been closed.
-		/// </summary>
-		/// <param name="ar">the async operation result object from the receive operation</param>
-		private static void OnReceiveHandler(IAsyncResult ar)
-		{
-			if (ar == null)
-				return;
+            // If an async operation is running, wait for it to be completed.
+            // We could work with a new `SocketAsyncEventArgs` instead, but the implementation is tricky and I don't think there would be any benefit.
+            // We could also let the callback call `OnReceiveCompletion`, but the packet would be then processed outside of the game loop.
+            if (_isReceivingAsync)
+            {
+                if (!ReceivingAsyncCompleted)
+                    return;
 
-			BaseClient baseClient = null;
+                OnReceiveCompletion();
+                _isReceivingAsync = false;
+            }
 
-			try
-			{
-				baseClient = (BaseClient) ar.AsyncState;
-				int numBytes = baseClient.Socket.EndReceive(ar);
+            int remaining = ReceiveBuffer.Length - ReceiveBufferOffset;
 
-				if (numBytes > 0)
-				{
-                    baseClient.HasReceivedBytes = true;
-					baseClient.OnReceive(numBytes);
-					baseClient.BeginReceive();
-				}
-				else
-				{
-                    // Only show a message if this client has received bytes in the past
-                    // This helps avoid console spam for portal and other 0 byte pings - tolakram
-                    if (baseClient.HasReceivedBytes)
+            if (remaining <= 0)
+            {
+                if (remaining == 0)
+                    return;
+
+                if (log.IsErrorEnabled)
+                    log.Error($"Disconnecting client because of receive buffer overflow. (Client: {this})");
+
+                Disconnect();
+                return;
+            }
+
+            try
+            {
+                _receiveArgs.SetBuffer(ReceiveBufferOffset, ReceiveBuffer.Length - ReceiveBufferOffset);
+
+                if (Socket.ReceiveAsync(_receiveArgs))
+                {
+                    ReceivingAsyncCompleted = false;
+                    _isReceivingAsync = true;
+                }
+                else
+                    OnReceiveCompletion();
+            }
+            catch (ObjectDisposedException) { }
+            catch (SocketException e)
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug($"Socket exception on TCP receive (Client: {this}) (Code: {e.SocketErrorCode})");
+
+                Disconnect();
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Unhandled exception on TCP receive (Client: {this}): {e}");
+
+                Disconnect();
+            }
+        }
+
+        private void OnReceiveCompletion()
+        {
+            int received = _receiveArgs.BytesTransferred;
+
+            if (received <= 0)
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug($"Disconnecting client because of 0 bytes received. (Client: {this}");
+
+                Disconnect();
+                return;
+            }
+
+            OnReceive(received);
+        }
+
+        public void CloseConnections()
+        {
+            if (Socket != null)
+            {
+                if (Socket.Connected)
+                {
+                    try
                     {
-                        if (Log.IsDebugEnabled)
-                            Log.Debug("Disconnecting client (" + baseClient.TcpEndpointAddress + "), received bytes=" + numBytes);
+                        Socket.Shutdown(SocketShutdown.Send);
                     }
+                    catch { }
+                }
 
-					baseClient._srvr.Disconnect(baseClient);
-				}
-			}
-			catch (ObjectDisposedException)
-			{
-				if (baseClient != null)
-					baseClient._srvr.Disconnect(baseClient);
-			}
-			catch (SocketException e)
-			{
-				if (baseClient != null)
-				{
-					if (Log.IsInfoEnabled) 
-					{
-						try
-						{
-							Log.Info(string.Format("{0}  {1}", baseClient.TcpEndpoint, e.Message));
-						}
-						catch (SocketException ex)
-						{
-							Log.Info(string.Format("EndPoint not availaible: {0}  {1}", e.Message, ex.Message));
-						}
-					}
-						
-					baseClient._srvr.Disconnect(baseClient);
-				}
-			}
-			catch (Exception e)
-			{
-				if (Log.IsErrorEnabled)
-					Log.Error("OnReceiveHandler", e);
+                try
+                {
+                    Socket.Close();
+                }
+                catch { }
+            }
+        }
 
-				if (baseClient != null)
-					baseClient._srvr.Disconnect(baseClient);
-			}
-		}
-
-		/// <summary>
-		/// Closes the client connection.
-		/// </summary>
-		public void CloseConnections()
-		{
-			if (_socket != null)
-			{
-				try
-				{
-					_socket.Shutdown(SocketShutdown.Send);
-				}
-				catch
-				{
-				}
-
-				try
-				{
-					_socket.Close();
-				}
-				catch
-				{
-				}
-			}
-
-			byte[] buff = _pBuf;
-			if (buff != null)
-			{
-				_pBuf = null;
-				_srvr.ReleasePacketBuffer(buff);
-			}
-		}
-
-		/// <summary>
-		/// Closes the client connection.
-		/// </summary>
-		public void Disconnect()
-		{
-			try
-			{
-				_srvr.Disconnect(this);
-			}
-			catch (Exception e)
-			{
-				if (Log.IsErrorEnabled)
-					Log.Error("Exception", e);
-			}
-		}
-	}
+        public void Disconnect()
+        {
+            try
+            {
+                _server.Disconnect(this);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("Exception", e);
+            }
+        }
+    }
 }

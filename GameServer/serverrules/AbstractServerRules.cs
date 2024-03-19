@@ -191,7 +191,7 @@ namespace DOL.GS.ServerRules
 
 			if (!Properties.ALLOW_DUAL_LOGINS)
 			{
-				if ((account == null || account.PrivLevel == 1) && client.TcpEndpointAddress != "not connected")
+				if ((account == null || account.PrivLevel == 1) && client.Socket?.RemoteEndPoint != null)
 				{
 					GameClient otherClient = ClientService.GetClientWithSameIp(client);
 					

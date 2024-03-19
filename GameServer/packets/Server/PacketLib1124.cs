@@ -437,6 +437,10 @@ namespace DOL.GS.PacketHandler
 
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PositionAndObjectID)))
 			{
+				if (m_gameClient.Player.X <= 0)
+				{
+					int x = 0;
+				}
 				pak.WriteFloatLowEndian(m_gameClient.Player.X);
 				pak.WriteFloatLowEndian(m_gameClient.Player.Y);
 				pak.WriteFloatLowEndian(m_gameClient.Player.Z);
@@ -760,7 +764,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(m_gameClient.MajorBuild); // last seen : 0x44 0x05
 				pak.WriteByte(m_gameClient.MinorBuild);
 				SendTCP(pak);
-				m_gameClient.PacketProcessor.ProcessTcpQueue();
+				m_gameClient.PacketProcessor.SendPendingPackets();
 			}
 		}
 
