@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,11 +9,11 @@ using System.Reflection;
 using System.Text;
 using DOL.AI.Brain;
 using DOL.Config;
+using DOL.Events;
+using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerRules;
 using DOL.GS.Spells;
-using DOL.GS.Commands;
-using DOL.Events;
 using log4net;
 
 namespace DOL.GS
@@ -25,12 +26,12 @@ namespace DOL.GS
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static Dictionary<string, Assembly> m_compiledScripts = new();
-		private static Dictionary<eSpellType, Func<GameLiving, Spell, SpellLine, ISpellHandler>> m_spellhandlerConstructorCache = new();
+		private static ConcurrentDictionary<eSpellType, Func<GameLiving, Spell, SpellLine, ISpellHandler>> m_spellhandlerConstructorCache = new();
 
-        /// <summary>
-        /// This class will hold all info about a gamecommand
-        /// </summary>
-        public class GameCommand
+		/// <summary>
+		/// This class will hold all info about a gamecommand
+		/// </summary>
+		public class GameCommand
 		{
 			public String[] Usage { get; set; }
 			public string m_cmd;
