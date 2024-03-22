@@ -983,7 +983,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				log.Warn($"DetailDisplayHandler no info for objectID {objectId} of type {objectType}. Item: {item?.Id_nb ?? (invItem?.Id_nb ?? "null")}, client: {client}");
 		}
 
-		public static void WriteStyleInfo(IList<string> objectInfo, Style style, GameClient client)
+		public static void WriteStyleInfo(List<string> objectInfo, Style style, GameClient client)
 		{
 			client.Player.styleComponent.DelveWeaponStyle(objectInfo, style);
 		}
@@ -995,7 +995,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <param name="spell"></param>
 		/// <param name="spellLine"></param>
 		/// <param name="client"></param>
-		public void WriteSpellInfo(IList<string> output, Spell spell, SpellLine spellLine, GameClient client)
+		public void WriteSpellInfo(List<string> output, Spell spell, SpellLine spellLine, GameClient client)
 		{
 			if (client == null || client.Player == null)
 				return;
@@ -1012,7 +1012,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 			else
 			{
-				Util.AddRange(output, spellHandler.DelveInfo);
+				output.AddRange(spellHandler.DelveInfo);
 				//Subspells
 				if (spell.SubSpellID > 0)
 				{
@@ -1020,7 +1020,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					output.Add(" ");
 
 					ISpellHandler sh = ScriptMgr.CreateSpellHandler(client.Player, s, SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells));
-					Util.AddRange(output, sh.DelveInfo);
+					output.AddRange(sh.DelveInfo);
 				}
 			}
 			if (client.Account.PrivLevel > 1)
@@ -1360,12 +1360,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		}
 
-		public void WriteMagicalBonuses(IList<string> output, DbItemTemplate item, GameClient client, bool shortInfo)
+		public void WriteMagicalBonuses(List<string> output, DbItemTemplate item, GameClient client, bool shortInfo)
 		{
 			WriteMagicalBonuses(output, GameInventoryItem.Create(item), client, shortInfo);
 		}
 
-		public void WriteMagicalBonuses(IList<string> output, DbInventoryItem item, GameClient client, bool shortInfo)
+		public void WriteMagicalBonuses(List<string> output, DbInventoryItem item, GameClient client, bool shortInfo)
 		{
 			int oldCount = output.Count;
 
@@ -1454,7 +1454,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, procSpell, line);
 							if (spellHandler != null)
 							{
-								Util.AddRange(output, spellHandler.DelveInfo);
+								output.AddRange(spellHandler.DelveInfo);
 								output.Add(" ");
 							}
 							else
@@ -1501,7 +1501,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, procSpell, line);
 							if (spellHandler != null)
 							{
-								Util.AddRange(output, spellHandler.DelveInfo);
+								output.AddRange(spellHandler.DelveInfo);
 								output.Add(" ");
 							}
 							else
@@ -1545,7 +1545,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									output.Add(" ");
 								}
 
-								Util.AddRange(output, spellHandler.DelveInfo);
+								output.AddRange(spellHandler.DelveInfo);
 								output.Add(" ");
 								output.Add("- This spell is cast when the item is used.");
 							}
@@ -1584,7 +1584,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									output.Add(" ");
 								}
 
-								Util.AddRange(output, spellHandler.DelveInfo);
+								output.AddRange(spellHandler.DelveInfo);
 								output.Add(" ");
 								output.Add("- This spell is cast when the item is used.");
 							}
@@ -1627,7 +1627,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, spl, poisonLine);
 									if (spellHandler != null)
 									{
-										Util.AddRange(output, spellHandler.DelveInfo);
+										output.AddRange(spellHandler.DelveInfo);
 										output.Add(" ");
 									}
 									else
@@ -1668,7 +1668,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, spl, chargeEffectsLine);
 								if (spellHandler != null)
 								{
-									Util.AddRange(output, spellHandler.DelveInfo);
+									output.AddRange(spellHandler.DelveInfo);
 									output.Add(" ");
 								}
 								else
@@ -1804,12 +1804,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 			list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteHorseInfo.Food"));
 		}
 
-		protected void WritePoisonInfo(IList<string> list, DbItemTemplate item, GameClient client)
+		protected void WritePoisonInfo(List<string> list, DbItemTemplate item, GameClient client)
 		{
 			WritePoisonInfo(list, GameInventoryItem.Create(item), client);
 		}
 
-		protected void WritePoisonInfo(IList<string> list, DbInventoryItem item, GameClient client)
+		protected void WritePoisonInfo(List<string> list, DbInventoryItem item, GameClient client)
 		{
 			if (item.PoisonSpellID != 0)
 			{
@@ -1834,7 +1834,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, spl, poisonLine);
 							if (spellHandler != null)
 							{
-								Util.AddRange(list, spellHandler.DelveInfo);
+								list.AddRange(spellHandler.DelveInfo);
 							}
 							else
 							{

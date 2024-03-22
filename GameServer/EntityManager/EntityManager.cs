@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using DOL.AI;
 using log4net;
@@ -200,7 +199,7 @@ namespace DOL.GS
                     if (log.IsWarnEnabled)
                         log.Warn($"{typeof(T)} {nameof(Entities)} is too short. Resizing it to {newCapacity}.");
 
-                    ListExtras.Resize(Entities, newCapacity);
+                    Entities.Resize(newCapacity);
                 }
 
                 Entities.Add(entity);
@@ -278,28 +277,5 @@ namespace DOL.GS
     public interface IManagedEntity
     {
         public EntityManagerId EntityManagerId { get; set; }
-    }
-
-    // Extension methods for 'List<T>' that could be moved elsewhere.
-    public static class ListExtras
-    {
-        public static void Resize<T>(this List<T> list, int size, bool fill = false, T element = default)
-        {
-            int count = list.Count;
-
-            if (size < count)
-            {
-                list.RemoveRange(size, count - size);
-                list.TrimExcess();
-            }
-            else if (size > count)
-            {
-                if (size > list.Capacity)
-                    list.Capacity = size; // Creates a new internal array.
-
-                if (fill)
-                    list.AddRange(Enumerable.Repeat(element, size - count));
-            }
-        }
     }
 }
