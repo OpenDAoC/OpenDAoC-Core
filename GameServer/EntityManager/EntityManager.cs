@@ -87,7 +87,7 @@ namespace DOL.GS
             private object _entitiesToRemoveLock = new();
             private int _lastValidIndex = -1;
 
-            public List<T> Entities { get; private set; }
+            public List<T> Entities { get; }
 
             public EntityArray(int capacity)
             {
@@ -238,8 +238,8 @@ namespace DOL.GS
                 _pendingState = PendingState.NONE;
             }
         }
-        public EntityManager.EntityType Type { get; private set; }
-        public bool AllowReuseByEntityManager { get; private set; }
+        public EntityManager.EntityType Type { get; }
+        public bool AllowReuseByEntityManager { get; }
         public bool IsSet => _value > UNSET_ID;
         public bool IsPendingAddition => _pendingState == PendingState.ADDITION;
         public bool IsPendingRemoval => _pendingState == PendingState.REMOVAL;

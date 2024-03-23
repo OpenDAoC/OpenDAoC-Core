@@ -53,7 +53,7 @@ namespace DOL.GS
         /// <summary>
         /// Owner to which this calculator belongs to. Used for calculating position offsets
         /// </summary>
-        public GameNPC Owner { get; private set; }
+        public GameNPC Owner { get; }
 
         /// <summary>
         /// If set, contains the next door on the NPCs path

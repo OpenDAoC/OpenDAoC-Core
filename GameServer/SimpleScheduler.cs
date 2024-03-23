@@ -283,7 +283,7 @@ namespace DOL.GS.Scheduler
 		/// <summary>
 		/// Task's Method Reference
 		/// </summary>
-		internal Func<int> Method { get; private set; }
+		internal Func<int> Method { get; }
 		
 		/// <summary>
 		/// Lock Object Synchronzing Stopping Task

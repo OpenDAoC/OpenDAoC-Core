@@ -10,7 +10,7 @@ namespace DOL.GS
         private Point2D _positionDuringLastSubZoneRelocationCheck = new();
         private int _turningDisabledCount;
 
-        public GameLiving Owner { get; private set; }
+        public GameLiving Owner { get; }
         public short CurrentSpeed { get; set; }
         public short MaxSpeedBase { get; set; } // Currently unused for players.
         public virtual short MaxSpeed => (short) Owner.GetModified(eProperty.MaxSpeed);

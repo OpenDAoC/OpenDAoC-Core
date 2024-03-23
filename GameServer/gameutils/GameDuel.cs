@@ -10,8 +10,8 @@ namespace DOL.GS
     {
         private const string DUEL_PREVIOUS_LASTATTACKTICKPVP = "DUEL_PREVIOUS_LASTATTACKTICKPVP";
         private const string DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP= "DUEL_PREVIOUS_LASTATTACKEDBYENEMYTICKPVP";
-        public GamePlayer Starter { get; private set; }
-        public GamePlayer Target { get; private set; }
+        public GamePlayer Starter { get; }
+        public GamePlayer Target { get; }
 
         public GameDuel(GamePlayer starter, GamePlayer target)
         {

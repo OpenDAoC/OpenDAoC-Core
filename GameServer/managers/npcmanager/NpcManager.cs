@@ -30,7 +30,7 @@ namespace DOL.GS
 		/// </summary>
 		private GameServer GameServerInstance { get; set; }
 		
-		public MobAmbientBehaviourManager AmbientBehaviour { get; private set; }
+		public MobAmbientBehaviourManager AmbientBehaviour { get; }
 		
 		/// <summary>
 		/// Create a new Instance of <see cref="NpcManager"/>

@@ -4,11 +4,11 @@ namespace DOL.GS
 {
     public class CraftComponent : IManagedEntity
     {
-        public GamePlayer Owner { get; private set; }
+        public GamePlayer Owner { get; }
         public CraftAction CraftAction { get; set; }
         public bool CraftState { get; set; }
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.CraftComponent, false);
-        public List<Recipe> Recipes { get; private set; } = new();
+        public List<Recipe> Recipes { get; } = new();
         private object _recipesLock = new();
 
         public CraftComponent(GamePlayer owner)

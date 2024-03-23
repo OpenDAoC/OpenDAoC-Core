@@ -14,8 +14,8 @@ namespace DOL.GS.Effects
     {
         private class WeaponActionData
         {
-            public DbInventoryItem AttackWeapon { get; private set; }
-            public int InterruptDuration { get; private set; }
+            public DbInventoryItem AttackWeapon { get; }
+            public int InterruptDuration { get; }
 
             public WeaponActionData(DbInventoryItem attackWeapon, int interruptDuration)
             {

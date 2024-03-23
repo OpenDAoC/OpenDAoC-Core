@@ -194,7 +194,7 @@ namespace DOL.GS.Commands
     public abstract class ChainedAction<T> : IChainedAction
     {
         public virtual Skill Skill => null;
-        protected T Handler { get; private set; }
+        protected T Handler { get; }
 
         public ChainedAction(T handler)
         {

@@ -35,11 +35,11 @@ namespace DOL.Events
         /// <summary>
         /// The spot to walk to.
         /// </summary>
-        public IPoint3D Target { get; private set; }
+        public IPoint3D Target { get; }
 
 		/// <summary>
 		/// The speed to walk at.
 		/// </summary>
-        public int Speed { get; private set; }
+        public int Speed { get; }
 	}
 }

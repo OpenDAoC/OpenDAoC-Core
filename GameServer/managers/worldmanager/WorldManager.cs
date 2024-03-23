@@ -33,7 +33,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Reference to the World Weather Manager
 		/// </summary>
-		public WeatherManager WeatherManager { get; private set; }
+		public WeatherManager WeatherManager { get; }
 		
 		/// <summary>
 		/// Create a new instance of <see cref="WorldManager"/>

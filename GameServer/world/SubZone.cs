@@ -8,7 +8,7 @@ namespace DOL.GS
     public class SubZone
     {
         private ConcurrentLinkedList<GameObject>[] _objects = new ConcurrentLinkedList<GameObject>[Enum.GetValues(typeof(eGameObjectType)).Length];
-        public Zone ParentZone { get; private set; }
+        public Zone ParentZone { get; }
 
         public SubZone(Zone parentZone)
         {
@@ -24,7 +24,7 @@ namespace DOL.GS
     // A wrapper for a 'LinkedListNode<GameObject>'.
     public class SubZoneObject
     {
-        public LinkedListNode<GameObject> Node { get; private set; }
+        public LinkedListNode<GameObject> Node { get; }
         public SubZone CurrentSubZone { get; set; }
         private int _isChangingSubZone;
         public bool StartSubZoneChange => Interlocked.Exchange(ref _isChangingSubZone, 1) == 0; // Returns true the first time it's called.

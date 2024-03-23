@@ -10,7 +10,7 @@ namespace DOL.GS
         /// The name of the owner
         /// </summary>
         public override string OwnerName => $"Pulse: {SpellHandler.Spell.Name}";
-        public Dictionary<GameLiving, ECSGameSpellEffect> ChildEffects { get; private set; } = new();
+        public Dictionary<GameLiving, ECSGameSpellEffect> ChildEffects { get; } = new();
 
         public ECSPulseEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
             : base (new ECSGameEffectInitParams(owner, duration, effectiveness, handler))

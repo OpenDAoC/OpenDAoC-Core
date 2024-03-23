@@ -6,8 +6,8 @@ namespace DOL.GS
 {
     public class ProtectECSGameEffect : ECSGameAbilityEffect
     {
-        public GameLiving Source { get; private set; }
-        public GameLiving Target { get; private set; }
+        public GameLiving Source { get; }
+        public GameLiving Target { get; }
         public ProtectECSGameEffect PairedEffect { get; private set; }
         public override ushort Icon => 411;
         public override string Name

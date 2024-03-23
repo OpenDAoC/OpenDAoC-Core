@@ -283,7 +283,7 @@ namespace DOL.GS.PacketHandler
         /// <summary>
         /// The client TCP packet send queue
         /// </summary>
-        protected ConcurrentQueue<byte[]> TcpQueue { get; private set; } = new();
+        protected ConcurrentQueue<byte[]> TcpQueue { get; } = new();
 
         /// <summary>
         /// Sends a packet via TCP

@@ -8,19 +8,19 @@
 		/// <summary>
 		/// Column Name
 		/// </summary>
-		public string ColumnName { get; private set; }
+		public string ColumnName { get; }
 		/// <summary>
 		/// Column Type
 		/// </summary>
-		public string ColumnType { get; private set; }
+		public string ColumnType { get; }
 		/// <summary>
 		/// Column Allow Null
 		/// </summary>
-		public bool AllowDbNull { get; private set; }
+		public bool AllowDbNull { get; }
 		/// <summary>
 		/// Column Allow Null
 		/// </summary>
-		public bool Primary { get; private set; }
+		public bool Primary { get; }
 		
 		/// <summary>
 		/// Create new instance of <see cref="TableRowBinding"/>

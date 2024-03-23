@@ -56,7 +56,7 @@ namespace DOL.GS
 
         private long _nextTick;
 
-        public GameObject Owner { get; private set; }
+        public GameObject Owner { get; }
         public AuxECSTimerCallback Callback { get; set; }
         public int Interval { get; set; }
         public ref long NextTick => ref _nextTick;

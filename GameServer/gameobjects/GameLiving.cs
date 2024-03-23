@@ -33,7 +33,7 @@ namespace DOL.GS
 
 		public int UsedConcentration;
 
-		public ConcurrentDictionary<eSpellType, Spell> ActivePulseSpells { get; private set; } = new();
+		public ConcurrentDictionary<eSpellType, Spell> ActivePulseSpells { get; } = new();
 
 		#region Combat
 		/// <summary>
@@ -2901,7 +2901,7 @@ namespace DOL.GS
 		/// Stores temporary properties on this living.
 		/// Beware to use unique keys so they do not interfere
 		/// </summary>
-		public PropertyCollection TempProperties { get; private set; } = new();
+		public PropertyCollection TempProperties { get; } = new();
 
 		/// <summary>
 		/// Gets or Sets the effective level of the Object

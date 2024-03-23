@@ -37,7 +37,7 @@ namespace DOL.GS
         public eCraftingSkill RequiredCraftingSkill { get; }
         public int Level { get; }
         public List<Ingredient> Ingredients => new List<Ingredient>(ingredients);
-        public bool IsForUniqueProduct { get; private set; } = false;
+        public bool IsForUniqueProduct { get; } = false;
 
         public Recipe(DbItemTemplate product, List<Ingredient> ingredients)
         {

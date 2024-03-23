@@ -33,7 +33,7 @@ namespace DOL.GS
         /// <summary>
         /// Returns the list of attackers
         /// </summary>
-        public ConcurrentDictionary<GameLiving, long> Attackers { get; private set; } = new();
+        public ConcurrentDictionary<GameLiving, long> Attackers { get; } = new();
 
         private AttackersCheckTimer _attackersCheckTimer;
 

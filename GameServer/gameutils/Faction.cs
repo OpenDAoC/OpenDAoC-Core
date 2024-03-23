@@ -18,9 +18,9 @@ namespace DOL.GS
 
         public string Name { get; private set; }
         public int Id { get; private set; }
-        public HashSet<Faction> FriendFactions { get; private set; }
-        public HashSet<Faction> EnemyFactions { get; private set; }
-        public ConcurrentDictionary<string, int> AggroToPlayers { get; private set; }
+        public HashSet<Faction> FriendFactions { get; }
+        public HashSet<Faction> EnemyFactions { get; }
+        public ConcurrentDictionary<string, int> AggroToPlayers { get; }
 
         public Faction()
         {

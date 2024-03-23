@@ -33,6 +33,6 @@ namespace DOL.Events
             Attacker = attacker;
         }
 
-        public GameLiving Attacker { get; private set; }
+        public GameLiving Attacker { get; }
     }
 }

@@ -29,7 +29,7 @@ namespace DOL.GS
         private Point3D _positionForUpdatePackets;
         private bool _needsBroadcastUpdate;
 
-        public new GameNPC Owner { get; private set; }
+        public new GameNPC Owner { get; }
         public Vector3 Velocity { get; private set; }
         public Point3D Destination { get; private set; }
         public GameLiving FollowTarget { get; private set; }
@@ -693,9 +693,9 @@ namespace DOL.GS
 
         private class MovementRequest
         {
-            public Point3D Destination { get; private set; }
-            public short Speed { get; private set; }
-            public MovementRequestAction Action { get; private set; }
+            public Point3D Destination { get; }
+            public short Speed { get; }
+            public MovementRequestAction Action { get; }
 
             public MovementRequest(Point3D destination, short speed, MovementRequestAction action)
             {

@@ -7,8 +7,8 @@ namespace DOL.GS
 {
     public class InterceptECSGameEffect : ECSGameAbilityEffect
     {
-        public GameLiving Source { get; private set; }
-        public GameLiving Target { get; private set; }
+        public GameLiving Source { get; }
+        public GameLiving Target { get; }
         public InterceptECSGameEffect PairedEffect { get; private set; }
         public int InterceptChance
         {
