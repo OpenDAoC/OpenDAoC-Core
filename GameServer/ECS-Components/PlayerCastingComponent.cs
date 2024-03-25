@@ -27,15 +27,6 @@ namespace DOL.GS
             return base.RequestStartCastSpell(spell, spellLine, spellCastingAbilityHandler, target);
         }
 
-        protected override void StartCastSpell(StartCastSpellRequest startCastSpellRequest)
-        {
-            // Unstealth when we start casting (NS/Ranger/Hunter).
-            if (_playerOwner.IsStealthed)
-                _playerOwner.Stealth(false);
-
-            base.StartCastSpell(startCastSpellRequest);
-        }
-
         protected override bool CanCastSpell()
         {
             if (_playerOwner.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))

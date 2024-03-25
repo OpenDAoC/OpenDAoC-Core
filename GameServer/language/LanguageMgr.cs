@@ -314,10 +314,10 @@ namespace DOL.Language
                 log.Info("[Language-Manager] Loading object translations...");
 
             List<LanguageDataObject> lngObjs = new();
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageArea>());
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageGameObject>());
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageGameNpc>());
-            Util.AddRange(lngObjs, (IList<LanguageDataObject>) GameServer.Database.SelectAllObjects<DbLanguageZone>());
+            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageArea>());
+            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageGameObject>());
+            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageGameNpc>());
+            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageZone>());
 
             foreach (LanguageDataObject lngObj in lngObjs)
                 RegisterLanguageDataObject(lngObj);

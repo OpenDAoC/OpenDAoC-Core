@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+
 namespace DOL.GS.PacketHandler.Client.v168
 {
     [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.CheckLosRequest, "Handles a LoS Check Response", eClientStatus.PlayerInGame)]
@@ -12,7 +15,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 eLosCheckResponse response = (packet.ReadShort() & 0x100) == 0x100 ? eLosCheckResponse.TRUE : eLosCheckResponse.FALSE;
                 packet.ReadShort();
-                timer.SetResponse(response); // Let the timer service invoke the callback.
+                timer.SetResponse(response); // Let the timer service invoke the callbacks.
             }
         }
 
@@ -21,14 +24,37 @@ namespace DOL.GS.PacketHandler.Client.v168
             private ushort _sourceObjectId;
             private ushort _targetObjectId;
             private eLosCheckResponse _response;
-            public CheckLosResponse LosCheckCallback { get; set; }
+            private CheckLosResponse _firstCallback;
+            private object _lock = new();
+            public List<CheckLosResponse> Callbacks { get; private set; }
 
-            public TimeoutTimer(GamePlayer owner, CheckLosResponse losCheckCallback, ushort sourceObjectId, ushort targetObjectId) : base(owner)
+            public TimeoutTimer(GamePlayer owner, CheckLosResponse callback, ushort sourceObjectId, ushort targetObjectId) : base(owner)
             {
-                LosCheckCallback = losCheckCallback;
+                _firstCallback = callback;
                 _sourceObjectId = sourceObjectId;
                 _targetObjectId = targetObjectId;
                 Interval = ServerProperties.Properties.LOS_CHECK_TIMEOUT;
+            }
+
+            public bool TryAddCallback(CheckLosResponse callback)
+            {
+                // For performance reasons, we only instantiate `Callbacks` if we need to handle more than one callback.
+                // Most of the time, there will be only one.
+                // If `Callbacks` isn't null but is empty, then it means the timer already ticked.
+                lock (_lock)
+                {
+                    if (Callbacks == null)
+                    {
+                        Callbacks ??= new();
+                        Callbacks.Add(callback);
+                    }
+                    else if (Callbacks.Any())
+                        Callbacks.Add(callback);
+                    else
+                        return false;
+
+                    return true;
+                }
             }
 
             public void SetResponse(eLosCheckResponse response)
@@ -42,7 +68,19 @@ namespace DOL.GS.PacketHandler.Client.v168
                 GamePlayer player = Owner as GamePlayer;
                 player.LosCheckTimers.TryRemove((_sourceObjectId, _targetObjectId), out _);
                 eLosCheckResponse response = _response is eLosCheckResponse.NONE ? eLosCheckResponse.TIMEOUT : _response; // `_response` can be modified when this is being called.
-                LosCheckCallback(player, response, _sourceObjectId, _targetObjectId);
+                _firstCallback(player, response, _sourceObjectId, _targetObjectId);
+
+                lock (_lock)
+                {
+                    if (Callbacks != null)
+                    {
+                        foreach (CheckLosResponse callback in Callbacks)
+                            callback(player, response, _sourceObjectId, _targetObjectId);
+
+                        Callbacks.Clear();
+                    }
+                }
+
                 return 0;
             }
         }

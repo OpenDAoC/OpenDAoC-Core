@@ -1,6 +1,7 @@
 ﻿using DOL.GS;
 using DOL.GS.PropertyCalc;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 {
@@ -15,7 +16,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = ResistCalculator.CalcValue(npc, SomeResistProperty);
 
-            Assert.AreEqual(6, actual);
+            ClassicAssert.AreEqual(6, actual);
         }
 
         [Test]
@@ -26,7 +27,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = ResistCalculator.CalcValue(npc, SomeResistProperty);
 
-            Assert.AreEqual(-6, actual);
+            ClassicAssert.AreEqual(-6, actual);
         }
 
         private ResistCalculator ResistCalculator => new ResistCalculator();

@@ -255,7 +255,7 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual int AggroLevel { get; set; }
 
-        protected ConcurrentDictionary<GameLiving, AggroAmount> AggroList { get; private set; } = new();
+        protected ConcurrentDictionary<GameLiving, AggroAmount> AggroList { get; } = new();
         protected List<(GameLiving, long)> OrderedAggroList { get; private set; } = new();
         public GameLiving LastHighestThreatInAttackRange { get; private set; }
 

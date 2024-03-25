@@ -11,12 +11,12 @@ namespace DOL.GS
     {
         private int _lastUpdateEffectsCount;
 
-        public GameLiving Owner { get; private set; }
+        public GameLiving Owner { get; }
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.EffectListComponent, false);
-        public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; private set; } = new Dictionary<eEffect, List<ECSGameEffect>>();
-        public object EffectsLock { get; private set; } = new();
-        public List<ECSGameSpellEffect> ConcentrationEffects { get; private set; } = new List<ECSGameSpellEffect>(20);
-        public object ConcentrationEffectsLock { get; private set; } = new();
+        public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; } = new Dictionary<eEffect, List<ECSGameEffect>>();
+        public object EffectsLock { get; } = new();
+        public List<ECSGameSpellEffect> ConcentrationEffects { get; } = new List<ECSGameSpellEffect>(20);
+        public object ConcentrationEffectsLock { get; } = new();
         private readonly Dictionary<int, ECSGameEffect> EffectIdToEffect = new();
 
         public EffectListComponent(GameLiving owner)

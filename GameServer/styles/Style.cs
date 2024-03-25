@@ -132,7 +132,7 @@ namespace DOL.GS.Styles
 
         public int ClassID => baseStyle.ClassId;
 
-        public List<(Spell, int, int)> Procs { get; private set; } = new();
+        public List<(Spell, int, int)> Procs { get; } = new();
 
         /// <summary>
         /// (readonly) The Specialization's name required to execute this style
@@ -223,7 +223,7 @@ namespace DOL.GS.Styles
 
         public eArmorSlot ArmorHitLocation => (eArmorSlot) baseStyle.ArmorHitLocation;
 
-        public StyleExecutedCallback OnStyleExecuted { get; private set; }
+        public StyleExecutedCallback OnStyleExecuted { get; }
 
         /// <summary>
         /// Constructs a new Style object based on a database Style object

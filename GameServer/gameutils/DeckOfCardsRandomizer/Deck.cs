@@ -8,117 +8,83 @@ namespace DOL.GS.Utils
     public class PlayerDeck
     {
         private const int DECKS_COUNT = 1;
+        private const int CARDS_PER_DECK_COUNT = 100;
 
-        private ConcurrentStack<int> _cards;
+        private ConcurrentStack<int> _cards = new();
+        private object _lock = new();
 
         public PlayerDeck()
         {
-            _cards = new ConcurrentStack<int>();
-            ResetDeck();
+            lock (_lock)
+            {
+                InitializeDeck();
+            }
         }
 
         private void InitializeDeck()
         {
-            lock (_cardLock)
+            _cards.Clear();
+            int[] tempCards = new int[DECKS_COUNT * CARDS_PER_DECK_COUNT];
+
+            for (int i = 0; i < DECKS_COUNT; i++)
             {
-                _cards.Clear();
-
-                for (int i = 0; i < DECKS_COUNT; i++)
-                {
-                    for (int j = 0; j < 100; j++)
-                    {
-                        _cards.Push(j);
-                    }
-                }
-            }
-        }
-
-        private void ResetDeck()
-        {
-            InitializeDeck();
-            //shuffle thrice for good luck?
-            Shuffle();
-            Shuffle();
-            Shuffle();
-            //Console.WriteLine($"deck reset");
-        }
-
-        private object _cardLock = new object();
-
-        private void Shuffle()
-        {
-            int[] preshuffle = null;
-            lock (_cardLock)
-            {
-                preshuffle = _cards.ToArray();
+                for (int j = 0; j < CARDS_PER_DECK_COUNT; j++)
+                    tempCards[j + i * CARDS_PER_DECK_COUNT] = j;
             }
 
-            //Fisher-Yates shuffle algorithm
+            // Fisher-Yates shuffle algorithm.
             // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
-            int cardsLength = _cards.Count - 1;
-            while (cardsLength > 1)
+            for (int i = tempCards.Length - 1; i > 0; i--)
             {
-                cardsLength--;
-                int k = Util.CryptoNextInt(cardsLength + 1);
-                (preshuffle[k], preshuffle[cardsLength]) = (preshuffle[cardsLength], preshuffle[k]);
+                int j = Util.CryptoNextInt(i + 1);
+                (tempCards[j], tempCards[i]) = (tempCards[i], tempCards[j]);
             }
-            /*
-            //randomly order the contents of the array, then reassign the array
-            int[] shuffled = _cards.ToArray().OrderBy(x => Util.CryptoNextInt(cardsLength-1)).ToArray();
-            */
-            lock (_cardLock)
+
+            foreach (int card in tempCards)
+                _cards.Push(card);
+        }
+
+        private int Pop()
+        {
+            int result;
+
+            while (!_cards.TryPop(out result))
             {
-                _cards.Clear();
-                foreach (var i in preshuffle)
+                lock (_lock)
                 {
-                    _cards.Push(i);
+                    if (_cards.IsEmpty)
+                        InitializeDeck();
                 }
             }
+
+            return result;
         }
 
         public int GetInt()
         {
-            if (_cards.Count < 2)
-                ResetDeck();
-
-            _cards.TryPop(out int output);
-            return output;
+            return Pop();
         }
 
         public double GetPseudoDouble()
         {
-            if (_cards.Count < 2)
-            {
-                ResetDeck();
-                Shuffle(); //shuffle it for fun
-            }
-
-            //we append two ints together to simulate more accuracy on the double
-            //subtract 1 to only generate values 0-99
-            //useful to get outputs of 0-9999 instead of 11-100100
-
-            _cards.TryPop(out int first);
-            int second = Util.CryptoNextInt(100); //just use a simple random for the .XX values
-
-            //append our ints together
-            //if we are unable to parse numbers for any reason, use a 0
-            if (!int.TryParse(first.ToString() + second.ToString("D2"), out int append))
-                append = 0;
-
-            //divide by max possible value to simulate 0-1 output of doubles
-            double pseudoDouble = append / 9999.0;
-            return pseudoDouble;
+            // Just use a simple random for the fractional digits.
+            return (Pop() + Util.CryptoNextDouble()) / 100.0;
         }
 
         public string SaveDeckToJSON()
         {
-            string json = JsonConvert.SerializeObject(_cards.Reverse());
-            return json;
+            lock (_lock)
+            {
+                return JsonConvert.SerializeObject(_cards.Reverse());
+            }
         }
 
         public void LoadDeckFromJSON(string json)
         {
-            _cards = JsonConvert.DeserializeObject<ConcurrentStack<int>>(json);
+            lock (_lock)
+            {
+                _cards = JsonConvert.DeserializeObject<ConcurrentStack<int>>(json);
+            }
         }
     }
 }

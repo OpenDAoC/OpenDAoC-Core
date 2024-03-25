@@ -1,4 +1,6 @@
-﻿namespace DOL.GS
+﻿using System.Threading;
+
+namespace DOL.GS
 {
     public class MovementComponent
     {
@@ -8,12 +10,12 @@
         private Point2D _positionDuringLastSubZoneRelocationCheck = new();
         private int _turningDisabledCount;
 
-        public GameLiving Owner { get; private set; }
+        public GameLiving Owner { get; }
         public short CurrentSpeed { get; set; }
         public short MaxSpeedBase { get; set; } // Currently unused for players.
         public virtual short MaxSpeed => (short) Owner.GetModified(eProperty.MaxSpeed);
         public bool IsMoving => CurrentSpeed > 0;
-        public bool IsTurningDisabled => _turningDisabledCount > 0 && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound);
+        public bool IsTurningDisabled => Interlocked.CompareExchange(ref _turningDisabledCount, 0, 0) > 0 && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound);
 
         protected MovementComponent(GameLiving owner)
         {
@@ -42,12 +44,9 @@
         public virtual void DisableTurning(bool add)
         {
             if (add)
-                _turningDisabledCount++;
+                Interlocked.Increment(ref _turningDisabledCount);
             else
-                _turningDisabledCount--;
-
-            if (_turningDisabledCount < 0)
-                _turningDisabledCount = 0;
+                Interlocked.Decrement(ref _turningDisabledCount);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace DOL.Events
             NewTarget = newTarget;
         }
 
-        public GameObject PreviousTarget { get; private set; }
-        public GameObject NewTarget { get; private set; }
+        public GameObject PreviousTarget { get; }
+        public GameObject NewTarget { get; }
     }
 }

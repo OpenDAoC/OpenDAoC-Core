@@ -64,7 +64,7 @@ namespace DOL.GS.RealmAbilities
             if (m_spell != null)
             {
                 m_spell.Damage = m_spell.Damage * m_caster.Level / 50;
-                m_caster.castingComponent.RequestStartCastSpell(m_spell, m_spellline, this);
+                m_caster.CastSpell(m_spell, m_spellline, this);
             }
 
             // We do not need to handle disabling the skill here. This ability casts a spell and is linked to that spell.

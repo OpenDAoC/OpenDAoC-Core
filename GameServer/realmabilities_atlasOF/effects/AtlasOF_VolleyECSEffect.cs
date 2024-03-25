@@ -14,8 +14,8 @@ namespace DOL.GS.Effects
     {
         private class WeaponActionData
         {
-            public DbInventoryItem AttackWeapon { get; private set; }
-            public int InterruptDuration { get; private set; }
+            public DbInventoryItem AttackWeapon { get; }
+            public int InterruptDuration { get; }
 
             public WeaponActionData(DbInventoryItem attackWeapon, int interruptDuration)
             {
@@ -46,10 +46,7 @@ namespace DOL.GS.Effects
                 return;
 
             base.OnStartEffect();
-
-            if (OwnerPlayer.IsStealthed)
-                OwnerPlayer.Stealth(false);
-
+            OwnerPlayer.Stealth(false);
             OwnerPlayer.attackComponent.StopAttack();
             OwnerPlayer.StopCurrentSpellcast();
             OwnerPlayer.rangeAttackComponent.RangedAttackType = eRangedAttackType.Volley; // Used by 'RangeAttackComponent' to calculate endurance cost.
@@ -244,9 +241,7 @@ namespace DOL.GS.Effects
             }
 
             OwnerPlayer.rangeAttackComponent.RemoveEnduranceAndAmmoOnShot();
-
-            if (player.IsStealthed)
-                player.Stealth(false);
+            player.Stealth(false);
 
             // Create a 'WeaponActionData' that will be used by 'MakeAttack', which will create and execute the actual 'WeaponAction' with the proper target.
             // The reason why we do this is because the player's active weapon and attack speed might change before the arrow hits something.

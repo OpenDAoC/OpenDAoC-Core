@@ -45,7 +45,7 @@ namespace DOL.GS
         public uint HitPointsHealed { get; set; } = 0;
         public uint RPEarnedFromHitPointsHealed { get; set; } = 0;
         public ushort ResurrectionsPerformed { get; set; } = 0;
-        public DateTime LoginTime { get; private set; }
+        public DateTime LoginTime { get; }
 
         public PlayerStatistics(GamePlayer player)
         {

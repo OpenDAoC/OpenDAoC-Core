@@ -1,23 +1,6 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,11 +9,11 @@ using System.Reflection;
 using System.Text;
 using DOL.AI.Brain;
 using DOL.Config;
+using DOL.Events;
+using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerRules;
 using DOL.GS.Spells;
-using DOL.GS.Commands;
-using DOL.Events;
 using log4net;
 
 namespace DOL.GS
@@ -43,12 +26,12 @@ namespace DOL.GS
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static Dictionary<string, Assembly> m_compiledScripts = new();
-		private static Dictionary<string, Func<GameLiving, Spell, SpellLine, ISpellHandler>> m_spellhandlerConstructorCache = new();
+		private static ConcurrentDictionary<eSpellType, Func<GameLiving, Spell, SpellLine, ISpellHandler>> m_spellhandlerConstructorCache = new();
 
-        /// <summary>
-        /// This class will hold all info about a gamecommand
-        /// </summary>
-        public class GameCommand
+		/// <summary>
+		/// This class will hold all info about a gamecommand
+		/// </summary>
+		public class GameCommand
 		{
 			public String[] Usage { get; set; }
 			public string m_cmd;
@@ -886,11 +869,11 @@ namespace DOL.GS
 		/// <returns>spellhandler or null if not found</returns>
 		public static ISpellHandler CreateSpellHandler(GameLiving caster, Spell spell, SpellLine line)
 		{
-			if (spell == null || (spell.SpellType).ToString().Length == 0)
+			if (spell == null)
 				return null;
 
 			// try to find it in assemblies when not in cache
-			if (!m_spellhandlerConstructorCache.TryGetValue((spell.SpellType).ToString(), out var handlerConstructor))
+			if (!m_spellhandlerConstructorCache.TryGetValue(spell.SpellType, out var handlerConstructor))
 			{
 				foreach (Assembly script in GameServerScripts)
 				{
@@ -909,7 +892,7 @@ namespace DOL.GS
 
 							foreach (SpellHandlerAttribute attrib in objs)
 							{
-								if (attrib.SpellType == (spell.SpellType).ToString())
+								if (attrib.SpellType.Equals(spell.SpellType.ToString(), StringComparison.OrdinalIgnoreCase))
 								{
 									ParameterExpression[] constructorParams = new ParameterExpression[] { Expression.Parameter(typeof(GameLiving)), Expression.Parameter(typeof(Spell)), Expression.Parameter(typeof(SpellLine)) };
 									ConstructorInfo constructor = type.GetConstructor(new[] { typeof(GameLiving), typeof(Spell), typeof(SpellLine) });
@@ -933,7 +916,7 @@ namespace DOL.GS
 				}
 
 				if (handlerConstructor != null)
-					m_spellhandlerConstructorCache.TryAdd((spell.SpellType).ToString(), handlerConstructor);
+					m_spellhandlerConstructorCache.TryAdd(spell.SpellType, handlerConstructor);
 			}
 
 			if (handlerConstructor != null)

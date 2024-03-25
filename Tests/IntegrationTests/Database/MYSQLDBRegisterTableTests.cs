@@ -20,6 +20,7 @@ using DOL.Database.Connection;
 using DOL.Database.Attributes;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using DOL.Database;
 
 namespace DOL.Tests.Integration.Database.MySQL
@@ -55,7 +56,7 @@ namespace DOL.Tests.Integration.Database.MySQL
 			                                	new TestTableWithBrokenPrimaryV2 { PrimaryKey = 1 },
 			                                });
 			
-			Assert.IsFalse(adds, "Primary Key was not restored and duplicate key were inserted !");
+			ClassicAssert.IsFalse(adds, "Primary Key was not restored and duplicate key were inserted !");
 		}
 	}
 }

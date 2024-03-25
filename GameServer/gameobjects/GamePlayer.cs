@@ -53,7 +53,7 @@ namespace DOL.GS
         public double CombatRegen { get; set; }
         public double SpecLock { get; set; }
         public long LastWorldUpdate { get; set; }
-        public ChainedActions ChainedActions { get; private set; }
+        public ChainedActions ChainedActions { get; }
 
         public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
         public ECSGameTimer PredatorTimeoutTimer
@@ -351,13 +351,13 @@ namespace DOL.GS
             set { m_wasmovedbycorpsesummoner = value; }
         }
 
-        public ConcurrentDictionary<(ushort, ushort), CheckLosResponseHandler.TimeoutTimer> LosCheckTimers { get; private set; } = new();
+        public ConcurrentDictionary<(ushort, ushort), CheckLosResponseHandler.TimeoutTimer> LosCheckTimers { get; } = new();
 
         #region Object Caches
-        public ConcurrentDictionary<GameNPC, ClientService.CachedNpcValues> NpcUpdateCache { get; private set; } = new();
-        public ConcurrentDictionary<GameStaticItem, long> ItemUpdateCache { get; private set; } = new();
-        public ConcurrentDictionary<GameDoorBase, long> DoorUpdateCache { get; private set; } = new();
-        public ConcurrentDictionary<House, long> HouseUpdateCache { get; private set; } = new();
+        public ConcurrentDictionary<GameNPC, ClientService.CachedNpcValues> NpcUpdateCache { get; } = new();
+        public ConcurrentDictionary<GameStaticItem, long> ItemUpdateCache { get; } = new();
+        public ConcurrentDictionary<GameDoorBase, long> DoorUpdateCache { get; } = new();
+        public ConcurrentDictionary<House, long> HouseUpdateCache { get; } = new();
         #endregion
 
         #region Database Accessor
@@ -870,7 +870,7 @@ namespace DOL.GS
 
         private LinkDeathTimer _linkDeathTimer;
 
-        public bool HasLinkDeathTimerActive => _linkDeathTimer?.IsAlive == true;
+        public bool IsLinkDeathTimerRunning => _linkDeathTimer?.IsAlive == true;
 
         public bool OnUpdatePosition()
         {
@@ -1140,7 +1140,7 @@ namespace DOL.GS
         public class LinkDeathTimer : ECSGameTimerWrapperBase
         {
             private GamePlayer _playerOwner;
-            public GameLocation LocationAtLinkDeath { get; private set; }
+            public GameLocation LocationAtLinkDeath { get; }
 
             public LinkDeathTimer(GameObject owner) : base(owner)
             {
@@ -1158,7 +1158,7 @@ namespace DOL.GS
                 if (!ServiceUtils.ShouldTick(_playerOwner.Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000))
                     return Interval;
 
-                if (!IsAlive)
+                if (!_playerOwner.IsAlive)
                 {
                     _playerOwner.Release(_playerOwner.ReleaseType, true);
 
@@ -1173,9 +1173,7 @@ namespace DOL.GS
                 }
                 finally
                 {
-                    // We may still be playing if this was a soft LD, so we change the state here too.
-                    _playerOwner.Client.ClientState = GameClient.eClientState.Linkdead;
-                    GameServer.Instance.Disconnect(_playerOwner.Client);
+                    _playerOwner.Client.LinkDeathQuit();
                 }
 
                 return 0;
@@ -1999,7 +1997,7 @@ namespace DOL.GS
                         if (rvrsick == null) return;
                         Spell rvrillness = SkillBase.FindSpell(8181, rvrsick);
                         //player.CastSpell(rvrillness, rvrsick);
-                        castingComponent.RequestStartCastSpell(rvrillness, rvrsick);
+                        CastSpell(rvrillness, rvrsick);
                         break;
                     case eDeathType.PvP: //PvP sickness is the same as PvE sickness - Curable
                     case eDeathType.PvE:
@@ -2007,7 +2005,7 @@ namespace DOL.GS
                         if (pvesick == null) return;
                         Spell pveillness = SkillBase.FindSpell(2435, pvesick);
                         //player.CastSpell(pveillness, pvesick);
-                        castingComponent.RequestStartCastSpell(pveillness, pvesick);
+                        CastSpell(pveillness, pvesick);
                         break;
                 }
 
@@ -6168,14 +6166,14 @@ namespace DOL.GS
                     if (ad.Damage == -1)
                         break;
 
-                    // If attacked by a non-damaging spell, we should not show damage numbers.
-                    // We need to check the damage on the spell here, not in the AD, since this could in theory be a damaging spell that had its damage modified to 0.
-                    if (ad.AttackType == AttackData.eAttackType.Spell && ad.SpellHandler.Spell?.Damage == 0)
-                        break;
-
-                    if (IsStealthed && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+                    if (ad.AttackType == AttackData.eAttackType.Spell)
                     {
-                        if (!(ad.AttackType == AttackData.eAttackType.Spell && ad.SpellHandler.Spell.SpellType == eSpellType.DamageOverTime))
+                        // If attacked by a non-damaging spell, we should not show damage numbers.
+                        // We need to check the damage on the spell here, not in the AD, since this could in theory be a damaging spell that had its damage modified to 0.
+                        if (ad.SpellHandler.Spell.Damage == 0)
+                            break;
+
+                        if (ad.SpellHandler.Spell.SpellType != eSpellType.DamageOverTime && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
                             Stealth(false);
                     }
 
@@ -8368,7 +8366,7 @@ namespace DOL.GS
 
                     if (spellHandler != null && spellHandler.CheckBeginCast(TargetObject as GameLiving))
                     {
-                        castingComponent.RequestStartCastSpell(spell, itemSpellLine);
+                        CastSpell(spell, itemSpellLine);
                         TempProperties.SetProperty(LAST_USED_ITEM_SPELL, item);
                         //CurrentSpellHandler = spellHandler;
                         //CurrentSpellHandler.CastingCompleteEvent += new CastingCompleteCallback(OnAfterSpellCastSequence);
@@ -9142,7 +9140,7 @@ namespace DOL.GS
                     {
                         if (player != this)
                         {
-                            if (IsStealthed == false || player.CanDetect(this))
+                            if (!IsStealthed || player.CanDetect(this))
                                 player.Out.SendPlayerCreate(this);
                         }
                     }
@@ -9199,12 +9197,10 @@ namespace DOL.GS
             {
                 if (player != null && player != this)
                 {
-                    if (IsStealthed == false || player.CanDetect(this))
-                    {
+                    if (!IsStealthed || player.CanDetect(this))
                         player.Out.SendPlayerCreate(this);
-                    }
 
-                    if (player.IsStealthed == false || CanDetect(player))
+                    if (!player.IsStealthed || CanDetect(player))
                     {
                         Out.SendPlayerCreate(player);
                         Out.SendLivingEquipmentUpdate(player);
@@ -12114,61 +12110,43 @@ namespace DOL.GS
         /// Property that holds tick when stealth state was changed last time
         /// </summary>
         public const string STEALTH_CHANGE_TICK = "StealthChangeTick";
+
         /// <summary>
         /// The stealth state of this player
         /// </summary>
-        public override bool IsStealthed
-        {
-            get { return effectListComponent.ContainsEffectForEffectType(eEffect.Stealth); }
-        }
+        public override bool IsStealthed => effectListComponent.ContainsEffectForEffectType(eEffect.Stealth);
 
-        public static void Unstealth(DOLEvent ev, object sender, EventArgs args)
-        {
-            AttackedByEnemyEventArgs atkArgs = args as AttackedByEnemyEventArgs;
-            GamePlayer player = sender as GamePlayer;
-            if (player == null || atkArgs == null) return;
-            if (atkArgs.AttackData.AttackResult != eAttackResult.HitUnstyled && atkArgs.AttackData.AttackResult != eAttackResult.HitStyle) return;
-            if (atkArgs.AttackData.Damage == -1) return;
-
-            player.Stealth(false);
-        }
-        /// <summary>
-        /// Set player's stealth state
-        /// </summary>
-        /// <param name="goStealth">true is stealthing, false if unstealthing</param>
-        public virtual void Stealth(bool goStealth)
+        public override void Stealth(bool goStealth)
         {
             if (IsStealthed == goStealth)
                 return;
 
-            if (goStealth && CraftTimer != null && CraftTimer.IsAlive)
-            {
-                Out.SendMessage("You can't stealth while crafting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
-            if (this.effectListComponent.ContainsEffectForEffectType(eEffect.Pulse) )
-            {
-                Out.SendMessage("You currently have an active, pulsing spell effect and cannot hide!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
-            if (IsOnHorse || IsSummoningMount)
-                IsOnHorse = false;
-
             if (goStealth)
             {
-                new StealthECSGameEffect(new ECSGameEffectInitParams(this, 0, 1));
-            }
-            else
-            {
-                if (effectListComponent.ContainsEffectForEffectType(eEffect.Stealth))
+                if (CraftTimer != null && CraftTimer.IsAlive)
                 {
-                    EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
+                    Out.SendMessage("You can't stealth while crafting!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
                 }
-                if(effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
-                    EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
+
+                if (effectListComponent.ContainsEffectForEffectType(eEffect.Pulse))
+                {
+                    Out.SendMessage("You currently have an active, pulsing spell effect and cannot hide!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                if (IsOnHorse || IsSummoningMount)
+                    IsOnHorse = false;
+
+                new StealthECSGameEffect(new ECSGameEffectInitParams(this, 0, 1));
+                return;
             }
+
+            if (effectListComponent.ContainsEffectForEffectType(eEffect.Stealth))
+                EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
+
+            if (effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+                EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
         }
 
         // UncoverStealthAction is what unstealths player if they are too close to mobs.
@@ -12295,7 +12273,7 @@ namespace DOL.GS
         {
             GameObject target = CurrentRegion.GetObject(targetOID);
 
-            if ((target == null) || (player.IsStealthed == false))
+            if (target == null || !player.IsStealthed)
                 return;
 
             if (response is eLosCheckResponse.TRUE)
@@ -12551,8 +12529,8 @@ namespace DOL.GS
         }
 
         private List<AbstractQuest> _questListFinished = new();
-        public virtual ConcurrentDictionary<AbstractQuest, byte> QuestList { get; private set; } = new(); // Value is the index to send to clients.
-        public ConcurrentQueue<byte> AvailableQuestIndexes { get; private set; } = new(); // If empty, 'QuestList.Count' will be used when adding a quest to 'QuestList'
+        public virtual ConcurrentDictionary<AbstractQuest, byte> QuestList { get; } = new(); // Value is the index to send to clients.
+        public ConcurrentQueue<byte> AvailableQuestIndexes { get; } = new(); // If empty, 'QuestList.Count' will be used when adding a quest to 'QuestList'
         public ECSGameTimer QuestActionTimer;
 
         public List<AbstractQuest> GetFinishedQuests()

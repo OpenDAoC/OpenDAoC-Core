@@ -22,6 +22,7 @@ using System.Threading;
 using DOL.Database;
 using DOL.GS;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -61,8 +62,8 @@ namespace DOL.Tests.Integration.Server
 			for (int i = 0; i < count; i++)
 			{
 				GameNPC mob = mobs[i] = new GameNPC();
-				Assert.IsTrue(mob.ObjectID == -1, "mob {0} oid={1}, should be -1", i, mob.ObjectID);
-				Assert.IsFalse(mob.ObjectState == GameObject.eObjectState.Active, "mob {0} state={1}, should be not Active", i, mob.ObjectState);
+				ClassicAssert.IsTrue(mob.ObjectID == -1, "mob {0} oid={1}, should be -1", i, mob.ObjectID);
+				ClassicAssert.IsFalse(mob.ObjectState == GameObject.eObjectState.Active, "mob {0} state={1}, should be not Active", i, mob.ObjectState);
 				mob.Name = "test mob " + i;
 				mob.CurrentRegion = m_reg;
 				m_reg.PreAllocateRegionSpace(1953);
@@ -76,8 +77,8 @@ namespace DOL.Tests.Integration.Server
 				{
 //					Console.Out.WriteLine("add "+i);
 					GameNPC mob = mobs[i];
-					Assert.IsTrue(mob.AddToWorld(), "failed to add {0} to the world", mob.Name);
-					Assert.IsTrue(mob.ObjectID > 0 && mob.ObjectID <= DOL.GS.ServerProperties.Properties.REGION_MAX_OBJECTS, "{0} oid={1}", mob.Name, mob.ObjectID);
+					ClassicAssert.IsTrue(mob.AddToWorld(), "failed to add {0} to the world", mob.Name);
+					ClassicAssert.IsTrue(mob.ObjectID > 0 && mob.ObjectID <= DOL.GS.ServerProperties.Properties.REGION_MAX_OBJECTS, "{0} oid={1}", mob.Name, mob.ObjectID);
 				}
 				
 				for (int i = count-x; i >= 0; i--)
@@ -85,7 +86,7 @@ namespace DOL.Tests.Integration.Server
 //					Console.Out.WriteLine("check "+i);
 					GameNPC mob = mobs[i];
 					GameNPC regMob = (GameNPC)m_reg.GetObject((ushort)mob.ObjectID);
-					Assert.AreSame(mob, regMob, "expected to read '{0}' oid={1} but read '{2}' oid={3}", mob.Name, mob.ObjectID, regMob==null?"null":regMob.Name, regMob==null?"null":regMob.ObjectID.ToString());
+					ClassicAssert.AreSame(mob, regMob, "expected to read '{0}' oid={1} but read '{2}' oid={3}", mob.Name, mob.ObjectID, regMob==null?"null":regMob.Name, regMob==null?"null":regMob.ObjectID.ToString());
 				}
 			
 				Console.Out.WriteLine("[{0}] loop {1} remove mobs", id, count-x);
@@ -95,11 +96,11 @@ namespace DOL.Tests.Integration.Server
 //					Console.Out.WriteLine("remove "+i);
 					GameNPC mob = mobs[i];
 					int oid = mob.ObjectID;
-					Assert.IsTrue(mob.RemoveFromWorld(), "failed to remove {0}", mob.Name);
-					Assert.IsTrue(mob.ObjectID == -1, "{0}: oid is not -1 (oid={1})", mob.Name, mob.ObjectID);
-					Assert.IsFalse(mob.ObjectState == GameObject.eObjectState.Active, "{0} is still active after remove", mob.Name);
+					ClassicAssert.IsTrue(mob.RemoveFromWorld(), "failed to remove {0}", mob.Name);
+					ClassicAssert.IsTrue(mob.ObjectID == -1, "{0}: oid is not -1 (oid={1})", mob.Name, mob.ObjectID);
+					ClassicAssert.IsFalse(mob.ObjectState == GameObject.eObjectState.Active, "{0} is still active after remove", mob.Name);
 					GameNPC regMob = (GameNPC)m_reg.GetObject((ushort)oid);
-					Assert.IsNull(regMob, "{0} was removed from the region but oid {1} is still used by {2}", mob.Name, oid, regMob==null?"null":regMob.Name);
+					ClassicAssert.IsNull(regMob, "{0} was removed from the region but oid {1} is still used by {2}", mob.Name, oid, regMob==null?"null":regMob.Name);
 				}
 			}
 		}

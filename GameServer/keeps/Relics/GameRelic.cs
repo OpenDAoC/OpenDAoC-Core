@@ -218,6 +218,7 @@ namespace DOL.GS
 				player.Out.SendMessage("You are already carrying a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
+
 			if (player.IsStealthed)
 			{
 				player.Out.SendMessage("You cannot carry a relic while stealthed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);

@@ -18,6 +18,7 @@
  */
 using DOL.GS;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -31,7 +32,7 @@ namespace DOL.Tests.Integration.Server
 		public void TrainNow()
 		{
 			GamePlayer player = CreateMockGamePlayer();
-			Assert.IsNotNull(player);
+			ClassicAssert.IsNotNull(player);
 			player.Out.SendTrainerWindow();
 			return;
 		}

@@ -24,7 +24,7 @@ namespace DOL.GS
 
         public virtual LanguageDataObject.eTranslationIdentifier TranslationIdentifier => LanguageDataObject.eTranslationIdentifier.eZone;
         public string TranslationId { get => ID.ToString(); set { } }
-        public eRealm Realm { get; private set; }
+        public eRealm Realm { get; }
         public Region ZoneRegion { get; set; }
         public ushort ID { get; }
         public ushort ZoneSkinID { get; } // The ID we send to the client, for client-side positioning of gameobjects and npcs.

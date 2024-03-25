@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using DOL.GS;
 using DOL.GS.Keeps;
 
@@ -21,7 +22,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             int actual = npc.GetModified(eProperty.Constitution);
             
-            Assert.AreEqual(75, actual);
+            ClassicAssert.AreEqual(75, actual);
         }
 
         [Test]
@@ -33,7 +34,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = npc.GetArmorAbsorb(eArmorSlot.NOTSET);
 
-            Assert.AreEqual(-0.05, actual, 0.001);
+            ClassicAssert.AreEqual(-0.05, actual, 0.001);
         }
 
         [Test]
@@ -45,7 +46,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = npc.GetArmorAbsorb(eArmorSlot.NOTSET);
 
-            Assert.AreEqual(0.30, actual, 0.001);
+            ClassicAssert.AreEqual(0.30, actual, 0.001);
         }
 
         [Test]
@@ -57,7 +58,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = npc.GetArmorAbsorb(eArmorSlot.NOTSET);
 
-            Assert.AreEqual(0.27, actual, 0.001);
+            ClassicAssert.AreEqual(0.27, actual, 0.001);
         }
 
         [Test]
@@ -69,7 +70,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = npc.GetArmorAbsorb(eArmorSlot.NOTSET);
 
-            Assert.AreEqual(-0.25, actual, 0.001);
+            ClassicAssert.AreEqual(-0.25, actual, 0.001);
         }
 
         private static GameNPC NewNPC() => new GameNPC(new FakeControlledBrain());
@@ -93,7 +94,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = guard.GetArmorAbsorb(eArmorSlot.NOTSET);
 
-            Assert.AreEqual(0.27, actual, 0.001);
+            ClassicAssert.AreEqual(0.27, actual, 0.001);
         }
 
         [Test]
@@ -105,7 +106,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = guard.GetArmorAbsorb(eArmorSlot.NOTSET);
 
-            Assert.AreEqual(0.32, actual, 0.001);
+            ClassicAssert.AreEqual(0.32, actual, 0.001);
         }
 
         [Test]
@@ -117,7 +118,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = guard.GetArmorAbsorb(eArmorSlot.NOTSET);
 
-            Assert.AreEqual(0.22, actual, 0.001);
+            ClassicAssert.AreEqual(0.22, actual, 0.001);
         }
     }
 }

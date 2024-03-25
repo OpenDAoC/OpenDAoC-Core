@@ -33,7 +33,7 @@ namespace DOL.GS
 
 		public int UsedConcentration;
 
-		public ConcurrentDictionary<eSpellType, Spell> ActivePulseSpells { get; private set; } = new();
+		public ConcurrentDictionary<eSpellType, Spell> ActivePulseSpells { get; } = new();
 
 		#region Combat
 		/// <summary>
@@ -2901,7 +2901,7 @@ namespace DOL.GS
 		/// Stores temporary properties on this living.
 		/// Beware to use unique keys so they do not interfere
 		/// </summary>
-		public PropertyCollection TempProperties { get; private set; } = new();
+		public PropertyCollection TempProperties { get; } = new();
 
 		/// <summary>
 		/// Gets or Sets the effective level of the Object
@@ -3604,30 +3604,11 @@ namespace DOL.GS
 			movementComponent.DisableTurning(add);
 		}
 
-		/// <summary>
-		/// Moves the item from one spot to another spot, possible even
-		/// over region boundaries
-		/// </summary>
-		/// <param name="regionID">new regionid</param>
-		/// <param name="x">new x</param>
-		/// <param name="y">new y</param>
-		/// <param name="z">new z</param>
-		/// <param name="heading">new heading</param>
-		/// <returns>true if moved</returns>
-		public override bool MoveTo(ushort regionID, int x, int y, int z, ushort heading)
-		{
-			// if (regionID != CurrentRegionID)
-			// 	CancelAllConcentrationEffects();
+		public virtual bool IsStealthed => false;
 
-			return base.MoveTo(regionID, x, y, z, heading);
-		}
-
-		/// <summary>
-		/// The stealth state of this living
-		/// </summary>
-		public virtual bool IsStealthed
+		public virtual void Stealth(bool goStealth)
 		{
-			get { return false; }
+			// Not implemented.
 		}
 
 		#endregion
@@ -4391,16 +4372,16 @@ namespace DOL.GS
 			castingComponent.InterruptCasting();
 		}
 
-		public virtual bool CastSpell(Spell spell, SpellLine line)
+		public virtual bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
 		{
-			return castingComponent.RequestStartCastSpell(spell, line, null, TargetObject as GameLiving);
+			return castingComponent.RequestStartCastSpell(spell, line, spellCastingAbilityHandler, TargetObject as GameLiving);
 		}
 
-		// Should only be used when the target of the spell is different than the currenctly selected one.
+		// Should only be used when the target of the spell is different than the currently selected one.
 		// Which can happen during LoS checks, since we're not waiting for the check to complete to perform other actions.
-		protected bool CastSpell(Spell spell, SpellLine line, GameLiving target)
+		protected bool CastSpell(Spell spell, SpellLine line, GameLiving target, ISpellCastingAbilityHandler spellCastingAbilityHandle = null)
 		{
-			return castingComponent.RequestStartCastSpell(spell, line, null, target);
+			return castingComponent.RequestStartCastSpell(spell, line, spellCastingAbilityHandle, target);
 		}
 
 		public virtual bool CastSpell(ISpellCastingAbilityHandler ab)

@@ -2793,11 +2793,8 @@ namespace DOL.GS.ServerProperties
 
 		#endregion
 
-		public static IDictionary<string, object> AllCurrentProperties
-		{
-			get; private set;
-		}
-		
+		public static IDictionary<string, object> AllCurrentProperties { get; private set; }
+
 		/// <summary>
 		/// Get a Dictionary that tracks all Properties by Key String
 		/// Returns the ServerPropertyAttribute, the Static Field with current Value, and the according DataObject

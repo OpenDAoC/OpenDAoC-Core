@@ -134,7 +134,10 @@ namespace DOL.GS.Effects
 			}
 			
 			BeginChanges();
-			Util.ForEach(fx, effect => effect.Cancel(false));
+
+			foreach (IGameEffect effect in fx)
+				effect.Cancel(false);
+
 			CommitChanges();
 		}
 

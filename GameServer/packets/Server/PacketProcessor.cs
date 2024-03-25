@@ -283,7 +283,7 @@ namespace DOL.GS.PacketHandler
         /// <summary>
         /// The client TCP packet send queue
         /// </summary>
-        protected ConcurrentQueue<byte[]> TcpQueue { get; private set; } = new();
+        protected ConcurrentQueue<byte[]> TcpQueue { get; } = new();
 
         /// <summary>
         /// Sends a packet via TCP
@@ -786,8 +786,6 @@ namespace DOL.GS.PacketHandler
                         {
                             builder.Append("null");
                         }
-                        builder.Append("\n");
-                        builder.Append(Util.GetFormattedStackTraceFrom(Thread.CurrentThread));
                         builder.Append("\n\n");
                     }
                     catch (Exception e)

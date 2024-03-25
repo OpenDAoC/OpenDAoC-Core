@@ -636,14 +636,5 @@ namespace DOL.GS.SpamMob
         }
 
         public override bool IsBeingInterrupted => false;
-        public override bool CastSpell(Spell spell, SpellLine line)
-        {
-            return castingComponent.RequestStartCastSpell(spell, line);
-        }
-
-        public override bool CastSpell(Spell spell, SpellLine line, bool checkLOS)
-        {
-            return castingComponent.RequestStartCastSpell(spell, line);
-        }
     }
 }

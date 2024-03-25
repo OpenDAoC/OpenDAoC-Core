@@ -657,7 +657,7 @@ namespace DOL.GS
 		/// </summary>
 		public bool ReplaceMobValues
 		{
-			get { return m_replaceMobValues;  }
+			get { return m_replaceMobValues; }
 			set { m_replaceMobValues = value; }
 		}
 

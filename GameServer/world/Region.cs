@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -28,7 +9,6 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.Keeps;
 using DOL.GS.ServerProperties;
-using DOL.GS.Utils;
 using log4net;
 
 namespace DOL.GS
@@ -923,10 +903,15 @@ namespace DOL.GS
                 {
                     if (obj.ObjectID < m_objects.Length && obj == m_objects[obj.ObjectID - 1])
                     {
-                        log.WarnFormat("Object is already in the region ({0})", obj.ToString());
+                        if (log.IsWarnEnabled)
+                            log.Warn($"Object is already in \"{Description}\". ({obj})");
+
                         return false;
                     }
-                    log.Warn(obj.Name + " should be added to " + Description + " but had already an OID(" + obj.ObjectID + ") => not added\n" + Environment.StackTrace);
+
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Object already has an OID. ({obj})");
+
                     return false;
                 }
 
@@ -998,9 +983,9 @@ namespace DOL.GS
 
                             // no available slot
                             if (log.IsErrorEnabled)
-                                log.Error("Can't add new object - region '" + Description + "' is full. (object: " + obj.ToString() + ")");
-                            return false;
+                                log.Error($"Can't add new object to \"{Description}\" because it is full. ({obj})");
 
+                            return false;
                         }
                         else
                         {
@@ -1029,7 +1014,9 @@ namespace DOL.GS
 
                 if (objID < 0)
                 {
-                    log.Warn("There was an unexpected problem while adding " + obj.Name + " to " + Description);
+                    if (log.IsErrorEnabled)
+                        log.Error($"There was an unexpected problem while adding new object to \"{Description}\". ({obj})");
+
                     return false;
                 }
 
@@ -1064,7 +1051,8 @@ namespace DOL.GS
                 {
                     // no available slot
                     if (log.IsErrorEnabled)
-                        log.Error("Can't add new object - region '" + Description + "' (object: " + obj.ToString() + "); OID is used by " + oidObj.ToString());
+                        log.Error($"Can't add new object to \"{Description}\" because  OID is already used by {oidObj}. ({obj})");
+
                     return false;
                 }
             }

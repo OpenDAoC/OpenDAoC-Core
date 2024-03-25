@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using DOL.GS;
 using DOL.GS.PropertyCalc;
 
@@ -15,7 +16,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValueFromBuffs(npc, eProperty.Constitution);
 
-            Assert.AreEqual(100, actual);
+            ClassicAssert.AreEqual(100, actual);
         }
 
         [Test]
@@ -28,7 +29,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
             int actual = StatCalculator.CalcValueFromBuffs(player, eProperty.Constitution);
 
             int expected = (int)(50 * 1.25);
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -41,7 +42,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
             int actual = StatCalculator.CalcValueFromBuffs(player, eProperty.Constitution);
 
             int expected = (int)(50 * 1.875);
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -54,7 +55,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
             int actual = StatCalculator.CalcValueFromBuffs(npc, eProperty.Constitution);
 
             int expected = 7;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -62,7 +63,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
         {
             int actual = StatCalculator.CalcValueFromBuffs(null, eProperty.Constitution);
             
-            Assert.AreEqual(0, actual);
+            ClassicAssert.AreEqual(0, actual);
         }
 
         [Test]
@@ -70,7 +71,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
         {
             int actual = StatCalculator.CalcValueFromItems(null, eProperty.Constitution);
 
-            Assert.AreEqual(0, actual);
+            ClassicAssert.AreEqual(0, actual);
         }
 
         [Test]
@@ -83,7 +84,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
             int actual = StatCalculator.CalcValueFromItems(player, eProperty.Constitution);
 
             int expected = (int)(1.5 * 50);
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -97,7 +98,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
             int actual = StatCalculator.CalcValueFromItems(npc, stat);
 
             int expected = (int)(1.5 * 50);
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -110,7 +111,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValueFromItems(player, eProperty.Intelligence);
             
-            Assert.AreEqual(50, actual);
+            ClassicAssert.AreEqual(50, actual);
         }
 
         [Test]
@@ -123,7 +124,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValueFromItems(player, eProperty.Constitution);
 
-            Assert.AreEqual(127, actual);
+            ClassicAssert.AreEqual(127, actual);
         }
 
         [Test]
@@ -137,7 +138,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValueFromItems(player, eProperty.Constitution);
 
-            Assert.AreEqual(106, actual);
+            ClassicAssert.AreEqual(106, actual);
         }
 
         [Test]
@@ -150,7 +151,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
             int actual = StatCalculator.GetItemBonusCapIncrease(player, eProperty.Constitution);
 
             int expected = (int)(50 / 2.0 + 1);
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -162,7 +163,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.GetItemBonusCapIncrease(player, eProperty.Constitution);
 
-            Assert.AreEqual(10, actual);
+            ClassicAssert.AreEqual(10, actual);
         }
 
         [Test]
@@ -173,7 +174,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.GetMythicalItemBonusCapIncrease(player, eProperty.Constitution);
 
-            Assert.AreEqual(52, actual);
+            ClassicAssert.AreEqual(52, actual);
         }
 
         [Test]
@@ -184,7 +185,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.GetMythicalItemBonusCapIncrease(player, eProperty.Constitution);
 
-            Assert.AreEqual(10, actual);
+            ClassicAssert.AreEqual(10, actual);
         }
 
         [Test]
@@ -195,7 +196,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValue(npc, eProperty.Constitution);
 
-            Assert.AreEqual(100, actual);
+            ClassicAssert.AreEqual(100, actual);
         }
 
         [Test]
@@ -206,7 +207,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValue(npc, eProperty.Intelligence);
 
-            Assert.AreEqual(100, actual);
+            ClassicAssert.AreEqual(100, actual);
         }
 
         [Test]
@@ -219,7 +220,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValue(player, eProperty.Intelligence);
 
-            Assert.AreEqual(50, actual);
+            ClassicAssert.AreEqual(50, actual);
         }
 
         [Test]
@@ -230,7 +231,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValue(player, eProperty.Constitution);
 
-            Assert.AreEqual(200, actual);
+            ClassicAssert.AreEqual(200, actual);
         }
 
         [Test]
@@ -241,7 +242,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValue(player, eProperty.Constitution);
 
-            Assert.AreEqual(1, actual);
+            ClassicAssert.AreEqual(1, actual);
         }
 
         [Test]
@@ -253,7 +254,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValue(player, eProperty.Constitution);
 
-            Assert.AreEqual(200 - (50/2), actual);
+            ClassicAssert.AreEqual(200 - (50/2), actual);
         }
 
         [Test]
@@ -266,7 +267,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValue(player, eProperty.Constitution);
 
-            Assert.AreEqual(20, actual);
+            ClassicAssert.AreEqual(20, actual);
         }
 
         [Test]
@@ -280,7 +281,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
             int actual = StatCalculator.CalcValue(player, eProperty.Constitution);
 
             int expected = 70 - (50 / 2);
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -294,7 +295,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
             int actual = StatCalculator.CalcValue(player, eProperty.Constitution);
 
             int expected = 70 - (50 / 2);
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -307,7 +308,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
 
             int actual = StatCalculator.CalcValue(player, eProperty.Constitution);
             
-            Assert.AreEqual(67, actual);
+            ClassicAssert.AreEqual(67, actual);
         }
 
         public static StatCalculator StatCalculator => new StatCalculator();

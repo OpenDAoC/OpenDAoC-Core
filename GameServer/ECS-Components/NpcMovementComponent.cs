@@ -25,12 +25,11 @@ namespace DOL.GS
         private long _walkingToEstimatedArrivalTime;
         private MovementRequest _movementRequest;
         private PathCalculator _pathCalculator;
-        private AuxECSGameTimer _resetHeadingAction;
-        private int _firstMove;
+        private ResetHeadingAction _resetHeadingAction;
         private Point3D _positionForUpdatePackets;
         private bool _needsBroadcastUpdate;
 
-        public new GameNPC Owner { get; private set; }
+        public new GameNPC Owner { get; }
         public Vector3 Velocity { get; private set; }
         public Point3D Destination { get; private set; }
         public GameLiving FollowTarget { get; private set; }
@@ -44,7 +43,7 @@ namespace DOL.GS
         public long MovementElapsedTicks => IsMoving ? GameLoop.GameLoopTime - MovementStartTick : 0;
         public bool FixedSpeed { get; set; }
         public override short MaxSpeed => FixedSpeed ? MaxSpeedBase : base.MaxSpeed;
-        public bool IsMovingOnPath => IsSet(MovementState.ON_PATH);
+        public bool IsMovingOnPath => IsFlagSet(MovementState.ON_PATH);
         public bool IsNearSpawn => Owner.IsWithinRadius(Owner.SpawnPoint, 25);
         public bool IsDestinationValid { get; private set; }
         public bool IsAtDestination => !IsDestinationValid || (Destination.X == Owner.X && Destination.Y == Owner.Y && Destination.Z == Owner.Z);
@@ -62,13 +61,26 @@ namespace DOL.GS
 
         public override void Tick()
         {
-            if (IsSet(MovementState.REQUEST))
+            if (IsFlagSet(MovementState.TURN_TO))
             {
-                _movementState &= ~MovementState.REQUEST;
+                if (!Owner.IsAttacking)
+                {
+                    FinalizeTick();
+                    return;
+                }
+
+                UnsetFlag(MovementState.TURN_TO);
+                _resetHeadingAction.Stop();
+                _resetHeadingAction = null;
+            }
+
+            if (IsFlagSet(MovementState.REQUEST))
+            {
+                UnsetFlag(MovementState.REQUEST);
                 _movementRequest.Execute();
             }
 
-            if (IsSet(MovementState.FOLLOW))
+            if (IsFlagSet(MovementState.FOLLOW))
             {
                 if (ServiceUtils.ShouldTickAdjust(ref _nextFollowTick))
                 {
@@ -77,34 +89,39 @@ namespace DOL.GS
                     if (_followTickInterval != 0)
                         _nextFollowTick += _followTickInterval;
                     else
-                        _movementState &= ~MovementState.FOLLOW;
+                        UnsetFlag(MovementState.WALK_TO);
                 }
             }
 
-            if (IsSet(MovementState.WALK_TO))
+            if (IsFlagSet(MovementState.WALK_TO))
             {
                 if (ServiceUtils.ShouldTick(_walkingToEstimatedArrivalTime))
                 {
-                    _movementState &= ~MovementState.WALK_TO;
+                    UnsetFlag(MovementState.WALK_TO);
                     OnArrival();
                 }
             }
 
-            if (IsSet(MovementState.AT_WAYPOINT))
+            if (IsFlagSet(MovementState.AT_WAYPOINT))
             {
                 if (ServiceUtils.ShouldTick(_stopAtWaypointUntil))
                 {
-                    _movementState &= ~MovementState.AT_WAYPOINT;
+                    UnsetFlag(MovementState.AT_WAYPOINT);
                     MoveToNextWaypoint();
                 }
             }
 
-            base.Tick();
+            FinalizeTick();
 
-            if (_needsBroadcastUpdate)
+            void FinalizeTick()
             {
-                ClientService.UpdateObjectForPlayers(Owner);
-                _needsBroadcastUpdate = false;
+                base.Tick();
+
+                if (_needsBroadcastUpdate)
+                {
+                    ClientService.UpdateObjectForPlayers(Owner);
+                    _needsBroadcastUpdate = false;
+                }
             }
         }
 
@@ -113,7 +130,7 @@ namespace DOL.GS
             // The copy is intentional. `Point3D` can be moving objects.
             destination = new Point3D(destination.X, destination.Y, destination.Z);
             _movementRequest = new(destination, speed, WalkToInternal);
-            _movementState |= MovementState.REQUEST;
+            SetFlag(MovementState.REQUEST);
         }
 
         public void PathTo(Point3D destination, short speed)
@@ -121,7 +138,7 @@ namespace DOL.GS
             // The copy is intentional. `Point3D` can be moving objects.
             destination = new Point3D(destination.X, destination.Y, destination.Z);
             _movementRequest = new(destination, speed, PathToInternal);
-            _movementState |= MovementState.REQUEST;
+            SetFlag(MovementState.REQUEST);
         }
 
         public void StopMoving()
@@ -146,12 +163,12 @@ namespace DOL.GS
             FollowTarget = target;
             FollowMinDistance = minDistance;
             FollowMaxDistance = maxDistance;
-            _movementState |= MovementState.FOLLOW;
+            SetFlag(MovementState.FOLLOW);
         }
 
         public void StopFollowing()
         {
-            _movementState &= ~MovementState.FOLLOW;
+            UnsetFlag(MovementState.FOLLOW);
             FollowTarget = null;
         }
 
@@ -178,13 +195,13 @@ namespace DOL.GS
                     return;
                 }
 
-                _movementState |= MovementState.ON_PATH;
+                SetFlag(MovementState.ON_PATH);
                 PathTo(CurrentWaypoint, Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
                 return;
             }
-            else if (!IsSet(MovementState.ON_PATH))
+            else if (!IsFlagSet(MovementState.ON_PATH))
             {
-                _movementState |= MovementState.ON_PATH;
+                SetFlag(MovementState.ON_PATH);
 
                 if (Owner.IsWithinRadius(CurrentWaypoint, 25))
                 {
@@ -209,12 +226,12 @@ namespace DOL.GS
         public void StopMovingOnPath()
         {
             // Without this, horses would be immediately removed since 'MoveOnPath' immediately calls 'StopMoving', which calls 'StopMovingOnPath'.
-            if (IsSet(MovementState.ON_PATH))
+            if (IsFlagSet(MovementState.ON_PATH))
             {
                 if (Owner is GameTaxi or GameTaxiBoat)
                     Owner.RemoveFromWorld();
 
-                _movementState &= ~MovementState.ON_PATH;
+                UnsetFlag(MovementState.ON_PATH);
             }
         }
 
@@ -275,26 +292,48 @@ namespace DOL.GS
             if (Owner.Heading == heading || Owner.IsStunned || Owner.IsMezzed || IsTurningDisabled)
                 return;
 
-            if (duration > 0 && _resetHeadingAction == null)
+            if (duration > 0)
             {
-                _resetHeadingAction = new ResetHeadingAction(Owner, this, () => _resetHeadingAction = null);
-                _resetHeadingAction.Start(duration);
+                SetFlag(MovementState.TURN_TO);
+
+                if (_resetHeadingAction == null)
+                {
+                    _resetHeadingAction = CreateResetHeadingAction();
+                    _resetHeadingAction.Start(duration);
+                }
+                else
+                {
+                    // Attempt to extend the duration of our existing `ResetHeadingAction`.
+                    _resetHeadingAction.Start(duration);
+
+                    if (!_resetHeadingAction.IsAlive)
+                    {
+                        _resetHeadingAction = CreateResetHeadingAction();
+                        _resetHeadingAction.Start(duration);
+                    }
+                }
             }
 
             _needsBroadcastUpdate = true;
             Owner.Heading = heading;
         }
 
+        public override void DisableTurning(bool add)
+        {
+            // Trigger an update to make sure the NPC properly starts or stops auto facing client side.
+            // May technically be only necessary if the count is going from 0 to 1 or 1 to 0, but we're skipping that because it would needs to be thread safe.
+            _needsBroadcastUpdate = true;
+            base.DisableTurning(add);
+        }
+
         private void UpdateVelocity(double distanceToTarget)
         {
             MovementStartTick = GameLoop.GameLoopTime;
-            _needsBroadcastUpdate = true;
 
             if (!IsMoving || distanceToTarget < 1)
             {
                 Velocity = Vector3.Zero;
                 HorizontalVelocityForClient = 0.0;
-                _firstMove = 0;
                 return;
             }
 
@@ -318,7 +357,6 @@ namespace DOL.GS
 
             Velocity = new(velocityX, velocityY, velocityZ);
             HorizontalVelocityForClient = Math.Sqrt(velocityX * velocityX + velocityY * velocityY);
-            _firstMove++;
             return;
         }
 
@@ -348,7 +386,7 @@ namespace DOL.GS
                     TurnTo(destination.X, destination.Y);
 
                 UpdateMovement(destination, distanceToTarget, speed);
-                _movementState |= MovementState.WALK_TO;
+                SetFlag(MovementState.WALK_TO);
                 _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
             }
             else if (IsMoving)
@@ -360,7 +398,7 @@ namespace DOL.GS
             // Pathing with no target position isn't currently supported.
             if (_pathCalculator == null || destination == null)
             {
-                _movementState &= ~MovementState.PATHING;
+                UnsetFlag(MovementState.PATHING);
                 WalkToInternal(destination, speed);
                 return;
             }
@@ -369,7 +407,7 @@ namespace DOL.GS
 
             if (!PathCalculator.ShouldPath(Owner, destinationForPathCalculator))
             {
-                _movementState &= ~MovementState.PATHING;
+                UnsetFlag(MovementState.PATHING);
                 WalkToInternal(destination, speed);
                 return;
             }
@@ -382,14 +420,14 @@ namespace DOL.GS
 
             if (!nextNode.HasValue)
             {
-                _movementState &= ~MovementState.PATHING;
+                UnsetFlag(MovementState.PATHING);
                 WalkToInternal(destination, speed);
                 return;
             }
 
             // Do the actual pathing bit: Walk towards the next pathing node
             _movementRequest = new(destination, speed, PathToInternal);
-            _movementState |= MovementState.PATHING;
+            SetFlag(MovementState.PATHING);
             WalkToInternal(new Point3D(nextNode.Value.X, nextNode.Value.Y, nextNode.Value.Z), speed);
             return;
         }
@@ -399,8 +437,6 @@ namespace DOL.GS
             // Stop moving if the NPC is casting or attacking with a ranged weapon.
             if (Owner.IsCasting || (Owner.IsAttacking && Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance))
             {
-                TurnTo(FollowTarget);
-
                 if (IsMoving)
                     StopMoving();
 
@@ -468,13 +504,13 @@ namespace DOL.GS
 
         private void OnArrival()
         {
-            if (IsSet(MovementState.PATHING))
+            if (IsFlagSet(MovementState.PATHING))
             {
                 _movementRequest.Execute();
                 return;
             }
 
-            if (IsSet(MovementState.FOLLOW))
+            if (IsFlagSet(MovementState.FOLLOW))
             {
                 FollowTick();
                 return;
@@ -488,7 +524,7 @@ namespace DOL.GS
                 return;
             }
 
-            if (IsSet(MovementState.ON_PATH))
+            if (IsFlagSet(MovementState.ON_PATH))
             {
                 if (CurrentWaypoint != null)
                 {
@@ -497,11 +533,9 @@ namespace DOL.GS
                         MoveToNextWaypoint();
                         return;
                     }
-                    else
-                    {
-                        _movementState |= MovementState.AT_WAYPOINT;
-                        _stopAtWaypointUntil = GameLoop.GameLoopTime + CurrentWaypoint.WaitTime * 100;
-                    }
+
+                    SetFlag(MovementState.AT_WAYPOINT);
+                    _stopAtWaypointUntil = GameLoop.GameLoopTime + CurrentWaypoint.WaitTime * 100;
                 }
                 else
                     StopMovingOnPath();
@@ -610,9 +644,17 @@ namespace DOL.GS
             Owner.Z = Owner.Z;
 
             if (destination == null || distanceToTarget < 1)
+            {
+                if (!IsAtDestination)
+                    _needsBroadcastUpdate = true;
+
                 IsDestinationValid = false;
+            }
             else
             {
+                if (CurrentSpeed != speed || !Destination.IsSamePosition(destination))
+                    _needsBroadcastUpdate = true;
+
                 Destination = destination;
                 IsDestinationValid = true;
             }
@@ -623,18 +665,37 @@ namespace DOL.GS
             PrepareValuesForClient(wasMoving, distanceToTarget);
         }
 
-        private bool IsSet(MovementState flag)
+        private ResetHeadingAction CreateResetHeadingAction()
+        {
+            return new(Owner, this, () =>
+            {
+                UnsetFlag(MovementState.TURN_TO);
+                _resetHeadingAction = null;
+            });
+        }
+
+        private bool IsFlagSet(MovementState flag)
         {
             return (_movementState & flag) == flag;
+        }
+
+        private void SetFlag(MovementState flag)
+        {
+            _movementState |= flag;
+        }
+
+        private void UnsetFlag(MovementState flag)
+        {
+            _movementState &= ~flag;
         }
 
         private delegate void MovementRequestAction(Point3D destination, short speed);
 
         private class MovementRequest
         {
-            public Point3D Destination { get; private set; }
-            public short Speed { get; private set; }
-            public MovementRequestAction Action { get; private set; }
+            public Point3D Destination { get; }
+            public short Speed { get; }
+            public MovementRequestAction Action { get; }
 
             public MovementRequest(Point3D destination, short speed, MovementRequestAction action)
             {
@@ -691,7 +752,8 @@ namespace DOL.GS
             FOLLOW = 4,       // Is following an object.
             ON_PATH = 8,      // Is following a path / is patrolling.
             AT_WAYPOINT = 16, // Is waiting at a waypoint.
-            PATHING = 32      // Is moving using PathCalculator.
+            PATHING = 32,     // Is moving using PathCalculator.
+            TURN_TO = 64      // Is facing a direction for a certain duration.
         }
     }
 }

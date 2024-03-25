@@ -6,7 +6,7 @@
     </PropertyGroup>
     <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <OutputType>Library</OutputType>
@@ -33,9 +33,9 @@
         <RegisterForComInterop>False</RegisterForComInterop>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="log4net" Version="2.0.13" />
-        <PackageReference Include="MySqlConnector" Version="2.0.0" />
-        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.114.2" />
+        <PackageReference Include="log4net" Version="2.0.16" />
+        <PackageReference Include="MySqlConnector" Version="2.3.6" />
+        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
     </ItemGroup>
     <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>

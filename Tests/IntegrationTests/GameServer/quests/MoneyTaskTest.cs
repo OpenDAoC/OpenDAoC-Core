@@ -22,6 +22,7 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.Quests;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -52,7 +53,7 @@ namespace DOL.Tests.Integration.Server
 					MoneyTask task = (MoneyTask)player.Task;
 
 
-					Assert.IsNotNull(task);
+					ClassicAssert.IsNotNull(task);
 					Console.WriteLine("XP" + task.RewardXP);
 					Console.WriteLine("Item:" + task.ItemName);
 					Console.WriteLine("Item:" + task.Name);
@@ -67,7 +68,7 @@ namespace DOL.Tests.Integration.Server
 					task.Notify(GamePlayerEvent.GiveItem, player, new GiveItemEventArgs(player, npc, item));
 
 					if (player.Task.TaskActive || player.Task == null)
-						Assert.Fail("Task did not finished proper in Notify");
+						ClassicAssert.Fail("Task did not finished proper in Notify");
 				}
 			}
 		}

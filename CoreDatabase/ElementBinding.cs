@@ -14,35 +14,35 @@ namespace DOL.Database
 		/// <summary>
 		/// Column Name of this Element Binding
 		/// </summary>
-		public string ColumnName { get; private set; }
+		public string ColumnName { get; }
 		/// <summary>
 		/// Value's Type of this Element Binding
 		/// </summary>
-		public Type ValueType { get; private set; }
+		public Type ValueType { get; }
 		/// <summary>
 		/// Get Value Object
 		/// </summary>
-		public Func<DataObject, object> GetValue { get; private set; }
+		public Func<DataObject, object> GetValue { get; }
 		/// <summary>
 		/// Set Value Object
 		/// </summary>
-		public Action<DataObject, object> SetValue { get; private set; }
+		public Action<DataObject, object> SetValue { get; }
 		/// <summary>
 		/// Get DataElement Attribute
 		/// </summary>
-		public DataElement DataElement { get; private set; }
+		public DataElement DataElement { get; }
 		/// <summary>
 		/// Get Relation Attribute
 		/// </summary>
-		public Relation Relation { get; private set; }
+		public Relation Relation { get; }
 		/// <summary>
 		/// Get Primary Key Attribute
 		/// </summary>
-		public PrimaryKey PrimaryKey { get; private set; }
+		public PrimaryKey PrimaryKey { get; }
 		/// <summary>
 		/// Get ReadOnly Attribute
 		/// </summary>
-		public ReadOnly ReadOnly { get; private set; }
+		public ReadOnly ReadOnly { get; }
 		/// <summary>
 		/// Check if this Element Binding Implement any Data Attribute
 		/// </summary>

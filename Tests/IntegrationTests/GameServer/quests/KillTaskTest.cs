@@ -22,6 +22,7 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.Quests;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -56,8 +57,8 @@ namespace DOL.Tests.Integration.Server
 			{
 				KillTask task = (KillTask)player.Task;
 
-				Assert.IsNotNull(task);
-				Assert.IsTrue(task.TaskActive);
+				ClassicAssert.IsNotNull(task);
+				ClassicAssert.IsTrue(task.TaskActive);
 
 				Console.WriteLine("Mob:" + task.MobName);
 				Console.WriteLine("Item:" + task.ItemName);
@@ -87,13 +88,13 @@ namespace DOL.Tests.Integration.Server
 				
 				// Check item in Inventory
 				if (player.Inventory.GetFirstItemByName(task.ItemName,eInventorySlot.FirstBackpack,eInventorySlot.LastBackpack) != null)
-					Assert.Fail("Player didn't receive task item.");
+					ClassicAssert.Fail("Player didn't receive task item.");
 				
 				// Now give item tro trainer
 				task.Notify(GamePlayerEvent.GiveItem,player,new GiveItemEventArgs(player,trainer,item));
 
 				if (player.Task.TaskActive || player.Task==null)
-					Assert.Fail("Task did not finished proper in Notify");
+					ClassicAssert.Fail("Task did not finished proper in Notify");
 			}
 		}
 	}

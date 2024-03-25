@@ -35,7 +35,7 @@ namespace DOL.GS
         /// </summary>
         protected AncientBoundDjinn Djinn
         {
-            get { return m_djinn;  }
+            get { return m_djinn; }
             set { m_djinn = value; }
         }
     }

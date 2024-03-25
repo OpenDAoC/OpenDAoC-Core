@@ -16,27 +16,27 @@ namespace DOL.Database
 		/// <summary>
 		/// Data Object Type
 		/// </summary>
-		public Type ObjectType { get; private set; }
+		public Type ObjectType { get; }
 		/// <summary>
 		/// Has Relations
 		/// </summary>
-		public bool HasRelations { get; private set; }
+		public bool HasRelations { get; }
 		/// <summary>
 		/// Pre Cache Directory Handler
 		/// </summary>
-		private readonly ConcurrentDictionary<object, DataObject> _precache;		
+		private readonly ConcurrentDictionary<object, DataObject> _precache;
 		/// <summary>
 		/// Uses Precaching
 		/// </summary>
-		public bool UsesPreCaching { get; private set; }
+		public bool UsesPreCaching { get; }
 		/// <summary>
 		/// The Table Name for this Handler
 		/// </summary>
-		public string TableName { get; private set; }
+		public string TableName { get; }
 		/// <summary>
 		/// Element Bindings for this Handler
 		/// </summary>
-		public ElementBinding[] ElementBindings { get; private set; }
+		public ElementBinding[] ElementBindings { get; }
 		/// <summary>
 		/// Retrieve Element Bindings for DataTable Fields Only
 		/// </summary>
@@ -47,7 +47,7 @@ namespace DOL.Database
 		/// <summary>
 		/// Data Table Handled
 		/// </summary>
-		public DataTable Table { get; private set; }
+		public DataTable Table { get; }
 		/// <summary>
 		/// Retrieve Single Primary Key Binding
 		/// </summary>

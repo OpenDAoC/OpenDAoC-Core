@@ -54,39 +54,6 @@ namespace DOL.GS.Spells
 				duration = (Spell.Duration * 4);
 			return (int)duration;
 		}
-		
-		///// <summary>
-		///// Start event listener for Speed Effect
-		///// </summary>
-		///// <param name="effect"></param>
-		//public override void OnEffectAdd(GameSpellEffect effect)
-		//{
-		//	GamePlayer player = effect.Owner as GamePlayer;
-			
-		//	GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-		//	GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.AttackFinished, new DOLEventHandler(OnAttack));
-		//	GameEventMgr.AddHandler(effect.Owner, GameLivingEvent.CastFinished, new DOLEventHandler(OnAttack));
-		//	if (player != null)
-		//		GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(OnStealthStateChanged));
-			
-		//	base.OnEffectAdd(effect);
-		//}
-
-		///// <summary>
-		///// Remove event listener for Speed Effect
-		///// </summary>
-		///// <param name="effect"></param>
-		///// <param name="overwrite"></param>
-		//public override void OnEffectRemove(GameSpellEffect effect, bool overwrite)
-		//{
-		//	GamePlayer player = effect.Owner as GamePlayer;
-		//	GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
-		//	GameEventMgr.RemoveHandler(effect.Owner, GameLivingEvent.AttackFinished, new DOLEventHandler(OnAttack));
-		//	if (player != null)
-		//		GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(OnStealthStateChanged));
-			
-		//	base.OnEffectRemove(effect, overwrite);
-		//}
 
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
@@ -229,21 +196,6 @@ namespace DOL.GS.Spells
 			if (speed != null)
 				EffectService.RequestImmediateCancelEffect(speed);
 				//speed.Cancel(false);
-		}
-
-		/// <summary>
-		/// Handles stealth state changes
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="arguments"></param>
-		private void OnStealthStateChanged(DOLEvent e, object sender, EventArgs arguments)
-		{
-			GamePlayer player = (GamePlayer)sender;
-			if (player.IsStealthed)
-				player.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
-			else player.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, Spell.Value / 100.0);
-			// max speed update is sent in setalth method
 		}
 
 		/// <summary>

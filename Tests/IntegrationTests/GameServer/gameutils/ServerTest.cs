@@ -20,6 +20,7 @@ using System;
 
 using DOL.GS;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -34,9 +35,9 @@ namespace DOL.Tests.Integration.Server
 		public void TestGameServerStartup()
 		{
 			Console.WriteLine("Test GameServer Startup...");
-			Assert.NotNull(GameServer.Instance);
-			Assert.IsTrue(GameServer.Instance.IsRunning);
-			Assert.AreEqual(GameServer.Instance.ServerStatus, EGameServerStatus.GSS_Open);
+			ClassicAssert.NotNull(GameServer.Instance);
+			ClassicAssert.IsTrue(GameServer.Instance.IsRunning);
+			ClassicAssert.AreEqual(GameServer.Instance.ServerStatus, EGameServerStatus.GSS_Open);
 		}
 	}
 }

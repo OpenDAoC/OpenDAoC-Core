@@ -17,6 +17,7 @@
  *
  */
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using DOL.Database;
 using DOL.GS;
@@ -61,7 +62,7 @@ namespace DOL.Tests.Integration.Keeps
             keepComponent2.Keep = keep;
             keepComponent2.LoadPositions();
             keepComponent2.FillPositions();
-            Assert.AreEqual(2, keepComponent.Keep.Guards.Count);
+            ClassicAssert.AreEqual(2, keepComponent.Keep.Guards.Count);
         }
 
         [Test]
@@ -80,7 +81,7 @@ namespace DOL.Tests.Integration.Keeps
             keepComponent2.Keep = keep;
             keepComponent2.LoadPositions();
             keepComponent2.FillPositions();
-            Assert.AreEqual(4, keepComponent.Keep.Guards.Count);
+            ClassicAssert.AreEqual(4, keepComponent.Keep.Guards.Count);
         }
 
         private void AddKeepPositions()

@@ -261,9 +261,9 @@ namespace DOL.AI.Brain
         /// </summary>
         private class SpellQueueEntry
         {
-            public Spell Spell { get; private set; }
-            public SpellLine SpellLine { get; private set; }
-            public GameLiving Target { get; private set; }
+            public Spell Spell { get; }
+            public SpellLine SpellLine { get; }
+            public GameLiving Target { get; }
 
             public SpellQueueEntry(Spell spell, SpellLine spellLine, GameLiving target)
             {

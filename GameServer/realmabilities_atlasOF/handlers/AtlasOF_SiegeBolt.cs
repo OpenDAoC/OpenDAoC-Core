@@ -79,7 +79,7 @@ namespace DOL.GS.RealmAbilities
             CreateSpell(m_caster);
 
             if (m_spell != null)
-                m_caster.castingComponent.RequestStartCastSpell(m_spell, m_spellline, this);
+                m_caster.CastSpell(m_spell, m_spellline, this);
 
             DisableSkill(m_caster);
 

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using DOL.AI;
 using log4net;
@@ -88,7 +87,7 @@ namespace DOL.GS
             private object _entitiesToRemoveLock = new();
             private int _lastValidIndex = -1;
 
-            public List<T> Entities { get; private set; }
+            public List<T> Entities { get; }
 
             public EntityArray(int capacity)
             {
@@ -200,7 +199,7 @@ namespace DOL.GS
                     if (log.IsWarnEnabled)
                         log.Warn($"{typeof(T)} {nameof(Entities)} is too short. Resizing it to {newCapacity}.");
 
-                    ListExtras.Resize(Entities, newCapacity);
+                    Entities.Resize(newCapacity);
                 }
 
                 Entities.Add(entity);
@@ -239,8 +238,8 @@ namespace DOL.GS
                 _pendingState = PendingState.NONE;
             }
         }
-        public EntityManager.EntityType Type { get; private set; }
-        public bool AllowReuseByEntityManager { get; private set; }
+        public EntityManager.EntityType Type { get; }
+        public bool AllowReuseByEntityManager { get; }
         public bool IsSet => _value > UNSET_ID;
         public bool IsPendingAddition => _pendingState == PendingState.ADDITION;
         public bool IsPendingRemoval => _pendingState == PendingState.REMOVAL;
@@ -278,28 +277,5 @@ namespace DOL.GS
     public interface IManagedEntity
     {
         public EntityManagerId EntityManagerId { get; set; }
-    }
-
-    // Extension methods for 'List<T>' that could be moved elsewhere.
-    public static class ListExtras
-    {
-        public static void Resize<T>(this List<T> list, int size, bool fill = false, T element = default)
-        {
-            int count = list.Count;
-
-            if (size < count)
-            {
-                list.RemoveRange(size, count - size);
-                list.TrimExcess();
-            }
-            else if (size > count)
-            {
-                if (size > list.Capacity)
-                    list.Capacity = size; // Creates a new internal array.
-
-                if (fill)
-                    list.AddRange(Enumerable.Repeat(element, size - count));
-            }
-        }
     }
 }

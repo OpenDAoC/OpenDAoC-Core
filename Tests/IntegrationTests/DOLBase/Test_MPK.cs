@@ -1,5 +1,6 @@
 ﻿using DOL.MPK;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Text;
 using System.IO;
 
@@ -35,10 +36,10 @@ namespace DOL.Tests.Integration.DOLBase
             newMPK[textFileLocation].Header.TimeStamp = 0; //Make MPK creation deterministic
 
             newMPK.Save();
-            Assert.AreEqual(1, newMPK.Count);
+            ClassicAssert.AreEqual(1, newMPK.Count);
 
             var expectedCRCValue = 375344986;
-            Assert.AreEqual(expectedCRCValue, newMPK.CRCValue);
+            ClassicAssert.AreEqual(expectedCRCValue, newMPK.CRCValue);
         }
 
         [Test, Order(2)]
@@ -55,7 +56,7 @@ namespace DOL.Tests.Integration.DOLBase
 
             var actualFileText = File.ReadAllText(Path.Combine(extractPath,  textFileLocation));
             var expectedFileText = textFileContent;
-            Assert.AreEqual(expectedFileText, actualFileText);
+            ClassicAssert.AreEqual(expectedFileText, actualFileText);
         }
 
         [OneTimeTearDown]

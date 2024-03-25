@@ -17,6 +17,7 @@
  *
  */
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Net
 {
@@ -36,7 +37,7 @@ namespace DOL.Tests.Integration.Net
 		[Test, Explicit]
 		public void Discover()
 		{
-			Assert.IsTrue(upnp.Discover());
+			ClassicAssert.IsTrue(upnp.Discover());
 		}
 	}
 }

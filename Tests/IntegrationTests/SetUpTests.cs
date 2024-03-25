@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Linq;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using DOL.GS;
 using DOL.Database;
 using DOL.Database.Connection;

@@ -2,6 +2,7 @@
 using DOL.GS.Quests;
 using DOL.Tests.Unit.Gameserver;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Collections.Generic;
 
 namespace DOL.Tests.Integration.Gameserver
@@ -51,18 +52,18 @@ namespace DOL.Tests.Integration.Gameserver
         {
             var dataQuest = new DataQuestSpy(dbDataQuest);
 
-            Assert.AreEqual(23886, dataQuest.ID);
-            Assert.AreEqual("QuestName", dataQuest.Name);
-            Assert.AreEqual(DataQuest.eStartType.Standard, dataQuest.StartType);
-            Assert.AreEqual("description", dataQuest.Description);
-            Assert.AreEqual(null, dataQuest.SpySourceName);
-            Assert.AreEqual(1, dataQuest.MaxQuestCount);
-            Assert.AreEqual(1, dataQuest.Level);
-            Assert.AreEqual(11, dataQuest.MaxLevel);
-            Assert.AreEqual("", dataQuest.OptionalRewards);
-            Assert.AreEqual("", dataQuest.FinalRewards);
-            Assert.AreEqual(new List<string>() { "Basics of Combat (Hibernia)" }, dataQuest.SpyQuestDependency);
-            Assert.AreEqual(new List<byte> { 1, 2, 3 }, dataQuest.SpyAllowedClasses);
+            ClassicAssert.AreEqual(23886, dataQuest.ID);
+            ClassicAssert.AreEqual("QuestName", dataQuest.Name);
+            ClassicAssert.AreEqual(DataQuest.eStartType.Standard, dataQuest.StartType);
+            ClassicAssert.AreEqual("description", dataQuest.Description);
+            ClassicAssert.AreEqual(null, dataQuest.SpySourceName);
+            ClassicAssert.AreEqual(1, dataQuest.MaxQuestCount);
+            ClassicAssert.AreEqual(1, dataQuest.Level);
+            ClassicAssert.AreEqual(11, dataQuest.MaxLevel);
+            ClassicAssert.AreEqual("", dataQuest.OptionalRewards);
+            ClassicAssert.AreEqual("", dataQuest.FinalRewards);
+            ClassicAssert.AreEqual(new List<string>() { "Basics of Combat (Hibernia)" }, dataQuest.SpyQuestDependency);
+            ClassicAssert.AreEqual(new List<byte> { 1, 2, 3 }, dataQuest.SpyAllowedClasses);
         }
 
         [Test]
@@ -76,17 +77,17 @@ namespace DOL.Tests.Integration.Gameserver
             {
                 dataQuest.Step = i;
                 int index = i - 1;
-                Assert.AreEqual(new List<byte>() { 0, 4, 6, 6, 5 }[index], (byte)dataQuest.StepType, "Failed at Step " + dataQuest.Step);
-                Assert.AreEqual(new List<long>() { 1, 2, 3, 4, 5 }[index], dataQuest.SpyRewardMoney);
-                Assert.AreEqual(new long[] { 6, 7, 8, 9, 10 }[index], dataQuest.SpyRewardXP);
-                Assert.AreEqual(0, dataQuest.SpyRewardBP);
-                Assert.AreEqual(new string[] { "tic", "trick", "truck", "track", "trock" }[index], dataQuest.TargetName);
-                Assert.AreEqual(new long[] { 10, 9, 8, 7, 6 }[index], dataQuest.TargetRegion);
-                Assert.AreEqual(new string[] { "foo", "bar", "baz", "bork", "fuu" }[index], dataQuest.SpyTargetText);
-                Assert.AreEqual("storyA", dataQuest.Story);
-                Assert.AreEqual(new string[] { "storyA", "", "storyC", "storyD", "storyEnd" }[index], dataQuest.SpySourceText);
-                Assert.AreEqual(new string[] { "step1", "step2", "step3", "step4", "step5"}[index], dataQuest.StepTexts[index]);
-                Assert.AreEqual(new string[] { "item1", "item2", "item3", "item4", "item5" }[index], dataQuest.SpyStepItemTemplate);
+                ClassicAssert.AreEqual(new List<byte>() { 0, 4, 6, 6, 5 }[index], (byte)dataQuest.StepType, "Failed at Step " + dataQuest.Step);
+                ClassicAssert.AreEqual(new List<long>() { 1, 2, 3, 4, 5 }[index], dataQuest.SpyRewardMoney);
+                ClassicAssert.AreEqual(new long[] { 6, 7, 8, 9, 10 }[index], dataQuest.SpyRewardXP);
+                ClassicAssert.AreEqual(0, dataQuest.SpyRewardBP);
+                ClassicAssert.AreEqual(new string[] { "tic", "trick", "truck", "track", "trock" }[index], dataQuest.TargetName);
+                ClassicAssert.AreEqual(new long[] { 10, 9, 8, 7, 6 }[index], dataQuest.TargetRegion);
+                ClassicAssert.AreEqual(new string[] { "foo", "bar", "baz", "bork", "fuu" }[index], dataQuest.SpyTargetText);
+                ClassicAssert.AreEqual("storyA", dataQuest.Story);
+                ClassicAssert.AreEqual(new string[] { "storyA", "", "storyC", "storyD", "storyEnd" }[index], dataQuest.SpySourceText);
+                ClassicAssert.AreEqual(new string[] { "step1", "step2", "step3", "step4", "step5"}[index], dataQuest.StepTexts[index]);
+                ClassicAssert.AreEqual(new string[] { "item1", "item2", "item3", "item4", "item5" }[index], dataQuest.SpyStepItemTemplate);
             }
         }
 

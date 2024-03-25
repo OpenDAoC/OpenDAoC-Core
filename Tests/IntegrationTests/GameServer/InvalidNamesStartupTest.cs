@@ -18,6 +18,7 @@
  */
 using DOL.GS;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -35,25 +36,25 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void InvalidNamesStartup_CheckDefaultConstraintOneString_Match()
 		{
-			Assert.IsTrue(GameServer.Instance.PlayerManager.InvalidNames["fuck"]);
+			ClassicAssert.IsTrue(GameServer.Instance.PlayerManager.InvalidNames["fuck"]);
 		}
 		
 		[Test]
 		public void InvalidNamesStartup_CheckDefaultConstraintOneString_NoMatch()
 		{
-			Assert.IsFalse(GameServer.Instance.PlayerManager.InvalidNames["unicorn"]);
+			ClassicAssert.IsFalse(GameServer.Instance.PlayerManager.InvalidNames["unicorn"]);
 		}
 		
 		[Test]
 		public void InvalidNamesStartup_CheckDefaultConstraintTwoString_Match()
 		{
-			Assert.IsTrue(GameServer.Instance.PlayerManager.InvalidNames["fu", "ck"]);
+			ClassicAssert.IsTrue(GameServer.Instance.PlayerManager.InvalidNames["fu", "ck"]);
 		}
 		
 		[Test]
 		public void InvalidNamesStartup_CheckDefaultConstraintTwoString_NoMatch()
 		{
-			Assert.IsFalse(GameServer.Instance.PlayerManager.InvalidNames["uni", "corn"]);
+			ClassicAssert.IsFalse(GameServer.Instance.PlayerManager.InvalidNames["uni", "corn"]);
 		}
 	}
 }

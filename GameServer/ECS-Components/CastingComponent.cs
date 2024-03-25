@@ -14,7 +14,7 @@ namespace DOL.GS
     {
         private ConcurrentQueue<StartCastSpellRequest> _startCastSpellRequests = new(); // This isn't the actual spell queue.
 
-        public GameLiving Owner { get; private set; }
+        public GameLiving Owner { get; }
         public SpellHandler SpellHandler { get; protected set; }
         public SpellHandler QueuedSpellHandler { get; private set; }
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.CastingComponent, false);
@@ -85,7 +85,7 @@ namespace DOL.GS
             return spellHandler;
         }
 
-        protected virtual void StartCastSpell(StartCastSpellRequest startCastSpellRequest)
+        protected void StartCastSpell(StartCastSpellRequest startCastSpellRequest)
         {
             SpellHandler newSpellHandler = CreateSpellHandler(startCastSpellRequest);
 
@@ -217,10 +217,10 @@ namespace DOL.GS
 
         public class StartCastSpellRequest
         {
-            public Spell Spell { get; private set; }
+            public Spell Spell { get; }
             public SpellLine SpellLine { get; private set ; }
-            public ISpellCastingAbilityHandler SpellCastingAbilityHandler { get; private set; }
-            public GameLiving Target { get; private set; }
+            public ISpellCastingAbilityHandler SpellCastingAbilityHandler { get; }
+            public GameLiving Target { get; }
 
             public StartCastSpellRequest(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler, GameLiving target)
             {

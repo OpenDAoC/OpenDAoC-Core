@@ -33,7 +33,7 @@ namespace DOL.GS
         /// <summary>
         /// Returns the list of attackers
         /// </summary>
-        public ConcurrentDictionary<GameLiving, long> Attackers { get; private set; } = new();
+        public ConcurrentDictionary<GameLiving, long> Attackers { get; } = new();
 
         private AttackersCheckTimer _attackersCheckTimer;
 
@@ -669,11 +669,9 @@ namespace DOL.GS
 
                 if (player.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                 {
-                    if (ServerProperties.Properties.ALLOW_OLD_ARCHERY == false)
+                    if (Properties.ALLOW_OLD_ARCHERY == false)
                     {
-                        if ((eCharacterClass) player.CharacterClass.ID == eCharacterClass.Scout ||
-                            (eCharacterClass) player.CharacterClass.ID == eCharacterClass.Hunter ||
-                            (eCharacterClass) player.CharacterClass.ID == eCharacterClass.Ranger)
+                        if ((eCharacterClass) player.CharacterClass.ID is eCharacterClass.Scout or eCharacterClass.Hunter or eCharacterClass.Ranger)
                         {
                             // There is no feedback on live when attempting to fire a bow with arrows
                             return;
@@ -729,6 +727,7 @@ namespace DOL.GS
                         // -Chance to unstealth nocking a crit = stealth / level  0.20
                         int stealthSpec = player.GetModifiedSpecLevel(Specs.Stealth);
                         int stayStealthed = stealthSpec * 100 / player.Level;
+
                         if (player.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical)
                             stayStealthed -= 20;
 
@@ -2093,12 +2092,14 @@ namespace DOL.GS
             {
                 if (inter.Target == owner && !inter.Source.IsIncapacitated && !inter.Source.IsSitting && owner.IsWithinRadius(inter.Source, InterceptAbilityHandler.INTERCEPT_DISTANCE))
                 {
-                    int interceptRoll;
+                    double interceptRoll;
 
                     if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
-                        interceptRoll = playerOwner.RandomNumberDeck.GetInt();
+                        interceptRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
                     else
-                        interceptRoll = Util.Random(100);
+                        interceptRoll = Util.CryptoNextDouble();
+
+                    interceptRoll *= 100;
 
                     if (inter.InterceptChance > interceptRoll)
                         intercept = inter;

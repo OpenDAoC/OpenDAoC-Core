@@ -17,6 +17,7 @@
  *
  */
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using DOL.Database;
 using System;
@@ -31,7 +32,7 @@ namespace DOL.Tests.Unit.Database
         {
             var expression = DB.Column("key").IsEqualTo(1);
 
-            Assert.AreEqual("WHERE key = @a", expression.ParameterizedText);
+            ClassicAssert.AreEqual("WHERE key = @a", expression.ParameterizedText);
         }
 
         [Test]
@@ -40,7 +41,7 @@ namespace DOL.Tests.Unit.Database
             var expression = DB.Column("key").IsEqualTo(1);
 
             var firstQueryParameter = expression.Parameters[0];
-            Assert.AreEqual(firstQueryParameter.Value, 1);
+            ClassicAssert.AreEqual(firstQueryParameter.Value, 1);
         }
 
         [Test]
@@ -53,7 +54,7 @@ namespace DOL.Tests.Unit.Database
 
             var actual = andExpression.ParameterizedText;
             var expected = $"WHERE ( foo = @a AND bar = @b )";
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -64,7 +65,7 @@ namespace DOL.Tests.Unit.Database
             var placeHolder2 = expr.Parameters[1].Item1;
             var actual = expr.ParameterizedText;
             var expected = $"WHERE foo IN ( {placeHolder1} , {placeHolder2} )";
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -75,7 +76,7 @@ namespace DOL.Tests.Unit.Database
             var placeHolder2 = expr.Parameters[1].Item1;
             var actual = expr.ParameterizedText;
             var expected = $"WHERE foo IN ( {placeHolder1} , {placeHolder2} )";
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -88,7 +89,7 @@ namespace DOL.Tests.Unit.Database
 
             var actual = andExpression.Parameters;
             var expected = new[] { new QueryParameter("@a", 1), new QueryParameter("@b", 2) };
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -98,7 +99,7 @@ namespace DOL.Tests.Unit.Database
 
             var actual = expression.ParameterizedText;
             var expected = string.Empty;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -107,7 +108,7 @@ namespace DOL.Tests.Unit.Database
             var expression = WhereClause.Empty;
 
             var actual = expression.Parameters;
-            Assert.IsEmpty(actual);
+            ClassicAssert.IsEmpty(actual);
         }
 
         [Test]
@@ -120,7 +121,7 @@ namespace DOL.Tests.Unit.Database
 
             var actual = andExpression;
             var expected = filterExpression;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -133,7 +134,7 @@ namespace DOL.Tests.Unit.Database
 
             var actual = andExpression;
             var expected = filterExpression;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -143,7 +144,7 @@ namespace DOL.Tests.Unit.Database
 
             var actual = andExpression.ParameterizedText;
             var expected = string.Empty;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -151,25 +152,25 @@ namespace DOL.Tests.Unit.Database
         {
             var actual = DB.Column("Foo").IsNull().ParameterizedText;
             var expected = "WHERE Foo IS NULL";
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
         public void DBColumn_Null_ThrowArgumentException()
         {
-            Assert.Throws(typeof(ArgumentException), () => DB.Column(null));
+            ClassicAssert.Throws(typeof(ArgumentException), () => DB.Column(null));
         }
 
         [Test]
         public void DBColumn_EmptyString_ThrowArgumentException()
         {
-            Assert.Throws(typeof(ArgumentException), () => DB.Column(string.Empty));
+            ClassicAssert.Throws(typeof(ArgumentException), () => DB.Column(string.Empty));
         }
 
         [Test]
         public void Equals_TwoFreshEmptyWhereClauses_True()
         {
-            Assert.IsTrue(WhereClause.Empty.Equals(WhereClause.Empty));
+            ClassicAssert.IsTrue(WhereClause.Empty.Equals(WhereClause.Empty));
         }
 
         [Test]
@@ -178,7 +179,7 @@ namespace DOL.Tests.Unit.Database
             var expression1 = DB.Column("foo").IsEqualTo(1);
             var expression2 = DB.Column("foo").IsEqualTo(1);
 
-            Assert.IsTrue(expression1.Equals(expression2));
+            ClassicAssert.IsTrue(expression1.Equals(expression2));
         }
 
         [Test]
@@ -187,7 +188,7 @@ namespace DOL.Tests.Unit.Database
             var expression1 = DB.Column("foo").IsEqualTo(0);
             var expression2 = DB.Column("foo").IsEqualTo(1);
 
-            Assert.IsFalse(expression1.Equals(expression2));
+            ClassicAssert.IsFalse(expression1.Equals(expression2));
         }
 
         [Test]
@@ -196,7 +197,7 @@ namespace DOL.Tests.Unit.Database
             var expression1 = DB.Column("foo").IsEqualTo(1);
             var expression2 = DB.Column("bar").IsEqualTo(1);
 
-            Assert.IsFalse(expression1.Equals(expression2));
+            ClassicAssert.IsFalse(expression1.Equals(expression2));
         }
 
         [Test]
@@ -205,7 +206,7 @@ namespace DOL.Tests.Unit.Database
             var expression1 = DB.Column("foo").IsEqualTo(1);
             var expression2 = DB.Column("foo").IsNotEqualTo(1);
 
-            Assert.IsFalse(expression1.Equals(expression2));
+            ClassicAssert.IsFalse(expression1.Equals(expression2));
         }
 
         [Test]
@@ -215,7 +216,7 @@ namespace DOL.Tests.Unit.Database
             var andExpression1 = filterExpression.And(filterExpression);
             var andExpression2 = filterExpression.And(filterExpression);
 
-            Assert.IsTrue(andExpression1.Equals(andExpression2));
+            ClassicAssert.IsTrue(andExpression1.Equals(andExpression2));
         }
 
         [Test]
@@ -225,7 +226,7 @@ namespace DOL.Tests.Unit.Database
             var andExpression = filterExpression.And(filterExpression);
             var orExpression = filterExpression.Or(filterExpression);
 
-            Assert.IsFalse(andExpression.Equals(orExpression));
+            ClassicAssert.IsFalse(andExpression.Equals(orExpression));
         }
     }
 }

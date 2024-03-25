@@ -28,19 +28,19 @@ namespace DOL.GS.Friends
 		/// <summary>
 		/// Friend Name
 		/// </summary>
-		public string Name { get; private set; }
+		public string Name { get; }
 		/// <summary>
 		/// Friend Level
 		/// </summary>
-		public int Level { get; private set; }
+		public int Level { get; }
 		/// <summary>
 		/// Friend Class ID
 		/// </summary>
-		public int ClassID { get; private set; }
+		public int ClassID { get; }
 		/// <summary>
 		/// Friend LastPlayed
 		/// </summary>
-		public DateTime LastPlayed { get; private set; }
+		public DateTime LastPlayed { get; }
 		
 		/// <summary>
 		/// Create a new instance of <see cref="FriendStatus"/>

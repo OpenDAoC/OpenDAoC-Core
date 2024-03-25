@@ -20,6 +20,7 @@ using System;
 using DOL.Events;
 using DOL.GS;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -46,9 +47,9 @@ namespace DOL.Tests.Integration.Server
 			obj.AddToWorld();
 
 			if (obj.ObjectID<0)
-				Assert.Fail("Failed to add object to Region. ObjectId < 0");
+				ClassicAssert.Fail("Failed to add object to Region. ObjectId < 0");
 
-			Assert.AreEqual(region.GetObject((ushort)obj.ObjectID),obj);
+			ClassicAssert.AreEqual(region.GetObject((ushort)obj.ObjectID),obj);
 		}
 
 
@@ -58,10 +59,10 @@ namespace DOL.Tests.Integration.Server
 			Region region = WorldMgr.GetRegion(1);
 			IArea insertArea = region.AddArea(new Area.Circle(null,1000,1000,0,500));
 
-			Assert.IsNotNull(insertArea);
+			ClassicAssert.IsNotNull(insertArea);
 
 			var areas = region.GetAreasOfSpot(501,1000,0);			
-			Assert.IsTrue(areas.Count>0);
+			ClassicAssert.IsTrue(areas.Count>0);
 
 			bool found = false;
 			foreach( IArea ar in areas)
@@ -72,11 +73,11 @@ namespace DOL.Tests.Integration.Server
 					break;
 				}
 			}
-			Assert.IsTrue(found);
+			ClassicAssert.IsTrue(found);
 
 			//
 			areas = region.GetAreasOfSpot(1499,1000,2000);			
-			Assert.IsTrue(areas.Count>0);
+			ClassicAssert.IsTrue(areas.Count>0);
 
 			found = false;
 			foreach( IArea ar in areas)
@@ -87,7 +88,7 @@ namespace DOL.Tests.Integration.Server
 					break;
 				}
 			}
-			Assert.IsTrue(found);
+			ClassicAssert.IsTrue(found);
 
 
 			//Notify test
@@ -98,12 +99,12 @@ namespace DOL.Tests.Integration.Server
 			insertArea.RegisterPlayerEnter(new DOLEventHandler(NotifyTest));
 			insertArea.OnPlayerEnter(player);
 
-			Assert.IsTrue(notified);
+			ClassicAssert.IsTrue(notified);
 
 			region.RemoveArea(insertArea);
 
 			areas = region.GetAreasOfSpot(1499,1000,2000);
-			Assert.IsTrue(areas.Count==0);
+			ClassicAssert.IsTrue(areas.Count==0);
 
 		}
 

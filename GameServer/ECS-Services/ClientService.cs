@@ -52,11 +52,6 @@ namespace DOL.GS
             switch (client.ClientState)
             {
                 case GameClient.eClientState.Disconnected:
-                {
-                    OnClientDisconnect(client);
-                    client.PacketProcessor?.OnDisconnect();
-                    return;
-                }
                 case GameClient.eClientState.NotConnected:
                 case GameClient.eClientState.Linkdead:
                     return;
@@ -74,7 +69,7 @@ namespace DOL.GS
                     {
                         try
                         {
-                            if (player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                            if (ServiceUtils.ShouldTick(player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL))
                             {
                                 long startTick = GameLoop.GetCurrentTime();
                                 UpdateWorld(player);
@@ -118,14 +113,36 @@ namespace DOL.GS
 
         public static void OnClientConnect(GameClient client)
         {
-            EntityManager.Add(client);
-            Interlocked.Increment(ref _clientCount);
+            if (EntityManager.Add(client))
+                Interlocked.Increment(ref _clientCount);
+            else if (log.IsWarnEnabled)
+            {
+                EntityManagerId entityManagerId = client.EntityManagerId;
+                log.Warn($"{nameof(OnClientConnect)} was called but the client couldn't be added to the entity manager." +
+                         $"(Client: {client})" +
+                         $"(IsIdSet: {client.EntityManagerId.IsSet})" +
+                         $"(IsIdSet: {entityManagerId.IsSet})" +
+                         $"(IsPendingAddition: {entityManagerId.IsPendingAddition})" +
+                         $"(IsPendingRemoval: {entityManagerId.IsPendingAddition})" +
+                         $"\n{Environment.StackTrace}");
+            }
         }
 
         public static void OnClientDisconnect(GameClient client)
         {
-            Interlocked.Decrement(ref _clientCount);
-            EntityManager.Remove(client);
+            if (EntityManager.Remove(client))
+                Interlocked.Decrement(ref _clientCount);
+            else if (log.IsWarnEnabled)
+            {
+                EntityManagerId entityManagerId = client.EntityManagerId;
+                log.Warn($"{nameof(OnClientDisconnect)} was called but the client couldn't be removed from the entity manager." +
+                         $"(Client: {client})" +
+                         $"(IsIdSet: {client.EntityManagerId.IsSet})" +
+                         $"(IsIdSet: {entityManagerId.IsSet})" +
+                         $"(IsPendingAddition: {entityManagerId.IsPendingAddition})" +
+                         $"(IsPendingRemoval: {entityManagerId.IsPendingAddition})" +
+                         $"\n{Environment.StackTrace}");
+            }
         }
 
         public static GamePlayer GetPlayer<T>(CheckPlayerAction<T> action)
@@ -554,7 +571,7 @@ namespace DOL.GS
 
         private static void CheckInGameTimeout(GameClient client)
         {
-            if (client.Player.HasLinkDeathTimerActive)
+            if (client.Player.IsLinkDeathTimerRunning)
                 return;
 
             if (ServiceUtils.ShouldTickNoEarly(client.Player.LastPositionUpdateTime + POSITION_UPDATE_TIMEOUT))
@@ -610,9 +627,9 @@ namespace DOL.GS
 
                 if (!npcUpdateCache.TryGetValue(objectInRange, out CachedNpcValues cachedNpcValues))
                     UpdateObjectForPlayer(player, objectInRange);
-                else if (cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL))
                     UpdateObjectForPlayer(player, objectInRange);
-                else if (cachedNpcValues.Time + 250 < GameLoop.GameLoopTime)
+                else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + 250))
                 {
                     // `GameNPC.HealthPercent` is a bit of an expensive call. Do it last.
                     if (objectInRange == targetObject)
@@ -683,7 +700,7 @@ namespace DOL.GS
                     CreateObjectForPlayer(player, doorInRange);
                     player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange);
                 }
-                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (ServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
                     UpdateObjectForPlayer(player, doorInRange);
             }
         }
@@ -714,7 +731,7 @@ namespace DOL.GS
                     player.Client.Out.SendGarden(house);
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
                 }
-                else if (lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL < GameLoop.GameLoopTime)
+                else if (ServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
 
                 AddHouseToPlayerCache(player, house);

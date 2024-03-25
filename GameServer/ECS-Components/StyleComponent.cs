@@ -218,7 +218,7 @@ namespace DOL.GS
         /// <param name="delveInfo"></param>
         /// <param name="style"></param>
         /// <returns></returns>
-        public void DelveWeaponStyle(IList<string> delveInfo, Style style)
+        public void DelveWeaponStyle(List<string> delveInfo, Style style)
         {
             StyleProcessor.DelveWeaponStyle(delveInfo, style, _owner as GamePlayer);
         }

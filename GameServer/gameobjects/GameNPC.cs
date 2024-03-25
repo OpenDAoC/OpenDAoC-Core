@@ -3817,7 +3817,7 @@ namespace DOL.GS
 		/// Cast a spell with LOS check to a player
 		/// </summary>
 		/// <returns>Whether the spellcast started successfully</returns>
-		public override bool CastSpell(Spell spell, SpellLine line)
+		public override bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
 		{
 			// Good opportunity to clean up our 'm_spellTargetLosChecks'.
 			// Entries older than 3 seconds are removed, so that another check can be performed in case the previous one never was.
@@ -3867,7 +3867,7 @@ namespace DOL.GS
 			}
 
 			if (LosChecker == null)
-				return base.CastSpell(spellToCast, line);
+				return base.CastSpell(spellToCast, line, spellCastingAbilityHandler);
 
 			bool spellCastedFromLosCheck = m_spellCastedFromLosCheck;
 

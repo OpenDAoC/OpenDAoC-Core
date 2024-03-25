@@ -25,6 +25,7 @@ using DOL.Tests;
 using DOL.Events;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -41,7 +42,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_StartUp_NotNull()
 		{
-			Assert.IsNotNull(GameServer.Instance.PlayerManager.Friends);
+			ClassicAssert.IsNotNull(GameServer.Instance.PlayerManager.Friends);
 		}
 		
 		[Test]
@@ -159,7 +160,7 @@ namespace DOL.Tests.Integration.Server
 
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayer);
 			gameplayer.AddFriend("buddy");
-			Assert.IsFalse(gameplayer.AddFriend("buddy"));
+			ClassicAssert.IsFalse(gameplayer.AddFriend("buddy"));
 			gameplayer.AddFriend("someone");
 
 			CollectionAssert.AreEquivalent(gameplayer.GetFriends(), gameplayer.SerializedFriendsList);
@@ -217,7 +218,7 @@ namespace DOL.Tests.Integration.Server
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayer);
 			gameplayer.AddFriend("buddy");
 			CollectionAssert.IsNotEmpty(gameplayer.GetFriends());
-			Assert.IsFalse(gameplayer.RemoveFriend("mate"));
+			ClassicAssert.IsFalse(gameplayer.RemoveFriend("mate"));
 			CollectionAssert.AreEquivalent(gameplayer.GetFriends(), new [] { "buddy" });
 			GameServer.Instance.PlayerManager.Friends.RemovePlayerFriendsListFromCache(gameplayer);
 		}
@@ -401,7 +402,7 @@ namespace DOL.Tests.Integration.Server
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayerMate);
 			
 			GameEventMgr.Notify(GamePlayerEvent.GameEntered, gameplayerMate);
-			Assert.IsNull(received);
+			ClassicAssert.IsNull(received);
 			GameServer.Instance.PlayerManager.Friends.RemovePlayerFriendsListFromCache(gameplayer);
 			GameServer.Instance.PlayerManager.Friends.RemovePlayerFriendsListFromCache(gameplayerMate);
 		}
@@ -453,7 +454,7 @@ namespace DOL.Tests.Integration.Server
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayerMate);
 			
 			GameEventMgr.Notify(GamePlayerEvent.Quit, gameplayerMate);
-			Assert.IsNull(received);
+			ClassicAssert.IsNull(received);
 			GameServer.Instance.PlayerManager.Friends.RemovePlayerFriendsListFromCache(gameplayer);
 			GameServer.Instance.PlayerManager.Friends.RemovePlayerFriendsListFromCache(gameplayerMate);
 		}
@@ -461,10 +462,10 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_WrongMethodArguments_ThrowsException()
 		{
-			Assert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(null));
-			Assert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.RemovePlayerFriendsListFromCache(null));
-			Assert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.AddFriendToPlayerList(null, null));
-			Assert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.RemoveFriendFromPlayerList(null, null));
+			ClassicAssert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(null));
+			ClassicAssert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.RemovePlayerFriendsListFromCache(null));
+			ClassicAssert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.AddFriendToPlayerList(null, null));
+			ClassicAssert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.RemoveFriendFromPlayerList(null, null));
 			
 			var client = new GameClient(GameServer.Instance) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() } },
@@ -472,12 +473,12 @@ namespace DOL.Tests.Integration.Server
 			};
 			var gameplayer = new GamePlayer(client, client.Account.Characters[0]);
 			
-			Assert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.AddFriendToPlayerList(gameplayer, null));
-			Assert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.RemoveFriendFromPlayerList(gameplayer, null));
-			Assert.Throws(typeof(ArgumentException), () => GameServer.Instance.PlayerManager.Friends.AddFriendToPlayerList(gameplayer, string.Empty));
-			Assert.Throws(typeof(ArgumentException), () => GameServer.Instance.PlayerManager.Friends.RemoveFriendFromPlayerList(gameplayer, string.Empty));
-			Assert.Throws(typeof(ArgumentException), () => GameServer.Instance.PlayerManager.Friends.AddFriendToPlayerList(gameplayer, " "));
-			Assert.Throws(typeof(ArgumentException), () => GameServer.Instance.PlayerManager.Friends.RemoveFriendFromPlayerList(gameplayer, " "));
+			ClassicAssert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.AddFriendToPlayerList(gameplayer, null));
+			ClassicAssert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.RemoveFriendFromPlayerList(gameplayer, null));
+			ClassicAssert.Throws(typeof(ArgumentException), () => GameServer.Instance.PlayerManager.Friends.AddFriendToPlayerList(gameplayer, string.Empty));
+			ClassicAssert.Throws(typeof(ArgumentException), () => GameServer.Instance.PlayerManager.Friends.RemoveFriendFromPlayerList(gameplayer, string.Empty));
+			ClassicAssert.Throws(typeof(ArgumentException), () => GameServer.Instance.PlayerManager.Friends.AddFriendToPlayerList(gameplayer, " "));
+			ClassicAssert.Throws(typeof(ArgumentException), () => GameServer.Instance.PlayerManager.Friends.RemoveFriendFromPlayerList(gameplayer, " "));
 		}
 	}
 }

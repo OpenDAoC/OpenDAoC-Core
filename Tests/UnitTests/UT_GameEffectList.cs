@@ -2,6 +2,7 @@
 using DOL.GS;
 using DOL.GS.Effects;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Collections.Generic;
 
 namespace DOL.Tests.Unit.Gameserver
@@ -19,7 +20,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             bool actual = effectList.Add(effect);
 
-            Assert.AreEqual(false, actual);
+            ClassicAssert.AreEqual(false, actual);
         }
 
         [Test]
@@ -33,7 +34,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             bool actual = effectList.Add(effect);
 
-            Assert.AreEqual(false, actual);
+            ClassicAssert.AreEqual(false, actual);
         }
 
         [Test]
@@ -47,7 +48,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             bool actual = effectList.Add(effect);
 
-            Assert.AreEqual(true, actual);
+            ClassicAssert.AreEqual(true, actual);
         }
 
         [Test]
@@ -62,7 +63,7 @@ namespace DOL.Tests.Unit.Gameserver
             effectList.Add(effect);
 
             int actual = effectList.Count;
-            Assert.AreEqual(1, actual);
+            ClassicAssert.AreEqual(1, actual);
         }
 
         [Test]
@@ -76,7 +77,7 @@ namespace DOL.Tests.Unit.Gameserver
             effectList.Add(effect);
 
             int actual = effectList.Count;
-            Assert.AreEqual(0, actual);
+            ClassicAssert.AreEqual(0, actual);
         }
 
         [Test]
@@ -88,7 +89,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             bool actual = effectList.Remove(effect);
             
-            Assert.AreEqual(false, actual);
+            ClassicAssert.AreEqual(false, actual);
         }
 
         [Test]
@@ -101,7 +102,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             bool actual = effectList.Remove(effect);
 
-            Assert.AreEqual(true, actual);
+            ClassicAssert.AreEqual(true, actual);
         }
 
         [Test]
@@ -114,7 +115,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             bool actual = effectList.Remove(effect);
             
-            Assert.AreEqual(false, actual);
+            ClassicAssert.AreEqual(false, actual);
         }
 
         [Test]
@@ -127,7 +128,7 @@ namespace DOL.Tests.Unit.Gameserver
             effectList.Remove(effect);
 
             int actual = effectList.Count;
-            Assert.AreEqual(0, actual);
+            ClassicAssert.AreEqual(0, actual);
         }
 
         [Test]
@@ -139,7 +140,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             effectList.CancelAll();
 
-            Assert.IsTrue(effect.receivedCancel);
+            ClassicAssert.IsTrue(effect.receivedCancel);
         }
 
         [Test]
@@ -151,7 +152,7 @@ namespace DOL.Tests.Unit.Gameserver
             
             effectList.OnEffectsChanged(null);
 
-            Assert.IsTrue(brain.receivedUpdatePetWindow);
+            ClassicAssert.IsTrue(brain.receivedUpdatePetWindow);
         }
 
         [Test]
@@ -164,7 +165,7 @@ namespace DOL.Tests.Unit.Gameserver
             effectList.BeginChanges();
             effectList.OnEffectsChanged(null);
 
-            Assert.IsFalse(brain.receivedUpdatePetWindow);
+            ClassicAssert.IsFalse(brain.receivedUpdatePetWindow);
         }
 
         [Test]
@@ -176,7 +177,7 @@ namespace DOL.Tests.Unit.Gameserver
             
             effectList.OnEffectsChanged(null);
 
-            Assert.IsTrue(brain.receivedUpdatePetWindow);
+            ClassicAssert.IsTrue(brain.receivedUpdatePetWindow);
         }
 
         [Test]
@@ -189,7 +190,7 @@ namespace DOL.Tests.Unit.Gameserver
             effectList.BeginChanges();
             effectList.OnEffectsChanged(null);
 
-            Assert.IsFalse(brain.receivedUpdatePetWindow);
+            ClassicAssert.IsFalse(brain.receivedUpdatePetWindow);
         }
 
         [Test]
@@ -200,7 +201,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             IGameEffect actual = effectList.GetOfType<GameSpellEffect>();
 
-            Assert.AreEqual(null, actual);
+            ClassicAssert.AreEqual(null, actual);
         }
 
         [Test]
@@ -212,7 +213,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             IGameEffect actual = effectList.GetOfType<GameSpellEffect>();
             
-            Assert.IsNotNull(actual);
+            ClassicAssert.IsNotNull(actual);
         }
 
         //RestoreAllEffects calls Database

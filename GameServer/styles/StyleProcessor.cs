@@ -301,7 +301,7 @@ namespace DOL.GS.Styles
 			}
 		}
 
-		public static bool ExecuteStyle(GameLiving living, GameLiving target, Style style, DbInventoryItem weapon, double unstyledDamage, double unstyledDamageCap, eArmorSlot armorHitLocation, IList<ISpellHandler> styleEffects, out int styleDamage, out int animationId)
+		public static bool ExecuteStyle(GameLiving living, GameLiving target, Style style, DbInventoryItem weapon, double unstyledDamage, double unstyledDamageCap, eArmorSlot armorHitLocation, List<ISpellHandler> styleEffects, out int styleDamage, out int animationId)
 		{
 			styleDamage = 0;
 			animationId = 0;
@@ -621,7 +621,7 @@ namespace DOL.GS.Styles
 		/// <param name="delveInfo"></param>
 		/// <param name="style"></param>
 		/// <param name="player"></param>
-		public static void DelveWeaponStyle(IList<string> delveInfo, Style style, GamePlayer player)
+		public static void DelveWeaponStyle(List<string> delveInfo, Style style, GamePlayer player)
 		{
 			delveInfo.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.HandlePacket.WeaponType", style.GetRequiredWeaponName()));
 			string temp = LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.HandlePacket.Opening") + " ";
@@ -869,7 +869,7 @@ namespace DOL.GS.Styles
 								temp += spell.Name;
 								delveInfo.Add(temp);
 								delveInfo.Add(" ");//empty line
-								Util.AddRange(delveInfo, spellHandler.DelveInfo);
+								delveInfo.AddRange(spellHandler.DelveInfo);
 							}
 						}
 					}

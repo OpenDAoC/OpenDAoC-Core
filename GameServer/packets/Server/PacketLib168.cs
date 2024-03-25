@@ -1496,21 +1496,9 @@ namespace DOL.GS.PacketHandler
 
 			ushort sourceObjectId = (ushort) source.ObjectID;
 			ushort targetObjectId = (ushort) target.ObjectID;
-			bool result = false;
 
-			CheckLosResponseHandler.TimeoutTimer timer = m_gameClient.Player.LosCheckTimers.GetOrAdd((sourceObjectId, targetObjectId), AddFactory, (m_gameClient.Player, callback, result));
-
-			static CheckLosResponseHandler.TimeoutTimer AddFactory((ushort sourceObjectId, ushort targetObjectId) key, (GamePlayer player, CheckLosResponse callback, bool result) args)
-			{
-				return new(args.player, args.callback, key.sourceObjectId, key.targetObjectId);
-			}
-
-			// If there's already a timer running, keep it and don't send a new packet. Instead, update the callback and wait for the reply or for it to timeout.
-			if (timer.IsAlive)
-			{
-				timer.LosCheckCallback = callback;
+			if (!HandleCallback(m_gameClient, sourceObjectId, targetObjectId, callback))
 				return;
-			}
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CheckLOSRequest)))
 			{
@@ -1521,7 +1509,30 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 
-			timer.Start();
+			static bool HandleCallback(GameClient client, ushort sourceObjectId, ushort targetObjectId, CheckLosResponse callback)
+			{
+				CheckLosResponseHandler.TimeoutTimer timer;
+
+				// If there's already a timer running, don't send a new packet. Instead, try to add the callback to its list.
+				// Loop until we can do something with this callback. `TryAddCallback` may return false if the timer was being processed.
+				do
+				{
+					timer = client.Player.LosCheckTimers.GetOrAdd((sourceObjectId, targetObjectId), CreateTimer, (client.Player, callback));
+
+					if (!timer.IsAlive)
+					{
+						timer.Start();
+						return true;
+					}
+				} while (!timer.TryAddCallback(callback));
+
+				return false;
+
+				static CheckLosResponseHandler.TimeoutTimer CreateTimer((ushort sourceObjectId, ushort targetObjectId) key, (GamePlayer player, CheckLosResponse callback) args)
+				{
+					return new(args.player, args.callback, key.sourceObjectId, key.targetObjectId);
+				}
+			}
 		}
 
 		public virtual void SendQuestListUpdate()

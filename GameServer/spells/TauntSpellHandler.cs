@@ -20,14 +20,13 @@ namespace DOL.GS.Spells
 
 		public override void OnDirectEffect(GameLiving target)
 		{
-			if (target == null) return;
-			if (!target.IsAlive || target.ObjectState!=GameLiving.eObjectState.Active) return;
-			
-			// no animation on stealthed players
-			if (target is GamePlayer)
-				if ( target.IsStealthed ) 
-					return;
-			
+			if (target == null || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active)
+				return;
+
+			// No effect on stealthed players
+			if (target is GamePlayer || target.IsStealthed)
+				return;
+
 			SendEffectAnimation(target, 0, false, 1);
 
 			// Create attack data.

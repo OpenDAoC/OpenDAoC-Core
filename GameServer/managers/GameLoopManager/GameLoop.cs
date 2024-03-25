@@ -130,7 +130,12 @@ namespace DOL.GS
                     Thread.Yield();
 
                 if (busyWaitThreshold > 0)
-                    while (TICK_RATE > stopwatch.Elapsed.TotalMilliseconds) { }
+                {
+                    SpinWait spinWait = new();
+
+                    while (TICK_RATE > stopwatch.Elapsed.TotalMilliseconds)
+                        spinWait.SpinOnce(-1);
+                }
             }
         }
 

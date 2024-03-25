@@ -35,12 +35,12 @@ namespace DOL.GS
 		/// <summary>
 		/// Reference to the Invalid Names Manager
 		/// </summary>
-		public InvalidNamesManager InvalidNames { get; private set; }
+		public InvalidNamesManager InvalidNames { get; }
 		
 		/// <summary>
 		/// Reference to the Friends List Manager
 		/// </summary>
-		public FriendsManager Friends { get; private set; }
+		public FriendsManager Friends { get; }
 
 		/// <summary>
 		/// Create a new Instance of <see cref="PlayerManager"/>
