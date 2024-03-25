@@ -1,6 +1,6 @@
 # ---- build ----
-# Use the official .NET 6.0 SDK image as the build environment
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+# Use the official .NET 8.0 SDK image as the build environment
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 LABEL stage=build
 
 # Set the working directory in the container
