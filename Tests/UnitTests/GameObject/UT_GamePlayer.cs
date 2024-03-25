@@ -1,5 +1,6 @@
 ﻿using DOL.GS;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Unit.Gameserver
 {
@@ -22,7 +23,7 @@ namespace DOL.Tests.Unit.Gameserver
             int actual = player.Constitution;
 
             int expected = (int)(50 * 1.25);
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -35,7 +36,7 @@ namespace DOL.Tests.Unit.Gameserver
             int actual = player.Constitution;
 
             int expected = (int)(50 * 1.875);
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -48,7 +49,7 @@ namespace DOL.Tests.Unit.Gameserver
             int actual = player.Constitution;
 
             int expected = (int)(1.5 * 50);
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -60,7 +61,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             int actual = player.Intelligence;
 
-            Assert.AreEqual(50, actual);
+            ClassicAssert.AreEqual(50, actual);
         }
 
         [Test]
@@ -73,7 +74,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             int actual = player.Constitution;
 
-            Assert.AreEqual(127, actual);
+            ClassicAssert.AreEqual(127, actual);
         }
 
         [Test]
@@ -87,7 +88,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             int actual = player.Constitution;
 
-            Assert.AreEqual(106, actual);
+            ClassicAssert.AreEqual(106, actual);
         }
 
         [Test]
@@ -99,7 +100,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             int actual = player.Intelligence;
 
-            Assert.AreEqual(50, actual);
+            ClassicAssert.AreEqual(50, actual);
         }
 
         [Test]
@@ -113,7 +114,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             int actual = player.Intelligence;
 
-            Assert.AreEqual(127, actual);
+            ClassicAssert.AreEqual(127, actual);
         }
 
         [Test]
@@ -126,7 +127,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             int actual = player.Intelligence;
 
-            Assert.AreEqual(60, actual);
+            ClassicAssert.AreEqual(60, actual);
         }
 
         [Test]
@@ -140,7 +141,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             int actual = player.Constitution;
 
-            Assert.AreEqual(81, actual);
+            ClassicAssert.AreEqual(81, actual);
         }
 
         private static GamePlayer NewPlayer()

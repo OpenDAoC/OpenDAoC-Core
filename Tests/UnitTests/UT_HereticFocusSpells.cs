@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using DOL.GS.Spells;
 using DOL.GS;
 using DOL.Database;
@@ -29,7 +30,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = source.LastDamageDealt;
             var expected = 100;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -49,7 +50,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = source.LastDamageDealt;
             var expected = 150;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -68,7 +69,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = source.LastDamageDealt;
             var expected = 150;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -89,7 +90,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = source.LastDamageDealt;
             var expected = 170;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         private Spell NewHereticFocusDamageSpell(double initialDamage, int growthPercent)

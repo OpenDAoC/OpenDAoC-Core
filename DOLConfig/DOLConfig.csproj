@@ -39,8 +39,8 @@
         <RegisterForComInterop>False</RegisterForComInterop>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="MySql.Data" Version="8.0.25" />
-        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.114.2" />
+        <PackageReference Include="MySql.Data" Version="8.3.0" />
+        <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
         <ProjectReference Include="..\CoreBase\CoreBase.csproj" Name="CoreBase" />
         <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" />
         <ProjectReference Include="..\CoreDatabase\CoreDatabase.csproj" Name="CoreDatabase" />

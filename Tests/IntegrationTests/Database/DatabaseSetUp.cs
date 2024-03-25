@@ -24,6 +24,7 @@ using DOL.Database;
 using DOL.Database.Connection;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Database
 {

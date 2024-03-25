@@ -20,6 +20,7 @@ using System;
 using System.Linq;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using DOL.GS.Scheduler;
 
@@ -56,7 +57,7 @@ namespace DOL.Tests.Integration.Utils
 			
 			var task = scheduler.Start(() => 0, 10);
 			
-			Assert.IsTrue(task.Active, "Task should be active after Scheduler Insertion...");
+			ClassicAssert.IsTrue(task.Active, "Task should be active after Scheduler Insertion...");
 		}
 		
 		[Test]
@@ -68,7 +69,7 @@ namespace DOL.Tests.Integration.Utils
 			
 			task.Stop();
 			
-			Assert.IsFalse(task.Active, "Task should be inactive after Scheduler Stop...");
+			ClassicAssert.IsFalse(task.Active, "Task should be inactive after Scheduler Stop...");
 		}
 		
 		[Test]
@@ -85,7 +86,7 @@ namespace DOL.Tests.Integration.Utils
 			
 			System.Threading.Thread.Sleep(100);
 			
-			Assert.IsFalse(run, "Task should not have run when Stopping before delay...");
+			ClassicAssert.IsFalse(run, "Task should not have run when Stopping before delay...");
 		}
 		
 		[Test]
@@ -100,7 +101,7 @@ namespace DOL.Tests.Integration.Utils
 			
 			task.Stop();
 			
-			Assert.IsTrue(run, "Task should have run when Stopping after delay...");
+			ClassicAssert.IsTrue(run, "Task should have run when Stopping after delay...");
 		}
 		
 		[Test]
@@ -114,12 +115,12 @@ namespace DOL.Tests.Integration.Utils
 			System.Threading.Thread.Sleep(100);
 			
 			var intermediate = count;
-			Assert.Greater(intermediate, 0, "Task Should have been Scheduled multiple time with an Interval of 1ms...");
+			ClassicAssert.Greater(intermediate, 0, "Task Should have been Scheduled multiple time with an Interval of 1ms...");
 			
 			System.Threading.Thread.Sleep(100);
 			task.Stop();
 
-			Assert.Greater(count, intermediate, "Task should have been scheduled again before stopping...");
+			ClassicAssert.Greater(count, intermediate, "Task should have been scheduled again before stopping...");
 		}
 		
 		[Test]
@@ -132,9 +133,9 @@ namespace DOL.Tests.Integration.Utils
 			
 			System.Threading.Thread.Sleep(100);
 			
-			Assert.AreEqual(count, 1, "Task Should have been Scheduled once with no Interval...");
+			ClassicAssert.AreEqual(count, 1, "Task Should have been Scheduled once with no Interval...");
 			
-			Assert.IsFalse(task.Active, "Task Should be inactive after one Scheduling...");
+			ClassicAssert.IsFalse(task.Active, "Task Should be inactive after one Scheduling...");
 		}
 		
 		[Test]
@@ -147,8 +148,8 @@ namespace DOL.Tests.Integration.Utils
 			
 			System.Threading.Thread.Sleep(200);
 			
-			Assert.AreEqual(10, count, "Task Should have been Scheduled 10 times...");
-			Assert.IsFalse(task.Active, "Task should be Inactive after Fixed Schedule count...");
+			ClassicAssert.AreEqual(10, count, "Task Should have been Scheduled 10 times...");
+			ClassicAssert.IsFalse(task.Active, "Task should be Inactive after Fixed Schedule count...");
 		}
 		
 		[Test]
@@ -162,8 +163,8 @@ namespace DOL.Tests.Integration.Utils
 			
 			System.Threading.Thread.Sleep(100);
 			
-			Assert.Less(finished - start, 100, "Scheduler Task Latency is higher than 100ms!");
-			Assert.IsFalse(task.Active, "Task Should be inactive after Scheduling...");
+			ClassicAssert.Less(finished - start, 100, "Scheduler Task Latency is higher than 100ms!");
+			ClassicAssert.IsFalse(task.Active, "Task Should be inactive after Scheduling...");
 		}
 		
 		[Test, Explicit]
@@ -223,7 +224,7 @@ namespace DOL.Tests.Integration.Utils
 			
 			System.Threading.Thread.Sleep(1000);
 			
-			Assert.IsFalse(task.Active, "Task should have been scheduled to Test Exception...");
+			ClassicAssert.IsFalse(task.Active, "Task should have been scheduled to Test Exception...");
 		}
 		
 		[Test]
@@ -235,7 +236,7 @@ namespace DOL.Tests.Integration.Utils
 			
 			System.Threading.Thread.Sleep(100);
 			
-			Assert.IsFalse(task.Active, "Task should have been scheduled to Test Exception...");
+			ClassicAssert.IsFalse(task.Active, "Task should have been scheduled to Test Exception...");
 		}
 	}
 }

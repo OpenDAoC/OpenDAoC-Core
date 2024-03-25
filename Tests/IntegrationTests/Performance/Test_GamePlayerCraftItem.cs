@@ -19,6 +19,7 @@
 using System.Diagnostics;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 using DOL.Database;
 using DOL.GS;
@@ -59,7 +60,7 @@ namespace DOL.Tests.Integration.Performance
             }
             var duration = sw.ElapsedMilliseconds;
             sw.Stop();
-            Assert.Warn($"{repetitions} executions of GamePlayer.CraftItem took {duration} ms.");
+            ClassicAssert.Warn($"{repetitions} executions of GamePlayer.CraftItem took {duration} ms.");
         }
 
         private static DbCraftedItem AddOneCompleteRecipeToDatabase()

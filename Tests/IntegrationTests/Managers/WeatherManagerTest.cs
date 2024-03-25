@@ -21,6 +21,7 @@ using System;
 using DOL.GS;
 using DOL.GS.Scheduler;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Managers
 {
@@ -62,7 +63,7 @@ namespace DOL.Tests.Integration.Managers
 		{
 			var weatherMgr = new WeatherManager(new SimpleScheduler());
 			
-			Assert.IsNull(weatherMgr[1]);
+			ClassicAssert.IsNull(weatherMgr[1]);
 		}
 		
 		[Test]
@@ -70,7 +71,7 @@ namespace DOL.Tests.Integration.Managers
 		{
 			var weatherMgr = new WeatherManager(new SimpleScheduler());
 			
-			Assert.IsFalse(weatherMgr.ChangeWeather(1, weather => weather.Clear()));
+			ClassicAssert.IsFalse(weatherMgr.ChangeWeather(1, weather => weather.Clear()));
 		}
 		
 		[Test]
@@ -81,7 +82,7 @@ namespace DOL.Tests.Integration.Managers
 			var region = FakeRegion();
 			weatherMgr.RegisterRegion(region);
 			
-			Assert.AreEqual(weatherMgr[1].Region, region);
+			ClassicAssert.AreEqual(weatherMgr[1].Region, region);
 		}
 		
 		[Test]
@@ -93,7 +94,7 @@ namespace DOL.Tests.Integration.Managers
 			weatherMgr.RegisterRegion(region);
 			weatherMgr.UnRegisterRegion(region);
 			
-			Assert.IsNull(weatherMgr[1]);
+			ClassicAssert.IsNull(weatherMgr[1]);
 		}
 		
 		[Test]
@@ -104,7 +105,7 @@ namespace DOL.Tests.Integration.Managers
 			var region = FakeRegion();
 			weatherMgr.RegisterRegion(region);
 			
-			Assert.IsTrue(weatherMgr.StartWeather(1));
+			ClassicAssert.IsTrue(weatherMgr.StartWeather(1));
 		}
 
 		[Test]
@@ -116,7 +117,7 @@ namespace DOL.Tests.Integration.Managers
 			weatherMgr.RegisterRegion(region);
 			
 			weatherMgr.StartWeather(1);
-			Assert.IsTrue(weatherMgr.StopWeather(1));
+			ClassicAssert.IsTrue(weatherMgr.StopWeather(1));
 		}
 
 		[Test]
@@ -128,7 +129,7 @@ namespace DOL.Tests.Integration.Managers
 			weatherMgr.RegisterRegion(region);
 			
 			weatherMgr.StartWeather(1);
-			Assert.Greater(weatherMgr[1].StartTime, 0);
+			ClassicAssert.Greater(weatherMgr[1].StartTime, 0);
 		}
 
 		[Test]
@@ -141,7 +142,7 @@ namespace DOL.Tests.Integration.Managers
 			
 			weatherMgr.StartWeather(1);
 			weatherMgr.StopWeather(1);
-			Assert.AreEqual(0, weatherMgr[1].StartTime);
+			ClassicAssert.AreEqual(0, weatherMgr[1].StartTime);
 		}
 
 		[Test]
@@ -154,8 +155,8 @@ namespace DOL.Tests.Integration.Managers
 			
 			weatherMgr.ChangeWeather(1, weather => weather.CreateWeather(65000, 300, 100, 16000, 0));
 
-			Assert.AreEqual((65535 + 65000) / 300, weatherMgr[1].Duration / 1000);
-			Assert.AreEqual(65000, weatherMgr[1].Width);
+			ClassicAssert.AreEqual((65535 + 65000) / 300, weatherMgr[1].Duration / 1000);
+			ClassicAssert.AreEqual(65000, weatherMgr[1].Width);
 		}
 
 		[Test]
@@ -168,8 +169,8 @@ namespace DOL.Tests.Integration.Managers
 			
 			weatherMgr.ChangeWeather(1, weather => { weather.CreateWeather(65000, 300, 100, 16000, 0); throw new Exception(); });
 
-			Assert.AreEqual((65535 + 65000) / 300, weatherMgr[1].Duration / 1000);
-			Assert.AreEqual(65000, weatherMgr[1].Width);
+			ClassicAssert.AreEqual((65535 + 65000) / 300, weatherMgr[1].Duration / 1000);
+			ClassicAssert.AreEqual(65000, weatherMgr[1].Width);
 		}
 		
 		[Test]
@@ -181,8 +182,8 @@ namespace DOL.Tests.Integration.Managers
 			
 			var duration = (65535 + 65000) * 1000 / 300;
 			
-			Assert.AreEqual(65535 + 65000, weather.CurrentPosition(duration));
-			Assert.AreEqual(0, weather.CurrentPosition(0));
+			ClassicAssert.AreEqual(65535 + 65000, weather.CurrentPosition(duration));
+			ClassicAssert.AreEqual(0, weather.CurrentPosition(0));
 		}
 
 	}

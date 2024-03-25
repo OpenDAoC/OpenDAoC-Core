@@ -20,6 +20,7 @@
 using System;
 using DOL.GS;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -83,7 +84,7 @@ namespace DOL.Tests.Integration.Server
 		public void GetRandomNPCTest()
 		{		
 			Zone zone = WorldMgr.GetZone(0);
-			Assert.IsNotNull(zone);
+			ClassicAssert.IsNotNull(zone);
 
 			StartWatch();
 			GameNPC npc = zone.GetRandomNPC(eRealm.None, 5, 7);
@@ -93,9 +94,9 @@ namespace DOL.Tests.Integration.Server
 			{
 				Console.WriteLine($"Found NPC from Realm None in {zone.ZoneRegion.Description}/{zone.Description}:{npc.Name} level:{npc.Level}");
 
-				Assert.GreaterOrEqual(npc.Level, 5, "NPC Level out of defined range");
-				Assert.LessOrEqual(npc.Level, 7, "NPC Level out of defined range");
-				Assert.AreEqual(eRealm.None, npc.Realm, "NPC wrong realm");
+				ClassicAssert.GreaterOrEqual(npc.Level, 5, "NPC Level out of defined range");
+				ClassicAssert.LessOrEqual(npc.Level, 7, "NPC Level out of defined range");
+				ClassicAssert.AreEqual(eRealm.None, npc.Realm, "NPC wrong realm");
 			}
 			else
 			{
@@ -110,7 +111,7 @@ namespace DOL.Tests.Integration.Server
 				Console.WriteLine("Found Albion NPC in " + zone.ZoneRegion.Description + "/" + zone.Description + ":" + npc.Name);
 
 				if (npc.Realm != eRealm.Albion)
-					Assert.Fail("NPC wrong Realm");
+					ClassicAssert.Fail("NPC wrong Realm");
 			}
 			else
 			{

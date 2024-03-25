@@ -19,6 +19,7 @@
 using DOL.GS;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Managers
 {
@@ -38,9 +39,9 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "Bob" } );
 			
-			Assert.IsTrue(manager["bob"], "'bob' should match 'Bob' Pattern with case insensitive...");
-			Assert.IsTrue(manager["boba fett"], "'boba fett' should match 'Bob' Pattern with case insensitive...");
-			Assert.IsTrue(manager["FOOBobBAR"], "'FOOBobBAR' should match 'Bob' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["bob"], "'bob' should match 'Bob' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["boba fett"], "'boba fett' should match 'Bob' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["FOOBobBAR"], "'FOOBobBAR' should match 'Bob' Pattern with case insensitive...");
 		}
 		
 		[Test]
@@ -49,9 +50,9 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "Bob" } );
 			
-			Assert.IsFalse(manager["john"], "'john' should not match 'Bob' Pattern...");
-			Assert.IsFalse(manager["han solo"], "'han solo' not should match 'Bob' Pattern...");
-			Assert.IsFalse(manager["FOOBAR"], "'FOOBAR' should not match 'Bob' Pattern...");
+			ClassicAssert.IsFalse(manager["john"], "'john' should not match 'Bob' Pattern...");
+			ClassicAssert.IsFalse(manager["han solo"], "'han solo' not should match 'Bob' Pattern...");
+			ClassicAssert.IsFalse(manager["FOOBAR"], "'FOOBAR' should not match 'Bob' Pattern...");
 		}
 		
 		[Test]
@@ -60,9 +61,9 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "Bob" } );
 			
-			Assert.IsTrue(manager["bo", "b"], "'bo' 'b' should match 'Bob' Pattern with case insensitive...");
-			Assert.IsTrue(manager["boba", "fett"], "'boba' 'fett' should match 'Bob' Pattern with case insensitive...");
-			Assert.IsTrue(manager["FOOB", "obBAR"], "'FOOB' 'obBAR' should match 'Bob' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["bo", "b"], "'bo' 'b' should match 'Bob' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["boba", "fett"], "'boba' 'fett' should match 'Bob' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["FOOB", "obBAR"], "'FOOB' 'obBAR' should match 'Bob' Pattern with case insensitive...");
 		}
 		
 		[Test]
@@ -71,9 +72,9 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "Bob" } );
 			
-			Assert.IsFalse(manager["jo", "hn"], "'jo' 'hn' should not match 'Bob' Pattern...");
-			Assert.IsFalse(manager["han", "solo"], "'han' 'solo' not should match 'Bob' Pattern...");
-			Assert.IsFalse(manager["FO", "OBAR"], "'FO' 'OBAR' should not match 'Bob' Pattern...");
+			ClassicAssert.IsFalse(manager["jo", "hn"], "'jo' 'hn' should not match 'Bob' Pattern...");
+			ClassicAssert.IsFalse(manager["han", "solo"], "'han' 'solo' not should match 'Bob' Pattern...");
+			ClassicAssert.IsFalse(manager["FO", "OBAR"], "'FO' 'OBAR' should not match 'Bob' Pattern...");
 		}
 		
 		[Test]
@@ -82,10 +83,10 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/" } );
 			
-			Assert.IsTrue(manager["bob"], "'bob' should match '/B.*o.*b/' Pattern with case insensitive...");
-			Assert.IsTrue(manager["boba fett"], "'boba fett' should match '/B.*o.*b/' Pattern with case insensitive...");
-			Assert.IsTrue(manager["FOOBobBAR"], "'FOOBobBAR' should match '/B.*o.*b/' Pattern with case insensitive...");
-			Assert.IsTrue(manager["F O O B o b B A R"], "'F O O B o b B A R' should match '/B.*o.*b/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["bob"], "'bob' should match '/B.*o.*b/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["boba fett"], "'boba fett' should match '/B.*o.*b/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["FOOBobBAR"], "'FOOBobBAR' should match '/B.*o.*b/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["F O O B o b B A R"], "'F O O B o b B A R' should match '/B.*o.*b/' Pattern with case insensitive...");
 		}
 		
 		[Test]
@@ -94,10 +95,10 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/" } );
 			
-			Assert.IsFalse(manager["john"], "'john' should not match '/B.*o.*b/' Pattern...");
-			Assert.IsFalse(manager["han solo"], "'han solo' not should match '/B.*o.*b/' Pattern...");
-			Assert.IsFalse(manager["FOOBAR"], "'FOOBAR' should not match '/B.*o.*b/' Pattern...");
-			Assert.IsFalse(manager["F O O B A R"], "'F O O B A R' should not match '/B.*o.*b/' Pattern...");
+			ClassicAssert.IsFalse(manager["john"], "'john' should not match '/B.*o.*b/' Pattern...");
+			ClassicAssert.IsFalse(manager["han solo"], "'han solo' not should match '/B.*o.*b/' Pattern...");
+			ClassicAssert.IsFalse(manager["FOOBAR"], "'FOOBAR' should not match '/B.*o.*b/' Pattern...");
+			ClassicAssert.IsFalse(manager["F O O B A R"], "'F O O B A R' should not match '/B.*o.*b/' Pattern...");
 		}
 		
 		[Test]
@@ -106,10 +107,10 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/" } );
 			
-			Assert.IsTrue(manager["bo", "b"], "'bo' 'b' should match '/B.*o.*b/' Pattern with case insensitive...");
-			Assert.IsTrue(manager["boba", "fett"], "'boba' 'fett' should match '/B.*o.*b/' Pattern with case insensitive...");
-			Assert.IsTrue(manager["FOOB", "obBAR"], "'FOOB' 'obBAR' should match '/B.*o.*b/' Pattern with case insensitive...");
-			Assert.IsTrue(manager["F O O", " B o b B A R"], "'F O O' ' B o b B A R' should match '/B.*o.*b/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["bo", "b"], "'bo' 'b' should match '/B.*o.*b/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["boba", "fett"], "'boba' 'fett' should match '/B.*o.*b/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["FOOB", "obBAR"], "'FOOB' 'obBAR' should match '/B.*o.*b/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["F O O", " B o b B A R"], "'F O O' ' B o b B A R' should match '/B.*o.*b/' Pattern with case insensitive...");
 		}
 		
 		[Test]
@@ -118,10 +119,10 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/" } );
 			
-			Assert.IsFalse(manager["jo", "hn"], "'jo' 'hn' should not match '/B.*o.*b/' Pattern...");
-			Assert.IsFalse(manager["han", "solo"], "'han' 'solo' not should match '/B.*o.*b/' Pattern...");
-			Assert.IsFalse(manager["FOOB", "AR"], "'FOOB' 'AR' should not match '/B.*o.*b/' Pattern...");
-			Assert.IsFalse(manager["F O O", " B A R"], "'F O O' ' B A R' should not match '/B.*o.*b/' Pattern...");
+			ClassicAssert.IsFalse(manager["jo", "hn"], "'jo' 'hn' should not match '/B.*o.*b/' Pattern...");
+			ClassicAssert.IsFalse(manager["han", "solo"], "'han' 'solo' not should match '/B.*o.*b/' Pattern...");
+			ClassicAssert.IsFalse(manager["FOOB", "AR"], "'FOOB' 'AR' should not match '/B.*o.*b/' Pattern...");
+			ClassicAssert.IsFalse(manager["F O O", " B A R"], "'F O O' ' B A R' should not match '/B.*o.*b/' Pattern...");
 		}
 		
 		[Test]
@@ -130,10 +131,10 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/", "/B.*a.*r/", "FOO", "Luke" } );
 			
-			Assert.IsTrue(manager["bar"], "'bar' should match '/B.*a.*r/' Pattern with case insensitive...");
-			Assert.IsTrue(manager["boba fett"], "'boba fett' should match '/B.*o.*b/' Pattern with case insensitive...");
-			Assert.IsTrue(manager["FOOBobBAR"], "'FOOBobBAR' should match 'FOO' Pattern with case insensitive...");
-			Assert.IsTrue(manager["LukeSkywalker"], "'LukeSkywalker' should match 'Luke' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["bar"], "'bar' should match '/B.*a.*r/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["boba fett"], "'boba fett' should match '/B.*o.*b/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["FOOBobBAR"], "'FOOBobBAR' should match 'FOO' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["LukeSkywalker"], "'LukeSkywalker' should match 'Luke' Pattern with case insensitive...");
 		}
 		
 		[Test]
@@ -142,10 +143,10 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/", "/B.*a.*r/", "FOO", "Luke" } );
 			
-			Assert.IsFalse(manager["john"], "'john' should not match any Pattern...");
-			Assert.IsFalse(manager["han solo"], "'han solo' should not match any Pattern...");
-			Assert.IsFalse(manager["FARBABBoo"], "'FARBABBoo' should not match any Pattern...");
-			Assert.IsFalse(manager["AnakinSkywalker"], "'AnakinSkywalker' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["john"], "'john' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["han solo"], "'han solo' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["FARBABBoo"], "'FARBABBoo' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["AnakinSkywalker"], "'AnakinSkywalker' should not match any Pattern...");
 		}
 		
 		[Test]
@@ -154,10 +155,10 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/", "/B.*a.*r/", "FOO", "Luke" } );
 			
-			Assert.IsTrue(manager["ba", "r"], "'ba' 'r' should match '/B.*a.*r/' Pattern with case insensitive...");
-			Assert.IsTrue(manager["boba", "fett"], "'boba' 'fett' should match '/B.*o.*b/' Pattern with case insensitive...");
-			Assert.IsTrue(manager["FOOB", "obBAR"], "'FOOB' 'obBAR' should match 'FOO' Pattern with case insensitive...");
-			Assert.IsTrue(manager["LukeSky", " walker"], "'LukeSky' ' walker' should match 'Luke' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["ba", "r"], "'ba' 'r' should match '/B.*a.*r/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["boba", "fett"], "'boba' 'fett' should match '/B.*o.*b/' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["FOOB", "obBAR"], "'FOOB' 'obBAR' should match 'FOO' Pattern with case insensitive...");
+			ClassicAssert.IsTrue(manager["LukeSky", " walker"], "'LukeSky' ' walker' should match 'Luke' Pattern with case insensitive...");
 		}
 		
 		[Test]
@@ -166,10 +167,10 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "/B.*o.*b/", "/B.*a.*r/", "FOO", "Luke" } );
 			
-			Assert.IsFalse(manager["jo", "hn"], "'jo' 'hn' should not match any Pattern...");
-			Assert.IsFalse(manager["han", "solo"], "'han' 'solo' should not match any Pattern...");
-			Assert.IsFalse(manager["FARB", "ABBoo"], "'FARB' 'ABBoo' should not match any Pattern...");
-			Assert.IsFalse(manager["AnakinSky", " walker"], "'AnakinSky' ' walker' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["jo", "hn"], "'jo' 'hn' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["han", "solo"], "'han' 'solo' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["FARB", "ABBoo"], "'FARB' 'ABBoo' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["AnakinSky", " walker"], "'AnakinSky' ' walker' should not match any Pattern...");
 		}
 		
 		[Test]
@@ -178,9 +179,9 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "BA #R", "#Luke", "bob" } );
 			
-			Assert.IsFalse(manager["Luke"], "'Luke' should not match any Pattern...");
-			Assert.IsFalse(manager["B AR"], "'B AR' should not match any Pattern...");
-			Assert.IsFalse(manager["han solo"], "'han solo' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["Luke"], "'Luke' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["B AR"], "'B AR' should not match any Pattern...");
+			ClassicAssert.IsFalse(manager["han solo"], "'han solo' should not match any Pattern...");
 		}
 		
 		[Test]
@@ -189,9 +190,9 @@ namespace DOL.Tests.Integration.Managers
 			var manager = new InvalidNamesManager(string.Empty);
 			manager.LoadFromLines(new [] { "BA #R", "#Luke", "bob" } );
 			
-			Assert.IsTrue(manager["Bob"], "'Bob' should match 'Bob' Pattern...");
-			Assert.IsTrue(manager["BA F"], "'BA F' should match 'BA' Pattern...");
-			Assert.IsTrue(manager["bobaFett"], "'boba' should match 'BA' Pattern...");
+			ClassicAssert.IsTrue(manager["Bob"], "'Bob' should match 'Bob' Pattern...");
+			ClassicAssert.IsTrue(manager["BA F"], "'BA F' should match 'BA' Pattern...");
+			ClassicAssert.IsTrue(manager["bobaFett"], "'boba' should match 'BA' Pattern...");
 		}
 	}
 }

@@ -19,6 +19,7 @@
 using System;
 using DOL.Language;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -34,7 +35,7 @@ namespace DOL.Tests.Integration.Server
 		{
 			Console.WriteLine("TestGetString();");
 			Console.WriteLine(LanguageMgr.GetTranslation ("test","fail default string"));
-			Assert.IsTrue(true, "ok");
+			ClassicAssert.IsTrue(true, "ok");
 		}
 	}
 }

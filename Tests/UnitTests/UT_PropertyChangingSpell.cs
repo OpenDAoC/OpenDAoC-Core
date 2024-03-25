@@ -2,6 +2,7 @@
 using DOL.GS;
 using DOL.GS.Spells;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Unit.Gameserver
 {
@@ -26,7 +27,7 @@ namespace DOL.Tests.Unit.Gameserver
             resiPierceBuff.ApplyEffectOnTarget(target);
 
             var actual = target.BaseBuffBonusCategory[eProperty.ResistPierce];
-            Assert.AreEqual(5, actual);
+            ClassicAssert.AreEqual(5, actual);
         }
 
         [Test]
@@ -44,7 +45,7 @@ namespace DOL.Tests.Unit.Gameserver
             constitutionBuff.ApplyEffectOnTarget(target);
 
             var actual = target.GetModified(eProperty.Constitution);
-            Assert.AreEqual(51, actual);
+            ClassicAssert.AreEqual(51, actual);
         }
 
         private Spell NewSpellWithValue(int value)

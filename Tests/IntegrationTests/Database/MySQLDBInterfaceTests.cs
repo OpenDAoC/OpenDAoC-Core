@@ -17,6 +17,7 @@
  *
  */
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Database.MySQL
 {
@@ -33,7 +34,7 @@ namespace DOL.Tests.Integration.Database.MySQL
 		{
 			var test = "\\\"'’";
 			
-			Assert.AreEqual("\\\\\\\"\\'\\’", Database.Escape(test), "MySQL String Escape Test Failure...");
+			ClassicAssert.AreEqual("\\\\\\\"\\'\\’", Database.Escape(test), "MySQL String Escape Test Failure...");
 		}
 	}
 }

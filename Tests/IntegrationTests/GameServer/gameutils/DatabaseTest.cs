@@ -20,6 +20,7 @@ using System;
 using DOL.Database;
 using DOL.GS;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {

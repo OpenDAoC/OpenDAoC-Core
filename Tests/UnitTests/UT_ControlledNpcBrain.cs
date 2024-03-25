@@ -18,6 +18,7 @@
  */
 using DOL.AI.Brain;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Unit.Gameserver
 {  
@@ -33,7 +34,7 @@ namespace DOL.Tests.Unit.Gameserver
             var actual = brain.GetPlayerOwner();
 
             var expected = player;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
     }
 }

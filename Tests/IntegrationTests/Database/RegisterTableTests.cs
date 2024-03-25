@@ -25,6 +25,7 @@ using DOL.Database.Connection;
 using DOL.Database.Attributes;
 
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Database
 {
@@ -65,7 +66,7 @@ namespace DOL.Tests.Integration.Database
 						var selectall = typeof(IObjectDatabase).GetMethod("SelectAllObjects", new Type[] { }).MakeGenericMethod(type);
 						object objs = null;
 						Assert.DoesNotThrow( () => { objs = selectall.Invoke(Database, new object[] { }); }, "Registered tables should not Throw Exception on Select All... (Failed on Type {0})", type);
-						Assert.IsNotNull(objs);
+						ClassicAssert.IsNotNull(objs);
 					}
 				}
 			}
@@ -77,7 +78,7 @@ namespace DOL.Tests.Integration.Database
 		[Test]
 		public void TestWrongDataObject()
 		{
-			Assert.Throws(typeof(ArgumentException), () => {
+			ClassicAssert.Throws(typeof(ArgumentException), () => {
 			              	var dth = new DataTableHandler(typeof(AttributeUtil));
 			              	Database.CheckOrCreateTableImpl(dth);
 			              }, "Registering a wrong DataObject should throw Argument Exception");
@@ -109,7 +110,7 @@ namespace DOL.Tests.Integration.Database
 			
 			Database.DeleteObject(Database.SelectAllObjects<TestTableWithNoPrimaryV1>());
 			
-			Assert.IsEmpty(Database.SelectAllObjects<TestTableWithNoPrimaryV1>(), "Test Table TestTableWithNoPrimaryV1 should be empty to begin this tests.");
+			ClassicAssert.IsEmpty(Database.SelectAllObjects<TestTableWithNoPrimaryV1>(), "Test Table TestTableWithNoPrimaryV1 should be empty to begin this tests.");
 			
 			var objs = new [] { "TestObj1", "TestObj2", "TestObj3" }.Select(ent => new TestTableWithNoPrimaryV1 { Value = ent }).ToArray();
 			
@@ -124,7 +125,7 @@ namespace DOL.Tests.Integration.Database
 			
 			CollectionAssert.AreEquivalent(objs.Select(obj => obj.Value), newObjs.Select(obj => obj.Value), "Test Table Migration to TestTableWithNoPrimaryV2 should retrieve similar values that created ones...");
 			
-			Assert.IsTrue(newObjs.All(obj => obj.PrimaryKey != 0), "Test Table Migration to TestTableWithNoPrimaryV2 should have created and populated Primary Key Auto Increment.");
+			ClassicAssert.IsTrue(newObjs.All(obj => obj.PrimaryKey != 0), "Test Table Migration to TestTableWithNoPrimaryV2 should have created and populated Primary Key Auto Increment.");
 			
 			// Trigger Another Migration
 			DatabaseV2 = GetDatabaseV2;
@@ -134,7 +135,7 @@ namespace DOL.Tests.Integration.Database
 			
 			CollectionAssert.AreEquivalent(objs.Select(obj => obj.Value), newerObjs.Select(obj => obj.Value), "Test Table Migration to TestTableWithNoPrimaryV3 should retrieve similar values that created ones...");
 			
-			Assert.IsTrue(newerObjs.All(obj => obj.PrimaryKey2 != 0), "Test Table Migration to TestTableWithNoPrimaryV3 should have created and populated Primary Key Auto Increment.");
+			ClassicAssert.IsTrue(newerObjs.All(obj => obj.PrimaryKey2 != 0), "Test Table Migration to TestTableWithNoPrimaryV3 should have created and populated Primary Key Auto Increment.");
 
 		}
 		
@@ -154,7 +155,7 @@ namespace DOL.Tests.Integration.Database
 			
 			Database.DeleteObject(Database.SelectAllObjects<TestTableDifferentTypesV1>());
 			
-			Assert.IsEmpty(Database.SelectAllObjects<TestTableDifferentTypesV1>(), "Test Table TestTableDifferentTypesV1 should be empty to begin this tests.");
+			ClassicAssert.IsEmpty(Database.SelectAllObjects<TestTableDifferentTypesV1>(), "Test Table TestTableDifferentTypesV1 should be empty to begin this tests.");
 			
 			var datenow = DateTime.UtcNow;
 			var now = new DateTime(datenow.Year, datenow.Month, datenow.Day, datenow.Hour, datenow.Minute, datenow.Second);
@@ -193,7 +194,7 @@ namespace DOL.Tests.Integration.Database
 			Database.RegisterDataObject(typeof(TestTablePrecachedPrimaryKey));
 			Database.DeleteObject(Database.SelectAllObjects<TestTablePrecachedPrimaryKey>());
 			
-			Assert.IsEmpty(Database.SelectAllObjects<TestTablePrecachedPrimaryKey>(), "Test Precached Table with Update Cache need Empty table to begin tests.");
+			ClassicAssert.IsEmpty(Database.SelectAllObjects<TestTablePrecachedPrimaryKey>(), "Test Precached Table with Update Cache need Empty table to begin tests.");
 			
 			// Get a new Database Object to Trigger Cache Invalidation
 			var DatabaseV2 = GetDatabaseV2;
@@ -205,11 +206,11 @@ namespace DOL.Tests.Integration.Database
 			
 			var inserted = Database.AddObject(objs);
 			
-			Assert.IsTrue(inserted, "Test Precached Table with Update Cache could not insert test objects.");
+			ClassicAssert.IsTrue(inserted, "Test Precached Table with Update Cache could not insert test objects.");
 			
 			var update = DatabaseV2.UpdateObjsInCache<TestTablePrecachedPrimaryKey>(objs.Select(o => o.PrimaryKey));
 			
-			Assert.IsTrue(update, "Test Precached Table with Update Cache could not refresh newly inserted objects.");
+			ClassicAssert.IsTrue(update, "Test Precached Table with Update Cache could not refresh newly inserted objects.");
 			
 			var retrieve = DatabaseV2.SelectAllObjects<TestTablePrecachedPrimaryKey>();
 			
@@ -226,7 +227,7 @@ namespace DOL.Tests.Integration.Database
 			
 			var saved = DatabaseV2.SaveObject(retrieve);
 			
-			Assert.IsTrue(saved, "Test Precached Table with Update Cache could not modify objects in database.");
+			ClassicAssert.IsTrue(saved, "Test Precached Table with Update Cache could not modify objects in database.");
 			
 			var retrievecached = Database.FindObjectsByKey<TestTablePrecachedPrimaryKey>(objs.Select(obj => obj.PrimaryKey));
 			
@@ -237,7 +238,7 @@ namespace DOL.Tests.Integration.Database
 			// update
 			var updated = Database.UpdateObjsInCache<TestTablePrecachedPrimaryKey>(objs.Select(obj => obj.PrimaryKey));
 			
-			Assert.IsTrue(updated, "Test Precached Table with Update Cache could not update objects cache from database.");
+			ClassicAssert.IsTrue(updated, "Test Precached Table with Update Cache could not update objects cache from database.");
 			
 			var retrieveupdated = Database.FindObjectsByKey<TestTablePrecachedPrimaryKey>(objs.Select(obj => obj.PrimaryKey));
 			
@@ -262,7 +263,7 @@ namespace DOL.Tests.Integration.Database
 			
 			Database.DeleteObject(Database.SelectAllObjects<TestTableWithPrimaryChangingV1>());
 			
-			Assert.IsEmpty(Database.SelectAllObjects<TestTableWithPrimaryChangingV1>(), "Test Table TestTableWithPrimaryChangingV1 should be empty to begin this tests.");
+			ClassicAssert.IsEmpty(Database.SelectAllObjects<TestTableWithPrimaryChangingV1>(), "Test Table TestTableWithPrimaryChangingV1 should be empty to begin this tests.");
 			
 			var objs = new [] { "TestObj1", "TestObj2", "TestObj3" }.Select((ent, i) => new TestTableWithPrimaryChangingV1 { PrimaryKey = i, Value = ent }).ToArray();
 			
@@ -292,7 +293,7 @@ namespace DOL.Tests.Integration.Database
             
             Database.DeleteObject(Database.SelectAllObjects<TestTableMigrationNullToNonNull>());
             
-            Assert.IsEmpty(Database.SelectAllObjects<TestTableMigrationNullToNonNull>(), "Test Table TestTableMigrationNullToNonNull should be empty to begin this tests.");
+            ClassicAssert.IsEmpty(Database.SelectAllObjects<TestTableMigrationNullToNonNull>(), "Test Table TestTableMigrationNullToNonNull should be empty to begin this tests.");
             
             var objs = new [] { "TestObj1", null, "TestObj3" }.Select((ent, i) => new TestTableMigrationNullToNonNull { StringValue = ent }).ToArray();
             

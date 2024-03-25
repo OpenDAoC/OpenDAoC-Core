@@ -17,6 +17,7 @@
  *
  */
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Collections.Generic;
 
 using DOL.Database;
@@ -44,7 +45,7 @@ namespace DOL.Tests.Unit.Gameserver
             var actual = recipe.CostToCraft;
 
             var expected = 2;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -58,7 +59,7 @@ namespace DOL.Tests.Unit.Gameserver
             var actual = recipe.CostToCraft;
 
             var expected = 6;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -72,7 +73,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = product.Price;
             var expected = 2;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -89,7 +90,7 @@ namespace DOL.Tests.Unit.Gameserver
 
             var actual = product.Price;
             var expected = 95 * 2;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
     }
 
@@ -105,7 +106,7 @@ namespace DOL.Tests.Unit.Gameserver
             var actual = ingredient.Cost;
 
             var expected = 1;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -117,7 +118,7 @@ namespace DOL.Tests.Unit.Gameserver
             var actual = ingredient.Cost;
 
             var expected = 2;
-            Assert.AreEqual(expected, actual);
+            ClassicAssert.AreEqual(expected, actual);
         }
     }
 }

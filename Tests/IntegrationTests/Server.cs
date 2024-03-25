@@ -24,6 +24,7 @@ using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 namespace DOL.Tests.Integration.Server
 {
@@ -37,14 +38,14 @@ namespace DOL.Tests.Integration.Server
 		{
 			DbCoreCharacter character= null;
 			var account = GameServer.Database.SelectAllObjects<DbAccount>().FirstOrDefault();
-			Assert.IsNotNull(account);
+			ClassicAssert.IsNotNull(account);
 
 			foreach (var charact in account.Characters)
 			{
 				if (charact!=null)
 					character = charact;
 			}
-			Assert.IsNotNull(character);
+			ClassicAssert.IsNotNull(character);
 			
 			var client = new GameClient(GameServer.Instance);
 			client.Version = GameClient.eClientVersion.Version1105;
@@ -53,7 +54,7 @@ namespace DOL.Tests.Integration.Server
 			client.PacketProcessor = new PacketProcessor(client);
 			client.Out = new PacketLib1105(client);
 			client.Player = new GamePlayer(client,character);
-			Assert.IsNotNull(client.Player,"GamePlayer instance created");
+			ClassicAssert.IsNotNull(client.Player,"GamePlayer instance created");
 			
 			return client.Player;
 		}
