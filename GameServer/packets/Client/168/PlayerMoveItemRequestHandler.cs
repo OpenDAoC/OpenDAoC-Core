@@ -42,6 +42,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             bool isToSlotValid = toClientSlot is eInventorySlot.PlayerPaperDoll or
                                                  eInventorySlot.NewPlayerPaperDoll or
+                                                 eInventorySlot.GeneralVault or
                                                  (>= eInventorySlot.Ground and <= eInventorySlot.LastBackpack) or
                                                  (>= eInventorySlot.FirstVault and <= eInventorySlot.LastVault) or
                                                  (>= eInventorySlot.FirstBagHorse and <= eInventorySlot.LastBagHorse);
@@ -60,9 +61,15 @@ namespace DOL.GS.PacketHandler.Client.v168
             }
 
             // Are we shift right clicking or dropping the item on the paper doll?
+            // Inventory and player vault are handled here. House and account vaults are handled by `GameInventoryObject`.
             if (toClientSlot is eInventorySlot.PlayerPaperDoll or eInventorySlot.NewPlayerPaperDoll)
             {
                 EquipUnequipItemFromInventory(client, fromClientSlot, itemCount);
+                return;
+            }
+            else if (toClientSlot is eInventorySlot.GeneralVault)
+            {
+                MoveItemBetweenVaultAndInventory(client, fromClientSlot, itemCount);
                 return;
             }
 
@@ -112,8 +119,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             // Is the item we want to move in our backpack?
             // We also allow drag'n drop from equipped to blacksmith.
-            if (fromClientSlot is >= eInventorySlot.FirstBackpack and <= eInventorySlot.LastBackpack ||
-                (fromClientSlot is >= eInventorySlot.MinEquipable and <= eInventorySlot.MaxEquipable && obj is Blacksmith))
+            if (GameInventoryObjectExtensions.IsBackpackSlot(fromClientSlot) ||
+                (GameInventoryObjectExtensions.IsEquipmentSlot(fromClientSlot) && obj is Blacksmith))
             {
                 if (!obj.IsWithinRadius(client.Player, WorldMgr.GIVE_ITEM_DISTANCE))
                 {
@@ -265,14 +272,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             eInventorySlot toClientSlot;
 
-            if (fromClientSlot is >= eInventorySlot.MinEquipable and <= eInventorySlot.MaxEquipable)
+            if (GameInventoryObjectExtensions.IsEquipmentSlot(fromClientSlot))
             {
                 toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
                 if (toClientSlot is eInventorySlot.Invalid)
                     return;
             }
-            else if ((eInventorySlot) item.Item_Type is >= eInventorySlot.MinEquipable and <= eInventorySlot.MaxEquipable)
+            else if (GameInventoryObjectExtensions.IsEquipmentSlot((eInventorySlot) item.Item_Type))
             {
                 toClientSlot = (eInventorySlot) item.Item_Type;
 
@@ -281,6 +288,20 @@ namespace DOL.GS.PacketHandler.Client.v168
                 else if (toClientSlot is eInventorySlot.LeftRing or eInventorySlot.RightRing)
                     toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftRing) == null ? eInventorySlot.LeftRing : eInventorySlot.RightRing;
             }
+            else
+                return;
+
+            client.Player.Inventory.MoveItem(fromClientSlot, toClientSlot, itemCount);
+        }
+
+        private static void MoveItemBetweenVaultAndInventory(GameClient client, eInventorySlot fromClientSlot, ushort itemCount)
+        {
+            eInventorySlot toClientSlot;
+
+            if (GameInventoryObjectExtensions.IsBackpackSlot(fromClientSlot) || GameInventoryObjectExtensions.IsEquipmentSlot(fromClientSlot))
+                toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstVault, eInventorySlot.LastVault);
+            else if (fromClientSlot is >= eInventorySlot.FirstVault and <= eInventorySlot.LastVault)
+                toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
             else
                 return;
 

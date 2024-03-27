@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DOL.Database;
 using DOL.GS.PacketHandler;
-using Microsoft.AspNetCore.Hosting.Server;
 
 namespace DOL.GS
 {
@@ -479,6 +478,11 @@ namespace DOL.GS
         public static bool IsBackpackSlot(eInventorySlot slot)
         {
             return slot is >= eInventorySlot.FirstBackpack and <= eInventorySlot.LastBackpack;
+        }
+
+        public static bool IsEquipmentSlot(eInventorySlot slot)
+        {
+            return slot is >= eInventorySlot.MinEquipable and <= eInventorySlot.MaxEquipable;
         }
 
         private static void SendErrorMessage(GamePlayer player, string method, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, DbInventoryItem fromItem, DbInventoryItem toItem, ushort count)

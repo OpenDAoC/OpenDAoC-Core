@@ -93,7 +93,10 @@ namespace DOL.GS
         Silver178           = 503,
         Copper178           = 504,
 
+        // Destination slots sent when the client is shift right clicking an item or dropping something on the paper doll.
         NewPlayerPaperDoll  = 600,
+        GeneralVault        = 601,
+        GeneralHousing      = 602,
 
         Max_Inv = 249
     }

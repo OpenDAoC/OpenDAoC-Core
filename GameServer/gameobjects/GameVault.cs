@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -92,16 +91,29 @@ namespace DOL.GS
 
             foreach (DbInventoryItem item in DBItems(player))
             {
-                if (item != null)
-                {
-                    int slot = item.SlotPosition + slotOffset;
+                int slot = item.SlotPosition + slotOffset;
 
-                    if (!inventory.TryAdd(slot, item))
-                        log.Error($"GAMEVAULT: Duplicate item {item.Name}, owner {item.OwnerID}, position {item.SlotPosition + slotOffset}");
-                }
+                if (!inventory.TryAdd(slot, item))
+                    log.Error($"GAMEVAULT: Duplicate item {item.Name}, owner {item.OwnerID}, position {item.SlotPosition + slotOffset}");
             }
 
             return inventory;
+        }
+
+        public virtual eInventorySlot GetFirstEmptyClientSlot(GamePlayer player)
+        {
+            eInventorySlot result = FirstClientSlot;
+            Dictionary<int, DbInventoryItem> clientInventory = GetClientInventory(player);
+
+            while (result <= LastClientSlot)
+            {
+                if (!clientInventory.ContainsKey((int) result))
+                    return result;
+
+                result++;
+            }
+
+            return eInventorySlot.Invalid;
         }
 
         /// <summary>
@@ -154,6 +166,16 @@ namespace DOL.GS
                 return false;
 
             bool fromHousing = GameInventoryObjectExtensions.IsHousingInventorySlot(fromSlot);
+
+            // If this is a shift right click move, try to move the item to the first empty slot of either inventory.
+            if (toSlot == eInventorySlot.GeneralHousing)
+            {
+                if (fromHousing)
+                    toSlot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                else if (GameInventoryObjectExtensions.IsBackpackSlot(fromSlot) || GameInventoryObjectExtensions.IsEquipmentSlot(fromSlot))
+                    toSlot = GetFirstEmptyClientSlot(player);
+            }
+
             bool toHousing = GameInventoryObjectExtensions.IsHousingInventorySlot(toSlot);
 
             if (!fromHousing && !toHousing)
