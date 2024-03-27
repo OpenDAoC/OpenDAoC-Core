@@ -22,7 +22,7 @@ namespace DOL.GS.Commands
 			finally
 			{
 				if (client.Player.Inventory.GetItem(eInventorySlot.Horse) != null)
-					client.Player.UseSlot(eInventorySlot.Horse, eUseType.clic);
+					client.Player.UseSlot(eInventorySlot.Horse, eUseType.Click);
 			}
 		}
 	}

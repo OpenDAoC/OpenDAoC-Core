@@ -838,7 +838,7 @@ namespace DOL.GS
 							}
 							break;
 
-						case eInventorySlot.Jewellery:
+						case eInventorySlot.Jewelry:
 						case eInventorySlot.Cloak:
 						case eInventorySlot.Neck:
 						case eInventorySlot.Waist:
@@ -1028,7 +1028,7 @@ namespace DOL.GS
 							}
 							break;
 
-						case eInventorySlot.Jewellery:
+						case eInventorySlot.Jewelry:
 						case eInventorySlot.Cloak:
 						case eInventorySlot.Neck:
 						case eInventorySlot.Waist:

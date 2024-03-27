@@ -720,7 +720,7 @@ namespace DOL.GS
 					case 1: return item.Item_Type == (int)eInventorySlot.HeadArmor;
 					case 2: return item.Item_Type == (int)eInventorySlot.HandsArmor;
 					case 3: return item.Item_Type == (int)eInventorySlot.FeetArmor;
-					case 4: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Jewellery;
+					case 4: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Jewelry;
 					case 5: return item.Item_Type == (int)eInventorySlot.TorsoArmor;
 					case 6: return item.Object_Type == (int)eObjectType.Magical && item.Item_Type == (int)eInventorySlot.Cloak;
 					case 7: return item.Item_Type == (int)eInventorySlot.LegsArmor;

@@ -49,7 +49,7 @@ namespace DOL.GS
 			eInventorySlot.HeadArmor,
 			eInventorySlot.HandsArmor,
 			eInventorySlot.FeetArmor,
-			eInventorySlot.Jewellery,
+			eInventorySlot.Jewelry,
 			eInventorySlot.TorsoArmor,
 			eInventorySlot.Cloak,
 			eInventorySlot.LegsArmor,
