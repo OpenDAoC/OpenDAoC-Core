@@ -62,7 +62,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             // Are we shift right clicking or dropping the item on the paper doll?
             if (toClientSlot is eInventorySlot.PlayerPaperDoll or eInventorySlot.NewPlayerPaperDoll)
             {
-                EquipItemFromInventory(client, fromClientSlot, itemCount);
+                EquipUnequipItemFromInventory(client, fromClientSlot, itemCount);
                 return;
             }
 
@@ -253,31 +253,38 @@ namespace DOL.GS.PacketHandler.Client.v168
             client.Out.SendInventoryItemsUpdate(null);
         }
 
-        private static void EquipItemFromInventory(GameClient client, eInventorySlot fromClientSlot, ushort itemCount)
+        private static void EquipUnequipItemFromInventory(GameClient client, eInventorySlot fromClientSlot, ushort itemCount)
         {
             DbInventoryItem item = client.Player.Inventory.GetItem(fromClientSlot);
 
             if (item == null)
-                return;
-
-            eInventorySlot toClientSlot = eInventorySlot.Invalid;
-
-            if ((eInventorySlot) item.Item_Type is >= eInventorySlot.MinEquipable and <= eInventorySlot.MaxEquipable)
-                toClientSlot = (eInventorySlot) item.Item_Type;
-
-            if (toClientSlot is eInventorySlot.Invalid)
             {
                 client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
                 return;
             }
 
-            if (toClientSlot is eInventorySlot.LeftBracer or eInventorySlot.RightBracer)
-                toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftBracer) == null ? eInventorySlot.LeftBracer : eInventorySlot.RightBracer;
-            else if (toClientSlot is eInventorySlot.LeftRing or eInventorySlot.RightRing)
-                toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftRing) == null ? eInventorySlot.LeftRing : eInventorySlot.RightRing;
+            eInventorySlot toClientSlot;
+
+            if (fromClientSlot is >= eInventorySlot.MinEquipable and <= eInventorySlot.MaxEquipable)
+            {
+                toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+                if (toClientSlot is eInventorySlot.Invalid)
+                    return;
+            }
+            else if ((eInventorySlot) item.Item_Type is >= eInventorySlot.MinEquipable and <= eInventorySlot.MaxEquipable)
+            {
+                toClientSlot = (eInventorySlot) item.Item_Type;
+
+                if (toClientSlot is eInventorySlot.LeftBracer or eInventorySlot.RightBracer)
+                    toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftBracer) == null ? eInventorySlot.LeftBracer : eInventorySlot.RightBracer;
+                else if (toClientSlot is eInventorySlot.LeftRing or eInventorySlot.RightRing)
+                    toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftRing) == null ? eInventorySlot.LeftRing : eInventorySlot.RightRing;
+            }
+            else
+                return;
 
             client.Player.Inventory.MoveItem(fromClientSlot, toClientSlot, itemCount);
-            return;
         }
     }
 }
