@@ -301,9 +301,10 @@ namespace DOL.GS.Styles
 			}
 		}
 
-		public static bool ExecuteStyle(GameLiving living, GameLiving target, Style style, DbInventoryItem weapon, double unstyledDamage, double unstyledDamageCap, eArmorSlot armorHitLocation, List<ISpellHandler> styleEffects, out int styleDamage, out int animationId)
+		public static bool ExecuteStyle(GameLiving living, GameLiving target, Style style, DbInventoryItem weapon, double unstyledDamage, double unstyledDamageCap, eArmorSlot armorHitLocation, List<ISpellHandler> styleEffects, out double styleDamage, out double styleDamageCap, out int animationId)
 		{
 			styleDamage = 0;
+			styleDamageCap = 0;
 			animationId = 0;
 
 			// First thing in processors, lock the objects you modify.
@@ -353,41 +354,46 @@ namespace DOL.GS.Styles
 							case 335: //Backstab I
 							{
 								//Backstab I Cap = ~5 + Critical Strike Spec *14 / 3 + Nonstyle Cap
-								styleDamage = Math.Min(5, spec / 10) + spec * 14 / 3;
+								styleDamage = Math.Min(5, spec / 10.0) + spec * 14 / 3.0;
+								break;
 							}
-							break;
 							case 339: //Backstab II
 							{
 								//Backstab II Cap = 45 + Critical Strike Spec *6 + Nonstyle Cap
 								styleDamage = Math.Min(45, spec) + spec * 6;
+								break;
 							}
-							break;
 							case 343: //Perforate Artery
 							{
 								if (living.ActiveWeapon.Item_Type == Slot.TWOHAND)
 								{
 									//Perforate Artery 2h Cap = 75 + Critical Strike Spec * 12 + Nonstyle Cap
-									styleDamage = (int) (Math.Min(75, spec * 1.5) + spec * 12);
+									styleDamage = Math.Min(75, spec * 1.5) + spec * 12;
 								}
 								else
 								{
 									//Perforate Artery Cap = 75 + Critical Strike Spec *9 + Nonstyle Cap
-									styleDamage = (int) (Math.Min(75, spec * 1.5) + spec * 9);
+									styleDamage = Math.Min(75, spec * 1.5) + spec * 9;
 								}
+
 								break;
 							}
 						}
 
 						// Styles with a static growth don't use unstyled damage, so armor has to be taken into account here.
-						// TODO: Check if ignoring AF is indeed intended.
 						DbInventoryItem armor = target.Inventory?.GetItem((eInventorySlot) armorHitLocation);
-						styleDamage = (int) (styleDamage * (1.0 - Math.Min(0.85, target.GetArmorAbsorb(armorHitLocation))));
+						styleDamage = styleDamage * (1.0 - Math.Min(0.85, target.GetArmorAbsorb(armorHitLocation)));
+						styleDamageCap = -1; // Uncapped. Is there supposed to be one?
 					}
 					else
-						styleDamage = (int) (talyGrowth * talySpec * talySpeed / unstyledDamageCap * unstyledDamage);
+					{
+						double modifiedGrowthRate = talyGrowth * talySpec * talySpeed / unstyledDamageCap;
+						styleDamage = modifiedGrowthRate * unstyledDamage;
+						styleDamageCap = modifiedGrowthRate * unstyledDamageCap;
+					}
 
 					if (player != null)
-						styleDamage = (int) (styleDamage * player.GetModified(eProperty.StyleDamage) * 0.01);
+						styleDamage = styleDamage * player.GetModified(eProperty.StyleDamage) * 0.01;
 
 					// Style absorb bonus.
 					if (target is GamePlayer)

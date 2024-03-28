@@ -3417,7 +3417,7 @@ namespace DOL.GS.Spells
 
 			// Calculate resistances and conversion.
 			finalDamage = ModifyDamageWithTargetResist(ad, finalDamage);
-			double conversionMod = AttackComponent.CalculateTargetConversion(ad.Target, finalDamage);
+			double conversionMod = AttackComponent.CalculateTargetConversion(ad.Target);
 			int preConversionDamage = finalDamage;
 			finalDamage = (int) (finalDamage * conversionMod);
 			ad.Modifier += finalDamage - preConversionDamage;

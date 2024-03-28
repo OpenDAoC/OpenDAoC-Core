@@ -1212,7 +1212,7 @@ namespace DOL.GS
                 case eAttackResult.HitUnstyled:
                 case eAttackResult.HitStyle:
                 {
-                    double damage = AttackDamage(weapon, out double damageCap) * effectiveness;
+                    double damage = AttackDamage(weapon, out double baseDamageCap) * effectiveness;
                     DbInventoryItem armor = null;
 
                     if (ad.Target.Inventory != null)
@@ -1246,13 +1246,10 @@ namespace DOL.GS
                     double damageMod = weaponSkill / armorMod;
 
                     if (action.RangedAttackType == eRangedAttackType.Critical)
-                        damageCap *= 2; // This may be incorrect. Critical shot doesn't double damage on >yellow targets.
+                        baseDamageCap *= 2; // This may be incorrect. Critical shot doesn't double damage on >yellow targets.
 
                     if (playerOwner != null)
                     {
-                        if (playerOwner.UseDetailedCombatLog)
-                            PrintDetailedCombatLog(playerOwner, armorFactor, absorb, armorMod, baseWeaponSkill, specModifier, weaponSkill, damageMod, damageCap);
-
                         // Badge Of Valor Calculation 1+ absorb or 1- absorb
                         // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
                         //     damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
@@ -1271,9 +1268,6 @@ namespace DOL.GS
                         //     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
                     }
 
-                    if (target is GamePlayer targetPlayer && targetPlayer.UseDetailedCombatLog)
-                        PrintDetailedCombatLog(targetPlayer, armorFactor, absorb, armorMod, baseWeaponSkill, specModifier, weaponSkill, damageMod, damageCap);
-
                     if (ad.IsOffHand)
                         damage *= 1 + owner.GetModified(eProperty.OffhandDamage) * 0.01;
 
@@ -1287,28 +1281,34 @@ namespace DOL.GS
                     }
 
                     damage *= damageMod;
-                    double preResistDamage = damage;
+                    double conversionMod = CalculateTargetConversion(ad.Target);
                     double primarySecondaryResistMod = CalculateTargetResistance(ad.Target, ad.DamageType, armor);
-                    double preConversionDamage = preResistDamage * primarySecondaryResistMod;
-                    double conversionMod = CalculateTargetConversion(ad.Target, damage * primarySecondaryResistMod);
+                    double primarySecondaryResistConversionMod = primarySecondaryResistMod * conversionMod;
+                    double preResistBaseDamage = damage;
+                    damage = Math.Min(baseDamageCap, preResistBaseDamage * primarySecondaryResistConversionMod);
+                    // This makes capped unstyled hits have weird modifiers and no longer match the actual damage reduction from resistances; for example 150 (-1432) an a naked target.
+                    // But inaccurate modifiers when the cap is hit appear to be live like.
+                    double modifier = damage - preResistBaseDamage;
 
-                    if (StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, preResistDamage, damageCap, ad.ArmorHitLocation, ad.StyleEffects, out int styleDamage, out int animationId))
+                    if (StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, preResistBaseDamage, baseDamageCap, ad.ArmorHitLocation, ad.StyleEffects, out double styleDamage, out double styleDamageCap, out int animationId))
                     {
                         double preResistStyleDamage = styleDamage;
-                        double preConversionStyleDamage = preResistStyleDamage * primarySecondaryResistMod;
-                        ad.StyleDamage = (int) (preConversionStyleDamage * conversionMod);
+                        ad.StyleDamage = (int) preResistStyleDamage; // We show uncapped and unmodified by resistances style damage. This should only be used by the combat log.
+                        // We have to calculate damage reduction again because `ExecuteStyle` works with pre resist base damage. Static growth styles also don't use it.
+                        styleDamage = preResistStyleDamage * primarySecondaryResistConversionMod;
 
-                        preResistDamage += preResistStyleDamage;
-                        preConversionDamage += preConversionStyleDamage;
-                        damage += ad.StyleDamage;
+                        if (styleDamageCap > 0)
+                            styleDamage = Math.Min(styleDamageCap, styleDamage);
 
+                        damage += styleDamage;
+                        modifier += styleDamage - preResistStyleDamage;
                         ad.AnimationId = animationId;
                         ad.AttackResult = eAttackResult.HitStyle;
                     }
 
-                    damage = preConversionDamage * conversionMod;
-                    ad.Modifier = (int) Math.Floor(damage - preResistDamage);
-                    damage = Math.Min(damage, damageCap);
+                    ad.Damage = (int) damage;
+                    ad.Modifier = (int) Math.Floor(modifier);
+                    ad.CriticalDamage = CalculateMeleeCriticalDamage(ad, action, weapon);
 
                     if (conversionMod < 1)
                     {
@@ -1316,8 +1316,12 @@ namespace DOL.GS
                         ApplyTargetConversionRegen(ad.Target, (int) conversionAmount);
                     }
 
-                    ad.Damage = (int) damage;
-                    ad.CriticalDamage = CalculateMeleeCriticalDamage(ad, action, weapon);
+                    if (playerOwner != null && playerOwner.UseDetailedCombatLog)
+                        PrintDetailedCombatLog(playerOwner, armorFactor, absorb, armorMod, baseWeaponSkill, specModifier, weaponSkill, damageMod, baseDamageCap, styleDamageCap);
+
+                    if (target is GamePlayer targetPlayer && targetPlayer.UseDetailedCombatLog)
+                        PrintDetailedCombatLog(targetPlayer, armorFactor, absorb, armorMod, baseWeaponSkill, specModifier, weaponSkill, damageMod, baseDamageCap, styleDamageCap);
+
                     break;
                 }
                 case eAttackResult.Blocked:
@@ -1332,12 +1336,16 @@ namespace DOL.GS
                     break;
                 }
 
-                static void PrintDetailedCombatLog(GamePlayer player, double armorFactor, double absorb, double armorMod, double baseWeaponSkill, double specModifier, double weaponSkill, double damageMod, double damageCap)
+                static void PrintDetailedCombatLog(GamePlayer player, double armorFactor, double absorb, double armorMod, double baseWeaponSkill, double specModifier, double weaponSkill, double damageMod, double baseDamageCap, double styleDamageCap)
                 {
                     StringBuilder stringBuilder = new();
                     stringBuilder.Append($"BaseWS: {baseWeaponSkill:0.00} | SpecMod: {specModifier:0.00} | WS: {weaponSkill:0.00}\n");
                     stringBuilder.Append($"AF: {armorFactor:0.00} | ABS: {absorb * 100:0.00}% | AF/ABS: {armorMod:0.00}\n");
-                    stringBuilder.Append($"DamageMod: {damageMod:0.00} | DamageCap: {damageCap:0.00}");
+                    stringBuilder.Append($"DamageMod: {damageMod:0.00} | BaseDamageCap: {baseDamageCap:0.00}");
+
+                    if (styleDamageCap > 0)
+                        stringBuilder.Append($" | StyleDamageCap: {styleDamageCap:0.00}");
+
                     player.Out.SendMessage(stringBuilder.ToString(), eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
             }
@@ -1778,17 +1786,13 @@ namespace DOL.GS
             return damageModifier;
         }
 
-        public static double CalculateTargetConversion(GameLiving target, double damage)
+        public static double CalculateTargetConversion(GameLiving target)
         {
             if (target is not GamePlayer)
                 return 1.0;
 
             double conversionMod = 1 - target.GetModified(eProperty.Conversion) / 100.0;
-
-            if (conversionMod > 1.0)
-                return 1.0;
-
-            return conversionMod;
+            return Math.Min(1.0, conversionMod);
         }
 
         public static void ApplyTargetConversionRegen(GameLiving target, int conversionAmount)
@@ -2452,12 +2456,12 @@ namespace DOL.GS
                                 {
                                     case "DE":
                                     {
-                                        hitWeapon = $"{LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {weapon.Name}";
+                                        hitWeapon = $" {LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {weapon.Name}";
                                         break;
                                     }
                                     default:
                                     {
-                                        hitWeapon = $"{LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {GlobalConstants.NameToShortName(weapon.Name)}";
+                                        hitWeapon = $" {LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {GlobalConstants.NameToShortName(weapon.Name)}";
                                         break;
                                     }
                                 }
@@ -2577,12 +2581,12 @@ namespace DOL.GS
                                 {
                                     case "DE":
                                     {
-                                        hitWeapon = $"{LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {weapon.Name}";
+                                        hitWeapon = $" {LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {weapon.Name}";
                                         break;
                                     }
                                     default:
                                     {
-                                        hitWeapon = $"{LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {GlobalConstants.NameToShortName(weapon.Name)}";
+                                        hitWeapon = $" {LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.WithYour")} {GlobalConstants.NameToShortName(weapon.Name)}";
                                         break;
                                     }
                                 }
