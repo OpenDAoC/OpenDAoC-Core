@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
+using DOL.GS.API;
 using log4net;
 
 namespace DOL.GS
@@ -725,16 +726,9 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Exchange two Items in form specified slot
-		/// </summary>
-		/// <param name="fromSlot">Source slot</param>
-		/// <param name="toSlot">Destination slot</param>
-		/// <param name="itemCount"></param>
-		/// <returns>true if successfull false if not</returns>
 		public virtual bool MoveItem(eInventorySlot fromSlot, eInventorySlot toSlot, int itemCount)
 		{
-			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+			lock (m_items)
 			{
 				fromSlot = GetValidInventorySlot(fromSlot);
 				toSlot = GetValidInventorySlot(toSlot);
@@ -748,9 +742,7 @@ namespace DOL.GS
 				m_items.TryGetValue(toSlot, out toItem);
 
 				if (!CombineItems(fromItem, toItem) && !StackItems(fromSlot, toSlot, itemCount))
-				{
 					ExchangeItems(fromSlot, toSlot);
-				}
 
 				if (!m_changedSlots.Contains(fromSlot))
 					m_changedSlots.Add(fromSlot);
@@ -764,6 +756,13 @@ namespace DOL.GS
 				return true;
 			}
 		}
+
+		public virtual bool CheckItemsBeforeMovingFromOrToExternalInventory(DbInventoryItem fromItem, DbInventoryItem toItem, eInventorySlot externalSlot, eInventorySlot playerInventorySlot, int itemCount)
+		{
+			return true;
+		}
+
+		public virtual void OnItemMove(DbInventoryItem fromItem, DbInventoryItem toItem, eInventorySlot fromSlot, eInventorySlot toSlot) { }
 
 		/// <summary>
 		/// Get the list of all visible items

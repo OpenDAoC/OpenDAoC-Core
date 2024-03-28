@@ -172,7 +172,7 @@ namespace DOL.GS
             {
                 if (fromHousing)
                     toSlot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                else if (GameInventoryObjectExtensions.IsBackpackSlot(fromSlot) || GameInventoryObjectExtensions.IsEquipmentSlot(fromSlot))
+                else if (GameInventoryObjectExtensions.IsCharacterInventorySlot(fromSlot))
                     toSlot = GetFirstEmptyClientSlot(player);
             }
 

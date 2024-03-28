@@ -298,7 +298,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         {
             eInventorySlot toClientSlot;
 
-            if (GameInventoryObjectExtensions.IsBackpackSlot(fromClientSlot) || GameInventoryObjectExtensions.IsEquipmentSlot(fromClientSlot))
+            if (GameInventoryObjectExtensions.IsCharacterInventorySlot(fromClientSlot))
                 toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstVault, eInventorySlot.LastVault);
             else if (fromClientSlot is >= eInventorySlot.FirstVault and <= eInventorySlot.LastVault)
                 toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);

@@ -129,6 +129,8 @@ namespace DOL.GS
         bool RemoveCountFromStack(DbInventoryItem item, int count);
         bool RemoveTemplate(string templateID, int count, eInventorySlot minSlot, eInventorySlot maxSlot);
         bool MoveItem(eInventorySlot fromSlot, eInventorySlot toSlot, int itemCount);
+        bool CheckItemsBeforeMovingFromOrToExternalInventory(DbInventoryItem fromItem, DbInventoryItem toItem, eInventorySlot externalSlot, eInventorySlot playerInventorySlot, int itemCount);
+        void OnItemMove(DbInventoryItem fromItem, DbInventoryItem toItem, eInventorySlot fromSlot, eInventorySlot toSlot);
         DbInventoryItem GetItem(eInventorySlot slot);
         ICollection<DbInventoryItem> GetItemRange(eInventorySlot minSlot, eInventorySlot maxSlot);
 
