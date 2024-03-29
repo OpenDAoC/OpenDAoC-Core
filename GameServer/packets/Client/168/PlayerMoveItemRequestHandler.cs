@@ -24,9 +24,17 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
             }
 
-            // We did not drop an item on a game object, which means we should have valid from and to slots since we are moving an item from one window to another.
+            // Try to convert `PlayerPaperDoll` into an actual slot, using the source slot as context.
+            if (toClientSlot is eInventorySlot.PlayerPaperDoll or eInventorySlot.NewPlayerPaperDoll)
+            {
+                if (!ConvertPaperDollDestinationSlot(client, fromClientSlot, out toClientSlot))
+                {
+                    client.Out.SendInventorySlotsUpdate(null);
+                    return;
+                }
+            }
 
-            // First check for an active `GameInventoryObject`.
+            // Let `GameInventoryObject` handle the move, if there's any.
             if (client.Player.ActiveInventoryObject?.MoveItem(client.Player, fromClientSlot, toClientSlot, itemCount) == true)
                 return;
 
@@ -40,9 +48,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
             }
 
-            bool isToSlotValid = toClientSlot is eInventorySlot.PlayerPaperDoll or
-                                                 eInventorySlot.NewPlayerPaperDoll or
-                                                 eInventorySlot.GeneralVault or
+            bool isToSlotValid = toClientSlot is eInventorySlot.GeneralVault or
                                                  (>= eInventorySlot.Ground and <= eInventorySlot.LastBackpack) or
                                                  (>= eInventorySlot.FirstVault and <= eInventorySlot.LastVault) or
                                                  (>= eInventorySlot.FirstBagHorse and <= eInventorySlot.LastBagHorse);
@@ -60,14 +66,9 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
             }
 
-            // Are we shift right clicking or dropping the item on the paper doll?
-            // Inventory and player vault are handled here. House and account vaults are handled by `GameInventoryObject`.
-            if (toClientSlot is eInventorySlot.PlayerPaperDoll or eInventorySlot.NewPlayerPaperDoll)
-            {
-                EquipUnequipItemFromInventory(client, fromClientSlot, itemCount);
-                return;
-            }
-            else if (toClientSlot is eInventorySlot.GeneralVault)
+            // Are we shift right clicking with a character vault open?
+            // House and account vaults are handled by `GameInventoryObject`.
+            if (toClientSlot is eInventorySlot.GeneralVault)
             {
                 MoveItemBetweenVaultAndInventory(client, fromClientSlot, itemCount);
                 return;
@@ -76,6 +77,45 @@ namespace DOL.GS.PacketHandler.Client.v168
             // We're simply moving the item from one inventory slot to another.
             client.Player.Inventory.MoveItem(fromClientSlot, toClientSlot, itemCount);
             return;
+        }
+
+        private static bool ConvertPaperDollDestinationSlot(GameClient client, eInventorySlot fromClientSlot, out eInventorySlot toClientSlot)
+        {
+            if (GameInventoryObjectExtensions.IsEquipmentSlot(fromClientSlot))
+            {
+                toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                return true;
+            }
+            else
+            {
+                DbInventoryItem item;
+
+                if (GameInventoryObjectExtensions.IsCharacterInventorySlot(fromClientSlot) || GameInventoryObjectExtensions.IsCharacterVaultSlot(fromClientSlot))
+                    item = client.Player.Inventory.GetItem(fromClientSlot);
+                else
+                    item = client.Player.ActiveInventoryObject?.GetClientItems(client.Player)[(int) fromClientSlot];
+
+                if (item == null)
+                {
+                    toClientSlot = eInventorySlot.Invalid;
+                    return false;
+                }
+
+                if (GameInventoryObjectExtensions.IsEquipmentSlot((eInventorySlot) item.Item_Type))
+                {
+                    toClientSlot = (eInventorySlot) item.Item_Type;
+
+                    if (toClientSlot is eInventorySlot.LeftBracer or eInventorySlot.RightBracer)
+                        toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftBracer) == null ? eInventorySlot.LeftBracer : eInventorySlot.RightBracer;
+                    else if (toClientSlot is eInventorySlot.LeftRing or eInventorySlot.RightRing)
+                        toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftRing) == null ? eInventorySlot.LeftRing : eInventorySlot.RightRing;
+
+                    return true;
+                }
+            }
+
+            toClientSlot = eInventorySlot.Invalid;
+            return false;
         }
 
         private static void MoveItemToTargetObject(GameClient client, eInventorySlot toClientSlot, eInventorySlot fromClientSlot, ushort itemCount)
@@ -124,7 +164,6 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 if (!obj.IsWithinRadius(client.Player, WorldMgr.GIVE_ITEM_DISTANCE))
                 {
-                    // show too far away message
                     if (obj is GamePlayer player)
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerMoveItemRequestHandler.TooFarAway", client.Player.GetName(player)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     else
@@ -260,47 +299,13 @@ namespace DOL.GS.PacketHandler.Client.v168
             client.Out.SendInventoryItemsUpdate(null);
         }
 
-        private static void EquipUnequipItemFromInventory(GameClient client, eInventorySlot fromClientSlot, ushort itemCount)
-        {
-            DbInventoryItem item = client.Player.Inventory.GetItem(fromClientSlot);
-
-            if (item == null)
-            {
-                client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
-                return;
-            }
-
-            eInventorySlot toClientSlot;
-
-            if (GameInventoryObjectExtensions.IsEquipmentSlot(fromClientSlot))
-            {
-                toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-
-                if (toClientSlot is eInventorySlot.Invalid)
-                    return;
-            }
-            else if (GameInventoryObjectExtensions.IsEquipmentSlot((eInventorySlot) item.Item_Type))
-            {
-                toClientSlot = (eInventorySlot) item.Item_Type;
-
-                if (toClientSlot is eInventorySlot.LeftBracer or eInventorySlot.RightBracer)
-                    toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftBracer) == null ? eInventorySlot.LeftBracer : eInventorySlot.RightBracer;
-                else if (toClientSlot is eInventorySlot.LeftRing or eInventorySlot.RightRing)
-                    toClientSlot = client.Player.Inventory.GetItem(eInventorySlot.LeftRing) == null ? eInventorySlot.LeftRing : eInventorySlot.RightRing;
-            }
-            else
-                return;
-
-            client.Player.Inventory.MoveItem(fromClientSlot, toClientSlot, itemCount);
-        }
-
         private static void MoveItemBetweenVaultAndInventory(GameClient client, eInventorySlot fromClientSlot, ushort itemCount)
         {
             eInventorySlot toClientSlot;
 
             if (GameInventoryObjectExtensions.IsCharacterInventorySlot(fromClientSlot))
                 toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstVault, eInventorySlot.LastVault);
-            else if (fromClientSlot is >= eInventorySlot.FirstVault and <= eInventorySlot.LastVault)
+            else if (GameInventoryObjectExtensions.IsCharacterVaultSlot(fromClientSlot))
                 toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
             else
                 return;

@@ -498,6 +498,11 @@ namespace DOL.GS
             return slot is >= eInventorySlot.MinEquipable and <= eInventorySlot.MaxEquipable;
         }
 
+        public static bool IsCharacterVaultSlot(eInventorySlot slot)
+        {
+            return slot is >= eInventorySlot.FirstVault and <= eInventorySlot.LastVault;
+        }
+
         public static bool IsCharacterInventorySlot(eInventorySlot slot)
         {
             return IsBackpackSlot(slot) || IsEquipmentSlot(slot);
