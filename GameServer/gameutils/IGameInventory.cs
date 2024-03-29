@@ -146,6 +146,8 @@ namespace DOL.GS
         eInventorySlot FindLastEmptySlot(eInventorySlot first, eInventorySlot last);
         eInventorySlot FindFirstFullSlot(eInventorySlot first, eInventorySlot last);
         eInventorySlot FindLastFullSlot(eInventorySlot first, eInventorySlot last);
+        eInventorySlot FindFirstPartiallyFullSlot(eInventorySlot first, eInventorySlot last, DbInventoryItem item);
+        eInventorySlot FindLastPartiallyFullSlot(eInventorySlot first, eInventorySlot last, DbInventoryItem item);
 
         DbInventoryItem GetFirstItemByID(string uniqueID, eInventorySlot minSlot, eInventorySlot maxSlot);
         DbInventoryItem GetFirstItemByObjectType(int objectType, eInventorySlot minSlot, eInventorySlot maxSlot);

@@ -116,6 +116,23 @@ namespace DOL.GS
             return eInventorySlot.Invalid;
         }
 
+        public virtual eInventorySlot GetFirstPartiallyFullClientSlot(GamePlayer player, DbInventoryItem item)
+        {
+            eInventorySlot result = FirstClientSlot;
+            Dictionary<int, DbInventoryItem> clientInventory = GetClientInventory(player);
+
+            while (result <= LastClientSlot)
+            {
+                if (clientInventory.TryGetValue((int) result, out DbInventoryItem otherItem) && otherItem.Count < otherItem.MaxCount && otherItem.Name.Equals(item.Name))
+                    return result;
+
+                result++;
+            }
+
+            // Return the first empty slot if we couldn't find any partially full one.
+            return GetFirstEmptyClientSlot(player);
+        }
+
         /// <summary>
         /// Player interacting with this vault.
         /// </summary>
@@ -166,14 +183,31 @@ namespace DOL.GS
                 return false;
 
             bool fromHousing = GameInventoryObjectExtensions.IsHousingInventorySlot(fromSlot);
+            DbInventoryItem itemInFromSlot = null;
 
-            // If this is a shift right click move, try to move the item to the first empty slot of either inventory.
+            // If this is a shift right click move, find the first available slot of either inventory.
             if (toSlot == eInventorySlot.GeneralHousing)
             {
                 if (fromHousing)
-                    toSlot = player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                {
+                    if (!GetClientInventory(player).TryGetValue((int) fromSlot, out itemInFromSlot))
+                        return false;
+
+                    toSlot = itemInFromSlot.IsStackable ?
+                                player.Inventory.FindFirstPartiallyFullSlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack, itemInFromSlot) :
+                                player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                }
                 else if (GameInventoryObjectExtensions.IsCharacterInventorySlot(fromSlot))
-                    toSlot = GetFirstEmptyClientSlot(player);
+                {
+                    itemInFromSlot = player.Inventory.GetItem(fromSlot);
+
+                    if (itemInFromSlot == null)
+                        return false;
+
+                    toSlot = itemInFromSlot.IsStackable ?
+                                GetFirstPartiallyFullClientSlot(player, itemInFromSlot) :
+                                GetFirstEmptyClientSlot(player);
+                }
             }
 
             bool toHousing = GameInventoryObjectExtensions.IsHousingInventorySlot(toSlot);
@@ -200,14 +234,12 @@ namespace DOL.GS
                 return false;
             }
 
-            DbInventoryItem itemInFromSlot = player.Inventory.GetItem(fromSlot);
             DbInventoryItem itemInToSlot = player.Inventory.GetItem(toSlot);
 
             // Check for a swap to get around not allowing non-tradeable items in a housing vault.
             if (fromHousing && itemInToSlot != null && !itemInToSlot.IsTradable && this is not AccountVault)
             {
                 player.Out.SendMessage("You cannot swap with an untradable item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                log.Debug($"GameVault: {player.Name} attempted to swap untradable item {itemInFromSlot.Name} with {itemInToSlot.Name}");
                 player.Out.SendInventoryItemsUpdate(null);
                 return false;
             }
@@ -224,7 +256,6 @@ namespace DOL.GS
             {
                 GameInventoryObjectExtensions.NotifyObservers(this, player, _observers, GameInventoryObjectExtensions.MoveItem(this, player, fromSlot, toSlot, count));
             }
-
             return true;
         }
 

@@ -302,14 +302,30 @@ namespace DOL.GS.PacketHandler.Client.v168
         private static void MoveItemBetweenVaultAndInventory(GameClient client, eInventorySlot fromClientSlot, ushort itemCount)
         {
             eInventorySlot toClientSlot;
+            DbInventoryItem item = client.Player.Inventory.GetItem(fromClientSlot);
+
+            if (item == null)
+                return;
+
+            eInventorySlot first;
+            eInventorySlot last;
 
             if (GameInventoryObjectExtensions.IsCharacterInventorySlot(fromClientSlot))
-                toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstVault, eInventorySlot.LastVault);
+            {
+                first = eInventorySlot.FirstVault;
+                last = eInventorySlot.LastVault;
+            }
             else if (GameInventoryObjectExtensions.IsCharacterVaultSlot(fromClientSlot))
-                toClientSlot = client.Player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+            {
+                first = eInventorySlot.FirstBackpack;
+                last = eInventorySlot.LastBackpack;
+            }
             else
                 return;
 
+            toClientSlot = item.IsStackable ?
+                           client.Player.Inventory.FindFirstPartiallyFullSlot(first, last, item) :
+                           client.Player.Inventory.FindFirstEmptySlot(first, last);
             client.Player.Inventory.MoveItem(fromClientSlot, toClientSlot, itemCount);
         }
     }
