@@ -6033,14 +6033,14 @@ namespace DOL.GS
             for (int i = 0; i < 4; i++)
             {
                 if (oldActiveSlots[i] != null && newActiveSlots[i] == null)
-                    Notify(PlayerInventoryEvent.ItemUnequipped, Inventory, new ItemUnequippedArgs(oldActiveSlots[i], oldActiveSlots[i].SlotPosition));
+                    OnItemUnequipped(oldActiveSlots[i], (eInventorySlot) oldActiveSlots[i].SlotPosition);
             }
 
             // equip new active items
             for (int i = 0; i < 4; i++)
             {
                 if (newActiveSlots[i] != null && oldActiveSlots[i] == null)
-                    Notify(PlayerInventoryEvent.ItemEquipped, Inventory, new ItemEquippedArgs(newActiveSlots[i], newActiveSlots[i].SlotPosition));
+                    OnItemEquipped(newActiveSlots[i], (eInventorySlot) newActiveSlots[i].SlotPosition);
             }
 
             if (ObjectState == eObjectState.Active)
@@ -10178,156 +10178,160 @@ namespace DOL.GS
         /// <summary>
         /// Adds magical bonuses whenever item was equipped
         /// </summary>
-        /// <param name="e"></param>
-        /// <param name="sender">inventory</param>
-        /// <param name="arguments"></param>
-        protected virtual void OnItemEquipped(DOLEvent e, object sender, EventArgs arguments)
+        public virtual void OnItemEquipped(DbInventoryItem item, eInventorySlot slot)
         {
-            if (arguments is ItemEquippedArgs == false) return;
-            DbInventoryItem item = ((ItemEquippedArgs)arguments).Item;
-            if (item == null) return;
+            if (item == null)
+                return;
 
-            if (item is IGameInventoryItem)
-            {
-                (item as IGameInventoryItem).OnEquipped(this);
-            }
+            if (item is IGameInventoryItem inventoryItem)
+                inventoryItem.OnEquipped(this);
 
-            if (item.Item_Type >= Slot.RIGHTHAND && item.Item_Type <= Slot.RANGED)
+            if (item.Item_Type is >= Slot.RIGHTHAND and <= Slot.RANGED)
             {
                 if (item.Hand == 1) // 2h
-                {
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.WieldBothHands", item.GetName(0, false))), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
                 else if (item.SlotPosition == Slot.LEFTHAND)
-                {
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.WieldLeftHand", item.GetName(0, false))), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
                 else
-                {
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.WieldRightHand", item.GetName(0, false))), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
             }
 
-            if (item.Item_Type == (int)eInventorySlot.Horse)
+            if ((eInventorySlot) item.Item_Type == eInventorySlot.Horse)
             {
                 if (item.SlotPosition == Slot.HORSE)
                 {
-                    ActiveHorse.ID = (byte)(item.SPD_ABS == 0 ? 1 : item.SPD_ABS);
+                    ActiveHorse.ID = (byte) (item.SPD_ABS == 0 ? 1 : item.SPD_ABS);
                     ActiveHorse.Name = item.Creator;
                 }
+
                 return;
             }
-            else if (item.Item_Type == (int)eInventorySlot.HorseArmor)
+            else if ((eInventorySlot) item.Item_Type == eInventorySlot.HorseArmor)
             {
                 if (item.SlotPosition == Slot.HORSEARMOR)
-                {
-                    //					Out.SendDebugMessage("Try apply horse armor.");
-                    ActiveHorse.Saddle = (byte)(item.DPS_AF);
-                }
+                    ActiveHorse.Saddle = (byte) item.DPS_AF;
+
                 return;
             }
-            else if (item.Item_Type == (int)eInventorySlot.HorseBarding)
+            else if ((eInventorySlot) item.Item_Type == eInventorySlot.HorseBarding)
             {
                 if (item.SlotPosition == Slot.HORSEBARDING)
-                {
-                    //					Out.SendDebugMessage("Try apply horse barding.");
-                    ActiveHorse.Barding = (byte)(item.DPS_AF);
-                }
+                    ActiveHorse.Barding = (byte) item.DPS_AF;
+
                 return;
             }
 
-            if (!item.IsMagical) return;
+            if (!item.IsMagical)
+                return;
 
             Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Magic", item.GetName(0, false))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
 
             if (item.Bonus1 != 0)
             {
                 ItemBonus[item.Bonus1Type] += item.Bonus1;
+
                 if (item.Bonus1Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus1Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus2 != 0)
             {
                 ItemBonus[item.Bonus2Type] += item.Bonus2;
+
                 if (item.Bonus2Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus2Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus3 != 0)
             {
                 ItemBonus[item.Bonus3Type] += item.Bonus3;
+
                 if (item.Bonus3Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus3Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus4 != 0)
             {
                 ItemBonus[item.Bonus4Type] += item.Bonus4;
+
                 if (item.Bonus4Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus4Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus5 != 0)
             {
                 ItemBonus[item.Bonus5Type] += item.Bonus5;
+
                 if (item.Bonus5Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus5Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus6 != 0)
             {
                 ItemBonus[item.Bonus6Type] += item.Bonus6;
+
                 if (item.Bonus6Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus6Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus7 != 0)
             {
                 ItemBonus[item.Bonus7Type] += item.Bonus7;
+
                 if (item.Bonus7Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus7Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus8 != 0)
             {
                 ItemBonus[item.Bonus8Type] += item.Bonus8;
+
                 if (item.Bonus8Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus8Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus9 != 0)
             {
                 ItemBonus[item.Bonus9Type] += item.Bonus9;
+
                 if (item.Bonus9Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus9Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus10 != 0)
             {
                 ItemBonus[item.Bonus10Type] += item.Bonus10;
+
                 if (item.Bonus10Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus10Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.ExtraBonus != 0)
-            {
                 ItemBonus[item.ExtraBonusType] += item.ExtraBonus;
-                //if (item.ExtraBonusType < 20)
-                //Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.ExtraBonusType))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-            }
-            //Check null on client.player bypass region change
-            if (Client.Account.PrivLevel == (uint)ePrivLevel.Player && Client.Player != null && Client.Player.ObjectState == eObjectState.Active)
+
+            if ((ePrivLevel) Client.Account.PrivLevel == ePrivLevel.Player && Client.Player != null && Client.Player.ObjectState == eObjectState.Active)
+            {
                 if (item.SpellID > 0 || item.SpellID1 > 0)
                     TempProperties.SetProperty("ITEMREUSEDELAY" + item.Id_nb, CurrentRegion.Time);
+            }
 
-            /*
-            //max 2 charges
+            // This was used during Atlas to only allow two self buff charges.
+            /*// Max 2 charges.
             if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
             {
-                if(ActiveBuffCharges < 2)
-                    UseItemCharge(item, (int)eUseType.use1);
+                if (ActiveBuffCharges < 2)
+                    UseItemCharge(item, (int) eUseType.Use1);
                 else
                 {
                     Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
             }
 
-            //max 2 charges
+            // Max 2 charges.
             if (item.SpellID1 > 0 && SelfBuffChargeIDs.Contains(item.SpellID1) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
             {
-                if(ActiveBuffCharges < 2)
-                    UseItemCharge(item, (int)eUseType.use2);
+                if (ActiveBuffCharges < 2)
+                    UseItemCharge(item, (int) eUseType.Use2);
                 else
                 {
                     Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -10336,7 +10340,6 @@ namespace DOL.GS
 
             if (ObjectState == eObjectState.Active)
             {
-                // TODO: remove when properties system is finished
                 Out.SendCharStatsUpdate();
                 Out.SendCharResistsUpdate();
                 Out.SendUpdateWeaponAndArmorStats();
@@ -10345,17 +10348,22 @@ namespace DOL.GS
                 Out.SendUpdatePlayerSkills();
                 UpdatePlayerStatus();
 
-
                 if (IsAlive)
                 {
-                    if (Health < MaxHealth) StartHealthRegeneration();
-                    else if (Health > MaxHealth) Health = MaxHealth;
+                    if (Health < MaxHealth)
+                        StartHealthRegeneration();
+                    else if (Health > MaxHealth)
+                        Health = MaxHealth;
 
-                    if (Mana < MaxMana) StartPowerRegeneration();
-                    else if (Mana > MaxMana) Mana = MaxMana;
+                    if (Mana < MaxMana)
+                        StartPowerRegeneration();
+                    else if (Mana > MaxMana)
+                        Mana = MaxMana;
 
-                    if (Endurance < MaxEndurance) StartEnduranceRegeneration();
-                    else if (Endurance > MaxEndurance) Endurance = MaxEndurance;
+                    if (Endurance < MaxEndurance)
+                        StartEnduranceRegeneration();
+                    else if (Endurance > MaxEndurance)
+                        Endurance = MaxEndurance;
                 }
             }
         }
@@ -10394,60 +10402,45 @@ namespace DOL.GS
         /// <summary>
         /// Removes magical bonuses whenever item was unequipped
         /// </summary>
-        /// <param name="e"></param>
-        /// <param name="sender">inventory</param>
-        /// <param name="arguments"></param>
-        protected virtual void OnItemUnequipped(DOLEvent e, object sender, EventArgs arguments)
+        public virtual void OnItemUnequipped(DbInventoryItem item, eInventorySlot slot)
         {
-            if (arguments is ItemUnequippedArgs == false) return;
-            DbInventoryItem item = ((ItemUnequippedArgs)arguments).Item;
-            int prevSlot = (int)((ItemUnequippedArgs)arguments).PreviousSlotPosition;
-            if (item == null) return;
+            if (item == null)
+                return;
 
-            if (item.Item_Type >= Slot.RIGHTHAND && item.Item_Type <= Slot.RANGED)
+            if (item.Item_Type is >= Slot.RIGHTHAND and <= Slot.RANGED)
             {
                 if (item.Hand == 1) // 2h
-                {
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.BothHandsFree", item.GetName(0, false))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-                }
-                else if (prevSlot == Slot.LEFTHAND)
-                {
+                else if (slot == eInventorySlot.LeftHandWeapon)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.LeftHandFree", item.GetName(0, false))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-                }
                 else
-                {
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.RightHandFree", item.GetName(0, false))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-                }
             }
 
-            if (prevSlot == Slot.MYTHICAL && item.Item_Type == (int)eInventorySlot.Mythical && item is GameMythirian)
-            {
-                (item as GameMythirian).OnUnEquipped(this);
-            }
+            if (slot == eInventorySlot.Mythical && (eInventorySlot) item.Item_Type == eInventorySlot.Mythical && item is GameMythirian mythirian)
+                mythirian.OnUnEquipped(this);
 
-            if (item.Item_Type == (int)eInventorySlot.Horse)
+            if ((eInventorySlot) item.Item_Type == eInventorySlot.Horse)
             {
                 if (IsOnHorse)
                     IsOnHorse = false;
+
                 ActiveHorse.ID = 0;
                 ActiveHorse.Name = "";
-                //				Out.SendDebugMessage("Try unapply horse.");
                 return;
             }
-            else if (item.Item_Type == (int)eInventorySlot.HorseArmor)
+            else if ((eInventorySlot) item.Item_Type == eInventorySlot.HorseArmor)
             {
                 ActiveHorse.Saddle = 0;
-                //				Out.SendDebugMessage("Try unapply saddle.");
                 return;
             }
-            else if (item.Item_Type == (int)eInventorySlot.HorseBarding)
+            else if ((eInventorySlot) item.Item_Type == eInventorySlot.HorseBarding)
             {
                 ActiveHorse.Barding = 0;
-                //				Out.SendDebugMessage("Try unapply barding.");
                 return;
             }
 
-            // Cancel any self buffs that are unequipped
+            // Cancel any self buffs that are unequipped.
             if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && Inventory.EquippedItems.Where(x => x.SpellID == item.SpellID).Count() <= 1)
                 CancelChargeBuff(item.SpellID);
 
@@ -10457,78 +10450,91 @@ namespace DOL.GS
             if (item.Bonus1 != 0)
             {
                 ItemBonus[item.Bonus1Type] -= item.Bonus1;
+
                 if (item.Bonus1Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus1Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus2 != 0)
             {
                 ItemBonus[item.Bonus2Type] -= item.Bonus2;
+
                 if (item.Bonus2Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus2Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus3 != 0)
             {
                 ItemBonus[item.Bonus3Type] -= item.Bonus3;
+
                 if (item.Bonus3Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus3Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus4 != 0)
             {
                 ItemBonus[item.Bonus4Type] -= item.Bonus4;
+
                 if (item.Bonus4Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus4Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus5 != 0)
             {
                 ItemBonus[item.Bonus5Type] -= item.Bonus5;
+
                 if (item.Bonus5Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus5Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus6 != 0)
             {
                 ItemBonus[item.Bonus6Type] -= item.Bonus6;
+
                 if (item.Bonus6Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus6Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus7 != 0)
             {
                 ItemBonus[item.Bonus7Type] -= item.Bonus7;
+
                 if (item.Bonus7Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus7Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus8 != 0)
             {
                 ItemBonus[item.Bonus8Type] -= item.Bonus8;
+
                 if (item.Bonus8Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus8Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus9 != 0)
             {
                 ItemBonus[item.Bonus9Type] -= item.Bonus9;
+
                 if (item.Bonus9Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus9Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
+
             if (item.Bonus10 != 0)
             {
                 ItemBonus[item.Bonus10Type] -= item.Bonus10;
+
                 if (item.Bonus10Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus10Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
-            if (item.ExtraBonus != 0)
-            {
-                ItemBonus[item.ExtraBonusType] -= item.ExtraBonus;
-                //if (item.ExtraBonusType < 20)
-                //Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.ExtraBonusType))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-            }
 
-            if (item is IGameInventoryItem)
-            {
-                (item as IGameInventoryItem).OnUnEquipped(this);
-            }
+            if (item.ExtraBonus != 0)
+                ItemBonus[item.ExtraBonusType] -= item.ExtraBonus;
+
+            if (item is IGameInventoryItem inventoryItem)
+                inventoryItem.OnUnEquipped(this);
 
             if (ObjectState == eObjectState.Active)
             {
-                // TODO: remove when properties system is finished
                 Out.SendCharStatsUpdate();
                 Out.SendCharResistsUpdate();
                 Out.SendUpdateWeaponAndArmorStats();
@@ -10539,14 +10545,20 @@ namespace DOL.GS
 
                 if (IsAlive)
                 {
-                    if (Health < MaxHealth) StartHealthRegeneration();
-                    else if (Health > MaxHealth) Health = MaxHealth;
+                    if (Health < MaxHealth)
+                        StartHealthRegeneration();
+                    else if (Health > MaxHealth)
+                        Health = MaxHealth;
 
-                    if (Mana < MaxMana) StartPowerRegeneration();
-                    else if (Mana > MaxMana) Mana = MaxMana;
+                    if (Mana < MaxMana)
+                        StartPowerRegeneration();
+                    else if (Mana > MaxMana)
+                        Mana = MaxMana;
 
-                    if (Endurance < MaxEndurance) StartEnduranceRegeneration();
-                    else if (Endurance > MaxEndurance) Endurance = MaxEndurance;
+                    if (Endurance < MaxEndurance)
+                        StartEnduranceRegeneration();
+                    else if (Endurance > MaxEndurance)
+                        Endurance = MaxEndurance;
                 }
             }
         }
@@ -10673,16 +10685,12 @@ namespace DOL.GS
         /// <summary>
         /// Handles a bonus change on an item.
         /// </summary>
-        /// <param name="e"></param>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        protected virtual void OnItemBonusChanged(DOLEvent e, object sender, EventArgs args)
+        protected virtual void OnItemBonusChanged(int bonusType, int bonusAmount)
         {
-            ItemBonusChangedEventArgs changeArgs = args as ItemBonusChangedEventArgs;
-            if (changeArgs == null || changeArgs.BonusType == 0 || changeArgs.BonusAmount == 0)
+            if (bonusType == 0 || bonusAmount == 0)
                 return;
 
-            ItemBonus[changeArgs.BonusType] += changeArgs.BonusAmount;
+            ItemBonus[bonusType] += bonusAmount;
 
             if (ObjectState == eObjectState.Active)
             {
@@ -10694,14 +10702,20 @@ namespace DOL.GS
 
                 if (IsAlive)
                 {
-                    if (Health < MaxHealth) StartHealthRegeneration();
-                    else if (Health > MaxHealth) Health = MaxHealth;
+                    if (Health < MaxHealth)
+                        StartHealthRegeneration();
+                    else if (Health > MaxHealth)
+                        Health = MaxHealth;
 
-                    if (Mana < MaxMana) StartPowerRegeneration();
-                    else if (Mana > MaxMana) Mana = MaxMana;
+                    if (Mana < MaxMana)
+                        StartPowerRegeneration();
+                    else if (Mana > MaxMana)
+                        Mana = MaxMana;
 
-                    if (Endurance < MaxEndurance) StartEnduranceRegeneration();
-                    else if (Endurance > MaxEndurance) Endurance = MaxEndurance;
+                    if (Endurance < MaxEndurance)
+                        StartEnduranceRegeneration();
+                    else if (Endurance > MaxEndurance)
+                        Endurance = MaxEndurance;
                 }
             }
         }
@@ -10709,11 +10723,10 @@ namespace DOL.GS
         #endregion
 
         #region ReceiveItem/DropItem/PickupObject
+
         /// <summary>
         /// Receive an item from another living
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="item"></param>
         /// <returns>true if player took the item</returns>
         public override bool ReceiveItem(GameLiving source, DbInventoryItem item)
         {
@@ -10846,12 +10859,10 @@ namespace DOL.GS
 
             return gameItem;
         }
+
         /// <summary>
         /// Called when the player tries to pick up an object
         /// </summary>
-        /// <param name="floorObject"></param>
-        /// <param name="checkRange"></param>
-        /// <returns></returns>
         public virtual void PickupObject(GameObject floorObject, bool checkRange)
         {
             if (floorObject == null)
@@ -14923,9 +14934,6 @@ namespace DOL.GS
             m_canFly = false;
 
             CreateInventory();
-            GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemEquipped, new DOLEventHandler(OnItemEquipped));
-            GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemUnequipped, new DOLEventHandler(OnItemUnequipped));
-            GameEventMgr.AddHandler(m_inventory, PlayerInventoryEvent.ItemBonusChanged, new DOLEventHandler(OnItemBonusChanged));
 
             m_enteredGame = false;
             m_customDialogCallback = null;

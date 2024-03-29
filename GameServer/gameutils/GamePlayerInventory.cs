@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
@@ -138,15 +137,11 @@ namespace DOL.GS
 					foreach (eInventorySlot slot in EQUIP_SLOTS)
 					{
 						// skip weapons. only active weapons should fire equip event, done in player.SwitchWeapon
-						if (slot >= eInventorySlot.RightHandWeapon && slot <= eInventorySlot.DistanceWeapon)
+						if (slot is >= eInventorySlot.RightHandWeapon and <= eInventorySlot.DistanceWeapon)
 							continue;
 
-						DbInventoryItem item;
-
-						if (m_items.TryGetValue(slot, out item))
-						{
-							m_player.Notify(PlayerInventoryEvent.ItemEquipped, this, new ItemEquippedArgs(item, slot));
-						}
+						if (m_items.TryGetValue(slot, out DbInventoryItem item))
+							m_player.OnItemEquipped(item, slot);
 					}
 
 					return true;
@@ -326,7 +321,7 @@ namespace DOL.GS
 			}
 
 			if (IsEquippedSlot((eInventorySlot) item.SlotPosition))
-				m_player.Notify(PlayerInventoryEvent.ItemEquipped, this, new ItemEquippedArgs(item, eInventorySlot.Invalid));
+				m_player.OnItemEquipped(item, eInventorySlot.Invalid);
 
 			(item as IGameInventoryItem)?.OnReceive(m_player);
 			return true;
@@ -404,7 +399,7 @@ namespace DOL.GS
 			m_player.TradeWindow?.RemoveItemToTrade(item);
 
 			if (IsEquippedSlot(oldSlot))
-				m_player.Notify(PlayerInventoryEvent.ItemUnequipped, this, new ItemUnequippedArgs(item, oldSlot));
+				m_player.OnItemUnequipped(item, oldSlot);
 			else if (oldSlot is >= eInventorySlot.FirstQuiver and <= eInventorySlot.FourthQuiver)
 				m_player.SwitchQuiver(eActiveQuiverSlot.None, true);
 
@@ -1116,11 +1111,11 @@ namespace DOL.GS
 				{
 					if (toSlotEquipped) // item was equipped
 					{
-						m_player.Notify(PlayerInventoryEvent.ItemUnequipped, this, new ItemUnequippedArgs(toItem, toSlot));
+						m_player.OnItemUnequipped(toItem, toSlot);
 					}
 					else
 					{
-						m_player.Notify(PlayerInventoryEvent.ItemEquipped, this, new ItemEquippedArgs(toItem, toSlot));
+						m_player.OnItemEquipped(toItem, toSlot);
 					}
 				}
 
@@ -1128,11 +1123,11 @@ namespace DOL.GS
 				{
 					if (fromSlotEquipped) // item was equipped
 					{
-						m_player.Notify(PlayerInventoryEvent.ItemUnequipped, this, new ItemUnequippedArgs(fromItem, fromSlot));
+						m_player.OnItemUnequipped(fromItem, fromSlot);
 					}
 					else
 					{
-						m_player.Notify(PlayerInventoryEvent.ItemEquipped, this, new ItemEquippedArgs(fromItem, fromSlot));
+						m_player.OnItemEquipped(fromItem, fromSlot);
 					}
 				}
 			}
