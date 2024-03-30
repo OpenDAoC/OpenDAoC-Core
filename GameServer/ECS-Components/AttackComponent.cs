@@ -771,6 +771,9 @@ namespace DOL.GS
                     if (DreamweaverRR5 != null)
                         DreamweaverRR5.Cancel(false);
                 }*/
+
+                bool oldAttackState = AttackState;
+
                 if (LivingStartAttack())
                 {
                     if (player.castingComponent.SpellHandler?.Spell.Uninterruptible == false)
@@ -780,7 +783,7 @@ namespace DOL.GS
                     }
 
                     if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-                        player.Out.SendAttackMode(AttackState);
+                        player.Out.SendAttackMode(AttackState && !oldAttackState);
                     else
                     {
                         string typeMsg = attackWeapon.Object_Type == (int) eObjectType.Thrown ? "throw" : "shot";
@@ -889,12 +892,13 @@ namespace DOL.GS
                 }
             }
 
+            bool oldAttackState = AttackState;
             AttackState = false;
             owner.CancelEngageEffect();
             owner.styleComponent.NextCombatStyle = null;
             owner.styleComponent.NextCombatBackupStyle = null;
 
-            if (owner is GamePlayer playerOwner && playerOwner.IsAlive)
+            if (oldAttackState && owner is GamePlayer playerOwner && playerOwner.IsAlive)
                 playerOwner.Out.SendAttackMode(AttackState);
             else if (owner is GameNPC npcOwner && npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null && npcOwner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                 npcOwner.SwitchWeapon(eActiveWeaponSlot.Distance);
