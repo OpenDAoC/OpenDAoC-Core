@@ -269,7 +269,7 @@ namespace DOL.GS
 
             static bool Predicate(GamePlayer player, string playerName)
             {
-                if (!player.Client.IsPlaying || player.ObjectState != GameObject.eObjectState.Active)
+                if (!player.Client.IsPlaying || player.ObjectState is not GameObject.eObjectState.Active)
                     return false;
 
                 if (player.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase))
@@ -300,7 +300,7 @@ namespace DOL.GS
 
             static bool Predicate(GamePlayer player, (string playerName, List<GamePlayer> partialList) args)
             {
-                if (!player.Client.IsPlaying || player.ObjectState != GameObject.eObjectState.Active)
+                if (!player.Client.IsPlaying || player.ObjectState is not GameObject.eObjectState.Active)
                     return false;
 
                 if (player.Name.Equals(args.playerName, StringComparison.OrdinalIgnoreCase))
@@ -610,7 +610,7 @@ namespace DOL.GS
             {
                 GameNPC npc = npcInCache.Key;
 
-                if (!npc.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || npc.ObjectState != GameObject.eObjectState.Active || !npc.IsVisibleTo(player))
+                if (!npc.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || npc.ObjectState is not GameObject.eObjectState.Active || !npc.IsVisibleTo(player))
                     npcUpdateCache.Remove(npc, out _);
             }
 
@@ -620,26 +620,26 @@ namespace DOL.GS
             CachedNpcValues cachedTargetValues = null;
             CachedNpcValues cachedPetValues = null;
 
-            foreach (GameNPC objectInRange in npcsInRange)
+            foreach (GameNPC npcInRange in npcsInRange)
             {
-                if (!objectInRange.IsVisibleTo(player))
+                if (npcInRange.ObjectState is not GameObject.eObjectState.Active || !npcInRange.IsVisibleTo(player))
                     continue;
 
-                if (!npcUpdateCache.TryGetValue(objectInRange, out CachedNpcValues cachedNpcValues))
-                    UpdateObjectForPlayer(player, objectInRange);
+                if (!npcUpdateCache.TryGetValue(npcInRange, out CachedNpcValues cachedNpcValues))
+                    UpdateObjectForPlayer(player, npcInRange);
                 else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL))
-                    UpdateObjectForPlayer(player, objectInRange);
+                    UpdateObjectForPlayer(player, npcInRange);
                 else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + 250))
                 {
                     // `GameNPC.HealthPercent` is a bit of an expensive call. Do it last.
-                    if (objectInRange == targetObject)
+                    if (npcInRange == targetObject)
                     {
-                        if (objectInRange.HealthPercent > cachedNpcValues.HealthPercent)
+                        if (npcInRange.HealthPercent > cachedNpcValues.HealthPercent)
                             cachedTargetValues = cachedNpcValues;
                     }
-                    else if (objectInRange == pet)
+                    else if (npcInRange == pet)
                     {
-                        if (objectInRange.HealthPercent > cachedNpcValues.HealthPercent)
+                        if (npcInRange.HealthPercent > cachedNpcValues.HealthPercent)
                             cachedPetValues = cachedNpcValues;
                     }
                 }
@@ -660,7 +660,7 @@ namespace DOL.GS
             {
                 GameStaticItem item = itemInCache.Key;
 
-                if (!item.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || item.ObjectState != GameObject.eObjectState.Active || !item.IsVisibleTo(player))
+                if (!item.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || item.ObjectState is not GameObject.eObjectState.Active || !item.IsVisibleTo(player))
                     itemUpdateCache.Remove(item, out _);
             }
 
@@ -668,7 +668,7 @@ namespace DOL.GS
 
             foreach (GameStaticItem itemInRange in itemsInRange)
             {
-                if (!itemInRange.IsVisibleTo(player))
+                if (itemInRange.ObjectState is not GameObject.eObjectState.Active || !itemInRange.IsVisibleTo(player))
                     continue;
 
                 if (!itemUpdateCache.TryGetValue(itemInRange, out _))
@@ -684,7 +684,7 @@ namespace DOL.GS
             {
                 GameDoorBase door = doorInCache.Key;
 
-                if (!door.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || door.ObjectState != GameObject.eObjectState.Active || !door.IsVisibleTo(player))
+                if (!door.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || door.ObjectState is not GameObject.eObjectState.Active || !door.IsVisibleTo(player))
                     doorUpdateCache.Remove(door, out _);
             }
 
@@ -692,7 +692,7 @@ namespace DOL.GS
 
             foreach (GameDoorBase doorInRange in doorsInRange)
             {
-                if (!doorInRange.IsVisibleTo(player))
+                if (doorInRange.ObjectState is not GameObject.eObjectState.Active || !doorInRange.IsVisibleTo(player))
                     continue;
 
                 if (!doorUpdateCache.TryGetValue(doorInRange, out long lastUpdate))
