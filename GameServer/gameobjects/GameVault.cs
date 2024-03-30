@@ -234,30 +234,33 @@ namespace DOL.GS
                         return false;
                     }
 
-                    // Check for a swap to get around not allowing non-tradeable items in a housing vault.
-                    if (fromHousing && this is not AccountVault)
+                    if (player.Client.Account.PrivLevel == 1)
                     {
-                        if (!characterInventoryLockTaken)
-                            Monitor.Enter(player.Inventory.LockObject, ref characterInventoryLockTaken);
-
-                        DbInventoryItem itemInToSlot = player.Inventory.GetItem(toSlot);
-
-                        if (itemInToSlot != null && !itemInToSlot.IsTradable)
+                        // Check for a swap to get around not allowing non-tradeable items in a housing vault.
+                        if (fromHousing && this is not AccountVault)
                         {
-                            player.Out.SendMessage("You cannot swap with an untradable item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            player.Out.SendInventoryItemsUpdate(null);
-                            return false;
+                            if (!characterInventoryLockTaken)
+                                Monitor.Enter(player.Inventory.LockObject, ref characterInventoryLockTaken);
+
+                            DbInventoryItem itemInToSlot = player.Inventory.GetItem(toSlot);
+
+                            if (itemInToSlot != null && !itemInToSlot.IsTradable)
+                            {
+                                player.Out.SendMessage("You cannot swap with an untradable item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                player.Out.SendInventoryItemsUpdate(null);
+                                return false;
+                            }
                         }
-                    }
 
-                    // Allow people to get untradable items out of their house vaults (old bug) but block placing untradable items into housing vaults from any source.
-                    if (toHousing && this is not AccountVault)
-                    {
-                        if (itemInFromSlot != null && !itemInFromSlot.IsTradable)
+                        // Allow people to get untradable items out of their house vaults (old bug) but block placing untradable items into housing vaults from any source.
+                        if (toHousing && this is not AccountVault)
                         {
-                            player.Out.SendMessage("You can not put this item into a House Vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            player.Out.SendInventoryItemsUpdate(null);
-                            return false;
+                            if (itemInFromSlot != null && !itemInFromSlot.IsTradable)
+                            {
+                                player.Out.SendMessage("You can not put this item into a house vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                player.Out.SendInventoryItemsUpdate(null);
+                                return false;
+                            }
                         }
                     }
 
