@@ -340,7 +340,7 @@ namespace DOL.GS
 			InventoryLogging.LogInventoryAction(player, "(salvage)", eInventoryActionType.Craft, itemToSalvage.Template, itemToSalvage.Count);
 
 			Dictionary<int, int> changedSlots = new Dictionary<int, int>(5); // value: < 0 = new item count; > 0 = add to old
-			lock(player.Inventory)
+			lock (player.Inventory.LockObject)
 			{
 				int count = materialCount;
 				foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))

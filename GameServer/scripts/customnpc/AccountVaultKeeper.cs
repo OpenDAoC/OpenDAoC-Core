@@ -125,7 +125,7 @@ namespace DOL.GS
 
             player.ActiveInventoryObject?.RemoveObserver(player);
 
-            lock (LockObject())
+            lock (LockObject)
             {
                 _observers.TryAdd(player.Name, player);
             }

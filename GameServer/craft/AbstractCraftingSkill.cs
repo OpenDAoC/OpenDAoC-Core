@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -278,7 +259,7 @@ namespace DOL.GS
 			ArrayList missingMaterials = null;
 
 			long totalPrice = 0;
-			lock (player.Inventory)
+			lock (player.Inventory.LockObject)
 			{
 				foreach (var ingredient in recipe.Ingredients)
 				{
@@ -392,7 +373,7 @@ namespace DOL.GS
 		{
 			Dictionary<int, int?> dataSlots = new Dictionary<int, int?>(10);
 
-			lock (player.Inventory)
+			lock (player.Inventory.LockObject)
 			{
 				foreach (var ingredient in recipe.Ingredients)
 				{
@@ -462,7 +443,7 @@ namespace DOL.GS
 
 			Dictionary<int, int> changedSlots = new Dictionary<int, int>(5); // key : > 0 inventory ; < 0 ground || value: < 0 = new item count; > 0 = add to old
 
-			lock (player.Inventory)
+			lock (player.Inventory.LockObject)
 			{
 				int count = product.PackSize < 1 ? 1 : product.PackSize;
 				foreach (DbInventoryItem item in player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))

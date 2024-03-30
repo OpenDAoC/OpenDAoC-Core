@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -22,11 +23,6 @@ namespace DOL.GS
         /// for any one observer if there is a change.
         /// </summary>
         protected Dictionary<string, GamePlayer> _observers = [];
-
-        /// <summary>
-        /// This is used to synchronize actions on the vault.
-        /// </summary>
-        protected object _vaultSync = new();
 
         public int Index { get; protected set; }
 
@@ -55,10 +51,7 @@ namespace DOL.GS
         /// </summary>
         public virtual int LastDbSlot => (int) eInventorySlot.HouseVault_First + VaultSize * (Index + 1) - 1;
 
-        public object LockObject()
-        {
-            return _vaultSync;
-        }
+        public object LockObject { get; } = new();
 
         public virtual string GetOwner(GamePlayer player = null)
         {
@@ -143,7 +136,7 @@ namespace DOL.GS
 
             player.ActiveInventoryObject?.RemoveObserver(player);
 
-            lock (LockObject())
+            lock (LockObject)
             {
                 _observers.TryAdd(player.Name, player);
             }
@@ -184,78 +177,99 @@ namespace DOL.GS
 
             bool fromHousing = GameInventoryObjectExtensions.IsHousingInventorySlot(fromSlot);
             DbInventoryItem itemInFromSlot = null;
+            bool characterInventoryLockTaken = false;
 
-            // If this is a shift right click move, find the first available slot of either inventory.
-            if (toSlot == eInventorySlot.GeneralHousing)
+            lock (LockObject)
             {
-                if (fromHousing)
+                try
                 {
-                    if (!GetClientInventory(player).TryGetValue((int) fromSlot, out itemInFromSlot))
+                    // If this is a shift right click move, find the first available slot of either inventory.
+                    if (toSlot == eInventorySlot.GeneralHousing)
+                    {
+                        Monitor.Enter(player.Inventory.LockObject, ref characterInventoryLockTaken);
+
+                        if (fromHousing)
+                        {
+                            if (!GetClientInventory(player).TryGetValue((int) fromSlot, out itemInFromSlot))
+                                return false;
+
+                            toSlot = itemInFromSlot.IsStackable ?
+                                     player.Inventory.FindFirstPartiallyFullSlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack, itemInFromSlot) :
+                                     player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+                        }
+                        else if (GameInventoryObjectExtensions.IsCharacterInventorySlot(fromSlot))
+                        {
+                            itemInFromSlot = player.Inventory.GetItem(fromSlot);
+
+                            if (itemInFromSlot == null)
+                                return false;
+
+                            toSlot = itemInFromSlot.IsStackable ?
+                                     GetFirstPartiallyFullClientSlot(player, itemInFromSlot) :
+                                     GetFirstEmptyClientSlot(player);
+                        }
+                    }
+
+                    bool toHousing = GameInventoryObjectExtensions.IsHousingInventorySlot(toSlot);
+
+                    if (!fromHousing && !toHousing)
                         return false;
 
-                    toSlot = itemInFromSlot.IsStackable ?
-                                player.Inventory.FindFirstPartiallyFullSlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack, itemInFromSlot) :
-                                player.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                }
-                else if (GameInventoryObjectExtensions.IsCharacterInventorySlot(fromSlot))
-                {
-                    itemInFromSlot = player.Inventory.GetItem(fromSlot);
-
-                    if (itemInFromSlot == null)
+                    if (player.ActiveInventoryObject is not GameVault gameVault)
+                    {
+                        player.Out.SendMessage("You are not actively viewing a vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        player.Out.SendInventoryItemsUpdate(null);
                         return false;
+                    }
 
-                    toSlot = itemInFromSlot.IsStackable ?
-                                GetFirstPartiallyFullClientSlot(player, itemInFromSlot) :
-                                GetFirstEmptyClientSlot(player);
+                    if (toHousing && !gameVault.CanAddItems(player))
+                    {
+                        player.Out.SendMessage("You don't have permission to add items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return false;
+                    }
+
+                    if (fromHousing && !gameVault.CanRemoveItems(player))
+                    {
+                        player.Out.SendMessage("You don't have permission to remove items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        return false;
+                    }
+
+                    // Check for a swap to get around not allowing non-tradeable items in a housing vault.
+                    if (fromHousing && this is not AccountVault)
+                    {
+                        if (!characterInventoryLockTaken)
+                            Monitor.Enter(player.Inventory.LockObject, ref characterInventoryLockTaken);
+
+                        DbInventoryItem itemInToSlot = player.Inventory.GetItem(toSlot);
+
+                        if (itemInToSlot != null && !itemInToSlot.IsTradable)
+                        {
+                            player.Out.SendMessage("You cannot swap with an untradable item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendInventoryItemsUpdate(null);
+                            return false;
+                        }
+                    }
+
+                    // Allow people to get untradable items out of their house vaults (old bug) but block placing untradable items into housing vaults from any source.
+                    if (toHousing && this is not AccountVault)
+                    {
+                        if (itemInFromSlot != null && !itemInFromSlot.IsTradable)
+                        {
+                            player.Out.SendMessage("You can not put this item into a House Vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            player.Out.SendInventoryItemsUpdate(null);
+                            return false;
+                        }
+                    }
+
+                    GameInventoryObjectExtensions.NotifyObservers(this, player, _observers, GameInventoryObjectExtensions.MoveItem(this, player, fromSlot, toSlot, count));
+                }
+                finally
+                {
+                    if (characterInventoryLockTaken)
+                        Monitor.Exit(player.Inventory.LockObject);
                 }
             }
 
-            bool toHousing = GameInventoryObjectExtensions.IsHousingInventorySlot(toSlot);
-
-            if (!fromHousing && !toHousing)
-                return false;
-
-            if (player.ActiveInventoryObject is not GameVault gameVault)
-            {
-                player.Out.SendMessage("You are not actively viewing a vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.Out.SendInventoryItemsUpdate(null);
-                return false;
-            }
-
-            if (toHousing && !gameVault.CanAddItems(player))
-            {
-                player.Out.SendMessage("You don't have permission to add items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return false;
-            }
-
-            if (fromHousing && !gameVault.CanRemoveItems(player))
-            {
-                player.Out.SendMessage("You don't have permission to remove items!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return false;
-            }
-
-            DbInventoryItem itemInToSlot = player.Inventory.GetItem(toSlot);
-
-            // Check for a swap to get around not allowing non-tradeable items in a housing vault.
-            if (fromHousing && itemInToSlot != null && !itemInToSlot.IsTradable && this is not AccountVault)
-            {
-                player.Out.SendMessage("You cannot swap with an untradable item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.Out.SendInventoryItemsUpdate(null);
-                return false;
-            }
-
-            // Allow people to get untradable items out of their house vaults (old bug) but block placing untradable items into housing vaults from any source.
-            if (toHousing && itemInFromSlot != null && !itemInFromSlot.IsTradable && this is not AccountVault)
-            {
-                player.Out.SendMessage("You can not put this item into a House Vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.Out.SendInventoryItemsUpdate(null);
-                return false;
-            }
-
-            lock (_vaultSync)
-            {
-                GameInventoryObjectExtensions.NotifyObservers(this, player, _observers, GameInventoryObjectExtensions.MoveItem(this, player, fromSlot, toSlot, count));
-            }
             return true;
         }
 

@@ -157,5 +157,6 @@ namespace DOL.GS
         ICollection<DbInventoryItem> EquippedItems { get; }
         ICollection<DbInventoryItem> AllItems { get; }
         int InventoryWeight { get; }
+        object LockObject { get; }
     }
 }

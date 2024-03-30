@@ -38,7 +38,7 @@ namespace DOL.GS
 		/// <returns>success</returns>
 		public override bool LoadFromDatabase(string inventoryID)
 		{
-			lock (m_items)
+			lock (LockObject)
 			{
 				try
 				{
@@ -163,7 +163,7 @@ namespace DOL.GS
 		/// <returns>success</returns>
 		public override bool SaveIntoDatabase(string inventoryID)
 		{
-			lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+			lock (LockObject)
 			{
 				try
 				{
@@ -501,7 +501,7 @@ namespace DOL.GS
             DbInventoryItem toItem;
             bool moved;
 
-            lock (m_items)
+            lock (LockObject)
             {
                 if (!GetValidInventorySlot(ref fromSlot) || !GetValidInventorySlot(ref toSlot))
                     return false;
@@ -563,7 +563,7 @@ namespace DOL.GS
             if (!CheckPlayerState())
                 return false;
 
-            lock (m_items)
+            lock (LockObject)
             {
                 if (!GetValidInventorySlot(ref playerInventorySlot))
                     return false;
@@ -1182,7 +1182,7 @@ namespace DOL.GS
 				var weight = 0;
 				IList<DbInventoryItem> items;
 
-				lock (m_items) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+				lock (LockObject)
 				{
 					items = new List<DbInventoryItem>(m_items.Values);
 				}

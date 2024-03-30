@@ -20,12 +20,6 @@ namespace DOL.GS
         protected Dictionary<string, GamePlayer> _observers = [];
         protected long _money;
         protected object _moneyLock = new();
-        protected object _vaultSync = new();
-
-        public object LockObject()
-        {
-            return _vaultSync;
-        }
 
         /// <summary>
         /// First slot of the client window that shows this inventory
@@ -46,6 +40,8 @@ namespace DOL.GS
         /// Last slot in the DB.
         /// </summary>
         public virtual int LastDbSlot => (int) eInventorySlot.Consignment_Last;
+
+        public object LockObject { get; } = new();
 
         private static Dictionary<string, GameLocation> _tokenDestinations =
             new()
@@ -199,7 +195,7 @@ namespace DOL.GS
             if (!CanHandleMove(player, fromClientSlot, toClientSlot))
                 return false;
 
-            lock (_vaultSync)
+            lock (LockObject)
             {
                 if (fromClientSlot == toClientSlot)
                     return false;
@@ -408,7 +404,7 @@ namespace DOL.GS
             player.TempProperties.RemoveProperty(CONSIGNMENT_BUY_ITEM);
             DbInventoryItem item = null;
 
-            lock (LockObject())
+            lock (LockObject)
             {
                 if (fromClientSlot != eInventorySlot.Invalid)
                 {
@@ -431,7 +427,7 @@ namespace DOL.GS
                 if (usingMarketExplorer && ServerProperties.Properties.MARKET_FEE_PERCENT > 0)
                     purchasePrice += purchasePrice * ServerProperties.Properties.MARKET_FEE_PERCENT / 100;
 
-                lock (player.Inventory)
+                lock (player.Inventory.LockObject)
                 {
                     if (purchasePrice <= 0)
                     {

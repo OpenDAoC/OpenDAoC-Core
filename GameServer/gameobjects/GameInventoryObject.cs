@@ -11,11 +11,11 @@ namespace DOL.GS
     /// </summary>
     public interface IGameInventoryObject
     {
-        object LockObject();
         eInventorySlot FirstClientSlot { get; }
         eInventorySlot LastClientSlot { get; }
         int FirstDbSlot { get; }
         int LastDbSlot { get; }
+        object LockObject { get; }
         string GetOwner(GamePlayer player);
         IList<DbInventoryItem> DBItems(GamePlayer player = null);
         Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player);
@@ -55,7 +55,7 @@ namespace DOL.GS
 
         public static IDictionary<int, DbInventoryItem> MoveItem(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort count)
         {
-            lock (thisObject.LockObject())
+            lock (thisObject.LockObject)
             {
                 if (!GetItemInSlot(fromClientSlot, out DbInventoryItem fromItem))
                 {

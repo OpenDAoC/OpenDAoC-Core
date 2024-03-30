@@ -302,7 +302,7 @@ namespace DOL.GS
 			}
 			if (removeFromInventory)
 			{
-				lock (player.Inventory)
+				lock (player.Inventory.LockObject)
 				{
 					bool success = player.Inventory.RemoveItem(m_item);
 					InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Other, m_item.Template, m_item.Count);

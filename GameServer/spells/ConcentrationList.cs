@@ -1,29 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using DOL.GS.Effects;
-
 using log4net;
 
 namespace DOL.GS.Spells
@@ -83,7 +63,7 @@ namespace DOL.GS.Spells
 		{
 			BeginChanges();
 
-			lock (m_lockObject) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+			lock (m_lockObject)
 			{
 				if (m_concSpells == null)
 					m_concSpells = new List<IConcentrationEffect>(20);
@@ -132,7 +112,7 @@ namespace DOL.GS.Spells
 			if (m_concSpells == null)
 				return;
 
-			lock (m_lockObject) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+			lock (m_lockObject)
 			{
 				if (m_concSpells.Contains(effect))
 				{
@@ -217,7 +197,7 @@ namespace DOL.GS.Spells
 			if (m_concSpells == null)
 				return null;
 			
-			lock (m_lockObject) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+			lock (m_lockObject)
 			{
 				return m_concSpells.FirstOrDefault(eff => eff.GetType().Equals(effectType));
 			}
@@ -233,7 +213,7 @@ namespace DOL.GS.Spells
 			if (m_concSpells == null)
 				return new IConcentrationEffect[0];
 			
-			lock (m_lockObject) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+			lock (m_lockObject)
 			{
 				return m_concSpells.Where(eff => eff.GetType().Equals(effectType)).ToArray();
 			}

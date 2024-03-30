@@ -1,49 +1,13 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-/* Created by Shawn
- * Date : March 29 2011
- * Version : 1.0
- * 
- * All you need to do when you add this to your core is
- * /mob create DOL.GS.BuffMerchant
- * and then
- * /merchant sell add BuffTokens
- * 
- * Updated by Mattress to apply buffs equally to all class types, set values to match live.
- * Added option to purchase with bounty points.  Feb 6, 2012.
- * 
- * Enjoy!
- */
-
-using System;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
-using System.Collections;
-
-using DOL.Events;
 using DOL.Database;
-using DOL.Language;
+using DOL.Events;
 using DOL.GS;
-using DOL.GS.Spells;
 using DOL.GS.PacketHandler;
-
+using DOL.GS.Spells;
+using DOL.Language;
 using log4net;
 
 namespace DOL.GS
@@ -914,7 +878,7 @@ namespace DOL.GS
 
 				long totalValue = number * (template.Price);
 
-				lock (player.Inventory)
+				lock (player.Inventory.LockObject)
 				{
 					if (player.BountyPoints < totalValue)
 					{
@@ -954,7 +918,7 @@ namespace DOL.GS
 
 				long totalValue = number * template.Price;
 
-				lock (player.Inventory)
+				lock (player.Inventory.LockObject)
 				{
 
 					if (player.GetCurrentMoney() < totalValue)
@@ -1259,7 +1223,7 @@ namespace DOL.GS
 #region Tokens
 namespace DOL.GS.Items
 {
-	public class BuffTokens
+    public class BuffTokens
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -2050,4 +2014,3 @@ public class BPBuffTokensList
 	}
 }
 #endregion
-

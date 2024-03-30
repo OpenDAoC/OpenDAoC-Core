@@ -84,7 +84,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 //check emblems at world load before any updates
                 if (player.Inventory != null) 
                 {
-                    lock (player.Inventory)
+                    lock (player.Inventory.LockObject)
                     {
                         Guild playerGuild = player.Guild;
                         foreach (DbInventoryItem myitem in player.Inventory.AllItems)

@@ -1212,7 +1212,6 @@ namespace DOL.GS.Commands
 							#region Valid Characters Check
 							if (!IsValidGuildName(guildname))
 							{
-								// Mannen doesn't know the live server message, so someone needs to enter it . ;-)
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.InvalidLetters"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
