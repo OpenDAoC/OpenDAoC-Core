@@ -15,9 +15,6 @@ namespace DOL.GS.PacketHandler.Client.v168
              * 0x0001 = players attack mode bit (not targets!)
              */
 
-            if (targetId == 0)
-                return;
-
             ChangeTarget(client.Player, targetId, (flags & (0x4000 | 0x2000)) != 0, (flags & 0x8000) != 0);
         }
 
@@ -25,7 +22,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         {
             GameObject target = actionSource.CurrentRegion.GetObject(newTargetId);
 
-            if (!actionSource.IsWithinRadius(target, WorldMgr.OBJ_UPDATE_DISTANCE))
+            if (newTargetId > 0 && !actionSource.IsWithinRadius(target, WorldMgr.OBJ_UPDATE_DISTANCE))
             {
                 actionSource.Out.SendObjectDelete(newTargetId);
                 target = null;
