@@ -63,26 +63,19 @@ namespace DOL.GS
 		/// for players the vault, the equipped items and the backpack
 		/// and for mob the quest drops ect ...
 		/// </summary>
-		protected readonly Dictionary<eInventorySlot, DbInventoryItem> m_items;
+		protected readonly Dictionary<eInventorySlot, DbInventoryItem> m_items = [];
+
+		protected readonly List<DbInventoryItem> _itemsAwaitingDeletion = [];
 
 		/// <summary>
 		/// Holds all changed slots
 		/// </summary>
-		protected List<eInventorySlot> m_changedSlots;
+		protected List<eInventorySlot> m_changedSlots = [];
 
 		/// <summary>
 		/// Holds the begin changes counter for slot updates
 		/// </summary>
 		protected int m_changesCounter;
-
-		/// <summary>
-		/// Constructs a new empty inventory
-		/// </summary>
-		protected GameLivingInventory()
-		{
-			m_items = new Dictionary<eInventorySlot, DbInventoryItem>();
-			m_changedSlots = new List<eInventorySlot>();
-		}
 
 		/// <summary>
 		/// LoadFromDatabase
@@ -578,11 +571,10 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual bool AddTradeItem(eInventorySlot slot, DbInventoryItem item)
+		public virtual bool AddItemWithoutDbAddition(eInventorySlot slot, DbInventoryItem item)
 		{
 			return false;
 		}
-
 
 		/// <summary>
 		/// Removes all items from the inventory
@@ -634,8 +626,7 @@ namespace DOL.GS
 			return false;
 		}
 
-
-		public virtual bool RemoveTradeItem(DbInventoryItem item)
+		public virtual bool RemoveItemWithoutDbDeletion(DbInventoryItem item)
 		{
 			return false;
 		}

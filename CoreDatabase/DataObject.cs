@@ -128,4 +128,13 @@ namespace DOL.Database
 			return string.Format("DataObject: {0}, ObjectId{{{1}}}", TableName, ObjectId);
 		}
 	}
+
+	// Used to allow manipulation of inventory items and delay their database action.
+	public enum PendingDatabaseAction
+	{
+		NONE,
+		SAVE,
+		ADD,
+		DELETE
+	}
 }

@@ -8,7 +8,7 @@ namespace DOL.Database
 	/// <summary>
 	/// The InventoryItem table holds all values from the
 	/// ItemTemplate table and also some more values that
-	/// are neccessary to store the inventory position
+	/// are necessary to store the inventory position
 	/// </summary>
 	[DataTable(TableName = "Inventory")]
 	public class DbInventoryItem : DataObject
@@ -18,6 +18,24 @@ namespace DOL.Database
 		public const string BLANK_ITEM = "blank_item";
 
 		protected bool m_hasLoggedError = false;
+		private PendingDatabaseAction _pendingDatabaseAction = PendingDatabaseAction.SAVE;
+
+		public PendingDatabaseAction PendingDatabaseAction
+		{
+			get => _pendingDatabaseAction;
+			set
+			{
+				// If an addition is cancelled by a deletion, no action will be necessary.
+				if (_pendingDatabaseAction is PendingDatabaseAction.ADD && value is PendingDatabaseAction.DELETE)
+				{
+					_pendingDatabaseAction = PendingDatabaseAction.NONE;
+					return;
+				}
+
+				_pendingDatabaseAction = value;
+				Dirty = true;
+			}
+		}
 
 		#region Inventory fields
 
@@ -807,6 +825,5 @@ namespace DOL.Database
 
 			return str;
 		}
-
 	}
 }

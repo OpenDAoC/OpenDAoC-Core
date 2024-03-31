@@ -1,25 +1,6 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections;
 using System.Reflection;
-using DOL.GS;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using log4net;
@@ -578,7 +559,7 @@ namespace DOL.GS
                     {
                         lock (m_owner.Inventory)
                         {
-							if (!m_owner.Inventory.RemoveTradeItem(item))
+							if (!m_owner.Inventory.RemoveItemWithoutDbDeletion(item))
 							{
 								if (logTrade)
 									GameServer.Instance.LogGMAction("   NOTItem: " + m_owner.Name + "(" + m_owner.Client.Account.Name + ") -> " + partner.Name + "(" + partner.Client.Account.Name + ") : " + item.Name + "(" + item.Id_nb + ")");
@@ -594,7 +575,7 @@ namespace DOL.GS
                     {
                         lock (partner.Inventory)
                         {
-							if (!partner.Inventory.RemoveTradeItem(item))
+							if (!partner.Inventory.RemoveItemWithoutDbDeletion(item))
 							{
 								if (logTrade)
 									GameServer.Instance.LogGMAction("   NOTItem: " + m_owner.Name + "(" + m_owner.Client.Account.Name + ") -> " + partner.Name + "(" + partner.Client.Account.Name + ") : " + item.Name + "(" + item.Id_nb + ")");
@@ -633,7 +614,7 @@ namespace DOL.GS
 						}
 						else
 						{
-							tradeSuccess = partner.Inventory.AddTradeItem(eInventorySlot.FirstEmptyBackpack, itemtoadd);
+							tradeSuccess = partner.Inventory.AddItemWithoutDbAddition(eInventorySlot.FirstEmptyBackpack, itemtoadd);
 						}
 
 						if (!tradeSuccess)
@@ -676,7 +657,7 @@ namespace DOL.GS
 						}
 						else
 						{
-							tradeSuccess = m_owner.Inventory.AddTradeItem(eInventorySlot.FirstEmptyBackpack, itemtoadd);
+							tradeSuccess = m_owner.Inventory.AddItemWithoutDbAddition(eInventorySlot.FirstEmptyBackpack, itemtoadd);
 						}
 
 						if (!tradeSuccess)

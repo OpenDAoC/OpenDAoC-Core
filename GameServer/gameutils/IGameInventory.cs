@@ -121,11 +121,11 @@ namespace DOL.GS
         bool SaveIntoDatabase(string inventoryID);
 
         bool AddItem(eInventorySlot slot, DbInventoryItem item);
-        bool AddTradeItem(eInventorySlot slot, DbInventoryItem item);
+        bool AddItemWithoutDbAddition(eInventorySlot slot, DbInventoryItem item);
         bool AddCountToStack(DbInventoryItem item, int count);
         bool AddTemplate(DbInventoryItem template, int count, eInventorySlot minSlot, eInventorySlot maxSlot);
         bool RemoveItem(DbInventoryItem item);
-        bool RemoveTradeItem(DbInventoryItem item);
+        bool RemoveItemWithoutDbDeletion(DbInventoryItem item);
         bool RemoveCountFromStack(DbInventoryItem item, int count);
         bool RemoveTemplate(string templateID, int count, eInventorySlot minSlot, eInventorySlot maxSlot);
         bool MoveItem(eInventorySlot fromSlot, eInventorySlot toSlot, int itemCount);

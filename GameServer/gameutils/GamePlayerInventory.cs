@@ -165,96 +165,102 @@ namespace DOL.GS
 		{
 			lock (LockObject)
 			{
-				try
+				foreach (DbInventoryItem item in _itemsAwaitingDeletion)
 				{
-					foreach (var item in m_items)
+					try
 					{
-						try
-						{
-							DbInventoryItem currentItem = item.Value;
-
-							if (currentItem == null)
-								continue;
-
-							bool canPersist = true;
-							GameInventoryItem gameItem = currentItem as GameInventoryItem;
-							if (gameItem != null)
-							{
-								canPersist = gameItem.CanPersist;
-							}
-
-							if (canPersist == false)
-								continue;
-
-							if (GetValidInventorySlot((eInventorySlot) currentItem.SlotPosition) == eInventorySlot.Invalid)
-							{
-								if (Log.IsErrorEnabled)
-									Log.Error("item's slot position is invalid. item slot=" + currentItem.SlotPosition + " id=" +
-									          currentItem.ObjectId);
-
-								continue;
-							}
-
-							if (currentItem.OwnerID != m_player.InternalID)
-							{
-								string itemOwner = currentItem.OwnerID ?? "(null)";
-
-								if (Log.IsErrorEnabled)
-									Log.Error("item owner id (" + itemOwner + ") not equals player ID (" + m_player.InternalID + "); item ID=" +
-									          currentItem.ObjectId);
-
-								continue;
-							}
-
-							if (currentItem.Dirty)
-							{
-								var realSlot = (int) item.Key;
-
-								if (currentItem.SlotPosition != realSlot)
-								{
-									if (Log.IsErrorEnabled)
-										Log.Error("Item slot and real slot position are different. Item slot=" + currentItem.SlotPosition +
-										          " real slot=" + realSlot + " item ID=" + currentItem.ObjectId);
-									currentItem.SlotPosition = realSlot; // just to be sure
-								}
-
-								// Check database to make sure player still owns this item before saving
-
-								DbInventoryItem checkItem = GameServer.Database.FindObjectByKey<DbInventoryItem>(currentItem.ObjectId);
-
-								if (checkItem == null || checkItem.OwnerID != m_player.InternalID)
-								{
-									if (checkItem != null)
-									{
-										Log.ErrorFormat("Item '{0}' : '{1}' does not have same owner id on save inventory.  Game Owner = '{2}' : '{3}', DB Owner = '{4}'", currentItem.Name, currentItem.ObjectId, m_player.Name, m_player.InternalID, checkItem.OwnerID);
-									}
-									else
-									{
-										Log.ErrorFormat("Item '{0}' : '{1}' not found in DBInventory for player '{2}'", currentItem.Name, currentItem.Id_nb, m_player.Name);
-									}
-
-									continue;
-								}
-
-								GameServer.Database.SaveObject(currentItem);
-							}
-						}
-						catch (Exception e)
-						{
-							if (Log.IsErrorEnabled)
-								Log.Error("Error saving inventory item: player=" + m_player.Name, e);
-						}
+						DeleteItem(item);
 					}
-
-					return true;
+					catch (Exception e)
+					{
+						if (Log.IsErrorEnabled)
+							Log.Error($"Error deleting item when saving player inventory. (ObjectId: {item.ObjectId}) (Player: {m_player})", e);
+					}
 				}
-				catch (Exception e)
+
+				_itemsAwaitingDeletion.Clear();
+
+				foreach (var pair in m_items)
+				{
+					try
+					{
+						SaveItem(pair);
+					}
+					catch (Exception e)
+					{
+						if (Log.IsErrorEnabled)
+							Log.Error($"Error saving item. (ObjectId: {pair.Value?.ObjectId}) (Player: {m_player})", e);
+					}
+				}
+
+				return true;
+			}
+
+			void DeleteItem(DbInventoryItem item)
+			{
+				bool canPersist = true;
+
+				if (item is GameInventoryItem gameItem)
+					canPersist = gameItem.CanPersist;
+
+				if (!canPersist)
+					return;
+
+				if (item.PendingDatabaseAction is PendingDatabaseAction.DELETE)
+				{
+					GameServer.Database.DeleteObject(item);
+					item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
+				}
+			}
+
+			void SaveItem(KeyValuePair<eInventorySlot, DbInventoryItem> pair)
+			{
+				DbInventoryItem item = pair.Value;
+
+				if (item == null)
+					return;
+
+				bool canPersist = true;
+
+				if (item is GameInventoryItem gameItem)
+					canPersist = gameItem.CanPersist;
+
+				if (!canPersist)
+					return;
+
+				int slot = (int) pair.Key;
+
+				if (item.SlotPosition != slot)
 				{
 					if (Log.IsErrorEnabled)
-						Log.Error("Saving player inventory (" + m_player.Name + ")", e);
+						Log.Error($"Item's slot doesn't match. Changing it to InventorySlot. (SlotPosition: {item.SlotPosition}) (InventorySlot: {slot}) (ObjectId: {item.ObjectId}");
 
-					return false;
+					item.SlotPosition = slot; // Just to be sure.
 				}
+
+				if (GetValidInventorySlot((eInventorySlot) item.SlotPosition) == eInventorySlot.Invalid)
+				{
+					if (Log.IsErrorEnabled)
+						Log.Error($"Item's slot position is invalid. (SlotPosition: {item.SlotPosition}) (ObjectId: {item.ObjectId})");
+
+					return;
+				}
+
+				if (item.OwnerID != m_player.InternalID)
+				{
+					if (Log.IsErrorEnabled)
+						Log.Error($"Item's owner ID doesn't equal inventory owner's ID. (ItemOwner: {item.OwnerID}) (InventoryOwner: {m_player.InternalID}) (ObjectId: {item.ObjectId}");
+
+					return;
+				}
+
+				if (item.PendingDatabaseAction is PendingDatabaseAction.ADD)
+				{
+					GameServer.Database.AddObject(item);
+					item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
+				}
+				else if (item.PendingDatabaseAction is PendingDatabaseAction.SAVE)
+					GameServer.Database.SaveObject(item);
 			}
 		}
 
@@ -267,57 +273,27 @@ namespace DOL.GS
 			return AddItem(slot, item, true);
 		}
 
-		public override bool AddTradeItem(eInventorySlot slot, DbInventoryItem item)
+		public override bool AddItemWithoutDbAddition(eInventorySlot slot, DbInventoryItem item)
 		{
 			return AddItem(slot, item, false);
 		}
 
-		protected bool AddItem(eInventorySlot slot, DbInventoryItem item, bool addObject)
+		private bool AddItem(eInventorySlot slot, DbInventoryItem item, bool markForAddition)
 		{
-			int savePosition = item.SlotPosition;
-			string saveOwnerID = item.OwnerID;
-
 			if (!base.AddItem(slot, item))
 				return false;
 
 			item.OwnerID = m_player.InternalID;
-			bool canPersist = true;
 
-			if (item is GameInventoryItem gameItem)
-				canPersist = gameItem.CanPersist;
-
-			if (canPersist)
+			if (markForAddition)
 			{
-				if (addObject)
-				{
-					if (GameServer.Database.AddObject(item) == false)
-					{
-						m_player.Out.SendMessage("Error adding item to the database, item may be lost!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				bool canPersist = true;
 
-						if (Log.IsErrorEnabled)
-							Log.Error($"Error adding item {item.Id_nb}:{item.Name} for player {m_player.Name} into the database during AddItem!");
+				if (item is GameInventoryItem gameItem)
+					canPersist = gameItem.CanPersist;
 
-						m_items.Remove(slot);
-						item.SlotPosition = savePosition;
-						item.OwnerID = saveOwnerID;
-						return false;
-					}
-				}
-				else
-				{
-					if (GameServer.Database.SaveObject(item) == false)
-					{
-						m_player.Out.SendMessage("Error saving item to the database, this item may be lost!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
-						if (Log.IsErrorEnabled)
-							Log.Error($"Error saving item {item.Id_nb}:{item.Name} for player {m_player.Name} into the database during AddItem!");
-
-						m_items.Remove(slot);
-						item.SlotPosition = savePosition;
-						item.OwnerID = saveOwnerID;
-						return false;
-					}
-				}
+				if (canPersist)
+					item.PendingDatabaseAction = PendingDatabaseAction.ADD;
 			}
 
 			if (IsEquippedSlot((eInventorySlot) item.SlotPosition))
@@ -332,12 +308,12 @@ namespace DOL.GS
 			return RemoveItem(item, true);
 		}
 
-		public override bool RemoveTradeItem(DbInventoryItem item)
+		public override bool RemoveItemWithoutDbDeletion(DbInventoryItem item)
 		{
 			return RemoveItem(item, false);
 		}
 
-		protected bool RemoveItem(DbInventoryItem item, bool deleteObject)
+		private bool RemoveItem(DbInventoryItem item, bool markForDeletion)
 		{
 			if (item == null)
 				return false;
@@ -345,54 +321,27 @@ namespace DOL.GS
 			if (item.OwnerID != m_player.InternalID)
 			{
 				if (Log.IsErrorEnabled)
-					Log.Error($"{m_player.Name}: PlayerInventory -> tried to remove item with wrong owner ({item.OwnerID})\n{Environment.StackTrace}");
+					Log.Error($"{m_player.Name} tried to remove item with wrong owner ({item.OwnerID})\n{Environment.StackTrace}");
 
 				return false;
 			}
 
-			int savePosition = item.SlotPosition;
-			string saveOwnerID = item.OwnerID;
 			eInventorySlot oldSlot = (eInventorySlot) item.SlotPosition;
 
 			if (!base.RemoveItem(item))
 				return false;
 
-			bool canPersist = true;
-
-			if (item is GameInventoryItem gameItem)
-				canPersist = gameItem.CanPersist;
-
-			if (canPersist)
+			if (markForDeletion)
 			{
-				if (deleteObject)
+				bool canPersist = true;
+
+				if (item is GameInventoryItem gameItem)
+					canPersist = gameItem.CanPersist;
+
+				if (canPersist)
 				{
-					if (GameServer.Database.DeleteObject(item) == false)
-					{
-						m_player.Out.SendMessage("Error deleting item from the database, operation aborted!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
-						if (Log.IsErrorEnabled)
-							Log.Error($"Error deleting item {item.Id_nb}:{item.Name} for player {m_player.Name} from the database during RemoveItem!");
-
-						m_items.Add(oldSlot, item);
-						item.SlotPosition = savePosition;
-						item.OwnerID = saveOwnerID;
-						return false;
-					}
-				}
-				else
-				{
-					if (GameServer.Database.SaveObject(item) == false)
-					{
-						m_player.Out.SendMessage("Error saving item to the database, operation aborted!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-
-						if (Log.IsErrorEnabled)
-							Log.Error($"Error saving item {item.Id_nb}:{item.Name} for player {m_player.Name} to the database during RemoveItem!");
-
-						m_items.Add(oldSlot, item);
-						item.SlotPosition = savePosition;
-						item.OwnerID = saveOwnerID;
-						return false;
-					}
+					item.PendingDatabaseAction = PendingDatabaseAction.DELETE;
+					_itemsAwaitingDeletion.Add(item);
 				}
 			}
 
@@ -425,10 +374,13 @@ namespace DOL.GS
 			if (item != null && item.OwnerID != m_player.InternalID)
 			{
 				if (Log.IsErrorEnabled)
-					Log.Error("Item owner not equals inventory owner.\n\n" + Environment.StackTrace);
+					Log.Error("Item owner not equals inventory owner.\n" + Environment.StackTrace);
 
 				return false;
 			}
+
+			if (item.Count <= 0)
+				item.PendingDatabaseAction = PendingDatabaseAction.DELETE;
 
 			return base.RemoveCountFromStack(item, count);
 		}
@@ -1060,8 +1012,7 @@ namespace DOL.GS
 				newItem.SlotPosition = (int) toSlot;
 				fromItem.Count -= itemCount;
 				newItem.AllowAdd = fromItem.Template.AllowAdd;
-				GameServer.Database.AddObject(newItem);
-
+				newItem.PendingDatabaseAction = PendingDatabaseAction.ADD;
 				return true;
 			}
 
@@ -1085,23 +1036,7 @@ namespace DOL.GS
 			bool fromSlotEquipped = IsEquippedSlot(fromSlot);
 			bool toSlotEquipped = IsEquippedSlot(toSlot);
 
-			if (base.ExchangeItems(fromSlot, toSlot) == false)
-			{
-
-			}
-
-			if (fromItem != null && fromItem.Id_nb != DbInventoryItem.BLANK_ITEM)
-			{
-				if (GameServer.Database.SaveObject(fromItem) == false)
-				{
-				}
-			}
-			if (toItem != null && toItem != fromItem && toItem.Id_nb != DbInventoryItem.BLANK_ITEM)
-			{
-				if (GameServer.Database.SaveObject(toItem) == false)
-				{
-				}
-			}
+			base.ExchangeItems(fromSlot, toSlot);
 
 			// notify handlers if items changing state
 			if (fromSlotEquipped != toSlotEquipped)

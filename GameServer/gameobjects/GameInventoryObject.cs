@@ -192,7 +192,7 @@ namespace DOL.GS
                     if (!player.Inventory.CheckItemsBeforeMovingFromOrToExternalInventory(fromItem, null, toClientSlot, fromClientSlot, count))
                         return;
 
-                    if (!player.Inventory.RemoveTradeItem(fromItem))
+                    if (!player.Inventory.RemoveItemWithoutDbDeletion(fromItem))
                     {
                         SendErrorMessage(player, nameof(MoveWholeStackFromCharacterInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, null, count);
                         return;
@@ -203,11 +203,13 @@ namespace DOL.GS
                     fromItem.OwnerID = thisObject.GetOwner(player);
                     thisObject.OnAddItem(player, fromItem);
 
-                    if (!GameServer.Database.SaveObject(fromItem))
+                    if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(MoveWholeStackFromCharacterInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, null, count);
                         return;
                     }
+
+                    player.Inventory.SaveIntoDatabase(player.InternalID);
                 }
 
                 void MoveWholeStackFromHousingInventoryToHousingInventory()
@@ -215,7 +217,7 @@ namespace DOL.GS
                     fromItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
                     fromItem.OwnerID = thisObject.GetOwner(player);
 
-                    if (!GameServer.Database.SaveObject(fromItem))
+                    if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(MoveWholeStackFromCharacterInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, null, count);
                         return;
@@ -227,16 +229,15 @@ namespace DOL.GS
                     if (!player.Inventory.CheckItemsBeforeMovingFromOrToExternalInventory(fromItem, null, fromClientSlot, toClientSlot, count))
                         return;
 
-                    // Don't delete the item.
-
-                    if (!player.Inventory.AddTradeItem(toClientSlot, fromItem))
+                    if (!player.Inventory.AddItemWithoutDbAddition(toClientSlot, fromItem))
                     {
                         SendErrorMessage(player, nameof(MoveWholeStackFromHousingInventoryToCharacterInventory), fromClientSlot, toClientSlot, fromItem, null, count);
                         return;
                     }
 
-                    player.Inventory.OnItemMove(fromItem, null, fromClientSlot, toClientSlot);
                     thisObject.OnRemoveItem(player, fromItem);
+                    player.Inventory.OnItemMove(fromItem, null, fromClientSlot, toClientSlot);
+                    player.Inventory.SaveIntoDatabase(player.InternalID);
                 }
             }
 
@@ -287,20 +288,23 @@ namespace DOL.GS
 
                     toItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
                     toItem.OwnerID = thisObject.GetOwner(player);
+                    toItem.PendingDatabaseAction = PendingDatabaseAction.ADD;
                     thisObject.OnAddItem(player, toItem);
 
-                    if (!GameServer.Database.AddObject(toItem))
+                    if (!SaveItem(toItem))
                     {
                         SendErrorMessage(player, nameof(SplitStackFromCharacterInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, toItem, count);
                         return;
                     }
+
+                    player.Inventory.SaveIntoDatabase(player.InternalID);
                 }
 
                 void SplitStackFromHousingInventoryToHousingInventory()
                 {
                     fromItem.Count -= count;
 
-                    if (!GameServer.Database.SaveObject(fromItem))
+                    if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(SplitStackFromHousingInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, toItem, count);
                         return;
@@ -308,9 +312,10 @@ namespace DOL.GS
 
                     toItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
                     toItem.OwnerID = thisObject.GetOwner(player);
+                    toItem.PendingDatabaseAction = PendingDatabaseAction.ADD;
                     thisObject.OnAddItem(player, toItem);
 
-                    if (!GameServer.Database.AddObject(toItem))
+                    if (!SaveItem(toItem))
                     {
                         SendErrorMessage(player, nameof(SplitStackFromHousingInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, toItem, count);
                         return;
@@ -321,11 +326,13 @@ namespace DOL.GS
                 {
                     fromItem.Count -= count;
 
-                    if (!GameServer.Database.SaveObject(fromItem) || !player.Inventory.AddItem(toClientSlot, toItem))
+                    if (!SaveItem(fromItem) || !player.Inventory.AddItem(toClientSlot, toItem))
                     {
                         SendErrorMessage(player, nameof(SplitStackFromHousingInventoryToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, count);
                         return;
                     }
+
+                    player.Inventory.SaveIntoDatabase(player.InternalID);
                 }
             }
         }
@@ -386,18 +393,22 @@ namespace DOL.GS
 
                 toItem.Count += count;
 
-                if (!GameServer.Database.SaveObject(toItem))
+                if (!SaveItem(toItem))
                 {
                     SendErrorMessage(player, nameof(StackItemsFromCharacterInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
                 }
+
+                player.Inventory.SaveIntoDatabase(player.InternalID);
             }
 
             void StackItemsFromHousingInventoryToHousingInventory()
             {
                 if (fromItem.Count - count <= 0)
                 {
-                    if (!GameServer.Database.DeleteObject(fromItem))
+                    fromItem.PendingDatabaseAction = PendingDatabaseAction.DELETE;
+
+                    if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(StackItemsFromCharacterInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                         return;
@@ -409,7 +420,7 @@ namespace DOL.GS
                 {
                     fromItem.Count -= count;
 
-                    if (!GameServer.Database.SaveObject(fromItem))
+                    if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(StackItemsFromCharacterInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                         return;
@@ -418,7 +429,7 @@ namespace DOL.GS
 
                 toItem.Count += count;
 
-                if (!GameServer.Database.SaveObject(toItem))
+                if (!SaveItem(toItem))
                 {
                     SendErrorMessage(player, nameof(StackItemsFromCharacterInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
@@ -429,7 +440,9 @@ namespace DOL.GS
             {
                 if (fromItem.Count - count <= 0)
                 {
-                    if (!GameServer.Database.DeleteObject(fromItem))
+                    fromItem.PendingDatabaseAction = PendingDatabaseAction.DELETE;
+
+                    if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(StackItemsFromHousingInventoryToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                         return;
@@ -441,7 +454,7 @@ namespace DOL.GS
                 {
                     fromItem.Count -= count;
 
-                    if (!GameServer.Database.SaveObject(fromItem))
+                    if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(StackItemsFromHousingInventoryToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                         return;
@@ -453,6 +466,8 @@ namespace DOL.GS
                     SendErrorMessage(player, nameof(StackItemsFromHousingInventoryToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
                 }
+
+                player.Inventory.SaveIntoDatabase(player.InternalID);
             }
         }
 
@@ -500,7 +515,7 @@ namespace DOL.GS
                 if (!player.Inventory.CheckItemsBeforeMovingFromOrToExternalInventory(vaultItem, characterInventoryItem, vaultSlot, characterInventorySlot, 0))
                     return;
 
-                if (!player.Inventory.RemoveTradeItem(characterInventoryItem))
+                if (!player.Inventory.RemoveItemWithoutDbDeletion(characterInventoryItem))
                 {
                     SendErrorMessage(player, nameof(SwapItemsFromOrToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
@@ -510,7 +525,7 @@ namespace DOL.GS
                 characterInventoryItem.OwnerID = thisObject.GetOwner(player);
                 thisObject.OnAddItem(player, characterInventoryItem);
 
-                if (!GameServer.Database.SaveObject(characterInventoryItem))
+                if (!SaveItem(characterInventoryItem))
                 {
                     SendErrorMessage(player, nameof(SwapItemsFromOrToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
@@ -518,25 +533,51 @@ namespace DOL.GS
 
                 thisObject.OnRemoveItem(player, vaultItem);
 
-                if (!player.Inventory.AddTradeItem(characterInventorySlot, vaultItem) || !GameServer.Database.SaveObject(vaultItem))
+                if (!player.Inventory.AddItemWithoutDbAddition(characterInventorySlot, vaultItem) || !SaveItem(vaultItem))
                 {
                     SendErrorMessage(player, nameof(SwapItemsFromOrToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
                 }
 
                 player.Inventory.OnItemMove(fromItem, toItem, fromClientSlot, toClientSlot);
+                player.Inventory.SaveIntoDatabase(player.InternalID);
             }
 
             void SwapItemsFromAndToHousingInventory()
             {
                 (toItem.SlotPosition, fromItem.SlotPosition) = (fromItem.SlotPosition, toItem.SlotPosition);
 
-                if (!GameServer.Database.SaveObject(fromItem) || !GameServer.Database.SaveObject(toItem))
+                if (!SaveItem(fromItem) || !SaveItem(toItem))
                 {
                     SendErrorMessage(player, nameof(SwapItemsFromAndToHousingInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return;
                 }
             }
+        }
+
+        private static bool SaveItem(DbInventoryItem item)
+        {
+            if (item.PendingDatabaseAction is PendingDatabaseAction.ADD)
+            {
+                if (!GameServer.Database.AddObject(item))
+                    return false;
+
+                item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
+            }
+            else if (item.PendingDatabaseAction is PendingDatabaseAction.DELETE)
+            {
+                if (!GameServer.Database.DeleteObject(item))
+                    return false;
+
+                item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
+            }
+            else if (item.PendingDatabaseAction is PendingDatabaseAction.SAVE)
+            {
+                if (!GameServer.Database.SaveObject(item))
+                    return false;
+            }
+
+            return true;
         }
 
         public static bool IsHousingInventorySlot(eInventorySlot slot)
