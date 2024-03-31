@@ -388,9 +388,9 @@ namespace DOL.AI.Brain
                 {
                     if (mob_c != null)
                     {
-                        if (mob_c?.Brain is XagaBrain brain1 && mob_c.IsAlive && mob_c.IsAvailable && !brain1.HasAggro)
+                        if (mob_c?.Brain is XagaBrain brain1 && mob_c.IsAlive && mob_c.CanJoinFight)
                             AddAggroListTo(brain1);
-                        if (mob_c?.Brain is TineBrain brain2 && mob_c.IsAlive && mob_c.IsAvailable && !brain2.HasAggro)
+                        if (mob_c?.Brain is TineBrain brain2 && mob_c.IsAlive && mob_c.CanJoinFight)
                             AddAggroListTo(brain2);
                     }
                 }
@@ -600,9 +600,9 @@ namespace DOL.AI.Brain
                 {
                     if (mob_c != null)
                     {
-                        if (mob_c?.Brain is XagaBrain brain1 && mob_c.IsAlive && mob_c.IsAvailable && !brain1.HasAggro)
+                        if (mob_c?.Brain is XagaBrain brain1 && mob_c.IsAlive && mob_c.CanJoinFight)
                             AddAggroListTo(brain1);
-                        if (mob_c?.Brain is BeathaBrain brain2 && mob_c.IsAlive && mob_c.IsAvailable && !brain2.HasAggro)
+                        if (mob_c?.Brain is BeathaBrain brain2 && mob_c.IsAlive && mob_c.CanJoinFight)
                             AddAggroListTo(brain2);
                     }
                 }

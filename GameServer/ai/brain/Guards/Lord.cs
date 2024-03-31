@@ -52,7 +52,7 @@ namespace DOL.AI.Brain
 					int iGuardsResponding = 0;
 
 					foreach (GameKeepGuard guard in lord.Component.Keep.Guards.Values)
-						if (guard != null && guard.IsAlive && guard.IsAvailable)
+						if (guard != null && guard.IsAlive && guard.CanJoinFight)
 							if (guard.AssistLord(lord))
 								iGuardsResponding++;
 

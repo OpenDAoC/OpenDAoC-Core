@@ -31,7 +31,7 @@ namespace DOL.AI.Brain
 				// and see if we can get multiple adds.
 				foreach (GameNPC npc in Body.GetNPCsInRadius(600))
 				{
-					if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable)
+					if (npc.IsFriend(Body) && npc.IsAggressive && npc.CanJoinFight)
 						ReportTargets(npc);
 				}
 
@@ -152,7 +152,7 @@ namespace DOL.AI.Brain
 			ArrayList addList = new ArrayList();
 			foreach (GameNPC npc in Body.GetNPCsInRadius(ScoutRange))
 			{
-				if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable)
+				if (npc.IsFriend(Body) && npc.IsAggressive && npc.CanJoinFight)
 					addList.Add(npc);
 			}
 

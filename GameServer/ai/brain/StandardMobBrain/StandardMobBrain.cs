@@ -256,18 +256,14 @@ namespace DOL.AI.Brain
         public virtual int AggroLevel { get; set; }
 
         protected ConcurrentDictionary<GameLiving, AggroAmount> AggroList { get; } = new();
-        protected List<(GameLiving, long)> OrderedAggroList { get; private set; } = new();
+        protected List<(GameLiving, long)> OrderedAggroList { get; private set; } = [];
         public GameLiving LastHighestThreatInAttackRange { get; private set; }
 
-        public class AggroAmount
+        public class AggroAmount(long @base = 0)
         {
-            public long Base { get; set; }
+            public long Base { get; set; } = @base;
             public long Effective { get; set; }
-
-            public AggroAmount(long @base = 0)
-            {
-                Base = @base;
-            }
+            public long Temporary { get; set; }
         }
 
         /// <summary>
@@ -292,55 +288,57 @@ namespace DOL.AI.Brain
             if (Body.IsConfused || !Body.IsAlive || living == null)
                 return;
 
+            if (aggroAmount > 0)
+            {
+                foreach (ProtectECSGameEffect protect in living.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+                {
+                    if (protect.Target != living)
+                        continue;
+
+                    GameLiving protectSource = protect.Source;
+
+                    if (protectSource.IsIncapacitated || protectSource.IsSitting)
+                        continue;
+
+                    if (!living.IsWithinRadius(protectSource, ProtectAbilityHandler.PROTECT_DISTANCE))
+                        continue;
+
+                    // P I: prevents 10% of aggro amount
+                    // P II: prevents 20% of aggro amount
+                    // P III: prevents 30% of aggro amount
+                    // guessed percentages, should never be higher than or equal to 50%
+                    int abilityLevel = protectSource.GetAbilityLevel(Abilities.Protect);
+                    long protectAmount = (long) (abilityLevel * 0.1 * aggroAmount);
+
+                    if (protectAmount > 0)
+                    {
+                        aggroAmount -= protectAmount;
+
+                        if (protectSource is GamePlayer playerProtectSource)
+                        {
+                            playerProtectSource.Out.SendMessage(LanguageMgr.GetTranslation(playerProtectSource.Client.Account.Language, "AI.Brain.StandardMobBrain.YouProtDist", living.GetName(0, false),
+                                Body.GetName(0, false, playerProtectSource.Client.Account.Language, Body)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        }
+
+                        AggroList.AddOrUpdate(protectSource, Add, Update, protectAmount);
+                    }
+                }
+            }
+
+            AggroList.AddOrUpdate(living, Add, Update, aggroAmount);
+
             if (living is GamePlayer player)
             {
                 // Add the whole group to the aggro list.
                 if (player.Group != null)
                 {
                     foreach (GamePlayer playerInGroup in player.Group.GetPlayersInTheGroup())
-                        AggroList.TryAdd(playerInGroup, new());
-                }
-
-                // Only protect if `aggroAmount` is positive.
-                if (aggroAmount > 0)
-                {
-                    foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
                     {
-                        if (protect.Target != living)
-                            continue;
-
-                        GameLiving protectSource = protect.Source;
-
-                        if (protectSource.IsIncapacitated || protectSource.IsSitting)
-                            continue;
-
-                        if (!living.IsWithinRadius(protectSource, ProtectAbilityHandler.PROTECT_DISTANCE))
-                            continue;
-
-                        // P I: prevents 10% of aggro amount
-                        // P II: prevents 20% of aggro amount
-                        // P III: prevents 30% of aggro amount
-                        // guessed percentages, should never be higher than or equal to 50%
-                        int abilityLevel = protectSource.GetAbilityLevel(Abilities.Protect);
-                        long protectAmount = (long) (abilityLevel * 0.1 * aggroAmount);
-
-                        if (protectAmount > 0)
-                        {
-                            aggroAmount -= protectAmount;
-
-                            if (protectSource is GamePlayer playerProtectSource)
-                            {
-                                playerProtectSource.Out.SendMessage(LanguageMgr.GetTranslation(playerProtectSource.Client.Account.Language, "AI.Brain.StandardMobBrain.YouProtDist", player.GetName(0, false),
-                                    Body.GetName(0, false, playerProtectSource.Client.Account.Language, Body)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            }
-
-                            AggroList.AddOrUpdate(protectSource, Add, Update, protectAmount);
-                        }
+                        if (playerInGroup != living)
+                            AggroList.TryAdd(playerInGroup, new());
                     }
                 }
             }
-
-            AggroList.AddOrUpdate(living, Add, Update, aggroAmount);
 
             static AggroAmount Add(GameLiving key, long arg)
             {
@@ -465,12 +463,16 @@ namespace DOL.AI.Brain
             OrderedAggroList.Clear();
             int attackRange = Body.AttackRange;
             GameLiving highestThreat = null;
+            KeyValuePair<GameLiving, AggroAmount> currentTarget = default;
             long highestEffectiveAggro = -1; // Assumes that negative aggro amounts aren't allowed in the list.
             long highestEffectiveAggroInAttackRange = -1; // Assumes that negative aggro amounts aren't allowed in the list.
 
             foreach (var pair in AggroList)
             {
                 GameLiving living = pair.Key;
+
+                if (Body.TargetObject == living)
+                    currentTarget = pair;
 
                 if (ShouldBeRemovedFromAggroList(living))
                 {
@@ -482,10 +484,11 @@ namespace DOL.AI.Brain
                     continue;
 
                 // Livings further than `EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD` units away have a reduced effective aggro amount.
+                // Using `Math.Ceiling` helps differentiate between 0 and 1 base aggro amount.
                 AggroAmount aggroAmount = pair.Value;
                 double distance = Body.GetDistanceTo(living);
                 aggroAmount.Effective = distance > EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD ?
-                                        (long) Math.Floor(aggroAmount.Base * (EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD / distance)) :
+                                        (long) Math.Ceiling(aggroAmount.Base * (EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD / distance)) :
                                         aggroAmount.Base;
 
                 if (aggroAmount.Effective > highestEffectiveAggroInAttackRange)
@@ -504,7 +507,14 @@ namespace DOL.AI.Brain
                 }
             }
 
-            if (highestThreat == null)
+            if (highestThreat != null)
+            {
+                // Don't change target if our new found highest threat has the same effective aggro.
+                // This helps with BAF code to make mobs actually go to their intended target.
+                if (currentTarget.Key != null && currentTarget.Key != highestThreat && currentTarget.Value.Effective >= highestEffectiveAggro)
+                    highestThreat = currentTarget.Key;
+            }
+            else
             {
                 // The list seems to be full of shades. It could mean we added a shade to the aggro list instead of its pet.
                 // Ideally, this should never happen, but it currently can be caused by the way `AddToAggroList` propagates aggro to group members.
@@ -609,12 +619,6 @@ namespace DOL.AI.Brain
         #region Bring a Friend
 
         /// <summary>
-        /// Initial range to try to get BAFs from.
-        /// May be overloaded for specific brain types, ie. dragons or keep guards
-        /// </summary>
-        protected virtual ushort BAFInitialRange => 250;
-
-        /// <summary>
         /// Max range to try to get BAFs from.
         /// May be overloaded for specific brain types, ie.dragons or keep guards
         /// </summary>
@@ -638,7 +642,7 @@ namespace DOL.AI.Brain
         /// <param name="attacker">Whoever triggered the BAF</param>
         protected virtual void BringFriends(GameLiving attacker)
         {
-            if (!CanBAF)
+            if (!CanBAF || Body.Faction == null)
                 return;
 
             GamePlayer playerPuller;
@@ -728,48 +732,47 @@ namespace DOL.AI.Brain
             int percentBAF = Properties.BAF_INITIAL_CHANCE
                 + ((numAttackers - 1) * Properties.BAF_ADDITIONAL_CHANCE);
 
-            int maxAdds = percentBAF / 100; // Multiple of 100 are guaranteed BAFs
+            int maxAdds = percentBAF / 100; // Multiple of 100 are guaranteed BAFs.
 
-            // Calculate chance of an addition add based on the remainder
+            // Calculate chance of an addition add based on the remainder.
             if (Util.Chance(percentBAF % 100))
                 maxAdds++;
 
-            if (maxAdds > 0)
+            if (maxAdds <= 0)
+                return;
+
+            IEnumerable<StandardMobBrain> brainsInRadius =  Body.GetNPCsInRadius(BAFMaxRange).Where(WherePredicate).OrderBy(OrderByPredicate).Take(maxAdds).Select(SelectPredicate);
+
+            foreach (StandardMobBrain brain in brainsInRadius)
             {
-                int numAdds = 0; // Number of mobs currently BAFed
-                ushort range = BAFInitialRange; // How far away to look for friends
+                brain.CanBAF = false;
+                GameLiving target;
 
-                // Try to bring closer friends before distant ones.
-                while (numAdds < maxAdds && range <= BAFMaxRange)
-                {
-                    foreach (GameNPC npc in Body.GetNPCsInRadius(range))
-                    {
-                        if (numAdds >= maxAdds)
-                            break;
+                if (victims != null && victims.Count > 1)
+                    target = victims[Util.Random(0, victims.Count - 1)];
+                else
+                    target = attacker;
 
-                        if (npc == Body)
-                            continue;
+                brain.AddToAggroList(target, 1);
+                brain.AttackMostWanted();
+            }
 
-                        // If it's a friend, have it attack
-                        if (npc.IsFriend(Body) && npc.IsAggressive && npc.IsAvailable && npc.Brain is StandardMobBrain brain)
-                        {
-                            brain.CanBAF = false; // Mobs brought cannot bring friends of their own
-                            GameLiving target;
+            bool WherePredicate(GameNPC npc)
+            {
+                return npc != Body && npc.IsFriend(Body) && npc.IsAggressive && npc.CanJoinFight;
+            }
 
-                            if (victims != null && victims.Count > 0)
-                                target = victims[Util.Random(0, victims.Count - 1)];
-                            else
-                                target = attacker;
+            long OrderByPredicate(GameNPC npc)
+            {
+                int xDiff = Body.X - npc.X;
+                int yDiff = Body.Y - npc.Y;
+                int zDiff = Body.Z - npc.Z;
+                return xDiff * xDiff + yDiff * yDiff + zDiff * zDiff;
+            }
 
-                            brain.AddToAggroList(target, 1);
-                            brain.AttackMostWanted();
-                            numAdds++;
-                        }
-                    }
-
-                    // Increase the range for finding friends to join the fight.
-                    range *= 2;
-                }
+            static StandardMobBrain SelectPredicate(GameNPC npc)
+            {
+                return npc.Brain as StandardMobBrain;
             }
         }
 

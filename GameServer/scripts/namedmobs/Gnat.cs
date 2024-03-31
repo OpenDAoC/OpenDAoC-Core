@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections;
-using DOL.AI.Brain;
-using DOL.Events;
-using DOL.Database;
+﻿using DOL.AI.Brain;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
 
 namespace DOL.GS.Scripts
 {
@@ -74,7 +69,7 @@ namespace DOL.AI.Brain
                     {
                         if (mob_c != null)
                         {
-                            if ((mob_c.Name.ToLower() == "fiery ant") && mob_c.IsAlive && mob_c.IsAvailable)
+                            if ((mob_c.Name.ToLower() == "fiery ant") && mob_c.IsAlive && mob_c.CanJoinFight)
                             {
                                 if (mob_c.Brain is GnatAntsBrain && mob_c.RespawnInterval == -1)
                                 {

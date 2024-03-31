@@ -137,7 +137,7 @@ namespace DOL.AI.Brain
                 Spawn(); // spawn images
                 foreach (GameNPC mob_c in Body.GetNPCsInRadius(2000))
                 {
-                    if (mob_c?.Brain is IlronImagesBrain && mob_c.IsAlive && mob_c.IsAvailable)
+                    if (mob_c?.Brain is IlronImagesBrain && mob_c.IsAlive && mob_c.CanJoinFight)
                     {
                         AddAggroListTo(mob_c.Brain as IlronImagesBrain);
                     }

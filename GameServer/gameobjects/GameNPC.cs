@@ -4333,22 +4333,12 @@ namespace DOL.GS
 		/// <summary>
 		/// Whether this NPC is available to add on a fight.
 		/// </summary>
-		public virtual bool IsAvailable
-		{
-			get { return !(Brain is IControlledBrain) && !InCombat; }
-		}
+		public virtual bool CanJoinFight => !InCombat && Brain is not IControlledBrain && Brain is StandardMobBrain brain && !brain.HasAggro;
 
 		/// <summary>
 		/// Whether this NPC is aggressive.
 		/// </summary>
-		public virtual bool IsAggressive
-		{
-			get
-			{
-				ABrain brain = Brain;
-				return (brain == null) ? false : (brain is IOldAggressiveBrain);
-			}
-		}
+		public virtual bool IsAggressive => Brain is IOldAggressiveBrain;
 
 		/// <summary>
 		/// Whether this NPC is a friend or not.
