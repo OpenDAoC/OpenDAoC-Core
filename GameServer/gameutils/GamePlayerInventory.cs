@@ -702,6 +702,7 @@ namespace DOL.GS
             if (CheckItemClassRestriction(fromItem, toSlot) &&
                 CheckItemClassRestriction(toItem, fromSlot) &&
                 CheckItemRealmRestriction(fromItem, toSlot) &&
+                CheckItemRealmRestriction(toItem, fromSlot) &&
                 CheckItemSlotRestriction(fromItem, toSlot) &&
                 CheckItemSlotRestriction(toItem, fromSlot))
             {
@@ -714,7 +715,10 @@ namespace DOL.GS
 
         private bool CheckItemRealmRestriction(DbInventoryItem item, eInventorySlot slot)
         {
-            if (item == null ||item.Realm <= 0 || (eRealm) item.Realm == m_player.Realm || slot is eInventorySlot.HorseArmor or eInventorySlot.HorseBarding || m_player.Client.Account.PrivLevel > 1)
+            if (item == null || item.Realm <= 0 || (eRealm) item.Realm == m_player.Realm || m_player.Client.Account.PrivLevel > 1)
+                return true;
+
+            if (slot is > eInventorySlot.MaxEquipable or (>= eInventorySlot.FirstBackpack and <= eInventorySlot.LastBackpack) or eInventorySlot.HorseArmor or eInventorySlot.HorseBarding)
                 return true;
 
             m_player.Out.SendMessage("You cannot equip an item from another realm!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -723,12 +727,15 @@ namespace DOL.GS
 
         private bool CheckItemClassRestriction(DbInventoryItem item, eInventorySlot slot)
         {
-            if (item == null || slot is >= eInventorySlot.MaxEquipable or (>= eInventorySlot.FirstBackpack and <= eInventorySlot.LastBackpack) || string.IsNullOrEmpty(item.AllowedClasses))
+            if (item == null || string.IsNullOrEmpty(item.AllowedClasses) || m_player.Client.Account.PrivLevel > 1)
+                return true;
+
+            if (slot is > eInventorySlot.MaxEquipable or (>= eInventorySlot.FirstBackpack and <= eInventorySlot.LastBackpack))
                 return true;
 
             foreach (string allowed in Util.SplitCSV(item.AllowedClasses, true))
             {
-                if (m_player.CharacterClass.ID == int.Parse(allowed) || m_player.Client.Account.PrivLevel > 1)
+                if (m_player.CharacterClass.ID == int.Parse(allowed))
                     return true;
             }
 
