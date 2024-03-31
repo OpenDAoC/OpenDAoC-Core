@@ -32,7 +32,7 @@ RUN cp /build/CoreServer/config/serverconfig.example.xml /build/CoreServer/confi
 RUN dotnet build DOLLinux.sln -c Release
 
 # Use the official .NET 6.0 Runtime image as the base for the final image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 LABEL stage=final
 
 # Install a few packages useful for debugging
