@@ -138,26 +138,22 @@ namespace DOL.GS.PacketHandler
 			{
 				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.NPCCreate)))
 				{
-					ushort speed = (ushort) npc.movementComponent.HorizontalVelocityForClient;
-					int zSpeed = (int) (npc.movementComponent.Velocity.Z / 4);
-					ushort heading = npc.Heading;
+					short speed = 0;
+					ushort speedZ = 0;
 
-					if (zSpeed < 0)
+					if (npc.IsMoving && !npc.IsAtDestination)
 					{
-						zSpeed = -zSpeed;
-						speed |= 0x8000;
+						speed = npc.CurrentSpeed;
+						speedZ = (ushort) npc.movementComponent.Velocity.Z;
 					}
 
-					speed |= (ushort) ((zSpeed & 0x70) << 8);
-					heading = (ushort) (((zSpeed & 0x0F) << 12) | (npc.Heading & 0xFFF));
-
 					pak.WriteShort((ushort) npc.ObjectID);
-					pak.WriteShort(speed);
-					pak.WriteShort(heading);
+					pak.WriteShort((ushort) speed);
+					pak.WriteShort(npc.Heading);
 					pak.WriteShort((ushort) npc.Z);
 					pak.WriteInt((uint) npc.X);
 					pak.WriteInt((uint) npc.Y);
-					pak.WriteShort((ushort) zSpeed);
+					pak.WriteShort(speedZ);
 					pak.WriteShort(npc.Model);
 					pak.WriteByte(npc.Size);
 					byte level = npc.GetDisplayLevel(m_gameClient.Player);
