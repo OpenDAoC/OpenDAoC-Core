@@ -154,8 +154,8 @@ namespace DOL.AI.Brain
 
     public class StandardMobState_ROAMING : StandardMobState
     {
-        private const int ROAM_COOLDOWN = 45 * 1000;
-        private long _lastRoamTick = 0;
+        private long _nextRoamingTick;
+        private bool _nextRoamingTickSet;
 
         public StandardMobState_ROAMING(StandardMobBrain brain) : base(brain)
         {
@@ -184,13 +184,20 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            if (!_brain.Body.IsCasting)
+            if (!_brain.Body.IsCasting && !_brain.Body.IsMoving)
             {
-                if (_lastRoamTick + ROAM_COOLDOWN <= GameLoop.GameLoopTime && Util.Chance(Properties.GAMENPC_RANDOMWALK_CHANCE))
+                if (!_nextRoamingTickSet)
                 {
+                    _nextRoamingTickSet = true;
+                    _nextRoamingTick += Util.Random(Properties.GAMENPC_ROAM_COOLDOWN_MIN, Properties.GAMENPC_ROAM_COOLDOWN_MAX) * 1000;
+                }
+
+                if (ServiceUtils.ShouldTickAdjust(ref _nextRoamingTick))
+                {
+                    // We're not updating `_nextRoamingTick` here because we want it to be set after the NPC stopped moving.
+                    _nextRoamingTickSet = false;
                     _brain.Body.Roam(NpcMovementComponent.DEFAULT_WALK_SPEED);
                     _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
-                    _lastRoamTick = GameLoop.GameLoopTime;
                 }
             }
 

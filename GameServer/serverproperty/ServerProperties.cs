@@ -1329,10 +1329,17 @@ namespace DOL.GS.ServerProperties
 		public static int GAMENPC_BASE_CON;
 
 		/// <summary>
-		/// Chance for NPC to random walk. Default is 20
+		/// Chance for NPC to roam.
 		/// </summary>
-		[ServerProperty("npc", "gamenpc_randomwalk_chance", "Chance for NPC to random walk. Default is 20", 20)]
-		public static int GAMENPC_RANDOMWALK_CHANCE;
+		[ServerProperty("npc", "gamenpc_roam_cooldown_min", "Minimum duration in seconds between two roams.", 5)]
+		public static int GAMENPC_ROAM_COOLDOWN_MIN;
+
+		/// <summary>
+		/// Chance for NPC to roam.
+		/// </summary>
+		[ServerProperty("npc", "gamenpc_roam_cooldown_max", "Maximum duration in seconds between two roams.", 40)]
+		public static int GAMENPC_ROAM_COOLDOWN_MAX;
+
 		/// <summary>
 		/// How often, in milliseconds, to check follow distance.  Lower numbers make NPC follow closer but increase load on server.
 		/// </summary>
