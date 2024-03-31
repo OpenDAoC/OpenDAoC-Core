@@ -58,15 +58,22 @@ namespace DOL.GS
             _baseAggroLevel = dbFaction.BaseAggroLevel;
         }
 
-        public void SaveFactionAggroToPlayers()
+        public int SaveFactionAggroToPlayers()
         {
+            int count = 0;
+
             lock (((ICollection) _characterIdsToSave).SyncRoot)
             {
                 foreach (GamePlayer player in _characterIdsToSave)
+                {
                     SaveFactionAggroToPlayer(player);
+                    count++;
+                }
 
                 _characterIdsToSave.Clear();
             }
+
+            return count;
         }
 
         private void SaveFactionAggroToPlayer(GamePlayer player)

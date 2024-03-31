@@ -454,7 +454,7 @@ namespace DOL.GS
 
         public static int SavePlayers()
         {
-            int savedCount = 0;
+            int count = 0;
 
             using (_lock)
             {
@@ -466,11 +466,11 @@ namespace DOL.GS
                         return;
 
                     client.SavePlayer();
-                    savedCount++;
+                    Interlocked.Increment(ref count);
                 });
             }
 
-            return savedCount;
+            return count;
         }
 
         private static void AddNpcToPlayerCache(GamePlayer player, GameNPC npc)

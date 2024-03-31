@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using DOL.Config;
 using DOL.Database;
@@ -1525,54 +1526,73 @@ namespace DOL.GS
 		/// <param name="sender">Object that generated the event</param>
 		protected void SaveTimerProc(object sender)
 		{
+			ThreadPriority oldPriority = Thread.CurrentThread.Priority;
+
 			try
 			{
-				int startTick = Environment.TickCount;
+				long startTick = GameLoop.GetCurrentTime();
+				long startTick2 = GameLoop.GetCurrentTime();
+
 				if (log.IsInfoEnabled)
 					log.Info("Saving database...");
-				if (log.IsDebugEnabled)
-					log.Debug("Save ThreadId=" + Thread.CurrentThread.ManagedThreadId);
-				int saveCount = 0;
-				int craftingSaveCount = 0;
+
+				(int count, long elapsed) players = (0, 0);
+				(int count, long elapsed) keepDoors = (0, 0);
+				(int count, long elapsed) guilds = (0, 0);
+				(int count, long elapsed) boats = (0, 0);
+				(int count, long elapsed) factions = (0, 0);
+				(int count, long elapsed) crafting = (0, 0);
+
 				if (m_database != null)
 				{
-					ThreadPriority oldprio = Thread.CurrentThread.Priority;
 					Thread.CurrentThread.Priority = ThreadPriority.Lowest;
 
-					//Only save the players, NOT any other object!
-					saveCount = ClientService.SavePlayers();
-
-					//The following line goes through EACH region and EACH object
-					//is tested for savability. A real waste of time, so it is commented out
+					// The following line goes through EACH region and EACH object is tested for savability. A real waste of time, so it is commented out.
+					// Only save players instead.
 					//WorldMgr.SaveToDatabase();
-
-					DoorMgr.SaveKeepDoors();
-					GuildMgr.SaveAllGuilds();
-					BoatMgr.SaveAllBoats();
-					FactionMgr.SaveAllAggroToFaction();
-					craftingSaveCount = CraftingProgressMgr.Save();
-
-					// 2008-01-29 Kakuri - Obsolete
-					//m_database.WriteDatabaseTables();
-					Thread.CurrentThread.Priority = oldprio;
+					Save(ClientService.SavePlayers, ref players);
+					Save(DoorMgr.SaveKeepDoors, ref keepDoors);
+					Save(GuildMgr.SaveAllGuilds, ref guilds);
+					Save(BoatMgr.SaveAllBoats, ref boats);
+					Save(FactionMgr.SaveAllAggroToFaction, ref factions);
+					Save(CraftingProgressMgr.Save, ref crafting);
 				}
+
 				if (log.IsInfoEnabled)
 					log.Info("Saving database complete!");
-				startTick = Environment.TickCount - startTick;
-				if (log.IsInfoEnabled) 
-					log.Info("Saved all databases and " + saveCount + " players in " + startTick + "ms" + Environment.NewLine 
-						+ "Crafting Progress Saved for: " + craftingSaveCount);
+
+				startTick = GameLoop.GetCurrentTime() - startTick;
+
+				if (log.IsInfoEnabled)
+				{
+					StringBuilder stringBuilder = new();
+					stringBuilder.Append($"Saving completed in {startTick}m\n");
+					stringBuilder.Append($"   {nameof(players)}: {players.count} in {players.elapsed}ms\n");
+					stringBuilder.Append($" {nameof(keepDoors)}: {keepDoors.count} in {keepDoors.elapsed}ms\n");
+					stringBuilder.Append($"    {nameof(guilds)}: {guilds.count} in {guilds.elapsed}ms\n");
+					stringBuilder.Append($"     {nameof(boats)}: {boats.count} in {boats.elapsed}ms\n");
+					stringBuilder.Append($"  {nameof(factions)}: {factions.count} in {factions.elapsed}ms\n");
+					stringBuilder.Append($"  {nameof(crafting)}: {crafting.count} in {crafting.elapsed}ms");
+
+					log.Info(stringBuilder.ToString());
+				}
 			}
-			catch (Exception e1)
+			catch (Exception e)
 			{
 				if (log.IsErrorEnabled)
-					log.Error("SaveTimerProc", e1);
+					log.Error("SaveTimerProc", e);
 			}
 			finally
 			{
-				if (m_timer != null)
-					m_timer.Change(SaveInterval * MINUTE_CONV, Timeout.Infinite);
-				GameEventMgr.Notify(GameServerEvent.WorldSave);
+				m_timer?.Change(SaveInterval * MINUTE_CONV, Timeout.Infinite);
+				Thread.CurrentThread.Priority = oldPriority;
+			}
+
+			static void Save(Func<int> save, ref (int count, long elapsed) result)
+			{
+				result.elapsed = GameLoop.GetCurrentTime();
+				result.count = save();
+				result.elapsed = GameLoop.GetCurrentTime() - result.elapsed;
 			}
 		}
 
@@ -1639,3 +1659,4 @@ namespace DOL.GS
 		#endregion
 	}
 }
+
