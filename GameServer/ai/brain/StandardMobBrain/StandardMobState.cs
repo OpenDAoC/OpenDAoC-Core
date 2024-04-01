@@ -47,7 +47,7 @@ namespace DOL.AI.Brain
 
             if (_brain.Body.CanRoam)
             {
-                _brain.FSM.SetCurrentState( eFSMStateType.ROAMING);
+                _brain.FSM.SetCurrentState(eFSMStateType.ROAMING);
                 return;
             }
 
@@ -184,7 +184,7 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            if (!_brain.Body.IsCasting && !_brain.Body.IsMoving)
+            if (!_brain.Body.IsCasting && !_brain.Body.IsMoving && !_brain.Body.movementComponent.HasActiveResetHeadingAction)
             {
                 if (!_nextRoamingTickSet)
                 {

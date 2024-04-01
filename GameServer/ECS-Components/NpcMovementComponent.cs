@@ -50,6 +50,7 @@ namespace DOL.GS
         public bool CanRoam => Properties.ALLOW_ROAM && RoamingRange != 0 && string.IsNullOrWhiteSpace(PathID);
         public double HorizontalVelocityForClient { get; private set; }
         public Point3D PositionForClient => _needsBroadcastUpdate ? _positionForUpdatePackets : Owner;
+        public bool HasActiveResetHeadingAction => _resetHeadingAction != null && _resetHeadingAction.IsAlive;
         public Point3D DestinationForClient { get; private set; }
 
         public NpcMovementComponent(GameNPC npcOwner) : base(npcOwner)
