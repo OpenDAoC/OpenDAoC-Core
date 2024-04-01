@@ -660,6 +660,11 @@ namespace DOL.AI.Brain
             else
                 return;
 
+            // Prevent the same puller from triggering two BAFs at the same time.
+            if (!playerPuller.TempProperties.TrySetProperty(ResetBafPropertyAction.Property, true))
+                 return;
+
+            _ = new ResetBafPropertyAction(playerPuller);
             CanBAF = false; // Mobs only BAF once per fight
             int numAttackers = 0;
 
@@ -773,6 +778,22 @@ namespace DOL.AI.Brain
             static StandardMobBrain SelectPredicate(GameNPC npc)
             {
                 return npc.Brain as StandardMobBrain;
+            }
+        }
+
+        private class ResetBafPropertyAction: ECSGameTimerWrapperBase
+        {
+            public const string Property = "IsTriggeringBaf";
+
+            public ResetBafPropertyAction(GameObject owner) : base(owner)
+            {
+                Start(0);
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                (Owner as GameLiving).TempProperties.RemoveProperty(Property);
+                return 0;
             }
         }
 

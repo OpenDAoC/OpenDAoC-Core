@@ -294,7 +294,7 @@ namespace DOL.GS
             if (house == null || !house.HasOwnerPermissions(player))
                 return false;
 
-            if (player.TempProperties.RemoveAndGetProperty(ITEM_BEING_ADDED, out object result))
+            if (player.TempProperties.TryRemoveProperty(ITEM_BEING_ADDED, out object result))
             {
                 if (result is not DbInventoryItem item)
                     return false;
