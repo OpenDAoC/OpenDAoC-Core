@@ -20,8 +20,7 @@ namespace DOL.GS
             CraftComponent,
             ObjectChangingSubZone,
             LivingBeingKilled,
-            Timer,
-            AuxTimer
+            Timer
         }
 
         private static Dictionary<EntityType, object> _entityArrays = new()
@@ -35,8 +34,7 @@ namespace DOL.GS
             { EntityType.CraftComponent, new EntityArray<CraftComponent>(100) },
             { EntityType.ObjectChangingSubZone, new EntityArray<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) },
             { EntityType.LivingBeingKilled, new EntityArray<LivingBeingKilled>(200) },
-            { EntityType.Timer, new EntityArray<ECSGameTimer>(500) },
-            { EntityType.AuxTimer, new EntityArray<AuxECSGameTimer>(500) }
+            { EntityType.Timer, new EntityArray<ECSGameTimer>(500) }
         };
 
         public static bool Add<T>(T entity) where T : class, IManagedEntity

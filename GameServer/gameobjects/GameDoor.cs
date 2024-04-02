@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -34,8 +15,8 @@ namespace DOL.GS
         private bool _openDead = false;
         private eDoorState _state;
         private object _lock = new();
-        private AuxECSGameTimer _closeDoorAction;
-        private AuxECSGameTimer _repairTimer;
+        private ECSGameTimer _closeDoorAction;
+        private ECSGameTimer _repairTimer;
 
         public int Locked { get; set; }
         public override int DoorID { get; set; }
@@ -204,12 +185,12 @@ namespace DOL.GS
             if ((_repairTimer != null && _repairTimer.IsAlive) || Health >= MaxHealth)
                 return;
 
-            _repairTimer = new AuxECSGameTimer(this);
-            _repairTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RepairTimerCallback);
+            _repairTimer = new ECSGameTimer(this);
+            _repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
             _repairTimer.Start(REPAIR_INTERVAL);
         }
 
-        private int RepairTimerCallback(AuxECSGameTimer timer)
+        private int RepairTimerCallback(ECSGameTimer timer)
         {
             if (HealthPercent != 100 && !InCombat)
             {
@@ -269,11 +250,11 @@ namespace DOL.GS
             }
         }
 
-        private class CloseDoorAction : AuxECSGameTimerWrapperBase
+        private class CloseDoorAction : ECSGameTimerWrapperBase
         {
             public CloseDoorAction(GameDoor door) : base(door) { }
 
-            protected override int OnTick(AuxECSGameTimer timer)
+            protected override int OnTick(ECSGameTimer timer)
             {
                 GameDoor door = (GameDoor) timer.Owner;
                 door.Close();

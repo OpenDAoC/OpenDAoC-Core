@@ -45,13 +45,13 @@ namespace DOL.GS.Keeps
                         m_respawnTimer = null;
                     }
 
-                    m_respawnTimer = new AuxECSGameTimer(this);
-                    m_respawnTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(ModdedRespawnTimerCallback);
+                    m_respawnTimer = new ECSGameTimer(this);
+                    m_respawnTimer.Callback = new ECSGameTimer.ECSTimerCallback(ModdedRespawnTimerCallback);
                     m_respawnTimer.Start(reloadrespawntimer > 0 ? reloadrespawntimer : respawnInt);
                 }
             }
         }
-        protected virtual int ModdedRespawnTimerCallback(AuxECSGameTimer respawnTimer)
+        protected virtual int ModdedRespawnTimerCallback(ECSGameTimer respawnTimer)
         {
             lock (m_respawnTimerLock)
             {
@@ -116,7 +116,7 @@ namespace DOL.GS.Keeps
 
 namespace DOL.AI.Brain
 {
-    
+
     public class CorpseSummonerBrain : KeepGuardBrain
     {
         public CorpseSummonerBrain()

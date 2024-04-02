@@ -66,7 +66,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <summary>
         /// Handles player world init requests
         /// </summary>
-        protected class WorldInitAction : AuxECSGameTimerWrapperBase
+        protected class WorldInitAction : ECSGameTimerWrapperBase
         {
             /// <summary>
             /// Constructs a new WorldInitAction
@@ -77,7 +77,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             /// <summary>
             /// Called on every timer tick
             /// </summary>
-            protected override int OnTick(AuxECSGameTimer timer)
+            protected override int OnTick(ECSGameTimer timer)
             {
                 GamePlayer player = timer.Owner as GamePlayer;
 

@@ -1,34 +1,12 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using System.Threading;
-
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
-
 using log4net;
 
 namespace DOL.GS.Housing
@@ -37,7 +15,7 @@ namespace DOL.GS.Housing
 	{
 		public static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static AuxECSGameTimer CheckRentTimer = null;
+		private static ECSGameTimer CheckRentTimer = null;
 		private static Dictionary<ushort, Dictionary<int, House>> _houseList;
 		private static Dictionary<ushort, int> _idList;
 		private static int TimerInterval = Properties.RENT_CHECK_INTERVAL * 60 * 1000;
@@ -111,8 +89,8 @@ namespace DOL.GS.Housing
 
 			if (CheckRentTimer == null)
 			{
-				CheckRentTimer =
-					new AuxECSGameTimer(null, CheckRents, TimerInterval);
+                CheckRentTimer =
+					new ECSGameTimer(null, (ECSGameTimer.ECSTimerCallback) CheckRents, TimerInterval);
 			}
 
 			return true;
@@ -760,7 +738,7 @@ namespace DOL.GS.Housing
 			return Properties.HOUSING_RENT_COTTAGE;
 		}
 
-		public static int CheckRents(AuxECSGameTimer timer)
+		public static int CheckRents(ECSGameTimer timer)
 		{
 			if (Properties.RENT_DUE_DAYS == 0)
 				return 0;

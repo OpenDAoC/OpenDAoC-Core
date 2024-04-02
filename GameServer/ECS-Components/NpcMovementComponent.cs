@@ -711,7 +711,7 @@ namespace DOL.GS
             }
         }
 
-        private class ResetHeadingAction : AuxECSGameTimerWrapperBase
+        private class ResetHeadingAction : ECSGameTimerWrapperBase
         {
             private NpcMovementComponent _movementComponent;
             private ushort _oldHeading;
@@ -726,7 +726,7 @@ namespace DOL.GS
                 _onCompletion = onCompletion;
             }
 
-            protected override int OnTick(AuxECSGameTimer timer)
+            protected override int OnTick(ECSGameTimer timer)
             {
                 GameNPC owner = _movementComponent.Owner;
 

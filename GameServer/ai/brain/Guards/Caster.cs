@@ -36,12 +36,11 @@ namespace DOL.AI.Brain
             foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.Out.SendSpellCastAnimation(Body, 4321, 30);
-                new AuxECSGameTimer(player, new AuxECSGameTimer.AuxECSTimerCallback(ShowEffect), 3000);
+                new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(ShowEffect), 3000);
             }
         }
 
-
-        public int ShowEffect(AuxECSGameTimer timer)
+        public int ShowEffect(ECSGameTimer timer)
         {
             if (!Body.IsAlive)
                 return 0;

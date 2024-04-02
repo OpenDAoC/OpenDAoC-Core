@@ -569,8 +569,8 @@ namespace DOL.GS.Keeps
 			if ((m_repairTimer != null && m_repairTimer.IsAlive) || Health >= MaxHealth)
 				return;
 
-			m_repairTimer = new AuxECSGameTimer(this);
-			m_repairTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RepairTimerCallback);
+			m_repairTimer = new ECSGameTimer(this);
+			m_repairTimer.Callback = new ECSGameTimer.ECSTimerCallback(RepairTimerCallback);
 			m_repairTimer.Start(REPAIR_INTERVAL);
 		}
 
@@ -800,10 +800,10 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		protected AuxECSGameTimer m_repairTimer;
+		protected ECSGameTimer m_repairTimer;
 		protected const int REPAIR_INTERVAL = 30 * 60 * 1000;
 
-		public int RepairTimerCallback(AuxECSGameTimer timer)
+		public int RepairTimerCallback(ECSGameTimer timer)
 		{
 			if (Component == null || Component.Keep == null)
 				return 0;

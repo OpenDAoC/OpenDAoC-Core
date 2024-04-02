@@ -106,7 +106,6 @@ namespace DOL.GS
                 ZoneService.Tick();
                 CraftingService.Tick();
                 TimerService.Tick();
-                AuxTimerService.Tick();
                 ReaperService.Tick();
                 ClientService.Tick();
                 DailyQuestService.Tick();

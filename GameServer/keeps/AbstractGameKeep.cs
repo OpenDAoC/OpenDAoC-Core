@@ -50,7 +50,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Timerto upgrade the keep level
 		/// </summary>
-		protected AuxECSGameTimer m_changeLevelTimer;
+		protected ECSGameTimer m_changeLevelTimer;
 
 		protected long m_lastAttackedByEnemyTick = 0;
 		public long LastAttackedByEnemyTick
@@ -719,8 +719,8 @@ namespace DOL.GS.Keeps
 
 		protected void InitialiseTimers()
 		{
-			m_changeLevelTimer = new AuxECSGameTimer(new GameNPC());
-			m_changeLevelTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(ChangeLevelTimerCallback);
+			m_changeLevelTimer = new ECSGameTimer(new GameNPC());
+			m_changeLevelTimer.Callback = new ECSGameTimer.ECSTimerCallback(ChangeLevelTimerCallback);
 
 			//Commenting out claimTimer as we dont give RPs to guilds for holding onto claimed keeps currently.
 			// m_claimTimer = new ECSGameTimer(new GameNPC());
@@ -985,7 +985,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		/// <param name="timer"></param>
 		/// <returns></returns>
-		public int ChangeLevelTimerCallback(AuxECSGameTimer timer)
+		public int ChangeLevelTimerCallback(ECSGameTimer timer)
 		{
 			if (this is GameKeepTower)
 			{

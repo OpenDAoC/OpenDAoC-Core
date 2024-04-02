@@ -3105,7 +3105,7 @@ namespace DOL.GS
 		/// <summary>
 		/// A timer that will respawn this mob
 		/// </summary>
-		protected AuxECSGameTimer m_respawnTimer;
+		protected ECSGameTimer m_respawnTimer;
 		/// <summary>
 		/// The sync object for respawn timer modifications
 		/// </summary>
@@ -3200,8 +3200,8 @@ namespace DOL.GS
 				{
 					if (m_respawnTimer == null)
 					{
-						m_respawnTimer = new AuxECSGameTimer(this);
-						m_respawnTimer.Callback = new AuxECSGameTimer.AuxECSTimerCallback(RespawnTimerCallback);
+						m_respawnTimer = new ECSGameTimer(this);
+						m_respawnTimer.Callback = new ECSGameTimer.ECSTimerCallback(RespawnTimerCallback);
 					}
 					else if (m_respawnTimer.IsAlive)
 					{
@@ -3220,7 +3220,7 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="respawnTimer">the timer calling this callback</param>
 		/// <returns>the new interval</returns>
-		protected virtual int RespawnTimerCallback(AuxECSGameTimer respawnTimer)
+		protected virtual int RespawnTimerCallback(ECSGameTimer respawnTimer)
 		{
 			CurrentRegion.MobsRespawning.TryRemove(this, out _);
 
