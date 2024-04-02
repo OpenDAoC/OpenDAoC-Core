@@ -3063,7 +3063,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00);
 				pak.WriteByte((byte) eDialogCode.HousePayRent);
 				pak.Fill(0x00, 8); // empty
-				pak.WriteByte(0x02); // type
+				pak.WriteByte(0x01); // type. Changed from 0x02 to `YesNo`. 0x02 seems invalid on 1.127.
 				pak.WriteByte(0x01); // wrap
 				if (title.Length > 0)
 					pak.WriteString(title); // title ??

@@ -1,29 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
-using DOL.GS.Utils;
 using DOL.Language;
 using log4net;
 
@@ -65,41 +45,53 @@ namespace DOL.GS.PacketHandler.Client.v168
 					return;
 				}
 
-
-				if ((slot >= 244) && (slot <= 248)) // money
+				// Money.
+				if (slot is >= 244 and <= 248) 
 				{
-					// check that player has permission to pay rent
 					if (!house.CanPayRent(client.Player))
 					{
-						client.Out.SendInventorySlotsUpdate(new[] { slot });
+						client.Out.SendInventorySlotsUpdate([slot]);
 						return;
 					}
 
 					long moneyToAdd = _position;
+					string moneyType;
+
 					switch (slot)
 					{
 						case 248:
+						{
 							moneyToAdd *= 1;
+							moneyType = "copper";
 							break;
+						}
 						case 247:
+						{
 							moneyToAdd *= 100;
+							moneyType = "silver";
 							break;
+						}
 						case 246:
+						{
 							moneyToAdd *= 10000;
+							moneyType = "gold";
 							break;
+						}
 						case 245:
+						{
 							moneyToAdd *= 10000000;
+							moneyType = "platinum";
 							break;
-						case 244:
-							moneyToAdd *= 10000000000;
-							break;
+						}
+						case 244:// What is this?
+						default:
+							return;
 					}
 
 					client.Player.TempProperties.SetProperty(HousingConstants.MoneyForHouseRent, moneyToAdd);
 					client.Player.TempProperties.SetProperty(HousingConstants.HouseForHouseRent, house);
 					client.Player.Out.SendInventorySlotsUpdate(null);
-					client.Player.Out.SendHousePayRentDialog("Housing07");
-
+					client.Player.Out.SendHousePayRentDialog($"Pay rent with {_position} {moneyType}?");
 					return;
 				}
 
