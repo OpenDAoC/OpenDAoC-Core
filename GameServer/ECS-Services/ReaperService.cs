@@ -60,8 +60,11 @@ namespace DOL.GS
 
         public static void Create(GameLiving killed, GameObject killer)
         {
-            if (EntityManager.TryReuse(EntityManager.EntityType.LivingBeingKilled, out LivingBeingKilled livingBeingKilled))
+            if (EntityManager.TryReuse(EntityManager.EntityType.LivingBeingKilled, out LivingBeingKilled livingBeingKilled, out int index))
+            {
                 livingBeingKilled.Initialize(killed, killer);
+                livingBeingKilled.EntityManagerId.Value = index;
+            }
             else
             {
                 livingBeingKilled = new(killed, killer);

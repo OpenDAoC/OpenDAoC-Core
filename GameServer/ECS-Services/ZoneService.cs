@@ -126,8 +126,11 @@ namespace DOL.GS
 
         public static void Create(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
-            if (EntityManager.TryReuse(EntityManager.EntityType.ObjectChangingSubZone, out ObjectChangingSubZone objectChangingSubZone))
+            if (EntityManager.TryReuse(EntityManager.EntityType.ObjectChangingSubZone, out ObjectChangingSubZone objectChangingSubZone, out int index))
+            {
                 objectChangingSubZone.Initialize(subZoneObject, destinationZone, destinationSubZone);
+                objectChangingSubZone.EntityManagerId.Value = index;
+            }
             else
             {
                 objectChangingSubZone = new(subZoneObject, destinationZone, destinationSubZone);

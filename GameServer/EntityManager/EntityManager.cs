@@ -49,9 +49,10 @@ namespace DOL.GS
             return true;
         }
 
-        public static bool TryReuse<T>(EntityType type, out T entity) where T : class, IManagedEntity
+        public static bool TryReuse<T>(EntityType type, out T entity, out int index) where T : class, IManagedEntity
         {
-            return (_entityArrays[type] as EntityArray<T>).TryReuse(out entity);
+            // The returned index must be set by the caller, so that the entity can be initialized before being handled by the services.
+            return (_entityArrays[type] as EntityArray<T>).TryReuse(out entity, out index);
         }
 
         public static bool Remove<T>(T entity) where T : class, IManagedEntity
@@ -68,6 +69,7 @@ namespace DOL.GS
 
         // Applies pending additions and removals then returns the list alongside the last valid index.
         // Thread unsafe. The returned list should not be modified.
+        // Elements should be null checked alongside the value returned by `ManagedEntityId.IsSet`.
         public static List<T> UpdateAndGetAll<T>(EntityType type, out int lastValidIndex) where T : IManagedEntity
         {
             dynamic array = _entityArrays[type];
@@ -102,9 +104,9 @@ namespace DOL.GS
                 }
             }
 
-            public bool TryReuse(out T entity)
+            public bool TryReuse(out T entity, out int index)
             {
-                int index;
+                index = EntityManagerId.UNSET_ID;
                 entity = null;
 
                 lock (_updateLock)
@@ -115,7 +117,6 @@ namespace DOL.GS
                     index = _invalidIndexes.Min;
                     _invalidIndexes.Remove(index);
                     entity = Entities[index];
-                    entity.EntityManagerId.Value = index;
 
                     if (_lastValidIndex < index)
                         _lastValidIndex = index;
@@ -223,7 +224,7 @@ namespace DOL.GS
 
     public class EntityManagerId
     {
-        private const int UNSET_ID = -1;
+        public const int UNSET_ID = -1;
         private int _value = UNSET_ID;
         private PendingState _pendingState = PendingState.NONE;
 
