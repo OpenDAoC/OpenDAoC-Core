@@ -16,9 +16,6 @@ namespace DOL.GS.Commands
         "'/craftmacro buyto <#>' to buy only the missing materials to craft <#> items")]
     public class CraftMacroCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        public const string CraftQueueLength = "CraftQueueLength";
-        public const string RecipeToCraft = "RecipeToCraft";
-
         public void OnCommand(GameClient client, string[] args)
         {
             if (args.Length >= 2)
@@ -40,8 +37,8 @@ namespace DOL.GS.Commands
                         {
                             count = 100;
                         }
-                
-                        client.Player.TempProperties.SetProperty(CraftQueueLength, count);
+
+                        client.Player.TempProperties.SetProperty(CraftAction.CRAFT_QUEUE_LENGTH_PROPERTY, count);
                         DisplayMessage(client, $"Crafting queue set to {count} items");
                     }
                     else
@@ -57,13 +54,12 @@ namespace DOL.GS.Commands
                 if (args[1] == "clear")
                 {
 
-                    client.Player.TempProperties.RemoveProperty(CraftQueueLength);
-                    
+                    client.Player.TempProperties.RemoveProperty(CraftAction.CRAFT_QUEUE_LENGTH_PROPERTY);
 
-                    var recipe = client.Player.TempProperties.GetProperty<Recipe>(RecipeToCraft);
+                    var recipe = client.Player.TempProperties.GetProperty<Recipe>(CraftAction.RECIPE_TO_CRAFT_PROPERTY);
                     if (recipe != null)
                     {
-                        client.Player.TempProperties.RemoveProperty(RecipeToCraft);
+                        client.Player.TempProperties.RemoveProperty(CraftAction.RECIPE_TO_CRAFT_PROPERTY);
                     }
 
                     DisplayMessage(client, "Crafting queue reset to 1 and item cleared");
@@ -75,9 +71,9 @@ namespace DOL.GS.Commands
 
                 if (args[1] == "show")
                 {
-                    if (client.Player.TempProperties.GetProperty<int>(CraftQueueLength) != 0)
+                    if (client.Player.TempProperties.GetProperty<int>(CraftAction.CRAFT_QUEUE_LENGTH_PROPERTY) != 0)
                         DisplayMessage(client,
-                            $"Crafting queue set to {client.Player.TempProperties.GetProperty<int>(CraftQueueLength)}");
+                            $"Crafting queue set to {client.Player.TempProperties.GetProperty<int>(CraftAction.CRAFT_QUEUE_LENGTH_PROPERTY)}");
                     else
                         DisplayMessage(client, "Crafting queue set to 1");
                 }
@@ -98,14 +94,14 @@ namespace DOL.GS.Commands
                         }
                     }
 
-                    var recipe = client.Player.TempProperties.GetProperty<Recipe>("RecipeToCraft");
+                    var recipe = client.Player.TempProperties.GetProperty<Recipe>(CraftAction.RECIPE_TO_CRAFT_PROPERTY);
                     if (recipe != null)
                     {
                         if (client.Player.TargetObject is GameMerchant merchant)
                         {
                             var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                                 .IsEqualTo(merchant.TradeItems.ItemsListID));
-                            
+
                             IList<Ingredient> recipeIngredients;
 
                             lock (recipe)
@@ -132,7 +128,7 @@ namespace DOL.GS.Commands
                         {
                             var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                                 .IsEqualTo(guardMerchant.TradeItems.ItemsListID));
-                            
+
                             IList<Ingredient> recipeIngredients;
 
                             lock (recipe)
@@ -159,14 +155,14 @@ namespace DOL.GS.Commands
                         {
                             var merchantitems = DOLDB<DbMerchantItem>.SelectObjects(DB.Column("ItemListID")
                                 .IsEqualTo(guardCurrencyMerchant.TradeItems.ItemsListID));
-                            
+
                             IList<Ingredient> recipeIngredients;
 
                             lock (recipe)
                             {
                                 recipeIngredients = recipe.Ingredients;
                             }
-                            
+
                             foreach (var ingredient in recipeIngredients)
                             {
                                 foreach (var items in merchantitems)
@@ -214,7 +210,7 @@ namespace DOL.GS.Commands
                         return;
                     }
 
-                    var recipe = client.Player.TempProperties.GetProperty<Recipe>("RecipeToCraft");
+                    var recipe = client.Player.TempProperties.GetProperty<Recipe>(CraftAction.RECIPE_TO_CRAFT_PROPERTY);
                     if (recipe != null)
                     {
                         if (client.Player.TargetObject is GameMerchant merchant)
@@ -228,9 +224,9 @@ namespace DOL.GS.Commands
                             {
                                 recipeIngredients = recipe.Ingredients;
                             }
-                            
+
                             var playerItems = new List<DbInventoryItem>(); 
-                                    
+
                             lock (client.Player.Inventory)
                             {
                                 foreach (var pItem in client.Player.Inventory.AllItems)
@@ -241,7 +237,7 @@ namespace DOL.GS.Commands
                                     playerItems.Add(pItem);
                                 }
                             }
-                            
+
                             foreach (var ingredient in recipeIngredients)
                             {
                                 foreach (var items in merchantitems)

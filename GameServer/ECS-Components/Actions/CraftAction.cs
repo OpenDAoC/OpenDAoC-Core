@@ -8,6 +8,9 @@ namespace DOL.GS
     public class CraftAction
     {
         protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        public const string CRAFT_QUEUE_LENGTH_PROPERTY = "CraftQueueLength";
+        public const string CRAFT_QUEUE_REMAINING_PROPERTY = "CraftQueueRemaining";
+        public const string RECIPE_TO_CRAFT_PROPERTY = "RecipeToCraft";
 
         private GamePlayer _owner;
         private Recipe _recipe;
@@ -62,20 +65,19 @@ namespace DOL.GS
             _owner.craftComponent.CraftState = false;
             _finishedCraft = false;
             _owner.Out.SendCloseTimerWindow();
-            _owner.TempProperties.RemoveProperty("CraftQueueRemaining");
+            _owner.TempProperties.RemoveProperty(CRAFT_QUEUE_REMAINING_PROPERTY);
         }
 
         protected virtual void MakeItem()
         {
-            GamePlayer player = _owner as GamePlayer;
             Recipe recipe = _recipe;
             AbstractCraftingSkill skill = _skill;
-            int queue = player.TempProperties.GetProperty<int>("CraftQueueLength");
-            int remainingToCraft = player.TempProperties.GetProperty<int>("CraftQueueRemaining");
+            int queue = _owner.TempProperties.GetProperty<int>(CRAFT_QUEUE_LENGTH_PROPERTY);
+            int remainingToCraft = _owner.TempProperties.GetProperty<int>(CRAFT_QUEUE_REMAINING_PROPERTY);
 
-            if (player == null || recipe == null || skill == null)
+            if (_owner == null || recipe == null || skill == null)
             {
-                player?.Out.SendMessage("Could not find recipe or item to craft!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                _owner?.Out.SendMessage("Could not find recipe or item to craft!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 log.Error("Crafting.MakeItem: Could not retrieve player, recipe, or raw materials to craft from CraftTimer.");
                 return;
             }
@@ -83,46 +85,46 @@ namespace DOL.GS
             if (queue > 1 && remainingToCraft == 0)
                 remainingToCraft = queue;
 
-            player.Out.SendCloseTimerWindow();
+            _owner.Out.SendCloseTimerWindow();
 
-            if (Util.Chance(skill.CalculateChanceToMakeItem(player, recipe.Level)))
+            if (Util.Chance(skill.CalculateChanceToMakeItem(_owner, recipe.Level)))
             {
-                if (!skill.RemoveUsedMaterials(player, recipe))
+                if (!skill.RemoveUsedMaterials(_owner, recipe))
                 {
-                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.NotAllMaterials"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    _owner.Out.SendMessage(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "AbstractCraftingSkill.MakeItem.NotAllMaterials"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-                    if (player.Client.Account.PrivLevel == 1)
+                    if (_owner.Client.Account.PrivLevel == 1)
                     {
                         CleanupCraftAction();
                         return;
                     }
                 }
 
-                skill.BuildCraftedItem(player, recipe);
-                skill.GainCraftingSkillPoints(player, recipe);
+                _owner.TempProperties.SetProperty(CRAFT_QUEUE_REMAINING_PROPERTY, --remainingToCraft);
+                skill.BuildCraftedItem(_owner, recipe);
+                skill.GainCraftingSkillPoints(_owner, recipe);
             }
             else
             {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.MakeItem.LoseNoMaterials", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                player.Out.SendPlaySound(eSoundType.Craft, 0x02);
+                _owner.Out.SendMessage(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "AbstractCraftingSkill.MakeItem.LoseNoMaterials", recipe.Product.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                _owner.Out.SendPlaySound(eSoundType.Craft, 0x02);
             }
 
-            if (remainingToCraft > 1)
+            if (remainingToCraft > 0)
             {
-                if (skill.CheckRawMaterials(player, recipe))
+                if (skill.CheckRawMaterials(_owner, recipe))
                 {
-                    player.TempProperties.SetProperty("CraftQueueRemaining", --remainingToCraft);
-                    _startTick = GameLoop.GameLoopTime + 1;
-                    player.Out.SendTimerWindow(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), skill.GetCraftingTime(player, recipe));
+                    _startTick = GameLoop.GameLoopTime;
+                    _owner.Out.SendTimerWindow(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "AbstractCraftingSkill.CraftItem.CurrentlyMaking", recipe.Product.Name), skill.GetCraftingTime(_owner, recipe));
                     _finishedCraft = false;
-                    player.craftComponent.AddRecipe(recipe);
+                    _owner.craftComponent.AddRecipe(recipe);
                 }
                 else
                     _finishedCraft = true;
             }
             else
             {
-                player.TempProperties.RemoveProperty("CraftQueueRemaining");
+                _owner.TempProperties.RemoveProperty(CRAFT_QUEUE_REMAINING_PROPERTY);
                 _finishedCraft = true;
             }
         }
