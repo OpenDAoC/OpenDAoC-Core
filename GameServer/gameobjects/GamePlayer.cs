@@ -11773,6 +11773,10 @@ namespace DOL.GS
             //     }
             // }
 
+            // Starter guilds are added to the `DBCharacter` when created, but the guild isn't actually reloaded and won't see it until the next server reboot.
+            // This does nothing if the character is already loaded by the guild.
+            GuildMgr.AddPlayerToAllGuildPlayersList(this);
+
             // check the account for the Muted flag
             if (Client.Account.IsMuted)
                 IsMuted = true;
