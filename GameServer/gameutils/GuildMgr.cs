@@ -209,6 +209,8 @@ namespace DOL.GS
 		public static void RepairRanks(Guild guild)
 		{
 			DbGuildRank rank;
+			guild.Ranks ??= new DbGuildRank[10];
+
 			for (int i = 0; i < 10; i++)
 			{
 				bool foundRank = false;
