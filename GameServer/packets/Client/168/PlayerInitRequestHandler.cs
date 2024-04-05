@@ -193,7 +193,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			private static void ShowPatchNotes(GamePlayer player)
 			{
+				if (player.Client.HasSeenPatchNotes)
+					return;
+
 				player.Out.SendCustomTextWindow($"Server News {DateTime.Today:d}", GameServer.Instance.PatchNotes);
+				player.Client.HasSeenPatchNotes = true;
 			}
 
 			private static void CheckBGLevelCapForPlayerAndMoveIfNecessary(GamePlayer player)

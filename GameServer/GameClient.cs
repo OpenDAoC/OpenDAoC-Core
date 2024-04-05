@@ -220,6 +220,8 @@ namespace DOL.GS
 		/// </summary>
 		protected long m_udpPingTime = GameLoop.GameLoopTime;
 
+		public bool HasSeenPatchNotes { get; set; }
+
 		/// <summary>
 		/// Custom Account Params
 		/// </summary>
