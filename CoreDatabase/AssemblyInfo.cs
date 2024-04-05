@@ -9,4 +9,4 @@
 [assembly: AssemblyTrademark("OpenDAoC Development Team")]
 [assembly: AssemblyCulture("")]		
 
-[assembly: AssemblyVersion("1.9.7.*")]
+[assembly: AssemblyVersion("1.9.7")]
