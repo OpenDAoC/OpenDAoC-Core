@@ -11904,15 +11904,6 @@ namespace DOL.GS
                     if (quest is Quests.MonthlyQuest mq)
                         mq.SaveQuestParameters();
 
-                    if (quest is LaunchQuestAlb lqa)
-                        lqa.SaveQuestParameters();
-
-                    if (quest is LaunchQuestHib lqh)
-                        lqh.SaveQuestParameters();
-
-                    if (quest is LaunchQuestMid lqm)
-                        lqm.SaveQuestParameters();
-
                     if (quest is Quests.AtlasQuest aq)
                         aq.SaveQuestParameters();
                 }
@@ -12511,15 +12502,6 @@ namespace DOL.GS
 
                 if (quest is Quests.MonthlyQuest mq)
                     mq.LoadQuestParameters();
-
-                if (quest is LaunchQuestAlb lqa)
-                    lqa.LoadQuestParameters();
-
-                if (quest is LaunchQuestHib lqh)
-                    lqh.LoadQuestParameters();
-
-                if (quest is LaunchQuestMid lqm)
-                    lqm.LoadQuestParameters();
 
                 if (quest is Quests.AtlasQuest aq)
                     aq.LoadQuestParameters();
