@@ -270,8 +270,9 @@ namespace DOL.GS
                 return;
             }
 
-            double targetX = Owner.SpawnPoint.X + Util.Random(-maxRoamingRadius, maxRoamingRadius);
-            double targetY = Owner.SpawnPoint.Y + Util.Random(-maxRoamingRadius, maxRoamingRadius);
+            double angle = Util.RandomDouble() * Math.PI * 2;
+            double targetX = Owner.SpawnPoint.X + maxRoamingRadius * Math.Cos(angle);
+            double targetY = Owner.SpawnPoint.Y + maxRoamingRadius * Math.Sin(angle);
             WalkTo(new Point3D((int) targetX, (int) targetY, Owner.SpawnPoint.Z), speed);
         }
 
