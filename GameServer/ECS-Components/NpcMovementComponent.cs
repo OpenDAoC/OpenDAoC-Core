@@ -521,7 +521,7 @@ namespace DOL.GS
 
             if (IsReturningToSpawnPoint)
             {
-                UpdateMovement(null, 0.0, 0);
+                SetPositionToDestination();
                 CancelReturnToSpawnPoint();
                 TurnTo(Owner.SpawnHeading);
                 return;
@@ -545,7 +545,15 @@ namespace DOL.GS
             }
 
             if (IsMoving)
+                SetPositionToDestination();
+
+            void SetPositionToDestination()
+            {
+                Owner.X = Destination.X;
+                Owner.Y = Destination.Y;
+                Owner.Z = Destination.Z;
                 UpdateMovement(null, 0.0, 0);
+            }
         }
 
         private void MoveToNextWaypoint()
@@ -648,6 +656,9 @@ namespace DOL.GS
 
             if (destination == null || distanceToTarget < 1)
             {
+                // This appears to be unreliable if we don't forcefully snap the NPC's position to its destination in `OnArrival`.
+                // X, Y, Z are supposed to return the destination. It's possible early ticks prevent that.
+                // We could also simply broadcast, but this would be  wasteful.
                 if (!IsAtDestination)
                     _needsBroadcastUpdate = true;
 
