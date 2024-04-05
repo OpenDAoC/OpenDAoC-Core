@@ -270,6 +270,7 @@ namespace DOL.GS
                 return;
             }
 
+            maxRoamingRadius = Util.Random(maxRoamingRadius);
             double angle = Util.RandomDouble() * Math.PI * 2;
             double targetX = Owner.SpawnPoint.X + maxRoamingRadius * Math.Cos(angle);
             double targetY = Owner.SpawnPoint.Y + maxRoamingRadius * Math.Sin(angle);
