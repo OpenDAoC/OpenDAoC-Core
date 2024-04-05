@@ -262,7 +262,7 @@ namespace DOL.GS
 
             if (Owner.CurrentZone.IsPathingEnabled)
             {
-                Vector3? target = PathingMgr.Instance.GetRandomPointAsync(Owner.CurrentZone, new Vector3(Owner.X, Owner.Y, Owner.Z), maxRoamingRadius);
+                Vector3? target = PathingMgr.Instance.GetRandomPointAsync(Owner.CurrentZone, new Vector3(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), maxRoamingRadius);
 
                 if (target.HasValue)
                     PathTo(new Point3D(target.Value.X, target.Value.Y, target.Value.Z), speed);
