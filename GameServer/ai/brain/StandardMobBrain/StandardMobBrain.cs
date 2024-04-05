@@ -40,7 +40,6 @@ namespace DOL.AI.Brain
             FSM.Add(new StandardMobState_PATROLLING(this));
             FSM.Add(new StandardMobState_ROAMING(this));
             FSM.Add(new StandardMobState_DEAD(this));
-
             FSM.SetCurrentState(eFSMStateType.WAKING_UP);
         }
 
@@ -627,8 +626,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Bring friends when this mob aggros
         /// </summary>
-        /// <param name="attacker">Whoever triggered the BAF</param>
-        protected virtual void BringFriends(GameLiving attacker)
+        protected virtual void BringFriends(GameLiving puller)
         {
             if (!CanBAF || Body.Faction == null)
                 return;
@@ -636,9 +634,9 @@ namespace DOL.AI.Brain
             GamePlayer playerPuller;
 
             // Only BAF on players and pets of players
-            if (attacker is GamePlayer)
-                playerPuller = (GamePlayer) attacker;
-            else if (attacker is GameNPC pet && pet.Brain is ControlledNpcBrain brain)
+            if (puller is GamePlayer)
+                playerPuller = (GamePlayer) puller;
+            else if (puller is GameNPC pet && pet.Brain is ControlledNpcBrain brain)
             {
                 playerPuller = brain.GetPlayerOwner();
 
@@ -654,101 +652,99 @@ namespace DOL.AI.Brain
 
             _ = new ResetBafPropertyAction(playerPuller);
             CanBAF = false; // Mobs only BAF once per fight
-            int numAttackers = 0;
-
-            List<GamePlayer> victims = null; // Only instantiated if we're tracking potential victims
-
-            // These are only used if we have to check for duplicates
-            HashSet<string> countedVictims = null;
-            HashSet<string> countedAttackers = null;
-
-            BattleGroup bg = playerPuller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
-
-            // Check group first to minimize the number of HashSet.Add() calls
-            if (playerPuller.Group is Group group)
-            {
-                if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && bg != null)
-                    countedAttackers = new HashSet<string>(); // We have to check for duplicates when counting attackers
-
-                if (!Properties.BAF_MOBS_ATTACK_PULLER)
-                {
-                    if (Properties.BAF_MOBS_ATTACK_BG_MEMBERS && bg != null)
-                    {
-                        // We need a large enough victims list for group and BG, and also need to check for duplicate victims
-                        victims = new List<GamePlayer>(group.MemberCount + bg.PlayerCount - 1);
-                        countedVictims = new HashSet<string>();
-                    }
-                    else
-                        victims = new List<GamePlayer>(group.MemberCount);
-                }
-
-                foreach (GamePlayer player in group.GetPlayersInTheGroup())
-                {
-                    if (player != null && (player.InternalID == playerPuller.InternalID || player.IsWithinRadius(playerPuller, BAFPlayerRange, true)))
-                    {
-                        numAttackers++;
-                        countedAttackers?.Add(player.InternalID);
-
-                        if (victims != null)
-                        {
-                            victims.Add(player);
-                            countedVictims?.Add(player.InternalID);
-                        }
-                    }
-                }
-            }
-
-            // Do we have to count BG members, or add them to victims list?
-            if (bg != null && (Properties.BAF_MOBS_COUNT_BG_MEMBERS || (Properties.BAF_MOBS_ATTACK_BG_MEMBERS && !Properties.BAF_MOBS_ATTACK_PULLER)))
-            {
-                if (victims == null && Properties.BAF_MOBS_ATTACK_BG_MEMBERS && !Properties.BAF_MOBS_ATTACK_PULLER)
-                    // Puller isn't in a group, so we have to create the victims list for the BG
-                    victims = new List<GamePlayer>(bg.PlayerCount);
-
-                foreach (GamePlayer player2 in bg.Members.Keys)
-                {
-                    if (player2 != null && (player2.InternalID == playerPuller.InternalID || player2.IsWithinRadius(playerPuller, BAFPlayerRange, true)))
-                    {
-                        if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && (countedAttackers == null || !countedAttackers.Contains(player2.InternalID)))
-                            numAttackers++;
-
-                        if (victims != null && (countedVictims == null || !countedVictims.Contains(player2.InternalID)))
-                            victims.Add(player2);
-                    }
-                }
-            }
-
-            if (numAttackers == 0)
-                // Player is alone
-                numAttackers = 1;
-
-            int percentBAF = Properties.BAF_INITIAL_CHANCE
-                + ((numAttackers - 1) * Properties.BAF_ADDITIONAL_CHANCE);
-
-            int maxAdds = percentBAF / 100; // Multiple of 100 are guaranteed BAFs.
-
-            // Calculate chance of an addition add based on the remainder.
-            if (Util.Chance(percentBAF % 100))
-                maxAdds++;
-
-            if (maxAdds <= 0)
-                return;
-
-            IEnumerable<StandardMobBrain> brainsInRadius =  Body.GetNPCsInRadius(BAFMaxRange).Where(WherePredicate).OrderBy(OrderByPredicate).Take(maxAdds).Select(SelectPredicate);
+            int maxAdds = GetMaxAddsCountFromBaf(puller, out List<GamePlayer> otherTargets);
+            IEnumerable<StandardMobBrain> brainsInRadius = GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(BAFMaxRange, maxAdds);
 
             foreach (StandardMobBrain brain in brainsInRadius)
             {
                 brain.CanBAF = false;
                 GameLiving target;
 
-                if (victims != null && victims.Count > 1)
-                    target = victims[Util.Random(0, victims.Count - 1)];
+                if (otherTargets != null && otherTargets.Count > 1)
+                    target = otherTargets[Util.Random(0, otherTargets.Count - 1)];
                 else
-                    target = attacker;
+                    target = puller;
 
                 brain.AddToAggroList(target, 1);
                 brain.AttackMostWanted();
             }
+
+            int GetMaxAddsCountFromBaf(GameLiving puller, out List<GamePlayer> otherTargets)
+            {
+                int numAttackers = 0;
+                otherTargets = null;
+                HashSet<string> countedVictims = null;
+                HashSet<string> countedAttackers = null;
+                BattleGroup bg = puller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+
+                if (puller.Group is Group group)
+                {
+                    if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && bg != null)
+                        countedAttackers = [];
+
+                    if (!Properties.BAF_MOBS_ATTACK_PULLER)
+                    {
+                        if (Properties.BAF_MOBS_ATTACK_BG_MEMBERS && bg != null)
+                        {
+                            otherTargets = new(group.MemberCount + bg.PlayerCount - 1);
+                            countedVictims = [];
+                        }
+                        else
+                            otherTargets = new(group.MemberCount);
+                    }
+
+                    foreach (GamePlayer playerInGroup in group.GetPlayersInTheGroup())
+                    {
+                        if (playerInGroup != null && (playerInGroup.InternalID == puller.InternalID || playerInGroup.IsWithinRadius(puller, BAFPlayerRange, true)))
+                        {
+                            numAttackers++;
+                            countedAttackers?.Add(playerInGroup.InternalID);
+
+                            if (otherTargets != null)
+                            {
+                                otherTargets.Add(playerInGroup);
+                                countedVictims?.Add(playerInGroup.InternalID);
+                            }
+                        }
+                    }
+                }
+
+                if (bg != null && (Properties.BAF_MOBS_COUNT_BG_MEMBERS || (Properties.BAF_MOBS_ATTACK_BG_MEMBERS && !Properties.BAF_MOBS_ATTACK_PULLER)))
+                {
+                    if (otherTargets == null && Properties.BAF_MOBS_ATTACK_BG_MEMBERS && !Properties.BAF_MOBS_ATTACK_PULLER)
+                        otherTargets = new(bg.PlayerCount);
+
+                    foreach (GamePlayer player2 in bg.Members.Keys)
+                    {
+                        if (player2 != null && (player2.InternalID == puller.InternalID || player2.IsWithinRadius(puller, BAFPlayerRange, true)))
+                        {
+                            if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && (countedAttackers == null || !countedAttackers.Contains(player2.InternalID)))
+                                numAttackers++;
+
+                            if (otherTargets != null && (countedVictims == null || !countedVictims.Contains(player2.InternalID)))
+                                otherTargets.Add(player2);
+                        }
+                    }
+                }
+
+                // Player is alone.
+                if (numAttackers == 0)
+                    numAttackers = 1;
+
+                int percentBAF = Properties.BAF_INITIAL_CHANCE + (numAttackers - 1) * Properties.BAF_ADDITIONAL_CHANCE;
+                int maxAdds = percentBAF / 100; // Multiple of 100 are guaranteed BAFs.
+
+                // Calculate chance of an addition add based on the remainder.
+                if (Util.Chance(percentBAF % 100))
+                    maxAdds++;
+
+                return Math.Max(0, maxAdds);
+            }
+        }
+
+        public IEnumerable<StandardMobBrain> GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(ushort radius, int count)
+        {
+            return Body.GetNPCsInRadius(radius).Where(WherePredicate).OrderBy(OrderByPredicate).Take(count).Select(SelectPredicate);
 
             bool WherePredicate(GameNPC npc)
             {

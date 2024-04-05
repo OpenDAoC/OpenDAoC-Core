@@ -2426,25 +2426,39 @@ namespace DOL.GS
 		/// <returns>list with string messages</returns>
 		public override IList GetExamineMessages(GamePlayer player)
 		{
+			IList list;
+			string message;
+			string extra = Brain is ScoutMobBrain ? " and is a scout" : null;
+
+			// Message: You examine {0}. {1} is {2}.
 			switch (player.Client.Account.Language)
 			{
 				case "EN":
 				{
-					IList list = base.GetExamineMessages(player);
-					// Message: You examine {0}. {1} is {2}.
-					list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetExamineMessages.YouExamine", GetName(0, false), GetPronoun(0, true), GetAggroLevelString(player, false)));
-					return list;
+					list = base.GetExamineMessages(player);
+					message = LanguageMgr.GetTranslation(player.Client.Account.Language,
+						"GameNPC.GetExamineMessages.YouExamine",
+						GetName(0, false),
+						GetPronoun(0, true),
+						GetAggroLevelString(player, false),
+						extra);
+					break;
 				}
 				default:
-					{
-						IList list = new ArrayList(4);
-						// Message: You examine {0}. {1} is {2}.
-						list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.GetExamineMessages.YouExamine",
-															GetName(0, false, player.Client.Account.Language, this),
-															GetPronoun(0, true, player.Client.Account.Language), GetAggroLevelString(player, false)));
-						return list;
-					}
+				{
+					list = new ArrayList(4);
+					message = LanguageMgr.GetTranslation(player.Client.Account.Language,
+						"GameNPC.GetExamineMessages.YouExamine",
+						GetName(0, false, player.Client.Account.Language, this),
+						GetPronoun(0, true, player.Client.Account.Language),
+						GetAggroLevelString(player, false),
+						extra);
+					break;
+				}
 			}
+
+			list.Add(message);
+			return list;
 		}
 
 		/*		/// <summary>

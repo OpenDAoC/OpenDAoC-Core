@@ -5,14 +5,14 @@ namespace DOL.AI
 {
     public class FSM
     {
-        protected Dictionary<eFSMStateType, FSMState> _states = new();
+        protected Dictionary<eFSMStateType, FSMState> _states = [];
         protected FSMState _state;
 
         public FSM() { }
 
         public virtual void Add(FSMState state)
         {
-            _states.Add(state.StateType, state);
+            _states[state.StateType] = state;
         }
 
         public virtual void ClearStates()
@@ -28,13 +28,9 @@ namespace DOL.AI
 
         public virtual void SetCurrentState(eFSMStateType stateType)
         {
-            if (_state != null)
-                _state.Exit();
-
+            _state?.Exit();
             _states.TryGetValue(stateType, out _state);
-
-            if (_state != null)
-                _state.Enter();
+            _state?.Enter();
         }
 
         public virtual FSMState GetCurrentState()
@@ -44,8 +40,7 @@ namespace DOL.AI
 
         public virtual void Think()
         {
-            if (_state != null)
-                _state.Think();
+            _state?.Think();
         }
 
         public virtual void KillFSM() { }

@@ -97,8 +97,7 @@ namespace DOL.AI.Brain
     public class StandardMobState_AGGRO : StandardMobState
     {
         private const int LEAVE_WHEN_OUT_OF_COMBAT_FOR = 25000;
-
-        private long _aggroTime = GameLoop.GameLoopTime; // Used to prevent leaving on the first think tick, due to `InCombatInLast` returning false.
+        private long _aggroEndTime; // Used to prevent leaving on the first think tick, due to `InCombatInLast` returning false.
 
         public StandardMobState_AGGRO(StandardMobBrain brain) : base(brain)
         {
@@ -110,7 +109,7 @@ namespace DOL.AI.Brain
             if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
                 Console.WriteLine($"{_brain.Body} is entering AGGRO");
 
-            _aggroTime = GameLoop.GameLoopTime;
+            _aggroEndTime = GameLoop.GameLoopTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR;
             base.Enter();
         }
 
@@ -125,7 +124,7 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (!_brain.HasAggro || (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && _aggroTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR <= GameLoop.GameLoopTime))
+            if (!_brain.HasAggro || (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && ServiceUtils.ShouldTick(_aggroEndTime)))
             {
                 if (!_brain.Body.IsMezzed && !_brain.Body.IsStunned)
                 {
@@ -150,6 +149,9 @@ namespace DOL.AI.Brain
     {
         private long _nextRoamingTick;
         private bool _nextRoamingTickSet;
+        protected virtual short Speed => NpcMovementComponent.DEFAULT_WALK_SPEED;
+        protected virtual int MinCooldown => Properties.GAMENPC_ROAM_COOLDOWN_MIN;
+        protected virtual int MaxCooldown => Properties.GAMENPC_ROAM_COOLDOWN_MAX;
 
         public StandardMobState_ROAMING(StandardMobBrain brain) : base(brain)
         {
@@ -177,14 +179,14 @@ namespace DOL.AI.Brain
                 if (!_nextRoamingTickSet)
                 {
                     _nextRoamingTickSet = true;
-                    _nextRoamingTick += Util.Random(Properties.GAMENPC_ROAM_COOLDOWN_MIN, Properties.GAMENPC_ROAM_COOLDOWN_MAX) * 1000;
+                    _nextRoamingTick += Util.Random(MinCooldown, MaxCooldown) * 1000;
                 }
 
                 if (ServiceUtils.ShouldTickAdjust(ref _nextRoamingTick))
                 {
                     // We're not updating `_nextRoamingTick` here because we want it to be set after the NPC stopped moving.
                     _nextRoamingTickSet = false;
-                    _brain.Body.Roam(NpcMovementComponent.DEFAULT_WALK_SPEED);
+                    _brain.Body.Roam(Speed);
                     _brain.Body.FireAmbientSentence(GameNPC.eAmbientTrigger.roaming, _brain.Body);
                 }
             }
@@ -196,6 +198,8 @@ namespace DOL.AI.Brain
 
     public class StandardMobState_RETURN_TO_SPAWN : StandardMobState
     {
+        protected virtual short Speed => NpcMovementComponent.DEFAULT_WALK_SPEED;
+
         public StandardMobState_RETURN_TO_SPAWN(StandardMobBrain brain) : base(brain)
         {
             StateType = eFSMStateType.RETURN_TO_SPAWN;
@@ -210,7 +214,7 @@ namespace DOL.AI.Brain
                 _brain.Body.Flags |= GameNPC.eFlags.STEALTH;
 
             _brain.ClearAggroList();
-            _brain.Body.ReturnToSpawnPoint(NpcMovementComponent.DEFAULT_WALK_SPEED);
+            _brain.Body.ReturnToSpawnPoint(Speed);
             base.Enter();
         }
 
