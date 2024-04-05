@@ -1,13 +1,9 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
-using DOL.GS.Styles;
-using DOL.GS.Effects;
 
 // Boss Mechanics
 // Changes form every ~20 seconds
@@ -18,7 +14,6 @@ using DOL.GS.Effects;
 // Each state change is random, so he may change to the same form repeatedly.
 // Form change accompanied by message, "A ring of magical energy emanates from Hurionthex."
 // Spell animation same as ice wizard PBAOE.
-
 
 namespace DOL.GS
 {
@@ -153,7 +148,6 @@ namespace DOL.GS
                 Hurion.X = 55672;
                 Hurion.Y = 43536;
                 Hurion.Z = 12417;
-                Hurion.MaxDistance = 2000;
                 Hurion.MaxSpeedBase = 300;
                 Hurion.Heading = 1035;
 

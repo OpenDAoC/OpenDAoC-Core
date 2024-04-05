@@ -73,7 +73,6 @@ namespace DOL.GS
 			Model = 347;
 			Level = 70;
 			Size = 50;
-			MaxDistance = 2500;
 			TetherRange = 2600;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -224,4 +223,3 @@ namespace DOL.AI.Brain
 		#endregion
 	}
 }
-

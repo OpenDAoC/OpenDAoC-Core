@@ -573,7 +573,6 @@ namespace DOL.GS
             Model = 918;
             MeleeDamageType = eDamageType.Crush;
             Name = "hrimthursa seer";
-            MaxDistance = 3500;
             TetherRange = 3800;
             Size = 60;
             Level = (byte)Util.Random(73, 75);

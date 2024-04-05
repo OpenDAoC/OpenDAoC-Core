@@ -269,7 +269,6 @@ namespace DOL.GS
             Level = (byte)Util.Random(34, 38);
             Name = "summoned innocent";
             Realm = eRealm.None;
-            MaxDistance = 0;
             TetherRange = 0;
             Faction = FactionMgr.GetFactionByID(187);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
@@ -345,6 +344,7 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class SpecialInnocentBrain : StandardMobBrain

@@ -141,7 +141,6 @@ namespace DOL.GS
 				OF.X = 39273;
 				OF.Y = 41166;
 				OF.Z = 15998;
-				OF.MaxDistance = 2000;
 				OF.TetherRange = 1300;
 				OF.MaxSpeedBase = 250;
 				OF.Heading = 967;
@@ -160,6 +159,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class SummonerLossrenBrain : StandardMobBrain
@@ -353,6 +353,7 @@ namespace DOL.AI.Brain
 		}
 	}
 }
+
 namespace DOL.GS
 {
 	public class TorturedSouls : GameNPC
@@ -513,6 +514,7 @@ namespace DOL.AI.Brain
 		}
 	}
 }
+
 namespace DOL.GS
 {
 	public class ExplodeUndead : GameNPC

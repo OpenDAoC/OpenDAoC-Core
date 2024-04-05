@@ -21,7 +21,6 @@ namespace DOL.GS
 			Piety = npcTemplate.Piety;
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
-			MaxDistance = 0;
 			TetherRange = 0;
 
 			EquesBrain.point1check = false;
@@ -42,6 +41,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class EquesBrain : StandardMobBrain

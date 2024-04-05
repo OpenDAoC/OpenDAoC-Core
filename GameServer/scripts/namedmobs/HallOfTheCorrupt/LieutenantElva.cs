@@ -175,7 +175,6 @@ namespace DOL.GS
             Quickness = 145;
             IsCloakHoodUp = true;
             EvadeChance = 50;
-            MaxDistance = 2000;
             TetherRange = 1500;
             MaxSpeedBase = 225;
             Gender = eGender.Female;

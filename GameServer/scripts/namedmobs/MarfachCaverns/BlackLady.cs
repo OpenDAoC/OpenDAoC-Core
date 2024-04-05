@@ -328,7 +328,6 @@ namespace DOL.GS
             RespawnInterval = -1;
             MaxSpeedBase = 200;
             Realm = eRealm.None;
-            MaxDistance = 0;
             TetherRange = 0;
 
             ++OgressCount;

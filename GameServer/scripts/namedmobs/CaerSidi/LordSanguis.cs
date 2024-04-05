@@ -158,7 +158,6 @@ namespace DOL.GS
                 CO.X = 34080;
                 CO.Y = 32919;
                 CO.Z = 14518;
-                CO.MaxDistance = 2000;
                 CO.TetherRange = 2000;
                 CO.MaxSpeedBase = 250;
                 CO.Heading = 4079;
@@ -311,7 +310,6 @@ namespace DOL.GS
             RespawnInterval = -1;
             LichLordSanguisBrain.set_flag = false;
 
-            MaxDistance = 2000;
             TetherRange = 2000;
             Size = 100;
             Level = 81;
@@ -445,7 +443,6 @@ namespace DOL.GS
             Name = "blood mage";
             RespawnInterval = -1;
 
-            MaxDistance = 2500;
             TetherRange = 3000;
             RoamingRange = 120;
             Size = 50;

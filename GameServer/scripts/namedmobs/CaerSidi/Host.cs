@@ -304,7 +304,6 @@ namespace DOL.GS
             Name = "Host";
             PackageID = "HostCopy";
             RespawnInterval = -1;
-            MaxDistance = 0;
             TetherRange = 0;
             Size = 60;
             Level = 79;
@@ -4012,8 +4011,7 @@ namespace DOL.AI.Brain
                         {
                             if (BafMobs == true && npc.TargetObject == Body.TargetObject)
                             {
-                                npc.MaxDistance = 10000; //set mob distance to make it reach target
-                                npc.TetherRange = 10000; //set tether to not return to home
+                                npc.TetherRange = 0; //set tether to not return to home
                                 if (!npc.IsWithinRadius(Body.TargetObject, 100))
                                 {
                                     npc.MaxSpeedBase = 300; //speed is is not near to reach target faster
@@ -4035,7 +4033,6 @@ namespace DOL.AI.Brain
                         {
                             if (BafMobs == false)
                             {
-                                npc.MaxDistance = npc.NPCTemplate.MaxDistance; //return distance to normal
                                 npc.TetherRange = npc.NPCTemplate.TetherRange; //return tether to normal
                                 npc.MaxSpeedBase = npc.NPCTemplate.MaxSpeed; //return speed to normal
                             }

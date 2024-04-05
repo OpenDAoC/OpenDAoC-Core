@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
@@ -143,7 +142,6 @@ namespace DOL.GS
                 OG.X = 39152;
                 OG.Y = 36878;
                 OG.Z = 14975;
-                OG.MaxDistance = 2000;
                 OG.MaxSpeedBase = 300;
                 OG.Heading = 2033;
 
@@ -575,7 +573,6 @@ namespace DOL.GS
             Model = 925;
             Name = "geomancer minion";
             RespawnInterval = -1;
-            MaxDistance = 0;
             TetherRange = 0;
             Size = (byte) Util.Random(45, 55);
             Level = (byte) Util.Random(62, 66);

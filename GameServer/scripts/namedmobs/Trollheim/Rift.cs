@@ -83,7 +83,6 @@ namespace DOL.GS
 			Piety = 150;
 			Intelligence = 150;
 			Empathy = 300;
-			MaxDistance = 3500;
 			TetherRange = 3500;
 			MeleeDamageType = eDamageType.Crush;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
@@ -101,6 +100,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class RiftBrain : StandardMobBrain
@@ -264,6 +264,7 @@ namespace DOL.AI.Brain
 		}
 	}
 }
+
 namespace DOL.GS
 {
 	public class Morkenhet : GameNPC

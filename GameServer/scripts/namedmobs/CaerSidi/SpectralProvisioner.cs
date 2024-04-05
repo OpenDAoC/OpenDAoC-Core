@@ -80,7 +80,6 @@ namespace DOL.GS.Scripts
 			Level = 77;
 			Gender = eGender.Neutral;
 			BodyType = 11; // undead
-			MaxDistance = 0;
 			TetherRange = 0;
 			RoamingRange = 0;
 			MaxSpeedBase = 300;

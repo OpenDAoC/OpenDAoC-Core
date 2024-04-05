@@ -125,7 +125,6 @@ namespace DOL.GS
 			EvadeChance = 50;
 
 			MaxSpeedBase = 250;
-			MaxDistance = 3500;
 			TetherRange = 3800;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
@@ -141,6 +140,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class DrihtenElredenBrain : StandardMobBrain

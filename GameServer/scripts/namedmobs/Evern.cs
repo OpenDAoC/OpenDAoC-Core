@@ -139,7 +139,6 @@ namespace DOL.GS
                 CO.X = 429840;
                 CO.Y = 380396;
                 CO.Z = 2328;
-                CO.MaxDistance = 3500;
                 CO.TetherRange = 3800;
                 CO.MaxSpeedBase = 250;
                 CO.Heading = 4059;
@@ -170,6 +169,7 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class EvernBrain : EpicBossBrain
@@ -317,6 +317,7 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class EvernFairyBrain : StandardMobBrain

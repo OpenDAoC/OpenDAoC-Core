@@ -75,7 +75,6 @@ namespace DOL.GS
 			Level = 75;
 			Size = 200;
 			ParryChance = 50;
-			MaxDistance = 3500;
 			TetherRange = 3600;
 			if (!Styles.Contains(taunt))
 				Styles.Add(taunt);
@@ -129,4 +128,3 @@ namespace DOL.AI.Brain
 		}
 	}
 }
-

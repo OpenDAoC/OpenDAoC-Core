@@ -119,21 +119,18 @@ namespace DOL.GS.Commands
 					{
 						info.Add(" + Aggro level: " + aggroBrain.AggroLevel);
 						info.Add(" + Aggro range: " + aggroBrain.AggroRange);
+
 						if(aggroBrain is StandardMobBrain mobBrain)
 							info.Add(" + ThinkInterval: " + mobBrain.ThinkInterval +"ms");
-
-						if (target.MaxDistance < 0)
-							info.Add(" + MaxDistance: " + -target.MaxDistance * aggroBrain.AggroRange / 100);
-						else
-							info.Add(" + MaxDistance: " + target.MaxDistance);
 					}
 					else
 						info.Add(" + Not aggressive brain");
-						
+
 					if (target.NPCTemplate != null)
 						info.Add(" + NPCTemplate: " + "[" + target.NPCTemplate.TemplateId + "] " + target.NPCTemplate.Name);
 
 					info.Add(" + Roaming Range: " + target.RoamingRange);
+					info.Add(" + Tether Range: " + target.TetherRange);
 
 					TimeSpan respawn = TimeSpan.FromMilliseconds(target.RespawnInterval);
 					if (target.RespawnInterval <= 0)

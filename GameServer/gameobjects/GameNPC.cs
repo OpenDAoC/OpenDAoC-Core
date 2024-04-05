@@ -826,19 +826,6 @@ namespace DOL.GS
 		public override bool IsStealthed => false;// (Flags & eFlags.STEALTH) != 0;
 		public bool WasStealthed { get; private set; } = false;
 
-		protected int m_maxdistance;
-		/// <summary>
-		/// The Mob's max distance from its spawn before return automatically
-		/// if MaxDistance > 0 ... the amount is the normal value
-		/// if MaxDistance = 0 ... no maxdistance check
-		/// if MaxDistance less than 0 ... the amount is calculated in percent of the value and the aggrorange (in StandardMobBrain)
-		/// </summary>
-		public int MaxDistance
-		{
-			get { return m_maxdistance; }
-			set { m_maxdistance = value; }
-		}
-
 		protected int m_tetherRange;
 
 		/// <summary>
@@ -1162,7 +1149,6 @@ namespace DOL.GS
 			m_race = (short)dbMob.Race;
 			m_bodyType = (ushort)dbMob.BodyType;
 			m_houseNumber = (ushort)dbMob.HouseNumber;
-			m_maxdistance = dbMob.MaxDistance;
 			RoamingRange = dbMob.RoamingRange;
 			m_isCloakHoodUp = dbMob.IsCloakHoodUp;
 			m_visibleActiveWeaponSlots = dbMob.VisibleWeaponSlots;
@@ -1277,7 +1263,6 @@ namespace DOL.GS
 			mob.Race = Race;
 			mob.BodyType = BodyType;
 			mob.PathID = PathID;
-			mob.MaxDistance = m_maxdistance;
 			mob.IsCloakHoodUp = m_isCloakHoodUp;
 			mob.Gender = (byte)Gender;
 			mob.VisibleWeaponSlots = m_visibleActiveWeaponSlots;
@@ -1378,7 +1363,6 @@ namespace DOL.GS
 			#endregion
 
 			#region Misc Stats
-			MaxDistance = template.MaxDistance;
 			Race = (short) template.Race;
 			BodyType = template.BodyType;
 			MaxSpeedBase = template.MaxSpeed;
@@ -4440,7 +4424,6 @@ namespace DOL.GS
 			copyTarget.SaveInDB = SaveInDB;
 			copyTarget.Strength = Strength;
 			copyTarget.TetherRange = TetherRange;
-			copyTarget.MaxDistance = MaxDistance;
 			copyTarget.X = X;
 			copyTarget.Y = Y;
 			copyTarget.Z = Z;
@@ -4515,7 +4498,6 @@ namespace DOL.GS
 			GuildName = "";
 			m_size = 50;
 			m_flags = 0;
-			m_maxdistance = 0;
 			RoamingRange = 0;
 			OwnerID = "";
 			m_spawnPoint = new Point3D();

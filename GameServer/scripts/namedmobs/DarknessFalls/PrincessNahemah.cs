@@ -57,7 +57,6 @@ namespace DOL.GS
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165038);
             LoadTemplate(npcTemplate);
-            MaxDistance = 1500;
             TetherRange = 2000;
             RoamingRange = 400;
             PrincessNahemahBrain sBrain = new PrincessNahemahBrain();
@@ -179,7 +178,6 @@ namespace DOL.GS
             LoadTemplate(npcTemplate);
             RoamingRange = 350;
             RespawnInterval = -1;
-            MaxDistance = 1500;
             TetherRange = 2000;
             IsWorthReward = false; // worth no reward
             Realm = eRealm.None;

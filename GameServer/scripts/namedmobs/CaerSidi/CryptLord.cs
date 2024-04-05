@@ -220,8 +220,7 @@ namespace DOL.AI.Brain
                         {
                             if (npc.TargetObject == Body.TargetObject && npc.NPCTemplate != null)//check if npc got NpcTemplate!
                             {
-                                npc.MaxDistance = 10000; //set mob distance to make it reach target
-                                npc.TetherRange = 10000; //set tether to not return to home
+                                npc.TetherRange = 0; //set tether to not return to home
                                 if (!npc.IsWithinRadius(Body.TargetObject, 100))
                                     npc.MaxSpeedBase = 300; //speed is is not near to reach target faster
                                 else
@@ -241,7 +240,6 @@ namespace DOL.AI.Brain
                         {
                             if (!HasAggro)
                             {
-                                npc.MaxDistance = npc.NPCTemplate.MaxDistance; //return distance to normal
                                 npc.TetherRange = npc.NPCTemplate.TetherRange; //return tether to normal
                                 npc.MaxSpeedBase = npc.NPCTemplate.MaxSpeed; //return speed to normal
                             }

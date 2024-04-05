@@ -451,7 +451,6 @@ namespace DOL.GS
             Name = "Fames";
             RespawnInterval = -1;
 
-            MaxDistance = 3500;
             TetherRange = 3600;
             Size = 120;
             Level = 83;
@@ -676,7 +675,6 @@ namespace DOL.GS
             Name = "Bellum";
             RespawnInterval = -1;
 
-            MaxDistance = 3500;
             TetherRange = 3600;
             Size = 140;
             Level = 83;
@@ -1465,7 +1463,6 @@ namespace DOL.GS
             Name = "Morbus";
             RespawnInterval = -1;
 
-            MaxDistance = 3500;
             TetherRange = 3600;
             Size = 140;
             Level = 83;
@@ -1799,7 +1796,6 @@ namespace DOL.GS
                     }
                     break;
             }
-            MaxDistance = 2500;
             TetherRange = 3000;
             Level = 75;
 
@@ -2025,7 +2021,6 @@ namespace DOL.GS
             Name = "Funus";
             RespawnInterval = -1;
 
-            MaxDistance = 3500;
             TetherRange = 3600;
             Size = 120;
             Level = 83;
@@ -2235,7 +2230,6 @@ namespace DOL.GS
             Name = "Apocalypse";
             RespawnInterval = -1;
 
-            MaxDistance = 3500;
             TetherRange = 3600;
             Size = 120;
             Level = 87;
@@ -2649,7 +2643,6 @@ namespace DOL.GS
             this.AbilityBonus[(int)eProperty.Resist_Crush] = 30;
             this.AbilityBonus[(int)eProperty.Resist_Thrust] = 30;
 
-            MaxDistance = 2500;
             TetherRange = 3000;
             MaxSpeedBase = 220;
             Level = 75;

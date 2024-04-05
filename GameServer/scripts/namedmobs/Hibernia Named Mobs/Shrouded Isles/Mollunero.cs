@@ -235,7 +235,6 @@ namespace DOL.GS
 			Size = (byte)Util.Random(35, 45);
 			RespawnInterval = -1;
 			RoamingRange = 200;
-			MaxDistance = 2500;
 			TetherRange = 2600;
 			Faction = FactionMgr.GetFactionByID(96);
 			Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
@@ -248,6 +247,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class MolluneroAddBrain : StandardMobBrain

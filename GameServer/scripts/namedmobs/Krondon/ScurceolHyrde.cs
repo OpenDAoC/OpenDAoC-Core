@@ -1,10 +1,9 @@
 ﻿using System;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS.PacketHandler;
 using DOL.Events;
 using DOL.GS;
-using System.Collections.Generic;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -102,7 +101,6 @@ namespace DOL.GS
 			Empathy = 300;
 
 			MaxSpeedBase = 250;
-			MaxDistance = 3500;
 			TetherRange = 3800;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
@@ -164,6 +162,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class ScurceolHyrdeBrain : StandardMobBrain
@@ -267,6 +266,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class LyftMihtBrain1 : StandardMobBrain
@@ -325,6 +325,7 @@ namespace DOL.AI.Brain
 	}
 }
 #endregion
+
 #region 2nd orb
 namespace DOL.GS
 {
@@ -397,6 +398,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class LyftMihtBrain2 : StandardMobBrain
@@ -455,6 +457,7 @@ namespace DOL.AI.Brain
 	}
 }
 #endregion
+
 #region 3th orb
 namespace DOL.GS
 {
@@ -527,6 +530,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class LyftMihtBrain3 : StandardMobBrain
@@ -585,6 +589,7 @@ namespace DOL.AI.Brain
 	}
 }
 #endregion
+
 #region 4th orb
 namespace DOL.GS
 {
@@ -657,6 +662,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class LyftMihtBrain4 : StandardMobBrain

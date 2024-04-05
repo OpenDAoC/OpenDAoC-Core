@@ -69,10 +69,9 @@ namespace DOL.GS
 			Piety = 200;
 			Intelligence = 200;
 			Charisma = 200;
-			Empathy = 400;		
+			Empathy = 400;
 
 			MaxSpeedBase = 250;
-			MaxDistance = 3500;
 			TetherRange = 3800;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
@@ -88,6 +87,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class DebenSeGecyndeBrain : StandardMobBrain
@@ -249,6 +249,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class DebenFighterBrain : StandardMobBrain
@@ -267,6 +268,7 @@ namespace DOL.AI.Brain
 	}
 }
 #endregion
+
 #region mage 
 namespace DOL.GS
 {
@@ -338,6 +340,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class DebenMageBrain : StandardMobBrain

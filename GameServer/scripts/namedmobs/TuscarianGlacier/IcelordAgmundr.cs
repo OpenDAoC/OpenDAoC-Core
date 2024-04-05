@@ -1,6 +1,5 @@
 ﻿using System;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
@@ -192,8 +191,8 @@ namespace DOL.AI.Brain
                 if (npc.NPCTemplate == null) continue;//check for nontemplated mobs
                 if (!npc.IsAlive || npc.PackageID != "AgmundrBaf") continue;
                 if (npc.TargetObject != Body.TargetObject) continue;
-                npc.MaxDistance = 10000; //set mob distance to make it reach target
-                npc.TetherRange = 10000; //set tether to not return to home
+
+                npc.TetherRange = 0; //set tether to not return to home
                 if (!npc.IsWithinRadius(Body.TargetObject, 100))
                 {
                     npc.MaxSpeedBase = 300; //speed is is not near to reach target faster

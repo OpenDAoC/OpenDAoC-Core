@@ -104,7 +104,6 @@ namespace DOL.GS.Scripts
 			mob.MeleeDamageType = this.MeleeDamageType;
 			mob.RespawnInterval = -1; // dont respawn
 			mob.RoamingRange = this.RoamingRange;
-			mob.MaxDistance = 4000;
 
 			// also copies the stats
 
@@ -205,5 +204,4 @@ namespace DOL.GS.Scripts
 		}
 		
 	}
-
 }

@@ -322,7 +322,6 @@ namespace DOL.GS
             Name = "hrimathursa tormentor";
             RespawnInterval = -1;
 
-            MaxDistance = 5500;
             TetherRange = 5800;
             Size = 50;
             Level = 78;

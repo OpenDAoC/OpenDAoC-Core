@@ -100,7 +100,6 @@ namespace DOL.GS
 			Empathy = 400;
 
 			MaxSpeedBase = 250;
-			MaxDistance = 2500;
 			TetherRange = 1800;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 

@@ -1,10 +1,11 @@
 ﻿using System;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
+
 namespace DOL.GS
 {
     public class LieutenantSaxe : GameNPC
@@ -148,7 +149,6 @@ namespace DOL.GS
             Dexterity = 200;
             Quickness = 80;
             EvadeChance = 50;
-            MaxDistance = 2000;
             TetherRange = 1500;
             MaxSpeedBase = 225;
             Gender = eGender.Male;
@@ -236,9 +236,3 @@ namespace DOL.AI.Brain
         }
     }
 }
-
-
-
-
-
-

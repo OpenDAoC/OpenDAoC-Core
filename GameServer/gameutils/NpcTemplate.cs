@@ -1,29 +1,10 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
+using System.Collections;
+using System.Linq;
 using System.Reflection;
 using DOL.Database;
 using DOL.GS.Styles;
-using DOL.GS.Spells;
 using log4net;
-using System.Collections;
-using System.Linq;
 
 namespace DOL.GS
 {
@@ -218,7 +199,6 @@ namespace DOL.GS
             m_examineArticle = mob.ExamineArticle;
             m_messageArticle = mob.MessageArticle;
 			m_intelligence = mob.Intelligence;
-			m_maxdistance = mob.MaxDistance;
 			m_maxSpeed = (short)mob.MaxSpeedBase;
 			m_meleeDamageType = (eDamageType)mob.MeleeDamageType;
 			m_model = mob.Model.ToString();
@@ -629,18 +609,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// The Mob's max distance from its spawn before return automatically
-		/// if MaxDistance > 0 ... the amount is the normal value
-		/// if MaxDistance = 0 ... no maxdistance check
-		/// if MaxDistance less than 0 ... the amount is calculated in procent of the value and the aggrorange (in StandardMobBrain)
-		/// </summary>
-		public int MaxDistance
-		{
-			get { return m_maxdistance;	}
-			set	{ m_maxdistance = value;	}
-		}
-
-		/// <summary>
 		/// The mob's tether range; if mob is pulled farther than this distance
 		/// it will return to its spawn point.
 		/// if TetherRange > 0 ... the amount is the normal value
@@ -705,7 +673,6 @@ namespace DOL.GS
 			tmp.Intelligence = Intelligence;
 			tmp.LeftHandSwingChance = LeftHandSwingChance;
 			tmp.Level = Level;
-			tmp.MaxDistance = MaxDistance;
 			tmp.MaxSpeed = MaxSpeed;
 			tmp.MeleeDamageType = (byte)MeleeDamageType;
 			tmp.Model = Model;

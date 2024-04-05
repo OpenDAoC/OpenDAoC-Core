@@ -297,7 +297,6 @@ namespace DOL.GS
             Model = 906;
             Name = "Giant Sporite Cluster";
             RespawnInterval = -1;
-            MaxDistance = 0;
             TetherRange = 0;
             Size = (byte)Util.Random(45, 55);
             Level = 79;

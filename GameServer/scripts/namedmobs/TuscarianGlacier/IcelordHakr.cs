@@ -151,6 +151,7 @@ namespace DOL.GS
         }
     }
 }
+
 namespace DOL.AI.Brain
 {
     public class HakrBrain : StandardMobBrain
@@ -335,7 +336,6 @@ namespace DOL.GS
             Name = "Royal Iceweaver";
             RespawnInterval = -1;
 
-            MaxDistance = 3500;
             TetherRange = 3800;
             Size = 60;
             Level = 78;

@@ -61,7 +61,6 @@ namespace DOL.GS.Scripts
 			Level = 81;
 			Gender = eGender.Neutral;
 			BodyType = 5; // giant
-			MaxDistance = 1500;
 			TetherRange = 2000;
 			RoamingRange = 0;
 			Realm = eRealm.None;

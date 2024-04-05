@@ -89,7 +89,6 @@ namespace DOL.GS
 			Model = 26;
 			Level = 70;
 			Size = 35;
-			MaxDistance = 2500;
 			TetherRange = 2600;
 			BroadcastMessage("Bloody bones fly from all directions into a swirling cloud of gore in the air before you. The bones begin to join together forming a single giant skeleton.");
 

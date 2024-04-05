@@ -70,7 +70,6 @@ namespace DOL.GS
 			Model = 903;
 			Size = 80;
 			Level = 68;
-			MaxDistance = 2500;
 			TetherRange = 2600;
 			SpawnAdds();
 
@@ -142,6 +141,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class CronwortBrain : StandardMobBrain
@@ -233,6 +233,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class BreanwortBrain : StandardMobBrain

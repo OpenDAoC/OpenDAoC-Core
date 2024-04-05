@@ -80,9 +80,8 @@ namespace DOL.GS
             Race = 2004;
             Size = 230;
 
-            MaxDistance = 3000;
             TetherRange = 4500;
-            
+
             Faction = FactionMgr.GetFactionByID(31);
             Faction.AddFriendFaction(FactionMgr.GetFactionByID(31));
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds

@@ -308,7 +308,6 @@ namespace DOL.GS.Commands
                             mob.MeleeDamageType = targetMob.MeleeDamageType;
                             mob.RespawnInterval = targetMob.RespawnInterval;
                             mob.RoamingRange = targetMob.RoamingRange;
-                            mob.MaxDistance = targetMob.MaxDistance;
                             mob.BodyType = targetMob.BodyType;
 
                             // also copies the stats
@@ -586,7 +585,6 @@ namespace DOL.GS.Commands
                 mob.MeleeDamageType = targetMob.MeleeDamageType;
                 mob.RespawnInterval = targetMob.RespawnInterval;
                 mob.RoamingRange = targetMob.RoamingRange;
-                mob.MaxDistance = targetMob.MaxDistance;
                 mob.BodyType = targetMob.BodyType;
 
                 // also copies the stats

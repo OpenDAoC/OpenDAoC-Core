@@ -58,7 +58,6 @@ namespace DOL.GS.Scripts
                 "{0} trips and falls on the hard stone floor.",
                 "'You will remember my name! {0}!'"
             };
-            MaxDistance = 2500;
             TetherRange = 3500;
             SetOwnBrain(new ArosBrain());
         }
@@ -248,7 +247,6 @@ namespace DOL.GS.Scripts
             summonedGuardian.MeleeDamageType = eDamageType.Spirit;
             summonedGuardian.RespawnInterval = -1; // dont respawn
             summonedGuardian.RoamingRange = this.RoamingRange;
-            summonedGuardian.MaxDistance = 2000;
             summonedGuardian.MaxSpeedBase = this.MaxSpeedBase;
 
             // also copies the stats

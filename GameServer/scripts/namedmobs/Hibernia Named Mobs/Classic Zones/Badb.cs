@@ -70,8 +70,7 @@ namespace DOL.GS
 			Model = 1883;
 			Level = 70;
 			Size = 50;
-			MaxDistance = 2500;
-			TetherRange = 2600;			
+			TetherRange = 2600;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 468, 0, 0);

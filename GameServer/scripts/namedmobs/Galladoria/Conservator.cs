@@ -151,7 +151,6 @@ namespace DOL.GS
                 CO.X = 31297;
                 CO.Y = 41040;
                 CO.Z = 13473;
-                CO.MaxDistance = 2000;
                 CO.TetherRange = 2500;
                 CO.MaxSpeedBase = 300;
                 CO.Heading = 409;

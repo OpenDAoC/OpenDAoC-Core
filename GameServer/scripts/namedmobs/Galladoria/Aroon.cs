@@ -396,7 +396,6 @@ namespace DOL.GS
                 CO.X = 51478;
                 CO.Y = 43359;
                 CO.Z = 10369;
-                CO.MaxDistance = 2000;
                 CO.TetherRange = 2500;
                 CO.MaxSpeedBase = 250;
                 CO.Heading = 11;
@@ -679,7 +678,6 @@ namespace DOL.GS
             Strength = 350;
             Dexterity = 200;
             Quickness = 125;
-            MaxDistance = 2500;
             TetherRange = 3000;
             Size = 155;
             Level = 77;
@@ -881,7 +879,6 @@ namespace DOL.GS
             Strength = 350;
             Dexterity = 200;
             Quickness = 125;
-            MaxDistance = 2500;
             TetherRange = 3000;
             Size = 155;
             Level = 77;
@@ -1076,7 +1073,6 @@ namespace DOL.GS
             Strength = 350;
             Dexterity = 200;
             Quickness = 125;
-            MaxDistance = 2500;
             TetherRange = 3000;
             Size = 155;
             Level = 77;
@@ -1277,7 +1273,6 @@ namespace DOL.GS
             Strength = 350;
             Dexterity = 200;
             Quickness = 125;
-            MaxDistance = 2500;
             TetherRange = 3000;
             Size = 155;
             Level = 77;
@@ -1479,7 +1474,6 @@ namespace DOL.GS
             Dexterity = 200;
             Quickness = 125;
             RespawnInterval = -1;
-            MaxDistance = 2500;
             TetherRange = 3000;
             Size = 155;
             Level = 77;
@@ -1682,7 +1676,6 @@ namespace DOL.GS
             Strength = 350;
             Dexterity = 200;
             Quickness = 125;
-            MaxDistance = 2500;
             TetherRange = 3000;
             Size = 155;
             Level = 77;
@@ -1885,7 +1878,6 @@ namespace DOL.GS
             Strength = 350;
             Dexterity = 200;
             Quickness = 125;
-            MaxDistance = 2500;
             TetherRange = 3000;
             Size = 155;
             Level = 77;
@@ -2089,7 +2081,6 @@ namespace DOL.GS
             Strength = 350;
             Dexterity = 200;
             Quickness = 125;
-            MaxDistance = 2500;
             TetherRange = 3000;
             Size = 155;
             Level = 77;
@@ -2293,7 +2284,6 @@ namespace DOL.GS
             Strength = 350;
             Dexterity = 200;
             Quickness = 125;
-            MaxDistance = 2500;
             TetherRange = 3000;
             Size = 155;
             Level = 77;

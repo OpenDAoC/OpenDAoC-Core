@@ -1,9 +1,9 @@
 ﻿using System;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.GS.PacketHandler;
 using DOL.Events;
 using DOL.GS;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -100,7 +100,6 @@ namespace DOL.GS
 			Empathy = 400;
 
 			MaxSpeedBase = 250;
-			MaxDistance = 2500;
 			TetherRange = 1800;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
@@ -123,6 +122,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class NorsobAnnihilatorBrain : StandardMobBrain
@@ -247,7 +247,6 @@ namespace DOL.GS
 			Empathy = 400;
 
 			MaxSpeedBase = 250;
-			MaxDistance = 2500;
 			TetherRange = 1800;
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
@@ -268,12 +267,12 @@ namespace DOL.GS
 			base.AddToWorld();
 			return true;
 		}
-
 	}
 }
+
 namespace DOL.AI.Brain
 {
-	public class SarganConquerorBrain : StandardMobBrain
+    public class SarganConquerorBrain : StandardMobBrain
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public SarganConquerorBrain() : base()

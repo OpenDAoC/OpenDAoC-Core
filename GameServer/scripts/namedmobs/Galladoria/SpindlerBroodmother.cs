@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
+
 namespace DOL.GS
 {
     public class SpindlerBroodmother : GameEpicBoss
@@ -146,7 +147,6 @@ namespace DOL.GS
                 SB.X = 21283;
                 SB.Y = 51707;
                 SB.Z = 10876;
-                SB.MaxDistance = 2000;
                 SB.TetherRange = 2500;
                 SB.MaxSpeedBase = 300;
                 SB.Heading = 0;

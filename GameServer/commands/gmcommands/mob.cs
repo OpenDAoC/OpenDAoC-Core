@@ -34,7 +34,6 @@ namespace DOL.GS.Commands
 	     "'/mob peace' toggle whether the mob can be attacked.",
 	     "'/mob aggro <level>' to set mob's aggro level (0..100)%.",
 	     "'/mob range <distance>' to set mob's aggro range.",
-	     "'/mob distance <maxdistance>' set mob max distance from its spawn (>0=real, 0=no check, <0=percent of aggro range).",
 	     "'/mob roaming <distance>' set mob random range radius (0=noroaming, -1=standard, >0=individual).",
 	     "'/mob damagetype <eDamageType>' set mob damage type.",
 	     "'/mob movehere' move mob to player's location.",
@@ -174,7 +173,6 @@ namespace DOL.GS.Commands
 						case "peace": peace(client, targetMob, args); break;
 						case "aggro": aggro(client, targetMob, args); break;
 						case "range": range(client, targetMob, args); break;
-						case "distance": distance(client, targetMob, args); break;
 						case "roaming": roaming(client, targetMob, args); break;
 						case "damagetype": damagetype(client, targetMob, args); break;
 						case "movehere": movehere(client, targetMob, args); break;
@@ -968,22 +966,6 @@ namespace DOL.GS.Commands
 			}
 		}
 
-		private void distance(GameClient client, GameNPC targetMob, string[] args)
-		{
-			try
-			{
-				int distance = Convert.ToInt32(args[2]);
-				targetMob.MaxDistance = distance;
-				targetMob.SaveIntoDatabase();
-				client.Out.SendMessage("Mob max distance changed to: " + targetMob.MaxDistance, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			}
-			catch (Exception)
-			{
-				DisplaySyntax(client, args[1]);
-				return;
-			}
-		}
-
 		private void roaming(GameClient client, GameNPC targetMob, string[] args)
 		{
 			int maxRoamingRange;
@@ -1265,11 +1247,8 @@ namespace DOL.GS.Commands
 				info.Add(" + Aggro level: " + aggroBrain.AggroLevel);
 				info.Add(" + Aggro range: " + aggroBrain.AggroRange);
 
-				if (targetMob.MaxDistance < 0)
-					info.Add(" + MaxDistance: " + -targetMob.MaxDistance * aggroBrain.AggroRange / 100);
-				else
-					info.Add(" + MaxDistance: " + targetMob.MaxDistance);
-
+				if(aggroBrain is StandardMobBrain mobBrain)
+					info.Add(" + ThinkInterval: " + mobBrain.ThinkInterval +"ms");
 			}
 			else
 			{
@@ -1277,7 +1256,7 @@ namespace DOL.GS.Commands
 			}
 
 			info.Add(" + Roaming Range: " + targetMob.RoamingRange);
-			//info.Add(" + Tether Range: " + targetMob.TetherRange);
+			info.Add(" + Tether Range: " + targetMob.TetherRange);
 
 			TimeSpan respawn = TimeSpan.FromMilliseconds(targetMob.RespawnInterval);
 
@@ -2530,7 +2509,6 @@ namespace DOL.GS.Commands
 			mob.MeleeDamageType = targetMob.MeleeDamageType;
 			mob.RespawnInterval = targetMob.RespawnInterval;
 			mob.RoamingRange = targetMob.RoamingRange;
-			mob.MaxDistance = targetMob.MaxDistance;
 			mob.BodyType = targetMob.BodyType;
 
 			// also copies the stats

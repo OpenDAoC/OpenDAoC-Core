@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 
@@ -145,7 +145,6 @@ namespace DOL.GS
 				OF.X = 34577;
 				OF.Y = 31371;
 				OF.Z = 15998;
-				OF.MaxDistance = 2000;
 				OF.TetherRange = 1300;
 				OF.MaxSpeedBase = 250;
 				OF.Heading = 19;
@@ -164,6 +163,7 @@ namespace DOL.GS
 		}
 	}
 }
+
 namespace DOL.AI.Brain
 {
 	public class SummonerRoesiaBrain : StandardMobBrain

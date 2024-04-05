@@ -21,7 +21,6 @@ namespace DOL.GS.Scripts
             Gender = eGender.Neutral;
 
             BodyType = 6; // Humanoid
-            MaxDistance = 1500;
             TetherRange = 2000;
             RoamingRange = 400;
             GnatBrain sBrain = new GnatBrain();
@@ -128,7 +127,6 @@ namespace DOL.GS
             MeleeDamageType = eDamageType.Thrust;
             RoamingRange = 350;
             RespawnInterval = -1;
-            MaxDistance = 1500;
             TetherRange = 2000;
             IsWorthReward = false; //worth no reward
             Size = (byte) Util.Random(8, 12);

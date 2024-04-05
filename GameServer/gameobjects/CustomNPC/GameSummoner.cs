@@ -1,22 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using DOL.AI;
+﻿using DOL.AI;
 using DOL.AI.Brain;
 
 namespace DOL.GS
@@ -46,7 +28,6 @@ namespace DOL.GS
 
         // Optional modifiers.
         virtual public int PetTetherRange { get { return 0; } }
-        virtual public int PetMaxDistance { get { return 1500; } }
         virtual public byte PetSize {  get { return 0; } }
         virtual public int PetSummonDistance {  get { return 100; } }
         virtual public long PetResummonTime { get { return 60000; } }
@@ -155,7 +136,6 @@ namespace DOL.GS
                     m_pet.Heading = Heading;
                     m_pet.Realm = eRealm.None;
                     m_pet.LoadedFromScript = true;
-                    m_pet.MaxDistance = PetMaxDistance;
                     m_pet.TetherRange = PetTetherRange;
                     m_pet.RespawnInterval = -1;
                     m_pet.IsWorthReward = false;

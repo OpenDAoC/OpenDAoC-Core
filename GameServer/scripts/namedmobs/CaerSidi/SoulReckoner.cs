@@ -392,7 +392,6 @@ namespace DOL.GS
             PackageID = "SoulReckonerBaf";
             RespawnInterval = -1;
 
-            MaxDistance = 2500;
             TetherRange = 3000;
             RoamingRange = 120;
             Size = 100;

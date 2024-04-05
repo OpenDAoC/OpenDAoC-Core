@@ -72,7 +72,6 @@ namespace DOL.GS
 			Model = 679;
 			Level = (byte)Util.Random(64,68);
 			Size = 50;
-			MaxDistance = 2500;
 			TetherRange = 2600;
 			Flags = eFlags.FLYING;
 			MaxSpeedBase = 250;
