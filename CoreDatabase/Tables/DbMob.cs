@@ -697,25 +697,6 @@ namespace DOL.Database
 		}
 
 		/// <summary>
-		/// The Mob's max distance from its spawn before return automatically
-		/// if MaxDistance > 0 ... the amount is the normal value
-		/// if MaxDistance = 0 ... no maxdistance check
-		/// if MaxDistance less than 0 ... the amount is calculated in procent of the value and the aggrorange (in StandardMobBrain)
-		/// </summary>
-		[DataElement(AllowDbNull = false)]
-		public int MaxDistance
-		{
-			get
-			{
-				return m_maxdistance;
-			}
-			set
-			{
-				Dirty = true;
-				m_maxdistance = value;
-			}
-		}
-		/// <summary>
 		/// An OwnerID for this mob
 		/// </summary>
 		[DataElement(AllowDbNull = false, Varchar = 255)]
