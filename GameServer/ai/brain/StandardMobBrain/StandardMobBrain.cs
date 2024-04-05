@@ -92,18 +92,6 @@ namespace DOL.AI.Brain
             return HasAggro;
         }
 
-        public virtual bool IsBeyondTetherRange()
-        {
-            if (Body.MaxDistance != 0)
-            {
-                int distance = Body.GetDistanceTo(Body.SpawnPoint);
-                int maxDistance = Body.MaxDistance > 0 ? Body.MaxDistance : -Body.MaxDistance * AggroRange / 100;
-                return maxDistance > 0 && distance > maxDistance;
-            }
-            else
-                return false;
-        }
-
         public virtual bool HasPatrolPath()
         {
             return Body.MaxSpeedBase > 0 &&

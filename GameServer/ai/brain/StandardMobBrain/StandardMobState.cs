@@ -51,12 +51,6 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            if (_brain.IsBeyondTetherRange())
-            {
-                _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                return;
-            }
-
             if (_brain.CheckProximityAggro())
             {
                 _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
@@ -172,12 +166,6 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (_brain.IsBeyondTetherRange())
-            {
-                _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                return;
-            }
-
             if (_brain.CheckProximityAggro())
             {
                 _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
@@ -268,11 +256,6 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (_brain.IsBeyondTetherRange())
-            {
-                _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-            }
-
             if (_brain.CheckProximityAggro())
             {
                 _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);

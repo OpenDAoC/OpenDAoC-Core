@@ -70,17 +70,6 @@ namespace DOL.AI.Brain
 			return base.CheckProximityAggro();
 		}
 
-		public override bool IsBeyondTetherRange()
-		{
-			// Eden - Portal Keeps Guards max distance
-			if (Body.Level > 200 && !Body.IsWithinRadius(Body.SpawnPoint, 2000))
-				return true;
-			else if (!Body.InCombat && !Body.IsWithinRadius(Body.SpawnPoint, 6000))
-				return true;
-
-			return false;
-		}
-
 		protected override void CheckPlayerAggro()
 		{
 			foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
