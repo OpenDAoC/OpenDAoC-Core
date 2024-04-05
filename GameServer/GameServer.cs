@@ -859,24 +859,19 @@ namespace DOL.GS
 
 		public async void GetPatchNotes()
 		{
-			var news = new List<string>();
-
 			try
 			{
 				using var newsClient = new HttpClient();
 				var url = Properties.PATCH_NOTES_URL;
 				var newsResult = await newsClient.GetStringAsync(url);
-				news.Add(newsResult);
+				PatchNotes = [newsResult];
 				log.Debug("Patch notes updated.");
 				newsClient.Dispose();
 			}
 			catch (Exception)
 			{
-				news.Add("No patch notes available.");
 				log.Debug("Cannot retrieve patch notes.");
-
 			}
-			PatchNotes = news;
 		}
 
 		/// <summary>

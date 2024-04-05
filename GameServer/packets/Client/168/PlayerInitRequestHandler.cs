@@ -190,12 +190,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				return 0;
 			}
-			
-			private void ShowPatchNotes(GamePlayer player)
-			{
-				var today = DateTime.Today;
 
-				player.Out.SendCustomTextWindow("Server News " + today.ToString("d"), GameServer.Instance.PatchNotes);
+			private static void ShowPatchNotes(GamePlayer player)
+			{
+				player.Out.SendCustomTextWindow($"Server News {DateTime.Today:d}", GameServer.Instance.PatchNotes);
 			}
 
 			private static void CheckBGLevelCapForPlayerAndMoveIfNecessary(GamePlayer player)
