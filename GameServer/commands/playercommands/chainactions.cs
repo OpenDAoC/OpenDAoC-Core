@@ -5,7 +5,7 @@ using static DOL.GS.CastingComponent;
 
 namespace DOL.GS.Commands
 {
-    [CmdAttribute("&chainactions", ePrivLevel.Player, "Chain multiple actions.", "/chainactions <create|save|clear>")]
+    [CmdAttribute("&chainactions", ePrivLevel.Player, "Chain multiple actions.", "/chainactions <create | save | clear>")]
     public class ChainActionsCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
