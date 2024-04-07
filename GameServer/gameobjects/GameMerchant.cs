@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -54,17 +53,9 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		public virtual void SendMerchantWindow(GamePlayer player)
 		{
-			ThreadPool.QueueUserWorkItem(new WaitCallback(SendMerchantWindowCallback), player);
+			player.Out.SendMerchantWindow(m_tradeItems, eMerchantWindowType.Normal);
 		}
 
-		/// <summary>
-		/// Sends merchant window from threadpool thread
-		/// </summary>
-		/// <param name="state">The game player to send to</param>
-		protected virtual void SendMerchantWindowCallback(object state)
-		{
-			((GamePlayer)state).Out.SendMerchantWindow(m_tradeItems, eMerchantWindowType.Normal);
-		}
 		#endregion
 
 		#region Items List
@@ -507,11 +498,6 @@ namespace DOL.GS
 			return base.ReceiveItem(source, item);
 		}
 
-		protected override void SendMerchantWindowCallback(object state)
-		{
-			((GamePlayer)state).Out.SendMerchantWindow(m_tradeItems, eMerchantWindowType.Bp);
-		}
-
 		public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
 		{
 			//Get the template
@@ -671,11 +657,6 @@ namespace DOL.GS
 			}
 
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.BuyItemsFor", this.Name, text), eChatType.CT_Say, eChatLoc.CL_ChatWindow);
-		}
-
-		protected override void SendMerchantWindowCallback(object state)
-		{
-			((GamePlayer)state).Out.SendMerchantWindow(m_tradeItems, eMerchantWindowType.Count);
 		}
 
 		public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
