@@ -58,19 +58,21 @@ namespace DOL.GS
 		/// <param name="player">Player to add</param>
 		public static void AddPlayerToAllGuildPlayersList(GamePlayer player)
 		{
-			if (m_guildXAllMembers.ContainsKey(player.GuildID))
+			if (string.IsNullOrEmpty(player.GuildID))
+				return;
+
+			if (m_guildXAllMembers.TryGetValue(player.GuildID, out Dictionary<string, GuildMemberDisplay> guildMemberList))
 			{
-				if (!m_guildXAllMembers[player.GuildID].ContainsKey(player.InternalID))
+				if (!guildMemberList.ContainsKey(player.InternalID))
 				{
-					Dictionary<string, GuildMemberDisplay> guildMemberList = m_guildXAllMembers[player.GuildID];
-					GuildMemberDisplay member = new GuildMemberDisplay(	player.InternalID, 
-																		player.Name, 
-																		player.Level.ToString(), 
-																		player.CharacterClass.ID.ToString(), 
-																		player.GuildRank.RankLevel.ToString(), 
-																		player.Group != null ? player.Group.MemberCount.ToString() : "1", 
-																		player.CurrentZone.Description, 
-																		player.GuildNote);
+					GuildMemberDisplay member = new(player.InternalID,
+													player.Name,
+													player.Level.ToString(),
+													player.CharacterClass.ID.ToString(),
+													player.GuildRank.RankLevel.ToString(),
+													player.Group != null ? player.Group.MemberCount.ToString() : "1",
+													player.CurrentZone.Description,
+													player.GuildNote);
 					guildMemberList.Add(player.InternalID, member);
 				}
 			}
