@@ -51,16 +51,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Holds the AttackData object of the last left-hand attack
-		/// </summary>
-		public const string LAST_ATTACK_DATA_LH = "LastAttackDataLH";
-
-		/// <summary>
-		/// Holds the property for the result the last enemy
-		/// </summary>
-		public const string LAST_ENEMY_ATTACK_RESULT = "LastEnemyAttackResult";
-
-		/// <summary>
 		/// Can this living accept any item regardless of tradable or droppable?
 		/// </summary>
 		public virtual bool CanTradeAnyItem
