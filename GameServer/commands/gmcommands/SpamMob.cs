@@ -636,5 +636,6 @@ namespace DOL.GS.SpamMob
         }
 
         public override bool IsBeingInterrupted => false;
+        public override bool IsBeingInterruptedIgnoreSelfInterrupt => false;
     }
 }

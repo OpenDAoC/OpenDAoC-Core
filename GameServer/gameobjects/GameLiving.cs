@@ -1053,24 +1053,37 @@ namespace DOL.GS
 		/// <summary>
 		/// Starts the interrupt timer on this living.
 		/// </summary>
-		/// <param name="duration"></param>
-		/// <param name="attackType"></param>
-		/// <param name="attacker"></param>
 		public virtual void StartInterruptTimer(int duration, eAttackType attackType, GameLiving attacker)
 		{
+			// Is this really necessary?
 			if (!IsAlive || ObjectState != eObjectState.Active)
 			{
 				InterruptTime = 0;
-				InterruptAction = 0;
+				SelfInterruptTime = 0;
+				LastInterrupter = null;
 				return;
 			}
 
-			bool interrupt = InterruptChance(attacker);
+			if (attacker == this)
+			{
+				SelfInterruptTime = GameLoop.GameLoopTime + duration;
+				return;
+			}
 
-			if (!interrupt)
+			double chance;
+
+			if (attacker is GamePlayer)
+				chance = 99;
+			else
+			{
+				chance = BaseInterruptChance + GetConLevel(attacker) * 10;
+				chance = Math.Clamp(chance, 1, 99);
+			}
+
+			if (!Util.Chance((int) chance))
 				return;
 
-			// Dont't replace the current interrut with a shorter one.
+			// Don't replace the current interrupt with a shorter one.
 			// Otherwise a slow melee hit's interrupt duration will be made shorter by a proc for example.
 			InterruptTime = Math.Max(InterruptTime, GameLoop.GameLoopTime + duration);
 			LastInterrupter = attacker;
@@ -1083,10 +1096,8 @@ namespace DOL.GS
 					CheckRangedAttackInterrupt(attacker, attackType);
 				else if (effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
 				{
-					AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, eEffect.Volley);
-
-					if (volley != null)
-						volley.OnAttacked();
+					AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect) EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+					volley?.OnAttacked();
 				}
 			}
 		}
@@ -1097,29 +1108,11 @@ namespace DOL.GS
 		}
 
 		public GameObject LastInterrupter { get; private set; }
-
-		protected long m_interruptTime = 0;
-		public long InterruptTime
-		{
-			get => m_interruptTime;
-			private set
-			{
-				InterruptAction = GameLoop.GameLoopTime;
-				m_interruptTime = value;
-			}
-		}
-
-		protected long m_interruptAction = 0;
-		public long InterruptAction
-		{
-			get => m_interruptAction;
-			private set => m_interruptAction = value;
-		}
-
-		/// <summary>
-		/// Yields true if interrupt action is running on this living.
-		/// </summary>
-		public virtual bool IsBeingInterrupted => m_interruptTime > GameLoop.GameLoopTime;
+		public long InterruptTime { get; private set; }
+		public long SelfInterruptTime { get; private set; }
+		public long InterruptRemainingDuration => !IsBeingInterrupted ? 0 : Math.Max(InterruptTime, SelfInterruptTime) - GameLoop.GameLoopTime;
+		public virtual bool IsBeingInterrupted => IsBeingInterruptedIgnoreSelfInterrupt || SelfInterruptTime > GameLoop.GameLoopTime;
+		public virtual bool IsBeingInterruptedIgnoreSelfInterrupt => InterruptTime > GameLoop.GameLoopTime;
 
 		/// <summary>
 		/// Base chance this living can be interrupted
@@ -1135,24 +1128,6 @@ namespace DOL.GS
 		/// Additional interrupt time if interrupted again
 		/// </summary>
 		public virtual int SpellInterruptRecastAgain => Properties.SPELL_INTERRUPT_AGAIN;
-
-		public virtual bool InterruptChance(GameLiving attacker)
-		{
-			double chance;
-
-			if (attacker is GamePlayer)
-				chance = 99;
-			else
-			{
-				double mod = GetConLevel(attacker);
-				chance = BaseInterruptChance;
-				chance += mod * 10;
-				chance = Math.Max(1, chance);
-				chance = Math.Min(99, chance);
-			}
-
-			return Util.Chance((int)chance);
-		}
 
 		protected virtual bool CheckRangedAttackInterrupt(GameLiving attacker, eAttackType attackType)
 		{

@@ -14,11 +14,7 @@ namespace DOL.GS
 
         public override bool CheckInterruptTimer()
         {
-            if (_playerOwner.attackComponent.Attackers.IsEmpty)
-                return false;
-
-            // Don't interrupt aiming if we haven't received an interrupt timer.
-            if (!_playerOwner.IsBeingInterrupted)
+            if (!_playerOwner.IsBeingInterruptedIgnoreSelfInterrupt)
                 return false;
 
             _playerOwner.attackComponent.StopAttack();

@@ -210,7 +210,7 @@ namespace DOL.GS.RealmAbilities
                 }
             }
 
-            if (!_player.attackComponent.Attackers.IsEmpty && _player.IsBeingInterrupted)
+            if (_player.IsBeingInterruptedIgnoreSelfInterrupt)
             {
                 GameObject attacker = _player.LastInterrupter;
 

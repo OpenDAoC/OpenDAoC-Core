@@ -608,31 +608,38 @@ namespace DOL.GS.Spells
 				m_caster.attackComponent.StopAttack();
 
 			// Check interrupt timer.
-			if (!m_spell.Uninterruptible && !m_spell.IsInstantCast && Caster.InterruptAction > 0 && Caster.IsBeingInterrupted)
+			if (!m_spell.Uninterruptible && !m_spell.IsInstantCast)
 			{
-				if (m_caster is GamePlayer)
-				{
-					if (!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) &&
-						!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
-					{
-						if (!quiet)
-							MessageToCaster($"You must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted);
+				long interruptRemainingDuration = Caster.InterruptRemainingDuration;
 
-						return false;
-					}
-				}
-				else if (m_caster is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain)
+				if (interruptRemainingDuration > 0)
 				{
-					if (!necroPet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
-					{
-						if (!quiet)
-							MessageToCaster($"Your {necroPet.Name} must wait {(Caster.InterruptTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted);
+					interruptRemainingDuration /= 1000 + 1;
 
-						return false;
+					if (m_caster is GamePlayer)
+					{
+						if (!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) &&
+							!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
+						{
+							if (!quiet)
+								MessageToCaster($"You must wait {interruptRemainingDuration} seconds to cast a spell!", eChatType.CT_SpellResisted);
+
+							return false;
+						}
 					}
+					else if (m_caster is NecromancerPet necroPet && necroPet.Brain is NecromancerPetBrain)
+					{
+						if (!necroPet.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking))
+						{
+							if (!quiet)
+								MessageToCaster($"Your {necroPet.Name} must wait {interruptRemainingDuration} seconds to cast a spell!", eChatType.CT_SpellResisted);
+
+							return false;
+						}
+					}
+					else
+						return false;
 				}
-				else
-					return false;
 			}
 
 			if (m_spell.RecastDelay > 0)
@@ -1209,7 +1216,7 @@ namespace DOL.GS.Spells
 					}
 					else
 					{
-						if (Caster.InterruptAction > 0 && Caster.InterruptTime > GameLoop.GameLoopTime)
+						if (Caster.IsBeingInterrupted)
 							CastState = eCastState.Interrupted;
 						else
 							CastState = eCastState.Cleanup;
@@ -1235,7 +1242,6 @@ namespace DOL.GS.Spells
 				case eCastState.Interrupted:
 				{
 					InterruptCasting();
-					SendInterruptCastAnimation();
 					CastState = eCastState.Cleanup;
 					break;
 				}
@@ -1458,15 +1464,6 @@ namespace DOL.GS.Spells
 
 			foreach (GamePlayer player in target.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 				player.Out.SendSpellEffectAnimation(m_caster, target, m_spell.ClientEffect, boltDuration, noSound, success);
-		}
-
-		/// <summary>
-		/// Send the Interrupt Cast Animation
-		/// </summary>
-		public virtual void SendInterruptCastAnimation()
-		{
-			foreach (GamePlayer player in m_caster.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				player.Out.SendInterruptAnimation(m_caster);
 		}
 
 		public virtual void SendEffectAnimation(GameObject target, ushort clientEffect, ushort boltDuration, bool noSound, byte success)
