@@ -1732,16 +1732,18 @@ namespace DOL.GS
 
             if (owner is GamePlayer playerOwner)
             {
-                int spec = owner.WeaponSpecLevel(weapon);
-
-                if (owner.Level < 5 && spec < 2)
-                    spec = 2;
-
+                // Characters below level 5 get a bonus to their spec to help with the very wide variance at this level range.
+                // Target level, lower bound at 2, lower bound at 1:
+                // 0 | 1      | 0.25
+                // 1 | 0.625  | 0.25
+                // 2 | 0.5    | 0.25
+                // 3 | 0.4375 | 0.25
+                // 4 | 0.4    | 0.25
+                // 5 | 0.375  | 0.25
+                // Absolute minimum spec is set to 1 to prevent an issue where the lower bound (with staffs for example) would slightly rise with the target's level.
+                // Also prevents negative values.
+                int spec = Math.Max(owner.Level < 5 ? 2 : 1, owner.WeaponSpecLevel(weapon));
                 double lowerLimit = Math.Min(0.75 * (spec - 1) / (target.EffectiveLevel + 1) + 0.25, 1.0);
-
-                if (lowerLimit < 0.01)
-                    lowerLimit = 0.01;
-
                 double upperLimit = Math.Min(Math.Max(1.25 + (3.0 * (spec - 1) / (target.EffectiveLevel + 1) - 2) * 0.25, 1.25), 1.50);
                 int varianceRange = (int) (upperLimit * 100 - lowerLimit * 100);
                 specModifier = playerOwner.SpecLock > 0 ? playerOwner.SpecLock : lowerLimit + Util.Random(varianceRange) * 0.01;
