@@ -9781,19 +9781,19 @@ namespace DOL.GS
             get => m_sitting;
             set
             {
-                m_sitting = value;
-                if (value)
+                if (!m_sitting && value)
                 {
                     CurrentSpellHandler?.CasterMoves();
+
                     if (attackComponent.AttackState && ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                     {
-                        string attackTypeMsg = "shot";
-                        if (ActiveWeapon.Object_Type == (int) eObjectType.Thrown)
-                            attackTypeMsg = "throw";
-                        Out.SendMessage("You move and interrupt your " + attackTypeMsg + "!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        string attackTypeMsg = (eObjectType) ActiveWeapon.Object_Type == eObjectType.Thrown ? "throw" : "shot";
+                        Out.SendMessage($"You move and interrupt your {attackTypeMsg}!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                         attackComponent.StopAttack();
                     }
                 }
+
+                m_sitting = value;
             }
         }
 
