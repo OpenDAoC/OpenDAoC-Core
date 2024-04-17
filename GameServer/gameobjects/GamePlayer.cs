@@ -2696,20 +2696,20 @@ namespace DOL.GS
                     ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
                 }
             }
-            if (!sprinting)
+
+            if (sprinting)
             {
-                if (Endurance >= MaxEndurance) selfRegenerationTimer.Stop();
-            }
-            else
-            {
-                long lastmove = TempProperties.GetProperty<long>(PlayerPositionUpdateHandler.LASTMOVEMENTTICK);
-                if ((lastmove > 0 && lastmove + 5000 < CurrentRegion.Time) //cancel sprint after 5sec without moving?
-                    || Endurance - 5 <= 0)
+                if (Endurance - 5 <= 0)
                     Sprint(false);
             }
-            var rate = EnduranceRegenerationPeriod;
+            else if (Endurance >= MaxEndurance)
+                selfRegenerationTimer.Stop();
+
+            ushort rate = EnduranceRegenerationPeriod;
+
             if (IsSitting)
                 rate /= 2;
+
             return rate;
         }
 
@@ -9111,9 +9111,6 @@ namespace DOL.GS
             Y = y;
             Z = z;
             Heading = heading;
-
-            // Remove the last update tick property to prevent speedhack messages during zoning and teleporting.
-            TempProperties.RemoveProperty(PlayerPositionUpdateHandler.LASTMOVEMENTTICK);
 
             if (regionID != CurrentRegionID)
             {

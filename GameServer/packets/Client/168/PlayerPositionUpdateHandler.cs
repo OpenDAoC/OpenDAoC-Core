@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.Utils;
 using DOL.Language;
 using log4net;
@@ -19,15 +17,15 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// </summary>
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public const string LASTMOVEMENTTICK = "PLAYERPOSITION_LASTMOVEMENTTICK";
-        public const string LASTCPSTICK = "PLAYERPOSITION_LASTCPSTICK";
-
         /// <summary>
         /// Stores the count of times the player is above speedhack tolerance!
         /// If this value reaches 10 or more, a logfile entry is written.
         /// </summary>
-        public const string SPEEDHACKCOUNTER = "SPEEDHACKCOUNTER";
-        public const string SHSPEEDCOUNTER = "MYSPEEDHACKCOUNTER";
+        private const string SHSPEEDCOUNTER = "SHSPEEDCOUNTER";
+        private const string SHLASTUPDATETICK = "SHLASTUPDATETICK";
+        private const string SHLASTFLY = "SHLASTFLY";
+        private const string SHLASTSTATUS = "SHLASTSTATUS";
+        private const string LASTCPSTICK = "LASTCPSTICK";
 
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
@@ -112,7 +110,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             //int speed = (newPlayerSpeed & 0x1FF);
             //Flags1 = (eFlags1)playerState;
             //Flags2 = (eFlags2)playerAction;
-            if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+            if ((client.Player.IsMezzed || client.Player.IsStunned) && !client.Player.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
                 client.Player.CurrentSpeed = 0;
             else
             {
@@ -222,10 +220,6 @@ namespace DOL.GS.PacketHandler.Client.v168
             client.Player.LastPositionUpdatePoint.X = x;
             client.Player.LastPositionUpdatePoint.Y = y;
             client.Player.LastPositionUpdatePoint.Z = z;
-            client.Player.X = (int) x;
-            client.Player.Y = (int) y;
-            client.Player.Z = (int) z;
-
             int tolerance = ServerProperties.Properties.CPS_TOLERANCE;
 
             if (client.Player.Steed != null && client.Player.Steed.MaxSpeed > 0)
@@ -325,9 +319,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                 client.Player.TempProperties.SetProperty(LASTCPSTICK, environmentTick);
             }
             //client.Player.Heading = (ushort)(newHeading & 0xFFF); //patch 0024 expermental
-
-            if (client.Player.X != x || client.Player.Y != y)
-                client.Player.TempProperties.SetProperty(LASTMOVEMENTTICK, client.Player.CurrentRegion.Time);
 
             client.Player.X = (int) x;
             client.Player.Y = (int) y;
@@ -615,7 +606,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             if ((speedData & 0x200) != 0)
                 speed = -speed;
 
-            if ((client.Player.IsMezzed || client.Player.IsStunned) && client.Player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+            if ((client.Player.IsMezzed || client.Player.IsStunned) && !client.Player.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
                 // Nidel: updating client.Player.CurrentSpeed instead of speed
                 client.Player.CurrentSpeed = 0;
             else
@@ -858,10 +849,6 @@ namespace DOL.GS.PacketHandler.Client.v168
             byte flags = (byte) packet.ReadByte();
 
             client.Player.Heading = (ushort) (headingflag & 0xFFF);
-
-            if (client.Player.X != realX || client.Player.Y != realY)
-                client.Player.TempProperties.SetProperty(LASTMOVEMENTTICK, client.Player.CurrentRegion.Time);
-
             client.Player.X = realX;
             client.Player.Y = realY;
             client.Player.Z = realZ;
@@ -924,9 +911,6 @@ namespace DOL.GS.PacketHandler.Client.v168
             //15 14 13 12 11 10 9 8
             //                1 1
 
-            const string SHLASTUPDATETICK = "SHPLAYERPOSITION_LASTUPDATETICK";
-            const string SHLASTFLY = "SHLASTFLY_STRING";
-            const string SHLASTSTATUS = "SHLASTSTATUS_STRING";
             long SHlastTick = client.Player.TempProperties.GetProperty<long>(SHLASTUPDATETICK);
             int SHlastFly = client.Player.TempProperties.GetProperty<int>(SHLASTFLY);
             int SHlastStatus = client.Player.TempProperties.GetProperty<int>(SHLASTSTATUS);
