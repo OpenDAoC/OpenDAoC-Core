@@ -12,7 +12,7 @@ namespace DOL.AI.Brain
         {
             // Ice pets don't check for spells if their target is close, and attack instead.
             // Once ice pets enter melee range, there's no going back.
-            if (Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange) || DontAttemptToCastAgain)
+            if (DontAttemptToCastAgain || Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange + 50))
             {
                 DontAttemptToCastAgain = true;
                 Body.StartAttack(Body.TargetObject);
