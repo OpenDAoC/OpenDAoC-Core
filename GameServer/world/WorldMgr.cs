@@ -3,11 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using log4net;
-using Timer = System.Threading.Timer;
 
 namespace DOL.GS
 {
@@ -164,26 +162,7 @@ namespace DOL.GS
 			get { return m_zones; }
 		}
 
-		/// <summary>
-		/// This constant defines the day constant
-		/// </summary>
-		private const int DAY = 86400000;
-
-		/// <summary>
-		/// This holds the tick when the day started
-		/// </summary>
-		private static int m_dayStartTick;
-
-		/// <summary>
-		/// This holds the speed of our days
-		/// </summary>
-		private static uint m_dayIncrement;
-
-		/// <summary>
-		/// A timer that will send the daytime to all playing
-		/// clients after a certain intervall;
-		/// </summary>
-		private static Timer m_dayResetTimer;
+		private static DayNightCycleTimer _dayNightCycleTimer;
 
 		/// <summary>
 		/// Region ID INI field
@@ -470,9 +449,8 @@ namespace DOL.GS
 					log.Info("Total Bind Points: " + bindpoints);
 				}
 
-				m_dayIncrement = Math.Max(0, Math.Min(1000, ServerProperties.Properties.WORLD_DAY_INCREMENT)); // increments > 1000 do not render smoothly on clients
-				m_dayStartTick = (int) (GameLoop.GameLoopTime - DAY / Math.Max(1, m_dayIncrement) / 2); // set start time to 12pm
-				m_dayResetTimer = new Timer(new TimerCallback(DayReset), null, DAY / Math.Max(1, m_dayIncrement) / 2, DAY / Math.Max(1, m_dayIncrement));
+				_dayNightCycleTimer ??= new(null);
+				_dayNightCycleTimer.Initialize();
 			}
 			catch (Exception e)
 			{
@@ -491,52 +469,9 @@ namespace DOL.GS
 		}
 #endif
 
-		/// <summary>
-		/// This timer callback resets the day on all clients
-		/// </summary>
-		/// <param name="sender"></param>
-		private static void DayReset(object sender)
+		public static void ChangeGameTime(uint newDayIncrement, double startTimePercent)
 		{
-			m_dayStartTick = (int) GameLoop.GameLoopTime;
-
-			foreach (GamePlayer player in ClientService.GetPlayers<object>(Predicate))
-				player.Out.SendTime();
-
-			static bool Predicate(GamePlayer player, object unused)
-			{
-				return player.CurrentRegion?.UseTimeManager == true;
-			}
-		}
-
-		/// <summary>
-		/// Starts a new day with a certain percent of the increment
-		/// </summary>
-		/// <param name="dayInc"></param>
-		/// <param name="percent">0..1</param>
-		public static void StartDay( uint dayInc, double percent )
-		{
-			uint dayStart = (uint)( percent * DAY );
-			m_dayIncrement = dayInc;
-
-			if (m_dayIncrement == 0)
-			{
-				// day should stand still so pause the timer
-				m_dayStartTick = (int)(dayStart);
-				m_dayResetTimer.Change(Timeout.Infinite, Timeout.Infinite);
-			}
-			else
-			{
-				m_dayStartTick = (int) (GameLoop.GameLoopTime - dayStart / m_dayIncrement); // set start time to ...
-				m_dayResetTimer.Change((DAY - dayStart) / m_dayIncrement, Timeout.Infinite);
-			}
-
-			foreach (GamePlayer player in ClientService.GetPlayers<object>(Predicate))
-				player.Out.SendTime();
-
-			static bool Predicate(GamePlayer player, object unused)
-			{
-				return player.CurrentRegion?.UseTimeManager == true;
-			}
+			_dayNightCycleTimer.ChangeGameTime(newDayIncrement, startTimePercent);
 		}
 
 		/// <summary>
@@ -558,16 +493,7 @@ namespace DOL.GS
 		/// <returns>current time</returns>
 		public static uint GetCurrentGameTime()
 		{
-			if (m_dayIncrement == 0)
-			{
-				return (uint)m_dayStartTick;
-			}
-			else
-			{
-				long diff = GameLoop.GameLoopTime - m_dayStartTick;
-				long curTime = diff * m_dayIncrement;
-				return (uint)(curTime % DAY);
-			}
+			return _dayNightCycleTimer.CurrentGameTime;
 		}
 
 		/// <summary>
@@ -582,10 +508,9 @@ namespace DOL.GS
 			return GetDayIncrement();
 		}
 
-
 		public static uint GetDayIncrement()
 		{
-			return m_dayIncrement;
+			return _dayNightCycleTimer.DayIncrement;
 		}
 
 #if NETFRAMEWORK
@@ -604,12 +529,6 @@ namespace DOL.GS
 		{
 			try
 			{
-				if (m_dayResetTimer != null)
-				{
-					m_dayResetTimer.Dispose();
-					m_dayResetTimer = null;
-				}
-
 				//Stop all mobMgrs
 				StopRegionMgrs();
 			}

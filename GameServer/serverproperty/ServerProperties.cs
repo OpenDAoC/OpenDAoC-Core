@@ -689,7 +689,7 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "world_pickup_distance", "How far before you can no longer pick up an object (loot for example).", 256)]
 		public static int WORLD_PICKUP_DISTANCE;
 
-		[ServerProperty("world", "world_day_increment", "Day Increment (0 to 512, default is 24).  Larger increments make shorter days.", (uint)24)]
+		[ServerProperty("world", "world_day_increment", "Larger increments make shorter days. Because night time is 25% faster, it should ideally be a multiple of 4.", (uint) 24)]
 		public static uint WORLD_DAY_INCREMENT;
 
 		[ServerProperty("world", "world_npc_update_interval", "How often (milliseconds) will npc's broadcast updates to the clients.", (uint)5000)]
