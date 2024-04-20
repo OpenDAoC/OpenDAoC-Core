@@ -161,6 +161,11 @@ namespace DOL.GS
             QueuedSpellHandler = null;
         }
 
+        public void ClearUpQueuedSpellHandler()
+        {
+            QueuedSpellHandler = null;
+        }
+
         public void OnSpellHandlerCleanUp(Spell currentSpell)
         {
             if (Owner is GamePlayer player)
