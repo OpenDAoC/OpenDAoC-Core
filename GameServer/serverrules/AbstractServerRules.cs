@@ -1226,7 +1226,7 @@ namespace DOL.GS.ServerRules
 			double npcExceedXPCapAmount = killedNPC.ExceedXPCapAmount;
 
 			//Need to do this before hand so we only do it once - just in case if the player levels!
-			double highestConValue = 0;
+			int highestConValue;
 
 			GameLiving living = de.Key as GameLiving;
 			GamePlayer player = living as GamePlayer;
@@ -1376,9 +1376,21 @@ namespace DOL.GS.ServerRules
 			//xp challenge
 			if (player != null && highestPlayer != null && highestConValue < 0)
 			{
+				int levelFromCon = 0;
+
+				// This isn't efficient, but there is currently no way to accurately calculate a level from a con level.
+				// We start at player's level minus one until we find the first level matching the target con level.
+				for (int i = player.Level - 1; i >= 0; i--)
+				{
+					if (ConLevels.GetConLevel(player.Level, i) == highestConValue)
+					{
+						levelFromCon = i;
+						break;
+					}
+				}
+
 				//challenge success, the xp needs to be reduced to the proper con
-				expCap = (long) (GameServer.ServerRules.GetExperienceForLiving(
-					GameObject.GetLevelFromCon(player.Level, highestConValue)));
+				expCap = GameServer.ServerRules.GetExperienceForLiving(levelFromCon);
 			}
 
 			#endregion

@@ -220,19 +220,18 @@ namespace DOL.GS
                     classForLoot = GetRandomClassFromGroup(player.Group);
                 }
 
-
-                double killedCon = player.GetConLevel(mob);
+                int killedCon = player.GetConLevel(mob);
 
                 //grey don't loot RoG
                 if (killedCon <= -3)
                     return loot;
 
                 // chance to get a RoG Item
-                int chance = BASE_ROG_CHANCE + ((int) killedCon + 3) * 2;
+                int chance = BASE_ROG_CHANCE + (killedCon + 3) * 2;
                 // toa item
                 bool toachance = false;
 
-                if (IsMobInTOA(mob) && mob.Name.ToLower() != mob.Name && mob.Level >= 50)
+                if (IsMobInTOA(mob) && !mob.Name.Equals(mob.Name, StringComparison.OrdinalIgnoreCase) && mob.Level >= 50)
                 {
                     // ToA named mobs have good chance to drop unique loot
                     chance += NAMED_ROG_CHANCE + NAMED_TOA_CHANCE;

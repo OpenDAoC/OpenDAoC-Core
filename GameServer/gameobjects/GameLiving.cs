@@ -1319,7 +1319,7 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual double TryEvade(AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount)
+		public virtual double TryEvade(AttackData ad, AttackData lastAD, int attackerConLevel, int attackerCount)
 		{
 			// 1. A: It isn't possible to give a simple answer. The formula includes such elements
 			// as your level, your target's level, your level of evade, your QUI, your DEX, your
@@ -1397,7 +1397,7 @@ namespace DOL.GS
 			return evadeChance;
 		}
 
-		public virtual double TryParry(AttackData ad, AttackData lastAD, double attackerConLevel, int attackerCount)
+		public virtual double TryParry(AttackData ad, AttackData lastAD, int attackerConLevel, int attackerCount)
 		{
 			//1.  Dual wielding does not grant more chances to parry than a single weapon.  Grab Bag 9/12/03
 			//2.  There is no hard cap on ability to Parry.  Grab Bag 8/13/02
@@ -1489,7 +1489,7 @@ namespace DOL.GS
 			return parryChance;
 		}
 
-		public virtual double TryBlock(AttackData ad, double attackerConLevel, int attackerCount)
+		public virtual double TryBlock(AttackData ad, int attackerConLevel, int attackerCount)
 		{
 			//1.Quality does not affect the chance to block at this time.  Grab Bag 3/7/03
 			//2.Condition and enchantment increases the chance to block  Grab Bag 2/27/03

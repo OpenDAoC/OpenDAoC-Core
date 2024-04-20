@@ -160,7 +160,7 @@ namespace DOL.GS {
             this.GenerateItemNameModel();
 
             //set item quality (this can be called again by any script with real mob values)
-            this.GenerateItemQuality((double)Util.Random(0, 6) - 3);
+            this.GenerateItemQuality(Util.Random(0, 6) - 3);
 
             //item magical bonuses
             //if staff and magic..... focus
@@ -205,7 +205,7 @@ namespace DOL.GS {
         #endregion
 
         #region generate item properties
-        public void GenerateItemQuality(double conlevel)
+        public void GenerateItemQuality(int conlevel)
         {
             // set base quality
             int minQuality = RogStartingQual + Math.Max(0, this.Level - 59);

@@ -192,7 +192,7 @@ namespace DOL.GS.Quests
 								}
 								else
 								{
-									int con = (int)gainer.GetConLevel(target);
+									int con = gainer.GetConLevel(target);
 									if (con < lowestCon)
 									{
 										lowestCon = con;

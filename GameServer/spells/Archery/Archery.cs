@@ -330,7 +330,7 @@ namespace DOL.GS.Spells
 
 			if (IsInCastingPhase && Stage < 2)
 			{
-				double mod = Caster.GetConLevel(attacker);
+				int mod = Caster.GetConLevel(attacker);
 				double chance = 65;
 				chance += mod * 10;
 				chance = Math.Max(1, chance);

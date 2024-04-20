@@ -52,7 +52,7 @@ namespace DOL.GS
 				if (player == null)
 					return loot;
 
-				int killedcon = (int)player.GetConLevel(mob)+3;
+				int killedcon = player.GetConLevel(mob)+3;
 				
 				if(killedcon <= 0)
 					return loot;

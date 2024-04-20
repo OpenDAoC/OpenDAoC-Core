@@ -697,7 +697,7 @@ namespace DOL.GS
                                 addToList = true;
 
                                 if (compareLevel > 0 && conLevel > 0)
-                                    addToList = (int)GameObject.GetConLevel(compareLevel, currentNPC.Level) == conLevel;
+                                    addToList = GameObject.GetConLevel(compareLevel, currentNPC.Level) == conLevel;
                                 else
                                 {
                                     if (minLevel > 0 && currentNPC.Level < minLevel)

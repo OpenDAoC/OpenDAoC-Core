@@ -2542,8 +2542,8 @@ namespace DOL.GS.Spells
 
 				if (target is GameNPC)
 				{
-					double mobScalar = m_caster.GetConLevel(target) > 3 ? 3 : m_caster.GetConLevel(target);
-					hitChance -= (int)(mobScalar * Properties.PVE_SPELL_CONHITPERCENT);
+					int mobScalar = m_caster.GetConLevel(target);
+					hitChance -= (int) (mobScalar * Properties.PVE_SPELL_CONHITPERCENT);
 					hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
 				}
 			}

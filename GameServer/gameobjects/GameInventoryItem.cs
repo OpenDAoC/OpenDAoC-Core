@@ -267,14 +267,11 @@ namespace DOL.GS
                 if (ConditionPercent > 70 && Util.Chance(ServerProperties.Properties.ITEM_CONDITION_LOSS_CHANCE))
                 {
                     int oldPercent = ConditionPercent;
-                    double con = GamePlayer.GetConLevel(player.Level, Level);
-                    if (con < -3.0)
-                        con = -3.0;
-                    int sub = (int)(con + 4);
+                    int con = GameObject.GetConLevel(player.Level, Level);
+                    int sub = con + 4;
+
                     if (oldPercent < 91)
-                    {
                         sub *= 2;
-                    }
 
                     // Subtract condition
                     Condition -= sub;
@@ -311,14 +308,11 @@ namespace DOL.GS
                 if (ConditionPercent > 70 && Util.Chance(ServerProperties.Properties.ITEM_CONDITION_LOSS_CHANCE))
                 {
                     int oldPercent = ConditionPercent;
-                    double con = GamePlayer.GetConLevel(player.Level, Level);
-                    if (con < -3.0)
-                        con = -3.0;
-                    int sub = (int)(con + 4);
+                    int con = GameObject.GetConLevel(player.Level, Level);
+                    int sub = con + 4;
+
                     if (oldPercent < 91)
-                    {
                         sub *= 2;
-                    }
 
                     // Subtract condition
                     Condition -= sub;

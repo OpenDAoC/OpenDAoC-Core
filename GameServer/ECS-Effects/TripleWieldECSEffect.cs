@@ -67,7 +67,7 @@ namespace DOL.GS
 			double baseDamage = attackData.Weapon.DPS_AF / 10.0 *
 								attackData.WeaponSpeed;
 
-			modifier += (int)(25 * attackData.Target.GetConLevel(attackData.Attacker));
+			modifier += 25 * attackData.Target.GetConLevel(attackData.Attacker);
 			modifier = Math.Min(300, modifier);
 			modifier = Math.Max(75, modifier);
 

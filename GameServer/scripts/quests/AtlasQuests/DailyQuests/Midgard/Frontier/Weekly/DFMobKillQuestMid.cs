@@ -338,7 +338,7 @@ namespace DOL.GS.WeeklyQuest.Midgard
 			    !(player.GetConLevel(gArgs.Target) > -2)) return;
 			if (player.Group != null)
 			{
-				double minRequiredCon = Math.Ceiling((double) (player.Group.MemberCount / 3));
+				int minRequiredCon = (int) Math.Ceiling(player.Group.MemberCount / 3.0);
 				if (minRequiredCon > 3) minRequiredCon = 3;
 				if (player.Group.Leader.GetConLevel(gArgs.Target) >= minRequiredCon)
 					_mobsKilled++;

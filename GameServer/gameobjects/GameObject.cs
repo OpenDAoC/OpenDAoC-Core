@@ -990,52 +990,14 @@ namespace DOL.GS
 
 		#region ConLevel/DurLevel
 
-		/// <summary>
-		/// Calculate con-level against other object
-		/// &lt;=-3 = grey
-		/// -2 = green
-		/// -1 = blue
-		/// 0 = yellow (same level)
-		/// 1 = orange
-		/// 2 = red
-		/// &gt;=3 = violet
-		/// </summary>
-		/// <returns>conlevel</returns>
-		public double GetConLevel(GameObject compare)
+		public int GetConLevel(GameObject compare)
 		{
-			return GetConLevel(EffectiveLevel, compare.EffectiveLevel);
-			//			return (compare.Level - Level) / ((double)(Level / 10 + 1));
+			return ConLevels.GetConLevel(EffectiveLevel, compare.EffectiveLevel);
 		}
 
-		/// <summary>
-		/// Calculate con-level against other compareLevel
-		/// -3- = grey
-		/// -2 = green
-		/// -1 = blue  (compareLevel is 1 con lower)
-		/// 0 = yellow (same level)
-		/// 1 = orange (compareLevel is 1 con higher)
-		/// 2 = red
-		/// 3+ = violet
-		/// </summary>
-		/// <returns>conlevel</returns>
-		public static double GetConLevel(int level, int compareLevel)
+		public static int GetConLevel(int level, int compareLevel)
 		{
-			int constep = Math.Max(1, (level + 9) / 10);
-			double stepping = 1.0 / constep;
-			int leveldiff = level - compareLevel;
-			return 0 - leveldiff * stepping;
-		}
-
-		/// <summary>
-		/// Calculate a level based on source level and a con level
-		/// </summary>
-		/// <param name="level"></param>
-		/// <param name="con"></param>
-		/// <returns></returns>
-		public static int GetLevelFromCon(int level, double con)
-		{
-			int constep = Math.Max(1, (level + 10) / 10);
-			return Math.Max((int)0, (int)(level + constep * con));
+			return ConLevels.GetConLevel(level, compareLevel);
 		}
 
 		#endregion

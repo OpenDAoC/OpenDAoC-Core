@@ -63,7 +63,7 @@ namespace DOL.GS.Spells
             // Resources indicate that resistances aren't applied on the physical part of the damage.
             damage = base.ModifyDamageWithTargetResist(ad, damage / 2);
 
-            if (!ad.Target.attackComponent.CheckBlock(ad, 0.0) || ad.Target.attackComponent.CheckGuard(ad, false, 0.0))
+            if (!ad.Target.attackComponent.CheckBlock(ad, 0) || ad.Target.attackComponent.CheckGuard(ad, false, 0))
             {
                 // This is normally set in 'AttackComponent.CalculateEnemyAttackResult', but we don't call it.
                 if (ad.Target is GamePlayer playerTarget)
@@ -78,8 +78,8 @@ namespace DOL.GS.Spells
             else
             {
                 ad.AttackResult = eAttackResult.Blocked;
-                MessageToLiving(ad.Target, "You partially block " + Caster.GetName(0, false) + "'s spell!", eChatType.CT_Missed);
-                MessageToCaster(ad.Target.GetName(0, true) + " blocks!", eChatType.CT_YouHit);
+                MessageToLiving(ad.Target, $"You partially block {Caster.GetName(0, false)}'s spell!", eChatType.CT_Missed);
+                MessageToCaster($"{ad.Target.GetName(0, true)} blocks!", eChatType.CT_YouHit);
             }
 
             return damage;

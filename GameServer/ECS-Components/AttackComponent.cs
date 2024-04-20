@@ -1823,7 +1823,7 @@ namespace DOL.GS
             target.Endurance = Math.Min(target.MaxEndurance, target.Endurance + enduranceConversion);
         }
 
-        public virtual bool CheckBlock(AttackData ad, double attackerConLevel)
+        public virtual bool CheckBlock(AttackData ad, int attackerConLevel)
         {
             double blockChance = owner.TryBlock(ad, attackerConLevel, Attackers.Count);
             ad.BlockChance = blockChance;
@@ -1859,7 +1859,7 @@ namespace DOL.GS
             return false;
         }
 
-        public bool CheckGuard(AttackData ad, bool stealthStyle, double attackerConLevel)
+        public bool CheckGuard(AttackData ad, bool stealthStyle, int attackerConLevel)
         {
             GuardECSGameEffect guard = EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Guard) as GuardECSGameEffect;
 
@@ -1950,7 +1950,7 @@ namespace DOL.GS
             return false;
         }
 
-        public bool CheckDashingDefense(AttackData ad, bool stealthStyle, double attackerConLevel, out eAttackResult result)
+        public bool CheckDashingDefense(AttackData ad, bool stealthStyle, int attackerConLevel, out eAttackResult result)
         {
             // Not implemented.
             result = eAttackResult.Any;
@@ -2172,7 +2172,7 @@ namespace DOL.GS
                 return eAttackResult.HitUnstyled;
             }
 
-            double attackerConLevel = -owner.GetConLevel(ad.Attacker);
+            int attackerConLevel = -owner.GetConLevel(ad.Attacker);
 
             if (!defenseDisabled)
             {
@@ -2702,7 +2702,7 @@ namespace DOL.GS
 
             // PVE group miss rate.
             if (owner is GameNPC && ad.Attacker is GamePlayer playerAttacker && playerAttacker.Group != null && (int) (0.90 * playerAttacker.Group.Leader.Level) >= ad.Attacker.Level && ad.Attacker.IsWithinRadius(playerAttacker.Group.Leader, 3000))
-                missChance -= (int) (5 * playerAttacker.Group.Leader.GetConLevel(owner));
+                missChance -= 5 * playerAttacker.Group.Leader.GetConLevel(owner);
             else if (owner is GameNPC || ad.Attacker is GameNPC)
             {
                 GameLiving misscheck = ad.Attacker;
@@ -2710,7 +2710,7 @@ namespace DOL.GS
                 if (ad.Attacker is GameSummonedPet petAttacker && petAttacker.Level < petAttacker.Owner.Level)
                     misscheck = petAttacker.Owner;
 
-                missChance += (int) (5 * misscheck.GetConLevel(owner));
+                missChance += 5 * misscheck.GetConLevel(owner);
             }
 
             // Experimental miss rate adjustment for number of attackers.
