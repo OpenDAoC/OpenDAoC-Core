@@ -2694,8 +2694,8 @@ namespace DOL.GS
         public int GetMissChance(WeaponAction action, AttackData ad, AttackData lastAD, DbInventoryItem weapon)
         {
             // No miss if the target is sitting or for Volley attacks.
-             if ((owner is GamePlayer player && player.IsSitting) || action.RangedAttackType == eRangedAttackType.Volley)
-                return 0;
+            if ((owner is GamePlayer player && player.IsSitting) || action.RangedAttackType == eRangedAttackType.Volley)
+               return 0;
 
             int missChance = ad.Attacker is GamePlayer or GameSummonedPet ? 18 : 25;
             missChance -= ad.Attacker.GetModified(eProperty.ToHitBonus);
