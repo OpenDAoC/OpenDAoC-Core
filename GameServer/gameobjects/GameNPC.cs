@@ -762,10 +762,10 @@ namespace DOL.GS
 				double movementAmount = MovementElapsedTicks * movementComponent.Velocity.X * 0.001;
 
 				if (!IsDestinationValid)
-					return (int) (m_x + movementAmount);
+					return (int) Math.Round(m_x + movementAmount);
 
 				double absMovementAmount = Math.Abs(movementAmount);
-				return Math.Abs(Destination.X - m_x) < absMovementAmount ? Destination.X : (int) (m_x + movementAmount);
+				return Math.Abs(Destination.X - m_x) < absMovementAmount ? Destination.X : (int) Math.Round(m_x + movementAmount);
 			}
 		}
 
@@ -786,10 +786,10 @@ namespace DOL.GS
 				double movementAmount = MovementElapsedTicks * movementComponent.Velocity.Y * 0.001;
 
 				if (!IsDestinationValid)
-					return (int) (m_y + movementAmount);
+					return (int) Math.Round(m_y + movementAmount);
 
 				double absMovementAmount = Math.Abs(movementAmount);
-				return Math.Abs(Destination.Y - m_y) < absMovementAmount ? Destination.Y : (int) (m_y + movementAmount);
+				return Math.Abs(Destination.Y - m_y) < absMovementAmount ? Destination.Y : (int) Math.Round(m_y + movementAmount);
 			}
 		}
 
@@ -810,10 +810,10 @@ namespace DOL.GS
 				double movementAmount = MovementElapsedTicks * movementComponent.Velocity.Z * 0.001;
 
 				if (!IsDestinationValid)
-					return (int) (m_z + movementAmount);
+					return (int) Math.Round(m_z + movementAmount);
 
 				double absMovementAmount = Math.Abs(movementAmount);
-				return Math.Abs(Destination.Z - m_z) < absMovementAmount ? Destination.Z : (int) (m_z + movementAmount);
+				return Math.Abs(Destination.Z - m_z) < absMovementAmount ? Destination.Z : (int) Math.Round(m_z + movementAmount);
 			}
 		}
 
