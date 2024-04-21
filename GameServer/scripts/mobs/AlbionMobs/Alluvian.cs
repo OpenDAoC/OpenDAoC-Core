@@ -1,6 +1,6 @@
-﻿using DOL.AI.Brain;
+﻿using System;
+using DOL.AI.Brain;
 using DOL.Events;
-using System;
 
 namespace DOL.GS
 {
@@ -43,7 +43,6 @@ namespace DOL.GS
 			globulespawn.CurrentRegionID = 51;
 			globulespawn.Heading = Heading;
 			globulespawn.Realm = 0;
-			globulespawn.CurrentSpeed = 0;
 			globulespawn.MaxSpeedBase = 191;
 			globulespawn.GuildName = "";
 			globulespawn.X = X;

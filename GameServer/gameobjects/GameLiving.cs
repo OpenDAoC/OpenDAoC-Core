@@ -3576,6 +3576,8 @@ namespace DOL.GS
 			// Not implemented.
 		}
 
+		public virtual void OnMaxSpeedChange() { }
+
 		#endregion
 		#region Say/Yell/Whisper/Emote/Messages
 

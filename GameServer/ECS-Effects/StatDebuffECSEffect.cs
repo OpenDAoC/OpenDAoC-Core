@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DOL.GS.PlayerClass;
 using DOL.GS.PropertyCalc;
-using DOL.GS.Spells;
 
 namespace DOL.GS
 {
@@ -70,10 +69,8 @@ namespace DOL.GS
 
                     var effectiveValue = SpellHandler.Spell.Value * Effectiveness;
 
-                    Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, EffectType,
-                        1.0 - effectiveValue * 0.01);
-                    UnbreakableSpeedDecreaseSpellHandler.SendUpdates(Owner);
-
+                    Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, EffectType, 1.0 - effectiveValue * 0.01);
+                    Owner.OnMaxSpeedChange();
                 }
                 else
                 {
@@ -130,7 +127,7 @@ namespace DOL.GS
                     }
 
                     Owner.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, EffectType);
-                    UnbreakableSpeedDecreaseSpellHandler.SendUpdates(Owner);
+                    Owner.OnMaxSpeedChange();
                 }
                 else
                 {

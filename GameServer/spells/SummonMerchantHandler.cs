@@ -62,7 +62,6 @@ namespace DOL.GS.Spells
             Npc.CurrentRegion = m_caster.CurrentRegion;
             Npc.Heading = (ushort) ((m_caster.Heading + 2048)%4096);
             Npc.Realm = m_caster.Realm;
-            Npc.CurrentSpeed = 0;
             Npc.Level = m_caster.Level;
             Npc.Name = m_caster.Name + "'s Merchant";
             Npc.GuildName = "Temp Worker";

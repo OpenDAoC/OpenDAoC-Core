@@ -83,8 +83,6 @@ namespace DOL.GS.Scripts
 			mob.Charisma = this.Charisma;
 
 			//Fill the living variables
-			mob.CurrentSpeed = 200;
-
 			mob.MaxSpeedBase = this.MaxSpeedBase;
 			mob.Size = this.Size;
 			mob.NPCTemplate = this.NPCTemplate;
@@ -157,5 +155,4 @@ namespace DOL.GS.Scripts
 		}
 		
 	}
-
 }

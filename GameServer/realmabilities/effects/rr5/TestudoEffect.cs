@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
-using DOL.GS.RealmAbilities;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Effects
 {
@@ -36,14 +34,7 @@ namespace DOL.GS.Effects
 			target.attackComponent.StopAttack();
 			GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
 			GameEventMgr.AddHandler(target, GameLivingEvent.AttackFinished, new DOLEventHandler(attackEventHandler));
-			if (player != null)
-			{
-				player.Out.SendUpdateMaxSpeed();
-			}
-			else
-			{
-				owner.CurrentSpeed = owner.MaxSpeed;
-			}
+			owner.OnMaxSpeedChange();
 		}
 
 		private void OnAttack(DOLEvent e, object sender, EventArgs arguments)
@@ -107,15 +98,7 @@ namespace DOL.GS.Effects
 			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
 			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackFinished, new DOLEventHandler(attackEventHandler));
 			base.Stop();
-			GamePlayer player = owner as GamePlayer;
-			if (player != null)
-			{
-				player.Out.SendUpdateMaxSpeed();
-			}
-			else
-			{
-				owner.CurrentSpeed = owner.MaxSpeed;
-			}
+			owner.OnMaxSpeedChange();
 		}
 
 		public override string Name { get { return "Testudo"; } }

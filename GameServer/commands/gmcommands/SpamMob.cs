@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DOL.AI.Brain;
-using DOL.AI;
-using DOL.spells;
 using System.Collections;
-using DOL.Database;
+using System.Collections.Generic;
 using System.Reflection;
+using DOL.AI.Brain;
+using DOL.Database;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
@@ -189,7 +184,6 @@ namespace DOL.GS.Commands
                 mob.Model = 34;
 
                 //Fill the living variables
-                mob.CurrentSpeed = 0;
                 mob.MaxSpeedBase = 200;
                 mob.GuildName = "Burn Baby Burn";
                 mob.Size = 50;

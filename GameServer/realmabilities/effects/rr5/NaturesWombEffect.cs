@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
 using DOL.Events;
-using DOL.GS.RealmAbilities;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Effects
 {
@@ -93,15 +91,7 @@ namespace DOL.GS.Effects
 			GameEventMgr.RemoveHandler(owner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
 			owner.IsStunned = false;
 			owner.DisableTurning(false);
-			GamePlayer player = owner as GamePlayer;
-			if (player != null)
-			{
-				player.Out.SendUpdateMaxSpeed();
-			}
-			else
-			{
-				owner.CurrentSpeed = owner.MaxSpeed;
-			}
+			owner.OnMaxSpeedChange();
 			base.Stop();
 		}
 

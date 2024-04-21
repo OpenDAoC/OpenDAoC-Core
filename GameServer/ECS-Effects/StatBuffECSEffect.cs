@@ -1,14 +1,10 @@
-using System;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
-using DOL.GS.PacketHandler;
-using DOL.AI.Brain;
 using DOL.GS.PropertyCalc;
+using DOL.GS.Spells;
 
 namespace DOL.GS
 {
     public class StatBuffECSEffect : ECSGameSpellEffect
-    {        
+    {
         public StatBuffECSEffect(ECSGameEffectInitParams initParams)
             : base(initParams) { }
 
@@ -56,7 +52,7 @@ namespace DOL.GS
                             //e.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, e.SpellHandler, e.SpellHandler.Spell.Value / 100.0);
                             Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, EffectType, SpellHandler.Spell.Value / 100.0);
                             //Console.WriteLine($"Value after: {Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                            (SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(Owner);
+                            Owner.OnMaxSpeedChange();
                         }
                         if (Owner.IsStealthed)
                         {
@@ -123,7 +119,7 @@ namespace DOL.GS
                             //e.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, e.SpellHandler);
                             Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, EffectType);
                             //Console.WriteLine($"Value after: {Owner.BuffBonusMultCategory1.Get((int)eProperty.MaxSpeed)}");
-                            (SpellHandler as SpeedEnhancementSpellHandler).SendUpdates(Owner);
+                            Owner.OnMaxSpeedChange();
                         //}
                     }
                     

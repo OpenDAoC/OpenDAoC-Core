@@ -9,7 +9,6 @@ using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
@@ -825,6 +824,12 @@ namespace DOL.GS
 		/// </summary>
 		public override bool IsStealthed => false;// (Flags & eFlags.STEALTH) != 0;
 		public bool WasStealthed { get; private set; } = false;
+
+		public override void OnMaxSpeedChange()
+		{
+			base.OnMaxSpeedChange();
+			movementComponent.RestartCurrentMovement();
+		}
 
 		protected int m_tetherRange;
 
@@ -2764,7 +2769,7 @@ namespace DOL.GS
 
 				// Slow NPCs down when they are hurt.
 				if (CurrentSpeed > MaxSpeed)
-					CurrentSpeed = MaxSpeed;
+					OnMaxSpeedChange();
 			}
 		}
 

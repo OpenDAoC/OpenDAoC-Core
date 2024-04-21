@@ -12152,6 +12152,12 @@ namespace DOL.GS
                 EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
         }
 
+        public override void OnMaxSpeedChange()
+        {
+            base.OnMaxSpeedChange();
+            Out.SendUpdateMaxSpeed();
+        }
+
         // UncoverStealthAction is what unstealths player if they are too close to mobs.
         public void StartStealthUncoverAction()
         {

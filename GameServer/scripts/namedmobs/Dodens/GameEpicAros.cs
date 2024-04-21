@@ -250,8 +250,6 @@ namespace DOL.GS.Scripts
             summonedGuardian.MaxSpeedBase = this.MaxSpeedBase;
 
             // also copies the stats
-            summonedGuardian.CurrentSpeed = 200;
-
             summonedGuardian.Strength = this.Strength;
             summonedGuardian.Constitution = this.Constitution;
             summonedGuardian.Dexterity = this.Dexterity;

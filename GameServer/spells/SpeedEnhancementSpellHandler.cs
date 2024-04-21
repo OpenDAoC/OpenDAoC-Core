@@ -84,66 +84,6 @@ namespace DOL.GS.Spells
 			base.ApplyEffectOnTarget(target);
 		}
 
-		///// <summary>
-		///// When an applied effect starts
-		///// duration spells only
-		///// </summary>
-		///// <param name="effect"></param>
-		//public override void OnEffectStart(GameSpellEffect effect)
-		//{
-		//	base.OnEffectStart(effect);
-
-		//	GamePlayer player = effect.Owner as GamePlayer;
-
-		//	if (player == null || !player.IsStealthed)
-		//	{
-		//		effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, Spell.Value / 100.0);
-		//		SendUpdates(effect.Owner);
-		//	}
-		//}
-
-		///// <summary>
-		///// When an applied effect expires.
-		///// Duration spells only.
-		///// </summary>
-		///// <param name="effect">The expired effect</param>
-		///// <param name="noMessages">true, when no messages should be sent to player and surrounding</param>
-		///// <returns>immunity duration in milliseconds</returns>
-		//public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
-		//{
-		//	effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
-
-		//	if (!noMessages)
-		//	{
-		//		SendUpdates(effect.Owner);
-		//	}
-
-		//	return base.OnEffectExpires(effect, noMessages);
-		//}
-
-
-		/// <summary>
-		/// Sends updates on effect start/stop
-		/// </summary>
-		/// <param name="owner"></param>
-		public virtual void SendUpdates(GameLiving owner)
-		{
-			if (owner.IsMezzed || owner.IsStunned)
-				return;
-
-			if (owner is GamePlayer)
-			{
-				((GamePlayer)owner).Out.SendUpdateMaxSpeed();
-			}
-			else if (owner is GameNPC)
-			{
-				GameNPC npc = (GameNPC)owner;
-				short maxSpeed = npc.MaxSpeed;
-				if (npc.CurrentSpeed > maxSpeed)
-					npc.CurrentSpeed = maxSpeed;
-			}
-		}
-
 		/// <summary>
 		/// Handles attacks on player/by player
 		/// </summary>

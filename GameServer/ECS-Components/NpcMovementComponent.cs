@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -28,6 +29,7 @@ namespace DOL.GS
         private ResetHeadingAction _resetHeadingAction;
         private Point3D _positionForUpdatePackets;
         private bool _needsBroadcastUpdate;
+        private short _currentMovementDesiredSpeed;
 
         public new GameNPC Owner { get; }
         public Vector3 Velocity { get; private set; }
@@ -277,6 +279,12 @@ namespace DOL.GS
             WalkTo(new Point3D((int) targetX, (int) targetY, Owner.SpawnPoint.Z), speed);
         }
 
+        public void RestartCurrentMovement()
+        {
+            if (IsDestinationValid && !IsAtDestination)
+                WalkToInternal(Destination, _currentMovementDesiredSpeed);
+        }
+
         public void TurnTo(GameObject target, int duration = 0)
         {
             if (target == null || target.CurrentRegion != Owner.CurrentRegion)
@@ -368,13 +376,12 @@ namespace DOL.GS
             if (IsTurningDisabled)
                 return;
 
+            _currentMovementDesiredSpeed = speed;
+
             if (speed > MaxSpeed)
                 speed = MaxSpeed;
 
-            if (speed <= 0)
-                return;
-
-            if (destination == null)
+            if (destination == null || speed <= 0)
             {
                 UpdateMovement(null, 0.0, speed);
                 return;
@@ -392,7 +399,7 @@ namespace DOL.GS
                 SetFlag(MovementState.WALK_TO);
                 _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
             }
-            else if (IsMoving)
+            else
                 UpdateMovement(null, 0.0, 0);
         }
 
@@ -658,7 +665,7 @@ namespace DOL.GS
             {
                 // This appears to be unreliable if we don't forcefully snap the NPC's position to its destination in `OnArrival`.
                 // X, Y, Z are supposed to return the destination. It's possible early ticks prevent that.
-                // We could also simply broadcast, but this would be  wasteful.
+                // We could also simply broadcast, but this would be wasteful.
                 if (!IsAtDestination)
                     _needsBroadcastUpdate = true;
 

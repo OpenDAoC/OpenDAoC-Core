@@ -49,8 +49,7 @@ namespace DOL.GS.Spells
 		{
 			base.OnEffectStart(effect);
 			effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect, 1.0-Spell.Value*0.01);
-
-			SendUpdates(effect.Owner);
+			effect.Owner.OnMaxSpeedChange();
 
 			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner);
@@ -79,8 +78,7 @@ namespace DOL.GS.Spells
 			if(timer!=null) timer.Stop();
 
 			effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, effect);
-
-			SendUpdates(effect.Owner);
+			effect.Owner.OnMaxSpeedChange();
 
 			MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
@@ -107,28 +105,6 @@ namespace DOL.GS.Spells
 			if (Spell.Name.Equals("Prevent Flight"))
 				duration = Spell.Duration;
 			return (int)duration;
-		}
-
-		/// <summary>
-		/// Sends updates on effect start/stop
-		/// </summary>
-		/// <param name="owner"></param>
-		public static void SendUpdates(GameLiving owner)
-		{
-			if (owner.IsMezzed || owner.IsStunned)
-				return;
-
-			GamePlayer player = owner as GamePlayer;
-			if (player != null)
-				player.Out.SendUpdateMaxSpeed();
-
-			GameNPC npc = owner as GameNPC;
-			if (npc != null)
-			{
-				short maxSpeed = npc.MaxSpeed;
-				if (npc.CurrentSpeed > maxSpeed)
-					npc.CurrentSpeed = maxSpeed;
-			}
 		}
 
 		/// <summary>
@@ -162,8 +138,7 @@ namespace DOL.GS.Spells
 				else if (factor > 1) factor = 1;
 
 				effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect, 1.0 - effect.Spell.Value*factor*0.01);
-
-				SendUpdates(effect.Owner);
+				effect.Owner.OnMaxSpeedChange();
 
 				return factor <= 0 ? 0 : Interval;
 			}

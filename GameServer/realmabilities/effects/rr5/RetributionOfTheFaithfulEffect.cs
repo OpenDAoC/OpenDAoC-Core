@@ -27,15 +27,7 @@ namespace DOL.GS.Effects
             owner.attackComponent.StopAttack();
             owner.StopCurrentSpellcast();
             owner.DisableTurning(true);
-            GamePlayer player = owner as GamePlayer;
-            if (player != null)
-            {
-                player.Out.SendUpdateMaxSpeed();
-            }
-            else if(owner.CurrentSpeed > owner.MaxSpeed) 
-            {
-                owner.CurrentSpeed = owner.MaxSpeed;
-            }
+            owner.OnMaxSpeedChange();
         }
 
 
@@ -48,17 +40,8 @@ namespace DOL.GS.Effects
         {
             owner.IsStunned = false;
             owner.DisableTurning(false);
-            GamePlayer player = owner as GamePlayer;
-            if (player != null)
-            {
-                player.Out.SendUpdateMaxSpeed();
-            }
-            else
-            {
-                owner.CurrentSpeed = owner.MaxSpeed;
-            }
+            owner.OnMaxSpeedChange();
             base.Stop();
-
         }
 
         public int SpellEffectiveness

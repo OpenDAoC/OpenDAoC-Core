@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
@@ -79,8 +78,6 @@ namespace DOL.GS.Scripts
 			mob.Charisma = this.Charisma;
 
 			//Fill the living variables
-			mob.CurrentSpeed = 0;
-
 			mob.MaxSpeedBase = this.MaxSpeedBase;
 			mob.Size = this.Size;
 			mob.NPCTemplate = this.NPCTemplate;

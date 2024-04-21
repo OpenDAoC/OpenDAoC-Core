@@ -416,7 +416,7 @@ namespace DOL.GS.Spells
 
             effect.Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, effect);
 
-            SendUpdates(effect.Owner);
+            effect.Owner.OnMaxSpeedChange();
             MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_SpellExpires);
             Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_SpellExpires, effect.Owner);
 

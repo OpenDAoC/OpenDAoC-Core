@@ -1,5 +1,3 @@
-using System;
-using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 
@@ -30,7 +28,7 @@ namespace DOL.GS.Effects
             Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 99 * 0.01);
             //m_rootExpire = new ECSGameTimer(target, new ECSGameTimer.ECSTimerCallback(RootExpires), duration);
             //GameEventMgr.AddHandler(target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttacked));
-            SendUpdates(Owner);
+            Owner.OnMaxSpeedChange();
 
             // Send root animation and spell message
             foreach (GamePlayer player in Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -45,26 +43,8 @@ namespace DOL.GS.Effects
         public override void OnStopEffect()
         {
             Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
-            SendUpdates(Owner);
+            Owner.OnMaxSpeedChange();
             base.OnStopEffect();
-        }
-        
-        protected static void SendUpdates(GameLiving owner)
-        {
-            if (owner.IsMezzed || owner.IsStunned)
-                return;
-
-            GamePlayer player = owner as GamePlayer;
-            if (player != null)
-                player.Out.SendUpdateMaxSpeed();
-
-            GameNPC npc = owner as GameNPC;
-            if (npc != null)
-            {
-                short maxSpeed = npc.MaxSpeed;
-                if (npc.CurrentSpeed > maxSpeed)
-                    npc.CurrentSpeed = maxSpeed;
-            }
         }
     }
 }

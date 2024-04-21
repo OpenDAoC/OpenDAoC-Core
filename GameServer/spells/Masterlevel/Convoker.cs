@@ -384,7 +384,6 @@ namespace DOL.GS.Spells
 			warder.Realm = caster.Realm;
 			warder.Name = "Battle Warder";
 			warder.Model = 993;
-			warder.CurrentSpeed = 0;
 			warder.MaxSpeedBase = 0;
 			warder.GuildName = "";
 			warder.Size = 50;
@@ -496,7 +495,6 @@ namespace DOL.GS.Spells
 				summoned.CurrentRegion = target.CurrentRegion;
 				summoned.Heading = (ushort)((target.Heading + 2048) % 4096);
 				summoned.Realm = target.Realm;
-				summoned.CurrentSpeed = 0;
 				summoned.Level = 1;
 				summoned.Size = 10;
 				summoned.AddToWorld();
@@ -658,7 +656,6 @@ namespace DOL.GS.Spells
 			summoned.CurrentRegion = player.CurrentRegion;
 			summoned.Heading = (ushort)((player.Heading + 2048) % 4096);
 			summoned.Realm = player.Realm;
-			summoned.CurrentSpeed = 0;
 			summoned.Size = 10;
 			summoned.Level = 100;
 			summoned.Flags |= GameNPC.eFlags.PEACE;

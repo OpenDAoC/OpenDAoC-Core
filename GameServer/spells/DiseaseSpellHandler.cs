@@ -115,30 +115,6 @@ namespace DOL.GS.Spells
 			return (int)duration;
 		}
 
-		/// <summary>
-		/// Sends needed updates on start/stop
-		/// </summary>
-		/// <param name="effect"></param>
-		public virtual void SendUpdates(ECSGameEffect effect)
-		{
-            GamePlayer player = effect.Owner as GamePlayer;
-            if (player != null)
-            {
-                if (!player.IsMezzed && !player.IsStunned)
-                    player.Out.SendUpdateMaxSpeed();
-                player.Out.SendCharStatsUpdate();
-                player.Out.SendUpdateWeaponAndArmorStats();
-            }
-
-            GameNPC npc = effect.Owner as GameNPC;
-            if (npc != null)
-            {
-                short maxSpeed = npc.MaxSpeed;
-                if (npc.CurrentSpeed > maxSpeed)
-                    npc.CurrentSpeed = maxSpeed;
-            }
-        }
-
 		public override DbPlayerXEffect GetSavedEffect(GameSpellEffect e)
 		{
 			if ( //VaNaTiC-> this cannot work, cause PulsingSpellEffect is derived from object and only implements IConcEffect

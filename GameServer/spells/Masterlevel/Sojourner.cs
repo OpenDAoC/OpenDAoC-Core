@@ -95,7 +95,6 @@ namespace DOL.GS.Spells
                 merchant.Realm = casterPlayer.Realm;
                 merchant.Name = "Ancient Transmuter";
                 merchant.Model = 993;
-                merchant.CurrentSpeed = 0;
                 merchant.MaxSpeedBase = 0;
                 merchant.GuildName = "";
                 merchant.Size = 50;

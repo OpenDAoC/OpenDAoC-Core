@@ -803,6 +803,7 @@ namespace DOL.AI.Brain
             AggroLevel = 100;
             AggroRange = 800;
             ThinkInterval = 1500;
+            Body.MaxSpeedBase = 300;
         }
         private protected bool Point1check = false;
         private protected bool Point2check = false;
@@ -816,7 +817,6 @@ namespace DOL.AI.Brain
         }
         public override void Think()
         {
-            Body.CurrentSpeed = 300;
             if (!SetNpcTarget)
             {
                 foreach (GameNPC npc in Body.GetNPCsInRadius(1500))

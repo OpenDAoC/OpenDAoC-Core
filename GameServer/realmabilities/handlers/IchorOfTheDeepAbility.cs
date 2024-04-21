@@ -1,10 +1,8 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
-using DOL.GS.Spells;
-using DOL.Events;
 using DOL.Database;
-using DOL.Language;
+using DOL.Events;
+using DOL.GS.Effects;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -174,33 +172,12 @@ namespace DOL.GS.RealmAbilities
 			if (living != null)
 			{
 				living.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
-				SendUpdates(living);
+				living.OnMaxSpeedChange();
 			}
 			timer.Stop();
-			timer = null;
 			return 0;
 		}
-		/// <summary>
-		/// Sends updates on effect start/stop
-		/// </summary>
-		/// <param name="owner"></param>
-		protected static void SendUpdates(GameLiving owner)
-		{
-			if (owner.IsMezzed || owner.IsStunned)
-				return;
 
-			GamePlayer player = owner as GamePlayer;
-			if (player != null)
-				player.Out.SendUpdateMaxSpeed();
-
-			GameNPC npc = owner as GameNPC;
-			if (npc != null)
-			{
-				short maxSpeed = npc.MaxSpeed;
-				if (npc.CurrentSpeed > maxSpeed)
-					npc.CurrentSpeed = maxSpeed;
-			}
-		}
 		/// <summary>
 		/// Handles attack on buff owner
 		/// </summary>
@@ -219,7 +196,7 @@ namespace DOL.GS.RealmAbilities
 				case eAttackResult.HitStyle:
 				case eAttackResult.HitUnstyled:
 					living.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
-					SendUpdates(living);
+					living.OnMaxSpeedChange();
 					break;
 			}
 		}

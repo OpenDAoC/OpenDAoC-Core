@@ -1,9 +1,7 @@
-
-
-using System;
 using DOL.Database;
 
-namespace DOL.GS {
+namespace DOL.GS
+{
     public class DisplayModel : GameNPC
     {
         private GamePlayer m_displayedPlayer;
@@ -23,8 +21,6 @@ namespace DOL.GS {
             this.Model = tmpModel;
             //mob.Model = 8;
             this.Name = player.Name + "'s Reflection";
-
-            this.CurrentSpeed = 0;
             this.MaxSpeedBase = 200;
             this.GuildName = "A Faded You";
             this.Size = 50;
@@ -61,7 +57,5 @@ namespace DOL.GS {
             
             return true;
         }
-        
-        
     }
 }
