@@ -1,38 +1,19 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System.Collections.Generic;
-using System.Linq;
 using DOL.GS;
 
 namespace DOL.AI.Brain
 {
     public class TurretBrain : ControlledNpcBrain
     {
-        protected readonly List<GameLiving> m_defensiveSpellTargets;
+        protected readonly List<GameLiving> _defensiveSpellTargets;
+        protected virtual bool CheckLosBeforeCastingDefensiveSpells => false;
+        protected virtual bool CheckLosBeforeCastingOffensiveSpells => true;
 
         public TurretBrain(GameLiving owner) : base(owner)
         {
-            m_defensiveSpellTargets = new();
+            _defensiveSpellTargets = new();
         }
 
-        public List<GameLiving> DefensiveSpellTargets => m_defensiveSpellTargets;
         public override int AggroRange => ((TurretPet) Body).TurretSpell.Range;
 
         public override void Think()
@@ -46,12 +27,12 @@ namespace DOL.AI.Brain
 
         public override bool CheckSpells(eCheckSpellType type)
         {
-            if (Body == null || AggressionState == eAggressionState.Passive || ((TurretPet)Body).TurretSpell == null)
+            if (Body == null || AggressionState == eAggressionState.Passive)
                 return false;
 
-            Spell spell = ((TurretPet)Body).TurretSpell;
+            Spell spell = ((TurretPet) Body).TurretSpell;
 
-            if (Body.GetSkillDisabledDuration(spell) != 0)
+            if (spell == null || Body.GetSkillDisabledDuration(spell) != 0)
                 return false;
 
             bool casted = false;
@@ -59,11 +40,15 @@ namespace DOL.AI.Brain
             switch (type)
             {
                 case eCheckSpellType.Defensive:
+                {
                     casted = CheckDefensiveSpells(spell);
                     break;
+                }
                 case eCheckSpellType.Offensive:
+                {
                     casted = CheckOffensiveSpells(spell);
                     break;
+                }
             }
 
             return casted /*|| Body.IsCasting*/;
@@ -77,7 +62,14 @@ namespace DOL.AI.Brain
                 case eSpellType.BodySpiritEnergyBuff:
                 case eSpellType.ArmorAbsorptionBuff:
                 case eSpellType.AblativeArmor:
-                    return TrustCast(spell, eCheckSpellType.Defensive, GetDefensiveTarget(spell));
+                {
+                    GameLiving target = GetDefensiveTarget(spell);
+
+                    if (target != null)
+                        return TrustCast(spell, eCheckSpellType.Defensive, GetDefensiveTarget(spell), CheckLosBeforeCastingDefensiveSpells);
+
+                    break;
+                }
             }
 
             return false;
@@ -92,13 +84,20 @@ namespace DOL.AI.Brain
                 case eSpellType.SpeedDecrease:
                 case eSpellType.Taunt:
                 case eSpellType.MeleeDamageDebuff:
-                    return TrustCast(spell, eCheckSpellType.Offensive, CalculateNextAttackTarget());
+                {
+                    GameLiving target = CalculateNextAttackTarget();
+
+                    if (target != null)
+                        return TrustCast(spell, eCheckSpellType.Offensive, target, CheckLosBeforeCastingOffensiveSpells);
+
+                    break;
+                }
             }
 
             return false;
         }
 
-        protected virtual bool TrustCast(Spell spell, eCheckSpellType type, GameLiving target)
+        protected virtual bool TrustCast(Spell spell, eCheckSpellType type, GameLiving target, bool checkLos)
         {
             if (spell.IsPBAoE)
                 return Body.CastSpell(spell, m_mobSpellLine);
@@ -107,7 +106,7 @@ namespace DOL.AI.Brain
             {
                 Body.TargetObject = target;
                 Body.StopAttack();
-                return Body.CastSpell(spell, m_mobSpellLine, false);
+                return Body.CastSpell(spell, m_mobSpellLine, checkLos);
             }
 
             return false;
@@ -116,12 +115,12 @@ namespace DOL.AI.Brain
         private GameLiving GetDefensiveTarget(Spell spell)
         {
             // Clear the current list of invalid or already buffed targets before checking nearby players and NPCs.
-            for (int i = DefensiveSpellTargets.Count - 1; i >= 0; i--)
+            for (int i = _defensiveSpellTargets.Count - 1; i >= 0; i--)
             {
-                GameLiving living = DefensiveSpellTargets[i];
+                GameLiving living = _defensiveSpellTargets[i];
 
                 if (GameServer.ServerRules.IsAllowedToAttack(Body, living, true) || !living.IsAlive || LivingHasEffect(living, spell) || !Body.IsWithinRadius(living, (ushort)spell.Range))
-                    DefensiveSpellTargets.RemoveAt(i);
+                    _defensiveSpellTargets.RemoveAt(i);
             }
 
             foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) spell.Range))
@@ -132,8 +131,8 @@ namespace DOL.AI.Brain
                 if (player == GetPlayerOwner())
                     return player;
 
-                if (!DefensiveSpellTargets.Contains(player))
-                    DefensiveSpellTargets.Add(player);
+                if (!_defensiveSpellTargets.Contains(player))
+                    _defensiveSpellTargets.Add(player);
             }
 
             foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) spell.Range))
@@ -144,17 +143,17 @@ namespace DOL.AI.Brain
                 if (npc == Body || npc == GetLivingOwner())
                     return npc;
 
-                if (!DefensiveSpellTargets.Contains(npc))
-                    DefensiveSpellTargets.Add(npc);
+                if (!_defensiveSpellTargets.Contains(npc))
+                    _defensiveSpellTargets.Add(npc);
             }
 
-            return DefensiveSpellTargets.Any() ? DefensiveSpellTargets[Util.Random(DefensiveSpellTargets.Count - 1)] : null;
+            return _defensiveSpellTargets.Count != 0 ? _defensiveSpellTargets[Util.Random(_defensiveSpellTargets.Count - 1)] : null;
         }
 
         public override bool Stop()
         {
             ClearAggroList();
-            DefensiveSpellTargets.Clear();
+            _defensiveSpellTargets.Clear();
             return base.Stop();
         }
 

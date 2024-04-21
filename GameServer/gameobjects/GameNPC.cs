@@ -1978,7 +1978,13 @@ namespace DOL.GS
 			m_spawnPoint.Z = Z;
 			m_spawnHeading = Heading;
 
-			Brain?.Start();
+			if (Brain != null)
+			{
+				// Delay the first think tick a bit to prevent clients from sending positive LoS checks.
+				// when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
+				Brain.NextThinkTick = GameLoop.GameLoopTime + 750;
+				Brain.Start();
+			}
 
 			if (Mana <= 0 && MaxMana > 0)
 				Mana = MaxMana;
@@ -3258,10 +3264,6 @@ namespace DOL.GS
 			AddToWorld();
 			m_spawnPoint.X = origSpawnX;
 			m_spawnPoint.Y = origSpawnY;
-
-			// Delay the first think tick a bit to prevent clients from sending positive LoS check
-			// when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
-			Brain.NextThinkTick = GameLoop.GameLoopTime + 1250;
 			return 0;
 		}
 

@@ -16,15 +16,12 @@ namespace DOL.GS.Spells
 
 			// The effect may have been cancelled already, in which case we shouldn't spawn the pet.
 			// This could happen if the player dies before this method is called by the casting service.
-			if (effect != null)
-				effect.PetSpellHander = this;
-			else
+			if (effect == null)
 				return;
 
+			effect.PetSpellHander = this;
 			base.ApplyEffectOnTarget(target);
-
-			m_pet.Brain.Think();
-			((ControlledNpcBrain)m_pet.Brain).Stay();
+			((ControlledNpcBrain) m_pet.Brain).Stay();
 		}
 
 		protected override GameSummonedPet GetGamePet(INpcTemplate template)

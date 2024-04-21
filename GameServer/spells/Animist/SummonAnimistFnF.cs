@@ -104,7 +104,6 @@ namespace DOL.GS.Spells
 			}
 
 			(m_pet.Brain as TurretBrain).IsMainPet = false;
-			(m_pet.Brain as TurretBrain).Think();
 			Caster.UpdatePetCount(true);
 		}
 

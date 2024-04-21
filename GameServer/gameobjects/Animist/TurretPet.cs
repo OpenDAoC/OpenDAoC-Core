@@ -1,23 +1,4 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using DOL.AI.Brain;
+﻿using DOL.AI.Brain;
 using DOL.Database;
 
 namespace DOL.GS
@@ -70,6 +51,16 @@ namespace DOL.GS
         {
             // Don't interrupt turrets (1.90 EU).
             return;
+        }
+
+        public override void OnCastSpellLosCheckFail(GameObject target)
+        {
+            base.OnCastSpellLosCheckFail(target);
+
+            // This is where FnF turrets with LoS check on aggro enabled clear their list of hidden targets.
+            // This can create a delay between attacks in some cases because turrets only ask one target at a time.
+            if (Brain is TurretFNFBrain fnfBrain)
+                fnfBrain.RemoveFromAggroList(target as GameLiving);
         }
     }
 }
