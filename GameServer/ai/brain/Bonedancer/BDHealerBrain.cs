@@ -170,13 +170,6 @@ namespace DOL.AI.Brain
 		}
 
 		/// <summary>
-		/// Don't
-		/// </summary>
-		/// <param name="spell"></param>
-		/// <returns></returns>
-		protected override bool CheckInstantSpells(Spell spell) { return false; }
-
-		/// <summary>
 		/// Add living to the aggrolist
 		/// aggroAmount can be negative to lower amount of aggro
 		/// </summary>

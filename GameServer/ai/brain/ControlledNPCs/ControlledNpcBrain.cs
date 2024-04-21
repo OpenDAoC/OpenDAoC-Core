@@ -471,10 +471,11 @@ namespace DOL.AI.Brain
 		/// <returns>True if we are begin to cast or are already casting</returns>
 		public override bool CheckSpells(eCheckSpellType type)
 		{
-			if (Body == null || Body.Spells == null || Body.Spells.Count < 1)
+			if (Body == null || Body.Spells == null || Body.Spells.Count == 0)
 				return false;
-			
+
 			bool casted = false;
+
 			if (type == eCheckSpellType.Defensive)
 			{
 				// Check instant spells, but only cast one of each type to prevent spamming

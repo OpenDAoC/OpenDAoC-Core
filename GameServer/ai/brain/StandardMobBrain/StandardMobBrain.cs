@@ -797,7 +797,7 @@ namespace DOL.AI.Brain
         /// <param name="type">Which type should we go through and check for?</param>
         public virtual bool CheckSpells(eCheckSpellType type)
         {
-            if (Body == null || Body.Spells == null || Body.Spells.Count <= 0)
+            if (Body == null || Body.Spells == null || Body.Spells.Count == 0)
                 return false;
 
             bool casted = false;
@@ -858,11 +858,8 @@ namespace DOL.AI.Brain
                 {
                     if (Body.GetSkillDisabledDuration(spell) == 0)
                     {
-                        if (spell.CastTime > 0)
-                        {
-                            if (spell.Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
-                                spellsToCast.Add(spell);
-                        }
+                        if (spell.Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
+                            spellsToCast.Add(spell);
                     }
                 }
 
@@ -1131,69 +1128,6 @@ namespace DOL.AI.Brain
             }
 
             return casted;
-        }
-
-        /// <summary>
-        /// Checks Instant Spells.  Handles Taunts, shouts, stuns, etc.
-        /// </summary>
-        protected virtual bool CheckInstantSpells(Spell spell)
-        {
-            GameObject lastTarget = Body.TargetObject;
-            Body.TargetObject = null;
-
-            switch (spell.SpellType)
-            {
-                #region Enemy Spells
-                case eSpellType.DirectDamage:
-                case eSpellType.Lifedrain:
-                case eSpellType.DexterityDebuff:
-                case eSpellType.StrengthConstitutionDebuff:
-                case eSpellType.CombatSpeedDebuff:
-                case eSpellType.DamageOverTime:
-                case eSpellType.MeleeDamageDebuff:
-                case eSpellType.AllStatsPercentDebuff:
-                case eSpellType.CrushSlashThrustDebuff:
-                case eSpellType.EffectivenessDebuff:
-                case eSpellType.Disease:
-                case eSpellType.Stun:
-                case eSpellType.Mez:
-                case eSpellType.Taunt:
-                    if (!LivingHasEffect(lastTarget as GameLiving, spell))
-                    {
-                        Body.TargetObject = lastTarget;
-                    }
-
-                    break;
-                #endregion
-
-                #region Combat Spells
-                case eSpellType.CombatHeal:
-                case eSpellType.DamageAdd:
-                case eSpellType.ArmorFactorBuff:
-                case eSpellType.DexterityQuicknessBuff:
-                case eSpellType.EnduranceRegenBuff:
-                case eSpellType.CombatSpeedBuff:
-                case eSpellType.AblativeArmor:
-                case eSpellType.Bladeturn:
-                case eSpellType.OffensiveProc:
-                    if (!LivingHasEffect(Body, spell))
-                    {
-                        Body.TargetObject = Body;
-                    }
-
-                    break;
-                    #endregion
-            }
-
-            if (Body.TargetObject != null && (spell.Duration == 0 || (Body.TargetObject is GameLiving living && LivingHasEffect(living, spell) == false)))
-            {
-                Body.CastSpell(spell, m_mobSpellLine);
-                Body.TargetObject = lastTarget;
-                return true;
-            }
-
-            Body.TargetObject = lastTarget;
-            return false;
         }
 
         protected static SpellLine m_mobSpellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells);

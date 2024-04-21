@@ -123,11 +123,6 @@ namespace DOL.AI.Brain
 			return casted;
 		}
 
-		/// <summary>
-		/// Checks Instant Spells.  Handles Taunts, shouts, stuns, etc.
-		/// </summary>
-		protected override bool CheckInstantSpells(Spell spell) { return false; }
-
 		#endregion
 	}
 }
