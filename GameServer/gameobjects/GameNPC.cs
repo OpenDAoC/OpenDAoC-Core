@@ -3591,8 +3591,21 @@ namespace DOL.GS
 		#region Spell
 
 		private List<Spell> m_spells = new(0);
-		private ConcurrentDictionary<GameObject, (Spell, SpellLine, long)> m_castSpellLosChecks = new();
-		private bool m_spellCastedFromLosCheck;
+		private ConcurrentDictionary<GameObject, CastSpellLosCheck> m_castSpellLosChecks = new();
+
+		public class CastSpellLosCheck
+		{
+			public Spell Spell { get; set; }
+			public SpellLine SpellLine { get; set; }
+			public long RequestTime { get; set; }
+
+			public CastSpellLosCheck(Spell spell, SpellLine spellLine, long requestTime)
+			{
+				Spell = spell;
+				SpellLine = spellLine;
+				RequestTime = requestTime;
+			}
+		}
 
 		/// <summary>
 		/// property of spell array of NPC
@@ -3817,13 +3830,12 @@ namespace DOL.GS
 		/// <returns>Whether the spellcast started successfully</returns>
 		public override bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
 		{
-			// Good opportunity to clean up our 'm_spellTargetLosChecks'.
-			// Entries older than 3 seconds are removed, so that another check can be performed in case the previous one never was.
+			// Clean up our 'm_spellTargetLosChecks'. Entries older than 2 seconds are removed.
 			for (int i = m_castSpellLosChecks.Count - 1; i >= 0; i--)
 			{
 				var element = m_castSpellLosChecks.ElementAt(i);
 
-				if (GameLoop.GameLoopTime - element.Value.Item3 >= 3000)
+				if (ServiceUtils.ShouldTick(element.Value.RequestTime + 2000))
 					m_castSpellLosChecks.TryRemove(element.Key, out _);
 			}
 
@@ -3867,42 +3879,50 @@ namespace DOL.GS
 			if (LosChecker == null)
 				return base.CastSpell(spellToCast, line, spellCastingAbilityHandler);
 
-			bool spellCastedFromLosCheck = m_spellCastedFromLosCheck;
+			m_castSpellLosChecks.AddOrUpdate(TargetObject, Add, Update, new CastSpellLosCheck(spellToCast, line, GameLoop.GameLoopTime));
+			return false;
 
-			if (spellCastedFromLosCheck)
-				m_spellCastedFromLosCheck = false;
-
-			if (m_castSpellLosChecks.TryAdd(TargetObject, new(spellToCast, line, GameLoop.GameLoopTime)))
+			CastSpellLosCheck Add(GameObject key, CastSpellLosCheck arg)
+			{
 				LosChecker.Out.SendCheckLos(this, TargetObject, new CheckLosResponse(CastSpellLosCheckReply));
+				return arg;
+			}
 
-			return spellCastedFromLosCheck;
+			static CastSpellLosCheck Update(GameObject key, CastSpellLosCheck oldValue, CastSpellLosCheck arg)
+			{
+				return arg;
+			}
 		}
 
-		public void CastSpellLosCheckReply(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+		public virtual void CastSpellLosCheckReply(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
 			GameObject target = CurrentRegion.GetObject(targetOID);
 
 			if (target == null)
 				return;
 
-			if (m_castSpellLosChecks.TryRemove(target, out (Spell, SpellLine, long) value))
+			if (m_castSpellLosChecks.TryRemove(target, out CastSpellLosCheck value))
 			{
-				Spell spell = value.Item1;
-				SpellLine line = value.Item2;
+				Spell spell = value.Spell;
+				SpellLine spellLine = value.SpellLine;
 
-				if (response is eLosCheckResponse.TRUE && line != null && spell != null)
-				{
-					if (target is GameLiving livingTarget && livingTarget.EffectList.GetOfType<NecromancerShadeEffect>() != null)
-						target = livingTarget.ControlledBrain?.Body;
-
-					m_spellCastedFromLosCheck = CastSpell(spell, line, target as GameLiving);
-				}
+				if (response is eLosCheckResponse.TRUE && spellLine != null && spell != null)
+					OnCastSpellLosCheckSuccess(target, spell, spellLine);
 				else
-				{
-					m_spellCastedFromLosCheck = false;
-					Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
-				}
+					OnCastSpellLosCheckFail(target);
 			}
+		}
+
+		public virtual void OnCastSpellLosCheckSuccess(GameObject target, Spell spell, SpellLine spellLine)
+		{
+			CastSpell(spell, spellLine, target as GameLiving);
+		}
+
+		public virtual void OnCastSpellLosCheckFail(GameObject target)
+		{
+			// In case the NPC changes target while casting on the current one and the first LoS check was positive.
+			if (castingComponent.QueuedSpellHandler?.Target == target)
+				castingComponent.ClearUpQueuedSpellHandler();
 		}
 
 		#endregion
