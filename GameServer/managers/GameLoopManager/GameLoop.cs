@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using DOL.GS.ServerProperties;
 using log4net;
 
 namespace DOL.GS
@@ -9,17 +10,17 @@ namespace DOL.GS
     public static class GameLoop
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
-        public const long TICK_RATE = 50;
         private const bool DYNAMIC_BUSY_WAIT_THRESHOLD = true; // Setting it to false disables busy waiting completely unless a default value is given to '_busyWaitThreshold'.
         private const string THREAD_NAME = "GameLoop";
 
-        public static long GameLoopTime;
-        public static string CurrentServiceTick;
         private static Thread _gameLoopThread;
         private static Thread _busyWaitThresholdThread;
         private static int _busyWaitThreshold;
-        private static readonly long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
+        private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
+
+        public static long TickRate { get; private set; }
+        public static long GameLoopTime { get; private set; }
+        public static string CurrentServiceTick { get; set; }
 
         // This is unrelated to the game loop and should probably be moved elsewhere.
         public static long GetCurrentTime()
@@ -31,6 +32,8 @@ namespace DOL.GS
         {
             if (_gameLoopThread != null)
                 return false;
+
+            TickRate = Properties.GAME_LOOP_TICK_RATE;
 
             _gameLoopThread = new Thread(new ThreadStart(Run))
             {
@@ -114,13 +117,13 @@ namespace DOL.GS
                 BountyService.Tick();
                 PredatorService.Tick();
                 ECS.Debug.Diagnostics.Tick();
-                CurrentServiceTick = "";
+                CurrentServiceTick = string.Empty;
                 ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
             }
 
             static void Sleep(Stopwatch stopwatch)
             {
-                int sleepFor = (int) (TICK_RATE - stopwatch.Elapsed.TotalMilliseconds);
+                int sleepFor = (int) (TickRate - stopwatch.Elapsed.TotalMilliseconds);
                 int busyWaitThreshold = _busyWaitThreshold;
 
                 if (sleepFor >= busyWaitThreshold)
@@ -128,11 +131,11 @@ namespace DOL.GS
                 else
                     Thread.Yield();
 
-                if (busyWaitThreshold > 0)
+                if (busyWaitThreshold > 0 && TickRate > stopwatch.Elapsed.TotalMilliseconds)
                 {
                     SpinWait spinWait = new();
 
-                    while (TICK_RATE > stopwatch.Elapsed.TotalMilliseconds)
+                    while (TickRate > stopwatch.Elapsed.TotalMilliseconds)
                         spinWait.SpinOnce(-1);
                 }
             }

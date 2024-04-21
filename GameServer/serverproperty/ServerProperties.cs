@@ -308,6 +308,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("system", "save_packets", "Save packets and print the last sent/received ones when a client crashes. For debugging purpose.", false)]
 		public static bool SAVE_PACKETS;
 
+		[ServerProperty("system", "game_loop_tick_rate", "Minimum amount of milliseconds that must pass since the current tick started before starting the next onek. Higher values reduce CPU usage but make the game less responsive.", 30)]
+		public static int GAME_LOOP_TICK_RATE;
+
 		#endregion
 
 		#region LOGGING

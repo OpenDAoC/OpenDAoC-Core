@@ -7,11 +7,11 @@ namespace DOL.GS
     public static class ServiceUtils
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private const long HALF_TICK_RATE = GameLoop.TICK_RATE / 2;
+        private static long HalfTickRate => GameLoop.TickRate / 2;
 
         public static bool ShouldTick(long tickTime)
         {
-            return GetDelta(tickTime) - HALF_TICK_RATE <= 0;
+            return GetDelta(tickTime) - HalfTickRate <= 0;
         }
 
         public static bool ShouldTickNoEarly(long tickTime)
@@ -25,13 +25,13 @@ namespace DOL.GS
 
             // Consider ticks to be late if the game loop can't keep up with its tick rate.
             // This is used to adjust services' tick time, allowing them to catch up.
-            if (delta < -GameLoop.TICK_RATE)
+            if (delta < -GameLoop.TickRate)
             {
                 tickTime = GameLoop.GameLoopTime;
                 return true;
             }
 
-            return delta - HALF_TICK_RATE <= 0;
+            return delta - HalfTickRate <= 0;
         }
 
         public static bool ShouldTickAdjustNoEarly(ref long tickTime)
@@ -40,7 +40,7 @@ namespace DOL.GS
 
             // Consider ticks to be late if the game loop can't keep up with its tick rate.
             // This is used to adjust services' tick time, allowing them to catch up.
-            if (delta < -GameLoop.TICK_RATE)
+            if (delta < -GameLoop.TickRate)
             {
                 tickTime = GameLoop.GameLoopTime;
                 return true;
