@@ -1208,6 +1208,12 @@ namespace DOL.AI.Brain
             if (target == null)
                 return true;
 
+            eEffect spellEffect = EffectService.GetEffectFromSpell(spell, m_mobSpellLine.IsBaseLine);
+
+            // Ignore effects that aren't actually effects (may be incomplete).
+            if (spellEffect is eEffect.DirectDamage or eEffect.Pet or eEffect.Unknown)
+                return false;
+
             /* all my homies hate vampires
             if (target is GamePlayer && (target as GamePlayer).CharacterClass.ID == (int)eCharacterClass.Vampiir)
             {
@@ -1242,7 +1248,6 @@ namespace DOL.AI.Brain
                 return false;
             }
 
-            eEffect spellEffect = EffectService.GetEffectFromSpell(spell, m_mobSpellLine.IsBaseLine);
             ECSGameEffect effect = EffectListService.GetEffectOnTarget(target, spellEffect);
 
             if (effect != null)
