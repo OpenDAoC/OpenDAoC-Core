@@ -46,6 +46,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (target is not GamePlayer)
                     ClientService.UpdateObjectForPlayer(actionSource, target);
+
+                // Unstealth if anything is targeted while we're in combat mode.
+                // A timer is used to allow any potential opener to be executed during this tick.
+                if (actionSource.IsAttacking && actionSource.IsStealthed)
+                    actionSource.Stealth(false);
             }
 
             if (actionSource.IsPraying)

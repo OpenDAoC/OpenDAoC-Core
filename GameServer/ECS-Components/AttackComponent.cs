@@ -566,104 +566,80 @@ namespace DOL.GS
         {
             if (owner is GamePlayer player)
             {
-                if (player.CharacterClass.StartAttack(m_startAttackTarget) == false)
-                {
+                if (!player.CharacterClass.StartAttack(m_startAttackTarget))
                     return;
-                }
 
                 if (!player.IsAlive)
                 {
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouCantCombat"),
-                        eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouCantCombat"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
-                // Necromancer with summoned pet cannot attack
+                // Necromancer with summoned pet cannot attack.
                 if (player.ControlledBrain?.Body is NecromancerPet)
                 {
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language,
-                            "GamePlayer.StartAttack.CantInShadeMode"), eChatType.CT_YouHit,
-                        eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage( LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CantInShadeMode"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (player.IsStunned)
                 {
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language,
-                            "GamePlayer.StartAttack.CantAttackStunned"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CantAttackStunned"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (player.IsMezzed)
                 {
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language,
-                            "GamePlayer.StartAttack.CantAttackmesmerized"), eChatType.CT_YouHit,
-                        eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CantAttackmesmerized"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 long vanishTimeout = player.TempProperties.GetProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
+
                 if (vanishTimeout > 0 && vanishTimeout > GameLoop.GameLoopTime)
                 {
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouMustWaitAgain",
-                            (vanishTimeout - GameLoop.GameLoopTime + 1000) / 1000), eChatType.CT_YouHit,
-                        eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouMustWaitAgain", (vanishTimeout - GameLoop.GameLoopTime + 1000) / 1000), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 long VanishTick = player.TempProperties.GetProperty<long>(VanishEffect.VANISH_BLOCK_ATTACK_TIME_KEY);
                 long changeTime = GameLoop.GameLoopTime - VanishTick;
+
                 if (changeTime < 30000 && VanishTick > 0)
                 {
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouMustWait",
-                            ((30000 - changeTime) / 1000).ToString()), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouMustWait", ((30000 - changeTime) / 1000).ToString()), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (player.IsOnHorse)
                     player.IsOnHorse = false;
 
-                if (player.Steed != null && player.Steed is GameSiegeRam)
+                if (player.Steed is GameSiegeRam)
                 {
-                    player.Out.SendMessage("You can't enter combat mode while riding a siegeram!.", eChatType.CT_YouHit,eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage("You can't attack while using a ram!", eChatType.CT_YouHit,eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (player.IsDisarmed)
                 {
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CantDisarmed"),
-                        eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CantDisarmed"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (player.IsSitting)
-                {
                     player.Sit(false);
-                }
 
                 DbInventoryItem attackWeapon = owner.ActiveWeapon;
 
                 if (attackWeapon == null)
                 {
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language,
-                            "GamePlayer.StartAttack.CannotWithoutWeapon"), eChatType.CT_YouHit,
-                        eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CannotWithoutWeapon"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
-                if (attackWeapon.Object_Type == (int) eObjectType.Instrument)
+                if ((eObjectType) attackWeapon.Object_Type == eObjectType.Instrument)
                 {
-                    player.Out.SendMessage(
-                        LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CannotMelee"),
-                        eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CannotMelee"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
@@ -673,51 +649,44 @@ namespace DOL.GS
                     {
                         if ((eCharacterClass) player.CharacterClass.ID is eCharacterClass.Scout or eCharacterClass.Hunter or eCharacterClass.Ranger)
                         {
-                            // There is no feedback on live when attempting to fire a bow with arrows
+                            // There is no feedback on live when attempting to fire a bow with arrows.
                             return;
                         }
                     }
 
-                    // Check arrows for ranged attack
+                    // Check arrows for ranged attack.
                     if (player.rangeAttackComponent.UpdateAmmo(attackWeapon) == null)
                     {
-                        player.Out.SendMessage(
-                            LanguageMgr.GetTranslation(player.Client.Account.Language,
-                                "GamePlayer.StartAttack.SelectQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.SelectQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
-                    // Check if selected ammo is compatible for ranged attack
+                    // Check if selected ammo is compatible for ranged attack.
                     if (!player.rangeAttackComponent.IsAmmoCompatible)
                     {
-                        player.Out.SendMessage(
-                            LanguageMgr.GetTranslation(player.Client.Account.Language,
-                                "GamePlayer.StartAttack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CantUseQuiver"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
                     if (EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot) != null)
                         player.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
+
                     if (EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire) != null)
                         player.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
+
                     if (EffectListService.GetAbilityEffectOnTarget(player, eEffect.TrueShot) != null)
                         player.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
-
 
                     if (player.rangeAttackComponent?.RangedAttackType == eRangedAttackType.Critical &&
                         player.Endurance < RangeAttackComponent.CRITICAL_SHOT_ENDURANCE_COST)
                     {
-                        player.Out.SendMessage(
-                            LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TiredShot"),
-                            eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TiredShot"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
                     if (player.Endurance < RangeAttackComponent.DEFAULT_ENDURANCE_COST)
                     {
-                        player.Out.SendMessage(
-                            LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TiredUse",
-                                attackWeapon.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.TiredUse", attackWeapon.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         return;
                     }
 
@@ -738,22 +707,24 @@ namespace DOL.GS
                 else
                 {
                     if (m_startAttackTarget == null)
-                        player.Out.SendMessage(
-                            LanguageMgr.GetTranslation(player.Client.Account.Language,
-                                "GamePlayer.StartAttack.CombatNoTarget"), eChatType.CT_YouHit,
-                            eChatLoc.CL_SystemWindow);
-                    else if (m_startAttackTarget is GameNPC)
-                    {
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
-                                "GamePlayer.StartAttack.CombatTarget",
-                                m_startAttackTarget.GetName(0, false, player.Client.Account.Language, (m_startAttackTarget as GameNPC))),
-                            eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                    }
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CombatNoTarget"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     else
                     {
-                        player.Out.SendMessage(
-                            LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CombatTarget",
-                                m_startAttackTarget.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        if (m_startAttackTarget is GameNPC npcTarget)
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CombatTarget", m_startAttackTarget.GetName(0, false, player.Client.Account.Language, npcTarget)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        else
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.CombatTarget", m_startAttackTarget.GetName(0, false)), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+
+                        // Unstealth right after entering combat mode if anything is targeted.
+                        // A timer is used to allow any potential opener to be executed.
+                        if (player.IsStealthed)
+                            new ECSGameTimer(player, Unstealth, 1);
+
+                        int Unstealth(ECSGameTimer timer)
+                        {
+                            player.Stealth(false);
+                            return 0;
+                        }
                     }
                 }
 
@@ -799,13 +770,12 @@ namespace DOL.GS
                             targetMsg = string.Empty;
 
                         int speed = AttackSpeed(attackWeapon) / 100;
+
                         if (player.rangeAttackComponent.RangedAttackType == eRangedAttackType.RapidFire)
                             speed = Math.Max(15, speed / 2);
 
-                        if (!player.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))//volley check
-                            player.Out.SendMessage(
-                            LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare",
-                                typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        if (!player.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare", typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                     }
                 }
             }
@@ -2116,7 +2086,7 @@ namespace DOL.GS
 
             bool stealthStyle = false;
 
-            if (ad.Style != null && ad.Style.StealthRequirement && ad.Attacker is GamePlayer && StyleProcessor.CanUseStyle(lastAttackData, (GamePlayer) ad.Attacker, ad.Style, attackerWeapon))
+            if (ad.Style != null && ad.Style.StealthRequirement && playerAttacker != null && StyleProcessor.CanUseStyle(lastAttackData, playerAttacker, ad.Style, attackerWeapon))
             {
                 stealthStyle = true;
                 defenseDisabled = true;
