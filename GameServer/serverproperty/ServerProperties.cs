@@ -464,7 +464,6 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("atlas", "trade_slowmode_length", "The slowmode duration for /trade in seconds", 60)]
 		public static int TRADE_SLOWMODE_LENGTH;
 		
-				
 		/// <summary>
 		/// The slowmode duration for /lfg in seconds
 		/// </summary>
@@ -554,12 +553,6 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("server", "anon_modifier", "Various modifying options for anon, 0 = default, 1 = /who shows player but as ANON, -1 = disabled", 0)]
 		public static int ANON_MODIFIER;
-
-		/// <summary>
-		/// Should the server load the example scripts
-		/// </summary>
-		[ServerProperty("server", "load_examples", "Should the server load the example scripts", true)]
-		public static bool LOAD_EXAMPLES;
 
 		/// <summary>
 		/// Death Messages All Realms
