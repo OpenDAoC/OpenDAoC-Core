@@ -6857,7 +6857,6 @@ namespace DOL.GS
             tempAd.Target = display;
             tempAd.AttackType = AttackData.eAttackType.MeleeOneHand;
             tempAd.AttackResult = eAttackResult.HitUnstyled;
-            display.AttackState = true;
             display.TargetObject = display;
             display.ObjectState = eObjectState.Active;
             display.attackComponent.AttackState = true;

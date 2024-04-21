@@ -80,7 +80,7 @@ namespace DOL.AI.Brain
             FireAmbientSentence();
 
             // Check aggro only if our aggro list is empty and we're not in combat.
-            if (AggroLevel > 0 && AggroRange > 0 && !HasAggro && !Body.AttackState && Body.CurrentSpellHandler == null)
+            if (AggroLevel > 0 && AggroRange > 0 && !HasAggro && Body.CurrentSpellHandler == null)
             {
                 CheckPlayerAggro();
                 CheckNPCAggro();

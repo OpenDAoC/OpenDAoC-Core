@@ -1181,7 +1181,6 @@ namespace DOL.GS
             }
 
             tempAd.AttackResult = eAttackResult.HitUnstyled;
-            display.AttackState = true;
             display.TargetObject = display;
             display.ObjectState = eObjectState.Active;
             display.attackComponent.AttackState = true;
