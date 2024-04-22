@@ -124,17 +124,17 @@ namespace DOL.AI.Brain
             bool hasTarget = brain.HasAggro || brain.OrderedAttackTarget != null;
 
             // Check for buffs, heals, etc, interrupting melee if not being interrupted.
-            if (brain.Owner is GameNPC || (brain.Owner is GamePlayer && !hasTarget))
+            if (!hasTarget)
             {
                 if (brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive))
                     return;
-            }
 
-            // Return to defensive if there's no valid target.
-            if (!hasTarget && brain.AggressionState != eAggressionState.Aggressive)
-            {
-                brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-                return;
+                // Return to defensive if there's no valid target.
+                if (brain.AggressionState != eAggressionState.Aggressive)
+                {
+                    brain.FSM.SetCurrentState(eFSMStateType.IDLE);
+                    return;
+                }
             }
 
             brain.AttackMostWanted();

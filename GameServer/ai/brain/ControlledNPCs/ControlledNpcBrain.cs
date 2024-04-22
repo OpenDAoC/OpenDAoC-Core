@@ -476,7 +476,7 @@ namespace DOL.AI.Brain
 
 			bool casted = false;
 
-			if (type == eCheckSpellType.Defensive)
+			if (type is eCheckSpellType.Defensive)
 			{
 				// Check instant spells, but only cast one of each type to prevent spamming
 				if (Body.CanCastInstantHealSpells)
@@ -522,7 +522,7 @@ namespace DOL.AI.Brain
 					}
 				}
 			}
-			else if (Body.TargetObject is GameLiving living && living.IsAlive)
+			else if (type is eCheckSpellType.Offensive)
 			{
 				// Check instant spells, but only cast one to prevent spamming
 				if (Body.CanCastInstantHarmfulSpells)
@@ -961,7 +961,6 @@ namespace DOL.AI.Brain
 					owner_npc.TargetObject is GameLiving &&
 					GameServer.ServerRules.IsAllowedToAttack(owner_npc, owner_npc.TargetObject as GameLiving, false))
 				{
-
 					if (!CheckSpells(eCheckSpellType.Offensive))
 						Body.StartAttack(owner_npc.TargetObject);
 
