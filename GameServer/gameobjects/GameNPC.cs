@@ -3598,15 +3598,15 @@ namespace DOL.GS
 		#region Spell
 
 		private List<Spell> m_spells = new(0);
-		private ConcurrentDictionary<GameObject, CastSpellLosCheck> m_castSpellLosChecks = new();
+		private ConcurrentDictionary<GameObject, List<SpellWaitingForLosCheck>> _spellsWaitingForLosCheck = new();
 
-		public class CastSpellLosCheck
+		public class SpellWaitingForLosCheck
 		{
 			public Spell Spell { get; set; }
 			public SpellLine SpellLine { get; set; }
 			public long RequestTime { get; set; }
 
-			public CastSpellLosCheck(Spell spell, SpellLine spellLine, long requestTime)
+			public SpellWaitingForLosCheck(Spell spell, SpellLine spellLine, long requestTime)
 			{
 				Spell = spell;
 				SpellLine = spellLine;
@@ -3837,13 +3837,23 @@ namespace DOL.GS
 		/// <returns>Whether the spellcast started successfully</returns>
 		public override bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
 		{
-			// Clean up our 'm_spellTargetLosChecks'. Entries older than 2 seconds are removed.
-			for (int i = m_castSpellLosChecks.Count - 1; i >= 0; i--)
+			// Clean up our '_spellTargetLosChecks'. Entries older than 2 seconds are removed.
+			foreach (var pair in _spellsWaitingForLosCheck)
 			{
-				var element = m_castSpellLosChecks.ElementAt(i);
+				List<SpellWaitingForLosCheck> list = pair.Value;
 
-				if (ServiceUtils.ShouldTick(element.Value.RequestTime + 2000))
-					m_castSpellLosChecks.TryRemove(element.Key, out _);
+				lock (((ICollection) list).SyncRoot)
+				{
+					for (int i = list.Count - 1; i >= 0; i--)
+					{
+						if (ServiceUtils.ShouldTick(list[i].RequestTime + 2000))
+							list.RemoveAt(i);
+					}
+
+					// We can keep the list if we're about to add anything to it.
+					if (list.Count == 0 && TargetObject != pair.Key)
+						_spellsWaitingForLosCheck.TryRemove(pair.Key, out _);
+				}
 			}
 
 			if (IsIncapacitated)
@@ -3886,18 +3896,27 @@ namespace DOL.GS
 			if (LosChecker == null)
 				return base.CastSpell(spellToCast, line, spellCastingAbilityHandler);
 
-			m_castSpellLosChecks.AddOrUpdate(TargetObject, Add, Update, new CastSpellLosCheck(spellToCast, line, GameLoop.GameLoopTime));
+			_spellsWaitingForLosCheck.AddOrUpdate(TargetObject, Add, Update, new SpellWaitingForLosCheck(spellToCast, line, GameLoop.GameLoopTime));
 			return false;
 
-			CastSpellLosCheck Add(GameObject key, CastSpellLosCheck arg)
+			List<SpellWaitingForLosCheck> Add(GameObject key, SpellWaitingForLosCheck arg)
 			{
 				LosChecker.Out.SendCheckLos(this, TargetObject, new CheckLosResponse(CastSpellLosCheckReply));
-				return arg;
+				List<SpellWaitingForLosCheck> list = [arg];
+				return list;
 			}
 
-			static CastSpellLosCheck Update(GameObject key, CastSpellLosCheck oldValue, CastSpellLosCheck arg)
+			List<SpellWaitingForLosCheck> Update(GameObject key, List<SpellWaitingForLosCheck> oldValue, SpellWaitingForLosCheck arg)
 			{
-				return arg;
+				// This LoS check will not necessarily result in an actual packet being sent to the client, but it will trigger a second call to the callback.
+				LosChecker.Out.SendCheckLos(this, TargetObject, new CheckLosResponse(CastSpellLosCheckReply));
+
+				lock (((ICollection) oldValue).SyncRoot)
+				{
+					oldValue.Add(arg);
+				}
+
+				return oldValue;
 			}
 		}
 
@@ -3908,12 +3927,25 @@ namespace DOL.GS
 			if (target == null)
 				return;
 
-			if (m_castSpellLosChecks.TryRemove(target, out CastSpellLosCheck value))
-			{
-				Spell spell = value.Spell;
-				SpellLine spellLine = value.SpellLine;
+			if (!_spellsWaitingForLosCheck.TryRemove(target, out List<SpellWaitingForLosCheck> list))
+				return;
 
-				if (response is eLosCheckResponse.TRUE && spellLine != null && spell != null)
+			bool success = response is eLosCheckResponse.TRUE;
+			List<SpellWaitingForLosCheck> spellsWaitingForLosCheck;
+
+			lock (((ICollection) list).SyncRoot)
+			{
+				spellsWaitingForLosCheck = list.ToList();
+				// Don't bother removing the list here. It'll be done by `CastSpell`.
+				list.Clear();
+			}
+
+			foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in spellsWaitingForLosCheck)
+			{
+				Spell spell = spellWaitingForLosCheck.Spell;
+				SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
+
+				if (success && spellLine != null && spell != null)
 					OnCastSpellLosCheckSuccess(target, spell, spellLine);
 				else
 					OnCastSpellLosCheckFail(target);
