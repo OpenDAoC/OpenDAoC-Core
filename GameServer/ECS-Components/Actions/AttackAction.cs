@@ -119,7 +119,12 @@ namespace DOL.GS
 
         public virtual bool CheckInterruptTimer()
         {
-            return false;
+            if (!_owner.IsBeingInterruptedIgnoreSelfInterrupt)
+                return false;
+
+            _owner.attackComponent.StopAttack();
+            OnAimInterrupt(_owner.LastInterrupter);
+            return true;
         }
 
         public virtual void OnAimInterrupt(GameObject attacker) { }
