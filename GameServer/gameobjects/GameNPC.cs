@@ -3828,12 +3828,12 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Cast a spell with LOS check to a player
+		/// Cast a spell with LoS check if possible.
 		/// </summary>
-		/// <returns>Whether the spellcast started successfully</returns>
+		/// <returns>True if the spellcast started successfully. False otherwise or if a LoS check was initiated.</returns>
 		public override bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
 		{
-			// Clean up our '_spellTargetLosChecks'. Entries older than 2 seconds are removed.
+			// Clean up our '_spellsWaitingForLosCheck'. Entries older than 2 seconds are removed.
 			foreach (var pair in _spellsWaitingForLosCheck)
 			{
 				List<SpellWaitingForLosCheck> list = pair.Value;
