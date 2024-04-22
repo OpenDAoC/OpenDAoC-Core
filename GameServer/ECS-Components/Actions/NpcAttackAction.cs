@@ -20,7 +20,7 @@ namespace DOL.GS
             _npcOwner = npcOwner;
             _isGuardArcher = _npcOwner is GuardArcher;
 
-            if (Properties.ALWAYS_CHECK_PET_LOS && npcOwner.Brain is IControlledBrain npcOwnerBrain)
+            if (Properties.CHECK_LOS_BEFORE_NPC_RANGED_ATTACK && npcOwner.Brain is IControlledBrain npcOwnerBrain)
             {
                 _npcOwnerOwner = npcOwnerBrain.GetPlayerOwner();
 

@@ -9,7 +9,7 @@ namespace DOL.AI.Brain
     public class TurretFNFBrain : TurretBrain
     {
         private List<GameLiving> _filteredAggroList = [];
-        protected override bool CheckLosBeforeCastingOffensiveSpells => Properties.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO;
+        protected override bool CheckLosBeforeCastingOffensiveSpells => Properties.CHECK_LOS_BEFORE_AGGRO_FNF;
 
         public TurretFNFBrain(GameLiving owner) : base(owner)
         {
@@ -39,7 +39,7 @@ namespace DOL.AI.Brain
                 if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Shade))
                     continue;
 
-                if (Properties.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
+                if (Properties.CHECK_LOS_BEFORE_AGGRO_FNF)
                     player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
                 else
                     AddToAggroList(player, 1);
@@ -57,7 +57,7 @@ namespace DOL.AI.Brain
                 if (npc is GameTaxi or GameTrainingDummy)
                     continue;
 
-                if (Properties.FNF_TURRETS_REQUIRE_LOS_TO_AGGRO)
+                if (Properties.CHECK_LOS_BEFORE_AGGRO_FNF)
                 {
                     if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
                     {

@@ -118,7 +118,7 @@ namespace DOL.AI.Brain
                 if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Shade))
                     continue;
 
-                if (Properties.ALWAYS_CHECK_LOS)
+                if (Properties.CHECK_LOS_BEFORE_AGGRO)
                     // We don't know if the LoS check will be positive, so we have to ask other players
                     player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
                 else
@@ -142,7 +142,7 @@ namespace DOL.AI.Brain
                 if (npc is GameTaxi or GameTrainingDummy)
                     continue;
 
-                if (Properties.ALWAYS_CHECK_LOS)
+                if (Properties.CHECK_LOS_BEFORE_AGGRO)
                 {
                     // Check LoS if either the target or the current mob is a pet
                     if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)

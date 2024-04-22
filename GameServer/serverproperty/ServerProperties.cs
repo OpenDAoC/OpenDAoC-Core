@@ -706,42 +706,31 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "weather_log_events", "Should weather events be shown in the Log (and on the console).", true)]
 		public static bool WEATHER_LOG_EVENTS;
 
-		/// <summary>
-		/// Perform a LoS check on client with each mob
-		/// </summary>
-		[ServerProperty("world", "always_check_los", "Perform a LoS check before aggroing. This can involve a huge lag, handle with care!", false)]
-		public static bool ALWAYS_CHECK_LOS;
+		[ServerProperty("world", "check_los_before_aggro", "Should we perform LoS checks before allowing standard NPCs to aggro from proximity.", true)]
+		public static bool CHECK_LOS_BEFORE_AGGRO;
 
-		[ServerProperty("classes", "fnf_turrets_require_los_to_aggro", "Should FnF turrets require LoS to aggro entities (may send many requests to the player)", false)]
-		public static bool FNF_TURRETS_REQUIRE_LOS_TO_AGGRO;
+		[ServerProperty("world", "check_los_before_aggro_fnf", "Should we perform LoS checks before allowing FnF turrets to aggro from proximity. If false, they will attempt to cast behind walls.", true)]
+		public static bool CHECK_LOS_BEFORE_AGGRO_FNF;
 
-		/// <summary>
-		/// Perform a LoS check on client during cast
-		/// </summary>
-		[ServerProperty("world", "check_los_during_cast", "Perform LOS checks during a spell cast.", true)]
+		[ServerProperty("world", "enable_pet_ranged_attack_los_checks", "Should we perform LoS checks before allowing archer NPCs to attack.", true)]
+		public static bool CHECK_LOS_BEFORE_NPC_RANGED_ATTACK;
+
+		[ServerProperty("world", "check_los_during_ranged_attack_minimum_interval", "The minimum interval (milliseconds) between two LoS checks performed during a ranged attack.", 200)]
+		public static int CHECK_LOS_DURING_RANGED_ATTACK_MINIMUM_INTERVAL;
+
+		[ServerProperty("world", "check_los_during_cast", "Should we perform LoS checks during spell casts.", true)]
 		public static bool CHECK_LOS_DURING_CAST;
 
-		/// <summary>
-		/// Minimum interval between two LoS checks during cast
-		/// </summary>
-		[ServerProperty("world", "check_los_during_cast_minimum_interval", "The minimum interval (milliseconds) between two LOS checks performed during a spell cast.", 200)]
-		public static int CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL;
-
-		/// <summary>
-		/// Interrupt cast if a LoS check fails before end of cast
-		/// </summary>
-		[ServerProperty("world", "check_los_during_cast_interrupt", "Should the casting animation be interrupted if a during cast LOS checks fails.", false)]
+		[ServerProperty("world", "check_los_during_cast_interrupt", "Should the casting animation be interrupted if a during cast LoS check fails.", false)]
 		public static bool CHECK_LOS_DURING_CAST_INTERRUPT;
 
-		/// <summary>
-		/// Perform LOS check between controlled NPC's and players
-		/// </summary>
-		[ServerProperty("world", "always_check_pet_los", "Should we perform LOS checks between controlled NPC's and players?", false)]
-		public static bool ALWAYS_CHECK_PET_LOS;
+		[ServerProperty("world", "check_los_during_cast_minimum_interval", "The minimum interval (milliseconds) between two LoS checks performed during a spell cast.", 200)]
+		public static int CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL;
 
 		[ServerProperty("world", "los_check_timeout", "After how long (milliseconds) should a los check timeout. If less than 0, the default ECS timer interval will be used.", 1500)]
 		public static int LOS_CHECK_TIMEOUT;
 
+		/// <summary>
 		/// HPs gained per champion's level
 		/// </summary>
 		[ServerProperty("world", "hps_per_championlevel", "The amount of extra HPs gained each time you reach a new Champion's Level", 40)]
