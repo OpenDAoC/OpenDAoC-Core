@@ -25,7 +25,7 @@ namespace DOL.AI.Brain
                 return true;
             }
 
-            return base.CheckSpells(type) || Body.IsCasting;
+            return base.CheckSpells(type);
         }
     }
 }

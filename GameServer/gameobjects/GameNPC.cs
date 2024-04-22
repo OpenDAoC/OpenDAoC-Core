@@ -3749,7 +3749,6 @@ namespace DOL.GS
 				if (spell == null)
 					continue;
 
-
 				if (spell.IsHarmful)
 				{
 					if (spell.IsInstantCast)
@@ -3807,9 +3806,6 @@ namespace DOL.GS
 		{
 			bool casted;
 
-			if (IsIncapacitated)
-				return false;
-
 			if (checkLos)
 				casted = CastSpell(spell, line);
 			else
@@ -3856,9 +3852,6 @@ namespace DOL.GS
 				}
 			}
 
-			if (IsIncapacitated)
-				return false;
-
 			Spell spellToCast = null;
 
 			if (line.KeyName == GlobalSpellsLines.Mob_Spells)
@@ -3872,9 +3865,6 @@ namespace DOL.GS
 
 			if (TargetObject == this || TargetObject == null)
 				return base.CastSpell(spellToCast, line);
-
-			if (spellToCast.Range > 0 && !IsWithinRadius(TargetObject, spellToCast.Range))
-				return false;
 
 			GamePlayer LosChecker = TargetObject as GamePlayer;
 

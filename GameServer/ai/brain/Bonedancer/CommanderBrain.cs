@@ -234,7 +234,7 @@ namespace DOL.AI.Brain
 				}
 
 				if (cast != null)
-					casted = CheckOffensiveSpells(cast);
+					casted = Body.CastSpell(cast, m_mobSpellLine);
 			}
 
 			if (casted)
@@ -243,7 +243,7 @@ namespace DOL.AI.Brain
 				if (Body.CanCastInstantHarmfulSpells)
 					foreach (Spell spell in Body.InstantHarmfulSpells)
 					{
-						if (CheckOffensiveSpells(spell))
+						if (Body.CastSpell(spell, m_mobSpellLine))
 							break;
 					}
 			}

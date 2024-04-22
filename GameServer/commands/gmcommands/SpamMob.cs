@@ -242,9 +242,9 @@ namespace DOL.GS.SpamMob
                         if (spell.Target is eSpellTarget.ENEMY or eSpellTarget.AREA or eSpellTarget.CONE)
                             continue;
 
-                        if (spell.Uninterruptible && CheckDefensiveSpells(spell))
+                        if (spell.Uninterruptible && Body.CastSpell(spell, m_mobSpellLine))
                             casted = true;
-                        else if (!Body.IsBeingInterrupted && CheckDefensiveSpells(spell))
+                        else if (!Body.IsBeingInterrupted && Body.CastSpell(spell, m_mobSpellLine))
                             casted = true;
                     }
                 }
@@ -267,228 +267,15 @@ namespace DOL.GS.SpamMob
                     {
                         spellToCast = (Spell) spell_rec[Util.Random((spell_rec.Count - 1))];
 
-
-                        if (spellToCast.Uninterruptible && CheckOffensiveSpells(spellToCast))
+                        if (spellToCast.Uninterruptible && Body.CastSpell(spellToCast, m_mobSpellLine))
                             casted = true;
-                        else if (!Body.IsBeingInterrupted && CheckOffensiveSpells(spellToCast))
+                        else if (!Body.IsBeingInterrupted && Body.CastSpell(spellToCast, m_mobSpellLine))
                             casted = true;
                     }
                 }
 
                 return casted;
             }
-
-            return casted;
-        }
-
-        protected override bool CheckDefensiveSpells(Spell spell)
-        {
-            if (spell == null) return false;
-            if (Body.GetSkillDisabledDuration(spell) > 0) return false;
-
-            bool casted = false;
-
-            // clear current target, set target based on spell type, cast spell, return target to original target
-            GameObject lastTarget = Body.TargetObject;
-
-            Body.TargetObject = null;
-            switch (spell.SpellType)
-            {
-                #region Buffs
-                case eSpellType.AcuityBuff:
-                case eSpellType.AFHitsBuff:
-                case eSpellType.AllMagicResistBuff:
-                case eSpellType.ArmorAbsorptionBuff:
-                case eSpellType.ArmorFactorBuff:
-                case eSpellType.BodyResistBuff:
-                case eSpellType.BodySpiritEnergyBuff:
-                case eSpellType.Buff:
-                case eSpellType.CelerityBuff:
-                case eSpellType.ColdResistBuff:
-                case eSpellType.CombatSpeedBuff:
-                case eSpellType.ConstitutionBuff:
-                case eSpellType.CourageBuff:
-                case eSpellType.CrushSlashTrustBuff:
-                case eSpellType.DexterityBuff:
-                case eSpellType.DexterityQuicknessBuff:
-                case eSpellType.EffectivenessBuff:
-                case eSpellType.EnduranceRegenBuff:
-                case eSpellType.EnergyResistBuff:
-                case eSpellType.FatigueConsumptionBuff:
-                case eSpellType.FlexibleSkillBuff:
-                case eSpellType.HasteBuff:
-                case eSpellType.HealthRegenBuff:
-                case eSpellType.HeatColdMatterBuff:
-                case eSpellType.HeatResistBuff:
-                case eSpellType.HeroismBuff:
-                case eSpellType.KeepDamageBuff:
-                case eSpellType.MagicResistBuff:
-                case eSpellType.MatterResistBuff:
-                case eSpellType.MeleeDamageBuff:
-                case eSpellType.MesmerizeDurationBuff:
-                case eSpellType.MLABSBuff:
-                case eSpellType.PaladinArmorFactorBuff:
-                case eSpellType.ParryBuff:
-                case eSpellType.PowerHealthEnduranceRegenBuff:
-                case eSpellType.PowerRegenBuff:
-                case eSpellType.SavageCombatSpeedBuff:
-                case eSpellType.SavageCrushResistanceBuff:
-                case eSpellType.SavageDPSBuff:
-                case eSpellType.SavageParryBuff:
-                case eSpellType.SavageSlashResistanceBuff:
-                case eSpellType.SavageThrustResistanceBuff:
-                case eSpellType.SpiritResistBuff:
-                case eSpellType.StrengthBuff:
-                case eSpellType.StrengthConstitutionBuff:
-                case eSpellType.SuperiorCourageBuff:
-                case eSpellType.ToHitBuff:
-                case eSpellType.WeaponSkillBuff:
-                case eSpellType.DamageAdd:
-                case eSpellType.OffensiveProc:
-                case eSpellType.DefensiveProc:
-                case eSpellType.DamageShield:
-                case eSpellType.DamageOverTime:
-                    {
-                        // Buff self, if not in melee, but not each and every mob
-                        // at the same time, because it looks silly.
-                        if (!LivingHasEffect(Body, spell) && !Body.attackComponent.AttackState && Util.Chance(40) && spell.Target != eSpellTarget.PET)
-                        {
-                            Body.TargetObject = Body;
-                            break;
-                        }
-                        if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Util.Chance(40) && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell) && spell.Target != eSpellTarget.SELF)
-                        {
-                            Body.TargetObject = Body.ControlledBrain.Body;
-                            break;
-                        }
-                        break;
-                    }
-                #endregion Buffs
-
-                #region Disease Cure/Poison Cure/Summon
-                case eSpellType.CureDisease:
-                    if (Body.IsDiseased)
-                    {
-                        Body.TargetObject = Body;
-                        break;
-                    }
-                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Body.ControlledBrain.Body.IsDiseased
-                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target != eSpellTarget.SELF)
-                    {
-                        Body.TargetObject = Body.ControlledBrain.Body;
-                        break;
-                    }
-                    break;
-                case eSpellType.CurePoison:
-                    if (LivingIsPoisoned(Body))
-                    {
-                        Body.TargetObject = Body;
-                        break;
-                    }
-                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && LivingIsPoisoned(Body.ControlledBrain.Body)
-                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target != eSpellTarget.SELF)
-                    {
-                        Body.TargetObject = Body.ControlledBrain.Body;
-                        break;
-                    }
-                    break;
-                case eSpellType.Summon:
-                    Body.TargetObject = Body;
-                    break;
-                case eSpellType.SummonMinion:
-                    //If the list is null, lets make sure it gets initialized!
-                    if (Body.ControlledNpcList == null)
-                        Body.InitControlledBrainArray(2);
-                    else
-                    {
-                        //Let's check to see if the list is full - if it is, we can't cast another minion.
-                        //If it isn't, let them cast.
-                        IControlledBrain[] icb = Body.ControlledNpcList;
-                        int numberofpets = 0;
-                        for (int i = 0; i < icb.Length; i++)
-                        {
-                            if (icb[i] != null)
-                                numberofpets++;
-                        }
-                        if (numberofpets >= icb.Length)
-                            break;
-                    }
-                    Body.TargetObject = Body;
-                    break;
-                #endregion Disease Cure/Poison Cure/Summon
-
-                #region Heals
-                case eSpellType.CombatHeal:
-                case eSpellType.Heal:
-                case eSpellType.HealOverTime:
-                case eSpellType.MercHeal:
-                case eSpellType.OmniHeal:
-                case eSpellType.PBAoEHeal:
-                case eSpellType.SpreadHeal:
-                    if (spell.Target == eSpellTarget.SELF)
-                    {
-                        // if we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing
-                        if (Body.HealthPercent < ServerProperties.Properties.NPC_HEAL_THRESHOLD)
-                        {
-                            Body.TargetObject = Body;
-                        }
-                        break;
-                    }
-
-                    // Chance to heal self when dropping below 30%, do NOT spam it.
-                    if (Body.HealthPercent < (ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2.0)
-                        && Util.Chance(10) && spell.Target != eSpellTarget.PET)
-                    {
-                        Body.TargetObject = Body;
-                        break;
-                    }
-
-                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null
-                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range
-                        && Body.ControlledBrain.Body.HealthPercent < ServerProperties.Properties.NPC_HEAL_THRESHOLD
-                        && spell.Target != eSpellTarget.SELF)
-                    {
-                        Body.TargetObject = Body.ControlledBrain.Body;
-                        break;
-                    }
-                    break;
-                #endregion
-
-                //case "SummonAnimistFnF":
-                //case "SummonAnimistPet":
-                case eSpellType.SummonCommander:
-                case eSpellType.SummonDruidPet:
-                case eSpellType.SummonHunterPet:
-                case eSpellType.SummonNecroPet:
-                case eSpellType.SummonUnderhill:
-                case eSpellType.SummonSimulacrum:
-                case eSpellType.SummonSpiritFighter:
-                    //case "SummonTheurgistPet":
-                    if (Body.ControlledBrain != null)
-                        break;
-                    Body.TargetObject = Body;
-                    break;
-
-                default:
-                    //log.Warn($"CheckDefensiveSpells() encountered an unknown spell type [{spell.SpellType}]");
-                    break;
-            }
-
-            if (Body.TargetObject != null && (spell.Duration == 0 || (Body.TargetObject is GameLiving living && LivingHasEffect(living, spell) == false)))
-            {
-                casted = Body.CastSpell(spell, m_mobSpellLine);
-
-                if (casted && spell.CastTime > 0)
-                {
-                    if (Body.IsMoving)
-                        Body.StopFollowing();
-
-                    if (Body.TargetObject != Body)
-                        Body.TurnTo(Body.TargetObject);
-                }
-            }
-
-            Body.TargetObject = lastTarget;
 
             return casted;
         }

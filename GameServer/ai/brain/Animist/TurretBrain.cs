@@ -35,84 +35,55 @@ namespace DOL.AI.Brain
             if (spell == null || Body.GetSkillDisabledDuration(spell) != 0)
                 return false;
 
-            bool casted = false;
-
             switch (type)
             {
                 case eCheckSpellType.Defensive:
                 {
-                    casted = CheckDefensiveSpells(spell);
-                    break;
+                    switch (spell.SpellType)
+                    {
+                        case eSpellType.HeatColdMatterBuff:
+                        case eSpellType.BodySpiritEnergyBuff:
+                        case eSpellType.ArmorAbsorptionBuff:
+                        case eSpellType.AblativeArmor:
+                        {
+                            GameLiving target = FindTargetForDefensiveSpell(spell);
+
+                            if (target != null)
+                                return TrustCast(spell, eCheckSpellType.Defensive, FindTargetForDefensiveSpell(spell), CheckLosBeforeCastingDefensiveSpells);
+
+                            break;
+                        }
+                    }
+
+                    return false;
                 }
                 case eCheckSpellType.Offensive:
                 {
-                    casted = CheckOffensiveSpells(spell);
-                    break;
+                    switch (spell.SpellType)
+                    {
+                        case eSpellType.DirectDamage:
+                        case eSpellType.DamageSpeedDecrease:
+                        case eSpellType.SpeedDecrease:
+                        case eSpellType.Taunt:
+                        case eSpellType.MeleeDamageDebuff:
+                        {
+                            GameLiving target = CalculateNextAttackTarget();
+
+                            if (target != null)
+                                return TrustCast(spell, eCheckSpellType.Offensive, target, CheckLosBeforeCastingOffensiveSpells);
+
+                            break;
+                        }
+                    }
+
+                    return false;
                 }
+                default:
+                    return false;
             }
-
-            return casted /*|| Body.IsCasting*/;
         }
 
-        protected override bool CheckDefensiveSpells(Spell spell)
-        {
-            switch (spell.SpellType)
-            {
-                case eSpellType.HeatColdMatterBuff:
-                case eSpellType.BodySpiritEnergyBuff:
-                case eSpellType.ArmorAbsorptionBuff:
-                case eSpellType.AblativeArmor:
-                {
-                    GameLiving target = GetDefensiveTarget(spell);
-
-                    if (target != null)
-                        return TrustCast(spell, eCheckSpellType.Defensive, GetDefensiveTarget(spell), CheckLosBeforeCastingDefensiveSpells);
-
-                    break;
-                }
-            }
-
-            return false;
-        }
-
-        protected override bool CheckOffensiveSpells(Spell spell)
-        {
-            switch (spell.SpellType)
-            {
-                case eSpellType.DirectDamage:
-                case eSpellType.DamageSpeedDecrease:
-                case eSpellType.SpeedDecrease:
-                case eSpellType.Taunt:
-                case eSpellType.MeleeDamageDebuff:
-                {
-                    GameLiving target = CalculateNextAttackTarget();
-
-                    if (target != null)
-                        return TrustCast(spell, eCheckSpellType.Offensive, target, CheckLosBeforeCastingOffensiveSpells);
-
-                    break;
-                }
-            }
-
-            return false;
-        }
-
-        protected virtual bool TrustCast(Spell spell, eCheckSpellType type, GameLiving target, bool checkLos)
-        {
-            if (spell.IsPBAoE)
-                return Body.CastSpell(spell, m_mobSpellLine);
-
-            if (target != null)
-            {
-                Body.TargetObject = target;
-                Body.StopAttack();
-                return Body.CastSpell(spell, m_mobSpellLine, checkLos);
-            }
-
-            return false;
-        }
-
-        private GameLiving GetDefensiveTarget(Spell spell)
+        protected override GameLiving FindTargetForDefensiveSpell(Spell spell)
         {
             // Clear the current list of invalid or already buffed targets before checking nearby players and NPCs.
             for (int i = _defensiveSpellTargets.Count - 1; i >= 0; i--)
@@ -148,6 +119,21 @@ namespace DOL.AI.Brain
             }
 
             return _defensiveSpellTargets.Count != 0 ? _defensiveSpellTargets[Util.Random(_defensiveSpellTargets.Count - 1)] : null;
+        }
+
+        protected virtual bool TrustCast(Spell spell, eCheckSpellType type, GameLiving target, bool checkLos)
+        {
+            if (spell.IsPBAoE)
+                return Body.CastSpell(spell, m_mobSpellLine);
+
+            if (target != null)
+            {
+                Body.TargetObject = target;
+                Body.StopAttack();
+                return Body.CastSpell(spell, m_mobSpellLine, checkLos);
+            }
+
+            return false;
         }
 
         public override bool Stop()
