@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace DOL.GS
 {
@@ -72,10 +71,10 @@ namespace DOL.GS
             ];
 
             // Add missing data. For higher levels, we'll be using the data from level 50, shifted by one for every level difference.
-            short lastKnownDataGreySpan = data[data.Count - 1].First().Value;
+            Dictionary<short, short> lastKnownData = data[^1];
 
             for (int i = data.Count, j = 1; i < MAX_LEVEL; i++, j++)
-                data.Add(new() { { -3, (short) (lastKnownDataGreySpan + j) }, { -2, 5 }, { -1, 5 }, { 0, 5 }, { 1, 5 }, { 2, 5 } });
+                data.Add(new() { { -3, (short) (lastKnownData[-3] + j) }, { -2, lastKnownData[-2] }, { -1, lastKnownData[-1] }, { 0, lastKnownData[0] }, { 1, lastKnownData[1] }, { 2, lastKnownData[2] } });
 
             for (int i = 0; i < data.Count; i++)
             {
