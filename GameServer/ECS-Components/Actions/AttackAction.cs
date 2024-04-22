@@ -422,6 +422,7 @@ namespace DOL.GS
         public virtual void CleanUp()
         {
             _owner.TempProperties.RemoveProperty(LAST_ATTACK_DATA);
+            _target = null;
         }
     }
 }

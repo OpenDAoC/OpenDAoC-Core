@@ -101,7 +101,10 @@ namespace DOL.GS
                 weaponAction = null;
 
             if (weaponAction is null && !AttackState)
+            {
+                attackAction.CleanUp();
                 EntityManager.Remove(this);
+            }
         }
 
         /// <summary>
