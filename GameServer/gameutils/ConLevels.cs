@@ -1,22 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace DOL.GS
 {
-    // Assumes NPCs cannot have a level below 0 or above 127.
-    // Assumes players cannot have a level below 1 or above 50.
     public static class ConLevels
     {
-        private static readonly List<List<short>> _conLevels;
+        private static readonly short[,] _conLevels;
+        private const int MAX_LEVEL = 127 + 1; // Adding one to be able to use level 0 and so that indexes match entities' levels.
 
         static ConLevels()
         {
-            _conLevels = new(51);
+            _conLevels = new short[MAX_LEVEL,MAX_LEVEL];
 
-            // One dictionary per player level. Key value pairs represent a con level and a span (how many NPC levels from 0).
+            // One dictionary per level. Key value pairs represent a con level and a span (how many NPC levels from 0).
             // This will be used to populate `_conLevels`.
+            // Data is from http://capnbry.net/daoc/concolors.html.
             List<Dictionary<short, short>> data =
             [
-                /* 0*/ [], // Players shouldn't be level 0. This is here so that we can use the user level directly to access the list.
+                /* 0*/ new() { { 0, 1 }, { 1, 1}, { 2, 1} }, // Unknown, so let's just use data for level 1, shifted by 1.
                 /* 1*/ new() { { -1, 1 }, { 0, 1 }, { 1, 1 }, { 2, 1 } },
                 /* 2*/ new() { { -2, 1 }, { -1, 1 }, { 0, 1 }, { 1, 1 }, { 2, 1 } },
                 /* 3*/ new() { { -3, 1 }, { -2, 1 }, { -1, 1 }, { 0, 1 }, { 1, 1 }, { 2, 1 } },
@@ -67,41 +68,40 @@ namespace DOL.GS
                 /*48*/ new() { { -3, 34 }, { -2, 5 }, { -1, 5 }, { 0, 5 }, { 1, 5 }, { 2, 5 } },
                 /*49*/ new() { { -3, 35 }, { -2, 5 }, { -1, 5 }, { 0, 5 }, { 1, 5 }, { 2, 5 } },
                 /*50*/ new() { { -3, 36 }, { -2, 5 }, { -1, 5 }, { 0, 5 }, { 1, 5 }, { 2, 5 } }
-                /*..*/ // Should be filled if we want to support players above level 50.
+                // From here data is missing.
             ];
+
+            // Add missing data. For higher levels, we'll be using the data from level 50, shifted by one for every level difference.
+            short lastKnownDataGreySpan = data[data.Count - 1].First().Value;
+
+            for (int i = data.Count, j = 1; i < MAX_LEVEL; i++, j++)
+                data.Add(new() { { -3, (short) (lastKnownDataGreySpan + j) }, { -2, 5 }, { -1, 5 }, { 0, 5 }, { 1, 5 }, { 2, 5 } });
 
             for (int i = 0; i < data.Count; i++)
             {
-                List<short> list = new(127);
+                int index = 0;
 
                 foreach (var item in data[i])
                 {
-                    for (int j = 0; j < item.Value; j++)
-                        list.Add(item.Key);
+                    for (int j = 0; j < item.Value && index < MAX_LEVEL; j++, index++)
+                        _conLevels[i,index] = item.Key;
                 }
 
                 // Fill remaining capacity with purple.
-                for (int j = list.Count; j < list.Capacity; j++)
-                    list.Add(3);
-
-                _conLevels.Add(list);
+                for (; index < MAX_LEVEL; index++)
+                    _conLevels[i,index] = 3;
             }
         }
 
         public static int GetConLevel(int userLevel, int targetLevel)
         {
-            if (userLevel < 0 || targetLevel < 0)
+            if (userLevel < 0 || userLevel > _conLevels.GetLength(0) - 1)
                 return 0;
 
-            if (userLevel > _conLevels.Count - 1)
+            if (targetLevel < 0 || targetLevel > _conLevels.GetLength(1) - 1)
                 return 0;
 
-            List<short> data = _conLevels[userLevel];
-
-            if (targetLevel > data.Count - 1)
-                return 0;
-
-            return data[targetLevel];
+            return _conLevels[userLevel,targetLevel];
         }
 
         public static ConColor GetConColor(int conLevel)
