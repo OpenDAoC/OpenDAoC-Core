@@ -1,5 +1,6 @@
 using System.Reflection;
 using DOL.GS;
+using DOL.GS.ServerProperties;
 using log4net;
 
 namespace DOL.AI.Brain
@@ -53,6 +54,7 @@ namespace DOL.AI.Brain
         protected override GameLiving FindTargetForDefensiveSpell(Spell spell)
         {
             GameLiving target = null;
+            int healThreshold = Properties.BONEDANCER_HEALER_PET_HEAL_THRESHOLD;
 
             switch (spell.SpellType)
             {
@@ -65,7 +67,7 @@ namespace DOL.AI.Brain
                     // Heal player.
                     if (player != null)
                     {
-                        if (player.HealthPercent < 90)
+                        if (player.HealthPercent < healThreshold)
                         {
                             target = player;
                             break;
@@ -75,14 +77,14 @@ namespace DOL.AI.Brain
                     GameLiving owner = (this as IControlledBrain).Owner;
 
                     // Heal owner.
-                    if (owner.HealthPercent < 90)
+                    if (owner.HealthPercent < healThreshold)
                     {
                         target = owner;
                         break;
                     }
 
                     // Heal self.
-                    if (Body.HealthPercent < 90)
+                    if (Body.HealthPercent < healThreshold)
                     {
                         target = Body;
                         break;
@@ -94,7 +96,7 @@ namespace DOL.AI.Brain
                         if (icb == null)
                             continue;
 
-                        if (icb.Body.HealthPercent < 90)
+                        if (icb.Body.HealthPercent < healThreshold)
                         {
                             target = icb.Body;
                             break;
