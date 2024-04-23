@@ -229,10 +229,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				if (player.CurrentRegion.IsInstance)
 				{
-					if (WorldMgr.RvRLinkDeadPlayers.ContainsKey(player.InternalID))
-					{
-						WorldMgr.RvRLinkDeadPlayers.Remove(player.InternalID);
-					}
+					WorldMgr.RvrLinkDeadPlayers.TryRemove(player.InternalID, out _);
 					return;
 				}
 
@@ -241,9 +238,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
 				if (keep != null && player.Client.Account.PrivLevel == 1 && GameServer.KeepManager.IsEnemy(keep, player))
 				{
-					if (WorldMgr.RvRLinkDeadPlayers.ContainsKey(player.InternalID))
+					if (WorldMgr.RvrLinkDeadPlayers.TryGetValue(player.InternalID, out DateTime value))
 					{
-						if (DateTime.Now.Subtract(new TimeSpan(0, gracePeriodInMinutes, 0)) > WorldMgr.RvRLinkDeadPlayers[player.InternalID])
+						if (DateTime.Now.Subtract(new TimeSpan(0, gracePeriodInMinutes, 0)) > value)
 						{
 							SendMessageAndMoveToSafeLocation(player);
 						}
@@ -253,14 +250,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 						SendMessageAndMoveToSafeLocation(player);
 					}
 				}			
-				var linkDeadPlayerIds = new string[WorldMgr.RvRLinkDeadPlayers.Count];
-				WorldMgr.RvRLinkDeadPlayers.Keys.CopyTo(linkDeadPlayerIds, 0);
+				var linkDeadPlayerIds = new string[WorldMgr.RvrLinkDeadPlayers.Count];
+				WorldMgr.RvrLinkDeadPlayers.Keys.CopyTo(linkDeadPlayerIds, 0);
 				foreach (string playerId in linkDeadPlayerIds)
 				{
-					if (playerId != null &&
-					    DateTime.Now.Subtract(new TimeSpan(0, gracePeriodInMinutes, 0)) > WorldMgr.RvRLinkDeadPlayers[playerId])
+					if (playerId != null && DateTime.Now.Subtract(new TimeSpan(0, gracePeriodInMinutes, 0)) > WorldMgr.RvrLinkDeadPlayers[playerId])
 					{
-						WorldMgr.RvRLinkDeadPlayers.Remove(playerId);
+						WorldMgr.RvrLinkDeadPlayers.TryRemove(playerId, out _);
 					}
 				}
 			}
@@ -273,9 +269,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(player.CurrentRegionID, player, WorldMgr.VISIBILITY_DISTANCE);
 				if (keep != null && keep.InCombat && player.Client.Account.PrivLevel == 1 && !GameServer.KeepManager.IsEnemy(keep, player))
 				{
-					if (WorldMgr.RvRLinkDeadPlayers.ContainsKey(player.InternalID))
+					if (WorldMgr.RvrLinkDeadPlayers.TryGetValue(player.InternalID, out DateTime value))
 					{
-						if (DateTime.Now.Subtract(new TimeSpan(0, gracePeriodInMinutes, 0)) > WorldMgr.RvRLinkDeadPlayers[player.InternalID])
+						if (DateTime.Now.Subtract(new TimeSpan(0, gracePeriodInMinutes, 0)) > value)
 						{
 							SendMessageAndMoveToSafeLocation(player);
 						}
