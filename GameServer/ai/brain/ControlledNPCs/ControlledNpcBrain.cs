@@ -685,7 +685,7 @@ namespace DOL.AI.Brain
                     if (spell.Target == eSpellTarget.SELF)
                     {
                         if (bodyPercent < healThreshold && !LivingHasEffect(Body, spell))
-                            Body.TargetObject = Body;
+                            target = Body;
 
                         break;
                     }
@@ -697,14 +697,14 @@ namespace DOL.AI.Brain
                     // Heal owner.
                     if (ownerPercent < emergencyThreshold && !LivingHasEffect(Owner, spell) && Body.IsWithinRadius(Owner, spell.Range))
                     {
-                        Body.TargetObject = Owner;
+                        target = Owner;
                         break;
                     }
 
                     // Heal self.
                     if (bodyPercent < emergencyThreshold && !LivingHasEffect(Body, spell))
                     {
-                        Body.TargetObject = Body;
+                        target = Body;
                         break;
                     }
 
