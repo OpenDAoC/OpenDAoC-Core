@@ -849,18 +849,11 @@ namespace DOL.GS.Housing
 
 			if (houseCM != null)
 			{
-				if (houseCM.HouseNumber > 0)
-				{
-					log.ErrorFormat("Add CM: Found active consignment merchant for this owner, can't add new one to house {0}!", HouseNumber);
-					return false;
-				}
-
+				log.Warn($"Re-adding an existing consignment merchant for house {HouseNumber}. The previous house was {houseCM.HouseNumber}");
 				houseCM.HouseNumber = HouseNumber;
 				GameServer.Database.SaveObject(houseCM);
-				log.Warn("Re-adding an existing consignment merchant for house " + HouseNumber);
 			}
-
-			if (houseCM == null)
+			else
 			{
 				// create a new consignment merchant entry, and add it to the DB
 				log.Warn("Adding a consignment merchant for house " + HouseNumber);
