@@ -1352,20 +1352,27 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// NPCs heal when a target is below what percentage of their health?
 		/// </summary>
-		[ServerProperty("npc", "npc_heal_threshold", "NPCs, including pets, heal targets whose health falls below this percentage.", 75)]
+		[ServerProperty("npc", "npc_heal_threshold", "NPCs heal targets whose health falls below this percentage.", 75)]
 		public static int NPC_HEAL_THRESHOLD;
-		
+
 		/// <summary>
-		/// Charmed NPC heal when a target is below what percentage of their health?
+		/// Pets heal when a target is below what percentage of their health?
 		/// </summary>
-		[ServerProperty("npc", "charmed_npc_heal_threshold", "Charmed NPC, heal targets whose health falls below this percentage.", 50)]
-		public static int CHARMED_NPC_HEAL_THRESHOLD;
-		
+		[ServerProperty("npc", "pet_heal_threshold", "Pets (including charmed NPCs, excluding Bonedancer pets) heal targets whose health falls below this percentage.", 50)]
+		public static int PET_HEAL_THRESHOLD;
+
+		/// <summary>
+		/// Bonedancer healer pets heal when a target is below what percentage of their health?
+		/// </summary>
+		[ServerProperty("npc", "bonedancer_healer_pets_heal_threshold", "Bonedancer healer pets heal targets whose health falls below this percentage.", 90)]
+		public static int BONEDANCER_HEALER_PET_HEAL_THRESHOLD;
+
 		/// <summary>
 		/// Expand the Wild Minion RA to also improve crit chance for ranged and spell attacks?
 		/// </summary>
 		[ServerProperty("npc", "expand_wild_minion", "Expand the Wild Minion RA to also improve crit chance for ranged and spell attacks?", false)]
 		public static bool EXPAND_WILD_MINION;
+
 		#endregion
 
 		#region PVP / RVR

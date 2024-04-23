@@ -1044,18 +1044,7 @@ namespace DOL.AI.Brain
                 case eSpellType.PBAoEHeal:
                 case eSpellType.SpreadHeal:
                 {
-                    if (spell.Target == eSpellTarget.SELF)
-                    {
-                        // If we have a self heal and health is less than 75% then heal, otherwise return false to try another spell or do nothing.
-                        if (Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD)
-                            target = Body;
-
-                        break;
-                    }
-
-                    // Chance to heal self when dropping below 30%, do NOT spam it.
-                    if (Body.HealthPercent < (Properties.NPC_HEAL_THRESHOLD / 2.0)
-                        && Util.Chance(10) && spell.Target != eSpellTarget.PET)
+                    if (Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD)
                     {
                         target = Body;
                         break;

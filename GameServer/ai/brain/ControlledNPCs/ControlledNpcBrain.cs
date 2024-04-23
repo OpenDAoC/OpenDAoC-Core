@@ -7,6 +7,7 @@ using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.RealmAbilities;
+using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
 using log4net;
@@ -678,13 +679,8 @@ namespace DOL.AI.Brain
                 case eSpellType.PBAoEHeal:
                 case eSpellType.SpreadHeal:
                 {
-                    // Underhill ally heals at half the normal threshold 'will heal seriously injured groupmates'.
-
                     int bodyPercent = Body.HealthPercent;
-                    int healThreshold = Body.Name.Contains("underhill") ? GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD / 2 : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
-
-                    if (Body.Name.Contains("empyrean"))
-                        healThreshold = Body.Name.Contains("empyrean") ? GS.ServerProperties.Properties.CHARMED_NPC_HEAL_THRESHOLD : GS.ServerProperties.Properties.NPC_HEAL_THRESHOLD;
+                    int healThreshold = Properties.PET_HEAL_THRESHOLD;
 
                     if (spell.Target == eSpellTarget.SELF)
                     {
@@ -694,15 +690,14 @@ namespace DOL.AI.Brain
                         break;
                     }
 
-                    // Heal seriously injured targets first,
+                    // Heal seriously injured targets first.
                     int emergencyThreshold = healThreshold / 2;
-                    GameLiving owner = (this as IControlledBrain).Owner;
-                    int ownerPercent = owner.HealthPercent;
+                    int ownerPercent = Owner.HealthPercent;
 
                     // Heal owner.
-                    if (ownerPercent < emergencyThreshold && !LivingHasEffect(owner, spell) && Body.IsWithinRadius(owner, spell.Range))
+                    if (ownerPercent < emergencyThreshold && !LivingHasEffect(Owner, spell) && Body.IsWithinRadius(Owner, spell.Range))
                     {
-                        Body.TargetObject = owner;
+                        Body.TargetObject = Owner;
                         break;
                     }
 
@@ -713,13 +708,13 @@ namespace DOL.AI.Brain
                         break;
                     }
 
-                    GamePlayer player = GetPlayerOwner();
                     ICollection<GamePlayer> playerGroup = null;
+                    GamePlayer playerOwner = GetPlayerOwner();
 
                     // Heal group members.
-                    if (player?.Group != null && (spell.Target is eSpellTarget.REALM or eSpellTarget.GROUP))
+                    if (playerOwner?.Group != null && (spell.Target is eSpellTarget.REALM or eSpellTarget.GROUP))
                     {
-                        playerGroup = player.Group.GetPlayersInTheGroup();
+                        playerGroup = playerOwner.Group.GetPlayersInTheGroup();
 
                         foreach (GamePlayer member in playerGroup)
                         {
@@ -743,9 +738,9 @@ namespace DOL.AI.Brain
                     }
 
                     // Heal owner
-                    if (ownerPercent < healThreshold && !LivingHasEffect(owner, spell) && Body.IsWithinRadius(owner, spell.Range))
+                    if (ownerPercent < healThreshold && !LivingHasEffect(Owner, spell) && Body.IsWithinRadius(Owner, spell.Range))
                     {
-                        target = owner;
+                        target = Owner;
                         break;
                     }
 
