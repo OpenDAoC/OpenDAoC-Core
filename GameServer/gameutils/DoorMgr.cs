@@ -41,9 +41,6 @@ namespace DOL.GS
 		{
 			int count = 0;
 
-			if (log.IsDebugEnabled)
-				log.Debug("Saving keep doors...");
-
 			try
 			{
 				lock (Lock)

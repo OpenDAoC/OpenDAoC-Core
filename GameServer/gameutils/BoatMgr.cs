@@ -260,9 +260,6 @@ namespace DOL.GS
         {
             int count = 0;
 
-            if (log.IsDebugEnabled)
-                log.Debug("Saving all boats...");
-
             try
             {
                 lock (m_boats.SyncRoot)

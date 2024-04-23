@@ -1553,15 +1553,12 @@ namespace DOL.GS
 					Save(CraftingProgressMgr.Save, ref crafting);
 				}
 
-				if (log.IsInfoEnabled)
-					log.Info("Saving database complete!");
-
 				startTick = GameLoop.GetCurrentTime() - startTick;
 
 				if (log.IsInfoEnabled)
 				{
 					StringBuilder stringBuilder = new();
-					stringBuilder.Append($"Saving completed in {startTick}m\n");
+					stringBuilder.Append($"Saving completed in {startTick}ms\n");
 					stringBuilder.Append($"   {nameof(players)}: {players.count} in {players.elapsed}ms\n");
 					stringBuilder.Append($" {nameof(keepDoors)}: {keepDoors.count} in {keepDoors.elapsed}ms\n");
 					stringBuilder.Append($"    {nameof(guilds)}: {guilds.count} in {guilds.elapsed}ms\n");

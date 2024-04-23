@@ -11904,9 +11904,6 @@ namespace DOL.GS
                 if (m_mlSteps != null)
                     GameServer.Database.SaveObject(m_mlSteps.OfType<DbCharacterXMasterLevel>());
 
-                if (log.IsInfoEnabled)
-                    log.InfoFormat("{0} saved!", DBCharacter.Name);
-
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SaveIntoDatabase.CharacterSaved"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
             catch (Exception e)

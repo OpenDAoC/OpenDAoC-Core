@@ -91,16 +91,16 @@ namespace DOL.GS.GameEvents
                     StringBuilder stats = new StringBuilder(256)
                         .Append("-stats- Mem=").Append(GC.GetTotalMemory(false) / 1024 / 1024).Append("MB")
                         .Append("  Clients=").Append(ClientService.ClientCount)
-                        .Append("  Down=").Append(inRate / 1024).Append("kb/s (").Append(Statistics.BytesIn / 1024 / 1024).Append("MB)")
-                        .Append("  Up=").Append(outRate / 1024).Append("kb/s (").Append(Statistics.BytesOut / 1024 / 1024).Append("MB)")
-                        .Append("  In=").Append(inPckRate).Append("pck/s (").Append(Statistics.PacketsIn / 1000).Append("K)")
-                        .Append("  Out=").Append(outPckRate).Append("pck/s (").Append(Statistics.PacketsOut / 1000).Append("K)")
+                        //.Append("  Down=").Append(inRate / 1024).Append("kb/s (").Append(Statistics.BytesIn / 1024 / 1024).Append("MB)")
+                        //.Append("  Up=").Append(outRate / 1024).Append("kb/s (").Append(Statistics.BytesOut / 1024 / 1024).Append("MB)")
+                        //.Append("  In=").Append(inPckRate).Append("pck/s (").Append(Statistics.PacketsIn / 1000).Append("K)")
+                        //.Append("  Out=").Append(outPckRate).Append("pck/s (").Append(Statistics.PacketsOut / 1000).Append("K)")
                         .AppendFormat("  Pool={0}/{1}({2})", poolCurrent, poolMax, poolMin)
                         .AppendFormat("  IOCP={0}/{1}({2})", iocpCurrent, iocpMax, iocpMin)
                         .AppendFormat("  GH/OH={0}/{1}", globalHandlers, objectHandlers);
 
-                    AppendStatistic(stats, "CPU", _systemCpuUsagePercent, "%");
-                    AppendStatistic(stats, "DOL", _programCpuUsagePercent, "%");
+                    AppendStatistic(stats, "CPU(sys)", _systemCpuUsagePercent, "%");
+                    AppendStatistic(stats, "CPU(proc)", _programCpuUsagePercent, "%");
                     AppendStatistic(stats, "pg/s", _pageFaultsPerSecond);
                     AppendStatistic(stats, "dsk/s", _diskTransfersPerSecond);
 
