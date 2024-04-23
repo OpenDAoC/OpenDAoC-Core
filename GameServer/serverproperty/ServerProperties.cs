@@ -2890,7 +2890,7 @@ namespace DOL.GS.ServerProperties
 				log.ErrorFormat("Trying to load {0} value is {1}", key, prop.Value);
 			}
 		}
-		
+
 		/// <summary>
 		/// Refreshes the server properties from the DB
 		/// </summary>
@@ -2898,6 +2898,52 @@ namespace DOL.GS.ServerProperties
 		{
 			log.Info("Refreshing server properties...");
 			InitProperties();
+		}
+
+		/// <summary>
+		/// Irreversibly removes rogue properties from the Database.
+		/// </summary>
+		public static void CleanUpDatabase()
+		{
+			IList<DbServerProperty> dbProperties = GameServer.Database.SelectAllObjects<DbServerProperty>();
+			List<string> properties = [];
+
+			foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+			{
+				foreach (Type type in assembly.GetTypes())
+				{
+					foreach (FieldInfo field in type.GetFields())
+					{
+						// Properties are static.
+						if (!field.IsStatic)
+							continue;
+
+						// Properties should contain a property attribute.
+						object[] attributes = field.GetCustomAttributes(typeof(ServerPropertyAttribute), false);
+
+						if (attributes.Length == 0)
+							continue;
+
+						properties.Add(((ServerPropertyAttribute) attributes[0]).Key);
+					}
+				}
+			}
+
+			foreach (DbServerProperty dbProperty in dbProperties)
+			{
+				if (properties.Contains(dbProperty.Key))
+					continue;
+
+				try
+				{
+					GameServer.Database.DeleteObject(dbProperty);
+					log.Info($"Removed rogue property: {dbProperty.Key} ({dbProperty.Value}).");
+				}
+				catch
+				{
+					log.Error($"Couldn't remove rogue property: {dbProperty.Key} ({dbProperty.Value}).");
+				}
+			}
 		}
 	}
 }

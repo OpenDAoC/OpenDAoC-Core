@@ -1,7 +1,5 @@
 ﻿
 # /serverproperties Command
-AdminCommands.ServerProperties.Description:			Ricarica le proprietà del server dal database
-AdminCommands.ServerProperties.Usage:				/serverproperties
 AdminCommands.ServerProperties.DataBaseXML:			XML è cache, non poi aggiornare le proprietà del server a meno che non usi il database MySQL!
 AdminCommands.ServerProperties.PropertiesRefreshed:	Le proprietà del server aggiornati!
 

@@ -114,8 +114,8 @@ AdminCommands.Plvl.Note.PlvlSingle:                     To retain access to spec
 # '/serverproperties' Commands
 
 # Old /serverproperties Command
-AdminCommands.ServerProperties.Description:			Reloads server properties from the database
-AdminCommands.ServerProperties.Usage:				/serverproperties
+AdminCommands.ServerProperties.Description:			Reloads or clean up server properties from the database
+AdminCommands.ServerProperties.Usage:				/serverproperties <refresh | cleanup>
 AdminCommands.ServerProperties.DataBaseXML:			XML is cached sorry, you cannot refresh server properties unless using MySQL!
 AdminCommands.ServerProperties.PropertiesRefreshed:	Refreshed server properties!
 

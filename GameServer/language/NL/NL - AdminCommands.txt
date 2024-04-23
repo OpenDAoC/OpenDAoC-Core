@@ -1,7 +1,5 @@
 ﻿
 # /serverproperties Command
-AdminCommands.ServerProperties.Description:			Herlaad server eigenschappen van de database
-AdminCommands.ServerProperties.Usage:				/serverproperties
 AdminCommands.ServerProperties.DataBaseXML:			XML is cached sorry, je kan niet de server eigenschappen vernieuwen tenzij van MySQL gebruiken!
 AdminCommands.ServerProperties.PropertiesRefreshed:		server eigenschappen vernieuwen!
 
