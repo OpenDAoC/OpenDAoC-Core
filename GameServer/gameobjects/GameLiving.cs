@@ -556,7 +556,7 @@ namespace DOL.GS
 			return 0;
 		}
 
-		private (DbInventoryItem item, long time) m_cachedActiveWeapon;
+		private (DbInventoryItem item, eActiveWeaponSlot slot, long time) _cachedActiveWeapon;
 
         /// <summary>
         /// Returns the currently active weapon, null=natural
@@ -565,30 +565,41 @@ namespace DOL.GS
         {
             get
             {
-				// We cache the weapon since 'ActiveWeapon' can be called multiple times per tick and 'GameInventory.GetItem' is potentially expensive.
-				if (m_cachedActiveWeapon.time >= GameLoop.GameLoopTime)
-					return m_cachedActiveWeapon.item;
+                if (Inventory == null)
+                    return null;
 
-				m_cachedActiveWeapon.item = null;
-				m_cachedActiveWeapon.time = GameLoop.GameLoopTime;
+                // We cache the weapon since 'ActiveWeapon' can be called multiple times per tick and 'GameInventory.GetItem' is potentially expensive.
+                if (_cachedActiveWeapon.item != null && _cachedActiveWeapon.slot == ActiveWeaponSlot && _cachedActiveWeapon.time >= GameLoop.GameLoopTime)
+                    return _cachedActiveWeapon.item;
 
-                if (Inventory != null)
+                _cachedActiveWeapon.time = GameLoop.GameLoopTime;
+                _cachedActiveWeapon.slot = ActiveWeaponSlot;
+
+                switch (ActiveWeaponSlot)
                 {
-                    switch (ActiveWeaponSlot)
+                    case eActiveWeaponSlot.Standard:
                     {
-                        case eActiveWeaponSlot.Standard:
-							m_cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.RightHandWeapon);
-							break;
-                        case eActiveWeaponSlot.TwoHanded:
-							m_cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-							break;
-                        case eActiveWeaponSlot.Distance:
-							m_cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.DistanceWeapon);
-							break;
+                        _cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+                        break;
+                    }
+                    case eActiveWeaponSlot.TwoHanded:
+                    {
+                        _cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+                        break;
+                    }
+                    case eActiveWeaponSlot.Distance:
+                    {
+                        _cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.DistanceWeapon);
+                        break;
+                    }
+                    default:
+                    {
+                        _cachedActiveWeapon.item = null;
+                        break;
                     }
                 }
 
-                return m_cachedActiveWeapon.item;
+                return _cachedActiveWeapon.item;
             }
         }
 
