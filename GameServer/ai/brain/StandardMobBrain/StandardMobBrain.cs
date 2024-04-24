@@ -33,8 +33,8 @@ namespace DOL.AI.Brain
         public StandardMobBrain() : base()
         {
             FSM = new FSM();
-            FSM.Add(new StandardMobState_IDLE(this));
             FSM.Add(new StandardMobState_WAKING_UP(this));
+            FSM.Add(new StandardMobState_IDLE(this));
             FSM.Add(new StandardMobState_AGGRO(this));
             FSM.Add(new StandardMobState_RETURN_TO_SPAWN(this));
             FSM.Add(new StandardMobState_PATROLLING(this));

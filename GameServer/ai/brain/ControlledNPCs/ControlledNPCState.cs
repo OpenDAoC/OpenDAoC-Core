@@ -4,6 +4,8 @@ namespace DOL.AI.Brain
 {
     public class ControlledNPCState_WAKING_UP : StandardMobState_WAKING_UP
     {
+        private bool _abilitiesChecked;
+
         public ControlledNPCState_WAKING_UP(ControlledNpcBrain brain) : base(brain)
         {
             StateType = eFSMStateType.WAKING_UP;
@@ -13,15 +15,13 @@ namespace DOL.AI.Brain
         {
             ControlledNpcBrain brain = _brain as ControlledNpcBrain;
 
-            // Load abilities on first Think() cycle.
-            if (!brain.checkAbility)
+            if (!_abilitiesChecked)
             {
                 brain.CheckAbilities();
                 brain.Body.SortSpells();
-                brain.checkAbility = true;
+                _abilitiesChecked = true;
             }
 
-            // Determine state we should be in.
             if (brain.AggressionState == eAggressionState.Aggressive)
                 brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
             else if (brain.AggressionState == eAggressionState.Defensive)
@@ -29,16 +29,27 @@ namespace DOL.AI.Brain
             else if (brain.AggressionState == eAggressionState.Passive)
                 brain.FSM.SetCurrentState(eFSMStateType.PASSIVE);
 
-            // Put this here so no delay after entering initial state before next Think().
             brain.Think();
         }
     }
 
     public class ControlledNPCState_DEFENSIVE : StandardMobState_IDLE
     {
+        private bool _abilitiesChecked;
+
         public ControlledNPCState_DEFENSIVE(ControlledNpcBrain brain) : base(brain)
         {
             StateType = eFSMStateType.IDLE;
+        }
+
+        public override void Enter()
+        {
+            if (_abilitiesChecked)
+                return;
+
+            ControlledNpcBrain brain = _brain as ControlledNpcBrain;
+            brain.CheckAbilities();
+            brain.Body.SortSpells();
         }
 
         public override void Think()

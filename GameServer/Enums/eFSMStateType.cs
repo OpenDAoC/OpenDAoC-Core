@@ -2,8 +2,8 @@
 {
     public enum eFSMStateType
     {
-        IDLE,
         WAKING_UP,
+        IDLE,
         AGGRO,
         ROAMING,
         RETURN_TO_SPAWN,

@@ -22,6 +22,20 @@ namespace DOL.AI.Brain
         public override void Exit() { }
     }
 
+    public class StandardMobState_WAKING_UP : StandardMobState
+    {
+        public StandardMobState_WAKING_UP(StandardMobBrain brain) : base(brain)
+        {
+            StateType = eFSMStateType.WAKING_UP;
+        }
+
+        public override void Think()
+        {
+            _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
+            _brain.Think();
+        }
+    }
+
     public class StandardMobState_IDLE : StandardMobState
     {
         public StandardMobState_IDLE(StandardMobBrain brain) : base(brain)
@@ -39,6 +53,9 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
+            if (_brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive))
+                return;
+
             if (_brain.HasPatrolPath())
             {
                 _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
@@ -57,39 +74,12 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            _brain.CheckSpells(StandardMobBrain.eCheckSpellType.Defensive);
-            base.Think();
-        }
-    }
-
-    public class StandardMobState_WAKING_UP : StandardMobState
-    {
-        public StandardMobState_WAKING_UP(StandardMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.WAKING_UP;
-        }
-
-        public override void Think()
-        {
-            if (!_brain.Body.attackComponent.AttackState && _brain.Body.CanRoam)
+            if (!_brain.Body.IsNearSpawn)
             {
-                _brain.FSM.SetCurrentState(eFSMStateType.ROAMING);
+                _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
                 return;
             }
 
-            if (_brain.HasPatrolPath())
-            {
-                _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
-                return;
-            }
-
-            if (_brain.CheckProximityAggro())
-            {
-                _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
-                return;
-            }
-
-            _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
             base.Think();
         }
     }
@@ -225,14 +215,7 @@ namespace DOL.AI.Brain
                 (!_brain.Body.IsReturningToSpawnPoint) &&
                 _brain.Body.CurrentSpeed == 0)
             {
-                _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);
-                _brain.Body.TurnTo(_brain.Body.SpawnHeading);
-                return;
-            }
-
-            if (_brain.Body.IsNearSpawn)
-            {
-                _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+                _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
                 _brain.Body.TurnTo(_brain.Body.SpawnHeading);
                 return;
             }
@@ -288,7 +271,7 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            _brain.FSM.SetCurrentState(eFSMStateType.WAKING_UP);
+            _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
             base.Think();
         }
     }

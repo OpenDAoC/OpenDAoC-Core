@@ -2230,15 +2230,17 @@ namespace DOL.GS
 		/// <param name="newBrain"></param>
 		public virtual void AddBrain(ABrain newBrain)
 		{
-			if (newBrain == null)
-				throw new ArgumentNullException("newBrain");
+			ArgumentNullException.ThrowIfNull(newBrain);
+
 			if (newBrain.IsActive)
-				throw new ArgumentException("The new brain is already active.", "newBrain");
+				throw new ArgumentException("The new brain is already active.", nameof(newBrain));
 
 			Brain.Stop();
-			ArrayList brains = new ArrayList(m_brains);
-			brains.Add(newBrain);
-			m_brains = brains; // make new array list to avoid locks in the Brain property
+			ArrayList brains = new(m_brains)
+			{
+				newBrain
+			};
+			m_brains = brains;
 			newBrain.Body = this;
 			newBrain.Start();
 		}

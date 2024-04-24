@@ -71,19 +71,15 @@ namespace DOL.AI.Brain
 			AggroRange = MAX_PET_AGGRO_DISTANCE;
 
 			FSM.ClearStates();
-
 			FSM.Add(new ControlledNPCState_WAKING_UP(this));
-			FSM.Add(new ControlledNPCState_PASSIVE(this));
 			FSM.Add(new ControlledNPCState_DEFENSIVE(this));
 			FSM.Add(new ControlledNPCState_AGGRO(this));
+			FSM.Add(new ControlledNPCState_PASSIVE(this));
 			FSM.Add(new StandardMobState_DEAD(this));
-
 			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
 		}
 
 		protected bool m_isMainPet = true;
-		public bool checkAbility;
-		public bool sortedSpells;
 
 		public override int AggroRange => Math.Min(base.AggroRange, MAX_PET_AGGRO_DISTANCE);
 

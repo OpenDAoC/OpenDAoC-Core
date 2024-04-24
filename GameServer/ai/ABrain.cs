@@ -48,9 +48,12 @@ namespace DOL.AI
         /// <returns>true if stopped</returns>
         public virtual bool Stop()
         {
+            bool wasReturningToSpawnPoint = Body.IsReturningToSpawnPoint;
+
             Body.StopMoving();
 
-            if (Body.IsReturningToSpawnPoint)
+            // Without `IsActive` check, charming a NPC that's returning to spawn would teleport it.
+            if (wasReturningToSpawnPoint && !IsActive)
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading);
 
             return EntityManager.Remove(this);

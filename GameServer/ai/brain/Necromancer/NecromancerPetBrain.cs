@@ -18,13 +18,11 @@ namespace DOL.AI.Brain
         public NecromancerPetBrain(GameLiving owner) : base(owner)
         {
             FSM.ClearStates();
-
-            FSM.Add(new NecromancerPetState_WAKING_UP(this));
+            FSM.Add(new ControlledNPCState_WAKING_UP(this));
             FSM.Add(new NecromancerPetState_DEFENSIVE(this));
             FSM.Add(new NecromancerPetState_AGGRO(this));
             FSM.Add(new NecromancerPetState_PASSIVE(this));
             FSM.Add(new StandardMobState_DEAD(this));
-
             FSM.SetCurrentState(eFSMStateType.WAKING_UP);
         }
 
