@@ -6805,7 +6805,7 @@ namespace DOL.GS
 
             CharacterClass.Die(killer);
 
-            bool realmDeath = killer != null && killer.Realm != eRealm.None && killer.Realm != Realm;
+            bool killingBlowByEnemyRealm = killer != null && killer.Realm != eRealm.None && killer.Realm != Realm;
 
             TargetObject = null;
             UpdateWaterBreathState(eWaterBreath.None);
@@ -6829,7 +6829,7 @@ namespace DOL.GS
 
             if (killer == null)
             {
-                if (realmDeath)
+                if (killingBlowByEnemyRealm)
                 {
                     playerMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledLocation", GetName(0, true), location);
                     publicMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledLocation", GetName(0, true), location);
@@ -6852,7 +6852,7 @@ namespace DOL.GS
                 else
                 {
                     messageDistance = 0;
-                    if (realmDeath)
+                    if (killingBlowByEnemyRealm)
                     {
                         playerMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledByLocation", GetName(0, true), killer.GetName(1, false), location);
                         publicMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledByLocation", GetName(0, true), killer.GetName(1, false), location);
@@ -6993,7 +6993,10 @@ namespace DOL.GS
                     xpLossPercent = MaxLevel - 40;
                 }
 
-                if (realmDeath || killer?.Realm == Realm) //Live PvP servers have 3 con loss on pvp death, can be turned off in server properties -Unty
+                if (InCombatPvP)
+                    LastDeathPvP = true;
+
+                if (InCombatPvP || killer?.Realm == Realm) //Live PvP servers have 3 con loss on pvp death, can be turned off in server properties -Unty
                 {
                     int conpenalty = 0;
                     switch (GameServer.Instance.Configuration.ServerType)
@@ -7050,9 +7053,6 @@ namespace DOL.GS
                             conLoss = 1;
                         TempProperties.SetProperty(DEATH_CONSTITUTION_LOSS_PROPERTY, conLoss);
                     }
-
-                    if (realmDeath)
-                        LastDeathPvP = true;
                 }
                 GameEventMgr.AddHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
             }
