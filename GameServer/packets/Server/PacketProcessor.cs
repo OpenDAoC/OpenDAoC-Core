@@ -322,6 +322,9 @@ namespace DOL.GS.PacketHandler
 
         public void ProcessTcpQueue()
         {
+            if (!m_client.Socket.Connected)
+                return;
+
             try
             {
                 int count;
