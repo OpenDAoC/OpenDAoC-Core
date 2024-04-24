@@ -23,13 +23,13 @@ using NUnit.Framework.Legacy;
 namespace DOL.Tests.Unit.Gameserver
 {  
     [TestFixture]
-    class UT_ControlledNpcBrain
+    class UT_ControlledMobBrain
     {
         [Test]
         public void GetPlayerOwner_InitWithPlayer_Player()
         {
             var player = new FakePlayer();
-            var brain = new ControlledNpcBrain(player);
+            var brain = new ControlledMobBrain(player);
 
             var actual = brain.GetPlayerOwner();
 

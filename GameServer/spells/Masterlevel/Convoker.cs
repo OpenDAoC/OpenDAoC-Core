@@ -736,7 +736,7 @@ namespace DOL.GS.Spells
 #region BrittleBrain
 namespace DOL.AI.Brain
 {
-    public class BrittleBrain : ControlledNpcBrain
+    public class BrittleBrain : ControlledMobBrain
 	{
 		public BrittleBrain(GameLiving owner)
 			: base(owner)
@@ -760,7 +760,7 @@ namespace DOL.AI.Brain
 
 namespace DOL.AI.Brain
 {
-    public class TitanBrain : ControlledNpcBrain
+    public class TitanBrain : ControlledMobBrain
 	{
 		private GameLiving m_target;
 

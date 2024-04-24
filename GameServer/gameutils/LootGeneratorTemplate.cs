@@ -279,7 +279,7 @@ namespace DOL.GS
                 }
                 else if (killer is GameNPC && (killer as GameNPC).Brain is IControlledBrain)
                 {
-                    player = ((killer as GameNPC).Brain as ControlledNpcBrain).GetPlayerOwner();
+                    player = ((killer as GameNPC).Brain as ControlledMobBrain).GetPlayerOwner();
                 }
 
                 // allow the leader to decide the loot realm

@@ -50,7 +50,7 @@ namespace DOL.GS.Spells
 			GameNPC npc = Caster as GameNPC;
 			if (npc != null)
 			{
-				ControlledNpcBrain brain = npc.Brain as ControlledNpcBrain;
+				ControlledMobBrain brain = npc.Brain as ControlledMobBrain;
 				if (brain != null)
 				{
 					GamePlayer owner = brain.Owner as GamePlayer;

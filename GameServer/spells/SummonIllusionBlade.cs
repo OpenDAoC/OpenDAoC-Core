@@ -64,8 +64,8 @@ namespace DOL.GS.Spells
             m_pet.Level = 44; // lowered in patch 1109b, also calls AutoSetStats()
             m_pet.AddToWorld();
             //Check for buffs
-            if (brain is ControlledNpcBrain)
-                (brain as ControlledNpcBrain).CheckSpells(StandardMobBrain.eCheckSpellType.Defensive);
+            if (brain is ControlledMobBrain)
+                (brain as ControlledMobBrain).CheckSpells(StandardMobBrain.eCheckSpellType.Defensive);
 
             AddHandlers();
             SetBrainToOwner(brain);

@@ -2,18 +2,18 @@
 
 namespace DOL.AI.Brain
 {
-    public class ControlledNPCState_WAKING_UP : StandardMobState_WAKING_UP
+    public class ControlledMobState_WAKING_UP : StandardMobState_WAKING_UP
     {
         private bool _abilitiesChecked;
 
-        public ControlledNPCState_WAKING_UP(ControlledNpcBrain brain) : base(brain)
+        public ControlledMobState_WAKING_UP(ControlledMobBrain brain) : base(brain)
         {
             StateType = eFSMStateType.WAKING_UP;
         }
 
         public override void Think()
         {
-            ControlledNpcBrain brain = _brain as ControlledNpcBrain;
+            ControlledMobBrain brain = _brain as ControlledMobBrain;
 
             if (!_abilitiesChecked)
             {
@@ -33,11 +33,11 @@ namespace DOL.AI.Brain
         }
     }
 
-    public class ControlledNPCState_DEFENSIVE : StandardMobState_IDLE
+    public class ControlledMobState_DEFENSIVE : StandardMobState_IDLE
     {
         private bool _abilitiesChecked;
 
-        public ControlledNPCState_DEFENSIVE(ControlledNpcBrain brain) : base(brain)
+        public ControlledMobState_DEFENSIVE(ControlledMobBrain brain) : base(brain)
         {
             StateType = eFSMStateType.IDLE;
         }
@@ -47,20 +47,20 @@ namespace DOL.AI.Brain
             if (_abilitiesChecked)
                 return;
 
-            ControlledNpcBrain brain = _brain as ControlledNpcBrain;
+            ControlledMobBrain brain = _brain as ControlledMobBrain;
             brain.CheckAbilities();
             brain.Body.SortSpells();
         }
 
         public override void Think()
         {
-            ControlledNpcBrain brain = _brain as ControlledNpcBrain;
+            ControlledMobBrain brain = _brain as ControlledMobBrain;
             GamePlayer playerOwner = brain.GetPlayerOwner();
 
             if (playerOwner != null)
             {
                 // See if the pet is too far away, if so release it!
-                if (brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
+                if (brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledMobBrain.MAX_OWNER_FOLLOW_DIST))
                     playerOwner.CommandNpcRelease();
             }
 
@@ -79,9 +79,9 @@ namespace DOL.AI.Brain
         }
     }
 
-    public class ControlledNPCState_AGGRO : StandardMobState_AGGRO
+    public class ControlledMobState_AGGRO : StandardMobState_AGGRO
     {
-        public ControlledNPCState_AGGRO(ControlledNpcBrain brain) : base(brain)
+        public ControlledMobState_AGGRO(ControlledMobBrain brain) : base(brain)
         {
             StateType = eFSMStateType.AGGRO;
         }
@@ -98,13 +98,13 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            ControlledNpcBrain brain = _brain as ControlledNpcBrain;
+            ControlledMobBrain brain = _brain as ControlledMobBrain;
             GamePlayer playerOwner = brain.GetPlayerOwner();
 
             if (playerOwner != null)
             {
                 // See if the pet is too far away, if so release it!
-                if (brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
+                if (brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledMobBrain.MAX_OWNER_FOLLOW_DIST))
                     playerOwner.CommandNpcRelease();
             }
 
@@ -152,9 +152,9 @@ namespace DOL.AI.Brain
         }
     }
 
-    public class ControlledNPCState_PASSIVE : StandardMobState
+    public class ControlledMobState_PASSIVE : StandardMobState
     {
-        public ControlledNPCState_PASSIVE(ControlledNpcBrain brain) : base(brain)
+        public ControlledMobState_PASSIVE(ControlledMobBrain brain) : base(brain)
         {
             StateType = eFSMStateType.PASSIVE;
         }
@@ -169,13 +169,13 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            ControlledNpcBrain brain = _brain as ControlledNpcBrain;
+            ControlledMobBrain brain = _brain as ControlledMobBrain;
             GamePlayer playerOwner = brain.GetPlayerOwner();
 
             if (playerOwner != null)
             {
                 // See if the pet is too far away, if so release it!
-                if (brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST))
+                if (brain.IsMainPet && !brain.Body.IsWithinRadius(brain.Owner, ControlledMobBrain.MAX_OWNER_FOLLOW_DIST))
                     playerOwner.CommandNpcRelease();
             }
 

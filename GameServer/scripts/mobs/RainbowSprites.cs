@@ -57,7 +57,7 @@ namespace DOL.AI.Brain
 						foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
 						{
 							GameLiving target = Body.TargetObject as GameLiving;
-							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledNpcBrain && npc.Brain is RainbowSpriteTanBrain brain && npc != Body)
+							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledMobBrain && npc.Brain is RainbowSpriteTanBrain brain && npc != Body)
 							{
 								if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
 									brain.AddToAggroList(target, 10);
@@ -128,7 +128,7 @@ namespace DOL.AI.Brain
 						foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
 						{
 							GameLiving target = Body.TargetObject as GameLiving;
-							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledNpcBrain && npc.Brain is RainbowSpriteWhiteBrain brain && npc != Body)
+							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledMobBrain && npc.Brain is RainbowSpriteWhiteBrain brain && npc != Body)
 							{
 								if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
 									brain.AddToAggroList(target, 10);
@@ -199,7 +199,7 @@ namespace DOL.AI.Brain
 						foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
 						{
 							GameLiving target = Body.TargetObject as GameLiving;
-							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledNpcBrain && npc.Brain is RainbowSpriteBlueBrain brain && npc != Body)
+							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledMobBrain && npc.Brain is RainbowSpriteBlueBrain brain && npc != Body)
 							{
 								if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
 									brain.AddToAggroList(target, 10);
@@ -273,7 +273,7 @@ namespace DOL.AI.Brain
 						foreach (GameNPC npc in Body.GetNPCsInRadius(1000))
 						{
 							GameLiving target = Body.TargetObject as GameLiving;
-							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledNpcBrain && npc.Brain is RainbowSpriteGreenBrain brain && npc != Body)
+							if (npc != null && npc.IsAlive && npc.Name.ToLower() == "rainbow sprite" && npc.Brain is not ControlledMobBrain && npc.Brain is RainbowSpriteGreenBrain brain && npc != Body)
 							{
 								if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
 									brain.AddToAggroList(target, 10);

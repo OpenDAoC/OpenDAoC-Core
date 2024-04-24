@@ -1850,7 +1850,7 @@ namespace DOL.GS
 
 			if (this is GameNPC npc)
 			{
-				var brain = npc.Brain as ControlledNpcBrain;
+				var brain = npc.Brain as ControlledMobBrain;
 
                 if (ad.Target is GamePlayer)
 				{
@@ -2154,10 +2154,10 @@ namespace DOL.GS
 				}
             }
 
-			if (this is GameNPC npc && npc.Brain is ControlledNpcBrain || this is GameSummonedPet)
+			if (this is GameNPC npc && npc.Brain is ControlledMobBrain || this is GameSummonedPet)
             {
 				List<ECSGameSpellEffect> ownerEffects;
-				ControlledNpcBrain pBrain = (this as GameNPC).Brain as ControlledNpcBrain;
+				ControlledMobBrain pBrain = (this as GameNPC).Brain as ControlledMobBrain;
 				GameSummonedPet pet = this as GameSummonedPet;
 
 				if (pBrain != null)

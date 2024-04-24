@@ -147,7 +147,7 @@ namespace DOL.GS
 				// isn't dead already and update necromancer's current health.
 
 				if (Player.ControlledBrain != null)
-					(Player.ControlledBrain as ControlledNpcBrain).Stop();
+					(Player.ControlledBrain as ControlledMobBrain).Stop();
 
 				Player.Health = Math.Min(Player.Health, Player.MaxHealth * Math.Max(10, m_savedPetHealthPercent) / 100);
 			}

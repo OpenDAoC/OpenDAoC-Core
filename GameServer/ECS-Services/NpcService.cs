@@ -82,7 +82,7 @@ namespace DOL.GS
                     brain.NextThinkTick += brain.ThinkInterval;
 
                     // Offset LastThinkTick for non-controlled mobs so that 'Think' ticks are not all "grouped" in one server tick.
-                    if (brain is not ControlledNpcBrain)
+                    if (brain is not ControlledMobBrain)
                         brain.NextThinkTick += Util.Random(-2, 2) * GameLoop.TickRate;
                 }
 

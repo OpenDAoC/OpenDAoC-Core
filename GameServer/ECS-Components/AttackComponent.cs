@@ -1413,7 +1413,7 @@ namespace DOL.GS
                         }
                         else if (owner is GameNPC)
                         {
-                            ControlledNpcBrain brain = ((GameNPC) owner).Brain as ControlledNpcBrain;
+                            ControlledMobBrain brain = ((GameNPC) owner).Brain as ControlledMobBrain;
 
                             if (brain != null)
                             {

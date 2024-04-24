@@ -903,7 +903,7 @@ namespace DOL.GS
 				//Found it, lets remove it
 				if (found)
 				{
-					if (controlledNpc.Body.Brain is ControlledNpcBrain controlledNpcBrain)
+					if (controlledNpc.Body.Brain is ControlledMobBrain controlledNpcBrain)
 						controlledNpcBrain.StripCastedBuffs();
 
 					m_controlledBrain[i] = null;

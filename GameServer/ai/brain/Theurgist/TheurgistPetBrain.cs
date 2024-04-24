@@ -21,7 +21,7 @@ using DOL.GS;
 
 namespace DOL.AI.Brain
 {
-	public class TheurgistPetBrain : ControlledNpcBrain
+	public class TheurgistPetBrain : ControlledMobBrain
 	{
 		private GameObject _target;
 

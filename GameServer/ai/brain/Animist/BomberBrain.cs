@@ -5,7 +5,7 @@ using log4net;
 
 namespace DOL.AI.Brain
 {
-    public class BomberBrain : ControlledNpcBrain
+    public class BomberBrain : ControlledMobBrain
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 

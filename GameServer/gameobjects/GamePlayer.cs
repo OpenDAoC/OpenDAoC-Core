@@ -5715,7 +5715,7 @@ namespace DOL.GS
 
             // Level up pets and subpets
             if (DOL.GS.ServerProperties.Properties.PET_LEVELS_WITH_OWNER &&
-                ControlledBrain is ControlledNpcBrain brain && brain.Body is GameSummonedPet pet)
+                ControlledBrain is ControlledMobBrain brain && brain.Body is GameSummonedPet pet)
             {
                 if (pet.SetPetLevel())
                 {
@@ -6120,9 +6120,9 @@ namespace DOL.GS
                 IsOnHorse = false;
             base.OnAttackedByEnemy(ad);
 
-            if(ControlledBrain != null && ControlledBrain is ControlledNpcBrain)
+            if(ControlledBrain != null && ControlledBrain is ControlledMobBrain)
             {
-                var brain = (ControlledNpcBrain) ControlledBrain;
+                var brain = (ControlledMobBrain) ControlledBrain;
                 brain.OnOwnerAttacked(ad);
             }
 
@@ -7190,7 +7190,7 @@ namespace DOL.GS
             if (partner == null)
                 return false;
 
-            if (living is GameNPC npc && npc.Brain is ControlledNpcBrain brain)
+            if (living is GameNPC npc && npc.Brain is ControlledMobBrain brain)
                 living = brain.GetPlayerOwner();
 
             return partner == living;

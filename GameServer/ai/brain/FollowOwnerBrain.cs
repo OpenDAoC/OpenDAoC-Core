@@ -7,7 +7,7 @@ namespace DOL.AI.Brain
 	/// <summary>
 	/// Dummy Controlled Brain to provide a Following Pet. 
 	/// </summary>
-	public class FollowOwnerBrain : ControlledNpcBrain
+	public class FollowOwnerBrain : ControlledMobBrain
 	{
 		/// <summary>
 		/// Passive default

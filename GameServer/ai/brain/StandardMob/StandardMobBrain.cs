@@ -145,12 +145,12 @@ namespace DOL.AI.Brain
                 if (Properties.CHECK_LOS_BEFORE_AGGRO)
                 {
                     // Check LoS if either the target or the current mob is a pet
-                    if (npc.Brain is ControlledNpcBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
+                    if (npc.Brain is ControlledMobBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
                     {
                         theirOwner.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
                         continue;
                     }
-                    else if (this is ControlledNpcBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
+                    else if (this is ControlledMobBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
                     {
                         ourOwner.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
                         continue;
@@ -576,7 +576,7 @@ namespace DOL.AI.Brain
         /// </summary>
         protected virtual void ConvertDamageToAggroAmount(GameLiving attacker, int damage)
         {
-            if (attacker is GameNPC NpcAttacker && NpcAttacker.Brain is ControlledNpcBrain controlledBrain)
+            if (attacker is GameNPC NpcAttacker && NpcAttacker.Brain is ControlledMobBrain controlledBrain)
             {
                 damage = controlledBrain.ModifyDamageWithTaunt(damage);
 
@@ -636,7 +636,7 @@ namespace DOL.AI.Brain
             // Only BAF on players and pets of players
             if (puller is GamePlayer)
                 playerPuller = (GamePlayer) puller;
-            else if (puller is GameNPC pet && pet.Brain is ControlledNpcBrain brain)
+            else if (puller is GameNPC pet && pet.Brain is ControlledMobBrain brain)
             {
                 playerPuller = brain.GetPlayerOwner();
 

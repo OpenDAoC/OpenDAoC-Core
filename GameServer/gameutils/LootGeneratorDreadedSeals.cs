@@ -51,7 +51,7 @@ namespace DOL.GS
             {
                 GamePlayer player = killer as GamePlayer;
                 if (killer is GameNPC && ((GameNPC)killer).Brain is IControlledBrain)
-                    player = ((ControlledNpcBrain)((GameNPC)killer).Brain).GetPlayerOwner();
+                    player = ((ControlledMobBrain)((GameNPC)killer).Brain).GetPlayerOwner();
                 if (player == null)
                     return loot;
 

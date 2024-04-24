@@ -4,7 +4,7 @@ using DOL.GS;
 
 namespace DOL.AI.Brain
 {
-    public abstract class BDPetBrain : ControlledNpcBrain
+    public abstract class BDPetBrain : ControlledMobBrain
     {
         protected const int BASEFORMATIONDIST = 50;
 

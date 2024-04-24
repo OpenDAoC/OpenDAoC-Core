@@ -2,7 +2,7 @@
 
 namespace DOL.AI.Brain
 {
-	public class JuggernautBrain : ControlledNpcBrain
+	public class JuggernautBrain : ControlledMobBrain
 	{
 		public JuggernautBrain(GameLiving owner) : base(owner) { }
 	}

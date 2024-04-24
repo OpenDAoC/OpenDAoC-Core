@@ -21,7 +21,7 @@ namespace DOL.GS.Spells
 
 			effect.PetSpellHander = this;
 			base.ApplyEffectOnTarget(target);
-			((ControlledNpcBrain) m_pet.Brain).Stay();
+			((ControlledMobBrain) m_pet.Brain).Stay();
 		}
 
 		protected override GameSummonedPet GetGamePet(INpcTemplate template)

@@ -3,7 +3,7 @@ using DOL.GS;
 
 namespace DOL.AI.Brain
 {
-    public class TurretBrain : ControlledNpcBrain
+    public class TurretBrain : ControlledMobBrain
     {
         protected readonly List<GameLiving> _defensiveSpellTargets;
         protected virtual bool CheckLosBeforeCastingDefensiveSpells => false;

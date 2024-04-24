@@ -46,7 +46,7 @@ namespace DOL.AI.Brain
 
                 GamePlayer playerToNotify = null;
 
-                if (_target is GameNPC targetNpc && targetNpc.Brain is ControlledNpcBrain targetBrain)
+                if (_target is GameNPC targetNpc && targetNpc.Brain is ControlledMobBrain targetBrain)
                     targetBrain.GetPlayerOwner();
                 else
                     playerToNotify = _target as GamePlayer;

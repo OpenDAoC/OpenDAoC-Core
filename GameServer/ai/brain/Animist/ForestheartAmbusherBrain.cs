@@ -2,7 +2,7 @@ using DOL.GS;
 
 namespace DOL.AI.Brain
 {
-	public class ForestheartAmbusherBrain : ControlledNpcBrain
+	public class ForestheartAmbusherBrain : ControlledMobBrain
 	{
 		public ForestheartAmbusherBrain(GameLiving owner) : base(owner)
 		{

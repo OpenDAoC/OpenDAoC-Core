@@ -212,7 +212,7 @@ namespace DOL.GS.Spells
 					break;
 				//Other
 				default:
-					controlledBrain = new ControlledNpcBrain(owner);
+					controlledBrain = new ControlledMobBrain(owner);
 					break;
 			}
 

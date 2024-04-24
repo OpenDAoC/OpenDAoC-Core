@@ -425,11 +425,11 @@ namespace DOL.GS.ServerRules
 					return true;
 
 				// Anything can attack pets
-				if (defender is GameSummonedPet || defendnpc.Brain is ControlledNpcBrain)
+				if (defender is GameSummonedPet || defendnpc.Brain is ControlledMobBrain)
 					return true;
 
 				// Pets can attack everything else
-				if (attacknpc is GameSummonedPet || attacknpc.Brain is ControlledNpcBrain)
+				if (attacknpc is GameSummonedPet || attacknpc.Brain is ControlledMobBrain)
 					return true;
 
 				// Mobs can attack mobs only if they both have a faction

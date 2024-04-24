@@ -5,7 +5,7 @@ namespace DOL.AI.Brain
 	/// <summary>
 	/// A brain for the commanders
 	/// </summary>
-	public class CommanderBrain : ControlledNpcBrain
+	public class CommanderBrain : ControlledMobBrain
 	{
 		public CommanderBrain(GameLiving owner) : base(owner) { }
 

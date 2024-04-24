@@ -57,7 +57,7 @@ namespace DOL.AI.Brain
 					foreach(GameNPC npc in Body.GetNPCsInRadius(500))
                     {
 						GameLiving target = Body.TargetObject as GameLiving;
-						if(npc != null && npc.IsAlive && npc.Name.ToLower() == "pygmy goblin" && npc.Brain is not ControlledNpcBrain && npc.Brain is StandardMobBrain brain)
+						if(npc != null && npc.IsAlive && npc.Name.ToLower() == "pygmy goblin" && npc.Brain is not ControlledMobBrain && npc.Brain is StandardMobBrain brain)
                         {
 							if (target != null && target.IsAlive && brain != null && !brain.HasAggro)
 								brain.AddToAggroList(target, 10);

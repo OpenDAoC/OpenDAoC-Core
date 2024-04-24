@@ -18,11 +18,11 @@ namespace DOL.GS
 
             CharmSpellHandler charmSpellHandler = SpellHandler as CharmSpellHandler;
 
-            if (charmSpellHandler.m_controlledBrain == null && charmMob.Brain is not ControlledNpcBrain)
-                charmSpellHandler.m_controlledBrain = new ControlledNpcBrain(casterPlayer);
+            if (charmSpellHandler.m_controlledBrain == null && charmMob.Brain is not ControlledMobBrain)
+                charmSpellHandler.m_controlledBrain = new ControlledMobBrain(casterPlayer);
             else
             {
-                charmSpellHandler.m_controlledBrain = charmMob.Brain as ControlledNpcBrain;
+                charmSpellHandler.m_controlledBrain = charmMob.Brain as ControlledMobBrain;
                 charmSpellHandler.m_isBrainSet = true;
             }
 
@@ -70,7 +70,7 @@ namespace DOL.GS
             if (casterPlayer != null && charmMob != null)
             {
                 GameEventMgr.RemoveHandler(charmMob, GameLivingEvent.PetReleased, charmSpellHandler.ReleaseEventHandler);
-                ControlledNpcBrain oldBrain = casterPlayer.ControlledBrain as ControlledNpcBrain;
+                ControlledMobBrain oldBrain = casterPlayer.ControlledBrain as ControlledMobBrain;
                 casterPlayer.SetControlledBrain(null);
 
                 var immunityEffects = charmMob.effectListComponent.GetSpellEffects().Where(e => e.TriggersImmunity).ToArray();
@@ -130,7 +130,7 @@ namespace DOL.GS
                     }
                 }
 
-                keepSongAlive = charmMob.IsAlive && charmMob.IsWithinRadius(casterPlayer, ControlledNpcBrain.MAX_OWNER_FOLLOW_DIST);
+                keepSongAlive = charmMob.IsAlive && charmMob.IsWithinRadius(casterPlayer, ControlledMobBrain.MAX_OWNER_FOLLOW_DIST);
             }
 
             if (!keepSongAlive)

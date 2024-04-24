@@ -1930,7 +1930,7 @@ namespace DOL.GS.Spells
 								}
 							}
 						}
-						else if (m_caster is GameNPC && (m_caster as GameNPC).Brain is ControlledNpcBrain casterBrain)
+						else if (m_caster is GameNPC && (m_caster as GameNPC).Brain is ControlledMobBrain casterBrain)
 						{
 							GamePlayer player = casterBrain.GetPlayerOwner();
 
@@ -2200,7 +2200,7 @@ namespace DOL.GS.Spells
 					ApplyEffectOnTarget(targetInList);
 				}
 
-				if (Spell.IsConcentration && Caster is GameNPC npc && npc.Brain is ControlledNpcBrain npcBrain && Spell.IsBuff)
+				if (Spell.IsConcentration && Caster is GameNPC npc && npc.Brain is ControlledMobBrain npcBrain && Spell.IsBuff)
 					npcBrain.AddBuffedTarget(Target);
 			}
 

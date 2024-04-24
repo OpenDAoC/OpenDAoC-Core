@@ -17,7 +17,7 @@ namespace DOL.AI.Brain
 	/// <summary>
 	/// A brain that can be controlled
 	/// </summary>
-	public class ControlledNpcBrain : StandardMobBrain, IControlledBrain
+	public class ControlledMobBrain : StandardMobBrain, IControlledBrain
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -58,7 +58,7 @@ namespace DOL.AI.Brain
 		/// Constructs new controlled npc brain
 		/// </summary>
 		/// <param name="owner"></param>
-		public ControlledNpcBrain(GameLiving owner) : base()
+		public ControlledMobBrain(GameLiving owner) : base()
 		{
 			m_owner = owner ?? throw new ArgumentNullException("owner");
 			m_aggressionState = eAggressionState.Defensive;
@@ -71,10 +71,10 @@ namespace DOL.AI.Brain
 			AggroRange = MAX_PET_AGGRO_DISTANCE;
 
 			FSM.ClearStates();
-			FSM.Add(new ControlledNPCState_WAKING_UP(this));
-			FSM.Add(new ControlledNPCState_DEFENSIVE(this));
-			FSM.Add(new ControlledNPCState_AGGRO(this));
-			FSM.Add(new ControlledNPCState_PASSIVE(this));
+			FSM.Add(new ControlledMobState_WAKING_UP(this));
+			FSM.Add(new ControlledMobState_DEFENSIVE(this));
+			FSM.Add(new ControlledMobState_AGGRO(this));
+			FSM.Add(new ControlledMobState_PASSIVE(this));
 			FSM.Add(new StandardMobState_DEAD(this));
 			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
 		}
