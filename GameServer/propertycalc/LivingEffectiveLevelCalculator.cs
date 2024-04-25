@@ -20,8 +20,8 @@ namespace DOL.GS.PropertyCalc
             int bonus = living.ItemBonus[(int) property] + living.BaseBuffBonusCategory[(int) property];
 
             // Summoned pets use their owner's level.
-            if (living is GameSummonedPet summonedPet)
-                level = summonedPet.Brain is IControlledBrain brain ? brain.Owner.Level : living.Level;
+            if (living is GameSummonedPet summonedPet && summonedPet.Brain is IControlledBrain brain)
+                level = brain.Owner.Level;
             else
                 level = living.Level;
 
