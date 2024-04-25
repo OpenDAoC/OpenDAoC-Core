@@ -285,7 +285,7 @@ namespace DOL.AI.Brain
 				}
 				if (Util.Chance(35) && !Body.IsCasting)
 					Body.CastSpell(Vortanos_DD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
-				if (Util.Chance(35) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+				if (Util.Chance(35) && !Body.IsCasting && !target.IsPoisoned)
 					Body.CastSpell(Vortanos_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 				if(!CanSpawnAdds)
                 {

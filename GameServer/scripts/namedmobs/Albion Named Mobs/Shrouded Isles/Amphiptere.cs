@@ -216,7 +216,7 @@ namespace DOL.AI.Brain
 							Body.StopFollowing();
 					}
 					Body.TurnTo(Body.TargetObject);
-					if (Util.Chance(25) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+					if (Util.Chance(25) && !Body.IsCasting && !target.IsPoisoned)
 						Body.CastSpell(Amphiptere_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
 					if (Util.Chance(25) && !Body.IsCasting && !target.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
 						Body.CastSpell(AmphiptereDisease, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);

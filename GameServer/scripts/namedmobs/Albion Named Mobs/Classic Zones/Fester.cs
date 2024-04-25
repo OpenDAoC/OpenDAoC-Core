@@ -146,7 +146,7 @@ namespace DOL.AI.Brain
 			if (HasAggro && Body.TargetObject != null)
 			{
 				GameLiving target = Body.TargetObject as GameLiving;
-				if(target != null && !target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+				if(target != null && !target.IsPoisoned)
 					Body.CastSpell(fester_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 			}
 			base.Think();

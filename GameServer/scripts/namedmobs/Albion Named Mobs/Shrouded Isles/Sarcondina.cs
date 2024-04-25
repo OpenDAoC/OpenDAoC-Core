@@ -100,7 +100,7 @@ namespace DOL.GS
 			{
 				if (ad != null && (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle))
 				{
-					if(!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))
+					if(!ad.Target.IsPoisoned)
 						CastSpell(Sarcondina_Dot, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 				}
 			}

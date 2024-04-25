@@ -148,7 +148,7 @@ namespace DOL.AI.Brain
                 Body.Z = Body.SpawnPoint.Z;
                 Body.Heading = Body.SpawnHeading;
                 //remove effects: dots and bleeds
-                if (Body.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime) && Body.IsAlive)
+                if (Body.IsPoisoned && Body.IsAlive)
                 {
                     var effect = EffectListService.GetEffectOnTarget(Body, eEffect.DamageOverTime);
                     if (effect != null)

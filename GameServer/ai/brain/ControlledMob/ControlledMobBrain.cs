@@ -627,14 +627,14 @@ namespace DOL.AI.Brain
                     GameLiving owner = (this as IControlledBrain).Owner;
 
                     // Cure owner.
-                    if (LivingIsPoisoned(owner))
+                    if (owner.IsPoisoned)
                     {
                         target = owner;
                         break;
                     }
 
                     // Cure self.
-                    if (LivingIsPoisoned(Body))
+                    if (Body.IsPoisoned)
                     {
                         target = Body;
                         break;
@@ -647,7 +647,7 @@ namespace DOL.AI.Brain
                     {
                         foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
                         {
-                            if (LivingIsPoisoned(member) && Body.IsWithinRadius(member, spell.Range))
+                            if (member.IsPoisoned && Body.IsWithinRadius(member, spell.Range))
                             {
                                 target = member;
                                 break;

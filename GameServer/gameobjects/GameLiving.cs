@@ -196,10 +196,8 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets diseased state
 		/// </summary>
-		public virtual bool IsDiseased
-		{
-			get { return m_diseasedCount > 0; }
-		}
+		public virtual bool IsDiseased => m_diseasedCount > 0;
+		public virtual bool IsPoisoned => effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime);
 
 		protected bool m_isEngaging = false;
 		public virtual bool IsEngaging

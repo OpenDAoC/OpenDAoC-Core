@@ -987,14 +987,16 @@ namespace DOL.AI.Brain
                 }
                 case eSpellType.CurePoison:
                 {
-                    if (LivingIsPoisoned(Body))
+                    if (Body.IsPoisoned)
                     {
                         target = Body;
                         break;
                     }
 
-                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && LivingIsPoisoned(Body.ControlledBrain.Body)
-                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target != eSpellTarget.SELF)
+                    if (Body.ControlledBrain != null &&
+                        Body.ControlledBrain.Body != null &&
+                        Body.ControlledBrain.Body.IsPoisoned &&
+                        Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target != eSpellTarget.SELF)
                     {
                         target = Body.ControlledBrain.Body;
                         break;
@@ -1178,24 +1180,6 @@ namespace DOL.AI.Brain
             }
 
             return immunityToCheck != eEffect.Unknown && EffectListService.GetEffectOnTarget(target, immunityToCheck) != null;
-        }
-
-        protected static bool LivingIsPoisoned(GameLiving target)
-        {
-            foreach (IGameEffect effect in target.EffectList)
-            {
-                //If the effect we are checking is not a gamespelleffect keep going
-                if (effect is not GameSpellEffect)
-                    continue;
-
-                GameSpellEffect spellEffect = effect as GameSpellEffect;
-
-                // if this is a DOT then target is poisoned
-                if (spellEffect.Spell.SpellType == eSpellType.DamageOverTime)
-                    return true;
-            }
-
-            return false;
         }
 
         #endregion
