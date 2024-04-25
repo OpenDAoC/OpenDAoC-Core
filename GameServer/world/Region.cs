@@ -118,11 +118,6 @@ namespace DOL.GS
         /// </summary>
         protected int m_numPlayer = 0;
 
-        /// <summary>
-        /// The Region Mob's Respawn Timer Collection
-        /// </summary>
-        protected readonly ConcurrentDictionary<GameNPC, int> m_mobsRespawning = new();
-
         #endregion
 
         #region Constructor
@@ -643,14 +638,6 @@ namespace DOL.GS
             set { m_isNightTime = value; }
         }
 
-        public virtual ConcurrentDictionary<GameNPC, int> MobsRespawning
-        {
-        	get
-        	{
-        		return m_mobsRespawning;
-        	}
-        }
-        
         #endregion
 
         #region Methods

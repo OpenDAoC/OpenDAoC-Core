@@ -244,6 +244,7 @@ namespace DOL.AI.Brain
                 return;
             }
 
+            // TODO: NPCs can get stuck here. Find a way to resume patrols.
             base.Think();
         }
     }

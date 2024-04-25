@@ -30,8 +30,6 @@ namespace DOL.GS
 
 		private const int VISIBLE_TO_PLAYER_SPAN = 60000;
 
-		private int m_databaseLevel;
-
 		public override eGameObjectType GameObjectType => eGameObjectType.NPC;
 
 		#region Formations/Spacing
@@ -993,42 +991,40 @@ namespace DOL.GS
 		/// <param name="equipmentTemplateID">The template id</param>
 		public virtual void LoadEquipmentTemplateFromDatabase(string equipmentTemplateID)
 		{
-			EquipmentTemplateID = equipmentTemplateID;
-			if (EquipmentTemplateID != null && EquipmentTemplateID.Length > 0)
-			{
-				GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
-				if (template.LoadFromDatabase(EquipmentTemplateID))
-				{
-					m_inventory = template.CloseTemplate();
-				}
-				else
-				{
-					//if (log.IsDebugEnabled)
-					//{
-					//    //log.Warn("Error loading NPC inventory: InventoryID="+EquipmentTemplateID+", NPC name="+Name+".");
-					//}
-				}
-				if (Inventory != null)
-				{
-					//if the distance slot isnt empty we use that
-					if (Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
-						SwitchWeapon(eActiveWeaponSlot.Distance);
-					else
-					{
-						DbInventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-						DbInventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+			if (string.IsNullOrEmpty(equipmentTemplateID))
+				return;
 
-						if (twohand != null && onehand != null)
-							//Let's add some random chance
-							SwitchWeapon(Util.Chance(50) ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard);
-						else if (twohand != null)
-							//Hmm our right hand weapon may have been null
-							SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-						else if (onehand != null)
-							//Hmm twohand was null lets default down here
-							SwitchWeapon(eActiveWeaponSlot.Standard);
-					}
-				}
+			// Only load the template if it's a new one.
+			if (EquipmentTemplateID != equipmentTemplateID)
+			{
+				EquipmentTemplateID = equipmentTemplateID;
+				GameNpcInventoryTemplate template = new();
+
+				if (template.LoadFromDatabase(EquipmentTemplateID))
+					Inventory = template.CloseTemplate();
+			}
+
+			InitializeActiveWeaponFromInventory();
+		}
+
+		public void InitializeActiveWeaponFromInventory()
+		{
+			if (Inventory == null)
+				return;
+
+			if (Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
+				SwitchWeapon(eActiveWeaponSlot.Distance);
+			else
+			{
+				DbInventoryItem twoHand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+				DbInventoryItem oneHand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+
+				if (twoHand != null && oneHand != null)
+					SwitchWeapon(Util.Chance(50) ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard);
+				else if (twoHand != null)
+					SwitchWeapon(eActiveWeaponSlot.TwoHanded);
+				else if (oneHand != null)
+					SwitchWeapon(eActiveWeaponSlot.Standard);
 			}
 		}
 
@@ -1038,7 +1034,6 @@ namespace DOL.GS
 			get { return m_loadedFromScript; }
 			set { m_loadedFromScript = value; }
 		}
-
 
 		/// <summary>
 		/// Load a npc from the npc template
@@ -1053,7 +1048,6 @@ namespace DOL.GS
 
 			m_loadedFromScript = false;
 			DbMob dbMob = (DbMob)obj;
-			NPCTemplate = NpcTemplateMgr.GetTemplate(dbMob.NPCTemplateID);
 			TranslationId = dbMob.TranslationId;
 			Name = dbMob.Name;
 			Suffix = dbMob.Suffix;
@@ -1072,7 +1066,6 @@ namespace DOL.GS
 			Flags = (eFlags)dbMob.Flags;
 			m_packageID = dbMob.PackageID;
 			m_level = dbMob.Level;
-			m_databaseLevel = dbMob.Level;
 			AutoSetStats(dbMob);
 			Level = dbMob.Level;
 			m_health = MaxHealth;
@@ -1093,7 +1086,7 @@ namespace DOL.GS
 			m_respawnInterval = dbMob.RespawnInterval * 1000;
 			PathID = dbMob.PathID;
 
-			if (dbMob.Brain != "")
+			if (!string.IsNullOrEmpty(dbMob.Brain))
 			{
 				try
 				{
@@ -1111,7 +1104,7 @@ namespace DOL.GS
 				}
 				catch
 				{
-					log.ErrorFormat("GameNPC error in LoadFromDatabase: can not instantiate brain of type {0} for npc {1}, name = {2}.", dbMob.Brain, dbMob.ClassType, dbMob.Name);
+					log.Error($"GameNPC error in LoadFromDatabase: can not instantiate brain of type {dbMob.Brain} for npc {dbMob.ClassType}, name {dbMob.Name}.");
 				}
 			}
 
@@ -1126,7 +1119,7 @@ namespace DOL.GS
 					{
 						aggroBrain.AggroRange = 400;
 
-						if (Name != Name.ToLower())
+						if (!Name.Equals(Name, StringComparison.OrdinalIgnoreCase))
 							aggroBrain.AggroRange = 500;
 
 						if (CurrentRegion.IsDungeon)
@@ -1143,7 +1136,7 @@ namespace DOL.GS
 					if (Level > 5)
 						aggroBrain.AggroLevel = 30;
 
-					if (Name != Name.ToLower())
+					if (!Name.Equals(Name, StringComparison.OrdinalIgnoreCase))
 						aggroBrain.AggroLevel = 30;
 
 					if (Realm != eRealm.None)
@@ -1160,7 +1153,7 @@ namespace DOL.GS
 			Gender = (eGender)dbMob.Gender;
 			OwnerID = dbMob.OwnerID;
 
-			LoadTemplate(NPCTemplate);
+			LoadTemplate(NpcTemplateMgr.GetTemplate(dbMob.NPCTemplateID)); // Returns a random template if multiple with the same ID exist.);
 		}
 
 		/// <summary>
@@ -1283,214 +1276,236 @@ namespace DOL.GS
 				GameServer.Database.SaveObject(mob);
 		}
 
-		/// <summary>
-		/// Load a NPC template onto this NPC
-		/// </summary>
-		/// <param name="template"></param>
+		// Cached template data from the last call to `LoadTemplate`.
+		private List<string> _templateLevels;
+		private List<string> _templateModels;
+		private List<string> _templateSizes;
+		private List<string> _templateEquipmentIds;
+
 		public virtual void LoadTemplate(INpcTemplate template)
 		{
 			if (template == null)
 				return;
 
-			// Save the template for later
-			NPCTemplate = template as NpcTemplate;
+			// Some properties don't have to be reloaded if we're reusing the same template.
+			// Some properties are also randomized and will be changed even if the template doesn't change.
+			bool isNewTemplate = NPCTemplate != template; 
 
-			// These stats aren't found in the mob table, so always get them from the template
-			this.TetherRange = template.TetherRange;
-			this.ParryChance = template.ParryChance;
-			this.EvadeChance = template.EvadeChance;
-			this.BlockChance = template.BlockChance;
-			this.LeftHandSwingChance = template.LeftHandSwingChance;
-
-			// We need level set before assigning spells to scale pet spells
-			if (template.ReplaceMobValues)
+			// We need the level to be set before assigning spells to scale pet spells.
+			if (isNewTemplate)
 			{
-				byte choosenLevel = 1;
-				if (!string.IsNullOrEmpty(template.Level))
-				{
-					var split = Util.SplitCSV(template.Level, true);
-					byte.TryParse(split[Util.Random(0, split.Count - 1)], out choosenLevel);
-				}
-				this.Level = choosenLevel; // Also calls AutosetStats()
+				NPCTemplate = template as NpcTemplate;
+				HandleTemplateOnlyProperties();
+				HandleLevelFromNewTemplate();
+				HandleSpells();
+				HandleStyles();
+				HandleAbilities();
+			}
+			else
+			{
+				HandleLevel();
+				HandleSpells();
 			}
 
-			if (template.Spells != null) this.Spells = template.Spells;
-			if (template.Styles != null) this.Styles = template.Styles;
-			if (template.Abilities != null)
-			{
-				lock (m_lockAbilities)
-				{
-					foreach (Ability ab in template.Abilities)
-						m_abilities[ab.KeyName] = ab;
-				}
-			}
-
-			// Everything below this point is already in the mob table
+			// Everything below this point overwrites what is in the mob table.
 			if (!template.ReplaceMobValues && !LoadedFromScript)
 				return;
 
-			List<string> m_templatedInventory = new();
-			TranslationId = template.TranslationId;
-			Name = template.Name;
-			Suffix = template.Suffix;
-			GuildName = template.GuildName;
-			ExamineArticle = template.ExamineArticle;
-			MessageArticle = template.MessageArticle;
-			Faction = FactionMgr.GetFactionByID(template.FactionId);
+			if (isNewTemplate)
+				HandleNewMobProperties();
 
-			#region Models, Sizes, Levels, Gender
-			// Grav: this.Model/Size/Level accessors are triggering SendUpdate()
-			// so i must use them, and not directly use private variables
-			ushort choosenModel = 1;
-			var splitModel = Util.SplitCSV(template.Model, true);
-			ushort.TryParse(splitModel[Util.Random(0, splitModel.Count - 1)], out choosenModel);
-			this.Model = choosenModel;
+			HandleModel();
+			HandleSize();
+			HandleInventory();
+			HandleBrain();
 
-			// Graveen: template.Gender is 0,1 or 2 for respectively eGender.Neutral("it"), eGender.Male ("he"), 
-			// eGender.Female ("she"). Any other value is randomly choosing a gender for current GameNPC
-			int choosenGender = template.Gender > 2 ? Util.Random(0, 2) : template.Gender;
-
-			switch (choosenGender)
+			void HandleTemplateOnlyProperties()
 			{
-				default:
-				case 0: this.Gender = eGender.Neutral; break;
-				case 1: this.Gender = eGender.Male; break;
-				case 2: this.Gender = eGender.Female; break;
+				TetherRange = template.TetherRange;
+				ParryChance = template.ParryChance;
+				EvadeChance = template.EvadeChance;
+				BlockChance = template.BlockChance;
+				LeftHandSwingChance = template.LeftHandSwingChance;
 			}
 
-			byte choosenSize = 50;
-			if (!string.IsNullOrEmpty(template.Size))
+			bool HandleLevelFromNewTemplate()
 			{
-				var split = Util.SplitCSV(template.Size, true);
-				byte.TryParse(split[Util.Random(0, split.Count - 1)], out choosenSize);
-			}
-			this.Size = choosenSize;
-			#endregion
-
-			#region Misc Stats
-			Race = (short) template.Race;
-			BodyType = template.BodyType;
-			MaxSpeedBase = template.MaxSpeed;
-			Flags = (eFlags)template.Flags;
-			MeleeDamageType = template.MeleeDamageType;
-			#endregion
-
-			#region Inventory
-			//Ok lets start loading the npc equipment - only if there is a value!
-			if (!string.IsNullOrEmpty(template.Inventory))
-			{
-				bool equipHasItems = false;
-				GameNpcInventoryTemplate equip = new GameNpcInventoryTemplate();
-				//First let's try to reach the npcequipment table and load that!
-				//We use a ';' split to allow npctemplates to support more than one equipmentIDs
-				var equipIDs = Util.SplitCSV(template.Inventory);
-				if (!template.Inventory.Contains(":"))
+				if (!string.IsNullOrEmpty(template.Level))
 				{
-
-					foreach (string str in equipIDs)
-					{
-						m_templatedInventory.Add(str);
-					}
-
-					string equipid = "";
-
-					if (m_templatedInventory.Count > 0)
-					{
-						if (m_templatedInventory.Count == 1)
-							equipid = template.Inventory;
-						else
-							equipid = m_templatedInventory[Util.Random(m_templatedInventory.Count - 1)];
-					}
-					if (equip.LoadFromDatabase(equipid))
-						equipHasItems = true;
+					_templateLevels = Util.SplitCSV(template.Level, true);
+					return HandleLevel();
 				}
 
-				#region Legacy Equipment Code
-				//Nope, nothing in the npcequipment table, lets do the crappy parsing
-				//This is legacy code
-				if (!equipHasItems && template.Inventory.Contains(":"))
-				{
-					//Temp list to store our models
-					List<int> tempModels = new List<int>();
+				return false;
+			}
 
-					//Let's go through all of our ';' seperated slots
-					foreach (string str in equipIDs)
+			bool HandleLevel()
+			{
+				if (template.ReplaceMobValues &&
+					_templateLevels != null &&
+					_templateLevels.Count > 0 &&
+					byte.TryParse(_templateLevels[Util.Random(0, _templateLevels.Count - 1)], out byte newLevel) &&
+					Level != newLevel)
+				{
+					Level = newLevel;
+					return true;
+				}
+
+				_templateLevels = null;
+				return false;
+			}
+
+			void HandleSpells()
+			{
+				if (template.Spells != null)
+					Spells = template.Spells;
+			}
+
+			void HandleStyles()
+			{
+				if (template.Styles != null)
+					Styles = template.Styles;
+			}
+
+			void HandleAbilities()
+			{
+				if (template.Abilities != null)
+				{
+					lock (m_lockAbilities)
+					{
+						foreach (Ability ab in template.Abilities)
+							m_abilities[ab.KeyName] = ab;
+					}
+				}
+			}
+
+			void HandleNewMobProperties()
+			{
+				TranslationId = template.TranslationId;
+				Name = template.Name;
+				Suffix = template.Suffix;
+				GuildName = template.GuildName;
+				ExamineArticle = template.ExamineArticle;
+				MessageArticle = template.MessageArticle;
+				Faction = FactionMgr.GetFactionByID(template.FactionId);
+				Race = (short) template.Race;
+				BodyType = template.BodyType;
+				MaxSpeedBase = template.MaxSpeed;
+				Flags = (eFlags) template.Flags;
+				MeleeDamageType = template.MeleeDamageType;
+				Gender = template.Gender switch
+				{
+					1 => eGender.Male,
+					2 => eGender.Female,
+					_ => eGender.Neutral,
+				};
+
+				if (!string.IsNullOrEmpty(template.Model))
+					_templateModels = Util.SplitCSV(template.Model, true);
+				else
+					_templateModels = null;
+
+				if (!string.IsNullOrEmpty(template.Size))
+					_templateSizes = Util.SplitCSV(template.Size, true);
+				else
+					_templateSizes = null;
+
+				if (!string.IsNullOrEmpty(template.Inventory))
+					_templateEquipmentIds = Util.SplitCSV(template.Inventory);
+				else
+					_templateEquipmentIds = null;
+			}
+
+			void HandleBrain()
+			{
+				if (m_ownBrain != null)
+				{
+					if (m_ownBrain is StandardMobBrain brain)
+					{
+						brain.AggroLevel = template.AggroLevel;
+						brain.AggroRange = template.AggroRange;
+					}
+
+					return;
+				}
+
+				m_ownBrain = new StandardMobBrain()
+				{
+					AggroLevel = template.AggroLevel,
+					AggroRange = template.AggroRange
+				};
+			}
+
+			void HandleModel()
+			{
+				if (_templateModels != null && _templateModels.Count > 0 && ushort.TryParse(_templateModels[Util.Random(0, _templateModels.Count - 1)], out ushort model))
+					Model = model;
+			}
+
+			void HandleSize()
+			{
+				if (_templateSizes != null && _templateSizes.Count > 0 && byte.TryParse(_templateSizes[Util.Random(0, _templateSizes.Count - 1)], out byte size))
+					Size = size;
+				else
+					Size = 50;
+			}
+
+			void HandleInventory()
+			{
+				if (_templateEquipmentIds == null || _templateEquipmentIds.Count <= 0)
+					return;
+
+				GameNpcInventoryTemplate inventoryTemplate = new();
+				bool foundEquipment = false;
+				List<string> templatedInventory = [];
+
+				// Try to load from the npcequipment table.
+				if (!template.Inventory.Contains(':'))
+				{
+					foreach (string str in _templateEquipmentIds)
+						templatedInventory.Add(str);
+
+					string equipmentId = templatedInventory[Util.Random(templatedInventory.Count - 1)];
+
+					if (inventoryTemplate.LoadFromDatabase(equipmentId))
+						foundEquipment = true;
+				}
+
+				// If that failed, parse it the old way (legacy entry).
+				if (!foundEquipment && template.Inventory.Contains(':'))
+				{
+					List<int> tempModels = [];
+
+					foreach (string str in _templateEquipmentIds)
 					{
 						tempModels.Clear();
-						//Split the equipment into slot and model(s)
 						string[] slotXModels = str.Split(':');
-						//It should only be two in length SLOT : MODELS
+
 						if (slotXModels.Length == 2)
 						{
-							int slot;
-							//Let's try to get our slot
-							if (Int32.TryParse(slotXModels[0], out slot))
+							if (int.TryParse(slotXModels[0], out int slot))
 							{
-								//Now lets go through and add all the models to the list
-								string[] models = slotXModels[1].Split('|');
-								foreach (string strModel in models)
+								foreach (string strModel in slotXModels[1].Split('|').ToList())
 								{
-									//We'll add it to the list if we successfully parse it!
-									int model;
-									if (Int32.TryParse(strModel, out model))
+									if (ushort.TryParse(strModel, out ushort model))
 										tempModels.Add(model);
 								}
 
-								//If we found some models let's randomly pick one and add it the equipment
 								if (tempModels.Count > 0)
-									equipHasItems |= equip.AddNPCEquipment((eInventorySlot)slot, tempModels[Util.Random(tempModels.Count - 1)]);
+									foundEquipment |= inventoryTemplate.AddNPCEquipment((eInventorySlot) slot, tempModels[Util.Random(tempModels.Count - 1)]);
 							}
 						}
 					}
 				}
-				#endregion
 
-				//We added some items - let's make it the new inventory
-				if (equipHasItems)
+				if (foundEquipment)
 				{
-					this.Inventory = new GameNPCInventory(equip);
-					if (this.Inventory.GetItem(eInventorySlot.DistanceWeapon) != null)
-						this.SwitchWeapon(eActiveWeaponSlot.Distance);
-					else
-					{
-						DbInventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-						DbInventoryItem onehand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
-
-						if (twohand != null && onehand != null)
-							//Let's add some random chance
-							SwitchWeapon(Util.Chance(50) ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard);
-						else if (twohand != null)
-							//Hmm our right hand weapon may have been null
-							SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-						else if (onehand != null)
-							//Hmm twohand was null lets default down here
-							SwitchWeapon(eActiveWeaponSlot.Standard);
-
-					}
+					Inventory = new GameNPCInventory(inventoryTemplate);
+					InitializeActiveWeaponFromInventory();
 				}
-
-				if (template.VisibleActiveWeaponSlot > 0)
-					this.VisibleActiveWeaponSlots = template.VisibleActiveWeaponSlot;
 			}
-			#endregion
-
-			BuffBonusCategory4[(int)eStat.STR] += template.Strength;
-			BuffBonusCategory4[(int)eStat.DEX] += template.Dexterity;
-			BuffBonusCategory4[(int)eStat.CON] += template.Constitution;
-			BuffBonusCategory4[(int)eStat.QUI] += template.Quickness;
-			BuffBonusCategory4[(int)eStat.INT] += template.Intelligence;
-			BuffBonusCategory4[(int)eStat.PIE] += template.Piety;
-			BuffBonusCategory4[(int)eStat.EMP] += template.Empathy;
-			BuffBonusCategory4[(int)eStat.CHR] += template.Charisma;
-
-			m_ownBrain = new StandardMobBrain
-			{
-				Body = this,
-				AggroLevel = template.AggroLevel,
-				AggroRange = template.AggroRange
-			};
 		}
-		
+
 		public void UpdateNPCEquipmentAppearance()
 		{
 			if (ObjectState != eObjectState.Active) return;
@@ -2136,20 +2151,6 @@ namespace DOL.GS
 			}
 
 			return true;
-		}
-
-		/// <summary>
-		/// Gets or Sets the current Region of the Object
-		/// </summary>
-		public override Region CurrentRegion
-		{
-			get => base.CurrentRegion;
-			set
-			{
-				Region oldRegion = CurrentRegion;
-				base.CurrentRegion = value;
-				Region newRegion = CurrentRegion;
-			}
 		}
 
 		/// <summary>
@@ -3201,28 +3202,18 @@ namespace DOL.GS
 				m_healthRegenerationTimer = null;
 			}
 
-			int respawnInt = RespawnInterval;
-			int minBound = (int) Math.Floor(respawnInt * .95);
-			int maxBound = (int) Math.Floor(respawnInt * 1.05);
-			respawnInt = Util.Random(minBound, maxBound);
-			if (respawnInt > 0)
-			{
-				lock (m_respawnTimerLock)
-				{
-					if (m_respawnTimer == null)
-					{
-						m_respawnTimer = new ECSGameTimer(this);
-						m_respawnTimer.Callback = new ECSGameTimer.ECSTimerCallback(RespawnTimerCallback);
-					}
-					else if (m_respawnTimer.IsAlive)
-					{
-						m_respawnTimer.Stop();
-					}
-					// register Mob as "respawning"
-					CurrentRegion.MobsRespawning.TryAdd(this, respawnInt);
+			if (RespawnInterval <= 0)
+				return;
 
-					m_respawnTimer.Start(respawnInt);
+			lock (m_respawnTimerLock)
+			{
+				if (m_respawnTimer == null)
+				{
+					m_respawnTimer = new ECSGameTimer(this);
+					m_respawnTimer.Callback = new ECSGameTimer.ECSTimerCallback(RespawnTimerCallback);
 				}
+
+				m_respawnTimer.Start(RespawnInterval);
 			}
 		}
 
@@ -3233,8 +3224,6 @@ namespace DOL.GS
 		/// <returns>the new interval</returns>
 		protected virtual int RespawnTimerCallback(ECSGameTimer respawnTimer)
 		{
-			CurrentRegion.MobsRespawning.TryRemove(this, out _);
-
 			lock (m_respawnTimerLock)
 			{
 				if (m_respawnTimer != null)
@@ -3247,30 +3236,16 @@ namespace DOL.GS
 			if (IsAlive || ObjectState == eObjectState.Active)
 				return 0;
 
-			/*
-			if (m_level >= 5 && m_databaseLevel < 60)
-			{
-				int minBound = (int) Math.Round(m_databaseLevel * .9);
-				int maxBound = (int) Math.Round(m_databaseLevel * 1.1);
-				this.Level = (byte)  Util.Random(minBound, maxBound);
-			}*/
-
-			SpawnTick = GameLoop.GameLoopTime;
-
-			// Heal this NPC and move it to the spawn location.
+			LoadTemplate(NPCTemplate);
 			Health = MaxHealth;
 			Mana = MaxMana;
 			Endurance = MaxEndurance;
-
-			int origSpawnX = m_spawnPoint.X;
-			int origSpawnY = m_spawnPoint.Y;
-			X = m_spawnPoint.X;
-			Y = m_spawnPoint.Y;
-			Z = m_spawnPoint.Z;
-			Heading = m_spawnHeading;
+			m_x = m_spawnPoint.X;
+			m_y = m_spawnPoint.Y;
+			m_z = m_spawnPoint.Z;
+			_heading = m_spawnHeading;
+			SpawnTick = GameLoop.GameLoopTime;
 			AddToWorld();
-			m_spawnPoint.X = origSpawnX;
-			m_spawnPoint.Y = origSpawnY;
 			return 0;
 		}
 
