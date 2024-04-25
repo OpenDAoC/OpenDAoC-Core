@@ -1056,32 +1056,13 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StartInterruptTimer(int duration, eAttackType attackType, GameLiving attacker)
 		{
-			// Is this really necessary?
-			if (!IsAlive || ObjectState != eObjectState.Active)
-			{
-				InterruptTime = 0;
-				SelfInterruptTime = 0;
-				LastInterrupter = null;
-				return;
-			}
-
 			if (attacker == this)
 			{
 				SelfInterruptTime = GameLoop.GameLoopTime + duration;
 				return;
 			}
 
-			double chance;
-
-			if (attacker is GamePlayer)
-				chance = 99;
-			else
-			{
-				chance = BaseInterruptChance + GetConLevel(attacker) * 10;
-				chance = Math.Clamp(chance, 1, 99);
-			}
-
-			if (!Util.Chance((int) chance))
+			if (!Util.Chance(100 + GetConLevel(attacker) * 15))
 				return;
 
 			// Don't replace the current interrupt with a shorter one.
@@ -1114,11 +1095,6 @@ namespace DOL.GS
 		public long InterruptRemainingDuration => !IsBeingInterrupted ? 0 : Math.Max(InterruptTime, SelfInterruptTime) - GameLoop.GameLoopTime;
 		public virtual bool IsBeingInterrupted => IsBeingInterruptedIgnoreSelfInterrupt || SelfInterruptTime > GameLoop.GameLoopTime;
 		public virtual bool IsBeingInterruptedIgnoreSelfInterrupt => InterruptTime > GameLoop.GameLoopTime;
-
-		/// <summary>
-		/// Base chance this living can be interrupted
-		/// </summary>
-		public virtual int BaseInterruptChance => 95;
 
 		/// <summary>
 		/// How long does an interrupt last?
