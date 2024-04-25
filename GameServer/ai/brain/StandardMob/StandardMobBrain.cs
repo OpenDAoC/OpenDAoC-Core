@@ -947,6 +947,7 @@ namespace DOL.AI.Brain
                 case eSpellType.OffensiveProc:
                 case eSpellType.DefensiveProc:
                 case eSpellType.DamageShield:
+                case eSpellType.Bladeturn:
                 {
                     if (!LivingHasEffect(Body, spell) && !Body.attackComponent.AttackState && spell.Target != eSpellTarget.PET)
                     {
