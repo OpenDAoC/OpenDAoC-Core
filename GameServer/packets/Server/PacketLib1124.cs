@@ -7,7 +7,6 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.Quests;
-using DOL.GS.Spells;
 using DOL.Language;
 using log4net;
 
@@ -794,9 +793,9 @@ namespace DOL.GS.PacketHandler
 				playerStatus |= 0x02;
 			if (living.IsDiseased)
 				playerStatus |= 0x04;
-			if (SpellHelper.FindEffectOnTarget(living, "DamageOverTime") != null)
+			if (living.IsPoisoned)
 				playerStatus |= 0x08;
-			if (player?.Client?.ClientState == GameClient.eClientState.Linkdead)
+			if (player?.Client.ClientState == GameClient.eClientState.Linkdead)
 				playerStatus |= 0x10;
 			if (living.DebuffCategory[(int)eProperty.SpellRange] != 0 || living.DebuffCategory[(int)eProperty.ArcheryRange] != 0)
 				playerStatus |= 0x40;

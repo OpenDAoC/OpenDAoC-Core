@@ -14,7 +14,6 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
-using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
 using log4net;
@@ -1605,7 +1604,7 @@ namespace DOL.GS.PacketHandler
 								playerStatus |= 0x02;
 							if (updateLiving.IsDiseased)
 								playerStatus |= 0x04;
-							if (SpellHelper.FindEffectOnTarget(updateLiving, "DamageOverTime") != null)
+							if (updateLiving.IsPoisoned)
 								playerStatus |= 0x08;
 							if (updateLiving is GamePlayer &&
 							    (updateLiving as GamePlayer).Client.ClientState == GameClient.eClientState.Linkdead)
@@ -3865,9 +3864,9 @@ namespace DOL.GS.PacketHandler
 					playerStatus |= 0x02;
 				if (living.IsDiseased)
 					playerStatus |= 0x04;
-				if (SpellHelper.FindEffectOnTarget(living, "DamageOverTime") != null)
+				if (living.IsPoisoned)
 					playerStatus |= 0x08;
-				if (living is GamePlayer && ((GamePlayer) living).Client.ClientState == GameClient.eClientState.Linkdead)
+				if (player?.Client.ClientState == GameClient.eClientState.Linkdead)
 					playerStatus |= 0x10;
 
 				pak.WriteByte(playerStatus);
