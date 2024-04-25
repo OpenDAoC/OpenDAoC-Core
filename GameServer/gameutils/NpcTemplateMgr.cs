@@ -183,21 +183,19 @@ namespace DOL.GS
 		{
 			if (templateId == -1 || templateId == 0)
 				return null;
-			lock (m_mobTemplates.SyncRoot)
+
+			object entry = m_mobTemplates[templateId];
+			if (entry is ArrayList)
 			{
-				object entry = m_mobTemplates[templateId];
-				if (entry is ArrayList)
-				{
-					ArrayList array = (ArrayList)entry;
-					return (NpcTemplate)array[Util.Random(array.Count - 1)];
-				}
-				else if (entry == null)
-				{
-					log.Error("No npctemplate with ID " + templateId + " found.");
-					return null;
-				}
-				return (NpcTemplate)entry;
+				ArrayList array = (ArrayList)entry;
+				return (NpcTemplate)array[Util.Random(array.Count - 1)];
 			}
+			else if (entry == null)
+			{
+				log.Error("No npctemplate with ID " + templateId + " found.");
+				return null;
+			}
+			return (NpcTemplate)entry;
 		}
 	}
 }
