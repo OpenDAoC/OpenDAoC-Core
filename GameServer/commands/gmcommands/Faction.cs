@@ -274,6 +274,7 @@ namespace DOL.GS.Commands
                     }
 
                     client.Player.TempProperties.SetProperty(TEMP_FACTION_LAST, faction);
+                    client.Player.Out.SendMessage($"Selected faction #{faction.Id}: {faction.Name } ({faction._baseAggroLevel})", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
                     break;
                 }
                 default:
