@@ -69,7 +69,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(64);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 			canSpawnAdds = false;
 			if(canSpawnAdds==false)
             {
@@ -388,7 +387,6 @@ namespace DOL.GS
 			++EssenceGhoulCount;
 
 			Faction = FactionMgr.GetFactionByID(64);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 
 			ValnirMordethAddBrain sbrain = new ValnirMordethAddBrain();
 			SetOwnBrain(sbrain);

@@ -80,7 +80,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(8);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
 			MorgusUrgalorgBrain sbrain = new MorgusUrgalorgBrain();
 			SetOwnBrain(sbrain);

@@ -69,7 +69,6 @@ namespace DOL.GS
 			VisibleActiveWeaponSlots = 34;
 			MeleeDamageType = eDamageType.Crush;
 			Faction = FactionMgr.GetFactionByID(150);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(150));
 			DagarBrain sbrain = new DagarBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;//load from database

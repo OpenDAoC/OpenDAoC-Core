@@ -67,7 +67,6 @@ namespace DOL.GS
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
 			Faction = FactionMgr.GetFactionByID(96);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			MolluneroBrain sbrain = new MolluneroBrain();
@@ -237,7 +236,6 @@ namespace DOL.GS
 			RoamingRange = 200;
 			TetherRange = 2600;
 			Faction = FactionMgr.GetFactionByID(96);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
 			LoadedFromScript = true;
 			MolluneroAddBrain sbrain = new MolluneroAddBrain();

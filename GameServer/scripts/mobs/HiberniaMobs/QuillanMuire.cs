@@ -20,7 +20,6 @@ namespace DOL.GS
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
 			Faction = FactionMgr.GetFactionByID(782);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(782));
 
 			QuillanMuireBrain sbrain = new QuillanMuireBrain();
 			SetOwnBrain(sbrain);
@@ -150,7 +149,6 @@ namespace DOL.GS
 			Model = 446;
 			Size = 52;
 			Faction = FactionMgr.GetFactionByID(782);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(782));
 			MuireHerbalistBrain sbrain = new MuireHerbalistBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;

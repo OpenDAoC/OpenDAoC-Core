@@ -154,7 +154,6 @@ namespace DOL.GS
 			Empathy = npcTemplate.Empathy;
 
 			Faction = FactionMgr.GetFactionByID(150);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(150));
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			NosdodenBrain sbrain = new NosdodenBrain();
 			SetOwnBrain(sbrain);
@@ -2658,7 +2657,6 @@ namespace DOL.GS
 			MaxSpeedBase = 225;
 			Level = (byte)Util.Random(62, 66);
 			Faction = FactionMgr.GetFactionByID(150);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(150));
 			NosdodenGhostAddBrain add = new NosdodenGhostAddBrain();
 			SetOwnBrain(add);
 			base.AddToWorld();
@@ -3199,7 +3197,6 @@ namespace DOL.GS
 			Realm = eRealm.None;
 			MaxSpeedBase = 250;
 			Faction = FactionMgr.GetFactionByID(150);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(150));
 			NosdodenSummonedAddsBrain adds = new NosdodenSummonedAddsBrain();
 			SetOwnBrain(adds);
 			base.AddToWorld();

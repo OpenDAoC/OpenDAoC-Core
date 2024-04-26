@@ -334,7 +334,6 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
             Aroon_slash = false;
             Aroon_thrust = false;
@@ -391,7 +390,6 @@ namespace DOL.GS
                 CO.BodyType = 5;
                 CO.MeleeDamageType = eDamageType.Slash;
                 CO.Faction = FactionMgr.GetFactionByID(96);
-                CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
                 CO.X = 51478;
                 CO.Y = 43359;
@@ -683,7 +681,6 @@ namespace DOL.GS
             Level = 77;
             MaxSpeedBase = 220;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             CorpScaithBrain adds = new CorpScaithBrain();
@@ -884,7 +881,6 @@ namespace DOL.GS
             Level = 77;
             MaxSpeedBase = 220;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             SpioradScaithBrain adds = new SpioradScaithBrain();
@@ -1078,7 +1074,6 @@ namespace DOL.GS
             Level = 77;
             MaxSpeedBase = 220;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             RopadhScaithBrain adds = new RopadhScaithBrain();
@@ -1278,7 +1273,6 @@ namespace DOL.GS
             Level = 77;
             MaxSpeedBase = 220;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             DamhnaScaithBrain adds = new DamhnaScaithBrain();
@@ -1479,7 +1473,6 @@ namespace DOL.GS
             Level = 77;
             MaxSpeedBase = 220;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             FuinneamgScaithBrain adds = new FuinneamgScaithBrain();
@@ -1681,7 +1674,6 @@ namespace DOL.GS
             Level = 77;
             MaxSpeedBase = 220;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             BruScaithBrain adds = new BruScaithBrain();
@@ -1883,7 +1875,6 @@ namespace DOL.GS
             Level = 77;
             MaxSpeedBase = 220;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             FuarScaithBrain adds = new FuarScaithBrain();
@@ -2086,7 +2077,6 @@ namespace DOL.GS
             Level = 77;
             MaxSpeedBase = 220;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             TaesScaithBrain adds = new TaesScaithBrain();
@@ -2289,7 +2279,6 @@ namespace DOL.GS
             Level = 77;
             MaxSpeedBase = 220;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             ScorScaithBrain adds = new ScorScaithBrain();

@@ -108,7 +108,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(93);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 841, 0, 0, 0);
 			Inventory = template.CloseTemplate();
@@ -269,7 +268,6 @@ namespace DOL.GS
 			MaxSpeedBase = 200;
 
 			Faction = FactionMgr.GetFactionByID(93);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));
 			Realm = eRealm.None;
 
 			Strength = 100;

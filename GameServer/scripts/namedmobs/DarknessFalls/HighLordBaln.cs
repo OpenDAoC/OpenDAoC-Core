@@ -64,7 +64,6 @@ namespace DOL.GS
             // demon
             BodyType = 2;
             Faction = FactionMgr.GetFactionByID(191);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
 
             BalnBrain sBrain = new BalnBrain();
             SetOwnBrain(sBrain);
@@ -197,7 +196,6 @@ namespace DOL.GS
             BodyType = 2;
 
             Faction = FactionMgr.GetFactionByID(191);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
 
             base.AddToWorld();
             return true;

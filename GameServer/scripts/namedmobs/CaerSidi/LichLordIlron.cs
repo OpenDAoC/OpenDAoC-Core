@@ -59,7 +59,6 @@ namespace DOL.GS.Scripts
             RoamingRange = 400;
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(64);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60163266);
             LoadTemplate(npcTemplate);
@@ -211,7 +210,6 @@ namespace DOL.GS
             RespawnInterval = -1;
             TetherRange = 2000;
             Faction = FactionMgr.GetFactionByID(64);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             IsWorthReward = false; // worth no reward
             Flags ^= eFlags.GHOST;
             Realm = eRealm.None;

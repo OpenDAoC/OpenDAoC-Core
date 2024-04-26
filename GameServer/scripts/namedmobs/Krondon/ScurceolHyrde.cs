@@ -106,7 +106,6 @@ namespace DOL.GS
 
 			SpawnOrbs();
 			Faction = FactionMgr.GetFactionByID(8);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
 			ScurceolHyrdeBrain sbrain = new ScurceolHyrdeBrain();
 			SetOwnBrain(sbrain);
@@ -256,7 +255,6 @@ namespace DOL.GS
 			++Orb1Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
 			LyftMihtBrain1 sbrain = new LyftMihtBrain1();
 			SetOwnBrain(sbrain);
@@ -388,7 +386,6 @@ namespace DOL.GS
 			++Orb2Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
 			LyftMihtBrain2 sbrain = new LyftMihtBrain2();
 			SetOwnBrain(sbrain);
@@ -520,7 +517,6 @@ namespace DOL.GS
 			++Orb3Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
 			LyftMihtBrain3 sbrain = new LyftMihtBrain3();
 			SetOwnBrain(sbrain);
@@ -652,7 +648,6 @@ namespace DOL.GS
 			++Orb4Count;
 
 			Faction = FactionMgr.GetFactionByID(8);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
 			LyftMihtBrain4 sbrain = new LyftMihtBrain4();
 			SetOwnBrain(sbrain);

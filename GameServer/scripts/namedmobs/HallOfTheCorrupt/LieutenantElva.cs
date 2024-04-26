@@ -139,7 +139,6 @@ namespace DOL.GS
         public override bool AddToWorld()
         {
             Faction = FactionMgr.GetFactionByID(187);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -206,7 +205,6 @@ namespace DOL.GS
                 HOC.Size = 50;
                 HOC.CurrentRegionID = 277; //hall of the corrupt
                 HOC.Faction = FactionMgr.GetFactionByID(187);
-                HOC.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
                 HOC.Strength = 50;
                 HOC.Constitution = 100;

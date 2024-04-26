@@ -53,7 +53,6 @@ namespace DOL.GS
             RespawnInterval = Util.Random(30000, 50000);
 
             Faction = FactionMgr.GetFactionByID(140);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             FallingIceBrain adds = new FallingIceBrain();
             SetOwnBrain(adds);
             LoadedFromScript = false;//load from database

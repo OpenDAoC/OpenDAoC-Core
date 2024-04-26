@@ -101,7 +101,6 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Gender = eGender.Female;
             Faction = FactionMgr.GetFactionByID(187);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -324,7 +323,6 @@ namespace DOL.GS
             Name = "Ogress";
             Size = (byte)Util.Random(40, 50);
             Faction = FactionMgr.GetFactionByID(187);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             RespawnInterval = -1;
             MaxSpeedBase = 200;
             Realm = eRealm.None;

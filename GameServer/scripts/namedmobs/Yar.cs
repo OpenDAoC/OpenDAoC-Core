@@ -79,7 +79,6 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             
             Faction = FactionMgr.GetFactionByID(154);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(154));
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
             YarBrain sBrain = new YarBrain();
@@ -282,8 +281,7 @@ namespace DOL.GS
             MeleeDamageType = eDamageType.Slash;
 
             Faction = FactionMgr.GetFactionByID(154);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(154));
-            
+
             BodyType = 5;
             YarAddBrain sBrain = new YarAddBrain();
             SetOwnBrain(sBrain);
@@ -357,7 +355,6 @@ namespace DOL.GS
             MeleeDamageType = eDamageType.Slash;
             
             Faction = FactionMgr.GetFactionByID(154);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(154));
             
             BodyType = 5;
             YarAddBrain sBrain = new YarAddBrain();
@@ -428,8 +425,7 @@ namespace DOL.GS
             Quickness = 125;
             RespawnInterval = -1;
             Faction = FactionMgr.GetFactionByID(154);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(154));
-            
+
             Gender = eGender.Neutral;
             MeleeDamageType = eDamageType.Slash;
 

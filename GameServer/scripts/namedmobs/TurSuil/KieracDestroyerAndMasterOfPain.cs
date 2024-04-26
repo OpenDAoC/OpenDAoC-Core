@@ -111,7 +111,6 @@ namespace DOL.GS
 			VisibleActiveWeaponSlots = 34;
 			MeleeDamageType = eDamageType.Slash;
 			Faction = FactionMgr.GetFactionByID(93);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));
 			SpawnMoP = false;
 
 			KieracDestroyerBrain sbrain = new KieracDestroyerBrain();
@@ -310,7 +309,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(93);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));
 			RespawnInterval = -1;
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
 			template.AddNPCEquipment(eInventorySlot.TwoHandWeapon, 442, 0, 0, 0);

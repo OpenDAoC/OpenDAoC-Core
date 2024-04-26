@@ -112,7 +112,6 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(187);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             BodyType = (ushort)NpcTemplateMgr.eBodyType.Plant;
             AncientBlackOakBrain.IsPulled = false;
             OakCount =1;

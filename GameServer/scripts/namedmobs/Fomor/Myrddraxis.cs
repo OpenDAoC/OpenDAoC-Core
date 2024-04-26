@@ -177,7 +177,6 @@ namespace DOL.GS
 			Heading = 492;
 
 			Faction = FactionMgr.GetFactionByID(105);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
 
 			CanSpawnHeads = false;
 			if(CanSpawnHeads == false)
@@ -924,7 +923,6 @@ namespace DOL.GS
 			MaxSpeedBase = 0;
 			++SecondHeadCount;
 			Faction = FactionMgr.GetFactionByID(105);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
 
 			MyrddraxisSecondHeadBrain sbrain = new MyrddraxisSecondHeadBrain();
 			SetOwnBrain(sbrain);
@@ -1141,7 +1139,6 @@ namespace DOL.GS
 			++ThirdHeadCount;
 
 			Faction = FactionMgr.GetFactionByID(105);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
 
 			MyrddraxisThirdHeadBrain sbrain = new MyrddraxisThirdHeadBrain();
 			SetOwnBrain(sbrain);
@@ -1358,7 +1355,6 @@ namespace DOL.GS
 			++FourthHeadCount;
 
 			Faction = FactionMgr.GetFactionByID(105);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
 
 			MyrddraxisFourthHeadBrain sbrain = new MyrddraxisFourthHeadBrain();
 			SetOwnBrain(sbrain);
@@ -1574,7 +1570,6 @@ namespace DOL.GS
 			++FifthHeadCount;
 
 			Faction = FactionMgr.GetFactionByID(105);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(82));
 
 			MyrddraxisFifthHeadBrain sbrain = new MyrddraxisFifthHeadBrain();
 			SetOwnBrain(sbrain);

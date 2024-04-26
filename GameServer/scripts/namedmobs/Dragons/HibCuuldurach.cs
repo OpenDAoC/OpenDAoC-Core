@@ -249,7 +249,6 @@ namespace DOL.GS
 			#endregion
 			MeleeDamageType = eDamageType.Slash;
 			Faction = FactionMgr.GetFactionByID(83);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(83));
 			HibCuuldurachBrain sbrain = new HibCuuldurachBrain();
 			SetOwnBrain(sbrain);
 			sbrain.Start();
@@ -1052,7 +1051,6 @@ namespace DOL.GS
 			Realm = eRealm.None;
 			MaxSpeedBase = 225;
 			Faction = FactionMgr.GetFactionByID(83);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(83));
 			CuuldurachMessengerBrain adds = new CuuldurachMessengerBrain();
 
 			if (!HibCuuldurachBrain.DragonAdds.Contains(this))
@@ -1392,7 +1390,6 @@ namespace DOL.GS
 			}
 			Level = (byte)Util.Random(60, 64);
 			Faction = FactionMgr.GetFactionByID(83);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(83));
 			RespawnInterval = -1;
 
 			MaxSpeedBase = 225;

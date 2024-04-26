@@ -70,7 +70,6 @@ namespace DOL.GS
 
 			Flags = eFlags.FLYING;
 			Faction = FactionMgr.GetFactionByID(20);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(20));
 
 			RisnirCrussBrain sbrain = new RisnirCrussBrain();
 			SetOwnBrain(sbrain);
@@ -100,7 +99,6 @@ namespace DOL.GS
 				add.CurrentRegion = CurrentRegion;
 				add.Heading = Heading;
 				add.Faction = FactionMgr.GetFactionByID(20);
-				add.Faction.AddFriendFaction(FactionMgr.GetFactionByID(20));
 				StandardMobBrain brain = new StandardMobBrain();
 				add.SetOwnBrain(brain);
 				brain.AggroRange = 600;

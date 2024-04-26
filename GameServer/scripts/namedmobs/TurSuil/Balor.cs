@@ -91,7 +91,6 @@ namespace DOL.GS
 
 			BalorBrain.spawn_eye = false;
 			Faction = FactionMgr.GetFactionByID(93);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));
 			IsCloakHoodUp = true;
 
 			GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -334,7 +333,6 @@ namespace DOL.GS
 			Size = 20;
 			Level = (byte)Util.Random(65, 70);
 			Faction = FactionMgr.GetFactionByID(93);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));//minions of balor
 			BalorEyeBrain eye = new BalorEyeBrain();
 			SetOwnBrain(eye);
 			eye.Start();

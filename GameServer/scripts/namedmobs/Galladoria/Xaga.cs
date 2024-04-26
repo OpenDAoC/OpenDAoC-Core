@@ -135,7 +135,6 @@ namespace DOL.GS
 
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             XagaBrain sBrain = new XagaBrain();
             SetOwnBrain(sBrain);
             SaveIntoDatabase();
@@ -180,7 +179,6 @@ namespace DOL.GS
                 SB.BodyType = 5;
                 SB.MeleeDamageType = eDamageType.Slash;
                 SB.Faction = FactionMgr.GetFactionByID(96);
-                SB.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
                 SB.X = 27397;
                 SB.Y = 54975;
@@ -358,7 +356,6 @@ namespace DOL.GS
 
             ++BeathaCount;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BeathaBrain sBrain = new BeathaBrain();
             SetOwnBrain(sBrain);
             base.AddToWorld();
@@ -552,7 +549,6 @@ namespace DOL.GS
             Charisma = npcTemplate.Charisma;
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             Flags = eFlags.FLYING;
             TineBrain.path4_2 = false;
             TineBrain.path1_2 = false;

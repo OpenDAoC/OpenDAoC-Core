@@ -4373,7 +4373,8 @@ namespace DOL.GS
 		{
 			if (Faction == null || npc.Faction == null)
 				return false;
-			return (npc.Faction == Faction || Faction.FriendFactions.Contains(npc.Faction));
+
+			return Faction.FriendFactions.Contains(npc.Faction);
 		}
 
 		/// <summary>

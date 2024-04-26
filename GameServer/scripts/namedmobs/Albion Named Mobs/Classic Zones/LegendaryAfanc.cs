@@ -71,7 +71,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(18);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(18));
 
 			LegendaryAfancBrain sbrain = new LegendaryAfancBrain();
 			SetOwnBrain(sbrain);
@@ -203,7 +202,6 @@ namespace DOL.AI.Brain
 					add.MaxSpeedBase = 200;
 					add.PackageID = "AfancMinion";
 					add.Faction = FactionMgr.GetFactionByID(18);
-					add.Faction.AddFriendFaction(FactionMgr.GetFactionByID(18));
 					StandardMobBrain brain = new StandardMobBrain();
 					add.SetOwnBrain(brain);
 					brain.AggroRange = 1000;

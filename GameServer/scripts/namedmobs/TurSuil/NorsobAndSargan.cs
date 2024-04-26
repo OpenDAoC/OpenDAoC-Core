@@ -111,7 +111,6 @@ namespace DOL.GS
 			VisibleActiveWeaponSlots = 16;
 			MeleeDamageType = eDamageType.Slash;
 			Faction = FactionMgr.GetFactionByID(93);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));
 
 			NorsobAnnihilatorBrain sbrain = new NorsobAnnihilatorBrain();
 			SetOwnBrain(sbrain);
@@ -258,7 +257,6 @@ namespace DOL.GS
 			VisibleActiveWeaponSlots = 16;
 			MeleeDamageType = eDamageType.Thrust;
 			Faction = FactionMgr.GetFactionByID(93);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(93));
 
 			SarganConquerorBrain sbrain = new SarganConquerorBrain();
 			SetOwnBrain(sbrain);

@@ -25,30 +25,10 @@ namespace DOL.GS
         public Faction()
         {
             Name = string.Empty;
-            FriendFactions = new HashSet<Faction>();
-            EnemyFactions = new HashSet<Faction>();
+            FriendFactions = [this];
+            EnemyFactions = [];
             AggroToPlayers = new ConcurrentDictionary<string, int>();
-            _characterIdsToSave = new List<GamePlayer>();
-        }
-
-        public void AddFriendFaction(Faction faction)
-        {
-            FriendFactions.Add(faction);
-        }
-
-        public void RemoveFriendFaction(Faction faction)
-        {
-            FriendFactions.Remove(faction);
-        }
-
-        public void AddEnemyFaction(Faction faction)
-        {
-            EnemyFactions.Add(faction);
-        }
-
-        public void RemoveEnemyFaction(Faction faction)
-        {
-            EnemyFactions.Remove(faction);
+            _characterIdsToSave = [];
         }
 
         public void LoadFromDatabase(DbFaction dbFaction)

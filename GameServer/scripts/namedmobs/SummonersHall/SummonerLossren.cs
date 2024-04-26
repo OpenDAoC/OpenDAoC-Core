@@ -95,7 +95,6 @@ namespace DOL.GS
 			Empathy = npcTemplate.Empathy;
 			RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			Faction = FactionMgr.GetFactionByID(206);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 			IsCloakHoodUp = true;
 			SummonerLossrenBrain.IsCreatingSouls = false;
 			TorturedSouls.TorturedSoulKilled = 0;
@@ -136,7 +135,6 @@ namespace DOL.GS
 				OF.BodyType = (ushort)NpcTemplateMgr.eBodyType.Humanoid;
 				OF.MeleeDamageType = eDamageType.Crush;
 				OF.Faction = FactionMgr.GetFactionByID(206);
-				OF.Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
 				OF.X = 39273;
 				OF.Y = 41166;
@@ -424,7 +422,6 @@ namespace DOL.GS
 			Size = (byte)Util.Random(45,55);
 			Level = (byte)Util.Random(48, 53);
 			Faction = FactionMgr.GetFactionByID(187);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 			TorturedSoulsBrain souls = new TorturedSoulsBrain();
 			SetOwnBrain(souls);			
 			base.AddToWorld();
@@ -589,7 +586,6 @@ namespace DOL.GS
 			Size = 70;
 			Level = (byte)Util.Random(62, 65);
 			Faction = FactionMgr.GetFactionByID(187);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 			ExplodeUndeadBrain souls = new ExplodeUndeadBrain();
 			SetOwnBrain(souls);
 			bool success = base.AddToWorld();

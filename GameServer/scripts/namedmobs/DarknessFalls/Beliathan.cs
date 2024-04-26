@@ -47,7 +47,6 @@ namespace DOL.GS
                 CO.Flags ^= eFlags.DONTSHOWNAME;
                 CO.Flags ^= eFlags.PEACE;
                 CO.Faction = FactionMgr.GetFactionByID(191);
-                CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
                 CO.X = 22699;
                 CO.Y = 18684;
                 CO.Z = 15174;
@@ -213,7 +212,6 @@ namespace DOL.GS
             BodyType = 2;
 
             Faction = FactionMgr.GetFactionByID(191);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
 
             base.AddToWorld();
             return true;
@@ -323,7 +321,6 @@ namespace DOL.GS
             BodyType = 2;
 
             Faction = FactionMgr.GetFactionByID(191);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(191));
 
             base.AddToWorld();
             return true;

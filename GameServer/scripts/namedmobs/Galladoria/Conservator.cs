@@ -77,7 +77,6 @@ namespace DOL.GS
             ConservatorBrain.spamaoe = false;
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
             ConservatorBrain sBrain = new ConservatorBrain();
             SetOwnBrain(sBrain);
@@ -146,7 +145,6 @@ namespace DOL.GS
                 CO.BodyType = 5;
                 CO.MeleeDamageType = eDamageType.Slash;
                 CO.Faction = FactionMgr.GetFactionByID(96);
-                CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
                 CO.X = 31297;
                 CO.Y = 41040;

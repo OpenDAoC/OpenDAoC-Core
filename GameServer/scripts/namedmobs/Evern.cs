@@ -99,7 +99,6 @@ namespace DOL.GS
             MaxSpeedBase = 300;
 
             Faction = FactionMgr.GetFactionByID(81);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(81));
             EvernBrain sbrain = new EvernBrain();
             SetOwnBrain(sbrain);
             LoadedFromScript = false; //load from database
@@ -307,7 +306,6 @@ namespace DOL.GS
             Size = 50;
             Flags = eFlags.FLYING;
             Faction = FactionMgr.GetFactionByID(81);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(81));
             Level = (byte) Util.Random(50, 55);
             Gender = eGender.Female;
             EvernFairyBrain adds = new EvernFairyBrain();

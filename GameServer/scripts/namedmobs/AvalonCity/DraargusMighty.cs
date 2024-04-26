@@ -77,7 +77,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(9);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(9));
 			CreateSphere();
 
 			DraargusMightyBrain sbrain = new DraargusMightyBrain();
@@ -226,7 +225,6 @@ namespace DOL.GS
 			IsSphereDead = false;
 
 			Faction = FactionMgr.GetFactionByID(9);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(9));
 			MaxSpeedBase = 0;
 			++SphereCount;
 			RespawnInterval = -1;

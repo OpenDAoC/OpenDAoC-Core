@@ -22,7 +22,6 @@ namespace DOL.GS
 			Intelligence = npcTemplate.Intelligence;
 			Empathy = npcTemplate.Empathy;
 			Faction = FactionMgr.GetFactionByID(79);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(79));
 
 			WatcherRylieBrain sbrain = new WatcherRylieBrain();
 			SetOwnBrain(sbrain);

@@ -28,7 +28,6 @@ namespace DOL.GS.Scripts
 			Empathy = npcTemplate.Empathy;
 
 			Faction = FactionMgr.GetFactionByID(779);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			BodyType = 1;

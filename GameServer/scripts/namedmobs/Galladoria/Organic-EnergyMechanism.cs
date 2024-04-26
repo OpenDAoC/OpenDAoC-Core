@@ -78,7 +78,6 @@ namespace DOL.GS
             OrganicEnergyMechanismBrain sBrain = new OrganicEnergyMechanismBrain();
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             SetOwnBrain(sBrain);
 
             OrganicEnergyMechanismBrain.StartCastDOT = false;
@@ -445,7 +444,6 @@ namespace DOL.GS
             Gender = eGender.Neutral;
             MeleeDamageType = eDamageType.Slash;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             IsWorthReward = false; //worth no reward
 
             BodyType = 1;

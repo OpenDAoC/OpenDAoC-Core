@@ -96,7 +96,6 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             KvasirBrain sbrain = new KvasirBrain();
@@ -341,7 +340,6 @@ namespace DOL.GS
             TunnelsBrain.message2 = false;
 
             Faction = FactionMgr.GetFactionByID(140);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
 
             TunnelsBrain adds = new TunnelsBrain();
             SetOwnBrain(adds);

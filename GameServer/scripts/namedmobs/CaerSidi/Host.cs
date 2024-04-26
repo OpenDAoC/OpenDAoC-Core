@@ -177,7 +177,6 @@ namespace DOL.GS
                 CO.Flags ^= eFlags.DONTSHOWNAME;
                 CO.Flags ^= eFlags.PEACE;
                 CO.Faction = FactionMgr.GetFactionByID(64);
-                CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
                 CO.X = 26995;
                 CO.Y = 29733;
                 CO.Z = 17871;
@@ -311,7 +310,6 @@ namespace DOL.GS
             Flags = eFlags.GHOST;
 
             Faction = FactionMgr.GetFactionByID(64);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 6;
             Realm = eRealm.None;
 

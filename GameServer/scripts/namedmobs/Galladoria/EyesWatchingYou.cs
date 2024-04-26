@@ -47,7 +47,6 @@ namespace DOL.GS
                 CO.Flags ^= eFlags.DONTSHOWNAME;
                 CO.Flags ^= eFlags.PEACE;
                 CO.Faction = FactionMgr.GetFactionByID(64);
-                CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
                 CO.X = 37278;
                 CO.Y = 63018;
                 CO.Z = 12706;
@@ -168,7 +167,6 @@ namespace DOL.GS
             Flags ^= eFlags.CANTTARGET;
 
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             OlcasgeanEffectBrain adds = new OlcasgeanEffectBrain();

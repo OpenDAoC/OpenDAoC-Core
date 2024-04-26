@@ -69,7 +69,6 @@ namespace DOL.GS
 			SpawnNest();
 
 			Faction = FactionMgr.GetFactionByID(69);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(69));
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 			CurengkurBrain sbrain = new CurengkurBrain();
 			SetOwnBrain(sbrain);
@@ -246,7 +245,6 @@ namespace DOL.GS
 			Flags = (GameNPC.eFlags)42;
 			MaxSpeedBase = 0;
 			Faction = FactionMgr.GetFactionByID(69);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(69));
 
 			LoadedFromScript = true;
 			CurengkurNestBrain sbrain = new CurengkurNestBrain();

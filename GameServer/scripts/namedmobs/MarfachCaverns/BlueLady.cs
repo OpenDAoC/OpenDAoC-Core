@@ -104,7 +104,6 @@ namespace DOL.GS
             Piety = npcTemplate.Piety;
             Intelligence = npcTemplate.Intelligence;
             Faction = FactionMgr.GetFactionByID(187);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             GameNpcInventoryTemplate template = new GameNpcInventoryTemplate();
@@ -307,7 +306,6 @@ namespace DOL.GS
             ++SwordCount;
             RespawnInterval = -1;
             Faction = FactionMgr.GetFactionByID(187);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
             Gender = eGender.Neutral;
             MeleeDamageType = eDamageType.Slash;
@@ -386,7 +384,6 @@ namespace DOL.GS
             ++AxeCount;
             RespawnInterval = -1;
             Faction = FactionMgr.GetFactionByID(187);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(187));
 
             Gender = eGender.Neutral;
             MeleeDamageType = eDamageType.Slash;

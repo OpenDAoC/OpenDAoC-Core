@@ -34,7 +34,6 @@ namespace DOL.GS.Scripts
 			Empathy = npcTemplate.Empathy;
 
 			Faction = FactionMgr.GetFactionByID(779);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(778));
 			LoadedFromScript = false; //load from database
 			SaveIntoDatabase();
 			base.AddToWorld();

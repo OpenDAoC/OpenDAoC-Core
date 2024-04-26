@@ -117,7 +117,6 @@ namespace DOL.GS
 
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             GiantSporiteClusterBrain sBrain = new GiantSporiteClusterBrain();
             SetOwnBrain(sBrain);
             base.AddToWorld();
@@ -301,7 +300,6 @@ namespace DOL.GS
             Size = (byte)Util.Random(45, 55);
             Level = 79;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             GSCAddsBrain adds = new GSCAddsBrain();

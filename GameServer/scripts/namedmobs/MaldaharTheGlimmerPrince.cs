@@ -75,7 +75,6 @@ namespace DOL.GS
             // magical
             BodyType = 8;
             Faction = FactionMgr.GetFactionByID(83);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(83));
             RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
             MaldaharBrain sBrain = new MaldaharBrain();

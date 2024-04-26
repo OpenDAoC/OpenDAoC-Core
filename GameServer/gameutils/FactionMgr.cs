@@ -10,7 +10,7 @@ namespace DOL.GS
 	/// </summary>
 	public class FactionMgr
 	{
-		private FactionMgr(){}
+		private FactionMgr() {}
 
 		/// <summary>
 		/// Defines a logger for this class.
@@ -49,9 +49,9 @@ namespace DOL.GS
 					continue;
 				}
 				if (dblinkedfaction.IsFriend)
-					faction.AddFriendFaction(linkedFaction);
+					faction.FriendFactions.Add(linkedFaction);
 				else
-					faction.AddEnemyFaction(linkedFaction);
+					faction.EnemyFactions.Add(linkedFaction);
 			}
 
 			var dbfactionAggroLevels =	GameServer.Database.SelectAllObjects<DbFactionAggroLevel>();

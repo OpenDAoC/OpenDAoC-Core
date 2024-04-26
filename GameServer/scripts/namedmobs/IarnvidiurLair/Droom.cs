@@ -69,7 +69,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(159); //Servants of Iarnvidiur
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(159)); //Servants of Iarnvidiur
 			DroomBrain sbrain = new DroomBrain();
 			SetOwnBrain(sbrain);
 			LoadedFromScript = false;

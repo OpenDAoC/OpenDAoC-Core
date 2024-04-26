@@ -70,7 +70,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(64);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 
 			AmphiptereBrain sbrain = new AmphiptereBrain();
 			SetOwnBrain(sbrain);
@@ -372,7 +371,6 @@ namespace DOL.GS
 			Level = (byte)Util.Random(61, 63);
 			MaxSpeedBase = 225;
 			Faction = FactionMgr.GetFactionByID(64);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 
 			AmphiptereAddsBrain sbrain = new AmphiptereAddsBrain();
 			SetOwnBrain(sbrain);

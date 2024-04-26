@@ -38,7 +38,6 @@ namespace DOL.GS.Scripts
             Name = "botonid seedling";
 
             Faction = FactionMgr.GetFactionByID(69);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(69));
 
             BotonidBrain sBrain = new BotonidBrain();
             SetOwnBrain(sBrain);

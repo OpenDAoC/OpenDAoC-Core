@@ -152,7 +152,6 @@ namespace DOL.GS
 
                 CO.MeleeDamageType = eDamageType.Crush;
                 CO.Faction = FactionMgr.GetFactionByID(64);
-                CO.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
                 CO.RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
 
                 CO.X = 34080;
@@ -316,7 +315,6 @@ namespace DOL.GS
             MaxSpeedBase = 250;
 
             Faction = FactionMgr.GetFactionByID(64);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 8;
             Realm = eRealm.None;
             LichLordSanguisBrain.set_flag = false;
@@ -450,7 +448,6 @@ namespace DOL.GS
             MaxSpeedBase = 200;
 
             Faction = FactionMgr.GetFactionByID(64);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 6;
             Realm = eRealm.None;
             ++MageCount;

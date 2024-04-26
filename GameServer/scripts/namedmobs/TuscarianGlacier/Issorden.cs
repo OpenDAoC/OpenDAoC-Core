@@ -68,7 +68,6 @@ namespace DOL.GS
             Empathy = npcTemplate.Empathy;
             IssordenBrain.BafMobs = false;
             Faction = FactionMgr.GetFactionByID(140);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
 
             IssordenBrain sbrain = new IssordenBrain();
             SetOwnBrain(sbrain);

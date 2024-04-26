@@ -100,7 +100,6 @@ namespace DOL.GS
 
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             OlcasarGeomancerBrain sBrain = new OlcasarGeomancerBrain();
             SetOwnBrain(sBrain);
             SaveIntoDatabase();
@@ -137,7 +136,6 @@ namespace DOL.GS
                 OG.BodyType = 8; //magician
                 OG.MeleeDamageType = eDamageType.Slash;
                 OG.Faction = FactionMgr.GetFactionByID(96);
-                OG.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
                 OG.X = 39152;
                 OG.Y = 36878;
@@ -577,7 +575,6 @@ namespace DOL.GS
             Size = (byte) Util.Random(45, 55);
             Level = (byte) Util.Random(62, 66);
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             BodyType = 8;
             Realm = eRealm.None;
             OGAddsBrain adds = new OGAddsBrain();

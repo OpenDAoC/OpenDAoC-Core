@@ -75,9 +75,7 @@ namespace DOL.GS
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(140);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
-
             OtryggAdd.PetsCount = 0;
             OtryggBrain sbrain = new OtryggBrain();
             SetOwnBrain(sbrain);
@@ -243,7 +241,6 @@ namespace DOL.GS
             MaxSpeedBase = 250;
 
             Faction = FactionMgr.GetFactionByID(140);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(140));
             BodyType = 6;
             Realm = eRealm.None;
 

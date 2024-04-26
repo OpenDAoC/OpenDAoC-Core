@@ -76,7 +76,6 @@ namespace DOL.GS
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
 
 			Faction = FactionMgr.GetFactionByID(64);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 
 			SarcondinaBrain sbrain = new SarcondinaBrain();
 			SetOwnBrain(sbrain);
@@ -203,7 +202,6 @@ namespace DOL.AI.Brain
 				add.CurrentRegion = Body.CurrentRegion;
 				add.Heading = Body.Heading;
 				add.Faction = FactionMgr.GetFactionByID(64);
-				add.Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
 				StandardMobBrain brain = new StandardMobBrain();
 				add.SetOwnBrain(brain);
 				brain.AggroRange = 800;

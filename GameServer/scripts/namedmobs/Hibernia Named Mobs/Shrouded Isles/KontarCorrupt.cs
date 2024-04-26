@@ -73,7 +73,6 @@ namespace DOL.GS
 			Level = 65;
 			TetherRange = 2600;
 			Faction = FactionMgr.GetFactionByID(96);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 			MaxSpeedBase = 280;
 
 			RespawnInterval = ServerProperties.Properties.SET_EPIC_GAME_ENCOUNTER_RESPAWNINTERVAL * 60000;//1min is 60000 miliseconds
@@ -209,7 +208,6 @@ namespace DOL.GS
 			RoamingRange = 200;
 			TetherRange = 2600;
 			Faction = FactionMgr.GetFactionByID(96);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
 			LoadedFromScript = true;
 			CorruptorBodyguardBrain sbrain = new CorruptorBodyguardBrain();

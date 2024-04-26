@@ -82,7 +82,6 @@ namespace DOL.GS
 			VisibleActiveWeaponSlots = 34;
 			MeleeDamageType = eDamageType.Slash;
 			Faction = FactionMgr.GetFactionByID(8);
-			Faction.AddFriendFaction(FactionMgr.GetFactionByID(8));
 
 			LurfosHeraldBrain sbrain = new LurfosHeraldBrain();
 			SetOwnBrain(sbrain);

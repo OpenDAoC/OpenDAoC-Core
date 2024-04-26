@@ -40,7 +40,6 @@ namespace DOL.GS.Scripts
 
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167362);
             LoadTemplate(npcTemplate);
             Strength = npcTemplate.Strength;

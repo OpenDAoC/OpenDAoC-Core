@@ -91,7 +91,6 @@ namespace DOL.GS
 
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             SpindlerBroodmotherBrain sBrain = new SpindlerBroodmotherBrain();
             SetOwnBrain(sBrain);
             SaveIntoDatabase();
@@ -142,7 +141,6 @@ namespace DOL.GS
                 SB.BodyType = 5;
                 SB.MeleeDamageType = eDamageType.Slash;
                 SB.Faction = FactionMgr.GetFactionByID(96);
-                SB.Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
 
                 SB.X = 21283;
                 SB.Y = 51707;
@@ -469,7 +467,6 @@ namespace DOL.GS
             Size = (byte) Util.Random(50, 60);
             Level = (byte) Util.Random(56, 59);
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             Realm = 0;
             SBAddsBrain adds = new SBAddsBrain();
             LoadedFromScript = true;
@@ -577,7 +574,6 @@ namespace DOL.GS
             Size = (byte) Util.Random(30, 40);
             Level = 50;
             Faction = FactionMgr.GetFactionByID(96);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(96));
             Realm = 0;
             SBDeadAddsBrain adds = new SBDeadAddsBrain();
             LoadedFromScript = true;

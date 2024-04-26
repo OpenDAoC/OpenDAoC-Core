@@ -137,7 +137,7 @@ namespace DOL.GS.Commands
                         IsFriend = true
                     };
                     GameServer.Database.AddObject(dbFactionLinks);
-                    selectedFaction.AddFriendFaction(faction);
+                    selectedFaction.FriendFactions.Add(faction);
                     break;
                 }
                 case "addenemy":

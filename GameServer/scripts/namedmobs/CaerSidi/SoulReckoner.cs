@@ -400,7 +400,6 @@ namespace DOL.GS
             Flags = eFlags.GHOST;           
 
             Faction = FactionMgr.GetFactionByID(64);
-            Faction.AddFriendFaction(FactionMgr.GetFactionByID(64));
             BodyType = 6;
             Realm = eRealm.None;
             ++SoulCount;
