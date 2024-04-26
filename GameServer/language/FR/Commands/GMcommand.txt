@@ -107,7 +107,7 @@ GMCommands.Faction.Description:				Créer une faction et assigner ami et ennemi 
 GMCommands.Faction.Usage.Create:			'/faction create <name> <base aggro level>' pour crée une faction
 GMCommands.Faction.Usage.Assign:			'/faction assign' pour assigner le NPC à une faction
 GMCommands.Faction.Usage.AddFriend:			'/faction addfriend <factionid>' ajouter une faction allier à une autre faction
-GMCommands.Faction.Usage.AddEnemy:			'/faction addenemy  <factionid>' ajouter une faction ennemi à une autre faction
+GMCommands.Faction.Usage.AddEnemy:			'/faction addenemy <factionid>' ajouter une faction ennemi à une autre faction
 GMCommands.Faction.Usage.List:				'/faction list' pour afficher la liste des factions
 GMCommands.Faction.Usage.Select:			'/faction select <factionid>' pour séléctioner une faction
 GMCommands.Faction.MustSelectFaction:		Vous devez d'abord  séléctioner une faction.

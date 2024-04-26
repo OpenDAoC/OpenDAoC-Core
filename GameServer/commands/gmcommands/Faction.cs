@@ -1,242 +1,287 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.Commands
 {
-	[CmdAttribute(
-	   "&faction",
-	   ePrivLevel.GM,
-	   "GMCommands.Faction.Description",
-	   "GMCommands.Faction.Usage.Create",
-	   "GMCommands.Faction.Usage.Assign",
-	   "GMCommands.Faction.Usage.AddFriend",
-	   "GMCommands.Faction.Usage.AddEnemy",
-	   "GMCommands.Faction.Usage.List",
-	   "GMCommands.Faction.Usage.Select")]
-	public class FactionCommandHandler : AbstractCommandHandler, ICommandHandler
-	{
-		protected string TEMP_FACTION_LAST = "TEMP_FACTION_LAST";
+    [CmdAttribute(
+       "&faction",
+       ePrivLevel.GM,
+       "GMCommands.Faction.Description",
+       "GMCommands.Faction.Usage.Create",
+       "GMCommands.Faction.Usage.Assign",
+       "GMCommands.Faction.Usage.AddFriend",
+       "GMCommands.Faction.Usage.AddEnemy",
+       "GMCommands.Faction.Usage.Relations",
+       "GMCommands.Faction.Usage.List",
+       "GMCommands.Faction.Usage.Select")]
+    public class FactionCommandHandler : AbstractCommandHandler, ICommandHandler
+    {
+        protected string TEMP_FACTION_LAST = "TEMP_FACTION_LAST";
 
-		public void OnCommand(GameClient client, string[] args)
-		{
-			if (args.Length < 2)
-			{
-				DisplaySyntax(client);
-				return;
-			}
-			Faction myfaction = client.Player.TempProperties.GetProperty<Faction>(TEMP_FACTION_LAST, null);
-			switch (args[1])
-			{
-				#region Create
-				case "create":
-					{
-						if (args.Length < 4)
-						{
-							DisplaySyntax(client);
-							return;
-						}
-						string name = args[2];
-						int baseAggro = 0;
-						try
-						{
-							baseAggro = Convert.ToInt32(args[3]);
-						}
-						catch
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.Create.BAMustBeNumber"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
+        public void OnCommand(GameClient client, string[] args)
+        {
+            if (args.Length < 2)
+            {
+                DisplaySyntax(client);
+                return;
+            }
 
-						int max = 0;
-						//Log.Info("count:" + FactionMgr.Factions.Count.ToString());
-						if (FactionMgr.Factions.Count != 0)
-						{
-							//Log.Info("count >0");
-							IEnumerator enumerator = FactionMgr.Factions.Keys.GetEnumerator();
-							while (enumerator.MoveNext())
-							{
-								//Log.Info("max :" + max + " et current :" + (int)enumerator.Current);
-								max = System.Math.Max(max, (int)enumerator.Current);
-							}
-						}
-						//Log.Info("max :" + max);
-						DbFaction dbfaction = new DbFaction();
-						dbfaction.BaseAggroLevel = baseAggro;
-						dbfaction.Name = name;
-						dbfaction.ID = (max + 1);
-						//Log.Info("add obj to db with id :" + dbfaction.ID);
-						GameServer.Database.AddObject(dbfaction);
-						//Log.Info("add obj to db");
-						myfaction = new Faction();
-						myfaction.LoadFromDatabase(dbfaction);
-						FactionMgr.Factions.Add(dbfaction.ID, myfaction);
-						client.Player.TempProperties.SetProperty(TEMP_FACTION_LAST, myfaction);
-						client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.Create.NewCreated"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-					}
-					break;
-				#endregion Create
-				#region Assign
-				case "assign":
-					{
-						if (myfaction == null)
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.MustSelectFaction"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
+            Faction selectedFaction = client.Player.TempProperties.GetProperty<Faction>(TEMP_FACTION_LAST, null);
 
-						GameNPC npc = client.Player.TargetObject as GameNPC;
-						if (npc == null)
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.Assign.MustSelectMob"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
-						npc.Faction = myfaction;
-						client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.Assign.MobHasJoinedFact", npc.Name, myfaction.Name), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-					}
-					break;
-				#endregion Assign
-				#region AddFriend
-				case "addfriend":
-					{
-						if (myfaction == null)
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.MustSelectFaction"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
-						if (args.Length < 3)
-						{
-							DisplaySyntax(client);
-							return;
-						}
-						int id = 0;
-						try
-						{
-							id = Convert.ToInt32(args[2]);
-						}
-						catch
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.IndexMustBeNumber"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
-						Faction linkedfaction = FactionMgr.GetFactionByID(id);
-						if (linkedfaction == null)
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
-						DbFactionLinks dblinkedfaction = new DbFactionLinks();
-						dblinkedfaction.FactionID = myfaction.Id;
-						dblinkedfaction.LinkedFactionID = linkedfaction.Id;
-						dblinkedfaction.IsFriend = true;
-						GameServer.Database.AddObject(dblinkedfaction);
-						myfaction.AddFriendFaction(linkedfaction);
-					}
-					break;
-				#endregion AddFriend
-				#region AddEnemy
-				case "addenemy":
-					{
-						if (myfaction == null)
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.MustSelectFaction"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
-						if (args.Length < 3)
-						{
-							DisplaySyntax(client);
-							return;
-						}
-						int id = 0;
-						try
-						{
-							id = Convert.ToInt32(args[2]);
-						}
-						catch
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.IndexMustBeNumber"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
-						Faction linkedfaction = FactionMgr.GetFactionByID(id);
-						if (linkedfaction == null)
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
-						DbFactionLinks dblinkedfaction = new DbFactionLinks();
-						dblinkedfaction.FactionID = myfaction.Id;
-						dblinkedfaction.LinkedFactionID = linkedfaction.Id;
-						dblinkedfaction.IsFriend = false;
-						GameServer.Database.AddObject(dblinkedfaction);
-						myfaction.EnemyFactions.Add(linkedfaction);
-					}
-					break;
-				#endregion AddEnemy
-				#region List
-				case "list":
-					{
-						foreach (Faction faction in FactionMgr.Factions.Values)
-							client.Player.Out.SendMessage("#" + faction.Id.ToString() + ": " + faction.Name + " (" + faction._baseAggroLevel + ")", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-						return;
-					}
-				#endregion List
-				#region Select
-				case "select":
-					{
-						if (args.Length < 3)
-						{
-							DisplaySyntax(client);
-							return;
-						}
-						int id = 0;
-						try
-						{
-							id = Convert.ToInt32(args[2]);
-						}
-						catch
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.IndexMustBeNumber"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
-						Faction tempfaction = FactionMgr.GetFactionByID(id);
-						if (tempfaction == null)
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
-							return;
-						}
-						client.Player.TempProperties.SetProperty(TEMP_FACTION_LAST, tempfaction);
-					}
-					break;
-				#endregion Select
-				#region Default
-				default:
-					{
-						DisplaySyntax(client);
-						return;
-					}
-				#endregion Default
-			}
-		}
-	}
+            switch (args[1])
+            {
+                case "create":
+                {
+                    if (args.Length < 4)
+                    {
+                        DisplaySyntax(client);
+                        return;
+                    }
+
+                    int baseAggro;
+
+                    try
+                    {
+                        baseAggro = Convert.ToInt32(args[3]);
+                    }
+                    catch
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.Create.BAMustBeNumber"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    int max = 0;
+
+                    if (FactionMgr.Factions.Count != 0)
+                    {
+                        IEnumerator enumerator = FactionMgr.Factions.Keys.GetEnumerator();
+
+                        while (enumerator.MoveNext())
+                            max = Math.Max(max, (int)enumerator.Current);
+                    }
+
+                    DbFaction dbFaction = new()
+                    {
+                        BaseAggroLevel = baseAggro,
+                        Name = args[2],
+                        ID = max + 1
+                    };
+                    GameServer.Database.AddObject(dbFaction);
+                    selectedFaction = new Faction();
+                    selectedFaction.LoadFromDatabase(dbFaction);
+                    FactionMgr.Factions.Add(dbFaction.ID, selectedFaction);
+                    client.Player.TempProperties.SetProperty(TEMP_FACTION_LAST, selectedFaction);
+                    client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.Create.NewCreated"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                    break;
+                }
+                case "assign":
+                {
+                    if (selectedFaction == null)
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.MustSelectFaction"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    if (client.Player.TargetObject is not GameNPC npc)
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.Assign.MustSelectMob"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    npc.Faction = selectedFaction;
+                    client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.Assign.MobHasJoinedFact", npc.Name, selectedFaction.Name), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                    break;
+                }
+                case "addfriend":
+                {
+                    if (selectedFaction == null)
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.MustSelectFaction"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    if (args.Length < 3)
+                    {
+                        DisplaySyntax(client);
+                        return;
+                    }
+
+                    int id;
+
+                    try
+                    {
+                        id = Convert.ToInt32(args[2]);
+                    }
+                    catch
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.IndexMustBeNumber"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    Faction faction = FactionMgr.GetFactionByID(id);
+
+                    if (faction == null)
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    DbFactionLinks dbFactionLinks = new()
+                    {
+                        FactionID = selectedFaction.Id,
+                        LinkedFactionID = faction.Id,
+                        IsFriend = true
+                    };
+                    GameServer.Database.AddObject(dbFactionLinks);
+                    selectedFaction.AddFriendFaction(faction);
+                    break;
+                }
+                case "addenemy":
+                {
+                    if (selectedFaction == null)
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.MustSelectFaction"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    if (args.Length < 3)
+                    {
+                        DisplaySyntax(client);
+                        return;
+                    }
+
+                    int id;
+
+                    try
+                    {
+                        id = Convert.ToInt32(args[2]);
+                    }
+                    catch
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.IndexMustBeNumber"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    Faction faction = FactionMgr.GetFactionByID(id);
+
+                    if (faction == null)
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    DbFactionLinks dbFactionLinks = new()
+                    {
+                        FactionID = selectedFaction.Id,
+                        LinkedFactionID = faction.Id,
+                        IsFriend = false
+                    };
+                    GameServer.Database.AddObject(dbFactionLinks);
+                    selectedFaction.EnemyFactions.Add(faction);
+                    break;
+                }
+                case "relations":
+                {
+                    if (selectedFaction == null)
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.MustSelectFaction"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    client.Player.Out.SendMessage($"Relations for #{selectedFaction.Id}: {selectedFaction.Name } ({selectedFaction._baseAggroLevel}):", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                    HashSet<Faction> otherFactions = selectedFaction.FriendFactions;
+
+                    if (otherFactions.Count > 0)
+                    {
+                        client.Player.Out.SendMessage($" Is friend with:", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+
+                        foreach (Faction otherFaction in otherFactions)
+                            SendOtherFactionInfo(client, otherFaction, IsHardcoded(selectedFaction.Id, otherFaction.Id, true), otherFaction.FriendFactions.Contains(selectedFaction));
+                    }
+
+                    otherFactions = selectedFaction.EnemyFactions;
+
+                    if (otherFactions.Count > 0)
+                    {
+                        client.Player.Out.SendMessage($" Is hostile with:", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+
+                        foreach (Faction otherFaction in selectedFaction.EnemyFactions)
+                            SendOtherFactionInfo(client, otherFaction, IsHardcoded(selectedFaction.Id, otherFaction.Id, false), otherFaction.EnemyFactions.Contains(selectedFaction));
+                    }
+
+                    static bool IsHardcoded(int selectedFactionId, int otherFactionId, bool checkForFriendly)
+                    {
+                        return GameServer.Database.SelectObject<DbFactionLinks>(DB.Column("FactionID").IsEqualTo(selectedFactionId).And(DB.Column("LinkedFactionID").IsEqualTo(otherFactionId).And(DB.Column("IsFriend").IsEqualTo(checkForFriendly)))) == null;
+                    }
+
+                    static void SendOtherFactionInfo(GameClient client, Faction otherFaction, bool hardcoded, bool reciprocal)
+                    {
+                        string extraInfo = string.Empty;
+
+                        if (hardcoded || !reciprocal)
+                        {
+                            extraInfo = "  ";
+
+                            if (hardcoded)
+                                extraInfo += "[hardcoded]";
+
+                            if (!reciprocal)
+                                extraInfo += "[not reciprocal]";
+                        }
+
+                        client.Out.SendMessage($"  #{otherFaction.Id}: {otherFaction.Name } ({otherFaction._baseAggroLevel}){extraInfo}", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                    }
+
+                    break;
+                }
+                case "list":
+                {
+                    foreach (Faction faction in FactionMgr.Factions.Values)
+                        client.Player.Out.SendMessage($"#{faction.Id}: {faction.Name } ({faction._baseAggroLevel})", eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+
+                    return;
+                }
+                case "select":
+                {
+                    if (args.Length < 3)
+                    {
+                        DisplaySyntax(client);
+                        return;
+                    }
+
+                    int id;
+
+                    try
+                    {
+                        id = Convert.ToInt32(args[2]);
+                    }
+                    catch
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.IndexMustBeNumber"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    Faction faction = FactionMgr.GetFactionByID(id);
+
+                    if (faction == null)
+                    {
+                        client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Faction.FactionNotLoaded"), eChatType.CT_Say, eChatLoc.CL_SystemWindow);
+                        return;
+                    }
+
+                    client.Player.TempProperties.SetProperty(TEMP_FACTION_LAST, faction);
+                    break;
+                }
+                default:
+                {
+                    DisplaySyntax(client);
+                    return;
+                }
+            }
+        }
+    }
 }

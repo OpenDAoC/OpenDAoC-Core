@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using DOL.GS;
-using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;

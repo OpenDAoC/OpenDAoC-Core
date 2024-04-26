@@ -119,7 +119,8 @@ GMCommands.Faction.Description:				Create a faction and assign friend and enemy 
 GMCommands.Faction.Usage.Create:			'/faction create <name> <base aggro level>' to create a faction
 GMCommands.Faction.Usage.Assign:			'/faction assign' to assign the faction to the target mob
 GMCommands.Faction.Usage.AddFriend:			'/faction addfriend <factionid>' to add faction friend to current faction
-GMCommands.Faction.Usage.AddEnemy:			'/faction addenemy  <factionid>' to add enemy to the current faction
+GMCommands.Faction.Usage.AddEnemy:			'/faction addenemy <factionid>' to add enemy to the current faction
+GMCommands.Faction.Usage.Relations:			'/faction relations' to show relations of the current faction
 GMCommands.Faction.Usage.List:				'/faction list' to have a list of all faction
 GMCommands.Faction.Usage.Select:			'/faction select <factionid>' to select the faction with this id
 GMCommands.Faction.MustSelectFaction:		You must select a faction first.
