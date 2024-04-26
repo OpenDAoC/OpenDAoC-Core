@@ -35,21 +35,9 @@ namespace DOL.AI.Brain
 
     public class ControlledMobState_DEFENSIVE : StandardMobState_IDLE
     {
-        private bool _abilitiesChecked;
-
         public ControlledMobState_DEFENSIVE(ControlledMobBrain brain) : base(brain)
         {
             StateType = eFSMStateType.IDLE;
-        }
-
-        public override void Enter()
-        {
-            if (_abilitiesChecked)
-                return;
-
-            ControlledMobBrain brain = _brain as ControlledMobBrain;
-            brain.CheckAbilities();
-            brain.Body.SortSpells();
         }
 
         public override void Think()
