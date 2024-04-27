@@ -869,8 +869,8 @@ namespace DOL.GS
 
 		#region Movement
 
-		public const int STICK_MINIMUM_RANGE = 75;
-		public const int STICK_MAXIMUM_RANGE = 5000;
+		public virtual int StickMinimumRange => (int) (MeleeAttackRange * 0.375);
+		public virtual int StickMaximumRange => 5000;
 
 		public long LastVisibleToPlayersTickCount => m_lastVisibleToPlayerTick;
 

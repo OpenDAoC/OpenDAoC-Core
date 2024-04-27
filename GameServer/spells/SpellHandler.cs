@@ -711,7 +711,7 @@ namespace DOL.GS.Spells
 						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
 
 						if (Caster is GameNPC npc)
-							npc.Follow(Target, Spell.Range - 100, GameNPC.STICK_MAXIMUM_RANGE);
+							npc.Follow(Target, Spell.Range - 100, npc.StickMaximumRange);
 
 						return false;
 					}

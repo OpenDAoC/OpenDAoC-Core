@@ -829,9 +829,9 @@ namespace DOL.GS
             {
                 // Archer mobs sometimes bug and keep trying to fire at max range unsuccessfully so force them to get just a tad closer.
                 if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                    npc.Follow(attackTarget, AttackRange - 30, GameNPC.STICK_MAXIMUM_RANGE);
+                    npc.Follow(attackTarget, AttackRange - 30, npc.StickMaximumRange);
                 else
-                    npc.Follow(attackTarget, GameNPC.STICK_MINIMUM_RANGE, GameNPC.STICK_MAXIMUM_RANGE);
+                    npc.Follow(attackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
             }
         }
 

@@ -140,7 +140,7 @@ namespace DOL.GS.Keeps
 		/// <returns>Whether or not we are responding</returns>
 		public virtual bool AssistLord(GuardLord lord)
 		{
-			Follow(lord, STICK_MINIMUM_RANGE, int.MaxValue);
+			Follow(lord, StickMinimumRange, int.MaxValue);
 			return true;
 		}
 
