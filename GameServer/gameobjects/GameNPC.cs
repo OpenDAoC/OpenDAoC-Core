@@ -2723,14 +2723,6 @@ namespace DOL.GS
 		public virtual void StartAttack(GameObject target)
 		{
 			attackComponent.RequestStartAttack(target);
-
-			if (FollowTarget != target)
-			{
-				StopFollowing();
-				Follow(target as GameLiving, movementComponent.FollowMinDistance, movementComponent.FollowMaxDistance);
-			}
-
-			FireAmbientSentence(eAmbientTrigger.fighting, target);
 		}
 
 		private int scalingFactor = Properties.GAMENPC_SCALING;

@@ -199,6 +199,8 @@ namespace DOL.GS
         /// </summary>
         public int UsedHandOnLastDualWieldAttack { get; set; }
 
+        public const int NPC_MELEE_ATTACK_RANGE = 200;
+
         /// <summary>
         /// Returns this attack's range
         /// </summary>
@@ -298,7 +300,7 @@ namespace DOL.GS
                     if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
                         return Math.Max(32, (int) (2000.0 * owner.GetModified(eProperty.ArcheryRange) * 0.01));
 
-                    return 200;
+                    return NPC_MELEE_ATTACK_RANGE;
                 }
             }
         }
@@ -823,8 +825,15 @@ namespace DOL.GS
         private void NpcStartAttack(GameObject attackTarget)
         {
             GameNPC npc = owner as GameNPC;
+
+            if (npc.FollowTarget != attackTarget)
+            {
+                npc.StopMoving();
+                npc.TurnTo(attackTarget);
+            }
+
+            npc.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, attackTarget);
             npc.TargetObject = attackTarget;
-            npc.StopMovingOnPath();
 
             if (npc.Brain is IControlledBrain brain)
             {

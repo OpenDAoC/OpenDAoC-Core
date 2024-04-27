@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -453,7 +452,7 @@ namespace DOL.GS
                 return Properties.GAMENPC_FOLLOWCHECK_TIME;
             }
 
-            if (FollowTarget.IsAlive == false || FollowTarget.ObjectState != eObjectState.Active || Owner.CurrentRegionID != FollowTarget.CurrentRegionID)
+            if (!FollowTarget.IsAlive || FollowTarget.ObjectState != eObjectState.Active || Owner.CurrentRegionID != FollowTarget.CurrentRegionID)
             {
                 StopFollowing();
                 return 0;
