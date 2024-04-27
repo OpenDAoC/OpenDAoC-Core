@@ -458,10 +458,35 @@ namespace DOL.GS
                 return 0;
             }
 
-            float relativeX = FollowTarget.X - Owner.X;
-            float relativeY = FollowTarget.Y - Owner.Y;
-            float relativeZ = FollowTarget.Z - Owner.Z;
-            double distance = Math.Sqrt(relativeX * relativeX + relativeY * relativeY + relativeZ * relativeZ);
+            int targetX = FollowTarget.X;
+            int targetY = FollowTarget.Y;
+            int targetZ = FollowTarget.Z;
+            float relativeX;
+            float relativeY;
+            float relativeZ;
+            double distance;
+            bool isInFormation;
+
+            if (Owner.Brain is StandardMobBrain brain && Owner.FollowTarget.Realm == Owner.Realm)
+            {
+                if (brain.CheckFormation(ref targetX, ref targetY, ref targetZ))
+                    isInFormation = true;
+                else
+                    isInFormation = false;
+
+                relativeX = targetX - Owner.X;
+                relativeY = targetY - Owner.Y;
+                relativeZ = targetZ - Owner.Z;
+            }
+            else
+            {
+                relativeX = FollowTarget.X - Owner.X;
+                relativeY = FollowTarget.Y - Owner.Y;
+                relativeZ = FollowTarget.Z - Owner.Z;
+                isInFormation = false;
+            }
+
+            distance = Math.Sqrt(relativeX * relativeX + relativeY * relativeY + relativeZ * relativeZ);
 
             // If distance is greater then the max follow distance, stop following and return home.
             if (distance > FollowMaxDistance)
@@ -470,34 +495,23 @@ namespace DOL.GS
                 return 0;
             }
 
-            Point3D destination;
+            int minAllowedFollowDistance;
 
-            if (Owner.Brain is StandardMobBrain brain && Owner.FollowTarget.Realm == Owner.Realm)
+            if (isInFormation)
+                minAllowedFollowDistance = 0;
+            else
             {
-                // If we're part of a formation, we can get out early.
-                int newX = FollowTarget.X;
-                int newY = FollowTarget.Y;
-                int newZ = FollowTarget.Z;
+                minAllowedFollowDistance = Math.Max(FollowMinDistance, MIN_ALLOWED_FOLLOW_DISTANCE);
 
-                if (brain.CheckFormation(ref newX, ref newY, ref newZ))
+                if (distance <= minAllowedFollowDistance)
                 {
-                    destination = new(newX, newY, newZ);
-                    double followSpeed = Math.Max(Math.Min(MaxSpeed, Owner.GetDistance(destination) * FOLLOW_SPEED_SCALAR), 50);
-                    PathToInternal(destination, (short) followSpeed);
+                    TurnTo(FollowTarget);
+
+                    if (IsMoving)
+                        UpdateMovement(null, 0.0, 0);
+
                     return Properties.GAMENPC_FOLLOWCHECK_TIME;
                 }
-            }
-
-            int minAllowedFollowDistance = Math.Max(FollowMinDistance, MIN_ALLOWED_FOLLOW_DISTANCE);
-
-            if ((int) distance <= minAllowedFollowDistance)
-            {
-                TurnTo(FollowTarget);
-
-                if (IsMoving)
-                    UpdateMovement(null, 0.0, 0);
-
-                return Properties.GAMENPC_FOLLOWCHECK_TIME;
             }
 
             // Use a slightly lower follow distance for destination calculation. This helps with heading at low speed.
@@ -505,7 +519,7 @@ namespace DOL.GS
             relativeX = (float) (relativeX / distance * minAllowedFollowDistance);
             relativeY = (float) (relativeY / distance * minAllowedFollowDistance);
             relativeZ = (float) (relativeZ / distance * minAllowedFollowDistance);
-            destination = new((int) (FollowTarget.X - relativeX), (int) (FollowTarget.Y - relativeY), (int) (FollowTarget.Z - relativeZ));
+            Point3D destination = new((int) (targetX - relativeX), (int) (targetY - relativeY), (int) (targetZ - relativeZ));
             short speed = (short) ((distance - minAllowedFollowDistance) * (1000.0 / Properties.GAMENPC_FOLLOWCHECK_TIME));
             PathToInternal(destination, Math.Min(MaxSpeed, speed));
             return Properties.GAMENPC_FOLLOWCHECK_TIME;
