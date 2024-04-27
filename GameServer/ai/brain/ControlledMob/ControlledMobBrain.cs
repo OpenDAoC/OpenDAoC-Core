@@ -29,8 +29,6 @@ namespace DOL.AI.Brain
 		public const short MIN_OWNER_FOLLOW_DIST = 50;
 		//4000 - rough guess, needs to be confirmed
 		public const short MAX_OWNER_FOLLOW_DIST = 10000; // setting this to max stick distance
-		public const short MIN_ENEMY_FOLLOW_DIST = 90;
-		public const short MAX_ENEMY_FOLLOW_DIST = 5000;
 
 		protected int m_tempX = 0;
 		protected int m_tempY = 0;
@@ -901,12 +899,7 @@ namespace DOL.AI.Brain
 				}
 
 				if (!CheckSpells(eCheckSpellType.Offensive))
-				{
 					Body.StartAttack(target);
-
-					if (Body.FollowTarget != target)
-						Body.Follow(target, MIN_ENEMY_FOLLOW_DIST, MAX_ENEMY_FOLLOW_DIST);
-				}
 			}
 			else
 			{
