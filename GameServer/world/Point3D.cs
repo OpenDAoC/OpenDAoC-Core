@@ -131,6 +131,9 @@ namespace DOL.GS
 		/// <returns>True if the point is within the radius, otherwise false</returns>
 		public bool IsWithinRadius(IPoint3D point, int radius, bool ignoreZ)
 		{
+			if (radius < 0)
+				return false;
+
 			if (radius > ushort.MaxValue)
 				return GetDistanceTo(point, ignoreZ ? 0.0 : 1.0) <= radius;
 
