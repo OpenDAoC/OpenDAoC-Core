@@ -125,7 +125,7 @@ namespace DOL.GS.Keeps
 
 		public override long ExperienceValue => 0;
 
-		public override int AttackRange => 1000;
+		public override int MeleeAttackRange => 1000;
 
 		public override IList GetExamineMessages(GamePlayer player)
 		{

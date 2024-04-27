@@ -43,15 +43,7 @@ namespace DOL.GS.Scripts
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override int AttackRange
-		{
-			get
-			{
-				return 350;
-			}
-			set
-			{ }
-		}
+		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -87,7 +79,7 @@ namespace DOL.GS.Scripts
 			GudlaugrBrain brain = new GudlaugrBrain();
 			if (TargetObject != null)
 			{
-				if (ad.Target.IsWithinRadius(this, AttackRange))
+				if (ad.Target.IsWithinRadius(this, attackComponent.AttackRange))
 				{
 					if (!ad.Target.effectListComponent.ContainsEffectForEffectType(eEffect.Bleed))
 					{

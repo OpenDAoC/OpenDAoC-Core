@@ -48,16 +48,7 @@ namespace DOL.GS
             return base.AttackDamage(weapon) * Strength / 100;
         }
 
-        public override int AttackRange
-        {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
-        }
+        public override int MeleeAttackRange => 450;
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -239,16 +230,7 @@ namespace DOL.GS
             }
         }
 
-        public override int AttackRange
-        {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
-        }
+        public override int MeleeAttackRange => 450;
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 300;
@@ -313,16 +295,7 @@ namespace DOL.GS
             }
         }
 
-        public override int AttackRange
-        {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
-        }
+        public override int MeleeAttackRange => 450;
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 300;
@@ -387,16 +360,7 @@ namespace DOL.GS
             }
         }
 
-        public override int AttackRange
-        {
-            get
-            {
-                return 450;
-            }
-            set
-            {
-            }
-        }
+        public override int MeleeAttackRange => 450;
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 300;

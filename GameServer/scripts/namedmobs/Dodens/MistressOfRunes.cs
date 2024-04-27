@@ -45,12 +45,7 @@ namespace DOL.GS.Scripts
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override int AttackRange
-		{
-			get
-			{ return 350;}
-			set{ }
-		}
+		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -240,7 +235,7 @@ namespace DOL.AI.Brain
 				if (living != null &&
 					living.IsAlive &&
 					living.EffectList.GetOfType<NecromancerShadeEffect>() == null &&
-					!mistress.IsWithinRadius(living, mistress.AttackRange))
+					!mistress.IsWithinRadius(living, mistress.attackComponent.AttackRange))
 				{
 					inRangeLiving.Add(living);
 				}

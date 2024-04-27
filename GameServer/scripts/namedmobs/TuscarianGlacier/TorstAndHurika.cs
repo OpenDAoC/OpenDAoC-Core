@@ -27,11 +27,7 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
-        public override int AttackRange
-        {
-            get { return 350; }
-            set { }
-        }
+        public override int MeleeAttackRange => 350;
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -277,7 +273,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             TorstFlyingPath();
-            if (CheckProximityAggro() && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange) && Body.InCombat)
+            if (CheckProximityAggro() && Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange) && Body.InCombat)
             {
                 Body.Flags = 0; //dont fly
             }
@@ -440,11 +436,7 @@ namespace DOL.GS
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
 
-        public override int AttackRange
-        {
-            get { return 350; }
-            set { }
-        }
+        public override int MeleeAttackRange => 350;
 
         public override bool HasAbility(string keyName)
         {
@@ -623,7 +615,7 @@ namespace DOL.AI.Brain
         public override void Think()
         {
             HurikaFlyingPath();
-            if (CheckProximityAggro() && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange) && Body.InCombat)
+            if (CheckProximityAggro() && Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange) && Body.InCombat)
             {
                 Body.Flags = 0; //dont fly
             }

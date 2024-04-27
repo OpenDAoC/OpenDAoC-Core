@@ -45,11 +45,7 @@ namespace DOL.GS
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override int AttackRange
-		{
-			get { return 350; }
-			set { }
-		}
+		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -444,7 +440,7 @@ namespace DOL.AI.Brain
 		}
 		public override void Think()
 		{
-			foreach(GamePlayer player in Body.GetPlayersInRadius((ushort)Body.AttackRange))
+			foreach(GamePlayer player in Body.GetPlayersInRadius((ushort)Body.attackComponent.AttackRange))
             {
 				if(player != null)
                 {

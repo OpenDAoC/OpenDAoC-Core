@@ -104,11 +104,7 @@ namespace DOL.GS.Scripts
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
-        public override int AttackRange
-        {
-            get { return 450; }
-            set { }
-        }
+        public override int MeleeAttackRange => 450;
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -741,11 +737,7 @@ namespace DOL.GS
             get { return 1200; }
         }
 
-        public override int AttackRange
-        {
-            get { return 450; }
-            set { }
-        }
+        public override int MeleeAttackRange => 450;
         public override void DropLoot(GameObject killer)
         {
         }
@@ -854,11 +846,7 @@ namespace DOL.GS
             get { return 600000; }
         }
 
-        public override int AttackRange
-        {
-            get { return 450; }
-            set { }
-        }
+        public override int MeleeAttackRange => 450;
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 550;

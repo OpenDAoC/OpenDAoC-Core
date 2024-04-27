@@ -9,8 +9,8 @@ namespace DOL.GS
     public class NpcAttackAction : AttackAction
     {
         private const int MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT = 70;
-        private const int SWITCH_TO_MELEE_DISTANCE = AttackComponent.NPC_MELEE_ATTACK_RANGE + 50;
-        private const int SWITCH_TO_RANGED_DISTANCE = SWITCH_TO_MELEE_DISTANCE + 250;
+        private const int SWITCH_TO_MELEE_DISTANCE_OFFSET = 50; // NPCs will stay in melee if within this + melee range from their target.
+        private const int SWITCH_TO_RANGED_DISTANCE_OFFSET = 250; // NPCs will switch to ranged if further than this + melee range from their target.
 
         private GameNPC _npcOwner;
         private bool _isGuardArcher;
@@ -38,10 +38,12 @@ namespace DOL.GS
 
         protected override bool PrepareMeleeAttack()
         {
+            int meleeAttackRange = _npcOwner.MeleeAttackRange;
+
             // NPCs try to switch to their ranged weapon whenever possible.
             if (!_npcOwner.IsBeingInterrupted &&
                 _npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null &&
-                !_npcOwner.IsWithinRadius(_target, SWITCH_TO_RANGED_DISTANCE))
+                !_npcOwner.IsWithinRadius(_target, meleeAttackRange + SWITCH_TO_RANGED_DISTANCE_OFFSET))
             {
                 // But only if there is no timer running or if it has LoS.
                 // If the timer is running, it'll check for LoS continuously.
@@ -57,16 +59,14 @@ namespace DOL.GS
             if (!base.PrepareMeleeAttack())
                 return false;
 
-            int attackRange = AttackComponent.AttackRange;
-
             // The target isn't in melee range yet. Check if another target is in range to attack on the way to the main target.
-            if (!_npcOwner.IsWithinRadius(_target, attackRange) &&
+            if (!_npcOwner.IsWithinRadius(_target, meleeAttackRange) &&
                 _npcOwner.Brain is not IControlledBrain &&
                 _npcOwner.Brain is StandardMobBrain npcBrain)
             {
                 _target = npcBrain.LastHighestThreatInAttackRange;
 
-                if (_target == null || !_npcOwner.IsWithinRadius(_target, attackRange))
+                if (_target == null || !_npcOwner.IsWithinRadius(_target, meleeAttackRange))
                 {
                     _interval = TICK_INTERVAL_FOR_NON_ATTACK;
                     return false;
@@ -102,7 +102,7 @@ namespace DOL.GS
             // Switch to melee if the target is close enough.
             if (_npcOwner != null &&
                 _npcOwner.TargetObject != null &&
-                _npcOwner.IsWithinRadius(_target, SWITCH_TO_MELEE_DISTANCE))
+                _npcOwner.IsWithinRadius(_target, _npcOwner.MeleeAttackRange + SWITCH_TO_MELEE_DISTANCE_OFFSET))
             {
                 SwitchToMeleeAndTick();
                 return false;

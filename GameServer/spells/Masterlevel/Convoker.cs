@@ -793,7 +793,7 @@ namespace DOL.AI.Brain
 		{
 			ArrayList list = new ArrayList();
 
-			foreach (GamePlayer o in Body.GetPlayersInRadius((ushort)Body.AttackRange))
+			foreach (GamePlayer o in Body.GetPlayersInRadius((ushort)Body.attackComponent.AttackRange))
 			{
 				GamePlayer p = o as GamePlayer;
 
@@ -814,7 +814,7 @@ namespace DOL.AI.Brain
 			IList enemies = new ArrayList();
 			if (Target == null)
 				enemies = FindTarget();
-			else if (!Body.IsWithinRadius(Target, Body.AttackRange))
+			else if (!Body.IsWithinRadius(Target, Body.attackComponent.AttackRange))
 				enemies = FindTarget();
 			else if (!Target.IsAlive)
 				enemies = FindTarget();
@@ -838,7 +838,7 @@ namespace DOL.AI.Brain
 				{
 					Target = null;
 				}
-				else if (Body.IsWithinRadius(Target, Body.AttackRange))
+				else if (Body.IsWithinRadius(Target, Body.attackComponent.AttackRange))
 				{
 					Body.TargetObject = Target;
 					Goto(Target);

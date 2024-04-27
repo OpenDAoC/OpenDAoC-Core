@@ -60,15 +60,7 @@ namespace DOL.GS.Scripts
         /// <summary>
         /// Melee Attack Range.
         /// </summary>
-        public override int AttackRange
-        {
-            get
-            {
-                //Normal mob attacks have 200 ...
-                return 400;
-            }
-            set { }
-        }
+        public override int MeleeAttackRange => 400;
 
         #endregion
         public override void Die(GameObject killer)

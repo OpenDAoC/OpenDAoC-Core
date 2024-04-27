@@ -74,11 +74,7 @@ namespace DOL.GS.Scripts
         {
             get { return 40000; }
         }
-        public override int AttackRange
-        {
-            get { return 350; }
-            set { }
-        }
+        public override int MeleeAttackRange => 350;
         public override bool HasAbility(string keyName)
         {
             if (IsReturningToSpawnPoint && keyName == GS.Abilities.CCImmunity)
@@ -242,7 +238,6 @@ namespace DOL.GS.Scripts
             summonedGuardian.GuildName = "Summoned Ghost";
             summonedGuardian.Model = 140;
             summonedGuardian.Size = 65;
-            summonedGuardian.AttackRange = 200;
             summonedGuardian.Flags |= eFlags.GHOST;
             summonedGuardian.MeleeDamageType = eDamageType.Spirit;
             summonedGuardian.RespawnInterval = -1; // dont respawn

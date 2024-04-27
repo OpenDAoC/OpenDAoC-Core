@@ -217,7 +217,7 @@ namespace DOL.AI.Brain
                 if (living != null &&
                     living.IsAlive &&
                     living.EffectList.GetOfType<NecromancerShadeEffect>() == null &&
-                    !aros.IsWithinRadius(living, aros.AttackRange))
+                    !aros.IsWithinRadius(living, aros.attackComponent.AttackRange))
                 {
                     inRangeLiving.Add(living);
                 }

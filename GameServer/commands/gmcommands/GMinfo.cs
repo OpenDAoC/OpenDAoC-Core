@@ -662,7 +662,7 @@ namespace DOL.GS.Commands
 					info.Add( " ");
 					info.Add( " + RealmPointsValue : " + target.RealmPointsValue);
 					info.Add( " + ExperienceValue : " + target.ExperienceValue);
-					info.Add( " + AttackRange : " + target.AttackRange);
+					info.Add( " + AttackRange : " + target.attackComponent.AttackRange);
 					info.Add(" ");
 					if (GameServer.KeepManager.GetFrontierKeeps().Contains(target.Keep))
 					{

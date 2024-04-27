@@ -40,11 +40,7 @@ namespace DOL.GS
         {
             get { return 100000; }
         }
-        public override int AttackRange
-        {
-            get { return 450; }
-            set { }
-        }
+        public override int MeleeAttackRange => 450;
         public override double GetArmorAbsorb(eArmorSlot slot)
         {
             // 85% ABS is cap.
@@ -412,11 +408,7 @@ namespace DOL.GS
         {
             get { return 5000; }
         }
-        public override int AttackRange
-        {
-            get { return 350; }
-            set { }
-        }
+        public override int MeleeAttackRange => 350;
         public override void DropLoot(GameObject killer) //no loot
         {
         }

@@ -38,11 +38,7 @@ namespace DOL.GS.Scripts
         }
         public override short MaxSpeedBase => (short) (191 + Level * 2);
         public override int MaxHealth => 100000;
-        public override int AttackRange
-        {
-            get => 180;
-            set { }
-        }
+        public override int MeleeAttackRange => 180;
         public override bool AddToWorld()
         {
             RespawnInterval = ServerProperties.Properties.SET_SI_EPIC_ENCOUNTER_RESPAWNINTERVAL * 60000; //1min is 60000 miliseconds

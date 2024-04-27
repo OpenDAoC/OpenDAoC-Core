@@ -70,11 +70,7 @@ namespace DOL.GS
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override int AttackRange
-		{
-			get { return 350; }
-			set { }
-		}
+		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -453,7 +449,7 @@ namespace DOL.AI.Brain
 				}
 				if (Body.TargetObject != null)
 				{
-					if (Body.IsWithinRadius(Body.TargetObject, Body.AttackRange))
+					if (Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange))
 					{
 						if (IsKilled == false)
 						{
@@ -536,11 +532,7 @@ namespace DOL.GS
 			// 85% ABS is cap.
 			return 0.25;
 		}
-		public override int AttackRange
-		{
-			get { return 200; }
-			set { }
-		}
+		public override int MeleeAttackRange => 200;
 		public override int GetResist(eDamageType damageType)
 		{
 			switch (damageType)

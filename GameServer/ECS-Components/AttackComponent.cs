@@ -199,8 +199,6 @@ namespace DOL.GS
         /// </summary>
         public int UsedHandOnLastDualWieldAttack { get; set; }
 
-        public const int NPC_MELEE_ATTACK_RANGE = 200;
-
         /// <summary>
         /// Returns this attack's range
         /// </summary>
@@ -216,14 +214,13 @@ namespace DOL.GS
 
             get
             {
-                if (owner is GamePlayer)
+                if (owner is GamePlayer player)
                 {
                     DbInventoryItem weapon = owner.ActiveWeapon;
 
                     if (weapon == null)
                         return 0;
 
-                    var player = owner as GamePlayer;
                     GameLiving target = player.TargetObject as GameLiving;
 
                     // TODO: Change to real distance of bows.
@@ -279,28 +276,13 @@ namespace DOL.GS
                         return (int)range;
                     }
 
-
-                    // int meleeRange = 128;
-                    int meleeRange = 150; // Increase default melee range to 150 to help with higher latency players.
-
-                    if (target is GameKeepComponent)
-                        meleeRange += 150;
-                    else
-                    {
-                        if (target != null && target.IsMoving)
-                            meleeRange += 32;
-                        if (player.IsMoving)
-                            meleeRange += 32;
-                    }
-
-                    return meleeRange;
+                    return owner.MeleeAttackRange;
                 }
                 else
                 {
-                    if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                        return Math.Max(32, (int) (2000.0 * owner.GetModified(eProperty.ArcheryRange) * 0.01));
-
-                    return NPC_MELEE_ATTACK_RANGE;
+                    return owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance
+                        ? Math.Max(32, (int) (2000.0 * owner.GetModified(eProperty.ArcheryRange) * 0.01))
+                        : owner.MeleeAttackRange;
                 }
             }
         }
@@ -803,7 +785,7 @@ namespace DOL.GS
                 // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
                 if (owner is GameNPC npcOwner)
                 {
-                    if (!npcOwner.IsWithinRadius(npcOwner.TargetObject, npcOwner.attackComponent.AttackRange - 30))
+                    if (!npcOwner.IsWithinRadius(npcOwner.TargetObject, AttackRange - 30))
                     {
                         StopAttack();
                         return false;

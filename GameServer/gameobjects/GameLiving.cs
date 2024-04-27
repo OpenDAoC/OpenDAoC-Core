@@ -466,27 +466,7 @@ namespace DOL.GS
 			}
 		}
 
-
-        /// <summary>
-        /// Returns the AttackRange of this living
-        /// </summary>
-        public virtual int AttackRange
-        {
-            get
-            {
-                //Mobs have a good distance range with distance weapons
-                //automatically
-                if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                {
-                    return Math.Max(32, (int)(2000.0 * GetModified(eProperty.ArcheryRange) * 0.01));
-                }
-                //Normal mob attacks have 200 ...
-                //TODO dragon, big mobs etc...
-                return 200;
-            }
-
-            set { }
-        }
+        public virtual int MeleeAttackRange => 200;
 
         /// <summary>
         /// calculates weapon stat

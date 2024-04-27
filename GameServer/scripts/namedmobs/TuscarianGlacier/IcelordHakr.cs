@@ -28,11 +28,7 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
-        public override int AttackRange
-        {
-            get { return 350; }
-            set { }
-        }
+        public override int MeleeAttackRange => 350;
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -301,11 +297,7 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
-        public override int AttackRange
-        {
-            get { return 350; }
-            set { }
-        }
+        public override int MeleeAttackRange => 350;
         public override double GetArmorAF(eArmorSlot slot)
         {
             return 300;
@@ -396,7 +388,7 @@ namespace DOL.AI.Brain
             {
                 if (Body.TargetObject != null)
                 {
-                    if (Body.TargetObject.IsWithinRadius(Body, Body.AttackRange))
+                    if (Body.TargetObject.IsWithinRadius(Body, Body.attackComponent.AttackRange))
                     {
                         GameLiving target = Body.TargetObject as GameLiving;
                         if (!target.effectListComponent.ContainsEffectForEffectType(eEffect.DamageOverTime))

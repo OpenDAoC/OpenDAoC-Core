@@ -130,11 +130,7 @@ namespace DOL.GS
 		{
 			get { return 100000; }
 		}
-		public override int AttackRange
-		{
-			get { return 550; }
-			set { }
-		}
+		public override int MeleeAttackRange => 550;
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -666,7 +662,7 @@ namespace DOL.AI.Brain
 				}
 				#endregion
 				GameLiving target = Body.TargetObject as GameLiving;
-				if(target != null && !target.IsWithinRadius(Body,Body.AttackRange))
+				if(target != null && !target.IsWithinRadius(Body,Body.attackComponent.AttackRange))
                 {
 					Body.SetGroundTarget(target.X, target.Y, target.Z);
 					Body.CastSpell(Hydra_DD2, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));//cast dmg if main target is not in attack range
@@ -849,11 +845,7 @@ namespace DOL.GS
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
-		public override int AttackRange
-		{
-			get { return 350; }
-			set { }
-		}
+		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -1064,11 +1056,7 @@ namespace DOL.GS
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
-		public override int AttackRange
-		{
-			get { return 350; }
-			set { }
-		}
+		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -1280,11 +1268,7 @@ namespace DOL.GS
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
-		public override int AttackRange
-		{
-			get { return 350; }
-			set { }
-		}
+		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -1496,11 +1480,7 @@ namespace DOL.GS
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
-		public override int AttackRange
-		{
-			get { return 350; }
-			set { }
-		}
+		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)

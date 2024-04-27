@@ -339,11 +339,7 @@ namespace DOL.GS
         {
             get { return 250000; }
         }
-        public override int AttackRange
-        {
-            get { return 1500; }
-            set { }
-        }
+        public override int MeleeAttackRange => 1500;
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -883,11 +879,7 @@ namespace DOL.GS
         {
             get { return 250000; }
         }
-        public override int AttackRange
-        {
-            get { return 1500; }
-            set { }
-        }
+        public override int MeleeAttackRange => 1500;
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -1176,11 +1168,7 @@ namespace DOL.GS
                 return 900;//low health, as source says 1 volcanic pillar 5 could one shot it
             }
         }
-        public override int AttackRange
-        {
-            get { return 350; }
-            set { }
-        }
+        public override int MeleeAttackRange => 350;
         public override void ReturnToSpawnPoint(short speed)
         {
             if (IsAlive)
@@ -1607,16 +1595,7 @@ namespace DOL.GS
             }
         }
 
-        public override int AttackRange
-        {
-            get
-            {
-                return 350;
-            }
-            set
-            {
-            }
-        }
+        public override int MeleeAttackRange => 350;
         public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
         {
             if (source is GamePlayer || source is GameSummonedPet)
@@ -1941,11 +1920,7 @@ namespace DOL.GS
                 return 125000;
             }
         }
-        public override int AttackRange
-        {
-            get { return 350; }
-            set { }
-        }
+        public override int MeleeAttackRange => 350;
 
         public override bool AddToWorld()
         {
@@ -2335,11 +2310,7 @@ namespace DOL.GS
         {
             get { return 125000; }
         }
-        public override int AttackRange
-        {
-            get { return 350; }
-            set { }
-        }
+        public override int MeleeAttackRange => 350;
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60159436);
@@ -3345,11 +3316,7 @@ namespace DOL.GS
         {
             get { return 5000; }
         }
-        public override int AttackRange
-        {
-            get { return 200; }
-            set { }
-        }
+        public override int MeleeAttackRange => 200;
         public override void DropLoot(GameObject killer)//no loot
         {
         }

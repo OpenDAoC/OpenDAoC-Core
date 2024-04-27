@@ -31,11 +31,7 @@ namespace DOL.GS
         {
             get { return 100000; }
         }
-        public override int AttackRange
-        {
-            get { return 250; }
-            set { }
-        }
+        public override int MeleeAttackRange => 250;
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)
@@ -225,11 +221,7 @@ namespace DOL.GS
         {
             return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
-        public override int AttackRange
-        {
-            get { return 250; }
-            set { }
-        }
+        public override int MeleeAttackRange => 250;
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == GS.Abilities.CCImmunity)

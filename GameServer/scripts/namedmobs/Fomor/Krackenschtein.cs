@@ -68,11 +68,7 @@ namespace DOL.GS
 		public override void StartAttack(GameObject target)
         {
         }
-        public override int AttackRange
-		{
-			get { return 350; }
-			set { }
-		}
+        public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
 			if (IsAlive && keyName == GS.Abilities.CCImmunity)

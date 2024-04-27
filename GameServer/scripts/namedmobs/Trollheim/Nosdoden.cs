@@ -136,11 +136,7 @@ namespace DOL.GS
 		{
 			return base.AttackDamage(weapon) * Strength / 100;
 		}
-		public override int AttackRange
-		{
-			get { return 350; }
-			set { }
-		}
+		public override int MeleeAttackRange => 350;
 		public override bool AddToWorld()
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164545);
@@ -1082,7 +1078,7 @@ namespace DOL.AI.Brain
 				{
 					if (Body.TargetObject != null)
 					{
-						if (!Body.IsCasting && !Body.IsWithinRadius(Body.TargetObject, Body.AttackRange))
+						if (!Body.IsCasting && !Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange))
 						{
 							if (Body.attackComponent.AttackState)
 								Body.attackComponent.StopAttack();
@@ -1092,9 +1088,9 @@ namespace DOL.AI.Brain
 							Body.CastSpell(InstantThaneDD_casting, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells),false);
 						}
 
-						if(Util.Chance(15) && Body.IsWithinRadius(Body.TargetObject,Body.AttackRange))
+						if(Util.Chance(15) && Body.IsWithinRadius(Body.TargetObject,Body.attackComponent.AttackRange))
 							Body.CastSpell(InstantThaneDD, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
-						if (Util.Chance(15) && Body.IsWithinRadius(Body.TargetObject, Body.AttackRange))
+						if (Util.Chance(15) && Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange))
 							Body.CastSpell(InstantThaneDD_pbaoe, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells));
 						
 						GameLiving target = Body.TargetObject as GameLiving;

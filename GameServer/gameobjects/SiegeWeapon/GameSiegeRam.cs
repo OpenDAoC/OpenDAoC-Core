@@ -94,7 +94,7 @@ namespace DOL.GS
 				return;
 			}
 			//Range Check
-			if (!this.IsWithinRadius(Owner.TargetObject, AttackRange))
+			if (!this.IsWithinRadius(Owner.TargetObject, attackComponent.AttackRange))
 			{
 				if(Owner != null)
 					Owner.Out.SendMessage("You are too far away to attack " + Owner.TargetObject.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -159,7 +159,7 @@ namespace DOL.GS
 			}
 
 			//todo good  distance check
-			if (!this.IsWithinRadius(target, AttackRange))
+			if (!this.IsWithinRadius(target, attackComponent.AttackRange))
 			{
 				if(Owner != null)
 					Owner.Out.SendMessage("You are too far away to attack " + target.Name, eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -265,7 +265,7 @@ namespace DOL.GS
 			}
 		}
 
-		public override int AttackRange
+		public override int MeleeAttackRange
 		{
 			get
 			{

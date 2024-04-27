@@ -9,6 +9,7 @@ using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.API;
 using DOL.GS.Commands;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
@@ -6370,6 +6371,27 @@ namespace DOL.GS
 
             if (HasAbility(Abilities.DefensiveCombatPowerRegeneration))
                 Mana += (int)((damageAmount + criticalAmount) * 0.25);
+        }
+
+        public override int MeleeAttackRange
+        {
+            get
+            {
+                int range = 150; // Increase default melee range to 150 to help with higher latency players. Was 128.
+
+                if (TargetObject is GameKeepComponent)
+                    range += 150;
+                else
+                {
+                    if (TargetObject is GameLiving target && target.IsMoving)
+                        range += 32;
+
+                    if (IsMoving)
+                        range += 32;
+                }
+
+                return range;
+            }
         }
 
         /// <summary>

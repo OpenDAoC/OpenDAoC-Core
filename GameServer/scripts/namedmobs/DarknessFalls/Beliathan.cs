@@ -184,11 +184,7 @@ namespace DOL.GS
             get { return 100000; }
         }
         public override short MaxSpeedBase => (short) (191 + Level * 2);
-        public override int AttackRange
-        {
-            get => 180;
-            set { }
-        }
+        public override int MeleeAttackRange => 180;
         public override bool AddToWorld()
         {
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158351);

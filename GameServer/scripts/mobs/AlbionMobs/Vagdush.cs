@@ -95,7 +95,7 @@ namespace DOL.AI.Brain
 					}				
 				}
 				GameLiving target = Body.TargetObject as GameLiving;
-				if(!target.IsWithinRadius(Body,Body.AttackRange) && target.IsAlive && target != null)
+				if(!target.IsWithinRadius(Body,Body.attackComponent.AttackRange) && target.IsAlive && target != null)
                 {
 					Body.MaxSpeedBase = 0;
 					if (!Body.IsCasting && Util.Chance(100))

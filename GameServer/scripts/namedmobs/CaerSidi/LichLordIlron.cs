@@ -38,11 +38,7 @@ namespace DOL.GS.Scripts
             return base.AttackDamage(weapon) * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
         }
 
-        public override int AttackRange
-        {
-            get => 180;
-            set { }
-        }
+        public override int MeleeAttackRange => 180;
         public override bool HasAbility(string keyName)
         {
             if (IsAlive && keyName == "CCImmunity")
