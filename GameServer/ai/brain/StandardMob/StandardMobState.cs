@@ -29,6 +29,15 @@ namespace DOL.AI.Brain
             StateType = eFSMStateType.WAKING_UP;
         }
 
+        public override void Enter()
+        {
+            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+                Console.WriteLine($"{_brain.Body} is entering WAKING_UP");
+
+            _brain.Body?.StopMoving();
+            base.Enter();
+        }
+
         public override void Think()
         {
             _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
@@ -48,7 +57,6 @@ namespace DOL.AI.Brain
             if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
                 Console.WriteLine($"{_brain.Body} is entering IDLE");
 
-            _brain.Body.StopMoving();
             base.Enter();
         }
 
