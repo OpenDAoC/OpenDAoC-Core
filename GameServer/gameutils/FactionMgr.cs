@@ -1,112 +1,94 @@
-using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// FactionMgr manage all the faction system
-	/// </summary>
-	public class FactionMgr
-	{
-		private FactionMgr() {}
+    public class FactionMgr
+    {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        public static Dictionary<int, Faction> Factions { get; } = [];
 
-		private static Hashtable m_factions;
+        private FactionMgr() { }
 
-		public static Hashtable Factions
-		{
-			get	{ return m_factions;}
-		}
-		/// <summary>
-		/// this function load all faction from DB
-		/// </summary>	
-		public static bool Init()
-		{
-			m_factions = new Hashtable(1);
+        public static bool Init()
+        {
+            IList<DbFaction> dbFactions = GameServer.Database.SelectAllObjects<DbFaction>();
 
-			var dbfactions =	GameServer.Database.SelectAllObjects<DbFaction>();
-			foreach(DbFaction dbfaction in dbfactions)
-			{
-				Faction myfaction = new Faction();
-				myfaction.LoadFromDatabase(dbfaction);
-				m_factions.Add(dbfaction.ID,myfaction);
-			}
+            foreach(DbFaction dbFaction in dbFactions)
+            {
+                Faction faction = new();
+                faction.LoadFromDatabase(dbFaction);
+                Factions.Add(dbFaction.ID,faction);
+            }
 
-			var dblinkedfactions =	GameServer.Database.SelectAllObjects<DbFactionLinks>();
-			foreach(DbFactionLinks dblinkedfaction in dblinkedfactions)
-			{
-				Faction faction = GetFactionByID(dblinkedfaction.LinkedFactionID);
-				Faction linkedFaction = GetFactionByID(dblinkedfaction.FactionID);
-				if (faction == null || linkedFaction == null) 
-				{
-					log.Warn("Missing Faction or friend faction with Id :"+dblinkedfaction.LinkedFactionID+"/"+dblinkedfaction.FactionID);
-					continue;
-				}
-				if (dblinkedfaction.IsFriend)
-					faction.FriendFactions.Add(linkedFaction);
-				else
-					faction.EnemyFactions.Add(linkedFaction);
-			}
+            IList<DbFactionLinks> dbFactionLinks = GameServer.Database.SelectAllObjects<DbFactionLinks>();
 
-			var dbfactionAggroLevels =	GameServer.Database.SelectAllObjects<DbFactionAggroLevel>();
-			foreach(DbFactionAggroLevel dbfactionAggroLevel in dbfactionAggroLevels)
-			{
-				Faction faction = GetFactionByID(dbfactionAggroLevel.FactionID);
-				if (faction == null)
-				{
-					log.Warn("Missing Faction with Id :"+dbfactionAggroLevel.FactionID);
-					continue;
-				}
-				faction.AggroToPlayers.TryAdd(dbfactionAggroLevel.CharacterID, dbfactionAggroLevel.AggroLevel);
-			}
-			return true;
-		}
-		/// <summary>
-		/// get the faction with id
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		public static Faction GetFactionByID(int id)
-		{
-			if (m_factions.ContainsKey(id))
-				return m_factions[id] as Faction;
-			else
-				return null;
-		}
+            foreach (DbFactionLinks dbFactionLink in dbFactionLinks)
+            {
+                Faction faction = GetFactionByID(dbFactionLink.LinkedFactionID);
+                Faction otherFaction = GetFactionByID(dbFactionLink.FactionID);
 
-		/// <summary>
-		/// save all faction aggro level of player who have change faction aggro level
-		/// </summary>
-		public static int SaveAllAggroToFaction()
-		{
-			if (m_factions == null)
-				return 0;
+                if (faction == null || otherFaction == null) 
+                {
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Missing faction or friend faction with id {dbFactionLink.LinkedFactionID}/{dbFactionLink.FactionID}");
 
-			int count = 0;
+                    continue;
+                }
 
-			foreach (Faction faction in m_factions.Values)
-				count += faction.SaveFactionAggroToPlayers();
+                if (dbFactionLink.IsFriend)
+                    faction.FriendFactions.Add(otherFaction);
+                else
+                    faction.EnemyFactions.Add(otherFaction);
+            }
 
-			return count;
-		}
+            return true;
+        }
 
-		public static bool CanLivingAttack(GameLiving attacker, GameLiving defender)
-		{
-			// someone who cares about factions should write this
-			// TODO Improve this !
-			if(attacker == null || defender == null)
-				return false;
-			
-			if(attacker is GameNPC && defender is GameNPC)
-				return !(((GameNPC)attacker).IsFriend((GameNPC)defender));
-			
-			return true;//false;
-		}
-	}
+        public static Faction GetFactionByID(int id)
+        {
+            return Factions.ContainsKey(id) ? Factions[id] : null;
+        }
+
+        public static int SaveAllAggroToFaction()
+        {
+            if (Factions == null)
+                return 0;
+
+            int count = 0;
+
+            foreach (Faction faction in Factions.Values)
+                count += faction.SaveAggroLevels();
+
+            return count;
+        }
+
+        public static void LoadAllAggroToFaction(GamePlayer player)
+        {
+            IList<DbFactionAggroLevel> factionRelations = DOLDB<DbFactionAggroLevel>.SelectObjects(DB.Column("CharacterID").IsEqualTo(player.ObjectId));
+
+            foreach (DbFactionAggroLevel factionRelation in factionRelations)
+            {
+                Faction faction = GetFactionByID(factionRelation.FactionID);
+
+                if (faction == null)
+                {
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Missing faction with id {factionRelation.FactionID}");
+
+                    continue;
+                }
+
+                faction.TryLoadAggroLevel(player, factionRelation.AggroLevel);
+            }
+        }
+
+        public static bool CanLivingAttack(GameLiving attacker, GameLiving defender)
+        {
+            return attacker is not GameNPC npcAttacker || defender is not GameNPC defenderNpc || !npcAttacker.IsFriend(defenderNpc);
+        }
+    }
 }

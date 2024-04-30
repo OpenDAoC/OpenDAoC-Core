@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using DOL.Database;
@@ -14,21 +13,17 @@ namespace DOL.GS
         private const int MIN_AGGRO_VALUE = -100;
 
         public int _baseAggroLevel;
-        private List<GamePlayer> _characterIdsToSave;
+        private ConcurrentDictionary<string, AggroLevel> _aggroLevels = [];
+        private object _saveLoadLock = new(); // Used to prevent `SaveAggroLevels` from removing a player from `_aggroLevels` while `TryLoadAggroLevel` is updating the `GamePlayer` reference.
 
-        public string Name { get; private set; }
+        public string Name { get; private set; } = string.Empty;
         public int Id { get; private set; }
-        public HashSet<Faction> FriendFactions { get; }
-        public HashSet<Faction> EnemyFactions { get; }
-        public ConcurrentDictionary<string, int> AggroToPlayers { get; }
+        public HashSet<Faction> FriendFactions { get; } = [];
+        public HashSet<Faction> EnemyFactions { get; } = [];
 
         public Faction()
         {
-            Name = string.Empty;
-            FriendFactions = [this];
-            EnemyFactions = [];
-            AggroToPlayers = new ConcurrentDictionary<string, int>();
-            _characterIdsToSave = [];
+            FriendFactions.Add(this);
         }
 
         public void LoadFromDatabase(DbFaction dbFaction)
@@ -38,47 +33,52 @@ namespace DOL.GS
             _baseAggroLevel = dbFaction.BaseAggroLevel;
         }
 
-        public int SaveFactionAggroToPlayers()
+        public int SaveAggroLevels()
         {
             int count = 0;
 
-            lock (((ICollection) _characterIdsToSave).SyncRoot)
+            lock (_saveLoadLock)
             {
-                foreach (GamePlayer player in _characterIdsToSave)
+                foreach (KeyValuePair<string, AggroLevel> pair in _aggroLevels)
                 {
-                    SaveFactionAggroToPlayer(player);
+                    AggroLevel playerAggro = pair.Value;
+
+                    if (!playerAggro.Dirty)
+                        continue;
+
+                    playerAggro.Dirty = false;
+                    int aggro = playerAggro.Aggro;
+                    string characterId = pair.Key;
+                    DbFactionAggroLevel dbFactionAggroLevel = DOLDB<DbFactionAggroLevel>.SelectObject(DB.Column("CharacterID").IsEqualTo(characterId).And(DB.Column("FactionID").IsEqualTo(Id)));
+
+                    if (dbFactionAggroLevel == null)
+                    {
+                        dbFactionAggroLevel = new DbFactionAggroLevel
+                        {
+                            AggroLevel = aggro,
+                            CharacterID = characterId,
+                            FactionID = Id
+                        };
+
+                        GameServer.Database.AddObject(dbFactionAggroLevel);
+                    }
+                    else
+                    {
+                        dbFactionAggroLevel.AggroLevel = aggro;
+                        GameServer.Database.SaveObject(dbFactionAggroLevel);
+                    }
+
+                    if (playerAggro.Player.Client.ClientState == GameClient.eClientState.Disconnected)
+                        _aggroLevels.TryRemove(pair);
+
                     count++;
                 }
-
-                _characterIdsToSave.Clear();
             }
 
             return count;
         }
 
-        private void SaveFactionAggroToPlayer(GamePlayer player)
-        {
-            DbFactionAggroLevel dbFactionAggroLevel = DOLDB<DbFactionAggroLevel>.SelectObject(DB.Column("CharacterID").IsEqualTo(player.ObjectId).And(DB.Column("FactionID").IsEqualTo(Id)));
-
-            if (dbFactionAggroLevel == null)
-            {
-                dbFactionAggroLevel = new DbFactionAggroLevel
-                {
-                    AggroLevel = AggroToPlayers[player.ObjectId],
-                    CharacterID = player.ObjectId,
-                    FactionID = Id
-                };
-
-                GameServer.Database.AddObject(dbFactionAggroLevel);
-            }
-            else
-            {
-                dbFactionAggroLevel.AggroLevel = AggroToPlayers[player.ObjectId];
-                GameServer.Database.SaveObject(dbFactionAggroLevel);
-            }
-        }
-
-        public void KillMember(GamePlayer killer)
+        public void OnMemberKilled(GamePlayer killer)
         {
             foreach (Faction faction in FriendFactions)
                 faction.ChangeAggroLevel(killer, INCREASE_AGGRO_AMOUNT);
@@ -87,14 +87,32 @@ namespace DOL.GS
                 faction.ChangeAggroLevel(killer, DECREASE_AGGRO_AMOUNT);
         }
 
+        public void TryLoadAggroLevel(GamePlayer player, int aggro)
+        {
+            lock (_saveLoadLock)
+            {
+                // Update our `GamePlayer` reference if it's new.
+                _aggroLevels.AddOrUpdate(player.ObjectId, Add, Update);
+            }
+
+            AggroLevel Add(string characterId)
+            {
+                return new(player, aggro);
+            }
+
+            AggroLevel Update(string characterId, AggroLevel oldValue)
+            {
+                oldValue.Player = player;
+                return oldValue;
+            }
+        }
+
         private void ChangeAggroLevel(GamePlayer player, int amount)
         {
-            if (!_characterIdsToSave.Contains(player))
-                _characterIdsToSave.Add(player);
-
             if (Util.Chance(20))
             {
-                int oldAggro = AggroToPlayers.GetOrAdd(player.ObjectId, (key) => _baseAggroLevel);
+                AggroLevel playerAggro = _aggroLevels.GetOrAdd(player.ObjectId, (key) => new(player, _baseAggroLevel));
+                int oldAggro = playerAggro.Aggro;
                 int newAggro = oldAggro + amount;
 
                 if (newAggro < MIN_AGGRO_VALUE)
@@ -103,7 +121,10 @@ namespace DOL.GS
                     newAggro = MAX_AGGRO_VALUE;
 
                 if (newAggro != oldAggro)
-                    AggroToPlayers[player.ObjectId] = newAggro;
+                {
+                    playerAggro.Aggro = newAggro;
+                    playerAggro.Dirty = true;
+                }
             }
 
             string message = $"Your relationship with {Name} has {(amount > 0 ? "decreased" : "increased")}";
@@ -112,8 +133,7 @@ namespace DOL.GS
 
         public Standing GetStandingToFaction(GamePlayer player)
         {
-            if (!AggroToPlayers.TryGetValue(player.ObjectId, out int aggro))
-                aggro = _baseAggroLevel;
+            int aggro = _aggroLevels.TryGetValue(player.ObjectId, out AggroLevel playerAggro) ? playerAggro.Aggro : _baseAggroLevel;
 
             if (aggro > 75)
                 return Standing.AGGRESIVE;
@@ -132,6 +152,13 @@ namespace DOL.GS
             NEUTRAL,
             HOSTILE,
             AGGRESIVE
+        }
+
+        public class AggroLevel(GamePlayer player, int aggro)
+        {
+            public GamePlayer Player { get; set; } = player;
+            public int Aggro { get; set; } = aggro;
+            public bool Dirty { get; set; }
         }
     }
 }

@@ -128,7 +128,7 @@ public class BPMob : GameNPC
 
             GamePlayer player3 = killer as GamePlayer;
 
-            Faction.KillMember(player3);
+            Faction.OnMemberKilled(player3);
 
         }
 

@@ -11740,10 +11740,9 @@ namespace DOL.GS
             //existing skill levels for this player
             LoadSkillsFromCharacter();
             LoadCraftingSkills();
-
             VerifySpecPoints();
-
             LoadQuests();
+            FactionMgr.LoadAllAggroToFaction(this);
 
             // Load Task object of player ...
             var tasks = DOLDB<DbTask>.SelectObjects(DB.Column("Character_ID").IsEqualTo(InternalID));

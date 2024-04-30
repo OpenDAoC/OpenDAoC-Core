@@ -2926,7 +2926,7 @@ namespace DOL.GS
 									playerXpGainer.ObjectState == eObjectState.Active &&
 									playerXpGainer.IsAlive &&
 									playerXpGainer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-									Faction.KillMember(playerXpGainer);
+									Faction.OnMemberKilled(playerXpGainer);
 							}
 						}
 					}

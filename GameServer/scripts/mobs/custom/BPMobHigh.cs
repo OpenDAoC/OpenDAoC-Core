@@ -1,10 +1,3 @@
-//Written by Sirru
-using System;
-using System.Collections;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-
 namespace DOL.GS.Scripts
 {
     /// <summary>
@@ -26,7 +19,7 @@ namespace DOL.GS.Scripts
             if ((Faction != null) && (killer is GamePlayer))
             {
                 GamePlayer player3 = killer as GamePlayer;
-                Faction.KillMember(player3);
+                Faction.OnMemberKilled(player3);
             }
 
             StartRespawn();
