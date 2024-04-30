@@ -620,8 +620,12 @@ namespace DOL.GS.Keeps
 			if (dbDoor == null)
 				return;
 
-			dbDoor.Health = Health;
-			dbDoor.State = (int)State;
+			if (dbDoor.Health != Health)
+				dbDoor.Health = Health;
+
+			if (dbDoor.State != (int) State)
+				dbDoor.State = (int) State;
+
 			GameServer.Database.SaveObject(dbDoor);
 		}
 
