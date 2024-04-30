@@ -92,24 +92,46 @@ namespace DOL.GS
             if (!_characterIdsToSave.Contains(player))
                 _characterIdsToSave.Add(player);
 
-            int oldAggro = AggroToPlayers.GetOrAdd(player.ObjectId, (key) => _baseAggroLevel);
-            int newAggro = oldAggro + amount;
+            if (Util.Chance(20))
+            {
+                int oldAggro = AggroToPlayers.GetOrAdd(player.ObjectId, (key) => _baseAggroLevel);
+                int newAggro = oldAggro + amount;
 
-            if (newAggro < MIN_AGGRO_VALUE)
-                newAggro = MIN_AGGRO_VALUE;
-            else if (newAggro > MAX_AGGRO_VALUE)
-                newAggro = MAX_AGGRO_VALUE;
+                if (newAggro < MIN_AGGRO_VALUE)
+                    newAggro = MIN_AGGRO_VALUE;
+                else if (newAggro > MAX_AGGRO_VALUE)
+                    newAggro = MAX_AGGRO_VALUE;
 
-            if (newAggro != oldAggro && Util.Chance(20))
-                AggroToPlayers[player.ObjectId] = newAggro;
+                if (newAggro != oldAggro)
+                    AggroToPlayers[player.ObjectId] = newAggro;
+            }
 
             string message = $"Your relationship with {Name} has {(amount > 0 ? "decreased" : "increased")}";
             player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
 
-        public int GetAggroToFaction(GamePlayer player)
+        public Standing GetStandingToFaction(GamePlayer player)
         {
-            return AggroToPlayers.TryGetValue(player.ObjectId, out int value) ? value : _baseAggroLevel;
+            if (!AggroToPlayers.TryGetValue(player.ObjectId, out int aggro))
+                aggro = _baseAggroLevel;
+
+            if (aggro > 75)
+                return Standing.AGGRESIVE;
+            else if (aggro > 50)
+                return Standing.HOSTILE;
+            else if (aggro > 25)
+                return Standing.NEUTRAL;
+
+            return Standing.FRIENDLY;
+        }
+
+        public enum Standing
+        {
+            // From least aggressive to most aggressive.
+            FRIENDLY,
+            NEUTRAL,
+            HOSTILE,
+            AGGRESIVE
         }
     }
 }
