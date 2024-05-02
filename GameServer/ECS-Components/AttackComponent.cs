@@ -1390,35 +1390,25 @@ namespace DOL.GS
                 {
                     if (ad.AttackResult == eAttackResult.HitStyle)
                     {
-                        if (owner is GamePlayer)
+                        if (playerOwner != null)
                         {
-                            GamePlayer player = owner as GamePlayer;
-
                             string damageAmount = $" (+{ad.StyleDamage}, GR: {ad.Style.GrowthRate})";
-                            player.Out.SendMessage(
-                                LanguageMgr.GetTranslation(player.Client.Account.Language,
-                                    "StyleProcessor.ExecuteStyle.PerformPerfectly", ad.Style.Name, damageAmount),
-                                eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                            message = LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "StyleProcessor.ExecuteStyle.PerformPerfectly",ad.Style.Name, damageAmount);
+                            playerOwner.Out.SendMessage(message, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                         }
-                        else if (owner is GameNPC)
+                        else if (owner is GameNPC ownerNpc && ownerNpc.Brain is ControlledMobBrain brain)
                         {
-                            ControlledMobBrain brain = ((GameNPC) owner).Brain as ControlledMobBrain;
+                            GamePlayer player = brain.GetPlayerOwner();
 
-                            if (brain != null)
+                            if (player != null)
                             {
-                                GamePlayer player = brain.GetPlayerOwner();
-                                if (player != null)
-                                {
-                                    string damageAmount = $" (+{ad.StyleDamage}, GR: {ad.Style.GrowthRate})";
-                                    player.Out.SendMessage(
-                                        LanguageMgr.GetTranslation(player.Client.Account.Language,
-                                            "StyleProcessor.ExecuteStyle.PerformsPerfectly", owner.Name, ad.Style.Name,
-                                            damageAmount), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-                                }
+                                string damageAmount = $" (+{ad.StyleDamage}, GR: {ad.Style.GrowthRate})";
+                                message = LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.ExecuteStyle.PerformsPerfectly", owner.Name, ad.Style.Name, damageAmount);
+                                player.Out.SendMessage(message, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                             }
                         }
                     }
-                    
+
                     if (target != null && target != ad.Target)
                     {
                         message = string.Format("{0} attacks {1} but hits {2}!", ad.Attacker.GetName(0, true),
