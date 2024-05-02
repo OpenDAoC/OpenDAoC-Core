@@ -1394,9 +1394,7 @@ namespace DOL.GS
                         {
                             GamePlayer player = owner as GamePlayer;
 
-                            string damageAmount = (ad.StyleDamage > 0)
-                                ? $" (+{ad.StyleDamage}, GR: {ad.Style.GrowthRate})"
-                                : string.Empty;
+                            string damageAmount = $" (+{ad.StyleDamage}, GR: {ad.Style.GrowthRate})";
                             player.Out.SendMessage(
                                 LanguageMgr.GetTranslation(player.Client.Account.Language,
                                     "StyleProcessor.ExecuteStyle.PerformPerfectly", ad.Style.Name, damageAmount),
@@ -1411,9 +1409,7 @@ namespace DOL.GS
                                 GamePlayer player = brain.GetPlayerOwner();
                                 if (player != null)
                                 {
-                                    string damageAmount = (ad.StyleDamage > 0)
-                                        ? $" (+{ad.StyleDamage}, GR: {ad.Style.GrowthRate})"
-                                        : string.Empty;
+                                    string damageAmount = $" (+{ad.StyleDamage}, GR: {ad.Style.GrowthRate})";
                                     player.Out.SendMessage(
                                         LanguageMgr.GetTranslation(player.Client.Account.Language,
                                             "StyleProcessor.ExecuteStyle.PerformsPerfectly", owner.Name, ad.Style.Name,
