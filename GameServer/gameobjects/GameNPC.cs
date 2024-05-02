@@ -3861,14 +3861,8 @@ namespace DOL.GS
 
 			if (LosChecker == null && Brain is StandardMobBrain brain)
 			{
-				foreach (GamePlayer playerInRange in GetPlayersInRadius((ushort) brain.AggroRange))
-				{
-					if (playerInRange != null)
-					{
-						LosChecker = playerInRange;
-						break;
-					}
-				}
+				List<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
+				LosChecker = playersInRadius[Util.Random(playersInRadius.Count - 1)];
 			}
 
 			if (LosChecker == null)
