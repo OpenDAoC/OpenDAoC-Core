@@ -6160,17 +6160,14 @@ namespace DOL.GS
                 case eAttackResult.HitStyle:
                 case eAttackResult.HitUnstyled:
                 {
-                    if (ad.Damage == -1)
+                    // If attacked by a non-damaging spell, we should not show damage numbers.
+                    // We need to check the damage on the spell here, not in the AD, since this could in theory be a damaging spell that had its damage modified to 0.
+                    if (ad.AttackType == AttackData.eAttackType.Spell && ad.SpellHandler.Spell?.Damage == 0)
                         break;
 
-                    if (ad.AttackType == AttackData.eAttackType.Spell)
+                    if (IsStealthed && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
                     {
-                        // If attacked by a non-damaging spell, we should not show damage numbers.
-                        // We need to check the damage on the spell here, not in the AD, since this could in theory be a damaging spell that had its damage modified to 0.
-                        if (ad.SpellHandler.Spell.Damage == 0)
-                            break;
-
-                        if (ad.SpellHandler.Spell.SpellType != eSpellType.DamageOverTime && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+                        if (ad.AttackType != AttackData.eAttackType.Spell || ad.SpellHandler.Spell.SpellType != eSpellType.DamageOverTime)
                             Stealth(false);
                     }
 
