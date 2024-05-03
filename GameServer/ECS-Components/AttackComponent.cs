@@ -1210,7 +1210,7 @@ namespace DOL.GS
 
                     double specModifier = CalculateSpecModifier(ad.Target, spec);
                     double weaponSkill = CalculateWeaponSkill(weapon, specModifier, out double baseWeaponSkill);
-                    double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double bonusArmorFactor, out double armorFactor, out double absorb);
+                    double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
                     double damageMod = weaponSkill / armorMod;
 
                     if (action.RangedAttackType == eRangedAttackType.Critical)
@@ -1713,17 +1713,19 @@ namespace DOL.GS
             }
         }
 
-        private const int ARMOR_FACTOR_LEVEL_SCALAR = 25;
-
-        public double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot)
+        public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot)
         {
-            return CalculateTargetArmor(target, armorSlot, out _, out _, out _);
+            return CalculateTargetArmor(target, armorSlot, out _, out _);
         }
 
-        public double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double bonusArmorFactor, out double armorFactor, out double absorb)
+        public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
         {
-            bonusArmorFactor = owner is GamePlayer && target is not GamePlayer ? 2 : target.Level * ARMOR_FACTOR_LEVEL_SCALAR / 50.0;
-            armorFactor = bonusArmorFactor + target.GetArmorAF(armorSlot);
+            armorFactor = target.GetArmorAF(armorSlot);
+
+            // Gives 0.5~25 bonus AF to players.
+            if (target is GamePlayer)
+                armorFactor += target.Level * 25 / 50.0;
+
             absorb = target.GetArmorAbsorb(armorSlot);
             return absorb >= 1 ? double.MaxValue : armorFactor / (1 - absorb);
         }
