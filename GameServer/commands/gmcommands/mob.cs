@@ -260,8 +260,8 @@ namespace DOL.GS.Commands
 
 			try {
 				scaleFactor = Convert.ToInt16(args[2]);
-				targetMob.ScalingFactor = scaleFactor;
-				client.Out.SendMessage("Mob Scaling changed to: " + targetMob.ScalingFactor, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				targetMob.WeaponSkillScalingFactor = scaleFactor;
+				client.Out.SendMessage("Mob Scaling changed to: " + targetMob.WeaponSkillScalingFactor, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 			catch (Exception) {
 				DisplaySyntax(client, args[1]);

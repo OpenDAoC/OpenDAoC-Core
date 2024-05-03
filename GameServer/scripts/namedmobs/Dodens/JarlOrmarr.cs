@@ -35,7 +35,7 @@ namespace DOL.GS.Scripts
 
 			// right hand
 			VisibleActiveWeaponSlots = (byte) eActiveWeaponSlot.Standard;			
-			ScalingFactor = 40;
+			WeaponSkillScalingFactor = 40;
 			base.SetOwnBrain(new JarlOrmarrBrain());
 			LoadedFromScript = false; //load from database
 			SaveIntoDatabase();

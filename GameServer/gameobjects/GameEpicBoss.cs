@@ -14,7 +14,7 @@ namespace DOL.GS
 
         public GameEpicBoss() : base()
         {
-            ScalingFactor = 80;
+            WeaponSkillScalingFactor = 80;
             ArmorFactorScalingFactor = DefaultArmorFactorScalingFactor;
             OrbsReward = Properties.EPICBOSS_ORBS;
         }

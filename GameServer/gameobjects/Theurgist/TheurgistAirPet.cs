@@ -4,7 +4,7 @@
 	{
 		public TheurgistAirPet(INpcTemplate npcTemplate) : base(npcTemplate)
 		{
-			ScalingFactor = 11;
+			WeaponSkillScalingFactor = 11;
 
 			foreach (Spell spell in Spells)
 			{

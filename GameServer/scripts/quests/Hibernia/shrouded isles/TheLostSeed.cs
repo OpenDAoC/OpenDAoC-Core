@@ -314,7 +314,7 @@ namespace DOL.GS.Quests.Hibernia
 			Feairna_Athar.CurrentRegionID = 181;
 			Feairna_Athar.Size = 100;
 			Feairna_Athar.Level = 65;
-			Feairna_Athar.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
+			Feairna_Athar.WeaponSkillScalingFactor = 80;
 			Feairna_Athar.X = 288348;
 			Feairna_Athar.Y = 319950;
 			Feairna_Athar.Z = 2328;

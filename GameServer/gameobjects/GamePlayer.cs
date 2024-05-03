@@ -6595,7 +6595,7 @@ namespace DOL.GS
 
             int classBaseWeaponSkill = weapon.SlotPosition == (int)eInventorySlot.DistanceWeapon ? CharacterClass.WeaponSkillRangedBase : CharacterClass.WeaponSkillBase;
             double weaponSkill = Level * classBaseWeaponSkill / 200.0 * (1 + 0.01 * GetWeaponStat(weapon) / 2) * Effectiveness;
-            return Math.Max(0, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
+            return Math.Max(1, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
         }
 
         /// <summary>

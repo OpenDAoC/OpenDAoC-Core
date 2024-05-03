@@ -12,7 +12,7 @@ namespace DOL.GS.Scripts
 		public ElroTheAncient()
 		{
 			TetherRange = 4500;
-			ScalingFactor = 55;
+			WeaponSkillScalingFactor = 55;
 		}
 		public override int GetResist(eDamageType damageType)
 		{
