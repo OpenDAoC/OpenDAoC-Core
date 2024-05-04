@@ -2778,60 +2778,65 @@ namespace DOL.GS
         /// </summary>
         public int CalculateLeftHandSwingCount()
         {
-            if (CanUseLefthandedWeapon == false)
+            if (!CanUseLefthandedWeapon)
                 return 0;
+
+            GamePlayer playerOwner = owner as GamePlayer;
 
             if (owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)
             {
-                if (owner is GamePlayer player && player.UseDetailedCombatLog)
+                if (playerOwner != null && playerOwner.UseDetailedCombatLog)
                 {
-                    int spec = owner.GetModifiedSpecLevel(Specs.Left_Axe);
+                    // This shouldn't be done here.
                     double effectiveness = CalculateLeftAxeModifier();
-
-                    player.Out.SendMessage($"{Math.Round(effectiveness * 100, 2)}% dmg (after LA penalty) \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage($"{Math.Round(effectiveness * 100, 2)}% dmg (after LA penalty) \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 return 1; // always use left axe
             }
 
-            int specLevel = Math.Max(owner.GetModifiedSpecLevel(Specs.Celtic_Dual), owner.GetModifiedSpecLevel(Specs.Dual_Wield));
+            int bonus = owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
+
+            // CD, DW, FW chance.
+            int specLevel = owner.GetModifiedSpecLevel(Specs.Dual_Wield);
+            specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Celtic_Dual));
             specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Fist_Wraps));
 
-            decimal tmpOffhandChance = 25 + (specLevel - 1) * 68 / 100;
-            tmpOffhandChance += owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
-
-            if (owner is GamePlayer p && p.UseDetailedCombatLog && owner.GetModifiedSpecLevel(Specs.HandToHand) <= 0)
-                p.Out.SendMessage($"OH swing%: {Math.Round(tmpOffhandChance, 2)} ({owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)}% from RAs) \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                
             if (specLevel > 0)
-                return Util.Chance((int) tmpOffhandChance) ? 1 : 0;
+            {
+                double random = Util.RandomDouble() * 100;
+                double offhandChance = 25 + (specLevel - 1) * 68 * 0.01 + bonus;
 
-            // HtH chance
+                if (playerOwner != null && playerOwner.UseDetailedCombatLog)
+                    playerOwner.Out.SendMessage($"OH swing%: {offhandChance:0.00} ({bonus}% from RAs) \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                return random < offhandChance ? 1 : 0;
+            }
+
+            // HtH chance.
             specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
             DbInventoryItem attackWeapon = owner.ActiveWeapon;
-            DbInventoryItem leftWeapon = (owner.Inventory == null) ? null : owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem leftWeapon = owner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
-            if (specLevel > 0 && attackWeapon != null && leftWeapon != null && leftWeapon.Object_Type == (int) eObjectType.HandToHand)
+            if (specLevel > 0 && attackWeapon != null && leftWeapon != null && (eObjectType) leftWeapon.Object_Type == eObjectType.HandToHand)
             {
                 specLevel--;
-                int randomChance = Util.Random(99);
-                int doubleHitChance = (specLevel >> 1) + owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
-                int tripleHitChance = doubleHitChance + (specLevel >> 2) + ((owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)) >> 1);
-                int quadHitChance = tripleHitChance + (specLevel >> 4) + ((owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance)) >> 2);
+                double random = Util.RandomDouble() * 100;
+                double doubleHitChance = specLevel * 0.5 + bonus; // specLevel >> 1
+                double tripleHitChance = doubleHitChance + specLevel * 0.25 + bonus * 0.5; // specLevel >> 2
+                double quadHitChance = tripleHitChance + specLevel * 0.0625 + bonus * 0.25; // specLevel >> 4
 
                 if (owner is GamePlayer pl && pl.UseDetailedCombatLog)
-                    pl.Out.SendMessage( $"Chance for 2 hits: {doubleHitChance}% | 3 hits: { (specLevel > 25 ? tripleHitChance-doubleHitChance : 0)}% | 4 hits: {(specLevel > 40 ? quadHitChance-tripleHitChance : 0)}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    pl.Out.SendMessage( $"Chance for 2 hits: {doubleHitChance:0.00}% | 3 hits: { (specLevel > 25 ? tripleHitChance-doubleHitChance : 0):0.00}% | 4 hits: {(specLevel > 40 ? quadHitChance-tripleHitChance : 0):0.00}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                if (randomChance < doubleHitChance)
-                    return 1; // 1 hit = spec/2
+                if (random < doubleHitChance)
+                    return 1;
 
-                //doubleHitChance += specLevel >> 2;
-                if (randomChance < tripleHitChance && specLevel > 25)
-                    return 2; // 2 hits = spec/4
+                if (random < tripleHitChance && specLevel > 25)
+                    return 2;
 
-                //doubleHitChance += specLevel >> 4;
-                if (randomChance < quadHitChance && specLevel > 40)
-                    return 3; // 3 hits = spec/16
+                if (random < quadHitChance && specLevel > 40)
+                    return 3;
             }
 
             return 0;
