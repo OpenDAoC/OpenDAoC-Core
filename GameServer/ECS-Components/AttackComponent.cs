@@ -2826,8 +2826,8 @@ namespace DOL.GS
                 double tripleHitChance = doubleHitChance + specLevel * 0.25 + bonus * 0.5; // specLevel >> 2
                 double quadHitChance = tripleHitChance + specLevel * 0.0625 + bonus * 0.25; // specLevel >> 4
 
-                if (owner is GamePlayer pl && pl.UseDetailedCombatLog)
-                    pl.Out.SendMessage( $"Chance for 2 hits: {doubleHitChance:0.00}% | 3 hits: { (specLevel > 25 ? tripleHitChance-doubleHitChance : 0):0.00}% | 4 hits: {(specLevel > 40 ? quadHitChance-tripleHitChance : 0):0.00}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                if (playerOwner != null && playerOwner.UseDetailedCombatLog)
+                    playerOwner.Out.SendMessage( $"Chance for 2 hits: {doubleHitChance:0.00}% | 3 hits: { (specLevel > 25 ? tripleHitChance-doubleHitChance : 0):0.00}% | 4 hits: {(specLevel > 40 ? quadHitChance-tripleHitChance : 0):0.00}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                 if (random < doubleHitChance)
                     return 1;
