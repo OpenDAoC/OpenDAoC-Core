@@ -49,7 +49,6 @@ namespace DOL.AI
         public virtual bool Stop()
         {
             bool wasReturningToSpawnPoint = Body.IsReturningToSpawnPoint;
-
             Body.StopMoving();
 
             // Without `IsActive` check, charming a NPC that's returning to spawn would teleport it.

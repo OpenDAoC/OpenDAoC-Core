@@ -244,7 +244,7 @@ namespace DOL.GS
 
         public void ReturnToSpawnPoint(short speed)
         {
-            StopFollowing();
+            StopMoving();
             Owner.TargetObject = null;
             Owner.attackComponent.StopAttack();
             (Owner.Brain as StandardMobBrain)?.ClearAggroList();
