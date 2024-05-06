@@ -3058,10 +3058,7 @@ namespace DOL.GS
 		/// <param name="target"></param>
 		public void SwitchToMelee(GameObject target)
 		{
-			// Tolakram: Order is important here.  First StopAttack, then switch weapon
-			StopFollowing();
 			attackComponent.StopAttack();
-
 			DbInventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
 			DbInventoryItem righthand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
 
@@ -3071,7 +3068,8 @@ namespace DOL.GS
 			{
 				if (Util.Chance(50))
 					SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-				else SwitchWeapon(eActiveWeaponSlot.Standard);
+				else
+					SwitchWeapon(eActiveWeaponSlot.Standard);
 			}
 			else
 				SwitchWeapon(eActiveWeaponSlot.Standard);

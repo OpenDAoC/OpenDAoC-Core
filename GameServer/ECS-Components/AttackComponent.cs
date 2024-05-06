@@ -804,12 +804,6 @@ namespace DOL.GS
         {
             GameNPC npc = owner as GameNPC;
 
-            if (npc.FollowTarget != attackTarget)
-            {
-                npc.StopMoving();
-                npc.TurnTo(attackTarget);
-            }
-
             npc.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, attackTarget);
             npc.TargetObject = attackTarget;
 
@@ -821,13 +815,14 @@ namespace DOL.GS
 
             LivingStartAttack();
 
-            if (AttackState)
+            if (attackTarget != npc.FollowTarget)
             {
-                // Archer mobs sometimes bug and keep trying to fire at max range unsuccessfully so force them to get just a tad closer.
+                npc.StopMoving();
+
                 if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                    npc.Follow(attackTarget, AttackRange - 30, npc.StickMaximumRange);
-                else
-                    npc.Follow(attackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
+                    npc.TurnTo(attackTarget);
+
+                npc.Follow(attackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
             }
         }
 
