@@ -48,7 +48,7 @@ namespace DOL.GS
         public bool IsNearSpawn => Owner.IsWithinRadius(Owner.SpawnPoint, 25);
         public bool IsDestinationValid { get; private set; }
         public bool IsAtDestination => !IsDestinationValid || (Destination.X == Owner.X && Destination.Y == Owner.Y && Destination.Z == Owner.Z);
-        public bool CanRoam => Properties.ALLOW_ROAM && RoamingRange != -1 && string.IsNullOrWhiteSpace(PathID);
+        public bool CanRoam => Properties.ALLOW_ROAM && RoamingRange > 0 && string.IsNullOrWhiteSpace(PathID);
         public double HorizontalVelocityForClient { get; private set; }
         public Point3D PositionForClient => _needsBroadcastUpdate ? _positionForUpdatePackets : Owner;
         public bool HasActiveResetHeadingAction => _resetHeadingAction != null && _resetHeadingAction.IsAlive;
@@ -259,6 +259,7 @@ namespace DOL.GS
 
         public void Roam(short speed)
         {
+            // Note that `CanRoam` returns false if `RoamingRange` is <= 0.
             int maxRoamingRadius = Owner.RoamingRange > 0 ? Owner.RoamingRange : Owner.CurrentRegion.IsDungeon ? 5 : 500;
 
             if (Owner.CurrentZone.IsPathingEnabled)
