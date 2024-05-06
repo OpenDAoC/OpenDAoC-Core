@@ -305,6 +305,7 @@ namespace DOL.GS
 						{
 							_itemsAwaitingDeletion.RemoveAt(i);
 							removedFromItemsAwaitingDeletion = true;
+							break;
 						}
 					}
 
@@ -356,8 +357,14 @@ namespace DOL.GS
 
 				if (canPersist)
 				{
-					item.PendingDatabaseAction = PendingDatabaseAction.DELETE;
-					_itemsAwaitingDeletion.Add(item);
+					// Only add the item to our items awaiting deletion list if it wasn't about to be added to the database.
+					if (item.PendingDatabaseAction == PendingDatabaseAction.ADD)
+						item.PendingDatabaseAction = PendingDatabaseAction.NONE;
+					else
+					{
+						item.PendingDatabaseAction = PendingDatabaseAction.DELETE;
+						_itemsAwaitingDeletion.Add(item);
+					}
 				}
 			}
 
