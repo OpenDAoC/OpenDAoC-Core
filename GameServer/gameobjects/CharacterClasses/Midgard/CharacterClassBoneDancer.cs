@@ -35,8 +35,8 @@ namespace DOL.GS
 		/// </summary>
 		public override void CommandNpcRelease()
 		{
-			BDPet subpet = Player.TargetObject as BDPet;
-			if (subpet != null && subpet.Brain is BDPetBrain && Player.ControlledBrain is CommanderBrain && (Player.ControlledBrain as CommanderBrain).FindPet(subpet.Brain as IControlledBrain))
+			BdPet subpet = Player.TargetObject as BdPet;
+			if (subpet != null && subpet.Brain is BdPetBrain && Player.ControlledBrain is CommanderBrain && (Player.ControlledBrain as CommanderBrain).FindPet(subpet.Brain as IControlledBrain))
 			{
 				Player.Notify(GameLivingEvent.PetReleased, subpet);
 				CommanderPet commander = (subpet.Brain as IControlledBrain).Owner as CommanderPet;
@@ -63,7 +63,7 @@ namespace DOL.GS
 				&& player.ControlledBrain != null && player.ControlledBrain.Body is GameSummonedPet pet
 				&& pet.ControlledNpcList != null)
 					foreach (ABrain subBrain in pet.ControlledNpcList)
-						if (subBrain != null && subBrain.Body is BDSubPet subPet && subPet.PetSpecLine == skill.KeyName)
+						if (subBrain != null && subBrain.Body is BdSubPet subPet && subPet.PetSpecLine == skill.KeyName)
 							subPet.SortSpells();
 		}
 

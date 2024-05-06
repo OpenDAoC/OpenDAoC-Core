@@ -7,7 +7,7 @@ namespace DOL.AI.Brain
     /// <summary>
     /// A brain that can be controlled
     /// </summary>
-    public class BDDebufferBrain : BDPetBrain
+    public class BdDebufferBrain : BdPetBrain
     {
         /// <summary>
         /// Defines a logger for this class.
@@ -18,7 +18,7 @@ namespace DOL.AI.Brain
         /// Constructs new controlled npc brain
         /// </summary>
         /// <param name="owner"></param>
-        public BDDebufferBrain(GameLiving owner) : base(owner) { }
+        public BdDebufferBrain(GameLiving owner) : base(owner) { }
 
         #region AI
 

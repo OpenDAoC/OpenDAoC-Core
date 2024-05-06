@@ -26,7 +26,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-	public class CommanderPet : BDPet
+	public class CommanderPet : BdPet
 	{
 		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 

@@ -1007,7 +1007,7 @@ namespace DOL.GS
 			InitializeActiveWeaponFromInventory();
 		}
 
-		public void InitializeActiveWeaponFromInventory()
+		public virtual void InitializeActiveWeaponFromInventory()
 		{
 			if (Inventory == null)
 				return;

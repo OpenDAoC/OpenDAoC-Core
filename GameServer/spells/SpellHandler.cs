@@ -1718,7 +1718,7 @@ namespace DOL.GS.Spells
 							{
 								if (npcInRadius is CommanderPet commander && commander.Owner == player)
 									list.Add(commander);
-								else if (npcInRadius is BDSubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
+								else if (npcInRadius is BdSubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
 								{
 									if (!Spell.IsHealing)
 										list.Add(subpet);

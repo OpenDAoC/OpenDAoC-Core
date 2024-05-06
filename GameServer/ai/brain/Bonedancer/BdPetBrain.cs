@@ -4,11 +4,11 @@ using DOL.GS;
 
 namespace DOL.AI.Brain
 {
-    public abstract class BDPetBrain : ControlledMobBrain
+    public abstract class BdPetBrain : ControlledMobBrain
     {
         protected const int BASEFORMATIONDIST = 50;
 
-        public BDPetBrain(GameLiving Owner) : base(Owner)
+        public BdPetBrain(GameLiving Owner) : base(Owner)
         {
             IsMainPet = false;
         }

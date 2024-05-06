@@ -22,7 +22,7 @@ namespace DOL.GS
 
                 // Patch 1.123: The intercept chance on the Fossil Defender has been reduced by 20%.
                 // Can't find documentation for previous intercept chance, so assuming 50%
-                if (pet is BDSubPet)
+                if (pet is BdSubPet)
                     return 30;
 
                 // Patch 1.125: Reduced the spirit warrior's intercept chance from 75% to 60% and intercept radius from 150 to 125

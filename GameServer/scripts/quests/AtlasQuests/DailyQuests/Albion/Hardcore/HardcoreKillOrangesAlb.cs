@@ -333,7 +333,7 @@ namespace DOL.GS.DailyQuest
 					{
 						if (living == player ||
 						    (player.ControlledBrain is {Body: { }} && player.ControlledBrain.Body == living) ||
-						    (living is BDPet bdpet &&
+						    (living is BdPet bdpet &&
 						     (bdpet.Owner == player || bdpet.Owner == player.ControlledBrain?.Body)))
 							continue;
 

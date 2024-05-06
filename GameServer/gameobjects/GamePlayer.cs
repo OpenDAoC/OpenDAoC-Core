@@ -3486,7 +3486,7 @@ namespace DOL.GS
                 && ControlledBrain is IControlledBrain brain && brain.Body is GameSummonedPet pet
                 && pet.ControlledNpcList != null)
                 foreach (ABrain subBrain in pet.ControlledNpcList)
-                    if (subBrain != null && subBrain.Body is BDSubPet subPet && subPet.PetSpecLine == specLine.KeyName)
+                    if (subBrain != null && subBrain.Body is BdSubPet subPet && subPet.PetSpecLine == specLine.KeyName)
                         subPet.SortSpells();
 
             return specPoints;

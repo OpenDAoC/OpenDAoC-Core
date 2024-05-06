@@ -58,7 +58,7 @@ namespace DOL.GS.Spells
 
 			if (pet.ControlledNpcList != null)
 			{
-				foreach (BDPetBrain cnpc in pet.ControlledNpcList)
+				foreach (BdPetBrain cnpc in pet.ControlledNpcList)
 				{
 					if (cnpc != null)
 						GameEventMgr.Notify(GameLivingEvent.PetReleased, cnpc.Body);

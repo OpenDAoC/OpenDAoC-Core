@@ -36,7 +36,7 @@ namespace DOL.AI.Brain
 			{
 				foreach (var controlledBrain in Body.ControlledNpcList)
 				{
-					if (controlledBrain is BDPetBrain bdPetBrain)
+					if (controlledBrain is BdPetBrain bdPetBrain)
 						bdPetBrain.OnOwnerAttacked(ad);
 				}
 			}
@@ -74,7 +74,7 @@ namespace DOL.AI.Brain
 			{
 				lock (Body.ControlledNpcList)
 				{
-					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					foreach (BdPetBrain icb in Body.ControlledNpcList)
 						icb?.Attack(target);
 				}
 			}
@@ -88,7 +88,7 @@ namespace DOL.AI.Brain
 			{
 				lock (Body.ControlledNpcList)
 				{
-					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					foreach (BdPetBrain icb in Body.ControlledNpcList)
 					{
 						if (icb != null)
 							icb.Disengage();
@@ -128,7 +128,7 @@ namespace DOL.AI.Brain
 			{
 				lock (Body.ControlledNpcList)
 				{
-					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					foreach (BdPetBrain icb in Body.ControlledNpcList)
 					{
 						if (icb == null)
 							continue;
@@ -175,7 +175,7 @@ namespace DOL.AI.Brain
 			{
 				lock (Body.ControlledNpcList)
 				{
-					foreach (BDPetBrain icb in Body.ControlledNpcList)
+					foreach (BdPetBrain icb in Body.ControlledNpcList)
 					{
 						if (icb != null)
 							icb.SetAggressionState(state);
