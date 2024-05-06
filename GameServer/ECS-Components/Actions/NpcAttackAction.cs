@@ -29,6 +29,9 @@ namespace DOL.GS
 
         public override void OnAimInterrupt(GameObject attacker)
         {
+            // If the NPC is interrupted, we need to tell it to stop following its target if we want the following code to work.
+            _npcOwner.StopFollowing();
+
             // Guard archers shouldn't switch to melee when interrupted from a ranged attack, otherwise they fall from the wall.
             // They will still switch to melee if their target is in melee range.
             if ((!_isGuardArcher && _npcOwner.HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT) ||

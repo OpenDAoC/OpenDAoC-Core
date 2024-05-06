@@ -762,8 +762,8 @@ namespace DOL.GS
                     }
                 }
             }
-            else if (owner is GameNPC && m_startAttackTarget != null)
-                NpcStartAttack(m_startAttackTarget);
+            else if (owner is GameNPC)
+                NpcStartAttack();
             else
                 LivingStartAttack();
         }
@@ -778,18 +778,6 @@ namespace DOL.GS
 
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
-                // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
-                if (owner is GameNPC npcOwner)
-                {
-                    if (!npcOwner.IsWithinRadius(npcOwner.TargetObject, AttackRange - 30))
-                    {
-                        StopAttack();
-                        return false;
-                    }
-                    else if (npcOwner.IsMoving)
-                        npcOwner.StopMoving();
-                }
-
                 if (owner.rangeAttackComponent.RangedAttackState != eRangedAttackState.Aim && attackAction.CheckInterruptTimer())
                     return false;
 
@@ -800,12 +788,12 @@ namespace DOL.GS
             return true;
         }
 
-        private void NpcStartAttack(GameObject attackTarget)
+        private void NpcStartAttack()
         {
             GameNPC npc = owner as GameNPC;
 
-            npc.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, attackTarget);
-            npc.TargetObject = attackTarget;
+            npc.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, m_startAttackTarget);
+            npc.TargetObject = m_startAttackTarget;
 
             if (npc.Brain is IControlledBrain brain)
             {
@@ -813,17 +801,35 @@ namespace DOL.GS
                     return;
             }
 
-            LivingStartAttack();
-
-            if (attackTarget != npc.FollowTarget)
+            // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
+            if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
-                npc.StopMoving();
+                if (!npc.IsWithinRadius(npc.TargetObject, AttackRange - 30))
+                {
+                    StopAttack();
+                    npc.Follow(m_startAttackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
+                    return;
+                }
 
-                if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
-                    npc.TurnTo(attackTarget);
-
-                npc.Follow(attackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
+                if (npc.IsMoving)
+                    npc.StopMoving();
             }
+
+            if (LivingStartAttack())
+            {
+                if (m_startAttackTarget != npc.FollowTarget)
+                {
+                    if (npc.IsMoving)
+                        npc.StopMoving();
+
+                    if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                        npc.TurnTo(m_startAttackTarget);
+
+                    npc.Follow(m_startAttackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
+                }
+            }
+            else if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                npc.TurnTo(m_startAttackTarget);
         }
 
         public void StopAttack()
