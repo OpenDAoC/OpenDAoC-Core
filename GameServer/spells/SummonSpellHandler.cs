@@ -143,6 +143,7 @@ namespace DOL.GS.Spells
 			m_pet.Heading = heading;
 			m_pet.CurrentRegion = region;
 			m_pet.Realm = Caster.Realm;
+			m_pet.SetPetLevel();
 
 			if (m_isSilent)
 				m_pet.IsSilent = true;
@@ -156,7 +157,6 @@ namespace DOL.GS.Spells
 			AddHandlers();
 			SetBrainToOwner(brain);
 
-			m_pet.SetPetLevel();
 			m_pet.Health = m_pet.MaxHealth;
 			m_pet.Spells = template.Spells; // Have to sort spells again now that the pet level has been assigned.
 
