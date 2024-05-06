@@ -382,7 +382,8 @@ namespace DOL.GS
             }
             else
             {
-                double speed = NpcWeaponSpeed() * 100 * (1.0 - (owner.GetModified(eProperty.Quickness) - 60) / 500.0);
+                double speed = NpcWeaponSpeed(mainWeapon) * 100 * (1.0 - (owner.GetModified(eProperty.Quickness) - 60) / 500.0);
+
                 if (owner is GameSummonedPet pet)
                 {
                     if (pet != null)
@@ -420,21 +421,16 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Gets the speed of a NPC's weapon, based on its ActiveWeaponSlot.
         /// InventoryItem.SPD_ABS isn't set for NPCs, so this method must be used instead.
         /// </summary>
-        public int NpcWeaponSpeed()
+        public static int NpcWeaponSpeed(DbInventoryItem weapon)
         {
-            switch (owner.ActiveWeaponSlot)
+            return weapon?.SlotPosition switch
             {
-                default:
-                case eActiveWeaponSlot.Standard:
-                    return 30;
-                case eActiveWeaponSlot.TwoHanded:
-                    return 40;
-                case eActiveWeaponSlot.Distance:
-                    return 45;
-            }
+                Slot.TWOHAND => 40,
+                Slot.RANGED => 45,
+                _ => 30,
+            };
         }
 
         public double AttackDamage(DbInventoryItem weapon, out double damageCap)
@@ -502,7 +498,7 @@ namespace DOL.GS
             }
             else
             {
-                double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed() * 0.1;
+                double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed(weapon) * 0.1;
 
                 if (weapon == null ||
                     weapon.SlotPosition == Slot.RIGHTHAND ||
