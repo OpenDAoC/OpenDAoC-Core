@@ -513,7 +513,6 @@ namespace DOL.GS
 				else
 				{
 					DbItemUnique unique = new DbItemUnique(product);
-					GameServer.Database.AddObject(unique);
 					newItem = GameInventoryItem.Create(unique);
 					newItem.Quality = GetQuality(player, recipe.Level);
 				}

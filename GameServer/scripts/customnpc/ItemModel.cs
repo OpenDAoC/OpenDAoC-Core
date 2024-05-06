@@ -6743,7 +6743,6 @@ namespace DOL.GS
                 unique.Model = number;
                 item.IsTradable = false;
                 item.IsDropable = false;
-                GameServer.Database.AddObject(unique);
                 //Console.WriteLine($"unique model: {unique.Model} assignment {number}");
                 DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
@@ -6796,7 +6795,6 @@ namespace DOL.GS
                 player.Inventory.RemoveItem(item);
                 DbItemUnique unique = new DbItemUnique(item.Template);
                 unique.Extension = number;
-                GameServer.Database.AddObject(unique);
                 DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
                 player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });

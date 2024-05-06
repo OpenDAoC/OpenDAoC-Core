@@ -537,10 +537,7 @@ namespace DOL.GS.Quests
             DbInventoryItem item;
 
             if (itemTemplate is DbItemUnique)
-            {
-                GameServer.Database.AddObject(itemTemplate as DbItemUnique);
                 item = GameInventoryItem.Create(itemTemplate as DbItemUnique);
-            }
             else
                 item = GameInventoryItem.Create(itemTemplate);
 

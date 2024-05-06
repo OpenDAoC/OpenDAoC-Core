@@ -1,16 +1,12 @@
-﻿using DOL.Database;
-using DOL.GS;
+﻿using System;
+using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DOL.GS {
-    public static class AtlasROGManager {
-
+namespace DOL.GS
+{
+    public static class AtlasROGManager
+    {
         private static DbItemTemplate beadTemplate = null;
         
         private static string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
@@ -63,7 +59,6 @@ namespace DOL.GS {
                     item.Color = (int)color;
                 }
                 
-                GameServer.Database.AddObject(item);
                 DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
@@ -84,7 +79,6 @@ namespace DOL.GS {
                 item.AllowAdd = true;
                 item.IsTradable = true;
 
-                GameServer.Database.AddObject(item);
                 DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
@@ -111,7 +105,6 @@ namespace DOL.GS {
                 item.AllowAdd = true;
                 item.IsTradable = true;
 
-                GameServer.Database.AddObject(item);
                 DbInventoryItem invitem = GameInventoryItem.Create<DbItemUnique>(item);
                 invitem.IsROG = true;
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, invitem);
@@ -305,6 +298,5 @@ namespace DOL.GS {
             
             return item;
         }
-
     }
 }

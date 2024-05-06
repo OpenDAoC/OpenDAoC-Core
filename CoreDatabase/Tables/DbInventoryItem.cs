@@ -243,18 +243,26 @@ namespace DOL.Database
 			set { Dirty =true;m_cooldown = value; }
 		}
 
-		[Relation(LocalField = "ITemplate_Id", RemoteField = "Id_nb", AutoLoad = true, AutoDelete=false)]
+		[Relation(LocalField = "ITemplate_Id", RemoteField = "Id_nb", AutoLoad = true, AutoDelete = false)]
 		public DbItemTemplate ITWrapper
 		{
-			get { return Template.GetType() == typeof(DbItemTemplate) ? Template as DbItemTemplate : null; }
-			set { if (value != null) Template = value as DbItemTemplate; }
+			get => string.IsNullOrEmpty(ITemplate_Id) ? null : Template;
+			set
+			{
+				if (value != null)
+					Template = value;
+			}
 		}
 
-		[Relation(LocalField = "UTemplate_Id", RemoteField = "Id_nb", AutoLoad = true, AutoDelete=true)]
+		[Relation(LocalField = "UTemplate_Id", RemoteField = "Id_nb", AutoLoad = true, AutoDelete = true)]
 		public DbItemUnique IUWrapper
 		{
-			get { return Template.GetType() == typeof(DbItemUnique) ? Template as DbItemUnique : null; }
-			set { if (value != null) Template = value; }
+			get => string.IsNullOrEmpty(UTemplate_Id) ? null : Template as DbItemUnique;
+			set
+			{
+				if (value != null)
+					Template = value;
+			}
 		}
 
 		protected DbItemTemplate m_item;
@@ -298,8 +306,6 @@ namespace DOL.Database
 			m_creator = string.Empty;
 			m_itemplate_id = null;
 			m_utemplate_id = null;
-			ITWrapper = new DbItemTemplate();
-			ITWrapper.AllowAdd = false;
 		}
 
 		/// <summary>
@@ -309,24 +315,10 @@ namespace DOL.Database
 		/// or from an Artifact will never be saved too.
 		/// </summary>
 		/// <param name="itemTemplate"></param>
-		protected DbInventoryItem(DbItemTemplate template):base()
+		protected DbInventoryItem(DbItemTemplate template) : base()
 		{
-			m_ownerID = null;
-			Template = template;
 			m_itemplate_id = template.Id_nb;
-			m_utemplate_id = null;
-			m_color = template.Color;
-			m_emblem = template.Emblem;
-			m_count = template.PackSize;
-			m_extension = template.Extension;
-			m_salvageextension = template.SalvageExtension;
-			m_condition = template.MaxCondition;
-			m_durability = template.MaxDurability;
-			m_charges = template.Charges > 0 ? template.Charges : template.MaxCharges;
-			m_charges1 = template.Charges1 > 0 ? template.Charges1 : template.MaxCharges1;
-			m_poisonCharges = template.PoisonCharges;
-			m_poisonMaxCharges = template.PoisonMaxCharges;
-			m_poisonSpellID = template.PoisonSpellID;
+			InitializeFromTemplate(template);
 		}
 		
 		/// <summary>
@@ -334,13 +326,16 @@ namespace DOL.Database
 		/// ItemUnique will always be created in the ItemUnique table
 		/// </summary>
 		/// <param name="itemTemplate"></param>
-		protected DbInventoryItem(DbItemUnique template):base()
+		protected DbInventoryItem(DbItemUnique template) : base()
 		{
-			m_ownerID = null;
-			Template = (DbItemTemplate)template;
-			Template.Dirty = true;
 			m_utemplate_id = template.Id_nb;
-			m_itemplate_id = null;
+			InitializeFromTemplate(template);
+
+		}
+
+		private void InitializeFromTemplate(DbItemTemplate template)
+		{
+			m_item = template;
 			m_color = template.Color;
 			m_emblem = template.Emblem;
 			m_count = template.PackSize;
@@ -354,7 +349,7 @@ namespace DOL.Database
 			m_poisonMaxCharges = template.PoisonMaxCharges;
 			m_poisonSpellID = template.PoisonSpellID;
 		}
-		
+
 		/// <summary>
 		/// Creates a new Inventoryitem based on the given InventoryItem
 		/// </summary>

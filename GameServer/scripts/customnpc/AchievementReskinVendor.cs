@@ -296,7 +296,6 @@ public class AchievementReskinVendor : GameNPC
                 unique.IsTradable = false; //no trading/selling
             }
 
-            GameServer.Database.AddObject(unique);
             //Console.WriteLine($"unique model: {unique.Model} assignment {number}");
             DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
             if (item.IsCrafted)
@@ -374,7 +373,6 @@ public class AchievementReskinVendor : GameNPC
             player.Inventory.RemoveItem(item);
             DbItemUnique unique = new DbItemUnique(item.Template);
             unique.Extension = number;
-            GameServer.Database.AddObject(unique);
             DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
             if (item.IsCrafted)
                 newInventoryItem.IsCrafted = true;

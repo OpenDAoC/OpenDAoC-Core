@@ -1,16 +1,4 @@
-﻿//Dawn of Light Version 1.7.48
-//12/13/2004
-//Written by Gavinius
-//based on Nardin and Zjovaz previous script
-//08/18/2005
-//by sirru
-//completely rewrote SetEffect, no duel item things whatsoever left
-//compatible with dol 1.7 and added some nice things like more 
-//smalltalk, equip, emotes, changing of itemnames and spellcast at the end of process
-//plus i added changing of speed and color
-//what could be done is trimming the prefixes from the name instead of looking at the db, but i dont know how to do that :)
-
-using System.Collections;
+﻿using System.Collections;
 using DOL.Database;
 using DOL.Database.UniqueID;
 using DOL.GS.PacketHandler;
@@ -34,8 +22,6 @@ namespace DOL.GS
         public string TempEffectId = "TempEffectID";
         public string TempColorId = "TempColorID";
         private string _currencyID = ServerProperties.Properties.ALT_CURRENCY_ID;
-
-
 
         public override bool AddToWorld()
         {
@@ -1019,7 +1005,6 @@ namespace DOL.GS
             {
                 unique.Id_nb = IdGenerator.GenerateID();
             }
-            GameServer.Database.AddObject(unique);
 
             DbInventoryItem newInventoryItem = GameInventoryItem.Create<DbItemUnique>(unique);
             if(item.IsCrafted)
@@ -1122,7 +1107,6 @@ namespace DOL.GS
             {
                 unique.Id_nb = IdGenerator.GenerateID();
             }
-            GameServer.Database.AddObject(unique);
 
             DbInventoryItem newInventoryItem = GameInventoryItem.Create<DbItemUnique>(unique);
             if(item.IsCrafted)

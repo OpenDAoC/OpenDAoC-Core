@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -71,11 +53,6 @@ namespace DOL.GS
 			this.Model = (ushort)item.Model;
 			this.Emblem = item.Emblem;
 			this.Name = item.Name;
-
-			if (item.Template is DbItemUnique && item.Template.IsPersisted == false)
-			{
-				GameServer.Database.AddObject(item.Template as DbItemUnique);
-			}
 		}
 
 		/// <summary>
@@ -165,10 +142,8 @@ namespace DOL.GS
 
 			WorldInventoryItem invItem = new WorldInventoryItem();
 			DbItemUnique item = new DbItemUnique(template);
-			GameServer.Database.AddObject(item);
 
 			invItem.m_item = GameInventoryItem.Create(item);
-			
 			invItem.m_item.SlotPosition = 0;
 			invItem.m_item.OwnerID = null;
 
@@ -190,17 +165,6 @@ namespace DOL.GS
 			}
 
 			return false;
-		}
-
-		public override void Delete()
-		{
-			if (m_item != null && m_isRemoved == false && m_item.Template is DbItemUnique)
-			{
-				// for world items that expire we need to delete the associated ItemUnique
-				GameServer.Database.DeleteObject(m_item.Template as DbItemUnique);
-			}
-
-			base.Delete();
 		}
 
 		#region PickUpTimer

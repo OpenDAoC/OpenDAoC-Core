@@ -559,17 +559,17 @@ namespace DOL.GS
         {
             if (item.PendingDatabaseAction is PendingDatabaseAction.ADD)
             {
+                item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
+
                 if (!GameServer.Database.AddObject(item))
                     return false;
-
-                item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
             }
             else if (item.PendingDatabaseAction is PendingDatabaseAction.DELETE)
             {
+                item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
+
                 if (!GameServer.Database.DeleteObject(item))
                     return false;
-
-                item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
             }
             else if (item.PendingDatabaseAction is PendingDatabaseAction.SAVE)
             {

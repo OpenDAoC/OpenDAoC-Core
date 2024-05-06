@@ -3381,10 +3381,7 @@ namespace DOL.GS
 					DbInventoryItem invitem;
 
 					if (lootTemplate is DbItemUnique)
-					{
-						GameServer.Database.AddObject(lootTemplate);
 						invitem = GameInventoryItem.Create(lootTemplate as DbItemUnique);
-					}
 					else
 						invitem = GameInventoryItem.Create(lootTemplate);
 
