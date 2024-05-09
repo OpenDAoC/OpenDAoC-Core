@@ -136,17 +136,13 @@ public class PredatorManager
     public static void DisqualifyPlayer(GamePlayer player)
     {
         RemoveActivePlayer(player);
-        if (DisqualifiedPlayers.ContainsKey(player))
-        {
-            DisqualifiedPlayers[player] = GameLoop.GameLoopTime;
-        }
-        else
-        {
-            DisqualifiedPlayers.Add(player, GameLoop.GameLoopTime);
-        }
 
-        if (PlayerKillTallyDict.ContainsKey(player))
-            PlayerKillTallyDict.Remove(player);
+        if (DisqualifiedPlayers.ContainsKey(player))
+            DisqualifiedPlayers[player] = GameLoop.GameLoopTime;
+        else
+            DisqualifiedPlayers.Add(player, GameLoop.GameLoopTime);
+
+        PlayerKillTallyDict.Remove(player);
 
         player.Out.SendMessage($"The call of the wild leaves you. You have been removed from the hunt.",
             eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -555,9 +551,9 @@ public class PredatorManager
         BroadcastKill(predatorBounty.Prey);
         killerPlayer.GainRealmPoints(predatorBounty.Reward, false);
         FreshKillers.Add(predatorBounty.Predator);
-        
-        if(PlayerKillTallyDict.ContainsKey(predatorBounty.Predator))
-            PlayerKillTallyDict[predatorBounty.Predator]++;
+
+        if (PlayerKillTallyDict.TryGetValue(predatorBounty.Predator, out int value))
+            PlayerKillTallyDict[predatorBounty.Predator] = ++value;
         else
             PlayerKillTallyDict.Add(predatorBounty.Predator, 1);
 

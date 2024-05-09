@@ -607,10 +607,8 @@ namespace DOL.GS
 
 				var slot = (eInventorySlot) item.SlotPosition;
 
-				if (m_items.ContainsKey(slot))
+				if (m_items.Remove(slot))
 				{
-					m_items.Remove(slot);
-
 					if (!m_changedSlots.Contains(slot))
 						m_changedSlots.Add(slot);
 

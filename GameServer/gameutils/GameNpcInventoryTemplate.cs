@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -279,12 +280,8 @@ namespace DOL.GS
 
 			lock (LockObject)
 			{
-				IList<DbNpcEquipment> npcEquip;
-				
-				if (m_npcEquipmentCache.ContainsKey(templateID))
-					npcEquip = m_npcEquipmentCache[templateID];
-				else
-					npcEquip = DOLDB<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID));
+				if (!m_npcEquipmentCache.TryGetValue(templateID, out List<DbNpcEquipment> npcEquip))
+					npcEquip = DOLDB<DbNpcEquipment>.SelectObjects(DB.Column("templateID").IsEqualTo(templateID)).ToList();
 
 				if (npcEquip == null || npcEquip.Count == 0)
 				{
@@ -313,27 +310,25 @@ namespace DOL.GS
 			try
 			{
 				m_npcEquipmentCache = new Dictionary<string, List<DbNpcEquipment>>(1000);
+
 				foreach (DbNpcEquipment equip in GameServer.Database.SelectAllObjects<DbNpcEquipment>())
 				{
-					List<DbNpcEquipment> list;
-					if (m_npcEquipmentCache.ContainsKey(equip.TemplateID))
+					if (!m_npcEquipmentCache.TryGetValue(equip.TemplateID, out List<DbNpcEquipment> npcEquipment))
 					{
-						list = m_npcEquipmentCache[equip.TemplateID];
-					}
-					else
-					{
-						list = new List<DbNpcEquipment>();
-						m_npcEquipmentCache[equip.TemplateID] = list;
+						npcEquipment = [];
+						m_npcEquipmentCache[equip.TemplateID] = npcEquipment;
 					}
 
-					list.Add(equip);
+					npcEquipment.Add(equip);
 				}
+
 				return true;
 			}
 			catch (Exception e)
 			{
 				log.Error(e);
 			}
+
 			return false;
 		}
 

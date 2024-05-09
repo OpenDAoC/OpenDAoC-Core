@@ -1,29 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
-
 using DOL.Database;
-
 using log4net;
 
 namespace DOL.GS
@@ -96,6 +76,7 @@ namespace DOL.GS
 			{
 				string name = m_serializedNames;
 				var nameByLevel = new Dictionary<int, string>();
+
 				foreach (string levelNamePair in Util.SplitCSV(name.Trim()))
 				{
 					if (levelNamePair.Trim().Length <= 0)
@@ -109,12 +90,9 @@ namespace DOL.GS
 						nameByLevel.Add(int.Parse(levelAndName[0]), levelAndName[1]);
 				}
 
-				int level = Level;				
-				if (nameByLevel.ContainsKey(level))
-				{
-					name = nameByLevel[level];
-				}
-				else
+				int level = Level;
+
+				if (!nameByLevel.TryGetValue(level, out name))
 				{
 					var entry = nameByLevel.OrderBy(k => k.Key).FirstOrDefault(k => k.Key <= level);
 					name = entry.Value ?? string.Format("??{0}", KeyName);

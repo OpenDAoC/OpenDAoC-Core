@@ -98,15 +98,17 @@ namespace DOL.GS
 		/// </param>
 		/// <param name="teleportKey">Composite key into teleport dictionary.</param>
 		/// <returns></returns>
-		public static DbTeleport GetTeleportLocation(eRealm realm, String teleportKey)
+		public static DbTeleport GetTeleportLocation(eRealm realm, string teleportKey)
 		{
 			lock (m_syncTeleport)
 			{
-				return (m_teleportLocations.ContainsKey(realm)) ?
-					(m_teleportLocations[realm].ContainsKey(teleportKey) ?
-					 m_teleportLocations[realm][teleportKey] :
-					 null) :
-					null;
+				if (m_teleportLocations.TryGetValue(realm, out Dictionary<string, DbTeleport> teleportLocations))
+				{
+					if (teleportLocations.TryGetValue(teleportKey, out DbTeleport teleportLocation))
+						return teleportLocation;
+				}
+
+				return null;
 			}
 		}
 
@@ -117,23 +119,20 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static bool AddTeleportLocation(DbTeleport teleport)
 		{
-			eRealm realm = (eRealm)teleport.Realm;
-			String teleportKey = String.Format("{0}:{1}", teleport.Type, teleport.TeleportID);
+			eRealm realm = (eRealm) teleport.Realm;
+			string teleportKey = $"{teleport.Type}:{teleport.TeleportID}";
 
 			lock (m_syncTeleport)
 			{
-				Dictionary<String, DbTeleport> teleports = null;
-				if (m_teleportLocations.ContainsKey(realm))
+				if (m_teleportLocations.TryGetValue(realm, out Dictionary<string, DbTeleport> teleports))
 				{
-					if (m_teleportLocations[realm].ContainsKey(teleportKey))
+					if (teleports.ContainsKey(teleportKey))
 						return false;   // Double entry.
-
-					teleports = m_teleportLocations[realm];
 				}
 
 				if (teleports == null)
 				{
-					teleports = new Dictionary<String, DbTeleport>();
+					teleports = [];
 					m_teleportLocations.Add(realm, teleports);
 				}
 
@@ -1023,10 +1022,7 @@ namespace DOL.GS
 				return null;
 			}
 
-			List<ZoneData> list = null;
-
-			if (m_zonesData.ContainsKey(data.Id))
-				list = m_zonesData[data.Id];
+			m_zonesData.TryGetValue(data.Id, out List<ZoneData> list);
 
 			if (list == null)
 			{

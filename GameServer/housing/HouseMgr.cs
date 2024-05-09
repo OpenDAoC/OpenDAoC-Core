@@ -204,15 +204,8 @@ namespace DOL.GS.Housing
 		/// <param name="regionID"></param>
 		public static void RemoveHousingForRegion(ushort regionID)
 		{
-			if (_houseList.ContainsKey(regionID))
-			{
-				_houseList.Remove(regionID);
-			}
-
-			if (_idList.ContainsKey(regionID))
-			{
-				_idList.Remove(regionID);
-			}
+			_houseList.Remove(regionID);
+			_idList.Remove(regionID);
 		}
 
 		public static void Stop()
@@ -231,16 +224,15 @@ namespace DOL.GS.Housing
 		public static House GetHouse(ushort regionID, int houseNumber)
 		{
 			// try and get the houses for the given region
-			Dictionary<int, House> housesByRegion;
-			_houseList.TryGetValue(regionID, out housesByRegion);
+			_houseList.TryGetValue(regionID, out Dictionary<int, House> housesByRegion);
 
 			// if we couldn't find houses for the region, return null
 			if (housesByRegion == null)
 				return null;
 
 			// if the house number exists, return the house
-			if (housesByRegion.ContainsKey(houseNumber))
-				return housesByRegion[houseNumber];
+			if (housesByRegion.TryGetValue(houseNumber, out House house))
+				return house;
 
 			// couldn't find the house, return null
 			return null;
@@ -252,8 +244,8 @@ namespace DOL.GS.Housing
 			// the given house number, return it
 			foreach (var housingRegion in _houseList.Values)
 			{
-				if (housingRegion.ContainsKey(houseNumber))
-					return housingRegion[houseNumber];
+				if (housingRegion.TryGetValue(houseNumber, out House house))
+					return house;
 			}
 
 			// couldn't find the house, return null
@@ -266,8 +258,8 @@ namespace DOL.GS.Housing
 			// the given house number, return the consignment merchant
 			foreach (var housingRegion in _houseList.Values)
 			{
-				if (housingRegion.ContainsKey(houseNumber))
-					return housingRegion[houseNumber].ConsignmentMerchant;
+				if (housingRegion.TryGetValue(houseNumber, out House house))
+					return house.ConsignmentMerchant;
 			}
 
 			// couldn't find the house, return null
@@ -306,13 +298,10 @@ namespace DOL.GS.Housing
 				// create a new set of permissions
 				for (int i = HousingConstants.MinPermissionLevel; i < HousingConstants.MaxPermissionLevel + 1; i++)
 				{
-					if (house.PermissionLevels.ContainsKey(i))
+					if (house.PermissionLevels.TryGetValue(i, out DbHousePermissions housePermissions))
 					{
-						var oldPermission = house.PermissionLevels[i];
-						if (oldPermission != null)
-						{
-							GameServer.Database.DeleteObject(oldPermission);
-						}
+						if (housePermissions != null)
+							GameServer.Database.DeleteObject(housePermissions);
 					}
 
 					// create a new, blank permission

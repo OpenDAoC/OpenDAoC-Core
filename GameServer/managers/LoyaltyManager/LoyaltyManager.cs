@@ -2,14 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DOL.Database;
-using DOL.Events;
-using DOL.GS.PacketHandler;
-using DOL.GS.ServerProperties;
 
 namespace DOL.GS;
 
 public class LoyaltyManager
-
 {
     private static Dictionary<GamePlayer, PlayerLoyalty> _CachedPlayerLoyaltyDict;
 
@@ -49,14 +45,13 @@ public class LoyaltyManager
     public static void CachePlayer(GamePlayer player)
     {
         List<DbAccountXRealmLoyalty> realmLoyalty = new List<DbAccountXRealmLoyalty>(DOLDB<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(player.Client.Account.ObjectId)));
-        if (_CachedPlayerLoyaltyDict == null) _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyalty>();
+
+        if (_CachedPlayerLoyaltyDict == null)
+            _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyalty>();
 
         lock (CachedDictLock)
         {
-            if (_CachedPlayerLoyaltyDict.ContainsKey(player))
-            {
-                _CachedPlayerLoyaltyDict.Remove(player);
-            }
+            _CachedPlayerLoyaltyDict.Remove(player);
         }
 
         var midLoyalty = 0;
@@ -194,5 +189,4 @@ public class LoyaltyManager
 
         GameServer.Database.SaveObject(rloyal);
     }
-
 }

@@ -178,7 +178,7 @@ namespace DOL.GS.PacketHandler
             Array.Clear(packetHandlers, 0, packetHandlers.Length);
             lock (m_packetHandlerCacheLock)
             {
-                if (!m_cachedPacketHandlerSearchResults.ContainsKey(version))
+                if (!m_cachedPacketHandlerSearchResults.TryGetValue(version, out IPacketHandler[] packetHandler))
                 {
                     int count = SearchAndAddPacketHandlers(version, Assembly.GetAssembly(typeof(GameServer)), packetHandlers);
                     if (log.IsInfoEnabled)
@@ -197,14 +197,13 @@ namespace DOL.GS.PacketHandler
                 }
                 else
                 {
-                    packetHandlers = (IPacketHandler[])m_cachedPacketHandlerSearchResults[version].Clone();
+                    packetHandlers = (IPacketHandler[]) packetHandler.Clone();
                     int count = 0;
                     foreach (IPacketHandler ph in packetHandlers) if (ph != null) count++;
                     log.Info("PacketProcessor: Loaded " + count + " handlers from cache for version="+version+"!");
                 }
 
-                if (m_cachedPreprocessorSearchResults.ContainsKey(version))
-                    attributes = m_cachedPreprocessorSearchResults[version];
+                m_cachedPreprocessorSearchResults.TryGetValue(version, out attributes);
                 log.Info("PacketProcessor: Loaded " + attributes.Count + " preprocessors from cache for version=" + version + "!");
             }
         }

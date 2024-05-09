@@ -570,15 +570,12 @@ namespace DOL.GS
 		/// <param name="assembly"></param>
 		public static void AddOrReplaceAssembly(Assembly assembly)
 		{
-			if (m_compiledScripts.ContainsKey(assembly.FullName))
+			if (!m_compiledScripts.TryAdd(assembly.FullName, assembly))
 			{
 				m_compiledScripts[assembly.FullName] = assembly;
+
 				if (log.IsDebugEnabled)
-					log.Debug("Replaced assembly " + assembly.FullName);
-			}
-			else
-			{
-				m_compiledScripts.Add(assembly.FullName, assembly);
+					log.Debug($"Replaced assembly {assembly.FullName}");
 			}
 		}
 
@@ -588,13 +585,7 @@ namespace DOL.GS
 		/// <param name="fullName"></param>
 		public static bool RemoveAssembly(string fullName)
 		{
-			if (m_compiledScripts.ContainsKey(fullName))
-			{
-				m_compiledScripts.Remove(fullName);
-				return true;
-			}
-
-			return false;
+			return m_compiledScripts.ContainsKey(fullName);
 		}
 
 		/// <summary>

@@ -1,50 +1,12 @@
-﻿/*
-* DAWN OF LIGHT - The first free open source DAoC server emulator
-* 
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-* 
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-*/
-
-
-//
-// This is a class writen from the Storm Unique Object Generator.
-//
-// Original version by Etaew
-// Modified by Tolakram to add live like names and item models
-//
-// Released to the public on July 12th, 2010
-//
-// Updating to Class by Leodagan on Aug 2013.
-//
-//
-// **** Atlas ROG Generation system ****
-//
-//	Based on the above mentioned software releases
-//	Converted for use by Atlas server by Fen - Sept 2021 - Dec 21
-//
-
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS.ServerProperties;
 
-namespace DOL.GS {
+namespace DOL.GS
+{
     /// <summary>
     /// GeneratedUniqueItem is a subclass of UniqueItem used to create RoG object
     /// Using it as a class is much more extendable to other usage than just loot and inventory
@@ -6838,12 +6800,12 @@ namespace DOL.GS {
         #region Naming and Modeling
         public bool WriteMagicalName(eProperty property)
         {
-            if (hPropertyToMagicPrefix.ContainsKey(property) && !m_named)
+            if (hPropertyToMagicPrefix.TryGetValue(property, out string prefix) && !m_named)
             {
-                string str = hPropertyToMagicPrefix[property];
                 //Console.WriteLine($"Str: {str}");
-                if (str != string.Empty)
-                    this.Name = str + " " + this.Name;
+                if (!string.IsNullOrEmpty(prefix))
+                    Name = $"{prefix} {Name}";
+
                 m_named = true;
                 //Console.WriteLine("Named = true, name = " + this.Name);
                 return true;

@@ -139,14 +139,9 @@ namespace DOL.GS
 		
 		public static byte GetAttackResultByte(eAttackResult attResult)
 		{
-			if (AttackResultByte.ContainsKey(attResult))
-			{
-				return AttackResultByte[attResult];
-			}
-			
-			return 0;
+			return AttackResultByte.TryGetValue(attResult, out byte value) ? value : (byte) 0;
 		}
-		
+
 		public static bool IsExpansionEnabled(int expansion)
 		{
 			bool enabled = true;

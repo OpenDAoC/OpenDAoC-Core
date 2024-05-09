@@ -36,13 +36,16 @@ namespace DOL.GS
 
                     EntityManager.Add(this);
 
-                    // Check to prevent crash from holding sprint button down.
                     if (effect is ECSGameAbilityEffect)
                     {
-                        if (!Effects.ContainsKey(effect.EffectType))
-                            Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
-                        else if (effect.EffectType is eEffect.Protect or eEffect.Guard)
-                            Effects[effect.EffectType].Add(effect);
+                        if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
+                        {
+                            // Check to prevent crash from holding sprint button down.
+                            if (effect.EffectType is eEffect.Protect or eEffect.Guard)
+                                existingEffects.Add(effect);
+                        }
+                        else
+                            Effects.Add(effect.EffectType, [effect]);
 
                         EffectIdToEffect.TryAdd(effect.Icon, effect);
                         return true;
@@ -234,8 +237,8 @@ namespace DOL.GS
                         //Console.WriteLine("Effect List contains type: " + effect.EffectType.ToString() + " (" + effect.Owner.Name + ")");
                         return false;
                     }
-                    else if (Effects.ContainsKey(effect.EffectType))
-                        Effects[effect.EffectType].Add(effect);
+                    else if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
+                        existingEffects.Add(effect);
                     else
                     {
                         Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
@@ -382,31 +385,24 @@ namespace DOL.GS
             {
                 try
                 {
-                    if (!Effects.ContainsKey(effect.EffectType))
-                    {
-                        //Console.WriteLine("Effect List does not contain type: " + effect.EffectType.ToString());
+                    if (!Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
                         return false;
-                    }
-                    else
+
+                    if (effect.CancelEffect)
                     {
-                        if (effect.CancelEffect)
+                        // Get the effectToRemove from the Effects list. Had issues trying to remove the effect directly from the list if it wasn't the same object.
+                        ECSGameEffect effectToRemove = existingEffects.FirstOrDefault(e => e.Name == effect.Name);
+                        existingEffects.Remove(effectToRemove);
+                        EffectIdToEffect.Remove(effect.Icon);
+
+                        if (existingEffects.Count == 0)
                         {
-                            List<ECSGameEffect> existingEffects = Effects[effect.EffectType];
-                            // Get the effectToRemove from the Effects list. Had issues trying to remove the effect directly from the list if it wasn't the same object.
-                            ECSGameEffect effectToRemove = existingEffects.FirstOrDefault(e => e.Name == effect.Name);
-
-                            Effects[effect.EffectType].Remove(effectToRemove);
                             EffectIdToEffect.Remove(effect.Icon);
-
-                            if (Effects[effect.EffectType].Count == 0)
-                            {
-                                EffectIdToEffect.Remove(effect.Icon);
-                                Effects.Remove(effect.EffectType);
-                            }
+                            Effects.Remove(effect.EffectType);
                         }
-
-                        return true;
                     }
+
+                    return true;
                 }
                 catch (Exception e)
                 {

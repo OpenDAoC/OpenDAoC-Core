@@ -44,12 +44,7 @@ namespace DOL.GS
 		/// <returns>Copy of a dictionary of all guild members for the guild or null if guild is not found</returns>
 		public static Dictionary<string, GuildMemberDisplay> GetAllGuildMembers(string guildID)
 		{
-			if (m_guildXAllMembers.ContainsKey(guildID))
-			{
-				return new Dictionary<string, GuildMemberDisplay>(m_guildXAllMembers[guildID]);
-			}
-
-			return null;
+			return m_guildXAllMembers.TryGetValue(guildID, out Dictionary<string, GuildMemberDisplay> value) ? new Dictionary<string, GuildMemberDisplay>(value) : null;
 		}
 
 		/// <summary>
@@ -85,13 +80,9 @@ namespace DOL.GS
 		/// <returns>True if player was removed, else false.</returns>
 		public static bool RemovePlayerFromAllGuildPlayersList(GamePlayer player)
 		{
-			if (m_guildXAllMembers.ContainsKey(player.GuildID))
-			{
-				return m_guildXAllMembers[player.GuildID].Remove(player.InternalID);
-			}
-			return false;
+			return m_guildXAllMembers.TryGetValue(player.GuildID, out Dictionary<string, GuildMemberDisplay> value) && value.Remove(player.InternalID);
 		}
-		
+
 		static private ushort m_lastID = 0;
 
 		/// <summary>

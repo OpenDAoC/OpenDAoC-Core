@@ -9,7 +9,6 @@ using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.API;
 using DOL.GS.Commands;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
@@ -3287,21 +3286,16 @@ namespace DOL.GS
 
             lock (((ICollection)m_specialization).SyncRoot)
             {
-                // search for existing key
-                if (!m_specialization.ContainsKey(skill.KeyName))
+                if (m_specialization.TryGetValue(skill.KeyName, out Specialization specialization))
                 {
-                    // Adding
-                    m_specialization.Add(skill.KeyName, skill);
-
-                    if (notify)
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.AddSpecialisation.YouLearn", skill.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
+                    specialization.Level = skill.Level;
+                    return;
                 }
-                else
-                {
-                    // Updating
-                    m_specialization[skill.KeyName].Level = skill.Level;
-                }
+
+                m_specialization.Add(skill.KeyName, skill);
+
+                if (notify)
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.AddSpecialisation.YouLearn", skill.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
 
@@ -3532,20 +3526,16 @@ namespace DOL.GS
         /// Retrives a specific specialization by name
         /// </summary>
         /// <param name="name">the name of the specialization line</param>
-        /// <param name="caseSensitive">false for case-insensitive compare</param>
         /// <returns>found specialization or null</returns>
-        public virtual Specialization GetSpecializationByName(string name, bool caseSensitive = false)
+        public virtual Specialization GetSpecializationByName(string name)
         {
             Specialization spec = null;
 
             lock (((ICollection)m_specialization).SyncRoot)
             {
-                if (caseSensitive && m_specialization.ContainsKey(name))
-                    spec = m_specialization[name];
-
                 foreach (KeyValuePair<string, Specialization> entry in m_specialization)
                 {
-                    if (entry.Key.ToLower().Equals(name.ToLower()))
+                    if (entry.Key.Equals(name, StringComparison.OrdinalIgnoreCase))
                     {
                         spec = entry.Value;
                         break;
@@ -3860,12 +3850,10 @@ namespace DOL.GS
                         List<Skill> sps = new List<Skill>();
                         SpellLine key = spells.Keys.FirstOrDefault(el => el.ID == sl.ID);
 
-                        if (key != null && spells.ContainsKey(key))
+                        if (key != null && spells.TryGetValue(key, out List<Skill> spellsInLine))
                         {
-                            foreach (Skill sp in spells[key])
-                            {
+                            foreach (Skill sp in spellsInLine)
                                 sps.Add(sp);
-                            }
                         }
 
                         working.Add(new Tuple<SpellLine, List<Skill>>(sl, sps));
@@ -12794,8 +12782,7 @@ namespace DOL.GS
         {
             lock (CraftingLock)
             {
-                if (!m_craftingSkills.ContainsKey(skill)) return -1;
-                return m_craftingSkills[skill];
+                return m_craftingSkills.TryGetValue(skill, out int value) ? value : -1;
             }
         }
 

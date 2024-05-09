@@ -1152,10 +1152,8 @@ namespace DOL.GS.Housing
 		public void RemovePermission(int slot)
 		{
 			// make sure the permission exists
-			if (!_housePermissions.ContainsKey(slot))
+			if (!_housePermissions.TryGetValue(slot, out DbHouseCharsXPerms matchedPerm))
 				return;
-
-			var matchedPerm = _housePermissions[slot];
 
 			// remove the permission and delete it from the database
 			_housePermissions.Remove(slot);
@@ -1165,13 +1163,11 @@ namespace DOL.GS.Housing
 		public void AdjustPermissionSlot(int slot, int newPermLevel)
 		{
 			// make sure the permission exists
-			if (!_housePermissions.ContainsKey(slot))
+			if (!_housePermissions.TryGetValue(slot, out DbHouseCharsXPerms permission))
 				return;
 
-			var permission = _housePermissions[slot];
-
 			// check for proper permission level range
-			if (newPermLevel < HousingConstants.MinPermissionLevel || newPermLevel > HousingConstants.MaxPermissionLevel)
+			if (newPermLevel is < HousingConstants.MinPermissionLevel or > HousingConstants.MaxPermissionLevel)
 				return;
 
 			// update the permission level

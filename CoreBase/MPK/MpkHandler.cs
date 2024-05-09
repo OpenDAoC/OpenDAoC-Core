@@ -96,18 +96,7 @@ namespace DOL.MPK
 		/// <summary>
 		/// Gets a specific MPK file from this MPK
 		/// </summary>
-		public MpkFile this[string fname]
-		{
-			get
-			{
-				if (_files.ContainsKey(fname))
-				{
-					return _files[fname];
-				}
-
-				return null;
-			}
-		}
+		public MpkFile this[string fname] => _files.TryGetValue(fname, out MpkFile value) ? value : null;
 
 		/// <summary>
 		/// The event to fire if an invalid file was found
@@ -130,13 +119,7 @@ namespace DOL.MPK
 		/// <returns>true if successfull, false if the file is already contained</returns>
 		public bool AddFile(MpkFile file)
 		{
-			if (!_files.ContainsKey(file.Header.Name))
-			{
-				_files.Add(file.Header.Name, file);
-				return true;
-			}
-
-			return false;
+			return _files.TryAdd(file.Header.Name, file);
 		}
 
 		/// <summary>
@@ -146,13 +129,7 @@ namespace DOL.MPK
 		/// <returns>true if the file was successfully removed, false if it wasn't in the MPK</returns>
 		public bool RemoveFile(string fname)
 		{
-			if (_files.ContainsKey(fname.ToLower()))
-			{
-				_files.Remove(fname.ToLower());
-				return true;
-			}
-
-			return false;
+			return _files.Remove(fname.ToLower());
 		}
 
 		/// <summary>

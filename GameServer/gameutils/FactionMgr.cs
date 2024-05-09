@@ -50,7 +50,7 @@ namespace DOL.GS
 
         public static Faction GetFactionByID(int id)
         {
-            return Factions.ContainsKey(id) ? Factions[id] : null;
+            return Factions.TryGetValue(id, out Faction value) ? value : null;
         }
 
         public static int SaveAllAggroToFaction()

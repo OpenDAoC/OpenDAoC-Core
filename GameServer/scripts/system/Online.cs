@@ -381,32 +381,32 @@ namespace DOL.GS.Commands
                 }
             }
 
-            if (showZoneBreakzone) {
-                
-                Dictionary<string, int> zoneXnumbers = new Dictionary<string, int>();
+            if (showZoneBreakzone)
+            {
+                Dictionary<string, int> zoneXnumbers = [];
+
                 foreach (GameClient c in clients)
                 {
-                    if (c == null || c.Player == null || c.Player.CurrentZone == null || c.Player.CurrentZone.Description == null || c.Account.PrivLevel > 1 && c.Player.IsAnonymous )
+                    if (c == null || c.Player == null || c.Player.CurrentZone == null || c.Player.CurrentZone.Description == null || (c.Account.PrivLevel > 1 && c.Player.IsAnonymous) )
                         continue;
 
                     int count = 1;
-                    if (zoneXnumbers.ContainsKey(c.Player.CurrentZone.Description))
+
+                    if (zoneXnumbers.TryGetValue(c.Player.CurrentZone.Description, out int countInZone))
                     {
-                        count += zoneXnumbers[c.Player.CurrentZone.Description];
+                        count += countInZone;
                         zoneXnumbers.Remove(c.Player.CurrentZone.Description);
                     }
+
                     zoneXnumbers.Add(c.Player.CurrentZone.Description, count);
                 }
 
-                var sortedZones = zoneXnumbers.ToList();
-            
+                List<KeyValuePair<string, int>> sortedZones = zoneXnumbers.ToList();
                 sortedZones.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
-            
                 output.Add(string.Format("\n"));
+
                 foreach (KeyValuePair<string, int> kvp in sortedZones)
-                {
-                    output.Add(kvp.Value + " players in " + kvp.Key);
-                } 
+                    output.Add($"{kvp.Value} players in {kvp.Key}");
             }
 
             if (showDetailedClass)

@@ -31,16 +31,16 @@ namespace DOL.GS
 		#region caches and static indexes
 
 		// Career Dictionary, Spec Attached to Character class ID, auto loaded on char creation !!
-		protected static readonly Dictionary<int, IDictionary<string, int>> m_specsByClass = new();
+		protected static readonly Dictionary<int, Dictionary<string, int>> m_specsByClass = new();
 
 		// Specialization dict KeyName => Spec Tuple to instanciate.
 		protected static readonly Dictionary<string, Tuple<Type, string, ushort, int>> m_specsByName = new();
 
 		// Specialization X SpellLines Dict<"string spec keyname", "List<"Tuple<"SpellLine line", "int classid"> line constraint"> list of lines">
-		protected static readonly Dictionary<string, IList<Tuple<SpellLine, int>>> m_specsSpellLines = new();
+		protected static readonly Dictionary<string, List<Tuple<SpellLine, int>>> m_specsSpellLines = new();
 
 		// global table for spec => List of styles, Dict <"string spec keyname", "Dict <"int classid", "List<"Tuple<"Style style", "byte requiredLevel"> Style Constraint" StyleByClass">
-		protected static readonly Dictionary<string, IDictionary<int, List<Tuple<Style, byte>>>> m_specsStyles = new();
+		protected static readonly Dictionary<string, Dictionary<int, List<Tuple<Style, byte>>>> m_specsStyles = new();
 
 		// Specialization X Ability Cache Dict<"string spec keyname", "List<"Tuple<"string abilitykey", "byte speclevel", "int ab Level", "int class hint"> ab constraint"> list ab's>">
 		protected static readonly Dictionary<string, List<Tuple<string, byte, int, int>>> m_specsAbilities = new();
@@ -49,7 +49,7 @@ namespace DOL.GS
 		protected static readonly Dictionary<string, DbAbility> m_abilityIndex = new();
 
 		// class id => realm abilitykey list
-		protected static readonly Dictionary<int, IList<string>> m_classRealmAbilities = new();
+		protected static readonly Dictionary<int, List<string>> m_classRealmAbilities = new();
 
 		// SpellLine Cache Dict KeyName => SpellLine Object
 		protected static readonly Dictionary<string, SpellLine> m_spellLineIndex = new();
@@ -601,34 +601,29 @@ namespace DOL.GS
 							foreach (DbStyle specStyle in spec.Styles)
 							{
 								// Update Style Career
-								if (!m_specsStyles.ContainsKey(spec.KeyName))
+								if (!m_specsStyles.TryGetValue(spec.KeyName, out Dictionary<int, List<Tuple<Style, byte>>> specStyles))
 								{
-									m_specsStyles.Add(spec.KeyName, new Dictionary<int, List<Tuple<Style, byte>>>());
+									specStyles = new Dictionary<int, List<Tuple<Style, byte>>>();
+									m_specsStyles.Add(spec.KeyName, specStyles);
 								}
 
-								if (!m_specsStyles[spec.KeyName].ContainsKey(specStyle.ClassId))
+								if (!specStyles.TryGetValue(specStyle.ClassId, out List<Tuple<Style, byte>> styles))
 								{
-									m_specsStyles[spec.KeyName].Add(specStyle.ClassId, new List<Tuple<Style, byte>>());
+									styles = [];
+									specStyles.Add(specStyle.ClassId, styles);
 								}
 
 								Style newStyle = new(specStyle, null);
-
-								m_specsStyles[spec.KeyName][specStyle.ClassId].Add(new Tuple<Style, byte>(newStyle, (byte)specStyle.SpecLevelRequirement));
+								styles.Add(new Tuple<Style, byte>(newStyle, (byte) specStyle.SpecLevelRequirement));
 
 								// Update Style Index.
 
 								KeyValuePair<int, int> styleKey = new(newStyle.ID, specStyle.ClassId);
 
-								if (!m_styleIndex.ContainsKey(styleKey))
-								{
-									m_styleIndex.Add(styleKey, newStyle);
+								if (m_styleIndex.TryAdd(styleKey, newStyle))
 									count++;
-								}
-								else
-								{
-									if (log.IsWarnEnabled)
-										log.WarnFormat("Specialization {0} - Duplicate Style Key, StyleID {1} : ClassID {2}, Ignored...", spec.KeyName, newStyle.ID, specStyle.ClassId);
-								}
+								else if (log.IsWarnEnabled)
+									log.Warn($"Specialization {spec.KeyName} - Duplicate Style Key, StyleID {newStyle.ID} : ClassID {specStyle.ClassId}, Ignored...");
 
 								// Load Procs.
 								if (specStyle.AttachedProcs != null)
@@ -704,23 +699,18 @@ namespace DOL.GS
 
 					foreach (DbClassXSpecialization career in dbo)
 					{
-						if (!m_specsByClass.ContainsKey(career.ClassID))
+						if (!m_specsByClass.TryGetValue(career.ClassID, out Dictionary<string, int> specs))
 						{
-							m_specsByClass.Add(career.ClassID, new Dictionary<string, int>());
+							specs = [];
+							m_specsByClass.Add(career.ClassID, specs);
 							summary.Add(career.ClassID, new StringBuilder());
-							summary[career.ClassID].AppendFormat("Career for Class {0} - ", career.ClassID);
+							summary[career.ClassID].Append($"Career for Class {career.ClassID} - ");
 						}
 
-						if (!m_specsByClass[career.ClassID].ContainsKey(career.SpecKeyName))
-						{
-							m_specsByClass[career.ClassID].Add(career.SpecKeyName, career.LevelAcquired);
-							summary[career.ClassID].AppendFormat("{0}({1}), ", career.SpecKeyName, career.LevelAcquired);
-						}
-						else
-						{
-							if (log.IsWarnEnabled)
-								log.WarnFormat("Duplicate Sepcialization Key {0} for Class Career : {1}", career.SpecKeyName, career.ClassID);
-						}
+						if (specs.TryAdd(career.SpecKeyName, career.LevelAcquired))
+							summary[career.ClassID].Append($"{career.SpecKeyName}({career.LevelAcquired}), ");
+						else if (log.IsWarnEnabled)
+							log.Warn($"Duplicate Specialization Key {career.SpecKeyName} for Class Career : {career.ClassID}");
 					}
 				}
 
@@ -2169,10 +2159,10 @@ namespace DOL.GS
 		public static void UnRegisterSpellLine(string LineKeyName)
 		{
 			m_syncLockUpdates.EnterWriteLock();
+
 			try
 			{
-				if (m_spellLineIndex.ContainsKey(LineKeyName))
-					m_spellLineIndex.Remove(LineKeyName);
+				m_spellLineIndex.Remove(LineKeyName);
 			}
 			finally
 			{
@@ -2183,25 +2173,19 @@ namespace DOL.GS
 		/// <summary>
 		/// returns level 1 instantiated realm abilities, only for readonly use!
 		/// </summary>
-		/// <param name="classID"></param>
-		/// <returns></returns>
 		public static List<RealmAbility> GetClassRealmAbilities(int classID)
 		{
-			List<DbAbility> ras = new();
+			List<DbAbility> ras = [];
 			m_syncLockUpdates.EnterReadLock();
+
 			try
 			{
-				if (m_classRealmAbilities.ContainsKey(classID))
+				if (m_classRealmAbilities.TryGetValue(classID, out List<string> realmAbilities))
 				{
-					foreach (string str in m_classRealmAbilities[classID])
+					foreach (string str in realmAbilities)
 					{
-						try
-						{
-							ras.Add(m_abilityIndex[str]);
-						}
-						catch
-						{
-						}
+						if (m_abilityIndex.TryGetValue(str, out DbAbility ability))
+							ras.Add(ability);
 					}
 				}
 			}
@@ -2212,7 +2196,7 @@ namespace DOL.GS
 
 			/// [Atlas - Takii] Order RAs by their PrimaryKey in the DB so we have control over their order, instead of base DOL implementation.
 			//return ras.Select(e => GetNewAbilityInstance(e)).Where(ab => ab is RealmAbility).Cast<RealmAbility>().OrderByDescending(el => el.MaxLevel).ThenBy(el => el.KeyName).ToList();
-			return ras.Select(e => GetNewAbilityInstance(e)).Where(ab => ab is RealmAbility).Cast<RealmAbility>().ToList();
+			return ras.Select(GetNewAbilityInstance).Where(ab => ab is RealmAbility).Cast<RealmAbility>().ToList();
 		}
 
 		/// <summary>
@@ -2293,12 +2277,11 @@ namespace DOL.GS
 		{
 			m_syncLockUpdates.EnterReadLock();
 			DbAbility dbab = null;
+
 			try
 			{
-				if (m_abilityIndex.ContainsKey(keyname))
-				{
-					dbab = m_abilityIndex[keyname];
-				}
+				if (m_abilityIndex.TryGetValue(keyname, out DbAbility value))
+					dbab = value;
 			}
 			finally
 			{
@@ -2313,9 +2296,9 @@ namespace DOL.GS
 			}
 
 			if (log.IsWarnEnabled)
-				log.Warn("Ability '" + keyname + "' unknown");
+				log.Warn($"Ability '{keyname}' unknown");
 
-			return new Ability(keyname, "?" + keyname, "", 0, 0, level, 0);
+			return new Ability(keyname, $"?{keyname}", "", 0, 0, level, 0);
 		}
 
 		/// <summary>
@@ -2326,13 +2309,14 @@ namespace DOL.GS
 		/// <returns>list of spells, never null</returns>
 		public static List<Spell> GetSpellList(string spellLineID)
 		{
-			List<Spell> spellList = new();
+			List<Spell> spellList = [];
 			m_syncLockUpdates.EnterReadLock();
+
 			try
 			{
-				if (m_lineSpells.ContainsKey(spellLineID))
+				if (m_lineSpells.TryGetValue(spellLineID, out List<Spell> spells))
 				{
-					foreach (var element in m_lineSpells[spellLineID])
+					foreach (var element in spells)
 						spellList.Add((Spell)element.Clone());
 				}
 			}
@@ -2401,12 +2385,10 @@ namespace DOL.GS
 			m_syncLockUpdates.EnterReadLock();
 			try
 			{
-				if (m_specsSpellLines.ContainsKey(specName))
+				if (m_specsSpellLines.TryGetValue(specName, out List<Tuple<SpellLine, int>> spellLines))
 				{
-					foreach(Tuple<SpellLine, int> entry in m_specsSpellLines[specName])
-					{
+					foreach (Tuple<SpellLine, int> entry in spellLines)
 						list.Add(new Tuple<SpellLine, int>((SpellLine)entry.Item1.Clone(), entry.Item2));
-					}
 				}
 			}
 			finally
@@ -2437,10 +2419,11 @@ namespace DOL.GS
 		{
 			SpellLine result = null;
 			m_syncLockUpdates.EnterReadLock();
+
 			try
 			{
-				if (m_spellLineIndex.ContainsKey(keyname))
-					result = (SpellLine)m_spellLineIndex[keyname].Clone();
+				if (m_spellLineIndex.TryGetValue(keyname, out SpellLine value))
+					result = (SpellLine) value.Clone();
 			}
 			finally
 			{
@@ -2454,10 +2437,10 @@ namespace DOL.GS
 			{
 				if (log.IsWarnEnabled)
 				{
-					log.WarnFormat("Spell-Line {0} unknown, creating temporary line.", keyname);
+					log.WarnFormat($"Spell-Line {keyname} unknown, creating temporary line.");
 				}
 
-				return new SpellLine(keyname, string.Format("{0}?", keyname), "", true);
+				return new SpellLine(keyname, $"{keyname}?", "", true);
 			}
 
 			return null;
@@ -2514,6 +2497,7 @@ namespace DOL.GS
 				{
 					try
 					{
+						// Yo what the fuck.
 						if ((m_lineSpells[spellLineID][r] != null &&
 						    spell.ID > 0 && m_lineSpells[spellLineID][r].ID == spell.ID && m_lineSpells[spellLineID][r].Name.ToLower().Equals(spell.Name.ToLower()) && m_lineSpells[spellLineID][r].SpellType.ToString().ToLower().Equals(spell.SpellType.ToString().ToLower()))
 						    || (m_lineSpells[spellLineID][r].Name.ToLower().Equals(spell.Name.ToLower()) && m_lineSpells[spellLineID][r].SpellType.ToString().ToLower().Equals(spell.SpellType.ToString().ToLower())))
@@ -2635,10 +2619,11 @@ namespace DOL.GS
 		{
 			Specialization spec = null;
 			m_syncLockUpdates.EnterReadLock();
+
 			try
 			{
-				if (m_specsByName.ContainsKey(keyname))
-					spec = GetNewSpecializationInstance(keyname, m_specsByName[keyname]);
+				if (m_specsByName.TryGetValue(keyname, out Tuple<Type, string, ushort, int> value))
+					spec = GetNewSpecializationInstance(keyname, value);
 			}
 			finally
 			{
@@ -2651,12 +2636,10 @@ namespace DOL.GS
 			if (create)
 			{
 				if (log.IsWarnEnabled)
-				{
-					log.WarnFormat("Specialization {0} unknown", keyname);
-				}
+					log.Warn($"Specialization {keyname} unknown");
 
 				// Untrainable Spec by default to prevent garbage in player display...
-				return new UntrainableSpecialization(keyname, "?" + keyname, 0, 0);
+				return new UntrainableSpecialization(keyname, $"?{keyname}", 0, 0);
 			}
 
 			return null;
@@ -2688,15 +2671,14 @@ namespace DOL.GS
 		/// <returns>Dictionary of Specialization with their Level Requirement (including ClassId 0 for game wide specs)</returns>
 		public static IDictionary<Specialization, int> GetSpecializationCareer(int classID)
 		{
-			Dictionary<Specialization, int> dictRes = new();
+			Dictionary<Specialization, int> dictRes = [];
 			m_syncLockUpdates.EnterReadLock();
 			IDictionary<string, int> entries = new Dictionary<string, int>();
+
 			try
 			{
-				if (m_specsByClass.ContainsKey(classID))
-				{
-					entries = new Dictionary<string, int>(m_specsByClass[classID]);
-				}
+				if (m_specsByClass.TryGetValue(classID, out Dictionary<string, int> value))
+					entries = new Dictionary<string, int>(value);
 			}
 			finally
 			{
@@ -2711,19 +2693,16 @@ namespace DOL.GS
 					spec.LevelRequired = constraint.Value;
 					dictRes.Add(spec, constraint.Value);
 				}
-				catch
-				{
-				}
+				catch { }
 			}
 
 			m_syncLockUpdates.EnterReadLock();
 			entries = new Dictionary<string, int>();
+
 			try
 			{
-				if (m_specsByClass.ContainsKey(0))
-				{
-					entries = new Dictionary<string, int>(m_specsByClass[0]);
-				}
+				if (m_specsByClass.TryGetValue(0, out Dictionary<string, int> value))
+					entries = new Dictionary<string, int>(value);
 			}
 			finally
 			{
@@ -2739,9 +2718,7 @@ namespace DOL.GS
 					spec.LevelRequired = constraint.Value;
 					dictRes.Add(spec, constraint.Value);
 				}
-				catch
-				{
-				}
+				catch { }
 			}
 
 			return dictRes;
@@ -2757,22 +2734,21 @@ namespace DOL.GS
 		public static List<Style> GetStyleList(string specID, int classId)
 		{
 			m_syncLockUpdates.EnterReadLock();
-			List<Tuple<Style, byte>> entries = new();
+			List<Tuple<Style, byte>> entries = [];
+
 			try
 			{
-				if(m_specsStyles.ContainsKey(specID) && m_specsStyles[specID].ContainsKey(classId))
-				{
-					entries = new List<Tuple<Style, byte>>(m_specsStyles[specID][classId]);
-				}
+				if (m_specsStyles.TryGetValue(specID, out Dictionary<int, List<Tuple<Style, byte>>> value) && value.TryGetValue(classId, out List<Tuple<Style, byte>> styles))
+					entries = new List<Tuple<Style, byte>>(styles);
 			}
 			finally
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
 
-			List<Style> styleRes = new();
+			List<Style> styleRes = [];
 
-			foreach(Tuple<Style, byte> constraint in entries)
+			foreach (Tuple<Style, byte> constraint in entries)
 				styleRes.Add((Style)constraint.Item1.Clone());
 
 			return styleRes;
@@ -2786,20 +2762,20 @@ namespace DOL.GS
 		public static List<Ability> GetSpecAbilityList(string specID, int classID)
 		{
 			m_syncLockUpdates.EnterReadLock();
-			List<Tuple<string, byte, int, int>> entries = new();
+			List<Tuple<string, byte, int, int>> entries = [];
+
 			try
 			{
-				if (m_specsAbilities.ContainsKey(specID))
-				{
-					entries = new List<Tuple<string, byte, int, int>>(m_specsAbilities[specID]);
-				}
+				if (m_specsAbilities.TryGetValue(specID, out List<Tuple<string, byte, int, int>> value))
+					entries = new List<Tuple<string, byte, int, int>>(value);
 			}
 			finally
 			{
 				m_syncLockUpdates.ExitReadLock();
 			}
 
-			List<Ability> abRes = new();
+			List<Ability> abRes = [];
+
 			foreach (Tuple<string, byte, int, int> constraint in entries)
 			{
 				if (constraint.Item4 != 0 && constraint.Item4 != classID)
@@ -2969,33 +2945,22 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static int GetRaceResist(int race, eResist type)
 		{
-			if( race == 0 )
+			if (race == 0 )
 				return 0;
 
 			int resistValue = 0;
 
-			if (m_raceResists.ContainsKey(race))
+			if (m_raceResists.TryGetValue(race, out int[] value))
 			{
-				int resistIndex;
+				int resistIndex = type is eResist.Natural ? 9 : (int) type - (int) eProperty.Resist_First;
 
-				if (type == eResist.Natural)
-					resistIndex = 9;
-				else
-					resistIndex = (int)type - (int)eProperty.Resist_First;
-
-				if (resistIndex < m_raceResists[race].Length)
-				{
-					resistValue = m_raceResists[race][resistIndex];
-				}
-				else
-				{
-					log.WarnFormat("No resists defined for type: {0}", type.ToString());
-				}
+				if (resistIndex < value.Length)
+					resistValue = value[resistIndex];
+				else if (log.IsWarnEnabled)
+					log.Warn($"No resists defined for type: {type}");
 			}
-			else
-			{
-				log.WarnFormat("No resists defined for race: {0}", race);
-			}
+			else if (log.IsWarnEnabled)
+				log.Warn($"No resists defined for race: {race}");
 
 			return resistValue;
 		}
@@ -3064,12 +3029,10 @@ namespace DOL.GS
 			Ability ab = null;
 			DbAbility dba = null;
 			m_syncLockUpdates.EnterReadLock();
+
 			try
 			{
-				if (m_abilityIndex.ContainsKey(keyname))
-				{
-					dba = m_abilityIndex[keyname];
-				}
+				m_abilityIndex.TryGetValue(keyname, out dba);
 			}
 			finally
 			{

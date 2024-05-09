@@ -116,12 +116,13 @@ namespace DOL.GS.PacketHandler
 						{
 							try
 							{
-								if (!itemsByOwnerID.ContainsKey(item.OwnerID))
+								if (!itemsByOwnerID.TryGetValue(item.OwnerID, out Dictionary<eInventorySlot, DbInventoryItem> inventory))
 								{
-									itemsByOwnerID.Add(item.OwnerID, new Dictionary<eInventorySlot, DbInventoryItem>());
+									inventory = new Dictionary<eInventorySlot, DbInventoryItem>();
+									itemsByOwnerID.Add(item.OwnerID, inventory);
 								}
 
-								itemsByOwnerID[item.OwnerID].Add((eInventorySlot)item.SlotPosition, item);
+								inventory.Add((eInventorySlot) item.SlotPosition, item);
 							}
 							catch (Exception ex)
 							{

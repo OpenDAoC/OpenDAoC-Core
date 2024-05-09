@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 
@@ -169,26 +168,22 @@ public class SubObjective
     public void CheckNearbyPlayers()
     {
         Dictionary<eRealm, int> playersOfRealmDict = new Dictionary<eRealm, int>();
-       // Console.WriteLine($"Flag Object {FlagObject} {FlagObject.CurrentZone.Description} {FlagObject.Realm} {FlagObject.CurrentRegion.Description} players nearby {FlagObject.GetPlayersInRadius(true, 1000, true)}");
-       var nearbyPlayers = FlagObject.GetPlayersInRadius(750);
+        // Console.WriteLine($"Flag Object {FlagObject} {FlagObject.CurrentZone.Description} {FlagObject.Realm} {FlagObject.CurrentRegion.Description} players nearby {FlagObject.GetPlayersInRadius(true, 1000, true)}");
+        var nearbyPlayers = FlagObject.GetPlayersInRadius(750);
+
         foreach (GamePlayer player in nearbyPlayers)
         {
             if (!player.IsAlive || player.IsStealthed) continue;
-           //Console.WriteLine($"Player near flag: {player.Name}");
-            if (playersOfRealmDict.ContainsKey(player.Realm))
-            {
-                playersOfRealmDict[player.Realm]++;
-            }
+            //Console.WriteLine($"Player near flag: {player.Name}");
+
+            if (playersOfRealmDict.TryGetValue(player.Realm, out int value))
+                playersOfRealmDict[player.Realm] = ++value;
             else
-            {
-                playersOfRealmDict.Add(player.Realm, 1);    
-            }
+                playersOfRealmDict.Add(player.Realm, 1);
         }
 
         if (playersOfRealmDict.Keys.Count is > 1 or 0 && CaptureTimer != null)
-        {
             StopCaptureTimer();
-        }
         else if (playersOfRealmDict.Keys.Count == 1 && playersOfRealmDict.First().Key != OwningRealm)
         {
             StartCaptureTimer(playersOfRealmDict.First().Key);

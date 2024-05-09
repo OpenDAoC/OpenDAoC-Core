@@ -1,28 +1,8 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DOL.Database;
-using DOL.GS.PacketHandler;
 using log4net;
 
 namespace DOL.GS.Keeps
@@ -225,10 +205,15 @@ namespace DOL.GS.Keeps
 			{
 				List<DbKeepHookPoint> currentArray;
 				string key = dbhookPoint.KeepComponentSkinID + "H:" + dbhookPoint.Height;
-				if (!hookPointList.ContainsKey(key))
-					hookPointList.Add(key, currentArray = new List<DbKeepHookPoint>());
+
+				if (!hookPointList.TryGetValue(key, out List<DbKeepHookPoint> hookPoints))
+				{
+					currentArray = [];
+					hookPointList.Add(key, currentArray);
+				}
 				else
-					currentArray = hookPointList[key];
+					currentArray = hookPoints;
+
 				currentArray.Add(dbhookPoint);
 			}
 			foreach (AbstractGameKeep keep in m_keepList.Values)
@@ -236,19 +221,21 @@ namespace DOL.GS.Keeps
 				foreach (GameKeepComponent component in keep.KeepComponents)
 				{
 					string key = component.Skin + "H:" + component.Height;
-					if ((hookPointList.ContainsKey(key)))
+
+					if (hookPointList.TryGetValue(key, out List<DbKeepHookPoint> hookPoints))
 					{
-						List<DbKeepHookPoint> HPlist = hookPointList[key];
-						if ((HPlist != null) && (HPlist.Count != 0))
+						if (hookPoints != null && hookPoints.Count != 0)
 						{
-							foreach (DbKeepHookPoint dbhookPoint in hookPointList[key])
+							foreach (DbKeepHookPoint dbhookPoint in hookPoints)
 							{
 								GameKeepHookPoint myhookPoint = new GameKeepHookPoint(dbhookPoint, component);
 								component.HookPoints.Add(dbhookPoint.HookPointID, myhookPoint);
 							}
+
 							continue;
 						}
 					}
+
 					//add this to keep hookpoint system until DB is not full
 					for (int i = 0; i < 38; i++)
 						component.HookPoints.Add(i, new GameKeepHookPoint(i, component));

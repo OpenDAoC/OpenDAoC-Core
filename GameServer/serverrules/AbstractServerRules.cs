@@ -1273,10 +1273,8 @@ namespace DOL.GS.ServerRules
 				realmPoints = (int) (npcRPValue * damagePercent);
 				//rp bonuses from RR and Group
 				//100% if full group,scales down according to player count in group and their range to target
-				if (player != null && player.Group != null && plrGrpExp.ContainsKey(player.Group))
-				{
-					realmPoints = (int) (realmPoints * (1.0 + plrGrpExp[player.Group] * 0.5));
-				}
+				if (player != null && player.Group != null && plrGrpExp.TryGetValue(player.Group, out int value))
+					realmPoints = (int) (realmPoints * (1.0 + value * 0.5));
 			}
 
 			if (realmPoints > rpCap && !(killedNPC is Doppelganger))

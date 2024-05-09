@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace DOL.GS.Realm
 {
@@ -54,8 +53,7 @@ namespace DOL.GS.Realm
 		
 		public static RaceStats GetRaceStats(short race)
 		{
-			return !Stats.ContainsKey(race) ? null : Stats[race];
+			return Stats.TryGetValue(race, out RaceStats value) ? value : null;
 		}
 	}
-	
 }

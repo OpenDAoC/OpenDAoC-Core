@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -563,21 +544,18 @@ namespace DOL.GS
 		{
 			lock (m_memberListLock)
 			{
-				if (m_onlineGuildPlayers.ContainsKey(player.InternalID))
+				if (m_onlineGuildPlayers.Remove(player.InternalID))
 				{
-					m_onlineGuildPlayers.Remove(player.InternalID);
-
 					// now update the all member list to display lastonline time instead of zone
 					Dictionary<string, GuildMgr.GuildMemberDisplay> memberList = GuildMgr.GetAllGuildMembers(player.GuildID);
 
-					if (memberList != null && memberList.ContainsKey(player.InternalID))
-					{
-						memberList[player.InternalID].ZoneOrOnline = DateTime.Now.ToShortDateString();
-					}
+					if (memberList != null && memberList.TryGetValue(player.InternalID, out GuildMgr.GuildMemberDisplay guildMemberDisplay))
+						guildMemberDisplay.ZoneOrOnline = DateTime.Now.ToShortDateString();
 
 					return true;
 				}
 			}
+
 			return false;
 		}
 
@@ -600,11 +578,8 @@ namespace DOL.GS
 		{
 			lock (m_memberListLock)
 			{
-				if (m_onlineGuildPlayers.ContainsKey(memberID))
-					return m_onlineGuildPlayers[memberID];
+				return m_onlineGuildPlayers.TryGetValue(memberID, out GamePlayer value) ? value : null;
 			}
-
-			return null;
 		}
 
 		/// <summary>

@@ -1,28 +1,8 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
 using DOL.Language;
 
 namespace DOL.GS.PlayerTitles
 {
-  	/// <summary>
+	/// <summary>
 	/// Craft Title Handler
 	/// </summary>
 	public class CraftTitle : SimplePlayerTitle
@@ -45,18 +25,13 @@ namespace DOL.GS.PlayerTitles
 		/// <returns>The title value.</returns>
 		public override string GetValue(GamePlayer source, GamePlayer player)
 		{
-			if (player.CraftingPrimarySkill == eCraftingSkill.NoCrafting || !player.CraftingSkills.ContainsKey(player.CraftingPrimarySkill))
+			if (player.CraftingPrimarySkill == eCraftingSkill.NoCrafting || !player.CraftingSkills.TryGetValue(player.CraftingPrimarySkill, out int craftingLevel))
 				return string.Format(LanguageMgr.TryTranslateOrDefault(source, "!BasicCrafting!", "Crafting.Name.BasicCrafting"));
-			
-			var craftingSkill = CraftingMgr.getSkillbyEnum(player.CraftingPrimarySkill);
-			var profession = craftingSkill as AbstractProfession;
-			
-			if (profession == null)
-				return craftingSkill.Name;
-			
-			return profession.GetTitle(source, player.CraftingSkills[player.CraftingPrimarySkill]);
+
+			AbstractCraftingSkill craftingSkill = CraftingMgr.getSkillbyEnum(player.CraftingPrimarySkill);
+			return craftingSkill is AbstractProfession profession ? profession.GetTitle(source, craftingLevel) : craftingSkill.Name;
 		}
-		
+
 		/// <summary>
 		/// Verify whether the player is suitable for this title.
 		/// </summary>

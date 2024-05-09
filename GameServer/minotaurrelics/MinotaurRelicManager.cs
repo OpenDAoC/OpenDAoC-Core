@@ -104,11 +104,13 @@ namespace DOL.GS
 
             foreach (MinotaurRelic relic in GetAllRelics())
             {
-                if (!relics.ContainsKey(relic.CurrentRegionID))
+                if (!relics.TryGetValue(relic.CurrentRegionID, out IList<MinotaurRelic> relicsInRegion))
                 {
-                    relics.Add(relic.CurrentRegionID, new List<MinotaurRelic>());
+                    relicsInRegion = [];
+                    relics.Add(relic.CurrentRegionID, relicsInRegion);
                 }
-                relics[relic.CurrentRegionID].Add(relic);
+
+                relicsInRegion.Add(relic);
             }
 
             foreach (GamePlayer player in ClientService.GetPlayers(Predicate, relics))
@@ -185,10 +187,7 @@ namespace DOL.GS
         {
             lock (m_minotaurrelics)
             {
-                if (!m_minotaurrelics.ContainsKey(ID))
-                    return null;
-
-                return m_minotaurrelics[ID] as MinotaurRelic;
+                return m_minotaurrelics.TryGetValue(ID, out MinotaurRelic value) ? value : null;
             }
         }
 

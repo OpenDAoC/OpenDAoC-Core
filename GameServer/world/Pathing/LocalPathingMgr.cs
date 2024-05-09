@@ -5,7 +5,6 @@ using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using log4net;
 
 namespace DOL.GS
@@ -170,10 +169,10 @@ namespace DOL.GS
         /// <param name="zone"></param>
         public void UnloadNavMesh(Zone zone)
         {
-            if (_navmeshPtrs.ContainsKey(zone.ID))
+            if (_navmeshPtrs.TryGetValue(zone.ID, out nint ptr))
             {
                 zone.IsPathingEnabled = false;
-                FreeNavMesh(_navmeshPtrs[zone.ID]);
+                FreeNavMesh(ptr);
                 _navmeshPtrs.Remove(zone.ID);
             }
         }
@@ -202,20 +201,23 @@ namespace DOL.GS
         /// <returns></returns>
         public WrappedPathingResult GetPathStraightAsync(Zone zone, Vector3 start, Vector3 end)
         {
-            if (!_navmeshPtrs.ContainsKey(zone.ID))
+            if (!_navmeshPtrs.TryGetValue(zone.ID, out nint ptr))
+            {
                 return new WrappedPathingResult
                 {
                     Error = PathingError.NoPathFound,
                     Points = null,
                 };
+            }
 
             var result = new WrappedPathingResult();
-            NavMeshQuery query;
-            if (!_navmeshQueries.Value.TryGetValue(zone.ID, out query))
+
+            if (!_navmeshQueries.Value.TryGetValue(zone.ID, out NavMeshQuery query))
             {
-                query = new NavMeshQuery(_navmeshPtrs[zone.ID]);
+                query = new NavMeshQuery(ptr);
                 _navmeshQueries.Value.Add(zone.ID, query);
             }
+
             var startFloats = ToRecastFloats(start + Vector3.UnitZ * 8);
             var endFloats = ToRecastFloats(end + Vector3.UnitZ * 8);
 
@@ -262,19 +264,18 @@ namespace DOL.GS
         /// <returns>null if no point found, Vector3 with point otherwise</returns>
         public Vector3? GetRandomPointAsync(Zone zone, Vector3 position, float radius)
         {
-            if (!_navmeshPtrs.ContainsKey(zone.ID))
+            if (!_navmeshPtrs.TryGetValue(zone.ID, out nint ptr))
                 return null;
 
             //GSStatistics.Paths.Inc();
-
             Vector3? result = null;
-            NavMeshQuery query;
-            if (!_navmeshQueries.Value.TryGetValue(zone.ID, out query))
+
+            if (!_navmeshQueries.Value.TryGetValue(zone.ID, out NavMeshQuery query))
             {
-                query = new NavMeshQuery(_navmeshPtrs[zone.ID]);
+                query = new NavMeshQuery(ptr);
                 _navmeshQueries.Value.Add(zone.ID, query);
             }
-            var ptrs = _navmeshPtrs[zone.ID];
+
             var center = ToRecastFloats(position + Vector3.UnitZ * 8);
             var cradius = (radius * CONVERSION_FACTOR);
             var outVec = new float[3];
@@ -298,18 +299,18 @@ namespace DOL.GS
         /// </summary>
         public Vector3? GetClosestPointAsync(Zone zone, Vector3 position, float xRange = 256f, float yRange = 256f, float zRange = 256f)
         {
-            if (!_navmeshPtrs.ContainsKey(zone.ID))
+            if (!_navmeshPtrs.TryGetValue(zone.ID, out nint ptr))
                 return position; // Assume the point is safe if we don't have a navmesh
-                                 //GSStatistics.Paths.Inc();
 
+            //GSStatistics.Paths.Inc();
             Vector3? result = null;
-            NavMeshQuery query;
-            if (!_navmeshQueries.Value.TryGetValue(zone.ID, out query))
+
+            if (!_navmeshQueries.Value.TryGetValue(zone.ID, out NavMeshQuery query))
             {
-                query = new NavMeshQuery(_navmeshPtrs[zone.ID]);
+                query = new NavMeshQuery(ptr);
                 _navmeshQueries.Value.Add(zone.ID, query);
             }
-            var ptrs = _navmeshPtrs[zone.ID];
+
             var center = ToRecastFloats(position + Vector3.UnitZ * 8);
             var outVec = new float[3];
 

@@ -4090,19 +4090,23 @@ namespace DOL.GS
 		{
 			lock ((m_disabledSkills as ICollection).SyncRoot)
 			{
-				KeyValuePair<int, Type> key = new KeyValuePair<int, Type>(skill.ID, skill.GetType());
-				if (m_disabledSkills.ContainsKey(key))
+				KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
+
+				if (m_disabledSkills.TryGetValue(key, out KeyValuePair<long, Skill> value))
 				{
-					long timeout = m_disabledSkills[key].Key;
+					long timeout = value.Key;
 					long left = timeout - GameLoop.GameLoopTime;
+
 					if (left <= 0)
 					{
 						left = 0;
 						m_disabledSkills.Remove(key);
 					}
-					return (int)left;
+
+					return (int) left;
 				}
 			}
+
 			return 0;
 		}
 
@@ -4173,9 +4177,7 @@ namespace DOL.GS
 		{
 			lock ((m_disabledSkills as ICollection).SyncRoot)
 			{
-				KeyValuePair<int, Type> key = new KeyValuePair<int, Type>(skill.ID, skill.GetType());
-				if(m_disabledSkills.ContainsKey(key))
-					m_disabledSkills.Remove(key);
+				m_disabledSkills.Remove(new(skill.ID, skill.GetType()));
 			}
 		}
 

@@ -231,92 +231,91 @@ namespace DOL.GS
             }
         }
 
-        public void AddStyle(Style st, bool notify)
+        public void AddStyle(Style style, bool notify)
         {
             var p = _owner as GamePlayer;
 
             lock (lockStyleList)
             {
-                if (m_styles.ContainsKey(st.ID))
+                if (m_styles.TryGetValue(style.ID, out style))
                 {
-                    m_styles[st.ID].Level = st.Level;
+                    style.Level = style.Level;
+                    return;
                 }
-                else
+
+                m_styles.Add(style.ID, style);
+
+                if (!notify)
+                    return;
+
+
+                p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.YouLearn", style.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                string message = null;
+
+                if (Style.eOpening.Offensive == style.OpeningRequirementType)
                 {
-                    m_styles.Add(st.ID, st);
-
-                    // Verbose
-                    if (notify)
+                    switch (style.AttackResultRequirement)
                     {
-                        Style style = st;
-                        p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.YouLearn", style.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        case Style.eAttackResultRequirement.Style:
+                        case Style.eAttackResultRequirement.Hit: // TODO: make own message for hit after styles DB is updated
 
-                        string message = null;
+                            Style reqStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, p.CharacterClass.ID);
 
-                        if (Style.eOpening.Offensive == style.OpeningRequirementType)
-                        {
-                            switch (style.AttackResultRequirement)
-                            {
-                                case Style.eAttackResultRequirement.Style:
-                                case Style.eAttackResultRequirement.Hit: // TODO: make own message for hit after styles DB is updated
+                            if (reqStyle == null)
+                                message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterStyle", "(style " + style.OpeningRequirementValue + " not found)");
 
-                                    Style reqStyle = SkillBase.GetStyleByID(style.OpeningRequirementValue, p.CharacterClass.ID);
+                            else
+                                message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterStyle", reqStyle.Name);
 
-                                    if (reqStyle == null)
-                                        message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterStyle", "(style " + style.OpeningRequirementValue + " not found)");
-
-                                    else message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterStyle", reqStyle.Name);
-
-                                    break;
-                                case Style.eAttackResultRequirement.Miss:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterMissed");
-                                    break;
-                                case Style.eAttackResultRequirement.Parry:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterParried");
-                                    break;
-                                case Style.eAttackResultRequirement.Block:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterBlocked");
-                                    break;
-                                case Style.eAttackResultRequirement.Evade:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterEvaded");
-                                    break;
-                                case Style.eAttackResultRequirement.Fumble:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterFumbles");
-                                    break;
-                            }
-                        }
-                        else if (Style.eOpening.Defensive == style.OpeningRequirementType)
-                        {
-                            switch (style.AttackResultRequirement)
-                            {
-                                case Style.eAttackResultRequirement.Miss:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetMisses");
-                                    break;
-                                case Style.eAttackResultRequirement.Hit:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetHits");
-                                    break;
-                                case Style.eAttackResultRequirement.Parry:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetParried");
-                                    break;
-                                case Style.eAttackResultRequirement.Block:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetBlocked");
-                                    break;
-                                case Style.eAttackResultRequirement.Evade:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetEvaded");
-                                    break;
-                                case Style.eAttackResultRequirement.Fumble:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetFumbles");
-                                    break;
-                                case Style.eAttackResultRequirement.Style:
-                                    message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetStyle");
-                                    break;
-                            }
-                        }
-
-                        if (!string.IsNullOrEmpty(message))
-                            p.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                            break;
+                        case Style.eAttackResultRequirement.Miss:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterMissed");
+                            break;
+                        case Style.eAttackResultRequirement.Parry:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterParried");
+                            break;
+                        case Style.eAttackResultRequirement.Block:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterBlocked");
+                            break;
+                        case Style.eAttackResultRequirement.Evade:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterEvaded");
+                            break;
+                        case Style.eAttackResultRequirement.Fumble:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.AfterFumbles");
+                            break;
                     }
                 }
+                else if (Style.eOpening.Defensive == style.OpeningRequirementType)
+                {
+                    switch (style.AttackResultRequirement)
+                    {
+                        case Style.eAttackResultRequirement.Miss:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetMisses");
+                            break;
+                        case Style.eAttackResultRequirement.Hit:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetHits");
+                            break;
+                        case Style.eAttackResultRequirement.Parry:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetParried");
+                            break;
+                        case Style.eAttackResultRequirement.Block:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetBlocked");
+                            break;
+                        case Style.eAttackResultRequirement.Evade:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetEvaded");
+                            break;
+                        case Style.eAttackResultRequirement.Fumble:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetFumbles");
+                            break;
+                        case Style.eAttackResultRequirement.Style:
+                            message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.RefreshSpec.TargetStyle");
+                            break;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(message))
+                    p.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
     }

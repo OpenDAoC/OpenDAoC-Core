@@ -102,27 +102,23 @@ namespace DOL.GS
 			return true;
 		}
 
-	    public static void RegisterDoor(GameDoorBase door)
-	    {
-	        lock (Lock)
-	        {
-	            if (!m_doors.ContainsKey(door.DoorID))
-	            {
-	                List<GameDoorBase> createDoorList = new List<GameDoorBase>();
-	                m_doors.Add(door.DoorID, createDoorList);
-	            }
+		public static void RegisterDoor(GameDoorBase door)
+		{
+			lock (Lock)
+			{
+				if (!m_doors.TryGetValue(door.DoorID, out List<GameDoorBase> doorsOfId))
+				{
+					doorsOfId = [];
+					m_doors.Add(door.DoorID, doorsOfId);
+				}
 
-	            List<GameDoorBase> addDoorList = m_doors[door.DoorID];
-	            addDoorList.Add(door);
-	        }
-	    }
+				doorsOfId.Add(door);
+			}
+		}
 
 		public static void UnRegisterDoor(int doorID)
 		{
-			if (m_doors.ContainsKey(doorID))
-			{
-				m_doors.Remove(doorID);
-			}
+			m_doors.Remove(doorID);
 		}
 
 		/// <summary>
@@ -131,14 +127,7 @@ namespace DOL.GS
 		/// <returns>return the door with the index</returns>
 		public static List<GameDoorBase> getDoorByID(int id)
 		{
-			if (m_doors.ContainsKey(id))
-			{
-				return m_doors[id];
-			}
-			else
-			{
-				return new List<GameDoorBase>();
-			}
+			return m_doors.TryGetValue(id, out List<GameDoorBase> value) ? value : [];
 		}
 	}
 }

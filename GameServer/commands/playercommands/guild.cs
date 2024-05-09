@@ -3110,9 +3110,8 @@ namespace DOL.GS.Commands
 
 				foreach (GamePlayer player in onlineGuildPlayers)
 				{
-					if (allGuildMembers.ContainsKey(player.InternalID))
+					if (allGuildMembers.TryGetValue(player.InternalID, out GuildMgr.GuildMemberDisplay memberDisplay))
 					{
-						GuildMgr.GuildMemberDisplay memberDisplay = allGuildMembers[player.InternalID];
 						memberDisplay.UpdateMember(player);
 						string key = memberDisplay[sortColumn];
 

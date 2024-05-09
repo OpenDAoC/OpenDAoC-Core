@@ -78,9 +78,10 @@ namespace DOL.GS.Effects
 			{
 				for (eProperty property = eProperty.Stat_First; property <= eProperty.Stat_Last; property++)
 				{
-					if (m_debuffs.ContainsKey(property))
-						owner.DebuffCategory[(int)property] -= m_debuffs[property];
+					if (m_debuffs.TryGetValue(property, out int value))
+						owner.DebuffCategory[(int)property] -= value;
 				}
+
 				owner.Out.SendCharStatsUpdate();
 			}
 			

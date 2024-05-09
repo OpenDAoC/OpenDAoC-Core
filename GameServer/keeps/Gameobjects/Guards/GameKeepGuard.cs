@@ -602,11 +602,11 @@ namespace DOL.GS.Keeps
 			{
 				if (Component.Keep != null)
 				{
-					string skey = m_dataObjectID;
-					if (Component.Keep.Guards.ContainsKey(skey))
-						Component.Keep.Guards.Remove(skey);
-					else if (log.IsWarnEnabled)
-						log.Warn($"Can't find {Position.ClassType} with dataObjectId {m_dataObjectID} in Component InternalID {Component.InternalID} Guard list.");
+					if (!Component.Keep.Guards.Remove(m_dataObjectID))
+					{
+						if (log.IsWarnEnabled)
+							log.Warn($"Can't find {Position.ClassType} with dataObjectId {m_dataObjectID} in Component InternalID {Component.InternalID} Guard list.");
+					}
 				}
 				else if (log.IsWarnEnabled)
 					log.Warn($"Keep is null on delete of guard {Name} with dataObjectId {m_dataObjectID}");
