@@ -942,6 +942,12 @@ namespace DOL.GS
 
             GameEventMgr.RemoveAllHandlersForObject(m_inventory);
 
+            if (_linkDeathTimer != null)
+            {
+                _linkDeathTimer.Stop();
+                _linkDeathTimer = null;
+            }
+
             if (CraftTimer != null)
             {
                 CraftTimer.Stop();
