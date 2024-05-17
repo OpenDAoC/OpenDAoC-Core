@@ -1154,9 +1154,6 @@ namespace DOL.GS
 
             protected override int OnTick(ECSGameTimer timer)
             {
-                if (_playerOwner.ObjectState is eObjectState.Deleted)
-                    return 0;
-
                 if (_playerOwner.ObjectState is eObjectState.Active)
                     PlayerPositionUpdateHandler.BroadcastLastReceivedPacket(_playerOwner.Client);
 
