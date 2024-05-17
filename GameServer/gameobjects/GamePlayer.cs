@@ -9128,6 +9128,7 @@ namespace DOL.GS
             Y = y;
             Z = z;
             Heading = heading;
+            IsSitting = false;
 
             if (regionID != CurrentRegionID)
             {
