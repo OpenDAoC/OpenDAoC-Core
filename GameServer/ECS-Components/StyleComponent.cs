@@ -237,9 +237,9 @@ namespace DOL.GS
 
             lock (lockStyleList)
             {
-                if (m_styles.TryGetValue(style.ID, out style))
+                if (m_styles.TryGetValue(style.ID, out Style existingStyle))
                 {
-                    style.Level = style.Level;
+                    existingStyle.Level = style.Level;
                     return;
                 }
 
