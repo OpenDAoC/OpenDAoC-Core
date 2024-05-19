@@ -297,20 +297,19 @@ namespace DOL.GS
 		/// <summary>
 		/// Check if Player can be Promoted
 		/// </summary>
-		/// <param name="player"></param>
 		public virtual bool CanPromotePlayer(GamePlayer player)
 		{
-			var baseClass = ScriptMgr.FindCharacterBaseClass((int)TrainedClass);
-			ICharacterClass pickedClass = ScriptMgr.FindCharacterClass((int)TrainedClass);
+			var baseClass = ScriptMgr.FindCharacterBaseClass((int) TrainedClass);
+			ICharacterClass pickedClass = ScriptMgr.FindCharacterClass((int) TrainedClass);
 
 			// Error or Base Trainer...
-			if (baseClass == null || baseClass.ID == (int)TrainedClass)
+			if (baseClass == null || (eCharacterClass) baseClass.ID == TrainedClass)
 				return false;
 
 			if (player.Level < 5 || player.CharacterClass.ID != baseClass.ID)
 				return false;
 
-			if (pickedClass.EligibleRaces.Exists(s => (short)s.ID == player.Race))
+			if (!pickedClass.EligibleRaces.Exists(s => s.ID == (eRace) player.Race))
 				return false;
 
 			if (GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT.TryGetValue(TrainedClass, out eGender gender) && gender != player.Gender)
