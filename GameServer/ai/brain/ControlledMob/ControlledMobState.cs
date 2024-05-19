@@ -40,6 +40,11 @@ namespace DOL.AI.Brain
             StateType = eFSMStateType.IDLE;
         }
 
+        public override void Enter()
+        {
+            // Don't call base since it makes pets stop moving.
+        }
+
         public override void Think()
         {
             ControlledMobBrain brain = _brain as ControlledMobBrain;

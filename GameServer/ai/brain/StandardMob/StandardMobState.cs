@@ -57,6 +57,7 @@ namespace DOL.AI.Brain
             if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
                 Console.WriteLine($"{_brain.Body} is entering IDLE");
 
+            _brain.Body.StopMoving();
             base.Enter();
         }
 
