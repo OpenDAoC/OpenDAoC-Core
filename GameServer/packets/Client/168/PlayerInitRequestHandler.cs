@@ -54,7 +54,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 					player.Out.SendPlayerRevive(player);
 				}
 
-				int mobs = SendMobsAndMobEquipmentToPlayer(player);
 				player.Out.SendTime();
 
 				bool checkInstanceLogin = false;
@@ -361,25 +360,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 							eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					}
 				}
-			}
-
-			private static int SendMobsAndMobEquipmentToPlayer(GamePlayer player)
-			{
-				int mobs = 0;
-
-				if (player.CurrentRegion != null)
-				{
-					var npcs = player.GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE);
-					foreach (GameNPC npc in npcs)
-					{
-						player.Out.SendNPCCreate(npc);
-						mobs++;
-						if (npc.Inventory != null)
-							player.Out.SendLivingEquipmentUpdate(npc);
-					}
-				}
-
-				return mobs;
 			}
 		}
 	}

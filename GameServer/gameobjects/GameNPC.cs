@@ -172,16 +172,9 @@ namespace DOL.GS
 
 				if (Level != value)
 				{
+					// This is a newly created NPC, so notify nearby players of its creation
 					if (Level < 1 && ObjectState == eObjectState.Active)
-					{
-						// This is a newly created NPC, so notify nearby players of its creation
-						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						{
-							player.Out.SendNPCCreate(this);
-							if (m_inventory != null)
-								player.Out.SendLivingEquipmentUpdate(this);
-						}
-					}
+						ClientService.CreateNpcForPlayers(this);
 
 					base.Level = value;
 					AutoSetStats();  // Recalculate stats when level changes
@@ -295,15 +288,9 @@ namespace DOL.GS
 			set
 			{
 				base.Realm = value;
+
 				if (ObjectState == eObjectState.Active)
-				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					{
-						player.Out.SendNPCCreate(this);
-						if (m_inventory != null)
-							player.Out.SendLivingEquipmentUpdate(this);
-					}
-				}
+					ClientService.CreateNpcForPlayers(this);
 			}
 		}
 
@@ -316,15 +303,9 @@ namespace DOL.GS
 			set
 			{
 				base.Name = value;
+
 				if (ObjectState == eObjectState.Active)
-				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					{
-						player.Out.SendNPCCreate(this);
-						if (m_inventory != null)
-							player.Out.SendLivingEquipmentUpdate(this);
-					}
-				}
+					ClientService.CreateNpcForPlayers(this);
 			}
 		}
 
@@ -361,15 +342,9 @@ namespace DOL.GS
 			set
 			{
 				base.GuildName = value;
+
 				if (ObjectState == eObjectState.Active)
-				{
-					foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-					{
-						player.Out.SendNPCCreate(this);
-						if (m_inventory != null)
-							player.Out.SendLivingEquipmentUpdate(this);
-					}
-				}
+					ClientService.CreateNpcForPlayers(this);
 			}
 		}
 
@@ -667,17 +642,11 @@ namespace DOL.GS
 			{
 				eFlags oldflags = m_flags;
 				m_flags = value;
+
 				if (ObjectState == eObjectState.Active)
 				{
 					if (oldflags != m_flags)
-					{
-						foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-						{
-							player.Out.SendNPCCreate(this);
-							if (m_inventory != null)
-								player.Out.SendLivingEquipmentUpdate(this);
-						}
-					}
+						ClientService.CreateNpcForPlayers(this);
 				}
 			}
 		}
@@ -1955,7 +1924,7 @@ namespace DOL.GS
 
 		#region Add/Remove/Create/Remove/Update
 
-		public override void OnUpdateByPlayerService()
+		public override void OnUpdateOrCreateForPlayer()
 		{
 			m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
 
@@ -1975,24 +1944,7 @@ namespace DOL.GS
 			if (MAX_PASSENGERS > 0)
 				Riders = new GamePlayer[MAX_PASSENGERS];
 
-			bool anyPlayer = false;
-
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				if (player == null)
-					continue;
-
-				player.Out.SendNPCCreate(this);
-
-				if (m_inventory != null)
-					player.Out.SendLivingEquipmentUpdate(this);
-
-				anyPlayer = true;
-			}
-
-			if (anyPlayer)
-				m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
-
+			ClientService.CreateNpcForPlayers(this);
 			m_spawnPoint.X = X;
 			m_spawnPoint.Y = Y;
 			m_spawnPoint.Z = Z;
@@ -2139,17 +2091,7 @@ namespace DOL.GS
 				player.Out.SendObjectRemove(this);
 
 			// New position.
-			foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-			{
-				if (player == null)
-					continue;
-
-				player.Out.SendNPCCreate(this);
-
-				if (m_inventory != null)
-					player.Out.SendLivingEquipmentUpdate(this);
-			}
-
+			ClientService.CreateNpcForPlayers(this);
 			return true;
 		}
 

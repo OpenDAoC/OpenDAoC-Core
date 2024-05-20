@@ -47,14 +47,7 @@ namespace DOL.GS
                     charmSpellHandler.MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "GamePlayer.GamePet.StartSpell.UnderControl", charmMob.GetName(0, true)), eChatType.CT_Spell);
 
                 casterPlayer.SetControlledBrain(charmSpellHandler.m_controlledBrain);
-
-                foreach (GamePlayer playerInRadius in charmMob.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                {
-                    playerInRadius.Out.SendNPCCreate(charmMob);
-
-                    if (charmMob.Inventory != null)
-                        playerInRadius.Out.SendLivingEquipmentUpdate(charmMob);
-                }
+                ClientService.CreateNpcForPlayers(charmMob);
             }
 
             charmSpellHandler.SendEffectAnimation(charmMob, 0, false, 1);

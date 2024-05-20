@@ -517,18 +517,38 @@ namespace DOL.GS
             }
         }
 
+        private static void OnObjectCreateOrUpdateForPlayer(GamePlayer player, GameObject gameObject)
+        {
+            gameObject.OnUpdateOrCreateForPlayer();
+            AddObjectToPlayerCache(player, gameObject);
+        }
+
         public static void UpdateObjectForPlayer(GamePlayer player, GameObject gameObject)
         {
-            // Doesn't handle houses. They aren't 'GameObject'.
-            gameObject.OnUpdateByPlayerService();
             player.Out.SendObjectUpdate(gameObject);
-            AddObjectToPlayerCache(player, gameObject);
+            OnObjectCreateOrUpdateForPlayer(player, gameObject);
         }
 
         public static void UpdateObjectForPlayers(GameObject gameObject)
         {
             foreach (GamePlayer player in gameObject.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 UpdateObjectForPlayer(player, gameObject);
+        }
+
+        public static void CreateNpcForPlayer(GamePlayer player, GameNPC npc)
+        {
+            player.Out.SendNPCCreate(npc);
+
+            if (npc.Inventory != null)
+                player.Out.SendLivingEquipmentUpdate(npc);
+
+            OnObjectCreateOrUpdateForPlayer(player, npc);
+        }
+
+        public static void CreateNpcForPlayers(GameNPC npc)
+        {
+            foreach (GamePlayer playerInRadius in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                CreateNpcForPlayer(playerInRadius, npc);
         }
 
         public static void CreateObjectForPlayer(GamePlayer player, GameObject gameObject)
@@ -621,7 +641,7 @@ namespace DOL.GS
                     continue;
 
                 if (!npcUpdateCache.TryGetValue(npcInRange, out CachedNpcValues cachedNpcValues))
-                    UpdateObjectForPlayer(player, npcInRange);
+                    CreateNpcForPlayer(player, npcInRange);
                 else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL))
                     UpdateObjectForPlayer(player, npcInRange);
                 else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + 250))
@@ -710,7 +730,7 @@ namespace DOL.GS
                 if (!doorUpdateCache.TryGetValue(doorInRange, out long lastUpdate))
                 {
                     CreateObjectForPlayer(player, doorInRange);
-                    player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange);
+                    player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange); // Not handled by `CreateObjectForPlayer`.
                 }
                 else if (ServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
                     UpdateObjectForPlayer(player, doorInRange);

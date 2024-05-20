@@ -9198,12 +9198,8 @@ namespace DOL.GS
         /// </summary>
         public virtual void RefreshWorld()
         {
-            foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE * 2))
-            {
-                Out.SendNPCCreate(npc);
-                if (npc.Inventory != null)
-                    Out.SendLivingEquipmentUpdate(npc);
-            }
+            foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                ClientService.CreateNpcForPlayer(this, npc);
 
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
