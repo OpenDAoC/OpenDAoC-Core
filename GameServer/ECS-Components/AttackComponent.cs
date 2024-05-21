@@ -1183,29 +1183,32 @@ namespace DOL.GS
                     if (ad.Target.Inventory != null)
                         armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
 
-                    DbInventoryItem weaponForSpecModifier = null;
+                    int spec;
 
-                    if (weapon != null)
+                    if (weapon == null)
+                        spec = 0;
+                    else
                     {
-                        weaponForSpecModifier = new DbInventoryItem();
-                        weaponForSpecModifier.Object_Type = weapon.Object_Type;
-                        weaponForSpecModifier.SlotPosition = weapon.SlotPosition;
+                        eObjectType objectType = (eObjectType) weapon.Object_Type;
+                        int slotPosition = weapon.SlotPosition;
 
                         if (owner is GamePlayer && owner.Realm == eRealm.Albion && Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC &&
                             (GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.TwoHandedWeapon) ||
                             GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.PolearmWeapon)))
                         {
                             // Albion dual spec penalty, which sets minimum damage to the base damage spec.
-                            if (weapon.Type_Damage == (int) eDamageType.Crush)
-                                weaponForSpecModifier.Object_Type = (int) eObjectType.CrushingWeapon;
-                            else if (weapon.Type_Damage == (int) eDamageType.Slash)
-                                weaponForSpecModifier.Object_Type = (int) eObjectType.SlashingWeapon;
+                            if ((eDamageType) weapon.Type_Damage == eDamageType.Crush)
+                                objectType = eObjectType.CrushingWeapon;
+                            else if ((eDamageType) weapon.Type_Damage == eDamageType.Slash)
+                                objectType = eObjectType.SlashingWeapon;
                             else
-                                weaponForSpecModifier.Object_Type = (int) eObjectType.ThrustWeapon;
+                                objectType = eObjectType.ThrustWeapon;
                         }
+
+                        spec = owner.WeaponSpecLevel(objectType, slotPosition);
                     }
 
-                    double specModifier = CalculateSpecModifier(ad.Target, weaponForSpecModifier);
+                    double specModifier = CalculateSpecModifier(ad.Target, spec);
                     double weaponSkill = CalculateWeaponSkill(ad.Target, weapon, specModifier, out double baseWeaponSkill);
                     double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double bonusArmorFactor, out double armorFactor, out double absorb);
                     double damageMod = weaponSkill / armorMod;
@@ -1671,7 +1674,7 @@ namespace DOL.GS
             return baseWeaponSkill;
         }
 
-        public double CalculateSpecModifier(GameLiving target, DbInventoryItem weapon)
+        public double CalculateSpecModifier(GameLiving target, int spec)
         {
             double specModifier;
 
@@ -1687,7 +1690,7 @@ namespace DOL.GS
                 // 5 | 0.375  | 0.25
                 // Absolute minimum spec is set to 1 to prevent an issue where the lower bound (with staffs for example) would slightly rise with the target's level.
                 // Also prevents negative values.
-                int spec = Math.Max(owner.Level < 5 ? 2 : 1, owner.WeaponSpecLevel(weapon));
+                spec = Math.Max(owner.Level < 5 ? 2 : 1, spec);
                 double lowerLimit = Math.Min(0.75 * (spec - 1) / (target.EffectiveLevel + 1) + 0.25, 1.0);
                 double upperLimit = Math.Min(Math.Max(1.25 + (3.0 * (spec - 1) / (target.EffectiveLevel + 1) - 2) * 0.25, 1.25), 1.50);
                 int varianceRange = (int) (upperLimit * 100 - lowerLimit * 100);

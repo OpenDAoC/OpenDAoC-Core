@@ -6526,6 +6526,19 @@ namespace DOL.GS
             }
         }
 
+        public override int WeaponSpecLevel(eObjectType objectType, int slotPosition)
+        {
+            // Use axe spec if left hand axe is not in the left hand slot.
+            if (objectType == eObjectType.LeftAxe && slotPosition != Slot.LEFTHAND)
+                return GameServer.ServerRules.GetObjectSpecLevel(this, eObjectType.Axe);
+
+            // Use left axe spec if axe is in the left hand slot.
+            if (slotPosition == Slot.LEFTHAND && objectType == eObjectType.Axe)
+                return GameServer.ServerRules.GetObjectSpecLevel(this, eObjectType.LeftAxe);
+
+            return GameServer.ServerRules.GetObjectSpecLevel(this, objectType);
+        }
+
         /// <summary>
         /// determines current weaponspeclevel
         /// </summary>
@@ -6533,14 +6546,8 @@ namespace DOL.GS
         {
             if (weapon == null)
                 return 0;
-            // use axe spec if left hand axe is not in the left hand slot
-            if (weapon.Object_Type == (int)eObjectType.LeftAxe && weapon.SlotPosition != Slot.LEFTHAND)
-                return GameServer.ServerRules.GetObjectSpecLevel(this, eObjectType.Axe);
-            // use left axe spec if axe is in the left hand slot
-            if (weapon.SlotPosition == Slot.LEFTHAND
-                && weapon.Object_Type == (int)eObjectType.Axe)
-                return GameServer.ServerRules.GetObjectSpecLevel(this, eObjectType.LeftAxe);
-            return GameServer.ServerRules.GetObjectSpecLevel(this, (eObjectType)weapon.Object_Type);
+
+            return WeaponSpecLevel((eObjectType) weapon.Object_Type, weapon.SlotPosition);
         }
 
         public virtual String GetWeaponSpec(DbInventoryItem weapon)

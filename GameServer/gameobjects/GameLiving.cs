@@ -634,14 +634,17 @@ namespace DOL.GS
 			get { return 0; }
 		}
 
+		public virtual int WeaponSpecLevel(eObjectType objectType, int slotPosition)
+		{
+			return 0;
+		}
+
 		/// <summary>
 		/// determines the spec level for current AttackWeapon
 		/// </summary>
 		public virtual int WeaponSpecLevel(DbInventoryItem weapon)
 		{
-			if (weapon == null) return 0;
-
-			return 0;	// TODO
+			return 0;
 		}
 
 		/// <summary>
