@@ -523,10 +523,18 @@ namespace DOL.GS
             AddObjectToPlayerCache(player, gameObject);
         }
 
-        public static void UpdateObjectForPlayer(GamePlayer player, GameObject gameObject)
+        private static void UpdateObjectForPlayerInternal(GamePlayer player, GameObject gameObject)
         {
             player.Out.SendObjectUpdate(gameObject);
             OnObjectCreateOrUpdateForPlayer(player, gameObject);
+        }
+
+        public static void UpdateObjectForPlayer(GamePlayer player, GameObject gameObject)
+        {
+            if (player.Client.ClientState is not GameClient.eClientState.Playing)
+                return;
+
+            UpdateObjectForPlayerInternal(player, gameObject);
         }
 
         public static void UpdateObjectForPlayers(GameObject gameObject)
@@ -535,7 +543,7 @@ namespace DOL.GS
                 UpdateObjectForPlayer(player, gameObject);
         }
 
-        public static void CreateNpcForPlayer(GamePlayer player, GameNPC npc)
+        private static void CreateNpcForPlayerInternal(GamePlayer player, GameNPC npc)
         {
             player.Out.SendNPCCreate(npc);
 
@@ -545,16 +553,37 @@ namespace DOL.GS
             OnObjectCreateOrUpdateForPlayer(player, npc);
         }
 
+        public static void CreateNpcForPlayer(GamePlayer player, GameNPC npc)
+        {
+            if (player.Client.ClientState is not GameClient.eClientState.Playing)
+                return;
+
+            player.Out.SendNPCCreate(npc);
+
+            if (npc.Inventory != null)
+                player.Out.SendLivingEquipmentUpdate(npc);
+
+            CreateNpcForPlayerInternal(player, npc);
+        }
+
         public static void CreateNpcForPlayers(GameNPC npc)
         {
             foreach (GamePlayer playerInRadius in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 CreateNpcForPlayer(playerInRadius, npc);
         }
 
-        public static void CreateObjectForPlayer(GamePlayer player, GameObject gameObject)
+        private static void CreateObjectForPlayerInternal(GamePlayer player, GameObject gameObject)
         {
             player.Out.SendObjectCreate(gameObject);
             AddObjectToPlayerCache(player, gameObject);
+        }
+
+        public static void CreateObjectForPlayer(GamePlayer player, GameObject gameObject)
+        {
+            if (player.Client.ClientState is not GameClient.eClientState.Playing)
+                return;
+
+            CreateObjectForPlayerInternal(player, gameObject);
         }
 
         public static void CreateObjectForPlayers(GameObject gameObject)
@@ -573,6 +602,7 @@ namespace DOL.GS
                 GameServer.Instance.Disconnect(client);
             }
         }
+
         private static void CheckHardTimeout(GameClient client)
         {
             if (ServiceUtils.ShouldTickNoEarly(client.PingTime + HARD_TIMEOUT))
@@ -641,9 +671,9 @@ namespace DOL.GS
                     continue;
 
                 if (!npcUpdateCache.TryGetValue(npcInRange, out CachedNpcValues cachedNpcValues))
-                    CreateNpcForPlayer(player, npcInRange);
+                    CreateNpcForPlayerInternal(player, npcInRange);
                 else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL))
-                    UpdateObjectForPlayer(player, npcInRange);
+                    UpdateObjectForPlayerInternal(player, npcInRange);
                 else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + 250))
                 {
                     // `GameNPC.HealthPercent` is a bit of an expensive call. Do it last.
@@ -661,10 +691,10 @@ namespace DOL.GS
             }
 
             if (cachedTargetValues != null)
-                UpdateObjectForPlayer(player, targetObject);
+                UpdateObjectForPlayerInternal(player, targetObject);
 
             if (cachedPetValues != null)
-                UpdateObjectForPlayer(player, pet);
+                UpdateObjectForPlayerInternal(player, pet);
         }
 
         private static void UpdateItems(GamePlayer player)
@@ -703,7 +733,7 @@ namespace DOL.GS
                 if (!itemUpdateCache.TryGetValue(itemInRange, out (long lastUpdate, bool allowFurtherUpdates) value) ||
                     (value.allowFurtherUpdates && ServiceUtils.ShouldTick(value.lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL)))
                 {
-                    CreateObjectForPlayer(player, itemInRange);
+                    CreateObjectForPlayerInternal(player, itemInRange);
                 }
             }
         }
@@ -729,11 +759,11 @@ namespace DOL.GS
 
                 if (!doorUpdateCache.TryGetValue(doorInRange, out long lastUpdate))
                 {
-                    CreateObjectForPlayer(player, doorInRange);
+                    CreateObjectForPlayerInternal(player, doorInRange);
                     player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange); // Not handled by `CreateObjectForPlayer`.
                 }
                 else if (ServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
-                    UpdateObjectForPlayer(player, doorInRange);
+                    UpdateObjectForPlayerInternal(player, doorInRange);
             }
         }
 
