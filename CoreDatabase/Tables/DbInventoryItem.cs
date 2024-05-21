@@ -278,7 +278,10 @@ namespace DOL.Database
 						m_hasLoggedError = true;
 					}
 
-					return new DbItemTemplate() { AllowAdd = false };
+					m_item = new DbItemTemplate()
+					{
+						AllowAdd = false
+					};
 				}
 
 				return m_item;
