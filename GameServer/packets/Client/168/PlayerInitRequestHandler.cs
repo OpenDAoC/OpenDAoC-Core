@@ -21,7 +21,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{
-			new PlayerInitRequestAction(client.Player).Start(100);
+			new PlayerInitRequestAction(client.Player).Start(1);
 		}
 
 		/// <summary>
