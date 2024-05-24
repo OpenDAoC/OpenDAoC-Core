@@ -5,11 +5,9 @@ namespace DOL.GS
 {
     public class TurretPet : GameSummonedPet
     {
-        public TurretPet(INpcTemplate template) : base(template) { }
-
         public Spell TurretSpell;
 
-        public override int Health { get => base.Health; set => base.Health = value; }
+        public TurretPet(INpcTemplate template) : base(template) { }
 
         protected override void BuildAmbientTexts()
         {
