@@ -41,21 +41,11 @@ namespace DOL.GS
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         public override eGameObjectType GameObjectType => eGameObjectType.PLAYER;
-        private readonly object m_LockObject = new object();
-        public int Regen { get; set; }
-        public int Endchant { get; set; }
-        public long LastEnduTick { get; set; }
-        public int RegenRateAtChange { get; set; }
-        public int EnduDebuff { get; set; }
-        public double RegenBuff { get; set; }
-        public double RegenAfterTireless { get; set; }
-        public double NonCombatNonSprintRegen { get; set; }
-        public double CombatRegen { get; set; }
+        private readonly object m_LockObject = new();
         public double SpecLock { get; set; }
         public long LastWorldUpdate { get; set; }
         public ChainedActions ChainedActions { get; }
 
-        public ECSGameTimer EnduRegenTimer { get { return m_enduRegenerationTimer; } }
         public ECSGameTimer PredatorTimeoutTimer
         {
             get
@@ -2654,8 +2644,6 @@ namespace DOL.GS
             if (Client.ClientState != GameClient.eClientState.Playing)
                 return EnduranceRegenerationPeriod;
 
-            LastEnduTick = GameLoop.GameLoopTime;
-
             bool sprinting = IsSprinting;
 
             if (Endurance < MaxEndurance || sprinting)
@@ -2663,11 +2651,8 @@ namespace DOL.GS
                 int regen = GetModified(eProperty.EnduranceRegenerationRate);  //default is 1
                 int endchant = GetModified(eProperty.FatigueConsumption);      //Pull chant/buff value
                 var charge = EffectListService.GetEffectOnTarget(this, eEffect.Charge);
-
-                Regen = regen;
-                Endchant = endchant;
-
                 int longwind = 5;
+
                 if (sprinting && IsMoving)
                 {
                     if (charge is null)
@@ -2692,7 +2677,7 @@ namespace DOL.GS
                         }
                     }
                 }
-                RegenRateAtChange = regen;
+
                 if (regen != 0)
                 {
                     ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
