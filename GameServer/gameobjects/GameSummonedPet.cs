@@ -399,17 +399,5 @@ namespace DOL.GS
 			if (ambientTexts.Count == 0)
 				ambientTexts = GameServer.Instance.NpcManager.AmbientBehaviour["pet"];
 		}
-
-		public override bool IsObjectGreyCon(GameObject obj)
-		{
-			GameObject tempobj = obj;
-			if (Brain is IControlledBrain)
-			{
-				GameLiving player = (Brain as IControlledBrain).GetLivingOwner();
-				if (player != null)
-					tempobj = player;
-			}
-			return base.IsObjectGreyCon(tempobj);
-		}
 	}
 }

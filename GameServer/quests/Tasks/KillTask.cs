@@ -183,20 +183,11 @@ namespace DOL.GS.Quests
 						{
 							if (gainer is GamePlayer)
 							{
-								if (gainer.Level <= GameLiving.NoXPForLevel.Length)
+								int con = gainer.GetConLevel(target);
+
+								if (con < lowestCon)
 								{
-									if (target.Level <= GameLiving.NoXPForLevel[gainer.Level])
-									{
-										lowestCon = -3;
-									}
-								}
-								else
-								{
-									int con = gainer.GetConLevel(target);
-									if (con < lowestCon)
-									{
-										lowestCon = con;
-									}
+									lowestCon = con;
 								}
 							}
 						}
@@ -356,10 +347,7 @@ namespace DOL.GS.Quests
 		/// <returns>The GameMob Searched</returns>
 		public static GameNPC GetRandomMob(GamePlayer Player)
 		{
-			int minLevel = GameLiving.NoXPForLevel[Player.Level]+1;
-			int maxLevel = Player.Level;
-			GameNPC npc = Player.CurrentZone.GetRandomNPC(eRealm.None, minLevel,maxLevel);
-			
+			GameNPC npc = Player.CurrentZone.GetRandomNPC(eRealm.None, Player.Level - 2, Player.Level);
 			return npc != null && npc.Name.ToLower().Equals(npc.Name) ? npc : null;
 		}
 

@@ -909,64 +909,6 @@ namespace DOL.GS
 			42949672960			// xp for level 100
 		};
 
-		/// <summary>
-		/// Holds the level of target at which no exp is given
-		/// </summary>
-		public static readonly int[] NoXPForLevel =
-		{
-			-3,		//for level 0
-			-2,		//for level 1
-			-1,		//for level 2
-			0,		//for level 3
-			1,		//for level 4
-			2,		//for level 5
-			3,		//for level 6
-			4,		//for level 7
-			5,		//for level 8
-			6,		//for level 9
-			6,		//for level 10
-			6,		//for level 11
-			6,		//for level 12
-			7,		//for level 13
-			8,		//for level 14
-			9,		//for level 15
-			10,		//for level 16
-			11,		//for level 17
-			12,		//for level 18
-			13,		//for level 19
-			13,		//for level 20
-			13,		//for level 21
-			13,		//for level 22
-			14,		//for level 23
-			15,		//for level 24
-			16,		//for level 25
-			17,		//for level 26
-			18,		//for level 27
-			19,		//for level 28
-			20,		//for level 29
-			21,		//for level 30
-			22,		//for level 31
-			23,		//for level 32
-			24,		//for level 33
-			25,		//for level 34
-			25,		//for level 35
-			25,		//for level 36
-			25,		//for level 37
-			25,		//for level 38
-			25,		//for level 39
-			25,		//for level 40
-			26,		//for level 41
-			27,		//for level 42
-			28,		//for level 43
-			29,		//for level 44
-			30,		//for level 45
-			31,		//for level 46
-			32,		//for level 47
-			33,		//for level 48
-			34,		//for level 49
-			35,		//for level 50
-		};
-
 		#endregion
 
 		/// <summary>
@@ -976,30 +918,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual bool IsObjectGreyCon(GameObject obj)
 		{
-			return IsObjectGreyCon(this, obj);
-		}
-
-		/// <summary>
-		/// Checks whether target is grey con to source
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="target"></param>
-		/// <returns></returns>
-		static public bool IsObjectGreyCon(GameObject source, GameObject target)
-		{
-			int sourceLevel = source.EffectiveLevel;
-			if (sourceLevel < GameLiving.NoXPForLevel.Length)
-			{
-				//if target level is less or equals to level that is grey to source
-				if (target.EffectiveLevel <= GameLiving.NoXPForLevel[sourceLevel])
-					return true;
-			}
-			else
-			{
-				if (source.GetConLevel(target) <= -3)
-					return true;
-			}
-			return false;
+			return (ConColor) GetConLevel(obj) <= ConColor.GREY;
 		}
 
 		/// <summary>
