@@ -1252,11 +1252,9 @@ namespace DOL.GS.ServerRules
 			long campBonus = CalculateCampBonus();
 			long groupBonus = CalculateGroupBonus();
 			long outpostBonus = CalculateOutpostBonus();
-			long relicBonus = CalculateRelicBonus();
+			long totalReward = baseXpReward + campBonus + groupBonus + outpostBonus;
 
 			ShowXpStatsToPlayer();
-
-			long totalReward = baseXpReward + campBonus + groupBonus + outpostBonus + relicBonus;
 			living.GainExperience(eXPSource.NPC, totalReward, campBonus, groupBonus, outpostBonus, true, true, true); // XP Rate is handled in GainExperience
 
 			void RewardRealmPoints()
@@ -1505,11 +1503,6 @@ namespace DOL.GS.ServerRules
 
 				return outpostBonus;
 			}
-			
-			long CalculateRelicBonus()
-			{
-				return (long) (baseXpReward * 0.05 * RelicMgr.GetRelicCount(player.Realm));
-			}
 
 			void ShowXpStatsToPlayer()
 			{
@@ -1525,16 +1518,13 @@ namespace DOL.GS.ServerRules
 					if (modifiedByDamage && damagePercent < 1)
 						player.Out.SendMessage($"%Damage inflicted: {damagePercent:0.##}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-					long totalXpReward = baseXpReward + campBonus + groupBonus + outpostBonus + relicBonus;
-					double levelPercent = (double) (player.Experience + totalXpReward - player.ExperienceForCurrentLevel) / (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel) * 100.0;
-
+					double levelPercent = (double) (player.Experience + totalReward - player.ExperienceForCurrentLevel) / (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel) * 100.0;
 					double campPercent = (double) campBonus / baseXpReward * 100.0;
 					double groupPercent = (double) groupBonus / baseXpReward * 100.0;
 					double outpostPercent = (double) outpostBonus / baseXpReward * 100.0;
-					double relicPercent = (double) relicBonus / baseXpReward * 100.0;
 
 					player.Out.SendMessage($"XP needed: {player.ExperienceForNextLevel.ToString("N0", format)} | {levelPercent:0.##}% done with current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					player.Out.SendMessage($"# of kills needed to level at this rate: {(double) (player.ExperienceForNextLevel - player.Experience) / totalXpReward:0.##}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage($"# of kills needed to level at this rate: {(double) (player.ExperienceForNextLevel - player.Experience) / totalReward:0.##}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 					if (campBonus > 0)
 						player.Out.SendMessage($"Camp: {campBonus.ToString("N0", format)} | {campPercent:0.##}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1544,9 +1534,6 @@ namespace DOL.GS.ServerRules
 
 					if (outpostBonus > 0)
 						player.Out.SendMessage($"Outpost: {outpostBonus.ToString("N0", format)} | {outpostPercent:0.##}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-					if (relicBonus > 0)
-						player.Out.SendMessage($"Relic: {relicBonus.ToString("N0", format)} | {relicPercent:0.##}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
 			}
 		}
