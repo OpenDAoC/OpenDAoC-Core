@@ -1334,7 +1334,7 @@ namespace DOL.GS.ServerRules
 
 				foreach (GamePlayer gamePlayer in player.Group.GetPlayersInTheGroup())
 				{
-					if (gamePlayer.Level > highestLevelPlayerInGroup.EffectiveLevel)
+					if (gamePlayer.Level > highestLevelPlayerInGroup.Level)
 						highestLevelPlayerInGroup = gamePlayer;
 				}
 
@@ -1370,9 +1370,9 @@ namespace DOL.GS.ServerRules
 				if (conColorForHighestLevelPlayerInGroup < ConColor.YELLOW)
 				{
 					// Downwards loop. Return the first level found.
-					for (int i = player.EffectiveLevel - 1; i > 1; i--)
+					for (int i = player.Level - 1; i > 1; i--)
 					{
-						if (ConLevels.GetConColor(ConLevels.GetConLevel(player.EffectiveLevel, i)) == conColorForHighestLevelPlayerInGroup)
+						if (ConLevels.GetConColor(ConLevels.GetConLevel(player.Level, i)) == conColorForHighestLevelPlayerInGroup)
 						{
 							level = i;
 							break;
@@ -1381,12 +1381,12 @@ namespace DOL.GS.ServerRules
 				}
 				else if (conColorForHighestLevelPlayerInGroup > ConColor.YELLOW)
 				{
-					level = player.EffectiveLevel + 1;
+					level = player.Level + 1;
 
 					for (int i = level; i < 51; i++)
 					{
 						// Upwards loop. Continue until we find the highest level matching this color.
-						ConColor color = ConLevels.GetConColor(ConLevels.GetConLevel(player.EffectiveLevel, i));
+						ConColor color = ConLevels.GetConColor(ConLevels.GetConLevel(player.Level, i));
 
 						if (color == conColorForHighestLevelPlayerInGroup)
 							level = i;
@@ -1395,7 +1395,7 @@ namespace DOL.GS.ServerRules
 					}
 				}
 				else if (conColorForHighestLevelPlayerInGroup == ConColor.YELLOW)
-					level = player.EffectiveLevel;
+					level = player.Level;
 
 				if (player.XPLogState is eXPLogState.Verbose)
 					player.Out.SendMessage($"Base XP set to match the one of a level {level} NPC", eChatType.CT_System, eChatLoc.CL_SystemWindow);

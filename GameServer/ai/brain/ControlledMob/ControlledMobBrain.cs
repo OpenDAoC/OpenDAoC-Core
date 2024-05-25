@@ -937,7 +937,7 @@ namespace DOL.AI.Brain
 				case eAttackResult.HitUnstyled:
 				case eAttackResult.Missed:
 				case eAttackResult.Parried:
-					AddToAggroList(ad.Attacker, ad.Attacker.EffectiveLevel + ad.Damage + ad.CriticalDamage);
+					AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
 					break;
 			}
 

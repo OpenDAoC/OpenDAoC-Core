@@ -585,7 +585,7 @@ namespace DOL.GS.Spells
                     armor = target.Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
 
                 //calculate the lowerboundary of the damage
-                int lowerboundary = (player.WeaponSpecLevel(weapon) - 1) * 50 / (ad.Target.EffectiveLevel + 1) + 75;
+                int lowerboundary = (player.WeaponSpecLevel(weapon) - 1) * 50 / (ad.Target.Level + 1) + 75;
                 lowerboundary = Math.Max(lowerboundary, 75);
                 lowerboundary = Math.Min(lowerboundary, 125);
 
