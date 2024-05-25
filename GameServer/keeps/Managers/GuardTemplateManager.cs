@@ -1467,43 +1467,41 @@ namespace DOL.GS.Keeps
         {
             if (guard is GuardLord)
             {
-                guard.Strength = (short)(20 + (guard.Level * 8));
-                guard.Dexterity = (short)(guard.Level * 2);
-                guard.Constitution = (short)(DOL.GS.ServerProperties.Properties.GAMENPC_BASE_CON);
+                guard.Strength = (short) (20 + guard.Level * 8);
+                guard.Dexterity = (short) (guard.Level * 2);
+                guard.Constitution = 30;
                 guard.Quickness = 60;
             }
             else if (guard is GuardFighterRK)
             {
-                guard.Strength = (short)(20 + (guard.Level * 9));
-                guard.Dexterity = (short)(guard.Level * 2);
-                guard.Constitution = (short)(DOL.GS.ServerProperties.Properties.GAMENPC_BASE_CON);
+                guard.Strength = (short) (20 + guard.Level * 9);
+                guard.Dexterity = (short) (guard.Level * 2);
+                guard.Constitution = 30;
                 guard.Quickness = 60;
             }
             else if (guard is GuardCaster)
             {
-                guard.Strength = (short)(20 + (guard.Level * 4));
-                //guard.Strength = (short)(20 + (guard.Level * 6));
-                guard.Dexterity = (short)(guard.Level);
-                guard.Constitution = (short)(DOL.GS.ServerProperties.Properties.GAMENPC_BASE_CON - 5);
+                guard.Strength = (short) (20 + guard.Level * 4);
+                guard.Dexterity = guard.Level;
+                guard.Constitution = 25;
                 guard.Quickness = 40;
             }
             else if (guard.IsPortalKeepGuard || guard.Level == 255)
             {
-                guard.Strength = (short)(20 + (guard.Level / 4));
-                guard.Dexterity = (short)(guard.Level);
-                guard.Constitution = (short)(guard.Level);
-                guard.Quickness = (short)(guard.Level / 2);
-                guard.Intelligence = (short)(guard.Level);
-                guard.Empathy = (short)(guard.Level);
-                guard.Piety = (short)(guard.Level);
-                guard.Charisma = (short)(guard.Level);
+                guard.Strength = (short) (20 + guard.Level / 4);
+                guard.Dexterity = guard.Level;
+                guard.Constitution = guard.Level;
+                guard.Quickness = (short) (guard.Level / 2);
+                guard.Intelligence = guard.Level;
+                guard.Empathy = guard.Level;
+                guard.Piety = guard.Level;
+                guard.Charisma = guard.Level;
             }
             else
             {
-                guard.Strength = (short)(20 + (guard.Level * 5));
-                //guard.Strength = (short)(20 + (guard.Level * 7));
-                guard.Dexterity = (short)(guard.Level);
-                guard.Constitution = (short)(DOL.GS.ServerProperties.Properties.GAMENPC_BASE_CON);
+                guard.Strength = (short) (20 + guard.Level * 5);
+                guard.Dexterity = guard.Level;
+                guard.Constitution = 30;
                 guard.Quickness = 40;
             }
         }

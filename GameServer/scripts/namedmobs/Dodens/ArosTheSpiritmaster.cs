@@ -35,7 +35,7 @@ namespace DOL.GS.Scripts
             Intelligence = npcTemplate.Intelligence;
             Empathy = npcTemplate.Empathy;
 
-            ScalingFactor = 40;
+            WeaponSkillScalingFactor = 40;
             Faction = FactionMgr.GetFactionByID(779);
             LoadedFromScript = false; //load from database
             SaveIntoDatabase();

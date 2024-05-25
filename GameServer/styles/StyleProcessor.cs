@@ -390,6 +390,14 @@ namespace DOL.GS.Styles
 						double modifiedGrowthRate = talyGrowth * talySpec * talySpeed / unstyledDamageCap;
 						styleDamage = modifiedGrowthRate * unstyledDamage;
 						styleDamageCap = modifiedGrowthRate * unstyledDamageCap;
+
+						// Force styles do at least 1 damage to make level 2 styles actually do something.
+						// Don't forget to ignore the cap. Do it only if the style has a GR.
+						if (styleDamage < 1 && talyGrowth > 0)
+						{
+							styleDamage = 1;
+							styleDamageCap = 0;
+						}
 					}
 
 					if (player != null)

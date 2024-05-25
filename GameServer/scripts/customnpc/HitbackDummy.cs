@@ -29,7 +29,7 @@
             Name = "Hitback Dummy - Right Click to Reset";
             Model = 34;
             Strength = 10;
-            ScalingFactor = 4;
+            WeaponSkillScalingFactor = 4;
             FixedSpeed = true;
             return base.AddToWorld();
         }

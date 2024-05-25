@@ -2686,13 +2686,13 @@ namespace DOL.GS
 			attackComponent.RequestStartAttack(target);
 		}
 
-		private int scalingFactor = Properties.GAMENPC_SCALING;
+		private double weaponSkillScalingFactor = 15;
 		private int orbsReward = 0;
 		
 		public override double GetWeaponSkill(DbInventoryItem weapon)
 		{
-			double weaponSkill = (Level + 1) * (ScalingFactor / 7.5) * (1 + 0.01 * GetWeaponStat(weapon) / 2);
-			return Math.Max(0, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
+			double weaponSkill = Math.Max(1, (int) Level) * (WeaponSkillScalingFactor / 5.75) * (1 + 0.01 * (GetWeaponStat(weapon) + 30) / 2);
+			return Math.Max(1, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
 		}
 
 		public void SetLastMeleeAttackTick()
@@ -4509,7 +4509,8 @@ namespace DOL.GS
 		private double m_campBonus = 1;
 
 		public virtual double CampBonus { get => m_campBonus; set => m_campBonus = value; }
-		public int ScalingFactor { get => scalingFactor; set => scalingFactor = value; }
+		public virtual double MaxHealthScalingFactor => 1.0;
+		public double WeaponSkillScalingFactor { get => weaponSkillScalingFactor; set => weaponSkillScalingFactor = value; }
 		public int OrbsReward { get => orbsReward; set => orbsReward = value; }
 	}
 }

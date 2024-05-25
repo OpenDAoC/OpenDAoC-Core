@@ -1,10 +1,12 @@
 ﻿namespace DOL.GS
 {
-	public class TheurgistEarthPet : TheurgistPet
-	{
-		public TheurgistEarthPet(INpcTemplate npcTemplate) : base(npcTemplate)
-		{
-			ScalingFactor = 17;
-		}
-	}
+    public class TheurgistEarthPet : TheurgistPet
+    {
+        public override double MaxHealthScalingFactor => 0.18;
+
+        public TheurgistEarthPet(INpcTemplate npcTemplate) : base(npcTemplate)
+        {
+            WeaponSkillScalingFactor = 17;
+        }
+    }
 }

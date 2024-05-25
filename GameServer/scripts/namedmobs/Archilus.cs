@@ -14,7 +14,7 @@ namespace DOL.GS.Scripts
 		{
 			m_SpawnAnnounce = "{0} will start to \'shake violently\' and spawns out some {1}!";
 			TetherRange = 4500;
-			ScalingFactor = 25;
+			WeaponSkillScalingFactor = 25;
 		}
 
 		public override bool AddToWorld()

@@ -341,7 +341,7 @@ namespace DOL.GS.Quests.Hibernia
 			AncestralKeeper.CurrentRegionID = 151;
 			AncestralKeeper.Size = 140;
 			AncestralKeeper.Level = 65;
-			AncestralKeeper.ScalingFactor = ServerProperties.Properties.NECK_BOSS_SCALING;
+			AncestralKeeper.WeaponSkillScalingFactor = 80;
 			AncestralKeeper.X = player.X;
 			AncestralKeeper.Y = player.Y;
 			AncestralKeeper.Z = player.Z;

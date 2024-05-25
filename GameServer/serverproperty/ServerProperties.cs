@@ -424,67 +424,55 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "Discord_RVR_Webhook_ID", "The id of the webhook for RvR updates", "")]
 		public static string DISCORD_RVR_WEBHOOK_ID;
-		
+
 		/// <summary>
 		/// RvRWebhook ID
 		/// </summary>
 		[ServerProperty("atlas", "Discord_AlbChat_Webhook_ID", "The id of the webhook for all Albion chat", "")]
 		public static string DISCORD_ALBCHAT_WEBHOOK_ID;
-		
+
 		/// <summary>
 		/// RvRWebhook ID
 		/// </summary>
 		[ServerProperty("atlas", "Discord_HibChat_Webhook_ID", "The id of the webhook for Hibernia chat", "")]
 		public static string DISCORD_HIBCHAT_WEBHOOK_ID;
-		
+
 		/// <summary>
 		/// RvRWebhook ID
 		/// </summary>
 		[ServerProperty("atlas", "Discord_MidChat_Webhook_ID", "The id of the webhook for Midgard chat", "")]
 		public static string DISCORD_MIDCHAT_WEBHOOK_ID;
-		
+
 		/// <summary>
 		/// Tester Role
 		/// </summary>
 		[ServerProperty("atlas", "tester_login", "Allow only testers and staff to login", false)]
 		public static bool TESTER_LOGIN;
-		
-		/// <summary>
-		/// The toughness of the boss for the SI necklace quest
-		/// </summary>
-		[ServerProperty("atlas", "neck_boss_scaling", "The toughness of the boss for the SI necklace quest", 80)]
-		public static int NECK_BOSS_SCALING;
-		
+
 		/// <summary>
 		/// The slowmode duration for /advice in seconds
 		/// </summary>
 		[ServerProperty("atlas", "advice_slowmode_length", "The slowmode duration for /advice in seconds", 60)]
 		public static int ADVICE_SLOWMODE_LENGTH;
-		
+
 		/// <summary>
 		/// The slowmode duration for /trade in seconds
 		/// </summary>
 		[ServerProperty("atlas", "trade_slowmode_length", "The slowmode duration for /trade in seconds", 60)]
 		public static int TRADE_SLOWMODE_LENGTH;
-		
+
 		/// <summary>
 		/// The slowmode duration for /lfg in seconds
 		/// </summary>
 		[ServerProperty("atlas", "lfg_slowmode_length", "The slowmode duration for /lfg in seconds", 60)]
 		public static int LFG_SLOWMODE_LENGTH;
-		
-		/// <summary>
-		/// The toughness of GameNPCs
-		/// </summary>
-		[ServerProperty("atlas", "gamenpc_scaling", "The toughness of GameNPCs", 15)]
-		public static int GAMENPC_SCALING;
 
 		/// <summary>
 		/// The first factor in the PVE mob damage equation. Lower hits harder.
 		/// </summary>
 		[ServerProperty("atlas", "pve_mob_damage_f1", "The first factor in the PVE mob damage equation. Lower hits harder.", 3.2)]
 		public static double PVE_MOB_DAMAGE_F1;
-		
+
 		/// <summary>
 		/// The second factor in the PVE mob damage equation. Lower hits harder.
 		/// </summary>
@@ -1293,25 +1281,6 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("npc", "allow_roam", "Allow mobs to roam on the server", true)]
 		public static bool ALLOW_ROAM;
-
-		/// <summary>
-		/// This is to set the baseHP For NPCs
-		/// </summary>
-		[ServerProperty("npc", "gamenpc_base_hp", "GameNPC's base HP * level", 500)]
-		public static int GAMENPC_BASE_HP;
-
-		/// <summary>
-		/// How many hitpoints per point of CON above gamenpc_base_con should an NPC gain.
-		/// This modification is applied prior to any buffs
-		/// </summary>
-		[ServerProperty("npc", "gamenpc_hp_gain_per_con", "How many hitpoints per point of CON above gamenpc_base_con should an NPC gain", 2)]
-		public static int GAMENPC_HP_GAIN_PER_CON;
-
-		/// <summary>
-		/// What is the base contitution for npc's
-		/// </summary>
-		[ServerProperty("npc", "gamenpc_base_con", "GameNPC's base Constitution", 30)]
-		public static int GAMENPC_BASE_CON;
 
 		/// <summary>
 		/// Chance for NPC to roam.

@@ -5,304 +5,117 @@ using DOL.GS.ServerProperties;
 
 namespace DOL.GS.PropertyCalc
 {
-	/// <summary>
-	/// The Max HP calculator
-	///
-	/// BuffBonusCategory1 is used for absolute HP buffs
-	/// BuffBonusCategory2 unused
-	/// BuffBonusCategory3 unused
-	/// BuffBonusCategory4 unused
-	/// BuffBonusMultCategory1 unused
-	/// </summary>
-	[PropertyCalculator(eProperty.MaxHealth)]
-	public class MaxHealthCalculator : PropertyCalculator
-	{
-		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-		public override int CalcValue(GameLiving living, eProperty property)
-		{
-			if (living is GamePlayer)
-			{
-				GamePlayer player = living as GamePlayer;
-				int hpBase = player.CalculateMaxHealth(player.Level, player.GetModified(eProperty.Constitution));
-				int buffBonus = living.BaseBuffBonusCategory[(int)property];
-
-				if (buffBonus < 0)
-					buffBonus = (int)((1 + (buffBonus / -100.0)) * hpBase) - hpBase;
-
-				int itemBonus = living.ItemBonus[(int)property];
-				int cap = Math.Max(player.Level * 4, 20) +
-						  Math.Min(living.ItemBonus[(int)eProperty.MaxHealthCapBonus], player.Level * 4);
-				itemBonus = Math.Min(itemBonus, cap);
-
-				if (player.HasAbility(Abilities.ScarsOfBattle) && player.Level >= 40)
-				{
-					int levelbonus = Math.Min(player.Level - 40, 10);
-					hpBase = (int)(hpBase * (100 + levelbonus) * 0.01);
-				}
-
-				int abilityBonus = living.AbilityBonus[(int)property];
-			
-				AtlasOF_ToughnessAbility toughness = player.GetAbility<AtlasOF_ToughnessAbility>();
-				double toughnessMod = toughness != null ? 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01 : 1;
-
-				return Math.Max((int)(hpBase * toughnessMod) + itemBonus + buffBonus + abilityBonus, 1);
-			}
-			else if (living is GameKeepComponent)
-			{
-				AbstractGameKeep gameKeep = (living as GameKeepComponent)?.Keep;
-
-				if (gameKeep != null)
-				{
-					int baseHealth = gameKeep.BaseLevel * Properties.KEEP_COMPONENTS_BASE_HEALTH;
-					baseHealth += (int)(baseHealth * (gameKeep.Level - 1) * Properties.KEEP_COMPONENTS_HEALTH_UPGRADE_MODIFIER);
-					return baseHealth;
-				}
-
-				return 0;
-			}
-			else if (living is GameKeepDoor)
-			{
-				AbstractGameKeep gameKeep = (living as GameKeepDoor)?.Component?.Keep;
-
-				if (gameKeep != null)
-				{
-					if (gameKeep.IsRelic)
-						return Properties.RELIC_DOORS_HEALTH;
-
-					int baseHealth = gameKeep.BaseLevel * Properties.KEEP_DOORS_BASE_HEALTH;
-					baseHealth += (int)(baseHealth * (gameKeep.Level - 1) * Properties.KEEP_DOORS_HEALTH_UPGRADE_MODIFIER);
-					return baseHealth;
-				}
-
-				return 0;
-			}
-			else if (living is TheurgistPet theu)
-			{
-				/*
-				int hp = 1;
-				if (theu.Level < 2)
-				{
-					hp += theu.Constitution * (theu.Level + 1);
-				} else
-				{
-					hp = theu.Constitution * theu.Level * 10 / 44;
-				}
-
-				if (theu.Name.Contains("air"))
-				{
-					//normal HP
-				}
-				else if (theu.Name.Contains("ice"))
-				{
-					hp = (int) Math.Ceiling(hp * 1.25);
-				} else if (theu.Name.Contains("earth"))
-				{
-					hp = (int) Math.Ceiling(hp * 1.5);
-				}
-				return hp;
-				*/
-
-				int hp = 1;
-				if (theu.Name.Contains("air"))
-				{
-					hp = 800;
-				}
-				else if (theu.Name.Contains("ice"))
-				{
-					hp = 500;
-				} else if (theu.Name.Contains("earth"))
-				{
-					hp = 350;
-				}
-				
-				hp = (int)((theu.Level / 44.0) * hp);
-				if (hp < 10) hp = 10;
-				return hp;
-			}
-			else if (living is TurretPet ani)
-			{
-				int hp = 1;
-				/*
-				if (ani.Level < 5)
-				{
-					hp += ani.Level * 2 + 50 + ani.Constitution;
-				}
-				else
-				{
-					hp = ani.Constitution * ani.Level;
-				}
-				*/
-
-				if (living.Level < 10)
-				{
-					hp = living.Level * 20 + 20 + ani.Constitution + living.BaseBuffBonusCategory[(int)property];  // default
-				}
-				else
-				{
-					// approx to original formula, thx to mathematica :)
-					hp = (int)(50 + 14 * living.Level + 0.548331 * living.Level) + ani.Constitution + living.BaseBuffBonusCategory[(int)property];
-					if (living.Level < 25)
-						hp += 20;
-				}
-
-				if (ani.Brain != null && ani.Brain is DOL.AI.Brain.TurretFNFBrain)
-					hp = (int)(hp * .8);
-
-				return hp;
-			}
-            else if (living is GameSummonedPet pet)
+    /// <summary>
+    /// The Max HP calculator
+    ///
+    /// BuffBonusCategory1 is used for absolute HP buffs
+    /// BuffBonusCategory2 unused
+    /// BuffBonusCategory3 unused
+    /// BuffBonusCategory4 unused
+    /// BuffBonusMultCategory1 unused
+    /// </summary>
+    [PropertyCalculator(eProperty.MaxHealth)]
+    public class MaxHealthCalculator : PropertyCalculator
+    {
+        public override int CalcValue(GameLiving living, eProperty property)
+        {
+            if (living is GamePlayer player)
             {
-				int hp = 0;
+                int hpBase = player.CalculateMaxHealth(player.Level, player.GetModified(eProperty.Constitution));
+                int buffBonus = player.BaseBuffBonusCategory[(int) property];
 
-				if (living.Level < 10)
-				{
-					hp = living.Level * 20 + 20 + pet.Constitution + living.BaseBuffBonusCategory[(int)property];  // default
-				}
-				else
-				{
-					// approx to original formula, thx to mathematica :)
-					hp = (int)(50 + 15 * living.Level + 0.548331 * living.Level * living.Level) + pet.Constitution + living.BaseBuffBonusCategory[(int)property];
-					if (living.Level < 25)
-						hp += 20;
-				}
+                if (buffBonus < 0)
+                    buffBonus = (int) ((1 + buffBonus / -100.0) * hpBase) - hpBase;
 
-				int basecon = (living as GameNPC).Constitution;
-				int conmod = 20; // at level 50 +75 con ~= +300 hit points
+                int itemBonus = player.ItemBonus[(int) property];
+                int cap = GetItemBonusCap(player) + GetItemBonusCapIncrease(player);
+                itemBonus = Math.Min(itemBonus, cap);
 
-				// first adjust hitpoints based on base CON
+                if (player.HasAbility(Abilities.ScarsOfBattle) && player.Level >= 40)
+                {
+                    int levelBonus = Math.Min(player.Level - 40, 10);
+                    hpBase = (int) (hpBase * (100 + levelBonus) * 0.01);
+                }
 
-				if (basecon != ServerProperties.Properties.GAMENPC_BASE_CON)
-				{
-					hp = Math.Max(1, hp + ((basecon - ServerProperties.Properties.GAMENPC_BASE_CON) * ServerProperties.Properties.GAMENPC_HP_GAIN_PER_CON));
-				}
+                int abilityBonus = player.AbilityBonus[(int) property];
+                AtlasOF_ToughnessAbility toughness = player.GetAbility<AtlasOF_ToughnessAbility>();
+                double toughnessMod = toughness != null ? 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01 : 1;
+                return Math.Max((int) (hpBase * toughnessMod) + itemBonus + buffBonus + abilityBonus, 1);
+            }
+            else if (living is GameKeepComponent keepComponent)
+            {
+                AbstractGameKeep gameKeep = keepComponent.Keep;
 
-				// Now adjust for buffs
+                if (gameKeep != null)
+                {
+                    int baseHealth = gameKeep.BaseLevel * Properties.KEEP_COMPONENTS_BASE_HEALTH;
+                    baseHealth += (int) (baseHealth * (gameKeep.Level - 1) * Properties.KEEP_COMPONENTS_HEALTH_UPGRADE_MODIFIER);
+                    return baseHealth;
+                }
 
-				// adjust hit points based on constitution difference from base con
-				// modified from http://www.btinternet.com/~challand/hp_calculator.htm
-				int conhp = hp + (conmod * living.Level * (living.GetModified(eProperty.Constitution) - basecon) / 250);
+                return 0;
+            }
+            else if (living is GameKeepDoor)
+            {
+                AbstractGameKeep gameKeep = (living as GameKeepDoor)?.Component?.Keep;
 
-				// 50% buff / debuff cap
-				if (conhp > hp * 1.5)
-					conhp = (int)(hp * 1.5);
-				else if (conhp < hp / 2)
-					conhp = hp / 2;
+                if (gameKeep != null)
+                {
+                    if (gameKeep.IsRelic)
+                        return Properties.RELIC_DOORS_HEALTH;
 
-				conhp = (int)Math.Floor(0.6666 * (double)conhp);
-				return hp;
-				//return conhp;
-			}
-            else if (living is GameNPC)
-			{
-				int hp = 0;
+                    int baseHealth = gameKeep.BaseLevel * Properties.KEEP_DOORS_BASE_HEALTH;
+                    baseHealth += (int) (baseHealth * (gameKeep.Level - 1) * Properties.KEEP_DOORS_HEALTH_UPGRADE_MODIFIER);
+                    return baseHealth;
+                }
 
-				if (living.Level<20)
-				{
-					//14 hp per level
-					//30 base
-					//con * level HP, scaled by level
-					hp = (int)((living.Level * 11) + 20 + (Math.Floor((double)((living as GameNPC).Constitution * living.Level) / (1 + (20-living.Level))))) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
-				}
-				else
-				{
-					double levelScalar = .5;
-					if (living.Level > 40)
-					{
-						//Console.WriteLine($"Scalar before {levelScalar} adding {(living.Level - 40) * .01} after {levelScalar + ((living.Level - 40) * .01)}");
-						levelScalar += (living.Level - 40) * .0015;
-					}
-					// approx to original formula, thx to mathematica :)
-					hp = (int)(50 + 12*living.Level + levelScalar * living.Level * (living.Level)) + (living as GameNPC).Constitution;
-					if (living.Level < 25)
-						hp += 20;
-				}
+                return 0;
+            }
+            else if (living is GameSummonedPet pet)
+                return CalculateNpcMaxHealth(pet, 17, 0.535, pet.GetBaseStat(eStat.CON), 25, 3, pet.BaseBuffBonusCategory[(int) property]);
+            else if (living is GameNPC npc)
+                return CalculateNpcMaxHealth(npc, 11, 0.6, npc.GetBaseStat(eStat.CON), 25, 1.8, npc.BaseBuffBonusCategory[(int) property]);
 
-				int basecon = (living as GameNPC).Constitution;
-				int conmod = 25; // at level 50 +75 con ~= +300 hit points
-
-				// first adjust hitpoints based on base CON
-
-				if (basecon != ServerProperties.Properties.GAMENPC_BASE_CON && living.Level >= 10)
-				{
-					hp = Math.Max(1, hp + ((basecon - ServerProperties.Properties.GAMENPC_BASE_CON) * ServerProperties.Properties.GAMENPC_HP_GAIN_PER_CON));
-				}
-
-				// Now adjust for buffs
-				if (living.Level > 10)
-				{
-
-					// adjust hit points based on constitution difference from base con
-					// modified from http://www.btinternet.com/~challand/hp_calculator.htm
-					int conhp = hp + (conmod * living.Level * (living.GetModified(eProperty.Constitution) - basecon) / 250);
-
-					// 50% buff / debuff cap
-					if (conhp > hp * 1.5)
-						conhp = (int)(hp * 1.5);
-					else if (conhp < hp / 2)
-						conhp = hp / 2;
-				}
-
-				if(living is GameEpicBoss)
-					hp = (int)(hp * 1.5); //epic bosses get 50% extra hp
-				else if (living is GameEpicNPC)
-					hp = (int)( hp * 1.25); //epic NPCs get 25% extra hp
-
-				return hp;
-				//return conhp;
-			}
+            // Old formula. No idea if it's being used by anything. Leaving it here in case some people want to experiment with it.
+            if (living.Level < 10)
+                return living.Level * 20 + 20 + living.GetBaseStat(eStat.CON);
             else
             {
-                if (living.Level < 10)
-                {
-                    return living.Level * 20 + 20 + living.GetBaseStat(eStat.CON) /*living.BaseBuffBonusCategory[(int)property]*/;	// default
-                }
-                else
-                {
-                    // approx to original formula, thx to mathematica :)
-                    int hp = (int)(50 + 11 * living.Level + 0.548331 * living.Level * living.Level) + living.GetBaseStat(eStat.CON)/*living.BaseBuffBonusCategory[(int)property]*/;
-                    if (living.Level < 25)
-                    {
-                        hp += 20;
-                    }
-                    return hp;
-                }
-            }
-		}
+                // approx to original formula, thx to mathematica :)
+                int hp = (int) (50 + 11 * living.Level + 0.548331 * living.Level * living.Level) + living.GetBaseStat(eStat.CON);
 
-        /// <summary>
-        /// Returns the hits cap for this living.
-        /// </summary>
-        /// <param name="living">The living the cap is to be determined for.</param>
-        /// <returns></returns>
-        public static int GetItemBonusCap(GameLiving living)
-        {
-            if (living == null) return 0;
-            return living.Level * 4;
+                if (living.Level < 25)
+                    hp += 20;
+
+                return hp;
+            }
+
+            static int CalculateNpcMaxHealth(GameNPC npc, int hpPerLevelPlusOne, double hpPerSquaredLevel, int constitution, int constitutionOffset, double hpPerConstitution,int hpBonus)
+            {
+                double hpFromConstitution = (constitution - constitutionOffset) * hpPerConstitution;
+                double hpFromLevel = hpPerLevelPlusOne * (npc.Level + 1) + hpPerSquaredLevel * npc.Level * npc.Level;
+                return (int) ((hpFromConstitution + hpFromLevel + hpBonus) * npc.MaxHealthScalingFactor);
+            }
         }
 
-        /// <summary>
-        /// Returns the hits cap increase for the this living.
-        /// </summary>
-        /// <param name="living">The living the cap increase is to be determined for.</param>
-        /// <returns></returns>
+        public static int GetItemBonusCap(GameLiving living)
+        {
+            return living == null ? 0 : living.Level * 4;
+        }
+
         public static int GetItemBonusCapIncrease(GameLiving living)
         {
-            if (living == null) return 0;
+            if (living == null)
+                return 0;
+
             int itemBonusCapIncreaseCap = GetItemBonusCapIncreaseCap(living);
-            int itemBonusCapIncrease = living.ItemBonus[(int)(eProperty.MaxHealthCapBonus)];
+            int itemBonusCapIncrease = living.ItemBonus[(int) eProperty.MaxHealthCapBonus];
             return Math.Min(itemBonusCapIncrease, itemBonusCapIncreaseCap);
         }
 
-        /// <summary>
-        /// Returns the cap for hits cap increase for this living.
-        /// </summary>
-        /// <param name="living">The living the value is to be determined for.</param>
-        /// <returns>The cap increase cap for this living.</returns>
         public static int GetItemBonusCapIncreaseCap(GameLiving living)
         {
-            if (living == null) return 0;
-            return living.Level * 4;
+            return living == null ? 0 : living.Level * 4;
         }
-	}
+    }
 }

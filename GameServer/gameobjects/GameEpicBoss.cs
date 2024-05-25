@@ -8,13 +8,14 @@ namespace DOL.GS
 {
     public class GameEpicBoss : GameNPC, IGameEpicNpc
     {
+        public override double MaxHealthScalingFactor => 1.5;
         public double DefaultArmorFactorScalingFactor => 1.6;
         public int ArmorFactorScalingFactorPetCap => 24;
         public double ArmorFactorScalingFactor { get; set; }
 
         public GameEpicBoss() : base()
         {
-            ScalingFactor = 80;
+            WeaponSkillScalingFactor = 80;
             ArmorFactorScalingFactor = DefaultArmorFactorScalingFactor;
             OrbsReward = Properties.EPICBOSS_ORBS;
         }

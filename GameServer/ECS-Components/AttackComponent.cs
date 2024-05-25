@@ -24,6 +24,7 @@ namespace DOL.GS
     public class AttackComponent : IManagedEntity
     {
         private static int CHECK_ATTACKERS_INTERVAL = 1000;
+        private static int INHERENT_AF_WS = 15;
 
         public GameLiving owner;
         public WeaponAction weaponAction;
@@ -1209,8 +1210,8 @@ namespace DOL.GS
                     }
 
                     double specModifier = CalculateSpecModifier(ad.Target, spec);
-                    double weaponSkill = CalculateWeaponSkill(ad.Target, weapon, specModifier, out double baseWeaponSkill);
-                    double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double bonusArmorFactor, out double armorFactor, out double absorb);
+                    double weaponSkill = CalculateWeaponSkill(weapon, specModifier, out double baseWeaponSkill);
+                    double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
                     double damageMod = weaponSkill / armorMod;
 
                     if (action.RangedAttackType == eRangedAttackType.Critical)
@@ -1655,29 +1656,24 @@ namespace DOL.GS
             return ad;
         }
 
-        public double CalculateWeaponSkill(GameLiving target, DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
+        public double CalculateWeaponSkill(DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
         {
-            baseWeaponSkill = 1 + owner.GetWeaponSkill(weapon);
-            return CalculateWeaponSkill(target, baseWeaponSkill, 1 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength), specModifier);
+            baseWeaponSkill = owner.GetWeaponSkill(weapon);
+            return CalculateWeaponSkill(baseWeaponSkill, 1 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength), specModifier);
         }
 
-        public double CalculateWeaponSkill(GameLiving target, double baseWeaponSkill, double relicBonus, double specModifier)
+        public double CalculateWeaponSkill(double baseWeaponSkill, double relicBonus, double specModifier)
         {
+            double weaponSkill = (baseWeaponSkill + INHERENT_AF_WS) * specModifier;
+
             if (owner is GamePlayer)
-                return baseWeaponSkill * relicBonus * specModifier;
+                weaponSkill *= relicBonus;
 
-            baseWeaponSkill += target.Level * 65 / 50.0;
-
-            if (owner.Level < 10)
-                baseWeaponSkill *= 1 - 0.05 * (10 - owner.Level);
-
-            return baseWeaponSkill;
+            return weaponSkill;
         }
 
         public double CalculateSpecModifier(GameLiving target, int spec)
         {
-            double specModifier;
-
             if (owner is GamePlayer playerOwner)
             {
                 // Characters below level 5 get a bonus to their spec to help with the very wide variance at this level range.
@@ -1694,11 +1690,13 @@ namespace DOL.GS
                 double lowerLimit = Math.Min(0.75 * (spec - 1) / (target.Level + 1) + 0.25, 1.0);
                 double upperLimit = Math.Min(Math.Max(1.25 + (3.0 * (spec - 1) / (target.Level + 1) - 2) * 0.25, 1.25), 1.50);
                 int varianceRange = (int) (upperLimit * 100 - lowerLimit * 100);
-                specModifier = playerOwner.SpecLock > 0 ? playerOwner.SpecLock : lowerLimit + Util.Random(varianceRange) * 0.01;
+                return playerOwner.SpecLock > 0 ? playerOwner.SpecLock : lowerLimit + Util.Random(varianceRange) * 0.01;
             }
             else
             {
-                int minimum;
+                return 1.0; // NPCs have no damage variance currently.
+
+                /*int minimum;
                 int maximum;
 
                 if (owner is GameEpicBoss)
@@ -1712,23 +1710,19 @@ namespace DOL.GS
                     maximum = 125;
                 }
 
-                specModifier = (Util.Random(maximum - minimum) + minimum) * 0.01;
+                return (Util.Random(maximum - minimum) + minimum) * 0.01;*/
             }
-
-            return specModifier;
         }
 
-        private const int ARMOR_FACTOR_LEVEL_SCALAR = 25;
 
-        public double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot)
+        public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
         {
-            return CalculateTargetArmor(target, armorSlot, out _, out _, out _);
-        }
+            armorFactor = target.GetArmorAF(armorSlot) + INHERENT_AF_WS;
 
-        public double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double bonusArmorFactor, out double armorFactor, out double absorb)
-        {
-            bonusArmorFactor = owner is GamePlayer && target is not GamePlayer ? 2 : target.Level * ARMOR_FACTOR_LEVEL_SCALAR / 50.0;
-            armorFactor = bonusArmorFactor + target.GetArmorAF(armorSlot);
+            // Gives an extra 0.5~25 bonus AF to players. Ideally AF scaling should be tweaked instead.
+            if (target is GamePlayer)
+                armorFactor += target.Level * 25 / 50.0;
+
             absorb = target.GetArmorAbsorb(armorSlot);
             return absorb >= 1 ? double.MaxValue : armorFactor / (1 - absorb);
         }
