@@ -2949,52 +2949,29 @@ namespace DOL.GS
 				m_enduRegenerationTimer = null;
 			}
 		}
-		/// <summary>
-		/// Timer callback for the hp regeneration
-		/// </summary>
-		/// <param name="callingTimer">timer calling this function</param>
+
 		protected virtual int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
 		{
 			if (Health < MaxHealth)
-			{
 				ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationRate));
-			}
 
-			#region PVP DAMAGE
+			bool atMaxHealth = Health >= MaxHealth;
 
-			
-			if (this is NecromancerPet)
+			if (this is NecromancerPet necroPet && necroPet.Brain is IControlledBrain necroBrain)
 			{
-				GamePlayer this_necro_pl = null;
+				GamePlayer player = necroBrain.GetPlayerOwner();
 
-				this_necro_pl = ((this as NecromancerPet).Brain as IControlledBrain).GetPlayerOwner();
-
-				if (DamageRvRMemory > 0 && this_necro_pl != null)
-					DamageRvRMemory -= (long)Math.Max(GetModified(eProperty.HealthRegenerationRate), 0);
-			}
-
-			#endregion PVP DAMAGE
-
-			//If we are fully healed, we stop the timer
-			if (Health >= MaxHealth)
-			{
-
-				#region PVP DAMAGE
-
-				if (this is NecromancerPet)
+				if (player != null && DamageRvRMemory > 0)
 				{
-					GamePlayer this_necro_pl = null;
-
-					this_necro_pl = ((this as NecromancerPet).Brain as IControlledBrain).GetPlayerOwner();
-
-					if (DamageRvRMemory > 0 && this_necro_pl != null)
+					if (atMaxHealth)
 						DamageRvRMemory = 0;
+					else
+						DamageRvRMemory -= Math.Max(GetModified(eProperty.HealthRegenerationRate), 0);
 				}
+			}
 
-				#endregion PVP DAMAGE
-
-				//We clean all damagedealers if we are fully healed,
-				//no special XP calculations need to be done
+			if (atMaxHealth)
+			{
 				lock (m_xpGainers.SyncRoot)
 				{
 					m_xpGainers.Clear();
@@ -3004,109 +2981,74 @@ namespace DOL.GS
 			}
 
 			if (InCombat)
-			{
-				// in combat each tic is aprox 15 seconds - tolakram
 				return HealthRegenerationPeriod * 5;
-			}
 
-			//Heal at standard rate
 			return HealthRegenerationPeriod;
 		}
-		/// <summary>
-		/// Callback for the power regenerationTimer
-		/// </summary>
-		/// <param name="selfRegenerationTimer">timer calling this function</param>
+
 		protected virtual int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
-			
-			if (this is GamePlayer &&
-			    (((GamePlayer)this).CharacterClass.ID == (int)eCharacterClass.Vampiir ||
-			     (((GamePlayer)this).CharacterClass.ID > 59 && ((GamePlayer)this).CharacterClass.ID < 63))) // Maulers
+			if (this is GamePlayer player)
 			{
-				double MinMana = MaxMana * 0.15;
-				double OnePercMana = Math.Ceiling(MaxMana * 0.01);
-				log.WarnFormat("current MaxMana is {0} and OnePercMana is {1}", MaxMana, OnePercMana);
-				
+				eCharacterClass characterClass = (eCharacterClass) player.CharacterClass.ID;
 
-				if (!InCombat)
+				if (characterClass is eCharacterClass.Vampiir || (characterClass >= eCharacterClass.MaulerAlb && characterClass <= eCharacterClass.MaulerHib))
 				{
-					/*if (ManaPercent < 15)
-					{
-						ChangeMana(this, eManaChangeType.Regenerate, (int)OnePercMana);
-						return 4000;
-					}
-					else if (ManaPercent > 15)
-					{*/
-					ChangeMana(this, eManaChangeType.Regenerate, (int)(-OnePercMana));
-					return 1000;
-					//}
+					double onePercMana = Math.Ceiling(MaxMana * 0.01);
 
-					//return 0;
+					if (!InCombat)
+					{
+						ChangeMana(this, eManaChangeType.Regenerate, (int) -onePercMana);
+						return 1000;
+					}
 				}
 			}
 			else
 			{
 				int stackingBonus = 0;
-				if (this is GamePlayer p) stackingBonus = p.PowerRegenStackingBonus;
-				if (Mana < MaxMana)
-				{
-					ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationRate) + stackingBonus);
-				}
 
-				//If we are full, we stop the timer
+				if (this is GamePlayer p)
+					stackingBonus = p.PowerRegenStackingBonus;
+
+				if (Mana < MaxMana)
+					ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationRate) + stackingBonus);
+
 				if (Mana >= MaxMana)
-				{
-					selfRegenerationTimer.Stop();
-				}
+					return 0;
 			}
 
 			int totalRegenPeriod = PowerRegenerationPeriod;
 
-			//If we were hit before we regenerated, we regenerate slower the next time
 			if (InCombat)
-			{
-				totalRegenPeriod = (int)(totalRegenPeriod * 2);//3.4);
-			}
+				totalRegenPeriod *= 2;
 
 			if (IsSitting)
-            {
-	            totalRegenPeriod = (int)(totalRegenPeriod / 2);
-            }
-			
-			#region Calculation : AtlasOF_Serenity
-			// --- [START] --- AtlasOF_Serenity -----------------------------------------------------------
-			AtlasOF_SerenityAbility raSerenity = GetAbility<AtlasOF_SerenityAbility>();
-			if (raSerenity != null)
-			{
-				if (raSerenity.Level > 0)
-				{
-					totalRegenPeriod = totalRegenPeriod - (raSerenity.GetAmountForLevel(raSerenity.Level));
-				}
-			}
-			// --- [START] --- AtlasOF_Serenity -----------------------------------------------------------
-			#endregion
+				totalRegenPeriod /= 2;
 
-			//regen at standard rate
+			AtlasOF_SerenityAbility raSerenity = GetAbility<AtlasOF_SerenityAbility>();
+
+			if (raSerenity != null && raSerenity.Level > 0)
+				totalRegenPeriod -= raSerenity.GetAmountForLevel(raSerenity.Level);
+
 			return totalRegenPeriod;
 		}
-		/// <summary>
-		/// Callback for the endurance regenerationTimer
-		/// </summary>
-		/// <param name="selfRegenerationTimer">timer calling this function</param>
+
 		protected virtual int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
 			if (Endurance < MaxEndurance)
 			{
 				int regen = GetModified(eProperty.EnduranceRegenerationRate);
+
 				if (regen > 0)
-				{
 					ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
-				}
 			}
-			if (Endurance >= MaxEndurance) return 0;
+
+			if (Endurance >= MaxEndurance)
+				return 0;
 
 			return EnduranceRegenerationPeriod;
 		}
+
         #endregion
 
 		#region Components

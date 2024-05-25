@@ -2549,139 +2549,87 @@ namespace DOL.GS
             m_enduRegenerationTimer.Stop();
         }
 
-        /// <summary>
-        /// Override HealthRegenTimer because if we are not connected anymore
-        /// we DON'T regenerate health, even if we are not garbage collected yet!
-        /// </summary>
-        /// <param name="callingTimer">the timer</param>
-        /// <returns>the new time</returns>
         protected override int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
         {
-            // I'm not sure what the point of this is.
-            if (Client.ClientState != GameClient.eClientState.Playing)
-                return HealthRegenerationPeriod;
-
-            // adjust timer based on Live testing of player
-
             if (Health < MaxHealth)
-            {
                 ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationRate));
-            }
 
-            #region PVP DAMAGE
+            bool atMaxHealth = Health >= MaxHealth;
 
             if (DamageRvRMemory > 0)
-                DamageRvRMemory -= (long)Math.Max(GetModified(eProperty.HealthRegenerationRate), 0);
-
-            #endregion PVP DAMAGE
-
-            //If we are fully healed, we stop the timer
-            if (Health >= MaxHealth)
             {
-
-                #region PVP DAMAGE
-
-                // Fully Regenerated, Set DamageRvRMemory to 0
-                if (DamageRvRMemory > 0)
+                if (atMaxHealth)
                     DamageRvRMemory = 0;
+                else
+                    DamageRvRMemory -= Math.Max(GetModified(eProperty.HealthRegenerationRate), 0);
+            }
 
-                #endregion PVP DAMAGE
-
-                //We clean all damagedealers if we are fully healed,
-                //no special XP calculations need to be done
+            if (atMaxHealth)
+            {
                 lock (m_xpGainers.SyncRoot)
                 {
                     m_xpGainers.Clear();
                 }
 
-                callingTimer.Stop();
+                return 0;
             }
 
             if (InCombat)
-            {
-                // in combat each tic is aprox 6 seconds - tolakram
                 return HealthRegenerationPeriod * 2;
-            }
 
             if (IsSitting)
-            {
                 return HealthRegenerationPeriod / 2;
-            }
 
-            //Heal at standard rate
             return HealthRegenerationPeriod;
         }
 
         public int PowerRegenStackingBonus = 0;
 
-        /// <summary>
-        /// Override PowerRegenTimer because if we are not connected anymore
-        /// we DON'T regenerate mana, even if we are not garbage collected yet!
-        /// </summary>
-        /// <param name="selfRegenerationTimer">the timer</param>
-        /// <returns>the new time</returns>
         protected override int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
-            if (Client.ClientState != GameClient.eClientState.Playing)
-                return PowerRegenerationPeriod;
             if (IsSitting)
             {
-                if(PowerRegenStackingBonus < 3) PowerRegenStackingBonus++;
+                if (PowerRegenStackingBonus < 3)
+                    PowerRegenStackingBonus++;
             }
-            else PowerRegenStackingBonus = 0;
-            int interval = base.PowerRegenerationTimerCallback(selfRegenerationTimer);
-            return interval;
+            else
+                PowerRegenStackingBonus = 0;
+
+            return base.PowerRegenerationTimerCallback(selfRegenerationTimer);
         }
 
-        /// <summary>
-        /// Override EnduranceRegenTimer because if we are not connected anymore
-        /// we DON'T regenerate endurance, even if we are not garbage collected yet!
-        /// </summary>
-        /// <param name="selfRegenerationTimer">the timer</param>
-        /// <returns>the new time</returns>
         protected override int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
-            if (Client.ClientState != GameClient.eClientState.Playing)
-                return EnduranceRegenerationPeriod;
-
             bool sprinting = IsSprinting;
 
             if (Endurance < MaxEndurance || sprinting)
             {
-                int regen = GetModified(eProperty.EnduranceRegenerationRate);  //default is 1
-                int endchant = GetModified(eProperty.FatigueConsumption);      //Pull chant/buff value
-                var charge = EffectListService.GetEffectOnTarget(this, eEffect.Charge);
-                int longwind = 5;
+                int regen = GetModified(eProperty.EnduranceRegenerationRate);
+                int endChant = GetModified(eProperty.FatigueConsumption);
+                ECSGameEffect charge = EffectListService.GetEffectOnTarget(this, eEffect.Charge);
+                int longWind = 5;
 
                 if (sprinting && IsMoving)
                 {
                     if (charge is null)
                     {
-                        #region Calculation : AtlasOF_LongWind
-                        // --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
                         AtlasOF_LongWindAbility raLongWind = GetAbility<AtlasOF_LongWindAbility>();
+
                         if (raLongWind != null)
-                        {
-                            longwind -= (raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100);
-                        }
-                        // --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
-                        #endregion
+                            longWind -= raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100;
 
-                        regen -= longwind;
+                        regen -= longWind;
 
-                        if (endchant > 1) regen = (int)Math.Ceiling(regen * endchant * 0.01);
+                        if (endChant > 1)
+                            regen = (int) Math.Ceiling(regen * endChant * 0.01);
 
-                        if (Endurance + regen > MaxEndurance - longwind)
-                        {
-                            regen -= (Endurance + regen) - (MaxEndurance - longwind);
-                        }
+                        if (Endurance + regen > MaxEndurance - longWind)
+                            regen -= Endurance + regen - (MaxEndurance - longWind);
                     }
                 }
 
                 if (regen != 0)
-                {
                     ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
-                }
             }
 
             if (sprinting)
@@ -2690,7 +2638,7 @@ namespace DOL.GS
                     Sprint(false);
             }
             else if (Endurance >= MaxEndurance)
-                selfRegenerationTimer.Stop();
+                return 0;
 
             ushort rate = EnduranceRegenerationPeriod;
 
