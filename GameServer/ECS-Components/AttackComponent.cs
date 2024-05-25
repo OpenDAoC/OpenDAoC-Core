@@ -24,6 +24,7 @@ namespace DOL.GS
     public class AttackComponent : IManagedEntity
     {
         private static int CHECK_ATTACKERS_INTERVAL = 1000;
+        private static int INHERENT_AF_WS = 15;
 
         public GameLiving owner;
         public WeaponAction weaponAction;
@@ -1663,7 +1664,7 @@ namespace DOL.GS
 
         public double CalculateWeaponSkill(double baseWeaponSkill, double relicBonus, double specModifier)
         {
-            double weaponSkill = baseWeaponSkill * specModifier;
+            double weaponSkill = (baseWeaponSkill + INHERENT_AF_WS) * specModifier;
 
             if (owner is GamePlayer)
                 weaponSkill *= relicBonus;
@@ -1713,16 +1714,12 @@ namespace DOL.GS
             }
         }
 
-        public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot)
-        {
-            return CalculateTargetArmor(target, armorSlot, out _, out _);
-        }
 
         public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
         {
-            armorFactor = target.GetArmorAF(armorSlot);
+            armorFactor = target.GetArmorAF(armorSlot) + INHERENT_AF_WS;
 
-            // Gives 0.5~25 bonus AF to players.
+            // Gives an extra 0.5~25 bonus AF to players. Ideally AF scaling should be tweaked instead.
             if (target is GamePlayer)
                 armorFactor += target.Level * 25 / 50.0;
 
