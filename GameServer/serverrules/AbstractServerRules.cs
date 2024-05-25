@@ -1255,7 +1255,9 @@ namespace DOL.GS.ServerRules
 			long relicBonus = CalculateRelicBonus();
 
 			ShowXpStatsToPlayer();
-			living.GainExperience(eXPSource.NPC, baseXpReward, campBonus, groupBonus, outpostBonus, true, true, true); // XP Rate is handled in GainExperience
+
+			long totalReward = baseXpReward + campBonus + groupBonus + outpostBonus + relicBonus;
+			living.GainExperience(eXPSource.NPC, totalReward, campBonus, groupBonus, outpostBonus, true, true, true); // XP Rate is handled in GainExperience
 
 			void RewardRealmPoints()
 			{
