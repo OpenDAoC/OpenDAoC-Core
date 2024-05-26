@@ -1145,13 +1145,14 @@ namespace DOL.AI.Brain
                 return false;
             }
 
-            ECSGameEffect effect = EffectListService.GetEffectOnTarget(target, spellEffect);
+            // True if the target has the effect, or the immunity effect for this effect.
+            // Treat NPC immunity effects as full immunity effects.
+            return EffectListService.GetEffectOnTarget(target, spellEffect) != null || HasImmunityEffect(EffectService.GetImmunityEffectFromSpell(spell)) || HasImmunityEffect(EffectService.GetNpcImmunityEffectFromSpell(spell));
 
-            if (effect != null)
-                return true;
-
-            eEffect immunityToCheck = EffectService.GetImmunityEffectFromSpell(spell);
-            return immunityToCheck != eEffect.Unknown && EffectListService.GetEffectOnTarget(target, immunityToCheck) != null;
+            bool HasImmunityEffect(eEffect immunityEffect)
+            {
+                return immunityEffect != eEffect.Unknown && EffectListService.GetEffectOnTarget(target, immunityEffect) != null;
+            }
         }
 
         #endregion

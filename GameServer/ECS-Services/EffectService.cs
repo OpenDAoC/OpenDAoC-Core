@@ -636,6 +636,20 @@ namespace DOL.GS
             }
         }
 
+        public static eEffect GetNpcImmunityEffectFromSpell(Spell spell)
+        {
+            switch (spell.SpellType)
+            {
+                case eSpellType.Mesmerize:
+                    return eEffect.NPCMezImmunity;
+                case eSpellType.StyleStun:
+                case eSpellType.Stun:
+                    return eEffect.NPCStunImmunity;
+                default:
+                    return eEffect.Unknown;
+            }
+        }
+
         public static void SendSpellResistAnimation(ECSGameSpellEffect e)
         {
             if (e is null)
