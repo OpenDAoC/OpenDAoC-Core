@@ -1150,33 +1150,7 @@ namespace DOL.AI.Brain
             if (effect != null)
                 return true;
 
-            eEffect immunityToCheck = eEffect.Unknown;
-
-            switch (spellEffect)
-            {
-                case eEffect.Stun:
-                {
-                    immunityToCheck = eEffect.StunImmunity;
-                    break;
-                }
-                case eEffect.Mez:
-                {
-                    immunityToCheck = eEffect.MezImmunity;
-                    break;
-                }
-                case eEffect.Snare:
-                case eEffect.MeleeSnare:
-                {
-                    immunityToCheck = eEffect.SnareImmunity;
-                    break;
-                }
-                case eEffect.Nearsight:
-                {
-                    immunityToCheck = eEffect.NearsightImmunity;
-                    break;
-                }
-            }
-
+            eEffect immunityToCheck = EffectService.GetImmunityEffectFromSpell(spell);
             return immunityToCheck != eEffect.Unknown && EffectListService.GetEffectOnTarget(target, immunityToCheck) != null;
         }
 
