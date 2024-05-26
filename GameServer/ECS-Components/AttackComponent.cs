@@ -1675,8 +1675,14 @@ namespace DOL.GS
 
         public double CalculateSpecModifier(GameLiving target, int spec)
         {
+            double lowerLimit;
+            double upperLimit;
+
             if (owner is GamePlayer playerOwner)
             {
+                if (playerOwner.SpecLock > 0)
+                    return playerOwner.SpecLock;
+
                 // Characters below level 5 get a bonus to their spec to help with the very wide variance at this level range.
                 // Target level, lower bound at 2, lower bound at 1:
                 // 0 | 1      | 0.25
@@ -1688,31 +1694,17 @@ namespace DOL.GS
                 // Absolute minimum spec is set to 1 to prevent an issue where the lower bound (with staffs for example) would slightly rise with the target's level.
                 // Also prevents negative values.
                 spec = Math.Max(owner.Level < 5 ? 2 : 1, spec);
-                double lowerLimit = Math.Min(0.75 * (spec - 1) / (target.Level + 1) + 0.25, 1.0);
-                double upperLimit = Math.Min(Math.Max(1.25 + (3.0 * (spec - 1) / (target.Level + 1) - 2) * 0.25, 1.25), 1.50);
-                int varianceRange = (int) (upperLimit * 100 - lowerLimit * 100);
-                return playerOwner.SpecLock > 0 ? playerOwner.SpecLock : lowerLimit + Util.Random(varianceRange) * 0.01;
+                lowerLimit = Math.Min(0.75 * (spec - 1) / (target.Level + 1) + 0.25, 1.0);
+                upperLimit = Math.Min(Math.Max(1.25 + (3.0 * (spec - 1) / (target.Level + 1) - 2) * 0.25, 1.25), 1.50);
             }
             else
             {
-                return 1.0; // NPCs have no damage variance currently.
-
-                /*int minimum;
-                int maximum;
-
-                if (owner is GameEpicBoss)
-                {
-                    minimum = 95;
-                    maximum = 105;
-                }
-                else
-                {
-                    minimum = 75;
-                    maximum = 125;
-                }
-
-                return (Util.Random(maximum - minimum) + minimum) * 0.01;*/
+                lowerLimit = 0.9;
+                upperLimit = 1.1;
             }
+
+            double varianceRange = upperLimit - lowerLimit;
+            return lowerLimit + Util.RandomDouble() * varianceRange;
         }
 
 
