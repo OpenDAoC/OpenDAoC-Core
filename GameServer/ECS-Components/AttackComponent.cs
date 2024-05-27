@@ -2637,22 +2637,11 @@ namespace DOL.GS
             int missChance = ad.Attacker is GamePlayer or GameSummonedPet ? 18 : 25;
             missChance -= ad.Attacker.GetModified(eProperty.ToHitBonus);
 
-            // PVE group miss rate.
-            if (owner is GameNPC && ad.Attacker is GamePlayer playerAttacker && playerAttacker.Group != null && (int) (0.90 * playerAttacker.Group.Leader.Level) >= ad.Attacker.Level && ad.Attacker.IsWithinRadius(playerAttacker.Group.Leader, 3000))
-                missChance -= 5 * playerAttacker.Group.Leader.GetConLevel(owner);
-            else if (owner is GameNPC || ad.Attacker is GameNPC)
+            if (owner is not GamePlayer || ad.Attacker is not GamePlayer)
             {
-                GameLiving misscheck = ad.Attacker;
-
-                if (ad.Attacker is GameSummonedPet petAttacker && petAttacker.Level < petAttacker.Owner.Level)
-                    misscheck = petAttacker.Owner;
-
-                missChance += 5 * misscheck.GetConLevel(owner);
-            }
-
-            // Experimental miss rate adjustment for number of attackers.
-            if ((owner is GamePlayer && ad.Attacker is GamePlayer) == false)
+                missChance += 5 * ad.Attacker.GetConLevel(owner);
                 missChance -= Math.Max(0, Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+            }
 
             // Weapon and armor bonuses.
             int armorBonus = 0;
