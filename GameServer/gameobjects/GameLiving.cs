@@ -2988,19 +2988,14 @@ namespace DOL.GS
 
 		protected virtual int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
-			if (this is GamePlayer player)
+			if (IsVampiirOrMauler())
 			{
-				eCharacterClass characterClass = (eCharacterClass) player.CharacterClass.ID;
+				double onePercMana = Math.Ceiling(MaxMana * 0.01);
 
-				if (characterClass is eCharacterClass.Vampiir || (characterClass >= eCharacterClass.MaulerAlb && characterClass <= eCharacterClass.MaulerHib))
+				if (!InCombat)
 				{
-					double onePercMana = Math.Ceiling(MaxMana * 0.01);
-
-					if (!InCombat)
-					{
-						ChangeMana(this, eManaChangeType.Regenerate, (int) -onePercMana);
-						return 1000;
-					}
+					ChangeMana(this, eManaChangeType.Regenerate, (int) -onePercMana);
+					return 1000;
 				}
 			}
 			else
@@ -3031,6 +3026,15 @@ namespace DOL.GS
 				totalRegenPeriod -= raSerenity.GetAmountForLevel(raSerenity.Level);
 
 			return totalRegenPeriod;
+
+			bool IsVampiirOrMauler()
+			{
+				if (this is not GamePlayer player)
+					return false;
+
+				eCharacterClass characterClass = (eCharacterClass) player.CharacterClass.ID;
+				return characterClass is eCharacterClass.Vampiir || (characterClass >= eCharacterClass.MaulerAlb && characterClass <= eCharacterClass.MaulerHib);
+			}
 		}
 
 		protected virtual int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
