@@ -9610,7 +9610,10 @@ namespace DOL.GS
             get => m_diving;
             set
             {
-                if (!CurrentZone.IsDivingEnabled && value && Client.Account.PrivLevel == 1)
+                // Force the diving state instead of trusting the client.
+                value = IsUnderwater;
+
+                if (value && !CurrentZone.IsDivingEnabled && Client.Account.PrivLevel == 1)
                 {
                     Z += 1;
                     Out.SendPlayerJump(false);

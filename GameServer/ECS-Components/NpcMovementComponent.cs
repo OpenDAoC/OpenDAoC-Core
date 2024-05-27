@@ -777,13 +777,13 @@ namespace DOL.GS
         private enum MovementState
         {
             NONE = 0,
-            REQUEST = 1,      // Was requested to move.
-            WALK_TO = 2,      // Is moving and has a destination.
-            FOLLOW = 4,       // Is following an object.
-            ON_PATH = 8,      // Is following a path / is patrolling.
-            AT_WAYPOINT = 16, // Is waiting at a waypoint.
-            PATHING = 32,     // Is moving using PathCalculator.
-            TURN_TO = 64      // Is facing a direction for a certain duration.
+            REQUEST = 1 << 1,      // Was requested to move.
+            WALK_TO = 1 << 2,      // Is moving and has a destination.
+            FOLLOW = 1 << 3,       // Is following an object.
+            ON_PATH = 1 << 4,      // Is following a path / is patrolling.
+            AT_WAYPOINT = 1 << 5,  // Is waiting at a waypoint.
+            PATHING = 1 << 6,      // Is moving using PathCalculator.
+            TURN_TO = 1 << 7       // Is facing a direction for a certain duration.
         }
     }
 }
