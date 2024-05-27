@@ -76,7 +76,7 @@ namespace DOL.GS.Spells
 			// miss rate is 0 on same level opponent
 			int hitchance = 100 + bonustohit;
 
-			if ((Caster is GamePlayer && target is GamePlayer) == false)
+			if (Caster is not GamePlayer || target is not GamePlayer)
 			{
 				hitchance -= (int)(Caster.GetConLevel(target) * ServerProperties.Properties.PVE_SPELL_CONHITPERCENT);
 				hitchance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
