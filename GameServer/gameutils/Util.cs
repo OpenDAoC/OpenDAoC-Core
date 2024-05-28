@@ -104,15 +104,19 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Generates a random number between 0.0 and 1.0.
+        /// Generates a random number between 0.0 inclusive and 1.0 exclusive.
         /// </summary>
-        /// <returns>
-        /// A double-precision floating point number greater than
-        /// or equal to 0.0, and less than 1.0.
-        /// </returns>
         public static double RandomDouble()
         {
             return _random.NextDouble();
+        }
+
+        /// <summary>
+        /// Generates a random number between 0.0 and 1.0 inclusive, with a granularity of 1.0 / (int.MaxValue - 1).
+        /// </summary>
+        public static double RandomDoubleIncl()
+        {
+            return _random.Next() / (double) (int.MaxValue - 1);
         }
 
         /// <summary>

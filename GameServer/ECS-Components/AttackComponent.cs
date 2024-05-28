@@ -1704,7 +1704,7 @@ namespace DOL.GS
             }
 
             double varianceRange = upperLimit - lowerLimit;
-            return lowerLimit + Util.RandomDouble() * varianceRange;
+            return lowerLimit + Util.RandomDoubleIncl() * varianceRange;
         }
 
 
