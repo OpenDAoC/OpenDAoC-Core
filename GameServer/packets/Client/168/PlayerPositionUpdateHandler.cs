@@ -1285,22 +1285,23 @@ namespace DOL.GS.PacketHandler.Client.v168
         }
 
         [Flags]
-        private enum State
+        private enum State : byte
         {
-            STRAFING_RIGHT =      1 << 15,
-            STRAFING_LEFT =       1 << 14,
-            STRAFING_FULL_SPEED = 1 << 13,
+            STRAFING_RIGHT =      1 << 7,
+            STRAFING_LEFT =       1 << 6,
+            STRAFING_FULL_SPEED = 1 << 5,
             STRAFING_ANY =        STRAFING_RIGHT | STRAFING_LEFT | STRAFING_FULL_SPEED,
-            SITTING =             1 << 12,
-            JUMPING =             1 << 11,
-            SWIMMING =            1 << 10,
+            SITTING =             1 << 4,
+            JUMPING =             1 << 3,
+            SWIMMING =            1 << 2,
             DEAD =                SITTING | SWIMMING,
             RIDING =              SITTING | JUMPING,
             FLYING =              JUMPING | SWIMMING,
             CLIMBING =            SITTING | JUMPING | SWIMMING
         }
 
-        private enum Action
+        [Flags]
+        private enum Action : byte
         {
             TORCH =                 1 << 7,
             TELEPORT =              1 << 6,
