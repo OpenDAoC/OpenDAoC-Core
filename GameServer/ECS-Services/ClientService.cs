@@ -558,11 +558,6 @@ namespace DOL.GS
             if (player.Client.ClientState is not GameClient.eClientState.Playing)
                 return;
 
-            player.Out.SendNPCCreate(npc);
-
-            if (npc.Inventory != null)
-                player.Out.SendLivingEquipmentUpdate(npc);
-
             CreateNpcForPlayerInternal(player, npc);
         }
 
