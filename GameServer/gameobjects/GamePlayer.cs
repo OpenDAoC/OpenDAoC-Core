@@ -9025,9 +9025,7 @@ namespace DOL.GS
                 return false;
 
             UpdateWaterBreathState(eWaterBreath.None);
-
-            if (SiegeWeapon != null)
-                SiegeWeapon.ReleaseControl();
+            SiegeWeapon?.ReleaseControl();
 
             if (regionID != CurrentRegionID)
             {
@@ -9049,15 +9047,13 @@ namespace DOL.GS
                 IsJumping = true;
             }
 
-            bool hasPetToMove = false;
+            bool movePet = false;
 
             if (ControlledBrain != null && ControlledBrain.WalkState != eWalkState.Stay)
             {
                 if (CharacterClass.ID is not ((int) eCharacterClass.Theurgist) and not ((int) eCharacterClass.Animist))
-                    hasPetToMove = true;
+                    movePet = true;
             }
-
-            List<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
             CurrentSpeed = 0;
             Point3D originalPoint = new(X, Y, Z);
@@ -9074,36 +9070,13 @@ namespace DOL.GS
             }
             else
             {
-                // Previous position.
-                foreach (GamePlayer player in playersInRadius)
-                {
-                    if (player != this)
-                        player.Out.SendObjectRemove(this);
-                }
-
                 Out.SendPlayerJump(false);
-
-                // Are we jumping far enough to force a complete refresh?
-                if (GetDistanceTo(originalPoint) > WorldMgr.REFRESH_DISTANCE)
-                    RefreshWorld();
-                else
-                {
-                    foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                    {
-                        if (player != this)
-                        {
-                            if (!IsStealthed || player.CanDetect(this))
-                                player.Out.SendPlayerCreate(this);
-                        }
-                    }
-                }
-
                 UpdateEquipmentAppearance();
 
                 if (IsUnderwater)
                     IsDiving = true;
 
-                if (hasPetToMove)
+                if (movePet)
                 {
                     Point2D point = GetPointFromHeading(Heading, 64);
                     IControlledBrain npc = ControlledBrain;
