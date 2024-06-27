@@ -36,10 +36,6 @@ namespace DOL.GS
 		public ConcurrentDictionary<eSpellType, Spell> ActivePulseSpells { get; } = new();
 
 		#region Combat
-		/// <summary>
-		/// Holds the AttackData object of last attack
-		/// </summary>
-		public const string LAST_ATTACK_DATA = "LastAttackData";
 
 		public bool isDeadOrDying = false;
 

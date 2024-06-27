@@ -108,7 +108,7 @@ namespace DOL.GS.Spells
             }
 
             // Use defense bonus from last executed style if any.
-            AttackData targetAD = target.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+            AttackData targetAD = target.attackComponent.attackAction.LastAttackData;
 
             if (targetAD?.AttackResult == eAttackResult.HitStyle && targetAD.Style != null)
                 hitChance -= targetAD.Style.BonusToDefense;

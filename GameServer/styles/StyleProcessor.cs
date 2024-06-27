@@ -68,7 +68,7 @@ namespace DOL.GS.Styles
 
 						break;
 					case Style.eOpening.Defensive:
-						AttackData targetsLastAD = target.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+						AttackData targetsLastAD = target.attackComponent.attackAction.LastAttackData;
 
 						// Last attack result.
 						if (requiredAttackResult != eAttackResult.Any)
@@ -190,7 +190,7 @@ namespace DOL.GS.Styles
 				bool automaticStyleUsed = false;
 				if (Properties.AUTO_SELECT_OPENING_STYLE && style.OpeningRequirementType != Style.eOpening.Positional)
 				{
-					AttackData lastAttackData = player.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+					AttackData lastAttackData = player.attackComponent.attackAction.LastAttackData;
 					Style styleToUse = style;
 
 					while (!CanUseStyle(lastAttackData, player, styleToUse, weapon))
@@ -223,7 +223,7 @@ namespace DOL.GS.Styles
 				{
 					if (preRequireStyle != null)
 					{
-						AttackData lastAD = player.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+						AttackData lastAD = player.attackComponent.attackAction.LastAttackData;
 						if (lastAD == null
 							|| lastAD.AttackResult != eAttackResult.HitStyle
 							|| lastAD.Style == null
@@ -277,7 +277,7 @@ namespace DOL.GS.Styles
 						{
 							if (preRequireStyle != null)
 							{
-								AttackData lastAD = player.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+								AttackData lastAD = player.attackComponent.attackAction.LastAttackData;
 
 								if (lastAD == null
 									|| lastAD.AttackResult != eAttackResult.HitStyle
@@ -330,7 +330,7 @@ namespace DOL.GS.Styles
 						player.Endurance -= CalculateEnduranceCost(living, style, weapon.SPD_ABS);
 				}
 
-				AttackData lastAttackData = living.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+				AttackData lastAttackData = living.attackComponent.attackAction.LastAttackData;
 
 				// Did primary and backup style fail?
 				if (!CanUseStyle(lastAttackData, living, style, weapon))

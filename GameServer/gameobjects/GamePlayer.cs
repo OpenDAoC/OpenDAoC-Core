@@ -9454,7 +9454,7 @@ namespace DOL.GS
 
                 if (attackComponent.AttackState && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
                 {
-                    AttackData ad = TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
+                    AttackData ad = attackComponent.attackAction.LastAttackData;
 
                     if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
                     {
@@ -9828,7 +9828,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    AttackData ad = TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
+                    AttackData ad = attackComponent.attackAction.LastAttackData;
 
                     if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
                     {

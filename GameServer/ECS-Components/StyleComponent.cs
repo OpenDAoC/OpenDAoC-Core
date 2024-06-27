@@ -118,9 +118,9 @@ namespace DOL.GS
             if (NextCombatStyle == null)
                 return null;
 
-            AttackData lastAttackData = _owner.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+            AttackData lastAttackData = _owner.attackComponent.attackAction.LastAttackData;
             DbInventoryItem weapon = NextCombatStyle.WeaponTypeRequirement == (int) eObjectType.Shield ? _owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : _owner.ActiveWeapon;
-            
+
             //if they've cached a style and then respecced to no longer have access, remove it
             if (AutomaticBackupStyle != null && _owner is GamePlayer player && player.WeaponBaseSpecLevel(weapon) < AutomaticBackupStyle.SpecLevelRequirement)
             {
@@ -156,7 +156,7 @@ namespace DOL.GS
             if (p.Styles == null || p.Styles.Count < 1 || p.TargetObject == null)
                 return null;
 
-            AttackData lastAttackData = p.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+            AttackData lastAttackData = p.attackComponent.attackAction.LastAttackData;
 
             // Chain and defensive styles are excluded from the chance roll because they would almost never happen otherwise. 
             // For example, an NPC blocks 10% of the time, so the default 20% style chance effectively means the defensive 

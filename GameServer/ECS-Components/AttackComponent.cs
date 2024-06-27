@@ -16,7 +16,6 @@ using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 using DOL.Language;
-using static DOL.GS.GameLiving;
 using static DOL.GS.GameObject;
 
 namespace DOL.GS
@@ -102,7 +101,7 @@ namespace DOL.GS
             if (weaponAction?.AttackFinished == true)
                 weaponAction = null;
 
-            if (weaponAction is null && !AttackState)
+            if (weaponAction == null && !AttackState)
             {
                 attackAction.CleanUp();
                 EntityManager.Remove(this);
@@ -2012,7 +2011,7 @@ namespace DOL.GS
             GameSpellEffect grapple = null;
             GameSpellEffect brittleguard = null;
 
-            AttackData lastAttackData = owner.TempProperties.GetProperty<AttackData>(LAST_ATTACK_DATA, null);
+            AttackData lastAttackData = owner.attackComponent.attackAction.LastAttackData;
             bool defenseDisabled = ad.Target.IsMezzed | ad.Target.IsStunned | ad.Target.IsSitting;
 
             GamePlayer playerOwner = owner as GamePlayer;

@@ -188,7 +188,7 @@ namespace DOL.AI.Brain
 					{
 						AttackAction attackAction = Body.attackComponent.attackAction;
 
-						if (attackAction != null && attackAction.NextTick - GameLoop.GameLoopTime <= 800 && CanWalk == false)
+						if (attackAction.NextTick - GameLoop.GameLoopTime <= 800 && CanWalk == false)
 						{
 							Body.styleComponent.NextCombatStyle = null;
 							Body.styleComponent.NextCombatBackupStyle = null;

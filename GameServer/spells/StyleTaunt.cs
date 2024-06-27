@@ -34,8 +34,8 @@ namespace DOL.GS.Spells
             // If damage scaling is chosen, stats, gear, and the target's armor would affect the result.
             // Detaunts are weirder in the sense that basing it on the damage would always lower the total threat, but basing it on the user level may lower total threat only if the damage is low enough.
             // This is a bit problematic because that would mean not attacking at all could sometimes be better to lose aggro, but this isn’t something the player could tell.
-            // Long story short, keeping the damage based scaling seems easier and more intuitive from a player’s perspective, but with only a tenth of the spell value, and while taking critical damage into account.
-            AttackData attackData = Caster.TempProperties.GetProperty<AttackData>(GameLiving.LAST_ATTACK_DATA, null);
+            // Long story short, keeping the damage based scaling seems easier and more intuitive from a player perspective, but with only a tenth of the spell value, and while taking critical damage into account.
+            AttackData attackData = Caster.attackComponent.attackAction.LastAttackData;
             brain.AddToAggroList(Caster, (long) Math.Floor((attackData.Damage + attackData.CriticalDamage) * Spell.Value * 0.1));
         }
     }

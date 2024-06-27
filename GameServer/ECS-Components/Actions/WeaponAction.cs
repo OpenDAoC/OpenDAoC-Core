@@ -6,7 +6,6 @@ using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
-using static DOL.GS.GameLiving;
 using static DOL.GS.GameObject;
 
 namespace DOL.GS
@@ -150,7 +149,7 @@ namespace DOL.GS
             else
                 mainHandAD = m_owner.attackComponent.MakeAttack(this, m_target, mainWeapon, style, mainHandEffectiveness, m_interruptDuration, false);
 
-            m_owner.TempProperties.SetProperty(LAST_ATTACK_DATA, mainHandAD);
+            m_owner.attackComponent.attackAction.LastAttackData = mainHandAD;
 
             if (mainHandAD.Target == null ||
                 mainHandAD.AttackResult == eAttackResult.OutOfRange ||
