@@ -2195,17 +2195,19 @@ namespace DOL.GS
                 if (ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog)
                 {
                     misser.Out.SendMessage($"miss rate on target: {missChance}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                    misser.Out.SendMessage($"Your chance to fumble: {100 * ad.Attacker.ChanceToFumble:0.##}% rand: {100 * missRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                    if (ad.AttackType != AttackData.eAttackType.Ranged)
+                        misser.Out.SendMessage($"Your chance to fumble: {100 * ad.Attacker.ChanceToFumble:0.##}% rand: {100 * missRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if (ad.Target is GamePlayer missee && missee.UseDetailedCombatLog)
                     missee.Out.SendMessage($"chance to be missed: {missChance}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                // Check for normal fumbles.
-                // NOTE: fumbles are a subset of misses, and a player can only fumble if the attack would have been a miss anyways.
                 if (missChance > missRoll * 100)
                 {
-                    if (ad.Attacker.ChanceToFumble > missRoll)
+                    // Check for normal fumbles.
+                    // Fumbles are a subset of misses, and a player can only fumble if the attack would have been a miss anyways.
+                    if (ad.AttackType != AttackData.eAttackType.Ranged && ad.Attacker.ChanceToFumble > missRoll)
                         return eAttackResult.Fumbled;
 
                     return eAttackResult.Missed;
