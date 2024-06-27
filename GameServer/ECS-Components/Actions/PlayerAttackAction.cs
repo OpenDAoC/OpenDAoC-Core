@@ -81,7 +81,7 @@ namespace DOL.GS
             if (stopAttack)
             {
                 AttackComponent.StopAttack();
-                AttackComponent.attackAction.CleanUp();
+                CleanUp();
                 return false;
             }
 

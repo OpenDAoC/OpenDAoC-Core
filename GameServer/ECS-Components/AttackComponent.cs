@@ -96,14 +96,14 @@ namespace DOL.GS
                 StartAttack();
             }
 
-            attackAction.Tick();
-
-            if (weaponAction?.AttackFinished == true)
-                weaponAction = null;
-
-            if (weaponAction == null && !AttackState)
+            if (attackAction.Tick())
             {
-                attackAction.CleanUp();
+                if (weaponAction?.AttackFinished == true)
+                    weaponAction = null;
+            }
+            else
+            {
+                weaponAction = null;
                 EntityManager.Remove(this);
             }
         }

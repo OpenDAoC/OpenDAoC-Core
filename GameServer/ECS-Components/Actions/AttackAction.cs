@@ -48,15 +48,21 @@ namespace DOL.GS
             return null;
         }
 
-        public void Tick()
+        public bool Tick()
         {
             if (!ShouldTick())
-                return;
+                return true;
 
             if (!CanPerformAction())
             {
                 _interval = TICK_INTERVAL_FOR_NON_ATTACK;
-                return;
+                return true;
+            }
+
+            if (!AttackComponent.AttackState)
+            {
+                CleanUp();
+                return false;
             }
 
             _weapon = _owner.ActiveWeapon;
@@ -67,6 +73,8 @@ namespace DOL.GS
                 TickMeleeAttack();
             else
                 TickRangedAttack();
+
+            return true;
         }
 
         private void TickMeleeAttack()
@@ -129,7 +137,7 @@ namespace DOL.GS
 
         private bool ShouldTick()
         {
-            if (!AttackComponent.AttackState || _owner.ObjectState != eObjectState.Active)
+            if (_owner.ObjectState != eObjectState.Active)
             {
                 CleanUp();
                 return false;
@@ -414,7 +422,7 @@ namespace DOL.GS
             return true;
         }
 
-        public virtual void CleanUp()
+        protected virtual void CleanUp()
         {
             LastAttackData = null;
             _target = null;

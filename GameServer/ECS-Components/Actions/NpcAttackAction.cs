@@ -114,7 +114,7 @@ namespace DOL.GS
             return base.FinalizeRangedAttack();
         }
 
-        public override void CleanUp()
+        protected override void CleanUp()
         {
             if (_npcOwner.Brain is NecromancerPetBrain necromancerPetBrain)
                 necromancerPetBrain.ClearAttackSpellQueue();

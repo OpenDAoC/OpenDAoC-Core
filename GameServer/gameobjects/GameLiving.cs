@@ -4090,7 +4090,6 @@ namespace DOL.GS
 			StopHealthRegeneration();
 			StopPowerRegeneration();
 			StopEnduranceRegeneration();
-			attackComponent.attackAction.CleanUp();
 			m_healthRegenerationTimer?.Stop();
 			m_powerRegenerationTimer?.Stop();
 			m_enduRegenerationTimer?.Stop();
