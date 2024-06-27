@@ -34,7 +34,7 @@ namespace DOL.GS.Commands
 			{
 				try
 				{
-					int sessionID = Convert.ToInt32(args[1][1..]);
+					int sessionID = Convert.ToInt32(args[2][1..]);
 					gc = ClientService.GetClientFromId(sessionID);
 				}
 				catch
@@ -44,7 +44,7 @@ namespace DOL.GS.Commands
 			}
 			else
 			{
-				gc = ClientService.GetPlayerByExactName(args[1])?.Client;
+				gc = ClientService.GetPlayerByExactName(args[2])?.Client;
 			}
 
 			var acc = gc != null ? gc.Account : DOLDB<DbAccount>.SelectObject(DB.Column("Name").IsLike(args[2]));
