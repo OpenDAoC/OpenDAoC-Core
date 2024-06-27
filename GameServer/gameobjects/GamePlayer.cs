@@ -9109,25 +9109,12 @@ namespace DOL.GS
         /// <summary>
         /// Refresh all objects around the player
         /// </summary>
-        public virtual void RefreshWorld()
+        public virtual void ClearUpdateCaches()
         {
-            foreach (GameNPC npc in GetNPCsInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                ClientService.CreateNpcForPlayer(this, npc);
-
-            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-            {
-                if (player != null && player != this)
-                {
-                    if (!IsStealthed || player.CanDetect(this))
-                        player.Out.SendPlayerCreate(this);
-
-                    if (!player.IsStealthed || CanDetect(player))
-                    {
-                        Out.SendPlayerCreate(player);
-                        Out.SendLivingEquipmentUpdate(player);
-                    }
-                }
-            }
+            NpcUpdateCache.Clear();
+            ItemUpdateCache.Clear();
+            DoorUpdateCache.Clear();
+            HouseUpdateCache.Clear();
         }
 
         //Eden - Move to bind, and check if the loc is allowed

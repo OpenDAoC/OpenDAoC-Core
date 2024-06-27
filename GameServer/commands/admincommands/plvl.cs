@@ -369,7 +369,7 @@ namespace DOL.GS.Commands
 
 							// Sets the privilege level to the character's account, saves to DB, and refreshes world for character to reflect the change
 							GameServer.Database.SaveObject(target.Client.Account);
-							client.Player.RefreshWorld();
+							client.Player.ClearUpdateCaches();
 							// Refresh equipment for player so they don't appear naked after changing plvl
 							client.Player.UpdateEquipmentAppearance();
 
