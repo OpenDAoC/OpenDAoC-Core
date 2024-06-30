@@ -1916,62 +1916,64 @@ namespace DOL.GS
 			// Attack was a Spell. Note that a spell being resisted does not mean it does not break mez.
 			else
 			{
-				// Any damage breaks mez and snare/root.
 				if (ad.Damage > 0)
 				{
+					// Any damage breaks mez and snare/root.
 					removeMez = true;
 					removeSnare = true;
 					removeMovementSpeedDebuff = true;
 				}
-				// Most resisted harmful spells break mez. There are some exceptions which can be added here.
-				else if (ad.IsSpellResisted)
-                {
-					removeMez = true;
-                }
-				// Non-Damaging, non-resisted spells that break mez.
-				else if (ad.SpellHandler is NearsightSpellHandler || ad.SpellHandler is AmnesiaSpellHandler || ad.SpellHandler is DiseaseSpellHandler
-						 || ad.SpellHandler is SpeedDecreaseSpellHandler || ad.SpellHandler is StunSpellHandler || ad.SpellHandler is ConfusionSpellHandler
-						 || ad.SpellHandler is AbstractResistDebuff) 
+				else if (ad.SpellHandler is
+						NearsightSpellHandler or
+						AmnesiaSpellHandler or
+						DiseaseSpellHandler or
+						SpeedDecreaseSpellHandler or
+						StunSpellHandler or
+						ConfusionSpellHandler or
+						AbstractResistDebuff)
 				{
+					// Non-damaging spells that always break mez.
 					removeMez = true;
 				}
-				
-				if (this is GameNPC && ad.SpellHandler is not MesmerizeSpellHandler)
+				else if ((ad.IsSpellResisted || this is GameNPC) && ad.SpellHandler is not MesmerizeSpellHandler)
 					removeMez = true;
 			}
 
+			ECSGameEffect effect;
+
 			// Remove Mez
-            if (removeMez && effectListComponent.Effects.ContainsKey(eEffect.Mez))
+			if (removeMez)
 			{
-				var effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
+				effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
 
 				if (effect != null)
 					EffectService.RequestImmediateCancelEffect(effect);
 			}
 
 			// Remove Snare/Root
-			if (removeSnare && effectListComponent.Effects.ContainsKey(eEffect.Snare))
+			if (removeSnare)
 			{
-				var effect = EffectListService.GetEffectOnTarget(this, eEffect.Snare);
+				effect = EffectListService.GetEffectOnTarget(this, eEffect.Snare);
 
 				if (effect != null)
 					EffectService.RequestImmediateCancelEffect(effect);
 			}
 
-            // Remove MovementSpeedDebuff
-            if (removeMovementSpeedDebuff)
-            {
-				var effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
+			// Remove MovementSpeedDebuff
+			if (removeMovementSpeedDebuff)
+			{
+				effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
 
 				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != eSpellType.UnbreakableSpeedDecrease)
 					EffectService.RequestImmediateCancelEffect(effect);
 
-				var ichor_effect = EffectListService.GetEffectOnTarget(this, eEffect.Ichor);
-				if (ichor_effect != null)
-					EffectService.RequestImmediateCancelEffect(ichor_effect);
-            }
+				effect = EffectListService.GetEffectOnTarget(this, eEffect.Ichor);
 
-            return removeMez || removeSnare || removeMovementSpeedDebuff;
+				if (effect != null)
+					EffectService.RequestImmediateCancelEffect(effect);
+			}
+
+			return removeMez || removeSnare || removeMovementSpeedDebuff;
 		}
 
         public virtual void HandleMovementSpeedEffectsOnAttacked(AttackData ad)

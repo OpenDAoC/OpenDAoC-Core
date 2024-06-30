@@ -125,7 +125,8 @@ namespace DOL.GS.Spells
 				GamePlayer player = target as GamePlayer;
 				player.Out.SendCheckLos(Caster, player, new CheckLosResponse(ResistSpellCheckLos));
 			}
-			else SpellResisted(target);
+			else
+				base.OnSpellResisted(target);
 		}
 
 		private void ResistSpellCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
@@ -136,7 +137,7 @@ namespace DOL.GS.Spells
 				{
 					GameLiving target = Caster.CurrentRegion.GetObject(targetOID) as GameLiving;
 					if (target != null)
-						SpellResisted(target);
+						base.OnSpellResisted(target);
 				}
 				catch (Exception e)
 				{
@@ -146,10 +147,6 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		private void SpellResisted(GameLiving target)
-		{
-			base.OnSpellResisted(target);
-		}
 		#endregion
 
 		/// <summary>

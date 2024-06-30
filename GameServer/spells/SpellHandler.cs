@@ -2588,7 +2588,7 @@ namespace DOL.GS.Spells
 			return 100 - CalculateToHitChance(target);
 		}
 
-		public virtual bool CheckSpellResist(GameLiving target)
+		protected virtual bool CheckSpellResist(GameLiving target)
 		{
 			int spellResistChance = CalculateSpellResistChance(target);
 
@@ -2622,7 +2622,6 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// When spell was resisted
 		/// </summary>
-		/// <param name="target">the target that resisted the spell</param>
 		protected virtual void OnSpellResisted(GameLiving target)
 		{
 			SendSpellResistAnimation(target);
@@ -2630,21 +2629,6 @@ namespace DOL.GS.Spells
 			SendSpellResistNotification(target);
 			StartSpellResistInterruptTimer(target);
 			StartSpellResistLastAttackTimer(target);
-
-			// Treat resists as attacks to trigger an immediate response and BAF
-			if (target is GameNPC)
-			{
-				if (Caster.Realm == 0 || target.Realm == 0)
-				{
-					target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-					Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
-				}
-				else
-				{
-					target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-					Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
-				}
-			}
 		}
 
 		/// <summary>
@@ -2655,7 +2639,7 @@ namespace DOL.GS.Spells
 			if (Spell.Pulse == 0 || !HasPositiveEffect)
 				SendEffectAnimation(target, 0, false, 0);
 		}
-		
+
 		/// <summary>
 		/// Send Spell Resist Messages to Caster and Target
 		/// </summary>
@@ -2678,7 +2662,7 @@ namespace DOL.GS.Spells
 			// Deliver message to the caster as well.
 			this.MessageToCaster(eChatType.CT_SpellResisted, "{0} resists the effect!" + " (" + CalculateSpellResistChance(target).ToString("0.0") + "%)", target.GetName(0, true));
 		}
-		
+
 		/// <summary>
 		/// Send Spell Attack Data Notification to Target when Spell is Resisted
 		/// </summary>
@@ -2697,7 +2681,7 @@ namespace DOL.GS.Spells
 			target.OnAttackedByEnemy(ad);
 			Caster.OnAttackEnemy(ad);
 		}
-		
+
 		/// <summary>
 		/// Start Spell Interrupt Timer when Spell is Resisted
 		/// </summary>
@@ -2706,9 +2690,9 @@ namespace DOL.GS.Spells
 			// Spells that would have caused damage or are not instant will still
 			// interrupt a casting player.
 			if(!(Spell.SpellType.ToString().IndexOf("debuff", StringComparison.OrdinalIgnoreCase) >= 0 && Spell.CastTime == 0))
-				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);			
+				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
-		
+
 		/// <summary>
 		/// Start Last Attack Timer when Spell is Resisted
 		/// </summary>
@@ -2725,7 +2709,7 @@ namespace DOL.GS.Spells
 				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
 			}
 		}
-		
+
 		#region messages
 
 		/// <summary>
