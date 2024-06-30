@@ -125,7 +125,7 @@ namespace DOL.AI.Brain
 
                 foreach (GameNPC mob_c in Body.GetNPCsInRadius(2000))
                 {
-                    if (mob_c?.Brain is NahemahMinionBrain && mob_c.IsAlive && mob_c.CanJoinFight)
+                    if (mob_c?.Brain is NahemahMinionBrain && mob_c.IsAlive && !mob_c.InCombat)
                     {
                         AddAggroListTo(mob_c.Brain as NahemahMinionBrain);
                     }

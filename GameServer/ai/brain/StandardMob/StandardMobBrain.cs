@@ -746,7 +746,7 @@ namespace DOL.AI.Brain
 
             bool WherePredicate(GameNPC npc)
             {
-                return npc != Body && npc.IsFriend(Body) && npc.IsAggressive && npc.CanJoinFight;
+                return npc != Body && npc.IsFriend(Body) && npc.IsAggressive && !npc.InCombat;
             }
 
             long OrderByPredicate(GameNPC npc)
