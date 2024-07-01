@@ -6,7 +6,7 @@ using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
-    public abstract class AttackAction
+    public class AttackAction
     {
         // Next tick interval for when the current tick doesn't result in an attack.
         protected const int TICK_INTERVAL_FOR_NON_ATTACK = 100;
@@ -44,8 +44,8 @@ namespace DOL.GS
                 return new NpcAttackAction(gameNpc);
             else if (gameLiving is GamePlayer gamePlayer)
                 return new PlayerAttackAction(gamePlayer);
-
-            return null;
+            else
+                return new AttackAction(gameLiving);
         }
 
         public bool Tick()
