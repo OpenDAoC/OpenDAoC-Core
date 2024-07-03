@@ -5,6 +5,7 @@ on:
       - master
 jobs:
   build-and-push:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-latest
     steps:
       - name: 🛎️ Checkout repository
@@ -93,10 +94,6 @@ jobs:
           echo "" >> release_notes.txt
           echo "## 🛠 Changes" >> release_notes.txt
           echo "$CHANGES" >> release_notes.txt
-        working-directory: ${{ github.workspace }}
-
-      - name: List files in the directory
-        run: ls -la
         working-directory: ${{ github.workspace }}
 
       - name: 🚀 Publish Release

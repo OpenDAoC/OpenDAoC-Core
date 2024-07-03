@@ -21,8 +21,8 @@ Releases for OpenDAoC are available at [OpenDAoC Releases](https://github.com/Op
 
 OpenDAoC is also available as a Docker image, which can be pulled from the following registries:
 
-- [GitHub Container Registry](https://ghcr.io/opendaoc/opendaoc) (recommended): `ghcr.io/opendaoc/opendaoc-core/opendaoc:latest`
-- [Docker Hub](https://hub.docker.com/r/opendaoc/opendaoc): `claitz/opendaoc:latest`
+- [GitHub Container Registry](https://ghcr.io/opendaoc/opendaoc-core) (recommended): `ghcr.io/opendaoc/opendaoc-core/opendaoc:latest`
+- [Docker Hub](https://hub.docker.com/repository/docker/claitz/opendaoc/): `claitz/opendaoc:latest`
 
 For detailed instructions and additional setup options, refer to the documentation.
 
@@ -38,5 +38,5 @@ Some of the main repositories include:
 
 ## License
 
-OpenDAoC is licensed under the [GNU General Public License (GPL)](https://choosealicense.com/licenses/gpl-3.0/) v3 to serve the DAoC community and promote open-source development.
+OpenDAoC is licensed under the [GNU General Public License (GPL)](https://choosealicense.com/licenses/gpl-3.0/) v3 to serve the DAoC community and promote open-source development.  
 See the [LICENSE](LICENSE) file for more details.
