@@ -316,5 +316,7 @@ namespace DOL.GS
 			get { return m_causesCombat; }
 			set { m_causesCombat = value; }
 		}
+
+		public bool GeneratesAggro => SpellHandler == null || SpellHandler.Spell.SpellType is not eSpellType.Amnesia || IsSpellResisted;
 	}
 }

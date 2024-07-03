@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DOL.GS
+﻿namespace DOL.GS
 {
     public class AmnesiaECSEffect : ECSGameSpellEffect
     {
-        public AmnesiaECSEffect(ECSGameEffectInitParams initParams)
-            : base(initParams) { }
+        public AmnesiaECSEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
         {

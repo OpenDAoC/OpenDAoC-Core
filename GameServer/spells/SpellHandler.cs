@@ -2324,15 +2324,17 @@ namespace DOL.GS.Spells
 				
 			if (!HasPositiveEffect)
 			{
-				AttackData ad = new AttackData();
-				ad.Attacker = Caster;
-				ad.Target = target;
-				ad.AttackType = AttackData.eAttackType.Spell;
-				ad.SpellHandler = this;
-				ad.AttackResult = eAttackResult.HitUnstyled;
-				ad.IsSpellResisted = false;
-				ad.Damage = (int)Spell.Damage;
-				ad.DamageType = Spell.DamageType;
+				AttackData ad = new()
+				{
+					Attacker = Caster,
+					Target = target,
+					AttackType = AttackData.eAttackType.Spell,
+					SpellHandler = this,
+					AttackResult = eAttackResult.HitUnstyled,
+					IsSpellResisted = false,
+					Damage = (int) Spell.Damage,
+					DamageType = Spell.DamageType
+				};
 
 				m_lastAttackData = ad;
 				Caster.OnAttackEnemy(ad);
@@ -2340,7 +2342,7 @@ namespace DOL.GS.Spells
 				// Harmful spells that deal no damage (ie. debuffs) should still trigger OnAttackedByEnemy.
 				// Exception for DoTs here since the initial landing of the DoT spell reports 0 damage
 				// and the first tick damage is done by the pulsing effect, which takes care of firing OnAttackedByEnemy.
-				if (ad.Damage == 0 && ad.SpellHandler.Spell.SpellType != eSpellType.DamageOverTime)
+				if (ad.Damage == 0 && ad.SpellHandler.Spell.SpellType is not eSpellType.DamageOverTime)
 					target.OnAttackedByEnemy(ad);
 			}
 		}
