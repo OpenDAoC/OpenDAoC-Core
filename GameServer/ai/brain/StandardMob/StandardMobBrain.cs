@@ -561,7 +561,7 @@ namespace DOL.AI.Brain
 
             ConvertDamageToAggroAmount(ad.Attacker, Math.Max(1, ad.Damage + ad.CriticalDamage));
 
-            if (!Body.attackComponent.AttackState && FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
+            if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO) && HasAggro)
             {
                 FSM.SetCurrentState(eFSMStateType.AGGRO);
                 Think();
