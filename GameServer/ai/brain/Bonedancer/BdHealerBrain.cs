@@ -171,7 +171,7 @@ namespace DOL.AI.Brain
         /// </summary>
         public override void AddToAggroList(GameLiving living, long aggroAmount) { }
 
-        public override void  RemoveFromAggroList(GameLiving living) { }
+        public override void RemoveFromAggroList(GameLiving living) { }
 
         /// <summary>
         /// Returns the best target to attack

@@ -432,8 +432,8 @@ namespace DOL.GS.ServerRules
 				if (attacknpc is GameSummonedPet || attacknpc.Brain is ControlledMobBrain)
 					return true;
 
-				// Mobs can attack mobs only if they both have a faction
-				if (defendnpc.Faction == null || attacknpc.Faction == null)
+				// Mobs can attack mobs only if they both have a faction or if any is confused.
+				if ((defendnpc.Faction == null || attacknpc.Faction == null) && !defendnpc.IsConfused && !attacknpc.IsConfused)
 					return false;
 			}
 

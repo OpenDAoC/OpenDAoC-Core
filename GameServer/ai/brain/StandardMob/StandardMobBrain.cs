@@ -241,7 +241,8 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual int AggroLevel { get; set; }
 
-        protected ConcurrentDictionary<GameLiving, AggroAmount> AggroList { get; } = new();
+        private ConcurrentDictionary<GameLiving, AggroAmount> _tempAggroList = new();
+        protected ConcurrentDictionary<GameLiving, AggroAmount> AggroList { get; private set; } = new();
         protected List<(GameLiving, long)> OrderedAggroList { get; private set; } = [];
         public GameLiving LastHighestThreatInAttackRange { get; private set; }
 
@@ -274,6 +275,11 @@ namespace DOL.AI.Brain
             if (Body.IsConfused || !Body.IsAlive || living == null)
                 return;
 
+            ForceAddToAggroList(living, aggroAmount);
+        }
+
+        public void ForceAddToAggroList(GameLiving living, long aggroAmount)
+        {
             if (aggroAmount > 0)
             {
                 foreach (ProtectECSGameEffect protect in living.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
@@ -358,6 +364,36 @@ namespace DOL.AI.Brain
         public long GetBaseAggroAmount(GameLiving living)
         {
             return AggroList.TryGetValue(living, out AggroAmount aggroAmount) ? aggroAmount.Base : 0;
+        }
+
+        public bool SetTemporaryAggroList()
+        {
+            if (_tempAggroList != null)
+                return false;
+
+            _tempAggroList = AggroList;
+            AggroList = new();
+            return true;
+        }
+
+        public bool UnsetTemporaryAggroList()
+        {
+            if (_tempAggroList == null)
+                return false;
+
+            AggroList = _tempAggroList;
+            _tempAggroList = null;
+
+            if (HasAggro)
+            {
+                if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
+                    FSM.SetCurrentState(eFSMStateType.AGGRO);
+
+                AttackMostWanted();
+                Think();
+            }
+
+            return true;
         }
 
         /// <summary>
