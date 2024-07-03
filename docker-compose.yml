@@ -23,8 +23,7 @@ services:
   gameserver:
     stdin_open: true # docker run -i
     tty: true        # docker run -t
-    #image: claitz/opendaoc:latest
-    image: opendaoc:test
+    image: ghcr.io/opendaoc/opendaoc-core/opendaoc:latest
     ports:
       - "10300:10300"
       - "10400:10400"
