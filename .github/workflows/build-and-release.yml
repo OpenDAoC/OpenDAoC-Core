@@ -1,0 +1,108 @@
+name: 'Build and push Docker image, then create release'
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎️ Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔠 Lowercase repository name
+        id: repo_name
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: '${{ github.repository }}'
+
+      - name: 📅 Get current date
+        id: date
+        run: echo "date=$(date +'%Y.%m')" >> $GITHUB_OUTPUT
+
+      - name: 🔢 Get number of releases this month
+        id: get_release_count
+        run: |
+          release_count=$(curl -s https://api.github.com/repos/${{ github.repository }}/releases | jq -r "[.[] | select(.tag_name | startswith(\"${{ steps.date.outputs.date }}\"))] | length")
+          echo "count=$((release_count + 1))" >> $GITHUB_OUTPUT
+
+      - name: 🏷️ Set version
+        id: set_version
+        run: |
+          echo "version=${{ steps.date.outputs.date }}.${{ steps.get_release_count.outputs.count }}" >> $GITHUB_OUTPUT
+
+      - name: 🛠️ Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🏗️ Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          tags: '${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo_name.outputs.lowercase }}:temp'
+          push: false
+          load: true
+
+      - name: 🏷️ Tag image for Docker Hub
+        run: |
+          docker tag "${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo_name.outputs.lowercase }}:temp" "${{ secrets.DOCKERHUB_USERNAME }}/opendaoc:${{ steps.set_version.outputs.version }}"
+          docker tag "${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo_name.outputs.lowercase }}:temp" "${{ secrets.DOCKERHUB_USERNAME }}/opendaoc:latest"
+
+      - name: 🏷️ Tag image for GitHub Container Registry
+        run: |
+          docker tag "${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo_name.outputs.lowercase }}:temp" "ghcr.io/${{ steps.repo_name.outputs.lowercase }}:${{ steps.set_version.outputs.version }}"
+          docker tag "${{ secrets.DOCKERHUB_USERNAME }}/${{ steps.repo_name.outputs.lowercase }}:temp" "ghcr.io/${{ steps.repo_name.outputs.lowercase }}:latest"
+
+      - name: 🔑 Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: '${{ secrets.DOCKERHUB_USERNAME }}'
+          password: '${{ secrets.DOCKERHUB_TOKEN }}'
+
+      - name: 📤 Push to Docker Hub
+        run: |
+          docker push "${{ secrets.DOCKERHUB_USERNAME }}/opendaoc:${{ steps.set_version.outputs.version }}"
+          docker push "${{ secrets.DOCKERHUB_USERNAME }}/opendaoc:latest"
+
+      - name: 🔑 Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: '${{ github.actor }}'
+          password: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: 📤 Push to GitHub Container Registry
+        run: |
+          docker push "ghcr.io/${{ steps.repo_name.outputs.lowercase }}:${{ steps.set_version.outputs.version }}"
+          docker push "ghcr.io/${{ steps.repo_name.outputs.lowercase }}:latest"
+
+      - name: 📝 Generate release notes
+        id: release_notes
+        run: |
+          VERSION=$(git tag --sort=-committerdate | head -1)
+          PREVIOUS_VERSION=$(git tag --sort=-committerdate | head -2 | tail -1)
+          CHANGES=$(git log --pretty="- %s" $VERSION...$PREVIOUS_VERSION | sed -n '1,20p')
+          echo "# 🎁 Release Notes for $VERSION" > release_notes.txt
+          echo "" >> release_notes.txt
+          echo "## 🐳 Docker" > release_notes.txt
+          echo "This release is also available as Docker image on [ghcr](https://ghcr.io/${{ steps.repo_name.outputs.lowercase }}) and [DockerHub](https://hub.docker.com/repository/docker/${{ secrets.DOCKERHUB_USERNAME }}/opendaoc/) using one of the following commands:" >> release_notes.txt
+          echo "" >> release_notes.txt
+          echo "- \`docker pull ghcr.io/${{ steps.repo_name.outputs.lowercase }}/${{ steps.set_version.outputs.version }}\`" >> release_notes.txt
+          echo "- \`docker pull ghcr.io/${{ steps.repo_name.outputs.lowercase }}:latest\`" >> release_notes.txt
+          echo "- \`docker pull ${{ secrets.DOCKERHUB_USERNAME }}/opendaoc:${{ steps.set_version.outputs.version }}\`" >> release_notes.txt
+          echo "- \`docker pull ${{ secrets.DOCKERHUB_USERNAME }}/opendaoc:latest\`" >> release_notes.txt
+          echo "" >> release_notes.txt
+          echo "## 🛠 Changes" >> release_notes.txt
+          echo "$CHANGES" >> release_notes.txt
+        working-directory: ${{ github.workspace }}
+
+      - name: List files in the directory
+        run: ls -la
+        working-directory: ${{ github.workspace }}
+
+      - name: 🚀 Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: 'Release ${{ steps.set_version.outputs.version }}'
+          tag_name: '${{ steps.set_version.outputs.version }}'
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          body_path: './release_notes.txt'
