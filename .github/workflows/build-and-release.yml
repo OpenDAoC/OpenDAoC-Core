@@ -80,7 +80,7 @@ jobs:
         id: release_notes
         run: |
           PREVIOUS_VERSION=$(git tag --sort=-committerdate | head -1)
-          CHANGES=$(git log --pretty="%h - %s - (%an)" $PREVIOUS_VERSION...HEAD | sed -n '1,20p')
+          CHANGES=$(git log --pretty="%h - %s" $PREVIOUS_VERSION...HEAD | sed -n '1,20p')
           echo "# 🎁 Release Notes for $VERSION" > release_notes.txt
           echo "" >> release_notes.txt
           echo "## 🐳 Docker" > release_notes.txt
