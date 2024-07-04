@@ -79,9 +79,8 @@ jobs:
       - name: 📝 Generate release notes
         id: release_notes
         run: |
-          VERSION=$(git tag --sort=-committerdate | head -1)
-          PREVIOUS_VERSION=$(git tag --sort=-committerdate | head -2 | tail -1)
-          CHANGES=$(git log --pretty="- %s" $VERSION...$PREVIOUS_VERSION | sed -n '1,20p')
+          PREVIOUS_VERSION=$(git tag --sort=-committerdate | head -1)
+          CHANGES=$(git log --pretty="%h - %s - (%an)" $PREVIOUS_VERSION...HEAD | sed -n '1,20p')
           echo "# 🎁 Release Notes for $VERSION" > release_notes.txt
           echo "" >> release_notes.txt
           echo "## 🐳 Docker" > release_notes.txt
