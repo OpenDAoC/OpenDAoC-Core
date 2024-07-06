@@ -46,7 +46,7 @@ namespace DOL.GS.Spells
                 return false;
             }
 
-            return true;
+            return base.CheckBeginCast(selectedTarget);
         }
 
         public override bool CheckEndCast(GameLiving target)
