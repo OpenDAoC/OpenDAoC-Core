@@ -1489,16 +1489,16 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback)
+		public virtual bool SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback)
 		{
 			if (m_gameClient.Player == null || source == null || target == null)
-				return;
+				return false;
 
 			ushort sourceObjectId = (ushort) source.ObjectID;
 			ushort targetObjectId = (ushort) target.ObjectID;
 
 			if (!HandleCallback(m_gameClient, sourceObjectId, targetObjectId, callback))
-				return;
+				return false;
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CheckLOSRequest)))
 			{
@@ -1508,6 +1508,8 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(0x00); // ?
 				SendTCP(pak);
 			}
+
+			return true;
 
 			static bool HandleCallback(GameClient client, ushort sourceObjectId, ushort targetObjectId, CheckLosResponse callback)
 			{

@@ -179,7 +179,7 @@ namespace DOL.AI.Brain
 			base.Think();
 		}
 
-		protected override void CheckNPCAggro()
+		protected override void CheckNpcAggro()
 		{
 			if (Body.attackComponent.AttackState)
 				return;

@@ -99,17 +99,8 @@ namespace DOL.GS
                 brain.ClearAggroList();
                 npc.StopAttack();
                 npc.StopCurrentSpellcast();
-                GameLiving target = targetList[Util.Random(targetList.Count - 1)] as GameLiving;
+                GameLiving target = targetList[Util.Random(targetList.Count - 1)];
                 brain.ForceAddToAggroList(target, 1);
-
-                if (brain.HasAggro)
-                {
-                    if (brain.FSM.GetCurrentState() != brain.FSM.GetState(eFSMStateType.AGGRO))
-                        brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
-
-                    brain.AttackMostWanted();
-                    brain.Think();
-                }
             }
         }
     }

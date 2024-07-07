@@ -39,7 +39,7 @@ namespace DOL.AI.Brain
 			}
 		}
 
-		protected override void CheckNPCAggro()
+		protected override void CheckNpcAggro()
 		{
 			if(m_spellHandler!=null)
 			{

@@ -84,7 +84,7 @@ namespace DOL.AI.Brain
 					continue;
 
 				WarMapMgr.AddGroup((byte) player.CurrentZone.ID, player.X, player.Y, player.Name, (byte) player.Realm);
-				player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
+				SendLosCheckForAggro(player, player);
 				// We don't know if the LoS check will be positive, so we have to ask other players
 			}
 		}
@@ -92,7 +92,7 @@ namespace DOL.AI.Brain
 		/// <summary>
 		/// Check area for NPCs to attack
 		/// </summary>
-		protected override void CheckNPCAggro()
+		protected override void CheckNpcAggro()
 		{
 			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
 			{
@@ -108,7 +108,7 @@ namespace DOL.AI.Brain
 					continue;
 
 				WarMapMgr.AddGroup((byte)player.CurrentZone.ID, player.X, player.Y, player.Name, (byte)player.Realm);
-				player.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
+				SendLosCheckForAggro(player, npc);
 				// We don't know if the LoS check will be positive, so we have to ask other players
 			}
 		}

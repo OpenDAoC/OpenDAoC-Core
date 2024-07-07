@@ -58,7 +58,7 @@ namespace DOL.AI.Brain
 				if (!Body.attackComponent.AttackState && AggroLevel > 0)
 				{
 					CheckPlayerAggro();
-					CheckNPCAggro();
+					CheckNpcAggro();
 				}
 				if (HasAggro)
 				{

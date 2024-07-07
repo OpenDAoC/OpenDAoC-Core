@@ -133,7 +133,7 @@ namespace DOL.AI.Brain
                 Body.AbilityBonus[(int)eProperty.StyleAbsorb] = 10;
             }
         }
-        protected override void CheckNPCAggro()
+        protected override void CheckNpcAggro()
         {
             if (Body.attackComponent.AttackState)
                 return;

@@ -1,5 +1,4 @@
 using DOL.GS;
-using DOL.GS.PacketHandler;
 
 namespace DOL.AI.Brain
 {
@@ -24,12 +23,12 @@ namespace DOL.AI.Brain
 				if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Shade))
 					continue;
 
-				player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
+				SendLosCheckForAggro(player, player);
 				// We don't know if the LoS check will be positive, so we have to ask other players
 			}
 		}
 
-		protected override void CheckNPCAggro()
+		protected override void CheckNpcAggro()
 		{
 			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
 			{

@@ -864,7 +864,7 @@ public class MLBrain : GuardBrain
 	{
 		get { return 400; }
 	}
-	protected override void CheckNPCAggro()
+	protected override void CheckNpcAggro()
 	{
 		//Check if we are already attacking, return if yes
 		if (Body.attackComponent.AttackState)

@@ -79,10 +79,10 @@ namespace DOL.AI.Brain
             FireAmbientSentence();
 
             // Check aggro only if our aggro list is empty and we're not in combat.
-            if (AggroLevel > 0 && AggroRange > 0 && !HasAggro && Body.CurrentSpellHandler == null)
+            if (AggroLevel > 0 && AggroRange > 0 && Body.CurrentSpellHandler == null && !HasAggro && !IsWaitingForLosCheck)
             {
                 CheckPlayerAggro();
-                CheckNPCAggro();
+                CheckNpcAggro();
             }
 
             // Some calls rely on this method to return if there's something in the aggro list, not necessarily to perform a proximity aggro check.
@@ -118,20 +118,21 @@ namespace DOL.AI.Brain
                     continue;
 
                 if (Properties.CHECK_LOS_BEFORE_AGGRO)
-                    // We don't know if the LoS check will be positive, so we have to ask other players
-                    player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
+                    SendLosCheckForAggro(player, player);
                 else
                 {
                     AddToAggroList(player, 1);
                     return;
                 }
+
+                // We don't know if the LoS check will be positive, so we have to ask other players
             }
         }
 
         /// <summary>
         /// Check for aggro against close NPCs
         /// </summary>
-        protected virtual void CheckNPCAggro()
+        protected virtual void CheckNpcAggro()
         {
             foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange))
             {
@@ -146,12 +147,12 @@ namespace DOL.AI.Brain
                     // Check LoS if either the target or the current mob is a pet
                     if (npc.Brain is ControlledMobBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
                     {
-                        theirOwner.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
+                        SendLosCheckForAggro(theirOwner, npc);
                         continue;
                     }
                     else if (this is ControlledMobBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
                     {
-                        ourOwner.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
+                        SendLosCheckForAggro(ourOwner, npc);
                         continue;
                     }
                 }
@@ -332,6 +333,13 @@ namespace DOL.AI.Brain
                 }
             }
 
+            // Change state and reschedule the next think tick to improve responsiveness.
+            if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO) && HasAggro)
+            {
+                FSM.SetCurrentState(eFSMStateType.AGGRO);
+                NextThinkTick = GameLoop.GameLoopTime;
+            }
+
             static AggroAmount Add(GameLiving key, long arg)
             {
                 return new(Math.Max(0, arg));
@@ -389,8 +397,7 @@ namespace DOL.AI.Brain
                 if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO))
                     FSM.SetCurrentState(eFSMStateType.AGGRO);
 
-                AttackMostWanted();
-                Think();
+                NextThinkTick = GameLoop.GameLoopTime;
             }
 
             return true;
@@ -440,13 +447,23 @@ namespace DOL.AI.Brain
         }
 
         private long _isHandlingAdditionToAggroListFromLosCheck;
+        private long _losCheckCount;
         private bool StartAddToAggroListFromLosCheck => Interlocked.Exchange(ref _isHandlingAdditionToAggroListFromLosCheck, 1) == 0; // Returns true the first time it's called.
+        private bool IsWaitingForLosCheck => Interlocked.Read(ref _losCheckCount) > 0;
+        protected virtual bool CanAddToAggroListFromMultipleLosChecks => false;
 
-        protected virtual void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+        protected void SendLosCheckForAggro(GamePlayer player, GameObject target)
+        {
+            if (player.Out.SendCheckLos(Body, target, new CheckLosResponse(LosCheckForAggroCallback)))
+                Interlocked.Increment(ref _losCheckCount);
+        }
+
+        protected void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
             // Make sure only one thread can enter this block to prevent multiple entities from being added to the aggro list.
             // Otherwise mobs could kill one player and immediately go for another one.
-            if (response is eLosCheckResponse.TRUE && StartAddToAggroListFromLosCheck)
+            // This method should not be allowed to be executed at the same time as `CheckPlayerAggro` or `CheckNPCAggro`.
+            if (response is eLosCheckResponse.TRUE && (CanAddToAggroListFromMultipleLosChecks || StartAddToAggroListFromLosCheck))
             {
                 if (!HasAggro)
                 {
@@ -458,6 +475,8 @@ namespace DOL.AI.Brain
 
                 _isHandlingAdditionToAggroListFromLosCheck = 0;
             }
+
+            Interlocked.Decrement(ref _losCheckCount);
         }
 
         protected virtual bool ShouldBeRemovedFromAggroList(GameLiving living)
@@ -594,12 +613,6 @@ namespace DOL.AI.Brain
 
             if (ad.GeneratesAggro)
                 ConvertDamageToAggroAmount(ad.Attacker, Math.Max(1, ad.Damage + ad.CriticalDamage));
-
-            if (FSM.GetCurrentState() != FSM.GetState(eFSMStateType.AGGRO) && HasAggro)
-            {
-                FSM.SetCurrentState(eFSMStateType.AGGRO);
-                Think();
-            }
         }
 
         /// <summary>
@@ -698,7 +711,6 @@ namespace DOL.AI.Brain
                     target = puller;
 
                 brain.AddToAggroList(target, 1);
-                brain.AttackMostWanted();
             }
 
             int GetMaxAddsCountFromBaf(GameLiving puller, out List<GamePlayer> otherTargets)

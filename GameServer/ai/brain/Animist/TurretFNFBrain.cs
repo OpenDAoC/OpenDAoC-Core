@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 
 namespace DOL.AI.Brain
@@ -21,7 +20,7 @@ namespace DOL.AI.Brain
         {
             // FnF turrets need to add all players and NPCs to their aggro list to be able to switch target randomly and effectively.
             CheckPlayerAggro();
-            CheckNPCAggro();
+            CheckNpcAggro();
             return HasAggro;
         }
 
@@ -40,13 +39,13 @@ namespace DOL.AI.Brain
                     continue;
 
                 if (Properties.CHECK_LOS_BEFORE_AGGRO_FNF)
-                    player.Out.SendCheckLos(Body, player, new CheckLosResponse(LosCheckForAggroCallback));
+                    SendLosCheckForAggro(player, player);
                 else
                     AddToAggroList(player, 1);
             }
         }
 
-        protected override void CheckNPCAggro()
+        protected override void CheckNpcAggro()
         {
             // Copy paste of 'base.CheckNPCAggro()' except we add all NPCs in range.
             foreach (GameNPC npc in Body.GetNPCsInRadius((ushort) AggroRange))
@@ -61,12 +60,12 @@ namespace DOL.AI.Brain
                 {
                     if (npc.Brain is ControlledMobBrain theirControlledNpcBrain && theirControlledNpcBrain.GetPlayerOwner() is GamePlayer theirOwner)
                     {
-                        theirOwner.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
+                        SendLosCheckForAggro(theirOwner, npc);
                         continue;
                     }
                     else if (this is ControlledMobBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
                     {
-                        ourOwner.Out.SendCheckLos(Body, npc, new CheckLosResponse(LosCheckForAggroCallback));
+                        SendLosCheckForAggro(ourOwner, npc);
                         continue;
                     }
                 }
@@ -75,17 +74,7 @@ namespace DOL.AI.Brain
             }
         }
 
-        protected override void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
-        {
-            // Copy paste of 'base.LosCheckForAggroCallback()' except we don't care if we already have aggro.
-            if (response is eLosCheckResponse.TRUE)
-            {
-                GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
-
-                if (gameObject is GameLiving gameLiving)
-                    AddToAggroList(gameLiving, 1);
-            }
-        }
+        protected override bool CanAddToAggroListFromMultipleLosChecks => true;
 
         protected override bool ShouldBeIgnoredFromAggroList(GameLiving living)
         {

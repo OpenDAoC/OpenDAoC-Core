@@ -112,14 +112,10 @@ namespace DOL.AI.Brain
                     return;
 
                 _brain.AddAggroListTo(_friend);
-                _friend.AttackMostWanted();
 
+                // This includes us.
                 foreach (StandardMobBrain otherFriendlyBrain in _friend.GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(ADDS_RADIUS, MAX_ADDS))
-                {
-                    // This includes us.
                     _brain.AddAggroListTo(otherFriendlyBrain);
-                    otherFriendlyBrain.AttackMostWanted();
-                }
 
                 _state = ScoutMobState.FIGHTING;
             }

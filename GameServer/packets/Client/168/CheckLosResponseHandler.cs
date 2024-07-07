@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -45,10 +44,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     if (Callbacks == null)
                     {
-                        Callbacks ??= new();
+                        Callbacks ??= [];
                         Callbacks.Add(callback);
                     }
-                    else if (Callbacks.Any())
+                    else if (Callbacks.Count != 0)
                         Callbacks.Add(callback);
                     else
                         return false;
