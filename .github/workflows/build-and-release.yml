@@ -90,9 +90,9 @@ jobs:
           echo "- \`docker pull ghcr.io/${{ steps.repo_name.outputs.lowercase }}:latest\`" >> release_notes.txt
           echo "- \`docker pull ${{ secrets.DOCKERHUB_USERNAME }}/opendaoc:${{ steps.set_version.outputs.version }}\`" >> release_notes.txt
           echo "- \`docker pull ${{ secrets.DOCKERHUB_USERNAME }}/opendaoc:latest\`" >> release_notes.txt
-          echo "" >> release_notes.txt
-          echo "## 🛠 Changes" >> release_notes.txt
-          echo "$CHANGES" >> release_notes.txt
+#          echo "" >> release_notes.txt
+#          echo "## 🛠 Changes" >> release_notes.txt
+#          echo "$CHANGES" >> release_notes.txt
         working-directory: ${{ github.workspace }}
 
       - name: 🚀 Publish Release
