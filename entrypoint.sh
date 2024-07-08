@@ -70,4 +70,4 @@ EOF
 chown -R appuser:appgroup /app
 
 # Switch to the non-root user and start the server
-exec gosu appuser sh -c "cd /app && exec dotnet CoreServer.dll"
+exec su-exec appuser sh -c "cd /app && dotnet CoreServer.dll"

@@ -34,11 +34,8 @@ RUN dotnet build DOLLinux.sln -c Release
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 LABEL stage=final
 
-# Copy gosu
-COPY --from=tianon/gosu /gosu /usr/local/bin/
-
-## Install ICU libraries
-RUN apk add --no-cache icu-libs
+## Install ICU libraries and su-exec
+RUN apk add --no-cache icu-libs su-exec
 
 # Set the working directory in the container
 WORKDIR /app
