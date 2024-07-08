@@ -1,14 +1,17 @@
-﻿version: "3.3"
-
-networks:
+﻿networks:
   opendaoc-network:
     driver: bridge
+
+volumes:
+  opendaoc-db-data:
+  base-db:
 
 services:
   db:
     image: mariadb:10.6
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
+    container_name: opendaoc-db
+    stdin_open: true
+    tty: true
     command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1 --character-set-server=utf8mb3 --collation-server=utf8mb3_general_ci --innodb_large_prefix=1 --innodb_file_format=Barracuda --innodb_file_per_table=1
     restart: always
     environment:
@@ -21,46 +24,43 @@ services:
       - opendaoc-network
 
   gameserver:
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
-    image: ghcr.io/opendaoc/opendaoc-core/opendaoc:latest
+    image: ghcr.io/opendaoc/opendaoc-core:latest
+    container_name: opendaoc-server
+    stdin_open: true
+    tty: true
     ports:
       - "10300:10300"
       - "10400:10400"
     depends_on:
       - db
     environment:
-      DB_CONNECTION_STRING: "server=db;port=3306;database=opendaoc;userid=root;password=my-secret-pw;treattinyasboolean=true"
-      SERVER_PORT: "10300"
-      SERVER_IP: "0.0.0.0"
-      REGION_IP: "0.0.0.0"
-      REGION_PORT: "10400"
-      UDP_IP: "0.0.0.0"
-      UDP_PORT: "10400"
-      ENABLE_UPNP: "False"
-      DETECT_REGION_IP: "True"
-      SERVER_NAME: "OpenDAoC"
-      SERVER_NAME_SHORT: "OPENDAOC"
-      LOG_CONFIG_FILE: "./config/logconfig.xml"
-      SCRIPT_COMPILATION_TARGET: "./lib/GameServerScripts.dll"
-      SCRIPT_ASSEMBLIES: ""
-      ENABLE_COMPILATION: "True"
+      UID: "1000"
+      GID: "1000"
       AUTO_ACCOUNT_CREATION: "True"
-      GAME_TYPE: "Normal"
       CHEAT_LOGGER_NAME: "cheats"
-      GM_ACTION_LOGGER_NAME: "gmactions"
-      INVALID_NAMES_FILE: "./config/invalidnames.txt"
-      DB_TYPE: "MYSQL"
+      CPU_USE: "8"
       DB_AUTOSAVE: "True"
       DB_AUTOSAVE_INTERVAL: "10"
-      CPU_USE: "8"
-
+      DB_CONNECTION_STRING: "server=db;port=3306;database=opendaoc;userid=root;password=my-secret-pw;treattinyasboolean=true"
+      DB_TYPE: "MYSQL"
+      DETECT_REGION_IP: "True"
+      ENABLE_COMPILATION: "True"
+      ENABLE_UPNP: "False"
+      GAME_TYPE: "Normal"
+      GM_ACTION_LOGGER_NAME: "gmactions"
+      INVALID_NAMES_FILE: "./config/invalidnames.txt"
+      LOG_CONFIG_FILE: "./config/logconfig.xml"
+      REGION_IP: "0.0.0.0"
+      REGION_PORT: "10400"
+      SCRIPT_ASSEMBLIES: ""
+      SCRIPT_COMPILATION_TARGET: "./lib/GameServerScripts.dll"
+      SERVER_IP: "0.0.0.0"
+      SERVER_NAME: "OpenDAoC"
+      SERVER_NAME_SHORT: "OPENDAOC"
+      SERVER_PORT: "10300"
+      UDP_IP: "0.0.0.0"
+      UDP_PORT: "10400"
     volumes:
       - base-db:/tmp/opendaoc-db
-
     networks:
       - opendaoc-network
-
-volumes:
-  opendaoc-db-data:
-  base-db:

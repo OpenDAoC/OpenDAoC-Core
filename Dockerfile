@@ -9,21 +9,19 @@ WORKDIR /build
 # Copy the source code to the build container
 COPY . .
 
-# Install required tools: unzip, git, and the text processing utilities we might need
+# Install required tools and clone the database repository
 RUN apt-get update && \
-    apt-get install -y unzip git sed
-
-# Clone the database repository
-RUN git config --global http.sslVerify false
-RUN git clone https://github.com/OpenDAoC/OpenDAoC-Database.git /tmp/opendaoc-db
+    apt-get install -y unzip git sed && \
+    git config --global http.sslVerify false && \
+    git clone https://github.com/OpenDAoC/OpenDAoC-Database.git /tmp/opendaoc-db && \
+    rm -rf /var/lib/apt/lists/*
 
 # Combine the SQL files
 WORKDIR /tmp/opendaoc-db/opendaoc-db-core
 RUN cat *.sql > combined.sql
 
-# Restore NuGet packages
+# Set the working directory back to the build container
 WORKDIR /build
-RUN dotnet restore DOLLinux.sln
 
 # Copy serverconfig.example.xml to serverconfig.xml
 RUN cp /build/CoreServer/config/serverconfig.example.xml /build/CoreServer/config/serverconfig.xml
@@ -31,20 +29,22 @@ RUN cp /build/CoreServer/config/serverconfig.example.xml /build/CoreServer/confi
 # Build the application in Release mode
 RUN dotnet build DOLLinux.sln -c Release
 
-# Use the official .NET 8.0 Runtime image as the base for the final image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# ---- final ----
+# Use the official .NET 8.0 Alpine Runtime image as the base for the final image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 LABEL stage=final
 
-# Install a few packages useful for debugging
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y mariadb-client iproute2
+# Copy gosu
+COPY --from=tianon/gosu /gosu /usr/local/bin/
+
+## Install ICU libraries
+RUN apk add --no-cache icu-libs
 
 # Set the working directory in the container
 WORKDIR /app
 
 # Copy the build output from the build stage
-COPY --from=build /build/Release .
+COPY --from=build /build/Release /app
 
 # Copy the combined.sql file from the build stage
 COPY --from=build /tmp/opendaoc-db/opendaoc-db-core/combined.sql /tmp/opendaoc-db/combined.sql
@@ -52,5 +52,8 @@ COPY --from=build /tmp/opendaoc-db/opendaoc-db-core/combined.sql /tmp/opendaoc-d
 # Copy the entrypoint script
 COPY --from=build /build/entrypoint.sh /app
 
+# Make the entrypoint script executable
+RUN chmod +x /app/entrypoint.sh
+
 # Set the entrypoint
-ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
