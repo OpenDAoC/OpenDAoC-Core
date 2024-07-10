@@ -980,15 +980,11 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual bool StartInterruptTimerOnItselfOnMeleeAttack()
-		{
-			return true;
-		}
-
 		public GameObject LastInterrupter { get; private set; }
 		public long InterruptTime { get; private set; }
 		public long SelfInterruptTime { get; private set; }
 		public long InterruptRemainingDuration => !IsBeingInterrupted ? 0 : Math.Max(InterruptTime, SelfInterruptTime) - GameLoop.GameLoopTime;
+		public virtual int SelfInterruptDurationOnMeleeAttack => 3000;
 		public virtual bool IsBeingInterrupted => IsBeingInterruptedIgnoreSelfInterrupt || SelfInterruptTime > GameLoop.GameLoopTime;
 		public virtual bool IsBeingInterruptedIgnoreSelfInterrupt => InterruptTime > GameLoop.GameLoopTime;
 

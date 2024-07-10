@@ -215,7 +215,7 @@ namespace DOL.GS
             if (_target is GamePlayer playerTarget && playerTarget.IsSitting)
                 _effectiveness *= 2;
 
-            _interruptDuration = mainHandAttackSpeed;
+            _interruptDuration = mainHandAttackSpeed; // Shouldn't this take left hand into account?
             return true;
         }
 

@@ -3036,8 +3036,11 @@ namespace DOL.GS
 			// Increase substantially the base interrupt timer duration for non player controlled NPCs
 			// so that they don't start attacking immediately after the attacker's melee swing interval.
 			// It makes repositioning them easier without having to constantly attack them.
-			if (Brain is not IControlledBrain controlledBrain || controlledBrain.GetPlayerOwner() == null)
-				duration += 2500;
+			if (attacker != this)
+			{
+				if (Brain is not IControlledBrain controlledBrain || controlledBrain.GetPlayerOwner() == null)
+					duration += 2500;
+			}
 
 			base.StartInterruptTimer(duration, attackType, attacker);
 		}
@@ -3056,10 +3059,7 @@ namespace DOL.GS
 			return interrupted;
 		}
 
-		public override bool StartInterruptTimerOnItselfOnMeleeAttack()
-		{
-			return false;
-		}
+		public override int SelfInterruptDurationOnMeleeAttack => AttackSpeed(ActiveWeapon) / 2;
 
 		/// <summary>
 		/// The time to wait before each mob respawn
