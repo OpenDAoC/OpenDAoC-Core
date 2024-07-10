@@ -132,13 +132,6 @@ namespace DOL.GS
 		{
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60157792);
 			LoadTemplate(npcTemplate);
-			Strength = npcTemplate.Strength;
-			Dexterity = npcTemplate.Dexterity;
-			Constitution = npcTemplate.Constitution;
-			Quickness = npcTemplate.Quickness;
-			Piety = npcTemplate.Piety;
-			Intelligence = npcTemplate.Intelligence;
-			Empathy = npcTemplate.Empathy;
 
 			AmalgamateParthananBrain sbrain = new AmalgamateParthananBrain();
 			SetOwnBrain(sbrain);
@@ -402,13 +395,7 @@ namespace DOL.GS
 
 			INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164845);
 			LoadTemplate(npcTemplate);
-			Strength = npcTemplate.Strength;
-			Dexterity = npcTemplate.Dexterity;
-			Constitution = npcTemplate.Constitution;
-			Quickness = npcTemplate.Quickness;
-			Piety = npcTemplate.Piety;
-			Intelligence = npcTemplate.Intelligence;
-			Empathy = npcTemplate.Empathy;
+
 
 			ParthananBrain sbrain = new ParthananBrain();
 			SetOwnBrain(sbrain);

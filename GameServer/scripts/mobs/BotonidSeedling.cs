@@ -24,14 +24,6 @@ namespace DOL.GS.Scripts
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60165666);
             LoadTemplate(npcTemplate);
 
-            Strength = npcTemplate.Strength;
-            Constitution = npcTemplate.Constitution;
-            Dexterity = npcTemplate.Dexterity;
-            Quickness = npcTemplate.Quickness;
-            Empathy = npcTemplate.Empathy;
-            Piety = npcTemplate.Piety;
-            Intelligence = npcTemplate.Intelligence;
-
             //seedling
             Model = 818;
             Size = 9;

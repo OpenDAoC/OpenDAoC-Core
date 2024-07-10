@@ -448,13 +448,6 @@ namespace DOL.GS
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60160695);
             LoadTemplate(npcTemplate);
-            Strength = npcTemplate.Strength;
-            Dexterity = npcTemplate.Dexterity;
-            Constitution = npcTemplate.Constitution;
-            Quickness = npcTemplate.Quickness;
-            Piety = npcTemplate.Piety;
-            Intelligence = npcTemplate.Intelligence;
-            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(64);
             BodyType = 11;
             Realm = eRealm.None;
@@ -660,13 +653,6 @@ namespace DOL.GS
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60158353);
             LoadTemplate(npcTemplate);
-            Strength = npcTemplate.Strength;
-            Dexterity = npcTemplate.Dexterity;
-            Constitution = npcTemplate.Constitution;
-            Quickness = npcTemplate.Quickness;
-            Piety = npcTemplate.Piety;
-            Intelligence = npcTemplate.Intelligence;
-            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(64);
             BodyType = 11;
             Realm = eRealm.None;
@@ -1434,13 +1420,6 @@ namespace DOL.GS
             
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60164171);
             LoadTemplate(npcTemplate);
-            Strength = npcTemplate.Strength;
-            Dexterity = npcTemplate.Dexterity;
-            Constitution = npcTemplate.Constitution;
-            Quickness = npcTemplate.Quickness;
-            Piety = npcTemplate.Piety;
-            Intelligence = npcTemplate.Intelligence;
-            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(64);
             BodyType = 11;
             Realm = eRealm.None;
@@ -1971,13 +1950,6 @@ namespace DOL.GS
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60161151);
             LoadTemplate(npcTemplate);
-            Strength = npcTemplate.Strength;
-            Dexterity = npcTemplate.Dexterity;
-            Constitution = npcTemplate.Constitution;
-            Quickness = npcTemplate.Quickness;
-            Piety = npcTemplate.Piety;
-            Intelligence = npcTemplate.Intelligence;
-            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(64);
             BodyType = 11;
             Realm = eRealm.None;
@@ -2169,13 +2141,6 @@ namespace DOL.GS
 
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60157955);
             LoadTemplate(npcTemplate);
-            Strength = npcTemplate.Strength;
-            Dexterity = npcTemplate.Dexterity;
-            Constitution = npcTemplate.Constitution;
-            Quickness = npcTemplate.Quickness;
-            Piety = npcTemplate.Piety;
-            Intelligence = npcTemplate.Intelligence;
-            Empathy = npcTemplate.Empathy;
             Faction = FactionMgr.GetFactionByID(64);
 
             ApocalypseBrain.spawn_harbringers = false;

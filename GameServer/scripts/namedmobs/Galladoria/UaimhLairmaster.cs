@@ -42,13 +42,6 @@ namespace DOL.GS.Scripts
             Faction = FactionMgr.GetFactionByID(96);
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(60167362);
             LoadTemplate(npcTemplate);
-            Strength = npcTemplate.Strength;
-            Dexterity = npcTemplate.Dexterity;
-            Constitution = npcTemplate.Constitution;
-            Quickness = npcTemplate.Quickness;
-            Piety = npcTemplate.Piety;
-            Intelligence = npcTemplate.Intelligence;
-            Empathy = npcTemplate.Empathy;
             SaveIntoDatabase();
             LoadedFromScript = false;
             base.AddToWorld();
