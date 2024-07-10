@@ -168,21 +168,10 @@ namespace DOL.GS
 			get => base.Level;
 			set
 			{
-				bool bMaxHealth = m_health >= MaxHealth;
+				base.Level = value;
+				AutoSetStats();
 
-				if (Level != value)
-				{
-					// This is a newly created NPC, so notify nearby players of its creation
-					if (Level < 1 && ObjectState == eObjectState.Active)
-						ClientService.CreateNpcForPlayers(this);
-
-					base.Level = value;
-					AutoSetStats();  // Recalculate stats when level changes
-				}
-				else
-					base.Level = value;
-
-				if (bMaxHealth)
+				if (m_health > MaxHealth)
 					m_health = MaxHealth;
 			}
 		}
@@ -1035,8 +1024,7 @@ namespace DOL.GS
 			Flags = (eFlags)dbMob.Flags;
 			m_packageID = dbMob.PackageID;
 			m_level = dbMob.Level;
-			AutoSetStats(dbMob);
-			Level = dbMob.Level;
+			AutoSetStats(); // Uses level and npctemplate (should be null at this point).
 			m_health = MaxHealth;
 			MeleeDamageType = (eDamageType)dbMob.MeleeDamageType;
 
@@ -1266,14 +1254,20 @@ namespace DOL.GS
 				NPCTemplate = template as NpcTemplate;
 				HandleTemplateOnlyProperties();
 				HandleLevelFromNewTemplate();
+				AutoSetStats();
 				HandleSpells();
 				HandleStyles();
 				HandleAbilities();
 			}
 			else
 			{
-				HandleLevel();
-				HandleSpells();
+				if (HandleLevel())
+				{
+					// If the level has changed.
+					AutoSetStats();
+					HandleSpells();
+					// Styles and abilities currently don't need to be refreshed.
+				}
 			}
 
 			// Everything below this point overwrites what is in the mob table.
@@ -1313,11 +1307,15 @@ namespace DOL.GS
 				if (template.ReplaceMobValues &&
 					_templateLevels != null &&
 					_templateLevels.Count > 0 &&
-					byte.TryParse(_templateLevels[Util.Random(0, _templateLevels.Count - 1)], out byte newLevel) &&
-					Level != newLevel)
+					byte.TryParse(_templateLevels[Util.Random(0, _templateLevels.Count - 1)], out byte newLevel))
 				{
-					Level = newLevel;
-					return true;
+					if (Level != newLevel)
+					{
+						Level = newLevel;
+						return true;
+					}
+
+					return false;
 				}
 
 				_templateLevels = null;
