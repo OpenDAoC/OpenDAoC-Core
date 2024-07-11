@@ -1002,6 +1002,18 @@ namespace DOL.GS
 			if (obj is not DbMob)
 				return;
 
+			// Clear cached values in case this is a reload.
+			NPCTemplate = null;
+			EquipmentTemplateID = null;
+			Inventory = null;
+			_templateEquipmentIds = null;
+			_templateLevels = null;
+			_templateModels = null;
+			_templateSizes = null;
+			Spells = [];
+			Styles = [];
+			Abilities = [];
+
 			base.LoadFromDatabase(obj);
 
 			m_loadedFromScript = false;
@@ -1246,7 +1258,7 @@ namespace DOL.GS
 
 			// Some properties don't have to be reloaded if we're reusing the same template.
 			// Some properties are also randomized and will be changed even if the template doesn't change.
-			bool isNewTemplate = NPCTemplate != template; 
+			bool isNewTemplate = NPCTemplate != template;
 
 			// We need the level to be set before assigning spells to scale pet spells.
 			if (isNewTemplate)
@@ -3522,7 +3534,7 @@ namespace DOL.GS
 
 		#region Spell
 
-		private List<Spell> m_spells = new(0);
+		private List<Spell> m_spells = [];
 		private ConcurrentDictionary<GameObject, List<SpellWaitingForLosCheck>> _spellsWaitingForLosCheck = new();
 
 		public class SpellWaitingForLosCheck
@@ -3542,9 +3554,9 @@ namespace DOL.GS
 		/// <summary>
 		/// property of spell array of NPC
 		/// </summary>
-		public virtual IList Spells
+		public virtual List<Spell> Spells
 		{
-			get { return m_spells; }
+			get => m_spells;
 			set
 			{
 				if (value == null || value.Count < 1)
@@ -3559,9 +3571,9 @@ namespace DOL.GS
 				}
 				else
 				{
-					m_spells = value.Cast<Spell>().ToList();
-					//if(!SortedSpells)
-						SortSpells();
+					// Voluntary copy. This isn't ideal and needs to be changed eventually.
+					m_spells = value.ToList();
+					SortSpells();
 				}
 			}
 		}
@@ -3882,14 +3894,14 @@ namespace DOL.GS
 		/// <summary>
 		/// Styles for this NPC
 		/// </summary>
-		private IList m_styles = new List<Style>(0);
-		public IList Styles
+		private List<Style> m_styles = [];
+		public List<Style> Styles
 		{
-			get { return m_styles; }
+			get => m_styles;
 			set
 			{
 				m_styles = value;
-				this.SortStyles();
+				SortStyles();
 			}
 		}
 
@@ -4106,6 +4118,7 @@ namespace DOL.GS
 
 				return tmp;
 			}
+			protected set => m_abilities = value;
 		}
 
 		#endregion
@@ -4453,10 +4466,10 @@ namespace DOL.GS
 			}
 
 			if (Spells != null && Spells.Count > 0)
-				copyTarget.Spells = new List<Spell>(Spells.Cast<Spell>());
+				copyTarget.Spells = new List<Spell>(Spells);
 
 			if (Styles != null && Styles.Count > 0)
-				copyTarget.Styles = new ArrayList(Styles);
+				copyTarget.Styles = new List<Style>(Styles);
 
 			if (copyTarget.Inventory != null)
 				copyTarget.SwitchWeapon(ActiveWeaponSlot);

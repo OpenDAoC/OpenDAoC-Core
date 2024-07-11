@@ -3739,9 +3739,9 @@ namespace DOL.GS
         /// <summary>
         /// Holds all abilities of the living (KeyName -> Ability)
         /// </summary>
-        protected readonly Dictionary<string, Ability> m_abilities = new Dictionary<string, Ability>();
+        protected Dictionary<string, Ability> m_abilities = [];
 
-		protected readonly Object m_lockAbilities = new Object();
+		protected readonly object m_lockAbilities = new();
 
 		/// <summary>
 		/// Asks for existence of specific ability

@@ -1,11 +1,12 @@
-using System.Collections;
+using System.Collections.Generic;
+using DOL.GS.Styles;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// Interface for all NPC templates
-	/// </summary>
-	public interface INpcTemplate
+    /// <summary>
+    /// Interface for all NPC templates
+    /// </summary>
+    public interface INpcTemplate
 	{
 		/// <summary>
 		/// Gets the npc template ID
@@ -63,10 +64,10 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the template npc abilities
 		/// </summary>
-		IList Spells { get; }
-		IList Styles { get; }
-		IList SpellLines { get; }
-		IList Abilities { get; }
+		List<Spell> Spells { get; }
+		List<Style> Styles { get; }
+		List<SpellLine> SpellLines { get; }
+		List<Ability> Abilities { get; }
 
 		/// <summary>
 		/// Gets the template npc stats

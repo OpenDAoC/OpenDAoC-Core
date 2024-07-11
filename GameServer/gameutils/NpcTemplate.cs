@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using DOL.Database;
@@ -8,10 +8,10 @@ using log4net;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// A npc template
-	/// </summary>
-	public class NpcTemplate : INpcTemplate
+    /// <summary>
+    /// A npc template
+    /// </summary>
+    public class NpcTemplate : INpcTemplate
 	{
 		/// <summary>
 		/// Defines a logger for this class.
@@ -48,10 +48,10 @@ namespace DOL.GS
 		protected short m_intelligence;
 		protected short m_empathy;
 		protected short m_charisma;
-		protected IList m_styles;
-		protected IList m_spells;
-		protected IList m_spelllines;
-		protected IList m_abilities;
+		protected List<Style> m_styles;
+		protected List<Spell> m_spells;
+		protected List<SpellLine> m_spelllines;
+		protected List<Ability> m_abilities;
 		protected byte m_aggroLevel;
 		protected int m_aggroRange;
 		protected ushort m_race;
@@ -105,9 +105,9 @@ namespace DOL.GS
 			m_empathy = data.Empathy;
 
 			//Time to add Spells/Styles and Abilties to the templates
-			m_abilities = new ArrayList();
-			m_spelllines = new ArrayList();
-			m_spells = new ArrayList();
+			m_abilities = [];
+			m_spelllines = [];
+			m_spells = [];
 			//Adding the spells to an Arraylist here
 			if (data.Spells != null && data.Spells.Length > 0)
 			{
@@ -123,7 +123,7 @@ namespace DOL.GS
 			}
 
 			// Adding Style list to Template NPC
-			m_styles = new ArrayList();
+			m_styles = [];
 			if (data.Styles != null && data.Styles.Length > 0)
 			{
 				string[] styles = data.Styles.Split(';');
@@ -220,7 +220,7 @@ namespace DOL.GS
 				try
 				{
 					if (m_abilities == null)
-						m_abilities = new ArrayList(mob.Abilities.Count);
+						m_abilities = new(mob.Abilities.Count);
 
 					foreach (Ability mobAbility in mob.Abilities.Values)
 					{
@@ -238,7 +238,7 @@ namespace DOL.GS
 				try
 				{
 					if (m_spells == null)
-						m_spells = new ArrayList(mob.Spells.Count);
+						m_spells = new(mob.Spells.Count);
 
 					foreach (Spell mobSpell in mob.Spells)
 					{
@@ -256,7 +256,7 @@ namespace DOL.GS
 				try
 				{
 					if (m_styles == null)
-						m_styles = new ArrayList(mob.Styles.Count);
+						m_styles = new(mob.Styles.Count);
 
 					foreach (Style mobStyle in mob.Styles)
 					{
@@ -506,7 +506,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the template npc spells name array
 		/// </summary>
-		public IList Spells
+		public List<Spell> Spells
 		{
 			get { return m_spells; }
 			set { m_spells = value; }
@@ -514,7 +514,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the template npc styles name array
 		/// </summary>
-		public IList Styles
+		public List<Style> Styles
 		{
 			get { return m_styles; }
 			set { m_styles = value; }
@@ -522,7 +522,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets the template npc spellLines
 		/// </summary>
-		public IList SpellLines
+		public List<SpellLine> SpellLines
 		{
 			get { return m_spelllines; }
 			set { m_spelllines = value; }
@@ -530,7 +530,7 @@ namespace DOL.GS
 		///<summary>
 		///Gets the template npc Abilities
 		///</summary>
-		public IList Abilities
+		public List<Ability> Abilities
 		{
 			get { return m_abilities; }
 			set { m_abilities = value; }
