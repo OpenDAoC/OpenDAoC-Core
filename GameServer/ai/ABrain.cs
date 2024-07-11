@@ -50,6 +50,7 @@ namespace DOL.AI
         {
             bool wasReturningToSpawnPoint = Body.IsReturningToSpawnPoint;
             Body.StopMoving();
+            FSM?.SetCurrentState(eFSMStateType.IDLE);
 
             // Without `IsActive` check, charming a NPC that's returning to spawn would teleport it.
             if (wasReturningToSpawnPoint && !IsActive)

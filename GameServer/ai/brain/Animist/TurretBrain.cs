@@ -138,9 +138,11 @@ namespace DOL.AI.Brain
 
         public override bool Stop()
         {
-            ClearAggroList();
+            if (!base.Stop())
+                return false;
+
             _defensiveSpellTargets.Clear();
-            return base.Stop();
+            return true;
         }
 
         #region AI

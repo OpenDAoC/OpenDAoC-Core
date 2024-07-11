@@ -53,13 +53,11 @@ namespace DOL.AI.Brain
         public override bool Stop()
         {
             // tolakram - when the brain stops, due to either death or no players in the vicinity, clear the aggro list
-            if (base.Stop())
-            {
-                ClearAggroList();
-                return true;
-            }
+            if (!base.Stop())
+                return false;
 
-            return false;
+            ClearAggroList();
+            return true;
         }
 
         public override void KillFSM()
