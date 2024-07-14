@@ -197,7 +197,7 @@ namespace DOL.GS.Spells
     [SpellHandler("MLUnbreakableSnare")]
     public class MLUnbreakableSnare : BanelordSnare
     {
-        protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+        protected override int CalculateEffectDuration(GameLiving target)
         {
             int duration = Spell.Duration;
             if (duration < 1)
@@ -295,7 +295,7 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+        protected override int CalculateEffectDuration(GameLiving target)
         {
             return Spell.Duration;
         }

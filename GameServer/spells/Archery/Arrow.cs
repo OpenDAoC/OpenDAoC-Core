@@ -19,6 +19,16 @@ namespace DOL.GS.Spells
 			get { return false; }
 		}
 
+		protected override double CalculateDamageEffectiveness()
+		{
+			// Half of the damage is magical.
+			// Subtract any spelldamage bonus and re-calculate after half damage is calculated.
+			if (Caster is GamePlayer playerCaster)
+				return CasterEffectiveness * (0.5 - playerCaster.GetModified(eProperty.SpellDamage) * 0.01);
+			else
+				return CasterEffectiveness * 0.5;
+		}
+
 		/// <summary>
 		/// Fire arrow
 		/// </summary>
@@ -115,6 +125,8 @@ namespace DOL.GS.Spells
 
 			protected override int OnTick(ECSGameTimer timer)
 			{
+				// A lot of things here seem to be outdated and need to be cleaned up.
+
 				GameLiving target = m_arrowTarget;
 				GameLiving caster = (GameLiving) timer.Owner;
 
@@ -131,9 +143,6 @@ namespace DOL.GS.Spells
 					missrate += targetAD.Style.BonusToDefense;
 				}
 
-				// half of the damage is magical
-				// subtract any spelldamage bonus and re-calculate after half damage is calculated
-				m_handler.Effectiveness = 0.5 - caster.GetModified(eProperty.SpellDamage) * 0.01;
 				AttackData ad = m_handler.CalculateDamageToTarget(target);
 
 				// check for bladeturn miss

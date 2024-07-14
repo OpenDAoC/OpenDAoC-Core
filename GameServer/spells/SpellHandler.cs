@@ -28,39 +28,18 @@ namespace DOL.GS.Spells
 
 		// Array of pulse spell groups allowed to exist with others.
 		// Used to allow players to have more than one pulse spell refreshing itself automatically.
-		private static readonly int[] PulseSpellGroupsIgnoringOtherPulseSpells = Array.Empty<int>();
+		private static readonly int[] PulseSpellGroupsIgnoringOtherPulseSpells = [];
 
-		public eCastState CastState { get; set; }
 		public GameLiving Target { get; set; }
-		public bool HasLos { get; set; }
+		protected eCastState CastState { get; private set; }
+		protected bool HasLos { get; private set; }
+		protected double DistanceFallOff { get; private set; }
+		protected double CasterEffectiveness { get; private set; } // Should be equal to `Caster.Effectiveness` in most cases. See `StartSpell`.
 
-		/// <summary>
-		/// The spell that we want to handle
-		/// </summary>
 		protected Spell m_spell;
-		/// <summary>
-		/// The spell line the spell belongs to
-		/// </summary>
 		protected SpellLine m_spellLine;
-		/// <summary>
-		/// The caster of the spell
-		/// </summary>
 		protected GameLiving m_caster;
-		public double Effectiveness { get; protected set; } = 1;
-		protected double _distanceFallOff;
-		/// <summary>
-		/// Has the spell been interrupted
-		/// </summary>
 		protected bool m_interrupted = false;
-		/// <summary>
-		/// Delayedcast Stage
-		/// </summary>
-		public int Stage
-		{
-			get { return m_stage; }
-			set { m_stage = value; }
-		}
-		protected int m_stage = 0;
 
 		/// <summary>
 		/// Shall we start the reuse timer
@@ -341,7 +320,7 @@ namespace DOL.GS.Spells
 		public virtual ECSPulseEffect CreateECSPulseEffect(GameLiving target, double effectiveness)
 		{
 			int freq = Spell != null ? Spell.Frequency : 0;
-			return new ECSPulseEffect(target, this, CalculateEffectDuration(target, effectiveness), freq, effectiveness, Spell.Icon);
+			return new ECSPulseEffect(target, this, CalculateEffectDuration(target), freq, effectiveness, Spell.Icon);
 		}
 
 		/// <summary>
@@ -1542,7 +1521,7 @@ namespace DOL.GS.Spells
 
 				if (m_spell.SpellType != eSpellType.Mesmerize)
 				{
-					PulseEffect = CreateECSPulseEffect(Caster, Caster.Effectiveness);
+					PulseEffect = CreateECSPulseEffect(Caster, CasterEffectiveness);
 					Caster.ActivePulseSpells.AddOrUpdate(m_spell.SpellType, m_spell, (x, y) => m_spell);
 				}
 			}
@@ -2141,10 +2120,10 @@ namespace DOL.GS.Spells
 			else
 				targets = SelectTargets(Target);
 
-			Effectiveness = Caster.Effectiveness;
-
 			if (SpellLine.KeyName == "OffensiveProc" &&  Caster is GameSummonedPet gpet && !Spell.ScaledToPetLevel)
 				gpet.ScalePetSpell(Spell);
+
+			CasterEffectiveness = Caster.Effectiveness;
 
 			/// [Atlas - Takii] No effectiveness drop in OF MOC.
 // 			if (Caster.EffectList.GetOfType<MasteryofConcentrationEffect>() != null)
@@ -2152,7 +2131,7 @@ namespace DOL.GS.Spells
 // 				AtlasOF_MasteryofConcentration ra = Caster.GetAbility<AtlasOF_MasteryofConcentration>();
 // 				if (ra != null && ra.Level > 0)
 // 				{
-// 					Effectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
+// 					_casterEffectiveness *= System.Math.Round((double)ra.GetAmountForLevel(ra.Level) / 100, 2);
 // 				}
 // 			}
 
@@ -2164,7 +2143,7 @@ namespace DOL.GS.Spells
 // 					AtlasOF_MasteryofConcentration necroRA = (Caster as NecromancerPet).Owner.GetAbility<AtlasOF_MasteryofConcentration>();
 // 					if (necroRA != null && necroRA.Level > 0)
 // 					{
-// 						Effectiveness *= System.Math.Round((double)necroRA.GetAmountForLevel(necroRA.Level) / 100, 2);
+// 						_casterEffectiveness *= System.Math.Round((double)necroRA.GetAmountForLevel(necroRA.Level) / 100, 2);
 // 					}
 // 				}
 // 			}
@@ -2175,8 +2154,7 @@ namespace DOL.GS.Spells
 
 				if (uninterruptibleSpell != null && uninterruptibleSpell.Value > 0)
 				{
-					double nerf = uninterruptibleSpell.Value;
-					Effectiveness *= (1 - (nerf * 0.01));
+					CasterEffectiveness *= 1 - uninterruptibleSpell.Value * 0.01;
 					Caster.TempProperties.RemoveProperty(UninterruptableSpellHandler.WARLOCK_UNINTERRUPTABLE_SPELL);
 				}
 			}
@@ -2191,11 +2169,11 @@ namespace DOL.GS.Spells
 				else
 				{
 					if (Spell.Target == eSpellTarget.AREA)
-						_distanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster.GroundTarget), Spell.Radius);
+						DistanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster.GroundTarget), Spell.Radius);
 					else if (Spell.Target == eSpellTarget.CONE)
-						_distanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster), Spell.Range);
+						DistanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster), Spell.Range);
 					else
-						_distanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Target), Spell.Radius);
+						DistanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Target), Spell.Radius);
 
 					ApplyEffectOnTarget(targetInList);
 				}
@@ -2213,52 +2191,137 @@ namespace DOL.GS.Spells
 			return distance / (double) radius;
 		}
 
+		protected virtual double CalculateDamageEffectiveness()
+		{
+			if (Caster is GamePlayer playerCaster)
+				return CasterEffectiveness *= 1 + playerCaster.GetModified(eProperty.SpellDamage) * 0.01;
+			else
+				return CasterEffectiveness;
+		}
+
+		protected double CalculateBuffDebuffEffectiveness()
+		{
+			double effectiveness;
+
+			if (SpellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects)
+				effectiveness = 1.0;
+			else if (Spell.Level <= 0)
+				effectiveness = 1.0;
+			else if (Spell.IsBuff)
+			{
+				GamePlayer playerCaster = Caster as GamePlayer;
+
+				if (playerCaster != null && playerCaster.CharacterClass.ClassType is not eClassType.ListCaster && (eCharacterClass) playerCaster.CharacterClass.ID is not eCharacterClass.Savage)
+					effectiveness = CalculateEffectivenessFromSpec(playerCaster); // Non list caster buffs (savage excluded).
+				else
+					effectiveness = 1.0; // List caster buffs or NPC.
+
+				effectiveness *= 1 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
+
+				if (playerCaster != null && playerCaster.UseDetailedCombatLog && effectiveness != 1)
+					playerCaster.Out.SendMessage($"buff effectiveness: {effectiveness:0.00}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+			}
+			else if (Spell.IsDebuff)
+			{
+				GamePlayer playerCaster;
+
+				if (Caster is NecromancerPet necromancerPet && necromancerPet.Owner is GamePlayer playerOwner)
+				{
+					playerCaster = playerOwner;
+					effectiveness = CalculateEffectivenessFromSpec(playerCaster);
+
+					if (Spell.SpellType == eSpellType.ArmorFactorDebuff)
+						effectiveness *= 1 + Target.GetArmorAbsorb(eArmorSlot.TORSO);
+				}
+				else
+					playerCaster = Caster as GamePlayer;
+
+				if (playerCaster != null && playerCaster.CharacterClass.ClassType is eClassType.ListCaster)
+					effectiveness = CalculateEffectivenessFromSpec(playerCaster); // List caster debuffs.
+				else
+					effectiveness = 1.0; // Non list caster debuffs or NPC (necromancer pet excluded).
+
+				effectiveness *= 1 + m_caster.GetModified(eProperty.DebuffEffectiveness) * 0.01;
+				effectiveness *= GetDebuffEffectivenessCriticalModifier();
+
+				if (playerCaster != null && playerCaster.UseDetailedCombatLog && effectiveness != 1)
+					playerCaster.Out.SendMessage($"debuff effectiveness: {effectiveness:0.00}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+			}
+			else
+				effectiveness = 1.0; // Neither a potion, item, buff, or debuff.
+
+			return effectiveness;
+
+			double CalculateEffectivenessFromSpec(GamePlayer player)
+			{
+				double effectiveness = 0.75 + (player.GetModifiedSpecLevel(m_spellLine.Spec) - 1.0) * 0.5 / Spell.Level;
+				return Math.Clamp(effectiveness, 0.75, 1.25);
+			}
+		}
+
+		protected double GetDebuffEffectivenessCriticalModifier()
+		{
+			if (Util.Chance(Caster.DotCriticalChance))
+			{
+				double min = 0.1;
+				double max = 1.0;
+				double criticalModifier = min + Util.RandomDoubleIncl() * (max - min);
+				(Caster as GamePlayer)?.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {criticalModifier * 100:0}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+				return 1.0 + criticalModifier;
+			}
+			else
+				return 1.0;
+		}
+
 		/// <summary>
 		/// Calculates the effect duration in milliseconds
 		/// </summary>
-		/// <param name="target">The effect target</param>
-		/// <param name="effectiveness">The effect effectiveness</param>
-		/// <returns>The effect duration in milliseconds</returns>
-		protected virtual int CalculateEffectDuration(GameLiving target, double effectiveness)
+		protected virtual int CalculateEffectDuration(GameLiving target)
 		{
 			if (Spell.Duration == 0)
 				return 0;
-			
-			double duration = Spell.Duration;
-			duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
+
+			double effectiveness = CasterEffectiveness;
+
+			// Duration is reduced for AoE spells based on the distance from the center, but only in RvR combat and if the spell doesn't have a damage component.
+			if (DistanceFallOff > 0 && Spell.Damage == 0 && (target is GamePlayer || (target is GameNPC npcTarget && npcTarget.Brain is IControlledBrain)))
+				effectiveness *= 1 - DistanceFallOff / 2;
+
+			double duration = Spell.Duration * (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
+
 			if (Spell.InstrumentRequirement != 0)
 			{
 				DbInventoryItem instrument = Caster.ActiveWeapon;
+
 				if (instrument != null)
 				{
-					duration *= 1.0 + Math.Min(1.0, instrument.Level / (double)Caster.Level); // up to 200% duration for songs
-					duration *= instrument.Condition / (double)instrument.MaxCondition * instrument.Quality / 100;
+					duration *= 1.0 + Math.Min(1.0, instrument.Level / (double) Caster.Level); // Up to 200% duration for songs.
+					duration *= instrument.Condition / (double) instrument.MaxCondition * instrument.Quality / 100;
 				}
 			}
 
 			duration *= effectiveness;
+
 			if (duration < 1)
 				duration = 1;
 			else if (duration > (Spell.Duration * 4))
-				duration = (Spell.Duration * 4);
-			return (int)duration;
+				duration = Spell.Duration * 4;
+
+			return (int) duration;
 		}
 
 		/// <summary>
 		/// Creates the corresponding spell effect for the spell
 		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="effectiveness"></param>
-		/// <returns></returns>
 		protected virtual GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
 		{
 			int freq = Spell != null ? Spell.Frequency : 0;
-			return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
+			return new GameSpellEffect(this, CalculateEffectDuration(target), freq, effectiveness);
 		}
 
 		public virtual void ApplyEffectOnTarget(GameLiving target)
 		{
-			if ((target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent))
+			if (target is Keeps.GameKeepDoor or Keeps.GameKeepComponent)
 			{
 				bool isAllowed = false;
 				bool isSilent = false;
@@ -2300,28 +2363,16 @@ namespace DOL.GS.Spells
 					return;
 				}
 			}
-			
-			if (Spell.Radius == 0 &&
-				//(m_spellLine.KeyName == GlobalSpellsLines.Item_Effects ||
-				(m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || 
-				//m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || 
-				m_spellLine.KeyName == Specs.Savagery || 
-				m_spellLine.KeyName == GlobalSpellsLines.Character_Abilities || 
-				m_spellLine.KeyName == "OffensiveProc"))
-				Effectiveness = 1.0; // TODO player.PlayerEffectiveness
 
+			// Potion and item effects aren't character abilities and so shouldn't be affected by effectiveness.
+			if (m_spellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects)
+				CasterEffectiveness = 1.0;
 
-			if (Spell.Radius == 0 && (m_spellLine.KeyName == GlobalSpellsLines.Potions_Effects || m_spellLine.KeyName == GlobalSpellsLines.Item_Effects))
-				Effectiveness = 1.0;
-
-			if (Effectiveness <= 0)
-				return;
-
-			if ((Spell.Duration > 0 && Spell.Target != eSpellTarget.AREA) || Spell.Concentration > 0)
+			if ((Spell.Duration > 0 && Spell.Target is not eSpellTarget.AREA) || Spell.Concentration > 0)
 				OnDurationEffectApply(target);
 			else
 				OnDirectEffect(target);
-				
+
 			if (!HasPositiveEffect)
 			{
 				AttackData ad = new()
@@ -2431,13 +2482,7 @@ namespace DOL.GS.Spells
 			if (!target.IsAlive || target.effectListComponent == null)
 				return;
 
-			double durationEffectiveness = Effectiveness;
-
-			// Duration is reduced for AoE spells based on the distance from the center, but only in RvR combat and if the spell doesn't have a damage component.
-			if (_distanceFallOff > 0 && Spell.Damage == 0 && (target is GamePlayer || (target is GameNPC npcTarget && npcTarget.Brain is IControlledBrain)))
-				durationEffectiveness *= 1 - _distanceFallOff / 2;
-
-			ECSGameSpellEffect effect = CreateECSEffect(new ECSGameEffectInitParams(target, CalculateEffectDuration(target, durationEffectiveness), Effectiveness, this));
+			ECSGameSpellEffect effect = CreateECSEffect(new ECSGameEffectInitParams(target, CalculateEffectDuration(target), CalculateBuffDebuffEffectiveness(), this));
 
 			if (PulseEffect != null)
 				PulseEffect.ChildEffects[target] = effect;
@@ -3326,19 +3371,17 @@ namespace DOL.GS.Spells
 			CalculateDamageVariance(target, out double minVariance, out double maxVariance);
 			double spellDamage = CalculateDamageBase(target);
 			GamePlayer playerCaster = m_caster is GameSummonedPet pet ? pet.Owner as GamePlayer : m_caster as GamePlayer;
-			double effectiveness = Effectiveness;
+			double effectiveness = CalculateDamageEffectiveness();
 
+			// Relic bonus is applied to damage directly instead of effectiveness (does not increase cap)
+			// This applies to bleeds. Is that intended?
 			if (playerCaster != null)
-			{
-				// Relic bonus applied to damage, does not alter effectiveness or increase cap
 				spellDamage *= 1.0 + RelicMgr.GetRelicBonusModifier(playerCaster.Realm, eRelicType.Magic);
-				effectiveness *= 1 + playerCaster.GetModified(eProperty.SpellDamage) * 0.01;
-			}
 
 			spellDamage *= effectiveness;
 
-			if (_distanceFallOff > 0)
-				spellDamage *= 1 - _distanceFallOff;
+			if (DistanceFallOff > 0)
+				spellDamage *= 1 - DistanceFallOff;
 
 			int finalDamage = Util.Random((int)(minVariance * spellDamage), (int)(maxVariance * spellDamage));
 

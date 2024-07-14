@@ -30,10 +30,7 @@ namespace DOL.GS.Spells
         /// <summary>
         /// Calculates the effect duration in milliseconds
         /// </summary>
-        /// <param name="target">The effect target</param>
-        /// <param name="effectiveness">The effect effectiveness</param>
-        /// <returns>The effect duration in milliseconds</returns>
-        protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+        protected override int CalculateEffectDuration(GameLiving target)
         {
             return Spell.Duration;
         }
@@ -236,13 +233,7 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        /// <summary>
-        /// Calculates the effect duration in milliseconds
-        /// </summary>
-        /// <param name="target">The effect target</param>
-        /// <param name="effectiveness">The effect effectiveness</param>
-        /// <returns>The effect duration in milliseconds</returns>
-        protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+        protected override int CalculateEffectDuration(GameLiving target)
         {
             return Spell.Duration;
         }
@@ -290,13 +281,7 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        /// <summary>
-        /// Calculates the effect duration in milliseconds
-        /// </summary>
-        /// <param name="target">The effect target</param>
-        /// <param name="effectiveness">The effect effectiveness</param>
-        /// <returns>The effect duration in milliseconds</returns>
-        protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+        protected override int CalculateEffectDuration(GameLiving target)
         {
             return Spell.Duration;
         }
@@ -345,13 +330,7 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        /// <summary>
-        /// Calculates the effect duration in milliseconds
-        /// </summary>
-        /// <param name="target">The effect target</param>
-        /// <param name="effectiveness">The effect effectiveness</param>
-        /// <returns>The effect duration in milliseconds</returns>
-        protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+        protected override int CalculateEffectDuration(GameLiving target)
         {
             return Spell.Duration;
         }
@@ -423,13 +402,7 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        /// <summary>
-        /// Calculates the effect duration in milliseconds
-        /// </summary>
-        /// <param name="target">The effect target</param>
-        /// <param name="effectiveness">The effect effectiveness</param>
-        /// <returns>The effect duration in milliseconds</returns>
-        protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+        protected override int CalculateEffectDuration(GameLiving target)
         {
             return Spell.Duration;
         }
@@ -483,7 +456,7 @@ namespace DOL.GS.Spells
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, CasterEffectiveness);
             if(font != null)
             {
                 font.AddToWorld();
@@ -581,7 +554,7 @@ namespace DOL.GS.Spells
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, CasterEffectiveness);
             mine.AddToWorld();
             neweffect.Start(mine);
         }
@@ -647,7 +620,7 @@ namespace DOL.GS.Spells
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, CasterEffectiveness);
             storm.AddToWorld();
             neweffect.Start(storm.Owner);
         }

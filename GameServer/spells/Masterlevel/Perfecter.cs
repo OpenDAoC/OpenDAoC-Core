@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
-
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Effects;
@@ -278,26 +260,6 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override void ApplyEffectOnTarget(GameLiving target)
-        {
-            // TODO: correct formula
-            Effectiveness = 1.25;
-            if (Caster is GamePlayer)
-            {
-                double lineSpec = Caster.GetModifiedSpecLevel(m_spellLine.Spec);
-                if (lineSpec < 1)
-                    lineSpec = 1;
-                Effectiveness = 0.75;
-                if (Spell.Level > 0)
-                {
-                    Effectiveness += (lineSpec - 1.0) / Spell.Level * 0.5;
-                    if (Effectiveness > 1.25)
-                        Effectiveness = 1.25;
-                }
-            }
-            base.ApplyEffectOnTarget(target);
-        }
-
         protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
         {
             return new GameSpellEffect(this, Spell.Duration, Spell.Frequency, effectiveness);
@@ -332,7 +294,7 @@ namespace DOL.GS.Spells
             }
 
             base.OnDirectEffect(target);
-            double heal = Spell.Value * Effectiveness;
+            double heal = Spell.Value * CasterEffectiveness;
             if (heal < 0) target.Mana += (int)(-heal * target.MaxMana / 100);
             else target.Mana += (int)heal;
             //"You feel calm and healthy."

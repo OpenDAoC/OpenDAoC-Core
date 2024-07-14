@@ -143,36 +143,28 @@ namespace DOL.GS.Spells
 //                 amount = amount * mocFactor;
 //             }
 
-            double criticalvalue = 0;
-            int criticalchance = Caster.GetModified(eProperty.CriticalHealHitChance);
-            double effectiveness = 0;
+            double criticalModifier = 1.0;
+            int criticalChance = Caster.GetModified(eProperty.CriticalHealHitChance);
+            double effectiveness;
+
             if (Caster is GamePlayer)
-                effectiveness = (Caster as GamePlayer).Effectiveness + (double)(Caster.GetModified(eProperty.HealingEffectiveness)) * 0.01;
-            if (Caster is GameNPC)
+                effectiveness = Caster.Effectiveness + Caster.GetModified(eProperty.HealingEffectiveness) * 0.01;
+            else
                 effectiveness = 1.0;
 
-            //USE DOUBLE !
-            double cache = amount * effectiveness;
-
-            amount = cache;
-
-            int randNum = Util.CryptoNextInt(0, 100); //grab our random number
-
-            if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog)
+            if (Util.Chance(criticalChance))
             {
-                spellCaster.Out.SendMessage($"heal crit chance: {criticalchance} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-                spellCaster.Out.SendMessage($"heal effectiveness: {Caster.GetModified(eProperty.HealingEffectiveness)}%", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                double min = 0.1;
+                double max = 0.5;
+                criticalModifier += min + Util.RandomDoubleIncl() * (max - min);
             }
 
-            if (criticalchance > randNum)
-            {
-                double minValue = amount / 10;
-                double maxValue = amount / 2 + 1;
-                criticalvalue = Util.RandomDouble() * (maxValue - minValue) + minValue;
-                criticalvalue = Math.Round(criticalvalue, MidpointRounding.ToEven); /// [Atlas - Takii] Round crit value for simplicity and to remove decimals from combat log.
-            }
+            effectiveness *= criticalModifier;
 
-            amount += criticalvalue;
+            if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && effectiveness != 1)
+                spellCaster.Out.SendMessage($"heal effectiveness: {effectiveness:0.00}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+            amount *= effectiveness;
 
             GamePlayer playerTarget = target as GamePlayer;
             /*
@@ -337,8 +329,8 @@ namespace DOL.GS.Spells
 
                     MessageToCaster(target.GetName(0, true) + " is fully healed.", eChatType.CT_Spell);
                 }
-                if (heal > 0 && criticalvalue > 0)
-                    MessageToCaster("Your heal criticals for an extra " + criticalvalue + " hit points!", eChatType.CT_Spell);
+                if (heal > 0 && criticalModifier > 0)
+                    MessageToCaster("Your heal criticals for an extra " + criticalModifier + " hit points!", eChatType.CT_Spell);
             }
             
             //check for conquest activity

@@ -328,7 +328,7 @@ namespace DOL.GS.Spells
 			if (Spell.Uninterruptible)
 				return false;
 
-			if (IsInCastingPhase && Stage < 2)
+			if (IsInCastingPhase)
 			{
 				int mod = Caster.GetConLevel(attacker);
 				double chance = 65;

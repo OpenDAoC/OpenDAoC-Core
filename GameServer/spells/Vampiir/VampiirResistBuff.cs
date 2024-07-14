@@ -1,23 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
 using System.Collections.Generic;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -72,17 +52,6 @@ namespace DOL.GS.Spells
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner);
 			return 0;
 		}
-
-		public override void ApplyEffectOnTarget(GameLiving target)
-		{
-			int specLevel = 0;
-			if (Caster is GamePlayer)
-				specLevel = ((GamePlayer)Caster).GetModifiedSpecLevel(m_spellLine.Spec);
-			Effectiveness = 0.75 + (specLevel-1) * 0.5 / Spell.Level;
-			Effectiveness = Math.Max(0.75, Effectiveness);
-			Effectiveness = Math.Min(1.25, Effectiveness);
-			base.ApplyEffectOnTarget(target);
-        }
 
 		public override IList<string> DelveInfo 
 		{
@@ -172,17 +141,6 @@ namespace DOL.GS.Spells
 			MessageToLiving(effect.Owner, Spell.Message3, eChatType.CT_Spell);
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message4, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner);
 			return 0;
-		}
-
-		public override void ApplyEffectOnTarget(GameLiving target)
-		{
-			int specLevel = 0;
-			if (Caster is GamePlayer)
-				specLevel = ((GamePlayer)Caster).GetModifiedSpecLevel(m_spellLine.Spec);
-			Effectiveness = 0.75 + (specLevel-1) * 0.5 / Spell.Level;
-			Effectiveness = Math.Max(0.75, Effectiveness);
-			Effectiveness = Math.Min(1.25, Effectiveness);
-			base.ApplyEffectOnTarget(target);
 		}
 
 		public override IList<string> DelveInfo 

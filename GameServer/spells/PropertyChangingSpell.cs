@@ -30,18 +30,13 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		/// <summary>
-		/// Calculates the effect duration in milliseconds
-		/// </summary>
-		/// <param name="target">The effect target</param>
-		/// <param name="effectiveness">The effect effectiveness</param>
-		/// <returns>The effect duration in milliseconds</returns>
-		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+		protected override int CalculateEffectDuration(GameLiving target)
 		{
-			double duration = Spell.Duration;
 			if (HasPositiveEffect)
-			{	
-				duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
+			{
+				double duration = Spell.Duration;
+				duration *= 1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01;
+
 				if (Spell.InstrumentRequirement != 0)
 				{
 					DbInventoryItem instrument = Caster.ActiveWeapon;
@@ -51,14 +46,16 @@ namespace DOL.GS.Spells
 						duration *= instrument.Condition / (double)instrument.MaxCondition * instrument.Quality / 100;
 					}
 				}
+
 				if (duration < 1)
 					duration = 1;
 				else if (duration > (Spell.Duration * 4))
-					duration = (Spell.Duration * 4);
-				return (int)duration; 
+					duration = Spell.Duration * 4;
+
+				return (int) duration;
 			}
-			duration = base.CalculateEffectDuration(target, effectiveness);
-			return (int)duration;
+
+			return base.CalculateEffectDuration(target);
 		}
 
 		public override void ApplyEffectOnTarget(GameLiving target)

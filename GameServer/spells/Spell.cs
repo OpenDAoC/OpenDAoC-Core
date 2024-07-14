@@ -306,6 +306,8 @@ namespace DOL.GS
 		/// </summary>
 		public bool IsBuff => IsHelpful && (Duration > 0 || Concentration > 0);
 
+		public bool IsDebuff => IsHarmful && (Duration > 0 || Concentration > 0);
+
 		/// <summary>
 		/// Is this a healing spell?
 		/// </summary>

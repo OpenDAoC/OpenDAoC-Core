@@ -13,7 +13,7 @@ namespace DOL.GS.PropertyCalc
     /// </summary>
 
     //Debuff Effectivness
-    [PropertyCalculator(eProperty.DebuffEffectivness)]
+    [PropertyCalculator(eProperty.DebuffEffectiveness)]
     public class DebuffEffectivnessPercentCalculator : PropertyCalculator
     {
         public override int CalcValue(GameLiving living, eProperty property)

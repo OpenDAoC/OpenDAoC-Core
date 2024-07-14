@@ -160,7 +160,7 @@ namespace DOL.GS.Spells
 			m_pet.Health = m_pet.MaxHealth;
 			m_pet.Spells = template.Spells; // Have to sort spells again now that the pet level has been assigned.
 
-			CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target, Effectiveness), Effectiveness, this));
+			CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target), CasterEffectiveness, this));
 			Caster.OnPetSummoned(m_pet);
 		}
 

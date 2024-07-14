@@ -34,7 +34,7 @@ namespace DOL.GS.Spells
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
-            GameSpellEffect neweffect = CreateSpellEffect(target, Effectiveness);
+            GameSpellEffect neweffect = CreateSpellEffect(target, CasterEffectiveness);
             decoy.AddToWorld();
             neweffect.Start(decoy);
         }
@@ -483,24 +483,24 @@ namespace DOL.GS.Spells
         #endregion
     }
 
-    //to show an Icon & informations to the caster
-    namespace DOL.GS.Effects
-    {
+//to show an Icon & informations to the caster
+namespace DOL.GS.Effects
+{
     public class LoockoutOwner : StaticEffect, IGameEffect
+    {
+        public LoockoutOwner() : base() { }
+        public void Start(GamePlayer player) { base.Start(player); }
+        public override void Stop() { base.Stop(); }
+        public override ushort Icon { get { return 2616; } }
+        public override string Name { get { return "Loockout"; } }
+        public override IList<string> DelveInfo
         {
-            public LoockoutOwner() : base() { }
-            public void Start(GamePlayer player) { base.Start(player); }
-            public override void Stop() { base.Stop(); }
-            public override ushort Icon { get { return 2616; } }
-            public override string Name { get { return "Loockout"; } }
-            public override IList<string> DelveInfo
+            get
             {
-                get
-                {
-                    var delveInfoList = new List<string>();
-                    delveInfoList.Add("Your stealth range is increased.");
-                    return delveInfoList;
-                }
+                var delveInfoList = new List<string>();
+                delveInfoList.Add("Your stealth range is increased.");
+                return delveInfoList;
             }
         }
     }
+}

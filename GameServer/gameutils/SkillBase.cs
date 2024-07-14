@@ -1822,7 +1822,7 @@ namespace DOL.GS
 			                                                                       "SkillBase.RegisterPropertyNames.CastingSpeed"));
 			m_propertyNames.Add(eProperty.OffhandDamageAndChance, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                       "SkillBase.RegisterPropertyNames.OffhandChanceAndDamage"));
-			m_propertyNames.Add(eProperty.DebuffEffectivness, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
+			m_propertyNames.Add(eProperty.DebuffEffectiveness, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                             "SkillBase.RegisterPropertyNames.DebuffEffectivness"));
 			m_propertyNames.Add(eProperty.Fatigue, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                  "SkillBase.RegisterPropertyNames.Fatigue"));

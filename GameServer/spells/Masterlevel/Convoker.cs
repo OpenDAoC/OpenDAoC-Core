@@ -481,7 +481,7 @@ namespace DOL.GS.Spells
 			}
 
 			Point2D summonloc;
-			beffect = CreateSpellEffect(target, Effectiveness);
+			beffect = CreateSpellEffect(target, CasterEffectiveness);
 			{
 				summonloc = target.GetPointFromHeading( target.Heading, 64 );
 
@@ -640,7 +640,7 @@ namespace DOL.GS.Spells
 				MessageToCaster("NPC template " + Spell.LifeDrainReturn + " not found!", eChatType.CT_System);
 				return;
 			}
-			GameSpellEffect effect = CreateSpellEffect(target, Effectiveness);
+			GameSpellEffect effect = CreateSpellEffect(target, CasterEffectiveness);
 			TitanBrain controlledBrain = new TitanBrain(player);
 			controlledBrain.IsMainPet = false;
 			controlledBrain.WalkState = eWalkState.Stay;

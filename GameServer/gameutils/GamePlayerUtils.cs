@@ -360,7 +360,7 @@ namespace DOL.GS
 			//cap at 25 with no chance of going over
 			//DebuffEffectivness, BuffEffectiveness, HealingEffectiveness
 			//SpellDuration
-			if (iBonusType == (int)eProperty.DebuffEffectivness || iBonusType == (int)eProperty.BuffEffectiveness || iBonusType == (int)eProperty.HealingEffectiveness || iBonusType == (int)eProperty.SpellDuration || iBonusType == (int)eProperty.ArcaneSyphon)
+			if (iBonusType == (int)eProperty.DebuffEffectiveness || iBonusType == (int)eProperty.BuffEffectiveness || iBonusType == (int)eProperty.HealingEffectiveness || iBonusType == (int)eProperty.SpellDuration || iBonusType == (int)eProperty.ArcaneSyphon)
 			{
 				if (iBonus > 25)
 					iBonus = 25;

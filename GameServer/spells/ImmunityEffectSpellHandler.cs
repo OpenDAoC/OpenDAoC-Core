@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
@@ -67,23 +48,18 @@ namespace DOL.GS.Spells
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 
-		/// <summary>
-		/// Calculates the effect duration in milliseconds
-		/// </summary>
-		/// <param name="target">The effect target</param>
-		/// <param name="effectiveness">The effect effectiveness</param>
-		/// <returns>The effect duration in milliseconds</returns>
-		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+		protected override int CalculateEffectDuration(GameLiving target)
 		{
 			// http://support.darkageofcamelot.com/kb/article.php?id=423
 			// Patch Notes: Version 1.52
 			// The duration is 100% at the middle of the area, and it tails off to 50%
 			// duration at the edges. This does NOT change the way area effect spells
 			// work against monsters, only realm enemies (i.e. enemy players and enemy realm guards).
-			double duration = base.CalculateEffectDuration(target, effectiveness);
+			double duration = base.CalculateEffectDuration(target);
+
 			if (!(target is GamePlayer) && !(target is Keeps.GameKeepGuard))
 				return (int)duration;
-			duration *= (0.5 + 0.5*effectiveness);
+
 			duration -= duration * target.GetResistBase(Spell.DamageType) * 0.01;
 
 			if (duration < 1)
@@ -101,7 +77,7 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
 		{
-			return new GameSpellAndImmunityEffect(this, CalculateEffectDuration(target, effectiveness), 0, effectiveness);
+			return new GameSpellAndImmunityEffect(this, CalculateEffectDuration(target), 0, effectiveness);
 		}
 
 		/// <summary>

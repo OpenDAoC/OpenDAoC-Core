@@ -242,7 +242,7 @@ namespace DOL.GS
 		BuffEffectiveness = 190,
 		CastingSpeed = 191,
 		OffhandDamageAndChance = 192,
-		DebuffEffectivness = 193,
+		DebuffEffectiveness = 193,
 		Fatigue = 194,
 		HealingEffectiveness = 195,
 		PowerPool = 196,

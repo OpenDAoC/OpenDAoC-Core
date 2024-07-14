@@ -1,373 +1,225 @@
 using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
-using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Base class for all resist debuffs, needed to set effectiveness and duration
-	/// </summary>
-	public abstract class AbstractResistDebuff : PropertyChangingSpell
-	{
-		/// <summary>
-		/// Gets debuff type name for delve info
-		/// </summary>
-		public abstract string DebuffTypeName { get; }
+    /// <summary>
+    /// Base class for all resist debuffs, needed to set effectiveness and duration
+    /// </summary>
+    public abstract class AbstractResistDebuff(GameLiving caster, Spell spell, SpellLine line) : PropertyChangingSpell(caster, spell, line)
+    {
+        public abstract string DebuffTypeName { get; }
+        public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.Debuff;
 
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
         {
-			return new StatDebuffECSEffect(initParams);
+            return new StatDebuffECSEffect(initParams);
         }
 
-        /// <summary>
-        /// Debuff category is 3 for debuffs
-        /// </summary>
-        public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.Debuff; } }
-
-		/// <summary>
-		/// Calculates the effect duration in milliseconds
-		/// </summary>
-		/// <param name="target">The effect target</param>
-		/// <param name="effectiveness">The effect effectiveness</param>
-		/// <returns>The effect duration in milliseconds</returns>
-		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
-		{
-			double duration = Spell.Duration;
-			
-			duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);		
-			duration -= duration * target.GetResist(m_spell.DamageType) * 0.01;
-			
-			if (duration < 1)
-				duration = 1;
-			else if (duration > (Spell.Duration * 4))
-				duration = (Spell.Duration * 4);
-			return (int)duration;
-		}
-
-		public override void ApplyEffectOnTarget(GameLiving target)
-		{
-			//check for existing effect
-			// var debuffs = target.effectListComponent.GetSpellEffects()
-			// 					.Where(x => x.SpellHandler is AbstractResistDebuff);
-
-			// foreach (var debuff in debuffs)
-			// {
-			// 	var debuffSpell = debuff.SpellHandler as AbstractResistDebuff;
-
-			// 	if (debuffSpell.Property1 == this.Property1 && debuffSpell.Spell.Value >= Spell.Value)
-			// 	{
-			// 		// Old Spell is Better than new one
-			// 		SendSpellResistAnimation(target);
-			// 		this.MessageToCaster(eChatType.CT_SpellResisted, "{0} already has that effect.", target.GetName(0, true));
-			// 		MessageToCaster("Wait until it expires. Spell Failed.", eChatType.CT_SpellResisted);
-			// 		// Prevent Adding.
-			// 		return;
-			// 	}
-			// }
-
-
-			//TODO: correct effectiveness formula
-			// invoke direct effect if not resisted for DD w/ debuff spells
-			if (Caster is GamePlayer && Spell.Level > 0)
-            {
-                if (((GamePlayer)Caster).CharacterClass.ClassType == eClassType.ListCaster)
-				{
-					int specLevel = Caster.GetModifiedSpecLevel(m_spellLine.Spec);
-					Effectiveness = 0.75;
-                    Effectiveness += (specLevel - 1.0) * 0.5 / Spell.Level;
-                    Effectiveness = Math.Max(0.75, Effectiveness);
-                    Effectiveness = Math.Min(1.25, Effectiveness);
-                    Effectiveness *= (1.0 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01);
-                }
-				else
-				{
-					Effectiveness = 1.0; 
-					Effectiveness *= (1.0 + m_caster.GetModified(eProperty.DebuffEffectivness) * 0.01);
-				}
-
-				Effectiveness *= GetCritBonus();
-			}
-            
-			
-			base.ApplyEffectOnTarget(target);
-
-			if (target.Realm == 0 || Caster.Realm == 0)
-			{
-				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
-			}
-			else
-			{
-				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
-			}
-			if(target is GameNPC)
-			{
-				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;
-				if (aggroBrain != null)
-					aggroBrain.AddToAggroList(Caster, 1);
-			}
-			if(Spell.CastTime>0) target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
-		}
-
-        private double GetCritBonus()
+        protected override int CalculateEffectDuration(GameLiving target)
         {
-            double critMod = 1.0;
-            int critChance = Caster.DotCriticalChance;
+            double duration = Spell.Duration;
 
-            if (critChance <= 0)
-                return critMod;
+            duration *= 1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01;
+            duration -= duration * target.GetResist(m_spell.DamageType) * 0.01;
 
-            GamePlayer playerCaster = Caster as GamePlayer;
+            if (duration < 1)
+                duration = 1;
+            else if (duration > (Spell.Duration * 4))
+                duration = Spell.Duration * 4;
 
-            if (playerCaster?.UseDetailedCombatLog == true && critChance > 0)
-                playerCaster.Out.SendMessage($"Debuff crit chance: {Caster.DotCriticalChance}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+            return (int) duration;
+        }
 
-            if (Util.Chance(critChance))
-            {                    
-                critMod *= 1 + Util.Random(1, 10) * 0.1;
-                playerCaster?.Out.SendMessage($"Your {Spell.Name} critically debuffs the enemy for {Math.Round(critMod - 1,3) * 100}% additional effect!", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+        public override void ApplyEffectOnTarget(GameLiving target)
+        {
+            base.ApplyEffectOnTarget(target);
+
+            if (target.Realm == 0 || Caster.Realm == 0)
+            {
+                target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
+            }
+            else
+            {
+                target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+                Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
             }
 
-            return critMod;
+            if (target is GameNPC npc && npc.Brain is StandardMobBrain brain)
+                brain.AddToAggroList(Caster, 1);
+
+            if (Spell.CastTime > 0)
+                target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
         }
 
-		/// <summary>
-		/// Calculates chance of spell getting resisted
-		/// </summary>
-		/// <param name="target">the target of the spell</param>
-		/// <returns>chance that spell will be resisted for specific target</returns>
-		public override int CalculateSpellResistChance(GameLiving target)
-		{
-			int basechance = base.CalculateSpellResistChance(target);
-			/*
-			GameSpellEffect rampage = SpellHandler.FindEffectOnTarget(target, "Rampage");
-			if (rampage != null)
-			{
-				basechance += (int)rampage.Spell.Value;
-			}*/
-			return Math.Min(100, basechance);
-		}
-		/// <summary>
-		/// Updates changes properties to living
-		/// </summary>
-		/// <param name="target"></param>
-		protected override void SendUpdates(GameLiving target)
-		{
-			base.SendUpdates(target);
-			if (target is GamePlayer)
-			{
-				GamePlayer player = (GamePlayer)target;
-				player.Out.SendCharResistsUpdate();
-			}
-		}
+        public override int CalculateSpellResistChance(GameLiving target)
+        {
+            int basechance = base.CalculateSpellResistChance(target);
 
-		/// <summary>
-		/// Delve Info
-		/// </summary>
-		public override IList<string> DelveInfo
-		{
-			get
-			{
-				/*
-				<Begin Info: Nullify Dissipation>
-				Function: resistance decrease
- 
-				Decreases the target's resistance to the listed damage type.
- 
-				Resist decrease Energy: 15
-				Target: Targetted
-				Range: 1500
-				Duration: 15 sec
-				Power cost: 13
-				Casting time:      2.0 sec
-				Damage: Cold
- 
-				<End Info>
-				 */
+            /*
+            GameSpellEffect rampage = SpellHandler.FindEffectOnTarget(target, "Rampage");
 
-				var list = new List<string>();
-				list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "ResistDebuff.DelveInfo.Function"));
-				list.Add(" "); //empty line
-				list.Add(Spell.Description);
-				list.Add(" "); //empty line
-				list.Add(String.Format(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "ResistDebuff.DelveInfo.Decrease", DebuffTypeName, m_spell.Value)));
-				list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Target", Spell.Target));
-				if (Spell.Range != 0)
-					list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Range", Spell.Range));
-				if (Spell.Duration >= ushort.MaxValue * 1000)
-					list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Duration") + " Permanent.");
-				else if (Spell.Duration > 60000)
-					list.Add(string.Format(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Duration") + Spell.Duration / 60000 + ":" + (Spell.Duration % 60000 / 1000).ToString("00") + " min"));
-				else if (Spell.Duration != 0)
-					list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Duration") + (Spell.Duration / 1000).ToString("0' sec';'Permanent.';'Permanent.'"));
-				if (Spell.Power != 0)
-					list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.PowerCost", Spell.Power.ToString("0;0'%'")));
-				list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
-				if (Spell.RecastDelay > 60000)
-					list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.RecastTime") + Spell.RecastDelay / 60000 + ":" + (Spell.RecastDelay % 60000 / 1000).ToString("00") + " min");
-				else if (Spell.RecastDelay > 0)
-					list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.RecastTime") + (Spell.RecastDelay / 1000).ToString() + " sec");
-				if (Spell.Concentration != 0)
-					list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.ConcentrationCost", Spell.Concentration));
-				if (Spell.Radius != 0)
-					list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Radius", Spell.Radius));
-				if (Spell.DamageType != eDamageType.Natural)
-					list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
+            if (rampage != null)
+                basechance += rampage.Spell.Value;
+            */
 
-				return list;
-			}
-		}
+            return Math.Min(100, basechance);
+        }
 
-		//constructor
-		public AbstractResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+        protected override void SendUpdates(GameLiving target)
+        {
+            base.SendUpdates(target);
 
-	/// <summary>
-	/// Body resistance debuff
-	/// </summary>
-	[SpellHandlerAttribute("BodyResistDebuff")]
-	public class BodyResistDebuff : AbstractResistDebuff
-	{
-		public override eProperty Property1 { get { return eProperty.Resist_Body; } }
-		public override string DebuffTypeName { get { return "Body"; } }
+            if (target is GamePlayer player)
+                player.Out.SendCharResistsUpdate();
+        }
 
-		// constructor
-		public BodyResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+        public override IList<string> DelveInfo
+        {
+            get
+            {
+                /*
+                Function: resistance decrease
 
-	/// <summary>
-	/// Cold resistance debuff
-	/// </summary>
-	[SpellHandlerAttribute("ColdResistDebuff")]
-	public class ColdResistDebuff : AbstractResistDebuff
-	{
-		public override eProperty Property1 { get { return eProperty.Resist_Cold; } }
-		public override string DebuffTypeName { get { return "Cold"; } }
+                Decreases the target's resistance to the listed damage type.
 
-		// constructor
-		public ColdResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+                Resist decrease Energy: 15
+                Target: Targetted
+                Range: 1500
+                Duration: 15 sec
+                Power cost: 13
+                Casting time: 2.0 sec
+                Damage: Cold
+                 */
 
-	/// <summary>
-	/// Energy resistance debuff
-	/// </summary>
-	[SpellHandlerAttribute("EnergyResistDebuff")]
-	public class EnergyResistDebuff : AbstractResistDebuff
-	{
-		public override eProperty Property1 { get { return eProperty.Resist_Energy; } }
-		public override string DebuffTypeName { get { return "Energy"; } }
+                List<string> list =
+                [
+                    LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "ResistDebuff.DelveInfo.Function"),
+                    " ",
+                    Spell.Description,
+                    " ",
+                    string.Format(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "ResistDebuff.DelveInfo.Decrease", DebuffTypeName, m_spell.Value)),
+                    LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Target", Spell.Target),
+                ];
 
-		// constructor
-		public EnergyResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+                if (Spell.Range != 0)
+                    list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Range", Spell.Range));
 
-	/// <summary>
-	/// Heat resistance debuff
-	/// </summary>
-	[SpellHandlerAttribute("HeatResistDebuff")]
-	public class HeatResistDebuff : AbstractResistDebuff
-	{
-		public override eProperty Property1 { get { return eProperty.Resist_Heat; } }
-		public override string DebuffTypeName { get { return "Heat"; } }
+                if (Spell.Duration >= ushort.MaxValue * 1000)
+                    list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Duration") + " Permanent.");
+                else if (Spell.Duration > 60000)
+                    list.Add(string.Format(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Duration") + Spell.Duration / 60000 + ":" + (Spell.Duration % 60000 / 1000).ToString("00") + " min"));
+                else if (Spell.Duration != 0)
+                    list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Duration") + (Spell.Duration / 1000).ToString("0' sec';'Permanent.';'Permanent.'"));
 
-		// constructor
-		public HeatResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+                if (Spell.Power != 0)
+                    list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.PowerCost", Spell.Power.ToString("0;0'%'")));
 
-	/// <summary>
-	/// Matter resistance debuff
-	/// </summary>
-	[SpellHandlerAttribute("MatterResistDebuff")]
-	public class MatterResistDebuff : AbstractResistDebuff
-	{
-		public override eProperty Property1 { get { return eProperty.Resist_Matter; } }
-		public override string DebuffTypeName { get { return "Matter"; } }
+                list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.CastingTime", (Spell.CastTime * 0.001).ToString("0.0## sec;-0.0## sec;'instant'")));
 
-		// constructor
-		public MatterResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+                if (Spell.RecastDelay > 60000)
+                    list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.RecastTime") + Spell.RecastDelay / 60000 + ":" + (Spell.RecastDelay % 60000 / 1000).ToString("00") + " min");
+                else if (Spell.RecastDelay > 0)
+                    list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.RecastTime") + (Spell.RecastDelay / 1000).ToString() + " sec");
 
-	/// <summary>
-	/// Spirit resistance debuff
-	/// </summary>
-	[SpellHandlerAttribute("SpiritResistDebuff")]
-	public class SpiritResistDebuff : AbstractResistDebuff
-	{
-		public override eProperty Property1 { get { return eProperty.Resist_Spirit; } }
-		public override string DebuffTypeName { get { return "Spirit"; } }
+                if (Spell.Concentration != 0)
+                    list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.ConcentrationCost", Spell.Concentration));
 
-		// constructor
-		public SpiritResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+                if (Spell.Radius != 0)
+                    list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Radius", Spell.Radius));
 
-	/// <summary>
-	/// Slash resistance debuff
-	/// </summary>
-	[SpellHandlerAttribute("SlashResistDebuff")]
-	public class SlashResistDebuff : AbstractResistDebuff
-	{
-		public override eProperty Property1 { get { return eProperty.Resist_Slash; } }
-		public override string DebuffTypeName { get { return "Slash"; } }
+                if (Spell.DamageType is not eDamageType.Natural)
+                    list.Add(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "DelveInfo.Damage", GlobalConstants.DamageTypeToName(Spell.DamageType)));
 
-		// constructor
-		public SlashResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+                return list;
+            }
+        }
+    }
 
-	/// <summary>
-	/// Thrust resistance debuff
-	/// </summary>
-	[SpellHandlerAttribute("ThrustResistDebuff")]
-	public class ThrustResistDebuff : AbstractResistDebuff
-	{
-		public override eProperty Property1 { get { return eProperty.Resist_Thrust; } }
-		public override string DebuffTypeName { get { return "Thrust"; } }
+    [SpellHandlerAttribute("BodyResistDebuff")]
+    public class BodyResistDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eProperty Property1 => eProperty.Resist_Body;
+        public override string DebuffTypeName => "Body";
+    }
 
-		// constructor
-		public ThrustResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+    [SpellHandlerAttribute("ColdResistDebuff")]
+    public class ColdResistDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eProperty Property1 => eProperty.Resist_Cold;
+        public override string DebuffTypeName => "Cold";
+    }
 
-	/// <summary>
-	/// Crush resistance debuff
-	/// </summary>
-	[SpellHandlerAttribute("CrushResistDebuff")]
-	public class CrushResistDebuff : AbstractResistDebuff
-	{
-		public override eProperty Property1 { get { return eProperty.Resist_Crush; } }
-		public override string DebuffTypeName { get { return "Crush"; } }
+    [SpellHandlerAttribute("EnergyResistDebuff")]
+    public class EnergyResistDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eProperty Property1 => eProperty.Resist_Energy;
+        public override string DebuffTypeName => "Energy";
+    }
 
-		// constructor
-		public CrushResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
-	/// <summary>
-	/// Crush/Slash/Thrust resistance debuff
-	/// </summary>
-	[SpellHandlerAttribute("CrushSlashThrustDebuff")]
-	public class CrushSlashThrustDebuff : AbstractResistDebuff
-	{
-		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.Debuff; } }
-		public override eBuffBonusCategory BonusCategory2 { get { return eBuffBonusCategory.Debuff; } }
-		public override eBuffBonusCategory BonusCategory3 { get { return eBuffBonusCategory.Debuff; } }
-		
-		public override eProperty Property1 { get { return eProperty.Resist_Crush; } }
-		public override eProperty Property2 { get { return eProperty.Resist_Slash; } }
-		public override eProperty Property3 { get { return eProperty.Resist_Thrust; } }
+    [SpellHandlerAttribute("HeatResistDebuff")]
+    public class HeatResistDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eProperty Property1 => eProperty.Resist_Heat;
+        public override string DebuffTypeName => "Heat";
+    }
 
-		public override string DebuffTypeName { get { return "Crush/Slash/Thrust"; } }
+    [SpellHandlerAttribute("MatterResistDebuff")]
+    public class MatterResistDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eProperty Property1 => eProperty.Resist_Matter;
+        public override string DebuffTypeName => "Matter";
+    }
 
-		// constructor
-		public CrushSlashThrustDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
-	
-	[SpellHandlerAttribute("EssenceSear")]
-	public class EssenceResistDebuff : AbstractResistDebuff
-	{
-		public override eProperty Property1 { get { return eProperty.Resist_Natural; } }
-		public override string DebuffTypeName { get { return "Essence"; } }
+    [SpellHandlerAttribute("SpiritResistDebuff")]
+    public class SpiritResistDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eProperty Property1 => eProperty.Resist_Spirit;
+        public override string DebuffTypeName => "Spirit";
+    }
 
-		// constructor
-		public EssenceResistDebuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
-	}
+    [SpellHandlerAttribute("SlashResistDebuff")]
+    public class SlashResistDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eProperty Property1 => eProperty.Resist_Slash;
+        public override string DebuffTypeName => "Slash";
+    }
+
+    [SpellHandlerAttribute("ThrustResistDebuff")]
+    public class ThrustResistDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eProperty Property1 => eProperty.Resist_Thrust;
+        public override string DebuffTypeName => "Thrust";
+    }
+
+    [SpellHandlerAttribute("CrushResistDebuff")]
+    public class CrushResistDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eProperty Property1 => eProperty.Resist_Crush;
+        public override string DebuffTypeName => "Crush";
+    }
+
+    [SpellHandlerAttribute("CrushSlashThrustDebuff")]
+    public class CrushSlashThrustDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.Debuff;
+        public override eBuffBonusCategory BonusCategory2 => eBuffBonusCategory.Debuff;
+        public override eBuffBonusCategory BonusCategory3 => eBuffBonusCategory.Debuff;
+
+        public override eProperty Property1 => eProperty.Resist_Crush;
+        public override eProperty Property2 => eProperty.Resist_Slash;
+        public override eProperty Property3 => eProperty.Resist_Thrust;
+
+        public override string DebuffTypeName => "Crush/Slash/Thrust";
+    }
+
+    [SpellHandlerAttribute("EssenceSear")]
+    public class EssenceResistDebuff(GameLiving caster, Spell spell, SpellLine line) : AbstractResistDebuff(caster, spell, line)
+    {
+        public override eProperty Property1 => eProperty.Resist_Natural;
+        public override string DebuffTypeName => "Essence";
+    }
 }

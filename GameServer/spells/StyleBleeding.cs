@@ -47,6 +47,11 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 
+		protected override double CalculateDamageEffectiveness()
+		{
+			return CasterEffectiveness;
+		}
+
 		/// <summary>
 		/// When an applied effect pulses
 		/// duration spells only
@@ -60,10 +65,7 @@ namespace DOL.GS.Spells
 			Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, false)), eChatType.CT_YouHit, effect.Owner);
 
 			int bleedValue = effect.Owner.TempProperties.GetProperty<int>(BLEED_VALUE_PROPERTY);
-
-			Effectiveness = 1;
 			AttackData ad = CalculateDamageToTarget(effect.Owner);
-
 			SendDamageMessages(ad);
 
 			// attacker must be null, attack result is 0x0A
@@ -88,7 +90,7 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
 		{
-			return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), Spell.Frequency, effectiveness);
+			return new GameSpellEffect(this, CalculateEffectDuration(target), Spell.Frequency, effectiveness);
 		}
 
 		public override AttackData CalculateDamageToTarget(GameLiving target)
@@ -109,13 +111,7 @@ namespace DOL.GS.Spells
 			return ad;
 		}
 
-		/// <summary>
-		/// Calculates the effect duration in milliseconds
-		/// </summary>
-		/// <param name="target">The effect target</param>
-		/// <param name="effectiveness">The effect effectiveness</param>
-		/// <returns>The effect duration in milliseconds</returns>
-		protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+		protected override int CalculateEffectDuration(GameLiving target)
 		{
 			return Spell.Duration;
 		}

@@ -53,9 +53,9 @@ namespace DOL.GS.Spells
             return (effect.Name == "Pet Stun") ? 0 : 60000;
         }
 
-        protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+        protected override int CalculateEffectDuration(GameLiving target)
         {
-            double duration = base.CalculateEffectDuration(target, effectiveness);
+            double duration = base.CalculateEffectDuration(target);
 
             // [Atlas - Takii] Disabling MOC effectiveness scaling in OF.
             // double mocFactor = 1.0;
@@ -200,15 +200,9 @@ namespace DOL.GS.Spells
             return base.CheckSpellResist(target);
         }
 
-        /// <summary>
-        /// Calculates the effect duration in milliseconds
-        /// </summary>
-        /// <param name="target">The effect target</param>
-        /// <param name="effectiveness">The effect effectiveness</param>
-        /// <returns>The effect duration in milliseconds</returns>
-        protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+        protected override int CalculateEffectDuration(GameLiving target)
         {
-            double duration = base.CalculateEffectDuration(target, effectiveness);
+            double duration = base.CalculateEffectDuration(target);
             duration *= target.GetModified(eProperty.MesmerizeDurationReduction) * 0.01;
             NPCECSMezImmunityEffect npcImmune = (NPCECSMezImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCMezImmunity);
 
@@ -244,11 +238,11 @@ namespace DOL.GS.Spells
             if (Spell.ResurrectMana == 1)
             {
                 int freq = Spell != null ? Spell.Frequency : 0;
-                return new GameSpellEffect(this, CalculateEffectDuration(target, effectiveness), freq, effectiveness);
+                return new GameSpellEffect(this, CalculateEffectDuration(target), freq, effectiveness);
             }
 
             else
-                return new GameSpellAndImmunityEffect(this, CalculateEffectDuration(target, effectiveness), 0, effectiveness);
+                return new GameSpellAndImmunityEffect(this, CalculateEffectDuration(target), 0, effectiveness);
         }
 
         /// <summary>
@@ -300,16 +294,10 @@ namespace DOL.GS.Spells
 
             base.ApplyEffectOnTarget(target);
         }
-        
-        /// <summary>
-        /// Calculates the effect duration in milliseconds
-        /// </summary>
-        /// <param name="target">The effect target</param>
-        /// <param name="effectiveness">The effect effectiveness</param>
-        /// <returns>The effect duration in milliseconds</returns>
-        protected override int CalculateEffectDuration(GameLiving target, double effectiveness)
+
+        protected override int CalculateEffectDuration(GameLiving target)
         {
-            double duration = base.CalculateEffectDuration(target, effectiveness);
+            double duration = base.CalculateEffectDuration(target);
             duration *= target.GetModified(eProperty.StunDurationReduction) * 0.01;
             NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
 

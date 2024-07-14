@@ -18,7 +18,7 @@ namespace DOL.GS.Spells
 
         protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
         {
-            return new FacilitatePainworkingEffect(this, CalculateEffectDuration(target, effectiveness), 0, effectiveness);
+            return new FacilitatePainworkingEffect(this, CalculateEffectDuration(target), 0, effectiveness);
         }
     }
 }

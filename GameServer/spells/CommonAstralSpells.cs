@@ -93,7 +93,7 @@ namespace DOL.GS.Spells
             }
 
             Point2D summonloc;
-            beffect = CreateSpellEffect(target, Effectiveness);
+            beffect = CreateSpellEffect(target, CasterEffectiveness);
             {
                 summonloc = target.GetPointFromHeading(target.Heading, 64);
 
