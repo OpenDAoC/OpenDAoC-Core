@@ -1161,13 +1161,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// When a ranged attack is finished this is called in order to check LOS for next attack
-		/// </summary>
-		public virtual void RangedAttackFinished()
-		{
-		}
-
-		/// <summary>
 		/// Remove engage effect on this living if it is present.
 		/// </summary>
 		public void CancelEngageEffect()

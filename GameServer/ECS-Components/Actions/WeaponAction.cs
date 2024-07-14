@@ -268,7 +268,6 @@ namespace DOL.GS
             {
                 m_owner.CheckWeaponMagicalEffect(mainHandAD, mainWeapon);
                 HandleDamageAdd(m_owner, mainHandAD);
-                m_owner.RangedAttackFinished();
             }
 
             switch (mainHandAD.AttackResult)
