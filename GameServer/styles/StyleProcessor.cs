@@ -341,14 +341,12 @@ namespace DOL.GS.Styles
 				else
 				{
 					bool staticGrowth = style.StealthRequirement; // Static growth is not a function of (effective) weapon speed.
-					double talyGrowth = style.GrowthRate;
-					double talySpec = living.GetModifiedSpecLevel(style.Spec);
-					double talySpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
+					double growthRate = style.GrowthRate;
+					double spec = living.GetModifiedSpecLevel(style.Spec);
+					double attackSpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
 
 					if (staticGrowth)
 					{
-						int spec = Math.Min(living.Level, living.GetModifiedSpecLevel(style.Spec));
-
 						switch (style.ID)
 						{
 							case 335: //Backstab I
@@ -387,13 +385,13 @@ namespace DOL.GS.Styles
 					}
 					else
 					{
-						double modifiedGrowthRate = talyGrowth * talySpec * talySpeed / unstyledDamageCap;
+						double modifiedGrowthRate = growthRate * spec * attackSpeed / unstyledDamageCap;
 						styleDamage = modifiedGrowthRate * unstyledDamage;
 						styleDamageCap = modifiedGrowthRate * unstyledDamageCap;
 
 						// Force styles do at least 1 damage to make level 2 styles actually do something.
 						// Don't forget to ignore the cap. Do it only if the style has a GR.
-						if (styleDamage < 1 && talyGrowth > 0)
+						if (styleDamage < 1 && growthRate > 0)
 						{
 							styleDamage = 1;
 							styleDamageCap = 0;
