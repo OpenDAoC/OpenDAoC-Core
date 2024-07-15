@@ -2203,9 +2203,7 @@ namespace DOL.GS.Spells
 		{
 			double effectiveness;
 
-			if (SpellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects)
-				effectiveness = 1.0;
-			else if (Spell.Level <= 0)
+			if (SpellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Combat_Styles_Effect or GlobalSpellsLines.Realm_Spells || Spell.Level <= 0)
 				effectiveness = 1.0;
 			else if (Spell.IsBuff)
 			{
