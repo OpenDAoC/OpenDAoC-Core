@@ -445,9 +445,9 @@ namespace DOL.AI.Brain
         }
 
         private long _isHandlingAdditionToAggroListFromLosCheck;
-        private long _losCheckCount;
+        private int _losCheckCount;
         private bool StartAddToAggroListFromLosCheck => Interlocked.Exchange(ref _isHandlingAdditionToAggroListFromLosCheck, 1) == 0; // Returns true the first time it's called.
-        private bool IsWaitingForLosCheck => Interlocked.Read(ref _losCheckCount) > 0;
+        private bool IsWaitingForLosCheck => Interlocked.CompareExchange(ref _losCheckCount, 0, 0) > 0;
         protected virtual bool CanAddToAggroListFromMultipleLosChecks => false;
 
         protected void SendLosCheckForAggro(GamePlayer player, GameObject target)

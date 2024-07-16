@@ -340,12 +340,10 @@ namespace DOL.GS.Styles
 				}
 				else
 				{
-					bool staticGrowth = style.StealthRequirement; // Static growth is not a function of (effective) weapon speed.
-					double growthRate = style.GrowthRate;
 					double spec = living.GetModifiedSpecLevel(style.Spec);
-					double attackSpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
 
-					if (staticGrowth)
+					// Stealth openers are unaffected by weapon speed.
+					if (style.StealthRequirement)
 					{
 						switch (style.ID)
 						{
@@ -385,6 +383,8 @@ namespace DOL.GS.Styles
 					}
 					else
 					{
+						double growthRate = style.GrowthRate;
+						double attackSpeed = living.attackComponent.AttackSpeed(weapon) * 0.001;
 						double modifiedGrowthRate = growthRate * spec * attackSpeed / unstyledDamageCap;
 						styleDamage = modifiedGrowthRate * unstyledDamage;
 						styleDamageCap = modifiedGrowthRate * unstyledDamageCap;

@@ -8,8 +8,15 @@ namespace DOL.GS
     {
         private LinkedList<T> _list = new();
         private ReaderWriterLockSlim _lock = new();
+
+        public SimpleDisposableLock Lock { get; }
         public int Count => _list.Count;
         public bool Any => _list.Count > 0;
+
+        public ConcurrentLinkedList()
+        {
+            Lock = new(_lock);
+        }
 
         public void AddLast(LinkedListNode<T> node)
         {
@@ -51,14 +58,9 @@ namespace DOL.GS
             }
         }
 
-        public SimpleDisposableLock GetLock()
-        {
-            return new SimpleDisposableLock(_lock);
-        }
-
         public Enumerator GetEnumerator()
         {
-            return new Enumerator(_list, _lock);
+            return new Enumerator(_list, Lock);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -79,16 +81,15 @@ namespace DOL.GS
             public LinkedListNode<T> Current { get; private set; }
             object IEnumerator.Current => Current;
 
-            public Enumerator(LinkedList<T> list, ReaderWriterLockSlim @lock)
+            public Enumerator(LinkedList<T> list, SimpleDisposableLock @lock)
             {
                 _list = list;
-                _lock = new(@lock);
+                _lock = @lock;
                 _lock.EnterReadLock();
             }
 
             public bool MoveNext()
             {
-                // Unsafe.
                 Current = Current == null ? _list.First : Current.Next;
                 return Current != null;
             }

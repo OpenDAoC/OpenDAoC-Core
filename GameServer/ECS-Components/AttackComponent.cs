@@ -73,12 +73,12 @@ namespace DOL.GS
         /// <summary>
         /// Actually a boolean. Use 'StartAttackRequested' to preserve thread safety.
         /// </summary>
-        private long m_startAttackRequested;
+        private int m_startAttackRequested;
 
         public bool StartAttackRequested
         {
-            get => Interlocked.Read(ref m_startAttackRequested) == 1;
-            set => Interlocked.Exchange(ref m_startAttackRequested, Convert.ToInt64(value));
+            get => Interlocked.CompareExchange(ref m_startAttackRequested, 0, 0) == 1;
+            set => Interlocked.Exchange(ref m_startAttackRequested, Convert.ToInt32(value));
         }
 
         public AttackComponent(GameLiving owner)

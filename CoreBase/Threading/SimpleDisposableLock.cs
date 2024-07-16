@@ -6,7 +6,6 @@ namespace DOL
     // A wrapper for a `ReaderWriterLockSlim` implementing `IDisposable`.
     // `Dispose` only takes care of the unlocking; it doesn't invalidate the underlying lock.
     // Upgrades are not allowed.
-    // This class' instances aren't meant to be shared by multiple threads.
     public class SimpleDisposableLock : IDisposable
     {
         private ReaderWriterLockSlim _lock;
