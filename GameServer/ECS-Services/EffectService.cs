@@ -98,7 +98,7 @@ namespace DOL.GS
             {
                 if (caster != null && caster.effectListComponent.ConcentrationEffects != null)
                 {
-                    caster.UsedConcentration += spell.Concentration;
+                    caster.effectListComponent.AddUsedConcentration(spell.Concentration);
 
                     lock (caster.effectListComponent.ConcentrationEffectsLock)
                     {
@@ -212,7 +212,7 @@ namespace DOL.GS
                 {
                     if (spellEffect.SpellHandler.Caster != null && spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffects != null)
                     {
-                        spellEffect.SpellHandler.Caster.UsedConcentration -= spellEffect.SpellHandler.Spell.Concentration;
+                        spellEffect.SpellHandler.Caster.effectListComponent.AddUsedConcentration(-spellEffect.SpellHandler.Spell.Concentration);
 
                         lock (spellEffect.SpellHandler.Caster.effectListComponent.ConcentrationEffectsLock)
                         {

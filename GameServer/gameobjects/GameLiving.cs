@@ -31,8 +31,6 @@ namespace DOL.GS
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 		public static int IN_COMBAT_DURATION = 10000;
 
-		public int UsedConcentration;
-
 		public ConcurrentDictionary<eSpellType, Spell> ActivePulseSpells { get; } = new();
 
 		#region Combat

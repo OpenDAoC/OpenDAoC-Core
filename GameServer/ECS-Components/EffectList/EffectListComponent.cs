@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using DOL.GS.Effects;
 using DOL.GS.Spells;
 
@@ -10,14 +11,17 @@ namespace DOL.GS
     public class EffectListComponent : IManagedEntity
     {
         private int _lastUpdateEffectsCount;
+        private int _usedConcentration;
 
         public GameLiving Owner { get; }
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.EffectListComponent, false);
-        public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; } = new Dictionary<eEffect, List<ECSGameEffect>>();
+        public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; } = [];
         public object EffectsLock { get; } = new();
         public List<ECSGameSpellEffect> ConcentrationEffects { get; } = new List<ECSGameSpellEffect>(20);
         public object ConcentrationEffectsLock { get; } = new();
-        private readonly Dictionary<int, ECSGameEffect> EffectIdToEffect = new();
+        private readonly Dictionary<int, ECSGameEffect> EffectIdToEffect = [];
+
+        public int UsedConcentration => Interlocked.CompareExchange(ref _usedConcentration, 0, 0);
 
         public EffectListComponent(GameLiving owner)
         {
@@ -255,6 +259,11 @@ namespace DOL.GS
                     return false;
                 }
             }
+        }
+
+        public void AddUsedConcentration(int amount)
+        {
+            Interlocked.Add(ref _usedConcentration, amount);
         }
 
         public List<ECSGameEffect> GetAllEffects()
