@@ -102,9 +102,8 @@ namespace DOL.GS.Commands
 	     "'/mob trigger <type> <chance> <emote> <text>' adds a trigger to targeted mob class.  Use '/mob trigger help' for more info.",
 	     "'/mob trigger info' Give trigger informations.",
 	     "'/mob trigger remove <id>' Remove a trigger.",
-	     "'/mob ownerid <id>' Sets and saves the OwnerID for this mob.",
-		 "'/mob scaling [number] Sets the NPCs ScalingFactor to the number."
-	    )]
+	     "'/mob ownerid <id>' Sets and saves the OwnerID for this mob."
+		)]
 	public class MobCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -241,7 +240,6 @@ namespace DOL.GS.Commands
 						case "reload": reload(client, targetMob, args); break;
 						case "findname": findname(client, args); break;
 						case "trigger": trigger(client, targetMob, args); break;
-						case "scaling": scaling(client, targetMob, args); break;
 					default:
 						DisplaySyntax(client);
 						return;
@@ -254,22 +252,7 @@ namespace DOL.GS.Commands
 			}
 		}
 
-        private void scaling(GameClient client, GameNPC targetMob, string[] args) {
-			
-			short scaleFactor;
-
-			try {
-				scaleFactor = Convert.ToInt16(args[2]);
-				targetMob.WeaponSkillScalingFactor = scaleFactor;
-				client.Out.SendMessage("Mob Scaling changed to: " + targetMob.WeaponSkillScalingFactor, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			}
-			catch (Exception) {
-				DisplaySyntax(client, args[1]);
-			}
-			
-		}
-
-        private void create(GameClient client, string[] args)
+		private void create(GameClient client, string[] args)
 		{
 			string theType = "DOL.GS.GameNPC";
 			byte realm = 0;
