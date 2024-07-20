@@ -190,9 +190,9 @@ namespace DOL.GS
             if (_combatStyle != null && _combatStyle.WeaponTypeRequirement == (int) eObjectType.Shield)
                 _weapon = _leftWeapon;
 
-            int mainHandAttackSpeed = AttackComponent.AttackSpeed(_weapon);
+            int attackSpeed = AttackComponent.AttackSpeed(_weapon);
 
-            if (clearOldStyles || StyleComponent.NextCombatStyleTime + mainHandAttackSpeed < GameLoop.GameLoopTime)
+            if (clearOldStyles || ServiceUtils.ShouldTick(StyleComponent.NextCombatStyleTime + attackSpeed))
             {
                 // Cancel the styles if they were registered too long ago.
                 // Nature's Shield stays active forever and falls back to a non-backup style.
@@ -215,7 +215,7 @@ namespace DOL.GS
             if (_target is GamePlayer playerTarget && playerTarget.IsSitting)
                 _effectiveness *= 2;
 
-            _interruptDuration = mainHandAttackSpeed; // Shouldn't this take left hand into account?
+            _interruptDuration = attackSpeed;
             return true;
         }
 
