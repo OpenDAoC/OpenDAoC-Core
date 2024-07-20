@@ -14,9 +14,11 @@ namespace DOL.GS
         {
             get
             {
+                GamePlayer playerOwner = Owner as GamePlayer;
+
                 return Source != null && Target != null
-                    ? LanguageMgr.GetTranslation(((GamePlayer) Owner).Client, "Effects.ProtectEffect.ProtectByName", Target.GetName(0, false), Source.GetName(0, false))
-                    : LanguageMgr.GetTranslation(((GamePlayer) Owner).Client, "Effects.ProtectEffect.Name");
+                    ? LanguageMgr.GetTranslation(playerOwner?.Client, "Effects.ProtectEffect.ProtectByName", Target.GetName(0, false), Source.GetName(0, false))
+                    : LanguageMgr.GetTranslation(playerOwner?.Client, "Effects.ProtectEffect.Name");
             }
         }
         public override bool HasPositiveEffect => true;
@@ -78,7 +80,7 @@ namespace DOL.GS
                 playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.ProtectEffect.XNoProtectYou", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            EffectService.RequestCancelEffect(PairedEffect);
+            EffectService.RequestImmediateCancelEffect(PairedEffect);
             base.OnStopEffect();
         }
     }
