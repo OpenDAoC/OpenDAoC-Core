@@ -62,7 +62,6 @@ namespace DOL.Language
 
         #region Variables
         private const string TRANSLATION_ID_EMPTY = "No translation ID could be found for this message.";
-        private const string TRANSLATION_NULL = "NULL";
 
         /// <summary>
         /// Translation ID for the sentence, array position 0
@@ -488,7 +487,7 @@ namespace DOL.Language
         {
             if (client == null)
             {
-                translation = TRANSLATION_NULL;
+                translation = null;
                 return true;
             }
 
