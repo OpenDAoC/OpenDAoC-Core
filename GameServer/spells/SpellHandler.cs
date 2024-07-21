@@ -34,7 +34,7 @@ namespace DOL.GS.Spells
 		protected eCastState CastState { get; private set; }
 		protected bool HasLos { get; private set; }
 		protected double DistanceFallOff { get; private set; }
-		protected double CasterEffectiveness { get; private set; } // Should be equal to `Caster.Effectiveness` in most cases. See `StartSpell`.
+		protected double CasterEffectiveness { get; private set; } = 1.0; // Needs to default to 1 since some spell handlers override `StartSpell`, preventing it from being set.
 
 		protected Spell m_spell;
 		protected SpellLine m_spellLine;
