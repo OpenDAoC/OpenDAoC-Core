@@ -689,13 +689,13 @@ namespace DOL.GS
 					if (item.Count < count)
 						return false;
 
-					if (item.Count == count)
+					item.Count -= count;
+
+					if (item.Count == 0)
 					{
 						item.AllowAdd = true;
 						return RemoveItem(item);
 					}
-
-					item.Count -= count;
 
 					if (!m_changedSlots.Contains(slot))
 						m_changedSlots.Add(slot);
