@@ -368,7 +368,7 @@ namespace DOL.GS.Spells
                     {
                         // Message: You can't charm {0} while {1} is in combat!
                         MessageToCaster(
-                            LanguageMgr.GetTranslation(casterPlayer.Client, "SpellEffect.Charm.Err.InCombat", selectedTarget.GetName(0, false), selectedTarget.GetPronoun(1, false)), eChatType.CT_SpellResisted);
+                            LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.InCombat", selectedTarget.GetName(0, false), selectedTarget.GetPronoun(1, false)), eChatType.CT_SpellResisted);
                         return false;
                     }
                 }
