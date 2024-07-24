@@ -48,7 +48,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
          public class AtlasOF_WildArcanaAbility : RAPropertyEnhancer
          {
-             public AtlasOF_WildArcanaAbility(DbAbility dba, int level) : base(dba, level, eProperty.CriticalDotHitChance) { }
+             public AtlasOF_WildArcanaAbility(DbAbility dba, int level) : base(dba, level, eProperty.CriticalDebuffHitChance) { }
              public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 2; }
              public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer5AmountForLevel(level); }
              public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }

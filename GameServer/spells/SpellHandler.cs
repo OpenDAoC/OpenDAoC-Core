@@ -2259,7 +2259,7 @@ namespace DOL.GS.Spells
 
 		protected double GetDebuffEffectivenessCriticalModifier()
 		{
-			if (Util.Chance(Caster.DotCriticalChance))
+			if (Util.Chance(Caster.DebuffCriticalChance))
 			{
 				double min = 0.1;
 				double max = 1.0;

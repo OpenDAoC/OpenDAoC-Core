@@ -587,9 +587,9 @@ namespace DOL.GS
 		/// <summary>
 		/// Returns the chance for a critical hit with a spell
 		/// </summary>
-		public virtual int DotCriticalChance
+		public virtual int DebuffCriticalChance
 		{
-			get { return GetModified(eProperty.CriticalDotHitChance); }
+			get { return GetModified(eProperty.CriticalDebuffHitChance); }
 			set { }
 		}
 

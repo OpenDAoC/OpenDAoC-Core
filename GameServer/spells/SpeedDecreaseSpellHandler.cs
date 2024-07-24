@@ -49,7 +49,7 @@ namespace DOL.GS.Spells
 			// 	}
 			// }
 
-			int criticalChance = Caster.DotCriticalChance;
+			int criticalChance = Caster.DebuffCriticalChance;
 
 			if (criticalChance > 0)
 			{

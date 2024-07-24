@@ -163,7 +163,7 @@ namespace DOL.GS
 
 		// 116 - 119 Available
 
-		CriticalDotHitChance = 119,
+		CriticalDebuffHitChance = 119,
 
 		Focus_Darkness = 120,
 		Focus_Suppression = 121,

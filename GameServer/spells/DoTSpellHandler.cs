@@ -155,7 +155,7 @@ namespace DOL.GS.Spells
             //        Spell.Name, ad.Target.GetName(0, false), ad.CriticalDamage)) + " (" + (ad.Attacker.SpellCriticalChance - 10) + "%)", eChatType.CT_YouHit);
 
 			if (this.CriticalDamage > 0)
-				MessageToCaster("You critically hit for an additional " + this.CriticalDamage + " damage!" + " (" + m_caster.DotCriticalChance + "%)", eChatType.CT_YouHit);
+				MessageToCaster("You critically hit for an additional " + this.CriticalDamage + " damage!" + " (" + m_caster.DebuffCriticalChance + "%)", eChatType.CT_YouHit);
 
 			//			if (ad.Damage > 0)
 			//			{
@@ -326,7 +326,7 @@ namespace DOL.GS.Spells
 			if (CriticalDamage > 0 || !firstTick)
 				return CriticalDamage;
 
-			int criticalChance = Caster.DotCriticalChance;
+			int criticalChance = Caster.DebuffCriticalChance;
 
 			if (criticalChance < 0)
 				return 0;
