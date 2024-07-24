@@ -2194,7 +2194,7 @@ namespace DOL.GS.Spells
 		protected virtual double CalculateDamageEffectiveness()
 		{
 			if (Caster is GamePlayer playerCaster)
-				return CasterEffectiveness *= 1 + playerCaster.GetModified(eProperty.SpellDamage) * 0.01;
+				return CasterEffectiveness * 1 + playerCaster.GetModified(eProperty.SpellDamage) * 0.01;
 			else
 				return CasterEffectiveness;
 		}
