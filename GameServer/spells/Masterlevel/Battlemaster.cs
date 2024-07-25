@@ -547,15 +547,18 @@ namespace DOL.GS.Spells
                 return null;
 
             //create the AttackData
-            AttackData ad = new AttackData();
-            ad.Attacker = player;
-            ad.Target = target;
-            ad.Damage = 0;
-            ad.CriticalDamage = 0;
-            ad.WeaponSpeed = player.AttackSpeed(weapon) / 100;
-            ad.DamageType = player.attackComponent.AttackDamageType(weapon);
-            ad.Weapon = weapon;
-            ad.IsOffHand = weapon.Hand == 2;
+            AttackData ad = new()
+            {
+                Attacker = player,
+                Target = target,
+                Damage = 0,
+                CriticalDamage = 0,
+                WeaponSpeed = player.AttackSpeed(weapon),
+                DamageType = player.attackComponent.AttackDamageType(weapon),
+                Weapon = weapon,
+                IsOffHand = weapon.Hand == 2
+            };
+
             //we need to figure out which armor piece they are going to hit.
             //figure out the attacktype
             switch (weapon.Item_Type)

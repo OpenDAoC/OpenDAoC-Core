@@ -1048,7 +1048,7 @@ namespace DOL.GS
                 Attacker = owner,
                 Target = target as GameLiving,
                 Style = style,
-                WeaponSpeed = AttackSpeed(weapon) / 100,
+                WeaponSpeed = AttackSpeed(weapon),
                 DamageType = AttackDamageType(weapon),
                 Weapon = weapon,
                 IsOffHand = weapon != null && weapon.SlotPosition == Slot.LEFTHAND
