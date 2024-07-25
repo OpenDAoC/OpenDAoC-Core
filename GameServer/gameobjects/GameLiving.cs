@@ -1849,24 +1849,6 @@ namespace DOL.GS
 				npc.CancelReturnToSpawnPoint();
 		}
 
-		public void HandleDamageShields(AttackData ad)
-		{
-			var dSEffects = effectListComponent.GetSpellEffects(eEffect.FocusShield);
-			// Handle DamageShield damage
-			if (dSEffects != null)
-			{
-				for (int i = 0; i < dSEffects.Count; i++)
-				{
-					if (dSEffects[i].IsBuffActive)
-					{
-						var dSEffect = dSEffects[i];
-
-						((DamageShieldSpellHandler)dSEffect.SpellHandler).EventHandler(null, this, new AttackedByEnemyEventArgs(ad));
-					}
-				}
-			}
-		}
-
 		/// <summary>
 		/// Attempt to break/remove CC spells on this living. Returns true if any CC spells were removed.
 		/// </summary>

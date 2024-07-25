@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
@@ -214,7 +213,7 @@ namespace DOL.GS
             if (mainHandAD == null || mainHandAD.Target == null)
                 return;
 
-            mainHandAD.Target.HandleDamageShields(mainHandAD);
+            HandleDamageShields(mainHandAD);
 
             // Now left hand damage.
             if (leftHandSwingCount > 0 && mainWeapon.SlotPosition != Slot.RANGED)
@@ -253,7 +252,7 @@ namespace DOL.GS
                                 }
                             }
 
-                            leftHandAD.Target.HandleDamageShields(leftHandAD);
+                            HandleDamageShields(leftHandAD);
 
                             // Reflex Attack - Offhand.
                             if (targetHasReflexAttackRA)
@@ -326,38 +325,48 @@ namespace DOL.GS
 
         private static void HandleDamageAdd(GameLiving owner, AttackData ad)
         {
-            List<ECSGameSpellEffect> dmgAddEffects = owner.effectListComponent.GetSpellEffects(eEffect.DamageAdd);
+            List<ECSGameSpellEffect> damageAddEffects = owner.effectListComponent.GetSpellEffects(eEffect.DamageAdd);
+
+            if (damageAddEffects == null)
+                return;
 
             /// [Atlas - Takii] This could probably be optimized a bit by doing the split below between "affected/unaffected by stacking"
             /// when the effect is applied in the EffectListComponent instead of every time we swing our weapon?
-            if (dmgAddEffects != null)
+            List<ECSGameSpellEffect> damageAddsUnaffectedByStacking = [];
+
+            // 1 - Apply the DmgAdds that are unaffected by stacking (usually RA-based DmgAdds, EffectGroup 99999) first regardless of their damage.
+            foreach (ECSGameSpellEffect damageAdd in damageAddEffects)
             {
-                List<ECSGameSpellEffect> dmgAddsUnaffectedByStacking = new();
-
-                // 1 - Apply the DmgAdds that are unaffected by stacking (usually RA-based DmgAdds, EffectGroup 99999) first regardless of their damage.
-                foreach (ECSGameSpellEffect effect in dmgAddEffects)
+                if (damageAdd.SpellHandler.Spell.EffectGroup == 99999)
                 {
-                    if (effect.SpellHandler.Spell.EffectGroup == 99999)
-                    {
-                        dmgAddsUnaffectedByStacking.Add(effect);
-                        ((DamageAddSpellHandler)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), 1);
-                    }
-                }
-
-                // 2 - Apply regular damage adds. We only start reducing to 50% effectiveness if there is more than one regular damage add being applied.
-                // "Unaffected by stacking" dmg adds also dont reduce subsequence damage adds; they are effectively outside of the stacking mechanism.
-                int numRegularDmgAddsApplied = 0;
-
-                foreach (ECSGameSpellEffect effect in dmgAddEffects.Except(dmgAddsUnaffectedByStacking).OrderByDescending(e => e.SpellHandler.Spell.Damage))
-                {
-                    double effectiveness = 1 + effect.SpellHandler.Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
-                    if (effect.IsBuffActive)
-                    {
-                        ((DamageAddSpellHandler)effect.SpellHandler).EventHandler(null, owner, new AttackFinishedEventArgs(ad), numRegularDmgAddsApplied > 0 ? effectiveness * 0.5 : effectiveness);
-                        numRegularDmgAddsApplied++;
-                    }
+                    damageAddsUnaffectedByStacking.Add(damageAdd);
+                    (damageAdd.SpellHandler as DamageAddSpellHandler).Handle(ad, 1);
                 }
             }
+
+            // 2 - Apply regular damage adds. We only start reducing to 50% effectiveness if there is more than one regular damage add being applied.
+            // "Unaffected by stacking" dmg adds also dont reduce subsequent damage adds; they are effectively outside of the stacking mechanism.
+            int numRegularDmgAddsApplied = 0;
+
+            foreach (ECSGameSpellEffect damageAdd in damageAddEffects.Except(damageAddsUnaffectedByStacking).OrderByDescending(e => e.SpellHandler.Spell.Damage))
+            {
+                if (damageAdd.IsBuffActive)
+                {
+                    (damageAdd.SpellHandler as DamageAddSpellHandler).Handle(ad, numRegularDmgAddsApplied > 0 ? 0.5 : 1.0);
+                    numRegularDmgAddsApplied++;
+                }
+            }
+        }
+
+        private static void HandleDamageShields(AttackData ad)
+        {
+            List<ECSGameSpellEffect> damagShieldEffects = ad.Target.effectListComponent.GetSpellEffects(eEffect.FocusShield);
+
+            if (damagShieldEffects == null)
+                return;
+
+            foreach (ECSGameSpellEffect damageShield in damagShieldEffects)
+                (damageShield.SpellHandler as DamageShieldSpellHandler).Handle(ad, 1);
         }
 
         private static void HandleReflexAttack(GameLiving attacker, GameLiving target, eAttackResult attackResult, int interruptDuration)
