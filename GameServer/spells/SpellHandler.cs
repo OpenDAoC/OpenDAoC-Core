@@ -3224,10 +3224,6 @@ namespace DOL.GS.Spells
 			{
 				if (Caster is GameSummonedPet pet)
 				{
-					// There is no reason to cap pet spell damage if it's being scaled anyway.
-					if (ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
-						spellDamage = CapPetSpellDamage(spellDamage, player);
-
 					if (pet is NecromancerPet nPet)
 					{
 						/*
@@ -3248,6 +3244,10 @@ namespace DOL.GS.Spells
 					}
 					else
 					{
+						// There is no reason to cap pet spell damage if it's being scaled anyway.
+						if (Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
+							spellDamage = CapPetSpellDamage(spellDamage, player);
+
 						int ownerIntMod = 125;
 						if (pet.Owner is GamePlayer own) ownerIntMod += own.Intelligence / 2;
 						spellDamage *= ((pet.Intelligence + ownerIntMod ) / 275.0);
