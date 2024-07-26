@@ -14,11 +14,11 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	/// <summary>
-	/// Default class for spell handler
-	/// should be used as a base class for spell handler
-	/// </summary>
-	public class SpellHandler : ISpellHandler
+    /// <summary>
+    /// Default class for spell handler
+    /// should be used as a base class for spell handler
+    /// </summary>
+    public class SpellHandler : ISpellHandler
 	{
 		// Maximum number of sub-spells to get delve info for.
 		protected const byte MAX_DELVE_RECURSION = 5;
@@ -3090,54 +3090,34 @@ namespace DOL.GS.Spells
 		/// <param name="max">returns max variance</param>
 		public virtual void CalculateDamageVariance(GameLiving target, out double min, out double max)
 		{
-			if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects)
+			if (m_spellLine.KeyName is GlobalSpellsLines.Item_Effects)
 			{
-				min = .75;
+				min = 0.75;
 				max = 1.0;
 				return;
 			}
 
-			if (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
+			if (m_spellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect)
 			{
-				if (UseMinVariance)
-				{
-					min = 1.0;
-				}
-				else
-				{
-					min = .75;
-				}
-
-				max = 1.0;
-
-				return;
-			}
-
-			if (m_spellLine.KeyName == GlobalSpellsLines.Reserved_Spells)
-			{
-				min = max = 1.0;
-				return;
-			}
-
-			if (m_spellLine.KeyName == GlobalSpellsLines.Mob_Spells)
-			{
-				min = .75;
+				min = UseMinVariance ? 1.0 : 0.75;
 				max = 1.0;
 				return;
 			}
 
-			int speclevel = 1;
+			if (m_spellLine.KeyName is GlobalSpellsLines.Reserved_Spells)
+			{
+				min = 1.0;
+				max = 1.0;
+				return;
+			}
 
-			if (m_caster is GameSummonedPet)
+			if (m_spellLine.KeyName is GlobalSpellsLines.Mob_Spells)
 			{
-				IControlledBrain brain = (m_caster as GameNPC).Brain as IControlledBrain;
-				speclevel = brain.GetLivingOwner().Level;
+				min = 0.75;
+				max = 1.0;
+				return;
 			}
-			else if (m_caster is GamePlayer)
-			{
-				speclevel = ((GamePlayer)m_caster).GetModifiedSpecLevel(m_spellLine.Spec);
-			}
-			
+
 			/*
 			 * June 21st 2022 - Fen: Removing a lot of DoL code that should not be here for 1.65 calculations.
 			 *
@@ -3146,47 +3126,36 @@ namespace DOL.GS.Spells
 			 *
 			 * Base DoL calculations were adding an extra 10-30% damage above 1.0, which has now been removed.
 			 */
-			min = .2;
-			max = 1;
-			
-			if (target.Level > 0)
+			int spec;
+			double bonusFromLevelDifference;
+			double targetLevel = Math.Max(1.0, target.Level); // Treat level 0 NPCs as if they were level 1.
+
+			if (m_caster is GamePlayer playerCaster)
 			{
-				var varianceMod = (speclevel - 1) / (double) target.Level;
-				if (varianceMod > 1) varianceMod = 1;
-				min = varianceMod;
+				spec = playerCaster.GetModifiedSpecLevel(m_spellLine.Spec);
+				bonusFromLevelDifference = GetLevelModFactor() * (m_caster.Level - targetLevel);
 			}
-			/*
-			if (speclevel - 1 > target.Level)
+			else if (m_caster is GameSummonedPet summonedPetCaster && summonedPetCaster.Brain is IControlledBrain brain)
 			{
-				double overspecBonus = (speclevel - 1 - target.Level) * 0.005;
-				min += overspecBonus;
-				max += overspecBonus;
-				Console.WriteLine($"overspec bonus {overspecBonus}");
-			}*/
-			
-			// add level mod
-			if (m_caster is GamePlayer)
-			{
-				min += GetLevelModFactor() * (m_caster.Level - target.Level);
-				max += GetLevelModFactor() * (m_caster.Level - target.Level);
+				// This should only be used by necromancer pets. But just in case, we're also handling summoned pets using spells that aren't from `GlobalSpellsLines.Mob_Spells`.
+				GameLiving owner = brain.GetLivingOwner();
+				spec = m_caster is NecromancerPet ? owner.GetModifiedSpecLevel(m_spellLine.Spec) : owner.Level;
+				bonusFromLevelDifference = GetLevelModFactor() * (owner.Level - targetLevel);
 			}
-			else if (m_caster is GameNPC && ((GameNPC)m_caster).Brain is IControlledBrain)
+			else
 			{
-				//Get the root owner
-				GameLiving owner = ((IControlledBrain)((GameNPC)m_caster).Brain).GetLivingOwner();
-				if (owner != null)
-				{
-					min += GetLevelModFactor() * (owner.Level - target.Level);
-					max += GetLevelModFactor() * (owner.Level - target.Level);
-				}
+				// We normally shouldn't be able to reach this point.
+				spec = 1;
+				bonusFromLevelDifference = 0;
 			}
 
-			if (max < 0.25)
-				max = 0.25;
-			if (min > max)
-				min = max;
-			if (min < .2)
-				min = .2;
+			spec = Math.Max(1, spec);
+
+			min = Math.Min(1, (spec - 1) / targetLevel) + bonusFromLevelDifference;
+			max = 1.0 + bonusFromLevelDifference;
+
+			max = Math.Max(0.25, max);
+			min = Math.Clamp(min, 0.2, max);
 		}
 
 		/// <summary>
