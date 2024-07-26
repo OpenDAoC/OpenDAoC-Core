@@ -14,11 +14,11 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-    /// <summary>
-    /// Default class for spell handler
-    /// should be used as a base class for spell handler
-    /// </summary>
-    public class SpellHandler : ISpellHandler
+	/// <summary>
+	/// Default class for spell handler
+	/// should be used as a base class for spell handler
+	/// </summary>
+	public class SpellHandler : ISpellHandler
 	{
 		// Maximum number of sub-spells to get delve info for.
 		protected const byte MAX_DELVE_RECURSION = 5;
@@ -3163,40 +3163,27 @@ namespace DOL.GS.Spells
 		/// This simulates a player casting a baseline nuke with the capped damage near (but not exactly) that of the equivilent spell of the players level.
 		/// This cap is not applied if the player is level 50
 		/// </summary>
-		/// <param name="player"></param>
-		/// <returns></returns>
-		public virtual double CapPetSpellDamage(double damage, GamePlayer player)
+		public virtual double CapPetSpellDamage(double damage, GameLiving owner)
 		{
 			double cappedDamage = damage;
 
-			if (player.Level < 13)
-			{
-				cappedDamage = 4.1 * player.Level;
-			}
-
-			if (player.Level < 50)
-			{
-				cappedDamage = 3.8 * player.Level;
-			}
+			if (owner.Level < 13)
+				cappedDamage = 4.1 * owner.Level;
+			else if (owner.Level < 50)
+				cappedDamage = 3.8 * owner.Level;
 
 			return Math.Min(damage, cappedDamage);
 		}
-
 
 		/// <summary>
 		/// Put a calculated cap on NPC damage to solve a problem where an npc is given a high level spell but needs damage
 		/// capped to the npc level.  This uses player spec nukes to calculate damage cap.
 		/// NPC's level 50 and above are not capped
 		/// </summary>
-		/// <param name="damage"></param>
-		/// <param name="player"></param>
-		/// <returns></returns>
 		public virtual double CapNPCSpellDamage(double damage, GameNPC npc)
 		{
 			if (npc.Level < 50)
-			{
 				return Math.Min(damage, 4.7 * npc.Level);
-			}
 
 			return damage;
 		}
@@ -3208,104 +3195,100 @@ namespace DOL.GS.Spells
 		public virtual double CalculateDamageBase(GameLiving target)
 		{
 			double spellDamage = Spell.Damage;
-			GamePlayer player = Caster as GamePlayer;
+			bool listCaster = false;
 
-			if (Spell.SpellType == eSpellType.Lifedrain)
-				spellDamage *= (1 + Spell.LifeDrainReturn * .001);
+			if (Spell.SpellType is eSpellType.Lifedrain)
+				spellDamage *= 1 + Spell.LifeDrainReturn * 0.001;
 
-			// For pets the stats of the owner have to be taken into account.
-
-			if (Caster is GameNPC && ((Caster as GameNPC).Brain) is IControlledBrain)
+			// For pets, the stats of the owner have to be taken into account.
+			if (Caster is GameNPC npcCaster)
 			{
-				player = (((Caster as GameNPC).Brain) as IControlledBrain).Owner as GamePlayer;
-			}
-
-			if (player != null)
-			{
-				if (Caster is GameSummonedPet pet)
+				if (npcCaster is GameSummonedPet summonedPet)
 				{
-					if (pet is NecromancerPet nPet)
+					if (summonedPet is NecromancerPet)
 					{
-						/*
-						int ownerIntMod = 125;
-						if (pet.Owner is GamePlayer own) ownerIntMod += own.Intelligence;
-						spellDamage *= ((nPet.GetModified(eProperty.Intelligence) + ownerIntMod) / 275.0);
-						if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
-*/
-						
-						if (pet.Owner is GamePlayer own)
+						if (summonedPet.Owner is GamePlayer owner)
 						{
-							//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
-							int manaStatValue = own.GetModified((eProperty)own.CharacterClass.ManaStat);
-							//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
-							spellDamage *= ((manaStatValue - own.Level) * 0.005) + 1;
+							int manaStatValue = owner.GetModified((eProperty) owner.CharacterClass.ManaStat);
+							spellDamage *= (manaStatValue - owner.Level) * 0.005 + 1;
+							listCaster = true;
 						}
-						
 					}
 					else
 					{
 						// There is no reason to cap pet spell damage if it's being scaled anyway.
 						if (Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
-							spellDamage = CapPetSpellDamage(spellDamage, player);
+							spellDamage = CapPetSpellDamage(spellDamage, summonedPet.Owner);
 
 						int ownerIntMod = 125;
-						if (pet.Owner is GamePlayer own) ownerIntMod += own.Intelligence / 2;
-						spellDamage *= ((pet.Intelligence + ownerIntMod ) / 275.0);
-					}
-						
-					
-					int modSkill = pet.Owner.GetModifiedSpecLevel(m_spellLine.Spec) -
-								   pet.Owner.GetBaseSpecLevel(m_spellLine.Spec);
-					spellDamage *= 1 + (modSkill * .005);
-				}
-				else if (SpellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect)
-				{
-					double weaponskillScalar = (3 + .02 * player.GetWeaponStat(player.ActiveWeapon)) /
-											   (1 + .005 * player.GetWeaponStat(player.ActiveWeapon));
-					spellDamage *= (player.GetWeaponSkill(player.ActiveWeapon) * weaponskillScalar /3 + 100) / 200;
-				}
-				else if (player.CharacterClass.ManaStat != eStat.UNDEFINED
-					&& SpellLine.KeyName != GlobalSpellsLines.Combat_Styles_Effect
-					&& m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons
-					&& SpellLine.KeyName != GlobalSpellsLines.Item_Effects
-					&& player.CharacterClass.ID != (int)eCharacterClass.MaulerAlb
-					&& player.CharacterClass.ID != (int)eCharacterClass.MaulerMid
-					&& player.CharacterClass.ID != (int)eCharacterClass.MaulerHib
-					&& player.CharacterClass.ID != (int)eCharacterClass.Vampiir)
-				{
-					//Delve * (acu/200+1) * (plusskillsfromitems/200+1) * (Relicbonus+1) * (mom+1) * (1 - enemyresist) 
-					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-					//spellDamage *= ((manaStatValue - 50) / 275.0) + 1;
-					spellDamage *= ((manaStatValue - player.Level) * 0.005) + 1;
-					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) -
-								   player.GetBaseSpecLevel(m_spellLine.Spec);
-					spellDamage *= 1 + (modSkill * .005);
 
-					//list casters get a little extra sauce
-					if ((eCharacterClass) player.CharacterClass.ID is eCharacterClass.Wizard
-						or eCharacterClass.Theurgist
-						or eCharacterClass.Cabalist or eCharacterClass.Sorcerer or eCharacterClass.Necromancer
-						or eCharacterClass.Eldritch or eCharacterClass.Enchanter or eCharacterClass.Mentalist
-						or eCharacterClass.Animist or eCharacterClass.Valewalker
-						or eCharacterClass.Runemaster or eCharacterClass.Spiritmaster or eCharacterClass.Bonedancer)
-					{
-						spellDamage *= 1.10;
+						if (summonedPet.Owner is GamePlayer owner)
+							ownerIntMod += owner.Intelligence / 2;
+
+						spellDamage *= (summonedPet.Intelligence + ownerIntMod) / 275.0;
 					}
-					
-					if (spellDamage < Spell.Damage) spellDamage = Spell.Damage;
+
+					// It won't have any effect if the spell is of `GlobalSpellsLines.Mob_Spells`.
+					int modSkill = summonedPet.Owner.GetModifiedSpecLevel(m_spellLine.Spec) - summonedPet.Owner.GetBaseSpecLevel(m_spellLine.Spec);
+					spellDamage *= 1 + modSkill * 0.005;
+				}
+				else
+				{
+					int manaStatValue = npcCaster.GetModified(eProperty.Intelligence);
+					spellDamage = CapNPCSpellDamage(spellDamage, npcCaster) * (manaStatValue + 200) / 275.0;
+					return Math.Max(0, spellDamage);
 				}
 			}
-			else if (Caster is GameNPC)
+			else if (Caster is GamePlayer player)
 			{
-				var npc = (GameNPC) Caster;
-				int manaStatValue = npc.GetModified(eProperty.Intelligence);
-				spellDamage = CapNPCSpellDamage(spellDamage, npc)*(manaStatValue + 200)/275.0;
+				if (SpellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect)
+				{
+					int weaponStat = player.GetWeaponStat(player.ActiveWeapon);
+					double weaponSkillScalar = (3 + 0.02 * weaponStat) / (1 + 0.005 * weaponStat);
+					spellDamage *= (player.GetWeaponSkill(player.ActiveWeapon) * weaponSkillScalar / 3.0 + 100) / 200.0;
+				}
+				else if (player.CharacterClass.ManaStat is not eStat.UNDEFINED &&
+					SpellLine.KeyName is not GlobalSpellsLines.Combat_Styles_Effect
+					and not GlobalSpellsLines.Mundane_Poisons
+					and not GlobalSpellsLines.Item_Effects &&
+					(eCharacterClass) player.CharacterClass.ID is not eCharacterClass.MaulerAlb
+					and not eCharacterClass.MaulerMid
+					and not eCharacterClass.MaulerHib
+					and not eCharacterClass.Vampiir)
+				{
+					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
+					spellDamage *= (manaStatValue - player.Level) * 0.005 + 1;
+					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) - player.GetBaseSpecLevel(m_spellLine.Spec);
+					spellDamage *= 1 + modSkill * 0.005;
+
+					// List casters get a little extra sauce.
+					switch ((eCharacterClass) player.CharacterClass.ID)
+					{
+						case eCharacterClass.Wizard:
+						case eCharacterClass.Theurgist:
+						case eCharacterClass.Cabalist:
+						case eCharacterClass.Sorcerer:
+						case eCharacterClass.Necromancer:
+						case eCharacterClass.Eldritch:
+						case eCharacterClass.Enchanter:
+						case eCharacterClass.Mentalist:
+						case eCharacterClass.Animist:
+						case eCharacterClass.Valewalker:
+						case eCharacterClass.Runemaster:
+						case eCharacterClass.Spiritmaster:
+						case eCharacterClass.Bonedancer:
+						{
+							listCaster = true;
+							break;
+						}
+					}
+				}
 			}
 
-			if (spellDamage < 0)
-				spellDamage = 0;
+			if (listCaster)
+				spellDamage *= 1.1;
 
-			return spellDamage;
+			return Math.Max(0, spellDamage);
 		}
 
 		/// <summary>
