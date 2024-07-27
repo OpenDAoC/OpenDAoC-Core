@@ -29,13 +29,6 @@ namespace DOL.GS.PropertyCalc
                 regen /= 2.0;
 
             regen *= ServerProperties.Properties.MANA_REGEN_AMOUNT_MODIFIER;
-
-            double decimals = regen - (int) regen;
-
-            // Compensate for int rounding.
-            if (Util.ChanceDouble(decimals))
-                regen += 1;
-
             int debuff = living.SpecBuffBonusCategory[(int) property];
 
             if (debuff < 0)

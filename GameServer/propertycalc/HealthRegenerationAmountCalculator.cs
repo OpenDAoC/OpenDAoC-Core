@@ -41,13 +41,6 @@ namespace DOL.GS.PropertyCalc
             }
 
             regen *= ServerProperties.Properties.HEALTH_REGEN_AMOUNT_MODIFIER;
-
-            double decimals = regen - (int) regen;
-
-            // Compensate for int rounding.
-            if (Util.ChanceDouble(decimals))
-                regen += 1;
-
             regen += living.ItemBonus[(int)property];
 
             int debuff = living.SpecBuffBonusCategory[(int) property];

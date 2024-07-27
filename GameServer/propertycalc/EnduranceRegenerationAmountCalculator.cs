@@ -69,12 +69,6 @@ namespace DOL.GS.PropertyCalc
             else
                 regen *= ServerProperties.Properties.ENDURANCE_REGEN_AMOUNT_MODIFIER;
 
-            double decimals = regen - (int) regen;
-
-            // Compensate for int rounding.
-            if (Util.ChanceDouble(decimals))
-                regen += 1;
-
             return (int) regen;
         }
     }
