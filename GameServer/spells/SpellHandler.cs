@@ -3102,6 +3102,7 @@ namespace DOL.GS.Spells
 					{
 						if (summonedPet.Owner is GamePlayer owner)
 						{
+							// Shouldn't the pet's intelligence be used, since stats are supposed to be transferred?
 							int manaStatValue = owner.GetModified((eProperty) owner.CharacterClass.ManaStat);
 							spellDamage *= (manaStatValue - owner.Level) * 0.005 + 1;
 							listCaster = true;
@@ -3116,7 +3117,7 @@ namespace DOL.GS.Spells
 						int ownerIntMod = 125;
 
 						if (summonedPet.Owner is GamePlayer owner)
-							ownerIntMod += owner.Intelligence / 2;
+							ownerIntMod += owner.GetModified((eProperty) owner.CharacterClass.ManaStat) / 2;
 
 						spellDamage *= (summonedPet.Intelligence + ownerIntMod) / 275.0;
 					}
