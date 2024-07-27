@@ -2920,7 +2920,7 @@ namespace DOL.GS
 		protected virtual int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
 		{
 			if (Health < MaxHealth)
-				ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationRate));
+				ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationAmount));
 
 			bool atMaxHealth = Health >= MaxHealth;
 
@@ -2933,7 +2933,7 @@ namespace DOL.GS
 					if (atMaxHealth)
 						DamageRvRMemory = 0;
 					else
-						DamageRvRMemory -= Math.Max(GetModified(eProperty.HealthRegenerationRate), 0);
+						DamageRvRMemory -= Math.Max(GetModified(eProperty.HealthRegenerationAmount), 0);
 				}
 			}
 
@@ -2973,7 +2973,7 @@ namespace DOL.GS
 					stackingBonus = p.PowerRegenStackingBonus;
 
 				if (Mana < MaxMana)
-					ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationRate) + stackingBonus);
+					ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationAmount) + stackingBonus);
 
 				if (Mana >= MaxMana)
 					return 0;
@@ -3008,7 +3008,7 @@ namespace DOL.GS
 		{
 			if (Endurance < MaxEndurance)
 			{
-				int regen = GetModified(eProperty.EnduranceRegenerationRate);
+				int regen = GetModified(eProperty.EnduranceRegenerationAmount);
 
 				if (regen > 0)
 					ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);

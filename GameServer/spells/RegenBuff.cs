@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
 	public class HealthRegenSpellHandler : PropertyChangingSpell
 	{
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-		public override eProperty Property1 { get { return eProperty.HealthRegenerationRate; } }
+		public override eProperty Property1 { get { return eProperty.HealthRegenerationAmount; } }
 
 		public HealthRegenSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
@@ -52,7 +52,7 @@ namespace DOL.GS.Spells
 			base.ApplyEffectOnTarget(target);
 		}
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-		public override eProperty Property1 { get { return eProperty.PowerRegenerationRate; } }
+		public override eProperty Property1 { get { return eProperty.PowerRegenerationAmount; } }
 
 		public PowerRegenSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
@@ -64,7 +64,7 @@ namespace DOL.GS.Spells
 	public class EnduranceRegenSpellHandler : PropertyChangingSpell
 	{
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
-		public override eProperty Property1 { get { return eProperty.EnduranceRegenerationRate; } }
+		public override eProperty Property1 { get { return eProperty.EnduranceRegenerationAmount; } }
 
 		/// <summary>
 		/// The max range from caster to owner for all conc buffs

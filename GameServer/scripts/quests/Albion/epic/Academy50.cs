@@ -442,7 +442,7 @@ namespace DOL.GS.Quests.Albion
 				item.Bonus1Type = (int) eResist.Cold;
 
 				item.Bonus2 = 14;
-				item.Bonus2Type = (int) eProperty.PowerRegenerationRate;
+				item.Bonus2Type = (int) eProperty.PowerRegenerationAmount;
 
 				item.Bonus3 = 24;
 				item.Bonus3Type = (int) eProperty.MaxHealth;
@@ -693,7 +693,7 @@ namespace DOL.GS.Quests.Albion
 				item.Bonus1Type = (int) eResist.Cold;
 
 				item.Bonus2 = 8;
-				item.Bonus2Type = (int) eProperty.PowerRegenerationRate;
+				item.Bonus2Type = (int) eProperty.PowerRegenerationAmount;
 
 				item.Bonus3 = 39;
 				item.Bonus3Type = (int) eProperty.MaxHealth;
@@ -952,7 +952,7 @@ namespace DOL.GS.Quests.Albion
 				item.Bonus1Type = (int) eResist.Spirit;
 
 				item.Bonus2 = 14;
-				item.Bonus2Type = (int) eProperty.PowerRegenerationRate;
+				item.Bonus2Type = (int) eProperty.PowerRegenerationAmount;
 
 				item.Bonus3 = 24;
 				item.Bonus3Type = (int) eProperty.MaxHealth;

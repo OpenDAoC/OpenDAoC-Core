@@ -244,7 +244,7 @@ namespace DOL.GS.Quests.Hibernia
 				BardEpicBoots.Bonus2Type = (int) eResist.Matter;
 
 				BardEpicBoots.Bonus3 = 4;
-				BardEpicBoots.Bonus3Type = (int) eProperty.PowerRegenerationRate;
+				BardEpicBoots.Bonus3Type = (int) eProperty.PowerRegenerationAmount;
 
 				BardEpicBoots.Bonus4 = 33;
 				BardEpicBoots.Bonus4Type = (int) eProperty.MaxHealth;
@@ -285,7 +285,7 @@ namespace DOL.GS.Quests.Hibernia
 				BardEpicHelm.Bonus1Type = (int) eStat.CHR;
 
 				BardEpicHelm.Bonus2 = 4;
-				BardEpicHelm.Bonus2Type = (int) eProperty.PowerRegenerationRate;
+				BardEpicHelm.Bonus2Type = (int) eProperty.PowerRegenerationAmount;
 
 				BardEpicHelm.Bonus3 = 3;
 				BardEpicHelm.Bonus3Type = (int) eProperty.Skill_Regrowth;
@@ -552,7 +552,7 @@ namespace DOL.GS.Quests.Hibernia
 				ChampionEpicHelm.Bonus3Type = (int) eStat.QUI;
 
 				ChampionEpicHelm.Bonus4 = 6;
-				ChampionEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				ChampionEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 				if (SAVE_INTO_DATABASE)
 				{

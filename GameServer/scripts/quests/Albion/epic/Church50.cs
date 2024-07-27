@@ -359,7 +359,7 @@ namespace DOL.GS.Quests.Albion
 				i.Bonus2Type = (int) eResist.Spirit;
 
 				i.Bonus3 = 12;
-				i.Bonus3Type = (int) eProperty.PowerRegenerationRate;
+				i.Bonus3Type = (int) eProperty.PowerRegenerationAmount;
 
 				i.Bonus4 = 27;
 				i.Bonus4Type = (int) eProperty.MaxHealth;

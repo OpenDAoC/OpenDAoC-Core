@@ -915,20 +915,20 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Health Regen Rate
 		/// </summary>
-		[ServerProperty("rates", "health_regen_rate", "Health regen rate", 1.0)]
-		public static double HEALTH_REGEN_RATE;
+		[ServerProperty("rates", "health_regen_amount_modifier", "Health regen amount modifier", 1.0)]
+		public static double HEALTH_REGEN_AMOUNT_MODIFIER;
 
 		/// <summary>
 		/// Health Regen Rate
 		/// </summary>
-		[ServerProperty("rates", "endurance_regen_rate", "Endurance regen rate", 1.0)]
-		public static double ENDURANCE_REGEN_RATE;
+		[ServerProperty("rates", "endurance_regen_amount_modifier", "Endurance regen amount modifier", 1.0)]
+		public static double ENDURANCE_REGEN_AMOUNT_MODIFIER;
 
 		/// <summary>
 		/// Health Regen Rate
 		/// </summary>
-		[ServerProperty("rates", "mana_regen_rate", "Mana regen rate", 1.0)]
-		public static double MANA_REGEN_RATE;
+		[ServerProperty("rates", "mana_regen_amount_modifier", "Mana regen amount modifier", 1.0)]
+		public static double MANA_REGEN_AMOUNT_MODIFIER;
 
 		[ServerProperty("rates", "mana_regen_amount_halved_below_50_percent", "Should the mana regen amount be halved below 50%?", false)]
 		public static bool MANA_REGEN_AMOUNT_HALVED_BELOW_50_PERCENT;

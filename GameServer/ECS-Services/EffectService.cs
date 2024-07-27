@@ -787,13 +787,13 @@ namespace DOL.GS
                     list.Add(eProperty.Resist_Slash);
                     return list;
                 case eEffect.HealthRegenBuff:
-                    list.Add(eProperty.HealthRegenerationRate);
+                    list.Add(eProperty.HealthRegenerationAmount);
                     return list;
                 case eEffect.PowerRegenBuff:
-                    list.Add(eProperty.PowerRegenerationRate);
+                    list.Add(eProperty.PowerRegenerationAmount);
                     return list;
                 case eEffect.EnduranceRegenBuff:
-                    list.Add(eProperty.EnduranceRegenerationRate);
+                    list.Add(eProperty.EnduranceRegenerationAmount);
                     return list;
                 case eEffect.MeleeHasteBuff:
                 case eEffect.MeleeHasteDebuff:

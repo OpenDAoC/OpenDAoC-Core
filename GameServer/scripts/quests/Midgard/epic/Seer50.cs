@@ -339,7 +339,7 @@ namespace DOL.GS.Quests.Midgard
 				HealerEpicHelm.Bonus3Type = (int) eResist.Slash;
 
 				HealerEpicHelm.Bonus4 = 6;
-				HealerEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				HealerEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -383,7 +383,7 @@ namespace DOL.GS.Quests.Midgard
 				HealerEpicGloves.Bonus3Type = (int) eResist.Crush;
 
 				HealerEpicGloves.Bonus4 = 6;
-				HealerEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				HealerEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -595,7 +595,7 @@ namespace DOL.GS.Quests.Midgard
 				ShamanEpicHelm.Bonus3Type = (int) eResist.Thrust;
 
 				ShamanEpicHelm.Bonus4 = 6;
-				ShamanEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				ShamanEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -638,7 +638,7 @@ namespace DOL.GS.Quests.Midgard
 				ShamanEpicGloves.Bonus3Type = (int) eResist.Crush;
 
 				ShamanEpicGloves.Bonus4 = 6;
-				ShamanEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				ShamanEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 				if (SAVE_INTO_DATABASE)
 				{

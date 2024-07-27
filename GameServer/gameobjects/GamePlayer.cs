@@ -2552,7 +2552,7 @@ namespace DOL.GS
         protected override int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
         {
             if (Health < MaxHealth)
-                ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationRate));
+                ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationAmount));
 
             bool atMaxHealth = Health >= MaxHealth;
 
@@ -2561,7 +2561,7 @@ namespace DOL.GS
                 if (atMaxHealth)
                     DamageRvRMemory = 0;
                 else
-                    DamageRvRMemory -= Math.Max(GetModified(eProperty.HealthRegenerationRate), 0);
+                    DamageRvRMemory -= Math.Max(GetModified(eProperty.HealthRegenerationAmount), 0);
             }
 
             if (atMaxHealth)
@@ -2604,7 +2604,7 @@ namespace DOL.GS
 
             if (Endurance < MaxEndurance || sprinting)
             {
-                int regen = GetModified(eProperty.EnduranceRegenerationRate);
+                int regen = GetModified(eProperty.EnduranceRegenerationAmount);
                 int endChant = GetModified(eProperty.FatigueConsumption);
                 ECSGameEffect charge = EffectListService.GetEffectOnTarget(this, eEffect.Charge);
                 int longWind = 5;

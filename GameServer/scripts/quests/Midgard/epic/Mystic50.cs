@@ -296,7 +296,7 @@ namespace DOL.GS.Quests.Midgard
 				SpiritmasterEpicHelm.Bonus3Type = (int) eStat.PIE;
 
 				SpiritmasterEpicHelm.Bonus4 = 4;
-				SpiritmasterEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				SpiritmasterEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -339,7 +339,7 @@ namespace DOL.GS.Quests.Midgard
 				SpiritmasterEpicGloves.Bonus3Type = (int) eStat.PIE;
 
 				SpiritmasterEpicGloves.Bonus4 = 4;
-				SpiritmasterEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				SpiritmasterEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -552,7 +552,7 @@ namespace DOL.GS.Quests.Midgard
 				RunemasterEpicHelm.Bonus3Type = (int) eStat.PIE;
 
 				RunemasterEpicHelm.Bonus4 = 4;
-				RunemasterEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				RunemasterEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -594,7 +594,7 @@ namespace DOL.GS.Quests.Midgard
 				RunemasterEpicGloves.Bonus3Type = (int) eStat.PIE;
 
 				RunemasterEpicGloves.Bonus4 = 6;
-				RunemasterEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				RunemasterEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 				if (SAVE_INTO_DATABASE)
 				{
@@ -802,7 +802,7 @@ namespace DOL.GS.Quests.Midgard
 				BonedancerEpicHelm.Bonus2Type = (int) eStat.PIE;
 
 				BonedancerEpicHelm.Bonus3 = 4;
-				BonedancerEpicHelm.Bonus3Type = (int) eProperty.PowerRegenerationRate;
+				BonedancerEpicHelm.Bonus3Type = (int) eProperty.PowerRegenerationAmount;
 
 				BonedancerEpicHelm.Bonus4 = 4;
 				BonedancerEpicHelm.Bonus4Type = (int) eProperty.Focus_BoneArmy;
@@ -849,7 +849,7 @@ namespace DOL.GS.Quests.Midgard
 				BonedancerEpicGloves.Bonus3Type = (int) eStat.PIE;
 
 				BonedancerEpicGloves.Bonus4 = 6;
-				BonedancerEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				BonedancerEpicGloves.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 				if (SAVE_INTO_DATABASE)
 				{

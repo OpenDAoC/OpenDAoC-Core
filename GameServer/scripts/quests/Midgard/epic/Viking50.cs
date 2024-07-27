@@ -879,7 +879,7 @@ namespace DOL.GS.Quests.Midgard
 				ThaneEpicHelm.Bonus3Type = (int) eResist.Spirit;
 
 				ThaneEpicHelm.Bonus4 = 6;
-				ThaneEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationRate;
+				ThaneEpicHelm.Bonus4Type = (int) eProperty.PowerRegenerationAmount;
 
 
 				if (SAVE_INTO_DATABASE)

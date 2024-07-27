@@ -36,9 +36,9 @@ namespace DOL.GS.Spells
 
 			return true;
 		}
-        public override eProperty Property1 => eProperty.PowerRegenerationRate;
-        public override eProperty Property2 => eProperty.EnduranceRegenerationRate;
-        public override eProperty Property3 => eProperty.HealthRegenerationRate;
+        public override eProperty Property1 => eProperty.PowerRegenerationAmount;
+        public override eProperty Property2 => eProperty.EnduranceRegenerationAmount;
+        public override eProperty Property3 => eProperty.HealthRegenerationAmount;
 
 
 
@@ -105,9 +105,9 @@ namespace DOL.GS.Spells
 
 			return true;
 		}
-		public override eProperty Property1 => eProperty.PowerRegenerationRate;
-		public override eProperty Property2 => eProperty.EnduranceRegenerationRate;
-		public override eProperty Property3 => eProperty.HealthRegenerationRate;
+		public override eProperty Property1 => eProperty.PowerRegenerationAmount;
+		public override eProperty Property2 => eProperty.EnduranceRegenerationAmount;
+		public override eProperty Property3 => eProperty.HealthRegenerationAmount;
 
 
 

@@ -1748,11 +1748,11 @@ namespace DOL.GS
 			m_propertyNames.Add(eProperty.ArmorAbsorption, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                          "SkillBase.RegisterPropertyNames.BonusToArmorAbsorption"));
 
-			m_propertyNames.Add(eProperty.HealthRegenerationRate, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
+			m_propertyNames.Add(eProperty.HealthRegenerationAmount, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                                 "SkillBase.RegisterPropertyNames.HealthRegeneration"));
-			m_propertyNames.Add(eProperty.PowerRegenerationRate, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
+			m_propertyNames.Add(eProperty.PowerRegenerationAmount, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                                "SkillBase.RegisterPropertyNames.PowerRegeneration"));
-			m_propertyNames.Add(eProperty.EnduranceRegenerationRate, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
+			m_propertyNames.Add(eProperty.EnduranceRegenerationAmount, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                                    "SkillBase.RegisterPropertyNames.EnduranceRegeneration"));
 			m_propertyNames.Add(eProperty.SpellRange, LanguageMgr.GetTranslation(ServerProperties.Properties.DB_LANGUAGE,
 			                                                                     "SkillBase.RegisterPropertyNames.SpellRange"));

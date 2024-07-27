@@ -8,7 +8,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public class XSerenityAbility : RAPropertyEnhancer
 	{
-		public XSerenityAbility(DbAbility dba, int level) : base(dba, level, eProperty.PowerRegenerationRate) { }
+		public XSerenityAbility(DbAbility dba, int level) : base(dba, level, eProperty.PowerRegenerationAmount) { }
 
 		public override int GetAmountForLevel(int level)
 		{

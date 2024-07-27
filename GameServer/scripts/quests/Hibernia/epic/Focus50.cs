@@ -801,7 +801,7 @@ namespace DOL.GS.Quests.Hibernia
 				WardenEpicHelm.Bonus1Type = (int) eStat.EMP;
 
 				WardenEpicHelm.Bonus2 = 2;
-				WardenEpicHelm.Bonus2Type = (int) eProperty.PowerRegenerationRate;
+				WardenEpicHelm.Bonus2Type = (int) eProperty.PowerRegenerationAmount;
 
 				WardenEpicHelm.Bonus3 = 30;
 				WardenEpicHelm.Bonus3Type = (int) eProperty.MaxHealth;
@@ -848,7 +848,7 @@ namespace DOL.GS.Quests.Hibernia
 				WardenEpicGloves.Bonus2Type = (int) eResist.Slash;
 
 				WardenEpicGloves.Bonus3 = 4;
-				WardenEpicGloves.Bonus3Type = (int) eProperty.PowerRegenerationRate;
+				WardenEpicGloves.Bonus3Type = (int) eProperty.PowerRegenerationAmount;
 
 				WardenEpicGloves.Bonus4 = 33;
 				WardenEpicGloves.Bonus4Type = (int) eProperty.MaxHealth;
@@ -1020,7 +1020,7 @@ namespace DOL.GS.Quests.Hibernia
 				EldritchEpicBoots.Bonus2Type = (int) eStat.DEX;
 
 				EldritchEpicBoots.Bonus3 = 6;
-				EldritchEpicBoots.Bonus3Type = (int) eProperty.PowerRegenerationRate;
+				EldritchEpicBoots.Bonus3Type = (int) eProperty.PowerRegenerationAmount;
 
 				EldritchEpicBoots.Bonus4 = 21;
 				EldritchEpicBoots.Bonus4Type = (int) eProperty.MaxHealth;
@@ -1108,7 +1108,7 @@ namespace DOL.GS.Quests.Hibernia
 				EldritchEpicGloves.Bonus2Type = (int) eStat.DEX;
 
 				EldritchEpicGloves.Bonus3 = 4;
-				EldritchEpicGloves.Bonus3Type = (int) eProperty.PowerRegenerationRate;
+				EldritchEpicGloves.Bonus3Type = (int) eProperty.PowerRegenerationAmount;
 
 				EldritchEpicGloves.Bonus4 = 24;
 				EldritchEpicGloves.Bonus4Type = (int) eProperty.MaxHealth;
