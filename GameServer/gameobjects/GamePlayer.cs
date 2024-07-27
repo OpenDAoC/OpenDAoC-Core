@@ -2719,14 +2719,11 @@ namespace DOL.GS
         /// <summary>
         /// Calculate max mana for this player based on level and mana stat level
         /// </summary>
-        /// <param name="level"></param>
-        /// <param name="manaStat"></param>
-        /// <returns></returns>
         public virtual int CalculateMaxMana(int level, int manaStat)
         {
-            int maxpower = 0;
+            int maxPower = 0;
 
-            //Special handling for Vampiirs:
+            // Special handling for Vampiirs:
             /* There is no stat that affects the Vampiir's power pool or the damage done by its power based spells.
              * The Vampiir is not a focus based class like, say, an Enchanter.
              * The Vampiir is a lot more cut and dried than the typical casting class.
@@ -2743,36 +2740,15 @@ namespace DOL.GS
              * Strength ALSO affects the size of the power pool for a Vampiir sort of.
              * Your INNATE strength (the number of attribute points your character has for strength) has no effect at all.
              * Extra points added through ITEMS, however, does increase the size of your power pool.
-
              */
-            if (CharacterClass.ManaStat != eStat.UNDEFINED || CharacterClass.ID == (int)eCharacterClass.Vampiir)
-            {
-                maxpower = Math.Max(5, (level * 5) + (manaStat - 50));
-            }
-            else if (CharacterClass.ManaStat == eStat.UNDEFINED && Champion && ChampionLevel > 0)
-            {
-                maxpower = 100; // This is a guess, need feedback
-            }
 
-            #region Calculation : AtlasOF_EtheralBond
-            // --- [START] --- AtlasOF_EtherealBond --------------------------------------------------------
-            AtlasOF_EtherealBondAbility raEtherealBond = GetAbility<AtlasOF_EtherealBondAbility>();
-            if (raEtherealBond != null)
-            {
-                if (raEtherealBond.Level > 0)
-                {
-                    maxpower += (maxpower * raEtherealBond.Level) / 100;
-                }
-            }
-            // --- [ END ] --- AtlasOF_EtherealBond --------------------------------------------------------
-            #endregion
+            if (CharacterClass.ManaStat is not eStat.UNDEFINED || (eCharacterClass) CharacterClass.ID is eCharacterClass.Vampiir)
+                maxPower = Math.Max(5, level * 5 + (manaStat - 50));
+            else if (Champion && ChampionLevel > 0)
+                maxPower = 100; // This is a guess, need feedback.
 
-            if (maxpower < 0)
-                maxpower = 0;
-
-            return maxpower;
+            return Math.Max(0, maxPower);
         }
-
 
         /// <summary>
         /// Gets/sets the object mana
