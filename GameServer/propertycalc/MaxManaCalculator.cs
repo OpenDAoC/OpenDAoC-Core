@@ -49,17 +49,22 @@ namespace DOL.GS.PropertyCalc
             int poolItemBonusCap = player.Level / 2 + Math.Min(player.ItemBonus[(int) eProperty.PowerPoolCapBonus], player.Level);
 
             int manaBase = player.CalculateMaxMana(player.Level, player.GetModified((eProperty) manaStat));
-            int flatItemBonus = Math.Min(flatItemBonusCap, living.ItemBonus[(int) property]);
-            int poolItemBonus = Math.Min(poolItemBonusCap, living.ItemBonus[(int) eProperty.PowerPool]);
-            int flatAbilityBonus = living.AbilityBonus[(int) property];
-            int poolAbilityBonus = living.AbilityBonus[(int) eProperty.PowerPool];
+            int flatItemBonus = Math.Min(flatItemBonusCap, living.ItemBonus[(int) property]); // Pre-ToA flat bonus.
+            int poolItemBonus = Math.Min(poolItemBonusCap, living.ItemBonus[(int) eProperty.PowerPool]); // ToA bonus.
+            int flatAbilityBonus = living.AbilityBonus[(int) property]; // New Ethereal Bond.
+            int poolAbilityBonus = living.AbilityBonus[(int) eProperty.PowerPool]; // Old Ethereal Bond.
 
             // Q: What exactly does the power pool % increase do? Does it increase the amount of power my cleric can generate (like having higher piety)?
             // Or, like the dex cap increase, do I have to put spellcraft points into power to make it worth anything?
             // A: I'm better off quoting Balance Boy directly here: "Power pool is affected by your acuity stat, +power bonus,
             // the Ethereal Bond Realm ability, and your level. The resulting power pool is adjusted by your power pool % increase bonus.
-            double result = manaBase + flatItemBonus + flatAbilityBonus;
-            result *= 1 + (poolItemBonus + poolAbilityBonus) * 0.01;
+
+            // For consistency sake, make old Ethereal Bound work the same way Toughness works for hit points, before flat bonuses.
+            // ToA bonus is still applied on top of everything.
+            double result = manaBase;
+            result *= 1 + poolAbilityBonus * 0.01;
+            result += flatItemBonus + flatAbilityBonus;
+            result *= 1 + poolItemBonus * 0.01;
             return (int) result;
         }
     }
