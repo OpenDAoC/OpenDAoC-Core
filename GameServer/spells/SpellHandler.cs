@@ -1015,17 +1015,6 @@ namespace DOL.GS.Spells
 			if (m_interrupted)
 				return false;
 
-			if (m_caster.ObjectState != GameObject.eObjectState.Active)
-				return false;
-
-			if (!m_caster.IsAlive)
-			{
-				if (!quiet)
-					MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
-
-				return false;
-			}
-
 			if (Caster is GameNPC npcOwner)
 			{
 				if (Spell.CastTime > 0)
@@ -1038,116 +1027,20 @@ namespace DOL.GS.Spells
 					npcOwner.TurnTo(Target);
 			}
 
-			if (m_spell.InstrumentRequirement != 0)
+			if (Properties.CHECK_LOS_DURING_CAST && GameLoop.GameLoopTime > _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
 			{
-				if (!CheckInstrument())
+				_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
+
+				if (m_spell.Target is not eSpellTarget.SELF and not eSpellTarget.GROUP and not eSpellTarget.CONE and not eSpellTarget.PET && m_spell.Range > 0)
 				{
-					if (!quiet)
-						MessageToCaster("You are not wielding the right type of instrument!", eChatType.CT_SpellResisted);
 
-					return false;
-				}
-			}
-			else if (m_caster.IsSitting) // songs can be played if sitting
-			{
-				//Purge can be cast while sitting but only if player has negative effect that
-				//don't allow standing up (like stun or mez)
-				if (!quiet)
-					MessageToCaster("You can't cast while sitting!", eChatType.CT_SpellResisted);
-
-				return false;
-			}
-
-			if (m_spell.Target == eSpellTarget.AREA)
-			{
-				if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
-				{
-					if (!quiet)
-						MessageToCaster("Your area target is out of range.  Select a closer target.", eChatType.CT_SpellResisted);
-
-					return false;
-				}
-			}
-			else if (m_spell.Target is not eSpellTarget.SELF and not eSpellTarget.GROUP and not eSpellTarget.CONE && m_spell.Range > 0)
-			{
-				if (m_spell.Target != eSpellTarget.PET)
-				{
-					//all other spells that need a target
-					if (target == null || target.ObjectState != GameObject.eObjectState.Active)
-					{
-						if (Caster is GamePlayer && !quiet)
-							MessageToCaster("You must select a target for this spell!", eChatType.CT_SpellResisted);
-
-						return false;
-					}
-
-					if (Properties.CHECK_LOS_DURING_CAST && GameLoop.GameLoopTime > _lastDuringCastLosCheckTime + Properties.CHECK_LOS_DURING_CAST_MINIMUM_INTERVAL)
-					{
-						_lastDuringCastLosCheckTime = GameLoop.GameLoopTime;
-
-						if (Caster is GameNPC npc && npc.Brain is IControlledBrain npcBrain)
-							npcBrain.GetPlayerOwner()?.Out.SendCheckLos(npc, target, CheckPetLosDuringCastCallback);
-						else if (Caster is GamePlayer player)
-							player.Out.SendCheckLos(player, target, CheckPlayerLosDuringCastCallback);
-					}
-				}
-
-				switch (m_spell.Target)
-				{
-					case eSpellTarget.ENEMY:
-					{
-						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, target, quiet))
-							return false;
-
-						break;
-					}
-					case eSpellTarget.CORPSE:
-					{
-						if (target.IsAlive || !GameServer.ServerRules.IsSameRealm(Caster, target, quiet))
-						{
-							if (!quiet)
-								MessageToCaster("This spell only works on dead members of your realm!", eChatType.CT_SpellResisted);
-
-							return false;
-						}
-
-						break;
-					}
+					if (Caster is GameNPC npc && npc.Brain is IControlledBrain npcBrain)
+						npcBrain.GetPlayerOwner()?.Out.SendCheckLos(npc, target, CheckPetLosDuringCastCallback);
+					else if (Caster is GamePlayer player)
+						player.Out.SendCheckLos(player, target, CheckPlayerLosDuringCastCallback);
 				}
 			}
 
-			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType != eSpellType.Archery)
-			{
-				if (!quiet)
-					MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
-
-				return false;
-			}
-
-			if (Spell.Power != 0 && m_caster.Mana < PowerCost(target) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != eSpellType.Archery)
-			{
-				if (!quiet)
-					MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
-
-				return false;
-			}
-
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.Concentration < m_spell.Concentration)
-			{
-				if (!quiet)
-					MessageToCaster("This spell requires " + m_spell.Concentration + " concentration points to cast!", eChatType.CT_SpellResisted);
-
-				return false;
-			}
-
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.effectListComponent.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
-			{
-				if (!quiet)
-					MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
-
-				return false;
-			}
-			
 			if ((m_caster.IsMoving || m_caster.IsStrafing) && !Spell.MoveCast)
 			{
 				CasterMoves();
