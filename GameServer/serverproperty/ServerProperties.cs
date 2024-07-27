@@ -930,6 +930,9 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("rates", "mana_regen_rate", "Mana regen rate", 1.0)]
 		public static double MANA_REGEN_RATE;
 
+		[ServerProperty("rates", "mana_regen_amount_halved_below_50_percent", "Should the mana regen amount be halved below 50%?", false)]
+		public static bool MANA_REGEN_AMOUNT_HALVED_BELOW_50_PERCENT;
+
 		/// <summary>
 		/// Items sell ratio
 		/// </summary>

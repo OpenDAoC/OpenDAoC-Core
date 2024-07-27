@@ -43,6 +43,9 @@ namespace DOL.GS.PropertyCalc
 
             regen += living.BaseBuffBonusCategory[(int) property] + living.AbilityBonus[(int) property] + living.ItemBonus[(int) property] - debuff;
 
+            if (ServerProperties.Properties.MANA_REGEN_AMOUNT_HALVED_BELOW_50_PERCENT && living.ManaPercent < 50)
+                regen /= 2;
+
             if (regen < 1)
                 regen = 1;
 
