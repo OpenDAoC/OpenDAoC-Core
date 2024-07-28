@@ -6277,7 +6277,7 @@ namespace DOL.GS
         {
             get
             {
-                int range = 150; // Increase default melee range to 150 to help with higher latency players. Was 128.
+                int range = 128;
 
                 if (TargetObject is GameKeepComponent)
                     range += 150;
