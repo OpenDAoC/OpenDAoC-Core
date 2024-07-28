@@ -6466,13 +6466,13 @@ namespace DOL.GS
         {
             // Use axe spec if left hand axe is not in the left hand slot.
             if (objectType is eObjectType.LeftAxe && slotPosition is not Slot.LEFTHAND)
-                return GameServer.ServerRules.GetBaseObjectSpecLevel(this, eObjectType.Axe);
+                return GameServer.ServerRules.GetObjectBaseSpecLevel(this, eObjectType.Axe);
 
             // Use left axe spec if axe is in the left hand slot.
             if (slotPosition is Slot.LEFTHAND && objectType is eObjectType.Axe)
-                return GameServer.ServerRules.GetBaseObjectSpecLevel(this, eObjectType.LeftAxe);
+                return GameServer.ServerRules.GetObjectBaseSpecLevel(this, eObjectType.LeftAxe);
 
-            return GameServer.ServerRules.GetBaseObjectSpecLevel(this, objectType);
+            return GameServer.ServerRules.GetObjectBaseSpecLevel(this, objectType);
         }
 
         public int WeaponBaseSpecLevel(DbInventoryItem weapon)

@@ -967,7 +967,7 @@ namespace DOL.GS.ServerRules
 		/// <param name="player">player whom specializations are checked</param>
 		/// <param name="objectType">object type</param>
 		/// <returns>specialization in object or 0</returns>
-		public virtual int GetBaseObjectSpecLevel(GamePlayer player, eObjectType objectType)
+		public virtual int GetObjectBaseSpecLevel(GamePlayer player, eObjectType objectType)
 		{
 			int res = 0;
 
