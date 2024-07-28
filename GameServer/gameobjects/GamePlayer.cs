@@ -6459,22 +6459,6 @@ namespace DOL.GS
             return WeaponSpecLevel((eObjectType) weapon.Object_Type, weapon.SlotPosition);
         }
 
-        public virtual String GetWeaponSpec(DbInventoryItem weapon)
-        {
-            if (weapon == null)
-                return null;
-            // use axe spec if left hand axe is not in the left hand slot
-            if (weapon.Object_Type == (int)eObjectType.LeftAxe && weapon.SlotPosition != Slot.LEFTHAND)
-                return SkillBase.ObjectTypeToSpec(eObjectType.Axe);
-            // use left axe spec if axe is in the left hand slot
-            if (weapon.SlotPosition == Slot.LEFTHAND
-                && (weapon.Object_Type == (int)eObjectType.Axe
-                    || weapon.Object_Type == (int)eObjectType.Sword
-                    || weapon.Object_Type == (int)eObjectType.Hammer))
-                return SkillBase.ObjectTypeToSpec(eObjectType.LeftAxe);
-            return SkillBase.ObjectTypeToSpec((eObjectType)weapon.Object_Type);
-        }
-
         /// <summary>
         /// determines current weaponspeclevel
         /// </summary>
