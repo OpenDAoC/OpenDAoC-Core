@@ -38,14 +38,14 @@ namespace DOL.GS
             _nextRangedTick = GameLoop.GameLoopTime;
         }
 
-        public static AttackAction Create(GameLiving gameLiving)
+        public static AttackAction Create(GameLiving living)
         {
-            if (gameLiving is GameNPC gameNpc)
-                return new NpcAttackAction(gameNpc);
-            else if (gameLiving is GamePlayer gamePlayer)
-                return new PlayerAttackAction(gamePlayer);
+            if (living is GameNPC npc)
+                return new NpcAttackAction(npc);
+            else if (living is GamePlayer player)
+                return new PlayerAttackAction(player);
             else
-                return new AttackAction(gameLiving);
+                return new AttackAction(living);
         }
 
         public bool Tick()

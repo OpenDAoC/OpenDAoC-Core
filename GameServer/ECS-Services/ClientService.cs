@@ -18,7 +18,6 @@ namespace DOL.GS
         private const string SERVICE_NAME = nameof(ClientService);
         private const int PING_TIMEOUT = 60000;
         private const int HARD_TIMEOUT = 600000;
-        private const int POSITION_UPDATE_TIMEOUT = 5000;
         private const int STATIC_OBJECT_UPDATE_MIN_DISTANCE = 4000;
 
         private static List<GameClient> _clients = new();
@@ -71,7 +70,7 @@ namespace DOL.GS
                         CheckInGameTimeout(client);
                         GamePlayer player = client.Player;
 
-                        if (player?.ObjectState == GameObject.eObjectState.Active)
+                        if (player?.ObjectState is GameObject.eObjectState.Active)
                         {
                             if (ServiceUtils.ShouldTick(player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL))
                             {
@@ -611,19 +610,9 @@ namespace DOL.GS
 
         private static void CheckInGameTimeout(GameClient client)
         {
-            if (client.Player.IsLinkDeathTimerRunning)
-                return;
-
-            if (ServiceUtils.ShouldTickNoEarly(client.Player.LastPositionUpdateTime + POSITION_UPDATE_TIMEOUT))
-            {
-                if (log.IsInfoEnabled)
-                    log.Info($"Position update timeout on client. Calling link death. ({client})");
-
-                client.OnLinkDeath(true);
-            }
-            else if (Properties.KICK_IDLE_PLAYER_STATUS &&
-                     ServiceUtils.ShouldTickNoEarly(client.Player.LastPlayerActivityTime + Properties.KICK_IDLE_PLAYER_TIME * 60000) &&
-                     client.Account.PrivLevel == 1)
+            if (Properties.KICK_IDLE_PLAYER_STATUS &&
+                ServiceUtils.ShouldTickNoEarly(client.Player.LastPlayerActivityTime + Properties.KICK_IDLE_PLAYER_TIME * 60000) &&
+                client.Account.PrivLevel == 1)
             {
                 if (log.IsInfoEnabled)
                     log.Info($"Kicking inactive client to char screen. ({client})");

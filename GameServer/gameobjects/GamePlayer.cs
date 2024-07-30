@@ -36,15 +36,17 @@ namespace DOL.GS
     /// </summary>
     public class GamePlayer : GameLiving
     {
-        private const int SECONDS_TO_QUIT_ON_LINKDEATH = 60;
-
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public override eGameObjectType GameObjectType => eGameObjectType.PLAYER;
+        private const int SECONDS_TO_QUIT_ON_LINKDEATH = 60;
+
         private readonly object m_LockObject = new();
+        public new PlayerMovementComponent movementComponent;
+
+        public override eGameObjectType GameObjectType => eGameObjectType.PLAYER;
+        public ChainedActions ChainedActions { get; }
         public double SpecLock { get; set; }
         public long LastWorldUpdate { get; set; }
-        public ChainedActions ChainedActions { get; }
 
         public ECSGameTimer PredatorTimeoutTimer
         {
@@ -862,15 +864,38 @@ namespace DOL.GS
 
         public bool IsLinkDeathTimerRunning => _linkDeathTimer?.IsAlive == true;
 
-        public bool OnUpdatePosition()
+        public long LastPositionUpdatePacketReceivedTime
+        {
+            get => movementComponent.LastPositionUpdatePacketReceivedTime;
+            set => movementComponent.LastPositionUpdatePacketReceivedTime = value;
+        }
+
+        public long LastHeadingUpdatePacketReceivedTime
+        {
+            get => movementComponent.LastHeadingUpdatePacketReceivedTime;
+            set => movementComponent.LastHeadingUpdatePacketReceivedTime = value;
+        }
+
+        public bool OnPositionPacketReceivedStart()
         {
             if (_linkDeathTimer == null)
                 return true;
 
+            LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
             _linkDeathTimer.Stop();
             MoveTo(_linkDeathTimer.LocationAtLinkDeath);
             _linkDeathTimer = null;
             return false;
+        }
+
+        public void OnPositionPacketReceivedEnd()
+        {
+            movementComponent.OnPositionPacketReceivedEnd();
+        }
+
+        public void OnHeadingPacketReceived()
+        {
+            movementComponent.OnHeadingPacketReceived();
         }
 
         public void OnLinkDeath()
@@ -893,11 +918,14 @@ namespace DOL.GS
             if (TradeWindow != null)
                 TradeWindow.CloseTrade();
 
-            // Notify players in close proximity.
-            foreach (GamePlayer playerInRadius in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
+            // Notify players in close proximity (hard LD only).
+            if (Client.ClientState is GameClient.eClientState.Linkdead)
             {
-                if (playerInRadius != this && GameServer.ServerRules.IsAllowedToUnderstand(this, playerInRadius))
-                    playerInRadius.Out.SendMessage(LanguageMgr.GetTranslation(playerInRadius.Client.Account.Language, "GamePlayer.OnLinkdeath.Linkdead", Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                foreach (GamePlayer playerInRadius in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
+                {
+                    if (playerInRadius != this && GameServer.ServerRules.IsAllowedToUnderstand(this, playerInRadius))
+                        playerInRadius.Out.SendMessage(LanguageMgr.GetTranslation(playerInRadius.Client.Account.Language, "GamePlayer.OnLinkdeath.Linkdead", Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                }
             }
 
             // Notify other group members.
@@ -1145,7 +1173,7 @@ namespace DOL.GS
             protected override int OnTick(ECSGameTimer timer)
             {
                 if (_playerOwner.ObjectState is eObjectState.Active)
-                    PlayerPositionUpdateHandler.BroadcastLastReceivedPacket(_playerOwner.Client);
+                    _playerOwner.movementComponent.BroadcastPosition();
 
                 if (!ServiceUtils.ShouldTick(_playerOwner.Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000))
                     return Interval;
@@ -8887,7 +8915,7 @@ namespace DOL.GS
             else
                 RandomNumberDeck = new PlayerDeck();
 
-            LastPositionUpdateTime = GameLoop.GameLoopTime;
+            LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
             LastPlayerActivityTime = GameLoop.GameLoopTime;
             return true;
         }
@@ -9363,6 +9391,10 @@ namespace DOL.GS
             }
         }
 
+        public short FallSpeed { get; set; }
+        public PlayerPositionUpdateHandler.StateFlags StateFlags { get; set; }
+        public PlayerPositionUpdateHandler.ActionFlags ActionFlags { get; set; }
+
         /// <summary>
         /// Gets or sets the region of this player
         /// </summary>
@@ -9376,7 +9408,6 @@ namespace DOL.GS
         }
 
         public Zone LastPositionUpdateZone { get; set; }
-        public long LastPositionUpdateTime { get; set; }
         public long LastPlayerActivityTime { get; set; }
         public Point3DFloat LastPositionUpdatePoint { get; set; } = new(0, 0, 0);
 
@@ -9536,7 +9567,8 @@ namespace DOL.GS
             set
             {
                 // Force the diving state instead of trusting the client.
-                value = IsUnderwater;
+                if (!value)
+                    value = IsUnderwater;
 
                 if (value && !CurrentZone.IsDivingEnabled && Client.Account.PrivLevel == 1)
                 {
@@ -9733,18 +9765,7 @@ namespace DOL.GS
             }
         }
 
-        protected bool m_strafing;
-        public override bool IsStrafing
-        {
-            get => m_strafing;
-            set
-            {
-                m_strafing = value;
-
-                if (value)
-                    OnPlayerMove();
-            }
-        }
+        public override bool IsStrafing => (StateFlags & PlayerPositionUpdateHandler.StateFlags.STRAFING_ANY) != 0;
 
         public virtual void OnPlayerMove()
         {
@@ -11529,7 +11550,7 @@ namespace DOL.GS
             m_x = DBCharacter.Xpos;
             m_y = DBCharacter.Ypos;
             m_z = DBCharacter.Zpos;
-            _heading = (ushort)DBCharacter.Direction;
+            Heading = (ushort)DBCharacter.Direction;
             //important, use CurrentRegion property
             //instead because it sets the Region too
             CurrentRegionID = (ushort)DBCharacter.Region;
@@ -11539,7 +11560,7 @@ namespace DOL.GS
                 m_x = DBCharacter.BindXpos;
                 m_y = DBCharacter.BindYpos;
                 m_z = DBCharacter.BindZpos;
-                _heading = (ushort)DBCharacter.BindHeading;
+                Heading = (ushort)DBCharacter.BindHeading;
                 CurrentRegionID = (ushort)DBCharacter.BindRegion;
             }
 
@@ -12523,6 +12544,8 @@ namespace DOL.GS
         /// <returns>true if added, false if player is already doing the quest!</returns>
         public bool AddQuest(AbstractQuest quest)
         {
+            if (QuestList.Count > 25)
+
             if (IsDoingQuest(quest) != null)
                 return false;
 
@@ -14788,6 +14811,9 @@ namespace DOL.GS
         /// <param name="dbChar">The character for this player</param>
         public GamePlayer(GameClient client, DbCoreCharacter dbChar) : base()
         {
+            if (movementComponent == null)
+                movementComponent = base.movementComponent as PlayerMovementComponent;
+
             IsJumping = false;
             m_steed = new WeakRef(null);
             m_client = client;

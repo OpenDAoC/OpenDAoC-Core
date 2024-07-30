@@ -781,7 +781,7 @@ namespace DOL.GS.PacketHandler
 					}
 
 					speed |= (ushort) ((zSpeed & 0x70) << 8);
-					heading = (ushort) (((zSpeed & 0xF) << 12) | (npc.Heading & 0xFFF));
+					heading = (ushort) (((zSpeed & 0xF) << 12) | npc.Heading);
 
 					if (npc.IsDestinationValid)
 					{

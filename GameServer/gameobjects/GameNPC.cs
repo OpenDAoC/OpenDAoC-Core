@@ -1027,7 +1027,7 @@ namespace DOL.GS
 			m_x = dbMob.X;
 			m_y = dbMob.Y;
 			m_z = dbMob.Z;
-			_heading = (ushort) (dbMob.Heading & 0xFFF);
+			Heading = dbMob.Heading;
 			MaxSpeedBase = (short) dbMob.Speed;
 			CurrentRegionID = dbMob.Region;
 			Realm = (eRealm)dbMob.Realm;
@@ -2094,7 +2094,7 @@ namespace DOL.GS
 			m_x = x;
 			m_y = y;
 			m_z = z;
-			_heading = heading;
+			Heading = heading;
 
 			// Previous position.
 			foreach (GamePlayer player in playersInRadius)
@@ -3206,7 +3206,7 @@ namespace DOL.GS
 			m_x = m_spawnPoint.X;
 			m_y = m_spawnPoint.Y;
 			m_z = m_spawnPoint.Z;
-			_heading = m_spawnHeading;
+			Heading = m_spawnHeading;
 			SpawnTick = GameLoop.GameLoopTime;
 			AddToWorld();
 			return 0;
@@ -4480,7 +4480,7 @@ namespace DOL.GS
 		public GameNPC(ABrain defaultBrain) : base()
 		{
 			if (movementComponent == null)
-				movementComponent = (NpcMovementComponent) base.movementComponent;
+				movementComponent = base.movementComponent as NpcMovementComponent;
 
 			Level = 1;
 			m_health = MaxHealth;

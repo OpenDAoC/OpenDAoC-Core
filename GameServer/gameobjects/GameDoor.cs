@@ -61,7 +61,7 @@ namespace DOL.GS
 
             CurrentRegion = curZone.ZoneRegion;
             m_name = dbDoor.Name;
-            _heading = (ushort) dbDoor.Heading;
+            Heading = (ushort) dbDoor.Heading;
             m_x = dbDoor.X;
             m_y = dbDoor.Y;
             m_z = dbDoor.Z;

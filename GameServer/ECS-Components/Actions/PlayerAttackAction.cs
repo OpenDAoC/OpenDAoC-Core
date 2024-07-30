@@ -7,9 +7,9 @@ namespace DOL.GS
     {
         private GamePlayer _playerOwner;
 
-        public PlayerAttackAction(GamePlayer playerOwner) : base(playerOwner)
+        public PlayerAttackAction(GamePlayer owner) : base(owner)
         {
-            _playerOwner = playerOwner;
+            _playerOwner = owner;
         }
 
         public override void OnAimInterrupt(GameObject attacker)

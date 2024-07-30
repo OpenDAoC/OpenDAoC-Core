@@ -76,7 +76,7 @@ namespace DOL.GS
 
 		#region Position
 
-		protected ushort _heading;
+		private ushort _rawHeading;
 
 		public virtual string OwnerID { get; set; }
 		public virtual eRealm Realm { get; set; }
@@ -90,9 +90,10 @@ namespace DOL.GS
 		public SubZoneObject SubZoneObject { get; set; }
 		public virtual ushort Heading
 		{
-			get => _heading;
-			set => _heading = (ushort) (value & 0xFFF);
+			get => (ushort) (_rawHeading & 0xFFF);
+			set => _rawHeading = value;
 		}
+		public ushort RawHeading => _rawHeading; // Includes extra bits that clients send.
 
 		/// <summary>
 		/// Returns the angle towards a target spot in degrees, clockwise
@@ -102,12 +103,12 @@ namespace DOL.GS
 		/// <returns>the angle towards the spot</returns>
 		public float GetAngle( IPoint2D point )
 		{
-			float headingDifference = ( GetHeading( point ) & 0xFFF ) - ( this.Heading & 0xFFF );
+			float headingDifference = GetHeading(point) - Heading;
 
 			if (headingDifference < 0)
 				headingDifference += 4096.0f;
 
-			return (headingDifference * 360.0f / 4096.0f);
+			return headingDifference * 360.0f / 4096.0f;
 		}
 
         /// <summary>
@@ -669,7 +670,7 @@ namespace DOL.GS
 			m_x = x;
 			m_y = y;
 			m_z = z;
-			_heading = heading;
+			Heading = heading;
 			return AddToWorld();
 		}
 
@@ -776,7 +777,7 @@ namespace DOL.GS
 			m_x = x;
 			m_y = y;
 			m_z = z;
-			_heading = heading;
+			Heading = heading;
 			CurrentRegionID = regionID;
 			return AddToWorld();
 		}

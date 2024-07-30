@@ -22,12 +22,14 @@ namespace DOL.GS
             Owner = owner;
         }
 
-        public static MovementComponent Create(GameLiving gameLiving)
+        public static MovementComponent Create(GameLiving living)
         {
-            if (gameLiving is GameNPC gameNpc)
-                return new NpcMovementComponent(gameNpc);
+            if (living is GameNPC npc)
+                return new NpcMovementComponent(npc);
+            else if (living is GamePlayer player)
+                return new PlayerMovementComponent(player);
             else
-                return new MovementComponent(gameLiving);
+                return new MovementComponent(living);
         }
 
         public virtual void Tick()

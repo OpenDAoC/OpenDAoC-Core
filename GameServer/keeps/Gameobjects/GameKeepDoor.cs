@@ -648,7 +648,7 @@ namespace DOL.GS.Keeps
 			CurrentRegion = curZone.ZoneRegion;
 			m_name = dbDoor.Name;
 			m_health = dbDoor.Health;
-			_heading = (ushort)dbDoor.Heading;
+			Heading = (ushort)dbDoor.Heading;
 			m_x = dbDoor.X;
 			m_y = dbDoor.Y;
 			m_z = dbDoor.Z;

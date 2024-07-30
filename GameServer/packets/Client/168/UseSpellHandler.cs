@@ -37,7 +37,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			else
 			{
 				flagSpeedData = packet.ReadShort();
-				int heading = packet.ReadShort();
+				ushort heading = packet.ReadShort();
 
 				if (client.Version > GameClient.eClientVersion.Version171)
 				{
@@ -62,7 +62,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				spellLevel = packet.ReadByte();
 				spellLineIndex = packet.ReadByte();
 
-				client.Player.Heading = (ushort)(heading & 0xfff);
+				client.Player.Heading = heading;
 			}
 
 			GamePlayer player = client.Player;

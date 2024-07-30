@@ -291,7 +291,7 @@ namespace DOL.GS
 					PingTime = GameLoop.GameLoopTime;
 
 					if (m_player != null)
-						m_player.LastPositionUpdateTime = GameLoop.GameLoopTime;
+						m_player.LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
 				}
 
 				m_clientState = value;
@@ -303,8 +303,6 @@ namespace DOL.GS
 		/// When the linkdeath occured. 0 if there wasn't any
 		/// </summary>
 		public long LinkDeathTime { get; set; }
-
-		public GSPacketIn LastPositionUpdatePacketReceived { get; set; }
 
 		/// <summary>
 		/// Variable is false if account/player is Ban, for a wrong password, if server is closed etc ... 
