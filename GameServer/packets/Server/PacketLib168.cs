@@ -1539,18 +1539,54 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendQuestListUpdate()
 		{
-			HashSet<byte> sentIndexes = new();
+			// Send up to 25 quests.
+			byte questIndex;
+			HashSet<byte> sentIndexes = [];
+			HashSet<AbstractQuest> questsWithTooHighIndex = null;
 
 			foreach (var entry in m_gameClient.Player.QuestList)
 			{
-				SendQuestPacket(entry.Key, entry.Value);
-				sentIndexes.Add(entry.Value);
+				questIndex = entry.Value;
+
+				if (questIndex < 25)
+				{
+					SendQuestPacket(entry.Key, questIndex);
+					sentIndexes.Add(questIndex);
+				}
+				else
+				{
+					if (questsWithTooHighIndex == null)
+						questsWithTooHighIndex = [];
+
+					questsWithTooHighIndex.Add(entry.Key);
+				}
 			}
 
-			for (byte i = 0; i < 25; i++)
+			// If possible, move and send quests which indexes are too high.
+			if (questsWithTooHighIndex != null)
 			{
-				if (!sentIndexes.Contains(i))
-					SendQuestPacket(null, i);
+				questIndex = 0;
+
+				foreach (AbstractQuest questWithTooHighIndex in questsWithTooHighIndex)
+				{
+					for ( ; questIndex < 25; questIndex++)
+					{
+						if (sentIndexes.Contains(questIndex))
+							continue;
+
+						m_gameClient.Player.QuestList[questWithTooHighIndex] = questIndex;
+						SendQuestPacket(questWithTooHighIndex, questIndex);
+						sentIndexes.Add(questIndex);
+						break;
+					}
+				}
+			}
+
+			// Send null for unused indexes.
+			for (questIndex = 0; questIndex < 25; questIndex++)
+			{
+				if (!sentIndexes.Contains(questIndex))
+					SendQuestPacket(null, questIndex);
 			}
 		}
 
