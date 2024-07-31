@@ -23,7 +23,8 @@ namespace DOL.GS.PacketHandler
 	[PacketLib(168, GameClient.eClientVersion.Version168)]
 	public class PacketLib168 : AbstractPacketLib, IPacketLib
 	{
-		protected const int MaxPacketLength = 2048;
+		protected const int MAX_PACKET_LENGTH = 2048;
+		protected const int JOURNAL_MAX_QUEST_COUNT = 25;
 
 		/// <summary>
 		/// Defines a logger for this class.
@@ -1539,16 +1540,22 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendQuestListUpdate()
 		{
-			// Send up to 25 quests.
+			SendQuestListUpdate(0);
+		}
+
+		public virtual void SendQuestListUpdate(byte indexOffset)
+		{
+			// Send up to JOURNAL_MAX_QUEST_COUNT quests.
 			byte questIndex;
+			byte lastIndex = (byte) (JOURNAL_MAX_QUEST_COUNT + indexOffset);
 			HashSet<byte> sentIndexes = [];
 			HashSet<AbstractQuest> questsWithTooHighIndex = null;
 
 			foreach (var entry in m_gameClient.Player.QuestList)
 			{
-				questIndex = entry.Value;
+				questIndex = (byte) (entry.Value + indexOffset);
 
-				if (questIndex < 25)
+				if (questIndex < lastIndex)
 				{
 					SendQuestPacket(entry.Key, questIndex);
 					sentIndexes.Add(questIndex);
@@ -1565,11 +1572,11 @@ namespace DOL.GS.PacketHandler
 			// If possible, move and send quests which indexes are too high.
 			if (questsWithTooHighIndex != null)
 			{
-				questIndex = 0;
+				questIndex = indexOffset;
 
 				foreach (AbstractQuest questWithTooHighIndex in questsWithTooHighIndex)
 				{
-					for ( ; questIndex < 25; questIndex++)
+					for ( ; questIndex < lastIndex; questIndex++)
 					{
 						if (sentIndexes.Contains(questIndex))
 							continue;
@@ -1583,7 +1590,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Send null for unused indexes.
-			for (questIndex = 0; questIndex < 25; questIndex++)
+			for (questIndex = indexOffset; questIndex < lastIndex; questIndex++)
 			{
 				if (!sentIndexes.Contains(questIndex))
 					SendQuestPacket(null, questIndex);
@@ -4042,7 +4049,7 @@ namespace DOL.GS.PacketHandler
 		{
 		}
 
-		protected void WriteCustomTextWindowData(GSTCPPacketOut pak, IList<string> text)
+		protected static void WriteCustomTextWindowData(GSTCPPacketOut pak, IList<string> text)
 		{
 			byte line = 0;
 			bool needBreak = false;
@@ -4053,7 +4060,7 @@ namespace DOL.GS.PacketHandler
 
 				if (str != null)
 				{
-					if (pak.Position + 4 > MaxPacketLength) // line + pascalstringline(1) + trailingZero
+					if (pak.Position + 4 > MAX_PACKET_LENGTH) // line + pascalstringline(1) + trailingZero
 						return;
 
 					pak.WriteByte(++line);
@@ -4062,7 +4069,7 @@ namespace DOL.GS.PacketHandler
 					{
 						string s = str.Substring(0, byte.MaxValue);
 
-						if (pak.Position + s.Length + 2 > MaxPacketLength)
+						if (pak.Position + s.Length + 2 > MAX_PACKET_LENGTH)
 						{
 							needBreak = true;
 							break;
@@ -4070,16 +4077,16 @@ namespace DOL.GS.PacketHandler
 
 						pak.WritePascalString(s);
 						str = str.Substring(byte.MaxValue, str.Length - byte.MaxValue);
-						if (line >= 200 || pak.Position + Math.Min(byte.MaxValue, str.Length) + 2 >= MaxPacketLength)
+						if (line >= 200 || pak.Position + Math.Min(byte.MaxValue, str.Length) + 2 >= MAX_PACKET_LENGTH)
 							// line + pascalstringline(1) + trailingZero
 							return;
 
 						pak.WriteByte(++line);
 					}
 
-					if (pak.Position + str.Length + 2 > MaxPacketLength) // str.Length + trailing zero
+					if (pak.Position + str.Length + 2 > MAX_PACKET_LENGTH) // str.Length + trailing zero
 					{
-						str = str.Substring(0, (int)Math.Max(Math.Min(1, str.Length), MaxPacketLength - pak.Position - 2));
+						str = str.Substring(0, (int)Math.Max(Math.Min(1, str.Length), MAX_PACKET_LENGTH - pak.Position - 2));
 						needBreak = true;
 					}
 
