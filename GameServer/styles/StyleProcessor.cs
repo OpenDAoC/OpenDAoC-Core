@@ -590,42 +590,25 @@ namespace DOL.GS.Styles
 		/// <param name="spellID">The spellid of the magical effect</param>
 		protected static ISpellHandler CreateMagicEffect(GameLiving caster, GameLiving target, int spellID)
 		{
-			SpellLine styleLine = SkillBase.GetSpellLine(GlobalSpellsLines.Combat_Styles_Effect);
-			if (styleLine == null || target == null) return null;
+			Spell spell = SkillBase.GetSpellByID(spellID);
 
-			List<Spell> spells = SkillBase.GetSpellList(styleLine.KeyName);
-
-			Spell styleSpell = null;
-			foreach (Spell spell in spells)
-			{
-				if (spell.ID == spellID)
-				{
-					// We have to scale style procs when cast
-					if (caster is GameSummonedPet pet)
-						pet.ScalePetSpell(spell);
-
-					styleSpell = spell;
-					break;
-				}
-			}
-
-			ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(caster, styleSpell, styleLine);
-			if (spellHandler == null && styleSpell != null && caster is GamePlayer)
-			{
-				((GamePlayer)caster).Out.SendMessage(styleSpell.Name + " not implemented yet (" + styleSpell.SpellType + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			if (spell == null)
 				return null;
-			}
 
-			// No negative effects can be applied on a keep door or via attacking a keep door
-			if ((target is GameKeepComponent || target is GameKeepDoor) && spellHandler?.HasPositiveEffect == false)
-			{
+			// We have to scale style procs when cast.
+			if (caster is GameSummonedPet pet)
+				pet.ScalePetSpell(spell);
+
+			ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Combat_Styles_Effect));
+
+			if (spellHandler == null)
 				return null;
-			}
 
+			if ((target is GameKeepComponent || target is GameDoorBase) && !spellHandler.HasPositiveEffect)
+				return null;
 
 			return spellHandler;
 		}
-
 
 		/// <summary>
 		/// Delve a Style handled by this processor
