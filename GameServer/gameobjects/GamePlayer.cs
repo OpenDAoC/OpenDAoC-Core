@@ -2008,26 +2008,27 @@ namespace DOL.GS
 
             if (player.IsUnderwater && player.CanBreathUnderWater == false)
                 player.UpdateWaterBreathState(eWaterBreath.Holding);
+
             //We need two different sickness spells because RvR sickness is not curable by Healer NPC -Unty
             if (applyRezSick)
+            {
                 switch (DeathType)
                 {
                     case eDeathType.RvR:
-                        SpellLine rvrsick = SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells);
-                        if (rvrsick == null) return;
-                        Spell rvrillness = SkillBase.FindSpell(8181, rvrsick);
-                        //player.CastSpell(rvrillness, rvrsick);
-                        CastSpell(rvrillness, rvrsick);
+                    {
+                        Spell rvrIllness = SkillBase.GetSpellByID(8181);
+                        CastSpell(rvrIllness, SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells));
                         break;
+                    }
                     case eDeathType.PvP: //PvP sickness is the same as PvE sickness - Curable
                     case eDeathType.PvE:
-                        SpellLine pvesick = SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells);
-                        if (pvesick == null) return;
-                        Spell pveillness = SkillBase.FindSpell(2435, pvesick);
-                        //player.CastSpell(pveillness, pvesick);
-                        CastSpell(pveillness, pvesick);
+                    {
+                        Spell pveIllness = SkillBase.GetSpellByID(2435);
+                        CastSpell(pveIllness, SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells));
                         break;
+                    }
                 }
+            }
 
             GameEventMgr.RemoveHandler(this, GamePlayerEvent.Revive, new DOLEventHandler(OnRevive));
             m_deathtype = eDeathType.None;
@@ -6221,44 +6222,41 @@ namespace DOL.GS
 
                 if (requiredLevel <= Level)
                 {
-                    SpellLine reactiveEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+                    SpellLine reactiveEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects); 
 
-                    if (reactiveEffectLine != null)
+                    if (reactiveItem.ProcSpellID != 0)
                     {
-                        if (reactiveItem.ProcSpellID != 0)
+                        Spell spell = SkillBase.GetSpellByID(reactiveItem.ProcSpellID);
+
+                        if (spell != null)
                         {
-                            Spell spell = SkillBase.FindSpell(reactiveItem.ProcSpellID, reactiveEffectLine);
+                            int chance = reactiveItem.ProcChance > 0 ? reactiveItem.ProcChance : 10;
 
-                            if (spell != null)
+                            if (Util.Chance(chance))
                             {
-                                int chance = reactiveItem.ProcChance > 0 ? reactiveItem.ProcChance : 10;
-
-                                if (Util.Chance(chance))
+                                ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, reactiveEffectLine);
+                                if (spellHandler != null)
                                 {
-                                    ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, reactiveEffectLine);
-                                    if (spellHandler != null)
-                                    {
-                                        spellHandler.StartSpell(target, reactiveItem);
-                                    }
+                                    spellHandler.StartSpell(target, reactiveItem);
                                 }
                             }
                         }
+                    }
 
-                        if (reactiveItem.ProcSpellID1 != 0)
+                    if (reactiveItem.ProcSpellID1 != 0)
+                    {
+                        Spell spell = SkillBase.GetSpellByID(reactiveItem.ProcSpellID1);
+
+                        if (spell != null)
                         {
-                            Spell spell = SkillBase.FindSpell(reactiveItem.ProcSpellID1, reactiveEffectLine);
+                            int chance = reactiveItem.ProcChance > 0 ? reactiveItem.ProcChance : 10;
 
-                            if (spell != null)
+                            if (Util.Chance(chance))
                             {
-                                int chance = reactiveItem.ProcChance > 0 ? reactiveItem.ProcChance : 10;
-
-                                if (Util.Chance(chance))
+                                ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, reactiveEffectLine);
+                                if (spellHandler != null)
                                 {
-                                    ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, reactiveEffectLine);
-                                    if (spellHandler != null)
-                                    {
-                                        spellHandler.StartSpell(target, reactiveItem);
-                                    }
+                                    spellHandler.StartSpell(target, reactiveItem);
                                 }
                             }
                         }
@@ -7847,7 +7845,7 @@ namespace DOL.GS
                             if (useItem.Item_Type == 41)
                                 potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
 
-                            Spell spell = SkillBase.FindSpell(useItem.SpellID, potionEffectLine);
+                            Spell spell = SkillBase.GetSpellByID(useItem.SpellID);
 
                             if (spell != null)
                             {
@@ -7859,86 +7857,81 @@ namespace DOL.GS
                                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.MustWaitBeforeUse", (nextPotionAvailTime - CurrentRegion.Time) / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 else
                                 {
-                                    if (potionEffectLine != null)
+                                    int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MaxLevel, useItem.Level);
+
+                                    if (requiredLevel <= Level)
                                     {
-                                        int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MaxLevel, useItem.Level);
-
-                                        if (requiredLevel <= Level)
+                                        if (spell.CastTime > 0 && attackComponent.AttackState)
+                                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                        else if ((IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || IsMezzed || !IsAlive)
+                                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseState", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                        else if (spell.CastTime > 0 && IsCasting)
+                                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseCast", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                        else
                                         {
-                                            if (spell.CastTime > 0 && attackComponent.AttackState)
-                                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                            else if ((IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || IsMezzed || !IsAlive)
-                                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseState", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                            else if (spell.CastTime > 0 && IsCasting)
-                                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseCast", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                            else
+                                            if (ScriptMgr.CreateSpellHandler(this, spell, potionEffectLine) is SpellHandler spellHandler)
                                             {
-                                                if (ScriptMgr.CreateSpellHandler(this, spell, potionEffectLine) is SpellHandler spellHandler)
+                                                GameLiving target = TargetObject as GameLiving;
+
+                                                if (spellHandler is AllStatsBarrel)
+                                                    target = this;
+
+                                                if (spellHandler is AllRegenBuff)
+                                                    target = this;
+
+                                                if (spell.Target == eSpellTarget.ENEMY)
                                                 {
-                                                    GameLiving target = TargetObject as GameLiving;
-
-                                                    if (spellHandler is AllStatsBarrel)
-                                                        target = this;
-
-                                                    if (spellHandler is AllRegenBuff)
-                                                        target = this;
-
-                                                    if (spell.Target == eSpellTarget.ENEMY)
+                                                    if (!GameServer.ServerRules.IsAllowedToAttack(this, target, true))
                                                     {
-                                                        if (!GameServer.ServerRules.IsAllowedToAttack(this, target, true))
-                                                        {
-                                                            Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                                            return;
-                                                        }
-                                                    }
-
-                                                    if (spell.IsHealing && spell.CastTime == 0 && IsAttacking)
-                                                    {
-                                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseAttacking", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                        Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                                         return;
                                                     }
+                                                }
 
-                                                    Stealth(false);
+                                                if (spell.IsHealing && spell.CastTime == 0 && IsAttacking)
+                                                {
+                                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseAttacking", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                    return;
+                                                }
 
-                                                    if (useItem.Item_Type == (int) eInventorySlot.FirstBackpack)
+                                                Stealth(false);
+
+                                                if (useItem.Item_Type == (int) eInventorySlot.FirstBackpack)
+                                                {
+                                                    Emote(eEmote.Drink);
+
+                                                    if (spell.CastTime > 0)
+                                                        TempProperties.SetProperty(NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION, 6 * 1000 + CurrentRegion.Time);
+                                                }
+
+                                                if (spellHandler.StartSpell(target, useItem))
+                                                {
+                                                    if (useItem.Count > 1)
                                                     {
-                                                        Emote(eEmote.Drink);
-
-                                                        if (spell.CastTime > 0)
-                                                            TempProperties.SetProperty(NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION, 6 * 1000 + CurrentRegion.Time);
+                                                        Inventory.RemoveCountFromStack(useItem, 1);
+                                                        InventoryLogging.LogInventoryAction(this, "(potion)", eInventoryActionType.Other, useItem.Template);
                                                     }
-
-                                                    if (spellHandler.StartSpell(target, useItem))
+                                                    else
                                                     {
-                                                        if (useItem.Count > 1)
+                                                        useItem.Charges--;
+
+                                                        if (useItem.Charges < 1)
                                                         {
                                                             Inventory.RemoveCountFromStack(useItem, 1);
                                                             InventoryLogging.LogInventoryAction(this, "(potion)", eInventoryActionType.Other, useItem.Template);
                                                         }
-                                                        else
-                                                        {
-                                                            useItem.Charges--;
-
-                                                            if (useItem.Charges < 1)
-                                                            {
-                                                                Inventory.RemoveCountFromStack(useItem, 1);
-                                                                InventoryLogging.LogInventoryAction(this, "(potion)", eInventoryActionType.Other, useItem.Template);
-                                                            }
-                                                        }
-
-                                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.Used", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                                        TempProperties.SetProperty($"{NEXT_POTION_AVAIL_TIME}_Type{spell.SharedTimerGroup}", useItem.CanUseEvery * 1000 + CurrentRegion.Time);
                                                     }
+
+                                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.Used", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                    TempProperties.SetProperty($"{NEXT_POTION_AVAIL_TIME}_Type{spell.SharedTimerGroup}", useItem.CanUseEvery * 1000 + CurrentRegion.Time);
                                                 }
-                                                else
-                                                    Out.SendMessage($"Potion effect ID {spell.ID} is not implemented yet.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                             }
+                                            else
+                                                Out.SendMessage($"Potion effect ID {spell.ID} is not implemented yet.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                         }
-                                        else
-                                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.NotEnouthPower"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                     }
                                     else
-                                        Out.SendMessage("Potion effect line not found", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.NotEnouthPower"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                                 }
                             }
                             else
@@ -8157,13 +8150,9 @@ namespace DOL.GS
             Spell spell = null;
 
             if (type == 1)
-            {
-                spell = SkillBase.FindSpell(useItem.SpellID, chargeEffectLine);
-            }
+                spell = SkillBase.GetSpellByID(useItem.SpellID);
             else
-            {
-                spell = SkillBase.FindSpell(useItem.SpellID1, chargeEffectLine);
-            }
+                spell = SkillBase.GetSpellByID(useItem.SpellID1);
 
             if (spell != null)
             {
@@ -8281,17 +8270,13 @@ namespace DOL.GS
                 return false;
             }
 
-            SpellLine itemSpellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-
-            if (itemSpellLine == null)
-                return false;
-
             if (type == 1 || type == 0)
             {
-                Spell spell = SkillBase.FindSpell(item.SpellID, itemSpellLine);
+                Spell spell = SkillBase.GetSpellByID(item.SpellID);
 
                 if (spell != null)
                 {
+                    SpellLine itemSpellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
                     int requiredLevel = item.Template.LevelRequirement > 0 ? item.Template.LevelRequirement : Math.Min(MaxLevel, item.Level);
 
                     if (requiredLevel > Level)
@@ -8322,6 +8307,7 @@ namespace DOL.GS
                     }
                 }
             }
+
             return false;
         }
 

@@ -611,34 +611,26 @@ namespace DOL.GS
                         spellNote = LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.StrikeArmor");
                     }
 
-                    SpellLine line = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-                    if (line != null)
+                    Spell procSpell = SkillBase.GetSpellByID(ProcSpellID);
+
+                    if (procSpell != null)
                     {
-                        Spell procSpell = SkillBase.FindSpell(ProcSpellID, line);
-
-                        if (procSpell != null)
+                        ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, procSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects));
+                        if (spellHandler != null)
                         {
-                            ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, procSpell, line);
-                            if (spellHandler != null)
-                            {
-                                output.AddRange(spellHandler.DelveInfo);
-                                output.Add(" ");
-                            }
-                            else
-                            {
-                                output.Add("-" + procSpell.Name + " (Spell Handler Not Implemented)");
-                            }
-
-                            output.Add(spellNote);
+                            output.AddRange(spellHandler.DelveInfo);
+                            output.Add(" ");
                         }
                         else
                         {
-                            output.Add("- Spell Not Found: " + ProcSpellID);
+                            output.Add("-" + procSpell.Name + " (Spell Handler Not Implemented)");
                         }
+
+                        output.Add(spellNote);
                     }
                     else
                     {
-                        output.Add("- Item_Effects Spell Line Missing");
+                        output.Add("- Spell Not Found: " + ProcSpellID);
                     }
 
                     output.Add(" ");
@@ -658,34 +650,26 @@ namespace DOL.GS
                         spellNote = LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.StrikeArmor");
                     }
 
-                    SpellLine line = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-                    if (line != null)
+                    Spell procSpell = SkillBase.GetSpellByID(ProcSpellID1);
+
+                    if (procSpell != null)
                     {
-                        Spell procSpell = SkillBase.FindSpell(ProcSpellID1, line);
-
-                        if (procSpell != null)
+                        ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, procSpell, SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects));
+                        if (spellHandler != null)
                         {
-                            ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, procSpell, line);
-                            if (spellHandler != null)
-                            {
-                                output.AddRange(spellHandler.DelveInfo);
-                                output.Add(" ");
-                            }
-                            else
-                            {
-                                output.Add("-" + procSpell.Name + " (Spell Handler Not Implemented)");
-                            }
-
-                            output.Add(spellNote);
+                            output.AddRange(spellHandler.DelveInfo);
+                            output.Add(" ");
                         }
                         else
                         {
-                            output.Add("- Spell Not Found: " + ProcSpellID1);
+                            output.Add("-" + procSpell.Name + " (Spell Handler Not Implemented)");
                         }
+
+                        output.Add(spellNote);
                     }
                     else
                     {
-                        output.Add("- Item_Effects Spell Line Missing");
+                        output.Add("- Spell Not Found: " + ProcSpellID1);
                     }
 
                     output.Add(" ");
@@ -694,36 +678,29 @@ namespace DOL.GS
                 #region Charge1
                 if (SpellID != 0)
                 {
-                    SpellLine chargeEffectsLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-                    if (chargeEffectsLine != null)
+                    Spell spell = SkillBase.GetSpellByID(SpellID);
+
+                    if (spell != null)
                     {
-                        Spell spell = SkillBase.FindSpell(SpellID, chargeEffectsLine);
-                        if (spell != null)
+                        ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects));
+
+                        if (spellHandler != null)
                         {
-                            ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, spell, chargeEffectsLine);
-
-                            if (spellHandler != null)
+                            if (MaxCharges > 0)
                             {
-                                if (MaxCharges > 0)
-                                {
-                                    output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.ChargedMagic"));
-                                    output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.Charges", Charges));
-                                    output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MaxCharges", MaxCharges));
-                                    output.Add(" ");
-                                }
-
-                                output.AddRange(spellHandler.DelveInfo);
+                                output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.ChargedMagic"));
+                                output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.Charges", Charges));
+                                output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MaxCharges", MaxCharges));
                                 output.Add(" ");
-                                output.Add("- This spell is cast when the item is used.");
                             }
-                            else
-                            {
-                                output.Add("- Item_Effects Spell Line Missing");
-                            }
+
+                            output.AddRange(spellHandler.DelveInfo);
+                            output.Add(" ");
+                            output.Add("- This spell is cast when the item is used.");
                         }
                         else
                         {
-                            output.Add("- Spell Not Found: " + SpellID);
+                            output.Add("- Item_Effects Spell Line Missing");
                         }
                     }
 
@@ -733,37 +710,34 @@ namespace DOL.GS
                 #region Charge2
                 if (SpellID1 != 0)
                 {
-                    SpellLine chargeEffectsLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-                    if (chargeEffectsLine != null)
+                    Spell spell = SkillBase.GetSpellByID(SpellID1);
+
+                    if (spell != null)
                     {
-                        Spell spell = SkillBase.FindSpell(SpellID1, chargeEffectsLine);
-                        if (spell != null)
+                        ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects));
+
+                        if (spellHandler != null)
                         {
-                            ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(client.Player, spell, chargeEffectsLine);
-
-                            if (spellHandler != null)
+                            if (MaxCharges > 0)
                             {
-                                if (MaxCharges > 0)
-                                {
-                                    output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.ChargedMagic"));
-                                    output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.Charges", Charges1));
-                                    output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MaxCharges", MaxCharges1));
-                                    output.Add(" ");
-                                }
-
-                                output.AddRange(spellHandler.DelveInfo);
+                                output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.ChargedMagic"));
+                                output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.Charges", Charges1));
+                                output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MaxCharges", MaxCharges1));
                                 output.Add(" ");
-                                output.Add("- This spell is cast when the item is used.");
                             }
-                            else
-                            {
-                                output.Add("- Item_Effects Spell Line Missing");
-                            }
+
+                            output.AddRange(spellHandler.DelveInfo);
+                            output.Add(" ");
+                            output.Add("- This spell is cast when the item is used.");
                         }
                         else
                         {
-                            output.Add("- Spell Not Found: " + SpellID1);
+                            output.Add("- Item_Effects Spell Line Missing");
                         }
+                    }
+                    else
+                    {
+                        output.Add("- Spell Not Found: " + SpellID1);
                     }
 
                     output.Add(" ");

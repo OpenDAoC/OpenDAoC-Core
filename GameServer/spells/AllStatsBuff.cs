@@ -1,6 +1,3 @@
-using System;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 using System.Collections.Generic;
 
 namespace DOL.GS.Spells
@@ -24,22 +21,22 @@ namespace DOL.GS.Spells
         {
 			SpellLine potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
 
-			Spell strengthSpell = SkillBase.FindSpell(strengthID, potionEffectLine);
+			Spell strengthSpell = SkillBase.GetSpellByID(strengthID);
 			SpellHandler strenghtSpellHandler = ScriptMgr.CreateSpellHandler(target, strengthSpell, potionEffectLine) as SpellHandler;
 
-			Spell conSpell = SkillBase.FindSpell(conID, potionEffectLine);
+			Spell conSpell = SkillBase.GetSpellByID(conID);
 			SpellHandler conSpellHandler = ScriptMgr.CreateSpellHandler(target, conSpell, potionEffectLine) as SpellHandler;
 
-			Spell strengthConSpell = SkillBase.FindSpell(strenghtConID, potionEffectLine);
+			Spell strengthConSpell = SkillBase.GetSpellByID(strenghtConID);
 			SpellHandler strenghtConSpellHandler = ScriptMgr.CreateSpellHandler(target, strengthConSpell, potionEffectLine) as SpellHandler;
 
-			Spell dexSpell = SkillBase.FindSpell(dexID, potionEffectLine);
+			Spell dexSpell = SkillBase.GetSpellByID(dexID);
 			SpellHandler dexSpellHandler = ScriptMgr.CreateSpellHandler(target, dexSpell, potionEffectLine) as SpellHandler;
 
-			Spell dexQuickSpell = SkillBase.FindSpell(dexQuickID, potionEffectLine);
+			Spell dexQuickSpell = SkillBase.GetSpellByID(dexQuickID);
 			SpellHandler dexQuickSpellHandler = ScriptMgr.CreateSpellHandler(target, dexQuickSpell, potionEffectLine) as SpellHandler;
 
-			Spell acuitySpell = SkillBase.FindSpell(acuityID, potionEffectLine);
+			Spell acuitySpell = SkillBase.GetSpellByID(acuityID);
 			SpellHandler acuitySpellHandler = ScriptMgr.CreateSpellHandler(target, acuitySpell, potionEffectLine) as SpellHandler;
 
 			//Spell hasteSpell = SkillBase.FindSpell(hasteID, potionEffectLine);
