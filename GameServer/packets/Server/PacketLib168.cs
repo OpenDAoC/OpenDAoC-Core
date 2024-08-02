@@ -1613,7 +1613,7 @@ namespace DOL.GS.PacketHandler
 			if (index + indexOffset >= JOURNAL_MAX_QUEST_COUNT + indexOffset)
 				return;
 
-			SendQuestPacket(quest, index);
+			SendQuestPacket(quest, (byte) (index + indexOffset));
 		}
 
 		public virtual void SendQuestRemove(byte index)
