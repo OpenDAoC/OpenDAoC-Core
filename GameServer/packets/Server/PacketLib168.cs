@@ -1610,7 +1610,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendQuestRemove(byte index)
 		{
-			if (m_gameClient.Player.QuestList.Count > MAX_PACKET_LENGTH)
+			if (m_gameClient.Player.QuestList.Count > JOURNAL_MAX_QUEST_COUNT)
 				SendQuestListUpdate();
 			else
 				SendQuestPacket(null, index);
