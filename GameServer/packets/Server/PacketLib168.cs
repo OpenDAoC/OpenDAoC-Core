@@ -1546,6 +1546,8 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendQuestListUpdate(byte indexOffset)
 		{
 			// Send up to JOURNAL_MAX_QUEST_COUNT quests.
+			// `indexOffset` is used to accommodate for the client version and represents the first index it accepts.
+			// Our dictionary's value doesn't change and starts a 0.
 			byte questIndex;
 			byte lastIndex = (byte) (JOURNAL_MAX_QUEST_COUNT + indexOffset);
 			HashSet<byte> sentIndexes = [];
@@ -1581,11 +1583,14 @@ namespace DOL.GS.PacketHandler
 						if (sentIndexes.Contains(questIndex))
 							continue;
 
-						m_gameClient.Player.QuestList[questWithTooHighIndex] = questIndex;
+						m_gameClient.Player.QuestList[questWithTooHighIndex] = (byte) (questIndex - indexOffset);
 						SendQuestPacket(questWithTooHighIndex, questIndex);
 						sentIndexes.Add(questIndex);
 						break;
 					}
+
+					if (questIndex == lastIndex)
+						break;
 				}
 			}
 
@@ -1605,7 +1610,10 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendQuestRemove(byte index)
 		{
-			SendQuestPacket(null, index);
+			if (m_gameClient.Player.QuestList.Count > MAX_PACKET_LENGTH)
+				SendQuestListUpdate();
+			else
+				SendQuestPacket(null, index);
 		}
 
 		public virtual void SendGroupWindowUpdate()

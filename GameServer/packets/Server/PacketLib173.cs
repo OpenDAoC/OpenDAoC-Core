@@ -552,7 +552,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendQuestRemove(byte index)
 		{
-			SendQuestPacket(null, (byte) (index + 1));
+			base.SendQuestRemove((byte) (index + 1));
 		}
 
 		public override void SendRegionChanged()
