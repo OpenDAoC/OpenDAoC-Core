@@ -20,6 +20,7 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.PropertyCalc;
 using DOL.GS.Quests;
 using DOL.GS.RealmAbilities;
+using DOL.GS.Scripts;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
@@ -912,13 +913,11 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.InfoFormat("Linkdead player {0}({1}) will quit in {2} seconds", Name, Client.Account.Name, SECONDS_TO_QUIT_ON_LINKDEATH);
 
-            // Keep link-dead characters in game.
-            _linkDeathTimer = new(this);
+            _linkDeathTimer = new(this); // Keep link-dead characters in game.
+            TradeWindow?.CloseTrade();
+            Group?.UpdateMember(this, false, false);
 
-            if (TradeWindow != null)
-                TradeWindow.CloseTrade();
-
-            // Notify players in close proximity (hard LD only).
+            // Hard LD only.
             if (Client.ClientState is GameClient.eClientState.Linkdead)
             {
                 foreach (GamePlayer playerInRadius in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
@@ -926,16 +925,10 @@ namespace DOL.GS
                     if (playerInRadius != this && GameServer.ServerRules.IsAllowedToUnderstand(this, playerInRadius))
                         playerInRadius.Out.SendMessage(LanguageMgr.GetTranslation(playerInRadius.Client.Account.Language, "GamePlayer.OnLinkdeath.Linkdead", Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 }
+
+                CheckIfNearEnemyKeepAndAddToRvRLinkDeathListIfNecessary();
+                Notify(GamePlayerEvent.Linkdeath, this);
             }
-
-            // Notify other group members.
-            if (Group != null)
-                Group.UpdateMember(this, false, false);
-
-            CheckIfNearEnemyKeepAndAddToRvRLinkDeathListIfNecessary();
-
-            // Notify our event handlers (if any).
-            Notify(GamePlayerEvent.Linkdeath, this);
         }
 
         private void CheckIfNearEnemyKeepAndAddToRvRLinkDeathListIfNecessary()
