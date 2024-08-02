@@ -33,12 +33,11 @@ namespace DOL.GS.RealmAbilities
         {
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED))
                 return;
+
             if (living is GamePlayer)
                 CreateSpell(name, icon, clientEffect, damageType, GetDamageAddAmount(living));
-           
-            ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(living, m_spell, m_spellline);
-            spellHandler.IgnoreDamageCap = true;
 
+            ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(living, m_spell, m_spellline);
             new AtlasOF_RainOfBaseECSEffect(new ECSGameEffectInitParams(living, duration, 1, spellHandler));
             DisableSkill(living);
         }

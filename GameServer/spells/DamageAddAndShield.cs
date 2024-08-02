@@ -30,8 +30,7 @@ namespace DOL.GS.Spells
             if (Spell.Damage > 0)
             {
                 CalculateDamageVariance(target, out double minVariance, out double maxVariance);
-                double dpsCap = (1.2 + 0.3 * attacker.Level) * 0.7;
-                double dps = IgnoreDamageCap ? Spell.Damage : Math.Min(Spell.Damage, dpsCap);
+                double dps = Caster == Target ? Spell.Damage : Math.Min(Spell.Damage, (1.2 + 0.3 * attacker.Level) * 0.7);
                 effectiveness *= 1 + Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
                 damage = dps * effectiveness * attackData.WeaponSpeed * 0.001;
                 damage = Util.Random((int) (damage * minVariance), (int) (damage * maxVariance));

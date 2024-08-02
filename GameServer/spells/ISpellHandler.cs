@@ -120,12 +120,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		bool AllowCoexisting { get; }
 
-		/// <summary>
-		/// Does this spell ignore all damage caps?
-		/// </summary>
-		bool IgnoreDamageCap { get; set; }
-
-	    long CastStartTick { get; }
+		long CastStartTick { get; }
 		/// <summary>
 		/// Should this spell use the minimum variance for the type?
 		/// Followup style effects, for example, always use the minimum variance

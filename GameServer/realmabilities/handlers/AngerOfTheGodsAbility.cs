@@ -1,15 +1,11 @@
-using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
-using DOL.GS;
-using DOL.GS.PacketHandler;
 using DOL.Database;
 using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities
 {
-	public class AngerOfTheGodsAbility : TimedRealmAbility
-	{
+    public class AngerOfTheGodsAbility : TimedRealmAbility
+    {
         private DbSpell m_dbspell;
         private Spell m_spell = null;
         private SpellLine m_spellline;
@@ -56,10 +52,9 @@ namespace DOL.GS.RealmAbilities
 			if (target.IsAlive && m_spell != null)
 			{
 				ISpellHandler dd = ScriptMgr.CreateSpellHandler(m_player, m_spell, m_spellline);
-				dd.IgnoreDamageCap = true;
 				dd.StartSpell(target);
 			}
-        }	
+        }
 
         public override int GetReUseDelay(int level)
         {

@@ -99,18 +99,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public const string INTERRUPT_TIMEOUT_PROPERTY = "CAST_INTERRUPT_TIMEOUT";
 
-		protected bool m_ignoreDamageCap = false;
 		private long _lastDuringCastLosCheckTime;
-
-		/// <summary>
-		/// Does this spell ignore any damage cap?
-		/// </summary>
-		public bool IgnoreDamageCap
-		{
-			get { return m_ignoreDamageCap; }
-			set { m_ignoreDamageCap = value; }
-		}
-
 		protected bool m_useMinVariance = false;
 
 		/// <summary>
