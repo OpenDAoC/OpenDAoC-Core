@@ -1564,9 +1564,7 @@ namespace DOL.GS.PacketHandler
 				}
 				else
 				{
-					if (questsWithTooHighIndex == null)
-						questsWithTooHighIndex = [];
-
+					questsWithTooHighIndex ??= [];
 					questsWithTooHighIndex.Add(entry.Key);
 				}
 			}
@@ -1604,8 +1602,18 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendQuestUpdate(AbstractQuest quest)
 		{
-			if (m_gameClient.Player.QuestList.TryGetValue(quest, out byte index))
-				SendQuestPacket(quest, index);
+			SendQuestUpdate(quest, 0);
+		}
+
+		public virtual void SendQuestUpdate(AbstractQuest quest, byte indexOffset)
+		{
+			if (!m_gameClient.Player.QuestList.TryGetValue(quest, out byte index))
+				return;
+
+			if (index + indexOffset >= JOURNAL_MAX_QUEST_COUNT + indexOffset)
+				return;
+
+			SendQuestPacket(quest, index);
 		}
 
 		public virtual void SendQuestRemove(byte index)

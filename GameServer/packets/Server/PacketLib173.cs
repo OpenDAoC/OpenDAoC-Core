@@ -546,8 +546,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendQuestUpdate(AbstractQuest quest)
 		{
-			if (m_gameClient.Player.QuestList.TryGetValue(quest, out byte index))
-				SendQuestPacket(quest, (byte) (index + 1));
+			base.SendQuestUpdate(quest, 1);
 		}
 
 		public override void SendQuestRemove(byte index)
