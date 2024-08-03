@@ -106,12 +106,6 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            if (!_brain.HasAggro)
-            {
-                _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-                return;
-            }
-
             if (_brain.Body.IsCrowdControlled || EffectListService.GetSpellEffectOnTarget(_brain.Body, eEffect.MovementSpeedDebuff)?.SpellHandler.Spell.Value == 99)
                 _aggroEndTime = GameLoop.GameLoopTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR;
             else if (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && ServiceUtils.ShouldTick(_aggroEndTime))
@@ -121,6 +115,13 @@ namespace DOL.AI.Brain
             }
 
             _brain.AttackMostWanted();
+
+            if (!_brain.HasAggro)
+            {
+                _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
+                return;
+            }
+
             base.Think();
         }
     }
