@@ -1803,16 +1803,17 @@ namespace DOL.GS
 
             if (source == null ||
                 source.IsIncapacitated ||
-                source.ActiveWeaponSlot == eActiveWeaponSlot.Distance ||
+                source.ActiveWeaponSlot is eActiveWeaponSlot.Distance ||
                 source.IsSitting ||
                 stealthStyle ||
+                !guard.Source.IsObjectInFront(ad.Attacker, 180) || 
                 !guard.Source.IsWithinRadius(guard.Target, GuardAbilityHandler.GUARD_DISTANCE))
                 return false;
 
             DbInventoryItem leftHand = source.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
             DbInventoryItem rightHand = source.ActiveWeapon;
 
-            if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || leftHand.Object_Type != (int) eObjectType.Shield) && source is not GameNPC)
+            if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || (eObjectType) leftHand.Object_Type is not eObjectType.Shield) && source is not GameNPC)
                 return false;
 
             // TODO: Insert actual formula for guarding here, this is just a guessed one based on block.
@@ -1856,7 +1857,7 @@ namespace DOL.GS
             else if (shieldSize == 3 && guardChance > 0.99)
                 guardChance = 0.99;
 
-            if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
+            if (ad.AttackType is AttackData.eAttackType.MeleeDualWield)
                 guardChance *= 0.5;
 
             double guardRoll;
