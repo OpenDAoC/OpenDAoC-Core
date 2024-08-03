@@ -58,7 +58,16 @@ namespace DOL.AI.Brain
                 Console.WriteLine($"{_brain.Body} is entering IDLE");
 
             _brain.Body.StopMoving();
+            _brain.NextThinkTick -= _brain.ThinkInterval; // Don't stay in IDLE for a full think cycle.
             base.Enter();
+        }
+
+        public override void Exit()
+        {
+            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
+                Console.WriteLine($"{_brain.Body} is entering IDLE");
+
+            base.Exit();
         }
 
         public override void Think()
@@ -67,30 +76,18 @@ namespace DOL.AI.Brain
                 return;
 
             if (_brain.HasPatrolPath())
-            {
                 _brain.FSM.SetCurrentState(eFSMStateType.PATROLLING);
-                return;
-            }
-
-            if (!_brain.Body.IsNearSpawn)
-            {
+            else if (!_brain.Body.IsNearSpawn)
                 _brain.FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-                return;
-            }
-
-            if (_brain.CheckProximityAggro())
-            {
+            else if (_brain.CheckProximityAggro())
                 _brain.FSM.SetCurrentState(eFSMStateType.AGGRO);
-                return;
-            }
-
-            if (_brain.Body.CanRoam)
-            {
+            else if (_brain.Body.CanRoam)
                 _brain.FSM.SetCurrentState(eFSMStateType.ROAMING);
-                return;
-            }
 
-            base.Think();
+            if (_brain.FSM.GetCurrentState() != this)
+                _brain.NextThinkTick -= _brain.ThinkInterval; // Don't stay in IDLE for a full think cycle.
+            else
+                base.Think();
         }
     }
 
