@@ -28,9 +28,6 @@ namespace DOL.AI.Brain
 		/// </summary>
 		public KeepGuardBrain() : base()
 		{
-			AggroLevel = 90;
-			AggroRange = 1000;
-
 			FSM.Add(new GuardState_RETURN_TO_SPAWN(this));
 		}
 

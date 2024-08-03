@@ -438,12 +438,6 @@ namespace DOL.GS.Keeps
 			if (!base.AddToWorld())
 				return false;
 
-			if (IsPortalKeepGuard && Brain is KeepGuardBrain keepGuardBrain)
-			{
-				keepGuardBrain.AggroRange = 2000;
-				keepGuardBrain.AggroLevel = 99;
-			}
-
 			if (PatrolGroup != null && !m_changingPositions)
 			{
 				bool foundGuard = false;
@@ -925,7 +919,15 @@ namespace DOL.GS.Keeps
 			RespawnInterval = (iRespawn > 1000) ? iRespawn : 1000; // Make sure we don't end up with an impossibly low respawn interval.
 		}
 
-		protected virtual void SetAggression() { }
+		protected virtual void SetAggression()
+		{
+			SetAggression(99, IsPortalKeepGuard ? 2000 : 1000);
+		}
+
+		protected void SetAggression(int aggroLevel, int aggroRange)
+		{
+			(Brain as KeepGuardBrain).SetAggression(aggroLevel, aggroRange);
+		}
 
 		public void SetLevel()
 		{
