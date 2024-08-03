@@ -1331,55 +1331,39 @@ namespace DOL.GS
             switch (ad.AttackResult)
             {
                 case eAttackResult.Parried:
-                    message = string.Format("{0} attacks {1} and is parried!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
+                    message = $"{ad.Attacker.GetName(0, true)} attacks {ad.Target.GetName(0, false)} and is parried!";
                     break;
                 case eAttackResult.Evaded:
-                    message = string.Format("{0} attacks {1} and is evaded!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
+                    message = $"{ad.Attacker.GetName(0, true)} attacks {ad.Target.GetName(0, false)} and is evaded!";
                     break;
                 case eAttackResult.Fumbled:
-                    message = string.Format("{0} fumbled!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
+                    message = $"{ad.Attacker.GetName(0, true)} fumbled!";
                     break;
                 case eAttackResult.Missed:
-                    message = string.Format("{0} attacks {1} and misses!", ad.Attacker.GetName(0, true), ad.Target.GetName(0, false));
+                    message = $"{ad.Attacker.GetName(0, true)} attacks {ad.Target.GetName(0, false)} and misses!";
                     break;
                 case eAttackResult.Blocked:
                 {
-                    message = string.Format("{0} attacks {1} and is blocked!", ad.Attacker.GetName(0, true),
-                        ad.Target.GetName(0, false));
-                    // guard messages
+                    message = $"{ad.Attacker.GetName(0, true)} attacks {ad.Target.GetName(0, false)} and is blocked!";
+
+                    // Guard.
                     if (target != null && target != ad.Target)
                     {
                         excludes.Add(target);
 
-                        // another player blocked for real target
-                        if (target is GamePlayer)
-                            ((GamePlayer) target).Out.SendMessage(
-                                string.Format(
-                                    LanguageMgr.GetTranslation(((GamePlayer) target).Client.Account.Language,
-                                        "GameLiving.AttackData.BlocksYou"), ad.Target.GetName(0, true),
-                                    ad.Attacker.GetName(0, false)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                        // Another player blocked for real target.
+                        if (target is GamePlayer playerTarget)
+                            playerTarget.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(playerTarget.Client.Account.Language, "GameLiving.AttackData.BlocksYou") + $" ({ad.BlockChance:0.0}%)", ad.Target.GetName(0, true), ad.Attacker.GetName(0, false)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
 
-                        // blocked for another player
-                        if (ad.Target is GamePlayer)
+                        // Blocked for another player.
+                        if (ad.Target is GamePlayer playerTarget2)
                         {
-                            ((GamePlayer) ad.Target).Out.SendMessage(
-                                string.Format(
-                                    LanguageMgr.GetTranslation(((GamePlayer) ad.Target).Client.Account.Language,
-                                        "GameLiving.AttackData.YouBlock") +
-                                        $" ({ad.BlockChance:0.0}%)", ad.Attacker.GetName(0, false),
-                                    target.GetName(0, false)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-                            ((GamePlayer) ad.Target).Stealth(false);
+                            playerTarget2.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(playerTarget2.Client.Account.Language, "GameLiving.AttackData.YouBlock") + $" ({ad.BlockChance:0.0}%)", ad.Attacker.GetName(0, false), target.GetName(0, false)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+                            playerTarget2.Stealth(false);
                         }
                     }
-                    else if (ad.Target is GamePlayer)
-                    {
-                        ((GamePlayer) ad.Target).Out.SendMessage(
-                            string.Format(
-                                LanguageMgr.GetTranslation(((GamePlayer) ad.Target).Client.Account.Language,
-                                    "GameLiving.AttackData.AttacksYou") +
-                                    $" ({ad.BlockChance:0.0}%)", ad.Attacker.GetName(0, true)),
-                            eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
-                    }
+                    else if (ad.Target is GamePlayer playerTarget)
+                        playerTarget.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(playerTarget.Client.Account.Language, "GameLiving.Attack.Block") + $" ({ad.BlockChance:0.0}%)", ad.Attacker.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
 
                     break;
                 }
@@ -1860,25 +1844,27 @@ namespace DOL.GS
             if (ad.AttackType is AttackData.eAttackType.MeleeDualWield)
                 guardChance *= 0.5;
 
-            double guardRoll;
-
-            if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
-                guardRoll = player.RandomNumberDeck.GetPseudoDouble();
-            else
-                guardRoll = Util.CryptoNextDouble();
-
-            bool success = guardChance > guardRoll;
-
-            if (source is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
-                blockAttk.Out.SendMessage($"Chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##} success? {success}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
-            if (guard.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
-                blockTarg.Out.SendMessage($"Chance to be guarded: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##} success? {success}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
-            if (success)
+            if (guardChance > 0)
             {
-                ad.Target = source;
-                return true;
+                double guardRoll;
+
+                if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
+                    guardRoll = player.RandomNumberDeck.GetPseudoDouble();
+                else
+                    guardRoll = Util.CryptoNextDouble();
+
+                if (source is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
+                    blockAttk.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                if (guard.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
+                    blockTarg.Out.SendMessage($"chance to be guarded: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                if (guardChance > guardRoll)
+                {
+                    ad.Target = source;
+                    ad.BlockChance = guardChance * 100;
+                    return true;
+                }
             }
 
             return false;

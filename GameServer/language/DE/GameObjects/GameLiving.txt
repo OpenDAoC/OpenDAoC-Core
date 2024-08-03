@@ -1,6 +1,6 @@
 ﻿# GAMELIVING
 
-GameLiving.AttackData.AttacksYou:		{0} greift Euch an aber Ihr blockt den Schlag ab!
+GameLiving.Attack.Block:				{0} greift Euch an aber Ihr blockt den Schlag ab!
 GameLiving.AttackData.Blocked:			{0} greift Euer {1} an aber wurde abgeblockt!
 GameLiving.AttackData.BlocksYou:		{0} blockt den Angriff auf Euch von {1} ab!
 GameLiving.AttackData.CriticallyHitsForDamage:	{0} trifft Euer {1} kritisch für zusätzlich {2} Schaden.
