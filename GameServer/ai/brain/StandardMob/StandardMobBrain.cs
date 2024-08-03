@@ -38,7 +38,6 @@ namespace DOL.AI.Brain
             FSM.Add(new StandardMobState_RETURN_TO_SPAWN(this));
             FSM.Add(new StandardMobState_PATROLLING(this));
             FSM.Add(new StandardMobState_ROAMING(this));
-            FSM.Add(new StandardMobState_DEAD(this));
             FSM.SetCurrentState(eFSMStateType.WAKING_UP);
         }
 

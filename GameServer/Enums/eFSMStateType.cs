@@ -8,7 +8,6 @@
         ROAMING,
         RETURN_TO_SPAWN,
         PATROLLING,
-        PASSIVE,
-        DEAD
+        PASSIVE
     }
 }

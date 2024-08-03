@@ -263,27 +263,4 @@ namespace DOL.AI.Brain
             base.Think();
         }
     }
-
-    public class StandardMobState_DEAD : StandardMobState
-    {
-        public StandardMobState_DEAD(StandardMobBrain brain) : base(brain)
-        {
-            StateType = eFSMStateType.DEAD;
-        }
-
-        public override void Enter()
-        {
-            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
-                Console.WriteLine($"{_brain.Body} has entered DEAD state");
-
-            _brain.ClearAggroList();
-            base.Enter();
-        }
-
-        public override void Think()
-        {
-            _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
-            base.Think();
-        }
-    }
 }
