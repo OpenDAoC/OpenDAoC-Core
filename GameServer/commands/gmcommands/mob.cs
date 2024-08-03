@@ -3039,8 +3039,8 @@ namespace DOL.GS.Commands
 
 			text.Add("InCombat: " + targetMob.InCombat);
 			text.Add("AttackState: " + targetMob.attackComponent.AttackState);
-			text.Add("LastCombatPVE: " + targetMob.LastAttackedByEnemyTickPvE);
-			text.Add("LastCombatPVP: " + targetMob.LastAttackedByEnemyTickPvP);
+			text.Add("LastCombatPVE: " + targetMob.LastCombatTickPvE);
+			text.Add("LastCombatPVP: " + targetMob.LastCombatTickPvP);
 
 			if (targetMob.InCombat || targetMob.attackComponent.AttackState)
 			{

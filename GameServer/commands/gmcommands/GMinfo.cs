@@ -263,8 +263,8 @@ namespace DOL.GS.Commands
 
 					info.Add("InCombat: " + target.InCombat);
 					info.Add("AttackState: " + target.attackComponent.AttackState);
-					info.Add("LastCombatPVE: " + target.LastAttackedByEnemyTickPvE);
-					info.Add("LastCombatPVP: " + target.LastAttackedByEnemyTickPvP);
+					info.Add("LastCombatPVE: " + target.LastCombatTickPvE);
+					info.Add("LastCombatPVP: " + target.LastCombatTickPvP);
 					info.Add("AttackAction: " + target.attackComponent.attackAction);
 					info.Add("WeaponAction: " + target.attackComponent.weaponAction);
 
