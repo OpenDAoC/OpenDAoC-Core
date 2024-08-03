@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using DOL.GS;
 using DOL.GS.ServerProperties;
 using log4net;
@@ -31,9 +30,6 @@ namespace DOL.AI.Brain
 
         public override void Enter()
         {
-            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
-                Console.WriteLine($"{_brain.Body} is entering WAKING_UP");
-
             _brain.Body?.StopMoving();
             base.Enter();
         }
@@ -54,20 +50,9 @@ namespace DOL.AI.Brain
 
         public override void Enter()
         {
-            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
-                Console.WriteLine($"{_brain.Body} is entering IDLE");
-
             _brain.Body.StopMoving();
             _brain.NextThinkTick -= _brain.ThinkInterval; // Don't stay in IDLE for a full think cycle.
             base.Enter();
-        }
-
-        public override void Exit()
-        {
-            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
-                Console.WriteLine($"{_brain.Body} is entering IDLE");
-
-            base.Exit();
         }
 
         public override void Think()
@@ -103,9 +88,6 @@ namespace DOL.AI.Brain
 
         public override void Enter()
         {
-            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
-                Console.WriteLine($"{_brain.Body} is entering AGGRO");
-
             if (_brain.Body.Flags.HasFlag(GameNPC.eFlags.STEALTH))
                 _brain.Body.Flags ^= GameNPC.eFlags.STEALTH;
 
@@ -156,14 +138,6 @@ namespace DOL.AI.Brain
             StateType = eFSMStateType.ROAMING;
         }
 
-        public override void Enter()
-        {
-            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
-                Console.WriteLine($"{_brain.Body} is entering ROAM");
-
-            base.Enter();
-        }
-
         public override void Think()
         {
             if (_brain.CheckProximityAggro())
@@ -205,9 +179,6 @@ namespace DOL.AI.Brain
 
         public override void Enter()
         {
-            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
-                Console.WriteLine($"{_brain.Body} is entering RETURN_TO_SPAWN");
-
             if (_brain.Body.WasStealthed)
                 _brain.Body.Flags |= GameNPC.eFlags.STEALTH;
 
@@ -240,9 +211,6 @@ namespace DOL.AI.Brain
 
         public override void Enter()
         {
-            if (ECS.Debug.Diagnostics.StateMachineDebugEnabled)
-                Console.WriteLine($"{_brain.Body} is PATROLLING");
-
             _brain.Body.MoveOnPath(_brain.Body.MaxSpeed);
             _brain.ClearAggroList();
             base.Enter();

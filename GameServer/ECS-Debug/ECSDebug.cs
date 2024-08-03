@@ -25,8 +25,6 @@ namespace ECS.Debug
         private static Stopwatch GameEventMgrNotifyStopwatch;
         private static Dictionary<string, List<double>> GameEventMgrNotifyTimes = new();
 
-        public static bool StateMachineDebugEnabled { get => stateMachineDebugEnabled; private set => stateMachineDebugEnabled = value; }
-
         public static void TogglePerfCounters(bool enabled)
         {
             if (enabled == false)
@@ -36,11 +34,6 @@ namespace ECS.Debug
             }
 
             PerfCountersEnabled = enabled;
-        }
-
-        public static void ToggleStateMachineDebug(bool enabled)
-        {
-            StateMachineDebugEnabled = enabled;
         }
 
         public static void Tick()
@@ -385,46 +378,6 @@ namespace DOL.GS.Commands
 
             // Finalize.
             player.Out.SendCustomTextWindow(header, messages);
-        }
-    }
-
-    [CmdAttribute(
-    "&fsm",
-    ePrivLevel.GM,
-    "Toggle server logging of mob FSM states.",
-    "/fsm debug <on|off> to toggle performance diagnostics logging on server.")]
-    public class StateMachineCommandHandler : AbstractCommandHandler, ICommandHandler
-    {
-        public void OnCommand(GameClient client, string[] args)
-        {
-            if (client == null || client.Player == null)
-                return;
-
-            if (IsSpammingCommand(client.Player, "fsm"))
-                return;
-
-            if (client.Account.PrivLevel < 2)
-                return;
-
-            if (args.Length < 3)
-            {
-                DisplaySyntax(client);
-                return;
-            }
-
-            if (args[1].ToLower().Equals("debug"))
-            {
-                if (args[2].ToLower().Equals("on"))
-                {
-                    Diagnostics.ToggleStateMachineDebug(true);
-                    DisplayMessage(client, "Mob state logging turned on.");
-                }
-                else if (args[2].ToLower().Equals("off"))
-                {
-                    Diagnostics.ToggleStateMachineDebug(false);
-                    DisplayMessage(client, "Mob state logging turned off.");
-                }
-            }
         }
     }
 }
