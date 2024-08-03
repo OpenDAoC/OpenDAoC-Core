@@ -1227,25 +1227,14 @@ namespace DOL.GS
 				if (ad.AttackType == eAttackType.Ranged)
 					evadeChance /= 5.0;
 
-				if (evadeChance < 0.01)
-					evadeChance = 0.01;
-				else if (evadeChance > Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+				if (evadeChance > Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 					evadeChance = Properties.EVADE_CAP; // 50% evade cap RvR only. http://www.camelotherald.com/more/664.shtml
 
-				if (evadeChance > 0.995)
-					evadeChance = 0.995;
+				if (evadeChance > 0.99)
+					evadeChance = 0.99;
 				
-				if (ad.AttackType == eAttackType.MeleeDualWield)
-					evadeChance = Math.Max(evadeChance * 0.5, 0.01);
-			
-				if (IsObjectInFront(ad.Attacker, 180) &&
-					(evadeBuff != null || (player != null && player.HasAbility(Abilities.Evade))) &&
-					evadeChance < 0.05 &&
-					ad.AttackType != eAttackType.Ranged)
-				{
-					// If player has a hard evade source, 5% minimum evade chance.
-					evadeChance = 0.05;
-				}
+				if (ad.AttackType is eAttackType.MeleeDualWield)
+					evadeChance *= 0.5;
 			}
 
 			// Infiltrator RR5.
@@ -1296,13 +1285,13 @@ namespace DOL.GS
 					else if (IsObjectInFront(ad.Attacker, 120))
 					{
 						if ((player.HasSpecialization(Specs.Parry) || parryBuff != null) && ActiveWeapon != null &&
-							ActiveWeapon.Object_Type != (int)eObjectType.RecurvedBow &&
-							ActiveWeapon.Object_Type != (int)eObjectType.Longbow &&
-							ActiveWeapon.Object_Type != (int)eObjectType.CompositeBow &&
-							ActiveWeapon.Object_Type != (int)eObjectType.Crossbow &&
-							ActiveWeapon.Object_Type != (int)eObjectType.Fired)
+							(eObjectType) ActiveWeapon.Object_Type is not eObjectType.RecurvedBow &&
+							(eObjectType) ActiveWeapon.Object_Type is not eObjectType.Longbow &&
+							(eObjectType) ActiveWeapon.Object_Type is not eObjectType.CompositeBow &&
+							(eObjectType) ActiveWeapon.Object_Type is not eObjectType.Crossbow &&
+							(eObjectType) ActiveWeapon.Object_Type is not eObjectType.Fired)
 						{
-							parryChance = GetModified( eProperty.ParryChance );
+							parryChance = GetModified(eProperty.ParryChance);
 						}
 					}
 				}
@@ -1327,18 +1316,16 @@ namespace DOL.GS
 					// Reduce chance by attacker's defense penetration.
 					parryChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100.0;
 
-					if (parryChance < 0.01)
-						parryChance = 0.01;
-					else if (parryChance > Properties.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+					if (parryChance > Properties.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 						parryChance = Properties.PARRY_CAP;
 
-					if (parryChance > 0.995)
-						parryChance = 0.995;
+					if (parryChance > 0.99)
+						parryChance = 0.99;
 				}
 			}
 
-			if (ad.AttackType == eAttackType.MeleeTwoHand)
-				parryChance = Math.Max(parryChance * 0.5, 0);
+			if (ad.AttackType is eAttackType.MeleeTwoHand)
+				parryChance *= 0.5;
 
 			// Infiltrator RR5.
 			if (ad.Attacker is GamePlayer attackerPlayer)
@@ -1377,7 +1364,7 @@ namespace DOL.GS
 			double blockChance = 0;
 			DbInventoryItem leftHand = Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
-			if (leftHand != null && leftHand.Object_Type != (int) eObjectType.Shield)
+			if (leftHand != null && (eObjectType) leftHand.Object_Type is not eObjectType.Shield)
 				leftHand = null;
 
 			GamePlayer player = this as GamePlayer;
@@ -1386,7 +1373,7 @@ namespace DOL.GS
 			{
 				if (player != null)
 				{
-					if (player.HasAbility(Abilities.Shield) && leftHand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type == Slot.RIGHTHAND || player.ActiveWeapon.Item_Type == Slot.LEFTHAND))
+					if (player.HasAbility(Abilities.Shield) && leftHand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type is Slot.RIGHTHAND || player.ActiveWeapon.Item_Type is Slot.LEFTHAND))
 						blockChance = GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
 				}
 				else
@@ -1412,9 +1399,7 @@ namespace DOL.GS
 				// Reduce chance by attacker's defense penetration.
 				blockChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100;
 
-				if (blockChance < 0.01)
-					blockChance = 0.01;
-				else if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+				if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 					blockChance = Properties.BLOCK_CAP;
 
 				// Possibly intended to be applied in RvR only.
@@ -1446,7 +1431,7 @@ namespace DOL.GS
 					}
 				}
 
-				if (ad.AttackType == eAttackType.MeleeDualWield)
+				if (ad.AttackType is eAttackType.MeleeDualWield)
 					blockChance *= 0.5;
 			}
 

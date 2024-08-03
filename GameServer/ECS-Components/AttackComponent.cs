@@ -1828,9 +1828,7 @@ namespace DOL.GS
             // Reduce chance by attacker's defense penetration.
             guardChance *= 1 - ad.Attacker.GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100;
 
-            if (guardChance < 0.01)
-                guardChance = 0.01;
-            else if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+            if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
                 guardChance = Properties.BLOCK_CAP;
 
             // Possibly intended to be applied in RvR only.
@@ -1901,8 +1899,6 @@ namespace DOL.GS
 
                 if (guardchance > 0.99)
                     guardchance = 0.99;
-                else if (guardchance < 0.01)
-                    guardchance = 0.01;
 
                 int shieldSize = 0;
 
@@ -1924,8 +1920,6 @@ namespace DOL.GS
 
                     if (parrychance > 0.99)
                         parrychance = 0.99;
-                    else if (parrychance < 0.01)
-                        parrychance = 0.01;
 
                     if (Attackers.Count > 1)
                         parrychance /= Attackers.Count / 2;
@@ -1955,8 +1949,6 @@ namespace DOL.GS
 
                     if (parrychance > 0.99)
                         parrychance = 0.99;
-                    else if (parrychance < 0.01)
-                        parrychance = 0.01;
 
                     if (Attackers.Count > 1)
                         parrychance /= Attackers.Count / 2;

@@ -12136,7 +12136,6 @@ namespace DOL.GS
                         chanceMod = 1f - (distanceToPlayer - 125.0) / (detectRadius - 125.0);
 
                     double chanceToUncover = 0.1 + (npc.Level - stealthLevel) * 0.01 * chanceMod;
-                    if (chanceToUncover < 0.01) chanceToUncover = 0.01;
 
                     if (Util.ChanceDouble(chanceToUncover))
                     {
