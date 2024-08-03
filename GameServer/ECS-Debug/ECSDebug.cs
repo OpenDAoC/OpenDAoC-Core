@@ -322,32 +322,6 @@ namespace DOL.GS.Commands
             GamePlayer player = client.Player;
             DbInventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
 
-            // Block chance.
-            if (player.HasAbility(Abilities.Shield))
-            {
-                if (lefthand == null)
-                    messages.Add($"Block Chance: No Shield Equipped!");
-                else
-                {
-                    double blockChance = player.GetBlockChance();
-                    messages.Add($"Block Chance: {blockChance}%");
-                }
-            }
-
-            // Parry chance.
-            if (player.HasSpecialization(Specs.Parry))
-            {
-                double parryChance = player.GetParryChance();
-                messages.Add($"Parry Chance: {parryChance}%");
-            }
-
-            // Evade chance.
-            if (player.HasAbility(Abilities.Evade))
-            {
-                double evadeChance = player.GetEvadeChance();
-                messages.Add($"Evade Chance: {evadeChance}%");
-            }
-
             // Melee crit chance.
             int meleeCritChance = player.GetModified(eProperty.CriticalMeleeHitChance);
             messages.Add($"Melee Crit Chance: {meleeCritChance}%");
