@@ -13,8 +13,12 @@ namespace DOL.AI.Brain
 
 		public override GameNPC Body
 		{
-			get => _keepGuardBody;
-			set => _keepGuardBody = value is GameKeepGuard gameKeepGuard ? gameKeepGuard : new GameKeepGuard(); // Dummy object to avoid errors caused by bad DB entries
+			get => _keepGuardBody ?? base.Body;
+			set
+			{
+				_keepGuardBody = value as GameKeepGuard;
+				base.Body = value;
+			}
 		}
 
 		public override int ThinkInterval => 500;
@@ -26,6 +30,8 @@ namespace DOL.AI.Brain
 		{
 			AggroLevel = 90;
 			AggroRange = 1000;
+
+			FSM.Add(new GuardState_RETURN_TO_SPAWN(this));
 		}
 
 		public void SetAggression(int aggroLevel, int aggroRange)
