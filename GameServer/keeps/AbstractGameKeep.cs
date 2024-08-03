@@ -887,6 +887,7 @@ namespace DOL.GS.Keeps
 				}
 
 				guard.Level = (byte)(GetBaseLevel(guard) + (bonusLevel * multiplier));
+				guard.Health = guard.MaxHealth;
 			}
 
 			guard.StartHealthRegeneration();
