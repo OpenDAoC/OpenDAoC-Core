@@ -100,7 +100,9 @@ namespace DOL.GS
                 playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.InterceptEffect.XNoAttemptInterceptYou", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            EffectService.RequestImmediateCancelEffect(PairedEffect);
+            if (!PairedEffect.CancelEffect)
+                EffectService.RequestImmediateCancelEffect(PairedEffect);
+
             base.OnStopEffect();
         }
     }
