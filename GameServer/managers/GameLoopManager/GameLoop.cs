@@ -61,8 +61,12 @@ namespace DOL.GS
             if (_gameLoopThread == null)
                 return;
 
-            _gameLoopThread.Interrupt();
-            _gameLoopThread.Join();
+            if (Thread.CurrentThread != _gameLoopThread)
+            {
+                _gameLoopThread.Interrupt();
+                _gameLoopThread.Join();
+            }
+
             _gameLoopThread = null;
             _busyWaitThresholdThread.Interrupt();
             _busyWaitThresholdThread.Join();
