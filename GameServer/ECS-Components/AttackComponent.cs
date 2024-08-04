@@ -1746,9 +1746,9 @@ namespace DOL.GS
             target.Endurance = Math.Min(target.MaxEndurance, target.Endurance + enduranceConversion);
         }
 
-        public virtual bool CheckBlock(AttackData ad, int attackerConLevel)
+        public virtual bool CheckBlock(AttackData ad)
         {
-            double blockChance = owner.TryBlock(ad, attackerConLevel, Attackers.Count);
+            double blockChance = owner.TryBlock(ad, Attackers.Count);
             ad.BlockChance = blockChance * 100;
             double blockRoll;
 
@@ -1782,7 +1782,7 @@ namespace DOL.GS
             return false;
         }
 
-        public bool CheckGuard(AttackData ad, bool stealthStyle, int attackerConLevel)
+        public bool CheckGuard(AttackData ad, bool stealthStyle)
         {
             GuardECSGameEffect guard = EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Guard) as GuardECSGameEffect;
 
@@ -1817,7 +1817,6 @@ namespace DOL.GS
 
             guardChance *= 0.001;
             guardChance += guardLevel * 5 * 0.01; // 5% additional chance to guard with each Guard level.
-            guardChance += attackerConLevel * 0.05;
             int shieldSize = 1;
 
             if (leftHand != null)
@@ -1874,7 +1873,7 @@ namespace DOL.GS
             return false;
         }
 
-        public bool CheckDashingDefense(AttackData ad, bool stealthStyle, int attackerConLevel, out eAttackResult result)
+        public bool CheckDashingDefense(AttackData ad, bool stealthStyle, out eAttackResult result)
         {
             // Not implemented.
             result = eAttackResult.Any;
@@ -1901,7 +1900,6 @@ namespace DOL.GS
                 int guardLevel = dashing.GuardSource.GetAbilityLevel(Abilities.Guard);
                 double guardchance = dashing.GuardSource.GetModified(eProperty.BlockChance) * leftHand.Quality * 0.00001;
                 guardchance *= guardLevel * 0.25 + 0.05;
-                guardchance += attackerConLevel * 0.05;
 
                 if (guardchance > 0.99)
                     guardchance = 0.99;
@@ -1922,7 +1920,6 @@ namespace DOL.GS
                 if (parrychance != double.MinValue)
                 {
                     parrychance *= 0.001;
-                    parrychance += 0.05 * attackerConLevel;
 
                     if (parrychance > 0.99)
                         parrychance = 0.99;
@@ -1951,7 +1948,6 @@ namespace DOL.GS
                 if (parrychance != double.MinValue)
                 {
                     parrychance *= 0.001;
-                    parrychance += 0.05 * attackerConLevel;
 
                     if (parrychance > 0.99)
                         parrychance = 0.99;
@@ -2090,14 +2086,12 @@ namespace DOL.GS
                 return eAttackResult.HitUnstyled;
             }
 
-            int attackerConLevel = -owner.GetConLevel(ad.Attacker);
-
             if (!defenseDisabled)
             {
                 if (lastAttackData != null && lastAttackData.AttackResult != eAttackResult.HitStyle)
                     lastAttackData = null;
 
-                double evadeChance = owner.TryEvade(ad, lastAttackData, attackerConLevel, Attackers.Count);
+                double evadeChance = owner.TryEvade(ad, lastAttackData, Attackers.Count);
                 ad.EvadeChance = evadeChance * 100;
                 double evadeRoll;
 
@@ -2120,7 +2114,7 @@ namespace DOL.GS
 
                 if (ad.IsMeleeAttack)
                 {
-                    double parryChance = owner.TryParry(ad, lastAttackData, attackerConLevel, Attackers.Count);
+                    double parryChance = owner.TryParry(ad, lastAttackData, Attackers.Count);
                     ad.ParryChance = parryChance * 100;
                     double parryRoll;
 
@@ -2142,15 +2136,15 @@ namespace DOL.GS
                     }
                 }
 
-                if (CheckBlock(ad, attackerConLevel))
+                if (CheckBlock(ad))
                     return eAttackResult.Blocked;
             }
 
-            if (CheckGuard(ad, stealthStyle, attackerConLevel))
+            if (CheckGuard(ad, stealthStyle))
                 return eAttackResult.Blocked;
 
             // Not implemented.
-            // if (CheckDashingDefense(ad, stealthStyle, attackerConLevel, out eAttackResult result)
+            // if (CheckDashingDefense(ad, stealthStyle, out eAttackResult result)
             //     return result;
 
             // Miss chance.
