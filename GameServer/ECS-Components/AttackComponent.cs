@@ -2083,12 +2083,13 @@ namespace DOL.GS
 
             if (intercept != null && !stealthStyle)
             {
-                ad.Target = intercept.Source;
+                if (intercept.Source is not GamePlayer || EffectService.RequestImmediateCancelEffect(intercept))
+                {
+                    ad.Target = intercept.Source;
+                    return eAttackResult.HitUnstyled;
+                }
 
-                if (intercept.Source is GamePlayer)
-                    EffectService.RequestCancelEffect(intercept);
-
-                return eAttackResult.HitUnstyled;
+                intercept = null;
             }
 
             if (!defenseDisabled)

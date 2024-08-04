@@ -195,10 +195,10 @@ namespace DOL.GS
             }
         }
 
-        private static void HandleCancelEffect(ECSGameEffect e)
+        private static bool HandleCancelEffect(ECSGameEffect e)
         {
             if (!e.Owner.effectListComponent.RemoveEffect(e))
-                return;
+                return false;
 
             if (e is ECSGameSpellEffect spellEffect)
             {
@@ -258,6 +258,8 @@ namespace DOL.GS
             }
             else if (e.Owner is GameNPC npc && npc.Brain is IControlledBrain npcBrain)
                 npcBrain.UpdatePetWindow();
+
+            return true;
         }
 
         /// <summary>
@@ -305,10 +307,10 @@ namespace DOL.GS
         /// <summary>
         /// Immediately removes an ECSGameEffect.
         /// </summary>
-        public static void RequestImmediateCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
+        public static bool RequestImmediateCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
         {
             if (effect is null)
-                return;
+                return false;
 
             // Player can't remove negative effect or Effect in Immunity State
             if (playerCanceled && ((!effect.HasPositiveEffect) || effect is ECSImmunityEffect))
@@ -316,13 +318,13 @@ namespace DOL.GS
                 if (effect.Owner is GamePlayer player)
                     player.Out.SendMessage(LanguageMgr.GetTranslation((effect.Owner as GamePlayer).Client, "Effects.GameSpellEffect.CantRemoveEffect"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-                return;
+                return false;
             }
 
             // playerCanceled param isn't used but it's there in case we eventually want to...
             effect.CancelEffect = true;
             effect.ExpireTick = GameLoop.GameLoopTime - 1;
-            HandleCancelEffect(effect);
+            return HandleCancelEffect(effect);
         }
 
         /// <summary>
