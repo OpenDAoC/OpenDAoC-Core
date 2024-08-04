@@ -43,11 +43,7 @@ namespace DOL.GS
                     if (effect is ECSGameAbilityEffect)
                     {
                         if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
-                        {
-                            // Check to prevent crash from holding sprint button down.
-                            if (effect.EffectType is eEffect.Protect or eEffect.Guard)
-                                existingEffects.Add(effect);
-                        }
+                            existingEffects.Add(effect);
                         else
                             Effects.Add(effect.EffectType, [effect]);
 
