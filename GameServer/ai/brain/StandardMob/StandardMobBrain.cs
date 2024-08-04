@@ -280,7 +280,7 @@ namespace DOL.AI.Brain
         {
             if (aggroAmount > 0)
             {
-                foreach (ProtectECSGameEffect protect in living.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Protect))
+                foreach (ProtectECSGameEffect protect in living.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Protect))
                 {
                     if (protect.Target != living)
                         continue;

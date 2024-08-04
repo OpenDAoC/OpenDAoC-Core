@@ -1784,89 +1784,90 @@ namespace DOL.GS
 
         public bool CheckGuard(AttackData ad, bool stealthStyle)
         {
-            GuardECSGameEffect guard = EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Guard) as GuardECSGameEffect;
-
-            if (guard?.Target != owner)
-                return false;
-
-            GameLiving source = guard.Source;
-
-            if (source == null ||
-                source.IsIncapacitated ||
-                source.ActiveWeaponSlot is eActiveWeaponSlot.Distance ||
-                source.IsSitting ||
-                stealthStyle ||
-                !guard.Source.IsObjectInFront(ad.Attacker, 180) || 
-                !guard.Source.IsWithinRadius(guard.Target, GuardAbilityHandler.GUARD_DISTANCE))
-                return false;
-
-            DbInventoryItem leftHand = source.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-            DbInventoryItem rightHand = source.ActiveWeapon;
-
-            if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || (eObjectType) leftHand.Object_Type is not eObjectType.Shield) && source is not GameNPC)
-                return false;
-
-            // TODO: Insert actual formula for guarding here, this is just a guessed one based on block.
-            int guardLevel = source.GetAbilityLevel(Abilities.Guard);
-            double guardChance;
-
-            if (source is GameNPC)
-                guardChance = source.GetModified(eProperty.BlockChance);
-            else
-                guardChance = source.GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
-
-            guardChance *= 0.001;
-            guardChance += guardLevel * 5 * 0.01; // 5% additional chance to guard with each Guard level.
-            int shieldSize = 1;
-
-            if (leftHand != null)
+            foreach (GuardECSGameEffect guard in owner.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Guard))
             {
-                shieldSize = Math.Max(leftHand.Type_Damage, 1);
+                if (guard.Target != owner)
+                    continue;
 
-                if (source is GamePlayer)
-                    guardChance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
-            }
+                GameLiving source = guard.Source;
 
-            if (Attackers.Count > shieldSize)
-                guardChance *= shieldSize / (double) Attackers.Count;
+                if (source == null ||
+                    source.IsIncapacitated ||
+                    source.ActiveWeaponSlot is eActiveWeaponSlot.Distance ||
+                    source.IsSitting ||
+                    stealthStyle ||
+                    !guard.Source.IsObjectInFront(ad.Attacker, 180) ||
+                    !guard.Source.IsWithinRadius(guard.Target, GuardAbilityHandler.GUARD_DISTANCE))
+                    continue;
 
-            // Reduce chance by attacker's defense penetration.
-            guardChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100;
+                DbInventoryItem leftHand = source.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                DbInventoryItem rightHand = source.ActiveWeapon;
 
-            if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
-                guardChance = Properties.BLOCK_CAP;
+                if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || (eObjectType) leftHand.Object_Type is not eObjectType.Shield) && source is not GameNPC)
+                    continue;
 
-            // Possibly intended to be applied in RvR only.
-            if (shieldSize == 1 && guardChance > 0.8)
-                guardChance = 0.8;
-            else if (shieldSize == 2 && guardChance > 0.9)
-                guardChance = 0.9;
-            else if (shieldSize == 3 && guardChance > 0.99)
-                guardChance = 0.99;
+                // TODO: Insert actual formula for guarding here, this is just a guessed one based on block.
+                int guardLevel = source.GetAbilityLevel(Abilities.Guard);
+                double guardChance;
 
-            if (ad.AttackType is AttackData.eAttackType.MeleeDualWield)
-                guardChance *= 0.5;
-
-            if (guardChance > 0)
-            {
-                double guardRoll;
-
-                if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
-                    guardRoll = player.RandomNumberDeck.GetPseudoDouble();
+                if (source is GameNPC)
+                    guardChance = source.GetModified(eProperty.BlockChance);
                 else
-                    guardRoll = Util.CryptoNextDouble();
+                    guardChance = source.GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
 
-                if (source is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
-                    blockAttk.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                guardChance *= 0.001;
+                guardChance += guardLevel * 5 * 0.01; // 5% additional chance to guard with each Guard level.
+                int shieldSize = 1;
 
-                if (guard.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
-                    blockTarg.Out.SendMessage($"chance to be guarded: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
-                if (guardChance > guardRoll)
+                if (leftHand != null)
                 {
-                    ad.Target = source;
-                    ad.BlockChance = guardChance * 100;
-                    return true;
+                    shieldSize = Math.Max(leftHand.Type_Damage, 1);
+
+                    if (source is GamePlayer)
+                        guardChance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
+                }
+
+                if (Attackers.Count > shieldSize)
+                    guardChance *= shieldSize / (double) Attackers.Count;
+
+                // Reduce chance by attacker's defense penetration.
+                guardChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100;
+
+                if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+                    guardChance = Properties.BLOCK_CAP;
+
+                // Possibly intended to be applied in RvR only.
+                if (shieldSize == 1 && guardChance > 0.8)
+                    guardChance = 0.8;
+                else if (shieldSize == 2 && guardChance > 0.9)
+                    guardChance = 0.9;
+                else if (shieldSize == 3 && guardChance > 0.99)
+                    guardChance = 0.99;
+
+                if (ad.AttackType is AttackData.eAttackType.MeleeDualWield)
+                    guardChance *= 0.5;
+
+                if (guardChance > 0)
+                {
+                    double guardRoll;
+
+                    if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
+                        guardRoll = player.RandomNumberDeck.GetPseudoDouble();
+                    else
+                        guardRoll = Util.CryptoNextDouble();
+
+                    if (source is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
+                        blockAttk.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                    if (guard.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
+                        blockTarg.Out.SendMessage($"chance to be guarded: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                    if (guardChance > guardRoll)
+                    {
+                        ad.Target = source;
+                        ad.BlockChance = guardChance * 100;
+                        return true;
+                    }
                 }
             }
 
@@ -1876,6 +1877,7 @@ namespace DOL.GS
         public bool CheckDashingDefense(AttackData ad, bool stealthStyle, out eAttackResult result)
         {
             // Not implemented.
+            // Very outdated and needs to be rewritten.
             result = eAttackResult.Any;
             return false;
             DashingDefenseEffect dashing = null;
@@ -2010,7 +2012,7 @@ namespace DOL.GS
             }
 
             // We check if interceptor can intercept.
-            if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Intercept) is InterceptECSGameEffect inter)
+            foreach (InterceptECSGameEffect inter in owner.effectListComponent.GetAbilityEffects().Where(e => e is InterceptECSGameEffect))
             {
                 if (inter.Target == owner && !inter.Source.IsIncapacitated && !inter.Source.IsSitting && owner.IsWithinRadius(inter.Source, InterceptAbilityHandler.INTERCEPT_DISTANCE))
                 {
@@ -2024,7 +2026,10 @@ namespace DOL.GS
                     interceptRoll *= 100;
 
                     if (inter.InterceptChance > interceptRoll)
+                    {
                         intercept = inter;
+                        break;
+                    }
                 }
             }
 

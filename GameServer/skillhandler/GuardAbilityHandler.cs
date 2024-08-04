@@ -68,7 +68,7 @@ namespace DOL.GS.SkillHandler
             foundOurEffect = false;
             effectFromAnotherSource = null;
 
-            foreach (GuardECSGameEffect guard in target.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Guard))
+            foreach (GuardECSGameEffect guard in target.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Guard))
             {
                 if (guard.Source == source)
                 {
@@ -85,7 +85,7 @@ namespace DOL.GS.SkillHandler
 
         public static void CancelOurEffectThenAddOnTarget(GameLiving source, GameLiving target)
         {
-            foreach (GuardECSGameEffect guard in source.effectListComponent.GetAbilityEffects().Where(e => e.EffectType == eEffect.Guard))
+            foreach (GuardECSGameEffect guard in source.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Guard))
             {
                 if (guard.Source == source)
                     EffectService.RequestImmediateCancelEffect(guard);
