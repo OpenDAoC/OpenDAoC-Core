@@ -1222,7 +1222,7 @@ namespace DOL.GS
 					evadeChance += 15 * 0.01;
 
 				// Reduce chance by attacker's defense penetration.
-				evadeChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100.0;
+				evadeChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100;
 
 				if (ad.AttackType == eAttackType.Ranged)
 					evadeChance /= 5.0;
@@ -1314,7 +1314,7 @@ namespace DOL.GS
 						parryChance += 25 * 0.01;
 
 					// Reduce chance by attacker's defense penetration.
-					parryChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100.0;
+					parryChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100;
 
 					if (parryChance > Properties.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 						parryChance = Properties.PARRY_CAP;
@@ -1397,7 +1397,7 @@ namespace DOL.GS
 				blockChance += attackerConLevel * 0.05;
 
 				// Reduce chance by attacker's defense penetration.
-				blockChance *= 1 - GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100;
+				blockChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100;
 
 				if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 					blockChance = Properties.BLOCK_CAP;
@@ -1447,39 +1447,12 @@ namespace DOL.GS
 			return blockChance;
 		}
 
-		public double GetAttackerDefensePenetration(GameLiving living, DbInventoryItem weapon)
-		{
-			double totalReduction = 0.0;
-
-			if (living is GamePlayer p)
-            {
-	            double skillBasedReduction = living.WeaponSpecLevel(weapon) * 0.15;
-	            double statBasedReduction = living.GetWeaponStat(weapon) * .05;
-				//p.CharacterClass.WeaponSkillBase returns unscaled damage table value
-				//divide by 200 to change to scaling factor. example: warrior's 460 WeaponSkillBase / 200 = 2.3 Damage Table
-				//divide by final 2.1 to use the 2.1 damage table as our anchor. classes below 2.1 damage table will have slightly reduced penetration, above 2.1 will have increased penetration
-				double tableMod = p.CharacterClass.WeaponSkillBase / 200.0 / 2.1;
-				totalReduction = (skillBasedReduction + statBasedReduction) * tableMod;
-            }
-			else
-			{
-				double NPCReduction = 15 * (living.Level / 50.0); //10% penetration at level 50
-				totalReduction = NPCReduction;
-				if(totalReduction < 0) totalReduction = 0;
-			}
-				
-			return totalReduction;
-		}
-
 		/// <summary>
 		/// Modify the attack done to this living.
 		/// This method offers us a chance to modify the attack data prior to the living taking damage.
 		/// </summary>
 		/// <param name="attackData">The attack data for this attack</param>
-		public virtual void ModifyAttack(AttackData attackData)
-		{
-		}
-
+		public virtual void ModifyAttack(AttackData attackData) { }
 
 		/// <summary>
 		/// This method is called whenever this living

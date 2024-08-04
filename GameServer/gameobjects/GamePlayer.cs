@@ -20,7 +20,6 @@ using DOL.GS.PlayerTitles;
 using DOL.GS.PropertyCalc;
 using DOL.GS.Quests;
 using DOL.GS.RealmAbilities;
-using DOL.GS.Scripts;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
@@ -6653,7 +6652,7 @@ namespace DOL.GS
             return Dps * 0.1;
         }
 
-        public double ApplyWeaponQualityAndConditionToDamage(DbInventoryItem weapon, double damage)
+        public static double ApplyWeaponQualityAndConditionToDamage(DbInventoryItem weapon, double damage)
         {
             return damage * weapon.Quality * 0.01 * weapon.Condition / weapon.MaxCondition;
         }

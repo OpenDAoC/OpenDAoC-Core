@@ -493,7 +493,7 @@ namespace DOL.GS
                 }
 
                 damageCap *= effectiveness;
-                double damage = player.ApplyWeaponQualityAndConditionToDamage(weapon, damageCap);
+                double damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damageCap);
                 damageCap *= 3;
                 return damage *= effectiveness;
             }
@@ -1653,6 +1653,13 @@ namespace DOL.GS
             return weaponSkill;
         }
 
+        public double CalculateDefensePenetration(AttackData ad)
+        {
+            int levelDifference = (owner is GamePlayer ? owner.WeaponSpecLevel(ad.Weapon) : owner.Level) - ad.Target.Level;
+            double specModifier = 1 + levelDifference * 0.01;
+            return CalculateWeaponSkill(ad.Weapon, specModifier, out _) * 0.08;
+        }
+
         public double CalculateSpecModifier(GameLiving target, int spec)
         {
             double lowerLimit;
@@ -1686,7 +1693,6 @@ namespace DOL.GS
             double varianceRange = upperLimit - lowerLimit;
             return lowerLimit + Util.RandomDoubleIncl() * varianceRange;
         }
-
 
         public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
         {
@@ -1826,7 +1832,7 @@ namespace DOL.GS
                 guardChance *= shieldSize / (double) Attackers.Count;
 
             // Reduce chance by attacker's defense penetration.
-            guardChance *= 1 - ad.Attacker.GetAttackerDefensePenetration(ad.Attacker, ad.Weapon) / 100;
+            guardChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100;
 
             if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
                 guardChance = Properties.BLOCK_CAP;
