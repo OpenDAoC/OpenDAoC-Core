@@ -237,7 +237,7 @@ namespace DOL.GS
 
 				log.DebugFormat("keep {0}", keep);
 				
-				if (m_currentRelicPad.GetEnemiesOnPad() < 1)
+				if (m_currentRelicPad.GetEnemiesOnPad() < Properties.RELIC_PLAYERS_REQUIRED_ON_PAD)
 				{
 					player.Out.SendMessage($"You must have {Properties.RELIC_PLAYERS_REQUIRED_ON_PAD} players nearby the pad before taking a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
