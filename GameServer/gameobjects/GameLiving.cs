@@ -1502,7 +1502,7 @@ namespace DOL.GS
 				{
 					int difference = (int)(0.25 * damageDealt); // RA absorb 25% damage
 					damageDealt -= difference;
-					GamePlayer TheMauler = this.TempProperties.GetProperty<GamePlayer>("GiftOfPerizorOwner", null);
+					GamePlayer TheMauler = this.TempProperties.GetProperty<GamePlayer>("GiftOfPerizorOwner");
 					if (TheMauler != null && TheMauler.IsAlive)
 					{
 						// Calculate mana using %. % is calculated with target maxhealth and damage difference, apply this % to mauler maxmana

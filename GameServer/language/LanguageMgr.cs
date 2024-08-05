@@ -499,7 +499,7 @@ namespace DOL.Language
                 {
                     if (client.ClientState == GameClient.eClientState.Playing)
                     {
-                        if (client.Player.TempProperties.GetProperty("LANGUAGEMGR-DEBUG", false))
+                        if (client.Player.TempProperties.GetProperty<bool>("LANGUAGEMGR-DEBUG"))
                             translation = "Id is " + translationId + " " + translation;
                     }
                 }

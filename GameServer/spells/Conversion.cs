@@ -178,7 +178,7 @@ namespace DOL.GS.Spells
 				{
 					case AttackData.eAttackType.Spell:
 						{
-							int reduceddmg = living.TempProperties.GetProperty<int>(ConvertDamage, 0);
+							int reduceddmg = living.TempProperties.GetProperty<int>(ConvertDamage);
 							double absorbPercent = Spell.Damage;
 							int damageConverted = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
 							if (damageConverted > reduceddmg)

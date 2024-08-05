@@ -128,7 +128,7 @@ namespace DOL.GS
 
 		public static bool IsPlayerCarryingRelic(GamePlayer player)
 		{
-			return player.TempProperties.GetProperty(PLAYER_CARRY_RELIC_WEAK, false);
+			return player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) != null;
 		}
 
 		#endregion
@@ -213,7 +213,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		protected virtual void PlayerTakesRelic(GamePlayer player)
 		{
-			if (player.TempProperties.GetProperty(PLAYER_CARRY_RELIC_WEAK, false))
+			if (player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) != null)
 			{
 				player.Out.SendMessage("You are already carrying a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
@@ -237,7 +237,7 @@ namespace DOL.GS
 
 				log.DebugFormat("keep {0}", keep);
 				
-				if (m_currentRelicPad.GetEnemiesOnPad() < Properties.RELIC_PLAYERS_REQUIRED_ON_PAD)
+				if (m_currentRelicPad.GetEnemiesOnPad() < 1)
 				{
 					player.Out.SendMessage($"You must have {Properties.RELIC_PLAYERS_REQUIRED_ON_PAD} players nearby the pad before taking a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
@@ -295,7 +295,7 @@ namespace DOL.GS
 
 			GamePlayer player = m_currentCarrier;
 
-			if (!player.TempProperties.GetProperty(PLAYER_CARRY_RELIC_WEAK, false))
+			if (player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) == null)
 			{
 				log.Warn("GameRelic: " + player.Name + " has already lost" + Name);
 				return;
@@ -327,7 +327,6 @@ namespace DOL.GS
 				m_timeRelicOnGround = GameLoop.GameLoopTime;
 				m_returnRelicTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(ReturnRelicTick), RelicEffectInterval);
 				log.DebugFormat("{0} dropped, return timer for relic set to {1} seconds.", Name, ReturnRelicInterval / 1000);
-				Console.WriteLine($"Starting return relic timer {m_returnRelicTimer}");
 
 				// update the position of the worldObject Relic
 				Update();
@@ -375,7 +374,6 @@ namespace DOL.GS
 		/// <param name="player">Player to set the timer on. Timer stops if param is null</param>
 		protected virtual void StartPlayerTimer(GamePlayer player)
 		{
-			Console.WriteLine($"Starting player relic timer {player} currentTimer {m_currentCarrierTimer}");
 			if (player != null)
 			{
 				if (m_currentCarrierTimer != null)

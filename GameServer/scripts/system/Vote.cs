@@ -507,7 +507,7 @@ namespace DOL.GS.Commands
                 #region /gmvote add
                 case "add":
                     {
-                        DBVoting voting = player.TempProperties.GetProperty<DBVoting>(VotingMgr.GM_TEMP_PROP_KEY, null);
+                        DBVoting voting = player.TempProperties.GetProperty<DBVoting>(VotingMgr.GM_TEMP_PROP_KEY);
                         if (voting == null)
                         {
                             player.Out.SendMessage("You didnt created an empty voting. Please use /gmvote create before!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -521,7 +521,7 @@ namespace DOL.GS.Commands
                 #region /gmvote desc
                 case "desc":
                     {
-                        DBVoting voting = player.TempProperties.GetProperty<DBVoting>(VotingMgr.GM_TEMP_PROP_KEY, null);
+                        DBVoting voting = player.TempProperties.GetProperty<DBVoting>(VotingMgr.GM_TEMP_PROP_KEY);
                         if (voting == null)
                         {
                             player.Out.SendMessage("You didnt created an empty voting. Please use /gmvote create before!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -540,7 +540,7 @@ namespace DOL.GS.Commands
                         if (param != string.Empty)
                             voting = GameServer.Database.FindObjectByKey<DBVoting> (GameServer.Database.Escape(param));
                         else
-                            voting = player.TempProperties.GetProperty<DBVoting>(VotingMgr.GM_TEMP_PROP_KEY, null);
+                            voting = player.TempProperties.GetProperty<DBVoting>(VotingMgr.GM_TEMP_PROP_KEY);
 
                         if (voting == null)
                         {
@@ -605,7 +605,7 @@ namespace DOL.GS.Commands
                         if (param != string.Empty)
                             voting = GameServer.Database.FindObjectByKey<DBVoting> (GameServer.Database.Escape(param));
                         else
-                            voting = player.TempProperties.GetProperty<DBVoting>(VotingMgr.GM_TEMP_PROP_KEY, null);
+                            voting = player.TempProperties.GetProperty<DBVoting>(VotingMgr.GM_TEMP_PROP_KEY);
 
                         if (voting == null)
                         {

@@ -58,7 +58,7 @@ namespace DOL.GS.Commands
 			if (response != 0x01)
 				return;
 
-			var newPassword = player.TempProperties.GetProperty<string>(PASSWORD_PROPERTY, null);
+			var newPassword = player.TempProperties.GetProperty<string>(PASSWORD_PROPERTY);
 			if (newPassword == null)
 				return;
 

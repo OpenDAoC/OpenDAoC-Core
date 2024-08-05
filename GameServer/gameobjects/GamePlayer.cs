@@ -975,7 +975,7 @@ namespace DOL.GS
             if (Group != null)
                 Group.RemoveMember(this);
 
-            BattleGroup myBattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            BattleGroup myBattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
             if (myBattlegroup != null)
                 myBattlegroup.RemoveBattlePlayer(this);
 
@@ -988,7 +988,7 @@ namespace DOL.GS
             if (Mission != null)
                 Mission.ExpireMission();
 
-            ChatGroup mychatgroup = TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+            ChatGroup mychatgroup = TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY);
             if (mychatgroup != null)
                 mychatgroup.RemovePlayer(this);
 
@@ -1053,7 +1053,7 @@ namespace DOL.GS
                         if (occurrences == 0)
                             continue;
 
-                        object propertyValue = TempProperties.GetProperty<object>(property, null);
+                        object propertyValue = TempProperties.GetProperty<object>(property);
 
                         if (propertyValue == null)
                             continue;
@@ -1321,7 +1321,7 @@ namespace DOL.GS
             }
 
             //60 second rebind timer
-            long lastBindTick = TempProperties.GetProperty<long>(LAST_BIND_TICK, 0);
+            long lastBindTick = TempProperties.GetProperty<long>(LAST_BIND_TICK);
             long changeTime = CurrentRegion.Time - lastBindTick;
             if (Client.Account.PrivLevel <= (uint)ePrivLevel.Player && changeTime < BindAllowInterval)
             {
@@ -5024,7 +5024,7 @@ namespace DOL.GS
                     this.Out.SendMessage("This kill was not hardcore enough to gain experience.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            if (this.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null) != null)
+            if (this.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY) != null)
             {
                 Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -7937,7 +7937,7 @@ namespace DOL.GS
                             {
                                 long lastChargedItemUseTick = TempProperties.GetProperty<long>(LAST_CHARGED_ITEM_USE_TICK);
                                 long changeTime = CurrentRegion.Time - lastChargedItemUseTick;
-                                long delay = TempProperties.GetProperty(ITEM_USE_DELAY, 0L);
+                                long delay = TempProperties.GetProperty<long>(ITEM_USE_DELAY);
                                 long itemDelay = TempProperties.GetProperty<long>("ITEMREUSEDELAY" + useItem.Id_nb);
                                 long itemReuse = (long)useItem.CanUseEvery * 1000;
 
@@ -8915,7 +8915,7 @@ namespace DOL.GS
 
             if (CurrentRegion.GetZone(X, Y) == null)
             {
-                if (Client.Account.PrivLevel < 3 && !TempProperties.GetProperty("isbeingbanned", false))
+                if (Client.Account.PrivLevel < 3 && !TempProperties.GetProperty<bool>("isbeingbanned"))
                 {
                     TempProperties.SetProperty("isbeingbanned", true);
                     MoveToBind();
@@ -8949,7 +8949,7 @@ namespace DOL.GS
         {
             CleanupOnDisconnect();
             Group?.RemoveMember(this);
-            BattleGroup mybattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            BattleGroup mybattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
             mybattlegroup?.RemoveBattlePlayer(this);
             m_guild?.RemoveOnlineMember(this);
             GroupMgr.RemovePlayerLooking(this);
@@ -10781,7 +10781,7 @@ namespace DOL.GS
                     }
 
                     Group group = Group;
-                    BattleGroup mybattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                    BattleGroup mybattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                     if (mybattlegroup != null && mybattlegroup.GetBGLootType() == true && mybattlegroup.GetBGTreasurer() != null)
                     {
                         GamePlayer theTreasurer = mybattlegroup.GetBGTreasurer();
@@ -12035,7 +12035,7 @@ namespace DOL.GS
         // UncoverStealthAction is what unstealths player if they are too close to mobs.
         public void StartStealthUncoverAction()
         {
-            UncoverStealthAction action = TempProperties.GetProperty<UncoverStealthAction>(UNCOVER_STEALTH_ACTION_PROP, null);
+            UncoverStealthAction action = TempProperties.GetProperty<UncoverStealthAction>(UNCOVER_STEALTH_ACTION_PROP);
             //start the uncover timer
             if (action == null)
                 action = new UncoverStealthAction(this);
@@ -12047,7 +12047,7 @@ namespace DOL.GS
         // UncoverStealthAction is what unstealths player if they are too close to mobs.
         public void StopStealthUncoverAction()
         {
-            UncoverStealthAction action = TempProperties.GetProperty<UncoverStealthAction>(UNCOVER_STEALTH_ACTION_PROP, null);
+            UncoverStealthAction action = TempProperties.GetProperty<UncoverStealthAction>(UNCOVER_STEALTH_ACTION_PROP);
             //stop the uncover timer
             if (action != null)
             {

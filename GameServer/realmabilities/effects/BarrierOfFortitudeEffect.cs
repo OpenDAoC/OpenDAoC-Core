@@ -35,7 +35,7 @@ namespace DOL.GS.Effects
 			m_effectDuration = duration;
 			m_value = value;
 
-			if (player.TempProperties.GetProperty(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb, false))
+			if (player.TempProperties.GetProperty<bool>(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb))
 				return;
 
 			StartTimers();

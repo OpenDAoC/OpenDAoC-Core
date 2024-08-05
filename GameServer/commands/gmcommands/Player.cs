@@ -1768,7 +1768,7 @@ namespace DOL.GS.Commands
 
                                     if (player != null)
                                     {
-                                        ChatGroup cg = player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+                                        ChatGroup cg = player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY);
 
                                         if (cg != null)
                                         {
@@ -1798,7 +1798,7 @@ namespace DOL.GS.Commands
 
                                     if (player != null)
                                     {
-                                        BattleGroup bg = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                                        BattleGroup bg = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
                                         if (bg != null)
                                         {

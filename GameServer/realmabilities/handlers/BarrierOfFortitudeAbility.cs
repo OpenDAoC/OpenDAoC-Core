@@ -36,7 +36,7 @@ namespace DOL.GS.RealmAbilities
 				if (!playerInGroup.IsAlive)
 					continue;
 
-				success = !playerInGroup.TempProperties.GetProperty(BofBaSb, false);
+				success = !playerInGroup.TempProperties.GetProperty<bool>(BofBaSb);
 
 				SendCasterSpellEffect(playerInGroup, 7009, success);
 				SendCasterSpellEffect(playerInGroup, 1486, success);

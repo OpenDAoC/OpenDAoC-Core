@@ -33,8 +33,8 @@ namespace DOL.GS.Commands
 		public void OnCommand(GameClient client, string[] args)
 		{
 			GamePlayer target = client.Player.TargetObject as GamePlayer;
-			BattleGroup bg = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
-			ChatGroup cg = client.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY, null);
+			BattleGroup bg = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+			ChatGroup cg = client.Player.TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY);
 
 
 			if (args.Length < 2)

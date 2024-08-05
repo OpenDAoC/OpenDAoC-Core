@@ -57,7 +57,7 @@ namespace DOL.GS.Commands
 
 			if (args.Length > 1 && args[1] == "show" && client.Player != null)
 			{
-				if (client.Player.TempProperties.GetProperty(DoorMgr.WANT_TO_ADD_DOORS, false))
+				if (client.Player.TempProperties.GetProperty<bool>(DoorMgr.WANT_TO_ADD_DOORS))
 				{
 					client.Player.TempProperties.RemoveProperty(DoorMgr.WANT_TO_ADD_DOORS);
 					client.Out.SendMessage("You will no longer be shown the add door dialog.", eChatType.CT_System,

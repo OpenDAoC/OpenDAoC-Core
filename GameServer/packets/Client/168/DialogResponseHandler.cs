@@ -280,7 +280,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								return 0;
 							}
 
-							var house = player.TempProperties.GetProperty<House>(HousingConstants.HouseForHouseRent, null);
+							var house = player.TempProperties.GetProperty<House>(HousingConstants.HouseForHouseRent);
 							var moneyToAdd = player.TempProperties.GetProperty<long>(HousingConstants.MoneyForHouseRent, -1);
 							var bpsToMoney = player.TempProperties.GetProperty<long>(HousingConstants.BPsForHouseRent, -1);
 

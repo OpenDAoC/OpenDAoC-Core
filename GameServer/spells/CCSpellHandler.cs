@@ -18,7 +18,7 @@ namespace DOL.GS.Spells
                 return;
             }
 
-            if (target.EffectList.GetOfType<ChargeEffect>() != null || target.TempProperties.GetProperty("Charging", false))
+            if (target.EffectList.GetOfType<ChargeEffect>() != null || target.TempProperties.GetProperty<bool>("Charging"))
             {
                 MessageToCaster(target.Name + " is moving too fast for this spell to have any effect!", eChatType.CT_SpellResisted);
                 return;

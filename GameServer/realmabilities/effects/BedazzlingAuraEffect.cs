@@ -30,7 +30,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			m_value = value;
 
-			if (living.TempProperties.GetProperty(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb, false))
+			if (living.TempProperties.GetProperty<bool>(RealmAbilities.BarrierOfFortitudeAbility.BofBaSb))
 				return;
 
 			base.Start(living);

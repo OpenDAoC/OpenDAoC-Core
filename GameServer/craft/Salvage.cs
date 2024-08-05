@@ -301,10 +301,10 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected static int Proceed(ECSGameTimer timer)
 		{
-			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
-			DbInventoryItem itemToSalvage = timer.Properties.GetProperty<DbInventoryItem>(SALVAGED_ITEM, null);
-			DbSalvageYield yield = timer.Properties.GetProperty<DbSalvageYield>(SALVAGE_YIELD, null);
-			IList<DbInventoryItem> itemList = player.TempProperties.GetProperty<IList<DbInventoryItem>>(SALVAGE_QUEUE, null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER);
+			DbInventoryItem itemToSalvage = timer.Properties.GetProperty<DbInventoryItem>(SALVAGED_ITEM);
+			DbSalvageYield yield = timer.Properties.GetProperty<DbSalvageYield>(SALVAGE_YIELD);
+			IList<DbInventoryItem> itemList = player.TempProperties.GetProperty<IList<DbInventoryItem>>(SALVAGE_QUEUE);
 			int materialCount = yield.Count;
 
 			if (player == null || itemToSalvage == null || yield == null || materialCount == 0)

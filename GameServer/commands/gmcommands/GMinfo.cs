@@ -349,7 +349,7 @@ namespace DOL.GS.Commands
 					// info.Add("TEMP PROPERTIES:");
 					// foreach (var property in target.TempProperties.getAllProperties())
 					// {
-					// 	info.Add(property + ": " + target.TempProperties.getProperty(property, false));
+					// 	info.Add(property + ": " + target.TempProperties.GetProperty<bool>(property));
 					// }
 					// info.Add("");
 					

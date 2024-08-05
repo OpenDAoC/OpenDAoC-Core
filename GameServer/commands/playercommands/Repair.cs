@@ -206,8 +206,8 @@ namespace DOL.GS.Commands
 
 		private int Proceed(ECSGameTimer timer)
 		{
-			GamePlayer player = timer.Properties.GetProperty<GamePlayer>("repair_player", null);
-			GameLiving obj = timer.Properties.GetProperty<GameLiving>("repair_target", null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>("repair_player");
+			GameLiving obj = timer.Properties.GetProperty<GameLiving>("repair_target");
 
 			if (player == null || obj == null)
 			{

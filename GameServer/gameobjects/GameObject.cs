@@ -1052,7 +1052,7 @@ namespace DOL.GS
 			// Avoids server freeze.
 			if (CurrentRegion.GetZone(X, Y) == null)
 			{
-				if (this is GamePlayer player && !player.TempProperties.GetProperty("isbeingbanned", false))
+				if (this is GamePlayer player && !player.TempProperties.GetProperty<bool>("isbeingbanned"))
 				{
 					player.TempProperties.SetProperty("isbeingbanned", true);
 					player.MoveToBind();

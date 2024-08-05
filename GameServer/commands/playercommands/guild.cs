@@ -2074,7 +2074,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPlayerSelected"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							GamePlayer inviter = client.Player.TempProperties.GetProperty<GamePlayer>("allianceinvite", null);
+							GamePlayer inviter = client.Player.TempProperties.GetProperty<GamePlayer>("allianceinvite");
 							if (inviter == client.Player)
 								obj.TempProperties.RemoveProperty("allianceinvite");
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceAnsCancel"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
@@ -2098,7 +2098,7 @@ namespace DOL.GS.Commands
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.NoPrivilages"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							GamePlayer inviter = client.Player.TempProperties.GetProperty<GamePlayer>("allianceinvite", null);
+							GamePlayer inviter = client.Player.TempProperties.GetProperty<GamePlayer>("allianceinvite");
 							client.Player.TempProperties.RemoveProperty("allianceinvite");
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceDeclined"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 							inviter.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.AllianceDeclinedOther"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
@@ -2573,7 +2573,7 @@ namespace DOL.GS.Commands
 			if (response != 0x01)
 				return;
 
-			long bannerPrice = player.TempProperties.GetProperty<long>(GUILD_BANNER_PRICE, 0);
+			long bannerPrice = player.TempProperties.GetProperty<long>(GUILD_BANNER_PRICE);
 			player.TempProperties.RemoveProperty(GUILD_BANNER_PRICE);
 
 			if (bannerPrice == 0 || player.Guild.GuildBanner)
@@ -2601,7 +2601,7 @@ namespace DOL.GS.Commands
 			if (response != 0x01)
 				return;
 
-			Guild.eBonusType buffType = player.TempProperties.GetProperty<Guild.eBonusType>(GUILD_BUFF_TYPE, Guild.eBonusType.None);
+			Guild.eBonusType buffType = player.TempProperties.GetProperty(GUILD_BUFF_TYPE, Guild.eBonusType.None);
 			player.TempProperties.RemoveProperty(GUILD_BUFF_TYPE);
 
 			if (buffType == Guild.eBonusType.None || player.Guild.MeritPoints < 1000 || player.Guild.BonusType != Guild.eBonusType.None)
@@ -2634,7 +2634,7 @@ namespace DOL.GS.Commands
 			if (reponse != 0x01)
 				return; //declined
 
-			GamePlayer inviter = player.TempProperties.GetProperty<GamePlayer>("allianceinvite", null);
+			GamePlayer inviter = player.TempProperties.GetProperty<GamePlayer>("allianceinvite");
 
 			if (player.Guild == null)
 			{
@@ -3060,7 +3060,7 @@ namespace DOL.GS.Commands
 			else
 			{
 				// try to recall last setting
-				showOffline = client.Player.TempProperties.GetProperty<bool>("SOCIALSHOWOFFLINE", false);
+				showOffline = client.Player.TempProperties.GetProperty<bool>("SOCIALSHOWOFFLINE");
 			}
 
 			client.Player.TempProperties.SetProperty("SOCIALSHOWOFFLINE", showOffline);

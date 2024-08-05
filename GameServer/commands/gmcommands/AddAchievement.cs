@@ -66,7 +66,7 @@ namespace DOL.GS.Commands
             } 
             else if (args[1] == "addbg")
             {
-                BattleGroup bg = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                BattleGroup bg = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
                 if (bg == null)
                 {

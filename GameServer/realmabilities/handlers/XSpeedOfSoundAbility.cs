@@ -22,7 +22,7 @@ namespace DOL.GS.RealmAbilities
 				 return;
 			 }*/
 
-			if (player.TempProperties.GetProperty("Charging", false)
+			if (player.TempProperties.GetProperty<bool>("Charging")
 				|| player.EffectList.CountOfType(typeof(SpeedOfSoundEffect), typeof(ArmsLengthEffect), typeof(ChargeEffect)) > 0)
 			{
 				player.Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);

@@ -192,7 +192,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 //used only on PvP, sets THIS players ID for nearest friend/enemy buttons and "friendly" name colors
                 //if (GameServer.ServerRules.GetColorHandling(player.Client) == 1) // PvP
                 player.Out.SendObjectGuildID(player, player.Guild);
-                player.Out.SendDebugMode(player.TempProperties.GetProperty(GamePlayer.DEBUG_MODE_PROPERTY, false));
+                player.Out.SendDebugMode(player.TempProperties.GetProperty<bool>(GamePlayer.DEBUG_MODE_PROPERTY));
                 player.Out.SendUpdateMaxSpeed(); // Speed in debug mode ?
                                                  //WARNING: This would change problems if a scripter changed the values for plvl
                                                  //GSMessages.SendDebugMode(client,client.Account.PrivLevel>1);

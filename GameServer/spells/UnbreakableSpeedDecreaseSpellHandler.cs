@@ -73,7 +73,7 @@ namespace DOL.GS.Spells
 		{
 			base.OnEffectExpires(effect,noMessages);
 
-			RestoreSpeedTimer timer = effect.Owner.TempProperties.GetProperty<RestoreSpeedTimer>(EFFECT_PROPERTY, null);
+			RestoreSpeedTimer timer = effect.Owner.TempProperties.GetProperty<RestoreSpeedTimer>(EFFECT_PROPERTY);
 			effect.Owner.TempProperties.RemoveProperty(EFFECT_PROPERTY);
 			if(timer!=null) timer.Stop();
 

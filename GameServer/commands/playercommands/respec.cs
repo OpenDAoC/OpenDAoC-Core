@@ -198,33 +198,33 @@ namespace DOL.GS.Commands
 			int specPoints = player.SkillSpecialtyPoints;
 			int realmSpecPoints = player.RealmSpecialtyPoints;
 
-			if (player.TempProperties.GetProperty(ALL_RESPEC, false))
+			if (player.TempProperties.GetProperty<bool>(ALL_RESPEC))
 			{
 				player.RespecAll();
 				player.TempProperties.RemoveProperty(ALL_RESPEC);
 			}
-			if (player.TempProperties.GetProperty(DOL_RESPEC, false))
+			if (player.TempProperties.GetProperty<bool>(DOL_RESPEC))
 			{
 				player.RespecDOL();
 				player.TempProperties.RemoveProperty(DOL_RESPEC);
 			}
-			if (player.TempProperties.GetProperty(RA_RESPEC, false))
+			if (player.TempProperties.GetProperty<bool>(RA_RESPEC))
 			{
 				player.RespecRealm();
 				player.TempProperties.RemoveProperty(RA_RESPEC);
 			}
-			if (player.TempProperties.GetProperty(CHAMP_RESPEC, false))
+			if (player.TempProperties.GetProperty<bool>(CHAMP_RESPEC))
 			{
 				player.RespecChampionSkills();
 				player.TempProperties.RemoveProperty(CHAMP_RESPEC);
 			}
-			Specialization specLine = player.TempProperties.GetProperty<Specialization>(LINE_RESPEC, null);
+			Specialization specLine = player.TempProperties.GetProperty<Specialization>(LINE_RESPEC);
 			if (specLine != null)
 			{
 				player.RespecSingle(specLine);
 				player.TempProperties.RemoveProperty(LINE_RESPEC);
 			}
-			if (player.TempProperties.GetProperty(BUY_RESPEC, false))
+			if (player.TempProperties.GetProperty<bool>(BUY_RESPEC))
 			{
 				player.TempProperties.RemoveProperty(BUY_RESPEC);
 				if (player.RespecCost >= 0 && player.RemoveMoney(player.RespecCost * 10000))

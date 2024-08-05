@@ -1160,7 +1160,7 @@ namespace DOL.GS.ServerRules
 
 					if (player != null)
 					{
-						BattleGroup clientBattleGroup = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+						BattleGroup clientBattleGroup = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 						if (clientBattleGroup != null)
 						{
 							livingsToAward.Add(living);

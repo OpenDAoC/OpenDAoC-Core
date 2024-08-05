@@ -162,7 +162,7 @@ namespace DOL.GS
                 GameInventoryObjectExtensions.IsBackpackSlot(toClientSlot) &&
                 player.ActiveInventoryObject == this)
             {
-                List<DbInventoryItem> list = player.TempProperties.GetProperty<List<DbInventoryItem>>(EXPLORER_ITEM_LIST, null);
+                List<DbInventoryItem> list = player.TempProperties.GetProperty<List<DbInventoryItem>>(EXPLORER_ITEM_LIST);
 
                 if (list == null)
                     return false;

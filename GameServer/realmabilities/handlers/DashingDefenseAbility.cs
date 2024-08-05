@@ -22,7 +22,7 @@ namespace DOL.GS.RealmAbilities
         {
             GamePlayer player = living as GamePlayer;
             if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-            if (player.TempProperties.GetProperty(Dashing, false))
+            if (player.TempProperties.GetProperty<bool>(Dashing))
             {
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "DashingDefenseAbility.Execute.AlreadyEffect"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return;
@@ -68,7 +68,7 @@ namespace DOL.GS.RealmAbilities
             {
                 //send spelleffect
                 if (!target.IsAlive) continue;
-                success = !target.TempProperties.GetProperty(Dashing, false);
+                success = !target.TempProperties.GetProperty<bool>(Dashing);
                 if (success)
                     if (target != null && target != player)
                     {

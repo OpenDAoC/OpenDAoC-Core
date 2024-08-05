@@ -393,7 +393,7 @@ namespace DOL.GS.Commands
 							#region Add
 							case "add":
 								{
-									PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST, null);
+									PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST);
 									if (path == null)
 									{
 										DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.NoPathCreatedYet"));
@@ -435,7 +435,7 @@ namespace DOL.GS.Commands
 							#region Save
 							case "save":
 								{
-									PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST, null);
+									PathPoint path = client.Player.TempProperties.GetProperty<PathPoint>(TEMP_PATH_LAST);
 									if (path == null)
 									{
 										DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.KeepGuard.Path.NoPathCreatedYet"));
@@ -499,7 +499,7 @@ namespace DOL.GS.Commands
 			obj.Model = 488;
 			obj.Emblem = 0;
 			obj.AddToWorld();
-			ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS, null);
+			ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS);
 			if (objs == null)
 				objs = new ArrayList();
 			objs.Add(obj);
@@ -508,7 +508,7 @@ namespace DOL.GS.Commands
 
 		private void RemoveAllTempPathObjects(GameClient client)
 		{
-			ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS, null);
+			ArrayList objs = client.Player.TempProperties.GetProperty<ArrayList>(TEMP_PATH_OBJS);
 			if (objs == null)
 				return;
 			foreach (GameStaticItem obj in objs)

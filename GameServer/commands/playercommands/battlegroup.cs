@@ -23,7 +23,7 @@ namespace DOL.GS.Commands
             if (IsSpammingCommand(client.Player, "battlechat"))
                 return;
 
-            BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
             if (mybattlegroup == null)
             {
                 client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -125,13 +125,13 @@ namespace DOL.GS.Commands
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InviteYourself"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return;
                         }
-                        BattleGroup oldbattlegroup = inviteePlayer.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup oldbattlegroup = inviteePlayer.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (oldbattlegroup != null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.PlayerInBattlegroup", inviteePlayer.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return;
                         }
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         /*if (mybattlegroup == null)
                         {
                             mybattlegroup = new BattleGroup();
@@ -155,7 +155,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
                         if (mybattlegroup == null)
                         {
@@ -232,7 +232,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        var mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        var mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
                         if (mybattlegroup == null)
                         {
@@ -290,7 +290,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        var mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        var mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
                         if (mybattlegroup == null)
                         {
@@ -347,7 +347,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -392,7 +392,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -423,7 +423,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -437,7 +437,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -462,7 +462,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -513,7 +513,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -552,7 +552,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -577,7 +577,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -608,7 +608,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup oldbattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup oldbattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (oldbattlegroup != null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.AlreadyInBattlegroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -628,7 +628,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        BattleGroup mybattlegroup = inviteePlayer.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = inviteePlayer.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.NotBattleGroupMember"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -661,7 +661,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -691,7 +691,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup curbattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup curbattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (curbattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -705,7 +705,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -738,7 +738,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -770,7 +770,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -831,7 +831,7 @@ namespace DOL.GS.Commands
                         if (client.Player == null)
                             return;
 
-                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                        BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                         if (mybattlegroup == null)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -870,7 +870,7 @@ namespace DOL.GS.Commands
                     if (client.Player == null)
                         return;
 
-                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                     if (mybattlegroup == null)
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -892,7 +892,7 @@ namespace DOL.GS.Commands
                     if (client.Player == null)
                         return;
 
-                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                    BattleGroup mybattlegroup = client.Player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
                     if (mybattlegroup == null)
                     {
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.InBattleGroup"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -946,11 +946,11 @@ namespace DOL.GS.Commands
         public const string PLAYER_INVITE_SENDER = "PLAYER_INVITE_SENDER";
         public static void JoinBattleGroup(GamePlayer player, byte response)
         {
-            /*BattleGroup mybattlegroupinvite = player.TempProperties.getProperty<BattleGroup>(JOIN_BATTLEGROUP_PROPERTY, null);
+            /*BattleGroup mybattlegroupinvite = player.TempProperties.GetProperty<BattleGroup>(JOIN_BATTLEGROUP_PROPERTY);
             if (mybattlegroupinvite == null) 
                 return;*/
 
-            GamePlayer leader = player.TempProperties.GetProperty<GamePlayer>(PLAYER_INVITE_SENDER, null);
+            GamePlayer leader = player.TempProperties.GetProperty<GamePlayer>(PLAYER_INVITE_SENDER);
             if (leader == null)
             {
                 player.TempProperties.RemoveProperty(JOIN_BATTLEGROUP_PROPERTY);
@@ -959,7 +959,7 @@ namespace DOL.GS.Commands
             }
 
 
-            BattleGroup mybattlegroup = leader.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+            BattleGroup mybattlegroup = leader.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
             if (mybattlegroup != null)
             {
                 //log.Debug("bg");

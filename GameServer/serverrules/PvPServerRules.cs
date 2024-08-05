@@ -69,7 +69,7 @@ namespace DOL.GS.ServerRules
 		public override void OnReleased(DOLEvent e, object sender, EventArgs args)
 		{
 			GamePlayer player = (GamePlayer)sender;
-			if (player.TempProperties.GetProperty<string>(KILLED_BY_PLAYER_PROP, null) != null)
+			if (player.TempProperties.GetProperty<string>(KILLED_BY_PLAYER_PROP) != null)
 			{
 				player.TempProperties.RemoveProperty(KILLED_BY_PLAYER_PROP);
 				StartImmunityTimer(player, ServerProperties.Properties.TIMER_KILLED_BY_PLAYER * 1000);//When Killed by a Player
@@ -177,7 +177,7 @@ namespace DOL.GS.ServerRules
 					}
 
 				    // Player can't hit other members of the same BattleGroup
-				    BattleGroup mybattlegroup = playerAttacker.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				    BattleGroup mybattlegroup = playerAttacker.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
 				    if (mybattlegroup != null && mybattlegroup.IsInTheBattleGroup(playerDefender))
 				    {

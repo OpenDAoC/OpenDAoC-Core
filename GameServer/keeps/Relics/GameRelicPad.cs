@@ -201,7 +201,7 @@ namespace DOL.GS
 				//select targets to increase CapturedRelics
 				//TODO increase stats
 				
-				BattleGroup relicBG = relic.CurrentCarrier?.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+				BattleGroup relicBG = relic.CurrentCarrier?.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 				List<GamePlayer> targets = new List<GamePlayer>();
 
 				if (relicBG != null)
@@ -313,7 +313,7 @@ namespace DOL.GS
 
 			public override void OnPlayerEnter(GamePlayer player)
 			{
-				GameRelic relicOnPlayer = player.TempProperties.GetProperty<GameRelic>(GameRelic.PLAYER_CARRY_RELIC_WEAK, null);
+				GameRelic relicOnPlayer = player.TempProperties.GetProperty<GameRelic>(GameRelic.PLAYER_CARRY_RELIC_WEAK);
 				if (relicOnPlayer == null)
 				{
 					return;

@@ -50,7 +50,7 @@ namespace DOL.GS.RealmAbilities
 				return;
 			}
 			
-			GameLiving resurrectionCaster = targetPlayer.TempProperties.GetProperty<GameLiving>(RESURRECT_CASTER_PROPERTY, null);
+			GameLiving resurrectionCaster = targetPlayer.TempProperties.GetProperty<GameLiving>(RESURRECT_CASTER_PROPERTY);
 			if (resurrectionCaster != null)
 			{
 				player.Out.SendMessage("Your target is already considering a resurrection!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
@@ -107,7 +107,7 @@ namespace DOL.GS.RealmAbilities
                 resurrectExpiredTimer.Stop();
             }
 
-            GameLiving rezzer = player.TempProperties.GetProperty<GameLiving>(RESURRECT_CASTER_PROPERTY, null);
+            GameLiving rezzer = player.TempProperties.GetProperty<GameLiving>(RESURRECT_CASTER_PROPERTY);
             if (!player.IsAlive)
             {
                 if (rezzer == null)
@@ -144,7 +144,7 @@ namespace DOL.GS.RealmAbilities
         /// <returns></returns>
         protected virtual int ResurrectExpiredCallback(ECSGameTimer callingTimer)
         {
-            GamePlayer player = callingTimer.Properties.GetProperty<GamePlayer>("targetPlayer", null);
+            GamePlayer player = callingTimer.Properties.GetProperty<GamePlayer>("targetPlayer");
             if (player == null) return 0;
             player.TempProperties.RemoveProperty(RESURRECT_CASTER_PROPERTY);
             player.Out.SendMessage("Your resurrection spell has expired.", eChatType.CT_System, eChatLoc.CL_SystemWindow);

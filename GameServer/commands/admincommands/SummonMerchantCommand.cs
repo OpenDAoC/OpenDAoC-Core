@@ -25,7 +25,7 @@ namespace DOL.GS.Commands
         public void OnCommand(GameClient client, string[] args)
         {
             var player = client.Player;
-            var merchTick = player.TempProperties.GetProperty(SummonMerch, 0L);
+            var merchTick = player.TempProperties.GetProperty<long>(SummonMerch);
             var changeTime = GameLoop.GameLoopTime - merchTick;
             if (changeTime < 30000)
             {

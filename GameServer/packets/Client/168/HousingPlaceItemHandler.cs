@@ -551,7 +551,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
 								{
-									if (client.Player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
+									if (client.Player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint))
 									{
 
 										ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.HookPointID", +_position);
@@ -694,7 +694,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 								if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
 								{
-									if (client.Player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint, false))
+									if (client.Player.TempProperties.GetProperty<bool>(HousingConstants.AllowAddHouseHookpoint))
 									{
 
 										ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.HookPointID", +_position);
@@ -914,7 +914,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			player.TempProperties.RemoveProperty(DeedWeak);
 
 			var item = (DbInventoryItem)itemWeak.Target;
-			var house = player.TempProperties.GetProperty<House>(TargetHouse, null);
+			var house = player.TempProperties.GetProperty<House>(TargetHouse);
 			player.TempProperties.RemoveProperty(TargetHouse);
 
 			if (house == null)
@@ -957,7 +957,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			player.TempProperties.RemoveProperty(DeedWeak);
 
 			var item = (DbInventoryItem)itemWeak.Target;
-			var house = player.TempProperties.GetProperty<House>(TargetHouse, null);
+			var house = player.TempProperties.GetProperty<House>(TargetHouse);
 			player.TempProperties.RemoveProperty(TargetHouse);
 
 			if (house == null)

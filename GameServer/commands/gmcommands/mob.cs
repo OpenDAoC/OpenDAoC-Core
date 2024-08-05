@@ -3180,7 +3180,7 @@ namespace DOL.GS.Commands
 				DisplaySyntax(client);
 				return;
 			}
-			var triggers = client.Player.TempProperties.GetProperty<IList<DbMobXAmbientBehavior>>("mob_triggers", null);
+			var triggers = client.Player.TempProperties.GetProperty<IList<DbMobXAmbientBehavior>>("mob_triggers");
 			if (triggers == null)
 			{
 				ChatUtil.SendSystemMessage(client, "You must use '/mob trigger info' before using this command !");

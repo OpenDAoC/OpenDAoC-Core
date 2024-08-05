@@ -58,7 +58,7 @@ namespace DOL.GS.Spells
                 return false;
             }
 
-			if (Caster.TempProperties.GetProperty<bool>(NoveltyPetBrain.HAS_PET, false))
+			if (Caster.TempProperties.GetProperty<bool>(NoveltyPetBrain.HAS_PET))
 			{
 				// no message
 				MessageToCaster("You already have a pet by your side!", PacketHandler.eChatType.CT_SpellResisted);

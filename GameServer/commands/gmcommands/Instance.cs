@@ -222,7 +222,7 @@ namespace DOL.GS.Commands
 								throw new Exception("You need to provide a skin id.  A skin is the ID of the region you want this instance to look like.");
 							}
 
-							Instance newInstance = player.TempProperties.GetProperty<Instance>(key, null);
+							Instance newInstance = player.TempProperties.GetProperty<Instance>(key);
 
 							if (newInstance != null)
 							{
@@ -255,7 +255,7 @@ namespace DOL.GS.Commands
 				#region close
 				case "close":
 					{
-						Instance newInstance = player.TempProperties.GetProperty<Instance>(key, null);
+						Instance newInstance = player.TempProperties.GetProperty<Instance>(key);
 
 						if (newInstance == null)
 						{
@@ -286,7 +286,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						Instance newInstance = player.TempProperties.GetProperty<Instance>(key, null);
+						Instance newInstance = player.TempProperties.GetProperty<Instance>(key);
 
 						if (newInstance == null)
 						{
@@ -344,7 +344,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						GameLocation saveLocation = player.TempProperties.GetProperty<GameLocation>(player.Name + "_exit", null);
+						GameLocation saveLocation = player.TempProperties.GetProperty<GameLocation>(player.Name + "_exit");
 
 						if (saveLocation == null)
 						{
@@ -370,7 +370,7 @@ namespace DOL.GS.Commands
             string str = "";
             try
             {
-                str = p.TempProperties.GetProperty<string>(INSTANCE_KEY, "");
+                str = p.TempProperties.GetProperty(INSTANCE_KEY, string.Empty);
             }
             catch { return ""; }
             return str;

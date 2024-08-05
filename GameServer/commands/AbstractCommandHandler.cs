@@ -50,7 +50,7 @@ namespace DOL.GS.Commands
 		public bool IsSpammingCommand(GamePlayer player, string commandName, int delay)
 		{
 			string spamKey = commandName + "NOSPAM";
-			long tick = player.TempProperties.GetProperty<long>(spamKey, 0);
+			long tick = player.TempProperties.GetProperty<long>(spamKey);
 
 			if (tick > 0 && player.CurrentRegion.Time - tick <= 0)
 			{

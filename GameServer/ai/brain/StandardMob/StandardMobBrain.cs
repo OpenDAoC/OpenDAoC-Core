@@ -716,7 +716,7 @@ namespace DOL.AI.Brain
                 otherTargets = null;
                 HashSet<string> countedVictims = null;
                 HashSet<string> countedAttackers = null;
-                BattleGroup bg = puller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                BattleGroup bg = puller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
                 if (puller.Group is Group group)
                 {

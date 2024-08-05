@@ -339,8 +339,7 @@ namespace DOL.GS
                                         int dropCooldown =
                                             lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
                                         long tempProp =
-                                            player.TempProperties.GetProperty<long>(XPItemKey,
-                                                0); //check if our loot has dropped for player
+                                            player.TempProperties.GetProperty<long>(XPItemKey); //check if our loot has dropped for player
                                         List<string> itemsDropped =
                                             player.TempProperties
                                                 .GetProperty<List<string>>(
@@ -490,8 +489,7 @@ namespace DOL.GS
                                         int dropCooldown =
                                             lootTemplate.Chance * -1 * 60 * 1000; //chance time in minutes
                                         long tempProp =
-                                            player.TempProperties.GetProperty<long>(XPItemKey,
-                                                0); //check if our loot has dropped for player
+                                            player.TempProperties.GetProperty<long>(XPItemKey); //check if our loot has dropped for player
                                         List<string> itemsDropped =
                                             player.TempProperties
                                                 .GetProperty<List<string>>(
@@ -609,7 +607,7 @@ namespace DOL.GS
                 if ((player.CurrentZone != groupMember.CurrentZone) ||
                     player.CurrentRegion != groupMember.CurrentRegion) continue;
                 if (player.GetDistance(groupMember) > WorldMgr.MAX_EXPFORKILL_DISTANCE) continue;
-                long tempProp = groupMember.TempProperties.GetProperty<long>(xpItemKey, 0);
+                long tempProp = groupMember.TempProperties.GetProperty<long>(xpItemKey);
                 if (tempProp == 0 || tempProp + dropCooldown < GameLoop.GameLoopTime)
                     return groupMember;
             }

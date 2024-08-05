@@ -45,7 +45,7 @@ namespace DOL.GS
                 if (EffectType == eEffect.MovementSpeedDebuff)
                 {
                     //// Cannot apply if the effect owner has a charging effect
-                    //if (effect.Owner.EffectList.GetOfType<ChargeEffect>() != null || effect.Owner.TempProperties.getProperty("Charging", false))
+                    //if (effect.Owner.EffectList.GetOfType<ChargeEffect>() != null || effect.Owner.TempProperties.GetProperty<bool>("Charging"))
                     //{
                     //    MessageToCaster(effect.Owner.Name + " is moving too fast for this spell to have any effect!", eChatType.CT_SpellResisted);
                     //    return;

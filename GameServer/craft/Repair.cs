@@ -91,9 +91,9 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected static int Proceed(ECSGameTimer timer)
 		{
-			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
-			GamePlayer tradePartner = timer.Properties.GetProperty<GamePlayer>(PLAYER_PARTNER, null);
-			DbInventoryItem item = timer.Properties.GetProperty<DbInventoryItem>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER);
+			GamePlayer tradePartner = timer.Properties.GetProperty<GamePlayer>(PLAYER_PARTNER);
+			DbInventoryItem item = timer.Properties.GetProperty<DbInventoryItem>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED);
 
 			if (player == null || item == null)
 			{
@@ -259,8 +259,8 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected static int ProceedSiegeWeapon(ECSGameTimer timer)
 		{
-			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER, null);
-			GameSiegeWeapon siegeWeapon = timer.Properties.GetProperty<GameSiegeWeapon>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED, null);
+			GamePlayer player = timer.Properties.GetProperty<GamePlayer>(AbstractCraftingSkill.PLAYER_CRAFTER);
+			GameSiegeWeapon siegeWeapon = timer.Properties.GetProperty<GameSiegeWeapon>(AbstractCraftingSkill.RECIPE_BEING_CRAFTED);
 
 			if (player == null || siegeWeapon == null)
 			{

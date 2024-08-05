@@ -47,7 +47,7 @@ namespace DOL.GS.Spells
                 MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
                 return;
             }
-            if (target.TempProperties.GetProperty("Charging", false))
+            if (target.TempProperties.GetProperty<bool>("Charging"))
             {
                 MessageToCaster(target.Name + " is moving to fast for this spell to have any effect!", eChatType.CT_SpellResisted);
                 return;
@@ -125,7 +125,7 @@ namespace DOL.GS.Spells
 		{
 			base.OnEffectExpires(effect,noMessages);
 
-			ECSGameTimer timer = effect.Owner.TempProperties.GetProperty<ECSGameTimer>(EFFECT_PROPERTY, null);
+			ECSGameTimer timer = effect.Owner.TempProperties.GetProperty<ECSGameTimer>(EFFECT_PROPERTY);
 			effect.Owner.TempProperties.RemoveProperty(EFFECT_PROPERTY);
 			timer.Stop();
 

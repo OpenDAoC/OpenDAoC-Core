@@ -3365,13 +3365,13 @@ namespace DOL.GS
 				BattleGroup activeBG = null;
 
 				if (killer is GamePlayer playerKiller && activeBG != null)
-					activeBG = playerKiller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+					activeBG = playerKiller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 				
 				foreach (GameObject gainer in XPGainerList.Keys)
 				{
 					//if a battlegroup killed the mob, filter out any non BG players
 					if (activeBG != null && gainer is GamePlayer p &&
-						p.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null) != activeBG)
+						p.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY) != activeBG)
 						continue;
 					
 					if (gainer is GamePlayer)

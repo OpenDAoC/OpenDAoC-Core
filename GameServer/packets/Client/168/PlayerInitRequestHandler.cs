@@ -73,7 +73,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					player.Notify(GamePlayerEvent.RegionChanged, player);
 				}
-				if (player.TempProperties.GetProperty(GamePlayer.RELEASING_PROPERTY, false))
+				if (player.TempProperties.GetProperty<bool>(GamePlayer.RELEASING_PROPERTY))
 				{
 					player.TempProperties.RemoveProperty(GamePlayer.RELEASING_PROPERTY);
 					player.Notify(GamePlayerEvent.Revive, player);

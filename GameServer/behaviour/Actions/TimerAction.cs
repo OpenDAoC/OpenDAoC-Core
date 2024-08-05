@@ -65,11 +65,11 @@ namespace DOL.GS.Behaviour.Actions
         /// <returns>0</returns>
         private static int QuestTimerCallBack(ECSGameTimer callingTimer)
         {
-            string timerid = callingTimer.Properties.GetProperty<string>(TIMER_ID, null);
+            string timerid = callingTimer.Properties.GetProperty<string>(TIMER_ID);
             if (timerid == null)
                 throw new ArgumentNullException("TimerId out of Range", "timerid");
 
-            GameLiving source = callingTimer.Properties.GetProperty<GameLiving>(TIMER_SOURCE, null);
+            GameLiving source = callingTimer.Properties.GetProperty<GameLiving>(TIMER_SOURCE);
             if (source == null)
                 throw new ArgumentNullException("TimerSource null", "timersource");
 

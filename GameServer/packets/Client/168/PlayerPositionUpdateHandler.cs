@@ -116,7 +116,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (newZone == null)
                 {
-                    if (!client.Player.TempProperties.GetProperty("isbeingbanned", false))
+                    if (!client.Player.TempProperties.GetProperty<bool>("isbeingbanned"))
                     {
                         log.Error($"{client.Player.Name}'s position in unknown zone! => {zoneId}");
                         GamePlayer player = client.Player;
@@ -212,7 +212,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (coordsPerSec > tolerance)
                     {
                         // check to see if CPS time tolerance is exceeded
-                        int lastCPSTick = client.Player.TempProperties.GetProperty(LASTCPSTICK, 0);
+                        int lastCPSTick = client.Player.TempProperties.GetProperty<int>(LASTCPSTICK);
 
                         if (GameLoop.GameLoopTime - lastCPSTick > ServerProperties.Properties.CPS_TIME_TOLERANCE)
                             isHackDetected = false;
@@ -458,7 +458,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (client.Player==null)
                         return;
 
-                    if (!client.Player.TempProperties.GetProperty("isbeingbanned",false))
+                    if (!client.Player.TempProperties.GetProperty<bool>("isbeingbanned"))
                     {
                         if (log.IsErrorEnabled)
                             log.Error($"{client.Player.Name}'s position in unknown zone! => {zoneId}");
@@ -567,7 +567,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (coordsPerSec > tolerance)
                     {
                         // check to see if CPS time tolerance is exceeded
-                        int lastCPSTick = client.Player.TempProperties.GetProperty(LASTCPSTICK, 0);
+                        int lastCPSTick = client.Player.TempProperties.GetProperty<int>(LASTCPSTICK);
 
                         if (environmentTick - lastCPSTick > ServerProperties.Properties.CPS_TIME_TOLERANCE)
                             isHackDetected = false;
@@ -813,7 +813,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 client.Player.IsSwimming = state == 1;
 
                 // debugFly on, but player not do /debug on (hack)
-                if (state == 3 && !client.Player.TempProperties.GetProperty(GamePlayer.DEBUG_MODE_PROPERTY, false) && !client.Player.IsAllowedToFly)
+                if (state == 3 && !client.Player.TempProperties.GetProperty<bool>(GamePlayer.DEBUG_MODE_PROPERTY) && !client.Player.IsAllowedToFly)
                 {
                     StringBuilder builder = new();
                     builder.Append("HACK_FLY");
@@ -1280,7 +1280,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     stateFlags &= ~StateFlags.DEAD;
 
                 // If the client has flying enabled but the debug option wasn't enabled.
-                if ((stateFlags & StateFlags.FLYING) is StateFlags.FLYING && !player.TempProperties.GetProperty(GamePlayer.DEBUG_MODE_PROPERTY, false) && !player.IsAllowedToFly)
+                if ((stateFlags & StateFlags.FLYING) is StateFlags.FLYING && !player.TempProperties.GetProperty<bool>(GamePlayer.DEBUG_MODE_PROPERTY) && !player.IsAllowedToFly)
                 {
                     if (ServerProperties.Properties.BAN_HACKERS)
                     {

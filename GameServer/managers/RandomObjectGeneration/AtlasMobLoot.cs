@@ -59,7 +59,7 @@ namespace DOL.GS {
 
                 //chance = 100;
                 
-                BattleGroup bg = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY, null);
+                BattleGroup bg = player.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
                 if (bg != null)
                 {

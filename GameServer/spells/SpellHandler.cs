@@ -2438,7 +2438,7 @@ namespace DOL.GS.Spells
 
 				if (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
 				{
-					AttackData lastAD = playerCaster.TempProperties.GetProperty<AttackData>("LastAttackData", null);
+					AttackData lastAD = playerCaster.TempProperties.GetProperty<AttackData>("LastAttackData");
 					spellLevel = (lastAD != null && lastAD.Style != null) ? lastAD.Style.Level : Math.Min(playerCaster.MaxLevel, target.Level);
 				}
 			}

@@ -30,7 +30,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            Faction selectedFaction = client.Player.TempProperties.GetProperty<Faction>(TEMP_FACTION_LAST, null);
+            Faction selectedFaction = client.Player.TempProperties.GetProperty<Faction>(TEMP_FACTION_LAST);
 
             switch (args[1])
             {

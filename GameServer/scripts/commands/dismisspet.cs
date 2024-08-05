@@ -14,7 +14,7 @@ namespace DOL.GS.Commands
 			if (IsSpammingCommand(client.Player, "dismisspet"))
 				return;
 
-			if (client.Player.TempProperties.GetProperty<bool>(NoveltyPetBrain.HAS_PET, false))
+			if (client.Player.TempProperties.GetProperty<bool>(NoveltyPetBrain.HAS_PET))
 			{
 				foreach (GameSummonedPet pet in client.Player.GetNPCsInRadius(500))
 				{
