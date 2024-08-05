@@ -1806,8 +1806,6 @@ namespace DOL.GS
                 if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || (eObjectType) leftHand.Object_Type is not eObjectType.Shield) && source is not GameNPC)
                     continue;
 
-                // TODO: Insert actual formula for guarding here, this is just a guessed one based on block.
-                int guardLevel = source.GetAbilityLevel(Abilities.Guard);
                 double guardChance;
 
                 if (source is GameNPC)
@@ -1816,25 +1814,16 @@ namespace DOL.GS
                     guardChance = source.GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
 
                 guardChance *= 0.001;
-                guardChance += guardLevel * 5 * 0.01; // 5% additional chance to guard with each Guard level.
-                int shieldSize = 1;
-
-                if (leftHand != null)
-                {
-                    shieldSize = Math.Max(leftHand.Type_Damage, 1);
-
-                    if (source is GamePlayer)
-                        guardChance += (double) (leftHand.Level - 1) / 50 * 0.15; // Up to 15% extra block chance based on shield level.
-                }
-
-                if (Attackers.Count > shieldSize)
-                    guardChance *= shieldSize / (double) Attackers.Count;
-
-                // Reduce chance by attacker's defense penetration.
-                guardChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100;
+                guardChance += source.GetAbilityLevel(Abilities.Guard) * 0.05; // 5% additional chance to guard with each Guard level.
+                guardChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100; // Reduce chance by attacker's defense penetration.
 
                 if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
                     guardChance = Properties.BLOCK_CAP;
+
+                int shieldSize = 1; // Guard isn't affected by shield size or attacker count.
+
+                if (leftHand != null)
+                    shieldSize = Math.Max(leftHand.Type_Damage, 1);
 
                 // Possibly intended to be applied in RvR only.
                 if (shieldSize == 1 && guardChance > 0.8)
