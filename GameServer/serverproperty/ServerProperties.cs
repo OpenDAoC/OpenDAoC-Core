@@ -871,12 +871,6 @@ namespace DOL.GS.ServerProperties
 		public static double PARRY_CAP;
 
 		/// <summary>
-		/// Critical strike opening style effectiveness.  Increase this to make CS styles BS, BSII and Perf Artery more effective
-		/// </summary>
-		[ServerProperty("rates", "cs_opening_effectiveness", "Critical strike opening style effectiveness.  Increase this to make CS styles BS, BSII and Perf Artery more effective", 1.0)]
-		public static double CS_OPENING_EFFECTIVENESS;
-
-		/// <summary>
 		/// The money drop modifier
 		/// </summary>
 		[ServerProperty("rates", "money_drop", "Money Drop Modifier - Edit this to change the amount of money which is dropped e.g 1.5 is 50% more 2.0 is twice the amount (100%) 0.5 is half the amount (50%)", 1.0)]
