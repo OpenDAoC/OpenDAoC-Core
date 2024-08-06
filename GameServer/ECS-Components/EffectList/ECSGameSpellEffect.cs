@@ -159,20 +159,21 @@ namespace DOL.GS
 
         public override DbPlayerXEffect getSavedEffect()
         {
-            if (SpellHandler == null || SpellHandler.Spell == null) return null;
+            if (SpellHandler?.Spell == null)
+                return null;
 
-            DbPlayerXEffect eff = new DbPlayerXEffect();
-            eff.Var1 = SpellHandler.Spell.ID;
-            eff.Var2 = Effectiveness;
-            eff.Var3 = (int)SpellHandler.Spell.Value;
+            DbPlayerXEffect eff = new()
+            {
+                Var1 = SpellHandler.Spell.ID,
+                Var2 = Effectiveness,
+                Var3 = (int) SpellHandler.Spell.Value,
+                IsHandler = true,
+                SpellLine = SpellHandler.SpellLine.KeyName
+            };
 
             if (Duration > 0)
-                eff.Duration = (int)(ExpireTick - GameLoop.GameLoopTime);
-            else
-                eff.Duration = 30 * 60 * 1000;
+                eff.Duration = (int) (ExpireTick - GameLoop.GameLoopTime);
 
-            eff.IsHandler = true;
-            eff.SpellLine = SpellHandler.SpellLine.KeyName;
             return eff;
         }
     }
