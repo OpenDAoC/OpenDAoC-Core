@@ -39,9 +39,9 @@ namespace DOL.GS
         private AttackersCheckTimer _attackersCheckTimer;
         private BlockRoundHandler _blockRoundHandler;
 
-        public void AddAttacker(GameLiving target)
+        public void AddAttacker(AttackData attackData)
         {
-            if (target == owner)
+            if (attackData.Attacker == owner)
                 return;
 
             lock (_attackersCheckTimer.LockObject)
@@ -53,7 +53,12 @@ namespace DOL.GS
                 }
             }
 
-            Attackers.AddOrUpdate(target, Add, Update, GameLoop.GameLoopTime + 5000); // Use interrupt duration instead?
+            long duration = attackData.Interval;
+
+            if (duration <= 0)
+                duration = Properties.SPELL_INTERRUPT_DURATION;
+
+            Attackers.AddOrUpdate(attackData.Attacker, Add, Update, GameLoop.GameLoopTime + duration);
 
             static long Add(GameLiving key, long arg)
             {

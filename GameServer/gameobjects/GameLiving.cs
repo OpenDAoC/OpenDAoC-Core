@@ -1719,7 +1719,7 @@ namespace DOL.GS
 				if (this is GameNPC gameNpc && ActiveWeaponSlot == eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
 					gameNpc.SwitchToMelee(ad.Attacker);
 
-				attackComponent.AddAttacker(ad.Attacker);
+				attackComponent.AddAttacker(ad);
 
 				if (ad.SpellHandler == null || (ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler))
 				{
