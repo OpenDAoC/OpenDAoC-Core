@@ -37,6 +37,7 @@ namespace DOL.GS
         public ConcurrentDictionary<GameLiving, long> Attackers { get; } = new();
 
         private AttackersCheckTimer _attackersCheckTimer;
+        private BlockRoundHandler _blockRoundHandler;
 
         public void AddAttacker(GameLiving target)
         {
@@ -86,6 +87,7 @@ namespace DOL.GS
             this.owner = owner;
             attackAction = AttackAction.Create(owner);
             _attackersCheckTimer = AttackersCheckTimer.Create(owner);
+            _blockRoundHandler = new(owner);
         }
 
         public void Tick()
@@ -1726,24 +1728,27 @@ namespace DOL.GS
 
         public virtual bool CheckBlock(AttackData ad)
         {
-            double blockChance = owner.TryBlock(ad, Attackers.Count);
+            double blockChance = owner.TryBlock(ad, out int shieldSize);
             ad.BlockChance = blockChance * 100;
             double blockRoll;
 
-            if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
-                blockRoll = player.RandomNumberDeck.GetPseudoDouble();
-            else
-                blockRoll = Util.CryptoNextDouble();
-
             if (blockChance > 0)
             {
-                if (ad.Attacker is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
-                    blockAttk.Out.SendMessage($"target block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
+                    blockRoll = player.RandomNumberDeck.GetPseudoDouble();
+                else
+                    blockRoll = Util.CryptoNextDouble();
 
-                if (ad.Target is GamePlayer blockTarg && blockTarg.UseDetailedCombatLog)
-                    blockTarg.Out.SendMessage($"your block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                if (ad.Attacker is GamePlayer attacker && attacker.UseDetailedCombatLog)
+                    attacker.Out.SendMessage($"target block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                if (blockChance > blockRoll)
+                if (ad.Target is GamePlayer defender && defender.UseDetailedCombatLog)
+                    defender.Out.SendMessage($"your block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                // The order here matters a lot. Either we consume attempts (by calling `Consume` first`) or blocks (by checking the roll first; the current implementation).
+                // If we consume attempts, the effective block rate changes according to this formula: "if (shieldSize < attackerCount) blockChance *= (shieldSize / attackerCount)".
+                // If we consume blocks, then the reduction is lower the lower the base block chance, and identical with a theoretical 100% block chance.
+                if (blockChance > blockRoll && _blockRoundHandler.Consume(shieldSize, ad))
                     return true;
             }
 
@@ -2781,6 +2786,64 @@ namespace DOL.GS
                 return modifier + owner.GetModified(eProperty.OffhandDamageAndChance) * 0.01;
 
             return modifier;
+        }
+
+        public class BlockRoundHandler
+        {
+            private GameObject _owner;
+            private int _usedBlockRoundCount;
+
+            public BlockRoundHandler(GameObject owner)
+            {
+                _owner = owner;
+            }
+
+            public bool Consume(int shieldSize, AttackData attackData)
+            {
+                // Block rounds work from the point of view of the attacker and use their attack speed, similar to how interrupts work.
+                // However, according to grab bags, it's supposed to be based on the defender's swing speed. But this sounds very wrong, since it implies haste buffs should make blocking more effective.
+
+                if (attackData.Target is not GamePlayer)
+                    return true;
+
+                // There is no need to make dual wield even more effective against shields.
+                // Returning true allow the off-hand of dual wield attacks to be blocked without consuming a block.
+                if (attackData.AttackType is AttackData.eAttackType.MeleeDualWield && attackData.IsOffHand)
+                    return true;
+
+                // Many threads can enter this block simultaneously, so we increment the count first, then decrement if we've overshot the shield size.
+                if (Interlocked.Increment(ref _usedBlockRoundCount) > shieldSize)
+                {
+                    Relinquish();
+                    return false;
+                }
+
+                // Decrement the count after a duration equal to the attack interval.
+                // We need to make sure it ticks before the attacker's next attack. We can't use `AttackData.Interval` only because `AttackAction.NextTick` is adjusted by `ServiceUtil.ShouldTickAdjust`.
+                new BlockRoundCountDecrementTimer(_owner, Relinquish).Start((int) (attackData.Attacker.attackComponent.attackAction.NextTick - GameLoop.GameLoopTime + attackData.Interval));
+                return true;
+            }
+
+            private void Relinquish()
+            {
+                Interlocked.Decrement(ref _usedBlockRoundCount);
+            }
+
+            class BlockRoundCountDecrementTimer : ECSGameTimerWrapperBase
+            {
+                private Action _decrementBlockRoundCount;
+
+                public BlockRoundCountDecrementTimer(GameObject owner, Action decrementBlockRoundCount) : base(owner)
+                {
+                    _decrementBlockRoundCount = decrementBlockRoundCount;
+                }
+
+                protected override int OnTick(ECSGameTimer timer)
+                {
+                    _decrementBlockRoundCount();
+                    return 0;
+                }
+            }
         }
 
         public class StandardAttackersCheckTimer : AttackersCheckTimer

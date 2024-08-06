@@ -1337,8 +1337,10 @@ namespace DOL.GS
 			return parryChance;
 		}
 
-		public virtual double TryBlock(AttackData ad, int attackerCount)
+		public virtual double TryBlock(AttackData ad, out int shieldSize)
 		{
+			shieldSize = 0;
+
 			//1.Quality does not affect the chance to block at this time.  Grab Bag 3/7/03
 			//2.Condition and enchantment increases the chance to block  Grab Bag 2/27/03
 			//3.There is currently no hard cap on chance to block  Grab Bag 2/27/03 and 8/16/02
@@ -1380,24 +1382,16 @@ namespace DOL.GS
 
 			if (blockChance > 0)
 			{
-				// Reduce block chance if the shield used is too small.
-				int shieldSize = 1;
-
-				if (leftHand != null)
-				{
-					shieldSize = Math.Max(leftHand.Type_Damage, 1);
-
-					if (attackerCount > shieldSize)
-						blockChance *= shieldSize / (double) attackerCount;
-				}
-
 				blockChance *= 0.001;
-
-				// Reduce chance by attacker's defense penetration.
-				blockChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100;
+				blockChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100; // Reduce chance by attacker's defense penetration.
 
 				if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 					blockChance = Properties.BLOCK_CAP;
+
+				shieldSize = 1;
+
+				if (leftHand != null)
+					shieldSize = Math.Max(leftHand.Type_Damage, 1);
 
 				// Possibly intended to be applied in RvR only.
 				if (shieldSize == 1 && blockChance > 0.8)
@@ -1414,7 +1408,7 @@ namespace DOL.GS
 					if (engage != null && attackComponent.AttackState && engage.EngageTarget == ad.Attacker)
 					{
 						if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
-							player?.Out.SendMessage(engage.EngageTarget.GetName(0, true) + " has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							player?.Out.SendMessage($"{engage.EngageTarget.GetName(0, true)} has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						else if (Endurance < EngageAbilityHandler.ENGAGE_ENDURANCE_COST)
 							engage.Cancel(false, true);
 						else
