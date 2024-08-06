@@ -111,44 +111,22 @@ namespace DOL.GS
         /// <summary>
         /// The chance for a critical hit
         /// </summary>
-        /// <param name="weapon">attack weapon</param>
         public int AttackCriticalChance(WeaponAction action, DbInventoryItem weapon)
         {
-            if (owner is GamePlayer playerOwner)
+            if (weapon == null)
+                return 0;
+
+            switch ((eInventorySlot) weapon.SlotPosition)
             {
-                if (weapon != null)
-                {
-                    if (weapon.Item_Type != Slot.RANGED)
-                        return playerOwner.GetModified(eProperty.CriticalMeleeHitChance);
-                    else
-                    {
-                        if (action.RangedAttackType == eRangedAttackType.Critical)
-                            return 0;
-                        else
-                            return playerOwner.GetModified(eProperty.CriticalArcheryHitChance);
-                    }
-                }
-
-                // Base of 10% critical chance.
-                return 10;
+                case eInventorySlot.RightHandWeapon:
+                case eInventorySlot.LeftHandWeapon:
+                case eInventorySlot.TwoHandWeapon:
+                    return owner.GetModified(eProperty.CriticalMeleeHitChance);
+                case eInventorySlot.DistanceWeapon:
+                    return action.RangedAttackType is eRangedAttackType.Critical ? 0 : owner.GetModified(eProperty.CriticalArcheryHitChance);
+                default:
+                    return 0;
             }
-
-            /// [Atlas - Takii] Wild Minion Implementation. We don't want any non-pet NPCs to crit.
-            /// We cannot reliably check melee vs ranged here since archer pets don't necessarily have a proper weapon with the correct slot type assigned.
-            /// Since Wild Minion is the only way for pets to crit and we (currently) want it to affect melee/ranged/spells, we can just rely on the Melee crit chance even for archery attacks
-            /// and as a result we don't actually need to detect melee vs ranged to end up with the correct behavior since all attack types will have the same % chance to crit in the end.
-            if (owner is GameNPC npc)
-            {
-                // Player-Summoned pet.
-                if (npc is GameSummonedPet summonedPet && summonedPet.Owner is GamePlayer)
-                    return npc.GetModified(eProperty.CriticalMeleeHitChance);
-
-                // Charmed Pet.
-                if (npc.Brain is IControlledBrain charmedPetBrain && charmedPetBrain.GetPlayerOwner() != null)
-                    return npc.GetModified(eProperty.CriticalMeleeHitChance);
-            }
-
-            return 0;
         }
 
         /// <summary>
