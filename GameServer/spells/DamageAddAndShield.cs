@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
                 CalculateDamageVariance(target, out double minVariance, out double maxVariance);
                 double dps = Caster == Target ? Spell.Damage : Math.Min(Spell.Damage, (1.2 + 0.3 * attacker.Level) * 0.7);
                 effectiveness *= 1 + Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
-                damage = dps * effectiveness * attackData.WeaponSpeed * 0.001;
+                damage = dps * effectiveness * attackData.Interval * 0.001;
                 damage = Util.Random((int) (damage * minVariance), (int) (damage * maxVariance));
                 damageResisted = damage * target.GetResist(Spell.DamageType) * -0.01;
             }
@@ -94,7 +94,7 @@ namespace DOL.GS.Spells
             {
                 CalculateDamageVariance(target, out double minVariance, out double maxVariance);
                 effectiveness *= 1 + Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
-                damage = Spell.Damage * effectiveness * attackData.WeaponSpeed * 0.001;
+                damage = Spell.Damage * effectiveness * attackData.Interval * 0.001;
                 damage = Util.Random((int) (damage * minVariance), (int) (damage * maxVariance));
                 damageResisted = damage * target.GetResist(Spell.DamageType) * -0.01;
             }

@@ -64,7 +64,7 @@ namespace DOL.GS
 			int modifier = 100;
 			//double dpsCap = (1.2 + 0.3 * attacker.Level) * 0.7;
 			//double dps = Math.Min(atkArgs.AttackData.Weapon.DPS_AF/10.0, dpsCap);
-			double baseDamage = attackData.Weapon.DPS_AF * attackData.WeaponSpeed * 0.001;
+			double baseDamage = attackData.Weapon.DPS_AF * attackData.Interval * 0.001;
 
 			modifier += 25 * attackData.Target.GetConLevel(attackData.Attacker);
 			modifier = Math.Min(300, modifier);
@@ -81,7 +81,7 @@ namespace DOL.GS
 			ad.DamageType = eDamageType.Body;
 			ad.AttackType = AttackData.eAttackType.MeleeOneHand;
 			ad.AttackResult = eAttackResult.HitUnstyled;
-			ad.WeaponSpeed = attackData.WeaponSpeed;
+			ad.Interval = attackData.Interval;
 
 			GamePlayer owner = attacker as GamePlayer;
 			if (owner != null)

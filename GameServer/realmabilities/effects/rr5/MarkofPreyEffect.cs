@@ -102,7 +102,7 @@ namespace DOL.GS.Effects
 			dpsCap = (1.2 + 0.3 * attacker.Level) * 0.7;
 
 			double dps = Math.Min(RealmAbilities.MarkOfPreyAbility.VALUE, dpsCap);
-			double damage = dps * atkArgs.AttackData.WeaponSpeed * 0.001;
+			double damage = dps * atkArgs.AttackData.Interval * 0.001;
 			double damageResisted = damage * target.GetResist(eDamageType.Heat) * -0.01;
 
 			AttackData ad = new AttackData();

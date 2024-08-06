@@ -553,7 +553,7 @@ namespace DOL.GS.Spells
                 Target = target,
                 Damage = 0,
                 CriticalDamage = 0,
-                WeaponSpeed = player.AttackSpeed(weapon),
+                Interval = player.AttackSpeed(weapon),
                 DamageType = player.attackComponent.AttackDamageType(weapon),
                 Weapon = weapon,
                 IsOffHand = weapon.Hand == 2

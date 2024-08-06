@@ -847,7 +847,7 @@ namespace DOL.GS
         /// <summary>
         /// Called whenever a single attack strike is made
         /// </summary>
-        public AttackData MakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield)
+        public AttackData MakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval, bool dualWield)
         {
             if (owner is GamePlayer playerOwner)
             {
@@ -867,7 +867,7 @@ namespace DOL.GS
                     playerOwner.Out.SendCloseTimerWindow();
                 }
 
-                AttackData ad = LivingMakeAttack(action, target, weapon, style, effectiveness * playerOwner.Effectiveness, interruptDuration, dualWield);
+                AttackData ad = LivingMakeAttack(action, target, weapon, style, effectiveness * playerOwner.Effectiveness, interval, dualWield);
 
                 switch (ad.AttackResult)
                 {
@@ -1010,7 +1010,7 @@ namespace DOL.GS
                 else
                     effectiveness = 1;
 
-                return LivingMakeAttack(action, target, weapon, style, effectiveness, interruptDuration, dualWield);
+                return LivingMakeAttack(action, target, weapon, style, effectiveness, interval, dualWield);
             }
         }
 
@@ -1019,16 +1019,16 @@ namespace DOL.GS
         /// attacktimer and should not be called manually
         /// </summary>
         /// <returns>the object where we collect and modifiy all parameters about the attack</returns>
-        public AttackData LivingMakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interruptDuration, bool dualWield, bool ignoreLOS = false)
+        public AttackData LivingMakeAttack(WeaponAction action, GameObject target, DbInventoryItem weapon, Style style, double effectiveness, int interval, bool dualWield, bool ignoreLOS = false)
         {
             AttackData ad = new()
             {
                 Attacker = owner,
                 Target = target as GameLiving,
                 Style = style,
-                WeaponSpeed = AttackSpeed(weapon),
                 DamageType = AttackDamageType(weapon),
                 Weapon = weapon,
+                Interval = interval,
                 IsOffHand = weapon != null && weapon.SlotPosition == Slot.LEFTHAND
             };
 
@@ -1605,7 +1605,7 @@ namespace DOL.GS
             }
 
             // Interrupt the target of the attack
-            ad.Target.StartInterruptTimer(interruptDuration, ad.AttackType, ad.Attacker);
+            ad.Target.StartInterruptTimer(interval, ad.AttackType, ad.Attacker);
 
             // If we're attacking via melee, start an interrupt timer on ourselves so we cannot swing + immediately cast.
             if (ad.IsMeleeAttack)
