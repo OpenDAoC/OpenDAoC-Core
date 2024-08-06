@@ -105,6 +105,7 @@ namespace DOL.GS
             static void TickServices()
             {
                 ECS.Debug.Diagnostics.StartPerfCounter(THREAD_NAME);
+                TimerService.Tick();
                 NpcService.Tick();
                 AttackService.Tick();
                 CastingService.Tick();
@@ -112,7 +113,6 @@ namespace DOL.GS
                 EffectListService.Tick();
                 ZoneService.Tick();
                 CraftingService.Tick();
-                TimerService.Tick();
                 ReaperService.Tick();
                 ClientService.Tick();
                 DailyQuestService.Tick();
