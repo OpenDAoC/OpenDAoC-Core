@@ -872,9 +872,6 @@ namespace DOL.GS
         /// </summary>
         public static void SaveAllEffects(GamePlayer player)
         {
-            if (player == null || player.effectListComponent.GetAllEffects().Count == 0)
-                return;
-
             IList<DbPlayerXEffect> effs = DOLDB<DbPlayerXEffect>.SelectObjects(DB.Column("ChardID").IsEqualTo(player.ObjectId));
             if (effs != null)
                 GameServer.Database.DeleteObject(effs);

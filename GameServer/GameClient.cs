@@ -345,10 +345,9 @@ namespace DOL.GS
 			set
 			{
 				GamePlayer oldPlayer = Interlocked.Exchange(ref m_player, value);
-				if (oldPlayer != null)
-				{
+
+				if (oldPlayer != null && oldPlayer.ObjectState is not GameObject.eObjectState.Deleted)
 					oldPlayer.Delete();
-				}
 
 				GameEventMgr.Notify(GameClientEvent.PlayerLoaded, this); // hmm seems not right
 			}
