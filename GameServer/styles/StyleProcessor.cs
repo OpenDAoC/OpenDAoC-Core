@@ -378,7 +378,7 @@ namespace DOL.GS.Styles
 
 						// Styles with a static growth don't use unstyled damage, so armor has to be taken into account here.
 						DbInventoryItem armor = target.Inventory?.GetItem((eInventorySlot) armorHitLocation);
-						styleDamage = styleDamage * (1.0 - Math.Min(0.85, target.GetArmorAbsorb(armorHitLocation)));
+						styleDamage = styleDamage * (1.0 - target.GetArmorAbsorb(armorHitLocation));
 						styleDamageCap = -1; // Uncapped. Is there supposed to be one?
 					}
 					else
