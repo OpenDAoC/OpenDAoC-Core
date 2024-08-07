@@ -2181,7 +2181,9 @@ namespace DOL.GS
                 if (stealthStyle)
                     return eAttackResult.HitUnstyled; // Exit early for stealth to prevent breaking bubble but still register a hit.
 
-                if (ad.AttackType is AttackData.eAttackType.Ranged)
+                if (ad.Attacker.Level > bladeturn.SpellHandler.Caster.Level && !Util.ChanceDouble(bladeturn.SpellHandler.Caster.Level / (double) ad.Attacker.Level))
+                    penetrate = true;
+                else if (ad.AttackType is AttackData.eAttackType.Ranged)
                 {
                     // 1.62: Penetrating Arrow penetrate only if the caster == target. Longshot and Volley always penetrate BTs.
                     if ((ad.Target != bladeturn.SpellHandler.Caster && playerAttacker != null && playerAttacker.HasAbility(Abilities.PenetratingArrow)) ||
@@ -2190,8 +2192,6 @@ namespace DOL.GS
                         penetrate = true;
                     }
                 }
-                else if (ad.IsMeleeAttack && !Util.ChanceDouble(bladeturn.SpellHandler.Caster.Level / (double) ad.Attacker.Level))
-                    penetrate = true;
 
                 if (EffectService.RequestImmediateCancelEffect(bladeturn))
                 {
