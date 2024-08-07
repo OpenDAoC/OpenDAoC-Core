@@ -2580,7 +2580,8 @@ namespace DOL.GS
             if ((owner is GamePlayer player && player.IsSitting) || action.RangedAttackType == eRangedAttackType.Volley)
                return 0;
 
-            int missChance = ad.Attacker is GamePlayer or GameSummonedPet ? 18 : 25;
+            // In 1.117C, every weapon was given the intrinsic 5% flat bonus special weapons (such as artifacts) had, lowering the base miss rate to 13%.
+            int missChance = 18;
             missChance -= ad.Attacker.GetModified(eProperty.ToHitBonus);
 
             if (owner is not GamePlayer || ad.Attacker is not GamePlayer)
@@ -2632,9 +2633,6 @@ namespace DOL.GS
 
             if (lastAD != null && lastAD.AttackResult == eAttackResult.HitStyle && lastAD.Style != null)
                 missChance += lastAD.Style.BonusToDefense;
-
-            if (owner is GamePlayer && ad.Attacker is GamePlayer && weapon != null)
-                missChance -= (int) ((ad.Attacker.WeaponSpecLevel(weapon) - 1) * 0.1);
 
             if (action.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
