@@ -1962,7 +1962,6 @@ namespace DOL.GS
             //http://daoc.catacombs.com/forum.cfm?ThreadKey=511&DefMessage=681444&forum=DAOCMainForum#Defense
 
             InterceptECSGameEffect intercept = null;
-            ECSGameSpellEffect bladeturn = null;
             // ML effects
             GameSpellEffect phaseshift = null;
             GameSpellEffect grapple = null;
@@ -1974,19 +1973,8 @@ namespace DOL.GS
             GamePlayer playerOwner = owner as GamePlayer;
             GamePlayer playerAttacker = ad.Attacker as GamePlayer;
 
-            // If berserk is on, no defensive skills may be used: evade, parry, ...
-            // unfortunately this as to be check for every action itself to kepp oder of actions the same.
-            // Intercept and guard can still be used on berserked
-            // BerserkEffect berserk = null;
-
             if (EffectListService.GetAbilityEffectOnTarget(owner, eEffect.Berserk) != null)
                 defenseDisabled = true;
-
-            if (EffectListService.GetSpellEffectOnTarget(owner, eEffect.Bladeturn) is ECSGameSpellEffect bladeturnEffect)
-            {
-                if (bladeturn == null)
-                    bladeturn = bladeturnEffect;
-            }
 
             // We check if interceptor can intercept.
             foreach (InterceptECSGameEffect inter in owner.effectListComponent.GetAbilityEffects().Where(e => e is InterceptECSGameEffect))
@@ -2184,6 +2172,8 @@ namespace DOL.GS
              * It was a bug that caused it to work 100% of the time - now it takes the
              * levels of the players involved into account.
              */
+            BladeturnECSGameEffect bladeturn = EffectListService.GetSpellEffectOnTarget(owner, eEffect.Bladeturn) as BladeturnECSGameEffect;
+
             if (bladeturn != null)
             {
                 bool penetrate = false;
@@ -2191,12 +2181,11 @@ namespace DOL.GS
                 if (stealthStyle)
                     return eAttackResult.HitUnstyled; // Exit early for stealth to prevent breaking bubble but still register a hit.
 
-                if (ad.AttackType == AttackData.eAttackType.Ranged)
+                if (ad.AttackType is AttackData.eAttackType.Ranged)
                 {
                     // 1.62: Penetrating Arrow penetrate only if the caster == target. Longshot and Volley always penetrate BTs.
                     if ((ad.Target != bladeturn.SpellHandler.Caster && playerAttacker != null && playerAttacker.HasAbility(Abilities.PenetratingArrow)) ||
-                        action.RangedAttackType == eRangedAttackType.Long ||
-                        action.RangedAttackType == eRangedAttackType.Volley)
+                        action.RangedAttackType is eRangedAttackType.Long or eRangedAttackType.Volley)
                     {
                         penetrate = true;
                     }
@@ -2204,25 +2193,22 @@ namespace DOL.GS
                 else if (ad.IsMeleeAttack && !Util.ChanceDouble(bladeturn.SpellHandler.Caster.Level / (double) ad.Attacker.Level))
                     penetrate = true;
 
-                if (penetrate)
+                if (EffectService.RequestImmediateCancelEffect(bladeturn))
                 {
-                    if (playerOwner != null)
+                    if (penetrate)
+                        playerOwner?.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowPenetrated"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                    else
                     {
-                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowPenetrated"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                        EffectService.RequestImmediateCancelEffect(bladeturn);
-                    }
-                }
-                else
-                {
-                    if (playerOwner != null)
-                    {
-                        playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                        playerOwner.Stealth(false);
-                    }
+                        playerAttacker?.Out.SendMessage(LanguageMgr.GetTranslation(playerAttacker.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.StrikeAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 
-                    playerAttacker?.Out.SendMessage(LanguageMgr.GetTranslation(playerAttacker.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.StrikeAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    EffectService.RequestImmediateCancelEffect(bladeturn);
-                    return eAttackResult.Missed;
+                        if (playerOwner != null)
+                        {
+                            playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowAbsorbed"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                            playerOwner.Stealth(false);
+                        }
+
+                        return eAttackResult.Missed;
+                    }
                 }
             }
 
