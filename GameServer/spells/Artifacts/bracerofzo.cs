@@ -66,10 +66,11 @@ namespace DOL.GS.Spells
             }
             return base.OnEffectExpires(effect,noMessages);
         }
-        public override int CalculateSpellResistChance(GameLiving target) { return 0; }
+
+        public override double CalculateSpellResistChance(GameLiving target) { return 0; }
         public BracerOfZo(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
-    
+
     [SpellHandlerAttribute("Bedazzlement")]
     public class ZoDebuffSpellHandler : DualStatDebuff
     {

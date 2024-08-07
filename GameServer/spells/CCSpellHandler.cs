@@ -71,7 +71,7 @@ namespace DOL.GS.Spells
             if (Spell.SpellType != eSpellType.StyleStun)
             {
                 // capping duration adjustment to 100%, live cap unknown - Tolakram
-                int hitChance = Math.Min(200, CalculateToHitChance(target));
+                double hitChance = Math.Min(200, CalculateToHitChance(target));
 
                 if (hitChance <= 0)
                 {
@@ -79,20 +79,20 @@ namespace DOL.GS.Spells
                 }
                 else if (hitChance < 55)
                 {
-                    duration -= (int)(duration * (55 - hitChance) * 0.01);
+                    duration -= duration * (55 - hitChance) * 0.01;
                 }
                 else if (hitChance > 100)
                 {
-                    duration += (int)(duration * (hitChance - 100) * 0.01);
+                    duration += duration * (hitChance - 100) * 0.01;
                 }
             }
 
             return (int)duration;
         }
 
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
-            int resistChance;
+            double resistChance;
 
             /*
             GameSpellEffect fury = SpellHandler.FindEffectOnTarget(target, "Fury");
@@ -110,10 +110,10 @@ namespace DOL.GS.Spells
             if (HasPositiveEffect)
                 return 0;
 
-            int hitchance = CalculateToHitChance(target);
+            double hitChance = CalculateToHitChance(target);
 
             // Calculate the resist chance.
-            resistChance = 100 - hitchance;
+            resistChance = 100 - hitChance;
 
             if (resistChance > 100)
                 resistChance = 100;
@@ -121,8 +121,6 @@ namespace DOL.GS.Spells
             // Use ResurrectHealth = 1 if the CC should not be resisted.
             if (Spell.ResurrectHealth == 1)
                 resistChance = 0;
-            else if (resistChance < 1)
-                resistChance = 1;
 
             return resistChance;
         }

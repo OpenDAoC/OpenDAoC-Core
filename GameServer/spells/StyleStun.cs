@@ -13,7 +13,7 @@ namespace DOL.GS.Spells
 			return new StunECSGameEffect(initParams);
 		}
 		
-		public override int CalculateSpellResistChance(GameLiving target)
+		public override double CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;
 		}

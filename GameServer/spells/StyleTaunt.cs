@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
     [SpellHandler("StyleTaunt")]
     public class StyleTaunt : SpellHandler
     {
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
         }

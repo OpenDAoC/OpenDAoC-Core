@@ -86,7 +86,7 @@ namespace DOL.GS.Spells
                 return false;
 
             // Ignore SpellResisted values by returning 0
-            if (Util.Chance(CalculateSpellResistChance(target)))
+            if (Util.ChanceDouble(CalculateSpellResistChance(target)))
             {
                 OnSpellResisted(target);
             }
@@ -102,7 +102,7 @@ namespace DOL.GS.Spells
         /// Calculates chance of spell getting resisted
         /// </summary>
         /// <param name="target">The target mob for the spell</param>
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
         }
@@ -399,7 +399,7 @@ namespace DOL.GS.Spells
             if (playerCaster != null)
             {
                 // base resists for all charm spells
-                double resistChance = (short) (100 - (85 + (Caster.Level - target.Level) / 2));
+                double resistChance;
 
                 if (Spell.Pulse != 0) // not permanent
                 {
@@ -427,6 +427,8 @@ namespace DOL.GS.Spells
                         resistChance = Math.Min(resistChance, 99);
                     }
                 }
+                else
+                    resistChance = CalculateToHitChance(target);
 
                 double spellResistChance = resistChance;
                 double resistResult = Util.RandomDouble() * 100;

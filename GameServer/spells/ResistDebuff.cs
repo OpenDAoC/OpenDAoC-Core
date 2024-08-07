@@ -55,18 +55,18 @@ namespace DOL.GS.Spells
                 target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
         }
 
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
-            int basechance = base.CalculateSpellResistChance(target);
+            double chance = base.CalculateSpellResistChance(target);
 
             /*
             GameSpellEffect rampage = SpellHandler.FindEffectOnTarget(target, "Rampage");
 
             if (rampage != null)
-                basechance += rampage.Spell.Value;
+                chance += rampage.Spell.Value;
             */
 
-            return Math.Min(100, basechance);
+            return Math.Min(100, chance);
         }
 
         protected override void SendUpdates(GameLiving target)

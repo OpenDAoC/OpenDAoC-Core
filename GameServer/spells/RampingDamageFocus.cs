@@ -95,7 +95,7 @@ namespace DOL.GS.Spells
 
 			foreach (GameLiving t in targets)
 			{
-				if (Util.Chance(CalculateSpellResistChance(t)))
+				if (Util.ChanceDouble(CalculateSpellResistChance(t)))
 				{
 					OnSpellResisted(t);
 					continue;
@@ -178,7 +178,7 @@ namespace DOL.GS.Spells
 
 	public class SnareWithoutImmunity : SpeedDecreaseSpellHandler
 	{
-		public override int CalculateSpellResistChance(GameLiving target)
+		public override double CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;
 		}

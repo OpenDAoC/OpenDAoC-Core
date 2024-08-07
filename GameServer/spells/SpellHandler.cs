@@ -2099,7 +2099,7 @@ namespace DOL.GS.Spells
 				effectiveness *= 1 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
 
 				if (playerCaster != null && playerCaster.UseDetailedCombatLog && effectiveness != 1)
-					playerCaster.Out.SendMessage($"buff effectiveness: {effectiveness:0.00}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerCaster.Out.SendMessage($"buff effectiveness: {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 			}
 			else if (Spell.IsDebuff)
 			{
@@ -2125,7 +2125,7 @@ namespace DOL.GS.Spells
 				effectiveness *= GetDebuffEffectivenessCriticalModifier();
 
 				if (playerCaster != null && playerCaster.UseDetailedCombatLog && effectiveness != 1)
-					playerCaster.Out.SendMessage($"debuff effectiveness: {effectiveness:0.00}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerCaster.Out.SendMessage($"debuff effectiveness: {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 			}
 			else
 				effectiveness = 1.0; // Neither a potion, item, buff, or debuff.
@@ -2425,7 +2425,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="target">spell target</param>
 		/// <returns>chance that the spell lands on target</returns>
-		public virtual int CalculateToHitChance(GameLiving target)
+		public virtual double CalculateToHitChance(GameLiving target)
 		{
 			int spellLevel;
 
@@ -2459,26 +2459,22 @@ namespace DOL.GS.Spells
 			or duration is penalized. If the chance to hit goes below 0, you cannot hit at all. Once the spell hits, damage and duration are further modified
 			by resistances.
 
-			Note:  The last section about maintaining a chance to hit of 55% has been proven incorrect with live testing.  The code below is very close to live like.
-			- Tolakram
+			Note:  The last section about maintaining a chance to hit of 55% has been proven incorrect with live testing.
 			 */
 
-			int hitChance = 88 + (spellLevel - target.Level) / 2;
+			// 12.5% resist rate based on live tests done for Uthgard.
+			double hitChance = 87.5 + (spellLevel - target.Level) / 2.0;
 			hitChance += m_caster.GetModified(eProperty.ToHitBonus);
 
 			if (m_caster is not GamePlayer || target is not GamePlayer)
-			{
-				int mobScalar = m_caster.GetConLevel(target);
-				hitChance -= (int) (mobScalar * Properties.PVE_SPELL_CONHITPERCENT);
 				hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
-			}
 
 			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.PiercingMagic))
 			{
 				ECSGameEffect effect = m_caster.effectListComponent.GetSpellEffects().FirstOrDefault(e => e.EffectType == eEffect.PiercingMagic);
 
 				if (effect != null)
-					hitChance += (int)effect.SpellHandler.Spell.Value;
+					hitChance += effect.SpellHandler.Spell.Value;
 			}
 
 			// Check for active RAs.
@@ -2487,7 +2483,7 @@ namespace DOL.GS.Spells
 				ECSGameEffect effect = m_caster.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.MajesticWill);
 
 				if (effect != null)
-					hitChance += (int)effect.Effectiveness * 5;
+					hitChance += effect.Effectiveness * 5;
 			}
 
 			return hitChance;
@@ -2498,7 +2494,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="target">the target of the spell</param>
 		/// <returns>chance that spell will be resisted for specific target</returns>
-		public virtual int CalculateSpellResistChance(GameLiving target)
+		public virtual double CalculateSpellResistChance(GameLiving target)
 		{
 			if (HasPositiveEffect)
 				return 0;
@@ -2508,7 +2504,7 @@ namespace DOL.GS.Spells
 				if (Caster is GamePlayer playerCaster)
 				{
 					int itemSpellLevel = m_spellItem.Template.LevelRequirement > 0 ? m_spellItem.Template.LevelRequirement : Math.Min(playerCaster.MaxLevel, m_spellItem.Level);
-					return 100 - (85 + (itemSpellLevel - target.Level) / 2);
+					return 100 - (85 + (itemSpellLevel - target.Level) / 2.0);
 				}
 			}
 
@@ -2517,7 +2513,7 @@ namespace DOL.GS.Spells
 
 		protected virtual bool CheckSpellResist(GameLiving target)
 		{
-			int spellResistChance = CalculateSpellResistChance(target);
+			double spellResistChance = CalculateSpellResistChance(target);
 
 			if (spellResistChance > 0)
 			{
@@ -2531,10 +2527,10 @@ namespace DOL.GS.Spells
 				spellResistRoll *= 100;
 
 				if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog)
-					playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerCaster.Out.SendMessage($"Target chance to resist: {spellResistChance:0.##} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
 				if (target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
-					playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerTarget.Out.SendMessage($"Your chance to resist: {spellResistChance:0.##} RandomNumber: {spellResistRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
 				if (spellResistChance > spellResistRoll)
 				{
@@ -3180,7 +3176,7 @@ namespace DOL.GS.Spells
 		/// <param name="damage"></param>
 		/// <param name="hitChance"></param>
 		/// <returns></returns>
-		public virtual int AdjustDamageForHitChance(int damage, int hitChance)
+		public virtual int AdjustDamageForHitChance(int damage, double hitChance)
 		{
 			int adjustedDamage = damage;
 
@@ -3220,7 +3216,7 @@ namespace DOL.GS.Spells
 
 			// Live testing done Summer 2009 by Bluraven, Tolakram. Levels 40, 45, 50, 55, 60, 65, 70.
 			// Damage reduced by chance < 55, no extra damage increase noted with hitchance > 100.
-			int hitChance = CalculateToHitChance(ad.Target);
+			double hitChance = CalculateToHitChance(ad.Target);
 			finalDamage = AdjustDamageForHitChance(finalDamage, hitChance);
 
 			if (m_caster is GamePlayer || (m_caster is GameNPC && (m_caster as GameNPC).Brain is IControlledBrain && m_caster.Realm != 0))

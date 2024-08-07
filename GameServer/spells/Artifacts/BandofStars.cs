@@ -91,7 +91,7 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("StarsProc2")]
     public class StarsProc2 : SpellHandler
     {
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
         }

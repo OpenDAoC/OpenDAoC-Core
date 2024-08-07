@@ -240,7 +240,7 @@ namespace DOL.GS.Spells
     {
         // constructor
         public Spymaster6DotHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
-        public override int CalculateSpellResistChance(GameLiving target) { return 0; }
+        public override double CalculateSpellResistChance(GameLiving target) { return 0; }
         protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)
         {
             return new GameSpellEffect(this, m_spell.Duration, m_spellLine.IsBaseLine ? 5000 : 4000, effectiveness);

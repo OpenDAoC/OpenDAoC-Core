@@ -829,12 +829,6 @@ namespace DOL.GS.ServerProperties
 		public static double PVE_SPELL_DAMAGE = 1.0;
 
 		/// <summary>
-		/// The percent per con difference (-1 = blue, 0 = yellow, 1 = OJ, 2 = red ...) subtracted to hitchance for spells in PVE.  0 is none, 5 is 5% per con, etc.  Default is 10%
-		/// </summary>
-		[ServerProperty("rates", "pve_spell_conhitpercent", "The percent per con (1 = OJ, 2 = red ...) subtracted to hitchance for spells in PVE  Must be >= 0.  0 is none, 5 is 5% per level, etc.  Default is 10%", (uint)10)]
-		public static uint PVE_SPELL_CONHITPERCENT;
-
-		/// <summary>
 		/// The damage players do against players with melee
 		/// </summary>
 		[ServerProperty("rates", "pvp_melee_damage", "The PvP Melee Damage Modifier - Edit this to change the amount of melee damage done when fighting players e.g 1.5 is 50% more damage 2.0 is twice the damage (100%) 0.5 is half the damage (50%)", 1.0)]

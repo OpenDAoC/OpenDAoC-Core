@@ -42,12 +42,13 @@ namespace DOL.GS.Spells
 			}
 			base.ApplyEffectOnTarget(target);
         }
+
         /// <summary>
         /// Calculates chance of spell getting resisted
         /// </summary>
         /// <param name="target">the target of the spell</param>
         /// <returns>chance that spell will be resisted for specific target</returns>
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             //Bonedancer rr5
             if (target.EffectList.GetOfType<AllureofDeathEffect>() != null)
@@ -55,8 +56,8 @@ namespace DOL.GS.Spells
                 return AllureofDeathEffect.nschance;
             }
             return base.CalculateSpellResistChance(target);
-
         }
+
 		/// <summary>
 		/// When an applied effect starts
 		/// duration spells only

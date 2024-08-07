@@ -133,7 +133,7 @@ namespace DOL.GS.Spells
 				if (target == null || !target.IsAlive || target.ObjectState != GameObject.eObjectState.Active || target.CurrentRegionID != caster.CurrentRegionID)
 					return 0;
 
-				int missrate = 100 - m_handler.CalculateToHitChance(target);
+				double missrate = 100 - m_handler.CalculateToHitChance(target);
 				// add defence bonus from last executed style if any
 				AttackData targetAD = target.attackComponent.attackAction.LastAttackData;
 				if (targetAD != null
@@ -151,7 +151,7 @@ namespace DOL.GS.Spells
 					return 0;
 				}
 
-				if (Util.Chance(missrate))
+				if (Util.ChanceDouble(missrate))
 				{
 					ad.AttackResult = eAttackResult.Missed;
 					m_handler.MessageToCaster("You miss!", eChatType.CT_YouHit);
@@ -183,7 +183,6 @@ namespace DOL.GS.Spells
 							double shield = 0.5 * player.GetModifiedSpecLevel(Specs.Shields);
 							double blockchance = ((player.Dexterity * 2) - 100) / 40.0 + shield + (0 * 3) + 5;
 							blockchance += 30;
-							blockchance -= target.GetConLevel(caster) * 5;
 							if (blockchance >= 100) blockchance = 99;
 							if (blockchance <= 0) blockchance = 1;
 

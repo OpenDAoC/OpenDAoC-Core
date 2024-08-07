@@ -162,7 +162,7 @@ namespace DOL.GS.Spells
             effectiveness *= criticalModifier;
 
             if (this.Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && effectiveness != 1)
-                spellCaster.Out.SendMessage($"heal effectiveness: {effectiveness:0.00}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                spellCaster.Out.SendMessage($"heal effectiveness: {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
             amount *= effectiveness;
 

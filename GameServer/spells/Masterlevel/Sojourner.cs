@@ -302,7 +302,7 @@ namespace DOL.GS.Spells
             return new Point3D((int)targetX, (int)targetY, m_npc.Z);
         }
 
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
         }
@@ -370,7 +370,7 @@ namespace DOL.GS.Spells
             }
         }
 
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
         }

@@ -68,30 +68,25 @@ namespace DOL.GS.Spells
 			MessageToCaster("You prepare a " + Spell.Name, eChatType.CT_YouHit);
 		}
 
-
-		public override int CalculateToHitChance(GameLiving target)
+		public override double CalculateToHitChance(GameLiving target)
 		{
-			int bonustohit = Caster.GetModified(eProperty.ToHitBonus);
-
 			// miss rate is 0 on same level opponent
-			int hitchance = 100 + bonustohit;
+			double hitChance = 100 + Caster.GetModified(eProperty.ToHitBonus);
 
 			if (Caster is not GamePlayer || target is not GamePlayer)
 			{
-				hitchance -= (int)(Caster.GetConLevel(target) * ServerProperties.Properties.PVE_SPELL_CONHITPERCENT);
-				hitchance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+				// 1.33 per level difference.
+				hitChance += (Caster.EffectiveLevel - target.EffectiveLevel) * (1 + 1 / 3.0);
+				hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
 			}
 
-			return hitchance;
+			return hitChance;
 		}
 
 		/// <summary>
 		/// Adjust damage based on chance to hit.
 		/// </summary>
-		/// <param name="damage"></param>
-		/// <param name="hitChance"></param>
-		/// <returns></returns>
-		public override int AdjustDamageForHitChance(int damage, int hitChance)
+		public override int AdjustDamageForHitChance(int damage, double hitChance)
 		{
 			int adjustedDamage = damage;
 
@@ -102,7 +97,6 @@ namespace DOL.GS.Spells
 
 			return adjustedDamage;
 		}
-
 
 		/// <summary>
 		/// Level mod for effect between target and caster if there is any
@@ -330,9 +324,7 @@ namespace DOL.GS.Spells
 
 			if (IsInCastingPhase)
 			{
-				int mod = Caster.GetConLevel(attacker);
 				double chance = 65;
-				chance += mod * 10;
 				chance = Math.Max(1, chance);
 				chance = Math.Min(99, chance);
 				if (attacker is GamePlayer) chance = 100;

@@ -94,7 +94,7 @@ namespace DOL.GS.Spells
             }
         }
 
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 25;
         }
@@ -115,10 +115,12 @@ namespace DOL.GS.Spells
             m_caster.Mana -= PowerCost(target);
             base.FinishSpellCast(target);
         }
-        public override int CalculateSpellResistChance(GameLiving target)
+
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
         }
+
         public override void OnEffectStart(GameSpellEffect effect)
         {
             base.OnEffectStart(effect);
@@ -169,7 +171,7 @@ namespace DOL.GS.Spells
             base.OnEffectStart(effect);
         }
 
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
         }
@@ -207,7 +209,7 @@ namespace DOL.GS.Spells
             return duration;
         }
 
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
         }
@@ -308,7 +310,7 @@ namespace DOL.GS.Spells
             return base.IsOverwritable(compare);
         }
 
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
         }

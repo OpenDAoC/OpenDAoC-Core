@@ -49,16 +49,16 @@ namespace DOL.GS.Spells
         /// </summary>
         /// <param name="target">the target of the spell</param>
         /// <returns>chance that spell will be resisted for specific target</returns>
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
-            int basechance =  base.CalculateSpellResistChance(target);
+            double chance =  base.CalculateSpellResistChance(target);
 
             /* GameSpellEffect rampage = SpellHandler.FindEffectOnTarget(target, "Rampage");
 
             if (rampage != null)
-                basechance += (int)rampage.Spell.Value;*/
+                chance += (int)rampage.Spell.Value;*/
 
-            return Math.Min(100, basechance);
+            return Math.Min(100, chance);
         }
     }
 

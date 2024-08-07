@@ -85,12 +85,12 @@ namespace DOL.GS.Spells
             return damage;
         }
 
-        public override int CalculateToHitChance(GameLiving target)
+        public override double CalculateToHitChance(GameLiving target)
         {
             if (target is GameKeepDoor)
                 return 0;
 
-            int hitChance = base.CalculateToHitChance(target);
+            double hitChance = base.CalculateToHitChance(target);
 
             if (Caster is GamePlayer && target is GamePlayer && target.InCombat)
             {

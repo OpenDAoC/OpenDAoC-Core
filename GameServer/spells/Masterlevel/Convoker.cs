@@ -212,10 +212,11 @@ namespace DOL.GS.Spells
 	[SpellHandlerAttribute("SpeedWrap")]
 	public class SpeedWrapSpellHandler : SpellHandler
 	{
-		public override int CalculateSpellResistChance(GameLiving target)
+		public override double CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;
 		}
+
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
 			base.OnEffectStart(effect);
@@ -725,7 +726,7 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 
-		public override int CalculateSpellResistChance(GameLiving target)
+		public override double CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;
 		}

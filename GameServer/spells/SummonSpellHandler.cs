@@ -164,7 +164,7 @@ namespace DOL.GS.Spells
 			Caster.OnPetSummoned(m_pet);
 		}
 
-		public override int CalculateSpellResistChance(GameLiving target)
+		public override double CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;
 		}

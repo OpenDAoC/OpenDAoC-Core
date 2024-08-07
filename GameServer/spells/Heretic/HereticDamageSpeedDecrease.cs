@@ -163,7 +163,7 @@ namespace DOL.GS.Spells
         {
             if (target == null) return;
             if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
-            if (Util.Chance(CalculateSpellResistChance(target)))
+            if (Util.ChanceDouble(CalculateSpellResistChance(target)))
             {
                 OnSpellResist(target);
                 return;

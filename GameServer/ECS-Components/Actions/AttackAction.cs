@@ -278,15 +278,9 @@ namespace DOL.GS
             {
                 case eRangedAttackType.Critical:
                 {
-                    double tmpEffectiveness = 2 - 0.3 * _owner.GetConLevel(_target);
-
-                    if (tmpEffectiveness > 2)
-                        _effectiveness *= 2;
-                    else if (tmpEffectiveness < 1.1)
-                        _effectiveness *= 1.1;
-                    else
-                        _effectiveness *= tmpEffectiveness;
-
+                    // Reduced effectiveness against higher level targets.
+                    double levelModifier = 2 + (_owner.EffectiveLevel - _target.EffectiveLevel) * 0.075;
+                    _effectiveness *= Math.Clamp(levelModifier, 1.1, 2.0);
                     break;
                 }
 
@@ -314,7 +308,7 @@ namespace DOL.GS
                     if (elapsedTime < rapidFireMaxDuration)
                     {
                         _effectiveness *= 0.25 + elapsedTime * 0.5 / rapidFireMaxDuration;
-                        _attackInteval = (int)(_attackInteval * _effectiveness);
+                        _attackInteval = (int) (_attackInteval * _effectiveness);
                     }
 
                     break;

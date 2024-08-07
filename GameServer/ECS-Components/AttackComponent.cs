@@ -1290,12 +1290,12 @@ namespace DOL.GS
                 static void PrintDetailedCombatLog(GamePlayer player, double armorFactor, double absorb, double armorMod, double baseWeaponSkill, double specModifier, double weaponSkill, double damageMod, double baseDamageCap, double styleDamageCap)
                 {
                     StringBuilder stringBuilder = new();
-                    stringBuilder.Append($"BaseWS: {baseWeaponSkill:0.00} | SpecMod: {specModifier:0.00} | WS: {weaponSkill:0.00}\n");
-                    stringBuilder.Append($"AF: {armorFactor:0.00} | ABS: {absorb * 100:0.00}% | AF/ABS: {armorMod:0.00}\n");
-                    stringBuilder.Append($"DamageMod: {damageMod:0.00} | BaseDamageCap: {baseDamageCap:0.00}");
+                    stringBuilder.Append($"BaseWS: {baseWeaponSkill:0.##} | SpecMod: {specModifier:0.##} | WS: {weaponSkill:0.##}\n");
+                    stringBuilder.Append($"AF: {armorFactor:0.##} | ABS: {absorb * 100:0.##}% | AF/ABS: {armorMod:0.##}\n");
+                    stringBuilder.Append($"DamageMod: {damageMod:0.##} | BaseDamageCap: {baseDamageCap:0.##}");
 
                     if (styleDamageCap > 0)
-                        stringBuilder.Append($" | StyleDamageCap: {styleDamageCap:0.00}");
+                        stringBuilder.Append($" | StyleDamageCap: {styleDamageCap:0.##}");
 
                     player.Out.SendMessage(stringBuilder.ToString(), eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
@@ -1667,7 +1667,7 @@ namespace DOL.GS
                 // Also prevents negative values.
                 spec = Math.Max(owner.Level < 5 ? 2 : 1, spec);
                 lowerLimit = Math.Min(0.75 * (spec - 1) / (target.Level + 1) + 0.25, 1.0);
-                upperLimit = Math.Min(Math.Max(1.25 + (3.0 * (spec - 1) / (target.Level + 1) - 2) * 0.25, 1.25), 1.50);
+                upperLimit = Math.Min(Math.Max(1.25 + (3.0 * (spec - 1) / (target.Level + 1) - 2) * 0.25, 1.25), 1.5);
             }
             else
             {
@@ -2119,7 +2119,7 @@ namespace DOL.GS
             //     return result;
 
             // Miss chance.
-            int missChance = GetMissChance(action, ad, lastAttackData, attackerWeapon);
+            double missChance = GetMissChance(action, ad, lastAttackData, attackerWeapon);
 
             // Check for dirty trick fumbles before misses.
             DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, eEffect.DirtyTricksDetrimental);
@@ -2140,14 +2140,14 @@ namespace DOL.GS
 
                 if (ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog)
                 {
-                    misser.Out.SendMessage($"miss rate on target: {missChance}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    misser.Out.SendMessage($"miss rate on target: {missChance:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                     if (ad.AttackType != AttackData.eAttackType.Ranged)
                         misser.Out.SendMessage($"Your chance to fumble: {100 * ad.Attacker.ChanceToFumble:0.##}% rand: {100 * missRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
                 if (ad.Target is GamePlayer missee && missee.UseDetailedCombatLog)
-                    missee.Out.SendMessage($"chance to be missed: {missChance}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    missee.Out.SendMessage($"chance to be missed: {missChance:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                 if (missChance > missRoll * 100)
                 {
@@ -2314,7 +2314,7 @@ namespace DOL.GS
                         case eAttackResult.Missed:
                             string message;
                             if (ad.MissChance > 0)
-                                message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Miss") + $" ({ad.MissChance}%)";
+                                message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Miss") + $" ({ad.MissChance:0.##}%)";
                             else
                                 message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.StrafMiss");
                             p.Out.SendMessage(message, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
@@ -2439,7 +2439,7 @@ namespace DOL.GS
                         case eAttackResult.Missed:
                             string message;
                             if (ad.MissChance > 0)
-                                message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Miss") + $" ({ad.MissChance}%)";
+                                message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.Miss") + $" ({ad.MissChance:0.##}%)";
                             else
                                 message = LanguageMgr.GetTranslation(p.Client.Account.Language, "GamePlayer.Attack.StrafMiss");
                             p.Out.SendMessage(message, eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
@@ -2574,28 +2574,29 @@ namespace DOL.GS
             }
         }
 
-        public int GetMissChance(WeaponAction action, AttackData ad, AttackData lastAD, DbInventoryItem weapon)
+        public double GetMissChance(WeaponAction action, AttackData ad, AttackData lastAD, DbInventoryItem weapon)
         {
             // No miss if the target is sitting or for Volley attacks.
-            if ((owner is GamePlayer player && player.IsSitting) || action.RangedAttackType == eRangedAttackType.Volley)
+            if ((owner is GamePlayer player && player.IsSitting) || action.RangedAttackType is eRangedAttackType.Volley)
                return 0;
 
             // In 1.117C, every weapon was given the intrinsic 5% flat bonus special weapons (such as artifacts) had, lowering the base miss rate to 13%.
-            int missChance = 18;
+            double missChance = 18;
             missChance -= ad.Attacker.GetModified(eProperty.ToHitBonus);
 
             if (owner is not GamePlayer || ad.Attacker is not GamePlayer)
             {
-                missChance += 5 * ad.Attacker.GetConLevel(owner);
+                // 1.33 per level difference.
+                missChance -= (ad.Attacker.EffectiveLevel - owner.EffectiveLevel) * (1 + 1 / 3.0);
                 missChance -= Math.Max(0, Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
             }
 
             // Weapon and armor bonuses.
             int armorBonus = 0;
 
-            if (ad.Target is GamePlayer p)
+            if (ad.Target is GamePlayer playerTarget)
             {
-                ad.ArmorHitLocation = ((GamePlayer) ad.Target).CalculateArmorHitLocation(ad);
+                ad.ArmorHitLocation = playerTarget.CalculateArmorHitLocation(ad);
 
                 if (ad.Target.Inventory != null)
                 {
@@ -2605,7 +2606,7 @@ namespace DOL.GS
                         armorBonus = armor.Bonus;
                 }
 
-                int bonusCap = GetBonusCapForLevel(p.Level);
+                int bonusCap = GetBonusCapForLevel(playerTarget.Level);
 
                 if (armorBonus > bonusCap)
                     armorBonus = bonusCap;
@@ -2631,10 +2632,10 @@ namespace DOL.GS
             if (ad.Style != null)
                 missChance -= ad.Style.BonusToHit;
 
-            if (lastAD != null && lastAD.AttackResult == eAttackResult.HitStyle && lastAD.Style != null)
+            if (lastAD != null && lastAD.AttackResult is eAttackResult.HitStyle && lastAD.Style != null)
                 missChance += lastAD.Style.BonusToDefense;
 
-            if (action.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            if (action.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
             {
                 DbInventoryItem ammo = ad.Attacker.rangeAttackComponent.Ammo;
 
@@ -2644,16 +2645,15 @@ namespace DOL.GS
                     {
                         // http://rothwellhome.org/guides/archery.htm
                         case 0:
-                            missChance += (int) Math.Round(missChance * 0.15);
+                            missChance += missChance * 0.15;
                             break; // Rough
                         //case 1:
-                        //  missrate -= 0;
                         //  break;
                         case 2:
-                            missChance -= (int) Math.Round(missChance * 0.15);
-                            break; // doesn't exist (?)
+                            missChance -= missChance * 0.15;
+                            break; // Doesn't exist (?)
                         case 3:
-                            missChance -= (int) Math.Round(missChance * 0.25);
+                            missChance -= missChance * 0.25;
                             break; // Footed
                     }
                 }
@@ -2728,7 +2728,7 @@ namespace DOL.GS
                 double offhandChance = 25 + (specLevel - 1) * 68 * 0.01 + bonus;
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                    playerOwner.Out.SendMessage($"OH swing%: {offhandChance:0.00} ({bonus}% from RAs) \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage($"OH swing%: {offhandChance:0.##} ({bonus}% from RAs) \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                 return random < offhandChance ? 1 : 0;
             }
@@ -2747,7 +2747,7 @@ namespace DOL.GS
                 double quadHitChance = tripleHitChance + specLevel * 0.0625 + bonus * 0.25; // specLevel >> 4
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                    playerOwner.Out.SendMessage( $"Chance for 2 hits: {doubleHitChance:0.00}% | 3 hits: { (specLevel > 25 ? tripleHitChance-doubleHitChance : 0):0.00}% | 4 hits: {(specLevel > 40 ? quadHitChance-tripleHitChance : 0):0.00}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage( $"Chance for 2 hits: {doubleHitChance:0.##}% | 3 hits: { (specLevel > 25 ? tripleHitChance-doubleHitChance : 0):0.##}% | 4 hits: {(specLevel > 40 ? quadHitChance-tripleHitChance : 0):0.##}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                 if (random < doubleHitChance)
                     return 1;

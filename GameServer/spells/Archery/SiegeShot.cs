@@ -51,12 +51,9 @@ namespace DOL.GS.Spells
 			return ad;
 		}
 
-		public override int CalculateToHitChance(GameLiving target)
+		public override double CalculateToHitChance(GameLiving target)
 		{
-			if ((target is GameKeepComponent || target is Keeps.GameKeepDoor))
-				return 100;
-
-			return 0;
+			return target is GameKeepComponent or GameKeepDoor ? 100 : 0;
 		}
 
 		public override int PowerCost(GameLiving target) { return 0; }

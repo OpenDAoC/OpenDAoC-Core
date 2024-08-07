@@ -88,7 +88,7 @@ namespace DOL.GS.spells
 			}
 		}
 
-		public override int CalculateSpellResistChance(GameLiving target) => 100 - CalculateToHitChance(target);
+		public override double CalculateSpellResistChance(GameLiving target) => 100 - CalculateToHitChance(target);
 
 		private double GetVariance()
 		{

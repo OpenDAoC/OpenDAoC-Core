@@ -115,7 +115,7 @@ namespace DOL.GS.Spells
             return Spell.Duration;
         }
 
-        public override int CalculateSpellResistChance(GameLiving target)
+        public override double CalculateSpellResistChance(GameLiving target)
         {
             return 0;
         }
@@ -329,11 +329,11 @@ namespace DOL.GS.Spells
 
             return base.CheckBeginCast(selectedTarget);
 		}
-		
+
         //Throw Weapon does not "resist"
-		public override int CalculateSpellResistChance(GameLiving target) 
-        { 
-            return 0; 
+		public override double CalculateSpellResistChance(GameLiving target)
+        {
+            return 0;
         }
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
@@ -665,7 +665,7 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("EssenceSearHandler")]
     public class EssenceSearHandler : SpellHandler
     {
-        public override int CalculateSpellResistChance(GameLiving target) { return 0; }
+        public override double CalculateSpellResistChance(GameLiving target) { return 0; }
 
         public override void OnEffectStart(GameSpellEffect effect)
         {
@@ -756,7 +756,7 @@ namespace DOL.GS.Spells
     {
         protected int DexDebuff = 0;
         protected int QuiDebuff = 0;
-        public override int CalculateSpellResistChance(GameLiving target) { return 0; }
+        public override double CalculateSpellResistChance(GameLiving target) { return 0; }
 
         public override void OnEffectStart(GameSpellEffect effect)
         {

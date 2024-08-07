@@ -50,7 +50,7 @@ namespace DOL.GS.Spells
     [SpellHandlerAttribute("UnresistableStun")]
 	public class UnresistableStunSpellHandler : StunSpellHandler
 	{
-		public override int CalculateSpellResistChance(GameLiving target)
+		public override double CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;
 		}

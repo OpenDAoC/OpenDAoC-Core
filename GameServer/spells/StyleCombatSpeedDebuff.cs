@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
 	[SpellHandler("StyleCombatSpeedDebuff")]
 	public class StyleCombatSpeedDebuff : CombatSpeedDebuff
 	{
-		public override int CalculateSpellResistChance(GameLiving target)
+		public override double CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;
 		}

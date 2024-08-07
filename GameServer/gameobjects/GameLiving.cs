@@ -956,7 +956,8 @@ namespace DOL.GS
 				return;
 			}
 
-			if (!Util.Chance(100 + GetConLevel(attacker) * 15))
+			// 3% reduced interrupt chance per level difference.
+			if (!Util.Chance(100 + (attacker.EffectiveLevel - EffectiveLevel) * 3))
 				return;
 
 			// Don't replace the current interrupt with a shorter one.
