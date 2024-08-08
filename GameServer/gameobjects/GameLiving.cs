@@ -1222,7 +1222,7 @@ namespace DOL.GS
 					evadeChance += 15 * 0.01;
 
 				// Reduce chance by attacker's defense penetration.
-				evadeChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100;
+				evadeChance *= 1 - ad.DefensePenetration;
 
 				if (ad.AttackType == eAttackType.Ranged)
 					evadeChance /= 5.0;
@@ -1313,7 +1313,7 @@ namespace DOL.GS
 						parryChance += 25 * 0.01;
 
 					// Reduce chance by attacker's defense penetration.
-					parryChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100;
+					parryChance *= 1 - ad.DefensePenetration;
 
 					if (parryChance > Properties.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 						parryChance = Properties.PARRY_CAP;
@@ -1384,7 +1384,7 @@ namespace DOL.GS
 			if (blockChance > 0)
 			{
 				blockChance *= 0.001;
-				blockChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100; // Reduce chance by attacker's defense penetration.
+				blockChance *= 1 - ad.DefensePenetration;
 
 				if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 					blockChance = Properties.BLOCK_CAP;

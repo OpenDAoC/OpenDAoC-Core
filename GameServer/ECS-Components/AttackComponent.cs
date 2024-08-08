@@ -1642,7 +1642,7 @@ namespace DOL.GS
         {
             int levelDifference = (owner is GamePlayer ? owner.WeaponSpecLevel(ad.Weapon) : owner.Level) - ad.Target.Level;
             double specModifier = 1 + levelDifference * 0.01;
-            return CalculateWeaponSkill(ad.Weapon, specModifier, out _) * 0.08;
+            return CalculateWeaponSkill(ad.Weapon, specModifier, out _) * 0.08 / 100;
         }
 
         public double CalculateSpecModifier(GameLiving target, int spec)
@@ -1803,7 +1803,7 @@ namespace DOL.GS
 
                 guardChance *= 0.001;
                 guardChance += source.GetAbilityLevel(Abilities.Guard) * 0.05; // 5% additional chance to guard with each Guard level.
-                guardChance *= 1 - ad.Attacker.attackComponent.CalculateDefensePenetration(ad) / 100; // Reduce chance by attacker's defense penetration.
+                guardChance *= 1 - ad.DefensePenetration;
 
                 if (guardChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
                     guardChance = Properties.BLOCK_CAP;
@@ -2059,9 +2059,10 @@ namespace DOL.GS
 
             if (!defenseDisabled)
             {
-                if (lastAttackData != null && lastAttackData.AttackResult != eAttackResult.HitStyle)
+                if (lastAttackData != null && lastAttackData.AttackResult is not eAttackResult.HitStyle)
                     lastAttackData = null;
 
+                ad.DefensePenetration = ad.Attacker.attackComponent.CalculateDefensePenetration(ad);
                 double evadeChance = owner.TryEvade(ad, lastAttackData, Attackers.Count);
                 ad.EvadeChance = evadeChance * 100;
                 double evadeRoll;

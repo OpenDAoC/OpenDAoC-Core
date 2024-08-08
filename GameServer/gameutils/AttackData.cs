@@ -26,6 +26,7 @@ namespace DOL.GS
         public double EvadeChance { get; set; }
         public double BlockChance { get; set; }
         public double MissChance { get; set; }
+        public double DefensePenetration { get; set; }
         public eArmorSlot ArmorHitLocation { get; set; } = eArmorSlot.NOTSET;
         public ISpellHandler SpellHandler { get; set; }
         public bool IsSpellResisted { get; set; }
