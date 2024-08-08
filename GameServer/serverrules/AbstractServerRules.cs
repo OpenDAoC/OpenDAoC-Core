@@ -1463,7 +1463,7 @@ namespace DOL.GS.ServerRules
 				long groupBonus = 0;
 
 				if (player.Group != null && plrGrpExp.ContainsKey(player.Group))
-					groupBonus = (long) (0.125 * baseXpReward * GetUniqueClassCount(player.Group));
+					groupBonus = (long) (0.125 * baseXpReward * player.Group.MemberCount);
 
 				return groupBonus;
 			}
@@ -1537,16 +1537,6 @@ namespace DOL.GS.ServerRules
 				}
 			}
 		}
-
-		private int GetUniqueClassCount(Group group)
-        {
-			HashSet<eCharacterClass> groupClasses = new HashSet<eCharacterClass>();
-            foreach (var player in group.GetPlayersInTheGroup().ToList())
-            {
-				groupClasses.Add((eCharacterClass)player.CharacterClass.ID);
-            }
-			return groupClasses.Count;
-        }
 
 		/// <summary>
 		/// Called on living death that is not gameplayer or gamenpc
