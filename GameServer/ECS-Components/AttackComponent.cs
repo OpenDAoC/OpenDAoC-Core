@@ -2057,12 +2057,13 @@ namespace DOL.GS
                 intercept = null;
             }
 
+            ad.DefensePenetration = ad.Attacker.attackComponent.CalculateDefensePenetration(ad);
+
             if (!defenseDisabled)
             {
                 if (lastAttackData != null && lastAttackData.AttackResult is not eAttackResult.HitStyle)
                     lastAttackData = null;
 
-                ad.DefensePenetration = ad.Attacker.attackComponent.CalculateDefensePenetration(ad);
                 double evadeChance = owner.TryEvade(ad, lastAttackData, Attackers.Count);
                 ad.EvadeChance = evadeChance * 100;
                 double evadeRoll;
