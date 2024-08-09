@@ -14,7 +14,7 @@ namespace DOL.GS
         public short CurrentSpeed { get; set; }
         public short MaxSpeedBase { get; set; } // Currently unused for players.
         public virtual short MaxSpeed => (short) Owner.GetModified(eProperty.MaxSpeed);
-        public bool IsMoving => CurrentSpeed > 0;
+        public bool IsMoving => CurrentSpeed != 0;
         public bool IsTurningDisabled => Interlocked.CompareExchange(ref _turningDisabledCount, 0, 0) > 0 && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound);
 
         protected MovementComponent(GameLiving owner)
