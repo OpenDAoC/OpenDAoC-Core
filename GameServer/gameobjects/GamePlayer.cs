@@ -9743,7 +9743,18 @@ namespace DOL.GS
             }
         }
 
-        public override bool IsStrafing => (StateFlags & PlayerPositionUpdateHandler.StateFlags.STRAFING_ANY) != 0;
+        protected bool m_strafing;
+        public override bool IsStrafing
+        {
+            get => m_strafing;
+            set
+            {
+                m_strafing = value;
+
+                if (value)
+                    OnPlayerMove();
+            }
+        }
 
         public virtual void OnPlayerMove()
         {
