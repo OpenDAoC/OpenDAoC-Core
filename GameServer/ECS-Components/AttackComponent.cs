@@ -174,10 +174,13 @@ namespace DOL.GS
                 return eDamageType.Natural;
         }
 
-        /// <summary>
-        /// Gets the attack-state of this living
-        /// </summary>
-        public virtual bool AttackState { get; set; }
+        private bool _attackState;
+
+        public virtual bool AttackState
+        {
+            get => _attackState || StartAttackRequested;
+            set => _attackState = value;
+        }
 
         /// <summary>
         /// Gets which weapon was used for the last dual wield attack
@@ -820,6 +823,8 @@ namespace DOL.GS
 
         public void StopAttack()
         {
+            StartAttackRequested = false;
+
             if (owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
             {
                 // Only cancel the animation if the ranged ammo isn't released already.
