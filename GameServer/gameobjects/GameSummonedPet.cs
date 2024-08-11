@@ -332,28 +332,6 @@ namespace DOL.GS
 		}
 		#endregion
 
-		#region Melee
-
-		/// <summary>
-		/// Calculate how fast this pet can cast a given spell
-		/// </summary>
-		/// <param name="spell"></param>
-		/// <returns></returns>
-		public override int CalculateCastingTime(SpellLine line, Spell spell)
-		{
-			int ticks = spell.CastTime;
-
-			double percent = DexterityCastTimeReduction;
-			percent -= GetModified(eProperty.CastingSpeed) * .01;
-
-			ticks = (int)(ticks * Math.Max(CastingSpeedReductionCap, percent));
-			if (ticks < MinimumCastingSpeed)
-				ticks = MinimumCastingSpeed;
-
-			return ticks;
-		}
-		#endregion
-
 		public override void Die(GameObject killer)
 		{
 			try

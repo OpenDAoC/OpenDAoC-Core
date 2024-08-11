@@ -391,22 +391,6 @@ namespace DOL.GS
 			return attackComponent.AttackSpeed(mainWeapon, leftWeapon);
         }
 
-        /// <summary>
-        /// Minimum reduction possible to spell casting speed (CastTime * CastingSpeedCap)
-        /// </summary>
-        public virtual double CastingSpeedReductionCap
-		{
-			get { return 0.4; }
-		}
-
-		/// <summary>
-		/// Minimum casting speed allowed, in ticks (milliseconds)
-		/// </summary>
-		public virtual int MinimumCastingSpeed
-		{
-			get { return 500; }
-		}
-
 		/// <summary>
 		/// Can this living cast while attacking?
 		/// </summary>
@@ -415,50 +399,45 @@ namespace DOL.GS
 			return false;
 		}
 
-		/// <summary>
-		/// Calculate how fast this living can cast a given spell
-		/// </summary>
-		public virtual int CalculateCastingTime(SpellLine line, Spell spell)
-		{
-			int ticks = spell.CastTime;
+        public virtual int CalculateCastingTime(SpellLine line, Spell spell)
+        {
+            if (spell.InstrumentRequirement != 0 ||
+                line.KeyName is GlobalSpellsLines.Item_Spells ||
+                line.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
+            {
+                return spell.CastTime;
+            }
 
-			if (spell.InstrumentRequirement != 0 ||
-			    line.KeyName == GlobalSpellsLines.Item_Spells ||
-			    line.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
-			{
-				return ticks;
-			}
+            if (EffectListService.GetAbilityEffectOnTarget(this, eEffect.QuickCast) != null)
+            {
+                // Most casters have access to the Quickcast ability (or the Necromancer equivalent, Facilitate Painworking).
+                // This ability will allow you to cast a spell without interruption.
+                // http://support.darkageofcamelot.com/kb/article.php?id=022
 
+                // A: You're right. The answer I should have given was that Quick Cast reduces the time needed to cast to a flat two seconds,
+                // and that a spell that has been quick casted cannot be interrupted. ...
+                // http://www.camelotherald.com/news/news_article.php?storyid=1383
 
-			double percent = DexterityCastTimeReduction;
+                return 2000;
+            }
 
-			ticks = (int)(ticks * Math.Max(CastingSpeedReductionCap, percent));
-			if (ticks < MinimumCastingSpeed)
-				ticks = MinimumCastingSpeed;
+            // Q: Would you please give more detail as to how dex affects a caster?
+            // For instance, I understand that when I have my dex maxed I will cast 25% faster.
+            // How does this work incrementally? And will a lurikeen be able to cast faster in the end than another race?
+            // A: From a dex of 50 to a dex of 250, the formula lets you cast 1% faster for each ten points.
+            // From a dex of 250 to the maximum possible (which as you know depends on your starting total),
+            // your speed increases 1% for every twenty points.
 
-			return ticks;
-		}
+            // The grab bag was proven to be wrong. We're using Phoenix's formula.
+            // https://playphoenix.online/forum/bug-tracker/resolved-issues/casting-speed-formula-is-wrong-01CHWTCXSGYS4TZ96DEF7FM55F#p01CHWTCXSGX4057FQ9VF0DSM6K
+            // https://docs.google.com/spreadsheets/d/1BFbHYz_smxP8KPGoytb4SqQnEOoPqUc8SIKmSqQF4BI
 
-		/// <summary>
-		/// The casting time reduction based on dexterity bonus.
-		/// http://daoc.nisrv.com/modules.php?name=DD_DMG_Calculator
-		/// Q: Would you please give more detail as to how dex affects a caster?
-		/// For instance, I understand that when I have my dex maxed I will cast 25% faster.
-		/// How does this work incrementally? And will a lurikeen be able to cast faster in the end than another race?
-		/// A: From a dex of 50 to a dex of 250, the formula lets you cast 1% faster for each ten points.
-		/// From a dex of 250 to the maximum possible (which as you know depends on your starting total),
-		/// your speed increases 1% for every twenty points.
-		/// </summary>
-		public virtual double DexterityCastTimeReduction
-		{
-			get
-			{
-				int dex = GetModified(eProperty.Dexterity);
-				if (dex < 60) return 1.0;
-				else if (dex < 250) return 1.0 - (dex - 60) * 0.15 * 0.01;
-				else return 1.0 - ((dex - 60) * 0.15 + (dex - 250) * 0.05) * 0.01;
-			}
-		}
+            double castTime = spell.CastTime;
+            double dexterityModifier = 1 - (GetModified(eProperty.Dexterity) - 60) / 600.0;
+            double bonusModifier = 1 - GetModified(eProperty.CastingSpeed) * 0.01;
+            castTime *= dexterityModifier * bonusModifier;
+            return (int) Math.Max(castTime, spell.CastTime * 0.4); // Capped at 40% of the delve speed.
+        }
 
         public virtual int MeleeAttackRange => 200;
 

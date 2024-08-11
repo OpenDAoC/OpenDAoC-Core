@@ -7241,54 +7241,20 @@ namespace DOL.GS
             return casted;
         }
 
-        /// <summary>
-        /// Calculate how fast this player can cast a given spell
-        /// </summary>
-        /// <param name="spell"></param>
-        /// <returns></returns>
         public override int CalculateCastingTime(SpellLine line, Spell spell)
         {
-            int ticks = spell.CastTime;
+            int castTime;
 
-            if (spell.InstrumentRequirement != 0 ||
-                line.KeyName == GlobalSpellsLines.Item_Spells ||
-                line.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
-            {
-                return ticks;
-            }
+            if (!CharacterClass.CanChangeCastingSpeed(line, spell))
+                castTime = spell.CastTime;
+            else
+                castTime = base.CalculateCastingTime(line, spell);
 
-            if (CharacterClass.CanChangeCastingSpeed(line, spell) == false)
-                return ticks;
+            if (UseDetailedCombatLog)
+                Out.SendMessage($"Casting Speed: {castTime * 0.001:0.##}s", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-            if (EffectListService.GetAbilityEffectOnTarget(this, eEffect.QuickCast) != null)
-            {
-                // Most casters have access to the Quickcast ability (or the Necromancer equivalent, Facilitate Painworking).
-                // This ability will allow you to cast a spell without interruption.
-                // http://support.darkageofcamelot.com/kb/article.php?id=022
-
-                // A: You're right. The answer I should have given was that Quick Cast reduces the time needed to cast to a flat two seconds,
-                // and that a spell that has been quick casted cannot be interrupted. ...
-                // http://www.camelotherald.com/news/news_article.php?storyid=1383
-
-                return 2000;
-            }
-
-
-            double percent = DexterityCastTimeReduction;
-            percent *= 1.0 - GetModified(eProperty.CastingSpeed) * 0.01;
-
-            ticks = (int)(ticks * Math.Max(CastingSpeedReductionCap, percent));
-            if (ticks < MinimumCastingSpeed)
-                ticks = MinimumCastingSpeed;
-
-            if (this.UseDetailedCombatLog)
-            {
-                this.Out.SendMessage($"Casting Speed: {ticks/1000.0}s", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-            }
-
-            return ticks;
+            return castTime;
         }
-
 
         #endregion
 

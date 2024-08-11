@@ -259,45 +259,9 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		/// <summary>
-		/// Calculates the effective casting time
-		/// </summary>
-		/// <returns>effective casting time in milliseconds</returns>
 		public override int CalculateCastingTime()
 		{
-			if (Spell.LifeDrainReturn == (int)eShotType.Power) return 6000;
-
-			int ticks = m_spell.CastTime;
-
-			double percent = 1.0;
-			int dex = Caster.GetModified(eProperty.Dexterity);
-
-			if (dex < 60)
-			{
-				//do nothing.
-			}
-			else if (dex < 250)
-			{
-				percent = 1.0 - (dex - 60) * 0.15 * 0.01;
-			}
-			else
-			{
-				percent = 1.0 - ((dex - 60) * 0.15 + (dex - 250) * 0.05) * 0.01;
-			}
-
-			GamePlayer player = m_caster as GamePlayer;
-
-			if (player != null)
-			{
-				percent *= 1.0 - m_caster.GetModified(eProperty.CastingSpeed) * 0.01;
-			}
-
-			ticks = (int)(ticks * Math.Max(m_caster.CastingSpeedReductionCap, percent));
-
-			if (ticks < m_caster.MinimumCastingSpeed)
-				ticks = m_caster.MinimumCastingSpeed;
-
-			return ticks;
+			return (eShotType) Spell.LifeDrainReturn is eShotType.Power ? 6000 : base.CalculateCastingTime();
 		}
 
 		public override int PowerCost(GameLiving target) { return 0; }
