@@ -155,10 +155,6 @@ namespace DOL.Events
         /// </summary>
         public static readonly GameLivingEvent CrowdControlExpired = new GameLivingEvent("GameLiving.CrowdControlExpired");
         /// <summary>
-        /// The Interrupted event is fired when a living is interrupted.
-        /// </summary>
-        public static readonly GameLivingEvent Interrupted = new GameLivingEvent("GameLiving.Interrupted");
-        /// <summary>
         /// The InterruptExpired event is fired when a living's interrupt timer expires.
         /// </summary>
         public static readonly GameLivingEvent InterruptExpired = new GameLivingEvent("GameLiving.InterruptExpired");
