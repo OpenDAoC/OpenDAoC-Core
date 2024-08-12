@@ -6,7 +6,7 @@
 
         public override void OnStopEffect()
         {
-            Caster.UpdatePetCount(false);
+            SpellHandler.Caster.UpdatePetCount(false);
             Owner.Health = 0; // to send proper remove packet
             Owner.Delete();
         }

@@ -30,7 +30,7 @@ namespace DOL.GS
                 }
             }
 
-            eBuffBonusCategory debuffCategory = (Caster as GamePlayer)?.CharacterClass is ClassChampion ? eBuffBonusCategory.SpecDebuff : eBuffBonusCategory.Debuff;
+            eBuffBonusCategory debuffCategory = (SpellHandler.Caster as GamePlayer)?.CharacterClass is ClassChampion ? eBuffBonusCategory.SpecDebuff : eBuffBonusCategory.Debuff;
 
             if (EffectType == eEffect.StrConDebuff || EffectType == eEffect.DexQuiDebuff)
             {
@@ -98,7 +98,7 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
-            eBuffBonusCategory debuffCategory = (Caster as GamePlayer)?.CharacterClass is ClassChampion ? eBuffBonusCategory.SpecDebuff : eBuffBonusCategory.Debuff;
+            eBuffBonusCategory debuffCategory = (SpellHandler.Caster as GamePlayer)?.CharacterClass is ClassChampion ? eBuffBonusCategory.SpecDebuff : eBuffBonusCategory.Debuff;
 
             if (EffectType == eEffect.StrConDebuff || EffectType == eEffect.DexQuiDebuff)
             {

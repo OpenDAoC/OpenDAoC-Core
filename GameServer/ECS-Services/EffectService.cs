@@ -61,29 +61,31 @@ namespace DOL.GS
         private static void HandlePropertyModification(ECSGameEffect e)
         {
             if (e.Owner == null)
-            {
-                //Console.WriteLine($"Invalid target for Effect {e}");
                 return;
-            }
 
-            ECSGameSpellEffect spellEffect = e as ECSGameSpellEffect;
             EffectListComponent effectList = e.Owner.effectListComponent;
 
             if (effectList == null)
-            {
-                //Console.WriteLine($"No effect list found for {e.Owner}");
                 return;
-            }
+
+            ECSGameSpellEffect spellEffect = e as ECSGameSpellEffect;
+
             // Early out if we're trying to add an effect that is already present.
-            else if (!effectList.AddEffect(e))
+            if (!effectList.AddEffect(e))
             {
-                if (spellEffect != null && !spellEffect.SpellHandler.Spell.IsPulsing)
+                // Temporarily include `BleedECSEffect` since they're set as pulsing spells in the DB, even though they should work like DoTs instead.
+                if (spellEffect != null && (!spellEffect.SpellHandler.Spell.IsPulsing || spellEffect is BleedECSEffect))
                 {
-                    SendSpellResistAnimation(e as ECSGameSpellEffect);
-                    if (spellEffect.SpellHandler.Caster is GameSummonedPet petCaster && petCaster.Owner is GamePlayer casterOwner)
-                        ChatUtil.SendResistMessage(casterOwner, "GamePlayer.Caster.Buff.EffectAlreadyActive", e.Owner.GetName(0, true));
+                    SendSpellResistAnimation(spellEffect);
+                    GamePlayer playerToNotify = null;
+
                     if (spellEffect.SpellHandler.Caster is GamePlayer playerCaster)
-                        ChatUtil.SendResistMessage(playerCaster, "GamePlayer.Caster.Buff.EffectAlreadyActive", e.Owner.GetName(0, true));
+                        playerToNotify = playerCaster;
+                    else if (spellEffect.SpellHandler.Caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain brain && brain.Owner is GamePlayer casterOwner)
+                        playerToNotify = casterOwner;
+
+                    if (playerToNotify != null)
+                        ChatUtil.SendResistMessage(playerToNotify, "GamePlayer.Caster.Buff.EffectAlreadyActive", spellEffect.Owner.GetName(0, true));
                 }
 
                 return;

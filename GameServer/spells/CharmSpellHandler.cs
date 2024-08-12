@@ -500,25 +500,6 @@ namespace DOL.GS.Spells
         }
 
         /// <summary>
-        /// Determines wether this spell is better than given one
-        /// </summary>
-        /// <param name="oldeffect"></param>
-        /// <param name="neweffect"></param>
-        /// <returns>true if this spell is better version than compare spell</returns>
-        public override bool IsNewEffectBetter(GameSpellEffect oldeffect, GameSpellEffect neweffect)
-        {
-            if (oldeffect.Spell.SpellType != neweffect.Spell.SpellType)
-            {
-                if (log.IsWarnEnabled)
-                    log.Warn("Spell effect compare with different types " + oldeffect.Spell.SpellType + " <=> " + neweffect.Spell.SpellType + "\n" + Environment.StackTrace);
-
-                return false;
-            }
-
-            return neweffect.SpellHandler == this;
-        }
-
-        /// <summary>
         /// Send the Effect Animation
         /// </summary>
         /// <param name="target">The target object</param>

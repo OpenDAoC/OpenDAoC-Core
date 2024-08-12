@@ -83,15 +83,6 @@ namespace DOL.GS.Spells
 		ECSPulseEffect PulseEffect { get; }
 
 		/// <summary>
-		/// Determines wether new spell is better than existing one
-		/// important for overwriting
-		/// </summary>
-		/// <param name="oldeffect"></param>
-		/// <param name="neweffect"></param>
-		/// <returns>true if new spell is better version</returns>
-		bool IsNewEffectBetter(GameSpellEffect oldeffect, GameSpellEffect neweffect);
-
-		/// <summary>
 		/// Determines wether this spell is compatible with given spell
 		/// and therefore overwritable by better versions
 		/// spells that are overwritable do not stack

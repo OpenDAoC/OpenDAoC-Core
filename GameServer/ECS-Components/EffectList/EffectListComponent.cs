@@ -191,10 +191,10 @@ namespace DOL.GS
                                             break;
                                         }
 
-                                        // New Effect is better than the current enabled effect so disable the current Effect and add the new effect.
-                                        if (newSpell.Value > existingSpell.Value || newSpell.Damage > existingSpell.Damage)
+                                        if (newSpellEffect.IsBetterThan(existingEffect))
                                         {
-                                            if (newSpell.IsHelpful&& (newSpellHandler.Caster != existingSpellHandler.Caster
+                                            // New effect is better than the current effect. Disable or cancel the current effect.
+                                            if (newSpell.IsHelpful && (newSpellHandler.Caster != existingSpellHandler.Caster
                                                 || newSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects
                                                 || existingSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects))
                                                 EffectService.RequestDisableEffect(existingEffect);
@@ -204,9 +204,9 @@ namespace DOL.GS
                                             addEffect = true;
                                             break;
                                         }
-                                        // New Effect is not as good as current effect, but it can be added in a disabled state.
                                         else
                                         {
+                                            // New effect is not as good as the current effect, but it can be added in a disabled state.
                                             if (newSpell.IsHelpful && (newSpellHandler.Caster != existingSpellHandler.Caster
                                                 || newSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects
                                                 || existingSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects))

@@ -2279,37 +2279,6 @@ namespace DOL.GS.Spells
 		}
 
 		/// <summary>
-		/// Determines wether this spell is better than given one
-		/// </summary>
-		/// <param name="oldeffect"></param>
-		/// <param name="neweffect"></param>
-		/// <returns>true if this spell is better version than compare spell</returns>
-		public virtual bool IsNewEffectBetter(GameSpellEffect oldeffect, GameSpellEffect neweffect)
-		{
-			Spell oldspell = oldeffect.Spell;
-			Spell newspell = neweffect.Spell;
-//			if (oldspell.SpellType != newspell.SpellType)
-//			{
-//				if (Log.IsWarnEnabled)
-//					Log.Warn("Spell effect compare with different types " + oldspell.SpellType + " <=> " + newspell.SpellType + "\n" + Environment.StackTrace);
-//				return false;
-//			}
-			if (oldspell.IsConcentration)
-				return false;
-			if (newspell.Damage < oldspell.Damage)
-				return false;
-			if (newspell.Value < oldspell.Value)
-				return false;
-			//makes problems for immunity effects
-			if (!oldeffect.ImmunityState && !newspell.IsConcentration)
-			{
-				if (neweffect.Duration <= oldeffect.RemainingTime)
-					return false;
-			}
-			return true;
-		}
-
-		/// <summary>
 		/// Determines wether this spell is compatible with given spell
 		/// and therefore overwritable by better versions
 		/// spells that are overwritable cannot stack

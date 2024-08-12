@@ -16,18 +16,6 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		/// <summary>
-		/// Determines wether this spell is better than given one
-		/// </summary>
-		/// <param name="oldeffect"></param>
-		/// <param name="neweffect"></param>
-		/// <returns>true if this spell is better version than compare spell</returns>
-		public override bool IsNewEffectBetter(GameSpellEffect oldeffect, GameSpellEffect neweffect)
-		{
-			if (oldeffect.Owner is GamePlayer) return false; //no overwrite for players
-			return base.IsNewEffectBetter(oldeffect, neweffect);
-		}
-
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			if (target == null || target.CurrentRegion == null)

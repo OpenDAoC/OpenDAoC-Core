@@ -31,9 +31,9 @@ namespace DOL.GS
                 npc.StopMoving();
             if(Owner.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
                 UpdatePlayerStatus();
-            
+
             //check for conquest activity
-            if (Caster is GamePlayer caster)
+            if (SpellHandler.Caster is GamePlayer caster)
             {
                 if(ConquestService.ConquestManager.IsPlayerInConquestArea(caster))
                     ConquestService.ConquestManager.AddContributor(caster);
