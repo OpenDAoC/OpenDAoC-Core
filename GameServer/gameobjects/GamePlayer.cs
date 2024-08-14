@@ -6557,7 +6557,7 @@ namespace DOL.GS
             if (slot is eArmorSlot.NOTSET)
                 return 0;
 
-            DbInventoryItem item = Inventory.GetItem((eInventorySlot)slot);
+            DbInventoryItem item = Inventory.GetItem((eInventorySlot) slot);
 
             if (item == null)
                 return 0;
@@ -6573,7 +6573,7 @@ namespace DOL.GS
 
             armorFactor = Math.Min(armorFactor, itemArmorFactorCap);
             armorFactor *= item.Quality * 0.01 * item.Condition / item.MaxCondition;
-            armorFactor += GetModified(eProperty.ArmorFactor);
+            armorFactor += base.GetArmorAF(slot);
 
             /*GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, typeof(VampiirArmorDebuff));
             if (effect != null && slot == (effect.SpellHandler as VampiirArmorDebuff).Slot)

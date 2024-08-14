@@ -458,7 +458,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual double GetArmorAF(eArmorSlot slot)
 		{
-			return GetModified(eProperty.ArmorFactor);
+			return GetModified(eProperty.ArmorFactor) / 6.0;
 		}
 
 		/// <summary>
