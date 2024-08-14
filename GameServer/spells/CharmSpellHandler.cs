@@ -428,7 +428,7 @@ namespace DOL.GS.Spells
                     }
                 }
                 else
-                    resistChance = CalculateToHitChance(target);
+                    resistChance = 100 - CalculateToHitChance(target);
 
                 double spellResistChance = resistChance;
                 double resistResult = Util.RandomDouble() * 100;
