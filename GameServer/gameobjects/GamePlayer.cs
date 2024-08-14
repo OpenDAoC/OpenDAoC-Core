@@ -6552,38 +6552,36 @@ namespace DOL.GS
         /// <summary>
         /// calculate item armor factor influenced by quality, con and duration
         /// </summary>
-        /// <param name="slot"></param>
-        /// <returns></returns>
         public override double GetArmorAF(eArmorSlot slot)
         {
-            if (slot == eArmorSlot.NOTSET) return 0;
+            if (slot is eArmorSlot.NOTSET)
+                return 0;
+
             DbInventoryItem item = Inventory.GetItem((eInventorySlot)slot);
-            if (item == null) return 0;
-            double eaf = item.DPS_AF + BaseBuffBonusCategory[(int)eProperty.ArmorFactor]; // base AF buff
 
-            int itemAFcap = Level;
+            if (item == null)
+                return 0;
+
+            double armorFactor = item.DPS_AF + BaseBuffBonusCategory[(int) eProperty.ArmorFactor] / 6.0; // base AF buff
+            int itemArmorFactorCap = Level;
+
             if (RealmLevel > 39)
-                itemAFcap++;
-            if (item.Object_Type != (int)eObjectType.Cloth)
-            {
-                itemAFcap <<= 1;
-            }
+                itemArmorFactorCap++;
 
-            eaf = Math.Min(eaf, itemAFcap);
-            //eaf *= 4.67; // compensate *4.67 in damage formula
+            if ((eObjectType) item.Object_Type is not eObjectType.Cloth)
+                itemArmorFactorCap *= 2;
 
-            // my test shows that qual is added after AF buff
-            eaf *= item.Quality * 0.01 * item.Condition / item.MaxCondition;
-
-            eaf += GetModified(eProperty.ArmorFactor);
-            //eaf *= 4.67; // compensate *4.67 in damage formula
+            armorFactor = Math.Min(armorFactor, itemArmorFactorCap);
+            armorFactor *= item.Quality * 0.01 * item.Condition / item.MaxCondition;
+            armorFactor += GetModified(eProperty.ArmorFactor);
 
             /*GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, typeof(VampiirArmorDebuff));
             if (effect != null && slot == (effect.SpellHandler as VampiirArmorDebuff).Slot)
             {
                 eaf -= (int)(effect.SpellHandler as VampiirArmorDebuff).Spell.Value;
             }*/
-            return eaf;
+
+            return armorFactor;
         }
 
         /// <summary>
