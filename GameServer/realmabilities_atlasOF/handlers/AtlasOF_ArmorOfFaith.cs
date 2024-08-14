@@ -1,10 +1,4 @@
-using System;
-using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.Database;
 using DOL.GS.Spells;
 
@@ -42,7 +36,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = 11;
             m_dbspell.Target = "Self";
             m_dbspell.Radius = 0;
-            m_dbspell.Type = eSpellType.ArmorFactorBuff.ToString();
+            m_dbspell.Type = eSpellType.SpecArmorFactorBuff.ToString();
             m_dbspell.Value = m_value;
             m_dbspell.Duration = 60;
             m_dbspell.Pulse = 0;

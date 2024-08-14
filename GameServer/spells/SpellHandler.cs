@@ -3479,7 +3479,8 @@ namespace DOL.GS.Spells
 					return "absorb";
 				case eSpellType.ArmorAbsorptionDebuff:
 					return "nabsorb";
-				case eSpellType.ArmorFactorBuff:
+				case eSpellType.BaseArmorFactorBuff:
+				case eSpellType.SpecArmorFactorBuff:
 				case eSpellType.PaladinArmorFactorBuff:
 					return "shield";
 				case eSpellType.Bolt:
@@ -3639,7 +3640,9 @@ namespace DOL.GS.Spells
 				case eSpellType.AcuityBuff:
 				case eSpellType.ArmorAbsorptionBuff:
 				case eSpellType.ArmorAbsorptionDebuff:
-				case eSpellType.ArmorFactorBuff:
+				case eSpellType.BaseArmorFactorBuff:
+				case eSpellType.SpecArmorFactorBuff:
+				case eSpellType.PaladinArmorFactorBuff:
 				case eSpellType.BodyResistBuff:
 				case eSpellType.BodyResistDebuff:
 				case eSpellType.BodySpiritEnergyBuff:
@@ -3665,7 +3668,6 @@ namespace DOL.GS.Spells
 				case eSpellType.MeleeDamageBuff:
 				case eSpellType.MeleeDamageDebuff:
 				case eSpellType.MesmerizeDurationBuff:
-				case eSpellType.PaladinArmorFactorBuff:
 				case eSpellType.PetConversion:
 				case eSpellType.SavageCombatSpeedBuff:
 				case eSpellType.SavageCrushResistanceBuff:

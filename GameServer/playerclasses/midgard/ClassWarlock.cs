@@ -1,21 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System.Collections.Generic;
 using DOL.GS.Realm;
 
@@ -55,13 +37,13 @@ namespace DOL.GS.PlayerClass
 				 || line.KeyName == "Cursing Spec"
 				 || line.KeyName == "Hexing"
 				 || line.KeyName == "Witchcraft")
-				&& (spell.SpellType != eSpellType.ArmorFactorBuff
-					&& spell.SpellType != eSpellType.Bladeturn
-					&& spell.SpellType != eSpellType.ArmorAbsorptionBuff
-					&& spell.SpellType != eSpellType.MatterResistDebuff
-					&& spell.SpellType != eSpellType.Uninterruptable
-					&& spell.SpellType != eSpellType.Powerless
-					&& spell.SpellType != eSpellType.Range
+				&& (spell.SpellType is not eSpellType.BaseArmorFactorBuff
+					and not eSpellType.Bladeturn
+					and not eSpellType.ArmorAbsorptionBuff
+					and not eSpellType.MatterResistDebuff
+					and not eSpellType.Uninterruptable
+					and not eSpellType.Powerless
+					and not eSpellType.Range
 					&& spell.Name != "Lesser Twisting Curse"
 					&& spell.Name != "Twisting Curse"
 					&& spell.Name != "Lesser Winding Curse"

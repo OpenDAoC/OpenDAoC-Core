@@ -238,7 +238,9 @@ namespace DOL.GS
 				case eSpellType.DexterityDebuff:
 				case eSpellType.StrengthDebuff:
 				case eSpellType.ArmorFactorDebuff:
-				case eSpellType.ArmorFactorBuff:
+				case eSpellType.BaseArmorFactorBuff:
+				case eSpellType.SpecArmorFactorBuff:
+				case eSpellType.PaladinArmorFactorBuff:
 				case eSpellType.ArmorAbsorptionBuff:
 				case eSpellType.ArmorAbsorptionDebuff:
 				case eSpellType.DexterityQuicknessBuff:

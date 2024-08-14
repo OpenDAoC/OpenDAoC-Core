@@ -164,11 +164,11 @@ namespace DOL.GS
 					spell.Duration = BUFFS_SPELL_DURATION;
 					spell.Value = 78; //Effective buff 58
 					spell.Name = "Armor of the Realm";
-					spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection againts some forms of attack. It acts in addition to any armor the target is wearing.";
+					spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88001;
 					spell.Target = "Realm";
-					spell.Type = eSpellType.ArmorFactorBuff.ToString();
+					spell.Type = eSpellType.BaseArmorFactorBuff.ToString();
 					spell.EffectGroup = 1;
 
 					m_baseaf = new Spell(spell, 50);
@@ -194,11 +194,11 @@ namespace DOL.GS
 					spell.Duration = BUFFS_SPELL_DURATION;
 					spell.Value = 58; //Effective buff 58
 					spell.Name = "Armor of the Realm";
-					spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection againts some forms of attack. It acts in addition to any armor the target is wearing.";
+					spell.Description = "Adds to the recipient's Armor Factor (AF) resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 89001;
 					spell.Target = "Realm";
-					spell.Type = eSpellType.ArmorFactorBuff.ToString();
+					spell.Type = eSpellType.BaseArmorFactorBuff.ToString();
 					spell.EffectGroup = 1;
 
 					m_casterbaseaf = new Spell(spell, 50);
@@ -588,7 +588,7 @@ namespace DOL.GS
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 88014;
 					spell.Target = "Realm";
-					spell.Type = eSpellType.ArmorFactorBuff.ToString();
+					spell.Type = eSpellType.SpecArmorFactorBuff.ToString();
 					spell.EffectGroup = 2;
 
 					m_specaf = new Spell(spell, 50);
@@ -618,7 +618,7 @@ namespace DOL.GS
 					spell.Range = WorldMgr.VISIBILITY_DISTANCE;
 					spell.SpellID = 89014;
 					spell.Target = "Realm";
-					spell.Type = eSpellType.ArmorFactorBuff.ToString();
+					spell.Type = eSpellType.SpecArmorFactorBuff.ToString();
 					spell.EffectGroup = 2;
 
 					m_casterspecaf = new Spell(spell, 50);

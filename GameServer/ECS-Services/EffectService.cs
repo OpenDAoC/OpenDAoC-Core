@@ -438,10 +438,12 @@ namespace DOL.GS
                     return eEffect.AcuityBuff;
                 case eSpellType.ArmorAbsorptionBuff:
                     return eEffect.ArmorAbsorptionBuff;
+                case eSpellType.BaseArmorFactorBuff:
+                    return eEffect.BaseAFBuff;
+                case eSpellType.SpecArmorFactorBuff:
+                    return eEffect.SpecAFBuff;
                 case eSpellType.PaladinArmorFactorBuff:
                     return eEffect.PaladinAf;
-                case eSpellType.ArmorFactorBuff:
-                    return isBaseLine ? eEffect.BaseAFBuff : eEffect.SpecAFBuff;
 
                 // Resists.
                 case eSpellType.BodyResistBuff:

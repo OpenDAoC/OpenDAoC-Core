@@ -329,12 +329,12 @@ namespace DOL.GS.SpamMob
                 spell.Value = 20; //Effective buff 58
                 spell.Name = "Armor of the Realm";
                 spell.Description =
-                    "Adds to the recipient's Armor Factor (AF) resulting in better protection againts some forms of attack. It acts in addition to any armor the target is wearing.";
+                    "Adds to the recipient's Armor Factor (AF) resulting in better protection against some forms of attack. It acts in addition to any armor the target is wearing.";
                 spell.Range = WorldMgr.VISIBILITY_DISTANCE;
                 spell.SpellID = 88001;
                 spell.Target = "Self";
                 spell.Message1 = "Increases target's Base Armor Factor by 20.";
-                spell.Type = eSpellType.ArmorFactorBuff.ToString();
+                spell.Type = eSpellType.BaseArmorFactorBuff.ToString();
                 spell.EffectGroup = 1;
 
                 af = new Spell(spell, 0);

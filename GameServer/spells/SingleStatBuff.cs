@@ -1,6 +1,4 @@
-using System;
 using DOL.GS.PacketHandler;
-using DOL.GS.PlayerClass;
 
 namespace DOL.GS.Spells
 {
@@ -94,32 +92,27 @@ namespace DOL.GS.Spells
     }
 
     [SpellHandlerAttribute("ArmorFactorBuff")]
-    public class ArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
+    public abstract class ArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
-        public override eBuffBonusCategory BonusCategory1
-        {
-            get
-            {
-                if (Caster is GamePlayer playerCaster)
-                {
-                    if ((playerCaster.CharacterClass is ClassRanger && SpellLine.KeyName.Equals("pathfinding", StringComparison.OrdinalIgnoreCase)) ||
-                        (playerCaster.CharacterClass is ClassHunter && SpellLine.KeyName.Equals("beastcraft", StringComparison.OrdinalIgnoreCase)))
-                    {
-                        return eBuffBonusCategory.BaseBuff;
-                    }
-                }
-
-                if (Spell.Target == eSpellTarget.SELF)
-                    return eBuffBonusCategory.Other; // no caps for self buffs
-
-                if (m_spellLine.IsBaseLine)
-                    return eBuffBonusCategory.BaseBuff; // baseline cap
-
-                return eBuffBonusCategory.Other; // no caps for spec line buffs
-            }
-        }
-
         public override eProperty Property1 => eProperty.ArmorFactor;
+    }
+
+    [SpellHandlerAttribute("BaseArmorFactorBuff")]
+    public class BaseArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : ArmorFactorBuff(caster, spell, line)
+    {
+        public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
+    }
+
+    [SpellHandlerAttribute("SpecArmorFactorBuff")]
+    public class SpecArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : ArmorFactorBuff(caster, spell, line)
+    {
+        public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.SpecBuff;
+    }
+
+    [SpellHandlerAttribute("PaladinArmorFactorBuff")]
+    public class PaladinArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : ArmorFactorBuff(caster, spell, line)
+    {
+        public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.Other;
     }
 
     [SpellHandlerAttribute("ArmorAbsorptionBuff")]
@@ -232,26 +225,6 @@ namespace DOL.GS.Spells
     public class ExtraHP(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
         public override eProperty Property1 => eProperty.ExtraHP;
-    }
-
-    [SpellHandlerAttribute("PaladinArmorFactorBuff")]
-    public class PaladinArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
-    {
-        public override eBuffBonusCategory BonusCategory1
-        {
-            get
-            {
-                if (Spell.Target == eSpellTarget.SELF)
-                    return eBuffBonusCategory.Other; // no caps for self buffs
-
-                if (m_spellLine.IsBaseLine)
-                    return eBuffBonusCategory.BaseBuff; // baseline cap
-
-                return eBuffBonusCategory.Other; // no caps for spec line buffs
-            }
-        }
-
-        public override eProperty Property1 => eProperty.ArmorFactor;
     }
 
     [SpellHandler("FlexibleSkillBuff")]
