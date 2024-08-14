@@ -124,7 +124,7 @@ namespace DOL.GS.Spells
 		{
 			get
 			{
-				if (m_spell.SpellType != eSpellType.Null)
+				if (m_spell.SpellType != eSpellType.None)
 					switch (m_spell.SpellType)
 					{
 						case eSpellType.Bomber:

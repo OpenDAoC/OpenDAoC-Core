@@ -251,13 +251,13 @@ namespace DOL.GS
             }
         }
 
-        public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Null)
+        public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.None)
         {
             lock (target.effectListComponent.EffectsLock)
             {
                 target.effectListComponent.Effects.TryGetValue(effectType, out List<ECSGameEffect> effects);
 
-                if (effects != null && spellType == eSpellType.Null)
+                if (effects != null && spellType == eSpellType.None)
                     return effects.FirstOrDefault();
                 else if (effects != null)
                     return effects.OfType<ECSGameSpellEffect>().Where(e => e.SpellHandler.Spell.SpellType == spellType).FirstOrDefault();
@@ -266,7 +266,7 @@ namespace DOL.GS
             }
         }
 
-        public static ECSGameSpellEffect GetSpellEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.Null)
+        public static ECSGameSpellEffect GetSpellEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.None)
         {
             if (target == null)
                 return null;
@@ -276,7 +276,7 @@ namespace DOL.GS
                 target.effectListComponent.Effects.TryGetValue(effectType, out List<ECSGameEffect> effects);
 
                 if (effects != null)
-                    return effects.OfType<ECSGameSpellEffect>().Where(e => e != null && (spellType == eSpellType.Null || e.SpellHandler.Spell.SpellType == spellType)).FirstOrDefault();
+                    return effects.OfType<ECSGameSpellEffect>().Where(e => e != null && (spellType == eSpellType.None || e.SpellHandler.Spell.SpellType == spellType)).FirstOrDefault();
                 else
                     return null;
             }

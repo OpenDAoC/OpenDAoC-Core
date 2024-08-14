@@ -1,3 +1,4 @@
+using System;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerClass;
 
@@ -99,8 +100,14 @@ namespace DOL.GS.Spells
         {
             get
             {
-                if (Caster is GamePlayer c && (c.CharacterClass is ClassRanger || c.CharacterClass is ClassHunter) && (SpellLine.KeyName.ToLower().Equals("beastcraft") || SpellLine.KeyName.ToLower().Equals("pathfinding")))
-                    return eBuffBonusCategory.BaseBuff;
+                if (Caster is GamePlayer playerCaster)
+                {
+                    if ((playerCaster.CharacterClass is ClassRanger && SpellLine.KeyName.Equals("pathfinding", StringComparison.OrdinalIgnoreCase)) ||
+                        (playerCaster.CharacterClass is ClassHunter && SpellLine.KeyName.Equals("beastcraft", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        return eBuffBonusCategory.BaseBuff;
+                    }
+                }
 
                 if (Spell.Target == eSpellTarget.SELF)
                     return eBuffBonusCategory.Other; // no caps for self buffs
