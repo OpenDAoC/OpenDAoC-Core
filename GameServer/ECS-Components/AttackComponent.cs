@@ -1511,7 +1511,7 @@ namespace DOL.GS
                             }
                             case eAttackResult.Missed:
                             {
-                                owner.Out.SendMessage(message + $" ({ad.MissChance}%)", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                                owner.Out.SendMessage(message + $" ({ad.MissChance:0.##}%)", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                                 break;
                             }
                             default:
