@@ -1252,6 +1252,7 @@ namespace DOL.GS
             {
                 bool wasInCombat = InCombat;
                 base.LastAttackTickPvP = value;
+
                 if (!wasInCombat && InCombat)
                     Out.SendUpdateMaxSpeed();
 
@@ -10188,14 +10189,14 @@ namespace DOL.GS
                 }
             }*/
 
-            if (ObjectState == eObjectState.Active)
+            if (ObjectState is eObjectState.Active)
             {
                 Out.SendCharStatsUpdate();
                 Out.SendCharResistsUpdate();
                 Out.SendUpdateWeaponAndArmorStats();
                 Out.SendUpdateMaxSpeed();
                 Out.SendEncumberance();
-                Out.SendUpdatePlayerSkills();
+                // Out.SendUpdatePlayerSkills();
                 UpdatePlayerStatus();
 
                 if (IsAlive)
@@ -10383,14 +10384,14 @@ namespace DOL.GS
             if (item is IGameInventoryItem inventoryItem)
                 inventoryItem.OnUnEquipped(this);
 
-            if (ObjectState == eObjectState.Active)
+            if (ObjectState is eObjectState.Active)
             {
                 Out.SendCharStatsUpdate();
                 Out.SendCharResistsUpdate();
                 Out.SendUpdateWeaponAndArmorStats();
                 Out.SendUpdateMaxSpeed();
                 Out.SendEncumberance();
-                Out.SendUpdatePlayerSkills();
+                // Out.SendUpdatePlayerSkills();
                 UpdatePlayerStatus();
 
                 if (IsAlive)
@@ -10542,12 +10543,14 @@ namespace DOL.GS
 
             ItemBonus[bonusType] += bonusAmount;
 
-            if (ObjectState == eObjectState.Active)
+            if (ObjectState is eObjectState.Active)
             {
                 Out.SendCharStatsUpdate();
                 Out.SendCharResistsUpdate();
                 Out.SendUpdateWeaponAndArmorStats();
-                Out.SendUpdatePlayerSkills();
+                Out.SendUpdateMaxSpeed();
+                Out.SendEncumberance();
+                // Out.SendUpdatePlayerSkills();
                 UpdatePlayerStatus();
 
                 if (IsAlive)
