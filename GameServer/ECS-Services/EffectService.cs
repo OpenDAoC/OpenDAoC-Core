@@ -393,7 +393,7 @@ namespace DOL.GS
             }
         }
 
-        public static eEffect GetEffectFromSpell(Spell spell, bool isBaseLine = true)
+        public static eEffect GetEffectFromSpell(Spell spell)
         {
             switch (spell.SpellType)
             {

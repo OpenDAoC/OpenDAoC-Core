@@ -23,7 +23,7 @@ namespace DOL.GS
         {
             SpellHandler = initParams.SpellHandler;
             Spell spell = SpellHandler.Spell;
-            EffectType = EffectService.GetEffectFromSpell(SpellHandler.Spell, SpellHandler.SpellLine.IsBaseLine);
+            EffectType = EffectService.GetEffectFromSpell(SpellHandler.Spell);
             PulseFreq = spell.Frequency;
 
             if (spell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
