@@ -10187,34 +10187,7 @@ namespace DOL.GS
                 }
             }*/
 
-            if (ObjectState is eObjectState.Active)
-            {
-                Out.SendCharStatsUpdate();
-                Out.SendCharResistsUpdate();
-                Out.SendUpdateWeaponAndArmorStats();
-                Out.SendUpdateMaxSpeed();
-                Out.SendEncumberance();
-                // Out.SendUpdatePlayerSkills();
-                UpdatePlayerStatus();
-
-                if (IsAlive)
-                {
-                    if (Health < MaxHealth)
-                        StartHealthRegeneration();
-                    else if (Health > MaxHealth)
-                        Health = MaxHealth;
-
-                    if (Mana < MaxMana)
-                        StartPowerRegeneration();
-                    else if (Mana > MaxMana)
-                        Mana = MaxMana;
-
-                    if (Endurance < MaxEndurance)
-                        StartEnduranceRegeneration();
-                    else if (Endurance > MaxEndurance)
-                        Endurance = MaxEndurance;
-                }
-            }
+            _statsSenderOnEquipmentChange ??= new(this, OnStatsSendCompletionAfterEquipmentChange);
         }
 
         private int m_activeBuffCharges = 0;
@@ -10382,33 +10355,67 @@ namespace DOL.GS
             if (item is IGameInventoryItem inventoryItem)
                 inventoryItem.OnUnEquipped(this);
 
-            if (ObjectState is eObjectState.Active)
+            _statsSenderOnEquipmentChange ??= new(this, OnStatsSendCompletionAfterEquipmentChange);
+        }
+
+        private StatsSenderOnEquipmentChange _statsSenderOnEquipmentChange;
+
+        private int OnStatsSendCompletionAfterEquipmentChange()
+        {
+            _statsSenderOnEquipmentChange = null;
+            return 0; // Must return 0 to stop the timer. This is just to make `OnTick` cleaner.
+        }
+
+        public class StatsSenderOnEquipmentChange : ECSGameTimerWrapperBase
+        {
+            private new GamePlayer Owner { get; }
+            private Func<int> _onCompletion;
+
+            public StatsSenderOnEquipmentChange(GameObject owner, Func<int> OnCompletion) : base(owner)
             {
-                Out.SendCharStatsUpdate();
-                Out.SendCharResistsUpdate();
-                Out.SendUpdateWeaponAndArmorStats();
-                Out.SendUpdateMaxSpeed();
-                Out.SendEncumberance();
+                Owner = owner as GamePlayer;
+                _onCompletion = OnCompletion;
+                Start(0);
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                if (Owner.ObjectState is not eObjectState.Active)
+                    return _onCompletion();
+
+                Owner.Out.SendCharStatsUpdate();
+                Owner.Out.SendCharResistsUpdate();
+                Owner.Out.SendUpdateWeaponAndArmorStats();
+                Owner.Out.SendUpdateMaxSpeed();
+                Owner.Out.SendEncumberance();
                 // Out.SendUpdatePlayerSkills();
-                UpdatePlayerStatus();
+                Owner.UpdatePlayerStatus();
 
-                if (IsAlive)
-                {
-                    if (Health < MaxHealth)
-                        StartHealthRegeneration();
-                    else if (Health > MaxHealth)
-                        Health = MaxHealth;
+                if (!IsAlive)
+                    return _onCompletion();
 
-                    if (Mana < MaxMana)
-                        StartPowerRegeneration();
-                    else if (Mana > MaxMana)
-                        Mana = MaxMana;
+                int maxHealth = Owner.MaxHealth;
 
-                    if (Endurance < MaxEndurance)
-                        StartEnduranceRegeneration();
-                    else if (Endurance > MaxEndurance)
-                        Endurance = MaxEndurance;
-                }
+                if (Owner.Health < maxHealth)
+                    Owner.StartHealthRegeneration();
+                else if (Owner.Health > maxHealth)
+                    Owner.Health = maxHealth;
+
+                int maxMana = Owner.MaxMana;
+
+                if (Owner.Mana < maxMana)
+                    Owner.StartPowerRegeneration();
+                else if (Owner.Mana > maxMana)
+                    Owner.Mana = maxMana;
+
+                int maxEndurance = Owner.MaxEndurance;
+
+                if (Owner.Endurance < maxEndurance)
+                    Owner.StartEnduranceRegeneration();
+                else if (Owner.Endurance > maxEndurance)
+                    Owner.Endurance = maxEndurance;
+
+                return _onCompletion();
             }
         }
 
