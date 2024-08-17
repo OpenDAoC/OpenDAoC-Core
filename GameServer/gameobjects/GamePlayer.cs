@@ -5972,8 +5972,6 @@ namespace DOL.GS
                 // Update active weapon appearence (has to be done with all
                 // equipment in the packet else player is naked)
                 UpdateEquipmentAppearance();
-                //Send new weapon stats
-                Out.SendUpdateWeaponAndArmorStats();
             }
         }
 
