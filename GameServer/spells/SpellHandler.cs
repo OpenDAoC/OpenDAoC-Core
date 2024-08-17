@@ -3142,17 +3142,12 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Adjust damage based on chance to hit.
 		/// </summary>
-		/// <param name="damage"></param>
-		/// <param name="hitChance"></param>
-		/// <returns></returns>
-		public virtual int AdjustDamageForHitChance(int damage, double hitChance)
+		public virtual double AdjustDamageForHitChance(double damage, double hitChance)
 		{
-			int adjustedDamage = damage;
-
 			if (hitChance < 55)
-				adjustedDamage += (int) (adjustedDamage * (hitChance - 55) * Properties.SPELL_HITCHANCE_DAMAGE_REDUCTION_MULTIPLIER * 0.01);
+				damage *= (hitChance - 55) * Properties.SPELL_HITCHANCE_DAMAGE_REDUCTION_MULTIPLIER * 0.01;
 
-			return Math.Max(adjustedDamage, 1);
+			return damage;
 		}
 
 		public virtual AttackData CalculateDamageToTarget(GameLiving target)
@@ -3181,7 +3176,8 @@ namespace DOL.GS.Spells
 			if (DistanceFallOff > 0)
 				spellDamage *= 1 - DistanceFallOff;
 
-			int finalDamage = Util.Random((int)(minVariance * spellDamage), (int)(maxVariance * spellDamage));
+			double variance = minVariance + Util.RandomDoubleIncl() * (maxVariance - minVariance);
+			double finalDamage = spellDamage * variance;
 
 			// Live testing done Summer 2009 by Bluraven, Tolakram. Levels 40, 45, 50, 55, 60, 65, 70.
 			// Damage reduced by chance < 55, no extra damage increase noted with hitchance > 100.
@@ -3191,21 +3187,20 @@ namespace DOL.GS.Spells
 			if (m_caster is GamePlayer || (m_caster is GameNPC && (m_caster as GameNPC).Brain is IControlledBrain && m_caster.Realm != 0))
 			{
 				if (target is GamePlayer)
-					finalDamage = (int) (finalDamage * Properties.PVP_SPELL_DAMAGE);
+					finalDamage *= Properties.PVP_SPELL_DAMAGE;
 				else if (target is GameNPC)
-					finalDamage = (int) (finalDamage * Properties.PVE_SPELL_DAMAGE);
+					finalDamage *= Properties.PVE_SPELL_DAMAGE;
 			}
 
 			// Calculate resistances and conversion.
 			finalDamage = ModifyDamageWithTargetResist(ad, finalDamage);
 			double conversionMod = AttackComponent.CalculateTargetConversion(ad.Target);
-			int preConversionDamage = finalDamage;
-			finalDamage = (int) (finalDamage * conversionMod);
-			ad.Modifier += finalDamage - preConversionDamage;
+			double preConversionDamage = finalDamage;
+			finalDamage = finalDamage * conversionMod;
+			ad.Modifier += (int) Math.Floor(finalDamage - preConversionDamage);
 
 			// Apply damage cap.
-			if (finalDamage > DamageCap(effectiveness))
-				finalDamage = (int) DamageCap(effectiveness);
+			finalDamage = Math.Min(finalDamage, DamageCap(effectiveness));
 
 			// Apply conversion.
 			if (conversionMod < 1)
@@ -3228,18 +3223,18 @@ namespace DOL.GS.Spells
 
 			if (criticalCap > randNum && finalDamage > 0)
 			{
-				int criticalMax = (ad.Target is GamePlayer) ? finalDamage / 2 : finalDamage;
-				criticalDamage = Util.Random(finalDamage / 10, criticalMax);
+				int criticalMax = ad.Target is GamePlayer ? (int) finalDamage / 2 : (int) finalDamage;
+				criticalDamage = Util.Random((int) finalDamage / 10, criticalMax);
 			}
 
-			ad.Damage = finalDamage;
+			ad.Damage = (int) finalDamage;
 			ad.CriticalDamage = criticalDamage;
 			ad.Target.ModifyAttack(ad); // Attacked living may modify the attack data. Primarily used for keep doors and components.
 			m_lastAttackData = ad;
 			return ad;
 		}
 
-		public virtual int ModifyDamageWithTargetResist(AttackData ad, int damage)
+		public virtual double ModifyDamageWithTargetResist(AttackData ad, double damage)
 		{
 			// Since 1.65 there are different categories of resist.
 			// - First category contains Item / Race/ Buff / RvrBanners resists.
@@ -3256,21 +3251,19 @@ namespace DOL.GS.Spells
 			// Resist Pierce is a special bonus which has been introduced with ToA.
 			// It reduces the resistance that the victim receives through items by the specified percentage.
 			// http://de.daocpedia.eu/index.php/Resistenz_durchdringen (translated)
-			int resitPierce = Caster.GetModified(eProperty.ResistPierce);
+			int resistPierce = Caster.GetModified(eProperty.ResistPierce);
 
-			// Substract max ItemBonus of property of target, but at least 0.
-			if (resitPierce > 0 && Spell.SpellType != eSpellType.Archery)
-				primaryResistModifier -= Math.Max(0, Math.Min(ad.Target.ItemBonus[(int) property], resitPierce));
+			// Subtract max ItemBonus of property of target, but at least 0.
+			if (resistPierce > 0 && Spell.SpellType != eSpellType.Archery)
+				primaryResistModifier -= Math.Max(0, Math.Min(ad.Target.ItemBonus[(int) property], resistPierce));
 
-			int resistModifier = 0;
-			resistModifier += (int)(damage * (double) primaryResistModifier * -0.01);
-			resistModifier += (int)((damage + (double) resistModifier) * secondaryResistModifier * -0.01);
+			double resistModifier = damage * primaryResistModifier * -0.01;
+			resistModifier += (damage + resistModifier) * secondaryResistModifier * -0.01;
 			damage += resistModifier;
 
 			// Update AttackData.
-			ad.Modifier = resistModifier;
+			ad.Modifier = (int) Math.Floor(resistModifier);
 			ad.DamageType = damageType;
-
 			return damage;
 		}
 

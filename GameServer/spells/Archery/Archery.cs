@@ -86,16 +86,12 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Adjust damage based on chance to hit.
 		/// </summary>
-		public override int AdjustDamageForHitChance(int damage, double hitChance)
+		public override double AdjustDamageForHitChance(double damage, double hitChance)
 		{
-			int adjustedDamage = damage;
-
 			if (hitChance < 85)
-			{
-				adjustedDamage += (int)(adjustedDamage * (hitChance - 85) * 0.038);
-			}
+				damage *= (hitChance - 85) * 0.038;
 
-			return adjustedDamage;
+			return damage;
 		}
 
 		/// <summary>
