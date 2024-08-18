@@ -141,6 +141,9 @@ namespace DOL.GS
 
         private void SwitchToMeleeAndTick()
         {
+            if (_npcOwner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
+                return;
+
             _npcOwner.SwitchToMelee(_target);
             _npcOwner.attackComponent.AttackState = true; // Force `AttackState` back to be able to tick again immediately.
             Tick();
@@ -149,6 +152,9 @@ namespace DOL.GS
 
         private void SwitchToRangedAndTick()
         {
+            if (_npcOwner.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
+                return;
+
             _npcOwner.SwitchToRanged(_target);
             _npcOwner.attackComponent.AttackState = true; // Force `AttackState` back to be able to tick again immediately.
             Tick();
