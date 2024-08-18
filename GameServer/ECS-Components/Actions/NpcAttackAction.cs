@@ -9,8 +9,8 @@ namespace DOL.GS
     public class NpcAttackAction : AttackAction
     {
         private const int MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT = 70;
-        private const int SWITCH_TO_MELEE_DISTANCE_OFFSET = 50; // NPCs will stay in melee if within this + melee range from their target.
-        private const int SWITCH_TO_RANGED_DISTANCE_OFFSET = 250; // NPCs will switch to ranged if further than this + melee range from their target.
+        private const double TIME_TO_TARGET_TRESHOLD_BEFORE_MELEE_SWITCH = 250; // NPCs will switch to melee if within melee range + (this * maxSpeed * 0.001).
+        private const double TIME_TO_TARGET_TRESHOLD_BEFORE_RANGED_SWITCH = 1000; // NPCs will switch to ranged if further than melee range + (this * maxSpeed * 0.001).
 
         private GameNPC _npcOwner;
         private bool _isGuardArcher;
@@ -35,18 +35,23 @@ namespace DOL.GS
             // Guard archers shouldn't switch to melee when interrupted from a ranged attack, otherwise they fall from the wall.
             // They will still switch to melee if their target is in melee range.
             if ((!_isGuardArcher && _npcOwner.HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT) ||
-                (attacker is GameLiving livingAttacker && livingAttacker.ActiveWeaponSlot != eActiveWeaponSlot.Distance && livingAttacker.IsWithinRadius(_npcOwner, livingAttacker.attackComponent.AttackRange)))
+                (attacker is GameLiving livingAttacker && livingAttacker.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingAttacker.IsWithinRadius(_npcOwner, livingAttacker.attackComponent.AttackRange)))
                 SwitchToMeleeAndTick();
         }
 
         protected override bool PrepareMeleeAttack()
         {
             int meleeAttackRange = _npcOwner.MeleeAttackRange;
+            int offsetMeleeAttackRange = meleeAttackRange;
+            int maxSpeed = _npcOwner.MaxSpeed;
+
+            if (maxSpeed > 0)
+                offsetMeleeAttackRange += (int) (TIME_TO_TARGET_TRESHOLD_BEFORE_RANGED_SWITCH * maxSpeed * 0.001);
 
             // NPCs try to switch to their ranged weapon whenever possible.
             if (!_npcOwner.IsBeingInterrupted &&
                 _npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null &&
-                !_npcOwner.IsWithinRadius(_target, meleeAttackRange + SWITCH_TO_RANGED_DISTANCE_OFFSET))
+                !_npcOwner.IsWithinRadius(_target, offsetMeleeAttackRange))
             {
                 // But only if there is no timer running or if it has LoS.
                 // If the timer is running, it'll check for LoS continuously.
@@ -102,10 +107,16 @@ namespace DOL.GS
 
         protected override bool FinalizeRangedAttack()
         {
+            int offsetMeleeAttackRange = _npcOwner.MeleeAttackRange;
+            int maxSpeed = _npcOwner.MaxSpeed;
+
+            if (maxSpeed > 0)
+                offsetMeleeAttackRange += (int) (TIME_TO_TARGET_TRESHOLD_BEFORE_MELEE_SWITCH * maxSpeed * 0.001);
+
             // Switch to melee if the target is close enough.
             if (_npcOwner != null &&
                 _npcOwner.TargetObject != null &&
-                _npcOwner.IsWithinRadius(_target, _npcOwner.MeleeAttackRange + SWITCH_TO_MELEE_DISTANCE_OFFSET))
+                _npcOwner.IsWithinRadius(_target, offsetMeleeAttackRange))
             {
                 SwitchToMeleeAndTick();
                 return false;
