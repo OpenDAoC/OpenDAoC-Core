@@ -13,18 +13,17 @@ namespace DOL.GS
         private const double TIME_TO_TARGET_TRESHOLD_BEFORE_RANGED_SWITCH = 1000; // NPCs will switch to ranged if further than melee range + (this * maxSpeed * 0.001).
 
         private GameNPC _npcOwner;
-        private bool _isGuardArcher;
         private bool _hasLos;
         private CheckLosTimer _checkLosTimer;
         private GameObject _losCheckTarget;
 
         private static int LosCheckInterval => Properties.CHECK_LOS_DURING_RANGED_ATTACK_MINIMUM_INTERVAL;
         private bool HasLosOnCurrentTarget => _losCheckTarget == _target && _hasLos;
+        private bool IsGuardArcherOrImmobile => _npcOwner is GuardArcher || _npcOwner.MaxSpeedBase == 0;
 
         public NpcAttackAction(GameNPC owner) : base(owner)
         {
             _npcOwner = owner;
-            _isGuardArcher = _npcOwner is GuardArcher;
         }
 
         public override void OnAimInterrupt(GameObject attacker)
@@ -32,19 +31,18 @@ namespace DOL.GS
             // If the NPC is interrupted, we need to tell it to stop following its target if we want the following code to work.
             _npcOwner.StopFollowing();
 
-            // Guard archers shouldn't switch to melee when interrupted from a ranged attack, otherwise they fall from the wall.
-            // They will still switch to melee if their target is in melee range.
-            if ((!_isGuardArcher && _npcOwner.HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT) ||
+            // Guard archers and immobile NPCs should ignore the health threshold.
+            // They will still switch to melee if their target gets in melee range.
+            if ((!IsGuardArcherOrImmobile && _npcOwner.HealthPercent < MIN_HEALTH_PERCENT_FOR_MELEE_SWITCH_ON_INTERRUPT) ||
                 (attacker is GameLiving livingAttacker && livingAttacker.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingAttacker.IsWithinRadius(_npcOwner, livingAttacker.attackComponent.AttackRange)))
                 SwitchToMeleeAndTick();
         }
 
         public override bool OnOutOfRangeOrNoLosRangedAttack()
         {
-            // If we're a guard, let's forget about our target so that we can attack another one and not stare at the wall.
+            // If we're a guard or an immobile NPC, let's forget about our target so that we can attack another one and not stare at the wall.
             // Otherwise, switch to melee, but keep the timer alive.
-
-            if (_isGuardArcher)
+            if (IsGuardArcherOrImmobile)
             {
                 GameObject oldTarget = _target;
                 StandardMobBrain brain = _npcOwner.Brain as StandardMobBrain;
