@@ -1,151 +1,92 @@
 using DOL.GS;
 using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
 
 namespace DOL.AI.Brain
 {
-	/// <summary>
-	/// Brain Class for Area Capture Guards
-	/// </summary>
-	public class KeepGuardBrain : StandardMobBrain
-	{
-		protected GameKeepGuard _keepGuardBody;
+    public class KeepGuardBrain : StandardMobBrain
+    {
+        protected GameKeepGuard _keepGuardBody;
 
-		public override GameNPC Body
-		{
-			get => _keepGuardBody ?? base.Body;
-			set
-			{
-				_keepGuardBody = value as GameKeepGuard;
-				base.Body = value;
-			}
-		}
+        public override GameNPC Body
+        {
+            get => _keepGuardBody ?? base.Body;
+            set
+            {
+                _keepGuardBody = value as GameKeepGuard;
+                base.Body = value;
+            }
+        }
 
-		public override int ThinkInterval => 500;
+        public override int ThinkInterval => 500;
 
-		/// <summary>
-		/// Constructor for the Brain setting default values
-		/// </summary>
-		public KeepGuardBrain() : base()
-		{
-			FSM.Add(new GuardState_RETURN_TO_SPAWN(this));
-		}
+        public KeepGuardBrain() : base()
+        {
+            FSM.Add(new GuardState_RETURN_TO_SPAWN(this));
+        }
 
-		public void SetAggression(int aggroLevel, int aggroRange)
-		{
-			AggroLevel = aggroLevel;
-			AggroRange = aggroRange;
-		}
+        public void SetAggression(int aggroLevel, int aggroRange)
+        {
+            AggroLevel = aggroLevel;
+            AggroRange = aggroRange;
+        }
 
-		public override bool CheckProximityAggro()
-		{
-			if (Body is GuardArcher or GuardStaticArcher or GuardLord)
-			{
-				GameObject target = Body.TargetObject;
+        protected override void CheckPlayerAggro()
+        {
+            foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) AggroRange))
+            {
+                if (!CanAggroTarget(player))
+                    continue;
 
-				// Ranged guards check LoS constantly
-				if (target != null)
-				{
-					GamePlayer losChecker = null;
+                if (Body is not GuardStealther && player.IsStealthed)
+                    continue;
 
-					if (target is GameNPC && (target as GameNPC).Brain is IControlledBrain)
-						losChecker = ((target as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-					else if (target is GamePlayer)
-						losChecker = target as GamePlayer;
+                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Shade))
+                    continue;
 
-					if (losChecker != null)
-						losChecker.Out.SendCheckLos(Body, target, new CheckLosResponse(LosCheckInCombatCallback));
-				}
+                WarMapMgr.AddGroup((byte) player.CurrentZone.ID, player.X, player.Y, player.Name, (byte) player.Realm);
+                SendLosCheckForAggro(player, player);
+                // We don't know if the LoS check will be positive, so we have to ask other players
+            }
+        }
 
-				// Drop aggro and disengage if the target is out of range
-				if (Body.IsAttacking && !Body.IsWithinRadius(target, AggroRange, false))
-				{
-					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
+        protected override void CheckNpcAggro()
+        {
+            foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
+            {
+                // Non-pet NPCs are ignored.
+                if (npc is GameKeepGuard || npc.Brain == null || npc.Brain is not IControlledBrain npcBrain)
+                    continue;
 
-					if (target is GameLiving livingTarget && livingTarget != null)
-						RemoveFromAggroList(livingTarget);
-				}
+                GamePlayer player = npcBrain.GetPlayerOwner();
 
-				if (Body.attackComponent.AttackState && _keepGuardBody.CanUseRanged)
-					Body.SwitchToRanged(target);
-			}
+                if (player == null)
+                    continue;
 
-			return base.CheckProximityAggro();
-		}
+                if (!CanAggroTarget(npc))
+                    continue;
 
-		protected override void CheckPlayerAggro()
-		{
-			foreach (GamePlayer player in Body.GetPlayersInRadius((ushort)AggroRange))
-			{
-				if (!CanAggroTarget(player))
-					continue;
+                WarMapMgr.AddGroup((byte) player.CurrentZone.ID, player.X, player.Y, player.Name, (byte) player.Realm);
+                SendLosCheckForAggro(player, npc);
+                // We don't know if the LoS check will be positive, so we have to ask other players.
+            }
+        }
 
-				if (Body is not GuardStealther && player.IsStealthed)
-					continue;
+        public override bool CanAggroTarget(GameLiving target)
+        {
+            if (AggroLevel <= 0 || !GameServer.ServerRules.IsAllowedToAttack(Body, target, true))
+                return false;
 
-				if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Shade))
-					continue;
+            GamePlayer checkPlayer = null;
 
-				WarMapMgr.AddGroup((byte) player.CurrentZone.ID, player.X, player.Y, player.Name, (byte) player.Realm);
-				SendLosCheckForAggro(player, player);
-				// We don't know if the LoS check will be positive, so we have to ask other players
-			}
-		}
+            if (target is GameNPC targetNpc && targetNpc.Brain is IControlledBrain targetBrain)
+                checkPlayer = targetBrain.GetPlayerOwner();
+            else if (target is GamePlayer targetPlayer)
+                checkPlayer = targetPlayer;
 
-		/// <summary>
-		/// Check area for NPCs to attack
-		/// </summary>
-		protected override void CheckNpcAggro()
-		{
-			foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
-			{
-				// Non-pet NPCs are ignored
-				if (npc is GameKeepGuard || npc.Brain == null || npc.Brain is not IControlledBrain)
-					continue;
+            if (checkPlayer == null || !GameServer.KeepManager.IsEnemy(_keepGuardBody, checkPlayer, true))
+                return false;
 
-				GamePlayer player = (npc.Brain as IControlledBrain).GetPlayerOwner();
-				
-				if (player == null)
-					continue;
-				if (!CanAggroTarget(npc))
-					continue;
-
-				WarMapMgr.AddGroup((byte)player.CurrentZone.ID, player.X, player.Y, player.Name, (byte)player.Realm);
-				SendLosCheckForAggro(player, npc);
-				// We don't know if the LoS check will be positive, so we have to ask other players
-			}
-		}
-
-		public override bool CanAggroTarget(GameLiving target)
-		{
-			if (AggroLevel <= 0 || !GameServer.ServerRules.IsAllowedToAttack(Body, target, true))
-				return false;
-
-			GamePlayer checkPlayer = null;
-
-			if (target is GameNPC && (target as GameNPC).Brain is IControlledBrain)
-				checkPlayer = ((target as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-			else if (target is GamePlayer)
-				checkPlayer = target as GamePlayer;
-
-			if (checkPlayer == null || !GameServer.KeepManager.IsEnemy(_keepGuardBody, checkPlayer, true))
-				return false;
-
-			return true;
-		}
-
-		private void LosCheckInCombatCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			if (response is not eLosCheckResponse.TRUE)
-			{
-				GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
-
-				if (gameObject is GameLiving gameLiving)
-				{
-					FSM.SetCurrentState(eFSMStateType.RETURN_TO_SPAWN);
-					RemoveFromAggroList(gameLiving);
-				}
-			}
-		}
-	}
+            return true;
+        }
+    }
 }
