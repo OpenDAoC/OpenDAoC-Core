@@ -39,6 +39,33 @@ namespace DOL.GS
                 SwitchToMeleeAndTick();
         }
 
+        public override bool OnOutOfRangeOrNoLosRangedAttack()
+        {
+            // If we're a guard, let's forget about our target so that we can attack another one and not stare at the wall.
+            // Otherwise, switch to melee, but keep the timer alive.
+
+            if (_isGuardArcher)
+            {
+                GameObject oldTarget = _target;
+                StandardMobBrain brain = _npcOwner.Brain as StandardMobBrain;
+                brain.RemoveFromAggroList(_losCheckTarget as GameLiving);
+                brain.AttackMostWanted(); // This won't immediately start the attack on the new target, but we can use `TargetObject` to start checking it.
+                GameObject newTarget = _npcOwner.TargetObject;
+
+                if (newTarget != oldTarget)
+                    _checkLosTimer?.ChangeTarget(newTarget); // The timer might be already cleaned up if this was the last target.
+
+                return true;
+            }
+            else if (AttackComponent.AttackState && !_hasLos)
+            {
+                SwitchToMeleeAndTick();
+                return true;
+            }
+
+            return false;
+        }
+
         protected override bool PrepareMeleeAttack()
         {
             int meleeAttackRange = _npcOwner.MeleeAttackRange;
@@ -175,21 +202,7 @@ namespace DOL.GS
                 return;
             }
 
-            // If we're a guard, let's forget about our target so that we can attack another one and not stare at the wall.
-            // Otherwise, switch to melee, but keep the timer alive.
-            if (_isGuardArcher)
-            {
-                GameObject oldTarget = _target;
-                StandardMobBrain brain = _npcOwner.Brain as StandardMobBrain;
-                brain.RemoveFromAggroList(_losCheckTarget as GameLiving);
-                brain.AttackMostWanted(); // This won't immediately start the attack on the new target, but we can use `TargetObject` to start checking it.
-                GameObject newTarget = _npcOwner.TargetObject;
-
-                if (newTarget != oldTarget)
-                    _checkLosTimer?.ChangeTarget(newTarget); // The timer might be already cleaned up if this was the last target.
-            }
-            else if (_npcOwner.attackComponent.AttackState)
-                SwitchToMeleeAndTick();
+            OnOutOfRangeOrNoLosRangedAttack();
         }
 
         public class CheckLosTimer : ECSGameTimerWrapperBase

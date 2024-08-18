@@ -780,23 +780,28 @@ namespace DOL.GS
         private void NpcStartAttack()
         {
             GameNPC npc = owner as GameNPC;
-
             npc.FireAmbientSentence(GameNPC.eAmbientTrigger.fighting, m_startAttackTarget);
             npc.TargetObject = m_startAttackTarget;
 
             if (npc.Brain is IControlledBrain brain)
             {
-                if (brain.AggressionState == eAggressionState.Passive)
+                if (brain.AggressionState is eAggressionState.Passive)
                     return;
             }
 
             // NPCs aren't allowed to prepare their ranged attack while moving or out of range.
-            if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            // If we have a running `AttackAction`, let it decide what to do. Not every NPC should start following their target and this allows us to react faster.
+            if (npc.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
             {
                 if (!npc.IsWithinRadius(npc.TargetObject, AttackRange - 30))
                 {
-                    StopAttack();
-                    npc.Follow(m_startAttackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
+                    if (attackAction == null || !attackAction.OnOutOfRangeOrNoLosRangedAttack())
+                    {
+                        // Default behavior. If `AttackAction` doesn't handle it, tell the NPC to get closer to its target.
+                        StopAttack();
+                        npc.Follow(m_startAttackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
+                    }
+
                     return;
                 }
 
@@ -811,13 +816,13 @@ namespace DOL.GS
                     if (npc.IsMoving)
                         npc.StopMoving();
 
-                    if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+                    if (npc.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
                         npc.TurnTo(m_startAttackTarget);
 
                     npc.Follow(m_startAttackTarget, npc.StickMinimumRange, npc.StickMaximumRange);
                 }
             }
-            else if (npc.ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+            else if (npc.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
                 npc.TurnTo(m_startAttackTarget);
         }
 
