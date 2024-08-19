@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.Language;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -13,32 +7,23 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_ToughnessAbility : RAPropertyEnhancer
     {
-
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public AtlasOF_ToughnessAbility(DbAbility dba, int level) : base(dba, level, eProperty.MaxHealth) { }
 
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
-
-        public override int GetAmountForLevel(int level) { return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level); }
-
-        public override void Activate(GameLiving living, bool sendUpdates)
+        public override int CostForUpgrade(int level)
         {
-            log.Warn("INSIDE Activate");
-            base.Activate(living, sendUpdates);
+            return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level);
         }
 
-        public override void Deactivate(GameLiving living, bool sendUpdates)
+        public override int GetAmountForLevel(int level)
         {
-            log.Warn("INSIDE Deactivate");
-            base.Deactivate(living, sendUpdates);
+            return AtlasRAHelpers.GetPropertyEnhancer3AmountForLevel(level);
         }
 
         public override void OnLevelChange(int oldLevel, int newLevel = 0)
         {
-            log.Warn("INSIDE onLevelChange");
-            SendUpdates(this.m_activeLiving);
-            base.OnLevelChange(oldLevel, newLevel);
+            SendUpdates(m_activeLiving);
         }
     }
 }
