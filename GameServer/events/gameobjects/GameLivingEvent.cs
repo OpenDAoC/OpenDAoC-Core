@@ -135,10 +135,6 @@ namespace DOL.Events
 		/// </summary>
 		public static readonly GameLivingEvent HealthChanged = new GameLivingEvent("GameLiving.HealthChanged");
 		/// <summary>
-		/// The PetReleased event is fired whenever the player commands to release controlled NPC
-		/// </summary>
-		public static readonly GameLivingEvent PetReleased = new GameLivingEvent("GameLiving.PetReleased");
-		/// <summary>
 		/// The RegionChanging event is fired when a living is changing regions
 		/// </summary>
 		public static readonly GameLivingEvent RegionChanging = new GameLivingEvent("GameLiving.RegionChanging");

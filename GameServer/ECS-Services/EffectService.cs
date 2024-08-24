@@ -614,6 +614,8 @@ namespace DOL.GS
                 case eSpellType.SummonNecroPet:
                 case eSpellType.SummonCommander:
                 case eSpellType.SummonMinion:
+                case eSpellType.SummonJuggernaut:
+                case eSpellType.SummonAnimistAmbusher:
                     return eEffect.Pet;
 
                 default:

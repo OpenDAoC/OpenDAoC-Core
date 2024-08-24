@@ -2,7 +2,6 @@ using System;
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.ServerProperties;
 
 namespace DOL.GS
@@ -336,14 +335,7 @@ namespace DOL.GS
 
 		public override void Die(GameObject killer)
 		{
-			try
-			{
-				GameEventMgr.Notify(GameLivingEvent.PetReleased, this);
-			}
-			finally
-			{
-				base.Die(killer);
-			}
+			base.Die(killer);
 		}
 
 		/// <summary>

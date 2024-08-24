@@ -329,19 +329,15 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void CommandNpcRelease()
 		{
-			IControlledBrain controlledBrain = Player.ControlledBrain;
+			ControlledMobBrain controlledBrain;
 
-			if (controlledBrain == null)
-				return;
+			if (Player.TargetObject is not GameNPC targetNpc || !Player.IsControlledNPC(targetNpc))
+				controlledBrain = Player.ControlledBrain as ControlledMobBrain;
+			else
+				controlledBrain = targetNpc.Brain as ControlledMobBrain;
 
-			(controlledBrain as ControlledMobBrain)?.StripCastedBuffs();
-
-			GameNPC npc = controlledBrain.Body;
-
-			if (npc == null)
-				return;
-
-			Player.Notify(GameLivingEvent.PetReleased, npc);
+			controlledBrain?.OnRelease();
+			return;
 		}
 
 		/// <summary>
@@ -358,7 +354,6 @@ namespace DOL.GS
 		{
 			return true;
 		}
-
 
 		/// <summary>
 		/// Return the health percent of this character

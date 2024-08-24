@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Events;
@@ -92,10 +90,7 @@ namespace DOL.GS.Spells
 			Caster.SetControlledBrain(brain);
 		}
 
-		protected virtual void AddHandlers()
-		{
-			GameEventMgr.AddHandler(m_pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
-		}
+		protected virtual void AddHandlers() { }
 
 		#endregion
 
@@ -164,6 +159,23 @@ namespace DOL.GS.Spells
 			Caster.OnPetSummoned(m_pet);
 		}
 
+		public virtual void OnPetReleased(GameSummonedPet pet)
+		{
+			if (pet.Brain is not IControlledBrain petBrain)
+				return;
+
+			GameLiving petOwner = petBrain.Owner;
+
+			if (petOwner.ControlledBrain == petBrain)
+				petOwner.SetControlledBrain(null);
+
+			foreach (ECSGameAbilityEffect ability in pet.effectListComponent.GetAbilityEffects())
+			{
+				if (ability is InterceptECSGameEffect interceptEffect && interceptEffect.Source == pet && interceptEffect.Target == petOwner)
+					EffectService.RequestCancelEffect(interceptEffect);
+			}
+		}
+
 		public override double CalculateSpellResistChance(GameLiving target)
 		{
 			return 0;
@@ -190,34 +202,6 @@ namespace DOL.GS.Spells
 		protected virtual void RemoveHandlers()
 		{
 			GameEventMgr.RemoveAllHandlersForObject(m_pet);
-		}
-
-		/// <summary>
-		/// Called when owner release NPC
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="arguments"></param>
-		protected virtual void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
-		{
-			if (sender is not GameNPC pet || pet.Brain is not IControlledBrain petBrain)
-				return;
-
-			GameLiving petOwner = petBrain.Owner;
-
-			if (petOwner.ControlledBrain == petBrain)
-				petOwner.SetControlledBrain(null);
-
-			foreach (var ability in pet.effectListComponent.GetAbilityEffects())
-			{
-				if (ability is InterceptECSGameEffect interceptEffect && interceptEffect.Source == pet && interceptEffect.Target == petOwner)
-					EffectService.RequestCancelEffect(interceptEffect);
-			}
-
-			GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
-			
-			if (pet.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(Spell), out var petEffect))
-				EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
 		}
 
 		/// <summary>

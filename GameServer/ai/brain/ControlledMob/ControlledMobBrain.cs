@@ -370,26 +370,13 @@ namespace DOL.AI.Brain
 			return true;
 		}
 
-		/// <summary>
-		/// Stops the brain thinking
-		/// </summary>
-		/// <returns>true if stopped</returns>
 		public override bool Stop()
 		{
 			if (!base.Stop())
 				return false;
 
-			StripCastedBuffs();
-			GameEventMgr.Notify(GameLivingEvent.PetReleased, Body);
+			OnRelease();
 			return true;
-		}
-
-		/// <summary>
-		/// Do the mob AI
-		/// </summary>
-		public override void Think()
-		{
-			base.Think();
 		}
 
 		/// <summary>
@@ -943,6 +930,17 @@ namespace DOL.AI.Brain
 
 			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()) { FSM.SetCurrentState(eFSMStateType.AGGRO); }
 			AttackMostWanted();
+		}
+
+		public virtual void OnRelease()
+		{
+			StripCastedBuffs();
+
+			foreach (ECSGameSpellEffect effect in Body.effectListComponent.GetSpellEffects())
+			{
+				if (effect.EffectType is eEffect.Pet or eEffect.Charm)
+					EffectService.RequestImmediateCancelEffect(effect);
+			}
 		}
 
 		public void AddBuffedTarget(GameLiving living)

@@ -2813,11 +2813,7 @@ namespace DOL.GS
 
 		protected void ControlledNPC_Release()
 		{
-			if (this.ControlledBrain != null)
-			{
-				//log.Info("On tue le pet !");
-				this.Notify(GameLivingEvent.PetReleased, ControlledBrain.Body);
-			}
+			(ControlledBrain as ControlledMobBrain)?.OnRelease();
 		}
 
 		/// <summary>

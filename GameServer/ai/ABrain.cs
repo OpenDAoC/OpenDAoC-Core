@@ -48,6 +48,9 @@ namespace DOL.AI
         /// <returns>true if stopped</returns>
         public virtual bool Stop()
         {
+            if (EntityManagerId.IsPendingRemoval)
+                return false; // Prevents overrides from doing any redundant work. Maybe counter intuitive.
+
             bool wasReturningToSpawnPoint = Body.IsReturningToSpawnPoint;
             Body.StopMoving();
             FSM?.SetCurrentState(eFSMStateType.IDLE);

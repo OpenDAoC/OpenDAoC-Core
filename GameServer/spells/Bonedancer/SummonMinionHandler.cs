@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -99,17 +97,6 @@ namespace DOL.GS.Spells
 
             if (m_pet.Brain is BdPetBrain brain && !brain.MinionsAssisting)
                 brain.SetAggressionState(eAggressionState.Passive);
-        }
-
-        protected override void OnNpcReleaseCommand(DOLEvent e, object sender, EventArgs arguments)
-        {
-            if (sender is not GameNPC pet)
-                return;
-
-            GameEventMgr.RemoveHandler(pet, GameLivingEvent.PetReleased, new DOLEventHandler(OnNpcReleaseCommand));
-
-            if (pet.effectListComponent.Effects.TryGetValue(eEffect.Pet, out var petEffect))
-                EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
         }
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)

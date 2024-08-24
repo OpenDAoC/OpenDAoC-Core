@@ -46,8 +46,7 @@ namespace DOL.GS
 		/// </summary>
 		public override void CommandNpcRelease()
 		{
-			m_savedPetHealthPercent = (Player.ControlledBrain != null) ? (int)Player.ControlledBrain.Body.HealthPercent : 0;
-
+			m_savedPetHealthPercent = Player.ControlledBrain != null ? Player.ControlledBrain.Body.HealthPercent : 0;
 			base.CommandNpcRelease();
 			OnPetReleased();
 		}

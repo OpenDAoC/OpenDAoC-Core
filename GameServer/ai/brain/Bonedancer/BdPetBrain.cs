@@ -1,5 +1,4 @@
 using System;
-using DOL.Events;
 using DOL.GS;
 
 namespace DOL.AI.Brain
@@ -68,19 +67,6 @@ namespace DOL.AI.Brain
         /// Updates the pet window
         /// </summary>
         public override void UpdatePetWindow() { }
-
-        /// <summary>
-        /// Stops the brain thinking
-        /// </summary>
-        /// <returns>true if stopped</returns>
-        public override bool Stop()
-        {
-            if (!base.Stop())
-                return false;
-
-            GameEventMgr.Notify(GameLivingEvent.PetReleased, Body);
-            return true;
-        }
 
         /// <summary>
         /// Start following the owner

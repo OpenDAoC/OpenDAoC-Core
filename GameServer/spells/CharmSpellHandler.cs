@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DOL.AI.Brain;
-using DOL.Events;
-using DOL.GS.Effects;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -20,36 +17,7 @@ namespace DOL.GS.Spells
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-        /// <summary>
-        /// Holds the charmed GameNPC for pulsing spells
-        /// </summary>
-        public GameNPC m_charmedNpc;
-
-        /// <summary>
-        /// Holds the new controlled NPC's brain
-        /// </summary>
-        public ControlledMobBrain m_controlledBrain;
-
-        /// <summary>
-        /// Tells pulsing spells to not add a controlled brain if it has not been previously removed by OnStopEffect()
-        /// </summary>
-        public bool m_isBrainSet;
-
-        /// <summary>
-        /// Specifies the type of mobs this spell can charm, based on Spell.AmnesiaChance values
-        /// </summary>
-        public enum eCharmType : ushort
-        {
-            All = 0,
-            Humanoid = 1,
-            Animal = 2,
-            Insect = 3,
-            HumanoidAnimal = 4,
-            HumanoidAnimalInsect = 5,
-            HumanoidAnimalInsectMagical = 6,
-            HumanoidAnimalInsectMagicalUndead = 7,
-            Reptile = 8
-        }
+        public CharmSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
         {
@@ -72,29 +40,14 @@ namespace DOL.GS.Spells
         /// <returns>'true' if the effect should be applied to the target</returns>
         public override bool StartSpell(GameLiving target)
         {
-            if (m_charmedNpc == null)
-                // Save target on first tick
-                m_charmedNpc = target as GameNPC;
-            else
-                // Reuse target for pulsing spells
-                target = m_charmedNpc;
+            // The argument is null when the effect is pulsing.
+            target ??= Target;
 
-            if (target == null)
-                return false;
-
-            if (Caster == null)
-                return false;
-
-            // Ignore SpellResisted values by returning 0
             if (Util.ChanceDouble(CalculateSpellResistChance(target)))
-            {
                 OnSpellResisted(target);
-            }
-            // If resist chance > 0, apply effect
             else
-            {
                 ApplyEffectOnTarget(target);
-            }
+
             return true;
         }
 
@@ -138,23 +91,13 @@ namespace DOL.GS.Spells
                 return false;
             }
 
-            // Apply following logic only if the target is a mob/NPC
-            // If the mob is not controlled and the caster
-            if (m_controlledBrain == null && Caster.ControlledBrain == null)
+            if (Caster.ControlledBrain == null)
             {
                 // Target is already controlled
-                if(charmMob.Brain != null && charmMob.Brain is IControlledBrain && (((IControlledBrain)(charmMob).Brain).Owner as GamePlayer) != Caster)
+                if (charmMob.Brain is IControlledBrain controlledBrain && controlledBrain.Owner != Caster)
                 {
                     // Message: {0} is currently being controlled.
                     MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.CurrentlyControlled", charmMob.GetName(0, true)), eChatType.CT_SpellResisted);
-                    return false;
-                }
-
-                // If Caster already has a pet
-                if (Caster.ControlledBrain != null)
-                {
-                    // Message: You already have a charmed creature, release it first!
-                    MessageToCaster(LanguageMgr.GetTranslation(casterPlayer.Client, "CharmSpell.EndCast.Fail.AlreadyOwnCharmed"), eChatType.CT_SpellResisted);
                     return false;
                 }
 
@@ -245,7 +188,6 @@ namespace DOL.GS.Spells
                 // For example, if the spell has an AmnesiaChance value of 4 (HumanoidAnimal), then the Caster may charm any mob with a BodyType of Humanoid or Animal.
                 if (m_spell.AmnesiaChance is > (ushort)eCharmType.All and <= (ushort)eCharmType.Reptile)
                 {
-
                     bool isCharmable = false;
 
                     // Returns 'true' only for charmable mobs
@@ -463,55 +405,6 @@ namespace DOL.GS.Spells
         }
 
         /// <summary>
-        /// When an applied effect starts
-        /// duration spells only
-        /// </summary>
-        /// <param name="effect"></param>
-        public override void OnEffectStart(GameSpellEffect effect)
-        {
-            // Behaviors moved to CharmECSEffect.cs > OnStopEffect()
-        }
-
-        /// <summary>
-        /// Handles release commands
-        /// </summary>
-        /// <param name="e"></param>
-        /// <param name="sender"></param>
-        /// <param name="arguments"></param>
-        public void ReleaseEventHandler(DOLEvent e, object sender, EventArgs arguments)
-        {
-            if (sender is not GameNPC pet || pet.Brain is not IControlledBrain)
-                return;
-
-            if (pet.effectListComponent.Effects.TryGetValue(eEffect.Charm, out List<ECSGameEffect> charms))
-                EffectService.RequestImmediateCancelEffect(charms.FirstOrDefault());
-        }
-
-        /// <summary>
-        /// When an applied effect expires.
-        /// Duration spells only.
-        /// </summary>
-        /// <param name="effect">The expired effect</param>
-        /// <param name="noMessages">true, when no messages should be sent to player and surrounding</param>
-        /// <returns>immunity duration in milliseconds</returns>
-        public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
-        {
-            return 0; // Behaviors moved to CharmECSEffect.cs > OnStopEffect()
-        }
-
-        /// <summary>
-        /// Send the Effect Animation
-        /// </summary>
-        /// <param name="target">The target object</param>
-        /// <param name="boltDuration">The duration of a bolt</param>
-        /// <param name="noSound">sound?</param>
-        /// <param name="success">spell success?</param>
-        public override void SendEffectAnimation(GameObject target, ushort boltDuration, bool noSound, byte success)
-        {
-            base.SendEffectAnimation(m_charmedNpc, boltDuration, noSound, success);
-        }
-
-        /// <summary>
         /// Delve Info
         /// </summary>
         public override IList<string> DelveInfo
@@ -588,7 +481,21 @@ namespace DOL.GS.Spells
             }
         }
 
-        public CharmSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+        /// <summary>
+        /// Specifies the type of mobs this spell can charm, based on Spell.AmnesiaChance values
+        /// </summary>
+        public enum eCharmType : ushort
+        {
+            All = 0,
+            Humanoid = 1,
+            Animal = 2,
+            Insect = 3,
+            HumanoidAnimal = 4,
+            HumanoidAnimalInsect = 5,
+            HumanoidAnimalInsectMagical = 6,
+            HumanoidAnimalInsectMagicalUndead = 7,
+            Reptile = 8
+        }
 
         /*
          Information covered below includes sources and info regarding the following:
