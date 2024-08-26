@@ -1,5 +1,4 @@
 using System;
-using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.PropertyCalc
 {
@@ -19,23 +18,9 @@ namespace DOL.GS.PropertyCalc
 
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            GamePlayer player = living as GamePlayer;
-            int debuff = living.SpecBuffBonusCategory[(int) property];
-
-            if (debuff < 0)
-                debuff = -debuff;
-
-            // Buffs allow to regenerate endurance even in combat and while moving.
-            double regenBuff = living.BaseBuffBonusCategory[(int) property] + living.ItemBonus[(int) property];
-            double regen = regenBuff;
-
-            if (regen == 0 && player != null)
-                regen++;
-
-            AtlasOF_RAEndRegenEnhancer raTireless = living.GetAbility<AtlasOF_RAEndRegenEnhancer>();
-
-            if (raTireless != null)
-                regen++;
+            // In 1.65, tireless is supposed to run on its own timer and regenerate 1 endurance per (9 - level) seconds. Works in and out combat, but is notoriously bad.
+            // The way endurance regeneration currently works doesn't allow for it to be implemented that way and we're still using Atlas' version of tireless instead.
+            // It has a max level of 1, and always adds 1 endurance per tick.
 
             /*    Patch 1.87 - COMBAT AND REGENERATION CHANGES
                 - The bonus to regeneration while standing out of combat has been greatly increased. The amount of ticks 
@@ -44,26 +29,21 @@ namespace DOL.GS.PropertyCalc
                 - Fatigue now regenerates at the standing rate while moving.
             */
 
+            int debuff = living.SpecBuffBonusCategory[(int) property];
+
+            if (debuff < 0)
+                debuff = -debuff;
+
+            // Buffs allow to regenerate endurance even in combat and while moving.
+            double regen = living.BaseBuffBonusCategory[(int) property] + living.AbilityBonus[(int) property] + living.ItemBonus[(int) property] - debuff;
+
             if (!living.InCombat)
             {
-                if (player != null && !player.IsSprinting)
-                    regen += 4;
-            }
-            else
-            {
-                regen -= 3;
 
-                if (regen <= 0)
-                    regen = 0.1;
-
-                if (regenBuff > 0)
-                    regen = regenBuff;
-
-                if (player != null && raTireless != null)
-                    regen++;
+                if (living is not GamePlayer player || !player.IsSprinting)
+                    regen += 5;
             }
 
-            regen -= debuff;
             regen *= ServerProperties.Properties.ENDURANCE_REGEN_AMOUNT_MODIFIER;
             return Math.Max(0, (int) regen);
         }
