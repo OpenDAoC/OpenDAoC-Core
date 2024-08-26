@@ -25,7 +25,10 @@ namespace DOL.GS.PropertyCalc
               - All health and power regeneration aids are now twice as effective.
              */
 
-            double regen = 5 + living.Level * 0.5;
+            // Reverted 1.87 changes.
+            // From DoL's `living.Level * 0.6` above level 25, `10 + (living.Level * 0.2)` below level 26.
+            // 15 health per tick at level 50 instead of 30.
+            double regen = 2.5 + living.Level * 0.25;
 
             if (living is GameNPC npc)
             {

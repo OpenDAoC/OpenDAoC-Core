@@ -12,7 +12,7 @@ namespace DOL.GS.PropertyCalc
     [PropertyCalculator(eProperty.PowerRegenerationAmount)]
     public class PowerRegenerationAmountCalculator : PropertyCalculator
     {
-        public PowerRegenerationAmountCalculator() {}
+        public PowerRegenerationAmountCalculator() { }
 
         public override int CalcValue(GameLiving living, eProperty property) 
         {
@@ -22,12 +22,10 @@ namespace DOL.GS.PropertyCalc
               - All health and power regeneration aids are now twice as effective.
              */
 
-            double regen = living.Level / 10.0 + living.Level / 2.75;
-
-            // What is this? NPCs don't have power.
-            if (living is GameNPC && living.InCombat)
-                regen /= 2.0;
-
+            // Reverted 1.87 changes.
+            // From DoL's `5 + (living.Level / 2.75)`.
+            // 12 power per tick at level 50 instead of 20.68.
+            double regen = 2.5 + living.Level * 0.2;
             regen *= ServerProperties.Properties.MANA_REGEN_AMOUNT_MODIFIER;
             int debuff = living.SpecBuffBonusCategory[(int) property];
 
