@@ -232,6 +232,8 @@ namespace DOL.GS
 			get { return eClassType.ListCaster; }
 		}
 
+		public virtual bool FocusCaster => false;
+
 		/// <summary>
 		/// Return the base list of Realm abilities that the class
 		/// can train in.  Added by Echostorm for RAs

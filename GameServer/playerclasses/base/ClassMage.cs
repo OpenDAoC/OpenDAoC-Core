@@ -43,6 +43,8 @@ namespace DOL.GS.PlayerClass
 			get { return eClassType.ListCaster; }
 		}
 
+		public override bool FocusCaster => true;
+
 		public override GameTrainer.eChampionTrainerType ChampionTrainerType()
 		{
 			return GameTrainer.eChampionTrainerType.Mage;

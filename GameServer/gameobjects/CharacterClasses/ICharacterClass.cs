@@ -105,6 +105,8 @@ namespace DOL.GS
 		/// </summary>
 		eClassType ClassType { get; }
 
+		bool FocusCaster { get; }
+
 		/// <summary>
 		/// Instance Attached GamePlayer
 		/// </summary>
