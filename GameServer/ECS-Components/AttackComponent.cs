@@ -457,7 +457,7 @@ namespace DOL.GS
                         }
                     }
 
-                    if (weapon.Object_Type is ((int) eObjectType.Longbow) or ((int) eObjectType.RecurvedBow) or ((int) eObjectType.CompositeBow))
+                    if ((eObjectType) weapon.Object_Type is eObjectType.Longbow or eObjectType.RecurvedBow or eObjectType.CompositeBow)
                     {
                         if (Properties.ALLOW_OLD_ARCHERY)
                             effectiveness += player.GetModified(eProperty.RangedDamage) * 0.01;
@@ -496,9 +496,9 @@ namespace DOL.GS
                 {
                     effectiveness += owner.GetModified(eProperty.MeleeDamage) * 0.01;
                 }
-                else if (weapon.SlotPosition == Slot.RANGED)
+                else if (weapon.SlotPosition is Slot.RANGED)
                 {
-                    if (weapon.Object_Type is ((int) eObjectType.Longbow) or ((int) eObjectType.RecurvedBow) or ((int) eObjectType.CompositeBow))
+                    if ((eObjectType) weapon.Object_Type is eObjectType.Longbow or eObjectType.RecurvedBow or eObjectType.CompositeBow)
                     {
                         if (Properties.ALLOW_OLD_ARCHERY)
                             effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
@@ -513,11 +513,10 @@ namespace DOL.GS
                 }
 
                 damage *= effectiveness;
+                damageCap = damage * 3;
 
                 if (owner is GameEpicBoss epicBoss)
-                    damageCap = damage * epicBoss.Empathy / 100.0 * Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
-                else
-                    damageCap = damage * 3;
+                    damageCap *= Properties.SET_EPIC_ENCOUNTER_WEAPON_DAMAGE_CAP;
 
                 return damage;
             }
