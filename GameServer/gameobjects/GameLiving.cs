@@ -2889,13 +2889,8 @@ namespace DOL.GS
 			}
 			else
 			{
-				int stackingBonus = 0;
-
-				if (this is GamePlayer p)
-					stackingBonus = p.PowerRegenStackingBonus;
-
 				if (Mana < MaxMana)
-					ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationAmount) + stackingBonus);
+					ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationAmount));
 
 				if (Mana >= MaxMana)
 					return 0;

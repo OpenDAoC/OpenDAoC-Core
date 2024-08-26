@@ -2487,78 +2487,51 @@ namespace DOL.GS
 
         #region Health/Mana/Endurance/Regeneration
 
-        /// <summary>
-        /// Starts the health regeneration.
-        /// Overriden. No lazy timers for GamePlayers.
-        /// </summary>
         public override void StartHealthRegeneration()
         {
-            if (!IsAlive || ObjectState != eObjectState.Active) return;
-            if (m_healthRegenerationTimer is {IsAlive: true}) return;
-
-            if (m_healthRegenerationTimer == null)
-            {
-                m_healthRegenerationTimer = new ECSGameTimer(this);
-                m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
-            }
-            else if (m_healthRegenerationTimer.IsAlive)
-            {
+            if (!IsAlive || ObjectState is not eObjectState.Active || m_healthRegenerationTimer.IsAlive)
                 return;
-            }
 
+            m_healthRegenerationTimer ??= new(this, new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback));
             m_healthRegenerationTimer.Start(m_healthRegenerationPeriod);
         }
-        /// <summary>
-        /// Starts the power regeneration.
-        /// Overriden. No lazy timers for GamePlayers.
-        /// </summary>
+
         public override void StartPowerRegeneration()
         {
-            if (ObjectState != eObjectState.Active) return;
-            if (m_powerRegenerationTimer is {IsAlive: true}) return;
-            if (m_powerRegenerationTimer == null)
-            {
-                m_powerRegenerationTimer = new ECSGameTimer(this);
-                m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
-            }
+            if (ObjectState is not eObjectState.Active || m_powerRegenerationTimer.IsAlive)
+                return;
 
-            PowerRegenStackingBonus = 0;
+            m_powerRegenerationTimer ??= new(this, new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback));
             m_powerRegenerationTimer.Start(m_powerRegenerationPeriod);
         }
-        /// <summary>
-        /// Starts the endurance regeneration.
-        /// Overriden. No lazy timers for GamePlayers.
-        /// </summary>
+
         public override void StartEnduranceRegeneration()
         {
-            if (ObjectState != eObjectState.Active) return;
-            if (m_enduRegenerationTimer is {IsAlive: true}) return;
-            if (m_enduRegenerationTimer == null)
-            {
-                m_enduRegenerationTimer = new ECSGameTimer(this);
-                m_enduRegenerationTimer.Callback =
-                    new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
-            }
+            if (ObjectState is not eObjectState.Active || m_enduRegenerationTimer.IsAlive)
+                return;
 
+
+            m_enduRegenerationTimer ??= new(this, new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback));
             m_enduRegenerationTimer.Start(m_enduranceRegenerationPeriod);
         }
-        /// <summary>
-        /// Stop the health regeneration.
-        /// Overriden. No lazy timers for GamePlayers.
-        /// </summary>
+
         public override void StopHealthRegeneration()
         {
-            if (m_healthRegenerationTimer == null) return;
+            if (m_healthRegenerationTimer == null)
+                return;
+
             m_healthRegenerationTimer.Stop();
         }
+
         /// <summary>
         /// Stop the power regeneration.
         /// Overriden. No lazy timers for GamePlayers.
         /// </summary>
         public override void StopPowerRegeneration()
         {
-            PowerRegenStackingBonus = 0;
-            if (m_powerRegenerationTimer == null) return;
+            if (m_powerRegenerationTimer == null)
+                return;
+
             m_powerRegenerationTimer.Stop();
         }
         /// <summary>
@@ -2567,7 +2540,9 @@ namespace DOL.GS
         /// </summary>
         public override void StopEnduranceRegeneration()
         {
-            if (m_enduRegenerationTimer == null) return;
+            if (m_enduRegenerationTimer == null)
+                return;
+
             m_enduRegenerationTimer.Stop();
         }
 
@@ -2603,21 +2578,6 @@ namespace DOL.GS
                 return HealthRegenerationPeriod / 2;
 
             return HealthRegenerationPeriod;
-        }
-
-        public int PowerRegenStackingBonus = 0;
-
-        protected override int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
-        {
-            if (IsSitting)
-            {
-                if (PowerRegenStackingBonus < 3)
-                    PowerRegenStackingBonus++;
-            }
-            else
-                PowerRegenStackingBonus = 0;
-
-            return base.PowerRegenerationTimerCallback(selfRegenerationTimer);
         }
 
         protected override int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
