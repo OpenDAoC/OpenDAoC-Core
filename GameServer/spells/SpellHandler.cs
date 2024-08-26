@@ -1148,91 +1148,64 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Calculates the power to cast the spell
 		/// </summary>
-		/// <param name="target"></param>
-		/// <returns></returns>
 		public virtual int PowerCost(GameLiving target)
 		{
-			/*
-			// warlock
-			GameSpellEffect effect = SpellHandler.FindEffectOnTarget(m_caster, "Powerless");
+			// Warlock.
+			/* GameSpellEffect effect = SpellHandler.FindEffectOnTarget(m_caster, "Powerless");
 			if (effect != null && !m_spell.IsPrimary)
 				return 0;*/
 
-			//1.108 - Valhallas Blessing now has a 75% chance to not use power.
-			ValhallasBlessingEffect ValhallasBlessing = m_caster.EffectList.GetOfType<ValhallasBlessingEffect>();
-			if (ValhallasBlessing != null && Util.Chance(75))
+			// 1.108 - Valhalla's Blessing now has a 75% chance to not use power.
+			if (m_caster.EffectList.GetOfType<ValhallasBlessingEffect>() != null && Util.Chance(75))
 				return 0;
 
-			//patch 1.108 increases the chance to not use power to 50%.
-			FungalUnionEffect FungalUnion = m_caster.EffectList.GetOfType<FungalUnionEffect>();
-			{
-				if (FungalUnion != null && Util.Chance(50))
-					return 0;
-			}
+			// Patch 1.108 increases the chance to not use power to 50%.
+			if (m_caster.EffectList.GetOfType<FungalUnionEffect>() != null && Util.Chance(50))
+				return 0;
 
-			// Arcane Syphon chance
+			// Arcane Syphon.
 			int syphon = Caster.GetModified(eProperty.ArcaneSyphon);
-			if (syphon > 0)
-			{
-				if(Util.Chance(syphon))
-				{
-					return 0;
-				}
-			}
+			if (syphon > 0 && Util.Chance(syphon))
+				return 0;
 
-			double basepower = m_spell.Power; //<== defined a basevar first then modified this base-var to tell %-costs from absolut-costs
+			double powerCost = m_spell.Power;
+			GamePlayer playerCaster = Caster as GamePlayer;
 
-			// percent of maxPower if less than zero
-			if (basepower < 0)
+			// Percent of max power if less than zero.
+			if (powerCost < 0)
 			{
-				if (Caster is GamePlayer && ((GamePlayer)Caster).CharacterClass.ManaStat != eStat.UNDEFINED)
-				{
-					GamePlayer player = Caster as GamePlayer;
-					basepower = player.CalculateMaxMana(player.Level, player.GetBaseStat(player.CharacterClass.ManaStat)) * basepower * -0.01;
-				}
+				if (playerCaster != null && playerCaster.CharacterClass.ManaStat is not eStat.UNDEFINED)
+					powerCost = playerCaster.CalculateMaxMana(playerCaster.Level, playerCaster.GetBaseStat(playerCaster.CharacterClass.ManaStat)) * powerCost * -0.01;
 				else
+					powerCost = Caster.MaxMana * powerCost * -0.01;
+			}
+
+			if (playerCaster != null && playerCaster.CharacterClass.FocusCaster)
+			{
+				eProperty focusProp = SkillBase.SpecToFocus(SpellLine.Spec);
+
+				if (focusProp is not eProperty.Undefined)
 				{
-					basepower = Caster.MaxMana * basepower * -0.01;
+					double focusBonus = Caster.GetModified(focusProp) * 0.4;
+
+					if (Spell.Level > 0)
+						focusBonus /= Spell.Level;
+
+					if (focusBonus > 0.4)
+						focusBonus = 0.4;
+					else if (focusBonus < 0)
+						focusBonus = 0;
+
+					focusBonus *= Math.Min(1, playerCaster.GetModifiedSpecLevel(SpellLine.Spec) / (double) Spell.Level);
+					powerCost *= 1.2 - focusBonus; // Between 120% and 80% of base power cost.
 				}
 			}
 
-			double power = basepower * 1.2; //<==NOW holding basepower*1.2 within 'power'
-
-			eProperty focusProp = SkillBase.SpecToFocus(SpellLine.Spec);
-			if (focusProp != eProperty.Undefined)
-			{
-				double focusBonus = Caster.GetModified(focusProp) * 0.4;
-				if (Spell.Level > 0)
-					focusBonus /= Spell.Level;
-				if (focusBonus > 0.4)
-					focusBonus = 0.4;
-				else if (focusBonus < 0)
-					focusBonus = 0;
-				if (Caster is GamePlayer)
-				{
-					var spec = ((GamePlayer)Caster).GetModifiedSpecLevel(SpellLine.Spec);
-					double specBonus = Math.Min(spec, 50) / (Spell.Level * 1.0);
-					if (specBonus > 1)
-						specBonus = 1;
-					focusBonus *= specBonus;
-				}
-				power -= basepower * focusBonus; //<== So i can finally use 'basepower' for both calculations: % and absolut
-			}
-			else if (Caster is GamePlayer && ((GamePlayer)Caster).CharacterClass.ClassType == eClassType.Hybrid)
-			{
-				double specBonus = 0;
-				if (Spell.Level != 0) specBonus = (((GamePlayer)Caster).GetBaseSpecLevel(SpellLine.Spec) * 0.4 / Spell.Level);
-
-				if (specBonus > 0.4)
-					specBonus = 0.4;
-				else if (specBonus < 0)
-					specBonus = 0;
-				power -= basepower * specBonus;
-			}
-			// doubled power usage if quickcasting
+			// Doubled power usage if using QuickCast.
 			if (EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) != null && Spell.CastTime > 0)
-				power *= 2;
-			return (int)power;
+				powerCost *= 2;
+
+			return (int) powerCost;
 		}
 
 		public virtual int CalculateEnduranceCost()

@@ -45,34 +45,7 @@ namespace DOL.GS.Spells
             Caster.TempProperties.SetProperty(WARLOCK_UNINTERRUPTABLE_SPELL, Spell);
 
             base.FinishSpellCast(target);
-
-
         }
-		/// <summary>
-        /// Calculates the power to cast the spell
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        public override int PowerCost(GameLiving target)
-        { 
-            double basepower = m_spell.Power; //<== defined a basevar first then modified this base-var to tell %-costs from absolut-costs
-
-            // percent of maxPower if less than zero
-			if (basepower < 0)
-			{
-				if (Caster is GamePlayer && ((GamePlayer)Caster).CharacterClass.ManaStat != eStat.UNDEFINED)
-				{
-					GamePlayer player = Caster as GamePlayer;
-					basepower = player.CalculateMaxMana(player.Level, player.GetBaseStat(player.CharacterClass.ManaStat)) * basepower * -0.01;
-				}
-				else
-				{
-					basepower = Caster.MaxMana * basepower * -0.01;
-				}
-			}
-            return (int) basepower;
-        }
-
 
 		public override bool CasterIsAttacked(GameLiving attacker)
 		{
