@@ -6,7 +6,7 @@
 
         public TheurgistEarthPet(INpcTemplate npcTemplate) : base(npcTemplate)
         {
-            WeaponSkillScalingFactor = 17;
+            DamageFactor = 1.15;
         }
     }
 }

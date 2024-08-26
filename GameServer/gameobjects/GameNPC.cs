@@ -2698,12 +2698,12 @@ namespace DOL.GS
 			attackComponent.RequestStartAttack(target);
 		}
 
-		private double weaponSkillScalingFactor = 15;
+		private double damageFactor = 1;
 		private int orbsReward = 0;
-		
+
 		public override double GetWeaponSkill(DbInventoryItem weapon)
 		{
-			double weaponSkill = Math.Max(1, (int) Level) * (WeaponSkillScalingFactor / 5.75) * (1 + 0.01 * (GetWeaponStat(weapon) + 30) / 2);
+			double weaponSkill = Math.Max(1, (int) Level) * 2.6 * (1 + 0.01 * (GetWeaponStat(weapon) + 30) / 2);
 			return Math.Max(1, weaponSkill * GetModified(eProperty.WeaponSkill) * 0.01);
 		}
 
@@ -4516,7 +4516,7 @@ namespace DOL.GS
 
 		public virtual double CampBonus { get => m_campBonus; set => m_campBonus = value; }
 		public virtual double MaxHealthScalingFactor => 1.0;
-		public double WeaponSkillScalingFactor { get => weaponSkillScalingFactor; set => weaponSkillScalingFactor = value; }
+		public double DamageFactor { get => damageFactor; set => damageFactor = value; }
 		public int OrbsReward { get => orbsReward; set => orbsReward = value; }
 	}
 }

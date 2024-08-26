@@ -489,6 +489,9 @@ namespace DOL.GS
             {
                 double damage = (1.0 + owner.Level / Properties.PVE_MOB_DAMAGE_F1 + owner.Level * owner.Level / Properties.PVE_MOB_DAMAGE_F2) * NpcWeaponSpeed(weapon) * 0.1;
 
+                if (owner is GameNPC npc)
+                    damage *= npc.DamageFactor;
+
                 if (weapon == null ||
                     weapon.SlotPosition == Slot.RIGHTHAND ||
                     weapon.SlotPosition == Slot.LEFTHAND ||

@@ -14,7 +14,7 @@ namespace DOL.GS
 
         public GameEpicNPC() : base()
         {
-            WeaponSkillScalingFactor = 60;
+            DamageFactor = 1.5;
             ArmorFactorScalingFactor = DefaultArmorFactorScalingFactor;
         }
 

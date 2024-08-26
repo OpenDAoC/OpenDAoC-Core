@@ -33,8 +33,6 @@ namespace DOL.GS.Scripts
             Level = 77;
             // Giant
             BodyType = 5;
-            WeaponSkillScalingFactor = 45;
-            
             HordBrain sBrain = new HordBrain();
             SetOwnBrain(sBrain);
             LoadedFromScript = false;//load from database

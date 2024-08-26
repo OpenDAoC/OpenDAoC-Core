@@ -183,9 +183,9 @@ namespace DOL.GS.Commands
 					info.Add(" + Damage type: " + target.MeleeDamageType);
 					if (target.LeftHandSwingChance > 0)
 						info.Add(" + Left Swing %: " + target.LeftHandSwingChance);
-					if(target.WeaponSkillScalingFactor > 0)
-						info.Add(" + DamageTableScalingFactor: " + target.WeaponSkillScalingFactor);
-					if(target.GetModified(eProperty.MeleeDamage) > 0) 
+					if (target.DamageFactor > 0)
+						info.Add(" + DamageFactor: " + target.DamageFactor);
+					if (target.GetModified(eProperty.MeleeDamage) > 0)
 						info.Add(" + MeleeDamage bonus %: " + target.GetModified(eProperty.MeleeDamage));
 					if (target.GetWeaponSkill(new DbInventoryItem()) > 0)
 						info.Add(" + Calculated Weaponskill: " + target.GetWeaponSkill(new DbInventoryItem()));

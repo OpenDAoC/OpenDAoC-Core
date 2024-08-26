@@ -28,7 +28,6 @@ namespace DOL.GS.Scripts
             INpcTemplate npcTemplate = NpcTemplateMgr.GetTemplate(9916);
             LoadTemplate(npcTemplate);
 
-            WeaponSkillScalingFactor = 40;
             Faction = FactionMgr.GetFactionByID(779);
             LoadedFromScript = false; //load from database
             SaveIntoDatabase();
