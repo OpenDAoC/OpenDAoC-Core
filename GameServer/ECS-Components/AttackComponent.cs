@@ -483,7 +483,7 @@ namespace DOL.GS
                 damageCap *= effectiveness;
                 double damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damageCap);
                 damageCap *= 3;
-                return damage *= effectiveness;
+                return damage;
             }
             else
             {
