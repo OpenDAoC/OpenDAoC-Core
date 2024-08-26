@@ -1209,25 +1209,11 @@ namespace DOL.GS
                     if (action.RangedAttackType == eRangedAttackType.Critical)
                         baseDamageCap *= 2; // This may be incorrect. Critical shot doesn't double damage on >yellow targets.
 
-                    if (playerOwner != null)
-                    {
-                        // Badge Of Valor Calculation 1+ absorb or 1- absorb
-                        // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
-                        //     damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                        // else
-                        //     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                    }
-                    else
-                    {
-                        if (owner is GameEpicBoss boss)
-                            damageMod += boss.Strength / 200;
-
-                        // Badge Of Valor Calculation 1+ absorb or 1- absorb
-                        // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
-                        //     damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                        // else
-                        //     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
-                    }
+                    // Badge Of Valor Calculation 1+ absorb or 1- absorb
+                    // if (ad.Attacker.EffectList.GetOfType<BadgeOfValorEffect>() != null)
+                    //     damage *= 1.0 + Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
+                    // else
+                    //     damage *= 1.0 - Math.Min(0.85, ad.Target.GetArmorAbsorb(ad.ArmorHitLocation));
 
                     if (ad.IsOffHand)
                         damage *= 1 + owner.GetModified(eProperty.OffhandDamage) * 0.01;
