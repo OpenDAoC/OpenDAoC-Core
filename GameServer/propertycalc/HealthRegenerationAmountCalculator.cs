@@ -44,14 +44,13 @@ namespace DOL.GS.PropertyCalc
             }
 
             regen *= ServerProperties.Properties.HEALTH_REGEN_AMOUNT_MODIFIER;
-            regen += living.ItemBonus[(int)property];
 
             int debuff = living.SpecBuffBonusCategory[(int) property];
 
             if (debuff < 0)
                 debuff = -debuff;
 
-            regen += living.BaseBuffBonusCategory[(int) property] - debuff;
+            regen += living.BaseBuffBonusCategory[(int) property] + living.AbilityBonus[(int) property] + living.ItemBonus[(int)property] - debuff;
 
             if (regen < 1)
                 regen = 1;

@@ -1,39 +1,36 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
-using DOL.Language;
 
 namespace DOL.GS.RealmAbilities
 {
     /// <summary>
-    /// Serenity : Your spell points regenerate faster than normal.
-    /// Pre-Requisits : Augmented Acuity lvl 2
+    /// Adds to the amount of power regenerated over time.
+    /// Pre-requisites: Augmented Acuity 2
     /// </summary>
     public class AtlasOF_SerenityAbility : RAPropertyEnhancer
     {
+        public AtlasOF_SerenityAbility(DbAbility dba, int level) : base(dba, level, eProperty.PowerRegenerationAmount) { }
 
-        public AtlasOF_SerenityAbility(DbAbility dba, int level) : base(dba, level, eProperty.Undefined) { }
+        public override bool CheckRequirement(GamePlayer player)
+        {
+            return AtlasRAHelpers.GetAugAcuityLevel(player) >= 2;
+        }
 
-        public override bool CheckRequirement(GamePlayer player) { return AtlasRAHelpers.GetAugAcuityLevel(player) >= 2; }
-
-        public override int CostForUpgrade(int level) { return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level); }
+        public override int CostForUpgrade(int level)
+        {
+            return AtlasRAHelpers.GetCommonUpgradeCostFor5LevelsRA(level);
+        }
 
         public override int GetAmountForLevel(int level)
         {
-            if (level < 1) { return 0; }
-            switch (level)
+            return level switch
             {
-                case 1: return 500;
-                case 2: return 1000;
-                case 3: return 1500;
-                case 4: return 2000;
-                case 5: return 2500;
-                default: return 0;
-            }
+                1 => 1,
+                2 => 2,
+                3 => 3,
+                4 => 4,
+                5 => 5,
+                _ => 0,
+            };
         }
-
     }
 }

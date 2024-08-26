@@ -14,7 +14,7 @@ namespace DOL.GS.PropertyCalc
     {
         public PowerRegenerationAmountCalculator() { }
 
-        public override int CalcValue(GameLiving living, eProperty property) 
+        public override int CalcValue(GameLiving living, eProperty property)
         {
             /* PATCH 1.87 COMBAT AND REGENERATION
               - While in combat, health and power regeneration ticks will happen twice as often.

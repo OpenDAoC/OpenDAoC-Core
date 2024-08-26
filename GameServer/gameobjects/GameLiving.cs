@@ -2904,11 +2904,6 @@ namespace DOL.GS
 			if (IsSitting)
 				totalRegenPeriod /= 2;
 
-			AtlasOF_SerenityAbility raSerenity = GetAbility<AtlasOF_SerenityAbility>();
-
-			if (raSerenity != null && raSerenity.Level > 0)
-				totalRegenPeriod -= raSerenity.GetAmountForLevel(raSerenity.Level);
-
 			return totalRegenPeriod;
 
 			bool IsVampiirOrMauler()
