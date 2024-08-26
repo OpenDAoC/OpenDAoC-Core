@@ -1,3 +1,5 @@
+using System;
+
 namespace DOL.GS.PropertyCalc
 {
     /// <summary>
@@ -26,7 +28,6 @@ namespace DOL.GS.PropertyCalc
             // From DoL's `5 + (living.Level / 2.75)`.
             // 12 power per tick at level 50 instead of 20.68.
             double regen = 2.5 + living.Level * 0.2;
-            regen *= ServerProperties.Properties.MANA_REGEN_AMOUNT_MODIFIER;
             int debuff = living.SpecBuffBonusCategory[(int) property];
 
             if (debuff < 0)
@@ -42,10 +43,8 @@ namespace DOL.GS.PropertyCalc
                 regen /= 2;
             }
 
-            if (regen < 1)
-                regen = 1;
-
-            return (int) regen;
+            regen *= ServerProperties.Properties.MANA_REGEN_AMOUNT_MODIFIER;
+            return Math.Max(1, (int) regen);
         }
     }
 }

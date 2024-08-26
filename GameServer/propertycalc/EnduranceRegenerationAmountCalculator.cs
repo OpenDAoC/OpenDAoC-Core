@@ -1,3 +1,4 @@
+using System;
 using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.PropertyCalc
@@ -63,13 +64,8 @@ namespace DOL.GS.PropertyCalc
             }
 
             regen -= debuff;
-
-            if (regen < 0)
-                regen = 0;
-            else
-                regen *= ServerProperties.Properties.ENDURANCE_REGEN_AMOUNT_MODIFIER;
-
-            return (int) regen;
+            regen *= ServerProperties.Properties.ENDURANCE_REGEN_AMOUNT_MODIFIER;
+            return Math.Max(0, (int) regen);
         }
     }
 }
