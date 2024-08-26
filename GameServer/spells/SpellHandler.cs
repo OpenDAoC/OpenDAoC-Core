@@ -7,7 +7,6 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.PlayerClass;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
 using DOL.Language;
@@ -1236,13 +1235,9 @@ namespace DOL.GS.Spells
 			return (int)power;
 		}
 
-		/// <summary>
-		/// Calculates the enduance cost of the spell
-		/// </summary>
-		/// <returns></returns>
 		public virtual int CalculateEnduranceCost()
 		{
-			return 5;
+			return Spell.IsPulsing ? 0 : 5;
 		}
 
 		/// <summary>
@@ -1471,12 +1466,10 @@ namespace DOL.GS.Spells
 					m_caster.DisableSkill(m_spell, m_spell.RecastDelay);
 			}
 
-			/*if(Caster is GamePlayer && target != null)
-			{
-				(Caster as GamePlayer).Out.SendObjectUpdate(target);
-			}*/
-			if(!this.Spell.IsPulsingEffect && !this.Spell.IsPulsing && Caster is GamePlayer {CharacterClass: not ClassSavage})
-				m_caster.ChangeEndurance(m_caster, eEnduranceChangeType.Spell, -5);
+			int enduranceCost = CalculateEnduranceCost();
+
+			if (enduranceCost > 0)
+				m_caster.ChangeEndurance(m_caster, eEnduranceChangeType.Spell, -enduranceCost);
 
 			GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
 		}

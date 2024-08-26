@@ -102,7 +102,7 @@ SummonNecromancerPet.DelveInfo.Power:	Coût en mana: {0}%
 SummonNecromancerPet.DelveInfo.CastingTime:	Temp d'Incantation: {0}
 
 #SavageEnduranceHeal
-SavageEnduranceHeal.CheckBeginCast.InsuffiscientHealth:	Vous n'avez pas assez de vie pour lancer ce sort!
+SavageEnduranceHeal.CheckBeginCast.InsufficientHealth:	Vous n'avez pas assez de vie pour lancer ce sort!
 
 #AblativeArmorSpellHandler
 AblativeArmor.Target:	Votre bouclier absorbe {0} points de dégats!

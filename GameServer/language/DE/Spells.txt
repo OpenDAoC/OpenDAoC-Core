@@ -71,7 +71,7 @@ ResistDebuff.DelveInfo.Decrease:			Resistenz herabgesetzt ({0}): {1}
 ResistDebuff.DelveInfo.Function:			Wirkung: Weniger Resistenz
 
 # SavageEnduranceHeal
-SavageEnduranceHeal.CheckBeginCast.InsuffiscientHealth:	Ihr seid nicht gesund genug umd dies zu machen!
+SavageEnduranceHeal.CheckBeginCast.InsufficientHealth:	Ihr seid nicht gesund genug umd dies zu machen!
 
 # SpellHandler
 SpellHandler.CancelEffect:				Ihr beendet Euren Effekt.

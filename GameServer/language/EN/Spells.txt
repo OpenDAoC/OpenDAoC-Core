@@ -121,7 +121,7 @@ ResistDebuff.DelveInfo.Function:			Function: resistance decrease
 GamePlayer.Spell.ResurrectionIllness:		Resurrection Illness
 
 ## Savage Endurance Heal
-SavageEnduranceHeal.CheckBeginCast.InsuffiscientHealth:	You do not have enough health to cast that!
+SavageEnduranceHeal.CheckBeginCast.InsufficientHealth:	You do not have enough health to cast that!
 
 ## Shade
 Effects.ShadeEffect.Name:						Shade
