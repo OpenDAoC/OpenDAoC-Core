@@ -544,23 +544,6 @@ namespace DOL.GS.Keeps
 			return "the " + base.GetName(article, firstLetterUppercase);
 		}
 
-		/// <summary>
-		/// Starts the power regeneration
-		/// </summary>
-		public override void StartPowerRegeneration()
-		{
-			// No regeneration for doors
-			return;
-		}
-		/// <summary>
-		/// Starts the endurance regeneration
-		/// </summary>
-		public override void StartEnduranceRegeneration()
-		{
-			// No regeneration for doors
-			return;
-		}
-
 		public override void StartHealthRegeneration()
 		{
 			if (!IsAttackableDoor)

@@ -2738,8 +2738,9 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StartHealthRegeneration()
 		{
-			if (!IsAlive || ObjectState != eObjectState.Active)
+			if (!IsAlive || ObjectState is not eObjectState.Active)
 				return;
+
 			lock (m_regenTimerLock)
 			{
 				if (m_healthRegenerationTimer == null)
@@ -2755,50 +2756,17 @@ namespace DOL.GS
 				m_healthRegenerationTimer.Start(HealthRegenerationPeriod);
 			}
 		}
+
 		/// <summary>
 		/// Starts the power regeneration
 		/// </summary>
-		public virtual void StartPowerRegeneration()
-		{
-			
-			if (ObjectState != eObjectState.Active)
-				return;
-			lock (m_regenTimerLock)
-			{
-				if (m_powerRegenerationTimer == null)
-				{
-					m_powerRegenerationTimer = new ECSGameTimer(this);
-					m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
-				}
-				else if (m_powerRegenerationTimer.IsAlive)
-				{
-					return;
-				}
+		public virtual void StartPowerRegeneration() { }
 
-				m_powerRegenerationTimer.Start(PowerRegenerationPeriod);
-			}
-		}
 		/// <summary>
 		/// Starts the endurance regeneration
 		/// </summary>
-		public virtual void StartEnduranceRegeneration()
-		{
-			if (ObjectState != eObjectState.Active)
-				return;
-			lock (m_regenTimerLock)
-			{
-				if (m_enduRegenerationTimer == null)
-				{
-					m_enduRegenerationTimer = new ECSGameTimer(this);
-					m_enduRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
-				}
-				else if (m_enduRegenerationTimer.IsAlive)
-				{
-					return;
-				}
-				m_enduRegenerationTimer.Start(EnduranceRegenerationPeriod);
-			}
-		}
+		public virtual void StartEnduranceRegeneration() { }
+
 		/// <summary>
 		/// Stop the health regeneration
 		/// </summary>
@@ -2812,6 +2780,7 @@ namespace DOL.GS
 				m_healthRegenerationTimer = null;
 			}
 		}
+
 		/// <summary>
 		/// Stop the power regeneration
 		/// </summary>
@@ -2825,6 +2794,7 @@ namespace DOL.GS
 				m_powerRegenerationTimer = null;
 			}
 		}
+
 		/// <summary>
 		/// Stop the endurance regeneration
 		/// </summary>

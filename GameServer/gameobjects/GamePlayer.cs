@@ -2510,7 +2510,6 @@ namespace DOL.GS
             if (ObjectState is not eObjectState.Active || m_enduRegenerationTimer.IsAlive)
                 return;
 
-
             m_enduRegenerationTimer ??= new(this, new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback));
             m_enduRegenerationTimer.Start(m_enduranceRegenerationPeriod);
         }

@@ -77,21 +77,5 @@ namespace DOL.GS
 				}
 			}
 		}
-		/// <summary>
-		/// Starts the power regeneration
-		/// </summary>
-		public override void StartPowerRegeneration()
-		{
-			//No regeneration for moving objects
-			return;
-		}
-		/// <summary>
-		/// Starts the endurance regeneration
-		/// </summary>
-		public override void StartEnduranceRegeneration()
-		{
-			//No regeneration for moving objects
-			return;
-		}
 	}
 }
