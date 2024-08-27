@@ -35,7 +35,7 @@ namespace DOL.GS
                     {
                         if (!Owner.IsStealthed)
                         {
-                            Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, EffectType, SpellHandler.Spell.Value / 100.0);
+                            Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, EffectType, SpellHandler.Spell.Value / 100.0);
                             Owner.OnMaxSpeedChange();
                         }
 
@@ -46,6 +46,11 @@ namespace DOL.GS
                         ApplyBonus(Owner, eBuffBonusCategory.BaseBuff, prop, SpellHandler.Spell.Value, Effectiveness, false);
                 }
             }
+
+            // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
+            Owner.StartHealthRegeneration();
+            Owner.StartEnduranceRegeneration();
+            Owner.StartPowerRegeneration();
 
             // "You feel more dexterous!"
             // "{0} looks more agile!"
