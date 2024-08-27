@@ -2729,32 +2729,15 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// The lock object for lazy regen timers initialization
-		/// </summary>
-		protected readonly object m_regenTimerLock = new object();
-
-		/// <summary>
 		/// Starts the health regeneration
 		/// </summary>
 		public virtual void StartHealthRegeneration()
 		{
-			if (!IsAlive || ObjectState is not eObjectState.Active)
+			if (!IsAlive || ObjectState is not eObjectState.Active || m_healthRegenerationTimer.IsAlive)
 				return;
 
-			lock (m_regenTimerLock)
-			{
-				if (m_healthRegenerationTimer == null)
-				{
-					m_healthRegenerationTimer = new ECSGameTimer(this);
-					m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
-				}
-				else if (m_healthRegenerationTimer.IsAlive)
-				{
-					return;
-				}
-
-				m_healthRegenerationTimer.Start(HealthRegenerationPeriod);
-			}
+			m_healthRegenerationTimer ??= new(this, new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback));
+			m_healthRegenerationTimer.Start(m_healthRegenerationPeriod);
 		}
 
 		/// <summary>
@@ -2772,13 +2755,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopHealthRegeneration()
 		{
-			lock (m_regenTimerLock)
-			{
-				if (m_healthRegenerationTimer == null)
-					return;
-				m_healthRegenerationTimer.Stop();
-				m_healthRegenerationTimer = null;
-			}
+			m_healthRegenerationTimer?.Stop();
 		}
 
 		/// <summary>
@@ -2786,13 +2763,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopPowerRegeneration()
 		{
-			lock (m_regenTimerLock)
-			{
-				if (m_powerRegenerationTimer == null)
-					return;
-				m_powerRegenerationTimer.Stop();
-				m_powerRegenerationTimer = null;
-			}
+			m_powerRegenerationTimer?.Stop();
 		}
 
 		/// <summary>
@@ -2800,13 +2771,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopEnduranceRegeneration()
 		{
-			lock (m_regenTimerLock)
-			{
-				if (m_enduRegenerationTimer == null)
-					return;
-				m_enduRegenerationTimer.Stop();
-				m_enduRegenerationTimer = null;
-			}
+			m_enduRegenerationTimer?.Stop();
 		}
 
 		protected virtual int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)

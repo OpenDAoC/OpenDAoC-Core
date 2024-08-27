@@ -2487,15 +2487,6 @@ namespace DOL.GS
 
         #region Health/Mana/Endurance/Regeneration
 
-        public override void StartHealthRegeneration()
-        {
-            if (!IsAlive || ObjectState is not eObjectState.Active || m_healthRegenerationTimer.IsAlive)
-                return;
-
-            m_healthRegenerationTimer ??= new(this, new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback));
-            m_healthRegenerationTimer.Start(m_healthRegenerationPeriod);
-        }
-
         public override void StartPowerRegeneration()
         {
             if (ObjectState is not eObjectState.Active || m_powerRegenerationTimer.IsAlive)
@@ -2512,37 +2503,6 @@ namespace DOL.GS
 
             m_enduRegenerationTimer ??= new(this, new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback));
             m_enduRegenerationTimer.Start(m_enduranceRegenerationPeriod);
-        }
-
-        public override void StopHealthRegeneration()
-        {
-            if (m_healthRegenerationTimer == null)
-                return;
-
-            m_healthRegenerationTimer.Stop();
-        }
-
-        /// <summary>
-        /// Stop the power regeneration.
-        /// Overriden. No lazy timers for GamePlayers.
-        /// </summary>
-        public override void StopPowerRegeneration()
-        {
-            if (m_powerRegenerationTimer == null)
-                return;
-
-            m_powerRegenerationTimer.Stop();
-        }
-        /// <summary>
-        /// Stop the endurance regeneration.
-        /// Overriden. No lazy timers for GamePlayers.
-        /// </summary>
-        public override void StopEnduranceRegeneration()
-        {
-            if (m_enduRegenerationTimer == null)
-                return;
-
-            m_enduRegenerationTimer.Stop();
         }
 
         protected override int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
