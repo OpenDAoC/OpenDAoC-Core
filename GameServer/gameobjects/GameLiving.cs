@@ -2733,10 +2733,14 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StartHealthRegeneration()
 		{
-			if (!IsAlive || ObjectState is not eObjectState.Active || m_healthRegenerationTimer.IsAlive)
+			if (!IsAlive || ObjectState is not eObjectState.Active)
 				return;
 
-			m_healthRegenerationTimer ??= new(this, new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback));
+			if (m_healthRegenerationTimer == null)
+				m_healthRegenerationTimer = new(this, new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback));
+			else if (m_healthRegenerationTimer.IsAlive)
+				return;
+
 			m_healthRegenerationTimer.Start(m_healthRegenerationPeriod);
 		}
 

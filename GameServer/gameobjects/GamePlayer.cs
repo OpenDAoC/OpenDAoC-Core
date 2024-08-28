@@ -2489,19 +2489,27 @@ namespace DOL.GS
 
         public override void StartPowerRegeneration()
         {
-            if (ObjectState is not eObjectState.Active || m_powerRegenerationTimer.IsAlive)
+            if (!IsAlive || ObjectState is not eObjectState.Active)
                 return;
 
-            m_powerRegenerationTimer ??= new(this, new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback));
+            if (m_powerRegenerationTimer == null)
+                m_powerRegenerationTimer = new(this, new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback));
+            else if (m_powerRegenerationTimer.IsAlive)
+                return;
+
             m_powerRegenerationTimer.Start(m_powerRegenerationPeriod);
         }
 
         public override void StartEnduranceRegeneration()
         {
-            if (ObjectState is not eObjectState.Active || m_enduRegenerationTimer.IsAlive)
+            if (!IsAlive || ObjectState is not eObjectState.Active)
                 return;
 
-            m_enduRegenerationTimer ??= new(this, new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback));
+            if (m_enduRegenerationTimer == null)
+                m_enduRegenerationTimer = new(this, new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback));
+            else if (m_enduRegenerationTimer.IsAlive)
+                return;
+
             m_enduRegenerationTimer.Start(m_enduranceRegenerationPeriod);
         }
 
@@ -8734,13 +8742,7 @@ namespace DOL.GS
 
             IsJumping = false;
             m_invulnerabilityTick = 0;
-            m_healthRegenerationTimer = new ECSGameTimer(this);
-            m_powerRegenerationTimer = new ECSGameTimer(this);
-            m_enduRegenerationTimer = new ECSGameTimer(this);
             craftComponent = new CraftComponent(this);
-            m_healthRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(HealthRegenerationTimerCallback);
-            m_powerRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(PowerRegenerationTimerCallback);
-            m_enduRegenerationTimer.Callback = new ECSGameTimer.ECSTimerCallback(EnduranceRegenerationTimerCallback);
 
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
