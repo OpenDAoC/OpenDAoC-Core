@@ -6488,24 +6488,21 @@ namespace DOL.GS
             if (item == null)
                 return 0;
 
-            double armorFactor = item.DPS_AF + BaseBuffBonusCategory[(int) eProperty.ArmorFactor] / 6.0; // base AF buff
-            int itemArmorFactorCap = Level;
+            int characterLevel = Level;
 
             if (RealmLevel > 39)
-                itemArmorFactorCap++;
+                characterLevel++;
 
-            if ((eObjectType) item.Object_Type is not eObjectType.Cloth)
-                itemArmorFactorCap *= 2;
-
-            armorFactor = Math.Min(armorFactor, itemArmorFactorCap);
+            int armorFactorCap = characterLevel * 2;
+            double armorFactor = Math.Min(item.DPS_AF, (eObjectType) item.Object_Type is eObjectType.Cloth ? characterLevel : armorFactorCap);
+            armorFactor += BaseBuffBonusCategory[(int) eProperty.ArmorFactor] / 6.0; // Base AF buff.
+            armorFactor = Math.Min(armorFactor, armorFactorCap);
             armorFactor *= item.Quality * 0.01 * item.Condition / item.MaxCondition;
             armorFactor += base.GetArmorAF(slot);
 
             /*GameSpellEffect effect = SpellHandler.FindEffectOnTarget(this, typeof(VampiirArmorDebuff));
             if (effect != null && slot == (effect.SpellHandler as VampiirArmorDebuff).Slot)
-            {
-                eaf -= (int)(effect.SpellHandler as VampiirArmorDebuff).Spell.Value;
-            }*/
+                armorFactor -= (int) (effect.SpellHandler as VampiirArmorDebuff).Spell.Value;*/
 
             return armorFactor;
         }
