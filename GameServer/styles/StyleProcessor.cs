@@ -167,7 +167,7 @@ namespace DOL.GS.Styles
 				// Put player into attack state before setting the styles.
 				// Changing the attack state clears out the styles.
 				if (player.attackComponent.AttackState == false || EffectListService.GetEffectOnTarget(player, eEffect.Engage) != null)
-					player.attackComponent.RequestStartAttack(player.TargetObject);
+					player.attackComponent.RequestStartAttack();
 
 				if (player.TargetObject == null)
 				{

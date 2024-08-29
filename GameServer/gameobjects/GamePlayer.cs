@@ -7626,7 +7626,7 @@ namespace DOL.GS
                         else if (!attackComponent.AttackState && useItem.Object_Type != (int) eObjectType.Instrument && volley == null)
                         {
                             StopCurrentSpellcast();
-                            attackComponent.RequestStartAttack(TargetObject);
+                            attackComponent.RequestStartAttack();
                             newAttack = true;
                         }
 

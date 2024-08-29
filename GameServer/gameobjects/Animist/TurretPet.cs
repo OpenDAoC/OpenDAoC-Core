@@ -42,7 +42,7 @@ namespace DOL.GS
                 m_lastAttackTickPvP = GameLoop.GameLoopTime;
 
             if (Brain is TurretMainPetTankBrain)
-                attackComponent.RequestStartAttack(TargetObject);
+                attackComponent.RequestStartAttack();
         }
 
         public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)

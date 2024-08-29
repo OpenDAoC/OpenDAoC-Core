@@ -210,9 +210,6 @@ namespace DOL.GS
                     targetPlayer?.Out.SendChangeTarget(mainHandAD.Attacker);
             }
 
-            if (mainHandAD == null || mainHandAD.Target == null)
-                return;
-
             HandleDamageShields(mainHandAD);
 
             // Now left hand damage.
@@ -503,8 +500,7 @@ namespace DOL.GS
                     // It only affects the attacker's client, but for some reason, the attack animation doesn't play when the defender is different than the actually selected target.
                     // The lack of feedback makes fighting Spiritmasters very awkward because of the intercept mechanic. So until this get figured out, we'll instead play the hit animation on the attacker's selected target.
                     // Ranged attacks can be delayed (which makes the selected target unreliable) and don't seem to be affect by this anyway, so they must be ignored.
-                    GameObject animationTarget = player != m_owner || ActiveWeaponSlot == eActiveWeaponSlot.Distance || m_owner.TargetObject == defender ? defender : m_owner.TargetObject;
-
+                    GameObject animationTarget = player != m_owner || ActiveWeaponSlot == eActiveWeaponSlot.Distance || m_target == defender ? defender : m_target;
                     player.Out.SendCombatAnimation(m_owner, animationTarget,
                                                    (ushort) attackersWeapon, (ushort) defendersWeapon,
                                                    animationId, 0, resultByte, defender.HealthPercent);

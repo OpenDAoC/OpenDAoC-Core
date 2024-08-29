@@ -31,9 +31,7 @@ namespace DOL.GS
         {
             EngageTarget = Owner.TargetObject as GameLiving;
             Owner.IsEngaging = true;
-
-            if (OwnerPlayer != null)
-                OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.EngageEffect.ConcOnBlockingX", EngageTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            OwnerPlayer?.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.EngageEffect.ConcOnBlockingX", EngageTarget.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             // Only emulate attack mode so it works more like on live servers.
             // Entering real attack mode while engaging someone stops engage.
@@ -52,7 +50,7 @@ namespace DOL.GS
             Owner.IsEngaging = false;
 
             if (_startAttackAfterCancel)
-                Owner.attackComponent.RequestStartAttack(Owner.TargetObject);
+                Owner.attackComponent.RequestStartAttack(OwnerPlayer == null ? Owner.TargetObject : null);
         }
 
         public void Cancel(bool manualCancel, bool startAttackAfterCancel)

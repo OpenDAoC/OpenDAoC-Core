@@ -170,9 +170,6 @@ namespace DOL.GS
                 return;
 
             _npcOwner.SwitchToMelee(_target);
-            _npcOwner.attackComponent.AttackState = true; // Force `AttackState` back to be able to tick again immediately.
-            Tick();
-            _interval = 0;
         }
 
         private void SwitchToRangedAndTick()
@@ -181,9 +178,6 @@ namespace DOL.GS
                 return;
 
             _npcOwner.SwitchToRanged(_target);
-            _npcOwner.attackComponent.AttackState = true; // Force `AttackState` back to be able to tick again immediately.
-            Tick();
-            _interval = 0;
         }
 
         private void LosCheckCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)

@@ -18,7 +18,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             }
 
             if (start && userAction)
-                player.attackComponent.RequestStartAttack(player.TargetObject);
+                player.attackComponent.RequestStartAttack();
             else
                 player.attackComponent.StopAttack();
         }
