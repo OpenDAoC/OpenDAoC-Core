@@ -924,14 +924,18 @@ namespace DOL.GS
 			set { }
 		}
 
+		private object _interruptTimerLock = new();
+
 		/// <summary>
 		/// Starts the interrupt timer on this living.
 		/// </summary>
 		public virtual void StartInterruptTimer(int duration, eAttackType attackType, GameLiving attacker)
 		{
+			long newInterruptTime = GameLoop.GameLoopTime + duration;
+
 			if (attacker == this)
 			{
-				SelfInterruptTime = GameLoop.GameLoopTime + duration;
+				SelfInterruptTime = newInterruptTime;
 				return;
 			}
 
@@ -939,20 +943,34 @@ namespace DOL.GS
 			if (!Util.Chance(100 + (attacker.EffectiveLevel - EffectiveLevel) * 3))
 				return;
 
-			// Don't replace the current interrupt with a shorter one.
-			// Otherwise a slow melee hit's interrupt duration will be made shorter by a proc for example.
-			InterruptTime = Math.Max(InterruptTime, GameLoop.GameLoopTime + duration);
-			LastInterrupter = attacker;
+			lock (_interruptTimerLock)
+			{
+				bool wasAlreadyInterrupted = IsBeingInterrupted;
 
-			if (castingComponent?.SpellHandler != null)
-				castingComponent.SpellHandler.CasterIsAttacked(attacker);
-			else if (ActiveWeaponSlot == eActiveWeaponSlot.Distance)
+				// Don't update the interrupt time if it's shorter than the current one.
+				// If that's the case, we can assume the target is still being interrupted and isn't able to attack.
+				if (InterruptTime >= newInterruptTime)
+					return;
+
+				InterruptTime = newInterruptTime;
+				LastInterrupter = attacker;
+
+				// If the time is updated, we also check if the target was already interrupted.
+				// This should prevent multiple threads from executing the interrupt code, without expanding the lock.
+				if (wasAlreadyInterrupted)
+					return;
+			}
+
+			// Perform the actual interrupt.
+			if (castingComponent.SpellHandler?.CasterIsAttacked(attacker) == true)
+				return;
+			else if (ActiveWeaponSlot is eActiveWeaponSlot.Distance)
 			{
 				if (attackComponent.AttackState)
 					CheckRangedAttackInterrupt(attacker, attackType);
-				else if (effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
+				else
 				{
-					AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect) EffectListService.GetEffectOnTarget(this, eEffect.Volley);
+					AtlasOF_VolleyECSEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley) as AtlasOF_VolleyECSEffect;
 					volley?.OnAttacked();
 				}
 			}
