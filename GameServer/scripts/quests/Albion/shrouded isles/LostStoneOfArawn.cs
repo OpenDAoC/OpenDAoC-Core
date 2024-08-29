@@ -109,7 +109,7 @@ public class LostStoneofArawn : BaseQuest
             Honaytrt = new GameNPC();
             Honaytrt.Model = 759;
             Honaytrt.Name = "Honayt\'rt";
-            Honaytrt.GuildName = "";
+            Honaytrt.GuildName = string.Empty;
             Honaytrt.Realm = eRealm.Albion;
             Honaytrt.CurrentRegionID = 51;
             Honaytrt.LoadEquipmentTemplateFromDatabase("097fe8c1-7d7e-4b82-a7ca-04a6e192afc1");
@@ -140,7 +140,7 @@ public class LostStoneofArawn : BaseQuest
             Nchever = new GameNPC();
             Nchever.Model = 752;
             Nchever.Name = "N\'chever";
-            Nchever.GuildName = "";
+            Nchever.GuildName = string.Empty;
             Nchever.Realm = eRealm.Albion;
             Nchever.CurrentRegionID = 51;
             Nchever.LoadEquipmentTemplateFromDatabase("a2639e94-f032-4041-ad67-15dfeaf004d2");
@@ -173,7 +173,7 @@ public class LostStoneofArawn : BaseQuest
             Ohonat.LoadEquipmentTemplateFromDatabase("a58ef747-80e0-4cda-9052-15711ea0f4f7");
             Ohonat.Model = 761;
             Ohonat.Name = "O\'honat";
-            Ohonat.GuildName = "";
+            Ohonat.GuildName = string.Empty;
             Ohonat.Realm = eRealm.Albion;
             Ohonat.CurrentRegionID = 51;
             Ohonat.Size = 52;
@@ -312,7 +312,7 @@ public class LostStoneofArawn : BaseQuest
         Nyaegha.LoadEquipmentTemplateFromDatabase("Nyaegha");
         Nyaegha.Model = 605;
         Nyaegha.Name = "Nyaegha";
-        Nyaegha.GuildName = "";
+        Nyaegha.GuildName = string.Empty;
         Nyaegha.Realm = eRealm.None;
         Nyaegha.Race = 2001;
         Nyaegha.BodyType = (ushort) NpcTemplateMgr.eBodyType.Demon;

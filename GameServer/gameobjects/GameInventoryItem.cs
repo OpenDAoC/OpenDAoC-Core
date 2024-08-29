@@ -47,7 +47,7 @@ namespace DOL.GS
         /// <summary>
         /// Holds the translation id.
         /// </summary>
-        protected string m_translationId = "";
+        protected string m_translationId = string.Empty;
 
         /// <summary>
         /// Gets or sets the translation id.
@@ -375,7 +375,7 @@ namespace DOL.GS
                 delve.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.HandlePacket.CrafterName", Creator));
                 delve.Add(" ");
             }
-            else if (Description != null && Description != "")
+            else if (Description != null && Description != string.Empty)
             {
                 delve.Add(Description);
                 delve.Add(" ");
@@ -600,7 +600,7 @@ namespace DOL.GS
                 #region Proc1
                 if (ProcSpellID != 0)
                 {
-                    string spellNote = "";
+                    string spellNote = string.Empty;
                     output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MagicAbility"));
                     if (GlobalConstants.IsWeapon(Object_Type))
                     {
@@ -639,7 +639,7 @@ namespace DOL.GS
                 #region Proc2
                 if (ProcSpellID1 != 0)
                 {
-                    string spellNote = "";
+                    string spellNote = string.Empty;
                     output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MagicAbility"));
                     if (GlobalConstants.IsWeapon(Object_Type))
                     {

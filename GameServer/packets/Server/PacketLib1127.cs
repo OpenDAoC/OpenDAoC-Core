@@ -41,7 +41,7 @@ namespace DOL.GS.PacketHandler
             else if (loc == eChatLoc.CL_PopupWindow)
                 str = "##";
             else
-                str = "";
+                str = string.Empty;
 
             pak.WriteString(str + msg);
             SendTCP(pak);

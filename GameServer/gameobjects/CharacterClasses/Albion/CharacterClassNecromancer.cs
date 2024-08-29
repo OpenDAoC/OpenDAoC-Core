@@ -21,7 +21,7 @@ namespace DOL.GS
 		}
 
 		
-		//private String m_petName = "";
+		//private String m_petName = string.Empty;
 		private int m_savedPetHealthPercent = 0;
 
 		/// <summary>

@@ -81,7 +81,7 @@ namespace DOL.GS.Spells
             decoy.X = caster.X;
             decoy.Y = caster.Y;
             decoy.Z = caster.Z;
-            string TemplateId = "";
+            string TemplateId = string.Empty;
             switch (caster.Realm)
             {
                 case eRealm.Albion:
@@ -108,7 +108,7 @@ namespace DOL.GS.Spells
                 decoy.BroadcastLivingEquipmentUpdate();
             }
             decoy.MaxSpeedBase = 0;
-            decoy.GuildName = "";
+            decoy.GuildName = string.Empty;
         }
     }
     #endregion

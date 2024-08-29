@@ -139,7 +139,7 @@ namespace DOL.GS.Scripts
 
             if (cast)
             {
-                string portMessage = "";
+                string portMessage = string.Empty;
 
                 switch (Realm)
                 {

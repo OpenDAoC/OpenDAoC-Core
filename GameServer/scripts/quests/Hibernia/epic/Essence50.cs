@@ -130,7 +130,7 @@ namespace DOL.GS.Quests.Hibernia
 				Brigit.LoadEquipmentTemplateFromDatabase("4d0ceec2-6812-4d38-8b83-e56a7ee89821");
 				Brigit.Model = 346;
 				Brigit.Name = "Brigit";
-				Brigit.GuildName = "";
+				Brigit.GuildName = string.Empty;
 				Brigit.Realm = eRealm.Hibernia;
 				Brigit.CurrentRegionID = 201;
 				Brigit.Size = 50;
@@ -164,7 +164,7 @@ namespace DOL.GS.Quests.Hibernia
 				Caithor = new GhostOfCaithor();
 				Caithor.Model = 339;
 				Caithor.Name = "Giant Caithor";
-				Caithor.GuildName = "";
+				Caithor.GuildName = string.Empty;
 				Caithor.Realm = eRealm.None;
 				Caithor.CurrentRegionID = 200;
 				Caithor.Size = 160;

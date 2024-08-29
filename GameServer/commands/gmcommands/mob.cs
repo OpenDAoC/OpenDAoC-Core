@@ -307,7 +307,7 @@ namespace DOL.GS.Commands
 
 			//Fill the living variables
 			mob.MaxSpeedBase = 200;
-			mob.GuildName = "";
+			mob.GuildName = string.Empty;
 			mob.Size = 50;
 			mob.Flags |= GameNPC.eFlags.PEACE;
 			mob.AddToWorld();
@@ -379,7 +379,7 @@ namespace DOL.GS.Commands
 			}
 
 			mob.MaxSpeedBase = 200;
-			mob.GuildName = "";
+			mob.GuildName = string.Empty;
 			mob.Size = 50;
 			mob.AddToWorld();
 
@@ -458,7 +458,7 @@ namespace DOL.GS.Commands
 				}
 
 				mob.MaxSpeedBase = 200;
-				mob.GuildName = "";
+				mob.GuildName = string.Empty;
 				mob.Size = 50;
 				mob.AddToWorld();
 				client.Out.SendMessage("Mob created: OID=" + mob.ObjectID, eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -517,7 +517,7 @@ namespace DOL.GS.Commands
 				}
 
 				mob.MaxSpeedBase = 200;
-				mob.GuildName = "";
+				mob.GuildName = string.Empty;
 				mob.Size = 50;
 				mob.AddToWorld();
 			}
@@ -706,12 +706,12 @@ namespace DOL.GS.Commands
 		//        return;
 		//    }
 
-		//    string id = "";
+		//    string id = string.Empty;
 
 		//    if (args.Length > 2)
 		//        id = String.Join("", args, 2, args.Length - 2);
 
-		//    if (id != "")
+		//    if (id != string.Empty)
 		//    {
 		//        targetMob.TranslationId = id;
 		//        targetMob.SaveIntoDatabase();
@@ -728,12 +728,12 @@ namespace DOL.GS.Commands
 
 		private void name(GameClient client, GameNPC targetMob, string[] args)
 		{
-			string mobName = "";
+			string mobName = string.Empty;
 
 			if (args.Length > 2)
 				mobName = String.Join(" ", args, 2, args.Length - 2);
 
-			if (mobName != "")
+			if (mobName != string.Empty)
 			{
 				targetMob.Name = CheckName(mobName, client);
 				targetMob.SaveIntoDatabase();
@@ -753,12 +753,12 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			string suf = "";
+			string suf = string.Empty;
 
 			if (args.Length > 2)
 				suf = String.Join(" ", args, 2, args.Length - 2);
 
-			if (suf != "")
+			if (suf != string.Empty)
 			{
 				targetMob.Suffix = suf;
 				targetMob.SaveIntoDatabase();
@@ -770,12 +770,12 @@ namespace DOL.GS.Commands
 
 		private void guild(GameClient client, GameNPC targetMob, string[] args)
 		{
-			string guildName = "";
+			string guildName = string.Empty;
 
 			if (args.Length > 2)
 				guildName = String.Join(" ", args, 2, args.Length - 2);
 
-			if (guildName != "")
+			if (guildName != string.Empty)
 			{
 				targetMob.GuildName = CheckGuildName(guildName, client);
 				targetMob.SaveIntoDatabase();
@@ -783,9 +783,9 @@ namespace DOL.GS.Commands
 			}
 			else
 			{
-				if (targetMob.GuildName != "")
+				if (targetMob.GuildName != string.Empty)
 				{
-					targetMob.GuildName = "";
+					targetMob.GuildName = string.Empty;
 					targetMob.SaveIntoDatabase();
 					client.Out.SendMessage("Mob guild removed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
@@ -804,12 +804,12 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			string exa = "";
+			string exa = string.Empty;
 
 			if (args.Length > 2)
 				exa = String.Join(" ", args, 2, args.Length - 2);
 
-			if (exa != "")
+			if (exa != string.Empty)
 			{
 				targetMob.ExamineArticle = exa;
 				targetMob.SaveIntoDatabase();
@@ -829,12 +829,12 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			string msg = "";
+			string msg = string.Empty;
 
 			if (args.Length > 2)
 				msg = String.Join(" ", args, 2, args.Length - 2);
 
-			if (msg != "")
+			if (msg != string.Empty)
 			{
 				targetMob.Suffix = msg;
 				targetMob.SaveIntoDatabase();
@@ -1241,8 +1241,8 @@ namespace DOL.GS.Commands
 				info.Add(" + Respawn: NPC will not respawn");
 			else
 			{
-				string days = "";
-				string hours = "";
+				string days = string.Empty;
+				string hours = string.Empty;
 
 				if (respawn.Days > 0)
 					days = respawn.Days + " days ";
@@ -1602,7 +1602,7 @@ namespace DOL.GS.Commands
 			}
 
 			client.Out.SendMessage("-------------------------------", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-			string closed = "";
+			string closed = string.Empty;
 
 			if (targetMob.Inventory is GameNpcInventoryTemplate)
 			{
@@ -2661,7 +2661,7 @@ namespace DOL.GS.Commands
 			{
 				string pathname = String.Join(" ", args, 2, args.Length - 2);
 
-				if (pathname != "" && MovementMgr.LoadPath(pathname) == null)
+				if (pathname != string.Empty && MovementMgr.LoadPath(pathname) == null)
 				{
 					client.Out.SendMessage("The specified path does not exist", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
@@ -2828,7 +2828,7 @@ namespace DOL.GS.Commands
 			{
 				packageID = args[2];
 
-				if (packageID == "")
+				if (packageID == string.Empty)
 				{
 					DisplaySyntax(client, args[1]);
 					return;
@@ -2851,7 +2851,7 @@ namespace DOL.GS.Commands
 			{
 				ownerID = args[2];
 
-				if (ownerID == "")
+				if (ownerID == string.Empty)
 				{
 					DisplaySyntax(client, args[1]);
 					return;
@@ -3095,7 +3095,7 @@ namespace DOL.GS.Commands
 
 		private void trigger(GameClient client, GameNPC targetMob, string[] args)
 		{
-			string text = "";
+			string text = string.Empty;
 			ushort emote = 0;
 			ushort chance = 0;
 			try
@@ -3144,7 +3144,7 @@ namespace DOL.GS.Commands
 					text = String.Join(" ", args, 5, args.Length - 5);
 				}
 
-				if (text == "")
+				if (text == string.Empty)
 				{
 					client.Out.SendMessage("You must specify some text for the trigger.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;

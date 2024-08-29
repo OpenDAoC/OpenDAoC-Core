@@ -147,7 +147,7 @@ namespace DOL.GS.Quests.Midgard
 				Lynnleigh = new GameNPC();
 				Lynnleigh.Model = 217;
 				Lynnleigh.Name = "Lynnleigh";
-				Lynnleigh.GuildName = "";
+				Lynnleigh.GuildName = string.Empty;
 				Lynnleigh.Realm = eRealm.Midgard;
 				Lynnleigh.CurrentRegionID = 100;
 				Lynnleigh.Size = 51;
@@ -216,7 +216,7 @@ namespace DOL.GS.Quests.Midgard
 				Ydenia = new Ydenia();
 				Ydenia.Model = 439;
 				Ydenia.Name = "Ydenia of the Seithkona";
-				Ydenia.GuildName = "";
+				Ydenia.GuildName = string.Empty;
 				Ydenia.Realm = eRealm.None;
 				Ydenia.CurrentRegionID = 100;
 				Ydenia.Size = 60;

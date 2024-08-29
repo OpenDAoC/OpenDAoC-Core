@@ -118,7 +118,7 @@ namespace DOL.GS.Keeps
 
 		public Hashtable Positions { get; }
 
-		protected string m_CreateInfo = "";
+		protected string m_CreateInfo = string.Empty;
 		#endregion
 
 		public override int RealmPointsValue => 0;

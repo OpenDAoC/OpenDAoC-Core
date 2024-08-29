@@ -27,7 +27,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 	///	function cryptPassword($pass)
 	///	{
 	///		$len = strlen($pass);
-	///		$res = "";
+	///		$res = string.Empty;
 	///		for ($i = 0; $i < $len; $i++)
 	///		{
 	///			$res = $res . chr(ord(substr($pass, $i, 1)) >> 8);

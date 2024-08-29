@@ -36,7 +36,7 @@ namespace DOL.GS.Commands
 			}
 
 			/* When you don't have a lastname, change is for free, otherwise you need money */
-			if (client.Player.LastName != "" && client.Player.GetCurrentMoney() < Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0))
+			if (client.Player.LastName != string.Empty && client.Player.GetCurrentMoney() < Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0))
 			{
 				client.Out.SendMessage("Changing your last name costs " + Money.GetString(Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0)) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
@@ -106,7 +106,7 @@ namespace DOL.GS.Commands
 		{
 			foreach (Char c in name)
 			{
-				//if (!Char.IsLetter(c)) /* IsLetter() use unicode characters, it doesn't catch all accented letters like É, è, ì, Å, ecc.. that are invalid! */
+				//if (!Char.IsLetter(c)) /* IsLetter() use unicode characters, it doesn't catch all accented letters like É, E E Å, ecc.. that are invalid! */
 				if (c < 'A' || (c > 'Z' && c < 'a') || c > 'z')
 					return true;
 			}
@@ -131,7 +131,7 @@ namespace DOL.GS.Commands
 			}
 
 			/* Check money only if your lastname is not blank */
-			if (player.LastName != "" && player.GetCurrentMoney() < Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0))
+			if (player.LastName != string.Empty && player.GetCurrentMoney() < Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0))
 			{
 				player.Out.SendMessage("Changing your last name costs " + Money.GetString(Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0)) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
@@ -139,12 +139,12 @@ namespace DOL.GS.Commands
 
 			if (response != 0x01)
 			{
-				player.Out.SendMessage("You decline to " + (NewLastName != "" ? ("take " + NewLastName + " as") : "clear") + " your last name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("You decline to " + (NewLastName != string.Empty ? ("take " + NewLastName + " as") : "clear") + " your last name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
 
 			/* Remove money only if your lastname is not blank and is different from the previous one */
-            if (player.LastName != "" && player.LastName != NewLastName)
+            if (player.LastName != string.Empty && player.LastName != NewLastName)
             {
                 player.RemoveMoney(Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0), null);
                 InventoryLogging.LogInventoryAction(player, player.TargetObject, eInventoryActionType.Merchant, LASTNAME_FEE * 10000);
@@ -152,7 +152,7 @@ namespace DOL.GS.Commands
 
 		    /* Set the new lastname */
 			player.LastName = NewLastName;
-			player.Out.SendMessage("Your last name has been " + (NewLastName != "" ? ("set to " + NewLastName) : "cleared") + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage("Your last name has been " + (NewLastName != string.Empty ? ("set to " + NewLastName) : "cleared") + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
 	}
 }

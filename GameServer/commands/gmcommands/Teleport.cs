@@ -67,7 +67,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        if (args[2] == "")
+                        if (args[2] == string.Empty)
                         {
                             client.Out.SendMessage("You must specify a teleport ID.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return;

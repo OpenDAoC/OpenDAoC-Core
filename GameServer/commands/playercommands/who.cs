@@ -215,7 +215,7 @@ namespace DOL.GS.Commands
 			}
 
 			StringBuilder result = new StringBuilder(player.Name, 100);
-			if (player.GuildName != "")
+			if (player.GuildName != string.Empty)
 			{
 				result.Append(" <");
 				result.Append(player.GuildName);

@@ -214,7 +214,7 @@ namespace DOL.GS.Spells
 				var list = new List<string>();
 
 				// TODO: Fix no spellType
-				//list.Add("Function: " + (Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType));
+				//list.Add("Function: " + (Spell.SpellType == string.Empty ? "(not implemented)" : Spell.SpellType));
 				list.Add(" "); //empty line
 				list.Add(Spell.Description);
 				list.Add(" "); //empty line

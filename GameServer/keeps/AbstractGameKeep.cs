@@ -312,7 +312,7 @@ namespace DOL.GS.Keeps
 			return (byte)Math.Max(0, level - 1);
 		}
 
-		string m_name = "";
+		string m_name = string.Empty;
 
 		/// <summary>
 		/// The Keep Name linked to the DBKeep
@@ -529,7 +529,7 @@ namespace DOL.GS.Keeps
 			m_difficultyLevel[0] = DBKeep.AlbionDifficultyLevel;
 			m_difficultyLevel[1] = DBKeep.MidgardDifficultyLevel;
 			m_difficultyLevel[2] = DBKeep.HiberniaDifficultyLevel;
-			if (DBKeep.ClaimedGuildName != null && DBKeep.ClaimedGuildName != "")
+			if (DBKeep.ClaimedGuildName != null && DBKeep.ClaimedGuildName != string.Empty)
 			{
 				Guild myguild = GuildMgr.GetGuildByName(DBKeep.ClaimedGuildName);
 				if (myguild != null)
@@ -562,7 +562,7 @@ namespace DOL.GS.Keeps
 			if (Guild != null)
 				DBKeep.ClaimedGuildName = Guild.Name;
 			else
-				DBKeep.ClaimedGuildName = "";
+				DBKeep.ClaimedGuildName = string.Empty;
 			if(InternalID == null)
 			{
 				GameServer.Database.AddObject(DBKeep);

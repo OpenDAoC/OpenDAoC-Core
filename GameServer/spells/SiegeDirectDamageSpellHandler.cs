@@ -59,7 +59,7 @@ namespace DOL.GS.Spells
 
         public override void SendDamageMessages(AttackData ad)
         {
-            string modmessage = "";
+            string modmessage = string.Empty;
             if (ad.Modifier > 0)
                 modmessage = " (+" + ad.Modifier + ")";
             if (ad.Modifier < 0)

@@ -56,7 +56,7 @@
 //
 // 			IList quests = QuestListToGive;
 // 			int count = 0;
-// 			string artifacts = "";
+// 			string artifacts = string.Empty;
 // 			if (quests.Count > 0)
 // 			{
 // 				lock (quests.SyncRoot)
@@ -88,7 +88,7 @@
 // 				}
 // 			}
 //
-// 			String intro = "";
+// 			String intro = string.Empty;
 //
 // 			if (count == 0)
 // 			{

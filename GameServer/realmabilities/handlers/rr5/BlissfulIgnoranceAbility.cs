@@ -66,10 +66,10 @@ namespace DOL.GS.RealmAbilities
 						db.Duration = spell.Duration / 1000;
                         db.Power = 0;
 						db.Value = spell.Value;
-	                    db.Message1 = "";
-	                    db.Message2 = "";
-	                    db.Message3 = "";
-	                    db.Message4 = "";
+	                    db.Message1 = string.Empty;
+	                    db.Message2 = string.Empty;
+	                    db.Message3 = string.Empty;
+	                    db.Message4 = string.Empty;
                         db.Type = (spell.SpellType).ToString();
                         db.Target = "Self";
                         db.MoveCast = true;

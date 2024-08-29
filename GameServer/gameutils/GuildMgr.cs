@@ -330,7 +330,7 @@ namespace DOL.GS
 				foreach (var guild in guilds)
 				{
 					foreach (var cha in DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("GuildID").IsEqualTo(guild.GuildID)))
-						cha.GuildID = "";
+						cha.GuildID = string.Empty;
 				}
 				GameServer.Database.DeleteObject(guilds);
 
@@ -343,8 +343,8 @@ namespace DOL.GS
 					foreach (GamePlayer ply in removeGuild.GetListOfOnlineMembers())
 					{
 						ply.Guild = null;
-						ply.GuildID = "";
-						ply.GuildName = "";
+						ply.GuildID = string.Empty;
+						ply.GuildName = string.Empty;
 						ply.GuildRank = null;
 					}
 				}
@@ -640,7 +640,7 @@ namespace DOL.GS
 				set { m_zoneOnline = value; }
 			}
 
-			string m_guildNote = "";
+			string m_guildNote = string.Empty;
 			public string Note
 			{
 				get { return m_guildNote; }

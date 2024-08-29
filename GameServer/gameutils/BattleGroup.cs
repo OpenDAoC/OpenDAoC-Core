@@ -68,7 +68,7 @@ namespace DOL.GS
 			set{ispublic = value;}
 		}
 
-		private string password="";
+		private string password=string.Empty;
 		public string Password
 		{
 			get{return password;}

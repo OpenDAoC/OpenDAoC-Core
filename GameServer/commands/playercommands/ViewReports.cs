@@ -47,7 +47,7 @@ namespace DOL.GS.Commands
 								client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.NoPriv"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							if (args[2] == "")
+							if (args[2] == string.Empty)
 							{
 								client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Help.Close"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								break;
@@ -72,7 +72,7 @@ namespace DOL.GS.Commands
 								client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.NoPriv"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
-							if (args[2] == "")
+							if (args[2] == string.Empty)
 							{
 								client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.ViewReport.Help.Delete"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								break;
@@ -130,7 +130,7 @@ namespace DOL.GS.Commands
 					Reports += "Closed By: " + repo.ClosedBy + "\n";
 					Reports += "Date Closed: " + repo.DateClosed + "\n\n";
 					client.Out.SendMessage(Reports, eChatType.CT_Important, eChatLoc.CL_PopupWindow);
-					Reports = "";
+					Reports = string.Empty;
 				}
 			}
 		}

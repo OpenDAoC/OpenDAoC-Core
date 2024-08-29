@@ -207,7 +207,7 @@ namespace DOL.GS.Quests.Albion
 				funeral_speech_scroll.Type_Damage = 0;
 				funeral_speech_scroll.Quality = 100;
 				funeral_speech_scroll.Weight = 1;
-				funeral_speech_scroll.Description = "";
+				funeral_speech_scroll.Description = string.Empty;
 				if (SAVE_INTO_DATABASE)
 				{
 					GameServer.Database.AddObject(funeral_speech_scroll);

@@ -103,7 +103,7 @@ namespace DOL.GS.Quests.Hibernia
                 _resalg = new GameNPC();
                 _resalg.Model = 363;
                 _resalg.Name = "Resalg";
-                _resalg.GuildName = "";
+                _resalg.GuildName = string.Empty;
                 _resalg.Realm = eRealm.Hibernia;
                 _resalg.CurrentRegionID = 181;
                 _resalg.LoadEquipmentTemplateFromDatabase("Resalg");

@@ -191,7 +191,7 @@ namespace DOL.GS.Commands
 
 			if (args[1].ToLower() == "remove")
 			{
-				string confirm = "";
+				string confirm = string.Empty;
 
 				if (args.Length > 2)
 					confirm = args[2];

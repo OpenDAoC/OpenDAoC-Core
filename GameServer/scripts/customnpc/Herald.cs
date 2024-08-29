@@ -36,7 +36,7 @@ namespace DOL.GS.Scripts
             int count = 1;
             foreach (DbCoreCharacter chr in chars)
             {
-                var realm = "";
+                var realm = string.Empty;
                 
                 switch (chr.Realm)
                 {

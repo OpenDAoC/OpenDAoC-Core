@@ -52,14 +52,14 @@ namespace DOL.GS.Commands
 
 			if (args.Length < 2)
             {
-				if (key != "")
+				if (key != string.Empty)
 					SendMessage(client, "Current instance key is " + key);
 					
 				DisplaySyntax(client);
                 return;
             }
 
-            if (key == "" && args[1] != "key")
+            if (key == string.Empty && args[1] != "key")
             {
                 SendMessage(client, "You must first assign an instance to work with using /instance key <ID>.");
                 return;
@@ -367,7 +367,7 @@ namespace DOL.GS.Commands
 
         public string GetInstanceKey(GamePlayer p)
         {
-            string str = "";
+            string str = string.Empty;
             try
             {
                 str = p.TempProperties.GetProperty(INSTANCE_KEY, string.Empty);

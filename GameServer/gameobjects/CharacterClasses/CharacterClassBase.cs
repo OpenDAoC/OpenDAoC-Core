@@ -96,7 +96,7 @@ namespace DOL.GS
 			m_id = 0;
 			m_name = "Unknown Class";
 			m_basename = "Unknown Base Class";
-			m_profession = "";
+			m_profession = string.Empty;
 
 			// initialize members from attributes
 			Attribute[] attrs = Attribute.GetCustomAttributes(this.GetType(), typeof(CharacterClassAttribute));

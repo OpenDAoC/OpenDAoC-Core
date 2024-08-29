@@ -617,7 +617,7 @@ namespace DOL.GS.PacketHandler
 				else if (loc == eChatLoc.CL_PopupWindow)
 					str = "##";
 				else
-					str = "";
+					str = string.Empty;
 
 				str = String.Concat(str, msg);
 				pak.WriteString(str);
@@ -1028,7 +1028,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(flags);
 				pak.WriteByte(0x20); //TODO this is the default maxstick distance
 
-				string add = "";
+				string add = string.Empty;
 				if (m_gameClient.Account.PrivLevel > 1)
 				{
 					if ((npc.Flags & GameNPC.eFlags.CANTTARGET) != 0)
@@ -2396,7 +2396,7 @@ namespace DOL.GS.PacketHandler
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.DetailWindow)))
 			{
 				if (caption == null)
-					caption = "";
+					caption = string.Empty;
 
 				if (caption.Length > byte.MaxValue)
 					caption = caption.Substring(0, byte.MaxValue);
@@ -3662,7 +3662,7 @@ namespace DOL.GS.PacketHandler
 
 					if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 					{
-						string bpPrice = "";
+						string bpPrice = string.Empty;
 						if (item.SellPrice > 0)
 							bpPrice = "[" + item.SellPrice.ToString() + " BP";
 
@@ -3868,20 +3868,20 @@ namespace DOL.GS.PacketHandler
 
 			//all the task info is sent in name field
 
-			string taskStr = "";
+			string taskStr = string.Empty;
 			if (task == null)
 				taskStr = "You have no current personal task.\n";
 			else taskStr = "[" + task.Name + "] " + task.Description + ".\n";
 
-			string personalMission = "";
+			string personalMission = string.Empty;
 			if (pMission != null)
 				personalMission = "[" + pMission.Name + "] " + pMission.Description + ".\n";
 
-			string groupMission = "";
+			string groupMission = string.Empty;
 			if (gMission != null)
 				groupMission = "[" + gMission.Name + "] " + gMission.Description + ".\n";
 
-			string realmMission = "";
+			string realmMission = string.Empty;
 			if (rMission != null)
 				realmMission = "[" + rMission.Name + "]" + " " + rMission.Description + ".\n";
 

@@ -450,11 +450,11 @@ namespace DOL.GS.Spells
                 case eAttackResult.Fumbled: player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Fumble"), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow); break;
                 case eAttackResult.HitStyle:
                 case eAttackResult.HitUnstyled:
-					string modmessage = "";
+					string modmessage = string.Empty;
 					if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
 					if (ad.Modifier < 0) modmessage = " (" + ad.Modifier + ")";
 
-					string hitWeapon = "";
+					string hitWeapon = string.Empty;
 
 					switch (ServerProperties.Properties.SERV_LANGUAGE)
 					{

@@ -139,13 +139,13 @@ namespace DOL.GS
             allStatsRpEarnedFromHeal.Sort((ctc1, ctc2) => ctc1.count.CompareTo(ctc2.count));
             allStatsRpEarnedFromHeal.Reverse();
 
-            STATS_RP = "";
-            STATS_LRP = "";
-            STATS_KILL = "";
-            STATS_DEATH = "";
-            STATS_IRS = "";
-            STATS_HEAL = "";
-            STATS_RES = "";
+            STATS_RP = string.Empty;
+            STATS_LRP = string.Empty;
+            STATS_KILL = string.Empty;
+            STATS_DEATH = string.Empty;
+            STATS_IRS = string.Empty;
+            STATS_HEAL = string.Empty;
+            STATS_RES = string.Empty;
 
             for (int c = 0; c < allStatsRp.Count; c++)
             {

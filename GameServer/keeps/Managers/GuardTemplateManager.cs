@@ -280,11 +280,11 @@ namespace DOL.GS.Keeps
         {
             if (guard.Component == null)
             {
-                guard.GuildName = "";
+                guard.GuildName = string.Empty;
             }
             else if (guard.Component.Keep == null || guard.Component.Keep.Guild == null)
             {
-                guard.GuildName = "";
+                guard.GuildName = string.Empty;
             }
             else
             {

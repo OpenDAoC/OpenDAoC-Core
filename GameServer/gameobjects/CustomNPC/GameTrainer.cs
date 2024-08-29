@@ -66,7 +66,7 @@ namespace DOL.GS
 		/// <returns>list with string messages</returns>
 		public override IList GetExamineMessages(GamePlayer player)
 		{
-			string TrainerClassName = "";
+			string TrainerClassName = string.Empty;
             switch (player.Client.Account.Language)
 			{
                 case "DE":
@@ -338,7 +338,7 @@ namespace DOL.GS
 				player.RemoveAllAbilities();
 				player.RemoveAllSpellLines();
 
-				if (messageToPlayer != "")
+				if (messageToPlayer != string.Empty)
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Says", this.Name, messageToPlayer), eChatType.CT_System, eChatLoc.CL_PopupWindow);
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameTrainer.PromotePlayer.Upgraded", player.CharacterClass.Name), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 

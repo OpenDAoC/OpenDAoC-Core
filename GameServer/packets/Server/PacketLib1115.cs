@@ -236,7 +236,7 @@ namespace DOL.GS.PacketHandler
 
 					int flag = (byte)keep.Realm; // 3 bits
 					Guild guild = keep.Guild;
-					string name = "";
+					string name = string.Empty;
 					// map is now 0 indexed
 					pak.WriteByte((byte)(((map - 1) << 6) | (index << 3) | tower));
 					if (guild != null)

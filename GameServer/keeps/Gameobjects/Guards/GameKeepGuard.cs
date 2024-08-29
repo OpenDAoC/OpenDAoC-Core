@@ -25,7 +25,7 @@ namespace DOL.GS.Keeps
 			set { m_Patrol = value; }
 		}
 
-		private string m_templateID = "";
+		private string m_templateID = string.Empty;
 		public string TemplateID
 		{
 			get { return m_templateID; }
@@ -504,12 +504,12 @@ namespace DOL.GS.Keeps
 				list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameKeepGuard.GetExamineMessages.YouExamine", GetName(0, false), GetPronoun(0, true), GetAggroLevelString(player, false)));
 				if (this.Component != null)
 				{
-					string text = "";
+					string text = string.Empty;
 					if (Component.Keep.Level > 1 && Component.Keep.Level < 250 && GameServer.ServerRules.IsSameRealm(player, this, true))
 						text = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameKeepGuard.GetExamineMessages.Upgraded", GetPronoun(0, true), Component.Keep.Level);
 					if (Properties.USE_KEEP_BALANCING && Component.Keep.Region == 163 && !(Component.Keep is GameKeepTower))
 						text += LanguageMgr.GetTranslation(player.Client.Account.Language, "GameKeepGuard.GetExamineMessages.Balancing", GetPronoun(0, true), (Component.Keep.BaseLevel - 50).ToString());
-					if (text != "")
+					if (text != string.Empty)
 						list.Add(text);
 				}
 			}
@@ -524,7 +524,7 @@ namespace DOL.GS.Keeps
 		/// <returns></returns>
 		public override string GetPronoun(int form, bool firstLetterUppercase)
 		{
-			string s = "";
+			string s = string.Empty;
 			switch (form)
 			{
 				default:
@@ -561,7 +561,7 @@ namespace DOL.GS.Keeps
 			return s;
 		}
 		
-		string m_dataObjectID = "";
+		string m_dataObjectID = string.Empty;
 
         #region Database
         /// <summary>
@@ -699,7 +699,7 @@ namespace DOL.GS.Keeps
 				return;
 			}
 			Guild guild = Component.Keep.Guild;
-			string guildname = "";
+			string guildname = string.Empty;
 			if (guild != null)
 				guildname = guild.Name;
 
@@ -890,11 +890,11 @@ namespace DOL.GS.Keeps
 		{
 			if (Component == null)
 			{
-				GuildName = "";
+				GuildName = string.Empty;
 			}
 			else if (Component.Keep.Guild == null)
 			{
-				GuildName = "";
+				GuildName = string.Empty;
 			}
 			else if ((Component.Keep.Guild == null || Component.Keep.Guild != null)&& this is GuardMerchant)
 			{

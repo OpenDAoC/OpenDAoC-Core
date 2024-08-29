@@ -687,7 +687,7 @@ namespace DOL.GS
 
 			if( m_abilities != null && m_abilities.Count > 0 )
 			{
-				string serializedAbilities = "";
+				string serializedAbilities = string.Empty;
 
 				foreach ( Ability npcAbility in m_abilities )
 				{
@@ -703,7 +703,7 @@ namespace DOL.GS
 
 			if ( m_spells != null && m_spells.Count > 0 )
 			{
-				string serializedSpells = "";
+				string serializedSpells = string.Empty;
 
 				foreach ( Spell npcSpell in m_spells )
 				{
@@ -719,7 +719,7 @@ namespace DOL.GS
 
 			if ( m_styles != null && m_styles.Count > 0 )
 			{
-				string serializedStyles = "";
+				string serializedStyles = string.Empty;
 
 				foreach ( Style npcStyle in m_styles )
 				{

@@ -112,7 +112,7 @@ namespace DOL.GS.GameEvents
 			var guildname = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, string.Format("Guild.StartupGuild.{0}", GlobalConstants.RealmToName((eRealm)ch.Realm)));
 			ch.GuildID = GuildMgr.GuildNameToGuildID(guildname);
 
-			if (ch.GuildID != "")
+			if (ch.GuildID != string.Empty)
 				ch.GuildRank = 8;
 			
 		}

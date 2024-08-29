@@ -184,7 +184,7 @@ namespace DOL.GS
                     source.Out.SendMessage((source == m_owner ? "You have " : m_owner.Player.Name + " has ") + "no cards.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
-                string cards = "";
+                string cards = string.Empty;
                 foreach (Card c in m_hand)
                     if(source == m_owner || c.Up) 
                         cards += c.Id + " - " + c.Name + "\n";

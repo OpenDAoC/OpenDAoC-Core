@@ -828,7 +828,7 @@ namespace DOL.GS.Keeps
 
 		public virtual void ExitBattleground(GamePlayer player)
 		{
-			string location = "";
+			string location = string.Empty;
 			switch (player.Realm)
 			{
 				case eRealm.Albion: location = "Castle Sauvage"; break;
@@ -836,7 +836,7 @@ namespace DOL.GS.Keeps
 				case eRealm.Hibernia: location = "Druim Ligen"; break;
 			}
 
-			if (location != "")
+			if (location != string.Empty)
 			{
 				DbTeleport t = DOLDB<DbTeleport>.SelectObject(DB.Column("TeleportID").IsEqualTo(location));
 				if (t != null)

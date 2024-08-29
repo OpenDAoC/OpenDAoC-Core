@@ -136,7 +136,7 @@ namespace DOL.GS
 				salvageYield.MaterialId_nb = (string) ReturnSalvage.ID;
 			}
 
-			if (salvageYield.MaterialId_nb == "")
+			if (salvageYield.MaterialId_nb == string.Empty)
 			{
 				player.Out.SendMessage("No material set for this item", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return 0;
@@ -178,7 +178,7 @@ namespace DOL.GS
             int Multiplier = 0;
             int ReturnCount = SalvageCount;
 
-            string iType = "";
+            string iType = string.Empty;
 
             // if (item.IsCrafted)
             // {
@@ -695,7 +695,7 @@ namespace DOL.GS
             #region SpecialFix MerchantList
 
             if (item.Bonus8 > 0)
-                if (item.Bonus8Type == 0 || item.Bonus8Type.ToString() == "")
+                if (item.Bonus8Type == 0 || item.Bonus8Type.ToString() == string.Empty)
                     maxCount = item.Bonus8;
 
             #endregion SpecialFix MerchantList

@@ -183,7 +183,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the time of the last UDP ping
 		/// </summary>
-		protected string m_localIP = "";
+		protected string m_localIP = string.Empty;
 
 		/// <summary>
 		/// The packetsender of this client
@@ -439,7 +439,7 @@ namespace DOL.GS
 			set { m_clientType = value; }
 		}
 
-		public string MinorRev = "";
+		public string MinorRev = string.Empty;
 		public byte MajorBuild = 0;
 		public byte MinorBuild = 0;
 

@@ -243,16 +243,13 @@ namespace DOL.GS.Quests
             return false;
         }
 
-        public virtual void StartQuestActionTimer(GamePlayer player, eQuestCommand command, int seconds, string label = "")
+        public virtual void StartQuestActionTimer(GamePlayer player, eQuestCommand command, int seconds, string label = null)
         {
             if (player.QuestActionTimer == null)
             {
                 m_currentCommand = command;
                 AddActionHandlers(player);
-
-                if (label == "")
-                    label = Enum.GetName(typeof(eQuestCommand), command);
-
+                label ??= Enum.GetName(typeof(eQuestCommand), command);
                 player.Out.SendTimerWindow(label, seconds);
                 player.QuestActionTimer = new(player, new ECSGameTimer.ECSTimerCallback(QuestActionCallback), seconds * 1000);
             }

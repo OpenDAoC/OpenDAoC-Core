@@ -170,7 +170,7 @@ namespace DOL.GS.PacketHandler
 					Region region = WorldMgr.GetRegion((ushort)c.Region);
 					if (region != null)
 						locationDescription = m_gameClient.GetTranslatedSpotDescription(region, c.Xpos, c.Ypos, c.Zpos);
-					string classname = "";
+					string classname = string.Empty;
 					if (c.Class != 0)
 						classname = ((eCharacterClass)c.Class).ToString();
 					string racename = m_gameClient.RaceToTranslatedName(c.Race, c.Gender);

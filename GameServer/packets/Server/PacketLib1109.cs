@@ -200,8 +200,8 @@ namespace DOL.GS.PacketHandler
 
 			ushort icon1 = 0;
 			ushort icon2 = 0;
-			string spell_name1 = "";
-			string spell_name2 = "";
+			string spell_name1 = string.Empty;
+			string spell_name2 = string.Empty;
 			if (item.Object_Type != (int)eObjectType.AlchemyTincture)
 			{
 				if (item.SpellID > 0/* && item.Charges > 0*/)

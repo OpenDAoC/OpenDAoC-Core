@@ -19,7 +19,7 @@ namespace DOL.GS.Scripts
 		public override bool AddToWorld()
 		{
 			this.Name = "Archilus";
-			this.GuildName = "";
+			this.GuildName = string.Empty;
 			this.Model = 817;
 			this.Size = 100;
 			this.Level = 58;

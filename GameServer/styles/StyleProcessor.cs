@@ -721,17 +721,17 @@ namespace DOL.GS.Styles
 				delveInfo.Add(string.Format("- Error: Opening Requirement '{0}' but requirement type is Any!", style.OpeningRequirementValue));
 			}
 
-			temp = "";
+			temp = string.Empty;
 
 			foreach (Style st in SkillBase.GetStyleList(style.Spec, player.CharacterClass.ID))
 			{
 				if (st.AttackResultRequirement == Style.eAttackResultRequirement.Style && st.OpeningRequirementValue == style.ID)
 				{
-					temp = (temp == "" ? st.Name : temp + LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.HandlePacket.Or", st.Name));
+					temp = (temp == string.Empty ? st.Name : temp + LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.HandlePacket.Or", st.Name));
 				}
 			}
 
-			if (temp != "")
+			if (temp != string.Empty)
 			{
 				delveInfo.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "DetailDisplayHandler.HandlePacket.FollowupStyle", temp));
 			}
@@ -888,7 +888,7 @@ namespace DOL.GS.Styles
 				delveInfo.Add(string.Format("Endurance: {0}", style.EnduranceCost));
 				delveInfo.Add(string.Format("StealthRequirement: {0}", style.StealthRequirement));
 				delveInfo.Add(string.Format("WeaponTypeRequirement: {0}", style.WeaponTypeRequirement));
-				string indicator = "";
+				string indicator = string.Empty;
 				if (style.OpeningRequirementValue != 0 && style.AttackResultRequirement == 0 && style.OpeningRequirementType == 0)
 				{
 					indicator = "!!";
@@ -904,10 +904,10 @@ namespace DOL.GS.Styles
 				{
 					delveInfo.Add(" ");
 
-					string procs = "";
+					string procs = string.Empty;
 					foreach ((Spell, int, int) spell in style.Procs)
 					{
-						if (procs != "")
+						if (procs != string.Empty)
 							procs += ", ";
 
 						procs += spell.Item1.ID;

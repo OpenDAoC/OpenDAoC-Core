@@ -55,7 +55,7 @@ namespace DOL.GS.Scripts
         /// <returns>list with string messages</returns>
         public override IList GetExamineMessages(GamePlayer player)
         {
-            string TrainerClassName = "";
+            string TrainerClassName = string.Empty;
             switch (player.Client.Account.Language)
             {
                 case "DE":

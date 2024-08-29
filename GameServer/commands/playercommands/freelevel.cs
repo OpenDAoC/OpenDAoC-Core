@@ -33,7 +33,7 @@ namespace DOL.GS.Commands
 		{
 			//flag 1 = above level, 2 = elligable, 3= time until, 4 = level and time until, 5 = level until
 			byte state = client.Player.FreeLevelState;
-			string message = "";
+			string message = string.Empty;
 
 			if (args.Length == 2 && args[1] == "decline")
 			{

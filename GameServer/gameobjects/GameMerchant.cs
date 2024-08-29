@@ -645,7 +645,7 @@ namespace DOL.GS
 
 		protected virtual void SendInteractMessage(GamePlayer player)
 		{
-			string text = "";
+			string text = string.Empty;
 			if (m_moneyItem == null || m_moneyItem.Item == null)
 			{
 				text = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.GetExamineMessages.Nothing");

@@ -221,12 +221,12 @@ namespace DOL.GS.Commands
 
 		private void name(GameClient client, GameDoor targetDoor, string[] args)
 		{
-			string doorName = "";
+			string doorName = string.Empty;
 
 			if (args.Length > 2)
 				doorName = String.Join(" ", args, 2, args.Length - 2);
 
-			if (doorName != "")
+			if (doorName != string.Empty)
 			{
 				targetDoor.Name = CheckName(doorName, client);
 				targetDoor.SaveIntoDatabase();
@@ -265,12 +265,12 @@ namespace DOL.GS.Commands
 
 		private void guild(GameClient client, GameDoor targetDoor, string[] args)
 		{
-			string guildName = "";
+			string guildName = string.Empty;
 
 			if (args.Length > 2)
 				guildName = String.Join(" ", args, 2, args.Length - 2);
 
-			if (guildName != "")
+			if (guildName != string.Empty)
 			{
 				targetDoor.GuildName = CheckGuildName(guildName, client);
 				targetDoor.SaveIntoDatabase();
@@ -279,9 +279,9 @@ namespace DOL.GS.Commands
 			}
 			else
 			{
-				if (targetDoor.GuildName != "")
+				if (targetDoor.GuildName != string.Empty)
 				{
-					targetDoor.GuildName = "";
+					targetDoor.GuildName = string.Empty;
 					targetDoor.SaveIntoDatabase();
 					client.Out.SendMessage("Door guild removed", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}

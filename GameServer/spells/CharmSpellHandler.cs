@@ -413,7 +413,7 @@ namespace DOL.GS.Spells
             {
                 var list = new List<string>();
 
-                list.Add(LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpellHandler.DelveInfo.Function", (Spell.SpellType.ToString() == "" ? "(not implemented)" : Spell.SpellType.ToString())));
+                list.Add(LanguageMgr.GetTranslation(((GamePlayer) Caster).Client, "CharmSpellHandler.DelveInfo.Function", (Spell.SpellType.ToString() == string.Empty ? "(not implemented)" : Spell.SpellType.ToString())));
                 list.Add(" "); //empty line
                 list.Add(Spell.Description);
                 list.Add(" "); //empty line

@@ -38,7 +38,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (client.Player == null && client.Account.Characters != null && client.ClientState == GameClient.eClientState.CharScreen)
             {
                 bool charFound = false;
-                string selectedChar = "";
+                string selectedChar = string.Empty;
                 int realmOffset = charIndex - (client.Account.Realm * 10 - 10);
                 int charSlot = client.Account.Realm * 100 + realmOffset;
 

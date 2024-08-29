@@ -171,7 +171,7 @@ namespace DOL.GS
 		/// <param name="player"></param>
 		public virtual void OnPlayerLeave(GamePlayer player)
 		{
-            if (m_displayMessage && Description != null && Description != "")
+            if (m_displayMessage && Description != null && Description != string.Empty)
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "AbstractArea.Left", Description),
                     eChatType.CT_System, eChatLoc.CL_SystemWindow);
 

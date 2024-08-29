@@ -64,7 +64,7 @@ namespace DOL.GS.Keeps
 		/// </summary>
 		public const ushort HiberniaGuildModel = 680;
 
-		protected string m_templateID = "";
+		protected string m_templateID = string.Empty;
 		public string TemplateID
 		{
 			get { return m_templateID; }

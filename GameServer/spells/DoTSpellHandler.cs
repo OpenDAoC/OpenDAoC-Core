@@ -159,7 +159,7 @@ namespace DOL.GS.Spells
 
 			//			if (ad.Damage > 0)
 			//			{
-			//				string modmessage = "";
+			//				string modmessage = string.Empty;
 			//				if (ad.Modifier > 0) modmessage = " (+"+ad.Modifier+")";
 			//				if (ad.Modifier < 0) modmessage = " ("+ad.Modifier+")";
 			//				MessageToCaster("You hit "+ad.Target.GetName(0, false)+" for " + ad.Damage + " damage!", eChatType.CT_Spell);

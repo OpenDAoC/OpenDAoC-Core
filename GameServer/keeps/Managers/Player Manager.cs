@@ -37,7 +37,7 @@ namespace DOL.GS.Keeps
 		/// <param name="keep">The keep object</param>
 		public static void BroadcastCapture(AbstractGameKeep keep)
 		{
-			string message = "";
+			string message = string.Empty;
 			if (keep.Realm != eRealm.None)
 			{
 				message = string.Format(LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "PlayerManager.BroadcastCapture.Captured", GlobalConstants.RealmToName((eRealm)keep.Realm), keep.Name));
@@ -57,7 +57,7 @@ namespace DOL.GS.Keeps
 					}
 				case eGameServerType.GST_PvP:
 					{
-						string defeatersStr = "";
+						string defeatersStr = string.Empty;
 						message = string.Format("The forces of {0} have defeated the defenders of {1}!", defeatersStr, keep.Name);
 						break;
 					}
@@ -170,20 +170,20 @@ namespace DOL.GS.Keeps
 		public static void BroadcastDiscordRvR(string message, eRealm realm, string keepName)
 		{
 			int color = 0;
-			string avatarUrl = "";
+			string avatarUrl = string.Empty;
 			switch (realm)
 			{
 				case eRealm._FirstPlayerRealm:
 					color = 16711680;
-					avatarUrl = "";
+					avatarUrl = string.Empty;
 					break;
 				case eRealm._LastPlayerRealm:
 					color = 32768;
-					avatarUrl = "";
+					avatarUrl = string.Empty;
 					break;
 				default:
 					color = 255;
-					avatarUrl = "";
+					avatarUrl = string.Empty;
 					break;
 			}
 			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);

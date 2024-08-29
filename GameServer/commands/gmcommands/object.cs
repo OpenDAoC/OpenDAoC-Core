@@ -55,7 +55,7 @@ namespace DOL.GS.Commands
 				DisplaySyntax(client);
 				return;
 			}
-			string param = "";
+			string param = string.Empty;
 			if (args.Length > 2)
 				param = String.Join(" ", args, 2, args.Length - 2);
 
@@ -254,7 +254,7 @@ namespace DOL.GS.Commands
 					}
 				case "name":
 					{
-						if (param != "")
+						if (param != string.Empty)
 						{
 							targetObject.Name = param;
 							targetObject.SaveIntoDatabase();
@@ -264,7 +264,7 @@ namespace DOL.GS.Commands
 					}
 				case "noname":
 					{
-						targetObject.Name = "";
+						targetObject.Name = string.Empty;
 						targetObject.SaveIntoDatabase();
 						DisplayMessage(client, "Object name removed");
 						break;

@@ -208,7 +208,7 @@ namespace DOL.GS.Keeps
 		{
 			get
 			{
-				string name = "";
+				string name = string.Empty;
 
 				if (IsAttackableDoor)
 				{

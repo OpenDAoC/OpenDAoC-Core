@@ -487,7 +487,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        var message = "";
+                        var message = string.Empty;
                         var isMod = mybattlegroup.IsBGModerator(inviteePlayer);
 
                         if (!isMod)
@@ -679,7 +679,7 @@ namespace DOL.GS.Commands
                         }
                         if (args[2] == "clear")
                         {
-                            mybattlegroup.Password = "";
+                            mybattlegroup.Password = string.Empty;
                             return;
                         }
                         mybattlegroup.Password = args[2];
@@ -787,7 +787,7 @@ namespace DOL.GS.Commands
                         }
 
                         string treasname = String.Join(" ", args, 2, args.Length - 2);
-                        if (treasname == null || treasname == "")
+                        if (treasname == null || treasname == string.Empty)
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Battlegroup.NoPlayer", treasname), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return;

@@ -23,7 +23,7 @@ namespace DOL.GS.Spells
         {
             var template = NpcTemplateMgr.GetTemplate((int) m_spell.Value);
 
-            if (template.ClassType == "")
+            if (template.ClassType == string.Empty)
                 Npc = new GameAtlasMerchant();
             else
             {

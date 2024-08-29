@@ -44,7 +44,7 @@ namespace DOL.GS.Commands
 
 			if (args.Length >= 2)
 			{
-				string msg = "";
+				string msg = string.Empty;
 				for (int i = 1; i < args.Length; ++i)
 				{
 					msg += args[i] + " ";

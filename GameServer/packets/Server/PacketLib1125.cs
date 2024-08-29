@@ -193,7 +193,7 @@ namespace DOL.GS.PacketHandler
 							}
 							pak.WritePascalStringIntLE(locationDescription);
 
-							string classname = "";
+							string classname = string.Empty;
 							if (c.Class != 0)
 							{
 								classname = ((eCharacterClass)c.Class).ToString();
@@ -576,7 +576,7 @@ namespace DOL.GS.PacketHandler
 
 					if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 					{
-						string bpPrice = "";
+						string bpPrice = string.Empty;
 						if (item.SellPrice > 0)
 						{
 							bpPrice = "[" + item.SellPrice.ToString() + " BP";

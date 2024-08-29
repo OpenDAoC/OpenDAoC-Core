@@ -115,7 +115,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The file name of the invalid names file
 		/// </summary>
-		protected string m_invalidNamesFile = "";
+		protected string m_invalidNamesFile = string.Empty;
 
 		#endregion
 		#region Database

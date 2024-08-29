@@ -121,7 +121,7 @@ namespace DOL.GS.Quests.Albion
 				Lidmann = new GameNPC();
 				Lidmann.Model = 64;
 				Lidmann.Name = "Lidmann Halsey";
-				Lidmann.GuildName = "";
+				Lidmann.GuildName = string.Empty;
 				Lidmann.Realm = eRealm.Albion;
 				Lidmann.CurrentRegionID = 1;
 				Lidmann.Size = 50;
@@ -155,7 +155,7 @@ namespace DOL.GS.Quests.Albion
 				Uragaig = new CailleachUragaig();
 				Uragaig.Model = 349;
 				Uragaig.Name = "Cailleach Uragaig";
-				Uragaig.GuildName = "";
+				Uragaig.GuildName = string.Empty;
 				Uragaig.Realm = eRealm.None;
 				Uragaig.CurrentRegionID = 1;
 				Uragaig.Size = 55;

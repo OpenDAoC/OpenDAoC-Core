@@ -164,7 +164,7 @@ namespace DOL.GS
         private static Recipe LoadFromDB(ushort recipeDatabaseID)
         {
 
-            string craftingDebug = "";
+            string craftingDebug = string.Empty;
             
             var dbRecipe = GameServer.Database.FindObjectByKey<DbCraftedItem>(recipeDatabaseID.ToString());
             if (dbRecipe == null)

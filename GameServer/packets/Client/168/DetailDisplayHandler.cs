@@ -32,7 +32,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			uint extraId = packet.ReadInt();
 			ushort objectId = packet.ReadShort();
 
-			string caption = "";
+			string caption = string.Empty;
 			var objectInfo = new List<string>();
 
 			/*
@@ -1433,7 +1433,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				#region Proc1
 				if (item.ProcSpellID != 0)
 				{
-					string spellNote = "";
+					string spellNote = string.Empty;
 					output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MagicAbility"));
 					if (GlobalConstants.IsWeapon(item.Object_Type))
 					{
@@ -1472,7 +1472,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				#region Proc2
 				if (item.ProcSpellID1 != 0)
 				{
-					string spellNote = "";
+					string spellNote = string.Empty;
 					output.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteMagicalBonuses.MagicAbility"));
 					if (GlobalConstants.IsWeapon(item.Object_Type))
 					{
@@ -1773,7 +1773,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				list.Add(" ");
 				list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteHorseInfo.Summon"));
 				list.Add(" ");
-				list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteHorseInfo.Name", ((horseName == null || horseName == "") ? "None" : horseName)));
+				list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteHorseInfo.Name", ((horseName == null || horseName == string.Empty) ? "None" : horseName)));
 				list.Add(LanguageMgr.GetTranslation(client.Account.Language, "DetailDisplayHandler.WriteHorseInfo.NameMount"));
 			}
 			list.Add(" ");

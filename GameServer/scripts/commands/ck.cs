@@ -36,7 +36,7 @@ namespace DOL.GS.Commands
 		}
 		private string KeepStringBuilder(AbstractGameKeep keep)
 		{
-			string buffer = "";
+			string buffer = string.Empty;
 			buffer += keep.Name + ": " + GlobalConstants.RealmToName(keep.Realm);
 			if (keep.Guild != null)
 			{

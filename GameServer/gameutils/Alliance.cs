@@ -80,7 +80,7 @@ namespace DOL.GS
 			lock (Guilds.SyncRoot)
 			{
 				myguild.alliance = null;
-				myguild.AllianceId = "";
+				myguild.AllianceId = string.Empty;
                 Guilds.Remove(myguild);
                 if (myguild.GuildID == m_dballiance.DBguildleader.GuildID)
                 {
@@ -134,7 +134,7 @@ namespace DOL.GS
 				foreach (Guild guild in Guilds)
 				{
 					guild.alliance = null;
-					guild.AllianceId = "";
+					guild.AllianceId = string.Empty;
 					//sirru 23.12.06 save changes to db
 					guild.SaveIntoDatabase();
 				}

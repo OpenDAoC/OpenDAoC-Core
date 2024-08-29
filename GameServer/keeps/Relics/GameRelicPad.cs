@@ -139,20 +139,20 @@ namespace DOL.GS
 		public static void BroadcastDiscordRelic(string message, eRealm realm, string keepName)
 		{
 			int color = 0;
-			string avatarUrl = "";
+			string avatarUrl = string.Empty;
 			switch (realm)
 			{
 				case eRealm._FirstPlayerRealm:
 					color = 16711680;
-					avatarUrl = "";
+					avatarUrl = string.Empty;
 					break;
 				case eRealm._LastPlayerRealm:
 					color = 32768;
-					avatarUrl = "";
+					avatarUrl = string.Empty;
 					break;
 				default:
 					color = 255;
-					avatarUrl = "";
+					avatarUrl = string.Empty;
 					break;
 			}
 			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);

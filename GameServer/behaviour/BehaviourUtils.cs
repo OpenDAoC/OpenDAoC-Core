@@ -155,7 +155,7 @@ namespace DOL.GS.Behaviour
 
             if (message.Contains("<Guild>"))
             {
-                string guild = "";
+                string guild = string.Empty;
                 if (player.Guild != null)
                     guild = player.GuildName;
 
@@ -164,7 +164,7 @@ namespace DOL.GS.Behaviour
 
             if (message.Contains("<Title>"))
             {
-                string title = "";
+                string title = string.Empty;
                 if (player.CurrentTitle != null)
                     title = player.CurrentTitle.GetValue(player, player);
 

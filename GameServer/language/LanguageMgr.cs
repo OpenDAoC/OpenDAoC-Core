@@ -89,13 +89,13 @@ namespace DOL.Language
         private static string LangPath {
             get
             {
-                if (soleInstance.LangPathImpl == "")
+                if (soleInstance.LangPathImpl == string.Empty)
                     soleInstance.LangPathImpl = Path.Combine(GameServer.Instance.Configuration.RootDirectory, "languages");
 
                 return soleInstance.LangPathImpl;
             }
         }
-        protected string LangPathImpl = "";
+        protected string LangPathImpl = string.Empty;
         #endregion Variables
 
         #region Properties

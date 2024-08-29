@@ -1009,7 +1009,7 @@ namespace DOL.GS
             DbInventoryItem newInventoryItem = GameInventoryItem.Create<DbItemUnique>(unique);
             if(item.IsCrafted)
                 newInventoryItem.IsCrafted = true;
-            if(item.Creator != "")
+            if(item.Creator != string.Empty)
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
@@ -1111,7 +1111,7 @@ namespace DOL.GS
             DbInventoryItem newInventoryItem = GameInventoryItem.Create<DbItemUnique>(unique);
             if(item.IsCrafted)
                 newInventoryItem.IsCrafted = true;
-            if(item.Creator != "")
+            if(item.Creator != string.Empty)
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);

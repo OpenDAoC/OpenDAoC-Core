@@ -8,10 +8,10 @@ namespace DOL.GS.Scripts.discord
 {
     public static class WebhookMessage
     {
-        public static void SendMessage(String webhookId, String message, String userName = "Server Bot", string avatar = "")
+        public static void SendMessage(String webhookId, String message, String userName = "Server Bot", string avatar = null)
         {
+            avatar ??= string.Empty;
             var client = new DiscordWebhookClient(webhookId);
-
             var content = message;
             var msg = new DiscordMessage(
                 content,
@@ -29,7 +29,7 @@ namespace DOL.GS.Scripts.discord
         public static void LogChatMessage(GamePlayer player, eChatType chatType, String message)
         {
             // Format message
-            String formattedMessage = "";
+            String formattedMessage = string.Empty;
             switch (chatType)
             {
                 case eChatType.CT_Broadcast:
@@ -62,21 +62,21 @@ namespace DOL.GS.Scripts.discord
                 case eRealm.Albion:
                     if (!string.IsNullOrEmpty(Properties.DISCORD_ALBCHAT_WEBHOOK_ID))
                     {
-                        avatar = "";
+                        avatar = string.Empty;
                         SendMessage(Properties.DISCORD_ALBCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;
                 case eRealm.Hibernia:
                     if (!string.IsNullOrEmpty(Properties.DISCORD_HIBCHAT_WEBHOOK_ID))
                     {
-                        avatar = "";
+                        avatar = string.Empty;
                         SendMessage(Properties.DISCORD_HIBCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;
                 case eRealm.Midgard:
                     if (!string.IsNullOrEmpty(Properties.DISCORD_MIDCHAT_WEBHOOK_ID))
                     {
-                        avatar = "";
+                        avatar = string.Empty;
                         SendMessage(Properties.DISCORD_MIDCHAT_WEBHOOK_ID,formattedMessage, avatar: avatar);
                     }
                     break;

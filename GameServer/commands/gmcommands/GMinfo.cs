@@ -137,8 +137,8 @@ namespace DOL.GS.Commands
 						info.Add(" + Respawn: NPC will not respawn");
 					else
 					{
-						string days = "";
-						string hours = "";
+						string days = string.Empty;
+						string hours = string.Empty;
 						if (respawn.Days > 0)
 							days = respawn.Days + " days ";
 						if (respawn.Hours > 0)
@@ -323,7 +323,7 @@ namespace DOL.GS.Commands
 					{
 						DbItemTemplate drop = GameServer.Database.FindObjectByKey<DbItemTemplate>(loot.ItemTemplateID);
 
-						string message = "";
+						string message = string.Empty;
 						if (drop == null)
 						{
 							message += loot.ItemTemplateID + " (Template Not Found)";
@@ -421,15 +421,15 @@ namespace DOL.GS.Commands
 					info.Add("SPECCING INFORMATIONS ");
 					info.Add("  - Remaining spec. points : " + target.SkillSpecialtyPoints);
 					sTitle = "  - Player specialisations / level: \n";
-					sCurrent = "";
+					sCurrent = string.Empty;
                     foreach (Specialization spec in target.GetSpecList())
 					{
 						sCurrent += "  - " +spec.Name + " = " + spec.Level + " \n";
 					}
 					info.Add(sTitle + sCurrent);
 					
-					sCurrent = "";
-					sTitle = "";
+					sCurrent = string.Empty;
+					sTitle = string.Empty;
 
 					info.Add(" ");
 					info.Add("CHARACTER STATS ");
@@ -444,22 +444,22 @@ namespace DOL.GS.Commands
                         sCurrent += target.GetModified(stat);
 						
 						info.Add("  - " + sTitle + " : " + sCurrent);
-						sCurrent = "";
-						sTitle = "";
+						sCurrent = string.Empty;
+						sTitle = string.Empty;
 					}
 
 					info.Add("  -");
 
-					sCurrent = "";
-					sTitle = "";
+					sCurrent = string.Empty;
+					sTitle = string.Empty;
 					cnt = 0;
 					for (eProperty res = eProperty.Resist_First; res <= eProperty.Resist_Last; res++, cnt++)
 					{
 						sTitle += GlobalConstants.PropertyToName(res);
                         sCurrent += target.GetModified(res);
 						info.Add("  - " + sTitle + " : " + sCurrent);
-						sCurrent = "";
-						sTitle = "";
+						sCurrent = string.Empty;
+						sTitle = string.Empty;
 					}
 
 					info.Add("  -");
@@ -527,8 +527,8 @@ namespace DOL.GS.Commands
 				{
 					var target = client.Player.TargetObject as GameDoor;
 					
-					string Realmname = "";
-					string statut = "";
+					string Realmname = string.Empty;
+					string statut = string.Empty;
 					
 					name = target.Name;
 					
@@ -574,8 +574,8 @@ namespace DOL.GS.Commands
                 {
 					var target = client.Player.TargetObject as GameKeepDoor;
 
-					string Realmname = "";
-					string statut = "";
+					string Realmname = string.Empty;
+					string statut = string.Empty;
 
 					name = target.Name;
 

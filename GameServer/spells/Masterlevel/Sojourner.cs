@@ -96,7 +96,7 @@ namespace DOL.GS.Spells
                 merchant.Name = "Ancient Transmuter";
                 merchant.Model = 993;
                 merchant.MaxSpeedBase = 0;
-                merchant.GuildName = "";
+                merchant.GuildName = string.Empty;
                 merchant.Size = 50;
                 merchant.Flags |= GameNPC.eFlags.PEACE;
                 merchant.TradeItems = new MerchantTradeItems("ML_transmuteritems");

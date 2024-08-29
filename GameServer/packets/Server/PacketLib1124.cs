@@ -181,7 +181,7 @@ namespace DOL.GS.PacketHandler
 					pak.WriteByte(flags);
 					pak.WriteByte(0x20); //TODO this is the default maxstick distance
 
-					string add = "";
+					string add = string.Empty;
 					byte flags2 = 0x00;
 
 					if (npc.Brain is IControlledBrain)
@@ -947,8 +947,8 @@ namespace DOL.GS.PacketHandler
 				flag |= 0x04; // enable craft button
 			ushort icon1 = 0;
 			ushort icon2 = 0;
-			string spell_name1 = "";
-			string spell_name2 = "";
+			string spell_name1 = string.Empty;
+			string spell_name2 = string.Empty;
 			if (item.Object_Type != (int)eObjectType.AlchemyTincture)
 			{
 				if (item.SpellID > 0/* && item.Charges > 0*/)
@@ -1010,7 +1010,7 @@ namespace DOL.GS.PacketHandler
 				else
 					name += "[" + Money.GetString(item.SellPrice) + "]";
 			}
-			if (name == null) name = "";
+			if (name == null) name = string.Empty;
 			if (name.Length > 55)
 				name = name.Substring(0, 55);
 			pak.WritePascalString(name);

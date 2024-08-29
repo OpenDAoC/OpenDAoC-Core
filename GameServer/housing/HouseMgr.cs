@@ -103,7 +103,7 @@ namespace DOL.GS.Housing
 		/// <returns></returns>
 		public static string LoadHousingForRegion(ushort regionID)
 		{
-			string result = "";
+			string result = string.Empty;
 			var regionHousing = DOLDB<DbHouse>.SelectObjects(DB.Column("RegionID").IsEqualTo(regionID));
 
 			if (regionHousing == null || regionHousing.Count == 0)
@@ -427,9 +427,9 @@ namespace DOL.GS.Housing
 			RemoveHousePermissions(house);
 			ResetHouseData(house);
 
-			house.OwnerID = "";
+			house.OwnerID = string.Empty;
 			house.KeptMoney = 0;
-			house.Name = ""; // not null !
+			house.Name = string.Empty; // not null !
 			house.DatabaseItem.CreationTime = DateTime.Now;
 			house.DatabaseItem.LastPaid = DateTime.MinValue;
 

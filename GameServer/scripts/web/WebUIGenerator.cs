@@ -105,7 +105,7 @@ namespace DOL.GS.Scripts
 		private static void GenerateJS(string fname)
 		{
 			string path = fname.Replace(Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"template", Path.DirectorySeparatorChar+"webui"+Path.DirectorySeparatorChar+"generated");
-			string buf = "";
+			string buf = string.Empty;
 
 			using (StreamReader rdr = File.OpenText(fname))
 			{

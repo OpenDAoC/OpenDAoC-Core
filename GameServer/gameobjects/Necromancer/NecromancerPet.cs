@@ -269,7 +269,7 @@ namespace DOL.GS
 			if (ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0)
 			{
 				GamePlayer player = Owner as GamePlayer;
-				string modmessage = "";
+				string modmessage = string.Empty;
 
 				if (ad.Modifier > 0)
 					modmessage = " (+" + ad.Modifier + ")";

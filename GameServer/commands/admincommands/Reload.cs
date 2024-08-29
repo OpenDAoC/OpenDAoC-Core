@@ -90,7 +90,7 @@ namespace DOL.GS.Commands
 			ushort region = 0;
 			if (client.Player != null)
 				region = client.Player.CurrentRegionID;
-			string arg = "";
+			string arg = string.Empty;
 			int argLength = args.Length - 1;
 
 			if (argLength < 1)

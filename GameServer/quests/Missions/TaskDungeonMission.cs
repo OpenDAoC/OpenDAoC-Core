@@ -55,13 +55,13 @@ namespace DOL.GS.Quests
 			get { return m_total; }
 		}
 
-		private string m_bossName = "";
+		private string m_bossName = string.Empty;
 		public string BossName
 		{
 			get { return m_bossName; }
 		}
 
-		private string m_targetName = "";
+		private string m_targetName = string.Empty;
 		public string TargetName
 		{
 			get { return m_targetName; }
@@ -115,22 +115,22 @@ namespace DOL.GS.Quests
 
                 if (npc.Name.ToLower() != npc.Name)
                 {
-                    if (m_bossName == "")
+                    if (m_bossName == string.Empty)
                         m_bossName = npc.Name; //Some instances have multiple bosses, eg Gregorian - why break?
                     else if (Util.Chance(50))
                         m_bossName = npc.Name;
                 } //else what if we aren't looking at a boss, but a normal mob?
                 else
-                    if (Util.Chance(20) || m_targetName == "")
+                    if (Util.Chance(20) || m_targetName == string.Empty)
                         m_targetName = npc.Name;
             }
 
 			int specificCount = 0;
             
             //Draw the mission type before we do anymore counting...
-            if (Util.Chance(40) && m_bossName != "")
+            if (Util.Chance(40) && m_bossName != string.Empty)
                 m_missionType = eTDMissionType.Boss;
-            else if (Util.Chance(20) && m_targetName != "")
+            else if (Util.Chance(20) && m_targetName != string.Empty)
                 m_missionType = eTDMissionType.Specific;
             else
                 m_missionType = eTDMissionType.Clear;

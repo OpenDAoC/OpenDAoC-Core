@@ -76,7 +76,7 @@ namespace DOL.GS
         /// <summary>
         /// The translation id
         /// </summary>
-        protected string m_translationId = "";
+        protected string m_translationId = string.Empty;
 
         /// <summary>
         /// Gets or sets the translation id
@@ -108,7 +108,7 @@ namespace DOL.GS
         /// <summary>
         /// Holds the examine article
         /// </summary>
-        private string m_examineArticle = "";
+        private string m_examineArticle = string.Empty;
         /// <summary>
         /// Gets or sets the examine article
         /// </summary>
@@ -135,7 +135,7 @@ namespace DOL.GS
 		/// <returns>name of this object (includes article if needed)</returns>
 		public override string GetName(int article, bool firstLetterUppercase)
 		{
-			if (Name == "")
+			if (Name == string.Empty)
 				return "";
 
 			if(char.IsUpper(Name[0]))

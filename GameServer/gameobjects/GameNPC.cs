@@ -120,7 +120,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds the translation id.
 		/// </summary>
-		protected string m_translationId = "";
+		protected string m_translationId = string.Empty;
 
 		/// <summary>
 		/// Gets or sets the translation id.
@@ -1998,7 +1998,7 @@ namespace DOL.GS
 				{
 					m_teleporterIndicator = new GameNPC
 					{
-						Name = "",
+						Name = string.Empty,
 						Model = 1923,
 						X = X,
 						Y = Y,
@@ -4336,7 +4336,7 @@ namespace DOL.GS
 				String lastloot;
 				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.INFO_DISTANCE))
 				{
-					lastloot = "";
+					lastloot = string.Empty;
 					foreach (string str in droplist)
 					{
 						// Suppress identical messages (multiple item drops).
@@ -4484,11 +4484,11 @@ namespace DOL.GS
 			m_name = "new mob";
 			m_model = 408;
 			MaxSpeedBase = 200;
-			GuildName = "";
+			GuildName = string.Empty;
 			m_size = 50;
 			m_flags = 0;
 			RoamingRange = 0;
-			OwnerID = "";
+			OwnerID = string.Empty;
 			m_spawnPoint = new Point3D();
 			LinkedFactions = new ArrayList(1);
 

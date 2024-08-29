@@ -103,7 +103,7 @@ namespace DOL.GS.Scripts
 
             TurnTo(player, 10000);
             
-            var message = "";
+            var message = string.Empty;
 
             switch (Realm)
             {

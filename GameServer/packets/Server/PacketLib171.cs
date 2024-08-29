@@ -179,7 +179,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(flags);
 				pak.WriteByte(0x20); //TODO this is the default maxstick distance
 
-				string add = "";
+				string add = string.Empty;
 				byte flags2 = 0x00;
 				IControlledBrain brain = npc.Brain as IControlledBrain;
 				if (m_gameClient.Version >= GameClient.eClientVersion.Version187)

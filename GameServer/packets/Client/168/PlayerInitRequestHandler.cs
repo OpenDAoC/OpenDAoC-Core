@@ -97,7 +97,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					SendGuildMessagesToPlayer(player);
 				}
 				SendHouseRentRemindersToPlayer(player);
-				if (player.Level > 1 && ServerProperties.Properties.MOTD != "")
+				if (player.Level > 1 && ServerProperties.Properties.MOTD != string.Empty)
 				{
 					player.Out.SendMessage(ServerProperties.Properties.MOTD, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
@@ -331,19 +331,19 @@ namespace DOL.GS.PacketHandler.Client.v168
 			{
 				try
 				{
-					if (player.GuildRank.GcHear && player.Guild.Motd != "")
+					if (player.GuildRank.GcHear && player.Guild.Motd != string.Empty)
 					{
 						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.GuildMessage"),
 						                       eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						player.Out.SendMessage(player.Guild.Motd, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
-					if (player.GuildRank.OcHear && player.Guild.Omotd != "")
+					if (player.GuildRank.OcHear && player.Guild.Omotd != string.Empty)
 					{
 						player.Out.SendMessage(
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.OfficerMessage", player.Guild.Omotd),
 							eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					}
-					if (player.Guild.alliance != null && player.GuildRank.AcHear && player.Guild.alliance.Dballiance.Motd != "")
+					if (player.Guild.alliance != null && player.GuildRank.AcHear && player.Guild.alliance.Dballiance.Motd != string.Empty)
 					{
 						player.Out.SendMessage(
 							LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerInitRequestHandler.AllianceMessage",

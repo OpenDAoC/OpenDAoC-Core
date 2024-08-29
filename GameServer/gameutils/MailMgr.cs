@@ -79,10 +79,10 @@ namespace DOL.Mail
 
 	public class MailMgr
 	{
-		private static string m_username = "";
-		private static string m_password = "";
-		private static string m_emailAddress = "";
-		private static string m_smtpServer = "";
+		private static string m_username = string.Empty;
+		private static string m_password = string.Empty;
+		private static string m_emailAddress = string.Empty;
+		private static string m_smtpServer = string.Empty;
 		private static bool m_enable = false;
 		private static bool m_ssl = false;
 
@@ -147,7 +147,7 @@ namespace DOL.Mail
 			SmtpClient.EnableSsl = m_ssl;
 			SmtpClient.Credentials = new NetworkCredential(m_username, m_password);
 
-			if (DOL.GS.ServerProperties.Properties.LOG_EMAIL_ADDRESSES != "")
+			if (DOL.GS.ServerProperties.Properties.LOG_EMAIL_ADDRESSES != string.Empty)
 				SendLogs(DOL.GS.ServerProperties.Properties.LOG_EMAIL_ADDRESSES);
 
 			if (m_enable)
@@ -287,7 +287,7 @@ namespace DOL.Mail
 					mail.Subject = "[ Logs ] " + DateTime.Now.ToString();
 					mail.From = new MailAddress(m_emailAddress, GameServer.Instance.Configuration.ServerName);
 					mail.IsBodyHtml = true;
-					mail.Body = ""; // Add the mail core here if needed
+					mail.Body = string.Empty; // Add the mail core here if needed
 					mail.BodyEncoding = System.Text.Encoding.ASCII;
 					mail.SubjectEncoding = System.Text.Encoding.ASCII;
 

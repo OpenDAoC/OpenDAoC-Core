@@ -70,7 +70,7 @@ namespace DOL.GS.Quests
 
 			if (list.Count > 0)
 			{
-				if (hint != "")
+				if (hint != string.Empty)
 				{
 					foreach (AbstractGameKeep keep in list)
 					{

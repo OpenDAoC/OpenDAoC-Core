@@ -90,9 +90,9 @@ namespace DOL.GS.Commands
 			GameServer.Database.AddObject(report);
 			client.Player.Out.SendMessage("Report submitted, if this is not a bug report it will be ignored!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-			if (ServerProperties.Properties.BUG_REPORT_EMAIL_ADDRESSES.Trim() != "")
+			if (ServerProperties.Properties.BUG_REPORT_EMAIL_ADDRESSES.Trim() != string.Empty)
 			{
-				if (client.Account.Mail == "")
+				if (client.Account.Mail == string.Empty)
 					client.Player.Out.SendMessage("If you enter your email address for your account with /email command, your bug reports will send an email to the staff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				else
 				{

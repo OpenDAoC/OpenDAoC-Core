@@ -32,7 +32,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte(0); // new in 1.75
 				if (caption == null)
-					caption = "";
+					caption = string.Empty;
 				if (caption.Length > byte.MaxValue)
 					caption = caption.Substring(0, byte.MaxValue);
 				pak.WritePascalString(caption); //window caption

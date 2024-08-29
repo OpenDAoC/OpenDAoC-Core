@@ -2690,7 +2690,7 @@ namespace DOL.GS.Spells
 			get
 			{
 				var list = new List<string>(32);
-				//list.Add("Function: " + (Spell.SpellType == "" ? "(not implemented)" : Spell.SpellType));
+				//list.Add("Function: " + (Spell.SpellType == string.Empty ? "(not implemented)" : Spell.SpellType));
 				//list.Add(" "); //empty line
 				GamePlayer p = null;
 
@@ -3253,7 +3253,7 @@ namespace DOL.GS.Spells
 		/// <param name="ad"></param>
 		public virtual void SendDamageMessages(AttackData ad)
 		{
-			string modmessage = "";
+			string modmessage = string.Empty;
 			if (ad.Modifier > 0)
 				modmessage = " (+" + ad.Modifier + ")";
 			if (ad.Modifier < 0)

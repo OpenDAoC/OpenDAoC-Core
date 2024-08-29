@@ -116,7 +116,7 @@ namespace DOL.GS.Commands
         #region Helpers
         private string GetRealmBySlotIndex(int slot)
         {
-            string realm = "";
+            string realm = string.Empty;
 
             if (slot >= 100 && slot <= 109)
                 realm = "Albion";
@@ -159,7 +159,7 @@ namespace DOL.GS.Commands
 
         private void InvalidSlot(GameClient client, int[] slots)
         {
-            string str = "";
+            string str = string.Empty;
 
             foreach (int slot in slots)
             {

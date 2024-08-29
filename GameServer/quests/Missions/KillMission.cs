@@ -9,7 +9,7 @@ namespace DOL.GS.Quests
 		private Type m_targetType = null;
 		private int m_total = 0;
 		private int m_current = 0;
-		private string m_desc = "";
+		private string m_desc = string.Empty;
 
 		public KillMission(Type targetType, int total, string desc, object owner)
 			: base(owner)

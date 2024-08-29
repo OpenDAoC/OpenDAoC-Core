@@ -90,7 +90,7 @@ namespace DOL.GS
 			if (realm != player.Realm)
 			{
 				DbItemUnique template = new DbItemUnique(Template);
-				template.ClassType = "";
+				template.ClassType = string.Empty;
 				template.Model = trophyModel;
 				template.IsDropable = true;
 				template.IsIndestructible = false;

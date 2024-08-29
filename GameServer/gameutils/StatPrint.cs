@@ -120,11 +120,12 @@ namespace DOL.GS.GameEvents
             }
         }
 
-        private static void AppendStatistic(StringBuilder stringBuilder, string shortName, IPerformanceStatistic statistic, string unit = "")
+        private static void AppendStatistic(StringBuilder stringBuilder, string shortName, IPerformanceStatistic statistic, string unit = null)
         {
             if (statistic == null)
                 return;
 
+            unit ??= string.Empty;
             stringBuilder.Append($"  {shortName}={statistic.GetNextValue().ToString("0.0")}{unit}");
         }
 

@@ -36,7 +36,7 @@ namespace DOL.GS.Quests
         DataQuest m_dataQuest = null;
 		int m_validStep;
 		int m_searchSeconds;
-		string m_popupText = "";
+		string m_popupText = string.Empty;
 
 		/// <summary>
 		/// Create an area used for /search.  Area will only be active when player is doing associated quest

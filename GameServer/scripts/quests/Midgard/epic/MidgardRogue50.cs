@@ -117,7 +117,7 @@ namespace DOL.GS.Quests.Midgard
 				Masrim = new GameNPC();
 				Masrim.Model = 177;
 				Masrim.Name = "Masrim";
-				Masrim.GuildName = "";
+				Masrim.GuildName = string.Empty;
 				Masrim.Realm = eRealm.Midgard;
 				Masrim.CurrentRegionID = 100;
 				Masrim.Size = 52;
@@ -151,7 +151,7 @@ namespace DOL.GS.Quests.Midgard
 				Oona = new Oona();
 				Oona.Model = 356;
 				Oona.Name = "Oona";
-				Oona.GuildName = "";
+				Oona.GuildName = string.Empty;
 				Oona.Realm = eRealm.None;
 				Oona.CurrentRegionID = 100;
 				Oona.Size = 50;

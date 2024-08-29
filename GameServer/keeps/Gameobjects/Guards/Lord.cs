@@ -172,7 +172,7 @@ namespace DOL.GS.Keeps
 
                             keeplog.CapturedBy = GlobalConstants.RealmToName(killer.Realm);
 
-                            string listRPGainers = "";
+                            string listRPGainers = string.Empty;
 
                             lock (XPGainers.SyncRoot)
                             {

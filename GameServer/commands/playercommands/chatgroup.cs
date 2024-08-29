@@ -372,7 +372,7 @@ namespace DOL.GS.Commands
 						}
 						if (args[2] == "clear")
 						{
-							mychatgroup.Password = "";
+							mychatgroup.Password = string.Empty;
 							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Chatgroup.PasswordClear", mychatgroup.Password), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 							return;
 						}

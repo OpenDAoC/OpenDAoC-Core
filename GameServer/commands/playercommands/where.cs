@@ -91,12 +91,12 @@ namespace DOL.GS.Commands
 				return true;
 			}
 
-			if (name.StartsWith("Sir ") && (target.GuildName == null || target.GuildName == ""))
+			if (name.StartsWith("Sir ") && (target.GuildName == null || target.GuildName == string.Empty))
 			{
 				return true;
 			}
 
-			if (name.StartsWith("Captain ") && (target.GuildName == null || target.GuildName == ""))
+			if (name.StartsWith("Captain ") && (target.GuildName == null || target.GuildName == string.Empty))
 			{
 				return true;
 			}
@@ -106,7 +106,7 @@ namespace DOL.GS.Commands
 				return true;
 			}
 
-			if (name.StartsWith("Lady ") && (target.GuildName == null || target.GuildName == ""))
+			if (name.StartsWith("Lady ") && (target.GuildName == null || target.GuildName == string.Empty))
 			{
 				return true;
 			}

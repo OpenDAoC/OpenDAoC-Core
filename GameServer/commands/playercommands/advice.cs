@@ -46,7 +46,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            string msg = "";
+            string msg = string.Empty;
 
             if (args.Length >= 2)
             {

@@ -99,7 +99,7 @@ namespace DOL.GS.Effects
             spirits[spiritId].Name = spiritName;
             spirits[spiritId].Model = spiritModel;
             spirits[spiritId].MaxSpeedBase = spiritSpeed;
-            spirits[spiritId].GuildName = "";
+            spirits[spiritId].GuildName = string.Empty;
             spirits[spiritId].Size = 50;
             spirits[spiritId].X = EffectOwner.X + Util.Random(20, 40) - Util.Random(20, 40);
             spirits[spiritId].Y = EffectOwner.Y + Util.Random(20, 40) - Util.Random(20, 40);

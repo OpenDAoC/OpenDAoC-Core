@@ -2235,7 +2235,7 @@ namespace DOL.GS.Commands
 			bool limitShown = false;
 
 
-			if (limitType == "" || limitType == "wear")
+			if (limitType == string.Empty || limitType == "wear")
 			{
 				limitShown = true;
 				text.Add("  ----- Wearing:");
@@ -2247,7 +2247,7 @@ namespace DOL.GS.Commands
 				text.Add(" ");
 			}
 
-			if (limitType == "" || limitType == "bag")
+			if (limitType == string.Empty || limitType == "bag")
 			{
 				limitShown = true;
 				text.Add("  ----- Backpack:");
@@ -2337,32 +2337,32 @@ namespace DOL.GS.Commands
 					}
 					else
 					{
-						activeBags = "";
+						activeBags = string.Empty;
 
 						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.LeftFront) > 0)
 						{
-							if (activeBags != "")
+							if (activeBags != string.Empty)
 								activeBags += ", ";
 
 							activeBags += "LeftFront";
 						}
 						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.RightFront) > 0)
 						{
-							if (activeBags != "")
+							if (activeBags != string.Empty)
 								activeBags += ", ";
 
 							activeBags += "RightFront";
 						}
 						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.LeftRear) > 0)
 						{
-							if (activeBags != "")
+							if (activeBags != string.Empty)
 								activeBags += ", ";
 
 							activeBags += "LeftRear";
 						}
 						if ((player.ActiveSaddleBags & (byte)eHorseSaddleBag.RightRear) > 0)
 						{
-							if (activeBags != "")
+							if (activeBags != string.Empty)
 								activeBags += ", ";
 
 							activeBags += "RightRear";
@@ -2403,8 +2403,8 @@ namespace DOL.GS.Commands
 			text.Add(" ");
 			text.Add("CHARACTER STATS ");
 
-			String sCurrent = "";
-			String sTitle = "";
+			String sCurrent = string.Empty;
+			String sTitle = string.Empty;
 			int cnt = 0;
 
 			for (eProperty stat = eProperty.Stat_First; stat <= eProperty.Stat_Last; stat++, cnt++)
@@ -2414,14 +2414,14 @@ namespace DOL.GS.Commands
 				if (cnt == 3)
 				{
 					text.Add("  - Current stats " + sTitle + " : " + sCurrent);
-					sTitle = "";
-					sCurrent = "";
+					sTitle = string.Empty;
+					sCurrent = string.Empty;
 				}
 			}
 			text.Add("  - Current stats " + sTitle + " : " + sCurrent);
 
-			sCurrent = "";
-			sTitle = "";
+			sCurrent = string.Empty;
+			sTitle = string.Empty;
 			cnt = 0;
 			for (eProperty res = eProperty.Resist_First; res <= eProperty.Resist_Last; res++, cnt++)
 			{
@@ -2430,14 +2430,14 @@ namespace DOL.GS.Commands
 				if (cnt == 2)
 				{
 					text.Add("  - Current " + sTitle + " : " + sCurrent);
-					sCurrent = "";
-					sTitle = "";
+					sCurrent = string.Empty;
+					sTitle = string.Empty;
 				}
 				if (cnt == 5)
 				{
 					text.Add("  - Current " + sTitle + " : " + sCurrent);
-					sCurrent = "";
-					sTitle = "";
+					sCurrent = string.Empty;
+					sTitle = string.Empty;
 				}
 			}
 			text.Add("  - Current " + sTitle + " : " + sCurrent);
@@ -2451,7 +2451,7 @@ namespace DOL.GS.Commands
 					 " single, " + player.RespecAmountAllSkill + " full");
 			text.Add("  - Remaining spec. points : " + player.SkillSpecialtyPoints);
 			sTitle = "  - Player specialisations : ";
-			sCurrent = "";
+			sCurrent = string.Empty;
 			foreach (Specialization spec in player.GetSpecList())
 			{
 				sCurrent += spec.Name + " = " + spec.Level + " ; ";

@@ -1043,7 +1043,7 @@ namespace DOL.GS
 
                     foreach (string property in TempProperties.GetAllProperties())
                     {
-                        if (property == "")
+                        if (property == string.Empty)
                             continue;
 
                         int occurrences = 0;
@@ -1116,7 +1116,7 @@ namespace DOL.GS
                 if (Statistics != null)
                 {
                     string stats = Statistics.GetStatisticsMessage();
-                    if (stats != "")
+                    if (stats != string.Empty)
                     {
                         Out.SendMessage(stats, eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }
@@ -5131,13 +5131,13 @@ namespace DOL.GS
             {
                 System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
                 string totalExpStr = expTotal.ToString("N0", format);
-                string expCampBonusStr = "";
-                string expGroupBonusStr = "";
-                string expOutpostBonusStr = "";
-                string expSoloBonusStr = "";
-                string expRealmLoyaltyStr = "";
-                string expGuildBonusStr = "";
-                string expRelicBonusStr = "";
+                string expCampBonusStr = string.Empty;
+                string expGroupBonusStr = string.Empty;
+                string expOutpostBonusStr = string.Empty;
+                string expSoloBonusStr = string.Empty;
+                string expRealmLoyaltyStr = string.Empty;
+                string expGuildBonusStr = string.Empty;
+                string expRelicBonusStr = string.Empty;
 
                 if (expCampBonus > 0)
                 {
@@ -6035,7 +6035,7 @@ namespace DOL.GS
                         case eArmorSlot.HAND: hitLocName = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Location.Hand"); break;
                         case eArmorSlot.FEET: hitLocName = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.Location.Foot"); break;
                     }
-                    string modmessage = "";
+                    string modmessage = string.Empty;
                     if (ad.Attacker is GamePlayer == false) // if attacked by player, don't show resists (?)
                     {
                         if (ad.Modifier > 0) modmessage = " (+" + ad.Modifier + ")";
@@ -6620,13 +6620,13 @@ namespace DOL.GS
             TimeSpan timeLived = TimeSpan.FromSeconds(playedTime);
             string timeLivedString = timeLived.Days + "d " + timeLived.Hours + "h " + timeLived.Minutes + "m ";
 
-            string playerName = "";
-            if (lastname != "")
+            string playerName = string.Empty;
+            if (lastname != string.Empty)
                 playerName = name + " " + lastname;
             else
                 playerName = name;
 
-            var DiscordObituaryHook = ""; // Make it a property later
+            var DiscordObituaryHook = string.Empty; // Make it a property later
             var client = new DiscordWebhookClient(DiscordObituaryHook);
 
             // Create your DiscordMessage with all parameters of your message.
@@ -6681,7 +6681,7 @@ namespace DOL.GS
             ushort messageDistance = WorldMgr.DEATH_MESSAGE_DISTANCE;
             m_releaseType = eReleaseType.Normal;
 
-            string location = "";
+            string location = string.Empty;
             if (CurrentAreas.Count > 0 && (CurrentAreas[0] is Area.BindArea) == false)
                 location = (CurrentAreas[0] as AbstractArea).Description;
             else
@@ -8391,7 +8391,7 @@ namespace DOL.GS
             var afkmessage = TempProperties.GetProperty<string>(AFK_MESSAGE);
             if (afkmessage != null)
             {
-                if (afkmessage == "")
+                if (afkmessage == string.Empty)
                 {
                     // Message: {0} is currently AFK.
                     ChatUtil.SendSystemMessage(source.Client, "Social.ReceiveMessage.AFK.PlayerAFK", Name);
@@ -9921,7 +9921,7 @@ namespace DOL.GS
         /// </summary>
         public string ItemBonusName(int BonusType)
         {
-            string BonusName = "";
+            string BonusName = string.Empty;
 
             if (BonusType == 1) BonusName = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ItemBonusName.Bonus1");//Strength
             if (BonusType == 2) BonusName = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.ItemBonusName.Bonus2");//Dexterity
@@ -10169,7 +10169,7 @@ namespace DOL.GS
                     IsOnHorse = false;
 
                 ActiveHorse.ID = 0;
-                ActiveHorse.Name = "";
+                ActiveHorse.Name = string.Empty;
                 return;
             }
             else if ((eInventorySlot) item.Item_Type == eInventorySlot.HorseArmor)
@@ -10348,7 +10348,7 @@ namespace DOL.GS
         public virtual void RefreshItemBonuses()
         {
             m_itemBonus = new PropertyIndexer();
-            string slotToLoad = "";
+            string slotToLoad = string.Empty;
             switch (VisibleActiveWeaponSlots)
             {
                 case 16: slotToLoad = "rightandleftHandSlot"; break;
@@ -10368,7 +10368,7 @@ namespace DOL.GS
                     continue;
                 // skip weapons. only active weapons should fire equip event, done in player.SwitchWeapon
                 bool add = true;
-                if (slotToLoad != "")
+                if (slotToLoad != string.Empty)
                 {
                     switch (item.SlotPosition)
                     {
@@ -11812,7 +11812,7 @@ namespace DOL.GS
             // TODO: PvP & PvE messages
             IList list = base.GetExamineMessages(player);
 
-            string message = "";
+            string message = string.Empty;
             switch (GameServer.Instance.Configuration.ServerType)
             {//FIXME: Better extract this to a new function in ServerRules !!! (VaNaTiC)
                 case EGameServerType.GST_Normal:
@@ -13967,7 +13967,7 @@ namespace DOL.GS
 
             public ControlledHorse(GamePlayer player)
             {
-                m_name = "";
+                m_name = string.Empty;
                 m_player = player;
             }
 

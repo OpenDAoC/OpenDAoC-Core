@@ -94,7 +94,7 @@ namespace DOL.GS.Quests.Hibernia
             OtaYrling = new GameNPC();
             OtaYrling.Model = 230;
             OtaYrling.Name = "Ota Yrling";
-            OtaYrling.GuildName = "";
+            OtaYrling.GuildName = string.Empty;
             OtaYrling.Realm = eRealm.Midgard;
             OtaYrling.CurrentRegionID = 151;
             OtaYrling.LoadEquipmentTemplateFromDatabase("95ff9192-4787-4dca-bcbb-7a081d801074");
@@ -125,7 +125,7 @@ namespace DOL.GS.Quests.Hibernia
             Jaklyr = new GameNPC();
             Jaklyr.Model = 203;
             Jaklyr.Name = "Jaklyr";
-            Jaklyr.GuildName = "";
+            Jaklyr.GuildName = string.Empty;
             Jaklyr.Realm = eRealm.Midgard;
             Jaklyr.CurrentRegionID = 151;
             Jaklyr.LoadEquipmentTemplateFromDatabase("MidTownsperson4");
@@ -157,7 +157,7 @@ namespace DOL.GS.Quests.Hibernia
             Longbeard.LoadEquipmentTemplateFromDatabase("be600079-ca29-4093-953a-3ee3aa1552e8");
             Longbeard.Model = 232;
             Longbeard.Name = "Longbeard";
-            Longbeard.GuildName = "";
+            Longbeard.GuildName = string.Empty;
             Longbeard.Realm = eRealm.Midgard;
             Longbeard.CurrentRegionID = 151;
             Longbeard.Size = 53;
@@ -190,7 +190,7 @@ namespace DOL.GS.Quests.Hibernia
 	        Styr.LoadEquipmentTemplateFromDatabase("dbdb0127-cbbe-42b5-b60a-3cdc27256ae9");
 	        Styr.Model = 235;
 	        Styr.Name = "Styr";
-	        Styr.GuildName = "";
+	        Styr.GuildName = string.Empty;
 	        Styr.Realm = eRealm.Midgard;
 	        Styr.CurrentRegionID = 151;
 	        Styr.Size = 51;
@@ -334,7 +334,7 @@ namespace DOL.GS.Quests.Hibernia
 			AncestralKeeper = new SINeckBoss();
 			AncestralKeeper.Model = 951;
 			AncestralKeeper.Name = "Ancestral Keeper";
-			AncestralKeeper.GuildName = "";
+			AncestralKeeper.GuildName = string.Empty;
 			AncestralKeeper.Realm = eRealm.None;
 			AncestralKeeper.Race = 2003;
 			AncestralKeeper.BodyType = (ushort) NpcTemplateMgr.eBodyType.Elemental;
@@ -486,7 +486,7 @@ namespace DOL.GS.Quests.Hibernia
 							OtaYrling.SayTo(player, "Hey "+player.Name+", don't listen to Longbeard and his friend Styr, they came from Dellingstad and fled.");
 							
 							int random = Util.Random(0, 3);
-							var message = "";
+							var message = string.Empty;
 							switch (random)
 							{
 								case 0:

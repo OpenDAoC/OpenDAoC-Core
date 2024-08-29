@@ -12,11 +12,11 @@ namespace DOL.GS.DatabaseUpdate
         private class language : DataObject
         {
             protected string m_translationid;
-            protected string m_EN = "";
-            protected string m_DE = "";
-            protected string m_FR = "";
-            protected string m_IT = "";
-            protected string m_CU = "";
+            protected string m_EN = string.Empty;
+            protected string m_DE = string.Empty;
+            protected string m_FR = string.Empty;
+            protected string m_IT = string.Empty;
+            protected string m_CU = string.Empty;
             protected string m_packageID;
 
             public language() { }

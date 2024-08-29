@@ -300,7 +300,7 @@ public class AchievementReskinVendor : GameNPC
             DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
             if (item.IsCrafted)
                 newInventoryItem.IsCrafted = true;
-            if (item.Creator != "")
+            if (item.Creator != string.Empty)
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
 
@@ -376,7 +376,7 @@ public class AchievementReskinVendor : GameNPC
             DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
             if (item.IsCrafted)
                 newInventoryItem.IsCrafted = true;
-            if (item.Creator != "")
+            if (item.Creator != string.Empty)
                 newInventoryItem.Creator = item.Creator;
             newInventoryItem.Count = 1;
             player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);

@@ -165,7 +165,7 @@ namespace DOL.GS.ServerProperties
 		/// A serialised list of disabled expansion IDs
 		/// </summary>
 		[ServerProperty("system", "disabled_expansions", "Serialized list of disabled expansions IDs, expansion IDs are client type seperated by ;", "")]
-		public static string DISABLED_EXPANSIONS = "";
+		public static string DISABLED_EXPANSIONS = string.Empty;
 
 		/// <summary>
 		/// Server Language
@@ -659,7 +659,7 @@ namespace DOL.GS.ServerProperties
 		/// A serialised list of disabled RegionIDs
 		/// </summary>
 		[ServerProperty("world", "disabled_regions", "Serialized list of disabled region IDs, separated by semi-colon or a range with a dash (ie 1-5;7;9)", "")]
-		public static string DISABLED_REGIONS = "";
+		public static string DISABLED_REGIONS = string.Empty;
 
 		/// <summary>
 		/// Should the server disable the tutorial zone

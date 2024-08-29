@@ -86,7 +86,7 @@ namespace DOL.GS.Quests.Hibernia
                 Theresa = new GameNPC();
                 Theresa.Model = 310;
                 Theresa.Name = "Theresa";
-                Theresa.GuildName = "";
+                Theresa.GuildName = string.Empty;
                 Theresa.Realm = eRealm.Hibernia;
                 Theresa.CurrentRegionID = 201;
                 Theresa.LoadEquipmentTemplateFromDatabase("Theresa");
@@ -118,7 +118,7 @@ namespace DOL.GS.Quests.Hibernia
                 Karl = new GameNPC();
                 Karl.Model = 956;
                 Karl.Name = "Karl";
-                Karl.GuildName = "";
+                Karl.GuildName = string.Empty;
                 Karl.Realm = eRealm.Hibernia;
                 Karl.CurrentRegionID = 200;
                 Karl.LoadEquipmentTemplateFromDatabase("Karl");
@@ -462,7 +462,7 @@ namespace DOL.GS.Quests.Hibernia
                 MobEffect = new GameNPC();
                 MobEffect.Model = 1;
                 MobEffect.Name = "power of nature";
-                MobEffect.GuildName = "";
+                MobEffect.GuildName = string.Empty;
                 MobEffect.Realm = eRealm.Hibernia;
                 MobEffect.Race = 2007;
                 MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;

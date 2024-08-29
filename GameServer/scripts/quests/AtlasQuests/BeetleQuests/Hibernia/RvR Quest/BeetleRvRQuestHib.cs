@@ -329,7 +329,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 	        Beetle = new GameNPC();
             Beetle.Model = 668;
             Beetle.Name = "Kevin";
-            Beetle.GuildName = "";
+            Beetle.GuildName = string.Empty;
             Beetle.Realm = eRealm.Hibernia;
             Beetle.Race = 2007;
             Beetle.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;
@@ -351,7 +351,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 			MobEffect = new GameNPC();
 			MobEffect.Model = 1822;
 			MobEffect.Name = "power of the beetle";
-			MobEffect.GuildName = "";
+			MobEffect.GuildName = string.Empty;
 			MobEffect.Realm = eRealm.Hibernia;
 			MobEffect.Race = 2007;
 			MobEffect.BodyType = (ushort) NpcTemplateMgr.eBodyType.Magical;

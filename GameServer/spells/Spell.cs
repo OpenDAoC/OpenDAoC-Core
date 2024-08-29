@@ -8,7 +8,7 @@ namespace DOL.GS
 {
 	public class Spell : Skill, ICustomParamsValuable
 	{
-		protected readonly string m_description = "";
+		protected readonly string m_description = string.Empty;
 		protected readonly eSpellTarget m_target = eSpellTarget.NONE;
         protected readonly eSpellType m_spelltype;// = "-";
 		protected readonly int m_range = 0;
@@ -28,10 +28,10 @@ namespace DOL.GS
 		protected readonly int m_resmana = 0;
 		protected readonly int m_lifedrain_return = 0;
 		protected readonly int m_amnesia_chance = 0;
-		protected readonly string m_message1 = "";
-		protected readonly string m_message2 = "";
-		protected readonly string m_message3 = "";
-		protected readonly string m_message4 = "";
+		protected readonly string m_message1 = string.Empty;
+		protected readonly string m_message2 = string.Empty;
+		protected readonly string m_message3 = string.Empty;
+		protected readonly string m_message4 = string.Empty;
 		protected readonly ushort m_effectID = 0;
 		protected readonly int m_instrumentRequirement = 0;
 		protected readonly int m_spellGroup = 0;

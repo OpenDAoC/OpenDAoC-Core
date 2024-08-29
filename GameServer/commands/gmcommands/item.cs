@@ -1831,7 +1831,7 @@ namespace DOL.GS.Commands
 					case "findid":
 						{
 							string name = string.Join(" ", args, 2, args.Length - 2);
-							if (name != "")
+							if (name != string.Empty)
 							{
 								var items = DOLDB<DbItemTemplate>.SelectObjects(DB.Column("id_nb").IsLike($"%{name}%"));
 								DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.FindID.MatchingIDsForX", name, items.Count), new object[] { });
@@ -1847,7 +1847,7 @@ namespace DOL.GS.Commands
 					case "findname":
 						{
 							string name = string.Join(" ", args, 2, args.Length - 2);
-							if (name != "")
+							if (name != string.Empty)
 							{
 								var items = DOLDB<DbItemTemplate>.SelectObjects(DB.Column("name").IsLike($"%{name}%"));
 								DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Item.FindName.MatchingNamesForX", name, items.Count), new object[] { });
@@ -1898,7 +1898,7 @@ namespace DOL.GS.Commands
 						#region LoadPackage
 					case "loadpackage":
 						{
-							if (args[2] != "")
+							if (args[2] != string.Empty)
 							{
 								if (args[2] == "**all**") args[2] = String.Empty;
 

@@ -56,7 +56,7 @@ namespace DOL.GS.Commands
 			if (IsSpammingCommand(client.Player, "relic"))
 				return;
 
-            string albStr = "", albPwr = "", midStr = "", midPwr = "", hibStr = "", hibPwr = "";
+            string albStr = string.Empty, albPwr = string.Empty, midStr = string.Empty, midPwr = string.Empty, hibStr = string.Empty, hibPwr = string.Empty;
 			var relicInfo = new List<string>();
             
 
@@ -64,7 +64,7 @@ namespace DOL.GS.Commands
             #region Reformat Relics  '[Type]: [OwnerRealm]'
             foreach (GameRelic relic in RelicMgr.getNFRelics())
             {
-                string relicLoc = "";
+                string relicLoc = string.Empty;
                 if (relic.Realm == eRealm.None)
                 {
                     relicLoc = $" ({relic.CurrentZone.Description})";

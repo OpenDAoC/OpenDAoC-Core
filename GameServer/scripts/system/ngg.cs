@@ -138,7 +138,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            string ClasseEpic = "";
+            string ClasseEpic = string.Empty;
             ushort color = 0;
             ushort color1 = 0;
             ushort color2 = 0;

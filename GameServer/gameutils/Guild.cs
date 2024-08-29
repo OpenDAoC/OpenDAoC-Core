@@ -643,9 +643,9 @@ namespace DOL.GS
 			{
 				GuildMgr.RemovePlayerFromAllGuildPlayersList(member);
 				RemoveOnlineMember(member);
-				member.GuildName = "";
-				member.GuildNote = "";
-				member.GuildID = "";
+				member.GuildName = string.Empty;
+				member.GuildNote = string.Empty;
+				member.GuildID = string.Empty;
 				member.GuildRank = null;
 				member.Guild = null;
 				member.SaveIntoDatabase();

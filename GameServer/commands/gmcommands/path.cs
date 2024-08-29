@@ -371,7 +371,7 @@ namespace DOL.GS.Commands
 			// With the new horse system, the stablemasters are using the item.Id_nb to find the horse route in the database
 			// So we have to save a path in the database with the Id_nb as a PathID
 			// The following string will contain the item Id_nb if it is found in the merchant list
-			string pathname = "";
+			string pathname = string.Empty;
 			if (merchant.TradeItems != null)
 			{
 				foreach (DbItemTemplate template in merchant.TradeItems.GetAllItems().Values)

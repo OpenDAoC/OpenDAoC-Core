@@ -26,7 +26,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            var achievementName = "";
+            var achievementName = string.Empty;
             if (args.Length < 3)
             {
                 DisplaySyntax(client);

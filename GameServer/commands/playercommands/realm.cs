@@ -73,9 +73,9 @@ namespace DOL.GS.Commands
 			if (IsSpammingCommand(client.Player, "realm"))
 				return;
 
-			string albKeeps = "";
-			string midKeeps = "";
-			string hibKeeps = "";
+			string albKeeps = string.Empty;
+			string midKeeps = string.Empty;
+			string hibKeeps = string.Empty;
 			ICollection<AbstractGameKeep> keepList = GameServer.KeepManager.GetFrontierKeeps();
 			ICollection<AbstractGameKeep> albKeepList = GameServer.KeepManager.GetKeepsOfRegion(1);
 			ICollection<AbstractGameKeep> midKeepList = GameServer.KeepManager.GetKeepsOfRegion(100);
@@ -152,7 +152,7 @@ namespace DOL.GS.Commands
 				if (DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod >= GameLoop.GameLoopTime)
 				{
 					var pve = DFEnterJumpPoint.LastRealmSwapTick + DFEnterJumpPoint.GracePeriod - GameLoop.GameLoopTime;
-					string realmName = "";
+					string realmName = string.Empty;
 					if (DFEnterJumpPoint.PreviousOwner == eRealm._LastPlayerRealm || 
 					    DFEnterJumpPoint.PreviousOwner == eRealm.Hibernia)
 						realmName = "Hibernia";
@@ -161,7 +161,7 @@ namespace DOL.GS.Commands
 						realmName = "Albion";
 					if (DFEnterJumpPoint.PreviousOwner == eRealm.Midgard)
 						realmName = "Midgard";
-					if(realmName != "")
+					if(realmName != string.Empty)
 						realmInfo.Add(realmName + " can enter Darkness Falls for another " + TimeSpan.FromMilliseconds(pve).Minutes + "m " + TimeSpan.FromMilliseconds(pve).Seconds + "s");
 				}	
 			}
@@ -173,7 +173,7 @@ namespace DOL.GS.Commands
 
 		private string KeepStringBuilder(AbstractGameKeep keep)
 		{
-			string buffer = "";
+			string buffer = string.Empty;
 			buffer += keep.Name + ": " + GlobalConstants.RealmToName(keep.Realm);
 			if (keep.Guild != null)
 			{

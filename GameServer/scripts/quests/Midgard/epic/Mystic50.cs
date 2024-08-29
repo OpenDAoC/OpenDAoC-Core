@@ -134,7 +134,7 @@ namespace DOL.GS.Quests.Midgard
 				Danica = new GameNPC();
 				Danica.Model = 227;
 				Danica.Name = "Danica";
-				Danica.GuildName = "";
+				Danica.GuildName = string.Empty;
 				Danica.Realm = eRealm.Midgard;
 				Danica.CurrentRegionID = 100;
 				Danica.LoadEquipmentTemplateFromDatabase("Danica");
@@ -169,7 +169,7 @@ namespace DOL.GS.Quests.Midgard
 				Kelic = new Kelic();
 				Kelic.Model = 26;
 				Kelic.Name = "Kelic";
-				Kelic.GuildName = "";
+				Kelic.GuildName = string.Empty;
 				Kelic.Realm = eRealm.None;
 				Kelic.CurrentRegionID = 100;
 				Kelic.Size = 100;

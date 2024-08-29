@@ -124,7 +124,7 @@ namespace DOL.GS.Commands
 				long mins = secs / 60;
 				long hours = mins / 60;
 
-				string translationID = "";
+				string translationID = string.Empty;
 				long args1 = 0;
 				long args2 = 0;
 
@@ -235,7 +235,7 @@ namespace DOL.GS.Commands
 				//Change the timer to the new callback time
 				m_timer.Change(m_currentCallbackTime, m_currentCallbackTime);
 
-				if (translationID != "")
+				if (translationID != string.Empty)
 				{
 					foreach (GamePlayer player in ClientService.GetPlayers())
 					{
@@ -303,7 +303,7 @@ namespace DOL.GS.Commands
 				long mins = secs / 60;
 				long hours = mins / 60;
 
-				string translationID = "";
+				string translationID = string.Empty;
 				long args1 = 0;
 				long args2 = 0;
 
@@ -414,7 +414,7 @@ namespace DOL.GS.Commands
 				//Change the timer to the new callback time
 				m_timer.Change(m_currentCallbackTime, m_currentCallbackTime);
 
-				if (translationID != "")
+				if (translationID != string.Empty)
 				{
 					foreach (GamePlayer player in ClientService.GetPlayers())
 					{

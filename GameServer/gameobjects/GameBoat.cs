@@ -137,7 +137,7 @@ namespace DOL.GS
 
         public override bool Interact(GamePlayer player)
         {
-            return OwnerID != "" ? false : base.Interact(player);
+            return OwnerID != string.Empty ? false : base.Interact(player);
         }
 
         public override void LoadFromDatabase(DataObject obj)
