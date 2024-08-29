@@ -2163,7 +2163,7 @@ namespace DOL.GS
             get
             {
                 if (m_guild == null)
-                    return "";
+                    return string.Empty;
 
                 return m_guild.Name;
             }

@@ -60,7 +60,7 @@ namespace DOL.GS
 		{
 			get
 			{
-				return "";
+				return string.Empty;
 			}
 		}
 		public eCraftingSkill eSkill

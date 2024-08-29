@@ -875,7 +875,7 @@ namespace DOL.GS.Quests
 				{
 					if (m_dataQuest.Description == null)
 					{
-						return "";
+						return string.Empty;
 					}
 					else
 					{
@@ -1120,7 +1120,7 @@ namespace DOL.GS.Quests
 					log.Error("DataQuest [" + ID + "] TargetName error for Step " + Step, ex);
 				}
 
-				return "";
+				return string.Empty;
 			}
 		}
 
@@ -1269,7 +1269,7 @@ namespace DOL.GS.Quests
                     if (QuestPlayer != null) ChatUtil.SendDebugMessage(QuestPlayer, "DataQuest [" + ID + "] StepItemTemplate error for Step " + Step);
                 }
 
-				return "";
+				return string.Empty;
 			}
 		}
 
@@ -1293,7 +1293,7 @@ namespace DOL.GS.Quests
                     if (QuestPlayer != null) ChatUtil.SendDebugMessage(QuestPlayer, "DataQuest [" + ID + "] CollectItemTemplate error for Step " + Step);
                 }
 
-				return "";
+				return string.Empty;
 			}
 		}
 
@@ -1318,7 +1318,7 @@ namespace DOL.GS.Quests
                     if (QuestPlayer != null) ChatUtil.SendDebugMessage(QuestPlayer, "DataQuest [" + ID + "] AdvanceText error for Step " + Step);
                 }
 
-				return "";
+				return string.Empty;
 			}
 		}
 

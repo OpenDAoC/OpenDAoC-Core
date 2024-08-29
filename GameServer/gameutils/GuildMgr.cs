@@ -401,7 +401,7 @@ namespace DOL.GS
 		{
 			Guild g = GetGuildByName(guildName);
 			if (g == null)
-				return "";
+				return string.Empty;
 			return g.GuildID;
 		}
 
@@ -670,7 +670,7 @@ namespace DOL.GS
 						case eSocialWindowSortColumn.ZoneOrOnline:
 							return ZoneOrOnline;
 						default:
-							return "";
+							return string.Empty;
 					}
 				}
 			}

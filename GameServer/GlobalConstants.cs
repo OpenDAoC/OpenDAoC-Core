@@ -609,7 +609,7 @@ namespace DOL.GS
 					case eRealm.Midgard: return "Midgard";
 					case eRealm.Hibernia: return "Hibernia";
 					case eRealm.Door: return "Door";
-					default: return "";
+					default: return string.Empty;
 			}
 		}
 		public static int EmblemOfRealm(eRealm realm)
@@ -690,7 +690,7 @@ namespace DOL.GS
 			{
                 return LanguageMgr.GetTranslation(client.Account.Language, "CraftLevelToCraftTitle.LegendaryGrandmaster");
 			}
-			return "";
+			return string.Empty;
 		}
 
 		public static eRealm GetBonusRealm(eProperty bonus)

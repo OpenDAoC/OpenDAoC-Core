@@ -77,7 +77,7 @@ namespace DOL.GS.RealmAbilities
 		/// <summary>
 		/// Unit for values like %
 		/// </summary>
-		protected virtual string ValueUnit { get { return ""; } }
+		protected virtual string ValueUnit { get { return string.Empty; } }
 
 		public override void Activate(GameLiving living, bool sendUpdates)
 		{

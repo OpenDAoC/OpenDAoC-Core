@@ -2184,9 +2184,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 				Style style2 = SkillBase.GetStyleByID(style.OpeningRequirementValue);
 				if (style2!=null)
 					return style2.Name;
-				return "";
+				return string.Empty;
 			}
-			return "";
+			return string.Empty;
 		}*/
 
 		#endregion

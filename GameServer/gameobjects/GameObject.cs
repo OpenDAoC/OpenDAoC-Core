@@ -482,7 +482,7 @@ namespace DOL.GS
 			 */
 
 			if (Name.Length < 1)
-				return "";
+				return string.Empty;
 
 			// actually this should be only for Named mobs (like dragon, legion) but there is no way to find that out
 			if (char.IsUpper(Name[0]) && this is GameLiving) // proper noun
@@ -1254,7 +1254,7 @@ namespace DOL.GS
 		public static string ObjectHasOwner()
 		{
 			if (m_boat_ownerid == string.Empty)
-				return "";
+				return string.Empty;
 			else
 				return m_boat_ownerid;
 		}

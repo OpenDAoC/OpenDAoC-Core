@@ -512,7 +512,7 @@ namespace DOL.GS.Scripts
                     return "[40-50+]";
             }
 
-            return "";
+            return string.Empty;
         }
 
         public static string GetText()

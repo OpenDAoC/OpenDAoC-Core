@@ -372,7 +372,7 @@ namespace DOL.GS.Commands
             {
                 str = p.TempProperties.GetProperty(INSTANCE_KEY, string.Empty);
             }
-            catch { return ""; }
+            catch { return string.Empty; }
             return str;
         }
 

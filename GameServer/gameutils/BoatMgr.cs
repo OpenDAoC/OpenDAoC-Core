@@ -199,7 +199,7 @@ namespace DOL.GS
         {
             GameBoat b = GetBoatByName(boatName);
             if (b == null)
-                return "";
+                return string.Empty;
             return b.BoatID;
         }
 

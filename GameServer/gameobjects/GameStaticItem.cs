@@ -136,7 +136,7 @@ namespace DOL.GS
 		public override string GetName(int article, bool firstLetterUppercase)
 		{
 			if (Name == string.Empty)
-				return "";
+				return string.Empty;
 
 			if(char.IsUpper(Name[0]))
 			{

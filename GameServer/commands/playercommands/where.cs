@@ -165,7 +165,7 @@ namespace DOL.GS.Commands
 				return "East";
 			else if (heading > 3328 && heading < 3840)
 				return "South East";
-			return "";
+			return string.Empty;
 		}
 	}
 }

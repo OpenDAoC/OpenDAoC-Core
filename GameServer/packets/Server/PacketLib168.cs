@@ -3855,7 +3855,7 @@ namespace DOL.GS.PacketHandler
 		protected string BuildTaskString()
 		{
 			if (m_gameClient.Player == null)
-				return "";
+				return string.Empty;
 
 			AbstractTask task = m_gameClient.Player.Task;
 			AbstractMission pMission = m_gameClient.Player.Mission;

@@ -42,7 +42,7 @@ namespace DOL.GS
         /// </summary>
         protected virtual String Type
         {
-            get { return ""; }
+            get { return string.Empty; }
         }
 
         /// <summary>
