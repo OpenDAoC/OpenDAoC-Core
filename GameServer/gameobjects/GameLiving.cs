@@ -3110,13 +3110,6 @@ namespace DOL.GS
 
         #endregion
         #region Speed/Heading/Target/GroundTarget/GuildName/SitState/Level
-        /// <summary>
-        /// The targetobject of this living
-        /// This is a weak reference to a GameObject, which
-        /// means that the gameobject can be cleaned up even
-        /// when this living has a reference on it ...
-        /// </summary>
-        protected readonly WeakReference m_targetObjectWeakReference;
 
 		/// <summary>
 		/// Holds the Living's Coordinate inside the current Region
@@ -3126,17 +3119,8 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the target of this living
 		/// </summary>
-		public virtual GameObject TargetObject
-		{
-			get
-			{
-				return (m_targetObjectWeakReference.Target as GameObject);
-			}
-			set
-			{
-				m_targetObjectWeakReference.Target = value;
-			}
-		}
+		public virtual GameObject TargetObject { get; set; }
+
 		public virtual bool IsSitting
 		{
 			get { return false; }
@@ -3936,7 +3920,7 @@ namespace DOL.GS
 			m_healthRegenerationTimer = null;
 			m_powerRegenerationTimer = null;
 			m_enduRegenerationTimer = null;
-
+			TargetObject = null;
 			return true;
 		}
 
@@ -4196,7 +4180,6 @@ namespace DOL.GS
 			healthComponent = new HealthComponent(this);
 
 			m_guildName = string.Empty;
-			m_targetObjectWeakReference = new WeakRef(null);
 			m_groundTarget = new Point3D(0, 0, 0);
 
 			//Set all combat properties
