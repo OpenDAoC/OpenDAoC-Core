@@ -1461,12 +1461,12 @@ namespace DOL.GS.ServerRules
 
 			long CalculateGroupBonus()
 			{
-				long groupBonus = 0;
+				if (player.Group == null || plrGrpExp.ContainsKey(player.Group))
+					return 0;
 
-				if (player.Group != null && plrGrpExp.ContainsKey(player.Group))
-					groupBonus = (long) (0.125 * baseXpReward * player.Group.MemberCount);
-
-				return groupBonus;
+				// Group size is reduced by 1 to prevent the bonus from doing more than simply working against the base experience reduction done in `CalculateNpcExperienceValueModifiedByGroup`.
+				// For example, a bonus of 100% should nullify that reduction. If the group size wasn't reduced by 1, duos would actually gain more experience than solo players (ignoring other bonuses).
+				return (long) (baseXpReward * (player.Group.MemberCount - 1) * 0.125);
 			}
 
 			long CalculateBafBonus()
@@ -1639,7 +1639,7 @@ namespace DOL.GS.ServerRules
 					{
 						lock (killerPlayer.Group)
 						{
-							int count = 0;
+							int count = -1;
 							foreach (GamePlayer player in killerPlayer.Group.GetPlayersInTheGroup())
 							{
 								if (!player.IsWithinRadius(killedLiving, WorldMgr.MAX_EXPFORKILL_DISTANCE)) continue;
@@ -1869,7 +1869,7 @@ namespace DOL.GS.ServerRules
 						{
 							lock (killerPlayer.Group)
 							{
-								int count = 0;
+								int count = -1;
 								foreach (GamePlayer player in killerPlayer.Group.GetPlayersInTheGroup())
 								{
 									if (!player.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE)) continue;
