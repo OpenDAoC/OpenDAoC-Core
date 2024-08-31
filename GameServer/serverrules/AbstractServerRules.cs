@@ -1251,11 +1251,12 @@ namespace DOL.GS.ServerRules
 
 			long campBonus = CalculateCampBonus();
 			long groupBonus = CalculateGroupBonus();
+			long bafBonus = CalculateBafBonus();
 			long outpostBonus = CalculateOutpostBonus();
-			long totalReward = baseXpReward + campBonus + groupBonus + outpostBonus;
+			long totalReward = baseXpReward + campBonus + groupBonus + bafBonus + outpostBonus;
 
 			ShowXpStatsToPlayer();
-			living.GainExperience(eXPSource.NPC, totalReward, campBonus, groupBonus, outpostBonus, true, true, true); // XP Rate is handled in GainExperience
+			living.GainExperience(eXPSource.NPC, totalReward, campBonus, groupBonus, bafBonus, outpostBonus, true, true, true); // XP Rate is handled in GainExperience
 
 			void RewardRealmPoints()
 			{
@@ -1468,6 +1469,14 @@ namespace DOL.GS.ServerRules
 				return groupBonus;
 			}
 
+			long CalculateBafBonus()
+			{
+				if (killedNPC.Brain is not StandardMobBrain brain)
+					return 0;
+
+				return (long) (baseXpReward * brain.BafAddCount * 0.075);
+			}
+
 			long CalculateOutpostBonus()
 			{
 				long outpostBonus = 0;
@@ -1521,6 +1530,7 @@ namespace DOL.GS.ServerRules
 					double levelPercent = (double) (player.Experience + totalReward - player.ExperienceForCurrentLevel) / (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel) * 100.0;
 					double campPercent = (double) campBonus / baseXpReward * 100.0;
 					double groupPercent = (double) groupBonus / baseXpReward * 100.0;
+					double bafPercent = (double) bafBonus / baseXpReward * 100.0;
 					double outpostPercent = (double) outpostBonus / baseXpReward * 100.0;
 
 					player.Out.SendMessage($"XP needed: {player.ExperienceForNextLevel.ToString("N0", format)} | {levelPercent:0.##}% done with current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -1531,6 +1541,9 @@ namespace DOL.GS.ServerRules
 
 					if (groupBonus > 0)
 						player.Out.SendMessage($"Group: {groupBonus.ToString("N0", format)} | {groupPercent:0.##}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+					if (bafPercent > 0)
+						player.Out.SendMessage($"BaF: {bafBonus.ToString("N0", format)} | {bafPercent:0.##}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 					if (outpostBonus > 0)
 						player.Out.SendMessage($"Outpost: {outpostBonus.ToString("N0", format)} | {outpostPercent:0.##}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
