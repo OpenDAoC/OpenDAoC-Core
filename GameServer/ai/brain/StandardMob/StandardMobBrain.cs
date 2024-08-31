@@ -647,16 +647,19 @@ namespace DOL.AI.Brain
 
         #region Bring a Friend
 
+        private bool _canBaf = true;
+
         // 600 at 2 players, 1500 at 8.
         protected static ushort BAF_MIN_RADIUS => 450; // BaF radius for a solo player (assuming solo players are allowed to trigger BaF).
         protected static ushort BAF_EXTRA_RADIUS_PER_OTHER_PLAYER => 150; // Caps at 8 players.
         protected static double BAF_RADIUS_DUNGEON_MODIFIER => 0.5;
 
-        /// <summary>
-        /// Can the mob bring a friend?
-        /// Set to false when a mob BAFs or is brought by a friend.
-        /// </summary>
-        public virtual bool CanBaf { get; set; } = true;
+        public virtual bool CanBaf
+        {
+            // Prevent NPCs that were charmed from initiating a BaF or replying to one.
+            get => _canBaf && GameLoop.GameLoopTime - GameNPC.CHARMED_NOEXP_TIMEOUT >= Body.TempProperties.GetProperty<long>(GameNPC.CHARMED_TICK_PROP);
+            set => _canBaf = value;
+        }
 
         protected virtual void BringFriends(GameLiving puller)
         {
