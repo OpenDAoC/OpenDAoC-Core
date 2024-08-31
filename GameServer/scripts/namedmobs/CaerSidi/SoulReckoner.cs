@@ -183,7 +183,7 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 400;
-            CanBAF = false;
+            CanBaf = false;
         }
 
         public static bool InRoom = false;
@@ -410,7 +410,7 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 500;
-            CanBAF = false;
+            CanBaf = false;
         }
         public override void Think()
         {

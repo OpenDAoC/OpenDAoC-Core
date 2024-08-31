@@ -405,7 +405,7 @@ namespace DOL.AI.Brain
         /// </summary>
         public virtual void ClearAggroList()
         {
-            CanBAF = true; // Mobs that drop out of combat can BAF again.
+            CanBaf = true; // Mobs that drop out of combat can BAF again.
             AggroList.Clear();
 
             lock (((ICollection) OrderedAggroList).SyncRoot)
@@ -647,30 +647,20 @@ namespace DOL.AI.Brain
 
         #region Bring a Friend
 
-        /// <summary>
-        /// Max range to try to get BAFs from.
-        /// May be overloaded for specific brain types, ie.dragons or keep guards
-        /// </summary>
-        protected virtual ushort BAFMaxRange => 2000;
-
-        /// <summary>
-        /// Max range to try to look for nearby players.
-        /// May be overloaded for specific brain types, ie.dragons or keep guards
-        /// </summary>
-        protected virtual ushort BAFPlayerRange => 5000;
+        // 600 at 2 players, 1500 at 8.
+        protected static ushort BAF_MIN_RADIUS => 450; // BaF radius for a solo player (assuming solo players are allowed to trigger BaF).
+        protected static ushort BAF_EXTRA_RADIUS_PER_OTHER_PLAYER => 150; // Caps at 8 players.
+        protected static double BAF_RADIUS_DUNGEON_MODIFIER => 0.5;
 
         /// <summary>
         /// Can the mob bring a friend?
         /// Set to false when a mob BAFs or is brought by a friend.
         /// </summary>
-        public virtual bool CanBAF { get; set; } = true;
+        public virtual bool CanBaf { get; set; } = true;
 
-        /// <summary>
-        /// Bring friends when this mob aggros
-        /// </summary>
         protected virtual void BringFriends(GameLiving puller)
         {
-            if (!CanBAF || Body.Faction == null)
+            if (!CanBaf || Body.Faction == null)
                 return;
 
             GamePlayer playerPuller;
@@ -693,13 +683,18 @@ namespace DOL.AI.Brain
                  return;
 
             _ = new ResetBafPropertyAction(playerPuller);
-            CanBAF = false; // Mobs only BAF once per fight
-            int maxAdds = GetMaxAddsCountFromBaf(puller, out List<GamePlayer> otherTargets);
-            IEnumerable<StandardMobBrain> brainsInRadius = GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(BAFMaxRange, maxAdds);
+            CanBaf = false; // Mobs only BAF once per fight.
+            int maxAdds = GetMaxAddsCountFromBaf(puller, out List<GamePlayer> otherTargets, out int attackersCount);
+            int bafRadius = BAF_MIN_RADIUS + (Math.Min(8, attackersCount) - 1) * BAF_EXTRA_RADIUS_PER_OTHER_PLAYER;
+
+            if (Body.CurrentZone.IsDungeon)
+                bafRadius = (int) (bafRadius * BAF_RADIUS_DUNGEON_MODIFIER);
+
+            IEnumerable<StandardMobBrain> brainsInRadius = GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(bafRadius, maxAdds);
 
             foreach (StandardMobBrain brain in brainsInRadius)
             {
-                brain.CanBAF = false;
+                brain.CanBaf = false;
                 GameLiving target;
 
                 if (otherTargets != null && otherTargets.Count > 1)
@@ -710,9 +705,9 @@ namespace DOL.AI.Brain
                 brain.AddToAggroList(target, 1);
             }
 
-            int GetMaxAddsCountFromBaf(GameLiving puller, out List<GamePlayer> otherTargets)
+            static int GetMaxAddsCountFromBaf(GameLiving puller, out List<GamePlayer> otherTargets, out int attackersCount)
             {
-                int numAttackers = 0;
+                attackersCount = 0;
                 otherTargets = null;
                 HashSet<string> countedVictims = null;
                 HashSet<string> countedAttackers = null;
@@ -736,9 +731,9 @@ namespace DOL.AI.Brain
 
                     foreach (GamePlayer playerInGroup in group.GetPlayersInTheGroup())
                     {
-                        if (playerInGroup != null && (playerInGroup.InternalID == puller.InternalID || playerInGroup.IsWithinRadius(puller, BAFPlayerRange, true)))
+                        if (playerInGroup != null && (playerInGroup.InternalID == puller.InternalID || playerInGroup.IsWithinRadius(puller, WorldMgr.VISIBILITY_DISTANCE, true)))
                         {
-                            numAttackers++;
+                            attackersCount++;
                             countedAttackers?.Add(playerInGroup.InternalID);
 
                             if (otherTargets != null)
@@ -757,10 +752,10 @@ namespace DOL.AI.Brain
 
                     foreach (GamePlayer player2 in bg.Members.Keys)
                     {
-                        if (player2 != null && (player2.InternalID == puller.InternalID || player2.IsWithinRadius(puller, BAFPlayerRange, true)))
+                        if (player2 != null && (player2.InternalID == puller.InternalID || player2.IsWithinRadius(puller, WorldMgr.VISIBILITY_DISTANCE, true)))
                         {
                             if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && (countedAttackers == null || !countedAttackers.Contains(player2.InternalID)))
-                                numAttackers++;
+                                attackersCount++;
 
                             if (otherTargets != null && (countedVictims == null || !countedVictims.Contains(player2.InternalID)))
                                 otherTargets.Add(player2);
@@ -769,10 +764,10 @@ namespace DOL.AI.Brain
                 }
 
                 // Player is alone.
-                if (numAttackers == 0)
-                    numAttackers = 1;
+                if (attackersCount == 0)
+                    attackersCount = 1;
 
-                int percentBAF = Properties.BAF_INITIAL_CHANCE + (numAttackers - 1) * Properties.BAF_ADDITIONAL_CHANCE;
+                int percentBAF = Properties.BAF_INITIAL_CHANCE + (attackersCount - 1) * Properties.BAF_ADDITIONAL_CHANCE;
                 int maxAdds = percentBAF / 100; // Multiple of 100 are guaranteed BAFs.
 
                 // Calculate chance of an addition add based on the remainder.
@@ -783,9 +778,9 @@ namespace DOL.AI.Brain
             }
         }
 
-        public IEnumerable<StandardMobBrain> GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(ushort radius, int count)
+        public IEnumerable<StandardMobBrain> GetFriendlyAndAvailableBrainsInRadiusOrderedByDistance(int radius, int count)
         {
-            return Body.GetNPCsInRadius(radius).Where(WherePredicate).OrderBy(OrderByPredicate).Take(count).Select(SelectPredicate);
+            return Body.GetNPCsInRadius((ushort) radius).Where(WherePredicate).OrderBy(OrderByPredicate).Take(count).Select(SelectPredicate);
 
             bool WherePredicate(GameNPC npc)
             {

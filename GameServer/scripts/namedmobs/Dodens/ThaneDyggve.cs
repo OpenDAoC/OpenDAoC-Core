@@ -86,7 +86,7 @@ namespace DOL.GS.Scripts
 			private bool CanCastSpell = false;
 			public ThaneDyggveBrain() : base()
 			{
-				CanBAF = false;
+				CanBaf = false;
 				m_MjollnirAnnounce = new String[]
 				{
 					"You feel your energy draining and {0} summons powerful lightning hammers!",

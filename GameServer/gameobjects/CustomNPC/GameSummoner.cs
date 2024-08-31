@@ -152,7 +152,7 @@ namespace DOL.GS
 
                     if (m_pet.Brain is StandardMobBrain petBrain && Brain is StandardMobBrain brain && TargetObject is GameLiving living)
                     {
-                        petBrain.CanBAF = false;
+                        petBrain.CanBaf = false;
                         brain.AddAggroListTo(petBrain);
                     }
 

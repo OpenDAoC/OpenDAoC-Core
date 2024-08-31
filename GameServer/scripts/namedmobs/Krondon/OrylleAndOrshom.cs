@@ -96,7 +96,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 600;
 			ThinkInterval = 1500;
-			CanBAF = false;
+			CanBaf = false;
 		}
 		public static bool IsPulled = false;
         #region Throw Player
@@ -269,7 +269,7 @@ namespace DOL.AI.Brain
 			AggroLevel = 100;
 			AggroRange = 600;
 			ThinkInterval = 1500;
-			CanBAF = false;
+			CanBaf = false;
 		}
 		private bool Spawn_Fire = false;
 		private bool RemoveAdds = false;
