@@ -10,7 +10,6 @@ using DOL.Events;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
-using DOL.GS.Scripts;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 using ECS.Debug;
@@ -2017,64 +2016,10 @@ namespace DOL.GS.ServerRules
 					}
 				}
 			}
-            
-            killedPlayer.DeathsPvP++;
 
-			//for each group member, a 50% chance to get a ROG
-            foreach (var grp in groupsToAward)
-            {
-				List<GamePlayer> players = new List<GamePlayer>();
-				foreach (GamePlayer pla in grp.GetPlayersInTheGroup())
-                {
-                    if (!playersToAward.Contains(pla))
-                    {
-						playersToAward.Add(pla);
-					}
-					//players.Add(pla);
-                }
-				//GamePlayer playerToAward = players[Util.Random(players.Count - 1)];
-				//Console.WriteLine($"Chosen player: {playerToAward}");
-				//if (!playersToAward.Contains(playerToAward) ) playersToAward.Add(playerToAward);
-            }
+			killedPlayer.DeathsPvP++;
 
-			//distribute ROGs
-
-            foreach (var player in playersToAward)
-            {
-                if (player.Level < 35 || player.GetDistanceTo(killedPlayer) > WorldMgr.MAX_EXPFORKILL_DISTANCE || player.GetConLevel(killedPlayer) <= -3) continue;
-                
-                if (GameServer.Instance.Configuration.ServerType != EGameServerType.GST_PvP)
-                {
-	                AtlasROGManager.GenerateOrbAmount(player, Util.Random(50, 150));
-                }
-
-                int bonusRegion = 0;
-                switch (ZoneBonusRotator.GetCurrentBonusRealm())
-                {
-	                case eRealm.Albion:
-		                bonusRegion = 1;
-		                break;
-	                case eRealm.Hibernia:
-		                bonusRegion = 200;
-		                break;
-	                case eRealm.Midgard:
-		                bonusRegion = 100;
-		                break;
-                }
-                
-                if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(10))
-                {
-	                var RRMod = (int)Math.Floor(killedPlayer.RealmLevel / 10d) * 3;
-	                AtlasROGManager.GenerateROG(player, (byte)(player.Level + RRMod));
-                }
-
-                if (player.CurrentZone.ZoneRegion.ID == bonusRegion && Util.Chance(1))
-                {
-	                AtlasROGManager.GenerateBeetleCarapace(player);
-                }
-            }
-
-            if (ServerProperties.Properties.LOG_PVP_KILLS && playerKillers.Count > 0)
+			if (ServerProperties.Properties.LOG_PVP_KILLS && playerKillers.Count > 0)
 			{
 				try
 				{
