@@ -1,29 +1,8 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
-using System.Collections;
 using System.Threading;
 using DOL.Events;
-using DOL.GS;
-using log4net;
 using DOL.GS.PacketHandler;
+using log4net;
 
 namespace DOL.GS
 {
@@ -198,37 +177,6 @@ namespace DOL.GS
 
 		#endregion
 
-		#region XP Gain
-
-		public static void XPGain(DOLEvent e, object sender, EventArgs args)
-		{
-			GamePlayer player = sender as GamePlayer;
-
-			if (player == null || player.Guild == null) return;
-
-			GainedExperienceEventArgs xpArgs = args as GainedExperienceEventArgs;
-
-			if (player.Guild != null && !player.Guild.IsStartingGuild && player.Guild.BonusType == Guild.eBonusType.Experience && xpArgs.XPSource == eXPSource.NPC)
-			{
-				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 100);
-
-				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, 0, 0, false);
-				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				// player.Guild.UpdateGuildWindow();
-			}
-			
-			if (player.Guild != null && player.Guild.IsStartingGuild && xpArgs.XPSource == eXPSource.NPC)
-			{
-				long bonusXP = (long)Math.Ceiling((double)xpArgs.ExpBase * ServerProperties.Properties.GUILD_BUFF_XP / 200);
-
-				player.GainExperience(eXPSource.Other, bonusXP, 0, 0, 0, 0, 0, false);
-				player.Out.SendMessage("You gain an additional " + bonusXP + " experience due to your starting guild's buff!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				// player.Guild.UpdateGuildWindow();
-			}
-		}
-
-		#endregion
-
 		#region RealmPointsGain
 
 		public static void RealmPointsGain(DOLEvent e, object sender, EventArgs args)
@@ -325,5 +273,4 @@ namespace DOL.GS
 
 		#endregion
 	}
-	
 }
