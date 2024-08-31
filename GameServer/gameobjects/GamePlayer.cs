@@ -4886,23 +4886,23 @@ namespace DOL.GS
         /// <summary>
         /// Called whenever this player gains experience
         /// </summary>
-        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expBafBonus, long expOutpostBonus, bool sendMessage)
+        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expGuildBonus, long expBafBonus, long expOutpostBonus, bool sendMessage)
         {
-            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, expBafBonus, sendMessage, true);
+            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expGuildBonus, expOutpostBonus, expBafBonus, sendMessage, true);
         }
 
         /// <summary>
         /// Called whenever this player gains experience
         /// </summary>
-        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expBafBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply)
+        public void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expGuildBonus, long expBafBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply)
         {
-            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expOutpostBonus, expBafBonus, sendMessage, allowMultiply, true);
+            GainExperience(xpSource, expTotal, expCampBonus, expGroupBonus, expGuildBonus, expOutpostBonus, expBafBonus, sendMessage, allowMultiply, true);
         }
 
         /// <summary>
         /// Called whenever this player gains experience
         /// </summary>
-        public override void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expBafBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify)
+        public override void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expGuildBonus, long expBafBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify)
         {
             if (!GainXP && expTotal > 0)
                 return;
@@ -5023,7 +5023,7 @@ namespace DOL.GS
                         long tmpBonus = (long)(zoneBonus * ServerProperties.Properties.XP_RATE);
                         Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)tmpBonus, ZoneBonus.eZoneBonusType.XP),
                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                        GainExperience(eXPSource.Other, tmpBonus, 0, 0, 0, 0, false, false, false);
+                        GainExperience(eXPSource.Other, tmpBonus, 0, 0, 0, 0, 0, false, false, false);
                     }
                 }
 
@@ -5053,20 +5053,6 @@ namespace DOL.GS
             // Get Champion Experience too
             // GainChampionExperience(expTotal);
 
-            #region Guild XP Bonus
-            long guildBonus = 0;
-            if (this.Guild != null && !this.Guild.IsStartingGuild && this.Guild.BonusType == Guild.eBonusType.Experience && xpSource == eXPSource.NPC)
-            {
-                guildBonus = (long)Math.Ceiling((double)expTotal * ServerProperties.Properties.GUILD_BUFF_XP / 100);
-            }else if (this.Guild != null && this.Guild.IsStartingGuild && xpSource == eXPSource.NPC)
-            {
-                guildBonus = (long)Math.Ceiling((double)expTotal * ServerProperties.Properties.GUILD_BUFF_XP / 200);
-            }
-
-            expTotal += guildBonus;
-
-            #endregion Guild XP Bonus
-
             if (IsLevelSecondStage)
             {
                 if (Experience + expTotal < ExperienceForCurrentLevelSecondStage)
@@ -5088,10 +5074,10 @@ namespace DOL.GS
                 string totalExpStr = expTotal.ToString("N0", format);
                 string expCampBonusStr = string.Empty;
                 string expGroupBonusStr = string.Empty;
+                string expGuildBonusStr = string.Empty;
                 string expBafBonusStr = string.Empty;
                 string expOutpostBonusStr = string.Empty;
                 string expSoloBonusStr = string.Empty;
-                string expGuildBonusStr = string.Empty;
                 string expRelicBonusStr = string.Empty;
 
                 if (expCampBonus > 0)
@@ -5099,6 +5085,9 @@ namespace DOL.GS
 
                 if (expGroupBonus > 0)
                     expGroupBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.GroupBonus", expGroupBonus.ToString("N0", format)) + " ";
+
+                if (expGuildBonus > 0)
+                    expGuildBonusStr = "("+ expGuildBonus.ToString("N0", format) + " guild bonus) ";
 
                 if (expBafBonus > 0)
                     expBafBonusStr = "("+ expBafBonus.ToString("N0", format) + " baf bonus) ";
@@ -5109,10 +5098,7 @@ namespace DOL.GS
                 if (relicBonus > 0)
                     expRelicBonusStr = "("+ relicBonus.ToString("N0", format) + " relic bonus) ";
 
-                if (guildBonus > 0)
-                    expGuildBonusStr = "("+ guildBonus.ToString("N0", format) + " guild bonus) ";
-
-                string message = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + " " + expCampBonusStr + expGroupBonusStr + expBafBonusStr + expOutpostBonusStr + expSoloBonusStr + expGuildBonusStr + expRelicBonusStr;
+                string message = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + " " + expCampBonusStr + expGroupBonusStr + expGuildBonusStr + expBafBonusStr + expOutpostBonusStr + expSoloBonusStr + expRelicBonusStr;
                 Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
@@ -6848,7 +6834,7 @@ namespace DOL.GS
                         DeathCount++;
                         m_deathtype = eDeathType.PvE;
                         long xpLoss = (ExperienceForNextLevel - ExperienceForCurrentLevel) * xpLossPercent / 1000;
-                        GainExperience(eXPSource.Other, -xpLoss, 0, 0, 0, 0, false, true);
+                        GainExperience(eXPSource.Other, -xpLoss, 0, 0, 0, 0, 0, false, true);
                         TempProperties.SetProperty(DEATH_EXP_LOSS_PROPERTY, xpLoss);
                     }
 

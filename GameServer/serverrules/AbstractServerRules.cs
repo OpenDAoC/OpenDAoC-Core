@@ -1251,12 +1251,13 @@ namespace DOL.GS.ServerRules
 
 			long campBonus = CalculateCampBonus();
 			long groupBonus = CalculateGroupBonus();
+			long guildBonus = CalculateGuildBonus();
 			long bafBonus = CalculateBafBonus();
 			long outpostBonus = CalculateOutpostBonus();
-			long totalReward = baseXpReward + campBonus + groupBonus + bafBonus + outpostBonus;
+			long totalReward = baseXpReward + campBonus + groupBonus + bafBonus + guildBonus + outpostBonus;
 
 			ShowXpStatsToPlayer();
-			living.GainExperience(eXPSource.NPC, totalReward, campBonus, groupBonus, bafBonus, outpostBonus, true, true, true); // XP Rate is handled in GainExperience
+			living.GainExperience(eXPSource.NPC, totalReward, campBonus, groupBonus, guildBonus, bafBonus, outpostBonus, true, true, true); // XP Rate is handled in GainExperience
 
 			void RewardRealmPoints()
 			{
@@ -1469,6 +1470,14 @@ namespace DOL.GS.ServerRules
 				return (long) (baseXpReward * (player.Group.MemberCount - 1) * 0.125);
 			}
 
+			long CalculateGuildBonus()
+			{
+				if (player.Guild == null || player.Guild.BonusType is not Guild.eBonusType.Experience)
+					return 0;
+
+				return (long) (baseXpReward * Properties.GUILD_BUFF_XP * 0.01);
+			}
+
 			long CalculateBafBonus()
 			{
 				if (killedNPC.Brain is not StandardMobBrain brain)
@@ -1530,6 +1539,7 @@ namespace DOL.GS.ServerRules
 					double levelPercent = (double) (player.Experience + totalReward - player.ExperienceForCurrentLevel) / (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel) * 100.0;
 					double campPercent = (double) campBonus / baseXpReward * 100.0;
 					double groupPercent = (double) groupBonus / baseXpReward * 100.0;
+					double guildPercent = (double) guildBonus / baseXpReward * 100.0;
 					double bafPercent = (double) bafBonus / baseXpReward * 100.0;
 					double outpostPercent = (double) outpostBonus / baseXpReward * 100.0;
 
@@ -1541,6 +1551,9 @@ namespace DOL.GS.ServerRules
 
 					if (groupBonus > 0)
 						player.Out.SendMessage($"Group: {groupBonus.ToString("N0", format)} | {groupPercent:0.##}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+					if (guildBonus > 0)
+						player.Out.SendMessage($"Guild: {guildBonus.ToString("N0", format)} | {guildPercent:0.##}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 					if (bafPercent > 0)
 						player.Out.SendMessage($"BaF: {bafBonus.ToString("N0", format)} | {bafPercent:0.##}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);

@@ -8,17 +8,19 @@ namespace DOL.Events
         public long ExpBase { get; }
         public long ExpCampBonus { get; }
         public long ExpGroupBonus { get; }
+        public long ExpGuildBonus { get; }
         public long ExpBafBonus { get; }
         public long ExpOutpostBonus { get; }
         public bool SendMessage { get; }
         public bool AllowMultiply { get; }
         public eXPSource XPSource { get; }
 
-        public GainedExperienceEventArgs(long expBase, long expCampBonus, long expGroupBonus, long expBafBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, eXPSource xpSource)
+        public GainedExperienceEventArgs(long expBase, long expCampBonus, long expGroupBonus, long expGuildBonus, long expBafBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, eXPSource xpSource)
         {
             ExpBase = expBase;
             ExpCampBonus = expCampBonus;
             ExpGroupBonus = expGroupBonus;
+            ExpGuildBonus = expGuildBonus;
             ExpBafBonus = expBafBonus;
             ExpOutpostBonus = expOutpostBonus;
             SendMessage = sendMessage;
