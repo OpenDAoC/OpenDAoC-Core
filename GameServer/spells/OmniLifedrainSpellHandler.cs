@@ -93,16 +93,6 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		/// <summary>
-		/// Calculates the base 100% spell damage which is then modified by damage variance factors
-		/// </summary>
-		/// <returns></returns>
-		public override double CalculateDamageBase(GameLiving target)
-		{
-			double spellDamage = Spell.Damage;
-			return spellDamage;
-		}
-
 		// constructor
 		public OmniLifedrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 		public override IList<string> DelveInfo

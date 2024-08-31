@@ -15,6 +15,8 @@ namespace DOL.GS.Spells
 		public int CriticalDamage { get; protected set; } = 0;
 		private bool firstTick = true;
 
+		public DoTSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
 		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
 			return new DamageOverTimeECSGameEffect(initParams);
@@ -30,7 +32,7 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		public override double GetLevelModFactor()
+		public override double CalculateDamageVarianceOffsetFromLevelDifference(GameLiving caster)
 		{
 			return 0;
 		}
@@ -74,54 +76,6 @@ namespace DOL.GS.Spells
 			//	ad.Damage *= (int)(1.00 - (iWarLordEffect.Spell.Value * 0.01));
 			
 			return ad;
-		}
-
-		/// <summary>
-		/// Calculates min damage variance %
-		/// </summary>
-		/// <param name="target">spell target</param>
-		/// <param name="min">returns min variance</param>
-		/// <param name="max">returns max variance</param>
-		public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
-		{
-			int speclevel = 1;
-			min = 1;
-			max = 1;
-
-			if (m_caster is GamePlayer)
-			{
-				if (m_spellLine.KeyName == GlobalSpellsLines.Mundane_Poisons)
-				{
-					speclevel = ((GamePlayer)m_caster).GetModifiedSpecLevel(Specs.Envenom);
-					min = 1;
-					max = 1;
-
-					if (target.Level > 0)
-					{
-						min = 0.25 + (speclevel - 1) / (double)target.Level;
-					}
-				}
-
-				if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects)
-				{
-					min = .75;
-					max = 1;
-				}
-				else
-				{
-					speclevel = ((GamePlayer)m_caster).GetModifiedSpecLevel(m_spellLine.Spec);
-
-					if (target.Level > 0)
-					{
-						min = 0.25 + (speclevel - 1) / (double)target.Level;
-					}
-				}
-			}
-
-			// no overspec bonus for dots
-
-			if (min > max) min = max;
-			if (min < 0) min = 0;
 		}
 
 		/// <summary>
@@ -292,35 +246,6 @@ namespace DOL.GS.Spells
 			DamageTarget(ad, false);
 		}
 
-		public override double CalculateDamageBase(GameLiving target)
-		{
-			double spellDamage = Spell.Damage;
-			GamePlayer player = null;
-			if (m_caster is GamePlayer)
-				player = m_caster as GamePlayer;
-
-			if (m_spellLine.KeyName != GlobalSpellsLines.Mundane_Poisons && m_spellLine.KeyName != GlobalSpellsLines.Item_Effects && m_spellLine.KeyName != GlobalSpellsLines.Item_Spells)
-			{
-				if (player != null && player.CharacterClass.ManaStat != eStat.UNDEFINED)
-				{
-					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-					spellDamage *= (manaStatValue + 200) / 275.0;
-					if (spellDamage < 0)
-						spellDamage = 0;
-				}
-				else if (m_caster is GameNPC)
-				{
-					int manaStatValue = m_caster.GetModified(eProperty.Intelligence);
-					spellDamage *= (manaStatValue + 200) / 275.0;
-					if (spellDamage < 0)
-						spellDamage = 0;
-				}
-			}
-			return spellDamage;
-		}
-
-		// constructor
-		public DoTSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 		private int CalculateCriticalDamage(AttackData ad)
         {
 			if (CriticalDamage > 0 || !firstTick)

@@ -94,16 +94,6 @@ namespace DOL.GS.Spells
 			return damage;
 		}
 
-		/// <summary>
-		/// Level mod for effect between target and caster if there is any
-		/// </summary>
-		/// <returns></returns>
-		public override double GetLevelModFactor()
-		{
-			return 0.025;
-		}
-
-
 		public override AttackData CalculateDamageToTarget(GameLiving target)
 		{
 			AttackData ad = base.CalculateDamageToTarget(target);
@@ -191,27 +181,6 @@ namespace DOL.GS.Spells
 			{
 				return eDamageType.Slash;
 			}
-		}
-
-		/// <summary>
-		/// Calculates the base 100% spell damage which is then modified by damage variance factors
-		/// </summary>
-		/// <returns></returns>
-		public override double CalculateDamageBase(GameLiving target)
-		{
-			double spellDamage = Spell.Damage;
-			GamePlayer player = Caster as GamePlayer;
-
-			if (player != null)
-			{
-				int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-				spellDamage *= (manaStatValue + 300) / 275.0;
-			}
-
-			if (spellDamage < 0)
-				spellDamage = 0;
-
-			return spellDamage;
 		}
 
 		public override void FinishSpellCast(GameLiving target)

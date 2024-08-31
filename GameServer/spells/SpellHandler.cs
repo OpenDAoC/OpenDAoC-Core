@@ -2893,13 +2893,12 @@ namespace DOL.GS.Spells
 
 		#region various helpers
 
-		/// <summary>
-		/// Level mod for effect between target and caster if there is any
-		/// </summary>
-		/// <returns></returns>
-		public virtual double GetLevelModFactor()
+		public virtual double CalculateDamageVarianceOffsetFromLevelDifference(GameLiving caster)
 		{
-			return 0.02;  // Live testing done Summer 2009 by Bluraven, Tolakram  Levels 40, 45, 50, 55, 60, 65, 70
+			// Was previously 2% per level difference, but this didn't match live results at lower level.
+			// Assuming 2% was correct at level 50, it means it should be dynamic, either based on the caster's level of the target's.
+			// This new formula increases the modifier the lower the level of the caster is: 10% at level 0, 2% at level 50.
+			return (caster.Level - Target.Level) * (10 - caster.Level * 0.16) * 0.01;
 		}
 
 		/// <summary>
@@ -2910,72 +2909,61 @@ namespace DOL.GS.Spells
 		/// <param name="max">returns max variance</param>
 		public virtual void CalculateDamageVariance(GameLiving target, out double min, out double max)
 		{
-			if (m_spellLine.KeyName is GlobalSpellsLines.Item_Effects)
+			// Vanesyra lays out variance calculations here: https://www.ignboards.com/threads/melee-speed-melee-and-style-damage-or-why-pure-grothrates-are-wrong.452406879/page-3
+			// However, this results in an extremely low variance at low level without adjusting some parameters, and it doesn't seem to match live results.
+			// It's possible live changed how variance is calculated at some point, but this would need to be proven.
+
+			switch (m_spellLine.KeyName)
 			{
-				min = 0.75;
-				max = 1.0;
-				return;
+				// Further research should be done on these.
+				// The variance range is tied to the base damage calculation.
+				// The variance of Nightshade's nukes currently depends on stealth spec, which may not be accurate for 1.65.
+				case GlobalSpellsLines.Mob_Spells:
+				case GlobalSpellsLines.Combat_Styles_Effect:
+				{
+					// Mob spells are modified by acuity stats.
+					// Style effects use a custom damage calculation currently expecting the upper bound to be 1.0.
+					// Lower bound is similar to what the variance calculation would return if we used 35 for the specialization and 50 for the target level.
+					max = 1.0;
+					min = 0.68;
+					return;
+				}
+				case GlobalSpellsLines.Item_Effects:
+				{
+					// Procs and charges normally aren't modified by any stat, but are shown to be able to do about 25% more damage than their base value.
+					max = 1.25;
+					min = UseMinVariance ? 1.25 : 0.85; // 0.68 * 1.25
+					return;
+				}
+				case GlobalSpellsLines.Reserved_Spells:
+				{
+					max = 1.0;
+					min = 1.0;
+					return;
+				}
+				default:
+				{
+					GameLiving casterToUse;
+
+					if (m_caster is NecromancerPet necromancerPet && necromancerPet.Brain is IControlledBrain brain)
+						casterToUse = brain.GetPlayerOwner();
+					else
+						casterToUse = m_caster;
+
+					double varianceOffset = CalculateDamageVarianceOffsetFromLevelDifference(casterToUse);
+					max = 1 + varianceOffset;
+
+					if (target.Level <= 0)
+						min = max;
+					else
+					{
+						min = (casterToUse.GetModifiedSpecLevel(m_spellLine.Spec) - 1) / (double) target.Level + varianceOffset;
+						min = Math.Clamp(min, 0.2, max);
+					}
+
+					return;
+				}
 			}
-
-			if (m_spellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect)
-			{
-				min = UseMinVariance ? 1.0 : 0.75;
-				max = 1.0;
-				return;
-			}
-
-			if (m_spellLine.KeyName is GlobalSpellsLines.Reserved_Spells)
-			{
-				min = 1.0;
-				max = 1.0;
-				return;
-			}
-
-			if (m_spellLine.KeyName is GlobalSpellsLines.Mob_Spells)
-			{
-				min = 0.75;
-				max = 1.0;
-				return;
-			}
-
-			/*
-			 * June 21st 2022 - Fen: Removing a lot of DoL code that should not be here for 1.65 calculations.
-			 *
-			 * Vanesyra lays out variance calculations here: https://www.ignboards.com/threads/melee-speed-melee-and-style-damage-or-why-pure-grothrates-are-wrong.452406879/page-3
-			 * Most importantly, variance should be .25 at its lowest, 1.0 at its max, and never exceed 1.0.
-			 *
-			 * Base DoL calculations were adding an extra 10-30% damage above 1.0, which has now been removed.
-			 */
-			int spec;
-			double bonusFromLevelDifference;
-			double targetLevel = Math.Max(1.0, target.Level); // Treat level 0 NPCs as if they were level 1.
-
-			if (m_caster is GamePlayer playerCaster)
-			{
-				spec = playerCaster.GetModifiedSpecLevel(m_spellLine.Spec);
-				bonusFromLevelDifference = GetLevelModFactor() * (m_caster.Level - targetLevel);
-			}
-			else if (m_caster is GameSummonedPet summonedPetCaster && summonedPetCaster.Brain is IControlledBrain brain)
-			{
-				// This should only be used by necromancer pets. But just in case, we're also handling summoned pets using spells that aren't from `GlobalSpellsLines.Mob_Spells`.
-				GameLiving owner = brain.GetLivingOwner();
-				spec = m_caster is NecromancerPet ? owner.GetModifiedSpecLevel(m_spellLine.Spec) : owner.Level;
-				bonusFromLevelDifference = GetLevelModFactor() * (owner.Level - targetLevel);
-			}
-			else
-			{
-				// We normally shouldn't be able to reach this point.
-				spec = 1;
-				bonusFromLevelDifference = 0;
-			}
-
-			spec = Math.Max(1, spec);
-
-			min = Math.Min(1, (spec - 1) / targetLevel) + bonusFromLevelDifference;
-			max = 1.0 + bonusFromLevelDifference;
-
-			max = Math.Max(0.25, max);
-			min = Math.Clamp(min, 0.2, max);
 		}
 
 		/// <summary>
@@ -3000,7 +2988,7 @@ namespace DOL.GS.Spells
 		/// capped to the npc level.  This uses player spec nukes to calculate damage cap.
 		/// NPC's level 50 and above are not capped
 		/// </summary>
-		public virtual double CapNPCSpellDamage(double damage, GameNPC npc)
+		public virtual double CapNpcSpellDamage(double damage, GameNPC npc)
 		{
 			if (npc.Level < 50)
 				return Math.Min(damage, 4.7 * npc.Level);
@@ -3015,100 +3003,72 @@ namespace DOL.GS.Spells
 		public virtual double CalculateDamageBase(GameLiving target)
 		{
 			double spellDamage = Spell.Damage;
-			bool listCaster = false;
 
 			if (Spell.SpellType is eSpellType.Lifedrain)
 				spellDamage *= 1 + Spell.LifeDrainReturn * 0.001;
 
-			// For pets, the stats of the owner have to be taken into account.
-			if (Caster is GameNPC npcCaster)
+			if (SpellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect)
 			{
-				if (npcCaster is GameSummonedPet summonedPet)
+				int weaponStat = Caster.GetWeaponStat(Caster.ActiveWeapon);
+				double weaponSkillScalar = (3 + 0.02 * weaponStat) / (1 + 0.005 * weaponStat);
+				spellDamage *= (Caster.GetWeaponSkill(Caster.ActiveWeapon) * weaponSkillScalar / 3.0 + 100) / 200.0;
+				return Math.Max(0, spellDamage);
+			}
+			else if (SpellLine.KeyName is GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Mundane_Poisons)
+				return Math.Max(0, spellDamage);
+
+			// Stats are only partially transferred to the necromancer pet, so we don't use its intelligence at all.
+			// Other pets use their own stats and level.
+			GameLiving modifiedCaster = Caster is NecromancerPet necromancerPet ? necromancerPet.Owner : Caster;
+			double acuity = 0.0;
+			double specBonus = 0.0;
+
+			if (modifiedCaster is GameSummonedPet summonedPetCaster && summonedPetCaster.Brain is IControlledBrain brain)
+			{
+				acuity = modifiedCaster.GetModified(eProperty.Intelligence);
+				GamePlayer playerOwner = brain.GetPlayerOwner();
+
+				if (playerOwner != null)
 				{
-					if (summonedPet is NecromancerPet)
-					{
-						if (summonedPet.Owner is GamePlayer owner)
-						{
-							// Shouldn't the pet's intelligence be used, since stats are supposed to be transferred?
-							int manaStatValue = owner.GetModified((eProperty) owner.CharacterClass.ManaStat);
-							spellDamage *= (manaStatValue - owner.Level) * 0.005 + 1;
-							listCaster = true;
-						}
-					}
-					else
-					{
-						// There is no reason to cap pet spell damage if it's being scaled anyway.
-						if (Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
-							spellDamage = CapPetSpellDamage(spellDamage, summonedPet.Owner);
-
-						int ownerIntMod = 125;
-
-						if (summonedPet.Owner is GamePlayer owner)
-							ownerIntMod += owner.GetModified((eProperty) owner.CharacterClass.ManaStat) / 2;
-
-						spellDamage *= (summonedPet.Intelligence + ownerIntMod) / 275.0;
-					}
-
-					// It won't have any effect if the spell is of `GlobalSpellsLines.Mob_Spells`.
-					int modSkill = summonedPet.Owner.GetModifiedSpecLevel(m_spellLine.Spec) - summonedPet.Owner.GetBaseSpecLevel(m_spellLine.Spec);
-					spellDamage *= 1 + modSkill * 0.005;
-				}
-				else
-				{
-					int manaStatValue = npcCaster.GetModified(eProperty.Intelligence);
-					spellDamage = CapNPCSpellDamage(spellDamage, npcCaster) * (manaStatValue + 200) / 275.0;
-					return Math.Max(0, spellDamage);
+					// There is no reason to cap pet spell damage if it's being scaled anyway.
+					if (Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
+						spellDamage = CapPetSpellDamage(spellDamage, playerOwner);
 				}
 			}
-			else if (Caster is GamePlayer player)
+			else if (modifiedCaster is GameNPC npcCaster)
 			{
-				if (SpellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect)
+				acuity = modifiedCaster.GetModified(eProperty.Intelligence);
+				spellDamage = CapNpcSpellDamage(spellDamage, npcCaster);
+			}
+			else if (modifiedCaster is GamePlayer playerCaster)
+			{
+				switch ((eCharacterClass) playerCaster.CharacterClass.ID)
 				{
-					int weaponStat = player.GetWeaponStat(player.ActiveWeapon);
-					double weaponSkillScalar = (3 + 0.02 * weaponStat) / (1 + 0.005 * weaponStat);
-					spellDamage *= (player.GetWeaponSkill(player.ActiveWeapon) * weaponSkillScalar / 3.0 + 100) / 200.0;
-				}
-				else if (player.CharacterClass.ManaStat is not eStat.UNDEFINED &&
-					SpellLine.KeyName is not GlobalSpellsLines.Combat_Styles_Effect
-					and not GlobalSpellsLines.Mundane_Poisons
-					and not GlobalSpellsLines.Item_Effects &&
-					(eCharacterClass) player.CharacterClass.ID is not eCharacterClass.MaulerAlb
-					and not eCharacterClass.MaulerMid
-					and not eCharacterClass.MaulerHib
-					and not eCharacterClass.Vampiir)
-				{
-					int manaStatValue = player.GetModified((eProperty)player.CharacterClass.ManaStat);
-					spellDamage *= (manaStatValue - player.Level) * 0.005 + 1;
-					int modSkill = player.GetModifiedSpecLevel(m_spellLine.Spec) - player.GetBaseSpecLevel(m_spellLine.Spec);
-					spellDamage *= 1 + modSkill * 0.005;
-
-					// List casters get a little extra sauce.
-					switch ((eCharacterClass) player.CharacterClass.ID)
+					case eCharacterClass.MaulerAlb:
+					case eCharacterClass.MaulerMid:
+					case eCharacterClass.MaulerHib:
+					case eCharacterClass.Vampiir:
+						break;
+					case eCharacterClass.Nightshade:
 					{
-						case eCharacterClass.Wizard:
-						case eCharacterClass.Theurgist:
-						case eCharacterClass.Cabalist:
-						case eCharacterClass.Sorcerer:
-						case eCharacterClass.Necromancer:
-						case eCharacterClass.Eldritch:
-						case eCharacterClass.Enchanter:
-						case eCharacterClass.Mentalist:
-						case eCharacterClass.Animist:
-						case eCharacterClass.Valewalker:
-						case eCharacterClass.Runemaster:
-						case eCharacterClass.Spiritmaster:
-						case eCharacterClass.Bonedancer:
-						{
-							listCaster = true;
-							break;
-						}
+						// Seems to be based on strength instead of dexterity around 1.65.
+						acuity = playerCaster.GetModified((eProperty) playerCaster.Strength);
+						break;
+					}
+					default:
+					{
+						if (playerCaster.CharacterClass.ManaStat is not eStat.UNDEFINED)
+							acuity = playerCaster.GetModified((eProperty) playerCaster.CharacterClass.ManaStat);
+
+						specBonus = modifiedCaster.ItemBonus[SkillBase.SpecToSkill(m_spellLine.Spec)]; // Only item bonus increases damage.
+						break;
 					}
 				}
 			}
 
-			if (listCaster)
-				spellDamage *= 1.1;
-
+			// A nerf of about 10% to spell damage was supposedly applied around 2014. We are not applying it.
+			// This formula is also somewhat inaccurate. Even with that nerf applied, the intelligence modifier is too high when comparing damage on live at low level.
+			spellDamage *= (1 + acuity * 0.005) * (1 + specBonus * 0.005);
 			return Math.Max(0, spellDamage);
 		}
 
@@ -3134,16 +3094,16 @@ namespace DOL.GS.Spells
 				AttackResult = eAttackResult.HitUnstyled
 			};
 
+			GamePlayer playerCaster = Caster as GamePlayer;
+
 			CalculateDamageVariance(target, out double minVariance, out double maxVariance);
-			double spellDamage = CalculateDamageBase(target);
-			GamePlayer playerCaster = m_caster is GameSummonedPet pet ? pet.Owner as GamePlayer : m_caster as GamePlayer;
+			double baseDamage = CalculateDamageBase(target);
+			double spellDamage = baseDamage;
 			double effectiveness = CalculateDamageEffectiveness();
 
 			// Relic bonus is applied to damage directly instead of effectiveness (does not increase cap)
 			// This applies to bleeds. Is that intended?
-			if (playerCaster != null)
-				spellDamage *= 1.0 + RelicMgr.GetRelicBonusModifier(playerCaster.Realm, eRelicType.Magic);
-
+			spellDamage *= 1.0 + RelicMgr.GetRelicBonusModifier(Caster.Realm, eRelicType.Magic);
 			spellDamage *= effectiveness;
 
 			if (DistanceFallOff > 0)
@@ -3157,7 +3117,7 @@ namespace DOL.GS.Spells
 			double hitChance = CalculateToHitChance(ad.Target);
 			finalDamage = AdjustDamageForHitChance(finalDamage, hitChance);
 
-			if (m_caster is GamePlayer || (m_caster is GameNPC && (m_caster as GameNPC).Brain is IControlledBrain && m_caster.Realm != 0))
+			if (playerCaster != null || (Caster is GameNPC casterNpc && casterNpc.Brain is IControlledBrain && Caster.Realm != 0))
 			{
 				if (target is GamePlayer)
 					finalDamage *= Properties.PVP_SPELL_DAMAGE;
@@ -3186,15 +3146,19 @@ namespace DOL.GS.Spells
 				finalDamage = 0;
 
 			// DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly.
-			int criticalChance = this is not DoTSpellHandler ? m_caster.SpellCriticalChance : 0;
+			int criticalChance = this is not DoTSpellHandler ? Math.Min(50, m_caster.SpellCriticalChance) : 0;
 			int criticalDamage = 0;
 			int randNum = Util.CryptoNextInt(0, 100);
-			int criticalCap = Math.Min(50, criticalChance);
 
-			if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && criticalCap > 0)
-				spellCaster.Out.SendMessage($"spell crit chance: {criticalCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+			if (playerCaster != null && playerCaster.UseDetailedCombatLog)
+			{
+				if (criticalChance > 0)
+					playerCaster.Out.SendMessage($"spell crit chance: {criticalChance:0.##} random: {randNum:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-			if (criticalCap > randNum && finalDamage > 0)
+				playerCaster.Out.SendMessage($"BaseDamage: {baseDamage:0.##} | Variance: {variance:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+			}
+
+			if (criticalChance > randNum && finalDamage > 0)
 			{
 				int criticalMax = ad.Target is GamePlayer ? (int) finalDamage / 2 : (int) finalDamage;
 				criticalDamage = Util.Random((int) finalDamage / 10, criticalMax);

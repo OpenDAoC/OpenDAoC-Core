@@ -18,7 +18,7 @@ namespace DOL.GS.Spells
             base.FinishSpellCast(target);
         }
 
-        public override double GetLevelModFactor()
+        public override double CalculateDamageVarianceOffsetFromLevelDifference(GameLiving caster)
         {
             return 0;
         }
