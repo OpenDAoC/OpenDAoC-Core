@@ -1834,22 +1834,6 @@ namespace DOL.GS.ServerRules
 				int rpCap = living.RealmPointsValue * 2;
 				int realmPoints = (int)(playerRPValue * damagePercent);
 
-                switch (expGainPlayer?.GetConLevel(killedPlayer))
-                {
-					case <= -3:
-						rpCap = 0;
-						expGainPlayer.Out.SendMessage("You shamefully killed a defenseless opponent and gain no realm points from this kill!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						break;
-					case -2:
-						rpCap /= 4;
-						break;
-					case -1:
-						rpCap /= 2;
-						break;
-					default:
-						break;
-                }
-
 				//moved to after realmPoints assignment so that dead players retain full RP
 				if (!living.IsAlive)//Dead living gets 25% exp only
 					damagePercent *= 0.25;
@@ -1901,26 +1885,8 @@ namespace DOL.GS.ServerRules
 				int bpCap = living.BountyPointsValue * 2;
 				int bountyPoints = (int)(playerBPValue * damagePercent);
 
-				switch (expGainPlayer?.GetConLevel(killedPlayer))
-				{
-					case <= -3:
-						bpCap = 0;
-						expGainPlayer.Out.SendMessage("You killed a defenseless opponent and gain no bps from this kill, you animal!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						break;
-					case -2:
-						bpCap /= 4;
-						break;
-					case -1:
-						bpCap /= 2;
-						break;
-					default:
-						break;
-				}
-
 				if (bountyPoints > bpCap)
 					bountyPoints = bpCap;
-
-				
 
 				//FIXME: [WARN] this is guessed, i do not believe this is the right way, we will most likely need special messages to be sent
 				//apply the keep bonus for bounty points
@@ -1940,24 +1906,7 @@ namespace DOL.GS.ServerRules
 				// experience
 				// TODO: pets take 25% and owner gets 75%
 				long xpReward = (long)(playerExpValue * damagePercent); // exp for damage percent
-
 				long expCap = (long)(living.ExperienceValue * ServerProperties.Properties.XP_PVP_CAP_PERCENT / 100);
-
-				switch (expGainPlayer?.GetConLevel(killedPlayer))
-				{
-					case <= -3:
-						expCap = 0;
-						expGainPlayer.Out.SendMessage("No experience points awarded for killing greys, you degenerate.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						break;
-					case -2:
-						expCap /= 4;
-						break;
-					case -1:
-						expCap /= 2;
-						break;
-					default:
-						break;
-				}
 
 				if (xpReward > expCap)
 					xpReward = expCap;
