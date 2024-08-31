@@ -5003,7 +5003,6 @@ namespace DOL.GS
                LoyaltyManager.HandlePVPKill(this);
             }
 
-            long RealmLoyaltyBonus = 0;
             long baseXp = 0;
             //xp rate modifier
             if (allowMultiply)
@@ -5028,11 +5027,6 @@ namespace DOL.GS
                     }
                 }
 
-                if (numCurrentLoyalDays > 30)
-                    numCurrentLoyalDays = 30;
-
-                RealmLoyaltyBonus = (long) (expTotal * (numCurrentLoyalDays / 30.0) * .25);
-
                 if (this.CurrentRegion.IsRvR)
                     expTotal = (long)(expTotal * ServerProperties.Properties.RvR_XP_RATE);
                 else
@@ -5054,12 +5048,7 @@ namespace DOL.GS
                 expTotal += expGroupBonus;
                 expTotal += expBafBonus;
                 expTotal += expOutpostBonus;
-                expTotal += RealmLoyaltyBonus;
             }
-
-            double loyaltyPercent = ((double)RealmLoyaltyBonus / (baseXp)) * 100.0;
-            if (RealmLoyaltyBonus > 0 && XPLogState == eXPLogState.Verbose)
-                this.Out.SendMessage($"Loyalty: {RealmLoyaltyBonus.ToString("N0", System.Globalization.NumberFormatInfo.InvariantInfo)} | {loyaltyPercent.ToString("0.##")}% bonus", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
             // Get Champion Experience too
             // GainChampionExperience(expTotal);
@@ -5102,7 +5091,6 @@ namespace DOL.GS
                 string expBafBonusStr = string.Empty;
                 string expOutpostBonusStr = string.Empty;
                 string expSoloBonusStr = string.Empty;
-                string expRealmLoyaltyStr = string.Empty;
                 string expGuildBonusStr = string.Empty;
                 string expRelicBonusStr = string.Empty;
 
@@ -5118,16 +5106,13 @@ namespace DOL.GS
                 if (expOutpostBonus > 0)
                     expOutpostBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.OutpostBonus", expOutpostBonus.ToString("N0", format)) + " ";
 
-                if (RealmLoyaltyBonus > 0)
-                    expRealmLoyaltyStr = "("+ RealmLoyaltyBonus.ToString("N0", format) + " realm loyalty bonus) ";
-
                 if (relicBonus > 0)
                     expRelicBonusStr = "("+ relicBonus.ToString("N0", format) + " relic bonus) ";
 
                 if (guildBonus > 0)
                     expGuildBonusStr = "("+ guildBonus.ToString("N0", format) + " guild bonus) ";
 
-                string message = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + " " + expCampBonusStr + expGroupBonusStr + expBafBonusStr + expOutpostBonusStr + expSoloBonusStr + expRealmLoyaltyStr + expGuildBonusStr + expRelicBonusStr;
+                string message = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + " " + expCampBonusStr + expGroupBonusStr + expBafBonusStr + expOutpostBonusStr + expSoloBonusStr + expGuildBonusStr + expRelicBonusStr;
                 Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
