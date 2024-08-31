@@ -5036,9 +5036,6 @@ namespace DOL.GS
                 expTotal = ExperienceForCurrentLevel - Experience;
             }
 
-            int relicBonus = (int)(baseXp * (0.05 * RelicMgr.GetRelicCount(this.Realm)));
-            if (relicBonus > 0) expTotal += relicBonus;
-
             if (arguments.SendMessage && expTotal > 0)
             {
                 System.Globalization.NumberFormatInfo format = System.Globalization.NumberFormatInfo.InvariantInfo;
@@ -5048,8 +5045,6 @@ namespace DOL.GS
                 string expGuildBonusStr = string.Empty;
                 string expBafBonusStr = string.Empty;
                 string expOutpostBonusStr = string.Empty;
-                string expSoloBonusStr = string.Empty;
-                string expRelicBonusStr = string.Empty;
 
                 if (arguments.ExpCampBonus > 0)
                     expCampBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.CampBonus", arguments.ExpCampBonus.ToString("N0", format)) + " ";
@@ -5066,10 +5061,7 @@ namespace DOL.GS
                 if (arguments.ExpOutpostBonus > 0)
                     expOutpostBonusStr = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.OutpostBonus", arguments.ExpOutpostBonus.ToString("N0", format)) + " ";
 
-                if (relicBonus > 0)
-                    expRelicBonusStr = "("+ relicBonus.ToString("N0", format) + " relic bonus) ";
-
-                string message = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + " " + expCampBonusStr + expGroupBonusStr + expGuildBonusStr + expBafBonusStr + expOutpostBonusStr + expSoloBonusStr + expRelicBonusStr;
+                string message = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainExperience.YouGet", totalExpStr) + " " + expCampBonusStr + expGroupBonusStr + expGuildBonusStr + expBafBonusStr + expOutpostBonusStr;
                 Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
 
