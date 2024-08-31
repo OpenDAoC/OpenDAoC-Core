@@ -88,10 +88,6 @@ namespace DOL.Events
 		/// </summary>
 		public static readonly GameLivingEvent EnemyKilled = new GameLivingEvent("GameLiving.EnemyKilled");
 		/// <summary>
-		/// The GainedExperience event is fired whenever the living gains experience
-		/// </summary>
-		public static readonly GameLivingEvent GainedExperience = new GameLivingEvent("GameLiving.GainedExperience");
-		/// <summary>
 		/// The GainRealmPoints event is fired whenever the living gains realm points
 		/// </summary>
 		public static readonly GameLivingEvent GainedRealmPoints = new GameLivingEvent("GameLiving.GainedRealmPoints");

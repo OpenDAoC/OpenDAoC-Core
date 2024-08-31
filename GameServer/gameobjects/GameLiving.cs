@@ -2173,11 +2173,8 @@ namespace DOL.GS
 		/// <summary>
 		/// Called when the living is gaining experience
 		/// </summary>
-		public virtual void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expGuildBonus, long expBafBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify)
-		{
-			if (expTotal > 0 && notify)
-				Notify(GameLivingEvent.GainedExperience, this, new GainedExperienceEventArgs(expTotal, expCampBonus, expGroupBonus, expGuildBonus, expBafBonus, expOutpostBonus, sendMessage, allowMultiply, xpSource));
-		}
+		public virtual void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expGuildBonus, long expBafBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify) { }
+
 		/// <summary>
 		/// Called when this living gains realm points
 		/// </summary>
@@ -2186,6 +2183,7 @@ namespace DOL.GS
 		{
 			Notify(GameLivingEvent.GainedRealmPoints, this, new GainedRealmPointsEventArgs(amount));
 		}
+
 		/// <summary>
 		/// Called when this living gains bounty points
 		/// </summary>
@@ -2194,6 +2192,7 @@ namespace DOL.GS
 		{
 			Notify(GameLivingEvent.GainedBountyPoints, this, new GainedBountyPointsEventArgs(amount));
 		}
+
 		/// <summary>
 		/// Called when the living is gaining experience
 		/// </summary>
