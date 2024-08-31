@@ -1254,10 +1254,11 @@ namespace DOL.GS.ServerRules
 			long guildBonus = CalculateGuildBonus();
 			long bafBonus = CalculateBafBonus();
 			long outpostBonus = CalculateOutpostBonus();
-			long totalReward = baseXpReward + campBonus + groupBonus + bafBonus + guildBonus + outpostBonus;
+			GainedExperienceEventArgs arguments = new(baseXpReward, campBonus, groupBonus, guildBonus, bafBonus, outpostBonus, true, true, eXPSource.NPC);
+			long totalReward = arguments.ExpTotal;
 
 			ShowXpStatsToPlayer();
-			living.GainExperience(eXPSource.NPC, totalReward, campBonus, groupBonus, guildBonus, bafBonus, outpostBonus, true, true, true); // XP Rate is handled in GainExperience
+			living.GainExperience(arguments);
 
 			void RewardRealmPoints()
 			{

@@ -781,12 +781,6 @@ namespace DOL.GS.ServerProperties
 		public static int XP_PVP_CAP_PERCENT;
 
 		/// <summary>
-		/// Hardcap XP a player can earn after all other adjustments are applied.  Given in percent of level, default is 500%  There is no live value that corresponds to this cap.
-		/// </summary>
-		[ServerProperty("rates", "XP_HardCap_Percent", "Hardcap XP a player can earn after all other adjustments are applied. Given in percent of their level. Default is 500%", 500)]
-		public static int XP_HARDCAP_PERCENT;
-
-		/// <summary>
 		/// The Experience Rate
 		/// </summary>
 		[ServerProperty("rates", "xp_rate", "The Experience Points Rate Modifier - Edit this to change the rate at which you gain experience points e.g 1.5 is 50% more 2.0 is twice the amount (100%) 0.5 is half the amount (50%)", 1.0)]

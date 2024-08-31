@@ -11,6 +11,7 @@ namespace DOL.Events
         public long ExpGuildBonus { get; }
         public long ExpBafBonus { get; }
         public long ExpOutpostBonus { get; }
+        public long ExpTotal { get; }
         public bool SendMessage { get; }
         public bool AllowMultiply { get; }
         public eXPSource XPSource { get; }
@@ -23,6 +24,7 @@ namespace DOL.Events
             ExpGuildBonus = expGuildBonus;
             ExpBafBonus = expBafBonus;
             ExpOutpostBonus = expOutpostBonus;
+            ExpTotal = expBase + expCampBonus + expGroupBonus + expGuildBonus + expBafBonus + expOutpostBonus; // Needs to be updated every time a new bonus is added.
             SendMessage = sendMessage;
             AllowMultiply = allowMultiply;
             XPSource = xpSource;

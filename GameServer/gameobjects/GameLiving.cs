@@ -2170,46 +2170,21 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Called when the living is gaining experience
-		/// </summary>
-		public virtual void GainExperience(eXPSource xpSource, long expTotal, long expCampBonus, long expGroupBonus, long expGuildBonus, long expBafBonus, long expOutpostBonus, bool sendMessage, bool allowMultiply, bool notify) { }
+		public void GainExperience(eXPSource xpSource, long exp, bool allowMultiply = false)
+		{
+			GainExperience(new(exp, 0, 0, 0, 0, 0, true, allowMultiply, xpSource));
+		}
 
-		/// <summary>
-		/// Called when this living gains realm points
-		/// </summary>
-		/// <param name="amount">amount of realm points gained</param>
+		public virtual void GainExperience(GainedExperienceEventArgs arguments, bool notify = true) { }
+
 		public virtual void GainRealmPoints(long amount)
 		{
 			Notify(GameLivingEvent.GainedRealmPoints, this, new GainedRealmPointsEventArgs(amount));
 		}
 
-		/// <summary>
-		/// Called when this living gains bounty points
-		/// </summary>
-		/// <param name="amount"></param>
 		public virtual void GainBountyPoints(long amount)
 		{
 			Notify(GameLivingEvent.GainedBountyPoints, this, new GainedBountyPointsEventArgs(amount));
-		}
-
-		/// <summary>
-		/// Called when the living is gaining experience
-		/// </summary>
-		/// <param name="exp">base amount of xp to gain</param>
-		public void GainExperience(eXPSource xpSource, long exp)
-		{
-			GainExperience(xpSource, exp, 0, 0, 0, 0, 0, true, false, true);
-		}
-
-		/// <summary>
-		/// Called when the living is gaining experience
-		/// </summary>
-		/// <param name="exp">base amount of xp to gain</param>
-		/// <param name="allowMultiply">Do we allow the xp to be multiplied</param>
-		public void GainExperience(eXPSource xpSource, long exp, bool allowMultiply)
-		{
-			GainExperience(xpSource, exp, 0, 0, 0, 0, 0, true, allowMultiply, true);
 		}
 
 		/// <summary>
