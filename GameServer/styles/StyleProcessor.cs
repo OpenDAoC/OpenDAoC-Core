@@ -544,6 +544,7 @@ namespace DOL.GS.Styles
 			switch (style.WeaponTypeRequirement)
 			{
 				case Style.SpecialWeaponType.DualWield:
+				{
 					// both weapons are needed to use style,
 					// shield is not a weapon here
 					DbInventoryItem rightHand = player.ActiveWeapon;
@@ -558,27 +559,34 @@ namespace DOL.GS.Styles
 						return false;
 
 					return leftHand.Object_Type != (int)eObjectType.Shield;
-
+				}
 				case Style.SpecialWeaponType.AnyWeapon:
+				{
 					// TODO: style can be used with any weapon type,
 					// shield is not a weapon here
 					return weapon != null;
-
+				}
 				default:
-					// WeaponTypeRequirement holds eObjectType of weapon needed for style
-					// no weapon = can't use style
+				{
 					if (weapon == null)
 						return false;
 
-					// can't use shield styles if no active weapon
-					if (style.WeaponTypeRequirement == (int)eObjectType.Shield
-						&& (player.ActiveWeapon == null || (player.ActiveWeapon.Item_Type != Slot.RIGHTHAND && player.ActiveWeapon.Item_Type != Slot.LEFTHAND)))
+					eObjectType weaponTypeRequirement = (eObjectType) style.WeaponTypeRequirement;
+
+					// Can't use shield styles if no active weapon.
+					if (weaponTypeRequirement is eObjectType.Shield &&
+						(player.ActiveWeapon == null || (player.ActiveWeapon.Item_Type is not Slot.RIGHTHAND and not Slot.LEFTHAND)))
 						return false;
 
-					// weapon type check
-					return GameServer.ServerRules.IsObjectTypesEqual(
-							(eObjectType)style.WeaponTypeRequirement,
-							(eObjectType)weapon.Object_Type);
+					eObjectType objectType = (eObjectType) weapon.Object_Type;
+
+					// Treat a left axe as a normal axe.
+					if ((eObjectType) weapon.Object_Type is eObjectType.LeftAxe)
+						objectType = eObjectType.Axe;
+
+					// Weapon type check.
+					return GameServer.ServerRules.IsObjectTypesEqual(weaponTypeRequirement, objectType);
+				}
 			}
 		}
 
