@@ -399,16 +399,19 @@ namespace DOL.GS
 			return false;
 		}
 
-        public virtual int CalculateCastingTime(SpellLine line, Spell spell)
+        public virtual int CalculateCastingTime(SpellHandler spellHandler)
         {
+            Spell spell = spellHandler.Spell;
+            SpellLine spellLine = spellHandler.SpellLine;
+
             if (spell.InstrumentRequirement != 0 ||
-                line.KeyName is GlobalSpellsLines.Item_Spells ||
-                line.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
+                spellLine.KeyName is GlobalSpellsLines.Item_Spells ||
+                spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
             {
                 return spell.CastTime;
             }
 
-            if (EffectListService.GetAbilityEffectOnTarget(this, eEffect.QuickCast) != null)
+            if (spellHandler.IsQuickCasting)
             {
                 // Most casters have access to the Quickcast ability (or the Necromancer equivalent, Facilitate Painworking).
                 // This ability will allow you to cast a spell without interruption.

@@ -45,10 +45,12 @@ namespace DOL.GS.Spells
 		/// </summary>
 		protected bool m_startReuseTimer = true;
 
+		private QuickCastECSGameEffect _quickcast;
 		private long _castStartTick;
 		private long _castEndTick;
 		private long _calculatedCastTime;
 
+		public bool IsQuickCasting => _quickcast != null;
 		public long CastStartTick => _castStartTick;
 		public bool StartReuseTimer => m_startReuseTimer;
 
@@ -375,7 +377,7 @@ namespace DOL.GS.Spells
 
 			if (Caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration)
 				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.FacilitatePainworking)
-				|| Caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast))
+				|| IsQuickCasting)
 				return false;
 
 			// Only interrupt if we're under 50% of the way through the cast.
@@ -492,13 +494,14 @@ namespace DOL.GS.Spells
 			}
 
 			m_caster.CancelFocusSpell();
+			_quickcast = EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast) as QuickCastECSGameEffect;
 
-			var quickCast = EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast);
+			if (IsQuickCasting)
+				_quickcast.ExpireTick = GameLoop.GameLoopTime + _quickcast.Duration;
 
-			if (quickCast != null)
-				quickCast.ExpireTick = GameLoop.GameLoopTime + quickCast.Duration;
+			GamePlayer playerCaster = m_caster as GamePlayer;
 
-			if (m_caster is GamePlayer playerCaster)
+			if (playerCaster != null)
 			{
 				long nextSpellAvailTime = m_caster.TempProperties.GetProperty<long>(GamePlayer.NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION);
 
@@ -529,13 +532,15 @@ namespace DOL.GS.Spells
 			if (Spell.Range > 0)
 			{
 				SelectiveBlindnessEffect SelectiveBlindness = Caster.EffectList.GetOfType<SelectiveBlindnessEffect>();
+
 				if (SelectiveBlindness != null)
 				{
 					GameLiving EffectOwner = SelectiveBlindness.EffectSource;
-					if(EffectOwner==Target)
+
+					if (EffectOwner==Target)
 					{
-						if (m_caster is GamePlayer && !quiet)
-							((GamePlayer)m_caster).Out.SendMessage(string.Format("{0} is invisible to you!", Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
+						if (playerCaster != null && !quiet)
+							playerCaster.Out.SendMessage(string.Format("{0} is invisible to you!", Target.GetName(0, true)), eChatType.CT_Missed, eChatLoc.CL_SystemWindow);
 
 						return false;
 					}
@@ -583,9 +588,9 @@ namespace DOL.GS.Spells
 				{
 					interruptRemainingDuration /= 1000 + 1;
 
-					if (m_caster is GamePlayer)
+					if (playerCaster != null)
 					{
-						if (!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.QuickCast) &&
+						if (!IsQuickCasting &&
 							!m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MasteryOfConcentration))
 						{
 							if (!quiet)
@@ -766,8 +771,11 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			//Ryan: don't want mobs to have reductions in mana
-			if (Spell.Power != 0 && m_caster is GamePlayer && (m_caster as GamePlayer).CharacterClass.ID != (int)eCharacterClass.Savage && m_caster.Mana < PowerCost(Target) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != eSpellType.Archery)
+			if (Spell.Power != 0 &&
+				(playerCaster == null || (eCharacterClass) playerCaster.CharacterClass.ID is not eCharacterClass.Savage) &&
+				m_caster.Mana < PowerCost(Target) &&
+				!IsQuickCasting &&
+				Spell.SpellType is not eSpellType.Archery)
 			{
 				if (!quiet)
 					MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
@@ -775,28 +783,29 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0)
+			if (playerCaster != null && m_spell.Concentration > 0)
 			{
 				if (m_caster.Concentration < m_spell.Concentration)
 				{
 					if (!quiet)
 						MessageToCaster("This spell requires " + m_spell.Concentration + " concentration points to cast!", eChatType.CT_SpellResisted);
+
 					return false;
 				}
 
 				var maxConc = MAX_CONC_SPELLS;
 
 				//self buff charge IDs should not count against conc cap
-				if (m_caster is GamePlayer p)
+				maxConc += playerCaster.effectListComponent.ConcentrationEffects.Count(concentrationEffect =>
 				{
-					maxConc += p.effectListComponent.ConcentrationEffects.Count(concentrationEffect => concentrationEffect.SpellHandler?.Spell?.ID != null 
-																				&& p.SelfBuffChargeIDs.Contains(concentrationEffect.SpellHandler.Spell.ID));
-				}
+					return concentrationEffect.SpellHandler?.Spell?.ID != null && playerCaster.SelfBuffChargeIDs.Contains(concentrationEffect.SpellHandler.Spell.ID);
+				});
 
 				if (m_caster.effectListComponent.ConcentrationEffects.Count >= maxConc)
 				{
 					if (!quiet)
 						MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
+
 					return false;
 				}
 			}
@@ -966,13 +975,13 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType != eSpellType.Archery)
+			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType is not eSpellType.Archery)
 			{
 				MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
 				return false;
 			}
 
-			if (Spell.Power > 0 && m_caster.Mana < PowerCost(target) && EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) == null && Spell.SpellType != eSpellType.Archery)
+			if (Spell.Power > 0 && m_caster.Mana < PowerCost(target) && !IsQuickCasting && Spell.SpellType is not eSpellType.Archery)
 			{
 				MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
 				return false;
@@ -1202,7 +1211,7 @@ namespace DOL.GS.Spells
 			}
 
 			// Doubled power usage if using QuickCast.
-			if (EffectListService.GetAbilityEffectOnTarget(Caster, eEffect.QuickCast) != null && Spell.CastTime > 0)
+			if (IsQuickCasting && Spell.CastTime > 0)
 				powerCost *= 2;
 
 			return (int) powerCost;
@@ -1245,7 +1254,7 @@ namespace DOL.GS.Spells
 		/// <returns>effective casting time in milliseconds</returns>
 		public virtual int CalculateCastingTime()
 		{
-			return m_caster.CalculateCastingTime(m_spellLine, m_spell);
+			return m_caster.CalculateCastingTime(this);
 		}
 
 		#region animations
@@ -1401,13 +1410,11 @@ namespace DOL.GS.Spells
 			//set the time when casting to can not quickcast during a minimum time
 			if (playerCaster != null)
 			{
-				QuickCastECSGameEffect quickcast = (QuickCastECSGameEffect)EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast);
-				if (quickcast != null && Spell.CastTime > 0)
+				if (IsQuickCasting && Spell.CastTime > 0)
 				{
 					m_caster.TempProperties.SetProperty(GamePlayer.QUICK_CAST_CHANGE_TICK, m_caster.CurrentRegion.Time);
 					playerCaster.DisableSkill(SkillBase.GetAbility(Abilities.Quickcast), QuickCastAbilityHandler.DISABLE_DURATION);
-					//EffectService.RequestImmediateCancelEffect(quickcast, false);
-					quickcast.Cancel(false);
+					_quickcast.Cancel(false);
 				}
 			}
 
