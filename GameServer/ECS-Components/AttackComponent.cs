@@ -1820,7 +1820,7 @@ namespace DOL.GS
                     guardChance = 0.99;
 
                 if (ad.AttackType is AttackData.eAttackType.MeleeDualWield)
-                    guardChance *= 0.5;
+                    guardChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
 
                 if (guardChance > 0)
                 {

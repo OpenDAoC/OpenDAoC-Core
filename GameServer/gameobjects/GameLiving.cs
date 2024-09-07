@@ -44,6 +44,9 @@ namespace DOL.GS
 			set { m_lastInterruptMessage = value; }
 		}
 
+		public virtual double DualWieldDefensePenetrationFactor => 0.5;
+		public virtual double TwoHandedDefensePenetrationFactor => 0.5;
+
 		/// <summary>
 		/// Can this living accept any item regardless of tradable or droppable?
 		/// </summary>
@@ -1234,13 +1237,13 @@ namespace DOL.GS
 					evadeChance = 0.99;
 				
 				if (ad.AttackType is eAttackType.MeleeDualWield)
-					evadeChance *= 0.5;
+					evadeChance *= DualWieldDefensePenetrationFactor;
 			}
 
 			// Infiltrator RR5.
-			if (ad.Attacker is GamePlayer playerAttacker)
+			if (player != null)
 			{
-				OverwhelmEffect Overwhelm = playerAttacker.EffectList.GetOfType<OverwhelmEffect>();
+				OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
 
 				if (Overwhelm != null)
 					evadeChance = Math.Max(evadeChance - OverwhelmAbility.BONUS, 0);
@@ -1268,18 +1271,19 @@ namespace DOL.GS
 			//Also, before this comparison happens, the game looks to see if your opponent is in your forward arc  to determine that arc, make a 120 degree angle, and put yourself at the point.
 
 			double parryChance = 0;
+			GamePlayer player = this as GamePlayer;
 
 			if (ad.IsMeleeAttack)
 			{
 				BladeBarrierEffect BladeBarrier = null;
 				ECSGameEffect parryBuff = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageParryBuff);
 
-				if (this is GamePlayer player)
+				if (player != null)
 				{
 					// BladeBarrier overwrites all parrying, 90% chance to parry any attack, does not consider other bonuses to parry.
 					// They still need an active weapon to parry with BladeBarrier
 					BladeBarrier = player.EffectList.GetOfType<BladeBarrierEffect>();
-					
+
 					if (BladeBarrier != null && ActiveWeapon != null)
 						parryChance = 0.90;
 					else if (IsObjectInFront(ad.Attacker, 120))
@@ -1324,12 +1328,12 @@ namespace DOL.GS
 			}
 
 			if (ad.AttackType is eAttackType.MeleeTwoHand)
-				parryChance *= 0.5;
+				parryChance *= TwoHandedDefensePenetrationFactor;
 
 			// Infiltrator RR5.
-			if (ad.Attacker is GamePlayer attackerPlayer)
+			if (player != null)
 			{
-				OverwhelmEffect Overwhelm = attackerPlayer.EffectList.GetOfType<OverwhelmEffect>();
+				OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
 
 				if (Overwhelm != null)
 					parryChance = Math.Max(parryChance - OverwhelmAbility.BONUS, 0);
@@ -1424,7 +1428,7 @@ namespace DOL.GS
 				}
 
 				if (ad.AttackType is eAttackType.MeleeDualWield)
-					blockChance *= 0.5;
+					blockChance *= DualWieldDefensePenetrationFactor;
 			}
 
 			// Infiltrator RR5.
