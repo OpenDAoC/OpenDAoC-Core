@@ -422,7 +422,7 @@ namespace DOL.GS.Commands
 						player.MLLine = line;
 						player.SaveIntoDatabase();
 						player.RefreshSpecDependantSkills(true);
-						player.Out.SendUpdatePlayerSkills();
+						player.Out.SendUpdatePlayerSkills(true);
 						player.Out.SendUpdatePlayer();
 						player.Out.SendMasterLevelWindow((byte)player.MLLevel);
 						client.Out.SendMessage(player.Name + " Master Line is set to " + line + "!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -2477,7 +2477,7 @@ namespace DOL.GS.Commands
             target.OnLevelUp(0);
 
             target.Out.SendUpdatePlayer();
-            target.Out.SendUpdatePlayerSkills();
+            target.Out.SendUpdatePlayerSkills(true);
             target.Out.SendUpdatePoints();
         }
 	}

@@ -79,7 +79,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						client.Player.RefreshSpecDependantSkills(false);
 						client.Player.Out.SendUpdatePlayer();
 						client.Player.Out.SendUpdatePoints();
-						client.Player.Out.SendUpdatePlayerSkills();
+						client.Player.Out.SendUpdatePlayerSkills(true);
 						client.Player.UpdatePlayerStatus();
 						client.Player.Out.SendChampionTrainerWindow(idLine);
 
@@ -153,7 +153,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							client.Player.AddRealmAbility(ra, true);
 							client.Out.SendUpdatePoints();
 							client.Out.SendUpdatePlayer();
-							client.Out.SendUpdatePlayerSkills();
+							client.Out.SendUpdatePlayerSkills(true);
 							client.Out.SendTrainerWindow();
 						}
 						else
@@ -301,7 +301,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							client.Out.SendUpdatePlayer();
 							client.Out.SendCharResistsUpdate();
 							client.Out.SendCharStatsUpdate();
-							client.Out.SendUpdatePlayerSkills();
+							client.Out.SendUpdatePlayerSkills(true);
 							client.Out.SendTrainerWindow();
 							trained = true;
 						}

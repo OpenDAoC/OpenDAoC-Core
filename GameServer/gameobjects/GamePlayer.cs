@@ -3742,7 +3742,7 @@ namespace DOL.GS
         /// <returns></returns>
         public virtual List<Tuple<Skill, Skill>> GetAllUsableSkills(bool update = false)
         {
-            List<Tuple<Skill, Skill>> results = new List<Tuple<Skill, Skill>>();
+            List<Tuple<Skill, Skill>> results = [];
 
             if (!update)
             {
@@ -3944,7 +3944,7 @@ namespace DOL.GS
             CharacterClass.OnSkillTrained(this, skill);
             RefreshSpecDependantSkills(true);
 
-            Out.SendUpdatePlayerSkills();
+            Out.SendUpdatePlayerSkills(true);
         }
 
         /// <summary>
@@ -4176,7 +4176,7 @@ namespace DOL.GS
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.GainedLevel"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 if (RealmLevel % 10 == 0)
                 {
-                    Out.SendUpdatePlayerSkills();
+                    Out.SendUpdatePlayerSkills(true);
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.GainedRank"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.ReachedRank", (RealmLevel / 10) + 1), eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.NewRealmTitle", RealmRankTitle(Client.Account.Language)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -5439,7 +5439,7 @@ namespace DOL.GS
             Out.SendUpdatePlayer(); // Update player level
             Out.SendCharStatsUpdate(); // Update Stats and MaxHitpoints
             Out.SendCharResistsUpdate();
-            Out.SendUpdatePlayerSkills();
+            Out.SendUpdatePlayerSkills(true);
             Out.SendUpdatePoints();
             UpdatePlayerStatus();
 
@@ -5515,7 +5515,7 @@ namespace DOL.GS
             }
             Out.SendUpdatePlayer(); // Update player level
             Out.SendCharStatsUpdate(); // Update Stats and MaxHitpoints
-            Out.SendUpdatePlayerSkills();
+            Out.SendUpdatePlayerSkills(true);
             Out.SendUpdatePoints();
             UpdatePlayerStatus();
             // save player to database
@@ -10201,7 +10201,7 @@ namespace DOL.GS
                 Owner.Out.SendUpdateWeaponAndArmorStats();
                 Owner.Out.SendUpdateMaxSpeed();
                 Owner.Out.SendEncumberance();
-                // Out.SendUpdatePlayerSkills();
+                Owner.Out.SendUpdatePlayerSkills(false);
                 Owner.UpdatePlayerStatus();
 
                 if (!IsAlive)
@@ -14237,7 +14237,6 @@ namespace DOL.GS
             Out.SendUpdatePoints();
         }
 
-
         /// <summary>
         /// Reset all Champion skills for this player
         /// </summary>
@@ -14251,10 +14250,9 @@ namespace DOL.GS
             RefreshSpecDependantSkills(false);
             Out.SendUpdatePlayer();
             Out.SendUpdatePoints();
-            Out.SendUpdatePlayerSkills();
+            Out.SendUpdatePlayerSkills(true);
             UpdatePlayerStatus();
         }
-
 
         /// <summary>
         /// Remove all Champion levels and XP from this character.
@@ -14281,7 +14279,7 @@ namespace DOL.GS
             }
 
             RefreshSpecDependantSkills(true);
-            Out.SendUpdatePlayerSkills();
+            Out.SendUpdatePlayerSkills(true);
 
             Notify(GamePlayerEvent.ChampionLevelUp, this);
             Out.SendMessage("You have gained one champion level!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);

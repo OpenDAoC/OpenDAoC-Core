@@ -124,7 +124,7 @@ namespace DOLGameServerConsole
 		public void SendPlayerDied(GamePlayer killedPlayer, GameObject killer) { }
 		public void SendPlayerRevive(GamePlayer revivedPlayer) { }
 		public void SendUpdatePlayer() { }
-		public void SendUpdatePlayerSkills() { }
+		public void SendUpdatePlayerSkills(bool updateInternalCache) { }
 		public void SendUpdateWeaponAndArmorStats() { }
 		public void SendCustomTextWindow(string caption, IList<string> text) { }
 		public void SendEncumberance() { }

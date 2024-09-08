@@ -464,10 +464,10 @@ namespace DOL.Tests
 		{
 			if (SendUpdatePlayerMethod != null) SendUpdatePlayerMethod(this);
 		}
-		public Action<TestPacketLib> SendUpdatePlayerSkillsMethod { get; set; }
-		public void SendUpdatePlayerSkills()
+		public Action<TestPacketLib, bool> SendUpdatePlayerSkillsMethod { get; set; }
+		public void SendUpdatePlayerSkills(bool updateInternalCache)
 		{
-			if (SendUpdatePlayerSkillsMethod != null) SendUpdatePlayerSkillsMethod(this);
+			if (SendUpdatePlayerSkillsMethod != null) SendUpdatePlayerSkillsMethod(this, updateInternalCache);
 		}
 		public Action<TestPacketLib> SendUpdateWeaponAndArmorStatsMethod { get; set; }
 		public void SendUpdateWeaponAndArmorStats()

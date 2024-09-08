@@ -36,7 +36,7 @@ namespace DOL.GS.Spells
 			if (gp != null)
 			{
 				gp.AddAbility(SkillBase.GetAbility(Abilities.Climbing));
-				gp.Out.SendUpdatePlayerSkills();
+				gp.Out.SendUpdatePlayerSkills(true);
 			}
 		}
 
@@ -46,7 +46,7 @@ namespace DOL.GS.Spells
 			if (gp != null)
 			{
 				gp.RemoveAbility(Abilities.Climbing);
-				gp.Out.SendUpdatePlayerSkills();
+				gp.Out.SendUpdatePlayerSkills(true);
 			}
 			return 0;
 		}

@@ -717,7 +717,7 @@ namespace DOL.GS.PacketHandler
 		void SendPlayerDied(GamePlayer killedPlayer, GameObject killer);
 		void SendPlayerRevive(GamePlayer revivedPlayer);
 		void SendUpdatePlayer();
-		void SendUpdatePlayerSkills();
+		void SendUpdatePlayerSkills(bool updateInternalCache);
 		void SendUpdateWeaponAndArmorStats();
 		void SendCustomTextWindow(string caption, IList<string> text);
 		void SendPlayerTitles();

@@ -248,7 +248,7 @@ namespace DOL.GS.Commands
 			}
 			player.RefreshSpecDependantSkills(false);
 			// Notify Player of points
-			player.Out.SendUpdatePlayerSkills();
+			player.Out.SendUpdatePlayerSkills(true);
 			player.Out.SendUpdatePoints();
 			player.Out.SendUpdatePlayer();
 			player.SendTrainerWindow();

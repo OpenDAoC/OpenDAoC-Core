@@ -192,7 +192,7 @@ namespace DOL.GS
 					}
 					player.RefreshSpecDependantSkills(false);
 					// Notify Player of points
-					player.Out.SendUpdatePlayerSkills();
+					player.Out.SendUpdatePlayerSkills(true);
 					player.Out.SendUpdatePoints();
 					player.Out.SendUpdatePlayer();
 					player.Out.SendTrainerWindow();
@@ -345,7 +345,7 @@ namespace DOL.GS
 				player.CharacterClass.OnLevelUp(player, player.Level);
 				player.RefreshSpecDependantSkills(true);
 				player.StartPowerRegeneration();
-				player.Out.SendUpdatePlayerSkills();
+				player.Out.SendUpdatePlayerSkills(true);
 				player.Out.SendUpdatePlayer();
 				// drop any non usable item
 				CheckAbilityToUseItem(player);

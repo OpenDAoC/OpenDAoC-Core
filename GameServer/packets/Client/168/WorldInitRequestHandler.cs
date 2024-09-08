@@ -114,6 +114,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     }
                 }
 
+                bool wasOnCharScreen = player.Client.ClientState is GameClient.eClientState.CharScreen;
                 player.Client.ClientState = GameClient.eClientState.WorldEnter;
                 // 0x88 - Position
                 // 0x6D - FriendList
@@ -174,7 +175,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 player.Out.SendStatusUpdate();
                 player.Out.SendInventoryItemsUpdate(eInventoryWindowType.Equipment, player.Inventory.EquippedItems);
                 player.Out.SendInventoryItemsUpdate(eInventoryWindowType.Inventory, player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBagHorse));
-                player.Out.SendUpdatePlayerSkills();   //TODO Insert 0xBE - 08 Various in SendUpdatePlayerSkills() before send spells
+                player.Out.SendUpdatePlayerSkills(wasOnCharScreen);   //TODO Insert 0xBE - 08 Various in SendUpdatePlayerSkills() before send spells
                 player.Out.SendUpdateCraftingSkills(); // ^
                 player.Out.SendUpdatePlayer();
                 player.Out.SendUpdateMoney();
