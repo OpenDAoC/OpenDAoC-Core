@@ -527,7 +527,7 @@ namespace DOL.GS
 
         public void RequestStartAttack(GameObject attackTarget = null)
         {
-            _startAttackTarget = attackTarget;
+            _startAttackTarget = attackTarget ?? owner.target;
             StartAttackRequested = true;
             EntityManager.Add(this);
         }
