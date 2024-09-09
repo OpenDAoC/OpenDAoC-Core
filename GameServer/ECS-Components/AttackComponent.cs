@@ -1663,7 +1663,7 @@ namespace DOL.GS
                 // Absolute minimum spec is set to 1 to prevent an issue where the lower bound (with staffs for example) would slightly rise with the target's level.
                 // Also prevents negative values.
                 spec = Math.Max(owner.Level < 5 ? 2 : 1, spec);
-                double specVsTargetLevelMod = (spec - 1) / (target.Level + 1);
+                double specVsTargetLevelMod = (spec - 1) / ((double) target.Level + 1);
                 lowerLimit = Math.Min(0.75 * specVsTargetLevelMod + 0.25, 1.0);
                 upperLimit = Math.Min(Math.Max(1.25 + (3.0 * specVsTargetLevelMod - 2) * 0.25, 1.25), 1.5);
             }
