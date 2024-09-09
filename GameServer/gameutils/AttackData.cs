@@ -47,26 +47,6 @@ namespace DOL.GS
             _ => false
         };
 
-        public bool IsRandomFumble
-        {
-            get
-            {
-                GamePlayer playerAttacker = Attacker as GamePlayer;
-                double fumbleChance = Attacker.ChanceToFumble;
-                double fumbleRoll;
-
-                if (!ServerProperties.Properties.OVERRIDE_DECK_RNG && playerAttacker != null)
-                    fumbleRoll = playerAttacker.RandomNumberDeck.GetPseudoDouble();
-                else
-                    fumbleRoll = Util.CryptoNextDouble();
-
-                if (playerAttacker?.UseDetailedCombatLog == true)
-                    playerAttacker.Out.SendMessage($"Your chance to fumble: {fumbleChance * 100:0.##}% rand: {fumbleRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
-                return IsMeleeAttack && fumbleChance > fumbleRoll;
-            }
-        }
-
         public bool GeneratesAggro => SpellHandler == null || SpellHandler.Spell.SpellType is not eSpellType.Amnesia || IsSpellResisted;
 
         public AttackData() { }

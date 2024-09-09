@@ -2118,16 +2118,19 @@ namespace DOL.GS
             // if (CheckDashingDefense(ad, stealthStyle, out eAttackResult result)
             //     return result;
 
-            // Miss chance.
-            double missChance = GetMissChance(action, ad, lastAttackData, attackerWeapon);
+            double missChance = Math.Min(1, GetMissChance(action, ad, lastAttackData, attackerWeapon) * 0.01);
+            double fumbleChance = ad.IsMeleeAttack ? Math.Min(1, ad.Attacker.GetModified(eProperty.FumbleChance) * 0.001) : 0;
 
-            // Check for dirty trick fumbles before misses.
-            DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(ad.Attacker, eEffect.DirtyTricksDetrimental);
+            // At some point during Atlas' development it was decided to make fumbles a subset of misses (can't fumble without a miss), since otherwise the miss + fumble rate at low level is way too high.
+            // However, this prevented fumble debuffs from working properly when fumble chance became higher than the miss chance.
+            // To solve this, an extra early fumble check was added when the attacker is affected by Dirty Tricks, but this effectively made fumble chance be checked twice and made Dirty Tricks way stronger than it should be.
+            // But we want to keep fumbles as a subset of misses. The solution is then to ensure miss chance can't be lower than fumble chance.
+            // This however means that when miss chance is equal to fumble chance, the attacker can no longer technically miss, and can only fumble.
+            // It also means that a level 50 player will always have at least 0.1% chance to fumble even against a very low level target.
+            if (missChance < fumbleChance)
+                missChance = fumbleChance;
 
-            if (dt != null && ad.IsRandomFumble)
-                return eAttackResult.Fumbled;
-
-            ad.MissChance = missChance;
+            ad.MissChance = missChance * 100;
 
             if (missChance > 0)
             {
@@ -2138,26 +2141,19 @@ namespace DOL.GS
                 else
                     missRoll = Util.CryptoNextDouble();
 
-                if (ad.Attacker is GamePlayer misser && misser.UseDetailedCombatLog)
+                if (playerAttacker != null && playerAttacker.UseDetailedCombatLog)
                 {
-                    misser.Out.SendMessage($"miss rate on target: {missChance:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerAttacker.Out.SendMessage($"miss rate: {missChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                    if (ad.AttackType != AttackData.eAttackType.Ranged)
-                        misser.Out.SendMessage($"Your chance to fumble: {100 * ad.Attacker.ChanceToFumble:0.##}% rand: {100 * missRoll:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    if (fumbleChance > 0)
+                        playerAttacker.Out.SendMessage($"chance to fumble: {fumbleChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if (ad.Target is GamePlayer missee && missee.UseDetailedCombatLog)
-                    missee.Out.SendMessage($"chance to be missed: {missChance:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                if (ad.Target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
+                    playerTarget.Out.SendMessage($"chance to be missed: {missChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                if (missChance > missRoll * 100)
-                {
-                    // Check for normal fumbles.
-                    // Fumbles are a subset of misses, and a player can only fumble if the attack would have been a miss anyways.
-                    if (ad.AttackType != AttackData.eAttackType.Ranged && ad.Attacker.ChanceToFumble > missRoll)
-                        return eAttackResult.Fumbled;
-
-                    return eAttackResult.Missed;
-                }
+                if (missChance > missRoll)
+                    return fumbleChance > missRoll ? eAttackResult.Fumbled : eAttackResult.Missed;
             }
 
             // Bladeturn

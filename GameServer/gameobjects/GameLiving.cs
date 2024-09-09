@@ -55,40 +55,6 @@ namespace DOL.GS
 			get { return false; }
 		}
 
-		/// <summary>
-		/// Chance to fumble an attack.
-		/// </summary>
-		public virtual double ChanceToFumble
-		{
-			get
-			{
-				double chanceToFumble = GetModified(eProperty.FumbleChance);
-				chanceToFumble *= 0.001;
-
-				if (chanceToFumble > 0.99) chanceToFumble = 0.99;
-				if (chanceToFumble < 0) chanceToFumble = 0;
-
-				return chanceToFumble;
-			}
-		}
-
-		/// <summary>
-		/// Chance to be missed by an attack.
-		/// </summary>
-		public virtual double ChanceToBeMissed
-		{
-			get
-			{
-				double chanceToBeMissed = GetModified(eProperty.MissHit);
-				chanceToBeMissed *= 0.001;
-
-				if (chanceToBeMissed > 0.99) chanceToBeMissed = 0.99;
-				if (chanceToBeMissed < 0) chanceToBeMissed = 0;
-
-				return chanceToBeMissed;
-			}
-		}
-
 		protected short m_race;
 		public virtual short Race
 		{
