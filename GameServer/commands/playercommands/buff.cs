@@ -9,7 +9,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS.Commands
 {
-    [CmdAttribute("&buff", ePrivLevel.Player, "Buff the target", "/buff <(buffList) | all | help> [playerName]")]
+    [CmdAttribute("&buff", ePrivLevel.Player, "Buff the target", "/buff <(buffList) | all | help> [playerName | npcName]")]
     public class BuffCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public const string SPELL_TYPE = "BuffCommand";
