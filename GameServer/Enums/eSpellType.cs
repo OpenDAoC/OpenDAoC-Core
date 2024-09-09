@@ -428,6 +428,7 @@ namespace DOL.GS
         SkillsDebuff,
         StylePowerDrain,
         UniPortalKeep,
-        ValkyrieOffensiveProc
+        ValkyrieOffensiveProc,
+        BuffCommand
     }
 }
