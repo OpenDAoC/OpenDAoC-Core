@@ -2840,11 +2840,7 @@ namespace DOL.GS
 		public CastingComponent castingComponent;
 		public EffectListComponent effectListComponent;
 		public MovementComponent movementComponent;
-		public HealthComponent healthComponent;
 		public CraftComponent craftComponent;
-		//public DamageComponent damageComponent;
-		//public StatsComponent statsComponent;
-		//public SingleStatBuffComponent buffComponent;
 
 		#endregion
 
@@ -4118,7 +4114,6 @@ namespace DOL.GS
 			castingComponent = CastingComponent.Create(this);
 			effectListComponent = new EffectListComponent(this);
 			movementComponent = MovementComponent.Create(this);
-			healthComponent = new HealthComponent(this);
 
 			m_guildName = string.Empty;
 			m_groundTarget = new Point3D(0, 0, 0);
