@@ -2741,23 +2741,35 @@ namespace DOL.GS
 
             if (specLevel > 0 && attackWeapon != null && leftWeapon != null && (eObjectType) leftWeapon.Object_Type is eObjectType.HandToHand)
             {
+                bool canTripleHit = specLevel >= 25;
+                bool canQuadHit = specLevel >= 40;
                 specLevel--;
                 double random = Util.RandomDouble() * 100;
                 double doubleHitChance = specLevel * 0.5 + bonus; // specLevel >> 1
-                double tripleHitChance = doubleHitChance + specLevel * 0.25 + bonus * 0.5; // specLevel >> 2
-                double quadHitChance = tripleHitChance + specLevel * 0.0625 + bonus * 0.25; // specLevel >> 4
+                double tripleHitChance = canTripleHit ? specLevel * 0.25 + bonus * 0.5 : 0; // specLevel >> 2
+                double quadHitChance = canQuadHit ? specLevel * 0.0625 + bonus * 0.25 : 0; // specLevel >> 4
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                    playerOwner.Out.SendMessage( $"Chance for 2 hits: {doubleHitChance:0.##}% | 3 hits: { (specLevel > 25 ? tripleHitChance-doubleHitChance : 0):0.##}% | 4 hits: {(specLevel > 40 ? quadHitChance-tripleHitChance : 0):0.##}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage( $"Chance for 2 hits: {doubleHitChance:0.##}% | 3 hits: {tripleHitChance:0.##}% | 4 hits: {quadHitChance:0.##}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                 if (random < doubleHitChance)
                     return 1;
 
-                if (random < tripleHitChance && specLevel > 25)
-                    return 2;
+                if (canTripleHit)
+                {
+                    tripleHitChance += doubleHitChance;
 
-                if (random < quadHitChance && specLevel > 40)
-                    return 3;
+                    if (random < tripleHitChance)
+                        return 2;
+                }
+
+                if (canQuadHit)
+                {
+                    quadHitChance += tripleHitChance;
+
+                    if (random < quadHitChance)
+                        return 3;
+                }
             }
 
             return 0;
