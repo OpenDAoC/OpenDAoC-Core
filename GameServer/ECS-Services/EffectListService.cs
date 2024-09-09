@@ -49,20 +49,19 @@ namespace DOL.GS
 
         private static void HandleEffects(EffectListComponent effectListComponent)
         {
-            if (!effectListComponent.Effects.Any())
+            if (effectListComponent.Effects.Count == 0)
             {
+                effectListComponent.SendPlayerUpdates();
                 EntityManager.Remove(effectListComponent);
                 return;
             }
 
-            List<ECSGameEffect> effectsList = new();
+            List<ECSGameEffect> effectsList = [];
 
             lock (effectListComponent.EffectsLock)
             {
                 foreach (var pair in effectListComponent.Effects)
-                {
                     effectsList.AddRange(pair.Value);
-                }
             }
 
             foreach (ECSGameEffect e in effectsList)
@@ -73,8 +72,6 @@ namespace DOL.GS
                     continue;
                 }
 
-                // TEMP - A lot of the code below assumes effects come from spells but many effects come from abilities (Sprint, Stealth, RAs, etc)
-                // This will need a better refactor later but for now this prevents crashing while working on porting over non-spell based effects to our system.
                 if (e is ECSGameAbilityEffect)
                 {
                     if (e.NextTick != 0 && ServiceUtils.ShouldTickAdjust(ref e.NextTick))
@@ -249,6 +246,8 @@ namespace DOL.GS
                     }
                 }
             }
+
+            effectListComponent.SendPlayerUpdates();
         }
 
         public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.None)
