@@ -89,17 +89,7 @@ namespace DOL.AI.Brain
         {
             base.Notify(e, sender, args);
 
-            if (e == GameLivingEvent.Dying)
-            {
-                // At necropet Die, we check DamageRvRMemory for transfer it to owner if necessary.
-                GamePlayer playerowner = GetPlayerOwner();
-
-                if (playerowner != null && Body.DamageRvRMemory > 0)
-                    playerowner.DamageRvRMemory = Body.DamageRvRMemory;
-
-                return;
-            }
-            else if (e == GameLivingEvent.CastFinished)
+            if (e == GameLivingEvent.CastFinished)
             {
                 // Instant cast spells bypass the queue.
                 if (args is CastingEventArgs cArgs && !cArgs.SpellHandler.Spell.IsInstantCast)

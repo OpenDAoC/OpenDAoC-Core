@@ -1187,14 +1187,6 @@ namespace DOL.GS
         #endregion
 
         #region Combat timer
-        /// <summary>
-        /// gets the DamageRvR Memory of this player
-        /// </summary>
-        public override long DamageRvRMemory
-        {
-            get => m_damageRvRMemory;
-            set => m_damageRvRMemory = value;
-        }
 
         public override long LastAttackTickPvE
         {
@@ -2510,17 +2502,7 @@ namespace DOL.GS
             if (Health < MaxHealth)
                 ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationAmount));
 
-            bool atMaxHealth = Health >= MaxHealth;
-
-            if (DamageRvRMemory > 0)
-            {
-                if (atMaxHealth)
-                    DamageRvRMemory = 0;
-                else
-                    DamageRvRMemory -= Math.Max(GetModified(eProperty.HealthRegenerationAmount), 0);
-            }
-
-            if (atMaxHealth)
+            if (Health >= MaxHealth)
             {
                 lock (m_xpGainers.SyncRoot)
                 {
@@ -6101,12 +6083,6 @@ namespace DOL.GS
         {
             if (Duel != null && !IsDuelPartner(source as GameLiving))
                 Duel.Stop();
-
-            if (source is GamePlayer || (source is GameNPC npc && npc.Brain is IControlledBrain brain && brain.GetPlayerOwner() != null) || source is GameSiegeWeapon)
-            {
-                if (Realm != source.Realm && source.Realm != 0)
-                    DamageRvRMemory += damageAmount + criticalAmount;
-            }
 
             base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 

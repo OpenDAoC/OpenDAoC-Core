@@ -1,5 +1,3 @@
-using System;
-using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 
@@ -64,20 +62,6 @@ namespace DOL.GS.Spells
             {
 				MessageToLiving(target, "You are full health.", eChatType.CT_SpellResisted);
             }
-			
-
-            #region PVP DAMAGE
-
-            if (target.DamageRvRMemory > 0 &&
-                (target is NecromancerPet &&
-                ((target as NecromancerPet).Brain as IControlledBrain).GetPlayerOwner() != null
-                || target is GamePlayer))
-            {
-                if (target.DamageRvRMemory > 0)
-                    target.DamageRvRMemory -= (long)Math.Max(heal, 0);
-            }
-
-            #endregion PVP DAMAGE
 
 			//"You feel calm and healthy."
 			MessageToLiving(target, Spell.Message1, eChatType.CT_Spell);

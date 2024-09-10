@@ -335,22 +335,6 @@ namespace DOL.GS
 			set => m_lastAttackedByEnemyTickPvP = value;
 		}
 
-		/// <summary>
-		/// Total damage RvR Value
-		/// </summary>
-		protected long m_damageRvRMemory;
-		/// <summary>
-		/// gets the DamageRvR Memory of this living (always 0 for Gameliving)
-		/// </summary>
-		public virtual long DamageRvRMemory
-		{
-			get { return 0; }
-			set
-			{
-				m_damageRvRMemory = 0;
-			}
-		}
-
         /// <summary>
         /// Gets the current attackspeed of this living in milliseconds
         /// </summary>
@@ -1429,27 +1413,6 @@ namespace DOL.GS
 			base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 
 			double damageDealt = damageAmount + criticalAmount;
-
-			#region PVP DAMAGE
-
-			// Is this a GamePlayer behind the source?
-			if (source is GamePlayer || (source is GameNPC && (source as GameNPC).Brain is IControlledBrain && ((source as GameNPC).Brain as IControlledBrain).GetPlayerOwner() != null) || source is GameSiegeWeapon)
-			{
-				// Only apply to necropet.
-				if (this is NecromancerPet)
-				{
-					//And if a GamePlayer is behind
-					GamePlayer this_necro_pl = null;
-
-					if (this is GameNPC && (this as GameNPC).Brain is IControlledBrain)
-						this_necro_pl = ((this as GameNPC).Brain as IControlledBrain).GetPlayerOwner();
-
-					if (this_necro_pl != null && this_necro_pl.Realm != source.Realm && source.Realm != 0)
-						DamageRvRMemory += (long)damageDealt + (long)criticalAmount;
-				}
-			}
-
-			#endregion PVP DAMAGE
 
 			if (source != null && source is GameNPC)
 			{
@@ -2731,22 +2694,7 @@ namespace DOL.GS
 			if (Health < MaxHealth)
 				ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationAmount));
 
-			bool atMaxHealth = Health >= MaxHealth;
-
-			if (this is NecromancerPet necroPet && necroPet.Brain is IControlledBrain necroBrain)
-			{
-				GamePlayer player = necroBrain.GetPlayerOwner();
-
-				if (player != null && DamageRvRMemory > 0)
-				{
-					if (atMaxHealth)
-						DamageRvRMemory = 0;
-					else
-						DamageRvRMemory -= Math.Max(GetModified(eProperty.HealthRegenerationAmount), 0);
-				}
-			}
-
-			if (atMaxHealth)
+			if (Health >= MaxHealth)
 			{
 				lock (m_xpGainers.SyncRoot)
 				{

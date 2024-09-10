@@ -38,12 +38,6 @@ namespace DOL.GS
 			}
 		}
 
-		public override long DamageRvRMemory
-		{
-			get => m_damageRvRMemory;
-			set => m_damageRvRMemory = value;
-		}
-
 		/// <summary>
 		/// Proc IDs for various pet weapons.
 		/// </summary>
