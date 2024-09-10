@@ -1522,36 +1522,25 @@ namespace DOL.GS
 				}
 			}*/
 
-			bool wasAlive = IsAlive;
-
 			Health -= damageAmount + criticalAmount;
 
-			if (!IsAlive && wasAlive && isDeadOrDying == false)
-            {
-					if (Monitor.TryEnter(deadLock))
-					{
-						try
-						{
-						isDeadOrDying = true;
-						Die(source);
-						}
-						finally
-						{
-							Monitor.Exit(deadLock);
-						}
-					}
-					else
-					{
-					return;
-					}
-			}
-			else
+			if (!IsAlive && Monitor.TryEnter(dieLock) && !isDeadOrDying)
 			{
-				if (IsLowHealth)
-					Notify(GameLivingEvent.LowHealth, this, null);
+				isDeadOrDying = true;
+
+				try
+				{
+					Die(source);
+				}
+				finally
+				{
+					Monitor.Exit(dieLock);
+				}
 			}
 		}
-		object deadLock = new object();
+
+		object dieLock = new();
+
 		/// <summary>
 		/// Called on the attacker when attacking an enemy.
 		/// </summary>
