@@ -2673,7 +2673,7 @@ namespace DOL.GS
 
         public double CalculateTwoHandedDamageModifier(DbInventoryItem weapon)
         {
-            return 1.1 + (owner.WeaponSpecLevel(weapon) - 1) * 0.005;
+            return 1.1 + owner.WeaponSpecLevel(weapon) * 0.005;
         }
 
         /// <summary>
@@ -2722,7 +2722,7 @@ namespace DOL.GS
             if (specLevel > 0)
             {
                 double random = Util.RandomDouble() * 100;
-                double offhandChance = 25 + (specLevel - 1) * 68 * 0.01 + bonus;
+                double offhandChance = 25 + specLevel * 68 * 0.01 + bonus;
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
                     playerOwner.Out.SendMessage($"OH swing%: {offhandChance:0.##} ({bonus}% from RAs) \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -2739,7 +2739,6 @@ namespace DOL.GS
             {
                 bool canTripleHit = specLevel >= 25;
                 bool canQuadHit = specLevel >= 40;
-                specLevel--;
                 double random = Util.RandomDouble() * 100;
                 double doubleHitChance = specLevel * 0.5 + bonus; // specLevel >> 1
                 double tripleHitChance = canTripleHit ? specLevel * 0.25 + bonus * 0.5 : 0; // specLevel >> 2
