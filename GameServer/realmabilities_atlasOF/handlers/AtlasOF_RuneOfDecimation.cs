@@ -38,7 +38,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = (int)eDamageType.Energy;
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = 0;
-            m_dbspell.Type = eSpellType.DirectDamage.ToString();
+            m_dbspell.Type = eSpellType.DirectDamageNoVariance.ToString();
             m_dbspell.Value = 0;
             m_dbspell.Duration = m_duration;
             m_dbspell.Pulse = 0;
