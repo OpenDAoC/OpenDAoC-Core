@@ -36,6 +36,7 @@ namespace DOL.GS
         Bomber,
         SummonAnimistFnFCustom,
         DamageOverTime,
+        DamageOverTimeNoVariance,
         PowerRegenBuff,
         CombatSpeedBuff,
         ArmorAbsorptionBuff,
