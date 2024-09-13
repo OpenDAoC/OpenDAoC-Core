@@ -20,6 +20,23 @@ namespace DOL.GS.Spells
         }
     }
 
+    [SpellHandlerAttribute("DirectDamageWithDebuffNoVariance")]
+    public class DirectDamageDebuffNoVariance : DirectDamageDebuffSpellHandler
+    {
+        public DirectDamageDebuffNoVariance(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
+        public override double CalculateDamageBase(GameLiving target)
+        {
+            return Spell.Damage;
+        }
+
+        public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
+        {
+            min = 1.00;
+            max = 1.00;
+        }
+    }
+
     [SpellHandlerAttribute("DamageSpeedDecreaseNoVariance")]
     public class DamageSpeedDecreaseNoVarianceSpellHandler : DamageSpeedDecreaseSpellHandler
     {

@@ -43,6 +43,7 @@ namespace DOL.GS
         DefensiveProc,
         ConstitutionDebuff,
         DirectDamageWithDebuff,
+        DirectDamageWithDebuffNoVariance,
         MeleeDamageDebuff,
         ArmorAbsorptionDebuff,
         Charm,
