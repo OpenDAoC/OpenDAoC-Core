@@ -72,7 +72,7 @@ namespace DOL.GS.Effects
             tSpell.Icon = 476;			// not official effect
             tSpell.ClientEffect = 476;	// not official effect
             petSpell = new Spell(tSpell, 1);
-            petSpellLine = new SpellLine("RAs", "RealmAbilitys", "RealmAbilitys", true);
+            petSpellLine = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
         }
 
         public override void Start(GameLiving target)

@@ -95,7 +95,7 @@ namespace DOL.GS.RealmAbilities
 	        dbspell.Frequency = 0;
 	        dbspell.Range = 1500;
 	        Spell spell = new Spell(dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
-	        SpellLine line = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
+	        SpellLine line = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
 	        return new SpellHandler(caster, spell, line);
         }
     }

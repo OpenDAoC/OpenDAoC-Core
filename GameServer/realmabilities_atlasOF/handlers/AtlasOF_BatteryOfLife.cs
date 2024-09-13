@@ -51,7 +51,7 @@ namespace DOL.GS.RealmAbilities
             tmpSpell.Range = 0;
             tmpSpell.Frequency = 500;
             tmpSpell.Description = "Creates a 1000HP buffer that is distributed to groupmembers within 1500 units as healing. Healing priority matches spreadheal.";
-            SpellLine spellLine = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
+            SpellLine spellLine = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
             SpellHandler tmpHandler = new SpellHandler(owner, new Spell(tmpSpell, 0) , spellLine); // make spell level 0 so it bypasses the spec level adjustment code
             return tmpHandler;
         }

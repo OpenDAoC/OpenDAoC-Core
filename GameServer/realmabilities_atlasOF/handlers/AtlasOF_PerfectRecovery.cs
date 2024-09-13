@@ -44,7 +44,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.ResurrectHealth = 100;
             m_dbspell.ResurrectMana = 100;
             m_spell = new Spell(m_dbspell, caster.Level);
-            m_spellline = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", false);
+            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, false);
         }
 
         public override void Execute(GameLiving living)

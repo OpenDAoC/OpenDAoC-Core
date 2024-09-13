@@ -57,7 +57,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Description = "Reduce the movement speed of all enemies in a " 
                                                + m_range + " unit radius by 35%.";
 			m_spell = new Spell(m_dbspell, caster.Level);
-            m_spellline = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
+            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
         }
 
         public override void Execute(GameLiving living)

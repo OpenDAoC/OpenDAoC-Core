@@ -53,7 +53,7 @@ namespace DOL.GS.Effects
             tSpell.Icon = 7049;
             tSpell.ClientEffect = 7049;
             spiritSpell = new Spell(tSpell, 1);
-            spiritSpellLine = new SpellLine("RAs", "RealmAbilitys", "RealmAbilitys", true);
+            spiritSpellLine = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
         }
 
         public override void Start(GameLiving target)

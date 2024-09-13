@@ -305,6 +305,9 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		private bool IsPerfectRecovery() { return SpellLine.Name == "RealmAbilities"; }
+		private bool IsPerfectRecovery()
+		{
+			return SpellLine.Name is GlobalSpellsLines.Realm_Spells;
+		}
 	}
 }

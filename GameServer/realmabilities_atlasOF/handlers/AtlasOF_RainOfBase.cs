@@ -64,7 +64,7 @@ namespace DOL.GS.RealmAbilities
                 Range = 0
             };
             m_spell = new Spell(m_dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
-            m_spellline = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
+            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
         }
         
         private double GetDamageAddAmount(GameLiving caster)

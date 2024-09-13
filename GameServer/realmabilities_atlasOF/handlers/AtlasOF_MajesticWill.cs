@@ -46,7 +46,7 @@ namespace DOL.GS.RealmAbilities
             tmpSpell.EffectGroup = 0; // stacks with other damage adds
             tmpSpell.Range = 0;
             tmpSpell.Description = "Your targets chance of resisting your spells is reduced by 5% per level per level of this ability for 60 seconds.";
-            SpellLine spellLine = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
+            SpellLine spellLine = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
             SpellHandler tmpHandler = new SpellHandler(owner, new Spell(tmpSpell, 0) , spellLine); // make spell level 0 so it bypasses the spec level adjustment code
             return tmpHandler;
         }

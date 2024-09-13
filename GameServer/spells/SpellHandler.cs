@@ -2371,21 +2371,24 @@ namespace DOL.GS.Spells
 		{
 			int spellLevel;
 
-			if (m_caster is GamePlayer playerCaster)
+			if (m_caster is not GamePlayer playerCaster ||
+				m_spellLine.KeyName is GlobalSpellsLines.Realm_Spells or GlobalSpellsLines.Reserved_Spells)
+			{
+				spellLevel = m_caster.EffectiveLevel;
+			}
+			else
 			{
 				spellLevel = Spell.Level + m_caster.GetModified(eProperty.SpellLevel);
 
 				if (spellLevel > playerCaster.MaxLevel)
 					spellLevel = playerCaster.MaxLevel;
 
-				if (m_spellLine.KeyName == GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
+				if (m_spellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
 				{
 					AttackData lastAD = playerCaster.TempProperties.GetProperty<AttackData>("LastAttackData");
 					spellLevel = (lastAD != null && lastAD.Style != null) ? lastAD.Style.Level : Math.Min(playerCaster.MaxLevel, target.Level);
 				}
 			}
-			else
-				spellLevel = m_caster.EffectiveLevel;
 
 			/*
 			http://www.camelotherald.com/news/news_article.php?storyid=704
@@ -2404,8 +2407,8 @@ namespace DOL.GS.Spells
 			Note:  The last section about maintaining a chance to hit of 55% has been proven incorrect with live testing.
 			 */
 
-			// 12.5% resist rate based on live tests done for Uthgard.
-			double hitChance = 87.5 + (spellLevel - target.Level) / 2.0;
+            // 12.5% resist rate based on live tests done for Uthgard.
+            double hitChance = 87.5 + (spellLevel - target.Level) / 2.0;
 			hitChance += m_caster.GetModified(eProperty.ToHitBonus);
 
 			if (m_caster is not GamePlayer || target is not GamePlayer)

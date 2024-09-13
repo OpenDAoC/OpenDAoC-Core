@@ -48,7 +48,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.RecastDelay = GetReUseDelay(0); // Spell code is responsible for disabling this ability and will use this value.
             m_dbspell.Range = m_range;
             m_spell = new Spell(m_dbspell, caster.Level);
-            m_spellline = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
+            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
         }
 
         public override void Execute(GameLiving living)

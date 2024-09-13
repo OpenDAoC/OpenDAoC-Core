@@ -52,7 +52,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Message1 = "You are grappled and cannot move.";
             m_dbspell.Message2 = "{0}'s is grappled and cannot move!";
 			m_spell = new Spell(m_dbspell, caster.Level);
-            m_spellline = new SpellLine("RAs", "RealmAbilities", "RealmAbilities", true);
+            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
         }
 
         public override void Execute(GameLiving living)
