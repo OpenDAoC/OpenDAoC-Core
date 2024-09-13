@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = (int)m_damageType;
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = m_radius;
-            m_dbspell.Type = eSpellType.Lifedrain.ToString();
+            m_dbspell.Type = eSpellType.LifedrainNoVariance.ToString();
             m_dbspell.Value = -70;
             m_dbspell.LifeDrainReturn = 70;
             m_dbspell.Duration = 0;

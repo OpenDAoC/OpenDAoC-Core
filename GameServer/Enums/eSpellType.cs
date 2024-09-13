@@ -27,6 +27,7 @@ namespace DOL.GS
         BodySpiritEnergyBuff,
         SpeedEnhancement,
         Lifedrain,
+        LifedrainNoVariance,
         DamageShield,
         Bladeturn,
         DirectDamage,
