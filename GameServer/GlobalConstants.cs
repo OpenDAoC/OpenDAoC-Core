@@ -120,13 +120,14 @@ namespace DOL.GS
 		public const string Character_Abilities = "Character Abilities"; // dirty tricks, flurry ect...
 		public const string Item_Spells = "Item Spells";	// Combine scroll etc.
 		public const string Champion_Lines_StartWith = "Champion ";
-        public const string Realm_Spells = "Realm Spells"; // Resurrection illness, Speed of the realm
-    }
+		public const string Realm_Spells = "Realm Spells"; // Resurrection illness, Speed of the realm
+		public const string Nightshade = "Nightshade";
+	}
 
 	public static class GlobalConstants
 	{
 		private static readonly Dictionary<eAttackResult, byte> AttackResultByte = new Dictionary<eAttackResult, byte>()
-	    {
+		{
 			{eAttackResult.Missed, 0},
 			{eAttackResult.Parried, 1},
 			{eAttackResult.Blocked, 2},

@@ -2917,12 +2917,13 @@ namespace DOL.GS.Spells
 			{
 				// Further research should be done on these.
 				// The variance range is tied to the base damage calculation.
-				// The variance of Nightshade's nukes currently depends on stealth spec, which may not be accurate for 1.65.
 				case GlobalSpellsLines.Mob_Spells:
 				case GlobalSpellsLines.Combat_Styles_Effect:
+				case GlobalSpellsLines.Nightshade:
 				{
 					// Mob spells are modified by acuity stats.
 					// Style effects use a custom damage calculation currently expecting the upper bound to be 1.0.
+					// Nightshade spells aren't tied to any trainable specialization and thus require a fixed variance.
 					// Lower bound is similar to what the variance calculation would return if we used 35 for the specialization and 50 for the target level.
 					max = 1.0;
 					min = 0.68;
