@@ -7,7 +7,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Pve Resurrection Illness
 	/// </summary>
-	[SpellHandler("PveResurrectionIllness")]
+	[SpellHandler(eSpellType.PveResurrectionIllness)]
 	public class PveResurrectionIllness : AbstractIllnessSpellHandler
 	{
 		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)

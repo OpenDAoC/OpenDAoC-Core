@@ -25,7 +25,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Handler to make the frontal pulsing cone show the effect animation on every pulse
 	/// </summary>
-	[SpellHandlerAttribute("FrontalPulseConeDD")]
+	[SpellHandler(eSpellType.FrontalPulseConeDD)]
 	public class FrontalAOEConeHandler : DirectDamageSpellHandler
 	{
 		public FrontalAOEConeHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

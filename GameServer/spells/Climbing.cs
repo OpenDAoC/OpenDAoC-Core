@@ -25,7 +25,7 @@ using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("Climbing")]
+	[SpellHandler(eSpellType.Climbing)]
 	public class ClimbingHandler : SpellHandler
 	{
 		private GamePlayer gp;

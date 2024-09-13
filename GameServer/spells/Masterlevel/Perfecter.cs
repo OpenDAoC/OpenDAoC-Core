@@ -15,7 +15,7 @@ namespace DOL.GS.Spells
 
     //shared timer 1
     #region Perfecter-3
-    [SpellHandlerAttribute("FOH")]
+    [SpellHandler(eSpellType.FOH)]
     public class FOHSpellHandler : FontSpellHandler
     {
         // constructor
@@ -71,7 +71,7 @@ namespace DOL.GS.Spells
 
     //shared timer 1
     #region Perfecter-5
-    [SpellHandlerAttribute("FOP")]
+    [SpellHandler(eSpellType.FOP)]
     public class FOPSpellHandler : FontSpellHandler
     {
         // constructor
@@ -125,7 +125,7 @@ namespace DOL.GS.Spells
 
     //shared timer 1
     #region Perfecter-6
-    [SpellHandlerAttribute("FOR")]
+    [SpellHandler(eSpellType.FOR)]
     public class FORSpellHandler : FontSpellHandler
     {
         // constructor
@@ -179,7 +179,7 @@ namespace DOL.GS.Spells
 
     //no shared timer
     #region Perfecter-8
-    [SpellHandlerAttribute("SickHeal")]
+    [SpellHandler(eSpellType.SickHeal)]
     public class SickHealSpellHandler : RemoveSpellEffectHandler
     {
         // constructor
@@ -195,7 +195,7 @@ namespace DOL.GS.Spells
 
     //shared timer 1
     #region Perfecter-9
-    [SpellHandlerAttribute("FOD")]
+    [SpellHandler(eSpellType.FOD)]
     public class FODSpellHandler : FontSpellHandler
     {
         // constructor
@@ -247,7 +247,7 @@ namespace DOL.GS.Spells
     //ML10 Rampant Healing - already handled in another area
 
     #region PoT
-    [SpellHandlerAttribute("PowerOverTime")]
+    [SpellHandler(eSpellType.PowerOverTime)]
     public class PoTSpellHandler : SpellHandler
     {
         /// <summary>
@@ -328,7 +328,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region CCResist
-    [SpellHandler("CCResist")]
+    [SpellHandler(eSpellType.CCResist)]
     public class CCResistSpellHandler : MasterlevelHandling
     {
         public override void OnEffectStart(GameSpellEffect effect)

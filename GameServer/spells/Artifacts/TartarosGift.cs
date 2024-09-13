@@ -2,7 +2,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandlerAttribute("Tartaros")]
+    [SpellHandler(eSpellType.Tartaros)]
     public class Tartaros : LifedrainSpellHandler
     {
 		public override double CalculateSpellResistChance(GameLiving target)

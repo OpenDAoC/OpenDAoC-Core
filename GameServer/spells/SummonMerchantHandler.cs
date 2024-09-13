@@ -5,7 +5,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandler("SummonMerchant")]
+    [SpellHandler(eSpellType.SummonMerchant)]
     public class SummonMerchantSpellHandler : SpellHandler
     {
         protected GameMerchant Npc;

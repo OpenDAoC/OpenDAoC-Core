@@ -83,7 +83,7 @@ namespace DOL.GS.Spells
 		public HereticImmunityEffectSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) {}
 	}
 
-	[SpellHandler("HereticSpeedDecrease")]
+	[SpellHandler(eSpellType.HereticSpeedDecrease)]
 	public class HereticSpeedDecreaseSpellHandler : HereticImmunityEffectSpellHandler
 	{
 		private readonly object TIMER_PROPERTY;

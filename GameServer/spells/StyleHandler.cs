@@ -26,7 +26,7 @@ using DOL.GS.Styles;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("StyleHandler")]
+	[SpellHandler(eSpellType.StyleHandler)]
 	public class StyleHandler : SpellHandler
 	{
 		public StyleHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

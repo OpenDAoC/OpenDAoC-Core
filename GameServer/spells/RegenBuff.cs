@@ -28,7 +28,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Health regeneration rate buff
 	/// </summary>
-	[SpellHandler("HealthRegenBuff")]
+	[SpellHandler(eSpellType.HealthRegenBuff)]
 	public class HealthRegenSpellHandler : PropertyChangingSpell
 	{
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
@@ -40,7 +40,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Power regeneration rate buff
 	/// </summary>
-	[SpellHandler("PowerRegenBuff")]
+	[SpellHandler(eSpellType.PowerRegenBuff)]
 	public class PowerRegenSpellHandler : PropertyChangingSpell
 	{
 		public override void ApplyEffectOnTarget(GameLiving target)
@@ -60,7 +60,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Endurance regeneration rate buff
 	/// </summary>
-	[SpellHandler("EnduranceRegenBuff")]
+	[SpellHandler(eSpellType.EnduranceRegenBuff)]
 	public class EnduranceRegenSpellHandler : PropertyChangingSpell
 	{
 		public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }

@@ -3,7 +3,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Style combat speed debuff effect spell handler
 	/// </summary>
-	[SpellHandler("StylePowerDrain")]
+	[SpellHandler(eSpellType.StylePowerDrain)]
 	public class StylePowerDrain : DamageToPowerSpellHandler
 	{
 		public override double CalculateSpellResistChance(GameLiving target)

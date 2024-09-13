@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	///
 	/// </summary>
-	[SpellHandlerAttribute("EnduranceHeal")]
+	[SpellHandler(eSpellType.EnduranceHeal)]
 	public class EnduranceHealSpellHandler : SpellHandler
 	{
 		// constructor

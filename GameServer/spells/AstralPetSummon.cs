@@ -2,7 +2,7 @@
 
 namespace DOL.GS.Spells
 {
-    [SpellHandler("AstralPetSummon")]
+    [SpellHandler(eSpellType.AstralPetSummon)]
     public class AstralPetSummon : SummonSpellHandler
     {
         public AstralPetSummon(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

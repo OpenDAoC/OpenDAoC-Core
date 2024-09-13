@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Dex/Qui/Str/Con stat specline debuff and transfers them to the caster.
     /// </summary>
-    [SpellHandlerAttribute("DexStrConQuiTap")]
+    [SpellHandler(eSpellType.DexStrConQuiTap)]
     public class DexStrConQuiTap : SpellHandler
     {
         private IList<eProperty> m_stats;
@@ -54,7 +54,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// A proc to lower target's ArmorFactor and ArmorAbsorption.
     /// </summary>
-    [SpellHandlerAttribute("ArmorReducingEffectiveness")]
+    [SpellHandler(eSpellType.ArmorReducingEffectiveness)]
     public class ArmorReducingEffectiveness : DualStatDebuff
     {
         public override eProperty Property1 { get { return eProperty.ArmorFactor; } }
@@ -65,7 +65,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Summons a Elemental that only follows the caster.
     /// </summary>
-    [SpellHandler("SummonHealingElemental")]
+    [SpellHandler(eSpellType.SummonHealingElemental)]
     public class SummonHealingElemental : MasterlevelHandling
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -136,7 +136,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Summons a Elemental that follows the target and attacks the target.
     /// </summary>
-    [SpellHandler("SummonElemental")]
+    [SpellHandler(eSpellType.SummonElemental)]
     public class SummonElemental : SummonSpellHandler
     {
         private ISpellHandler _trap;

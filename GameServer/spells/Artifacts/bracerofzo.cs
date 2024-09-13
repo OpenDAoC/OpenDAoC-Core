@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Zo' Arkat summoning
     /// </summary>
-    [SpellHandlerAttribute("ZoSummon")]
+    [SpellHandler(eSpellType.ZoSummon)]
     public class BracerOfZo : SpellHandler
     {
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -71,7 +71,7 @@ namespace DOL.GS.Spells
         public BracerOfZo(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 
-    [SpellHandlerAttribute("Bedazzlement")]
+    [SpellHandler(eSpellType.Bedazzlement)]
     public class ZoDebuffSpellHandler : DualStatDebuff
     {
 		public override eProperty Property1 { get { return eProperty.FumbleChance; } }

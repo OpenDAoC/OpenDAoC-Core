@@ -41,7 +41,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Str/Con stat specline buff
 	/// </summary>
-	[SpellHandlerAttribute("StrengthConstitutionBuff")]
+	[SpellHandler(eSpellType.StrengthConstitutionBuff)]
 	public class StrengthConBuff : DualStatBuff
 	{
         public override void ApplyEffectOnTarget(GameLiving target)
@@ -64,7 +64,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Dex/Qui stat specline buff
 	/// </summary>
-	[SpellHandlerAttribute("DexterityQuicknessBuff")]
+	[SpellHandler(eSpellType.DexterityQuicknessBuff)]
 	public class DexterityQuiBuff : DualStatBuff
 	{
         public override void ApplyEffectOnTarget(GameLiving target)

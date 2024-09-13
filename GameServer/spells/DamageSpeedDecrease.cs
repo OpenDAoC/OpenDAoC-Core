@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Damages target and decreases speed after
 	/// </summary>
-	[SpellHandlerAttribute("DamageSpeedDecrease")]
+	[SpellHandler(eSpellType.DamageSpeedDecrease)]
 	public class DamageSpeedDecreaseSpellHandler : SpeedDecreaseSpellHandler
 	{
 		public override void ApplyEffectOnTarget(GameLiving target)

@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Style taunt effect spell handler
     /// </summary>
-    [SpellHandler("StyleTaunt")]
+    [SpellHandler(eSpellType.StyleTaunt)]
     public class StyleTaunt : SpellHandler
     {
         public override double CalculateSpellResistChance(GameLiving target)

@@ -2,7 +2,7 @@
 
 namespace DOL.GS.Spells
 {
-    [SpellHandlerAttribute("ShatterIllusions")]
+    [SpellHandler(eSpellType.ShatterIllusions)]
 	public class ShatterIllusions : SpellHandler
 	{
         //Shatter Illusions 

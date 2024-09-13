@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
     ///
     /// Caster.GetModifiedSpecLevel * 1.1 is used for hard NPC level cap
     /// </summary>
-    [SpellHandlerAttribute("Charm")]
+    [SpellHandler(eSpellType.Charm)]
     public class CharmSpellHandler : SpellHandler
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

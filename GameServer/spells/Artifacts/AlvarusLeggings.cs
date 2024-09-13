@@ -28,7 +28,7 @@ namespace DOL.GS.Spells
     /// Alvarus spell handler
     /// Water breathing is a subspell
     /// </summary>
-    [SpellHandlerAttribute("AlvarusMorph")]
+    [SpellHandler(eSpellType.AlvarusMorph)]
     public class AlvarusMorph : Morph
     {
         GameSpellEffect m_effect = null;

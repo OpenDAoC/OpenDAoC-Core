@@ -27,7 +27,7 @@ namespace DOL.spells
     /// <summary>
     /// Return life to Player Owner
     /// </summary>
-    [SpellHandler("PetLifedrain")]
+    [SpellHandler(eSpellType.PetLifedrain)]
     public class PetLifedrainSpellHandler : LifedrainSpellHandler
     {
         public PetLifedrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

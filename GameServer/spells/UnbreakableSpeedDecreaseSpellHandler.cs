@@ -7,7 +7,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Spell handler for unbreakable speed decreasing spells
 	/// </summary>
-	[SpellHandler("UnbreakableSpeedDecrease")]
+	[SpellHandler(eSpellType.UnbreakableSpeedDecrease)]
 	public class UnbreakableSpeedDecreaseSpellHandler : ImmunityEffectSpellHandler
 	{
 		private const string EFFECT_PROPERTY = "UnbreakableSpeedDecreaseProperty";

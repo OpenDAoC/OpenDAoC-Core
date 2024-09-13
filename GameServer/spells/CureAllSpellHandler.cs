@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	///
 	/// </summary>
-	[SpellHandlerAttribute("CureAll")]
+	[SpellHandler(eSpellType.CureAll)]
 	public class CureAllSpellHandler : RemoveSpellEffectHandler
 	{
 		// constructor

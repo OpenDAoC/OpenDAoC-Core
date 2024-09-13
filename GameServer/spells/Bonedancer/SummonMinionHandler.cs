@@ -25,7 +25,7 @@ namespace DOL.GS.Spells
     /// 4 = Buffer
     /// 5 = Range
     /// </summary>
-    [SpellHandler("SummonMinion")]
+    [SpellHandler(eSpellType.SummonMinion)]
     public class SummonMinionHandler : SummonSpellHandler
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

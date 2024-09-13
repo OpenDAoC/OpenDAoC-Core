@@ -242,7 +242,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// This class contains data for OffensiveProc spells
 	/// </summary>
-	[SpellHandler("OffensiveProc")]
+	[SpellHandler(eSpellType.OffensiveProc)]
 	public class OffensiveProcSpellHandler : BaseProcSpellHandler
 	{
 		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -322,7 +322,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// This class contains data for DefensiveProc spells
 	/// </summary>
-	[SpellHandler("DefensiveProc")]
+	[SpellHandler(eSpellType.DefensiveProc)]
 	public class DefensiveProcSpellHandler : BaseProcSpellHandler
 	{
 		/// <summary>
@@ -394,7 +394,7 @@ namespace DOL.GS.Spells
 		public DefensiveProcSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 	
-	[SpellHandler( "OffensiveProcPvE" )]
+	[SpellHandler(eSpellType.OffensiveProcPvE)]
 	public class OffensiveProcPvESpellHandler : OffensiveProcSpellHandler
 	{
 		/// <summary>

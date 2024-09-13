@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Simulates disarming a target by stopping their attack
 	/// </summary>
-	[SpellHandler("Disarm")]
+	[SpellHandler(eSpellType.Disarm)]
 	public class DisarmSpellHandler : SpellHandler
 	{
 		/// <summary>

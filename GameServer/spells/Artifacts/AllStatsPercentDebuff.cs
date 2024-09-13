@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// All stats debuff spell handler
     /// </summary>
-    [SpellHandlerAttribute("AllStatsPercentDebuff")]
+    [SpellHandler(eSpellType.AllStatsPercentDebuff)]
 	public class AllStatsPercentDebuff : SpellHandler
 	{
         protected int StrDebuff = 0;

@@ -23,7 +23,7 @@ namespace DOL.GS.Spells
     /// They have less chance of landing melee attacks, and spells have a greater chance of affecting them.
     /// Note: Spell to hit code is located in CalculateToHitChance method in SpellHandler.cs
     /// </summary>
-    [SpellHandler("HarpyFeatherCloak")]
+    [SpellHandler(eSpellType.HarpyFeatherCloak)]
     public class HarpyFeatherCloak : SingleStatDebuff
     {
         public HarpyFeatherCloak(GameLiving caster, Spell spell, SpellLine line)

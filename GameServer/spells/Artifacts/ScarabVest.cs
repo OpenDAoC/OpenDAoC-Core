@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
     /// Scarab proc spell handler
     /// Snare and morph target. Cecity is a subspell.
     /// </summary>
-    [SpellHandlerAttribute("ScarabProc")]
+    [SpellHandler(eSpellType.ScarabProc)]
     public class ScarabProc : UnbreakableSpeedDecreaseSpellHandler
     {
  		public override double CalculateSpellResistChance(GameLiving target)

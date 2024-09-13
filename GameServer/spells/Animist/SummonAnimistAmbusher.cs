@@ -3,7 +3,7 @@ using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandler("SummonAnimistAmbusher")]
+	[SpellHandler(eSpellType.SummonAnimistAmbusher)]
 	public class SummonAnimistAmbusher : SummonSpellHandler
 	{
 		public SummonAnimistAmbusher(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

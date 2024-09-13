@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Base Handler for the focus shell
 	/// </summary>
-	[SpellHandlerAttribute("FocusShell")]
+	[SpellHandler(eSpellType.FocusShell)]
 	public class FocusShellHandler : SpellHandler
 	{
 		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)

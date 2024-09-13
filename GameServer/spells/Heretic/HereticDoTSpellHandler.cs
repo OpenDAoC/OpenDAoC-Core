@@ -3,7 +3,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("HereticDamageOverTime")]
+	[SpellHandler(eSpellType.HereticDamageOverTime)]
 	public class HereticDoTSpellHandler : HereticPiercingMagic
 	{
 

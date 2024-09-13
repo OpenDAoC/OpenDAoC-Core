@@ -6,7 +6,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandler("ValkyrieOffensiveProc")]
+    [SpellHandler(eSpellType.ValkyrieOffensiveProc)]
     public class ValkyrieOffensiveProcSpellHandler : SpellHandler
     {
         /// <summary>

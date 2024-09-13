@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
     /// Here they say hit points but spell description states that
     /// it is strength, what should I use hmm...
     /// </summary>
-    [SpellHandlerAttribute("Disease")]
+    [SpellHandler(eSpellType.Disease)]
 	public class DiseaseSpellHandler : SpellHandler
 	{
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)

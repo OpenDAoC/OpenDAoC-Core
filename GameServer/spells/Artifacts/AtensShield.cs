@@ -4,7 +4,7 @@ using DOL.Events;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandler("AtensShield")]
+	[SpellHandler(eSpellType.AtensShield)]
 	public class AtensShield : SummonItemSpellHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

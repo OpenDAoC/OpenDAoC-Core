@@ -27,7 +27,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Summon a theurgist pet.
 	/// </summary>
-	[SpellHandler("SummonTheurgistPet")]
+	[SpellHandler(eSpellType.SummonTheurgistPet)]
 	public class SummonTheurgistPet : SummonSpellHandler
 	{
 		private enum PetType

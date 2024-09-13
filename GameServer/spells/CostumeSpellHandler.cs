@@ -25,7 +25,7 @@ namespace DOL.GS.Spells
 {
 	/// Costume spell handler: Shape change on self
 	/// <author>Luhz</author>
-	[SpellHandler("Costume")]
+	[SpellHandler(eSpellType.Costume)]
 	class CostumeSpellHandler : SpellHandler
 	{
 		public override bool CheckBeginCast(GameLiving selectedTarget, bool quiet)

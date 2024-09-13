@@ -21,7 +21,7 @@ using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("VampiirStealthDetection")]
+	[SpellHandler(eSpellType.VampiirStealthDetection)]
 	public class VampiirStealthDetection : SpellHandler
 	{
 		public VampiirStealthDetection(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}

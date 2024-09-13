@@ -29,7 +29,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// 
 	/// </summary>
-	[SpellHandlerAttribute("CureDisease")]
+	[SpellHandler(eSpellType.CureDisease)]
 	public class CureDiseaseSpellHandler : RemoveSpellEffectHandler
 	{
 		// constructor

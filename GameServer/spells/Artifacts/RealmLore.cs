@@ -5,7 +5,7 @@ using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("RealmLore")]
+	[SpellHandler(eSpellType.RealmLore)]
 	public class RealmLore : SpellHandler
 	{
 		public override bool CheckBeginCast(GameLiving selectedTarget)

@@ -6,7 +6,7 @@ namespace DOL.GS.Spells.Atlantis
 	/// <summary>
 	/// All stats debuff spell handler
 	/// </summary>
-	[SpellHandlerAttribute("AllStatsDebuff")]
+	[SpellHandler(eSpellType.AllStatsDebuff)]
 	public class AllStatsDebuff : SpellHandler
 	{
 		public override double CalculateSpellResistChance(GameLiving target)

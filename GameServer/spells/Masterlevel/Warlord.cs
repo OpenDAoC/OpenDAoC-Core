@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 
     //shared timer 1 for 2 - shared timer 4 for 8
     #region Warlord-2/8
-    [SpellHandlerAttribute("PBAEHeal")]
+    [SpellHandler(eSpellType.PBAEHeal)]
     public class PBAEHealHandler : MasterlevelHandling
     {
         public override void FinishSpellCast(GameLiving target)
@@ -99,7 +99,7 @@ namespace DOL.GS.Spells
 
     //shared timer 2
     #region Warlord-3
-    [SpellHandlerAttribute("CoweringBellow")]
+    [SpellHandler(eSpellType.CoweringBellow)]
     public class CoweringBellowSpellHandler : FearSpellHandler
     {
         public override double CalculateSpellResistChance(GameLiving target)
@@ -126,7 +126,7 @@ namespace DOL.GS.Spells
 
     //shared timer 3
     #region Warlord-5
-    [SpellHandlerAttribute("Critical")]
+    [SpellHandler(eSpellType.Critical)]
     public class CriticalDamageBuff : MasterlevelDualBuffHandling
     {
         public override eProperty Property1 { get { return eProperty.CriticalSpellHitChance; } }
@@ -140,7 +140,7 @@ namespace DOL.GS.Spells
 
     //shared timer 3
     #region Warlord-7
-    [SpellHandlerAttribute("CleansingAura")]
+    [SpellHandler(eSpellType.CleansingAura)]
     public class CleansingAurauraSpellHandler : SpellHandler
     {
         public override bool IsOverwritable(ECSGameSpellEffect compare)
@@ -154,7 +154,7 @@ namespace DOL.GS.Spells
 
     //shared timer 5
     #region Warlord-9
-    [SpellHandlerAttribute("EffectivenessBuff")]
+    [SpellHandler(eSpellType.EffectivenessBuff)]
     public class EffectivenessBuff : MasterlevelHandling
     {
         /// <summary>
@@ -212,7 +212,7 @@ namespace DOL.GS.Spells
 
     //shared timer 5
     #region Warlord-10
-    [SpellHandlerAttribute("MLABSBuff")]
+    [SpellHandler(eSpellType.MLABSBuff)]
     public class MLABSBuff : MasterlevelBuffHandling
     {
         public override eProperty Property1 { get { return eProperty.ArmorAbsorption; } }

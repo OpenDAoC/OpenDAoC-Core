@@ -4,7 +4,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandler("SummonSiegeRam")]
+    [SpellHandler(eSpellType.SummonSiegeRam)]
     public class SummonSiegeRam : SpellHandler
     {
 	    public SummonSiegeRam(GameLiving caster, Spell spell, SpellLine line)

@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Increases the target's movement speed.
 	/// </summary>
-	[SpellHandlerAttribute("SpeedOfTheRealm")]
+	[SpellHandler(eSpellType.SpeedOfTheRealm)]
 	public class SpeedOfTheRealmHandler : SpeedEnhancementSpellHandler
 	{
 		private const ushort SECONDEFFECT = 2086;

@@ -2,8 +2,7 @@ using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
-
-    [SpellHandlerAttribute("DirectDamageNoVariance")]
+    [SpellHandler(eSpellType.DirectDamageNoVariance)]
     public class DirectDamageNoVarianceSpellHandler : DirectDamageSpellHandler
     {
         public DirectDamageNoVarianceSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -20,7 +19,7 @@ namespace DOL.GS.Spells
         }
     }
 
-    [SpellHandlerAttribute("DirectDamageWithDebuffNoVariance")]
+    [SpellHandler(eSpellType.DirectDamageWithDebuffNoVariance)]
     public class DirectDamageDebuffNoVariance : DirectDamageDebuffSpellHandler
     {
         public DirectDamageDebuffNoVariance(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -37,7 +36,7 @@ namespace DOL.GS.Spells
         }
     }
 
-    [SpellHandlerAttribute("DamageOverTimeNoVariance")]
+    [SpellHandler(eSpellType.DamageOverTimeNoVariance)]
     public class DoTSpellHandlerNoVariance : DoTSpellHandler
     {
         public DoTSpellHandlerNoVariance(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -54,7 +53,7 @@ namespace DOL.GS.Spells
         }
     }
 
-    [SpellHandlerAttribute("DamageSpeedDecreaseNoVariance")]
+    [SpellHandler(eSpellType.DamageSpeedDecreaseNoVariance)]
     public class DamageSpeedDecreaseNoVarianceSpellHandler : DamageSpeedDecreaseSpellHandler
     {
         public DamageSpeedDecreaseNoVarianceSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -71,7 +70,7 @@ namespace DOL.GS.Spells
         }
     }
 
-    [SpellHandlerAttribute("LifedrainNoVariance")]
+    [SpellHandler(eSpellType.LifedrainNoVariance)]
     public class LifedrainNoVarianceSpellHandler : LifedrainSpellHandler
     {
         public LifedrainNoVarianceSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -88,7 +87,7 @@ namespace DOL.GS.Spells
         }
     }
 
-    [SpellHandlerAttribute("UnresistableStun")]
+    [SpellHandler(eSpellType.UnresistableStun)]
     public class UnresistableStunSpellHandler : StunSpellHandler
     {
         public UnresistableStunSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

@@ -25,7 +25,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// 
     /// </summary>
-    [SpellHandlerAttribute("DamageToPower")]
+    [SpellHandler(eSpellType.DamageToPower)]
     public class DamageToPowerSpellHandler : LifedrainSpellHandler
     {
         /// <summary>

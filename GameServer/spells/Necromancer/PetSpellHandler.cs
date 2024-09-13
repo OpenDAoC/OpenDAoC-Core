@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
     /// Handler for spells that are issued by the player, but cast
     /// by his pet.
     /// </summary>
-    [SpellHandler("PetSpell")]
+    [SpellHandler(eSpellType.PetSpell)]
     class PetSpellHandler : SpellHandler
     {
         /// <summary>

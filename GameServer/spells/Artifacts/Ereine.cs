@@ -7,7 +7,7 @@
 //
 // namespace DOL.GS.Spells
 // {
-//     [SpellHandlerAttribute("Ereine")]
+//     [SpellHandler(eSpellType.Ereine)]
 //     public class Ereine : AllStatsBuff
 //     {
 //         public override void OnEffectStart(GameSpellEffect effect)
@@ -54,14 +54,14 @@
 //         }
 //         public Ereine(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 //     }
-// 	[SpellHandlerAttribute("Ereine2")]
+// 	[SpellHandler(eSpellType.Ereine2)]
 //     public class Ereine2 : AllStatsDebuff
 //     {
 // 		public override bool HasPositiveEffect { get { return false; } }
 //         public override bool IsUnPurgeAble { get { return true; } }
 // 		public Ereine2(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 // 	}
-// 	[SpellHandlerAttribute("EreineProc")]
+// 	[SpellHandler(eSpellType.EreineProc)]
 //     public class EreineProc : SpellHandler
 //     {
 // 		public override void OnEffectStart(GameSpellEffect effect)

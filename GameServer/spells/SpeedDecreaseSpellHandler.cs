@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Spell handler for speed decreasing spells
 	/// </summary>
-	[SpellHandler("SpeedDecrease")]
+	[SpellHandler(eSpellType.SpeedDecrease)]
 	public class SpeedDecreaseSpellHandler : UnbreakableSpeedDecreaseSpellHandler
 	{
 		private bool crit = false;

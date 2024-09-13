@@ -5,7 +5,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// All Stats buff
 	/// </summary>
-	[SpellHandlerAttribute("AllStatsBarrel")]
+	[SpellHandler(eSpellType.AllStatsBarrel)]
 	public class AllStatsBarrel : SingleStatBuff
 	{
 		public static List<int> BuffList = new List<int> {8090,8091,8094,8092,8095,8093/*,8071*/};

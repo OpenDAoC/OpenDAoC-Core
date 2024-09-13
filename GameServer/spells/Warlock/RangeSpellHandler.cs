@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// 
 	/// </summary>
-	[SpellHandlerAttribute("Range")]
+	[SpellHandler(eSpellType.Range)]
 	public class RangeSpellHandler : PrimerSpellHandler
 	{
 		public override bool CheckBeginCast(GameLiving selectedTarget)

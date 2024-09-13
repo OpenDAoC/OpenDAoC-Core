@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Heal Over Time spell handler
 	/// </summary>
-	[SpellHandlerAttribute("HealOverTime")]
+	[SpellHandler(eSpellType.HealOverTime)]
 	public class HoTSpellHandler : SpellHandler
 	{
 		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)

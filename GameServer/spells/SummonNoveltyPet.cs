@@ -25,7 +25,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// This pet is purely aesthetic and can't be cast in RvR zones
     /// </summary>
-    [SpellHandler("SummonNoveltyPet")]
+    [SpellHandler(eSpellType.SummonNoveltyPet)]
     public class SummonNoveltyPet : SummonSpellHandler
     {
         /// <summary>

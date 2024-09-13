@@ -4,7 +4,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("SpreadHeal")]
+	[SpellHandler(eSpellType.SpreadHeal)]
 	public class SpreadhealSpellHandler : HealSpellHandler
 	{
 		// constructor

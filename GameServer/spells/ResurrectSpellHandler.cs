@@ -8,7 +8,7 @@ using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("Resurrect")]
+	[SpellHandler(eSpellType.Resurrect)]
 	public class ResurrectSpellHandler : SpellHandler
 	{
 		private const string RESURRECT_CASTER_PROPERTY = "RESURRECT_CASTER";

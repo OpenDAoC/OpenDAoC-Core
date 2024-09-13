@@ -29,7 +29,7 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandler("SummonSpiritFighter")]
+	[SpellHandler(eSpellType.SummonSpiritFighter)]
 	public class SummonSpiritFighter : SummonSpellHandler
 	{
 		public SummonSpiritFighter(GameLiving caster, Spell spell, SpellLine line)

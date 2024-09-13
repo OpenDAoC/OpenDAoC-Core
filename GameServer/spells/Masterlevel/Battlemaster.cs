@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
 {
     //http://www.camelotherald.com/masterlevels/ma.php?ml=Battlemaster
     #region Battlemaster-1
-    [SpellHandlerAttribute("MLEndudrain")]
+    [SpellHandler(eSpellType.MLEndudrain)]
     public class MLEndudrain : MasterlevelHandling
     {
         public MLEndudrain(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -42,7 +42,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Battlemaster-2
-    [SpellHandlerAttribute("KeepDamageBuff")]
+    [SpellHandler(eSpellType.KeepDamageBuff)]
     public class KeepDamageBuff : MasterlevelBuffHandling
     {
         public override eProperty Property1 { get { return eProperty.KeepDamage; } }
@@ -52,7 +52,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Battlemaster-3
-    [SpellHandlerAttribute("MLManadrain")]
+    [SpellHandler(eSpellType.MLManadrain)]
     public class MLManadrain : MasterlevelHandling
     {
         public MLManadrain(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -78,7 +78,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Battlemaster-4
-    [SpellHandlerAttribute("Grapple")]
+    [SpellHandler(eSpellType.Grapple)]
     public class Grapple : MasterlevelHandling
     {
         private int check = 0;
@@ -171,7 +171,7 @@ namespace DOL.GS.Spells
 
     //ml5 in database Target shood be Group if PvP..Realm if RvR..Value = spell proc'd (a.k the 80value dd proc)
     #region Battlemaster-5
-    [SpellHandler("EssenceFlamesProc")]
+    [SpellHandler(eSpellType.EssenceFlamesProc)]
     public class EssenceFlamesProcSpellHandler : OffensiveProcSpellHandler
     {
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -267,7 +267,7 @@ namespace DOL.GS.Spells
 
 	#region Battlemaster-6
 	// LifeFlight
-    [SpellHandler("ThrowWeapon")]
+    [SpellHandler(eSpellType.ThrowWeapon)]
     public class ThrowWeaponSpellHandler : DirectDamageSpellHandler
  	{
         #region Disarm Weapon
@@ -662,7 +662,7 @@ namespace DOL.GS.Spells
 
     //essence debuff
     #region Battlemaster-7
-    [SpellHandlerAttribute("EssenceSearHandler")]
+    [SpellHandler(eSpellType.EssenceSearHandler)]
     public class EssenceSearHandler : SpellHandler
     {
         public override double CalculateSpellResistChance(GameLiving target) { return 0; }
@@ -723,7 +723,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Battlemaster-8
-    [SpellHandlerAttribute("BodyguardHandler")]
+    [SpellHandler(eSpellType.BodyguardHandler)]
     public class BodyguardHandler : SpellHandler
     {
         public override bool CheckBeginCast(GameLiving selectedTarget)
@@ -751,7 +751,7 @@ namespace DOL.GS.Spells
 
     //for ML9 in the database u have to add  EssenceDampenHandler  in type (its a new method customly made) 
     #region Battlemaster-9
-    [SpellHandlerAttribute("EssenceDampenHandler")]
+    [SpellHandler(eSpellType.EssenceDampenHandler)]
     public class EssenceDampenHandler : SpellHandler
     {
         protected int DexDebuff = 0;

@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Damage Over Time spell handler
 	/// </summary>
-	[SpellHandlerAttribute("DamageOverTime")]
+	[SpellHandler(eSpellType.DamageOverTime)]
 	public class DoTSpellHandler : SpellHandler
 	{
 		public int CriticalDamage { get; protected set; } = 0;

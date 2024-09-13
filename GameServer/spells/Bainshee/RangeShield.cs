@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Summary description for RangeShield.
 	/// </summary>
-	[SpellHandlerAttribute("RangeShield")]
+	[SpellHandler(eSpellType.RangeShield)]
 	public class RangeShield : BladeturnSpellHandler 
 	{
         public override void OnEffectStart(GameSpellEffect effect)

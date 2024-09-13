@@ -3,7 +3,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("EnduranceDrain")]
+	[SpellHandler(eSpellType.EnduranceDrain)]
 	public class EnduranceDrainSpellHandler : SpellHandler
 	{
 		public EnduranceDrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}

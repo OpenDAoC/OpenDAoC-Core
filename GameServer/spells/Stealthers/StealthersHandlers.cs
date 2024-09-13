@@ -20,19 +20,19 @@ using System;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("BloodRage")]
+	[SpellHandler(eSpellType.BloodRage)]
 	public class BloodRage : SpellHandler
 	{
 		public BloodRage(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 
-	[SpellHandlerAttribute("HeightenedAwareness")]
+	[SpellHandler(eSpellType.HeightenedAwareness)]
 	public class HeightenedAwareness : SpellHandler
 	{
 		public HeightenedAwareness(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 
-	[SpellHandlerAttribute("SubtleKills")]
+	[SpellHandler(eSpellType.SubtleKills)]
 	public class SubtleKills : SpellHandler
 	{
 		public SubtleKills(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

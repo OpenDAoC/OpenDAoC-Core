@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Effect that stays on target and does additional damage after each melee attack.
     /// </summary>
-    [SpellHandler("DamageAdd")]
+    [SpellHandler(eSpellType.DamageAdd)]
     public class DamageAddSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : AbstractDamageAddSpellHandler(caster, spell, spellLine)
     {
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
@@ -68,7 +68,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Effect that stays on target and does addition damage on every attack against this target.
     /// </summary>
-    [SpellHandler("DamageShield")]
+    [SpellHandler(eSpellType.DamageShield)]
     public class DamageShieldSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : AbstractDamageAddSpellHandler(caster, spell, spellLine)
     {
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)

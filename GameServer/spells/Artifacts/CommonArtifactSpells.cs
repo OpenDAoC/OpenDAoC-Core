@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// All stats debuff spell handler
     /// </summary>
-    [SpellHandlerAttribute("AllStatsDebuff")]
+    [SpellHandler(eSpellType.AllStatsDebuff)]
     public class AllStatsDebuff : SpellHandler
     {
 		public override double CalculateSpellResistChance(GameLiving target)
@@ -89,7 +89,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Lore debuff spell handler (Magic resist debuff)
     /// </summary>
-    [SpellHandlerAttribute("LoreDebuff")]
+    [SpellHandler(eSpellType.LoreDebuff)]
     public class LoreDebuff : SpellHandler
     {
  		public override double CalculateSpellResistChance(GameLiving target)
@@ -159,7 +159,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Strength/Constitution drain spell handler
     /// </summary>
-    [SpellHandlerAttribute("StrengthConstitutionDrain")]
+    [SpellHandler(eSpellType.StrengthConstitutionDrain)]
     public class StrengthConstitutionDrain : StrengthConDebuff
     {
 		public override double CalculateSpellResistChance(GameLiving target)
@@ -203,7 +203,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// ABS Damage shield spell handler
     /// </summary>
-    [SpellHandlerAttribute("ABSDamageShield")]
+    [SpellHandler(eSpellType.ABSDamageShield)]
     public class ABSDamageShield : AblativeArmorSpellHandler
     {
         public override void OnDamageAbsorbed(AttackData ad, int DamageAmount)
@@ -225,7 +225,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Morph spell handler
     /// </summary>
-    [SpellHandlerAttribute("Morph")]
+    [SpellHandler(eSpellType.Morph)]
     public class Morph : SpellHandler
     {
         public override void OnEffectStart(GameSpellEffect effect)
@@ -256,7 +256,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Arcane leadership spell handler (range+resist pierce)
     /// </summary>
-    [SpellHandlerAttribute("ArcaneLeadership")]
+    [SpellHandler(eSpellType.ArcaneLeadership)]
     public class ArcaneLeadership : CloudsongAuraSpellHandler
     {
     	public ArcaneLeadership(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

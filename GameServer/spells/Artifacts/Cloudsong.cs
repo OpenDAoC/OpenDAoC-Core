@@ -18,7 +18,7 @@
  */
 namespace DOL.GS.Spells
 {
-    [SpellHandler("CloudsongAura")]
+    [SpellHandler(eSpellType.CloudsongAura)]
     public class CloudsongAuraSpellHandler : DualStatBuff
     {
         public CloudsongAuraSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)
@@ -51,7 +51,7 @@ namespace DOL.GS.Spells
     /// [Freya] Nidel : Handler for Fall damage reduction.
     /// Calcul located in PlayerPositionUpdateHandler.cs
     /// </summary>
-    [SpellHandler("CloudsongFall")]
+    [SpellHandler(eSpellType.CloudsongFall)]
     public class CloudsongFallSpellHandler : SpellHandler
     {
         public CloudsongFallSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)

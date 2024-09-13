@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// All Stats buff
 	/// </summary>
-	[SpellHandlerAttribute("AllRegenBuff")]
+	[SpellHandler(eSpellType.AllRegenBuff)]
 	public class AllRegenBuff : PropertyChangingSpell
 	{
 		public static List<int> RegenList = new List<int> {8084,8080,8076};
@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// All Stats buff
 	/// </summary>
-	[SpellHandlerAttribute("BeadRegen")]
+	[SpellHandler(eSpellType.BeadRegen)]
 	public class BeadRegen : PropertyChangingSpell 
 	{
 		public static List<int> BeadRegenList = new List<int> {31057,31056,31055};

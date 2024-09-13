@@ -2,7 +2,7 @@ using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandlerAttribute("Fury")]
+    [SpellHandler(eSpellType.Fury)]
     public class FuryHandler : SpellHandler
     {
         public override void OnEffectStart(GameSpellEffect effect)

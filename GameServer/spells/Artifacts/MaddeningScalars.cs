@@ -26,7 +26,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Maddening Scalars Defensive proc spell handler
     /// </summary>
-    [SpellHandlerAttribute("MaddeningScalars")]
+    [SpellHandler(eSpellType.MaddeningScalars)]
     public class MaddeningScalars : OffensiveProcSpellHandler
     {   	
    		public override void OnEffectStart(GameSpellEffect effect)

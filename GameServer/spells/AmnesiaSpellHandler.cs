@@ -3,7 +3,7 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandlerAttribute("Amnesia")]
+    [SpellHandler(eSpellType.Amnesia)]
     public class AmnesiaSpellHandler : SpellHandler
     {
         public AmnesiaSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

@@ -26,7 +26,7 @@ namespace DOL.GS.Spells.Atlantis
     /// <summary>
     /// Arrogance spell handler
     /// </summary>
-    [SpellHandlerAttribute("Arrogance")]
+    [SpellHandler(eSpellType.Arrogance)]
     public class Arrogance : SpellHandler
     {
     	GamePlayer playertarget = null;

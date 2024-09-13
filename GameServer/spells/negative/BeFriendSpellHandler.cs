@@ -26,7 +26,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("BeFriend")]
+	[SpellHandler(eSpellType.BeFriend)]
 	public class BeFriendSpellHandler : SpellHandler 
 	{
 		/// <summary>

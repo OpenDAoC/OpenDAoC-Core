@@ -5,7 +5,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Style speed decrease effect spell handler
 	/// </summary>
-	[SpellHandler("StyleSpeedDecrease")]
+	[SpellHandler(eSpellType.StyleSpeedDecrease)]
 	public class StyleSpeedDecrease : SpeedDecreaseSpellHandler
 	{
 		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)

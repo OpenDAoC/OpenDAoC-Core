@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Increases the target's movement speed.
 	/// </summary>
-	[SpellHandlerAttribute("SpeedEnhancement")]
+	[SpellHandler(eSpellType.SpeedEnhancement)]
 	public class SpeedEnhancementSpellHandler : SpellHandler
 	{
 		/// <summary>

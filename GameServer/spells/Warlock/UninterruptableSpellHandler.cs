@@ -24,7 +24,7 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandlerAttribute("Uninterruptable")]
+    [SpellHandler(eSpellType.Uninterruptable)]
 	public class UninterruptableSpellHandler : PrimerSpellHandler
 	{
         public static string WARLOCK_UNINTERRUPTABLE_SPELL = "WARLOCK_UNINTERRUPTABLE_SPELL";

@@ -30,7 +30,7 @@ namespace DOL.GS.Spells
     /// </summary>
     
     //the self dream-morph doesnt break on damage/attacked by enemy only grp-target 1 does
-    [SpellHandlerAttribute("DreamMorph")]
+    [SpellHandler(eSpellType.DreamMorph)]
     public class DreamMorph : OffensiveProcSpellHandler
 	{   	
 		public override void OnEffectStart(GameSpellEffect effect)
@@ -84,7 +84,7 @@ namespace DOL.GS.Spells
 
     //http://www.daoc-toa.net/img/dreamPrey.jpg
     //http://www.daoc-toa.net/img/dreamCat.jpg
-    [SpellHandlerAttribute("DreamGroupMorph")]
+    [SpellHandler(eSpellType.DreamGroupMorph)]
     public class DreamGroupMorph : DreamMorph
     {
     	private GameSpellEffect m_effect = null;

@@ -4,7 +4,7 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandlerAttribute("SavageEnduranceHeal")]
+    [SpellHandler(eSpellType.SavageEnduranceHeal)]
     public class SavageEnduranceHeal : EnduranceHealSpellHandler
     {
         public SavageEnduranceHeal(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

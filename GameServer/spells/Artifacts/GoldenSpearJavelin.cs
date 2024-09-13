@@ -7,7 +7,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// NOTE: PLEASE CHECK YOUR SPELL ID FOR JAVELIN OR CREATE YOUR OWN ITEM
     /// </summary>
-    [SpellHandler("GoldenSpearJavelin")]
+    [SpellHandler(eSpellType.GoldenSpearJavelin)]
     public class GoldenSpearJavelin : SummonItemSpellHandler
     {
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

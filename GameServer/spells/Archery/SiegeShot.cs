@@ -3,7 +3,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandler("SiegeArrow")]
+	[SpellHandler(eSpellType.SiegeArrow)]
 	public class SiegeArrow : BoltSpellHandler
 	{
 		/// <summary>

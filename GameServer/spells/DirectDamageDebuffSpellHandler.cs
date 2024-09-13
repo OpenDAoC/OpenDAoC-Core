@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Damages the target and lowers their resistance to the spell's type.
 	/// </summary>
-	[SpellHandler("DirectDamageWithDebuff")]
+	[SpellHandler(eSpellType.DirectDamageWithDebuff)]
 	public class DirectDamageDebuffSpellHandler : AbstractResistDebuff
 	{
 		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)

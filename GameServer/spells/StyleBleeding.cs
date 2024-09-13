@@ -1,6 +1,6 @@
 namespace DOL.GS.Spells
 {
-    [SpellHandler("StyleBleeding")]
+    [SpellHandler(eSpellType.StyleBleeding)]
     public class StyleBleeding : SpellHandler
     {
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

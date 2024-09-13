@@ -33,7 +33,7 @@ namespace DOL.GS.Spells
 	/// Spell handler to summon a bonedancer pet.
 	/// </summary>
 	/// <author>IST</author>
-	[SpellHandler("SummonHunterPet")]
+	[SpellHandler(eSpellType.SummonHunterPet)]
 	public class SummonHunterPet : SummonSpellHandler
 	{
 		public SummonHunterPet(GameLiving caster, Spell spell, SpellLine line)

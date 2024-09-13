@@ -131,7 +131,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Mezz
     /// </summary>
-    [SpellHandlerAttribute("Mesmerize")]
+    [SpellHandler(eSpellType.Mesmerize)]
     public class MesmerizeSpellHandler : AbstractCCSpellHandler
     {
         public const int FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL = 2000;
@@ -221,7 +221,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Stun
     /// </summary>
-    [SpellHandlerAttribute("Stun")]
+    [SpellHandler(eSpellType.Stun)]
     public class StunSpellHandler : AbstractCCSpellHandler
     {
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)

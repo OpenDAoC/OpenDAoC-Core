@@ -21,7 +21,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Palading heal chant works only in combat
 	/// </summary>
-	[SpellHandlerAttribute("CombatHeal")]
+	[SpellHandler(eSpellType.CombatHeal)]
 	public class CombatHealSpellHandler : HealSpellHandler
 	{
 		public CombatHealSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }

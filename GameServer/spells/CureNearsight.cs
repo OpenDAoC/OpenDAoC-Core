@@ -28,7 +28,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// 
 	/// </summary>
-	[SpellHandlerAttribute("CureNearsight")]
+	[SpellHandler(eSpellType.CureNearsight)]
 	public class CureNearsightSpellHandler : RemoveSpellEffectHandler
 	{
 		// constructor

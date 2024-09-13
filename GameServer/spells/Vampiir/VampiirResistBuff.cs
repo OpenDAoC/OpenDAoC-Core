@@ -5,7 +5,7 @@ using DOL.GS.RealmAbilities;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("VampiirMeleeResistance")]
+	[SpellHandler(eSpellType.VampiirMeleeResistance)]
 	public class VampiirMeleeResistance : SpellHandler
 	{
 		public override void FinishSpellCast(GameLiving target)
@@ -85,7 +85,7 @@ namespace DOL.GS.Spells
 		public VampiirMeleeResistance(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
 
-	[SpellHandlerAttribute("VampiirMagicResistance")]
+	[SpellHandler(eSpellType.VampiirMagicResistance)]
 	public class VampiirMagicResistance : SpellHandler
 	{
 		public override void FinishSpellCast(GameLiving target)

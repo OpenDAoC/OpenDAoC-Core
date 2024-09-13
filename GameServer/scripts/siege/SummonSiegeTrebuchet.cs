@@ -4,7 +4,7 @@ using DOL.GS.Keeps;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandler("SummonSiegeTrebuchet")]
+    [SpellHandler(eSpellType.SummonSiegeTrebuchet)]
     public class SummonSiegeTrebuchet : SpellHandler
     {
 	    public SummonSiegeTrebuchet(GameLiving caster, Spell spell, SpellLine line)

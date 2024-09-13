@@ -3,7 +3,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("OmniLifedrain")]
+	[SpellHandler(eSpellType.OmniLifedrain)]
 	public class OmniLifedrainSpellHandler : DirectDamageSpellHandler
 	{
 		/// <summary>

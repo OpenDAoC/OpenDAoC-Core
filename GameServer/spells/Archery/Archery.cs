@@ -7,7 +7,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandler("Archery")]
+	[SpellHandler(eSpellType.Archery)]
 	public class Archery : ArrowSpellHandler
 	{
 		public enum eShotType

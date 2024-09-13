@@ -24,7 +24,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// PetMezz 
     /// </summary>
-    [SpellHandlerAttribute("PetMesmerize")]
+    [SpellHandler(eSpellType.PetMesmerize)]
     public class PetMesmerizeSpellHandler : MesmerizeSpellHandler
     {
         public PetMesmerizeSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }

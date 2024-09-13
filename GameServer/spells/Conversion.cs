@@ -6,7 +6,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("Conversion")]
+	[SpellHandler(eSpellType.Conversion)]
 	public class ConversionSpellHandler : SpellHandler
 	{
 		public const string ConvertDamage = "Conversion";
@@ -122,7 +122,7 @@ namespace DOL.GS.Spells
 		public ConversionSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 	}
 	
-	[SpellHandlerAttribute("MagicConversion")]
+	[SpellHandler(eSpellType.MagicConversion)]
 	public class MagicConversionSpellHandler : ConversionSpellHandler
 	{
 		//public const string ConvertDamage = "Conversion";

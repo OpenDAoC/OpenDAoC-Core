@@ -5,7 +5,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Reduce range needed to cast the sepll
 	/// </summary>
-	[SpellHandler("Silence")]
+	[SpellHandler(eSpellType.Silence)]
 	public class SilenceSpellHandler : SpellHandler
 	{
 		public override void OnEffectStart(GameSpellEffect effect)

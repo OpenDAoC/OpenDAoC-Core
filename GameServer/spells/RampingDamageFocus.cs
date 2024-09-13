@@ -7,7 +7,7 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandler("RampingDamageFocus")]
+	[SpellHandler(eSpellType.RampingDamageFocus)]
 	public class RampingDamageFocus : SpellHandler
 	{
 		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

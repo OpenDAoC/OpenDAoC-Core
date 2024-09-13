@@ -5,7 +5,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Heal Over Time spell handler
     /// </summary>
-    [SpellHandlerAttribute("SnakeCharmer")]
+    [SpellHandler(eSpellType.SnakeCharmer)]
     public class SnakeCharmer : LifedrainSpellHandler
     {
 		public override double CalculateSpellResistChance(GameLiving target)

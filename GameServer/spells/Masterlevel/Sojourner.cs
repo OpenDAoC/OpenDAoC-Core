@@ -18,7 +18,7 @@ namespace DOL.GS.Spells
 
     //no shared timer
     #region Sojourner-4
-    [SpellHandlerAttribute("UnmakeCrystalseed")]
+    [SpellHandler(eSpellType.UnmakeCrystalseed)]
     public class UnmakeCrystalseedSpellHandler : SpellHandler
     {
         /// <summary>
@@ -52,7 +52,7 @@ namespace DOL.GS.Spells
 
     //no shared timer
     #region Sojourner-5
-    [SpellHandlerAttribute("AncientTransmuter")]
+    [SpellHandler(eSpellType.AncientTransmuter)]
     public class AncientTransmuterSpellHandler : SpellHandler
     {
         private GameMerchant merchant;
@@ -107,7 +107,7 @@ namespace DOL.GS.Spells
 
     //no shared timer
     #region Sojourner-6
-    [SpellHandlerAttribute("Port")]
+    [SpellHandler(eSpellType.Port)]
     public class Port : MasterlevelHandling
     {
         // constructor
@@ -139,7 +139,7 @@ namespace DOL.GS.Spells
 
     //no shared timer
     #region Sojourner-7
-    [SpellHandlerAttribute("EssenceResist")]
+    [SpellHandler(eSpellType.EssenceResist)]
     public class EssenceResistHandler : AbstractResistBuff
     {
         public override eBuffBonusCategory BonusCategory1 { get { return eBuffBonusCategory.BaseBuff; } }
@@ -150,7 +150,7 @@ namespace DOL.GS.Spells
 
     //no shared timer
     #region Sojourner-8
-    [SpellHandlerAttribute("Zephyr")]
+    [SpellHandler(eSpellType.Zephyr)]
     public class FZSpellHandler : MasterlevelHandling
     {
         protected ECSGameTimer m_expireTimer;
@@ -313,7 +313,7 @@ namespace DOL.GS.Spells
 
     //no shared timer
     #region Sojourner-9
-    [SpellHandlerAttribute("Phaseshift")]
+    [SpellHandler(eSpellType.Phaseshift)]
     public class PhaseshiftHandler : MasterlevelHandling
     {
         private int endurance;
@@ -382,7 +382,7 @@ namespace DOL.GS.Spells
 
     //no shared timer
     #region Sojourner-10
-    [SpellHandlerAttribute("Groupport")]
+    [SpellHandler(eSpellType.Groupport)]
     public class Groupport : MasterlevelHandling
     {
         public Groupport(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

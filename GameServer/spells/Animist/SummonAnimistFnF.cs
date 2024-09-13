@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Summon a fnf animist pet.
     /// </summary>
-    [SpellHandler("SummonAnimistFnF")]
+    [SpellHandler(eSpellType.SummonAnimistFnF)]
 	public class SummonAnimistFnF : SummonAnimistPet
 	{
 		public SummonAnimistFnF(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

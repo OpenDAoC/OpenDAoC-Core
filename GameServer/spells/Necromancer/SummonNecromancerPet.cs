@@ -29,7 +29,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Spell handler to summon a necromancer pet.
     /// </summary>
-    [SpellHandler("SummonNecroPet")]
+    [SpellHandler(eSpellType.SummonNecroPet)]
     public class SummonNecromancerPet : SummonSpellHandler
     {
         public SummonNecromancerPet(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

@@ -25,7 +25,7 @@ using DOL.AI.Brain;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandlerAttribute("MetalGuard")]
+    [SpellHandler(eSpellType.MetalGuard)]
     public class MetalGuardSpellHandler : ArmorAbsorptionBuff
     {
         public override IList<GameLiving> SelectTargets(GameObject castTarget)

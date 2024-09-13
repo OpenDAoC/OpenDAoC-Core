@@ -27,7 +27,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Spell handler for speed decreasing spells
 	/// </summary>
-	[SpellHandler("WarlockSpeedDecrease")]
+	[SpellHandler(eSpellType.WarlockSpeedDecrease)]
 	public class WarlockSpeedDecreaseSpellHandler : UnbreakableSpeedDecreaseSpellHandler
 	{
 

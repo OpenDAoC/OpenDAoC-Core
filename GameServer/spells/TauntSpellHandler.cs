@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Summary description for TauntSpellHandler.
 	/// </summary>
-	[SpellHandler("Taunt")]
+	[SpellHandler(eSpellType.Taunt)]
 	public class TauntSpellHandler : SpellHandler
 	{
 		/// <summary>

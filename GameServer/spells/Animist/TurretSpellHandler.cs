@@ -22,7 +22,7 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandler("TurretsRelease")]
+    [SpellHandler(eSpellType.TurretsRelease)]
     public class TurretsReleaseSpellHandler : SpellHandler
     {
         public TurretsReleaseSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

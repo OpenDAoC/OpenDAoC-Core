@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Reduce range needed to cast the spell
 	/// </summary>
-	[SpellHandler("Nearsight")]
+	[SpellHandler(eSpellType.Nearsight)]
 	public class NearsightSpellHandler : ImmunityEffectSpellHandler
 	{
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
@@ -163,7 +163,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Reduce efficacity of nearsight effect
 	/// </summary>
-	[SpellHandler("NearsightReduction")]
+	[SpellHandler(eSpellType.NearsightReduction)]
 	public class NearsightReductionSpellHandler : SpellHandler
 	{
 		/// <summary>

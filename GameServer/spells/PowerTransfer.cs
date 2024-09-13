@@ -26,7 +26,7 @@ namespace DOL.GS.Spells
 	/// Spell handler for power trasnfer.
 	/// </summary>
 	/// <author>Aredhel</author>
-	[SpellHandlerAttribute("PowerTransfer")]
+	[SpellHandler(eSpellType.PowerTransfer)]
 	class PowerTransfer : SpellHandler
 	{
 		/// <summary>

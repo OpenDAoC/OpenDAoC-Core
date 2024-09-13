@@ -25,7 +25,7 @@ namespace DOL.GS.Spells
 	/// <summary>
 	/// Heal Over Time spell handler
 	/// </summary>
-	[SpellHandlerAttribute("HpPwrEndRegen")]
+	[SpellHandler(eSpellType.HpPwrEndRegen)]
 	public class HpPwrEndRegenSpellHandler : SpellHandler
 	{
 		/// <summary>

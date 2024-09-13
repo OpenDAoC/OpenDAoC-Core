@@ -29,7 +29,7 @@ namespace DOL.GS.Scripts
     /// <summary>
     /// 
     /// </summary>
-    [SpellHandlerAttribute("CureNearsightCustom")]
+    [SpellHandler(eSpellType.CureNearsightCustom)]
     public class CureNearsightCustomSpellHandler : RemoveSpellEffectHandler
     {
         private Spell spell;

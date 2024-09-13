@@ -26,7 +26,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("DmgReductionAndPowerReturn")]
+	[SpellHandler(eSpellType.DmgReductionAndPowerReturn)]
 	public class DamageReductionAndPowerReturnSpellHandler : SpellHandler
 	{
 		public const string Damage_Reduction = "damage reduction";

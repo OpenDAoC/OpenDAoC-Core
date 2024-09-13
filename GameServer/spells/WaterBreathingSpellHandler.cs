@@ -4,7 +4,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-	[SpellHandlerAttribute("WaterBreathing")]
+	[SpellHandler(eSpellType.WaterBreathing)]
 	public class WaterBreathingSpellHandler : SpellHandler
 	{
 		public WaterBreathingSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

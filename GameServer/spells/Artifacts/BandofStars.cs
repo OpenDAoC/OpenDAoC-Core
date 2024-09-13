@@ -5,7 +5,7 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandlerAttribute("StarsProc")]
+    [SpellHandler(eSpellType.StarsProc)]
     public class StarsProc : SpellHandler
     {
         public override bool CheckBeginCast(GameLiving selectedTarget)
@@ -88,7 +88,7 @@ namespace DOL.GS.Spells
         public StarsProc(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
     }
 
-    [SpellHandlerAttribute("StarsProc2")]
+    [SpellHandler(eSpellType.StarsProc2)]
     public class StarsProc2 : SpellHandler
     {
         public override double CalculateSpellResistChance(GameLiving target)

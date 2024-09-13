@@ -2,7 +2,7 @@
 
 namespace DOL.GS.Spells
 {
-    [SpellHandlerAttribute("SiegeDirectDamage")]
+    [SpellHandler(eSpellType.SiegeDirectDamage)]
     public class SiegeDirectDamageSpellHandler : DirectDamageSpellHandler
     {
         public SiegeDirectDamageSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

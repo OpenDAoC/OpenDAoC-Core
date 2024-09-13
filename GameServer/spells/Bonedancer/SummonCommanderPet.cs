@@ -6,7 +6,7 @@ using DOL.Language;
 
 namespace DOL.GS.Spells
 {
-    [SpellHandler("SummonCommander")]
+    [SpellHandler(eSpellType.SummonCommander)]
     public class SummonCommanderPet : SummonSpellHandler
     {
         public SummonCommanderPet(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

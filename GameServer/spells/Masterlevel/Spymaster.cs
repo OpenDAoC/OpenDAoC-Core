@@ -13,7 +13,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Spymaster-2
-    [SpellHandlerAttribute("Decoy")]
+    [SpellHandler(eSpellType.Decoy)]
     public class DecoySpellHandler : SpellHandler
     {
         private GameDecoy decoy;
@@ -118,7 +118,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Spymaster-4
-    [SpellHandlerAttribute("Sabotage")]
+    [SpellHandler(eSpellType.Sabotage)]
     public class SabotageSpellHandler : SpellHandler
     {
         public override void OnDirectEffect(GameLiving target)
@@ -138,7 +138,7 @@ namespace DOL.GS.Spells
 
     //shared timer 1
     #region Spymaster-5
-    [SpellHandlerAttribute("TangleSnare")]
+    [SpellHandler(eSpellType.TangleSnare)]
     public class TangleSnareSpellHandler : MineSpellHandler
     {
         // constructor
@@ -188,7 +188,7 @@ namespace DOL.GS.Spells
 
     //shared timer 1
     #region Spymaster-6
-    [SpellHandlerAttribute("PoisonSpike")]
+    [SpellHandler(eSpellType.PoisonSpike)]
     public class PoisonSpikeSpellHandler : MineSpellHandler
     {
         // constructor
@@ -235,7 +235,7 @@ namespace DOL.GS.Spells
         }
     }
     #region Subspell
-    [SpellHandlerAttribute("PoisonspikeDot")]
+    [SpellHandler(eSpellType.PoisonspikeDot)]
     public class Spymaster6DotHandler : DoTSpellHandler
     {
         // constructor
@@ -250,7 +250,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Spymaster-7
-    [SpellHandlerAttribute("Loockout")]
+    [SpellHandler(eSpellType.Loockout)]
     public class LoockoutSpellHandler : SpellHandler
     {
         private GameLiving m_target;
@@ -299,7 +299,7 @@ namespace DOL.GS.Spells
 
     //shared timer 1
     #region Spymaster-8
-    [SpellHandlerAttribute("SiegeWrecker")]
+    [SpellHandler(eSpellType.SiegeWrecker)]
     public class SiegeWreckerSpellHandler : MineSpellHandler
     {
         public override void OnEffectPulse(GameSpellEffect effect)
@@ -373,7 +373,7 @@ namespace DOL.GS.Spells
     #endregion
 
     #region Spymaster-9
-    [SpellHandlerAttribute("EssenceFlare")]
+    [SpellHandler(eSpellType.EssenceFlare)]
     public class EssenceFlareSpellHandler : SummonItemSpellHandler
     {
         public EssenceFlareSpellHandler(GameLiving caster, Spell spell, SpellLine line)
@@ -397,7 +397,7 @@ namespace DOL.GS.Spells
     #endregion
 
         #region Spymaster-10
-        [SpellHandler("BlanketOfCamouflage")]
+        [SpellHandler(eSpellType.BlanketOfCamouflage)]
         public class GroupstealthHandler : MasterlevelHandling
         {
             public GroupstealthHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

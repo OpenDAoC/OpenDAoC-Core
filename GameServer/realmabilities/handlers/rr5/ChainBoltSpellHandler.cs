@@ -22,7 +22,7 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Spell Handler for firing bolts
     /// </summary>
-    [SpellHandlerAttribute("ChainBolt")]
+    [SpellHandler(eSpellType.ChainBolt)]
     public class ChainBoltSpellHandler : BoltSpellHandler
     {
         public ChainBoltSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
