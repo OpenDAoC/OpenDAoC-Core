@@ -1421,37 +1421,48 @@ namespace DOL.GS.Spells
 			if (m_ability != null)
 				m_caster.DisableSkill(m_ability.Ability, (m_spell.RecastDelay == 0 ? 3000 : m_spell.RecastDelay));
 
-			// disable spells with recasttimer (Disables group of same type with same delay)
-			if (m_spell.RecastDelay > 0 && m_startReuseTimer)
-			{
-				if (m_caster is GamePlayer)
-				{
-					ICollection<Tuple<Skill, int>> toDisable = new List<Tuple<Skill, int>>();
-					
-					GamePlayer gp_caster = m_caster as GamePlayer;
-					foreach (var skills in gp_caster.GetAllUsableSkills())
-						if (skills.Item1 is Spell &&
-							(((Spell)skills.Item1).ID == m_spell.ID || ( ((Spell)skills.Item1).SharedTimerGroup != 0 && ( ((Spell)skills.Item1).SharedTimerGroup == m_spell.SharedTimerGroup) ) ))
-							toDisable.Add(new Tuple<Skill, int>((Spell)skills.Item1, m_spell.RecastDelay));
-					
-					foreach (var sl in gp_caster.GetAllUsableListSpells())
-						foreach(var sp in sl.Item2)
-							if (sp is Spell &&
-								( ((Spell)sp).ID == m_spell.ID || ( ((Spell)sp).SharedTimerGroup != 0 && ( ((Spell)sp).SharedTimerGroup == m_spell.SharedTimerGroup) ) ))
-							toDisable.Add(new Tuple<Skill, int>((Spell)sp, m_spell.RecastDelay));
-					
-					m_caster.DisableSkills(toDisable);
-				}
-				else if (m_caster is GameNPC)
-					m_caster.DisableSkill(m_spell, m_spell.RecastDelay);
-			}
-
+			DisableSpellAndSpellsOfSameGroup();
 			int enduranceCost = CalculateEnduranceCost();
 
 			if (enduranceCost > 0)
 				m_caster.ChangeEndurance(m_caster, eEnduranceChangeType.Spell, -enduranceCost);
 
 			GameEventMgr.Notify(GameLivingEvent.CastFinished, m_caster, new CastingEventArgs(this, target, m_lastAttackData));
+		}
+
+		private void DisableSpellAndSpellsOfSameGroup()
+		{
+			if (m_spell.RecastDelay <= 0 || !m_startReuseTimer)
+				return;
+
+			if (m_caster is GamePlayer playerCaster)
+			{
+				List<Tuple<Skill, int>> toDisable = [];
+
+				foreach (Tuple<Skill, Skill> skill in playerCaster.GetAllUsableSkills())
+				{
+					if (IsSameSpellOrOfSameGroup(skill.Item1 as Spell))
+						toDisable.Add(new Tuple<Skill, int>(skill.Item1, m_spell.RecastDelay));
+				}
+
+				foreach (Tuple<SpellLine, List<Skill>> spellLine in playerCaster.GetAllUsableListSpells())
+				{
+					foreach (Skill skill in spellLine.Item2)
+					{
+						if (IsSameSpellOrOfSameGroup(skill as Spell))
+							toDisable.Add(new Tuple<Skill, int>(skill, m_spell.RecastDelay));
+					}
+				}
+
+				m_caster.DisableSkills(toDisable);
+			}
+			else if (m_caster is GameNPC)
+				m_caster.DisableSkill(m_spell, m_spell.RecastDelay);
+
+			bool IsSameSpellOrOfSameGroup(Spell otherSpell)
+			{
+				return otherSpell.ID == m_spell.ID || (otherSpell.SharedTimerGroup != 0 && (otherSpell.SharedTimerGroup == m_spell.SharedTimerGroup));
+			}
 		}
 
 		/// <summary>
