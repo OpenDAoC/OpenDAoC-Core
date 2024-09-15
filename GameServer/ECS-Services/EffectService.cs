@@ -96,19 +96,17 @@ namespace DOL.GS
             GameLiving caster = spellHandler?.Caster;
 
             // Update the Concentration List if Conc Buff/Song/Chant.
-            if (spellEffect != null && spellEffect.ShouldBeAddedToConcentrationList() && !spellEffect.RenewEffect)
+            if (spellEffect != null && spellEffect.ShouldBeAddedToConcentrationList() && !spellEffect.RenewEffect && caster != null)
             {
-                if (caster != null && caster.effectListComponent.ConcentrationEffects != null)
+                EffectListComponent casterEffectListComponent = caster.effectListComponent;
+                casterEffectListComponent.AddUsedConcentration(spell.Concentration);
+
+                lock (casterEffectListComponent.ConcentrationEffectsLock)
                 {
-                    caster.effectListComponent.AddUsedConcentration(spell.Concentration);
-
-                    lock (caster.effectListComponent.ConcentrationEffectsLock)
-                    {
-                        caster.effectListComponent.ConcentrationEffects.Add(spellEffect);
-                    }
-
-                    effectList.RequestPlayerUpdate(PlayerUpdate.CONCENTRATION);
+                    casterEffectListComponent.ConcentrationEffects.Add(spellEffect);
                 }
+
+                casterEffectListComponent.RequestPlayerUpdate(PlayerUpdate.CONCENTRATION);
             }
 
             if (spellEffect != null)
@@ -162,32 +160,20 @@ namespace DOL.GS
                     effect.OnStopEffect();
 
                 effect.IsBuffActive = false;
+                GameLiving caster = effect.SpellHandler.Caster;
 
                 // Update the Concentration List if Conc Buff/Song/Chant.
-                if (effect.CancelEffect && effect.ShouldBeRemovedFromConcentrationList())
+                if (caster != null && effect.CancelEffect && effect.ShouldBeRemovedFromConcentrationList())
                 {
-                    EffectListComponent casterEffectListComponent = effect.SpellHandler.Caster?.effectListComponent;
+                    EffectListComponent casterEffectListComponent = caster.effectListComponent;
+                    casterEffectListComponent.AddUsedConcentration(-spellEffect.SpellHandler.Spell.Concentration);
 
-                    if (casterEffectListComponent != null && casterEffectListComponent.ConcentrationEffects != null)
+                    lock (casterEffectListComponent.ConcentrationEffectsLock)
                     {
-                        casterEffectListComponent.AddUsedConcentration(-spellEffect.SpellHandler.Spell.Concentration);
-
-                        lock (casterEffectListComponent.ConcentrationEffectsLock)
-                        {
-                            if (spellEffect is ECSPulseEffect)
-                            {
-                                for (int i = 0; i < casterEffectListComponent.ConcentrationEffects.Count; i++)
-                                {
-                                    if (casterEffectListComponent.ConcentrationEffects[i] is ECSPulseEffect)
-                                        casterEffectListComponent.ConcentrationEffects.RemoveAt(i);
-                                }
-                            }
-                            else
-                                casterEffectListComponent.ConcentrationEffects.Remove(spellEffect);
-                        }
-
-                        casterEffectListComponent.RequestPlayerUpdate(PlayerUpdate.CONCENTRATION);
+                        casterEffectListComponent.ConcentrationEffects.Remove(spellEffect);
                     }
+
+                    casterEffectListComponent.RequestPlayerUpdate(PlayerUpdate.CONCENTRATION);
                 }
             }
             else

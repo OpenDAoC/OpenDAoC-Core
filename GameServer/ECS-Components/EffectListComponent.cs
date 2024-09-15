@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using DOL.GS.Effects;
 using DOL.GS.Spells;
 
 namespace DOL.GS
@@ -84,29 +83,6 @@ namespace DOL.GS
                     {
                         if (effects[j].EffectType == eEffect.Pulse)
                             temp.Add((ECSPulseEffect)effects[j]);
-                    }
-                }
-
-                return temp;
-            }
-        }
-
-        public List<IConcentrationEffect> GetConcentrationEffects()
-        {
-            lock (EffectsLock)
-            {
-                var temp = new List<IConcentrationEffect>();
-                var allEffects = Effects.Values.ToList();
-
-                if (allEffects != null)
-                {
-                    foreach (var effects in allEffects)
-                    {
-                        for (int j = 0; j < effects?.Count; j++)
-                        {
-                            if (effects[j] is ECSPulseEffect || effects[j].IsConcentrationEffect())
-                                temp.Add(effects[j] as IConcentrationEffect);
-                        }
                     }
                 }
 
