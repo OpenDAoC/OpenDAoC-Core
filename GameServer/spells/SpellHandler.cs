@@ -24,6 +24,7 @@ namespace DOL.GS.Spells
 
 		// Maximum number of Concentration spells that a single caster is allowed to cast.
 		private const int MAX_CONC_SPELLS = 20;
+		private const int PULSING_SPELL_END_OF_CAST_MESSAGE_INTERVAL = 2000;
 
 		// Array of pulse spell groups allowed to exist with others.
 		// Used to allow players to have more than one pulse spell refreshing itself automatically.
@@ -49,6 +50,7 @@ namespace DOL.GS.Spells
 		private long _castStartTick;
 		private long _castEndTick;
 		private long _calculatedCastTime;
+		private long _puslingSpellLastEndOfCastMessage;
 
 		public bool IsQuickCasting => _quickcast != null;
 		public long CastStartTick => _castStartTick;
@@ -324,12 +326,12 @@ namespace DOL.GS.Spells
 			if (Spell.MoveCast)
 				return;
 
-			if (Caster is GamePlayer)
+			if (Caster is GamePlayer playerCaster)
 			{
-				if (CastState != eCastState.Focusing)
-					(Caster as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SpellHandler.CasterMove"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				if (CastState is not eCastState.Focusing)
+					playerCaster.Out.SendMessage(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CasterMove"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				else
-					Caster.CancelFocusSpell(true);
+					CancelFocusSpells(true);
 			}
 
 			InterruptCasting();
@@ -479,11 +481,10 @@ namespace DOL.GS.Spells
 
 			if (m_spell.IsPulsing && m_spell.Frequency > 0)
 			{
-				if (m_caster.ActivePulseSpells.TryRemove(m_spell.SpellType, out Spell _))
-				{
-					ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(m_caster, m_spell);
-					EffectService.RequestImmediateCancelConcEffect(effect);
+				ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(m_caster, m_spell);
 
+				if (EffectService.RequestImmediateCancelConcEffect(effect))
+				{
 					if (m_spell.InstrumentRequirement == 0)
 						MessageToCaster("You cancel your effect.", eChatType.CT_Spell);
 					else
@@ -493,7 +494,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			m_caster.CancelFocusSpell();
+			CancelFocusSpells(false);
 			_quickcast = EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast) as QuickCastECSGameEffect;
 
 			if (IsQuickCasting)
@@ -854,22 +855,28 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual bool CheckEndCast(GameLiving target)
 		{
+			bool verbose = CheckVerbosity();
+
 			if (IsSummoningSpell && Caster.CurrentRegion.IsCapitalCity)
 			{
 				// Message: You can't summon here!
-				ChatUtil.SendErrorMessage(Caster as GamePlayer, "GamePlayer.CastEnd.Fail.BadRegion", null);
+				if (verbose)
+					ChatUtil.SendErrorMessage(Caster as GamePlayer, "GamePlayer.CastEnd.Fail.BadRegion", null);
+
 				return false;
 			}
 			
 			if (Caster != target && Caster is GameNPC casterNPC && Caster is not NecromancerPet)
 				casterNPC.TurnTo(target);
 
-			if (m_caster.ObjectState != GameObject.eObjectState.Active)
+			if (m_caster.ObjectState is not GameObject.eObjectState.Active)
 				return false;
 
 			if (!m_caster.IsAlive)
 			{
-				MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
+				if (verbose)
+					MessageToCaster("You are dead and can't cast!", eChatType.CT_System);
+
 				return false;
 			}
 
@@ -877,71 +884,67 @@ namespace DOL.GS.Spells
 			{
 				if (!CheckInstrument())
 				{
-					MessageToCaster("You are not wielding the right type of instrument!", eChatType.CT_SpellResisted);
+					if (verbose)
+						MessageToCaster("You are not wielding the right type of instrument!", eChatType.CT_SpellResisted);
+
 					return false;
 				}
 			}
 			else if (m_caster.IsSitting) // Songs can be played when sitting.
 			{
 				// Purge can be cast while sitting but only if player has negative effect that doesn't allow standing up (like stun or mez).
-				MessageToCaster("You can't cast while sitting!", eChatType.CT_SpellResisted);
+				if (verbose)
+					MessageToCaster("You can't cast while sitting!", eChatType.CT_SpellResisted);
+
 				return false;
 			}
 
-			if (m_spell.Target == eSpellTarget.AREA)
+			if (m_spell.Target is eSpellTarget.AREA)
 			{
 				if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
 				{
-					MessageToCaster("Your area target is out of range. Select a closer target.", eChatType.CT_SpellResisted);
+					if (verbose)
+						MessageToCaster("Your area target is out of range. Select a closer target.", eChatType.CT_SpellResisted);
+
 					return false;
 				}
 			}
-			else if (m_spell.Target != eSpellTarget.SELF && m_spell.Target != eSpellTarget.GROUP && m_spell.Target != eSpellTarget.CONE && m_spell.Range > 0)
+			else if (m_spell.Target is not eSpellTarget.SELF && m_spell.Target is not eSpellTarget.GROUP && m_spell.Target is not eSpellTarget.CONE && m_spell.Range > 0)
 			{
-				if (m_spell.Target != eSpellTarget.PET)
+				if (m_spell.Target is not eSpellTarget.PET)
 				{
 					// All other spells that need a target.
-					if (target == null || target.ObjectState != GameObject.eObjectState.Active)
+					if (target == null || target.ObjectState is not GameObject.eObjectState.Active)
 					{
-						if (Caster is GamePlayer)
+						if (verbose)
 							MessageToCaster("You must select a target for this spell!", eChatType.CT_SpellResisted);
 
 						return false;
 					}
+				}
 
-					if (!m_caster.IsWithinRadius(target, CalculateSpellRange()))
-					{
-						if (Caster is GamePlayer)
-							MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
+				if (!m_caster.IsWithinRadius(target, CalculateSpellRange()))
+				{
+					if (verbose)
+						MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
 
-						return false;
-					}
+					return false;
 				}
 
 				switch (m_spell.Target)
 				{
 					case eSpellTarget.ENEMY:
 					{
-						if (m_spell.SpellType == eSpellType.Charm)
+						if (m_spell.SpellType is eSpellType.Charm)
 							break;
 
-						if (m_spell.SpellType != eSpellType.PetSpell)
+						if (m_spell.SpellType is not eSpellType.PetSpell)
 						{
 							// The target must be visible and in front of the caster
 							if (target.IsStealthed || !HasLos || !Caster.IsObjectInFront(target, 180, Caster.TargetInViewAlwaysTrueMinRange))
 							{
-								// Avoid flute mez's chat log spam.
-								if (m_spell.IsPulsing && m_spell.SpellType == eSpellType.Mesmerize)
-								{
-									MesmerizeSpellHandler mesmerizeSpellHandler = this as MesmerizeSpellHandler;
-
-									if (GameLoop.GameLoopTime - mesmerizeSpellHandler.FluteMezLastEndOfCastMessage < MesmerizeSpellHandler.FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL)
-										return false;
-
-									mesmerizeSpellHandler.FluteMezLastEndOfCastMessage = GameLoop.GameLoopTime;
-								}
-								
-								MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
+								if (verbose)
+									MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
 
 								return false;
 							}
@@ -956,17 +959,9 @@ namespace DOL.GS.Spells
 					{
 						if (target.IsAlive || !GameServer.ServerRules.IsSameRealm(Caster, target, true))
 						{
-							MessageToCaster("This spell only works on dead members of your realm!", eChatType.CT_SpellResisted);
-							return false;
-						}
+							if (verbose)
+								MessageToCaster("This spell only works on dead members of your realm!", eChatType.CT_SpellResisted);
 
-						break;
-					}
-					case eSpellTarget.PET:
-					{
-						if (!m_caster.IsWithinRadius(target, CalculateSpellRange()))
-						{
-							MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
 							return false;
 						}
 
@@ -977,29 +972,54 @@ namespace DOL.GS.Spells
 
 			if (m_caster.Mana <= 0 && Spell.Power > 0 && Spell.SpellType is not eSpellType.Archery)
 			{
-				MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
+				if (verbose)
+					MessageToCaster("You have exhausted all of your power and cannot cast spells!", eChatType.CT_SpellResisted);
+
 				return false;
 			}
 
 			if (Spell.Power > 0 && m_caster.Mana < PowerCost(target) && !IsQuickCasting && Spell.SpellType is not eSpellType.Archery)
 			{
-				MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
+				if (verbose)
+					MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
+
 				return false;
 			}
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.Concentration < m_spell.Concentration)
+			if (m_caster is GamePlayer && m_spell.Concentration > 0)
 			{
-				MessageToCaster("This spell requires " + m_spell.Concentration + " concentration points to cast!", eChatType.CT_SpellResisted);
-				return false;
-			}
+				if (m_caster.Concentration < m_spell.Concentration)
+				{
+					if (verbose)
+						MessageToCaster("This spell requires " + m_spell.Concentration + " concentration points to cast!", eChatType.CT_SpellResisted);
 
-			if (m_caster is GamePlayer && m_spell.Concentration > 0 && m_caster.effectListComponent.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
-			{
-				MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
-				return false;
+					return false;
+				}
+
+				if (m_caster.effectListComponent.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
+				{
+					if (verbose)
+						MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
+
+					return false;
+				}
 			}
 
 			return true;
+
+			bool CheckVerbosity()
+			{
+				if (!m_spell.IsPulsing)
+					return true;
+
+				if (GameLoop.GameLoopTime - _puslingSpellLastEndOfCastMessage >= PULSING_SPELL_END_OF_CAST_MESSAGE_INTERVAL)
+				{
+					_puslingSpellLastEndOfCastMessage = GameLoop.GameLoopTime;
+					return true;
+				}
+
+				return false;
+			}
 		}
 
 		public virtual bool CheckDuringCast(GameLiving target)
@@ -1100,7 +1120,7 @@ namespace DOL.GS.Spells
 
 					if (ServiceUtils.ShouldTick(_castEndTick))
 					{
-						if (!m_spell.IsPulsing || m_spell.SpellType != eSpellType.Mesmerize)
+						if (!m_spell.IsPulsing)
 							CastState = CheckEndCast(Target) ? eCastState.Finished : eCastState.Interrupted;
 						else if (CheckEndCast(Target))
 							CastState = eCastState.Finished;
@@ -1378,11 +1398,9 @@ namespace DOL.GS.Spells
 						EffectService.RequestImmediateCancelConcEffect(effect);
 				}
 
-				if (m_spell.SpellType != eSpellType.Mesmerize)
-				{
+				// Prevent `EffectListService` from pulsing flute mez, since it won't handle it correctly.
+				if (m_spell.SpellType is not eSpellType.Mesmerize)
 					PulseEffect = CreateECSPulseEffect(Caster, CasterEffectiveness);
-					Caster.ActivePulseSpells.AddOrUpdate(m_spell.SpellType, m_spell, (x, y) => m_spell);
-				}
 			}
 
 			if (playerWeapon != null)
@@ -1461,7 +1479,16 @@ namespace DOL.GS.Spells
 
 			bool IsSameSpellOrOfSameGroup(Spell otherSpell)
 			{
-				return otherSpell.ID == m_spell.ID || (otherSpell.SharedTimerGroup != 0 && (otherSpell.SharedTimerGroup == m_spell.SharedTimerGroup));
+				if (otherSpell == null)
+					return false;
+
+				if (otherSpell.ID == m_spell.ID)
+					return true;
+
+				if (otherSpell.SharedTimerGroup != 0 && (otherSpell.SharedTimerGroup == m_spell.SharedTimerGroup))
+					return true;
+
+				return false;
 			}
 		}
 
@@ -1950,7 +1977,7 @@ namespace DOL.GS.Spells
 		{
 			if (Caster.IsMezzed || Caster.IsStunned)
 			{
-				Caster.CancelFocusSpell();
+				CancelFocusSpells(false);
 				return false;
 			}
 
@@ -1963,7 +1990,7 @@ namespace DOL.GS.Spells
 			{
 				if (Spell.IsFocus && (!Target.IsAlive || !Caster.IsWithinRadius(Target, Spell.Range)))
 				{
-					Caster.CancelFocusSpell();
+					CancelFocusSpells(false);
 					return false;
 				}
 
@@ -2619,19 +2646,33 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		/// <summary>
-		/// Hold events for focus spells
-		/// </summary>
-		public virtual void FocusSpellAction(bool moving = false)
+		public virtual void CancelFocusSpells(bool moving)
 		{
 			CastState = eCastState.Cleanup;
+			bool cancelled = false;
 
-			Caster.ActivePulseSpells.TryRemove(m_spell.SpellType, out Spell _);
+			foreach (ECSGameSpellEffect pulseSpell in Caster.effectListComponent.GetSpellEffects(eEffect.Pulse))
+			{
+				if (!pulseSpell.SpellHandler.Spell.IsFocus)
+					continue;
 
-			if (moving)
-				MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
-			else
-				MessageToCaster($"You lose your focus on your {Spell.Name} spell.", eChatType.CT_SpellExpires);
+				if (EffectService.RequestImmediateCancelEffect(pulseSpell))
+					cancelled = true;
+
+				foreach (ECSGameEffect petEffect in pulseSpell.SpellHandler.Target.effectListComponent.GetSpellEffects(eEffect.FocusShield))
+				{
+					if (petEffect.SpellHandler.Spell.IsFocus)
+						EffectService.RequestImmediateCancelEffect(petEffect);
+				}
+			}
+
+			if (cancelled)
+			{
+				if (moving)
+					MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
+				else
+					MessageToCaster($"You lose your focus on your {Spell.Name} spell.", eChatType.CT_SpellExpires);
+			}
 		}
 
 		#endregion

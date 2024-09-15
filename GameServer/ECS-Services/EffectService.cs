@@ -158,7 +158,7 @@ namespace DOL.GS
 
             if (effect is ECSGameSpellEffect spellEffect)
             {
-                if (spellEffect.IsBuffActive && spellEffect.EffectType != eEffect.Pulse && spellEffect is not ECSImmunityEffect)
+                if (spellEffect.IsBuffActive && spellEffect is not ECSImmunityEffect)
                     effect.OnStopEffect();
 
                 effect.IsBuffActive = false;
@@ -248,12 +248,7 @@ namespace DOL.GS
         public static void RequestCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
         {
             if (concEffect is ECSGameSpellEffect effect)
-            {
-                if (effect.SpellHandler.Spell.IsPulsing)
-                    effect.Owner.ActivePulseSpells.TryRemove(effect.SpellHandler.Spell.SpellType, out Spell _);
-
                 RequestCancelEffect(effect, playerCanceled);
-            }
         }
 
         /// <summary>
@@ -282,15 +277,9 @@ namespace DOL.GS
         /// <summary>
         /// Immediately removes an ECSGameEffect (as a IConcentrationEffect).
         /// </summary>
-        public static void RequestImmediateCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
+        public static bool RequestImmediateCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
         {
-            if (concEffect is ECSGameSpellEffect effect)
-            {
-                RequestImmediateCancelEffect(effect, playerCanceled);
-
-                if (effect.SpellHandler.Spell.IsPulsing)
-                    effect.Owner.ActivePulseSpells.TryRemove(effect.SpellHandler.Spell.SpellType, out Spell _);
-            }
+            return concEffect is ECSGameSpellEffect effect && RequestImmediateCancelEffect(effect, playerCanceled);
         }
 
         /// <summary>

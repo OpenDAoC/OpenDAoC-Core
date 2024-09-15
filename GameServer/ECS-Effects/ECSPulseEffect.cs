@@ -10,7 +10,7 @@ namespace DOL.GS
         /// The name of the owner
         /// </summary>
         public override string OwnerName => $"Pulse: {SpellHandler.Spell.Name}";
-        public Dictionary<GameLiving, ECSGameSpellEffect> ChildEffects { get; } = new();
+        public Dictionary<GameLiving, ECSGameSpellEffect> ChildEffects { get; } = [];
 
         public ECSPulseEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
             : base (new ECSGameEffectInitParams(owner, duration, effectiveness, handler))
@@ -20,8 +20,18 @@ namespace DOL.GS
             EffectType = eEffect.Pulse;
             ExpireTick = pulseFreq + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
-
             EffectService.RequestStartEffect(this);
+        }
+
+        public override void OnStartEffect()
+        {
+            Spell spell = SpellHandler.Spell;
+            Owner.ActivePulseSpells.AddOrUpdate(spell.SpellType, spell, (x, y) => spell);
+        }
+
+        public override void OnStopEffect()
+        {
+            Owner.ActivePulseSpells.TryRemove(SpellHandler.Spell.SpellType, out _);
         }
     }
 }

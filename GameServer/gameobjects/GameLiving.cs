@@ -1592,29 +1592,8 @@ namespace DOL.GS
 
 			// Don't cancel offensive focus spell
 			if (ad.AttackType != eAttackType.Spell)
-				CancelFocusSpell();
-        }
-
-        public void CancelFocusSpell(bool moving = false)
-        {
-            foreach (var pulseSpell in effectListComponent.GetSpellEffects(eEffect.Pulse))
-            {
-				if (pulseSpell.SpellHandler.Spell.IsFocus)
-                {
-					((SpellHandler)pulseSpell.SpellHandler).FocusSpellAction(moving);
-					EffectService.RequestImmediateCancelEffect(pulseSpell);
-					if (((SpellHandler)pulseSpell.SpellHandler).Target.effectListComponent.Effects.TryGetValue(eEffect.FocusShield, out var petEffect))
-                    {
-						if (petEffect is not null)
-                        {
-							//verify the effect is a focus shield and not a timer based damage shield
-							if (petEffect.FirstOrDefault().SpellHandler.Spell.IsFocus)
-								EffectService.RequestImmediateCancelEffect(petEffect.FirstOrDefault());
-						}
-					}
-				}
-            }
-        }
+				castingComponent.CancelFocusSpells(false);
+		}
 
 		/// <summary>
 		/// This method is called at the end of the attack sequence to

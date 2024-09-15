@@ -155,6 +155,11 @@ namespace DOL.GS
             ClearUpSpellHandlers();
         }
 
+        public void CancelFocusSpells(bool moving)
+        {
+            SpellHandler?.CancelFocusSpells(moving);
+        }
+
         public void ClearUpSpellHandlers()
         {
             SpellHandler = null;

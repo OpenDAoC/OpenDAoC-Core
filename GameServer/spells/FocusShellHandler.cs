@@ -38,9 +38,7 @@ namespace DOL.GS.Spells
 					Caster.ActivePulseSpells.TryGetValue(m_spell.SpellType, out Spell currentSpell);
 
 					if (currentSpell != null && currentSpell == Spell)
-					{
-						Caster.CancelFocusSpell();
-					}
+						CancelFocusSpells(false);
 
 					FSTarget = selectedTarget as GamePlayer;
 				}
@@ -97,9 +95,9 @@ namespace DOL.GS.Spells
 		private void CancelSpell(DOLEvent e, object sender, EventArgs args)
 		{
 			//Send the cancel signal, we need to use the faster as the sender!
-			FocusSpellAction(/*null, Caster, null*/);
+			CancelFocusSpells(false);
 		}
-			
+
 		private void OnAttacked(DOLEvent e, object sender, EventArgs args)
 		{
 			AttackedByEnemyEventArgs attackArgs = args as AttackedByEnemyEventArgs;

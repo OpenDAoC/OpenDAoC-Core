@@ -134,9 +134,6 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Mesmerize)]
     public class MesmerizeSpellHandler : AbstractCCSpellHandler
     {
-        public const int FLUTE_MEZ_END_OF_CAST_MESSAGE_INTERVAL = 2000;
-        public long FluteMezLastEndOfCastMessage { get; set; } // Flute mez should probably have its own spell handler.
-
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
         {
             return new MezECSGameEffect(initParams);
