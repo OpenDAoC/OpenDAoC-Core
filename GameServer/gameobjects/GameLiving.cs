@@ -3753,6 +3753,7 @@ namespace DOL.GS
 			if (!base.RemoveFromWorld())
 				return false;
 
+			Health = 0; // So that `IsAlive` returns false too.
 			attackComponent.StopAttack();
 
 			foreach (GameObject attacker in attackComponent.Attackers.Keys)
