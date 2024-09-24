@@ -35,7 +35,7 @@ namespace DOL.GS
 
 		#region Combat
 
-		public bool isDeadOrDying = false;
+		public bool IsBeingHandledByReaperService { get; set; }
 
 		protected string m_lastInterruptMessage;
 		public string LastInterruptMessage
@@ -610,10 +610,7 @@ namespace DOL.GS
 		/// <summary>
 		/// returns if this living is alive
 		/// </summary>
-		public virtual bool IsAlive
-		{
-			get { return Health > 0; }
-		}
+		public virtual bool IsAlive => Health > 0 && !IsBeingHandledByReaperService;
 
 		/// <summary>
 		/// True if living is low on health, else false.
@@ -1487,9 +1484,9 @@ namespace DOL.GS
 
 			Health -= damageAmount + criticalAmount;
 
-			if (!IsAlive && Monitor.TryEnter(dieLock) && !isDeadOrDying)
+			if (!IsAlive && Monitor.TryEnter(dieLock) && !IsBeingHandledByReaperService)
 			{
-				isDeadOrDying = true;
+				IsBeingHandledByReaperService = true;
 
 				try
 				{
@@ -1967,8 +1964,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void Die(GameObject killer)
 		{
-			isDeadOrDying = true;
-			//Console.WriteLine($"Dead or Dying set to {this.isDeadOrDying} for {this.Name} in living");
+			IsBeingHandledByReaperService = true;
 			ReaperService.KillLiving(this, killer);
 		}
 
@@ -2069,8 +2065,7 @@ namespace DOL.GS
 			}
 			finally
 			{
-				//isDying flag is ALWAYS set to false even if exception happens so it can get remove from the list
-				isDeadOrDying = false;
+				IsBeingHandledByReaperService = false;
 			}
 		}
 

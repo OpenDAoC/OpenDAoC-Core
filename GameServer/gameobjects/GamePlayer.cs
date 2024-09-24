@@ -1819,8 +1819,6 @@ namespace DOL.GS
                 }
             }
 
-            //Update health&sit state first!
-            m_isDead = false;
             Health = MaxHealth;
             Endurance = MaxEndurance;
             Mana = MaxMana;
@@ -1966,10 +1964,7 @@ namespace DOL.GS
         /// </summary>
         public virtual void OnRevive(DOLEvent e, object sender, EventArgs args)
         {
-            GamePlayer player = (GamePlayer)sender;
-            //effectListComponent.CancelAll();
-            m_isDead = false;
-
+            GamePlayer player = sender as GamePlayer;
             bool applyRezSick = true;
 
             // Used by spells like Perfect Recovery
@@ -2591,9 +2586,6 @@ namespace DOL.GS
                 if (DBCharacter != null)
                     DBCharacter.Health = value;
                 base.Health = value;
-
-                if (m_health == 0)
-                    m_isDead = true;
 
                 if (oldPercent != HealthPercent)
                 {
@@ -12633,16 +12625,6 @@ namespace DOL.GS
         public bool IsSalvagingOrRepairing
         {
             get { return (m_crafttimer != null && m_crafttimer.IsAlive); }
-        }
-
-        protected bool m_isDead = false;
-        /// <summary>
-        /// returns if this living is alive
-        /// </summary>
-        public override bool IsAlive
-        {
-            //get { return Health > 0; }
-            get { return !m_isDead; }
         }
 
         /// <summary>

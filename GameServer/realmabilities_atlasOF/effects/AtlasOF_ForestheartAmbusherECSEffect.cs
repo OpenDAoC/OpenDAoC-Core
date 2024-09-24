@@ -29,7 +29,7 @@ namespace DOL.GS.Effects
         public override void OnStopEffect()
         {
             // The effect can be cancelled before the spell if fired by the casting service, in which case 'PetSpellHander' can be null.
-            if (PetSpellHander?.Pet.isDeadOrDying == false)
+            if (PetSpellHander?.Pet.IsBeingHandledByReaperService == false)
             {
                 PetSpellHander.Pet.Health = 0; // To send proper remove packet.
                 PetSpellHander.Pet.Delete();

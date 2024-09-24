@@ -2900,7 +2900,7 @@ namespace DOL.GS
 			}
 			finally
 			{
-				if (isDeadOrDying == true)
+				if (IsBeingHandledByReaperService)
 					base.ProcessDeath(killer);
 			}
 		}

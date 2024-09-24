@@ -140,9 +140,9 @@ namespace DOL.GS.Keeps
         /// <param name="killer">The killer object</param>
         public override void Die(GameObject killer)
         {
-            if (this.isDeadOrDying == false)
+            if (!IsBeingHandledByReaperService)
             {
-                this.isDeadOrDying = true;
+                this.IsBeingHandledByReaperService = true;
                 m_lastRealm = eRealm.None;
 
                 if (Properties.LOG_KEEP_CAPTURES)
