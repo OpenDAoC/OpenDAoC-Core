@@ -2948,12 +2948,12 @@ namespace DOL.GS.Spells
 
 		#region various helpers
 
-		public virtual double CalculateDamageVarianceOffsetFromLevelDifference(GameLiving caster)
+		public virtual double CalculateDamageVarianceOffsetFromLevelDifference(GameLiving caster, GameLiving target)
 		{
 			// Was previously 2% per level difference, but this didn't match live results at lower level.
 			// Assuming 2% was correct at level 50, it means it should be dynamic, either based on the caster's level of the target's.
 			// This new formula increases the modifier the lower the level of the caster is: 10% at level 0, 2% at level 50.
-			return (caster.Level - Target.Level) * (10 - caster.Level * 0.16) * 0.01;
+			return (caster.Level - target.Level) * (10 - caster.Level * 0.16) * 0.01;
 		}
 
 		/// <summary>
@@ -3006,7 +3006,7 @@ namespace DOL.GS.Spells
 					else
 						casterToUse = m_caster;
 
-					double varianceOffset = CalculateDamageVarianceOffsetFromLevelDifference(casterToUse);
+					double varianceOffset = CalculateDamageVarianceOffsetFromLevelDifference(casterToUse, target);
 					max = 1 + varianceOffset;
 
 					if (target.Level <= 0)

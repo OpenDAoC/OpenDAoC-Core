@@ -13,7 +13,7 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-		public override double CalculateDamageVarianceOffsetFromLevelDifference(GameLiving caster)
+		public override double CalculateDamageVarianceOffsetFromLevelDifference(GameLiving caster, GameLiving target)
 		{
 			return 0;
 		}
