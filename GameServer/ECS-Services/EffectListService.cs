@@ -56,6 +56,11 @@ namespace DOL.GS
                 return;
             }
 
+            // Pause if the owner is changing region.
+            // Also includes respawning NPCs, so this relies on the reaper service ticking last, otherwise effects wouldn't be cancelled.
+            if (effectListComponent.Owner.ObjectState is GameObject.eObjectState.Inactive)
+                return;
+
             List<ECSGameEffect> effectsList = [];
 
             lock (effectListComponent.EffectsLock)
@@ -66,7 +71,7 @@ namespace DOL.GS
 
             foreach (ECSGameEffect e in effectsList)
             {
-                if (!e.Owner.IsAlive || e.Owner.ObjectState == GameObject.eObjectState.Deleted)
+                if (!e.Owner.IsAlive)
                 {
                     EffectService.RequestCancelEffect(e);
                     continue;

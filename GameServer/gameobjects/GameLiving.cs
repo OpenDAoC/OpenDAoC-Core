@@ -588,29 +588,17 @@ namespace DOL.GS
 		/// <summary>
 		/// Whether this living is crowd controlled.
 		/// </summary>
-		public virtual bool IsCrowdControlled
-		{
-			get
-			{
-				return (IsStunned || IsMezzed);
-			}
-		}
-
-		/// <summary>
-		/// Whether this living can actually do anything.
-		/// </summary>
-		public virtual bool IsIncapacitated
-		{
-			get
-			{
-				return (ObjectState != eObjectState.Active || !IsAlive || IsStunned || IsMezzed);
-			}
-		}
+		public virtual bool IsCrowdControlled => IsStunned || IsMezzed;
 
 		/// <summary>
 		/// returns if this living is alive
 		/// </summary>
-		public virtual bool IsAlive => Health > 0 && !IsBeingHandledByReaperService;
+		public virtual bool IsAlive => ObjectState is eObjectState.Active && Health > 0 && !IsBeingHandledByReaperService;
+
+		/// <summary>
+		/// Whether this living can actually do anything.
+		/// </summary>
+		public virtual bool IsIncapacitated => !IsAlive || IsCrowdControlled;
 
 		/// <summary>
 		/// True if living is low on health, else false.
@@ -3748,7 +3736,6 @@ namespace DOL.GS
 			if (!base.RemoveFromWorld())
 				return false;
 
-			Health = 0; // So that `IsAlive` returns false too.
 			attackComponent.StopAttack();
 
 			foreach (GameObject attacker in attackComponent.Attackers.Keys)
