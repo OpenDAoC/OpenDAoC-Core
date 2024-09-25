@@ -36,6 +36,7 @@ namespace DOL.GS
 
                 long startTick = GameLoop.GetCurrentTime();
                 HandleEffects(effectListComponent);
+                effectListComponent.SendPlayerUpdates();
                 long stopTick = GameLoop.GetCurrentTime();
 
                 if (stopTick - startTick > 25)
@@ -51,7 +52,6 @@ namespace DOL.GS
         {
             if (effectListComponent.Effects.Count == 0)
             {
-                effectListComponent.SendPlayerUpdates();
                 EntityManager.Remove(effectListComponent);
                 return;
             }
@@ -251,8 +251,6 @@ namespace DOL.GS
                     }
                 }
             }
-
-            effectListComponent.SendPlayerUpdates();
         }
 
         public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.None)
