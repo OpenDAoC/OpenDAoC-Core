@@ -346,6 +346,8 @@ namespace DOL.GS
 
                         if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
                             speed = speed * 2 - (player.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
+                        else if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.RapidFire)
+                            speed *= RangeAttackComponent.RAPID_FIRE_ATTACK_SPEED_MODIFIER;
                     }
                     else
                     {
@@ -361,13 +363,7 @@ namespace DOL.GS
                     //Console.WriteLine($"Speed after {speed} quiMod {(1.0 - (qui - 60) * 0.002)} melee speed {0.01 * p.GetModified(eProperty.MeleeSpeed)} together {(1.0 - (qui - 60) * 0.002) * 0.01 * p.GetModified(eProperty.MeleeSpeed)}");
                 }
 
-                // apply speed cap
-                if (speed < 15)
-                {
-                    speed = 15;
-                }
-
-                return (int) (speed * 100);
+                return Math.Max(15, (int) (speed * 100));
             }
             else
             {
@@ -742,9 +738,6 @@ namespace DOL.GS
                             targetMsg = string.Empty;
 
                         int speed = AttackSpeed(attackWeapon) / 100;
-
-                        if (player.rangeAttackComponent.RangedAttackType is eRangedAttackType.RapidFire)
-                            speed = Math.Max(15, speed / 2);
 
                         if (!player.effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
                             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.StartAttack.YouPrepare", typeMsg, speed / 10, speed % 10, targetMsg), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);

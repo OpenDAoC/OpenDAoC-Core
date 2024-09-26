@@ -17,6 +17,7 @@ namespace DOL.GS
         public const int DEFAULT_ENDURANCE_COST = 5;
         public const int CRITICAL_SHOT_ENDURANCE_COST = 10;
         public const int VOLLEY_ENDURANCE_COST = 15;
+        public const double RAPID_FIRE_ATTACK_SPEED_MODIFIER = 0.5;
         public const int PROJECTILE_FLIGHT_SPEED = 1800; // 1800 units per second. Live value is unknown, but DoL had 1500. Also affects throwing weapons.
         public const int MAX_DRAW_DURATION = 15000;
         public GameObject AutoFireTarget { get; set; } // Used to shoot at a different target than the one currently selected. Always null for NPCs.
@@ -191,7 +192,7 @@ namespace DOL.GS
             if (RangedAttackType == eRangedAttackType.Critical)
                 m_owner.Endurance -= CRITICAL_SHOT_ENDURANCE_COST;
             else if (RangedAttackType == eRangedAttackType.RapidFire && m_owner.GetAbilityLevel(Abilities.RapidFire) == 2)
-                m_owner.Endurance -= (int)Math.Ceiling(DEFAULT_ENDURANCE_COST / 2.0);
+                m_owner.Endurance -= (int) Math.Ceiling(DEFAULT_ENDURANCE_COST / 2.0);
             else if (RangedAttackType == eRangedAttackType.Volley)
                 m_owner.Endurance -= VOLLEY_ENDURANCE_COST;
             else

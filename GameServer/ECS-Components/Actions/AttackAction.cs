@@ -238,7 +238,7 @@ namespace DOL.GS
                     foreach (GamePlayer player in _owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                         player.Out.SendCombatAnimation(_owner, null, (ushort) (_weapon != null ? _weapon.Model : 0), 0, player.Out.BowPrepare, 0x1A, 0x00, 0x00);
 
-                    _interval = _owner.rangeAttackComponent?.RangedAttackType == eRangedAttackType.RapidFire ? Math.Max(1500, attackSpeed / 2) : attackSpeed;
+                    _interval = attackSpeed;
                 }
 
                 return false;
@@ -307,12 +307,16 @@ namespace DOL.GS
                     // stat bonuses, I fire that bow at 3.0 seconds. The resulting interrupt on the caster will last 3.0 seconds. If I rapid fire that same bow, I will fire at 1.5 seconds,
                     // and the resulting interrupt will last 1.5 seconds."
 
-                    long rapidFireMaxDuration = AttackComponent.AttackSpeed(_weapon);
+                    // We need the attack speed unmodified by Rapid Fire to calculate the damage effectiveness, so we temporarily change the attack type to normal.
+                    // This is dirty, but I believe this is the simplest solution.
+                    _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
+                    double preRapidFireAttackSpeed = AttackComponent.AttackSpeed(_weapon);
+                    _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
                     long elapsedTime = GameLoop.GameLoopTime - _owner.rangeAttackComponent.AttackStartTime;
 
-                    if (elapsedTime < rapidFireMaxDuration)
+                    if (elapsedTime < preRapidFireAttackSpeed)
                     {
-                        _effectiveness *= 0.25 + elapsedTime * 0.5 / rapidFireMaxDuration;
+                        _effectiveness *= elapsedTime / preRapidFireAttackSpeed;
                         _attackInterval = (int) (_attackInterval * _effectiveness);
                     }
 
@@ -406,10 +410,7 @@ namespace DOL.GS
                 if (_owner.effectListComponent.ContainsEffectForEffectType(eEffect.SureShot))
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
                 else if (_owner.effectListComponent.ContainsEffectForEffectType(eEffect.RapidFire))
-                {
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
-                    _interval = Math.Max(1500, _interval /= 2);
-                }
                 else if (_owner.effectListComponent.ContainsEffectForEffectType(eEffect.SureShot))
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
             }
