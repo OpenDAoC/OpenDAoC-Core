@@ -2092,7 +2092,7 @@ namespace DOL.GS.Spells
 				return CasterEffectiveness;
 		}
 
-		protected double CalculateBuffDebuffEffectiveness()
+		protected virtual double CalculateBuffDebuffEffectiveness()
 		{
 			double effectiveness;
 

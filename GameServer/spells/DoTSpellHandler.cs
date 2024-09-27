@@ -270,5 +270,10 @@ namespace DOL.GS.Spells
 
 			return CriticalDamage;
 		}
+
+		protected override double CalculateBuffDebuffEffectiveness()
+		{
+			return 1.0; // Unused by DoTs.
+		}
 	}
 }
