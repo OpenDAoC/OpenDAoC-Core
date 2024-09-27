@@ -854,10 +854,11 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendObjectRemove(GameObject obj)
 		{
 			int oType = 0;
+
 			if (obj is GamePlayer)
 				oType = 2;
-			else if (obj is GameNPC)
-				oType = ((GameLiving) obj).IsAlive ? 1 : 0;
+			else if (obj is GameNPC npc)
+				oType = npc.Health > 0 ? 1 : 0;
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.RemoveObject)))
 			{
