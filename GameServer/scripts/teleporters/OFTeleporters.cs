@@ -111,7 +111,10 @@ namespace DOL.GS.Scripts
         public void StartTeleporting()
         {
             if (castTimer is null)
-                castTimer = new ECSGameTimer(this);
+                castTimer = new(this, CastTimerCallback);
+
+            if (followupTimer is null)
+                followupTimer = new(this, CastTimerCallback);
 
             bool cast = CastSpell(PORT_SPELL, SkillBase.GetSpellLine(GlobalSpellsLines.Mob_Spells), false);
             if (GetSkillDisabledDuration(PORT_SPELL) > 0)
@@ -168,13 +171,9 @@ namespace DOL.GS.Scripts
                         eChatLoc.CL_ChatWindow);
                 }
 
-                castTimer.Interval = PORT_SPELL.CastTime;
-                castTimer.Callback += new ECSGameTimer.ECSTimerCallback(CastTimerCallback);
                 castTimer.Start(PORT_SPELL.CastTime);
-                followupTimer = new ECSGameTimer(this, CastTimerCallback);
-                followupTimer.Interval = PORT_SPELL.CastTime + 10000; //10s after
-                followupTimer.Callback = CastTimerCallback;
-                followupTimer.Start(followupTimer.Interval);
+                followupTimer.Start(PORT_SPELL.CastTime + 10000);
+
                 foreach (OFAssistant assi in Assistants)
                 {
                     assi.CastEffect();
