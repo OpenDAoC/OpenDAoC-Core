@@ -1472,13 +1472,18 @@ namespace DOL.GS
 
 			Health -= damageAmount + criticalAmount;
 
-			if (!IsAlive && Monitor.TryEnter(dieLock) && !IsBeingHandledByReaperService)
-			{
-				IsBeingHandledByReaperService = true;
+			if (IsAlive)
+				return;
 
+			if (Monitor.TryEnter(dieLock))
+			{
 				try
 				{
-					Die(source);
+					if (!IsBeingHandledByReaperService)
+					{
+						IsBeingHandledByReaperService = true;
+						Die(source);
+					}
 				}
 				finally
 				{
@@ -2046,10 +2051,6 @@ namespace DOL.GS
 
 				//Let's send the notification at the end
 				Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer));
-			}
-			catch(Exception e)
-			{
-				Console.WriteLine(e.Message);
 			}
 			finally
 			{
