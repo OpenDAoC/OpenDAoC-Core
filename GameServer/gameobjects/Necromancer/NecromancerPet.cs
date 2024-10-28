@@ -97,34 +97,35 @@ namespace DOL.GS
 		/// </summary>
 		public override int GetModified(eProperty property)
 		{
-			if (Brain == null || (Brain as IControlledBrain) == null)
+			if (Brain is not IControlledBrain brain)
 				return base.GetModified(property);
 
 			switch (property)
 			{
 				case eProperty.MaxHealth:
 				{
-					int hitsCap = MaxHealthCalculator.GetItemBonusCap(Owner) + MaxHealthCalculator.GetItemBonusCapIncrease(Owner);
-					int conFromRa = 0;
-					int conFromItems = 0;
-					int maxHealthFromItems = 0;
-					double toughnessMod = 1.0;
-					
-					if ((Brain as IControlledBrain).GetLivingOwner() is GamePlayer playerOwner)
-					{
-						conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(AtlasRAHelpers.GetAugConLevel(playerOwner));
-						conFromItems = playerOwner.GetModifiedFromItems(eProperty.Constitution);
-						maxHealthFromItems = playerOwner.ItemBonus[(int) eProperty.MaxHealth];
-						AtlasOF_ToughnessAbility toughness = playerOwner.GetAbility<AtlasOF_ToughnessAbility>();
+					// Possibly missing flat HP buff bonus. Maybe HP from Champion levels too?
+					int baseHp = 30 * Level;
+					GameLiving livingOwner = brain.GetLivingOwner();
 
-						if (toughness != null)
-							toughnessMod = 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01;
-					}
+					if (livingOwner == null)
+						return baseHp;
 
-					int conBonus = (int) ((conFromItems + conFromRa) * 3.1);
-					int hitsBonus = 30 * Level + Math.Min(maxHealthFromItems, hitsCap);
-					int totalBonus = conBonus + hitsBonus;
-					return (int) (totalBonus * toughnessMod);
+					int conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(AtlasRAHelpers.GetAugConLevel(livingOwner));
+					int conFromItems = livingOwner.GetModifiedFromItems(eProperty.Constitution);
+					baseHp += (int) ((conFromItems + conFromRa) * 3.1);
+
+					int itemBonus = livingOwner.ItemBonus[(int) property];
+					int cap = MaxHealthCalculator.GetItemBonusCap(livingOwner) + MaxHealthCalculator.GetItemBonusCapIncrease(livingOwner);
+					itemBonus = Math.Min(itemBonus, cap);
+
+					int flatAbilityBonus = livingOwner.AbilityBonus[(int) property]; // New Toughness.
+					int multiplicativeAbilityBonus = livingOwner.AbilityBonus[(int) eProperty.Of_Toughness]; // Old Toughness.
+
+					double result = baseHp;
+					result *= 1 + multiplicativeAbilityBonus * 0.01;
+					result += itemBonus + flatAbilityBonus;
+					return (int) result;
 				}
 				default:
 					return base.GetModified(property);

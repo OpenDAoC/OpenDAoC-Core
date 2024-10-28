@@ -161,10 +161,10 @@ namespace DOL.GS
 		Skill_Last = 115,
 		#endregion
 
-		// 116 - 119 Available
+		// 116 - 117 Available
 
+		Of_Toughness = 118,
 		CriticalDebuffHitChance = 119,
-
 		Focus_Darkness = 120,
 		Focus_Suppression = 121,
 		Focus_Runecarving = 122,

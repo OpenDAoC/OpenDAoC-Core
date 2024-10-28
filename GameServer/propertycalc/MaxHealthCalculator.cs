@@ -37,10 +37,13 @@ namespace DOL.GS.PropertyCalc
                     hpBase = (int) (hpBase * (100 + levelBonus) * 0.01);
                 }
 
-                int abilityBonus = player.AbilityBonus[(int) property];
-                AtlasOF_ToughnessAbility toughness = player.GetAbility<AtlasOF_ToughnessAbility>();
-                double toughnessMod = toughness != null ? 1 + toughness.GetAmountForLevel(toughness.Level) * 0.01 : 1;
-                return Math.Max((int) (hpBase * toughnessMod) + itemBonus + buffBonus + abilityBonus, 1);
+                int flatAbilityBonus = living.AbilityBonus[(int) property]; // New Toughness.
+                int multiplicativeAbilityBonus = living.AbilityBonus[(int) eProperty.Of_Toughness]; // Old Toughness.
+
+                double result = hpBase;
+                result *= 1 + multiplicativeAbilityBonus * 0.01;
+                result += itemBonus + buffBonus + flatAbilityBonus;
+                return (int) result;
             }
             else if (living is GameKeepComponent keepComponent)
             {
