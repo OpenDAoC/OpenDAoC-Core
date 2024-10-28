@@ -3008,6 +3008,7 @@ namespace DOL.GS.Spells
 
 					double varianceOffset = CalculateDamageVarianceOffsetFromLevelDifference(casterToUse, target);
 					max = 1 + varianceOffset;
+					max = Math.Max(0.2, max);
 
 					if (target.Level <= 0)
 						min = max;
