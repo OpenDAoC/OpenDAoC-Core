@@ -87,64 +87,64 @@ namespace DOL.GS.RealmAbilities
             }
         }
 
-        public static int GetAugDexLevel(GamePlayer player)
+        public static int GetAugDexLevel(GameLiving living)
         {
-            AtlasOF_RADexterityEnhancer augDex = player.GetAbility<AtlasOF_RADexterityEnhancer>();
+            AtlasOF_RADexterityEnhancer augDex = living.GetAbility<AtlasOF_RADexterityEnhancer>();
             if (augDex == null)
                 return 0;
 
-            return player.CalculateSkillLevel(augDex);
+            return living.CalculateSkillLevel(augDex);
         }
 
-        public static int GetAugStrLevel(GamePlayer player)
+        public static int GetAugStrLevel(GameLiving living)
         {
-            AtlasOF_RAStrengthEnhancer augStr = player.GetAbility<AtlasOF_RAStrengthEnhancer>();
+            AtlasOF_RAStrengthEnhancer augStr = living.GetAbility<AtlasOF_RAStrengthEnhancer>();
             if (augStr == null)
                 return 0;
 
-            return player.CalculateSkillLevel(augStr);
+            return living.CalculateSkillLevel(augStr);
         }
 
-        public static int GetAugConLevel(GamePlayer player)
+        public static int GetAugConLevel(GameLiving living)
         {
-            AtlasOF_RAConstitutionEnhancer augCon = player.GetAbility<AtlasOF_RAConstitutionEnhancer>();
+            AtlasOF_RAConstitutionEnhancer augCon = living.GetAbility<AtlasOF_RAConstitutionEnhancer>();
             if (augCon == null)
                 return 0;
 
-            return player.CalculateSkillLevel(augCon);
+            return living.CalculateSkillLevel(augCon);
         }
 
-        public static int GetAugAcuityLevel(GamePlayer player)
+        public static int GetAugAcuityLevel(GameLiving living)
         {
-            AtlasOF_RAAcuityEnhancer augAcuity = player.GetAbility<AtlasOF_RAAcuityEnhancer>();
+            AtlasOF_RAAcuityEnhancer augAcuity = living.GetAbility<AtlasOF_RAAcuityEnhancer>();
 
             if (augAcuity == null)
                 return 0;
 
-            return player.CalculateSkillLevel(augAcuity);
+            return living.CalculateSkillLevel(augAcuity);
         }
 
-        public static int GetAugQuiLevel(GamePlayer player)
+        public static int GetAugQuiLevel(GameLiving living)
         {
-            AtlasOF_RAQuicknessEnhancer augQui = player.GetAbility<AtlasOF_RAQuicknessEnhancer>();
+            AtlasOF_RAQuicknessEnhancer augQui = living.GetAbility<AtlasOF_RAQuicknessEnhancer>();
 
             if (augQui == null)
                 return 0;
 
-            return player.CalculateSkillLevel(augQui);
+            return living.CalculateSkillLevel(augQui);
         }
 
-        public static int GetSerenityLevel(GamePlayer player)
+        public static int GetSerenityLevel(GameLiving living)
         {
-            AtlasOF_SerenityAbility raSerenity = player.GetAbility<AtlasOF_SerenityAbility>();
+            AtlasOF_SerenityAbility raSerenity = living.GetAbility<AtlasOF_SerenityAbility>();
 
             if (raSerenity == null)
                 return 0;
 
-            return player.CalculateSkillLevel(raSerenity);
+            return living.CalculateSkillLevel(raSerenity);
         }
 
-        public static int GetFirstAidLevel(GamePlayer player)
+        public static int GetFirstAidLevel(GameLiving player)
         {
             AtlasOF_FirstAid raFirstAid = player.GetAbility<AtlasOF_FirstAid>();
 
@@ -154,14 +154,14 @@ namespace DOL.GS.RealmAbilities
             return player.CalculateSkillLevel(raFirstAid);
         }
 
-        public static int GetLongshotLevel(GamePlayer player)
+        public static int GetLongshotLevel(GameLiving living)
         {
-            AtlasOF_Longshot raLongshot = player.GetAbility<AtlasOF_Longshot>();
+            AtlasOF_Longshot raLongshot = living.GetAbility<AtlasOF_Longshot>();
 
             if (raLongshot == null)
                 return 0;
 
-            return player.CalculateSkillLevel(raLongshot);
+            return living.CalculateSkillLevel(raLongshot);
         }
     }
 }
