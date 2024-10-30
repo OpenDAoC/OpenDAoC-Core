@@ -2450,7 +2450,11 @@ namespace DOL.GS.Spells
 			hitChance += m_caster.GetModified(eProperty.ToHitBonus);
 
 			if (m_caster is not GamePlayer || target is not GamePlayer)
+			{
+				// 1 per level difference.
+				hitChance += m_caster.EffectiveLevel - target.EffectiveLevel;
 				hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+			}
 
 			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.PiercingMagic))
 			{
