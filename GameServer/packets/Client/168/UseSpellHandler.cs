@@ -99,17 +99,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             else if (sk is Styles.Style style)
                 player.styleComponent.ExecuteWeaponStyle(style);
             else if (sk is Ability ability)
-            {
-                IAbilityActionHandler handler = SkillBase.GetAbilityActionHandler(ability.KeyName);
-
-                if (handler != null)
-                {
-                    handler.Execute(ability, player);
-                    return;
-                }
-
-                ability.Execute(player);
-            }
+                player.castingComponent.RequestStartUseAbility(ability);
             else
             {
                 if (Log.IsWarnEnabled)

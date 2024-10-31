@@ -131,13 +131,13 @@ namespace DOL.GS.Commands
 
         private void Create(Spell spell, SpellLine spellLine)
         {
-            ChainedSpell chainedSpell = new(new StartCastSpellRequest(spell, spellLine, null, null), _player);
-            _actionChainBeingCreated = new() { chainedSpell };
+            ChainedSpell chainedSpell = new(new StartCastSpellRequest(_player.castingComponent, spell, spellLine, null, null), _player);
+            _actionChainBeingCreated = [chainedSpell];
         }
 
         private void Add(Spell spell, SpellLine spellLine)
         {
-            ChainedSpell chainedSpell = new(new StartCastSpellRequest(spell, spellLine, null, null), _player);
+            ChainedSpell chainedSpell = new(new StartCastSpellRequest(_player.castingComponent, spell, spellLine, null, null), _player);
             _actionChainBeingCreated.Add(chainedSpell);
         }
 

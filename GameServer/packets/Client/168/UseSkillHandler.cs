@@ -114,17 +114,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 handler?.Execute(specialization, player);
             }
             else if (sk is Ability ability)
-            {
-                IAbilityActionHandler handler = SkillBase.GetAbilityActionHandler(ability.KeyName);
-
-                if (handler != null)
-                {
-                    handler.Execute(ability, player);
-                    return;
-                }
-
-                ability.Execute(player);
-            }
+                player.castingComponent.RequestStartUseAbility(ability);
             else if (sk is Spell spell)
             {
                 if (sksib is SpellLine spellLine)

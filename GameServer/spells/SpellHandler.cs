@@ -1128,15 +1128,9 @@ namespace DOL.GS.Spells
 
 					break;
 				}
-				case eCastState.Interrupted:
-				{
-					InterruptCasting();
-					CastState = eCastState.Cleanup;
-					break;
-				}
 				case eCastState.Focusing:
 				{
-					if ((Caster is GamePlayer && (Caster as GamePlayer).IsStrafing) || Caster.IsMoving)
+					if (Caster.IsStrafing || Caster.IsMoving)
 					{
 						CasterMoves();
 						CastState = eCastState.Cleanup;
@@ -1146,31 +1140,40 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			//Process cast on same tick if finished.
-			if (CastState == eCastState.Finished)
+			// Process cast on same tick if interrupted or finished.
+			switch (CastState)
 			{
-				FinishSpellCast(Target);
-				if (Spell.IsFocus)
+				case eCastState.Interrupted:
 				{
-					if (Spell.SpellType != eSpellType.GatewayPersonalBind)
+					InterruptCasting();
+					CastState = eCastState.Cleanup;
+					break;
+				}
+				case eCastState.Finished:
+				{
+					FinishSpellCast(Target);
+
+					if (Spell.IsFocus)
 					{
-						CastState = eCastState.Focusing;
+						if (Spell.SpellType is not eSpellType.GatewayPersonalBind)
+							CastState = eCastState.Focusing;
+						else
+						{
+							CastState = eCastState.Cleanup;
+							DbInventoryItem stone = Caster.Inventory.GetFirstItemByName("Personal Bind Recall Stone", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+							if (stone != null)
+								stone.CanUseAgainIn = stone.CanUseEvery;
+						}
 					}
 					else
-					{
 						CastState = eCastState.Cleanup;
 
-						var stone = Caster.Inventory.GetFirstItemByName("Personal Bind Recall Stone", eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-						stone.CanUseAgainIn = stone.CanUseEvery;
-
-						//.SetCooldown();
-					}
+					break;
 				}
-				else
-					CastState = eCastState.Cleanup;
 			}
 
-			if (CastState == eCastState.Cleanup)
+			if (CastState is eCastState.Cleanup)
 				Caster.castingComponent.OnSpellHandlerCleanUp(Spell);
 		}
 
