@@ -194,7 +194,7 @@ namespace DOL.GS
 
             this.ItemBonus[eProperty.ArmorAbsorption] += GetAbsorb(armorType);
             BroadcastLivingEquipmentUpdate();
-            ClientService.UpdateObjectForPlayers(this);
+            ClientService.UpdateNpcForPlayers(this);
         }
 
         private DbInventoryItem GenerateArmorStats(DbInventoryItem item)

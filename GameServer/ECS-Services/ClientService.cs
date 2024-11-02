@@ -542,6 +542,20 @@ namespace DOL.GS
                 UpdateObjectForPlayer(player, gameObject);
         }
 
+        public static void UpdateNpcForPlayer(GamePlayer player, GameNPC npc)
+        {
+            if (player.Client.ClientState is not GameClient.eClientState.Playing || !player.CanDetect(npc))
+                return;
+
+            UpdateObjectForPlayerInternal(player, npc);
+        }
+
+        public static void UpdateNpcForPlayers(GameNPC npc)
+        {
+            foreach (GamePlayer player in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                UpdateNpcForPlayer(player, npc);
+        }
+
         private static void CreateNpcForPlayerInternal(GamePlayer player, GameNPC npc)
         {
             player.Out.SendNPCCreate(npc);
@@ -558,7 +572,7 @@ namespace DOL.GS
 
         public static void CreateNpcForPlayer(GamePlayer player, GameNPC npc)
         {
-            if (player.Client.ClientState is not GameClient.eClientState.Playing)
+            if (player.Client.ClientState is not GameClient.eClientState.Playing || !player.CanDetect(npc))
                 return;
 
             CreateNpcForPlayerInternal(player, npc);
@@ -645,6 +659,13 @@ namespace DOL.GS
 
                 if (!npc.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || npc.ObjectState is not GameObject.eObjectState.Active || !npc.IsVisibleTo(player))
                     npcUpdateCache.Remove(npc, out _);
+                else if (!player.CanDetect(npc))
+                {
+                    // Prevents NPCs from staying visible for a few seconds after getting out of range.
+                    // Not really needed in other cases.
+                    player.Out.SendObjectRemove(npc);
+                    npcUpdateCache.Remove(npc, out _);
+                }
             }
 
             List<GameNPC> npcsInRange = player.GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE);
@@ -655,7 +676,7 @@ namespace DOL.GS
 
             foreach (GameNPC npcInRange in npcsInRange)
             {
-                if (npcInRange.ObjectState is not GameObject.eObjectState.Active || !npcInRange.IsVisibleTo(player))
+                if (npcInRange.ObjectState is not GameObject.eObjectState.Active || !npcInRange.IsVisibleTo(player) || !player.CanDetect(npcInRange))
                     continue;
 
                 if (!npcUpdateCache.TryGetValue(npcInRange, out CachedNpcValues cachedNpcValues))

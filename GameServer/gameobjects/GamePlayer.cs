@@ -8604,14 +8604,11 @@ namespace DOL.GS
             m_invulnerabilityTick = 0;
             craftComponent = new CraftComponent(this);
 
-            foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+            foreach (GamePlayer playerInRadius in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (player == null)
-                    continue;
-
                 // Prevents players from seeing stealthed GMs during their loading time.
-                if (player != this && (IsStealthed == false || player.CanDetect(this)))
-                    player.Out.SendPlayerCreate(this);
+                if (playerInRadius != this && playerInRadius.CanDetect(this))
+                    playerInRadius.Out.SendPlayerCreate(this);
             }
 
             UpdateEquipmentAppearance();
@@ -11926,25 +11923,27 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// Checks whether this player can detect stealthed enemy
-        /// </summary>
-        /// <param name="enemy"></param>
-        /// <returns>true if enemy can be detected</returns>
-        public virtual bool CanDetect(GamePlayer enemy)
+        public virtual bool CanDetect(GameObject enemy)
         {
-            if (enemy.CurrentRegionID != CurrentRegionID)
-                return false;
+            if (!enemy.IsStealthed || Client.Account.PrivLevel > 1)
+                return true;
+
             if (!IsAlive)
                 return false;
-            if (enemy.EffectList.GetOfType<VanishEffect>() != null)
-                return false;
-            if (this.Client.Account.PrivLevel > 1)
+
+            int detectionRange = Math.Clamp(1500 + (Level - enemy.Level) * 50, 500, 3000);
+            return IsWithinRadius(enemy, detectionRange);
+        }
+
+        public virtual bool CanDetect(GamePlayer enemy)
+        {
+            if (!enemy.IsStealthed || Client.Account.PrivLevel > 1)
                 return true;
-            if (enemy.Client.Account.PrivLevel > 1)
+
+            if (!IsAlive || enemy.EffectList.GetOfType<VanishEffect>() != null || enemy.Client.Account.PrivLevel > 1)
                 return false;
 
-            if (this.effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
+            if (effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
                 return true;
 
             if (HasAbilityType(typeof(AtlasOF_SeeHidden)) 

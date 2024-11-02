@@ -44,10 +44,7 @@ namespace DOL.GS
 
             foreach (GamePlayer player in OwnerPlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (player == OwnerPlayer)
-                    continue;
-
-                if (!player.CanDetect(OwnerPlayer))
+                if (player != OwnerPlayer && !player.CanDetect(OwnerPlayer))
                     player.Out.SendObjectDelete(OwnerPlayer);
             }
 

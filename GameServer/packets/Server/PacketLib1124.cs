@@ -203,7 +203,7 @@ namespace DOL.GS.PacketHandler
 							flags2 |= 0x02;
 					}
 
-					if ((npc.Flags & GameNPC.eFlags.STEALTH) > 0)
+					if (npc.IsStealthed)
 						flags2 |= 0x04;
 
 					eQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);

@@ -1169,7 +1169,7 @@ namespace DOL.GS
             display.ObjectState = eObjectState.Active;
             display.attackComponent.AttackState = true;
             display.BroadcastLivingEquipmentUpdate();
-            ClientService.UpdateObjectForPlayer(player, display);
+            ClientService.UpdateNpcForPlayer(player, display);
 
             //Uncomment this if you want animations
             // var animationThread = new Thread(() => LoopAnimation(player,item, display,tempAd));

@@ -50,10 +50,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             foreach (GamePlayer otherPlayer in client.Player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (otherPlayer == player)
-                    continue;
-
-                if (player.IsStealthed && !otherPlayer.CanDetect(player))
+                if (otherPlayer == player || !otherPlayer.CanDetect(player))
                     continue;
 
                 if (otherPlayer.Client.Version >= GameClient.eClientVersion.Version1127)

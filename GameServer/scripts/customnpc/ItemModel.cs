@@ -6859,7 +6859,7 @@ namespace DOL.GS
             display.ObjectState = eObjectState.Active;
             display.attackComponent.AttackState = true;
             display.BroadcastLivingEquipmentUpdate();
-            ClientService.UpdateObjectForPlayer(player, display);
+            ClientService.UpdateNpcForPlayer(player, display);
         }
 
         private void LoopAnimation(GamePlayer player, DbInventoryItem item, GameNPC display,AttackData ad)

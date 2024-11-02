@@ -1145,7 +1145,7 @@ namespace DOL.GS.Commands
 			{
 				targetMob.Health = targetMob.MaxHealth;
 				targetMob.SaveIntoDatabase();
-				ClientService.UpdateObjectForPlayer(client.Player, targetMob);
+				ClientService.UpdateNpcForPlayer(client.Player, targetMob);
 				client.Out.SendMessage("Mob '" + targetMob.Name + "' healed (" + targetMob.Health + "/" + targetMob.MaxHealth + ")", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 			catch (Exception e)

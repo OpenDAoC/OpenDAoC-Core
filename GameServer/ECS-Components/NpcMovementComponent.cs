@@ -121,7 +121,7 @@ namespace DOL.GS
 
                 if (_needsBroadcastUpdate)
                 {
-                    ClientService.UpdateObjectForPlayers(Owner);
+                    ClientService.UpdateNpcForPlayers(Owner);
                     _needsBroadcastUpdate = false;
                 }
             }

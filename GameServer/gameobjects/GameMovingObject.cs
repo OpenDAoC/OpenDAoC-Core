@@ -50,7 +50,7 @@ namespace DOL.GS
 			{
 				base.Model = value;
 				if(ObjectState==eObjectState.Active)
-					ClientService.UpdateObjectForPlayers(this);
+					ClientService.UpdateNpcForPlayers(this);
 			}
 		}
 		public override bool IsWorthReward

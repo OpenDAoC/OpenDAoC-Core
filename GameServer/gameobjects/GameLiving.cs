@@ -3059,8 +3059,6 @@ namespace DOL.GS
 			movementComponent.DisableTurning(add);
 		}
 
-		public virtual bool IsStealthed => false;
-
 		public virtual void Stealth(bool goStealth)
 		{
 			// Not implemented.

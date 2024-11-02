@@ -778,7 +778,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The stealth state of this NPC
 		/// </summary>
-		public override bool IsStealthed => false;// (Flags & eFlags.STEALTH) != 0;
+		public override bool IsStealthed => (Flags & eFlags.STEALTH) != 0;
 		public bool WasStealthed { get; private set; } = false;
 
 		public override void OnMaxSpeedChange()
@@ -2011,7 +2011,7 @@ namespace DOL.GS
 				m_teleporterIndicator.AddToWorld();
 			}
 
-			if (Flags.HasFlag(eFlags.STEALTH))
+			if (IsStealthed)
 				WasStealthed = true;
 
 			return true;

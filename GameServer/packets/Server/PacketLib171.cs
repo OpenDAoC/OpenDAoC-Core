@@ -196,7 +196,7 @@ namespace DOL.GS.PacketHandler
 					if (m_gameClient.Account.PrivLevel > 1) add += "-NON"; // indicates NON flag for GMs
 				else flags2 |= 0x02;
 
-				if( ( npc.Flags & GameNPC.eFlags.STEALTH ) > 0 )
+				if (npc.IsStealthed)
 					flags2 |= 0x04;
 
 				eQuestIndicator questIndicator = npc.GetQuestIndicator(m_gameClient.Player);

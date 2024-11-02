@@ -979,7 +979,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if ((player.InHouse || otherPlayer.InHouse) && otherPlayer.CurrentHouse != player.CurrentHouse)
                         continue;
 
-                    if (!player.IsStealthed || otherPlayer.CanDetect(player))
+                    if (otherPlayer.CanDetect(player))
                     {
                         if (otherPlayer.Client.Version >= GameClient.eClientVersion.Version1127)
                         {
@@ -1225,7 +1225,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         }
                     }
 
-                    if (!player.IsStealthed || otherPlayer.CanDetect(player))
+                    if (otherPlayer.CanDetect(player))
                     {
                         //forward the position packet like normal!
                         if (otherPlayer.Client.Version >= GameClient.eClientVersion.Version1124)

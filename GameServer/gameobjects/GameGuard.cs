@@ -19,8 +19,6 @@ namespace DOL.GS
             m_ownBrain.Body = this;
         }
 
-        public override bool IsStealthed => (Flags & eFlags.STEALTH) != 0;
-
         public override IList GetExamineMessages(GamePlayer player)
         {
             IList list = new ArrayList(4);

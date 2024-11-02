@@ -570,6 +570,8 @@ namespace DOL.GS
 			return list;
 		}
 
+		public virtual bool IsStealthed => false;
+
 		#endregion
 
 		#region IDs/Database

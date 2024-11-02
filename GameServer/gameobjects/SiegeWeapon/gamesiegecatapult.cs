@@ -132,8 +132,8 @@ namespace DOL.GS
 
 			if (Owner is GamePlayer)
 			{
-				ClientService.UpdateObjectForPlayer(Owner, tempLOSSkyChecker);
-				ClientService.UpdateObjectForPlayer(Owner, tempLOSGTChecker);
+				ClientService.UpdateNpcForPlayer(Owner, tempLOSSkyChecker);
+				ClientService.UpdateNpcForPlayer(Owner, tempLOSGTChecker);
 				Owner.Out.SendCheckLos(tempLOSSkyChecker, tempLOSGTChecker, new CheckLosResponse(CheckGTLosCallback));
 			}
 		}
@@ -158,7 +158,7 @@ namespace DOL.GS
 
 				if (Owner is GamePlayer)
 				{
-					ClientService.UpdateObjectForPlayer(Owner, tempLOSGTChecker);
+					ClientService.UpdateNpcForPlayer(Owner, tempLOSGTChecker);
 					Owner.Out.SendCheckLos(tempLOSSkyChecker, tempLOSGTChecker, new CheckLosResponse(CheckGTLosCallback));
 				}
 			}
