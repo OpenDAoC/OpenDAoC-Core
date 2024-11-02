@@ -3204,6 +3204,11 @@ namespace DOL.GS
 			m_z = m_spawnPoint.Z;
 			Heading = m_spawnHeading;
 			SpawnTick = GameLoop.GameLoopTime;
+
+			// Set stealth back on respawn instead of when the NPC is dying to prevent the corpse from immediately disappearing.
+			if (WasStealthed)
+				Flags |= eFlags.STEALTH;
+
 			AddToWorld();
 			return 0;
 		}
@@ -3229,9 +3234,7 @@ namespace DOL.GS
 			if (Brain is StandardMobBrain standardMobBrain)
 				standardMobBrain.OnAttackedByEnemy(ad);
 
-			if ((Flags & eFlags.STEALTH) != 0)
-				Flags ^= eFlags.STEALTH;
-
+			Flags &= ~eFlags.STEALTH;
 			base.OnAttackedByEnemy(ad);
 		}
 

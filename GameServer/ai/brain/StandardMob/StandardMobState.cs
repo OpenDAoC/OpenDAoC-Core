@@ -88,9 +88,7 @@ namespace DOL.AI.Brain
 
         public override void Enter()
         {
-            if (_brain.Body.Flags.HasFlag(GameNPC.eFlags.STEALTH))
-                _brain.Body.Flags ^= GameNPC.eFlags.STEALTH;
-
+            _brain.Body.Flags &= ~GameNPC.eFlags.STEALTH;
             _aggroEndTime = GameLoop.GameLoopTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR;
             base.Enter();
         }
@@ -99,6 +97,10 @@ namespace DOL.AI.Brain
         {
             if (_brain.Body.attackComponent.AttackState)
                 _brain.Body.StopAttack();
+
+            // Don't stealth NPCs on death to prevent their corpse from immediately disappearing.
+            if (_brain.Body.WasStealthed && _brain.Body.IsAlive)
+                _brain.Body.Flags |= GameNPC.eFlags.STEALTH;
 
             _brain.Body.TargetObject = null;
             base.Exit();
@@ -180,9 +182,6 @@ namespace DOL.AI.Brain
 
         public override void Enter()
         {
-            if (_brain.Body.WasStealthed)
-                _brain.Body.Flags |= GameNPC.eFlags.STEALTH;
-
             _brain.ClearAggroList();
             base.Enter();
         }

@@ -6,10 +6,10 @@ namespace DOL.GS.Keeps
 {
 	public class GuardStealther : GameKeepGuard
 	{
-        public GuardStealther() : base()
-        {
-            Flags = eFlags.STEALTH;
-        }
+		public GuardStealther() : base()
+		{
+			Flags |= eFlags.STEALTH;
+		}
 
 		protected override ICharacterClass GetClass()
 		{
