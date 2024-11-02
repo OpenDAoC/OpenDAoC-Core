@@ -11925,6 +11925,9 @@ namespace DOL.GS
 
         public virtual bool CanDetect(GameObject enemy)
         {
+            // Custom feature to make stealthed NPCs (or other GameObjects) actually invisible.
+            return true;
+
             if (!enemy.IsStealthed || Client.Account.PrivLevel > 1)
                 return true;
 
