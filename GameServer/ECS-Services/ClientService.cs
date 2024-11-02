@@ -549,6 +549,10 @@ namespace DOL.GS
             if (npc.Inventory != null)
                 player.Out.SendLivingEquipmentUpdate(npc);
 
+            // Dirty fix preventing the client from losing its target when its a NPC.
+            if (player.TargetObject == npc)
+                player.Out.SendChangeTarget(npc);
+
             OnObjectCreateOrUpdateForPlayer(player, npc);
         }
 
