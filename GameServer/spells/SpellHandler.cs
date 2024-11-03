@@ -941,7 +941,7 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType is not eSpellType.PetSpell)
 						{
 							// The target must be visible and in front of the caster
-							if (target.IsStealthed || !HasLos || !Caster.IsObjectInFront(target, 180, Caster.TargetInViewAlwaysTrueMinRange))
+							if (!HasLos || !Caster.IsObjectInFront(target, 180, Caster.TargetInViewAlwaysTrueMinRange))
 							{
 								if (verbose)
 									MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
