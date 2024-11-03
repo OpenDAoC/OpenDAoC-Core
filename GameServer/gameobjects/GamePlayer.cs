@@ -11925,137 +11925,128 @@ namespace DOL.GS
 
         public virtual bool CanDetect(GameObject enemy)
         {
-            // Custom feature to make stealthed NPCs (or other GameObjects) actually invisible.
-            return true;
-
             if (!enemy.IsStealthed || Client.Account.PrivLevel > 1)
                 return true;
 
             if (!IsAlive)
                 return false;
 
-            int detectionRange = Math.Clamp(1500 + (Level - enemy.Level) * 50, 500, 3000);
-            return IsWithinRadius(enemy, detectionRange);
-        }
-
-        public virtual bool CanDetect(GamePlayer enemy)
-        {
-            if (!enemy.IsStealthed || Client.Account.PrivLevel > 1)
-                return true;
-
-            if (!IsAlive || enemy.EffectList.GetOfType<VanishEffect>() != null || enemy.Client.Account.PrivLevel > 1)
-                return false;
-
-            if (effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
-                return true;
-
-            if (HasAbilityType(typeof(AtlasOF_SeeHidden)) 
-                && ( enemy.CharacterClass is ClassMinstrel 
-                     || enemy.CharacterClass is ClassRanger
-                     || enemy.CharacterClass is ClassHunter
-                     || enemy.CharacterClass is ClassScout)
-                && this.IsWithinRadius(enemy, 650)
-                && !enemy.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage))
+            switch (enemy.GameObjectType)
             {
-                return true;
+                case eGameObjectType.PLAYER:
+                {
+                    GamePlayer enemyPlayer = enemy as GamePlayer;
+
+                    // Own group is always visible.
+                    if (enemyPlayer.Group != null && Group != null && enemyPlayer.Group == Group)
+                        return true;
+
+                    // Why is this still using the old effect list and vanish effect?
+                    if (enemyPlayer.EffectList.GetOfType<VanishEffect>() != null || enemyPlayer.Client.Account.PrivLevel > 1)
+                        return false;
+
+                    if (effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
+                        return true;
+
+                    if (HasAbilityType(typeof(AtlasOF_SeeHidden)) &&
+                        (enemyPlayer.CharacterClass is ClassMinstrel or ClassRanger or ClassHunter or ClassScout) &&
+                        IsWithinRadius(enemy, 650) &&
+                        !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage))
+                    {
+                        return true;
+                    }
+
+                    /*
+                     * http://www.critshot.com/forums/showthread.php?threadid=3142
+                     * The person doing the looking has a chance to find them based on their level, minus the stealthed person's stealth spec.
+                     *
+                     * -Normal detection range = (enemy lvl  your stealth spec) * 20 + 125
+                     * -Detect Hidden Range = (enemy lvl  your stealth spec) * 50 + 250
+                     * -See Hidden range = 2700 - (38 * your stealth spec)
+                     */
+
+                    int enemyStealthLevel = Math.Min(50, enemyPlayer.GetModifiedSpecLevel(Specs.Stealth));
+                    int levelDiff = Math.Max(0, Level - enemyStealthLevel);
+                    int range;
+                    bool enemyHasCamouflage = enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage);
+                    bool enemyHasVanish = enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Vanish);
+
+                    // If we have detect hidden and enemy doesn't.
+                    if (HasAbility(Abilities.DetectHidden) && !enemyHasVanish && !enemyHasCamouflage)
+                        range = levelDiff * 50 + 250; // Was +300 before.
+                    else
+                        range = levelDiff * 20 + 125;
+
+                    if (ConquestService.ConquestManager.IsPlayerNearFlag(this))
+                        range += 50;
+
+                    // Mastery of Stealth
+                    // Disabled. This is NF MoS. OF Version does not add range, only movement speed.
+                    /*RAPropertyEnhancer mos = GetAbility<MasteryOfStealthAbility>();
+                    if (mos != null && !enemyHasCamouflage)
+                    {
+                        if (!HasAbility(Abilities.DetectHidden) || !enemy.HasAbility(Abilities.DetectHidden))
+                            range += mos.GetAmountForLevel(CalculateSkillLevel(mos));
+                    }*/
+
+                    range += BaseBuffBonusCategory[(int)eProperty.Skill_Stealth];
+
+                    // //Buff (Stealth Detection)
+                    // //Increases the target's ability to detect stealthed players and monsters.
+                    // GameSpellEffect iVampiirEffect = SpellHandler.FindEffectOnTarget((GameLiving)this, "VampiirStealthDetection");
+                    // if (iVampiirEffect != null)
+                    //     range += (int)iVampiirEffect.Spell.Value;
+                             //
+                    // //Infill Only - Greater Chance to Detect Stealthed Enemies for 1 minute
+                    // //after executing a klling blow on a realm opponent.
+                    // GameSpellEffect HeightenedAwareness = SpellHandler.FindEffectOnTarget((GameLiving)this, "HeightenedAwareness");
+                    // if (HeightenedAwareness != null)
+                    //     range += (int)HeightenedAwareness.Spell.Value;
+                    //
+                    // //Nightshade Only - Greater chance of remaining hidden while stealthed for 1 minute
+                    // //after executing a killing blow on a realm opponent.
+                    // GameSpellEffect SubtleKills = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "SubtleKills");
+                    // if (SubtleKills != null)
+                    // {
+                    //     range -= (int)SubtleKills.Spell.Value;
+                    //     if (range < 0) range = 0;
+                    // }
+                    //
+                    // // Apply Blanket of camouflage effect
+                    // GameSpellEffect iSpymasterEffect1 = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "BlanketOfCamouflage");
+                    // if (iSpymasterEffect1 != null)
+                    // {
+                    //     range -= (int)iSpymasterEffect1.Spell.Value;
+                    //     if (range < 0) range = 0;
+                    // }
+                    //
+                    // // Apply Lookout effect
+                    // GameSpellEffect iSpymasterEffect2 = SpellHandler.FindEffectOnTarget((GameLiving)this, "Loockout");
+                    // if (iSpymasterEffect2 != null)
+                    //     range += (int)iSpymasterEffect2.Spell.Value;
+                    //
+                    // // Apply Prescience node effect
+                    // GameSpellEffect iConvokerEffect = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "Prescience");
+                    // if (iConvokerEffect != null)
+                    //     range += (int)iConvokerEffect.Spell.Value;
+
+                    // Hard cap.
+                    if (range > 1900)
+                        range = 1900;
+
+                    return IsWithinRadius(enemy, range);
+                }
+                case eGameObjectType.NPC:
+                {
+                    // Custom feature to make stealthed NPCs actually invisible.
+                    // Currently disabled.
+                    return true;
+                    int detectionRange = Math.Clamp(1500 + (Level - enemy.Level) * 50, 500, 3000);
+                    return IsWithinRadius(enemy, detectionRange);
+                }
+                default:
+                    return true;
             }
-
-            /*
-             * http://www.critshot.com/forums/showthread.php?threadid=3142
-             * The person doing the looking has a chance to find them based on their level, minus the stealthed person's stealth spec.
-             *
-             * -Normal detection range = (enemy lvl  your stealth spec) * 20 + 125
-             * -Detect Hidden Range = (enemy lvl  your stealth spec) * 50 + 250
-             * -See Hidden range = 2700 - (38 * your stealth spec)
-             */
-
-            int EnemyStealthLevel = enemy.GetModifiedSpecLevel(Specs.Stealth);
-            if (EnemyStealthLevel > 50)
-                EnemyStealthLevel = 50;
-            int levelDiff = this.Level - EnemyStealthLevel;
-            if (levelDiff < 0) levelDiff = 0;
-
-            int range = 0;
-            bool enemyHasCamouflage = EffectListService.GetAbilityEffectOnTarget(enemy, eEffect.Camouflage) != null;
-            bool enemyHasVanish = EffectListService.GetAbilityEffectOnTarget(enemy, eEffect.Vanish) != null;
-            if (HasAbility(Abilities.DetectHidden) && !enemyHasVanish && !enemyHasCamouflage)
-            {
-                // we have detect hidden and enemy don't = higher range
-                range = levelDiff * 50 + 250; // Detect Hidden advantage
-                //range = levelDiff * 50 + 300; // Detect Hidden advantage
-            }
-            else
-            {
-                //range = levelDiff * 20 + 125; // Normal detection range
-                range = levelDiff * 20 + 125; 
-            }
-
-            if (ConquestService.ConquestManager.IsPlayerNearFlag(this))
-            {
-                range += 50;
-            }
-
-            // Mastery of Stealth Bonus
-            /*
-             //removed, this is NF MoStealth. OF Version does not add range, only movespeed
-            RAPropertyEnhancer mos = GetAbility<MasteryOfStealthAbility>();
-            if (mos != null && !enemyHasCamouflage)
-                if (!HasAbility(Abilities.DetectHidden) || !enemy.HasAbility(Abilities.DetectHidden))
-                    range += mos.GetAmountForLevel(CalculateSkillLevel(mos));
-            */
-            range += BaseBuffBonusCategory[(int)eProperty.Skill_Stealth];
-
-            // //Buff (Stealth Detection)
-            // //Increases the target's ability to detect stealthed players and monsters.
-            // GameSpellEffect iVampiirEffect = SpellHandler.FindEffectOnTarget((GameLiving)this, "VampiirStealthDetection");
-            // if (iVampiirEffect != null)
-            //     range += (int)iVampiirEffect.Spell.Value;
-                     //
-            // //Infill Only - Greater Chance to Detect Stealthed Enemies for 1 minute
-            // //after executing a klling blow on a realm opponent.
-            // GameSpellEffect HeightenedAwareness = SpellHandler.FindEffectOnTarget((GameLiving)this, "HeightenedAwareness");
-            // if (HeightenedAwareness != null)
-            //     range += (int)HeightenedAwareness.Spell.Value;
-            //
-            // //Nightshade Only - Greater chance of remaining hidden while stealthed for 1 minute
-            // //after executing a killing blow on a realm opponent.
-            // GameSpellEffect SubtleKills = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "SubtleKills");
-            // if (SubtleKills != null)
-            // {
-            //     range -= (int)SubtleKills.Spell.Value;
-            //     if (range < 0) range = 0;
-            // }
-            //
-            // // Apply Blanket of camouflage effect
-            // GameSpellEffect iSpymasterEffect1 = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "BlanketOfCamouflage");
-            // if (iSpymasterEffect1 != null)
-            // {
-            //     range -= (int)iSpymasterEffect1.Spell.Value;
-            //     if (range < 0) range = 0;
-            // }
-            //
-            // // Apply Lookout effect
-            // GameSpellEffect iSpymasterEffect2 = SpellHandler.FindEffectOnTarget((GameLiving)this, "Loockout");
-            // if (iSpymasterEffect2 != null)
-            //     range += (int)iSpymasterEffect2.Spell.Value;
-            //
-            // // Apply Prescience node effect
-            // GameSpellEffect iConvokerEffect = SpellHandler.FindEffectOnTarget((GameLiving)enemy, "Prescience");
-            // if (iConvokerEffect != null)
-            //     range += (int)iConvokerEffect.Spell.Value;
-
-            //Hard cap is 1900
-            if (range > 1900)
-                range = 1900;
-            //everyone can see your own group stealthed
-            else if (enemy.Group != null && Group != null && enemy.Group == Group)
-            {
-                range = 2500;
-            }
-
-            // Fin
-            // vampiir stealth range, uncomment when add eproperty stealthrange i suppose
-            return this.IsWithinRadius( enemy, range );
         }
 
         #endregion

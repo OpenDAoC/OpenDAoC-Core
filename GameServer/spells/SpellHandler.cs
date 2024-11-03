@@ -689,6 +689,15 @@ namespace DOL.GS.Spells
 						return false;
 					}
 
+					if (!HasLos)
+					{
+						if (!quiet)
+							MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
+
+						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
+						return false;
+					}
+
 					switch (m_spell.Target)
 					{
 						case eSpellTarget.ENEMY:
@@ -716,7 +725,8 @@ namespace DOL.GS.Spells
 								return true;
 
 							// Pet spells (shade) don't require the target to be in front.
-							if (!HasLos || m_spell.SpellType != eSpellType.PetSpell && !m_caster.IsObjectInFront(Target, 180))
+							if ((m_spell.SpellType is not eSpellType.PetSpell && !m_caster.IsObjectInFront(Target, 180)) ||
+								(playerCaster != null && !playerCaster.CanDetect(Target)))
 							{
 								if (!quiet)
 									MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
@@ -751,16 +761,7 @@ namespace DOL.GS.Spells
 						}
 					}
 
-					if (!HasLos)
-					{
-						if (!quiet)
-							MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
-
-						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetNotInView));
-						return false;
-					}
-
-					if (m_spell.Target != eSpellTarget.CORPSE && !Target.IsAlive)
+					if (m_spell.Target is not eSpellTarget.CORPSE && !Target.IsAlive)
 					{
 						if (!quiet)
 							MessageToCaster(Target.GetName(0, true) + " is dead!", eChatType.CT_SpellResisted);
@@ -931,6 +932,14 @@ namespace DOL.GS.Spells
 					return false;
 				}
 
+				if (!HasLos)
+				{
+					if (verbose)
+						MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
+
+					return false;
+				}
+
 				switch (m_spell.Target)
 				{
 					case eSpellTarget.ENEMY:
@@ -938,16 +947,14 @@ namespace DOL.GS.Spells
 						if (m_spell.SpellType is eSpellType.Charm)
 							break;
 
-						if (m_spell.SpellType is not eSpellType.PetSpell)
+						// Pet spells (shade) don't require the target to be in front.
+						if ((m_spell.SpellType is not eSpellType.PetSpell && !m_caster.IsObjectInFront(Target, 180, Caster.TargetInViewAlwaysTrueMinRange)) ||
+							(m_caster is GamePlayer playerCaster && !playerCaster.CanDetect(Target)))
 						{
-							// The target must be visible and in front of the caster
-							if (!HasLos || !Caster.IsObjectInFront(target, 180, Caster.TargetInViewAlwaysTrueMinRange))
-							{
-								if (verbose)
-									MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
+							if (verbose)
+								MessageToCaster("Your target is not visible!", eChatType.CT_SpellResisted);
 
-								return false;
-							}
+							return false;
 						}
 
 						if (!GameServer.ServerRules.IsAllowedToAttack(Caster, target, false))
