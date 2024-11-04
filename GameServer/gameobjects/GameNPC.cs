@@ -3231,6 +3231,26 @@ namespace DOL.GS
 
 		public override void OnAttackedByEnemy(AttackData ad)
 		{
+			if (ad.AttackType is AttackData.eAttackType.Spell && ad.Damage > 0 && Brain is IControlledBrain controlledBrain)
+			{
+				GamePlayer player = controlledBrain.GetPlayerOwner();
+
+				if (player != null)
+				{
+					string modMessage = string.Empty;
+
+					if (ad.Modifier > 0)
+						modMessage = $" ({ad.Modifier})";
+					else if (ad.Modifier < 0)
+						modMessage = $" ({ad.Modifier})";
+
+					player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modMessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+
+					if (ad.CriticalDamage > 0)
+						player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+				}
+			}
+
 			if (Brain is StandardMobBrain standardMobBrain)
 				standardMobBrain.OnAttackedByEnemy(ad);
 

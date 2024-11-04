@@ -255,31 +255,6 @@ namespace DOL.GS
 		/// </summary>
 		public static string PetInstaSpellLine => "Necro Pet Insta Spells";
 
-		/// <summary>
-		/// Called when necro pet is hit to see if spellcasting is interrupted.
-		/// </summary>
-		/// <param name="ad">information about the attack</param>
-		public override void OnAttackedByEnemy(AttackData ad)
-		{
-			if (ad.AttackType == AttackData.eAttackType.Spell && ad.Damage > 0)
-			{
-				GamePlayer player = Owner as GamePlayer;
-				string modmessage = string.Empty;
-
-				if (ad.Modifier > 0)
-					modmessage = " (+" + ad.Modifier + ")";
-				else if (ad.Modifier < 0)
-					modmessage = " (" + ad.Modifier + ")";
-
-				player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.HitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.Damage, modmessage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-
-				if (ad.CriticalDamage > 0)
-					player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.CriticallyHitsForDamage"), ad.Attacker.GetName(0, true), ad.Target.Name, ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
-			}
-
-			base.OnAttackedByEnemy(ad);
-		}
-
 		public override void ModifyAttack(AttackData attackData)
 		{
 			base.ModifyAttack(attackData);

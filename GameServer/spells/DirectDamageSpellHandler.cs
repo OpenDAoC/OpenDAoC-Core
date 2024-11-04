@@ -138,17 +138,14 @@ namespace DOL.GS.Spells
 
 		protected virtual void DealDamage(GameLiving target)
 		{
-			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
+			if (!target.IsAlive || target.ObjectState is not GameObject.eObjectState.Active)
+				return;
 
-			// calc damage
 			AttackData ad = CalculateDamageToTarget(target);
-
 			SendDamageMessages(ad);
 			DamageTarget(ad, true);
-			
 			target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
 		}
-
 
 		/*
 		 * We need to send resist spell los check packets because spell resist is calculated first, and

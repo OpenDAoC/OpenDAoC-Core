@@ -2663,6 +2663,7 @@ namespace DOL.GS.Spells
 			get { return m_ability; }
 			set { m_ability = value; }
 		}
+
 		/// <summary>
 		/// The Spell
 		/// </summary>
@@ -3261,18 +3262,18 @@ namespace DOL.GS.Spells
 		/// <param name="ad"></param>
 		public virtual void SendDamageMessages(AttackData ad)
 		{
-			string modmessage = string.Empty;
-			if (ad.Modifier > 0)
-				modmessage = " (+" + ad.Modifier + ")";
-			if (ad.Modifier < 0)
-				modmessage = " (" + ad.Modifier + ")";
-			if (Caster is GamePlayer || Caster is NecromancerPet)
-				MessageToCaster(string.Format("You hit {0} for {1}{2} damage!", ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
+			string modMessage = string.Empty;
+
+			if (ad.Modifier != 0)
+				modMessage = $" ({ad.Modifier})";
+
+			if (Caster is GamePlayer or NecromancerPet)
+				MessageToCaster(string.Format("You hit {0} for {1}{2} damage!", ad.Target.GetName(0, false), ad.Damage, modMessage), eChatType.CT_YouHit);
 			else if (Caster is GameNPC)
-				MessageToCaster(string.Format("Your " + Caster.Name + " hits {0} for {1}{2} damage!",
-											  ad.Target.GetName(0, false), ad.Damage, modmessage), eChatType.CT_YouHit);
+				MessageToCaster(string.Format("Your {0} hits {1} for {2}{3} damage!", Caster.Name, ad.Target.GetName(0, false), ad.Damage, modMessage), eChatType.CT_YouHit);
+
 			if (ad.CriticalDamage > 0)
-				MessageToCaster("You critically hit for an additional " + ad.CriticalDamage + " damage!" + " (" + m_caster.SpellCriticalChance + "%)", eChatType.CT_YouHit);
+				MessageToCaster($"You critically hit for an additional {ad.CriticalDamage} damage! ({m_caster.SpellCriticalChance}%)", eChatType.CT_YouHit);
 		}
 
 		/// <summary>
