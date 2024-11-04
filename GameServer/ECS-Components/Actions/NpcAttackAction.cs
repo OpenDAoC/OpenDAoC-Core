@@ -67,11 +67,15 @@ namespace DOL.GS
         protected override bool PrepareMeleeAttack()
         {
             int meleeAttackRange = _npcOwner.MeleeAttackRange;
-            int offsetMeleeAttackRange = meleeAttackRange;
-            int maxSpeed = _npcOwner.MaxSpeed;
+            int offsetMeleeAttackRange = -1; // Makes `IsWithinRadius` return false.
 
-            if (maxSpeed > 0)
-                offsetMeleeAttackRange += (int) (TIME_TO_TARGET_THRESHOLD_BEFORE_RANGED_SWITCH * maxSpeed * 0.001);
+            if (_npcOwner.IsMoving)
+            {
+                int maxSpeed = _npcOwner.MaxSpeed;
+
+                if (maxSpeed > 0)
+                    offsetMeleeAttackRange = meleeAttackRange + (int) (TIME_TO_TARGET_THRESHOLD_BEFORE_RANGED_SWITCH * maxSpeed * 0.001);
+            }
 
             // NPCs try to switch to their ranged weapon whenever possible.
             if (!_npcOwner.IsBeingInterrupted &&
@@ -128,26 +132,6 @@ namespace DOL.GS
                 _hasLos = true;
 
             return base.PrepareRangedAttack();
-        }
-
-        protected override bool FinalizeRangedAttack()
-        {
-            int offsetMeleeAttackRange = _npcOwner.MeleeAttackRange;
-            int maxSpeed = _npcOwner.MaxSpeed;
-
-            if (maxSpeed > 0)
-                offsetMeleeAttackRange += (int) (TIME_TO_TARGET_THRESHOLD_BEFORE_MELEE_SWITCH * maxSpeed * 0.001);
-
-            // Switch to melee if the target is close enough.
-            if (_npcOwner != null &&
-                _npcOwner.TargetObject != null &&
-                _npcOwner.IsWithinRadius(_target, offsetMeleeAttackRange))
-            {
-                SwitchToMeleeAndTick();
-                return false;
-            }
-
-            return base.FinalizeRangedAttack();
         }
 
         protected override void CleanUp()
