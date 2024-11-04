@@ -4261,13 +4261,24 @@ namespace DOL.GS
 
 		#region ControlledNPCs
 
-		public override void SetControlledBrain(IControlledBrain controlledBrain)
+		public override bool AddControlledBrain(IControlledBrain controlledBrain)
 		{
-			if (ControlledBrain == null)
-				InitControlledBrainArray(1);
-
 			ControlledBrain = controlledBrain;
+			return true;
 		}
+
+		public override bool RemoveControlledBrain(IControlledBrain controlledBrain)
+		{
+			if (ControlledBrain == controlledBrain)
+			{
+				InitControlledBrainArray(1);
+				ControlledBrain = null;
+				return true;
+			}
+
+			return false;
+		}
+
 		/// <summary>
 		/// Gets the controlled object of this NPC
 		/// </summary>
@@ -4286,26 +4297,6 @@ namespace DOL.GS
 		public IControlledBrain[] ControlledNpcList
 		{
 			get { return m_controlledBrain; }
-		}
-
-		/// <summary>
-		/// Adds a pet to the current array of pets
-		/// </summary>
-		/// <param name="controlledNpc">The brain to add to the list</param>
-		/// <returns>Whether the pet was added or not</returns>
-		public virtual bool AddControlledNpc(IControlledBrain controlledNpc)
-		{
-			return true;
-		}
-
-		/// <summary>
-		/// Removes the brain from
-		/// </summary>
-		/// <param name="controlledNpc">The brain to find and remove</param>
-		/// <returns>Whether the pet was removed</returns>
-		public virtual bool RemoveControlledNpc(IControlledBrain controlledNpc)
-		{
-			return true;
 		}
 
 		#endregion

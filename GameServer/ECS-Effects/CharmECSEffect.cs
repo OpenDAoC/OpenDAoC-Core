@@ -33,7 +33,7 @@ namespace DOL.GS
                 else
                     charmSpellHandler.MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "GamePlayer.GamePet.StartSpell.UnderControl", charmNpc.GetName(0, true)), eChatType.CT_Spell);
 
-                playerCaster.SetControlledBrain(newBrain);
+                playerCaster.AddControlledBrain(newBrain);
             }
 
             ClientService.CreateNpcForPlayers(charmNpc);
@@ -51,7 +51,7 @@ namespace DOL.GS
                 EffectService.RequestImmediateCancelEffect(immunityEffects[i]);
 
             ControlledMobBrain oldBrain = SpellHandler.Caster.ControlledBrain as ControlledMobBrain;
-            SpellHandler.Caster.SetControlledBrain(null);
+            SpellHandler.Caster.RemoveControlledBrain(oldBrain);
             bool keepSongAlive = false;
 
             if (oldBrain != null)

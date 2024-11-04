@@ -1,23 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
 using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -845,75 +825,63 @@ namespace DOL.GS
 		/// <summary>
 		/// Adds a pet to the current array of pets
 		/// </summary>
-		/// <param name="controlledNpc">The brain to add to the list</param>
+		/// <param name="controlledBrain">The brain to add to the list</param>
 		/// <returns>Whether the pet was added or not</returns>
-		public override bool AddControlledNpc(IControlledBrain controlledNpc)
+		public override bool AddControlledBrain(IControlledBrain controlledBrain)
 		{
-			IControlledBrain[] brainlist = ControlledNpcList;
-			if (brainlist == null) return false;
-			foreach (IControlledBrain icb in brainlist)
+			lock (ControlledNpcList)
 			{
-				if (icb == controlledNpc)
+				if (ControlledNpcList == null)
 					return false;
-			}
 
-			if (controlledNpc.Owner != this)
-				throw new ArgumentException("ControlledNpc with wrong owner is set (player=" + Name + ", owner=" + controlledNpc.Owner.Name + ")", "controlledNpc");
+				bool foundSpot = false;
 
-			//Find the next spot for this new pet
-			int i = 0;
-			for (; i < brainlist.Length; i++)
-			{
-				if (brainlist[i] == null)
-					break;
+				for (int i = 0; i < ControlledNpcList.Length; i++)
+				{
+					if (ControlledNpcList[i] == null)
+					{
+						foundSpot = true;
+						ControlledNpcList[i] = controlledBrain;
+						UpdatePetCount(true);
+						break;
+					}
+				}
+
+				return foundSpot;
 			}
-			//If we didn't find a spot return false
-			if (i >= m_controlledBrain.Length)
-				return false;
-			m_controlledBrain[i] = controlledNpc;
-			UpdatePetCount(true);
-			return base.AddControlledNpc(controlledNpc);
 		}
 
 		/// <summary>
 		/// Removes the brain from
 		/// </summary>
-		/// <param name="controlledNpc">The brain to find and remove</param>
+		/// <param name="controlledBrain">The brain to find and remove</param>
 		/// <returns>Whether the pet was removed</returns>
-		public override bool RemoveControlledNpc(IControlledBrain controlledNpc)
+		public override bool RemoveControlledBrain(IControlledBrain controlledBrain)
 		{
-			bool found = false;
+			bool foundBrain = false;
+
 			lock (ControlledNpcList)
 			{
-				if (controlledNpc == null) return false;
-				IControlledBrain[] brainlist = ControlledNpcList;
-				int i = 0;
+				if (controlledBrain == null)
+					return false;
 
-				//Try to find the minion in the list
-				for (; i < brainlist.Length; i++)
+				for (int i = 0; i < ControlledNpcList.Length; i++)
 				{
-					//Found it
-					if (brainlist[i] == controlledNpc)
+					if (ControlledNpcList[i] == controlledBrain)
 					{
-						found = true;
+						foundBrain = true;
+
+						if (controlledBrain is ControlledMobBrain controlledNpcBrain)
+							controlledNpcBrain.StripCastedBuffs();
+
+						ControlledNpcList[i] = null;
+						UpdatePetCount(false);
 						break;
 					}
 				}
-
-				//Found it, lets remove it
-				if (found)
-				{
-					if (controlledNpc.Body.Brain is ControlledMobBrain controlledNpcBrain)
-						controlledNpcBrain.StripCastedBuffs();
-
-					m_controlledBrain[i] = null;
-					UpdatePetCount(false);
-
-					return base.RemoveControlledNpc(controlledNpc);
-				}
 			}
 
-			return found;
+			return foundBrain;
 		}
 	}
 }

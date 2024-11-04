@@ -87,7 +87,7 @@ namespace DOL.GS.Spells
 
 		protected virtual void SetBrainToOwner(IControlledBrain brain)
 		{
-			Caster.SetControlledBrain(brain);
+			Caster.AddControlledBrain(brain);
 		}
 
 		protected virtual void AddHandlers() { }
@@ -165,9 +165,7 @@ namespace DOL.GS.Spells
 				return;
 
 			GameLiving petOwner = petBrain.Owner;
-
-			if (petOwner.ControlledBrain == petBrain)
-				petOwner.SetControlledBrain(null);
+			petOwner.RemoveControlledBrain(petBrain);
 
 			foreach (ECSGameAbilityEffect ability in pet.effectListComponent.GetAbilityEffects())
 			{

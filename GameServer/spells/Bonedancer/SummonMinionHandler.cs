@@ -102,7 +102,7 @@ namespace DOL.GS.Spells
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
             if (effect.Owner is BdPet bdPetOwner && bdPetOwner.Brain is IControlledBrain brain && brain.Owner is CommanderPet commander)
-                commander.RemoveControlledNpc(brain);
+                commander.RemoveControlledBrain(brain);
 
             return base.OnEffectExpires(effect, noMessages);
         }
@@ -146,7 +146,7 @@ namespace DOL.GS.Spells
 
         protected override void SetBrainToOwner(IControlledBrain brain)
         {
-            Caster.ControlledBrain.Body.AddControlledNpc(brain);
+            Caster.ControlledBrain.Body.AddControlledBrain(brain);
         }
 
         public override IList<string> DelveInfo

@@ -12894,20 +12894,30 @@ namespace DOL.GS
 
         #region ControlledNpc
 
-        /// <summary>
-        /// Sets the controlled object for this player
-        /// (delegates to CharacterClass)
-        /// </summary>
-        /// <param name="controlledNpc"></param>
-        public override void SetControlledBrain(IControlledBrain controlledBrain)
+        public override bool AddControlledBrain(IControlledBrain controlledBrain)
+        {
+            return SetControlledBrain(controlledBrain);
+        }
+
+        public override bool RemoveControlledBrain(IControlledBrain controlledBrain)
+        {
+            if (ControlledBrain == controlledBrain)
+                return SetControlledBrain(null);
+
+            return false;
+        }
+
+        private bool SetControlledBrain(IControlledBrain controlledBrain)
         {
             try
             {
                 CharacterClass.SetControlledBrain(controlledBrain);
+                return true;
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Caught exception when trying to set controlled pet brain: {e}");
+                return false;
             }
         }
 

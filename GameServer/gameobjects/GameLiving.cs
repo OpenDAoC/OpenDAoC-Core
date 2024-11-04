@@ -3963,12 +3963,14 @@ namespace DOL.GS
 			return brain.GetLivingOwner() == this;
 		}
 
-		/// <summary>
-		/// Sets the controlled object for this player
-		/// </summary>
-		/// <param name="controlledNpc"></param>
-		public virtual void SetControlledBrain(IControlledBrain controlledBrain)
+		public virtual bool AddControlledBrain(IControlledBrain controlledBrain)
 		{
+			return true;
+		}
+
+		public virtual bool RemoveControlledBrain(IControlledBrain controlledBrain)
+		{
+			return true;
 		}
 
 		#endregion
