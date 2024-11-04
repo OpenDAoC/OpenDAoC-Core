@@ -842,6 +842,10 @@ namespace DOL.GS
 					{
 						foundSpot = true;
 						ControlledNpcList[i] = controlledBrain;
+
+						if (Brain is IControlledBrain commanderBrain)
+							controlledBrain.SetAggressionState(commanderBrain.AggressionState);
+
 						UpdatePetCount(true);
 						break;
 					}
