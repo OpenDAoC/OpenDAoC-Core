@@ -23,15 +23,21 @@ namespace DOL.AI.Brain
 				lock (Body.ControlledNpcList)
 				{
 					foreach (IControlledBrain icb in Body.ControlledNpcList)
+					{
 						if (brain == icb)
 							return true;
+					}
 				}
 			}
+
 			return false;
 		}
 
-		public override void OnOwnerAttacked(AttackData ad)
+		public override void OnAttackedByEnemy(AttackData ad)
 		{
+			base.OnAttackedByEnemy(ad);
+
+			// Notify subpets.
 			if (Body.ControlledNpcList != null)
 			{
 				foreach (var controlledBrain in Body.ControlledNpcList)
@@ -40,25 +46,21 @@ namespace DOL.AI.Brain
 						bdPetBrain.OnOwnerAttacked(ad);
 				}
 			}
-		
-			// react only on these attack results
-			switch (ad.AttackResult)
+		}
+
+		public override void OnOwnerAttacked(AttackData ad)
+		{
+			base.OnOwnerAttacked(ad);
+
+			// Notify subpets.
+			if (Body.ControlledNpcList != null)
 			{
-				case eAttackResult.Blocked:
-				case eAttackResult.Evaded:
-				case eAttackResult.Fumbled:
-				case eAttackResult.HitStyle:
-				case eAttackResult.HitUnstyled:
-				case eAttackResult.Missed:
-				case eAttackResult.Parried:
-					AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
-					break;
+				foreach (var controlledBrain in Body.ControlledNpcList)
+				{
+					if (controlledBrain is BdPetBrain bdPetBrain)
+						bdPetBrain.OnOwnerAttacked(ad);
+				}
 			}
-
-			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState())
-				FSM.SetCurrentState(eFSMStateType.AGGRO);
-
-			AttackMostWanted();
 		}
 
 		/// <summary>

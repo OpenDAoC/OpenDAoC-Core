@@ -17,26 +17,6 @@ namespace DOL.AI.Brain
         /// </summary>
         public bool MinionsAssisting => Owner is CommanderPet commander && commander.MinionsAssisting;
 
-        public override void OnOwnerAttacked(AttackData ad)
-        {
-            // react only on these attack results
-            switch (ad.AttackResult)
-            {
-                case eAttackResult.Blocked:
-                case eAttackResult.Evaded:
-                case eAttackResult.Fumbled:
-                case eAttackResult.HitStyle:
-                case eAttackResult.HitUnstyled:
-                case eAttackResult.Missed:
-                case eAttackResult.Parried:
-                    AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
-                    break;
-            }
-
-            if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()) { FSM.SetCurrentState(eFSMStateType.AGGRO); }
-            AttackMostWanted();
-        }
-
         public override void SetAggressionState(eAggressionState state)
         {
             if (MinionsAssisting)
@@ -45,7 +25,7 @@ namespace DOL.AI.Brain
                 base.SetAggressionState(eAggressionState.Passive);
 
             // Attack immediately rather than waiting for the next Think()
-            if (AggressionState != eAggressionState.Passive)
+            if (AggressionState is not eAggressionState.Passive)
                 Attack(Owner.TargetObject);
         }
 
@@ -56,11 +36,10 @@ namespace DOL.AI.Brain
         /// <param name="ad">information about the attack</param>
         public override void OnAttackedByEnemy(AttackData ad)
         {
-            base.OnAttackedByEnemy(ad);
-
-            // Get help from the commander and other minions
-            if (ad.CausesCombat && Owner is GameSummonedPet own && own.Brain is CommanderBrain ownBrain)
-                ownBrain.DefendMinion(ad.Attacker);
+            // Any attack on a subpet is handled as if it was the commander that was attacker.
+            // This will propagate the event to every subpet.
+            if (ad.CausesCombat && Owner is CommanderPet owner && owner.Brain is CommanderBrain ownerBrain)
+                ownerBrain.OnAttackedByEnemy(ad);
         }
 
         /// <summary>

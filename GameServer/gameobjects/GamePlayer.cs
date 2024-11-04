@@ -5840,13 +5840,11 @@ namespace DOL.GS
         {
             if (IsOnHorse && ad.IsHit)
                 IsOnHorse = false;
+
             base.OnAttackedByEnemy(ad);
 
-            if(ControlledBrain != null && ControlledBrain is ControlledMobBrain)
-            {
-                var brain = (ControlledMobBrain) ControlledBrain;
+            if (ControlledBrain != null && ControlledBrain is ControlledMobBrain brain)
                 brain.OnOwnerAttacked(ad);
-            }
 
             switch (ad.AttackResult)
             {

@@ -605,19 +605,20 @@ namespace DOL.AI.Brain
 
         public virtual void OnAttackedByEnemy(AttackData ad)
         {
-            if (!Body.IsAlive || Body.ObjectState != GameObject.eObjectState.Active || FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE))
-                return;
-
-            if (ad.GeneratesAggro)
-                ConvertDamageToAggroAmount(ad.Attacker, Math.Max(1, ad.Damage + ad.CriticalDamage));
+            ConvertAttackToAggroAmount(ad);
         }
 
         /// <summary>
-        /// Converts a damage amount into an aggro amount, and splits it between the pet and its owner if necessary.
-        /// Assumes damage to be superior than 0.
+        /// Converts an amount into an aggro amount, and splits it between the pet and its owner if necessary.
         /// </summary>
-        protected virtual void ConvertDamageToAggroAmount(GameLiving attacker, int damage)
+        protected void ConvertAttackToAggroAmount(AttackData ad)
         {
+            if (!ad.GeneratesAggro || !Body.IsAlive || Body.ObjectState is not GameObject.eObjectState.Active || FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE))
+                return;
+
+            int damage = Math.Max(1, ad.Damage + ad.CriticalDamage);
+            GameLiving attacker = ad.Attacker;
+
             if (attacker is GameNPC NpcAttacker && NpcAttacker.Brain is ControlledMobBrain controlledBrain)
             {
                 damage = controlledBrain.ModifyDamageWithTaunt(damage);

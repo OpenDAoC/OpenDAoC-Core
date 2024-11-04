@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DOL.Events;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -906,13 +905,11 @@ namespace DOL.AI.Brain
 
 		public virtual void OnOwnerAttacked(AttackData ad)
 		{
-			if(FSM.GetState(eFSMStateType.PASSIVE) == FSM.GetCurrentState()) { return; }
-
-			// Theurgist pets don't help their owner.
-			if (Owner is GamePlayer && ((GamePlayer)Owner).CharacterClass.ID == (int)eCharacterClass.Theurgist)
+			if (FSM.GetCurrentState() == FSM.GetState(eFSMStateType.PASSIVE))
 				return;
 
-			if (ad.Target is GamePlayer && ((ad.Target as GamePlayer).ControlledBrain != this || (ad.Target as GamePlayer).ControlledBrain.Body == Owner))
+			// Theurgist pets don't help their owner.
+			if (Owner is GamePlayer playerOwner && (eCharacterClass) playerOwner.CharacterClass.ID is eCharacterClass.Theurgist)
 				return;
 
 			switch (ad.AttackResult)
@@ -924,12 +921,12 @@ namespace DOL.AI.Brain
 				case eAttackResult.HitUnstyled:
 				case eAttackResult.Missed:
 				case eAttackResult.Parried:
-					AddToAggroList(ad.Attacker, ad.Damage + ad.CriticalDamage);
-					break;
-			}
+				{
+					ConvertAttackToAggroAmount(ad);
+				}
 
-			if (FSM.GetState(eFSMStateType.AGGRO) != FSM.GetCurrentState()) { FSM.SetCurrentState(eFSMStateType.AGGRO); }
-			AttackMostWanted();
+				break;
+			}
 		}
 
 		public virtual void OnRelease()
