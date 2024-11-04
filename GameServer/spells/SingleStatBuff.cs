@@ -1,3 +1,4 @@
+using System;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
@@ -13,6 +14,53 @@ namespace DOL.GS.Spells
         protected override void SendUpdates(GameLiving target)
         {
             target.UpdateHealthManaEndu();
+        }
+
+        protected override double CalculateBuffDebuffEffectiveness()
+        {
+            double effectiveness;
+            GamePlayer playerCaster = Caster as GamePlayer;
+
+            if (SpellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Combat_Styles_Effect or GlobalSpellsLines.Realm_Spells || Spell.Level <= 0)
+                effectiveness = 1.0;
+            else if (Spell.IsBuff)
+            {
+                if (playerCaster != null && playerCaster.CharacterClass.ClassType is not eClassType.ListCaster && (eCharacterClass) playerCaster.CharacterClass.ID is not eCharacterClass.Savage)
+                    effectiveness = CalculateEffectivenessFromSpec(playerCaster); // Non list caster buffs (savage excluded).
+                else
+                    effectiveness = 1.0; // List caster buffs or NPC.
+            }
+            else if (Spell.IsDebuff)
+            {
+                if (Caster is NecromancerPet necromancerPet && necromancerPet.Owner is GamePlayer playerOwner)
+                {
+                    playerCaster = playerOwner;
+                    effectiveness = CalculateEffectivenessFromSpec(playerCaster);
+
+                    if (Spell.SpellType is eSpellType.ArmorFactorDebuff)
+                        effectiveness *= 1 + Target.GetArmorAbsorb(eArmorSlot.TORSO);
+                }
+                else
+                    playerCaster = Caster as GamePlayer;
+
+                if (playerCaster != null && playerCaster.CharacterClass.ClassType is eClassType.ListCaster)
+                    effectiveness = CalculateEffectivenessFromSpec(playerCaster); // List caster debuffs.
+                else
+                    effectiveness = 1.0; // Non list caster debuffs or NPC (necromancer pet excluded).
+            }
+            else
+                effectiveness = 1.0; // Neither a potion, item, buff, or debuff.
+
+            if (playerCaster != null && playerCaster.UseDetailedCombatLog && effectiveness != 1)
+                playerCaster.Out.SendMessage($"Effectiveness (spec): {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+            return base.CalculateBuffDebuffEffectiveness() * effectiveness;
+
+            double CalculateEffectivenessFromSpec(GamePlayer player)
+            {
+                double effectiveness = 0.75 + (player.GetModifiedSpecLevel(m_spellLine.Spec) - 1.0) * 0.5 / Spell.Level;
+                return Math.Clamp(effectiveness, 0.75, 1.25);
+            }
         }
 
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)

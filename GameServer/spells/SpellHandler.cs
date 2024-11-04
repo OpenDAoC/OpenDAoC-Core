@@ -2109,58 +2109,22 @@ namespace DOL.GS.Spells
 			if (SpellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Combat_Styles_Effect or GlobalSpellsLines.Realm_Spells || Spell.Level <= 0)
 				effectiveness = 1.0;
 			else if (Spell.IsBuff)
-			{
-				GamePlayer playerCaster = Caster as GamePlayer;
-
-				if (playerCaster != null && playerCaster.CharacterClass.ClassType is not eClassType.ListCaster && (eCharacterClass) playerCaster.CharacterClass.ID is not eCharacterClass.Savage)
-					effectiveness = CalculateEffectivenessFromSpec(playerCaster); // Non list caster buffs (savage excluded).
-				else
-					effectiveness = 1.0; // List caster buffs or NPC.
-
-				effectiveness *= 1 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
-
-				if (playerCaster != null && playerCaster.UseDetailedCombatLog && effectiveness != 1)
-					playerCaster.Out.SendMessage($"buff effectiveness: {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-			}
+				effectiveness = 1 + m_caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
 			else if (Spell.IsDebuff)
 			{
-				GamePlayer playerCaster;
-
-				if (Caster is NecromancerPet necromancerPet && necromancerPet.Owner is GamePlayer playerOwner)
-				{
-					playerCaster = playerOwner;
-					effectiveness = CalculateEffectivenessFromSpec(playerCaster);
-
-					if (Spell.SpellType == eSpellType.ArmorFactorDebuff)
-						effectiveness *= 1 + Target.GetArmorAbsorb(eArmorSlot.TORSO);
-				}
-				else
-					playerCaster = Caster as GamePlayer;
-
-				if (playerCaster != null && playerCaster.CharacterClass.ClassType is eClassType.ListCaster)
-					effectiveness = CalculateEffectivenessFromSpec(playerCaster); // List caster debuffs.
-				else
-					effectiveness = 1.0; // Non list caster debuffs or NPC (necromancer pet excluded).
-
-				effectiveness *= 1 + m_caster.GetModified(eProperty.DebuffEffectiveness) * 0.01;
+				effectiveness = 1 + m_caster.GetModified(eProperty.DebuffEffectiveness) * 0.01;
 				effectiveness *= GetDebuffEffectivenessCriticalModifier();
-
-				if (playerCaster != null && playerCaster.UseDetailedCombatLog && effectiveness != 1)
-					playerCaster.Out.SendMessage($"debuff effectiveness: {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 			}
 			else
 				effectiveness = 1.0; // Neither a potion, item, buff, or debuff.
 
-			return effectiveness;
+			if (Caster is GamePlayer playerCaster && playerCaster.UseDetailedCombatLog && effectiveness != 1)
+				playerCaster.Out.SendMessage($"Effectiveness (bonus / crit): {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-			double CalculateEffectivenessFromSpec(GamePlayer player)
-			{
-				double effectiveness = 0.75 + (player.GetModifiedSpecLevel(m_spellLine.Spec) - 1.0) * 0.5 / Spell.Level;
-				return Math.Clamp(effectiveness, 0.75, 1.25);
-			}
+			return effectiveness;
 		}
 
-		protected double GetDebuffEffectivenessCriticalModifier()
+		protected virtual double GetDebuffEffectivenessCriticalModifier()
 		{
 			if (Util.Chance(Caster.DebuffCriticalChance))
 			{
@@ -3226,7 +3190,7 @@ namespace DOL.GS.Spells
 			if (playerCaster != null && playerCaster.UseDetailedCombatLog)
 			{
 				if (criticalChance > 0)
-					playerCaster.Out.SendMessage($"spell crit chance: {criticalChance:0.##} random: {randNum:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+					playerCaster.Out.SendMessage($"Spell crit chance: {criticalChance:0.##} random: {randNum:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
 				playerCaster.Out.SendMessage($"BaseDamage: {baseDamage:0.##} | Variance: {variance:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 			}
