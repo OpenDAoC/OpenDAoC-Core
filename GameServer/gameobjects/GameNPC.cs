@@ -3240,7 +3240,7 @@ namespace DOL.GS
 					string modMessage = string.Empty;
 
 					if (ad.Modifier > 0)
-						modMessage = $" ({ad.Modifier})";
+						modMessage = $" (+{ad.Modifier})";
 					else if (ad.Modifier < 0)
 						modMessage = $" ({ad.Modifier})";
 

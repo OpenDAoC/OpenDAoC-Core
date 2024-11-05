@@ -3264,7 +3264,9 @@ namespace DOL.GS.Spells
 		{
 			string modMessage = string.Empty;
 
-			if (ad.Modifier != 0)
+			if (ad.Modifier > 0)
+				modMessage = $" (+{ad.Modifier})";
+			else if (ad.Modifier < 0)
 				modMessage = $" ({ad.Modifier})";
 
 			if (Caster is GamePlayer or NecromancerPet)
