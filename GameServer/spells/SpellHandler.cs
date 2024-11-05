@@ -922,20 +922,20 @@ namespace DOL.GS.Spells
 
 						return false;
 					}
+
+					if (!HasLos)
+					{
+						if (verbose)
+							MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
+
+						return false;
+					}
 				}
 
 				if (!m_caster.IsWithinRadius(target, CalculateSpellRange()))
 				{
 					if (verbose)
 						MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
-
-					return false;
-				}
-
-				if (!HasLos)
-				{
-					if (verbose)
-						MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
 
 					return false;
 				}
