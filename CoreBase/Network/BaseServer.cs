@@ -28,7 +28,7 @@ namespace DOL.Network
         private static Thread _udpThread;
 
         public BaseServerConfig Configuration { get; }
-        public bool IsRunning => _listen != null && _listen.Connected;
+        public bool IsRunning => _listen != null; // Not a great way to check if the server is running.
 
         protected BaseServer(BaseServerConfig config)
         {
@@ -168,7 +168,7 @@ namespace DOL.Network
                         }
                         catch (SocketException e)
                         {
-                            if (log.IsErrorEnabled)
+                            if (log.IsDebugEnabled)
                                 log.Error($"Socket exception on UDP receive (Code: {e.SocketErrorCode})");
                         }
                         catch (Exception e)
