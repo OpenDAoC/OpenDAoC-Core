@@ -1,107 +1,48 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using DOL.GS.Housing;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.HouseEnterLeave, "Housing Enter Leave Request.", eClientStatus.PlayerInGame)]
-	public class HouseEnterLeaveHandler : IPacketHandler
-	{
-		public void HandlePacket(GameClient client, GSPacketIn packet)
-		{
-			int pid = packet.ReadShort();
-			int housenumber = packet.ReadShort();
-			int enter = packet.ReadByte();
+    [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.HouseEnterLeave, "Housing Enter Leave Request.", eClientStatus.PlayerInGame)]
+    public class HouseEnterLeaveHandler : IPacketHandler
+    {
+        public void HandlePacket(GameClient client, GSPacketIn packet)
+        {
+            int pid = packet.ReadShort();
+            int houseNumber = packet.ReadShort();
+            int enter = packet.ReadByte();
+            House house = HouseMgr.GetHouse(houseNumber);
 
-			// house is null, return
-			House house = HouseMgr.GetHouse(housenumber);
-			if (house == null)
-				return;
+            if (house == null)
+                return;
 
-			new EnterLeaveHouseAction(client.Player, house, enter).Start(1);
-		}
+            GamePlayer player = client.Player;
 
-		/// <summary>
-		/// Handles house enter/leave events
-		/// </summary>
-		private class EnterLeaveHouseAction : ECSGameTimerWrapperBase
-		{
-			/// <summary>
-			/// The enter house flag
-			/// </summary>
-			private readonly int _enter;
+            switch (enter)
+            {
+                case 0:
+                {
+                    player.LeaveHouse();
+                    break;
+                }
+                case 1:
+                {
+                    if (!player.IsWithinRadius(house, 1000) || (player.CurrentRegionID != house.RegionID))
+                    {
+                        ChatUtil.SendSystemMessage(player, string.Format($"You are too far away to enter house {house.HouseNumber}."));
+                        return;
+                    }
 
-			/// <summary>
-			/// The target house
-			/// </summary>
-			private readonly House _house;
+                    if (house.CanEnterHome(player))
+                    {
+                        player.CurrentHouse = house;
+                        house.Enter(player);
+                    }
+                    else
+                        ChatUtil.SendSystemMessage(player, string.Format($"You can't enter house {house.HouseNumber}."));
 
-			/// <summary>
-			/// Constructs a new EnterLeaveHouseAction
-			/// </summary>
-			/// <param name="actionSource">The actions source</param>
-			/// <param name="house">The target house</param>
-			/// <param name="enter">The enter house flag</param>
-			public EnterLeaveHouseAction(GamePlayer actionSource, House house, int enter) : base(actionSource)
-			{
-				_house = house;
-				_enter = enter;
-			}
-
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
-			{
-				GamePlayer player = (GamePlayer) timer.Owner;
-
-				switch (_enter)
-				{
-					case 0:
-						player.LeaveHouse();
-						break;
-
-					case 1:
-						if (!player.IsWithinRadius(_house, 1000) || (player.CurrentRegionID != _house.RegionID))
-						{
-							ChatUtil.SendSystemMessage(player, string.Format("You are too far away to enter house {0}.", _house.HouseNumber));
-							return 0;
-						}
-
-						// make sure player can enter
-						if (_house.CanEnterHome(player))
-						{
-							player.CurrentHouse = _house;
-
-							_house.Enter(player);
-						}
-						else
-						{
-							ChatUtil.SendSystemMessage(player, string.Format("You can't enter house {0}.", _house.HouseNumber));
-							return 0;
-						}
-
-						break;
-				}
-
-				return 0;
-			}
-		}
-	}
+                    break;
+                }
+            }
+        }
+    }
 }

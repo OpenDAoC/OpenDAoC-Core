@@ -157,7 +157,7 @@ namespace DOL.GS
                     {
                         if (_properties == null)
                         {
-                            PropertyCollection properties = new PropertyCollection();
+                            PropertyCollection properties = new();
                             Thread.MemoryBarrier();
                             _properties = properties;
                         }

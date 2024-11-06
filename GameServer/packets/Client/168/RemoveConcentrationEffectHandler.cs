@@ -1,78 +1,21 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using DOL.GS.Effects;
-
 namespace DOL.GS.PacketHandler.Client.v168
 {
-	/// <summary>
-	/// Called when player removes concentration spell in conc window
-	/// </summary>
-	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.RemoveConcentrationEffect, "Handles Concentration Effect Remove Request", eClientStatus.PlayerInGame)]
-	public class RemoveConcentrationEffectHandler : IPacketHandler
-	{
-		public void HandlePacket(GameClient client, GSPacketIn packet)
-		{
-			int index = packet.ReadByte();
+    /// <summary>
+    /// Called when player removes concentration spell in conc window
+    /// </summary>
+    [PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.RemoveConcentrationEffect, "Handles Concentration Effect Remove Request", eClientStatus.PlayerInGame)]
+    public class RemoveConcentrationEffectHandler : IPacketHandler
+    {
+        public void HandlePacket(GameClient client, GSPacketIn packet)
+        {
+            int index = packet.ReadByte();
+            GamePlayer player = client.Player;
 
-			new CancelEffectHandler(client.Player, index).Start(1);
-		}
-
-		/// <summary>
-		/// Handles player cancel effect requests
-		/// </summary>
-		protected class CancelEffectHandler : ECSGameTimerWrapperBase
-		{
-			/// <summary>
-			/// The effect index
-			/// </summary>
-			protected readonly int m_index;
-
-			/// <summary>
-			/// Constructs a new CancelEffectHandler
-			/// </summary>
-			/// <param name="actionSource">The action source</param>
-			/// <param name="index">The effect index</param>
-			public CancelEffectHandler(GamePlayer actionSource, int index) : base(actionSource)
-			{
-				m_index = index;
-			}
-
-			/// <summary>
-			/// Called on every timer tick
-			/// </summary>
-			protected override int OnTick(ECSGameTimer timer)
-			{
-				GamePlayer player = (GamePlayer) timer.Owner;
-
-				IConcentrationEffect effect = null;
-				lock (player.effectListComponent.EffectsLock)
-				{
-					if (m_index < player.effectListComponent.ConcentrationEffects.Count)
-					{
-						effect = player.effectListComponent.ConcentrationEffects[m_index];
-					}
-				}
-
-				EffectService.RequestImmediateCancelConcEffect(effect, true);
-				return 0;
-			}
-		}
-	}
+            lock (player.effectListComponent.ConcentrationEffectsLock)
+            {
+                if (index < player.effectListComponent.ConcentrationEffects.Count)
+                    EffectService.RequestImmediateCancelConcEffect(player.effectListComponent.ConcentrationEffects[index], true);
+            }
+        }
+    }
 }

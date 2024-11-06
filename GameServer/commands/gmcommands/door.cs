@@ -350,7 +350,7 @@ namespace DOL.GS.Commands
 			if (targetDoor.Locked == 0)
 				statut = " Unlocked";
 
-			int doorType = DoorRequestHandler.m_handlerDoorID/100000000;
+			int doorType = DoorRequestHandler.HandlerDoorId / 100000000;
 
 			var info = new List<string>();
 
