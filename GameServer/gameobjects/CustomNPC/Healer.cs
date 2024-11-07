@@ -50,7 +50,7 @@ namespace DOL.GS
 			// Message: You examine {0}. {1} is {2} and is a healer.
             list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Examine.YouExamine.Healer", GetName(0, false, player.Client.Account.Language, this), GetPronoun(0, true, player.Client.Account.Language), GetAggroLevelString(player, false)));
             // Message: [Right-click to restore lost Constitution]
-            list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Interact.GiveDonation.Healer", null));
+            list.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Examine.GiveDonation.Healer", null));
             return list;
 		}
 		#endregion Examine Messages
