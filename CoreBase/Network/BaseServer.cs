@@ -195,7 +195,7 @@ namespace DOL.Network
 
             void OnAsyncListenCompletion(object sender, SocketAsyncEventArgs listenArgs)
             {
-                if (_listen == null || listenArgs.SocketError is SocketError.ConnectionReset)
+                if (_listen == null)
                     return;
 
                 BaseClient baseClient = null;
@@ -203,6 +203,9 @@ namespace DOL.Network
 
                 try
                 {
+                    if (listenArgs.SocketError is SocketError.ConnectionReset)
+                        return;
+
                     baseClient = GetNewClient(socket);
                     baseClient.Receive();
                     baseClient.OnConnect();
