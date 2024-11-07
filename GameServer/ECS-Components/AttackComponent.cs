@@ -722,7 +722,10 @@ namespace DOL.GS
                     }
 
                     if (player.ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
-                        player.Out.SendAttackMode(AttackState && !oldAttackState);
+                    {
+                        if (oldAttackState != AttackState)
+                            player.Out.SendAttackMode(AttackState);
+                    }
                     else
                     {
                         string typeMsg = (eObjectType) attackWeapon.Object_Type is eObjectType.Thrown ? "throw" : "shot";

@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class EngageECSGameEffect : ECSGameAbilityEffect
     {
-        private bool _startAttackAfterCancel;
+        private bool _manualCancel;
 
         public GameLiving EngageTarget { get; set; }
         public override ushort Icon => 421;
@@ -13,10 +13,12 @@ namespace DOL.GS
         {
             get
             {
-                if (EngageTarget != null)
-                    return LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.EngageEffect.EngageName", EngageTarget.GetName(0, false));
+                GamePlayer player = Owner as GamePlayer;
 
-                return LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.EngageEffect.Name");
+                if (EngageTarget != null)
+                    return LanguageMgr.GetTranslation(player.Client, "Effects.EngageEffect.EngageName", EngageTarget.GetName(0, false));
+
+                return LanguageMgr.GetTranslation(player.Client, "Effects.EngageEffect.Name");
             }
         }
         public override bool HasPositiveEffect => true;
@@ -47,25 +49,26 @@ namespace DOL.GS
 
         public override void OnStopEffect()
         {
-            Owner.IsEngaging = false;
-
-            if (_startAttackAfterCancel)
-                Owner.attackComponent.RequestStartAttack(OwnerPlayer == null ? Owner.TargetObject : null);
-        }
-
-        public void Cancel(bool manualCancel, bool startAttackAfterCancel)
-        {
-            _startAttackAfterCancel = startAttackAfterCancel;
-            EffectService.RequestImmediateCancelEffect(this, manualCancel);
-
-
             if (OwnerPlayer != null)
             {
-                if (manualCancel)
+                if (_manualCancel)
                     OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.EngageEffect.YouNoConcOnBlock"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 else
                     OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.EngageEffect.YouNoAttemptToEngageT"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
+
+            Owner.IsEngaging = false;
+
+            if (Owner.TargetObject != null)
+                Owner.attackComponent.RequestStartAttack();
+            else
+                Owner.attackComponent.StopAttack();
+        }
+
+        public void Cancel(bool manualCancel, bool startAttackAfterCancel)
+        {
+            _manualCancel = manualCancel;
+            EffectService.RequestImmediateCancelEffect(this, manualCancel);
         }
     }
 }
