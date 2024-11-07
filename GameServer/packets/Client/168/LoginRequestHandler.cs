@@ -193,32 +193,32 @@ namespace DOL.GS.PacketHandler.Client.v168
 					Log.Error("Error shutting down Client after IsAllowedToConnect failed!", e);
 			}
 
-			// Handle connection
+			// Handle connection.
 			EnterLock(userName);
 
 			try
 			{
 				DbAccount playerAccount;
-				// Make sure that client won't quit
+
+				// Make sure that client won't quit.
 				lock (client)
 				{
 					GameClient.eClientState state = client.ClientState;
-					if (state != GameClient.eClientState.NotConnected)
+
+					if (state is not GameClient.eClientState.NotConnected)
 					{
-						Log.DebugFormat("wrong client state on connect {0} {1}", userName, state.ToString());
+						Log.DebugFormat($"wrong client state on connect {userName} {state}");
 						return;
 					}
 
 					if (Log.IsInfoEnabled)
-						Log.Info(string.Format("({0})User {1} logging on! ({2} type:{3} add:{4})", ipAddress, userName, client.Version,
-											   (client.ClientType), client.ClientAddons.ToString("G")));
-					// check client already connected
+						Log.Info(string.Format($"({ipAddress})User {userName} logging on! ({client.Version} type:{client.ClientType} add:{client.ClientAddons:G})"));
 
 					GameClient otherClient = ClientService.GetClientFromAccountName(userName);
 
 					if (otherClient != null)
 					{
-						if (otherClient.ClientState == GameClient.eClientState.Connecting)
+						if (otherClient.ClientState is GameClient.eClientState.Connecting)
 						{
 							if (Log.IsInfoEnabled)
 								Log.Info("User is already connecting, ignored.");
@@ -226,9 +226,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 							client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIn);
 							client.IsConnected = false;
 							return;
-						} // in login
+						}
 
-						if (otherClient.ClientState == GameClient.eClientState.Linkdead)
+						// Check link death timer instead of client state to account for soft link deaths.
+						if ((otherClient.Player?.IsLinkDeathTimerRunning) != true)
 						{
 							if (Log.IsInfoEnabled)
 								Log.Info("User is still being logged out from linkdeath!");
