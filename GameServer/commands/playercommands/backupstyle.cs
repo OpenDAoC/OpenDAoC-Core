@@ -16,7 +16,7 @@ namespace DOL.GS.Commands
                 client.Out.SendMessage("This command is not enabled on this server.", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                 return;
             }
-            
+
             if (args.Length < 2)
             {
                 DisplaySyntax(client);
