@@ -156,32 +156,25 @@ namespace DOL.GS
                     player.Out.SendMessage($"You gained an additional {Convert.ToInt32(relicBonus)} BPs due to your realm's relic ownership!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
             }
-            
         }
+
         public static void GenerateOrbAmount(GameLiving living, int amount)
         {
-            if (amount == 0) return; 
+            if (amount == 0)
+                return;
 
-            if (living != null && living is GamePlayer)
+            if (living is GamePlayer player)
             {
-                var player = living as GamePlayer;
-                
-                var orbs = GameServer.Database.FindObjectByKey<DbItemTemplate>(_currencyID);
-                
+                DbItemTemplate orbs = GameServer.Database.FindObjectByKey<DbItemTemplate>(_currencyID);
+
                 if (orbs == null)
-                {
-                    player.Out.SendMessage("Error: Currency ID not found!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
-                }
 
                 DbInventoryItem item = GameInventoryItem.Create(orbs);
-
                 double numCurrentLoyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player) != null ? LoyaltyManager.GetPlayerRealmLoyalty(player).Days : 0;
 
-                if(numCurrentLoyalDays >= 30)
-                {
+                if (numCurrentLoyalDays >= 30)
                     numCurrentLoyalDays = 30;
-                }
 
                 var loyaltyBonus = ((amount * .2) * (numCurrentLoyalDays / 30));
                 

@@ -846,7 +846,7 @@ namespace DOL.GS
 
             private void Quit()
             {
-                if ((eCharacterClass) _owner.CharacterClass.ID is  eCharacterClass.Necromancer && _owner.IsShade)
+                if ((eCharacterClass) _owner.CharacterClass.ID is eCharacterClass.Necromancer && _owner.IsShade)
                     _owner.Shade(false);
 
                 _owner.Out.SendPlayerQuit(false);
