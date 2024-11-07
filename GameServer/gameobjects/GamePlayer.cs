@@ -764,8 +764,8 @@ namespace DOL.GS
 
         public class QuitTimer : ECSGameTimerWrapperBase
         {
-            private const int MAX_DURATION = 60;
-            private const int MIN_DURATION = 20; // Must be inferior to MAX_DURATION.
+            private const int MAX_DURATION = 60000; // In milliseconds.
+            private const int MIN_DURATION = 20000; // Must be inferior to MAX_DURATION.
             private static readonly int[] REMAINING_DURATIONS = [20, 15, 10, 5]; // Must be in descending order and not empty.
 
             private GamePlayer _owner;
@@ -791,7 +791,7 @@ namespace DOL.GS
                 if (GameLoop.GameLoopTime - lastCombatTick > lastCombatTickOffset)
                     lastCombatTick = GameLoop.GameLoopTime - lastCombatTickOffset;
 
-                int quitDuration = Math.Max(0, MAX_DURATION - (int) Math.Ceiling((GameLoop.GameLoopTime - lastCombatTick) / 1000.0));
+                int quitDuration = Math.Max(0, (int) Math.Ceiling((MAX_DURATION - (GameLoop.GameLoopTime - lastCombatTick)) / 1000.0));
                 owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GamePlayer.Quit.RecentlyInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GamePlayer.Quit.YouWillQuit2", quitDuration), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 Start(CalculateFirstInterval());
