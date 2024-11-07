@@ -760,93 +760,109 @@ namespace DOL.GS
         #endregion
 
         #region Player Quitting
-        /// <summary>
-        /// quit timer
-        /// </summary>
-        protected ECSGameTimer m_quitTimer;
 
-        /// <summary>
-        /// Timer callback for quit
-        /// </summary>
-        /// <param name="callingTimer">the calling timer</param>
-        /// <returns>the new intervall</returns>
-        protected virtual int QuitTimerCallback(ECSGameTimer callingTimer)
+        public class QuitTimer : ECSGameTimerWrapperBase
         {
-            if (!IsAlive || ObjectState != eObjectState.Active)
+            private const int MAX_DURATION = 60;
+            private const int MIN_DURATION = 20; // Must be inferior to MAX_DURATION.
+            private static readonly int[] REMAINING_DURATIONS = [20, 15, 10, 5]; // Must be in descending order and not empty.
+
+            private GamePlayer _owner;
+            private Func<int> _onQuitTimerEnd;
+            private int _remainingDurationsIndex;
+
+            public QuitTimer(GamePlayer owner, Func<int> onQuitTimerEnd) : base(owner)
             {
-                m_quitTimer = null;
-                return 0;
+                _owner = owner;
+                _onQuitTimerEnd = onQuitTimerEnd;
+
+                // Players can only quit instantaneously if they aren't in combat.
+                // Don't bother starting the timer if we can quit instantaneously.
+                if (_owner.Client.Account.PrivLevel > 1 || (ServerProperties.Properties.DISABLE_QUIT_TIMER && !_owner.Client.Player.InCombat))
+                {
+                    Quit();
+                    return;
+                }
+
+                long lastCombatTick = Math.Max(owner.LastAttackedByEnemyTick, owner.LastAttackTick);
+                int lastCombatTickOffset = MAX_DURATION - MIN_DURATION;
+
+                if (GameLoop.GameLoopTime - lastCombatTick > lastCombatTickOffset)
+                    lastCombatTick = GameLoop.GameLoopTime - lastCombatTickOffset;
+
+                int quitDuration = Math.Max(0, MAX_DURATION - (int) Math.Ceiling((GameLoop.GameLoopTime - lastCombatTick) / 1000.0));
+                owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GamePlayer.Quit.RecentlyInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GamePlayer.Quit.YouWillQuit2", quitDuration), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                Start(CalculateFirstInterval());
+
+                int CalculateFirstInterval()
+                {
+                    int result = REMAINING_DURATIONS[_remainingDurationsIndex];
+                    result = quitDuration - result;
+
+                    if (REMAINING_DURATIONS.Length > 1)
+                    {
+                        result += REMAINING_DURATIONS[_remainingDurationsIndex];
+                        _remainingDurationsIndex++;
+                        result -= REMAINING_DURATIONS[_remainingDurationsIndex];
+                    }
+
+                    return result * 1000;
+                }
             }
 
-            bool bInstaQuit = false;
-
-            if (Client.Account.PrivLevel > 1) // GMs can always insta quit
-                bInstaQuit = true;
-            else if (ServerProperties.Properties.DISABLE_QUIT_TIMER && Client.Player.InCombat == false)  // Players can only insta quit if they aren't in combat
-                bInstaQuit = true;
-
-            if (bInstaQuit == false)
+            protected override int OnTick(ECSGameTimer timer)
             {
-                if (CraftTimer != null && CraftTimer.IsAlive)
+                if (!_owner.IsAlive || _owner.ObjectState is not eObjectState.Active)
+                    return _onQuitTimerEnd();
+
+                if (_owner.CraftTimer != null && _owner.CraftTimer.IsAlive)
                 {
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.CantQuitCrafting"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    m_quitTimer = null;
+                    _owner.Out.SendMessage(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "GamePlayer.Quit.CantQuitCrafting"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                    return _onQuitTimerEnd();
+                }
+
+                if (_remainingDurationsIndex == REMAINING_DURATIONS.Length)
+                {
+                    Quit();
                     return 0;
                 }
 
-                long lastCombatAction = LastAttackedByEnemyTick;
-                if (lastCombatAction < LastAttackTick)
+                int currentRemainingDuration = REMAINING_DURATIONS[_remainingDurationsIndex];
+                _owner.Out.SendMessage(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "GamePlayer.Quit.YouWillQuit1", currentRemainingDuration), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                return CalculateNextInterval();
+
+                int CalculateNextInterval()
                 {
-                    lastCombatAction = LastAttackTick;
-                }
-                long secondsleft = 60 - (GameLoop.GameLoopTime - lastCombatAction + 500) / 1000; // 500 is for rounding
-                if (secondsleft > 0)
-                {
-                    if (secondsleft == 15 || secondsleft == 10 || secondsleft == 5)
-                    {
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.YouWillQuit1", secondsleft), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                    }
-                    return 1000;
+                    _remainingDurationsIndex++;
+
+                    if (_remainingDurationsIndex < REMAINING_DURATIONS.Length)
+                        currentRemainingDuration -= REMAINING_DURATIONS[_remainingDurationsIndex];
+
+                    return currentRemainingDuration * 1000;
                 }
             }
-            if (CharacterClass.ID == (int)eCharacterClass.Necromancer && IsShade)
-                Shade(false);
-            Out.SendPlayerQuit(false);
-            Quit(true);
-            CraftingProgressMgr.FlushAndSaveInstance(this);
-            SaveIntoDatabase();
-            m_quitTimer?.Stop();
-            m_quitTimer = null;
+
+            private void Quit()
+            {
+                if ((eCharacterClass) _owner.CharacterClass.ID is  eCharacterClass.Necromancer && _owner.IsShade)
+                    _owner.Shade(false);
+
+                _owner.Out.SendPlayerQuit(false);
+                _owner.Quit(true);
+                CraftingProgressMgr.FlushAndSaveInstance(_owner);
+                _owner.SaveIntoDatabase();
+                _onQuitTimerEnd();
+            }
+        }
+
+        private int OnQuitTimerEnd()
+        {
+            _quitTimer = null;
             return 0;
         }
 
-        /// <summary>
-        /// Gets the amount of time the player must wait before quit, in seconds
-        /// </summary>
-        public virtual int QuitTime
-        {
-            get
-            {
-                if (m_quitTimer == null)
-                {
-                    // dirty trick ;-) (20sec min quit time)
-                    //Commenting out the LastAttackTickPvP part as it was messing up the Realm Timer.
-                    // if (GameLoop.GameLoopTime - LastAttackTickPvP > 40000)
-                    //     LastAttackTickPvP = GameLoop.GameLoopTime - 40000;
-                    if (GameLoop.GameLoopTime - LastAttackTickPvE > 40000)
-                        LastAttackTickPvE = GameLoop.GameLoopTime - 40000;
-                }
-                long lastCombatAction = LastAttackTick;
-                if (lastCombatAction < LastAttackedByEnemyTick)
-                {
-                    lastCombatAction = LastAttackedByEnemyTick;
-                }
-
-                return (int)(60 - (GameLoop.GameLoopTime - lastCombatAction + 500) / 1000); // 500 is for rounding
-            }
-            set
-            { }
-        }
+        protected QuitTimer _quitTimer;
 
         #endregion
 
@@ -895,10 +911,10 @@ namespace DOL.GS
             CurrentSpeed = 0; // Stop player if he's running.
             LeaveHouse();
 
-            if (m_quitTimer != null)
+            if (_quitTimer != null)
             {
-                m_quitTimer.Stop();
-                m_quitTimer = null;
+                _quitTimer.Stop();
+                _quitTimer = null;
             }
 
             if (log.IsInfoEnabled)
@@ -1115,21 +1131,9 @@ namespace DOL.GS
                 }
 
                 if (!IsSitting)
-                {
                     Sit(true);
-                }
-                int secondsleft = QuitTime;
 
-                if (m_quitTimer == null)
-                {
-                    m_quitTimer = new ECSGameTimer(this);
-                    m_quitTimer.Callback = new ECSGameTimer.ECSTimerCallback(QuitTimerCallback);
-                    m_quitTimer.Start();
-                }
-
-                if (secondsleft > 20)
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.RecentlyInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Quit.YouWillQuit2", secondsleft), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                _quitTimer ??= new(this, OnQuitTimerEnd);
             }
             else
             {
@@ -6668,10 +6672,10 @@ namespace DOL.GS
                     m_releaseTimer = null;
                 }
 
-                if (m_quitTimer != null)
+                if (_quitTimer != null)
                 {
-                    m_quitTimer.Stop();
-                    m_quitTimer = null;
+                    _quitTimer.Stop();
+                    _quitTimer = null;
                 }
 
                 if (m_healthRegenerationTimer != null)
@@ -9623,10 +9627,10 @@ namespace DOL.GS
             if (!sit)
             {
                 // Stop quit sequence if the player stands up.
-                if (m_quitTimer != null)
+                if (_quitTimer != null)
                 {
-                    m_quitTimer.Stop();
-                    m_quitTimer = null;
+                    _quitTimer.Stop();
+                    _quitTimer = null;
                     Stuck = false;
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Sit.NoLongerWaitingQuit"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
