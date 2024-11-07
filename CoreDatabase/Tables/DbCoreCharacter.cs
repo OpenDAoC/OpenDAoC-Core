@@ -63,14 +63,14 @@ namespace DOL.Database
 		private int m_mithril;
 		private int m_currentModel;
 
-		private int m_constitution = 0;
-		private int m_dexterity = 0;
-		private int m_strength = 0;
-		private int m_quickness = 0;
-		private int m_intelligence = 0;
-		private int m_piety = 0;
-		private int m_empathy = 0;
-		private int m_charisma = 0;
+		private int m_constitution;
+		private int m_dexterity;
+		private int m_strength;
+		private int m_quickness;
+		private int m_intelligence;
+		private int m_piety;
+		private int m_empathy;
+		private int m_charisma;
 
 		//This needs to be uint and ushort!
 		private int m_xpos;
@@ -130,19 +130,19 @@ namespace DOL.Database
 		private bool m_isLevelRespecUsed;
 		private int m_respecBought; // /respec buy
 		private bool m_safetyFlag;
-		private int m_craftingPrimarySkill = 0;
+		private int m_craftingPrimarySkill;
 		private bool m_cancelStyle;
 		private bool m_isAnonymous;
 
-		private byte m_customisationStep = 1;
+		private byte m_customisationStep;
 
-		private byte m_eyesize = 0;
-		private byte m_lipsize = 0;
-		private byte m_eyecolor = 0;
-		private byte m_hairColor = 0;
-		private byte m_facetype = 0;
-		private byte m_hairstyle = 0;
-		private byte m_moodtype = 0;
+		private byte m_eyesize;
+		private byte m_lipsize;
+		private byte m_eyecolor;
+		private byte m_hairColor;
+		private byte m_facetype;
+		private byte m_hairstyle;
+		private byte m_moodtype;
 
 		private bool m_gainXP;
 		private bool m_gainRP;
@@ -167,15 +167,15 @@ namespace DOL.Database
 		private bool m_mlGranted;
 
 		// Should this player stats be ignored when tabulating statistics?
-		private bool m_ignoreStatistics = false;
+		private bool m_ignoreStatistics;
 		
 		// What should the Herald display of this character?
-		private byte m_notDisplayedInHerald = 0;
+		private byte m_notDisplayedInHerald;
 		
 		// Should we hide the detailed specialization of this player in the APIs?
 		private bool m_hideSpecializationAPI;
 
-		private byte m_activeSaddleBags = 0;
+		private byte m_activeSaddleBags;
 
         private DateTime m_lastLevelUp;
 
@@ -188,46 +188,28 @@ namespace DOL.Database
         private bool m_receiveROG; // toggle receiving ROGs for the player
         private bool m_boosted; // set to true if player has used a free level/rr NPC
 
+        // Controls automation
+        private ushort _automaticBackupStyleId;
+
         /// <summary>
         /// Create the character row in table
         /// </summary>
         public DbCoreCharacter()
-		{
-			m_creationDate = DateTime.Now;
-			m_concentration = 100;
-			m_exp = 0;
-			m_bntyPts = 0;
-			m_realmPts = 0;
-
-			m_lastPlayed = DateTime.Now; // Prevent /played crash.
-			m_playedTime = 0;  // /played startup
-			m_deathTime = long.MinValue;
-			m_respecAmountAllSkill = 0;
-			m_respecAmountSingleSkill = 0;
-			m_respecAmountRealmSkill = 0;
-			m_respecAmountDOL = 0;
-			m_respecBought = 0;
-			
-			m_isLevelRespecUsed = true;
-			m_safetyFlag = true;
-			m_craftingPrimarySkill = 0;
-			m_usedLevelCommand = false;
-			m_spellQueue = true;
-			m_gainXP = true;
-			m_gainRP = true;
-			m_autoloot = true;
-			m_showXFireInfo = false;
-			m_noHelp = false;
-			m_showGuildLogins = false;
-			m_roleplay = false;
-			m_ignoreStatistics = false;
+        {
+            m_creationDate = DateTime.Now;
+            m_concentration = 100;
+            m_lastPlayed = DateTime.Now; // Prevent /played crash.
+            m_deathTime = long.MinValue;
+            m_isLevelRespecUsed = true;
+            m_customisationStep = 1;
+            m_safetyFlag = true;
+            m_spellQueue = true;
+            m_gainXP = true;
+            m_gainRP = true;
+            m_autoloot = true;
             m_lastLevelUp = DateTime.Now;
-            m_playedTimeSinceLevel = 0;
             m_receiveROG = true;
-            m_hardcore = false;
-            m_hardcoreCompleted = false;
-            m_boosted = false;
-		}
+        }
 
 		/// <summary>
 		/// Gets/sets if this character has xp in a gravestone
@@ -2246,6 +2228,17 @@ namespace DOL.Database
 			{
 				Dirty = true;
 				m_boosted = value;
+			}
+		}
+
+		[DataElement(AllowDbNull = false)]
+		public ushort AutomaticBackupStyleId
+		{
+			get => _automaticBackupStyleId;
+			set
+			{
+				Dirty = true;
+				_automaticBackupStyleId = value;
 			}
 		}
 

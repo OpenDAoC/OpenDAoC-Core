@@ -4368,6 +4368,7 @@ namespace DOL.GS
 		public override eGender Gender { get; set; }
 
 		public new NpcMovementComponent movementComponent;
+		public new NpcStyleComponent styleComponent;
 
 		public GameNPC Copy()
 		{
@@ -4489,8 +4490,8 @@ namespace DOL.GS
 
 		public GameNPC(ABrain defaultBrain) : base()
 		{
-			if (movementComponent == null)
-				movementComponent = base.movementComponent as NpcMovementComponent;
+			movementComponent ??= base.movementComponent as NpcMovementComponent;
+			styleComponent ??= base.styleComponent as NpcStyleComponent;
 
 			Level = 1;
 			m_health = MaxHealth;

@@ -4010,7 +4010,7 @@ namespace DOL.GS
 		{
 			attackComponent = new AttackComponent(this);
 			rangeAttackComponent = new RangeAttackComponent(this);
-			styleComponent = new StyleComponent(this);
+			styleComponent = StyleComponent.Create(this);
 			castingComponent = CastingComponent.Create(this);
 			effectListComponent = new EffectListComponent(this);
 			movementComponent = MovementComponent.Create(this);

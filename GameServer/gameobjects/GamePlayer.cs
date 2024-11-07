@@ -42,6 +42,7 @@ namespace DOL.GS
 
         private readonly object m_LockObject = new();
         public new PlayerMovementComponent movementComponent;
+        public new PlayerStyleComponent styleComponent;
 
         public override eGameObjectType GameObjectType => eGameObjectType.PLAYER;
         public ChainedActions ChainedActions { get; }
@@ -11417,6 +11418,8 @@ namespace DOL.GS
             // check the account for the Muted flag
             if (Client.Account.IsMuted)
                 IsMuted = true;
+
+            styleComponent.OnPlayerLoadFromDatabase();
         }
 
         /// <summary>
@@ -11510,6 +11513,7 @@ namespace DOL.GS
                         DBCharacter.Direction = loc.Heading;
                     }
                 }
+                styleComponent.OnPlayerSaveIntoDatabase();
                 GameServer.Database.SaveObject(DBCharacter);
                 Inventory.SaveIntoDatabase(InternalID);
 
@@ -14542,8 +14546,8 @@ namespace DOL.GS
         /// <param name="dbChar">The character for this player</param>
         public GamePlayer(GameClient client, DbCoreCharacter dbChar) : base()
         {
-            if (movementComponent == null)
-                movementComponent = base.movementComponent as PlayerMovementComponent;
+            movementComponent ??= base.movementComponent as PlayerMovementComponent;
+            styleComponent ??= base.styleComponent as PlayerStyleComponent;
 
             IsJumping = false;
             m_steed = new WeakRef(null);

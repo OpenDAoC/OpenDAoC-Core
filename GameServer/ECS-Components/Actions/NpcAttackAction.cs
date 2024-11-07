@@ -91,7 +91,7 @@ namespace DOL.GS
                 }
             }
 
-            _combatStyle = StyleComponent.NPCGetStyleToUse();
+            _combatStyle = StyleComponent.GetStyleToUse();
 
             if (!base.PrepareMeleeAttack())
                 return false;

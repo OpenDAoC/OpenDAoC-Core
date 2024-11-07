@@ -169,7 +169,7 @@ namespace DOL.Network
                         catch (SocketException e)
                         {
                             if (log.IsDebugEnabled)
-                                log.Error($"Socket exception on UDP receive (Code: {e.SocketErrorCode})");
+                                log.Debug($"Socket exception on UDP receive (Code: {e.SocketErrorCode})");
                         }
                         catch (Exception e)
                         {
