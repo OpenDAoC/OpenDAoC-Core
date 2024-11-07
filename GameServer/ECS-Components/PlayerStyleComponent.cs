@@ -53,7 +53,16 @@ namespace DOL.GS
         {
             DbCoreCharacter dbCharacter = _playerOwner.DBCharacter;
 
-            if (dbCharacter == null || AutomaticBackupStyle.ID == dbCharacter.AutomaticBackupStyleId)
+            if (dbCharacter == null)
+                return;
+
+            if (AutomaticBackupStyle == null)
+            {
+                dbCharacter.AutomaticBackupStyleId = 0;
+                return;
+            }
+
+            if (AutomaticBackupStyle.ID == dbCharacter.AutomaticBackupStyleId)
                 return;
 
             dbCharacter.AutomaticBackupStyleId = (ushort) AutomaticBackupStyle.ID;
