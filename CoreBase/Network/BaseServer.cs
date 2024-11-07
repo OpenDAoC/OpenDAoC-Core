@@ -101,10 +101,11 @@ namespace DOL.Network
                         return false;
 
                     _listen.Listen(100);
-                    SocketAsyncEventArgs listenArgs = new();
-                    listenArgs.Completed += OnAsyncListenCompletion;
-                    _listen.AcceptAsync(listenArgs);
                     log.Info("Server is now listening to incoming connections!");
+                    SocketAsyncEventArgs listenArgs = CreateSocketAsyncEventArgs();
+
+                    while (!_listen.AcceptAsync(listenArgs))
+                        OnListenCompletion(listenArgs);
                 }
                 catch (Exception e)
                 {
@@ -116,6 +117,13 @@ namespace DOL.Network
                 }
 
                 return true;
+
+                SocketAsyncEventArgs CreateSocketAsyncEventArgs()
+                {
+                    SocketAsyncEventArgs listenArgs = new();
+                    listenArgs.Completed += OnAsyncListenCompletion;
+                    return listenArgs;
+                }
             }
 
             void StartUdpThread()
@@ -195,9 +203,24 @@ namespace DOL.Network
 
             void OnAsyncListenCompletion(object sender, SocketAsyncEventArgs listenArgs)
             {
-                if (_listen == null)
-                    return;
+                OnListenCompletion(listenArgs);
 
+                try
+                {
+                    while (_listen != null && !_listen.AcceptAsync(listenArgs))
+                        OnListenCompletion(listenArgs);
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error(e);
+
+                    _listen?.Close();
+                }
+            }
+
+            void OnListenCompletion(SocketAsyncEventArgs listenArgs)
+            {
                 BaseClient baseClient = null;
                 Socket socket = listenArgs.AcceptSocket;
 
@@ -212,7 +235,8 @@ namespace DOL.Network
                 }
                 catch (Exception e)
                 {
-                    log.Error(e);
+                    if (log.IsErrorEnabled)
+                        log.Error(e);
 
                     if (baseClient != null)
                         Disconnect(baseClient);
@@ -229,7 +253,6 @@ namespace DOL.Network
                 finally
                 {
                     listenArgs.AcceptSocket = null;
-                    _listen.AcceptAsync(listenArgs);
                 }
             }
         }
@@ -350,7 +373,9 @@ namespace DOL.Network
             }
             catch (Exception e)
             {
-                log.Error("Exception", e);
+                if (log.IsErrorEnabled)
+                    log.Error("Exception", e);
+
                 return false;
             }
 
