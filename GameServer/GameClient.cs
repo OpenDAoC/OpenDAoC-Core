@@ -393,7 +393,7 @@ namespace DOL.GS
                     }
 
                     int packetEnd = currentOffset + packetLength;
-                    int calcCheck = PacketHandler.PacketProcessor.CalculateChecksum(buffer, currentOffset, packetLength - 2);
+                    int calcCheck = PacketProcessor.CalculateChecksum(buffer, currentOffset, packetLength - 2);
                     int pakCheck = (buffer[packetEnd - 2] << 8) | (buffer[packetEnd - 1]);
 
                     if (pakCheck != calcCheck)

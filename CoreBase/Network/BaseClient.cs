@@ -91,15 +91,12 @@ namespace DOL.Network
                 _isReceivingAsync = false;
             }
 
-            int remaining = ReceiveBuffer.Length - ReceiveBufferOffset;
+            int available = ReceiveBuffer.Length - ReceiveBufferOffset;
 
-            if (remaining <= 0)
+            if (available <= 0)
             {
-                if (remaining == 0)
-                    return;
-
                 if (log.IsErrorEnabled)
-                    log.Error($"Disconnecting client because of receive buffer overflow. (Client: {this})");
+                    log.Error($"Disconnecting client because of receive buffer overflow. (Client: {this}) (Available: {available})");
 
                 Disconnect();
                 return;
@@ -107,7 +104,7 @@ namespace DOL.Network
 
             try
             {
-                _receiveArgs.SetBuffer(ReceiveBufferOffset, ReceiveBuffer.Length - ReceiveBufferOffset);
+                _receiveArgs.SetBuffer(ReceiveBufferOffset, available);
 
                 if (Socket.ReceiveAsync(_receiveArgs))
                 {
