@@ -288,7 +288,7 @@ namespace DOL.GS
 
         public static List<GameClient> GetClients<T>(CheckClientAction<T> action, T actionArgument)
         {
-            List<GameClient> players = new();
+            List<GameClient> clients = new();
 
             using (_lock)
             {
@@ -300,11 +300,11 @@ namespace DOL.GS
                         continue;
 
                     if (action?.Invoke(client, actionArgument) != false)
-                        players.Add(client);
+                        clients.Add(client);
                 }
             }
 
-            return players;
+            return clients;
         }
 
         public static GamePlayer GetPlayerByExactName(string playerName)

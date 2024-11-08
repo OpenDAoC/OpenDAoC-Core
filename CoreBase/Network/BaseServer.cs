@@ -230,8 +230,8 @@ namespace DOL.Network
                         return;
 
                     baseClient = GetNewClient(socket);
-                    baseClient.Receive();
-                    baseClient.OnConnect();
+                    baseClient.OnConnect(); // Must be called before `Receive` since `Receive` ends up calling `OnDisconnect` if it fails.
+                    // Don't call `Receive` here, the client service may be already doing it and it isn't thread safe.
                 }
                 catch (Exception e)
                 {
