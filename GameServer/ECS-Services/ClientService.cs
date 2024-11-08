@@ -450,19 +450,13 @@ namespace DOL.GS
 
         public static GameClient GetClientFromId(int id)
         {
-            // Since we want to avoid locks, `_clients` may change, so we can't check for count first.
-            // This should be fine unless for some reason a client keeps sending wrong IDs.
-            try
-            {
-                using (_lock)
-                {
-                    _lock.EnterReadLock();
-                    return _clients[id - 1];
-                }
-            }
-            catch
-            {
+            if (--id < 0)
                 return null;
+
+            using (_lock)
+            {
+                _lock.EnterReadLock();
+                return id < _clients.Count ? _clients[id] : null;
             }
         }
 
