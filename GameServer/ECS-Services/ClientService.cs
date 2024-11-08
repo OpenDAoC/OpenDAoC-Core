@@ -73,6 +73,7 @@ namespace DOL.GS
                     case GameClient.eClientState.Playing:
                     {
                         Receive(client);
+                        CheckHardTimeout(client);
 
                         GamePlayer player = client.Player;
 
