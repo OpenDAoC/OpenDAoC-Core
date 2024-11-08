@@ -229,7 +229,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						}
 
 						// Check link death timer instead of client state to account for soft link deaths.
-						if ((otherClient.Player?.IsLinkDeathTimerRunning) != true)
+						if (otherClient.Player?.IsLinkDeathTimerRunning == true)
 						{
 							if (Log.IsInfoEnabled)
 								Log.Info("User is still being logged out from linkdeath!");
