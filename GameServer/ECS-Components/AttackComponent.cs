@@ -2501,20 +2501,21 @@ namespace DOL.GS
                 if (berserk != null)
                 {
                     int level = owner.GetAbilityLevel(Abilities.Berserk);
-                    // According to : http://daoc.catacombs.com/forum.cfm?ThreadKey=10833&DefMessage=922046&forum=37
-                    // Zerk 1 = 1-25%
-                    // Zerk 2 = 1-50%
-                    // Zerk 3 = 1-75%
-                    // Zerk 4 = 1-99%
-                    critMin = (int) (0.01 * ad.Damage);
+                    // https://web.archive.org/web/20061017095337/http://daoc.catacombs.com/forum.cfm?ThreadKey=10833&DefMessage=922046&forum=37
+                    // 1% min is weird. Raised to 10%.
+                    // Berserk 1 = 10-25%
+                    // Berserk 2 = 10-50%
+                    // Berserk 3 = 10-75%
+                    // Berserk 4 = 10-99%
+                    critMin = (int) (ad.Damage * 0.1);
                     critMax = (int) (Math.Min(0.99, level * 0.25) * ad.Damage);
                 }
                 else
                 {
                     // Min crit damage is 10%.
-                    critMin = ad.Damage / 10;
-                    // Max crit damage to players is 50%. Berzerkers go up to 99% in Berserk mode.
+                    critMin = (int) (ad.Damage * 0.1);
 
+                    // Max crit damage to players is 50%.
                     if (ad.Target is GamePlayer)
                         critMax = ad.Damage / 2;
                     else
