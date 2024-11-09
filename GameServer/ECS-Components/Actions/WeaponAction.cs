@@ -378,18 +378,25 @@ namespace DOL.GS
                 case eAttackResult.Blocked:
                 case eAttackResult.Evaded:
                 case eAttackResult.Parried:
-                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(null, attacker, target.ActiveWeapon, null, 1, interval, false, true);
+                {
+                    int attackSpeed = target.AttackSpeed(target.ActiveWeapon);
+                    WeaponAction weaponAction = new(target, attacker, target.ActiveWeapon, null, target.Effectiveness, attackSpeed, null);
+                    // Don't call `WeaponAction.Execute` here.
+                    // It applies damage adds and shields, but Reflex Attack shouldn't trigger them.
+                    // It would also cause a stack overflow if the target has Reflex Attack too.
+                    AttackData ReflexAttackAD = target.attackComponent.LivingMakeAttack(weaponAction, attacker, target.ActiveWeapon, null, target.Effectiveness, attackSpeed, false, true);
                     target.DealDamage(ReflexAttackAD);
 
                     // If we get hit by Reflex Attack (it can miss), send a "you were hit" message to the attacker manually
                     // since it will not be done automatically as this attack is not processed by regular attacking code.
-                    if (ReflexAttackAD.AttackResult == eAttackResult.HitUnstyled)
+                    if (ReflexAttackAD.AttackResult is eAttackResult.HitUnstyled)
                     {
                         GamePlayer playerAttacker = attacker as GamePlayer;
-                        playerAttacker?.Out.SendMessage(target.Name + " counter-attacks you for " + ReflexAttackAD.Damage + " damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
+                        playerAttacker?.Out.SendMessage($"{target.Name} counter-attacks you for {ReflexAttackAD.Damage} damage.", eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
                     }
 
                     break;
+                }
                 case eAttackResult.NotAllowed_ServerRules:
                 case eAttackResult.NoTarget:
                 case eAttackResult.TargetDead:
