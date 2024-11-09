@@ -45,7 +45,10 @@ namespace DOL.GS
             {
                 GameObject oldTarget = _target;
                 StandardMobBrain brain = _npcOwner.Brain as StandardMobBrain;
-                brain.RemoveFromAggroList(_losCheckTarget as GameLiving);
+
+                if (_losCheckTarget is GameLiving livingLosCheckTarget)
+                    brain.RemoveFromAggroList(livingLosCheckTarget);
+
                 brain.AttackMostWanted(); // This won't immediately start the attack on the new target, but we can use `TargetObject` to start checking it.
                 GameObject newTarget = _npcOwner.TargetObject;
 
