@@ -18,7 +18,6 @@ namespace DOL.GS
         private GameObject _losCheckTarget;
 
         private static int LosCheckInterval => Properties.CHECK_LOS_DURING_RANGED_ATTACK_MINIMUM_INTERVAL;
-        private bool HasLosOnCurrentTarget => _losCheckTarget == _target && _hasLos;
         private bool IsGuardArcherOrImmobile => _npcOwner is GuardArcher || _npcOwner.MaxSpeedBase == 0;
 
         public NpcAttackAction(GameNPC owner) : base(owner)
@@ -82,9 +81,20 @@ namespace DOL.GS
                 _npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null &&
                 !_npcOwner.IsWithinRadius(_target, offsetMeleeAttackRange))
             {
-                // But only if there is no timer running or if it has LoS.
+                // But only if there is no timer running or if it has LoS on its current target.
                 // If the timer is running, it'll check for LoS continuously.
-                if (_checkLosTimer == null || !_checkLosTimer.IsAlive || HasLosOnCurrentTarget)
+                if (!Properties.CHECK_LOS_BEFORE_NPC_RANGED_ATTACK || _checkLosTimer == null || !_checkLosTimer.IsAlive)
+                {
+                    SwitchToRangedAndTick();
+                    return false;
+                }
+
+                if (_losCheckTarget != _target)
+                {
+                    _hasLos = false;
+                    _checkLosTimer.ChangeTarget(_target);
+                }
+                else if (_hasLos)
                 {
                     SwitchToRangedAndTick();
                     return false;
@@ -119,10 +129,12 @@ namespace DOL.GS
             {
                 if (_checkLosTimer == null)
                     _checkLosTimer = new CheckLosTimer(_npcOwner, _target, LosCheckCallback);
-                else
+                else if (_losCheckTarget != _target)
+                {
+                    _hasLos = false;
                     _checkLosTimer.ChangeTarget(_target);
-
-                if (!HasLosOnCurrentTarget)
+                }
+                else if (!_hasLos)
                 {
                     _interval = TICK_INTERVAL_FOR_NON_ATTACK;
                     return false;
