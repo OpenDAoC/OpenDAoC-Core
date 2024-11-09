@@ -76,9 +76,6 @@ namespace DOL.Network
 
         public void Receive()
         {
-            if (!Socket.Connected)
-                return;
-
             // If an async operation is running, wait for it to be completed.
             // We could work with a new `SocketAsyncEventArgs` instead, but the implementation is tricky and I don't think there would be any benefit.
             // We could also let the callback call `OnReceiveCompletion`, but the packet would be then processed outside of the game loop.
@@ -90,6 +87,10 @@ namespace DOL.Network
                 OnReceiveCompletion();
                 _isReceivingAsync = false;
             }
+
+            // Must be checked after calling `OnReceiveCompletion`.
+            if (!Socket.Connected)
+                return;
 
             int available = ReceiveBuffer.Length - ReceiveBufferOffset;
 
