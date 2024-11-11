@@ -188,11 +188,9 @@ namespace DOL.GS
                 RequestedPlayerUpdates |= playerUpdate;
             }
 
-            // Force an update in case our effect list component isn't ticking.
-            // This should only happen when the caster doesn't have any effect and is casting a concentration buff on another target.
-            // Alternatively we could add it to the entity manager, then it would send updates before being removed, but the end result is the same.
-            if (!EntityManagerId.IsSet)
-                SendPlayerUpdates();
+            // Forces an update in case our effect list component isn't ticking.
+            // Don't call `SendPlayerUpdates` directly.
+            EntityManager.Add(this);
         }
 
         public void SendPlayerUpdates()
