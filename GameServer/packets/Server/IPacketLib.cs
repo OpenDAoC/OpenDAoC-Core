@@ -683,7 +683,7 @@ namespace DOL.GS.PacketHandler
 		void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living);
 		void SendGroupMembersUpdate(bool updateIcons, bool updateMap);
 		void SendInventoryItemsUpdate(ICollection<DbInventoryItem> itemsToUpdate);
-		void SendInventorySlotsUpdate(ICollection<int> slots);
+		void SendInventorySlotsUpdate(ICollection<eInventorySlot> slots);
 		void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate);
 		void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, eInventoryWindowType windowType);
 		void SendDoorState(Region region, GameDoorBase door);
@@ -698,7 +698,7 @@ namespace DOL.GS.PacketHandler
 		void SendCustomTextWindow(string caption, IList<string> text);
 		void SendPlayerTitles();
 		void SendPlayerTitleUpdate(GamePlayer player);
-		void SendEncumberance();
+		void SendEncumbrance();
 		void SendAddFriends(string[] friendNames);
 		void SendRemoveFriends(string[] friendNames);
 		void SendTimerWindow(string title, int seconds);

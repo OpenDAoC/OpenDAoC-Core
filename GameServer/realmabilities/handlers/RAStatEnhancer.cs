@@ -80,7 +80,7 @@ namespace DOL.GS.RealmAbilities
 			{
 				player.Out.SendCharStatsUpdate();
 				player.Out.SendUpdateWeaponAndArmorStats();
-				player.UpdateEncumberance();
+				player.UpdateEncumbrance();
 				player.UpdatePlayerStatus();
 			}
 

@@ -1729,7 +1729,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendInventorySlotsUpdate(ICollection<int> slots)
+		public virtual void SendInventorySlotsUpdate(ICollection<eInventorySlot> slots)
 		{
 			// slots contain ints
 
@@ -1744,8 +1744,9 @@ namespace DOL.GS.PacketHandler
 			}
 			else
 			{
-				var updateSlots = new List<int>(ServerProperties.Properties.MAX_ITEMS_PER_PACKET);
-				foreach (int slot in slots)
+				var updateSlots = new List<eInventorySlot>(ServerProperties.Properties.MAX_ITEMS_PER_PACKET);
+
+				foreach (eInventorySlot slot in slots)
 				{
 					updateSlots.Add(slot);
 					if (updateSlots.Count >= ServerProperties.Properties.MAX_ITEMS_PER_PACKET)
@@ -1784,13 +1785,13 @@ namespace DOL.GS.PacketHandler
 
 			// clients crash if too long packet is sent
 			// so we send big updates in parts
-			var slotsToUpdate = new List<int>(Math.Min(ServerProperties.Properties.MAX_ITEMS_PER_PACKET, itemsToUpdate.Count));
+			var slotsToUpdate = new List<eInventorySlot>(Math.Min(ServerProperties.Properties.MAX_ITEMS_PER_PACKET, itemsToUpdate.Count));
 			foreach (DbInventoryItem item in itemsToUpdate)
 			{
 				if (item == null)
 					continue;
 
-				slotsToUpdate.Add(item.SlotPosition);
+				slotsToUpdate.Add((eInventorySlot) item.SlotPosition);
 				if (slotsToUpdate.Count >= ServerProperties.Properties.MAX_ITEMS_PER_PACKET)
 				{
 					SendInventorySlotsUpdateRange(slotsToUpdate, windowType);
@@ -2376,15 +2377,15 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendEncumberance()
+		public virtual void SendEncumbrance()
 		{
 			if (m_gameClient.Player == null)
 				return;
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.Encumberance)))
 			{
-				pak.WriteShort((ushort) m_gameClient.Player.MaxEncumberance); // encumb total
-				pak.WriteShort((ushort) m_gameClient.Player.Encumberance); // encumb used
+				pak.WriteShort((ushort) m_gameClient.Player.MaxCarryingCapacity);
+				pak.WriteShort((ushort) m_gameClient.Player.Inventory.InventoryWeight);
 				SendTCP(pak);
 			}
 		}
@@ -3965,7 +3966,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		protected virtual void SendInventorySlotsUpdateRange(ICollection<int> slots, eInventoryWindowType windowType)
+		protected virtual void SendInventorySlotsUpdateRange(ICollection<eInventorySlot> slots, eInventoryWindowType windowType)
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.InventoryUpdate)))
 			{

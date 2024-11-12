@@ -119,7 +119,7 @@ namespace DOL.GS
 					item.Durability -= toRecoverCond;
 				}
 
-				player.Out.SendInventorySlotsUpdate(new int[] { item.SlotPosition });
+				player.Out.SendInventorySlotsUpdate([(eInventorySlot) item.SlotPosition]);
 
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FullyRepaired1", item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				if (tradePartner != null) tradePartner.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Repair.Proceed.FullyRepaired2", player.Name, item.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);

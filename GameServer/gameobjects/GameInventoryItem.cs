@@ -288,7 +288,7 @@ namespace DOL.GS
                             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedRepairDire", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
                         player.Out.SendUpdateWeaponAndArmorStats();
-                        player.Out.SendInventorySlotsUpdate(new int[] { SlotPosition });
+                        player.Out.SendInventorySlotsUpdate([(eInventorySlot) SlotPosition]);
                     }
                 }
             }
@@ -329,7 +329,7 @@ namespace DOL.GS
                             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.NeedRepairDire", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
                         player.Out.SendUpdateWeaponAndArmorStats();
-                        player.Out.SendInventorySlotsUpdate(new int[] { SlotPosition });
+                        player.Out.SendInventorySlotsUpdate([(eInventorySlot) SlotPosition]);
                     }
                 }
             }

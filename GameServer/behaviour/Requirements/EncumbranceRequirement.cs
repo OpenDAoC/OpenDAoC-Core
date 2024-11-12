@@ -73,7 +73,7 @@ namespace DOL.GS.Behaviour.Requirements
 			bool result = true;
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
 
-            result = compare(player.Encumberance, N, Comparator);
+            result = compare(player.Inventory.InventoryWeight, N, Comparator);
 
 			return result;
 		}

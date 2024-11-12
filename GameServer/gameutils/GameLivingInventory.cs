@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using DOL.Database;
 
 namespace DOL.GS
 {
-	public abstract class GameLivingInventory : IGameInventory
+    public abstract class GameLivingInventory : IGameInventory
 	{
 		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -55,6 +54,8 @@ namespace DOL.GS
 			eInventorySlot.LegsArmor,
 			eInventorySlot.ArmsArmor
 		};
+
+		public object LockObject { get; } = new();
 
 		#region Constructor/Declaration/LoadDatabase/SaveDatabase
 
@@ -747,7 +748,7 @@ namespace DOL.GS
 				m_items.TryGetValue(toSlot, out toItem);
 
 				if (!CombineItems(fromItem, toItem) && !StackItems(fromSlot, toSlot, itemCount))
-					ExchangeItems(fromSlot, toSlot);
+					SwapItems(fromSlot, toSlot);
 
 				if (!m_changedSlots.Contains(fromSlot))
 					m_changedSlots.Add(fromSlot);
@@ -1152,7 +1153,7 @@ namespace DOL.GS
 		/// <param name="fromSlot">First SlotPosition</param>
 		/// <param name="toSlot">Second SlotPosition</param>
 		/// <returns>true if items exchanged successfully</returns>
-		protected virtual bool ExchangeItems(eInventorySlot fromSlot, eInventorySlot toSlot)
+		protected virtual bool SwapItems(eInventorySlot fromSlot, eInventorySlot toSlot)
 		{
 			DbInventoryItem newFromItem;
 			DbInventoryItem newToItem;
@@ -1194,35 +1195,13 @@ namespace DOL.GS
 		#endregion Combine/Exchange/Stack Items
 
 		#region Encumberance
-		/// <summary>
-		/// Gets the inventory weight
-		/// </summary>
-		public virtual int InventoryWeight
+
+		public virtual int InventoryWeight => 0;
+
+		public virtual bool UpdateInventoryWeight()
 		{
-			get
-			{
-				var weight = 0;
-				IList<DbInventoryItem> items;
-
-				lock (LockObject)
-				{
-					items = new List<DbInventoryItem>(m_items.Values);
-				}
-				
-				foreach (var item in items)
-				{
-					if (!EQUIP_SLOTS.Contains((eInventorySlot)item.SlotPosition))
-						continue;
-					if ((eInventorySlot) item.SlotPosition is eInventorySlot.FirstQuiver or eInventorySlot.SecondQuiver or eInventorySlot.ThirdQuiver or eInventorySlot.FourthQuiver)
-						continue;
-					weight += item.Weight;
-				}
-
-				return weight/10;
-			}
+			return false;
 		}
-
-		public object LockObject { get; } = new();
 
 		#endregion
 

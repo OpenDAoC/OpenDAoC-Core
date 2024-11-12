@@ -50,7 +50,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					if (!house.CanPayRent(client.Player))
 					{
-						client.Out.SendInventorySlotsUpdate([slot]);
+						client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 						return;
 					}
 
@@ -147,7 +147,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					// player needs to be in a guild to xfer a house to a guild
 					if (client.Player.Guild == null)
 					{
-						client.Out.SendInventorySlotsUpdate(new[] { slot });
+						client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 						ChatUtil.SendSystemMessage(client, "You must be a member of a guild to do that");
 						return;
 					}
@@ -155,7 +155,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					// player needs to own the house to be able to xfer it
 					if (!house.HasOwnerPermissions(client.Player))
 					{
-						client.Out.SendInventorySlotsUpdate(new[] { slot });
+						client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 						ChatUtil.SendSystemMessage(client, "You do not own this house.");
 						return;
 					}
@@ -163,7 +163,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					// guild can't already have a house
 					if (client.Player.Guild.GuildOwnsHouse)
 					{
-						client.Out.SendInventorySlotsUpdate(new[] { slot });
+						client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 						ChatUtil.SendSystemMessage(client, "Your Guild already owns a house.");
 						return;
 					}
@@ -171,7 +171,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					// player needs to be a GM in the guild to xfer his personal house to the guild
 					if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.Leader))
 					{
-						client.Out.SendInventorySlotsUpdate(new[] { slot });
+						client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 						ChatUtil.SendSystemMessage(client, "You are not the leader of a guild.");
 						return;
 					}
@@ -273,14 +273,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							if (client.Player.InHouse)
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
 							// no permissions to add to the garden, return
 							if (!house.CanChangeGarden(client.Player, DecorationPermissions.Add))
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
@@ -289,7 +289,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							if (house.OutdoorItems.Count >= Properties.MAX_OUTDOOR_HOUSE_ITEMS)
 							{
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.GardenMaxObjects", null);
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 
 								return;
 							}
@@ -336,14 +336,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							if (client.Player.InHouse == false)
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
 							// no permission to add to the interior, return
 							if (!house.CanChangeInterior(client.Player, DecorationPermissions.Add))
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
@@ -351,7 +351,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							if (!IsSuitableForWall(orgitem) && method == 2)
 							{
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.NotWallObject", null);
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
@@ -359,7 +359,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							if (objType != 51 && method == 3)
 							{
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.NotFloorObject", null);
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
@@ -367,7 +367,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							if (house.IndoorItems.Count >= GetMaxIndoorItemsForHouse(house.Model))
 							{
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.IndoorMaxItems", GetMaxIndoorItemsForHouse(house.Model));
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
@@ -394,7 +394,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								properRotation = 360;
 								if (objType != 50)
 								{
-									client.Out.SendInventorySlotsUpdate(new[] { slot });
+									client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								}
 							}
 
@@ -451,7 +451,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							// no permission to add to the garden, return
 							if (!house.CanChangeGarden(client.Player, DecorationPermissions.Add))
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
@@ -468,14 +468,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 									else
 									{
 										ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.PorchAlready", null);
-										client.Out.SendInventorySlotsUpdate(new[] { slot });
+										client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 									}
 									return;
 								case "housing_porch_remove_deed":
 									if (house.ConsignmentMerchant != null)
 									{
 										ChatUtil.SendSystemMessage(client, "You must first remove the consignment merchant.");
-										client.Out.SendInventorySlotsUpdate(new[] { slot });
+										client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 										return;
 									}
 
@@ -489,7 +489,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									else
 									{
 										ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.PorchNone", null);
-										client.Out.SendInventorySlotsUpdate(new[] { slot });
+										client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 									}
 									return;
 								case "housing_consignment_deed":
@@ -498,7 +498,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 										if (!house.Porch)
 										{
 											ChatUtil.SendSystemMessage(client, "Your house needs a porch first.");
-											client.Out.SendInventorySlotsUpdate(new[] { slot });
+											client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 											return;
 										}
 
@@ -512,13 +512,13 @@ namespace DOL.GS.PacketHandler.Client.v168
 										else
 										{
 											ChatUtil.SendSystemMessage(client, "You cannot add a consignment merchant here.");
-											client.Out.SendInventorySlotsUpdate(new[] { slot });
+											client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 										}
 										return;
 									}
 								default:
 									ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.PorchNotItem", null);
-									client.Out.SendInventorySlotsUpdate(new[] { slot });
+									client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 									return;
 							}
 						}
@@ -526,28 +526,28 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							if (client.Player.InHouse == false)
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
 							// no permission to add to the interior, return
 							if (!house.CanChangeInterior(client.Player, DecorationPermissions.Add))
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
 							// don't allow non-hookpoint items to be dropped on hookpoints
 							if (IsSuitableForHookpoint(orgitem) == false)
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
 							// if the hookpoint doesn't exist, prompt player to Log it in the database for us
 							if (house.GetHookpointLocation((uint)_position) == null)
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 
 								if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
 								{
@@ -580,7 +580,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 									if (hpitem.HookpointID == point.HookpointID)
 									{
 										ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.HookPointAlready", null);
-										client.Out.SendInventorySlotsUpdate(new[] { slot });
+										client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 										return;
 									}
 								}
@@ -594,7 +594,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								{
 									string error = string.Format("Hookpoint already has item on attempt to attach {0} to hookpoint {1} for house {2}!", orgitem.Id_nb, _position, house.HouseNumber);
 									log.ErrorFormat(error);
-									client.Out.SendInventorySlotsUpdate(new[] { slot });
+									client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 									throw new Exception(error);
 								}
 
@@ -613,7 +613,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							else
 							{
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.HookPointNot", null);
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 							}
 
 							// broadcast updates
@@ -625,7 +625,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							// no permission to change external appearance, return
 							if (!house.CanChangeExternalAppearance(client.Player))
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
@@ -660,7 +660,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							else
 							{
 								ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.BadShieldBanner", null);
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 							}
 
 							// save the house and broadcast updates
@@ -672,7 +672,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 						{
 							if (client.Player.InHouse == false)
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
@@ -683,14 +683,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 								log.Error("HOUSING: " + client.Player.Name + " working with invalid position " + _position + " in house " +
 										  house.HouseNumber + " model " + house.Model);
 
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 								return;
 							}
 
 							// if hookpoint doesn't exist, prompt player to Log it in the database for us
 							if (house.GetHookpointLocation((uint)_position) == null)
 							{
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 
 								if (client.Account.PrivLevel == (int)ePrivLevel.Admin)
 								{
@@ -717,7 +717,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								client.Player.Out.SendMessage("You can't add any more vaults to this house!", eChatType.CT_System,
 															  eChatLoc.CL_SystemWindow);
-								client.Out.SendInventorySlotsUpdate(new[] { slot });
+								client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 
 								return;
 							}
@@ -728,7 +728,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								if (hpitem.HookpointID == _position)
 								{
 									ChatUtil.SendSystemMessage(client, "Scripts.Player.Housing.HookPointAlready", null);
-									client.Out.SendInventorySlotsUpdate(new[] { slot });
+									client.Out.SendInventorySlotsUpdate([(eInventorySlot) slot]);
 									return;
 								}
 							}

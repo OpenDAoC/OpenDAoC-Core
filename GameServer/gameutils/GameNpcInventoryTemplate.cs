@@ -492,7 +492,7 @@ namespace DOL.GS
 		/// <param name="fromSlot">First SlotPosition</param>
 		/// <param name="toSlot">Second SlotPosition</param>
 		/// <returns>false</returns>
-		protected override bool ExchangeItems(eInventorySlot fromSlot, eInventorySlot toSlot)
+		protected override bool SwapItems(eInventorySlot fromSlot, eInventorySlot toSlot)
 		{
 			return false;
 		}

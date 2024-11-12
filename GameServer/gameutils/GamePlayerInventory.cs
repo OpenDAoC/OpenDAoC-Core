@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -144,6 +143,7 @@ namespace DOL.GS
 							m_player.OnItemEquipped(item, slot);
 					}
 
+					UpdateInventoryWeight();
 					return true;
 				}
 				catch (Exception e)
@@ -972,13 +972,8 @@ namespace DOL.GS
 			    fromItem.SlotPosition > (int) eInventorySlot.LastBackpack)
 				return false;
 
-			if (fromItem is IGameInventoryItem)
-			{
-				if ((fromItem as IGameInventoryItem).Combine(m_player, toItem))
-				{
-					return true;
-				}
-			}
+			if (fromItem is IGameInventoryItem gameInventoryItem)
+				return gameInventoryItem.Combine(m_player, toItem);
 
 			//Is the fromItem a dye or dyepack?
 			//TODO shouldn't be done with model check
@@ -1003,26 +998,24 @@ namespace DOL.GS
 		/// <returns>true if items stacked successfully</returns>
 		protected override bool StackItems(eInventorySlot fromSlot, eInventorySlot toSlot, int itemCount)
 		{
-			DbInventoryItem fromItem;
-			DbInventoryItem toItem;
+			m_items.TryGetValue(fromSlot, out DbInventoryItem fromItem);
+			m_items.TryGetValue(toSlot, out DbInventoryItem toItem);
 
-			m_items.TryGetValue(fromSlot, out fromItem);
-			m_items.TryGetValue(toSlot, out toItem);
-
-			if ((toSlot > eInventorySlot.HorseArmor && toSlot < eInventorySlot.FirstQuiver)
-			    || (toSlot > eInventorySlot.FourthQuiver && toSlot < eInventorySlot.FirstBackpack))
+			if (toSlot is
+				(> eInventorySlot.HorseArmor and < eInventorySlot.FirstQuiver) or
+				(> eInventorySlot.FourthQuiver and < eInventorySlot.FirstBackpack))
+			{
 				return false;
+			}
 
 			if (itemCount == 0)
-			{
 				itemCount = fromItem.Count > 0 ? fromItem.Count : 1;
-			}
 
 			if (toItem != null && toItem.IsStackable && toItem.Name.Equals(fromItem.Name))
 			{
 				if (fromItem.Count + toItem.Count > fromItem.MaxCount)
 				{
-					fromItem.Count -= (toItem.MaxCount - toItem.Count);
+					fromItem.Count -= toItem.MaxCount - toItem.Count;
 					toItem.Count = toItem.MaxCount;
 				}
 				else
@@ -1036,7 +1029,7 @@ namespace DOL.GS
 
 			if (toItem == null && fromItem.Count > itemCount)
 			{
-				var newItem = (DbInventoryItem) fromItem.Clone();
+				DbInventoryItem newItem = fromItem.Clone() as DbInventoryItem;
 				m_items[toSlot] = newItem;
 				newItem.Count = itemCount;
 				newItem.SlotPosition = (int) toSlot;
@@ -1055,45 +1048,31 @@ namespace DOL.GS
 		/// <param name="fromSlot">First SlotPosition</param>
 		/// <param name="toSlot">Second SlotPosition</param>
 		/// <returns>true if items exchanged successfully</returns>
-		protected override bool ExchangeItems(eInventorySlot fromSlot, eInventorySlot toSlot)
+		protected override bool SwapItems(eInventorySlot fromSlot, eInventorySlot toSlot)
 		{
-			DbInventoryItem fromItem;
-			DbInventoryItem toItem;
-
-			m_items.TryGetValue(fromSlot, out fromItem);
-			m_items.TryGetValue(toSlot, out toItem);
+			m_items.TryGetValue(fromSlot, out DbInventoryItem fromItem);
+			m_items.TryGetValue(toSlot, out DbInventoryItem toItem);
 
 			bool fromSlotEquipped = IsEquippedSlot(fromSlot);
 			bool toSlotEquipped = IsEquippedSlot(toSlot);
 
-			base.ExchangeItems(fromSlot, toSlot);
+			if (!base.SwapItems(fromSlot, toSlot) || fromSlotEquipped == toSlotEquipped)
+				return false;
 
-			// notify handlers if items changing state
-			if (fromSlotEquipped != toSlotEquipped)
+			if (toItem != null)
 			{
-				if (toItem != null)
-				{
-					if (toSlotEquipped) // item was equipped
-					{
-						m_player.OnItemUnequipped(toItem, toSlot);
-					}
-					else
-					{
-						m_player.OnItemEquipped(toItem, toSlot);
-					}
-				}
+				if (toSlotEquipped)
+					m_player.OnItemUnequipped(toItem, toSlot);
+				else
+					m_player.OnItemEquipped(toItem, toSlot);
+			}
 
-				if (fromItem != null)
-				{
-					if (fromSlotEquipped) // item was equipped
-					{
-						m_player.OnItemUnequipped(fromItem, fromSlot);
-					}
-					else
-					{
-						m_player.OnItemEquipped(fromItem, fromSlot);
-					}
-				}
+			if (fromItem != null)
+			{
+				if (fromSlotEquipped)
+					m_player.OnItemUnequipped(fromItem, fromSlot);
+				else
+					m_player.OnItemEquipped(fromItem, fromSlot);
 			}
 
 			return true;
@@ -1139,29 +1118,39 @@ namespace DOL.GS
 		#endregion Combine/Exchange/Stack Items
 
 		#region Encumberance
-		
-		public override int InventoryWeight
-		{
-			get
-			{
-				var weight = 0;
-				IList<DbInventoryItem> items;
 
-				lock (LockObject)
+		private int _inventoryWeight;
+		protected bool _requiresInventoryWeightUpdate = true; // Must be set to true every time something happens in the player's inventory.
+		public override int InventoryWeight => _inventoryWeight;
+
+		public override bool UpdateInventoryWeight()
+		{
+			int newInventoryWeight = 0;
+
+			lock (LockObject)
+			{
+				foreach (var pair in m_items)
 				{
-					items = new List<DbInventoryItem>(m_items.Values);
+					if (IsValidSlot(pair.Key))
+						newInventoryWeight += pair.Value.Weight;
 				}
-				
-				foreach (var item in items)
+
+				newInventoryWeight /= 10;
+
+				if (_inventoryWeight != newInventoryWeight)
 				{
-					if ((eInventorySlot) item.SlotPosition < eInventorySlot.FirstBackpack || (eInventorySlot)item.SlotPosition > eInventorySlot.LastBackpack)
-						continue;
-					var itemWeight = item.Weight;
-					if (item.Description.Contains("Atlas ROG")) itemWeight = (int)(itemWeight * 0.75);
-					weight += itemWeight;
+					_inventoryWeight = newInventoryWeight;
+					return true;
 				}
-				
-				return weight/10 + base.InventoryWeight;;
+			}
+
+			return false;
+
+			static bool IsValidSlot(eInventorySlot slot)
+			{
+				return slot is
+					(>= eInventorySlot.FirstBackpack and <= eInventorySlot.LastBackpack) or
+					(>= eInventorySlot.MinEquipable and <= eInventorySlot.MaxEquipable);
 			}
 		}
 
@@ -1242,27 +1231,14 @@ namespace DOL.GS
 		/// </summary>
 		protected override void UpdateChangedSlots()
 		{
-			
-			lock (m_changedSlots)
-			{
-				var invSlots = m_changedSlots.ToList();
-				var slotsToUpdate = new List<int>();
-				foreach (var inv in invSlots)
-				{
-					slotsToUpdate.Add((int)inv);
-				}
-				m_player.Out.SendInventorySlotsUpdate(slotsToUpdate);
-			}
-
 			bool statsUpdated = false;
 			bool appearanceUpdated = false;
-			bool encumberanceUpdated = false;
 
 			lock (InventorySlotLock)
 			{
 				foreach (eInventorySlot updatedSlot in m_changedSlots)
 				{
-					// update appearance if one of changed slots is visible
+					// Update appearance if one of changed slots is visible.
 					if (!appearanceUpdated)
 					{
 						foreach (eInventorySlot visibleSlot in VISIBLE_SLOTS)
@@ -1275,32 +1251,22 @@ namespace DOL.GS
 						}
 					}
 
-					// update stats if equipped item has changed
-					if (!statsUpdated && updatedSlot <= eInventorySlot.RightRing &&
-					    updatedSlot >= eInventorySlot.RightHandWeapon)
-					{
+					// Update stats if equipped item has changed.
+					if (!statsUpdated && updatedSlot <= eInventorySlot.RightRing && updatedSlot >= eInventorySlot.RightHandWeapon)
 						statsUpdated = true;
-					}
-
-					// update encumberance if changed slot was in inventory or equipped
-					if (!encumberanceUpdated &&
-					    //					(updatedSlot >=(int)eInventorySlot.FirstVault && updatedSlot<=(int)eInventorySlot.LastVault) ||
-					    (updatedSlot >= eInventorySlot.RightHandWeapon && updatedSlot <= eInventorySlot.RightRing) ||
-					    (updatedSlot >= eInventorySlot.FirstBackpack && updatedSlot <= eInventorySlot.LastBackpack))
-					{
-						encumberanceUpdated = true;
-					}
 				}
+
+				m_player.Out.SendInventorySlotsUpdate(m_changedSlots);
 			}
-			
-			if(appearanceUpdated)
+
+			UpdateInventoryWeight();
+			m_player.UpdateEncumbrance();
+
+			if (appearanceUpdated)
 				m_player.UpdateEquipmentAppearance();
-				
-			if(statsUpdated)
+
+			if (statsUpdated)
 				m_player.Out.SendUpdateWeaponAndArmorStats();
-				
-			if(encumberanceUpdated)
-				m_player.UpdateEncumberance();
 
 			base.UpdateChangedSlots();
 		}

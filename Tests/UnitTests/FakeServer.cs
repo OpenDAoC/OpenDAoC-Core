@@ -18,7 +18,7 @@ namespace DOL.Tests.Unit.Gameserver
         public override void SendCharStatsUpdate() { }
         public override void SendUpdateWeaponAndArmorStats() { }
         public override void SendUpdateMaxSpeed() { }
-        public override void SendEncumberance() { }
+        public override void SendEncumbrance() { }
         public override void SendStatusUpdate() { }
     }
 

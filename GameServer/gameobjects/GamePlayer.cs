@@ -5809,7 +5809,7 @@ namespace DOL.GS
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchQuiver.NoMoreAmmo"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
 
-                Out.SendInventorySlotsUpdate(new int[] { (int)updatedSlot });
+                Out.SendInventorySlotsUpdate([updatedSlot]);
             }
             else
             {
@@ -8615,6 +8615,7 @@ namespace DOL.GS
             }
 
             UpdateEquipmentAppearance();
+            UpdateEncumbrance(true);
 
             // display message
             if (SpecPointsOk == false)
@@ -9694,84 +9695,77 @@ namespace DOL.GS
 
         #region Equipment/Encumberance
 
-        /// <summary>
-        /// Gets the total possible Encumberance
-        /// </summary>
-        public virtual int MaxEncumberance
+        public int MaxCarryingCapacity
         {
             get
             {
-                double enc = (double)Strength;
-                RAPropertyEnhancer ab = GetAbility<AtlasOF_LifterAbility>();
-                if (ab != null)
-                    enc *= 1 + ((double)ab.Amount / 100);
+                double result = Strength;
+                RAPropertyEnhancer lifter = GetAbility<AtlasOF_LifterAbility>();
 
-                return (int)enc;
+                if (lifter != null)
+                    result *= 1 + lifter.Amount * 0.01;
+
+                return (int) result;
             }
         }
 
-        /// <summary>
-        /// Gets the current Encumberance
-        /// </summary>
-        public virtual int Encumberance
+        private int _previousInventoryWeight;
+        private int _previousMaxCarryingCapacity;
+
+        public bool IsEncumbered { get; private set;}
+        public double MaxSpeedModifierFromEncumbrance { get; private set; }
+
+        public void UpdateEncumbrance(bool forced = false)
         {
-            get { return Inventory.InventoryWeight; }
+            int inventoryWeight = Inventory.InventoryWeight;
+            int maxCarryingCapacity = MaxCarryingCapacity;
+
+            if (!forced && _previousInventoryWeight == inventoryWeight && _previousMaxCarryingCapacity == maxCarryingCapacity)
+                return;
+
+            double maxCarryingCapacityRatio = maxCarryingCapacity * 0.35;
+            double newMaxSpeedModifier = 1 - inventoryWeight / maxCarryingCapacityRatio + maxCarryingCapacity / maxCarryingCapacityRatio;
+
+            if (forced || MaxSpeedModifierFromEncumbrance != newMaxSpeedModifier)
+            {
+                if (inventoryWeight > maxCarryingCapacity)
+                {
+                    IsEncumbered = true;
+                    string message;
+
+                    if (MaxSpeed == 0)
+                        message = "PropertyCalc.MaxSpeed.YouAreEncumbered";
+                    else
+                        message = "GamePlayer.UpdateEncumbrance.EncumberedMoveSlowly";
+
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, message), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                }
+                else
+                    IsEncumbered = false;
+
+                MaxSpeedModifierFromEncumbrance = newMaxSpeedModifier;
+                Out.SendUpdateMaxSpeed(); // Should automatically end up updating max speed using `MaxSpeedModifierFromEncumbrance` if `IsEncumbered` is set to true.
+            }
+
+            _previousInventoryWeight = inventoryWeight;
+            _previousMaxCarryingCapacity = maxCarryingCapacity;
+            Out.SendEncumbrance();
         }
 
-        /// <summary>
-        /// The Encumberance state of this player
-        /// </summary>
-        protected bool m_overencumbered = true;
-
-        /// <summary>
-        /// Gets/Set the players Encumberance state
-        /// </summary>
-        public bool IsOverencumbered
-        {
-            get { return m_overencumbered; }
-            set { m_overencumbered = value; }
-        }
-
-        /// <summary>
-        /// Updates the appearance of the equipment this player is using
-        /// </summary>
-        public virtual void UpdateEquipmentAppearance()
+        public void UpdateEquipmentAppearance()
         {
             foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (player == null) continue;
                 if (player != this)
                     player.Out.SendLivingEquipmentUpdate(this);
             }
-        }
-
-        /// <summary>
-        /// Updates Encumberance and its effects
-        /// </summary>
-        public void UpdateEncumberance()
-        {
-            if (Inventory.InventoryWeight > MaxEncumberance)
-            {
-                IsOverencumbered = true;
-                Out.SendUpdateMaxSpeed();
-                if (MaxSpeed == 0)
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "PropertyCalc.MaxSpeed.YouAreEncumbered"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                else
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UpdateEncumberance.EncumberedMoveSlowly"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            }
-            else if (IsOverencumbered)
-            {
-                IsOverencumbered = false;
-                Out.SendUpdateMaxSpeed();
-            }
-            Out.SendEncumberance();
         }
 
         public override void UpdateHealthManaEndu()
         {
             Out.SendCharStatsUpdate();
             Out.SendUpdateWeaponAndArmorStats();
-            UpdateEncumberance();
+            UpdateEncumbrance();
             UpdatePlayerStatus();
             base.UpdateHealthManaEndu();
         }
@@ -10144,7 +10138,7 @@ namespace DOL.GS
         private int OnStatsSendCompletionAfterEquipmentChange()
         {
             _statsSenderOnEquipmentChange = null;
-            return 0; // Must return 0 to stop the timer. This is just to make `OnTick` cleaner.
+            return 0;
         }
 
         public class StatsSenderOnEquipmentChange : ECSGameTimerWrapperBase
@@ -10168,8 +10162,8 @@ namespace DOL.GS
                 Owner.Out.SendCharResistsUpdate();
                 Owner.Out.SendUpdateWeaponAndArmorStats();
                 Owner.Out.SendUpdateMaxSpeed();
-                Owner.Out.SendEncumberance();
                 Owner.Out.SendUpdatePlayerSkills(false);
+                Owner.UpdateEncumbrance();
                 Owner.UpdatePlayerStatus();
 
                 if (!IsAlive)
@@ -10335,7 +10329,7 @@ namespace DOL.GS
                 Out.SendCharResistsUpdate();
                 Out.SendUpdateWeaponAndArmorStats();
                 Out.SendUpdateMaxSpeed();
-                Out.SendEncumberance();
+                Out.SendEncumbrance();
                 // Out.SendUpdatePlayerSkills();
                 UpdatePlayerStatus();
 

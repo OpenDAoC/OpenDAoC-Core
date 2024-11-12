@@ -99,7 +99,7 @@ namespace DOL.GS.Spells
             {
                 player.Out.SendCharStatsUpdate();
                 player.Out.SendUpdateWeaponAndArmorStats();
-                player.UpdateEncumberance();
+                player.UpdateEncumbrance();
                 player.UpdatePlayerStatus();
             }
         }

@@ -374,8 +374,8 @@ namespace DOL.Tests
 		{
 			if (SendInventoryItemsUpdateMethod != null) SendInventoryItemsUpdateMethod(this, itemsToUpdate);
 		}
-		public Action<TestPacketLib, ICollection<int>> SendInventorySlotsUpdateMethod { get; set; }
-		public void SendInventorySlotsUpdate(ICollection<int> slots)
+		public Action<TestPacketLib, ICollection<eInventorySlot>> SendInventorySlotsUpdateMethod { get; set; }
+		public void SendInventorySlotsUpdate(ICollection<eInventorySlot> slots)
 		{
 			if (SendInventorySlotsUpdateMethod != null) SendInventorySlotsUpdateMethod(this, slots);
 		}
@@ -450,7 +450,7 @@ namespace DOL.Tests
 			if (SendPlayerTitleUpdateMethod != null) SendPlayerTitleUpdateMethod(this, player);
 		}
 		public Action<TestPacketLib> SendEncumberanceMethod { get; set; }
-		public void SendEncumberance()
+		public void SendEncumbrance()
 		{
 			if (SendEncumberanceMethod != null) SendEncumberanceMethod(this);
 		}

@@ -158,8 +158,8 @@ GamePlayer.GainRealmPoints.ReachedRank:			You reached realm rank {0}L0!
 GamePlayer.GainRealmPoints.ReachedRankNews:			{0} reached realm rank {1:#L#} in {2}!
 
 ## Movement
-GamePlayer.UpdateEncumberance.Encumbered:		You are encumbered!
-GamePlayer.UpdateEncumberance.EncumberedMoveSlowly:	You are encumbered and move more slowly.	
+GamePlayer.UpdateEncumbrance.Encumbered:		You are encumbered!
+GamePlayer.UpdateEncumbrance.EncumberedMoveSlowly:	You are encumbered and move more slowly.	
 PropertyCalc.MaxSpeed.YouAreEncumbered:			You are encumbered and cannot move.
 GamePlayer.Sit.AlreadySitting:				You are already sitting!
 GamePlayer.Sit.CantSitDead:					You can't sit down now, you're dead!

@@ -199,7 +199,7 @@ namespace DOL.GS.Commands
 							}
 
 							client.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { item });
-							client.Player.UpdateEncumberance();
+							client.Player.UpdateEncumbrance();
 							break;
 						}
 						#endregion Count

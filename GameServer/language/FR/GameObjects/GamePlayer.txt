@@ -288,8 +288,8 @@ GamePlayer.SwitchQuiver.NoMoreAmmo:			Vous n'avez plus de munitions dans votre c
 GamePlayer.SwitchQuiver.NotUseQuiver:		Vous n'utiliserez pas votre carquois.
 GamePlayer.SwitchQuiver.ShootWith:			Vous attaquerez avec : {0}.
 GamePlayer.SwitchWeapon.SpellCancelled:		Votre sort est annulé.
-GamePlayer.UpdateEncumberance.Encumbered:				Vous êtes encombré(e).
-GamePlayer.UpdateEncumberance.EncumberedMoveSlowly:		Vous êtes encombré(e), et bougez lentement.
+GamePlayer.UpdateEncumbrance.Encumbered:				Vous êtes encombré(e).
+GamePlayer.UpdateEncumbrance.EncumberedMoveSlowly:		Vous êtes encombré(e), et bougez lentement.
 GamePlayer.UpdateSpellLine.GainPower:		Vous gagnez de la puissance dans la ligne de sorts {0}.
 GamePlayer.UseSlot.AttemptToUse:			Vous essayez d'utiliser {0}.
 GamePlayer.UseSlot.AutoReleaseShot:			Vous allez maintenant tirer automatiquement.

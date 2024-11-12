@@ -53,19 +53,12 @@ namespace DOL.GS.PropertyCalc
                         speed *= 1.25; // New run speed is 125% when no buff.
                 }
 
-                if (player.IsOverencumbered && player.Client.Account.PrivLevel == 1 && ServerProperties.Properties.ENABLE_ENCUMBERANCE_SPEED_LOSS)
+                if (player.IsEncumbered && player.Client.Account.PrivLevel == 1 && ServerProperties.Properties.ENABLE_ENCUMBERANCE_SPEED_LOSS)
                 {
-                    double Enc = player.Encumberance; // Calculating player.Encumberance is a bit slow with all those locks, don't call it much.
+                    speed *= player.MaxSpeedModifierFromEncumbrance;
 
-                    if (Enc > player.MaxEncumberance)
-                    {
-                        speed *= (((player.MaxSpeedBase * 1.0 / GamePlayer.PLAYER_BASE_SPEED) * (-Enc)) / (player.MaxEncumberance * 0.35f)) + (player.MaxSpeedBase / GamePlayer.PLAYER_BASE_SPEED) + ((player.MaxSpeedBase / GamePlayer.PLAYER_BASE_SPEED) * player.MaxEncumberance / (player.MaxEncumberance * 0.35));
-
-                        if (speed <= 0)
-                            speed = 0;
-                    }
-                    else
-                        player.IsOverencumbered = false;
+                    if (speed <= 0)
+                        speed = 0;
                 }
 
                 if (player.IsStealthed && player.Client.Account.PrivLevel == 1)

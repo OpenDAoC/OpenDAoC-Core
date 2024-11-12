@@ -143,7 +143,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             player.Out.SendUpdateMaxSpeed(); // Speed in debug mode ?
                                                 //WARNING: This would change problems if a scripter changed the values for plvl
                                                 //GSMessages.SendDebugMode(client,client.Account.PrivLevel>1);
-            player.UpdateEncumberance(); // Update encumbrance on init.
+            player.UpdateEncumbrance(); // Update encumbrance on init.
 
             // Don't unstealth GMs.
             if (player.Client.Account.PrivLevel > 1)

@@ -375,8 +375,8 @@ GamePlayer.SwitchQuiver.ShootWith:			Ihr wollt schießen mit: {0}.
 
 GamePlayer.SwitchWeapon.SpellCancelled:			Euer Zauberspruch wurde abgebrochen!		
 
-GamePlayer.UpdateEncumberance.Encumbered:		Ihr seid überlastet!			
-GamePlayer.UpdateEncumberance.EncumberedMoveSlowly:	Ihr seid überlastet und bewegt Euch deshalb langsamer.				
+GamePlayer.UpdateEncumbrance.Encumbered:		Ihr seid überlastet!			
+GamePlayer.UpdateEncumbrance.EncumberedMoveSlowly:	Ihr seid überlastet und bewegt Euch deshalb langsamer.				
 
 GamePlayer.UpdateSpellLine.GainPower:			Ihr verbessert Euch bei den Zaubersprüchen der "{0}"-Linie!		
 

@@ -109,7 +109,7 @@ namespace DOLGameServerConsole
 		public void SendGroupMemberUpdate(bool updateIcons, bool updateMap, GameLiving living) { }
 		public void SendGroupMembersUpdate(bool updateIcons, bool updateMap) { }
 		public void SendInventoryItemsUpdate(ICollection<DbInventoryItem> itemsToUpdate) { }
-		public void SendInventorySlotsUpdate(ICollection<int> slots) { }
+		public void SendInventorySlotsUpdate(ICollection<eInventorySlot> slots) { }
 		public void SendInventoryItemsUpdate(eInventoryWindowType windowType, ICollection<DbInventoryItem> itemsToUpdate) { }
 		public void SendInventoryItemsUpdate(IDictionary<int, DbInventoryItem> updateItems, eInventoryWindowType windowType) { }
 		public void SendInventoryItemsPartialUpdate(IDictionary<int, DbInventoryItem> items, eInventoryWindowType windowType) { }
@@ -123,7 +123,7 @@ namespace DOLGameServerConsole
 		public void SendUpdatePlayerSkills(bool updateInternalCache) { }
 		public void SendUpdateWeaponAndArmorStats() { }
 		public void SendCustomTextWindow(string caption, IList<string> text) { }
-		public void SendEncumberance() { }
+		public void SendEncumbrance() { }
 		public void SendAddFriends(string[] friendNames) { }
 		public void SendRemoveFriends(string[] friendNames) { }
 		public void SendTimerWindow(string title, int seconds) { }

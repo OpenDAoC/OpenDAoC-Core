@@ -125,7 +125,7 @@ namespace DOL.GS.Spells
         {
             base.OnEffectStart(effect);
             if (effect.Owner is GamePlayer)
-                ((GamePlayer)effect.Owner).UpdateEncumberance();
+                ((GamePlayer)effect.Owner).UpdateEncumbrance();
 			effect.Owner.StartInterruptTimer(effect.Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
         }
 
@@ -140,7 +140,7 @@ namespace DOL.GS.Spells
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
             if (effect.Owner is GamePlayer)
-                ((GamePlayer)effect.Owner).UpdateEncumberance();
+                ((GamePlayer)effect.Owner).UpdateEncumbrance();
             return base.OnEffectExpires(effect, noMessages);
         }
         public OppressionSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }

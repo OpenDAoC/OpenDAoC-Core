@@ -219,7 +219,7 @@ namespace DOL.GS
                     playerOwner.Out.SendUpdateWeaponAndArmorStats();
 
                 if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.ENCUMBERANCE) != 0)
-                    playerOwner.Out.SendEncumberance();
+                    playerOwner.Out.SendEncumbrance();
 
                 if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.CONCENTRATION) != 0)
                     playerOwner.Out.SendConcentrationList();

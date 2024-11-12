@@ -319,8 +319,8 @@ GamePlayer.UseSlot.NotEnouthPower:			Nejsi dost silny na pouziti kouzla z tohoto
 GamePlayer.UseSlot.StopCallingMount:		Prestal jsi volat sveho kone.
 GamePlayer.UseSlot.SummonHorseLevel:			You must have {0} level for summon this horse.
 GamePlayer.UseSlot.WhistleMount:			Piskas na sveho kone.
-GamePlayer.UpdateEncumberance.EncumberedMoveSlowly:		Jsi pretizeny a pohybujes se pomaleji.
-GamePlayer.UpdateEncumberance.Encumbered:	Jsi pretizeny!
+GamePlayer.UpdateEncumbrance.EncumberedMoveSlowly:		Jsi pretizeny a pohybujes se pomaleji.
+GamePlayer.UpdateEncumbrance.Encumbered:	Jsi pretizeny!
 GamePlayer.Whisper.SelectTarget:			Oznac toho, komu chces septat!
 
 # HOUSING

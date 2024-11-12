@@ -125,7 +125,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             if (obj == null || obj.ObjectState != GameObject.eObjectState.Active)
             {
-                client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                 client.Out.SendMessage("Invalid trade target.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
@@ -138,21 +138,21 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 if (tradeTarget.Client.ClientState != GameClient.eClientState.Playing)
                 {
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     client.Out.SendMessage("Can't trade with inactive players.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (tradeTarget == client.Player)
                 {
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     client.Out.SendMessage("You can't trade with yourself, silly!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
 
                 if (!GameServer.ServerRules.IsAllowedToTrade(client.Player, tradeTarget, false))
                 {
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     return;
                 }
             }
@@ -169,7 +169,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     else
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerMoveItemRequestHandler.TooFarAway", obj.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     return;
                 }
 
@@ -177,7 +177,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (item == null)
                 {
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     return;
                 }
 
@@ -189,7 +189,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     // If the item has been removed by the event handlers, return.
                     if (item == null || item.OwnerID == null)
                     {
-                        client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                        client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                         return;
                     }
                 }
@@ -198,18 +198,18 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     // This is a player trade, let trade code handle.
                     tradeTarget.ReceiveTradeItem(client.Player, item);
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     return;
                 }
 
                 if (obj.ReceiveItem(client.Player, item))
                 {
                     // This object was expecting an item and handled it.
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     return;
                 }
 
-                client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                 return;
             }
 
@@ -234,13 +234,13 @@ namespace DOL.GS.PacketHandler.Client.v168
                     else
                         client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "PlayerMoveItemRequestHandler.TooFarAway", obj.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     return;
                 }
 
                 if (flatMoney > client.Player.GetCurrentMoney())
                 {
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     return;
                 }
 
@@ -249,17 +249,17 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (tradeTarget != null)
                 {
                     tradeTarget.ReceiveTradeMoney(client.Player, flatMoney);
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     return;
                 }
 
                 if (obj.ReceiveMoney(client.Player, flatMoney))
                 {
-                    client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                    client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     return;
                 }
 
-                client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                 return;
             }
 
@@ -272,20 +272,20 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             if (item == null)
             {
-                client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                 client.Out.SendMessage($"Invalid item (slot #{fromClientSlot}).", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
 
             if (fromClientSlot < eInventorySlot.FirstBackpack)
             {
-                client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                 return;
             }
 
             if (!item.IsDropable)
             {
-                client.Out.SendInventorySlotsUpdate([(int) fromClientSlot]);
+                client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                 client.Out.SendMessage("You can not drop this item!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
             }
