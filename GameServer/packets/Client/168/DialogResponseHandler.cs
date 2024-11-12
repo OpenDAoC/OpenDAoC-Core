@@ -48,7 +48,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         guildLeader = WorldMgr.GetObjectByIDFromRegion(region.ID, data1) as GamePlayer;
 
                         if (guildLeader != null)
-                            return;
+                            break;
                     }
 
                     if (response == 0x01)
