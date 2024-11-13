@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Keeps;
@@ -707,7 +707,7 @@ namespace DOL.GS
 
             if (mobObjs.Length > 0)
             {
-                foreach (DbMob mob in mobObjs)
+                Parallel.ForEach(mobObjs, (mob) =>
                 {
                     GameNPC myMob = null;
                     string error = string.Empty;
@@ -742,7 +742,6 @@ namespace DOL.GS
                         }
                     }
 
-  
                     if (myMob == null)
                     {
                     	if(template != null && template.ClassType != null && template.ClassType.Length > 0 && template.ClassType != DbMob.DEFAULT_NPC_CLASSTYPE && template.ReplaceMobValues)
@@ -816,12 +815,12 @@ namespace DOL.GS
 
                         myMob.AddToWorld();
                     }
-                }
+                });
             }
 
             if (staticObjs.Count > 0)
             {
-                foreach (DbWorldObject item in staticObjs)
+                Parallel.ForEach(staticObjs, (item) =>
                 {
                     GameStaticItem myItem;
                     if (!string.IsNullOrEmpty(item.ClassType))
@@ -850,13 +849,13 @@ namespace DOL.GS
                     myItem.AddToWorld();
                     //						if (!myItem.AddToWorld())
                     //							log.ErrorFormat("Failed to add the item to the world: {0}", myItem.ToString());
-                }
+                });
             }
 
-            foreach (DbBindPoint point in bindPoints)
+            Parallel.ForEach(bindPoints, (point) =>
             {
                 AddArea(new Area.BindArea("bind point", point));
-            }
+            });
 
             if (myMobCount + myItemCount + myMerchantCount + myBindCount > 0)
             {
@@ -867,9 +866,8 @@ namespace DOL.GS
 
                 if (allErrors != string.Empty)
                     log.Error("Error loading the following NPC ClassType(s), GameNPC used instead:" + allErrors.TrimEnd(','));
-
-                Thread.Sleep(0);  // give up remaining thread time to other resources
             }
+
             Interlocked.Add(ref mobCount, myMobCount);
             Interlocked.Add(ref merchantCount, myMerchantCount);
             Interlocked.Add(ref itemCount, myItemCount);
