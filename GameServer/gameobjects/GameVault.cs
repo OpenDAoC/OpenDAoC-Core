@@ -264,7 +264,10 @@ namespace DOL.GS
                         }
                     }
 
-                    GameInventoryObjectExtensions.NotifyObservers(this, player, _observers, GameInventoryObjectExtensions.MoveItem(this, player, fromSlot, toSlot, count));
+                    var updatedItems = GameInventoryObjectExtensions.MoveItem(this, player, fromSlot, toSlot, count);
+
+                    if (updatedItems.Count > 0)
+                        GameInventoryObjectExtensions.NotifyObservers(this, player, _observers, updatedItems);
                 }
                 finally
                 {
