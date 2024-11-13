@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using log4net;
 
 namespace DOL.GS
@@ -37,20 +38,21 @@ namespace DOL.GS
         private const int MAX_POLY = 256;    // max vector3 when looking up a path (for straight paths too)
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        private static Dictionary<ushort, IntPtr> _navmeshPtrs = new Dictionary<ushort, IntPtr>();
-        private static ThreadLocal<Dictionary<ushort, NavMeshQuery>> _navmeshQueries = new ThreadLocal<Dictionary<ushort, NavMeshQuery>>(() => new Dictionary<ushort, NavMeshQuery>());
+        private static Dictionary<ushort, IntPtr> _navmeshPtrs = [];
+        private static object _navmeshPtrsLock = new();
+        private static ThreadLocal<Dictionary<ushort, NavMeshQuery>> _navmeshQueries = new(() => []);
 
         [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern bool LoadNavMesh(string file, ref IntPtr meshPtr);
 
         [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool FreeNavMesh(IntPtr meshPtr);
+
         [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool CreateNavMeshQuery(IntPtr meshPtr, ref IntPtr queryPtr);
 
         [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
         private static extern bool FreeNavMeshQuery(IntPtr queryPtr);
-
 
         [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
         private static extern dtStatus PathStraight(IntPtr queryPtr, float[] start, float[] end, float[] polyPickExt, dtPolyFlags[] queryFilter, dtStraightPathOptions pathOptions, ref int pointCount, float[] pointBuffer, dtPolyFlags[] pointFlags);
@@ -72,6 +74,7 @@ namespace DOL.GS
 
         [DllImport("kernel32.dll")]
         private static extern IntPtr LoadLibrary(string dllName);
+
         [DllImport("libdl.so")]
         private static extern IntPtr dlopen(string file, int mode);
 
@@ -124,8 +127,7 @@ namespace DOL.GS
                 return false;
             }
 
-            foreach (var zone in WorldMgr.Zones.Values)
-                LoadNavMesh(zone);
+            Parallel.ForEach(WorldMgr.Zones.Values, LoadNavMesh);
             return true;
         }
 
@@ -133,33 +135,38 @@ namespace DOL.GS
         /// Loads the navmesh for the specified zone (if available)
         /// </summary>
         /// <param name="zone"></param>
-        public void LoadNavMesh(Zone zone)
+        public static void LoadNavMesh(Zone zone)
         {
-            if (_navmeshPtrs.ContainsKey(zone.ID))
-                throw new Exception($"Loading NavMesh failed for zone {zone.ID}: already loaded");
-            var id = zone.ID;
-            var file = Path.GetFullPath(Path.Join("pathing", $"zone{id:D3}.nav"));
-            if (!File.Exists(file))
+            ushort id = zone.ID;
+            string path = Path.GetFullPath(Path.Join("pathing", $"zone{id:D3}.nav"));
+
+            if (!File.Exists(path))
             {
-                log.DebugFormat("Loading NavMesh failed for zone {0}! (File not found: {1})", id, file);
+                log.DebugFormat($"Loading NavMesh failed for zone {id}! (File not found: {path})");
                 return;
             }
 
-            var meshPtr = IntPtr.Zero;
+            nint meshPtr = IntPtr.Zero;
 
-            if (!LoadNavMesh(file, ref meshPtr))
+            if (!LoadNavMesh(path, ref meshPtr))
             {
-                log.ErrorFormat("Loading NavMesh failed for zone {0}!", id);
+                log.ErrorFormat($"Loading NavMesh failed for zone {id}!");
                 return;
             }
 
             if (meshPtr == IntPtr.Zero)
             {
-                log.ErrorFormat("Loading NavMesh failed for zone {0}! (Pointer was zero!)", id);
+                log.ErrorFormat($"Loading NavMesh failed for zone {id}! (Pointer was zero!)");
                 return;
             }
-            log.InfoFormat("Loading NavMesh sucessful for zone {0}", id);
-            _navmeshPtrs[zone.ID] = meshPtr;
+
+            log.InfoFormat($"Loading NavMesh successful for zone {id}");
+
+            lock (_navmeshPtrsLock)
+            {
+                _navmeshPtrs[zone.ID] = meshPtr;
+            }
+
             zone.IsPathingEnabled = true;
         }
 
