@@ -133,9 +133,7 @@ namespace DOL.GS
             // Returns the ammo used by the current `WeaponAction` if there's any.
             // The currently active ammo otherwise.
             DbInventoryItem ammo = weaponAction?.Ammo;
-            (owner as GamePlayer)?.Out.SendMessage($"1 {ammo?.Name}", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
             ammo ??= owner.rangeAttackComponent.Ammo;
-            (owner as GamePlayer)?.Out.SendMessage($"2 {ammo?.Name}", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
             return ammo;
         }
 

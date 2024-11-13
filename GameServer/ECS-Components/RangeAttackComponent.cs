@@ -60,9 +60,6 @@ namespace DOL.GS
                 }
             }
 
-            if (_owner is GamePlayer p)
-                p.Out.SendMessage($"update ammo {Ammo.Count} {Ammo.PendingDatabaseAction}", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
-
             return Ammo;
 
             DbInventoryItem GetAmmoFromInventory(eObjectType ammoType)
