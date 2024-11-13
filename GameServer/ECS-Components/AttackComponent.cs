@@ -103,16 +103,8 @@ namespace DOL.GS
                 StartAttack();
             }
 
-            if (attackAction.Tick())
-            {
-                if (weaponAction?.AttackFinished == true)
-                    weaponAction = null;
-            }
-            else
-            {
-                weaponAction = null;
+            if (!attackAction.Tick())
                 EntityManager.Remove(this);
-            }
         }
 
         /// <summary>
@@ -136,16 +128,27 @@ namespace DOL.GS
             }
         }
 
+        public DbInventoryItem GetAttackAmmo()
+        {
+            // Returns the ammo used by the current `WeaponAction` if there's any.
+            // The currently active ammo otherwise.
+            DbInventoryItem ammo = weaponAction?.Ammo;
+            (owner as GamePlayer)?.Out.SendMessage($"1 {ammo?.Name}", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+            ammo ??= owner.rangeAttackComponent.Ammo;
+            (owner as GamePlayer)?.Out.SendMessage($"2 {ammo?.Name}", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
+            return ammo;
+        }
+
         /// <summary>
         /// Returns the damage type of the current attack
         /// </summary>
         /// <param name="weapon">attack weapon</param>
         public eDamageType AttackDamageType(DbInventoryItem weapon)
         {
-            if (owner is GamePlayer || owner is CommanderPet)
-            {
-                var p = owner as GamePlayer;
+            GamePlayer playerOwner = owner as GamePlayer;
 
+            if (playerOwner != null || owner is CommanderPet)
+            {
                 if (weapon == null)
                     return eDamageType.Natural;
 
@@ -156,20 +159,18 @@ namespace DOL.GS
                     case eObjectType.CompositeBow:
                     case eObjectType.RecurvedBow:
                     case eObjectType.Fired:
-                        DbInventoryItem ammo = p.rangeAttackComponent.Ammo;
-
-                        if (ammo == null)
-                            return (eDamageType) weapon.Type_Damage;
-
-                        return (eDamageType) ammo.Type_Damage;
+                    {
+                        DbInventoryItem ammo = GetAttackAmmo();
+                        return (eDamageType) (ammo == null ? weapon.Type_Damage : ammo.Type_Damage);
+                    }
                     case eObjectType.Shield:
                         return eDamageType.Crush; // TODO: shields do crush damage (!) best is if Type_Damage is used properly
                     default:
                         return (eDamageType) weapon.Type_Damage;
                 }
             }
-            else if (owner is GameNPC)
-                return (owner as GameNPC).MeleeDamageType;
+            else if (owner is GameNPC npcOwner)
+                return npcOwner.MeleeDamageType;
             else
                 return eDamageType.Natural;
         }
@@ -239,7 +240,7 @@ namespace DOL.GS
                         }
 
                         range = Math.Max(32, range * player.GetModified(eProperty.ArcheryRange) * 0.01);
-                        DbInventoryItem ammo = player.rangeAttackComponent.Ammo;
+                        DbInventoryItem ammo = GetAttackAmmo();
 
                         if (ammo != null)
                             switch ((ammo.SPD_ABS >> 2) & 0x3)
@@ -433,7 +434,7 @@ namespace DOL.GS
                 if (weapon.Item_Type == Slot.RANGED)
                 {
                     damageCap *= CalculateTwoHandedDamageModifier(weapon);
-                    DbInventoryItem ammo = player.rangeAttackComponent.Ammo;
+                    DbInventoryItem ammo = GetAttackAmmo();
 
                     if (ammo != null)
                     {
@@ -830,7 +831,7 @@ namespace DOL.GS
             if (owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
             {
                 // Only cancel the animation if the ranged ammo isn't released already.
-                if (AttackState && weaponAction?.AttackFinished != true)
+                if (AttackState && weaponAction?.IsFinished != false)
                 {
                     foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                         player.Out.SendInterruptAnimation(owner);
@@ -2601,7 +2602,7 @@ namespace DOL.GS
 
             if (action.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
             {
-                DbInventoryItem ammo = ad.Attacker.rangeAttackComponent.Ammo;
+                DbInventoryItem ammo = GetAttackAmmo();
 
                 if (ammo != null)
                 {

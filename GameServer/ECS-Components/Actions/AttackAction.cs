@@ -349,19 +349,14 @@ namespace DOL.GS
 
         protected virtual void PerformRangedAttack()
         {
-            AttackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _effectiveness, _attackInterval, _owner.rangeAttackComponent.RangedAttackType);
+            AttackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _effectiveness, _attackInterval, _owner.rangeAttackComponent.RangedAttackType, _owner.rangeAttackComponent.Ammo);
 
             if (_owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
                 _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
             // A positive ticksToTarget means the effects of our attack will be delayed. Typically used for ranged attacks.
             if (_ticksToTarget > 0)
-            {
                 new ECSGameTimer(_owner, new ECSGameTimer.ECSTimerCallback(AttackComponent.weaponAction.Execute), _ticksToTarget);
-
-                // This is done in weaponAction.Execute(), but we must not wait for the attack to reach our target.
-                AttackComponent.weaponAction.AttackFinished = true;
-            }
             else
                 AttackComponent.weaponAction.Execute();
         }

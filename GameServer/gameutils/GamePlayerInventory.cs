@@ -370,10 +370,11 @@ namespace DOL.GS
 
 			m_player.TradeWindow?.RemoveItemToTrade(item);
 
-			if (IsEquippedSlot(oldSlot))
-				m_player.OnItemUnequipped(item, oldSlot);
-			else if (oldSlot is >= eInventorySlot.FirstQuiver and <= eInventorySlot.FourthQuiver)
+			// Check if it's a quiver first, since `IsEquippedSlot` would return true.
+			if (oldSlot is >= eInventorySlot.FirstQuiver and <= eInventorySlot.FourthQuiver)
 				m_player.SwitchQuiver(eActiveQuiverSlot.None, true);
+			else if (IsEquippedSlot(oldSlot))
+				m_player.OnItemUnequipped(item, oldSlot);
 
 			(item as IGameInventoryItem)?.OnLose(m_player);
 			return true;

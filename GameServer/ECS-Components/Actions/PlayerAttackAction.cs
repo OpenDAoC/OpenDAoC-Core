@@ -51,6 +51,9 @@ namespace DOL.GS
         {
             _playerOwner.rangeAttackComponent.RemoveEnduranceAndAmmoOnShot();
             base.PerformRangedAttack();
+
+            if (_playerOwner.rangeAttackComponent.Ammo.Count == 0)
+                _playerOwner.rangeAttackComponent.UpdateAmmo(_playerOwner.ActiveWeapon);
         }
 
         protected override bool FinalizeMeleeAttack()

@@ -18,12 +18,12 @@ namespace DOL.GS
         protected readonly double m_effectiveness;
         protected readonly int m_interval;
         protected readonly Style m_combatStyle;
-        protected readonly eRangedAttackType m_RangedAttackType;
 
-        // The ranged attack type at the time the shot was released.
-        public eRangedAttackType RangedAttackType => m_RangedAttackType;
+        // The ranged attack type and ammo at the time the shot was released.
+        public eRangedAttackType RangedAttackType { get; }
+        public DbInventoryItem Ammo { get; }
 
-        public bool AttackFinished { get; set; }
+        public bool IsFinished { get; set; }
         public eActiveWeaponSlot ActiveWeaponSlot { get; }
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle)
@@ -38,21 +38,20 @@ namespace DOL.GS
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
         }
 
-        public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, double effectiveness, int interval, eRangedAttackType rangedAttackType)
+        public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, double effectiveness, int interval, eRangedAttackType rangedAttackType, DbInventoryItem ammo)
         {
             m_owner = owner;
             m_target = target;
             m_attackWeapon = attackWeapon;
             m_effectiveness = effectiveness;
             m_interval = interval;
-            m_RangedAttackType = rangedAttackType;
+            RangedAttackType = rangedAttackType;
+            Ammo = ammo;
             ActiveWeaponSlot = owner.ActiveWeaponSlot;
         }
 
         public void Execute()
         {
-            AttackFinished = true;
-
             // Crash fix since its apparently possible to get here with a null target.
             if (m_target == null)
                 return;
@@ -311,6 +310,7 @@ namespace DOL.GS
             if (m_owner is GameNPC npcOwner)
                 npcOwner.TurnTo(mainHandAD.Target);
 
+            IsFinished = true;
             return;
         }
 
