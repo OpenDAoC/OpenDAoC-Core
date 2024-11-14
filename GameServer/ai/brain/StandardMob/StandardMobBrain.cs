@@ -884,7 +884,7 @@ namespace DOL.AI.Brain
 
                 bool CanCastOffensiveSpell(Spell spell)
                 {
-                    if ((!spell.Uninterruptible && Body.IsBeingInterrupted) ||
+                    if ((spell.CastTime > 0 && !spell.Uninterruptible && Body.IsBeingInterrupted) ||
                         (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0))
                     {
                         return false;
@@ -922,7 +922,7 @@ namespace DOL.AI.Brain
                 {
                     target = null;
 
-                    if ((!spell.Uninterruptible && Body.IsBeingInterrupted) ||
+                    if ((spell.CastTime > 0 && !spell.Uninterruptible && Body.IsBeingInterrupted) ||
                         (spell.HasRecastDelay && Body.GetSkillDisabledDuration(spell) > 0))
                     {
                         return false;
