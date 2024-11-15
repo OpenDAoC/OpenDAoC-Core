@@ -21,7 +21,10 @@ namespace DOL.AI.Brain
     {
         public const int MAX_AGGRO_DISTANCE = 3600;
         public const int MAX_AGGRO_LIST_DISTANCE = 6000;
-        private const int EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD = 500;
+
+        // Effective aggro reduction is calculated using an exponential decay function, starting from the distance threshold. A reduction of 2/3rd is ensured at 1500.
+        private const int EFFECTIVE_AGGRO_DISTANCE_THRESHOLD = 250; // Should be higher than players' melee range.
+        private static readonly double EFFECTIVE_AGGRO_EXPONENT = Math.Log(1 / 3.0) / (1500 - EFFECTIVE_AGGRO_DISTANCE_THRESHOLD);
 
         // Used for AmbientBehaviour "Seeing" - maintains a list of GamePlayer in range
         public List<GamePlayer> PlayersSeen = new();
@@ -524,9 +527,12 @@ namespace DOL.AI.Brain
                 // Using `Math.Ceiling` helps differentiate between 0 and 1 base aggro amount.
                 AggroAmount aggroAmount = pair.Value;
                 double distance = Body.GetDistanceTo(living);
-                aggroAmount.Effective = distance > EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD ?
-                                        (long) Math.Ceiling(aggroAmount.Base * (EFFECTIVE_AGGRO_AMOUNT_CALCULATION_DISTANCE_THRESHOLD / distance)) :
-                                        aggroAmount.Base;
+                double distanceOverThreshold = distance - EFFECTIVE_AGGRO_DISTANCE_THRESHOLD;
+
+                if (distanceOverThreshold <= 0)
+                    aggroAmount.Effective = aggroAmount.Base;
+                else
+                    aggroAmount.Effective = (long) Math.Ceiling(aggroAmount.Base * Math.Exp(EFFECTIVE_AGGRO_EXPONENT * distanceOverThreshold));
 
                 if (aggroAmount.Effective > highestEffectiveAggroInAttackRange)
                 {
