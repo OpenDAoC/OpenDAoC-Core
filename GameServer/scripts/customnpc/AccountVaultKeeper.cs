@@ -115,26 +115,6 @@ namespace DOL.GS
             CurrentHouse = new House(dbHouse);
         }
 
-        public override bool Interact(GamePlayer player)
-        {
-            if (!CanView(player))
-            {
-                player.Out.SendMessage("You don't have permission to view this vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return false;
-            }
-
-            player.ActiveInventoryObject?.RemoveObserver(player);
-
-            lock (LockObject)
-            {
-                _observers.TryAdd(player.Name, player);
-            }
-
-            player.ActiveInventoryObject = this;
-            player.Out.SendInventoryItemsUpdate(GetClientInventory(player), eInventoryWindowType.HouseVault);
-            return true;
-        }
-
         /// <summary>
         /// Whether or not this player can view the contents of this vault.
         /// </summary>

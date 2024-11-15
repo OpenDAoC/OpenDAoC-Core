@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Housing;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -119,7 +120,7 @@ namespace DOL.GS
 
         public override string Name
         {
-            get => $"base.Name {Index + 1}";
+            get => $"{base.Name} {Index + 1}";
             set => base.Name = value;
         }
 
@@ -128,15 +129,13 @@ namespace DOL.GS
         /// </summary>
         public override bool Interact(GamePlayer player)
         {
-            if (!player.InHouse || !base.Interact(player) || CurrentHouse == null || CurrentHouse != player.CurrentHouse)
-                return false;
-
-            lock (_vaultLock)
+            if (!CanView(player))
             {
-                _observers.TryAdd(player.Name, player);
+                player.Out.SendMessage("You don't have permission to view this vault!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return false;
             }
 
-            return true;
+            return base.Interact(player);
         }
 
         /// <summary>
