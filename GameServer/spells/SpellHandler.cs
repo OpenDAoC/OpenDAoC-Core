@@ -2947,6 +2947,8 @@ namespace DOL.GS.Spells
 			// However, this results in an extremely low variance at low level without adjusting some parameters, and it doesn't seem to match live results.
 			// It's possible live changed how variance is calculated at some point, but this would need to be proven.
 
+			GameLiving casterToUse = m_caster;
+
 			switch (m_spellLine.KeyName)
 			{
 				// Further research should be done on these.
@@ -2961,45 +2963,44 @@ namespace DOL.GS.Spells
 					// Lower bound is similar to what the variance calculation would return if we used 35 for the specialization and 50 for the target level.
 					max = 1.0;
 					min = 0.68;
-					return;
+					break;
 				}
 				case GlobalSpellsLines.Item_Effects:
 				{
 					// Procs and charges normally aren't modified by any stat, but are shown to be able to do about 25% more damage than their base value.
 					max = 1.25;
 					min = UseMinVariance ? 1.25 : 0.85; // 0.68 * 1.25
-					return;
+					break;
 				}
 				case GlobalSpellsLines.Reserved_Spells:
 				{
 					max = 1.0;
 					min = 1.0;
-					return;
+					break;
 				}
 				default:
 				{
-					GameLiving casterToUse;
-
-					if (m_caster is NecromancerPet necromancerPet && necromancerPet.Brain is IControlledBrain brain)
-						casterToUse = brain.GetPlayerOwner();
-					else
-						casterToUse = m_caster;
-
-					double varianceOffset = CalculateDamageVarianceOffsetFromLevelDifference(casterToUse, target);
-					max = 1 + varianceOffset;
-					max = Math.Max(0.2, max);
+					max = 1.0;
 
 					if (target.Level <= 0)
 						min = max;
 					else
 					{
-						min = (casterToUse.GetModifiedSpecLevel(m_spellLine.Spec) - 1) / (double) target.Level + varianceOffset;
-						min = Math.Clamp(min, 0.2, max);
+						// Spells casted by a necromancer pet use the owner's spec.
+						if (m_caster is NecromancerPet necromancerPet && necromancerPet.Brain is IControlledBrain brain)
+							casterToUse = brain.GetPlayerOwner();
+
+						min = (casterToUse.GetModifiedSpecLevel(m_spellLine.Spec) - 1) / (double) target.Level;
 					}
 
-					return;
+					break;
 				}
 			}
+
+			// 0.2 is a guess.
+			double varianceOffset = CalculateDamageVarianceOffsetFromLevelDifference(casterToUse, target);
+			max = Math.Max(0.2, max + varianceOffset);
+			min = Math.Clamp(min + varianceOffset, 0.2, max);
 		}
 
 		/// <summary>
