@@ -9,10 +9,9 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-    // This component will hold all data related to casting spells.
     public class CastingComponent : IManagedEntity
     {
-        private ConcurrentQueue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
+        protected ConcurrentQueue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
 
         public GameLiving Owner { get; }
         public SpellHandler SpellHandler { get; protected set; }
@@ -25,12 +24,14 @@ namespace DOL.GS
             Owner = owner;
         }
 
-        public static CastingComponent Create(GameLiving owner)
+        public static CastingComponent Create(GameLiving living)
         {
-            if (owner is GamePlayer playerOwner)
-                return new PlayerCastingComponent(playerOwner);
+            if (living is GameNPC npc)
+                return new NpcCastingComponent(npc);
+            else if (living is GamePlayer player)
+                return new PlayerCastingComponent(player);
             else
-                return new CastingComponent(owner);
+                return new CastingComponent(living);
         }
 
         public void Tick()
@@ -94,10 +95,10 @@ namespace DOL.GS
             SpellHandler?.CancelFocusSpells(moving);
         }
 
-        public void ClearUpSpellHandlers()
+        public virtual void ClearUpSpellHandlers()
         {
-            SpellHandler = null;
             QueuedSpellHandler = null;
+            SpellHandler = null;
         }
 
         public void ClearUpQueuedSpellHandler()

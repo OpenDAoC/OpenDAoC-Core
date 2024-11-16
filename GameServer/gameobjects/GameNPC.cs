@@ -3556,6 +3556,11 @@ namespace DOL.GS
 		private List<Spell> m_spells = [];
 		private ConcurrentDictionary<GameObject, List<SpellWaitingForLosCheck>> _spellsWaitingForLosCheck = new();
 
+		public void ClearSpellsWaitingForLosCheck()
+		{
+			_spellsWaitingForLosCheck.Clear();
+		}
+
 		public class SpellWaitingForLosCheck
 		{
 			public Spell Spell { get; set; }
@@ -4368,7 +4373,6 @@ namespace DOL.GS
 		public override eGender Gender { get; set; }
 
 		public new NpcMovementComponent movementComponent;
-		public new NpcStyleComponent styleComponent;
 
 		public GameNPC Copy()
 		{
