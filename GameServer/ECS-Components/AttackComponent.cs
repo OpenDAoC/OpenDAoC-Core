@@ -2489,7 +2489,7 @@ namespace DOL.GS
 
             if (owner is GamePlayer)
             {
-                // triple wield prevents critical hits
+                // Triple wield prevents critical hits (1.62).
                 if (EffectListService.GetAbilityEffectOnTarget(ad.Target, eEffect.TripleWield) != null)
                     return 0;
 
