@@ -2382,12 +2382,12 @@ namespace DOL.GS.Spells
 		public virtual double CalculateToHitChance(GameLiving target)
 		{
 			int spellLevel;
+			GamePlayer playerCaster = m_caster as GamePlayer;
 
-			if (m_caster is not GamePlayer playerCaster ||
-				m_spellLine.KeyName is GlobalSpellsLines.Realm_Spells or GlobalSpellsLines.Reserved_Spells)
-			{
-				spellLevel = m_caster.EffectiveLevel;
-			}
+			if (m_spellLine.KeyName is GlobalSpellsLines.Item_Effects && m_spellItem != null)
+				spellLevel = m_spellItem.Template.LevelRequirement > 0 ? m_spellItem.Template.LevelRequirement : m_spellItem.Level;
+			else if (m_spellLine.KeyName is GlobalSpellsLines.Realm_Spells or GlobalSpellsLines.Reserved_Spells || playerCaster == null)
+				spellLevel = m_caster.EffectiveLevel; // NPCs go there too.
 			else
 			{
 				spellLevel = Spell.Level + m_caster.GetModified(eProperty.SpellLevel);
@@ -2419,11 +2419,11 @@ namespace DOL.GS.Spells
 			Note:  The last section about maintaining a chance to hit of 55% has been proven incorrect with live testing.
 			 */
 
-            // 12.5% resist rate based on live tests done for Uthgard.
-            double hitChance = 87.5 + (spellLevel - target.Level) / 2.0;
+			// 12.5% resist rate based on live tests done for Uthgard.
+			double hitChance = 87.5 + (spellLevel - target.Level) / 2.0;
 			hitChance += m_caster.GetModified(eProperty.ToHitBonus);
 
-			if (m_caster is not GamePlayer || target is not GamePlayer)
+			if (playerCaster == null || target is not GamePlayer)
 			{
 				// 1 per level difference.
 				hitChance += m_caster.EffectiveLevel - target.EffectiveLevel;
@@ -2459,15 +2459,6 @@ namespace DOL.GS.Spells
 		{
 			if (HasPositiveEffect)
 				return 0;
-
-			if (m_spellLine.KeyName == GlobalSpellsLines.Item_Effects && m_spellItem != null)
-			{
-				if (Caster is GamePlayer playerCaster)
-				{
-					int itemSpellLevel = m_spellItem.Template.LevelRequirement > 0 ? m_spellItem.Template.LevelRequirement : Math.Min(playerCaster.MaxLevel, m_spellItem.Level);
-					return 100 - (85 + (itemSpellLevel - target.Level) / 2.0);
-				}
-			}
 
 			return 100 - CalculateToHitChance(target);
 		}

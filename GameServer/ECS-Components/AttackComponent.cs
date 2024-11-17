@@ -1256,7 +1256,7 @@ namespace DOL.GS
                 static void PrintDetailedCombatLog(GamePlayer player, double armorFactor, double absorb, double armorMod, double baseWeaponSkill, (double lowerLimit, double upperLimit) varianceRange, double specModifier, double weaponSkill, double damageMod, double baseDamageCap, double styleDamageCap)
                 {
                     StringBuilder stringBuilder = new();
-                    stringBuilder.Append($"BaseWS: {baseWeaponSkill:0.##} | SpecMod: {specModifier:0.##} ({varianceRange.lowerLimit:0.##}~{varianceRange.upperLimit:0.##})| WS: {weaponSkill:0.##}\n");
+                    stringBuilder.Append($"BaseWS: {baseWeaponSkill:0.##} | SpecMod: {specModifier:0.##} ({varianceRange.lowerLimit:0.00}~{varianceRange.upperLimit:0.00}) | WS: {weaponSkill:0.##}\n");
                     stringBuilder.Append($"AF: {armorFactor:0.##} | ABS: {absorb * 100:0.##}% | AF/ABS: {armorMod:0.##}\n");
                     stringBuilder.Append($"DamageMod: {damageMod:0.##} | BaseDamageCap: {baseDamageCap:0.##}");
 
