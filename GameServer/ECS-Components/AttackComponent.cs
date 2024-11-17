@@ -22,9 +22,9 @@ namespace DOL.GS
 {
     public class AttackComponent : IManagedEntity
     {
-        private static int CHECK_ATTACKERS_INTERVAL = 1000;
-        private static double INHERENT_WEAPON_SKILL = 15.0;
-        private static double INHERENT_ARMOR_FACTOR = 12.5;
+        public const int CHECK_ATTACKERS_INTERVAL = 1000;
+        public const double INHERENT_WEAPON_SKILL = 15.0;
+        public const double INHERENT_ARMOR_FACTOR = 12.5;
 
         public GameLiving owner;
         public WeaponAction weaponAction;
@@ -1172,33 +1172,7 @@ namespace DOL.GS
                     if (ad.Target.Inventory != null)
                         armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
 
-                    int spec;
-
-                    if (weapon == null)
-                        spec = 0;
-                    else
-                    {
-                        eObjectType objectType = (eObjectType) weapon.Object_Type;
-                        int slotPosition = weapon.SlotPosition;
-
-                        if (owner is GamePlayer && owner.Realm is eRealm.Albion && Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC &&
-                            (GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.TwoHandedWeapon) ||
-                            GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.PolearmWeapon)))
-                        {
-                            // Albion dual spec penalty, which sets minimum damage to the base damage spec.
-                            if ((eDamageType) weapon.Type_Damage is eDamageType.Crush)
-                                objectType = eObjectType.CrushingWeapon;
-                            else if ((eDamageType) weapon.Type_Damage is eDamageType.Slash)
-                                objectType = eObjectType.SlashingWeapon;
-                            else
-                                objectType = eObjectType.ThrustWeapon;
-                        }
-
-                        spec = owner.WeaponSpecLevel(objectType, slotPosition);
-                    }
-
-                    double specModifier = CalculateSpecModifier(ad.Target, spec);
-                    double weaponSkill = CalculateWeaponSkill(weapon, specModifier, out double baseWeaponSkill);
+                    double weaponSkill = CalculateWeaponSkill(weapon, ad.Target, out int spec, out (double, double) varianceRange, out double specModifier, out double baseWeaponSkill);
                     double armorMod = CalculateTargetArmor(ad.Target, ad.ArmorHitLocation, out double armorFactor, out double absorb);
                     double damageMod = weaponSkill / armorMod;
 
@@ -1260,10 +1234,10 @@ namespace DOL.GS
                     }
 
                     if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                        PrintDetailedCombatLog(playerOwner, armorFactor, absorb, armorMod, baseWeaponSkill, specModifier, weaponSkill, damageMod, baseDamageCap, styleDamageCap);
+                        PrintDetailedCombatLog(playerOwner, armorFactor, absorb, armorMod, baseWeaponSkill, varianceRange, specModifier, weaponSkill, damageMod, baseDamageCap, styleDamageCap);
 
                     if (target is GamePlayer targetPlayer && targetPlayer.UseDetailedCombatLog)
-                        PrintDetailedCombatLog(targetPlayer, armorFactor, absorb, armorMod, baseWeaponSkill, specModifier, weaponSkill, damageMod, baseDamageCap, styleDamageCap);
+                        PrintDetailedCombatLog(targetPlayer, armorFactor, absorb, armorMod, baseWeaponSkill, varianceRange, specModifier, weaponSkill, damageMod, baseDamageCap, styleDamageCap);
 
                     break;
                 }
@@ -1279,10 +1253,10 @@ namespace DOL.GS
                     break;
                 }
 
-                static void PrintDetailedCombatLog(GamePlayer player, double armorFactor, double absorb, double armorMod, double baseWeaponSkill, double specModifier, double weaponSkill, double damageMod, double baseDamageCap, double styleDamageCap)
+                static void PrintDetailedCombatLog(GamePlayer player, double armorFactor, double absorb, double armorMod, double baseWeaponSkill, (double lowerLimit, double upperLimit) varianceRange, double specModifier, double weaponSkill, double damageMod, double baseDamageCap, double styleDamageCap)
                 {
                     StringBuilder stringBuilder = new();
-                    stringBuilder.Append($"BaseWS: {baseWeaponSkill:0.##} | SpecMod: {specModifier:0.##} | WS: {weaponSkill:0.##}\n");
+                    stringBuilder.Append($"BaseWS: {baseWeaponSkill:0.##} | SpecMod: {specModifier:0.##} ({varianceRange.lowerLimit:0.##}~{varianceRange.upperLimit:0.##})| WS: {weaponSkill:0.##}\n");
                     stringBuilder.Append($"AF: {armorFactor:0.##} | ABS: {absorb * 100:0.##}% | AF/ABS: {armorMod:0.##}\n");
                     stringBuilder.Append($"DamageMod: {damageMod:0.##} | BaseDamageCap: {baseDamageCap:0.##}");
 
@@ -1584,20 +1558,22 @@ namespace DOL.GS
             return ad;
         }
 
-        public double CalculateWeaponSkill(DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
+        public double CalculateWeaponSkill(DbInventoryItem weapon, GameLiving target, out int spec, out (double, double) varianceRange, out double specModifier, out double baseWeaponSkill)
         {
-            baseWeaponSkill = owner.GetWeaponSkill(weapon);
-            return CalculateWeaponSkill(baseWeaponSkill, 1 + RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength), specModifier);
+            spec = CalculateSpec(weapon);
+            specModifier = CalculateSpecModifier(target, spec, out varianceRange);
+            return CalculateWeaponSkill(weapon, specModifier, out baseWeaponSkill);
         }
 
-        public double CalculateWeaponSkill(double baseWeaponSkill, double relicBonus, double specModifier)
+        public double CalculateWeaponSkill(DbInventoryItem weapon, double specModifier, out double baseWeaponSkill)
         {
-            double weaponSkill = (baseWeaponSkill + INHERENT_WEAPON_SKILL) * specModifier;
+            baseWeaponSkill = owner.GetWeaponSkill(weapon) + INHERENT_WEAPON_SKILL;
+            double relicBonus = 1.0;
 
             if (owner is GamePlayer)
-                weaponSkill *= relicBonus;
+                relicBonus += RelicMgr.GetRelicBonusModifier(owner.Realm, eRelicType.Strength);
 
-            return weaponSkill;
+            return baseWeaponSkill * relicBonus * specModifier;
         }
 
         public double CalculateDefensePenetration(AttackData ad)
@@ -1607,15 +1583,38 @@ namespace DOL.GS
             return CalculateWeaponSkill(ad.Weapon, specModifier, out _) * 0.08 / 100;
         }
 
-        public double CalculateSpecModifier(GameLiving target, int spec)
+        public int CalculateSpec(DbInventoryItem weapon)
         {
-            double lowerLimit;
-            double upperLimit;
+            if (weapon == null)
+                return 0;
+
+            eObjectType objectType = (eObjectType) weapon.Object_Type;
+            int slotPosition = weapon.SlotPosition;
+
+            if (owner is GamePlayer && owner.Realm is eRealm.Albion && Properties.ENABLE_ALBION_ADVANCED_WEAPON_SPEC &&
+                (GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.TwoHandedWeapon) ||
+                GameServer.ServerRules.IsObjectTypesEqual((eObjectType) weapon.Object_Type, eObjectType.PolearmWeapon)))
+            {
+                // Albion dual spec penalty, which sets minimum damage to the base damage spec.
+                if ((eDamageType) weapon.Type_Damage is eDamageType.Crush)
+                    objectType = eObjectType.CrushingWeapon;
+                else if ((eDamageType) weapon.Type_Damage is eDamageType.Slash)
+                    objectType = eObjectType.SlashingWeapon;
+                else
+                    objectType = eObjectType.ThrustWeapon;
+            }
+
+            return owner.WeaponSpecLevel(objectType, slotPosition);
+        }
+
+        public (double, double) CalculateVarianceRange(GameLiving target, int spec)
+        {
+            (double lowerLimit, double upperLimit) varianceRange;
 
             if (owner is GamePlayer playerOwner)
             {
                 if (playerOwner.SpecLock > 0)
-                    return playerOwner.SpecLock;
+                    return (playerOwner.SpecLock, playerOwner.SpecLock);
 
                 // Characters below level 5 get a bonus to their spec to help with the very wide variance at this level range.
                 // Target level, lower bound at 2, lower bound at 1:
@@ -1629,17 +1628,19 @@ namespace DOL.GS
                 // Also prevents negative values.
                 spec = Math.Max(owner.Level < 5 ? 2 : 1, spec);
                 double specVsTargetLevelMod = (spec - 1) / ((double) target.Level + 1);
-                lowerLimit = Math.Min(0.75 * specVsTargetLevelMod + 0.25, 1.0);
-                upperLimit = Math.Min(Math.Max(1.25 + (3.0 * specVsTargetLevelMod - 2) * 0.25, 1.25), 1.5);
+                varianceRange = (Math.Min(0.75 * specVsTargetLevelMod + 0.25, 1.0), Math.Min(Math.Max(1.25 + (3.0 * specVsTargetLevelMod - 2) * 0.25, 1.25), 1.5));
             }
             else
-            {
-                lowerLimit = 0.9;
-                upperLimit = 1.1;
-            }
+                varianceRange = (0.9, 1.1);
 
-            double varianceRange = upperLimit - lowerLimit;
-            return lowerLimit + Util.RandomDoubleIncl() * varianceRange;
+            return varianceRange;
+        }
+
+        public double CalculateSpecModifier(GameLiving target, int spec, out (double lowerLimit, double upperLimit) varianceRange)
+        {
+            varianceRange = CalculateVarianceRange(target, spec);
+            double difference = varianceRange.upperLimit - varianceRange.lowerLimit;
+            return varianceRange.lowerLimit + Util.RandomDoubleIncl() * difference;
         }
 
         public static double CalculateTargetArmor(GameLiving target, eArmorSlot armorSlot, out double armorFactor, out double absorb)
@@ -2656,6 +2657,41 @@ namespace DOL.GS
             }
         }
 
+        public double CalculateDwCdLeftHandSwingChance()
+        {
+            int specLevel = owner.GetModifiedSpecLevel(Specs.Dual_Wield);
+            specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Celtic_Dual));
+            specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Fist_Wraps));
+
+            if (specLevel > 0)
+            {
+                int bonus = owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
+                return 25 + specLevel * 68 * 0.01 + bonus;
+            }
+
+            return 0;
+        }
+
+        public (double, double, double) CalculateHthSwingChances()
+        {
+            int specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
+            DbInventoryItem attackWeapon = owner.ActiveWeapon;
+            DbInventoryItem leftWeapon = owner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+
+            if (specLevel > 0 && attackWeapon != null && leftWeapon != null && (eObjectType) leftWeapon.Object_Type is eObjectType.HandToHand)
+            {
+                int bonus = owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
+                bool canTripleSwing = specLevel >= 25;
+                bool canQuadSwing = specLevel >= 40;
+                double doubleSwingChance = specLevel * 0.5 + bonus; // specLevel >> 1
+                double tripleSwingChance = canTripleSwing ? specLevel * 0.25 + bonus * 0.5 : 0; // specLevel >> 2
+                double quadSwingChance = canQuadSwing ? specLevel * 0.0625 + bonus * 0.25 : 0; // specLevel >> 4
+                return (doubleSwingChance, tripleSwingChance, quadSwingChance);
+            }
+
+            return (0, 0, 0);
+        }
+
         /// <summary>
         /// Calculates how many times left hand swings
         /// </summary>
@@ -2678,59 +2714,39 @@ namespace DOL.GS
                 return 1; // always use left axe
             }
 
-            int bonus = owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
+            double leftHandSwingChance = CalculateDwCdLeftHandSwingChance();
 
-            // CD, DW, FW chance.
-            int specLevel = owner.GetModifiedSpecLevel(Specs.Dual_Wield);
-            specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Celtic_Dual));
-            specLevel = Math.Max(specLevel, owner.GetModifiedSpecLevel(Specs.Fist_Wraps));
-
-            if (specLevel > 0)
+            if (leftHandSwingChance > 0)
             {
                 double random = Util.RandomDouble() * 100;
-                double offhandChance = 25 + specLevel * 68 * 0.01 + bonus;
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                    playerOwner.Out.SendMessage($"OH swing%: {offhandChance:0.##} ({bonus}% from RAs) \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage($"OH swing%: {leftHandSwingChance:0.##}\n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                return random < offhandChance ? 1 : 0;
+                return random < leftHandSwingChance ? 1 : 0;
             }
 
-            // HtH chance.
-            specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
-            DbInventoryItem attackWeapon = owner.ActiveWeapon;
-            DbInventoryItem leftWeapon = owner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+            (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) hthSwingChances = CalculateHthSwingChances();
 
-            if (specLevel > 0 && attackWeapon != null && leftWeapon != null && (eObjectType) leftWeapon.Object_Type is eObjectType.HandToHand)
+            if (hthSwingChances.doubleSwingChance > 0)
             {
-                bool canTripleHit = specLevel >= 25;
-                bool canQuadHit = specLevel >= 40;
                 double random = Util.RandomDouble() * 100;
-                double doubleHitChance = specLevel * 0.5 + bonus; // specLevel >> 1
-                double tripleHitChance = canTripleHit ? specLevel * 0.25 + bonus * 0.5 : 0; // specLevel >> 2
-                double quadHitChance = canQuadHit ? specLevel * 0.0625 + bonus * 0.25 : 0; // specLevel >> 4
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                    playerOwner.Out.SendMessage( $"Chance for 2 hits: {doubleHitChance:0.##}% | 3 hits: {tripleHitChance:0.##}% | 4 hits: {quadHitChance:0.##}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage( $"Chance for 2 swings: {hthSwingChances.doubleSwingChance:0.##}% | 3 swings: {hthSwingChances.tripleSwingChance:0.##}% | 4 swings: {hthSwingChances.quadSwingChance:0.##}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                if (random < doubleHitChance)
+                if (random < hthSwingChances.doubleSwingChance)
                     return 1;
 
-                if (canTripleHit)
-                {
-                    tripleHitChance += doubleHitChance;
+                hthSwingChances.tripleSwingChance += hthSwingChances.doubleSwingChance;
 
-                    if (random < tripleHitChance)
-                        return 2;
-                }
+                if (random < hthSwingChances.tripleSwingChance)
+                    return 2;
 
-                if (canQuadHit)
-                {
-                    quadHitChance += tripleHitChance;
+                hthSwingChances.quadSwingChance += hthSwingChances.tripleSwingChance;
 
-                    if (random < quadHitChance)
-                        return 3;
-                }
+                if (random < hthSwingChances.quadSwingChance)
+                    return 3;
             }
 
             return 0;

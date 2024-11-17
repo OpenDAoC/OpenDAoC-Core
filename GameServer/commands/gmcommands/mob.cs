@@ -190,7 +190,6 @@ namespace DOL.GS.Commands
 						case "heal": heal(client, targetMob, args); break;
 						case "attack": attack(client, targetMob, args); break;
 						case "info": info(client, targetMob, args); break;
-						case "stats": stats(client, targetMob, args); break;
 						case "state": state(client, targetMob); break;
 						case "realm": realm(client, targetMob, args); break;
 						case "speed": speed(client, targetMob, args); break;
@@ -1251,19 +1250,6 @@ namespace DOL.GS.Commands
 				info.Add(" + SpawnPoint:  " + targetMob.SpawnPoint.X + ", " + targetMob.SpawnPoint.Y + ", " + targetMob.SpawnPoint.Z);
 			}
 
-			info.Add(" ");
-			info.Add(" +     STR      /      CON      /      DEX      /      QUI");
-			info.Add(" + " + targetMob.Strength + " (" + targetMob.GetModified(eProperty.Strength) + ")  /  " + targetMob.Constitution + " (" + targetMob.GetModified(eProperty.Constitution) + ")  /  " + targetMob.Dexterity + " (" + targetMob.GetModified(eProperty.Dexterity) + ")  /  " + targetMob.Quickness + " (" + targetMob.GetModified(eProperty.Quickness) + ")");
-			info.Add(" +     INT      /     EMP     /     PIE     /     CHR");
-			info.Add(" + " + targetMob.Intelligence + " (" + targetMob.GetModified(eProperty.Intelligence) + ")  /  " + targetMob.Empathy + " (" + targetMob.GetModified(eProperty.Empathy) + ")  /  " + targetMob.Piety + " (" + targetMob.GetModified(eProperty.Piety) + ")  /  " + targetMob.Charisma + " (" + targetMob.GetModified(eProperty.Charisma) + ")");
-			info.Add(" + Block / Parry / Evade %:  " + targetMob.BlockChance + " / " + targetMob.ParryChance + " / " + targetMob.EvadeChance);
-			info.Add($"+ Weapon Skill: {targetMob.GetWeaponSkill(targetMob.ActiveWeapon)}");
-			info.Add(" + Attack Speed (Melee Speed Increase %):  " + targetMob.AttackSpeed(targetMob.ActiveWeapon) + " (" + (100 - targetMob.GetModified(eProperty.MeleeSpeed)) + ")");
-			info.Add(" + Casting Speed Increase %:  " + targetMob.GetModified(eProperty.CastingSpeed));
-
-			if (targetMob.LeftHandSwingChance > 0)
-				info.Add(" + Left Swing %: " + targetMob.LeftHandSwingChance);
-
 			if (targetMob.Abilities != null && targetMob.Abilities.Count > 0)
 				info.Add(" + Abilities: " + targetMob.Abilities.Count);
 
@@ -1285,21 +1271,6 @@ namespace DOL.GS.Commands
 				info.Add(" + Body Type:  " + targetMob.BodyType);
 
 			info.Add(" ");
-
-			info.Add("Current Resists:");
-			info.Add(" +  Crush / Slash / Thrust:  " + targetMob.GetResist(eDamageType.Crush)
-			         + " / " + targetMob.GetResist(eDamageType.Slash)
-			         + " / " + targetMob.GetResist(eDamageType.Thrust));
-			info.Add(" +  Heat / Cold / Matter:  " + targetMob.GetResist(eDamageType.Heat)
-			         + " / " + targetMob.GetResist(eDamageType.Cold)
-			         + " / " + targetMob.GetResist(eDamageType.Matter));
-			info.Add(" +  Body / Spirit / Energy:  " + targetMob.GetResist(eDamageType.Body)
-			         + " / " + targetMob.GetResist(eDamageType.Spirit)
-			         + " / " + targetMob.GetResist(eDamageType.Energy));
-			info.Add(" +  Natural:  " + targetMob.GetResist(eDamageType.Natural));
-
-			info.Add(" ");
-
 			info.Add(" + Position (X, Y, Z, H):  " + targetMob.X + ", " + targetMob.Y + ", " + targetMob.Z + ", " + targetMob.Heading);
 
 			if (targetMob.GuildName != null && targetMob.GuildName.Length > 0)
@@ -1316,8 +1287,6 @@ namespace DOL.GS.Commands
 			info.Add(" + OID: " + targetMob.ObjectID);
 			info.Add(" + Active weapon slot: " + targetMob.ActiveWeaponSlot);
 			info.Add(" + Visible weapon slot: " + targetMob.VisibleActiveWeaponSlots);
-			info.Add(" + Speed(current/max): " + targetMob.CurrentSpeed + "/" + targetMob.MaxSpeedBase);
-			info.Add(" + Health: " + targetMob.Health + "/" + targetMob.MaxHealth);
 
 			if (targetMob.EquipmentTemplateID != null && targetMob.EquipmentTemplateID.Length > 0)
 				info.Add(" + Equipment Template ID: " + targetMob.EquipmentTemplateID);
@@ -1350,42 +1319,6 @@ namespace DOL.GS.Commands
 			client.Out.SendCustomTextWindow("[ " + targetMob.Name + " ]", info);
 		}
 		
-		private void stats(GameClient client, GameNPC targetMob, string[] args)
-		{
-			if (targetMob == null)
-			{
-				client.Out.SendMessage("No target selected.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-			var info = new List<string>();
-			info.Add("Modified stats:");
-			info.Add("");
-			for (eProperty property = eProperty.Stat_First; property <= eProperty.Stat_Last; ++property)
-				info.Add(String.Format("{0}: {1}",
-				                       GlobalConstants.PropertyToName(property),
-				                       targetMob.GetModified(property)));
-			info.Add("");
-			info.Add("Modified resists:");
-			info.Add("");
-			for (eProperty property = eProperty.Resist_First + 1; property <= eProperty.Resist_Last; ++property)
-				info.Add(String.Format("{0}: {1}",
-				                       GlobalConstants.PropertyToName(property),
-				                       targetMob.GetModified(property)));
-			info.Add("");
-			info.Add("Miscellaneous:");
-			info.Add("");
-
-			if (targetMob.GetModified(eProperty.MeleeDamage) != 0)
-				info.Add($" + Damage Bonus: {targetMob.GetModified(eProperty.MeleeDamage)}");
-
-			info.Add(" + Attack Speed (Melee Speed Increase %):  " + targetMob.AttackSpeed(targetMob.ActiveWeapon) + " (" + (100 - targetMob.GetModified(eProperty.MeleeSpeed)) + ")");
-
-			info.Add(String.Format("Maximum Health: {0}", targetMob.MaxHealth));
-			info.Add(String.Format("Armor Factor (AF): {0}", targetMob.GetModified(eProperty.ArmorFactor)));
-			info.Add(String.Format("Absorption (ABS): {0}", targetMob.GetModified(eProperty.ArmorAbsorption)));
-			client.Out.SendCustomTextWindow("[ " + targetMob.Name + " ]", info);
-			return;
-		}
 
 		private void realm(GameClient client, GameNPC targetMob, string[] args)
 		{

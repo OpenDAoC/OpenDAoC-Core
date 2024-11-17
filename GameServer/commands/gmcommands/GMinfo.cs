@@ -108,11 +108,7 @@ namespace DOL.GS.Commands
 					info.Add(" + Size " + target.Size);
 					info.Add(string.Format(" + Flags: {0} (0x{1})", ((GameNPC.eFlags)target.Flags).ToString("G"), target.Flags.ToString("X")));
 					info.Add(" ");
-					
-					info.Add(" + Speed(current/max): " + target.CurrentSpeed + "/" + target.MaxSpeedBase);
-					info.Add(" + Health: " + target.Health + "/" + target.MaxHealth);
 					info.Add(" + Attacker Count: " + target.attackComponent.Attackers.Count);
-					info.Add(" + AF: " + GetTotalAFHelper(target));
 					
 					IOldAggressiveBrain aggroBrain = target.Brain as IOldAggressiveBrain;
 					if (aggroBrain != null)
@@ -157,78 +153,29 @@ namespace DOL.GS.Commands
 						info.Add(" + OwnerID: " + target.OwnerID);
 						
 					info.Add(" ");
-					if (target.Strength > 0)
-						info.Add(" + STR: "+ target.Strength);
-					if (target.Constitution > 0)
-						info.Add(" + CON: "+ target.Constitution);
-					if (target.Dexterity > 0)
-						info.Add(" + DEX: "+ target.Dexterity);
-					if (target.Quickness > 0)
-						info.Add(" + QUI: "+ target.Quickness);
-					if (target.Intelligence > 0)
-						info.Add(" + INT: "+ target.Intelligence);
-					if (target.Empathy > 0)
-						info.Add(" + EMP: "+ target.Empathy);
-					if (target.Piety > 0)
-						info.Add(" + PIE: "+ target.Piety);
-					if (target.Charisma > 0)
-						info.Add(" + CHR: "+ target.Charisma);
-					if (target.BlockChance > 0)
-						info.Add(" + Block: "+ target.BlockChance);
-					if (target.ParryChance > 0)
-						info.Add(" + Parry: "+ target.ParryChance);
-					if (target.EvadeChance > 0)
-						info.Add(" + Evade %:  "+ target.EvadeChance);
-					
 					info.Add(" + Damage type: " + target.MeleeDamageType);
-					if (target.LeftHandSwingChance > 0)
-						info.Add(" + Left Swing %: " + target.LeftHandSwingChance);
+
 					if (target.DamageFactor > 0)
 						info.Add(" + DamageFactor: " + target.DamageFactor);
+
 					if (target.GetModified(eProperty.MeleeDamage) > 0)
 						info.Add(" + MeleeDamage bonus %: " + target.GetModified(eProperty.MeleeDamage));
-					if (target.GetWeaponSkill(new DbInventoryItem()) > 0)
-						info.Add(" + Calculated Weaponskill: " + target.GetWeaponSkill(new DbInventoryItem()));
-
 
 					if (target.Abilities != null && target.Abilities.Count > 0)
 						info.Add(" + Abilities: " + target.Abilities.Count);
-						
+
 					if (target.Spells != null && target.Spells.Count > 0)
 						info.Add(" + Spells: " + target.Spells.Count);
 						
 					if (target.Styles != null && target.Styles.Count > 0)
 						info.Add(" + Styles: " + target.Styles.Count);
-						
+
 					info.Add(" ");
 					if (target.Race > 0)
 						info.Add(" + Race:  " + target.Race);
-						
+
 					if (target.BodyType > 0)
 						info.Add(" + Body Type:  " + target.BodyType);
-
-					info.Add(" ");
-					info.Add(" ------ Resists ------");
-					if (target.GetResist(eDamageType.Thrust) != 0)
-						info.Add(" + Thrust:  " + target.GetResist(eDamageType.Thrust));
-					if (target.GetResist(eDamageType.Crush) != 0)
-						info.Add(" + Crush:  " + target.GetResist(eDamageType.Crush));
-					if (target.GetResist(eDamageType.Slash) != 0)
-						info.Add(" + Slash:  " + target.GetResist(eDamageType.Slash));
-					if (target.GetResist(eDamageType.Heat) != 0)
-						info.Add(" + Heat:  " + target.GetResist(eDamageType.Heat));
-					if (target.GetResist(eDamageType.Cold) != 0)
-						info.Add(" + Cold:  " + target.GetResist(eDamageType.Cold));
-					if (target.GetResist(eDamageType.Matter) != 0)
-						info.Add(" + Matter:  " + target.GetResist(eDamageType.Matter));
-					if (target.GetResist(eDamageType.Energy) != 0)
-						info.Add(" + Energy:  " + target.GetResist(eDamageType.Energy));
-					if (target.GetResist(eDamageType.Spirit) != 0)
-						info.Add(" + Spirit:  " + target.GetResist(eDamageType.Spirit));
-					if (target.GetResist(eDamageType.Body) != 0)
-						info.Add(" + Body:  " + target.GetResist(eDamageType.Body));
-					if (target.GetResist(eDamageType.Natural) != 0)
-						info.Add(" + Natural:  " + target.GetResist(eDamageType.Natural));
 
 					info.Add(" ");
 					info.Add(" + Active weapon slot: " + target.ActiveWeaponSlot);
@@ -345,39 +292,7 @@ namespace DOL.GS.Commands
 				if (client.Player.TargetObject is GamePlayer)
 				{
 					var target = client.Player.TargetObject as GamePlayer;
-					
-					// info.Add("TEMP PROPERTIES:");
-					// foreach (var property in target.TempProperties.getAllProperties())
-					// {
-					// 	info.Add(property + ": " + target.TempProperties.GetProperty<bool>(property));
-					// }
-					// info.Add("");
-					
-					// info.Add("ENDURANCE INFORMATION");
-					// info.Add("EnduRegerationTimer.IsAlive: " + target.EnduRegenTimer.IsAlive);
-					// info.Add("Time since last timer tick (ms): " + (GameLoop.GameLoopTime - target.LastEnduTick));
-					// info.Add("Last Regen amount: " + target.Regen);
-					// info.Add("Last EndChant amount (FatigueConsumption): " + target.Endchant + "%");
-					// info.Add("Last Regen at change: " + target.RegenRateAtChange);
-					// info.Add(" ");
-					// info.Add("REGEN INFORMATION");
-					// info.Add("Last EnduDebuff:" + target.EnduDebuff + " | " + "Last RegenBuff: " + target.RegenBuff);
-					// info.Add("HP Regen: " + target.GetModified(eProperty.HealthRegenerationRate)+ " | End Regen: " + target.GetModified(eProperty.EnduranceRegenerationRate) + " | Pow Regen: " + target.GetModified(eProperty.PowerRegenerationRate));
-					// info.Add("HP: " + target.Health + "/" + target.GetModified(eProperty.MaxHealth)+ " " + Math.Round(((double)target.Health/(double)target.MaxHealth)*100, 2) + "%"
-					//          + " | Power: " + target.Mana + "/" + target.GetModified(eProperty.MaxMana)+ " " +  Math.Round(((double)target.Mana/(double)target.MaxMana)*100, 2) + "%");
-					// info.Add("End Regen Rate: " + target.GetModified(eProperty.EnduranceRegenerationRate));
-					// info.Add("Last Regen after Tireless: " + target.RegenAfterTireless);
-					// info.Add("Last Non-Combat Non-SprintRegen: " + target.NonCombatNonSprintRegen);
-					// info.Add("Combat flag: " + target.InCombat);
-					// info.Add("Last Combat Regen: " + target.CombatRegen);
-					// info.Add(" ");
-					// info.Add("DETERMINATION INFORMATION");
-					// info.Add("CC reduction: " + target.AbilityBonus[(int)eProperty.MesmerizeDurationReduction]);
-					// info.Add(" ");
-					
-					info.Add("MELEE SPEED INFORMATION");
-					info.Add("MeleeSpeed: " + target.attackComponent.AttackSpeed(target.ActiveWeapon));
-					info.Add(" ");
+
 					info.Add("PLAYER INFORMATION (Client # " + target.Client.SessionID + ")");
 					info.Add("  - Name : " + target.Name);
 					info.Add("  - Lastname : " + target.LastName);
@@ -398,7 +313,6 @@ namespace DOL.GS.Commands
 					info.Add("  - AFK Message: " + target.TempProperties.GetProperty<string>(GamePlayer.AFK_MESSAGE) + "");
 					info.Add(" ");
                     info.Add("  - Money : " + Money.GetString(target.GetCurrentMoney()) + "\n");
-					info.Add("  - Speed(current/max): " + target.CurrentSpeed + "/" + target.MaxSpeed);
 					info.Add("  - XPs : " + target.Experience);
 					info.Add("  - RPs : " + target.RealmPoints);
 					info.Add("  - BPs : " + target.BountyPoints);
@@ -427,42 +341,8 @@ namespace DOL.GS.Commands
 						sCurrent += "  - " +spec.Name + " = " + spec.Level + " \n";
 					}
 					info.Add(sTitle + sCurrent);
-					
-					sCurrent = string.Empty;
-					sTitle = string.Empty;
 
 					info.Add(" ");
-					info.Add("CHARACTER STATS ");
-					info.Add("  - Maximum Health : " + target.MaxHealth);
-					info.Add("  - Current AF : " + target.GetModified(eProperty.ArmorFactor));
-					info.Add("  - Current ABS : " + target.GetModified(eProperty.ArmorAbsorption));
-					info.Add("  -");
-
-					for (eProperty stat = eProperty.Stat_First; stat <= eProperty.Stat_Last; stat++, cnt++)
-					{
-						sTitle += GlobalConstants.PropertyToName(stat);
-                        sCurrent += target.GetModified(stat);
-						
-						info.Add("  - " + sTitle + " : " + sCurrent);
-						sCurrent = string.Empty;
-						sTitle = string.Empty;
-					}
-
-					info.Add("  -");
-
-					sCurrent = string.Empty;
-					sTitle = string.Empty;
-					cnt = 0;
-					for (eProperty res = eProperty.Resist_First; res <= eProperty.Resist_Last; res++, cnt++)
-					{
-						sTitle += GlobalConstants.PropertyToName(res);
-                        sCurrent += target.GetModified(res);
-						info.Add("  - " + sTitle + " : " + sCurrent);
-						sCurrent = string.Empty;
-						sTitle = string.Empty;
-					}
-
-					info.Add("  -");
 					info.Add("  - Respecs dol : " + target.RespecAmountDOL);
 					info.Add("  - Respecs single : " + target.RespecAmountSingleSkill);
 					info.Add("  - Respecs full : " + target.RespecAmountAllSkill);

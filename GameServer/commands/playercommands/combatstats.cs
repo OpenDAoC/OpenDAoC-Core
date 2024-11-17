@@ -4,7 +4,7 @@ namespace DOL.GS.Commands {
 	[CmdAttribute(
 		"&combatstats",
 		ePrivLevel.Player,
-		"toggle receiving experience points",
+		"Toggle detailed combat log",
 		"/combatstats <on/off>")]
 	public class CombatStatsCommandHandler : AbstractCommandHandler, ICommandHandler {
 		public void OnCommand(GameClient client, string[] args)
