@@ -3117,7 +3117,7 @@ namespace DOL.GS.Spells
 		public virtual double AdjustDamageForHitChance(double damage, double hitChance)
 		{
 			if (hitChance < 55)
-				damage *= (hitChance - 55) * Properties.SPELL_HITCHANCE_DAMAGE_REDUCTION_MULTIPLIER * 0.01;
+				damage += (hitChance - 55) * Properties.SPELL_HITCHANCE_DAMAGE_REDUCTION_MULTIPLIER * 0.01;
 
 			return damage;
 		}
