@@ -12,7 +12,7 @@ namespace DOL.GS.Commands
     {
         public void OnCommand(GameClient client, string[] args)
         {
-            if (IsSpammingCommand(client.Player, "targetstats", 5000))
+            if (IsSpammingCommand(client.Player, "targetstats"))
                 return;
 
             GameLiving target = client.Player.TargetObject as GameLiving;
@@ -81,7 +81,7 @@ namespace DOL.GS.Commands
             info.Add($"+ Armor{armorSlotString}:");
 
             double targetArmor = AttackComponent.CalculateTargetArmor(target, armorSlot, out double armorFactor, out double absorb);
-            info.Add($"Armor Factor:  {armorFactor:0.##}");
+            info.Add($"Armor factor:  {armorFactor:0.##}");
             info.Add($"Absorption:  {absorb * 100:0.##}%");
             info.Add($"Armor (AF / ABS):  {targetArmor:0.##}");
 
@@ -104,7 +104,7 @@ namespace DOL.GS.Commands
                 _ = target.attackComponent.CalculateWeaponSkill(weapon, client.Player, out _, out (double lowerLimit, double upperLimit) varianceRange, out _, out double baseWeaponSkill);
                 info.Add($"Weapon skill:  {baseWeaponSkill:0.##}");
                 info.Add($"Variance range:  {varianceRange.lowerLimit:0.00}~{varianceRange.upperLimit:0.00}");
-                info.Add($"Attack Speed:  {target.AttackSpeed(weapon) / 1000.0:0.###}");
+                info.Add($"Attack speed:  {target.AttackSpeed(weapon) / 1000.0:0.###}");
             }
         }
     }
