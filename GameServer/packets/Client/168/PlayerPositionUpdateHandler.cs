@@ -374,7 +374,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                             if (fallSpeed > 500)
                             {
-                                if ((eCharacterClass) client.Player.CharacterClass.ID is not eCharacterClass.Necromancer || !client.Player.IsShade)
+                                if ((eCharacterClass) client.Player.CharacterClass.ID is not eCharacterClass.Necromancer || !client.Player.HasShadeModel)
                                     client.Player.CalcFallDamage(fallPercent);
                             }
 

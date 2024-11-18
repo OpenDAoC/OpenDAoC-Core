@@ -368,47 +368,35 @@ namespace DOL.GS
 			}
 		}
 
-
-		/// <summary>
-		/// Create a shade effect for this player.
-		/// </summary>
-		/// <returns></returns>
-		public virtual ShadeECSGameEffect CreateShadeEffect()
+		public virtual bool CreateShadeEffect(out ECSGameAbilityEffect effect)
 		{
-			return new ShadeECSGameEffect(new ECSGameEffectInitParams(Player, 0, 1));
+			effect = EffectListService.GetAbilityEffectOnTarget(Player, eEffect.Shade);
+
+			if (effect != null)
+				return false;
+
+			effect = new ShadeECSGameEffect(new ECSGameEffectInitParams(Player, 0, 1));
+			return effect.IsBuffActive;
 		}
 
-		/// <summary>
-		/// Changes shade state of the player.
-		/// </summary>
-		/// <param name="state">The new state.</param>
-		public virtual void Shade(bool makeShade)
+		public virtual bool CancelShadeEffect(out ECSGameAbilityEffect effect)
 		{
-			if (Player.IsShade == makeShade)
+			effect = EffectListService.GetAbilityEffectOnTarget(Player, eEffect.Shade);
+			return effect != null && EffectService.RequestImmediateCancelEffect(effect);
+		}
+
+		public virtual bool Shade(bool makeShade, out ECSGameAbilityEffect effect)
+		{
+			if (Player.HasShadeModel == makeShade)
 			{
 				if (makeShade && (Player.ObjectState == GameObject.eObjectState.Active))
 					Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.Shade.AlreadyShade"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
+
+				effect = null;
+				return false;
 			}
 
-			if (makeShade)
-			{
-				// Turn into a shade.
-				Player.Model = Player.ShadeModel;
-				Player.ShadeEffect = CreateShadeEffect();
-			}
-			else
-			{
-				if (Player.ShadeEffect != null)
-				{
-					// Drop shade form.
-					EffectService.RequestImmediateCancelEffect(Player.ShadeEffect);
-					Player.ShadeEffect = null;
-				}
-				// Drop shade form.
-				Player.Model = Player.CreationModel;
-				Player.Out.SendMessage(LanguageMgr.GetTranslation(Player.Client.Account.Language, "GamePlayer.Shade.NoLongerShade"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			}
+			return makeShade ? CreateShadeEffect(out effect) : CancelShadeEffect(out effect);
 		}
 
 		/// <summary>

@@ -6,174 +6,114 @@ using DOL.GS.PlayerClass;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// The necromancer character class.
-	/// </summary>
-	public class CharacterClassNecromancer : ClassDisciple
-	{
-		public override void Init(GamePlayer player)
-		{
-			base.Init(player);
+    public class CharacterClassNecromancer : ClassDisciple
+    {
+        private int _petHealthPercentAfterBrainSet;
 
-			// Force caster form when creating this player in the world.
-			player.Model = (ushort)player.Client.Account.Characters[player.Client.ActiveCharIndex].CreationModel;
-			player.Shade(false);
-		}
+        public override void Init(GamePlayer player)
+        {
+            base.Init(player);
 
-		
-		//private String m_petName = string.Empty;
-		private int m_savedPetHealthPercent = 0;
+            if (Player.HasShadeModel)
+                player.Shade(false);
+        }
 
-		/// <summary>
-		/// Sets the controlled object for this player
-		/// </summary>
-		/// <param name="controlledNpc"></param>
-		public override void SetControlledBrain(IControlledBrain controlledNpcBrain)
-		{
-			m_savedPetHealthPercent = (Player.ControlledBrain != null)
-				? (int)Player.ControlledBrain.Body.HealthPercent : 0;
+        public override void SetControlledBrain(IControlledBrain controlledNpcBrain)
+        {
+            _petHealthPercentAfterBrainSet = Player.ControlledBrain != null ? Player.ControlledBrain.Body.HealthPercent : 0;
+            base.SetControlledBrain(controlledNpcBrain);
 
-			base.SetControlledBrain(controlledNpcBrain);
+            if (controlledNpcBrain == null)
+                OnPetReleased();
+        }
 
-			if (controlledNpcBrain == null)
-			{
-				OnPetReleased();
-			}
-		}
+        public override void CommandNpcRelease()
+        {
+            base.CommandNpcRelease();
+            OnPetReleased();
+        }
 
-		/// <summary>
-		/// Releases controlled object
-		/// </summary>
-		public override void CommandNpcRelease()
-		{
-			m_savedPetHealthPercent = Player.ControlledBrain != null ? Player.ControlledBrain.Body.HealthPercent : 0;
-			base.CommandNpcRelease();
-			OnPetReleased();
-		}
+        public override void OnPetReleased()
+        {
+            if (Player.HasShadeModel)
+                Player.Shade(false);
 
-		/// <summary>
-		/// Invoked when pet is released.
-		/// </summary>
-		public override void OnPetReleased()
-		{
-			if (Player.IsShade)
-				Player.Shade(false);
+            Player.InitControlledBrainArray(0);
+        }
 
-			Player.InitControlledBrainArray(0);
-		}
+        public override bool StartAttack(GameObject attackTarget)
+        {
+            if (!Player.HasShadeModel)
+                return true;
+            else
+            {
+                Player.Out.SendMessage("You cannot enter combat while in shade form!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                return false;
+            }
+        }
 
-		/// <summary>
-		/// Necromancer can only attack when it's not a shade.
-		/// </summary>
-		/// <param name="attackTarget"></param>
-		public override bool StartAttack(GameObject attackTarget)
-		{
-			if (!Player.IsShade)
-			{
-				return true;
-			}
-			else
-			{
-				Player.Out.SendMessage("You cannot enter combat while in shade form!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-				return false;
-			}
-		}
+        public override byte HealthPercentGroupWindow => Player.ControlledBrain == null ? Player.HealthPercent : Player.ControlledBrain.Body.HealthPercent;
 
-		/// <summary>
-		/// If the pet is up, show the pet's health in the group window.
-		/// </summary>
-		public override byte HealthPercentGroupWindow
-		{
-			get
-			{
-				if (Player.ControlledBrain == null) 
-					return Player.HealthPercent;
+        public override bool CreateShadeEffect(out ECSGameAbilityEffect effect)
+        {
+            effect = EffectListService.GetAbilityEffectOnTarget(Player, eEffect.Shade);
 
-				return Player.ControlledBrain.Body.HealthPercent;
-			}
-		}
+            if (effect != null)
+                return false;
 
-		/// <summary>
-		/// Create a necromancer shade effect for this player.
-		/// </summary>
-		/// <returns></returns>
-		public override ShadeECSGameEffect CreateShadeEffect()
-		{
-			return new NecromancerShadeECSGameEffect(new ECSGameEffectInitParams(Player, 0, 1));
-		}
+            effect = new NecromancerShadeECSGameEffect(new ECSGameEffectInitParams(Player, 0, 1));
+            return effect.IsBuffActive;
+        }
 
-		/// <summary>
-		/// Changes shade state of the player
-		/// </summary>
-		/// <param name="state">The new state</param>
-		public override void Shade(bool makeShade)
-		{
-			bool wasShade = Player.IsShade;
-			base.Shade(makeShade);
+        public override bool Shade(bool makeShade, out ECSGameAbilityEffect effect)
+        {
+            if (!base.Shade(makeShade, out effect))
+                return false;
 
-			if (wasShade == makeShade)
-				return;
+            if (effect is not NecromancerShadeECSGameEffect)
+                return true;
 
-			if (makeShade)
-			{
-				// Necromancer has become a shade. Have any previous NPC 
-				// attackers aggro on pet now, as they can't attack the 
-				// necromancer any longer.
+            if (makeShade)
+            {
+                GameNPC pet = Player.ControlledBrain.Body;
 
-				if (Player.ControlledBrain != null && Player.ControlledBrain.Body != null)
-				{
-					GameNPC pet = Player.ControlledBrain.Body;
+                if (pet == null)
+                    return true;
 
-					foreach (GameObject attacker in Player.attackComponent.Attackers.Keys)
-					{
-						if (attacker is GameNPC npcAttacker)
-						{
-							if (npcAttacker.TargetObject == Player && npcAttacker.attackComponent.AttackState)
-							{
-								if (npcAttacker.Brain is IOldAggressiveBrain npcAttackerBrain)
-								{
-									npcAttacker.StopAttack();
-									npcAttackerBrain.AddToAggroList(pet, npcAttackerBrain.GetBaseAggroAmount(Player));
-								}
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				// Necromancer has lost shade form, release the pet if it
-				// isn't dead already and update necromancer's current health.
+                // Necromancer has become a shade. Have any previous NPC attacker aggro the pet now, as they can't attack the necromancer any longer.
+                foreach (GameObject attacker in Player.attackComponent.Attackers.Keys)
+                {
+                    if (attacker is not GameNPC npcAttacker || !npcAttacker.attackComponent.AttackState || npcAttacker.Brain is not IOldAggressiveBrain npcAttackerBrain)
+                        continue;
 
-				if (Player.ControlledBrain != null)
-					(Player.ControlledBrain as ControlledMobBrain).Stop();
+                    npcAttacker.StopAttack();
+                    npcAttackerBrain.AddToAggroList(pet, npcAttackerBrain.GetBaseAggroAmount(Player));
+                }
+            }
+            else
+            {
+                // The necromancer has lost his shade form. Release the pet if it isn't dead already and update the necromancer's current health.
+                if (Player.ControlledBrain is ControlledMobBrain controlledMobBrain)
+                    controlledMobBrain.Stop();
 
-				Player.Health = Math.Min(Player.Health, Player.MaxHealth * Math.Max(10, m_savedPetHealthPercent) / 100);
-			}
-			Player.Out.SendUpdatePlayer();
-		}
+                Player.Health = (int) Math.Ceiling(Math.Min(Player.Health, Player.MaxHealth * Math.Max(10, _petHealthPercentAfterBrainSet) * 0.01));
+            }
 
-		/// <summary>
-		/// Called when player is removed from world.
-		/// </summary>
-		/// <returns></returns>
-		public override bool RemoveFromWorld()
-		{
-			// Force caster form.
+            return true;
+        }
 
-			if (Player.IsShade)
-				Player.Shade(false);
+        public override bool RemoveFromWorld()
+        {
+            if (Player.HasShadeModel)
+                Player.Shade(false);
 
-			return base.RemoveFromWorld();
-		}
+            return base.RemoveFromWorld();
+        }
 
-        /// <summary>
-        /// Drop shade first, this in turn will release the pet.
-        /// </summary>
-        /// <param name="killer"></param>
         public override void Die(GameObject killer)
         {
-            Player.Shade(false);
+            if (Player.HasShadeModel)
+                Player.Shade(false);
 
             base.Die(killer);
         }
@@ -182,25 +122,13 @@ namespace DOL.GS
         {
             if (Player.ControlledBrain != null)
             {
-				GameNPC pet = Player.ControlledBrain.Body;
+                GameNPC pet = Player.ControlledBrain.Body;
 
                 if (pet != null && sender == pet && e == GameLivingEvent.CastStarting && args is CastingEventArgs)
-                {
-       //             ISpellHandler spellHandler = (args as CastingEventArgs).SpellHandler;
-
-       //             if (spellHandler != null)
-       //             {
-       //                 int powerCost = spellHandler.PowerCost(Player);
-
-       //                 if (powerCost > 0)
-							//Player.ChangeMana(Player, eManaChangeType.Spell, -powerCost);
-       //             }
-
                     return;
-                }
             }
 
             base.Notify(e, sender, args);
         }
-	}
+    }
 }

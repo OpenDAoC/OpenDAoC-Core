@@ -478,7 +478,7 @@ namespace DOL.GS.PacketHandler
 				{
 					byte i = 0;
 					var effects = living.effectListComponent.GetAllEffects();
-					if (living is GamePlayer necro && necro.CharacterClass.ID == (int)eCharacterClass.Necromancer && necro.IsShade)
+					if (living is GamePlayer necro && (eCharacterClass) necro.CharacterClass.ID is eCharacterClass.Necromancer && necro.HasShadeModel)
 						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
 					foreach (var effect in effects)//.Effects.Values)
 												   //foreach (ECSGameEffect effect in effects)

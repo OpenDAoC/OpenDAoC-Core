@@ -1710,7 +1710,7 @@ namespace DOL.GS.Spells
 						{
 							if (GameServer.ServerRules.IsSameRealm(Caster, player, true))
 							{
-								if (player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
+								if ((eCharacterClass) player.CharacterClass.ID is eCharacterClass.Necromancer && player.HasShadeModel)
 								{
 									if (!Spell.IsBuff)
 										list.Add(player.ControlledBrain.Body);
@@ -1737,7 +1737,7 @@ namespace DOL.GS.Spells
 					{
 						if (target != null && GameServer.ServerRules.IsSameRealm(Caster, target, true))
 						{
-							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.IsShade)
+							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.HasShadeModel)
 							{
 								// Only buffs, Necromancer's power transfer, and teleport spells can be casted on the shade
 								if (Spell.IsBuff || Spell.SpellType == eSpellType.PowerTransferPet || Spell.SpellType == eSpellType.UniPortal)

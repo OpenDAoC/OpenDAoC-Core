@@ -846,7 +846,7 @@ namespace DOL.GS
 
             private void Quit()
             {
-                if ((eCharacterClass) _owner.CharacterClass.ID is eCharacterClass.Necromancer && _owner.IsShade)
+                if ((eCharacterClass) _owner.CharacterClass.ID is eCharacterClass.Necromancer && _owner.HasShadeModel)
                     _owner.Shade(false);
 
                 _owner.Out.SendPlayerQuit(false);
@@ -13120,37 +13120,10 @@ namespace DOL.GS
 
         #region Shade
 
-        protected ShadeECSGameEffect m_ShadeEffect = null;
-
-        /// <summary>
-        /// The shade effect of this player
-        /// </summary>
-        public ShadeECSGameEffect ShadeEffect
-        {
-            get { return m_ShadeEffect; }
-            set { m_ShadeEffect = value; }
-        }
-
         /// <summary>
         /// Gets flag indication whether player is in shade mode
         /// </summary>
-        public bool IsShade
-        {
-            get
-            {
-                bool shadeModel = Model == ShadeModel;
-                return m_ShadeEffect != null ? true : shadeModel;
-            }
-        }
-
-        /// <summary>
-        /// Create a shade effect for this player.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual ShadeECSGameEffect CreateShadeEffect()
-        {
-            return CharacterClass.CreateShadeEffect();
-        }
+        public bool HasShadeModel => Model == ShadeModel;
 
         /// <summary>
         /// The model ID used on character creation.
@@ -13213,7 +13186,7 @@ namespace DOL.GS
         /// <param name="state">The new state.</param>
         public virtual void Shade(bool state)
         {
-            CharacterClass.Shade(state);
+            CharacterClass.Shade(state, out _);
         }
         #endregion
 
