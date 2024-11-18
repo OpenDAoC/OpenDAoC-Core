@@ -2023,7 +2023,7 @@ namespace DOL.GS.Spells
 			else
 				targets = SelectTargets(Target);
 
-			if (SpellLine.KeyName == "OffensiveProc" &&  Caster is GameSummonedPet gpet && !Spell.ScaledToPetLevel)
+			if (SpellLine.KeyName == "OffensiveProc" && Caster is GameSummonedPet gpet && !Spell.ScaledToPetLevel)
 				gpet.ScalePetSpell(Spell);
 
 			CasterEffectiveness = Caster.Effectiveness;

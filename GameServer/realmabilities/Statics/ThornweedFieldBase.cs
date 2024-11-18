@@ -35,7 +35,7 @@ namespace DOL.GS.RealmAbilities.Statics
 			dbs.CastTime = 0;
 			dbs.Range = WorldMgr.VISIBILITY_DISTANCE;
 			s = new Spell(dbs,1);
-			new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+			sl = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
 		}
 		protected override void CastSpell (GameLiving target)
         {
