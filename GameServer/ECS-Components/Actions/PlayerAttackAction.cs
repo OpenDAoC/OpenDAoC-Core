@@ -1,4 +1,5 @@
-﻿using DOL.GS.PacketHandler;
+﻿using DOL.Database;
+using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS
@@ -73,12 +74,19 @@ namespace DOL.GS
         {
             bool stopAttack = false;
 
-            if (_playerOwner.rangeAttackComponent.RangedAttackState is not eRangedAttackState.AimFireReload || _playerOwner.rangeAttackComponent.Ammo.Count == 0)
+            if (_playerOwner.rangeAttackComponent.RangedAttackState is not eRangedAttackState.AimFireReload)
                 stopAttack = true;
             else if (_playerOwner.Endurance < RangeAttackComponent.DEFAULT_ENDURANCE_COST)
             {
                 stopAttack = true;
                 _playerOwner.Out.SendMessage(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "GamePlayer.StartAttack.TiredUse", _weapon.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+            }
+            else
+            {
+                DbInventoryItem ammo = _playerOwner.rangeAttackComponent.Ammo;
+
+                if (ammo == null || ammo.Count == 0)
+                    stopAttack = true;
             }
 
             if (stopAttack)
