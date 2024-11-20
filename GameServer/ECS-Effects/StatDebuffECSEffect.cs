@@ -74,10 +74,7 @@ namespace DOL.GS
                 else
                 {
                     foreach (eProperty property in EffectService.GetPropertiesFromEffect(EffectType))
-                    {
-                        if (EffectType is eEffect.ArmorFactorDebuff)
-                            ApplyBonus(Owner, debuffCategory, property, SpellHandler.Spell.Value, Effectiveness, EffectType is not eEffect.ArmorFactorDebuff);
-                    }
+                        ApplyBonus(Owner, debuffCategory, property, SpellHandler.Spell.Value, Effectiveness, EffectType is not eEffect.ArmorFactorDebuff);
                 }
             }
 
