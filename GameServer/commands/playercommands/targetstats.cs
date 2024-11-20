@@ -44,6 +44,11 @@ namespace DOL.GS.Commands
             info.Add($"Heat:  {target.GetModified(eProperty.Resist_Heat)}%  |  Cold:  {target.GetModified(eProperty.Resist_Cold)}%  |  Matter:  {target.GetModified(eProperty.Resist_Matter)}%");
             info.Add($"Energy:  {target.GetModified(eProperty.Resist_Energy)}%  |  Spirit:  {target.GetModified(eProperty.Resist_Spirit)}%  |  Body:  {target.GetModified(eProperty.Resist_Body)}%");
 
+            int naturalResist = target.GetModified(eProperty.Resist_Natural);
+
+            if (naturalResist != 0)
+                info.Add($"Natural:  {naturalResist}%");
+
             DbInventoryItem weapon = target.ActiveWeapon;
 
             if (target is GameNPC || weapon != null)
