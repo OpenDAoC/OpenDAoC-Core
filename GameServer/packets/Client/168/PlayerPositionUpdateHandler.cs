@@ -373,10 +373,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                             int fallPercent = (int) Math.Min(99, (fallSpeed - 501) / fallDivide);
 
                             if (fallSpeed > 500)
-                            {
-                                if ((eCharacterClass) client.Player.CharacterClass.ID is not eCharacterClass.Necromancer || !client.Player.HasShadeModel)
-                                    client.Player.CalcFallDamage(fallPercent);
-                            }
+                                client.Player.CalcFallDamage(fallPercent);
 
                             client.Player.MaxLastZ = client.Player.Z;
                         }
