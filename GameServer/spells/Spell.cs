@@ -313,8 +313,12 @@ namespace DOL.GS
 		/// </summary>
 		public bool IsHealing => SpellType switch
 		{
-			eSpellType.CurePoison or
+			eSpellType.CureAll or
 			eSpellType.CureDisease or
+			eSpellType.CureMezz or
+			eSpellType.CureNearsight or
+			eSpellType.CureNearsightCustom or
+			eSpellType.CurePoison or
 			eSpellType.CombatHeal or
 			eSpellType.Heal or
 			eSpellType.HealOverTime or
