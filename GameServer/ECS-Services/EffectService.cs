@@ -194,9 +194,6 @@ namespace DOL.GS
                 }
             }
 
-            if (effect.Owner is GameNPC npc && npc.Brain is IControlledBrain npcBrain)
-                npcBrain.UpdatePetWindow();
-
             return true;
         }
 

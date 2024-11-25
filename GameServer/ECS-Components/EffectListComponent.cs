@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using DOL.AI.Brain;
 using DOL.GS.Spells;
 
 namespace DOL.GS
@@ -180,9 +181,6 @@ namespace DOL.GS
 
         public void RequestPlayerUpdate(EffectService.PlayerUpdate playerUpdate)
         {
-            if (Owner is not GamePlayer)
-                return;
-
             lock (EffectsLock)
             {
                 RequestedPlayerUpdates |= playerUpdate;
@@ -195,34 +193,42 @@ namespace DOL.GS
 
         public void SendPlayerUpdates()
         {
-            if (RequestedPlayerUpdates is EffectService.PlayerUpdate.NONE || Owner is not GamePlayer playerOwner)
+            if (RequestedPlayerUpdates is EffectService.PlayerUpdate.NONE)
                 return;
 
             lock (EffectsLock)
             {
-                if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.ICONS) != 0)
+                if (Owner is GamePlayer playerOwner)
                 {
-                    playerOwner.Group?.UpdateMember(playerOwner, true, false);
-                    playerOwner.Out.SendUpdateIcons(GetAllEffects(), ref GetLastUpdateEffectsCount());
+                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.ICONS) != 0)
+                    {
+                        playerOwner.Group?.UpdateMember(playerOwner, true, false);
+                        playerOwner.Out.SendUpdateIcons(GetAllEffects(), ref GetLastUpdateEffectsCount());
+                    }
+
+                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.STATUS) != 0)
+                        playerOwner.Out.SendStatusUpdate();
+
+                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.STATS) != 0)
+                        playerOwner.Out.SendCharStatsUpdate();
+
+                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.RESISTS) != 0)
+                        playerOwner.Out.SendCharResistsUpdate();
+
+                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.WEAPON_ARMOR) != 0)
+                        playerOwner.Out.SendUpdateWeaponAndArmorStats();
+
+                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.ENCUMBERANCE) != 0)
+                        playerOwner.Out.SendEncumbrance();
+
+                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.CONCENTRATION) != 0)
+                        playerOwner.Out.SendConcentrationList();
                 }
-
-                if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.STATUS) != 0)
-                    playerOwner.Out.SendStatusUpdate();
-
-                if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.STATS) != 0)
-                    playerOwner.Out.SendCharStatsUpdate();
-
-                if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.RESISTS) != 0)
-                    playerOwner.Out.SendCharResistsUpdate();
-
-                if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.WEAPON_ARMOR) != 0)
-                    playerOwner.Out.SendUpdateWeaponAndArmorStats();
-
-                if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.ENCUMBERANCE) != 0)
-                    playerOwner.Out.SendEncumbrance();
-
-                if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.CONCENTRATION) != 0)
-                    playerOwner.Out.SendConcentrationList();
+                else if (Owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain npcOwnerBrain)
+                {
+                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.ICONS) != 0)
+                        npcOwnerBrain.UpdatePetWindow();
+                }
 
                 RequestedPlayerUpdates = EffectService.PlayerUpdate.NONE;
             }

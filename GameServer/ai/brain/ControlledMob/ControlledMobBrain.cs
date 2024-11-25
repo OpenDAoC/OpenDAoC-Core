@@ -179,30 +179,35 @@ namespace DOL.AI.Brain
             return null;
         }
 
-		/// <summary>
-		/// Gets or sets the walk state of the brain
-		/// </summary>
-		public virtual eWalkState WalkState
-		{
-			get { return m_walkState; }
-			set
-			{
-				m_walkState = value;
-				UpdatePetWindow();
-			}
-		}
+        /// <summary>
+        /// Gets or sets the walk state of the brain
+        /// </summary>
+        public virtual eWalkState WalkState
+        {
+            get => m_walkState;
+            set
+            {
+                if (m_walkState != value)
+                    Body.effectListComponent.RequestPlayerUpdate(EffectService.PlayerUpdate.ICONS);
 
-		/// <summary>
-		/// Gets or sets the aggression state of the brain
-		/// </summary>
-		public virtual eAggressionState AggressionState
+                m_walkState = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the aggression state of the brain
+        /// </summary>
+        public virtual eAggressionState AggressionState
         {
             get => m_aggressionState;
             set
             {
+                if (m_aggressionState != value)
+                    Body.effectListComponent.RequestPlayerUpdate(EffectService.PlayerUpdate.ICONS);
+
                 m_aggressionState = value;
 
-                if (m_aggressionState == eAggressionState.Passive)
+                if (m_aggressionState is eAggressionState.Passive)
                 {
                     Disengage();
 
@@ -223,11 +228,8 @@ namespace DOL.AI.Brain
         /// <param name="target"></param>
         public virtual void Attack(GameObject target)
 		{
-			if (AggressionState == eAggressionState.Passive)
-			{
+			if (AggressionState is eAggressionState.Passive)
 				AggressionState = eAggressionState.Defensive;
-				UpdatePetWindow();
-			}
 
 			if (m_orderAttackTarget == target)
 				return;
@@ -244,11 +246,8 @@ namespace DOL.AI.Brain
 		public virtual void CheckAggressionStateOnPlayerOrder()
 		{
 			// We switch to defensive mode if we're in aggressive and have a target, so that we don't immediately aggro back
-			if (AggressionState == eAggressionState.Aggressive && Body.TargetObject != null)
-			{
+			if (AggressionState is eAggressionState.Aggressive && Body.TargetObject != null)
 				AggressionState = eAggressionState.Defensive;
-				UpdatePetWindow();
-			}
 		}
 
 		public virtual void Disengage()
@@ -312,7 +311,6 @@ namespace DOL.AI.Brain
 		public virtual void SetAggressionState(eAggressionState state)
 		{
 			AggressionState = state;
-			UpdatePetWindow();
 		}
 
 		/// <summary>
