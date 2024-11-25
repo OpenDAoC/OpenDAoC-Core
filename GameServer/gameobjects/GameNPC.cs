@@ -2586,32 +2586,22 @@ namespace DOL.GS
 		{
 			if (!base.WhisperReceive(source, text))
 				return false;
-			if (source is GamePlayer == false)
+
+			if (source is not GamePlayer player || source.TargetObject is not GameLiving targetLiving)
 				return true;
 
-			// GamePlayer player = (GamePlayer)source;
-			//
-			// //TODO: Guards in rvr areas doesn't need check
-			// if (text == "task")
-			// {
-			// 	if (source.TargetObject == null)
-			// 		return false;
-			// 	if (KillTask.CheckAvailability(player, (GameLiving)source.TargetObject))
-			// 	{
-			// 		KillTask.BuildTask(player, (GameLiving)source.TargetObject);
-			// 		return true;
-			// 	}
-			// 	else if (MoneyTask.CheckAvailability(player, (GameLiving)source.TargetObject))
-			// 	{
-			// 		MoneyTask.BuildTask(player, (GameLiving)source.TargetObject);
-			// 		return true;
-			// 	}
-			// 	else if (CraftTask.CheckAvailability(player, (GameLiving)source.TargetObject))
-			// 	{
-			// 		CraftTask.BuildTask(player, (GameLiving)source.TargetObject);
-			// 		return true;
-			// 	}
-			// }
+			if (!text.Equals("task", StringComparison.OrdinalIgnoreCase))
+				return true;
+
+			if (KillTask.CheckAvailability(player, targetLiving))
+				KillTask.BuildTask(player, targetLiving);
+			else if (MoneyTask.CheckAvailability(player, targetLiving))
+				MoneyTask.BuildTask(player, targetLiving);
+			else if (CraftTask.CheckAvailability(player, targetLiving))
+				CraftTask.BuildTask(player, targetLiving);
+			else
+				return false;
+
 			return true;
 		}
 
