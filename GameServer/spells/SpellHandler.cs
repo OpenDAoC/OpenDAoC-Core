@@ -1710,12 +1710,12 @@ namespace DOL.GS.Spells
 						{
 							if (GameServer.ServerRules.IsSameRealm(Caster, player, true))
 							{
-								if ((eCharacterClass) player.CharacterClass.ID is eCharacterClass.Necromancer && player.HasShadeModel)
+								if (player.ControlledBrain is NecromancerPetBrain necromancerPetBrain)
 								{
-									if (!Spell.IsBuff)
-										list.Add(player.ControlledBrain.Body);
-									else
+									if (Spell.IsBuff)
 										list.Add(player);
+									else
+										list.Add(necromancerPetBrain.Body);
 								}
 								else
 									list.Add(player);
@@ -1737,11 +1737,15 @@ namespace DOL.GS.Spells
 					{
 						if (target != null && GameServer.ServerRules.IsSameRealm(Caster, target, true))
 						{
-							if (target is GamePlayer player && player.CharacterClass.ID == (int)eCharacterClass.Necromancer && player.HasShadeModel)
+							if (target is GamePlayer player && player.ControlledBrain is NecromancerPetBrain necromancerPetBrain)
 							{
-								// Only buffs, Necromancer's power transfer, and teleport spells can be casted on the shade
-								if (Spell.IsBuff || Spell.SpellType == eSpellType.PowerTransferPet || Spell.SpellType == eSpellType.UniPortal)
+								// Only buffs, Necromancer's power transfer, teleport spells, and heals when the pet is already at 100% can be casted on the shade.
+								if (Spell.IsBuff ||
+									Spell.SpellType is eSpellType.PowerTransferPet or eSpellType.UniPortal ||
+									(Spell.IsHealing && Spell.Value > 0 && necromancerPetBrain.Body.HealthPercent >= 100))
+								{
 									list.Add(player);
+								}
 								else
 									list.Add(player.ControlledBrain.Body);
 							}
