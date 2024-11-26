@@ -2961,6 +2961,7 @@ namespace DOL.GS.Spells
 					break;
 				}
 				case GlobalSpellsLines.Item_Effects:
+				case GlobalSpellsLines.Potions_Effects:
 				{
 					// Procs and charges normally aren't modified by any stat, but are shown to be able to do about 25% more damage than their base value.
 					max = 1.25;
@@ -3039,6 +3040,8 @@ namespace DOL.GS.Spells
 			if (Spell.SpellType is eSpellType.Lifedrain)
 				spellDamage *= 1 + Spell.LifeDrainReturn * 0.001;
 
+			// Combat style effects have their own calculation, using weapon spec and stat.
+			// Item effects (procs, charges), potion effects, and poisons don't use stats.
 			if (SpellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect)
 			{
 				int weaponStat = Caster.GetWeaponStat(Caster.ActiveWeapon);
@@ -3046,7 +3049,7 @@ namespace DOL.GS.Spells
 				spellDamage *= (Caster.GetWeaponSkill(Caster.ActiveWeapon) * weaponSkillScalar / 3.0 + 100) / 200.0;
 				return Math.Max(0, spellDamage);
 			}
-			else if (SpellLine.KeyName is GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Mundane_Poisons)
+			else if (SpellLine.KeyName is GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Mundane_Poisons)
 				return Math.Max(0, spellDamage);
 
 			// Stats are only partially transferred to the necromancer pet, so we don't use its intelligence at all.
