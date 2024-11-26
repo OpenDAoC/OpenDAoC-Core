@@ -458,11 +458,11 @@ namespace DOL.Database
 		{
 			get
 			{
-				if (Object_Type is (43 or 46)) // halved weight for arrows and poisons
-				{
-					return (int)Math.Round((double)(Template.Weight * m_count * 0.6)) ;
-				}
-				return (int)Math.Round((double)(Template.Weight * m_count)) ;
+				// Should find a way to use `eObjectType` instead.
+				if (Object_Type is 43 or 44 or 46) // Halved weight for arrows, bolts, and poisons.
+					return Template.Weight * m_count / 2;
+
+				return Template.Weight * m_count;
 			}
 			set { Template.Weight = value; }
 		}
