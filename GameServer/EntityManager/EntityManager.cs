@@ -60,7 +60,7 @@ namespace DOL.GS
             EntityManagerId id = entity.EntityManagerId;
 
             // Return false if the entity is absent and not being added.
-            if (!id.IsSet && !id.IsPendingAddition)
+            if (!id.IsSet && !id.IsPendingAddition) 
                 return false;
 
             (_entityArrays[entity.EntityManagerId.Type] as EntityArray<T>).Remove(entity);
@@ -70,9 +70,9 @@ namespace DOL.GS
         // Applies pending additions and removals then returns the list alongside the last valid index.
         // Thread unsafe. The returned list should not be modified.
         // Elements should be null checked alongside the value returned by `ManagedEntityId.IsSet`.
-        public static List<T> UpdateAndGetAll<T>(EntityType type, out int lastValidIndex) where T : IManagedEntity
+        public static List<T> UpdateAndGetAll<T>(EntityType type, out int lastValidIndex) where T : class, IManagedEntity
         {
-            dynamic array = _entityArrays[type];
+            EntityArray<T> array = _entityArrays[type] as EntityArray<T>;
             lastValidIndex = array.Update();
             return array.Entities;
         }
