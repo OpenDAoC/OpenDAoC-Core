@@ -447,15 +447,16 @@ namespace DOL.AI.Brain
         }
 
         private long _isHandlingAdditionToAggroListFromLosCheck;
-        private int _losCheckCount;
+        private int _pendingLosCheckCount;
         private bool StartAddToAggroListFromLosCheck => Interlocked.Exchange(ref _isHandlingAdditionToAggroListFromLosCheck, 1) == 0; // Returns true the first time it's called.
-        private bool IsWaitingForLosCheck => Interlocked.CompareExchange(ref _losCheckCount, 0, 0) > 0;
+        public int PendingLosCheckCount => _pendingLosCheckCount;
+        public bool IsWaitingForLosCheck => Interlocked.CompareExchange(ref _pendingLosCheckCount, 0, 0) > 0;
         protected virtual bool CanAddToAggroListFromMultipleLosChecks => false;
 
         protected void SendLosCheckForAggro(GamePlayer player, GameObject target)
         {
             if (player.Out.SendCheckLos(Body, target, new CheckLosResponse(LosCheckForAggroCallback)))
-                Interlocked.Increment(ref _losCheckCount);
+                Interlocked.Increment(ref _pendingLosCheckCount);
         }
 
         protected void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
@@ -476,7 +477,7 @@ namespace DOL.AI.Brain
                 _isHandlingAdditionToAggroListFromLosCheck = 0;
             }
 
-            Interlocked.Decrement(ref _losCheckCount);
+            Interlocked.Decrement(ref _pendingLosCheckCount);
         }
 
         protected virtual bool ShouldBeRemovedFromAggroList(GameLiving living)

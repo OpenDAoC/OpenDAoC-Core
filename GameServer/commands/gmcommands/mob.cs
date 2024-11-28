@@ -2935,7 +2935,6 @@ namespace DOL.GS.Commands
 
 		private void state(GameClient client, GameNPC targetMob)
 		{
-
 			if (targetMob == null)
 			{
 				client.Out.SendMessage("You need a valid target!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -2971,9 +2970,7 @@ namespace DOL.GS.Commands
 			text.Add("LastCombatPVP: " + targetMob.LastCombatTickPvP);
 
 			if (targetMob.InCombat || targetMob.attackComponent.AttackState)
-			{
 				text.Add("RegionTick: " + targetMob.CurrentRegion.Time);
-			}
 
 			text.Add("");
 
@@ -2985,6 +2982,11 @@ namespace DOL.GS.Commands
 
 			if (targetMob.Brain is StandardMobBrain standardBrain)
 			{
+				int pendingLosCheckCount = standardBrain.PendingLosCheckCount;
+				
+				if (pendingLosCheckCount != 0)
+					text.Add($"PendingLosCheckCount: {pendingLosCheckCount}");
+
 				List<(GameLiving, long)> aggroList = standardBrain.GetOrderedAggroList();
 
 				if (aggroList.Count > 0)
