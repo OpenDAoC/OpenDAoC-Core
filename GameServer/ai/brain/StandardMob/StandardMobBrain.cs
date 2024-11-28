@@ -454,8 +454,8 @@ namespace DOL.AI.Brain
 
         protected void SendLosCheckForAggro(GamePlayer player, GameObject target)
         {
-            player.Out.SendCheckLos(Body, target, new CheckLosResponse(LosCheckForAggroCallback));
-            Interlocked.Increment(ref _losCheckCount);
+            if (player.Out.SendCheckLos(Body, target, new CheckLosResponse(LosCheckForAggroCallback)))
+                Interlocked.Increment(ref _losCheckCount);
         }
 
         protected void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)

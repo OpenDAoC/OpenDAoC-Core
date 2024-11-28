@@ -1491,16 +1491,14 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback)
+		public virtual bool SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback)
 		{
 			if (m_gameClient.Player == null || source == null || target == null)
-				return;
+				return false;
 
 			ushort sourceObjectId = (ushort) source.ObjectID;
 			ushort targetObjectId = (ushort) target.ObjectID;
-
-			if (!HandleCallback(m_gameClient, sourceObjectId, targetObjectId, callback))
-				return;
+			HandleCallback(m_gameClient, sourceObjectId, targetObjectId, callback);
 
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CheckLOSRequest)))
 			{
@@ -1511,7 +1509,9 @@ namespace DOL.GS.PacketHandler
 				SendTCP(pak);
 			}
 
-			static bool HandleCallback(GameClient client, ushort sourceObjectId, ushort targetObjectId, CheckLosResponse callback)
+			return true;
+
+			static void HandleCallback(GameClient client, ushort sourceObjectId, ushort targetObjectId, CheckLosResponse callback)
 			{
 				CheckLosResponseHandler.TimeoutTimer timer;
 
@@ -1524,11 +1524,9 @@ namespace DOL.GS.PacketHandler
 					if (!timer.IsAlive)
 					{
 						timer.Start();
-						return true;
+						return; // Don't add the callback here. It's already done in the timer's constructor.
 					}
 				} while (!timer.TryAddCallback(callback));
-
-				return false;
 
 				static CheckLosResponseHandler.TimeoutTimer CreateTimer((ushort sourceObjectId, ushort targetObjectId) key, (GamePlayer player, CheckLosResponse callback) args)
 				{

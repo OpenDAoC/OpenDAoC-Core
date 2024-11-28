@@ -670,7 +670,7 @@ namespace DOL.GS.PacketHandler
 		                   bool autoWrapText, string message);
 
 		void SendCustomDialog(string msg, CustomDialogResponse callback);
-		void SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback);
+		bool SendCheckLos(GameObject source, GameObject target, CheckLosResponse callback);
 		void SendGuildLeaveCommand(GamePlayer invitingPlayer, string inviteMessage);
 		void SendGuildInviteCommand(GamePlayer invitingPlayer, string inviteMessage);
 		void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest);
