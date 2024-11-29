@@ -11,14 +11,13 @@ namespace DOL.Network
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        // This is mostly important for outbound UDP packets since the client seems to discard some content if its internal buffer is full.
-        // Thus if some UDP packets appear to be ignored, try lowering `SEND_UDP_BUFFER_SIZE`.
-        // Outbound TCP packets on the other hand seem to always be processed.
-        // Inbound TCP packets are generally small and the buffer size irrelevant.
-        public const int SEND_BUFFER_SIZE = 8192;
-        public const int RECEIVE_BUFFER_SIZE = 1024;
-        private const int SOCKET_SEND_BUFFER_SIZE = 8192;
-        private const int SOCKET_RECEIVE_BUFFER_SIZE = 1024;
+        public const int TCP_SEND_BUFFER_SIZE = 8192;
+        public const int UDP_SEND_BUFFER_SIZE = 1024;
+        // To prevent fragmentation (bad with UDP), this should be smaller than Ethernet's MTU (1500) minus headers (20 for IPv4, 8 for UDP).
+        // But other restrictions may apply, so leaving a reasonable margin is advisable.
+
+        private const int TCP_RECEIVE_BUFFER_SIZE = 1024;
+        // UDP_RECEIVE_BUFFER_SIZE is in `BaseServer`.
 
         private BaseServer _server;
         private SocketAsyncEventArgs _receiveArgs = new();
@@ -52,13 +51,11 @@ namespace DOL.Network
 
             if (socket != null)
             {
-                socket.SendBufferSize = SOCKET_SEND_BUFFER_SIZE;
-                socket.ReceiveBufferSize = SOCKET_RECEIVE_BUFFER_SIZE;
                 socket.NoDelay = true;
                 Socket = socket;
             }
 
-            ReceiveBuffer = new byte[RECEIVE_BUFFER_SIZE];
+            ReceiveBuffer = new byte[TCP_RECEIVE_BUFFER_SIZE];
             _receiveArgs.SetBuffer(ReceiveBuffer, 0, ReceiveBuffer.Length);
             _receiveArgs.Completed += OnAsyncReceiveCompletion;
 

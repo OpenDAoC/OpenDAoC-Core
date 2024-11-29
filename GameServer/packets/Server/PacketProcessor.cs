@@ -473,7 +473,7 @@ namespace DOL.GS.PacketHandler
             }
 
             _tcpSendArgs = new();
-            _tcpSendArgs.SetBuffer(new byte[BaseClient.SEND_BUFFER_SIZE], 0, 0);
+            _tcpSendArgs.SetBuffer(new byte[BaseClient.TCP_SEND_BUFFER_SIZE], 0, 0);
             _tcpSendArgs.Completed += OnTcpSendCompletion;
 
             void OnTcpSendCompletion(object sender, SocketAsyncEventArgs tcpSendArgs)
@@ -493,7 +493,7 @@ namespace DOL.GS.PacketHandler
             }
 
             _udpSendArgs = new();
-            _udpSendArgs.SetBuffer(new byte[BaseServer.UDP_SEND_BUFFER_SIZE], 0, 0);
+            _udpSendArgs.SetBuffer(new byte[BaseClient.UDP_SEND_BUFFER_SIZE], 0, 0);
             _udpSendArgs.Completed += OnUdpSendCompletion;
             _udpSendArgs.RemoteEndPoint = _client.UdpEndPoint;
 

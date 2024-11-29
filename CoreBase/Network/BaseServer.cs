@@ -14,9 +14,8 @@ namespace DOL.Network
     public class BaseServer
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
         public static readonly Encoding defaultEncoding = CodePagesEncodingProvider.Instance.GetEncoding(1252);
-        public const int UDP_SEND_BUFFER_SIZE = 8192;
+
         private const int UDP_RECEIVE_BUFFER_SIZE = 8192;
         private const int UDP_RECEIVE_BUFFER_CHUNK_SIZE = 64; // This should be increased if someday clients send UDP packets larger than this.
         private const string UDP_THREAD_NAME = "UDP";
