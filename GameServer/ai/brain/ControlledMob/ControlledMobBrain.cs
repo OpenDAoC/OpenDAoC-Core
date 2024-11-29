@@ -205,7 +205,7 @@ namespace DOL.AI.Brain
             set
             {
                 if (m_aggressionState != value)
-                    Body.effectListComponent.RequestPlayerUpdate(EffectService.PlayerUpdate.ICONS);
+                    Body?.effectListComponent.RequestPlayerUpdate(EffectService.PlayerUpdate.ICONS);
 
                 m_aggressionState = value;
 
