@@ -718,7 +718,7 @@ namespace DOL.GS.PacketHandler
 		void SendPlayerModelTypeChange(GamePlayer player, byte modelType);
 		void SendObjectDelete(GameObject obj);
 		void SendObjectDelete(ushort oid);
-		void SendObjectUpdate(GameObject obj);
+		void SendObjectUpdate(GameObject obj, bool udp = true);
 		void SendQuestListUpdate();
 		void SendQuestUpdate(AbstractQuest quest);
 		void SendQuestRemove(byte index);

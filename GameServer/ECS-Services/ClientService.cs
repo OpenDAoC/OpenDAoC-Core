@@ -566,9 +566,9 @@ namespace DOL.GS
             AddObjectToPlayerCache(player, gameObject);
         }
 
-        private static void UpdateObjectForPlayerInternal(GamePlayer player, GameObject gameObject)
+        private static void UpdateObjectForPlayerInternal(GamePlayer player, GameObject gameObject, bool udp = true)
         {
-            player.Out.SendObjectUpdate(gameObject);
+            player.Out.SendObjectUpdate(gameObject, udp);
             OnObjectCreateOrUpdateForPlayer(player, gameObject);
         }
 
@@ -731,7 +731,7 @@ namespace DOL.GS
                 if (!npcUpdateCache.TryGetValue(npcInRange, out CachedNpcValues cachedNpcValues))
                     CreateNpcForPlayerInternal(player, npcInRange);
                 else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL))
-                    UpdateObjectForPlayerInternal(player, npcInRange);
+                    UpdateObjectForPlayerInternal(player, npcInRange, false);
                 else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + 250))
                 {
                     // `GameNPC.HealthPercent` is a bit of an expensive call. Do it last.
@@ -821,7 +821,7 @@ namespace DOL.GS
                     player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange); // Not handled by `CreateObjectForPlayer`.
                 }
                 else if (ServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
-                    UpdateObjectForPlayerInternal(player, doorInRange);
+                    UpdateObjectForPlayerInternal(player, doorInRange, false);
             }
         }
 

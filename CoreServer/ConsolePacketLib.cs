@@ -144,7 +144,7 @@ namespace DOLGameServerConsole
 		public void SendPlayerModelTypeChange(GamePlayer player, byte modelType) { }
 		public void SendObjectDelete(GameObject obj) { }
 		public void SendObjectDelete(ushort oid) { }
-		public void SendObjectUpdate(GameObject obj) { }
+		public void SendObjectUpdate(GameObject obj, bool udp = true) { }
 		public void SendObjectRemove(GameObject obj) { }
 		public void SendObjectCreate(GameObject obj) { }
 		public void SendQuestListUpdate() { }

@@ -16,6 +16,7 @@ using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 using DOL.Language;
+using DOL.Network;
 using log4net;
 
 namespace DOL.GS.PacketHandler
@@ -712,7 +713,7 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public virtual void SendObjectUpdate(GameObject obj)
+		public virtual void SendObjectUpdate(GameObject obj, bool udp = true)
 		{
 			if (m_gameClient.Player == null || !m_gameClient.Player.IsVisibleTo(obj))
 				return;
@@ -807,7 +808,20 @@ namespace DOL.GS.PacketHandler
 				}
 			}
 
-			using (GSUDPPacketOut pak = new GSUDPPacketOut(GetPacketCode(eServerPackets.ObjectUpdate)))
+			if (udp)
+			{
+				using GSUDPPacketOut pak = new(GetPacketCode(eServerPackets.ObjectUpdate));
+				Write(pak);
+				SendUDP(pak);
+			}
+			else
+			{
+				using GSTCPPacketOut pak = new(GetPacketCode(eServerPackets.ObjectUpdate));
+				Write(pak);
+				SendTCP(pak);
+			}
+
+			void Write(PacketOut pak)
 			{
 				pak.WriteShort(speed);
 				pak.WriteShort(heading);
@@ -831,7 +845,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte((byte) zone.ZoneSkinID);
 				//Dinberg:Instances - targetZone already accomodates for this feat.
 				pak.WriteByte((byte) targetZoneSkinId);
-				SendUDP(pak);
 			}
 		}
 

@@ -549,10 +549,10 @@ namespace DOL.Tests
 		{
 			if (SendObjectIdDeleteMethod != null) SendObjectIdDeleteMethod(this, objId);
 		}
-		public Action<TestPacketLib, GameObject> SendObjectUpdateMethod { get; set; }
-		public void SendObjectUpdate(GameObject obj)
+		public Action<TestPacketLib, GameObject, bool> SendObjectUpdateMethod { get; set; }
+		public void SendObjectUpdate(GameObject obj, bool udp = true)
 		{
-			if (SendObjectUpdateMethod != null) SendObjectUpdateMethod(this, obj);
+			if (SendObjectUpdateMethod != null) SendObjectUpdateMethod(this, obj, udp);
 		}
 		public Action<TestPacketLib> SendQuestListUpdateMethod { get; set; }
 		public void SendQuestListUpdate()
