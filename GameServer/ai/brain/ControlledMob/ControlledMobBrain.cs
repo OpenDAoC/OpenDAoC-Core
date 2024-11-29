@@ -190,7 +190,7 @@ namespace DOL.AI.Brain
             set
             {
                 if (m_walkState != value)
-                    Body.effectListComponent.RequestPlayerUpdate(EffectService.PlayerUpdate.ICONS);
+                    Body?.effectListComponent.RequestPlayerUpdate(EffectService.PlayerUpdate.ICONS);
 
                 m_walkState = value;
             }
