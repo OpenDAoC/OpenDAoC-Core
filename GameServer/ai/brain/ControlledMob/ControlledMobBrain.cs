@@ -96,6 +96,8 @@ namespace DOL.AI.Brain
 			get { return GS.ServerProperties.Properties.PET_THINK_INTERVAL; }
 		}
 
+		protected override int ThinkOffsetOnStart => 0;
+
 		#region Control
 
 		/// <summary>

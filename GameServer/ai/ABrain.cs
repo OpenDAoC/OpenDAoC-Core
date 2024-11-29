@@ -18,6 +18,7 @@ namespace DOL.AI
         public virtual bool IsActive => Body != null && Body.IsAlive && Body.ObjectState == GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
         public virtual int ThinkInterval { get; set; } = 2500;
         public virtual ref long NextThinkTick => ref _nextThinkTick;
+        protected virtual int ThinkOffsetOnStart => Util.Random(750, 3000);
 
         /// <summary>
         /// Returns the string representation of the ABrain
@@ -39,7 +40,15 @@ namespace DOL.AI
         /// <returns>true if started</returns>
         public virtual bool Start()
         {
-            return EntityManager.Add(this);
+            if (EntityManager.Add(this))
+            {
+                // Offset the first think tick by a random amount so that not too many are grouped in one server tick.
+                // We also delay the first think tick a bit because clients tend to send positive LoS checks when they shouldn't.
+                NextThinkTick = GameLoop.GameLoopTime + ThinkOffsetOnStart;
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

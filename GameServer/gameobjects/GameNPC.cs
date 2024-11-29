@@ -1960,13 +1960,7 @@ namespace DOL.GS
 			m_spawnPoint.Z = Z;
 			m_spawnHeading = Heading;
 
-			if (Brain != null)
-			{
-				// Delay the first think tick a bit to prevent clients from sending positive LoS checks.
-				// when they shouldn't, which can happen right after 'SendNPCCreate' and makes mobs aggro through walls.
-				Brain.NextThinkTick = GameLoop.GameLoopTime + 750;
-				Brain.Start();
-			}
+			Brain?.Start();
 
 			if (Mana <= 0 && MaxMana > 0)
 				Mana = MaxMana;

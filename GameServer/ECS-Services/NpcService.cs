@@ -80,10 +80,6 @@ namespace DOL.GS
                         log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
 
                     brain.NextThinkTick += brain.ThinkInterval;
-
-                    // Offset LastThinkTick for non-controlled mobs so that 'Think' ticks are not all "grouped" in one server tick.
-                    if (brain is not ControlledMobBrain)
-                        brain.NextThinkTick += Util.Random(-2, 2) * GameLoop.TickRate;
                 }
 
                 npc.movementComponent.Tick();
