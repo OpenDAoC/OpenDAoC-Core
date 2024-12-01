@@ -1127,9 +1127,13 @@ namespace DOL.GS.Spells
 
 					if (ServiceUtils.ShouldTick(_castEndTick))
 					{
-						if (!m_spell.IsPulsing)
-							CastState = CheckEndCast(Target) ? eCastState.Finished : eCastState.Interrupted;
-						else if (CheckEndCast(Target))
+						if (!CheckEndCast(Target))
+						{
+							// Allow flute mez to spam (1.65 compliance).
+							if (!m_spell.IsPulsing || m_spell.SpellType is not eSpellType.Mesmerize)
+								CastState = eCastState.Interrupted;
+						}
+						else
 							CastState = eCastState.Finished;
 					}
 
