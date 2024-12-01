@@ -1339,37 +1339,37 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// PvP Immunity Timer - Killed by Mobs
 		/// </summary>
-		[ServerProperty("pvp", "Timer_Killed_By_Mob", "Immunity Timer When player killed in PvP, in seconds", 30)] //30 seconds default
+		[ServerProperty("pvp", "Timer_Killed_By_Mob", "Immunity Timer When player killed in PvP, in seconds", 30)]
 		public static int TIMER_KILLED_BY_MOB;
 
 		/// <summary>
 		/// PvP Immunity Timer - Killed by Player
 		/// </summary>
-		[ServerProperty("pvp", "Timer_Killed_By_Player", "Immunity Timer When player killed in PvP, in seconds", 120)] //2 min default
+		[ServerProperty("pvp", "Timer_Killed_By_Player", "Immunity Timer When player killed in PvP, in seconds", 120)]
 		public static int TIMER_KILLED_BY_PLAYER;
 
 		/// <summary>
 		/// PvP Immunity Timer - Region Changed
 		/// </summary>
-		[ServerProperty("pvp", "Timer_Region_Changed", "Immunity Timer when player changes regions, in seconds", 30)] //30 seconds default
+		[ServerProperty("pvp", "Timer_Region_Changed", "Immunity Timer when player changes regions, in seconds", 10)]
 		public static int TIMER_REGION_CHANGED;
 
 		/// <summary>
 		/// PvP Immunity Timer - Game Entered
 		/// </summary>
-		[ServerProperty("pvp", "Timer_Game_Entered", "Immunity Timer when player enters the game, in seconds", 10)] //10 seconds default
+		[ServerProperty("pvp", "Timer_Game_Entered", "Immunity Timer when player enters the game, in seconds", 10)]
 		public static int TIMER_GAME_ENTERED;
 
 		/// <summary>
 		/// PvP Immunity Timer - Teleport
 		/// </summary>
-		[ServerProperty("pvp", "Timer_PvP_Teleport", "Immunity Timer when player teleports within the same region, in seconds", 30)] //30 seconds default
+		[ServerProperty("pvp", "Timer_PvP_Teleport", "Immunity Timer when player teleports within the same region, in seconds", 30)]
 		public static int TIMER_PVP_TELEPORT;
 
 		/// <summary>
 		/// Time after a relic lost in nature is returning to his ReturnRelicPad pad
 		/// </summary>
-		[ServerProperty("pvp", "Relic_Return_Time", "A lost relic will automatically returns to its defined point, in seconds", 20 * 60)] //20 mins default
+		[ServerProperty("pvp", "Relic_Return_Time", "A lost relic will automatically returns to its defined point, in seconds", 20 * 60)]
 		public static int RELIC_RETURN_TIME;
 
 		/// <summary>
