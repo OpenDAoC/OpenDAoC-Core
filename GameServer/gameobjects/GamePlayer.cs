@@ -11857,8 +11857,13 @@ namespace DOL.GS
                     double detectRadius = 125.0 + ((npcLevel - stealthLevel) * 20.0);
 
                     // we have detect hidden and enemy don't = higher range
-                    if (npc.HasAbility(Abilities.DetectHidden) && EffectListService.GetAbilityEffectOnTarget(player, eEffect.Camouflage) == null)
+                    if (npc.HasAbility(Abilities.DetectHidden) &&
+                        !player.HasAbility(Abilities.DetectHidden) &&
+                        !player.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage) &&
+                        !player.effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+                    {
                         detectRadius += 125;
+                    }
 
                     if (detectRadius < 126) detectRadius = 126;
 
@@ -11968,17 +11973,18 @@ namespace DOL.GS
                     int enemyStealthLevel = Math.Min(50, enemyPlayer.GetModifiedSpecLevel(Specs.Stealth));
                     int levelDiff = Math.Max(0, Level - enemyStealthLevel);
                     int range;
-                    bool enemyHasCamouflage = enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage);
-                    bool enemyHasVanish = enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Vanish);
 
-                    // If we have detect hidden and enemy doesn't.
-                    if (HasAbility(Abilities.DetectHidden) && !enemyHasVanish && !enemyHasCamouflage)
-                        range = levelDiff * 50 + 250; // Was +300 before.
+                    // Detect hidden works only if the enemy doesn't have it or camouflage or vanish.
+                    // According to https://disorder.dk/daoc/stealth/, it's possible that the range per level difference is supposed to be 50 even when Detect Hidden is cancelled out.
+                    if (HasAbility(Abilities.DetectHidden) &&
+                        !enemyPlayer.HasAbility(Abilities.DetectHidden) &&
+                        !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage) &&
+                        !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+                    {
+                        range = levelDiff * 50 + 250;
+                    }
                     else
                         range = levelDiff * 20 + 125;
-
-                    if (ConquestService.ConquestManager.IsPlayerNearFlag(this))
-                        range += 50;
 
                     // Mastery of Stealth
                     // Disabled. This is NF MoS. OF Version does not add range, only movement speed.
