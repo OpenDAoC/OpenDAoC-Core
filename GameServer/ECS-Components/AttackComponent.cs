@@ -2678,18 +2678,15 @@ namespace DOL.GS
             DbInventoryItem attackWeapon = owner.ActiveWeapon;
             DbInventoryItem leftWeapon = owner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
-            if (specLevel > 0 && attackWeapon != null && leftWeapon != null && (eObjectType) leftWeapon.Object_Type is eObjectType.HandToHand)
-            {
-                int bonus = owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
-                bool canTripleSwing = specLevel >= 25;
-                bool canQuadSwing = specLevel >= 40;
-                double doubleSwingChance = specLevel * 0.5 + bonus; // specLevel >> 1
-                double tripleSwingChance = canTripleSwing ? specLevel * 0.25 + bonus * 0.5 : 0; // specLevel >> 2
-                double quadSwingChance = canQuadSwing ? specLevel * 0.0625 + bonus * 0.25 : 0; // specLevel >> 4
-                return (doubleSwingChance, tripleSwingChance, quadSwingChance);
-            }
+            if (specLevel <= 0 || attackWeapon == null || leftWeapon == null || (eObjectType) leftWeapon.Object_Type is not eObjectType.HandToHand)
+                return (0, 0, 0);
 
-            return (0, 0, 0);
+            double doubleSwingChance = specLevel * 0.5; // specLevel >> 1
+            double tripleSwingChance = specLevel >= 25 ? doubleSwingChance * 0.5 : 0; // specLevel >> 2
+            double quadSwingChance = specLevel >= 40 ? tripleSwingChance * 0.25 : 0; // specLevel >> 4
+            int bonus = owner.GetModified(eProperty.OffhandChance) + owner.GetModified(eProperty.OffhandDamageAndChance);
+            doubleSwingChance += bonus; // It's apparently supposed to only affect double swing chance around 1.65, which puts it more in line with DW / CD.
+            return (doubleSwingChance, tripleSwingChance, quadSwingChance);
         }
 
         /// <summary>
