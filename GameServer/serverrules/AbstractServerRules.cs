@@ -1536,14 +1536,15 @@ namespace DOL.GS.ServerRules
 					if (modifiedByDamage && damagePercent < 1)
 						player.Out.SendMessage($"%Damage inflicted: {damagePercent:0.##}%", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-					double levelPercent = (double) (player.Experience + totalReward - player.ExperienceForCurrentLevel) / (player.ExperienceForNextLevel - player.ExperienceForCurrentLevel) * 100.0;
+					long xpNeededForLevel = player.ExperienceForNextLevel - player.ExperienceForCurrentLevel;
+					double levelPercent = (double) (player.Experience + totalReward - player.ExperienceForCurrentLevel) / xpNeededForLevel * 100.0;
 					double campPercent = (double) campBonus / baseXpReward * 100.0;
 					double groupPercent = (double) groupBonus / baseXpReward * 100.0;
 					double guildPercent = (double) guildBonus / baseXpReward * 100.0;
 					double bafPercent = (double) bafBonus / baseXpReward * 100.0;
 					double outpostPercent = (double) outpostBonus / baseXpReward * 100.0;
 
-					player.Out.SendMessage($"XP needed: {player.ExperienceForNextLevel.ToString("N0", format)} | {levelPercent:0.##}% done with current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					player.Out.SendMessage($"XP needed: {xpNeededForLevel.ToString("N0", format)} | {levelPercent:0.##}% done with current level", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					player.Out.SendMessage($"# of kills needed to level at this rate: {(double) (player.ExperienceForNextLevel - player.Experience) / totalReward:0.##}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
 					if (campBonus > 0)
