@@ -175,7 +175,7 @@ namespace DOL.GS
             foreach (var effects in Effects.Values.ToList())
             {
                 for (int j = 0; j < effects.Count; j++)
-                    EffectService.RequestCancelEffect(effects[j]);
+                    EffectService.RequestImmediateCancelEffect(effects[j]);
             }
         }
 
@@ -274,6 +274,7 @@ namespace DOL.GS
                         {
                             if (newSpellEffect.IsConcentrationEffect() && !newSpellEffect.RenewEffect)
                                 return false;
+
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
                                 ECSGameSpellEffect existingEffect = existingEffects[i];
@@ -286,7 +287,7 @@ namespace DOL.GS
                                     || (existingSpell.IsConcentration && existingEffect == newSpellEffect)
                                     || existingSpell.ID == newSpell.ID)
                                 {
-                                    if (newSpell.IsPoisonEffect && newSpellEffect.EffectType == eEffect.DamageOverTime)
+                                    if (newSpell.IsPoisonEffect && newSpellEffect.EffectType is eEffect.DamageOverTime)
                                     {
                                         existingEffect.ExpireTick = newSpellEffect.ExpireTick;
                                         newSpellEffect.IsBuffActive = true; // Why?
@@ -350,8 +351,8 @@ namespace DOL.GS
                         else
                         {
                             bool addEffect = false;
-                            // foundIsOverwriteableEffect is a bool for if we find an overwriteable effect when looping over existing effects. Will be used to later to add effects that are not in same effect group.
-                            bool foundIsOverwriteableEffect = false;
+                            // foundIsOverwritableEffect is a bool for if we find an overwritable effect when looping over existing effects. Will be used to later to add effects that are not in same effect group.
+                            bool foundIsOverwritableEffect = false;
 
                             for (int i = 0; i < existingEffects.Count; i++)
                             {
@@ -360,19 +361,19 @@ namespace DOL.GS
                                 Spell existingSpell = existingSpellHandler.Spell;
 
                                 // Check if existingEffect is overwritable by new effect.
-                                if (existingSpellHandler.IsOverwritable(newSpellEffect) || newSpellEffect.EffectType == eEffect.MovementSpeedDebuff)
+                                if (existingSpellHandler.IsOverwritable(newSpellEffect) || newSpellEffect.EffectType is eEffect.MovementSpeedDebuff)
                                 {
-                                    foundIsOverwriteableEffect = true;
+                                    foundIsOverwritableEffect = true;
 
-                                    if (effect.EffectType == eEffect.Bladeturn)
+                                    if (effect.EffectType is eEffect.Bladeturn)
                                     {
                                         // PBT should only replace itself.
                                         if (!newSpell.IsPulsing)
                                         {
                                             // Self cast Bladeturns should never be overwritten.
-                                            if (existingSpell.Target != eSpellTarget.SELF)
+                                            if (existingSpell.Target is not eSpellTarget.SELF)
                                             {
-                                                EffectService.RequestCancelEffect(existingEffect);
+                                                EffectService.RequestImmediateCancelEffect(existingEffect);
                                                 addEffect = true;
                                             }
                                         }
@@ -385,14 +386,14 @@ namespace DOL.GS
                                         // Special handling for ablative effects.
                                         // We use the remaining amount instead of the spell value. They also can't be added as disabled effects.
                                         // Note: This ignores subclasses of 'AblativeArmorSpellHandler', so right know we only allow one ablative buff regardless of its type.
-                                        if (effect.EffectType == eEffect.AblativeArmor &&
+                                        if (effect.EffectType is eEffect.AblativeArmor &&
                                             existingEffect is AblativeArmorECSGameEffect existingAblativeEffect)
                                         {
                                             // 'Damage' represents the absorption% per hit.
                                             if (newSpell.Value * AblativeArmorSpellHandler.ValidateSpellDamage((int)newSpell.Damage) >
-                                                existingAblativeEffect.RemainingValue *  AblativeArmorSpellHandler.ValidateSpellDamage((int)existingSpell.Damage))
+                                                existingAblativeEffect.RemainingValue * AblativeArmorSpellHandler.ValidateSpellDamage((int) existingSpell.Damage))
                                             {
-                                                EffectService.RequestCancelEffect(existingEffect);
+                                                EffectService.RequestImmediateCancelEffect(existingEffect);
                                                 addEffect = true;
                                             }
 
@@ -403,11 +404,11 @@ namespace DOL.GS
                                         {
                                             // New effect is better than the current effect. Disable or cancel the current effect.
                                             if (newSpell.IsHelpful && (newSpellHandler.Caster != existingSpellHandler.Caster
-                                                || newSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects
-                                                || existingSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects))
+                                                || newSpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects
+                                                || existingSpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects))
                                                 EffectService.RequestDisableEffect(existingEffect);
                                             else
-                                                EffectService.RequestCancelEffect(existingEffect);
+                                                EffectService.RequestImmediateCancelEffect(existingEffect);
 
                                             addEffect = true;
                                             break;
@@ -416,8 +417,8 @@ namespace DOL.GS
                                         {
                                             // New effect is not as good as the current effect, but it can be added in a disabled state.
                                             if (newSpell.IsHelpful && (newSpellHandler.Caster != existingSpellHandler.Caster
-                                                || newSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects
-                                                || existingSpellHandler.SpellLine.KeyName == GlobalSpellsLines.Potions_Effects))
+                                                || newSpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects
+                                                || existingSpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects))
                                             {
                                                 addEffect = true;
                                                 newSpellEffect.IsDisabled = true;
@@ -429,14 +430,15 @@ namespace DOL.GS
                             }
 
                             // No overwriteable effects found that match new spell effect, so add it!
-                            if (!foundIsOverwriteableEffect)
+                            if (!foundIsOverwritableEffect)
                                 addEffect = true;
 
                             if (addEffect)
                             {
-                                Effects[newSpellEffect.EffectType].Add(newSpellEffect);
+                                existingGameEffects.Add(newSpellEffect);
+                                Effects.TryAdd(newSpellEffect.EffectType, existingGameEffects); // The effect type might have been removed by `RequestImmediateCancelEffect`.
 
-                                if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
+                                if (effect.EffectType is not eEffect.Pulse && effect.Icon != 0)
                                     _effectIdToEffect.TryAdd(newSpellEffect.Icon, newSpellEffect);
 
                                 return true;
@@ -449,9 +451,9 @@ namespace DOL.GS
                         existingEffects.Add(effect);
                     else
                     {
-                        Effects.Add(effect.EffectType, new List<ECSGameEffect> { effect });
+                        Effects.Add(effect.EffectType, [effect]);
 
-                        if (effect.EffectType != eEffect.Pulse && effect.Icon != 0)
+                        if (effect.EffectType is not eEffect.Pulse && effect.Icon != 0)
                             _effectIdToEffect.TryAdd(effect.Icon, effect);
                     }
 
