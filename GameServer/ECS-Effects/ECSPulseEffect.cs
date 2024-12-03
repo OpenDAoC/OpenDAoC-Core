@@ -18,8 +18,8 @@ namespace DOL.GS
             PulseFreq = pulseFreq;
             CancelEffect = cancelEffect;
             EffectType = eEffect.Pulse;
-            ExpireTick = pulseFreq + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
+            NextTick = pulseFreq + GameLoop.GameLoopTime;
             EffectService.RequestStartEffect(this);
         }
 

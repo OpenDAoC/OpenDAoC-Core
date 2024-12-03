@@ -1,3 +1,4 @@
+using System;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
@@ -18,6 +19,7 @@ namespace DOL.GS
         public override ushort Icon => SpellHandler.Spell.Icon;
         public override string Name => SpellHandler.Spell.Name;
         public override bool HasPositiveEffect => SpellHandler != null && SpellHandler.HasPositiveEffect;
+        public bool IsAllowedToPulse => NextTick > 0 && PulseFreq > 0;
 
         public ECSGameSpellEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
@@ -28,17 +30,16 @@ namespace DOL.GS
 
             if (spell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
             {
-                TickInterval = 650;
-                NextTick = 1 + (Duration >> 1) + (int)StartTick;
-                if (!spell.Name.Equals("Prevent Flight") && !spell.IsFocus)
+                PulseFreq = 250;
+                NextTick = 1 + Duration / 2 + StartTick + PulseFreq;
+
+                if (!spell.Name.Equals("Prevent Flight", StringComparison.OrdinalIgnoreCase) && !spell.IsFocus)
                     TriggersImmunity = true;
             }
             else if (spell.IsConcentration)
             {
-                NextTick = StartTick;
-                // 60 seconds taken from PropertyChangingSpell
-                // Not sure if this is correct
-                PulseFreq = 650;
+                PulseFreq = 2500;
+                NextTick = StartTick + PulseFreq;
             }
 
             // These classes start their effects themselves.

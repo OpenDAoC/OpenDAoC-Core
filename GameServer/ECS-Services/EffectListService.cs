@@ -69,186 +69,193 @@ namespace DOL.GS
                     effectsList.AddRange(pair.Value);
             }
 
-            foreach (ECSGameEffect e in effectsList)
+            foreach (ECSGameEffect effect in effectsList)
             {
-                if (!e.Owner.IsAlive)
+                if (!effect.Owner.IsAlive)
+                    EffectService.RequestCancelEffect(effect);
+                else if (effect is ECSGameAbilityEffect abilityEffect)
+                    HandleAbilityEffect(abilityEffect);
+                else if (effect is ECSGameSpellEffect spellEffect)
+                    HandleSpellEffect(spellEffect);
+            }
+
+            static void HandleAbilityEffect(ECSGameAbilityEffect abilityEffect)
+            {
+                if (abilityEffect.NextTick != 0 && ServiceUtils.ShouldTickAdjust(ref abilityEffect.NextTick))
                 {
-                    EffectService.RequestCancelEffect(e);
-                    continue;
+                    abilityEffect.OnEffectPulse();
+                    abilityEffect.NextTick += abilityEffect.PulseFreq;
                 }
 
-                if (e is ECSGameAbilityEffect)
+                if (abilityEffect.Duration > 0 && ServiceUtils.ShouldTick(abilityEffect.ExpireTick))
+                    EffectService.RequestCancelEffect(abilityEffect);
+            }
+
+            static void HandleSpellEffect(ECSGameSpellEffect spellEffect)
+            {
+                ISpellHandler spellHandler = spellEffect.SpellHandler;
+                Spell spell = spellHandler.Spell;
+                GameLiving caster = spellHandler.Caster;
+                bool isConcentrationEffect = spellEffect.IsConcentrationEffect() && !spell.IsFocus;
+
+                if (isConcentrationEffect && spellEffect.IsAllowedToPulse)
                 {
-                    if (e.NextTick != 0 && ServiceUtils.ShouldTickAdjust(ref e.NextTick))
+                    HandleConcentrationEffect(spellEffect);
+                    return;
+                }
+
+                if (ServiceUtils.ShouldTick(spellEffect.ExpireTick))
+                {
+                    // A pulse effect cancels its own child effects to prevent them from being cancelled and immediately reapplied.
+                    // So only cancel them if their source is no longer active.
+                    if (!spell.IsPulsing || spellHandler.PulseEffect?.IsBuffActive != true)
+                        EffectService.RequestCancelEffect(spellEffect);
+                }
+
+                // Make sure the effect actually has a next tick scheduled since some spells are marked as pulsing but actually don't.
+                if (spellEffect.IsAllowedToPulse)
+                    HandlePulsingEffect(spellEffect, spell, spellHandler, caster);
+
+                static void HandleConcentrationEffect(ECSGameSpellEffect spellEffect)
+                {
+                    if (!ServiceUtils.ShouldTickAdjust(ref spellEffect.NextTick))
+                        return;
+
+                    int radiusToCheck = spellEffect.SpellHandler.Spell.SpellType is not eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500;
+                    bool isWithinRadius = spellEffect.SpellHandler.Caster.IsWithinRadius(spellEffect.Owner, radiusToCheck);
+
+                    // Check if player is too far away from Caster for Concentration buff, or back in range.
+                    if (!isWithinRadius)
                     {
-                        e.OnEffectPulse();
-                        e.NextTick += e.PulseFreq;
+                        if (!spellEffect.IsDisabled)
+                        {
+                            ECSGameSpellEffect disabled = null;
+                            if (spellEffect.Owner.effectListComponent.GetSpellEffects(spellEffect.EffectType).Count > 1)
+                                disabled = spellEffect.Owner.effectListComponent.GetBestDisabledSpellEffect(spellEffect.EffectType);
+
+                            EffectService.RequestDisableEffect(spellEffect);
+
+                            if (disabled != null)
+                                EffectService.RequestEnableEffect(disabled);
+                        }
+                    }
+                    else if (spellEffect.IsDisabled)
+                    {
+                        //Check if this effect is better than currently enabled effects. Enable this effect and disable other effect if true.
+                        ECSGameSpellEffect enabled = null;
+                        spellEffect.Owner.effectListComponent.Effects.TryGetValue(spellEffect.EffectType, out List<ECSGameEffect> sameEffectTypeEffects);
+                        bool isBest = false;
+
+                        if (sameEffectTypeEffects.Count == 1)
+                            isBest = true;
+                        else if (sameEffectTypeEffects.Count > 1)
+                        {
+                            foreach (var tmpEff in sameEffectTypeEffects)
+                            {
+                                if (tmpEff is ECSGameSpellEffect eff)
+                                {
+                                    //Check only against enabled spells
+                                    if (!eff.IsDisabled)
+                                    {
+                                        enabled = eff;
+                                        isBest = spellEffect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (isBest)
+                        {
+                            EffectService.RequestEnableEffect(spellEffect);
+
+                            if (enabled != null)
+                                EffectService.RequestDisableEffect(enabled);
+                        }
                     }
 
-                    if (e.Duration > 0 && ServiceUtils.ShouldTick(e.ExpireTick))
-                        EffectService.RequestCancelEffect(e);
-
-                    continue;
+                    spellEffect.NextTick += spellEffect.PulseFreq;
                 }
 
-                if (e is ECSGameSpellEffect effect)
+                static void HandlePulsingEffect(ECSGameSpellEffect spellEffect, Spell spell, ISpellHandler spellHandler, GameLiving caster)
                 {
-                    ISpellHandler spellHandler = effect.SpellHandler;
-                    Spell spell = spellHandler.Spell;
-                    GameLiving caster = spellHandler.Caster;
+                    if (!ServiceUtils.ShouldTickAdjust(ref spellEffect.NextTick))
+                        return;
 
-                    if (!effect.IsConcentrationEffect() || spell.IsFocus)
+                    // Not every pulsing effect is a `ECSPulseEffect`. Snares and roots decreasing effect are also handled as pulsing spells for example.
+                    if (spellEffect is ECSPulseEffect pulseEffect)
                     {
-                        if (effect is ECSPulseEffect pulseEffect)
+                        if (!caster.ActivePulseSpells.ContainsKey(spell.SpellType))
+                            EffectService.RequestCancelEffect(pulseEffect);
+                        else
                         {
-                            if (!caster.ActivePulseSpells.ContainsKey(spell.SpellType))
-                                EffectService.RequestCancelEffect(pulseEffect);
+                            if (spell.PulsePower > 0)
+                            {
+                                if (caster.Mana >= spell.PulsePower)
+                                {
+                                    caster.Mana -= spell.PulsePower;
+                                    spellHandler.StartSpell(null);
+                                }
+                                else
+                                {
+                                    (spellHandler as SpellHandler).MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
+                                    EffectService.RequestCancelConcEffect(pulseEffect);
+                                    return;
+                                }
+                            }
                             else
+                                spellHandler.StartSpell(null);
+
+                            if (spell.IsHarmful && spell.SpellType is not eSpellType.SpeedDecrease)
                             {
-                                if (ServiceUtils.ShouldTickAdjust(ref pulseEffect.ExpireTick))
-                                {
-                                    if (spell.PulsePower > 0)
-                                    {
-                                        if (caster.Mana >= spell.PulsePower)
-                                        {
-                                            caster.Mana -= spell.PulsePower;
-                                            spellHandler.StartSpell(null);
-                                            pulseEffect.ExpireTick += pulseEffect.PulseFreq;
-                                        }
-                                        else
-                                        {
-                                            ((SpellHandler) spellHandler).MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
-                                            EffectService.RequestCancelConcEffect(pulseEffect);
-                                            continue;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        spellHandler.StartSpell(null);
-                                        pulseEffect.ExpireTick += pulseEffect.PulseFreq;
-                                    }
+                                if (!pulseEffect.Owner.IsMezzed && !pulseEffect.Owner.IsStunned)
+                                    (spellHandler as SpellHandler).SendCastAnimation();
+                            }
 
-                                    if (spell.IsHarmful && spell.SpellType != eSpellType.SpeedDecrease)
-                                    {
-                                        if (!pulseEffect.Owner.IsMezzed && !pulseEffect.Owner.IsStunned)
-                                            ((SpellHandler) spellHandler).SendCastAnimation();
-                                    }
+                            List<GameLiving> livings = null;
+
+                            foreach (var pair in pulseEffect.ChildEffects)
+                            {
+                                ECSGameSpellEffect childEffect = pair.Value;
+
+                                if (ServiceUtils.ShouldTickNoEarly(childEffect.ExpireTick))
+                                {
+                                    livings ??= new();
+                                    livings.Add(pair.Key);
+                                    EffectService.RequestCancelEffect(childEffect);
                                 }
+                            }
 
-                                List<GameLiving> livings = null;
-
-                                foreach (var pair in pulseEffect.ChildEffects)
+                            if (livings != null)
+                            {
+                                foreach (GameLiving living in livings)
                                 {
-                                    ECSGameSpellEffect childEffect = pair.Value;
-
-                                    if (ServiceUtils.ShouldTickNoEarly(childEffect.ExpireTick))
-                                    {
-                                        livings ??= new();
-                                        livings.Add(pair.Key);
-                                        EffectService.RequestCancelEffect(childEffect);
-                                    }
-                                }
-
-                                if (livings != null)
-                                {
-                                    foreach (GameLiving living in livings)
-                                    {
-                                        pulseEffect.ChildEffects.Remove(living);
-                                    }
+                                    pulseEffect.ChildEffects.Remove(living);
                                 }
                             }
                         }
-                        else if (ServiceUtils.ShouldTick(effect.ExpireTick))
-                        {
-                            // A pulse effect cancels its own child effects to prevent them from being cancelled and immediately reapplied.
-                            // So only cancel them if their source is no longer active.
-                            if (!spell.IsPulsing || spellHandler.PulseEffect?.IsBuffActive != true)
-                                EffectService.RequestCancelEffect(effect);
-                        }
                     }
-
-                    if (effect is not ECSImmunityEffect && effect.EffectType != eEffect.Pulse && effect.SpellHandler.Spell.SpellType == eSpellType.SpeedDecrease)
+                    else if (spellEffect is not ECSImmunityEffect && spellEffect.EffectType is not eEffect.Pulse && spellEffect.SpellHandler.Spell.SpellType is eSpellType.SpeedDecrease)
                     {
-                        if (ServiceUtils.ShouldTick(e.ExpireTick))
+                        double factor = 2.0 - (spellEffect.Duration - spellEffect.GetRemainingTimeForClient()) / (spellEffect.Duration * 0.5);
+                        Console.WriteLine($"{factor} {GameLoop.GameLoopTime}");
+
+                        if (factor < 0)
+                            factor = 0;
+                        else if (factor > 1)
+                            factor = 1;
+
+                        spellEffect.Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, spellEffect.EffectType, 1.0 - spellEffect.SpellHandler.Spell.Value * factor * 0.01);
+                        spellEffect.Owner.OnMaxSpeedChange();
+
+                        if (factor <= 0)
                         {
-                            double factor = 2.0 - (effect.Duration - effect.GetRemainingTimeForClient()) / (double)(effect.Duration >> 1);
-
-                            if (factor < 0)
-                                factor = 0;
-                            else if (factor > 1)
-                                factor = 1;
-
-                            effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect.EffectType, 1.0 - effect.SpellHandler.Spell.Value * factor * 0.01);
-                            effect.Owner.OnMaxSpeedChange();
-                            effect.NextTick += effect.TickInterval;
-
-                            if (factor <= 0)
-                                effect.ExpireTick = 0;
+                            EffectService.RequestImmediateCancelEffect(spellEffect);
+                            return;
                         }
                     }
 
-                    if (effect.NextTick != 0 && ServiceUtils.ShouldTickAdjust(ref effect.NextTick) && !ServiceUtils.ShouldTick(effect.ExpireTick))
-                    {
-                        effect.OnEffectPulse();
-                        effect.NextTick += effect.PulseFreq;
-                    }
-
-                    if (effect.IsConcentrationEffect() && ServiceUtils.ShouldTickAdjust(ref effect.NextTick))
-                    {
-                        int radiusToCheck = effect.SpellHandler.Spell.SpellType != eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500;
-                        bool isWithinRadius = effect.SpellHandler.Caster.IsWithinRadius(effect.Owner, radiusToCheck);
-
-                        // Check if player is too far away from Caster for Concentration buff, or back in range.
-                        if (!isWithinRadius)
-                        {
-                            if (!effect.IsDisabled)
-                            {
-                                ECSGameSpellEffect disabled = null;
-                                if (effect.Owner.effectListComponent.GetSpellEffects(effect.EffectType).Count > 1)
-                                    disabled = effect.Owner.effectListComponent.GetBestDisabledSpellEffect(effect.EffectType);
-
-                                EffectService.RequestDisableEffect(effect);
-
-                                if (disabled != null)
-                                    EffectService.RequestEnableEffect(disabled);
-                            }
-                        }
-                        else if (effect.IsDisabled)
-                        {
-                            //Check if this effect is better than currently enabled effects. Enable this effect and disable other effect if true.
-                            ECSGameSpellEffect enabled = null;
-                            effect.Owner.effectListComponent.Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> sameEffectTypeEffects);
-                            bool isBest = false;
-
-                            if (sameEffectTypeEffects.Count == 1)
-                                isBest = true;
-                            else if (sameEffectTypeEffects.Count > 1)
-                            {
-                                foreach (var tmpEff in sameEffectTypeEffects)
-                                {
-                                    if (tmpEff is ECSGameSpellEffect eff)
-                                    {
-                                        //Check only against enabled spells
-                                        if (!eff.IsDisabled)
-                                        {
-                                            enabled = eff;
-                                            isBest = effect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value;
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (isBest)
-                            {
-                                EffectService.RequestEnableEffect(effect);
-
-                                if (enabled != null)
-                                    EffectService.RequestDisableEffect(enabled);
-                            }
-                        }
-
-                        effect.NextTick += effect.PulseFreq;
-                    }
+                    spellEffect.OnEffectPulse();
+                    spellEffect.NextTick += spellEffect.PulseFreq;
                 }
             }
         }

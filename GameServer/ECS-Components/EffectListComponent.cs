@@ -301,7 +301,9 @@ namespace DOL.GS
                                         // Also needed for movement speed debuffs' since their effect decrease over time.
                                         if (existingEffect.Effectiveness != newSpellEffect.Effectiveness ||
                                             existingSpell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
+                                        {
                                             existingEffect.OnStopEffect();
+                                        }
 
                                         newSpellEffect.IsDisabled = existingEffect.IsDisabled;
                                         newSpellEffect.IsBuffActive = existingEffect.IsBuffActive;

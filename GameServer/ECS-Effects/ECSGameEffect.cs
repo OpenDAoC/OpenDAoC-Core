@@ -38,7 +38,6 @@ namespace DOL.GS
         public eEffect EffectType;
         public GameLiving Owner;
         public GamePlayer OwnerPlayer;
-        public int TickInterval;
         public long NextTick;
         public int PreviousPosition = -1;
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Effect, false);
