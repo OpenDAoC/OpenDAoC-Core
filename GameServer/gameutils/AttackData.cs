@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.GS.Styles;
 
@@ -50,6 +49,23 @@ namespace DOL.GS
         public bool GeneratesAggro => SpellHandler == null || SpellHandler.Spell.SpellType is not eSpellType.Amnesia || IsSpellResisted;
 
         public AttackData() { }
+
+        public static eAttackType GetAttackType(DbInventoryItem weapon, bool dualWield, GameLiving attacker)
+        {
+            if (dualWield && attacker is GamePlayer playerAttacker && (eCharacterClass) playerAttacker.CharacterClass.ID is not eCharacterClass.Savage)
+                return eAttackType.MeleeDualWield;
+            else if (weapon == null)
+                return eAttackType.MeleeOneHand;
+            else
+            {
+                return weapon.SlotPosition switch
+                {
+                    Slot.TWOHAND => eAttackType.MeleeTwoHand,
+                    Slot.RANGED => eAttackType.Ranged,
+                    _ => eAttackType.MeleeOneHand,
+                };
+            }
+        }
 
         public enum eAttackType : int
         {

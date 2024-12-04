@@ -1042,26 +1042,14 @@ namespace DOL.GS
                 DamageType = AttackDamageType(weapon),
                 Weapon = weapon,
                 Interval = interval,
-                IsOffHand = weapon != null && weapon.SlotPosition == Slot.LEFTHAND
+                IsOffHand = weapon != null && weapon.SlotPosition is Slot.LEFTHAND
             };
 
             // Asp style range add.
             IEnumerable<(Spell, int, int)> rangeProc = style?.Procs.Where(x => x.Item1.SpellType is eSpellType.StyleRange);
             int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Item1.Value - AttackRange) : 0;
 
-            if (dualWield && (ad.Attacker is GamePlayer gPlayer) && gPlayer.CharacterClass.ID != (int) eCharacterClass.Savage)
-                ad.AttackType = AttackData.eAttackType.MeleeDualWield;
-            else if (weapon == null)
-                ad.AttackType = AttackData.eAttackType.MeleeOneHand;
-            else
-            {
-                ad.AttackType = weapon.SlotPosition switch
-                {
-                    Slot.TWOHAND => AttackData.eAttackType.MeleeTwoHand,
-                    Slot.RANGED => AttackData.eAttackType.Ranged,
-                    _ => AttackData.eAttackType.MeleeOneHand,
-                };
-            }
+            ad.AttackType = AttackData.GetAttackType(weapon, dualWield, ad.Attacker);
 
             // No target.
             if (ad.Target == null)
@@ -1072,7 +1060,7 @@ namespace DOL.GS
             }
 
             // Region / state check.
-            if (ad.Target.CurrentRegionID != owner.CurrentRegionID || ad.Target.ObjectState != eObjectState.Active)
+            if (ad.Target.CurrentRegionID != owner.CurrentRegionID || ad.Target.ObjectState is not eObjectState.Active)
             {
                 ad.AttackResult = eAttackResult.NoValidTarget;
                 SendAttackingCombatMessages(action, ad);
@@ -1080,8 +1068,8 @@ namespace DOL.GS
             }
 
             // LoS / in front check.
-            if (!ignoreLOS && ad.AttackType != AttackData.eAttackType.Ranged && owner is GamePlayer &&
-                !(ad.Target is GameKeepComponent) &&
+            if (!ignoreLOS && ad.AttackType is not AttackData.eAttackType.Ranged && owner is GamePlayer &&
+                ad.Target is not GameKeepComponent &&
                 !(owner.IsObjectInFront(ad.Target, 120) && owner.TargetInView))
             {
                 ad.AttackResult = eAttackResult.TargetNotVisible;
@@ -1098,7 +1086,7 @@ namespace DOL.GS
             }
 
             // Melee range check (ranged is already done at this point).
-            if (ad.AttackType != AttackData.eAttackType.Ranged)
+            if (ad.AttackType is not AttackData.eAttackType.Ranged)
             {
                 if (!owner.IsWithinRadius(ad.Target, AttackRange + addRange))
                 {
@@ -1576,11 +1564,11 @@ namespace DOL.GS
             return baseWeaponSkill * relicBonus * specModifier;
         }
 
-        public double CalculateDefensePenetration(AttackData ad)
+        public double CalculateDefensePenetration(DbInventoryItem weapon, int targetLevel)
         {
-            int levelDifference = (owner is GamePlayer ? owner.WeaponSpecLevel(ad.Weapon) : owner.Level) - ad.Target.Level;
+            int levelDifference = (owner is GamePlayer ? owner.WeaponSpecLevel(weapon) : owner.Level) - targetLevel;
             double specModifier = 1 + levelDifference * 0.01;
-            return CalculateWeaponSkill(ad.Weapon, specModifier, out _) * 0.08 / 100;
+            return CalculateWeaponSkill(weapon, specModifier, out _) * 0.08 / 100;
         }
 
         public int CalculateSpec(DbInventoryItem weapon)
@@ -2021,7 +2009,7 @@ namespace DOL.GS
                 intercept = null;
             }
 
-            ad.DefensePenetration = ad.Attacker.attackComponent.CalculateDefensePenetration(ad);
+            ad.DefensePenetration = ad.Attacker.attackComponent.CalculateDefensePenetration(ad.Weapon, ad.Target.Level);
 
             if (!defenseDisabled)
             {

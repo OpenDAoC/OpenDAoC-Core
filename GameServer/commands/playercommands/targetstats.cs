@@ -72,10 +72,10 @@ namespace DOL.GS.Commands
                     info.Add($"Swing:  {leftHandSwingChance:0.##}%");
                 else
                 {
-                    (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) hthSwingChances = target.attackComponent.CalculateHthSwingChances();
+                    (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) = target.attackComponent.CalculateHthSwingChances();
 
-                    if (hthSwingChances.doubleSwingChance > 0)
-                        info.Add($"Double swing:  {hthSwingChances.doubleSwingChance:0.##}%  |  Triple swing:  {hthSwingChances.tripleSwingChance:0.##}%  |  Quad swing:  {hthSwingChances.quadSwingChance:0.##}%");
+                    if (doubleSwingChance > 0)
+                        info.Add($"Double swing:  {doubleSwingChance:0.##}%  |  Triple swing:  {tripleSwingChance:0.##}%  |  Quad swing:  {quadSwingChance:0.##}%");
                 }
             }
 
@@ -110,6 +110,7 @@ namespace DOL.GS.Commands
                 info.Add($"Weapon skill:  {baseWeaponSkill:0.##}");
                 info.Add($"Variance range:  {varianceRange.lowerLimit:0.00}~{varianceRange.upperLimit:0.00}");
                 info.Add($"Attack speed:  {target.AttackSpeed(weapon) / 1000.0:0.###}");
+                info.Add($"Defense penetration:  {target.attackComponent.CalculateDefensePenetration(weapon, client.Player.Level) * 100:0.##}%");
             }
         }
     }
