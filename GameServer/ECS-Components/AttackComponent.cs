@@ -362,7 +362,7 @@ namespace DOL.GS
                     //Console.WriteLine($"Speed after {speed} quiMod {(1.0 - (qui - 60) * 0.002)} melee speed {0.01 * p.GetModified(eProperty.MeleeSpeed)} together {(1.0 - (qui - 60) * 0.002) * 0.01 * p.GetModified(eProperty.MeleeSpeed)}");
                 }
 
-                return Math.Max(15, (int) (speed * 100));
+                return (int) Math.Max(1500, speed * 100);
             }
             else
             {
@@ -400,7 +400,7 @@ namespace DOL.GS
                     }
                 }
 
-                return (int) Math.Max(500.0, speed);
+                return (int) Math.Max(500, speed);
             }
         }
 
