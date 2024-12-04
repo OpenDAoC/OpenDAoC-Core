@@ -770,7 +770,8 @@ namespace DOL.GS
 
             private GamePlayer _owner;
             private Func<int> _onQuitTimerEnd;
-            private int _remainingDurationsIndex;
+            private int _remainingDurationsIndex = 1;
+            private long _lastCombatTick;
 
             public QuitTimer(GamePlayer owner, Func<int> onQuitTimerEnd) : base(owner)
             {
@@ -785,31 +786,11 @@ namespace DOL.GS
                     return;
                 }
 
-                long lastCombatTick = Math.Max(owner.LastAttackedByEnemyTick, owner.LastAttackTick);
-                int lastCombatTickOffset = MAX_DURATION - MIN_DURATION;
-
-                if (GameLoop.GameLoopTime - lastCombatTick > lastCombatTickOffset)
-                    lastCombatTick = GameLoop.GameLoopTime - lastCombatTickOffset;
-
-                int quitDuration = Math.Max(0, (int) Math.Ceiling((MAX_DURATION - (GameLoop.GameLoopTime - lastCombatTick)) / 1000.0));
+                _lastCombatTick = GetLastCombatTick();
+                int quitDuration = CalculateQuitDuration(_lastCombatTick);
                 owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GamePlayer.Quit.RecentlyInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 owner.Out.SendMessage(LanguageMgr.GetTranslation(owner.Client.Account.Language, "GamePlayer.Quit.YouWillQuit2", quitDuration), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                Start(CalculateFirstInterval());
-
-                int CalculateFirstInterval()
-                {
-                    int result = REMAINING_DURATIONS[_remainingDurationsIndex];
-                    result = quitDuration - result;
-
-                    if (REMAINING_DURATIONS.Length > 1)
-                    {
-                        result += REMAINING_DURATIONS[_remainingDurationsIndex];
-                        _remainingDurationsIndex++;
-                        result -= REMAINING_DURATIONS[_remainingDurationsIndex];
-                    }
-
-                    return result * 1000;
-                }
+                Start(CalculateFirstInterval(quitDuration));
             }
 
             protected override int OnTick(ECSGameTimer timer)
@@ -821,6 +802,15 @@ namespace DOL.GS
                 {
                     _owner.Out.SendMessage(LanguageMgr.GetTranslation(_owner.Client.Account.Language, "GamePlayer.Quit.CantQuitCrafting"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                     return _onQuitTimerEnd();
+                }
+
+                long newLastCombatTick = GetLastCombatTick();
+
+                if (newLastCombatTick > _lastCombatTick)
+                {
+                    _remainingDurationsIndex = 1;
+                    _lastCombatTick = newLastCombatTick;
+                    return CalculateFirstInterval(CalculateQuitDuration(_lastCombatTick));
                 }
 
                 if (_remainingDurationsIndex == REMAINING_DURATIONS.Length)
@@ -842,6 +832,35 @@ namespace DOL.GS
 
                     return currentRemainingDuration * 1000;
                 }
+            }
+
+            private long GetLastCombatTick()
+            {
+                return Math.Max(_owner.LastAttackedByEnemyTick, _owner.LastAttackTick);
+            }
+
+            private static int CalculateQuitDuration(long lastCombatTick)
+            {
+                int lastCombatTickOffset = MAX_DURATION - MIN_DURATION;
+
+                if (GameLoop.GameLoopTime - lastCombatTick > lastCombatTickOffset)
+                    lastCombatTick = GameLoop.GameLoopTime - lastCombatTickOffset;
+
+                return Math.Max(0, (int) Math.Ceiling((MAX_DURATION - (GameLoop.GameLoopTime - lastCombatTick)) / 1000.0));
+            }
+
+            private static int CalculateFirstInterval(int quitDuration)
+            {
+                int result = REMAINING_DURATIONS[0];
+                result = quitDuration - result;
+
+                if (REMAINING_DURATIONS.Length > 1)
+                {
+                    result += REMAINING_DURATIONS[0];
+                    result -= REMAINING_DURATIONS[1];
+                }
+
+                return result * 1000;
             }
 
             private void Quit()
