@@ -1462,7 +1462,7 @@ namespace DOL.GS.ServerRules
 
 			long CalculateGroupBonus()
 			{
-				if (player.Group == null || plrGrpExp.ContainsKey(player.Group))
+				if (player.Group == null || !plrGrpExp.ContainsKey(player.Group))
 					return 0;
 
 				// Group size is reduced by 1 to prevent the bonus from doing more than simply working against the base experience reduction done in `CalculateNpcExperienceValueModifiedByGroup`.
