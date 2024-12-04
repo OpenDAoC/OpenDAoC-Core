@@ -11,8 +11,8 @@ System.NoSense:				Das würde keinen Sinn machen!
 System.MustSelectTarget:		Ihr müsst ein Ziel auswählen!
 System.ReleaseTimer:			Automatischer Release
 
-# PropertyCalculator
-PropertyCalc.MaxSpeed.YouAreEncumbered:	Ihr seid überlastet und könnt euch nicht bewegen.
+# PlayerMovementComponent
+PlayerMovementComponent.Encumbered:	Ihr seid überlastet.
 
 # GAMEGRAVESTONE
 GameGravestone.GameGravestone.Grave:	Grabstein von {0}

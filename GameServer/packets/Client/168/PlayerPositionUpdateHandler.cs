@@ -193,10 +193,13 @@ namespace DOL.GS.PacketHandler.Client.v168
                 client.Player.LastPositionUpdatePoint.Z = z;
                 int tolerance = ServerProperties.Properties.CPS_TOLERANCE;
 
-                if (client.Player.Steed != null && client.Player.Steed.MaxSpeed > 0)
-                    tolerance += client.Player.Steed.MaxSpeed;
-                else if (client.Player.MaxSpeed > 0)
-                    tolerance += client.Player.MaxSpeed;
+                if (client.Player.movementComponent.MaxSpeedPercent > 0)
+                {
+                    if (client.Player.Steed != null)
+                        tolerance += client.Player.Steed.MaxSpeed;
+                    else
+                        tolerance += client.Player.MaxSpeed;
+                }
 
                 if (client.Player.IsJumping)
                 {

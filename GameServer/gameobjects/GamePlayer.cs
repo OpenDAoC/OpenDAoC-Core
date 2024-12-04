@@ -9733,12 +9733,12 @@ namespace DOL.GS
                     IsEncumbered = true;
                     string message;
 
-                    if (MaxSpeed == 0)
-                        message = "PropertyCalc.MaxSpeed.YouAreEncumbered";
+                    if (movementComponent.MaxSpeedPercent <= 0)
+                        message = "GamePlayer.UpdateEncumbrance.EncumberedCannotMove";
                     else
                         message = "GamePlayer.UpdateEncumbrance.EncumberedMoveSlowly";
 
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, message), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, message), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                 }
                 else
                     IsEncumbered = false;

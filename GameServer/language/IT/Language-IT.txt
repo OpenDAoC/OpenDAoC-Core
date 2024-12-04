@@ -367,7 +367,7 @@ GamePlayer.SwitchQuiver.ShootWith:			Colpirai con: {0}.
 GamePlayer.SwitchQuiver.NoMoreAmmo:			Non hai piu' colpi nella tua faretra!
 GamePlayer.SwitchQuiver.NotUseQuiver:		Non usi piu' la tua faretra.
 GamePlayer.SwitchWeapon.SpellCancelled:		Il tuo incantesimo e' stato annullato!
-GamePlayer.UpdateEncumbrance.Encumbered:	Sei sovrappeso!
+PlayerMovementComponent.Encumbered:			Sei sovrappeso!
 GamePlayer.UpdateEncumbrance.EncumberedMoveSlowly:		Sei sovrappeso e ti muovi piu' lentamente.
 GamePlayer.UpdateSpellLine.GainPower:		Acquisisci potere negli incantesimi {0} !
 GamePlayer.UseSlot.AttemptToUse:			Cerchi di usare {0}.

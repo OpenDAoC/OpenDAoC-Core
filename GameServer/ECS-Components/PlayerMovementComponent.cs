@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using DOL.GS.PacketHandler;
 using DOL.GS.PacketHandler.Client.v168;
+using DOL.Language;
 using log4net;
 
 namespace DOL.GS
@@ -19,7 +21,10 @@ namespace DOL.GS
         private long _nextHeadingBroadcast;
         private bool _needBroadcastHeading;
 
+        private bool _isEncumberedMessageSent;
+
         public new GamePlayer Owner { get; }
+        public int MaxSpeedPercent => MaxSpeed * 100 / GamePlayer.PLAYER_BASE_SPEED;
         public ref long LastPositionUpdatePacketReceivedTime => ref _lastPositionUpdatePacketReceivedTime;
         public ref long LastHeadingUpdatePacketReceivedTime => ref _lastHeadingUpdatePacketReceivedTime;
 
@@ -74,6 +79,30 @@ namespace DOL.GS
         {
             _needBroadcastPosition = true;
             _lastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
+
+            if (Owner.IsEncumbered)
+            {
+                if (Owner.IsMoving)
+                {
+                    if (!_isEncumberedMessageSent)
+                    {
+                        SendEncumberedMessage();
+                        _isEncumberedMessageSent = true;
+                    }
+                }
+                else
+                {
+                    _isEncumberedMessageSent = false;
+
+                    if (MaxSpeedPercent <= 0)
+                        SendEncumberedMessage(); // Allow it to be spammed.
+                }
+            }
+
+            void SendEncumberedMessage()
+            {
+                Owner.Out.SendMessage(LanguageMgr.GetTranslation(Owner.Client.Account.Language, "PlayerMovementComponent.Encumbered"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            }
         }
 
         public void OnHeadingPacketReceived()

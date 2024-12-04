@@ -320,7 +320,7 @@ GamePlayer.UseSlot.StopCallingMount:		Prestal jsi volat sveho kone.
 GamePlayer.UseSlot.SummonHorseLevel:			You must have {0} level for summon this horse.
 GamePlayer.UseSlot.WhistleMount:			Piskas na sveho kone.
 GamePlayer.UpdateEncumbrance.EncumberedMoveSlowly:		Jsi pretizeny a pohybujes se pomaleji.
-GamePlayer.UpdateEncumbrance.Encumbered:	Jsi pretizeny!
+PlayerMovementComponent.Encumbered:			Jsi pretizeny!
 GamePlayer.Whisper.SelectTarget:			Oznac toho, komu chces septat!
 
 # HOUSING
