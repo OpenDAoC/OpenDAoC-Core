@@ -49,33 +49,43 @@ namespace DOL.GS.Commands
             if (naturalResist != 0)
                 info.Add($"Natural:  {naturalResist}%");
 
-            DbInventoryItem weapon = target.ActiveWeapon;
+            DbInventoryItem mainWeapon = target.ActiveWeapon;
 
-            if (target is GameNPC || weapon != null)
+            if (target is GameNPC || mainWeapon != null)
             {
                 info.Add("");
                 info.Add("+ Attack (main hand):");
-                DisplayWeaponInfo(weapon);
+                DisplayWeaponInfo(mainWeapon);
             }
 
-            weapon = target.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem leftWeapon = target.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
-            if (target.attackComponent.CanUseLefthandedWeapon && (target is GameNPC || weapon != null))
+            if (target.attackComponent.CanUseLefthandedWeapon)
             {
-                info.Add("");
-                info.Add("+ Attack (offhand):");
-                DisplayWeaponInfo(weapon);
-
-                double leftHandSwingChance = target.attackComponent.CalculateDwCdLeftHandSwingChance();
-
-                if (leftHandSwingChance > 0)
-                    info.Add($"Swing:  {leftHandSwingChance:0.##}%");
-                else
+                if (target is GameNPC npcTarget)
                 {
-                    (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) = target.attackComponent.CalculateHthSwingChances();
+                    double leftHandSwingChance = npcTarget.LeftHandSwingChance;
 
-                    if (doubleSwingChance > 0)
-                        info.Add($"Double swing:  {doubleSwingChance:0.##}%  |  Triple swing:  {tripleSwingChance:0.##}%  |  Quad swing:  {quadSwingChance:0.##}%");
+                    if (leftHandSwingChance > 0)
+                        info.Add($"Left hand swing chance:  {leftHandSwingChance:0.##}%");
+                }
+                else if (target is GamePlayer)
+                {
+                    info.Add("");
+                    info.Add("+ Attack (offhand):");
+
+                    DisplayWeaponInfo(leftWeapon);
+                    double leftHandSwingChance = target.attackComponent.CalculateDwCdLeftHandSwingChance();
+
+                    if (leftHandSwingChance > 0)
+                        info.Add($"Swing:  {leftHandSwingChance:0.##}%");
+                    else
+                    {
+                        (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) = target.attackComponent.CalculateHthSwingChances(leftWeapon);
+
+                        if (doubleSwingChance > 0)
+                            info.Add($"Double swing:  {doubleSwingChance:0.##}%  |  Triple swing:  {tripleSwingChance:0.##}%  |  Quad swing:  {quadSwingChance:0.##}%");
+                    }
                 }
             }
 

@@ -64,7 +64,7 @@ namespace DOL.GS
             // 1.88
             //- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
 
-            _leftHandSwingCount = CalculateLeftHandSwingCount(_attackWeapon, _leftWeapon, _owner);
+            _leftHandSwingCount = _owner.attackComponent.CalculateLeftHandSwingCount(_attackWeapon, _leftWeapon);
             _isDualWieldAttack = IsDualWieldAttack(_attackWeapon, _leftWeapon, _owner, _leftHandSwingCount);
 
             if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, _effectiveness, out AttackData mainHandAttackData))
@@ -233,27 +233,14 @@ namespace DOL.GS
             }
         }
 
-        public static int CalculateLeftHandSwingCount(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon, GameLiving attacker)
-        {
-            if (attacker.attackComponent.CanUseLefthandedWeapon)
-            {
-                // NPCs can dual swing even with no weapon.
-                if (attacker is GameNPC ||
-                    (leftWeapon != null && (eObjectType) leftWeapon.Object_Type is not eObjectType.Shield && mainWeapon != null && mainWeapon.Hand != 1))
-                {
-                    return attacker.attackComponent.CalculateLeftHandSwingCount();
-                }
-            }
-
-            return 0;
-        }
-
         public static bool IsDualWieldAttack(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon, GameLiving attacker, int leftHandSwingCount)
         {
             if (leftHandSwingCount > 0)
             {
-                return attacker is not GameNPC &&
-                    (eObjectType) mainWeapon.Object_Type is not eObjectType.HandToHand &&
+                if (attacker is GameNPC)
+                    return true;
+
+                return (eObjectType) mainWeapon.Object_Type is not eObjectType.HandToHand &&
                     (eObjectType) leftWeapon?.Object_Type is not eObjectType.HandToHand &&
                     (eObjectType) mainWeapon.Object_Type is not eObjectType.TwoHandedWeapon &&
                     (eObjectType) mainWeapon.Object_Type is not eObjectType.Thrown &&
@@ -261,9 +248,10 @@ namespace DOL.GS
             }
             else if (mainWeapon != null)
             {
-                if (attacker is GameNPC || mainWeapon.Item_Type is Slot.TWOHAND || mainWeapon.SlotPosition is Slot.RANGED)
+                if (mainWeapon.Item_Type is Slot.TWOHAND || mainWeapon.SlotPosition is Slot.RANGED)
                     return false;
-                else if (leftWeapon != null && (eObjectType) leftWeapon.Object_Type is not eObjectType.Shield)
+
+                if (leftWeapon != null && (eObjectType) leftWeapon.Object_Type is not eObjectType.Shield)
                     return true;
             }
 

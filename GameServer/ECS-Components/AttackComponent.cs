@@ -2638,10 +2638,12 @@ namespace DOL.GS
         {
             get
             {
-                if (owner is GamePlayer)
-                    return (owner as GamePlayer).CharacterClass.CanUseLefthandedWeapon;
-                else
-                    return false;
+                if (owner is GamePlayer playerOwner)
+                    return playerOwner.CharacterClass.CanUseLefthandedWeapon;
+                else if (owner is GameNPC)
+                    return true;
+
+                return false;
             }
         }
 
@@ -2660,13 +2662,11 @@ namespace DOL.GS
             return 0;
         }
 
-        public (double, double, double) CalculateHthSwingChances()
+        public (double, double, double) CalculateHthSwingChances(DbInventoryItem leftWeapon)
         {
             int specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
-            DbInventoryItem attackWeapon = owner.ActiveWeapon;
-            DbInventoryItem leftWeapon = owner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
-            if (specLevel <= 0 || attackWeapon == null || leftWeapon == null || (eObjectType) leftWeapon.Object_Type is not eObjectType.HandToHand)
+            if (specLevel <= 0 || (eObjectType) leftWeapon.Object_Type is not eObjectType.HandToHand)
                 return (0, 0, 0);
 
             double doubleSwingChance = specLevel * 0.5; // specLevel >> 1
@@ -2680,12 +2680,20 @@ namespace DOL.GS
         /// <summary>
         /// Calculates how many times left hand swings
         /// </summary>
-        public int CalculateLeftHandSwingCount()
+        public int CalculateLeftHandSwingCount(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon)
         {
-            if (!CanUseLefthandedWeapon)
+            // Let's make NPCs require an actual weapon too. It looks silly otherwise.
+            if (leftWeapon == null || !CanUseLefthandedWeapon) 
                 return 0;
 
-            GamePlayer playerOwner = owner as GamePlayer;
+            if (owner is GameNPC npcOwner)
+            {
+                double random = Util.RandomDouble() * 100;
+                return random < npcOwner.LeftHandSwingChance ? 1 : 0;
+            }
+
+            if (owner is not GamePlayer playerOwner || (eObjectType) leftWeapon.Object_Type is eObjectType.Shield || mainWeapon == null)
+                return 0;
 
             if (owner.GetBaseSpecLevel(Specs.Left_Axe) > 0)
             {
@@ -2693,10 +2701,10 @@ namespace DOL.GS
                 {
                     // This shouldn't be done here.
                     double effectiveness = CalculateLeftAxeModifier();
-                    playerOwner.Out.SendMessage($"{Math.Round(effectiveness * 100, 2)}% dmg (after LA penalty) \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage($"{Math.Round(effectiveness * 100, 2)}% dmg (after LA penalty)\n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                return 1; // always use left axe
+                return 1; // Always use left axe.
             }
 
             double leftHandSwingChance = CalculateDwCdLeftHandSwingChance();
@@ -2711,7 +2719,7 @@ namespace DOL.GS
                 return random < leftHandSwingChance ? 1 : 0;
             }
 
-            (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) hthSwingChances = CalculateHthSwingChances();
+            (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) hthSwingChances = CalculateHthSwingChances(leftWeapon);
 
             if (hthSwingChances.doubleSwingChance > 0)
             {

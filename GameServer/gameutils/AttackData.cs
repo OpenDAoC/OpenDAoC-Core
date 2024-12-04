@@ -52,7 +52,7 @@ namespace DOL.GS
 
         public static eAttackType GetAttackType(DbInventoryItem weapon, bool dualWield, GameLiving attacker)
         {
-            if (dualWield && attacker is GamePlayer playerAttacker && (eCharacterClass) playerAttacker.CharacterClass.ID is not eCharacterClass.Savage)
+            if (dualWield && (attacker is not GamePlayer playerAttacker || (eCharacterClass) playerAttacker.CharacterClass.ID is not eCharacterClass.Savage))
                 return eAttackType.MeleeDualWield;
             else if (weapon == null)
                 return eAttackType.MeleeOneHand;
