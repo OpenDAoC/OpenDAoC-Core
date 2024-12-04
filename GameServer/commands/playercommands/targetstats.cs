@@ -50,15 +50,17 @@ namespace DOL.GS.Commands
                 info.Add($"Natural:  {naturalResist}%");
 
             DbInventoryItem mainWeapon = target.ActiveWeapon;
+            DbInventoryItem leftWeapon = target.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+            int leftHandSwingCount = target.attackComponent.CalculateLeftHandSwingCount(mainWeapon, leftWeapon);
+            bool isDualWieldAttack = WeaponAction.IsDualWieldAttack(mainWeapon, leftWeapon, target, leftHandSwingCount);
+            AttackData.eAttackType attackType = AttackData.GetAttackType(mainWeapon, isDualWieldAttack, target);
 
             if (target is GameNPC || mainWeapon != null)
             {
                 info.Add("");
                 info.Add("+ Attack (main hand):");
-                DisplayWeaponInfo(mainWeapon);
+                DisplayWeaponInfo(mainWeapon, attackType);
             }
-
-            DbInventoryItem leftWeapon = target.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
 
             if (target.attackComponent.CanUseLefthandedWeapon)
             {
@@ -74,7 +76,7 @@ namespace DOL.GS.Commands
                     info.Add("");
                     info.Add("+ Attack (offhand):");
 
-                    DisplayWeaponInfo(leftWeapon);
+                    DisplayWeaponInfo(leftWeapon, attackType);
                     double leftHandSwingChance = target.attackComponent.CalculateDwCdLeftHandSwingChance();
 
                     if (leftHandSwingChance > 0)
@@ -111,7 +113,7 @@ namespace DOL.GS.Commands
             client.Out.SendCustomTextWindow($"[{target.Name}]", info);
             return;
 
-            void DisplayWeaponInfo(DbInventoryItem weapon)
+            void DisplayWeaponInfo(DbInventoryItem weapon, AttackData.eAttackType attackType)
             {
                 double weaponDamage = target.attackComponent.AttackDamage(weapon, out double weaponDamageCap);
                 info.Add($"Weapon damage:  {weaponDamage:0}  |  {weaponDamageCap:0}");
@@ -120,7 +122,26 @@ namespace DOL.GS.Commands
                 info.Add($"Weapon skill:  {baseWeaponSkill:0.##}");
                 info.Add($"Variance range:  {varianceRange.lowerLimit:0.00}~{varianceRange.upperLimit:0.00}");
                 info.Add($"Attack speed:  {target.AttackSpeed(weapon) / 1000.0:0.###}");
-                info.Add($"Defense penetration:  {target.attackComponent.CalculateDefensePenetration(weapon, client.Player.Level) * 100:0.##}%");
+
+                double defensePenetration = target.attackComponent.CalculateDefensePenetration(weapon, client.Player.Level);
+                string defensePenetrationString = $"Defense penetration:  {defensePenetration * 100:0.##}%";
+
+                if (attackType is AttackData.eAttackType.MeleeTwoHand)
+                {
+                    double twoHandedDefensePenetration = defensePenetration + (1 - defensePenetration) * target.TwoHandedDefensePenetrationFactor;
+
+                    if (twoHandedDefensePenetration != defensePenetration)
+                        defensePenetrationString += $"  (vs parry:  {twoHandedDefensePenetration * 100:0.##}%)";
+                }
+                else if (attackType is AttackData.eAttackType.MeleeDualWield)
+                {
+                    double dualWieldDefensePenetration = defensePenetration + (1 - defensePenetration) * target.DualWieldDefensePenetrationFactor;
+
+                    if (dualWieldDefensePenetration != defensePenetration)
+                        defensePenetrationString += $"  (vs evade / block:  {dualWieldDefensePenetration * 100:0.##}%)";
+                }
+
+                info.Add(defensePenetrationString);
             }
         }
     }
