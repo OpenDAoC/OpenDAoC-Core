@@ -40,11 +40,11 @@ namespace DOL.GS.Commands
 
             info.Add("");
             info.Add("+ Resists:");
-            info.Add($"Thrust:  {target.GetModified(eProperty.Resist_Thrust)}%  |  Crush:  {target.GetModified(eProperty.Resist_Crush)}%  |  Slash:  {target.GetModified(eProperty.Resist_Slash)}%");
-            info.Add($"Heat:  {target.GetModified(eProperty.Resist_Heat)}%  |  Cold:  {target.GetModified(eProperty.Resist_Cold)}%  |  Matter:  {target.GetModified(eProperty.Resist_Matter)}%");
-            info.Add($"Energy:  {target.GetModified(eProperty.Resist_Energy)}%  |  Spirit:  {target.GetModified(eProperty.Resist_Spirit)}%  |  Body:  {target.GetModified(eProperty.Resist_Body)}%");
+            info.Add($"Thrust:  {target.GetResist(eDamageType.Thrust)}%  |  Crush:  {target.GetResist(eDamageType.Crush)}%  |  Slash:  {target.GetResist(eDamageType.Slash)}%");
+            info.Add($"Heat:  {target.GetResist(eDamageType.Heat)}%  |  Cold:  {target.GetResist(eDamageType.Cold)}%  |  Matter:  {target.GetResist(eDamageType.Matter)}%");
+            info.Add($"Energy:  {target.GetResist(eDamageType.Energy)}%  |  Spirit:  {target.GetResist(eDamageType.Spirit)}%  |  Body:  {target.GetResist(eDamageType.Body)}%");
 
-            int naturalResist = target.GetModified(eProperty.Resist_Natural);
+            int naturalResist = target.GetResist(eDamageType.Natural);
 
             if (naturalResist != 0)
                 info.Add($"Natural:  {naturalResist}%");
