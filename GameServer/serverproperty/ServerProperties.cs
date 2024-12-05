@@ -1959,6 +1959,12 @@ namespace DOL.GS.ServerProperties
 		public static double MAX_CAMP_BONUS;
 
 		/// <summary>
+		/// Max camp bonus
+		/// </summary>
+		[ServerProperty("pve", "max_dungeon_camp_bonus", "Max camp bonus, 0.55 = 55%", 0.66)]
+		public static double MAX_DUNGEON_CAMP_BONUS;
+
+		/// <summary>
 		/// Minimum privilege level to be able to enter Atlantis through teleporters.
 		/// </summary>
 		[ServerProperty("pve", "atlantis_teleport_plvl", "Set the minimum privilege level required to enter Atlantis zones.", 2)]

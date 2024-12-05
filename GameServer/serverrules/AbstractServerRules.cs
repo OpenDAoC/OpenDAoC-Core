@@ -1426,15 +1426,13 @@ namespace DOL.GS.ServerRules
 
 			long CalculateCampBonus()
 			{
-				// average max camp bonus is somewhere between 50 and 60%
-				double fullCampBonus = Properties.MAX_CAMP_BONUS;
-
-				if (killer.CurrentZone.IsDungeon)
-					fullCampBonus = 1; //dungeon gives +100% camp xp
-
+				// 1.49 http://news-daoc.goa.com/view_patchnote_archive.php?id_article=2478
+				// "Camp bonuses have been substantially upped in dungeons. Now camp bonuses in dungeons are, on average, 20% higher than outside camp bonuses."
+				// Average outside max camp bonus is somewhere between 50 and 60%.
+				double fullCampBonus = killer.CurrentZone.IsDungeon ? Properties.MAX_DUNGEON_CAMP_BONUS : Properties.MAX_CAMP_BONUS;
 				double campBonusPerc;
 
-				if (GameLoop.GameLoopTime - killedNPC.SpawnTick > 1800000) // spawn of this NPC was more than 30 minutes ago -> full camp bonus
+				if (GameLoop.GameLoopTime - killedNPC.SpawnTick > 1800000) // Spawn of this NPC was more than 30 minutes ago -> full camp bonus.
 				{
 					campBonusPerc = fullCampBonus;
 					killedNPC.CampBonus = 0.98;
@@ -1444,20 +1442,10 @@ namespace DOL.GS.ServerRules
 					campBonusPerc = fullCampBonus * killedNPC.CampBonus;
 
 					if (killedNPC.CampBonus >= 0.02)
-						killedNPC.CampBonus -= 0.02; // decrease camp bonus by 2% per kill
+						killedNPC.CampBonus -= 0.02; // Decrease camp bonus by 2% per kill.
 				}
 
-				//1.49 http://news-daoc.goa.com/view_patchnote_archive.php?id_article=2478
-				//"Camp bonuses" have been substantially upped in dungeons. Now camp bonuses in dungeons are, on average, 20% higher than outside camp bonuses.
-				if (killer.CurrentZone.IsDungeon)
-					campBonusPerc *= 1.50;
-
-				if (campBonusPerc < 0.01)
-					campBonusPerc = 0;
-				else if (campBonusPerc > fullCampBonus)
-					campBonusPerc = fullCampBonus;
-
-				return (long) (baseXpReward * campBonusPerc);
+				return (long) (baseXpReward * Math.Max(0, campBonusPerc));
 			}
 
 			long CalculateGroupBonus()
