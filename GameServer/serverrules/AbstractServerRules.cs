@@ -1186,26 +1186,6 @@ namespace DOL.GS.ServerRules
 			{
 				DictionaryEntry de = new(living, XPGainerList[living]);
 				AwardExperience(de, killedNPC, killer, totalDamage, plrGrpExp, isGroupInRange);
-
-				if (living.Level > 36)
-				{
-					int min = (int) Math.Round(killedNPC.Level / 10d) - 3;
-					if (min < 1) min = 1;
-					int max = (int) Math.Round(killedNPC.Level / 5d);
-					if (killedNPC.Level > 55)
-					{
-						min++;
-						max++;
-					}
-
-					if (killedNPC.CurrentZone is {IsOF: true})
-					{
-						min *= 5;
-						max *= 5;
-					}
-
-					AtlasROGManager.GenerateReward(living, Util.Random(min, max));
-				}
 			}
 
 			Diagnostics.StopPerfCounter("ReaperService-NPC-OnNPCKilled-XP-NPC("+killedNPC.GetHashCode()+")");
