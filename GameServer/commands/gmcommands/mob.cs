@@ -1125,7 +1125,7 @@ namespace DOL.GS.Commands
 		{
 			try
 			{
-				lock (targetMob.XPGainers.SyncRoot)
+				lock (targetMob._xpGainersLock)
 				{
 					targetMob.AddXPGainer(client.Player, targetMob.Health);
 					targetMob.Die(client.Player);
@@ -2012,7 +2012,7 @@ namespace DOL.GS.Commands
 				if (args.Length > 3 && args[3] == "inv")
 				{
 					targetMob.AddXPGainer(client.Player, 1);
-					targetMob.DropLoot(client.Player);
+					GameServer.ServerRules.DropLoot(targetMob, client.Player, [new(client.Player, 0)]);
 					return;
 				}
 

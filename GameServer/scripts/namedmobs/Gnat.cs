@@ -97,7 +97,6 @@ namespace DOL.AI.Brain
                 Add.Y = Body.Y + Util.Random(50, 80);
                 Add.Z = Body.Z;
                 Add.CurrentRegion = Body.CurrentRegion;
-                Add.IsWorthReward = false;
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();
             }
@@ -128,7 +127,6 @@ namespace DOL.GS
             RoamingRange = 350;
             RespawnInterval = -1;
             TetherRange = 2000;
-            IsWorthReward = false; //worth no reward
             Size = (byte) Util.Random(8, 12);
             Level = (byte) Util.Random(30, 34);
             Realm = eRealm.None;
@@ -139,9 +137,7 @@ namespace DOL.GS
             return true;
         }
 
-        public override void DropLoot(GameObject killer) //no loot
-        {
-        }
+        public override bool CanDropLoot => false;
 
         public override void Die(GameObject killer)
         {
@@ -162,12 +158,6 @@ namespace DOL.AI.Brain
         {
             AggroLevel = 100;
             AggroRange = 450;
-        }
-
-        public override void Think()
-        {
-            Body.IsWorthReward = false;
-            base.Think();
         }
     }
 }

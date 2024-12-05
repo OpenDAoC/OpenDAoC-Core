@@ -2,21 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using DOL.Database;
 using DOL.GS.PacketHandler;
+using DOL.Language;
+using static DOL.GS.IGameStaticItemOwner;
 
 namespace DOL.GS
 {
 	/// <summary>
 	/// Battlegroups
 	/// </summary>
-	public class BattleGroup
+	public class BattleGroup : IGameStaticItemOwner
 	{
 		public const string BATTLEGROUP_PROPERTY="battlegroup";
 		/// <summary>
 		/// This holds all players inside the battlegroup
 		/// </summary>
 		protected HybridDictionary m_battlegroupMembers = new HybridDictionary();
-        protected GameLiving m_battlegroupLeader;
+        protected GamePlayer m_battlegroupLeader;
         protected List<GamePlayer> m_battlegroupModerators = new List<GamePlayer>();
 
         protected Dictionary<GamePlayer, int> m_battlegroupRolls;
@@ -201,11 +204,11 @@ namespace DOL.GS
             return m_battlegroupLeader;
         }
 
-        public bool SetBGLeader(GameLiving living)
+        public bool SetBGLeader(GamePlayer player)
         {
-            if (living != null)
+            if (player != null)
             {
-                m_battlegroupLeader = living;
+                m_battlegroupLeader = player;
                 return true;
             }
 
@@ -264,59 +267,68 @@ namespace DOL.GS
         public void SetBGLootType(bool type)
         {
             battlegroupLootType = type;
-            if (battlegroupLootType == false)
-            {
-                // Within bounds, continue
-            }
-            if (battlegroupLootType == true)
-            {
-                // Within bounds, continue
-            }
-            else
-            {
-                // Data has entered here that should not be, set to normal = 0
-                battlegroupLootType = false;
-            }
         }
 
-        public bool SetBGTreasurer(GamePlayer treasurer)
+        public void SetBGTreasurer(GamePlayer treasurer)
         {
             battlegroupTreasurer = treasurer;
-            if (battlegroupTreasurer == null)
-            {
-                // Do not set treasurer
-                return false;
-            }
-
-            if (battlegroupTreasurer != null)
-            {
-                // Good input, got a treasurer, continue
-                return true;
-            }
-            else
-            {
-                // Bad input, fix with null
-                battlegroupTreasurer = null;
-                return false;
-            }
-        }
-
-        public virtual void SendMessageToBattleGroupMembers(string msg, eChatType type, eChatLoc loc)
-        {
-            lock (m_battlegroupMembers)
-            {
-                foreach (GamePlayer player in m_battlegroupMembers.Keys)
-                {
-                    player.Out.SendMessage(msg, type, loc);
-                }
-            }
+            battlegroupLootType = treasurer != null;
         }
 
         public int PlayerCount
         {
             get { return m_battlegroupMembers.Count; }
         }
-        /// <summary>
+
+		public string Name => $"{(Leader == null || PlayerCount <= 0 ? "leaderless" : $"{Leader.Name}'s")} battlegroup (size: {PlayerCount})";
+
+		public bool TryAutoPickUpMoney(GameMoney money)
+		{
+			return TryPickUpMoney(Leader as GamePlayer, money) is not TryPickUpResult.CANNOT_HANDLE;
+		}
+
+		public bool TryAutoPickUpItem(WorldInventoryItem worldItem)
+		{
+			// We don't care if players have auto loot enabled, or if they can see the item (the item isn't added to the world yet anyway), or who attacked last, etc.
+			// This is especially important for battlegroups since can have an illimited amount of players.
+			return TryPickUpItem(battlegroupTreasurer, worldItem) is not TryPickUpResult.CANNOT_HANDLE;
+		}
+
+		public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
+		{
+			// Splitting money in a battlegroup could cause performance issues. Let it fallback to group then solo logic.
+			return TryPickUpResult.CANNOT_HANDLE;
+		}
+
+		public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item)
+		{
+			// A battlegroup is only able to pick up items if it has a treasurer, otherwise it's supposed to fallback to group then solo logic.
+			// There is no range check. If you're in a BG, every item goes to the treasurer or stay on the ground.
+			// If his inventory is full, the item should simply stay on the ground until he makes some room, or another treasurer is appointed.
+			if (!GetBGLootType() || battlegroupTreasurer == null)
+				return TryPickUpResult.CANNOT_HANDLE;
+
+			if (!GiveItem(battlegroupTreasurer, item.Item))
+			{
+				battlegroupTreasurer.Out.SendMessage(LanguageMgr.GetTranslation(battlegroupTreasurer.Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				return TryPickUpResult.FAILED;
+			}
+
+			battlegroupTreasurer.Out.SendMessage(LanguageMgr.GetTranslation(battlegroupTreasurer.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Item.GetName(1, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			Message.SystemToOthers(source, LanguageMgr.GetTranslation(battlegroupTreasurer.Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, item.Item.GetName(1, false)), eChatType.CT_System);
+			item.RemoveFromWorld();
+			return TryPickUpResult.SUCCESS;
+
+			static bool GiveItem(GamePlayer player, DbInventoryItem item)
+			{
+				if (item.IsStackable)
+					return player.Inventory.AddTemplate(item, item.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+				return player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+			}
+		}
+
+		/// <summary>
 		/// Removes a player from the group
 		/// </summary>
 		/// <param name="player">GamePlayer to be removed</param>
@@ -345,6 +357,7 @@ namespace DOL.GS
 					{
 						RemoveBattlePlayer(plr);
 					}
+					m_battlegroupLeader = null;
 				} else if (leader && m_battlegroupMembers.Count >= 2)
 				{
 					var bgPlayers = new ArrayList(m_battlegroupMembers.Count);

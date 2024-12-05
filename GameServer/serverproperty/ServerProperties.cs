@@ -769,12 +769,6 @@ namespace DOL.GS.ServerProperties
 		public static int XP_CAP_PERCENT;
 
 		/// <summary>
-		/// Xp Cap for a player in a group.  Given in percent of level.  Default is 125%
-		/// </summary>
-		[ServerProperty("rates", "XP_Group_Cap_Percent", "Maximum XP a player can earn while in a group, given in percent of their level. Default is 125%", 125)]
-		public static int XP_GROUP_CAP_PERCENT;
-
-		/// <summary>
 		/// Xp Cap for a player vs player kill.  Given in percent of level.  Default is 125%
 		/// </summary>
 		[ServerProperty("rates", "XP_PVP_Cap_Percent", "Maximum XP a player can earn killing another player, given in percent of their level. Default is 125%", 125)]

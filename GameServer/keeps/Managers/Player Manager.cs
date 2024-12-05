@@ -294,14 +294,12 @@ namespace DOL.GS.Keeps
 		/// <param name="lord">The lord object</param>
 		public static void UpdateStats(GuardLord lord)
 		{
-			lock (lord.XPGainers.SyncRoot)
+			lock (lord._xpGainersLock)
 			{
-				foreach (System.Collections.DictionaryEntry de in lord.XPGainers)
+				foreach (var pair in lord.XPGainers)
 				{
-					GameObject obj = (GameObject)de.Key;
-					if (obj is GamePlayer)
+					if (pair.Key is GamePlayer player)
 					{
-						GamePlayer player = obj as GamePlayer;
 						if (lord.Component.Keep != null && lord.Component.Keep is GameKeep)
 						{
 							player.CapturedKeeps++;

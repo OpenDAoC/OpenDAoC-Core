@@ -17,17 +17,6 @@ namespace DOL.GS.ServerRules
 			return "standard Normal server rules";
 		}
 
-		/// <summary>
-		/// Invoked on NPC death and deals out
-		/// experience/realm points if needed
-		/// </summary>
-		/// <param name="killedNPC">npc that died</param>
-		/// <param name="killer">killer</param>
-		public override void OnNPCKilled(GameNPC killedNPC, GameObject killer)
-		{
-			base.OnNPCKilled(killedNPC, killer); 	
-		}
-
 		public override bool IsAllowedToAttack(GameLiving attacker, GameLiving defender, bool quiet)
 		{
 			if (!base.IsAllowedToAttack(attacker, defender, quiet))

@@ -151,7 +151,6 @@ namespace DOL.AI.Brain
                 Add.Y = Body.Y + Util.Random(-100, 100);
                 Add.Z = Body.Z;
                 Add.CurrentRegion = Body.CurrentRegion;
-                Add.IsWorthReward = false;
                 Add.Heading = Body.Heading;
                 Add.AddToWorld();
             }
@@ -199,7 +198,6 @@ namespace DOL.GS
             RespawnInterval = -1;
             TetherRange = 2000;
             Faction = FactionMgr.GetFactionByID(64);
-            IsWorthReward = false; // worth no reward
             Flags ^= eFlags.GHOST;
             Realm = eRealm.None;
             IlronImagesBrain adds = new IlronImagesBrain();
@@ -209,9 +207,7 @@ namespace DOL.GS
             return true;
         }
 
-        public override void DropLoot(GameObject killer) //no loot
-        {
-        }
+        public override bool CanDropLoot => false;
 
         public override void Die(GameObject killer)
         {

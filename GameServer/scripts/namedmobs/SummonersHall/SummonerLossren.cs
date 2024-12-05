@@ -380,9 +380,7 @@ namespace DOL.GS
 			++TorturedSoulKilled;
             base.Die(killer);
         }
-        public override void DropLoot(GameObject killer)//dont drop loot
-        {
-        }
+		public override bool CanDropLoot => false;
         List<string> soul_names = new List<string>()
 		{
 			"Aphryx's Tortured Soul","Arus's Tortured Soul","Briandina's Tortured Soul","Dwuanne's Tortured Soul",
@@ -547,9 +545,7 @@ namespace DOL.GS
 			RandomTarget = null;
 			base.Die(killer);
 		}
-        public override void DropLoot(GameObject killer)//dont drop loot
-        {
-        }
+        public override bool CanDropLoot => false;
         public static GamePlayer randomtarget = null;
 		public static GamePlayer RandomTarget
 		{

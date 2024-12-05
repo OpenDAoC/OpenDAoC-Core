@@ -625,7 +625,6 @@ namespace DOL.AI.Brain
                     add.Y = Body.Y + Util.Random(-150, 150);
                     add.Z = Body.Z;
                     add.CurrentRegionID = 249;
-                    add.IsWorthReward = false;
                     add.Level = (byte)level;
                     add.AddToWorld();
                 }
@@ -738,9 +737,7 @@ namespace DOL.GS
         }
 
         public override int MeleeAttackRange => 450;
-        public override void DropLoot(GameObject killer)
-        {
-        }
+        public override bool CanDropLoot => false;
         public override long ExperienceValue => 0;
         public override double GetArmorAF(eArmorSlot slot)
         {

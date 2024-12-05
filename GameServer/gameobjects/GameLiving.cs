@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -170,11 +169,12 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// List of objects that will gain XP after this living dies
-		/// consists of GameObject -> damage(float)
-		/// Damage in float because it might contain small amounts
+		/// List of objects that will gain XP after this living dies.
 		/// </summary>
-		protected readonly HybridDictionary m_xpGainers;
+		protected readonly Dictionary<GameLiving, double> m_xpGainers = new();
+		public object _xpGainersLock = new();
+		public Dictionary<GameLiving, double> XPGainers => m_xpGainers;
+
 		/// <summary>
 		/// Holds the weaponslot to be used
 		/// </summary>
@@ -196,21 +196,6 @@ namespace DOL.GS
         public virtual eActiveWeaponSlot ActiveWeaponSlot
 		{
 			get { return m_activeWeaponSlot; }
-		}
-
-		public object _xpGainersLock = new object();
-		/// <summary>
-		/// Gets a hashtable holding
-		/// gameobject->float
-		/// key-value pairs that will define how much
-		/// XP these objects get when this n
-		/// </summary>
-		public virtual HybridDictionary XPGainers
-		{
-			get
-			{
-				return m_xpGainers;
-			}
 		}
 
 		/// <summary>
@@ -489,11 +474,6 @@ namespace DOL.GS
 			get { return GetModified(eProperty.CriticalDebuffHitChance); }
 			set { }
 		}
-
-		/// <summary>
-		/// Gets the attack-state of this living
-		/// </summary>
-		public virtual bool AttackState { get; set; }
 
         /// <summary>
         /// Whether or not the living can be attacked.
@@ -1344,54 +1324,46 @@ namespace DOL.GS
 
 			double damageDealt = damageAmount + criticalAmount;
 
-			if (source != null && source is GameNPC)
+			if (source is GameNPC npcSource && npcSource.Brain is IControlledBrain brain)
+				source = brain.GetLivingOwner();
+
+			if (source is GameLiving livingSource && source != this)
 			{
-				IControlledBrain brain = ((GameNPC)source).Brain as IControlledBrain;
-				if (brain != null)
-					source = brain.GetLivingOwner();
-			}
-
-			GamePlayer attackerPlayer = source as GamePlayer;
-			if (attackerPlayer != null && attackerPlayer != this)
-			{
-				// Apply Mauler RA5L
-				GiftOfPerizorEffect GiftOfPerizor = EffectList.GetOfType<GiftOfPerizorEffect>();
-				if (GiftOfPerizor != null)
-				{
-					int difference = (int)(0.25 * damageDealt); // RA absorb 25% damage
-					damageDealt -= difference;
-					GamePlayer TheMauler = this.TempProperties.GetProperty<GamePlayer>("GiftOfPerizorOwner");
-					if (TheMauler != null && TheMauler.IsAlive)
-					{
-						// Calculate mana using %. % is calculated with target maxhealth and damage difference, apply this % to mauler maxmana
-						double manareturned = (difference / this.MaxHealth * TheMauler.MaxMana);
-						TheMauler.ChangeMana(source, eManaChangeType.Spell, (int)manareturned);
-					}
-				}
-
-				Group attackerGroup = attackerPlayer.Group;
-				if (attackerGroup != null)
-				{
-					List<GameLiving> xpGainers = new List<GameLiving>(8);
-					// collect "helping" group players in range
-					foreach (GameLiving living in attackerGroup.GetMembersInTheGroup())
-					{
-						if (this.IsWithinRadius(living, WorldMgr.MAX_EXPFORKILL_DISTANCE) && living.IsAlive && living.ObjectState == eObjectState.Active)
-							xpGainers.Add(living);
-					}
-
-					foreach (GameLiving living in xpGainers)
-						this.AddXPGainer(living, (float)(damageDealt / xpGainers.Count));
-				}
+				if (source is not GamePlayer attackerPlayer)
+					AddXPGainer(livingSource, damageDealt);
 				else
 				{
-					this.AddXPGainer(source, (float)damageDealt);
+					// Apply Mauler RA5L
+					GiftOfPerizorEffect GiftOfPerizor = EffectList.GetOfType<GiftOfPerizorEffect>();
+					if (GiftOfPerizor != null)
+					{
+						int difference = (int) (0.25 * damageDealt); // RA absorb 25% damage
+						damageDealt -= difference;
+						GamePlayer TheMauler = this.TempProperties.GetProperty<GamePlayer>("GiftOfPerizorOwner");
+						if (TheMauler != null && TheMauler.IsAlive)
+						{
+							// Calculate mana using %. % is calculated with target maxhealth and damage difference, apply this % to mauler maxmana
+							double manareturned = (difference / this.MaxHealth * TheMauler.MaxMana);
+							TheMauler.ChangeMana(source, eManaChangeType.Spell, (int) manareturned);
+						}
+					}
+
+					if (attackerPlayer.Group != null)
+					{
+						foreach (GameLiving living in attackerPlayer.Group.GetMembersInTheGroup())
+						{
+							if (IsWithinRadius(living, WorldMgr.MAX_EXPFORKILL_DISTANCE) && living.IsAlive && living.ObjectState is eObjectState.Active)
+							{
+								if (living == attackerPlayer)
+									AddXPGainer(living, damageDealt);
+								else
+									AddXPGainer(living, 0);
+							}
+						}
+					}
+					else
+						AddXPGainer(livingSource, damageDealt);
 				}
-				//DealDamage needs to be called after addxpgainer!
-			}
-			else if (source != null && source != this)
-			{
-				AddXPGainer(source, (float)damageAmount + criticalAmount);
 			}
 
 			/*
@@ -1811,15 +1783,14 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="xpGainer">the xp gaining object</param>
 		/// <param name="damageAmount">the amount of damage, float because for groups it can be split</param>
-		public virtual void AddXPGainer(GameObject xpGainer, float damageAmount)
+		public virtual void AddXPGainer(GameLiving xpGainer, double damageAmount)
 		{
-			lock (m_xpGainers.SyncRoot)
+			lock (_xpGainersLock)
 			{
-				if( m_xpGainers.Contains( xpGainer ) == false )
-				{
-					m_xpGainers.Add( xpGainer, 0.0f );
-				}
-				m_xpGainers[xpGainer] = (float)m_xpGainers[xpGainer] + damageAmount;
+				if (m_xpGainers.TryGetValue(xpGainer, out double value))
+					m_xpGainers[xpGainer] = value + damageAmount;
+				else
+					m_xpGainers[xpGainer] = damageAmount;
 			}
 		}
 
@@ -2635,7 +2606,7 @@ namespace DOL.GS
 
 			if (Health >= MaxHealth)
 			{
-				lock (m_xpGainers.SyncRoot)
+				lock (_xpGainersLock)
 				{
 					m_xpGainers.Clear();
 				}
@@ -2750,7 +2721,7 @@ namespace DOL.GS
 
 					// We clean all damage dealers if we are fully healed, no special XP calculations need to be done.
 					// May prevent players from gaining RPs after this living was healed to full?
-					lock (m_xpGainers.SyncRoot)
+					lock (_xpGainersLock)
 					{
 						m_xpGainers.Clear();
 					}
@@ -3999,7 +3970,6 @@ namespace DOL.GS
 			rangeAttackComponent.ActiveQuiverSlot = eActiveQuiverSlot.None;
 			rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
 			rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
-			m_xpGainers = new HybridDictionary();
 			m_effects = CreateEffectsList();
 
 			m_health = 1;

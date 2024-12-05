@@ -280,9 +280,7 @@ namespace DOL.GS
         {
             get { return 2000; }
         }
-        public override void DropLoot(GameObject killer)
-        {
-        }
+        public override bool CanDropLoot => false;
         public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override short Strength { get => base.Strength; set => base.Strength = 120; }

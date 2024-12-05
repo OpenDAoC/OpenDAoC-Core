@@ -174,16 +174,10 @@ namespace DOL.GS.Keeps
 
                             string listRPGainers = string.Empty;
 
-                            lock (XPGainers.SyncRoot)
+                            lock (_xpGainersLock)
                             {
-                                foreach (System.Collections.DictionaryEntry de in XPGainers)
-                                {
-                                    GameLiving living = de.Key as GameLiving;
-                                    if (living != null)
-                                    {
-                                        listRPGainers += living.Name + ";";
-                                    }
-                                }
+                                foreach (var pair in XPGainers)
+                                    listRPGainers += pair.Key.Name + ";";
                             }
 
                             keeplog.RPGainerList = listRPGainers.TrimEnd(';');
@@ -208,9 +202,6 @@ namespace DOL.GS.Keeps
             {
                 GameServer.ServerRules.ResetKeep(this, killer);
             }
-
-
-
         }
 
         /// <summary>

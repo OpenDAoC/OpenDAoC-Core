@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Keeps;
+using static DOL.GS.IGameStaticItemOwner;
 
 namespace DOL.GS.ServerRules
 {
@@ -203,7 +204,16 @@ namespace DOL.GS.ServerRules
 		/// </summary>
 		/// <param name="killedNPC">npc that died</param>
 		/// <param name="killer">killer</param>
-		void OnNPCKilled(GameNPC killedNPC, GameObject killer);
+		void OnNpcKilled(GameNPC killedNPC, GameObject killer);
+
+		void AwardExperience(GamePlayer player,
+			double npcTotalDamageReceived,
+			GameNPC killedNpc,
+			Dictionary<GamePlayer, EntityCountTotalDamagePair> playerCountAndDamage,
+			Dictionary<Group, EntityCountTotalDamagePair> groupCountAndDamage,
+			Dictionary<BattleGroup, EntityCountTotalDamagePair> battlegroupCountAndDamage);
+
+		void DropLoot(GameNPC killedNPC, GameObject killer, SortedSet<ItemOwnerTotalDamagePair> itemOwners);
 
 		/// <summary>
 		/// Invoked on Player death and deals out
@@ -439,5 +449,12 @@ namespace DOL.GS.ServerRules
 		/// Enable Handling Custom Player Level Up
 		/// </summary>
 		void OnPlayerLevelUp(GamePlayer player, int previousLevel);
+
+		public class EntityCountTotalDamagePair(int count, double damage, GamePlayer highestLevelPlayer)
+		{
+			public int Count { get; set; } = count;
+			public double Damage { get; set; } = damage;
+			public GamePlayer HighestLevelPlayer { get; set; } = highestLevelPlayer;
+		}
 	}
 }

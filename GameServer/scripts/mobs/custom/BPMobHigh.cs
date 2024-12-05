@@ -8,11 +8,9 @@ namespace DOL.GS.Scripts
         public override void Die(GameObject killer)
         {
             GamePlayer player = killer as GamePlayer;
+
             if (player is GamePlayer && IsWorthReward)
-
                 player.GainBountyPoints((this.Level * 5));
-
-            DropLoot(killer);
 
             base.Die(killer);
 

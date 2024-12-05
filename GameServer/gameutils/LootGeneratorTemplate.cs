@@ -602,7 +602,7 @@ namespace DOL.GS
         private GamePlayer CheckGroupForValidXpTimer(String xpItemKey, int dropCooldown, GamePlayer player)
         {
             //check if any group member has a valid timer to use
-            foreach (GamePlayer groupMember in player.Group.GetNearbyPlayersInTheGroup(player))
+            foreach (GamePlayer groupMember in player.Group.GetPlayersInTheGroup())
             {
                 if ((player.CurrentZone != groupMember.CurrentZone) ||
                     player.CurrentRegion != groupMember.CurrentRegion) continue;

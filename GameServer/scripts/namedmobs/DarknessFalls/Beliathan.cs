@@ -307,7 +307,6 @@ namespace DOL.GS
             RoamingRange = 350;
             RespawnInterval = -1;
             TetherRange = 2000;
-            IsWorthReward = false; // worth no reward
             Realm = eRealm.None;
             BeliathanMinionBrain adds = new BeliathanMinionBrain();
             LoadedFromScript = true;
@@ -321,9 +320,7 @@ namespace DOL.GS
             base.AddToWorld();
             return true;
         }
-        public override void DropLoot(GameObject killer) //no loot
-        {
-        }
+        public override bool CanDropLoot => false;
         public override long ExperienceValue => 0;
         public override void Die(GameObject killer)
         {

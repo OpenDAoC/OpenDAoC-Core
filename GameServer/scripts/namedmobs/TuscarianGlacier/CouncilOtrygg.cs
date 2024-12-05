@@ -200,9 +200,7 @@ namespace DOL.GS
             PetsCount--;
             base.Die(killer);
         }
-        public override void DropLoot(GameObject killer) //no loot
-        {
-        }
+        public override bool CanDropLoot => false;
         public static int PetsCount = 0;
         #region Stats
         public override short Charisma { get => base.Charisma; set => base.Charisma = 200; }

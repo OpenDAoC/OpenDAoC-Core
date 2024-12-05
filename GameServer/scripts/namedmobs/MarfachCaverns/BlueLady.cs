@@ -274,9 +274,7 @@ namespace DOL.GS
             base.Die(killer);
         }
         public override long ExperienceValue => 0;
-        public override void DropLoot(GameObject killer) //no loot
-        {
-        }
+        public override bool CanDropLoot => false;
         public override short Quickness { get => base.Quickness; set => base.Quickness = 125; }
         public override short Strength { get => base.Strength; set => base.Strength = 50; }
         public override bool AddToWorld()
@@ -343,9 +341,7 @@ namespace DOL.GS
             base.Die(killer);
         }
         public override long ExperienceValue => 0;
-        public override void DropLoot(GameObject killer) //no loot
-        {
-        }
+        public override bool CanDropLoot => false;
         public override short Quickness { get => base.Quickness; set => base.Quickness = 125; }
         public override short Strength { get => base.Strength; set => base.Strength = 50; }
         public override bool AddToWorld()

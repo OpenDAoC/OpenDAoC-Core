@@ -574,9 +574,9 @@ namespace DOL.GS.Housing
 			
 			// check every house in every region until we find
 			// a house that belongs to this player
-			foreach (var regs in _houseList.ToList())
+			foreach (KeyValuePair<ushort, Dictionary<int, House>> regs in _houseList.ToList())
 			{
-				foreach (var entry in regs.Value.ToList())
+				foreach (KeyValuePair<int, House> entry in regs.Value.ToList())
 				{
 					var house = entry.Value;
 

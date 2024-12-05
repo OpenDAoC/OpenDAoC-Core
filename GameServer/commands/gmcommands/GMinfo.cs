@@ -379,10 +379,12 @@ namespace DOL.GS.Commands
 					info.Add(" Model: " + target.Model);
 					info.Add(" Emblem: " + target.Emblem);
 					info.Add(" Realm: " + target.Realm);
-					if (target.Owners.LongLength > 0)
+					if (target.Owners.Count > 0)
 					{
 						info.Add(" ");
-						info.Add(" Owner Name: " + target.Owners[0].Name);
+
+						foreach (IGameStaticItemOwner owner in target.Owners)
+							info.Add($" Owner: {owner.Name}");
 					}
 					info.Add(" ");
 					info.Add(" OID: " + target.ObjectID);

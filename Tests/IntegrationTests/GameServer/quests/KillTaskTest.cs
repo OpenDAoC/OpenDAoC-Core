@@ -77,7 +77,7 @@ namespace DOL.Tests.Integration.Server
 				mob.CurrentRegionID = player.CurrentRegionID;
 				mob.AddToWorld();
 
-				lock (mob.XPGainers.SyncRoot)
+				lock (mob._xpGainersLock)
 				{ 
 					// First we kill mob
 					mob.XPGainers.Add(player, 1.0F);

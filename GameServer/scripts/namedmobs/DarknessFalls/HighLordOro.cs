@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using DOL.AI.Brain;
-using DOL.Events;
 using DOL.Database;
+using DOL.Events;
 using DOL.GS;
 using log4net;
 
@@ -197,8 +197,6 @@ namespace DOL.GS
 
             OroCloneBrain sBrain = new OroCloneBrain();
             SetOwnBrain(sBrain);
-
-            IsWorthReward = false;
 
             base.AddToWorld();
             return true;

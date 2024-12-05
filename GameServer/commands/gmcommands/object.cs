@@ -84,10 +84,12 @@ namespace DOL.GS.Commands
 						info.Add(" Model: " + targetObject.Model);
 						info.Add(" Emblem: " + targetObject.Emblem);
 						info.Add(" Realm: " + targetObject.Realm);
-						if (targetObject.Owners.LongLength > 0)
+						if (targetObject.Owners.Count > 0)
 						{
 							info.Add(" ");
-							info.Add(" Owner: " + targetObject.Owners[0].Name);
+
+							foreach (IGameStaticItemOwner owner in targetObject.Owners)
+								info.Add($" Owner: {owner.Name}");
 						}
 						if (string.IsNullOrEmpty(targetObject.OwnerID) == false)
 						{

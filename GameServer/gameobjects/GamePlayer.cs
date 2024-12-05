@@ -28,13 +28,14 @@ using DOL.GS.Utils;
 using DOL.Language;
 using JNogueira.Discord.Webhook.Client;
 using log4net;
+using static DOL.GS.IGameStaticItemOwner;
 
 namespace DOL.GS
 {
     /// <summary>
     /// This class represents a player inside the game
     /// </summary>
-    public class GamePlayer : GameLiving
+    public class GamePlayer : GameLiving, IGameStaticItemOwner
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -2523,7 +2524,7 @@ namespace DOL.GS
 
             if (Health >= MaxHealth)
             {
-                lock (m_xpGainers.SyncRoot)
+                lock (_xpGainersLock)
                 {
                     m_xpGainers.Clear();
                 }
@@ -4902,12 +4903,6 @@ namespace DOL.GS
                     this.Out.SendMessage("This kill was not hardcore enough to gain experience.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            if (this.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY) != null)
-            {
-                Out.SendMessage($"You may not gain experience while in a battlegroup.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return;
-            }
-
             int numCurrentLoyalDays = this.TempProperties.GetProperty<int>(CURRENT_LOYALTY_KEY);
             //check for cached loyalty days, and grab value if needed
             if (numCurrentLoyalDays == 0)
@@ -7259,6 +7254,22 @@ namespace DOL.GS
             return Money.GetMoney(Mithril, Platinum, Gold, Silver, Copper);
         }
 
+        public long ApplyGuildDues(long money)
+        {
+            Guild guild = Guild;
+
+            if (guild == null || !guild.IsGuildDuesOn())
+                return money;
+
+            long moneyToGuild = money * guild.GetGuildDuesPercent() / 100;
+
+            if (moneyToGuild <= 0)
+                return money;
+
+            guild.SetGuildBank(this, moneyToGuild);
+            return money - moneyToGuild;
+        }
+
         /// <summary>
         /// Adds money to this player
         /// </summary>
@@ -7298,9 +7309,7 @@ namespace DOL.GS
             Out.SendUpdateMoney();
 
             if (messageFormat != null)
-            {
                 Out.SendMessage(string.Format(messageFormat, Money.GetString(money)), ct, cl);
-            }
         }
 
         /// <summary>
@@ -8978,6 +8987,7 @@ namespace DOL.GS
             get { return m_lookingForGroup; }
             set { m_lookingForGroup = value; }
         }
+
         /// <summary>
         /// Gets/sets the autosplit for loot
         /// </summary>
@@ -10523,10 +10533,12 @@ namespace DOL.GS
                 return;
             }
 
-            if (floorObject.ObjectState != eObjectState.Active)
+            if (floorObject.ObjectState is not eObjectState.Active)
                 return;
 
-            if (floorObject is GameStaticItemTimed staticItem && !staticItem.IsOwner(this) && Client.Account.PrivLevel == (uint)ePrivLevel.Player)
+            if (floorObject is GameStaticItemTimed staticItem &&
+                !staticItem.IsOwner(this) &&
+                (ePrivLevel) Client.Account.PrivLevel <= ePrivLevel.Player)
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.LootDoesntBelongYou"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
@@ -10538,185 +10550,51 @@ namespace DOL.GS
                 return;
             }
 
-            if (floorObject is WorldInventoryItem)
+            if (floorObject is WorldInventoryItem floorItem)
             {
-                WorldInventoryItem floorItem = floorObject as WorldInventoryItem;
-                lock (floorItem)
+                if (floorItem.ObjectState is not eObjectState.Active)
+                    return;
+
+                if (floorItem.Item == null || !floorItem.Item.IsPickable)
                 {
-                    if (floorItem.ObjectState != eObjectState.Active)
-                        return;
-
-                    if (floorItem.Item == null || floorItem.Item.IsPickable == false)
-                    {
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.CantGetThat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-                    if (floorItem.GetPickupTime > 0)
-                    {
-                        Out.SendMessage("You must wait another " + floorItem.GetPickupTime / 1000 + " seconds to pick up " + floorItem.Name + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-
-                    Group group = Group;
-                    BattleGroup mybattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-                    if (mybattlegroup != null && mybattlegroup.GetBGLootType() == true && mybattlegroup.GetBGTreasurer() != null)
-                    {
-                        GamePlayer theTreasurer = mybattlegroup.GetBGTreasurer();
-                        if (theTreasurer.CanSeeObject(floorObject) || this.CanSeeObject((floorObject)))
-                        {
-                            bool good = false;
-                            if (floorItem.Item.IsStackable)
-                                good = theTreasurer.Inventory.AddTemplate(floorItem.Item, floorItem.Item.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                            else
-                                good = theTreasurer.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, floorItem.Item);
-
-                            if (!good)
-                            {
-                                theTreasurer.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                return;
-                            }
-                            theTreasurer.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouGet", floorItem.Item.GetName(1, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, floorItem.Item.GetName(1, false)), eChatType.CT_System);
-                            InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, floorItem.Item.Template, floorItem.Item.IsStackable ? floorItem.Item.Count : 1);
-                        }
-                        else
-                        {
-                            mybattlegroup.SendMessageToBattleGroupMembers(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.NoOneWantsThis", floorObject.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        }
-                    }
-                    else if (group != null && group.AutosplitLoot)
-                    {
-                        List<GameObject> owners = new List<GameObject>((GameObject[])floorItem.Owners);
-                        List<GamePlayer> eligibleMembers = new List<GamePlayer>(8);
-                        foreach (GamePlayer ply in group.GetNearbyPlayersInTheGroup(this))
-                        {
-                            if (ply.IsAlive
-                                && ply.CanSeeObject(floorObject)
-                                && this.IsWithinRadius( ply, WorldMgr.MAX_EXPFORKILL_DISTANCE )
-                                && (ply.ObjectState == eObjectState.Active)
-                                && (ply.AutoSplitLoot)
-                                && (owners.Contains(ply) || owners.Count == 0)
-                                && (ply.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) != eInventorySlot.Invalid))
-                            {
-                                eligibleMembers.Add(ply);
-                            }
-                        }
-
-                        if (eligibleMembers.Count <= 0)
-                        {
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.NoOneWantsThis", floorObject.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-
-                        int i = Util.Random(0, eligibleMembers.Count - 1);
-                        GamePlayer eligibleMember = eligibleMembers[i];
-                        if (eligibleMember != null)
-                        {
-                            bool good = false;
-                            if (floorItem.Item.IsStackable) // poison ID is lost here
-                                good = eligibleMember.Inventory.AddTemplate(floorItem.Item, floorItem.Item.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                            else
-                                good = eligibleMember.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, floorItem.Item);
-
-                            if (!good)
-                            {
-                                eligibleMember.Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                return;
-                            }
-                            Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, floorItem.Item.GetName(1, false)), eChatType.CT_System);
-                            group.SendMessageToGroupMembers(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.Autosplit", floorItem.Item.GetName(1, true), eligibleMember.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, floorItem.Item.Template, floorItem.Item.IsStackable ? floorItem.Item.Count : 1);
-                        }
-                    }
-                    else
-                    {
-                        bool good = false;
-                        if (floorItem.Item.IsStackable)
-                            good = Inventory.AddTemplate(GameInventoryItem.Create(floorItem.Item), floorItem.Item.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                        else
-                            good = Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, floorItem.Item);
-
-                        if (!good)
-                        {
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouGet", floorItem.Item.GetName(1, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, floorItem.Item.GetName(1, false)), eChatType.CT_System);
-                        InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, floorItem.Item.Template, floorItem.Item.IsStackable ? floorItem.Item.Count : 1);
-                    }
-                    floorItem.RemoveFromWorld();
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.CantGetThat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
                 }
+
+                if (floorItem.GetPickupTime > 0)
+                {
+                    Out.SendMessage($"You must wait another {floorItem.GetPickupTime / 1000} seconds to pick up {floorItem.Name}!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return;
+                }
+
+                BattleGroup battleGroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+
+                if (battleGroup == null || battleGroup.TryPickUpItem(this, floorItem) is TryPickUpResult.CANNOT_HANDLE)
+                {
+                    Group group = Group;
+
+                    if (group == null || group.TryPickUpItem(this, floorItem) is TryPickUpResult.CANNOT_HANDLE)
+                        TryPickUpItem(this, floorItem);
+                }
+
                 return;
             }
 
-            if (floorObject is GameMoney)
+            if (floorObject is GameMoney money)
             {
-                GameMoney moneyObject = floorObject as GameMoney;
-                lock (moneyObject)
+                if (money.ObjectState is not eObjectState.Active)
+                    return;
+
+                BattleGroup battleGroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+
+                if (battleGroup == null || battleGroup.TryPickUpMoney(this, money) is TryPickUpResult.CANNOT_HANDLE)
                 {
-                    if (moneyObject.ObjectState != eObjectState.Active)
-                        return;
+                    Group group = Group;
 
-                    if (Group != null && Group.AutosplitCoins)
-                    {
-                        //Spread the money in the group
-                        var eligibleMembers = from p in Group.GetNearbyPlayersInTheGroup(this)
-                            where p.IsAlive && p.CanSeeObject(floorObject) && p.ObjectState == eObjectState.Active
-                            select p;
-                        var gamePlayers = eligibleMembers as GamePlayer[] ?? eligibleMembers.ToArray();
-                        if (!gamePlayers.Any())
-                        {
-                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.NoOneGroupWantsMoney"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                            return;
-                        }
-
-                        long moneyToPlayer = moneyObject.TotalCopper / gamePlayers.Count();
-                        foreach (GamePlayer eligibleMember in gamePlayers)
-                        {
-                            if (eligibleMember.Guild != null && eligibleMember.Guild.IsGuildDuesOn())
-                            {
-                                long moneyToGuild = moneyToPlayer * eligibleMember.Guild.GetGuildDuesPercent() / 100;
-                                if (eligibleMember.Guild.GetGuildDuesPercent() != 100)
-                                    eligibleMember.AddMoney(moneyToPlayer, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YourLootShare", Money.GetString(moneyToPlayer)));
-                                else
-                                    eligibleMember.AddMoney(moneyToPlayer);
-
-                                InventoryLogging.LogInventoryAction("(ground)", eligibleMember, eInventoryActionType.Loot, moneyToPlayer);
-                                eligibleMember.Guild.SetGuildBank(eligibleMember, moneyToGuild);
-                            }
-                            else
-                            {
-                                eligibleMember.AddMoney(moneyToPlayer, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YourLootShare", Money.GetString(moneyToPlayer)));
-                                InventoryLogging.LogInventoryAction("(ground)", eligibleMember, eInventoryActionType.Loot, moneyToPlayer);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //Add money only to picking player
-                        if (Guild != null && Guild.IsGuildDuesOn() && moneyObject.TotalCopper > 0 && Guild.GetGuildDuesPercent() > 0)
-                        {
-                            long moneyToGuild = moneyObject.TotalCopper * Guild.GetGuildDuesPercent() / 100;
-                            if (Guild.GetGuildDuesPercent() != 100)
-                            {
-                                AddMoney(moneyObject.TotalCopper, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouPickUp", Money.GetString(moneyObject.TotalCopper)));
-                            }
-                            else
-                            {
-                                AddMoney(moneyObject.TotalCopper);
-                            }
-                            InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, moneyObject.TotalCopper);
-                            Guild.SetGuildBank(this, moneyToGuild);
-                        }
-                        else
-                        {
-                            AddMoney(moneyObject.TotalCopper, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouPickUp", Money.GetString(moneyObject.TotalCopper)));
-                            InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, moneyObject.TotalCopper);
-                        }
-                    }
-                    moneyObject.Delete();
+                    if (group == null || group.TryPickUpMoney(this, money) is TryPickUpResult.CANNOT_HANDLE)
+                        TryPickUpMoney(this, money);
                 }
+
                 return;
             }
 
@@ -10760,6 +10638,69 @@ namespace DOL.GS
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.CantGetThat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             return;
+        }
+
+        public bool TryAutoPickUpMoney(GameMoney money)
+        {
+            return Autoloot && TryPickUpMoney(this, money) is TryPickUpResult.SUCCESS;
+        }
+
+        public bool TryAutoPickUpItem(WorldInventoryItem inventoryItem)
+        {
+            return Autoloot && TryPickUpItem(this, inventoryItem) is TryPickUpResult.SUCCESS;
+        }
+
+        public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
+        {
+            if (this != source)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"The passed down {nameof(source)} isn't equal to 'this'. Money pick up aborted. ({nameof(source)}: {source}) (this: {this})");
+
+                return TryPickUpResult.CANNOT_HANDLE;
+            }
+
+            long moneyToPlayer = ApplyGuildDues(money.TotalCopper);
+
+            if (moneyToPlayer > 0)
+            {
+                AddMoney(moneyToPlayer, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouPickUp", Money.GetString(moneyToPlayer)));
+                InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, moneyToPlayer);
+            }
+
+            money.RemoveFromWorld();
+            return TryPickUpResult.SUCCESS;
+        }
+
+        public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item)
+        {
+            if (this != source)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"The passed down {nameof(source)} isn't equal to 'this'. Item pick up aborted. ({nameof(source)}: {source}) (this: {this})");
+
+                return TryPickUpResult.CANNOT_HANDLE;
+            }
+
+            if (!GiveItem(this, item.Item))
+            {
+                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return TryPickUpResult.FAILED;
+            }
+
+            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Item.GetName(1, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, item.Item.GetName(1, false)), eChatType.CT_System);
+            InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, item.Item.Template, item.Item.IsStackable ? item.Item.Count : 1);
+            item.RemoveFromWorld();
+            return TryPickUpResult.SUCCESS;
+
+            static bool GiveItem(GamePlayer player, DbInventoryItem item)
+            {
+                if (item.IsStackable)
+                    return player.Inventory.AddTemplate(item, item.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
+
+                return player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item);
+            }
         }
 
         /// <summary>

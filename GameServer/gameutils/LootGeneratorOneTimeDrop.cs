@@ -144,7 +144,7 @@ namespace DOL.GS
 
 				if (lootOTDs != null)
 				{
-					lock (mob.XPGainers.SyncRoot)
+					lock (mob._xpGainersLock)
 					{
 						foreach (GameObject gainer in mob.XPGainers.Keys)
 						{

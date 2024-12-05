@@ -155,7 +155,7 @@ namespace DOL.GS.Quests
                         return;
 
                     int lowestCon = int.MaxValue;
-                    lock (target.XPGainers.SyncRoot)
+                    lock (target._xpGainersLock)
                     {
                         if (target.XPGainers.Keys.Count == 0)
                         {
@@ -205,10 +205,8 @@ namespace DOL.GS.Quests
                             ArrayList dropMessages = new ArrayList();
                             DbInventoryItem itemdrop = GenerateItem(ItemName, 1, ObjectModels[ItemIndex]);
                             WorldInventoryItem droppeditem = new WorldInventoryItem(itemdrop);
-                            for (int a = 0; a < Owners.Count; a++)
-                            {
-                                droppeditem.AddOwner((GameObject)Owners[a]);
-                            }
+                            foreach (IGameStaticItemOwner owner in Owners)
+                                droppeditem.AddOwner(owner);
                             droppeditem.Name = itemdrop.Name;
                             droppeditem.Level = 1;
                             droppeditem.X = target.X;

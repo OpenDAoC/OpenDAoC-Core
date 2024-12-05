@@ -101,9 +101,9 @@ public class BountyManager
             List<GamePlayer> playersToAward = new List<GamePlayer>();
 
             var gainerList = killedPlayer.XPGainers;
-            foreach (System.Collections.DictionaryEntry de in gainerList)
+            foreach (var pair in gainerList)
             {
-                GameLiving living = de.Key as GameLiving;
+                GameLiving living = pair.Key as GameLiving;
                 GamePlayer player = living as GamePlayer;
                 if (player == null) continue;
                 if (player.Realm == activeBounty.BountyRealm)

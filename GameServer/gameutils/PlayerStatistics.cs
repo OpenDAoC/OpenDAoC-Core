@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -428,23 +427,23 @@ namespace DOL.GS.GameEvents
             if (killedPlayer.DeathTime + noExpSeconds > killedPlayer.PlayedTime)
                 return 0;
 
-            float totalDmg = 0.0f;
+            double totalDmg = 0;
 
-            lock (killedPlayer.XPGainers.SyncRoot)
+            lock (killedPlayer._xpGainersLock)
             {
-                foreach (DictionaryEntry de in killedPlayer.XPGainers)
-                    totalDmg += (float) de.Value;
+                foreach (var pair in killedPlayer.XPGainers)
+                    totalDmg += pair.Value;
 
-                foreach (DictionaryEntry de in killedPlayer.XPGainers)
+                foreach (var pair in killedPlayer.XPGainers)
                 {
-                    GamePlayer key = de.Key as GamePlayer;
+                    GamePlayer key = pair.Key as GamePlayer;
 
                     if (killer == key)
                     {
                         if (!killer.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                             return 0;
 
-                        double damagePercent = (float) de.Value / totalDmg;
+                        double damagePercent = pair.Value / totalDmg;
 
                         if (!key.IsAlive)//Dead living gets 25% exp only
                             damagePercent *= 0.25;

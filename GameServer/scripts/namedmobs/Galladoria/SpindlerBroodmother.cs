@@ -463,9 +463,7 @@ namespace DOL.GS
             return true;
         }
 
-        public override void DropLoot(GameObject killer) //no loot
-        {
-        }
+        public override bool CanDropLoot => false;
         public override void Die(GameObject killer)
         {
             base.Die(killer); //null to not gain experience
@@ -489,7 +487,6 @@ namespace DOL.AI.Brain
 
         public override void Think()
         {
-            Body.IsWorthReward = false;
             foreach (GamePlayer player in Body.GetPlayersInRadius(2000))
             {
                 if (player != null && player.IsAlive)
@@ -558,7 +555,6 @@ namespace DOL.GS
             MeleeDamageType = eDamageType.Slash;
             RespawnInterval = -1;
             Strength = 100;
-            IsWorthReward = false; //worth no reward
             Size = (byte) Util.Random(30, 40);
             Level = 50;
             Faction = FactionMgr.GetFactionByID(96);

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using DOL.AI;
@@ -16,7 +15,6 @@ using DOL.GS.Quests;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
 using DOL.Language;
-using ECS.Debug;
 
 namespace DOL.GS
 {
@@ -2744,56 +2742,7 @@ namespace DOL.GS
 		/// Tests if this MOB should give XP and loot based on the XPGainers
 		/// </summary>
 		/// <returns>true if it should deal XP and give loot</returns>
-		public virtual bool IsWorthReward
-		{
-			get
-			{
-				if (CurrentRegion == null || CurrentRegion.Time - CHARMED_NOEXP_TIMEOUT < TempProperties.GetProperty<long>(CHARMED_TICK_PROP))
-					return false;
-				if (this.Brain is IControlledBrain)
-					return false;
-				
-				HybridDictionary XPGainerList = new HybridDictionary();
-				lock (m_xpGainers.SyncRoot)
-				{
-					foreach (DictionaryEntry gainer in m_xpGainers)
-					{
-						XPGainerList.Add(gainer.Key, gainer.Value);
-					}
-				}
-				if (XPGainerList.Keys.Count == 0) return false;
-				foreach (DictionaryEntry de in XPGainerList)
-				{
-					GameObject obj = (GameObject)de.Key;
-					if (obj is GamePlayer)
-					{
-						//If a gameplayer with privlevel > 1 attacked the
-						//mob, then the players won't gain xp ...
-						if (((GamePlayer)obj).Client.Account.PrivLevel > 1)
-							return false;
-						//If a player to which we are gray killed up we
-						//aren't worth anything either
-						if (((GamePlayer)obj).IsObjectGreyCon(this))
-							return false;
-					}
-					else
-					{
-						//If object is no gameplayer and realm is != none
-						//then it means that a npc has hit this living and
-						//it is not worth any xp ...
-						//if(obj.Realm != (byte)eRealm.None)
-						//If grey to at least one living then no exp
-						if (obj is GameLiving && ((GameLiving)obj).IsObjectGreyCon(this))
-							return false;
-					}
-				}
-				return true;
-				
-			}
-			set
-			{
-			}
-		}
+		public virtual bool IsWorthReward => Brain is not IControlledBrain && CurrentRegion.Time - CHARMED_NOEXP_TIMEOUT >= TempProperties.GetProperty<long>(CHARMED_TICK_PROP);
 
 		protected void ControlledNPC_Release()
 		{
@@ -2805,75 +2754,34 @@ namespace DOL.GS
 		/// </summary>
 		public override void ProcessDeath(GameObject killer)
 		{
-			int hashCode = GetHashCode();
-
 			try
 			{
 				Brain?.KillFSM();
-
 				FireAmbientSentence(eAmbientTrigger.dying, killer);
 
 				if (ControlledBrain != null)
 					ControlledNPC_Release();
+
+				StopMoving();
 
 				if (killer is GameNPC pet && pet.Brain is IControlledBrain petBrain)
 					killer = petBrain.GetPlayerOwner();
 
 				if (killer != null)
 				{
-					Diagnostics.StartPerfCounter($"ReaperService-NPC-ProcessDeath-DropLoot-NPC({hashCode})");
-
-					if (IsWorthReward)
-						DropLoot(killer);
-
-					Diagnostics.StopPerfCounter($"ReaperService-NPC-ProcessDeath-DropLoot-NPC({hashCode})");
-					Diagnostics.StartPerfCounter($"ReaperService-NPC-ProcessDeath-AreaMessages-NPC({hashCode})");
-
-					Message.SystemToArea(this, GetName(0, true) + " dies!", eChatType.CT_PlayerDied, killer);
+					Message.SystemToArea(this, $"{GetName(0, true)} dies!", eChatType.CT_PlayerDied, killer);
 
 					if (killer is GamePlayer player)
-						player.Out.SendMessage(GetName(0, true) + " dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage($"{GetName(0, true)} dies!", eChatType.CT_PlayerDied, eChatLoc.CL_SystemWindow);
 
-					Diagnostics.StopPerfCounter($"ReaperService-NPC-ProcessDeath-AreaMessages-NPC({hashCode})");
+					// Deal out experience, realm points, loot... Based on server rules.
+					GameServer.ServerRules.OnNpcKilled(this, killer);
 				}
 
-				StopMoving();
-
-				if (Group != null)
-					Group.RemoveMember(this);
-
-				if (killer != null)
-				{
-					// Handle faction alignement changes.
-					if (Faction != null && killer is GamePlayer)
-					{
-						lock (m_xpGainers.SyncRoot)
-						{
-							foreach (GameLiving xpGainer in m_xpGainers.Keys)
-							{
-								GamePlayer playerXpGainer = xpGainer as GamePlayer;
-
-								if (playerXpGainer != null && playerXpGainer.IsObjectGreyCon(this))
-									continue;
-
-								if (playerXpGainer != null &&
-									playerXpGainer.ObjectState == eObjectState.Active &&
-									playerXpGainer.IsAlive &&
-									playerXpGainer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-									Faction.OnMemberKilled(playerXpGainer);
-							}
-						}
-					}
-
-					// Deal out exp and realm points based on server rules.
-					Diagnostics.StartPerfCounter($"ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC({hashCode})");
-					GameServer.ServerRules.OnNPCKilled(this, killer);
-					Diagnostics.StopPerfCounter($"ReaperService-NPC-ProcessDeath-OnNPCKIlled-NPC({hashCode})");
-				}
-
+				Group?.RemoveMember(this);
 				base.ProcessDeath(killer);
 
-				lock (XPGainers.SyncRoot)
+				lock (_xpGainersLock)
 				{
 					XPGainers.Clear();
 				}
@@ -3242,199 +3150,7 @@ namespace DOL.GS
 			base.OnAttackedByEnemy(ad);
 		}
 
-		/// <summary>
-		/// This method is called to drop loot after this mob dies
-		/// </summary>
-		/// <param name="killer">The killer</param>
-		public virtual void DropLoot(GameObject killer)
-		{
-			// TODO: mobs drop "a small chest" sometimes
-			ArrayList droplist = new ArrayList();
-			ArrayList autolootlist = new ArrayList();
-			ArrayList aplayer = new ArrayList();
-			
-			HybridDictionary XPGainerList = new HybridDictionary();
-			lock (m_xpGainers.SyncRoot)
-			{
-				foreach (DictionaryEntry gainer in m_xpGainers)
-				{
-					XPGainerList.Add(gainer.Key, gainer.Value);
-				}
-			}
-			
-			if (XPGainerList.Keys.Count == 0) return;
-
-			DbItemTemplate[] lootTemplates = LootMgr.GetLoot(this, killer);
-
-			foreach (DbItemTemplate lootTemplate in lootTemplates)
-			{
-				if (lootTemplate == null) continue;
-				GameStaticItem loot = null;
-				if (GameMoney.IsItemMoney(lootTemplate.Name))
-				{
-					long value = lootTemplate.Price;
-
-					//[StephenxPimentel] - Zone Bonus XP Support
-					if (Properties.ENABLE_ZONE_BONUSES)
-					{
-						GamePlayer killerPlayer;
-
-						if (killer is GamePlayer player)
-							killerPlayer = player;
-						else if (killer is GameNPC npc)
-						{
-							if (npc.Brain is IControlledBrain brain)
-								killerPlayer = brain.GetPlayerOwner();
-							else
-								return;
-						}
-						else
-							return;
-
-						int zoneBonus = (((int)value * ZoneBonus.GetCoinBonus(killerPlayer) / 100));
-						if (zoneBonus > 0)
-						{
-							long amount = (long)(zoneBonus * ServerProperties.Properties.MONEY_DROP);
-							killerPlayer.AddMoney(amount,
-												  ZoneBonus.GetBonusMessage(killerPlayer, (int)(zoneBonus * ServerProperties.Properties.MONEY_DROP), ZoneBonus.eZoneBonusType.COIN),
-												  eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-							InventoryLogging.LogInventoryAction(this, killerPlayer, eInventoryActionType.Loot, amount);
-						}
-					}
-
-					if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_5, (eRealm)killer.Realm))
-						value += (value / 100) * 5;
-					else if (Keeps.KeepBonusMgr.RealmHasBonus(DOL.GS.Keeps.eKeepBonusType.Coin_Drop_3, (eRealm)killer.Realm))
-						value += (value / 100) * 3;
-
-					//this will need to be changed when the ML for increasing money is added
-					if (value != lootTemplate.Price)
-					{
-						GamePlayer killerPlayer = killer as GamePlayer;
-						if (killerPlayer != null)
-							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client, "GameNPC.DropLoot.AdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-					}
-
-					//Mythical Coin bonus property (Can be used for any equipped item, bonus 235)
-					if (killer is GamePlayer)
-					{
-						GamePlayer killerPlayer = killer as GamePlayer;
-						if (killerPlayer.GetModified(eProperty.MythicalCoin) > 0)
-						{
-							value += (value * killerPlayer.GetModified(eProperty.MythicalCoin)) / 100;
-							killerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(killerPlayer.Client,
-																					"GameNPC.DropLoot.ItemAdditionalMoney", Money.GetString(value - lootTemplate.Price)), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-						}
-					}
-
-					loot = new GameMoney(value, this);
-					loot.Name = lootTemplate.Name;
-					loot.Model = (ushort)lootTemplate.Model;
-				}
-				else
-				{
-					DbInventoryItem invitem;
-
-					if (lootTemplate is DbItemUnique)
-						invitem = GameInventoryItem.Create(lootTemplate as DbItemUnique);
-					else
-						invitem = GameInventoryItem.Create(lootTemplate);
-
-					if (lootTemplate is GeneratedUniqueItem)
-					{
-						invitem.IsROG = true;
-					}
-
-					loot = new WorldInventoryItem(invitem);
-					loot.X = X;
-					loot.Y = Y;
-					loot.Z = Z;
-					loot.Heading = Heading;
-					loot.CurrentRegion = CurrentRegion;
-					(loot as WorldInventoryItem).Item.IsCrafted = false;
-					(loot as WorldInventoryItem).Item.Creator = Name;
-
-					// This may seem like an odd place for this code, but loot-generating code further up the line
-					// is dealing strictly with ItemTemplate objects, while you need the InventoryItem in order
-					// to be able to set the Count property.
-					// Converts single drops of loot with PackSize > 1 (and MaxCount >= PackSize) to stacks of Count = PackSize
-					if (((WorldInventoryItem)loot).Item.PackSize > 1 && ((WorldInventoryItem)loot).Item.MaxCount >= ((WorldInventoryItem)loot).Item.PackSize)
-					{
-						((WorldInventoryItem)loot).Item.Count = ((WorldInventoryItem)loot).Item.PackSize;
-					}
-				}
-
-				GamePlayer playerAttacker = null;
-				BattleGroup activeBG = null;
-
-				if (killer is GamePlayer playerKiller && activeBG != null)
-					activeBG = playerKiller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-				
-				foreach (GameObject gainer in XPGainerList.Keys)
-				{
-					//if a battlegroup killed the mob, filter out any non BG players
-					if (activeBG != null && gainer is GamePlayer p &&
-						p.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY) != activeBG)
-						continue;
-					
-					if (gainer is GamePlayer)
-					{
-						playerAttacker = gainer as GamePlayer;
-						if (loot.Realm == 0)
-							loot.Realm = ((GamePlayer)gainer).Realm;
-					}
-					loot.AddOwner(gainer);
-					if (gainer is GameNPC)
-					{
-						IControlledBrain brain = ((GameNPC)gainer).Brain as IControlledBrain;
-						if (brain != null)
-						{
-							playerAttacker = brain.GetPlayerOwner();
-							loot.AddOwner(brain.GetPlayerOwner());
-						}
-					}
-				}
-				if (playerAttacker == null) return; // no loot if mob kills another mob
-
-
-				droplist.Add(loot.GetName(1, false));
-				Diagnostics.StartPerfCounter("ReaperService-NPC-DropLoot-AddToWorld-loot("+loot.GetHashCode()+")");
-				loot.AddToWorld();
-				Diagnostics.StopPerfCounter("ReaperService-NPC-DropLoot-AddToWorld-loot("+loot.GetHashCode()+")");
-
-				foreach (GameObject gainer in XPGainerList.Keys)
-				{
-					if (gainer is GamePlayer)
-					{
-						GamePlayer player = gainer as GamePlayer;
-						if (player.Autoloot && loot.IsWithinRadius(player, 2400)) // should be large enough for most casters to autoloot
-						{
-							if (player.Group == null || (player.Group != null && player == player.Group.Leader))
-								aplayer.Add(player);
-							autolootlist.Add(loot);
-						}
-					}
-				}
-			}
-
-			Diagnostics.StartPerfCounter("ReaperService-NPC-DropLoot-BroadcastLoot-npc("+this.GetHashCode()+")");
-			BroadcastLoot(droplist);
-			Diagnostics.StopPerfCounter("ReaperService-NPC-DropLoot-BroadcastLoot-npc("+this.GetHashCode()+")");
-
-			Diagnostics.StartPerfCounter("ReaperService-NPC-DropLoot-PickupLoot-npc("+this.GetHashCode()+")");
-			if (autolootlist.Count > 0)
-			{
-				foreach (GameObject obj in autolootlist)
-				{
-					foreach (GamePlayer player in aplayer)
-					{
-						player.PickupObject(obj, true);
-						break;
-					}
-				}
-			}
-			Diagnostics.StopPerfCounter("ReaperService-NPC-DropLoot-PickupLoot-npc("+this.GetHashCode()+")");
-		}
+		public virtual bool CanDropLoot => true;
 
 		/// <summary>
 		/// The enemy is healed, so we add to the xp gainers list
@@ -3476,7 +3192,7 @@ namespace DOL.GS
 			}
 			else
 			{
-				this.AddXPGainer(healSource, (float)healAmount);
+				this.AddXPGainer(healSourceLiving, healAmount);
 			}
 
 			if (healSource is GamePlayer || (healSource is GameNPC healSourceNpc && (healSourceNpc.Flags & eFlags.PEACE) == 0))
@@ -4517,6 +4233,7 @@ namespace DOL.GS
 
 		private double m_campBonus = 1;
 
+		public virtual bool CanAwardKillCredit => false;
 		public virtual double CampBonus { get => m_campBonus; set => m_campBonus = value; }
 		public virtual double MaxHealthScalingFactor => 1.0;
 		public double DamageFactor { get => damageFactor; set => damageFactor = value; }

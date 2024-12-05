@@ -4,6 +4,7 @@ using System.Collections;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
+using DOL.GS.API;
 
 namespace DOL.GS.Scripts
 {
@@ -73,9 +74,8 @@ namespace DOL.GS.Scripts
                 player.GainBountyPoints((this.Level * 5));// grants BP at Server BP rate * 5 * level of mob
                 player.MoveTo(90, 51597, 38366, 10858, 3281);// Moved player to specified location
             }
-                DropLoot(killer);
 
-                StartRespawn();
-            }
+            StartRespawn();
         }
     }
+}

@@ -138,7 +138,6 @@ namespace DOL.GS
                     m_pet.LoadedFromScript = true;
                     m_pet.TetherRange = PetTetherRange;
                     m_pet.RespawnInterval = -1;
-                    m_pet.IsWorthReward = false;
 
                     if (PetSize > 0)
                         m_pet.Size = PetSize;
