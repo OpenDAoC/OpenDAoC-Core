@@ -40,8 +40,9 @@
         <RegisterForComInterop>False</RegisterForComInterop>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="System.ServiceProcess.ServiceController" Version="8.0.0" />
-        <PackageReference Include="log4net" Version="2.0.16" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="9.0.0" />
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.0" />
+        <PackageReference Include="log4net" Version="3.0.3" />
         <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" />
     </ItemGroup>
     <ItemGroup>
