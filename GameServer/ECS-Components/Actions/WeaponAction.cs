@@ -285,7 +285,10 @@ namespace DOL.GS
             }
 
             attackData = _owner.attackComponent.MakeAttack(this, _target, mainWeapon, style, mainHandEffectiveness, _interval, _isDualWieldAttack);
-            attackData.AnimationId = animationId;
+
+            if (style == null)
+                attackData.AnimationId = animationId;
+
             _owner.attackComponent.attackAction.LastAttackData = attackData;
 
             if (attackData.Target == null ||
