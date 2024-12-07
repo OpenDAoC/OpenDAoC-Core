@@ -235,11 +235,12 @@ namespace DOL.GS
 
         public static bool IsDualWieldAttack(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon, GameLiving attacker, int leftHandSwingCount)
         {
+            if (attacker is GameNPC npcAttacker)
+                return npcAttacker.LeftHandSwingChance > 0; // We can't rely on object types for NPCs.
+
+            // I'm not sure this has to be that complicated. We shouldn't even need `leftHandSwingCount`.
             if (leftHandSwingCount > 0)
             {
-                if (attacker is GameNPC)
-                    return true;
-
                 return (eObjectType) mainWeapon.Object_Type is not eObjectType.HandToHand &&
                     (eObjectType) leftWeapon?.Object_Type is not eObjectType.HandToHand &&
                     (eObjectType) mainWeapon.Object_Type is not eObjectType.TwoHandedWeapon &&

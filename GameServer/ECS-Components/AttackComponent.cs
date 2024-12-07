@@ -2683,7 +2683,7 @@ namespace DOL.GS
         public int CalculateLeftHandSwingCount(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon)
         {
             // Let's make NPCs require an actual weapon too. It looks silly otherwise.
-            if (leftWeapon == null || !CanUseLefthandedWeapon) 
+            if (leftWeapon == null || !CanUseLefthandedWeapon)
                 return 0;
 
             if (owner is GameNPC npcOwner)
