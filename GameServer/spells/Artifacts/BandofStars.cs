@@ -1,7 +1,6 @@
 using System;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
 {
@@ -22,7 +21,7 @@ namespace DOL.GS.Spells
 
             return true;
         }
-        
+
         private void DealDamage(GameLiving target)
         {
             int ticksToTarget = m_caster.GetDistanceTo(target) * 100 / 85; // 85 units per 1/10s
@@ -34,17 +33,7 @@ namespace DOL.GS.Spells
             BoltOnTargetAction bolt = new BoltOnTargetAction(Caster, target, this);
             bolt.Start(1 + ticksToTarget);
         }
-        
-        public override void FinishSpellCast(GameLiving target)
-        {
-            if (target is Keeps.GameKeepDoor || target is Keeps.GameKeepComponent)
-            {
-                MessageToCaster("Your spell has no effect on the keep component!", eChatType.CT_SpellResisted);
-                return;
-            }
-            base.FinishSpellCast(target);
-        }
-        
+
         protected class BoltOnTargetAction : ECSGameTimerWrapperBase
         {
             protected readonly GameLiving m_boltTarget;

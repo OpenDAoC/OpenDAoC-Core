@@ -607,15 +607,7 @@ namespace DOL.GS.Styles
 			if (caster is GameSummonedPet pet)
 				pet.ScalePetSpell(spell);
 
-			ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Combat_Styles_Effect));
-
-			if (spellHandler == null)
-				return null;
-
-			if ((target is GameKeepComponent || target is GameDoorBase) && !spellHandler.HasPositiveEffect)
-				return null;
-
-			return spellHandler;
+			return ScriptMgr.CreateSpellHandler(caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Combat_Styles_Effect));
 		}
 
 		/// <summary>

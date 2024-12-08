@@ -41,6 +41,11 @@ namespace DOL.GS.Spells
         public override bool StartSpell(GameLiving target)
         {
             // The argument is null when the effect is pulsing.
+            // In which case we don't call base, since pulses are technically offensive spells applied on friendly NPCs.
+
+            if (target != null)
+                return base.StartSpell(target);
+
             target ??= Target;
 
             if (Util.ChanceDouble(CalculateSpellResistChance(target)))

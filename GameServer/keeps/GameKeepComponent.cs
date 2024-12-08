@@ -140,16 +140,6 @@ namespace DOL.GS.Keeps
 		}
 
 		/// <summary>
-		/// Procs don't normally fire on game keep components
-		/// </summary>
-		public override bool AllowWeaponMagicalEffect(AttackData ad, DbInventoryItem weapon, Spell weaponSpell)
-		{
-			if (weapon.Flags == 10) //Bruiser or any other item needs Itemtemplate "Flags" set to 10 to proc on keep components
-				return true;
-			else return false;
-		}
-
-		/// <summary>
 		/// do not regen
 		/// </summary>
 		public override void StartHealthRegeneration()

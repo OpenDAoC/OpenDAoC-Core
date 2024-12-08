@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
@@ -27,11 +28,11 @@ namespace DOL.GS.Spells
 			Spell healSpell = SkillBase.GetSpellByID(healID);
 			SpellHandler healthConSpellHandler = ScriptMgr.CreateSpellHandler(target, healSpell, potionEffectLine) as SpellHandler;
 
-			pomSpellHandler.StartSpell(target);
-			endSpellHandler.StartSpell(target);
-			healthConSpellHandler.StartSpell(target);
-
-			return true;
+			bool success;
+			success = pomSpellHandler.StartSpell(target);
+			success = endSpellHandler.StartSpell(target) || success;
+			success = healthConSpellHandler.StartSpell(target) || success;
+			return success;
 		}
         public override eProperty Property1 => eProperty.PowerRegenerationAmount;
         public override eProperty Property2 => eProperty.EnduranceRegenerationAmount;
@@ -90,23 +91,23 @@ namespace DOL.GS.Spells
 			Spell healSpell = SkillBase.GetSpellByID(healID);
 			SpellHandler healthConSpellHandler = ScriptMgr.CreateSpellHandler(target, healSpell, potionEffectLine) as SpellHandler;
 
-			pomSpellHandler.StartSpell(target);
-			endSpellHandler.StartSpell(target);
-			healthConSpellHandler.StartSpell(target);
+			bool success;
+			success = pomSpellHandler.StartSpell(target);
+			success = endSpellHandler.StartSpell(target) || success;
+			success = healthConSpellHandler.StartSpell(target) || success;
 
-			if(Caster.ControlledBrain != null && Caster.ControlledBrain is AI.Brain.NecromancerPetBrain necrop)
-            {
-				SpellHandler petHealHandler = ScriptMgr.CreateSpellHandler(necrop.Body, healSpell, potionEffectLine) as SpellHandler;
-				petHealHandler.StartSpell(necrop.Body);
+			if (Caster.ControlledBrain is NecromancerPetBrain brain)
+			{
+				SpellHandler petHealHandler = ScriptMgr.CreateSpellHandler(brain.Body, healSpell, potionEffectLine) as SpellHandler;
+				success = petHealHandler.StartSpell(brain.Body) || success;
 			}
 
-			return true;
+			return success;
 		}
+
 		public override eProperty Property1 => eProperty.PowerRegenerationAmount;
 		public override eProperty Property2 => eProperty.EnduranceRegenerationAmount;
 		public override eProperty Property3 => eProperty.HealthRegenerationAmount;
-
-
 
 		// constructor
 		public BeadRegen(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)

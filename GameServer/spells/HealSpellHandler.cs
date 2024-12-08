@@ -57,9 +57,6 @@ namespace DOL.GS.Spells
             if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
                 return false;
 
-            if (target is Keeps.GameKeepComponent or Keeps.GameKeepDoor)
-                return false;
-
             if (!target.IsAlive)
             {
                 MessageToCaster($"{target.GetName(0, true)} is dead!", eChatType.CT_SpellResisted);

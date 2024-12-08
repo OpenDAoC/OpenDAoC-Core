@@ -253,20 +253,6 @@ namespace DOL.GS.Keeps
 
 		#region function override
 
-		/// <summary>
-		/// Procs don't normally fire on game keep components
-		/// </summary>
-		/// <param name="ad"></param>
-		/// <param name="weapon"></param>
-		/// <returns></returns>
-		public override bool AllowWeaponMagicalEffect(AttackData ad, DbInventoryItem weapon, Spell weaponSpell)
-		{
-			if (weapon.Flags == 10) //Bruiser or any other item needs Itemtemplate "Flags" set to 10 to proc on keep components
-				return true;
-			else return false; // special code goes here
-		}
-
-
 		public override void TakeDamage(GameObject source, eDamageType damageType, int damageAmount, int criticalAmount)
 		{
 			if (damageAmount > 0 && IsAlive)

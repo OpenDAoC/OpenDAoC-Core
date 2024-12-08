@@ -6,6 +6,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
+using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
@@ -1513,19 +1514,19 @@ namespace DOL.GS.Spells
 		/// <returns></returns>
 		public virtual IList<GameLiving> SelectTargets(GameObject castTarget)
 		{
-			List<GameLiving> list = new(8);
+			List<GameLiving> list = new();
 			GameLiving target = castTarget as GameLiving;
 			eSpellTarget modifiedTarget = Spell.Target;
 			ushort modifiedRadius = (ushort) Spell.Radius;
 
-			if (modifiedTarget == eSpellTarget.PET && !HasPositiveEffect)
+			if (modifiedTarget is eSpellTarget.PET && !HasPositiveEffect)
 				modifiedTarget = eSpellTarget.ENEMY;
 
 			switch (modifiedTarget)
 			{
 				case eSpellTarget.AREA:
 				{
-					if (Spell.SpellType == eSpellType.SummonAnimistPet || Spell.SpellType == eSpellType.SummonAnimistFnF)
+					if (Spell.SpellType is eSpellType.SummonAnimistPet or eSpellType.SummonAnimistFnF)
 						list.Add(Caster);
 					else if (modifiedRadius > 0)
 					{
@@ -1565,9 +1566,13 @@ namespace DOL.GS.Spells
 				}
 				case eSpellTarget.CORPSE:
 				{
-					if (target != null && !target.IsAlive)
-						list.Add(target);
+					if (target == null || target.IsAlive)
+						break;
 
+					if (!IsAllowedTarget(target))
+						break;
+
+					list.Add(target);
 					break;
 				}
 				case eSpellTarget.PET:
@@ -1596,9 +1601,9 @@ namespace DOL.GS.Spells
 					}
 
 					// Check 'ControlledBrain' if 'target' isn't a valid target.
-					if (!list.Any() && Caster.ControlledBrain != null)
+					if (list.Count == 0 && Caster.ControlledBrain != null)
 					{
-						if (Caster is GamePlayer player && player.CharacterClass.Name.ToLower() == "bonedancer")
+						if (Caster is GamePlayer player && player.CharacterClass.Name.Equals("bonedancer", StringComparison.OrdinalIgnoreCase))
 						{
 							foreach (GameNPC npcInRadius in player.GetNPCsInRadius((ushort) Spell.Range))
 							{
@@ -1643,10 +1648,11 @@ namespace DOL.GS.Spells
 					{
 						if (Spell.SpellType != eSpellType.TurretPBAoE && (target == null || Spell.Range == 0))
 							target = Caster;
+
 						if (target == null)
 							return null;
 
-						foreach (GamePlayer player in  target.GetPlayersInRadius(modifiedRadius))
+						foreach (GamePlayer player in target.GetPlayersInRadius(modifiedRadius))
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, player, true))
 							{
@@ -1666,7 +1672,7 @@ namespace DOL.GS.Spells
 							}
 						}
 
-						foreach (GameNPC npc in  target.GetNPCsInRadius(modifiedRadius))
+						foreach (GameNPC npc in target.GetNPCsInRadius(modifiedRadius))
 						{
 							if (GameServer.ServerRules.IsAllowedToAttack(Caster, npc, true))
 							{
@@ -1677,7 +1683,13 @@ namespace DOL.GS.Spells
 					}
 					else
 					{
-						if (target != null && GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
+						if (target == null)
+							break;
+
+						if (!IsAllowedTarget(target))
+							break;
+
+						if (GameServer.ServerRules.IsAllowedToAttack(Caster, target, true))
 						{
 							// Apply Mentalist RA5L
 							if (Spell.Range > 0)
@@ -1739,7 +1751,13 @@ namespace DOL.GS.Spells
 					}
 					else
 					{
-						if (target != null && GameServer.ServerRules.IsSameRealm(Caster, target, true))
+						if (target == null)
+							break;
+
+						if (!IsAllowedTarget(target))
+							break;
+
+						if (GameServer.ServerRules.IsSameRealm(Caster, target, true))
 						{
 							if (target is GamePlayer player && player.ControlledBrain is NecromancerPetBrain necromancerPetBrain)
 							{
@@ -1916,6 +1934,17 @@ namespace DOL.GS.Spells
 			}
 
 			return list;
+
+			bool IsAllowedTarget(GameLiving target)
+			{
+				if (target is GameKeepDoor or GameKeepComponent && Spell.SpellType is not eSpellType.SiegeDirectDamage or eSpellType.SiegeArrow)
+				{
+					MessageToCaster($"Your spell has no effect on the {target.Name}.", eChatType.CT_SpellResisted);
+					return false;
+				}
+
+				return true;
+			}
 		}
 
 		/// <summary>
@@ -1999,7 +2028,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (Spell.SpellType != eSpellType.TurretPBAoE && Spell.IsPBAoE)
+			if (Spell.SpellType is not eSpellType.TurretPBAoE && Spell.IsPBAoE)
 				Target = Caster;
 			else if (Target == null)
 				Target = target;
@@ -2194,49 +2223,6 @@ namespace DOL.GS.Spells
 
 		public virtual void ApplyEffectOnTarget(GameLiving target)
 		{
-			if (target is Keeps.GameKeepDoor or Keeps.GameKeepComponent)
-			{
-				bool isAllowed = false;
-				bool isSilent = false;
-
-				if (Spell.Radius == 0)
-				{
-					switch (Spell.SpellType)
-					{
-						case eSpellType.Archery:
-						case eSpellType.Bolt:
-						case eSpellType.Bomber:
-						case eSpellType.DamageSpeedDecrease:
-						case eSpellType.DirectDamage:
-						case eSpellType.MagicalStrike:
-						case eSpellType.SiegeArrow:
-						case eSpellType.Lifedrain:
-						case eSpellType.SiegeDirectDamage:
-						case eSpellType.SummonTheurgistPet:
-						case eSpellType.DirectDamageWithDebuff:
-							isAllowed = true;
-							break;
-					}
-				}
-
-				if (Spell.Radius > 0)
-				{
-					// pbaoe is allowed, otherwise door is in range of a AOE so don't spam caster with a message
-					if (Spell.Range == 0)
-						isAllowed = true;
-					else
-						isSilent = true;
-				}
-
-				if (!isAllowed)
-				{
-					if (!isSilent)
-						MessageToCaster($"Your spell has no effect on the {target.Name}!", eChatType.CT_SpellResisted);
-
-					return;
-				}
-			}
-
 			// Potion and item effects aren't character abilities and so shouldn't be affected by effectiveness.
 			if (m_spellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects)
 				CasterEffectiveness = 1.0;

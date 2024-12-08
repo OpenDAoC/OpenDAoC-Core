@@ -961,19 +961,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Does this living allow procs to be cast on it?
-		/// </summary>
-		/// <param name="ad"></param>
-		/// <param name="weapon"></param>
-		/// <returns></returns>
-		public virtual bool AllowWeaponMagicalEffect(AttackData ad, DbInventoryItem weapon, Spell weaponSpell)
-		{
-			if (weapon.Flags == 10) //Itemtemplates with "Flags" set to 10 will not proc on living (ex. Bruiser)
-				return false;
-			else return true;
-		}
-
-		/// <summary>
 		/// Check if we can make a proc on a weapon go off.  Weapon Procs
 		/// </summary>
 		/// <param name="ad"></param>
@@ -1059,32 +1046,28 @@ namespace DOL.GS
 
 				if (procSpell != null)
 				{
-					// check with target to see if it allows procs to cast on it (primarily used for keep components)
-					if (ad.Target.AllowWeaponMagicalEffect(ad, weapon, procSpell))
+					if (ignoreLevel == false)
 					{
-						if (ignoreLevel == false)
-						{
-							int requiredLevel = weapon.Template.LevelRequirement > 0 ? weapon.Template.LevelRequirement : Math.Min(50, weapon.Level);
+						int requiredLevel = weapon.Template.LevelRequirement > 0 ? weapon.Template.LevelRequirement : Math.Min(50, weapon.Level);
 
-							if (requiredLevel > Level)
+						if (requiredLevel > Level)
+						{
+							if (this is GamePlayer)
 							{
-								if (this is GamePlayer)
-								{
-									(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GameLiving.StartWeaponMagicalEffect.NotPowerful"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-								}
-								return;
+								(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GameLiving.StartWeaponMagicalEffect.NotPowerful"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 							}
+							return;
 						}
+					}
 
-						ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(ad.Attacker, procSpell, spellLine);
+					ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(ad.Attacker, procSpell, spellLine);
 
-						if (spellHandler != null)
-						{
-							bool rangeCheck = spellHandler.Spell.Target == eSpellTarget.ENEMY && spellHandler.Spell.Range > 0;
+					if (spellHandler != null)
+					{
+						bool rangeCheck = spellHandler.Spell.Target == eSpellTarget.ENEMY && spellHandler.Spell.Range > 0;
 
-							if (!rangeCheck || ad.Attacker.IsWithinRadius(ad.Target, spellHandler.CalculateSpellRange()))
-								spellHandler.StartSpell(ad.Target, weapon);
-						}
+						if (!rangeCheck || ad.Attacker.IsWithinRadius(ad.Target, spellHandler.CalculateSpellRange()))
+							spellHandler.StartSpell(ad.Target, weapon);
 					}
 				}
 			}

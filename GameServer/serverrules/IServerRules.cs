@@ -46,16 +46,6 @@ namespace DOL.GS.ServerRules
 		bool IsAllowedToAttack(GameLiving attacker, GameLiving defender, bool quiet);
 
 		/// <summary>
-		/// Is caster allowed to cast a spell
-		/// </summary>
-		/// <param name="caster"></param>
-		/// <param name="target"></param>
-		/// <param name="spell"></param>
-		/// <param name="spellLine"></param>
-		/// <returns>true if allowed</returns>
-		bool IsAllowedToCastSpell(GameLiving caster, GameLiving target, Spell spell, SpellLine spellLine);
-
-		/// <summary>
 		/// Should the target be considered the same realm as the source?
 		/// Do not use this for attack decisions, use IsAllowedToAttack instead.  This should be used
 		/// to determine things like Can join a guild? Can invite to a battlegroup?  Can rez?

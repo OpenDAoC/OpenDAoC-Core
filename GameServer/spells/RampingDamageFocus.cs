@@ -27,17 +27,6 @@ namespace DOL.GS.Spells
 			OnDirectEffect(target);
 		}
 
-		public override bool StartSpell(GameLiving target)
-		{
-			if (Target == null)
-				Target = target;
-
-			if (Target == null) return false;
-
-			ApplyEffectOnTarget(target);
-			return true;
-		}
-
 		public override void OnSpellPulse(PulsingSpellEffect effect)
 		{
 			if (Caster.ObjectState != GameObject.eObjectState.Active)

@@ -1,4 +1,3 @@
-using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
@@ -13,13 +12,6 @@ namespace DOL.GS.Spells
         public override void FinishSpellCast(GameLiving target)
         {
             Caster.Mana -= PowerCost(target);
-
-            if ((target is GameKeepDoor || target is GameKeepComponent) && Spell.SpellType != eSpellType.SiegeArrow && Spell.SpellType != eSpellType.SiegeDirectDamage)
-            {
-                MessageToCaster($"Your spell has no effect on the {target.Name}!", eChatType.CT_SpellResisted);
-                return;
-            }
-
             base.FinishSpellCast(target);
         }
 
@@ -27,7 +19,7 @@ namespace DOL.GS.Spells
         {
             foreach (GameLiving livingTarget in SelectTargets(target))
             {
-                if (livingTarget is GamePlayer playerTarget && Spell.Target == eSpellTarget.CONE)
+                if (livingTarget is GamePlayer playerTarget && Spell.Target is eSpellTarget.CONE)
                     playerTarget.Out.SendCheckLos(Caster, playerTarget, LosCheckCallback);
                 else
                     LaunchBolt(livingTarget);
@@ -88,9 +80,6 @@ namespace DOL.GS.Spells
 
         public override double CalculateToHitChance(GameLiving target)
         {
-            if (target is GameKeepDoor)
-                return 0;
-
             double hitChance = base.CalculateToHitChance(target);
 
             if (Caster is GamePlayer && target is GamePlayer && target.InCombat)
