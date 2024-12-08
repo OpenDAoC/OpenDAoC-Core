@@ -27,6 +27,11 @@ namespace DOL.GS.Spells
             return false;
         }
 
+        public override double CalculateDamageBase(GameLiving target)
+        {
+            return Spell.Damage;
+        }
+
         public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {
             min = 1;
