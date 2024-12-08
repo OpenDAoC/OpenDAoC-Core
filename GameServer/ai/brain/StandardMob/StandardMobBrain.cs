@@ -446,9 +446,7 @@ namespace DOL.AI.Brain
                 Body.StartAttack(newTarget);
         }
 
-        private long _isHandlingAdditionToAggroListFromLosCheck;
         private int _pendingLosCheckCount;
-        private bool StartAddToAggroListFromLosCheck => Interlocked.Exchange(ref _isHandlingAdditionToAggroListFromLosCheck, 1) == 0; // Returns true the first time it's called.
         public int PendingLosCheckCount => _pendingLosCheckCount;
         public bool IsWaitingForLosCheck => Interlocked.CompareExchange(ref _pendingLosCheckCount, 0, 0) > 0;
         protected virtual bool CanAddToAggroListFromMultipleLosChecks => false;
@@ -461,20 +459,16 @@ namespace DOL.AI.Brain
 
         protected void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
-            // Make sure only one thread can enter this block to prevent multiple entities from being added to the aggro list.
-            // Otherwise mobs could kill one player and immediately go for another one.
             // This method should not be allowed to be executed at the same time as `CheckPlayerAggro` or `CheckNPCAggro`.
-            if (response is eLosCheckResponse.TRUE && (CanAddToAggroListFromMultipleLosChecks || StartAddToAggroListFromLosCheck))
+            if (response is eLosCheckResponse.TRUE)
             {
-                if (!HasAggro)
+                if (!HasAggro || CanAddToAggroListFromMultipleLosChecks)
                 {
                     GameObject gameObject = Body.CurrentRegion.GetObject(targetOID);
 
                     if (gameObject is GameLiving gameLiving)
                         AddToAggroList(gameLiving, 1);
                 }
-
-                _isHandlingAdditionToAggroListFromLosCheck = 0;
             }
 
             Interlocked.Decrement(ref _pendingLosCheckCount);

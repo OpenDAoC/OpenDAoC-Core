@@ -63,7 +63,7 @@ namespace DOL.AI.Brain
                         SendLosCheckForAggro(theirOwner, npc);
                         continue;
                     }
-                    else if (this is ControlledMobBrain ourControlledNpcBrain && ourControlledNpcBrain.GetPlayerOwner() is GamePlayer ourOwner)
+                    else if (GetPlayerOwner() is GamePlayer ourOwner)
                     {
                         SendLosCheckForAggro(ourOwner, npc);
                         continue;
@@ -103,9 +103,9 @@ namespace DOL.AI.Brain
 
             // Prioritize targets that don't already have our effect and aren't immune to it.
             // If there's none, allow them to be attacked again but only if our spell does damage.
-            if (_filteredAggroList.Any())
+            if (_filteredAggroList.Count > 0)
                 return _filteredAggroList[Util.Random(_filteredAggroList.Count - 1)];
-            else if (((TurretPet) Body).TurretSpell.Damage > 0)
+            else if ((Body as TurretPet).TurretSpell.Damage > 0)
             {
                 List<GameLiving> tempAggroList = AggroList.Keys.ToList();
 
