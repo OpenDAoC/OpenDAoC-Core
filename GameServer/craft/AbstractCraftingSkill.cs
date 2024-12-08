@@ -634,6 +634,9 @@ namespace DOL.GS
 		}
 		public virtual int GetCraftingTime(GamePlayer player, Recipe recipe)
 		{
+			if ((ePrivLevel) player.Client.Account.PrivLevel >= ePrivLevel.GM)
+				return 0;
+
 			double baseMultiplier = (recipe.Level / 100) + 1;
 			if (baseMultiplier < 1) baseMultiplier = 1;
 
