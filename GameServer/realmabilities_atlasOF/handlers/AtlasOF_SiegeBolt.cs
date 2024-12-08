@@ -8,16 +8,17 @@ namespace DOL.GS.RealmAbilities
     {
         public AtlasOF_SiegeBolt(DbAbility dba, int level) : base(dba, level) { }
 
-        // ISpellCastingAbilityHandler
         public Spell Spell { get { return m_spell; } }
         public SpellLine SpellLine { get { return m_spellline; } }
         public Ability Ability { get { return this; } }
 
-        private const int m_dmgValue = 65000; //from thread: you can ONE SHOT miles gates, keep doors at level 1 ( just take keep by another realm for exemple ) to level 2 doors, OS ram and other siege equipement ...
-                                              //on relic raid, with doors level 10, you need 5 theurg to rekt this door ( something like 20% dmg on doors level 10 )
-                                              //level 1 door has 10k hp, level 10 door has 100k HP so this must deal about 20k damage after resists. 
-        private const int m_range = 1875; // bolt range
-        private const int m_radius = 0; //
+        // You can one shot miles gates, keep doors at level 1 and 2, rams and other siege equipment.
+        // On reliquary doors, 5 bolts are needed.
+        // This puts the damage at at least 20k, after resits / toughness.
+        // This should be changed based on server settings. And ideally made so that it's adjusted automatically.
+        private const int m_dmgValue = 25000;
+        private const int m_range = 1875;
+        private const int m_radius = 0;
 
         private DbSpell m_dbspell;
         private Spell m_spell = null;
