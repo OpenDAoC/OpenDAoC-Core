@@ -1,6 +1,6 @@
 # ---- build ----
-# Use the official .NET 8.0 SDK image as the build environment
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Use the official .NET 9.0 SDK image as the build environment
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 LABEL stage=build
 
 # Set the working directory in the container
@@ -30,8 +30,8 @@ RUN cp /build/CoreServer/config/serverconfig.example.xml /build/CoreServer/confi
 RUN dotnet build DOLLinux.sln -c Release
 
 # ---- final ----
-# Use the official .NET 8.0 Alpine Runtime image as the base for the final image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
+# Use the official .NET 9.0 Alpine Runtime image as the base for the final image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS final
 LABEL stage=final
 
 ## Install ICU libraries and su-exec
