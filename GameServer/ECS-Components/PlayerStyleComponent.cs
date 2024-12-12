@@ -81,7 +81,7 @@ namespace DOL.GS
             }
 
             AttackData lastAttackData = Owner.attackComponent.attackAction.LastAttackData;
-            DbInventoryItem weapon = NextCombatStyle.WeaponTypeRequirement == (int) eObjectType.Shield ? Owner.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : Owner.ActiveWeapon;
+            DbInventoryItem weapon = NextCombatStyle.WeaponTypeRequirement == (int) eObjectType.Shield ? Owner.ActiveLeftWeapon : Owner.ActiveWeapon;
 
             //determine which style will actually be used
             Style styleToUse;

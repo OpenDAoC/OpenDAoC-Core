@@ -175,7 +175,7 @@ namespace DOL.GS.Styles
 					return;
 				}
 
-				DbInventoryItem weapon = (style.WeaponTypeRequirement == (int) eObjectType.Shield) ? player.Inventory.GetItem(eInventorySlot.LeftHandWeapon) : player.ActiveWeapon;
+				DbInventoryItem weapon = (eObjectType) style.WeaponTypeRequirement is eObjectType.Shield ? player.ActiveLeftWeapon : player.ActiveWeapon;
 
 				if (!CheckWeaponType(style, player, weapon))
 				{
@@ -538,8 +538,9 @@ namespace DOL.GS.Styles
 		{
 			if (living is GameNPC)
 				return true;
-			GamePlayer player = living as GamePlayer;
-			if (player == null) return false;
+
+			if (living is not GamePlayer player)
+				return false;
 
 			switch (style.WeaponTypeRequirement)
 			{
@@ -548,17 +549,17 @@ namespace DOL.GS.Styles
 					// both weapons are needed to use style,
 					// shield is not a weapon here
 					DbInventoryItem rightHand = player.ActiveWeapon;
-					DbInventoryItem leftHand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+					DbInventoryItem leftHand = player.ActiveLeftWeapon;
 
-					if (rightHand == null || leftHand == null || (rightHand.Item_Type != Slot.RIGHTHAND && rightHand.Item_Type != Slot.LEFTHAND))
+					if (rightHand == null || leftHand == null || (rightHand.Item_Type is not Slot.RIGHTHAND and not Slot.LEFTHAND))
 						return false;
 
-					if (style.Spec == Specs.HandToHand && (rightHand.Object_Type != (int)eObjectType.HandToHand || leftHand.Object_Type != (int)eObjectType.HandToHand))
+					if (style.Spec == Specs.HandToHand && (eObjectType) rightHand.Object_Type is not eObjectType.HandToHand || (eObjectType) leftHand.Object_Type is not eObjectType.HandToHand)
 						return false;
-					else if (style.Spec == Specs.Fist_Wraps && (rightHand.Object_Type != (int)eObjectType.FistWraps || leftHand.Object_Type != (int)eObjectType.FistWraps))
+					else if (style.Spec == Specs.Fist_Wraps && (eObjectType) rightHand.Object_Type is not eObjectType.FistWraps || (eObjectType) leftHand.Object_Type is not eObjectType.FistWraps)
 						return false;
 
-					return leftHand.Object_Type != (int)eObjectType.Shield;
+					return (eObjectType) leftHand.Object_Type is not eObjectType.Shield;
 				}
 				case Style.SpecialWeaponType.AnyWeapon:
 				{

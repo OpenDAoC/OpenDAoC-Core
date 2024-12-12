@@ -50,7 +50,7 @@ namespace DOL.GS.Commands
                 info.Add($"Natural:  {naturalResist}%");
 
             DbInventoryItem mainWeapon = target.ActiveWeapon;
-            DbInventoryItem leftWeapon = target.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+            DbInventoryItem leftWeapon = target.ActiveLeftWeapon;
             int leftHandSwingCount = target.attackComponent.CalculateLeftHandSwingCount(mainWeapon, leftWeapon);
             bool isDualWieldAttack = WeaponAction.IsDualWieldAttack(mainWeapon, leftWeapon, target, leftHandSwingCount);
             AttackData.eAttackType attackType = AttackData.GetAttackType(mainWeapon, isDualWieldAttack, target);

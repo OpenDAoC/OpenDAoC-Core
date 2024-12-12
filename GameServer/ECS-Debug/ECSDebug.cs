@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using DOL.Database;
 using DOL.Events;
 using DOL.GS;
 using ECS.Debug;
@@ -305,53 +304,6 @@ namespace DOL.GS.Commands
                 NpcService.DebugTickCount = tickcount;
                 DisplayMessage(client, "Debugging next " + tickcount + " NPCThinkService tick(s)");
             }
-        }
-    }
-
-    // This should be moved outside of this file if we want this as a real player-facing feature.
-    [CmdAttribute(
-        "&charstats",
-        ePrivLevel.GM,
-        "Shows normally hidden character stats.")]
-    public class CharStatsCommandHandler : AbstractCommandHandler, ICommandHandler
-    {
-        public void OnCommand(GameClient client, string[] args)
-        {
-            List<string> messages = new();
-            string header = "Hidden Character Stats";
-            GamePlayer player = client.Player;
-            DbInventoryItem lefthand = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
-
-            // Melee crit chance.
-            int meleeCritChance = player.GetModified(eProperty.CriticalMeleeHitChance);
-            messages.Add($"Melee Crit Chance: {meleeCritChance}%");
-
-            // Spell crit chance
-            int spellCritChance = player.GetModified(eProperty.CriticalSpellHitChance);
-            messages.Add($"Spell Crit Chance: {spellCritChance}");
-
-            // Spell casting speed bonus.
-            int spellCastSpeed = player.GetModified(eProperty.CastingSpeed);
-            messages.Add($"Spell Casting Speed Bonus: {spellCastSpeed}%");
-
-            // Heal crit chance.
-            int healCritChance = player.GetModified(eProperty.CriticalHealHitChance);
-            messages.Add($"Heal Crit Chance: {healCritChance}%");
-
-            // Archery crit chance.
-            if (player.HasSpecialization(Specs.Archery)
-                || player.HasSpecialization(Specs.CompositeBow)
-                || player.HasSpecialization(Specs.RecurveBow)
-                || player.HasSpecialization(Specs.ShortBow)
-                || player.HasSpecialization(Specs.Crossbow)
-                || player.HasSpecialization(Specs.Longbow))
-            {
-                int archeryCritChance = player.GetModified(eProperty.CriticalArcheryHitChance);
-                messages.Add($"Archery Crit Chance: {archeryCritChance}%");
-            }
-
-            // Finalize.
-            player.Out.SendCustomTextWindow(header, messages);
         }
     }
 }

@@ -181,7 +181,7 @@ namespace DOL.GS
 
                         if (defender.Inventory != null)
                         {
-                            DbInventoryItem lefthand = defender.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                            DbInventoryItem lefthand = defender.ActiveLeftWeapon;
 
                             if (lefthand != null && (eObjectType) lefthand.Object_Type is eObjectType.Shield)
                                 defendersWeapon = lefthand.Model;
@@ -238,7 +238,7 @@ namespace DOL.GS
             if (attacker is GameNPC npcAttacker)
                 return npcAttacker.LeftHandSwingChance > 0; // We can't rely on object types for NPCs.
 
-            // I'm not sure this has to be that complicated. We shouldn't even need `leftHandSwingCount`.
+            // I'm not sure this has to be that complicated for players.
             if (leftHandSwingCount > 0)
             {
                 return (eObjectType) mainWeapon.Object_Type is not eObjectType.HandToHand &&

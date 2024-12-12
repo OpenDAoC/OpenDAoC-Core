@@ -19,7 +19,7 @@ namespace DOL.GS.RealmAbilities
 		public override void Execute(GameLiving living)
 		{
 			if (CheckPreconditions(living, DEAD | SITTING | MEZZED | STUNNED)) return;
-			DbInventoryItem shield = living.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItem shield = living.ActiveLeftWeapon;
 			if (shield == null)
 				return;
 			if (shield.Object_Type != (int)eObjectType.Shield)

@@ -516,16 +516,16 @@ namespace DOL.GS
 				}
 				else
 				{
-					if ((item = Inventory.GetItem(eInventorySlot.RightHandWeapon)) != null)
+					if (ActiveWeapon != null)
 					{
-						item.DPS_AF = (int)(Level * 3.3);
-						item.SPD_ABS = 37;
+						ActiveWeapon.DPS_AF = (int)(Level * 3.3);
+						ActiveWeapon.SPD_ABS = 37;
 					}
 
-					if ((item = Inventory.GetItem(eInventorySlot.LeftHandWeapon)) != null)
+					if (ActiveLeftWeapon != null)
 					{
-						item.DPS_AF = (int)(Level * 3.3);
-						item.SPD_ABS = 37;
+						ActiveLeftWeapon.DPS_AF = (int)(Level * 3.3);
+						ActiveLeftWeapon.SPD_ABS = 37;
 					}
 
 					SwitchWeapon(eActiveWeaponSlot.Standard);

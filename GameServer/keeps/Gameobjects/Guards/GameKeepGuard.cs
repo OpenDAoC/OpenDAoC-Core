@@ -713,7 +713,7 @@ namespace DOL.GS.Keeps
 			int emblem = 0;
 			if (guild != null)
 				emblem = guild.Emblem;
-			DbInventoryItem lefthand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItem lefthand = ActiveLeftWeapon;
 			if (lefthand != null)
 				lefthand.Emblem = emblem;
 

@@ -60,7 +60,7 @@ namespace DOL.GS.Spells
                 if (sender is GamePlayer)
                 {
                     GamePlayer player = (GamePlayer)sender;
-                    DbInventoryItem leftWeapon = player.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                    DbInventoryItem leftWeapon = player.ActiveLeftWeapon;
                     // if we can use left weapon, we have currently a weapon in left hand and we still have endurance,
                     // we can assume that we are using the two weapons.
                     if (player.attackComponent.CanUseLefthandedWeapon && leftWeapon != null && leftWeapon.Object_Type != (int)eObjectType.Shield)

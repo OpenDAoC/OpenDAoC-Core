@@ -471,7 +471,7 @@ namespace DOL.GS
 
                     if (weapon.Item_Type == Slot.TWOHAND)
                         damageCap *= CalculateTwoHandedDamageModifier(weapon);
-                    else if (player.Inventory?.GetItem(eInventorySlot.LeftHandWeapon) != null)
+                    else if (player.ActiveLeftWeapon != null)
                         damageCap *= CalculateLeftAxeModifier();
                 }
 
@@ -943,7 +943,7 @@ namespace DOL.GS
                             List<GameObject> extraTargets = new();
                             List<GameObject> listAvailableTargets = new();
                             DbInventoryItem attackWeapon = owner.ActiveWeapon;
-                            DbInventoryItem leftWeapon = playerOwner.Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+                            DbInventoryItem leftWeapon = owner.ActiveLeftWeapon;
 
                             int numTargetsCanHit = style.ID switch
                             {
@@ -1740,8 +1740,8 @@ namespace DOL.GS
                     !guard.Source.IsWithinRadius(guard.Target, GuardAbilityHandler.GUARD_DISTANCE))
                     continue;
 
-                DbInventoryItem leftHand = source.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
                 DbInventoryItem rightHand = source.ActiveWeapon;
+                DbInventoryItem leftHand = source.ActiveLeftWeapon;
 
                 if (((rightHand != null && rightHand.Hand == 1) || leftHand == null || (eObjectType) leftHand.Object_Type is not eObjectType.Shield) && source is not GameNPC)
                     continue;
@@ -1823,8 +1823,8 @@ namespace DOL.GS
             if (!dashing.GuardSource.IsWithinRadius(dashing.GuardTarget, DashingDefenseEffect.GUARD_DISTANCE))
                 return false;
 
-            DbInventoryItem leftHand = dashing.GuardSource.Inventory.GetItem(eInventorySlot.LeftHandWeapon);
             DbInventoryItem rightHand = dashing.GuardSource.ActiveWeapon;
+            DbInventoryItem leftHand = dashing.GuardSource.ActiveLeftWeapon;
 
             if ((rightHand == null || rightHand.Hand != 1) && leftHand != null && leftHand.Object_Type == (int) eObjectType.Shield)
             {
@@ -2683,7 +2683,7 @@ namespace DOL.GS
         public int CalculateLeftHandSwingCount(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon)
         {
             // Let's make NPCs require an actual weapon too. It looks silly otherwise.
-            if (leftWeapon == null || !CanUseLefthandedWeapon)
+            if (!CanUseLefthandedWeapon || leftWeapon == null || (eObjectType) leftWeapon.Object_Type is eObjectType.Shield)
                 return 0;
 
             if (owner is GameNPC npcOwner)

@@ -463,57 +463,19 @@ namespace DOL.GS
 			return 0;
 		}
 
-		private (DbInventoryItem item, eActiveWeaponSlot slot, long time) _cachedActiveWeapon;
+		private DbInventoryItem _activeWeapon;
+		private DbInventoryItem _activeLeftWeapon;
 
-        /// <summary>
-        /// Returns the currently active weapon, null=natural
-        /// </summary>
-        public virtual DbInventoryItem ActiveWeapon
-        {
-            get
-            {
-                if (Inventory == null)
-                    return null;
+		/// <summary>
+		/// Returns the currently active weapon, null=natural
+		/// </summary>
+		public virtual DbInventoryItem ActiveWeapon => _activeWeapon;
+		public virtual DbInventoryItem ActiveLeftWeapon => _activeLeftWeapon;
 
-                // We cache the weapon since 'ActiveWeapon' can be called multiple times per tick and 'GameInventory.GetItem' is potentially expensive.
-                if (_cachedActiveWeapon.item != null && _cachedActiveWeapon.slot == ActiveWeaponSlot && _cachedActiveWeapon.time >= GameLoop.GameLoopTime)
-                    return _cachedActiveWeapon.item;
-
-                _cachedActiveWeapon.time = GameLoop.GameLoopTime;
-                _cachedActiveWeapon.slot = ActiveWeaponSlot;
-
-                switch (ActiveWeaponSlot)
-                {
-                    case eActiveWeaponSlot.Standard:
-                    {
-                        _cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.RightHandWeapon);
-                        break;
-                    }
-                    case eActiveWeaponSlot.TwoHanded:
-                    {
-                        _cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-                        break;
-                    }
-                    case eActiveWeaponSlot.Distance:
-                    {
-                        _cachedActiveWeapon.item = Inventory.GetItem(eInventorySlot.DistanceWeapon);
-                        break;
-                    }
-                    default:
-                    {
-                        _cachedActiveWeapon.item = null;
-                        break;
-                    }
-                }
-
-                return _cachedActiveWeapon.item;
-            }
-        }
-
-        /// <summary>
-        /// Returns the chance for a critical hit with a spell
-        /// </summary>
-        public virtual int SpellCriticalChance
+		/// <summary>
+		/// Returns the chance for a critical hit with a spell
+		/// </summary>
+		public virtual int SpellCriticalChance
 		{
 			get { return GetModified(eProperty.CriticalSpellHitChance); }
 			set { }
@@ -1285,7 +1247,7 @@ namespace DOL.GS
 			//your friend is most likely using a player crafted shield. The quality of the player crafted item will make a significant difference  try it and see.
 
 			double blockChance = 0;
-			DbInventoryItem leftHand = Inventory?.GetItem(eInventorySlot.LeftHandWeapon);
+			DbInventoryItem leftHand = ActiveLeftWeapon;
 
 			if (leftHand != null && (eObjectType) leftHand.Object_Type is not eObjectType.Shield)
 				leftHand = null;
@@ -2151,14 +2113,26 @@ namespace DOL.GS
 				case eActiveWeaponSlot.Standard:
 				{
 					if (rightHandSlot == null)
+					{
 						rightHand = 0xFF;
+						_activeWeapon = null;
+					}
 					else
+					{
 						rightHand = 0x00;
+						_activeWeapon = rightHandSlot;
+					}
 
 					if (leftHandSlot == null)
+					{
 						leftHand = 0xFF;
+						_activeLeftWeapon = null;
+					}
 					else
+					{
 						leftHand = 0x01;
+						_activeLeftWeapon = leftHandSlot;
+					}
 
 					break;
 				}
@@ -2168,19 +2142,33 @@ namespace DOL.GS
 					if (twoHandSlot != null && (twoHandSlot.Hand == 1 || this is GameNPC)) // 2h
 					{
 						rightHand = leftHand = 0x02;
+						_activeWeapon = twoHandSlot;
+						_activeLeftWeapon = null;
 						break;
 					}
 
 					// 1h weapon in 2h slot
 					if (twoHandSlot == null)
+					{
 						rightHand = 0xFF;
+						_activeWeapon = null;
+					}
 					else
+					{
 						rightHand = 0x02;
+						_activeWeapon = twoHandSlot;
+					}
 
 					if (leftHandSlot == null)
+					{
 						leftHand = 0xFF;
+						_activeLeftWeapon = null;
+					}
 					else
+					{
 						leftHand = 0x01;
+						_activeLeftWeapon = leftHandSlot;
+					}
 
 					break;
 				}
@@ -2188,14 +2176,19 @@ namespace DOL.GS
 				case eActiveWeaponSlot.Distance:
 				{
 					leftHand = 0xFF; // cannot use left-handed weapons if ranged slot active
+					_activeLeftWeapon = null;
 
 					if (distanceSlot == null)
+					{
 						rightHand = 0xFF;
+						_activeWeapon = null;
+					}
 					else if (distanceSlot.Hand == 1 || this is GameNPC) // NPC equipment does not have hand so always assume 2 handed bow
 						rightHand = leftHand = 0x03; // bows use 2 hands, throwing axes 1h
 					else
 						rightHand = 0x03;
 
+					_activeWeapon = distanceSlot;
 					break;
 				}
 			}

@@ -5981,7 +5981,7 @@ namespace DOL.GS
                 }
                 case eAttackResult.Blocked:
                 {
-                    DbInventoryItem reactiveItem = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                    DbInventoryItem reactiveItem = ActiveLeftWeapon;
                     if (reactiveItem != null && reactiveItem.Object_Type == (int)eObjectType.Shield)
                     {
                         TryReactiveEffect(reactiveItem, ad.Attacker);
@@ -7595,7 +7595,7 @@ namespace DOL.GS
                         if (useItem.Object_Type == (int) eObjectType.Poison)
                         {
                             DbInventoryItem mainHand = ActiveWeapon;
-                            DbInventoryItem leftHand = Inventory.GetItem(eInventorySlot.LeftHandWeapon);
+                            DbInventoryItem leftHand = ActiveLeftWeapon;
 
                             if (mainHand != null && mainHand.PoisonSpellID == 0)
                                 ApplyPoison(useItem, mainHand);
