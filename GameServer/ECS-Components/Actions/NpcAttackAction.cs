@@ -8,8 +8,6 @@ namespace DOL.GS
 {
     public class NpcAttackAction : AttackAction
     {
-        private const int HEALTH_PERCENT_THRESHOLD_FOR_MELEE_SWITCH_ON_INTERRUPT = 80;
-        private const double TIME_TO_TARGET_THRESHOLD_BEFORE_MELEE_SWITCH = 250; // NPCs will switch to melee if within melee range + (this * maxSpeed * 0.001).
         private const double TIME_TO_TARGET_THRESHOLD_BEFORE_RANGED_SWITCH = 1000; // NPCs will switch to ranged if further than melee range + (this * maxSpeed * 0.001).
 
         private GameNPC _npcOwner;
@@ -30,11 +28,12 @@ namespace DOL.GS
             // If the NPC is interrupted, we need to tell it to stop following its target if we want the following code to work.
             _npcOwner.StopFollowing();
 
-            // Guard archers and immobile NPCs should ignore the health threshold.
-            // They will still switch to melee if their target gets in melee range.
-            if ((!IsGuardArcherOrImmobile && _npcOwner.HealthPercent < HEALTH_PERCENT_THRESHOLD_FOR_MELEE_SWITCH_ON_INTERRUPT) ||
-                (attacker is GameLiving livingAttacker && livingAttacker.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingAttacker.IsWithinRadius(_npcOwner, livingAttacker.attackComponent.AttackRange)))
+            if (attacker is GameLiving livingAttacker &&
+                livingAttacker.ActiveWeaponSlot is not eActiveWeaponSlot.Distance &&
+                livingAttacker.IsWithinRadius(_npcOwner, livingAttacker.attackComponent.AttackRange))
+            {
                 SwitchToMeleeAndTick();
+            }
         }
 
         public override bool OnOutOfRangeOrNoLosRangedAttack()
