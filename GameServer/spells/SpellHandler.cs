@@ -2060,9 +2060,6 @@ namespace DOL.GS.Spells
 			else
 				targets = SelectTargets(Target);
 
-			if (SpellLine.KeyName == "OffensiveProc" && Caster is GameSummonedPet gpet && !Spell.ScaledToPetLevel)
-				gpet.ScalePetSpell(Spell);
-
 			CasterEffectiveness = Caster.Effectiveness;
 
 			/// [Atlas - Takii] No effectiveness drop in OF MOC.
@@ -2990,36 +2987,6 @@ namespace DOL.GS.Spells
 		}
 
 		/// <summary>
-		/// Player pet damage cap
-		/// This simulates a player casting a baseline nuke with the capped damage near (but not exactly) that of the equivilent spell of the players level.
-		/// This cap is not applied if the player is level 50
-		/// </summary>
-		public virtual double CapPetSpellDamage(double damage, GameLiving owner)
-		{
-			double cappedDamage = damage;
-
-			if (owner.Level < 13)
-				cappedDamage = 4.1 * owner.Level;
-			else if (owner.Level < 50)
-				cappedDamage = 3.8 * owner.Level;
-
-			return Math.Min(damage, cappedDamage);
-		}
-
-		/// <summary>
-		/// Put a calculated cap on NPC damage to solve a problem where an npc is given a high level spell but needs damage
-		/// capped to the npc level.  This uses player spec nukes to calculate damage cap.
-		/// NPC's level 50 and above are not capped
-		/// </summary>
-		public virtual double CapNpcSpellDamage(double damage, GameNPC npc)
-		{
-			if (npc.Level < 50)
-				return Math.Min(damage, 4.7 * npc.Level);
-
-			return damage;
-		}
-
-		/// <summary>
 		/// Calculates the base 100% spell damage which is then modified by damage variance factors
 		/// </summary>
 		/// <returns></returns>
@@ -3048,23 +3015,8 @@ namespace DOL.GS.Spells
 			double acuity = 0.0;
 			double specBonus = 0.0;
 
-			if (modifiedCaster is GameSummonedPet summonedPetCaster && summonedPetCaster.Brain is IControlledBrain brain)
-			{
+			if (modifiedCaster is GameNPC)
 				acuity = modifiedCaster.GetModified(eProperty.Intelligence);
-				GamePlayer playerOwner = brain.GetPlayerOwner();
-
-				if (playerOwner != null)
-				{
-					// There is no reason to cap pet spell damage if it's being scaled anyway.
-					if (Properties.PET_SCALE_SPELL_MAX_LEVEL <= 0)
-						spellDamage = CapPetSpellDamage(spellDamage, playerOwner);
-				}
-			}
-			else if (modifiedCaster is GameNPC npcCaster)
-			{
-				acuity = modifiedCaster.GetModified(eProperty.Intelligence);
-				spellDamage = CapNpcSpellDamage(spellDamage, npcCaster);
-			}
 			else if (modifiedCaster is GamePlayer playerCaster)
 			{
 				switch ((eCharacterClass) playerCaster.CharacterClass.ID)
@@ -3156,7 +3108,7 @@ namespace DOL.GS.Spells
 			finalDamage = ModifyDamageWithTargetResist(ad, finalDamage);
 			double conversionMod = AttackComponent.CalculateTargetConversion(ad.Target);
 			double preConversionDamage = finalDamage;
-			finalDamage = finalDamage * conversionMod;
+			finalDamage *= conversionMod;
 			ad.Modifier += (int) Math.Floor(finalDamage - preConversionDamage);
 
 			// Apply damage cap.
