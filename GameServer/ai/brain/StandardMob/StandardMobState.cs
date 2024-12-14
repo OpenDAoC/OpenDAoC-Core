@@ -30,7 +30,16 @@ namespace DOL.AI.Brain
 
         public override void Enter()
         {
-            _brain.Body?.StopMoving();
+            GameNPC body = _brain.Body;
+
+            if (body != null)
+            {
+                body.StopMoving();
+                body.StopAttack();
+                body.StopCurrentSpellcast();
+                body.TargetObject = null;
+            }
+
             base.Enter();
         }
 

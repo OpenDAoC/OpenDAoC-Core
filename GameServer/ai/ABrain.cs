@@ -61,14 +61,12 @@ namespace DOL.AI
                 return false; // Prevents overrides from doing any redundant work. Maybe counter intuitive.
 
             bool wasReturningToSpawnPoint = Body.IsReturningToSpawnPoint;
-            Body.StopMoving();
-            Body.TargetObject = null;
-            FSM?.SetCurrentState(eFSMStateType.IDLE);
 
             // Without `IsActive` check, charming a NPC that's returning to spawn would teleport it.
             if (wasReturningToSpawnPoint && !IsActive)
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading);
 
+            FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
             return EntityManager.Remove(this);
         }
 
