@@ -105,7 +105,7 @@ namespace DOL.GS.Effects
 				if (index < 0)
 					return false;
 				
-				m_effects.RemoveAt(index);
+				m_effects.SwapRemoveAt(index);
 				
 				// Register remaining effects for change
 				changedEffects.AddRange(m_effects.Skip(index));

@@ -3509,7 +3509,7 @@ namespace DOL.GS
 					for (int i = list.Count - 1; i >= 0; i--)
 					{
 						if (ServiceUtils.ShouldTick(list[i].RequestTime + 2000))
-							list.RemoveAt(i);
+							list.SwapRemoveAt(i);
 					}
 
 					// We can keep the list if we're about to add anything to it.

@@ -303,7 +303,7 @@ namespace DOL.GS
 
 						if (_itemAwaitingDeletion == item)
 						{
-							_itemsAwaitingDeletion.RemoveAt(i);
+							_itemsAwaitingDeletion.SwapRemoveAt(i);
 							removedFromItemsAwaitingDeletion = true;
 							break;
 						}

@@ -81,8 +81,13 @@ namespace DOL.AI.Brain
             {
                 GameLiving living = _defensiveSpellTargets[i];
 
-                if (GameServer.ServerRules.IsAllowedToAttack(Body, living, true) || !living.IsAlive || LivingHasEffect(living, spell) || !Body.IsWithinRadius(living, (ushort)spell.Range))
-                    _defensiveSpellTargets.RemoveAt(i);
+                if (GameServer.ServerRules.IsAllowedToAttack(Body, living, true) ||
+                    !living.IsAlive ||
+                    LivingHasEffect(living, spell) ||
+                    !Body.IsWithinRadius(living, (ushort) spell.Range))
+                {
+                    _defensiveSpellTargets.SwapRemoveAt(i);
+                }
             }
 
             foreach (GamePlayer player in Body.GetPlayersInRadius((ushort) spell.Range))

@@ -179,10 +179,10 @@ namespace DOL.AI.Brain
                     currentPlayersSeen.Add(player);
                 }
 
-                for (int i = 0; i < PlayersSeen.Count; i++)
+                for (int i = PlayersSeen.Count - 1; i >= 0; i--)
                 {
                     if (!currentPlayersSeen.Contains(PlayersSeen[i]))
-                        PlayersSeen.RemoveAt(i);
+                        PlayersSeen.SwapRemoveAt(i);
                 }
             }
         }

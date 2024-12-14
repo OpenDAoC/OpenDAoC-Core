@@ -145,7 +145,7 @@ namespace DOL.GS
 						int tmpidx = Util.Random(lootCandidates.Count - 1);
 						loot.Add(lootCandidates[tmpidx].ItemTemplate);
 						if (--(lootCandidates[tmpidx].Count) <= 0)
-							lootCandidates.RemoveAt(tmpidx);
+							lootCandidates.SwapRemoveAt(tmpidx);
 					}
 
 				}

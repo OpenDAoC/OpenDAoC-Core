@@ -127,7 +127,7 @@ namespace DOL.GS
 					if (index > -1)
 					{
 						buffer[ls].Add(firstBetterSpellFinal[index]);
-						firstBetterSpellFinal.RemoveAt(index);
+						firstBetterSpellFinal.SwapRemoveAt(index);
 					}
 				}
 			}

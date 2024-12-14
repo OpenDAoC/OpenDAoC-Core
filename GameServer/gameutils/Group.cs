@@ -724,8 +724,7 @@ namespace DOL.GS
 						return true;
 
 					eligibleMember.Out.SendMessage(LanguageMgr.GetTranslation(eligibleMember.Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					eligibleMembers[randomIndex] = eligibleMembers[lastIndex];
-					eligibleMembers.RemoveAt(lastIndex);
+					eligibleMembers.SwapRemoveAt(randomIndex);
 				} while (eligibleMembers.Count > 0);
 
 				return false;

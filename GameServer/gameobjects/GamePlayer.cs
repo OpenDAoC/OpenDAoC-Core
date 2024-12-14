@@ -12197,7 +12197,7 @@ namespace DOL.GS
 
                     if (match(quest))
                     {
-                        _questListFinished.RemoveAt(i);
+                        _questListFinished.SwapRemoveAt(i);
                         quest.DeleteFromDatabase();
                     }
                 }
@@ -12223,7 +12223,7 @@ namespace DOL.GS
 
                     if (quest is not DataQuest && quest.GetType().Equals(questType) && quest.Step == -1)
                     {
-                        _questListFinished.RemoveAt(i);
+                        _questListFinished.SwapRemoveAt(i);
                         quest.DeleteFromDatabase();
                         return true;
                     }

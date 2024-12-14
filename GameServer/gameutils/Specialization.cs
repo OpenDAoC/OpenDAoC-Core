@@ -320,7 +320,7 @@ namespace DOL.GS
 					if (best[r].ID == ab.ID)
 					{
 						results.Add(best[r]);
-						best.RemoveAt(r);
+						best.SwapRemoveAt(r);
 						break;
 					}
 				}

@@ -253,5 +253,11 @@ namespace DOL.GS
         {
             return new Vector2(value.X, value.Y);
         }
+
+        public static void SwapRemoveAt<T>(this IList<T> list, int index)
+        {
+            list[index] = list[^1];
+            list.RemoveAt(list.Count - 1);
+        }
     }
 }

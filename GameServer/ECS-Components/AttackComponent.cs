@@ -989,7 +989,7 @@ namespace DOL.GS
                                 {
                                     index = Util.Random(listAvailableTargets.Count - 1);
                                     availableTarget = listAvailableTargets[index];
-                                    listAvailableTargets.RemoveAt(index);
+                                    listAvailableTargets.SwapRemoveAt(index);
                                     extraTargets.Add(availableTarget);
                                 }
                             }
