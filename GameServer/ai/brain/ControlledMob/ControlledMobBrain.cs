@@ -72,7 +72,6 @@ namespace DOL.AI.Brain
 			FSM.Add(new ControlledMobState_DEFENSIVE(this));
 			FSM.Add(new ControlledMobState_AGGRO(this));
 			FSM.Add(new ControlledMobState_PASSIVE(this));
-			FSM.SetCurrentState(eFSMStateType.WAKING_UP);
 		}
 
 		protected bool m_isMainPet = true;

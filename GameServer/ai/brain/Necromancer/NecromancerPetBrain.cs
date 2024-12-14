@@ -22,7 +22,6 @@ namespace DOL.AI.Brain
             FSM.Add(new NecromancerPetState_DEFENSIVE(this));
             FSM.Add(new NecromancerPetState_AGGRO(this));
             FSM.Add(new NecromancerPetState_PASSIVE(this));
-            FSM.SetCurrentState(eFSMStateType.WAKING_UP);
         }
 
         public override int ThinkInterval => 500;

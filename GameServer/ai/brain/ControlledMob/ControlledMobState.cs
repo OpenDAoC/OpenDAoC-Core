@@ -11,16 +11,20 @@ namespace DOL.AI.Brain
             StateType = eFSMStateType.WAKING_UP;
         }
 
+        public override void Enter()
+        {
+            if (_abilitiesChecked)
+                return;
+
+            ControlledMobBrain brain = _brain as ControlledMobBrain;
+            brain.CheckAbilities();
+            brain.Body.SortSpells();
+            _abilitiesChecked = true;
+        }
+
         public override void Think()
         {
             ControlledMobBrain brain = _brain as ControlledMobBrain;
-
-            if (!_abilitiesChecked)
-            {
-                brain.CheckAbilities();
-                brain.Body.SortSpells();
-                _abilitiesChecked = true;
-            }
 
             if (brain.AggressionState == eAggressionState.Aggressive)
                 brain.FSM.SetCurrentState(eFSMStateType.AGGRO);

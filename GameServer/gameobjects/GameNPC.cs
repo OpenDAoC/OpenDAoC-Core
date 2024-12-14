@@ -2154,15 +2154,20 @@ namespace DOL.GS
 		{
 			if (brain == null)
 				return null;
+
 			if (brain.IsActive)
 				throw new ArgumentException("The new brain is already active.", "brain");
 
 			ABrain oldBrain = m_ownBrain;
 			bool activate = oldBrain.IsActive;
+
 			if (activate)
 				oldBrain.Stop();
+
 			m_ownBrain = brain;
 			m_ownBrain.Body = this;
+			m_ownBrain.FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
+
 			if (activate)
 				m_ownBrain.Start();
 
