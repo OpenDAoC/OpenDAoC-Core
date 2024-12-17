@@ -2159,18 +2159,14 @@ namespace DOL.GS
 				throw new ArgumentException("The new brain is already active.", "brain");
 
 			ABrain oldBrain = m_ownBrain;
-			bool activate = oldBrain.IsActive;
 
-			if (activate)
+			if (oldBrain != null)
 				oldBrain.Stop();
 
 			m_ownBrain = brain;
 			m_ownBrain.Body = this;
 			m_ownBrain.FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
-
-			if (activate)
-				m_ownBrain.Start();
-
+			m_ownBrain.Start();
 			return oldBrain;
 		}
 
@@ -4218,8 +4214,8 @@ namespace DOL.GS
 
 			if (m_ownBrain == null)
 			{
-				m_ownBrain = defaultBrain;
-				m_ownBrain.Body = this;
+				defaultBrain.Body = this;
+				SetOwnBrain(defaultBrain);
 			}
 		}
 
