@@ -1937,7 +1937,7 @@ namespace DOL.GS.Spells
 
 			bool IsAllowedTarget(GameLiving target)
 			{
-				if (target is GameKeepDoor or GameKeepComponent && Spell.SpellType is not eSpellType.SiegeDirectDamage or eSpellType.SiegeArrow)
+				if (target is GameKeepDoor or GameKeepComponent && Spell.SpellType is not eSpellType.SiegeDirectDamage or eSpellType.SiegeArrow && !IsSummoningSpell)
 				{
 					MessageToCaster($"Your spell has no effect on the {target.Name}.", eChatType.CT_SpellResisted);
 					return false;
