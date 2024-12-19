@@ -152,18 +152,8 @@ namespace DOL.GS
             return GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDbSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDbSlot))));
         }
 
-        public override int FirstDbSlot => _vaultNumber switch
-        {
-            0 => 2500,
-            1 => 2600,
-            _ => 0,
-        };
+        public override int FirstDbSlot => (int) eInventorySlot.AccountVault_First + VaultSize * _vaultNumber;
 
-        public override int LastDbSlot => _vaultNumber switch
-        {
-            0 => 2599,
-            1 => 2699,
-            _ => 0,
-        };
+        public override int LastDbSlot => (int) eInventorySlot.AccountVault_Last + VaultSize * (_vaultNumber + 1) - 1;
     }
 }

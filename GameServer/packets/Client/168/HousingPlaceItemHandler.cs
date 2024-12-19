@@ -712,7 +712,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							}
 
 							// make sure we have space to add another vult
-							int vaultIndex = house.GetFreeVaultNumber();
+							int vaultIndex = house.GetAvailableVaultSlot();
 							if (vaultIndex < 0)
 							{
 								client.Player.Out.SendMessage("You can't add any more vaults to this house!", eChatType.CT_System,

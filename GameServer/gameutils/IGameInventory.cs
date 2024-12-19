@@ -74,13 +74,15 @@ namespace DOL.GS
         HousingInventory_First = 150,
         HousingInventory_Last  = 249,
 
+        MarketExplorerFirst = 1000, // Used for client slots.
         HouseVault_First    = 1000,
-        HouseVault_Last     = 1399,
+        HouseVault_Last     = 1799,
 
-        Consignment_First   = 1500,
-        Consignment_Last    = 1599,
+        Consignment_First   = 2000,
+        Consignment_Last    = 2099,
 
-        MarketExplorerFirst = 1000,
+        AccountVault_First  = 2500,
+        AccountVault_Last   = 2699,
 
         //FirstFixLoot      = 256, //You can define drops that will ALWAYS occur (eg quest drops etc.)
         //LastFixLoot       = 356, //100 drops should be enough ... if not, just raise this var, we have thousands free

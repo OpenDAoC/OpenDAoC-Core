@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,10 +10,9 @@ namespace DOL.GS.Housing
 {
 	public class House : Point3D, IGameLocation
 	{
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
+		private const int MAX_VAULT_COUNT = 8; // Must not be bigger than what `eInventorySlot` allows.
 
 		private readonly DbHouse _databaseItem;
 		private readonly Dictionary<int, DbHouseCharsXPerms> _housePermissions;
@@ -557,28 +537,20 @@ namespace DOL.GS.Housing
 			return ret;
 		}
 
-		/// <summary>
-		/// Find a number that can be used for this vault.
-		/// </summary>
-		/// <returns></returns>
-		public int GetFreeVaultNumber()
+		public int GetAvailableVaultSlot()
 		{
-			var usedVaults = new[] {false, false, false, false};
+			bool[] slots = new bool[MAX_VAULT_COUNT];
 
-			foreach (var housePointItem in DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber).And(DB.Column("ItemTemplateID").IsLike("%_vault"))))
+			foreach (DbHouseHookPointItem housePointItem in DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber).And(DB.Column("ItemTemplateID").IsLike("%_vault"))))
 			{
-				if (housePointItem.Index >= 0 && housePointItem.Index <= 3)
-				{
-					usedVaults[housePointItem.Index] = true;
-				}
+				if (housePointItem.Index is >= 0 and < MAX_VAULT_COUNT)
+					slots[housePointItem.Index] = true;
 			}
 
-			for (int freeVault = 0; freeVault <= 3; ++freeVault)
+			for (int availableSlot = 0; availableSlot < MAX_VAULT_COUNT; availableSlot++)
 			{
-				if (!usedVaults[freeVault])
-				{
-					return freeVault;
-				}
+				if (!slots[availableSlot])
+					return availableSlot;
 			}
 
 			return -1;
