@@ -259,7 +259,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					method = 5;
 				}
-				else if (objType == (int)eObjectType.HouseVault)
+				else if (method == 5 && (eObjectType) objType is eObjectType.HouseVault)
 				{
 					method = 7;
 				}
