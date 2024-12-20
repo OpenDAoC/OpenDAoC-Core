@@ -2156,13 +2156,11 @@ namespace DOL.GS
 				return null;
 
 			if (brain.IsActive)
-				throw new ArgumentException("The new brain is already active.", "brain");
+				throw new ArgumentException("The new brain is already active.", nameof(brain));
 
 			ABrain oldBrain = m_ownBrain;
 
-			if (oldBrain != null)
-				oldBrain.Stop();
-
+			oldBrain?.Stop();
 			m_ownBrain = brain;
 			m_ownBrain.Body = this;
 			m_ownBrain.FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
@@ -2173,21 +2171,24 @@ namespace DOL.GS
 		/// <summary>
 		/// Adds a temporary brain to Npc, last added brain is active
 		/// </summary>
-		/// <param name="newBrain"></param>
 		public virtual void AddBrain(ABrain newBrain)
 		{
-			ArgumentNullException.ThrowIfNull(newBrain);
+			if (newBrain == null)
+				return;
 
 			if (newBrain.IsActive)
 				throw new ArgumentException("The new brain is already active.", nameof(newBrain));
 
 			Brain.Stop();
+
 			ArrayList brains = new(m_brains)
 			{
 				newBrain
 			};
+
 			m_brains = brains;
 			newBrain.Body = this;
+			newBrain.FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
 			newBrain.Start();
 		}
 
