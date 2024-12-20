@@ -620,7 +620,7 @@ namespace DOL.GS.Housing
 			return position;
 		}
 
-		private ushort GetHookpointHeading(uint n)
+		public ushort GetHookpointHeading(uint n)
 		{
 			if (n > HousingConstants.MaxHookpointLocations)
 				return 0;
@@ -660,40 +660,40 @@ namespace DOL.GS.Housing
 			switch ((eObjectType)item.Object_Type)
 			{
 				case eObjectType.HouseVault:
-					{
-						var houseVault = new GameHouseVault(item, index);
-						houseVault.Attach(this, position, heading);
-						hookpointObject = houseVault;
-						break;
-					}
+				{
+					var houseVault = new GameHouseVault(item, index);
+					houseVault.Attach(this, position);
+					hookpointObject = houseVault;
+					break;
+				}
 				case eObjectType.HouseNPC:
-					{
-						hookpointObject = GameServer.ServerRules.PlaceHousingNPC(this, item, location, GetHookpointHeading(position));
-						break;
-					}
+				{
+					hookpointObject = GameServer.ServerRules.PlaceHousingNPC(this, item, location, GetHookpointHeading(position));
+					break;
+				}
 				case eObjectType.HouseBindstone:
-					{
-						hookpointObject = new GameStaticItem();
-						hookpointObject.CurrentHouse = this;
-						hookpointObject.InHouse = true;
-						hookpointObject.OwnerID = templateID;
-						hookpointObject.X = x;
-						hookpointObject.Y = y;
-						hookpointObject.Z = z;
-						hookpointObject.Heading = heading;
-						hookpointObject.CurrentRegionID = RegionID;
-						hookpointObject.Name = item.Name;
-						hookpointObject.Model = (ushort) item.Model;
-						hookpointObject.AddToWorld();
-						//0:07:45.984 S=>C 0xD9 item/door create v171 (oid:0x0DDB emblem:0x0000 heading:0x0DE5 x:596203 y:530174 z:24723 model:0x05D2 health:  0% flags:0x04(realm:0) extraBytes:0 unk1_171:0x0096220C name:"Hibernia bindstone")
-						//add bind point
-						break;
-					}
+				{
+					hookpointObject = new GameStaticItem();
+					hookpointObject.CurrentHouse = this;
+					hookpointObject.InHouse = true;
+					hookpointObject.OwnerID = templateID;
+					hookpointObject.X = x;
+					hookpointObject.Y = y;
+					hookpointObject.Z = z;
+					hookpointObject.Heading = GetHookpointHeading(position);
+					hookpointObject.CurrentRegionID = RegionID;
+					hookpointObject.Name = item.Name;
+					hookpointObject.Model = (ushort) item.Model;
+					hookpointObject.AddToWorld();
+					//0:07:45.984 S=>C 0xD9 item/door create v171 (oid:0x0DDB emblem:0x0000 heading:0x0DE5 x:596203 y:530174 z:24723 model:0x05D2 health:  0% flags:0x04(realm:0) extraBytes:0 unk1_171:0x0096220C name:"Hibernia bindstone")
+					//add bind point
+					break;
+				}
 				case eObjectType.HouseInteriorObject:
-					{
-						hookpointObject = GameServer.ServerRules.PlaceHousingInteriorItem(this, item, location, heading);
-						break;
-					}
+				{
+					hookpointObject = GameServer.ServerRules.PlaceHousingInteriorItem(this, item, location, heading);
+					break;
+				}
 			}
 
 			if (hookpointObject != null)

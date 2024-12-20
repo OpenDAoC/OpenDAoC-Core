@@ -37,7 +37,7 @@ namespace DOL.GS
         /// <summary>
         /// Attach this vault to a hook point in a house.
         /// </summary>
-        public bool Attach(House house, uint hookPointId, ushort heading)
+        public bool Attach(House house, uint hookPointId)
         {
             if (house == null)
                 return false;
@@ -46,9 +46,9 @@ namespace DOL.GS
             {
                 HouseNumber = house.HouseNumber,
                 HookpointID = hookPointId,
-                Heading = (ushort)(heading % 4096),
+                Heading = (ushort) ((house.GetHookpointHeading(hookPointId) + 2048) % 4096),
                 ItemTemplateID = TemplateID,
-                Index = (byte)Index
+                Index = (byte) Index
             };
 
             IList<DbHouseHookPointItem> hookPoints = DOLDB<DbHouseHookPointItem>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(house.HouseNumber).And(DB.Column("HookpointID").IsEqualTo(hookPointId)));
@@ -80,7 +80,7 @@ namespace DOL.GS
             X = position.X;
             Y = position.Y;
             Z = position.Z;
-            Heading = (ushort) (hookedItem.Heading % 4096);
+            Heading = (ushort) ((hookedItem.Heading + 2048) % 4096);
             AddToWorld();
             return true;
         }

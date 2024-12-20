@@ -103,7 +103,7 @@ namespace DOL.GS.Housing
 				}
 				else
 				{
-					ChatUtil.SendMerchantMessage(player, "You dont have enough money!");
+					ChatUtil.SendMerchantMessage(player, "You don't have enough money!");
 				}
 			}
 		}
