@@ -2505,75 +2505,116 @@ namespace DOL.GS.ServerRules
 			}
 		}
 
-
 		/// <summary>
 		/// Send merchant window containing housing items that can be purchased by a player.  If this list is customized
 		/// then the customized list must also be handled in BuyHousingItem
 		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="merchantType"></param>
-		public virtual void SendHousingMerchantWindow(GamePlayer player, DOL.GS.PacketHandler.eMerchantWindowType merchantType)
+		public virtual void SendHousingMerchantWindow(GamePlayer player, eMerchantWindowType merchantType)
 		{
 			switch (merchantType)
 			{
 				case eMerchantWindowType.HousingInsideShop:
-				case eMerchantWindowType.HousingInsideMenu:
+				{
 					player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorShopItems, merchantType);
 					break;
+				}
+				case eMerchantWindowType.HousingInsideMenu:
+				{
+					player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorMenuItems, merchantType);
+					break;
+				}
 				case eMerchantWindowType.HousingOutsideShop:
-				case eMerchantWindowType.HousingOutsideMenu:
+				{
 					player.Out.SendMerchantWindow(HouseTemplateMgr.OutdoorShopItems, merchantType);
 					break;
+				}
+				case eMerchantWindowType.HousingOutsideMenu:
+				{
+					player.Out.SendMerchantWindow(HouseTemplateMgr.OutdoorMenuItems, merchantType);
+					break;
+				}
 				case eMerchantWindowType.HousingBindstoneHookpoint:
+				{
 					switch (player.Realm)
 					{
 						case eRealm.Albion:
+						{
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItemsAlb, merchantType);
 							break;
+						}
 						case eRealm.Midgard:
+						{
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItemsMid, merchantType);
 							break;
+						}
 						case eRealm.Hibernia:
+						{
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItemsHib, merchantType);
 							break;
+						}
 						default:
+						{
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorBindstoneShopItems, merchantType);
 							break;
+						}
 					}
+
 					break;
+				}
 				case eMerchantWindowType.HousingCraftingHookpoint:
+				{
 					player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorCraftShopItems, merchantType);
 					break;
+				}
 				case eMerchantWindowType.HousingNPCHookpoint:
+				{
 					player.Out.SendMerchantWindow(HouseTemplateMgr.GetNpcShopItems(player), merchantType);
 					break;
+				}
 				case eMerchantWindowType.HousingVaultHookpoint:
+				{
 					switch (player.Realm)
 					{
 						case eRealm.Albion:
+						{
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItemsAlb, merchantType);
 							break;
+						}
 						case eRealm.Midgard:
+						{
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItemsMid, merchantType);
 							break;
+						}
 						case eRealm.Hibernia:
+						{
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItemsHib, merchantType);
 							break;
+						}
 						default:
+						{
 							player.Out.SendMerchantWindow(HouseTemplateMgr.IndoorVaultShopItems, merchantType);
 							break;
+						}
 					}
+
 					break;
+				}
 				case eMerchantWindowType.HousingDeedMenu:
+				{
 					player.Out.SendMerchantWindow(/* TODO */HouseTemplateMgr.OutdoorMenuItems, eMerchantWindowType.HousingDeedMenu);
 					break;
+				}
 				default:
-					player.Out.SendMessage("Unknown merchant type!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-					log.ErrorFormat("Unknown merchant type {0}", merchantType);
+				{
+					player.Out.SendMessage("Unknown merchant type.", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+
+					if (log.IsErrorEnabled)
+						log.Error($"Unknown merchant type {merchantType}");
+
 					break;
+				}
 			}
 		}
-
 
 		/// <summary>
 		/// Buys an item off a housing merchant.  If the list has been customized then this must be modified to
