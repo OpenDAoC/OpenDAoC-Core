@@ -2666,8 +2666,6 @@ namespace DOL.GS
 		/// </summary>
 		public const int CHARMED_NOEXP_TIMEOUT = 60000;
 
-		public override bool InCombat => base.InCombat || (Brain is not IControlledBrain && Brain is StandardMobBrain brain && brain.HasAggro);
-
 		public virtual void StopAttack()
 		{
 			attackComponent.StopAttack();

@@ -1,4 +1,5 @@
 using System;
+using DOL.AI.Brain;
 
 namespace DOL.GS.PropertyCalc
 {
@@ -40,9 +41,11 @@ namespace DOL.GS.PropertyCalc
 
             if (living is GameNPC npc)
             {
+                // Halved regeneration amount for NPCs in combat.
+                // NPCs (necromancer pets excluded) out of combat and without anything in their aggro list (so that it doesn't trigger when NPCs are being kited) get a huge bonus.
                 if (npc.InCombat)
                     regen /= 2.0;
-                else if (npc is not NecromancerPet)
+                else if (npc is not NecromancerPet && (npc.Brain is not StandardMobBrain brain || !brain.HasAggro))
                     regen *= 5;
             }
             else if (living is GamePlayer)
