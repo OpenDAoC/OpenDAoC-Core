@@ -178,58 +178,54 @@ namespace DOL.GS
             public override void StartSkill()
             {
                 SpellHandler newSpellHandler = CreateSpellHandler();
+                Spell newSpell = newSpellHandler.Spell;
 
-                if (CastingComponent.SpellHandler != null)
+                SpellHandler currentSpellHandler = CastingComponent.SpellHandler;
+                Spell currentSpell = currentSpellHandler?.Spell;
+
+                if (currentSpellHandler != null)
                 {
-                    if (CastingComponent.SpellHandler.Spell?.IsFocus == true)
+                    if (currentSpell?.IsFocus == true)
                     {
-                        if (newSpellHandler.Spell.IsInstantCast)
+                        if (newSpell.IsInstantCast)
                             newSpellHandler.Tick();
                         else
                         {
                             CastingComponent.SpellHandler = newSpellHandler;
-                            CastingComponent.SpellHandler.Tick();
+                            newSpellHandler.Tick();
                         }
                     }
-                    else if (newSpellHandler.Spell.IsInstantCast)
+                    else if (newSpell.IsInstantCast)
                         newSpellHandler.Tick();
                     else
                     {
-                        if (CastingComponent.Owner is GamePlayer player)
+                        GamePlayer player = CastingComponent.Owner as GamePlayer;
+
+                        if (newSpell.CastTime > 0 && currentSpell.InstrumentRequirement != 0)
                         {
-                            if (newSpellHandler.Spell.CastTime > 0 && CastingComponent.SpellHandler is not ChamberSpellHandler && newSpellHandler.Spell.SpellType != eSpellType.Chamber)
-                            {
-                                if (CastingComponent.SpellHandler.Spell.InstrumentRequirement != 0)
-                                {
-                                    if (newSpellHandler.Spell.InstrumentRequirement != 0)
-                                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                                    else
-                                        player.Out.SendMessage($"You must wait {(CastingComponent.SpellHandler.CastStartTick + CastingComponent.SpellHandler.Spell.CastTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                            HandleSong(player);
+                            return;
+                        }
 
-                                    return;
-                                }
-                            }
-
-                            if (player.SpellQueue)
-                            {
-                                player.Out.SendMessage("You are already casting a spell! You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                                CastingComponent.QueuedSpellHandler = newSpellHandler;
-                            }
-                            else
-                                player.Out.SendMessage("You are already casting a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                        if (player == null)
+                            CastingComponent.QueuedSpellHandler = newSpellHandler;
+                        else if (player.SpellQueue)
+                        {
+                            player.Out.SendMessage("You are already casting a spell! You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                            CastingComponent.QueuedSpellHandler = newSpellHandler;
                         }
                         else
-                            CastingComponent.QueuedSpellHandler = newSpellHandler;
+                            player.Out.SendMessage("You are already casting a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     }
                 }
                 else
                 {
-                    if (newSpellHandler.Spell.IsInstantCast)
+                    if (newSpell.IsInstantCast)
                         newSpellHandler.Tick();
                     else
                     {
                         CastingComponent.SpellHandler = newSpellHandler;
-                        CastingComponent.SpellHandler.Tick();
+                        newSpellHandler.Tick();
                     }
                 }
 
@@ -245,6 +241,38 @@ namespace DOL.GS
                     // Abilities that cast spells (i.e. Realm Abilities such as Volcanic Pillar) need to set this so the associated ability gets disabled if the cast is successful.
                     spellHandler.Ability = SpellCastingAbilityHandler;
                     return spellHandler;
+                }
+
+                void HandleSong(GamePlayer player)
+                {
+                    // Since flute mez is allowed to effectively stay in a casting state even after losing LoS for example, we allow the player to cast other songs here.
+                    // Otherwise the only way to cancel an out of LoS / range flute mez is to swap weapons.
+                    if (currentSpellHandler.CastState is eCastState.CastingRetry)
+                    {
+                        currentSpellHandler.InterruptCasting();
+
+                        if (newSpell.SpellType is eSpellType.Mesmerize && newSpell.InstrumentRequirement != 0)
+                        {
+                            currentSpellHandler.MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
+                            return;
+                        }
+
+                        // Not very elegant, but we need to do something with our new spell now that we've cancelled the flute mez.
+                        if (CastingComponent.SpellHandler == null)
+                            StartSkill();
+
+                        return;
+                    }
+
+                    if (player != null)
+                    {
+                        if (newSpell.InstrumentRequirement != 0)
+                            player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.CastSpell.AlreadyPlaySong"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                        else
+                            player.Out.SendMessage($"You must wait {(currentSpellHandler.CastStartTick + currentSpell.CastTime - GameLoop.GameLoopTime) / 1000 + 1} seconds to cast a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                    }
+
+                    return;
                 }
             }
         }

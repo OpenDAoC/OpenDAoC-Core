@@ -32,7 +32,7 @@ namespace DOL.GS.Spells
 		private static readonly int[] PulseSpellGroupsIgnoringOtherPulseSpells = [];
 
 		public GameLiving Target { get; set; }
-		protected eCastState CastState { get; private set; }
+		public eCastState CastState { get; private set; }
 		protected bool HasLos { get; private set; }
 		protected double DistanceFallOff { get; private set; }
 		protected double CasterEffectiveness { get; private set; } = 1.0; // Needs to default to 1 since some spell handlers override `StartSpell`, preventing it from being set.
@@ -343,7 +343,7 @@ namespace DOL.GS.Spells
 		///</summary>
 		public virtual void SendSpellMessages()
 		{
-			if (Spell.SpellType != eSpellType.PveResurrectionIllness && Spell.SpellType != eSpellType.RvrResurrectionIllness)
+			if (Spell.SpellType is not eSpellType.PveResurrectionIllness and not eSpellType.RvrResurrectionIllness)
 			{
 				if (Spell.InstrumentRequirement == 0)
 				{
@@ -352,7 +352,7 @@ namespace DOL.GS.Spells
 						// Message: You begin casting a {0} spell!
 						MessageToCaster(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CastSpell.Msg.YouBeginCasting", Spell.Name), eChatType.CT_Spell);
 					}
-					if (Caster is NecromancerPet {Owner: GamePlayer casterOwner})
+					else if (Caster is NecromancerPet petCaster && petCaster.Owner is GamePlayer casterOwner)
 					{
 						// Message: {0} begins casting a {1} spell!
 						casterOwner.Out.SendMessage(LanguageMgr.GetTranslation(casterOwner.Client.Account.Language, "SpellHandler.CastSpell.Msg.PetBeginsCasting", Caster.GetName(0, true), Spell.Name), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
@@ -1122,6 +1122,7 @@ namespace DOL.GS.Spells
 					break;
 				}
 				case eCastState.Casting:
+				case eCastState.CastingRetry:
 				{
 					if (!CheckDuringCast(Target))
 						CastState = eCastState.Interrupted;
@@ -1130,8 +1131,10 @@ namespace DOL.GS.Spells
 					{
 						if (!CheckEndCast(Target))
 						{
-							// Allow flute mez to spam (1.65 compliance).
-							if (!m_spell.IsPulsing || m_spell.SpellType is not eSpellType.Mesmerize)
+							// Allow flute mez to keep trying (1.65 compliance).
+							if (m_spell.IsPulsing && m_spell.SpellType is eSpellType.Mesmerize)
+								CastState = eCastState.CastingRetry;
+							else
 								CastState = eCastState.Interrupted;
 						}
 						else
