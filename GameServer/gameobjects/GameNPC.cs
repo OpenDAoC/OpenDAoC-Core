@@ -4027,6 +4027,11 @@ namespace DOL.GS
 		#endregion
 
 		/// <summary>
+		/// Whether this NPC is available to add on a fight.
+		/// </summary>
+		public virtual bool IsAvailableToJoinFight => !InCombat && Brain is not IControlledBrain && Brain is StandardMobBrain brain && !brain.HasAggro;
+
+		/// <summary>
 		/// Whether this NPC is aggressive.
 		/// </summary>
 		public virtual bool IsAggressive => Brain is IOldAggressiveBrain;

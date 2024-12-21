@@ -68,7 +68,7 @@ namespace DOL.AI.Brain
                     {
                         if (mob_c != null)
                         {
-                            if ((mob_c.Name.ToLower() == "fiery ant") && mob_c.IsAlive && !mob_c.InCombat)
+                            if ((mob_c.Name.ToLower() == "fiery ant") && mob_c.IsAlive && mob_c.IsAvailableToJoinFight)
                             {
                                 if (mob_c.Brain is GnatAntsBrain && mob_c.RespawnInterval == -1)
                                 {
