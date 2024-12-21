@@ -31,43 +31,15 @@ namespace DOL.GS.Commands
             {
                 case "player":
                 {
-                    if (args.Length == 2)
-                        return;
-
-                    if (client.Player.Name == args[2])
-                        return;
-
-                    GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[2], out ClientService.PlayerGuessResult result);
-
-                    if (result is ClientService.PlayerGuessResult.NOT_FOUND or ClientService.PlayerGuessResult.FOUND_MULTIPLE)
-                    {
-                        client.Out.SendMessage("No players online with that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-
-                    if (client.Player.CurrentHouse.AddPermission(targetPlayer, PermissionType.Player, HousingConstants.MinPermissionLevel))
-                        client.Out.SendMessage($"You added {targetPlayer.Name}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    if (TryAddPlayer(args, PermissionType.Player, out string playerName))
+                        client.Out.SendMessage($"You added {playerName}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
                     break;
                 }
                 case "account":
                 {
-                    if (args.Length == 2)
-                        return;
-
-                    if (client.Player.Name == args[2])
-                        return;
-
-                    GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[2], out ClientService.PlayerGuessResult result);
-
-                    if (result is ClientService.PlayerGuessResult.NOT_FOUND or ClientService.PlayerGuessResult.FOUND_MULTIPLE)
-                    {
-                        client.Out.SendMessage("No players online with that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                        return;
-                    }
-
-                    if (client.Player.CurrentHouse.AddPermission(targetPlayer, PermissionType.Account, HousingConstants.MinPermissionLevel))
-                        client.Out.SendMessage($"You added {targetPlayer.Name}'s account.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    if (TryAddPlayer(args, PermissionType.Account, out string playerName))
+                        client.Out.SendMessage($"You added {playerName}'s account.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
                     break;
                 }
@@ -101,6 +73,31 @@ namespace DOL.GS.Commands
                     DisplaySyntax(client);
                     break;
                 }
+            }
+
+            bool TryAddPlayer(string[] args, PermissionType permissionType, out string playerName)
+            {
+                playerName = string.Empty;
+
+                if (args.Length == 2)
+                    return false;
+
+                GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[2], out ClientService.PlayerGuessResult result);
+
+                if (client.Player == targetPlayer)
+                {
+                    client.Out.SendMessage("You cannot use this command on yourself.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+
+                if (result is ClientService.PlayerGuessResult.NOT_FOUND or ClientService.PlayerGuessResult.FOUND_MULTIPLE)
+                {
+                    client.Out.SendMessage("No players online with that name.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+
+                playerName = targetPlayer.Name;
+                return client.Player.CurrentHouse.AddPermission(targetPlayer, permissionType, HousingConstants.MinPermissionLevel);
             }
         }
     }
