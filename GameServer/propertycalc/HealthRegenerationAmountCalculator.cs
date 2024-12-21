@@ -46,7 +46,7 @@ namespace DOL.GS.PropertyCalc
                 if (npc.InCombat)
                     regen /= 2.0;
                 else if (npc is not NecromancerPet && (npc.Brain is not StandardMobBrain brain || !brain.HasAggro))
-                    regen *= 5;
+                    regen = npc.MaxHealth * 0.125;
             }
             else if (living is GamePlayer)
             {
