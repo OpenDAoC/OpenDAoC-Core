@@ -350,7 +350,7 @@ Scripts.Player.Guild.Help.GuildClaim:			'/gc claim' to claim a keep
 Scripts.Player.Guild.Help.GuildDecline:			'/gc decline' to decline the enter in guild	
 Scripts.Player.Guild.Help.GuildDemote:			'/gc demote [name] <rank#>' to set the rank from 0 to 10 of the player to an inferior rank	
 Scripts.Player.Guild.Help.GuildDeposit:			'/gc deposit <amount>' puts money into the guild bank account.
-Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' to set your guild dues %. 0-25% <0 is off>
+Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' to set your guild dues %. {0}-{1}% <0 is off>
 Scripts.Player.Guild.Help.GuildEdit:			'/gc edit' to show list of all option in guild edit	
 Scripts.Player.Guild.Help.GuildEditACHear:		'/gc edit <ranknum> achear <y/n>' edits this rank to be able to hear Alliance chat	
 Scripts.Player.Guild.Help.GuildEditACSpeak:		'/gc edit <ranknum> acspeak <y/n>' edits this rank to be able to speak in Alliance chat	
@@ -443,12 +443,15 @@ Scripts.Player.Guild.ConfirmLeave:			Do you really want to leave {0}?
 Scripts.Player.Guild.DemotedHigherThanPlayer:		You can only demote to ranks below your own.	
 Scripts.Player.Guild.DemotedOther:			{0} has set {1}'s guild rank to Rank {2} ({3}).	
 Scripts.Player.Guild.DemotedSelf:			You have set {0}'s guild rank to Rank {1} ({2}).	
-Scripts.Player.Guild.DepositAmount:			You deposit {0} into your guilds bank account.	
+Scripts.Player.Guild.DepositAmount:			You deposit {0} into your guild bank.
+Scripts.Player.Guild.DepositsAmount:		{0} deposit {1} into the guild bank.
 Scripts.Player.Guild.DepositFull:			The guild bank seems to be full.	
 Scripts.Player.Guild.DepositInvalid:		That is an invalid deposit amount.
 Scripts.Player.Guild.DepositTooMuch:		You don't have enough money to do that!
 Scripts.Player.Guild.DuesOff:				Guild dues are currently turned off.	
-Scripts.Player.Guild.DuesOn:				Guild dues are currently set at {0} percent.	
+Scripts.Player.Guild.DuesOn:				Guild dues are currently set at {0}%.
+Scripts.Player.Guild.DuesOnCapped:			Guild dues cannot be higher than {0}%.
+Scripts.Player.Guild.DuesOnForced:			Guild dues are forced to {0}% by the server.
 Scripts.Player.Guild.EmailSet:				You have set the guild email to {0}.	
 Scripts.Player.Guild.EmblemAlready:			Your guild already has an emblem but you may change it for a hefty fee of 100 gold. You must select the EmblemNPC again for this procedure to happen.	
 Scripts.Player.Guild.EmblemNeedGold:			You must have 200 gold to re emblem your guild.	
@@ -495,7 +498,7 @@ Scripts.Player.Guild.MotdSet:				You have set the motd for the guild.
 Scripts.Player.Guild.NoKeep:				You must have a keep before using that command.	
 Scripts.Player.Guild.NoPlayerSelected:			You must select a player.	
 Scripts.Player.Guild.NoPlayersInAcc:			There are no players from this account in your guild.	
-Scripts.Player.Guild.NoPrivilages:			You do not have high enough privilege in the guild to use that command.	
+Scripts.Player.Guild.NoPrivileges:			You do not have high enough privilege in the guild to use that command.
 Scripts.Player.Guild.NoteSet:				You set your guild note to: {0}	
 Scripts.Player.Guild.NotInYourGuild:			That player is not in your guild.	
 Scripts.Player.Guild.NotMember:				You must be in a guild before you can use any guild commands.	
@@ -533,7 +536,8 @@ Scripts.Player.Guild.UnknownCommand:			{0} is not a valid command:
 Scripts.Player.Guild.UpgradeNoLevel:			You must specify a level to target for upgrade.	
 Scripts.Player.Guild.UpgradeScndArg:			The second argument must be a number.	
 Scripts.Player.Guild.WebpageSet:				You have set the guild webpage to {0}.	
-Scripts.Player.Guild.Withdrawamount:			You withdraw {0} from the guild bank.
+Scripts.Player.Guild.WithdrawAmount:			You withdraw {0} from the guild bank.
+Scripts.Player.Guild.WithdrawsAmount:			{0} withdraws {1} from the guild bank.
 Scripts.Player.Guild.WithdrawInvalid:			That is an invalid amount to withdraw.	
 Scripts.Player.Guild.WithdrawTooMuch:			You cannot withdraw that much money from the guild bank.
 

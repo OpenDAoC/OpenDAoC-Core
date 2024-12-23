@@ -2320,10 +2320,16 @@ namespace DOL.GS.ServerProperties
 		public static int GUILD_NUM;
 
 		/// <summary>
-		/// This enables or disables new guild dues. Live standard is 2% dues
+		/// This enables or disables new guild dues.
 		/// </summary>
-		[ServerProperty("guild", "new_guild_dues", "Guild dues can be set from 1-100% if enabled, or standard 2% if not", false)]
+		[ServerProperty("guild", "new_guild_dues", "Guild dues can be set from 1-100% if enabled, or standard 2% if not", true)]
 		public static bool NEW_GUILD_DUES;
+
+		/// <summary>
+		/// This sets the guild dues max value to 0~100%.
+		/// </summary>
+		[ServerProperty("guild", "guild_dues_max_value", "Guild dues can be set from 1-100%", 25)]
+		public static int GUILD_DUES_MAX_VALUE;
 
 		/// <summary>
 		/// Do we allow guild members from other realms

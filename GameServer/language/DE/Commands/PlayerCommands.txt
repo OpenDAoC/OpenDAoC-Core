@@ -385,7 +385,7 @@ Scripts.Player.Guild.Help.GuildClaim:			/gc claim - eine Festung für die Gilde 
 Scripts.Player.Guild.Help.GuildDecline:			/gc decline - eine Einladung für eine Gilde ausschlagen	
 Scripts.Player.Guild.Help.GuildDemote:			/gc demote <rank#> [name] - einen Spieler degradieren (gültige Ränge: 0-10)	
 Scripts.Player.Guild.Help.GuildDeposit:			/gc deposit <amount> - Geld auf das Gildenkonto einzahlen	
-Scripts.Player.Guild.Help.GuildDues:			/gc dues <amount> - Gildenabgaben verlangen (0-100%)	
+Scripts.Player.Guild.Help.GuildDues:			/gc dues <amount> - Gildenabgaben verlangen {0}-{1}%	
 Scripts.Player.Guild.Help.GuildEdit:			/gc edit - zeige eine Liste der für /gc edit verfügbaren Optionen an	
 Scripts.Player.Guild.Help.GuildEditACHear:		/gc edit <ranknum> achear <y/n> - bestimmt ob der Rang den Allianz-Chat hören kann oder nicht
 Scripts.Player.Guild.Help.GuildEditACSpeak:		/gc edit <ranknum> acspeak <y/n> - bestimmt ob der Rang im Allianz-Chat schreiben kann oder nicht
@@ -463,7 +463,7 @@ Scripts.Player.Guild.MotdSet:				Ihr habt die "Nachricht des Tages" für die Gil
 Scripts.Player.Guild.NoKeep:				Für diesen Befehl braucht Ihr eine Festung.
 Scripts.Player.Guild.NoPlayerSelected:			Ihr müsst erst einen Spieler auswählen.	
 Scripts.Player.Guild.NoPlayersInAcc:			Diesen Spieler gibt es in Eurer Gilde nicht.	
-Scripts.Player.Guild.NoPrivilages:			Ihr habt nicht die erforderliche Berechtigung in Eurer Gilde für diesen Befehl.	
+Scripts.Player.Guild.NoPrivileges:			Ihr habt nicht die erforderliche Berechtigung in Eurer Gilde für diesen Befehl.	
 Scripts.Player.Guild.NoteSet:				Die Gildennotiz wurde von Euch geändert auf: {0}
 Scripts.Player.Guild.NotInYourGuild:			Dieser Spieler gehört nicht zu Eurer Gilde.
 Scripts.Player.Guild.NotMember:				Gildenbefehle können nur von Euch genutzt werden, wenn Ihr Mitglied einer Gilde seid.	

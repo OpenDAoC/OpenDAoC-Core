@@ -213,12 +213,7 @@ namespace DOL.GS
 				this.m_DBguild.DuesPercent = 0;
 			}
 		}
-		/// <summary>
-		/// Set guild bank command 
-		/// </summary>
-		/// <param name="donating"></param>
-		/// <param name="amount"></param>
-		/// <returns></returns>
+
 		public void SetGuildBank(GamePlayer donating, double amount)
 		{
 			if (donating == null || donating.Guild == null)
@@ -226,54 +221,71 @@ namespace DOL.GS
 
 			if (amount < 0)
 			{
-				donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositInvalid"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositInvalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			else if ((donating.Guild.GetGuildBank() + amount) >= 1000000001)
+			else if (donating.Guild.GetGuildBank() + amount >= 1000000001)
 			{
-				donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositFull"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
 
-            if (!donating.RemoveMoney(long.Parse(amount.ToString())))
-            {
-                donating.Out.SendMessage("You don't have this amount of money !", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-                return;
-            }
+			long longAmount = long.Parse(amount.ToString());
 
-			donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositAmount", Money.GetString(long.Parse(amount.ToString()))), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+			if (!donating.RemoveMoney(longAmount))
+			{
+				donating.Out.SendMessage("You don't have this amount of money !", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				return;
+			}
+
+			string stringAmount = Money.GetString(longAmount);
+			donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositAmount", stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+
+			foreach (GamePlayer guildPlayer in GetListOfOnlineMembers())
+			{
+				if (guildPlayer != donating)
+					guildPlayer.Out.SendMessage(LanguageMgr.GetTranslation(guildPlayer.Client.Account.Language, "Scripts.Player.Guild.DepositsAmount", donating.Name, stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+			}
 
 			donating.Guild.UpdateGuildWindow();
 			m_DBguild.Bank += amount;
 
-            InventoryLogging.LogInventoryAction(donating, "(GUILD;" + Name + ")", eInventoryActionType.Other, long.Parse(amount.ToString()));
-			//donating.SaveIntoDatabase();
-			donating.Out.SendUpdatePlayer();			
+			InventoryLogging.LogInventoryAction(donating, "(GUILD;" + Name + ")", eInventoryActionType.Other, long.Parse(amount.ToString()));
+			donating.SaveIntoDatabase();
+			SaveIntoDatabase();
 			return;
 		}
+
 		public void WithdrawGuildBank(GamePlayer withdraw, double amount)
 		{
-            if (amount < 0)
+			if (amount < 0)
 			{
-				withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawInvalid"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawInvalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
-			else if ((withdraw.Guild.GetGuildBank() - amount) < 0)
+			else if (withdraw.Guild.GetGuildBank() - amount < 0)
 			{
-				withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawTooMuch"), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+				withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawTooMuch"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
 
-            withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.Withdrawamount", Money.GetString(long.Parse(amount.ToString()))), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+			long longAmount = long.Parse(amount.ToString());
+			string stringAmount = Money.GetString(longAmount);
+			withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawAmount", stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+
+			foreach (GamePlayer guildPlayer in GetListOfOnlineMembers())
+			{
+				if (guildPlayer != withdraw)
+					guildPlayer.Out.SendMessage(LanguageMgr.GetTranslation(guildPlayer.Client.Account.Language, "Scripts.Player.Guild.WithdrawsAmount", withdraw.Name, stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+			}
+
 			withdraw.Guild.UpdateGuildWindow();
 			m_DBguild.Bank -= amount;
 
-		    var amt = long.Parse(amount.ToString());
-            withdraw.AddMoney(amt);
-            InventoryLogging.LogInventoryAction("(GUILD;" + Name + ")", withdraw, eInventoryActionType.Other, amt);
-            withdraw.Out.SendUpdatePlayer();
-            withdraw.SaveIntoDatabase();
-            withdraw.Guild.SaveIntoDatabase();
+			withdraw.AddMoney(longAmount);
+			InventoryLogging.LogInventoryAction("(GUILD;" + Name + ")", withdraw, eInventoryActionType.Other, longAmount);
+			withdraw.SaveIntoDatabase();
+			SaveIntoDatabase();
 			return;
 		}
 

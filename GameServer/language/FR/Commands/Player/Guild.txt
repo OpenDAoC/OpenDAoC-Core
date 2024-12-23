@@ -83,7 +83,7 @@ Scripts.Player.Guild.Help.GuildClaim:			'/gc claim' Réclame une tour ou un fort
 Scripts.Player.Guild.Help.GuildDecline:			'/gc decline' Décline une invitation à rejoindre la guilde.
 Scripts.Player.Guild.Help.GuildDemote:			'/gc demote <rank#> [name]' Rétrograde le joueur indiqué au rang désiré.
 Scripts.Player.Guild.Help.GuildDeposit:			'/gc deposit <amount>' Dépose une somme dans la caisse de guilde.	
-Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' Active ou désactive le système de taxation de la guilde (x% de l'argent gagné sur des créatures) (x = 0 à 10).
+Scripts.Player.Guild.Help.GuildDues:			'/gc dues <amount>' Active ou désactive le système de taxation de la guilde (x% de l'argent gagné sur des créatures) (x = {0} à {1}).
 Scripts.Player.Guild.Help.GuildEdit:			'/gc edit' Listes les parties modifiables de la structure de guilde.
 Scripts.Player.Guild.Help.GuildEditACHear:		'/gc edit <ranknum> achear <y/n>' Permet à un rang de pouvoir lire le canal d'alliance.
 Scripts.Player.Guild.Help.GuildEditACSpeak:		'/gc edit <ranknum> acspeak <y/n>' Permet à un rang de pouvoir parler sur le canal alliance.
@@ -161,7 +161,7 @@ Scripts.Player.Guild.MotdSet:				Vous changez le message de jour de guilde.
 Scripts.Player.Guild.NoKeep:				Vous n'avez pas actuellement de fort pour utiliser cette commande.
 Scripts.Player.Guild.NoPlayerSelected:			Sélectionnez un joueur.	
 Scripts.Player.Guild.NoPlayersInAcc:			Il n'y a pas de joueur du compte demandé dans votre guilde.	
-Scripts.Player.Guild.NoPrivilages:			Votre rang de guilde ne possède pas assez de priviléges pour utiliser cette commande.	
+Scripts.Player.Guild.NoPrivileges:			Votre rang de guilde ne possède pas assez de privilèges pour utiliser cette commande.	
 Scripts.Player.Guild.NoteSet:				La note de guilde est : {0}	
 Scripts.Player.Guild.NotInYourGuild:			Ce joueur n'est pas dans la guilde.	
 Scripts.Player.Guild.NotMember:				Vous devez être dans une guilde pour utiliser cette commande.	
