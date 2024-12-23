@@ -25,7 +25,7 @@ namespace DOL.GS
         public eRangedAttackType RangedAttackType { get; }
         public DbInventoryItem Ammo { get; }
 
-        public bool IsAmmoReleased { get; private set; }
+        public bool HasAmmoReachedTarget { get; private set; } // Used to not cancel the release animation. A bit clunky, may not work perfectly.
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle)
         {
@@ -53,7 +53,7 @@ namespace DOL.GS
 
         public int Execute(ECSGameTimer timer)
         {
-            IsAmmoReleased = true;
+            HasAmmoReachedTarget = true;
             Execute();
             return 0;
         }

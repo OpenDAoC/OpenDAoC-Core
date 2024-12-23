@@ -833,7 +833,7 @@ namespace DOL.GS
                     // Only cancel the animation if the ranged ammo isn't released already and we aren't preparing another shot.
                     // If `weaponAction` is null, no attack was performed yet.
                     // If `weaponAction.ActiveWeaponSlot` isn't `eActiveWeaponSlot.Distance`, the instance is outdated.
-                    if (weaponAction == null || weaponAction.ActiveWeaponSlot is not eActiveWeaponSlot.Distance || weaponAction.IsAmmoReleased)
+                    if (weaponAction == null || weaponAction.ActiveWeaponSlot is not eActiveWeaponSlot.Distance || weaponAction.HasAmmoReachedTarget)
                     {
                         foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                             player.Out.SendInterruptAnimation(owner);
