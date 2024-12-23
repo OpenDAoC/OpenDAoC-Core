@@ -14,6 +14,7 @@ namespace DOL.GS
         private bool _hasLos;
         private CheckLosTimer _checkLosTimer;
         private GameObject _losCheckTarget;
+        private bool _wasMeleeWeaponSwitchForced; // Used to prevent NPCs from switching to their ranged weapon automatically if they explicitly switched to a melee weapon during combat.
 
         private static int LosCheckInterval => Properties.CHECK_LOS_DURING_RANGED_ATTACK_MINIMUM_INTERVAL;
         private bool IsGuardArcherOrImmobile => _npcOwner is GuardArcher || _npcOwner.MaxSpeedBase == 0;
@@ -33,6 +34,24 @@ namespace DOL.GS
                 livingAttacker.IsWithinRadius(_npcOwner, livingAttacker.attackComponent.AttackRange))
             {
                 SwitchToMeleeAndTick();
+            }
+        }
+
+        public override void OnForcedWeaponSwitch()
+        {
+            switch (_npcOwner.ActiveWeaponSlot)
+            {
+                case eActiveWeaponSlot.Standard:
+                case eActiveWeaponSlot.TwoHanded:
+                {
+                    _wasMeleeWeaponSwitchForced = true;
+                    break;
+                }
+                case eActiveWeaponSlot.Distance:
+                {
+                    _wasMeleeWeaponSwitchForced = false;
+                    break;
+                }
             }
         }
 
@@ -81,7 +100,8 @@ namespace DOL.GS
             // NPCs try to switch to their ranged weapon whenever possible.
             if (!_npcOwner.IsBeingInterrupted &&
                 _npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null &&
-                !_npcOwner.IsWithinRadius(_target, offsetMeleeAttackRange))
+                !_npcOwner.IsWithinRadius(_target, offsetMeleeAttackRange) &&
+                !_wasMeleeWeaponSwitchForced)
             {
                 // But only if there is no timer running or if it has LoS on its current target.
                 // If the timer is running, it'll check for LoS continuously.
@@ -159,6 +179,7 @@ namespace DOL.GS
                 _checkLosTimer = null;
             }
 
+            _wasMeleeWeaponSwitchForced = false;
             base.CleanUp();
         }
 
@@ -167,7 +188,7 @@ namespace DOL.GS
             if (_npcOwner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
                 return;
 
-            _npcOwner.SwitchToMelee(_target);
+            _npcOwner.StartAttackWithMeleeWeapon(_target);
         }
 
         private void SwitchToRangedAndTick()
@@ -175,7 +196,7 @@ namespace DOL.GS
             if (_npcOwner.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
                 return;
 
-            _npcOwner.SwitchToRanged(_target);
+            _npcOwner.StartAttackWithRangedWeapon(_target);
         }
 
         private void LosCheckCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)

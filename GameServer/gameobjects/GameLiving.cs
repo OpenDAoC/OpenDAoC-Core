@@ -1522,11 +1522,10 @@ namespace DOL.GS
 
 			if (ad.IsHit && ad.CausesCombat)
 			{
-				//Notify(GameLivingEvent.AttackedByEnemy, this, new AttackedByEnemyEventArgs(ad));               
 				HandleMovementSpeedEffectsOnAttacked(ad);
 
-				if (this is GameNPC gameNpc && ActiveWeaponSlot == eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
-					gameNpc.SwitchToMelee(ad.Attacker);
+				if (this is GameNPC gameNpc && ActiveWeaponSlot is eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
+					gameNpc.StartAttackWithMeleeWeapon(ad.Attacker);
 
 				attackComponent.AddAttacker(ad);
 

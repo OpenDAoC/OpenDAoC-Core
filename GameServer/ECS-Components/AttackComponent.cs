@@ -828,17 +828,22 @@ namespace DOL.GS
 
             if (owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
             {
-                // Only cancel the animation if the ranged ammo isn't released already.
-                if (AttackState && weaponAction?.IsFinished != false)
+                if (AttackState)
                 {
-                    foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                        player.Out.SendInterruptAnimation(owner);
+                    // Only cancel the animation if the ranged ammo isn't released already and we aren't preparing another shot.
+                    // If `weaponAction` is null, no attack was performed yet.
+                    // If `weaponAction.ActiveWeaponSlot` isn't `eActiveWeaponSlot.Distance`, the instance is outdated.
+                    if (weaponAction == null || weaponAction.ActiveWeaponSlot is not eActiveWeaponSlot.Distance || weaponAction.IsAmmoReleased)
+                    {
+                        foreach (GamePlayer player in owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                            player.Out.SendInterruptAnimation(owner);
+                    }
                 }
 
                 RangeAttackComponent rangeAttackComponent = owner.rangeAttackComponent;
                 rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
-                if (rangeAttackComponent.RangedAttackState != eRangedAttackState.None)
+                if (rangeAttackComponent.RangedAttackState is not eRangedAttackState.None)
                 {
                     attackAction.OnRangedAttackStop();
                     rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
@@ -851,10 +856,22 @@ namespace DOL.GS
             owner.styleComponent.NextCombatStyle = null;
             owner.styleComponent.NextCombatBackupStyle = null;
 
-            if (oldAttackState && owner is GamePlayer playerOwner && playerOwner.IsAlive)
-                playerOwner.Out.SendAttackMode(AttackState);
-            else if (owner is GameNPC npcOwner && npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null && npcOwner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-                npcOwner.SwitchWeapon(eActiveWeaponSlot.Distance);
+            if (owner is GamePlayer playerOwner)
+            {
+                if (playerOwner.IsAlive && oldAttackState)
+                    playerOwner.Out.SendAttackMode(AttackState);
+            }
+            else if (owner is GameNPC npcOwner)
+            {
+                // Force NPCs to switch back to their ranged weapon if they have any and their aggro list is empty.
+                if (npcOwner.Inventory?.GetItem(eInventorySlot.DistanceWeapon) != null &&
+                    npcOwner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance &&
+                    npcOwner.Brain is StandardMobBrain brain &&
+                    !brain.HasAggro)
+                {
+                    npcOwner.SwitchWeapon(eActiveWeaponSlot.Distance);
+                }
+            }
         }
 
         /// <summary>

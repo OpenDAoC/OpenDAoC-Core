@@ -113,11 +113,6 @@ namespace DOL.GS
             _nextRangedTick = GameLoop.GameLoopTime;
         }
 
-        public void OnWeaponSwitch()
-        {
-            _nextRangedTick = GameLoop.GameLoopTime;
-        }
-
         public void OnEnterMeleeRange()
         {
             _nextMeleeTick = GameLoop.GameLoopTime;
@@ -134,6 +129,8 @@ namespace DOL.GS
         }
 
         public virtual void OnAimInterrupt(GameObject attacker) { }
+
+        public virtual void OnForcedWeaponSwitch() { }
 
         public virtual bool OnOutOfRangeOrNoLosRangedAttack()
         {
@@ -351,7 +348,7 @@ namespace DOL.GS
         {
             AttackComponent.weaponAction = new WeaponAction(_owner, _target, _weapon, _effectiveness, _attackInterval, _owner.rangeAttackComponent.RangedAttackType, _owner.rangeAttackComponent.Ammo);
 
-            if (_owner.rangeAttackComponent.RangedAttackType == eRangedAttackType.Critical)
+            if (_owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
                 _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
             // A positive ticksToTarget means the effects of our attack will be delayed. Typically used for ranged attacks.
@@ -379,13 +376,9 @@ namespace DOL.GS
 
                 return false;
             }
-            else
-            {
-                _interval = AttackComponent.AttackSpeed(_weapon, _leftWeapon);
-                StyleComponent.NextCombatStyle = null;
-                StyleComponent.NextCombatBackupStyle = null;
-                return true;
-            }
+
+            _interval = AttackComponent.AttackSpeed(_weapon, _leftWeapon);
+            return true;
         }
 
         protected virtual bool FinalizeRangedAttack()

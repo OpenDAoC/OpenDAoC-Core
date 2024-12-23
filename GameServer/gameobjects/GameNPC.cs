@@ -18,11 +18,11 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// This class is the baseclass for all Non Player Characters like
-	/// Monsters, Merchants, Guards, Steeds ...
-	/// </summary>
-	public class GameNPC : GameLiving, ITranslatableObject
+    /// <summary>
+    /// This class is the baseclass for all Non Player Characters like
+    /// Monsters, Merchants, Guards, Steeds ...
+    /// </summary>
+    public class GameNPC : GameLiving, ITranslatableObject
 	{
 		public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -1496,14 +1496,24 @@ namespace DOL.GS
 		/// <param name="slot">the new eActiveWeaponSlot</param>
 		public override void SwitchWeapon(eActiveWeaponSlot slot)
 		{
-			if (attackComponent.AttackState)
+			bool wasInAttackState = attackComponent.AttackState;
+
+			// Stop attack before changing weapon so that animations play correctly.
+			if (wasInAttackState)
 				attackComponent.StopAttack();
 
-			bool differentSlot = ActiveWeaponSlot != slot;
-
+			eActiveWeaponSlot previousActiveWeaponSlot = ActiveWeaponSlot;
 			base.SwitchWeapon(slot);
 
-			if (ObjectState == eObjectState.Active && differentSlot)
+			// Resume attack and notify `attackAction` (disables or reenables automatic ranged weapon switch for NPCs).
+			// This is to comply with scripted NPCs and doesn't happen if `StartAttackWithMeleeWeapon` was called instead.
+			if (wasInAttackState)
+			{
+				attackComponent.attackAction.OnForcedWeaponSwitch();
+				attackComponent.RequestStartAttack();
+			}
+
+			if (previousActiveWeaponSlot != ActiveWeaponSlot)
 				BroadcastLivingEquipmentUpdate();
 		}
 
@@ -2680,6 +2690,45 @@ namespace DOL.GS
 			attackComponent.RequestStartAttack(target);
 		}
 
+		public void StartAttackWithMeleeWeapon(GameObject target)
+		{
+			eActiveWeaponSlot newSlot;
+			DbInventoryItem rightHandWeapon = Inventory.GetItem(eInventorySlot.RightHandWeapon);
+			DbInventoryItem twoHandWeapon = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
+
+			if (twoHandWeapon == null)
+				newSlot = eActiveWeaponSlot.Standard;
+			else if (rightHandWeapon == null)
+				newSlot = eActiveWeaponSlot.TwoHanded;
+			else
+				newSlot = Util.Chance(50) ? eActiveWeaponSlot.TwoHanded : eActiveWeaponSlot.Standard;
+
+			if (newSlot != ActiveWeaponSlot)
+			{
+				if (attackComponent.AttackState)
+					attackComponent.StopAttack();
+
+				SwitchWeapon(newSlot);
+			}
+
+			StartAttack(target);
+		}
+
+		public void StartAttackWithRangedWeapon(GameObject target)
+		{
+			if (ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
+			{
+				StopFollowing();
+
+				if (attackComponent.AttackState)
+					attackComponent.StopAttack();
+
+				SwitchWeapon(eActiveWeaponSlot.Distance);
+			}
+
+			StartAttack(target);
+		}
+
 		private double damageFactor = 1;
 		private int orbsReward = 0;
 
@@ -2892,43 +2941,6 @@ namespace DOL.GS
 		{
 			get => m_leftHandSwingChance > 0;
 			set => CanUseLefthandedWeapon = value;
-		}
-
-		/// <summary>
-		/// Method to switch the npc to Melee attacks
-		/// </summary>
-		/// <param name="target"></param>
-		public void SwitchToMelee(GameObject target)
-		{
-			attackComponent.StopAttack();
-			DbInventoryItem twohand = Inventory.GetItem(eInventorySlot.TwoHandWeapon);
-			DbInventoryItem righthand = Inventory.GetItem(eInventorySlot.RightHandWeapon);
-
-			if (twohand != null && righthand == null)
-				SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-			else if (twohand != null && righthand != null)
-			{
-				if (Util.Chance(50))
-					SwitchWeapon(eActiveWeaponSlot.TwoHanded);
-				else
-					SwitchWeapon(eActiveWeaponSlot.Standard);
-			}
-			else
-				SwitchWeapon(eActiveWeaponSlot.Standard);
-
-			attackComponent.RequestStartAttack(target);
-		}
-
-		/// <summary>
-		/// Method to switch the guard to Ranged attacks
-		/// </summary>
-		/// <param name="target"></param>
-		public void SwitchToRanged(GameObject target)
-		{
-			StopFollowing();
-			attackComponent.StopAttack();
-			SwitchWeapon(eActiveWeaponSlot.Distance);
-			attackComponent.RequestStartAttack(target);
 		}
 
 		public override void StartInterruptTimer(int duration, AttackData.eAttackType attackType, GameLiving attacker)

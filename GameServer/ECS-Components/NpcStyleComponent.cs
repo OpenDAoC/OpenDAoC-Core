@@ -14,6 +14,11 @@ namespace DOL.GS
 
         public override Style GetStyleToUse()
         {
+            // We return `NextCombatStyle` if it was overwritten.
+            // It should be set back to null once used.
+            if (NextCombatStyle != null)
+                return NextCombatStyle;
+
             if (_npcOwner.Styles == null || _npcOwner.Styles.Count < 1 || _npcOwner.TargetObject == null)
                 return null;
 

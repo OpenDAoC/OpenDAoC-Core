@@ -26,7 +26,7 @@ namespace DOL.GS
         public int Range(ECSGameTimer timer)
         {
             this.Strength = 250;
-            this.SwitchToRanged(this.TargetObject);
+            this.StartAttackWithRangedWeapon(this.TargetObject);
             new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(RangeEnd), 9500);
             IsRanged = true;
             return 0;

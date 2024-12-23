@@ -20,12 +20,12 @@ namespace DOL.GS
         private int _leftHandSwingCount;
         private bool _isDualWieldAttack; // Not necessarily true even if _leftHandSwingCount is > 0, for example H2H isn't technically dual wield.
 
-        // The ranged attack type and ammo at the time the shot was released.
+        // The active weapon slot, ranged attack type, and ammo at the time the ammo was released
+        public eActiveWeaponSlot ActiveWeaponSlot { get; }
         public eRangedAttackType RangedAttackType { get; }
         public DbInventoryItem Ammo { get; }
 
-        public bool IsFinished { get; set; }
-        public eActiveWeaponSlot ActiveWeaponSlot { get; }
+        public bool IsAmmoReleased { get; private set; }
 
         public WeaponAction(GameLiving owner, GameObject target, DbInventoryItem attackWeapon, DbInventoryItem leftWeapon, double effectiveness, int interval, Style combatStyle)
         {
@@ -53,6 +53,7 @@ namespace DOL.GS
 
         public int Execute(ECSGameTimer timer)
         {
+            IsAmmoReleased = true;
             Execute();
             return 0;
         }
@@ -104,7 +105,6 @@ namespace DOL.GS
             if (_owner is GameNPC npcOwner)
                 npcOwner.TurnTo(mainHandAttackData.Target);
 
-            IsFinished = true;
             return;
         }
 

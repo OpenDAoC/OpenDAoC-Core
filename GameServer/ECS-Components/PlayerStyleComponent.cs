@@ -108,15 +108,15 @@ namespace DOL.GS
 
         public override void AddStyle(Style style, bool notify)
         {
-            lock (lockStyleList)
+            lock (_stylesLock)
             {
-                if (m_styles.TryGetValue(style.ID, out Style existingStyle))
+                if (_styles.TryGetValue(style.ID, out Style existingStyle))
                 {
                     existingStyle.Level = style.Level;
                     return;
                 }
 
-                m_styles.Add(style.ID, style);
+                _styles.Add(style.ID, style);
 
                 if (!notify)
                     return;
