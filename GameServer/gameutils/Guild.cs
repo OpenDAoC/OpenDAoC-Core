@@ -247,9 +247,8 @@ namespace DOL.GS
 					guildPlayer.Out.SendMessage(LanguageMgr.GetTranslation(guildPlayer.Client.Account.Language, "Scripts.Player.Guild.DepositsAmount", donating.Name, stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 			}
 
-			donating.Guild.UpdateGuildWindow();
 			m_DBguild.Bank += amount;
-
+			donating.Guild.UpdateGuildWindow();
 			InventoryLogging.LogInventoryAction(donating, "(GUILD;" + Name + ")", eInventoryActionType.Other, long.Parse(amount.ToString()));
 			donating.SaveIntoDatabase();
 			SaveIntoDatabase();
@@ -279,9 +278,8 @@ namespace DOL.GS
 					guildPlayer.Out.SendMessage(LanguageMgr.GetTranslation(guildPlayer.Client.Account.Language, "Scripts.Player.Guild.WithdrawsAmount", withdraw.Name, stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 			}
 
-			withdraw.Guild.UpdateGuildWindow();
 			m_DBguild.Bank -= amount;
-
+			withdraw.Guild.UpdateGuildWindow();
 			withdraw.AddMoney(longAmount);
 			InventoryLogging.LogInventoryAction("(GUILD;" + Name + ")", withdraw, eInventoryActionType.Other, longAmount);
 			withdraw.SaveIntoDatabase();
