@@ -29,11 +29,13 @@ namespace DOL.GS
             // If the NPC is interrupted, we need to tell it to stop following its target if we want the following code to work.
             _npcOwner.StopFollowing();
 
-            if (attacker is GameLiving livingAttacker &&
-                livingAttacker.ActiveWeaponSlot is not eActiveWeaponSlot.Distance &&
-                livingAttacker.IsWithinRadius(_npcOwner, livingAttacker.attackComponent.AttackRange))
+            if (attacker is GameLiving livingAttacker)
             {
-                SwitchToMeleeAndTick();
+                if (!IsGuardArcherOrImmobile ||
+                    (livingAttacker.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingAttacker.IsWithinRadius(_npcOwner, livingAttacker.attackComponent.AttackRange)))
+                {
+                    SwitchToMeleeAndTick();
+                }
             }
         }
 
