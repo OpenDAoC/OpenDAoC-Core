@@ -17,7 +17,7 @@ namespace DOL.GS
         private bool _wasMeleeWeaponSwitchForced; // Used to prevent NPCs from switching to their ranged weapon automatically if they explicitly switched to a melee weapon during combat.
 
         private static int LosCheckInterval => Properties.CHECK_LOS_DURING_RANGED_ATTACK_MINIMUM_INTERVAL;
-        private bool IsGuardArcherOrImmobile => _npcOwner is GuardArcher || _npcOwner.MaxSpeedBase == 0;
+        private bool IsGuardArcherOrImmobile => _npcOwner is GuardArcher or GuardCaster or GuardHealer || _npcOwner.MaxSpeedBase == 0;
 
         public NpcAttackAction(GameNPC owner) : base(owner)
         {
