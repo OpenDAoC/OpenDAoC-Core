@@ -2507,21 +2507,9 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						long amount = long.Parse(args[2]);
+						if (long.TryParse(args[2], out long result))
+							client.Player.Guild.DepositToBank(client.Player, result);
 
-						if (amount is < 0 or > 1000000001)
-						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.DepositInvalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							return;
-						}
-
-						if (client.Player.GetCurrentMoney() < amount)
-						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.DepositTooMuch"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							return;
-						}
-
-						client.Player.Guild.SetGuildBank(client.Player, amount);
 						break;
 					}
 					#endregion
@@ -2546,21 +2534,9 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						long amount = long.Parse(args[2]);
+						if (long.TryParse(args[2], out long result))
+							client.Player.Guild.WithdrawFromBank(client.Player, result);
 
-						if (amount is < 0 or > 1000000001)
-						{
-							client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.WithdrawInvalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							return;
-						}
-
-						if (client.Player.Guild.GetGuildBank() - amount < 0)
-						{
-							client.Player.Out.SendMessage(LanguageMgr.GetTranslation(client.Player.Client, "Scripts.Player.Guild.WithdrawTooMuch"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-							return;
-						}
-
-						client.Player.Guild.WithdrawGuildBank(client.Player, amount);
 						break;
 					}
 					#endregion

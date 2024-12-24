@@ -214,77 +214,129 @@ namespace DOL.GS
 			}
 		}
 
-		public void SetGuildBank(GamePlayer donating, double amount)
+		public bool ValidateAddToBankAmount(long amount, out double newBank, out ChangeBankResult changeBankResult)
 		{
-			if (donating == null || donating.Guild == null)
-				return;
+			newBank = GetGuildBank() + amount;
 
-			if (amount < 0)
+			if (newBank < 0)
 			{
-				donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositInvalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-			else if (donating.Guild.GetGuildBank() + amount >= 1000000001)
-			{
-				donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
+				changeBankResult = ChangeBankResult.INVALID;
+				return false;
 			}
 
-			long longAmount = long.Parse(amount.ToString());
-
-			if (!donating.RemoveMoney(longAmount))
+			if (newBank >= 1000000001)
 			{
-				donating.Out.SendMessage("You don't have this amount of money !", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				changeBankResult = ChangeBankResult.FULL;
+				return false;
+			}
+
+			changeBankResult = ChangeBankResult.SUCCESS;
+			return true;
+		}
+
+		public void DepositToBank(GamePlayer player, long amount)
+		{
+			if (player == null || player.Guild == null)
+				return;
+
+			amount = Math.Abs(amount);
+
+			if (!ValidateAddToBankAmount(amount, out double newBank, out ChangeBankResult changeBankResult))
+			{
+				switch (changeBankResult)
+				{
+					case ChangeBankResult.INVALID:
+					{
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Scripts.Player.Guild.DepositInvalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+					case ChangeBankResult.FULL:
+					{
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Scripts.Player.Guild.DepositFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+				}
+			}
+
+			if (!player.RemoveMoney(amount))
+			{
+				player.Out.SendMessage("You don't have this amount of money !", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				return;
 			}
 
-			string stringAmount = Money.GetString(longAmount);
-			donating.Out.SendMessage(LanguageMgr.GetTranslation(donating.Client, "Scripts.Player.Guild.DepositAmount", stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Scripts.Player.Guild.DepositAmount", amount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 
 			foreach (GamePlayer guildPlayer in GetListOfOnlineMembers())
 			{
-				if (guildPlayer != donating)
-					guildPlayer.Out.SendMessage(LanguageMgr.GetTranslation(guildPlayer.Client.Account.Language, "Scripts.Player.Guild.DepositsAmount", donating.Name, stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+				if (guildPlayer != player)
+					guildPlayer.Out.SendMessage(LanguageMgr.GetTranslation(guildPlayer.Client.Account.Language, "Scripts.Player.Guild.DepositsAmount", player.Name, amount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 			}
 
-			m_DBguild.Bank += amount;
-			donating.Guild.UpdateGuildWindow();
-			InventoryLogging.LogInventoryAction(donating, "(GUILD;" + Name + ")", eInventoryActionType.Other, long.Parse(amount.ToString()));
-			donating.SaveIntoDatabase();
-			SaveIntoDatabase();
+			ChangeBank(newBank, true, true);
+			InventoryLogging.LogInventoryAction(player, $"(GUILD;{Name})", eInventoryActionType.Other, amount);
+			player.SaveIntoDatabase();
 			return;
 		}
 
-		public void WithdrawGuildBank(GamePlayer withdraw, double amount)
+		public void WithdrawFromBank(GamePlayer player, long amount)
 		{
-			if (amount < 0)
-			{
-				withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawInvalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			if (player == null || player.Guild == null)
 				return;
-			}
-			else if (withdraw.Guild.GetGuildBank() - amount < 0)
+
+			amount = Math.Abs(amount);
+
+			if (!ValidateAddToBankAmount(-amount, out double newBank, out ChangeBankResult changeBankResult))
 			{
-				withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawTooMuch"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
+				switch (changeBankResult)
+				{
+					case ChangeBankResult.INVALID:
+					{
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Scripts.Player.Guild.WithdrawInvalid"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+					case ChangeBankResult.FULL:
+					{
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Scripts.Player.Guild.WithdrawTooMuch"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						return;
+					}
+				}
 			}
 
-			long longAmount = long.Parse(amount.ToString());
-			string stringAmount = Money.GetString(longAmount);
-			withdraw.Out.SendMessage(LanguageMgr.GetTranslation(withdraw.Client, "Scripts.Player.Guild.WithdrawAmount", stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+			string stringAmount = Money.GetString(amount);
+			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Scripts.Player.Guild.WithdrawAmount", stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 
 			foreach (GamePlayer guildPlayer in GetListOfOnlineMembers())
 			{
-				if (guildPlayer != withdraw)
-					guildPlayer.Out.SendMessage(LanguageMgr.GetTranslation(guildPlayer.Client.Account.Language, "Scripts.Player.Guild.WithdrawsAmount", withdraw.Name, stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+				if (guildPlayer != player)
+					guildPlayer.Out.SendMessage(LanguageMgr.GetTranslation(guildPlayer.Client.Account.Language, "Scripts.Player.Guild.WithdrawsAmount", player.Name, stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 			}
 
-			m_DBguild.Bank -= amount;
-			withdraw.Guild.UpdateGuildWindow();
-			withdraw.AddMoney(longAmount);
-			InventoryLogging.LogInventoryAction("(GUILD;" + Name + ")", withdraw, eInventoryActionType.Other, longAmount);
-			withdraw.SaveIntoDatabase();
-			SaveIntoDatabase();
+			ChangeBank(newBank, true, true);
+			player.AddMoney(amount);
+			InventoryLogging.LogInventoryAction($"(GUILD;{Name})", player, eInventoryActionType.Other, amount);
+			player.SaveIntoDatabase();
 			return;
+		}
+
+		public bool AddToBank(long amount, bool updateWindow, bool save)
+		{
+			if (!ValidateAddToBankAmount(amount, out double newBank, out _))
+				return false;
+
+			ChangeBank(newBank, updateWindow, save);
+			return true;
+		}
+
+		private void ChangeBank(double newBank, bool updateWindow, bool save)
+		{
+			// `newBank` should have been validated by `ValidateChangeBankAmount`.
+			m_DBguild.Bank = newBank;
+
+			if (updateWindow)
+				UpdateGuildWindow();
+
+			if (save)
+				SaveIntoDatabase();
 		}
 
 		// Used by the hack to make pets untargetable with tab on a PvP server. Effectively creates a dummy guild to get a unique ID.
@@ -1065,6 +1117,13 @@ namespace DOL.GS
 
 			if (guildPlayers.Count > 0 && guildPlayers[0] != null)
 				guildPlayers[0].Guild.SaveIntoDatabase();
+		}
+
+		public enum ChangeBankResult
+		{
+			INVALID,
+			FULL,
+			SUCCESS
 		}
 	}
 }
