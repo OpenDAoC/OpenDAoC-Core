@@ -1556,7 +1556,7 @@ namespace DOL.GS.Commands
 							int startInd = 0;
 
 							#region Social Window
-							if (args.Length == 6 && args[2] == "window")
+							if (args.Length >= 6 && args[2] == "window")
 							{
 								int sortTemp;
 								byte showTemp;
@@ -1574,24 +1574,30 @@ namespace DOL.GS.Commands
 							#region Alliance Who
 							else if (args.Length == 3)
 							{
+								var alliance = client.Player.Guild.alliance;
+
 								if (args[2] == "alliance" || args[2] == "a")
 								{
-									foreach (Guild guild in client.Player.Guild.alliance.Guilds)
+									if (alliance != null)
 									{
-										lock (guild.GetListOfOnlineMembers())
+										foreach (Guild guild in client.Player.Guild.alliance.Guilds)
 										{
-											foreach (GamePlayer ply in guild.GetListOfOnlineMembers())
+											lock (guild.GetListOfOnlineMembers())
 											{
-												if (ply.Client.IsPlaying && !ply.IsAnonymous)
+												foreach (GamePlayer ply in guild.GetListOfOnlineMembers())
 												{
-													ind++;
-													string zoneName = (ply.CurrentZone == null ? "(null)" : ply.CurrentZone.Description);
-													string mesg = ind + ") " + ply.Name + " <guild=" + guild.Name + "> the Level " + ply.Level + " " + ply.CharacterClass.Name + " in " + zoneName;
-													client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+													if (ply.Client.IsPlaying && !ply.IsAnonymous)
+													{
+														ind++;
+														string zoneName = (ply.CurrentZone == null ? "(null)" : ply.CurrentZone.Description);
+														string mesg = ind + ") " + ply.Name + " <guild=" + guild.Name + "> the Level " + ply.Level + " " + ply.CharacterClass.Name + " in " + zoneName;
+														client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+													}
 												}
 											}
 										}
 									}
+
 									return;
 								}
 								else

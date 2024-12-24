@@ -444,7 +444,7 @@ Scripts.Player.Guild.DemotedHigherThanPlayer:		You can only demote to ranks belo
 Scripts.Player.Guild.DemotedOther:			{0} has set {1}'s guild rank to Rank {2} ({3}).	
 Scripts.Player.Guild.DemotedSelf:			You have set {0}'s guild rank to Rank {1} ({2}).	
 Scripts.Player.Guild.DepositAmount:			You deposit {0} into your guild bank.
-Scripts.Player.Guild.DepositsAmount:		{0} deposit {1} into the guild bank.
+Scripts.Player.Guild.DepositsAmount:		{0} deposits {1} into the guild bank.
 Scripts.Player.Guild.DepositFull:			The guild bank seems to be full.	
 Scripts.Player.Guild.DepositInvalid:		That is an invalid deposit amount.
 Scripts.Player.Guild.DepositTooMuch:		You don't have enough money to do that!

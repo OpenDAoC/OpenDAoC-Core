@@ -204,14 +204,7 @@ namespace DOL.GS
 
 		public void SetGuildDuesPercent(long dues)
 		{
-			if (IsGuildDuesOn() == true)
-			{
-				this.m_DBguild.DuesPercent = dues;
-			}
-			else
-			{
-				this.m_DBguild.DuesPercent = 0;
-			}
+			m_DBguild.DuesPercent = IsGuildDuesOn() ? dues : 0;
 		}
 
 		public bool ValidateAddToBankAmount(long amount, out double newBank, out ChangeBankResult changeBankResult)
