@@ -700,7 +700,6 @@ namespace DOL.GS.Housing
 
 			// save the guild and broadcast updates
 			player.Guild.SaveIntoDatabase();
-			player.Guild.UpdateGuildWindow();
 
 			// save the house and broadcast updates
 			playerHouse.SaveIntoDatabase();

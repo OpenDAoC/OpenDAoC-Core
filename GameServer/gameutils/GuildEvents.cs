@@ -170,9 +170,6 @@ namespace DOL.GS
 					}
 				}
 			}
-
-			if (player.Guild != null)
-				player.Guild.UpdateGuildWindow();
 		}
 
 		#endregion

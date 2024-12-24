@@ -182,7 +182,6 @@ namespace DOL.GS.PacketHandler.Client.v168
  						// I'm fixing consignment, not housing, and frankly I'm sick of fixing stuff!  :)  - tolakram
 						client.Player.Inventory.RemoveItem(orgitem);
 						InventoryLogging.LogInventoryAction(client.Player, "(HOUSE;" + housenumber + ")", eInventoryActionType.Other, orgitem.Template, orgitem.Count);
-						client.Player.Guild.UpdateGuildWindow();
 					}
 					return;
 				}

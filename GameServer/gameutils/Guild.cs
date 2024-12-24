@@ -272,7 +272,7 @@ namespace DOL.GS
 					guildPlayer.Out.SendMessage(LanguageMgr.GetTranslation(guildPlayer.Client.Account.Language, "Scripts.Player.Guild.DepositsAmount", player.Name, amount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 			}
 
-			ChangeBank(newBank, true, true);
+			ChangeBank(newBank, true);
 			InventoryLogging.LogInventoryAction(player, $"(GUILD;{Name})", eInventoryActionType.Other, amount);
 			player.SaveIntoDatabase();
 			return;
@@ -311,29 +311,26 @@ namespace DOL.GS
 					guildPlayer.Out.SendMessage(LanguageMgr.GetTranslation(guildPlayer.Client.Account.Language, "Scripts.Player.Guild.WithdrawsAmount", player.Name, stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 			}
 
-			ChangeBank(newBank, true, true);
+			ChangeBank(newBank, true);
 			player.AddMoney(amount);
 			InventoryLogging.LogInventoryAction($"(GUILD;{Name})", player, eInventoryActionType.Other, amount);
 			player.SaveIntoDatabase();
 			return;
 		}
 
-		public bool AddToBank(long amount, bool updateWindow, bool save)
+		public bool AddToBank(long amount, bool save)
 		{
 			if (!ValidateAddToBankAmount(amount, out double newBank, out _))
 				return false;
 
-			ChangeBank(newBank, updateWindow, save);
+			ChangeBank(newBank, save);
 			return true;
 		}
 
-		private void ChangeBank(double newBank, bool updateWindow, bool save)
+		private void ChangeBank(double newBank, bool save)
 		{
 			// `newBank` should have been validated by `ValidateChangeBankAmount`.
 			m_DBguild.Bank = newBank;
-
-			if (updateWindow)
-				UpdateGuildWindow();
 
 			if (save)
 				SaveIntoDatabase();
@@ -1016,7 +1013,6 @@ namespace DOL.GS
 		public virtual void GainMeritPoints(long amount)
 		{
 			MeritPoints += amount;
-			UpdateGuildWindow();
 		}
 
 		/// <summary>
@@ -1028,7 +1024,6 @@ namespace DOL.GS
 			if (amount > MeritPoints)
 				amount = MeritPoints;
 			MeritPoints -= amount;
-			UpdateGuildWindow();
 		}
 
 		public bool AddToDatabase()
@@ -1074,49 +1069,6 @@ namespace DOL.GS
 				}
 			}
 			return bannerStatus;
-		}
-
-		public void UpdateMember(GamePlayer player)
-		{
-			if (player.Guild != this)
-				return;
-			int housenum;
-			if (player.Guild.GuildOwnsHouse)
-			{
-				housenum = player.Guild.GuildHouseNumber;
-			}
-			else
-				housenum = 0;
-
-			string mes = "I";
-			mes += ',' + player.Guild.GuildLevel.ToString(); // Guild Level
-			mes += ',' + player.Guild.GetGuildBank().ToString(); // Guild Bank money
-			mes += ',' + player.Guild.GetGuildDuesPercent().ToString(); // Guild Dues enable/disable
-			mes += ',' + player.Guild.BountyPoints.ToString(); // Guild Bounty
-			mes += ',' + player.Guild.RealmPoints.ToString(); // Guild Experience
-			mes += ',' + player.Guild.MeritPoints.ToString(); // Guild Merit Points
-			mes += ',' + housenum.ToString(); // Guild houseLot ?
-			mes += ',' + (player.Guild.MemberOnlineCount + 1).ToString(); // online Guild member ?
-			mes += ',' + player.Guild.GuildBannerStatus(player); //"Banner available for purchase", "Missing banner buying permissions"
-			mes += ",\"" + player.Guild.Motd + '\"'; // Guild Motd
-			mes += ",\"" + player.Guild.Omotd + '\"'; // Guild oMotd
-			player.Out.SendMessage(mes, eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
-		}
-
-		public void UpdateGuildWindow()
-		{
-			List<GamePlayer> guildPlayers;
-
-			lock (m_memberListLock)
-			{
-				guildPlayers = m_onlineGuildPlayers.Values.ToList();
-			}
-			
-			foreach (GamePlayer player in guildPlayers)
-				player.Guild.UpdateMember(player);
-
-			if (guildPlayers.Count > 0 && guildPlayers[0] != null)
-				guildPlayers[0].Guild.SaveIntoDatabase();
 		}
 
 		public enum ChangeBankResult

@@ -7263,7 +7263,7 @@ namespace DOL.GS
 
             long moneyToGuild = money * guild.GetGuildDuesPercent() / 100;
 
-            if (moneyToGuild <= 0 || !guild.AddToBank(moneyToGuild, false, false))
+            if (moneyToGuild <= 0 || !guild.AddToBank(moneyToGuild, false))
                 return money;
 
             return money - moneyToGuild;
