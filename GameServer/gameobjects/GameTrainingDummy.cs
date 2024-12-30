@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.PropertyCalc;
@@ -34,7 +15,6 @@ namespace DOL.GS
             SetOwnBrain(new BlankBrain());
         }
 
-        
         public override void StartAttack(GameObject target) { }
 
         /// <summary>
@@ -72,11 +52,6 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// Interacting with a training dummy does nothing
-        /// </summary>
-        /// <param name="player"></param>
-        /// <returns></returns>
         public override bool Interact(GamePlayer player)
         {
             Notify(GameObjectEvent.Interact, this, new InteractEventArgs(player));
@@ -84,21 +59,10 @@ namespace DOL.GS
             return true;
         }
 
-        protected static void ApplyBonus(GameLiving owner, eBuffBonusCategory BonusCat, eProperty Property, double Value, double Effectiveness, bool IsSubstracted)
+        protected void ApplyBonus(eBuffBonusCategory bonusCategory, eProperty property, int value)
         {
-            int effectiveValue = (int)(Value * Effectiveness);
-
-            IPropertyIndexer tblBonusCat;
-            if (Property != eProperty.Undefined)
-            {
-                tblBonusCat = GetBonusCategory(owner, BonusCat);
-                //Console.WriteLine($"Value before: {tblBonusCat[(int)Property]}");
-                if (IsSubstracted)
-                    tblBonusCat[(int)Property] -= effectiveValue;
-                else
-                    tblBonusCat[(int)Property] += effectiveValue;
-                //Console.WriteLine($"Value after: {tblBonusCat[(int)Property]}");
-            }
+            if (property is not eProperty.Undefined)
+                GetBonusCategory(this, bonusCategory)[(int) property] = value;
         }
 
         private static IPropertyIndexer GetBonusCategory(GameLiving target, eBuffBonusCategory categoryid)

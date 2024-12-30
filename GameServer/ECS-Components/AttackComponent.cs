@@ -1653,7 +1653,7 @@ namespace DOL.GS
             armorFactor = target.GetArmorAF(armorSlot) + INHERENT_ARMOR_FACTOR;
 
             // Gives an extra 0.4~20 bonus AF to players. Ideally this should be done in `ArmorFactorCalculator`.
-            if (target is GamePlayer)
+            if (target is GamePlayer or GameTrainingDummy)
                 armorFactor += target.Level * 20 / 50.0;
 
             absorb = target.GetArmorAbsorb(armorSlot);
