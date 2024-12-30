@@ -1,10 +1,4 @@
-using System;
-using System.Reflection;
-using System.Collections;
 using System.Collections.Generic;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.Database;
 using DOL.GS.Spells;
 
@@ -52,7 +46,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.EffectGroup = 100;
             m_dbspell.Range = 0;
             m_spell = new Spell(m_dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
-            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+            m_spellline = GlobalSpellsLines.RealmSpellsSpellLine;
         }
 
         public override void Execute(GameLiving living)

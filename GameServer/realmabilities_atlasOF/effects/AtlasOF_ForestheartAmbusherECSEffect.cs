@@ -17,7 +17,7 @@ namespace DOL.GS.Effects
 
         public override void OnStartEffect()
         {
-            SpellLine RAspellLine = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+            SpellLine RAspellLine = GlobalSpellsLines.RealmSpellsSpellLine;
             Spell ForestheartAmbusher = SkillBase.GetSpellByID(90802);
 
             if (ForestheartAmbusher != null)

@@ -34,7 +34,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = (int)m_damageType;
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = m_radius;
-            m_dbspell.Type = eSpellType.DirectDamageNoVariance.ToString();
+            m_dbspell.Type = eSpellType.DirectDamage.ToString();
             m_dbspell.Value = 0;
             m_dbspell.Duration = 0;
             m_dbspell.Pulse = 0;
@@ -47,7 +47,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Description = m_dmgValue + " damage blast erupts from the caster, damaging enemies in a " 
                                                + m_radius + " radius.";
             m_spell = new Spell(m_dbspell, caster.Level);
-            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+            m_spellline = GlobalSpellsLines.RealmSpellsSpellLine;
         }
 
         public override void Execute(GameLiving living)

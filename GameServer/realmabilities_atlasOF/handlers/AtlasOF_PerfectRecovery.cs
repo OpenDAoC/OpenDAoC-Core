@@ -15,9 +15,6 @@ namespace DOL.GS.RealmAbilities
         private Spell m_spell = null;
         private SpellLine m_spellline;
 
-        private bool LastTargetLetRequestExpire = false;
-        private const string RESURRECT_CASTER_PROPERTY = "RESURRECT_CASTER";
-
         public override int MaxLevel { get { return 1; } }
         public override int CostForUpgrade(int level) { return 14; }
         public override int GetReUseDelay(int level) { return 1800; } // 30 mins
@@ -44,7 +41,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.ResurrectHealth = 100;
             m_dbspell.ResurrectMana = 100;
             m_spell = new Spell(m_dbspell, caster.Level);
-            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, false);
+            m_spellline = GlobalSpellsLines.RealmSpellsSpellLine;
         }
 
         public override void Execute(GameLiving living)

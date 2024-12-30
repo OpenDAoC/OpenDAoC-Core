@@ -2992,7 +2992,6 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Calculates the base 100% spell damage which is then modified by damage variance factors
 		/// </summary>
-		/// <returns></returns>
 		public virtual double CalculateDamageBase(GameLiving target)
 		{
 			double spellDamage = Spell.Damage;
@@ -3009,7 +3008,7 @@ namespace DOL.GS.Spells
 				spellDamage *= (Caster.GetWeaponSkill(Caster.ActiveWeapon) * weaponSkillScalar / 3.0 + 100) / 200.0;
 				return Math.Max(0, spellDamage);
 			}
-			else if (SpellLine.KeyName is GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Mundane_Poisons)
+			else if (SpellLine.KeyName is GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Mundane_Poisons or GlobalSpellsLines.Realm_Spells)
 				return Math.Max(0, spellDamage);
 
 			// Stats are only partially transferred to the necromancer pet, so we don't use its intelligence at all.

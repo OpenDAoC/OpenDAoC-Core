@@ -1,12 +1,5 @@
-using System;
-using System.Collections;
-using System.Reflection;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.PropertyCalc;
-using DOL.GS.Effects;
-using DOL.Events;
 using DOL.Database;
+using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities
@@ -95,7 +88,7 @@ namespace DOL.GS.RealmAbilities
 	        dbspell.Frequency = 0;
 	        dbspell.Range = 1500;
 	        Spell spell = new Spell(dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
-	        SpellLine line = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+	        SpellLine line = GlobalSpellsLines.RealmSpellsSpellLine;
 	        return new SpellHandler(caster, spell, line);
         }
     }

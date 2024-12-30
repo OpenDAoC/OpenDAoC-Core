@@ -1,12 +1,7 @@
-using System;
-using System.Collections;
 using DOL.Database;
-using DOL.GS;
 using DOL.GS.Spells;
-using DOL.Events;
-using DOL.GS.PacketHandler;
 
-namespace DOL.GS.RealmAbilities.Statics 
+namespace DOL.GS.RealmAbilities.Statics
 {
     public class StaticTempestBase : GenericBase  
     {
@@ -35,7 +30,7 @@ namespace DOL.GS.RealmAbilities.Statics
 			dbs.CastTime = 0;
 			dbs.Range = WorldMgr.VISIBILITY_DISTANCE;
 			s = new Spell(dbs,1);
-			sl = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+			sl = GlobalSpellsLines.RealmSpellsSpellLine;
 		}
 		protected override void CastSpell (GameLiving target) {
             if (!target.IsAlive) return;

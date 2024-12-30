@@ -1,12 +1,7 @@
-using System;
-using System.Collections;
 using DOL.Database;
-using DOL.GS;
 using DOL.GS.Spells;
-using DOL.Events;
-using DOL.GS.PacketHandler;
 
-namespace DOL.GS.RealmAbilities.Statics 
+namespace DOL.GS.RealmAbilities.Statics
 {
     public class ThornweedFieldBase : GenericBase 
     {
@@ -26,7 +21,7 @@ namespace DOL.GS.RealmAbilities.Statics
 			dbs.DamageType = (int)eDamageType.Natural;
 			dbs.Target = "Enemy";
 			dbs.Radius = 0;
-			dbs.Type = eSpellType.DamageSpeedDecreaseNoVariance.ToString();
+			dbs.Type = eSpellType.DamageSpeedDecrease.ToString();
 			dbs.Value = 50;
 			dbs.Duration = 5;
 			dbs.Pulse = 0;
@@ -35,7 +30,7 @@ namespace DOL.GS.RealmAbilities.Statics
 			dbs.CastTime = 0;
 			dbs.Range = WorldMgr.VISIBILITY_DISTANCE;
 			s = new Spell(dbs,1);
-			sl = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+			sl = GlobalSpellsLines.RealmSpellsSpellLine;
 		}
 		protected override void CastSpell (GameLiving target)
         {

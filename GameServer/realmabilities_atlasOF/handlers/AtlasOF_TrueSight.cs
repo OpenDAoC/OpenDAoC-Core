@@ -1,11 +1,10 @@
-using DOL.Database;
 using System.Collections.Generic;
+using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.Spells;
 
 namespace DOL.GS.RealmAbilities
 {
-
     public class AtlasOF_TrueSight : TimedRealmAbility
     {
         public AtlasOF_TrueSight(DbAbility dba, int level) : base(dba, level) { }
@@ -46,7 +45,7 @@ namespace DOL.GS.RealmAbilities
             tmpSpell.EffectGroup = 0; // stacks with other damage adds
             tmpSpell.Range = 0;
             tmpSpell.Description = "Detect all hidden characters for 60 seconds.";
-            SpellLine spellLine = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+            SpellLine spellLine = GlobalSpellsLines.RealmSpellsSpellLine;
             SpellHandler tmpHandler = new SpellHandler(owner, new Spell(tmpSpell, 0) , spellLine); // make spell level 0 so it bypasses the spec level adjustment code
             return tmpHandler;
         }

@@ -49,7 +49,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.Description = "Taunt all enemies in a " 
                                                + m_radius + " unit radius.";
             m_spell = new Spell(m_dbspell, caster.Level);
-            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+            m_spellline = GlobalSpellsLines.RealmSpellsSpellLine;
         }
 
         public override void Execute(GameLiving living)

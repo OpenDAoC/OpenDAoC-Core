@@ -3540,7 +3540,7 @@ namespace DOL.GS
                 return 50;
 
             if (keyName.StartsWith(GlobalSpellsLines.Realm_Spells))
-                return this.Level;
+                return Level;
 
             Specialization spec = null;
             int level = 0;

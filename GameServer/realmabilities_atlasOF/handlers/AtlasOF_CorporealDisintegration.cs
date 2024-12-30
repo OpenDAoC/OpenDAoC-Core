@@ -33,7 +33,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = 14; // matter
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = m_radius;
-            m_dbspell.Type = eSpellType.DamageOverTimeNoVariance.ToString();
+            m_dbspell.Type = eSpellType.DamageOverTime.ToString();
             m_dbspell.Value = 0;
             m_dbspell.Duration = 40;
             m_dbspell.Pulse = 0;
@@ -45,7 +45,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.RecastDelay = GetReUseDelay(0); // Spell code is responsible for disabling this ability and will use this value.
             m_dbspell.Range = m_range;
             m_spell = new Spell(m_dbspell, caster.Level);
-            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+            m_spellline = GlobalSpellsLines.RealmSpellsSpellLine;
         }
 
         public override void Execute(GameLiving living)

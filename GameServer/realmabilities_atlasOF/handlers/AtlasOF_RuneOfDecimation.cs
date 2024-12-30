@@ -38,7 +38,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.DamageType = (int)eDamageType.Energy;
             m_dbspell.Target = "Enemy";
             m_dbspell.Radius = 0;
-            m_dbspell.Type = eSpellType.DirectDamageNoVariance.ToString();
+            m_dbspell.Type = eSpellType.DirectDamage.ToString();
             m_dbspell.Value = 0;
             m_dbspell.Duration = m_duration;
             m_dbspell.Pulse = 0;
@@ -48,7 +48,7 @@ namespace DOL.GS.RealmAbilities
             m_dbspell.EffectGroup = 0;
             m_dbspell.Range = 350;
             m_spell = new Spell(m_dbspell, 0); // Make spell level 0 so it bypasses the spec level adjustment code.
-            m_spellline = new SpellLine(GlobalSpellsLines.Realm_Spells, string.Empty, string.Empty, true);
+            m_spellline = GlobalSpellsLines.RealmSpellsSpellLine;
         }
 
         public override void Execute(GameLiving living)
