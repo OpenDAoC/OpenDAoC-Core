@@ -2945,9 +2945,9 @@ namespace DOL.GS.Spells
 					// Mob spells are modified by acuity stats.
 					// Style effects use a custom damage calculation currently expecting the upper bound to be 1.0.
 					// Nightshade spells aren't tied to any trainable specialization and thus require a fixed variance.
-					// Lower bound is similar to what the variance calculation would return if we used 35 for the specialization and 50 for the target level.
+					// Lower bound is similar to what the variance calculation would return if we used 31 for the specialization and 50 for the target level.
 					max = 1.0;
-					min = 0.68;
+					min = 0.6;
 					break;
 				}
 				case GlobalSpellsLines.Item_Effects:
@@ -2955,7 +2955,7 @@ namespace DOL.GS.Spells
 				{
 					// Procs and charges normally aren't modified by any stat, but are shown to be able to do about 25% more damage than their base value.
 					max = 1.25;
-					min = UseMinVariance ? 1.25 : 0.85; // 0.68 * 1.25
+					min = UseMinVariance ? 1.25 : 0.75; // 0.6 * 1.25
 					break;
 				}
 				case GlobalSpellsLines.Reserved_Spells:
