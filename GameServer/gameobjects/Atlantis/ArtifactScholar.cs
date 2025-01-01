@@ -48,7 +48,7 @@
 //
 // 			if (player != null)
 // 			{
-// 				lock (QuestListToGive.SyncRoot)
+// 				lock (_questListToGiveLock)
 // 				{
 // 					foreach (AbstractQuest quest in player.QuestList)
 // 					{
@@ -79,7 +79,7 @@
 // 			GamePlayer player = source as GamePlayer;
 // 			if (player != null)
 // 			{
-// 				lock (QuestListToGive.SyncRoot)
+// 				lock (_questListToGiveLock)
 // 				{
 // 					// Start new quest...
 //
@@ -118,7 +118,7 @@
 // 		{
 // 			if (player != null)
 // 			{
-// 				lock (QuestListToGive.SyncRoot)
+// 				lock (_questListToGiveLock)
 // 				{
 // 					// See if they player has the quest first
 // 					foreach (AbstractQuest quest in player.QuestList)

@@ -399,7 +399,7 @@ namespace DOL.GS.Commands
 		{
 			try
 			{
-				lock (targetDoor._xpGainersLock)
+				lock (targetDoor.XpGainersLock)
 				{
 					targetDoor.AddXPGainer(client.Player, targetDoor.Health);
 					targetDoor.Die(client.Player);

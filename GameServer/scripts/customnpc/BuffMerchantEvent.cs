@@ -874,7 +874,7 @@ namespace DOL.GS.Scripts
 
             long totalValue = number * template.Price;
 
-            lock (player.Inventory.LockObject)
+            lock (player.Inventory.Lock)
             {
 
                 if (player.GetCurrentMoney() < totalValue)

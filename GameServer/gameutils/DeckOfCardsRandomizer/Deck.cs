@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading;
 using Newtonsoft.Json;
 
 namespace DOL.GS.Utils
@@ -11,7 +12,7 @@ namespace DOL.GS.Utils
         private const int CARDS_PER_DECK_COUNT = 100;
 
         private ConcurrentStack<int> _cards = new();
-        private object _lock = new();
+        private readonly Lock _lock = new();
 
         public PlayerDeck()
         {

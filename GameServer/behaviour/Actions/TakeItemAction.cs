@@ -30,7 +30,7 @@ namespace DOL.GS.Behaviour.Actions
             DbItemTemplate itemToRemove = P;
 
 			Dictionary<DbInventoryItem, int?> dataSlots = new Dictionary<DbInventoryItem, int?>(10);
-            lock (player.Inventory.LockObject)
+            lock (player.Inventory.Lock)
             {
                 var allBackpackItems = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 

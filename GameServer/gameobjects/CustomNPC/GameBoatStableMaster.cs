@@ -38,7 +38,7 @@ namespace DOL.GS
 
 			GameInventoryItem item = GameInventoryItem.Create(template);
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 
 				if (player.GetCurrentMoney() < totalValue)

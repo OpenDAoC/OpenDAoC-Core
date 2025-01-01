@@ -261,7 +261,7 @@ namespace DOL.GS.PacketHandler
 				return;
 			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.TradeWindow)))
 			{
-				lock (m_gameClient.Player.TradeWindow.Sync)
+				lock (m_gameClient.Player.TradeWindow.Lock)
 				{
 					foreach (DbInventoryItem item in m_gameClient.Player.TradeWindow.TradeItems)
 					{

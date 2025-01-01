@@ -331,7 +331,7 @@ namespace DOL.GS
                                             timedDrops[
                                                 Util.Random(timedDrops.Count - 1)]; //randomly pick one available drop
 
-                                    lock (player._xpGainersLock)
+                                    lock (player.XpGainersLock)
                                     {
                                         DbItemTemplate drop =
                                             GameServer.Database.FindObjectByKey<DbItemTemplate>(lootTemplate
@@ -481,7 +481,7 @@ namespace DOL.GS
                                             timedDrops[
                                                 Util.Random(timedDrops.Count - 1)]; //randomly pick one available drop
 
-                                    lock (player._xpGainersLock)
+                                    lock (player.XpGainersLock)
                                     {
                                         DbItemTemplate drop =
                                             GameServer.Database.FindObjectByKey<DbItemTemplate>(lootTemplate

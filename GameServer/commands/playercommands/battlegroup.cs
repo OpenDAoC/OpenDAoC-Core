@@ -963,7 +963,7 @@ namespace DOL.GS.Commands
             if (mybattlegroup != null)
             {
                 //log.Debug("bg");
-                lock (mybattlegroup)
+                lock (mybattlegroup.Lock)
                 {
                     if (mybattlegroup.Members.Count < 1)
                     {
@@ -988,7 +988,7 @@ namespace DOL.GS.Commands
                     {
                         BattleGroup battlegroup = new BattleGroup();
 
-                        lock (battlegroup)
+                        lock (battlegroup.Lock)
                         {
                             battlegroup.SetBGLeader(leader);
                             battlegroup.AddBattlePlayer(leader, true);

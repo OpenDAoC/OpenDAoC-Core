@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using DOL.Database.Connection;
+using System.Linq;
+using System.Threading;
 using DOL.Database.Attributes;
+using DOL.Database.Connection;
 using DOL.Database.UniqueID;
 
 namespace DOL.Database
@@ -14,7 +15,7 @@ namespace DOL.Database
 	/// </summary>
 	public abstract class SqlObjectDatabase : ObjectDatabase
 	{
-		private static readonly object Lock = new object();
+		private static readonly Lock _lock = new();
 
 		/// <summary>
 		/// Create a new instance of <see cref="SqlObjectDatabase"/>
@@ -63,7 +64,7 @@ namespace DOL.Database
 					CheckOrCreateTableImpl(dataTableHandler);
 				}
 
-			    lock (Lock)
+			    lock (_lock)
 			    {
 			        TableDatasets.Add(tableName, dataTableHandler);
                 }

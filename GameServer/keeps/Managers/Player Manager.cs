@@ -294,7 +294,7 @@ namespace DOL.GS.Keeps
 		/// <param name="lord">The lord object</param>
 		public static void UpdateStats(GuardLord lord)
 		{
-			lock (lord._xpGainersLock)
+			lock (lord.XpGainersLock)
 			{
 				foreach (var pair in lord.XPGainers)
 				{

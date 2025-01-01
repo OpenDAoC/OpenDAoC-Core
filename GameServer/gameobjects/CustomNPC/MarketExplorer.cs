@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
@@ -12,7 +13,8 @@ namespace DOL.GS
 
         public const string EXPLORER_ITEM_LIST = "MarketExplorerItems";
 
-        public object LockObject { get; } = new();
+        private readonly Lock _lock = new();
+        public Lock Lock => _lock;
 
         public override bool Interact(GamePlayer player)
         {

@@ -55,7 +55,8 @@ namespace DOL.GS
 			eInventorySlot.ArmsArmor
 		};
 
-		public object LockObject { get; } = new();
+		private readonly Lock _inventoryLock = new();
+		public Lock Lock => _inventoryLock;
 
 		#region Constructor/Declaration/LoadDatabase/SaveDatabase
 
@@ -120,7 +121,7 @@ namespace DOL.GS
 
 			int result = 0;
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				for (eInventorySlot i = minSlot; i <= maxSlot; i++)
 				{
@@ -149,7 +150,7 @@ namespace DOL.GS
 		/// <returns>number of matched items found</returns>
 		public int CountItemTemplate(string itemtemplateID, eInventorySlot minSlot, eInventorySlot maxSlot)
 		{
-			lock (LockObject)
+			lock (Lock)
 			{
 				int count = 0;
 
@@ -195,7 +196,7 @@ namespace DOL.GS
 				maxSlot = tmp;
 			}
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				for (eInventorySlot i = minSlot; i <= maxSlot; i++)
 				{
@@ -299,7 +300,7 @@ namespace DOL.GS
 					throw new ArgumentException($"If {nameof(searchPartiallyFull)} is true, {nameof(item)} must not be null.");
 			}
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				first = GetValidInventorySlot(first);
 				last = GetValidInventorySlot(last);
@@ -389,7 +390,7 @@ namespace DOL.GS
 
 			var items = new List<DbInventoryItem>();
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				DbInventoryItem item;
 
@@ -428,7 +429,7 @@ namespace DOL.GS
 				maxSlot = tmp;
 			}
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				DbInventoryItem item;
 
@@ -468,7 +469,7 @@ namespace DOL.GS
 				maxSlot = tmp;
 			}
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				DbInventoryItem item;
 
@@ -508,7 +509,7 @@ namespace DOL.GS
 				maxSlot = tmp;
 			}
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				DbInventoryItem item;
 
@@ -540,7 +541,7 @@ namespace DOL.GS
 			if (item == null)
 				return false;
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				slot = GetValidInventorySlot(slot);
 				if (slot == eInventorySlot.Invalid) return false;
@@ -601,7 +602,7 @@ namespace DOL.GS
 		/// <returns>true if successfull</returns>
 		public virtual bool RemoveItem(DbInventoryItem item)
 		{
-			lock (LockObject)
+			lock (Lock)
 			{
 				if (item == null)
 					return false;
@@ -644,7 +645,7 @@ namespace DOL.GS
 			if (count <= 0)
 				return false;
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				var slot = (eInventorySlot) item.SlotPosition;
 
@@ -681,7 +682,7 @@ namespace DOL.GS
 			if (count <= 0)
 				return false;
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				var slot = (eInventorySlot) item.SlotPosition;
 
@@ -722,7 +723,7 @@ namespace DOL.GS
 			if (slot == eInventorySlot.Invalid)
 				return null;
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				DbInventoryItem item;
 				m_items.TryGetValue(slot, out item);
@@ -734,7 +735,7 @@ namespace DOL.GS
 
 		public virtual bool MoveItem(eInventorySlot fromSlot, eInventorySlot toSlot, int itemCount)
 		{
-			lock (LockObject)
+			lock (Lock)
 			{
 				fromSlot = GetValidInventorySlot(fromSlot);
 				toSlot = GetValidInventorySlot(toSlot);
@@ -779,7 +780,7 @@ namespace DOL.GS
 			{
 				var items = new List<DbInventoryItem>(VISIBLE_SLOTS.Length);
 
-				lock (LockObject)
+				lock (Lock)
 				{
 					foreach (eInventorySlot slot in VISIBLE_SLOTS)
 					{
@@ -805,7 +806,7 @@ namespace DOL.GS
 			{
 				var items = new List<DbInventoryItem>(EQUIP_SLOTS.Length);
 
-				lock (LockObject)
+				lock (Lock)
 				{
 					foreach (eInventorySlot slot in EQUIP_SLOTS)
 					{
@@ -869,7 +870,7 @@ namespace DOL.GS
 			if (maxSlot > eInventorySlot.Max_Inv)
 				return false;
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				var changedSlots = new Dictionary<eInventorySlot, int>(); // value: <0 = new item count; >0 = add to old
 				bool fits = false;
@@ -1046,7 +1047,7 @@ namespace DOL.GS
 			if (minSlot < eInventorySlot.Min_Inv) return false;
 			if (maxSlot > eInventorySlot.Max_Inv) return false;
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				var changedSlots = new Dictionary<DbInventoryItem, int>();
 				// value: null = remove item completely; >0 = remove count from stack
@@ -1238,7 +1239,7 @@ namespace DOL.GS
 			}
 		}
 
-		public object InventorySlotLock = new object();
+		public readonly Lock InventorySlotLock = new();
 		/// <summary>
 		/// Updates changed slots, inventory is already locked
 		/// </summary>

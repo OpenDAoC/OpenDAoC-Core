@@ -35,7 +35,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
             }
 
-			lock (conMerchant.LockObject)
+			lock (conMerchant.Lock)
 			{
 				long totalConMoney = conMerchant.TotalMoney;
 

@@ -59,7 +59,7 @@
 // 			string artifacts = string.Empty;
 // 			if (quests.Count > 0)
 // 			{
-// 				lock (quests.SyncRoot)
+// 				lock (_questListToGiveLock)
 // 				{
 // 					int numQuests = quests.Count;
 // 					foreach (ArtifactQuest quest in quests)
@@ -131,7 +131,7 @@
 // 			if (player == null)
 // 				return false;
 //
-// 			lock (QuestListToGive.SyncRoot)
+// 			lock (_questListToGiveLock)
 // 			{
 // 				// Start new quest...
 //
@@ -247,7 +247,7 @@
 //
 // 			if (player != null)
 // 			{
-// 				lock (QuestListToGive.SyncRoot)
+// 				lock (_questListToGiveLock)
 // 				{
 // 					try
 // 					{

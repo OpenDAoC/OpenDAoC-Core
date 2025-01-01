@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -1348,7 +1349,7 @@ namespace DOL.GS
 			{
 				if (template.Abilities != null)
 				{
-					lock (m_lockAbilities)
+					lock (_abilitiesLock)
 					{
 						foreach (Ability ab in template.Abilities)
 							m_abilities[ab.KeyName] = ab;
@@ -1537,6 +1538,7 @@ namespace DOL.GS
 		/// Holds all the quests this npc can give to players
 		/// </summary>
 		protected readonly ArrayList m_questListToGive = new ArrayList();
+		protected readonly Lock _questListToGiveLock = new();
 
 		/// <summary>
 		/// Gets the questlist of this player
@@ -1553,7 +1555,7 @@ namespace DOL.GS
 		/// <returns>true if added, false if the npc has already the quest!</returns>
 		public void AddQuestToGive(Type questType)
 		{
-			lock (m_questListToGive.SyncRoot)
+			lock (_questListToGiveLock)
 			{
 				if (HasQuest(questType) == null)
 				{
@@ -1570,7 +1572,7 @@ namespace DOL.GS
 		/// <returns>true if added, false if the npc has already the quest!</returns>
 		public bool RemoveQuestToGive(Type questType)
 		{
-			lock (m_questListToGive.SyncRoot)
+			lock (_questListToGiveLock)
 			{
 				foreach (AbstractQuest q in m_questListToGive)
 				{
@@ -1593,7 +1595,7 @@ namespace DOL.GS
 		/// <returns>the number of time the quest can be done again</returns>
 		public int CanGiveQuest(Type questType, GamePlayer player)
 		{
-			lock (m_questListToGive.SyncRoot)
+			lock (_questListToGiveLock)
 			{
 				foreach (AbstractQuest q in m_questListToGive)
 				{
@@ -1660,7 +1662,7 @@ namespace DOL.GS
 		public bool CanShowOneQuest(GamePlayer player)
 		{
 			// Scripted quests
-			lock (m_questListToGive.SyncRoot)
+			lock (_questListToGiveLock)
 			{
 				foreach (AbstractQuest q in m_questListToGive)
 				{
@@ -1672,7 +1674,7 @@ namespace DOL.GS
 			}
 
 			// Data driven quests
-			lock (m_dataQuests)
+			lock (_dataQuestsLock)
 			{
 				foreach (DataQuest quest in DataQuestList)
 				{
@@ -1758,7 +1760,7 @@ namespace DOL.GS
 		/// <returns>the quest if the npc have the quest or null if not</returns>
 		protected AbstractQuest HasQuest(Type questType)
 		{
-			lock (m_questListToGive.SyncRoot)
+			lock (_questListToGiveLock)
 			{
 				foreach (AbstractQuest q in m_questListToGive)
 				{
@@ -2112,7 +2114,7 @@ namespace DOL.GS
 		/// </summary>
 		public override void Delete()
 		{
-			lock (m_respawnTimerLock)
+			lock (_respawnTimerLock)
 			{
 				if (m_respawnTimer != null)
 				{
@@ -2830,7 +2832,7 @@ namespace DOL.GS
 				Group?.RemoveMember(this);
 				base.ProcessDeath(killer);
 
-				lock (_xpGainersLock)
+				lock (XpGainersLock)
 				{
 					XPGainers.Clear();
 				}
@@ -2984,7 +2986,7 @@ namespace DOL.GS
 		/// <summary>
 		/// The sync object for respawn timer modifications
 		/// </summary>
-		protected readonly object m_respawnTimerLock = new object();
+		protected readonly Lock _respawnTimerLock = new();
 
 		/// <summary>
 		/// The Respawn Interval of this mob in milliseconds
@@ -3068,7 +3070,7 @@ namespace DOL.GS
 			if (RespawnInterval <= 0)
 				return;
 
-			lock (m_respawnTimerLock)
+			lock (_respawnTimerLock)
 			{
 				if (m_respawnTimer == null)
 				{
@@ -3087,7 +3089,7 @@ namespace DOL.GS
 		/// <returns>the new interval</returns>
 		protected virtual int RespawnTimerCallback(ECSGameTimer respawnTimer)
 		{
-			lock (m_respawnTimerLock)
+			lock (_respawnTimerLock)
 			{
 				if (m_respawnTimer != null)
 				{
@@ -3511,18 +3513,15 @@ namespace DOL.GS
 			{
 				List<SpellWaitingForLosCheck> list = pair.Value;
 
-				lock (((ICollection) list).SyncRoot)
+				for (int i = list.Count - 1; i >= 0; i--)
 				{
-					for (int i = list.Count - 1; i >= 0; i--)
-					{
-						if (ServiceUtils.ShouldTick(list[i].RequestTime + 2000))
-							list.SwapRemoveAt(i);
-					}
-
-					// We can keep the list if we're about to add anything to it.
-					if (list.Count == 0 && TargetObject != pair.Key)
-						_spellsWaitingForLosCheck.TryRemove(pair.Key, out _);
+					if (ServiceUtils.ShouldTick(list[i].RequestTime + 2000))
+						list.RemoveAt(i);
 				}
+
+				// We can keep the list if we're about to add anything to it.
+				if (list.Count == 0 && TargetObject != pair.Key)
+					_spellsWaitingForLosCheck.TryRemove(pair.Key, out _);
 			}
 
 			Spell spellToCast = null;
@@ -3569,12 +3568,7 @@ namespace DOL.GS
 			{
 				// This LoS check will not necessarily result in an actual packet being sent to the client, but it will trigger a second call to the callback.
 				LosChecker.Out.SendCheckLos(this, TargetObject, new CheckLosResponse(CastSpellLosCheckReply));
-
-				lock (((ICollection) oldValue).SyncRoot)
-				{
-					oldValue.Add(arg);
-				}
-
+				oldValue.Add(arg);
 				return oldValue;
 			}
 		}
@@ -3590,16 +3584,10 @@ namespace DOL.GS
 				return;
 
 			bool success = response is eLosCheckResponse.TRUE;
-			List<SpellWaitingForLosCheck> spellsWaitingForLosCheck;
+			// Don't bother removing the list here. It'll be done by `CastSpell`.
+			list.Clear();
 
-			lock (((ICollection) list).SyncRoot)
-			{
-				spellsWaitingForLosCheck = list.ToList();
-				// Don't bother removing the list here. It'll be done by `CastSpell`.
-				list.Clear();
-			}
-
-			foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in spellsWaitingForLosCheck)
+			foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in list)
 			{
 				Spell spell = spellWaitingForLosCheck.Spell;
 				SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
@@ -3847,7 +3835,7 @@ namespace DOL.GS
 			{
 				Dictionary<string, Ability> tmp = new Dictionary<string, Ability>();
 
-				lock (m_lockAbilities)
+				lock (_abilitiesLock)
 				{
 					tmp = new Dictionary<string, Ability>(m_abilities);
 				}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Reflection;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using log4net;
@@ -18,7 +19,7 @@ namespace DOL.GS
 		/// </summary>
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public PlayerTradeWindow(GamePlayer owner, bool isRecipiantWindow, object sync)
+		public PlayerTradeWindow(GamePlayer owner, bool isRecipiantWindow, Lock sync)
 		{
 			if (owner == null)
 				throw new ArgumentNullException("owner");
@@ -30,7 +31,7 @@ namespace DOL.GS
 			m_combine = false;
 			m_repair = false;
 			m_recipiant = isRecipiantWindow;
-			m_sync = sync;
+			_lock = sync;
 		}
 
 		#region Fields
@@ -67,10 +68,6 @@ namespace DOL.GS
 		/// Holds the flag to know the it's a recipiant window
 		/// </summary>
 		protected bool m_recipiant;
-		/// <summary>
-		/// Holds the trade windows sync object
-		/// </summary>
-		protected object m_sync;
 		/// <summary>
 		/// Stores the begin changes count
 		/// </summary>
@@ -138,13 +135,8 @@ namespace DOL.GS
 			set { m_partnerWindow = value; }
 		}
 
-		/// <summary>
-		/// Gets the access sync object for this and TradePartner windows
-		/// </summary>
-		public object Sync
-		{
-			get { return m_sync; }
-		}
+		private readonly Lock _lock = new();
+		public Lock Lock => _lock;
 
 		/// <summary>
 		/// Gets the item count in trade window
@@ -267,7 +259,7 @@ namespace DOL.GS
                 // Luhz Crafting Update:
                 // Players may now have any, and all, "primary" crafting skills.
                 AbstractCraftingSkill skill = null;
-                lock (m_owner.TradeWindow.Sync)
+                lock (m_owner.TradeWindow.Lock)
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
@@ -327,7 +319,7 @@ namespace DOL.GS
 		/// <returns>true if added</returns>
 		public bool AddItemToTrade(DbInventoryItem itemForTrade)
 		{
-			lock(Sync)
+			lock(Lock)
 			{
 				// allow admin and gm account opened windows to trade any item
 				if (this.m_owner.Client.Account.PrivLevel == 1)
@@ -354,7 +346,7 @@ namespace DOL.GS
 		/// <param name="money">Array of money values to add</param>
 		public void AddMoneyToTrade(long money)
 		{
-			lock(Sync)
+			lock(Lock)
 			{
 				TradeMoney += money;
 				TradeUpdate();
@@ -370,7 +362,7 @@ namespace DOL.GS
 			if (itemToRemove == null)
 				return;
 
-			lock(Sync)
+			lock(Lock)
 			{
 				TradeItems.Remove(itemToRemove);
 				if(!m_tradeAccept || !m_partnerWindow.m_tradeAccept) TradeUpdate();
@@ -382,7 +374,7 @@ namespace DOL.GS
 		/// </summary>
 		public void TradeUpdate()
 		{
-			lock (Sync)
+			lock (Lock)
 			{
 				m_tradeAccept = false;
 				m_partnerWindow.m_tradeAccept = false;
@@ -409,7 +401,7 @@ namespace DOL.GS
 		/// </summary>
 		public bool AcceptTrade()
 		{
-			lock (Sync)
+			lock (Lock)
 			{
 				m_tradeAccept = true;
 				GamePlayer partner = m_partnerWindow.Owner;
@@ -470,7 +462,7 @@ namespace DOL.GS
                     // Players may now have any, and all, "primary" crafting skills.
                     // AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(crafter.CraftingPrimarySkill);
                     AbstractCraftingSkill skill = null;
-                    lock (crafter.TradeWindow.Sync)
+                    lock (crafter.TradeWindow.Lock)
                     {
                         foreach (DbInventoryItem i in (ArrayList)crafter.TradeWindow.TradeItems.Clone())
                         {
@@ -716,7 +708,7 @@ namespace DOL.GS
 		/// </summary>
 		public void CloseTrade()
 		{
-			lock(Sync)
+			lock(Lock)
 			{
 				m_owner.Out.SendCloseTradeWindow();
 				m_partnerWindow.Owner.Out.SendCloseTradeWindow();

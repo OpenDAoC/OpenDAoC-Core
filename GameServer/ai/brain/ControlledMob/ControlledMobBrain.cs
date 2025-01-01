@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using DOL.GS;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -48,8 +49,8 @@ namespace DOL.AI.Brain
 		/// </summary>
 		protected eAggressionState m_aggressionState;
 
-		private HashSet<GameLiving> m_buffedTargets = new();
-		private object m_buffedTargetsLock = new();
+		private HashSet<GameLiving> _buffedTargets = new();
+		private readonly Lock _buffedTargetsLock = new();
 
 		/// <summary>
 		/// Constructs new controlled npc brain
@@ -853,7 +854,7 @@ namespace DOL.AI.Brain
 
 					List<GameSpellEffect> effects = new List<GameSpellEffect>();
 
-					lock (Body.EffectList)
+					lock (Body.EffectList.Lock)
 					{
 						foreach (IGameEffect effect in Body.EffectList)
 						{
@@ -862,7 +863,7 @@ namespace DOL.AI.Brain
 						}
 					}
 
-					lock (Owner.EffectList)
+					lock (Owner.EffectList.Lock)
 					{
 						foreach (IGameEffect effect in Owner.EffectList)
 						{
@@ -936,23 +937,23 @@ namespace DOL.AI.Brain
 			if (living == Body)
 				return;
 
-			lock (m_buffedTargetsLock)
+			lock (_buffedTargetsLock)
 			{
-				m_buffedTargets.Add(living);
+				_buffedTargets.Add(living);
 			}
 		}
 
 		public void StripCastedBuffs()
 		{
-			lock (m_buffedTargetsLock)
+			lock (_buffedTargetsLock)
 			{
-				foreach (GameLiving living in m_buffedTargets)
+				foreach (GameLiving living in _buffedTargets)
 				{
 					foreach (ECSGameEffect effect in living.effectListComponent.GetAllEffects().Where(x => x.SpellHandler != null && x.SpellHandler.Caster == Body))
 						EffectService.RequestCancelEffect(effect);
 				}
 
-				m_buffedTargets.Clear();
+				_buffedTargets.Clear();
 			}
 		}
 

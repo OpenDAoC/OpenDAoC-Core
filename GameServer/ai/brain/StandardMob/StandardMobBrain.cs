@@ -244,6 +244,7 @@ namespace DOL.AI.Brain
         private ConcurrentDictionary<GameLiving, AggroAmount> _tempAggroList = new();
         protected ConcurrentDictionary<GameLiving, AggroAmount> AggroList { get; private set; } = new();
         protected List<(GameLiving, long)> OrderedAggroList { get; private set; } = [];
+        protected readonly Lock _orderedAggroListLock = new();
         public GameLiving LastHighestThreatInAttackRange { get; private set; }
 
         public class AggroAmount(long @base = 0)
@@ -359,7 +360,7 @@ namespace DOL.AI.Brain
         public List<(GameLiving, long)> GetOrderedAggroList()
         {
             // Potentially slow, so we cache the result.
-            lock (((ICollection) OrderedAggroList).SyncRoot)
+            lock (_orderedAggroListLock)
             {
                 if (!OrderedAggroList.Any())
                     OrderedAggroList = AggroList.OrderByDescending(x => x.Value.Effective).Select(x => (x.Key, x.Value.Effective)).ToList();
@@ -410,7 +411,7 @@ namespace DOL.AI.Brain
             CanBaf = true; // Mobs that drop out of combat can BAF again.
             AggroList.Clear();
 
-            lock (((ICollection) OrderedAggroList).SyncRoot)
+            lock (_orderedAggroListLock)
             {
                 OrderedAggroList.Clear();
             }

@@ -1125,7 +1125,7 @@ namespace DOL.GS.Commands
 		{
 			try
 			{
-				lock (targetMob._xpGainersLock)
+				lock (targetMob.XpGainersLock)
 				{
 					targetMob.AddXPGainer(client.Player, targetMob.Health);
 					targetMob.Die(client.Player);

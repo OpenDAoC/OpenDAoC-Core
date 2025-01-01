@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using DOL.Database;
 
 namespace DOL.GS;
@@ -8,8 +9,7 @@ namespace DOL.GS;
 public class LoyaltyManager
 {
     private static Dictionary<GamePlayer, PlayerLoyalty> _CachedPlayerLoyaltyDict;
-
-    public static object CachedDictLock = new object();
+    private static readonly Lock _cachedDictLock = new();
 
     public LoyaltyManager()
     {
@@ -25,7 +25,7 @@ public class LoyaltyManager
         bool alreadyExists = false;
 
         //need to do this since we can't safely lock the object in the IF statement below
-        lock (CachedDictLock)
+        lock (_cachedDictLock)
         {
             if (_CachedPlayerLoyaltyDict.ContainsKey(player))
                 alreadyExists = true;
@@ -36,7 +36,7 @@ public class LoyaltyManager
             CachePlayer(player);
         }
 
-        lock(CachedDictLock)
+        lock(_cachedDictLock)
             playerLoyalty = _CachedPlayerLoyaltyDict[player];
 
         return playerLoyalty;
@@ -49,7 +49,7 @@ public class LoyaltyManager
         if (_CachedPlayerLoyaltyDict == null)
             _CachedPlayerLoyaltyDict = new Dictionary<GamePlayer, PlayerLoyalty>();
 
-        lock (CachedDictLock)
+        lock (_cachedDictLock)
         {
             _CachedPlayerLoyaltyDict.Remove(player);
         }
@@ -82,7 +82,7 @@ public class LoyaltyManager
             HibPercent = hibPercent
         };
             
-        lock(CachedDictLock)
+        lock(_cachedDictLock)
             _CachedPlayerLoyaltyDict.Add(player, playerLoyalty);
     }
     

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.Housing;
@@ -822,6 +823,7 @@ namespace DOL.GS
 		/// List of DataQuests available for this object
 		/// </summary>
 		protected List<DataQuest> m_dataQuests = new List<DataQuest>();
+		protected readonly Lock _dataQuestsLock = new();
 
 		/// <summary>
 		/// Flag to prevent loading quests on every respawn

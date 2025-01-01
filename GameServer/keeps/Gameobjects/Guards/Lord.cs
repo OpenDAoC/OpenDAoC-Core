@@ -174,7 +174,7 @@ namespace DOL.GS.Keeps
 
                             string listRPGainers = string.Empty;
 
-                            lock (_xpGainersLock)
+                            lock (XpGainersLock)
                             {
                                 foreach (var pair in XPGainers)
                                     listRPGainers += pair.Key.Name + ";";

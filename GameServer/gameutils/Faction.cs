@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -14,7 +15,7 @@ namespace DOL.GS
 
         public int _baseAggroLevel;
         private ConcurrentDictionary<string, AggroLevel> _aggroLevels = [];
-        private object _saveLoadLock = new(); // Used to prevent `SaveAggroLevels` from removing a player from `_aggroLevels` while `TryLoadAggroLevel` is updating the `GamePlayer` reference.
+        private readonly Lock _saveLoadLock = new(); // Used to prevent `SaveAggroLevels` from removing a player from `_aggroLevels` while `TryLoadAggroLevel` is updating the `GamePlayer` reference.
 
         public string Name { get; private set; } = string.Empty;
         public int Id { get; private set; }

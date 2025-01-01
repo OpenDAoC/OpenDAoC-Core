@@ -51,7 +51,8 @@ namespace DOL.GS
         /// </summary>
         public virtual int LastDbSlot => (int) eInventorySlot.HouseVault_First + VaultSize * (Index + 1) - 1;
 
-        public object LockObject { get; } = new();
+        private readonly Lock _lock = new();
+        public Lock Lock => _lock;
 
         public virtual string GetOwner(GamePlayer player = null)
         {
@@ -136,7 +137,7 @@ namespace DOL.GS
 
             player.ActiveInventoryObject?.RemoveObserver(player);
 
-            lock (LockObject)
+            lock (Lock)
             {
                 _observers.TryAdd(player.Name, player);
             }
@@ -179,14 +180,14 @@ namespace DOL.GS
             DbInventoryItem itemInFromSlot = null;
             bool characterInventoryLockTaken = false;
 
-            lock (LockObject)
+            lock (Lock)
             {
                 try
                 {
                     // If this is a shift right click move, find the first available slot of either inventory.
                     if (toSlot == eInventorySlot.GeneralHousing)
                     {
-                        Monitor.Enter(player.Inventory.LockObject, ref characterInventoryLockTaken);
+                        Monitor.Enter(player.Inventory.Lock, ref characterInventoryLockTaken);
 
                         if (fromHousing)
                         {
@@ -240,7 +241,7 @@ namespace DOL.GS
                         if (fromHousing && this is not AccountVault)
                         {
                             if (!characterInventoryLockTaken)
-                                Monitor.Enter(player.Inventory.LockObject, ref characterInventoryLockTaken);
+                                Monitor.Enter(player.Inventory.Lock, ref characterInventoryLockTaken);
 
                             DbInventoryItem itemInToSlot = player.Inventory.GetItem(toSlot);
 
@@ -272,7 +273,7 @@ namespace DOL.GS
                 finally
                 {
                     if (characterInventoryLockTaken)
-                        Monitor.Exit(player.Inventory.LockObject);
+                        Monitor.Exit(player.Inventory.Lock);
                 }
             }
 

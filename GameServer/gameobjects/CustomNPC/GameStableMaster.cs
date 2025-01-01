@@ -49,9 +49,8 @@ namespace DOL.GS
 
 			GameInventoryItem item = GameInventoryItem.Create(template);
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
-
 				if (player.GetCurrentMoney() < totalValue)
 				{
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", Money.GetString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);

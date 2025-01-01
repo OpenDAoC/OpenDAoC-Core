@@ -153,14 +153,9 @@ namespace DOL.GS
             {
                 if (_properties == null)
                 {
-                    lock (this)
+                    lock(this)
                     {
-                        if (_properties == null)
-                        {
-                            PropertyCollection properties = new();
-                            Thread.MemoryBarrier();
-                            _properties = properties;
-                        }
+                        _properties ??= new();
                     }
                 }
 

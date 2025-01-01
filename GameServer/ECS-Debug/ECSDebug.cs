@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using DOL.Events;
 using DOL.GS;
 using ECS.Debug;
@@ -13,11 +14,11 @@ namespace ECS.Debug
         private const string SERVICE_NAME = "Diagnostics";
         private static StreamWriter _perfStreamWriter;
         private static bool _streamWriterInitialized = false;
-        private static object _GameEventMgrNotifyLock = new();
+        private static readonly Lock _gameEventMgrNotifyLock = new();
         private static bool PerfCountersEnabled = false;
         private static bool stateMachineDebugEnabled = false;
         private static Dictionary<string, Stopwatch> PerfCounters = new();
-        private static object _PerfCountersLock = new();
+        private static readonly Lock _perfCountersLock = new();
         private static bool GameEventMgrNotifyProfilingEnabled = false;
         private static int GameEventMgrNotifyTimerInterval = 0;
         private static long GameEventMgrNotifyTimerStartTick = 0;
@@ -66,7 +67,7 @@ namespace ECS.Debug
 
             InitializeStreamWriter();
             Stopwatch stopwatch = Stopwatch.StartNew();
-            lock(_PerfCountersLock)
+            lock(_perfCountersLock)
             {
                 PerfCounters.TryAdd(uniqueID, stopwatch);
             }
@@ -77,7 +78,7 @@ namespace ECS.Debug
             if (!PerfCountersEnabled)
                 return;
 
-            lock (_PerfCountersLock)
+            lock (_perfCountersLock)
             {
                 if (PerfCounters.TryGetValue(uniqueID, out Stopwatch stopwatch))
                     stopwatch.Stop();
@@ -90,7 +91,7 @@ namespace ECS.Debug
                 return;
 
             // Report perf counters that were active this frame and then flush them.
-            lock(_PerfCountersLock)
+            lock(_perfCountersLock)
             {
                 if (PerfCounters.Count > 0)
                 {
@@ -126,7 +127,7 @@ namespace ECS.Debug
 
             GameEventMgrNotifyStopwatch.Stop();
 
-            lock (_GameEventMgrNotifyLock)
+            lock (_gameEventMgrNotifyLock)
             {
                 if (GameEventMgrNotifyTimes.TryGetValue(e.Name, out List<double> EventTimeValues))
                     EventTimeValues.Add(GameEventMgrNotifyStopwatch.Elapsed.TotalMilliseconds);
@@ -163,7 +164,7 @@ namespace ECS.Debug
             string ActualInterval = Util.TruncateString((GameLoop.GetCurrentTime() - GameEventMgrNotifyTimerStartTick).ToString(), 5);
             Console.WriteLine($"==== GameEventMgr Notify() Costs (Requested Interval: {GameEventMgrNotifyTimerInterval}ms | Actual Interval: {ActualInterval}ms) ====");
 
-            lock (_GameEventMgrNotifyLock)
+            lock (_gameEventMgrNotifyLock)
             {
                 foreach (var NotifyData in GameEventMgrNotifyTimes)
                 {

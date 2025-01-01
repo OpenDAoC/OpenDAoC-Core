@@ -878,7 +878,7 @@ namespace DOL.GS
 
 				long totalValue = number * (template.Price);
 
-				lock (player.Inventory.LockObject)
+				lock (player.Inventory.Lock)
 				{
 					if (player.BountyPoints < totalValue)
 					{
@@ -918,7 +918,7 @@ namespace DOL.GS
 
 				long totalValue = number * template.Price;
 
-				lock (player.Inventory.LockObject)
+				lock (player.Inventory.Lock)
 				{
 
 					if (player.GetCurrentMoney() < totalValue)

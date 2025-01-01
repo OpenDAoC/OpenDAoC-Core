@@ -42,7 +42,7 @@ namespace DOL.GS
         /// <summary>
         /// Object to lock when changing objects in the array
         /// </summary>
-        public readonly object ObjectsSyncLock = new object();
+        public readonly Lock ObjectsSyncLock = new();
 
         /// <summary>
         /// This holds a counter with the absolute count of all objects that are actually in this region
@@ -81,7 +81,7 @@ namespace DOL.GS
         /// </summary>
         protected readonly List<Zone> m_zones;
 
-        protected object m_lockAreas = new object();
+        protected readonly Lock _lockAreas = new();
 
         /// <summary>
         /// Holds all the Areas inside this Region
@@ -1231,7 +1231,7 @@ namespace DOL.GS
         /// <returns></returns>
         public virtual IArea AddArea(IArea area)
         {
-            lock (m_lockAreas)
+            lock (_lockAreas)
             {
                 ushort nextAreaID = 0;
 
@@ -1264,7 +1264,7 @@ namespace DOL.GS
         /// <param name="area"></param>
         public virtual void RemoveArea(IArea area)
         {
-            lock (m_lockAreas)
+            lock (_lockAreas)
             {
                 if (m_Areas.ContainsKey(area.ID) == false)
                 {
@@ -1330,7 +1330,7 @@ namespace DOL.GS
         /// <returns></returns>
         public virtual IList<IArea> GetAreasOfZone(Zone zone, IPoint3D p, bool checkZ)
         {
-            lock (m_lockAreas)
+            lock (_lockAreas)
             {
                 int zoneIndex = Zones.IndexOf(zone);
                 var areas = new List<IArea>();
@@ -1360,7 +1360,7 @@ namespace DOL.GS
 
         public virtual IList<IArea> GetAreasOfZone(Zone zone, int x, int y, int z)
         {
-            lock (m_lockAreas)
+            lock (_lockAreas)
             {
                 int zoneIndex = Zones.IndexOf(zone);
                 var areas = new List<IArea>();

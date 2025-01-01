@@ -101,31 +101,29 @@ namespace DOL.GS.Commands
 			if (Properties.GUILD_NUM > 1)
 			{
 				Group group = player.Group;
-				lock (group)
+				Guild newGuild = GuildMgr.CreateGuild(player.Realm, guildname, player);
+
+				if (newGuild == null)
 				{
-					Guild newGuild = GuildMgr.CreateGuild(player.Realm, guildname, player);
-					if (newGuild == null)
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.UnableToCreateLead", guildname, player.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				}
+				else
+				{
+					foreach (GamePlayer ply in group.GetPlayersInTheGroup())
 					{
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.UnableToCreateLead", guildname, player.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					}
-					else
-					{
-						foreach (GamePlayer ply in group.GetPlayersInTheGroup())
+						if (ply != group.Leader)
 						{
-							if (ply != group.Leader)
-							{
-								newGuild.AddPlayer(ply);
-							}
-							else
-							{
-								newGuild.AddPlayer(ply, newGuild.GetRankByID(0));
-							}
-							ply.TempProperties.RemoveProperty("Guild_Consider");
+							newGuild.AddPlayer(ply);
 						}
-						player.Group.Leader.TempProperties.RemoveProperty("Guild_Name");
-						player.Group.Leader.RemoveMoney(GuildFormCost);
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.GuildCreated", guildname, player.Group.Leader.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
+						else
+						{
+							newGuild.AddPlayer(ply, newGuild.GetRankByID(0));
+						}
+						ply.TempProperties.RemoveProperty("Guild_Consider");
 					}
+					player.Group.Leader.TempProperties.RemoveProperty("Guild_Name");
+					player.Group.Leader.RemoveMoney(GuildFormCost);
+					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.GuildCreated", guildname, player.Group.Leader.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 				}
 			}
 			else
@@ -1572,26 +1570,19 @@ namespace DOL.GS.Commands
 
 								if (args[2] == "alliance" || args[2] == "a")
 								{
-									if (alliance != null)
+									foreach (Guild guild in client.Player.Guild.alliance.Guilds)
 									{
-										foreach (Guild guild in client.Player.Guild.alliance.Guilds)
+										foreach (GamePlayer ply in guild.GetListOfOnlineMembers())
 										{
-											lock (guild.GetListOfOnlineMembers())
+											if (ply.Client.IsPlaying && !ply.IsAnonymous)
 											{
-												foreach (GamePlayer ply in guild.GetListOfOnlineMembers())
-												{
-													if (ply.Client.IsPlaying && !ply.IsAnonymous)
-													{
-														ind++;
-														string zoneName = (ply.CurrentZone == null ? "(null)" : ply.CurrentZone.Description);
-														string mesg = ind + ") " + ply.Name + " <guild=" + guild.Name + "> the Level " + ply.Level + " " + ply.CharacterClass.Name + " in " + zoneName;
-														client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-													}
-												}
+												ind++;
+												string zoneName = (ply.CurrentZone == null ? "(null)" : ply.CurrentZone.Description);
+												string mesg = ind + ") " + ply.Name + " <guild=" + guild.Name + "> the Level " + ply.Level + " " + ply.CharacterClass.Name + " in " + zoneName;
+												client.Out.SendMessage(mesg, eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 											}
 										}
 									}
-
 									return;
 								}
 								else

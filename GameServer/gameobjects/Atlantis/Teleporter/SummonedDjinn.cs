@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using DOL.Events;
 
 namespace DOL.GS
@@ -12,7 +13,7 @@ namespace DOL.GS
     {
         private const int SummonSpellEffect = 0x1818;
         private const int InvisibleModel = 0x29a;
-        private object m_syncObject = new object();
+        private readonly Lock _lock = new();
 
         /// <summary>
         /// Creates a new SummonedDjinn.
@@ -31,7 +32,7 @@ namespace DOL.GS
         /// </summary>
         public override void Summon()
         {
-            lock (m_syncObject)
+            lock (_lock)
             {
                 if (CurrentRegion == null || IsSummoned)
                     return;
@@ -53,7 +54,7 @@ namespace DOL.GS
         {
             get
             {
-                lock (m_syncObject)
+                lock (_lock)
                     return m_summoned;
             }
         }
@@ -65,7 +66,7 @@ namespace DOL.GS
         /// <returns></returns>
         public override bool Interact(GamePlayer player)
         {
-            lock (m_syncObject)
+            lock (_lock)
                 m_timer.Restart();
 
             return base.Interact(player);
@@ -79,7 +80,7 @@ namespace DOL.GS
         /// <returns></returns>
         public override bool WhisperReceive(GameLiving source, String text)
         {
-            lock (m_syncObject)
+            lock (_lock)
                 m_timer.Restart();
 
             return base.WhisperReceive(source, text);
@@ -89,7 +90,7 @@ namespace DOL.GS
         {
             if (e == DjinnEvent.Summoning)
             {
-                lock (m_syncObject)
+                lock (_lock)
                 {
                     this.Model = InvisibleModel;
                     this.AddToWorld();
@@ -102,7 +103,7 @@ namespace DOL.GS
             {
                 // Show ourselves.
 
-                lock (m_syncObject)
+                lock (_lock)
                 {
                     this.Model = VisibleModel;
 
@@ -119,7 +120,7 @@ namespace DOL.GS
             {
                 // Go into hiding and show the smoke again.
 
-                lock (m_syncObject)
+                lock (_lock)
                 {
                     Say("My time here is done.");
                     this.Model = InvisibleModel;
@@ -134,7 +135,7 @@ namespace DOL.GS
             }
             else if (e == DjinnEvent.Vanished)
             {
-                lock (m_syncObject)
+                lock (_lock)
                 {
                     this.RemoveFromWorld();
                     m_summoned = false;

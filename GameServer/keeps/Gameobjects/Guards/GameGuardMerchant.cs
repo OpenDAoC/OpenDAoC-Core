@@ -110,7 +110,7 @@ namespace DOL.GS
 			//Calculate the value of items
 			long totalValue = number * template.Price;
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 
 				if (player.GetCurrentMoney() < totalValue)
@@ -179,7 +179,7 @@ namespace DOL.GS
 			//Calculate the value of items
 			long totalValue = number * template.Price;
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 
 				if (player.GetCurrentMoney() < totalValue)
@@ -258,7 +258,7 @@ namespace DOL.GS
 			//Calculate the value of items
 			long totalValue = number * template.Price;
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 
 				if (player.GetCurrentMoney() < totalValue)
@@ -629,7 +629,7 @@ namespace DOL.GS
 			//Calculate the value of items
 			long totalValue = number * template.Price;
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 				if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) < totalValue)
 				{
@@ -743,7 +743,7 @@ namespace DOL.GS
 				}
 			}
 			
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 				if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) < totalValue)
 				{

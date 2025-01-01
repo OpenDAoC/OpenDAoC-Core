@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using log4net;
 
 namespace DOL.GS.Effects
@@ -19,7 +20,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// Lock object for Change Update
 		/// </summary>
-		private readonly object m_changedLock = new object();		
+		private readonly Lock m_changedLock = new();
 		/// <summary>
 		/// Holds the list of changed effects
 		/// </summary>

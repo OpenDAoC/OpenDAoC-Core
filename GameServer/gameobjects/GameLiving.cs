@@ -172,7 +172,7 @@ namespace DOL.GS
 		/// List of objects that will gain XP after this living dies.
 		/// </summary>
 		protected readonly Dictionary<GameLiving, double> m_xpGainers = new();
-		public object _xpGainersLock = new();
+		public readonly Lock XpGainersLock = new();
 		public Dictionary<GameLiving, double> XPGainers => m_xpGainers;
 
 		/// <summary>
@@ -807,7 +807,7 @@ namespace DOL.GS
 			set { }
 		}
 
-		private object _interruptTimerLock = new();
+		private readonly Lock _interruptTimerLock = new();
 
 		/// <summary>
 		/// Starts the interrupt timer on this living.
@@ -1392,7 +1392,7 @@ namespace DOL.GS
 			if (IsAlive)
 				return;
 
-			if (Monitor.TryEnter(dieLock))
+			if (_dieLock.TryEnter())
 			{
 				try
 				{
@@ -1404,12 +1404,12 @@ namespace DOL.GS
 				}
 				finally
 				{
-					Monitor.Exit(dieLock);
+					_dieLock.Exit();
 				}
 			}
 		}
 
-		object dieLock = new();
+		private readonly Lock _dieLock = new();
 
 		/// <summary>
 		/// Called on the attacker when attacking an enemy.
@@ -1784,7 +1784,7 @@ namespace DOL.GS
 		/// <param name="damageAmount">the amount of damage, float because for groups it can be split</param>
 		public virtual void AddXPGainer(GameLiving xpGainer, double damageAmount)
 		{
-			lock (_xpGainersLock)
+			lock (XpGainersLock)
 			{
 				if (m_xpGainers.TryGetValue(xpGainer, out double value))
 					m_xpGainers[xpGainer] = value + damageAmount;
@@ -2605,7 +2605,7 @@ namespace DOL.GS
 
 			if (Health >= MaxHealth)
 			{
-				lock (_xpGainersLock)
+				lock (XpGainersLock)
 				{
 					m_xpGainers.Clear();
 				}
@@ -2720,7 +2720,7 @@ namespace DOL.GS
 
 					// We clean all damage dealers if we are fully healed, no special XP calculations need to be done.
 					// May prevent players from gaining RPs after this living was healed to full?
-					lock (_xpGainersLock)
+					lock (XpGainersLock)
 					{
 						m_xpGainers.Clear();
 					}
@@ -2874,7 +2874,7 @@ namespace DOL.GS
         }
 
         // 			ArrayList concEffects = new ArrayList();
-        // 			lock (EffectList)
+        // 			lock (EffectList.Lock)
         // 			{
         // 				foreach (IGameEffect effect in EffectList)
         // 				{
@@ -3347,8 +3347,7 @@ namespace DOL.GS
         /// Holds all abilities of the living (KeyName -> Ability)
         /// </summary>
         protected Dictionary<string, Ability> m_abilities = [];
-
-		protected readonly object m_lockAbilities = new();
+		protected readonly Lock _abilitiesLock = new();
 
 		/// <summary>
 		/// Asks for existence of specific ability
@@ -3359,7 +3358,7 @@ namespace DOL.GS
 		{
 			bool hasit = false;
 			
-			lock (m_lockAbilities)
+			lock (_abilitiesLock)
 			{
 				hasit = m_abilities.ContainsKey(keyName);
 			}
@@ -3371,7 +3370,7 @@ namespace DOL.GS
 		{
 			bool hasit = false;
 			
-			lock (m_lockAbilities)
+			lock (_abilitiesLock)
 			{
 				hasit = (m_abilities.Values.Count(x => x.GetType() == type) > 0 ? true : false);
 			}
@@ -3396,7 +3395,7 @@ namespace DOL.GS
 		public virtual void AddAbility(Ability ability, bool sendUpdates)
 		{
 			bool isNewAbility = false;
-			lock (m_lockAbilities)
+			lock (_abilitiesLock)
 			{
 				Ability oldAbility = null;
 				m_abilities.TryGetValue(ability.KeyName, out oldAbility);
@@ -3430,7 +3429,7 @@ namespace DOL.GS
 		public virtual bool RemoveAbility(string abilityKeyName)
 		{
 			Ability ability = null;
-			lock (m_lockAbilities)
+			lock (_abilitiesLock)
 			{
 				m_abilities.TryGetValue(abilityKeyName, out ability);
 				
@@ -3454,7 +3453,7 @@ namespace DOL.GS
 		public Ability GetAbility(string abilityKey)
 		{
 			Ability ab = null;
-			lock (m_lockAbilities)
+			lock (_abilitiesLock)
 			{
 				m_abilities.TryGetValue(abilityKey, out ab);
 			}
@@ -3469,7 +3468,7 @@ namespace DOL.GS
 		public T GetAbility<T>() where T : Ability
 		{
 			T tmp;
-			lock (m_lockAbilities)
+			lock (_abilitiesLock)
 			{
 				tmp = (T)m_abilities.Values.FirstOrDefault(a => a.GetType().Equals(typeof(T)));
 			}
@@ -3485,7 +3484,7 @@ namespace DOL.GS
 		[Obsolete("Use GetAbility<T>() instead")]
 		public Ability GetAbility(Type abilityType)
 		{
-			lock (m_lockAbilities)
+			lock (_abilitiesLock)
 			{
 				foreach (Ability ab in m_abilities.Values)
 				{
@@ -3506,7 +3505,7 @@ namespace DOL.GS
 		{
 			Ability ab = null;
 			
-			lock (m_lockAbilities)
+			lock (_abilitiesLock)
 			{
 				m_abilities.TryGetValue(keyName, out ab);
 			}
@@ -3524,7 +3523,7 @@ namespace DOL.GS
 		public IList GetAllAbilities()
 		{
 			List<Ability> list = new List<Ability>();
-			lock (m_lockAbilities)
+			lock (_abilitiesLock)
 			{
 				list = new List<Ability>(m_abilities.Values);
 			}
@@ -3549,6 +3548,7 @@ namespace DOL.GS
 		/// skill => disabletimeout (ticks) or 0 when endless
 		/// </summary>
 		private readonly Dictionary<KeyValuePair<int, Type>, KeyValuePair<long, Skill>> m_disabledSkills = new Dictionary<KeyValuePair<int, Type>, KeyValuePair<long, Skill>>();
+		private readonly Lock _disabledSkillsLock = new();
 
 		/// <summary>
 		/// Gets the time left for disabling this skill in milliseconds
@@ -3557,7 +3557,7 @@ namespace DOL.GS
 		/// <returns>milliseconds left for disable</returns>
 		public virtual int GetSkillDisabledDuration(Skill skill)
 		{
-			lock ((m_disabledSkills as ICollection).SyncRoot)
+			lock (_disabledSkillsLock)
 			{
 				KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
 
@@ -3585,7 +3585,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual ICollection<Skill> GetAllDisabledSkills()
 		{
-			lock ((m_disabledSkills as ICollection).SyncRoot)
+			lock (_disabledSkillsLock)
 			{
 				List<Skill> skillList = new List<Skill>();
 				
@@ -3603,7 +3603,7 @@ namespace DOL.GS
 		/// <param name="duration">duration of disable in milliseconds</param>
 		public virtual void DisableSkill(Skill skill, int duration)
 		{
-			lock ((m_disabledSkills as ICollection).SyncRoot)
+			lock (_disabledSkillsLock)
 			{
 				KeyValuePair<int, Type> key = new(skill.ID, skill.GetType());
 
@@ -3621,7 +3621,7 @@ namespace DOL.GS
 		/// <param name="duration">duration of disable in milliseconds</param>
 		public virtual void DisableSkills(ICollection<Tuple<Skill, int>> skills)
 		{
-			lock ((m_disabledSkills as ICollection).SyncRoot)
+			lock (_disabledSkillsLock)
 			{
 				foreach (Tuple<Skill, int> tuple in skills)
 				{
@@ -3644,7 +3644,7 @@ namespace DOL.GS
 		/// <param name="skill">the skill to remove</param>
 		public virtual void RemoveDisabledSkill(Skill skill)
 		{
-			lock ((m_disabledSkills as ICollection).SyncRoot)
+			lock (_disabledSkillsLock)
 			{
 				m_disabledSkills.Remove(new(skill.ID, skill.GetType()));
 			}
@@ -3725,7 +3725,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override bool HasEffect(Spell spell)
 		{
-			lock (EffectList)
+			lock (EffectList.Lock)
 			{
 				foreach (IGameEffect effect in EffectList)
 				{
@@ -3751,7 +3751,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public override bool HasEffect(Type effectType)
 		{
-			lock (EffectList)
+			lock (EffectList.Lock)
 			{
 				foreach (IGameEffect effect in EffectList)
 					if (effect.GetType() == effectType)

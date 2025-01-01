@@ -39,7 +39,7 @@ namespace DOL.GS
 
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static Dictionary<ushort, IntPtr> _navmeshPtrs = [];
-        private static object _navmeshPtrsLock = new();
+        private static readonly Lock _navmeshPtrsLock = new();
         private static ThreadLocal<Dictionary<ushort, NavMeshQuery>> _navmeshQueries = new(() => []);
 
         [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]

@@ -2,10 +2,10 @@ using DOL.GS;
 
 namespace DOL.AI.Brain
 {
-	/// <summary>
-	/// A brain for the commanders
-	/// </summary>
-	public class CommanderBrain : ControlledMobBrain
+    /// <summary>
+    /// A brain for the commanders
+    /// </summary>
+    public class CommanderBrain : ControlledMobBrain
 	{
 		public CommanderBrain(GameLiving owner) : base(owner) { }
 
@@ -20,7 +20,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body.ControlledNpcList != null)
 			{
-				lock (Body.ControlledNpcList)
+				lock ((Body as CommanderPet).ControlledNpcListLock)
 				{
 					foreach (IControlledBrain icb in Body.ControlledNpcList)
 					{
@@ -74,7 +74,7 @@ namespace DOL.AI.Brain
 
 			if (MinionsAssisting && Body.ControlledNpcList != null)
 			{
-				lock (Body.ControlledNpcList)
+				lock ((Body as CommanderPet).ControlledNpcListLock)
 				{
 					foreach (BdPetBrain icb in Body.ControlledNpcList)
 						icb?.Attack(target);
@@ -88,7 +88,7 @@ namespace DOL.AI.Brain
 
 			if (Body.ControlledNpcList != null)
 			{
-				lock (Body.ControlledNpcList)
+				lock ((Body as CommanderPet).ControlledNpcListLock)
 				{
 					foreach (BdPetBrain icb in Body.ControlledNpcList)
 					{
@@ -128,7 +128,7 @@ namespace DOL.AI.Brain
 		{
 			if (Body.ControlledNpcList != null)
 			{
-				lock (Body.ControlledNpcList)
+				lock ((Body as CommanderPet).ControlledNpcListLock)
 				{
 					foreach (BdPetBrain icb in Body.ControlledNpcList)
 					{
@@ -175,7 +175,7 @@ namespace DOL.AI.Brain
 			base.SetAggressionState(state);
 			if (Body.ControlledNpcList != null)
 			{
-				lock (Body.ControlledNpcList)
+				lock ((Body as CommanderPet).ControlledNpcListLock)
 				{
 					foreach (BdPetBrain icb in Body.ControlledNpcList)
 					{

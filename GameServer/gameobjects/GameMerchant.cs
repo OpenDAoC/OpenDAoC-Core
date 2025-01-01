@@ -104,9 +104,8 @@ namespace DOL.GS
 			//Calculate the value of items
 			long totalValue = number * template.Price;
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
-
 				if (player.GetCurrentMoney() < totalValue)
 				{
 					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", Money.GetString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -159,7 +158,7 @@ namespace DOL.GS
 			//Calculate the value of items
 			long totalValue = number * template.Price;
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 
 				if (player.GetCurrentMoney() < totalValue)
@@ -224,7 +223,7 @@ namespace DOL.GS
 			//Calculate the value of items
 			long totalValue = number * template.Price;
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 
 				if (player.GetCurrentMoney() < totalValue)
@@ -517,7 +516,7 @@ namespace DOL.GS
 			//Calculate the value of items
 			long totalValue = number * template.Price;
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 				if (player.BountyPoints < totalValue)
 				{
@@ -680,7 +679,7 @@ namespace DOL.GS
 			//Calculate the value of items
 			long totalValue = number * template.Price;
 
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 				if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) < totalValue)
 				{
@@ -867,7 +866,7 @@ namespace DOL.GS
 				totalValue = (int)(totalValue * (1 - discountAmount));
 			}
 			
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 				if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) < totalValue)
 				{
@@ -966,7 +965,7 @@ namespace DOL.GS
 				totalValue = (int)(totalValue * (1 - discountAmount));
 			}
 			
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 				if (player.Inventory.CountItemTemplate(m_moneyItem.Item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) < totalValue)
 				{

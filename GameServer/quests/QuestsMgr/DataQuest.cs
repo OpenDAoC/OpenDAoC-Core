@@ -1972,7 +1972,7 @@ namespace DOL.GS.Quests
 
 							if (m_finalRewards.Count > 0)
 							{
-								lock (player.Inventory.LockObject)
+								lock (player.Inventory.Lock)
 								{
 									if (player.Inventory.IsSlotsFree(m_finalRewards.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 									{
@@ -2074,7 +2074,7 @@ namespace DOL.GS.Quests
                 {
                     if (m_searchStartItemTemplate != string.Empty)
                     {
-                        lock (player.Inventory.LockObject)
+                        lock (player.Inventory.Lock)
                         {
                             if (player.Inventory.IsSlotsFree(1, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
                             {
@@ -2632,7 +2632,7 @@ namespace DOL.GS.Quests
 
 								if (m_finalRewards.Count > 0)
 								{
-									lock (player.Inventory.LockObject)
+									lock (player.Inventory.Lock)
 									{
 										if (player.Inventory.IsSlotsFree(m_finalRewards.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 										{

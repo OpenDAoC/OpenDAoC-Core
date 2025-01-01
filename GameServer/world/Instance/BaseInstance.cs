@@ -411,7 +411,7 @@ namespace DOL.GS
 
 			if (zoneIndex >= 0)
 			{
-				lock (m_lockAreas)
+				lock (_lockAreas)
 				{
 					try
 					{
@@ -461,7 +461,7 @@ namespace DOL.GS
 
 			if (zoneIndex >= 0)
 			{
-				lock (m_lockAreas)
+				lock (_lockAreas)
 				{
 					try
 					{

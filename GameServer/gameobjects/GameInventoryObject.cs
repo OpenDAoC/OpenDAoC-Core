@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -15,7 +16,7 @@ namespace DOL.GS
         eInventorySlot LastClientSlot { get; }
         int FirstDbSlot { get; }
         int LastDbSlot { get; }
-        object LockObject { get; }
+        Lock Lock { get; }
         string GetOwner(GamePlayer player);
         IList<DbInventoryItem> DBItems(GamePlayer player = null);
         Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player);
@@ -55,7 +56,7 @@ namespace DOL.GS
 
         public static IDictionary<int, DbInventoryItem> MoveItem(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort count)
         {
-            lock (thisObject.LockObject)
+            lock (thisObject.Lock)
             {
                 if (!GetItemInSlot(fromClientSlot, out DbInventoryItem fromItem))
                 {

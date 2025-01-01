@@ -63,7 +63,7 @@ namespace DOL.GS.Spells
         {
             if(!(sender is GamePlayer)) return;
             GamePlayer player = sender as GamePlayer;
-            lock (player.Inventory.LockObject)
+            lock (player.Inventory.Lock)
             {
                 var items = player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
                 foreach(DbInventoryItem invItem in items)

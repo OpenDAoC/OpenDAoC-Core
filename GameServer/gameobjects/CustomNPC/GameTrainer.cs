@@ -225,7 +225,7 @@ namespace DOL.GS
 		protected virtual void CheckAbilityToUseItem(GamePlayer player)
 		{
 			// drop any equiped-non usable item, in inventory or on the ground if full
-			lock (player.Inventory.LockObject)
+			lock (player.Inventory.Lock)
 			{
 				foreach (DbInventoryItem item in player.Inventory.EquippedItems)
 				{

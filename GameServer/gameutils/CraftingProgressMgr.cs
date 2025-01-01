@@ -1,11 +1,12 @@
 ﻿using DOL.Database;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace DOL.GS {
     public static class CraftingProgressMgr {
         private static IDictionary<GamePlayer, Dictionary<eCraftingSkill, int>> _craftingChanges = new Dictionary<GamePlayer, Dictionary<eCraftingSkill, int>>();
-        private static readonly object _lockObject = new();
+        private static readonly Lock _lock = new();
 
         /// <summary>
         /// For now, this method assumes all validation has been checked by m_craftingSkills in player class
@@ -15,7 +16,7 @@ namespace DOL.GS {
         /// <param name="craftSkill"></param>
         /// <param name="amount"></param>
         public static void TrackChange(GamePlayer gamePlayer, Dictionary<eCraftingSkill, int> craftingChanges) {
-            lock (_lockObject) {
+            lock (_lock) {
                 if (_craftingChanges.ContainsKey(gamePlayer)) {
                     _craftingChanges[gamePlayer] = craftingChanges;
                 } else {
@@ -30,7 +31,7 @@ namespace DOL.GS {
         /// <param name="player"></param>
         /// <returns></returns>
         public static bool FlushAndSaveInstance(GamePlayer player) {
-            lock (_lockObject) {
+            lock (_lock) {
                 if(_craftingChanges.TryGetValue(player, out var results)) {
                     _saveInstance(player, results);
                     _craftingChanges.Remove(player);
@@ -47,7 +48,7 @@ namespace DOL.GS {
         /// <returns></returns>
         public static int Save() {
             int count = 0;
-            lock (_lockObject) {
+            lock (_lock) {
                 foreach (var change in _craftingChanges) {
                     if (change.Key == null) {
                         continue;
@@ -70,7 +71,7 @@ namespace DOL.GS {
             craftingForRealm.CraftingPrimarySkill = (byte)player.CraftingPrimarySkill;
             string cs = string.Empty;
             if (player.CraftingPrimarySkill != eCraftingSkill.NoCrafting) {
-                lock (_lockObject) {
+                lock (_lock) {
                     foreach (var de in change) {
                         if (cs.Length > 0) cs += ";";
                         cs += Convert.ToInt32(de.Key) + "|" + Convert.ToInt32(de.Value);

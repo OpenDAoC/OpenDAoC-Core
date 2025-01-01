@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 
 namespace DOL.Config
 {
@@ -12,6 +13,7 @@ namespace DOL.Config
 		/// The child elements of this element.
 		/// </summary>
 		private readonly Dictionary<string, ConfigElement> _children = new Dictionary<string, ConfigElement>();
+		private readonly Lock _lock = new();
 
 		/// <summary>
 		/// The parent element of this element.
@@ -39,7 +41,7 @@ namespace DOL.Config
 		{
 			get
 			{
-				lock (_children) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+				lock (_lock)
 				{
 					if (!_children.ContainsKey(key))
 					{
@@ -51,7 +53,7 @@ namespace DOL.Config
 			}
 			set
 			{
-				lock (_children) // Mannen 10:56 PM 10/30/2006 - Fixing every lock(this)
+				lock (_lock)
 				{
 					_children[key] = value;
 				}

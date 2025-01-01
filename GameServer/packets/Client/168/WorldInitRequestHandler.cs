@@ -32,7 +32,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             //check emblems at world load before any updates
             if (player.Inventory != null)
             {
-                lock (player.Inventory.LockObject)
+                lock (player.Inventory.Lock)
                 {
                     Guild playerGuild = player.Guild;
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -15,14 +16,19 @@ namespace DOL.GS
 	public class BattleGroup : IGameStaticItemOwner
 	{
 		public const string BATTLEGROUP_PROPERTY="battlegroup";
+
+		public readonly Lock Lock = new();
+
 		/// <summary>
 		/// This holds all players inside the battlegroup
 		/// </summary>
 		protected HybridDictionary m_battlegroupMembers = new HybridDictionary();
+		protected readonly Lock _battlegroupMembersLock = new();
         protected GamePlayer m_battlegroupLeader;
         protected List<GamePlayer> m_battlegroupModerators = new List<GamePlayer>();
 
         protected Dictionary<GamePlayer, int> m_battlegroupRolls;
+        protected readonly Lock _battlegroupRolls = new();
         protected bool recordingRolls;
         protected int rollRecordThreshold;
 
@@ -87,7 +93,7 @@ namespace DOL.GS
 		public virtual bool AddBattlePlayer(GamePlayer player,bool leader) 
 		{
 			if (player == null) return false;
-			lock (m_battlegroupMembers)
+			lock (_battlegroupMembersLock)
 			{
 				if (m_battlegroupMembers.Contains(player))
 					return false;
@@ -106,7 +112,7 @@ namespace DOL.GS
 
         public virtual bool IsInTheBattleGroup(GamePlayer player)
         {
-            lock (m_battlegroupMembers)
+            lock (_battlegroupMembersLock)
             {
                 return m_battlegroupMembers.Contains(player);
             }
@@ -154,7 +160,7 @@ namespace DOL.GS
 		        return;
 	        if (roll > rollRecordThreshold)
 		        return;
-	        lock (m_battlegroupRolls)
+	        lock (_battlegroupRolls)
 	        {
 		        if(m_battlegroupRolls.ContainsKey(player))
 			        return;
@@ -336,7 +342,7 @@ namespace DOL.GS
 		public virtual bool RemoveBattlePlayer(GamePlayer player)
 		{
 			if (player == null) return false;
-			lock (m_battlegroupMembers)
+			lock (_battlegroupMembersLock)
 			{
 				if (!m_battlegroupMembers.Contains(player))
 					return false;
@@ -361,17 +367,14 @@ namespace DOL.GS
 				} else if (leader && m_battlegroupMembers.Count >= 2)
 				{
 					var bgPlayers = new ArrayList(m_battlegroupMembers.Count);
-					lock (bgPlayers)
+					bgPlayers.AddRange(m_battlegroupMembers.Keys);
+					var randomPlayer = bgPlayers[Util.Random(bgPlayers.Count - 1)] as GamePlayer;
+					if (randomPlayer == null) return false;
+					SetBGLeader(randomPlayer);
+					m_battlegroupMembers[randomPlayer] = true;
+					foreach(GamePlayer member in Members.Keys)
 					{
-						bgPlayers.AddRange(m_battlegroupMembers.Keys);
-						var randomPlayer = bgPlayers[Util.Random(bgPlayers.Count - 1)] as GamePlayer;
-						if (randomPlayer == null) return false;
-						SetBGLeader(randomPlayer);
-						m_battlegroupMembers[randomPlayer] = true;
-						foreach(GamePlayer member in Members.Keys)
-						{
-							member.Out.SendMessage(randomPlayer.Name + " is the new leader of the battle group.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
-						}
+						member.Out.SendMessage(randomPlayer.Name + " is the new leader of the battle group.", eChatType.CT_BattleGroupLeader, eChatLoc.CL_SystemWindow);
 					}
 				}
 

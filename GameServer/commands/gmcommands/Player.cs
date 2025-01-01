@@ -1277,7 +1277,7 @@ namespace DOL.GS.Commands
 
                         m_hasEffect = false;
 
-                        lock (player.EffectList)
+                        lock (player.EffectList.Lock)
                         {
                             foreach (GameSpellEffect effect in player.EffectList)
                             {
@@ -1295,7 +1295,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        lock (player.EffectList)
+                        lock (player.EffectList.Lock)
                         {
                             foreach (GameSpellEffect effect in player.EffectList)
                             {

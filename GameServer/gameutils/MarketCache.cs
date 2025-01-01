@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using DOL.Database;
 using log4net;
 
@@ -10,7 +11,7 @@ namespace DOL.GS
 
 		private static Dictionary<string, DbInventoryItem> m_itemCache = null;
 
-		private static object CacheLock = new object();
+		private static readonly Lock _cacheLock = new();
 
 		/// <summary>
 		/// Return a List of all items in the cache
@@ -61,7 +62,7 @@ namespace DOL.GS
 
 			if (item != null && item.OwnerID != null)
 			{
-				lock (CacheLock)
+				lock (_cacheLock)
 				{
 					if (m_itemCache.ContainsKey(item.ObjectId) == false)
 					{
@@ -88,7 +89,7 @@ namespace DOL.GS
 			if (item == null)
 				return false;
 
-			lock (CacheLock)
+			lock (_cacheLock)
 			{
 				return m_itemCache.Remove(item.ObjectId);
 			}

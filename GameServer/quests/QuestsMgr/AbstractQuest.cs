@@ -355,7 +355,7 @@ namespace DOL.GS.Quests
                 return;
             }
 
-            lock (player.Inventory.LockObject)
+            lock (player.Inventory.Lock)
             {
                 DbInventoryItem item = player.Inventory.GetFirstItemByID(itemTemplate.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 
@@ -380,7 +380,7 @@ namespace DOL.GS.Quests
                 return;
             }
 
-            lock (player.Inventory.LockObject)
+            lock (player.Inventory.Lock)
             {
                 if (item != null)
                 {
@@ -405,7 +405,7 @@ namespace DOL.GS.Quests
                 return 0;
             }
 
-            lock (player.Inventory.LockObject)
+            lock (player.Inventory.Lock)
             {
                 DbInventoryItem item = player.Inventory.GetFirstItemByID(itemTemplate.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
 

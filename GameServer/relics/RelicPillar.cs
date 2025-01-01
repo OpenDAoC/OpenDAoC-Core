@@ -17,6 +17,8 @@
  *
  */
 
+using System.Threading;
+
 namespace DOL.GS.Relics
 {
 	/// <summary>
@@ -37,7 +39,7 @@ namespace DOL.GS.Relics
 		/// <summary>
 		/// Object used for thread synchronization.
 		/// </summary>
-		private object m_syncPillar = new object();
+		private readonly Lock _syncPillar = new();
 
 		private int m_pillarID;
 
@@ -71,7 +73,7 @@ namespace DOL.GS.Relics
 			{
 				if (m_pillarState != value)
 				{
-					lock (m_syncPillar)
+					lock (_syncPillar)
 					{
 						m_pillarState = value;
 

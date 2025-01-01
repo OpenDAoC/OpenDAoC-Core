@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
@@ -19,7 +20,7 @@ namespace DOL.GS
 
         protected Dictionary<string, GamePlayer> _observers = [];
         protected long _money;
-        protected object _moneyLock = new();
+        protected readonly Lock _moneyLock = new();
 
         /// <summary>
         /// First slot of the client window that shows this inventory
@@ -41,7 +42,8 @@ namespace DOL.GS
         /// </summary>
         public virtual int LastDbSlot => (int) eInventorySlot.Consignment_Last;
 
-        public object LockObject { get; } = new();
+        private readonly Lock _lock = new();
+        public Lock Lock => _lock;
 
         private static Dictionary<string, GameLocation> _tokenDestinations =
             new()
@@ -195,7 +197,7 @@ namespace DOL.GS
             if (!CanHandleMove(player, fromClientSlot, toClientSlot))
                 return false;
 
-            lock (LockObject)
+            lock (Lock)
             {
                 if (fromClientSlot == toClientSlot)
                     return false;
@@ -415,7 +417,7 @@ namespace DOL.GS
             player.TempProperties.RemoveProperty(CONSIGNMENT_BUY_ITEM);
             DbInventoryItem item = null;
 
-            lock (LockObject)
+            lock (Lock)
             {
                 if (fromClientSlot != eInventorySlot.Invalid)
                 {
@@ -438,7 +440,7 @@ namespace DOL.GS
                 if (usingMarketExplorer && ServerProperties.Properties.MARKET_FEE_PERCENT > 0)
                     purchasePrice += purchasePrice * ServerProperties.Properties.MARKET_FEE_PERCENT / 100;
 
-                lock (player.Inventory.LockObject)
+                lock (player.Inventory.Lock)
                 {
                     if (purchasePrice <= 0)
                     {

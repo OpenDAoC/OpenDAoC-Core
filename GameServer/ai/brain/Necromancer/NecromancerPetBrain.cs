@@ -149,10 +149,7 @@ namespace DOL.AI.Brain
 
             if (shadeEffect != null)
             {
-                lock (shadeEffect)
-                {
-                    shadeEffect.SetTetherTimer(seconds);
-                }
+                shadeEffect.SetTetherTimer(seconds);
 
                 ArrayList effectList = new(1)
                 {

@@ -302,13 +302,12 @@ namespace DOL.GS
 			}
 			if (removeFromInventory)
 			{
-				lock (player.Inventory.LockObject)
+				lock (player.Inventory.Lock)
 				{
 					bool success = player.Inventory.RemoveItem(m_item);
 					InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Other, m_item.Template, m_item.Count);
 					log.Debug("Remove " + m_item.Name + " from " + player.Name + "'s Inventory " + ((success) ? "successfully." : "with errors."));
 				}
-
 			}
 
 			// remove the handlers from the player

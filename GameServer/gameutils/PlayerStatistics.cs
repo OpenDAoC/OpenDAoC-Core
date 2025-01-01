@@ -429,7 +429,7 @@ namespace DOL.GS.GameEvents
 
             double totalDmg = 0;
 
-            lock (killedPlayer._xpGainersLock)
+            lock (killedPlayer.XpGainersLock)
             {
                 foreach (var pair in killedPlayer.XPGainers)
                     totalDmg += pair.Value;

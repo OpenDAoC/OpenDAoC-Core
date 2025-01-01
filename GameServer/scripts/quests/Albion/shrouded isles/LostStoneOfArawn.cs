@@ -390,7 +390,7 @@ public class LostStoneofArawn : BaseQuest
         if (existingCopy.Length > 0) return;
 
         //only try to spawn him once per trigger even if multiple people enter at the same time
-        if (Monitor.TryEnter(spawnLock))
+        if (_spawnLock.TryEnter())
         {
             try
             {
@@ -402,7 +402,7 @@ public class LostStoneofArawn : BaseQuest
             }
             finally
             {
-                Monitor.Exit(spawnLock);
+                _spawnLock.Exit();
             }
         }
         else
@@ -411,7 +411,8 @@ public class LostStoneofArawn : BaseQuest
         }
     }
 
-    static object spawnLock = new object();
+    private static readonly Lock _spawnLock = new();
+
     private static void TalkToHonaytrt(DOLEvent e, object sender, EventArgs args)
     {
         //We get the player from the event arguments and check if he qualifies		

@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using log4net;
@@ -73,7 +74,7 @@ namespace DOL.GS
 		/// 'TeleportID' fields are permitted so long as the 'Realm' field is different for each.
 		/// </summary>
 		private static Dictionary<eRealm, Dictionary<string, DbTeleport>> m_teleportLocations;
-		private static object m_syncTeleport = new object();
+		private static readonly Lock _syncTeleport = new();
 
 		// this is used to hold the player ids with timestamp of ld, that ld near an enemy keep structure, to allow grace period relog
 		public static ConcurrentDictionary<string, DateTime> RvrLinkDeadPlayers = new();
@@ -96,7 +97,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static DbTeleport GetTeleportLocation(eRealm realm, string teleportKey)
 		{
-			lock (m_syncTeleport)
+			lock (_syncTeleport)
 			{
 				if (m_teleportLocations.TryGetValue(realm, out Dictionary<string, DbTeleport> teleportLocations))
 				{
@@ -118,7 +119,7 @@ namespace DOL.GS
 			eRealm realm = (eRealm) teleport.Realm;
 			string teleportKey = $"{teleport.Type}:{teleport.TeleportID}";
 
-			lock (m_syncTeleport)
+			lock (_syncTeleport)
 			{
 				if (m_teleportLocations.TryGetValue(realm, out Dictionary<string, DbTeleport> teleports))
 				{

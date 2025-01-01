@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using DOL.GS.Effects;
 using log4net;
 
@@ -21,7 +22,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Locking Object
 		/// </summary>
-		private readonly object m_lockObject = new object();
+		private readonly Lock _lock = new();
 		
 		/// <summary>
 		/// Holds the list owner
@@ -63,7 +64,7 @@ namespace DOL.GS.Spells
 		{
 			BeginChanges();
 
-			lock (m_lockObject)
+			lock (_lock)
 			{
 				if (m_concSpells == null)
 					m_concSpells = new List<IConcentrationEffect>(20);
@@ -112,7 +113,7 @@ namespace DOL.GS.Spells
 			if (m_concSpells == null)
 				return;
 
-			lock (m_lockObject)
+			lock (_lock)
 			{
 				if (m_concSpells.Contains(effect))
 				{
@@ -144,7 +145,7 @@ namespace DOL.GS.Spells
 			if (m_concSpells != null)
 			{
 				IConcentrationEffect[] concEffect = null;
-				lock (m_lockObject)
+				lock (_lock)
 				{
 					concEffect = m_concSpells.ToArray();
 				}
@@ -197,7 +198,7 @@ namespace DOL.GS.Spells
 			if (m_concSpells == null)
 				return null;
 			
-			lock (m_lockObject)
+			lock (_lock)
 			{
 				return m_concSpells.FirstOrDefault(eff => eff.GetType().Equals(effectType));
 			}
@@ -213,7 +214,7 @@ namespace DOL.GS.Spells
 			if (m_concSpells == null)
 				return new IConcentrationEffect[0];
 			
-			lock (m_lockObject)
+			lock (_lock)
 			{
 				return m_concSpells.Where(eff => eff.GetType().Equals(effectType)).ToArray();
 			}
@@ -229,7 +230,7 @@ namespace DOL.GS.Spells
 				if (m_concSpells == null)
 					return null;
 				
-				lock (m_lockObject)
+				lock (_lock)
 				{
 					return m_concSpells[index];
 				}
@@ -262,7 +263,7 @@ namespace DOL.GS.Spells
 				if (m_concSpells == null)
 					return 0;
 				
-				lock (m_lockObject)
+				lock (_lock)
 				{
 					return m_concSpells.Count;
 				}
@@ -279,7 +280,7 @@ namespace DOL.GS.Spells
 			if (m_concSpells == null)
 				return new IConcentrationEffect[0].AsEnumerable().GetEnumerator();
 			
-			lock (m_lockObject)
+			lock (_lock)
 			{
 				return m_concSpells.ToArray().AsEnumerable().GetEnumerator();
 			}

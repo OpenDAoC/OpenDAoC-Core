@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using DOL.GS.Styles;
 
 namespace DOL.GS
@@ -47,7 +48,7 @@ namespace DOL.GS
         }
 
         protected readonly Dictionary<int, Style> _styles = new();
-        protected readonly object _stylesLock = new();
+        protected readonly Lock _stylesLock = new();
 
         public IList GetStyleList()
         {

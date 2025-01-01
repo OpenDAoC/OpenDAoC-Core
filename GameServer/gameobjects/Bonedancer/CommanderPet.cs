@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.PacketHandler;
@@ -9,6 +10,8 @@ namespace DOL.GS
 	public class CommanderPet : BdPet
 	{
 		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		public readonly Lock ControlledNpcListLock = new();
 
 		public enum eCommanderType
 		{
@@ -829,7 +832,7 @@ namespace DOL.GS
 		/// <returns>Whether the pet was added or not</returns>
 		public override bool AddControlledBrain(IControlledBrain controlledBrain)
 		{
-			lock (ControlledNpcList)
+			lock (ControlledNpcListLock)
 			{
 				if (ControlledNpcList == null)
 					return false;
@@ -864,7 +867,7 @@ namespace DOL.GS
 		{
 			bool foundBrain = false;
 
-			lock (ControlledNpcList)
+			lock (ControlledNpcListLock)
 			{
 				if (controlledBrain == null)
 					return false;

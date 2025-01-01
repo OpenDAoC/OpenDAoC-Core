@@ -328,7 +328,7 @@ namespace DOL.GS.DailyQuest
 			if (gArgs.Target.XPGainers.Count > 1)
 			{
 				Array gainers = new GameObject[gArgs.Target.XPGainers.Count];
-				lock (gArgs.Target._xpGainersLock)
+				lock (gArgs.Target.XpGainersLock)
 				{
 
 					foreach (GameLiving living in gArgs.Target.XPGainers.Keys)

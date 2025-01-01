@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using DOL.Database;
 using DOL.Events;
 using DOL.Language;
@@ -340,14 +341,14 @@ namespace DOL.GS
 		/// <summary>
 		/// The sync object for respawn timer modifications
 		/// </summary>
-		protected readonly object m_respawnTimerLock = new object();
+		protected readonly Lock _respawnTimerLock = new();
 
 		/// <summary>
 		/// Starts the Respawn Timer
 		/// </summary>
 		protected virtual void StartRespawn(int respawnSeconds)
 		{
-			lock (m_respawnTimerLock)
+			lock (_respawnTimerLock)
 			{
 				if (m_respawnTimer == null)
 				{
@@ -365,7 +366,7 @@ namespace DOL.GS
 		/// <returns>the new interval</returns>
 		protected virtual int RespawnTimerCallback(ECSGameTimer respawnTimer)
 		{
-			lock (m_respawnTimerLock)
+			lock (_respawnTimerLock)
 			{
 				if (m_respawnTimer != null)
 				{

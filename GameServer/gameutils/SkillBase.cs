@@ -26,7 +26,7 @@ namespace DOL.GS
 		private static bool m_loaded = false;
 
 		private static ReaderWriterLockSlim m_syncLockUpdates = new();
-		private static object m_loadingLock = new();
+		private static readonly Lock _loadingLock = new();
 
 		#region caches and static indexes
 
@@ -89,7 +89,7 @@ namespace DOL.GS
 
 		public static void LoadSkills()
 		{
-			lock (m_loadingLock)
+			lock (_loadingLock)
 			{
 				if (!m_loaded)
 				{

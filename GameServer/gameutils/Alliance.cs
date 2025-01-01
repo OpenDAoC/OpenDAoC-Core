@@ -1,24 +1,6 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System.Collections;
-using System.Collections.Specialized;
 using System;
+using System.Collections;
+using System.Threading;
 using DOL.Database;
 
 namespace DOL.GS
@@ -46,6 +28,7 @@ namespace DOL.GS
 				m_guilds = value;
 			}
 		}
+		public readonly Lock GuildsLock = new();
 		public DbGuildAlliance Dballiance
 		{
 			get
@@ -61,7 +44,7 @@ namespace DOL.GS
 		#region IList
 		public void AddGuild(Guild myguild)
 		{
-			lock (Guilds.SyncRoot)
+			lock (GuildsLock)
 			{
 				myguild.alliance = this;
 				Guilds.Add(myguild);
@@ -77,7 +60,7 @@ namespace DOL.GS
 		}
 		public void RemoveGuild(Guild myguild)
 		{
-			lock (Guilds.SyncRoot)
+			lock (GuildsLock)
 			{
 				myguild.alliance = null;
 				myguild.AllianceId = string.Empty;
@@ -113,7 +96,7 @@ namespace DOL.GS
 		
 		public void PromoteGuild(Guild myguild)
 		{
-			lock (Guilds.SyncRoot)
+			lock (GuildsLock)
 			{
 				m_dballiance.DBguildleader.GuildID = myguild.GuildID;
 				m_dballiance.DBguildleader.GuildName = myguild.Name;
@@ -129,7 +112,7 @@ namespace DOL.GS
 		
 		public void Clear()
 		{
-			lock (Guilds.SyncRoot)
+			lock (GuildsLock)
 			{
 				foreach (Guild guild in Guilds)
 				{
@@ -143,7 +126,7 @@ namespace DOL.GS
 		}
 		public bool Contains(Guild myguild)
 		{
-			lock (Guilds.SyncRoot)
+			lock (GuildsLock)
 			{
 				return Guilds.Contains(myguild);
 			}
@@ -156,7 +139,7 @@ namespace DOL.GS
 		/// </summary>
 		public void SendMessageToAllianceMembers(string msg, PacketHandler.eChatType type, PacketHandler.eChatLoc loc)
 		{
-			lock (Guilds.SyncRoot)
+			lock (GuildsLock)
 			{
 				foreach (Guild guild in Guilds)
 				{
@@ -183,7 +166,7 @@ namespace DOL.GS
 		public void SaveIntoDatabase()
 		{
 			GameServer.Database.SaveObject(m_dballiance);
-			lock (Guilds.SyncRoot)
+			lock (GuildsLock)
 			{
 				foreach (Guild guild in Guilds)
 				{

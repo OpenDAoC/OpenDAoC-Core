@@ -18,7 +18,7 @@ namespace DOL.GS.GameEvents
         private static long _lastBytesOut;
         private static long _lastMeasureTick = DateTime.Now.Ticks;
         private static IPerformanceStatistic _programCpuUsagePercent;
-        private static object _lock  = new();
+        private static readonly Lock _lock  = new();
 
         [GameServerStartedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)

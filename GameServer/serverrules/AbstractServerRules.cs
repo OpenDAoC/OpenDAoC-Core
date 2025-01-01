@@ -1609,7 +1609,7 @@ namespace DOL.GS.ServerRules
 		public virtual void OnLivingKilled(GameLiving killedLiving, GameObject killer)
 		{
 			HybridDictionary XPGainerList = new HybridDictionary();
-			lock (killedLiving._xpGainersLock)
+			lock (killedLiving.XpGainersLock)
 			{
 				foreach (var pair in killedLiving.XPGainers)
 				{
@@ -1748,7 +1748,7 @@ namespace DOL.GS.ServerRules
 				WarMapMgr.AddFight((byte)killer.CurrentZone.ID, killer.X, killer.Y, (byte)killer.Realm, (byte)killedPlayer.Realm);
 			
 			HybridDictionary XPGainerList = new HybridDictionary();
-			lock (killedPlayer._xpGainersLock)
+			lock (killedPlayer.XpGainersLock)
 			{
 				foreach (var pair in killedPlayer.XPGainers)
 				{

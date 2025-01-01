@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Threading;
 using DOL.GS.ServerProperties;
 using DOL.Network;
 using log4net;
@@ -19,7 +20,7 @@ namespace DOL.GS.PacketHandler
         private const int SAVED_PACKETS_COUNT = 16;
         private static Dictionary<string, IPacketHandler[]> _cachedPacketHandlerSearchResults = [];
         private static Dictionary<string, List<PacketHandlerAttribute>> _cachedPreprocessorSearchResults = [];
-        private static object _loadPacketHandlersLock = new();
+        private static Lock _loadPacketHandlersLock = new();
 
         private GameClient _client;
         private IPacketHandler[] _packetHandlers = new IPacketHandler[256];

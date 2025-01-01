@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -41,7 +42,7 @@ namespace DOL.GS
 
         private const int SECONDS_TO_QUIT_ON_LINKDEATH = 60;
 
-        private readonly object m_LockObject = new();
+        private readonly Lock _tradeLock = new();
         public new PlayerMovementComponent movementComponent;
         public new PlayerStyleComponent styleComponent;
 
@@ -1918,7 +1919,7 @@ namespace DOL.GS
             TempProperties.RemoveProperty(DEATH_CONSTITUTION_LOSS_PROPERTY);
 
             //Reset last valide position array to prevent /stuck avec /release
-            lock (m_lastUniqueLocations)
+            lock (_lastUniqueLocationsLock)
             {
                 for (int i = 0; i < m_lastUniqueLocations.Length; i++)
                 {
@@ -2524,7 +2525,7 @@ namespace DOL.GS
 
             if (Health >= MaxHealth)
             {
-                lock (_xpGainersLock)
+                lock (XpGainersLock)
                 {
                     m_xpGainers.Clear();
                 }
@@ -2934,6 +2935,7 @@ namespace DOL.GS
         /// (KeyName -> Specialization)
         /// </summary>
         protected readonly Dictionary<string, Specialization> m_specialization = new Dictionary<string, Specialization>();
+        protected readonly Lock _specializationLock = new();
 
         /// <summary>
         /// Holds the Spell lines the player can use
@@ -2943,17 +2945,7 @@ namespace DOL.GS
         /// <summary>
         /// Object to use when locking the SpellLines list
         /// </summary>
-        protected readonly Object lockSpellLinesList = new Object();
-
-        ///// <summary>
-        ///// Holds all styles of the player
-        ///// </summary>
-        //protected readonly Dictionary<int, Style> m_styles = new Dictionary<int, Style>();
-
-        ///// <summary>
-        ///// Used to lock the style list
-        ///// </summary>
-        //protected readonly Object lockStyleList = new Object();
+        protected readonly Lock _spellLinesListLock = new();
 
         /// <summary>
         /// Temporary Stats Boni
@@ -3139,7 +3131,7 @@ namespace DOL.GS
             if (skill == null)
                 return;
 
-            lock (((ICollection)m_specialization).SyncRoot)
+            lock (_specializationLock)
             {
                 if (m_specialization.TryGetValue(skill.KeyName, out Specialization specialization))
                 {
@@ -3163,7 +3155,7 @@ namespace DOL.GS
         {
             Specialization playerSpec = null;
 
-            lock (((ICollection)m_specialization).SyncRoot)
+            lock (_specializationLock)
             {
                 if (!m_specialization.TryGetValue(specKeyName, out playerSpec))
                     return false;
@@ -3183,7 +3175,7 @@ namespace DOL.GS
         /// <returns>true if removed</returns>
         protected virtual bool RemoveSpellLine(SpellLine line)
         {
-            lock (lockSpellLinesList)
+            lock (_spellLinesListLock)
             {
                 if (!m_spellLines.Contains(line))
                 {
@@ -3358,7 +3350,7 @@ namespace DOL.GS
         {
             List<Specialization> list;
 
-            lock (((ICollection)m_specialization).SyncRoot)
+            lock (_specializationLock)
             {
                 // sort by Level and ID to simulate "addition" order... (try to sort your DB if you want to change this !)
                 list = m_specialization.Select(item => item.Value).OrderBy(it => it.LevelRequired).ThenBy(it => it.ID).ToList();
@@ -3386,7 +3378,7 @@ namespace DOL.GS
         {
             Specialization spec = null;
 
-            lock (((ICollection)m_specialization).SyncRoot)
+            lock (_specializationLock)
             {
                 foreach (KeyValuePair<string, Specialization> entry in m_specialization)
                 {
@@ -3460,7 +3452,7 @@ namespace DOL.GS
 
         public virtual void RemoveAllAbilities()
         {
-            lock (m_lockAbilities)
+            lock (_abilitiesLock)
             {
                 m_abilities.Clear();
             }
@@ -3468,7 +3460,7 @@ namespace DOL.GS
 
         public virtual void RemoveAllSpecs()
         {
-            lock (((ICollection)m_specialization).SyncRoot)
+            lock (_specializationLock)
             {
                 m_specialization.Clear();
             }
@@ -3476,7 +3468,7 @@ namespace DOL.GS
 
         public virtual void RemoveAllSpellLines()
         {
-            lock (lockSpellLinesList)
+            lock (_spellLinesListLock)
             {
                 m_spellLines.Clear();
             }
@@ -3500,7 +3492,7 @@ namespace DOL.GS
         {
             bool hasit = false;
 
-            lock (((ICollection)m_specialization).SyncRoot)
+            lock (_specializationLock)
             {
                 hasit = m_specialization.ContainsKey(keyName);
             }
@@ -3519,7 +3511,7 @@ namespace DOL.GS
             Specialization spec = null;
             int level = 0;
 
-            lock (((ICollection)m_specialization).SyncRoot)
+            lock (_specializationLock)
             {
                 if (m_specialization.TryGetValue(keyName, out spec))
                     level = m_specialization[keyName].Level;
@@ -3544,7 +3536,7 @@ namespace DOL.GS
 
             Specialization spec = null;
             int level = 0;
-            lock (((ICollection)m_specialization).SyncRoot)
+            lock (_specializationLock)
             {
                 if (!m_specialization.TryGetValue(keyName, out spec))
                 {
@@ -3597,7 +3589,7 @@ namespace DOL.GS
             SpellLine oldline = GetSpellLine(line.KeyName);
             if (oldline == null)
             {
-                lock (lockSpellLinesList)
+                lock (_spellLinesListLock)
                 {
                     m_spellLines.Add(line);
                 }
@@ -3622,7 +3614,7 @@ namespace DOL.GS
         public virtual List<SpellLine> GetSpellLines()
         {
             List<SpellLine> list = new List<SpellLine>();
-            lock (lockSpellLinesList)
+            lock (_spellLinesListLock)
             {
                 list = new List<SpellLine>(m_spellLines);
             }
@@ -3637,7 +3629,7 @@ namespace DOL.GS
         /// <returns></returns>
         public virtual SpellLine GetSpellLine(string keyname)
         {
-            lock (lockSpellLinesList)
+            lock (_spellLinesListLock)
             {
                 foreach (SpellLine line in m_spellLines)
                 {
@@ -3905,7 +3897,7 @@ namespace DOL.GS
             LoadClassSpecializations(sendMessages);
 
             // lock specialization while refreshing...
-            lock (((ICollection)m_specialization).SyncRoot)
+            lock (_specializationLock)
             {
                 foreach (Specialization spec in m_specialization.Values)
                 {
@@ -6679,7 +6671,7 @@ namespace DOL.GS
             // then buffs drop messages
             base.ProcessDeath(killer);
 
-            lock (m_LockObject)
+            lock (_tradeLock)
             {
                 if (m_releaseTimer != null)
                 {
@@ -7116,7 +7108,7 @@ namespace DOL.GS
             if (source == null || item == null || source == this)
                 return false;
 
-            lock (m_LockObject)
+            lock (_tradeLock)
             {
                 lock (source)
                 {
@@ -7174,7 +7166,7 @@ namespace DOL.GS
             if (source == null || source == this || money == 0)
                 return false;
 
-            lock (m_LockObject)
+            lock (_tradeLock)
             {
                 lock (source)
                 {
@@ -7393,7 +7385,7 @@ namespace DOL.GS
                 return;
             }
 
-            lock (Inventory)
+            lock (Inventory.Lock)
             {
                 DbInventoryItem useItem = Inventory.GetItem((eInventorySlot) slot);
                 UseItem = useItem;
@@ -9703,6 +9695,7 @@ namespace DOL.GS
         /// Holds unique locations array
         /// </summary>
         protected readonly GameLocation[] m_lastUniqueLocations;
+        protected readonly Lock _lastUniqueLocationsLock = new();
 
         /// <summary>
         /// Gets unique locations array
@@ -10465,7 +10458,7 @@ namespace DOL.GS
             droppedItem = null;
             if (slot_pos >= eInventorySlot.FirstBackpack && slot_pos <= eInventorySlot.LastBackpack)
             {
-                lock (Inventory)
+                lock (Inventory.Lock)
                 {
                     DbInventoryItem item = Inventory.GetItem(slot_pos);
                     if (!item.IsDropable)
@@ -10775,7 +10768,7 @@ namespace DOL.GS
 
             // Build Serialized Spec list
             List<Specialization> specs = null;
-            lock (((ICollection)m_specialization).SyncRoot)
+            lock (_specializationLock)
             {
                 specs = m_specialization.Values.Where(s => s.AllowSave).ToList();
                 foreach (Specialization spec in specs)
@@ -11456,7 +11449,7 @@ namespace DOL.GS
                 DBCharacter.ActiveWeaponSlot = (byte)((byte)ActiveWeaponSlot | (byte)rangeAttackComponent.ActiveQuiverSlot);
                 if (m_stuckFlag)
                 {
-                    lock (m_lastUniqueLocations)
+                    lock (_lastUniqueLocationsLock)
                     {
                         GameLocation loc = m_lastUniqueLocations[m_lastUniqueLocations.Length - 1];
                         DBCharacter.Xpos = loc.X;
@@ -12121,13 +12114,14 @@ namespace DOL.GS
         }
 
         private List<AbstractQuest> _questListFinished = new();
+        private readonly Lock _questListFinishedLock = new();
         public virtual ConcurrentDictionary<AbstractQuest, byte> QuestList { get; } = new(); // Value is the index to send to clients.
         public ConcurrentQueue<byte> AvailableQuestIndexes { get; } = new(); // If empty, 'QuestList.Count' will be used when adding a quest to 'QuestList'
         public ECSGameTimer QuestActionTimer;
 
         public List<AbstractQuest> GetFinishedQuests()
         {
-            lock (_questListFinished)
+            lock (_questListFinishedLock)
             {
                 return _questListFinished.ToList();
             }
@@ -12143,7 +12137,7 @@ namespace DOL.GS
         {
             int counter = 0;
 
-            lock (_questListFinished)
+            lock (_questListFinishedLock)
             {
                 foreach (AbstractQuest quest in _questListFinished)
                 {
@@ -12160,7 +12154,7 @@ namespace DOL.GS
 
         public bool HasFinishedQuest(AbstractQuest quest)
         {
-            lock (_questListFinished)
+            lock (_questListFinishedLock)
             {
                 return _questListFinished.Contains(quest);
             }
@@ -12172,7 +12166,7 @@ namespace DOL.GS
         /// <param name="quest"></param>
         public void AddFinishedQuest(AbstractQuest quest)
         {
-            lock (_questListFinished)
+            lock (_questListFinishedLock)
             {
                 _questListFinished.Add(quest);
             }
@@ -12180,7 +12174,7 @@ namespace DOL.GS
 
         public void RemoveFinishedQuest(AbstractQuest quest)
         {
-            lock (_questListFinished)
+            lock (_questListFinishedLock)
             {
                 _questListFinished.Remove(quest);
             }
@@ -12188,7 +12182,7 @@ namespace DOL.GS
 
         public void RemoveFinishedQuests(Predicate<AbstractQuest> match)
         {
-            lock (_questListFinished)
+            lock (_questListFinishedLock)
             {
                 for (int i = _questListFinished.Count - 1; i >= 0; i--)
                 {
@@ -12214,7 +12208,7 @@ namespace DOL.GS
             if (questType == null)
                 return false;
 
-            lock (_questListFinished)
+            lock (_questListFinishedLock)
             {
                 for (int i = _questListFinished.Count - 1; i >= 0; i--)
                 {
@@ -12334,7 +12328,7 @@ namespace DOL.GS
 
         #region Crafting
 
-        public Object CraftingLock = new Object();
+        public readonly Lock _craftingLock = new();
 
         /// <summary>
         /// Store all player crafting skill and their value (eCraftingSkill => Value)
@@ -12370,7 +12364,7 @@ namespace DOL.GS
         /// <returns>the level in the specified crafting if valid and -1 if not</returns>
         public virtual int GetCraftingSkillValue(eCraftingSkill skill)
         {
-            lock (CraftingLock)
+            lock (_craftingLock)
             {
                 return m_craftingSkills.TryGetValue(skill, out int value) ? value : -1;
             }
@@ -12386,7 +12380,7 @@ namespace DOL.GS
         {
             if (skill == eCraftingSkill.NoCrafting) return false;
 
-            lock (CraftingLock)
+            lock (_craftingLock)
             {
                 AbstractCraftingSkill craftingSkill = CraftingMgr.getSkillbyEnum(skill);
                 if (craftingSkill != null && count >0)
@@ -12534,7 +12528,7 @@ namespace DOL.GS
             if (CraftingPrimarySkill == eCraftingSkill.NoCrafting)
                 CraftingPrimarySkill = eCraftingSkill.BasicCrafting;
 
-            lock (CraftingLock)
+            lock (_craftingLock)
             {
                 if (m_craftingSkills.ContainsKey(skill))
                 {
@@ -12623,7 +12617,7 @@ namespace DOL.GS
             {
                 CraftingPrimarySkill = (eCraftingSkill)CraftingForRealm.CraftingPrimarySkill;
 
-                lock (CraftingLock)
+                lock (_craftingLock)
                 {
                     foreach (string skill in Util.SplitCSV(CraftingForRealm.SerializedCraftingSkills))
                     {
@@ -12797,14 +12791,14 @@ namespace DOL.GS
         /// <returns>true if trade has started</returns>
         public bool OpenTrade(GamePlayer tradePartner)
         {
-            lock (m_LockObject)
+            lock (_tradeLock)
             {
                 lock (tradePartner)
                 {
                     if (tradePartner.TradeWindow != null)
                         return false;
 
-                    object sync = new object();
+                    Lock sync = new();
                     PlayerTradeWindow initiantWindow = new PlayerTradeWindow(tradePartner, false, sync);
                     PlayerTradeWindow recipientWindow = new PlayerTradeWindow(this, true, sync);
 
@@ -12828,7 +12822,7 @@ namespace DOL.GS
         {
             if (item == null) return false;
 
-            lock (m_LockObject)
+            lock (_tradeLock)
             {
                 if (TradeWindow != null)
                 {

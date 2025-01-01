@@ -37,7 +37,7 @@ namespace DOL.GS
 		/// <returns>success</returns>
 		public override bool LoadFromDatabase(string inventoryID)
 		{
-			lock (LockObject)
+			lock (Lock)
 			{
 				try
 				{
@@ -163,7 +163,7 @@ namespace DOL.GS
 		/// <returns>success</returns>
 		public override bool SaveIntoDatabase(string inventoryID)
 		{
-			lock (LockObject)
+			lock (Lock)
 			{
 				foreach (DbInventoryItem item in _itemsAwaitingDeletion)
 				{
@@ -477,7 +477,7 @@ namespace DOL.GS
             DbInventoryItem toItem;
             bool moved;
 
-            lock (LockObject)
+            lock (Lock)
             {
                 if (!GetValidInventorySlot(ref fromSlot) || !GetValidInventorySlot(ref toSlot))
                     return false;
@@ -539,7 +539,7 @@ namespace DOL.GS
             if (!CheckPlayerState())
                 return false;
 
-            lock (LockObject)
+            lock (Lock)
             {
                 if (!GetValidInventorySlot(ref playerInventorySlot))
                     return false;
@@ -1128,7 +1128,7 @@ namespace DOL.GS
 		{
 			int newInventoryWeight = 0;
 
-			lock (LockObject)
+			lock (Lock)
 			{
 				foreach (var pair in m_items)
 				{

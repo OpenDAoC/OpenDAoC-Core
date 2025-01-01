@@ -26,7 +26,7 @@ namespace DOL.GS
         private IPEndPoint _udpEndpoint;
         private Dictionary<string, List<string>> _customParams = [];
         private ConcurrentDictionary<int, ConcurrentDictionary<int, long>> _tooltipRequestTimes = new();
-        private object _disconnectLock = new();
+        private readonly Lock _disconnectLock = new();
 
         public DbAccount Account
         {

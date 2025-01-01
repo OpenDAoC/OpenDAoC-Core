@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using DOL.Database;
 
 namespace DOL.GS
@@ -160,6 +161,6 @@ namespace DOL.GS
         ICollection<DbInventoryItem> EquippedItems { get; }
         ICollection<DbInventoryItem> AllItems { get; }
         int InventoryWeight { get; }
-        object LockObject { get; }
+        Lock Lock { get; }
     }
 }

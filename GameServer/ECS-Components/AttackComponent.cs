@@ -44,7 +44,7 @@ namespace DOL.GS
             if (attackData.Attacker == owner)
                 return;
 
-            lock (_attackersCheckTimer.LockObject)
+            lock (_attackersCheckTimer.Lock)
             {
                 if (!_attackersCheckTimer.IsAlive)
                 {
@@ -2886,8 +2886,8 @@ namespace DOL.GS
 
         public abstract class AttackersCheckTimer : ECSGameTimerWrapperBase
         {
+            public readonly Lock Lock = new();
             protected GameLiving _owner;
-            public object LockObject { get; } = new();
 
             public AttackersCheckTimer(GameObject owner) : base(owner)
             {

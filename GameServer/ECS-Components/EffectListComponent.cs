@@ -17,9 +17,9 @@ namespace DOL.GS
         public GameLiving Owner { get; }
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.EffectListComponent, false);
         public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; } = [];
-        public object EffectsLock { get; } = new();
+        public readonly Lock EffectsLock = new();
         public List<ECSGameSpellEffect> ConcentrationEffects { get; } = new List<ECSGameSpellEffect>(20);
-        public object ConcentrationEffectsLock { get; } = new();
+        public readonly Lock ConcentrationEffectsLock = new();
         public EffectService.PlayerUpdate RequestedPlayerUpdates { get; private set; }
         public int UsedConcentration => Interlocked.CompareExchange(ref _usedConcentration, 0, 0);
 

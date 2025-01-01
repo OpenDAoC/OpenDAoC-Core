@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.Keeps;
 using log4net;
@@ -14,7 +15,7 @@ namespace DOL.GS
 	{
 		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static readonly object Lock = new object();
+		private static readonly Lock Lock = new();
 
 		private static Dictionary<int, List<GameDoorBase>> m_doors = new Dictionary<int, List<GameDoorBase>>();
 

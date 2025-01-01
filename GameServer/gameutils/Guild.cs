@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
@@ -89,7 +90,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Use this object to lock the guild member list
 		/// </summary>
-		public Object m_memberListLock = new Object();
+		public readonly Lock m_memberListLock = new();
 
 		/// <summary>
 		/// This holds all players inside the guild

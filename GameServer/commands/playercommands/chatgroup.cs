@@ -408,7 +408,7 @@ namespace DOL.GS.Commands
 		{
 			ChatGroup mychatgroup = player.TempProperties.GetProperty<ChatGroup>(JOIN_CHATGROUP_PROPERTY);
 			if (mychatgroup == null) return;
-			lock (mychatgroup)
+			lock (mychatgroup.Lock)
 			{
 				if (mychatgroup.Members.Count < 1)
 				{

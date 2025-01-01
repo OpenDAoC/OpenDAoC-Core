@@ -12,7 +12,6 @@ namespace DOL.GS
     /// </summary>
     public class GameHouseVault : GameVault, IHouseHookpointItem
     {
-        private readonly object _vaultLock = new();
         private DbHouseHookPointItem _hookedItem;
 
         /// <summary>
@@ -93,7 +92,7 @@ namespace DOL.GS
             if (_hookedItem == null || CurrentHouse != player.CurrentHouse || CurrentHouse.CanEmptyHookpoint(player) == false)
                 return false;
 
-            lock (LockObject)
+            lock (Lock)
             {
                 foreach (GamePlayer observer in _observers.Values)
                     observer.ActiveInventoryObject = null;

@@ -1,3 +1,4 @@
+using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -14,7 +15,7 @@ namespace DOL.GS
 
         private bool _openDead = false;
         private eDoorState _state;
-        private object _lock = new();
+        private readonly Lock _lock = new();
         private ECSGameTimer _closeDoorAction;
         private ECSGameTimer _repairTimer;
 
@@ -159,7 +160,7 @@ namespace DOL.GS
                 {
                     m_health = maxhealth;
 
-                    lock (_xpGainersLock)
+                    lock (XpGainersLock)
                     {
                         m_xpGainers.Clear();
                     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -17,8 +18,6 @@ namespace DOL.GS
 	/// </summary>
 	public class Group : IGameStaticItemOwner
 	{
-		public object _groupLock = new object();
-
 		#region constructor and members
 		/// <summary>
 		/// Default Constructor with GamePlayer Leader.
@@ -43,6 +42,7 @@ namespace DOL.GS
 		/// This holds all players inside the group
 		/// </summary>
 		protected readonly ReaderWriterList<GameLiving> m_groupMembers;
+		protected readonly Lock _groupMembersLock = new();
 		#endregion
 
 		#region Leader / Member
@@ -765,7 +765,7 @@ namespace DOL.GS
 		/// <returns>A string of group members</returns>
 		public string GroupMemberString(GamePlayer player)
 		{
-			lock (m_groupMembers)
+			lock (_groupMembersLock)
 			{
 				StringBuilder text = new StringBuilder(64); //create the string builder
 				text.Length = 0;
@@ -793,7 +793,7 @@ namespace DOL.GS
 		/// <returns>A string of group members</returns>
 		public string GroupMemberClassString(GamePlayer player)
 		{
-			lock (m_groupMembers)
+			lock (_groupMembersLock)
 			{
 				StringBuilder text = new StringBuilder(64); //create the string builder
 				text.Length = 0;

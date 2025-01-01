@@ -1,25 +1,7 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections;
 using System.Reflection;
-using DOL.GS;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using log4net;
@@ -125,13 +107,8 @@ namespace DOL.GS
 			get { return null; }
 		}
 
-		/// <summary>
-		/// Gets the access sync object for this and TradePartner windows
-		/// </summary>
-		public object Sync
-		{
-			get { return m_tradeItems; }
-		}
+		private readonly Lock _lock = new();
+		public Lock Lock => _lock;
 
 		/// <summary>
 		/// Gets the item count in trade window
@@ -189,7 +166,7 @@ namespace DOL.GS
 		/// <returns>true if added</returns>
 		public bool AddItemToTrade(DbInventoryItem itemForTrade)
 		{
-			lock(Sync)
+			lock(Lock)
 			{
 				if(!itemForTrade.IsDropable || !itemForTrade.IsPickable || itemForTrade.IsNotLosingDur)
 					return false;
@@ -225,7 +202,7 @@ namespace DOL.GS
 			if (itemToRemove == null)
 				return;
 
-			lock(Sync)
+			lock(Lock)
 			{
 				TradeItems.Remove(itemToRemove);
 				if(!m_tradeAccept) TradeUpdate();
@@ -237,7 +214,7 @@ namespace DOL.GS
 		/// </summary>
 		public void TradeUpdate()
 		{
-			lock (Sync)
+			lock (Lock)
 			{
 				if (m_changesCount > 0) return;
 				if (m_changesCount < 0)
@@ -253,7 +230,7 @@ namespace DOL.GS
                 // Players may now have any, and all, "primary" crafting skills.
                 // AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(m_owner.CraftingPrimarySkill);
                 AbstractCraftingSkill skill = null;
-                lock (m_owner.TradeWindow.Sync)
+                lock (m_owner.TradeWindow.Lock)
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
@@ -300,14 +277,14 @@ namespace DOL.GS
 		{
 			m_tradeAccept = true;
 
-			lock (Sync)
+			lock (Lock)
 			{
                 // --------------------------------------------------------------
                 // Luhz Crafting Update:
                 // Players may now have any, and all, "primary" crafting skills.
                 // AbstractCraftingSkill skill = CraftingMgr.getSkillbyEnum(m_owner.CraftingPrimarySkill);
                 AbstractCraftingSkill skill = null;
-                lock (m_owner.TradeWindow.Sync)
+                lock (m_owner.TradeWindow.Lock)
                 {
                     foreach (DbInventoryItem i in (ArrayList)m_owner.TradeWindow.TradeItems.Clone())
                     {
@@ -345,7 +322,7 @@ namespace DOL.GS
 		/// </summary>
 		public void CloseTrade()
 		{	
-			lock (Sync)
+			lock (Lock)
 			{
 				m_owner.Out.SendCloseTradeWindow();
 			}
