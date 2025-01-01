@@ -110,21 +110,16 @@ namespace DOL.GS
         /// <summary>
         /// The chance for a critical hit
         /// </summary>
-        public int AttackCriticalChance(WeaponAction action, DbInventoryItem weapon)
+        public int AttackCriticalChance(WeaponAction action)
         {
-            if (weapon == null)
-                return 0;
-
-            switch ((eInventorySlot) weapon.SlotPosition)
+            switch (owner.ActiveWeaponSlot)
             {
-                case eInventorySlot.RightHandWeapon:
-                case eInventorySlot.LeftHandWeapon:
-                case eInventorySlot.TwoHandWeapon:
-                    return owner.GetModified(eProperty.CriticalMeleeHitChance);
-                case eInventorySlot.DistanceWeapon:
-                    return action.RangedAttackType is eRangedAttackType.Critical ? 0 : owner.GetModified(eProperty.CriticalArcheryHitChance);
                 default:
-                    return 0;
+                case eActiveWeaponSlot.Standard:
+                case eActiveWeaponSlot.TwoHanded:
+                    return owner.GetModified(eProperty.CriticalMeleeHitChance);
+                case eActiveWeaponSlot.Distance:
+                    return action.RangedAttackType is eRangedAttackType.Critical ? 0 : owner.GetModified(eProperty.CriticalArcheryHitChance);
             }
         }
 
@@ -1465,7 +1460,7 @@ namespace DOL.GS
                             if (ad.CriticalDamage > 0)
                             {
                                 player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.AttackData.YourCriticallyHits"),
-                                    ad.Attacker.Name, ad.Target.GetName(0, false), ad.CriticalDamage) + $" ({AttackCriticalChance(action, ad.Weapon)}%)",
+                                    ad.Attacker.Name, ad.Target.GetName(0, false), ad.CriticalDamage) + $" ({AttackCriticalChance(action)}%)",
                                     eChatType.CT_YouHit,eChatLoc.CL_SystemWindow);
                             }
 
@@ -2354,7 +2349,7 @@ namespace DOL.GS
                                 p.Out.SendMessage(LanguageMgr.GetTranslation(p.Client.Account.Language,
                                         "GamePlayer.Attack.Critical",
                                         ad.Target.GetName(0, false, p.Client.Account.Language, (ad.Target as GameNPC)),
-                                        ad.CriticalDamage) + $" ({AttackCriticalChance(action, ad.Weapon)}%)",
+                                        ad.CriticalDamage) + $" ({AttackCriticalChance(action)}%)",
                                     eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
                             break;
                     }
@@ -2480,7 +2475,7 @@ namespace DOL.GS
                                 p.Out.SendMessage(
                                     LanguageMgr.GetTranslation(p.Client.Account.Language,
                                         "GamePlayer.Attack.Critical", ad.Target.GetName(0, false),
-                                        ad.CriticalDamage) + $" ({AttackCriticalChance(action, ad.Weapon)}%)", eChatType.CT_YouHit,
+                                        ad.CriticalDamage) + $" ({AttackCriticalChance(action)}%)", eChatType.CT_YouHit,
                                     eChatLoc.CL_SystemWindow);
                             break;
                     }
@@ -2490,7 +2485,7 @@ namespace DOL.GS
 
         public int CalculateMeleeCriticalDamage(AttackData ad, WeaponAction action, DbInventoryItem weapon)
         {
-            if (!Util.Chance(AttackCriticalChance(action, weapon)))
+            if (!Util.Chance(AttackCriticalChance(action)))
                 return 0;
 
             if (owner is GamePlayer)
