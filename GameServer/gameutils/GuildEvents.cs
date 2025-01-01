@@ -246,7 +246,7 @@ namespace DOL.GS
 
 		public static void StartCheckThread()
 		{
-			foreach (Guild checkGuild in GuildMgr.GetAllGuilds())
+			foreach (Guild checkGuild in GuildMgr.GetGuilds())
 			{
 				if (checkGuild.BonusType != Guild.eBonusType.None)
 				{

@@ -50,7 +50,7 @@ public class Guild
                 return null;
 
             var membersCount = 0;
-            var members = GuildMgr.GetAllGuildMembers(guild.GuildID);
+            var members = GuildMgr.GetGuildMemberViews(guild);
             membersCount = members.Count;
 
             guildInfo = new GuildInfo
@@ -77,7 +77,7 @@ public class Guild
 
         if (!_cache.TryGetValue(_allGuildsCacheKey, out List<GuildInfo> allGuilds))
         {
-            var guilds = GuildMgr.GetAllGuilds();
+            var guilds = GuildMgr.GetGuilds();
 
             allGuilds = new List<GuildInfo>(guilds.Count);
 
@@ -86,7 +86,7 @@ public class Guild
                 if (guild == null)
                     continue;
 
-                var members = GuildMgr.GetAllGuildMembers(guild.GuildID);
+                var members = GuildMgr.GetGuildMemberViews(guild);
                 var membersCount = members.Count;
 
                 var guildInfo = new GuildInfo();
@@ -113,7 +113,7 @@ public class Guild
 
         if (!_cache.TryGetValue(_topRPGuildsCacheKey, out List<GuildInfo> allGuilds))
         {
-            var guilds = GuildMgr.GetAllGuilds();
+            var guilds = GuildMgr.GetGuilds();
 
             allGuilds = new List<GuildInfo>(guilds.Count);
 
@@ -124,7 +124,7 @@ public class Guild
                 if (guild == null)
                     continue;
 
-                var members = GuildMgr.GetAllGuildMembers(guild.GuildID);
+                var members = GuildMgr.GetGuildMemberViews(guild);
                 var membersCount = members.Count;
 
                 var guildInfo = new GuildInfo();

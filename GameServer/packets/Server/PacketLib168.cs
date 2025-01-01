@@ -705,8 +705,12 @@ namespace DOL.GS.PacketHandler
 					pak.WriteInt(0x00);
 				else
 				{
-					pak.WriteShort(guild.ID);
-					pak.WriteShort(guild.ID);
+					// Since we load every guild, the runtime ID might be too big for the client.
+					// No idea what happens if there's a collision.
+					// It's also possible that the two shorts should be an int instead.
+					ushort id = (ushort) (guild.ID % ushort.MaxValue);
+					pak.WriteShort(id);
+					pak.WriteShort(id);
 				}
 				pak.WriteShort(0x00); //seems random, not used by the client
 				SendTCP(pak);

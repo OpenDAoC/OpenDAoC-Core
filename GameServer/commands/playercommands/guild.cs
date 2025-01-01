@@ -284,19 +284,13 @@ namespace DOL.GS.Commands
 									break;
 							}
 
-							string oldguildname = String.Join(" ", args, 2, i - 2);
-							string newguildname = String.Join(" ", args, i + 1, args.Length - i - 1);
-							if (!GuildMgr.DoesGuildExist(oldguildname))
+							string oldName = String.Join(" ", args, 2, i - 2);
+							string newName = String.Join(" ", args, i + 1, args.Length - i - 1);
+
+							if (!GuildMgr.RenameGuild(oldName, newName))
 							{
 								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.Help.GuildNotExist"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
-							}
-							Guild myguild = GuildMgr.GetGuildByName(oldguildname);
-							myguild.Name = newguildname;
-							GuildMgr.AddGuild(myguild);
-							foreach (GamePlayer ply in myguild.GetListOfOnlineMembers())
-							{
-								ply.GuildName = newguildname;
 							}
 						}
 						break;
@@ -1094,7 +1088,7 @@ namespace DOL.GS.Commands
 						{
 							// Changing this to list online only, not sure if this is live like or not but list can be huge
 							// and spam client.  - Tolakram
-							List<Guild> guildList = GuildMgr.GetAllGuilds();
+							List<Guild> guildList = GuildMgr.GetGuilds();
 							foreach (Guild guild in guildList)
 							{
 								if (guild.MemberOnlineCount > 0)
@@ -2371,7 +2365,7 @@ namespace DOL.GS.Commands
 							}
 
 							bool noteSet = false;
-							foreach (var guildMember in GuildMgr.GetAllGuildMembers(client.Player.GuildID))
+							foreach (var guildMember in GuildMgr.GetGuildMemberViews(client.Player.Guild))
 							{
 								if (guildMember.Value.Name.ToLower() != args[2].ToLower()) continue;
 								string note = String.Join(" ", args, 3, args.Length - 3);
@@ -3011,7 +3005,7 @@ namespace DOL.GS.Commands
 		/// <param name="offline">0 = false, 1 = true, 2 to try and recall last setting used by player</param>
 		private void SendSocialWindowData(GameClient client, int sort, int page, byte offline)
 		{
-			Dictionary<string, GuildMgr.GuildMemberDisplay> allGuildMembers = GuildMgr.GetAllGuildMembers(client.Player.GuildID);
+			Dictionary<string, GuildMgr.GuildMemberView> allGuildMembers = GuildMgr.GetGuildMemberViews(client.Player.Guild);
 
 			if (allGuildMembers == null || allGuildMembers.Count == 0)
 			{
@@ -3033,39 +3027,39 @@ namespace DOL.GS.Commands
 			client.Player.TempProperties.SetProperty("SOCIALSHOWOFFLINE", showOffline);
 
 			//The type of sorting we will be sending
-			GuildMgr.GuildMemberDisplay.eSocialWindowSort sortOrder = (GuildMgr.GuildMemberDisplay.eSocialWindowSort)sort;
+			GuildMgr.GuildMemberView.eSocialWindowSort sortOrder = (GuildMgr.GuildMemberView.eSocialWindowSort)sort;
 
 			//Let's sort the sorted list - we don't need to sort if sort = name
-			SortedList<string, GuildMgr.GuildMemberDisplay> sortedWindowList = null;
+			SortedList<string, GuildMgr.GuildMemberView> sortedWindowList = null;
 
-			GuildMgr.GuildMemberDisplay.eSocialWindowSortColumn sortColumn = GuildMgr.GuildMemberDisplay.eSocialWindowSortColumn.Name;
+			GuildMgr.GuildMemberView.eSocialWindowSortColumn sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.NAME;
 
 			#region Determine Sort
 			switch (sortOrder)
 			{
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.ClassAsc:
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.ClassDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.eSocialWindowSortColumn.ClassID;
+				case GuildMgr.GuildMemberView.eSocialWindowSort.CLASS_ASC:
+				case GuildMgr.GuildMemberView.eSocialWindowSort.CLASS_DESC:
+					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.CLASS_ID;
 					break;
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.GroupAsc:
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.GroupDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.eSocialWindowSortColumn.Group;
+				case GuildMgr.GuildMemberView.eSocialWindowSort.GROUP_ASC:
+				case GuildMgr.GuildMemberView.eSocialWindowSort.GROUP_DESC:
+					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.GROUP;
 					break;
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.LevelAsc:
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.LevelDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.eSocialWindowSortColumn.Level;
+				case GuildMgr.GuildMemberView.eSocialWindowSort.LEVEL_ASC:
+				case GuildMgr.GuildMemberView.eSocialWindowSort.LEVEL_DESC:
+					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.LEVEL;
 					break;
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.NoteAsc:
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.NoteDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.eSocialWindowSortColumn.Note;
+				case GuildMgr.GuildMemberView.eSocialWindowSort.NOTE_ASC:
+				case GuildMgr.GuildMemberView.eSocialWindowSort.NOTE_DESC:
+					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.NOTE;
 					break;
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.RankAsc:
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.RankDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.eSocialWindowSortColumn.Rank;
+				case GuildMgr.GuildMemberView.eSocialWindowSort.RANK_ASC:
+				case GuildMgr.GuildMemberView.eSocialWindowSort.RANK_DESC:
+					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.RANK;
 					break;
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.ZoneOrOnlineAsc:
-				case GuildMgr.GuildMemberDisplay.eSocialWindowSort.ZoneOrOnlineDesc:
-					sortColumn = GuildMgr.GuildMemberDisplay.eSocialWindowSortColumn.ZoneOrOnline;
+				case GuildMgr.GuildMemberView.eSocialWindowSort.ZONE_OR_ONLINE_ASC:
+				case GuildMgr.GuildMemberView.eSocialWindowSort.ZONE_OR_ONLINE_DESC:
+					sortColumn = GuildMgr.GuildMemberView.eSocialWindowSortColumn.ZONE_OR_ONLINE;
 					break;
 			}
 			#endregion
@@ -3073,11 +3067,11 @@ namespace DOL.GS.Commands
 			if (showOffline == false) // show only a sorted list of online players
 			{
 				IList<GamePlayer> onlineGuildPlayers = client.Player.Guild.GetListOfOnlineMembers();
-				sortedWindowList = new SortedList<string, GuildMgr.GuildMemberDisplay>(onlineGuildPlayers.Count);
+				sortedWindowList = new SortedList<string, GuildMgr.GuildMemberView>(onlineGuildPlayers.Count);
 
 				foreach (GamePlayer player in onlineGuildPlayers)
 				{
-					if (allGuildMembers.TryGetValue(player.InternalID, out GuildMgr.GuildMemberDisplay memberDisplay))
+					if (allGuildMembers.TryGetValue(player.InternalID, out GuildMgr.GuildMemberView memberDisplay))
 					{
 						memberDisplay.UpdateMember(player);
 						string key = memberDisplay[sortColumn];
@@ -3091,10 +3085,10 @@ namespace DOL.GS.Commands
 			}
 			else // sort and display entire list
 			{
-				sortedWindowList = new SortedList<string, GuildMgr.GuildMemberDisplay>();
+				sortedWindowList = new SortedList<string, GuildMgr.GuildMemberView>();
 				int keyIncrement = 0;
 
-				foreach (GuildMgr.GuildMemberDisplay memberDisplay in allGuildMembers.Values)
+				foreach (GuildMgr.GuildMemberView memberDisplay in allGuildMembers.Values)
 				{
 					GamePlayer p = client.Player.Guild.GetOnlineMemberByID(memberDisplay.InternalID);
 					if (p != null)
@@ -3129,13 +3123,13 @@ namespace DOL.GS.Commands
 
 			//Finally lets send the list we made
 
-			IList<GuildMgr.GuildMemberDisplay> finalList = sortedWindowList.Values;
+			IList<GuildMgr.GuildMemberView> finalList = sortedWindowList.Values;
 
 			int i = 0;
 			string[] buffer = new string[10];
 			for (i = 0; i < 10 && finalList.Count > i + (page - 1) * 10; i++)
 			{
-				GuildMgr.GuildMemberDisplay memberDisplay;
+				GuildMgr.GuildMemberView memberDisplay;
 
 				if ((int)sortOrder > 0)
 				{

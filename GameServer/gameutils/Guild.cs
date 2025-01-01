@@ -104,7 +104,7 @@ namespace DOL.GS
 		/// <summary>
 		/// the runtime ID of the guild
 		/// </summary>
-		protected ushort m_id;
+		protected int m_id;
 
 		/// <summary>
 		/// Stores claimed keeps (unique)
@@ -465,15 +465,15 @@ namespace DOL.GS
 		/// <summary>
 		/// Gets or sets the runtime guild id
 		/// </summary>
-		public ushort ID
+		public int ID
 		{
-			get 
-			{ 
-				return m_id; 
+			get
+			{
+				return m_id;
 			}
-			set 
-			{ 
-				m_id = value; 
+			set
+			{
+				m_id = value;
 			}
 		}
 
@@ -599,9 +599,9 @@ namespace DOL.GS
 				if (m_onlineGuildPlayers.Remove(player.InternalID))
 				{
 					// now update the all member list to display lastonline time instead of zone
-					Dictionary<string, GuildMgr.GuildMemberDisplay> memberList = GuildMgr.GetAllGuildMembers(player.GuildID);
+					Dictionary<string, GuildMgr.GuildMemberView> memberList = GuildMgr.GetGuildMemberViews(player.Guild);
 
-					if (memberList != null && memberList.TryGetValue(player.InternalID, out GuildMgr.GuildMemberDisplay guildMemberDisplay))
+					if (memberList != null && memberList.TryGetValue(player.InternalID, out GuildMgr.GuildMemberView guildMemberDisplay))
 						guildMemberDisplay.ZoneOrOnline = DateTime.Now.ToShortDateString();
 
 					return true;
@@ -668,7 +668,7 @@ namespace DOL.GS
 				addPlayer.GuildRank = rank;
 				addPlayer.Guild = this;
 				addPlayer.SaveIntoDatabase();
-				GuildMgr.AddPlayerToAllGuildPlayersList(addPlayer);
+				GuildMgr.AddPlayerToGuildMemberViews(addPlayer);
 				addPlayer.Out.SendMessage("You have agreed to join " + this.Name + "!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
 				addPlayer.Out.SendMessage("Your current rank is " + addPlayer.GuildRank.Title + "!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
 				SendMessageToGuildMembers(addPlayer.Name + " has joined the guild!", eChatType.CT_Group, eChatLoc.CL_SystemWindow);
@@ -693,7 +693,7 @@ namespace DOL.GS
 		{
 			try
 			{
-				GuildMgr.RemovePlayerFromAllGuildPlayersList(member);
+				GuildMgr.RemovePlayerFromGuildMemberViews(member);
 				RemoveOnlineMember(member);
 				member.GuildName = string.Empty;
 				member.GuildNote = string.Empty;
