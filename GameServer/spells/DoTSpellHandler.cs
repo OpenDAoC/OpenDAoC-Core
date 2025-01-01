@@ -251,13 +251,13 @@ namespace DOL.GS.Spells
 			if (CriticalDamage > 0 || !firstTick)
 				return CriticalDamage;
 
-			int criticalChance = Caster.DebuffCriticalChance;
+			ad.CriticalChance = Caster.DebuffCriticalChance;
 
-			if (criticalChance < 0)
+			if (ad.CriticalChance < 0)
 				return 0;
 
 			int randNum = Util.CryptoNextInt(0, 100);
-			int critCap = Math.Min(50, criticalChance);
+			int critCap = Math.Min(50, ad.CriticalChance);
 
 			if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && critCap > 0)
 				spellCaster.Out.SendMessage($"dot crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);

@@ -34,10 +34,10 @@ namespace DOL.GS.Spells
         {
             AttackData ad = base.CalculateDamageToTarget(target);
             ad.CriticalDamage = 0;
+            ad.CriticalChance = 0;
             ad.AttackType = AttackData.eAttackType.Unknown;
             return ad;
         }
-
 
         public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {

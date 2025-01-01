@@ -488,7 +488,7 @@ namespace DOL.GS.Spells
 
 					// critical hit
 					if (ad.CriticalDamage > 0)
-                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Critical", ad.Target.GetName(0, false), ad.CriticalDamage) + $" ({ad.Attacker.attackComponent.AttackCriticalChance(null)}%)", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
+                        player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GamePlayer.Attack.Critical", ad.Target.GetName(0, false), ad.CriticalDamage) + $" ({ad.CriticalChance}%)", eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
 					break;
 			}
         }
@@ -551,8 +551,6 @@ namespace DOL.GS.Spells
             {
                 Attacker = player,
                 Target = target,
-                Damage = 0,
-                CriticalDamage = 0,
                 Interval = player.AttackSpeed(weapon),
                 DamageType = player.attackComponent.AttackDamageType(weapon),
                 Weapon = weapon,
@@ -618,10 +616,14 @@ namespace DOL.GS.Spells
                 ad.Damage = (int)damage;
                 ad.Damage = Math.Min(ad.Damage, (int)(player.attackComponent.AttackDamage(weapon, out _) * effectiveness));
                 ad.Damage = (int)(ad.Damage * ServerProperties.Properties.PVP_MELEE_DAMAGE);
+
                 if (ad.Damage == 0)
                     ad.AttackResult = eAttackResult.Missed;
                 else
-                    ad.CriticalDamage = player.attackComponent.CalculateMeleeCriticalDamage(ad, null, weapon);
+                {
+                    ad.CriticalChance = player.attackComponent.CalculateCriticalChance(null);
+                    ad.CriticalDamage = player.attackComponent.CalculateCriticalDamage(ad);
+                }
 
                 static int GetDamageResist(GameLiving living, eResist resistType)
                 {

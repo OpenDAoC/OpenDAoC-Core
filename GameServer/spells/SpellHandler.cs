@@ -3127,8 +3127,8 @@ namespace DOL.GS.Spells
 				finalDamage = 0;
 
 			// DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly.
-			int criticalChance = this is not DoTSpellHandler ? Math.Min(50, m_caster.SpellCriticalChance) : 0;
 			int criticalDamage = 0;
+			int criticalChance = this is not DoTSpellHandler ? Math.Min(50, m_caster.SpellCriticalChance) : 0;
 			int randNum = Util.CryptoNextInt(0, 100);
 
 			if (playerCaster != null && playerCaster.UseDetailedCombatLog)
@@ -3147,6 +3147,7 @@ namespace DOL.GS.Spells
 
 			ad.Damage = (int) finalDamage;
 			ad.CriticalDamage = criticalDamage;
+			ad.CriticalChance = criticalChance;
 			ad.Target.ModifyAttack(ad); // Attacked living may modify the attack data. Primarily used for keep doors and components.
 			m_lastAttackData = ad;
 			return ad;
@@ -3218,7 +3219,7 @@ namespace DOL.GS.Spells
 				MessageToCaster(string.Format("Your {0} hits {1} for {2}{3} damage!", Caster.Name, ad.Target.GetName(0, false), ad.Damage, modMessage), eChatType.CT_YouHit);
 
 			if (ad.CriticalDamage > 0)
-				MessageToCaster($"You critically hit for an additional {ad.CriticalDamage} damage! ({m_caster.SpellCriticalChance}%)", eChatType.CT_YouHit);
+				MessageToCaster($"You critically hit for an additional {ad.CriticalDamage} damage! ({ad.CriticalChance}%)", eChatType.CT_YouHit);
 		}
 
 		/// <summary>

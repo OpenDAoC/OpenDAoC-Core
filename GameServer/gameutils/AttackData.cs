@@ -13,8 +13,9 @@ namespace DOL.GS
         public eAttackType AttackType { get; set; } = eAttackType.Unknown;
         public eAttackResult AttackResult { get; set; } = eAttackResult.Any;
         public int Damage { get; set; }
-        public int CriticalDamage { get; set; }
         public int StyleDamage { get; set; }
+        public int CriticalDamage { get; set; }
+        public int CriticalChance { get; set; }
         public DbInventoryItem Weapon { get; set; }
         public int Interval { get; set; }
         public bool IsOffHand { get; set; }
