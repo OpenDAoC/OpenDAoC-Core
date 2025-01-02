@@ -108,6 +108,8 @@ namespace DOL.GS.Spells
             if (Caster is GamePlayer spellCaster && spellCaster.UseDetailedCombatLog && effectiveness != 1)
                 spellCaster.Out.SendMessage($"heal effectiveness: {effectiveness:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
+            amount *= effectiveness;
+
             /*if (playerTarget != null)
             {
                 GameSpellEffect HealEffect = SpellHandler.FindEffectOnTarget(playerTarget, "EfficientHealing");
