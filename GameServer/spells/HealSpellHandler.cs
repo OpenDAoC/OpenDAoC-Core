@@ -145,7 +145,7 @@ namespace DOL.GS.Spells
             if (Util.Chance(criticalChance))
             {
                 double min = 0.1;
-                double max = 0.5;
+                double max = 1.0;
                 double criticalModifier = min + Util.RandomDoubleIncl() * (max - min);
                 criticalAmount = amount * criticalModifier;
                 amount += criticalAmount;
