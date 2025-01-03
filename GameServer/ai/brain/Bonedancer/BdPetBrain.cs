@@ -128,21 +128,6 @@ namespace DOL.AI.Brain
             return false;
         }
 
-        /// <summary>
-        /// Standard think method for all the pets
-        /// </summary>
-        public override void Think()
-        {
-            CheckAbilities();
-            base.Think();
-        }
-
-        public override void Attack(GameObject target)
-        {
-            base.Attack(target);
-            CheckAbilities();
-        }
-
         public override eWalkState WalkState
         {
             get => eWalkState.Follow;

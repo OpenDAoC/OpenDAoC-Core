@@ -70,7 +70,6 @@ namespace DOL.AI.Brain
 		public override void Attack(GameObject target)
 		{
 			base.Attack(target);
-			CheckAbilities();
 
 			if (MinionsAssisting && Body.ControlledNpcList != null)
 			{

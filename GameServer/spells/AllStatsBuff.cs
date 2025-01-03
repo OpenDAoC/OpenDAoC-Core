@@ -39,14 +39,12 @@ namespace DOL.GS.Spells
 			Spell acuitySpell = SkillBase.GetSpellByID(acuityID);
 			SpellHandler acuitySpellHandler = ScriptMgr.CreateSpellHandler(target, acuitySpell, potionEffectLine) as SpellHandler;
 
-			bool success;
-			success = strenghtSpellHandler.StartSpell(target);
-			success = conSpellHandler.StartSpell(target) || success;
-			success = strenghtConSpellHandler.StartSpell(target) || success;
-			success = dexSpellHandler.StartSpell(target) || success;
-			success = dexQuickSpellHandler.StartSpell(target) || success;
-			success = acuitySpellHandler.StartSpell(target) || success;
-			return success;
+			return strenghtSpellHandler.StartSpell(target) |
+				conSpellHandler.StartSpell(target) |
+				strenghtConSpellHandler.StartSpell(target) |
+				dexSpellHandler.StartSpell(target) |
+				dexQuickSpellHandler.StartSpell(target) |
+				acuitySpellHandler.StartSpell(target);
 		}
 
         public override eProperty Property1 => eProperty.Strength;

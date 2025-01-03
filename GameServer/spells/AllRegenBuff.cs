@@ -28,17 +28,14 @@ namespace DOL.GS.Spells
 			Spell healSpell = SkillBase.GetSpellByID(healID);
 			SpellHandler healthConSpellHandler = ScriptMgr.CreateSpellHandler(target, healSpell, potionEffectLine) as SpellHandler;
 
-			bool success;
-			success = pomSpellHandler.StartSpell(target);
-			success = endSpellHandler.StartSpell(target) || success;
-			success = healthConSpellHandler.StartSpell(target) || success;
-			return success;
+			return pomSpellHandler.StartSpell(target) |
+				endSpellHandler.StartSpell(target) |
+				healthConSpellHandler.StartSpell(target);
 		}
+
         public override eProperty Property1 => eProperty.PowerRegenerationAmount;
         public override eProperty Property2 => eProperty.EnduranceRegenerationAmount;
         public override eProperty Property3 => eProperty.HealthRegenerationAmount;
-
-
 
         // constructor
         public AllRegenBuff(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)
