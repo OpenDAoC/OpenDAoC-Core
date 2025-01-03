@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using DOL.Database;
 using log4net;
 
@@ -18,6 +19,7 @@ namespace DOL.GS.Keeps
 		/// list of all keeps
 		/// </summary>
 		protected Hashtable m_keepList = new Hashtable();
+		private readonly Lock _lock = new();
 
 		public virtual Hashtable Keeps
 		{
@@ -73,7 +75,7 @@ namespace DOL.GS.Keeps
 			if (!ServerProperties.Properties.LOAD_KEEPS)
 				return true;
 
-			lock (m_keepList.SyncRoot)
+			lock (_lock)
 			{
 				m_keepList.Clear();
 
@@ -416,7 +418,7 @@ namespace DOL.GS.Keeps
 			List<AbstractGameKeep> closeKeeps = new List<AbstractGameKeep>();
 			long radiussqrt = radius * radius;
 
-			lock (m_keepList.SyncRoot)
+			lock (_lock)
 			{
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
@@ -449,7 +451,7 @@ namespace DOL.GS.Keeps
 		{
 			AbstractGameKeep closestKeep = null;
 
-			lock (m_keepList.SyncRoot)
+			lock (_lock)
 			{
 				long radiussqrt = radius * radius;
 				long lastKeepDistance = radiussqrt;
@@ -485,7 +487,7 @@ namespace DOL.GS.Keeps
 		public virtual int GetTowerCountByRealm(eRealm realm)
 		{
 			int index = 0;
-			lock (m_keepList.SyncRoot)
+			lock (_lock)
 			{
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
@@ -508,7 +510,7 @@ namespace DOL.GS.Keeps
 			realmXTower.Add(eRealm.Hibernia, 0);
 			realmXTower.Add(eRealm.Midgard, 0);
 
-			lock (m_keepList.SyncRoot)
+			lock (_lock)
 			{
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
@@ -534,7 +536,7 @@ namespace DOL.GS.Keeps
 			realmXTower.Add(eRealm.Midgard, 0);
 			realmXTower.Add(eRealm.None, 0);
 
-			lock (m_keepList.SyncRoot)
+			lock (_lock)
 			{
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
@@ -556,7 +558,7 @@ namespace DOL.GS.Keeps
 		public virtual int GetKeepCountByRealm(eRealm realm)
 		{
 			int index = 0;
-			lock (m_keepList.SyncRoot)
+			lock (_lock)
 			{
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
@@ -777,7 +779,7 @@ namespace DOL.GS.Keeps
 
 		public virtual void UpdateBaseLevels()
 		{
-			lock (m_keepList.SyncRoot)
+			lock (_lock)
 			{
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{
@@ -851,7 +853,7 @@ namespace DOL.GS.Keeps
 		public virtual AbstractGameKeep GetKeepsShortName(string shortname)
 		{
 
-			lock (m_keepList.SyncRoot)
+			lock (_lock)
 			{
 				foreach (AbstractGameKeep keep in m_keepList.Values)
 				{

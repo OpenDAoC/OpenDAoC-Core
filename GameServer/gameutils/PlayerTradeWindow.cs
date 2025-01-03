@@ -549,7 +549,7 @@ namespace DOL.GS
 					// if inventory is full but removed items count >= received count
                     foreach (DbInventoryItem item in ownerTradeItems)
                     {
-                        lock (m_owner.Inventory)
+                        lock (m_owner.Inventory.Lock)
                         {
 							if (!m_owner.Inventory.RemoveItemWithoutDbDeletion(item))
 							{
@@ -565,7 +565,7 @@ namespace DOL.GS
                     }
                     foreach (DbInventoryItem item in partnerTradeItems)
                     {
-                        lock (partner.Inventory)
+                        lock (partner.Inventory.Lock)
                         {
 							if (!partner.Inventory.RemoveItemWithoutDbDeletion(item))
 							{

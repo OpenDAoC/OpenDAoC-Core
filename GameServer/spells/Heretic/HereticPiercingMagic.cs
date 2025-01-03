@@ -1,16 +1,19 @@
 using System;
 using System.Collections;
+using System.Threading;
+using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.Events;
+
 namespace DOL.GS.Spells
 {
-
-	[SpellHandler(eSpellType.HereticPiercingMagic)]
+    [SpellHandler(eSpellType.HereticPiercingMagic)]
 	public class HereticPiercingMagic : SpellHandler
 	{
         protected GameLiving focustarget = null;
         protected ArrayList m_focusTargets = null;
+        private readonly Lock _lock = new();
+
         public override void FinishSpellCast(GameLiving target)
         {
             base.FinishSpellCast(target);
@@ -22,7 +25,7 @@ namespace DOL.GS.Spells
             if (m_focusTargets == null)
                 m_focusTargets = new ArrayList();
             GameLiving living = effect.Owner as GameLiving;
-            lock (m_focusTargets.SyncRoot)
+            lock (_lock)
             {
                 if (!m_focusTargets.Contains(effect.Owner))
                     m_focusTargets.Add(effect.Owner);
@@ -50,7 +53,7 @@ namespace DOL.GS.Spells
         {
             if (m_focusTargets != null)
             {
-                lock (m_focusTargets.SyncRoot)
+                lock (_lock)
                 {
                     foreach (GameLiving living in m_focusTargets)
                     {

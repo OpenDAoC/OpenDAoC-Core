@@ -75,6 +75,7 @@ namespace DOL.GS
         /// Player unique id(string) -> GameGraveStone
         /// </summary>
         protected readonly Hashtable m_graveStones;
+        private readonly Lock _graveStonesLock = new();
 
         /// <summary>
         /// Holds all the Zones inside this Region
@@ -1025,7 +1026,7 @@ namespace DOL.GS
                     {
                         if (obj is GameGravestone)
                         {
-                            lock (m_graveStones.SyncRoot)
+                            lock (_graveStonesLock)
                             {
                                 m_graveStones[obj.InternalID] = obj;
                             }
@@ -1067,7 +1068,7 @@ namespace DOL.GS
                 {
                     if (obj is GameGravestone)
                     {
-                        lock (m_graveStones.SyncRoot)
+                        lock (_graveStonesLock)
                         {
                             m_graveStones.Remove(obj.InternalID);
                         }
@@ -1110,7 +1111,7 @@ namespace DOL.GS
         /// <returns>the found gravestone or null</returns>
         public GameGravestone FindGraveStone(GamePlayer player)
         {
-            lock (m_graveStones.SyncRoot)
+            lock (_graveStonesLock)
             {
                 return (GameGravestone)m_graveStones[player.InternalID];
             }

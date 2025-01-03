@@ -396,7 +396,7 @@ namespace DOL.GS.Quests
         {
             if (ItemName != null)
             {
-                lock (m_taskPlayer.Inventory)
+                lock (m_taskPlayer.Inventory.Lock)
                 {
                     DbInventoryItem item = m_taskPlayer.Inventory.GetFirstItemByID(ItemName, eInventorySlot.Min_Inv,
                         eInventorySlot.Max_Inv);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using System.Threading;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -13,6 +14,7 @@ namespace DOL.GS.RealmAbilities
         private Int32 m_resurrectValue = 5;
 		private const String RESURRECT_CASTER_PROPERTY = "RESURRECT_CASTER";
         protected readonly ListDictionary m_resTimersByLiving = new ListDictionary();
+        private readonly Lock _lock = new();
 
 		public override void Execute(GameLiving living)
 		{
@@ -76,7 +78,7 @@ namespace DOL.GS.RealmAbilities
 				resurrectExpiredTimer.Callback = new ECSGameTimer.ECSTimerCallback(ResurrectExpiredCallback);
 				resurrectExpiredTimer.Properties.SetProperty("targetPlayer", targetPlayer);
 				resurrectExpiredTimer.Start(15000);
-				lock (m_resTimersByLiving.SyncRoot)
+				lock (_lock)
 				{
                     m_resTimersByLiving.Add(player.TargetObject, resurrectExpiredTimer);
 				}
@@ -97,7 +99,7 @@ namespace DOL.GS.RealmAbilities
         {
             //DOLConsole.WriteLine("resurrect responce: " + response);
             ECSGameTimer resurrectExpiredTimer = null;
-            lock (m_resTimersByLiving.SyncRoot)
+            lock (_lock)
             {
                 resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[player];
                 m_resTimersByLiving.Remove(player);
@@ -165,7 +167,7 @@ namespace DOL.GS.RealmAbilities
 
             GameLiving living = resurrectedPlayer as GameLiving;
             ECSGameTimer resurrectExpiredTimer = null;
-            lock (m_resTimersByLiving.SyncRoot)
+            lock (_lock)
             {
                 resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[living];
                 m_resTimersByLiving.Remove(living);

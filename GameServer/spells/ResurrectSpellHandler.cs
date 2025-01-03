@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Threading;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -13,6 +14,7 @@ namespace DOL.GS.Spells
 	{
 		private const string RESURRECT_CASTER_PROPERTY = "RESURRECT_CASTER";
 		protected readonly ListDictionary m_resTimersByLiving = new ListDictionary();
+		private readonly Lock _lock = new();
 
 		// constructor
 		public ResurrectSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
@@ -42,7 +44,7 @@ namespace DOL.GS.Spells
 				resurrectExpiredTimer.Callback = new ECSGameTimer.ECSTimerCallback(ResurrectExpiredCallback);
 				resurrectExpiredTimer.Properties.SetProperty("targetPlayer", targetPlayer);
 				resurrectExpiredTimer.Start(15000);
-				lock (m_resTimersByLiving.SyncRoot)
+				lock (_lock)
 				{
 					m_resTimersByLiving.Add(target, resurrectExpiredTimer);
 				}
@@ -77,7 +79,7 @@ namespace DOL.GS.Spells
 		{
 			//DOLConsole.WriteLine("resurrect responce: " + response);
 			ECSGameTimer resurrectExpiredTimer = null;
-			lock (m_resTimersByLiving.SyncRoot)
+			lock (_lock)
 			{
 				resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[player];
 				m_resTimersByLiving.Remove(player);
@@ -163,7 +165,7 @@ namespace DOL.GS.Spells
 			living.MoveTo(m_caster.CurrentRegionID, m_caster.X, m_caster.Y, m_caster.Z, m_caster.Heading);
 
 			ECSGameTimer resurrectExpiredTimer = null;
-			lock (m_resTimersByLiving.SyncRoot)
+			lock (_lock)
 			{
 				resurrectExpiredTimer = (ECSGameTimer)m_resTimersByLiving[living];
 				m_resTimersByLiving.Remove(living);

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using DOL.Database;
 using DOL.Events;
 using log4net;
@@ -18,23 +19,25 @@ namespace DOL.GS
 		/// table of all relics, id as key
 		/// </summary>
 		private static readonly Hashtable m_relics = new Hashtable();
+		private static readonly Lock _relicsLock = new Lock();
 
-		/// <summary>
-		/// list of all relicPads
-		/// </summary>
-		private static readonly ArrayList m_relicPads = new ArrayList();
+        /// <summary>
+        /// list of all relicPads
+        /// </summary>
+        private static readonly ArrayList m_relicPads = new ArrayList();
+		private static readonly Lock _relicPadsLock = new Lock();
 
-		/// <summary>
-		/// Defines a logger for this class.
-		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        /// <summary>
+        /// Defines a logger for this class.
+        /// </summary>
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// load all relics from DB
 		/// </summary>
 		public static bool Init()
 		{
-			lock (m_relics.SyncRoot)
+			lock (_relicsLock)
 			{
 				//at first remove all relics
 				foreach (GameRelic rel in m_relics.Values)
@@ -144,7 +147,7 @@ namespace DOL.GS
 		/// </summary>
 		public static void AddRelicPad(GameRelicPad pad)
 		{
-			lock (m_relicPads.SyncRoot)
+			lock (_relicPadsLock)
 			{
 				if (!m_relicPads.Contains(pad))
 					m_relicPads.Add(pad);
@@ -157,7 +160,7 @@ namespace DOL.GS
 		/// <returns>null if no GameRelicPad was found at the relic's position.</returns>
 		private static GameRelicPad GetPadAtRelicLocation(GameRelic relic)
 		{
-			lock (m_relicPads.SyncRoot)
+			lock (_relicPadsLock)
 			{
 				foreach (GameRelicPad pad in m_relicPads)
 				{
@@ -226,7 +229,7 @@ namespace DOL.GS
 		public static int GetRelicCount(eRealm realm)
 		{
 			int index = 0;
-			lock (m_relics.SyncRoot)
+			lock (_relicsLock)
 			{
 				foreach (GameRelic relic in m_relics.Values)
 				{
@@ -243,7 +246,7 @@ namespace DOL.GS
 		public static int GetRelicCount(eRealm realm, eRelicType type)
 		{
 			int index = 0;
-			lock (m_relics.SyncRoot)
+			lock (_relicsLock)
 			{
 				foreach (GameRelic relic in m_relics.Values)
 				{
@@ -299,7 +302,7 @@ namespace DOL.GS
 		/// </summary>
 		public static Hashtable GetAllRelics()
 		{
-			lock (m_relics.SyncRoot)
+			lock (_relicsLock)
 			{
 				return (Hashtable)m_relics.Clone();
 			}

@@ -1,29 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Reflection;
-
+using System.Threading;
 using DOL.Database;
-
 using log4net;
 
 namespace DOL.GS
@@ -91,6 +71,7 @@ namespace DOL.GS
 		/// Holds item template instances defined with script
 		/// </summary>
 		protected HybridDictionary m_usedItemsTemplates = new HybridDictionary();
+		private readonly Lock _lock = new();
 
 		#endregion
 
@@ -104,7 +85,7 @@ namespace DOL.GS
 		/// <param name="item">The item template to add</param>
 		public virtual bool AddTradeItem(int page, eMerchantWindowSlot slot, DbItemTemplate item)
 		{
-			lock (m_usedItemsTemplates.SyncRoot)
+			lock (_lock)
 			{
 				if (item == null)
 				{
@@ -133,7 +114,7 @@ namespace DOL.GS
 		/// <returns>true if removed</returns>
 		public virtual bool RemoveTradeItem(int page, eMerchantWindowSlot slot)
 		{
-			lock (m_usedItemsTemplates.SyncRoot)
+			lock (_lock)
 			{
 				slot = GetValidSlot(page, slot);
 				if (slot == eMerchantWindowSlot.Invalid) return false;
@@ -180,7 +161,7 @@ namespace DOL.GS
                         }
 					}
 				}
-				lock (m_usedItemsTemplates.SyncRoot)
+				lock (_lock)
 				{
 					foreach (DictionaryEntry de in m_usedItemsTemplates)
 					{
@@ -212,7 +193,7 @@ namespace DOL.GS
 				if (slot == eMerchantWindowSlot.Invalid) return null;
 
 				DbItemTemplate item;
-				lock (m_usedItemsTemplates.SyncRoot)
+				lock (_lock)
 				{
 					item = m_usedItemsTemplates[(int)slot+(page*MAX_ITEM_IN_TRADEWINDOWS)] as DbItemTemplate;
 					if (item != null) return item;
@@ -266,7 +247,7 @@ namespace DOL.GS
 					}
 				}
 
-				lock (m_usedItemsTemplates.SyncRoot)
+				lock (_lock)
 				{
 					foreach (DictionaryEntry de in m_usedItemsTemplates)
 					{

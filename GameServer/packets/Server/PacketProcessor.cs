@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
@@ -26,6 +25,7 @@ namespace DOL.GS.PacketHandler
         private IPacketHandler[] _packetHandlers = new IPacketHandler[256];
         private PacketPreprocessing _packetPreprocessor = new();
         private Queue<IPacket> _savedPackets = new(SAVED_PACKETS_COUNT);
+        private readonly Lock _savedPacketsLock = new();
 
         private ConcurrentQueue<GSTCPPacketOut> _tcpPacketQueue = [];
         private ConcurrentQueue<GSUDPPacketOut> _udpToTcpPacketQueue = [];
@@ -147,7 +147,7 @@ namespace DOL.GS.PacketHandler
 
         public IPacket[] GetLastPackets()
         {
-            lock (((ICollection) _savedPackets).SyncRoot)
+            lock (_savedPacketsLock)
             {
                 return _savedPackets.ToArray();
             }
@@ -509,7 +509,7 @@ namespace DOL.GS.PacketHandler
             if (!Properties.SAVE_PACKETS)
                 return;
 
-            lock (((ICollection) _savedPackets).SyncRoot)
+            lock (_savedPacketsLock)
             {
                 while (_savedPackets.Count >= SAVED_PACKETS_COUNT)
                     _savedPackets.Dequeue();

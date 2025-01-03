@@ -1619,7 +1619,7 @@ namespace DOL.GS.Quests
 					{
 						// check for inventory space
 
-						lock (QuestPlayer.Inventory)
+						lock (QuestPlayer.Inventory.Lock)
 						{
 							if (QuestPlayer.Inventory.IsSlotsFree(stepTemplates.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 							{
@@ -2846,7 +2846,7 @@ namespace DOL.GS.Quests
 
 			// try rewards first
 
-			lock (m_questPlayer.Inventory)
+			lock (m_questPlayer.Inventory.Lock)
 			{
 				if (m_questPlayer.Inventory.IsSlotsFree(m_finalRewards.Count + m_optionalRewardChoice.Count, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
 				{

@@ -89,6 +89,7 @@ namespace DOL.Mail
 		private static int m_mailFrequency = 5 * 60 * 1000;
 
 		private static Queue m_mailQueue = new Queue();
+		private readonly static Lock _lock = new();
 		private static volatile Timer m_timer = null;
 
 		private static SmtpClient SmtpClient = null;
@@ -182,7 +183,7 @@ namespace DOL.Mail
 				mail.BodyEncoding = System.Text.Encoding.ASCII;
 				mail.SubjectEncoding = System.Text.Encoding.ASCII;
 
-				lock (m_mailQueue.SyncRoot)
+				lock (_lock)
 				{
 					m_mailQueue.Enqueue(mail);
 				}
@@ -332,7 +333,7 @@ namespace DOL.Mail
 		{
 			MailMessage mailMessage = null;
 			Logger.Info("Starting mail queue");
-			lock (m_mailQueue.SyncRoot)
+			lock (_lock)
 			{
 				while (m_mailQueue.Count > 0)
 				{
