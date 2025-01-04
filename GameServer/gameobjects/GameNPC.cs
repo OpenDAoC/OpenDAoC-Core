@@ -3513,20 +3513,23 @@ namespace DOL.GS
 			{
 				List<SpellWaitingForLosCheck> list = pair.Value;
 
-				for (int i = list.Count - 1; i >= 0; i--)
+				lock (((ICollection) list).SyncRoot)
 				{
-					if (ServiceUtils.ShouldTick(list[i].RequestTime + 2000))
-						list.RemoveAt(i);
-				}
+					for (int i = list.Count - 1; i >= 0; i--)
+					{
+						if (ServiceUtils.ShouldTick(list[i].RequestTime + 2000))
+							list.SwapRemoveAt(i);
+					}
 
-				// We can keep the list if we're about to add anything to it.
-				if (list.Count == 0 && TargetObject != pair.Key)
-					_spellsWaitingForLosCheck.TryRemove(pair.Key, out _);
+					// We can keep the list if we're about to add anything to it.
+					if (list.Count == 0 && TargetObject != pair.Key)
+						_spellsWaitingForLosCheck.TryRemove(pair.Key, out _);
+				}
 			}
 
 			Spell spellToCast = null;
 
-			if (line.KeyName == GlobalSpellsLines.Mob_Spells)
+			if (line.KeyName is GlobalSpellsLines.Mob_Spells)
 			{
 				// NPC spells will get the level equal to their caster
 				spellToCast = (Spell) spell.Clone();
@@ -3584,10 +3587,16 @@ namespace DOL.GS
 				return;
 
 			bool success = response is eLosCheckResponse.TRUE;
-			// Don't bother removing the list here. It'll be done by `CastSpell`.
-			list.Clear();
+			List<SpellWaitingForLosCheck> spellsWaitingForLosCheck;
 
-			foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in list)
+			lock (((ICollection) list).SyncRoot)
+			{
+				spellsWaitingForLosCheck = list.ToList();
+				// Don't bother removing the list here. It'll be done by `CastSpell`.
+				list.Clear();
+			}
+
+			foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in spellsWaitingForLosCheck)
 			{
 				Spell spell = spellWaitingForLosCheck.Spell;
 				SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
