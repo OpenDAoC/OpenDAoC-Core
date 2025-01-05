@@ -7635,23 +7635,6 @@ namespace DOL.GS
                                         {
                                             if (ScriptMgr.CreateSpellHandler(this, spell, potionEffectLine) is SpellHandler spellHandler)
                                             {
-                                                GameLiving target = TargetObject as GameLiving;
-
-                                                if (spellHandler is AllStatsBarrel)
-                                                    target = this;
-
-                                                if (spellHandler is AllRegenBuff)
-                                                    target = this;
-
-                                                if (spell.Target == eSpellTarget.ENEMY)
-                                                {
-                                                    if (!GameServer.ServerRules.IsAllowedToAttack(this, target, true))
-                                                    {
-                                                        Out.SendMessage("You need a target for this ability!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                                        return;
-                                                    }
-                                                }
-
                                                 if (spell.IsHealing && spell.CastTime == 0 && IsAttacking)
                                                 {
                                                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseAttacking", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -7668,7 +7651,7 @@ namespace DOL.GS
                                                         TempProperties.SetProperty(NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION, 6 * 1000 + CurrentRegion.Time);
                                                 }
 
-                                                if (spellHandler.StartSpell(target, useItem))
+                                                if (spellHandler.StartSpell(this, useItem))
                                                 {
                                                     if (useItem.Count > 1)
                                                     {
