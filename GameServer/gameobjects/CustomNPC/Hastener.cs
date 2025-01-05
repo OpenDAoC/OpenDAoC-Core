@@ -1,29 +1,5 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System;
 using System.Collections;
-using DOL.Database;
-using DOL.Database.Attributes;
 using DOL.Events;
-using DOL.GS;
-using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -35,13 +11,9 @@ namespace DOL.GS
 		public GameHastener(INpcTemplate template) : base(template) { }
 
 		public const int SPEEDOFTHEREALMID = 2430;
-		private const int STROFTHEREALMID = 2431;
 
 		public override bool Interact(GamePlayer player)
 		{
-			if (player == null || player.InCombat)
-				return false;
-			
 			if (player.Client.Account.PrivLevel == 1 && !IsWithinRadius(player, WorldMgr.INTERACT_DISTANCE))
 			{
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameObject.Interact.TooFarAway", GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -49,14 +21,12 @@ namespace DOL.GS
 				return false;
 			}
 
-
 			if (!base.Interact(player))
 				return false;
 
 			// just give out speed without asking
 			GameNPCHelper.CastSpellOnOwnerAndPets(this, player, SkillBase.GetSpellByID(GameHastener.SPEEDOFTHEREALMID), SkillBase.GetSpellLine(GlobalSpellsLines.Realm_Spells), false);
 			player.Out.SendSpellEffectAnimation(this, player, SkillBase.GetSpellByID(935).ClientEffect, 0, false, 1);
-
 
 			if (player.CurrentRegion.IsCapitalCity)
 				SayTo(player, string.Format("{0} {1}. {2}",
