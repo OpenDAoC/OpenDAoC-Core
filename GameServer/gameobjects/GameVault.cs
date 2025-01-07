@@ -178,16 +178,15 @@ namespace DOL.GS
 
             bool fromHousing = GameInventoryObjectExtensions.IsHousingInventorySlot(fromSlot);
             DbInventoryItem itemInFromSlot = null;
-            bool characterInventoryLockTaken = false;
 
             lock (Lock)
             {
                 try
                 {
                     // If this is a shift right click move, find the first available slot of either inventory.
-                    if (toSlot == eInventorySlot.GeneralHousing)
+                    if (toSlot is eInventorySlot.GeneralHousing)
                     {
-                        Monitor.Enter(player.Inventory.Lock, ref characterInventoryLockTaken);
+                        player.Inventory.Lock.Enter();
 
                         if (fromHousing)
                         {
@@ -240,8 +239,8 @@ namespace DOL.GS
                         // Check for a swap to get around not allowing non-tradeable items in a housing vault.
                         if (fromHousing && this is not AccountVault)
                         {
-                            if (!characterInventoryLockTaken)
-                                Monitor.Enter(player.Inventory.Lock, ref characterInventoryLockTaken);
+                            if (!player.Inventory.Lock.IsHeldByCurrentThread)
+                                player.Inventory.Lock.Enter();
 
                             DbInventoryItem itemInToSlot = player.Inventory.GetItem(toSlot);
 
@@ -272,8 +271,8 @@ namespace DOL.GS
                 }
                 finally
                 {
-                    if (characterInventoryLockTaken)
-                        Monitor.Exit(player.Inventory.Lock);
+                    if (player.Inventory.Lock.IsHeldByCurrentThread)
+                        player.Inventory.Lock.Exit();
                 }
             }
 
