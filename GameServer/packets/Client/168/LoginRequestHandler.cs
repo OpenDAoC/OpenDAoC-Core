@@ -478,27 +478,23 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		public static string CryptPassword(string password)
 		{
-			MD5 md5 = new MD5CryptoServiceProvider();
-
 			char[] pw = password.ToCharArray();
+			byte[] res = new byte[pw.Length * 2];
 
-			var res = new byte[pw.Length * 2];
 			for (int i = 0; i < pw.Length; i++)
 			{
-				res[i * 2] = (byte)(pw[i] >> 8);
-				res[i * 2 + 1] = (byte)(pw[i]);
+				res[i * 2] = (byte) (pw[i] >> 8);
+				res[i * 2 + 1] = (byte) pw[i];
 			}
 
-			byte[] bytes = md5.ComputeHash(res);
+			byte[] hash = MD5.HashData(res);
+			StringBuilder stringBuilder = new();
+			stringBuilder.Append("##");
 
-			var crypted = new StringBuilder();
-			crypted.Append("##");
-			for (int i = 0; i < bytes.Length; i++)
-			{
-				crypted.Append(bytes[i].ToString("X"));
-			}
+			for (int i = 0; i < hash.Length; i++)
+				stringBuilder.Append(hash[i].ToString("X"));
 
-			return crypted.ToString();
+			return stringBuilder.ToString();
 		}
 
 		/// <summary>
