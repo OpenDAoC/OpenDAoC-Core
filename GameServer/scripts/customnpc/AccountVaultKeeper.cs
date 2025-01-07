@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Housing;
@@ -99,6 +100,9 @@ namespace DOL.GS
         /// <param name="dummyTemplate">An ItemTemplate to satisfy the base class's constructor</param>
         public AccountVault(GamePlayer player, int vaultNumber, DbItemTemplate dummyTemplate) : base(dummyTemplate, vaultNumber)
         {
+            if (vaultNumber is < 0 or > 1)
+                throw new ArgumentOutOfRangeException(nameof(vaultNumber), $"{nameof(vaultNumber)} must be either 0 or 1.");
+
             _vaultOwner = GetOwner(player);
             _vaultNumber = vaultNumber;
 
@@ -154,6 +158,6 @@ namespace DOL.GS
 
         public override int FirstDbSlot => (int) eInventorySlot.AccountVault_First + VaultSize * _vaultNumber;
 
-        public override int LastDbSlot => (int) eInventorySlot.AccountVault_Last + VaultSize * (_vaultNumber + 1) - 1;
+        public override int LastDbSlot => FirstDbSlot + (VaultSize -1);
     }
 }

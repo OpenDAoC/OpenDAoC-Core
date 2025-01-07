@@ -82,8 +82,8 @@ namespace DOL.GS
         Consignment_First   = 2000,
         Consignment_Last    = 2099,
 
-        AccountVault_First  = 2500,
-        AccountVault_Last   = 2699,
+        AccountVault_First  = 2500, // See `AccountVaultKeeper.LastDbSlot`.
+        AccountVault_Last   = 2699, // Unused. Just here so that people don't add anything in between. See `AccountVaultKeeper.LastDbSlot`.
 
         //FirstFixLoot      = 256, //You can define drops that will ALWAYS occur (eg quest drops etc.)
         //LastFixLoot       = 356, //100 drops should be enough ... if not, just raise this var, we have thousands free
