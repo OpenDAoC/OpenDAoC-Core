@@ -476,6 +476,7 @@ namespace DOL.AI.Brain
                 case eSpellType.AcuityBuff:
                 case eSpellType.AFHitsBuff:
                 case eSpellType.AllMagicResistBuff:
+                case eSpellType.AllSecondaryMagicResistsBuff:
                 case eSpellType.ArmorAbsorptionBuff:
                 case eSpellType.BaseArmorFactorBuff:
                 case eSpellType.SpecArmorFactorBuff:

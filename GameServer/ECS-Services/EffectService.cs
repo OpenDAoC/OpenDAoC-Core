@@ -385,6 +385,7 @@ namespace DOL.GS
                 case eSpellType.HeatColdMatterBuff:
                     return eEffect.HeatColdMatterBuff;
                 case eSpellType.AllMagicResistBuff:
+                case eSpellType.AllSecondaryMagicResistsBuff:
                     return eEffect.AllMagicResistsBuff;
 
                 // Regens.

@@ -229,6 +229,7 @@ namespace DOL.GS
         RampingDamageFocus,
         StatDebuffReturn,
         AllMagicResistsBuff,
+        AllSecondaryMagicResistsBuff,
         WaterBreathing,
         WarlockSpeedDecrease,
         BainsheePulseDmg,

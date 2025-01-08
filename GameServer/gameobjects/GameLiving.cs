@@ -2300,7 +2300,6 @@ namespace DOL.GS
 			return 0;
 		}
 
-		//Eden : secondary resists, such AoM, vampiir magic resistance etc, should not apply in CC duration, disease, debuff etc, using a new function
 		public virtual int GetModifiedBase(eProperty property)
 		{
 			if (m_propertyCalc != null && m_propertyCalc[(int)property] != null)
@@ -2455,6 +2454,7 @@ namespace DOL.GS
 
 		public virtual int GetResistBase(eDamageType damageType)
 		{
+			// Allows some resistance to not affect crowd control duration. See `ResistCalculator`.
 			return GetModifiedBase(GetResistTypeForDamage(damageType));
 		}
 

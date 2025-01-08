@@ -68,7 +68,7 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
         m_dbspell.DamageType = 0;
         m_dbspell.Target = "Realm";
         m_dbspell.Radius = 0;
-        m_dbspell.Type = eSpellType.AllMagicResistBuff.ToString();
+        m_dbspell.Type = eSpellType.AllSecondaryMagicResistsBuff.ToString();
         m_dbspell.Value = 36;
         m_dbspell.Duration = 30;
         m_dbspell.Pulse = 0;
@@ -80,7 +80,7 @@ public class AtlasOF_BrilliantAura : TimedRealmAbility, ISpellCastingAbilityHand
         m_dbspell.Range = 1500;
         m_spell = new Spell(m_dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
         m_spellline = GlobalSpellsLines.RealmSpellsSpellLine;
-        return new SpellHandler(caster, m_spell, m_spellline);
+        return ScriptMgr.CreateSpellHandler(caster, m_spell, m_spellline) as SpellHandler;
     }
 
     private DbSpell m_dbspell;

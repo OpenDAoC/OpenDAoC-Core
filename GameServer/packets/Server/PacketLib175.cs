@@ -384,9 +384,8 @@ namespace DOL.GS.PacketHandler
 				// buffs/debuffs only; remove base, item bonus, RA bonus, race bonus
 				for (int i = 0; i < updateResists.Length; i++)
 				{
-					int mod = m_gameClient.Player.GetModified((eProperty)updateResists[i]);
-					int buff = mod - racial[i] - m_gameClient.Player.AbilityBonus[(int)updateResists[i]] - Math.Min(caps[i], m_gameClient.Player.ItemBonus[(int)updateResists[i]]);
-					pak.WriteShort((ushort)buff);
+					int buff = m_gameClient.Player.GetModifiedFromBuffs((eProperty) updateResists[i]);
+					pak.WriteShort((ushort) buff);
 				}
 
 				// item bonuses
