@@ -75,7 +75,7 @@ namespace DOL.GS.RealmAbilities
                         db.MoveCast = true;
                         db.Uninterruptible = true;
 						
-						SpellHandler handler = new SpellHandler(player, new Spell(db, 0), SkillBase.GetSpellLine("Savagery"));
+						SpellHandler handler = ScriptMgr.CreateSpellHandler(player, new Spell(db, 0), SkillBase.GetSpellLine("Savagery")) as SpellHandler;
                         if(handler!=null)
                             handler.StartSpell(player);
 					}

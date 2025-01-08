@@ -71,7 +71,7 @@ namespace DOL.GS.RealmAbilities
 			m_dbspell.Range = 1500;
 			m_spell = new Spell(m_dbspell, 0); // make spell level 0 so it bypasses the spec level adjustment code
 			m_spellline = GlobalSpellsLines.RealmSpellsSpellLine;
-			return new SpellHandler(caster, m_spell, m_spellline);
+			return ScriptMgr.CreateSpellHandler(caster, m_spell, m_spellline) as SpellHandler;
 		}
 
 		private DbSpell m_dbspell;

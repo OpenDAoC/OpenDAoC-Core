@@ -46,10 +46,9 @@ namespace DOL.GS.RealmAbilities
             tmpSpell.Range = 0;
             tmpSpell.Description = "Your targets chance of resisting your spells is reduced by 5% per level per level of this ability for 60 seconds.";
             SpellLine spellLine = GlobalSpellsLines.RealmSpellsSpellLine;
-            SpellHandler tmpHandler = new SpellHandler(owner, new Spell(tmpSpell, 0) , spellLine); // make spell level 0 so it bypasses the spec level adjustment code
-            return tmpHandler;
+            return ScriptMgr.CreateSpellHandler(owner, new Spell(tmpSpell, 0) , spellLine) as SpellHandler;
         }
-        
+
         public override IList<string> DelveInfo
         {
             get

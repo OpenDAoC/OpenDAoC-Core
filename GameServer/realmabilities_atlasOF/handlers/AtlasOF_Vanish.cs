@@ -46,10 +46,9 @@ namespace DOL.GS.RealmAbilities
             tmpSpell.Range = 0;
             tmpSpell.Description = "You will immediately hide, regardless of action state or in-combat timer.";
             SpellLine spellLine = GlobalSpellsLines.RealmSpellsSpellLine;
-            SpellHandler tmpHandler = new SpellHandler(owner, new Spell(tmpSpell, 0) , spellLine); // make spell level 0 so it bypasses the spec level adjustment code
-            return tmpHandler;
+            return ScriptMgr.CreateSpellHandler(owner, new Spell(tmpSpell, 0) , spellLine) as SpellHandler;
         }
-        
+
         public override IList<string> DelveInfo
         {
             get
