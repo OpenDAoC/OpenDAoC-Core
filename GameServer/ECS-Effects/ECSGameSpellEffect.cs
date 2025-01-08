@@ -3,6 +3,7 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using DOL.GS.PropertyCalc;
 using DOL.GS.Spells;
 
 namespace DOL.GS
@@ -174,6 +175,36 @@ namespace DOL.GS
                 eff.Duration = (int) (ExpireTick - GameLoop.GameLoopTime);
 
             return eff;
+        }
+
+        protected static IPropertyIndexer GetPropertyIndexer(GameLiving target, eBuffBonusCategory buffBonusCategory)
+        {
+            return buffBonusCategory switch
+            {
+                eBuffBonusCategory.BaseBuff => target.BaseBuffBonusCategory,
+                eBuffBonusCategory.SpecBuff => target.SpecBuffBonusCategory,
+                eBuffBonusCategory.Debuff => target.DebuffCategory,
+                eBuffBonusCategory.Other => target.BuffBonusCategory4,
+                eBuffBonusCategory.SpecDebuff => target.SpecDebuffCategory,
+                eBuffBonusCategory.AbilityBuff => target.AbilityBonus,
+                _ => null,
+            };
+        }
+
+        protected static void ApplyBonus(GameLiving owner, eBuffBonusCategory bonusCategory, eProperty property, double value, double effectiveness, bool isSubtracted)
+        {
+            if (property is eProperty.Undefined)
+                return;
+
+            if (isSubtracted)
+                value = -value;
+
+            int effectiveValue = (int) (value * effectiveness);
+
+            if (owner is GamePlayer player && player.UseDetailedCombatLog)
+                player.Out.SendMessage($"BonusCategory: {bonusCategory} | Property: {property}\nValue: {value} | Effectiveness: {effectiveness} | EffectiveValue: {effectiveValue}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+            GetPropertyIndexer(owner, bonusCategory)[(int) property] += effectiveValue;
         }
     }
 }
