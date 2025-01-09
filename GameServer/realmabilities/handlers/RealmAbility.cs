@@ -1,27 +1,9 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
 using System.Collections.Generic;
 using DOL.Database;
-using DOL.Language;
 using DOL.GS.PacketHandler;
 using DOL.GS.Styles;
+using DOL.Language;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -59,17 +41,18 @@ namespace DOL.GS.RealmAbilities
 		/// <summary>
 		/// Delve for this RA
 		/// </summary>
-		/// <param name="w"></param>
 		public virtual void AddDelve(ref MiniDelveWriter w)
 		{
-			w.AddKeyValuePair("Name", Name);
+			w.AddKeyValuePair("Name", m_name);
+			w.AddKeyValuePair("description_string", string.Join('\n', DelveInfo));
+
 			if (Icon > 0)
 				w.AddKeyValuePair("icon", Icon);
 
 			for (int i = 0; i <= MaxLevel - 1; i++)
 			{
 				if (CostForUpgrade(i) > 0)
-					w.AddKeyValuePair(string.Format("TrainingCost_{0}", (i + 1)), CostForUpgrade(i));
+					w.AddKeyValuePair(string.Format("TrainingCost_{0}", i + 1), CostForUpgrade(i));
 			}
 		}
 
