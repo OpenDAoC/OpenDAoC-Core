@@ -59,7 +59,7 @@ namespace DOL.GS.PropertyCalc
                 }
             }
 
-            int result = itemBonus + buffBonus + racialBonus; // Primary resists.
+            int result = itemBonus + buffBonus; // Primary resists.
             result += (int) ((1 - result * 0.01) * abilityBonus); // Secondary resists.
 
             // Treat NPC resists from constitution buffs as another layer of resists for now.
@@ -69,7 +69,8 @@ namespace DOL.GS.PropertyCalc
                 result += (int) ((1 - result * 0.01) * resistanceFromConstitution);
             }
 
-            // Add up and apply hardcap.
+            // http://www.postcount.net/forum/showthread.php?192979-Primary-Secondary-and-Tertiary-resist-graphs-plus-racial-resist-oddities
+            result += racialBonus;
             return Math.Min(result, HardCap);
         }
 
