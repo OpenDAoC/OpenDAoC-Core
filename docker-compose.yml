@@ -60,6 +60,7 @@ services:
       SERVER_PORT: "10300"
       UDP_IP: "0.0.0.0"
       UDP_PORT: "10400"
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "False"
     volumes:
       - base-db:/tmp/opendaoc-db
     networks:
