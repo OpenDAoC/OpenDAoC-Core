@@ -42,7 +42,7 @@ namespace DOL.GS.PropertyCalc
 				+living.BaseBuffBonusCategory[(int)property]
 				+ living.SpecBuffBonusCategory[(int)property]
 				- living.DebuffCategory[(int)property]
-				+ living.BuffBonusCategory4[(int)property]
+				+ living.OtherBonus[(int)property]
 				+ living.AbilityBonus[(int)property]
 				+ Math.Min(10, living.ItemBonus[(int)property]));
 		}

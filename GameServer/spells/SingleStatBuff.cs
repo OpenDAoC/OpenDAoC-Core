@@ -160,7 +160,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.PaladinArmorFactorBuff)]
     public class PaladinArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : ArmorFactorBuff(caster, spell, line)
     {
-        public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.Other;
+        public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.OtherBuff;
     }
 
     [SpellHandler(eSpellType.ArmorAbsorptionBuff)]

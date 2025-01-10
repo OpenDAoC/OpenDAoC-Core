@@ -2172,109 +2172,16 @@ namespace DOL.GS
 		#endregion
 
 		#region Property/Bonus/Buff/PropertyCalculator fields
-		/// <summary>
-		/// Array for property boni for abilities
-		/// </summary>
-		protected IPropertyIndexer m_abilityBonus = new PropertyIndexer();
-		/// <summary>
-		/// Ability bonus property
-		/// </summary>
-		public virtual IPropertyIndexer AbilityBonus
-		{
-			get { return m_abilityBonus; }
-		}
 
-		/// <summary>
-		/// Array for property boni by items
-		/// </summary>
-		protected IPropertyIndexer m_itemBonus = new PropertyIndexer();
-		/// <summary>
-		/// Property Item Bonus field
-		/// </summary>
-		public virtual IPropertyIndexer ItemBonus
-		{
-			get { return m_itemBonus; }
-		}
+		public PropertyIndexer BaseBuffBonusCategory { get; protected set; } = new();
+		public PropertyIndexer SpecBuffBonusCategory { get; protected set; } = new();
+		public PropertyIndexer ItemBonus { get; protected set; } = new();
+		public PropertyIndexer AbilityBonus { get; protected set; } = new();
+		public PropertyIndexer OtherBonus { get; protected set; } = new();
+		public MultiplicativePropertiesHybrid BuffBonusMultCategory1 { get; protected set; } = new();
+		public PropertyIndexer DebuffCategory { get; protected set; } = new();
+		public PropertyIndexer SpecDebuffCategory { get; protected set; } = new();
 
-
-		/// <summary>
-		/// Array for buff boni
-		/// </summary>
-		protected IPropertyIndexer m_buff1Bonus = new PropertyIndexer();
-		/// <summary>
-		/// Property Buff bonus category
-		/// what it means depends from the PropertyCalculator for a property element
-		/// </summary>
-		public IPropertyIndexer BaseBuffBonusCategory
-		{
-			get { return m_buff1Bonus; }
-		}
-
-		/// <summary>
-		/// Array for second buff boni
-		/// </summary>
-		protected IPropertyIndexer m_buff2Bonus = new PropertyIndexer();
-		/// <summary>
-		/// Property Buff bonus category
-		/// what it means depends from the PropertyCalculator for a property element
-		/// </summary>
-		public IPropertyIndexer SpecBuffBonusCategory
-		{
-			get { return m_buff2Bonus; }
-		}
-
-		/// <summary>
-		/// Array for third debuff boni
-		/// </summary>
-		protected IPropertyIndexer m_debuffBonus = new PropertyIndexer();
-		/// <summary>
-		/// Property Buff bonus category
-		/// what it means depends from the PropertyCalculator for a property element
-		/// </summary>
-		public IPropertyIndexer DebuffCategory
-		{
-			get { return m_debuffBonus; }
-		}
-
-		/// <summary>
-		/// Array for forth buff boni
-		/// </summary>
-		protected IPropertyIndexer m_buff4Bonus = new PropertyIndexer();
-		/// <summary>
-		/// Property Buff bonus category
-		/// what it means depends from the PropertyCalculator for a property element
-		/// </summary>
-		public IPropertyIndexer BuffBonusCategory4
-		{
-			get { return m_buff4Bonus; }
-		}
-
-		/// <summary>
-		/// Array for first multiplicative buff boni
-		/// </summary>
-		protected IMultiplicativeProperties m_buffMult1Bonus = new MultiplicativePropertiesHybrid();
-		/// <summary>
-		/// Property Buff bonus category
-		/// what it means depends from the PropertyCalculator for a property element
-		/// </summary>
-		public IMultiplicativeProperties BuffBonusMultCategory1
-		{
-			get { return m_buffMult1Bonus; }
-		}
-
-		/// <summary>
-		/// Array for spec debuff boni
-		/// </summary>
-		protected IPropertyIndexer m_specDebuffBonus = new PropertyIndexer();
-		/// <summary>
-		/// Property Buff bonus category
-		/// what it means depends from the PropertyCalculator for a property element
-		/// </summary>
-		public IPropertyIndexer SpecDebuffCategory
-		{
-			get { return m_specDebuffBonus; }
-		}
-		
 		/// <summary>
 		/// property calculators for each property
 		/// look at PropertyCalculator class for more description

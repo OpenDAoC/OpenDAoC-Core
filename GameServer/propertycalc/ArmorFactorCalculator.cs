@@ -44,7 +44,7 @@ namespace DOL.GS.PropertyCalc
                 int armorFactor = Math.Min((int) (living.Level * 1.875), living.SpecBuffBonusCategory[(int) property]);
                 armorFactor -= Math.Abs(living.DebuffCategory[(int) property]);
                 armorFactor += Math.Min(living.Level, living.ItemBonus[(int) property]);
-                armorFactor += living.BuffBonusCategory4[(int) property];
+                armorFactor += living.OtherBonus[(int) property];
                 return armorFactor;
             }
 
@@ -57,7 +57,7 @@ namespace DOL.GS.PropertyCalc
 
                 armorFactor += living.SpecBuffBonusCategory[(int) property];
                 armorFactor -= Math.Abs(living.DebuffCategory[(int) property]);
-                armorFactor += living.BuffBonusCategory4[(int) property];
+                armorFactor += living.OtherBonus[(int) property];
                 return armorFactor;
             }
 

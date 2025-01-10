@@ -26,7 +26,7 @@ namespace DOL.GS.Effects
             if (_necromancerPet == null)
                 return;
 
-            _necromancerPet.BuffBonusCategory4[(int)eProperty.ToHitBonus] += (int)Effectiveness;
+            _necromancerPet.OtherBonus[(int)eProperty.ToHitBonus] += (int)Effectiveness;
             base.OnStartEffect();
         }
 
@@ -35,7 +35,7 @@ namespace DOL.GS.Effects
             if (OwnerPlayer == null || _necromancerPet == null)
                 return;
 
-            _necromancerPet.BuffBonusCategory4[(int)eProperty.ToHitBonus] -= (int)Effectiveness;
+            _necromancerPet.OtherBonus[(int)eProperty.ToHitBonus] -= (int)Effectiveness;
             base.OnStopEffect();
         }
     }

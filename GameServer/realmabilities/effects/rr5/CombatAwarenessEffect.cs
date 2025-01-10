@@ -38,7 +38,7 @@ namespace DOL.GS.Effects
             //1.108 - this ability no longer reduces the users attack power by 50%
 
 			//target.DebuffCategory[(int)eProperty.MissHit] -= 50;
-			target.BuffBonusCategory4[(int)eProperty.EvadeChance] += 50;
+			target.OtherBonus[(int)eProperty.EvadeChance] += 50;
 			target.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 0.5);
 
 			if (player != null)
@@ -55,7 +55,7 @@ namespace DOL.GS.Effects
 		public override void Stop()
 		{
 			//owner.DebuffCategory[(int)eProperty.MissHit] += 50;
-			owner.BuffBonusCategory4[(int)eProperty.EvadeChance] -= 50;
+			owner.OtherBonus[(int)eProperty.EvadeChance] -= 50;
 			owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
 
 			GamePlayer player = owner as GamePlayer;

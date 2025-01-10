@@ -20,7 +20,7 @@ namespace DOL.GS.PropertyCalc
             if (EffectListService.GetEffectOnTarget(living, eEffect.Berserk) != null)
                 return 100;
 
-            int chance = living.BuffBonusCategory4[(int) property] + living.AbilityBonus[(int) property];
+            int chance = living.OtherBonus[(int) property] + living.AbilityBonus[(int) property];
 
             if (living is GamePlayer)
                 chance += 10;

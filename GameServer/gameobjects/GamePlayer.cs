@@ -6206,7 +6206,7 @@ namespace DOL.GS
                     eaf = eafcap;
                 eaf += (int)Math.Min(Level * 1.875, SpecBuffBonusCategory[(int)eProperty.ArmorFactor])
                        - DebuffCategory[(int)eProperty.ArmorFactor]
-                       + BuffBonusCategory4[(int)eProperty.ArmorFactor]
+                       + OtherBonus[(int)eProperty.ArmorFactor]
                        + Math.Min(Level, ItemBonus[(int)eProperty.ArmorFactor]);
 
                 eaf = (int)(eaf * BuffBonusMultCategory1.Get((int)eProperty.ArmorFactor));
@@ -10205,7 +10205,7 @@ namespace DOL.GS
 
         public virtual void RefreshItemBonuses()
         {
-            m_itemBonus = new PropertyIndexer();
+            ItemBonus = new();
             string slotToLoad = string.Empty;
             switch (VisibleActiveWeaponSlots)
             {

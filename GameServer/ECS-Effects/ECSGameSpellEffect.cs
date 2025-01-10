@@ -183,10 +183,10 @@ namespace DOL.GS
             {
                 eBuffBonusCategory.BaseBuff => target.BaseBuffBonusCategory,
                 eBuffBonusCategory.SpecBuff => target.SpecBuffBonusCategory,
-                eBuffBonusCategory.Debuff => target.DebuffCategory,
-                eBuffBonusCategory.Other => target.BuffBonusCategory4,
-                eBuffBonusCategory.SpecDebuff => target.SpecDebuffCategory,
                 eBuffBonusCategory.AbilityBuff => target.AbilityBonus,
+                eBuffBonusCategory.OtherBuff => target.OtherBonus,
+                eBuffBonusCategory.Debuff => target.DebuffCategory,
+                eBuffBonusCategory.SpecDebuff => target.SpecDebuffCategory,
                 _ => null,
             };
         }

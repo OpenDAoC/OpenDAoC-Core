@@ -33,9 +33,9 @@ namespace DOL.GS.PropertyCalc
             int itemBonus = CalcValueFromItems(living, property);
             int abilityBonus = livingToCheck.AbilityBonus[propertyIndex]; // Applied as secondary resists.
 
-            // Ability bonuses are taken into account for crowd control duration unless they're put in `BuffBonusCategory4`.
+            // Ability bonuses are taken into account for crowd control duration unless they're put in `OtherBonus`.
             if (!forCrowdControlDuration)
-                abilityBonus += livingToCheck.BuffBonusCategory4[propertyIndex];
+                abilityBonus += livingToCheck.OtherBonus[propertyIndex];
 
             int racialBonus = SkillBase.GetRaceResist(living.Race, (eResist) property);
             int buffBonus = CalcValueFromBuffs(living, property);
@@ -53,7 +53,7 @@ namespace DOL.GS.PropertyCalc
                     abilityBonus += livingToCheck.AbilityBonus[eProperty.MagicAbsorption];
 
                     if (forCrowdControlDuration)
-                        abilityBonus += livingToCheck.BuffBonusCategory4[eProperty.MagicAbsorption];
+                        abilityBonus += livingToCheck.OtherBonus[eProperty.MagicAbsorption];
 
                     break;
                 }

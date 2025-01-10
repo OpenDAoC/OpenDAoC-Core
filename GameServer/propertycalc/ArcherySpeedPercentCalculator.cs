@@ -38,7 +38,7 @@ namespace DOL.GS.PropertyCalc
 			archerySpeed +=  living.BaseBuffBonusCategory[(int)property] 
 			                 + living.SpecBuffBonusCategory[(int)property] 
 			                 - living.DebuffCategory[(int)property] 
-			                 + living.BuffBonusCategory4[(int)property] 
+			                 + living.OtherBonus[(int)property] 
 			                 + living.AbilityBonus[(int)property] ;
 			//hardcap at 10%
 			//return Math.Min(10, living.ItemBonus[(int)property] - living.DebuffCategory[(int)property]);

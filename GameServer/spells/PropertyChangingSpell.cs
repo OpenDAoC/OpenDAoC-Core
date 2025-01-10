@@ -257,8 +257,8 @@ namespace DOL.GS.Spells
 				case eBuffBonusCategory.Debuff:
 					bonuscat = target.DebuffCategory;
 					break;
-				case eBuffBonusCategory.Other:
-					bonuscat = target.BuffBonusCategory4;
+				case eBuffBonusCategory.OtherBuff:
+					bonuscat = target.OtherBonus;
 					break;
 				case eBuffBonusCategory.SpecDebuff:
 					bonuscat = target.SpecDebuffCategory;
