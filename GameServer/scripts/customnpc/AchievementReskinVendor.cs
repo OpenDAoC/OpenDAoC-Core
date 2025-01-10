@@ -561,7 +561,7 @@ public class AchievementReskinVendor : GameNPC
             foundItem = FindChoosenOptionOtherItems(str, item, playerRealm, noneRealm, damageType, characterClassUnknown, playerClass, playerRealmRank, accountRealmRank, playerDragonKills, playerOrbs, epicBossPlayerKills, masteredCrafts, isGM);
         }
 
-        Console.Write("Item Type is" + item.Item_Type + "name is" + str + "damagetype is" + damageType + "objectType is " + item.Object_Type);
+        // Console.Write("Item Type is" + item.Item_Type + "name is" + str + "damagetype is" + damageType + "objectType is " + item.Object_Type);
 
         switch (str.ToLower())
         {
