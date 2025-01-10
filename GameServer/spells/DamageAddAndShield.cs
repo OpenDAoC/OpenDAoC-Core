@@ -1,4 +1,3 @@
-using System;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
@@ -27,9 +26,8 @@ namespace DOL.GS.Spells
             {
                 CalculateDamageVariance(target, out double minVariance, out double maxVariance);
                 double variance = minVariance + Util.RandomDoubleIncl() * (maxVariance - minVariance);
-                double dps = Caster == Target ? Spell.Damage : Math.Min(Spell.Damage, (1.2 + 0.3 * attacker.Level) * 0.7); // Self-casted damage adds are uncapped.
                 effectiveness *= 1 + Caster.GetModified(eProperty.BuffEffectiveness) * 0.01;
-                damage = dps * variance * effectiveness * attackData.Interval * 0.001;
+                damage = Spell.Damage * variance * effectiveness * attackData.Interval * 0.001;
             }
             else
                 damage = attackData.Damage * Spell.Damage / -100.0;
