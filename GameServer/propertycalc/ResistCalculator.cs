@@ -52,7 +52,7 @@ namespace DOL.GS.PropertyCalc
                 {
                     abilityBonus += livingToCheck.AbilityBonus[eProperty.MagicAbsorption];
 
-                    if (forCrowdControlDuration)
+                    if (!forCrowdControlDuration)
                         abilityBonus += livingToCheck.OtherBonus[eProperty.MagicAbsorption];
 
                     break;
