@@ -237,7 +237,6 @@ namespace DOL.GS
                     else if (spellEffect is not ECSImmunityEffect && spellEffect.EffectType is not eEffect.Pulse && spellEffect.SpellHandler.Spell.SpellType is eSpellType.SpeedDecrease)
                     {
                         double factor = 2.0 - (spellEffect.Duration - spellEffect.GetRemainingTimeForClient()) / (spellEffect.Duration * 0.5);
-                        Console.WriteLine($"{factor} {GameLoop.GameLoopTime}");
 
                         if (factor < 0)
                             factor = 0;
