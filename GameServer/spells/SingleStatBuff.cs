@@ -154,7 +154,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.SpecArmorFactorBuff)]
     public class SpecArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : ArmorFactorBuff(caster, spell, line)
     {
-        public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.SpecBuff;
+        // Spec AF chants (Paladin) are uncapped.
+        public override eBuffBonusCategory BonusCategory1 => spell.IsChant ? eBuffBonusCategory.OtherBuff : eBuffBonusCategory.SpecBuff;
     }
 
     [SpellHandler(eSpellType.PaladinArmorFactorBuff)]
