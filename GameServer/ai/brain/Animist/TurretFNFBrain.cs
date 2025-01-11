@@ -8,12 +8,17 @@ namespace DOL.AI.Brain
     public class TurretFNFBrain : TurretBrain
     {
         private List<GameLiving> _filteredAggroList = [];
+
+        public TurretFNFBrain(GameLiving owner) : base(owner) { }
+
         protected override bool CheckLosBeforeCastingOffensiveSpells => Properties.CHECK_LOS_BEFORE_AGGRO_FNF;
 
-        public TurretFNFBrain(GameLiving owner) : base(owner)
+        public override void Think()
         {
-            // Forced to aggressive, otherwise 'CheckProximityAggro()' won't be called.
-            AggressionState = eAggressionState.Aggressive;
+            CheckProximityAggro();
+
+            if (!CheckSpells(eCheckSpellType.Offensive))
+                CheckSpells(eCheckSpellType.Defensive);
         }
 
         public override bool CheckProximityAggro()
@@ -117,5 +122,6 @@ namespace DOL.AI.Brain
         }
 
         public override void UpdatePetWindow() { }
+        public override void OnAttackedByEnemy(AttackData ad) { }
     }
 }
