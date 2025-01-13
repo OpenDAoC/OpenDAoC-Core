@@ -40,7 +40,9 @@ namespace DOL.Network
                 return false;
 
             InitializeUdpSocket();
-            ConfigureUpnp();
+
+            if (Configuration.EnableUPnP)
+                ConfigureUpnp();
 
             if (!StartListen())
                 return false;
