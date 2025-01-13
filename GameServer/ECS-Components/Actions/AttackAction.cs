@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using DOL.Database;
 using DOL.GS.Styles;
 using static DOL.GS.GameObject;
@@ -318,20 +317,6 @@ namespace DOL.GS
                     }
 
                     break;
-                }
-            }
-
-            // Calculate Penetrating Arrow damage reduction.
-            if (_target is GameLiving livingTarget)
-            {
-                int PALevel = _owner.GetAbilityLevel(Abilities.PenetratingArrow);
-
-                if ((PALevel > 0) && (_owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long))
-                {
-                    ECSGameSpellEffect bladeturn = livingTarget.effectListComponent.GetSpellEffects(eEffect.Bladeturn)?.FirstOrDefault();
-
-                    if (bladeturn != null && _target != bladeturn.SpellHandler.Caster)
-                        _effectiveness *= 0.25 + PALevel * 0.25;
                 }
             }
 

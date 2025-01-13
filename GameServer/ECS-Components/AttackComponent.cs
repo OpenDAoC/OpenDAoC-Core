@@ -1147,7 +1147,7 @@ namespace DOL.GS
             }
 
             // Calculate our attack result and attack damage.
-            ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(action, ad, weapon);
+            ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(action, ad, weapon, ref effectiveness);
 
             GamePlayer playerOwner = owner as GamePlayer;
 
@@ -1914,7 +1914,7 @@ namespace DOL.GS
         /// <summary>
         /// Returns the result of an enemy attack
         /// </summary>
-        public virtual eAttackResult CalculateEnemyAttackResult(WeaponAction action, AttackData ad, DbInventoryItem attackerWeapon)
+        public virtual eAttackResult CalculateEnemyAttackResult(WeaponAction action, AttackData ad, DbInventoryItem attackerWeapon, ref double effectiveness)
         {
             if (owner.EffectList.CountOfType<NecromancerShadeEffect>() > 0)
                 return eAttackResult.NoValidTarget;
@@ -2135,9 +2135,8 @@ namespace DOL.GS
              * It was a bug that caused it to work 100% of the time - now it takes the
              * levels of the players involved into account.
              */
-            BladeturnECSGameEffect bladeturn = EffectListService.GetSpellEffectOnTarget(owner, eEffect.Bladeturn) as BladeturnECSGameEffect;
 
-            if (bladeturn != null)
+            if (EffectListService.GetSpellEffectOnTarget(owner, eEffect.Bladeturn) is BladeturnECSGameEffect bladeturn)
             {
                 bool penetrate = false;
 
@@ -2148,12 +2147,12 @@ namespace DOL.GS
                     penetrate = true;
                 else if (ad.AttackType is AttackData.eAttackType.Ranged)
                 {
-                    // 1.62: Penetrating Arrow penetrate only if the caster == target. Longshot and Volley always penetrate BTs.
-                    if ((ad.Target != bladeturn.SpellHandler.Caster && playerAttacker != null && playerAttacker.HasAbility(Abilities.PenetratingArrow)) ||
-                        action.RangedAttackType is eRangedAttackType.Long or eRangedAttackType.Volley)
-                    {
+                    double effectivenessAgainstBladeturn = CheckEffectivenessAgainstBladeturn(bladeturn);
+
+                    if (effectivenessAgainstBladeturn > 0)
                         penetrate = true;
-                    }
+
+                    effectiveness *= effectivenessAgainstBladeturn;
                 }
 
                 if (EffectService.RequestImmediateCancelEffect(bladeturn))
@@ -2179,6 +2178,19 @@ namespace DOL.GS
                 playerOwner.IsOnHorse = false;
 
             return eAttackResult.HitUnstyled;
+
+            double CheckEffectivenessAgainstBladeturn(ECSGameSpellEffect bladeturn)
+            {
+                // 1.62: Longshot and Volley always penetrate.
+                if (action.RangedAttackType is eRangedAttackType.Long or eRangedAttackType.Volley)
+                    return 1.0;
+
+                // 1.62: Penetrating Arrow penetrates only if the caster != target.
+                if (owner == bladeturn.SpellHandler.Caster)
+                    return 0.0;
+
+                return 0.25 + ad.Attacker.GetAbilityLevel(Abilities.PenetratingArrow) * 0.25;
+            }
         }
 
         private int GetBonusCapForLevel(int level)

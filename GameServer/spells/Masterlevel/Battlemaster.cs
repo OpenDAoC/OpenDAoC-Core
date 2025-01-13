@@ -570,13 +570,14 @@ namespace DOL.GS.Spells
                     ad.AttackType = AttackData.eAttackType.MeleeTwoHand;
                     break;
             }
+
+            double effectiveness = CalculateDamageEffectiveness();
+
             //Throw Weapon is subject to all the conventional attack results, parry, evade, block, etc.
-            ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(null, ad, weapon);
+            ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(null, ad, weapon, ref effectiveness);
 
             if (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle)
             {
-                //we only need to calculate the damage if the attack was a success.
-                double effectiveness = CalculateDamageEffectiveness();
                 double damage = player.attackComponent.AttackDamage(weapon, out _) * effectiveness;
 
                 if (target is GamePlayer)
