@@ -183,11 +183,10 @@ GamePlayer.Attack.YouShot:					You shoot
 GamePlayer.Attack.WithYour:					with your
 GamePlayer.Attack.Type.Shot:				shot
 GamePlayer.Attack.Type.Throw:				throw
+Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons:	You must ready a ranged weapon in your hands!
 GamePlayer.Attack.CantUseQuiver:			You can't use the selected quiver ammo with your weapon!
 GamePlayer.Attack.MustSelectQuiver:			You must select a quiver slot to draw from!
-Skill.Ability.CannotUse.CriticalShot.NoRangedWeapons:	You must ready a ranged weapon in your hands!
 Skill.Ability.CannotUse.CriticalShot.MustBeStanding:	You must be standing to attempt a ranged attack!
-Skill.Ability.CannotUse.CriticalShot.MustBeStealthed:	You must be stealthed to use this ability.
 Skill.Ability.CriticalShot.AlreadyFiring:	You are already firing this weapon!
 GamePlayer.Attack.ReadyToFire:				You are ready to fire!
 GamePlayer.Attack.Interrupted:				{0} is attacking you and your {1} is interrupted!
