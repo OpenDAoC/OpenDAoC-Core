@@ -1093,16 +1093,7 @@ namespace DOL.GS.Spells
 							if (!CheckEndCast(Target))
 								CastState = eCastState.Interrupted;
 							else
-							{
-								// Unsure about this. Calling 'SendCastAnimation' on non-harmful instant spells plays an annoying deep hum that overlaps with the
-								// sound of the spell effect (but is fine to have on harmful ones). For certain spells (like Skald's resist chants) it instead
-								// plays the audio of the spell effect a second time.
-								// It may prevent certain animations from playing, but I don't think there's any non-harmful instant spell with a casting animation.
-								if (Spell.IsHarmful)
-									SendCastAnimation(0);
-
 								CastState = eCastState.Finished;
-							}
 						}
 						else
 						{
