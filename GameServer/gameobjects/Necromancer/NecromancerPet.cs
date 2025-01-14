@@ -8,7 +8,6 @@ using DOL.GS.PacketHandler;
 using DOL.GS.PropertyCalc;
 using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
-using DOL.Language;
 
 namespace DOL.GS
 {
@@ -228,6 +227,8 @@ namespace DOL.GS
 		#endregion
 
 		#region Melee
+
+		public override int SelfInterruptDurationOnMeleeAttack => 0;
 
 		private void ToggleTauntMode()
 		{
