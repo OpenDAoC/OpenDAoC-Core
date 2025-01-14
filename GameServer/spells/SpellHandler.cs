@@ -36,6 +36,7 @@ namespace DOL.GS.Spells
 		protected bool HasLos { get; private set; }
 		protected double DistanceFallOff { get; private set; }
 		protected double CasterEffectiveness { get; private set; } = 1.0; // Needs to default to 1 since some spell handlers override `StartSpell`, preventing it from being set.
+		protected virtual bool IsDualComponentSpell => false; // Dual component spells have a higher chance to be resisted.
 
 		protected Spell m_spell;
 		protected SpellLine m_spellLine;
@@ -2405,7 +2406,12 @@ namespace DOL.GS.Spells
 			 */
 
 			// 12.5% resist rate based on live tests done for Uthgard.
-			double hitChance = 87.5 + (spellLevel - target.Level) / 2.0;
+			double hitChance = 87.5;
+
+			if (IsDualComponentSpell)
+				hitChance -= 2.5;
+
+			hitChance += (spellLevel - target.Level) / 2.0;
 			hitChance += m_caster.GetModified(eProperty.ToHitBonus);
 
 			if (playerCaster == null || target is not GamePlayer)

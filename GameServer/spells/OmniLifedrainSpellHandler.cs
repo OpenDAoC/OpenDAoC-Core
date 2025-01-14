@@ -6,6 +6,10 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.OmniLifedrain)]
 	public class OmniLifedrainSpellHandler : DirectDamageSpellHandler
 	{
+		protected override bool IsDualComponentSpell => true;
+
+		public OmniLifedrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
 		/// <summary>
 		/// execute direct effect
 		/// </summary>
@@ -93,8 +97,6 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		// constructor
-		public OmniLifedrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 		public override IList<string> DelveInfo
 		{
 			get

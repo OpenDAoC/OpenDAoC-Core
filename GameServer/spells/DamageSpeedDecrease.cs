@@ -11,6 +11,10 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.DamageSpeedDecrease)]
 	public class DamageSpeedDecreaseSpellHandler : SpeedDecreaseSpellHandler
 	{
+		protected override bool IsDualComponentSpell => true;
+
+		public DamageSpeedDecreaseSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			OnDirectEffect(target);
@@ -142,8 +146,5 @@ namespace DOL.GS.Spells
                 return list;
 			}
 		}
-
-		// counstructor
-		public DamageSpeedDecreaseSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}
 }

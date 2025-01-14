@@ -12,17 +12,16 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.DirectDamageWithDebuff)]
 	public class DirectDamageDebuffSpellHandler : AbstractResistDebuff
 	{
+		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+		public override eProperty Property1 => Caster.GetResistTypeForDamage(Spell.DamageType);
+		public override string DebuffTypeName => GlobalConstants.DamageTypeToName(Spell.DamageType);
+		protected override bool IsDualComponentSpell => true;
+
 		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
 			return new StatDebuffECSEffect(initParams);
 		}
-		
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-		public override eProperty Property1 { get { return Caster.GetResistTypeForDamage(Spell.DamageType); } }
-		public override string DebuffTypeName { get { return GlobalConstants.DamageTypeToName(Spell.DamageType); } }
-
-		#region LOS on Keeps
 
 		public override void OnDirectEffect(GameLiving target)
 		{
@@ -137,8 +136,6 @@ namespace DOL.GS.Spells
 				}
 			}
 		}
-
-		#endregion
 
 		/// <summary>
 		/// Delve Info

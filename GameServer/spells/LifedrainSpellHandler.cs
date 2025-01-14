@@ -1,4 +1,3 @@
-using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Spells
@@ -6,20 +5,23 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Lifedrain)]
     public class LifedrainSpellHandler : DirectDamageSpellHandler
     {
-	    
-		protected override void DealDamage(GameLiving target)
-		{
-			if (target == null || !target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
+        protected override bool IsDualComponentSpell => true;
 
-			// calc damage and healing
-			AttackData ad = CalculateDamageToTarget(target);
-			// "Your life energy is stolen!"
-			MessageToLiving(target, Spell.Message1, eChatType.CT_Spell);
-			SendDamageMessages(ad);
-			DamageTarget(ad, true);
-			StealLife(ad);
-			target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
-		}
+        public LifedrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
+
+        protected override void DealDamage(GameLiving target)
+        {
+            if (target == null || !target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
+
+            // calc damage and healing
+            AttackData ad = CalculateDamageToTarget(target);
+            // "Your life energy is stolen!"
+            MessageToLiving(target, Spell.Message1, eChatType.CT_Spell);
+            SendDamageMessages(ad);
+            DamageTarget(ad, true);
+            StealLife(ad);
+            target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
+        }
 
         /// <summary>
         /// Uses percent of damage to heal the caster
@@ -50,8 +52,5 @@ namespace DOL.GS.Spells
                 MessageToCaster("You cannot absorb any more life.", eChatType.CT_SpellResisted);
             }
         }
-
-        // constructor
-        public LifedrainSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
     }
 }
