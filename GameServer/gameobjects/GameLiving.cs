@@ -3678,7 +3678,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual void StopCurrentSpellcast()
 		{
-			castingComponent.InterruptCasting();
+			castingComponent.InterruptCasting(IsMoving);
 		}
 
 		public virtual bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)

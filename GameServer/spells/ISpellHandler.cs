@@ -23,12 +23,6 @@ namespace DOL.GS.Spells
 		bool StartSpell(GameLiving target, DbInventoryItem item);
 
 		/// <summary>
-		/// Whenever the current casting sequence is to be interrupted
-		/// this callback is called
-		/// </summary>
-		void InterruptCasting();
-
-		/// <summary>
 		/// Has to be called when the caster moves
 		/// </summary>
 		void CasterMoves();

@@ -94,9 +94,6 @@ namespace DOL.GS.Spells
         public override void CasterMoves()
         {
             InterruptCasting();
-
-            if (Caster is GamePlayer playerCaster)
-                playerCaster.Out.SendMessage(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CasterMove"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
         }
 
         public override IList<string> DelveInfo

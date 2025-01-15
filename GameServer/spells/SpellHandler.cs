@@ -328,14 +328,6 @@ namespace DOL.GS.Spells
 			if (Spell.MoveCast)
 				return;
 
-			if (Caster is GamePlayer playerCaster)
-			{
-				if (CastState is not eCastState.Focusing)
-					playerCaster.Out.SendMessage(LanguageMgr.GetTranslation(playerCaster.Client, "SpellHandler.CasterMove"), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				else
-					CancelFocusSpells(true);
-			}
-
 			InterruptCasting();
 		}
 
@@ -1277,13 +1269,13 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Called whenever the casters casting sequence is to interrupt immediately
 		/// </summary>
-		public virtual void InterruptCasting()
+		protected virtual void InterruptCasting()
 		{
 			if (m_interrupted)
 				return;
 
 			m_interrupted = true;
-			Caster.castingComponent.InterruptCasting();
+			Caster.castingComponent.InterruptCasting(Caster.IsMoving);
 			CastState = eCastState.Interrupted;
 			m_startReuseTimer = false;
 		}
@@ -2028,10 +2020,7 @@ namespace DOL.GS.Spells
 		public virtual bool StartSpell(GameLiving target)
 		{
 			if (Caster.IsMezzed || Caster.IsStunned)
-			{
-				CancelFocusSpells(false);
 				return false;
-			}
 
 			if (Spell.SpellType is not eSpellType.TurretPBAoE && Spell.IsPBAoE)
 				Target = Caster;
@@ -2628,12 +2617,6 @@ namespace DOL.GS.Spells
 
 				if (EffectService.RequestImmediateCancelEffect(pulseSpell))
 					cancelled = true;
-
-				foreach (ECSGameEffect petEffect in pulseSpell.SpellHandler.Target.effectListComponent.GetSpellEffects(eEffect.FocusShield))
-				{
-					if (petEffect.SpellHandler.Spell.IsFocus)
-						EffectService.RequestImmediateCancelEffect(petEffect);
-				}
 			}
 
 			if (cancelled)

@@ -79,12 +79,17 @@ namespace DOL.GS
                 startSkillRequest.StartSkill();
         }
 
-        public void InterruptCasting()
+        public void InterruptCasting(bool moving)
         {
-            if (SpellHandler?.IsInCastingPhase == true)
+            if (SpellHandler != null)
             {
-                foreach (GamePlayer player in Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                    player.Out.SendInterruptAnimation(Owner);
+                if (SpellHandler.IsInCastingPhase)
+                {
+                    foreach (GamePlayer player in Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        player.Out.SendInterruptAnimation(Owner);
+                }
+
+                CancelFocusSpells(moving);
             }
 
             ClearUpSpellHandlers();
@@ -249,7 +254,7 @@ namespace DOL.GS
                     // Otherwise the only way to cancel an out of LoS / range flute mez is to swap weapons.
                     if (currentSpellHandler.CastState is eCastState.CastingRetry)
                     {
-                        currentSpellHandler.InterruptCasting();
+                        CastingComponent.InterruptCasting(false);
 
                         if (newSpell.SpellType is eSpellType.Mesmerize && newSpell.InstrumentRequirement != 0)
                         {

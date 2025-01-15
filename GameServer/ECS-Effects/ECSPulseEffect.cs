@@ -32,6 +32,12 @@ namespace DOL.GS
         public override void OnStopEffect()
         {
             Owner.ActivePulseSpells.TryRemove(SpellHandler.Spell.SpellType, out _);
+
+            foreach (ECSGameEffect petEffect in SpellHandler.Target.effectListComponent.GetSpellEffects(eEffect.FocusShield))
+            {
+                if (petEffect.SpellHandler.Spell.IsFocus)
+                    EffectService.RequestImmediateCancelEffect(petEffect);
+            }
         }
     }
 }
