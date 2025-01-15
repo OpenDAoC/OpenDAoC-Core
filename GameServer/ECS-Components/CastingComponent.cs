@@ -190,21 +190,15 @@ namespace DOL.GS
 
                 if (currentSpellHandler != null)
                 {
-                    if (currentSpell?.IsFocus == true)
-                    {
-                        if (newSpell.IsInstantCast)
-                            newSpellHandler.Tick();
-                        else
-                        {
-                            CastingComponent.SpellHandler = newSpellHandler;
-                            newSpellHandler.Tick();
-                        }
-                    }
-                    else if (newSpell.IsInstantCast)
+                    if (newSpell.IsInstantCast)
                         newSpellHandler.Tick();
-                    else
+                    else if (currentSpell != null)
                     {
-                        GamePlayer player = CastingComponent.Owner as GamePlayer;
+                        if (CastingComponent.Owner is not GamePlayer player)
+                        {
+                            CastingComponent.QueuedSpellHandler = newSpellHandler;
+                            return;
+                        }
 
                         if (newSpell.CastTime > 0 && currentSpell.InstrumentRequirement != 0)
                         {
@@ -212,15 +206,26 @@ namespace DOL.GS
                             return;
                         }
 
-                        if (player == null)
-                            CastingComponent.QueuedSpellHandler = newSpellHandler;
-                        else if (player.SpellQueue)
+                        string message = "You are already casting a spell!";
+
+                        // Focus spells aren't allowed to have any spell be queued after them.
+                        if (currentSpell.IsFocus)
                         {
-                            player.Out.SendMessage("You are already casting a spell! You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                            if (currentSpellHandler.CastState is eCastState.Focusing)
+                                CastingComponent.SpellHandler = newSpellHandler;
+                            else
+                                player.Out.SendMessage(message, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+
+                            return;
+                        }
+
+                        if (player.SpellQueue)
+                        {
+                            player.Out.SendMessage($"{message} You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                             CastingComponent.QueuedSpellHandler = newSpellHandler;
                         }
                         else
-                            player.Out.SendMessage("You are already casting a spell!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage(message, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     }
                 }
                 else
