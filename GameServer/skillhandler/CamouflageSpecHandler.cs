@@ -16,11 +16,10 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 
-            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage))
-            {
-                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Camouflage.UseCamo"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            ECSGameEffect camouflage = EffectListService.GetEffectOnTarget(player, eEffect.Camouflage);
+
+            if (EffectService.RequestImmediateCancelEffect(camouflage))
                 return;
-            }
 
             new CamouflageECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));
             player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.Camouflage.UseCamo"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
