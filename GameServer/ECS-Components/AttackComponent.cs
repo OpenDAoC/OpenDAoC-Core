@@ -938,15 +938,11 @@ namespace DOL.GS
                             weaponItem.OnStrikeTarget(playerOwner, target);
 
                         // Camouflage will be disabled only when attacking a GamePlayer or ControlledNPC of a GamePlayer.
-                        if ((target is GamePlayer && playerOwner.HasAbility(Abilities.Camouflage)) ||
-                            (target is GameNPC targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain && targetNpcBrain.GetPlayerOwner() != null))
+                        // It should also be disabled even if Camouflage isn't active.
+                        if (playerOwner.HasAbility(Abilities.Camouflage))
                         {
-                            CamouflageECSGameEffect camouflage = (CamouflageECSGameEffect) EffectListService.GetAbilityEffectOnTarget(playerOwner, eEffect.Camouflage);
-
-                            if (camouflage != null)
-                                EffectService.RequestImmediateCancelEffect(camouflage, false);
-
-                            playerOwner.DisableSkill(SkillBase.GetAbility(Abilities.Camouflage), CamouflageSpecHandler.DISABLE_DURATION);
+                            if (target is GamePlayer || (target is GameNPC targetNpc && targetNpc.Brain is IControlledBrain targetNpcBrain && targetNpcBrain.GetPlayerOwner() != null))
+                                playerOwner.DisableSkill(SkillBase.GetAbility(Abilities.Camouflage), CamouflageSpecHandler.DISABLE_DURATION);
                         }
 
                         // Multiple Hit check.
