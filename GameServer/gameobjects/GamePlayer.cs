@@ -11712,11 +11712,9 @@ namespace DOL.GS
                 return;
             }
 
-            if (effectListComponent.ContainsEffectForEffectType(eEffect.Stealth))
-                EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth), false);
-
-            if (effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
-                EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
+            EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth));
+            EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
+            EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Camouflage));
         }
 
         public override void OnMaxSpeedChange()
