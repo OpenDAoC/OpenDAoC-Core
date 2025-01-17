@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
 using DOL.GS.PacketHandler;
-using log4net;
 
 namespace DOL.GS.Commands
 {
@@ -12,7 +11,7 @@ namespace DOL.GS.Commands
         "/rearrange setslot [source slot] [target slot] - Sets the given source slot to the given target slot.")]
     public class RearrangeCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public void OnCommand(GameClient client, string[] args)
         {

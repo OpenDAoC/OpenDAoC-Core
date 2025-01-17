@@ -27,7 +27,7 @@ namespace DOL.AI.Brain
 {
 	public class SnarlsBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public SnarlsBrain() : base()
 		{
 			AggroLevel = 80;
@@ -114,7 +114,7 @@ namespace DOL.AI.Brain
 {
 	public class SnarlsAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public SnarlsAddBrain() : base()
 		{
 			AggroLevel = 0;

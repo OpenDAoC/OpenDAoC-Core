@@ -10,8 +10,7 @@ namespace DOL.GS.Scripts
 {
     public class Ozur : GameEpicBoss
     {
-        private static new readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public Ozur()
             : base()
@@ -98,8 +97,7 @@ namespace DOL.AI.Brain
 {
     public class OzurBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static int _GettingFirstPlayerStage = 50;
         private static int _GettingSecondPlayerStage = 100;

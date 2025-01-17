@@ -37,7 +37,7 @@ namespace DOL.GS.Commands
 		"/instance exit")]
     public class InstanceCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public const string INSTANCE_KEY = "INSTANCE_KEY_TEMP";
 

@@ -75,7 +75,7 @@ namespace DOL.AI.Brain
 {
     public class AmminusPilusBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public AmminusPilusBrain() : base()
 		{
 			AggroLevel = 100;
@@ -176,7 +176,7 @@ namespace DOL.AI.Brain
 {
     public class PilusAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public PilusAddBrain() : base()
 		{
 			AggroLevel = 100;

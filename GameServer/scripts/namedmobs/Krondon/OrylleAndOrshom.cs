@@ -90,7 +90,7 @@ namespace DOL.AI.Brain
 {
     public class OrylleBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public OrylleBrain() : base()
 		{
 			AggroLevel = 100;
@@ -263,7 +263,7 @@ namespace DOL.AI.Brain
 {
     public class OrshomBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public OrshomBrain() : base()
 		{
 			AggroLevel = 100;
@@ -499,7 +499,7 @@ namespace DOL.AI.Brain
 {
     public class OrshomFireBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public OrshomFireBrain() : base()
 		{
 			AggroLevel = 100;

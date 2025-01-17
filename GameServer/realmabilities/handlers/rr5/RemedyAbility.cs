@@ -21,7 +21,6 @@
 using System.Reflection;
 using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
-using log4net;
 using DOL.GS.Keeps;
 using DOL.GS.Spells;
 

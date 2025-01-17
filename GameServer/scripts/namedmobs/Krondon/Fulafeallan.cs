@@ -100,7 +100,7 @@ namespace DOL.AI.Brain
 {
 	public class FulafeallanBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public FulafeallanBrain() : base()
 		{
 			AggroLevel = 100;
@@ -228,7 +228,7 @@ namespace DOL.AI.Brain
 {
 	public class FulafeallanAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public FulafeallanAddBrain() : base()
 		{
 			AggroLevel = 100;

@@ -1,12 +1,11 @@
 ﻿using System.Reflection;
-using log4net;
 
 namespace DOL.GS.PacketHandler
 {
     [PacketLib(1127, GameClient.eClientVersion.Version1127)]
     public class PacketLib1127 : PacketLib1126
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public PacketLib1127(GameClient client) : base(client) { }
 

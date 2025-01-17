@@ -263,7 +263,7 @@ namespace DOL.AI.Brain
 {
 	public class MidGjalpinulvaBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MidGjalpinulvaBrain()
 			: base()
 		{
@@ -1060,7 +1060,7 @@ namespace DOL.AI.Brain
 {
 	public class GjalpinulvaMessengerBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public GjalpinulvaMessengerBrain()
 		{
@@ -1386,7 +1386,7 @@ namespace DOL.AI.Brain
 {
 	public class GjalpinulvaSpawnedAdBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public GjalpinulvaSpawnedAdBrain() : base()
 		{

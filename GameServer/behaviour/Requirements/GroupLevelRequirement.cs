@@ -20,7 +20,6 @@ using System;
 using System.Text;
 using DOL.Events;
 using DOL.Database;
-using log4net;
 using System.Reflection;
 using DOL.GS.Behaviour.Attributes;
 using DOL.GS.Behaviour;
@@ -36,7 +35,7 @@ namespace DOL.GS.Behaviour.Requirements
     [RequirementAttribute(RequirementType=eRequirementType.GroupLevel)]
 	public class GroupLevelRequirement : AbstractRequirement<int,Unused>
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
         /// Creates a new QuestRequirement and does some basich compativilite checks for the parameters

@@ -9,13 +9,12 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Language;
 using ECS.Debug;
-using log4net;
 
 namespace DOL.GS
 {
     public static class EffectService
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(EffectService);
         private static List<ECSGameEffect> _list;
 

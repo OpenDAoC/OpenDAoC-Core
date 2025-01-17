@@ -137,7 +137,7 @@ namespace DOL.AI.Brain
 {
 	public class DuraekEmpoweredBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DuraekEmpoweredBrain() : base()
 		{
 			AggroLevel = 100;

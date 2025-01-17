@@ -3,7 +3,6 @@ using System.Reflection;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS.Commands
 {
@@ -18,7 +17,7 @@ namespace DOL.GS.Commands
 	)]
 	public class BanCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
-		private static ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public void OnCommand(GameClient client, string[] args)
 		{

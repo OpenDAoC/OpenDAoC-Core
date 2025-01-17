@@ -97,7 +97,7 @@ namespace DOL.AI.Brain
 {
 	public class MokkurvalveBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MokkurvalveBrain() : base()
 		{
 			AggroLevel = 100;
@@ -218,7 +218,7 @@ namespace DOL.AI.Brain
 {
 	public class MokkurvalveAddsBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MokkurvalveAddsBrain() : base()
 		{
 			AggroLevel = 100;

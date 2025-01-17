@@ -4,13 +4,12 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using log4net;
 
 namespace DOL.GS.Quests.Albion
 {
     public class ImmediateResolutionVB : BaseQuest
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         protected const string questTitle = "Immediate Resolution";
         protected const string stewardWillieNpcName = "Steward Willie";
         protected const string masterTorNpc = "Master Torr";

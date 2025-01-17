@@ -20,13 +20,12 @@
 using System;
 using System.Reflection;
 using DOL.GS.PacketHandler;
-using log4net;
 
 namespace DOL.GS.Quests
 {
 	public class QuestSearchArea : Area.Circle
 	{
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public const int DEFAULT_SEARCH_SECONDS = 5;
 		public const int DEFAULT_SEARCH_RADIUS = 150;

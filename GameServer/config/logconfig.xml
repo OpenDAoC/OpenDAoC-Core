@@ -1,160 +1,157 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- This section contains the log4net configuration settings -->
-<!-- For mor information please see the website http://logging.apache.org/log4net/ -->
-<log4net>
-	<!-- Setup the root category, add the appenders and set the default level -->
-	<root>
-		<level value="DEBUG" />
-		<appender-ref ref="ColoredConsoleAppender" />
-		<appender-ref ref="GameServerLogFile" />
-		<appender-ref ref="ErrorLogFile" />
-		<appender-ref ref="WarnLogFile" />
-	</root>
-
-	<!-- Define our console output -->
-	<appender name="ColoredConsoleAppender" type="log4net.Appender.ManagedColoredConsoleAppender">
-		<mapping>
-			<level value="ERROR" />
-			<foreColor value="Red" />
-		</mapping>
-		<mapping>
-			<level value="WARN" />
-			<foreColor value="Yellow" />
-		</mapping>
-		<mapping>
-			<level value="INFO" />
-			<foreColor value="White" />
-		</mapping>
-		<mapping>
-			<level value="DEBUG" />
-			<foreColor value="Blue" />
-		</mapping>
-
-		<Threshold value="DEBUG" />
-		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="[%date{ABSOLUTE}] [%level] [%class] %message%newline" />
-		</Layout>
-	</appender>
-
-	<!-- Define our file output -->
-	<appender name="GameServerLogFile" type="log4net.Appender.RollingFileAppender" >
-		<appendtofile value="true" />
-		<file value="./logs/GameServer.log" />
-		<maximumFileSize value="100MB" />
-		<datePattern value="yyyy-MM-dd" />
-		<immediateFlush value="false"/>
-		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%date - [%thread] - %level - %logger - %message%newline" />
-		</Layout>
-	</appender>
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" throwConfigExceptions="true" throwExceptions="true">
+	<variable name="logDirectory" value="./logs" />
 	
-	<!-- Define our ERROR Logger -->
-	<appender name="ErrorLogFile" type="log4net.Appender.RollingFileAppender" >
-		<file value="./logs/Error.log" />
-		<appendToFile value="false" />
-		<maxSizeRollBackups value="5" />
-		<maximumFileSize value="20MB" />
-		<staticLogFileName value="true" />
-		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%date - [%thread] - %level - %logger - %message%newline" />
-		</Layout>
-		<Threshold value="ERROR" />
-	</appender>
+	<targets>
+		<!-- Console -->
+		<target name="console" xsi:type="ColoredConsole"
+			layout="${date:format=HH\:mm\:ss} | ${level:uppercase=true:format=TriLetter} | ${logger} | ${message}">
+				<highlight-row foregroundColor="Gray" condition="level == LogLevel.Trace" />
+				<highlight-row foregroundColor="Blue" condition="level == LogLevel.Debug" />
+				<highlight-row foregroundColor="White" condition="level == LogLevel.Info" />
+				<highlight-row foregroundColor="Yellow" condition="level == LogLevel.Warn" />
+				<highlight-row foregroundColor="Red" condition="level == LogLevel.Error" />
+				<highlight-row foregroundColor="DarkRed" condition="level == LogLevel.Fatal" />
+				<highlight-row foregroundColor="Magenta" condition="level == LogLevel.Off" />
+		</target>
 
-	<!-- Define our WARN Logger -->
-	<appender name="WarnLogFile" type="log4net.Appender.RollingFileAppender" >
-		<file value="./logs/Warn.log" />
-			<appendToFile value="false" />
-			<maxSizeRollBackups value="5" />
-			<maximumFileSize value="20MB" />
-			<staticLogFileName value="true" />
-			<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%date - [%thread] - %level - %logger - %message%newline" />
-			</Layout>
-			<filter type="log4net.Filter.LevelRangeFilter">
-			<param name="LevelMin" value="WARN"/>
-			<param name="LevelMax" value="WARN"/>
-			</filter>
-			<filter type="log4net.Filter.DenyAllFilter" />
-	</appender>
+		<!-- Log Files -->
+		<target name="gameServerFile" xsi:type="File"
+			layout="${date:format=MM/dd HH\:mm\:ss} | ${level:uppercase=true:format=TriLetter} | ${logger} | ${message}${onexception:${newline}${exception:format=tostring}}"
+			fileName="${logDirectory}/server.log"
+			keepFileOpen="true"
+			cleanupFileName="false"
+			archiveFileName="${logDirectory}/server.{#}.log"
+			archiveNumbering="DateAndSequence"
+			archiveDateFormat="yyyy-MM-dd"
+			archiveAboveSize="104857600"
+			archiveEvery="Day"
+			maxArchiveDays="7" />
+		<target name="warnFile" xsi:type="File"
+			layout="${date:format=MM/dd HH\:mm\:ss} | ${logger} | ${message}${onexception:${newline}${exception:format=tostring}}"
+			fileName="${logDirectory}/warn.log"
+			keepFileOpen="true"
+			cleanupFileName="false"
+			archiveFileName="${logDirectory}/warn.{#}.log"
+			archiveNumbering="DateAndSequence"
+			archiveDateFormat="yyyy-MM-dd"
+			archiveAboveSize="104857600"
+			archiveEvery="Day"
+			maxArchiveDays="7" />
+		<target name="errorFile" xsi:type="File"
+			layout="${date:format=MM/dd HH\:mm\:ss} | ${logger} | ${message}${onexception:${newline}${exception:format=tostring}}"
+			fileName="${logDirectory}/error.log"
+			keepFileOpen="true"
+			cleanupFileName="false"
+			archiveFileName="${logDirectory}/error.{#}.log"
+			archiveNumbering="DateAndSequence"
+			archiveDateFormat="yyyy-MM-dd"
+			archiveAboveSize="104857600"
+			archiveEvery="Day"
+			maxArchiveDays="7" />
+		<target name="gmActionFile" xsi:type="File"
+			layout="${date:format=MM/dd HH\:mm\:ss} | ${message}}"
+			fileName="${logDirectory}/gm-action.log" 
+			keepFileOpen="true"
+			cleanupFileName="false"
+			archiveFileName="${logDirectory}/gm-action.{#}.log"
+			archiveNumbering="DateAndSequence"
+			archiveDateFormat="yyyy-MM-dd"
+			archiveAboveSize="104857600"
+			archiveEvery="Day" />
+		<target name="cheatFile" xsi:type="File"
+			layout="${date:format=MM/dd HH\:mm\:ss} | ${message}}"
+			fileName="${logDirectory}/cheat.log"
+			keepFileOpen="true"
+			cleanupFileName="false"
+			archiveFileName="${logDirectory}/cheat.{#}.log"
+			archiveNumbering="DateAndSequence"
+			archiveDateFormat="yyyy-MM-dd"
+			archiveAboveSize="104857600"
+			archiveEvery="Day" />
+		<target name="dualIpFile" xsi:type="File"
+			layout="${date:format=MM/dd HH\:mm\:ss} | ${message}"
+			fileName="${logDirectory}/dual-ip.log"
+			keepFileOpen="true"
+			cleanupFileName="false"
+			archiveFileName="${logDirectory}/dual-ip.{#}.log"
+			archiveNumbering="DateAndSequence"
+			archiveDateFormat="yyyy-MM-dd"
+			archiveAboveSize="104857600"
+			archiveEvery="Day" />
+		<target name="inventoryFile" xsi:type="File"
+			layout="${date:format=MM/dd HH\:mm\:ss} | ${message}"
+			fileName="${logDirectory}/inventory.log"
+			keepFileOpen="true"
+			cleanupFileName="false"
+			archiveFileName="${logDirectory}/inventory.{#}.log"
+			archiveNumbering="DateAndSequence"
+			archiveDateFormat="yyyy-MM-dd"
+			archiveAboveSize="104857600"
+			archiveEvery="Day" />
+		
+		<!-- Black Hole -->
+		<target name="blackHole"
+			xsi:type="Null" />
+	</targets>
 
-	<!-- Define our GM Action Logger -->
-	<logger name="gmactions">
-		<additivity value="false" />
-		<level value="ALL" />
-		<appender-ref ref="GMActionFileAppender" />
-	</logger>
-	<!-- Define our file output -->
-	<appender name="GMActionFileAppender" type="log4net.Appender.RollingFileAppender" >
-		<appendtofile value="true" />
-		<file value="./logs/GMActions.log" />
-		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%date - %message%newline" />
-		</Layout>
-	</appender>
+	<rules>
+		<!-- Special Loggers -->
+		<logger name="gmactions"
+			minLevel="Trace"
+			writeTo="gmActionFile"
+			final="true" />
+		<logger name="cheats"
+			minLevel="Trace"
+			writeTo="cheatFile"
+			final="true" />
+		<logger name="dualip"
+			minLevel="Trace"
+			writeTo="dualIpFile"
+			final="true" />
+		<logger name="inventories"
+			minLevel="Trace"
+			writeTo="inventoryFile"
+			final="true" />
 
-	<!-- Define our Cheat Action Logger -->
-	<logger name="cheats">
-		<additivity value="false" />
-		<level value="ALL" />
-		<appender-ref ref="CheatFileAppender" />
-	</logger>
-	<!-- Define our file output -->
-	<appender name="CheatFileAppender" type="log4net.Appender.RollingFileAppender" >
-		<appendtofile value="true" />
-		<file value="./logs/Cheats.log" />
-		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%date - %message%newline" />
-		</Layout>
-	</appender>
-
-	<!-- Define our DualIP Action Logger -->
-	<logger name="dualip">
-		<additivity value="true" />
-		<level value="ALL" />
-		<appender-ref ref="DualIPFileAppender" />
-	</logger>
-	<!-- Define our file output -->
-	<appender name="DualIPFileAppender" type="log4net.Appender.RollingFileAppender" >
-		<appendtofile value="true" />
-		<file value="./logs/DualIP.log" />
-		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%date - %message%newline" />
-		</Layout>
-	</appender>
-
-	<!-- Define our Inventories Action Logger -->
-	<logger name="inventories">
-		<additivity value="false" />
-		<level value="ALL" />
-		<appender-ref ref="InventoryFileAppender" />
-	</logger>
-	<!-- Define our file output -->
-	<appender name="InventoryFileAppender" type="log4net.Appender.RollingFileAppender" >
-		<appendtofile value="true" />
-		<file value="./logs/Inventories.log" />
-		<Layout type="log4net.Layout.PatternLayout">
-			<param name="ConversionPattern" value="%date - %message%newline" />
-		</Layout>
-	</appender>
-
-	<!-- We set the log level for some lowlevel loggers so it won't clutter our output -->
-	<logger name="DOL.GS.PacketHandler.PacketProcessor">
-		<level value="WARN" />
-	</logger>
-	<logger name="DOL.Database.ObjectDatabase">
-		<level value="WARN" />
-	</logger>
-	<logger name="DOL.GS.GameObject">
-		<level value="WARN" />
-	</logger>
-	<logger name="DOL.Database.Handlers">
-		<level value="WARN" />
-	</logger>
-	<logger name="DOL.GS.Zone">
-		<level value="WARN" />
-	</logger>
-	<logger name="DOL.GS.GameTimer">
-		<level value="INFO" />
-	</logger>
-</log4net>
+		<!-- Filters -->
+		<logger name="DOL.GS.PacketHandler.PacketProcessor"
+			maxlevel="Info"
+			writeTo="blackHole"
+			final="true" />
+		<logger name="DOL.Database.ObjectDatabase"
+			maxlevel="Info"
+			writeTo="blackHole"
+			final="true" />
+		<logger name="DOL.GS.GameObject"
+			maxlevel="Info"
+			writeTo="blackHole"
+			final="true" />
+		<logger name="DOL.Database.Handlers"
+			maxlevel="Info"
+			writeTo="blackHole"
+			final="true" />
+		<logger name="DOL.GS.Zone"
+			maxlevel="Info"
+			writeTo="blackHole"
+			final="true" />
+		<logger name="DOL.GS.GameTimer"
+			maxlevel="Debug"
+			writeTo="blackHole"
+			final="true" />
+		
+		<!-- Global Loggers -->
+		<logger name="*"
+			minLevel="Debug"
+			writeTo="console" />
+		<logger name="*"
+			minLevel="Debug"
+			writeTo="gameServerFile" />
+		<logger name="*"
+			Level="Warn"
+			writeTo="warnFile" />
+		<logger name="*"
+			Level="Error"
+			writeTo="errorFile" />
+	</rules>
+</nlog>

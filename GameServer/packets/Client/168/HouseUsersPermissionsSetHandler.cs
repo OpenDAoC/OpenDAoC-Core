@@ -18,7 +18,6 @@
  */
 using System.Reflection;
 using DOL.GS.Housing;
-using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {

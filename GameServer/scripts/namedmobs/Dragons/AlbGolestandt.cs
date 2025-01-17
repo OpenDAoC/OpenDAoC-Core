@@ -264,7 +264,7 @@ namespace DOL.AI.Brain
 {
     public class AlbGolestandtBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public AlbGolestandtBrain()
 			: base()
 		{
@@ -1054,7 +1054,7 @@ namespace DOL.AI.Brain
 {
 	public class GolestandtMessengerBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public GolestandtMessengerBrain()
 		{
@@ -1391,7 +1391,7 @@ namespace DOL.AI.Brain
 {
 	public class GolestandtSpawnedAdBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public GolestandtSpawnedAdBrain() : base()
 		{

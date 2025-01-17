@@ -21,7 +21,6 @@ using System.Text;
 using DOL.Events;
 using DOL.GS.Behaviour.Attributes;using DOL.GS.Behaviour;
 using System.Reflection;
-using log4net;
 
 namespace DOL.GS.Behaviour
 {
@@ -33,7 +32,7 @@ namespace DOL.GS.Behaviour
     /// </summary>
     public abstract class AbstractAction<TypeP,TypeQ> : IBehaviourAction
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private eActionType actionType;
         private TypeQ q;

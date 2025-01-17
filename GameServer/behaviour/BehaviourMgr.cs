@@ -24,7 +24,6 @@ using System.Text;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using log4net;
 using DOL.GS.Behaviour.Attributes;
 using DOL.GS.Behaviour;
 
@@ -41,7 +40,7 @@ namespace DOL.GS.Behaviour
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 		
         private static readonly IDictionary m_behaviourActionMap = new HybridDictionary();
         private static readonly IDictionary m_behaviourTriggerMap = new HybridDictionary();

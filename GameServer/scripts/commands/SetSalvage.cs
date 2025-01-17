@@ -10,7 +10,7 @@ namespace DOL.GS.Commands
          "/setsalvage - the item to modify have to be in lastbagpack slot (item saved and updated automatically)")]
     public class SetSalvageCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public void OnCommand(GameClient client, string[] args)
         {

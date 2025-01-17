@@ -4,14 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using DOL.Database;
-using log4net;
 
 namespace DOL.GS.PacketHandler
 {
 	[PacketLib(1126, GameClient.eClientVersion.Version1126)]
 	public class PacketLib1126 : PacketLib1125
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public PacketLib1126(GameClient client)
 			: base(client)

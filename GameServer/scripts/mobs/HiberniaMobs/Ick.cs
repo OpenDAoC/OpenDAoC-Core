@@ -57,7 +57,7 @@ namespace DOL.AI.Brain
 {
 	public class IckBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public IckBrain() : base()
 		{
 			AggroLevel = 100;
@@ -167,7 +167,7 @@ namespace DOL.AI.Brain
 {
 	public class IckAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public IckAddBrain() : base()
 		{
 			AggroLevel = 100;

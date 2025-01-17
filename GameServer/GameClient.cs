@@ -12,13 +12,12 @@ using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Network;
-using log4net;
 
 namespace DOL.GS
 {
     public class GameClient : BaseClient, ICustomParamsValuable, IManagedEntity
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private DbAccount _account;
         private eClientState _clientState = eClientState.NotConnected;

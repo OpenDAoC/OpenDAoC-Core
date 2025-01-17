@@ -4,13 +4,12 @@ using System.Reflection;
 using System.Threading;
 using DOL.Database;
 using DOL.GS.ServerProperties;
-using log4net;
 
 namespace DOL.GS
 {
     public class Recipe
     {
-        protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public readonly Lock Lock = new();
 
@@ -108,7 +107,7 @@ namespace DOL.GS
 
     public class RecipeDB
     {
-        protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private static Dictionary<ushort, Recipe> recipeCache = new Dictionary<ushort, Recipe>();
 
         public static Recipe FindBy(ushort recipeDatabaseID)

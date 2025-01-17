@@ -10,8 +10,7 @@ namespace DOL.GS.Scripts
 {
     public abstract class GameEpicAros : GameEpicBoss
     {
-        private static new readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Set Aros the Spiritmaster difficulty in percent of its max abilities

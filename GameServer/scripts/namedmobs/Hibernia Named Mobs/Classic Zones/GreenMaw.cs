@@ -110,7 +110,7 @@ namespace DOL.AI.Brain
 {
 	public class GreenMawBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public GreenMawBrain() : base()
 		{
 			AggroLevel = 100;
@@ -211,7 +211,7 @@ namespace DOL.AI.Brain
 {
 	public class GreenMawAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public GreenMawAddBrain() : base()
 		{
 			AggroLevel = 100;
@@ -306,7 +306,7 @@ namespace DOL.AI.Brain
 {
 	public class GreenMawAdd2Brain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public GreenMawAdd2Brain() : base()
 		{
 			AggroLevel = 100;
@@ -381,7 +381,7 @@ namespace DOL.AI.Brain
 {
 	public class GreenMawAdd3Brain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public GreenMawAdd3Brain() : base()
 		{
 			AggroLevel = 100;

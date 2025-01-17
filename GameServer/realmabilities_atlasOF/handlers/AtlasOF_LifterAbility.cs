@@ -7,7 +7,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class AtlasOF_LifterAbility : RAPropertyEnhancer
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         protected override string ValueUnit => "%";
 

@@ -116,7 +116,7 @@ namespace DOL.AI.Brain
 {
 	public class MolluneroBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MolluneroBrain() : base()
 		{
 			AggroLevel = 100;
@@ -239,7 +239,7 @@ namespace DOL.AI.Brain
 {
 	public class MolluneroAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MolluneroAddBrain() : base()
 		{
 			AggroLevel = 100;

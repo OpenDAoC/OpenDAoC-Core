@@ -11,7 +11,7 @@ namespace DOL.GS.RealmAbilities
     /// </summary>
     public class BlissfulIgnoranceAbility : RR5RealmAbility
     {
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public const int DURATION = 30 * 1000;
 

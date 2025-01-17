@@ -9,7 +9,7 @@ namespace DOL.GS.Effects
 	/// </summary> 
 	public class SpeedOfSoundEffect : TimedEffect, IGameEffect
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public SpeedOfSoundEffect(int duration)
 			: base(duration)

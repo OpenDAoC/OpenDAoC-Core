@@ -100,7 +100,7 @@ namespace DOL.AI.Brain
 {
 	public class CaithorBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public CaithorBrain() : base()
 		{
 			AggroLevel = 100;
@@ -241,7 +241,7 @@ namespace DOL.AI.Brain
 {
 	public class GhostOfCaithorBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public GhostOfCaithorBrain() : base()
 		{
 			AggroLevel = 100;
@@ -351,7 +351,7 @@ namespace DOL.AI.Brain
 {
 	public class CaithorDorochaBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public CaithorDorochaBrain() : base()
 		{
 			AggroLevel = 100;

@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Text;
 using DOL.Database;
 using DOL.GS.PacketHandler;
-using log4net;
 using System.Reflection;
 using DOL.Language;
 
@@ -29,7 +28,7 @@ namespace DOL.GS
 {
     public class ZoneBonus
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         #region eZoneBonusType
         public enum eZoneBonusType

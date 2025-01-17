@@ -6,7 +6,6 @@ using System.Reflection;
 using DOL.GS.PacketHandler;
 using DOL.Database;
 using DOL.Events;
-using log4net;
 using DOL.AI.Brain;
 
 

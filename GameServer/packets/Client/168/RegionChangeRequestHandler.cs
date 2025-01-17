@@ -4,7 +4,6 @@ using System.Reflection;
 using DOL.Database;
 using DOL.GS.Quests;
 using DOL.GS.ServerRules;
-using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -14,7 +13,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <summary>
         /// Defines a logger for this class.
         /// </summary>
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Holds jump point types

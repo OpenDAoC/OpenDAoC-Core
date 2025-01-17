@@ -25,7 +25,6 @@ using DOL.GS.Behaviour.Attributes;
 using DOL.GS.Behaviour;
 using DOL.Database;
 using DOL.AI.Brain;
-using log4net;
 using System.Reflection;
 
 namespace DOL.GS.Behaviour.Actions
@@ -33,7 +32,7 @@ namespace DOL.GS.Behaviour.Actions
 	[ActionAttribute(ActionType = eActionType.TrainerWindow, IsNullableP = true)]
 	public class TrainerWindowAction : AbstractAction<Nullable<Int32>, GameNPC>
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public TrainerWindowAction(GameNPC defaultNPC)
 			: base(defaultNPC, eActionType.TrainerWindow)

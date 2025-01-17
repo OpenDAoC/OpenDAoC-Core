@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using DOL.GS.ServerProperties;
 using DOL.GS.Styles;
-using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -13,7 +12,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <summary>
         /// Defines a logger for this class.
         /// </summary>
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {

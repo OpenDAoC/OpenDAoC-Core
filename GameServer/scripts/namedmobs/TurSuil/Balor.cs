@@ -101,7 +101,7 @@ namespace DOL.AI.Brain
 {
 	public class BalorBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BalorBrain() : base()
 		{
 			AggroLevel = 100;
@@ -182,7 +182,7 @@ namespace DOL.AI.Brain
 {
 	public class BalorEyeBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BalorEyeBrain()
 			: base()
 		{

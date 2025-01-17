@@ -1,7 +1,6 @@
 ﻿using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using log4net;
 using System;
 using System.Reflection;
 using DOL.GS.Trainer;
@@ -10,7 +9,7 @@ namespace DOL.GS.Quests.Hibernia
 {
     public class WildWilderness : BaseQuest
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         protected const int MIN_LEVEL = 1;
         protected const int MAX_LEVEL = 5;
         protected const string QUEST_TITLE = "Wild Wilderness";

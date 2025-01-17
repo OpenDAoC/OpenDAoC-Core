@@ -13,7 +13,7 @@ namespace DOL.GS.RealmAbilities
 	public class AtlasOF_FaithHealing : TimedRealmAbility
 	{
 
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public AtlasOF_FaithHealing(DbAbility dba, int level) : base(dba, level) { }
 

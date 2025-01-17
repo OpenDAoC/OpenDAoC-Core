@@ -445,7 +445,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.BrittleGuard)]
 	public class BrittleGuardSpellHandler : MasterlevelHandling
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		GameNPC summoned = null;
 		GameSpellEffect beffect = null;
@@ -600,7 +600,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.SummonTitan)]
 	public class Convoker10SpellHandler : MasterlevelHandling
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private int x, y, z;
 		GameNPC summoned = null;

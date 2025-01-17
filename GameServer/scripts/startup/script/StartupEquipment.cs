@@ -22,7 +22,6 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
-using log4net;
 
 using DOL.Events;
 using DOL.GS.ServerProperties;
@@ -46,7 +45,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Declare a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 		
 		/// <summary>
 		/// Table Cache

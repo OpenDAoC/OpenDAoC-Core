@@ -7,14 +7,13 @@ using System.Reflection;
 using System.Threading;
 using DOL.GS.ServerProperties;
 using DOL.Network;
-using log4net;
 using static DOL.GS.GameClient;
 
 namespace DOL.GS.PacketHandler
 {
     public class PacketProcessor
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private const int SAVED_PACKETS_COUNT = 16;
         private static Dictionary<string, IPacketHandler[]> _cachedPacketHandlerSearchResults = [];

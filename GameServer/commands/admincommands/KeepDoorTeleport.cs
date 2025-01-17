@@ -19,7 +19,6 @@
 using System;
 using DOL.Database;
 using DOL.GS.PacketHandler;
-using log4net;
 using DOL.GS.Keeps;
 
 namespace DOL.GS.Commands
@@ -36,7 +35,7 @@ namespace DOL.GS.Commands
         "'/keepdoorteleport reload' reload all teleport locations from the db"*/)]
     public class KeepDoorTeleportCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Handle command.

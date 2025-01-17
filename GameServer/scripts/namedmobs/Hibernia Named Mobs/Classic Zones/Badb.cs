@@ -98,7 +98,7 @@ namespace DOL.AI.Brain
 {
 	public class BadbBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BadbBrain() : base()
 		{
 			AggroLevel = 100;
@@ -304,7 +304,7 @@ namespace DOL.AI.Brain
 {
 	public class BadbWraithBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BadbWraithBrain() : base()
 		{
 			AggroLevel = 100;

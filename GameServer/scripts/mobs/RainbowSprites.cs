@@ -30,7 +30,7 @@ namespace DOL.AI.Brain
 {
 	public class RainbowSpriteTanBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public RainbowSpriteTanBrain() : base()
 		{
 			ThinkInterval = 1500;
@@ -94,7 +94,7 @@ namespace DOL.AI.Brain
 {
 	public class RainbowSpriteWhiteBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public RainbowSpriteWhiteBrain() : base()
 		{
 			ThinkInterval = 1500;
@@ -158,7 +158,7 @@ namespace DOL.AI.Brain
 {
 	public class RainbowSpriteBlueBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public RainbowSpriteBlueBrain() : base()
 		{
 			ThinkInterval = 1500;
@@ -222,7 +222,7 @@ namespace DOL.AI.Brain
 {
 	public class RainbowSpriteGreenBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public RainbowSpriteGreenBrain() : base()
 		{
 			ThinkInterval = 1500;

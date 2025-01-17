@@ -86,7 +86,7 @@ namespace DOL.GS
 
     public class AccountVault : GameHouseVault
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private string _vaultOwner;
         private int _vaultNumber = 0;

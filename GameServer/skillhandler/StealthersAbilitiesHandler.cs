@@ -20,13 +20,12 @@ using System;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
-using log4net;
 
 namespace DOL.GS
 {
 	public class StealtherAbilities
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		[ScriptLoadedEvent]
 		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)

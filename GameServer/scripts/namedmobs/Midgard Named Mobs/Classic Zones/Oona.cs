@@ -155,7 +155,7 @@ namespace DOL.AI.Brain
 {
 	public class OonaBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public OonaBrain() : base()
 		{
 			AggroLevel = 100;
@@ -305,7 +305,7 @@ namespace DOL.AI.Brain
 {
 	public class OonaUndeadSoldierBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public OonaUndeadSoldierBrain() : base()
 		{
 			AggroLevel = 100;
@@ -346,7 +346,7 @@ namespace DOL.AI.Brain
 {
 	public class OonaUndeadAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public OonaUndeadAddBrain() : base()
 		{
 			AggroLevel = 100;

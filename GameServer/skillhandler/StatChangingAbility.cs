@@ -24,7 +24,7 @@ namespace DOL.GS.SkillHandler
 {
 	public class StatChangingAbility : PropertyChangingAbility
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public StatChangingAbility(DbAbility dba, int level, eProperty[] property)
 			: base(dba, level, property)

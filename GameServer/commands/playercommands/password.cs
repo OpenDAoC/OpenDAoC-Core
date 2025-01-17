@@ -9,7 +9,7 @@ namespace DOL.GS.Commands
 		"/password <current_password> <new_password>")]
 	public class PasswordCommand : AbstractCommandHandler, ICommandHandler
 	{
-		private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		private const string PASSWORD_PROPERTY = "PasswordCommandProperty";
 
 		#region ICommandHandler Members

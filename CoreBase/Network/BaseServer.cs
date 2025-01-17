@@ -7,13 +7,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DOL.Config;
-using log4net;
 
 namespace DOL.Network
 {
     public class BaseServer
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         public static readonly Encoding defaultEncoding = CodePagesEncodingProvider.Instance.GetEncoding(1252);
 
         private const int UDP_RECEIVE_BUFFER_SIZE = 8192;
@@ -86,7 +85,7 @@ namespace DOL.Network
                 catch (Exception e)
                 {
                     if (log.IsErrorEnabled)
-                        log.Error(e.Message, e);
+                        log.Error($"{nameof(ConfigureUpnp)}", e);
                 }
             }
 

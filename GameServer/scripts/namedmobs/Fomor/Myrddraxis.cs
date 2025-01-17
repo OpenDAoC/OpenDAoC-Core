@@ -302,7 +302,7 @@ namespace DOL.AI.Brain
 {
 	public class MyrddraxisBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MyrddraxisBrain() : base()
 		{
 			AggroLevel = 100;
@@ -914,7 +914,7 @@ namespace DOL.AI.Brain
 {
 	public class MyrddraxisSecondHeadBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MyrddraxisSecondHeadBrain() : base()
 		{
 			AggroLevel = 100;
@@ -1119,7 +1119,7 @@ namespace DOL.AI.Brain
 {
 	public class MyrddraxisThirdHeadBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MyrddraxisThirdHeadBrain() : base()
 		{
 			AggroLevel = 100;
@@ -1324,7 +1324,7 @@ namespace DOL.AI.Brain
 {
 	public class MyrddraxisFourthHeadBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MyrddraxisFourthHeadBrain() : base()
 		{
 			AggroLevel = 100;
@@ -1528,7 +1528,7 @@ namespace DOL.AI.Brain
 {
 	public class MyrddraxisFifthHeadBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MyrddraxisFifthHeadBrain() : base()
 		{
 			AggroLevel = 100;

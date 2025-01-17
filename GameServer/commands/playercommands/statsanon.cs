@@ -19,7 +19,6 @@
 
 // By Daeli
 using System;
-using log4net;
 
 using DOL.GS;
 using DOL.GS.PacketHandler;

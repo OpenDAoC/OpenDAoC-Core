@@ -35,21 +35,7 @@ namespace DOL.Tests.Integration.Utils
 		public SchedulerTest()
 		{
 		}
-		
-		[OneTimeSetUp]
-		public void SetUp()
-		{
-			log4net.Config.BasicConfigurator.Configure(
-				new log4net.Appender.ConsoleAppender {
-					Layout = new log4net.Layout.SimpleLayout()});
-		}
 
-		[OneTimeTearDown]
-		public void TearDown()
-		{
-			log4net.LogManager.Shutdown();
-		}
-		
 		[Test]
 		public void Scheduler_AddTimer_RetrieveTask()
 		{

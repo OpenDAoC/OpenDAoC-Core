@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.DirectDamageWithDebuff)]
 	public class DirectDamageDebuffSpellHandler : AbstractResistDebuff
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public override eProperty Property1 => Caster.GetResistTypeForDamage(Spell.DamageType);
 		public override string DebuffTypeName => GlobalConstants.DamageTypeToName(Spell.DamageType);

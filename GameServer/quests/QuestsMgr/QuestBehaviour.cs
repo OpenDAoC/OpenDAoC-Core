@@ -22,7 +22,6 @@ using System.Collections;
 using DOL.Database;
 using DOL.Events;
 using DOL.AI.Brain;
-using log4net;
 using System.Reflection;
 using DOL.GS.Behaviour;
 
@@ -53,7 +52,7 @@ namespace DOL.GS.Quests
 
         public const string NUMBER_OF_EXECUTIONS = "quest.numberOfExecutions";
 
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Variables
                 

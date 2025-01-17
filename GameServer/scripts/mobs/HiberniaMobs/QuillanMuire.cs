@@ -27,7 +27,7 @@ namespace DOL.AI.Brain
 {
     public class QuillanMuireBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public QuillanMuireBrain() : base()
 		{
 			AggroLevel = 100;
@@ -155,7 +155,7 @@ namespace DOL.AI.Brain
 {
     public class MuireHerbalistBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MuireHerbalistBrain() : base()
 		{
 			AggroLevel = 100;

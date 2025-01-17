@@ -65,7 +65,7 @@ namespace DOL.AI.Brain
 {
     public class TaborBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public TaborBrain() : base()
 		{
 			AggroLevel = 100;
@@ -272,7 +272,7 @@ namespace DOL.AI.Brain
 {
     public class TaborGhostBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public TaborGhostBrain() : base()
 		{
 			AggroLevel = 100;
@@ -507,7 +507,7 @@ namespace DOL.AI.Brain
 {
     public class SwirlDirtBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public SwirlDirtBrain() : base()
 		{
 			AggroLevel = 0;

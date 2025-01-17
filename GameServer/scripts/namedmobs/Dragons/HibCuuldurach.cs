@@ -265,7 +265,7 @@ namespace DOL.AI.Brain
 {
 	public class HibCuuldurachBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public HibCuuldurachBrain()
 			: base()
 		{
@@ -1058,7 +1058,7 @@ namespace DOL.AI.Brain
 {
 	public class CuuldurachMessengerBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public CuuldurachMessengerBrain()
 		{
@@ -1395,7 +1395,7 @@ namespace DOL.AI.Brain
 {
 	public class CuuldurachSpawnedAdBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public CuuldurachSpawnedAdBrain() : base()
 		{

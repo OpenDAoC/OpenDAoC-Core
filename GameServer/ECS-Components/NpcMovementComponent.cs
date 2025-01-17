@@ -10,7 +10,7 @@ namespace DOL.GS
 {
     public class NpcMovementComponent : MovementComponent
     {
-        public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public const short DEFAULT_WALK_SPEED = 70;
         public const int MIN_ALLOWED_FOLLOW_DISTANCE = 100;

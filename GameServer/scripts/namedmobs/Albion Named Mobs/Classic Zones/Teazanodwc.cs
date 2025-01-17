@@ -84,7 +84,7 @@ namespace DOL.AI.Brain
 {
 	public class TeazanodwcBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public TeazanodwcBrain() : base()
 		{
 			AggroLevel = 100;
@@ -165,7 +165,7 @@ namespace DOL.AI.Brain
 {
 	public class TeazanodwcAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public TeazanodwcAddBrain() : base()
 		{
 			AggroLevel = 100;

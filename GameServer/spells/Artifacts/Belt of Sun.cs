@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.BeltOfSun)]
     public class BeltOfSun : SummonItemSpellHandler
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private DbItemTemplate m_SunSlash;
         private DbItemTemplate m_SunThrust;

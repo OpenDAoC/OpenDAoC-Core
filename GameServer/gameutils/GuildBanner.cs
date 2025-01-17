@@ -5,14 +5,13 @@ using DOL.Events;
 using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.Database;
-using log4net;
 using DOL.GS.Effects;
 
 namespace DOL.GS
 {
     public class GuildBanner
     {
-		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		ECSGameTimer m_timer;
         GamePlayer m_player;

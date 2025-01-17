@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
-using log4net;
 
 namespace DOL.GS.Keeps
 {
@@ -37,9 +36,9 @@ namespace DOL.GS.Keeps
 			get { return m_frontierRegionsList; }
 		}
 
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-		public ILog Log
+		public Logging.Logger Log
 		{
 			get { return log; }
 		}

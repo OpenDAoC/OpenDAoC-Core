@@ -8,8 +8,7 @@ namespace DOL.GS.GameEvents
 {
     public class RelicGuardManager
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private static readonly Lock _lock = new();
         private static int _albAddedGuardsCount = 0;

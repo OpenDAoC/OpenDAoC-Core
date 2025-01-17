@@ -95,7 +95,7 @@ namespace DOL.AI.Brain
 {
 	public class KontarCorruptBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public KontarCorruptBrain() : base()
 		{
 			AggroLevel = 100;
@@ -256,7 +256,7 @@ namespace DOL.AI.Brain
 {
 	public class CorruptorBodyguardBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public CorruptorBodyguardBrain() : base()
 		{
 			AggroLevel = 100;

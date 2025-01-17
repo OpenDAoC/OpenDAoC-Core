@@ -35,7 +35,7 @@ namespace DOL.GS.Commands
 	public class DynCodeCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 
-        private static log4net.ILog log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public static void ExecuteCode(GameClient client, string methodBody)
         {
@@ -110,17 +110,15 @@ namespace DOL.GS.Commands
             text.Append("using DOL.GS.Scripts;\n");
             text.Append("using DOL.GS.PacketHandler;\n");
             text.Append("using DOL.Events;\n");
-            text.Append("using log4net;\n");
             text.Append("public class DynCode {\n");
-            text.Append("private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);\n");
             text.Append("public static GameClient Client = null;\n");
             text.Append("public static void print(object obj) {\n");
             text.Append("	string str = (obj==null)?\"(null)\":obj.ToString();\n");
-            text.Append("	if (Client==null || Client.Player==null) Log.Debug(str);\n	else Client.Out.SendMessage(str, eChatType.CT_System, eChatLoc.CL_SystemWindow);\n}\n");
+            text.Append("	Client.Out.SendMessage(str, eChatType.CT_System, eChatLoc.CL_SystemWindow);\n}\n");
             text.Append("public static void DynMethod(GameObject target, GamePlayer player) {\nif (player!=null) Client = player.Client;\n");
             text.Append("GameNPC targetNpc = target as GameNPC;");
             text.Append(methodBody);
-            text.Append("\n}\n}\n");
+            text.Append(";\n}\n}\n");
             return text.ToString();
         }
 

@@ -142,7 +142,7 @@ namespace DOL.AI.Brain
 {
 	public class CronwortBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public CronwortBrain() : base()
 		{
 			AggroLevel = 100;
@@ -234,7 +234,7 @@ namespace DOL.AI.Brain
 {
 	public class BreanwortBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BreanwortBrain() : base()
 		{
 			AggroLevel = 100;

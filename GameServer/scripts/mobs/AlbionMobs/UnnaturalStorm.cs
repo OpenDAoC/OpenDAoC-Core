@@ -85,7 +85,7 @@ namespace DOL.AI.Brain
 {
     public class UnnaturalStormBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public UnnaturalStormBrain() : base()
 		{
 			AggroLevel = 100;
@@ -196,7 +196,7 @@ namespace DOL.AI.Brain
 {
     public class UnnaturalStormAddsBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public UnnaturalStormAddsBrain() : base()
 		{
 			AggroLevel = 0;
@@ -241,7 +241,7 @@ namespace DOL.AI.Brain
 {
     public class UnnaturalStormControllerBrain : APlayerVicinityBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public UnnaturalStormControllerBrain()
 			: base()

@@ -1,7 +1,6 @@
 using DOL.GS.PacketHandler;
 using DOL.Language;
 using JNogueira.Discord.Webhook.Client;
-using log4net;
 
 namespace DOL.GS.Keeps
 {
@@ -29,7 +28,7 @@ namespace DOL.GS.Keeps
 	/// </summary>
 	public class PlayerMgr
 	{
-		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Sends a message to all players to notify them of the keep capture

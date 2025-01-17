@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using DOL.Database;
 using DOL.Events;
-using log4net;
 
 namespace DOL.GS.GameEvents
 {
@@ -16,7 +15,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Declare a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Cached DB Startup Location

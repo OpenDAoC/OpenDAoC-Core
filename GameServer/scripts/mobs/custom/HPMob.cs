@@ -25,7 +25,6 @@ using DOL.GS;
 using DOL.GS.PacketHandler;
 using DOL.GS.Scripts;
 using System.Threading;
-using log4net;
 using DOL.AI.Brain;
 
 namespace DOL.GS.Scripts

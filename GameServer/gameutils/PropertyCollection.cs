@@ -2,13 +2,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using log4net;
 
 namespace DOL.GS
 {
     public class PropertyCollection
     {
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly ConcurrentDictionary<string, object> _properties = new();
 

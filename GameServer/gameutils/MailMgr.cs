@@ -10,7 +10,6 @@ using System.Xml;
 
 using DOL.Config;
 using DOL.GS;
-using log4net;
 
 namespace DOL.Mail
 {
@@ -97,7 +96,7 @@ namespace DOL.Mail
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		public static readonly ILog Logger = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		public static readonly Logging.Logger Logger = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public static bool Init()
 		{

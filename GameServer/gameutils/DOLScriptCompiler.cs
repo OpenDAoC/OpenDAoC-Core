@@ -23,7 +23,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-using log4net;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -31,7 +30,7 @@ namespace DOL.GS
 {
     public class DOLScriptCompiler
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private Compilation compiler;
         private Microsoft.CodeAnalysis.Emit.EmitResult lastEmitResult;
@@ -153,13 +152,12 @@ using System.Runtime.InteropServices;
 
 using Microsoft.CSharp;
 using Microsoft.VisualBasic;
-using log4net;
 
 namespace DOL.GS
 {
     public class DOLScriptCompiler
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerFactory.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private CodeDomProvider compiler;
         private CompilerErrorCollection lastCompilationErrors;

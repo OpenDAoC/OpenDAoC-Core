@@ -67,7 +67,7 @@ namespace DOL.AI.Brain
 {
     public class DoobenBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DoobenBrain() : base()
 		{
 			ThinkInterval = 1500;

@@ -26,7 +26,7 @@ namespace DOL.GS
 	// This class has to be completed and may be inherited for scripting purpose (like quests)
 	public class KingNPC : GameNPC
 	{
-		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public KingNPC()
 			: base()

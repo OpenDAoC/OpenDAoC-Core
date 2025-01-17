@@ -85,7 +85,7 @@ namespace DOL.AI.Brain
 {
 	public class DremcisFuiloltairBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DremcisFuiloltairBrain() : base()
 		{
 			AggroLevel = 100;
@@ -249,7 +249,7 @@ namespace DOL.AI.Brain
 {
 	public class BeomarbhanBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BeomarbhanBrain() : base()
 		{
 			AggroLevel = 100;
@@ -330,7 +330,7 @@ namespace DOL.AI.Brain
 {
 	public class FuilslathachBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public FuilslathachBrain() : base()
 		{
 			AggroLevel = 100;

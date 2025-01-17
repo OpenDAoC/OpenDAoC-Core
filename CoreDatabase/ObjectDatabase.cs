@@ -8,7 +8,6 @@ using DOL.Database.Attributes;
 using DOL.Database.Connection;
 using DOL.Database.Handlers;
 
-using log4net;
 
 namespace DOL.Database
 {
@@ -20,7 +19,7 @@ namespace DOL.Database
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Number Format Info to Use for Database

@@ -5,7 +5,6 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
-using log4net;
 
 namespace DOL.GS.DailyQuest
 {
@@ -14,7 +13,7 @@ namespace DOL.GS.DailyQuest
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const string questTitle = "[Hardcore] Big Man On Campus";
 		private const int minimumLevel = 1;

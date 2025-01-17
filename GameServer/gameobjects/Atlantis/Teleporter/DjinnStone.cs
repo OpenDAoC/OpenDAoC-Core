@@ -17,7 +17,6 @@
  *
  */
 using System;
-using log4net;
 using System.Reflection;
 
 namespace DOL.GS

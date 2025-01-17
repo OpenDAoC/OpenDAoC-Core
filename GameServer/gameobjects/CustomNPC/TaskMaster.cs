@@ -1,13 +1,12 @@
 using System.Reflection;
 using DOL.GS;
 using DOL.GS.Quests;
-using log4net;
 
 namespace DOL.GS
 {
 	public class TaskMaster : GameNPC
 	{
-		private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public override bool Interact(GamePlayer player)
 		{

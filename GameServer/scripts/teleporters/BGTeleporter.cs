@@ -2,14 +2,13 @@ using System;
 using DOL.GS;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using log4net;
 using System.Reflection;
 
 namespace DOL.GS.Scripts
 {
     public class BGTeleporter : GameNPC
 	{
-		private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static new readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public override bool AddToWorld()
         {

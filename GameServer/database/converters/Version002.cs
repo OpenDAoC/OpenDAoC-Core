@@ -17,7 +17,6 @@
  *
  */
 using System;
-using log4net;
 using DOL.Database;
 
 namespace DOL.GS.DatabaseConverters
@@ -31,7 +30,7 @@ namespace DOL.GS.DatabaseConverters
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// style icon field added this should copy the ID value

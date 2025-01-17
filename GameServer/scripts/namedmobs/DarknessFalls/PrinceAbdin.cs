@@ -3,14 +3,13 @@ using System.Reflection;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.Database;
-using log4net;
 using DOL.GS;
 
 namespace DOL.GS
 {
     public class PrinceAbdin : GameEpicBoss
     {
-        private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         [ScriptLoadedEvent]
         public static void ScriptLoaded(DOLEvent e, object sender, EventArgs args)
@@ -84,7 +83,7 @@ namespace DOL.AI.Brain
 {
     public class AbdinBrain : StandardMobBrain
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public AbdinBrain() : base()
         {

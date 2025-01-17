@@ -24,7 +24,6 @@ using DOL.Events;
 using DOL.Language;
 using DOL.GS.ServerProperties;
 
-using log4net;
 
 namespace DOL.GS.GameEvents
 {
@@ -36,7 +35,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 		
 		/// <summary>
 		/// Enable Starter Guilds

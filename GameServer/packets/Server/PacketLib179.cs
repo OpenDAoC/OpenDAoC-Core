@@ -20,7 +20,6 @@
 using System.Reflection;
 using DOL.GS.Housing;
 using DOL.GS.PlayerTitles;
-using log4net;
 
 namespace DOL.GS.PacketHandler
 {
@@ -30,7 +29,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Constructs a new PacketLib for Version 1.79 clients

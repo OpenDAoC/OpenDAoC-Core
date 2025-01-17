@@ -26,7 +26,6 @@ using DOL.Database.Attributes;
 using DOL.GS.Commands;
 using DOL.GS.ServerProperties;
 
-using log4net;
 
 namespace DOL.GS.DatabaseUpdate
 {
@@ -51,7 +50,7 @@ namespace DOL.GS.DatabaseUpdate
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Check For UnloadXML Args

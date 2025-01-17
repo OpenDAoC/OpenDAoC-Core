@@ -18,14 +18,13 @@
  */
 
 using System.Reflection;
-using log4net;
 
 namespace DOL.GS.PacketHandler
 {
     [PacketLib(1111, GameClient.eClientVersion.Version1111)]
     public class PacketLib1111 : PacketLib1110
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Constructs a new PacketLib for Client Version 1.111

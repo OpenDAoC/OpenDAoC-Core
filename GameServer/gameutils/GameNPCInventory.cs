@@ -4,7 +4,6 @@ using DOL.Database;
 using System.Collections;
 using DOL.GS.PacketHandler;
 using DOL.Events;
-using log4net;
 
 namespace DOL.GS
 {

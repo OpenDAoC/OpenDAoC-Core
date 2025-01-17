@@ -5,14 +5,13 @@ using System.Reflection;
 using System.Threading;
 using DOL.AI.Brain;
 using DOL.GS.Spells;
-using log4net;
 
 namespace DOL.GS
 {
     // Component for holding persistent effects on the player.
     public class EffectListComponent : IManagedEntity
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private int _lastUpdateEffectsCount;
         private int _usedConcentration;

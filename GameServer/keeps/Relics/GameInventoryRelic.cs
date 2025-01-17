@@ -1,6 +1,5 @@
 using System.Reflection;
 using DOL.Database;
-using log4net;
 
 namespace DOL.GS
 {
@@ -9,7 +8,7 @@ namespace DOL.GS
 	/// </summary>
 	public class GameInventoryRelic : GameInventoryItem
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public GameInventoryRelic()
 			: base()

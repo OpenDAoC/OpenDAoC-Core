@@ -29,7 +29,6 @@ using DOL.Events;
 using DOL;
 using System.Collections;
 using DOL.Database;
-using log4net;
 
 namespace DOL.GS.Commands
 {

@@ -70,7 +70,7 @@ namespace DOL.AI.Brain
 {
 	public class GneissBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public GneissBrain() : base()
 		{
 			AggroLevel = 100;
@@ -195,7 +195,7 @@ namespace DOL.AI.Brain
 {
 	public class GneissAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public GneissAddBrain() : base()
 		{
 			AggroLevel = 100;

@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Threading;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using log4net;
 using DOL.Database;
 
 namespace DOL.GS.Commands

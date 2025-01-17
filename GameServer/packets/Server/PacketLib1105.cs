@@ -23,14 +23,13 @@ using System.Linq;
 using System.Reflection;
 using DOL.GS.RealmAbilities;
 using DOL.GS.Styles;
-using log4net;
 
 namespace DOL.GS.PacketHandler
 {
 	[PacketLib(1105, GameClient.eClientVersion.Version1105)]
 	public class PacketLib1105 : PacketLib1104
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Constructs a new PacketLib for Client Version 1.105

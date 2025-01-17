@@ -50,7 +50,7 @@ namespace DOL.AI.Brain
 {
 	public class VagdushBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public VagdushBrain() : base()
 		{
 			ThinkInterval = 1500;

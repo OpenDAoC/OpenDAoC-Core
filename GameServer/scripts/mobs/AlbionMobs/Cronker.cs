@@ -26,7 +26,7 @@ namespace DOL.AI.Brain
 {
 	public class CronkerBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public CronkerBrain() : base()
 		{
 			AggroLevel = 100;

@@ -150,8 +150,7 @@ namespace DOL.AI.Brain
 {
     public class AidonTheArchwizardBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public AidonTheArchwizardBrain()
             : base()
@@ -503,8 +502,7 @@ namespace DOL.AI.Brain
 {
     public class AidonCopyFireBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public AidonCopyFireBrain()
             : base()
         {
@@ -631,8 +629,7 @@ namespace DOL.AI.Brain
 {
     public class AidonCopyIceBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public AidonCopyIceBrain()
             : base()
         {
@@ -759,8 +756,7 @@ namespace DOL.AI.Brain
 {
     public class AidonCopyAirBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public AidonCopyAirBrain()
             : base()
         {
@@ -885,8 +881,7 @@ namespace DOL.AI.Brain
 {
     public class AidonCopyEarthBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log =
-            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public AidonCopyEarthBrain()
             : base()
         {

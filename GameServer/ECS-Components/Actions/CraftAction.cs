@@ -1,13 +1,12 @@
 ﻿using System.Reflection;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS
 {
     public class CraftAction
     {
-        protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         public const string CRAFT_QUEUE_LENGTH_PROPERTY = "CraftQueueLength";
         public const string CRAFT_QUEUE_REMAINING_PROPERTY = "CraftQueueRemaining";
         public const string RECIPE_TO_CRAFT_PROPERTY = "RecipeToCraft";

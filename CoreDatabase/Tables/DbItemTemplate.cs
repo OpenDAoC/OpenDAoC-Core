@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using DOL.Database.Attributes;
-using log4net;
 
 namespace DOL.Database
 {
@@ -39,7 +38,7 @@ namespace DOL.Database
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 		
 		#region members
 		

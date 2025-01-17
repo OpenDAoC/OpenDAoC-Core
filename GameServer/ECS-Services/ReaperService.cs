@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using ECS.Debug;
-using log4net;
 
 namespace DOL.GS
 {
     public class ReaperService
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(ReaperService);
         private static List<LivingBeingKilled> _list;
 

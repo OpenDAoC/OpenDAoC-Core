@@ -9,9 +9,8 @@ using DOL.GS.Housing;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
-using log4net;
 
-namespace DOLGameServerConsole
+namespace DOL.GameServerConsole
 {
 	/// <summary>
 	/// The packetlib for dummy console clients for /commands
@@ -21,7 +20,7 @@ namespace DOLGameServerConsole
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public void SendMessage(string msg, eChatType type, eChatLoc loc)
 		{

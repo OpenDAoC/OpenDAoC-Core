@@ -71,7 +71,7 @@ namespace DOL.AI.Brain
 {
 	public class UlfketillBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public UlfketillBrain() : base()
 		{
 			AggroLevel = 100;
@@ -192,7 +192,7 @@ namespace DOL.AI.Brain
 {
 	public class UlfketillAddsBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public UlfketillAddsBrain() : base()
 		{
 			AggroLevel = 100;

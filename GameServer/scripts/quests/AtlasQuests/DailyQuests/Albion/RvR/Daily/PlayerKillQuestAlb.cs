@@ -10,7 +10,6 @@ using DOL.GS.API;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
-using log4net;
 
 namespace DOL.GS.DailyQuest.Albion
 {
@@ -19,7 +18,7 @@ namespace DOL.GS.DailyQuest.Albion
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const string questTitle = "[Daily] Fen's New Friends";
 		private const int minimumLevel = 40;

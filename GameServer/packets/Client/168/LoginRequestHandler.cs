@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using DOL.Database;
 using DOL.GS.ServerProperties;
-using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -52,7 +51,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static DateTime m_lastAccountCreateTime;
 		private readonly Dictionary<string, LockCount> m_locks = new Dictionary<string, LockCount>();

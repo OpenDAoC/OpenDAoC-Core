@@ -6,7 +6,6 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS
 {
@@ -15,7 +14,7 @@ namespace DOL.GS
     /// </summary>
     public abstract class AbstractCraftingSkill
 	{
-		protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private bool finishedCraft = false; 
 		#region Declaration

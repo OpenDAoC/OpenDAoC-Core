@@ -10,7 +10,7 @@ namespace DOL.GS.RealmAbilities
 	{
 		public AtlasOF_SpeedOfSound(DbAbility dba, int level) : base(dba, level) { }
 
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		int m_range = 2000;
 		int m_duration = 30000; // Your group moves at twice normal speed for 30 seconds

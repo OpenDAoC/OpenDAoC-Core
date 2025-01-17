@@ -368,7 +368,7 @@ namespace DOL.AI.Brain
 {
 	public class AmalgamateParthananBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public AmalgamateParthananBrain() : base()
 		{
 			AggroLevel = 100;
@@ -487,7 +487,7 @@ namespace DOL.AI.Brain
 {
 	public class ParthananBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ParthananBrain() : base()
 		{
 			AggroLevel = 100;
@@ -895,8 +895,7 @@ namespace DOL.AI.Brain
 {
 	public class ParthananFarmController1Brain : APlayerVicinityBrain
 	{
-		private static readonly log4net.ILog log =
-			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public ParthananFarmController1Brain()
 			: base()
@@ -996,8 +995,7 @@ namespace DOL.AI.Brain
 {
 	public class ParthananFarmController2Brain : APlayerVicinityBrain
 	{
-		private static readonly log4net.ILog log =
-			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public ParthananFarmController2Brain()
 			: base()
@@ -1099,8 +1097,7 @@ namespace DOL.AI.Brain
 {
 	public class ParthananFarmController2bBrain : APlayerVicinityBrain
 	{
-		private static readonly log4net.ILog log =
-			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public ParthananFarmController2bBrain()
 			: base()
@@ -1200,8 +1197,7 @@ namespace DOL.AI.Brain
 {
 	public class ParthananFarmController3Brain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log =
-			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public ParthananFarmController3Brain()
 			: base()
@@ -1300,8 +1296,7 @@ namespace DOL.AI.Brain
 {
 	public class ParthananFarmController3bBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log =
-			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public ParthananFarmController3bBrain()
 			: base()

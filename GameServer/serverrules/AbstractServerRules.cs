@@ -11,18 +11,17 @@ using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
-using log4net;
 using static DOL.GS.IGameStaticItemOwner;
 using static DOL.GS.ServerRules.IServerRules;
 
 namespace DOL.GS.ServerRules
 {
     public abstract class AbstractServerRules : IServerRules
-    {
+        {
         /// <summary>
         /// Defines a logger for this class.
         /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// This is called after the rules are created to do any event binding or other tasks

@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using DOL.Database.Attributes;
-using log4net;
 
 namespace DOL.Database
 {
@@ -13,7 +12,7 @@ namespace DOL.Database
 	[DataTable(TableName = "Inventory")]
 	public class DbInventoryItem : DataObject
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public const string BLANK_ITEM = "blank_item";
 

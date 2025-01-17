@@ -13,7 +13,7 @@ namespace DOL.GS.RealmAbilities
 	/// </summary>
 	public abstract class RAPropertyEnhancer : L5RealmAbility
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		// property to modify
 		eProperty[] m_property;

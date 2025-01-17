@@ -14,7 +14,6 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using DOL.Database;
-using log4net;
 
 
 namespace DOL.GS.Scripts
@@ -22,7 +21,7 @@ namespace DOL.GS.Scripts
 
     public class InstantLevelNPC : GameNPC
     {
-        private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         
 		public override bool AddToWorld()
 		{

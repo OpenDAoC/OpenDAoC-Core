@@ -12,7 +12,7 @@ namespace DOL.GS
 	/// </summary>
 	public class GamePlayerInventory : GameLivingInventory
 	{
-		private static readonly log4net.ILog Log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger Log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		#region Constructor/Declaration/LoadDatabase/SaveDatabase
 

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using DOL.GS.PacketHandler;
-using log4net;
 
 namespace DOL.GS.Commands
 {
@@ -13,7 +12,7 @@ namespace DOL.GS.Commands
         "/achievement addgroup <MobName> ie: /achievement addgroup Cuuldurach the Glimmer King")]
     public class AddAchievementCommandHandler : AbstractCommandHandler, ICommandHandler
     {        
-        protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         
         public void OnCommand(GameClient client, string[] args)
         {

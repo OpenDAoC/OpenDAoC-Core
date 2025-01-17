@@ -1,6 +1,5 @@
 using System.Reflection;
 using DOL.GS;
-using log4net;
 
 namespace DOL.AI.Brain
 {
@@ -12,7 +11,7 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Defines a logger for this class.
         /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Constructs new controlled npc brain

@@ -20,7 +20,6 @@ using System;
 using System.Text;
 using DOL.Events;
 using DOL.Database;
-using log4net;
 using System.Reflection;
 using DOL.GS.Behaviour.Attributes;
 using DOL.GS.Behaviour;
@@ -35,7 +34,7 @@ namespace DOL.GS.Quests.Triggers
     [TriggerAttribute(TriggerType=eTriggerType.DeclineQuest)]
     public class DeclineQuestTrigger : AbstractTrigger<Unused,Type>
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
         /// Creates a new questtrigger and does some simple triggertype parameter compatibility checking

@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using DOL.Events;
-using log4net;
 
 namespace DOL.GS.GameEvents
 {
@@ -60,7 +59,7 @@ namespace DOL.GS.GameEvents
 		/// <summary>
 		/// Sets up our logger instance
 		/// </summary>
-		protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// This method is called when the script is loaded.

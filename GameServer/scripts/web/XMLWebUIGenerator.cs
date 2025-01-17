@@ -5,7 +5,6 @@ using DOL.Database;
 using DOL.Database.Attributes;
 using DOL.Database.Connection;
 using DOL.Events;
-using log4net;
 
 namespace DOL.GS.Scripts
 {
@@ -17,7 +16,7 @@ namespace DOL.GS.Scripts
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		[ScriptLoadedEvent]
 		public static void OnScriptLoaded(DOLEvent e, object sender, EventArgs args)

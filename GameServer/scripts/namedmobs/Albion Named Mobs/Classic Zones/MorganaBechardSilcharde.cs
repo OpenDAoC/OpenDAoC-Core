@@ -46,7 +46,7 @@ namespace DOL.AI.Brain
 {
 	public class MorganaBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public MorganaBrain() : base()
 		{
 			AggroLevel = 0;
@@ -337,7 +337,7 @@ namespace DOL.AI.Brain
 {
 	public class BechardBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BechardBrain() : base()
 		{
 			AggroLevel = 100;
@@ -484,7 +484,7 @@ namespace DOL.AI.Brain
 {
 	public class SilchardeBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public SilchardeBrain() : base()
 		{
 			AggroLevel = 100;
@@ -554,7 +554,7 @@ namespace DOL.AI.Brain
 {
 	public class DemonicMinionBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DemonicMinionBrain() : base()
 		{
 			AggroLevel = 100;

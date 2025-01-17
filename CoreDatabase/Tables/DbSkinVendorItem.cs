@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using DOL.Database;
 using DOL.Database.Attributes;
-using log4net;
 
 namespace DOL.Database
 {
@@ -13,7 +12,7 @@ namespace DOL.Database
     public class DbSkinVendorItem : DataObject
     {
 
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         protected bool m_hasLoggedError = false;
         #region Inventory fields
         

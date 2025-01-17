@@ -17,7 +17,6 @@
  *
  */
 using System;
-using log4net;
 using System.Reflection;
 using DOL.Events;
 using DOL.Database;

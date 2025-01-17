@@ -8,8 +8,7 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using DOL.Database;
 
-//using log4net;
-
+//
 namespace DOL.GS.RealmAbilities
 {
 	public class ResoluteMinionAbility : RR5RealmAbility

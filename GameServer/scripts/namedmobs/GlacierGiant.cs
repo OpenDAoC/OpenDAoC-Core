@@ -115,7 +115,7 @@ namespace DOL.AI.Brain
 {
 	public class GlacierGiantBrain : EpicBossBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public GlacierGiantBrain() : base()
 		{
 			AggroLevel = 0;//is neutral

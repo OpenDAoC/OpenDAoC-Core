@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
-using log4net;
 
 namespace DOL.GS.Movement
 {
@@ -11,7 +10,7 @@ namespace DOL.GS.Movement
         /// <summary>
         /// Defines a logger for this class.
         /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static Dictionary<string, DbPath> m_pathCache = new Dictionary<string, DbPath>();
 		private static Dictionary<string, SortedList<int, DbPathPoint>> m_pathpointCache = new Dictionary<string, SortedList<int, DbPathPoint>>();

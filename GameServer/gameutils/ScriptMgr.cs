@@ -14,7 +14,6 @@ using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerRules;
 using DOL.GS.Spells;
-using log4net;
 
 namespace DOL.GS
 {
@@ -23,7 +22,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static Dictionary<string, Assembly> m_compiledScripts = new();
 		private static ConcurrentDictionary<eSpellType, Func<GameLiving, Spell, SpellLine, ISpellHandler>> m_spellhandlerConstructorCache = new();

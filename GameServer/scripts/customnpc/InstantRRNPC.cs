@@ -28,7 +28,6 @@ using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
 using System.Collections.Generic;
 using System.Reflection;
-using log4net;
 using DOL.GS.Housing;
 
 namespace DOL.GS
@@ -43,7 +42,7 @@ namespace DOL.GS
         int freeRR = 13;
         protected readonly bool AllowGMChangeAmount = true;
 
-        private static new readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         #endregion
 

@@ -27,7 +27,7 @@ namespace DOL.AI.Brain
 {
 	public class ThroatripperBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ThroatripperBrain() : base()
 		{
 			AggroLevel = 80;
@@ -112,7 +112,7 @@ namespace DOL.AI.Brain
 {
 	public class ThroatripperAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ThroatripperAddBrain() : base()
 		{
 			AggroLevel = 0;

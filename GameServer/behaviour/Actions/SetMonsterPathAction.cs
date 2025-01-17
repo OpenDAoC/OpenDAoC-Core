@@ -23,7 +23,6 @@ using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.Behaviour.Attributes;
 using DOL.GS.Movement;
-using log4net;
 
 namespace DOL.GS.Behaviour.Actions
 {
@@ -31,7 +30,7 @@ namespace DOL.GS.Behaviour.Actions
     public class SetMonsterPathAction : AbstractAction<PathPoint,GameNPC>
     {
 
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public SetMonsterPathAction(GameNPC defaultNPC,  Object p, Object q)
             : base(defaultNPC, eActionType.SetMonsterPath, p, q)

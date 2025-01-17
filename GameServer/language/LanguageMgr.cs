@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using DOL.Database;
 using DOL.GS;
-using log4net;
 
 namespace DOL.Language
 {
@@ -81,7 +80,7 @@ namespace DOL.Language
         /// <summary>
         /// Defines a logger for this class.
         /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Give a way to change or relocate the lang files

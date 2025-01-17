@@ -9,7 +9,6 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.Keeps;
 using DOL.GS.ServerProperties;
-using log4net;
 
 namespace DOL.GS
 {
@@ -22,7 +21,7 @@ namespace DOL.GS
     /// </summary>
     public class Region
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Region Variables
 

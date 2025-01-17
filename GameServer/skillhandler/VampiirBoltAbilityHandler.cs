@@ -4,7 +4,6 @@ using System.Reflection;
 using DOL.GS.PacketHandler;
 using DOL.GS.Effects;
 using DOL.Events;
-using log4net;
 
 namespace DOL.GS.SkillHandler
 {

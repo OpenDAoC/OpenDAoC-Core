@@ -190,7 +190,7 @@ namespace DOL.AI.Brain
 {
     public class BlightBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public BlightBrain() : base()
 		{
 			AggroLevel = 100;
@@ -316,7 +316,7 @@ namespace DOL.AI.Brain
 {
     public class FireBlightBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public FireBlightBrain() : base()
 		{
 			AggroLevel = 100;
@@ -425,7 +425,7 @@ namespace DOL.AI.Brain
 {
     public class LateBlightBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public LateBlightBrain() : base()
 		{
 			AggroLevel = 100;
@@ -534,7 +534,7 @@ namespace DOL.AI.Brain
 {
     public class FleshBlightBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public FleshBlightBrain() : base()
 		{
 			AggroLevel = 100;
@@ -620,8 +620,7 @@ namespace DOL.AI.Brain
 {
     public class BlightControllerBrain : APlayerVicinityBrain
 	{
-		private static readonly log4net.ILog log =
-			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public BlightControllerBrain()
 			: base()

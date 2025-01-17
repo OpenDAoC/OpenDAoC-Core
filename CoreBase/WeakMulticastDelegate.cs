@@ -1,7 +1,6 @@
 using System;
 using System.Reflection;
 using System.Text;
-using log4net;
 
 namespace DOL
 {
@@ -14,7 +13,7 @@ namespace DOL
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// The method info of the target

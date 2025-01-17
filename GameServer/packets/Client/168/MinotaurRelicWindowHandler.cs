@@ -19,7 +19,6 @@
 using System;
 using System.Reflection;
 using DOL.GS;
-using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -29,7 +28,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         /// <summary>
         /// Defines a logger for this class.
         /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {

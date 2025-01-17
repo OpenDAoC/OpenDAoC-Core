@@ -23,7 +23,6 @@ using DOL.GS;
 using DOL.Database;
 using System.Collections;
 using DOL.GS.Spells;
-using log4net;
 using System.Reflection;
 using DOL.GS.PacketHandler;
 

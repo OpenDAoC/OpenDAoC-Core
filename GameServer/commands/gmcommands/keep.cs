@@ -28,7 +28,7 @@ namespace DOL.GS.Commands
 		"GMCommands.Keep.Usage.Radius")]
 	public class KeepCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
-		private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		protected string TEMP_KEEP_LAST = "TEMP_KEEP_LAST";
 		public enum eKeepTypes : int

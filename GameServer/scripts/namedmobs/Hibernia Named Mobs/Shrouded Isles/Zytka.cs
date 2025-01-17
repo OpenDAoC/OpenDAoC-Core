@@ -127,7 +127,7 @@ namespace DOL.AI.Brain
 {
 	public class ZytkaBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ZytkaBrain() : base()
 		{
 			AggroLevel = 100;
@@ -250,7 +250,7 @@ namespace DOL.AI.Brain
 {
 	public class ZytkaAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ZytkaAddBrain() : base()
 		{
 			AggroLevel = 100;

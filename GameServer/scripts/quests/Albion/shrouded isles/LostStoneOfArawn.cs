@@ -5,7 +5,6 @@ using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using log4net;
 
 namespace DOL.GS.Quests.Albion;
 
@@ -18,7 +17,7 @@ public class LostStoneofArawn : BaseQuest
     /// <summary>
     ///     Defines a logger for this class.
     /// </summary>
-    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
     private static GameNPC Honaytrt; // Start NPC Honayt'rt
     private static GameNPC Nchever; // N'chever

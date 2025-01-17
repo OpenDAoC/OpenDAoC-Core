@@ -12,7 +12,7 @@ namespace DOL.GS
 {
 	public class MinotaurRelic : GameStaticItem
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		#region constructor
 		public MinotaurRelic() : base() { m_saveInDB = true; }

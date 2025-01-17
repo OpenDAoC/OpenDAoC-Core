@@ -22,7 +22,6 @@ using System.Collections.Specialized;
 using System.Reflection;
 using System.Linq;
 
-using log4net;
 
 // using DOL.GS.Quests.Atlantis;
 using DOL.Database;
@@ -41,7 +40,7 @@ namespace DOL.GS.Quests
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Holds all the quests descriptors used in the world (unique id => descriptor)

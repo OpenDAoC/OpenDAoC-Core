@@ -36,7 +36,7 @@ namespace DOL.GS.Commands
 		"AdminCommands.Shutdown.Usage.Stop")]
 	public class ShutdownCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
-		private static log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const int AUTOMATEDSHUTDOWN_CHECKINTERVALMINUTES = 15;
 		private const int AUTOMATEDSHUTDOWN_HOURTOSHUTDOWN = 4; // local time

@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using log4net;
 
 namespace DOL.GS.PacketHandler
 {
@@ -49,7 +48,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		
 		private readonly Dictionary<int, int> _packetIdToPreprocessMap;
 		private readonly Dictionary<int, Func<GameClient, GSPacketIn, bool>> _preprocessors;

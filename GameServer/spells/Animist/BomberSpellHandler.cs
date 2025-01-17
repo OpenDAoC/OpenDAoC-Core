@@ -6,7 +6,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Bomber)]
     public class BomberSpellHandler : SummonSpellHandler
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public BomberSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line)
         {

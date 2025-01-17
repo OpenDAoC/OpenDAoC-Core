@@ -6,7 +6,6 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS.Appeal
 {
@@ -15,7 +14,7 @@ namespace DOL.GS.Appeal
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static int m_CallbackFrequency = 5 * 60 * 1000; // How often appeal stat updates are sent out.
 		private static volatile Timer m_timer = null;

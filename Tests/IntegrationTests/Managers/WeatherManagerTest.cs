@@ -34,21 +34,7 @@ namespace DOL.Tests.Integration.Managers
 		public WeatherManagerTest()
 		{
 		}
-		
-		[OneTimeSetUp]
-		public void SetUp()
-		{
-			log4net.Config.BasicConfigurator.Configure(
-				new log4net.Appender.ConsoleAppender {
-					Layout = new log4net.Layout.SimpleLayout()});
-		}
 
-		[OneTimeTearDown]
-		public void TearDown()
-		{
-			log4net.LogManager.Shutdown();
-		}
-		
 		Region FakeRegion()
 		{
 			DOL.GS.ServerProperties.Properties.DISABLED_REGIONS = string.Empty;

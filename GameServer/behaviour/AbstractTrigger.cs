@@ -21,7 +21,6 @@ using System.Text;
 using DOL.Events;
 using DOL.GS.Behaviour.Attributes;using DOL.GS.Behaviour;
 using System.Reflection;
-using log4net;
 
 namespace DOL.GS.Behaviour
 {
@@ -32,7 +31,7 @@ namespace DOL.GS.Behaviour
     /// </summary>        
     public abstract class AbstractTrigger<TypeK, TypeI> : IBehaviourTrigger
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private TypeK k; //trigger keyword 
         private TypeI i;        

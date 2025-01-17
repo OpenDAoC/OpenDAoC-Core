@@ -22,7 +22,7 @@ namespace DOL.GS.Commands
 
     public class XCreateCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region spot cache
 

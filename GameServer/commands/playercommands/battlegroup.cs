@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Text;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS.Commands
 {
@@ -16,7 +15,7 @@ namespace DOL.GS.Commands
         "/bc <text>")]
     public class BattleGroupCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public void OnCommand(GameClient client, string[] args)
         {
@@ -84,7 +83,7 @@ namespace DOL.GS.Commands
         "/bg <option>")]
     public class BattleGroupSetupCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        protected static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         public void OnCommand(GameClient client, string[] args)
         {
             if (IsSpammingCommand(client.Player, "battlegroup"))

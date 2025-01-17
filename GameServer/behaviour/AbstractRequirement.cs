@@ -20,7 +20,6 @@ using System;
 using System.Text;
 using DOL.Events;
 using DOL.GS.Behaviour.Attributes;using DOL.GS.Behaviour;
-using log4net;
 using System.Reflection;
 
 namespace DOL.GS.Behaviour
@@ -32,7 +31,7 @@ namespace DOL.GS.Behaviour
     /// </summary>
     public abstract class AbstractRequirement<TypeN,TypeV> : IBehaviourRequirement
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private eRequirementType type;
         private TypeN n;

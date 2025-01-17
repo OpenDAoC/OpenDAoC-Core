@@ -4,13 +4,12 @@ using System.Threading;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PerformanceStatistics;
-using log4net;
 
 namespace DOL.GS.GameEvents
 {
     public class StatSave
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly int INITIAL_DELAY = 60000;
 
         private static volatile Timer _timer;

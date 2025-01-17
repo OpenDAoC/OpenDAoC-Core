@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Threading;
 using DOL.Database;
 using DOL.GS.Keeps;
-using log4net;
 
 namespace DOL.GS
 {
@@ -13,7 +12,7 @@ namespace DOL.GS
 	/// </summary>
 	public sealed class DoorMgr
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static readonly Lock Lock = new();
 

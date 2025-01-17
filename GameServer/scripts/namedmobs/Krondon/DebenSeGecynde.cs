@@ -87,7 +87,7 @@ namespace DOL.AI.Brain
 {
 	public class DebenSeGecyndeBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DebenSeGecyndeBrain() : base()
 		{
 			AggroLevel = 100;
@@ -244,7 +244,7 @@ namespace DOL.AI.Brain
 {
 	public class DebenFighterBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DebenFighterBrain() : base()
 		{
 			AggroLevel = 100;
@@ -330,7 +330,7 @@ namespace DOL.AI.Brain
 {
 	public class DebenMageBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DebenMageBrain() : base()
 		{
 			AggroLevel = 100;

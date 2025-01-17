@@ -3,13 +3,12 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
-using log4net;
 
 namespace DOL.Network
 {
     public class BaseClient
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public const int TCP_SEND_BUFFER_SIZE = 8192;
         public const int UDP_SEND_BUFFER_SIZE = 1024;

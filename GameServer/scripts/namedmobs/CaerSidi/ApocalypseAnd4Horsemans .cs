@@ -270,7 +270,7 @@ namespace DOL.AI.Brain
 {
     public class ApocIniBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public ApocIniBrain()
             : base()
         {
@@ -468,7 +468,7 @@ namespace DOL.AI.Brain
 {
     public class FamesBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public FamesBrain()
             : base()
         {
@@ -687,7 +687,7 @@ namespace DOL.AI.Brain
 {
     public class BellumBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public BellumBrain()
             : base()
         {
@@ -869,7 +869,7 @@ namespace DOL.AI.Brain
 {
     public class WarIncarnateCrushBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public WarIncarnateCrushBrain()
             : base()
         {
@@ -1037,7 +1037,7 @@ namespace DOL.AI.Brain
 {
     public class WarIncarnateSlashBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public WarIncarnateSlashBrain()
             : base()
         {
@@ -1205,7 +1205,7 @@ namespace DOL.AI.Brain
 {
     public class WarIncarnateThrustBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public WarIncarnateThrustBrain()
             : base()
         {
@@ -1458,7 +1458,7 @@ namespace DOL.AI.Brain
 {
     public class MorbusBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MorbusBrain()
             : base()
         {
@@ -1758,7 +1758,7 @@ namespace DOL.AI.Brain
 {
     public class MorbusSwarmBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MorbusSwarmBrain()
             : base()
         {
@@ -1984,7 +1984,7 @@ namespace DOL.AI.Brain
 {
     public class FunusBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public FunusBrain()
             : base()
         {
@@ -2188,7 +2188,7 @@ namespace DOL.AI.Brain
 {
     public class ApocalypseBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public ApocalypseBrain()
             : base()
         {
@@ -2552,7 +2552,7 @@ namespace DOL.AI.Brain
 {
     public class HarbringerOfFateBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public HarbringerOfFateBrain()
             : base()
         {
@@ -2653,7 +2653,7 @@ namespace DOL.AI.Brain
 {
     public class RainOfFireBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public RainOfFireBrain()
             : base()
         {

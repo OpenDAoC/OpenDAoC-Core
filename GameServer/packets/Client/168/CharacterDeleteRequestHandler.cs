@@ -23,7 +23,6 @@ using System.Linq;
 using DOL.Database;
 using DOL.Events;
 
-using log4net;
 
 namespace DOL.GS.PacketHandler.Client.v168
 {
@@ -33,7 +32,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 	[PacketHandlerAttribute(PacketHandlerType.TCP, eClientPackets.CharacterDeleteRequest, "Handles character delete requests", eClientStatus.LoggedIn)]
 	public class CharacterDeleteRequestHandler : IPacketHandler
 	{
-		private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
 		{

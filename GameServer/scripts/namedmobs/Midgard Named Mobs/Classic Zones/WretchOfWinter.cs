@@ -115,7 +115,7 @@ namespace DOL.AI.Brain
 {
 	public class WrethOfWinterScorpBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public WrethOfWinterScorpBrain() : base()
 		{
 			AggroLevel = 100;
@@ -250,7 +250,7 @@ namespace DOL.AI.Brain
 {
 	public class WrethOfWinterSpiderBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public WrethOfWinterSpiderBrain() : base()
 		{
 			AggroLevel = 100;
@@ -385,7 +385,7 @@ namespace DOL.AI.Brain
 {
 	public class WrethOfWinterCrabBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public WrethOfWinterCrabBrain() : base()
 		{
 			AggroLevel = 100;
@@ -511,7 +511,7 @@ namespace DOL.AI.Brain
 {
 	public class WrethOfWinterJotunBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public WrethOfWinterJotunBrain() : base()
 		{
 			AggroLevel = 100;
@@ -638,7 +638,7 @@ namespace DOL.AI.Brain
 {
 	public class WrethOfWinterOgreBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public WrethOfWinterOgreBrain() : base()
 		{
 			AggroLevel = 100;
@@ -765,7 +765,7 @@ namespace DOL.AI.Brain
 {
 	public class WrethOfWinterIceBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public WrethOfWinterIceBrain() : base()
 		{
 			AggroLevel = 100;
@@ -892,7 +892,7 @@ namespace DOL.AI.Brain
 {
 	public class WrethOfWinterRaumarikBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public WrethOfWinterRaumarikBrain() : base()
 		{
 			AggroLevel = 100;
@@ -1019,7 +1019,7 @@ namespace DOL.AI.Brain
 {
 	public class WrethOfWinterLichBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public WrethOfWinterLichBrain() : base()
 		{
 			AggroLevel = 100;
@@ -1155,7 +1155,7 @@ namespace DOL.AI.Brain
 {
 	public class WrethOfWinterArachiteBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public WrethOfWinterArachiteBrain() : base()
 		{
 			AggroLevel = 100;

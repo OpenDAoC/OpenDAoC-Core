@@ -75,7 +75,7 @@ namespace DOL.AI.Brain
 {
 	public class DurvalBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public DurvalBrain() : base()
 		{
 			AggroLevel = 100;

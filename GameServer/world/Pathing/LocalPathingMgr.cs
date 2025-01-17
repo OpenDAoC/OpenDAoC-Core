@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using log4net;
 
 namespace DOL.GS
 {
@@ -37,7 +36,7 @@ namespace DOL.GS
 
         private const int MAX_POLY = 256;    // max vector3 when looking up a path (for straight paths too)
 
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private static Dictionary<ushort, IntPtr> _navmeshPtrs = [];
         private static readonly Lock _navmeshPtrsLock = new();
         private static ThreadLocal<Dictionary<ushort, NavMeshQuery>> _navmeshQueries = new(() => []);

@@ -11,7 +11,7 @@ namespace DOL.GS.Keeps
     /// </summary>
     public class GateKeeperIn : GameKeepGuard
     {
-        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private List<DbKeepDoorTeleport> m_destinationsIn = new List<DbKeepDoorTeleport>();
         private const string type = "GateKeeperIn";
 
@@ -203,7 +203,7 @@ namespace DOL.GS.Keeps
     /// </summary>
     public class GateKeeperOut : GameKeepGuard
     {
-        private static new readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private List<DbKeepDoorTeleport> m_destinationsOut = new List<DbKeepDoorTeleport>();
         private const string type = "GateKeeperOut";
 

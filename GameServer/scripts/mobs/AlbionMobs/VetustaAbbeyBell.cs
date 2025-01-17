@@ -32,8 +32,7 @@ namespace DOL.AI.Brain
 {
 	public class VetustaAbbeyBellBrain : APlayerVicinityBrain
 	{
-		private static readonly log4net.ILog log =
-			log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		public VetustaAbbeyBellBrain()
 			: base()

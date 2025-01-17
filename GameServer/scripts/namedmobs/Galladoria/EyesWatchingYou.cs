@@ -65,7 +65,7 @@ namespace DOL.AI.Brain
 {
     public class EyesWatchingYouInitBrain : APlayerVicinityBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public EyesWatchingYouInitBrain()
             : base()
         {
@@ -204,7 +204,7 @@ namespace DOL.AI.Brain
 {
     public class EyesWatchingYouEffectBrain : StandardMobBrain
     {
-        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public EyesWatchingYouEffectBrain()
             : base()
         {

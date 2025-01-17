@@ -22,7 +22,6 @@ using DOL.GS;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Keeps;
-using log4net;
 
 namespace DOL.GS
 {
@@ -32,7 +31,7 @@ namespace DOL.GS
     /// </summary>
     public class LootGeneratorDreadedSeals : LootGeneratorBase
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static readonly DbItemTemplate m_GlowingDreadedSeal = GameServer.Database.FindObjectByKey<DbItemTemplate>("glowing_dreaded_seal");
         private static readonly DbItemTemplate m_SanguineDreadedSeal = GameServer.Database.FindObjectByKey<DbItemTemplate>("sanguine_dreaded_seal");

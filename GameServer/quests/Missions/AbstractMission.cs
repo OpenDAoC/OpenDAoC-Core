@@ -25,7 +25,6 @@ using System.Reflection;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 
-using log4net;
 
 namespace DOL.GS.Quests
 {
@@ -34,7 +33,7 @@ namespace DOL.GS.Quests
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// The temp property name for next check mission millisecond

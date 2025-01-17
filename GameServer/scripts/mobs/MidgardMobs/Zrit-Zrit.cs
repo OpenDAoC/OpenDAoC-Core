@@ -26,7 +26,7 @@ namespace DOL.AI.Brain
 {
 	public class ZritZritBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ZritZritBrain() : base()
 		{
 			AggroLevel = 50;
@@ -98,7 +98,7 @@ namespace DOL.AI.Brain
 {
 	public class ZritZritAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public ZritZritAddBrain() : base()
 		{
 			ThinkInterval = 1500;

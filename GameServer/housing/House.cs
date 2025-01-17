@@ -4,13 +4,12 @@ using System.Linq;
 using System.Reflection;
 using DOL.Database;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS.Housing
 {
 	public class House : Point3D, IGameLocation
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const int MAX_VAULT_COUNT = 8; // Must not be bigger than what `eInventorySlot` allows.
 

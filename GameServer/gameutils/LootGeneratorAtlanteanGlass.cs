@@ -23,7 +23,6 @@ using DOL.GS.PacketHandler;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS
 {

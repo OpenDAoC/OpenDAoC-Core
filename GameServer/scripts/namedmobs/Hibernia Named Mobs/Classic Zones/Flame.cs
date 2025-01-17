@@ -103,7 +103,7 @@ namespace DOL.AI.Brain
 {
 	public class FlameBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public FlameBrain() : base()
 		{
 			AggroLevel = 0;//flame should be neutral
@@ -211,7 +211,7 @@ namespace DOL.AI.Brain
 {
 	public class LuriquayBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public LuriquayBrain() : base()
 		{
 			AggroLevel = 100;
@@ -316,7 +316,7 @@ namespace DOL.AI.Brain
 {
 	public class FlameNormalBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public FlameNormalBrain() : base()
 		{
 			AggroLevel = 100;

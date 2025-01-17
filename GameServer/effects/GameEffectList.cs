@@ -7,7 +7,6 @@ using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Spells;
-using log4net;
 
 namespace DOL.GS.Effects
 {
@@ -20,7 +19,7 @@ namespace DOL.GS.Effects
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		/// <summary>
 		/// Default Lock Object

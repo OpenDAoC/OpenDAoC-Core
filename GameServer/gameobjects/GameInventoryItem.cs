@@ -5,7 +5,6 @@ using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS
 {
@@ -13,7 +12,7 @@ namespace DOL.GS
     /// This class represents an inventory item
     /// </summary>
     public class GameInventoryItem : DbInventoryItem, IGameInventoryItem, ITranslatableObject {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         protected GamePlayer m_owner = null;
 

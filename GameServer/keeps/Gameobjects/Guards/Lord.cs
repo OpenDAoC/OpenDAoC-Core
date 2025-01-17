@@ -5,13 +5,12 @@ using DOL.GS.PacketHandler;
 using DOL.GS.PlayerClass;
 using DOL.GS.ServerProperties;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS.Keeps
 {
     public class GuardLord : GameKeepGuard
     {
-        private static new readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static new readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private eRealm m_lastRealm = eRealm.None;
         private long m_lastSpawnTime = 0;

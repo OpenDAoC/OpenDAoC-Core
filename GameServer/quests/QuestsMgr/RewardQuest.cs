@@ -33,7 +33,7 @@ namespace DOL.GS.Quests
 	/// <author>Aredhel</author>
 	public class RewardQuest : BaseQuest
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		private GameNPC m_questGiver;
 		private List<QuestGoal> m_goals;

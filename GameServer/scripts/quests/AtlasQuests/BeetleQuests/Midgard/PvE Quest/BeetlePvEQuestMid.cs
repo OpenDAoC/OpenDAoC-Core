@@ -10,7 +10,6 @@ using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using DOL.GS.Scripts;
-using log4net;
 
 namespace DOL.GS.AtlasQuest.Midgard
 {
@@ -19,7 +18,7 @@ namespace DOL.GS.AtlasQuest.Midgard
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const string questTitle = "[Beetle] A peace offering from a beetle";
 		private const int minimumLevel = 50;

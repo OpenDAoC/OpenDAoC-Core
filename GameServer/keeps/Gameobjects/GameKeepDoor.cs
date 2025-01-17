@@ -3,7 +3,6 @@ using System.Collections;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
-using log4net;
 
 namespace DOL.GS.Keeps
 {
@@ -13,7 +12,7 @@ namespace DOL.GS.Keeps
 	public class GameKeepDoor : GameDoorBase, IKeepItem
 	{
 		private const int DOOR_CLOSE_THRESHOLD = 15;
-		private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
 		#region properties
 

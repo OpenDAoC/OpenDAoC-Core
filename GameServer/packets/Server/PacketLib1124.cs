@@ -8,14 +8,13 @@ using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.Quests;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS.PacketHandler
 {
 	[PacketLib(1124, GameClient.eClientVersion.Version1124)]
 	public class PacketLib1124 : PacketLib1123
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const ushort MAX_STORY_LENGTH = 1000; // Via trial and error, 1.108 client.
 

@@ -21,7 +21,6 @@ using System.Collections;
 using System.Reflection;
 using DOL.GS.PacketHandler;
 using DOL.Events;
-using log4net;
 
 namespace DOL.GS.Keeps
 {
@@ -71,7 +70,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private ArrayList hookpointItemList;
 		private const int MAX_ITEM = 10;
@@ -166,7 +165,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		public HookPointItem(string name, byte gold, ushort icon, string objectType, ushort flag)
 		{

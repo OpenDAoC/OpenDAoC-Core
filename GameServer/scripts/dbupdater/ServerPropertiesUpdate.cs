@@ -18,7 +18,6 @@
  */
 
 using DOL.Database;
-using log4net;
 
 namespace DOL.GS.DatabaseUpdate
 {
@@ -31,7 +30,7 @@ namespace DOL.GS.DatabaseUpdate
         /// <summary>
         /// Defines a logger for this class.
         /// </summary>
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public void Update()
         {

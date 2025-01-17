@@ -21,7 +21,6 @@ using System.Reflection;
 using DOL.GS;
 using DOL.AI.Brain;
 using DOL.Database;
-using log4net;
 
 namespace DOL.GS
 {
@@ -31,7 +30,7 @@ namespace DOL.GS
 	/// </summary>
 	public class LootGeneratorDragonscales : LootGeneratorBase
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static DbItemTemplate m_dragonscales = GameServer.Database.FindObjectByKey<DbItemTemplate>("dragonscales");
 		/// <summary>

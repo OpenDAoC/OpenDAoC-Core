@@ -6,8 +6,6 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerTitles;
-using log4net;
-using log4net.Repository.Hierarchy;
 
 #region LoginEvent
 namespace DOL.GS.GameEvents
@@ -15,7 +13,7 @@ namespace DOL.GS.GameEvents
     public class HardCoreLogin
     {
         
-        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         
         [GameServerStartedEvent]
         public static void OnServerStart(DOLEvent e, object sender, EventArgs arguments)

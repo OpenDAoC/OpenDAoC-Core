@@ -7,7 +7,6 @@ using DOL.Events;
 using DOL.GS.Behaviour;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using log4net;
 
 namespace DOL.GS.Quests
 {
@@ -110,7 +109,7 @@ namespace DOL.GS.Quests
 	/// </summary>
 	public class DataQuest : AbstractQuest
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		protected int m_step = 1;
 		protected DbDataQuest m_dataQuest = null;

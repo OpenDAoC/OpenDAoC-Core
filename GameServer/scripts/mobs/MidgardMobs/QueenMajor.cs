@@ -27,7 +27,7 @@ namespace DOL.AI.Brain
 {
 	public class QueenMajorBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public QueenMajorBrain() : base()
 		{
 			AggroLevel = 80;
@@ -119,7 +119,7 @@ namespace DOL.AI.Brain
 {
 	public class QueenMajorAddBrain : StandardMobBrain
 	{
-		private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		public QueenMajorAddBrain() : base()
 		{
 			AggroLevel = 0;

@@ -6,7 +6,6 @@ using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.GS.PlayerClass;
 using DOL.GS.Quests;
-using log4net;
 
 namespace DOL.GS.DailyQuest.Albion
 {
@@ -15,7 +14,7 @@ namespace DOL.GS.DailyQuest.Albion
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private const string questTitle = "[Group Daily] A Team Building Exercise";
 		private const int minimumLevel = 1;

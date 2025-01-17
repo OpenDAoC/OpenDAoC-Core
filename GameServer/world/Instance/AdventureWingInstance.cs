@@ -18,7 +18,6 @@
  */
 
 using DOL.Database;
-using log4net;
 
 namespace DOL.GS
 {
@@ -34,7 +33,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Console Logger
 		/// </summary>
-		private static readonly ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		
 		/// <summary>
 		/// Group Owner

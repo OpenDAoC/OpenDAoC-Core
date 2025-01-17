@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 using DOL.AI;
 using DOL.AI.Brain;
 using ECS.Debug;
-using log4net;
 
 namespace DOL.GS
 {
     public static class NpcService
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(NpcService);
 
         private static int _nonNullBrainCount;

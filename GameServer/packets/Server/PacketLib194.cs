@@ -22,7 +22,6 @@ using System.Reflection;
 using DOL.Database;
 using DOL.GS.Behaviour;
 using DOL.GS.Quests;
-using log4net;
 
 namespace DOL.GS.PacketHandler
 {
@@ -32,7 +31,7 @@ namespace DOL.GS.PacketHandler
 		/// <summary>
 		/// Defines a logger for this class.
 		/// </summary>
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 
 		public override void SendQuestOfferWindow(GameNPC questNPC, GamePlayer player, DataQuest quest)

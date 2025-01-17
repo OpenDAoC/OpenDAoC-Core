@@ -25,14 +25,13 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using DOL.GS.PacketHandler;
-using log4net;
 
 namespace DOL.GS.Commands
 {
     [Cmd("&ServerReboot",ePrivLevel.GM,"Restarts the server instantly!!")]
     public class RestartCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         public void OnCommand(GameClient client, string[] args)
         {
             client.Out.SendCustomDialog(string.Format("Do you wish to reboot the server instantly!!"), new CustomDialogResponse(RebootResponse));
