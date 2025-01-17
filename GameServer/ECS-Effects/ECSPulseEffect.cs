@@ -33,10 +33,15 @@ namespace DOL.GS
         {
             Owner.ActivePulseSpells.TryRemove(SpellHandler.Spell.SpellType, out _);
 
-            foreach (ECSGameEffect petEffect in SpellHandler.Target.effectListComponent.GetSpellEffects(eEffect.FocusShield))
+            if (!SpellHandler.Spell.IsFocus)
+                return;
+
+            foreach (var pair in ChildEffects)
             {
-                if (petEffect.SpellHandler.Spell.IsFocus)
-                    EffectService.RequestImmediateCancelEffect(petEffect);
+                ECSGameSpellEffect effect = pair.Value;
+
+                if (effect.EffectType is eEffect.FocusShield)
+                    EffectService.RequestImmediateCancelEffect(effect);
             }
         }
     }
