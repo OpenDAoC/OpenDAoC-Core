@@ -67,8 +67,10 @@ namespace DOL.Database
 
         public virtual WhereClause And(WhereClause rightExpression)
             => rightExpression.Equals(Empty) ? this : new ChainingExpression(this, "AND", rightExpression);
-        public virtual WhereClause Or(WhereClause rightExpression) 
+        public virtual WhereClause Or(WhereClause rightExpression)
             => rightExpression.Equals(Empty) ? this : new ChainingExpression(this, "OR", rightExpression);
+        public virtual WhereClause OrderBy(DBColumn column, bool descending = false, int limit = 0)
+            => new OrderLimitExpression(this, column, descending, limit);
 
         public static WhereClause Empty => new EmptyWhereClause();
 
@@ -218,6 +220,53 @@ namespace DOL.Database
         public override int GetHashCode() => base.GetHashCode();
     }
 
+    internal class OrderLimitExpression : WhereClause
+    {
+        private WhereClause left;
+        private DBColumn column;
+        private bool descending;
+        private int limit;
+
+        internal OrderLimitExpression(WhereClause left, DBColumn column, bool descending, int limit)
+        {
+            this.left = left;
+            this.column = column;
+            this.descending = descending;
+            this.limit = limit;
+        }
+
+        internal override List<TextAtom> IntermediateRepresentation
+        {
+            get
+            {
+                var result = new List<TextAtom>();
+                result.AddRange(left.IntermediateRepresentation);
+                result.Add(new TextAtom($"ORDER BY {column.Name}"));
+
+                if (descending)
+                    result.Add(new TextAtom(" DESC"));
+
+                if (limit > 0)
+                    result.Add(new TextAtom($" LIMIT {limit}"));
+
+                return result;
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is OrderLimitExpression expr)
+            {
+                return expr.left.Equals(left)
+                    && expr.column.Equals(column)
+                    && expr.descending.Equals(descending)
+                    && expr.limit.Equals(limit);
+            }
+            return false;
+        }
+        public override int GetHashCode() => base.GetHashCode();
+    }
+
     public class DB
     {
         public static DBColumn Column(string columnName) => new DBColumn(columnName);
@@ -235,7 +284,7 @@ namespace DOL.Database
 
         public WhereClause IsEqualTo(object val) => new FilterExpression(Name, "=", val);
         public WhereClause IsNotEqualTo(object val) => new FilterExpression(Name, "!=", val);
-        public WhereClause IsGreatherThan(object val) => new FilterExpression(Name, ">", val);
+        public WhereClause IsGreaterThan(object val) => new FilterExpression(Name, ">", val);
         public WhereClause IsGreaterOrEqualTo(object val) => new FilterExpression(Name, ">=", val);
         public WhereClause IsLessThan(object val) => new FilterExpression(Name, "<", val);
         public WhereClause IsLessOrEqualTo(object val) => new FilterExpression(Name, "<=", val);

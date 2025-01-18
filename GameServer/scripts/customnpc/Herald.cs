@@ -29,7 +29,7 @@ namespace DOL.GS.Scripts
             
             TurnTo(player, 500);
 
-            DbCoreCharacter[] chars = GameServer.Database.SelectObjects<DbCoreCharacter>(DB.Column("RealmPoints").IsGreatherThan(0).And(DB.Column("RealmPoints").IsLessThan(70000000))).OrderByDescending(x => x.RealmPoints).Take(25).ToArray();
+            DbCoreCharacter[] chars = GameServer.Database.SelectObjects<DbCoreCharacter>(DB.Column("RealmPoints").IsGreaterThan(0).And(DB.Column("RealmPoints").IsLessThan(70000000))).OrderByDescending(x => x.RealmPoints).Take(25).ToArray();
             List<string> list = new List<string>();
             
             list.Add("Top 25 Highest Realm Points:\n\n");

@@ -33,7 +33,7 @@ namespace DOL.GS
 				m_itemCache = new Dictionary<string, DbInventoryItem>();
 
 				var filterBySlot = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.Consignment_First).And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.Consignment_Last));
-				var list = DOLDB<DbInventoryItem>.SelectObjects(filterBySlot.And(DB.Column("OwnerLot").IsGreatherThan(0)));
+				var list = DOLDB<DbInventoryItem>.SelectObjects(filterBySlot.And(DB.Column("OwnerLot").IsGreaterThan(0)));
 
 				foreach (DbInventoryItem item in list)
 				{

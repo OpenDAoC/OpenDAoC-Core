@@ -133,7 +133,7 @@ namespace DOL.GS.Keeps
 				if (ServerProperties.Properties.USE_NEW_KEEPS == 0 || ServerProperties.Properties.USE_NEW_KEEPS == 2)
 					keepcomponents = DOLDB<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsLessThan(20));
 				else if (ServerProperties.Properties.USE_NEW_KEEPS == 1)
-					keepcomponents = DOLDB<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsGreatherThan(20));
+					keepcomponents = DOLDB<DbKeepComponent>.SelectObjects(DB.Column("Skin").IsGreaterThan(20));
 
 				if (keepcomponents != null)
 				{

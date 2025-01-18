@@ -65,7 +65,7 @@ namespace DOL.GS
             if (player.CurrentRegion.Time < TIME_TO_CHANGE && HAS_BEEN_RUN)
                 return;
 
-            DbCoreCharacter[] chars = DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("RealmPoints").IsGreatherThan(213881)).OrderByDescending(dc => dc.RealmPoints).Take(100).ToArray();
+            DbCoreCharacter[] chars = DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("RealmPoints").IsGreaterThan(213881)).OrderByDescending(dc => dc.RealmPoints).Take(100).ToArray();
 
             // assuming we can get at least 20 players
             if (TOP_LIST.Count > 0)
