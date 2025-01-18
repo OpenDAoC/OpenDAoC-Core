@@ -4178,16 +4178,9 @@ namespace DOL.GS
                 }
                 else
                     Notify(GamePlayerEvent.RLLevelUp, this);
-                if (CanGenerateNews && ((RealmLevel >= 40 && RealmLevel % 10 == 0) || RealmLevel >= 60))
+                if (GameServer.ServerRules.CanGenerateNews(this) && ((RealmLevel >= 40 && RealmLevel % 10 == 0) || RealmLevel >= 60))
                 {
-                    string message = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.ReachedRankNews", Name, RealmLevel + 10, LastPositionUpdateZone.Description);
                     string newsmessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.ReachedRankNews", Name, RealmLevel + 10, LastPositionUpdateZone.Description);
-                    NewsMgr.CreateNews(newsmessage, this.Realm, eNewsType.RvRLocal, true);
-                }
-                if (CanGenerateNews && RealmPoints >= 1000000 && RealmPoints - amount < 1000000)
-                {
-                    string message = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.Earned", Name, LastPositionUpdateZone.Description);
-                    string newsmessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainRealmPoints.Earned", Name, LastPositionUpdateZone.Description);
                     NewsMgr.CreateNews(newsmessage, this.Realm, eNewsType.RvRLocal, true);
                 }
             }
@@ -5312,9 +5305,8 @@ namespace DOL.GS
 
             if (Level == MaxLevel)
             {
-                if (CanGenerateNews)
+                if (GameServer.ServerRules.CanGenerateNews(this))
                 {
-                    string message = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.Reached", Name, Level, LastPositionUpdateZone.Description);
                     string newsmessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnLevelUp.Reached", Name, Level, LastPositionUpdateZone.Description);
                     NewsMgr.CreateNews(newsmessage, Realm, eNewsType.PvE, true);
                 }
@@ -12374,7 +12366,7 @@ namespace DOL.GS
                     {
                         GameEventMgr.Notify(GamePlayerEvent.NextCraftingTierReached, this,new NextCraftingTierReachedEventArgs(skill,currentSkillLevel) );
                     }
-                    if (CanGenerateNews && currentSkillLevel >= 1000 && currentSkillLevel - count < 1000)
+                    if (GameServer.ServerRules.CanGenerateNews(this) && currentSkillLevel >= 1000 && currentSkillLevel - count < 1000)
                     {
                         string message = string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.GainCraftingSkill.ReachedSkill", Name, craftingSkill.Name));
                         NewsMgr.CreateNews(message, Realm, eNewsType.PvE, true);
@@ -12401,17 +12393,6 @@ namespace DOL.GS
             }
 
             set { m_isEligibleToGiveMeritPoints = value; }
-        }
-
-        protected bool m_canGenerateNews = true;
-
-        /// <summary>
-        /// Can this player generate news items?
-        /// </summary>
-        public virtual bool CanGenerateNews
-        {
-            get { return m_canGenerateNews && GameServer.ServerRules.CanGenerateNews(this); }
-            set { m_canGenerateNews = value; }
         }
 
         /// <summary>

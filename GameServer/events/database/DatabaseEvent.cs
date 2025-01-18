@@ -48,10 +48,6 @@ namespace DOL.Events
 		/// </summary>
 		public static readonly DatabaseEvent CharacterDeleted = new DatabaseEvent("Database.CharacterDeleted");
 		/// <summary>
-		/// The NewsCreated event is fired whenever news is created
-		/// </summary>
-		public static readonly DatabaseEvent NewsCreated = new DatabaseEvent("Database.NewsCreated");
-		/// <summary>
 		/// The CharacterSelected event is fired whenever the player hit "play" button with a valid character..
 		/// </summary>
 		public static readonly DatabaseEvent CharacterSelected = new DatabaseEvent("Database.CharacterSelected");

@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
@@ -14,8 +13,34 @@ namespace DOL.GS
         PvE = 2,
     }
 
-    public class NewsMgr
+    public static class NewsMgr
     {
+        private const int MAX_NEWS_PER_TYPE = 5;
+        private static readonly ReaderWriterLockSlim _lock = new();
+        private static LinkedList<DbNews> _rvrGlobalNews;
+        private static Dictionary<eRealm, LinkedList<DbNews>> _rvrLocalNews;
+        private static Dictionary<eRealm, LinkedList<DbNews>> _pveNews;
+
+        static NewsMgr()
+        {
+            // Get the most recent news from the database, for each realm and type.
+            _rvrGlobalNews = new(DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(eNewsType.RvRGlobal).OrderBy(DB.Column("CreationDate"), true, MAX_NEWS_PER_TYPE)));
+
+            _rvrLocalNews = new()
+            {
+                [eRealm.Albion] = new(DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(eNewsType.RvRLocal).And(DB.Column("Realm").IsEqualTo(eRealm.Albion)).OrderBy(DB.Column("CreationDate"), true, MAX_NEWS_PER_TYPE))),
+                [eRealm.Midgard] = new(DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(eNewsType.RvRLocal).And(DB.Column("Realm").IsEqualTo(eRealm.Midgard)).OrderBy(DB.Column("CreationDate"), true, MAX_NEWS_PER_TYPE))),
+                [eRealm.Hibernia] = new(DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(eNewsType.RvRLocal).And(DB.Column("Realm").IsEqualTo(eRealm.Hibernia)).OrderBy(DB.Column("CreationDate"), true, MAX_NEWS_PER_TYPE)))
+            };
+
+            _pveNews = new()
+            {
+                [eRealm.Albion] = new(DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(eNewsType.PvE).And(DB.Column("Realm").IsEqualTo(eRealm.Albion)).OrderBy(DB.Column("CreationDate"), true, MAX_NEWS_PER_TYPE))),
+                [eRealm.Midgard] = new(DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(eNewsType.PvE).And(DB.Column("Realm").IsEqualTo(eRealm.Midgard)).OrderBy(DB.Column("CreationDate"), true, MAX_NEWS_PER_TYPE))),
+                [eRealm.Hibernia] = new(DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(eNewsType.PvE).And(DB.Column("Realm").IsEqualTo(eRealm.Hibernia)).OrderBy(DB.Column("CreationDate"), true, MAX_NEWS_PER_TYPE)))
+            };
+        }
+
         public static void CreateNews(string message, eRealm realm, eNewsType type, bool sendMessage)
         {
             if (sendMessage)
@@ -24,62 +49,112 @@ namespace DOL.GS
                     player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            if (ServerProperties.Properties.RECORD_NEWS)
+            if (!ServerProperties.Properties.RECORD_NEWS)
+                return;
+
+            DbNews news = new()
             {
-                DbNews news = new()
+                Type = (byte) type,
+                Realm = (byte) realm,
+                Text = message
+            };
+            GameServer.Database.AddObject(news);
+
+            _lock.EnterWriteLock();
+
+            try
+            {
+                switch (type)
                 {
-                    Type = (byte) type,
-                    Realm = (byte) realm,
-                    Text = message
-                };
-                GameServer.Database.AddObject(news);
-                GameEventMgr.Notify(DatabaseEvent.NewsCreated, new NewsEventArgs(news));
+                    case eNewsType.RvRGlobal:
+                    {
+                        _rvrGlobalNews.RemoveLast();
+                        _rvrGlobalNews.AddFirst(news);
+                        break;
+                    }
+                    case eNewsType.RvRLocal:
+                    {
+                        LinkedList<DbNews> newsList = _rvrLocalNews[realm];
+                        newsList.RemoveLast();
+                        newsList.AddFirst(news);
+                        break;
+                    }
+                    case eNewsType.PvE:
+                    {
+                        LinkedList<DbNews> newsList = _pveNews[realm];
+                        newsList.RemoveLast();
+                        newsList.AddFirst(news);
+                        break;
+                    }
+                }
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
             }
         }
 
         public static void DisplayNews(GameClient client)
         {
-            // N,chanel(0/1/2),index(0-4),string time,\"news\"
+            LinkedList<DbNews> newsList;
+            int index;
+            _lock.EnterReadLock();
 
-            for (int type = 0; type <= 2; type++)
+            try
             {
-                int index = 0;
-                string realm = string.Empty;
-                //we can see all captures
-                IList<DbNews> newsList;
-
-                if (type > 0)
-                    newsList = DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(type).And(DB.Column("Realm").IsEqualTo(0).Or(DB.Column("Realm").IsEqualTo(realm))));
-                else
-                    newsList = DOLDB<DbNews>.SelectObjects(DB.Column("Type").IsEqualTo(type));
-
-                newsList = newsList.OrderByDescending(it => it.CreationDate).Take(5).ToArray();
-                int n = newsList.Count;
-
-                while (n > 0)
+                foreach (eNewsType type in Enum.GetValues<eNewsType>())
                 {
-                    n--;
-                    DbNews news = newsList[n];
-                    client.Out.SendMessage(string.Format("N,{0},{1},{2},\"{3}\"", news.Type, index++, RetElapsedTime(news.CreationDate), news.Text), eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+                    index = 0;
+
+                    switch (type)
+                    {
+                        case eNewsType.RvRGlobal:
+                        {
+                            newsList = _rvrGlobalNews;
+                            break;
+                        }
+                        case eNewsType.RvRLocal:
+                        {
+                            newsList = _rvrLocalNews[client.Player.Realm];
+                            break;
+                        }
+                        case eNewsType.PvE:
+                        {
+                            newsList = _pveNews[client.Player.Realm];
+                            break;
+                        }
+                        default:
+                            continue;
+                    }
+
+                    for (LinkedListNode<DbNews> node = newsList.Last; node != null; node = node.Previous)
+                    {
+                        DbNews news = node.Value;
+                        client.Out.SendMessage(string.Format("N,{0},{1},{2},\"{3}\"", news.Type, index++, GetElapsedTime(news.CreationDate), news.Text), eChatType.CT_SocialInterface, eChatLoc.CL_SystemWindow);
+                    }
                 }
             }
-        }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
 
-        private static string RetElapsedTime(DateTime dt)
-        {
-            TimeSpan playerEnterGame = DateTime.Now.Subtract(dt);
-            string newsTime;
+            static string GetElapsedTime(DateTime dt)
+            {
+                TimeSpan elapsedTime = DateTime.Now.Subtract(dt);
+                string formattedElapsedTime;
 
-            if (playerEnterGame.Days > 0)
-                newsTime = $"{playerEnterGame.Days} day{(playerEnterGame.Days > 1 ? "s" : "")}";
-            else if (playerEnterGame.Hours > 0)
-                newsTime = $"{playerEnterGame.Hours} hour{(playerEnterGame.Hours > 1 ? "s" : "")}";
-            else if (playerEnterGame.Minutes > 0)
-                newsTime = $"{playerEnterGame.Minutes} minute{(playerEnterGame.Minutes > 1 ? "s" : "")}";
-            else
-                newsTime = $"{playerEnterGame.Seconds} second{(playerEnterGame.Seconds > 1 ? "s" : "")}";
+                if (elapsedTime.Days > 0)
+                    formattedElapsedTime = $"{elapsedTime.Days} day{(elapsedTime.Days > 1 ? "s" : "")}";
+                else if (elapsedTime.Hours > 0)
+                    formattedElapsedTime = $"{elapsedTime.Hours} hour{(elapsedTime.Hours > 1 ? "s" : "")}";
+                else if (elapsedTime.Minutes > 0)
+                    formattedElapsedTime = $"{elapsedTime.Minutes} minute{(elapsedTime.Minutes > 1 ? "s" : "")}";
+                else
+                    formattedElapsedTime = $"{elapsedTime.Seconds} second{(elapsedTime.Seconds > 1 ? "s" : "")}";
 
-            return newsTime;
+                return formattedElapsedTime;
+            }
         }
     }
 }
