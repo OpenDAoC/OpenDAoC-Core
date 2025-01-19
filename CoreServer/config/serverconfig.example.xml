@@ -24,6 +24,5 @@
         <DBConnectionString>server=localhost;port=3306;database=DBNAME;userid=USERNAME;password=PASSWORD;treattinyasboolean=false</DBConnectionString>
         <DBAutosave>True</DBAutosave>
         <DBAutosaveInterval>10</DBAutosaveInterval>
-        <CpuUse>8</CpuUse>
     </Server>
 </root>

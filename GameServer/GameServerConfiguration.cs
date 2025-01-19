@@ -61,11 +61,6 @@ namespace DOL.GS
 		protected string m_ServerNameShort;
 
 		/// <summary>
-		/// The count of server cpu
-		/// </summary>
-		protected int m_cpuCount;
-		
-		/// <summary>
 		/// The max client count.
 		/// </summary>
 		protected int m_maxClientCount;
@@ -203,15 +198,7 @@ namespace DOL.GS
 			m_autoSave = root["Server"]["DBAutosave"].GetBoolean(m_autoSave);
 			m_saveInterval = root["Server"]["DBAutosaveInterval"].GetInt(m_saveInterval);
 			m_maxClientCount = root["Server"]["MaxClientCount"].GetInt(m_maxClientCount);
-			m_cpuCount = root["Server"]["CpuCount"].GetInt(m_cpuCount);
-			
-			if (m_cpuCount < 1)
-				m_cpuCount = 1;
-			
-			m_cpuUse = root["Server"]["CpuUse"].GetInt(m_cpuUse);
-			if (m_cpuUse < 1)
-				m_cpuUse = 1; 
-			
+
 			// Parse UDP out endpoint
 			IPAddress	address = null;
 			int			port = -1;
@@ -351,24 +338,6 @@ namespace DOL.GS
 			m_autoSave = true;
 			m_saveInterval = 10;
 			m_maxClientCount = 5000;
-
-			// Get count of CPUs
-			m_cpuCount = Environment.ProcessorCount;
-			if (m_cpuCount < 1)
-			{
-				try
-				{
-					m_cpuCount = int.Parse(Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS"));
-				}
-				catch { m_cpuCount = -1; }
-			}
-			
-			if (m_cpuCount < 1)
-			{
-				m_cpuCount = 1;
-			}
-			
-			m_cpuUse = m_cpuCount;
 		}
 
 		#endregion
@@ -551,15 +520,6 @@ namespace DOL.GS
 		{
 			get { return m_saveInterval; }
 			set { m_saveInterval = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the server cpu count
-		/// </summary>
-		public int CpuCount
-		{
-			get { return m_cpuCount; }
-			set { m_cpuCount = value; }
 		}
 
 		/// <summary>
