@@ -18,13 +18,9 @@ namespace DOL.Network
 
         private const int UDP_RECEIVE_BUFFER_SIZE = 8192;
         private const int UDP_RECEIVE_BUFFER_CHUNK_SIZE = 64; // This should be increased if someday clients send UDP packets larger than this.
-        private const string UDP_THREAD_NAME = "UDP";
 
         private Socket _listen;
         private Socket _udpSocket;
-        private ConcurrentQueue<SocketAsyncEventArgs> _udpReceiveArgsPool = new();
-        private SocketAsyncEventArgs _udpReceiveArgs;
-        private static Thread _udpThread;
 
         public BaseServerConfig Configuration { get; }
         public bool IsRunning => _listen != null; // Not a great way to check if the server is running.
@@ -158,7 +154,6 @@ namespace DOL.Network
 
                             int offset = position;
                             SocketReceiveFromResult result = await _udpSocket.ReceiveFromAsync(new ArraySegment<byte>(buffer, offset, UDP_RECEIVE_BUFFER_CHUNK_SIZE), endPoint);
-
                             _ = Task.Run(() =>
                             {
                                 OnUdpReceive(buffer, offset, result.ReceivedBytes, result.RemoteEndPoint, FreeBufferPosition);
@@ -171,10 +166,7 @@ namespace DOL.Network
 
                             continue;
                         }
-                        catch (ObjectDisposedException)
-                        {
-                            _udpThread = null;
-                        }
+                        catch (ObjectDisposedException) { }
                         catch (SocketException e)
                         {
                             if (log.IsDebugEnabled)
@@ -184,8 +176,6 @@ namespace DOL.Network
                         {
                             if (log.IsErrorEnabled)
                                 log.Error(e);
-
-                            _udpThread = null;
 
                             if (_udpSocket != null)
                             {
@@ -338,13 +328,6 @@ namespace DOL.Network
             {
                 if (log.IsErrorEnabled)
                     log.Error(e);
-            }
-
-            if (_udpThread != null)
-            {
-                _udpThread.Interrupt();
-                _udpThread.Join();
-                _udpThread = null;
             }
 
             try
