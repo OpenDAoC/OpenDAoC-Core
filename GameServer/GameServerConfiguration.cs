@@ -294,7 +294,6 @@ namespace DOL.GS
 			root["Server"]["DBConnectionString"].Set(m_dbConnectionString);
 			root["Server"]["DBAutosave"].Set(m_autoSave);
 			root["Server"]["DBAutosaveInterval"].Set(m_saveInterval);
-			root["Server"]["CpuUse"].Set(m_cpuUse);
 
 			// Store UDP out endpoint
 			if (m_udpOutEndpoint != null)
@@ -529,13 +528,6 @@ namespace DOL.GS
 		{
 			get { return m_maxClientCount; }
 			set { m_maxClientCount = value; }
-		}
-
-		private int m_cpuUse;
-		public int CPUUse
-		{
-			get { return m_cpuUse; }
-			set { m_cpuUse = value; }
 		}
 	}
 }
