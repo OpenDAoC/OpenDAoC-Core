@@ -82,7 +82,8 @@ namespace DOL.GS
 
                         CheckInGameTimeout(client);
 
-                        if (player.ObjectState is not GameObject.eObjectState.Active)
+                        // The client state might have been modified by an inbound packet.
+                        if (client.ClientState is not GameClient.eClientState.Playing || player.ObjectState is not GameObject.eObjectState.Active)
                             break;
 
                         if (ServiceUtils.ShouldTick(player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL))
@@ -847,6 +848,7 @@ namespace DOL.GS
 
                 if (!player.HouseUpdateCache.TryGetValue(house, out long lastUpdate))
                 {
+                    Console.WriteLine($"{player.Client} || {player}");
                     player.Client.Out.SendHouse(house);
                     player.Client.Out.SendGarden(house);
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
