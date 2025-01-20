@@ -211,7 +211,6 @@ namespace DOL.GS
 
         private SubZone[] _subZones = new SubZone[SUBZONE_NBR];
         private int _objectCount;
-        private bool _initialized = false;
 
         #endregion
 
@@ -246,6 +245,9 @@ namespace DOL.GS
             BonusBountypoints = bpBonus;
             BonusCoin = coinBonus;
             Realm = (eRealm)realm;
+
+            for (int i = 0; i < SUBZONE_NBR; i++)
+                _subZones[i] = new SubZone(this);
         }
 
         public void Delete()
@@ -253,17 +255,6 @@ namespace DOL.GS
             _subZones = null;
             ZoneRegion = null;
             Events.GameEventMgr.RemoveAllHandlersForObject(this);
-        }
-
-        private void InitializeZone()
-        {
-            if (_initialized)
-                return;
-
-            for (int i = 0; i < SUBZONE_NBR; i++)
-                _subZones[i] = new SubZone(this);
-
-            _initialized = true;
         }
 
         #endregion
@@ -305,9 +296,6 @@ namespace DOL.GS
 
         public bool AddObject(GameObject gameObject)
         {
-            if (!_initialized)
-                InitializeZone();
-
             SubZone subZone = GetSubZone(GetSubZoneIndex(gameObject.X, gameObject.Y));
 
             if (subZone == null)
@@ -356,9 +344,6 @@ namespace DOL.GS
         /// <param name="partialList">a non-null list</param>
         public void GetObjectsInRadius<T>(int x, int y, int z, eGameObjectType objectType, ushort radius, List<T> partialList) where T : GameObject
         {
-            if (!_initialized)
-                InitializeZone();
-
             uint sqRadius = (uint) radius * radius;
             int referenceSubZoneIndex = GetSubZoneIndex(x, y);
 
@@ -675,9 +660,6 @@ namespace DOL.GS
         /// </summary>
         public List<GameNPC> GetNPCsOfZone(eRealm[] realms, int minLevel, int maxLevel, int compareLevel, int conLevel, bool firstOnly)
         {
-            if (!_initialized)
-                InitializeZone();
-
             List<GameNPC> list = new();
             GameNPC currentNPC;
             bool addToList;
