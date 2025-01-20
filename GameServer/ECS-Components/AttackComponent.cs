@@ -1929,7 +1929,7 @@ namespace DOL.GS
             GameSpellEffect brittleguard = null;
 
             AttackData lastAttackData = owner.attackComponent.attackAction.LastAttackData;
-            bool defenseDisabled = ad.Target.IsMezzed | ad.Target.IsStunned | ad.Target.IsSitting;
+            bool defenseDisabled = false; // CCs and casting state are individually checked in GameLiving.
 
             GamePlayer playerOwner = owner as GamePlayer;
             GamePlayer playerAttacker = ad.Attacker as GamePlayer;

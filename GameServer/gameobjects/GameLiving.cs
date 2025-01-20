@@ -1056,6 +1056,9 @@ namespace DOL.GS
 			// target's offensive RA, debuffs, and a few others. (The type of weapon - large, 1H,
 			// etc - doesn't matter.) ...."
 
+			if (IsCrowdControlled || IsSitting || IsCasting)
+				return 0;
+
 			double evadeChance = 0;
 			GamePlayer player = this as GamePlayer;
 			ECSGameEffect evadeBuff = EffectListService.GetEffectOnTarget(this, eEffect.SavageBuff, eSpellType.SavageEvadeBuff);
@@ -1073,7 +1076,7 @@ namespace DOL.GS
 			else if (this is GameNPC && IsObjectInFront(ad.Attacker, 180))
 				evadeChance = GetModified(eProperty.EvadeChance);
 
-			if (evadeChance > 0 && !ad.Target.IsStunned && !ad.Target.IsSitting)
+			if (evadeChance > 0)
 			{
 				if (attackerCount > 1)
 					evadeChance -= (attackerCount - 1) * 0.03;
@@ -1130,6 +1133,9 @@ namespace DOL.GS
 
 			//Also, before this comparison happens, the game looks to see if your opponent is in your forward arc  to determine that arc, make a 120 degree angle, and put yourself at the point.
 
+			if (IsCrowdControlled || IsSitting || IsCasting)
+				return 0;
+
 			double parryChance = 0;
 			GamePlayer player = this as GamePlayer;
 
@@ -1162,10 +1168,10 @@ namespace DOL.GS
 				else if (this is GameNPC && IsObjectInFront(ad.Attacker, 120))
 					parryChance = GetModified(eProperty.ParryChance);
 
-				if (BladeBarrier != null && !ad.Target.IsStunned && !ad.Target.IsSitting)
+				if (BladeBarrier != null)
 					return parryChance;
 
-				if (parryChance > 0 && !ad.Target.IsStunned && !ad.Target.IsSitting)
+				if (parryChance > 0)
 				{
 					if (attackerCount > 1)
 						parryChance /= attackerCount / 2;
@@ -1206,6 +1212,9 @@ namespace DOL.GS
 		{
 			shieldSize = 0;
 
+			if (IsCrowdControlled || IsSitting || IsCasting)
+				return 0;
+
 			//1.Quality does not affect the chance to block at this time.  Grab Bag 3/7/03
 			//2.Condition and enchantment increases the chance to block  Grab Bag 2/27/03
 			//3.There is currently no hard cap on chance to block  Grab Bag 2/27/03 and 8/16/02
@@ -1234,7 +1243,7 @@ namespace DOL.GS
 
 			GamePlayer player = this as GamePlayer;
 
-			if (IsObjectInFront(ad.Attacker, 120) && !ad.Target.IsStunned && !ad.Target.IsSitting)
+			if (IsObjectInFront(ad.Attacker, 120))
 			{
 				if (player != null)
 				{
