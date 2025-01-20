@@ -800,11 +800,11 @@ namespace DOL.GS
 
                             if (myMob is GameMerchant)
                             {
-                                myMerchantCount++;
+                                Interlocked.Increment(ref myMerchantCount);
                             }
                             else
                             {
-                                myMobCount++;
+                                Interlocked.Increment(ref myMobCount);
                             }
                         }
                         catch (Exception e)
@@ -853,10 +853,8 @@ namespace DOL.GS
                 });
             }
 
-            Parallel.ForEach(bindPoints, (point) =>
-            {
-                AddArea(new Area.BindArea("bind point", point));
-            });
+            foreach (DbBindPoint bindPoint in bindPoints)
+                AddArea(new Area.BindArea("bind point", bindPoint));
 
             if (myMobCount + myItemCount + myMerchantCount + myBindCount > 0)
             {
