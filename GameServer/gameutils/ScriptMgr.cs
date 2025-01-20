@@ -132,7 +132,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public static string[] GetCommandList(ePrivLevel plvl, bool addDesc)
 		{
-			return m_gameCommands.Where(kv => kv.Value != null && kv.Key != null && (uint)plvl > kv.Value.m_lvl)
+			return m_gameCommands.Where(kv => kv.Value != null && kv.Key != null && (uint)plvl >= kv.Value.m_lvl)
 				.Select(kv => string.Format("/{0}{2}{1}", kv.Key.Remove(0, 1), addDesc ? kv.Value.m_desc : string.Empty, addDesc ? " - " : string.Empty))
 				.ToArray();
 		}
