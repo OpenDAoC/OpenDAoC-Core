@@ -554,10 +554,14 @@ namespace DOL.GS
 
 		public async void GetPatchNotes()
 		{
+			string url = Properties.PATCH_NOTES_URL;
+
+			if (string.IsNullOrEmpty(url))
+				return;
+
 			try
 			{
 				using var newsClient = new HttpClient();
-				var url = Properties.PATCH_NOTES_URL;
 				var newsResult = await newsClient.GetStringAsync(url);
 				PatchNotes = [newsResult];
 				log.Debug("Patch notes updated.");
