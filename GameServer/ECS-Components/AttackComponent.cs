@@ -1741,13 +1741,17 @@ namespace DOL.GS
                 GameLiving source = guard.Source;
 
                 if (source == null ||
+                    source.IsCrowdControlled ||
+                    source.IsSitting ||
+                    source.IsCasting ||
                     source.IsIncapacitated ||
                     source.ActiveWeaponSlot is eActiveWeaponSlot.Distance ||
-                    source.IsSitting ||
                     stealthStyle ||
                     !guard.Source.IsObjectInFront(ad.Attacker, 180) ||
                     !guard.Source.IsWithinRadius(guard.Target, GuardAbilityHandler.GUARD_DISTANCE))
+                {
                     continue;
+                }
 
                 DbInventoryItem rightHand = source.ActiveWeapon;
                 DbInventoryItem leftHand = source.ActiveLeftWeapon;
