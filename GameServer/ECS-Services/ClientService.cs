@@ -848,7 +848,6 @@ namespace DOL.GS
 
                 if (!player.HouseUpdateCache.TryGetValue(house, out long lastUpdate))
                 {
-                    Console.WriteLine($"{player.Client} || {player}");
                     player.Client.Out.SendHouse(house);
                     player.Client.Out.SendGarden(house);
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
