@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.Database;
+using DOL.GS.Housing;
 using DOL.GS.PacketHandler;
 using log4net;
 
@@ -195,46 +196,75 @@ namespace DOL.GS
 
         public static void ChangeGuildEmblem(GamePlayer player, int oldEmblem, int newEmblem)
         {
-            if (player?.Guild == null)
+            Guild guild = player?.Guild;
+
+            if (guild == null)
                 return;
 
             lock (_lock)
             {
-                foreach (Guild guild in _nameToGuilds.Values)
+                foreach (Guild otherGuild in _nameToGuilds.Values)
                 {
-                    if (guild.Emblem == newEmblem)
+                    if (otherGuild.Emblem == newEmblem)
                     {
                         player.Out.SendMessage("This emblem is already in use by another guild, please choose another one.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         return;
                     }
                 }
 
-                player.Guild.Emblem = newEmblem;
+                guild.Emblem = newEmblem;
 
                 if (oldEmblem != 0)
                 {
                     player.RemoveMoney(COST_RE_EMBLEM, null);
-                    InventoryLogging.LogInventoryAction(player, $"(GUILD;{player.GuildName})", eInventoryActionType.Other, COST_RE_EMBLEM);
-                    IList<DbInventoryItem> items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("Emblem").IsEqualTo(oldEmblem));
+                    InventoryLogging.LogInventoryAction(player, $"(GUILD;{guild.Name})", eInventoryActionType.Other, COST_RE_EMBLEM);
 
-                    foreach (DbInventoryItem item in items)
-                        item.Emblem = newEmblem;
-
-                    GameServer.Database.SaveObject(items);
-
-                    if (player.Guild.GuildOwnsHouse && player.Guild.GuildHouseNumber > 0)
+                    // Update guild house emblem.
+                    if (guild.GuildOwnsHouse && guild.GuildHouseNumber > 0)
                     {
-                        Housing.House guildHouse = Housing.HouseMgr.GetHouse(player.Guild.GuildHouseNumber);
+                        House guildHouse = HouseMgr.GetHouse(guild.GuildHouseNumber);
 
                         if (guildHouse != null)
                         {
-                            guildHouse.Emblem = player.Guild.Emblem;
+                            guildHouse.Emblem = guild.Emblem;
                             guildHouse.SaveIntoDatabase();
                             guildHouse.SendUpdate();
                         }
                     }
                 }
+
+                // Update the guild emblem of every personal house.
+                // Houses of offline members will be updated when they log in.
+                foreach (GamePlayer member in player.Guild.GetListOfOnlineMembers())
+                    RefreshPersonalHouseEmblem(member, guild);
             }
+        }
+
+        public static void RefreshPersonalHouseEmblem(GamePlayer player)
+        {
+            RefreshPersonalHouseEmblem(player, player.Guild);
+        }
+
+        public static void RefreshPersonalHouseEmblem(GamePlayer player, Guild guild)
+        {
+            int newEmblem = guild == null ? 0 : guild.Emblem;
+            RefreshPersonalHouseEmblem(player, newEmblem);
+        }
+
+        public static void RefreshPersonalHouseEmblem(GamePlayer player, int newEmblem)
+        {
+            House house = HouseMgr.GetHouseByPlayer(player);
+            RefreshPersonalHouseEmblem(house, newEmblem);
+        }
+
+        private static void RefreshPersonalHouseEmblem(House personalHouse, int newEmblem)
+        {
+            if (personalHouse == null || personalHouse.Emblem == newEmblem)
+                return;
+
+            personalHouse.Emblem = newEmblem;
+            personalHouse.SaveIntoDatabase();
+            personalHouse.SendUpdate();
         }
 
         public static Guild GetGuildByName(string guildName)

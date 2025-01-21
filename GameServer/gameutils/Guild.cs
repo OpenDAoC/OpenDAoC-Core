@@ -562,20 +562,21 @@ namespace DOL.GS
 		/// <returns>true if added successfully</returns>
 		public bool AddOnlineMember(GamePlayer player)
 		{
-			if(player==null) return false;
+			if (player==null)
+				return false;
+
 			lock (m_memberListLock)
 			{
-				if (!m_onlineGuildPlayers.ContainsKey(player.InternalID))
-				{
-					if (!player.IsAnonymous)
-						NotifyGuildMembers(player);
+				if (!m_onlineGuildPlayers.TryAdd(player.InternalID, player))
+					return false;
 
-					m_onlineGuildPlayers.Add(player.InternalID, player);
-					return true;
-				}
+				if (!player.IsAnonymous)
+					NotifyGuildMembers(player);
+
+				GuildMgr.RefreshPersonalHouseEmblem(player, this);
 			}
 
-			return false;
+			return true;
 		}
 
 		private void NotifyGuildMembers(GamePlayer member)
@@ -597,19 +598,19 @@ namespace DOL.GS
 		{
 			lock (m_memberListLock)
 			{
-				if (m_onlineGuildPlayers.Remove(player.InternalID))
-				{
-					// now update the all member list to display lastonline time instead of zone
-					Dictionary<string, GuildMgr.GuildMemberView> memberList = GuildMgr.GetGuildMemberViews(player.Guild);
+				if (!m_onlineGuildPlayers.Remove(player.InternalID))
+					return false;
 
-					if (memberList != null && memberList.TryGetValue(player.InternalID, out GuildMgr.GuildMemberView guildMemberDisplay))
-						guildMemberDisplay.ZoneOrOnline = DateTime.Now.ToShortDateString();
+				// now update the all member list to display lastonline time instead of zone
+				Dictionary<string, GuildMgr.GuildMemberView> memberList = GuildMgr.GetGuildMemberViews(player.Guild);
 
-					return true;
-				}
+				if (memberList != null && memberList.TryGetValue(player.InternalID, out GuildMgr.GuildMemberView guildMemberDisplay))
+					guildMemberDisplay.ZoneOrOnline = DateTime.Now.ToShortDateString();
+
+				GuildMgr.RefreshPersonalHouseEmblem(player, null);
 			}
 
-			return false;
+			return true;
 		}
 
 		/// <summary>

@@ -18,7 +18,6 @@ using DOL.GS.PacketHandler;
 using DOL.GS.PacketHandler.Client.v168;
 using DOL.GS.PlayerClass;
 using DOL.GS.PlayerTitles;
-using DOL.GS.PropertyCalc;
 using DOL.GS.Quests;
 using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
@@ -8620,9 +8619,7 @@ namespace DOL.GS
             }
 
             //Dinberg, instance change.
-            if (CurrentRegion is BaseInstance)
-                ((BaseInstance)CurrentRegion).OnPlayerEnterInstance(this);
-
+            (CurrentRegion as BaseInstance)?.OnPlayerEnterInstance(this);
             RefreshItemBonuses();
 
             DbCoreCharacterXDeck playerDeck = DOLDB<DbCoreCharacterXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(ObjectId));
@@ -9805,6 +9802,16 @@ namespace DOL.GS
 
             if (item is IGameInventoryItem inventoryItem)
                 inventoryItem.OnEquipped(this);
+
+            // Update the emblem of shields and cloaks if needed.
+            // This requires the inventory is loaded before the guild is set.
+            if ((eObjectType) item.Object_Type is eObjectType.Shield || item.Item_Type is Slot.CLOAK)
+            {
+                int newEmblem = Guild != null ? Guild.Emblem : 0;
+
+                if (item.Emblem != newEmblem)
+                    item.Emblem = newEmblem;
+            }
 
             if (item.Item_Type is >= Slot.RIGHTHAND and <= Slot.RANGED)
             {
@@ -11185,30 +11192,39 @@ namespace DOL.GS
             m_customFaceAttributes[(int)eCharFacePart.MoodType] = DBCharacter.MoodType;
 
             #region guild handling
-            //TODO: overwork guild handling (VaNaTiC)
+
             m_guildId = DBCharacter.GuildID;
+
             if (m_guildId != null)
+            {
                 m_guild = GuildMgr.GetGuildByGuildID(m_guildId);
+
+                // If the guild is not found, we need to refresh the emblem ourselves.
+                // Otherwise this is done in `AddOnlineMember`.
+                if (m_guild == null)
+                    GuildMgr.RefreshPersonalHouseEmblem(this);
+                else
+                {
+                    foreach (DbGuildRank rank in m_guild.Ranks)
+                    {
+                        if (rank == null)
+                            continue;
+
+                        if (rank.RankLevel == DBCharacter.GuildRank)
+                        {
+                            m_guildRank = rank;
+                            break;
+                        }
+                    }
+
+                    m_guildName = m_guild.Name;
+                    m_guild.AddOnlineMember(this);
+                }
+            }
             else
                 m_guild = null;
 
-            if (m_guild != null)
-            {
-                foreach (DbGuildRank rank in m_guild.Ranks)
-                {
-                    if (rank == null) continue;
-                    if (rank.RankLevel == DBCharacter.GuildRank)
-                    {
-                        m_guildRank = rank;
-                        break;
-                    }
-                }
-
-                m_guildName = m_guild.Name;
-                m_guild.AddOnlineMember(this);
-            }
             #endregion
-
             #region setting world-init-position (delegate to PlayerCharacter dont make sense)
             m_x = DBCharacter.Xpos;
             m_y = DBCharacter.Ypos;
@@ -11253,7 +11269,6 @@ namespace DOL.GS
 
             SwitchQuiver((eActiveQuiverSlot)(DBCharacter.ActiveWeaponSlot & 0xF0), false);
             SwitchWeapon((eActiveWeaponSlot)(DBCharacter.ActiveWeaponSlot & 0x0F));
-
 
             if (DBCharacter.PlayedTime < 1) //added to make character start with 100% Health and Mana/Endurance when DB Start Lvl >1 :Loki
             {
