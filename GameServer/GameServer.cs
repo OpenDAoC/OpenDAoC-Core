@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -284,6 +285,8 @@ namespace DOL.GS
 		/// <returns>True if the server was successfully started</returns>
 		public override bool Start()
 		{
+			Stopwatch stopwatch = Stopwatch.StartNew();
+
 			try
 			{
 				//Manually set ThreadPool min thread count.
@@ -531,16 +534,19 @@ namespace DOL.GS
 					client.SendToDiscord(message);
 				}
 
-				if (log.IsInfoEnabled)
-					log.Info("GameServer is now open for connections!");
-
 				if (Properties.ATLAS_API)
 				{
-					var webserver = new DOL.GS.API.ApiHost();
-					log.Info("Game WebAPI open for connections.");
+					_ = new API.ApiHost();
+
+					if (log.IsInfoEnabled)
+						log.Info("Game WebAPI open for connections.");
 				}
 
 				GetPatchNotes();
+
+				if (log.IsInfoEnabled)
+					log.Info($"GameServer startup completed in {stopwatch.Elapsed.TotalSeconds:F3} seconds");
+
 				return true;
 			}
 			catch (Exception e)
