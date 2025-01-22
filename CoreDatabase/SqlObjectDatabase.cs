@@ -755,6 +755,7 @@ namespace DOL.Database
             var affected = new List<int>();
             bool repeat;
             var current = 0;
+
             do
             {
                 repeat = false;
@@ -762,66 +763,72 @@ namespace DOL.Database
                 if (!parameters.Any())
                     throw new ArgumentException("No parameter list was given.");
 
-                var conn = CreateConnection(ConnectionString);
+                DbConnection conn = null;
 
-                using (var cmd = conn.CreateCommand())
+                try
                 {
-                    try
+                    conn = CreateConnection(ConnectionString);
+
+                    using (var cmd = conn.CreateCommand())
                     {
-                        cmd.CommandText = SQLCommand;
-                        OpenConnection(conn);
-                        long start = (DateTime.UtcNow.Ticks / 10000);
-
-                        foreach (var parameter in parameters.Skip(current))
+                        try
                         {
-                            FillSQLParameter(parameter, cmd.Parameters);
-                            cmd.Prepare();
+                            cmd.CommandText = SQLCommand;
+                            OpenConnection(conn);
+                            long start = (DateTime.UtcNow.Ticks / 10000);
 
-                            var result = -1;
-                            try
+                            foreach (var parameter in parameters.Skip(current))
                             {
-                                result = cmd.ExecuteNonQuery();
-                                affected.Add(result);
-                            }
-                            catch (Exception ex)
-                            {
-                                if (HandleSQLException(ex))
+                                FillSQLParameter(parameter, cmd.Parameters);
+                                cmd.Prepare();
+
+                                var result = -1;
+                                try
                                 {
+                                    result = cmd.ExecuteNonQuery();
                                     affected.Add(result);
-                                    if (log.IsErrorEnabled)
-                                        log.ErrorFormat("ExecuteNonQueryImpl: Constraint Violation for raw query \"{0}\"\n{1}\n{2}", SQLCommand, ex, Environment.StackTrace);
                                 }
-                                else
+                                catch (Exception ex)
                                 {
-                                    throw;
+                                    if (HandleSQLException(ex))
+                                    {
+                                        affected.Add(result);
+                                        if (log.IsErrorEnabled)
+                                            log.ErrorFormat("ExecuteNonQueryImpl: Constraint Violation for raw query \"{0}\"\n{1}\n{2}", SQLCommand, ex, Environment.StackTrace);
+                                    }
+                                    else
+                                    {
+                                        throw;
+                                    }
                                 }
+                                current++;
+
+                                if (log.IsDebugEnabled && result < 1)
+                                    log.DebugFormat("ExecuteNonQueryImpl: No Change for raw query \"{0}\"", SQLCommand);
                             }
-                            current++;
 
-                            if (log.IsDebugEnabled && result < 1)
-                                log.DebugFormat("ExecuteNonQueryImpl: No Change for raw query \"{0}\"", SQLCommand);
+                            if (log.IsDebugEnabled)
+                                log.DebugFormat("ExecuteNonQueryImpl: SQL NonQuery exec time {0}ms", ((DateTime.UtcNow.Ticks / 10000) - start));
+                            else if (log.IsWarnEnabled && (DateTime.UtcNow.Ticks / 10000) - start > 500)
+                                log.WarnFormat("ExecuteNonQueryImpl: SQL NonQuery took {0}ms!\n{1}", ((DateTime.UtcNow.Ticks / 10000) - start), SQLCommand);
                         }
-
-                        if (log.IsDebugEnabled)
-                            log.DebugFormat("ExecuteNonQueryImpl: SQL NonQuery exec time {0}ms", ((DateTime.UtcNow.Ticks / 10000) - start));
-                        else if (log.IsWarnEnabled && (DateTime.UtcNow.Ticks / 10000) - start > 500)
-                            log.WarnFormat("ExecuteNonQueryImpl: SQL NonQuery took {0}ms!\n{1}", ((DateTime.UtcNow.Ticks / 10000) - start), SQLCommand);
-                    }
-                    catch (Exception e)
-                    {
-                        if (!HandleException(e))
+                        catch (Exception e)
                         {
-                            if (log.IsErrorEnabled)
-                                log.ErrorFormat("ExecuteNonQueryImpl: UnHandled Exception for raw query \"{0}\"\n{1}", SQLCommand, e);
+                            if (!HandleException(e))
+                            {
+                                if (log.IsErrorEnabled)
+                                    log.ErrorFormat("ExecuteNonQueryImpl: UnHandled Exception for raw query \"{0}\"\n{1}", SQLCommand, e);
 
-                            throw;
+                                throw;
+                            }
+                            repeat = true;
                         }
-                        repeat = true;
                     }
-                    finally
-                    {
+                }
+                finally
+                {
+                    if (conn != null)
                         CloseConnection(conn);
-                    }
                 }
             }
             while (repeat);
