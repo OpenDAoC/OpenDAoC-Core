@@ -9804,7 +9804,7 @@ namespace DOL.GS
                 inventoryItem.OnEquipped(this);
 
             // Update the emblem of shields and cloaks if needed.
-            // This requires the inventory is loaded before the guild is set.
+            // This requires the inventory to be loaded before the guild is set.
             if ((eObjectType) item.Object_Type is eObjectType.Shield || item.Item_Type is Slot.CLOAK)
             {
                 int newEmblem = Guild != null ? Guild.Emblem : 0;
