@@ -9803,16 +9803,6 @@ namespace DOL.GS
             if (item is IGameInventoryItem inventoryItem)
                 inventoryItem.OnEquipped(this);
 
-            // Update the emblem of shields and cloaks if needed.
-            // This requires the inventory to be loaded before the guild is set.
-            if ((eObjectType) item.Object_Type is eObjectType.Shield || item.Item_Type is Slot.CLOAK)
-            {
-                int newEmblem = Guild != null ? Guild.Emblem : 0;
-
-                if (item.Emblem != newEmblem)
-                    item.Emblem = newEmblem;
-            }
-
             if (item.Item_Type is >= Slot.RIGHTHAND and <= Slot.RANGED)
             {
                 if (item.Hand == 1) // 2h
