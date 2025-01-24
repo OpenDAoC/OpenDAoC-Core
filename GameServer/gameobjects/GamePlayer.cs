@@ -157,17 +157,7 @@ namespace DOL.GS
 
         public override int TargetInViewAlwaysTrueMinRange => (TargetObject is GamePlayer targetPlayer && targetPlayer.IsMoving) ? 100 : 64;
 
-        public PlayerDeck RandomNumberDeck
-        {
-            get
-            {
-                if (_randomNumberDeck == null)
-                    _randomNumberDeck = new PlayerDeck();
-
-                return _randomNumberDeck;
-            }
-            set { _randomNumberDeck = value; }
-        }
+        public PlayerDeck RandomNumberDeck { get; set; }
 
         /// <summary>
         /// Holds the ground target visibility flag
@@ -8590,6 +8580,8 @@ namespace DOL.GS
         /// <returns>true if created, false if creation failed</returns>
         public override bool AddToWorld()
         {
+            RandomNumberDeck = new PlayerDeck(this);
+
             if (!base.AddToWorld())
             {
                 log.Error("Failed to add player to world: " + Name);
@@ -8621,14 +8613,6 @@ namespace DOL.GS
             //Dinberg, instance change.
             (CurrentRegion as BaseInstance)?.OnPlayerEnterInstance(this);
             RefreshItemBonuses();
-
-            DbCoreCharacterXDeck playerDeck = DOLDB<DbCoreCharacterXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(ObjectId));
-
-            if (playerDeck != null)
-                RandomNumberDeck.LoadDeckFromJSON(playerDeck.Deck);
-            else
-                RandomNumberDeck = new PlayerDeck();
-
             LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
             LastPlayerActivityTime = GameLoop.GameLoopTime;
             return true;
@@ -11355,20 +11339,7 @@ namespace DOL.GS
         {
             try
             {
-                var existingDeck = DOLDB<DbCoreCharacterXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(this.ObjectId));
-                if (existingDeck != null)
-                {
-                    existingDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
-                    GameServer.Database.SaveObject(existingDeck);
-                }
-                else
-                {
-                    DbCoreCharacterXDeck playerDeck = new DbCoreCharacterXDeck();
-                    playerDeck.DOLCharactersObjectId = this.ObjectId;
-                    playerDeck.Deck = RandomNumberDeck.SaveDeckToJSON();
-                    GameServer.Database.AddObject(playerDeck);
-                }
-
+                RandomNumberDeck.SaveDeck();
                 DbAccountXRealmLoyalty realmLoyalty = DOLDB<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
                 if (realmLoyalty == null)

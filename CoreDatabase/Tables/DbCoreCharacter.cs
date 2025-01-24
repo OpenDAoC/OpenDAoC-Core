@@ -2344,12 +2344,12 @@ namespace DOL.Database
         /// List of Custom Params for this Character
         /// </summary>
         [Relation(LocalField = "DOLCharacters_ID", RemoteField = "DOLCharactersObjectId", AutoLoad = true, AutoDelete = true)]
-		public DbCoreCharacterXCustomParam[] CustomParams;
-        
+        public DbCoreCharacterXCustomParam[] CustomParams;
+
         /// <summary>
-        /// List of Random Number Decks for this Character
+        /// Random Number Deck for this Character
         /// </summary>
         [Relation(LocalField = "DOLCharacters_ID", RemoteField = "DOLCharactersObjectId", AutoLoad = true, AutoDelete = true)]
-        public DbCoreCharacterXDeck[] RandomNumberDecks;
-	}
+        public DbCoreCharacterXDeck RandomNumberDeck;
+    }
 }
