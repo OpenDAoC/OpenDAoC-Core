@@ -66,11 +66,18 @@ namespace DOL.GS
             get => _player;
             set
             {
-                GamePlayer oldPlayer = Interlocked.Exchange(ref _player, value);
+                if (_player != null && _player.ObjectState is not GameObject.eObjectState.Deleted)
+                {
+                    if (log.IsErrorEnabled)
+                    {
+                        string message = $"GameClient.Player is being replaced but hasn't been deleted yet (current: {_player}) (new: {_player}){Environment.NewLine}{Environment.StackTrace}";
+                        log.Error(message);
+                    }
 
-                if (oldPlayer != null && oldPlayer.ObjectState is not GameObject.eObjectState.Deleted)
-                    oldPlayer.Delete();
+                    _player.Delete();
+                }
 
+                _player = value;
                 GameEventMgr.Notify(GameClientEvent.PlayerLoaded, this); // Seems not right.
             }
         }
