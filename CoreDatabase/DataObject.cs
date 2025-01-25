@@ -61,7 +61,7 @@ namespace DOL.Database
 		/// Can this object added to the DB?
 		/// </summary>
 		[Browsable(false)]
-		public virtual bool AllowAdd 
+		public virtual bool AllowAdd
 		{
 			get { return m_allowAdd; }
 			set { m_allowAdd = value; }
@@ -117,6 +117,7 @@ namespace DOL.Database
 		public object Clone()
 		{
 			var obj = (DataObject) MemberwiseClone();
+			obj.IsPersisted = false;
 			obj.ObjectId = IdGenerator.GenerateID();
 			return obj;
 		}
@@ -127,14 +128,5 @@ namespace DOL.Database
 		{
 			return string.Format("DataObject: {0}, ObjectId{{{1}}}", TableName, ObjectId);
 		}
-	}
-
-	// Used to allow manipulation of inventory items and delay their database action.
-	public enum PendingDatabaseAction
-	{
-		NONE,
-		SAVE,
-		ADD,
-		DELETE
 	}
 }

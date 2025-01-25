@@ -88,7 +88,7 @@ namespace DOL.GS.Utils
 
             if (dbCoreCharacterXDeck?.IsPersisted == true)
                 GameServer.Database.SaveObject(dbCoreCharacterXDeck);
-            else 
+            else
                 GameServer.Database.AddObject(dbCoreCharacterXDeck);
 
             string SerializeCards()

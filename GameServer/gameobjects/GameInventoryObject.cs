@@ -311,7 +311,6 @@ namespace DOL.GS
 
                     toItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
                     toItem.OwnerID = thisObject.GetOwner(player);
-                    toItem.PendingDatabaseAction = PendingDatabaseAction.ADD;
                     thisObject.OnAddItem(player, toItem);
 
                     if (!SaveItem(toItem))
@@ -336,7 +335,6 @@ namespace DOL.GS
 
                     toItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
                     toItem.OwnerID = thisObject.GetOwner(player);
-                    toItem.PendingDatabaseAction = PendingDatabaseAction.ADD;
                     thisObject.OnAddItem(player, toItem);
 
                     if (!SaveItem(toItem))
@@ -443,8 +441,6 @@ namespace DOL.GS
             {
                 if (fromItem.Count - count <= 0)
                 {
-                    fromItem.PendingDatabaseAction = PendingDatabaseAction.DELETE;
-
                     if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(StackItemsFromCharacterInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
@@ -479,8 +475,6 @@ namespace DOL.GS
             {
                 if (fromItem.Count - count <= 0)
                 {
-                    fromItem.PendingDatabaseAction = PendingDatabaseAction.DELETE;
-
                     if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(StackItemsFromHousingInventoryToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
@@ -603,29 +597,14 @@ namespace DOL.GS
             }
         }
 
-        private static bool SaveItem(DbInventoryItem item)
+        public static bool SaveItem(DbInventoryItem item)
         {
-            if (item.PendingDatabaseAction is PendingDatabaseAction.ADD)
-            {
-                item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
+            return item.IsPersisted ? GameServer.Database.SaveObject(item) : GameServer.Database.AddObject(item);
+        }
 
-                if (!GameServer.Database.AddObject(item))
-                    return false;
-            }
-            else if (item.PendingDatabaseAction is PendingDatabaseAction.DELETE)
-            {
-                item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
-
-                if (!GameServer.Database.DeleteObject(item))
-                    return false;
-            }
-            else if (item.PendingDatabaseAction is PendingDatabaseAction.SAVE)
-            {
-                if (!GameServer.Database.SaveObject(item))
-                    return false;
-            }
-
-            return true;
+        public static bool DeleteItem(DbInventoryItem item)
+        {
+            return GameServer.Database.DeleteObject(item);
         }
 
         public static bool IsHousingInventorySlot(eInventorySlot slot)

@@ -206,11 +206,7 @@ namespace DOL.GS
 				if (!canPersist)
 					return;
 
-				if (item.PendingDatabaseAction is PendingDatabaseAction.DELETE)
-				{
-					item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
-					GameServer.Database.DeleteObject(item);
-				}
+				GameInventoryObjectExtensions.DeleteItem(item);
 			}
 
 			void SaveItem(KeyValuePair<eInventorySlot, DbInventoryItem> pair)
@@ -254,13 +250,7 @@ namespace DOL.GS
 					return;
 				}
 
-				if (item.PendingDatabaseAction is PendingDatabaseAction.ADD)
-				{
-					item.PendingDatabaseAction = PendingDatabaseAction.SAVE;
-					GameServer.Database.AddObject(item);
-				}
-				else if (item.PendingDatabaseAction is PendingDatabaseAction.SAVE)
-					GameServer.Database.SaveObject(item);
+				GameInventoryObjectExtensions.SaveItem(item);
 			}
 		}
 
@@ -294,9 +284,6 @@ namespace DOL.GS
 
 				if (canPersist)
 				{
-					// Clean up our items awaiting deletion list in case this is an item that was dropped then picked up again between two saves.
-					bool removedFromItemsAwaitingDeletion = false;
-
 					for (int i = _itemsAwaitingDeletion.Count - 1; i >= 0; i--)
 					{
 						DbInventoryItem _itemAwaitingDeletion = _itemsAwaitingDeletion[i];
@@ -304,12 +291,9 @@ namespace DOL.GS
 						if (_itemAwaitingDeletion == item)
 						{
 							_itemsAwaitingDeletion.SwapRemoveAt(i);
-							removedFromItemsAwaitingDeletion = true;
 							break;
 						}
 					}
-
-					item.PendingDatabaseAction = removedFromItemsAwaitingDeletion ? PendingDatabaseAction.SAVE : PendingDatabaseAction.ADD;
 				}
 			}
 
@@ -355,17 +339,9 @@ namespace DOL.GS
 				if (item is GameInventoryItem gameItem)
 					canPersist = gameItem.CanPersist;
 
-				if (canPersist)
-				{
-					// Only add the item to our items awaiting deletion list if it wasn't about to be added to the database.
-					if (item.PendingDatabaseAction == PendingDatabaseAction.ADD)
-						item.PendingDatabaseAction = PendingDatabaseAction.NONE;
-					else
-					{
-						item.PendingDatabaseAction = PendingDatabaseAction.DELETE;
-						_itemsAwaitingDeletion.Add(item);
-					}
-				}
+				// Only add the item to our items awaiting deletion list if it was actually added to the database.
+				if (canPersist && item.IsPersisted)
+					_itemsAwaitingDeletion.Add(item);
 			}
 
 			m_player.TradeWindow?.RemoveItemToTrade(item);
@@ -402,9 +378,6 @@ namespace DOL.GS
 
 				return false;
 			}
-
-			if (item.Count <= 0)
-				item.PendingDatabaseAction = PendingDatabaseAction.DELETE;
 
 			return base.RemoveCountFromStack(item, count);
 		}
@@ -1028,19 +1001,16 @@ namespace DOL.GS
 				return true;
 			}
 
-			if (toItem == null && fromItem.Count > itemCount)
-			{
-				DbInventoryItem newItem = fromItem.Clone() as DbInventoryItem;
-				m_items[toSlot] = newItem;
-				newItem.Count = itemCount;
-				newItem.SlotPosition = (int) toSlot;
-				fromItem.Count -= itemCount;
-				newItem.AllowAdd = fromItem.Template.AllowAdd;
-				newItem.PendingDatabaseAction = PendingDatabaseAction.ADD;
-				return true;
-			}
+			if (toItem != null || fromItem.Count <= itemCount)
+				return false;
 
-			return false;
+			DbInventoryItem newItem = fromItem.Clone() as DbInventoryItem;
+			m_items[toSlot] = newItem;
+			newItem.Count = itemCount;
+			newItem.SlotPosition = (int) toSlot;
+			fromItem.Count -= itemCount;
+			newItem.AllowAdd = fromItem.Template.AllowAdd;
+			return true;
 		}
 
 		/// <summary>

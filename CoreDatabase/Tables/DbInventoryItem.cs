@@ -18,24 +18,6 @@ namespace DOL.Database
 		public const string BLANK_ITEM = "blank_item";
 
 		protected bool m_hasLoggedError = false;
-		private PendingDatabaseAction _pendingDatabaseAction = PendingDatabaseAction.SAVE;
-
-		public PendingDatabaseAction PendingDatabaseAction
-		{
-			get => _pendingDatabaseAction;
-			set
-			{
-				// If an addition is cancelled by a deletion, no action will be necessary.
-				if (_pendingDatabaseAction is PendingDatabaseAction.ADD && value is PendingDatabaseAction.DELETE)
-				{
-					_pendingDatabaseAction = PendingDatabaseAction.NONE;
-					return;
-				}
-
-				_pendingDatabaseAction = value;
-				Dirty = true;
-			}
-		}
 
 		#region Inventory fields
 
@@ -333,7 +315,6 @@ namespace DOL.Database
 		{
 			m_utemplate_id = template.Id_nb;
 			InitializeFromTemplate(template);
-
 		}
 
 		private void InitializeFromTemplate(DbItemTemplate template)
@@ -357,30 +338,31 @@ namespace DOL.Database
 		/// Creates a new Inventoryitem based on the given InventoryItem
 		/// </summary>
 		/// <param name="inventoryItem"></param>
-		protected DbInventoryItem(DbInventoryItem template)
+		protected DbInventoryItem(DbInventoryItem dbInventoryItem)
 		{
-			Template = template.Template;
-			m_itemplate_id = template.ITemplate_Id;
-			m_utemplate_id = template.UTemplate_Id;
-			m_color = template.Color;
-			m_extension = template.Extension;
-			m_salvageextension = template.SalvageExtension;
-			m_slot_pos = template.SlotPosition;
-			m_count = template.Count;
-			m_creator = template.Creator;
-			m_iscrafted = template.IsCrafted;
-			m_sellPrice = template.SellPrice;
-			m_condition = template.Condition;
-			m_durability = template.Durability;
-			m_emblem = template.Emblem;
-			m_cooldown = template.Cooldown;
-			m_charges = template.Charges;
-			m_charges1 = template.Charges1;
-			m_poisonCharges = template.PoisonCharges ;
-			m_poisonMaxCharges = template.PoisonMaxCharges ;
-			m_poisonSpellID = template.PoisonSpellID;
-			m_experience = template.Experience;
-			m_ownerLot = template.OwnerLot;
+			Template = dbInventoryItem.Template;
+			IsPersisted = dbInventoryItem.IsPersisted;
+			m_itemplate_id = dbInventoryItem.ITemplate_Id;
+			m_utemplate_id = dbInventoryItem.UTemplate_Id;
+			m_color = dbInventoryItem.Color;
+			m_extension = dbInventoryItem.Extension;
+			m_salvageextension = dbInventoryItem.SalvageExtension;
+			m_slot_pos = dbInventoryItem.SlotPosition;
+			m_count = dbInventoryItem.Count;
+			m_creator = dbInventoryItem.Creator;
+			m_iscrafted = dbInventoryItem.IsCrafted;
+			m_sellPrice = dbInventoryItem.SellPrice;
+			m_condition = dbInventoryItem.Condition;
+			m_durability = dbInventoryItem.Durability;
+			m_emblem = dbInventoryItem.Emblem;
+			m_cooldown = dbInventoryItem.Cooldown;
+			m_charges = dbInventoryItem.Charges;
+			m_charges1 = dbInventoryItem.Charges1;
+			m_poisonCharges = dbInventoryItem.PoisonCharges ;
+			m_poisonMaxCharges = dbInventoryItem.PoisonMaxCharges ;
+			m_poisonSpellID = dbInventoryItem.PoisonSpellID;
+			m_experience = dbInventoryItem.Experience;
+			m_ownerLot = dbInventoryItem.OwnerLot;
 		}
 
 		public virtual void SetCooldown()
