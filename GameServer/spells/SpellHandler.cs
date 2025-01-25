@@ -2907,8 +2907,8 @@ namespace DOL.GS.Spells
 		{
 			// Was previously 2% per level difference, but this didn't match live results at lower level.
 			// Assuming 2% was correct at level 50, it means it should be dynamic, either based on the caster's level of the target's.
-			// This new formula increases the modifier the lower the level of the caster is: 10% at level 0, 2% at level 50.
-			return (caster.Level - target.Level) * (10 - caster.Level * 0.16) * 0.01;
+			// This new formula increases the modifier the lower the level of the caster is: 10% at level 0, 2% at level 50 and above.
+			return (caster.Level - target.Level) * Math.Max(2, 10 - caster.Level * 0.16) * 0.01;
 		}
 
 		/// <summary>
