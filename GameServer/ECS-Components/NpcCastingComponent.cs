@@ -9,6 +9,14 @@
             _npcOwner = npcOwner;
         }
 
+        public override void OnSpellCast(Spell spell)
+        {
+            if (!spell.IsHarmful || !spell.IsInstantCast)
+                return;
+
+            _npcOwner.ApplyInstantHarmfulSpellDelay();
+        }
+
         public override void ClearUpSpellHandlers()
         {
             // Make sure NPCs don't start casting pending spells after being told to stop.

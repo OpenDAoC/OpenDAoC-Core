@@ -1006,6 +1006,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
+			Caster.castingComponent.OnSpellCast(Spell);
 			return true;
 
 			bool CheckVerbosity()

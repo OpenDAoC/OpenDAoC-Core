@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -436,6 +435,10 @@ namespace DOL.AI.Brain
             {
                 BringFriends(newTarget);
                 Body.FireAmbientSentence(GameNPC.eAmbientTrigger.aggroing, newTarget);
+
+                // Don't immediately cast instant harmful spells. It's annoying.
+                if (Body.CanCastInstantHarmfulSpells && !Body.IsInstantHarmfulSpellCastingLocked)
+                    Body.ApplyInstantHarmfulSpellDelay();
             }
 
             Body.TargetObject = newTarget;
@@ -862,7 +865,8 @@ namespace DOL.AI.Brain
             }
             else if (type is eCheckSpellType.Offensive)
             {
-                if (Body.CanCastInstantHarmfulSpells)
+                // Instant harmful spells have a random global cooldown, set by the casting component.
+                if (Body.CanCastInstantHarmfulSpells && !Body.IsInstantHarmfulSpellCastingLocked)
                     CheckOffensiveSpells(Body.InstantHarmfulSpells);
 
                 if (Body.CanCastHarmfulSpells)

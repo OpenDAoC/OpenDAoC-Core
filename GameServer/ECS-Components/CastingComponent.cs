@@ -111,6 +111,8 @@ namespace DOL.GS
             QueuedSpellHandler = null;
         }
 
+        public virtual void OnSpellCast(Spell spell) { }
+
         public void OnSpellHandlerCleanUp(Spell currentSpell)
         {
             if (Owner is GamePlayer player)

@@ -351,6 +351,14 @@ namespace DOL.GS
 			Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.TargetNotInView));
 		}
 
+		// Necromancer pets shouldn't delay their instant spells.
+		public override bool IsInstantHarmfulSpellCastingLocked => false;
+
+		public override void ApplyInstantHarmfulSpellDelay()
+		{
+			return;
+		}
+
 		#endregion
 
 		public override bool SayReceive(GameLiving source, string str)

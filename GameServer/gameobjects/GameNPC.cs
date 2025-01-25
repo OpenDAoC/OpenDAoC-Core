@@ -19,11 +19,11 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// This class is the baseclass for all Non Player Characters like
-    /// Monsters, Merchants, Guards, Steeds ...
-    /// </summary>
-    public class GameNPC : GameLiving, ITranslatableObject
+	/// <summary>
+	/// This class is the baseclass for all Non Player Characters like
+	/// Monsters, Merchants, Guards, Steeds ...
+	/// </summary>
+	public class GameNPC : GameLiving, ITranslatableObject
 	{
 		public static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -3316,82 +3316,28 @@ namespace DOL.GS
 			}
 		}
 
-		/// <summary>
-		/// Harmful spell list and accessor
-		/// </summary>
 		public List<Spell> HarmfulSpells { get; set; } = null;
-
-		/// <summary>
-		/// Whether or not the NPC can cast harmful spells with a cast time.
-		/// </summary>
-		public bool CanCastHarmfulSpells
-		{
-			get { return (HarmfulSpells != null && HarmfulSpells.Count > 0); }
-		}
-
-		/// <summary>
-		/// Instant harmful spell list and accessor
-		/// </summary>
 		public List<Spell> InstantHarmfulSpells { get; set; } = null;
-
-		/// <summary>
-		/// Whether or not the NPC can cast harmful instant spells.
-		/// </summary>
-		public bool CanCastInstantHarmfulSpells
-		{
-			get { return (InstantHarmfulSpells != null && InstantHarmfulSpells.Count > 0); }
-		}
-
-		/// <summary>
-		/// Healing spell list and accessor
-		/// </summary>
 		public List<Spell> HealSpells { get; set; } = null;
-
-		/// <summary>
-		/// Whether or not the NPC can cast heal spells with a cast time.
-		/// </summary>
-		public bool CanCastHealSpells
-		{
-			get { return (HealSpells != null && HealSpells.Count > 0); }
-		}
-
-		/// <summary>
-		/// Instant healing spell list and accessor
-		/// </summary>
 		public List<Spell> InstantHealSpells { get; set; } = null;
-
-		/// <summary>
-		/// Whether or not the NPC can cast instant healing spells.
-		/// </summary>
-		public bool CanCastInstantHealSpells
-		{
-			get { return (InstantHealSpells != null && InstantHealSpells.Count > 0); }
-		}
-
-		/// <summary>
-		/// Miscellaneous spell list and accessor
-		/// </summary>
 		public List<Spell> MiscSpells { get; set; } = null;
-
-		/// <summary>
-		/// Whether or not the NPC can cast miscellaneous spells with a cast time.
-		/// </summary>
-		public bool CanCastMiscSpells
-		{
-			get { return (MiscSpells != null && MiscSpells.Count > 0); }
-		}
-
-		/// <summary>
-		/// Instant miscellaneous spell list and accessor
-		/// </summary>
 		public List<Spell> InstantMiscSpells { get; set; } = null;
 
-		/// <summary>
-		/// Whether or not the NPC can cast miscellaneous instant spells.
-		/// </summary>
-		public bool CanCastInstantMiscSpells
+		// These should only be used to check if the lists have something in them.
+		public bool CanCastHarmfulSpells => HarmfulSpells != null && HarmfulSpells.Count > 0;
+		public bool CanCastInstantHarmfulSpells => InstantHarmfulSpells != null && InstantHarmfulSpells.Count > 0;
+		public bool CanCastHealSpells => HealSpells != null && HealSpells.Count > 0;
+		public bool CanCastInstantHealSpells => InstantHealSpells != null && InstantHealSpells.Count > 0;
+		public bool CanCastMiscSpells => MiscSpells != null && MiscSpells.Count > 0;
+		public bool CanCastInstantMiscSpells => InstantMiscSpells != null && InstantMiscSpells.Count > 0;
+
+		private long _nextInstantHarmfulSpell;
+		public virtual bool IsInstantHarmfulSpellCastingLocked => !ServiceUtils.ShouldTickAdjust(ref _nextInstantHarmfulSpell);
+
+		public virtual void ApplyInstantHarmfulSpellDelay()
 		{
-			get { return (InstantMiscSpells != null && InstantMiscSpells.Count > 0); }
+			// Delay the next spell by 1~6 seconds (triangular distribution).
+			_nextInstantHarmfulSpell += 1000 + Util.Random(2500) + Util.Random(2500);;
 		}
 
 		/// <summary>
@@ -4086,6 +4032,7 @@ namespace DOL.GS
 
 		public override eGender Gender { get; set; }
 
+		public new NpcCastingComponent castingComponent;
 		public new NpcMovementComponent movementComponent;
 
 		public GameNPC Copy()
@@ -4208,8 +4155,8 @@ namespace DOL.GS
 
 		public GameNPC(ABrain defaultBrain) : base()
 		{
+			castingComponent ??= base.castingComponent as NpcCastingComponent;
 			movementComponent ??= base.movementComponent as NpcMovementComponent;
-			styleComponent ??= base.styleComponent as NpcStyleComponent;
 
 			Level = 1;
 			m_health = MaxHealth;
