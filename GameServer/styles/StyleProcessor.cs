@@ -606,7 +606,7 @@ namespace DOL.GS.Styles
 
 			// We have to scale style procs when cast.
 			if (caster is GameSummonedPet pet)
-				pet.ScalePetSpell(spell);
+				pet.ScaleSpell(spell, pet.Level, Properties.PET_SCALE_SPELL_MAX_LEVEL);
 
 			return ScriptMgr.CreateSpellHandler(caster, spell, SkillBase.GetSpellLine(GlobalSpellsLines.Combat_Styles_Effect));
 		}

@@ -3415,9 +3415,106 @@ namespace DOL.GS
 						MiscSpells.Add(spell);
 					}
 				}
-			} // foreach
+			}
+		}
 
-			//SortedSpells = true;
+		public virtual void ScaleSpell(Spell spell, int casterLevel, double baseLineLevel)
+		{
+			if (spell == null || Level < 1 || spell.ScaledToNpcLevel)
+				return;
+
+			if (casterLevel < 1)
+				casterLevel = Level;
+
+			double scalingFactor = casterLevel / baseLineLevel;
+
+			switch (spell.SpellType)
+			{
+				// Scale Damage.
+				case eSpellType.DamageOverTime:
+				case eSpellType.DamageShield:
+				case eSpellType.DamageAdd:
+				case eSpellType.DirectDamage:
+				case eSpellType.Lifedrain:
+				case eSpellType.DamageSpeedDecrease:
+				case eSpellType.StyleBleeding:
+				{
+					spell.Damage *= scalingFactor;
+					spell.ScaledToNpcLevel = true;
+					break;
+				}
+				// Scale Value.
+				case eSpellType.EnduranceRegenBuff:
+				case eSpellType.Heal:
+				case eSpellType.StormEnduDrain:
+				case eSpellType.PowerRegenBuff:
+				case eSpellType.PowerHealthEnduranceRegenBuff:
+				case eSpellType.CombatSpeedBuff:
+				case eSpellType.HasteBuff:
+				case eSpellType.CelerityBuff:
+				case eSpellType.CombatSpeedDebuff:
+				case eSpellType.StyleCombatSpeedDebuff:
+				case eSpellType.CombatHeal:
+				case eSpellType.HealthRegenBuff:
+				case eSpellType.HealOverTime:
+				case eSpellType.ConstitutionBuff:
+				case eSpellType.DexterityBuff:
+				case eSpellType.StrengthBuff:
+				case eSpellType.ConstitutionDebuff:
+				case eSpellType.DexterityDebuff:
+				case eSpellType.StrengthDebuff:
+				case eSpellType.ArmorFactorDebuff:
+				case eSpellType.BaseArmorFactorBuff:
+				case eSpellType.SpecArmorFactorBuff:
+				case eSpellType.PaladinArmorFactorBuff:
+				case eSpellType.ArmorAbsorptionBuff:
+				case eSpellType.ArmorAbsorptionDebuff:
+				case eSpellType.DexterityQuicknessBuff:
+				case eSpellType.StrengthConstitutionBuff:
+				case eSpellType.DexterityQuicknessDebuff:
+				case eSpellType.StrengthConstitutionDebuff:
+				case eSpellType.Taunt:
+				case eSpellType.SpeedDecrease:
+				case eSpellType.SavageCombatSpeedBuff:
+				case eSpellType.OffensiveProc:
+				{
+					spell.Value *= scalingFactor;
+					spell.ScaledToNpcLevel = true;
+					break;
+				}
+				// Scale Duration.
+				case eSpellType.Disease:
+				case eSpellType.Stun:
+				case eSpellType.UnrresistableNonImunityStun:
+				case eSpellType.Mesmerize:
+				case eSpellType.StyleStun:
+				case eSpellType.StyleSpeedDecrease:
+				{
+					spell.Duration = (int) Math.Ceiling(spell.Duration * scalingFactor);
+					spell.ScaledToNpcLevel = true;
+					break;
+				}
+				// Scale Damage and Value.
+				case eSpellType.DirectDamageWithDebuff:
+				{
+					// Patch 1.123: For Cabalist, Enchanter, and Spiritmaster pets
+					// The debuff component of its nuke has been as follows:
+					// For pet level 1-23, the debuff is now 10%.
+					// For pet level 24-43, the debuff is now 20%.
+					// For pet level 44-50, the debuff is now 30%.
+					spell.Value *= scalingFactor;
+					spell.Damage *= scalingFactor;
+					spell.Duration = (int) Math.Ceiling(spell.Duration * scalingFactor);
+					spell.ScaledToNpcLevel = true;
+					break;
+				}
+				case eSpellType.StyleTaunt:
+				case eSpellType.CurePoison:
+				case eSpellType.CureDisease:
+					break;
+				default:
+					break;
+			}
 		}
 
 		/// <summary>

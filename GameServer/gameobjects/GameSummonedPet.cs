@@ -137,7 +137,7 @@ namespace DOL.GS
 					for (int i = 0; i < HarmfulSpells.Count; i++)
 					{
 						HarmfulSpells[i] = HarmfulSpells[i].Copy();
-						ScalePetSpell(HarmfulSpells[i], scaleLevel);
+						ScaleSpell(HarmfulSpells[i], scaleLevel, Properties.PET_SCALE_SPELL_MAX_LEVEL);
 					}
 				}
 
@@ -146,7 +146,7 @@ namespace DOL.GS
 					for (int i = 0; i < InstantHarmfulSpells.Count; i++)
 					{
 						InstantHarmfulSpells[i] = InstantHarmfulSpells[i].Copy();
-						ScalePetSpell(InstantHarmfulSpells[i], scaleLevel);
+						ScaleSpell(InstantHarmfulSpells[i], scaleLevel, Properties.PET_SCALE_SPELL_MAX_LEVEL);
 					}
 				}
 
@@ -155,7 +155,7 @@ namespace DOL.GS
 					for (int i = 0; i < HealSpells.Count; i++)
 					{
 						HealSpells[i] = HealSpells[i].Copy();
-						ScalePetSpell(HealSpells[i], scaleLevel);
+						ScaleSpell(HealSpells[i], scaleLevel, Properties.PET_SCALE_SPELL_MAX_LEVEL);
 					}
 				}
 
@@ -164,7 +164,7 @@ namespace DOL.GS
 					for (int i = 0; i < InstantHealSpells.Count; i++)
 					{
 						InstantHealSpells[i] = InstantHealSpells[i].Copy();
-						ScalePetSpell(InstantHealSpells[i], scaleLevel);
+						ScaleSpell(InstantHealSpells[i], scaleLevel, Properties.PET_SCALE_SPELL_MAX_LEVEL);
 					}
 				}
 
@@ -173,7 +173,7 @@ namespace DOL.GS
 					for (int i = 0; i < InstantMiscSpells.Count; i++)
 					{
 						InstantMiscSpells[i] = InstantMiscSpells[i].Copy();
-						ScalePetSpell(InstantMiscSpells[i], scaleLevel);
+						ScaleSpell(InstantMiscSpells[i], scaleLevel, Properties.PET_SCALE_SPELL_MAX_LEVEL);
 					}
 				}
 
@@ -182,7 +182,7 @@ namespace DOL.GS
 					for (int i = 0; i < MiscSpells.Count; i++)
 					{
 						MiscSpells[i] = MiscSpells[i].Copy();
-						ScalePetSpell(MiscSpells[i], scaleLevel);
+						ScaleSpell(MiscSpells[i], scaleLevel, Properties.PET_SCALE_SPELL_MAX_LEVEL);
 					}
 				}
 			}
@@ -193,95 +193,10 @@ namespace DOL.GS
 		/// </summary>
 		/// <param name="spell">The spell to scale</param>
 		/// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
-		public virtual void ScalePetSpell(Spell spell, int casterLevel = 0)
+		public override void ScaleSpell(Spell spell, int casterLevel, double baseLineLevel)
 		{
-			if (Properties.PET_SCALE_SPELL_MAX_LEVEL < 1 || spell == null || Level < 1 || spell.ScaledToPetLevel)
-				return;
-
-			if (casterLevel < 1)
-				casterLevel = Level;
-
-			double scalingFactor = (double) casterLevel / Properties.PET_SCALE_SPELL_MAX_LEVEL;
-
-			switch (spell.SpellType)
-			{
-				// Scale Damage
-				case eSpellType.DamageOverTime:
-				case eSpellType.DamageShield:
-				case eSpellType.DamageAdd:
-				case eSpellType.DirectDamage:
-				case eSpellType.Lifedrain:
-				case eSpellType.DamageSpeedDecrease:
-				case eSpellType.StyleBleeding: // Style bleed effect
-					spell.Damage *= scalingFactor;
-					spell.ScaledToPetLevel = true;
-					break;
-				// Scale Value
-				case eSpellType.EnduranceRegenBuff:
-				case eSpellType.Heal:
-				case eSpellType.StormEnduDrain:
-				case eSpellType.PowerRegenBuff:
-				case eSpellType.PowerHealthEnduranceRegenBuff:
-				case eSpellType.CombatSpeedBuff:
-				case eSpellType.HasteBuff:
-				case eSpellType.CelerityBuff:
-				case eSpellType.CombatSpeedDebuff:
-				case eSpellType.StyleCombatSpeedDebuff:
-				case eSpellType.CombatHeal:
-				case eSpellType.HealthRegenBuff:
-				case eSpellType.HealOverTime:
-				case eSpellType.ConstitutionBuff:
-				case eSpellType.DexterityBuff:
-				case eSpellType.StrengthBuff:
-				case eSpellType.ConstitutionDebuff:
-				case eSpellType.DexterityDebuff:
-				case eSpellType.StrengthDebuff:
-				case eSpellType.ArmorFactorDebuff:
-				case eSpellType.BaseArmorFactorBuff:
-				case eSpellType.SpecArmorFactorBuff:
-				case eSpellType.PaladinArmorFactorBuff:
-				case eSpellType.ArmorAbsorptionBuff:
-				case eSpellType.ArmorAbsorptionDebuff:
-				case eSpellType.DexterityQuicknessBuff:
-				case eSpellType.StrengthConstitutionBuff:
-				case eSpellType.DexterityQuicknessDebuff:
-				case eSpellType.StrengthConstitutionDebuff:
-				case eSpellType.Taunt:
-				case eSpellType.SpeedDecrease:
-				case eSpellType.SavageCombatSpeedBuff:
-				//case eSpellType.OffensiveProc:
-					spell.Value *= scalingFactor;
-					spell.ScaledToPetLevel = true;
-					break;
-				// Scale Duration
-				case eSpellType.Disease:
-				case eSpellType.Stun:
-				case eSpellType.UnrresistableNonImunityStun:
-				case eSpellType.Mesmerize:
-				case eSpellType.StyleStun: // Style stun effet
-				case eSpellType.StyleSpeedDecrease: // Style hinder effet
-					spell.Duration = (int) Math.Ceiling(spell.Duration * scalingFactor);
-					spell.ScaledToPetLevel = true;
-					break;
-				// Scale Damage and value
-				case eSpellType.DirectDamageWithDebuff:
-					/* Patch 1.123: For Cabalist, Enchanter, and Spiritmaster pets
-					 * The debuff component of its nuke has been as follows:
-					 *	For pet level 1-23, the debuff is now 10%.
-					 *	For pet level 24-43, the debuff is now 20%.
-					 *	For pet level 44-50, the debuff is now 30%.  */
-					spell.Value *= (double) scalingFactor;
-					spell.Damage *= (double) scalingFactor;
-					spell.Duration = (int) Math.Ceiling(spell.Duration * scalingFactor);
-					spell.ScaledToPetLevel = true;
-					break;
-				case eSpellType.StyleTaunt: // Style taunt effects already scale with damage
-				case eSpellType.CurePoison:
-				case eSpellType.CureDisease:
-					break;
-				default:
-					break; // Don't mess with types we don't know
-			}
+			if (Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
+				base.ScaleSpell(spell, casterLevel, baseLineLevel);
 		}
 
 		#endregion

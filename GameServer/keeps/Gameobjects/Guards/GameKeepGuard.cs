@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -229,69 +228,6 @@ namespace DOL.GS.Keeps
 				HealTarget = target;
 				LOSChecker.Out.SendCheckLos(this, target, new CheckLosResponse(GuardStartSpellHealCheckLos));
 			}
-		}
-
-		public void CheckForNuke()
-		{
-			GameLiving target = TargetObject as GameLiving;
-			if (target == null) return;
-			if (!target.IsAlive) return;
-			if (target is GamePlayer && !GameServer.KeepManager.IsEnemy(this, target as GamePlayer, true)) return;
-			if (!IsWithinRadius(target, WorldMgr.VISIBILITY_DISTANCE)) { TargetObject = null; return; }
-			GamePlayer LOSChecker = null;
-			if (target is GamePlayer) LOSChecker = target as GamePlayer;
-			else
-			{
-				foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					LOSChecker = player;
-					break;
-				}
-			}
-			if (LOSChecker == null) return;
-			LOSChecker.Out.SendCheckLos(this, target, new CheckLosResponse(GuardStartSpellNukeCheckLos));
-		}
-
-		public void GuardStartSpellNukeCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			if (response is eLosCheckResponse.TRUE)
-			{
-				switch (Realm)
-				{
-					case eRealm.None:
-					case eRealm.Albion: LaunchSpell(47, "Pyromancy"); break;
-					case eRealm.Midgard: LaunchSpell(48, "Runecarving"); break;
-					case eRealm.Hibernia: LaunchSpell(47, "Way of the Eclipse"); break;
-				}
-			}
-		}
-
-		private void LaunchSpell(int spellLevel, string spellLineName)
-		{
-			if (TargetObject == null)
-				return;
-
-			Spell castSpell = null;
-			SpellLine castLine = SkillBase.GetSpellLine(spellLineName);
-			List<Spell> spells = SkillBase.GetSpellList(castLine.KeyName);
-
-			foreach (Spell spell in spells)
-			{
-				if (spell.Level == spellLevel)
-				{
-					castSpell = spell;
-					break;
-				}
-			}
-
-			if (attackComponent.AttackState)
-				attackComponent.StopAttack();
-
-			if (IsMoving)
-				StopFollowing();
-
-			TurnTo(TargetObject);
-			CastSpell(castSpell, castLine);
 		}
 
 		/// <summary>
@@ -778,6 +714,7 @@ namespace DOL.GS.Keeps
 			SetBrain();
 			SetSpeed();
 			SetLevel();
+			SetSpells();
 			SetResists();
 			AutoSetStats();
 			SetAggression();
@@ -838,6 +775,8 @@ namespace DOL.GS.Keeps
 				MaxSpeedBase = 575;
 			}
 		}
+
+		public virtual void SetSpells() { }
 
 		private void SetResists()
 		{

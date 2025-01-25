@@ -42,7 +42,6 @@ namespace DOL.GS
 		protected readonly bool m_uninterruptible = false;
 		protected readonly bool m_isfocus = false;
         protected readonly bool m_minotaurspell = false;
-        private bool scaledToPetLevel = false;
         // warlocks
         protected readonly bool m_isprimary = false;
 		protected readonly bool m_issecondary = false;
@@ -755,9 +754,8 @@ namespace DOL.GS
 			}
 		}
 
-        public bool ScaledToPetLevel { get => scaledToPetLevel; set => scaledToPetLevel = value; }
+		public bool ScaledToNpcLevel { get; set; }
 
-        #endregion
-    }
-	
+		#endregion
+	}
 }

@@ -114,12 +114,7 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// Scale the passed spell according to PET_SCALE_SPELL_MAX_LEVEL, capping by BD spec if appropriate
-        /// </summary>
-        /// <param name="spell">The spell to scale</param>
-        /// <param name="casterLevel">The level to scale the pet spell to, 0 to use pet level</param>
-        public override void ScalePetSpell(Spell spell, int casterLevel = 0)
+        public override void ScaleSpell(Spell spell, int casterLevel, double baseLineLevel)
         {
             if (Properties.PET_SCALE_SPELL_MAX_LEVEL < 1 || spell == null || Level < 1)
                 return;
@@ -138,8 +133,6 @@ namespace DOL.GS
                         casterLevel = spec;
                 }
             }
-
-            //base.ScalePetSpell(spell, casterLevel);
         }
 
         public override void Die(GameObject killer)
