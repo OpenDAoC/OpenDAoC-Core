@@ -655,7 +655,7 @@ namespace DOL.GS
                 DestinationForClient = Owner;
             else
             {
-                magic = Math.Max(20, CurrentSpeed * 0.1);
+                magic = Math.Max(15, CurrentSpeed * 0.1);
                 ratio = (distanceToTarget + magic) / distanceToTarget;
                 complementRatio = 1 - ratio;
 
