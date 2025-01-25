@@ -156,9 +156,16 @@ namespace DOL.Network
                             SocketReceiveFromResult result = await _udpSocket.ReceiveFromAsync(new ArraySegment<byte>(buffer, offset, UDP_RECEIVE_BUFFER_CHUNK_SIZE), endPoint);
                             _ = Task.Run(() =>
                             {
-                                OnUdpReceive(buffer, offset, result.ReceivedBytes, result.RemoteEndPoint, FreeBufferPosition);
-
-                                void FreeBufferPosition()
+                                try
+                                {
+                                    OnUdpReceive(buffer, offset, result.ReceivedBytes, result.RemoteEndPoint);
+                                }
+                                catch (Exception e)
+                                {
+                                    if (log.IsErrorEnabled)
+                                        log.Error(e);
+                                }
+                                finally
                                 {
                                     availablePositions.Enqueue(offset);
                                 }
@@ -366,6 +373,6 @@ namespace DOL.Network
             return true;
         }
 
-        protected virtual void OnUdpReceive(byte[] buffer, int offset, int size, EndPoint endPoint, Action freeBufferCallback) { }
+        protected virtual void OnUdpReceive(byte[] buffer, int offset, int size, EndPoint endPoint) { }
     }
 }

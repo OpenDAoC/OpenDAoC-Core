@@ -1009,7 +1009,7 @@ namespace DOL.GS
 			return client;
 		}
 
-		protected override void OnUdpReceive(byte[] buffer, int offset, int size, EndPoint endPoint, Action freeBufferCallback)
+		protected override void OnUdpReceive(byte[] buffer, int offset, int size, EndPoint endPoint)
 		{
 			if (m_status is not EGameServerStatus.GSS_Open)
 				return;
@@ -1037,7 +1037,6 @@ namespace DOL.GS
 
 			GSPacketIn packet = new(endPosition - GSPacketIn.HDR_SIZE);
 			packet.Load(buffer, offset, size);
-			freeBufferCallback(); // Notify the caller we're no longer going to use the buffer.
 			GameClient client = ClientService.GetClientFromId(packet.SessionID);
 
 			if (client == null)
