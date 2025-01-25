@@ -10588,6 +10588,8 @@ namespace DOL.GS
             return;
         }
 
+        public object GameStaticItemOwnerComparand => AccountName;
+
         public bool TryAutoPickUpMoney(GameMoney money)
         {
             return Autoloot && TryPickUpMoney(this, money) is TryPickUpResult.SUCCESS;

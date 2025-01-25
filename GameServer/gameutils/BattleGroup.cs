@@ -288,6 +288,8 @@ namespace DOL.GS
 
 		public string Name => $"{(Leader == null || PlayerCount <= 0 ? "leaderless" : $"{Leader.Name}'s")} battlegroup (size: {PlayerCount})";
 
+		public object GameStaticItemOwnerComparand => null;
+
 		public bool TryAutoPickUpMoney(GameMoney money)
 		{
 			return TryPickUpMoney(Leader as GamePlayer, money) is not TryPickUpResult.CANNOT_HANDLE;

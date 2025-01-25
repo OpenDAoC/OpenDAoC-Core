@@ -622,6 +622,8 @@ namespace DOL.GS
 
 		public string Name => $"{(Leader == null || MemberCount <= 0 ? "leaderless" : $"{Leader.Name}'s")} group (size: {MemberCount})";
 
+		public object GameStaticItemOwnerComparand => null;
+
 		public bool TryAutoPickUpMoney(GameMoney money)
 		{
 			return TryPickUpMoney(Leader, money) is not TryPickUpResult.CANNOT_HANDLE;

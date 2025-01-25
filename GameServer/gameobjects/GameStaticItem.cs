@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using DOL.Database;
 using DOL.Events;
@@ -383,7 +384,8 @@ namespace DOL.GS
 
 		public void AddOwner(IGameStaticItemOwner owner)
 		{
-			Owners ??= new();
+			// Make sure to use our custom comparer. This allows players logging back in to pick up items dropped during their previous session.
+			Owners ??= new(new IGameStaticItemOwner.OwnerEqualityComparer());
 			Owners.Add(owner);
 		}
 
@@ -403,6 +405,7 @@ namespace DOL.GS
 	public interface IGameStaticItemOwner
 	{
 		string Name { get; }
+		object GameStaticItemOwnerComparand { get; } // Used by `GameStaticItemOwnerEqualityComparer`. Can be null, in which case it will defer to the object's `Equals` and `GetHashCode`.
 		bool TryAutoPickUpMoney(GameMoney money);
 		bool TryAutoPickUpItem(WorldInventoryItem item);
 		TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money); // Expected to return false only if the object shouldn't try to pick up the item at all.
@@ -426,6 +429,23 @@ namespace DOL.GS
 			{
 				Owner = owner;
 				Damage = damage;
+			}
+		}
+
+		public class OwnerEqualityComparer : IEqualityComparer<IGameStaticItemOwner>
+		{
+			public bool Equals(IGameStaticItemOwner x, IGameStaticItemOwner y)
+			{
+				return x.GameStaticItemOwnerComparand != null && y.GameStaticItemOwnerComparand != null ?
+					x.GameStaticItemOwnerComparand == y.GameStaticItemOwnerComparand :
+					x.Equals(y);
+			}
+
+			public int GetHashCode([DisallowNull] IGameStaticItemOwner obj)
+			{
+				return obj.GameStaticItemOwnerComparand != null ?
+					obj.GameStaticItemOwnerComparand.GetHashCode() :
+					obj.GetHashCode();
 			}
 		}
 	}
