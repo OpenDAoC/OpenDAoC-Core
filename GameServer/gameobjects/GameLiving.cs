@@ -1078,10 +1078,10 @@ namespace DOL.GS
 
 			if (evadeChance > 0)
 			{
+				evadeChance *= 0.001;
+
 				if (attackerCount > 1)
 					evadeChance -= (attackerCount - 1) * 0.03;
-
-				evadeChance *= 0.001;
 
 				// Kelgor's Claw 15% evade.
 				if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 380)
