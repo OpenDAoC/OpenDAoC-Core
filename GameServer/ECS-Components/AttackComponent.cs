@@ -39,26 +39,27 @@ namespace DOL.GS
         private AttackersCheckTimer _attackersCheckTimer;
         private BlockRoundHandler _blockRoundHandler;
 
-        public void AddAttacker(AttackData attackData)
+        public void AddAttacker(GameLiving attacker, long duration)
         {
-            if (attackData.Attacker == owner)
+            if (attacker == owner)
                 return;
 
-            lock (_attackersCheckTimer.Lock)
+            if (!_attackersCheckTimer.IsAlive)
             {
-                if (!_attackersCheckTimer.IsAlive)
+                lock (_attackersCheckTimer.Lock)
                 {
-                   _attackersCheckTimer.Interval = CHECK_ATTACKERS_INTERVAL;
-                   _attackersCheckTimer.Start();
+                    if (!_attackersCheckTimer.IsAlive)
+                    {
+                       _attackersCheckTimer.Interval = CHECK_ATTACKERS_INTERVAL;
+                       _attackersCheckTimer.Start();
+                    }
                 }
             }
-
-            long duration = attackData.Interval;
 
             if (duration <= 0)
                 duration = Properties.SPELL_INTERRUPT_DURATION;
 
-            Attackers.AddOrUpdate(attackData.Attacker, Add, Update, GameLoop.GameLoopTime + duration);
+            Attackers.AddOrUpdate(attacker, Add, Update, GameLoop.GameLoopTime + duration);
 
             static long Add(GameLiving key, long arg)
             {
@@ -1141,6 +1142,9 @@ namespace DOL.GS
                 SendAttackingCombatMessages(action, ad);
                 return ad;
             }
+
+            // Add ourselves to the target's attackers list before going further.
+            ad.Target.attackComponent.AddAttacker(owner, ad.Interval);
 
             // Calculate our attack result and attack damage.
             ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(action, ad, weapon, ref effectiveness);

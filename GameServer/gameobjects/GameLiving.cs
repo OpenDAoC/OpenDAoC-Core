@@ -1536,7 +1536,7 @@ namespace DOL.GS
 				if (this is GameNPC gameNpc && ActiveWeaponSlot is eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
 					gameNpc.StartAttackWithMeleeWeapon(ad.Attacker);
 
-				attackComponent.AddAttacker(ad);
+				attackComponent.AddAttacker(ad.Attacker, ad.Interval);
 
 				if (ad.SpellHandler == null || (ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler))
 				{
