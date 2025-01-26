@@ -17,7 +17,7 @@ namespace DOL.GS
         private bool _wasMeleeWeaponSwitchForced; // Used to prevent NPCs from switching to their ranged weapon automatically if they explicitly switched to a melee weapon during combat.
 
         private static int LosCheckInterval => Properties.CHECK_LOS_DURING_RANGED_ATTACK_MINIMUM_INTERVAL;
-        private bool IsGuardArcherOrImmobile => _npcOwner is GuardArcher || _npcOwner.MaxSpeedBase == 0;
+        private bool IsArcherGuardOrImmobile => _npcOwner is GuardArcher || _npcOwner.MaxSpeedBase == 0;
 
         public NpcAttackAction(GameNPC owner) : base(owner)
         {
@@ -26,13 +26,16 @@ namespace DOL.GS
 
         public override void OnAimInterrupt(GameObject attacker)
         {
+            // Use the follow target instead of interrupter. We really don't want guards to move because a pet attacked them in melee.
+            GameObject followTarget = _npcOwner.FollowTarget;
+
             // If the NPC is interrupted, we need to tell it to stop following its target if we want the following code to work.
             _npcOwner.StopFollowing();
 
-            if (attacker is GameLiving livingAttacker)
+            if (followTarget is GameLiving livingFollowTarget)
             {
-                if (!IsGuardArcherOrImmobile ||
-                    (livingAttacker.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingAttacker.IsWithinRadius(_npcOwner, livingAttacker.attackComponent.AttackRange)))
+                if (!IsArcherGuardOrImmobile ||
+                    (livingFollowTarget.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingFollowTarget.IsWithinRadius(_npcOwner, livingFollowTarget.attackComponent.AttackRange)))
                 {
                     SwitchToMeleeAndTick();
                 }
@@ -61,7 +64,7 @@ namespace DOL.GS
         {
             // If we're a guard or an immobile NPC, let's forget about our target so that we can attack another one and not stare at the wall.
             // Otherwise, switch to melee, but keep the timer alive.
-            if (IsGuardArcherOrImmobile)
+            if (IsArcherGuardOrImmobile)
             {
                 GameObject oldTarget = _target;
                 StandardMobBrain brain = _npcOwner.Brain as StandardMobBrain;
