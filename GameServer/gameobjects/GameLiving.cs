@@ -1173,10 +1173,10 @@ namespace DOL.GS
 
 				if (parryChance > 0)
 				{
-					if (attackerCount > 1)
-						parryChance /= attackerCount / 2;
-
 					parryChance *= 0.001;
+
+					if (attackerCount > 0)
+						parryChance /= (attackerCount + 1) / 2.0;
 
 					// Tribal Wrath 25% evade.
 					if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 381)
