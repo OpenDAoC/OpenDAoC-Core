@@ -4129,6 +4129,7 @@ namespace DOL.GS
 
 		public override eGender Gender { get; set; }
 
+		public new NpcCastingComponent castingComponent;
 		public new NpcMovementComponent movementComponent;
 
 		public GameNPC Copy()
@@ -4251,6 +4252,7 @@ namespace DOL.GS
 
 		public GameNPC(ABrain defaultBrain) : base()
 		{
+			castingComponent ??= base.castingComponent as NpcCastingComponent;
 			movementComponent ??= base.movementComponent as NpcMovementComponent;
 
 			Level = 1;

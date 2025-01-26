@@ -156,7 +156,7 @@ namespace DOL.GS
 
         public void Follow(GameLiving target, int minDistance, int maxDistance)
         {
-            if (target == null || target.ObjectState != eObjectState.Active)
+            if (target == null || target.ObjectState is not eObjectState.Active || !Owner.castingComponent.IsAllowedToFollow(target))
                 return;
 
             if (target != FollowTarget)

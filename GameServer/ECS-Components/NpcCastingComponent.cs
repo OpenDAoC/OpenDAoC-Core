@@ -1,8 +1,12 @@
-﻿namespace DOL.GS
+﻿using DOL.GS.Keeps;
+
+namespace DOL.GS
 {
     public class NpcCastingComponent : CastingComponent
     {
         private GameNPC _npcOwner;
+
+        private bool IsCasterGuardOrImmobile => _npcOwner is GuardCaster || _npcOwner.MaxSpeedBase == 0;
 
         public NpcCastingComponent(GameNPC npcOwner) : base(npcOwner)
         {
@@ -23,6 +27,17 @@
             _startSkillRequests.Clear(); // This also clears pending abilities.
             _npcOwner.ClearSpellsWaitingForLosCheck();
             base.ClearUpSpellHandlers();
+        }
+
+        public bool IsAllowedToFollow(GameObject target)
+        {
+            if (!IsCasterGuardOrImmobile)
+                return true;
+
+            if (target is not GameLiving livingTarget)
+                return false;
+
+            return livingTarget.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingTarget.IsWithinRadius(_npcOwner, livingTarget.attackComponent.AttackRange);
         }
     }
 }
