@@ -71,7 +71,7 @@ namespace DOL.GS.Commands
 
             if (!IsInAllowedArea())
             {
-                ChatUtil.SendSystemMessage(client.Player, $"This command cannot be used here.");
+                ChatUtil.SendSystemMessage(client.Player, $"This command cannot be used here. You must be within 2500 units of a friendly keep, or within a main city, border keep, or a housing area.");
                 return;
             }
 
