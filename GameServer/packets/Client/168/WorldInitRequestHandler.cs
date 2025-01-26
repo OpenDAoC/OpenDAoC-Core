@@ -161,7 +161,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 byte charIndex = (byte)packet.ReadByte(); // character account location
 
                 // some funkiness going on below here. Could use some safeguards to ensure a character is loaded correctly
-                if (client.Account.Characters != null && client.ClientState == GameClient.eClientState.CharScreen)
+                if (client.Player == null && client.Account.Characters != null && client.ClientState == GameClient.eClientState.CharScreen)
                 {
                     bool charFound = false;
                     string selectedChar = string.Empty;
@@ -180,7 +180,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                     }
 
                     if (!charFound)
+                    {
+                        client.Player = null;
                         client.ActiveCharIndex = -1;
+                    }
                     else
                         AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterLogin, "", selectedChar);
                 }
