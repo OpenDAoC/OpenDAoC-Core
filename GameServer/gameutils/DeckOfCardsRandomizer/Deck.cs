@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using DOL.Database;
@@ -23,12 +24,12 @@ namespace DOL.GS.Utils
 
         public PlayerDeck(GamePlayer player)
         {
+            // We only want one deck even if for some reason multiple rows are returned or were loaded.
+
             _player = player;
 
             if (TryUsePreLoadedDeck())
                 return;
-
-            DbCoreCharacterXDeck dbCoreCharacterXDeck;
 
             if (TryLoadExistingDeck())
                 return;
@@ -37,23 +38,35 @@ namespace DOL.GS.Utils
 
             bool TryUsePreLoadedDeck()
             {
-                if (_player.DBCharacter.RandomNumberDeck == null)
+                string serializedDeck = _player.DBCharacter.RandomNumberDeck?.FirstOrDefault()?.Deck;
+
+                if (string.IsNullOrEmpty(serializedDeck))
                     return false;
 
-                _cards = JsonConvert.DeserializeObject<ConcurrentStack<int>>(_player.DBCharacter.RandomNumberDeck.Deck);
+                DeserializeCards(serializedDeck);
                 return true;
             }
 
             bool TryLoadExistingDeck()
             {
-                dbCoreCharacterXDeck = DOLDB<DbCoreCharacterXDeck>.SelectObject(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId));
+                IList<DbCoreCharacterXDeck> dbCoreCharacterXDecks = DOLDB<DbCoreCharacterXDeck>.SelectObjects(DB.Column("DOLCharactersObjectId").IsEqualTo(player.ObjectId));
 
-                if (dbCoreCharacterXDeck == null)
+                if (dbCoreCharacterXDecks == null || dbCoreCharacterXDecks.Count == 0)
                     return false;
 
-                _player.DBCharacter.RandomNumberDeck = dbCoreCharacterXDeck;
-                _cards = JsonConvert.DeserializeObject<ConcurrentStack<int>>(_player.DBCharacter.RandomNumberDeck.Deck);
+                _player.DBCharacter.RandomNumberDeck = dbCoreCharacterXDecks.ToArray();
+                string serializedDeck = dbCoreCharacterXDecks[0].Deck;
+
+                if (string.IsNullOrEmpty(serializedDeck))
+                    return false;
+
+                DeserializeCards(serializedDeck);
                 return true;
+            }
+
+            void DeserializeCards(string serializedDeck)
+            {
+                _cards = JsonConvert.DeserializeObject<ConcurrentStack<int>>(serializedDeck);
             }
         }
 
@@ -73,7 +86,7 @@ namespace DOL.GS.Utils
             if (_player == null)
                 return;
 
-            DbCoreCharacterXDeck dbCoreCharacterXDeck = _player.DBCharacter.RandomNumberDeck;
+            DbCoreCharacterXDeck dbCoreCharacterXDeck = _player.DBCharacter.RandomNumberDeck?.FirstOrDefault();
 
             if (dbCoreCharacterXDeck == null)
             {
@@ -82,6 +95,7 @@ namespace DOL.GS.Utils
                     DOLCharactersObjectId = _player.ObjectId,
                     Deck = SerializeCards()
                 };
+                _player.DBCharacter.RandomNumberDeck = [dbCoreCharacterXDeck];
             }
             else
                 dbCoreCharacterXDeck.Deck = SerializeCards();

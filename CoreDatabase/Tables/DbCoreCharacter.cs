@@ -2350,6 +2350,6 @@ namespace DOL.Database
         /// Random Number Deck for this Character
         /// </summary>
         [Relation(LocalField = "DOLCharacters_ID", RemoteField = "DOLCharactersObjectId", AutoLoad = true, AutoDelete = true)]
-        public DbCoreCharacterXDeck RandomNumberDeck;
+        public DbCoreCharacterXDeck[] RandomNumberDeck;
     }
 }
