@@ -919,19 +919,22 @@ namespace DOL.GS
             //Error protection and log for Item Proc's
             Spell procSpell = null;
             Spell procSpell1 = null;
-
             if (this is GamePlayer)
             {
-                procSpell = SkillBase.GetSpellByID(weapon.ProcSpellID);
-                procSpell1 = SkillBase.GetSpellByID(weapon.ProcSpellID1);
+                SpellLine line = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+                if (line != null)
+                {
+                    procSpell = SkillBase.FindSpell(weapon.ProcSpellID, line);
+                    procSpell1 = SkillBase.FindSpell(weapon.ProcSpellID1, line);
 
-                if (procSpell == null && weapon.ProcSpellID != 0)
-                {
-                    log.ErrorFormat("- Proc ID {0} Not Found on item: {1} ", weapon.ProcSpellID, weapon.Template.Id_nb);
-                }
-                if (procSpell1 == null && weapon.ProcSpellID1 != 0)
-                {
-                    log.ErrorFormat("- Proc1 ID {0} Not Found on item: {1} ", weapon.ProcSpellID1, weapon.Template.Id_nb);
+                    if (procSpell == null && weapon.ProcSpellID != 0)
+                    {
+                        log.ErrorFormat("- Proc ID {0} Not Found on item: {1} ", weapon.ProcSpellID, weapon.Template.Id_nb);
+                    }
+                    if (procSpell1 == null && weapon.ProcSpellID1 != 0)
+                    {
+                        log.ErrorFormat("- Proc1 ID {0} Not Found on item: {1} ", weapon.ProcSpellID1, weapon.Template.Id_nb);
+                    }
                 }
             }
 
@@ -976,15 +979,17 @@ namespace DOL.GS
 		/// </summary>
 		protected virtual void StartWeaponMagicalEffect(DbInventoryItem weapon, AttackData ad, SpellLine spellLine, int spellID, bool ignoreLevel)
 		{
-			if (ad == null || weapon == null)
+			if (weapon == null)
 				return;
 
 			if (spellLine == null)
-				spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-
-			if (ad != null)
 			{
-				Spell procSpell = SkillBase.GetSpellByID(spellID);
+				spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+			}
+
+			if (spellLine != null && ad != null && weapon != null)
+			{
+				Spell procSpell = SkillBase.FindSpell(spellID, spellLine);
 
 				if (procSpell != null)
 				{

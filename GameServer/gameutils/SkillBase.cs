@@ -2886,6 +2886,33 @@ namespace DOL.GS
 		}
 
 		/// <summary>
+		/// Will attempt to find either in the spell line given or in the list of all spells
+		/// </summary>
+		/// <param name="spellID"></param>
+		/// <param name="line"></param>
+		/// <returns></returns>
+		public static Spell FindSpell(int spellID, SpellLine line)
+		{
+			Spell spell = null;
+
+			if (line != null)
+			{
+				List<Spell> spells = GetSpellList(line.KeyName);
+				foreach (Spell lineSpell in spells)
+				{
+					if (lineSpell.ID == spellID)
+					{
+						spell = lineSpell;
+						break;
+					}
+				}
+			}
+
+			spell ??= GetSpellByID(spellID);
+			return spell;
+		}
+
+		/// <summary>
 		/// Get display name of property
 		/// </summary>
 		/// <param name="prop"></param>

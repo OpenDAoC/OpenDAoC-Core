@@ -19,13 +19,13 @@ namespace DOL.GS.Spells
         {
 			SpellLine potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
 
-			Spell pomSpell = SkillBase.GetSpellByID(pomID);
+			Spell pomSpell = SkillBase.FindSpell(pomID, potionEffectLine);
 			SpellHandler pomSpellHandler = ScriptMgr.CreateSpellHandler(target, pomSpell, potionEffectLine) as SpellHandler;
 
-			Spell endSpell = SkillBase.GetSpellByID(endID);
+			Spell endSpell = SkillBase.FindSpell(endID, potionEffectLine);
 			SpellHandler endSpellHandler = ScriptMgr.CreateSpellHandler(target, endSpell, potionEffectLine) as SpellHandler;
 
-			Spell healSpell = SkillBase.GetSpellByID(healID);
+			Spell healSpell = SkillBase.FindSpell(healID, potionEffectLine);
 			SpellHandler healthConSpellHandler = ScriptMgr.CreateSpellHandler(target, healSpell, potionEffectLine) as SpellHandler;
 
 			return pomSpellHandler.StartSpell(target) |
@@ -79,13 +79,13 @@ namespace DOL.GS.Spells
 			target = Caster;
 			SpellLine potionEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Potions_Effects);
 
-			Spell pomSpell = SkillBase.GetSpellByID(pomID);
+			Spell pomSpell = SkillBase.FindSpell(pomID, potionEffectLine);
 			SpellHandler pomSpellHandler = ScriptMgr.CreateSpellHandler(target, pomSpell, potionEffectLine) as SpellHandler;
 
-			Spell endSpell = SkillBase.GetSpellByID(endID);
+			Spell endSpell = SkillBase.FindSpell(endID, potionEffectLine);
 			SpellHandler endSpellHandler = ScriptMgr.CreateSpellHandler(target, endSpell, potionEffectLine) as SpellHandler;
 
-			Spell healSpell = SkillBase.GetSpellByID(healID);
+			Spell healSpell = SkillBase.FindSpell(healID, potionEffectLine);
 			SpellHandler healthConSpellHandler = ScriptMgr.CreateSpellHandler(target, healSpell, potionEffectLine) as SpellHandler;
 
 			bool success;
