@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -13,10 +14,7 @@ namespace DOL.GS.GameEvents
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static volatile Timer _timer;
-        private static long _lastBytesIn;
-        private static long _lastBytesOut;
-        private static long _lastPacketsIn;
-        private static long _lastPacketsOut;
+
         private static long _lastMeasureTick = DateTime.Now.Ticks;
         private static IPerformanceStatistic _systemCpuUsagePercent;
         private static IPerformanceStatistic _programCpuUsagePercent;
@@ -58,6 +56,9 @@ namespace DOL.GS.GameEvents
         {
             try
             {
+                if (!log.IsInfoEnabled)
+                    return;
+
                 long newTick = DateTime.Now.Ticks;
                 long time = newTick - _lastMeasureTick;
                 _lastMeasureTick = newTick;
@@ -69,15 +70,6 @@ namespace DOL.GS.GameEvents
                     time = 1;
                 }
 
-                long inRate = (Statistics.BytesIn - _lastBytesIn) / time;
-                long outRate = (Statistics.BytesOut - _lastBytesOut) / time;
-                long inPckRate = (Statistics.PacketsIn - _lastPacketsIn) / time;
-                long outPckRate = (Statistics.PacketsOut - _lastPacketsOut) / time;
-                _lastBytesIn = Statistics.BytesIn;
-                _lastBytesOut = Statistics.BytesOut;
-                _lastPacketsIn = Statistics.PacketsIn;
-                _lastPacketsOut = Statistics.PacketsOut;
-
                 // Get thread pool info.
                 ThreadPool.GetAvailableThreads(out int poolCurrent, out int iocpCurrent);
                 ThreadPool.GetMinThreads(out int poolMin, out int iocpMin);
@@ -86,26 +78,35 @@ namespace DOL.GS.GameEvents
                 int globalHandlers = GameEventMgr.NumGlobalHandlers;
                 int objectHandlers = GameEventMgr.NumObjectHandlers;
 
-                if (log.IsInfoEnabled)
+                List<(int, double)> averageTps = GameLoop.GetAverageTps();
+
+                StringBuilder stats = new StringBuilder(256)
+                    .Append($"-stats-  Mem={GC.GetTotalMemory(false) / 1024 / 1024}MB")
+                    .Append($"  Clients={ClientService.ClientCount}")
+                    .AppendFormat($"  Pool={poolCurrent}/{poolMax}({poolMin})")
+                    .AppendFormat($"  IOCP={iocpCurrent}/{iocpMax}({iocpMin})")
+                    .AppendFormat($"  GH/OH={globalHandlers}/{objectHandlers}")
+                    .Append($"  TPS=");
+
+                for (int i = averageTps.Count - 1; i >= 0; i--)
                 {
-                    StringBuilder stats = new StringBuilder(256)
-                        .Append("-stats- Mem=").Append(GC.GetTotalMemory(false) / 1024 / 1024).Append("MB")
-                        .Append("  Clients=").Append(ClientService.ClientCount)
-                        //.Append("  Down=").Append(inRate / 1024).Append("kb/s (").Append(Statistics.BytesIn / 1024 / 1024).Append("MB)")
-                        //.Append("  Up=").Append(outRate / 1024).Append("kb/s (").Append(Statistics.BytesOut / 1024 / 1024).Append("MB)")
-                        //.Append("  In=").Append(inPckRate).Append("pck/s (").Append(Statistics.PacketsIn / 1000).Append("K)")
-                        //.Append("  Out=").Append(outPckRate).Append("pck/s (").Append(Statistics.PacketsOut / 1000).Append("K)")
-                        .AppendFormat("  Pool={0}/{1}({2})", poolCurrent, poolMax, poolMin)
-                        .AppendFormat("  IOCP={0}/{1}({2})", iocpCurrent, iocpMax, iocpMin)
-                        .AppendFormat("  GH/OH={0}/{1}", globalHandlers, objectHandlers);
+                    string percent = $"{averageTps[i].Item2 / (10.0 / GameLoop.TickRate):0.0}%";
+                    int length = percent.Length;
+                    stats.Append(percent);
 
-                    AppendStatistic(stats, "CPU(sys)", _systemCpuUsagePercent, "%");
-                    AppendStatistic(stats, "CPU(proc)", _programCpuUsagePercent, "%");
-                    AppendStatistic(stats, "pg/s", _pageFaultsPerSecond);
-                    AppendStatistic(stats, "dsk/s", _diskTransfersPerSecond);
-
-                    log.Info(stats);
+                    if (i > 0)
+                    {
+                        stats.Append("".PadRight(6 - length));
+                        stats.Append('|');
+                    }
                 }
+
+                AppendStatistic(stats, "CPU(sys)", _systemCpuUsagePercent, "%");
+                //AppendStatistic(stats, "CPU(proc)", _programCpuUsagePercent, "%"); // This is pretty slow, at least on Windows. (over 6ms)
+                AppendStatistic(stats, "pg/s", _pageFaultsPerSecond);
+                AppendStatistic(stats, "dsk/s", _diskTransfersPerSecond);
+
+                log.Info(stats.ToString());
             }
             catch (Exception e)
             {

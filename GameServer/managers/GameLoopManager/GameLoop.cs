@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using DOL.GS.ServerProperties;
@@ -17,6 +20,7 @@ namespace DOL.GS
         private static Thread _busyWaitThresholdThread;
         private static int _busyWaitThreshold;
         private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
+        private static GameLoopStats _gameLoopStats;
 
         public static long TickRate { get; private set; }
         public static long GameLoopTime { get; private set; }
@@ -34,6 +38,7 @@ namespace DOL.GS
                 return false;
 
             TickRate = Properties.GAME_LOOP_TICK_RATE;
+            _gameLoopStats = new([60000, 30000, 10000]);
 
             _gameLoopThread = new Thread(new ThreadStart(Run))
             {
@@ -73,9 +78,15 @@ namespace DOL.GS
             _busyWaitThresholdThread = null;
         }
 
+        public static List<(int, double)> GetAverageTps()
+        {
+            return _gameLoopStats.GetAverageTicks(GameLoopTime);
+        }
+
         private static void Run()
         {
             double gameLoopTime = 0;
+            double elapsedTime = 0;
             Stopwatch stopwatch = new();
             stopwatch.Start();
 
@@ -84,10 +95,10 @@ namespace DOL.GS
                 try
                 {
                     TickServices();
-                    Sleep(stopwatch);
-                    gameLoopTime += stopwatch.Elapsed.TotalMilliseconds;
-                    GameLoopTime = (long) Math.Round(gameLoopTime);
+                    Sleep();
+                    elapsedTime = stopwatch.Elapsed.TotalMilliseconds;
                     stopwatch.Restart();
+                    UpdateStatsAndTime(elapsedTime);
                 }
                 catch (ThreadInterruptedException)
                 {
@@ -126,7 +137,7 @@ namespace DOL.GS
                 ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
             }
 
-            static void Sleep(Stopwatch stopwatch)
+            void Sleep()
             {
                 int sleepFor = (int) (TickRate - stopwatch.Elapsed.TotalMilliseconds);
                 int busyWaitThreshold = _busyWaitThreshold;
@@ -143,6 +154,13 @@ namespace DOL.GS
                     while (TickRate > stopwatch.Elapsed.TotalMilliseconds)
                         spinWait.SpinOnce(-1);
                 }
+            }
+
+            void UpdateStatsAndTime(double elapsed)
+            {
+                gameLoopTime += elapsed;
+                GameLoopTime = (long) Math.Round(gameLoopTime);
+                _gameLoopStats.RecordTick(gameLoopTime);
             }
         }
 
@@ -177,6 +195,79 @@ namespace DOL.GS
             {
                 log.Info($"Thread \"{_busyWaitThresholdThread.Name}\" was interrupted");
                 return;
+            }
+        }
+
+        private class GameLoopStats
+        {
+            private ConcurrentQueue<double> _tickTimestamps = new();
+            private List<int> _intervals;
+
+            public GameLoopStats(List<int> intervals)
+            {
+                // Intervals to use for average ticks per second. Must be in descending order.
+                _intervals = intervals;
+                _intervals.OrderByDescending(x => x);
+            }
+
+            public void RecordTick(double gameLoopTime)
+            {
+                // Clean up outdated timestamps to prevent the queue from growing indefinitely.
+                while (_tickTimestamps.TryPeek(out double _oldestTickTimestamp) && gameLoopTime - _oldestTickTimestamp > _intervals[0])
+                    _tickTimestamps.TryDequeue(out _);
+
+                _tickTimestamps.Enqueue(gameLoopTime);
+            }
+
+            public List<(int, double)> GetAverageTicks(long currentTime)
+            {
+                List<(int, double)> averages = new(); // Result.
+                Dictionary<int, double> tickCounts = new();
+
+                foreach (int interval in _intervals)
+                    tickCounts[interval] = 0;
+
+                List<double> tickTimestampsSnapshot = _tickTimestamps.ToList(); // Copy to allow thread safety.
+                int startIndex = 0;
+
+                // Count ticks per interval and calculate averages.
+                foreach (int interval in _intervals)
+                {
+                    double timestampToUse = 0;
+
+                    for (int i = startIndex; i < tickTimestampsSnapshot.Count; i++)
+                    {
+                        double timestamp = tickTimestampsSnapshot[i];
+                        double age = currentTime - timestamp;
+
+                        if (age > interval)
+                        {
+                            timestampToUse = timestamp;
+                            continue;
+                        }
+
+                        tickCounts[interval] += tickTimestampsSnapshot.Count - i;
+                        startIndex = i;
+                        break;
+                    }
+
+                    if (timestampToUse == 0)
+                    {
+                        if (tickTimestampsSnapshot.Count == 0)
+                        {
+                            averages.Add((interval, 0));
+                            continue;
+                        }
+
+                        timestampToUse = tickTimestampsSnapshot[0];
+                    }
+
+                    double tickCount = tickCounts[interval];
+                    double actualInterval = currentTime - timestampToUse;
+                    averages.Add((interval, actualInterval == 0 ? 0 : tickCount / actualInterval * 1000));
+                }
+
+                return averages;
             }
         }
     }
