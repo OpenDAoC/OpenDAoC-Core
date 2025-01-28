@@ -29,7 +29,7 @@ namespace DOL.GS
             EffectType = EffectService.GetEffectFromSpell(SpellHandler.Spell);
             PulseFreq = spell.Frequency;
 
-            if (spell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
+            if (spell.SpellType is eSpellType.SpeedDecrease or eSpellType.StyleSpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
             {
                 PulseFreq = 250;
                 NextTick = 1 + Duration / 2 + StartTick + PulseFreq;
