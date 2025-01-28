@@ -75,6 +75,16 @@ namespace DOL.GS
 
             switch (mainHandAttackData.AttackResult)
             {
+                case eAttackResult.HitStyle:
+                {
+                    if (mainHandAttackData.StyleEffects.Count > 0)
+                    {
+                        foreach (ISpellHandler proc in mainHandAttackData.StyleEffects)
+                            proc.StartSpell(mainHandAttackData.Target);
+                    }
+
+                    break;
+                }
                 case eAttackResult.NoTarget:
                 case eAttackResult.TargetDead:
                 {
@@ -341,12 +351,6 @@ namespace DOL.GS
                 _owner.DealDamage(attackData);
                 _owner.CheckWeaponMagicalEffect(attackData, attackData.Weapon);
                 HandleDamageAdd(_owner, attackData);
-
-                if (attackData.StyleEffects.Count > 0 && attackData.AttackResult is eAttackResult.HitStyle)
-                {
-                    foreach (ISpellHandler proc in attackData.StyleEffects)
-                        proc.StartSpell(attackData.Target);
-                }
             }
 
             HandleDamageShields(attackData);
