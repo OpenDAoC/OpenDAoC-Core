@@ -380,20 +380,16 @@ namespace DOL.GS
 			return 0;
 		}
 
-		public HashSet<IGameStaticItemOwner> Owners { get; private set; }
+		// Make sure to use our custom comparer. This allows players logging back in to pick up items dropped during their previous session.
+		public HashSet<IGameStaticItemOwner> Owners { get; private set; } = new(new IGameStaticItemOwner.OwnerEqualityComparer());
 
 		public void AddOwner(IGameStaticItemOwner owner)
 		{
-			// Make sure to use our custom comparer. This allows players logging back in to pick up items dropped during their previous session.
-			Owners ??= new(new IGameStaticItemOwner.OwnerEqualityComparer());
 			Owners.Add(owner);
 		}
 
 		public bool IsOwner(GamePlayer player)
 		{
-			if (Owners == null)
-				return false;
-
 			if (Owners.Contains(player) || Owners.Contains(player.Group))
 				return true;
 
