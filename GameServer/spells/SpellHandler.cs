@@ -2368,7 +2368,12 @@ namespace DOL.GS.Spells
 		public virtual double CalculateToHitChance(GameLiving target)
 		{
 			int spellLevel;
-			GamePlayer playerCaster = m_caster as GamePlayer;
+			GamePlayer playerCaster;
+
+			if (m_caster is NecromancerPet necromancerPet && necromancerPet.Brain is IControlledBrain brain)
+				playerCaster = brain.GetPlayerOwner();
+			else
+				playerCaster = m_caster as GamePlayer;
 
 			if (m_spellLine.KeyName is GlobalSpellsLines.Item_Effects && m_spellItem != null)
 				spellLevel = m_spellItem.Template.LevelRequirement > 0 ? m_spellItem.Template.LevelRequirement : m_spellItem.Level;
