@@ -206,14 +206,15 @@ namespace DOL.GS
             public GameLoopStats(List<int> intervals)
             {
                 // Intervals to use for average ticks per second. Must be in descending order.
-                _intervals = intervals;
-                _intervals.OrderByDescending(x => x);
+                _intervals = intervals.OrderByDescending(x => x).ToList();
             }
 
             public void RecordTick(double gameLoopTime)
             {
+                double oldestAllowed = gameLoopTime - _intervals[0];
+
                 // Clean up outdated timestamps to prevent the queue from growing indefinitely.
-                while (_tickTimestamps.TryPeek(out double _oldestTickTimestamp) && gameLoopTime - _oldestTickTimestamp > _intervals[0])
+                while (_tickTimestamps.TryPeek(out double _oldestTickTimestamp) && _oldestTickTimestamp < oldestAllowed)
                     _tickTimestamps.TryDequeue(out _);
 
                 _tickTimestamps.Enqueue(gameLoopTime);
@@ -221,50 +222,36 @@ namespace DOL.GS
 
             public List<(int, double)> GetAverageTicks(long currentTime)
             {
-                List<(int, double)> averages = new(); // Result.
-                Dictionary<int, double> tickCounts = new();
-
-                foreach (int interval in _intervals)
-                    tickCounts[interval] = 0;
-
-                List<double> tickTimestampsSnapshot = _tickTimestamps.ToList(); // Copy to allow thread safety.
+                List<(int, double)> averages = new();
+                List<double> snapshot = _tickTimestamps.ToList(); // Copy for thread safety.
                 int startIndex = 0;
 
                 // Count ticks per interval and calculate averages.
                 foreach (int interval in _intervals)
                 {
-                    double timestampToUse = 0;
+                    double intervalStart = currentTime - interval;
+                    int tickCount = 0;
 
-                    for (int i = startIndex; i < tickTimestampsSnapshot.Count; i++)
+                    // Find the number of ticks within this interval.
+                    for (int i = startIndex; i < snapshot.Count; i++)
                     {
-                        double timestamp = tickTimestampsSnapshot[i];
-                        double age = currentTime - timestamp;
-
-                        if (age > interval)
+                        if (snapshot[i] >= intervalStart)
                         {
-                            timestampToUse = timestamp;
-                            continue;
+                            tickCount = snapshot.Count - i;
+                            startIndex = i;
+                            break;
                         }
-
-                        tickCounts[interval] += tickTimestampsSnapshot.Count - i;
-                        startIndex = i;
-                        break;
                     }
 
-                    if (timestampToUse == 0)
-                    {
-                        if (tickTimestampsSnapshot.Count == 0)
-                        {
-                            averages.Add((interval, 0));
-                            continue;
-                        }
+                    double actualInterval;
 
-                        timestampToUse = tickTimestampsSnapshot[0];
-                    }
+                    if (tickCount > 0)
+                        actualInterval = snapshot[^1] - snapshot[startIndex];
+                    else
+                        actualInterval = interval;
 
-                    double tickCount = tickCounts[interval];
-                    double actualInterval = currentTime - timestampToUse;
-                    averages.Add((interval, actualInterval == 0 ? 0 : tickCount / actualInterval * 1000));
+                    double average = (tickCount - 1) / (actualInterval / 1000.0);
+                    averages.Add((interval, average));
                 }
 
                 return averages;
