@@ -793,6 +793,7 @@ namespace DOL.GS
 			Notify(GameObjectEvent.Delete, this);
 			RemoveFromWorld();
 			ObjectState = eObjectState.Deleted;
+			ClearObjectsInRadiusCache();
 			GameEventMgr.RemoveAllHandlersForObject(this);
 		}
 
@@ -1046,7 +1047,7 @@ namespace DOL.GS
 			};
 		}
 
-		public List<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck)  where T : GameObject
+		public List<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck) where T : GameObject
 		{
 			List<T> result = new();
 
