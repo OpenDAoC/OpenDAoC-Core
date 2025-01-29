@@ -305,11 +305,8 @@ namespace DOL.GS.Keeps
 							player.CapturedKeeps++;
 							player.Achieve(AchievementUtils.AchievementNames.Keeps_Taken);
 						}
-							
+
 						else player.CapturedTowers++;
-						
-						if(player.CapturedKeeps % 25 == 0)
-							player.RaiseRealmLoyaltyFloor(1);
 					}
 				}
 			}

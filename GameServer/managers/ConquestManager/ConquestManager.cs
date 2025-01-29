@@ -253,13 +253,8 @@ public class ConquestManager
         foreach (var player in ActiveDefenders.ToList())
         {
             if (player == source) continue; //don't double award the killer
-            
-            var loyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player).Days;
-            if (loyalDays > 30) loyalDays = 30;
-            
-            double RPFraction = 0.05 * (loyalDays / 30.0);
-            if (RPFraction < 0.01) RPFraction = 0.01;
-            
+
+            double RPFraction = 0.05;
             player.Out.SendMessage($"You have been awarded for helping to defend your keep!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             player.GainRealmPoints((long)(playerRpValue * RPFraction), false);
         }

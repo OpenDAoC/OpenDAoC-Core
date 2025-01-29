@@ -649,10 +649,6 @@ namespace DOL.GS
 			}
 
 			var divisorMod = 4;
-			var loyalDays = LoyaltyManager.GetPlayerRealmLoyalty(player).Days;
-			if ( loyalDays > 30) divisorMod++;
-			if ( loyalDays > 20) divisorMod++;
-			if ( loyalDays > 10) divisorMod++;
 			int craftingTime = (int)(baseMultiplier * materialsCount / divisorMod);
 
 			// Player does check for capital city bonus as well

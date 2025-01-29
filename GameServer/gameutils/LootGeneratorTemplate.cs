@@ -356,23 +356,6 @@ namespace DOL.GS
                                             tempProp + dropCooldown < GameLoop.GameLoopTime)
                                         {
                                             long nextDropTime = GameLoop.GameLoopTime;
-
-                                            /*
-                                            AccountXRealmLoyalty realmLoyalty =
-                                                DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
-                                                    .IsEqualTo(player.Client.Account.ObjectId)
-                                                    .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
-                                            if (realmLoyalty != null && realmLoyalty.Days > 0)
-                                            {
-                                                int tmpLoyal = realmLoyalty.Days > 30
-                                                    ? 30
-                                                    : realmLoyalty.Days;
-                                                nextDropTime -=
-                                                    tmpLoyal *
-                                                    1000; //reduce cooldown by 1s per loyalty day up to 30s cap
-                                            }
-
                                             var numRelics = RelicMgr.GetRelicCount(player.Realm);
                                             if (numRelics > 0) nextDropTime -= 10000 * numRelics;
 
@@ -385,22 +368,6 @@ namespace DOL.GS
                                         else if (GroupedTimerToUse != null)
                                         {
                                             long nextDropTime = GameLoop.GameLoopTime;
-                                            /*
-                                            AccountXRealmLoyalty realmLoyalty =
-                                                DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
-                                                    .IsEqualTo(GroupedTimerToUse.Client.Account.ObjectId)
-                                                    .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(GroupedTimerToUse);
-                                            if (realmLoyalty != null && realmLoyalty.Days > 0)
-                                            {
-                                                int tmpLoyal = realmLoyalty.Days > 30
-                                                    ? 30
-                                                    : realmLoyalty.Days;
-                                                nextDropTime -=
-                                                    tmpLoyal *
-                                                    1000; //reduce cooldown by 1s per loyalty day up to 30s cap
-                                            }
-
                                             loot.AddFixed(drop, lootTemplate.Count);
                                             GroupedTimerToUse.TempProperties.SetProperty(XPItemKey, nextDropTime);
 
@@ -506,22 +473,6 @@ namespace DOL.GS
                                             tempProp + dropCooldown < GameLoop.GameLoopTime)
                                         {
                                             long nextDropTime = GameLoop.GameLoopTime;
-                                            /*
-                                            AccountXRealmLoyalty realmLoyalty =
-                                                DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
-                                                    .IsEqualTo(player.Client.Account.ObjectId)
-                                                    .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
-                                            if (realmLoyalty != null && realmLoyalty.Days > 0)
-                                            {
-                                                int tmpLoyal = realmLoyalty.Days > 30
-                                                    ? 30
-                                                    : realmLoyalty.Days;
-                                                nextDropTime -=
-                                                    tmpLoyal *
-                                                    1000; //reduce cooldown by 1s per loyalty day up to 30s cap
-                                            }
-                                            
                                             var numRelics = RelicMgr.GetRelicCount(player.Realm);
                                             if (numRelics > 0) nextDropTime -= 10000 * numRelics;
 
@@ -534,21 +485,6 @@ namespace DOL.GS
                                         else if (GroupedTimerToUse != null)
                                         {
                                             long nextDropTime = GameLoop.GameLoopTime;
-                                            /*AccountXRealmLoyalty realmLoyalty =
-                                                DOLDB<AccountXRealmLoyalty>.SelectObject(DB.Column("AccountID")
-                                                    .IsEqualTo(GroupedTimerToUse.Client.Account.ObjectId)
-                                                    .And(DB.Column("Realm").IsEqualTo(player.Realm)));*/
-                                            var realmLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(GroupedTimerToUse);
-                                            if (realmLoyalty != null && realmLoyalty.Days > 0)
-                                            {
-                                                int tmpLoyal = realmLoyalty.Days > 30
-                                                    ? 30
-                                                    : realmLoyalty.Days;
-                                                nextDropTime -=
-                                                    tmpLoyal *
-                                                    1000; //reduce cooldown by 1s per loyalty day up to 30s cap
-                                            }
-
                                             loot.AddFixed(drop, lootTemplate.Count);
                                             GroupedTimerToUse.TempProperties.SetProperty(XPItemKey, nextDropTime);
 

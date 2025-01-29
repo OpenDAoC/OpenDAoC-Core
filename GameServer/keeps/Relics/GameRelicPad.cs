@@ -233,7 +233,6 @@ namespace DOL.GS
 				foreach (GamePlayer target in targets)
 				{
 					target.CapturedRelics++;
-					target.RaiseRealmLoyaltyFloor(2);
 					target.Achieve(AchievementUtils.AchievementNames.Relic_Captures);
 				}
 

@@ -56,15 +56,6 @@ namespace DOL.GS.Scripts
                     return;
                 }
 
-                var playerLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(client.Player).Days;
-
-                if (playerLoyalty < minLoyalty)
-                {
-                    client.Out.SendMessage($"You need to have at least {minLoyalty} days of Realm Loyalty to post a bounty.", eChatType.CT_Important,
-                        eChatLoc.CL_SystemWindow);
-                    return;
-                }
-
                 killerPlayer = client.Player.TempProperties.GetProperty<GamePlayer>(KILLEDBY);
 
                 amount = minBountyReward;

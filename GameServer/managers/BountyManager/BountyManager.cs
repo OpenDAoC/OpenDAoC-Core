@@ -123,18 +123,7 @@ public class BountyManager
             var reward = totalReward / playersToAwardCount * 10000; // *10000 as DOL is expecting the value in copper
             foreach (GamePlayer player in playersToAward)
             {
-                var playerLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
-
-                if (playerLoyalty.Days >= 30)
-                {
-                    bountyRate = 1;
-                }
-
-                if (playerLoyalty.Days < 3) continue;
-                
                 reward = (int)(reward * bountyRate);
-                
-                LoyaltyManager.LoyaltyUpdateAddHours(player, loyaltyHoursReward);
                 player.AddMoney(reward , "You have been rewarded {0} extra for killing a bounty target!");
             }
 
@@ -162,18 +151,12 @@ public class BountyManager
 
         foreach (BountyPoster activeBounty in activeBounties.ToList())
         {
-            var playerLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(player);
-            
-            if (playerLoyalty.Days >= 30)
-            {
-                bountyRate = 1;
-            }
-            
             int stolenReward = (int) (activeBounty.Reward - (activeBounty.Reward * bountyRate)) * 10000;
             player.AddMoney(stolenReward, "You have stolen {0} from a bounty on you!");
             activeBounty.Reward -= stolenReward;
 
             if (activeBounty.Reward > minBountyReward) continue;
+
             BroadcastExpiration(activeBounty);
             RemoveBounty(activeBounty);
         }
@@ -259,21 +242,10 @@ public class BountyManager
                     expireTime = bP.PostedTime + bountyDuration;
                     m_nextPosterToExpire = bP;
                     if (!ServiceUtils.ShouldTick(expireTime)) continue;
-                
+
                     GamePlayer playerToReimburse = bP.Ganked;
-                
-                    var posterLoyalty = LoyaltyManager.GetPlayerRealmLoyalty(playerToReimburse);
-
-                    if (posterLoyalty.Days >= 30)
-                    {
-                        bountyRate = 1;
-                    }
-
-                    var reward =
-                        (long) (bP.Reward * 10000 * bountyRate); // *10000 to convert to gold
-
+                    var reward = (long) (bP.Reward * 10000 * bountyRate); // *10000 to convert to gold
                     playerToReimburse.AddMoney(reward, "You have been reimbursed {0} for your expired bounty.");
-
                     RemoveBounty(bP);
                     BroadcastExpiration(bP);
                     m_nextPosterToExpire = null;

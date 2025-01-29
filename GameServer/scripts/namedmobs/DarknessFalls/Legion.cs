@@ -286,7 +286,6 @@ namespace DOL.GS.Scripts
             {
                 player.KillsLegion++;
                 player.Achieve(AchievementUtils.AchievementNames.Legion_Kills);
-                player.RaiseRealmLoyaltyFloor(1);
                 count++;
             }
             return count;

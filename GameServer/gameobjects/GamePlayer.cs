@@ -119,9 +119,6 @@ namespace DOL.GS
         /// </summary>
         public static readonly string LAST_USED_ITEM_SPELL = "last_used_item_spell";
 
-        public static readonly string REALM_LOYALTY_KEY = "realm_loyalty";
-        public static readonly string CURRENT_LOYALTY_KEY = "current_loyalty_days";
-
         /// <summary>
         /// Effectiveness of the rez sick that should be applied. This is set by rez spells just before rezzing.
         /// </summary>
@@ -1842,32 +1839,6 @@ namespace DOL.GS
             LastDeathPvP = false;
 
             var maxChargeItems = ServerProperties.Properties.MAX_CHARGE_ITEMS;
-            /*
-            foreach (var item in this.Inventory.EquippedItems)
-            {
-                //max 2 charges
-                if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
-                {
-                    if(ActiveBuffCharges < maxChargeItems)
-                        UseItemCharge(item, (int)eUseType.use1);
-                    else
-                    {
-                        Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    }
-                }
-
-                //max 2 charges
-                if (item.SpellID1 > 0 && SelfBuffChargeIDs.Contains(item.SpellID1) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
-                {
-                    if(ActiveBuffCharges < maxChargeItems)
-                        UseItemCharge(item, (int)eUseType.use2);
-                    else
-                    {
-                        Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    }
-                }
-            }*/
-
             UpdatePlayerStatus();
 
             Region region = null;
@@ -4876,85 +4847,6 @@ namespace DOL.GS
                     this.Out.SendMessage("This kill was not hardcore enough to gain experience.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            int numCurrentLoyalDays = this.TempProperties.GetProperty<int>(CURRENT_LOYALTY_KEY);
-            //check for cached loyalty days, and grab value if needed
-            if (numCurrentLoyalDays == 0)
-            {
-                DbAccountXRealmLoyalty realmLoyalty = DOLDB<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
-                if (realmLoyalty == null)
-                {
-                    DbAccountXRealmLoyalty newLoyalty = new DbAccountXRealmLoyalty();
-                    newLoyalty.AccountId = this.Client.Account.ObjectId;
-                    newLoyalty.Realm = (int)this.Realm;
-                    newLoyalty.LoyalDays = 1;
-                    numCurrentLoyalDays = 1;
-                    newLoyalty.LastLoyaltyUpdate = DateTime.Now;
-                    GameServer.Database.AddObject(newLoyalty);
-                }
-                else
-                {
-                    numCurrentLoyalDays = realmLoyalty.LoyalDays;
-                }
-
-                this.TempProperties.SetProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
-            }
-
-            //check for realm loyalty
-            var loyaltyCheck = this.TempProperties.GetProperty<DateTime>(REALM_LOYALTY_KEY);
-
-            if (loyaltyCheck < DateTime.Now.AddDays(-1))
-            {
-                List<DbAccountXRealmLoyalty> rloyal = new List<DbAccountXRealmLoyalty>(DOLDB<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)));
-                bool realmFound = false;
-                foreach (var rl in rloyal)
-                {
-                    if (rl.Realm == (int)this.Realm)
-                    {
-                        if(rl.LastLoyaltyUpdate < DateTime.Now.AddDays(-1))
-                            rl.LoyalDays++;
-                        numCurrentLoyalDays = rl.LoyalDays; 
-                        realmFound = true;
-                    }
-                    else
-                    {
-                        //reduce loyalty
-                        if (rl.LoyalDays < 2 || arguments.XPSource is eXPSource.Player)
-                        {
-                            rl.LoyalDays = 0;
-                        }
-                        else {
-                            rl.LoyalDays--;
-                            rl.LoyalDays--;
-                        } 
-
-                        if (rl.LoyalDays < rl.MinimumLoyalDays)
-                            rl.LoyalDays = rl.MinimumLoyalDays;
-                    }
-
-                    rl.LastLoyaltyUpdate = DateTime.Now;
-                    GameServer.Database.SaveObject(rl);
-                }
-
-                if (realmFound == false)
-                {
-                    DbAccountXRealmLoyalty newLoyalty = new DbAccountXRealmLoyalty();
-                    newLoyalty.AccountId = this.Client.Account.ObjectId;
-                    newLoyalty.Realm = (int)this.Realm;
-                    newLoyalty.LoyalDays = 1;
-                    numCurrentLoyalDays = 1;
-                    newLoyalty.LastLoyaltyUpdate = DateTime.Now;
-                    GameServer.Database.AddObject(newLoyalty);
-                }
-
-                this.TempProperties.SetProperty(REALM_LOYALTY_KEY, DateTime.Now);
-                this.TempProperties.SetProperty(CURRENT_LOYALTY_KEY, numCurrentLoyalDays);
-            }
-
-            if (arguments.XPSource is eXPSource.Player && !this.CurrentZone.IsBG)
-            {
-               LoyaltyManager.HandlePVPKill(this);
-            }
-
             long baseXp = arguments.ExpBase;
 
             if (arguments.AllowMultiply)
@@ -5551,27 +5443,6 @@ namespace DOL.GS
             return 0;
         }
         #endregion
-
-        public void RaiseRealmLoyaltyFloor(int amount)
-        {
-            DbAccountXRealmLoyalty realmLoyalty = DOLDB<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
-
-            if (realmLoyalty != null)
-            {
-                realmLoyalty.MinimumLoyalDays += amount;
-                GameServer.Database.SaveObject(realmLoyalty);
-            }
-            else
-            {
-                DbAccountXRealmLoyalty newLoyalty = new DbAccountXRealmLoyalty();
-                newLoyalty.AccountId = this.Client.Account.ObjectId;
-                newLoyalty.Realm = (int)this.Realm;
-                newLoyalty.MinimumLoyalDays = amount;
-                newLoyalty.LoyalDays = newLoyalty.MinimumLoyalDays;
-                newLoyalty.LastLoyaltyUpdate = DateTime.Now;
-                GameServer.Database.AddObject(newLoyalty);
-            }
-        }
 
         #region Combat
 
@@ -7903,12 +7774,6 @@ namespace DOL.GS
                     return;
                 }
 
-                if (LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30 && SelfBuffChargeIDs.Contains(spell.ID))
-                {
-                    spell.Duration = 0;
-                    spell.Concentration = 1;
-                }
-
                 GameLiving target = TargetObject as GameLiving;
                 ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, chargeEffectLine);
 
@@ -9930,29 +9795,6 @@ namespace DOL.GS
                     TempProperties.SetProperty("ITEMREUSEDELAY" + item.Id_nb, CurrentRegion.Time);
             }
 
-            // This was used during Atlas to only allow two self buff charges.
-            /*// Max 2 charges.
-            if (item.SpellID > 0 && SelfBuffChargeIDs.Contains(item.SpellID) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
-            {
-                if (ActiveBuffCharges < 2)
-                    UseItemCharge(item, (int) eUseType.Use1);
-                else
-                {
-                    Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
-            }
-
-            // Max 2 charges.
-            if (item.SpellID1 > 0 && SelfBuffChargeIDs.Contains(item.SpellID1) && LoyaltyManager.GetPlayerRealmLoyalty(this).Days > 30)
-            {
-                if (ActiveBuffCharges < 2)
-                    UseItemCharge(item, (int) eUseType.Use2);
-                else
-                {
-                    Out.SendMessage("You may only use two buff charge effects. This item fails to affect you.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
-            }*/
-
             _statsSenderOnEquipmentChange ??= new(this, OnStatsSendCompletionAfterEquipmentChange);
         }
 
@@ -11085,32 +10927,11 @@ namespace DOL.GS
         public override void LoadFromDatabase(DataObject obj)
         {
             base.LoadFromDatabase(obj);
-            if (!(obj is DbCoreCharacter))
+
+            if (obj is not DbCoreCharacter dbCoreCharacter)
                 return;
-            m_dbCharacter = (DbCoreCharacter)obj;
 
-            LoyaltyManager.CachePlayer(this);
-            List<DbAccountXRealmLoyalty> realmLoyaltyList = DOLDB<DbAccountXRealmLoyalty>.SelectObjects(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId)) as List<DbAccountXRealmLoyalty>;
-            DateTime lastRealmLoyaltyUpdateTime = DateTime.UnixEpoch;
-            int loyaltyDays = 0;
-
-            if (realmLoyaltyList != null)
-            {
-                //get the most recent loyalty update
-                foreach (var rloy in realmLoyaltyList)
-                {
-                    if (rloy.LastLoyaltyUpdate > lastRealmLoyaltyUpdateTime)
-                        lastRealmLoyaltyUpdateTime = rloy.LastLoyaltyUpdate;
-
-                    if (rloy.Realm == (int) this.Realm)
-                        loyaltyDays = rloy.LoyalDays;
-                }
-            }
-
-            //set that date as our temp property for reference on kill
-            this.TempProperties.SetProperty(REALM_LOYALTY_KEY, lastRealmLoyaltyUpdateTime);
-            this.TempProperties.SetProperty(CURRENT_LOYALTY_KEY, loyaltyDays);
-
+            m_dbCharacter = dbCoreCharacter;
             DbAccountXMoney MoneyForRealm = DOLDB<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
             if (MoneyForRealm == null)
@@ -11356,22 +11177,6 @@ namespace DOL.GS
             try
             {
                 RandomNumberDeck.SaveDeck();
-                DbAccountXRealmLoyalty realmLoyalty = DOLDB<DbAccountXRealmLoyalty>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
-
-                if (realmLoyalty == null)
-                {
-                    realmLoyalty = new DbAccountXRealmLoyalty();
-                    realmLoyalty.AccountId = this.Client.Account.ObjectId;
-                    realmLoyalty.Realm = (int)this.Realm;
-                    realmLoyalty.LoyalDays = 1;
-                    realmLoyalty.LastLoyaltyUpdate = DateTime.Now;
-                    GameServer.Database.AddObject(realmLoyalty);
-                }
-                else
-                {
-                    realmLoyalty.LastLoyaltyUpdate = this.TempProperties.GetProperty<DateTime>(REALM_LOYALTY_KEY);
-                    GameServer.Database.SaveObject(realmLoyalty);
-                }
 
                 DbAccountXMoney MoneyForRealm = DOLDB<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 
