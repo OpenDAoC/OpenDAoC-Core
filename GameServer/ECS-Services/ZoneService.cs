@@ -117,11 +117,12 @@ namespace DOL.GS
         public SubZoneObject SubZoneObject { get; private set; }
         public Zone DestinationZone { get; private set; }
         public SubZone DestinationSubZone { get; private set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.ObjectChangingSubZone, true);
+        public EntityManagerId EntityManagerId { get; set; }
 
         private ObjectChangingSubZone(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
             Initialize(subZoneObject, destinationZone, destinationSubZone);
+            EntityManagerId = new EntityManagerId(EntityManager.EntityType.ObjectChangingSubZone, CleanUp);
         }
 
         public static void Create(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
@@ -143,6 +144,13 @@ namespace DOL.GS
             SubZoneObject = subZoneObject;
             DestinationZone = destinationZone;
             DestinationSubZone = destinationSubZone;
+        }
+
+        private void CleanUp()
+        {
+            SubZoneObject = null;
+            DestinationZone = null;
+            DestinationSubZone = null;
         }
     }
 }

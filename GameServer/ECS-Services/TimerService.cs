@@ -90,7 +90,7 @@ namespace DOL.GS
         public ref long NextTick => ref _nextTick;
         public bool IsAlive { get; private set; }
         public int TimeUntilElapsed => (int) (_nextTick - GameLoop.GameLoopTime);
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Timer, false);
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Timer);
         private PropertyCollection _properties;
 
         public ECSGameTimer(GameObject timerOwner)

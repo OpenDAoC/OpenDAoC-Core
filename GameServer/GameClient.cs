@@ -104,7 +104,7 @@ namespace DOL.GS
 
         public bool IsPlaying => _clientState is eClientState.Playing or eClientState.Linkdead;
         public int SessionID => EntityManagerId.Value + 1;
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Client, false);
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Client);
         public bool HasSeenPatchNotes { get; set; }
         public List<Tuple<Specialization, List<Tuple<int, int, Skill>>>> TrainerSkillCache { get; set; }
         public long LinkDeathTime { get; set; }

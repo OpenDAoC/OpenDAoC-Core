@@ -29,7 +29,7 @@ namespace DOL.GS
         public GameLiving owner;
         public WeaponAction weaponAction;
         public AttackAction attackAction;
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.AttackComponent, false);
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.AttackComponent);
 
         /// <summary>
         /// Returns the list of attackers

@@ -40,7 +40,7 @@ namespace DOL.GS
         public GamePlayer OwnerPlayer;
         public long NextTick;
         public int PreviousPosition = -1;
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Effect, false);
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Effect);
         public ISpellHandler SpellHandler { get; protected set; }
 
         /// <summary>

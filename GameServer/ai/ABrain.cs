@@ -13,7 +13,7 @@ namespace DOL.AI
         private long _nextThinkTick;
 
         public FSM FSM { get; set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Brain, false);
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Brain);
         public virtual GameNPC Body { get; set; }
         public virtual bool IsActive => Body != null && Body.IsAlive && Body.ObjectState == GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
         public virtual int ThinkInterval { get; set; } = 2500;

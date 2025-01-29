@@ -51,11 +51,12 @@ namespace DOL.GS
     {
         public GameLiving Killed { get; private set; }
         public GameObject Killer { get; private set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.LivingBeingKilled, true);
+        public EntityManagerId EntityManagerId { get; set; }
 
         private LivingBeingKilled(GameLiving killed, GameObject killer)
         {
             Initialize(killed, killer);
+            EntityManagerId = new EntityManagerId(EntityManager.EntityType.LivingBeingKilled, CleanUp);
         }
 
         public static void Create(GameLiving killed, GameObject killer)
@@ -67,7 +68,7 @@ namespace DOL.GS
             }
             else
             {
-                livingBeingKilled = new(killed, killer);
+                livingBeingKilled = new LivingBeingKilled(killed, killer);
                 EntityManager.Add(livingBeingKilled);
             }
         }
@@ -76,6 +77,12 @@ namespace DOL.GS
         {
             Killed = killed;
             Killer = killer;
+        }
+
+        private void CleanUp()
+        {
+            Killed = null;
+            Killer = null;
         }
     }
 }

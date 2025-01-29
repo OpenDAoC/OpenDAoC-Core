@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -216,9 +217,12 @@ namespace DOL.GS
                 EntityManagerId entityManagerId = entity.EntityManagerId;
                 entityManagerId.Unset();
                 _invalidIndexes.Add(id);
+                Action cleanUpForReuseAction = entityManagerId.CleanupForReuseAction;
 
-                if (!entityManagerId.AllowReuseByEntityManager)
+                if (cleanUpForReuseAction == null)
                     Entities[id] = null;
+                else
+                    cleanUpForReuseAction();
             }
         }
     }
@@ -239,15 +243,15 @@ namespace DOL.GS
             }
         }
         public EntityManager.EntityType Type { get; }
-        public bool AllowReuseByEntityManager { get; }
+        public Action CleanupForReuseAction { get; }
         public bool IsSet => _value > UNSET_ID;
         public bool IsPendingAddition => _pendingState == PendingState.ADDITION;
         public bool IsPendingRemoval => _pendingState == PendingState.REMOVAL;
 
-        public EntityManagerId(EntityManager.EntityType type, bool allowReuseByEntityManager)
+        public EntityManagerId(EntityManager.EntityType type, Action cleanupAction = null)
         {
             Type = type;
-            AllowReuseByEntityManager = allowReuseByEntityManager;
+            CleanupForReuseAction = cleanupAction;
         }
 
         public void OnPreAdd()

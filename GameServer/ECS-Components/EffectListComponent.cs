@@ -15,7 +15,7 @@ namespace DOL.GS
         private Dictionary<int, ECSGameEffect> _effectIdToEffect = [];
 
         public GameLiving Owner { get; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.EffectListComponent, false);
+        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.EffectListComponent);
         public Dictionary<eEffect, List<ECSGameEffect>> Effects { get; } = [];
         public readonly Lock EffectsLock = new();
         public List<ECSGameSpellEffect> ConcentrationEffects { get; } = new List<ECSGameSpellEffect>(20);
