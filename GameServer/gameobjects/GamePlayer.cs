@@ -960,6 +960,7 @@ namespace DOL.GS
         /// </summary>
         protected virtual void CleanupOnDisconnect()
         {
+            ClearUpdateCaches();
             attackComponent.StopAttack();
             Stealth(false);
 
@@ -1091,6 +1092,15 @@ namespace DOL.GS
                     log.Debug("Error in TempProproperties Manager when saving TempProp: " + e.ToString());
                 }
             }
+
+            Group?.RemoveMember(this);
+            BattleGroup mybattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+            mybattlegroup?.RemoveBattlePlayer(this);
+            m_guild?.RemoveOnlineMember(this);
+            GroupMgr.RemovePlayerLooking(this);
+
+            if (log.IsDebugEnabled)
+                log.DebugFormat("({0}) player.Delete()", Name);
         }
 
         /// <summary>
@@ -8547,15 +8557,6 @@ namespace DOL.GS
         public override void Delete()
         {
             CleanupOnDisconnect();
-            Group?.RemoveMember(this);
-            BattleGroup mybattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-            mybattlegroup?.RemoveBattlePlayer(this);
-            m_guild?.RemoveOnlineMember(this);
-            GroupMgr.RemovePlayerLooking(this);
-
-            if (log.IsDebugEnabled)
-                log.DebugFormat("({0}) player.Delete()", Name);
-
             base.Delete();
         }
 
