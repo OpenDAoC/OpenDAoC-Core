@@ -1222,7 +1222,7 @@ namespace DOL.GS.Spells
 					powerCost = Caster.MaxMana * powerCost * -0.01;
 			}
 
-			if (playerCaster != null && playerCaster.CharacterClass.FocusCaster)
+			if (playerCaster != null && playerCaster.CharacterClass.IsFocusCaster)
 			{
 				eProperty focusProp = SkillBase.SpecToFocus(SpellLine.Spec);
 

@@ -11673,16 +11673,9 @@ namespace DOL.GS
                     if (enemyPlayer.EffectList.GetOfType<VanishEffect>() != null || enemyPlayer.Client.Account.PrivLevel > 1)
                         return false;
 
+                    // This ignores the hard cap.
                     if (effectListComponent.ContainsEffectForEffectType(eEffect.TrueSight))
                         return true;
-
-                    if (HasAbilityType(typeof(AtlasOF_SeeHidden)) &&
-                        (enemyPlayer.CharacterClass is ClassMinstrel or ClassRanger or ClassHunter or ClassScout) &&
-                        IsWithinRadius(enemy, 650) &&
-                        !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage))
-                    {
-                        return true;
-                    }
 
                     /*
                      * http://www.critshot.com/forums/showthread.php?threadid=3142
@@ -11695,9 +11688,9 @@ namespace DOL.GS
 
                     int enemyStealthLevel = Math.Min(50, enemyPlayer.GetModifiedSpecLevel(Specs.Stealth));
                     int levelDiff = Math.Max(0, Level - enemyStealthLevel);
-                    int range;
+                    int range = 0;
 
-                    // Detect hidden works only if the enemy doesn't have it or camouflage or vanish.
+                    // Detect Hidden works only if the enemy doesn't have it or camouflage or vanish.
                     // According to https://disorder.dk/daoc/stealth/, it's possible that the range per level difference is supposed to be 50 even when Detect Hidden is cancelled out.
                     if (HasAbility(Abilities.DetectHidden) &&
                         !enemyPlayer.HasAbility(Abilities.DetectHidden) &&
@@ -11708,6 +11701,15 @@ namespace DOL.GS
                     }
                     else
                         range = levelDiff * 20 + 125;
+
+                    // See Hidden only works against non assassin classes, if they don't have Camouflage enabled.
+                    if (HasAbilityType(typeof(AtlasOF_SeeHidden)) &&
+                        !enemyPlayer.CharacterClass.IsAssassin &&
+                        !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage))
+                    {
+                        https://forums.freddyshouse.com/threads/scouts-and-stealth.139740/
+                        range = Math.Max(range, 2700 - 36 * enemyStealthLevel);
+                    }
 
                     // Mastery of Stealth
                     // Disabled. This is NF MoS. OF Version does not add range, only movement speed.

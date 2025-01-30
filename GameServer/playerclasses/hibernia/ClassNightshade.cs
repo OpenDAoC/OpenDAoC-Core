@@ -47,6 +47,8 @@ namespace DOL.GS.PlayerClass
 			get { return eClassType.Hybrid; }
 		}
 
+		public override bool IsAssassin => true;
+
 		public override IList<string> GetAutotrainableSkills()
 		{
 			return AutotrainableSkills;

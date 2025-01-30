@@ -25,7 +25,7 @@ namespace DOL.GS.PropertyCalc
                 int itemBonus = player.ItemBonus[(int) property];
                 int focusLevel = player.BaseBuffBonusCategory[(int) property];
 
-                if (SkillBase.CheckPropertyType(property, ePropertyType.Focus) && player.CharacterClass.FocusCaster)
+                if (SkillBase.CheckPropertyType(property, ePropertyType.Focus) && player.CharacterClass.IsFocusCaster)
                 {
                     focusLevel += player.BaseBuffBonusCategory[(int) eProperty.AllFocusLevels];
                     itemBonus = Math.Max(itemBonus, player.ItemBonus[(int) eProperty.AllFocusLevels]);

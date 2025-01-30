@@ -38,7 +38,7 @@ namespace DOL.GS.PlayerClass
 			m_baseHP = 720;
 		}
 
-		public override bool FocusCaster => false;
+		public override bool IsFocusCaster => false;
 
 		public override bool HasAdvancedFromBaseClass()
 		{

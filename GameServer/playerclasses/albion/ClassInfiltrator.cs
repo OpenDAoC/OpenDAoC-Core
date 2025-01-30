@@ -42,6 +42,8 @@ namespace DOL.GS.PlayerClass
 			get { return true; }
 		}
 
+		public override bool IsAssassin => true;
+
 		public override IList<string> GetAutotrainableSkills()
 		{
 			return AutotrainableSkills;

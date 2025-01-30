@@ -232,7 +232,8 @@ namespace DOL.GS
 			get { return eClassType.ListCaster; }
 		}
 
-		public virtual bool FocusCaster => false;
+		public virtual bool IsFocusCaster => false;
+		public virtual bool IsAssassin => false;
 
 		/// <summary>
 		/// Return the base list of Realm abilities that the class
