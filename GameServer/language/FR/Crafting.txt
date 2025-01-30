@@ -179,13 +179,13 @@ SpellCrafting.IsAllowedToCombine.NoEnchanted:		Cet objet ne peut pas être encha
 SpellCrafting.IsAllowedToCombine.NoMoreLevels:		Vous ne pouvez pas surcharger votre {0} de plus de 5 niveaux!
 SpellCrafting.IsAllowedToCombine.NoSameBonus:		Vous ne pouvez pas mettre le même bonus sur plusieurs objets en même temps!
 SpellCrafting.IsAllowedToCombine.NotEnoughSkill:	Vous n'avez pas assez de connaissance pour l'imprégnation, c'est trop difficile!
-SpellCrafting.ShowSpellCraftingInfos.CurrentBonus:	Bonus actuel sur {0} :
-SpellCrafting.ShowSpellCraftingInfos.GemBonuses:	Bonus des Gemmes :
-SpellCrafting.ShowSpellCraftingInfos.ImbueCapacity:	Capacité d'imprégnation utilisée {0} sur {1}.
+SpellCrafting.ShowSpellCraftingInfo.CurrentBonus:	Bonus actuel sur {0} :
+SpellCrafting.ShowSpellCraftingInfo.GemBonuses:	Bonus des Gemmes :
+SpellCrafting.ShowSpellCraftingInfo.ImbueCapacity:	Capacité d'imprégnation utilisée {0} sur {1}.
 SpellCrafting.ShowSpellCraftingInfos.Losing:		{0}% de perdu durant l'imprégnation.
 SpellCrafting.ShowSpellCraftingInfos.Modified:		(Cette pénalité est modifiée par la qualité de l'objet ainsi que par votre compétence!)
-SpellCrafting.ShowSpellCraftingInfos.Penality:		{0} pénalité de surcharge.
-SpellCrafting.ShowSpellCraftingInfos.Success:		{0}% surcharge effectuée.
-SpellCrafting.ShowSpellCraftingInfos.TotalImbue:	Imprégnation {0} ({1} total des points imprégnés).
+SpellCrafting.ShowSpellCraftingInfo.Penalty:		{0} pénalité de surcharge.
+SpellCrafting.ShowSpellCraftingInfo.Success:		{0}% surcharge effectuée.
+SpellCrafting.ShowSpellCraftingInfo.TotalImbue:	Imprégnation {0} ({1} total des points imprégnés).
 
 

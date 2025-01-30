@@ -173,14 +173,14 @@ SpellCrafting.IsAllowedToCombine.NoEnchanted:		This item can't be enchanted!
 SpellCrafting.IsAllowedToCombine.NoMoreLevels:		You can't overcharge your {0} by more than 5 levels!
 SpellCrafting.IsAllowedToCombine.NoSameBonus:		You can't put the same bonus on an item multiple times!
 SpellCrafting.IsAllowedToCombine.NotEnoughSkill:	You do not have enough skill to imbue that!
-SpellCrafting.ShowSpellCraftingInfos.CurrentBonus:	Bonus currently on the {0}:
-SpellCrafting.ShowSpellCraftingInfos.GemBonuses:	Gem Bonuses:
-SpellCrafting.ShowSpellCraftingInfos.ImbueCapacity:	Used {0} of {1} imbue point capacity.
+SpellCrafting.ShowSpellCraftingInfo.CurrentBonus:	Bonus currently on the {0}:
+SpellCrafting.ShowSpellCraftingInfo.GemBonuses:	Gem Bonuses:
+SpellCrafting.ShowSpellCraftingInfo.ImbueCapacity:	Used {0} of {1} imbue point capacity.
 SpellCrafting.ShowSpellCraftingInfos.Losing:		{0}% of losing item during combination.
 SpellCrafting.ShowSpellCraftingInfos.Modified:		(This penalty is further modified by item quality and your skill!)
-SpellCrafting.ShowSpellCraftingInfos.Penality:		{0}% overcharge penalty.
-SpellCrafting.ShowSpellCraftingInfos.Success:		{0}% overcharge success.
-SpellCrafting.ShowSpellCraftingInfos.TotalImbue:	Spellcrafting the {0} ({1} total imbue points).
+SpellCrafting.ShowSpellCraftingInfo.Penalty:		{0}% overcharge penalty.
+SpellCrafting.ShowSpellCraftingInfo.Success:		{0}% overcharge success.
+SpellCrafting.ShowSpellCraftingInfo.TotalImbue:	Spellcrafting the {0} ({1} total imbue points).
 
 ## Misc
 ### Crafting Titles (OLD)

@@ -409,70 +409,67 @@ namespace DOL.GS
 
 		# region Show informations to player
 
-		/// <summary>
-		/// Shaw to player all infos about the current spellcraft
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="item"></param>
-		public virtual void ShowSpellCraftingInfos(GamePlayer player, DbInventoryItem item)
+		public virtual void ShowSpellCraftingInfo(GamePlayer player, DbInventoryItem item)
 		{
-			if (((DbInventoryItem)player.TradeWindow.TradeItems[0]).Model == 525) return; // check if applying dust
+			// 525 == dust.
+			if ((player.TradeWindow.TradeItems[0] as DbInventoryItem).Model == 525)
+				return;
 
-			ArrayList spellcraftInfos = new ArrayList(10);
-
+			ArrayList spellCraftingInfo = new(10);
 			int totalItemCharges = GetItemMaxImbuePoints(item);
-			int totalGemmesCharges = GetTotalImbuePoints(player, item);
+			int totalGemCharges = GetTotalImbuePoints(player, item);
+			spellCraftingInfo.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfo.TotalImbue", item.Name, totalItemCharges));
+			spellCraftingInfo.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfo.CurrentBonus", item.Name));
 
-			spellcraftInfos.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfos.TotalImbue", item.Name, totalItemCharges));
-			spellcraftInfos.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfos.CurrentBonus", item.Name));
 			if (item.Bonus1Type != 0)
 			{
-				spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((eProperty)item.Bonus1Type) + ": " + item.Bonus1 + " " + ((item.Bonus1Type >= (int)eProperty.Resist_First && item.Bonus1Type <= (int)eProperty.Resist_Last) ? "%" : " pts"));
+				spellCraftingInfo.Add($"* {SkillBase.GetPropertyName((eProperty) item.Bonus1Type)}: {item.Bonus1} {(item.Bonus1Type is >= (int) eProperty.Resist_First and <= (int) eProperty.Resist_Last ? "%" : " pts")}");
+
 				if (item.Bonus2Type != 0)
 				{
-					spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((eProperty)item.Bonus2Type) + ": " + item.Bonus2 + " " + ((item.Bonus2Type >= (int)eProperty.Resist_First && item.Bonus2Type <= (int)eProperty.Resist_Last) ? "%" : "pts"));
+					spellCraftingInfo.Add($"* {SkillBase.GetPropertyName((eProperty) item.Bonus2Type)}: {item.Bonus2} {(item.Bonus2Type is >= (int) eProperty.Resist_First and <= (int) eProperty.Resist_Last ? "%" : "pts")}");
+
 					if (item.Bonus3Type != 0)
 					{
-						spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((eProperty)item.Bonus3Type) + ": " + item.Bonus3 + " " + ((item.Bonus3Type >= (int)eProperty.Resist_First && item.Bonus3Type <= (int)eProperty.Resist_Last) ? "%" : "pts"));
+						spellCraftingInfo.Add($"* {SkillBase.GetPropertyName((eProperty) item.Bonus3Type)}: {item.Bonus3} {(item.Bonus3Type is >= (int) eProperty.Resist_First and <= (int) eProperty.Resist_Last ? "%" : "pts")}");
+
 						if (item.Bonus4Type != 0)
-						{
-							spellcraftInfos.Add("\t" + SkillBase.GetPropertyName((eProperty)item.Bonus4Type) + ": " + item.Bonus4 + " " + ((item.Bonus4Type >= (int)eProperty.Resist_First && item.Bonus4Type <= (int)eProperty.Resist_Last) ? "%" : "pts"));
-						}
+							spellCraftingInfo.Add($"* {SkillBase.GetPropertyName((eProperty) item.Bonus4Type)}: {item.Bonus4} {(item.Bonus4Type is >= (int) eProperty.Resist_First and <= (int) eProperty.Resist_Last ? "%" : "pts")}");
 					}
 				}
 			}
-			spellcraftInfos.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfos.GemBonuses"));
+
+			spellCraftingInfo.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfo.GemBonuses"));
+
 			lock (player.TradeWindow.Lock)
 			{
 				for (int i = 0; i < player.TradeWindow.ItemsCount; i++)
 				{
-					DbInventoryItem currentGem = (DbInventoryItem)player.TradeWindow.TradeItems[i];
-					spellcraftInfos.Add("\t" + currentGem.Name + " - " + SkillBase.GetPropertyName((eProperty)currentGem.Bonus1Type) + ": (" + GetGemImbuePoints(currentGem.Bonus1Type, currentGem.Bonus1) + ") " + currentGem.Bonus1 + " " + ((currentGem.Bonus1Type >= (int)eProperty.Resist_First && currentGem.Bonus1Type <= (int)eProperty.Resist_Last) ? "%" : "pts"));
+					DbInventoryItem currentGem = player.TradeWindow.TradeItems[i] as DbInventoryItem;
+					spellCraftingInfo.Add($"* {currentGem.Name} - {SkillBase.GetPropertyName((eProperty) currentGem.Bonus1Type)}: ({GetGemImbuePoints(currentGem.Bonus1Type, currentGem.Bonus1)}) {currentGem.Bonus1} {(currentGem.Bonus1Type >= (int) eProperty.Resist_First && currentGem.Bonus1Type <= (int) eProperty.Resist_Last ? "%" : "pts")}");
 				}
 			}
-			spellcraftInfos.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfos.ImbueCapacity", totalGemmesCharges, totalItemCharges));
 
-			if (totalGemmesCharges > totalItemCharges)
+			spellCraftingInfo.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfo.ImbueCapacity", totalGemCharges, totalItemCharges));
+
+			if (totalGemCharges > totalItemCharges)
 			{
 				int maxBonusLevel = GetItemMaxImbuePoints(item);
 				int bonusLevel = GetTotalImbuePoints(player, item);
-				spellcraftInfos.Add("\t");
-				spellcraftInfos.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfos.Penality", GetOverchargePenality(totalItemCharges, totalGemmesCharges)));
-				spellcraftInfos.Add("\t");
-				spellcraftInfos.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfos.Success", CalculateChanceToOverchargeItem(player, item, maxBonusLevel, bonusLevel)));
+				spellCraftingInfo.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfo.Penalty", GetOverchargePenality(totalItemCharges, totalGemCharges)));
+				spellCraftingInfo.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfo.Success", CalculateChanceToOverchargeItem(player, item, maxBonusLevel, bonusLevel)));
 			}
 
 			GamePlayer partner = player.TradeWindow.Partner;
-			foreach (string line in spellcraftInfos)
+
+			foreach (string line in spellCraftingInfo)
 			{
 				player.Out.SendMessage(line, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				if (partner != null) partner.Out.SendMessage(line, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+				partner?.Out.SendMessage(line, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 
-			if (totalGemmesCharges > totalItemCharges)
-			{
+			if (totalGemCharges > totalItemCharges)
 				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "SpellCrafting.ShowSpellCraftingInfos.Modified"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			}
 		}
 
 		# endregion
