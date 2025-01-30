@@ -147,7 +147,7 @@ namespace DOL.GS
                 else
                     Thread.Yield();
 
-                if (busyWaitThreshold > 0 && TickRate > stopwatch.Elapsed.TotalMilliseconds)
+                if (TickRate > stopwatch.Elapsed.TotalMilliseconds)
                 {
                     SpinWait spinWait = new();
 
@@ -166,9 +166,9 @@ namespace DOL.GS
 
         private static void UpdateBusyWaitThreshold()
         {
-            int maxIteration = 20;
-            int sleepFor = 50;
-            int pauseFor = 20000;
+            int maxIteration = 10;
+            int sleepFor = 1;
+            int pauseFor = 10000;
             Stopwatch stopwatch = new();
             stopwatch.Start();
 
