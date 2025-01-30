@@ -11503,8 +11503,6 @@ namespace DOL.GS
             }
 
             EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth));
-            EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Vanish));
-            EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Camouflage));
         }
 
         public override void OnMaxSpeedChange()

@@ -7,23 +7,23 @@ namespace DOL.GS
 {
     public class StealthECSGameEffect : ECSGameAbilityEffect
     {
-        public StealthECSGameEffect(ECSGameEffectInitParams initParams)
-            : base(initParams)
+        public StealthECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Stealth;
             EffectService.RequestStartEffect(this);
         }
 
-        public override ushort Icon { get { return 0x193; } }
-        public override string Name { get { return LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.StealthEffect.Name"); } }
-        public override bool HasPositiveEffect { get { return true; } }
+        public override ushort Icon => 0x193;
+        public override string Name => LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.StealthEffect.Name");
+        public override bool HasPositiveEffect => true;
 
         public override void OnStartEffect()
         {
             OwnerPlayer.StartStealthUncoverAction();
 
-            if (OwnerPlayer.ObjectState == GameObject.eObjectState.Active)
+            if (OwnerPlayer.ObjectState is GameObject.eObjectState.Active)
                 OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Stealth.NowHidden"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
             OwnerPlayer.Out.SendPlayerModelTypeChange(OwnerPlayer, 3);
 
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
@@ -60,21 +60,15 @@ namespace DOL.GS
 
             OwnerPlayer.Out.SendPlayerModelTypeChange(OwnerPlayer, 2);
 
-            //GameEventMgr.RemoveHandler(this, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(GamePlayer.Unstealth));
             foreach (GamePlayer otherPlayer in OwnerPlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
-                if (otherPlayer == null || otherPlayer == OwnerPlayer) continue;
+                if (otherPlayer == OwnerPlayer)
+                    continue;
 
-                /// [Atlas - Takii] This commented code from DOL causes a large (1-2 seconds) delay before the target unstealths.
-                /// It does not seem to cause any issues related to targeting despite the comments.
-                //if a player could see us stealthed, we just update our model to avoid untargetting.
-                // 					if (player.CanDetect(this))
-                // 						player.Out.SendPlayerModelTypeChange(this, 2);
-                // 					else
-                // 						player.Out.SendPlayerCreate(this);
                 otherPlayer.Out.SendPlayerCreate(OwnerPlayer);
                 otherPlayer.Out.SendLivingEquipmentUpdate(OwnerPlayer);
             }
+
             if (OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
             {
                 var speedBuff = OwnerPlayer.effectListComponent.GetBestDisabledSpellEffect(eEffect.MovementSpeedBuff);
@@ -82,19 +76,13 @@ namespace DOL.GS
                 if (speedBuff != null)
                 {
                     speedBuff.IsBuffActive = false;
-                    EffectService.RequestEnableEffect(speedBuff);                   
+                    EffectService.RequestEnableEffect(speedBuff);
                 }
             }
 
+            EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Vanish));
+            EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Camouflage));
             StealthStateChanged();
-
-            // This needs to be restored if we have the Camouflage ability on this server.
-            //             if (Owner.HasAbility(Abilities.Camouflage))
-            //             {
-            //                 IGameEffect camouflage = m_player.EffectList.GetOfType<CamouflageEffect>();
-            //                 if (camouflage != null)
-            //                     camouflage.Cancel(false);
-            //             }
         }
 
         private void StealthStateChanged()
