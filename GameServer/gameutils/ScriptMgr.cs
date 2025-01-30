@@ -130,11 +130,18 @@ namespace DOL.GS
 		/// <param name="plvl">plvl of the commands to get</param>
 		/// <param name="addDesc"></param>
 		/// <returns></returns>
-		public static string[] GetCommandList(ePrivLevel plvl, bool addDesc)
+		public static SortedDictionary<ePrivLevel, List<string>> GetCommandList(bool addDesc)
 		{
-			return m_gameCommands.Where(kv => kv.Value != null && kv.Key != null && (uint)plvl >= kv.Value.m_lvl)
-				.Select(kv => string.Format("/{0}{2}{1}", kv.Key.Remove(0, 1), addDesc ? kv.Value.m_desc : string.Empty, addDesc ? " - " : string.Empty))
-				.ToArray();
+			Dictionary<ePrivLevel, List<string>> sortedCommands = m_gameCommands
+				.GroupBy(kvp => (ePrivLevel) kvp.Value.m_lvl)
+				.ToDictionary(
+					g => g.Key,
+					g => g.Select(kv => string.Format("* /{0}{2}{1}", kv.Key.Remove(0, 1), addDesc ? kv.Value.m_desc : string.Empty, addDesc ? " - " : string.Empty))
+						.OrderBy(cmd => cmd)
+						.ToList()
+				);
+
+			return new SortedDictionary<ePrivLevel, List<string>>(sortedCommands);
 		}
 
 		/// <summary>

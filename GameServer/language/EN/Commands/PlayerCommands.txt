@@ -267,8 +267,8 @@ Scripts.Players.Chatgroup.PublicAlready:			This is already a public chat group.
 
 ## /cmdhelp
 Scripts.Players.Cmdhelp.NoCommand:			Command {0} does not exist.
-Scripts.Players.Cmdhelp.PlvlCommands:			<----------Commands available for plvl {0}---------->
-Scripts.Players.Cmdhelp.Usage:				>----------Usage for {0}----------<
+Scripts.Players.Cmdhelp.PlvlCommands:		Commands available for plvl {0}
+Scripts.Players.Cmdhelp.Usage:				Usage for
 
 ## /disband
 Scripts.Players.Disband.Disbanded:			{o} was disbanded from group.

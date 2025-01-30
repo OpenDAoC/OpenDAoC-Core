@@ -757,9 +757,9 @@ Scripts.Players.Chatgroup.Usage:				Utilizzo: /c <text>
 Scripts.Players.Chatgroup.UsageInvite:			Utilizzo: /cg invite <playername>"
 
 # /Cmdhelp
-Scripts.Players.Cmdhelp.NoCommand:				Il comando {0} non esiste.
-Scripts.Players.Cmdhelp.PlvlCommands:			<----------Comandi disponibili per plvl {0}---------->
-Scripts.Players.Cmdhelp.Usage:				>----------Utilizzo di {0}----------<
+Scripts.Players.Cmdhelp.NoCommand:			Il comando {0} non esiste.
+Scripts.Players.Cmdhelp.PlvlCommands:		Comandi disponibili per plvl {0}
+Scripts.Players.Cmdhelp.Usage:				Utilizzo di {0}
 
 # /Disband
 Scripts.Players.Disband.Disbanded:			{o} e' stato espulso dal gruppo.

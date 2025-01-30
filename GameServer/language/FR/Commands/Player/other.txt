@@ -100,8 +100,8 @@ Scripts.Players.Cancelstyle.Off: OFF
 
 # /Cmdhelp
 Scripts.Players.Cmdhelp.NoCommand:			La commande {0} n'existe pas.
-Scripts.Players.Cmdhelp.PlvlCommands:		<----------Commandes disponibles pour le niveau de privilège {0}---------->
-Scripts.Players.Cmdhelp.Usage:				>----------Usage pour {0}----------<
+Scripts.Players.Cmdhelp.PlvlCommands:		Commandes disponibles pour le niveau de privilège {0}
+Scripts.Players.Cmdhelp.Usage:				Usage pour {0}
 
 # /Disband
 Scripts.Players.Disband.Disbanded:			{o} a quitté le groupe.

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using DOL.Language;
@@ -12,7 +11,7 @@ namespace DOL.GS.Commands
         "'/cmdhelp <cmd>' displays the usage for cmd")]
     public class CmdHelpCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        private static IDictionary<ePrivLevel, string[]> m_commandLists = new Dictionary<ePrivLevel, string[]>();
+        private static SortedDictionary<ePrivLevel, List<string>> m_commandLists;
         private readonly static Lock _lock = new();
 
         public void OnCommand(GameClient client, string[] args)
@@ -22,14 +21,9 @@ namespace DOL.GS.Commands
 
             ePrivLevel privilegeLevel = (ePrivLevel) client.Account.PrivLevel;
 
-            if (args.Length == 0)
+            if (args.Length == 1)
             {
-                string[] commandList = GetCommandList(privilegeLevel);
-                DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Cmdhelp.PlvlCommands", privilegeLevel.ToString()));
-
-                foreach (string command in commandList)
-                    DisplayMessage(client, command);
-
+                ShowUseableCommands(client);
                 return;
             }
 
@@ -52,17 +46,26 @@ namespace DOL.GS.Commands
                 DisplayMessage(client, usage);
         }
 
-        private static string[] GetCommandList(ePrivLevel privilegeLevel)
+        private void ShowUseableCommands(GameClient client)
         {
-            lock (_lock)
+            if (m_commandLists == null)
             {
-                if (m_commandLists.TryGetValue(privilegeLevel, out string[] value))
-                    return value;
+                lock (_lock)
+                {
+                    m_commandLists = ScriptMgr.GetCommandList(true);
+                }
+            }
 
-                value = ScriptMgr.GetCommandList(privilegeLevel, true);
-                Array.Sort(value);
-                m_commandLists.Add(privilegeLevel, value);
-                return value;
+            foreach (var pair in m_commandLists)
+            {
+                if (pair.Key > (ePrivLevel) client.Account.PrivLevel)
+                    continue;
+
+                DisplayMessage(client, "\n");
+                DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Cmdhelp.PlvlCommands", pair.Key));
+
+                foreach (string usage in pair.Value)
+                    DisplayMessage(client, usage);
             }
         }
     }
