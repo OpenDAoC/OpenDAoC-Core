@@ -166,6 +166,9 @@ namespace DOL.GS
 
         private static void UpdateBusyWaitThreshold()
         {
+            int maxIteration = 20;
+            int sleepFor = 50;
+            int pauseFor = 20000;
             Stopwatch stopwatch = new();
             stopwatch.Start();
 
@@ -177,18 +180,18 @@ namespace DOL.GS
                     double overSleptFor;
                     double highest = 0;
 
-                    for (int i = 0; i < 20; i++)
+                    for (int i = 0; i < maxIteration; i++)
                     {
                         start = stopwatch.Elapsed.TotalMilliseconds;
-                        Thread.Sleep(1);
-                        overSleptFor = stopwatch.Elapsed.TotalMilliseconds - start - 1;
+                        Thread.Sleep(sleepFor);
+                        overSleptFor = stopwatch.Elapsed.TotalMilliseconds - start - sleepFor;
 
                         if (highest < overSleptFor)
                             highest = overSleptFor;
                     }
 
                     _busyWaitThreshold = Math.Max(0, (int) highest);
-                    Thread.Sleep(20000);
+                    Thread.Sleep(pauseFor);
                 }
             }
             catch (ThreadInterruptedException)
