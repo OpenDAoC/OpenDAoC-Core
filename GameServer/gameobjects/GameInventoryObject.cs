@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
+using log4net;
 
 namespace DOL.GS
 {
@@ -35,6 +37,8 @@ namespace DOL.GS
     /// </summary>
     public static class GameInventoryObjectExtensions
     {
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         public static bool CanHandleRequest(this IGameInventoryObject thisObject, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
         {
             return (fromClientSlot >= thisObject.FirstClientSlot && fromClientSlot <= thisObject.LastClientSlot) || (toClientSlot >= thisObject.FirstClientSlot && toClientSlot <= thisObject.LastClientSlot);
@@ -599,7 +603,17 @@ namespace DOL.GS
 
         public static bool SaveItem(DbInventoryItem item)
         {
-            return item.IsPersisted ? GameServer.Database.SaveObject(item) : GameServer.Database.AddObject(item);
+            bool result = item.IsPersisted ? GameServer.Database.SaveObject(item) : GameServer.Database.AddObject(item);
+
+            if (!result)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Couldn't save or add an item with {nameof(DataObject.IsPersisted)}={item.IsPersisted}. Attempting to call the other method instead.");
+
+                result = item.IsPersisted ? GameServer.Database.AddObject(item) : GameServer.Database.SaveObject(item);
+            }
+
+            return result;
         }
 
         public static bool DeleteItem(DbInventoryItem item)
