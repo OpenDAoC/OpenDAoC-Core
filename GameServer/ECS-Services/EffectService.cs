@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -68,133 +67,15 @@ namespace DOL.GS
             if (effectList == null)
                 return;
 
-            ECSGameSpellEffect spellEffect = e as ECSGameSpellEffect;
-
             // Early out if we're trying to add an effect that is already present.
             if (!effectList.AddEffect(e))
-            {
-                // Temporarily include `BleedECSEffect` since they're set as pulsing spells in the DB, even though they should work like DoTs instead.
-                if (spellEffect != null && (!spellEffect.SpellHandler.Spell.IsPulsing || spellEffect is BleedECSEffect))
-                {
-                    SendSpellResistAnimation(spellEffect);
-                    GamePlayer playerToNotify = null;
-
-                    if (spellEffect.SpellHandler.Caster is GamePlayer playerCaster)
-                        playerToNotify = playerCaster;
-                    else if (spellEffect.SpellHandler.Caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain brain && brain.Owner is GamePlayer casterOwner)
-                        playerToNotify = casterOwner;
-
-                    if (playerToNotify != null)
-                        ChatUtil.SendResistMessage(playerToNotify, "GamePlayer.Caster.Buff.EffectAlreadyActive", spellEffect.Owner.GetName(0, true));
-                }
-
                 return;
-            }
-
-            ISpellHandler spellHandler = spellEffect?.SpellHandler;
-            Spell spell = spellHandler?.Spell;
-            GameLiving caster = spellHandler?.Caster;
-
-            // Update the Concentration List if Conc Buff/Song/Chant.
-            if (spellEffect != null && spellEffect.ShouldBeAddedToConcentrationList() && !spellEffect.RenewEffect && caster != null)
-            {
-                EffectListComponent casterEffectListComponent = caster.effectListComponent;
-                casterEffectListComponent.AddUsedConcentration(spell.Concentration);
-
-                lock (casterEffectListComponent.ConcentrationEffectsLock)
-                {
-                    casterEffectListComponent.ConcentrationEffects.Add(spellEffect);
-                }
-
-                casterEffectListComponent.RequestPlayerUpdate(PlayerUpdate.CONCENTRATION);
-            }
-
-            if (spellEffect != null)
-            {
-                if ((!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
-                    || spellEffect is SavageBuffECSGameEffect)
-                {
-                    //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
-                    //{
-                    //    //Console.WriteLine("Applying EnduranceRegenBuff");
-                    //    var handler = spellHandler as EnduranceRegenSpellHandler;
-                    //    ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spell.Value, 1, false);
-                    //}
-                    e.OnStartEffect();
-                    e.IsBuffActive = true;
-                }
-
-                if (spell.IsPulsing)
-                {
-                    // This should allow the caster to see the effect of the first tick of a beneficial pulse effect, even when recasted before the existing effect expired.
-                    // It means they can spam some spells, but I consider it a good feedback for the player (example: Paladin's endurance chant).
-                    // It should also allow harmful effects to be played on the targets, but not the caster (example: Reaver's PBAEs -- the flames, not the waves).
-                    // It should prevent double animations too (only checking 'IsHarmful' and 'RenewEffect' would make resist chants play twice).
-                    if (spellEffect is ECSPulseEffect)
-                    {
-                        if (!spell.IsHarmful && spell.SpellType != eSpellType.Charm && !spellEffect.RenewEffect)
-                            SendSpellAnimation(spellEffect);
-                    }
-                    else if (spell.IsHarmful)
-                        SendSpellAnimation(spellEffect);
-                }
-                else if (spellEffect is not ECSImmunityEffect)
-                    SendSpellAnimation(spellEffect);
-                if (e is StatDebuffECSEffect && spell.CastTime == 0)
-                    StatDebuffECSEffect.TryDebuffInterrupt(spell, e.OwnerPlayer, caster);
-            }
-            else
-                e.OnStartEffect();
         }
 
         private static bool HandleCancelEffect(ECSGameEffect effect)
         {
             EffectListComponent effectListComponent = effect.Owner.effectListComponent;
-
-            if (!effectListComponent.RemoveEffect(effect))
-                return false;
-
-            if (effect is ECSGameSpellEffect spellEffect)
-            {
-                if (spellEffect.IsBuffActive && spellEffect is not ECSImmunityEffect)
-                    effect.OnStopEffect();
-
-                effect.IsBuffActive = false;
-                GameLiving caster = effect.SpellHandler.Caster;
-
-                // Update the Concentration List if Conc Buff/Song/Chant.
-                if (caster != null && effect.CancelEffect && effect.ShouldBeRemovedFromConcentrationList())
-                {
-                    EffectListComponent casterEffectListComponent = caster.effectListComponent;
-                    casterEffectListComponent.AddUsedConcentration(-spellEffect.SpellHandler.Spell.Concentration);
-
-                    lock (casterEffectListComponent.ConcentrationEffectsLock)
-                    {
-                        casterEffectListComponent.ConcentrationEffects.Remove(spellEffect);
-                    }
-
-                    casterEffectListComponent.RequestPlayerUpdate(PlayerUpdate.CONCENTRATION);
-                }
-            }
-            else
-                effect.OnStopEffect();
-
-            effect.TryApplyImmunity();
-
-            if (!effect.IsDisabled)
-            {
-                List<ECSGameSpellEffect> spellEffects = effectListComponent.GetSpellEffects(effect.EffectType);
-
-                if (spellEffects.Count > 0)
-                {
-                    ECSGameSpellEffect enableEffect = spellEffects.OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault();
-
-                    if (enableEffect != null && enableEffect.IsDisabled)
-                        RequestEnableEffect(enableEffect);
-                }
-            }
-
-            return true;
+            return effectListComponent.RemoveEffect(effect);
         }
 
         /// <summary>
