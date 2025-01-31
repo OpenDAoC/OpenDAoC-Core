@@ -23,7 +23,7 @@ namespace DOL.GS.Commands
                 if (otherClient.Account.PrivLevel > 1)
                     continue;
 
-                accountIp = ((IPEndPoint) otherClient.Socket.RemoteEndPoint).Address.ToString();
+                accountIp = otherClient.TcpEndpointAddress;
 
                 if (!ip.Contains(accountIp))
                     ip.Add(accountIp, otherClient);
