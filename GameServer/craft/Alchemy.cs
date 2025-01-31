@@ -141,7 +141,7 @@ namespace DOL.GS
 
 			if (item.Template is DbItemUnique)
 			{
-				GameServer.Database.SaveObject(item);
+				GameInventoryObjectExtensions.SaveItem(item);
 				GameServer.Database.SaveObject(item.Template as DbItemUnique);
 			}
 			else
