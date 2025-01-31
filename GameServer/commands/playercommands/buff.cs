@@ -193,6 +193,9 @@ namespace DOL.GS.Commands
 
             bool IsInAllowedArea()
             {
+                if ((ePrivLevel) client.Account.PrivLevel > ePrivLevel.Player)
+                    return true;
+
                 // Camelot, Tir na Nog, Jordheim.
                 if (client.Player.CurrentRegionID is 10 or 101 or 201)
                     return true;
