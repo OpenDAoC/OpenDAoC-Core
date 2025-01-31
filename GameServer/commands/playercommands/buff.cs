@@ -12,7 +12,6 @@ namespace DOL.GS.Commands
     [CmdAttribute("&buff", ePrivLevel.Player, "Buff the target", "/buff <(buffList) | all | help> [playerName | npcName]")]
     public class BuffCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        public const string SPELL_TYPE = "BuffCommand";
         private const int RANGE = 1500;
 
         private static Dictionary<string, eSpellType> _buffLookupTable;
@@ -278,7 +277,7 @@ namespace DOL.GS.Commands
                     ClientEffect = 11325, // A random ID. Maybe use one that matches the player's realm if we want to be fancy?
                     DamageType = (int) eDamageType.Natural,
                     Target = eSpellTarget.REALM.ToString(),
-                    Type = SPELL_TYPE,
+                    Type = eSpellType.BuffCommand.ToString(),
                     CastTime = 3,
                     Range = RANGE
                 };
@@ -298,7 +297,7 @@ namespace DOL.GS.Commands
         }
     }
 
-    [SpellHandlerAttribute(BuffCommandHandler.SPELL_TYPE)]
+    [SpellHandlerAttribute(eSpellType.BuffCommand)]
     public class BuffCommandSpellHandler : SingleStatBuff
     {
         public BuffCommandSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
