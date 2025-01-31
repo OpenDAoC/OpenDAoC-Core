@@ -11,20 +11,18 @@ namespace DOL.AI.Brain
         public override bool CheckSpells(eCheckSpellType type)
         {
             // Ice pets don't check for spells if their target is close, and attack instead.
-            // Once ice pets enter melee range, there's no going back.
-            if (IsInMeleeMode)
+            if (Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange + 50))
             {
-                Body.StartAttack(Body.TargetObject);
-                return true;
-            }
-            else if (Body.IsWithinRadius(Body.TargetObject, Body.attackComponent.AttackRange + 50))
-            {
+                if (IsInMeleeMode)
+                    return true;
+
                 IsInMeleeMode = true;
                 Body.castingComponent?.ClearUpQueuedSpellHandler();
                 Body.StartAttack(Body.TargetObject);
                 return true;
             }
 
+            IsInMeleeMode = false;
             return base.CheckSpells(type);
         }
     }
