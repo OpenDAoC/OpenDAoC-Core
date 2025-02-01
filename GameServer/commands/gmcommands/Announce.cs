@@ -41,7 +41,7 @@ namespace DOL.GS.Commands
                     };
 
                     foreach (GamePlayer player in ClientService.GetPlayers())
-                        player.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.WindowAnnounce", player.Name), messages);
+                        player.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.WindowAnnounce", client.Player.Name), messages);
 
                     break;
                 }
