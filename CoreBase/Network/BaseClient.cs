@@ -86,7 +86,7 @@ namespace DOL.Network
             }
 
             // Must be checked after calling `OnReceiveCompletion`.
-            if (!Socket.Connected)
+            if (Socket?.Connected != true)
                 return;
 
             int available = ReceiveBuffer.Length - ReceiveBufferOffset;
