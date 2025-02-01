@@ -215,7 +215,8 @@ namespace DOL.GS
         {
             try
             {
-                _player?.SaveIntoDatabase();
+                if (_player?.ObjectState is GameObject.eObjectState.Active)
+                    _player.SaveIntoDatabase();
             }
             catch (Exception e)
             {

@@ -50,10 +50,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     }
 
                     if (charFound == false)
-                    {
-                        client.Player = null;
                         client.ActiveCharIndex = -1;
-                    }
                     else
                     {
                         // Log character play

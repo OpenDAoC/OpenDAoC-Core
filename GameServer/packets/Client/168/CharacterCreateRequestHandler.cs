@@ -975,7 +975,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                         GameServer.Database.DeleteObject(character);
                         client.Account.Characters = null;
-                        client.Player = null;
                         GameServer.Database.FillObjectRelations(client.Account);
 
                         if (client.Account.Characters == null || client.Account.Characters.Length == 0)

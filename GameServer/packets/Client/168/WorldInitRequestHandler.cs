@@ -180,10 +180,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     }
 
                     if (!charFound)
-                    {
-                        client.Player = null;
                         client.ActiveCharIndex = -1;
-                    }
                     else
                         AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterLogin, "", selectedChar);
                 }
