@@ -8,8 +8,11 @@ namespace DOL.GS.Spells
     /// <summary>
     /// Base class for all resist debuffs, needed to set effectiveness and duration
     /// </summary>
-    public abstract class AbstractResistDebuff(GameLiving caster, Spell spell, SpellLine line) : PropertyChangingSpell(caster, spell, line)
+    public abstract class AbstractResistDebuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatDebuff(caster, spell, line)
     {
+        // Inherits `SingleStatDebuff` so that resist debuffs can get the 25% effectiveness bonus from specialization.
+        // Resist buffs don't.
+
         public abstract string DebuffTypeName { get; }
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.Debuff;
 
