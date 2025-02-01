@@ -341,7 +341,6 @@ namespace DOL.Database
 		protected DbInventoryItem(DbInventoryItem dbInventoryItem)
 		{
 			Template = dbInventoryItem.Template;
-			IsPersisted = dbInventoryItem.IsPersisted;
 			m_itemplate_id = dbInventoryItem.ITemplate_Id;
 			m_utemplate_id = dbInventoryItem.UTemplate_Id;
 			m_color = dbInventoryItem.Color;
