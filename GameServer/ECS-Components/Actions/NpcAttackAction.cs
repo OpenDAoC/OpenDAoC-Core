@@ -26,20 +26,21 @@ namespace DOL.GS
 
         public override void OnAimInterrupt(GameObject attacker)
         {
-            // Use the follow target instead of interrupter. We really don't want guards to move because a pet attacked them in melee.
-            GameObject followTarget = _npcOwner.FollowTarget;
+            // Use the follow target or current target (maybe redundant) instead of the interrupter.
+            // We really don't want guards to move because a pet attacked them in melee.
+            GameObject target = _npcOwner.TargetObject ?? _npcOwner.FollowTarget;
 
-            // If the NPC is interrupted, we need to tell it to stop following its target if we want the following code to work.
-            _npcOwner.StopFollowing();
+            if (target is not GameLiving livingFollowTarget)
+                return;
 
-            if (followTarget is GameLiving livingFollowTarget)
+            if (IsArcherGuardOrImmobile &&
+                (livingFollowTarget.ActiveWeaponSlot is eActiveWeaponSlot.Distance || !livingFollowTarget.IsWithinRadius(_npcOwner, livingFollowTarget.attackComponent.AttackRange)))
             {
-                if (!IsArcherGuardOrImmobile ||
-                    (livingFollowTarget.ActiveWeaponSlot is not eActiveWeaponSlot.Distance && livingFollowTarget.IsWithinRadius(_npcOwner, livingFollowTarget.attackComponent.AttackRange)))
-                {
-                    SwitchToMeleeAndTick();
-                }
+                _npcOwner.StopFollowing();
+                return;
             }
+
+            SwitchToMeleeAndTick();
         }
 
         public override void OnForcedWeaponSwitch()
