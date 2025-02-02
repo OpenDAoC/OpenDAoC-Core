@@ -61,7 +61,6 @@ namespace DOL.GS
         }
 
         protected ECSGameTimer m_predatortimer;
-        private PlayerDeck _randomNumberDeck;
 
         #region Client/Character/VariousFlags
 

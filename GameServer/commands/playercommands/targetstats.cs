@@ -128,14 +128,14 @@ namespace DOL.GS.Commands
 
                 if (attackType is AttackData.eAttackType.MeleeTwoHand)
                 {
-                    double twoHandedDefensePenetration = defensePenetration + (1 - defensePenetration) * target.TwoHandedDefensePenetrationFactor;
+                    double twoHandedDefensePenetration = defensePenetration + (1 - defensePenetration) * (1 - target.TwoHandedDefensePenetrationFactor);
 
                     if (twoHandedDefensePenetration != defensePenetration)
                         defensePenetrationString += $"  (vs parry:  {twoHandedDefensePenetration * 100:0.##}%)";
                 }
                 else if (attackType is AttackData.eAttackType.MeleeDualWield)
                 {
-                    double dualWieldDefensePenetration = defensePenetration + (1 - defensePenetration) * target.DualWieldDefensePenetrationFactor;
+                    double dualWieldDefensePenetration = defensePenetration + (1 - defensePenetration) * (1 - target.DualWieldDefensePenetrationFactor);
 
                     if (dualWieldDefensePenetration != defensePenetration)
                         defensePenetrationString += $"  (vs evade / block:  {dualWieldDefensePenetration * 100:0.##}%)";

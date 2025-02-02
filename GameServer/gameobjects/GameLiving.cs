@@ -43,6 +43,7 @@ namespace DOL.GS
 			set { m_lastInterruptMessage = value; }
 		}
 
+		// Both represent what percentage of this entity's target's defenses should be used, not how much is removed.
 		public virtual double DualWieldDefensePenetrationFactor => 0.5;
 		public virtual double TwoHandedDefensePenetrationFactor => 0.5;
 
@@ -1105,7 +1106,7 @@ namespace DOL.GS
 					evadeChance = 0.99;
 				
 				if (ad.AttackType is eAttackType.MeleeDualWield)
-					evadeChance *= DualWieldDefensePenetrationFactor;
+					evadeChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
 			}
 
 			// Infiltrator RR5.
@@ -1199,7 +1200,7 @@ namespace DOL.GS
 			}
 
 			if (ad.AttackType is eAttackType.MeleeTwoHand)
-				parryChance *= TwoHandedDefensePenetrationFactor;
+				parryChance *= ad.Attacker.TwoHandedDefensePenetrationFactor;
 
 			// Infiltrator RR5.
 			if (player != null)
@@ -1302,7 +1303,7 @@ namespace DOL.GS
 				}
 
 				if (ad.AttackType is eAttackType.MeleeDualWield)
-					blockChance *= DualWieldDefensePenetrationFactor;
+					blockChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
 			}
 
 			// Infiltrator RR5.
