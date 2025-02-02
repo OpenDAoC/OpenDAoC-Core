@@ -678,8 +678,8 @@ namespace DOL.AI.Brain
             GamePlayer playerPuller;
 
             // Only BAF on players and pets of players
-            if (puller is GamePlayer)
-                playerPuller = (GamePlayer) puller;
+            if (puller is GamePlayer player)
+                playerPuller = player;
             else if (puller is GameNPC pet && pet.Brain is ControlledMobBrain brain)
             {
                 playerPuller = brain.GetPlayerOwner();
@@ -696,7 +696,7 @@ namespace DOL.AI.Brain
 
             _ = new ResetBafPropertyAction(playerPuller);
             CanBaf = false; // Mobs only BAF once per fight.
-            int maxAdds = GetMaxAddsCountFromBaf(puller, out List<GamePlayer> otherTargets, out int attackersCount);
+            int maxAdds = GetMaxAddsCountFromBaf(playerPuller, out List<GamePlayer> otherTargets, out int attackersCount);
             int bafRadius = BAF_MIN_RADIUS + (Math.Min(8, attackersCount) - 1) * BAF_EXTRA_RADIUS_PER_OTHER_PLAYER;
 
             if (Body.CurrentZone.IsDungeon)
@@ -720,15 +720,16 @@ namespace DOL.AI.Brain
                 brain.AddToAggroList(target, 1);
             }
 
-            static int GetMaxAddsCountFromBaf(GameLiving puller, out List<GamePlayer> otherTargets, out int attackersCount)
+            static int GetMaxAddsCountFromBaf(GamePlayer puller, out List<GamePlayer> otherTargets, out int attackersCount)
             {
                 attackersCount = 0;
                 otherTargets = null;
                 HashSet<string> countedVictims = null;
                 HashSet<string> countedAttackers = null;
                 BattleGroup bg = puller.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+                Group group = puller.Group;
 
-                if (puller.Group is Group group)
+                if (group != null)
                 {
                     if (Properties.BAF_MOBS_COUNT_BG_MEMBERS && bg != null)
                         countedAttackers = [];
