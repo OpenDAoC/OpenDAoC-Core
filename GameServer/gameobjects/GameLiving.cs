@@ -1895,12 +1895,6 @@ namespace DOL.GS
 		{
 			try
 			{
-				if (this is not GameNPC and not GamePlayer)
-				{
-					// deal out exp and realm points based on server rules
-					GameServer.ServerRules.OnLivingKilled(this, killer);
-				}
-
 				attackComponent.StopAttack();
 
 				if (killer is GameLiving livingKiller)

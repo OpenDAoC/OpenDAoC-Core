@@ -206,13 +206,6 @@ namespace DOL.GS.ServerRules
 		/// <param name="killer">killer</param>
 		void OnNpcKilled(GameNPC killedNPC, GameObject killer);
 
-		void AwardExperience(GamePlayer player,
-			double npcTotalDamageReceived,
-			GameNPC killedNpc,
-			Dictionary<GamePlayer, EntityCountTotalDamagePair> playerCountAndDamage,
-			Dictionary<Group, EntityCountTotalDamagePair> groupCountAndDamage,
-			Dictionary<BattleGroup, EntityCountTotalDamagePair> battlegroupCountAndDamage);
-
 		void DropLoot(GameNPC killedNPC, GameObject killer, SortedSet<ItemOwnerTotalDamagePair> itemOwners);
 
 		/// <summary>
@@ -222,14 +215,6 @@ namespace DOL.GS.ServerRules
 		/// <param name="killedPlayer">player that died</param>
 		/// <param name="killer">killer</param>
 		void OnPlayerKilled(GamePlayer killedPlayer, GameObject killer);
-
-		/// <summary>
-		/// Invoked on a livings death and deals out
-		/// experience / rps if needed
-		/// </summary>
-		/// <param name="living">the living that died</param>
-		/// <param name="killer"></param>
-		void OnLivingKilled(GameLiving living, GameObject killer);
 
 		/// <summary>
 		/// Invoked when a player teleports somewhere
