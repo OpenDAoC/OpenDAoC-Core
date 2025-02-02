@@ -7489,23 +7489,23 @@ namespace DOL.GS
                                     {
                                         int requiredLevel = useItem.Template.LevelRequirement > 0 ? useItem.Template.LevelRequirement : Math.Min(MaxLevel, useItem.Level);
 
-                                    if (requiredLevel <= Level)
-                                    {
-                                        if (spell.CastTime > 0 && attackComponent.AttackState)
-                                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                        else if ((IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || IsMezzed || !IsAlive)
-                                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseState", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                        else if (spell.CastTime > 0 && IsCasting)
-                                            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseCast", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                        else
+                                        if (requiredLevel <= Level)
                                         {
-                                            if (ScriptMgr.CreateSpellHandler(this, spell, potionEffectLine) is SpellHandler spellHandler)
+                                            if (spell.CastTime > 0 && attackComponent.AttackState)
+                                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseInCombat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                            else if ((IsStunned && !(Steed != null && Steed.Name == "Forceful Zephyr")) || IsMezzed || !IsAlive)
+                                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseState", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                            else if (spell.CastTime > 0 && IsCasting)
+                                                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseCast", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                            else
                                             {
-                                                if (spell.IsHealing && spell.CastTime == 0 && IsAttacking)
+                                                if (ScriptMgr.CreateSpellHandler(this, spell, potionEffectLine) is SpellHandler spellHandler)
                                                 {
-                                                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseAttacking", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                                                    return;
-                                                }
+                                                    if (spell.IsHealing && spell.CastTime == 0 && IsAttacking)
+                                                    {
+                                                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.CantUseAttacking", useItem.GetName(0, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                                                        return;
+                                                    }
 
                                                     Stealth(false);
 
@@ -7517,16 +7517,16 @@ namespace DOL.GS
                                                             TempProperties.SetProperty(NEXT_SPELL_AVAIL_TIME_BECAUSE_USE_POTION, 6 * 1000 + CurrentRegion.Time);
                                                     }
 
-                                                if (spellHandler.StartSpell(this, useItem))
-                                                {
-                                                    if (useItem.Count > 1)
+                                                    if (spellHandler.StartSpell(this, useItem))
                                                     {
-                                                        Inventory.RemoveCountFromStack(useItem, 1);
-                                                        InventoryLogging.LogInventoryAction(this, "(potion)", eInventoryActionType.Other, useItem.Template);
-                                                    }
-                                                    else
-                                                    {
-                                                        useItem.Charges--;
+                                                        if (useItem.Count > 1)
+                                                        {
+                                                            Inventory.RemoveCountFromStack(useItem, 1);
+                                                            InventoryLogging.LogInventoryAction(this, "(potion)", eInventoryActionType.Other, useItem.Template);
+                                                        }
+                                                        else
+                                                        {
+                                                            useItem.Charges--;
 
                                                             if (useItem.Charges < 1)
                                                             {
