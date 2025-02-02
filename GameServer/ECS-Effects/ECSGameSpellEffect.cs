@@ -92,7 +92,8 @@ namespace DOL.GS
 
         public virtual bool IsBetterThan(ECSGameSpellEffect effect)
         {
-            return SpellHandler.Spell.Value > effect.SpellHandler.Spell.Value || SpellHandler.Spell.Damage > effect.SpellHandler.Spell.Damage;
+            return SpellHandler.Spell.Value * Effectiveness > effect.SpellHandler.Spell.Value * effect.Effectiveness ||
+                SpellHandler.Spell.Damage * Effectiveness > effect.SpellHandler.Spell.Damage * effect.Effectiveness;
         }
 
         /// <summary>
