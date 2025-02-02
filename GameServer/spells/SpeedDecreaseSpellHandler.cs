@@ -23,12 +23,12 @@ namespace DOL.GS.Spells
 			if (criticalChance <= 0)
 				return 1.0;
 
-			int randNum = Util.CryptoNextInt(0, 100);
+			double randNum = Util.RandomDouble() * 100;
 			int critCap = Math.Min(50, criticalChance);
 			GamePlayer playerCaster = Caster as GamePlayer;
 
 			if (playerCaster?.UseDetailedCombatLog == true && critCap > 0)
-				playerCaster.Out.SendMessage($"Debuff crit chance: {critCap} random: {randNum}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				playerCaster.Out.SendMessage($"Debuff crit chance: {critCap:0.##} random: {randNum:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
 			if (critCap <= randNum)
 				return 1.0;

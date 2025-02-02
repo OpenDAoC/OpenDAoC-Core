@@ -2470,7 +2470,7 @@ namespace DOL.GS.Spells
 				if (!Properties.OVERRIDE_DECK_RNG && Caster is GamePlayer player)
 					spellResistRoll = player.RandomNumberDeck.GetPseudoDouble();
 				else
-					spellResistRoll = Util.CryptoNextDouble();
+					spellResistRoll = Util.RandomDouble();
 
 				spellResistRoll *= 100;
 
@@ -3125,7 +3125,7 @@ namespace DOL.GS.Spells
 			// DoTs can only crit with Wild Arcana. This is handled by the DoTSpellHandler directly.
 			int criticalDamage = 0;
 			int criticalChance = this is not DoTSpellHandler ? Math.Min(50, m_caster.SpellCriticalChance) : 0;
-			int randNum = Util.CryptoNextInt(0, 100);
+			double randNum = Util.RandomDouble() * 100;
 
 			if (playerCaster != null && playerCaster.UseDetailedCombatLog)
 			{

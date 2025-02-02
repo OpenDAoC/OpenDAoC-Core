@@ -1707,7 +1707,7 @@ namespace DOL.GS
                 if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
                     blockRoll = player.RandomNumberDeck.GetPseudoDouble();
                 else
-                    blockRoll = Util.CryptoNextDouble();
+                    blockRoll = Util.RandomDouble();
 
                 if (ad.Attacker is GamePlayer attacker && attacker.UseDetailedCombatLog)
                     attacker.Out.SendMessage($"target block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -1800,7 +1800,7 @@ namespace DOL.GS
                     if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
                         guardRoll = player.RandomNumberDeck.GetPseudoDouble();
                     else
-                        guardRoll = Util.CryptoNextDouble();
+                        guardRoll = Util.RandomDouble();
 
                     if (source is GamePlayer blockAttk && blockAttk.UseDetailedCombatLog)
                         blockAttk.Out.SendMessage($"chance to guard: {guardChance * 100:0.##} rand: {guardRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
@@ -1955,7 +1955,7 @@ namespace DOL.GS
                     if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
                         interceptRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
                     else
-                        interceptRoll = Util.CryptoNextDouble();
+                        interceptRoll = Util.RandomDouble();
 
                     interceptRoll *= 100;
 
@@ -2040,7 +2040,7 @@ namespace DOL.GS
                 if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
                     evadeRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
                 else
-                    evadeRoll = Util.CryptoNextDouble();
+                    evadeRoll = Util.RandomDouble();
 
                 if (evadeChance > 0)
                 {
@@ -2063,7 +2063,7 @@ namespace DOL.GS
                     if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
                         parryRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
                     else
-                        parryRoll = Util.CryptoNextDouble();
+                        parryRoll = Util.RandomDouble();
 
                     if (parryChance > 0)
                     {
@@ -2110,7 +2110,7 @@ namespace DOL.GS
                 if (!Properties.OVERRIDE_DECK_RNG && playerAttacker != null)
                     missRoll = playerAttacker.RandomNumberDeck.GetPseudoDouble();
                 else
-                    missRoll = Util.CryptoNextDouble();
+                    missRoll = Util.RandomDouble();
 
                 if (playerAttacker != null && playerAttacker.UseDetailedCombatLog)
                 {

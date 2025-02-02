@@ -78,7 +78,7 @@ namespace DOL.GS.Utils
         public double GetPseudoDouble()
         {
             // Just use a simple random for the fractional digits.
-            return (Pop() + Util.CryptoNextDouble()) / 100.0;
+            return (Pop() + Util.RandomDouble()) / 100.0;
         }
 
         public void SaveDeck()
@@ -131,7 +131,7 @@ namespace DOL.GS.Utils
                 // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
                 for (int i = tempCards.Length - 1; i > 0; i--)
                 {
-                    int j = Util.CryptoNextInt(i + 1);
+                    int j = Util.Random(i);
                     (tempCards[j], tempCards[i]) = (tempCards[i], tempCards[j]);
                 }
 
