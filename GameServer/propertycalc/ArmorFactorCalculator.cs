@@ -27,15 +27,15 @@ namespace DOL.GS.PropertyCalc
                 case GameKeepComponent:
                     return CalculateKeepComponentArmorFactor(living);
                 case IGameEpicNpc:
-                    return CalculateLivingArmorFactor(living, property, 12.0 * (living as IGameEpicNpc).ArmorFactorScalingFactor, 50.0, false);
+                    return CalculateLivingArmorFactor(living, property, 12.0 * (living as IGameEpicNpc).ArmorFactorScalingFactor, 50.0);
                 case NecromancerPet:
-                    return CalculateLivingArmorFactor(living, property, 12.0, 121.0, true);
+                    return CalculateLivingArmorFactor(living, property, 12.0, 121.0);
                 case GameSummonedPet:
-                    return CalculateLivingArmorFactor(living, property, 12.0, 175.0, true);
+                    return CalculateLivingArmorFactor(living, property, 12.0, 175.0);
                 case GuardLord:
-                    return CalculateLivingArmorFactor(living, property, 12.0, 134.0, false);
+                    return CalculateLivingArmorFactor(living, property, 12.0, 134.0);
                 default:
-                    return CalculateLivingArmorFactor(living, property, 12.0, 200.0, false);
+                    return CalculateLivingArmorFactor(living, property, 12.0, 200.0);
             }
 
             static int CalculatePlayerArmorFactor(GameLiving living, eProperty property)
@@ -48,14 +48,16 @@ namespace DOL.GS.PropertyCalc
                 return armorFactor;
             }
 
-            static int CalculateLivingArmorFactor(GameLiving living, eProperty property, double factor, double divisor, bool useBaseBuff)
+            static int CalculateLivingArmorFactor(GameLiving living, eProperty property, double factor, double divisor)
             {
                 int armorFactor = (int) ((1 + living.Level / divisor) * (living.Level * factor));
 
-                if (useBaseBuff)
-                    armorFactor += living.BaseBuffBonusCategory[(int) property];
+                // We're allowing NPCs to benefit from base AF buffs, but not from spec AF buffs.
+                // For pets, this may be a later change according to a post on Phoenix's forums. Sadly that post doesn't contain more info.
+                // Allowing neither feels bad, and allowing only spec AF buffs only benefit Albion's pet classes.
+                armorFactor += living.BaseBuffBonusCategory[(int) property];
 
-                armorFactor += living.SpecBuffBonusCategory[(int) property];
+                // armorFactor += living.SpecBuffBonusCategory[(int) property];
                 armorFactor -= Math.Abs(living.DebuffCategory[(int) property]);
                 armorFactor += living.OtherBonus[(int) property];
                 return armorFactor;
