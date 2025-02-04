@@ -1256,7 +1256,7 @@ namespace DOL.GS
             set
             {
                 bool wasInCombat = InCombat;
-                base.LastAttackTickPvP = value;
+                base.LastAttackedByEnemyTickPvP = value;
 
                 if (!wasInCombat && InCombat)
                     Out.SendUpdateMaxSpeed();
