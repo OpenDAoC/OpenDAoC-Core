@@ -4549,11 +4549,11 @@ namespace DOL.GS
         /// <summary>
         /// Money value of this player
         /// </summary>
-        public override long MoneyValue
+        public override long MoneyValue => 3 * prcRestore[Level < prcRestore.Length ? Level : prcRestore.Length - 1];
         {
             get
             {
-                return 5 * prcRestore[Level < GamePlayer.prcRestore.Length ? Level : GamePlayer.prcRestore.Length - 1];
+                return 3 * prcRestore[Level < GamePlayer.prcRestore.Length ? Level : GamePlayer.prcRestore.Length - 1];
             }
         }
 
