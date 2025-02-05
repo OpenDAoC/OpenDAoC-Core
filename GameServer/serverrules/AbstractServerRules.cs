@@ -1706,7 +1706,7 @@ namespace DOL.GS.ServerRules
             long baseMoneyReward;
             int realmPointsEarned = 0;
 
-            if (!isWorthAnything)
+            if (isWorthAnything)
             {
                 // Players don't drop bags of money, it's immediately split and awarded.
                 CalculateRewardsModifiedByGroup(entityCountTotalDamagePair, out baseRpReward, out baseBpReward, out baseXpReward, out baseMoneyReward);
