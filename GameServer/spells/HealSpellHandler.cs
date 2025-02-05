@@ -222,6 +222,7 @@ namespace DOL.GS.Spells
                 }
             }
 
+            playerCaster?.Statistics.AddToHitPointsHealed((uint) effectiveAmount);
             return true;
         }
 

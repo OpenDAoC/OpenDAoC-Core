@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    public class PlayerStatistics : IPlayerStatistics
+    public class PlayerStatistics
     {
         private const int TIME_BETWEEN_UPDATES = 60000; // 1 minute
         private static bool HAS_BEEN_RUN = false;
@@ -35,20 +35,88 @@ namespace DOL.GS
             }
         }
 
-        public GamePlayer Player { get; set; } = null;
-        public uint TotalRP { get; set; } = 0;
-        public uint RealmPointsEarnedFromKills { get; set; } = 0;
-        public ushort KillsThatHaveEarnedRPs { get; set; } = 0;
-        public ushort Deathblows { get; set; } = 0;
-        public ushort Deaths { get; set; } = 0;
-        public uint HitPointsHealed { get; set; } = 0;
-        public uint RPEarnedFromHitPointsHealed { get; set; } = 0;
-        public ushort ResurrectionsPerformed { get; set; } = 0;
+        private readonly Lock _lock = new();
+
+        private uint _totalRealmPointsEarned;
+        private uint _realmPointsEarnedFromKills;
+        private uint _killsThatHaveEarnedRealmPoints;
+        private uint _deathblows;
+        private uint _deaths;
+        private uint _hitPointsHealed;
+        private uint _realmPointsEarnedFromHitPointsHealed;
+        private uint _resurrectionsPerformed;
+
+        public uint TotalRealmPointsEarned => _totalRealmPointsEarned;
+        public uint RealmPointsEarnedFromKills => _realmPointsEarnedFromKills;
+        public uint KillsThatHaveEarnedRealmPoints => _killsThatHaveEarnedRealmPoints;
+        public uint Deathblows => _deathblows;
+        public uint Deaths => _deaths;
+        public uint HitPointsHealed => _hitPointsHealed;
+        public uint RealmPointsEarnedFromHitPointsHealed => _realmPointsEarnedFromHitPointsHealed;
+        public uint ResurrectionsPerformed => _resurrectionsPerformed;
+
+        public void AddToTotalRealmPointsEarned(uint realmPointsEarned)
+        {
+            lock (_lock)
+            {
+                _totalRealmPointsEarned += realmPointsEarned;
+            }
+        }
+
+        public void AddToRealmPointsEarnedFromKills(uint realmPointsEarned)
+        {
+            lock (_lock)
+            {
+                _realmPointsEarnedFromKills += realmPointsEarned;
+                _killsThatHaveEarnedRealmPoints++;
+            }
+        }
+
+        public void AddToDeathblows()
+        {
+            lock (_lock)
+            {
+                _deathblows++;
+            }
+        }
+
+        public void AddToDeaths()
+        {
+            lock (_lock)
+            {
+                _deaths++;
+            }
+        }
+
+        public void AddToHitPointsHealed(uint hitPointsHealed)
+        {
+            lock (_lock)
+            {
+                _hitPointsHealed += hitPointsHealed;
+            }
+        }
+
+        public void AddToRealmPointsEarnedFromHitPointsHealed(uint realmPointsEarned)
+        {
+            lock (_lock)
+            {
+                _realmPointsEarnedFromHitPointsHealed += realmPointsEarned;
+            }
+        }
+
+        public void AddToResurrectionsPerformed()
+        {
+            lock (_lock)
+            {
+                _resurrectionsPerformed++;
+            }
+        }
+
+        public GamePlayer Player { get; }
         public DateTime LoginTime { get; }
 
         public PlayerStatistics(GamePlayer player)
         {
-            GameEvents.PlayerStatisticsEvent.CheckHandlers();
             Player = player;
             LoginTime = DateTime.Now;
         }
@@ -107,17 +175,17 @@ namespace DOL.GS
                 {
                     if (otherPlayer.RealmLevel > 31)
                     {
-                        allStatsRp.Add(new StatToCount(otherPlayer.Name, stats.TotalRP));
+                        allStatsRp.Add(new StatToCount(otherPlayer.Name, stats.TotalRealmPointsEarned));
                         TimeSpan onlineTime = DateTime.Now.Subtract(stats.LoginTime);
-                        allStatsLrp.Add(new StatToCount(otherPlayer.Name, (uint) Math.Round(RPsPerHour(stats.TotalRP, onlineTime))));
-                        allStatIrs.Add(new StatToCount(otherPlayer.Name, (uint) Math.Round(stats.TotalRP / Math.Max(1.0, stats.Deaths))));
+                        allStatsLrp.Add(new StatToCount(otherPlayer.Name, (uint) Math.Round(RPsPerHour(stats.TotalRealmPointsEarned, onlineTime))));
+                        allStatIrs.Add(new StatToCount(otherPlayer.Name, (uint) Math.Round(stats.TotalRealmPointsEarned / Math.Max(1.0, stats.Deaths))));
                     }
 
-                    allStatsKill.Add(new StatToCount(otherPlayer.Name, stats.KillsThatHaveEarnedRPs));
+                    allStatsKill.Add(new StatToCount(otherPlayer.Name, stats.KillsThatHaveEarnedRealmPoints));
                     allStatDeath.Add(new StatToCount(otherPlayer.Name, stats.Deathblows));
                     allStatHeal.Add(new StatToCount(otherPlayer.Name, stats.HitPointsHealed));
                     allStatsRes.Add(new StatToCount(otherPlayer.Name, stats.ResurrectionsPerformed));
-                    allStatsRpEarnedFromHeal.Add(new StatToCount(otherPlayer.Name, stats.RPEarnedFromHitPointsHealed));
+                    allStatsRpEarnedFromHeal.Add(new StatToCount(otherPlayer.Name, stats.RealmPointsEarnedFromHitPointsHealed));
                 }
             }
 
@@ -219,17 +287,17 @@ namespace DOL.GS
             StringBuilder stringBuilder = new();
             stringBuilder.Append("Options: /stats [top | rp | kills | deathblows | irs | heal | rez | player <name|target>]\n");
             stringBuilder.Append($"Statistics for {Player.Name} this Session:\n");
-            stringBuilder.Append($"Total RP: {TotalRP}\n");
+            stringBuilder.Append($"Total RP: {TotalRealmPointsEarned}\n");
             stringBuilder.Append($"RP earned from kills: {RealmPointsEarnedFromKills}\n");
-            stringBuilder.Append($"Kills that have earned RP: {KillsThatHaveEarnedRPs}\n");
+            stringBuilder.Append($"Kills that have earned RP: {KillsThatHaveEarnedRealmPoints}\n");
             stringBuilder.Append($"Deathblows: {Deathblows}\n");
             stringBuilder.Append($"Deaths: {Deaths}\n");
-            stringBuilder.Append($"HP healed: {HitPointsHealed} and {RPEarnedFromHitPointsHealed} RP gained from this heal\n");
+            stringBuilder.Append($"HP healed: {HitPointsHealed} and {RealmPointsEarnedFromHitPointsHealed} RP gained from this heal\n");
             stringBuilder.Append($"Resurrections performed: {ResurrectionsPerformed}\n");
             stringBuilder.Append(stringOnlineTime);
-            stringBuilder.Append($"RP/hour: {RPsPerHour(TotalRP, onlineTime)}\n");
-            stringBuilder.Append($"Kills per death: {Divide(KillsThatHaveEarnedRPs, Deaths)}\n");
-            stringBuilder.Append($"RP per kill: {Divide(RealmPointsEarnedFromKills, KillsThatHaveEarnedRPs)}\n");
+            stringBuilder.Append($"RP/hour: {RPsPerHour(TotalRealmPointsEarned, onlineTime)}\n");
+            stringBuilder.Append($"Kills per death: {Divide(KillsThatHaveEarnedRealmPoints, Deaths)}\n");
+            stringBuilder.Append($"RP per kill: {Divide(RealmPointsEarnedFromKills, KillsThatHaveEarnedRealmPoints)}\n");
             stringBuilder.Append($"\"I Remain Standing...\": {Divide(RealmPointsEarnedFromKills, Deaths)}\n");
             return stringBuilder.ToString();
         }
@@ -322,162 +390,6 @@ namespace DOL.GS
             float minutes = time.Minutes;
             float seconds = time.Seconds;
             return realmPoints / (days * 24 + hours + minutes / 60 + seconds / (60 * 60));
-        }
-    }
-}
-
-namespace DOL.GS.GameEvents
-{
-    public class PlayerStatisticsEvent
-    {
-        private static bool HANDLERS_LOADED = false;
-
-        // Load these when the first player logs in
-        // Coded like this so they won't be loaded if the server uses custom statistics
-        public static void CheckHandlers()
-        {
-            if (HANDLERS_LOADED == false)
-            {
-                HANDLERS_LOADED = true;
-                GameEventMgr.AddHandler(GameLivingEvent.GainedRealmPoints, new DOLEventHandler(GainedRealmPointsCallback));
-                GameEventMgr.AddHandler(GameLivingEvent.Dying, new DOLEventHandler(DyingCallback));
-                GameEventMgr.AddHandler(GameLivingEvent.CastFinished, new DOLEventHandler(FinishCastSpellCallback));
-                GameEventMgr.AddHandler(GameLivingEvent.HealthChanged, new DOLEventHandler(HealthChangedCallback));
-            }
-        }
-
-        public static void GainedRealmPointsCallback(DOLEvent e, object sender, EventArgs args)
-        {
-            if (sender is not GamePlayer player || args is not GainedRealmPointsEventArgs gargs)
-                return;
-
-            if (player.Statistics is not PlayerStatistics stats)
-                return;
-
-            stats.TotalRP += (uint) gargs.RealmPoints;
-        }
-
-        public static void DyingCallback(DOLEvent e, object sender, EventArgs args)
-        {
-            if (sender is not GamePlayer dyingPlayer || args is not DyingEventArgs dargs)
-                return;
-
-            if (dargs.Killer is not GamePlayer killer)
-                return;
-
-            if (killer.Statistics is not PlayerStatistics killerStats || dyingPlayer.Statistics is not PlayerStatistics dyingPlayerStats)
-                return;
-
-            killerStats.Deathblows++;
-
-            if (dyingPlayer.RealmPointsValue > 0)
-            {
-                killerStats.KillsThatHaveEarnedRPs++;
-                killerStats.RealmPointsEarnedFromKills += RPsEarnedFromKill(killer, dyingPlayer);
-
-                if (killer.Group != null)
-                {
-                    foreach (GamePlayer member in killer.Group.GetPlayersInTheGroup())
-                    {
-                        if (member != killer)
-                        {
-                            if (member.Statistics is PlayerStatistics memberStats)
-                            {
-                                memberStats.KillsThatHaveEarnedRPs++;
-                                memberStats.RealmPointsEarnedFromKills += RPsEarnedFromKill(member, dyingPlayer);
-                            }
-                        }
-                    }
-                }
-            }
-
-            dyingPlayerStats.Deaths++;
-        }
-
-        public static void FinishCastSpellCallback(DOLEvent e, object sender, EventArgs args)
-        {
-            if (sender is not GamePlayer caster || args is not CastingEventArgs fargs)
-                return;
-
-            if (fargs.SpellHandler.Spell.SpellType == eSpellType.Resurrect)
-            {
-                if (caster.Statistics is PlayerStatistics stats)
-                    stats.ResurrectionsPerformed++;
-            }
-        }
-
-        public static void HealthChangedCallback(DOLEvent e, object sender, EventArgs args)
-        {
-            HealthChangedEventArgs hargs = args as HealthChangedEventArgs;
-
-            if (hargs.ChangeType == eHealthChangeType.Spell)
-            {
-                if (hargs.ChangeSource is not GamePlayer player)
-                    return;
-
-                if (player.Statistics is PlayerStatistics stats)
-                    stats.HitPointsHealed += (uint) hargs.ChangeAmount;
-            }
-        }
-
-        public static uint RPsEarnedFromKill(GamePlayer killer, GamePlayer killedPlayer)
-        {
-            long noExpSeconds = ServerProperties.Properties.RP_WORTH_SECONDS;
-
-            if (killedPlayer.DeathTime + noExpSeconds > killedPlayer.PlayedTime)
-                return 0;
-
-            double totalDmg = 0;
-
-            lock (killedPlayer.XpGainersLock)
-            {
-                foreach (var pair in killedPlayer.XPGainers)
-                    totalDmg += pair.Value;
-
-                foreach (var pair in killedPlayer.XPGainers)
-                {
-                    GamePlayer key = pair.Key as GamePlayer;
-
-                    if (killer == key)
-                    {
-                        if (!killer.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-                            return 0;
-
-                        double damagePercent = pair.Value / totalDmg;
-
-                        if (!key.IsAlive)//Dead living gets 25% exp only
-                            damagePercent *= 0.25;
-
-                        int rpCap = key.RealmPointsValue * 2;
-                        uint realmPoints = (uint) (killedPlayer.RealmPointsValue * damagePercent);
-                        realmPoints = (uint) (realmPoints * (1.0 + 2.0 * (killedPlayer.RealmLevel - killer.RealmLevel) / 900.0));
-
-                        if (killer.Group != null && killer.Group.MemberCount > 1)
-                        {
-                            int count = 0;
-
-                            foreach (GamePlayer player in killer.Group.GetPlayersInTheGroup())
-                            {
-                                if (!player.IsWithinRadius(killedPlayer, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-                                    continue;
-
-                                count++;
-                            }
-
-                            realmPoints = (uint) (realmPoints * (1.0 + count * 0.125));
-                        }
-
-                        if (realmPoints > rpCap)
-                            realmPoints = (uint) rpCap;
-
-                        return realmPoints;
-                    }
-                    else
-                        continue;
-                }
-            }
-
-            return 0;
         }
     }
 }

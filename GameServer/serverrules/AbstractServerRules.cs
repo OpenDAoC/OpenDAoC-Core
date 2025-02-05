@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using DOL.AI.Brain;
@@ -1672,6 +1671,7 @@ namespace DOL.GS.ServerRules
             {
                 killedPlayer.LastDeathRealmPoints = isWorthAnything ? killedPlayer.RealmPointsValue : 0;
                 killedPlayer.DeathsPvP++;
+                killedPlayer.Statistics.AddToDeaths();
             }
         }
 
@@ -1704,8 +1704,9 @@ namespace DOL.GS.ServerRules
             int baseBpReward;
             long baseXpReward;
             long baseMoneyReward;
+            int realmPointsEarned = 0;
 
-            if (isWorthAnything)
+            if (!isWorthAnything)
             {
                 // Players don't drop bags of money, it's immediately split and awarded.
                 CalculateRewardsModifiedByGroup(entityCountTotalDamagePair, out baseRpReward, out baseBpReward, out baseXpReward, out baseMoneyReward);
@@ -1715,7 +1716,7 @@ namespace DOL.GS.ServerRules
                 baseXpReward = Math.Min(baseXpReward, CalculateXpCap());
                 baseMoneyReward = Math.Min(baseMoneyReward, CalculateMoneyCap());
 
-                RewardRealmPoints();
+                RewardRealmPoints(out realmPointsEarned);
                 RewardBountyPoints();
                 RewardExperience();
                 RewardMoney();
@@ -1723,7 +1724,7 @@ namespace DOL.GS.ServerRules
             else
                 SendNotWorthRewardMessage();
 
-            ProcessPlayerToAwardStats();
+            ProcessPlayerToAwardStats(realmPointsEarned);
 
             double CalculateDamagePercent()
             {
@@ -1769,7 +1770,7 @@ namespace DOL.GS.ServerRules
                 return playerToAward.MoneyValue * 2;
             }
 
-            void RewardRealmPoints()
+            void RewardRealmPoints(out int realmPointsEarned)
             {
                 int realmPoints = (int) (baseRpReward * damagePercent);
                 DbBattleground battleground = GameServer.KeepManager.GetBattleground(playerToAward.CurrentRegionID);
@@ -1781,7 +1782,9 @@ namespace DOL.GS.ServerRules
                 realmPoints += CalculateGroupBonus();
 
                 if (realmPoints > 0)
-                    playerToAward.GainRealmPoints(realmPoints);
+                    playerToAward.GainRealmPoints(realmPoints, true);
+
+                realmPointsEarned = realmPoints;
 
                 int CalculateGroupBonus()
                 {
@@ -1832,10 +1835,10 @@ namespace DOL.GS.ServerRules
                 }
             }
 
-            void ProcessPlayerToAwardStats()
+            void ProcessPlayerToAwardStats(int realmPointsEarned)
             {
                 GameObject killerToUse = killer is GameNPC petKiller && petKiller.Brain is IControlledBrain petKillerBrain ?  petKillerBrain.GetPlayerOwner() : killer;
-                playerToAward.UpdateKillStatsOnPlayerKill(killedPlayer.Realm, playerToAward == killerToUse, damagePercent >= 1.0 && entityCountTotalDamagePair.Count == 1);
+                playerToAward.UpdateKillStatsOnPlayerKill(killedPlayer.Realm, playerToAward == killerToUse, damagePercent >= 1.0 && entityCountTotalDamagePair.Count == 1, realmPointsEarned);
             }
 
             void SendNotWorthRewardMessage()

@@ -2429,12 +2429,12 @@ namespace DOL.GS
             get { return GetModified(eProperty.Charisma); }
         }
 
-        protected IPlayerStatistics m_statistics = null;
+        protected PlayerStatistics m_statistics = null;
 
         /// <summary>
         /// Get the statistics for this player
         /// </summary>
-        public virtual IPlayerStatistics Statistics
+        public virtual PlayerStatistics Statistics
         {
             get { return m_statistics; }
         }
@@ -4070,9 +4070,6 @@ namespace DOL.GS
         /// <summary>
         /// Called when this player gains realm points
         /// </summary>
-        /// <param name="amount"></param>
-        /// <param name="modify"></param>
-        /// <param name="sendMessage"></param>
         public void GainRealmPoints(long amount, bool modify, bool sendMessage)
         {
             GainRealmPoints(amount, modify, true, true);
@@ -4121,6 +4118,7 @@ namespace DOL.GS
                 base.GainRealmPoints(amount);
 
             RealmPoints += amount;
+            m_statistics.AddToTotalRealmPointsEarned((uint) amount);
 
             if (m_guild != null && Client.Account.PrivLevel == 1)
                 m_guild.RealmPoints += amount;
@@ -13302,10 +13300,13 @@ namespace DOL.GS
 
         private readonly Lock _killStatsOnPlayerKillLock = new();
 
-        public void UpdateKillStatsOnPlayerKill(eRealm killedPlayerRealm, bool deathBlow, bool soloKill)
+        public void UpdateKillStatsOnPlayerKill(eRealm killedPlayerRealm, bool deathBlow, bool soloKill, int realmPointsEarned)
         {
             lock (_killStatsOnPlayerKillLock)
             {
+                if (realmPointsEarned > 0)
+                    m_statistics.AddToRealmPointsEarnedFromKills((uint) realmPointsEarned);
+
                 switch (killedPlayerRealm)
                 {
                     case eRealm.Albion:
@@ -13316,6 +13317,7 @@ namespace DOL.GS
                         if (deathBlow)
                         {
                             KillsAlbionDeathBlows++;
+                            m_statistics.AddToDeathblows();
                             Achieve(AchievementUtils.AchievementNames.Alb_Deathblows);
                         }
 
@@ -13335,6 +13337,7 @@ namespace DOL.GS
                         if (deathBlow)
                         {
                             KillsHiberniaDeathBlows++;
+                            m_statistics.AddToDeathblows();
                             Achieve(AchievementUtils.AchievementNames.Hib_Deathblows);
                         }
 
@@ -13354,6 +13357,7 @@ namespace DOL.GS
                         if (deathBlow)
                         {
                             KillsMidgardDeathBlows++;
+                            m_statistics.AddToDeathblows();
                             Achieve(AchievementUtils.AchievementNames.Mid_Deathblows);
                         }
 

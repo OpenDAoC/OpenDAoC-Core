@@ -204,6 +204,8 @@ namespace DOL.GS.Spells
 						playerCaster.Out.SendMessage("The player you resurrected was not worth realm points on death.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 						playerCaster.Out.SendMessage("You thus get no realm points for the resurrect.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 					}
+
+					playerCaster.Statistics.AddToResurrectionsPerformed();
 				}
 			}
 		}
