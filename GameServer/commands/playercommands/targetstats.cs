@@ -115,7 +115,7 @@ namespace DOL.GS.Commands
 
             void DisplayWeaponInfo(DbInventoryItem weapon, AttackData.eAttackType attackType)
             {
-                double weaponDamage = target.attackComponent.AttackDamage(weapon, out double weaponDamageCap);
+                double weaponDamage = target.attackComponent.AttackDamage(weapon, null, out double weaponDamageCap);
                 info.Add($"Weapon damage:  {weaponDamage:0}  |  {weaponDamageCap:0}");
 
                 _ = target.attackComponent.CalculateWeaponSkill(weapon, client.Player, out _, out (double lowerLimit, double upperLimit) varianceRange, out _, out double baseWeaponSkill);

@@ -2755,7 +2755,7 @@ namespace DOL.GS
 		/// <returns></returns>
 		public virtual double AttackDamage(DbInventoryItem weapon)
 		{
-			return attackComponent.AttackDamage(weapon, out _);
+			return attackComponent.AttackDamage(weapon, null, out _);
 		}
 
 		/// <summary>

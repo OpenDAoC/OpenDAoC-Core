@@ -27,7 +27,7 @@ namespace DOL.GS
         public const double INHERENT_ARMOR_FACTOR = 12.5;
 
         public GameLiving owner;
-        public WeaponAction weaponAction;
+        public WeaponAction weaponAction; // This represents the current weapon action, which may become outdated when resolving ranged attacks.
         public AttackAction attackAction;
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.AttackComponent);
 
@@ -124,11 +124,11 @@ namespace DOL.GS
             }
         }
 
-        public DbInventoryItem GetAttackAmmo()
+        public DbInventoryItem GetAttackAmmo(WeaponAction action)
         {
-            // Returns the ammo used by the current `WeaponAction` if there's any.
+            // Returns the ammo used by the passed down `WeaponAction` if there's any.
             // The currently active ammo otherwise.
-            DbInventoryItem ammo = weaponAction?.Ammo;
+            DbInventoryItem ammo = action?.Ammo;
             ammo ??= owner.rangeAttackComponent.Ammo;
             return ammo;
         }
@@ -137,7 +137,7 @@ namespace DOL.GS
         /// Returns the damage type of the current attack
         /// </summary>
         /// <param name="weapon">attack weapon</param>
-        public eDamageType AttackDamageType(DbInventoryItem weapon)
+        public eDamageType AttackDamageType(DbInventoryItem weapon, WeaponAction action)
         {
             GamePlayer playerOwner = owner as GamePlayer;
 
@@ -154,7 +154,7 @@ namespace DOL.GS
                     case eObjectType.RecurvedBow:
                     case eObjectType.Fired:
                     {
-                        DbInventoryItem ammo = GetAttackAmmo();
+                        DbInventoryItem ammo = GetAttackAmmo(action);
                         return (eDamageType) (ammo == null ? weapon.Type_Damage : ammo.Type_Damage);
                     }
                     case eObjectType.Shield:
@@ -234,7 +234,7 @@ namespace DOL.GS
                         }
 
                         range = Math.Max(32, range * player.GetModified(eProperty.ArcheryRange) * 0.01);
-                        DbInventoryItem ammo = GetAttackAmmo();
+                        DbInventoryItem ammo = GetAttackAmmo(null);
 
                         if (ammo != null)
                             switch ((ammo.SPD_ABS >> 2) & 0x3)
@@ -413,7 +413,7 @@ namespace DOL.GS
             };
         }
 
-        public double AttackDamage(DbInventoryItem weapon, out double damageCap)
+        public double AttackDamage(DbInventoryItem weapon, WeaponAction action, out double damageCap)
         {
             double effectiveness = 1;
             damageCap = 0;
@@ -428,7 +428,7 @@ namespace DOL.GS
                 if (weapon.Item_Type == Slot.RANGED)
                 {
                     damageCap *= CalculateTwoHandedDamageModifier(weapon);
-                    DbInventoryItem ammo = GetAttackAmmo();
+                    DbInventoryItem ammo = GetAttackAmmo(action);
 
                     if (ammo != null)
                     {
@@ -1048,7 +1048,7 @@ namespace DOL.GS
                 Attacker = owner,
                 Target = target as GameLiving,
                 Style = style,
-                DamageType = AttackDamageType(weapon),
+                DamageType = AttackDamageType(weapon, action),
                 Weapon = weapon,
                 Interval = interval,
                 IsOffHand = weapon != null && weapon.SlotPosition is Slot.LEFTHAND
@@ -1166,7 +1166,7 @@ namespace DOL.GS
                 case eAttackResult.HitUnstyled:
                 case eAttackResult.HitStyle:
                 {
-                    double damage = AttackDamage(weapon, out double baseDamageCap) * effectiveness;
+                    double damage = AttackDamage(weapon, action, out double baseDamageCap) * effectiveness;
                     DbInventoryItem armor = null;
 
                     if (ad.Target.Inventory != null)
@@ -2618,7 +2618,7 @@ namespace DOL.GS
 
             if (action.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
             {
-                DbInventoryItem ammo = GetAttackAmmo();
+                DbInventoryItem ammo = GetAttackAmmo(action);
 
                 if (ammo != null)
                 {
