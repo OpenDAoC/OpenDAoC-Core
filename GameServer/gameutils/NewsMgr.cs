@@ -68,22 +68,31 @@ namespace DOL.GS
                 {
                     case eNewsType.RvRGlobal:
                     {
-                        _rvrGlobalNews.RemoveLast();
                         _rvrGlobalNews.AddFirst(news);
+
+                        if (_rvrGlobalNews.Count > MAX_NEWS_PER_TYPE)
+                            _rvrGlobalNews.RemoveLast();
+
                         break;
                     }
                     case eNewsType.RvRLocal:
                     {
                         LinkedList<DbNews> newsList = _rvrLocalNews[realm];
-                        newsList.RemoveLast();
                         newsList.AddFirst(news);
+
+                        if (newsList.Count > MAX_NEWS_PER_TYPE)
+                            newsList.RemoveLast();
+
                         break;
                     }
                     case eNewsType.PvE:
                     {
                         LinkedList<DbNews> newsList = _pveNews[realm];
-                        newsList.RemoveLast();
                         newsList.AddFirst(news);
+
+                        if (newsList.Count > MAX_NEWS_PER_TYPE)
+                            newsList.RemoveLast();
+
                         break;
                     }
                 }
