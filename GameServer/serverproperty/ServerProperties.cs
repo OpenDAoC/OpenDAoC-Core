@@ -314,11 +314,6 @@ namespace DOL.GS.ServerProperties
 		#endregion
 
 		#region LOGGING
-		/// <summary>
-		/// Turn on logging of player vs player kills
-		/// </summary>
-		[ServerProperty("system", "log_pvp_kills", "Turn on logging of pvp kills?", false)]
-		public static bool LOG_PVP_KILLS;
 
 		/// <summary>
 		/// Log All GM commands

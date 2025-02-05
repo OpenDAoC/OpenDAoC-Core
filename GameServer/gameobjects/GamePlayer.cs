@@ -13108,228 +13108,267 @@ namespace DOL.GS
 
         #region Statistics
 
-        /// <summary>
-        /// Gets or sets the count of albion players killed.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsAlbionPlayers
         {
-            get { return DBCharacter != null ? DBCharacter.KillsAlbionPlayers : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsAlbionPlayers : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsAlbionPlayers = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsAlbionPlayers = value;
+
                 Notify(GamePlayerEvent.KillsAlbionPlayersChanged, this);
                 Notify(GamePlayerEvent.KillsTotalPlayersChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of midgard players killed.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsMidgardPlayers
         {
-            get { return DBCharacter != null ? DBCharacter.KillsMidgardPlayers : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsMidgardPlayers : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsMidgardPlayers = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsMidgardPlayers = value;
+
                 Notify(GamePlayerEvent.KillsMidgardPlayersChanged, this);
                 Notify(GamePlayerEvent.KillsTotalPlayersChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of hibernia players killed.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsHiberniaPlayers
         {
-            get { return DBCharacter != null ? DBCharacter.KillsHiberniaPlayers : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsHiberniaPlayers : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsHiberniaPlayers = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsHiberniaPlayers = value;
+
                 Notify(GamePlayerEvent.KillsHiberniaPlayersChanged, this);
                 Notify(GamePlayerEvent.KillsTotalPlayersChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of death blows on albion players.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsAlbionDeathBlows
         {
-            get { return DBCharacter != null ? DBCharacter.KillsAlbionDeathBlows : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsAlbionDeathBlows : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsAlbionDeathBlows = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsAlbionDeathBlows = value;
+
                 Notify(GamePlayerEvent.KillsTotalDeathBlowsChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of death blows on midgard players.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsMidgardDeathBlows
         {
-            get { return DBCharacter != null ? DBCharacter.KillsMidgardDeathBlows : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsMidgardDeathBlows : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsMidgardDeathBlows = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsMidgardDeathBlows = value;
+
                 Notify(GamePlayerEvent.KillsTotalDeathBlowsChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of death blows on hibernia players.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsHiberniaDeathBlows
         {
-            get { return DBCharacter != null ? DBCharacter.KillsHiberniaDeathBlows : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsHiberniaDeathBlows : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsHiberniaDeathBlows = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsHiberniaDeathBlows = value;
                 Notify(GamePlayerEvent.KillsTotalDeathBlowsChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of killed solo albion players.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsAlbionSolo
         {
-            get { return DBCharacter != null ? DBCharacter.KillsAlbionSolo : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsAlbionSolo : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsAlbionSolo = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsAlbionSolo = value;
+
                 Notify(GamePlayerEvent.KillsTotalSoloChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of killed solo midgard players.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsMidgardSolo
         {
-            get { return DBCharacter != null ? DBCharacter.KillsMidgardSolo : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsMidgardSolo : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsMidgardSolo = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsMidgardSolo = value;
+
                 Notify(GamePlayerEvent.KillsTotalSoloChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of killed solo hibernia players.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsHiberniaSolo
         {
-            get { return DBCharacter != null ? DBCharacter.KillsHiberniaSolo : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsHiberniaSolo : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsHiberniaSolo = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsHiberniaSolo = value;
+
                 Notify(GamePlayerEvent.KillsTotalSoloChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of captured keeps.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int CapturedKeeps
         {
-            get { return DBCharacter != null ? DBCharacter.CapturedKeeps : 0; }
+            get => DBCharacter != null ? DBCharacter.CapturedKeeps : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.CapturedKeeps = value;
+                if (DBCharacter != null)
+                    DBCharacter.CapturedKeeps = value;
+
                 Notify(GamePlayerEvent.CapturedKeepsChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of captured towers.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int CapturedTowers
         {
-            get { return DBCharacter != null ? DBCharacter.CapturedTowers : 0; }
+            get => DBCharacter != null ? DBCharacter.CapturedTowers : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.CapturedTowers = value;
+                if (DBCharacter != null)
+                    DBCharacter.CapturedTowers = value;
+
                 Notify(GamePlayerEvent.CapturedTowersChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of captured relics.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int CapturedRelics
         {
-            get { return DBCharacter != null ? DBCharacter.CapturedRelics : 0; }
+            get => DBCharacter != null ? DBCharacter.CapturedRelics : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.CapturedRelics = value;
+                if (DBCharacter != null)
+                    DBCharacter.CapturedRelics = value;
+
                 Notify(GamePlayerEvent.CapturedRelicsChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of dragons killed.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsDragon
         {
-            get { return DBCharacter != null ? DBCharacter.KillsDragon : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsDragon : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsDragon = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsDragon = value;
+
                 Notify(GamePlayerEvent.KillsDragonChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the pvp deaths
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int DeathsPvP
         {
-            get { return DBCharacter != null ? DBCharacter.DeathsPvP : 0; }
-            set { if (DBCharacter != null) DBCharacter.DeathsPvP = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the count of killed Legions.
-        /// (delegate to DBCharacter)
-        /// </summary>
-        public virtual int KillsLegion
-        {
-            get { return DBCharacter != null ? DBCharacter.KillsLegion : 0; }
+            get => DBCharacter != null ? DBCharacter.DeathsPvP : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsLegion = value;
+                if (DBCharacter != null)
+                    DBCharacter.DeathsPvP = value;
+            }
+        }
+
+        public virtual int KillsLegion
+        {
+            get => DBCharacter != null ? DBCharacter.KillsLegion : 0;
+            set
+            {
+                if (DBCharacter != null)
+                    DBCharacter.KillsLegion = value;
+
                 Notify(GamePlayerEvent.KillsLegionChanged, this);
             }
         }
 
-        /// <summary>
-        /// Gets or sets the count of killed Epic Boss.
-        /// (delegate to DBCharacter)
-        /// </summary>
         public virtual int KillsEpicBoss
         {
-            get { return DBCharacter != null ? DBCharacter.KillsEpicBoss : 0; }
+            get => DBCharacter != null ? DBCharacter.KillsEpicBoss : 0;
             set
             {
-                if (DBCharacter != null) DBCharacter.KillsEpicBoss = value;
+                if (DBCharacter != null)
+                    DBCharacter.KillsEpicBoss = value;
+
                 Notify(GamePlayerEvent.KillsEpicBossChanged, this);
             }
         }
+
+        private readonly Lock _killStatsOnPlayerKillLock = new();
+
+        public void UpdateKillStatsOnPlayerKill(eRealm killedPlayerRealm, bool deathBlow, bool soloKill)
+        {
+            lock (_killStatsOnPlayerKillLock)
+            {
+                switch (killedPlayerRealm)
+                {
+                    case eRealm.Albion:
+                    {
+                        KillsAlbionPlayers++;
+                        Achieve(AchievementUtils.AchievementNames.Alb_Players_Killed);
+
+                        if (deathBlow)
+                        {
+                            KillsAlbionDeathBlows++;
+                            Achieve(AchievementUtils.AchievementNames.Alb_Deathblows);
+                        }
+
+                        if (soloKill)
+                        {
+                            KillsAlbionSolo++;
+                            Achieve(AchievementUtils.AchievementNames.Alb_Solo_Kills);
+                        }
+
+                        break;
+                    }
+                    case eRealm.Hibernia:
+                    {
+                        KillsHiberniaPlayers++;
+                        Achieve(AchievementUtils.AchievementNames.Hib_Players_Killed);
+
+                        if (deathBlow)
+                        {
+                            KillsHiberniaDeathBlows++;
+                            Achieve(AchievementUtils.AchievementNames.Hib_Deathblows);
+                        }
+
+                        if (soloKill)
+                        {
+                            KillsHiberniaSolo++;
+                            Achieve(AchievementUtils.AchievementNames.Hib_Solo_Kills);
+                        }
+
+                        break;
+                    }
+                    case eRealm.Midgard:
+                    {
+                        KillsMidgardPlayers++;
+                        Achieve(AchievementUtils.AchievementNames.Mid_Players_Killed);
+
+                        if (deathBlow)
+                        {
+                            KillsMidgardDeathBlows++;
+                            Achieve(AchievementUtils.AchievementNames.Mid_Deathblows);
+                        }
+
+                        if (soloKill)
+                        {
+                            KillsMidgardSolo++;
+                            Achieve(AchievementUtils.AchievementNames.Mid_Solo_Kills);
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Controlled Mount
