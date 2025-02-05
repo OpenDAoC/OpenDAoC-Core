@@ -1209,9 +1209,6 @@ namespace DOL.GS.ServerRules
 			long xpCap = CalculateXpCap();
 			baseXpReward = Math.Min(baseXpReward, xpCap);
 
-			// Dead players gets 25% exp only.
-			if (!playerToAward.IsAlive)
-				baseXpReward = (long) (baseXpReward * 0.25);
 
 			if (baseXpReward <= 0)
 				return;
