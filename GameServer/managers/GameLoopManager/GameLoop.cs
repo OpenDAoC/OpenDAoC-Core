@@ -129,9 +129,6 @@ namespace DOL.GS
                 ClientService.EndTick();
                 DailyQuestService.Tick();
                 WeeklyQuestService.Tick();
-                ConquestService.Tick();
-                BountyService.Tick();
-                PredatorService.Tick();
                 ECS.Debug.Diagnostics.Tick();
                 CurrentServiceTick = string.Empty;
                 ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);

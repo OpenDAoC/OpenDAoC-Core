@@ -191,13 +191,6 @@ namespace DOL.GS.Spells
             if (effectiveAmount > 0 && criticalAmount > 0)
                 MessageToCaster($"You heal for an extra {criticalAmount:0} hit points! ({criticalChance:0.##}%)", eChatType.CT_Spell);
 
-            // Check for conquest activity.
-            if (playerTarget != null)
-            {
-                if (ConquestService.ConquestManager.IsPlayerInConquestArea(playerTarget))
-                    ConquestService.ConquestManager.AddContributor(playerTarget);
-            }
-
             foreach (GameLiving attacker in target.attackComponent.Attackers.Keys)
             {
                 if (attacker is GameNPC npc)

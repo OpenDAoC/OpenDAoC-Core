@@ -6366,9 +6366,6 @@ namespace DOL.GS
                         playerMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledBy", GetName(0, true), killer.GetName(1, false));
                         publicMessage = LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Die.KilledBy", GetName(0, true), killer.GetName(1, false));
                     }
-
-                    if (ConquestService.ConquestManager.IsPlayerInConquestArea(this) && killer.Realm != Realm && killer is GamePlayer && !IsDuelPartner(killer as GameLiving))
-                        ConquestService.ConquestManager.AddContributor(this);
                 }
             }
 
@@ -6597,11 +6594,6 @@ namespace DOL.GS
 
             IsSwimming = false;
 
-            if (PredatorManager.PlayerIsActive(this))
-            {
-                PredatorManager.RemoveActivePlayer(this);
-            }
-
             if (HCFlag)
             {
                 DbCoreCharacter cha = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(Name));
@@ -6625,26 +6617,6 @@ namespace DOL.GS
 
                     if (IsWithinRadius(player, WorldMgr.MAX_EXPFORKILL_DISTANCE))
                         Notify(GameLivingEvent.EnemyKilled, player, new EnemyKilledEventArgs(enemy));
-                }
-            }
-
-            if (CurrentZone.IsRvR)
-            {
-                var activeConquest = ConquestService.ConquestManager.ActiveObjective;
-                int baseContribution = enemy.RealmPointsValue / 2; //todo turn it into a server prop?
-
-                if (activeConquest != null && this.GetDistance(new Point2D(activeConquest.Keep.X, activeConquest.Keep.Y)) <=
-                    ServerProperties.Properties.MAX_CONQUEST_RANGE)
-                {
-                    //TODO: add something here
-                    if (Group != null)
-                    {
-                        //activeConquest.Contribute(this, (baseContribution/Group.MemberCount) + 20); //offset to minimize the grouping penalty by a bit
-                    }
-                    else
-                    {
-                        //activeConquest.Contribute(this, baseContribution); 
-                    }
                 }
             }
 

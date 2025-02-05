@@ -59,16 +59,6 @@ namespace DOL.GS.Keeps
 			set { m_modelRealm = value; }
 		}
 
-		public override void ProcessDeath(GameObject killer)
-		{
-			if (killer is GamePlayer p && ConquestService.ConquestManager.IsPlayerNearConquestObjective(p))
-			{
-				ConquestService.ConquestManager.AddContributors(this.XPGainers.Keys.OfType<GamePlayer>().ToList());
-			}
-
-			base.ProcessDeath(killer);
-		}
-
 		public bool IsTowerGuard
 		{
 			get
