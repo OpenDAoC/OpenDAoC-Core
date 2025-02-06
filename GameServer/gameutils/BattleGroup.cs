@@ -324,6 +324,7 @@ namespace DOL.GS
 
 			battlegroupTreasurer.Out.SendMessage(LanguageMgr.GetTranslation(battlegroupTreasurer.Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Item.GetName(1, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			Message.SystemToOthers(source, LanguageMgr.GetTranslation(battlegroupTreasurer.Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, item.Item.GetName(1, false)), eChatType.CT_System);
+			InventoryLogging.LogInventoryAction("(ground)", battlegroupTreasurer, eInventoryActionType.Loot, item.Item.Template, item.Item.IsStackable ? item.Item.Count : 1);
 			item.RemoveFromWorld();
 			return TryPickUpResult.SUCCESS;
 
