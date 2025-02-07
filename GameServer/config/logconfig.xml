@@ -5,7 +5,7 @@
 	<targets>
 		<!-- Console -->
 		<target name="console" xsi:type="ColoredConsole"
-			layout="${date:format=HH\:mm\:ss} | ${level:uppercase=true:format=TriLetter} | ${logger} | ${message}">
+			layout="${date:format=HH\:mm\:ss} | ${level:uppercase=true:format=TriLetter} | ${logger} | ${message}${onexception:${newline}${exception:format=tostring}">
 				<highlight-row foregroundColor="Gray" condition="level == LogLevel.Trace" />
 				<highlight-row foregroundColor="Blue" condition="level == LogLevel.Debug" />
 				<highlight-row foregroundColor="White" condition="level == LogLevel.Info" />
