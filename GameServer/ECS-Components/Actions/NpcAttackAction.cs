@@ -67,17 +67,16 @@ namespace DOL.GS
             // Otherwise, switch to melee, but keep the timer alive.
             if (IsArcherGuardOrImmobile)
             {
-                GameObject oldTarget = _target;
                 StandardMobBrain brain = _npcOwner.Brain as StandardMobBrain;
 
                 if (_losCheckTarget is GameLiving livingLosCheckTarget)
                     brain.RemoveFromAggroList(livingLosCheckTarget);
 
                 brain.AttackMostWanted(); // This won't immediately start the attack on the new target, but we can use `TargetObject` to start checking it.
-                GameObject newTarget = _npcOwner.TargetObject;
+                GameObject nextTarget = _npcOwner.TargetObject;
 
-                if (newTarget != oldTarget)
-                    _checkLosTimer?.ChangeTarget(newTarget); // The timer might be already cleaned up if this was the last target.
+                if (nextTarget != _losCheckTarget)
+                    _checkLosTimer?.ChangeTarget(nextTarget); // The timer might be already cleaned up if this was the last target.
 
                 return true;
             }
@@ -162,7 +161,8 @@ namespace DOL.GS
                     _hasLos = false;
                     _checkLosTimer.ChangeTarget(_target);
                 }
-                else if (!_hasLos)
+
+                if (!_hasLos)
                 {
                     _interval = TICK_INTERVAL_FOR_NON_ATTACK;
                     return false;
@@ -207,19 +207,21 @@ namespace DOL.GS
 
         private void LosCheckCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
-            _hasLos = response is eLosCheckResponse.TRUE;
             _losCheckTarget = _npcOwner.CurrentRegion.GetObject(targetOID);
 
-            if (_losCheckTarget == null)
-                return;
+            if (_losCheckTarget == null || _losCheckTarget != _target)
+                _hasLos = false;
+            else
+                _hasLos = response is eLosCheckResponse.TRUE;
 
-            if (_hasLos)
+
+            if (!_hasLos)
             {
-                _npcOwner.TurnTo(_losCheckTarget);
+                OnOutOfRangeOrNoLosRangedAttack();
                 return;
             }
 
-            OnOutOfRangeOrNoLosRangedAttack();
+            _npcOwner.TurnTo(_losCheckTarget);
         }
 
         public class CheckLosTimer : ECSGameTimerWrapperBase
