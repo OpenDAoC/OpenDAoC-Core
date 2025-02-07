@@ -168,19 +168,11 @@ namespace DOL.GS
             {
                 switch (LastAttackData.AttackResult)
                 {
-                    case eAttackResult.Fumbled:
-                    {
-                        // Skip this attack if the last one fumbled.
-                        StyleComponent.NextCombatStyle = null;
-                        StyleComponent.NextCombatBackupStyle = null;
-                        LastAttackData.AttackResult = eAttackResult.Missed;
-                        _interval = AttackComponent.AttackSpeed(_weapon) * 2;
-                        return false;
-                    }
                     case eAttackResult.OutOfRange:
                     case eAttackResult.TargetNotVisible:
                     case eAttackResult.NotAllowed_ServerRules:
                     case eAttackResult.TargetDead:
+                    case eAttackResult.NoValidTarget:
                     {
                         clearOldStyles = true;
                         break;
@@ -191,9 +183,9 @@ namespace DOL.GS
             if (_combatStyle != null && _combatStyle.WeaponTypeRequirement == (int) eObjectType.Shield)
                 _weapon = _leftWeapon;
 
-            int attackSpeed = AttackComponent.AttackSpeed(_weapon);
+            _attackInterval = AttackComponent.AttackSpeed(_weapon);
 
-            if (clearOldStyles || ServiceUtils.ShouldTick(StyleComponent.NextCombatStyleTime + attackSpeed))
+            if (clearOldStyles || ServiceUtils.ShouldTick(StyleComponent.NextCombatStyleTime + _attackInterval))
             {
                 // Cancel the styles if they were registered too long ago.
                 // Nature's Shield stays active forever and falls back to a non-backup style.
@@ -216,7 +208,6 @@ namespace DOL.GS
             if (_target is GamePlayer playerTarget && playerTarget.IsSitting)
                 _effectiveness *= 2;
 
-            _attackInterval = attackSpeed;
             return true;
         }
 
@@ -346,20 +337,31 @@ namespace DOL.GS
         protected virtual bool FinalizeMeleeAttack()
         {
             // Melee weapons tick every TICK_INTERVAL_FOR_NON_ATTACK if they didn't attack.
-            if (LastAttackData != null &&
-                LastAttackData.AttackResult is not eAttackResult.Missed
-                and not eAttackResult.HitUnstyled
-                and not eAttackResult.HitStyle
-                and not eAttackResult.Evaded
-                and not eAttackResult.Blocked
-                and not eAttackResult.Parried)
+            if (LastAttackData != null)
             {
-                _interval = TICK_INTERVAL_FOR_NON_ATTACK;
+                switch (LastAttackData.AttackResult)
+                {
+                    case eAttackResult.OutOfRange:
+                    case eAttackResult.TargetNotVisible:
+                    case eAttackResult.NotAllowed_ServerRules:
+                    case eAttackResult.TargetDead:
+                    case eAttackResult.NoValidTarget:
+                    {
+                        _interval = TICK_INTERVAL_FOR_NON_ATTACK;
 
-                if (RoundWithNoAttackTime == 0)
-                    RoundWithNoAttackTime = GameLoop.GameLoopTime;
+                        if (RoundWithNoAttackTime == 0)
+                            RoundWithNoAttackTime = GameLoop.GameLoopTime;
 
-                return false;
+                        return false;
+                    }
+                    case eAttackResult.Fumbled:
+                    {
+                        StyleComponent.NextCombatStyle = null;
+                        StyleComponent.NextCombatBackupStyle = null;
+                        _interval = AttackComponent.AttackSpeed(_weapon, _leftWeapon) * 2;
+                        return true;
+                    }
+                }
             }
 
             _interval = AttackComponent.AttackSpeed(_weapon, _leftWeapon);
