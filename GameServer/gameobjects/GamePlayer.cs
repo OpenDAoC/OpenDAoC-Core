@@ -6269,7 +6269,7 @@ namespace DOL.GS
             else
                 playerName = name;
 
-            var DiscordObituaryHook = string.Empty; // Make it a property later
+            var DiscordObituaryHook = Properties.DISCORD_WEBHOOK_ID; // Make it a property later
             var client = new DiscordWebhookClient(DiscordObituaryHook);
 
             // Create your DiscordMessage with all parameters of your message.
