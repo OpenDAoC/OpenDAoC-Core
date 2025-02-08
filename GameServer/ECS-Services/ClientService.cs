@@ -16,7 +16,7 @@ namespace DOL.GS
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(ClientService);
         private const int PING_TIMEOUT = 60000;
-        private const int HARD_TIMEOUT = 600000;
+        private const int HARD_TIMEOUT = 150000;
         private const int STATIC_OBJECT_UPDATE_MIN_DISTANCE = 4000;
 
         private static List<GameClient> _clients = new();
@@ -61,6 +61,7 @@ namespace DOL.GS
                 switch (client.ClientState)
                 {
                     case GameClient.eClientState.NotConnected:
+                    case GameClient.eClientState.Linkdead:
                     case GameClient.eClientState.Connecting:
                     case GameClient.eClientState.CharScreen:
                     case GameClient.eClientState.WorldEnter:
