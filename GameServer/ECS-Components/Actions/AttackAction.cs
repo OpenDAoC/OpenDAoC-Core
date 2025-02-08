@@ -162,6 +162,9 @@ namespace DOL.GS
 
         protected virtual bool PrepareMeleeAttack()
         {
+            if (_combatStyle != null && _combatStyle.WeaponTypeRequirement == (int) eObjectType.Shield)
+                _weapon = _leftWeapon;
+
             bool clearOldStyles = false;
 
             if (LastAttackData != null)
@@ -170,6 +173,12 @@ namespace DOL.GS
                 {
                     case eAttackResult.OutOfRange:
                     case eAttackResult.TargetNotVisible:
+                    {
+                        // We allow styles to stay registered for about 250 milliseconds on out of range / not visible attack result.
+                        // Live doesn't seem to be very consistent in that regard, but neither are we because of `TICK_INTERVAL_FOR_NON_ATTACK`.
+                        clearOldStyles = ServiceUtils.ShouldTick(StyleComponent.NextCombatStyleTime + 250);
+                        break;
+                    }
                     case eAttackResult.NotAllowed_ServerRules:
                     case eAttackResult.TargetDead:
                     case eAttackResult.NoValidTarget:
@@ -180,12 +189,7 @@ namespace DOL.GS
                 }
             }
 
-            if (_combatStyle != null && _combatStyle.WeaponTypeRequirement == (int) eObjectType.Shield)
-                _weapon = _leftWeapon;
-
-            _attackInterval = AttackComponent.AttackSpeed(_weapon);
-
-            if (clearOldStyles || ServiceUtils.ShouldTick(StyleComponent.NextCombatStyleTime + _attackInterval))
+            if (clearOldStyles)
             {
                 // Cancel the styles if they were registered too long ago.
                 // Nature's Shield stays active forever and falls back to a non-backup style.
