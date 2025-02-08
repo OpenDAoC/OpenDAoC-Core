@@ -591,10 +591,13 @@ namespace DOL.GS
 
         public void CancelAll()
         {
-            foreach (var effects in Effects.Values.ToList())
+            lock (EffectsLock)
             {
-                for (int j = 0; j < effects.Count; j++)
-                    EffectService.RequestImmediateCancelEffect(effects[j]);
+                foreach (List<ECSGameEffect> list in Effects.Values.ToList())
+                {
+                    for (int i = list.Count - 1; i >= 0; i--)
+                        EffectService.RequestImmediateCancelEffect(list[i]);
+                }
             }
         }
 
