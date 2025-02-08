@@ -21,6 +21,7 @@ namespace DOL.GS
         public override string Name => SpellHandler.Spell.Name;
         public override bool HasPositiveEffect => SpellHandler != null && SpellHandler.HasPositiveEffect;
         public bool IsAllowedToPulse => NextTick > 0 && PulseFreq > 0;
+        public bool IsSilent { get; set; } // Used externally to force an effect to be silent before being enabled or disabled. Resets itself.
 
         public ECSGameSpellEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
@@ -106,7 +107,10 @@ namespace DOL.GS
         /// <returns>'Message1' and 'Message2' values from the 'spell' table.</returns>
         public void OnEffectStartsMsg(GameLiving target, bool msgTarget, bool msgSelf, bool msgArea)
         {
-            SendMessages(target, msgTarget, msgSelf, msgArea, SpellHandler.Spell.Message1, SpellHandler.Spell.Message2);
+            if (!IsSilent)
+                SendMessages(target, msgTarget, msgSelf, msgArea, SpellHandler.Spell.Message1, SpellHandler.Spell.Message2);
+            else
+                IsSilent = false;
         }
 
         /// <summary>
@@ -119,7 +123,10 @@ namespace DOL.GS
         /// <returns>'Message3' and 'Message4' values from the 'spell' table.</returns>
         public void OnEffectExpiresMsg(GameLiving target, bool msgTarget, bool msgSelf, bool msgArea)
         {
-            SendMessages(target, msgTarget, msgSelf, msgArea, SpellHandler.Spell.Message3, SpellHandler.Spell.Message4);
+            if (!IsSilent)
+                SendMessages(target, msgTarget, msgSelf, msgArea, SpellHandler.Spell.Message3, SpellHandler.Spell.Message4);
+            else
+                IsSilent = false;
         }
 
         private void SendMessages(GameLiving target, bool msgTarget, bool msgSelf, bool msgArea, string firstPersonMessage, string thirdPersonMessage)

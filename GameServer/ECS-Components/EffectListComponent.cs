@@ -104,15 +104,15 @@ namespace DOL.GS
                                         if (newSpell.IsPulsing)
                                             newSpellEffect.RenewEffect = true;
 
-                                        // If the effectiveness changed (for example after resurrection illness expired), we need to stop the effect.
-                                        // It will be restarted in 'EffectService.HandlePropertyModification()'.
-                                        // Also needed for movement speed debuffs' since their effect decrease over time.
-                                        if (existingEffect.Effectiveness != newSpellEffect.Effectiveness ||
-                                            existingSpell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
-                                        {
-                                            existingEffect.OnStopEffect();
-                                        }
-
+                                        // Always stop the current effect and let the new one be started by 'EffectService.HandlePropertyModification()'.
+                                        // Not calling `OnStopEffect` on the current effect and `OnStartEffect` on the new effect means some initialization may not be performed.
+                                        // To give some examples:
+                                        // * Effectiveness changes from resurrection illness expiring.
+                                        // * Champion debuffs being forced to spec debuffs in `OnStartEffect`.
+                                        // * Movement speed debuffs effectiveness decreasing over time.
+                                        existingEffect.IsSilent = true;
+                                        existingEffect.OnStopEffect();
+                                        newSpellEffect.IsSilent = true;
                                         newSpellEffect.IsDisabled = existingEffect.IsDisabled;
                                         newSpellEffect.IsBuffActive = existingEffect.IsBuffActive;
                                         newSpellEffect.PreviousPosition = GetAllEffects().IndexOf(existingEffect);
