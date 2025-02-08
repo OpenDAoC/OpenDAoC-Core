@@ -57,15 +57,30 @@ namespace DOL.GS
                 return eAttackType.MeleeDualWield;
             else if (weapon == null)
                 return eAttackType.MeleeOneHand;
-            else
+
+            eAttackType attackType = weapon.SlotPosition switch
             {
-                return weapon.SlotPosition switch
+                Slot.TWOHAND => eAttackType.MeleeTwoHand,
+                Slot.RANGED => eAttackType.Ranged,
+                _ => eAttackType.MeleeOneHand,
+            };
+
+            if (attacker is GamePlayer)
+            {
+                // This should the only important one to check.
+                if (attackType is eAttackType.MeleeTwoHand)
                 {
-                    Slot.TWOHAND => eAttackType.MeleeTwoHand,
-                    Slot.RANGED => eAttackType.Ranged,
-                    _ => eAttackType.MeleeOneHand,
-                };
+                    if (weapon.Item_Type is not Slot.TWOHAND)
+                        attackType = eAttackType.MeleeOneHand;
+                }
+                else if (attackType is eAttackType.Ranged)
+                {
+                    if (weapon.Item_Type is not Slot.RANGED)
+                        attackType = eAttackType.MeleeOneHand;
+                }
             }
+
+            return attackType;
         }
 
         public enum eAttackType : int
