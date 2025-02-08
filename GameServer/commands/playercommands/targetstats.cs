@@ -51,8 +51,7 @@ namespace DOL.GS.Commands
 
             DbInventoryItem mainWeapon = target.ActiveWeapon;
             DbInventoryItem leftWeapon = target.ActiveLeftWeapon;
-            int leftHandSwingCount = target.attackComponent.CalculateLeftHandSwingCount(mainWeapon, leftWeapon);
-            bool isDualWieldAttack = WeaponAction.IsDualWieldAttack(mainWeapon, leftWeapon, target, leftHandSwingCount);
+            bool isDualWieldAttack = WeaponAction.IsDualWieldAttack(mainWeapon, leftWeapon, target);
             AttackData.eAttackType attackType = AttackData.GetAttackType(mainWeapon, isDualWieldAttack, target);
 
             if (target is GameNPC || mainWeapon != null)

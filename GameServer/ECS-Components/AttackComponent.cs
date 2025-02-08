@@ -1057,7 +1057,6 @@ namespace DOL.GS
             // Asp style range add.
             IEnumerable<(Spell, int, int)> rangeProc = style?.Procs.Where(x => x.Item1.SpellType is eSpellType.StyleRange);
             int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Item1.Value - AttackRange) : 0;
-
             ad.AttackType = AttackData.GetAttackType(weapon, dualWield, ad.Attacker);
 
             // No target.
@@ -2717,6 +2716,9 @@ namespace DOL.GS
 
             if (owner is GameNPC npcOwner)
             {
+                if (mainWeapon == null || mainWeapon.SlotPosition is not Slot.RIGHTHAND)
+                    return 0;
+
                 double random = Util.RandomDouble() * 100;
                 return random < npcOwner.LeftHandSwingChance ? 1 : 0;
             }
