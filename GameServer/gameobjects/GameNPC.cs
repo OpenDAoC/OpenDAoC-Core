@@ -3476,7 +3476,6 @@ namespace DOL.GS
 				case eSpellType.Taunt:
 				case eSpellType.SpeedDecrease:
 				case eSpellType.SavageCombatSpeedBuff:
-				case eSpellType.OffensiveProc:
 				{
 					spell.Value *= scalingFactor;
 					spell.ScaledToNpcLevel = true;
