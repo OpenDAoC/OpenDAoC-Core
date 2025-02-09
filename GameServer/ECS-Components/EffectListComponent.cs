@@ -111,7 +111,8 @@ namespace DOL.GS
                                         // * Champion debuffs being forced to spec debuffs in `OnStartEffect`.
                                         // * Movement speed debuffs effectiveness decreasing over time.
                                         // This doesn't work will pulsing charm spells, and it's probably safer to exclude every pulsing spell for now.
-                                        if (!newSpell.IsPulsing)
+                                        // This should also ignores effects being reenabled.
+                                        if (!newSpellEffect.RenewEffect)
                                         {
                                             existingEffect.IsSilent = true;
                                             existingEffect.OnStopEffect();
