@@ -212,6 +212,7 @@ namespace DOL.GS
             if (_target is GamePlayer playerTarget && playerTarget.IsSitting)
                 _effectiveness *= 2;
 
+            _attackInterval = AttackComponent.AttackSpeed(_weapon);
             return true;
         }
 
