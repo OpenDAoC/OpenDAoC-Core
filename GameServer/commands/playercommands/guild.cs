@@ -76,7 +76,6 @@ namespace DOL.GS.Commands
 				return;
 			}
 
-			#region Player Declines
 			if (response != 0x01)
 			{
 				//remove all guild consider to enable re try
@@ -88,61 +87,41 @@ namespace DOL.GS.Commands
 				player.Group.SendMessageToGroupMembers(player, "Declines to form the guild", eChatType.CT_Group, eChatLoc.CL_ChatWindow);
 				return;
 			}
-			#endregion
-			#region Player Accepts
+
 			player.Group.SendMessageToGroupMembers(player, "Agrees to form the guild", eChatType.CT_Group, eChatLoc.CL_ChatWindow);
 			player.TempProperties.SetProperty("Guild_Consider", true);
 			var guildname = player.Group.Leader.TempProperties.GetProperty<string>("Guild_Name");
 
 			var memnum = player.Group.GetPlayersInTheGroup().Count(p => p.TempProperties.GetProperty<bool>("Guild_Consider"));
 
-			if (!GuildFormCheck(player) || memnum != player.Group.MemberCount) return;
+			if (!GuildFormCheck(player) || memnum != player.Group.MemberCount)
+				return;
 
-			if (Properties.GUILD_NUM > 1)
+			Group group = player.Group;
+			Guild newGuild = GuildMgr.CreateGuild(player.Realm, guildname, player);
+
+			if (newGuild == null)
 			{
-				Group group = player.Group;
-				Guild newGuild = GuildMgr.CreateGuild(player.Realm, guildname, player);
-
-				if (newGuild == null)
-				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.UnableToCreateLead", guildname, player.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				}
-				else
-				{
-					foreach (GamePlayer ply in group.GetPlayersInTheGroup())
-					{
-						if (ply != group.Leader)
-						{
-							newGuild.AddPlayer(ply);
-						}
-						else
-						{
-							newGuild.AddPlayer(ply, newGuild.GetRankByID(0));
-						}
-						ply.TempProperties.RemoveProperty("Guild_Consider");
-					}
-					player.Group.Leader.TempProperties.RemoveProperty("Guild_Name");
-					player.Group.Leader.RemoveMoney(GuildFormCost);
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.GuildCreated", guildname, player.Group.Leader.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-				}
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.UnableToCreateLead", guildname, player.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
 			else
 			{
-				Guild newGuild = GuildMgr.CreateGuild(player.Realm, guildname, player);
-
-				if (newGuild == null)
+				foreach (GamePlayer ply in group.GetPlayersInTheGroup())
 				{
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.UnableToCreateLead", guildname, player.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+					if (ply != group.Leader)
+					{
+						newGuild.AddPlayer(ply);
+					}
+					else
+					{
+						newGuild.AddPlayer(ply, newGuild.GetRankByID(0));
+					}
+					ply.TempProperties.RemoveProperty("Guild_Consider");
 				}
-				else
-				{
-					newGuild.AddPlayer(player, newGuild.GetRankByID(0));
-					player.TempProperties.RemoveProperty("Guild_Name");
-					player.RemoveMoney(10000);
-					player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.GuildCreated", guildname, player.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
-				}
+				player.Group.Leader.TempProperties.RemoveProperty("Guild_Name");
+				player.Group.Leader.RemoveMoney(GuildFormCost);
+				player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Player.Guild.GuildCreated", guildname, player.Group.Leader.Name), eChatType.CT_Guild, eChatLoc.CL_SystemWindow);
 			}
-			#endregion
 		}
 
 		/// <summary>
