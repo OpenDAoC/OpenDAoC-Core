@@ -157,6 +157,8 @@ namespace DOL.Config
 
 			_enableUPnP = root["Server"]["EnableUPnP"].GetBoolean(_enableUPnP);
 			_detectRegionIP = root["Server"]["DetectRegionIP"].GetBoolean(_detectRegionIP);
+
+
 		}
 
 		/// <summary>

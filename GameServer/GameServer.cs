@@ -27,6 +27,9 @@ using DOL.Logging;
 using DOL.Mail;
 using DOL.Network;
 using JNogueira.Discord.Webhook.Client;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
 
 namespace DOL.GS
 {
@@ -58,7 +61,7 @@ namespace DOL.GS
 		/// The textwrite for log operations
 		/// </summary>
 		protected Logging.Logger m_cheatLog;
-		
+
 		/// <summary>
 		/// The textwrite for log operations
 		/// </summary>
@@ -298,6 +301,12 @@ namespace DOL.GS
 				Thread.CurrentThread.Priority = ThreadPriority.Normal;
 
 				AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+                // -----------------------------------------------------------
+                // Init Metrics
+                if (!InitComponent(InitMetrics(), "Setup Metric Server"))
+                    log.Error("Can't setup Metric Server");
+
 				//---------------------------------------------------------------
 				//Try to compile the Scripts
 				if (!InitComponent(CompileScripts(), "Script compilation"))
@@ -512,7 +521,7 @@ namespace DOL.GS
 				{
 
 					var client = new DiscordWebhookClient(Properties.DISCORD_WEBHOOK_ID);
-					
+
  					var message = new DiscordMessage(
  						"",
  						username: "Game Server",
@@ -554,6 +563,43 @@ namespace DOL.GS
 				return false;
 			}
 		}
+
+        /// <summary>
+        /// Setup Metrics, this includes running a dedicated Kestrel Server for prometheus endpoints
+        /// and also starting the MetricsCollector
+        /// </summary>
+        /// <returns></returns>
+        private bool InitMetrics()
+        {
+            try
+            {
+                if (!Instance.Configuration.MetricsEnabled)
+                {
+                    return true;
+                }
+
+                var meterProivder = Sdk.CreateMeterProviderBuilder()
+                    .ConfigureResource(resource => resource.AddService("GameServer"))
+                    .AddMeter(MetricsCollector.METER_NAME)
+                    .AddRuntimeInstrumentation()
+                    .AddOtlpExporter((options, readerOptions) =>
+                    {
+                        options.Endpoint = Instance.Configuration.OltpEndpoint;
+                        readerOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = Instance.Configuration.MetricsExportInterval;
+                    })
+                    .Build();
+
+                MetricsCollector.StartCollecting();
+                meterProivder.ForceFlush();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                log.Error(e);
+                return false;
+            }
+        }
 
 		public async void GetPatchNotes()
 		{
