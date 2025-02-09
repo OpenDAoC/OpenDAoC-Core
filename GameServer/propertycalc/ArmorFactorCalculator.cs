@@ -26,16 +26,16 @@ namespace DOL.GS.PropertyCalc
                 case GameKeepDoor:
                 case GameKeepComponent:
                     return CalculateKeepComponentArmorFactor(living);
-                case IGameEpicNpc:
-                    return CalculateLivingArmorFactor(living, property, 12.0 * (living as IGameEpicNpc).ArmorFactorScalingFactor, 50.0);
+                case IGameEpicNpc epicNpc:
+                    return CalculateLivingArmorFactor(living, property, 12 * epicNpc.ArmorFactorScalingFactor, 50);
                 case NecromancerPet:
-                    return CalculateLivingArmorFactor(living, property, 12.0, 121.0);
+                    return CalculateLivingArmorFactor(living, property, 12, 121); // Should be equal to a level 50 player in 102 AF 100% qual armor.
                 case GameSummonedPet:
-                    return CalculateLivingArmorFactor(living, property, 12.0, 175.0);
+                    return CalculateLivingArmorFactor(living, property, 12, 175);
                 case GuardLord:
-                    return CalculateLivingArmorFactor(living, property, 12.0, 134.0);
+                    return CalculateLivingArmorFactor(living, property, 12, 134);
                 default:
-                    return CalculateLivingArmorFactor(living, property, 12.0, 200.0);
+                    return CalculateLivingArmorFactor(living, property, 12, 200);
             }
 
             static int CalculatePlayerArmorFactor(GameLiving living, eProperty property)
@@ -56,8 +56,6 @@ namespace DOL.GS.PropertyCalc
                 // For pets, this may be a later change according to a post on Phoenix's forums. Sadly that post doesn't contain more info.
                 // Allowing neither feels bad, and allowing only spec AF buffs only benefit Albion's pet classes.
                 armorFactor += living.BaseBuffBonusCategory[(int) property];
-
-                // armorFactor += living.SpecBuffBonusCategory[(int) property];
                 armorFactor -= Math.Abs(living.DebuffCategory[(int) property]);
                 armorFactor += living.OtherBonus[(int) property];
                 return armorFactor;

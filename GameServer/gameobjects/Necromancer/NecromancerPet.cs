@@ -91,46 +91,6 @@ namespace DOL.GS
 
 		#region Stats
 
-		/// <summary>
-		/// Get modified bonuses for the pet; some bonuses come from the shade, some come from the pet.
-		/// </summary>
-		public override int GetModified(eProperty property)
-		{
-			if (Brain is not IControlledBrain brain)
-				return base.GetModified(property);
-
-			switch (property)
-			{
-				case eProperty.MaxHealth:
-				{
-					// Possibly missing flat HP buff bonus. Maybe HP from Champion levels too?
-					int baseHp = 30 * Level;
-					GameLiving livingOwner = brain.GetLivingOwner();
-
-					if (livingOwner == null)
-						return baseHp;
-
-					int conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(AtlasRAHelpers.GetAugConLevel(livingOwner));
-					int conFromItems = livingOwner.GetModifiedFromItems(eProperty.Constitution);
-					baseHp += (int) ((conFromItems + conFromRa) * 3.1);
-
-					int itemBonus = livingOwner.ItemBonus[(int) property];
-					int cap = MaxHealthCalculator.GetItemBonusCap(livingOwner) + MaxHealthCalculator.GetItemBonusCapIncrease(livingOwner);
-					itemBonus = Math.Min(itemBonus, cap);
-
-					int flatAbilityBonus = livingOwner.AbilityBonus[(int) property]; // New Toughness.
-					int multiplicativeAbilityBonus = livingOwner.AbilityBonus[(int) eProperty.Of_Toughness]; // Old Toughness.
-
-					double result = baseHp;
-					result *= 1 + multiplicativeAbilityBonus * 0.01;
-					result += itemBonus + flatAbilityBonus;
-					return (int) result;
-				}
-				default:
-					return base.GetModified(property);
-			}
-		}
-
 		public override int Health
 		{
 			get => base.Health;

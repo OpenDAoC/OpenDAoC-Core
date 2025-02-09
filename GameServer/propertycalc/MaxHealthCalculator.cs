@@ -74,6 +74,30 @@ namespace DOL.GS.PropertyCalc
 
                 return 0;
             }
+            else if (living is NecromancerPet necromancerPet)
+            {
+                double baseHp = 32.5 * necromancerPet.Level;
+                GameLiving livingOwner = necromancerPet.Owner;
+
+                if (livingOwner == null)
+                    return (int) baseHp;
+
+                int conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(AtlasRAHelpers.GetAugConLevel(livingOwner));
+                int conFromItems = livingOwner.GetModifiedFromItems(eProperty.Constitution);
+
+                int itemBonus = livingOwner.ItemBonus[(int) property];
+                int itemCap = GetItemBonusCap(livingOwner) + GetItemBonusCapIncrease(livingOwner);
+                itemBonus = Math.Min(itemBonus, itemCap);
+
+                int flatAbilityBonus = livingOwner.AbilityBonus[(int) property]; // New Toughness.
+                int multiplicativeAbilityBonus = livingOwner.AbilityBonus[(int) eProperty.Of_Toughness]; // Old Toughness.
+
+                double result = baseHp;
+                result += (conFromItems + conFromRa) * 3;
+                result *= 1 + multiplicativeAbilityBonus * 0.01;
+                result += itemBonus + flatAbilityBonus;
+                return (int) result;
+            }
             else if (living is GameSummonedPet pet)
                 return CalculateNpcMaxHealth(pet, 17, 0.535, pet.GetBaseStat(eStat.CON), 25, 3, pet.BaseBuffBonusCategory[(int) property]);
             else if (living is GameNPC npc)

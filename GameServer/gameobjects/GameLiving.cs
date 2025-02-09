@@ -410,28 +410,10 @@ namespace DOL.GS
 		{
 			double baseAbsorb = 0;
 
-			if (this is NecromancerPet nPet)
-			{
-				if (nPet.Owner.Level == 50)
-					baseAbsorb = 0.5;
-				else if (nPet.Owner.Level >= 40)
-					baseAbsorb = 0.40;
-				else if (nPet.Owner.Level >= 30)
-					baseAbsorb = 0.27;
-				else if (nPet.Owner.Level >= 20)
-					baseAbsorb = 0.19;
-				else if (nPet.Owner.Level >= 10)
-					baseAbsorb = 0.10;
-			}
+			if (this is NecromancerPet necromancerPet)
+				baseAbsorb = necromancerPet.Owner.Level * 0.0068; // 34% at owner level 50.
 			else
-			{
-				if (Level >= 30)
-					baseAbsorb = 0.27;
-				else if (Level >= 20)
-					baseAbsorb = 0.19;
-				else if (Level >= 10)
-					baseAbsorb = 0.10;
-			}
+				baseAbsorb = Level * 0.0054; // 27% at level 50.
 
 			double absorbBonus = GetModified(eProperty.ArmorAbsorption) / 100.0;
 			double absorptionFromConstitution = StatCalculator.CalculateBuffContributionToAbsorbOrResist(this, eProperty.Constitution) / 4;
