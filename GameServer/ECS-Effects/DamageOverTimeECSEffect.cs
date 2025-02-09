@@ -31,22 +31,12 @@ namespace DOL.GS
             if (SpellHandler is not DoTSpellHandler dotHandler)
                 return;
 
+            // "Searing pain fills your mind!"
+            // "{0} is wracked with pain!"
             if (OwnerPlayer != null)
-            {
-                // "Searing pain fills your mind!"
-                // "{0} is wracked with pain!"
                 OnEffectStartsMsg(Owner, true, false, true);
-            }
 
-            if (dotHandler.Caster.effectListComponent.ContainsEffectForEffectType(eEffect.Viper) && dotHandler.Spell.IsPoison)
-            {
-                Effectiveness *= 2;
-                dotHandler.OnDirectEffect(Owner);
-                Effectiveness /= 2;
-            }
-            else
-                dotHandler.OnDirectEffect(Owner);
-
+            dotHandler.OnDirectEffect(Owner);
             FinalizeEffectPulse();
         }
 

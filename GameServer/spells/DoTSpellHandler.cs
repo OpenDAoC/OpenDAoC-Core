@@ -54,29 +54,19 @@ namespace DOL.GS.Spells
 			return Spell.SpellType == compare.SpellHandler.Spell.SpellType && Spell.DamageType == compare.SpellHandler.Spell.DamageType && SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine;
 		}
 
-		public override AttackData CalculateDamageToTarget(GameLiving target)
-		{
-			AttackData ad = base.CalculateDamageToTarget(target);
-            if (this.SpellLine.KeyName == GlobalSpellsLines.Mundane_Poisons)
-            {
-                RealmAbilities.L3RAPropertyEnhancer ra = Caster.GetAbility<RealmAbilities.ViperAbility>();
-				if (ra != null)
-				{
-					int additional = (int)((float)ad.Damage * ((float)ra.Amount / 100));
-					ad.Damage += additional;
-				}
-            }
+        public override AttackData CalculateDamageToTarget(GameLiving target)
+        {
+            AttackData ad = base.CalculateDamageToTarget(target);
 
-            //dots can only crit through Wild Arcana RA, which is handled elsewhere
-            //if (ad.CriticalDamage > 0) ad.CriticalDamage = 0;
-            
-            
-	            //GameSpellEffect iWarLordEffect = SpellHandler.FindEffectOnTarget(target, "CleansingAura");
-			//if (iWarLordEffect != null)
-			//	ad.Damage *= (int)(1.00 - (iWarLordEffect.Spell.Value * 0.01));
-			
-			return ad;
-		}
+            if (SpellLine.KeyName is GlobalSpellsLines.Mundane_Poisons && Caster.effectListComponent.ContainsEffectForEffectType(eEffect.Viper))
+                ad.Damage *= 2;
+
+            /* GameSpellEffect iWarLordEffect = FindEffectOnTarget(target, "CleansingAura");
+            if (iWarLordEffect != null)
+                ad.Damage *= (int) (1.00 - iWarLordEffect.Spell.Value * 0.01);*/
+
+            return ad;
+        }
 
 		/// <summary>
 		/// Sends damage text messages but makes no damage
