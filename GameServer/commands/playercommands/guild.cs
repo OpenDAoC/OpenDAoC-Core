@@ -60,7 +60,7 @@ namespace DOL.GS.Commands
 			#region Enough members to form Check - Ensure our group still has enough players in to form
 			if (group.MemberCount < Properties.GUILD_NUM)
 			{
-				leader.Out.SendMessage(LanguageMgr.GetTranslation(leader.Client.Account.Language, "Scripts.Player.Guild.FormNoMembers" + Properties.GUILD_NUM), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				leader.Out.SendMessage(LanguageMgr.GetTranslation(leader.Client.Account.Language, "Scripts.Player.Guild.FormNoMembers", Properties.GUILD_NUM), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return false;
 			}
 			#endregion
@@ -1149,7 +1149,7 @@ namespace DOL.GS.Commands
 							#region Enough members to form Check
 							if (group.MemberCount < Properties.GUILD_NUM)
 							{
-								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.FormNoMembers" + Properties.GUILD_NUM), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+								client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Player.Guild.FormNoMembers", Properties.GUILD_NUM), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 								return;
 							}
 							#endregion
