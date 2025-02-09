@@ -322,7 +322,7 @@ Scripts.Player.Guild.AllianceNoGMSelected:		Ihr müßt einen Anführer der Gilde
 Scripts.Player.Guild.AllianceNoLeader:			Kein Anführer der Allianz
 Scripts.Player.Guild.AllianceNotLeader:			Ihr müßt der Anführer der Allianz sein, um eine Gilde aus der Allianz entfernen zu können.
 Scripts.Player.Guild.AllianceNotMember:			Um das zu tun, müßtet Ihr erstmal in einer Allianz sein.
-Scripts.Player.Guild.AlreadyInGuild:			{0} gehört bereits einer Gilde an.
+Scripts.Player.Guild.AlreadyInGuildName:		{0} gehört bereits einer Gilde an.
 Scripts.Player.Guild.AlreadyInGuild:			Die gehören bereits einer Gilde an.
 Scripts.Player.Guild.AMotdSet:				Ihr habt die Willkommensnachricht für diese Gilde geändert.
 Scripts.Player.Guild.BannerAlready:			Eure Gilde hat schon ein Banner.

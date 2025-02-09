@@ -21,7 +21,7 @@ Scripts.Player.Guild.AllianceNoGMSelected:		Vous devez choisir un Maître de gui
 Scripts.Player.Guild.AllianceNoLeader:			Pas de chef d'alliance
 Scripts.Player.Guild.AllianceNotLeader:			Vous devez être la guilde du chef de l'alliance pour pouvoir enlever une guilde de l'alliance.	
 Scripts.Player.Guild.AllianceNotMember:			Vous devez être dans une alliance pour le faire.	
-Scripts.Player.Guild.AlreadyInGuild:			{0} est un membre de votre guilde.	
+Scripts.Player.Guild.AlreadyInGuildName:		{0} est un membre de votre guilde.	
 Scripts.Player.Guild.AlreadyInGuild:			Il est déjà membre d'une guilde.	
 Scripts.Player.Guild.AMotdSet:				Vous avez mis le message d'alliance à jour.	
 Scripts.Player.Guild.BannerAlready:			Votre guilde possède déjà une bannière.	

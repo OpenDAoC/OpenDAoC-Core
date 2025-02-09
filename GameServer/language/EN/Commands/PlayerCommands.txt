@@ -420,7 +420,7 @@ Scripts.Player.Guild.AllianceNoGMSelected:		You must select a GM of guild you wa
 Scripts.Player.Guild.AllianceNoLeader:			No alliance leader
 Scripts.Player.Guild.AllianceNotLeader:			You have to be the leader guild of the alliance , before you can remove a guild from the alliance.	
 Scripts.Player.Guild.AllianceNotMember:			You must be in an alliance to do that.	
-Scripts.Player.Guild.AlreadyInGuild:			{0} is already a member of a guild.	
+Scripts.Player.Guild.AlreadyInGuildName:		{0} is already a member of a guild.	
 Scripts.Player.Guild.AlreadyInGuild:			They are already a member of a guild.	
 Scripts.Player.Guild.AMotdSet:				You have set the alliance motd for the guild.	
 Scripts.Player.Guild.BannerAlready:			Your guild already has a banner.	
