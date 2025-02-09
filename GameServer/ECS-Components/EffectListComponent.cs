@@ -110,9 +110,14 @@ namespace DOL.GS
                                         // * Effectiveness changes from resurrection illness expiring.
                                         // * Champion debuffs being forced to spec debuffs in `OnStartEffect`.
                                         // * Movement speed debuffs effectiveness decreasing over time.
-                                        existingEffect.IsSilent = true;
-                                        existingEffect.OnStopEffect();
-                                        newSpellEffect.IsSilent = true;
+                                        // This doesn't work will pulsing charm spells, and it's probably safer to exclude every pulsing spell for now.
+                                        if (!newSpell.IsPulsing)
+                                        {
+                                            existingEffect.IsSilent = true;
+                                            existingEffect.OnStopEffect();
+                                            newSpellEffect.IsSilent = true;
+                                        }
+
                                         newSpellEffect.IsDisabled = existingEffect.IsDisabled;
                                         newSpellEffect.IsBuffActive = existingEffect.IsBuffActive;
                                         newSpellEffect.PreviousPosition = GetAllEffects().IndexOf(existingEffect);
