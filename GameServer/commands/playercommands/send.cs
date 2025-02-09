@@ -26,7 +26,7 @@ namespace DOL.GS.Commands
             }
 
             string targetName = args[1];
-            var name = !string.IsNullOrWhiteSpace(targetName) && char.IsLower(targetName, 0) ? targetName.Replace(targetName[0],char.ToUpper(targetName[0])) : targetName; // If first character in args[1] is lowercase, replace with uppercase character
+            string nameToDisplay = string.IsNullOrEmpty(targetName) ? string.Empty : char.ToUpper(targetName[0]) + targetName[1..];
             string message = string.Join(" ", args, 2, args.Length - 2);
             ClientService.PlayerGuessResult result;
             GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(targetName, out result);
@@ -37,7 +37,7 @@ namespace DOL.GS.Commands
             if (targetPlayer == null)
             {
                 // Message: "{0} is not in the game, or is a member of another realm."
-                ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", name);
+                ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", nameToDisplay);
                 return;
             }
 
@@ -47,7 +47,7 @@ namespace DOL.GS.Commands
                 if (client.Account.PrivLevel == (uint) ePrivLevel.Player)
                 {
                     // Message: "{0} is not in the game, or is a member of another realm."
-                    ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", name);
+                    ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.OfflineOtherRealm", nameToDisplay);
                     // Message: {0} tried to send you a message: "{1}"
                     ChatUtil.SendSendMessage(targetPlayer, "Social.ReceiveMessage.Staff.TriedToSend", client.Player.Name, message);
                 }
@@ -69,7 +69,7 @@ namespace DOL.GS.Commands
                 case ClientService.PlayerGuessResult.FOUND_MULTIPLE:
                 {
                     // Message: "{0} is not a unique character name."
-                    ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.NameNotUnique", name);
+                    ChatUtil.SendSystemMessage(client, "Social.SendMessage.Err.NameNotUnique", nameToDisplay);
                     return;
                 }
                 case ClientService.PlayerGuessResult.FOUND_EXACT:
