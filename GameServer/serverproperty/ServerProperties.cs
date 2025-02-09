@@ -1009,12 +1009,6 @@ namespace DOL.GS.ServerProperties
 		public static double MOB_AUTOSET_INT_MULTIPLIER;
 
 		/// <summary>
-		/// Do pets level up with their owner?
-		/// </summary>
-		[ServerProperty("npc", "pet_levels_with_owner", "Do pets level up with their owner? ", false)]
-		public static bool PET_LEVELS_WITH_OWNER;
-
-		/// <summary>
 		/// Base Value to use when auto-setting pet STR stat.
 		/// </summary>
 		[ServerProperty("npc", "pet_autoset_str_base", "Base Value to use when auto-setting Pet STR stat. ", (short)30)]

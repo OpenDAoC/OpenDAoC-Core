@@ -5238,27 +5238,6 @@ namespace DOL.GS
                 Task.SaveIntoDatabase();
             }
 
-            // Level up pets and subpets
-            if (DOL.GS.ServerProperties.Properties.PET_LEVELS_WITH_OWNER &&
-                ControlledBrain is ControlledMobBrain brain && brain.Body is GameSummonedPet pet)
-            {
-                if (pet.SetPetLevel())
-                {
-                    if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0 && pet.Spells.Count > 0)
-                        pet.SortSpells();
-
-                    brain.UpdatePetWindow();
-                }
-
-                // subpets
-                if (pet.ControlledNpcList != null)
-                    foreach (ABrain subBrain in pet.ControlledNpcList)
-                        if (subBrain != null && subBrain.Body is GameSummonedPet subPet)
-                            if (subPet.SetPetLevel()) // Levels up subpet
-                                if (DOL.GS.ServerProperties.Properties.PET_SCALE_SPELL_MAX_LEVEL > 0)
-                                    subPet.SortSpells();
-            }
-
             DBCharacter.PlayedTimeSinceLevel = 0;
 
             // save player to database
