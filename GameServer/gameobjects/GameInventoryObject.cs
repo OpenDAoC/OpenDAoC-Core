@@ -480,7 +480,7 @@ namespace DOL.GS
             {
                 if (fromItem.Count - count <= 0)
                 {
-                    fromItem.Count -= count;
+                    fromItem.Count = 0;
 
                     if (!SaveItem(fromItem))
                     {
@@ -606,6 +606,8 @@ namespace DOL.GS
 
         public static bool SaveItem(DbInventoryItem item)
         {
+            // Failsafe in case count wasn't properly tracked.
+            // We might also be able to ignore `IsStackable`, but I'm not sure non stackable items always have a non 0 count.
             if (item.IsStackable && item.Count == 0)
                 return DeleteItem(item);
 
