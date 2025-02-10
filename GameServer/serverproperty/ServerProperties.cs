@@ -2475,13 +2475,6 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("account", "total_accounts_allowed_sameip", "Total number of account allowed for the same IP", 20)]
 		public static int TOTAL_ACCOUNTS_ALLOWED_SAMEIP;
 
-		/// <summary>
-		/// Should we backup deleted characters and not delete associated content?
-		/// </summary>
-		[ServerProperty("account", "backup_deleted_characters", "Should we backup deleted characters and not delete associated content?", true)]
-		public static bool BACKUP_DELETED_CHARACTERS;
-
-
 		#endregion
 
 		#region ATLAS
