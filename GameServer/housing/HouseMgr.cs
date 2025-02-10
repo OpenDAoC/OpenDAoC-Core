@@ -25,7 +25,6 @@ namespace DOL.GS.Housing
 			House
 		}
 
-
 		public static bool Start(GameClient client = null)
 		{
 			// load hookpoint offsets
@@ -558,34 +557,32 @@ namespace DOL.GS.Housing
 		/// <summary>
 		/// Get the house object from the owner player
 		/// </summary>
-		/// <param name="p">The player owner</param>
-		/// <returns>The house object</returns>
-		public static House GetHouseByPlayer(GamePlayer p)
+		public static House GetHouseByPlayer(GamePlayer player)
 		{
-			List<String> acctObjectIds = new List<string>();
-			foreach (var character in p.Client.Account.Characters)
-			{
-				if (character.Realm == (int)p.Realm)
-				{
-					acctObjectIds.Add(character.ObjectId);	
-				}
-			}
-			
-			// check every house in every region until we find
-			// a house that belongs to this player
-			foreach (KeyValuePair<ushort, Dictionary<int, House>> regs in _houseList.ToList())
-			{
-				foreach (KeyValuePair<int, House> entry in regs.Value.ToList())
-				{
-					var house = entry.Value;
+			HashSet<string> characterIds = new();
 
-					if (acctObjectIds.Contains(house.OwnerID))
+			foreach (DbCoreCharacter character in player.Client.Account.Characters)
+			{
+				if ((eRealm) character.Realm == player.Realm)
+					characterIds.Add(character.ObjectId);
+			}
+
+			return GetHouseByCharacterIds(characterIds);
+		}
+
+		public static House GetHouseByCharacterIds(HashSet<string> characterIds)
+		{
+			foreach (var housesInWorld in _houseList.ToList())
+			{
+				foreach (var housesInRegion in housesInWorld.Value.ToList())
+				{
+					House house = housesInRegion.Value;
+
+					if (characterIds.Contains(house.OwnerID))
 						return house;
 				}
 			}
 
-			// didn't find a house that belonged to the player,
-			// so return null
 			return null;
 		}
 

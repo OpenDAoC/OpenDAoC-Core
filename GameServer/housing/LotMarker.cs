@@ -49,8 +49,8 @@ namespace DOL.GS.Housing
 
 			if (house != null)
 			{
-				//the player might be targeting a lot he already purchased that has no house on it yet
-				if (house.HouseNumber != DatabaseItem.HouseNumber && player.Client.Account.PrivLevel != (int)ePrivLevel.Admin)
+				// The player might be targeting a lot he already purchased that has no house on it yet.
+				if (house.HouseNumber != DatabaseItem.HouseNumber && (ePrivLevel) player.Client.Account.PrivLevel is not ePrivLevel.Admin)
 				{
 					ChatUtil.SendSystemMessage(player, "You already own a house!");
 					return false;
@@ -58,19 +58,13 @@ namespace DOL.GS.Housing
 			}
 
 			if (string.IsNullOrEmpty(DatabaseItem.OwnerID))
-			{
-				player.Out.SendCustomDialog("Do you want to buy this lot?\r\n It costs " + Money.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + "!", BuyLot);
-			}
+				player.Out.SendCustomDialog($"Do you want to buy this lot?\nIt costs {Money.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem))}.\nYou won't be able to delete this character.", BuyLot);
 			else
 			{
 				if (HouseMgr.IsOwner(DatabaseItem, player))
-				{
 					player.Out.SendMerchantWindow(HouseTemplateMgr.GetLotMarkerItems(this), eMerchantWindowType.Normal);
-				}
 				else
-				{
 					ChatUtil.SendSystemMessage(player, "You do not own this lot!");
-				}
 			}
 
 			return true;

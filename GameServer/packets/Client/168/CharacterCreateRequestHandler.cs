@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
 
 namespace DOL.GS.PacketHandler.Client.v168
@@ -871,38 +872,44 @@ namespace DOL.GS.PacketHandler.Client.v168
         public static bool CheckForDeletedCharacter(string accountName, GameClient client, int slot)
         {
             int charSlot = slot;
-            if (client.Version > GameClient.eClientVersion.Version1124) // 1125 support
-            {
+
+            if (client.Version > GameClient.eClientVersion.Version1124)
                 charSlot = client.Account.Realm * 100 + (slot - (client.Account.Realm - 1) * 10);
-            }
-            else // 1124
+            else
             {
                 if (accountName.EndsWith("-S"))
-                {
                     charSlot = 100 + slot;
-                }
                 else if (accountName.EndsWith("-N"))
-                {
                     charSlot = 200 + slot;
-                }
                 else if (accountName.EndsWith("-H"))
-                {
                     charSlot = 300 + slot;
-                }
             }
 
-            DbCoreCharacter[] allChars = client.Account.Characters;
+            DbCoreCharacter[] allChars = client.Account.Characters.ToArray();
 
             if (allChars == null)
                 return false;
 
-            foreach (DbCoreCharacter character in allChars.ToArray())
+            if (client.ClientState is not GameClient.eClientState.CharScreen)
+                return false;
+
+            foreach (DbCoreCharacter character in allChars)
             {
-                if (character.AccountSlot != charSlot || client.ClientState is not GameClient.eClientState.CharScreen)
+                if (character.AccountSlot != charSlot)
                     continue;
 
+                // If this character had a house, prevent deletion.
+                // Eventually we should change the owner ID, house name, and update items in consignment merchant and vault slots if possible.
+                if (HouseMgr.GetHouseByCharacterIds([character.ObjectId]) != null)
+                {
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Character deletion prevented because the character has a house. (Account {accountName}) (Character: {character.Name}) (Slot position: {character.AccountSlot}) (Client slot {slot})");
+
+                    return false;
+                }
+
                 if (log.IsInfoEnabled)
-                    log.Info($"DB Character Delete:  Account {accountName}, Character: {character.Name}, slot position: {character.AccountSlot}, client slot {slot}");
+                    log.Info($"Character deletion. (Account {accountName}) (Character: {character.Name}) (Slot position: {character.AccountSlot}) (Client slot {slot})");
 
                 if (allChars.Length < client.ActiveCharIndex && client.ActiveCharIndex > -1 && allChars[client.ActiveCharIndex] == character)
                     client.ActiveCharIndex = -1;
@@ -914,7 +921,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                     GameServer.Database.AddObject(customParam);
 
                 GameServer.Database.AddObject(backupCharacter);
-                string deletedChar = character.Name;
                 GameServer.Database.DeleteObject(character);
                 client.Account.Characters = null;
                 GameServer.Database.FillObjectRelations(client.Account);
@@ -924,11 +930,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                     client.Account.Realm = 0;
 
                 GameServer.Database.SaveObject(client.Account);
-                AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterDelete, string.Empty, deletedChar);
-                return true;
+                AuditMgr.AddAuditEntry(client, AuditType.Character, AuditSubtype.CharacterDelete, string.Empty, character.Name);
             }
 
-            return false;
+            return true;
         }
 
         /// <summary>
