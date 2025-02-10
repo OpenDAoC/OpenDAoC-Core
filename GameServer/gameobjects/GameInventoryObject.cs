@@ -444,6 +444,8 @@ namespace DOL.GS
             {
                 if (fromItem.Count - count <= 0)
                 {
+                    fromItem.Count = 0;
+
                     if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(StackItemsFromCharacterInventoryToHousingInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
@@ -478,6 +480,8 @@ namespace DOL.GS
             {
                 if (fromItem.Count - count <= 0)
                 {
+                    fromItem.Count -= count;
+
                     if (!SaveItem(fromItem))
                     {
                         SendErrorMessage(player, nameof(StackItemsFromHousingInventoryToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
@@ -602,6 +606,9 @@ namespace DOL.GS
 
         public static bool SaveItem(DbInventoryItem item)
         {
+            if (item.IsStackable && item.Count == 0)
+                return DeleteItem(item);
+
             bool result = item.IsPersisted ? GameServer.Database.SaveObject(item) : GameServer.Database.AddObject(item);
 
             if (!result)
