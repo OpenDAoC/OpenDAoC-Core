@@ -114,32 +114,6 @@ namespace DOL.GS
             }
         }
 
-        [CmdAttribute(
-            "&clearinventory",
-            ePrivLevel.GM,
-            "/clearinventory YES - clears your entire inventory!")]
-        public class ClearInventoryCommandHandler : DOL.GS.Commands.AbstractCommandHandler,
-            DOL.GS.Commands.ICommandHandler
-        {
-            public void OnCommand(GameClient client, string[] args)
-            {
-                // must add at least one parameter just to be safe
-                if (args.Length > 1 && args[1].ToString() == "YES")
-                {
-                    foreach (DbInventoryItem item in client.Player.Inventory.GetItemRange(eInventorySlot.FirstBackpack,
-                                 eInventorySlot.LastBackpack))
-                        client.Player.Inventory.RemoveItem(item);
-
-                    client.Out.SendMessage("Inventory cleared!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                }
-                else
-                {
-                    DisplaySyntax(client);
-                }
-            }
-        }
-
-
         //base chance in %
         public static ushort BASE_ROG_CHANCE = 15;
 
