@@ -508,6 +508,9 @@ namespace DOL.GS
 				if (!InitComponent(GameLoop.Init(), "GameLoop Init"))
 					return false;
 
+				if (!InitComponent(StatPrint.Init(), "StatPrint Init"))
+					return false;
+
 				GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
 				log.Info($"GarbageCollection IsServerGC: {System.Runtime.GCSettings.IsServerGC}" );

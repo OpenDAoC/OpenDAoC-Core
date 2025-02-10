@@ -6,7 +6,7 @@ using System.Threading;
 using DOL.Events;
 using DOL.GS.PerformanceStatistics;
 
-namespace DOL.GS.GameEvents
+namespace DOL.GS
 {
     public class StatPrint
     {
@@ -21,13 +21,12 @@ namespace DOL.GS.GameEvents
         private static IPerformanceStatistic _diskTransfersPerSecond;
         private static readonly Lock _lock  = new();
 
-        [GameServerStartedEvent]
-        public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+        public static bool Init()
         {
             if (ServerProperties.Properties.STATPRINT_FREQUENCY <= 0)
-                return;
+                return true;
 
-            lock (_lock)
+            try
             {
                 _timer = new(new TimerCallback(PrintStats), null, 10000, 0);
                 _systemCpuUsagePercent = TryToCreateStatistic(() => new SystemCpuUsagePercent());
@@ -35,20 +34,15 @@ namespace DOL.GS.GameEvents
                 _pageFaultsPerSecond = TryToCreateStatistic(() => new PageFaultsPerSecondStatistic());
                 _diskTransfersPerSecond = TryToCreateStatistic(() => new DiskTransfersPerSecondStatistic());
             }
-        }
-
-        [ScriptUnloadedEvent]
-        public static void OnScriptUnloaded(DOLEvent e, object sender, EventArgs args)
-        {
-            lock (_lock)
+            catch (Exception e)
             {
-                if (_timer == null)
-                    return;
+                if (log.IsErrorEnabled)
+                    log.Error(e);
 
-                _timer.Change(Timeout.Infinite, Timeout.Infinite);
-                _timer.Dispose();
-                _timer = null;
+                return false;
             }
+
+            return true;
         }
 
         public static void PrintStats(object state)
