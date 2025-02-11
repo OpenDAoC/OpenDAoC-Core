@@ -70,12 +70,6 @@ namespace DOL.GS
                     {
                         ISpellHandler newSpellHandler = newSpellEffect.SpellHandler;
                         Spell newSpell = newSpellHandler.Spell;
-
-                        // RAs use spells with an ID of 0. Differentiating them is tricky and requires some rewriting.
-                        // So for now let's prevent overwriting / coexistence altogether.
-                        if (newSpell.ID == 0)
-                            return false;
-
                         List<ECSGameSpellEffect> existingEffects = existingGameEffects.Cast<ECSGameSpellEffect>().ToList();
 
                         // Effects contains this effect already so refresh it
