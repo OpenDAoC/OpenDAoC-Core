@@ -2026,6 +2026,7 @@ namespace DOL.GS
             }
 
             ad.DefensePenetration = ad.Attacker.attackComponent.CalculateDefensePenetration(ad.Weapon, ad.Target.Level);
+            GamePlayer playerTarget = ad.Target as GamePlayer; // Must be done after Intercept.
 
             if (!defenseDisabled)
             {
@@ -2043,11 +2044,11 @@ namespace DOL.GS
 
                 if (evadeChance > 0)
                 {
-                    if (ad.Attacker is GamePlayer evadeAtk && evadeAtk.UseDetailedCombatLog)
-                        evadeAtk.Out.SendMessage($"target evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    if (playerAttacker != null && playerAttacker.UseDetailedCombatLog)
+                        playerAttacker.Out.SendMessage($"target evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                    if (ad.Target is GamePlayer evadeTarg && evadeTarg.UseDetailedCombatLog)
-                        evadeTarg.Out.SendMessage($"your evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    if (playerTarget != null && playerTarget.UseDetailedCombatLog)
+                        playerTarget.Out.SendMessage($"your evade%: {evadeChance * 100:0.##} rand: {evadeRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                     if (evadeChance > evadeRoll)
                         return eAttackResult.Evaded;
@@ -2066,11 +2067,11 @@ namespace DOL.GS
 
                     if (parryChance > 0)
                     {
-                        if (ad.Attacker is GamePlayer parryAtk && parryAtk.UseDetailedCombatLog)
-                            parryAtk.Out.SendMessage($"target parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        if (playerAttacker != null && playerAttacker.UseDetailedCombatLog)
+                            playerAttacker.Out.SendMessage($"target parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                        if (ad.Target is GamePlayer parryTarg && parryTarg.UseDetailedCombatLog)
-                            parryTarg.Out.SendMessage($"your parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                        if (playerTarget != null && playerTarget.UseDetailedCombatLog)
+                            playerTarget.Out.SendMessage($"your parry%: {parryChance * 100:0.##} rand: {parryRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                         if (parryChance > parryRoll)
                             return eAttackResult.Parried;
@@ -2088,6 +2089,7 @@ namespace DOL.GS
             // if (CheckDashingDefense(ad, stealthStyle, out eAttackResult result)
             //     return result;
 
+            ad.ArmorHitLocation = playerTarget.CalculateArmorHitLocation(ad); // Must be set before calling `GetMissChance`.
             double missChance = Math.Min(1, GetMissChance(action, ad, lastAttackData, attackerWeapon) * 0.01);
             double fumbleChance = ad.IsMeleeAttack ? Math.Min(1, ad.Attacker.GetModified(eProperty.FumbleChance) * 0.001) : 0;
 
@@ -2119,7 +2121,7 @@ namespace DOL.GS
                         playerAttacker.Out.SendMessage($"chance to fumble: {fumbleChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if (ad.Target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
+                if (playerTarget != null && playerTarget.UseDetailedCombatLog)
                     playerTarget.Out.SendMessage($"chance to be missed: {missChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                 if (missChance > missRoll)
@@ -2576,8 +2578,6 @@ namespace DOL.GS
 
             if (ad.Target is GamePlayer playerTarget)
             {
-                ad.ArmorHitLocation = playerTarget.CalculateArmorHitLocation(ad);
-
                 if (ad.Target.Inventory != null)
                 {
                     DbInventoryItem armor = ad.Target.Inventory.GetItem((eInventorySlot) ad.ArmorHitLocation);
