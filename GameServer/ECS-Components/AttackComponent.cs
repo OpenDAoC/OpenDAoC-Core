@@ -2088,8 +2088,10 @@ namespace DOL.GS
             // if (CheckDashingDefense(ad, stealthStyle, out eAttackResult result)
             //     return result;
 
+            GamePlayer playerTarget = ad.Target as GamePlayer;
+
             // Must be set before calling `GetMissChance`.
-            if (ad.Target is GamePlayer playerTarget)
+            if (playerTarget != null)
                 ad.ArmorHitLocation = playerTarget.CalculateArmorHitLocation(ad);
 
             double missChance = Math.Min(1, GetMissChance(action, ad, lastAttackData, attackerWeapon) * 0.01);
@@ -2123,7 +2125,7 @@ namespace DOL.GS
                         playerAttacker.Out.SendMessage($"chance to fumble: {fumbleChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
                 }
 
-                if (ad.Target is GamePlayer playerTarget && playerTarget.UseDetailedCombatLog)
+                if (playerTarget != null && playerTarget.UseDetailedCombatLog)
                     playerTarget.Out.SendMessage($"chance to be missed: {missChance * 100:0.##}% rand: {missRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
                 if (missChance > missRoll)
