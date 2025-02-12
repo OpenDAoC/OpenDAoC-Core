@@ -2023,11 +2023,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 		public static string DelveSpell(GameClient clt, Spell spell, SpellLine spellLine = null)
 		{
 			if (spell == null)
-			{
-				log.Error("Tried to delve spell but Spell was null!");
 				return "Null Spell";
-			}
-			
+
 			// We better rely on the handler to delve it correctly ! using reserved spellline as we can't guess it ! player can delve other object effect !
 			if (spellLine == null)
 				spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Reserved_Spells);
