@@ -61,7 +61,6 @@ namespace DOL.GS
                 switch (client.ClientState)
                 {
                     case GameClient.eClientState.NotConnected:
-                    case GameClient.eClientState.Linkdead:
                     case GameClient.eClientState.Connecting:
                     case GameClient.eClientState.CharScreen:
                     case GameClient.eClientState.WorldEnter:
