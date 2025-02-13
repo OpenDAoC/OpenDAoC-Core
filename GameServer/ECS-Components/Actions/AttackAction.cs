@@ -378,12 +378,10 @@ namespace DOL.GS
             if (CheckInterruptTimer())
                 return false;
 
-            // Need to find a way to not have to call 'AttackSpeed' again.
-            _interval = AttackComponent.AttackSpeed(_weapon);
             _owner.rangeAttackComponent.AttackStartTime = GameLoop.GameLoopTime;
             _owner.rangeAttackComponent.RangedAttackState = eRangedAttackState.Aim;
 
-            if (_owner.rangeAttackComponent.RangedAttackType != eRangedAttackType.Long)
+            if (_owner.rangeAttackComponent.RangedAttackType is not eRangedAttackType.Long)
             {
                 _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
@@ -394,6 +392,9 @@ namespace DOL.GS
                 else if (_owner.effectListComponent.ContainsEffectForEffectType(eEffect.SureShot))
                     _owner.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
             }
+
+            // Must be done after changing `RangedAttackType`.
+            _interval = AttackComponent.AttackSpeed(_weapon);
 
             // The 'stance' parameter appears to be used to tell whether or not the animation should be held, and doesn't seem to be related to the weapon speed.
             foreach (GamePlayer player in _owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
