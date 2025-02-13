@@ -277,48 +277,54 @@ namespace DOL.GS
         /// <returns>effective speed of the attack. average if more than one weapon.</returns>
         public int AttackSpeed(DbInventoryItem mainWeapon, DbInventoryItem leftWeapon = null)
         {
+            int minimum;
+
             if (owner is GamePlayer player)
             {
                 if (mainWeapon == null)
                     return 0;
 
+                minimum = 1500;
                 double speed = 0;
                 bool bowWeapon = false;
 
-                // If leftWeapon is null even on a dual wield attack, use the mainWeapon instead
+                // If leftWeapon is null even on a dual wield attack, use the mainWeapon instead.
                 switch (UsedHandOnLastDualWieldAttack)
                 {
                     case 2:
+                    {
                         speed = mainWeapon.SPD_ABS;
+
                         if (leftWeapon != null)
                         {
                             speed += leftWeapon.SPD_ABS;
                             speed /= 2;
                         }
+
                         break;
+                    }
                     case 1:
+                    {
                         speed = leftWeapon != null ? leftWeapon.SPD_ABS : mainWeapon.SPD_ABS;
                         break;
+                    }
                     case 0:
+                    {
                         speed = mainWeapon.SPD_ABS;
                         break;
+                    }
                 }
 
                 if (speed == 0)
                     return 0;
 
-                switch (mainWeapon.Object_Type)
-                {
-                    case (int) eObjectType.Fired:
-                    case (int) eObjectType.Longbow:
-                    case (int) eObjectType.Crossbow:
-                    case (int) eObjectType.RecurvedBow:
-                    case (int) eObjectType.CompositeBow:
-                        bowWeapon = true;
-                        break;
-                }
-
-                int qui = Math.Min(250, player.Quickness); //250 soft cap on quickness
+                bowWeapon = (eObjectType) mainWeapon.Object_Type is
+                    eObjectType.Fired or
+                    eObjectType.Longbow or
+                    eObjectType.Crossbow or
+                    eObjectType.RecurvedBow or
+                    eObjectType.CompositeBow;
+                int quickness = Math.Min(250, player.Quickness); //250 soft cap on quickness
 
                 if (bowWeapon)
                 {
@@ -330,73 +336,79 @@ namespace DOL.GS
                         //Table a: Formula used: drawspeed = bowspeed * (1-(quickness - 50)*0.002) * ((1-MoA*0.03) - (archeryspeedbonus/100))
                         //Table b: Formula used: drawspeed = bowspeed * (1-(quickness - 50)*0.002) * (1-MoA*0.03) - ((archeryspeedbonus/100 * basebowspeed))
 
-                        //For now use the standard weapon formula, later add ranger haste etc.
-                        speed *= (1.0 - (qui - 60) * 0.002);
-                        double percent = 0;
-                        // Calcul ArcherySpeed bonus to substract
+                        speed *= 1.0 - (quickness - 60) * 0.002;
+                        double percent;
                         percent = speed * 0.01 * player.GetModified(eProperty.ArcherySpeed);
-                        // Apply RA difference
                         speed -= percent;
-                        //log.Debug("speed = " + speed + " percent = " + percent + " eProperty.archeryspeed = " + GetModified(eProperty.ArcherySpeed));
 
                         if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.Critical)
                             speed = speed * 2 - (player.GetAbilityLevel(Abilities.Critical_Shot) - 1) * speed / 10;
                         else if (owner.rangeAttackComponent.RangedAttackType is eRangedAttackType.RapidFire)
+                        {
                             speed *= RangeAttackComponent.RAPID_FIRE_ATTACK_SPEED_MODIFIER;
+                            minimum = 900;
+                        }
                     }
                     else
-                    {
-                        // no archery bonus
-                        speed *= (1.0 - (qui - 60) * 0.002);
-                    }
+                        speed *= 1.0 - (quickness - 60) * 0.002;
                 }
                 else
-                {
-                    // TODO use haste
-                    //Weapon Speed*(1-(Quickness-60)/500]*(1-Haste)
-                    speed *= ((1.0 - (qui - 60) * 0.002) * 0.01 * player.GetModified(eProperty.MeleeSpeed));
-                    //Console.WriteLine($"Speed after {speed} quiMod {(1.0 - (qui - 60) * 0.002)} melee speed {0.01 * p.GetModified(eProperty.MeleeSpeed)} together {(1.0 - (qui - 60) * 0.002) * 0.01 * p.GetModified(eProperty.MeleeSpeed)}");
-                }
+                    speed *= (1.0 - (quickness - 60) * 0.002) * 0.01 * player.GetModified(eProperty.MeleeSpeed);
 
-                return (int) Math.Max(1500, speed * 100);
+                return (int) Math.Max(minimum, speed * 100);
             }
             else
             {
+                minimum = 500;
                 double speed = NpcWeaponSpeed(mainWeapon) * 100 * (1.0 - (owner.GetModified(eProperty.Quickness) - 60) / 500.0);
 
                 if (owner is GameSummonedPet pet)
                 {
                     if (pet != null)
                     {
-                        switch(pet.Name)
+                        double modifier;
+
+                        // This is pretty terrible.
+                        switch (pet.Name)
                         {
-                            case "amber simulacrum": speed *= (owner.GetModified(eProperty.MeleeSpeed) * 0.01) * 1.45; break;
-                            case "emerald simulacrum": speed *= (owner.GetModified(eProperty.MeleeSpeed) * 0.01) * 1.45; break;
-                            case "ruby simulacrum": speed *= (owner.GetModified(eProperty.MeleeSpeed) * 0.01) * 0.95; break;
-                            case "sapphire simulacrum": speed *= (owner.GetModified(eProperty.MeleeSpeed) * 0.01) * 0.95; break;
-                            case "jade simulacrum": speed *= (owner.GetModified(eProperty.MeleeSpeed) * 0.01) * 0.95; break;
-                            default: speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.01; break;
+                            case "amber simulacrum":
+                            case "emerald simulacrum":
+                            {
+                                modifier = 1.45;
+                                break;
+                            }
+                            case "ruby simulacrum":
+                            case "sapphire simulacrum":
+                            case "jade simulacrum":
+                            {
+                                modifier = 0.95;
+                                break;
+                            }
+                            default:
+                            {
+                                modifier = 1.0;
+                                break;
+                            }
                         }
-                        //return (int)speed;
+
+                        speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.01 * modifier;
                     }
                 }
                 else
                 {
                     if (owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
                     {
-                        // Old archery uses archery speed, but new archery uses casting speed
+                        // Old archery uses archery speed, but new archery uses casting speed.
                         if (Properties.ALLOW_OLD_ARCHERY)
                             speed *= 1.0 - owner.GetModified(eProperty.ArcherySpeed) * 0.01;
                         else
                             speed *= 1.0 - owner.GetModified(eProperty.CastingSpeed) * 0.01;
                     }
                     else
-                    {
                         speed *= owner.GetModified(eProperty.MeleeSpeed) * 0.01;
-                    }
                 }
 
-                return (int) Math.Max(500, speed);
+                return (int) Math.Max(minimum, speed);
             }
         }
 
