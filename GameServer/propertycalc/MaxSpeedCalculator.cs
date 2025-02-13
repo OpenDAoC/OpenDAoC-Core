@@ -112,9 +112,18 @@ namespace DOL.GS.PropertyCalc
                         if (!living.InCombat)
                         {
                             if (playerOwner != null)
+                            {
                                 owner = playerOwner;
+                                GameNPC ownerSteed = playerOwner.Steed;
+
+                                if (ownerSteed != null)
+                                    return ownerSteed.MaxSpeed;
+                            }
 
                             int distance = brain.Body.GetDistanceTo(owner);
+
+                            if (playerOwner != null && playerOwner.IsSprinting)
+                                speed *= 1.3;
 
                             if (distance > 20)
                                 speed *= 1.25;
@@ -126,15 +135,6 @@ namespace DOL.GS.PropertyCalc
 
                             if (ownerSpeedAdjust > 1.0)
                                 speed *= ownerSpeedAdjust;
-
-                            if (playerOwner != null)
-                            {
-                                if (playerOwner.IsOnHorse)
-                                    speed *= 3.0;
-
-                                if (playerOwner.IsSprinting)
-                                    speed *= 1.3;
-                            }
                         }
                     }
                 }
