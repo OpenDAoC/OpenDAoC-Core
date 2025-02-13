@@ -101,7 +101,7 @@ namespace DOL.GS.PropertyCalc
             }
             else if (living is GameNPC npc)
             {
-                if (npc.Brain is IControlledBrain brain)
+                if (!living.InCombat && npc.Brain is IControlledBrain brain)
                 {
                     GameLiving owner = brain.Owner;
 
@@ -133,11 +133,9 @@ namespace DOL.GS.PropertyCalc
                                     speed *= 3.0;
 
                                 if (playerOwner.IsSprinting)
-                                    speed *= 1.4;
+                                    speed *= 1.3;
                             }
                         }
-                        else if (playerOwner != null && playerOwner.IsSprinting)
-                            speed *= 1.3;
                     }
                 }
 
