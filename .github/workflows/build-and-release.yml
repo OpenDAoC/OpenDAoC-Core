@@ -45,7 +45,7 @@ jobs:
             page=$((page + 1))
           done
             
-          echo "count=$release_count" >> $GITHUB_OUTPUT
+          echo "count=$((release_count + 1))" >> $GITHUB_OUTPUT
 
       - name: 🏷️ Set version
         id: set_version
