@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
@@ -20,6 +21,7 @@ namespace DOL.GS
         private const int STATIC_OBJECT_UPDATE_MIN_DISTANCE = 4000;
 
         private static List<GameClient> _clients = new();
+        private static int _entityCount; // For diagnostics.
         private static SimpleDisposableLock _lock = new(LockRecursionPolicy.SupportsRecursion);
         private static int _lastValidIndex;
         private static int _clientCount;
@@ -46,6 +48,10 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
             Parallel.For(0, _lastValidIndex + 1, EndTickInternal);
+
+            if (Diagnostics.CheckEntityCounts)
+                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _clientCount, _clients.Count);
+
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
@@ -55,7 +61,6 @@ namespace DOL.GS
 
             if (client?.EntityManagerId.IsSet != true)
                 return;
-
             try
             {
                 switch (client.ClientState)
@@ -114,6 +119,9 @@ namespace DOL.GS
 
             if (client?.EntityManagerId.IsSet != true)
                 return;
+
+            if (Diagnostics.CheckEntityCounts)
+                Interlocked.Increment(ref _clientCount);
 
             try
             {

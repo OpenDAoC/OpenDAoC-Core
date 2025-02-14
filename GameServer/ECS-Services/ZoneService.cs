@@ -12,6 +12,7 @@ namespace DOL.GS
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(ZoneService);
         private static List<ObjectChangingSubZone> _list;
+        private static int _entityCount;
 
         public static void Tick()
         {
@@ -19,6 +20,10 @@ namespace DOL.GS
             Diagnostics.StartPerfCounter(SERVICE_NAME);
             _list = EntityManager.UpdateAndGetAll<ObjectChangingSubZone>(EntityManager.EntityType.ObjectChangingSubZone, out int lastValidIndex);
             Parallel.For(0, lastValidIndex + 1, TickInternal);
+
+            if (Diagnostics.CheckEntityCounts)
+                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
+
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
@@ -28,6 +33,9 @@ namespace DOL.GS
 
             if (objectChangingSubZone?.EntityManagerId.IsSet != true)
                 return;
+
+            if (Diagnostics.CheckEntityCounts)
+                Interlocked.Increment(ref _entityCount);
 
             EntityManager.Remove(objectChangingSubZone);
             SubZoneObject subZoneObject = null;

@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using DOL.AI;
-using DOL.AI.Brain;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -13,33 +12,18 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(NpcService);
-
-        private static int _nonNullBrainCount;
-        private static int _nullBrainCount;
-
-        public static int DebugTickCount { get; set; } // Will print active brain count/array size info for debug purposes if superior to 0.
-        private static bool Debug => DebugTickCount > 0;
         private static List<ABrain> _list;
+        private static int _entityCount;
 
         public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-            if (Debug)
-            {
-                _nonNullBrainCount = 0;
-                _nullBrainCount = 0;
-            }
-
             _list = EntityManager.UpdateAndGetAll<ABrain>(EntityManager.EntityType.Brain, out int lastValidIndex);
             Parallel.For(0, lastValidIndex + 1, TickInternal);
 
-            if (Debug)
-            {
-                log.Debug($"==== Non-null NCs in EntityManager array: {_nonNullBrainCount} | Null NPCs: {_nullBrainCount} | Total size: {_list.Count} ====");
-                DebugTickCount--;
-            }
+            if (Diagnostics.CheckEntityCounts)
+                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
@@ -49,15 +33,10 @@ namespace DOL.GS
             ABrain brain = _list[index];
 
             if (brain?.EntityManagerId.IsSet != true)
-            {
-                if (Debug)
-                    Interlocked.Increment(ref _nullBrainCount);
-
                 return;
-            }
 
-            if (Debug)
-                Interlocked.Increment(ref _nonNullBrainCount);
+            if (Diagnostics.CheckEntityCounts)
+                Interlocked.Increment(ref _entityCount);
 
             try
             {

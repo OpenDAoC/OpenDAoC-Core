@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
@@ -15,6 +16,7 @@ namespace DOL.GS
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(EffectListService);
         private static List<EffectListComponent> _list;
+        private static int _entityCount;
 
         public static void Tick()
         {
@@ -22,6 +24,10 @@ namespace DOL.GS
             Diagnostics.StartPerfCounter(SERVICE_NAME);
             _list = EntityManager.UpdateAndGetAll<EffectListComponent>(EntityManager.EntityType.EffectListComponent, out int lastValidIndex);
             Parallel.For(0, lastValidIndex + 1, TickInternal);
+
+            if (Diagnostics.CheckEntityCounts)
+                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
+
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
@@ -33,6 +39,9 @@ namespace DOL.GS
             {
                 if (effectListComponent?.EntityManagerId.IsSet != true)
                     return;
+
+                if (Diagnostics.CheckEntityCounts)
+                    Interlocked.Increment(ref _entityCount);
 
                 long startTick = GameLoop.GetCurrentTime();
                 HandleEffects(effectListComponent);

@@ -11,33 +11,18 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(TimerService);
-
         private static List<ECSGameTimer> _list;
-        private static int _nonNullTimerCount;
-        private static int _nullTimerCount;
-
-        public static int DebugTickCount { get; set; } // Will print active brain count/array size info for debug purposes if superior to 0.
-        private static bool Debug => DebugTickCount > 0;
+        private static int _entityCount;
 
         public static void Tick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-            if (Debug)
-            {
-                _nonNullTimerCount = 0;
-                _nullTimerCount = 0;
-            }
-
             _list = EntityManager.UpdateAndGetAll<ECSGameTimer>(EntityManager.EntityType.Timer, out int lastValidIndex);
             Parallel.For(0, lastValidIndex + 1, TickInternal);
 
-            if (Debug)
-            {
-                log.Debug($"==== Non-null timers in EntityManager array: {_nonNullTimerCount} | Null timers: {_nullTimerCount} | Total size: {_list.Count} ====");
-                DebugTickCount--;
-            }
+            if (Diagnostics.CheckEntityCounts)
+                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
@@ -47,15 +32,10 @@ namespace DOL.GS
             ECSGameTimer timer = _list[index];
 
             if (timer?.EntityManagerId.IsSet != true)
-            {
-                if (Debug)
-                    Interlocked.Increment(ref _nullTimerCount);
-
                 return;
-            }
 
-            if (Debug)
-                Interlocked.Increment(ref _nonNullTimerCount);
+            if (Diagnostics.CheckEntityCounts)
+                Interlocked.Increment(ref _entityCount);
 
             try
             {

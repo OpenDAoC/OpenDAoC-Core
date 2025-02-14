@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using ECS.Debug;
 
@@ -11,6 +12,7 @@ namespace DOL.GS
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(CraftingService);
         private static List<CraftComponent> _list;
+        private static int _entityCount;
 
         public static void Tick()
         {
@@ -18,6 +20,10 @@ namespace DOL.GS
             Diagnostics.StartPerfCounter(SERVICE_NAME);
             _list = EntityManager.UpdateAndGetAll<CraftComponent>(EntityManager.EntityType.CraftComponent, out int lastValidIndex);
             Parallel.For(0, lastValidIndex + 1, TickInternal);
+
+            if (Diagnostics.CheckEntityCounts)
+                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
+
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
@@ -29,6 +35,9 @@ namespace DOL.GS
             {
                 if (craftComponent?.EntityManagerId.IsSet != true)
                     return;
+
+                if (Diagnostics.CheckEntityCounts)
+                    Interlocked.Increment(ref _entityCount);
 
                 craftComponent.Tick();
             }
