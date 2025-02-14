@@ -70,22 +70,23 @@ namespace DOL.GS
             if (effectListComponent.Owner.ObjectState is eObjectState.Inactive)
                 return;
 
-            List<ECSGameEffect> effectsList = [];
-
-            lock (effectListComponent.EffectsLock)
+            if (!effectListComponent.Owner.IsAlive)
             {
-                foreach (var pair in effectListComponent.Effects)
-                    effectsList.AddRange(pair.Value);
+                effectListComponent.CancelAll();
+                return;
             }
 
-            foreach (ECSGameEffect effect in effectsList)
+            foreach (List<ECSGameEffect> list in effectListComponent.Effects.Values.ToList())
             {
-                if (!effect.Owner.IsAlive)
-                    EffectService.RequestCancelEffect(effect);
-                else if (effect is ECSGameAbilityEffect abilityEffect)
-                    HandleAbilityEffect(abilityEffect);
-                else if (effect is ECSGameSpellEffect spellEffect)
-                    HandleSpellEffect(spellEffect);
+                for (int i = list.Count - 1; i >= 0; i--)
+                {
+                    ECSGameEffect effect = list[i];
+
+                    if (effect is ECSGameAbilityEffect abilityEffect)
+                        HandleAbilityEffect(abilityEffect);
+                    else if (effect is ECSGameSpellEffect spellEffect)
+                        HandleSpellEffect(spellEffect);
+                }
             }
 
             static void HandleAbilityEffect(ECSGameAbilityEffect abilityEffect)
@@ -130,8 +131,12 @@ namespace DOL.GS
                     if (!ServiceUtils.ShouldTickAdjust(ref spellEffect.NextTick))
                         return;
 
-                    int radiusToCheck = spellEffect.SpellHandler.Spell.SpellType is not eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500;
-                    bool isWithinRadius = spellEffect.SpellHandler.Caster.IsWithinRadius(spellEffect.Owner, radiusToCheck);
+                    ISpellHandler spellHandler = spellEffect.SpellHandler;
+                    GameLiving caster = spellHandler.Caster;
+                    GameLiving effectOwner = spellEffect.Owner;
+
+                    int radiusToCheck = spellHandler.Spell.SpellType is not eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500;
+                    bool isWithinRadius = effectOwner == caster || caster.IsWithinRadius(effectOwner, radiusToCheck);
 
                     // Check if player is too far away from Caster for Concentration buff, or back in range.
                     if (!isWithinRadius)
@@ -139,8 +144,9 @@ namespace DOL.GS
                         if (!spellEffect.IsDisabled)
                         {
                             ECSGameSpellEffect disabled = null;
-                            if (spellEffect.Owner.effectListComponent.GetSpellEffects(spellEffect.EffectType).Count > 1)
-                                disabled = spellEffect.Owner.effectListComponent.GetBestDisabledSpellEffect(spellEffect.EffectType);
+
+                            if (effectOwner.effectListComponent.GetSpellEffects(spellEffect.EffectType).Count > 1)
+                                disabled = effectOwner.effectListComponent.GetBestDisabledSpellEffect(spellEffect.EffectType);
 
                             EffectService.RequestDisableEffect(spellEffect);
 
@@ -152,7 +158,7 @@ namespace DOL.GS
                     {
                         //Check if this effect is better than currently enabled effects. Enable this effect and disable other effect if true.
                         ECSGameSpellEffect enabled = null;
-                        spellEffect.Owner.effectListComponent.Effects.TryGetValue(spellEffect.EffectType, out List<ECSGameEffect> sameEffectTypeEffects);
+                        effectOwner.effectListComponent.Effects.TryGetValue(spellEffect.EffectType, out List<ECSGameEffect> sameEffectTypeEffects);
                         bool isBest = false;
 
                         if (sameEffectTypeEffects.Count == 1)
@@ -167,7 +173,7 @@ namespace DOL.GS
                                     if (!eff.IsDisabled)
                                     {
                                         enabled = eff;
-                                        isBest = spellEffect.SpellHandler.Spell.Value > eff.SpellHandler.Spell.Value;
+                                        isBest = spellHandler.Spell.Value > eff.SpellHandler.Spell.Value;
                                     }
                                 }
                             }
