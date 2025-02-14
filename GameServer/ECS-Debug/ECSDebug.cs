@@ -8,7 +8,6 @@ using DOL.Events;
 using DOL.GS;
 using DOL.Logging;
 using ECS.Debug;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ECS.Debug
 {
@@ -29,8 +28,9 @@ namespace ECS.Debug
         private static Stopwatch _gameEventMgrNotifyStopwatch;
         private static Dictionary<string, List<double>> _gameEventMgrNotifyTimes = new();
 
-        public static int CheckEntityCountTicks;
-        public static bool CheckEntityCounts => CheckEntityCountTicks > 0;
+        public static int _checkEntityCountTicks;
+        public static bool CheckEntityCounts => _checkEntityCountTicks > 0;
+        public static bool RequestCheckEntityCounts { get; set; }
 
         public static void PrintEntityCount(string serviceName, ref int nonNull, int total)
         {
@@ -67,8 +67,14 @@ namespace ECS.Debug
                     ReportGameEventMgrNotifyTimes();
             }
 
-            if (CheckEntityCounts)
-                CheckEntityCountTicks--;
+            // Delay by one tick to account for the fact that this was most likely requested from ClientService.
+            if (RequestCheckEntityCounts)
+            {
+                _checkEntityCountTicks = 1;
+                RequestCheckEntityCounts = false;
+            }
+            else if (CheckEntityCounts)
+                _checkEntityCountTicks--;
         }
 
         private static void InitializeStreamWriter()
@@ -251,7 +257,7 @@ namespace DOL.GS.Commands
 
             if (args[1].Equals("entity", StringComparison.OrdinalIgnoreCase))
             {
-                Diagnostics.CheckEntityCountTicks = 1;
+                Diagnostics.RequestCheckEntityCounts = true;
                 DisplayMessage(client, "Counting entities...");
                 return;
             }

@@ -50,7 +50,7 @@ namespace DOL.GS
             Parallel.For(0, _lastValidIndex + 1, EndTickInternal);
 
             if (Diagnostics.CheckEntityCounts)
-                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _clientCount, _clients.Count);
+                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _clients.Count);
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
@@ -61,6 +61,10 @@ namespace DOL.GS
 
             if (client?.EntityManagerId.IsSet != true)
                 return;
+
+            if (Diagnostics.CheckEntityCounts)
+                Interlocked.Increment(ref _entityCount);
+
             try
             {
                 switch (client.ClientState)
