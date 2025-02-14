@@ -102,6 +102,7 @@ namespace DOL.GS
 					LoadClassSpecializations();
 					LoadAbilityHandlers();
 					LoadSkillHandlers();
+					ScriptMgr.CacheSpellHandlerConstructors();
 					m_loaded = true;
 				}
 			}
@@ -740,7 +741,7 @@ namespace DOL.GS
 				foreach (KeyValuePair<string, Type> entry in ht)
 				{
 					if (log.IsDebugEnabled)
-						log.DebugFormat("\tFound ability handler for {0}", entry.Key);
+						log.DebugFormat("Found ability handler for {0}", entry.Key);
 
 					if (m_abilityActionHandler.ContainsKey(entry.Key))
 					{
@@ -776,16 +777,16 @@ namespace DOL.GS
 						try
 						{
 							if (m_abilityActionHandler.ContainsKey(entry.Key))
-								message = "\tFound new ability handler for " + entry.Key;
+								message = "Found new ability handler for " + entry.Key;
 							else
-								message = "\tFound ability handler for " + entry.Key;
+								message = "Found ability handler for " + entry.Key;
 
 							m_abilityActionHandler[entry.Key] = GetNewAbilityActionHandlerConstructor(entry.Value);
 						}
 						catch (Exception ex)
 						{
 							if (log.IsErrorEnabled)
-								log.ErrorFormat("Error While instantiacting IAbilityHandler {0} using {1} in GameServerScripts : {2}", entry.Key, entry.Value, ex);
+								log.ErrorFormat("Error while instantiating IAbilityHandler {0} using {1} in GameServerScripts : {2}", entry.Key, entry.Value, ex);
 						}
 
 						if (log.IsDebugEnabled)
@@ -823,7 +824,7 @@ namespace DOL.GS
 				foreach (KeyValuePair<string, Type> entry in ht)
 				{
 					if (log.IsDebugEnabled)
-						log.Debug("\tFound skill handler for " + entry.Key);
+						log.Debug("Found skill handler for " + entry.Key);
 
 					if (m_specActionHandler.ContainsKey(entry.Key))
 					{
@@ -861,9 +862,9 @@ namespace DOL.GS
 						try
 						{
 							if (m_specActionHandler.ContainsKey(entry.Key))
-								message = "\tFound new spec handler for " + entry.Key;
+								message = "Found new spec handler for " + entry.Key;
 							else
-								message = "\tFound spec handler for " + entry.Key;
+								message = "Found spec handler for " + entry.Key;
 
 							m_specActionHandler[entry.Key] = GetNewSpecActionHandlerConstructor(entry.Value);
 						}

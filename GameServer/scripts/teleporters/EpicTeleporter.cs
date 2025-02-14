@@ -78,7 +78,7 @@ namespace DOL.GS.Scripts
 		[ScriptLoadedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
-            log.Info("\tTeleporter initialized: true");
+            log.Info("Teleporter initialized: true");
         }	
     }
 	

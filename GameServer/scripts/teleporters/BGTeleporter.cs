@@ -147,7 +147,7 @@ namespace DOL.GS.Scripts
 		[ScriptLoadedEvent]
         public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
         {
-            log.Info("\t BG Teleporter initialized: true");
+            log.Info("BG Teleporter initialized: true");
         }	
     }
 }

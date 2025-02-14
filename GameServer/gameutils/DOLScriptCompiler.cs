@@ -120,7 +120,7 @@ namespace DOL.GS
             var errorMessages = new List<string>();
             foreach (var diag in errorDiagnostics)
             {
-                errorMessages.Add($"\t{diag.Location} {diag.Id}: {diag.GetMessage()}");
+                errorMessages.Add($"{diag.Location} {diag.Id}: {diag.GetMessage()}");
             }
             return errorMessages;
         }
