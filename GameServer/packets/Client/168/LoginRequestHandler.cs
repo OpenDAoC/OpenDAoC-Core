@@ -211,7 +211,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 
 					if (Log.IsInfoEnabled)
-						Log.Info(string.Format($"({ipAddress})User {userName} logging on! ({client.Version} type:{client.ClientType} add:{client.ClientAddons:G})"));
+						Log.Info(string.Format($"({ipAddress}) User {userName} logging on! ({client.Version} type:{client.ClientType} add:{client.ClientAddons:G})"));
 
 					GameClient otherClient = ClientService.GetClientFromAccountName(userName);
 

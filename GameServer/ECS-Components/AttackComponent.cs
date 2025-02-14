@@ -98,6 +98,13 @@ namespace DOL.GS
 
         public void Tick()
         {
+            if (owner.ObjectState is not eObjectState.Active)
+            {
+                attackAction.CleanUp();
+                EntityManager.Remove(this);
+                return;
+            }
+
             if (StartAttackRequested)
             {
                 StartAttackRequested = false;

@@ -49,7 +49,7 @@ namespace DOL.GS
 
         private static void HandleEffects(EffectListComponent effectListComponent)
         {
-            if (effectListComponent.Effects.Count == 0)
+            if (effectListComponent.Effects.Count == 0 || effectListComponent.Owner.ObjectState is eObjectState.Deleted)
             {
                 EntityManager.Remove(effectListComponent);
                 return;

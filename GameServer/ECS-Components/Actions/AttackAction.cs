@@ -1,7 +1,6 @@
 ﻿using System;
 using DOL.Database;
 using DOL.GS.Styles;
-using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
@@ -138,12 +137,6 @@ namespace DOL.GS
 
         private bool ShouldTick()
         {
-            if (_owner.ObjectState != eObjectState.Active)
-            {
-                CleanUp();
-                return false;
-            }
-
             return _owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance
                 ? ServiceUtils.ShouldTickAdjust(ref _nextMeleeTick)
                 : ServiceUtils.ShouldTickAdjust(ref _nextRangedTick);
@@ -403,7 +396,7 @@ namespace DOL.GS
             return true;
         }
 
-        protected virtual void CleanUp()
+        public virtual void CleanUp()
         {
             LastAttackData = null;
             _target = null;

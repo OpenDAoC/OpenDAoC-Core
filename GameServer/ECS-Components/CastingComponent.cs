@@ -6,6 +6,7 @@ using DOL.GS.Commands;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Language;
+using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
@@ -36,6 +37,12 @@ namespace DOL.GS
 
         public void Tick()
         {
+            if (Owner.ObjectState is not eObjectState.Active)
+            {
+                EntityManager.Remove(this);
+                return;
+            }
+
             SpellHandler?.Tick();
             ProcessStartSkillRequests();
 
