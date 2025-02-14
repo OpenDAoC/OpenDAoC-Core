@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using ECS.Debug;
+using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
@@ -57,7 +58,7 @@ namespace DOL.GS
 
             // Pause if the owner is changing region.
             // Also includes respawning NPCs, so this relies on the reaper service ticking last, otherwise effects wouldn't be cancelled.
-            if (effectListComponent.Owner.ObjectState is GameObject.eObjectState.Inactive)
+            if (effectListComponent.Owner.ObjectState is eObjectState.Inactive)
                 return;
 
             List<ECSGameEffect> effectsList = [];
