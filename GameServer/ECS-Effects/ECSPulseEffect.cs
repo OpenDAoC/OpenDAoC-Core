@@ -41,7 +41,7 @@ namespace DOL.GS
                 ECSGameSpellEffect effect = pair.Value;
 
                 if (effect.EffectType is eEffect.FocusShield)
-                    EffectService.RequestImmediateCancelEffect(effect);
+                    EffectService.RequestCancelEffect(effect);
             }
         }
     }

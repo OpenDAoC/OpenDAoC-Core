@@ -81,7 +81,7 @@ namespace DOL.GS
             }
 
             if (!PairedEffect.CancelEffect)
-                EffectService.RequestImmediateCancelEffect(PairedEffect);
+                EffectService.RequestCancelEffect(PairedEffect);
 
             base.OnStopEffect();
         }

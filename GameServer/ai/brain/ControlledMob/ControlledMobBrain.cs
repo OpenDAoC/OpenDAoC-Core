@@ -401,7 +401,7 @@ namespace DOL.AI.Brain
 								break;
 
 							if (existingEffectFromAnotherSource != null)
-								EffectService.RequestImmediateCancelEffect(existingEffectFromAnotherSource);
+								EffectService.RequestCancelEffect(existingEffectFromAnotherSource);
 
 							new InterceptECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1), Body, playerOwner);
 						}
@@ -420,7 +420,7 @@ namespace DOL.AI.Brain
 								break;
 
 							if (existingEffectFromAnotherSource != null)
-								EffectService.RequestImmediateCancelEffect(existingEffectFromAnotherSource);
+								EffectService.RequestCancelEffect(existingEffectFromAnotherSource);
 
 							new GuardECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1, null), Body, playerOwner);
 						}
@@ -439,7 +439,7 @@ namespace DOL.AI.Brain
 								break;
 
 							if (existingEffectFromAnotherSource != null)
-								EffectService.RequestImmediateCancelEffect(existingEffectFromAnotherSource);
+								EffectService.RequestCancelEffect(existingEffectFromAnotherSource);
 
 							new ProtectECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1, null), Body, playerOwner);
 						}
@@ -928,7 +928,7 @@ namespace DOL.AI.Brain
 			foreach (ECSGameSpellEffect effect in Body.effectListComponent.GetSpellEffects())
 			{
 				if (effect.EffectType is eEffect.Pet or eEffect.Charm)
-					EffectService.RequestImmediateCancelEffect(effect);
+					EffectService.RequestCancelEffect(effect);
 			}
 		}
 

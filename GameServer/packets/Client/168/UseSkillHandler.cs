@@ -92,7 +92,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (sk is Spell spell && spell.IsPulsing && player.ActivePulseSpells.ContainsKey(spell.SpellType))
                 {
                     ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(player, spell);
-                    EffectService.RequestImmediateCancelConcEffect(effect);
+                    EffectService.RequestCancelConcEffect(effect);
 
                     if (spell.InstrumentRequirement == 0)
                         player.Out.SendMessage("You cancel your effect.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);

@@ -1,3 +1,4 @@
+using System.Threading;
 using DOL.Database;
 using DOL.GS.Spells;
 
@@ -40,6 +41,7 @@ namespace DOL.GS
         public GamePlayer OwnerPlayer;
         public long NextTick;
         public int PreviousPosition = -1;
+        public readonly Lock CancelLock = new();
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Effect);
         public ISpellHandler SpellHandler { get; protected set; }
 

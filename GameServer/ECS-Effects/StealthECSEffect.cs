@@ -38,7 +38,7 @@ namespace DOL.GS
             List<ECSPulseEffect> effects = OwnerPlayer.effectListComponent.GetAllPulseEffects();
 
             for (int i = 0; i < effects.Count; i++)
-                EffectService.RequestImmediateCancelConcEffect(effects[i]);
+                EffectService.RequestCancelConcEffect(effects[i]);
 
             OwnerPlayer.Sprint(false);
 
@@ -80,8 +80,8 @@ namespace DOL.GS
                 }
             }
 
-            EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Vanish));
-            EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Camouflage));
+            EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Vanish));
+            EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(OwnerPlayer, eEffect.Camouflage));
             StealthStateChanged();
         }
 

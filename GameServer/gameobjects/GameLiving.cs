@@ -1437,7 +1437,7 @@ namespace DOL.GS
 					var spellEffect = effects[i] as ECSGameSpellEffect;
 					if (spellEffect != null && spellEffect.Name.ToLower().Equals("speed of the realm"))
 					{
-						EffectService.RequestImmediateCancelEffect(effects[i]);
+						EffectService.RequestCancelEffect(effects[i]);
 					}
 				}
             }
@@ -1577,7 +1577,7 @@ namespace DOL.GS
 							(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
 						if (ablativeHp <= 0)
-							EffectService.RequestImmediateCancelEffect(effect);
+							EffectService.RequestCancelEffect(effect);
 						else
 							effect.RemainingValue = ablativeHp;
 					}
@@ -1663,7 +1663,7 @@ namespace DOL.GS
 				effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
 
 				if (effect != null)
-					EffectService.RequestImmediateCancelEffect(effect);
+					EffectService.RequestCancelEffect(effect);
 			}
 
 			// Remove Snare/Root
@@ -1672,7 +1672,7 @@ namespace DOL.GS
 				effect = EffectListService.GetEffectOnTarget(this, eEffect.Snare);
 
 				if (effect != null)
-					EffectService.RequestImmediateCancelEffect(effect);
+					EffectService.RequestCancelEffect(effect);
 			}
 
 			// Remove MovementSpeedDebuff
@@ -1681,12 +1681,12 @@ namespace DOL.GS
 				effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
 
 				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != eSpellType.UnbreakableSpeedDecrease)
-					EffectService.RequestImmediateCancelEffect(effect);
+					EffectService.RequestCancelEffect(effect);
 
 				effect = EffectListService.GetEffectOnTarget(this, eEffect.Ichor);
 
 				if (effect != null)
-					EffectService.RequestImmediateCancelEffect(effect);
+					EffectService.RequestCancelEffect(effect);
 			}
 
 			return removeMez || removeSnare || removeMovementSpeedDebuff;
@@ -1709,7 +1709,7 @@ namespace DOL.GS
 
 					var spellEffect = effects[i];
 					if (spellEffect != null && spellEffect.SpellHandler.Spell.ID is 2430) // Speed of the Realm
-						EffectService.RequestImmediateCancelEffect(effects[i]);
+						EffectService.RequestCancelEffect(effects[i]);
 				}
             }
 
@@ -1740,7 +1740,7 @@ namespace DOL.GS
 							continue;
 					}
 					
-					EffectService.RequestImmediateCancelEffect(effects[i]);
+					EffectService.RequestCancelEffect(effects[i]);
 				}
             }
 
@@ -1758,7 +1758,7 @@ namespace DOL.GS
 				for (int i = 0; i < ownerEffects.Count; i++)
 				{
 					if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target != eSpellTarget.SELF)
-						EffectService.RequestImmediateCancelEffect(ownerEffects[i]);
+						EffectService.RequestCancelEffect(ownerEffects[i]);
 				}				
             }
         }

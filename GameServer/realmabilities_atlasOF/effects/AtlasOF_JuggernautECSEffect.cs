@@ -35,7 +35,7 @@ namespace DOL.GS.Effects
 
         public void Cancel(bool playerCancel)
         {
-            EffectService.RequestImmediateCancelEffect(this, playerCancel);
+            EffectService.RequestCancelEffect(this, playerCancel);
             OnStopEffect();
         }
     }

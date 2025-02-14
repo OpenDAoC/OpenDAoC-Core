@@ -263,7 +263,7 @@ namespace DOL.GS
 
                         if (factor <= 0)
                         {
-                            EffectService.RequestImmediateCancelEffect(spellEffect);
+                            EffectService.RequestCancelEffect(spellEffect);
                             return;
                         }
                     }
@@ -361,7 +361,7 @@ namespace DOL.GS
                 if (effectToCancel == null)
                     return false;
 
-                EffectService.RequestImmediateCancelEffect(effectToCancel);
+                EffectService.RequestCancelEffect(effectToCancel);
                 return true;
             }
         }

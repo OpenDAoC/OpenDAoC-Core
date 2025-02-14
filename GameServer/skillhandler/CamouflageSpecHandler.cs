@@ -18,7 +18,7 @@ namespace DOL.GS.SkillHandler
 
             ECSGameEffect camouflage = EffectListService.GetEffectOnTarget(player, eEffect.Camouflage);
 
-            if (EffectService.RequestImmediateCancelEffect(camouflage))
+            if (EffectService.RequestCancelEffect(camouflage))
                 return;
 
             new CamouflageECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));

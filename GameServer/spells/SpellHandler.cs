@@ -477,7 +477,7 @@ namespace DOL.GS.Spells
 			{
 				ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(m_caster, m_spell);
 
-				if (EffectService.RequestImmediateCancelConcEffect(effect))
+				if (EffectService.RequestCancelConcEffect(effect))
 				{
 					if (m_spell.InstrumentRequirement == 0)
 						MessageToCaster("You cancel your effect.", eChatType.CT_Spell);
@@ -1408,7 +1408,7 @@ namespace DOL.GS.Spells
 					IEnumerable<ECSPulseEffect> effects = m_caster.effectListComponent.GetAllPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
 
 					foreach (ECSPulseEffect effect in effects)
-						EffectService.RequestImmediateCancelConcEffect(effect);
+						EffectService.RequestCancelConcEffect(effect);
 				}
 
 				// Prevent `EffectListService` from pulsing flute mez, since it won't handle it correctly.
@@ -2621,7 +2621,7 @@ namespace DOL.GS.Spells
 				if (!pulseSpell.SpellHandler.Spell.IsFocus)
 					continue;
 
-				if (EffectService.RequestImmediateCancelEffect(pulseSpell))
+				if (EffectService.RequestCancelEffect(pulseSpell))
 					cancelled = true;
 			}
 

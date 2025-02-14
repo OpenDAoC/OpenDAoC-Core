@@ -29,7 +29,7 @@ namespace DOL.GS.Effects
         public override void OnEffectPulse()
         {
             if (_healthPool <= 0)
-                EffectService.RequestImmediateCancelEffect(this);
+                EffectService.RequestCancelEffect(this);
 
             if (OwnerPlayer.Group != null)
             {
@@ -52,7 +52,7 @@ namespace DOL.GS.Effects
                     int difference = currentLiving.MaxHealth - currentLiving.Health;
 
                     if (_healthPool <= 0)
-                        EffectService.RequestImmediateCancelEffect(this);
+                        EffectService.RequestCancelEffect(this);
 
                     if (_healthPool > difference)
                     {

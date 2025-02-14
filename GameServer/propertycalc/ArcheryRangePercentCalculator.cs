@@ -53,7 +53,7 @@ namespace DOL.GS.PropertyCalc
 				ra = 50;
 				TrueShotECSGameEffect effect = (TrueShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(living, eEffect.TrueShot);
 				if (effect != null)
-					EffectService.RequestImmediateCancelEffect(effect, false);
+					EffectService.RequestCancelEffect(effect, false);
 			}
 
 			return item + ra;

@@ -88,7 +88,7 @@ namespace DOL.GS.SkillHandler
 			//}
 			ECSGameEffect berserk = EffectListService.GetEffectOnTarget(player, eEffect.Berserk);
 			if (berserk != null)
-				EffectService.RequestImmediateCancelEffect(berserk);
+				EffectService.RequestCancelEffect(berserk);
 
 			player.DisableSkill(ab, REUSE_TIMER);
 

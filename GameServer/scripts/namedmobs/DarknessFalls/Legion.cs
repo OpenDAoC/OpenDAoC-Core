@@ -563,7 +563,7 @@ namespace DOL.AI.Brain
                         var effect = EffectListService.GetEffectOnTarget(target, eEffect.Bladeturn);
                         if (effect != null)
                         {
-                            EffectService.RequestImmediateCancelEffect(effect);//remove bladeturn effect here
+                            EffectService.RequestCancelEffect(effect);//remove bladeturn effect here
                             bladeturnConsumed++;
                             if(target is GamePlayer player)
                             {

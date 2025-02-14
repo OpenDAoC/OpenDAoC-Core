@@ -83,7 +83,7 @@ namespace DOL.GS.Effects
 
         public void Cancel(bool playerCancel)
         {
-            EffectService.RequestImmediateCancelEffect(this, playerCancel);
+            EffectService.RequestCancelEffect(this, playerCancel);
 
             foreach (GamePlayer playerInRadius in OwnerPlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 playerInRadius.Out.SendInterruptAnimation(OwnerPlayer);

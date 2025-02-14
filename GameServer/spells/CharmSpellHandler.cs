@@ -338,7 +338,7 @@ namespace DOL.GS.Spells
                 ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(Caster, Spell);
 
                 if (song != null)
-                    EffectService.RequestImmediateCancelConcEffect(song);
+                    EffectService.RequestCancelConcEffect(song);
 
                 return;
             }

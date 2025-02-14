@@ -89,69 +89,47 @@ namespace DOL.GS
         /// <summary>
         /// Immediately cancels an ECSGameEffect.
         /// </summary>
-        public static void RequestCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
+        public static bool RequestCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
         {
-            if (effect is null)
-                return;
+            if (effect.CancelEffect)
+                return false;
 
-            if (effect is QuickCastECSGameEffect quickCast)
+            lock (effect.CancelLock)
             {
-                quickCast.Cancel(true);
-                return;
+                if (effect.CancelEffect)
+                    return false;
+
+                if (effect is null)
+                    return false;
+
+                if (effect is QuickCastECSGameEffect quickCast)
+                {
+                    quickCast.Cancel(true);
+                    return false;
+                }
+
+                // Player can't remove negative effect or Effect in Immunity State
+                if (playerCanceled && ((!effect.HasPositiveEffect) || effect is ECSImmunityEffect))
+                {
+                    if (effect.Owner is GamePlayer player)
+                        player.Out.SendMessage(LanguageMgr.GetTranslation((effect.Owner as GamePlayer).Client, "Effects.GameSpellEffect.CantRemoveEffect"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
+                    return false;
+                }
+
+                effect.CancelEffect = true;
+                effect.ExpireTick = GameLoop.GameLoopTime - 1;
+                EntityManager.Add(effect);
+                return true;
             }
-
-            // Player can't remove negative effect or Effect in Immunity State
-            if (playerCanceled && ((!effect.HasPositiveEffect) || effect is ECSImmunityEffect))
-            {
-                if (effect.Owner is GamePlayer player)
-                    player.Out.SendMessage(LanguageMgr.GetTranslation((effect.Owner as GamePlayer).Client, "Effects.GameSpellEffect.CantRemoveEffect"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-                return;
-            }
-
-            effect.CancelEffect = true;
-            effect.ExpireTick = GameLoop.GameLoopTime - 1;
-            EntityManager.Add(effect);
         }
 
         /// <summary>
         /// Immediately cancels an ECSGameSpellEffect (as a IConcentrationEffect).
         /// </summary>
-        public static void RequestCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
+        public static bool RequestCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
         {
-            if (concEffect is ECSGameSpellEffect effect)
-                RequestCancelEffect(effect, playerCanceled);
-        }
-
-        /// <summary>
-        /// Immediately removes an ECSGameEffect.
-        /// </summary>
-        public static bool RequestImmediateCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
-        {
-            if (effect is null)
-                return false;
-
-            // Player can't remove negative effect or Effect in Immunity State
-            if (playerCanceled && ((!effect.HasPositiveEffect) || effect is ECSImmunityEffect))
-            {
-                if (effect.Owner is GamePlayer player)
-                    player.Out.SendMessage(LanguageMgr.GetTranslation((effect.Owner as GamePlayer).Client, "Effects.GameSpellEffect.CantRemoveEffect"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-
-                return false;
-            }
-
-            // playerCanceled param isn't used but it's there in case we eventually want to...
-            effect.CancelEffect = true;
-            effect.ExpireTick = GameLoop.GameLoopTime - 1;
-            return HandleCancelEffect(effect);
-        }
-
-        /// <summary>
-        /// Immediately removes an ECSGameEffect (as a IConcentrationEffect).
-        /// </summary>
-        public static bool RequestImmediateCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
-        {
-            return concEffect is ECSGameSpellEffect effect && RequestImmediateCancelEffect(effect, playerCanceled);
+            return concEffect is ECSGameSpellEffect effect && RequestCancelEffect(effect, playerCanceled);
         }
 
         /// <summary>

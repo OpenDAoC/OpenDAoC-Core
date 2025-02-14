@@ -68,7 +68,7 @@ namespace DOL.GS
         public void Cancel(bool manualCancel, bool startAttackAfterCancel)
         {
             _manualCancel = manualCancel;
-            EffectService.RequestImmediateCancelEffect(this, manualCancel);
+            EffectService.RequestCancelEffect(this, manualCancel);
         }
     }
 }

@@ -5471,7 +5471,7 @@ namespace DOL.GS
                 if (spell.InstrumentRequirement != 0)
                 {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    EffectService.RequestImmediateCancelConcEffect(EffectListService.GetPulseEffectOnTarget(this, spell));
+                    EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(this, spell));
                 }
             }
 
@@ -7189,7 +7189,7 @@ namespace DOL.GS
                                 effects.Cancel(false);
 
                             if (effect != null)
-                                EffectService.RequestImmediateCancelEffect(effect);
+                                EffectService.RequestCancelEffect(effect);
 
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
                             m_whistleMountTimer = new(this, new ECSGameTimer.ECSTimerCallback(WhistleMountTimerCallback), 5000);
@@ -9198,7 +9198,7 @@ namespace DOL.GS
             else
             {
                 if (effectListComponent.ContainsEffectForEffectType(eEffect.Sprint))
-                    EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Sprint), false);
+                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Sprint), false);
                 return false;
             }
         }
@@ -11361,7 +11361,7 @@ namespace DOL.GS
                 return;
             }
 
-            EffectService.RequestImmediateCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth));
+            EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth));
         }
 
         public override void OnMaxSpeedChange()

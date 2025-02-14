@@ -53,16 +53,16 @@ namespace DOL.GS.RealmAbilities
 			// cancel rapid fire effect
 			RapidFireECSGameEffect rapidFire = (RapidFireECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire);
 			if (rapidFire != null)
-				EffectService.RequestImmediateCancelEffect(rapidFire, false);
+				EffectService.RequestCancelEffect(rapidFire, false);
 
 			// cancel sure shot effect
 			SureShotECSGameEffect sureShot = (SureShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot);
 			if (sureShot != null)
-				EffectService.RequestImmediateCancelEffect(sureShot);
+				EffectService.RequestCancelEffect(sureShot);
 
 			TrueShotECSGameEffect trueshot = (TrueShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.TrueShot);
 			if (trueshot != null)
-				EffectService.RequestImmediateCancelEffect(trueshot, false);
+				EffectService.RequestCancelEffect(trueshot, false);
 
 			if (player.attackComponent.AttackState)
 			{

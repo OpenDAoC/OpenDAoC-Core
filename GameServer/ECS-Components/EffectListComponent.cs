@@ -181,7 +181,7 @@ namespace DOL.GS
                                             // Self cast Bladeturns should never be overwritten.
                                             if (existingSpell.Target is not eSpellTarget.SELF)
                                             {
-                                                EffectService.RequestImmediateCancelEffect(existingEffect);
+                                                EffectService.RequestCancelEffect(existingEffect);
                                                 addEffect = true;
                                             }
                                         }
@@ -201,7 +201,7 @@ namespace DOL.GS
                                             if (newSpell.Value * AblativeArmorSpellHandler.ValidateSpellDamage((int)newSpell.Damage) >
                                                 existingAblativeEffect.RemainingValue * AblativeArmorSpellHandler.ValidateSpellDamage((int) existingSpell.Damage))
                                             {
-                                                EffectService.RequestImmediateCancelEffect(existingEffect);
+                                                EffectService.RequestCancelEffect(existingEffect);
                                                 addEffect = true;
                                             }
 
@@ -216,7 +216,7 @@ namespace DOL.GS
                                                 || existingSpellHandler.SpellLine.KeyName is GlobalSpellsLines.Potions_Effects))
                                                 EffectService.RequestDisableEffect(existingEffect);
                                             else
-                                                EffectService.RequestImmediateCancelEffect(existingEffect);
+                                                EffectService.RequestCancelEffect(existingEffect);
 
                                             addEffect = true;
                                             break;
@@ -595,7 +595,7 @@ namespace DOL.GS
             foreach (List<ECSGameEffect> list in Effects.Values.ToList())
             {
                 for (int i = list.Count - 1; i >= 0; i--)
-                    EffectService.RequestImmediateCancelEffect(list[i]);
+                    EffectService.RequestCancelEffect(list[i]);
             }
         }
 

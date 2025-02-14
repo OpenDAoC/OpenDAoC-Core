@@ -48,7 +48,7 @@ namespace DOL.GS
             ECSGameSpellEffect[] immunityEffects = charmNpc.effectListComponent.GetSpellEffects().Where(e => e.TriggersImmunity).ToArray();
 
             for (int i = 0; i < immunityEffects.Length; i++)
-                EffectService.RequestImmediateCancelEffect(immunityEffects[i]);
+                EffectService.RequestCancelEffect(immunityEffects[i]);
 
             ControlledMobBrain oldBrain = SpellHandler.Caster.ControlledBrain as ControlledMobBrain;
             SpellHandler.Caster.RemoveControlledBrain(oldBrain);
@@ -114,7 +114,7 @@ namespace DOL.GS
                 ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(SpellHandler.Caster, SpellHandler.Spell);
 
                 if (song != null)
-                    EffectService.RequestImmediateCancelConcEffect(song);
+                    EffectService.RequestCancelConcEffect(song);
             }
         }
 
@@ -124,7 +124,7 @@ namespace DOL.GS
                 return;
 
             if (target.effectListComponent.Effects.TryGetValue(eEffect.Charm, out List<ECSGameEffect> charms))
-                EffectService.RequestImmediateCancelEffect(charms.FirstOrDefault());
+                EffectService.RequestCancelEffect(charms.FirstOrDefault());
         }
     }
 }

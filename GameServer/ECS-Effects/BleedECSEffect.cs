@@ -21,7 +21,7 @@ namespace DOL.GS
         public override void OnEffectPulse()
         {
             if (!Owner.IsAlive)
-                EffectService.RequestImmediateCancelEffect(this);
+                EffectService.RequestCancelEffect(this);
 
             if (SpellHandler is not StyleBleeding bleedHandler)
                 return;

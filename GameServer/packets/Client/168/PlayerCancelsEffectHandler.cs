@@ -24,7 +24,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 ECSGameEffect effect = effectListComponent.TryGetEffectFromEffectId(effectId);
 
                 if (effect != null)
-                    EffectService.RequestImmediateCancelEffect(effect, true);
+                    EffectService.RequestCancelEffect(effect, true);
 
                 return;
             }
