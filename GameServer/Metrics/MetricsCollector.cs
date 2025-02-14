@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using log4net;
 using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Reflection;
+using DOL.Logging;
 
 namespace DOL.GS
 {
     public static class MetricsCollector
     {
-        private static readonly ILog LOG = LogManager.GetLogger(typeof(MetricsCollector));
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         public const string METER_NAME = "GameServer.ServerStats";
 
         public static void StartCollecting()
@@ -42,7 +43,7 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                LOG.Error("MetricsCollector.CollectMetrics threw an exception", e);
+                log.Error("MetricsCollector.CollectMetrics threw an exception", e);
             }
 
             return 0;
@@ -85,7 +86,7 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                LOG.Error("MetricsCollector.CollectMetrics threw an exception", e);
+                log.Error("MetricsCollector.CollectMetrics threw an exception", e);
             }
 
             return [];
