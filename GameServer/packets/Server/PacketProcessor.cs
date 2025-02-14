@@ -387,7 +387,7 @@ namespace DOL.GS.PacketHandler
                     {
                         _tcpSendArgs.SetBuffer(0, _tcpSendBufferPosition);
 
-                        if (_client.Socket.SendAsync(_tcpSendArgs))
+                        if (_client.SendAsync(_tcpSendArgs))
                             GetAvailableTcpSendArgs();
 
                         _tcpSendBufferPosition = 0;

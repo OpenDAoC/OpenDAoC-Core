@@ -123,7 +123,7 @@ namespace DOL.GS
         public byte MajorBuild { get; set; } = 0;
         public byte MinorBuild { get; set; } = 0;
 
-        public GameClient(BaseServer server, Socket socket) : base(server, socket) { }
+        public GameClient(Socket socket) : base(socket) { }
 
         public bool CanSendTooltip(int type, int id)
         {
@@ -252,10 +252,16 @@ namespace DOL.GS
         {
             lock (_disconnectLock)
             {
-                Quit();
+                // Special handling for soft link deaths
+                // Contrary to normal link deaths, the connection is still alive.
+                if (ClientState is eClientState.Playing)
+                {
+                    CloseSocket();
+                    Quit();
+                    return;
+                }
 
-                if (ClientState == eClientState.Playing)
-                    CloseConnections();
+                Quit();
             }
         }
 
@@ -326,7 +332,7 @@ namespace DOL.GS
                         log.Warn(Marshal.ToHexDump("packet buffer:", ReceiveBuffer, 0, size));
                     }
 
-                    GameServer.Instance.Disconnect(this);
+                    Disconnect();
                     return false;
                 }
 
@@ -360,7 +366,7 @@ namespace DOL.GS
                     if (log.IsWarnEnabled)
                         log.Warn($"{TcpEndpointAddress} client Version {version} not handled on this server.");
 
-                    GameServer.Instance.Disconnect(this);
+                    Disconnect();
                 }
                 else
                 {
@@ -451,7 +457,7 @@ namespace DOL.GS
             }
         }
 
-        public override void OnDisconnect()
+        protected override void OnDisconnect()
         {
             lock (_disconnectLock)
             {

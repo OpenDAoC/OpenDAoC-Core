@@ -232,19 +232,17 @@ namespace DOL.Network
                 }
                 catch (Exception e)
                 {
-                    if (log.IsErrorEnabled)
-                        log.Error(e);
-
-                    if (baseClient != null)
-                        Disconnect(baseClient);
-
-                    if (socket != null)
+                    try
                     {
-                        try
-                        {
-                            socket.Close();
-                        }
-                        catch { }
+                        if (log.IsErrorEnabled)
+                            log.Error(e);
+
+                        baseClient?.Disconnect();
+                    }
+                    catch
+                    {
+                        // May end up be called twice, but this is fine.
+                        socket?.Close();
                     }
                 }
                 finally
@@ -256,7 +254,7 @@ namespace DOL.Network
 
         protected virtual BaseClient GetNewClient(Socket socket)
         {
-            return new BaseClient(this, socket);
+            return new BaseClient(socket);
         }
 
         protected virtual bool InitializeListenSocket()
@@ -302,25 +300,6 @@ namespace DOL.Network
 
         public virtual void Stop()
         {
-            /*if(Configuration.EnableUPNP)
-            {
-                try
-                {
-                    if(Log.IsDebugEnabled)
-                        Log.Debug("Removing UPnP Mappings");
-                    UPnPNat nat = new UPnPNat();
-                    PortMappingInfo pmiUDP = new PortMappingInfo("UDP", Configuration.UDPPort);
-                    PortMappingInfo pmiTCP = new PortMappingInfo("TCP", Configuration.Port);
-                    nat.RemovePortMapping(pmiUDP);
-                    nat.RemovePortMapping(pmiTCP);
-                }
-                catch(Exception ex)
-                {
-                    if(Log.IsDebugEnabled)
-                        Log.Debug("Failed to remove UPnP Mappings", ex);
-                }
-            }*/
-
             try
             {
                 if (_listen != null)
@@ -352,24 +331,6 @@ namespace DOL.Network
 
             if (log.IsInfoEnabled)
                 log.Info("Server stopped");
-        }
-
-        public virtual bool Disconnect(BaseClient baseClient)
-        {
-            try
-            {
-                baseClient.OnDisconnect();
-                baseClient.CloseConnections();
-            }
-            catch (Exception e)
-            {
-                if (log.IsErrorEnabled)
-                    log.Error("Exception", e);
-
-                return false;
-            }
-
-            return true;
         }
 
         protected virtual void OnUdpReceive(byte[] buffer, int offset, int size, EndPoint endPoint) { }

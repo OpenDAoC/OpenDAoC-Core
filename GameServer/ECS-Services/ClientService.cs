@@ -655,7 +655,7 @@ namespace DOL.GS
                 if (log.IsInfoEnabled)
                     log.Info($"Ping timeout on client. Disconnecting. ({client})");
 
-                GameServer.Instance.Disconnect(client);
+                client.Disconnect();
             }
         }
 
@@ -666,7 +666,7 @@ namespace DOL.GS
                 if (log.IsWarnEnabled)
                     log.Warn($"Hard timeout on client. Disconnecting. ({client})");
 
-                GameServer.Instance.Disconnect(client);
+                client.Disconnect();
             }
         }
 

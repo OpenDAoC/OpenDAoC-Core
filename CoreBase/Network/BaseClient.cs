@@ -18,7 +18,6 @@ namespace DOL.Network
         private const int TCP_RECEIVE_BUFFER_SIZE = 1024;
         // UDP_RECEIVE_BUFFER_SIZE is in `BaseServer`.
 
-        private BaseServer _server;
         private SocketAsyncEventArgs _receiveArgs = new();
         private bool _isReceivingAsync;
         private long _isReceivingAsyncCompleted; // Use `ReceivingAsyncCompleted` instead.
@@ -44,10 +43,8 @@ namespace DOL.Network
             }
         }
 
-        public BaseClient(BaseServer server, Socket socket)
+        public BaseClient(Socket socket)
         {
-            _server = server;
-
             if (socket != null)
             {
                 socket.NoDelay = true;
@@ -68,7 +65,12 @@ namespace DOL.Network
 
         public virtual void OnConnect() { }
 
-        public virtual void OnDisconnect() { }
+        protected virtual void OnDisconnect() { }
+
+        public bool SendAsync(SocketAsyncEventArgs tcpSendArgs)
+        {
+            return Socket.SendAsync(tcpSendArgs);
+        }
 
         public void Receive()
         {
@@ -86,8 +88,10 @@ namespace DOL.Network
                 if (!ReceivingAsyncCompleted)
                     return;
 
-                OnReceiveCompletion();
                 _isReceivingAsync = false;
+
+                if (!OnReceiveCompletion())
+                    return;
             }
 
             int available = ReceiveBuffer.Length - ReceiveBufferOffset;
@@ -130,7 +134,7 @@ namespace DOL.Network
             }
         }
 
-        private void OnReceiveCompletion()
+        private bool OnReceiveCompletion()
         {
             int received = _receiveArgs.BytesTransferred;
 
@@ -140,43 +144,48 @@ namespace DOL.Network
                     log.Debug($"Disconnecting client because of 0 bytes received. (Client: {this}");
 
                 Disconnect();
-                return;
+                return false;
             }
 
             OnReceive(received);
-        }
-
-        public void CloseConnections()
-        {
-            if (Socket != null)
-            {
-                if (Socket.Connected)
-                {
-                    try
-                    {
-                        Socket.Shutdown(SocketShutdown.Send);
-                    }
-                    catch { }
-                }
-
-                try
-                {
-                    Socket.Close();
-                }
-                catch { }
-            }
+            return true;
         }
 
         public void Disconnect()
         {
             try
             {
-                _server.Disconnect(this);
+                OnDisconnect();
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error("Exception", e);
+                    log.Error(e);
+            }
+            finally
+            {
+                CloseSocket();
+            }
+        }
+
+        protected void CloseSocket()
+        {
+            if (Socket == null)
+                return;
+
+            try
+            {
+                if (Socket.Connected)
+                    Socket.Shutdown(SocketShutdown.Send);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error(e);
+            }
+            finally
+            {
+                Socket.Close();
             }
         }
     }

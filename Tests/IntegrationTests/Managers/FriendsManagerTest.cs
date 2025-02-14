@@ -33,7 +33,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_AddPlayer_RetrieveFriendsList()
 		{
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() } },
 				Out = new TestPacketLib()
 			};
@@ -48,7 +48,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_RemovePlayer_RetrieveEmptyFriendsList()
 		{
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy" }  } },
 				Out = new TestPacketLib()
 			};
@@ -63,7 +63,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_AddPlayerWithFriend_RetrieveFriendsList()
 		{
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy" } } },
 				Out = new TestPacketLib()
 			};
@@ -79,7 +79,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_AddPlayerWithFriends_RetrieveFriendsList()
 		{
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy , mate , someone" } } },
 				Out = new TestPacketLib()
 			};
@@ -95,7 +95,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_AddFriend_RetrieveFriend()
 		{
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() } },
 				Out = new TestPacketLib()
 			};
@@ -112,7 +112,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_AddFriends_RetrieveFriend()
 		{
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() } },
 				Out = new TestPacketLib()
 			};
@@ -131,7 +131,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_AddDuplicate_RetrieveOnlyOne()
 		{
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() } },
 				Out = new TestPacketLib()
 			};
@@ -150,7 +150,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_RemoveFriend_RetrieveEmpty()
 		{
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() } },
 				Out = new TestPacketLib()
 			};
@@ -167,7 +167,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_RemoveFriends_RetrieveEmpty()
 		{
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() } },
 				Out = new TestPacketLib()
 			};
@@ -188,7 +188,7 @@ namespace DOL.Tests.Integration.Server
 		[Test]
 		public void FriendsManager_RemoveNonExisting_RetrieveOne()
 		{
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() } },
 				Out = new TestPacketLib()
 			};
@@ -206,7 +206,7 @@ namespace DOL.Tests.Integration.Server
 		public void FriendsManager_NotifyPlayerWorldEnter_ReceivePacketEmptyList()
 		{
 			string[] received = null;
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() } },
 				Out = new TestPacketLib() { SendAddFriendsMethod = (lib, friends) => received = friends }
 			};
@@ -223,14 +223,14 @@ namespace DOL.Tests.Integration.Server
 		public void FriendsManager_NotifyPlayerWorldEnterWithFriends_ReceivePacketMateList()
 		{
 			string[] received = null;
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy , mate , someone" } } },
 				Out = new TestPacketLib() { SendAddFriendsMethod = (lib, friends) => received = friends }
 			};
 			var gameplayer = new GamePlayer(client, client.Account.Characters[0]);
 			client.Player = gameplayer;
 			
-			var clientMate = new GameClient(GameServer.Instance, null) {
+			var clientMate = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { Name = "mate" } } },
 				Out = new TestPacketLib()
 			};
@@ -249,14 +249,14 @@ namespace DOL.Tests.Integration.Server
 		public void FriendsManager_NotifyPlayerWorldEnterWithFriendsAnon_ReceivePacketMateList()
 		{
 			string[] received = null;
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy , mate , someone" } } },
 				Out = new TestPacketLib() { SendAddFriendsMethod = (lib, friends) => received = friends }
 			};
 			var gameplayer = new GamePlayer(client, client.Account.Characters[0]);
 			client.Player = gameplayer;
 			
-			var clientMate = new GameClient(GameServer.Instance, null) {
+			var clientMate = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { Name = "mate" } } },
 				Out = new TestPacketLib()
 			};
@@ -264,7 +264,7 @@ namespace DOL.Tests.Integration.Server
 			
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayerMate);
 			
-			var clientBuddy = new GameClient(GameServer.Instance, null) {
+			var clientBuddy = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { Name = "buddy", IsAnonymous = true } } },
 				Out = new TestPacketLib()
 			};
@@ -284,7 +284,7 @@ namespace DOL.Tests.Integration.Server
 		public void FriendsManager_FriendsGetAnonymous_ReceiveRemovePacket()
 		{
 			string[] received = null;
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy , mate , someone" } } },
 				Out = new TestPacketLib() { SendRemoveFriendsMethod = (lib, friends) => received = friends }
 			};
@@ -292,7 +292,7 @@ namespace DOL.Tests.Integration.Server
 			client.Player = gameplayer;
 			
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayer);
-			var clientMate = new GameClient(GameServer.Instance, null) {
+			var clientMate = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { Name = "mate" } } },
 				Out = new TestPacketLib()
 			};
@@ -311,7 +311,7 @@ namespace DOL.Tests.Integration.Server
 		public void FriendsManager_FriendsUnsetAnonymous_ReceiveAddPacket()
 		{
 			string[] received = null;
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy , mate , someone" } } },
 				Out = new TestPacketLib() { SendAddFriendsMethod = (lib, friends) => received = friends }
 			};
@@ -319,7 +319,7 @@ namespace DOL.Tests.Integration.Server
 			client.Player = gameplayer;
 			
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayer);
-			var clientMate = new GameClient(GameServer.Instance, null) {
+			var clientMate = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { Name = "mate", IsAnonymous = true } } },
 				Out = new TestPacketLib()
 			};
@@ -338,7 +338,7 @@ namespace DOL.Tests.Integration.Server
 		public void FriendsManager_FriendsEnterGame_ReceiveAddPacket()
 		{
 			string[] received = null;
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy , mate , someone" } } },
 				Out = new TestPacketLib() { SendAddFriendsMethod = (lib, friends) => received = friends }
 			};
@@ -346,7 +346,7 @@ namespace DOL.Tests.Integration.Server
 			client.Player = gameplayer;
 			
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayer);
-			var clientMate = new GameClient(GameServer.Instance, null) {
+			var clientMate = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { Name = "mate" } } },
 				Out = new TestPacketLib()
 			};
@@ -364,7 +364,7 @@ namespace DOL.Tests.Integration.Server
 		public void FriendsManager_FriendsEnterGameAnon_ReceiveNoAddPacket()
 		{
 			string[] received = null;
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy , mate , someone" } } },
 				Out = new TestPacketLib() { SendAddFriendsMethod = (lib, friends) => received = friends }
 			};
@@ -372,7 +372,7 @@ namespace DOL.Tests.Integration.Server
 			client.Player = gameplayer;
 			
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayer);
-			var clientMate = new GameClient(GameServer.Instance, null) {
+			var clientMate = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { Name = "mate", IsAnonymous = true } } },
 				Out = new TestPacketLib()
 			};
@@ -390,7 +390,7 @@ namespace DOL.Tests.Integration.Server
 		public void FriendsManager_FriendsExitGame_ReceiveRemovePacket()
 		{
 			string[] received = null;
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy , mate , someone" } } },
 				Out = new TestPacketLib() { SendRemoveFriendsMethod = (lib, friends) => received = friends }
 			};
@@ -398,7 +398,7 @@ namespace DOL.Tests.Integration.Server
 			client.Player = gameplayer;
 			
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayer);
-			var clientMate = new GameClient(GameServer.Instance, null) {
+			var clientMate = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { Name = "mate" } } },
 				Out = new TestPacketLib()
 			};
@@ -416,7 +416,7 @@ namespace DOL.Tests.Integration.Server
 		public void FriendsManager_FriendsExitGame_ReceiveNoRemovePacket()
 		{
 			string[] received = null;
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { SerializedFriendsList = "buddy , mate , someone" } } },
 				Out = new TestPacketLib() { SendRemoveFriendsMethod = (lib, friends) => received = friends }
 			};
@@ -424,7 +424,7 @@ namespace DOL.Tests.Integration.Server
 			client.Player = gameplayer;
 			
 			GameServer.Instance.PlayerManager.Friends.AddPlayerFriendsListToCache(gameplayer);
-			var clientMate = new GameClient(GameServer.Instance, null) {
+			var clientMate = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() { Name = "mate", IsAnonymous = true } } },
 				Out = new TestPacketLib()
 			};
@@ -446,7 +446,7 @@ namespace DOL.Tests.Integration.Server
 			ClassicAssert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.AddFriendToPlayerList(null, null));
 			ClassicAssert.Throws(typeof(ArgumentNullException), () => GameServer.Instance.PlayerManager.Friends.RemoveFriendFromPlayerList(null, null));
 			
-			var client = new GameClient(GameServer.Instance, null) {
+			var client = new GameClient(null) {
 				Account = new DbAccount() { Characters = new [] { new DbCoreCharacter() } },
 				Out = new TestPacketLib()
 			};

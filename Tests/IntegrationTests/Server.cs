@@ -28,7 +28,7 @@ namespace DOL.Tests.Integration.Server
 			}
 			ClassicAssert.IsNotNull(character);
 			
-			var client = new GameClient(GameServer.Instance, new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp));
+			var client = new GameClient(new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp));
 			client.Version = GameClient.eClientVersion.Version1105;
 			client.Account = account;
 			client.PacketProcessor = new PacketProcessor(client);

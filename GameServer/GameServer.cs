@@ -1048,7 +1048,7 @@ namespace DOL.GS
 		/// <returns>An instance of a new client</returns>
 		protected override BaseClient GetNewClient(Socket socket)
 		{
-			var client = new GameClient(this, socket);
+			var client = new GameClient(socket);
 			GameEventMgr.Notify(GameClientEvent.Created, client);
 			client.UdpConfirm = false;
 
@@ -1087,8 +1087,8 @@ namespace DOL.GS
 
 			if (client == null)
 			{
-				if (log.IsErrorEnabled)
-					log.Error($"Got an UDP packet from invalid client id or ip: client id = {packet.SessionID}, ip = {endPoint},  code = {packet.ID:x2}");
+				if (log.IsWarnEnabled)
+					log.Warn($"Got an UDP packet from invalid client ID or IP (id: {packet.SessionID}) (ip: {endPoint}) (code: {packet.ID:x2})");
 
 				return;
 			}
