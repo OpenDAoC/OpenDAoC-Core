@@ -117,14 +117,5 @@ namespace DOL.GS
                     EffectService.RequestCancelConcEffect(song);
             }
         }
-
-        public static void FindAndCancelEffectOnTarget(GameNPC target)
-        {
-            if (target.Brain is not IControlledBrain)
-                return;
-
-            if (target.effectListComponent.Effects.TryGetValue(eEffect.Charm, out List<ECSGameEffect> charms))
-                EffectService.RequestCancelEffect(charms.FirstOrDefault());
-        }
     }
 }

@@ -1497,7 +1497,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(0x00); //data3
 				pak.WriteShort(0x00);
 				pak.WriteByte((byte) (callback == null ? 0x00 : 0x01)); //ok or yes/no response
-				pak.WriteByte(0x00); // autowrap text
+				pak.WriteByte((byte) (msg.Contains('\n') ? 0x00 : 0x01)); // autowrap text
 				if (msg.Length > 0)
 					pak.WriteString(msg, msg.Length);
 				pak.WriteByte(0x00);
