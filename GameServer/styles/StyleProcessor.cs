@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Effects;
-using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.Spells;
@@ -16,7 +15,7 @@ namespace DOL.GS.Styles
 	public class StyleProcessor
 	{
 		/// <summary>
-		/// Returns wether this player can use a particular style
+		/// Returns whether this player can use a particular style
 		/// right now. Tests for all preconditions like prerequired
 		/// styles, previous attack result, ...
 		/// </summary>
@@ -87,30 +86,34 @@ namespace DOL.GS.Styles
 						if (!living.IsObjectInFront(target, 120))
 							return false;
 
-						float angle = target.GetAngle( living );
+						float angle = target.GetAngle(living);
 
-						switch ((Style.eOpeningPosition)style.OpeningRequirementValue)
+						switch ((Style.eOpeningPosition) style.OpeningRequirementValue)
 						{
-							//Back Styles
-							//60 degree since 1.62 patch
 							case Style.eOpeningPosition.Back:
-								if (!(angle > 150 && angle < 210))
+							{
+								// Back Styles. 60 degree since 1.62.
+								if (angle is not (> 150 and < 210))
 									return false;
+
 								break;
-							// Side Styles  
-							//105 degree since 1.62 patch
-							// Atlas change: 90 degrees
+							}
 							case Style.eOpeningPosition.Side:
-								if (!(angle >= 60 && angle <= 150) && !(angle >= 210 && angle <= 300))
+							{
+								// Side Styles. 105 degree since 1.62.
+								if (angle is not (>= 45 and <= 150) and not (>= 210 and <= 315))
 									return false;
+
 								break;
-							// Front Styles
-							// 90 degree
-							// Atlas change: 120 degrees
+							}
 							case Style.eOpeningPosition.Front:
-								if (!(angle > 300 || angle < 60))
+							{
+								// Front Styles. 90 degrees.
+								if (angle is not (> 315 or < 45))
 									return false;
+
 								break;
+							}
 						}
 
 						break;
