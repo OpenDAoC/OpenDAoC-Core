@@ -1407,11 +1407,12 @@ namespace DOL.GS
 					return;
 				}
 
-				m_ownBrain = new StandardMobBrain()
+				SetOwnBrain(new StandardMobBrain()
 				{
 					AggroLevel = template.AggroLevel,
-					AggroRange = template.AggroRange
-				};
+					AggroRange = template.AggroRange,
+					Body = this
+				});
 			}
 
 			void HandleModel()
