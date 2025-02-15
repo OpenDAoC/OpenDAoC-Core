@@ -91,15 +91,15 @@ namespace DOL.GS
         /// </summary>
         public static bool RequestCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
         {
+            if (effect is null)
+                return false;
+
             if (effect.CancelEffect)
                 return false;
 
             lock (effect.CancelLock)
             {
                 if (effect.CancelEffect)
-                    return false;
-
-                if (effect is null)
                     return false;
 
                 // Player can't remove negative effect or Effect in Immunity State
