@@ -87,10 +87,6 @@ namespace DOL.GS.Styles
 						if (!living.IsObjectInFront(target, 120))
 							return false;
 
-						// You can't use positional styles on keep doors or walls.
-						if ((target is GameKeepComponent || target is GameKeepDoor) && (Style.eOpeningPosition)style.OpeningRequirementValue != Style.eOpeningPosition.Front)
-							return false;
-
 						float angle = target.GetAngle( living );
 
 						switch ((Style.eOpeningPosition)style.OpeningRequirementValue)
