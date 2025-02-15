@@ -416,29 +416,24 @@ namespace DOL.GS.Commands
 					
 					if (target.Realm == eRealm.None)
 						Realmname = "None";
-				
-					if (target.Realm == eRealm.Albion)
+					else if (target.Realm == eRealm.Albion)
 						Realmname = "Albion";
-						
-					if (target.Realm == eRealm.Midgard)
+					else if (target.Realm == eRealm.Midgard)
 						Realmname = "Midgard";
-						
-					if (target.Realm == eRealm.Hibernia)
+					else if (target.Realm == eRealm.Hibernia)
 						Realmname = "Hibernia";
-						
-					if (target.Realm == eRealm.Door)
+					else if (target.Realm == eRealm.Door)
 						Realmname = "All";
-						
-					if (target.Locked == 1)
+
+					if (target.Locked)
 						statut = " Locked";
-						
-					if( target.Locked == 0 )
+					else
 						statut = " Unlocked";
 
 					info.Add("  ------- DOOR ------\n");
 					info.Add(" ");
 					info.Add( " + Name : " + target.Name );
-					info.Add(" + ID : " + target.DoorID);
+					info.Add(" + ID : " + target.DoorId);
 					info.Add( " + Realm : " + (int)target.Realm + " : " +Realmname );
 					info.Add( " + Level : " + target.Level );
 					info.Add( " + Guild : " + target.GuildName );
@@ -482,7 +477,7 @@ namespace DOL.GS.Commands
 					info.Add("  ------- DOOR ------\n");
 					info.Add(" ");
 					info.Add(" + Name : " + target.Name);
-					info.Add(" + ID : " + target.DoorID);
+					info.Add(" + ID : " + target.DoorId);
 					info.Add(" + Realm : " + (int)target.Realm + " : " + Realmname);
 					info.Add(" + Level : " + target.Level);
 					info.Add(" + Guild : " + target.GuildName);

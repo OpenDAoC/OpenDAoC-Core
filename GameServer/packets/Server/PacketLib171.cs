@@ -113,7 +113,7 @@ namespace DOL.GS.PacketHandler
 				if (obj is GameDoorBase door)
 				{
 					pak.WriteByte(4);
-					pak.WriteInt((uint) door.DoorID);
+					pak.WriteInt((uint) door.DoorId);
 				}
 				else pak.WriteByte(0x00);
 				SendTCP(pak);

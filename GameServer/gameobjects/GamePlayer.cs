@@ -12500,7 +12500,7 @@ namespace DOL.GS
                     log.Error(e);
 
                 return false;
-        }
+            }
         }
 
         /// <summary>

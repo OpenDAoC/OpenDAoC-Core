@@ -941,7 +941,7 @@ namespace DOL.GS.PacketHandler
 				if (obj is GameDoorBase door)
 				{
 					pak.WriteByte(4);
-					pak.WriteInt((uint) door.DoorID);
+					pak.WriteInt((uint) door.DoorId);
 				}
 				else pak.WriteByte(0x00);
 				SendTCP(pak);
@@ -1816,8 +1816,8 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.DoorState)))
 			{
-				ushort zone = (ushort)(door.DoorID / 1000000);
-				int doorType = door.DoorID / 100000000;
+				ushort zone = (ushort)(door.DoorId / 1000000);
+				int doorType = door.DoorId / 100000000;
 				uint flag = door.Flag;
 
 				// by default give all unflagged above ground non keep doors a default sound (excluding TrialsOfAtlantis zones)
@@ -1826,7 +1826,7 @@ namespace DOL.GS.PacketHandler
 					flag = 1;
 				}
 
-				pak.WriteInt((uint)door.DoorID);
+				pak.WriteInt((uint)door.DoorId);
 				pak.WriteByte((byte)(door.State == eDoorState.Open ? 0x01 : 0x00));
 				pak.WriteByte((byte)flag);
 				pak.WriteByte(0xFF);

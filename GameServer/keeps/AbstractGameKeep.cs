@@ -492,7 +492,7 @@ namespace DOL.GS.Keeps
 				door.Delete();
 				GameDoor d = new GameDoor();
 				d.CurrentRegionID = door.CurrentRegionID;
-				d.DoorID = door.DoorID;
+				d.DoorId = door.DoorId;
 				d.Heading = door.Heading;
 				d.Level = door.Level;
 				d.Model = door.Model;

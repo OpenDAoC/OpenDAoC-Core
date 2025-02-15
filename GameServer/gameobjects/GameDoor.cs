@@ -1,4 +1,3 @@
-using System.Threading;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -14,117 +13,24 @@ namespace DOL.GS
         private const int REPAIR_INTERVAL = 30 * 1000;
 
         private bool _openDead = false;
-        private eDoorState _state;
-        private readonly Lock _lock = new();
         private ECSGameTimer _closeDoorAction;
         private ECSGameTimer _repairTimer;
 
-        public int Locked { get; set; }
-        public override int DoorID { get; set; }
-        public override uint Flag { get; set; }
-        public override eDoorState State
-        {
-            get => _state;
-            set
-            {
-                if (_state != value)
-                {
-                    lock (_lock)
-                    {
-                        _state = value;
-
-                        foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                            player.Out.SendDoorState(CurrentRegion, this);
-                    }
-                }
-            }
-        }
-
         public GameDoor() : base()
         {
-            _state = eDoorState.Closed;
             m_model = 0xFFFF;
-        }
-
-        public override void LoadFromDatabase(DataObject obj)
-        {
-            base.LoadFromDatabase(obj);
-
-            DbDoor dbDoor = obj as DbDoor;
-
-            if (dbDoor == null)
-                return;
-
-            Zone curZone = WorldMgr.GetZone((ushort) (dbDoor.InternalID / 1000000));
-
-            if (curZone == null)
-                return;
-
-            CurrentRegion = curZone.ZoneRegion;
-            m_name = dbDoor.Name;
-            Heading = (ushort) dbDoor.Heading;
-            m_x = dbDoor.X;
-            m_y = dbDoor.Y;
-            m_z = dbDoor.Z;
-            m_level = 0;
-            m_model = 0xFFFF;
-            DoorID = dbDoor.InternalID;
-            m_guildName = dbDoor.Guild;
-            Realm = (eRealm) dbDoor.Realm;
-            m_level = dbDoor.Level;
-            m_health = dbDoor.Health;
-            Locked = dbDoor.Locked;
-            Flag = dbDoor.Flags;
-
-            // Open mile gates on PVE and PVP server types.
-            if (CurrentRegion.IsFrontier && (GameServer.Instance.Configuration.ServerType is EGameServerType.GST_PvE or EGameServerType.GST_PvP))
-                State = eDoorState.Open;
-
-            AddToWorld();
-            StartHealthRegeneration();
-        }
-
-        public override void SaveIntoDatabase()
-        {
-            DbDoor obj = null;
-
-            if (InternalID != null)
-                obj = GameServer.Database.FindObjectByKey<DbDoor>(InternalID);
-
-            if (obj == null)
-                obj = new DbDoor();
-
-            obj.Name = Name;
-            obj.InternalID = DoorID;
-            obj.Type = DoorID / 100000000;
-            obj.Guild = GuildName;
-            obj.Flags = Flag;
-            obj.Realm = (byte) Realm;
-            obj.Level = Level;
-            obj.Health = Health;
-            obj.Locked = Locked;
-
-            if (InternalID == null)
-            {
-                GameServer.Database.AddObject(obj);
-                InternalID = obj.ObjectId;
-            }
-            else
-                GameServer.Database.SaveObject(obj);
         }
 
         public override void Open(GameLiving opener = null)
         {
-            if (Locked == 0)
+            if (!Locked)
                 State = eDoorState.Open;
 
             if (HealthPercent > 40 || !_openDead)
             {
-                lock (_lock)
+                lock (_stateLock)
                 {
-                    if (_closeDoorAction == null)
-                        _closeDoorAction = new CloseDoorAction(this);
-
+                    _closeDoorAction ??= new CloseDoorAction(this);
                     _closeDoorAction.Start(STAYS_OPEN_DURATION);
                 }
             }
@@ -143,9 +49,9 @@ namespace DOL.GS
         {
             npc.TurnTo(X, Y);
 
-            if (open && _state != eDoorState.Open)
+            if (open && State is not eDoorState.Open)
                 Open();
-            else if (!open && _state != eDoorState.Closed)
+            else if (!open && State is not eDoorState.Closed)
                 Close();
         }
 
@@ -154,11 +60,11 @@ namespace DOL.GS
             get => m_health;
             set
             {
-                int maxhealth = MaxHealth;
+                int maxHealth = MaxHealth;
 
-                if (value >= maxhealth)
+                if (value >= maxHealth)
                 {
-                    m_health = maxhealth;
+                    m_health = maxHealth;
 
                     lock (XpGainersLock)
                     {
@@ -168,7 +74,7 @@ namespace DOL.GS
                 else
                     m_health = value > 0 ? value : 0;
 
-                if (IsAlive && m_health < maxhealth)
+                if (IsAlive && m_health < maxHealth)
                     StartHealthRegeneration();
             }
         }
@@ -236,7 +142,7 @@ namespace DOL.GS
                         Die(source);
                         _openDead = true;
 
-                        if (Locked == 0)
+                        if (!Locked)
                             Open();
 
                         Group attackerGroup = attackerPlayer.Group;
@@ -247,6 +153,20 @@ namespace DOL.GS
                                 ((GamePlayer) living)?.Out.SendMessage(LanguageMgr.GetTranslation(attackerPlayer.Client.Account.Language, "GameDoor.NowOpen", Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         }
                     }
+                }
+            }
+        }
+
+        public override void LoadFromDatabase(DataObject obj)
+        {
+            base.LoadFromDatabase(obj);
+
+            if (State is eDoorState.Open)
+            {
+                lock (_stateLock)
+                {
+                    _closeDoorAction ??= new CloseDoorAction(this);
+                    _closeDoorAction.Start(STAYS_OPEN_DURATION);
                 }
             }
         }

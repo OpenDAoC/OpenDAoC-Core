@@ -2141,7 +2141,7 @@ namespace DOL.GS.Commands
 							d.Z = door.Z;
 							d.Level = 0;
 							d.Model = 0xFFFF;
-							d.DoorID = door.DoorID;
+							d.DoorId = door.DoorId;
 							d.State = eDoorState.Closed;
 
 							DoorMgr.RegisterDoor(d);
@@ -2149,7 +2149,7 @@ namespace DOL.GS.Commands
 
 							d.Component = new GameKeepComponent();
 							d.Component.Keep = k;
-							d.Component.Keep.Doors.Add(d.DoorID.ToString(), d);
+							d.Component.Keep.Doors.Add(d.DoorId.ToString(), d);
 
 							d.Health = d.MaxHealth;
 							d.StartHealthRegeneration();

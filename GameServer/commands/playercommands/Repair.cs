@@ -77,11 +77,11 @@ namespace DOL.GS.Commands
 			if (obj == null)
 				return false;
 
-			if (player.Realm != obj.Realm)
-				return false;
-
 			if (player.Client.Account.PrivLevel > (int)ePrivLevel.Player)
 				return true;
+
+			if (player.Realm != obj.Realm)
+				return false;
 
 			// if ((obj as GameLiving).InCombat)
 			// {

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DOL.Database;
 using DOL.GS.Keeps;
 using DOL.GS.ServerProperties;
@@ -74,7 +75,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
             }
 
-            DbDoor door = DOLDB<DbDoor>.SelectObject(DB.Column("InternalID").IsEqualTo(doorId));
+            GameDoorBase door = DoorMgr.GetDoorByID(doorId).FirstOrDefault();
 
             if (door != null)
             {
@@ -86,7 +87,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (client.Account.PrivLevel == 1)
                 {
-                    if (door.Locked == 0)
+                    if (!door.Locked)
                     {
                         if (door.Health == 0)
                         {
@@ -104,7 +105,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         }
                         else
                         {
-                            if (client.Player.Realm == (eRealm) door.Realm || door.Realm == 6)
+                            if (client.Player.Realm == door.Realm || door.Realm is eRealm.Door)
                             {
                                 UseDoor();
                                 return;
@@ -112,18 +113,16 @@ namespace DOL.GS.PacketHandler.Client.v168
                         }
                     }
                 }
-                else if (client.Account.PrivLevel > 1)
+                else
                 {
-                    client.Out.SendDebugMessage("GM: Forcing locked door open. ");
-                    client.Out.SendDebugMessage($"PosternDoor: {door.IsPostern}");
-
+                    client.Out.SendDebugMessage($"GM: Forcing locked door open. (PosternDoor: {door.IsPostern})");
                     UseDoor();
                     return;
                 }
             }
             else
             {
-                if (doorType != 9 && client.Account.PrivLevel > 1 && client.Player.CurrentRegion.IsInstance == false)
+                if (doorType != 9 && client.Account.PrivLevel > 1 && !client.Player.CurrentRegion.IsInstance)
                 {
                     if (client.Player.TempProperties.GetProperty<bool>(DoorMgr.WANT_TO_ADD_DOORS))
                         client.Player.Out.SendCustomDialog("This door is not in the database. Place yourself nearest to this door and click Accept to add it.", AddDoor);
@@ -138,7 +137,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             void UseDoor()
             {
                 GamePlayer player = client.Player;
-                List<GameDoorBase> doorList = DoorMgr.getDoorByID(doorId);
+                List<GameDoorBase> doorList = DoorMgr.GetDoorByID(doorId);
 
                 if (doorList.Count > 0)
                 {
@@ -185,7 +184,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                     GameDoor door = new()
                     {
-                        DoorID = doorId,
+                        DoorId = doorId,
                         X = player.X,
                         Y = player.Y,
                         Z = player.Z,

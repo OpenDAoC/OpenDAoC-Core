@@ -76,8 +76,8 @@ namespace DOL.GS.Commands
 			if (client.Player.TargetObject != null && client.Player.TargetObject is GameDoor)
 			{
 				targetDoor = (GameDoor) client.Player.TargetObject;
-				DoorID = targetDoor.DoorID;
-				doorType = targetDoor.DoorID/100000000;
+				DoorID = targetDoor.DoorId;
+				doorType = targetDoor.DoorId/100000000;
 			}
 
 			if (args.Length < 2)
@@ -187,7 +187,7 @@ namespace DOL.GS.Commands
 					door.Level = targetDoor.Level;
 					door.Realm = (byte) targetDoor.Realm;
 					door.Health = targetDoor.Health;
-					door.Locked = targetDoor.Locked;
+					door.Locked = Convert.ToInt32(targetDoor.Locked);
 					door.X = client.Player.X;
 					door.Y = client.Player.Y;
 					door.Z = client.Player.Z;
@@ -331,23 +331,18 @@ namespace DOL.GS.Commands
 		{
 			if (targetDoor.Realm == eRealm.None)
 				Realmname = "None";
-
-			if (targetDoor.Realm == eRealm.Albion)
+			else if (targetDoor.Realm == eRealm.Albion)
 				Realmname = "Albion";
-
-			if (targetDoor.Realm == eRealm.Midgard)
+			else if (targetDoor.Realm == eRealm.Midgard)
 				Realmname = "Midgard";
-
-			if (targetDoor.Realm == eRealm.Hibernia)
+			else if (targetDoor.Realm == eRealm.Hibernia)
 				Realmname = "Hibernia";
-
-			if (targetDoor.Realm == eRealm.Door)
+			else if (targetDoor.Realm == eRealm.Door)
 				Realmname = "All";
 
-			if (targetDoor.Locked == 1)
+			if (targetDoor.Locked)
 				statut = " Locked";
-
-			if (targetDoor.Locked == 0)
+			else
 				statut = " Unlocked";
 
 			int doorType = DoorRequestHandler.HandlerDoorId / 100000000;
@@ -382,18 +377,17 @@ namespace DOL.GS.Commands
 
 		private void locked(GameClient client, GameDoor targetDoor)
 		{
-			targetDoor.Locked = 1;
+			targetDoor.Locked = true;
 			targetDoor.SaveIntoDatabase();
 			client.Out.SendMessage("Door " + targetDoor.Name + " is locked", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
 
 		private void unlocked(GameClient client, GameDoor targetDoor)
 		{
-			targetDoor.Locked = 0;
+			targetDoor.Locked = false;
 			targetDoor.SaveIntoDatabase();
 			client.Out.SendMessage("Door " + targetDoor.Name + " is unlocked", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 		}
-
 
 		private void kill(GameClient client, GameDoor targetDoor, string[] args)
 		{
