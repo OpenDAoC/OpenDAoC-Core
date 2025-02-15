@@ -209,7 +209,6 @@ namespace DOL.GS
             else
                 _hasLos = response is eLosCheckResponse.TRUE;
 
-
             if (!_hasLos)
             {
                 OnOutOfRangeOrNoLosRangedAttack();
@@ -256,7 +255,7 @@ namespace DOL.GS
                 // Don't bother starting the timer if there's no one to perform the LoS check.
                 if (_losChecker == null)
                 {
-                    _callback(null, eLosCheckResponse.TRUE, 0, 0);
+                    // _callback(null, eLosCheckResponse.TRUE, 0, 0);
                     return;
                 }
 
