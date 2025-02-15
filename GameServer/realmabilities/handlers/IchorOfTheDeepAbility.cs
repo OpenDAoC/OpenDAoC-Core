@@ -160,9 +160,7 @@ namespace DOL.GS.RealmAbilities
 
 		private int CalculateDamageWithFalloff(int initialDamage, GameLiving initTarget, GameLiving aetarget)
 		{
-			//Console.WriteLine($"initial {initialDamage} caster {initTarget} target {aetarget}");
 			int modDamage = (int)Math.Round((decimal) (initialDamage * ((500-(initTarget.GetDistance(new Point2D(aetarget.X, aetarget.Y)))) / 500.0)));
-			//Console.WriteLine($"distance {((500-(initTarget.GetDistance(new Point2D(aetarget.X, aetarget.Y)))) / 500.0)} Mod {modDamage}");
 			return modDamage;
 		}
 

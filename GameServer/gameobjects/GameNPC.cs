@@ -2212,18 +2212,14 @@ namespace DOL.GS
 		public virtual bool RemoveBrain(ABrain removeBrain)
 		{
 			if (removeBrain == null)
-			{
-				//Console.WriteLine("removeBrain is null!");
 				return false;
-			}
 
 			ArrayList brains = new ArrayList(m_brains);
 			int index = brains.IndexOf(removeBrain);
+
 			if (index < 0)
-			{
-				//Console.WriteLine("Brain index < 0");
 				return false;
-			}
+
 			bool active = brains[index] == Brain;
 			if (active)
 				removeBrain.Stop();

@@ -121,7 +121,6 @@ namespace DOL.GS.Effects
 				//targets hp percent after heal is same as mostInjuredLiving
 				double targetHealPercent = bestHealPercent + mostInjuredPercent - targetHealthPercent;
 				int targetHeal = (int)(healTarget.MaxHealth * targetHealPercent);
-				//DOLConsole.WriteLine("SpreadHeal: targetHealPercent=" + targetHealPercent + "; uncapped targetHeal=" + targetHeal + "; bestHealPercent=" + bestHealPercent + "; mostInjuredPercent=" + mostInjuredPercent + "; targetHealthPercent=" + targetHealthPercent);
 
 				if (targetHeal > 0)
 				{

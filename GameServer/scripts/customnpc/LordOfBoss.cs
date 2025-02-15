@@ -271,31 +271,24 @@ namespace DOL.GS {
 				player.Out.SendMessage("You have already summoned a boss!.", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 				return;
 			}
-			
-			
+
 			//Create a new mob
 			GameNPC mob = new GameNPC();
 			mob = (GameNPC) Assembly.GetAssembly(typeof(GameServer)).CreateInstance(BossClass, false);
-			Console.WriteLine("Summoned " + BossClass);
-
-			if (mob == null)
-				Console.WriteLine("Error loading mob " + BossClass);
 
 			//Fill the object variables
-				mob.X = 34885;
-				mob.Y = 35347;
-				mob.Z = 19153;
-				mob.CurrentRegion = player.CurrentRegion;
-				mob.Heading = 2050;
+			mob.X = 34885;
+			mob.Y = 35347;
+			mob.Z = 19153;
+			mob.CurrentRegion = player.CurrentRegion;
+			mob.Heading = 2050;
 
-				//Fill the living variables
-				mob.Flags ^= eFlags.PEACE;
-				mob.AddToWorld();
-				
-	    }
-
+			//Fill the living variables
+			mob.Flags ^= eFlags.PEACE;
+			mob.AddToWorld();
 		}
-    
+	}
+
     public class LordOfBossBrain : StandardMobBrain {
 
         public int timeBeforeRez = 3000; //3 seconds

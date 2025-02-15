@@ -131,13 +131,8 @@ namespace DOL.GS.Scripts
                 foreach (GameNPC assistant in GetNPCsInRadius(5000))
                 {
                     if (assistant is OFAssistant)
-                    {
                         Assistants.Add(assistant as OFAssistant);
-                        Console.WriteLine($"Adding assistant {assistant}");
-                    }
                 }
-
-                //Console.WriteLine(Assistants.ToString());
             }
 
             if (cast)

@@ -12496,9 +12496,11 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Caught exception when trying to set controlled pet brain: {e}");
+                if (log.IsErrorEnabled)
+                    log.Error(e);
+
                 return false;
-            }
+        }
         }
 
         /// <summary>

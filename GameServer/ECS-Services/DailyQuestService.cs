@@ -66,8 +66,6 @@ namespace DOL.GS
                     if (existingDailyQuest.Step <= -1)
                         GameServer.Database.DeleteObject(existingDailyQuest);
                 }
-
-                //Console.WriteLine($"Daily refresh");
             }
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);

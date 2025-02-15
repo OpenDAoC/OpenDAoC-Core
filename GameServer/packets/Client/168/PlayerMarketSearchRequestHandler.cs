@@ -163,9 +163,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			search.clientVersion = client.Version.ToString();
 
-
-			Console.WriteLine(search);
-
 			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
 			{
 			

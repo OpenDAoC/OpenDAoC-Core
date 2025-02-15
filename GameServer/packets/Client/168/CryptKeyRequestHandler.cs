@@ -38,17 +38,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 				client.MinorRev = packet.ReadString(1);
 				if (rc4 == 1)
 				{
-					//DOLConsole.Log("SBox=\n");
-					//DOLConsole.LogDump(client.PacketProcessor.Encoding.SBox);
 					packet.Read(client.PacketProcessor.Encoding.SBox, 0, 256);
 					client.PacketProcessor.Encoding.EncryptionState = eEncryptionState.PseudoRC4Encrypted;
-					//DOLConsole.WriteLine(client.Socket.RemoteEndPoint.ToString()+": SBox set!");
-					//DOLConsole.Log("SBox=\n");
-					//DOLConsole.LogDump(((PacketEncoding168)client.PacketProcessor.Encoding).SBox);
 				}
 				else
 				{
-				  //Send the crypt key to the client
+					//Send the crypt key to the client
 					client.Out.SendVersionAndCryptKey();
 				}
 			}

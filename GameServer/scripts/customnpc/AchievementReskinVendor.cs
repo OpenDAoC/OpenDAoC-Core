@@ -88,8 +88,6 @@ public class AchievementReskinVendor : GameNPC
         int itemSlot = item.Item_Type;
         bool isGM = t.Client.Account.PrivLevel != 1;
 
-        //Console.Write("Item Type is" + item.Item_Type + "damagetype is" + damageType + "objectType is " + item.Object_Type);
-
         List<DbSkinVendorItem> foundItems = null;
 
         if (item.Item_Type == Slot.RIGHTHAND || item.Item_Type == Slot.LEFTHAND)
@@ -278,7 +276,6 @@ public class AchievementReskinVendor : GameNPC
             player.TempProperties.RemoveProperty(DisplayedItem);
             player.TempProperties.RemoveProperty(TempModelID);
 
-            //Console.WriteLine($"item model: {item.Model} assignment {number}");
             player.Inventory.RemoveItem(item);
             DbItemUnique unique = new DbItemUnique(item.Template);
             unique.Model = number;
@@ -296,7 +293,6 @@ public class AchievementReskinVendor : GameNPC
                 unique.IsTradable = false; //no trading/selling
             }
 
-            //Console.WriteLine($"unique model: {unique.Model} assignment {number}");
             DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
             if (item.IsCrafted)
                 newInventoryItem.IsCrafted = true;
@@ -426,9 +422,7 @@ public class AchievementReskinVendor : GameNPC
 
         /*
         mob.Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
-        //Console.WriteLine($"item: {item} slot: {item.Item_Type}");
         //mob.Inventory.AddItem((eInventorySlot) item.Item_Type, item);
-        //Console.WriteLine($"mob inventory: {mob.Inventory.ToString()}");
         player.Out.SendNPCCreate(mob);
         //mob.AddToWorld();*/
     }
@@ -561,8 +555,6 @@ public class AchievementReskinVendor : GameNPC
             foundItem = FindChoosenOptionOtherItems(str, item, playerRealm, noneRealm, damageType, characterClassUnknown, playerClass, playerRealmRank, accountRealmRank, playerDragonKills, playerOrbs, epicBossPlayerKills, masteredCrafts, isGM);
         }
 
-        // Console.Write("Item Type is" + item.Item_Type + "name is" + str + "damagetype is" + damageType + "objectType is " + item.Object_Type);
-
         switch (str.ToLower())
         {
             case "confirm model":
@@ -580,8 +572,6 @@ public class AchievementReskinVendor : GameNPC
                     foundItem = FindConfirmedOtherItems(item, cachedModelID, playerRealm, noneRealm, damageType, characterClassUnknown, playerClass, playerRealmRank, accountRealmRank, playerDragonKills, playerOrbs, epicBossPlayerKills, masteredCrafts, isGM);
                 }
 
-
-                //Console.WriteLine($"Cached: {cachedModelID}");
                 if (cachedModelID > 0 && cachedModelPrice > 0 && foundItem != null)
                 {
                     if (cachedModelPrice == 2500)

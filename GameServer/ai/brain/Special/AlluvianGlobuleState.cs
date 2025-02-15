@@ -10,12 +10,6 @@ namespace DOL.AI.Brain
             StateType = eFSMStateType.IDLE;
         }
 
-        public override void Enter()
-        {
-            Console.WriteLine($"{_brain.Body} is entering ALLUVIAN IDLE");
-            base.Enter();
-        }
-
         public override void Think()
         {
             if (_brain is AlluvianGlobuleBrain brain && brain.CheckStorm())
@@ -33,12 +27,6 @@ namespace DOL.AI.Brain
         public AlluvianGlobuleState_ROAMING(AlluvianGlobuleBrain brain) : base(brain)
         {
             StateType = eFSMStateType.ROAMING;
-        }
-
-        public override void Enter()
-        {
-            Console.WriteLine($"{_brain.Body} is entering ALLUVIAN ROAM");
-            base.Enter();
         }
 
         public override void Think()

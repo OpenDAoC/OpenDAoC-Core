@@ -164,12 +164,8 @@ namespace DOL.GS.Keeps
 
 			PatrolPath = PositionMgr.LoadPatrolPath(PatrolID, Component);
 
-			// Console.WriteLine(PatrolID + " guardstopatrol = " + guardsToPatrol + ", count = " + PatrolGuards.Count);
-
 			while (guardsToPatrol > PatrolGuards.Count)
-			{
 				CreatePatrolGuard(PatrolGuards.Count);
-			}
 
 			int x = 0;
 			int y = 0;
@@ -179,8 +175,6 @@ namespace DOL.GS.Keeps
 			for (int i = 0; i < PatrolGuards.Count; i++)
 			{
 				GameKeepGuard guard = PatrolGuards[i];
-
-				// Console.WriteLine(PatrolID + " loading guard " + guard.Name);
 
 				if (i < guardsToPatrol)
 				{

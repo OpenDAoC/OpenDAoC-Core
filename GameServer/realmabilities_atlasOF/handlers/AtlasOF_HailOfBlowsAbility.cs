@@ -55,12 +55,11 @@ namespace DOL.GS.RealmAbilities
             if (living is GamePlayer p)
                 m_hasteValue = GetHasteValue();
 
-            // Console.WriteLine($"haste buff of {m_hasteValue} applied");
             CreateSpell(m_hasteValue);
             CastSpell(living);
             DisableSkill(living);
         }
-        
+
         protected virtual double GetHasteValue()
         {
             return 5 * Level;

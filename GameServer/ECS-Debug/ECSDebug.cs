@@ -191,7 +191,7 @@ namespace ECS.Debug
         private static void ReportGameEventMgrNotifyTimes()
         {
             string ActualInterval = Util.TruncateString((GameLoop.GetCurrentTime() - _gameEventMgrNotifyTimerStartTick).ToString(), 5);
-            Console.WriteLine($"==== GameEventMgr Notify() Costs (Requested Interval: {_gameEventMgrNotifyTimerInterval}ms | Actual Interval: {ActualInterval}ms) ====");
+            log.Debug($"==== GameEventMgr Notify() Costs (Requested Interval: {_gameEventMgrNotifyTimerInterval}ms | Actual Interval: {ActualInterval}ms) ====");
 
             lock (_gameEventMgrNotifyLock)
             {
@@ -221,12 +221,12 @@ namespace ECS.Debug
                     string MinCostString = Util.TruncateString(MinCost.ToString(), 5);
                     string MaxCostString = Util.TruncateString(MaxCost.ToString(), 5);
                     string AvgCostString = Util.TruncateString(AvgCost.ToString(), 5);
-                    Console.WriteLine($"{EventNameString} - # Calls: {NumValuesString} | Total: {TotalCostString}ms | Avg: {AvgCostString}ms | Min: {MinCostString}ms | Max: {MaxCostString}ms");
+                    log.Debug($"{EventNameString} - # Calls: {NumValuesString} | Total: {TotalCostString}ms | Avg: {AvgCostString}ms | Min: {MinCostString}ms | Max: {MaxCostString}ms");
                 }
 
                 _gameEventMgrNotifyTimes.Clear();
                 _gameEventMgrNotifyTimerStartTick = GameLoop.GetCurrentTime();
-                Console.WriteLine("---------------------------------------------------------------------------");
+                log.Debug("---------------------------------------------------------------------------");
             }
         }
     }

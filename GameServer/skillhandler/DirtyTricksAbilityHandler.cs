@@ -249,7 +249,6 @@ namespace DOL.GS.Effects
 		{
 			if (m_expireTimer != null)
 			{
-				//DOLConsole.WriteLine("effect stop expire on "+Owner.Name+" "+this.InternalID);
 				m_expireTimer.Stop();
 				m_expireTimer = null;
 			}

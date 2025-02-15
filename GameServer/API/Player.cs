@@ -186,7 +186,6 @@ public class Player
     public static bool GetDiscord(string accountName)
     {
         var account = DOLDB<DbAccount>.SelectObject(DB.Column("Name").IsEqualTo(accountName));
-        Console.WriteLine(account.DiscordID);
         return account.DiscordID is not (null or "");
     }
 

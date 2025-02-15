@@ -70,17 +70,13 @@ namespace DOL.GS.Scripts
         {
             if (response == 1)
             {
-                Console.WriteLine($"Before Level: {player.RealmLevel} | Points: {player.RealmPoints}");
                 player.RealmLevel = 0;
                 player.RealmPoints = 0;
                 player.RespecRealm(false);
                 player.Out.SendUpdatePlayer();
                 player.Out.SendUpdatePoints();
                 //player.Achieve();
-                Console.WriteLine($"Player RR reset. Level: {player.RealmLevel} | Points: {player.RealmPoints}");
             }
         }
     }
-    
- }
-
+}

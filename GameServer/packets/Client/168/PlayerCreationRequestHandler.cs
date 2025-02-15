@@ -25,7 +25,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                 return;
             }
 
-            // DOLConsole.WriteLine("player creation request "+target.Player.Name);
             if (target.IsPlaying && target.Player != null && target.Player.ObjectState == GameObject.eObjectState.Active)
             {
                 client.Out.SendPlayerCreate(target.Player);

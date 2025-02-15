@@ -89,8 +89,6 @@ namespace DOL.GS
                     bonuscat = target.AbilityBonus;
                     break;
                 default:
-                    //if (log.IsErrorEnabled)
-                    //    Console.WriteLine("BonusCategory not found " + categoryid + "!");
                     break;
             }
             return bonuscat;

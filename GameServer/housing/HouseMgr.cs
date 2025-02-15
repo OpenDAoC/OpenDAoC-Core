@@ -727,8 +727,6 @@ namespace DOL.GS.Housing
 			if (Properties.RENT_DUE_DAYS == 0)
 				return 0;
 
-			Console.WriteLine("[Housing] Starting timed rent check");
-
 			TimeSpan diff;
 			var houseRemovalList = new List<House>();
 

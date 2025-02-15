@@ -1913,9 +1913,6 @@ namespace DOL.GS
 				return 0;
 
 			const int realmBits = DAMAGETYPE_BITCOUNT + ARMORTYPE_BITCOUNT;
-
-			//Console.WriteLine($"Realm {realm} armorType {armorType} damage {damage} input {(realm << realmBits) | (armorType << DAMAGETYPE_BITCOUNT) | damage} resistoutput {m_armorResists[(realm << realmBits) | (armorType << DAMAGETYPE_BITCOUNT) | damage]}");
-
 			return m_armorResists[(realm << realmBits) | (armorType << DAMAGETYPE_BITCOUNT) | damage];
 		}
 

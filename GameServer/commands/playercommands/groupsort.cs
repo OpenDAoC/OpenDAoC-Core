@@ -100,10 +100,7 @@ namespace DOL.GS.Commands
 					// 		
 					// 		List<String> classlist = new List<String>();
 					// 		foreach (GamePlayer player in client.Player.Group.GetMembersInTheGroup())
-					// 		{
 					// 			classlist.Add(player.CharacterClass.Name);
-					// 			Console.WriteLine(""+ classlist);
-					// 		}
 					// 		
 					// 		playerlist.Clear();
 					// 		classlist.Clear();

@@ -143,14 +143,12 @@ namespace DOL.Database
                 Dirty = true;
                 m_heading = value;
             }
-        }        
+        }
 
         [ScriptLoadedEvent]
-		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
-        {           
-        	GameServer.Database.RegisterDataObject(typeof (DBJumpPoint));                
-                               
-			Console.WriteLine("JumpPoints DB registered!");
+        public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
+        {
+            GameServer.Database.RegisterDataObject(typeof (DBJumpPoint));
         }
     }
 }

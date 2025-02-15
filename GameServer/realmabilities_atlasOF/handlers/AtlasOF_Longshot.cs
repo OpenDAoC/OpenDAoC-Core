@@ -37,7 +37,6 @@ namespace DOL.GS.RealmAbilities
 		
 		public override void Execute(GameLiving living)
 		{
-			Console.WriteLine();
 			if (living is not GamePlayer player) return;
 			if (player.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
 			{

@@ -66,7 +66,6 @@ namespace DOL.GS.Commands
 					break;
 				case eRealm.Hibernia:
 					t = client.Player.LastFreeLeveled.AddDays(DOL.GS.ServerProperties.Properties.FREELEVEL_DAYS_HIBERNIA) - DateTime.Now;
-					Console.WriteLine("derp");
 					break;
 			}
 

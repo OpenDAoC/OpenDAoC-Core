@@ -31,7 +31,7 @@ namespace DOL.Mail
 				//let's not try and compress already compressed files
 				if (file.EndsWith(".gz"))
 					continue;
-				Console.WriteLine(file);
+
 				if (!compressFile(file, file + ".gz"))
 					return false;
 			}

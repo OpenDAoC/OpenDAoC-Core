@@ -35,8 +35,8 @@ namespace DOL.GS.Spells
 
         public override void OnEffectStart(GameSpellEffect effect)
         {
-
             base.OnEffectStart(effect);
+
             if (effect.Owner is GamePlayer)
             {
                 GamePlayer player = effect.Owner as GamePlayer;
@@ -47,19 +47,16 @@ namespace DOL.GS.Spells
                     {
                         player.BaseBuffBonusCategory[i] = -player.GetModifiedSpecLevel(SkillBase.GetPropertyName((eProperty)(i)));
                     }
-                    //					DOLConsole.WriteWarning("Spec " + SkillBase.GetPropertyName((eProperty)(i)) + " " + player.GetModifiedSpecLevel(SkillBase.GetPropertyName((eProperty)(i))));
                 }
+
                 player.PropertiesChanged();
                 player.Out.SendCharStatsUpdate();
                 player.UpdatePlayerStatus();
                 MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);
                 Message.SystemToArea(effect.Owner, Util.MakeSentence(Spell.Message2, effect.Owner.GetName(0, true)), eChatType.CT_Spell, effect.Owner);
-
             }
-
         }
 
-		
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
 			if (effect.Owner is GamePlayer)

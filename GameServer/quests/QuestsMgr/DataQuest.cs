@@ -2193,7 +2193,6 @@ namespace DOL.GS.Quests
 			{
 				DbCharacterXDataQuest charQuest = GetCharacterQuest(player, ID, true);
 
-				//Console.WriteLine($"count {charQuest.Count} maxCount {MaxQuestCount} Minlvl {Level} Maxlvl {MaxLevel} playerlvl {player.Level}");
 				if (charQuest.Count < MaxQuestCount && player.Level <= MaxLevel && player.Level >= Level)
 				{
 					TryTurnTo(obj, player);

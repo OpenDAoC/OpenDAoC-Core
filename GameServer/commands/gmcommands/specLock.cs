@@ -60,7 +60,6 @@ namespace DOL.GS.Commands
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e + ": " + e.StackTrace);
 				DisplaySyntax(client);
 			}
 		}

@@ -1196,9 +1196,7 @@ namespace DOL.GS
 
             /*
             mob.Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
-            //Console.WriteLine($"item: {item} slot: {item.Item_Type}");
             //mob.Inventory.AddItem((eInventorySlot) item.Item_Type, item);
-            //Console.WriteLine($"mob inventory: {mob.Inventory.ToString()}");
             player.Out.SendNPCCreate(mob);
             //mob.AddToWorld();*/
         }

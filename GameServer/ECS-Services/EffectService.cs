@@ -407,9 +407,7 @@ namespace DOL.GS
                 case eSpellType.SummonJuggernaut:
                 case eSpellType.SummonAnimistAmbusher:
                     return eEffect.Pet;
-
                 default:
-                    //Console.WriteLine($"Unable to map effect for ECSGameEffect! {spell}");
                     return eEffect.Unknown;
             }
         }
@@ -594,9 +592,7 @@ namespace DOL.GS
                 case eEffect.FatigueConsumptionDebuff:
                     list.Add(eProperty.FatigueConsumption);
                     return list;
-
                 default:
-                    //Console.WriteLine($"Unable to find property mapping for: {e}");
                     return list;
             }
         }

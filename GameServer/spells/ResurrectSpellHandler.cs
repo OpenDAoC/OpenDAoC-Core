@@ -65,8 +65,6 @@ namespace DOL.GS.Spells
 				return 0;
 
 			float factor = Math.Max (0.1f, 0.5f + (target.Level - m_caster.Level) / (float)m_caster.Level);
-
-			//DOLConsole.WriteLine("res power needed: " + (int) (m_caster.MaxMana * factor) + "; factor="+factor);
 			return (int) (m_caster.MaxMana * factor);
 		}
 
@@ -77,7 +75,6 @@ namespace DOL.GS.Spells
 		/// <param name="response"></param>
 		protected virtual void ResurrectResponceHandler(GamePlayer player, byte response)
 		{
-			//DOLConsole.WriteLine("resurrect responce: " + response);
 			ECSGameTimer resurrectExpiredTimer = null;
 			lock (_lock)
 			{

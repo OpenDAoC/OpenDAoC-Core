@@ -231,8 +231,6 @@ namespace DOL.GS.PacketHandler
 								if (ip == "any" || ip == "0.0.0.0" || ip == "127.0.0.1" || ip.StartsWith("10.13.") || ip.StartsWith("192.168."))
 									ip = ((IPEndPoint)m_gameClient.Socket.LocalEndPoint).Address.ToString();
 								pak.FillString(ip, 20);
-
-								//							DOLConsole.WriteLine(string.Format(" ip={3}; fromPort={1}; toPort={2}; num={4}; id={0}; region name={5}", entries[index].id, entries[index].fromPort, entries[index].toPort, entries[index].ip, num, entries[index].name));
 								index++;
 							}
 						}

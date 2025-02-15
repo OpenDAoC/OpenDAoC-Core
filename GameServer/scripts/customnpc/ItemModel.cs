@@ -111,7 +111,6 @@ namespace DOL.GS
             switch (str.ToLower())
             {
                 case "confirm model":
-                    //Console.WriteLine($"Cached: {cachedModelID}");
                     if (cachedModelID > 0 && cachedModelPrice > 0)
                     {
                         if(cachedModelPrice == armorpads)
@@ -6015,10 +6014,8 @@ namespace DOL.GS
                     modelIDToAssign = 5;
                     break;
                     #endregion
-
             }
 
-            //Console.WriteLine($"price {price} model {modelIDToAssign}");
             if (price == armorpads)
             {
                 DbInventoryItem tmpItem = (DbInventoryItem) displayItem.Clone();
@@ -6729,21 +6726,19 @@ namespace DOL.GS
 
                 DbInventoryItem item = player.TempProperties.GetProperty<DbInventoryItem>(TempProperty);
                 DbInventoryItem displayItem = player.TempProperties.GetProperty<DbInventoryItem>(DisplayedItem);
-                
+
                 if (item == null || item.OwnerID != player.InternalID || item.OwnerID == null)
                     return false;
-                
+
                 player.TempProperties.RemoveProperty(TempProperty);
                 player.TempProperties.RemoveProperty(DisplayedItem);
                 player.TempProperties.RemoveProperty(TempModelID);
-                
-                //Console.WriteLine($"item model: {item.Model} assignment {number}");
+
                 player.Inventory.RemoveItem(item);
                 DbItemUnique unique = new DbItemUnique(item.Template);
                 unique.Model = number;
                 item.IsTradable = false;
                 item.IsDropable = false;
-                //Console.WriteLine($"unique model: {unique.Model} assignment {number}");
                 DbInventoryItem newInventoryItem = GameInventoryItem.Create(unique as DbItemTemplate);
                 player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, newInventoryItem);
                 player.Out.SendInventoryItemsUpdate(new DbInventoryItem[] { newInventoryItem });
@@ -6836,15 +6831,11 @@ namespace DOL.GS
 
             /*
             mob.Inventory = new GameNPCInventory(GameNpcInventoryTemplate.EmptyTemplate);
-            //Console.WriteLine($"item: {item} slot: {item.Item_Type}");
             //mob.Inventory.AddItem((eInventorySlot) item.Item_Type, item);
-            //Console.WriteLine($"mob inventory: {mob.Inventory.ToString()}");
             player.Out.SendNPCCreate(mob);
             //mob.AddToWorld();*/
-
-
         }
-        
+
         private void DisplayReskinPreviewTo(GamePlayer player, DbInventoryItem item)
         {
             GameNPC display = CreateDisplayNPC(player, item);

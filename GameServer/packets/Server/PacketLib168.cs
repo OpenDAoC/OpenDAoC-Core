@@ -475,7 +475,6 @@ namespace DOL.GS.PacketHandler
 							if (ip == "any" || ip == "0.0.0.0" || ip == "127.0.0.1" || ip.StartsWith("10.13.") || ip.StartsWith("192.168."))
 								ip = ((IPEndPoint) m_gameClient.Socket.LocalEndPoint).Address.ToString();
 							pak.FillString(ip, 20);
-							//						DOLConsole.WriteLine(string.Format(" ip={3}; fromPort={1}; toPort={2}; num={4}; id={0}; region name={5}", (byte)entries[index].id, entries[index].fromPort, entries[index].toPort, entries[index].ip, num, entries[index].name));
 							index++;
 						}
 					}
@@ -665,7 +664,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort((ushort) playerToCreate.Z);
 				pak.WriteShort(playerToCreate.Heading);
 				pak.WriteShort(playerToCreate.Model);
-				//DOLConsole.WriteLine("send created player "+target.Player.Name+" to "+client.Player.Name+" alive="+target.Player.Alive);
 				pak.WriteByte((byte) (playerToCreate.IsAlive ? 0x1 : 0x0));
 				pak.WriteByte(0x00);
 				pak.WriteByte(GameServer.ServerRules.GetLivingRealm(m_gameClient.Player, playerToCreate));
@@ -1266,7 +1264,6 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid,
 		                                             ushort boltTime, bool noSound, byte success)
 		{
-			//Console.WriteLine($"Spell Effect sent at {GameLoop.GameLoopTime}");
 			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SpellEffectAnimation)))
 			{
 				pak.WriteShort((ushort) spellCaster.ObjectID);

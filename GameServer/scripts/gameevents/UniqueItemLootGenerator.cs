@@ -107,8 +107,6 @@ namespace DOL.GS
                 }
                 catch (Exception e)
                 {
-	                Console.WriteLine(e);
-	                Console.WriteLine(e.StackTrace);
                     DisplaySyntax(client);
                 }
             }

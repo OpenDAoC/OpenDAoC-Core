@@ -97,7 +97,6 @@ namespace DOL.GS.RealmAbilities
         /// <param name="response"></param>
         protected virtual void ResurrectResponceHandler(GamePlayer player, byte response)
         {
-            //DOLConsole.WriteLine("resurrect responce: " + response);
             ECSGameTimer resurrectExpiredTimer = null;
             lock (_lock)
             {
