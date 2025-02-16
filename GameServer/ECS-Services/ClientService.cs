@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
@@ -94,6 +93,7 @@ namespace DOL.GS
                         if (ServiceUtils.ShouldTick(player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL))
                             UpdateWorld(player);
 
+                        player.effectListComponent.Tick();
                         player.movementComponent.Tick();
                         break;
                     }

@@ -121,7 +121,6 @@ namespace DOL.GS
                 AttackService.Tick();
                 CastingService.Tick();
                 EffectService.Tick();
-                EffectListService.Tick();
                 ZoneService.Tick();
                 CraftingService.Tick();
                 ReaperService.Tick();

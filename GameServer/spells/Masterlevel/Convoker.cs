@@ -778,18 +778,6 @@ namespace DOL.AI.Brain
 
 		#region AI
 
-		public override bool Start()
-		{
-			if (!base.Start()) return false;
-			return true;
-		}
-
-		public override bool Stop()
-		{
-			if (!base.Stop()) return false;
-			return true;
-		}
-
 		private IList FindTarget()
 		{
 			ArrayList list = new ArrayList();

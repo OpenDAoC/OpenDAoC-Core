@@ -32,7 +32,7 @@ namespace DOL.GS
             Owner = owner as GamePlayer;
         }
 
-        public override void Tick()
+        protected override void TickInternal()
         {
             if (!Owner.IsLinkDeathTimerRunning)
             {
@@ -61,7 +61,7 @@ namespace DOL.GS
                 }
             }
 
-            base.Tick();
+            base.TickInternal();
         }
 
         public void BroadcastPosition()

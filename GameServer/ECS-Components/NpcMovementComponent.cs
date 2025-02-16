@@ -61,7 +61,7 @@ namespace DOL.GS
             _positionForUpdatePackets = Owner;
         }
 
-        public override void Tick()
+        protected override void TickInternal()
         {
             if (IsFlagSet(MovementState.TURN_TO))
             {
@@ -117,7 +117,7 @@ namespace DOL.GS
 
             void FinalizeTick()
             {
-                base.Tick();
+                base.TickInternal();
 
                 if (_needsBroadcastUpdate)
                 {

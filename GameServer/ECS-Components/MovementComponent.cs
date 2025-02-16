@@ -1,9 +1,11 @@
-﻿using System.Threading;
+﻿using System.Reflection;
+using System.Threading;
 
 namespace DOL.GS
 {
     public class MovementComponent
     {
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 500;
 
         private long _nextSubZoneRelocationCheckTick;
@@ -32,7 +34,17 @@ namespace DOL.GS
                 return new MovementComponent(living);
         }
 
-        public virtual void Tick()
+        public void Tick()
+        {
+            long startTick = GameLoop.GetCurrentTime();
+            TickInternal();
+            long stopTick = GameLoop.GetCurrentTime();
+
+            if (stopTick - startTick > 25)
+                log.Warn($"Long {nameof(MovementComponent)}.{nameof(TickInternal)} for {Owner.Name}({Owner.ObjectID}) Time: {stopTick - startTick}ms");
+        }
+
+        protected virtual void TickInternal()
         {
             // Only check for subzone relocation if we moved.
             if (!Owner.IsSamePosition(_positionDuringLastSubZoneRelocationCheck) && ServiceUtils.ShouldTickAdjust(ref _nextSubZoneRelocationCheckTick))
