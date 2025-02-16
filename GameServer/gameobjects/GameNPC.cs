@@ -25,7 +25,8 @@ namespace DOL.GS
 	/// </summary>
 	public class GameNPC : GameLiving, ITranslatableObject
 	{
-		public static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		public static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		private static ConcurrentDictionary<Type, Func<AbstractQuest>> _abstractQuestConstructorCache = new();
 
 		private const int VISIBLE_TO_PLAYER_SPAN = 60000;
 
@@ -1558,11 +1559,23 @@ namespace DOL.GS
 		{
 			lock (_questListToGiveLock)
 			{
-				if (HasQuest(questType) == null)
+				if (HasQuest(questType) != null)
+					return;
+
+				AbstractQuest newQuest = null;
+
+				try
 				{
-					AbstractQuest newQuest = (AbstractQuest)Activator.CreateInstance(questType);
-					if (newQuest != null) m_questListToGive.Add(newQuest);
+					newQuest = _abstractQuestConstructorCache.GetOrAdd(questType, (key) => CompiledConstructorFactory.CompileConstructor(key, []) as Func<AbstractQuest>)();
 				}
+				catch (Exception e)
+				{
+					if (log.IsErrorEnabled)
+						log.Error(e);
+				}
+
+				if (newQuest != null)
+					m_questListToGive.Add(newQuest);
 			}
 		}
 

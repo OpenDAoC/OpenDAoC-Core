@@ -4,7 +4,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using DOL.AI.Brain;
@@ -25,7 +24,8 @@ namespace DOL.GS
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private static Dictionary<string, Assembly> m_compiledScripts = new();
-        private static ConcurrentDictionary<eSpellType, Func<GameLiving, Spell, SpellLine, ISpellHandler>> m_spellhandlerConstructorCache = new();
+        private static ConcurrentDictionary<eSpellType, Func<GameLiving, Spell, SpellLine, ISpellHandler>> _spellHandlerConstructorCache = new();
+        private static ConcurrentDictionary<int, Func<ICharacterClass>> _characterClassConstructorCache = new();
 
         /// <summary>
         /// This class will hold all info about a gamecommand
@@ -672,33 +672,41 @@ namespace DOL.GS
         /// <returns>ClassSpec that was found or null if not found</returns>
         public static ICharacterClass FindCharacterClass(int id)
         {
+            if (_characterClassConstructorCache.TryGetValue(id, out var constructor))
+                return constructor();
+
             foreach (Assembly asm in GameServerScripts)
             {
                 foreach (Type type in asm.GetTypes())
                 {
                     // Pick up a class
-                    if (type.IsClass != true) continue;
-                    if (type.IsAbstract) continue;
-                    if (type.GetInterface("DOL.GS.ICharacterClass") == null) continue;
+                    if (type.IsClass != true)
+                        continue;
+
+                    if (type.IsAbstract)
+                        continue;
+
+                    if (type.GetInterface("DOL.GS.ICharacterClass") == null)
+                        continue;
 
                     try
                     {
                         object[] objs = type.GetCustomAttributes(typeof(CharacterClassAttribute), false);
+
                         foreach (CharacterClassAttribute attrib in objs)
                         {
                             if (attrib.ID == id)
-                            {
-                                return (ICharacterClass)Activator.CreateInstance(type);
-                            }
+                                return _characterClassConstructorCache.GetOrAdd(id, (key) => CompiledConstructorFactory.CompileConstructor(type, []) as Func<ICharacterClass>)();
                         }
                     }
                     catch (Exception e)
                     {
                         if (log.IsErrorEnabled)
-                            log.Error("FindCharacterClass", e);
+                            log.Error(e);
                     }
                 }
             }
+
             return null;
         }
 
@@ -870,7 +878,7 @@ namespace DOL.GS
                 return null;
 
             // try to find it in assemblies when not in cache
-            if (!m_spellhandlerConstructorCache.TryGetValue(spell.SpellType, out var handlerConstructor))
+            if (!_spellHandlerConstructorCache.TryGetValue(spell.SpellType, out var handlerConstructor))
                 handlerConstructor = CacheSpellHandlerConstructor(spell.SpellType);
 
             if (handlerConstructor != null)
@@ -920,12 +928,9 @@ namespace DOL.GS
                     {
                         if (attrib.SpellType == spellType)
                         {
-                            ParameterExpression[] constructorParams = [Expression.Parameter(typeof(GameLiving)), Expression.Parameter(typeof(Spell)), Expression.Parameter(typeof(SpellLine))];
-                            ConstructorInfo constructor = type.GetConstructor([typeof(GameLiving), typeof(Spell), typeof(SpellLine)]);
-
                             try
                             {
-                                handlerConstructor = Expression.Lambda<Func<GameLiving, Spell, SpellLine, SpellHandler>>(Expression.New(constructor, constructorParams), constructorParams).Compile();
+                                handlerConstructor = CompiledConstructorFactory.CompileConstructor<SpellHandler>([typeof(GameLiving), typeof(Spell), typeof(SpellLine)]) as Func<GameLiving, Spell, SpellLine, ISpellHandler>;
                             }
                             catch (Exception e)
                             {
@@ -945,7 +950,7 @@ namespace DOL.GS
                     if (handlerConstructor == null)
                         continue;
 
-                    m_spellhandlerConstructorCache.TryAdd(spellType, handlerConstructor);
+                    _spellHandlerConstructorCache.TryAdd(spellType, handlerConstructor);
                     return handlerConstructor;
                 }
             }
@@ -958,7 +963,7 @@ namespace DOL.GS
         /// </summary>
         public static void ClearSpellHandlerCache()
         {
-            m_spellhandlerConstructorCache.Clear();
+            _spellHandlerConstructorCache.Clear();
         }
 
         /// <summary>

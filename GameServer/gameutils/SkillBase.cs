@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -3001,14 +3000,32 @@ namespace DOL.GS
 
 		private static Func<ISpecActionHandler> GetNewSpecActionHandlerConstructor(Type type)
 		{
-			ConstructorInfo constructor = type.GetConstructor(Type.EmptyTypes);
-			return Expression.Lambda<Func<ISpecActionHandler>>(Expression.New(constructor, null), null).Compile();
+			try
+			{
+				return CompiledConstructorFactory.CompileConstructor(type, []) as Func<ISpecActionHandler>;
+			}
+			catch (Exception e)
+			{
+				if (log.IsErrorEnabled)
+					log.Error(e);
+			}
+
+			return null;
 		}
 
 		private static Func<IAbilityActionHandler> GetNewAbilityActionHandlerConstructor(Type type)
 		{
-			ConstructorInfo constructor = type.GetConstructor(Type.EmptyTypes);
-			return Expression.Lambda<Func<IAbilityActionHandler>>(Expression.New(constructor, null), null).Compile();
+			try
+			{
+				return CompiledConstructorFactory.CompileConstructor(type, []) as Func<IAbilityActionHandler>;
+			}
+			catch (Exception e)
+			{
+				if (log.IsErrorEnabled)
+					log.Error(e);
+			}
+
+			return null;
 		}
 
 		private static Ability GetNewAbilityInstance(string keyname, int level)

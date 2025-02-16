@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -16,16 +17,13 @@ namespace DOL.Database
     public abstract class SqlObjectDatabase : ObjectDatabase
     {
         private static readonly Lock _lock = new();
+        private static ConcurrentDictionary<Type, Func<DataObject>> _dataObjectConstructorCache = new();
 
         /// <summary>
         /// Create a new instance of <see cref="SqlObjectDatabase"/>
         /// </summary>
         /// <param name="ConnectionString">Database Connection String</param>
-        protected SqlObjectDatabase(string ConnectionString)
-            : base(ConnectionString)
-        {
-
-        }
+        protected SqlObjectDatabase(string ConnectionString) : base(ConnectionString) { }
 
         #region ObjectDatabase Base Implementation for SQL
         /// <summary>
@@ -422,12 +420,12 @@ namespace DOL.Database
         private void FillQueryResultList(IDataReader reader, DataTableHandler tableHandler, ElementBinding[] columns, ElementBinding primary, List<IList<DataObject>> resultList)
         {
             var list = new List<DataObject>();
-
             var data = new object[reader.FieldCount];
+
             while (reader.Read())
             {
                 reader.GetValues(data);
-                var obj = Activator.CreateInstance(tableHandler.ObjectType) as DataObject;
+                DataObject obj = _dataObjectConstructorCache.GetOrAdd(tableHandler.ObjectType, (key) => CompiledConstructorFactory.CompileConstructor(key, []) as Func<DataObject>)();
 
                 // Fill Object
                 var current = 0;
@@ -445,6 +443,7 @@ namespace DOL.Database
                 obj.Dirty = false;
                 obj.IsPersisted = true;
             }
+
             resultList.Add(list.ToArray());
         }
 
@@ -662,7 +661,6 @@ namespace DOL.Database
                             log.DebugFormat("ExecuteSelectImpl: SQL Select exec time {0}ms", ((DateTime.UtcNow.Ticks / 10000) - start));
                         else if (log.IsWarnEnabled && (DateTime.UtcNow.Ticks / 10000) - start > 500)
                             log.WarnFormat("ExecuteSelectImpl: SQL Select took {0}ms!\n{1}", ((DateTime.UtcNow.Ticks / 10000) - start), selectFromExpression);
-
                     }
                     catch (Exception e)
                     {
