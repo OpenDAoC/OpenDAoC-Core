@@ -92,14 +92,7 @@ namespace DOL.GS
                             break;
 
                         if (ServiceUtils.ShouldTick(player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL))
-                        {
-                            long startTick = GameLoop.GetCurrentTime();
                             UpdateWorld(player);
-                            long stopTick = GameLoop.GetCurrentTime();
-
-                            if (stopTick - startTick > 25)
-                                log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
-                        }
 
                         player.movementComponent.Tick();
                         break;
