@@ -255,6 +255,12 @@ namespace DOL.GS.Commands
             if ((ePrivLevel) client.Account.PrivLevel < ePrivLevel.GM)
                 return;
 
+            if (args.Length < 2)
+            {
+                DisplaySyntax(client);
+                return;
+            }
+
             if (args[1].Equals("entity", StringComparison.OrdinalIgnoreCase))
             {
                 Diagnostics.RequestCheckEntityCounts = true;

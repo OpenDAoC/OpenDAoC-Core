@@ -62,9 +62,6 @@ namespace DOL.GS
             if (client?.EntityManagerId.IsSet != true)
                 return;
 
-            if (Diagnostics.CheckEntityCounts)
-                Interlocked.Increment(ref _entityCount);
-
             try
             {
                 switch (client.ClientState)
@@ -125,7 +122,7 @@ namespace DOL.GS
                 return;
 
             if (Diagnostics.CheckEntityCounts)
-                Interlocked.Increment(ref _clientCount);
+                Interlocked.Increment(ref _entityCount);
 
             try
             {
