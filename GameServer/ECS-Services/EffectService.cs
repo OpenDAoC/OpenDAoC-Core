@@ -50,7 +50,7 @@ namespace DOL.GS
                 if (effect.CancelEffect || effect.IsDisabled)
                     HandleCancelEffect(effect);
                 else
-                    HandlePropertyModification(effect);
+                    HandleStartEffect(effect);
 
                 EntityManager.Remove(effect);
 
@@ -65,24 +65,29 @@ namespace DOL.GS
             }
         }
 
-        private static void HandlePropertyModification(ECSGameEffect e)
+        private static void HandleStartEffect(ECSGameEffect effect)
         {
-            if (e.Owner == null)
+            if (effect.Owner == null)
                 return;
 
-            EffectListComponent effectList = e.Owner.effectListComponent;
+            EffectListComponent effectListComponent = effect.Owner.effectListComponent;
 
-            if (effectList == null)
+            if (effectListComponent == null)
                 return;
 
-            // Early out if we're trying to add an effect that is already present.
-            if (!effectList.AddEffect(e))
-                return;
+            effectListComponent.AddEffect(effect);
         }
 
         private static bool HandleCancelEffect(ECSGameEffect effect)
         {
+            if (effect.Owner == null)
+                return false;
+
             EffectListComponent effectListComponent = effect.Owner.effectListComponent;
+
+            if (effectListComponent == null)
+                return false;
+
             return effectListComponent.RemoveEffect(effect);
         }
 
@@ -91,7 +96,7 @@ namespace DOL.GS
         /// </summary>
         public static bool RequestCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
         {
-            if (effect is null)
+            if (effect == null)
                 return false;
 
             if (effect.CancelEffect)
@@ -131,7 +136,10 @@ namespace DOL.GS
         /// </summary>
         public static void RequestStartEffect(ECSGameEffect effect)
         {
-            HandlePropertyModification(effect);
+            if (effect == null)
+                return;
+
+            EntityManager.Add(effect);
         }
 
         /// <summary>
@@ -139,6 +147,9 @@ namespace DOL.GS
         /// </summary>
         public static void RequestDisableEffect(ECSGameEffect effect)
         {
+            if (effect == null)
+                return;
+
             effect.IsDisabled = true;
             effect.RenewEffect = false;
             HandleCancelEffect(effect);
@@ -149,12 +160,15 @@ namespace DOL.GS
         /// </summary>
         public static void RequestEnableEffect(ECSGameEffect effect)
         {
+            if (effect == null)
+                return;
+
             if (!effect.IsDisabled)
                 return;
 
             effect.IsDisabled = false;
             effect.RenewEffect = true;
-            HandlePropertyModification(effect);
+            EntityManager.Add(effect);
         }
 
         public static void SendSpellAnimation(ECSGameSpellEffect e)
