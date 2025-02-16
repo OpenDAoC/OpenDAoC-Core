@@ -91,9 +91,6 @@ namespace DOL.GS
             return effectListComponent.RemoveEffect(effect);
         }
 
-        /// <summary>
-        /// Immediately cancels an ECSGameEffect.
-        /// </summary>
         public static bool RequestCancelEffect(ECSGameEffect effect, bool playerCanceled = false)
         {
             if (effect == null)
@@ -123,17 +120,11 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// Immediately cancels an ECSGameSpellEffect (as a IConcentrationEffect).
-        /// </summary>
         public static bool RequestCancelConcEffect(IConcentrationEffect concEffect, bool playerCanceled = false)
         {
             return concEffect is ECSGameSpellEffect effect && RequestCancelEffect(effect, playerCanceled);
         }
 
-        /// <summary>
-        /// Immediately starts an ECSGameEffect.
-        /// </summary>
         public static void RequestStartEffect(ECSGameEffect effect)
         {
             if (effect == null)
@@ -142,9 +133,6 @@ namespace DOL.GS
             EntityManager.Add(effect);
         }
 
-        /// <summary>
-        /// Immediately disables an ECSGameEffect.
-        /// </summary>
         public static void RequestDisableEffect(ECSGameEffect effect)
         {
             if (effect == null)
@@ -152,12 +140,9 @@ namespace DOL.GS
 
             effect.IsDisabled = true;
             effect.RenewEffect = false;
-            HandleCancelEffect(effect);
+            EntityManager.Add(effect);
         }
 
-        /// <summary>
-        /// Immediately enables a previously disabled ECSGameEffect.
-        /// </summary>
         public static void RequestEnableEffect(ECSGameEffect effect)
         {
             if (effect == null)
