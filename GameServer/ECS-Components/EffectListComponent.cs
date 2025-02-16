@@ -6,6 +6,7 @@ using System.Threading;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
+using ECS.Debug;
 
 namespace DOL.GS
 {
@@ -54,7 +55,7 @@ namespace DOL.GS
             SendPlayerUpdates();
             long stopTick = GameLoop.GetCurrentTime();
 
-            if (stopTick - startTick > 25)
+            if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {nameof(EffectListComponent)}.{nameof(Tick)} for {Owner.Name}({Owner.ObjectID}) Time: {stopTick - startTick}ms");
         }
 

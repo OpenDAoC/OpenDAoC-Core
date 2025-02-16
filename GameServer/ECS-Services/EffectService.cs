@@ -56,7 +56,7 @@ namespace DOL.GS
 
                 long stopTick = GameLoop.GetCurrentTime();
 
-                if (stopTick - startTick > 25)
+                if (stopTick - startTick > Diagnostics.LongTickThreshold)
                     log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Effect: {effect}  Owner: {effect.OwnerName} Time: {stopTick - startTick}ms");
             }
             catch (Exception e)

@@ -145,7 +145,7 @@ namespace DOL.GS
             client.Receive();
             long stopTick = GameLoop.GetCurrentTime();
 
-            if (stopTick - startTick > 25)
+            if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {SERVICE_NAME}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
         }
 
@@ -155,7 +155,7 @@ namespace DOL.GS
             client.PacketProcessor.SendPendingPackets();
             long stopTick = GameLoop.GetCurrentTime();
 
-            if (stopTick - startTick > 25)
+            if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {SERVICE_NAME}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
         }
 
@@ -696,7 +696,7 @@ namespace DOL.GS
             player.LastWorldUpdate = GameLoop.GameLoopTime;
             long stopTick = GameLoop.GetCurrentTime();
 
-            if (stopTick - startTick > 25)
+            if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
         }
 

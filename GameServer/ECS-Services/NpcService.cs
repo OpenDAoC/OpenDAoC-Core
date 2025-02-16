@@ -54,7 +54,7 @@ namespace DOL.GS
                     brain.Think();
                     long stopTick = GameLoop.GetCurrentTime();
 
-                    if (stopTick - startTick > 25)
+                    if (stopTick - startTick > Diagnostics.LongTickThreshold)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
 
                     brain.NextThinkTick += brain.ThinkInterval;

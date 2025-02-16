@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Threading;
+using ECS.Debug;
 
 namespace DOL.GS
 {
@@ -40,7 +41,7 @@ namespace DOL.GS
             TickInternal();
             long stopTick = GameLoop.GetCurrentTime();
 
-            if (stopTick - startTick > 25)
+            if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {nameof(MovementComponent)}.{nameof(TickInternal)} for {Owner.Name}({Owner.ObjectID}) Time: {stopTick - startTick}ms");
         }
 

@@ -45,7 +45,7 @@ namespace DOL.GS
                     timer.Tick();
                     long stopTick = GameLoop.GetCurrentTime();
 
-                    if (stopTick - startTick > 25)
+                    if (stopTick - startTick > Diagnostics.LongTickThreshold)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Timer Callback: {timer.CallbackInfo?.DeclaringType}:{timer.CallbackInfo?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
                 }
             }

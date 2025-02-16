@@ -43,7 +43,7 @@ namespace DOL.GS
                 castingComponent.Tick();
                 long stopTick = GameLoop.GetCurrentTime();
 
-                if (stopTick - startTick > 25)
+                if (stopTick - startTick > Diagnostics.LongTickThreshold)
                     log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for: {castingComponent.Owner.Name}({castingComponent.Owner.ObjectID}) Spell: {castingComponent.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
             }
             catch (Exception e)

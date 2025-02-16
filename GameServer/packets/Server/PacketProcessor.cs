@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using DOL.GS.ServerProperties;
 using DOL.Network;
+using ECS.Debug;
 using static DOL.GS.GameClient;
 
 namespace DOL.GS.PacketHandler
@@ -196,7 +197,7 @@ namespace DOL.GS.PacketHandler
                 packetHandler.HandlePacket(_client, packet);
                 long stopTick = GameLoop.GetCurrentTime();
 
-                if (stopTick - startTick > 25)
+                if (stopTick - startTick > Diagnostics.LongTickThreshold)
                     log.Warn($"Long {nameof(PacketProcessor)}.{nameof(ProcessInboundPacket)} (code: 0x{packet.ID:X}) for {_client.Player?.Name}({_client.Player?.ObjectID}) Time: {stopTick - startTick}ms");
             }
             catch (Exception e)

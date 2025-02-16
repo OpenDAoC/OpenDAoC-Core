@@ -27,10 +27,11 @@ namespace ECS.Debug
         private static long _gameEventMgrNotifyTimerStartTick;
         private static Stopwatch _gameEventMgrNotifyStopwatch;
         private static Dictionary<string, List<double>> _gameEventMgrNotifyTimes = new();
+        private static int _checkEntityCountTicks;
 
-        public static int _checkEntityCountTicks;
         public static bool CheckEntityCounts => _checkEntityCountTicks > 0;
         public static bool RequestCheckEntityCounts { get; set; }
+        public static int LongTickThreshold { get; set; } = 25;
 
         public static void PrintEntityCount(string serviceName, ref int nonNull, int total)
         {
