@@ -33,17 +33,23 @@ namespace DOL.GS
 
         public bool AddEffect(ECSGameEffect effect)
         {
+            bool success;
+
             lock (EffectsLock)
             {
-                if (AddEffectInternal(effect))
-                {
-                    OnEffectAdded(effect);
-                    return true;
-                }
+                success = AddEffectInternal(effect);
             }
 
-            OnEffectNotAdded(effect);
-            return false;
+            if (success)
+            {
+                OnEffectAdded(effect);
+                return true;
+            }
+            else
+            {
+                OnEffectNotAdded(effect);
+                return false;
+            }
 
             bool AddEffectInternal(ECSGameEffect effect)
             {
@@ -377,13 +383,17 @@ namespace DOL.GS
 
         public bool RemoveEffect(ECSGameEffect effect)
         {
+            bool success;
+
             lock (EffectsLock)
             {
-                if (RemoveEffectInternal(effect))
-                {
-                    OnEffectRemoved(effect);
-                    return true;
-                }
+                success = RemoveEffectInternal(effect);
+            }
+
+            if (success)
+            {
+                OnEffectRemoved(effect);
+                return true;
             }
 
             return false;
