@@ -18,6 +18,7 @@ namespace DOL.GS
         private Dictionary<int, ECSGameEffect> _effectIdToEffect = [];
         private EffectService.PlayerUpdate _requestedPlayerUpdates;
         private readonly Lock _playerUpdatesLock = new();
+        private readonly Lock _startStopEffectLock = new();
 
         public GameLiving Owner { get; }
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.EffectListComponent);
@@ -35,11 +36,15 @@ namespace DOL.GS
         public bool AddEffect(ECSGameEffect effect)
         {
             bool success;
+            ECSGameEffect effectToStop; // Effect to stop before adding the new one. Used when refreshing an effect.
 
             lock (EffectsLock)
             {
-                success = AddEffectInternal(effect);
+                success = AddEffectInternal(effect, out effectToStop);
             }
+
+            if (effectToStop != null)
+                StopEffect(effectToStop);
 
             if (success)
             {
@@ -52,8 +57,10 @@ namespace DOL.GS
                 return false;
             }
 
-            bool AddEffectInternal(ECSGameEffect effect)
+            bool AddEffectInternal(ECSGameEffect effect, out ECSGameEffect effectToStop)
             {
+                effectToStop = null;
+
                 try
                 {
                     // Dead owners don't get effects
@@ -105,7 +112,7 @@ namespace DOL.GS
                                         if (newSpell.IsPulsing)
                                             newSpellEffect.RenewEffect = true;
 
-                                        // Always stop the current effect and let the new one be started by 'EffectService.HandlePropertyModification()'.
+                                        // Most of the time, we want to stop the current effect and let the new one be started normally but silently.
                                         // Not calling `OnStopEffect` on the current effect and `OnStartEffect` on the new effect means some initialization may not be performed.
                                         // To give some examples:
                                         // * Effectiveness changes from resurrection illness expiring.
@@ -116,14 +123,17 @@ namespace DOL.GS
                                         // `IsDisabled` is set to false before this is called, so both need to be checked.
                                         if (!existingEffect.IsDisabled && !newSpellEffect.RenewEffect)
                                         {
+                                            effectToStop = existingEffect;
                                             existingEffect.IsSilent = true;
-                                            existingEffect.OnStopEffect();
                                             newSpellEffect.IsSilent = true;
                                         }
+                                        else
+                                        {
+                                            newSpellEffect.IsDisabled = existingEffect.IsDisabled;
+                                            newSpellEffect.IsBuffActive = existingEffect.IsBuffActive;
+                                            newSpellEffect.PreviousPosition = GetAllEffects().IndexOf(existingEffect);
+                                        }
 
-                                        newSpellEffect.IsDisabled = existingEffect.IsDisabled;
-                                        newSpellEffect.IsBuffActive = existingEffect.IsBuffActive;
-                                        newSpellEffect.PreviousPosition = GetAllEffects().IndexOf(existingEffect);
                                         Effects[newSpellEffect.EffectType][i] = newSpellEffect;
                                         _effectIdToEffect[newSpellEffect.Icon] = newSpellEffect;
                                     }
@@ -291,7 +301,7 @@ namespace DOL.GS
 
                     if (effect is not ECSGameSpellEffect spellEffect)
                     {
-                        effect.OnStartEffect();
+                        StartEffect(effect);
                         return;
                     }
 
@@ -316,13 +326,7 @@ namespace DOL.GS
                     if ((!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
                         || spellEffect is SavageBuffECSGameEffect)
                     {
-                        //if (spellEffect.EffectType == eEffect.EnduranceRegenBuff)
-                        //{
-                        //    var handler = spellHandler as EnduranceRegenSpellHandler;
-                        //    ApplyBonus(spellEffect.Owner, handler.BonusCategory1, handler.Property1, spell.Value, 1, false);
-                        //}
-
-                        effect.OnStartEffect();
+                        StartEffect(effect);
                         effect.IsBuffActive = true;
                     }
 
@@ -438,11 +442,11 @@ namespace DOL.GS
                     RequestPlayerUpdate(EffectService.GetPlayerUpdateFromEffect(effect.EffectType));
 
                     if (effect is not ECSGameSpellEffect spellEffect)
-                        effect.OnStopEffect();
+                        StopEffect(effect);
                     else
                     {
                         if (spellEffect.IsBuffActive && spellEffect is not ECSImmunityEffect)
-                            effect.OnStopEffect();
+                            StopEffect(effect);
 
                         effect.IsBuffActive = false;
                         GameLiving caster = effect.SpellHandler.Caster;
@@ -482,6 +486,22 @@ namespace DOL.GS
                     if (log.IsErrorEnabled)
                         log.Error($"Failed processing an effect removed from {effect.Owner}'s effect list", e);
                 }
+            }
+        }
+
+        private void StartEffect(ECSGameEffect effect)
+        {
+            lock (_startStopEffectLock)
+            {
+                effect.OnStartEffect();
+            }
+        }
+
+        private void StopEffect(ECSGameEffect effect)
+        {
+            lock (_startStopEffectLock)
+            {
+                effect.OnStopEffect();
             }
         }
 
