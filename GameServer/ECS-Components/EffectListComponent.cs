@@ -121,7 +121,8 @@ namespace DOL.GS
                                         // This doesn't work will pulsing charm spells, and it's probably safer to exclude every pulsing spell for now.
                                         // This should also ignore effects currently disabled, or being reenabled.
                                         // `IsDisabled` is set to false before this is called, so both need to be checked.
-                                        if (!existingEffect.IsDisabled && !newSpellEffect.RenewEffect)
+                                        if ((!existingEffect.IsDisabled && !newSpellEffect.RenewEffect) ||
+                                            existingSpell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
                                         {
                                             effectToStop = existingEffect;
                                             existingEffect.IsSilent = true;
