@@ -16,6 +16,8 @@ namespace DOL.GS
         private int _lastUpdateEffectsCount;
         private int _usedConcentration;
         private Dictionary<int, ECSGameEffect> _effectIdToEffect = [];
+        private EffectService.PlayerUpdate _requestedPlayerUpdates;
+        private readonly Lock _playerUpdatesLock = new();
 
         public GameLiving Owner { get; }
         public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.EffectListComponent);
@@ -23,7 +25,6 @@ namespace DOL.GS
         public readonly Lock EffectsLock = new();
         public List<ECSGameSpellEffect> ConcentrationEffects { get; } = new List<ECSGameSpellEffect>(20);
         public readonly Lock ConcentrationEffectsLock = new();
-        public EffectService.PlayerUpdate RequestedPlayerUpdates { get; private set; }
         public int UsedConcentration => Interlocked.CompareExchange(ref _usedConcentration, 0, 0);
 
         public EffectListComponent(GameLiving owner)
@@ -286,7 +287,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    RequestedPlayerUpdates |= EffectService.GetPlayerUpdateFromEffect(effect.EffectType);
+                    RequestPlayerUpdate(EffectService.GetPlayerUpdateFromEffect(effect.EffectType));
 
                     if (effect is not ECSGameSpellEffect spellEffect)
                     {
@@ -434,7 +435,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    RequestedPlayerUpdates |= EffectService.GetPlayerUpdateFromEffect(effect.EffectType);
+                    RequestPlayerUpdate(EffectService.GetPlayerUpdateFromEffect(effect.EffectType));
 
                     if (effect is not ECSGameSpellEffect spellEffect)
                         effect.OnStopEffect();
@@ -611,9 +612,9 @@ namespace DOL.GS
 
         public void RequestPlayerUpdate(EffectService.PlayerUpdate playerUpdate)
         {
-            lock (EffectsLock)
+            lock (_playerUpdatesLock)
             {
-                RequestedPlayerUpdates |= playerUpdate;
+                _requestedPlayerUpdates |= playerUpdate;
             }
 
             // Forces an update in case our effect list component isn't ticking.
@@ -623,44 +624,44 @@ namespace DOL.GS
 
         public void SendPlayerUpdates()
         {
-            if (RequestedPlayerUpdates is EffectService.PlayerUpdate.NONE)
+            if (_requestedPlayerUpdates is EffectService.PlayerUpdate.NONE)
                 return;
 
-            lock (EffectsLock)
+            lock (_playerUpdatesLock)
             {
                 if (Owner is GamePlayer playerOwner)
                 {
-                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.ICONS) != 0)
+                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.ICONS) != 0)
                     {
                         playerOwner.Group?.UpdateMember(playerOwner, true, false);
                         playerOwner.Out.SendUpdateIcons(GetAllEffects(), ref GetLastUpdateEffectsCount());
                     }
 
-                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.STATUS) != 0)
+                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.STATUS) != 0)
                         playerOwner.Out.SendStatusUpdate();
 
-                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.STATS) != 0)
+                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.STATS) != 0)
                         playerOwner.Out.SendCharStatsUpdate();
 
-                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.RESISTS) != 0)
+                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.RESISTS) != 0)
                         playerOwner.Out.SendCharResistsUpdate();
 
-                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.WEAPON_ARMOR) != 0)
+                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.WEAPON_ARMOR) != 0)
                         playerOwner.Out.SendUpdateWeaponAndArmorStats();
 
-                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.ENCUMBERANCE) != 0)
+                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.ENCUMBERANCE) != 0)
                         playerOwner.UpdateEncumbrance();
 
-                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.CONCENTRATION) != 0)
+                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.CONCENTRATION) != 0)
                         playerOwner.Out.SendConcentrationList();
                 }
                 else if (Owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain npcOwnerBrain)
                 {
-                    if ((RequestedPlayerUpdates & EffectService.PlayerUpdate.ICONS) != 0)
+                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.ICONS) != 0)
                         npcOwnerBrain.UpdatePetWindow();
                 }
 
-                RequestedPlayerUpdates = EffectService.PlayerUpdate.NONE;
+                _requestedPlayerUpdates = EffectService.PlayerUpdate.NONE;
             }
         }
     }
