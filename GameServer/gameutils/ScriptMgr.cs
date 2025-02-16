@@ -930,7 +930,7 @@ namespace DOL.GS
                         {
                             try
                             {
-                                handlerConstructor = CompiledConstructorFactory.CompileConstructor<SpellHandler>([typeof(GameLiving), typeof(Spell), typeof(SpellLine)]) as Func<GameLiving, Spell, SpellLine, ISpellHandler>;
+                                handlerConstructor = CompiledConstructorFactory.CompileConstructor(type, [typeof(GameLiving), typeof(Spell), typeof(SpellLine)]) as Func<GameLiving, Spell, SpellLine, ISpellHandler>;
                             }
                             catch (Exception e)
                             {

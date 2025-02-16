@@ -7,11 +7,6 @@ namespace DOL
 {
     public static class CompiledConstructorFactory
     {
-        public static Delegate CompileConstructor<T>(Type[] paramTypes) where T : class
-        {
-            return CompileConstructor(typeof(T), paramTypes);
-        }
-
         public static Delegate CompileConstructor(Type type, Type[] paramTypes)
         {
             ConstructorInfo constructor = type.GetConstructor(paramTypes);
