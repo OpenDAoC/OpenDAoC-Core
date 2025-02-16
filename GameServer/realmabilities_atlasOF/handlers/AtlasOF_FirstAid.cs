@@ -40,9 +40,6 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer player = living as GamePlayer;
 			var scaleLevel = (double)player.Level / 50;
 			healAmount = (int)(currentLevelAbility * 300 * scaleLevel);
-
-			log.InfoFormat("healAmount is {0}", healAmount);
-
 			int healed = living.ChangeHealth(living, eHealthChangeType.Spell, healAmount);
 
 			SendCasterSpellEffectAndCastMessage(living, 7001, healed > 0);
