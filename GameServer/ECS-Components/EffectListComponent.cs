@@ -68,6 +68,7 @@ namespace DOL.GS
             {
                 success = AddEffectInternal(effect, out effectToStop);
             }
+
             if (effectToStop != null)
                 StopEffect(effectToStop);
 
@@ -103,7 +104,9 @@ namespace DOL.GS
                         return true;
                     }
 
-                    if (effect is ECSGameSpellEffect newSpellEffect && Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingGameEffects))
+                    ECSGameSpellEffect newSpellEffect = effect as ECSGameSpellEffect;
+
+                    if (newSpellEffect != null && Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingGameEffects))
                     {
                         ISpellHandler newSpellHandler = newSpellEffect.SpellHandler;
                         Spell newSpell = newSpellHandler.Spell;
@@ -278,28 +281,39 @@ namespace DOL.GS
                                 }
                             }
 
-                            // No overwriteable effects found that match new spell effect, so add it!
+                            // No overwritable effects found that match new spell effect, so add it.
                             if (!foundIsOverwritableEffect)
                                 addEffect = true;
 
-                            if (addEffect)
-                            {
-                                existingGameEffects.Add(newSpellEffect);
-                                Effects.TryAdd(newSpellEffect.EffectType, existingGameEffects); // The effect type might have been removed by `RequestImmediateCancelEffect`.
+                            if (!addEffect)
+                                return false;
 
-                                if (effect.EffectType is not eEffect.Pulse && effect.Icon != 0)
-                                    _effectIdToEffect.TryAdd(newSpellEffect.Icon, newSpellEffect);
+                            if (!HandleConcentration(newSpellEffect))
+                                return false;
 
-                                return true;
-                            }
+                            existingGameEffects.Add(newSpellEffect);
+                            Effects.TryAdd(newSpellEffect.EffectType, existingGameEffects); // The effect type might have been removed by `RequestImmediateCancelEffect`.
+
+                            if (effect.EffectType is not eEffect.Pulse && effect.Icon != 0)
+                                _effectIdToEffect.TryAdd(newSpellEffect.Icon, newSpellEffect);
+
+                            return true;
                         }
 
                         return false;
                     }
                     else if (Effects.TryGetValue(effect.EffectType, out List<ECSGameEffect> existingEffects))
+                    {
+                        if (!HandleConcentration(newSpellEffect))
+                            return false;
+
                         existingEffects.Add(effect);
+                    }
                     else
                     {
+                        if (!HandleConcentration(newSpellEffect))
+                            return false;
+
                         Effects.Add(effect.EffectType, [effect]);
 
                         if (effect.EffectType is not eEffect.Pulse && effect.Icon != 0)
@@ -314,6 +328,36 @@ namespace DOL.GS
                         log.Error($"Failed adding an effect to {effect.Owner}'s effect list", e);
 
                     return false;
+                }
+
+                bool HandleConcentration(ECSGameSpellEffect spellEffect)
+                {
+                    if (spellEffect == null)
+                        return true;
+
+                    if (!spellEffect.ShouldBeAddedToConcentrationList() || spellEffect.RenewEffect)
+                        return true;
+
+                    ISpellHandler spellHandler = spellEffect.SpellHandler;
+
+                    if (!spellHandler.CheckConcentrationCost(false))
+                        return false;
+
+                    GameLiving caster = spellHandler.Caster;
+
+                    if (caster == null)
+                        return true;
+
+                    EffectListComponent casterEffectListComponent = caster.effectListComponent;
+                    casterEffectListComponent.AddUsedConcentration(spellHandler.Spell.Concentration);
+
+                    lock (casterEffectListComponent.ConcentrationEffectsLock)
+                    {
+                        casterEffectListComponent.ConcentrationEffects.Add(spellEffect);
+                    }
+
+                    casterEffectListComponent.RequestPlayerUpdate(EffectService.PlayerUpdate.CONCENTRATION);
+                    return true;
                 }
             }
 
@@ -331,21 +375,6 @@ namespace DOL.GS
 
                     ISpellHandler spellHandler = spellEffect.SpellHandler;
                     Spell spell = spellHandler?.Spell;
-                    GameLiving caster = spellHandler?.Caster;
-
-                    // Update the Concentration List if Conc Buff/Song/Chant.
-                    if (spellEffect.ShouldBeAddedToConcentrationList() && !spellEffect.RenewEffect && caster != null)
-                    {
-                        EffectListComponent casterEffectListComponent = caster.effectListComponent;
-                        casterEffectListComponent.AddUsedConcentration(spell.Concentration);
-
-                        lock (casterEffectListComponent.ConcentrationEffectsLock)
-                        {
-                            casterEffectListComponent.ConcentrationEffects.Add(spellEffect);
-                        }
-
-                        casterEffectListComponent.RequestPlayerUpdate(EffectService.PlayerUpdate.CONCENTRATION);
-                    }
 
                     if ((!spellEffect.IsBuffActive && !spellEffect.IsDisabled)
                         || spellEffect is SavageBuffECSGameEffect)
@@ -371,7 +400,7 @@ namespace DOL.GS
                     else if (spellEffect is not ECSImmunityEffect)
                         EffectService.SendSpellAnimation(spellEffect);
                     if (effect is StatDebuffECSEffect && spell.CastTime == 0)
-                        StatDebuffECSEffect.TryDebuffInterrupt(spell, effect.OwnerPlayer, caster);
+                        StatDebuffECSEffect.TryDebuffInterrupt(spell, effect.OwnerPlayer, spellHandler?.Caster);
                 }
                 catch (Exception e)
                 {
@@ -446,6 +475,8 @@ namespace DOL.GS
                             _effectIdToEffect.Remove(effect.Icon);
                             Effects.Remove(effect.EffectType);
                         }
+
+                        HandleConcentration(effect as ECSGameSpellEffect);
                     }
 
                     return true;
@@ -456,6 +487,28 @@ namespace DOL.GS
                         log.Error($"Failed removing an effect from {effect.Owner}'s effect list", e);
 
                     return false;
+                }
+
+                void HandleConcentration(ECSGameSpellEffect spellEffect)
+                {
+                    if (spellEffect == null)
+                        return;
+
+                    ISpellHandler spellHandler = spellEffect.SpellHandler;
+                    GameLiving caster = spellHandler?.Caster;
+
+                    if (!spellEffect.ShouldBeRemovedFromConcentrationList() || caster == null)
+                        return;
+
+                    EffectListComponent casterEffectListComponent = caster.effectListComponent;
+                    casterEffectListComponent.AddUsedConcentration(-spellHandler.Spell.Concentration);
+
+                    lock (casterEffectListComponent.ConcentrationEffectsLock)
+                    {
+                        casterEffectListComponent.ConcentrationEffects.Remove(spellEffect);
+                    }
+
+                    casterEffectListComponent.RequestPlayerUpdate(EffectService.PlayerUpdate.CONCENTRATION);
                 }
             }
 
@@ -473,21 +526,6 @@ namespace DOL.GS
                             StopEffect(effect);
 
                         effect.IsBuffActive = false;
-                        GameLiving caster = effect.SpellHandler.Caster;
-
-                        // Update the Concentration List if Conc Buff/Song/Chant.
-                        if (caster != null && effect.CancelEffect && effect.ShouldBeRemovedFromConcentrationList())
-                        {
-                            EffectListComponent casterEffectListComponent = caster.effectListComponent;
-                            casterEffectListComponent.AddUsedConcentration(-spellEffect.SpellHandler.Spell.Concentration);
-
-                            lock (casterEffectListComponent.ConcentrationEffectsLock)
-                            {
-                                casterEffectListComponent.ConcentrationEffects.Remove(spellEffect);
-                            }
-
-                            casterEffectListComponent.RequestPlayerUpdate(EffectService.PlayerUpdate.CONCENTRATION);
-                        }
                     }
 
                     effect.TryApplyImmunity();
