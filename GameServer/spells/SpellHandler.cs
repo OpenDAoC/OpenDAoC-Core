@@ -779,32 +779,8 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			if (playerCaster != null && m_spell.Concentration > 0)
-			{
-				if (m_caster.Concentration < m_spell.Concentration)
-				{
-					if (!quiet)
-						MessageToCaster("This spell requires " + m_spell.Concentration + " concentration points to cast!", eChatType.CT_SpellResisted);
-
-					return false;
-				}
-
-				var maxConc = MAX_CONC_SPELLS;
-
-				//self buff charge IDs should not count against conc cap
-				maxConc += playerCaster.effectListComponent.ConcentrationEffects.Count(concentrationEffect =>
-				{
-					return concentrationEffect.SpellHandler?.Spell?.ID != null && playerCaster.SelfBuffChargeIDs.Contains(concentrationEffect.SpellHandler.Spell.ID);
-				});
-
-				if (m_caster.effectListComponent.ConcentrationEffects.Count >= maxConc)
-				{
-					if (!quiet)
-						MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
-
-					return false;
-				}
-			}
+			if (!CheckConcentrationCost(quiet))
+				return false;
 
 			// Cancel engage if user starts attack
 			if (m_caster.IsEngaging)
@@ -820,6 +796,38 @@ namespace DOL.GS.Spells
 
 			if (Caster is NecromancerPet necromancerPet && necromancerPet.Brain is NecromancerPetBrain necromancerPetBrain)
 				necromancerPetBrain.OnPetBeginCast(Spell, SpellLine);
+
+			return true;
+		}
+
+		public bool CheckConcentrationCost(bool quiet)
+		{
+			if (m_spell.Concentration == 0 || Caster is not GamePlayer playerCaster)
+				return true;
+
+			if (m_caster.Concentration < m_spell.Concentration)
+			{
+				if (!quiet)
+					MessageToCaster($"This spell requires {m_spell.Concentration} concentration points to cast!", eChatType.CT_SpellResisted);
+
+				return false;
+			}
+
+			int maxConc = MAX_CONC_SPELLS;
+
+			// Self buff charge IDs should not count against conc cap
+			maxConc += playerCaster.effectListComponent.ConcentrationEffects.Count(concentrationEffect =>
+			{
+				return concentrationEffect.SpellHandler?.Spell?.ID != null && playerCaster.SelfBuffChargeIDs.Contains(concentrationEffect.SpellHandler.Spell.ID);
+			});
+
+			if (m_caster.effectListComponent.ConcentrationEffects.Count >= maxConc)
+			{
+				if (!quiet)
+					MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
+
+				return false;
+			}
 
 			return true;
 		}
@@ -985,25 +993,6 @@ namespace DOL.GS.Spells
 					MessageToCaster("You don't have enough power to cast that!", eChatType.CT_SpellResisted);
 
 				return false;
-			}
-
-			if (m_caster is GamePlayer && m_spell.Concentration > 0)
-			{
-				if (m_caster.Concentration < m_spell.Concentration)
-				{
-					if (verbose)
-						MessageToCaster("This spell requires " + m_spell.Concentration + " concentration points to cast!", eChatType.CT_SpellResisted);
-
-					return false;
-				}
-
-				if (m_caster.effectListComponent.ConcentrationEffects.Count >= MAX_CONC_SPELLS)
-				{
-					if (verbose)
-						MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
-
-					return false;
-				}
 			}
 
 			Caster.castingComponent.OnSpellCast(Spell);
