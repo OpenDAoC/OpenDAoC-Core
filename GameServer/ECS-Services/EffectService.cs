@@ -140,7 +140,7 @@ namespace DOL.GS
 
             effect.IsDisabled = true;
             effect.RenewEffect = false;
-            EntityManager.Add(effect);
+            HandleCancelEffect(effect);
         }
 
         public static void RequestEnableEffect(ECSGameEffect effect)
@@ -153,7 +153,7 @@ namespace DOL.GS
 
             effect.IsDisabled = false;
             effect.RenewEffect = true;
-            EntityManager.Add(effect);
+            HandleStartEffect(effect);
         }
 
         public static void SendSpellAnimation(ECSGameSpellEffect e)
