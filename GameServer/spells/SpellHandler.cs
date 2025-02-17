@@ -2415,22 +2415,17 @@ namespace DOL.GS.Spells
 				hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
 			}
 
-			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.PiercingMagic))
-			{
-				ECSGameEffect effect = m_caster.effectListComponent.GetSpellEffects().FirstOrDefault(e => e.EffectType == eEffect.PiercingMagic);
+			GameLiving casterToUse = playerCaster ?? m_caster;
+			List<ECSGameEffect> effects = casterToUse.effectListComponent.GetAllEffects();
+			ECSGameEffect piercingMagic = effects.FirstOrDefault(e => e.EffectType is eEffect.PiercingMagic);
 
-				if (effect != null)
-					hitChance += effect.SpellHandler.Spell.Value;
-			}
+			if (piercingMagic != null)
+				hitChance += piercingMagic.SpellHandler.Spell.Value;
 
-			// Check for active RAs.
-			if (m_caster.effectListComponent.ContainsEffectForEffectType(eEffect.MajesticWill))
-			{
-				ECSGameEffect effect = m_caster.effectListComponent.GetAllEffects().FirstOrDefault(e => e.EffectType == eEffect.MajesticWill);
+			ECSGameEffect majesticWill = effects.FirstOrDefault(e => e.EffectType is eEffect.MajesticWill);
 
-				if (effect != null)
-					hitChance += effect.Effectiveness * 5;
-			}
+			if (majesticWill != null)
+				hitChance += majesticWill.Effectiveness * 5;
 
 			return hitChance;
 		}
