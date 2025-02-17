@@ -6804,7 +6804,6 @@ namespace DOL.GS
 
         /// <summary>
         /// The currently active InventoryObject
-        /// This is new and will probably replace the above Active methods in time.
         /// </summary>
         public IGameInventoryObject ActiveInventoryObject
         {

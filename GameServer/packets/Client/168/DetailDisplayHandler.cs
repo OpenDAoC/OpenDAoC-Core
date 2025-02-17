@@ -67,14 +67,12 @@ namespace DOL.GS.PacketHandler.Client.v168
 					{
 						if (objectType == 1)
 						{
-							// first try any active inventory object
-							var invObject = client.Player.ActiveInventoryObject;
-							if (invObject?.GetClientInventory(client.Player) != null)
-								invObject.GetClientInventory(client.Player).TryGetValue(objectId, out invItem);
+							// try direct inventory access first
+							invItem = client.Player.Inventory.GetItem((eInventorySlot) objectId);
 
-							// finally try direct inventory access
+							// first try any active inventory object
 							if (invItem == null)
-								invItem = client.Player.Inventory.GetItem((eInventorySlot)objectId);
+								client.Player.ActiveInventoryObject?.GetClientInventory(client.Player)?.TryGetValue(objectId, out invItem);
 
 							// Failed to get any inventory
 							if (invItem == null)
