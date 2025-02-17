@@ -2370,7 +2370,7 @@ namespace DOL.GS.Spells
 				spellLevel = m_caster.EffectiveLevel; // NPCs go there too.
 			else
 			{
-				spellLevel = Spell.Level + m_caster.GetModified(eProperty.SpellLevel);
+				spellLevel = Spell.Level + playerCaster.GetModified(eProperty.SpellLevel);
 
 				if (spellLevel > playerCaster.MaxLevel)
 					spellLevel = playerCaster.MaxLevel;
