@@ -377,7 +377,7 @@ namespace DOL.GS.PacketHandler
 				for (int i = 0; i < updateResists.Length; i++)
 				{
 					racial[i] = SkillBase.GetRaceResist(m_gameClient.Player.Race, updateResists[i]);
-					pak.WriteShort((ushort)racial[i]);
+					pak.WriteShort((ushort) racial[i]);
 				}
 
 				// buffs/debuffs only; remove base, item bonus, RA bonus, race bonus
@@ -390,7 +390,7 @@ namespace DOL.GS.PacketHandler
 				// item bonuses
 				for (int i = 0; i < updateResists.Length; i++)
 				{
-					pak.WriteShort((ushort)(m_gameClient.Player.ItemBonus[(int)updateResists[i]]));
+					pak.WriteShort((ushort) m_gameClient.Player.ItemBonus[(int)updateResists[i]]);
 				}
 
 				// item caps
@@ -402,7 +402,7 @@ namespace DOL.GS.PacketHandler
 				// RA bonuses
 				for (int i = 0; i < updateResists.Length; i++)
 				{
-					pak.WriteByte((byte)(m_gameClient.Player.AbilityBonus[(int)updateResists[i]]));
+					pak.WriteByte((byte) (m_gameClient.Player.AbilityBonus[(int)updateResists[i]] + m_gameClient.Player.OtherBonus[(int)updateResists[i]]));
 				}
 
 				pak.WriteByte(0xFF); // FF if resists packet
