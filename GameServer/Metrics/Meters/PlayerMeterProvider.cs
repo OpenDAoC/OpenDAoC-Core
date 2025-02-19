@@ -1,29 +1,36 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Reflection;
 using DOL.Logging;
+using OpenTelemetry.Metrics;
 
-namespace DOL.GS
+namespace DOL.GS.Metrics.Meters
 {
-    public static class MetricsCollector
+    public class PlayerMeterProvider : IMeterProvider
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        public const string METER_NAME = "GameServer.ServerStats";
+        private static readonly eCharacterClass[] classIds = Enum.GetValues<eCharacterClass>();
 
-        public static void StartCollecting()
+        public string MeterName => "GameServer.PlayerMetrics";
+
+        // Register the PlayerMetrics
+        public void Register(MeterProviderBuilder meterProviderBuilder)
         {
-            Meter meter = new(METER_NAME);
+            meterProviderBuilder.AddMeter(MeterName);
+            Meter meter = new(MeterName);
+
             var playerCountTotal = meter.CreateObservableGauge(
-                "daoc_player_count_total",
-                GetTotalPlayerCount,
+                "daoc.online.player.count.total",
+                OnlineTotalPlayerCount,
                 description: "Total number of players online"
             );
 
             var playerCount = meter.CreateObservableGauge(
-                "daoc_player_count",
-                GetClassesPerRealm,
+                "daoc.online.player.count.by.class",
+                OnlineClassesPerRealm,
                 description: "Number of classes per realm online"
             );
         }
@@ -32,14 +39,11 @@ namespace DOL.GS
         /// Calculate the current online player
         /// </summary>
         /// <returns></returns>
-        private static int GetTotalPlayerCount()
+        private static int OnlineTotalPlayerCount()
         {
             try
             {
-                var clients = ClientService.GetClients()
-                    .Where(client => client.ClientState == GameClient.eClientState.Playing)?.ToList();
-
-                return clients.Count;
+                return ClientService.GetClients().Count(client => client.ClientState == GameClient.eClientState.Playing);
             }
             catch (Exception e)
             {
@@ -53,14 +57,12 @@ namespace DOL.GS
         /// Get classes per realm online
         /// </summary>
         /// <returns></returns>
-        private static List<Measurement<int>> GetClassesPerRealm()
+        private static List<Measurement<int>> OnlineClassesPerRealm()
         {
             try
             {
                 List<Measurement<int>> classes = [];
-                var classIds = Enum.GetValues<eCharacterClass>();
-                var clients = ClientService.GetClients()
-                    .Where(client => client.ClientState == GameClient.eClientState.Playing)?.ToList();
+                List<GameClient> clients = [.. ClientService.GetClients().Where(client => client.ClientState == GameClient.eClientState.Playing)];
 
                 if (clients.Count == 0)
                 {
