@@ -416,11 +416,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                 ch.HairStyle = (byte)pdata.HairStyle;
                 ch.MoodType = (byte)pdata.MoodType;
                 ch.CustomisationStep = 2; // disable config button
-
-                if (log.IsDebugEnabled)
-                {
-                    log.Debug("Disable Config Button");
-                }
             }
 
             ch.Level = 1;
