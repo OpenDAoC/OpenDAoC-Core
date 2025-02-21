@@ -1157,7 +1157,7 @@ namespace DOL.GS.ServerRules
                         entityDamage[entity] = new(1, totalDamage, player);
                     }
 
-                    if (totalDamage > mostDamagingEntity.Damage)
+                    if (mostDamagingEntity.Damage == 0 || totalDamage > mostDamagingEntity.Damage)
                     {
                         if (entity != mostDamagingEntity.Owner)
                             mostDamagingEntity.Owner = entity;
@@ -1656,7 +1656,7 @@ namespace DOL.GS.ServerRules
                         entityDamage[entity] = new(1, totalDamage, player);
                     }
 
-                    if (totalDamage > mostDamagingEntity.Damage)
+                    if (mostDamagingEntity.Damage == 0 || totalDamage > mostDamagingEntity.Damage)
                     {
                         if (entity != mostDamagingEntity.Owner)
                             mostDamagingEntity.Owner = entity;
