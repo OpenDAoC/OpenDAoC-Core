@@ -324,7 +324,6 @@ namespace DOL.GS
 			}
 
 			Player.ControlledBrain = controlledBrain;
-
 		}
 
 		/// <summary>
