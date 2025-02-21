@@ -626,19 +626,19 @@ namespace DOL.GS
 
 		public bool TryAutoPickUpMoney(GameMoney money)
 		{
-			return TryPickUpMoney(Leader, money) is not TryPickUpResult.CANNOT_HANDLE;
+			return TryPickUpMoney(Leader, money) is not TryPickUpResult.DOES_NOT_HANDLE;
 		}
 
 		public bool TryAutoPickUpItem(WorldInventoryItem inventoryItem)
 		{
 			// We don't care if players have auto loot enabled, or if they can see the item (the item isn't added to the world yet anyway), or who attacked last, etc.
-			return TryPickUpItem(Leader, inventoryItem) is not TryPickUpResult.CANNOT_HANDLE;
+			return TryPickUpItem(Leader, inventoryItem) is not TryPickUpResult.DOES_NOT_HANDLE;
 		}
 
 		public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
 		{
 			if (!AutosplitCoins)
-				return TryPickUpResult.CANNOT_HANDLE;
+				return TryPickUpResult.DOES_NOT_HANDLE;
 
 			List<GamePlayer> eligibleMembers = new(8);
 
@@ -685,7 +685,7 @@ namespace DOL.GS
 			// A player with enough room in his inventory is chosen randomly.
 			// If there is none, the item should simply stays on the ground.
 			if (!AutosplitLoot)
-				return TryPickUpResult.CANNOT_HANDLE;
+				return TryPickUpResult.DOES_NOT_HANDLE;
 
 			List<GamePlayer> eligibleMembers = new(8);
 

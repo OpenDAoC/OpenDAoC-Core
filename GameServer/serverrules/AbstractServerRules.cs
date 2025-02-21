@@ -1052,12 +1052,13 @@ namespace DOL.GS.ServerRules
                 // This is used so that we can fallback to another owner if auto pick up fails or isn't handled, if we wants to.
                 SortedSet<ItemOwnerTotalDamagePair> itemOwners = new(_gameStaticItemOwnerDamageComparer);
 
-                // We prioritize 
                 if (mostDamagingBattlegroup != null)
                     itemOwners.Add(mostDamagingBattlegroup);
-                else if (mostDamagingGroup != null)
+
+                if (mostDamagingGroup != null)
                     itemOwners.Add(mostDamagingGroup);
-                else if (mostDamagingPlayer != null)
+
+                if (mostDamagingPlayer != null)
                     itemOwners.Add(mostDamagingPlayer);
 
                 DropLoot(killedNpc, killer, itemOwners);

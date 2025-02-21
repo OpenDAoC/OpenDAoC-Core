@@ -292,20 +292,20 @@ namespace DOL.GS
 
 		public bool TryAutoPickUpMoney(GameMoney money)
 		{
-			return TryPickUpMoney(Leader as GamePlayer, money) is not TryPickUpResult.CANNOT_HANDLE;
+			return TryPickUpMoney(Leader as GamePlayer, money) is not TryPickUpResult.DOES_NOT_HANDLE;
 		}
 
 		public bool TryAutoPickUpItem(WorldInventoryItem worldItem)
 		{
 			// We don't care if players have auto loot enabled, or if they can see the item (the item isn't added to the world yet anyway), or who attacked last, etc.
 			// This is especially important for battlegroups since can have an illimited amount of players.
-			return TryPickUpItem(battlegroupTreasurer, worldItem) is not TryPickUpResult.CANNOT_HANDLE;
+			return TryPickUpItem(battlegroupTreasurer, worldItem) is not TryPickUpResult.DOES_NOT_HANDLE;
 		}
 
 		public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
 		{
 			// Splitting money in a battlegroup could cause performance issues. Let it fallback to group then solo logic.
-			return TryPickUpResult.CANNOT_HANDLE;
+			return TryPickUpResult.DOES_NOT_HANDLE;
 		}
 
 		public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item)
@@ -314,7 +314,7 @@ namespace DOL.GS
 			// There is no range check. If you're in a BG, every item goes to the treasurer or stay on the ground.
 			// If his inventory is full, the item should simply stay on the ground until he makes some room, or another treasurer is appointed.
 			if (!GetBGLootType() || battlegroupTreasurer == null)
-				return TryPickUpResult.CANNOT_HANDLE;
+				return TryPickUpResult.DOES_NOT_HANDLE;
 
 			if (!GiveItem(battlegroupTreasurer, item.Item))
 			{

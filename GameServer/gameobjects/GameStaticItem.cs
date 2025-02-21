@@ -410,7 +410,7 @@ namespace DOL.GS
 		enum TryPickUpResult
 		{
 			SUCCESS,               // The item was picked up.
-			CANNOT_HANDLE,         // The item cannot be handled by this owner.
+			DOES_NOT_HANDLE,       // The item cannot be handled by this owner and we should fall back to the next one.
 			FAILED                 // The item can be handled by this owner, but failed (inventory full, no one in range, etc.)
 		}
 

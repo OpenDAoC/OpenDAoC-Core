@@ -10232,11 +10232,11 @@ namespace DOL.GS
 
                 BattleGroup battleGroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
-                if (battleGroup == null || battleGroup.TryPickUpItem(this, floorItem) is TryPickUpResult.CANNOT_HANDLE)
+                if (battleGroup == null || battleGroup.TryPickUpItem(this, floorItem) is TryPickUpResult.DOES_NOT_HANDLE)
                 {
                     Group group = Group;
 
-                    if (group == null || group.TryPickUpItem(this, floorItem) is TryPickUpResult.CANNOT_HANDLE)
+                    if (group == null || group.TryPickUpItem(this, floorItem) is TryPickUpResult.DOES_NOT_HANDLE)
                         TryPickUpItem(this, floorItem);
                 }
 
@@ -10250,11 +10250,11 @@ namespace DOL.GS
 
                 BattleGroup battleGroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
-                if (battleGroup == null || battleGroup.TryPickUpMoney(this, money) is TryPickUpResult.CANNOT_HANDLE)
+                if (battleGroup == null || battleGroup.TryPickUpMoney(this, money) is TryPickUpResult.DOES_NOT_HANDLE)
                 {
                     Group group = Group;
 
-                    if (group == null || group.TryPickUpMoney(this, money) is TryPickUpResult.CANNOT_HANDLE)
+                    if (group == null || group.TryPickUpMoney(this, money) is TryPickUpResult.DOES_NOT_HANDLE)
                         TryPickUpMoney(this, money);
                 }
 
@@ -10307,12 +10307,12 @@ namespace DOL.GS
 
         public bool TryAutoPickUpMoney(GameMoney money)
         {
-            return Autoloot && TryPickUpMoney(this, money) is TryPickUpResult.SUCCESS;
+            return Autoloot && TryPickUpMoney(this, money) is not TryPickUpResult.DOES_NOT_HANDLE;
         }
 
         public bool TryAutoPickUpItem(WorldInventoryItem inventoryItem)
         {
-            return Autoloot && TryPickUpItem(this, inventoryItem) is TryPickUpResult.SUCCESS;
+            return Autoloot && TryPickUpItem(this, inventoryItem) is not TryPickUpResult.DOES_NOT_HANDLE;
         }
 
         public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
@@ -10322,7 +10322,7 @@ namespace DOL.GS
                 if (log.IsErrorEnabled)
                     log.Error($"The passed down {nameof(source)} isn't equal to 'this'. Money pick up aborted. ({nameof(source)}: {source}) (this: {this})");
 
-                return TryPickUpResult.CANNOT_HANDLE;
+                return TryPickUpResult.DOES_NOT_HANDLE;
             }
 
             long moneyToPlayer = ApplyGuildDues(money.TotalCopper);
@@ -10344,7 +10344,7 @@ namespace DOL.GS
                 if (log.IsErrorEnabled)
                     log.Error($"The passed down {nameof(source)} isn't equal to 'this'. Item pick up aborted. ({nameof(source)}: {source}) (this: {this})");
 
-                return TryPickUpResult.CANNOT_HANDLE;
+                return TryPickUpResult.DOES_NOT_HANDLE;
             }
 
             if (!GiveItem(this, item.Item))
