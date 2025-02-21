@@ -1502,6 +1502,7 @@ namespace DOL.GS.ServerRules
                 };
 
                 NotifyNearbyPlayers(killedNpc, money, playersInRadius);
+                money.AddToWorld();
 
                 // Attempt auto pick up.
                 foreach (ItemOwnerTotalDamagePair itemOwner in itemOwners)
@@ -1511,8 +1512,6 @@ namespace DOL.GS.ServerRules
                     if (itemOwner.Owner.TryAutoPickUpMoney(money))
                         return;
                 }
-
-                money.AddToWorld();
             }
 
             static void CreateItem(GameNPC killedNpc, DbItemTemplate itemTemplate, SortedSet<ItemOwnerTotalDamagePair> itemOwners, List<GamePlayer> nearbyPlayers)
@@ -1549,6 +1548,7 @@ namespace DOL.GS.ServerRules
                 };
 
                 NotifyNearbyPlayers(killedNpc, item, nearbyPlayers);
+                item.AddToWorld();
 
                 // Attempt auto pick up.
                 foreach (ItemOwnerTotalDamagePair itemOwner in itemOwners)
@@ -1558,9 +1558,6 @@ namespace DOL.GS.ServerRules
                     if (itemOwner.Owner.TryAutoPickUpItem(item))
                         return;
                 }
-
-                // Don't bother spawning the item if it was picked up.
-                item.AddToWorld();
             }
 
             static void NotifyNearbyPlayers(GameNPC killedNpc, GameStaticItemTimed item, List<GamePlayer> nearbyPlayers)
