@@ -237,14 +237,10 @@ namespace DOL.GS
 
                 foreach (GameClient client in _clients)
                 {
-                    if (client == null)
+                    if (client == null || !client.IsPlaying)
                         continue;
 
                     GamePlayer player = client.Player;
-
-                    // Apparently 'Client.IsPlaying' can in sone cases be true even if it has no player. Need to figure out why.
-                    if (player == null)
-                        continue;
 
                     if (action?.Invoke(player, actionArgument) != false)
                         players.Add(player);
