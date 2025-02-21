@@ -1181,16 +1181,7 @@ namespace DOL.GS.ServerRules
             BattleGroup battlegroup = playerToAward.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
             long baseXpReward;
 
-            if (battlegroup != null)
-            {
-                battlegroupCountAndDamage.TryGetValue(battlegroup, out entityCountTotalDamagePair);
-
-                if (entityCountTotalDamagePair == null)
-                    return;
-
-                baseXpReward = CalculateNpcExperienceModifiedByGroupOrBattlegroup(entityCountTotalDamagePair);
-            }
-            else if (playerToAward.Group != null)
+            if (playerToAward.Group != null)
             {
                 groupCountAndDamage.TryGetValue(playerToAward.Group, out entityCountTotalDamagePair);
 
