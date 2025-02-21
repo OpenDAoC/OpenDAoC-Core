@@ -171,9 +171,6 @@ namespace DOL.GS
 
         public override void CleanUp()
         {
-            if (_npcOwner.Brain is NecromancerPetBrain necromancerPetBrain)
-                necromancerPetBrain.ClearAttackSpellQueue();
-
             if (_checkLosTimer != null)
             {
                 _checkLosTimer.Stop();

@@ -35,6 +35,12 @@ namespace DOL.AI.Brain
             FSM.Think();
         }
 
+        public override void Disengage()
+        {
+            base.Disengage();
+            ClearAttackSpellQueue();
+        }
+
         #region Events
 
         public void OnOwnerFinishPetSpellCast(Spell spell, SpellLine spellLine, GameLiving target)
