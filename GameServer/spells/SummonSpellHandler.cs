@@ -161,7 +161,6 @@ namespace DOL.GS.Spells
 
 			GameLiving petOwner = petBrain.Owner;
 			petOwner.RemoveControlledBrain(petBrain);
-			pet.effectListComponent.CancelAll();
 		}
 
 		public override double CalculateSpellResistChance(GameLiving target)
