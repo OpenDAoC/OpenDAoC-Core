@@ -12,13 +12,13 @@ namespace DOL.GS
     /// <summary>
     /// Pathing
     /// </summary>
-    public class LocalPathingMgr : IPathingMgr
+    public partial class LocalPathingMgr : IPathingMgr
     {
         public const float CONVERSION_FACTOR = 1.0f / 32f;
-        private const float INV_FACTOR = (1f / CONVERSION_FACTOR);
+        private const float INV_FACTOR = 1f / CONVERSION_FACTOR;
 
         [Flags]
-        private enum dtStatus : uint
+        private enum EDtStatus : uint
         {
             // High level status.
             DT_SUCCESS = 1u << 30,        // Operation succeed.
@@ -27,7 +27,7 @@ namespace DOL.GS
             DT_PARTIAL_RESULT = 1 << 6,     // Query did not reach the end location, returning best guess. 
         }
 
-        public enum dtStraightPathOptions : uint
+        public enum EDtStraightPathOptions : uint
         {
             DT_STRAIGHTPATH_NO_CROSSINGS = 0x00,    // Do not add extra vertices on polygon edge crossings.
             DT_STRAIGHTPATH_AREA_CROSSINGS = 0x01,  // Add a vertex at every polygon edge crossing where area changes.
@@ -41,41 +41,55 @@ namespace DOL.GS
         private static readonly Lock _navmeshPtrsLock = new();
         private static ThreadLocal<Dictionary<ushort, NavMeshQuery>> _navmeshQueries = new(() => []);
 
-        [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private static extern bool LoadNavMesh(string file, ref IntPtr meshPtr);
+        [LibraryImport("dol_detour", StringMarshalling = StringMarshalling.Custom, StringMarshallingCustomType = typeof(System.Runtime.InteropServices.Marshalling.AnsiStringMarshaller))]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool LoadNavMesh(string file, ref IntPtr meshPtr);
 
-        [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool FreeNavMesh(IntPtr meshPtr);
+        [LibraryImport("dol_detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool FreeNavMesh(IntPtr meshPtr);
 
-        [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool CreateNavMeshQuery(IntPtr meshPtr, ref IntPtr queryPtr);
+        [LibraryImport("dol_detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool CreateNavMeshQuery(IntPtr meshPtr, ref IntPtr queryPtr);
 
-        [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-        private static extern bool FreeNavMeshQuery(IntPtr queryPtr);
+        [LibraryImport("dol_detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool FreeNavMeshQuery(IntPtr queryPtr);
 
-        [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-        private static extern dtStatus PathStraight(IntPtr queryPtr, float[] start, float[] end, float[] polyPickExt, dtPolyFlags[] queryFilter, dtStraightPathOptions pathOptions, ref int pointCount, float[] pointBuffer, dtPolyFlags[] pointFlags);
+        [LibraryImport("dol_detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus PathStraight(IntPtr queryPtr, float[] start, float[] end, float[] polyPickExt, dtPolyFlags[] queryFilter, EDtStraightPathOptions pathOptions, ref int pointCount, float[] pointBuffer, dtPolyFlags[] pointFlags);
 
-        [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-        private static extern dtStatus FindRandomPointAroundCircle(IntPtr queryPtr, float[] center, float radius, float[] polyPickExt, dtPolyFlags[] queryFilter, float[] outputVector);
+        [LibraryImport("dol_detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus FindRandomPointAroundCircle(IntPtr queryPtr, float[] center, float radius, float[] polyPickExt, dtPolyFlags[] queryFilter, float[] outputVector);
 
-        [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-        private static extern dtStatus FindClosestPoint(IntPtr queryPtr, float[] center, float[] polyPickExt, dtPolyFlags[] queryFilter, float[] outputVector);
+        [LibraryImport("dol_detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus FindClosestPoint(IntPtr queryPtr, float[] center, float[] polyPickExt, dtPolyFlags[] queryFilter, float[] outputVector);
 
-        [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-        private static extern dtStatus GetPolyAt(IntPtr queryPtr, float[] center, float[] polyPickExt, dtPolyFlags[] queryFilter, ref uint outputPolyRef, float[] outputVector);
+        [LibraryImport("dol_detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus GetPolyAt(IntPtr queryPtr, float[] center, float[] polyPickExt, dtPolyFlags[] queryFilter, ref uint outputPolyRef, float[] outputVector);
 
-        [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-        private static extern dtStatus SetPolyFlags(IntPtr meshPtr, uint polyRef, dtPolyFlags flags);
+        [LibraryImport("dol_detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus SetPolyFlags(IntPtr meshPtr, uint polyRef, dtPolyFlags flags);
 
-        [DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-        private static extern dtStatus QueryPolygons(IntPtr queryPtr, float[] center, float[] polyPickExt, dtPolyFlags[] queryFilter, uint[] outputPolyRefs, ref int outputPolyCount, int maxPolyCount);
+        [LibraryImport("dol_detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus QueryPolygons(IntPtr queryPtr, float[] center, float[] polyPickExt, dtPolyFlags[] queryFilter, uint[] outputPolyRefs, ref int outputPolyCount, int maxPolyCount);
 
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr LoadLibrary(string dllName);
+        [LibraryImport("kernel32.dll", EntryPoint = "LoadLibraryW", StringMarshalling = StringMarshalling.Utf16)]
+        private static partial IntPtr LoadLibrary(string dllName);
 
-        [DllImport("libdl.so")]
-        private static extern IntPtr dlopen(string file, int mode);
+        [LibraryImport("libdl.so", StringMarshalling = StringMarshalling.Utf8)]
+        private static partial IntPtr dlopen(string file, int mode);
 
         private class NavMeshQuery : IDisposable
         {
@@ -104,14 +118,28 @@ namespace DOL.GS
             try
             {
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                {
                     if (LoadLibrary("lib\\dol_detour.dll") != IntPtr.Zero)
-                        log.Debug("dol_detour.dll loaded from LoadLibrary \"lib\\dol_detour.dll\"");
-                if (Environment.OSVersion.Platform == PlatformID.Unix)
+                    {
+                        if (log.IsDebugEnabled)
+                            log.Debug("dol_detour.dll loaded from LoadLibrary \"lib\\dol_detour.dll\"");
+                    }
+                }
+                else if (Environment.OSVersion.Platform == PlatformID.Unix)
+                {
                     if (dlopen("lib/libdol_detour.so", 2 /* RTLD_NOW */) != IntPtr.Zero)
-                        log.Debug("libdol_detour.so loaded from dlopen \"lib/libdol_detour.so\"");
+                    {
+                        if (log.IsDebugEnabled)
+                            log.Debug("libdol_detour.so loaded from dlopen \"lib/libdol_detour.so\"");
+                    }
+                }
             }
-            catch
+            catch (Exception e)
             {
+                if (log.IsErrorEnabled)
+                    log.Error(e);
+
+                return false;
             }
 
             try
@@ -121,8 +149,9 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                log.ErrorFormat("The current process is a {0} process!", (Environment.Is64BitProcess ? "64bit" : "32bit"));
-                log.ErrorFormat("PathingMgr did not find the dol_detour.dll! Error message: {0}", e.ToString());
+                if (log.IsErrorEnabled)
+                    log.Error("PathingMgr did not find the dol_detour.dll", e);
+
                 return false;
             }
 
@@ -141,7 +170,9 @@ namespace DOL.GS
 
             if (!File.Exists(path))
             {
-                log.DebugFormat($"Loading NavMesh failed for zone {id}! (File not found: {path})");
+                if (log.IsDebugEnabled)
+                    log.Debug($"Loading NavMesh failed for zone {id}! (File not found: {path})");
+
                 return;
             }
 
@@ -149,17 +180,22 @@ namespace DOL.GS
 
             if (!LoadNavMesh(path, ref meshPtr))
             {
-                log.ErrorFormat($"Loading NavMesh failed for zone {id}!");
+                if (log.IsErrorEnabled)
+                    log.Error($"Loading NavMesh failed for zone {id}!");
+
                 return;
             }
 
             if (meshPtr == IntPtr.Zero)
             {
-                log.ErrorFormat($"Loading NavMesh failed for zone {id}! (Pointer was zero!)");
+                if (log.IsErrorEnabled)
+                    log.Error($"Loading NavMesh failed for zone {id}! (Pointer was zero!)");
+
                 return;
             }
 
-            log.InfoFormat($"Loading NavMesh successful for zone {id}");
+            if (log.IsInfoEnabled)
+                log.Info($"Loading NavMesh successful for zone {id}");
 
             lock (_navmeshPtrsLock)
             {
@@ -233,10 +269,10 @@ namespace DOL.GS
             dtPolyFlags includeFilter = dtPolyFlags.ALL ^ dtPolyFlags.DISABLED;
             dtPolyFlags excludeFilter = 0;
             var polyExt = ToRecastFloats(new Vector3(64, 64, 256));
-            dtStraightPathOptions options = dtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS;
+            EDtStraightPathOptions options = EDtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS;
             var filter = new[] { includeFilter, excludeFilter };
             var status = PathStraight(query, startFloats, endFloats, polyExt, filter, options, ref numNodes, buffer, flags);
-            if ((status & dtStatus.DT_SUCCESS) == 0)
+            if ((status & EDtStatus.DT_SUCCESS) == 0)
             {
                 result.Error = PathingError.NoPathFound;
                 result.Points = null;
@@ -252,7 +288,7 @@ namespace DOL.GS
                 points[i].Flags = flags[i];
             }
 
-            if ((status & dtStatus.DT_PARTIAL_RESULT) == 0)
+            if ((status & EDtStatus.DT_PARTIAL_RESULT) == 0)
                 result.Error = PathingError.PathFound;
             else
                 result.Error = PathingError.PathFound;
@@ -294,7 +330,7 @@ namespace DOL.GS
 
             var status = FindRandomPointAroundCircle(query, center, cradius, polyPickEx, filter, outVec);
 
-            if ((status & dtStatus.DT_SUCCESS) != 0)
+            if ((status & EDtStatus.DT_SUCCESS) != 0)
                 result = new Vector3(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
 
             return result;
@@ -328,7 +364,7 @@ namespace DOL.GS
 
             var status = FindClosestPoint(query, center, polyPickEx, filter, outVec);
 
-            if ((status & dtStatus.DT_SUCCESS) != 0)
+            if ((status & EDtStatus.DT_SUCCESS) != 0)
                 result = new Vector3(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
 
             return result;
