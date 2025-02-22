@@ -7,32 +7,6 @@
 
 #include "dol_detour.hpp"
 
-/*
-	[DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-	private static extern bool LoadNavMesh(string file, ref IntPtr meshPtr, ref IntPtr queryPtr);
-
-	[DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-	private static extern bool FreeNavMesh(IntPtr meshPtr, IntPtr queryPtr);
-
-	[DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-	private static extern dtStatus PathStraight(IntPtr queryPtr, float[] start, float[] end, float[] polyPickExt, dtPolyFlags[] queryFilter, dtStraightPathOptions pathOptions, ref int pointCount, float[] pointBuffer, dtPolyFlags[] pointFlags);
-
-	[DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-	private static extern dtStatus FindRandomPointAroundCircle(IntPtr queryPtr, float[] center, float radius, float[] polyPickExt, dtPolyFlags[] queryFilter, float[] outputVector);
-
-	[DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-	private static extern dtStatus FindClosestPoint(IntPtr queryPtr, float[] center, float[] polyPickExt, dtPolyFlags[] queryFilter, float[] outputVector);
-
-	[DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-	private static extern dtStatus GetPolyAt(IntPtr queryPtr, float[] center, float[] polyPickExt, dtPolyFlags[] queryFilter, ref uint outputPolyRef, float[] outputVector);
-
-	[DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-	private static extern dtStatus SetPolyFlags(IntPtr meshPtr, uint polyRef, dtPolyFlags flags);
-
-	[DllImport("dol_detour", CallingConvention = CallingConvention.Cdecl)]
-	private static extern dtStatus QueryPolygons(IntPtr queryPtr, float[] center, float[] polyPickExt, dtPolyFlags[] queryFilter, uint[] outputPolyRefs, ref int outputPolyCount, int maxPolyCount);
-*/
-
 // RAII helper
 struct RAII
 {
@@ -194,7 +168,8 @@ DLLEXPORT dtStatus PathStraight(dtNavMeshQuery *query, float start[], float end[
 				auto straightPathRefs = &straightPathPolys[0];
 				if (dtStatusSucceed(status = query->findStraightPath(start, epos, polys, npolys, pointBuffer, straightPathFlags, straightPathRefs, pointCount, MAX_POLY, pathOptions)) && (0 < *pointCount))
 				{
-					PathOptimize(query, pointCount, pointBuffer, straightPathRefs);
+					// Temporarily disabled since it's too aggressive.
+					// PathOptimize(query, pointCount, pointBuffer, straightPathRefs);
 					int pointIdx = 0;
 					while (*pointCount != pointIdx && pointIdx <= *pointCount)
 					{
