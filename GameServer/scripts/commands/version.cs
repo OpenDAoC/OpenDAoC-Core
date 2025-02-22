@@ -13,25 +13,25 @@ namespace DOL.GS.Commands
         "/version")]
     public class VersionCommandHandler : AbstractCommandHandler, ICommandHandler
     {
-        private static DateTime? _buildTime;
+        private static string _buildTime;
         private static Lock _lock = new();
 
         public void OnCommand(GameClient client, string[] args)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
 
-            if (!_buildTime.HasValue)
+            if (string.IsNullOrEmpty(_buildTime))
             {
                 lock (_lock)
                 {
-                    if (!_buildTime.HasValue)
+                    if (string.IsNullOrEmpty(_buildTime))
                         _buildTime = GetBuildDate(assembly);
                 }
             }
 
-            client.Out.SendMessage($"{assembly.GetCustomAttribute<AssemblyTitleAttribute>().Title}: {_buildTime.Value}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage($"{assembly.GetCustomAttribute<AssemblyTitleAttribute>().Title}: {_buildTime}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-            static DateTime GetBuildDate(Assembly assembly)
+            static string GetBuildDate(Assembly assembly)
             {
                 string buildTime = string.Empty;
 
@@ -46,7 +46,10 @@ namespace DOL.GS.Commands
                 if (string.IsNullOrEmpty(buildTime))
                     return default;
 
-                return DateTime.TryParse(buildTime, out DateTime result) ? result : default;
+                if (!DateTime.TryParse(buildTime, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out DateTime dateTime))
+                    dateTime = default;
+
+                return dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
             }
         }
     }
