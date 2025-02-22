@@ -14,12 +14,19 @@
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
         <OutputPath>..\$(Configuration)\</OutputPath>
         <IntermediateOutputPath>..\build\CoreServer\$(Configuration)\obj\</IntermediateOutputPath>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
         <Deterministic>false</Deterministic>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <ServerGarbageCollection>true</ServerGarbageCollection>
         <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
         <InvariantGlobalization>false</InvariantGlobalization>
+        <RegisterForComInterop>false</RegisterForComInterop>
+        <AssemblyTitle>OpenDAoC - CoreServer</AssemblyTitle>
+        <AssemblyDescription>Main entry point for starting the server</AssemblyDescription>
+        <AssemblyCompany>OpenDAoC Development Team</AssemblyCompany>
+        <AssemblyProduct>DAoC Server Side Emulation Package - OpenDAoC</AssemblyProduct>
+        <AssemblyCopyright>OpenDAoC Development Team</AssemblyCopyright>
+        <AssemblyTrademark>OpenDAoC Development Team</AssemblyTrademark>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -36,15 +43,10 @@
         <DebugSymbols>false</DebugSymbols>
         <RemoveIntegerChecks>false</RemoveIntegerChecks>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-        <RegisterForComInterop>False</RegisterForComInterop>
-    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="9.0.1" />
         <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.1" />
         <ProjectReference Include="..\GameServer\GameServer.csproj" Name="GameServer" />
-    </ItemGroup>
-    <ItemGroup>
         <Content Include=".\config\serverconfig.xml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>

@@ -13,10 +13,17 @@
         <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
         <OutputPath>..\$(Configuration)\lib\</OutputPath>
         <IntermediateOutputPath>..\build\CoreDatabase\$(Configuration)\obj\</IntermediateOutputPath>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
         <Deterministic>false</Deterministic>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <InvariantGlobalization>false</InvariantGlobalization>
+        <RegisterForComInterop>false</RegisterForComInterop>
+        <AssemblyTitle>OpenDAoC - CoreDatabase</AssemblyTitle>
+        <AssemblyDescription>Database framework</AssemblyDescription>
+        <AssemblyCompany>OpenDAoC Development Team</AssemblyCompany>
+        <AssemblyProduct>DAoC Server Side Emulation Package - OpenDAoC</AssemblyProduct>
+        <AssemblyCopyright>OpenDAoC Development Team</AssemblyCopyright>
+        <AssemblyTrademark>OpenDAoC Development Team</AssemblyTrademark>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -29,9 +36,6 @@
         <Optimize>true</Optimize>
         <DebugType>None</DebugType>
         <DebugSymbols>false</DebugSymbols>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-        <RegisterForComInterop>False</RegisterForComInterop>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.1" />

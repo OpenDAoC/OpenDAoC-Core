@@ -13,9 +13,16 @@
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
         <IntermediateOutputPath>..\build\CoreBase\$(Configuration)\obj\</IntermediateOutputPath>
         <OutputPath>..\$(Configuration)\lib\</OutputPath>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
         <Deterministic>false</Deterministic>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <RegisterForComInterop>false</RegisterForComInterop>
+        <AssemblyTitle>OpenDAoC - CoreBase</AssemblyTitle>
+        <AssemblyDescription>Base code for OpenDAoC server</AssemblyDescription>
+        <AssemblyCompany>OpenDAoC Development Team</AssemblyCompany>
+        <AssemblyProduct>DAoC Server Side Emulation Package - OpenDAoC</AssemblyProduct>
+        <AssemblyCopyright>OpenDAoC Development Team</AssemblyCopyright>
+        <AssemblyTrademark>OpenDAoC Development Team</AssemblyTrademark>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <Optimize>False</Optimize>
@@ -26,9 +33,6 @@
         <Optimize>true</Optimize>
         <DebugType>None</DebugType>
         <DebugSymbols>false</DebugSymbols>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-        <RegisterForComInterop>False</RegisterForComInterop>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="log4net" Version="3.0.3" />

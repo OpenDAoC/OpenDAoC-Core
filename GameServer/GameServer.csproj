@@ -1,75 +1,77 @@
 ﻿<Project>
-  <PropertyGroup>
-    <BaseIntermediateOutputPath>..\build\GameServer\$(Configuration)\</BaseIntermediateOutputPath>
-  </PropertyGroup>
-  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <AssemblyName>GameServer</AssemblyName>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
-    <IntermediateOutputPath>..\build\GameServer\$(Configuration)\obj\</IntermediateOutputPath>
-    <OutputPath>..\$(Configuration)\lib\</OutputPath>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Deterministic>false</Deterministic>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <ServerGarbageCollection>true</ServerGarbageCollection>
-    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
-    <EnableLibraryImportGenerator>true</EnableLibraryImportGenerator>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DebugType>Full</DebugType>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <Optimize>False</Optimize>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <DebugType>None</DebugType>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>True</Optimize>
-    <DebugSymbols>false</DebugSymbols>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <RegisterForComInterop>False</RegisterForComInterop>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="discord-webhook-client" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="9.0.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
-    <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="3.1.512801" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.11.1" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.1" />
-    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.1" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.0" />
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.1" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <ProjectReference Include="..\CoreBase\CoreBase.csproj" Name="CoreBase" />
-    <ProjectReference Include="..\CoreDatabase\CoreDatabase.csproj" Name="CoreDatabase" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include=".\config\*" />
-    <TranslationFiles Include=".\language\**\*.txt" />
-    <APIDocs Include=".\API\docs\*" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="API\docs\index.css" />
-    <Content Include="API\docs\index.html" />
-    <Content Include="API\docs\oauth2-redirect.html" />
-    <Content Include="API\docs\swagger-initializer.js" />
-    <Content Include="API\docs\swagger-ui-bundle.js" />
-    <Content Include="API\docs\swagger-ui-es-bundle-core.js" />
-    <Content Include="API\docs\swagger-ui-es-bundle.js" />
-    <Content Include="API\docs\swagger-ui-standalone-preset.js" />
-    <Content Include="API\docs\swagger-ui.css" />
-    <Content Include="API\docs\swagger-ui.js" />
-  </ItemGroup>
-  <Target Name="CopyFiles" AfterTargets="AfterBuild">
-    <Copy SourceFiles="@(TranslationFiles)" DestinationFiles="@(TranslationFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\languages\%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(APIDocs)" DestinationFiles="@(APIDocs->'$(MSBuildProjectDirectory)\..\$(Configuration)\wwwroot\docs\%(RecursiveDir)%(Filename)%(Extension)')" />
-  </Target>
-  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+    <PropertyGroup>
+        <BaseIntermediateOutputPath>..\build\GameServer\$(Configuration)\</BaseIntermediateOutputPath>
+    </PropertyGroup>
+    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+        <IntermediateOutputPath>..\build\GameServer\$(Configuration)\obj\</IntermediateOutputPath>
+        <OutputPath>..\$(Configuration)\lib\</OutputPath>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <Deterministic>false</Deterministic>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+        <EnableLibraryImportGenerator>true</EnableLibraryImportGenerator>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <RegisterForComInterop>false</RegisterForComInterop>
+        <BuildTime>$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"))</BuildTime>
+        <AssemblyName>GameServer</AssemblyName>
+        <AssemblyTitle>OpenDAoC - GameServer</AssemblyTitle>
+        <AssemblyDescription>Library containing server side emulating framework</AssemblyDescription>
+        <AssemblyCompany>OpenDAoC Development Team</AssemblyCompany>
+        <AssemblyProduct>DAoC Server Side Emulation Package - OpenDAoC</AssemblyProduct>
+        <AssemblyCopyright>OpenDAoC Development Team</AssemblyCopyright>
+        <AssemblyTrademark>OpenDAoC Development Team</AssemblyTrademark>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DebugType>Full</DebugType>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+        <Optimize>False</Optimize>
+        <DebugSymbols>true</DebugSymbols>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DebugType>None</DebugType>
+        <DefineConstants>TRACE</DefineConstants>
+        <Optimize>True</Optimize>
+        <DebugSymbols>false</DebugSymbols>
+    </PropertyGroup>
+    <ItemGroup>
+        <AssemblyMetadata Include="BuildTime" Value="$(BuildTime)" />
+        <PackageReference Include="discord-webhook-client" Version="3.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="9.0.1" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+        <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="3.1.512801" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.11.1" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.11.1" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.1" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.11.0" />
+        <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="9.0.1" />
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+        <ProjectReference Include="..\CoreBase\CoreBase.csproj" Name="CoreBase" />
+        <ProjectReference Include="..\CoreDatabase\CoreDatabase.csproj" Name="CoreDatabase" />
+        <EmbeddedResource Include=".\config\*" />
+        <TranslationFiles Include=".\language\**\*.txt" />
+        <APIDocs Include=".\API\docs\*" />
+        <Content Include="API\docs\index.css" />
+        <Content Include="API\docs\index.html" />
+        <Content Include="API\docs\oauth2-redirect.html" />
+        <Content Include="API\docs\swagger-initializer.js" />
+        <Content Include="API\docs\swagger-ui-bundle.js" />
+        <Content Include="API\docs\swagger-ui-es-bundle-core.js" />
+        <Content Include="API\docs\swagger-ui-es-bundle.js" />
+        <Content Include="API\docs\swagger-ui-standalone-preset.js" />
+        <Content Include="API\docs\swagger-ui.css" />
+        <Content Include="API\docs\swagger-ui.js" />
+    </ItemGroup>
+    <Target Name="CopyFiles" AfterTargets="AfterBuild">
+        <Copy SourceFiles="@(TranslationFiles)" DestinationFiles="@(TranslationFiles->'$(MSBuildProjectDirectory)\..\$(Configuration)\languages\%(RecursiveDir)%(Filename)%(Extension)')" />
+        <Copy SourceFiles="@(APIDocs)" DestinationFiles="@(APIDocs->'$(MSBuildProjectDirectory)\..\$(Configuration)\wwwroot\docs\%(RecursiveDir)%(Filename)%(Extension)')" />
+    </Target>
+    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
