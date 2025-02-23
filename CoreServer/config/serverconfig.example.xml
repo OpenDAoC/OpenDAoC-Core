@@ -26,6 +26,6 @@
         <DBAutosaveInterval>10</DBAutosaveInterval>
         <MetricsEnabled>false</MetricsEnabled>
         <MetricsInterval>60s</MetricsInterval>
-        <OltpEndpoint>http://localhost:4317</OltpEndpoint>
+        <OtlpEndpoint>http://localhost:4317</OtlpEndpoint>
     </Server>
 </root>
