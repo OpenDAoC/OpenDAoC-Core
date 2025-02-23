@@ -219,14 +219,11 @@ namespace DOL.GS.Keeps
             if (InCombat || Component.Keep.InCombat)
             {
                 player.Out.SendMessage("You can't talk to the lord while under siege.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                log.DebugFormat("KEEPWARNING: {0} attempted to interact with {1} of {2} while keep or lord in combat.", player.Name, Name, Component.Keep.Name);
                 return false;
             }
 
             if (GameServer.ServerRules.IsAllowedToClaim(player, CurrentRegion))
-            {
                 player.Out.SendMessage("Would you like to [Claim Keep] now? Or maybe [Release Keep]?", eChatType.CT_System, eChatLoc.CL_PopupWindow);
-            }
 
             return true;
         }
