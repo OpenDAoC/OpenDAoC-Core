@@ -587,7 +587,7 @@ namespace DOL.GS
                     .AddRuntimeInstrumentation()
                     .AddOtlpExporter((options, readerOptions) =>
                     {
-                        options.Endpoint = Instance.Configuration.OltpEndpoint;
+                        options.Endpoint = Instance.Configuration.OtlpEndpoint;
                         readerOptions.PeriodicExportingMetricReaderOptions.ExportIntervalMilliseconds = Instance.Configuration.MetricsExportInterval;
                     })
                     .Build();

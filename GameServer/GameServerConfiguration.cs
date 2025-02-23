@@ -85,7 +85,7 @@ namespace DOL.GS
         /// <summary>
         /// The OpenTelemetry Protocol Endpoint to push the metrics to
         /// </summary>
-        public Uri OltpEndpoint { get; protected set; }
+        public Uri OtlpEndpoint { get; protected set; }
 
 		#endregion
 		#region Logging
@@ -231,7 +231,7 @@ namespace DOL.GS
             }
 
             this.MetricsEnabled = root["Server"]["MetricsEnabled"].GetBoolean(false);
-            this.OltpEndpoint = new Uri(root["Server"]["OltpEndpoint"].GetString("http://localhost:4317/"));
+            this.OtlpEndpoint = new Uri(root["Server"]["OtlpEndpoint"].GetString("http://localhost:4317/"));
             string durationFromConfig = root["Server"]["MetricsExportInterval"].GetString("60s");
             this.MetricsExportInterval = ParseDurationToMilliseconds(durationFromConfig);
         }
