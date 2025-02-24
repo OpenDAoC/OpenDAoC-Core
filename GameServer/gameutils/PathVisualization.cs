@@ -23,15 +23,15 @@ namespace DOL.GS.Movement
 
             StartCleanupTimer(AUTOMATIC_CLEANUP_INTERVAL);
 
-            static EMarkerModel GetModel(dtPolyFlags flags)
+            static EMarkerModel GetModel(EDtPolyFlags flags)
             {
-                if ((flags & dtPolyFlags.SWIM) != 0)
+                if ((flags & EDtPolyFlags.SWIM) != 0)
                     return EMarkerModel.Blue;
 
-                if ((flags & dtPolyFlags.DOOR) != 0)
+                if ((flags & EDtPolyFlags.DOOR) != 0)
                     return EMarkerModel.Red;
 
-                if ((flags & dtPolyFlags.WALK) != 0)
+                if ((flags & EDtPolyFlags.WALK) != 0)
                     return EMarkerModel.Yellow;
 
                 return EMarkerModel.Green;

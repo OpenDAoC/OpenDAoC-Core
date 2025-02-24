@@ -3,16 +3,32 @@ using System.Numerics;
 
 namespace DOL.GS
 {
-    public struct WrappedPathingResult
+    public class WrappedPathingResult
     {
-        public PathingError Error;
+        public EPathingError Error;
         public WrappedPathPoint[] Points;
+
+        public WrappedPathingResult() { }
+
+        public WrappedPathingResult(EPathingError error, WrappedPathPoint[] points)
+        {
+            Error = error;
+            Points = points;
+        }
     }
 
-    public struct WrappedPathPoint
+    public class WrappedPathPoint
     {
         public Vector3 Position;
-        public dtPolyFlags Flags;
+        public EDtPolyFlags Flags;
+
+        public WrappedPathPoint() { }
+
+        public WrappedPathPoint(Vector3 position, EDtPolyFlags flags)
+        {
+            Position = position;
+            Flags = flags;
+        }
 
         public override string ToString()
         {
@@ -21,7 +37,7 @@ namespace DOL.GS
     }
 
     [Flags]
-    public enum dtPolyFlags : ushort
+    public enum EDtPolyFlags : ushort
     {
         WALK = 0x01, // Ability to walk (ground, grass, road)
         SWIM = 0x02, // Ability to swim (water).
@@ -34,7 +50,7 @@ namespace DOL.GS
         ALL = 0xffff // All abilities.
     }
 
-    public enum PathingError
+    public enum EPathingError
     {
         UNKNOWN = 0,
         PathFound = 1,

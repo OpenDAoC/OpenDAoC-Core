@@ -2,9 +2,6 @@
 
 namespace DOL.GS
 {
-    /// <summary>
-    /// Always unavailable pathing mgr
-    /// </summary>
     public class NullPathingMgr : IPathingMgr
     {
         public bool Init()
@@ -16,7 +13,7 @@ namespace DOL.GS
 
         public WrappedPathingResult GetPathStraightAsync(Zone zone, Vector3 start, Vector3 end)
         {
-            return new WrappedPathingResult() { Error = PathingError.NavmeshUnavailable };
+            return new WrappedPathingResult(EPathingError.NavmeshUnavailable, []);
         }
 
         public Vector3? GetRandomPointAsync(Zone zone, Vector3 position, float radius)
