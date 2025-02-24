@@ -60,19 +60,45 @@ namespace DOL.GS
 
         [LibraryImport("dol_detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus PathStraight(IntPtr queryPtr, float[] start, float[] end, float[] polyPickExt, EDtPolyFlags[] queryFilter, EDtStraightPathOptions pathOptions, ref int pointCount, float[] pointBuffer, EDtPolyFlags[] pointFlags);
+        private static partial EDtStatus PathStraight(
+            IntPtr queryPtr,
+            [In] float[] start,
+            [In] float[] end,
+            [In] float[] polyPickExt,
+            [In] EDtPolyFlags[] queryFilter,
+            EDtStraightPathOptions pathOptions,
+            out int pointCount,
+            [Out] float[] pointBuffer,
+            [Out] EDtPolyFlags[] pointFlags);
 
         [LibraryImport("dol_detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus FindRandomPointAroundCircle(IntPtr queryPtr, float[] center, float radius, float[] polyPickExt, EDtPolyFlags[] queryFilter, float[] outputVector);
+        private static partial EDtStatus FindRandomPointAroundCircle(
+            IntPtr queryPtr,
+            [In] float[] center,
+            float radius,
+            [In] float[] polyPickExt,
+            [In] EDtPolyFlags[] queryFilter,
+            [Out] float[] outputVector);
 
         [LibraryImport("dol_detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus FindClosestPoint(IntPtr queryPtr, float[] center, float[] polyPickExt, EDtPolyFlags[] queryFilter, float[] outputVector);
+        private static partial EDtStatus FindClosestPoint(
+            IntPtr queryPtr,
+            [In] float[] center,
+            [In] float[] polyPickExt,
+            [In] EDtPolyFlags[] queryFilter,
+            [Out] float[] outputVector);
 
         [LibraryImport("dol_detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus GetPolyAt(IntPtr queryPtr, float[] center, float[] polyPickExt, EDtPolyFlags[] queryFilter, ref uint outputPolyRef, float[] outputVector);
+        private static partial EDtStatus GetPolyAt(
+            IntPtr queryPtr,
+            [In] float[] center,
+            [In] float[] polyPickExt,
+            [In] EDtPolyFlags[] queryFilter,
+            out uint outputPolyRef,
+            [Out] float[] outputVector);
 
         [LibraryImport("dol_detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
@@ -80,7 +106,13 @@ namespace DOL.GS
 
         [LibraryImport("dol_detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus QueryPolygons(IntPtr queryPtr, float[] center, float[] polyPickExt, EDtPolyFlags[] queryFilter, uint[] outputPolyRefs, ref int outputPolyCount, int maxPolyCount);
+        private static partial EDtStatus QueryPolygons(IntPtr queryPtr,
+            [In] float[] center,
+            [In] float[] polyPickExt,
+            [In] EDtPolyFlags[] queryFilter,
+            [Out] uint[] outputPolyRefs,
+            out int outputPolyCount,
+            int maxPolyCount);
 
         [LibraryImport("kernel32.dll", EntryPoint = "LoadLibraryW", StringMarshalling = StringMarshalling.Utf16)]
         private static partial IntPtr LoadLibrary(string dllName);
@@ -243,7 +275,7 @@ namespace DOL.GS
             float[] polyExt = ToRecastFloats(new Vector3(64, 64, 256));
             EDtStraightPathOptions options = EDtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS;
             EDtPolyFlags[] filter = [includeFilter, excludeFilter];
-            EDtStatus status = PathStraight(query, startFloats, endFloats, polyExt, filter, options, ref numNodes, buffer, flags);
+            EDtStatus status = PathStraight(query, startFloats, endFloats, polyExt, filter, options, out numNodes, buffer, flags);
 
             if ((status & EDtStatus.DT_SUCCESS) == 0)
                 return new WrappedPathingResult(EPathingError.NoPathFound, []);
