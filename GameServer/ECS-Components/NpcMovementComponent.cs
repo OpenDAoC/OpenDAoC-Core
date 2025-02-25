@@ -28,6 +28,7 @@ namespace DOL.GS
         private Point3D _positionForUpdatePackets;
         private bool _needsBroadcastUpdate;
         private short _currentMovementDesiredSpeed;
+        private PathVisualization _pathVisualization;
 
         public new GameNPC Owner { get; }
         public Vector3 Velocity { get; private set; }
@@ -184,7 +185,9 @@ namespace DOL.GS
             {
                 if (PathID == null)
                 {
-                    log.Error($"Called {nameof(MoveOnPath)} but PathID is null (NPC: {Owner})");
+                    if (log.IsErrorEnabled)
+                        log.Error($"Called {nameof(MoveOnPath)} but PathID is null (NPC: {Owner})");
+
                     return;
                 }
 
@@ -192,7 +195,9 @@ namespace DOL.GS
 
                 if (CurrentWaypoint == null)
                 {
-                    log.Error($"Called {nameof(MoveOnPath)} but LoadPath returned null (PathID: {PathID}) (NPC: {Owner})");
+                    if (log.IsErrorEnabled)
+                        log.Error($"Called {nameof(MoveOnPath)} but LoadPath returned null (PathID: {PathID}) (NPC: {Owner})");
+
                     return;
                 }
 
@@ -220,7 +225,7 @@ namespace DOL.GS
 
                 PathTo(CurrentWaypoint, Owner.MaxSpeed);
             }
-            else
+            else if (log.IsErrorEnabled)
                 log.Error($"Called {nameof(MoveOnPath)} but both CurrentWaypoint and ON_PATH are already set. (NPC: {Owner})");
         }
 
@@ -338,7 +343,21 @@ namespace DOL.GS
 
         public void TogglePathVisualization()
         {
+            // Toggle both visualization for `PathCalculator` (pathfinding) and `PathPoint` (patrols, horse routes).
+
             _pathCalculator.ToggleVisualization();
+
+            if (_pathVisualization != null)
+            {
+                _pathVisualization.CleanUp();
+                _pathVisualization = null;
+                return;
+            }
+
+            _pathVisualization = new();
+
+            if (CurrentWaypoint != null)
+                _pathVisualization.Visualize(MovementMgr.FindFirstPathPoint(CurrentWaypoint), Owner.CurrentRegion);
         }
 
         private void UpdateVelocity(double distanceToTarget)
@@ -626,7 +645,7 @@ namespace DOL.GS
             oldPathPoint.FiredFlag = !oldPathPoint.FiredFlag;
 
             if (CurrentWaypoint != null)
-                WalkToInternal(CurrentWaypoint, Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
+                PathToInternal(CurrentWaypoint, Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
             else
                 StopMovingOnPath();
         }
