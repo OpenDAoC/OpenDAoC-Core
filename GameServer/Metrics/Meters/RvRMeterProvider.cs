@@ -6,67 +6,66 @@ using System.Reflection;
 using DOL.Logging;
 using OpenTelemetry.Metrics;
 
-namespace DOL.GS.Metrics.Meters
+namespace DOL.GS.Metrics.Meters;
+
+public class RvRMeterProvider : IMeterProvider
 {
-    public class RvRMeterProvider : IMeterProvider
+    private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+    public string MeterName => "GameServer.RvRMetrics";
+
+    public void Register(MeterProviderBuilder meterProviderBuilder)
     {
-        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        public string MeterName => "GameServer.RvRMetrics";
+        meterProviderBuilder.AddMeter(MeterName);
+        Meter meter = new(MeterName);
 
-        public void Register(MeterProviderBuilder meterProviderBuilder)
+        var playerInRvPZones = meter.CreateObservableGauge(
+            "daoc.online.player.count.rvr.zones",
+            OnlinePlayerInRvRZones,
+            description: "Total number of players online in RvP zones"
+        );
+    }
+
+    /// <summary>
+    /// Get active players in RvR zones
+    /// </summary>
+    /// <returns></returns>
+    private static List<Measurement<int>> OnlinePlayerInRvRZones()
+    {
+        try 
         {
-            meterProviderBuilder.AddMeter(MeterName);
-            Meter meter = new(MeterName);
+            List<Measurement<int>> playersInRvR = [];
+            List<GameClient> activePlayers = [.. ClientService.GetClients().Where(client => client.ClientState == GameClient.eClientState.Playing && client.Player.CurrentRegion.IsRvR)];
 
-            var playerInRvPZones = meter.CreateObservableGauge(
-                "daoc.online.player.count.rvr.zones",
-                OnlinePlayerInRvRZones,
-                description: "Total number of players online in RvP zones"
+            // Albion players in RvR
+            Measurement<int> albionRvRPlayers = new(
+                activePlayers.Count(c => c.Player.Realm == eRealm.Albion),
+                [new("realm", "Albion")]
             );
-        }
 
-        /// <summary>
-        /// Get active players in RvR zones
-        /// </summary>
-        /// <returns></returns>
-        private static List<Measurement<int>> OnlinePlayerInRvRZones()
+            // Hibernia players in RvR
+            Measurement<int> hiberniaRvRPlayers = new(
+                activePlayers.Count(c => c.Player.Realm == eRealm.Hibernia),
+                [new("realm", "Hibernia")]
+            );
+
+            // Midgard players in RvR
+            Measurement<int> midgardRvRPlayers = new(
+                activePlayers.Count(c => c.Player.Realm == eRealm.Midgard),
+                [new("realm", "Midgard")]
+            );
+
+            return 
+            [
+                albionRvRPlayers,
+                hiberniaRvRPlayers,
+                midgardRvRPlayers
+            ];
+        } 
+        catch (Exception e)
         {
-            try 
-            {
-                List<Measurement<int>> playersInRvR = [];
-                List<GameClient> activePlayers = [.. ClientService.GetClients().Where(client => client.ClientState == GameClient.eClientState.Playing && client.Player.CurrentRegion.IsRvR)];
-
-                // Albion players in RvR
-                Measurement<int> albionRvRPlayers = new(
-                    activePlayers.Count(c => c.Player.Realm == eRealm.Albion),
-                    [new("realm", "Albion")]
-                );
-
-                // Hibernia players in RvR
-                Measurement<int> hiberniaRvRPlayers = new(
-                    activePlayers.Count(c => c.Player.Realm == eRealm.Hibernia),
-                    [new("realm", "Hibernia")]
-                );
-
-                // Midgard players in RvR
-                Measurement<int> midgardRvRPlayers = new(
-                    activePlayers.Count(c => c.Player.Realm == eRealm.Midgard),
-                    [new("realm", "Midgard")]
-                );
-
-                return 
-                [
-                    albionRvRPlayers,
-                    hiberniaRvRPlayers,
-                    midgardRvRPlayers
-                ];
-            } 
-            catch (Exception e)
-            {
-                log.Error("MetricsCollector.CollectMetrics threw an exception", e);
-            }
-
-            return [];
+            log.Error("MetricsCollector.CollectMetrics threw an exception", e);
         }
+
+        return [];
     }
 }
