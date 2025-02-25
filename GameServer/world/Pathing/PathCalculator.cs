@@ -124,13 +124,14 @@ namespace DOL.GS
         /// <summary>
         /// Calculates the next point this NPC should walk to to reach the target
         /// </summary>
-        /// <returns>Next path node, or null if target reached. Throws a NoPathToTargetException if path is blocked/returns>
-        public Tuple<Vector3?, ENoPathReason> CalculateNextTarget(Vector3 target)
+        /// <returns>Next path node, or null if target reached. Throws a NoPathToTargetException if path is blocked</returns>
+        public Vector3? CalculateNextTarget(Vector3 target, out ENoPathReason noPathReason)
         {
             if (!ShouldPath(target))
             {
                 DidFindPath = true; // Not needed.
-                return new(null, ENoPathReason.NoProblem);
+                noPathReason = ENoPathReason.NoProblem;
+                return null;
             }
 
             // Check if we can reuse our path. We assume that we ourselves never "suddenly" warp to a completely different position.
@@ -144,12 +145,17 @@ namespace DOL.GS
             if (_pathNodes.Count == 0)
             {
                 if (!DidFindPath)
-                    return new(null, ENoPathReason.NoPath);
+                {
+                    noPathReason = ENoPathReason.NoPath;
+                    return null;
+                }
 
-                return new(null, ENoPathReason.End);
+                noPathReason = ENoPathReason.End;
+                return null;
             }
 
-            return new(_pathNodes.Peek().Position, ENoPathReason.NoProblem);
+            noPathReason = ENoPathReason.NoProblem;
+            return _pathNodes.Peek().Position;
         }
 
         public override string ToString()

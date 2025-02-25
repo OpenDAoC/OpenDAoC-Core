@@ -422,11 +422,7 @@ namespace DOL.GS
                 return;
             }
 
-            Tuple<Vector3?, ENoPathReason> res = _pathCalculator.CalculateNextTarget(destinationForPathCalculator);
-            Vector3? nextNode = res.Item1;
-            //NoPathReason noPathReason = res.Item2;
-            //bool shouldUseAirPath = noPathReason == NoPathReason.RECAST_FOUND_NO_PATH;
-            //bool didFindPath = PathCalculator.DidFindPath;
+            Vector3? nextNode = _pathCalculator.CalculateNextTarget(destinationForPathCalculator, out _);
 
             if (!nextNode.HasValue)
             {
