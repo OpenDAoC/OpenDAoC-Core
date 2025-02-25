@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
 using System.Threading;
+using DOL.GS.Movement;
 
 namespace DOL.GS
 {
@@ -24,16 +25,17 @@ namespace DOL.GS
         private Dictionary<WrappedPathPoint, GameDoorBase> _doorsOnPath = new();
         private Vector3 _lastTarget = Vector3.Zero;
         private int _isReplottingPath = IDLE;
-
-        public static bool IsSupported(GameNPC npc)
-        {
-            return npc?.CurrentZone != null && npc.CurrentZone.IsPathingEnabled;
-        }
+        private PathVisualization _pathVisualization;
 
         public PathCalculator(GameNPC owner)
         {
             ForceReplot = true;
             Owner = owner;
+        }
+
+        public static bool IsSupported(GameNPC npc)
+        {
+            return npc?.CurrentZone != null && npc.CurrentZone.IsPathingEnabled;
         }
 
         private bool ShouldPath(Vector3 target)
@@ -117,6 +119,8 @@ namespace DOL.GS
                         foreach (GameDoorBase door in Owner.CurrentRegion.GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE))
                             _doorsOnPath[pathPoint] = door;
                     }
+
+                    _pathVisualization?.Visualize(_pathNodes, Owner.CurrentRegion);
                 }
                 else
                     DidFindPath = false;
@@ -185,6 +189,18 @@ namespace DOL.GS
 
             noPathReason = ENoPathReason.NoProblem;
             return _pathNodes.Peek().Position;
+        }
+
+        public void ToggleVisualization()
+        {
+            if (_pathVisualization != null)
+            {
+                _pathVisualization.CleanUp();
+                _pathVisualization = null;
+                return;
+            }
+
+            _pathVisualization = new();
         }
 
         public override string ToString()

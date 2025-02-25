@@ -336,6 +336,11 @@ namespace DOL.GS
             base.DisableTurning(add);
         }
 
+        public void TogglePathVisualization()
+        {
+            _pathCalculator.ToggleVisualization();
+        }
+
         private void UpdateVelocity(double distanceToTarget)
         {
             MovementStartTick = GameLoop.GameLoopTime;
