@@ -4,7 +4,7 @@ namespace DOL.GS.Movement
 {
     public class PathVisualization
     {
-        private const int AUTOMATIC_CLEANUP_INTERVAL = 600000;
+        private const int AUTOMATIC_CLEANUP_INTERVAL = 120000;
 
         private List<GameNPC> _markers;
         private ECSGameTimer _cleanupTimer;
@@ -19,7 +19,7 @@ namespace DOL.GS.Movement
             Prepare();
 
             foreach (WrappedPathPoint point in pathPoints)
-                _markers.Add(CreateMarker((int) point.Position.X, (int) point.Position.Y, (int) point.Position.Z, region, GetModel(point.Flags)));
+                _markers.Add(CreateMarker((int) point.Position.X, (int) point.Position.Y, (int) point.Position.Z, region, GetModel(point.Flags), 30));
 
             StartCleanupTimer(AUTOMATIC_CLEANUP_INTERVAL);
 
@@ -47,7 +47,7 @@ namespace DOL.GS.Movement
 
             do
             {
-                _markers.Add(CreateMarker(pathPoint.X, pathPoint.Y, pathPoint.Z, region, EMarkerModel.Yellow));
+                _markers.Add(CreateMarker(pathPoint.X, pathPoint.Y, pathPoint.Z, region, EMarkerModel.Yellow, 40));
                 pathPoint = pathPoint.Next;
             } while (pathPoint != null);
 
@@ -80,17 +80,18 @@ namespace DOL.GS.Movement
             _markers.Clear();
         }
 
-        private static GameNPC CreateMarker(int x, int y, int z, Region region, EMarkerModel model)
+        private static GameNPC CreateMarker(int x, int y, int z, Region region, EMarkerModel model, byte size)
         {
             GameNPC npc = new()
             {
                 X = x,
                 Y = y,
                 Z = z,
+                Name = string.Empty,
                 CurrentRegion = region,
                 Level = 1,
                 Model = (ushort) model,
-                Size = 35
+                Size = size
             };
 
             npc.Flags |= GameNPC.eFlags.PEACE | GameNPC.eFlags.FLYING;

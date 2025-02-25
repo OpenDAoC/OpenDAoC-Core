@@ -21,7 +21,7 @@ namespace DOL.GS.Commands
         "/path hide - hides all path markers but does not delete the path",
         "/path delete - deletes the temporary path",
         "/path type - changes the paths type",
-        "/path visualize - enables or disables path visualization for the selected NPC")]
+        "/path visualize - toggles path visualization for the selected NPC")]
     public class PathCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         protected string TEMP_PATH_FIRST = "TEMP_PATH_FIRST";
