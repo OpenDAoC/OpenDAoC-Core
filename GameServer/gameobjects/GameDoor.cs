@@ -12,6 +12,8 @@ namespace DOL.GS
         private const int STAYS_OPEN_DURATION = 5000;
         private const int REPAIR_INTERVAL = 30 * 1000;
 
+        public override bool CanBeOpenedViaInteraction => !Locked;
+
         private bool _openDead = false;
         private ECSGameTimer _closeDoorAction;
         private ECSGameTimer _repairTimer;
@@ -43,16 +45,6 @@ namespace DOL.GS
 
             _closeDoorAction?.Stop();
             _closeDoorAction = null;
-        }
-
-        public override void NPCManipulateDoorRequest(GameNPC npc, bool open)
-        {
-            npc.TurnTo(X, Y);
-
-            if (open && State is not eDoorState.Open)
-                Open();
-            else if (!open && State is not eDoorState.Closed)
-                Close();
         }
 
         public override int Health

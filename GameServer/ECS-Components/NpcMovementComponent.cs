@@ -15,7 +15,6 @@ namespace DOL.GS
         public const short DEFAULT_WALK_SPEED = 70;
         public const int MIN_ALLOWED_FOLLOW_DISTANCE = 100;
         public const int MIN_ALLOWED_PET_FOLLOW_DISTANCE = 90;
-        private const double FOLLOW_SPEED_SCALAR = 2.5;
 
         private MovementState _movementState;
         private long _nextFollowTick;
@@ -422,16 +421,29 @@ namespace DOL.GS
                 return;
             }
 
-            Vector3? nextNode = _pathCalculator.CalculateNextTarget(destinationForPathCalculator, out _);
+            Vector3? nextNode = _pathCalculator.CalculateNextTarget(destinationForPathCalculator, out ENoPathReason noPathReason);
 
-            if (!nextNode.HasValue)
+            // Fall back to normal walking method if no path is found.
+            if (noPathReason is ENoPathReason.NoPath or ENoPathReason.End)
             {
                 UnsetFlag(MovementState.PATHING);
                 WalkToInternal(destination, speed);
                 return;
             }
 
-            // Do the actual pathing bit: Walk towards the next pathing node
+            // Pause movement and turn toward the destination the path contains a closed door.
+            if (noPathReason is ENoPathReason.ClosedDoor)
+            {
+                TurnTo(destination.X, destination.Y);
+                UnsetFlag(MovementState.PATHING);
+
+                if (IsMoving)
+                    UpdateMovement(null, 0.0, 0);
+
+                return;
+            }
+
+            // Walk towards the next pathing node.
             _movementRequest = new(destination, speed, PathToInternal);
             SetFlag(MovementState.PATHING);
             WalkToInternal(new Point3D(nextNode.Value.X, nextNode.Value.Y, nextNode.Value.Z), speed);

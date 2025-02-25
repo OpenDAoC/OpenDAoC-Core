@@ -20,6 +20,7 @@ namespace DOL.GS
         protected readonly Lock _stateLock = new();
 
         public DbDoor DbDoor { get; set; }
+        public virtual bool CanBeOpenedViaInteraction => false;
 
         public virtual int DoorId
         {
@@ -112,7 +113,6 @@ namespace DOL.GS
         }
 
         public virtual void Close(GameLiving closer = null) { }
-        public virtual void NPCManipulateDoorRequest(GameNPC npc, bool open) { }
         public virtual void Open(GameLiving opener = null) { }
 
         public override void LoadFromDatabase(DataObject obj)

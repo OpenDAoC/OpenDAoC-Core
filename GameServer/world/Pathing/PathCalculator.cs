@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Reflection;
@@ -13,6 +12,7 @@ namespace DOL.GS
         public const int MIN_PATHING_DISTANCE = 80;
         public const int MIN_TARGET_DIFF_REPLOT_DISTANCE = 80;
         public const int NODE_REACHED_DISTANCE = 24;
+        public const int DOOR_SEARCH_DISTANCE = 512;
         private const int IDLE = 0;
         private const int REPLOTTING = 1;
 
@@ -21,6 +21,7 @@ namespace DOL.GS
         public bool DidFindPath { get; private set; }
 
         private Queue<WrappedPathPoint> _pathNodes = new();
+        private Dictionary<WrappedPathPoint, GameDoorBase> _doorsOnPath = new();
         private Vector3 _lastTarget = Vector3.Zero;
         private int _isReplottingPath = IDLE;
 
@@ -43,6 +44,7 @@ namespace DOL.GS
         public void Clear()
         {
             _pathNodes.Clear();
+            _doorsOnPath.Clear();
             _lastTarget = Vector3.Zero;
             DidFindPath = false;
             ForceReplot = true;
@@ -85,6 +87,7 @@ namespace DOL.GS
                 Vector3 currentPos = new(Owner.X, Owner.Y, Owner.Z);
                 WrappedPathingResult pathingResult = PathingMgr.Instance.GetPathStraightAsync(currentZone, currentPos, target);
                 _pathNodes.Clear();
+                _doorsOnPath.Clear();
 
                 if (pathingResult.Error is not EPathingError.NoPathFound && pathingResult.Error is not EPathingError.NavmeshUnavailable && pathingResult.Points != null)
                 {
@@ -96,13 +99,23 @@ namespace DOL.GS
 
                     for (int i = 0; i < to; i++)
                     {
-                        WrappedPathPoint pt = pathingResult.Points[i];
+                        WrappedPathPoint pathPoint = pathingResult.Points[i];
+                        bool isDoor = (pathPoint.Flags & EDtPolyFlags.DOOR) != 0;
 
-                        // Skip the first node.
-                        if (i == 0)
+                        // Skip the first node if it isn't a door.
+                        if (i == 0 && !isDoor)
                             continue;
 
-                        _pathNodes.Enqueue(pt);
+                        _pathNodes.Enqueue(pathPoint);
+
+                        // Keep track of doors on the path.
+                        if (!isDoor)
+                            continue;
+
+                        Point3D point = new(pathPoint.Position.X, pathPoint.Position.Y, pathPoint.Position.Z);
+
+                        foreach (GameDoorBase door in Owner.CurrentRegion.GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE))
+                            _doorsOnPath[pathPoint] = door;
                     }
                 }
                 else
@@ -130,7 +143,7 @@ namespace DOL.GS
             if (!ShouldPath(target))
             {
                 DidFindPath = true; // Not needed.
-                noPathReason = ENoPathReason.NoProblem;
+                noPathReason = ENoPathReason.NoPath;
                 return null;
             }
 
@@ -138,19 +151,35 @@ namespace DOL.GS
             if (ForceReplot || !_lastTarget.IsInRange(target, MIN_TARGET_DIFF_REPLOT_DISTANCE))
                 ReplotPath(target);
 
-            // Find the next node in the path to the target, but skip points that are too close.
-            while (_pathNodes.Count > 0 && Owner.IsWithinRadius(_pathNodes.Peek().Position, NODE_REACHED_DISTANCE))
+            // Stop right there if the path contains a closed door that we're not allowed to open.
+            foreach (GameDoorBase door in _doorsOnPath.Values)
+            {
+                if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
+                {
+                    noPathReason = ENoPathReason.ClosedDoor;
+                    return null;
+                }
+            }
+
+            // Dequeue the next node if we've reached it, and any subsequent node that might be close to it.
+            while (_pathNodes.TryPeek(out WrappedPathPoint nextNode) && Owner.IsWithinRadius(nextNode.Position, NODE_REACHED_DISTANCE))
+            {
+                // Open doors that can be opened (which should be every door if we're here).
+                if (_doorsOnPath.Remove(nextNode, out GameDoorBase door) && door.CanBeOpenedViaInteraction)
+                    door.Open();
+
                 _pathNodes.Dequeue();
+            }
 
             if (_pathNodes.Count == 0)
             {
-                if (!DidFindPath)
+                if (DidFindPath)
                 {
-                    noPathReason = ENoPathReason.NoPath;
+                    noPathReason = ENoPathReason.End;
                     return null;
                 }
 
-                noPathReason = ENoPathReason.End;
+                noPathReason = ENoPathReason.NoPath;
                 return null;
             }
 
