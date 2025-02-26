@@ -5,7 +5,7 @@
 #include <iostream>
 #include <random>
 
-#include "dol_detour.hpp"
+#include "DetourInterface.hpp"
 
 // RAII helper
 struct RAII
