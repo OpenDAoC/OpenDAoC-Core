@@ -156,7 +156,7 @@ namespace DOL.GS
                 }
                 else if (Environment.OSVersion.Platform == PlatformID.Unix)
                 {
-                    if (dlopen("lib/Detour.so", 2 /* RTLD_NOW */) != IntPtr.Zero)
+                    if (dlopen("lib/libDetour.so", 2 /* RTLD_NOW */) != IntPtr.Zero)
                     {
                         if (log.IsDebugEnabled)
                             log.Debug("libDetour.so loaded from dlopen \"lib/libDetour.so\"");
