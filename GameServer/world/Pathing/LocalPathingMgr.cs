@@ -38,27 +38,27 @@ namespace DOL.GS
         private static readonly Lock _navmeshPtrsLock = new();
         private static ThreadLocal<Dictionary<ushort, NavMeshQuery>> _navmeshQueries = new(() => []);
 
-        [LibraryImport("dol_detour", StringMarshalling = StringMarshalling.Custom, StringMarshallingCustomType = typeof(System.Runtime.InteropServices.Marshalling.AnsiStringMarshaller))]
+        [LibraryImport("Detour", StringMarshalling = StringMarshalling.Custom, StringMarshallingCustomType = typeof(System.Runtime.InteropServices.Marshalling.AnsiStringMarshaller))]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool LoadNavMesh(string file, ref IntPtr meshPtr);
 
-        [LibraryImport("dol_detour")]
+        [LibraryImport("Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool FreeNavMesh(IntPtr meshPtr);
 
-        [LibraryImport("dol_detour")]
+        [LibraryImport("Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool CreateNavMeshQuery(IntPtr meshPtr, ref IntPtr queryPtr);
 
-        [LibraryImport("dol_detour")]
+        [LibraryImport("Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool FreeNavMeshQuery(IntPtr queryPtr);
 
-        [LibraryImport("dol_detour")]
+        [LibraryImport("Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus PathStraight(
             IntPtr queryPtr,
@@ -71,7 +71,7 @@ namespace DOL.GS
             [Out] float[] pointBuffer,
             [Out] EDtPolyFlags[] pointFlags);
 
-        [LibraryImport("dol_detour")]
+        [LibraryImport("Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus FindRandomPointAroundCircle(
             IntPtr queryPtr,
@@ -81,7 +81,7 @@ namespace DOL.GS
             [In] EDtPolyFlags[] queryFilter,
             [Out] float[] outputVector);
 
-        [LibraryImport("dol_detour")]
+        [LibraryImport("Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus FindClosestPoint(
             IntPtr queryPtr,
@@ -90,7 +90,7 @@ namespace DOL.GS
             [In] EDtPolyFlags[] queryFilter,
             [Out] float[] outputVector);
 
-        [LibraryImport("dol_detour")]
+        [LibraryImport("Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus GetPolyAt(
             IntPtr queryPtr,
@@ -100,11 +100,11 @@ namespace DOL.GS
             out uint outputPolyRef,
             [Out] float[] outputVector);
 
-        [LibraryImport("dol_detour")]
+        [LibraryImport("Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus SetPolyFlags(IntPtr meshPtr, uint polyRef, EDtPolyFlags flags);
 
-        [LibraryImport("dol_detour")]
+        [LibraryImport("Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus QueryPolygons(IntPtr queryPtr,
             [In] float[] center,
@@ -148,18 +148,18 @@ namespace DOL.GS
             {
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
-                    if (LoadLibrary("lib\\dol_detour.dll") != IntPtr.Zero)
+                    if (LoadLibrary("lib\\Detour.dll") != IntPtr.Zero)
                     {
                         if (log.IsDebugEnabled)
-                            log.Debug("dol_detour.dll loaded from LoadLibrary \"lib\\dol_detour.dll\"");
+                            log.Debug("Detour.dll loaded from LoadLibrary \"lib\\Detour.dll\"");
                     }
                 }
                 else if (Environment.OSVersion.Platform == PlatformID.Unix)
                 {
-                    if (dlopen("lib/libdol_detour.so", 2 /* RTLD_NOW */) != IntPtr.Zero)
+                    if (dlopen("lib/Detour.so", 2 /* RTLD_NOW */) != IntPtr.Zero)
                     {
                         if (log.IsDebugEnabled)
-                            log.Debug("libdol_detour.so loaded from dlopen \"lib/libdol_detour.so\"");
+                            log.Debug("libDetour.so loaded from dlopen \"lib/libDetour.so\"");
                     }
                 }
             }
@@ -179,7 +179,7 @@ namespace DOL.GS
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error("PathingMgr did not find the dol_detour.dll", e);
+                    log.Error("PathingMgr did not find the Detour.dll", e);
 
                 return false;
             }

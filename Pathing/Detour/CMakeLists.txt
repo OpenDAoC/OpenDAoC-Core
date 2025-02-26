@@ -1,5 +1,5 @@
 file(GLOB SOURCES Source/*.cpp)
-add_library(Detour ${SOURCES})
+add_library(Detour SHARED ${SOURCES})
 
 add_library(RecastNavigation::Detour ALIAS Detour)
 set_target_properties(Detour PROPERTIES DEBUG_POSTFIX -d)
