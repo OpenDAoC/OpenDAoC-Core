@@ -32,7 +32,7 @@ About Linux, you can use your package manager to install theses tools: cmake, g+
   .. Click on "Finish"
 5. Click on "Generate" and "Open Project"
 6. In Visual Studio, select "Release" instead of "Debug" and build the solution
-7. Copy Detour.dll from `Release` in your build folder to `lib` in your OpenDAoC-Core folder
+7. Copy Detour.dll from `Release` in your build folder to your server's `/lib` folder
 
 ## Build (Linux)
 - Debian / Ubuntu: `sudo apt-get install build-essential cmake`
@@ -41,4 +41,4 @@ About Linux, you can use your package manager to install theses tools: cmake, g+
 1. Open a terminal in this path
 2. `mkdir build && cd build`
 3. `cmake -DCMAKE_BUILD_TYPE=Release .. && make`
-4. Copy `libDetour.so` to `lib` in your OpenDAoC-Core folder
+4. Copy `libDetour.so` to your server's `/lib` folder
