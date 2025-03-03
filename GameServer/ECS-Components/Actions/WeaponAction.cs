@@ -65,10 +65,8 @@ namespace DOL.GS
             // 1.88
             //- Monsters, pets and Non-Player Characters (NPCs) will now halt their pursuit when the character being chased stealths.
 
-            _isDualWieldAttack = IsDualWieldAttack(_attackWeapon, _leftWeapon, _owner);
-
-            if (_isDualWieldAttack)
-                _leftHandSwingCount = _owner.attackComponent.CalculateLeftHandSwingCount(_attackWeapon, _leftWeapon);
+            _isDualWieldAttack = IsDualWieldAttack(_attackWeapon, _leftWeapon, _owner); // Should be false for H2H.
+            _leftHandSwingCount = _owner.attackComponent.CalculateLeftHandSwingCount(_attackWeapon, _leftWeapon);
 
             if (!MakeMainHandAttack(_attackWeapon, _leftWeapon, _combatStyle, _effectiveness, out AttackData mainHandAttackData))
                 return;
