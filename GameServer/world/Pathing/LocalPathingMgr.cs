@@ -11,9 +11,6 @@ namespace DOL.GS
 {
     public partial class LocalPathingMgr : IPathingMgr
     {
-        public const float CONVERSION_FACTOR = 1.0f / 32f;
-        private const float INV_FACTOR = 1f / CONVERSION_FACTOR;
-
         [Flags]
         private enum EDtStatus : uint
         {
@@ -30,95 +27,6 @@ namespace DOL.GS
             DT_STRAIGHTPATH_AREA_CROSSINGS = 0x01, // Add a vertex at every polygon edge crossing where area changes.
             DT_STRAIGHTPATH_ALL_CROSSINGS = 0x02,  // Add a vertex at every polygon edge crossing.
         }
-
-        private const int MAX_POLY = 256; // Max vector3 when looking up a path (for straight paths too).
-
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private static Dictionary<ushort, IntPtr> _navmeshPtrs = [];
-        private static readonly Lock _navmeshPtrsLock = new();
-        private static ThreadLocal<Dictionary<ushort, NavMeshQuery>> _navmeshQueries = new(() => []);
-
-        [LibraryImport("Detour", StringMarshalling = StringMarshalling.Custom, StringMarshallingCustomType = typeof(System.Runtime.InteropServices.Marshalling.AnsiStringMarshaller))]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool LoadNavMesh(string file, ref IntPtr meshPtr);
-
-        [LibraryImport("Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool FreeNavMesh(IntPtr meshPtr);
-
-        [LibraryImport("Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool CreateNavMeshQuery(IntPtr meshPtr, ref IntPtr queryPtr);
-
-        [LibraryImport("Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static partial bool FreeNavMeshQuery(IntPtr queryPtr);
-
-        [LibraryImport("Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus PathStraight(
-            IntPtr queryPtr,
-            [In] float[] start,
-            [In] float[] end,
-            [In] float[] polyPickExt,
-            [In] EDtPolyFlags[] queryFilter,
-            EDtStraightPathOptions pathOptions,
-            out int pointCount,
-            [Out] float[] pointBuffer,
-            [Out] EDtPolyFlags[] pointFlags);
-
-        [LibraryImport("Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus FindRandomPointAroundCircle(
-            IntPtr queryPtr,
-            [In] float[] center,
-            float radius,
-            [In] float[] polyPickExt,
-            [In] EDtPolyFlags[] queryFilter,
-            [Out] float[] outputVector);
-
-        [LibraryImport("Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus FindClosestPoint(
-            IntPtr queryPtr,
-            [In] float[] center,
-            [In] float[] polyPickExt,
-            [In] EDtPolyFlags[] queryFilter,
-            [Out] float[] outputVector);
-
-        [LibraryImport("Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus GetPolyAt(
-            IntPtr queryPtr,
-            [In] float[] center,
-            [In] float[] polyPickExt,
-            [In] EDtPolyFlags[] queryFilter,
-            out uint outputPolyRef,
-            [Out] float[] outputVector);
-
-        [LibraryImport("Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus SetPolyFlags(IntPtr meshPtr, uint polyRef, EDtPolyFlags flags);
-
-        [LibraryImport("Detour")]
-        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
-        private static partial EDtStatus QueryPolygons(IntPtr queryPtr,
-            [In] float[] center,
-            [In] float[] polyPickExt,
-            [In] EDtPolyFlags[] queryFilter,
-            [Out] uint[] outputPolyRefs,
-            out int outputPolyCount,
-            int maxPolyCount);
-
-        [LibraryImport("kernel32.dll", EntryPoint = "LoadLibraryW", StringMarshalling = StringMarshalling.Utf16)]
-        private static partial IntPtr LoadLibrary(string dllName);
-
-        [LibraryImport("libdl.so", StringMarshalling = StringMarshalling.Utf8)]
-        private static partial IntPtr dlopen(string file, int mode);
 
         private class NavMeshQuery : IDisposable
         {
@@ -142,35 +50,94 @@ namespace DOL.GS
             }
         }
 
+        public const float CONVERSION_FACTOR = 1.0f / 32f;
+        private const int MAX_POLY = 256; // Max vector3 when looking up a path (for straight paths too).
+        private const float INV_FACTOR = 1f / CONVERSION_FACTOR;
+
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static Dictionary<ushort, IntPtr> _navmeshPtrs = [];
+        private static readonly Lock _navmeshPtrsLock = new();
+        private static ThreadLocal<Dictionary<ushort, NavMeshQuery>> _navmeshQueries = new(() => []);
+
+        [LibraryImport("lib/Detour", StringMarshalling = StringMarshalling.Custom, StringMarshallingCustomType = typeof(System.Runtime.InteropServices.Marshalling.AnsiStringMarshaller))]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool LoadNavMesh(string file, ref IntPtr meshPtr);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool FreeNavMesh(IntPtr meshPtr);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool CreateNavMeshQuery(IntPtr meshPtr, ref IntPtr queryPtr);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool FreeNavMeshQuery(IntPtr queryPtr);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus PathStraight(
+            IntPtr queryPtr,
+            [In] float[] start,
+            [In] float[] end,
+            [In] float[] polyPickExt,
+            [In] EDtPolyFlags[] queryFilter,
+            EDtStraightPathOptions pathOptions,
+            out int pointCount,
+            [Out] float[] pointBuffer,
+            [Out] EDtPolyFlags[] pointFlags);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus FindRandomPointAroundCircle(
+            IntPtr queryPtr,
+            [In] float[] center,
+            float radius,
+            [In] float[] polyPickExt,
+            [In] EDtPolyFlags[] queryFilter,
+            [Out] float[] outputVector);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus FindClosestPoint(
+            IntPtr queryPtr,
+            [In] float[] center,
+            [In] float[] polyPickExt,
+            [In] EDtPolyFlags[] queryFilter,
+            [Out] float[] outputVector);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus GetPolyAt(
+            IntPtr queryPtr,
+            [In] float[] center,
+            [In] float[] polyPickExt,
+            [In] EDtPolyFlags[] queryFilter,
+            out uint outputPolyRef,
+            [Out] float[] outputVector);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus SetPolyFlags(IntPtr meshPtr, uint polyRef, EDtPolyFlags flags);
+
+        [LibraryImport("lib/Detour")]
+        [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+        private static partial EDtStatus QueryPolygons(IntPtr queryPtr,
+            [In] float[] center,
+            [In] float[] polyPickExt,
+            [In] EDtPolyFlags[] queryFilter,
+            [Out] uint[] outputPolyRefs,
+            out int outputPolyCount,
+            int maxPolyCount);
+
+
         public bool Init()
         {
-            try
-            {
-                if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-                {
-                    if (LoadLibrary("lib\\Detour.dll") != IntPtr.Zero)
-                    {
-                        if (log.IsDebugEnabled)
-                            log.Debug("Detour.dll loaded from LoadLibrary \"lib\\Detour.dll\"");
-                    }
-                }
-                else if (Environment.OSVersion.Platform == PlatformID.Unix)
-                {
-                    if (dlopen("lib/libDetour.so", 2 /* RTLD_NOW */) != IntPtr.Zero)
-                    {
-                        if (log.IsDebugEnabled)
-                            log.Debug("libDetour.so loaded from dlopen \"lib/libDetour.so\"");
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                if (log.IsErrorEnabled)
-                    log.Error(e);
-
-                return false;
-            }
-
             try
             {
                 nint dummy = IntPtr.Zero;
@@ -179,7 +146,7 @@ namespace DOL.GS
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error("PathingMgr did not find the Detour.dll", e);
+                    log.Error("PathingMgr did not find the Detour library", e);
 
                 return false;
             }
