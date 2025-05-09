@@ -60,51 +60,32 @@ namespace DOL.GS
 
                 eGameObjectType objectType = node.Value.GameObjectType;
 
-                // Acquire locks on both subzones. We want the removal and addition to happen at the same time from a reader's point of view.
-                using SimpleDisposableLock currentSubZoneLock = currentSubZone?[objectType].Lock;
-                using SimpleDisposableLock destinationSubZoneLock = destinationSubZone?[objectType].Lock;
-
-                if (currentSubZoneLock != null)
+                if (currentSubZone != null)
                 {
-                    if (destinationSubZoneLock != null)
+                    if (destinationSubZone != null)
                     {
-                        currentSubZoneLock.EnterWriteLock();
+                        destinationSubZone.AddObjectToThisAndRemoveFromOther(node, currentSubZone);
 
-                        // Spin until we can acquire a lock on the other subzone.
-                        while (!destinationSubZoneLock.TryEnterWriteLock())
+                        if (changingZone)
                         {
-                            // Relinquish then reacquire our current lock to prevent dead-locks.
-                            currentSubZoneLock.Dispose();
-                            Thread.Sleep(0);
-                            currentSubZoneLock.EnterWriteLock();
+                            currentZone.OnObjectRemovedFromZone();
+                            destinationZone.OnObjectAddedToZone();
                         }
-
-                        RemoveObjectFromCurrentSubZone();
-                        AddObjectToDestinationSubZone();
                     }
                     else
-                        RemoveObjectFromCurrentSubZone();
+                    {
+                        currentSubZone.RemoveObject(node);
+
+                        if (changingZone)
+                            currentZone.OnObjectRemovedFromZone();
+                    }
                 }
                 else
-                    AddObjectToDestinationSubZone();
-
-                void AddObjectToDestinationSubZone()
                 {
-                    destinationSubZone[objectType].AddLast(node);
-                    subZoneObject.CurrentSubZone = destinationSubZone;
+                    destinationSubZone.AddObject(node);
 
                     if (changingZone)
                         destinationZone.OnObjectAddedToZone();
-                }
-
-                void RemoveObjectFromCurrentSubZone()
-                {
-                    currentSubZone[objectType].Remove(node);
-
-                    if (changingZone)
-                        currentZone.OnObjectRemovedFromZone();
-
-                    subZoneObject.CurrentSubZone = null;
                 }
             }
             catch (Exception e)

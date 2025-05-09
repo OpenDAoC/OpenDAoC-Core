@@ -307,19 +307,9 @@ namespace DOL.GS
 
             SubZoneObject subZoneObject = gameObject.SubZoneObject;
 
-            // It's possible for the object to already have a `subZoneObject` at this point (a NPC respawning for example).
             if (subZoneObject != null)
             {
                 if (subZoneObject.CurrentSubZone != subZone && subZoneObject.StartSubZoneChange)
-                    ObjectChangingSubZone.Create(subZoneObject, this, subZone);
-            }
-            else
-            {
-                LinkedListNode<GameObject> node = new(gameObject);
-                subZoneObject = new(node, null);
-                gameObject.SubZoneObject = subZoneObject;
-
-                if (subZoneObject.StartSubZoneChange)
                     ObjectChangingSubZone.Create(subZoneObject, this, subZone);
             }
 
@@ -380,7 +370,7 @@ namespace DOL.GS
                     subZoneIndex = GetSubZoneOffset(line, column);
                     subZone = _subZones[subZoneIndex];
 
-                    if (!subZone[objectType].Any)
+                    if (subZone[objectType].Count == 0)
                         continue;
 
                     if (subZoneIndex != referenceSubZoneIndex)

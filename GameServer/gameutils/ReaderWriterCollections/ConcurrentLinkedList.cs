@@ -1,109 +1,191 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace DOL.GS
 {
-    public class ConcurrentLinkedList<T> : IEnumerable<LinkedListNode<T>> where T : class
+    public static class ConcurrentLinkedListFactory
     {
-        private LinkedList<T> _list = new();
-        private ReaderWriterLockSlim _lock = new();
-
-        public SimpleDisposableLock Lock { get; }
-        public int Count => _list.Count;
-        public bool Any => _list.Count > 0;
-
-        public ConcurrentLinkedList()
+        public static IConcurrentLinkedList<T> Create<T>() where T : class
         {
-            Lock = new(_lock);
+            return new ConcurrentLinkedList<T>();
         }
 
-        public void AddLast(LinkedListNode<T> node)
+        public static IConcurrentLinkedList<T> Empty<T>() where T : class
         {
-            if (_lock.IsWriteLockHeld)
+            return EmptyConcurrentLinkedList<T>.Instance;
+        }
+
+        private class ConcurrentLinkedList<T> : IConcurrentLinkedList<T> where T : class
+        {
+            private LinkedList<T> _list = new();
+            private ReaderWriterLockSlim _lock = new();
+
+            public bool IsStaticEmpty => false;
+            public SimpleDisposableLock Lock { get; }
+            public int Count => _list.Count;
+
+            public ConcurrentLinkedList()
             {
-                _list.AddLast(node);
-                return;
+                Lock = new(_lock);
             }
 
-            _lock.EnterWriteLock();
+            public void AddLast(LinkedListNode<T> node)
+            {
+                if (_lock.IsWriteLockHeld)
+                {
+                    _list.AddLast(node);
+                    return;
+                }
 
-            try
-            {
-                _list.AddLast(node);
+                _lock.EnterWriteLock();
+
+                try
+                {
+                    _list.AddLast(node);
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
             }
-            finally
+
+            public void Remove(LinkedListNode<T> node)
             {
-                _lock.ExitWriteLock();
+                if (_lock.IsWriteLockHeld)
+                {
+                    _list.Remove(node);
+                    return;
+                }
+
+                _lock.EnterWriteLock();
+
+                try
+                {
+                    _list.Remove(node);
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
+            }
+
+            public Enumerator GetEnumerator()
+            {
+                return new Enumerator(_list, Lock);
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            IEnumerator<LinkedListNode<T>> IEnumerable<LinkedListNode<T>>.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            public sealed class Enumerator : IEnumerator<LinkedListNode<T>>
+            {
+                private LinkedList<T> _list;
+                private SimpleDisposableLock _lock;
+
+                public LinkedListNode<T> Current { get; private set; }
+                object IEnumerator.Current => Current;
+
+                public Enumerator(LinkedList<T> list, SimpleDisposableLock @lock)
+                {
+                    _list = list;
+                    _lock = @lock;
+                    _lock.EnterReadLock();
+                }
+
+                public bool MoveNext()
+                {
+                    Current = Current == null ? _list.First : Current.Next;
+                    return Current != null;
+                }
+
+                public void Reset()
+                {
+                    Current = null;
+                    _lock.Dispose();
+                }
+
+                public void Dispose()
+                {
+                    _lock.Dispose();
+                }
             }
         }
 
-        public void Remove(LinkedListNode<T> node)
+        private class EmptyConcurrentLinkedList<T> : IConcurrentLinkedList<T> where T : class
         {
-            if (_lock.IsWriteLockHeld)
+            private Enumerator _enumerator = new();
+
+            public bool IsStaticEmpty => true;
+            public SimpleDisposableLock Lock => null;
+            public int Count => 0;
+
+            public static EmptyConcurrentLinkedList<T> Instance => Holder.Instance;
+
+            public void AddLast(LinkedListNode<T> node)
             {
-                _list.Remove(node);
-                return;
+                throw new InvalidOperationException("Cannot add to a static empty list.");
             }
 
-            _lock.EnterWriteLock();
-
-            try
+            public void Remove(LinkedListNode<T> node)
             {
-                _list.Remove(node);
+                throw new InvalidOperationException("Cannot remove from a static empty list.");
             }
-            finally
+
+            private EmptyConcurrentLinkedList() { }
+
+            public Enumerator GetEnumerator()
             {
-                _lock.ExitWriteLock();
+                return _enumerator;
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            IEnumerator<LinkedListNode<T>> IEnumerable<LinkedListNode<T>>.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            public sealed class Enumerator : IEnumerator<LinkedListNode<T>>
+            {
+                public LinkedListNode<T> Current { get; private set; }
+                object IEnumerator.Current => Current;
+
+                public Enumerator() { }
+
+                public bool MoveNext()
+                {
+                    return false;
+                }
+
+                public void Reset() { }
+                public void Dispose() { }
+            }
+
+            private static class Holder
+            {
+                public static readonly EmptyConcurrentLinkedList<T> Instance = new();
             }
         }
+    }
 
-        public Enumerator GetEnumerator()
-        {
-            return new Enumerator(_list, Lock);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        IEnumerator<LinkedListNode<T>> IEnumerable<LinkedListNode<T>>.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public sealed class Enumerator : IEnumerator<LinkedListNode<T>>
-        {
-            private LinkedList<T> _list;
-            private SimpleDisposableLock _lock;
-
-            public LinkedListNode<T> Current { get; private set; }
-            object IEnumerator.Current => Current;
-
-            public Enumerator(LinkedList<T> list, SimpleDisposableLock @lock)
-            {
-                _list = list;
-                _lock = @lock;
-                _lock.EnterReadLock();
-            }
-
-            public bool MoveNext()
-            {
-                Current = Current == null ? _list.First : Current.Next;
-                return Current != null;
-            }
-
-            public void Reset()
-            {
-                Current = null;
-                _lock.Dispose();
-            }
-
-            public void Dispose()
-            {
-                _lock.Dispose();
-            }
-        }
+    public interface IConcurrentLinkedList<T> : IEnumerable<LinkedListNode<T>> where T : class
+    {
+        bool IsStaticEmpty { get; }
+        SimpleDisposableLock Lock { get; }
+        int Count { get; }
+        void AddLast(LinkedListNode<T> node);
+        void Remove(LinkedListNode<T> node);
     }
 }

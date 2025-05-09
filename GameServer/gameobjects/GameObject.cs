@@ -88,7 +88,7 @@ namespace DOL.GS
 			set => CurrentRegion = WorldMgr.GetRegion(value);
 		}
 		public Zone CurrentZone => CurrentRegion?.GetZone(X, Y);
-		public SubZoneObject SubZoneObject { get; set; }
+		public SubZoneObject SubZoneObject { get; set; } // Used for subzone management.
 		public virtual ushort Heading
 		{
 			get => (ushort) (_rawHeading & 0xFFF);
@@ -1246,6 +1246,7 @@ namespace DOL.GS
 			m_name = string.Empty;
 			m_ObjectState = eObjectState.Inactive;
 			m_boat_ownerid = string.Empty;
+			SubZoneObject = new(this);
 			ClearObjectsInRadiusCache();
 		}
 		public static bool PlayerHasItem(GamePlayer player, string str)
