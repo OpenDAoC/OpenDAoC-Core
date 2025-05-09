@@ -1501,13 +1501,12 @@ namespace DOL.GS.ServerRules
 
                 NotifyNearbyPlayers(killedNpc, money, playersInRadius);
                 money.AddToWorld();
-
                 // Attempt auto pick up.
                 foreach (ItemOwnerTotalDamagePair itemOwner in itemOwners)
                 {
                     money.AddOwner(itemOwner.Owner);
 
-                    if (itemOwner.Owner.TryAutoPickUpMoney(money))
+                    if (money.TryAutoPickUp(itemOwner.Owner))
                         return;
                 }
             }
@@ -1553,7 +1552,7 @@ namespace DOL.GS.ServerRules
                 {
                     item.AddOwner(itemOwner.Owner);
 
-                    if (itemOwner.Owner.TryAutoPickUpItem(item))
+                    if (item.TryAutoPickUp(itemOwner.Owner))
                         return;
                 }
             }

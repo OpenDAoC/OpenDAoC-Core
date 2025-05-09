@@ -637,7 +637,7 @@ namespace DOL.AI.Brain
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
             }
         }
-        public static List<t> GetRandomElements<t>(IEnumerable<t> list, int elementsCount)//pick X elements from list
+        public static List<T> GetRandomElements<T>(IEnumerable<T> list, int elementsCount)//pick X elements from list
         {
             return list.OrderBy(x => Guid.NewGuid()).Take(elementsCount).ToList();
         }

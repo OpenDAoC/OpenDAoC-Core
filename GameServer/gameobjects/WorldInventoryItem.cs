@@ -1,229 +1,156 @@
 using System;
+using System.Linq;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-	/// <summary>
-	/// This class represents an inventory item when it is
-	/// laying on the floor in the world! It is just a wraper
-	/// class around InventoryItem
-	/// </summary>
-	public class WorldInventoryItem : GameStaticItemTimed
-	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+    public class WorldInventoryItem : GameStaticItemTimed
+    {
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		/// <summary>
-		/// The InventoryItem that is contained within
-		/// </summary>
-		private DbInventoryItem m_item;
+        private ECSGameTimer _pickupTimer;
+        public int GetPickupTime => _pickupTimer == null ? 0 : _pickupTimer.TimeUntilElapsed;
+        public DbInventoryItem Item { get; private set; }
+        public override LanguageDataObject.eTranslationIdentifier TranslationIdentifier => LanguageDataObject.eTranslationIdentifier.eItem;
 
-		/// <summary>
-		/// Has this item been removed from the world?
-		/// </summary>
-		private bool m_isRemoved = false;
+        public WorldInventoryItem() : base() { }
 
-        public override LanguageDataObject.eTranslationIdentifier TranslationIdentifier
+        public WorldInventoryItem(DbInventoryItem item) : this()
         {
-            get { return LanguageDataObject.eTranslationIdentifier.eItem; }
+            Item = item;
+            Item.SlotPosition = 0;
+            Item.OwnerID = null;
+            Item.AllowAdd = true;
+            Level = (byte) item.Level;
+            Model = (ushort) item.Model;
+            Emblem = item.Emblem;
+            Name = item.Name;
         }
 
+        public static WorldInventoryItem CreateFromTemplate(DbInventoryItem item)
+        {
+            return item.Template is DbItemUnique ?  null : CreateFromTemplate(item.Id_nb);
+        }
 
-		/// <summary>
-		/// Constructs an empty GameInventoryItem
-		/// that will disappear from the world after a certain amount of time
-		/// </summary>
-		public WorldInventoryItem() : base(ServerProperties.Properties.WORLD_ITEM_DECAY_TIME)
-		{
-		}
+        public static WorldInventoryItem CreateFromTemplate(string templateID)
+        {
+            DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(templateID);
 
-		/// <summary>
-		/// Constructs a GameInventoryItem based on an
-		/// InventoryItem. Will disappear after WORLD_ITEM_DECAY_TIME if
-		/// added to the world
-		/// </summary>
-		/// <param name="item">the InventoryItem to put into this class</param>
-		public WorldInventoryItem(DbInventoryItem item) : this()
-		{
-			m_item = item;
-			m_item.SlotPosition = 0;
-			m_item.OwnerID = null;
-			m_item.AllowAdd = true;
-			this.Level = (byte)item.Level;
-			this.Model = (ushort)item.Model;
-			this.Emblem = item.Emblem;
-			this.Name = item.Name;
-		}
+            if (template == null)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Template not found (ID: {templateID}){Environment.NewLine}{Environment.StackTrace}");
 
-		/// <summary>
-		/// Creates a new GameInventoryItem based on an
-		/// InventoryTemplateID. Will disappear after 3 minutes if
-		/// added to the world
-		/// </summary>
-		/// <param name="item">The InventoryItem to load and create an item from</param>
-		/// <returns>Found item or null</returns>
-		public static WorldInventoryItem CreateFromTemplate(DbInventoryItem item)
-		{
-			if (item.Template is DbItemUnique)
-				return null;
-			
-			return CreateFromTemplate(item.Id_nb);
-		}
+                return null;
+            }
 
-		/// <summary>
-		/// Creates a new GameInventoryItem based on an
-		/// InventoryTemplateID. Will disappear after 3 minutes if
-		/// added to the world
-		/// </summary>
-		/// <param name="templateID">the templateID to load and create an item</param>
-		/// <returns>Found item or null</returns>
-		public static WorldInventoryItem CreateFromTemplate(string templateID)
-		{
-			DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(templateID);
-			if (template == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("Item Creation: Template not found!\n"+Environment.StackTrace);
-				return null;
-			}
+            return CreateFromTemplate(template);
+        }
 
-			return CreateFromTemplate(template);
-		}
+        public static WorldInventoryItem CreateUniqueFromTemplate(string templateID)
+        {
+            DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(templateID);
 
-		/// <summary>
-		/// Creates a new GII handling an UniqueItem in the InventoryItem attached
-		/// </summary>
-		/// <param name="templateID"></param>
-		/// <returns></returns>
-		public static WorldInventoryItem CreateUniqueFromTemplate(string templateID)
-		{
-			DbItemTemplate template = GameServer.Database.FindObjectByKey<DbItemTemplate>(templateID);
+            if (template == null)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"Template not found (ID: {templateID}){Environment.NewLine}{Environment.StackTrace}");
 
-			if (template == null)
-			{
-				if (log.IsWarnEnabled)
-					log.Warn("Item Creation: Template not found!\n" + Environment.StackTrace);
-				return null;
-			}
-			
-			return CreateUniqueFromTemplate(template);
-		}
-		
-		/// <summary>
-		/// Creates a new GameInventoryItem based on an ItemTemplate. Will disappear
-		/// after 3 minutes after being added to the world.
-		/// </summary>
-		/// <param name="template">The template to load and create an item from.</param>
-		/// <returns>Item reference or null.</returns>
-		public static WorldInventoryItem CreateFromTemplate(DbItemTemplate template)
-		{
-			if (template == null)
-				return null;
+                return null;
+            }
+            
+            return CreateUniqueFromTemplate(template);
+        }
 
-			WorldInventoryItem invItem = new WorldInventoryItem();
+        public static WorldInventoryItem CreateFromTemplate(DbItemTemplate template)
+        {
+            if (template == null)
+                return null;
 
-			invItem.m_item = GameInventoryItem.Create(template);
-			
-			invItem.m_item.SlotPosition = 0;
-			invItem.m_item.OwnerID = null;
+            WorldInventoryItem invItem = new();
+            invItem.Item = GameInventoryItem.Create(template);
+            invItem.Item.SlotPosition = 0;
+            invItem.Item.OwnerID = null;
+            invItem.Level = (byte)template.Level;
+            invItem.Model = (ushort)template.Model;
+            invItem.Emblem = template.Emblem;
+            invItem.Name = template.Name;
+            return invItem;
+        }
 
-			invItem.Level = (byte)template.Level;
-			invItem.Model = (ushort)template.Model;
-			invItem.Emblem = template.Emblem;
-			invItem.Name = template.Name;
+        public static WorldInventoryItem CreateUniqueFromTemplate(DbItemTemplate template)
+        {
+            if (template == null)
+                return null;
 
-			return invItem;
-		}
+            WorldInventoryItem invItem = new();
+            DbItemUnique item = new(template);
+            invItem.Item = GameInventoryItem.Create(item);
+            invItem.Item.SlotPosition = 0;
+            invItem.Item.OwnerID = null;
+            invItem.Level = (byte)template.Level;
+            invItem.Model = (ushort)template.Model;
+            invItem.Emblem = template.Emblem;
+            invItem.Name = template.Name;
+            return invItem;
+        }
 
-		public static WorldInventoryItem CreateUniqueFromTemplate(DbItemTemplate template)
-		{
-			if (template == null)
-				return null;
+        public override bool RemoveFromWorld()
+        {
+            if (base.RemoveFromWorld())
+            {
+                (Item as IGameInventoryItem)?.OnRemoveFromWorld();
+                return true;
+            }
 
-			WorldInventoryItem invItem = new WorldInventoryItem();
-			DbItemUnique item = new DbItemUnique(template);
+            return false;
+        }
 
-			invItem.m_item = GameInventoryItem.Create(item);
-			invItem.m_item.SlotPosition = 0;
-			invItem.m_item.OwnerID = null;
+        public void StartPickupTimer(int time)
+        {
+            if (_pickupTimer != null)
+            {
+                _pickupTimer.Stop();
+                _pickupTimer = null;
+            }
 
-			invItem.Level = (byte)template.Level;
-			invItem.Model = (ushort)template.Model;
-			invItem.Emblem = template.Emblem;
-			invItem.Name = template.Name;
+            _pickupTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CallBack), time * 1000);
+        }
 
-			return invItem;
-		}
+        private int CallBack(ECSGameTimer timer)
+        {
+            _pickupTimer.Stop();
+            _pickupTimer = null;
+            return 0;
+        }
 
-		public override bool RemoveFromWorld()
-		{
-			if (base.RemoveFromWorld())
-			{
-				(m_item as IGameInventoryItem)?.OnRemoveFromWorld();
-				m_isRemoved = true;
-				return true;
-			}
+        public void StopPickupTimer()
+        {
+            foreach (GamePlayer player in Owners.OfType<GamePlayer>())
+            {
+                if (player.ObjectState is eObjectState.Active)
+                    player.Out.SendMessage($"You may now pick up {Name}!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
+            }
 
-			return false;
-		}
+            _pickupTimer.Stop();
+            _pickupTimer = null;
+        }
 
-		#region PickUpTimer
-		private ECSGameTimer m_pickup;
+        public override bool TryAutoPickUp(IGameStaticItemOwner itemOwner)
+        {
+            lock (_pickUpLock)
+            {
+                return ObjectState is eObjectState.Active && itemOwner.TryAutoPickUpItem(this);
+            }
+        }
 
-		/// <summary>
-		/// Starts a new pickuptimer with the given time (in seconds)
-		/// </summary>
-		/// <param name="time"></param>
-		public void StartPickupTimer(int time)
-		{
-			if (m_pickup != null)
-			{
-				m_pickup.Stop();
-				m_pickup = null;
-			}
-			m_pickup = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(CallBack), time * 1000);
-		}
-
-		private int CallBack(ECSGameTimer timer)
-		{
-			m_pickup.Stop();
-			m_pickup = null;
-			return 0;
-		}
-
-		public void StopPickupTimer()
-		{
-			foreach (GamePlayer player in Owners)
-			{
-				if (player.ObjectState == eObjectState.Active)
-				{
-					player.Out.SendMessage("You may now pick up " + Name + "!", eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
-				}
-			}
-			m_pickup.Stop();
-			m_pickup = null;
-		}
-
-		public int GetPickupTime
-		{
-			get
-			{
-				if (m_pickup == null)
-					return 0;
-				return m_pickup.TimeUntilElapsed;
-			}
-		}
-		#endregion
-
-		/// <summary>
-		/// Gets the InventoryItem contained within this class
-		/// </summary>
-		public DbInventoryItem Item
-		{
-			get
-			{
-				return m_item;
-			}
-		}
-	}
+        public override TryPickUpResult TryPickUp(GamePlayer source, IGameStaticItemOwner itemOwner)
+        {
+            lock (_pickUpLock)
+            {
+                return ObjectState is eObjectState.Active ? itemOwner.TryPickUpItem(source, this) : TryPickUpResult.FAILED;
+            }
+        }
+    }
 }

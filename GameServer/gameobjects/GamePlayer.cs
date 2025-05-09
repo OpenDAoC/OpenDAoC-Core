@@ -27,7 +27,6 @@ using DOL.GS.Styles;
 using DOL.GS.Utils;
 using DOL.Language;
 using JNogueira.Discord.Webhook.Client;
-using static DOL.GS.IGameStaticItemOwner;
 
 namespace DOL.GS
 {
@@ -7958,10 +7957,6 @@ namespace DOL.GS
             if (IsIgnoring(source))
                 return true;
 
-            eChatType type = eChatType.CT_Send;
-            if (source.Client.Account.PrivLevel > 1)
-                type = eChatType.CT_Staff;
-
             if (GameServer.ServerRules.IsAllowedToUnderstand(source, this))
             {
                 // If GM/Admin uses '/alert send on', receive audio alert for all sends
@@ -10215,9 +10210,6 @@ namespace DOL.GS
 
             if (floorObject is WorldInventoryItem floorItem)
             {
-                if (floorItem.ObjectState is not eObjectState.Active)
-                    return;
-
                 if (floorItem.Item == null || !floorItem.Item.IsPickable)
                 {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.CantGetThat"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
@@ -10232,12 +10224,12 @@ namespace DOL.GS
 
                 BattleGroup battleGroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
-                if (battleGroup == null || battleGroup.TryPickUpItem(this, floorItem) is TryPickUpResult.DOES_NOT_HANDLE)
+                if (battleGroup == null || floorItem.TryPickUp(this, battleGroup) is TryPickUpResult.DOES_NOT_HANDLE)
                 {
                     Group group = Group;
 
-                    if (group == null || group.TryPickUpItem(this, floorItem) is TryPickUpResult.DOES_NOT_HANDLE)
-                        TryPickUpItem(this, floorItem);
+                    if (group == null || floorItem.TryPickUp(this, group) is TryPickUpResult.DOES_NOT_HANDLE)
+                        floorItem.TryPickUp(this, this);
                 }
 
                 return;
@@ -10245,17 +10237,14 @@ namespace DOL.GS
 
             if (floorObject is GameMoney money)
             {
-                if (money.ObjectState is not eObjectState.Active)
-                    return;
-
                 BattleGroup battleGroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
-                if (battleGroup == null || battleGroup.TryPickUpMoney(this, money) is TryPickUpResult.DOES_NOT_HANDLE)
+                if (battleGroup == null || money.TryPickUp(this, battleGroup) is TryPickUpResult.DOES_NOT_HANDLE)
                 {
                     Group group = Group;
 
-                    if (group == null || group.TryPickUpMoney(this, money) is TryPickUpResult.DOES_NOT_HANDLE)
-                        TryPickUpMoney(this, money);
+                    if (group == null || money.TryPickUp(this, group) is TryPickUpResult.DOES_NOT_HANDLE)
+                        money.TryPickUp(this, this);
                 }
 
                 return;
@@ -10317,6 +10306,8 @@ namespace DOL.GS
 
         public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
         {
+            money.AssertLockAcquisition();
+
             if (this != source)
             {
                 if (log.IsErrorEnabled)
@@ -10325,7 +10316,7 @@ namespace DOL.GS
                 return TryPickUpResult.DOES_NOT_HANDLE;
             }
 
-            long moneyToPlayer = ApplyGuildDues(money.TotalCopper);
+            long moneyToPlayer = ApplyGuildDues(money.Value);
 
             if (moneyToPlayer > 0)
             {
@@ -10339,6 +10330,8 @@ namespace DOL.GS
 
         public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item)
         {
+            item.AssertLockAcquisition();
+
             if (this != source)
             {
                 if (log.IsErrorEnabled)
@@ -11563,7 +11556,7 @@ namespace DOL.GS
                         !enemyPlayer.CharacterClass.IsAssassin &&
                         !enemyPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Camouflage))
                     {
-                        https://forums.freddyshouse.com/threads/scouts-and-stealth.139740/
+                        // https://forums.freddyshouse.com/threads/scouts-and-stealth.139740/
                         range = Math.Max(range, 2700 - 36 * enemyStealthLevel);
                     }
 

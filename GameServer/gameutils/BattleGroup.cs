@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -304,12 +305,16 @@ namespace DOL.GS
 
 		public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
 		{
+			money.AssertLockAcquisition();
+
 			// Splitting money in a battlegroup could cause performance issues. Let it fallback to group then solo logic.
 			return TryPickUpResult.DOES_NOT_HANDLE;
 		}
 
 		public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item)
 		{
+			item.AssertLockAcquisition();
+
 			// A battlegroup is only able to pick up items if it has a treasurer, otherwise it's supposed to fallback to group then solo logic.
 			// There is no range check. If you're in a BG, every item goes to the treasurer or stay on the ground.
 			// If his inventory is full, the item should simply stay on the ground until he makes some room, or another treasurer is appointed.

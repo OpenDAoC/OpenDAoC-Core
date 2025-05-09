@@ -9,7 +9,6 @@ using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 using static DOL.GS.GameObject;
-using static DOL.GS.IGameStaticItemOwner;
 
 namespace DOL.GS
 {
@@ -637,6 +636,8 @@ namespace DOL.GS
 
 		public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
 		{
+			money.AssertLockAcquisition();
+
 			if (!AutosplitCoins)
 				return TryPickUpResult.DOES_NOT_HANDLE;
 
@@ -662,7 +663,7 @@ namespace DOL.GS
 
 			static void SplitMoneyBetweenEligibleMembers(List<GamePlayer> eligibleMembers, GameMoney money)
 			{
-				long splitMoney = (long) Math.Ceiling((double) money.TotalCopper / eligibleMembers.Count);
+				long splitMoney = (long) Math.Ceiling((double) money.Value / eligibleMembers.Count);
 				long moneyToPlayer;
 
 				foreach (GamePlayer eligibleMember in eligibleMembers)
@@ -680,6 +681,8 @@ namespace DOL.GS
 
 		public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item)
 		{
+			item.AssertLockAcquisition();
+
 			// A group is only able to pick up items if auto split is enabled. Otherwise, solo logic should apply.
 			// Group members are filtered to exclude far away players or players with auto split solo enabled.
 			// A player with enough room in his inventory is chosen randomly.

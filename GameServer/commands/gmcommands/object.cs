@@ -1,26 +1,6 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-
 using DOL.GS.PacketHandler;
 
 namespace DOL.GS.Commands
@@ -40,12 +20,12 @@ namespace DOL.GS.Commands
 	              "'/object realm <0/1/2/3>' to set the targeted object realm",
 	              "'/object name <newName>' to set the targeted object name to newName",
 	              "'/object noname' to remove the targeted object name",
-				  "'/object respawn <seconds>' to set a respawn time if this object is removed from the world",
-				  "'/object remove' to remove the targeted object",
+	              "'/object respawn <seconds>' to set a respawn time if this object is removed from the world",
+	               "'/object remove' to remove the targeted object",
 	              "'/object copy' to copy the targeted object",
 	              "'/object save' to save the object",
 	              "'/object target' to automatically target the nearest object",
-				  "'/object quests' to load any dataquests associated with the target object")]
+	              "'/object quests' to load any dataquests associated with the target object")]
 	public class ObjectCommandHandler : AbstractCommandHandler, ICommandHandler
 	{
 		public void OnCommand(GameClient client, string[] args)
@@ -84,13 +64,15 @@ namespace DOL.GS.Commands
 						info.Add(" Model: " + targetObject.Model);
 						info.Add(" Emblem: " + targetObject.Emblem);
 						info.Add(" Realm: " + targetObject.Realm);
-						if (targetObject.Owners.Count > 0)
+
+						if (targetObject is GameStaticItemTimed staticItem && staticItem.Owners.Count > 0)
 						{
 							info.Add(" ");
 
-							foreach (IGameStaticItemOwner owner in targetObject.Owners)
+							foreach (IGameStaticItemOwner owner in staticItem.Owners)
 								info.Add($" Owner: {owner.Name}");
 						}
+
 						if (string.IsNullOrEmpty(targetObject.OwnerID) == false)
 						{
 							info.Add(" ");
