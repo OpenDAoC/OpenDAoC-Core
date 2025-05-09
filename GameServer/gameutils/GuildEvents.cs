@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 
@@ -18,16 +17,6 @@ namespace DOL.GS
 	{
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		/// <summary>
-		/// Time Interval to check for expired guild buffs
-		/// </summary>
-		public static readonly int BUFFCHECK_INTERVAL = 60 * 1000; // 1 Minute
-
-		/// <summary>
-		/// Static Timer for the Timer to check for expired guild buffs
-		/// </summary>
-		private static Timer m_timer;
-
 		[ScriptLoadedEvent]
 		public static void OnScriptCompiled(DOLEvent e, object sender, EventArgs args)
 		{
@@ -38,9 +27,6 @@ namespace DOL.GS
 			GameEventMgr.AddHandler(GamePlayerEvent.RRLevelUp, new DOLEventHandler(RealmRankUp));
 			GameEventMgr.AddHandler(GamePlayerEvent.RLLevelUp, new DOLEventHandler(RealmRankUp));
 			GameEventMgr.AddHandler(GamePlayerEvent.LevelUp, new DOLEventHandler(LevelUp));
-
-			// Guild Buff Check
-			m_timer = new Timer(new TimerCallback(StartCheck), m_timer, 0, BUFFCHECK_INTERVAL);
 		}
 
 		[ScriptUnloadedEvent]
@@ -53,12 +39,6 @@ namespace DOL.GS
 			GameEventMgr.RemoveHandler(GamePlayerEvent.RRLevelUp, new DOLEventHandler(RealmRankUp));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.RLLevelUp, new DOLEventHandler(RealmRankUp));
 			GameEventMgr.RemoveHandler(GamePlayerEvent.LevelUp, new DOLEventHandler(LevelUp));
-
-			if (m_timer != null)
-			{
-				m_timer.Dispose();
-				m_timer = null;
-			}
 		}
 
 		#region Crafting Tier
@@ -231,40 +211,6 @@ namespace DOL.GS
 
 			// if (player.Guild != null)
 			// 	player.Guild.UpdateGuildWindow();
-		}
-
-		#endregion
-
-		#region Guild Buff GameTimer Check
-
-		public static void StartCheck(object timer)
-		{
-			Thread th = new Thread(new ThreadStart(StartCheckThread));
-			th.Start();
-		}
-
-		public static void StartCheckThread()
-		{
-			foreach (Guild checkGuild in GuildMgr.GetGuilds())
-			{
-				if (checkGuild.BonusType != Guild.eBonusType.None)
-				{
-					TimeSpan bonusTime = DateTime.Now.Subtract(checkGuild.BonusStartTime);
-
-					if (bonusTime.Days > 0 && !checkGuild.IsStartingGuild)
-					{
-						checkGuild.BonusType = Guild.eBonusType.None;
-
-						checkGuild.SaveIntoDatabase();
-
-						string message = "[Guild Buff] Your guild buff has now worn off!";
-						foreach (GamePlayer player in checkGuild.GetListOfOnlineMembers())
-						{
-							player.Out.SendMessage(message, eChatType.CT_Guild, eChatLoc.CL_ChatWindow);
-						}
-					}
-				}
-			}
 		}
 
 		#endregion
