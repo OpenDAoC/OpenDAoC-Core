@@ -1222,12 +1222,13 @@ namespace DOL.GS
 		public void CommitChanges()
 		{
 			int changes = Interlocked.Decrement(ref m_changesCounter);
+
 			if (changes < 0)
 			{
 				if (Log.IsErrorEnabled)
-					Log.Error("Inventory changes counter is below zero (forgot to use BeginChanges?)!\n\n" + Environment.StackTrace);
+					Log.Error($"Inventory changes counter is below zero (forgot to use BeginChanges?)!{Environment.NewLine}{Environment.StackTrace}");
 
-				Thread.VolatileWrite(ref m_changesCounter, 0);
+				Interlocked.Exchange(ref m_changesCounter, 0);
 			}
 
 			if (changes <= 0 && m_changedSlots.Count > 0)
