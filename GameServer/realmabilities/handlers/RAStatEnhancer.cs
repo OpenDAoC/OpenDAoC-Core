@@ -101,7 +101,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			if (m_activeLiving == null)
 			{
-				living.AbilityBonus[(int)m_property] += GetAmountForLevel(Level);
+				living.AbilityBonus[m_property] += GetAmountForLevel(Level);
 				m_activeLiving = living;
 				if (sendUpdates) SendUpdates(living);
 			}
@@ -115,7 +115,7 @@ namespace DOL.GS.RealmAbilities
 		{
 			if (m_activeLiving != null)
 			{
-				living.AbilityBonus[(int)m_property] -= GetAmountForLevel(Level);
+				living.AbilityBonus[m_property] -= GetAmountForLevel(Level);
 				if (sendUpdates) SendUpdates(living);
 				m_activeLiving = null;
 			}
@@ -130,7 +130,7 @@ namespace DOL.GS.RealmAbilities
 			if (newLevel == 0)
 				newLevel = Level;
 
-			m_activeLiving.AbilityBonus[(int)m_property] += GetAmountForLevel(newLevel) - GetAmountForLevel(oldLevel);
+			m_activeLiving.AbilityBonus[m_property] += GetAmountForLevel(newLevel) - GetAmountForLevel(oldLevel);
 			SendUpdates(m_activeLiving);
 		}
 	}

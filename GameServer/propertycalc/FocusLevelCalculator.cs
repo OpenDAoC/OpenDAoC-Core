@@ -22,13 +22,13 @@ namespace DOL.GS.PropertyCalc
         {
             if (living is GamePlayer player)
             {
-                int itemBonus = player.ItemBonus[(int) property];
-                int focusLevel = player.BaseBuffBonusCategory[(int) property];
+                int itemBonus = player.ItemBonus[property];
+                int focusLevel = player.BaseBuffBonusCategory[property];
 
                 if (SkillBase.CheckPropertyType(property, ePropertyType.Focus) && player.CharacterClass.IsFocusCaster)
                 {
-                    focusLevel += player.BaseBuffBonusCategory[(int) eProperty.AllFocusLevels];
-                    itemBonus = Math.Max(itemBonus, player.ItemBonus[(int) eProperty.AllFocusLevels]);
+                    focusLevel += player.BaseBuffBonusCategory[eProperty.AllFocusLevels];
+                    itemBonus = Math.Max(itemBonus, player.ItemBonus[eProperty.AllFocusLevels]);
                 }
 
                 return focusLevel + Math.Min(50, itemBonus);

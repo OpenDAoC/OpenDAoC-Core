@@ -909,7 +909,7 @@ namespace DOL.GS
 		/// <summary>
 		/// Holds all property types
 		/// </summary>
-		private static readonly ePropertyType[] m_propertyTypes = new ePropertyType[(int)eProperty.MaxProperty+1];
+		private static readonly ePropertyType[] m_propertyTypes = new ePropertyType[(int) eProperty.MaxProperty + 1];
 
 		/// <summary>
 		/// table for property names
@@ -1169,53 +1169,53 @@ namespace DOL.GS
 			#region Resist
 
 			// resists
-			m_propertyTypes[(int)eProperty.Resist_Natural] = ePropertyType.Resist;
-			m_propertyTypes[(int)eProperty.Resist_Body] = ePropertyType.Resist;
-			m_propertyTypes[(int)eProperty.Resist_Cold] = ePropertyType.Resist;
-			m_propertyTypes[(int)eProperty.Resist_Crush] = ePropertyType.Resist;
-			m_propertyTypes[(int)eProperty.Resist_Energy] = ePropertyType.Resist;
-			m_propertyTypes[(int)eProperty.Resist_Heat] = ePropertyType.Resist;
-			m_propertyTypes[(int)eProperty.Resist_Matter] = ePropertyType.Resist;
-			m_propertyTypes[(int)eProperty.Resist_Slash] = ePropertyType.Resist;
-			m_propertyTypes[(int)eProperty.Resist_Spirit] = ePropertyType.Resist;
-			m_propertyTypes[(int)eProperty.Resist_Thrust] = ePropertyType.Resist;
+			m_propertyTypes[(int) eProperty.Resist_Natural] = ePropertyType.Resist;
+			m_propertyTypes[(int) eProperty.Resist_Body] = ePropertyType.Resist;
+			m_propertyTypes[(int) eProperty.Resist_Cold] = ePropertyType.Resist;
+			m_propertyTypes[(int) eProperty.Resist_Crush] = ePropertyType.Resist;
+			m_propertyTypes[(int) eProperty.Resist_Energy] = ePropertyType.Resist;
+			m_propertyTypes[(int) eProperty.Resist_Heat] = ePropertyType.Resist;
+			m_propertyTypes[(int) eProperty.Resist_Matter] = ePropertyType.Resist;
+			m_propertyTypes[(int) eProperty.Resist_Slash] = ePropertyType.Resist;
+			m_propertyTypes[(int) eProperty.Resist_Spirit] = ePropertyType.Resist;
+			m_propertyTypes[(int) eProperty.Resist_Thrust] = ePropertyType.Resist;
 
 			#endregion
 
 			#region Focus
 
 			// focuses
-			m_propertyTypes[(int)eProperty.Focus_Darkness] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Suppression] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Runecarving] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Spirit] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Fire] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Air] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Cold] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Earth] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Light] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Body] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Matter] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Mind] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Void] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Mana] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Enchantments] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Mentalism] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Summoning] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_BoneArmy] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_PainWorking] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_DeathSight] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_DeathServant] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Verdant] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_CreepingPath] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Arboreal] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_EtherealShriek] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_PhantasmalWail] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_SpectralForce] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Cursing] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Hexing] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.Focus_Witchcraft] = ePropertyType.Focus;
-			m_propertyTypes[(int)eProperty.AllFocusLevels] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Darkness] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Suppression] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Runecarving] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Spirit] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Fire] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Air] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Cold] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Earth] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Light] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Body] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Matter] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Mind] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Void] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Mana] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Enchantments] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Mentalism] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Summoning] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_BoneArmy] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_PainWorking] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_DeathSight] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_DeathServant] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Verdant] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_CreepingPath] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Arboreal] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_EtherealShriek] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_PhantasmalWail] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_SpectralForce] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Cursing] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Hexing] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.Focus_Witchcraft] = ePropertyType.Focus;
+			m_propertyTypes[(int) eProperty.AllFocusLevels] = ePropertyType.Focus;
 
 			#endregion
 
@@ -1234,115 +1234,115 @@ namespace DOL.GS
 			#region Melee Skills
 
 			// skills
-			m_propertyTypes[(int)eProperty.Skill_Two_Handed] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Critical_Strike] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Crushing] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Flexible_Weapon] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Polearms] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Slashing] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Staff] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Thrusting] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Sword] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Hammer] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Axe] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Spear] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Blades] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Blunt] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Piercing] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Large_Weapon] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Celtic_Spear] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Scythe] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_Thrown_Weapons] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_HandToHand] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_FistWraps] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
-			m_propertyTypes[(int)eProperty.Skill_MaulerStaff] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Two_Handed] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Critical_Strike] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Crushing] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Flexible_Weapon] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Polearms] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Slashing] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Staff] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Thrusting] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Sword] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Hammer] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Axe] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Spear] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Blades] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Blunt] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Piercing] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Large_Weapon] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Celtic_Spear] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Scythe] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_Thrown_Weapons] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_HandToHand] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_FistWraps] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
+			m_propertyTypes[(int) eProperty.Skill_MaulerStaff] = ePropertyType.Skill | ePropertyType.SkillMeleeWeapon;
 
-			m_propertyTypes[(int)eProperty.Skill_Dual_Wield] = ePropertyType.Skill | ePropertyType.SkillDualWield;
-			m_propertyTypes[(int)eProperty.Skill_Left_Axe] = ePropertyType.Skill | ePropertyType.SkillDualWield;
-			m_propertyTypes[(int)eProperty.Skill_Celtic_Dual] = ePropertyType.Skill | ePropertyType.SkillDualWield;
+			m_propertyTypes[(int) eProperty.Skill_Dual_Wield] = ePropertyType.Skill | ePropertyType.SkillDualWield;
+			m_propertyTypes[(int) eProperty.Skill_Left_Axe] = ePropertyType.Skill | ePropertyType.SkillDualWield;
+			m_propertyTypes[(int) eProperty.Skill_Celtic_Dual] = ePropertyType.Skill | ePropertyType.SkillDualWield;
 
 			#endregion
 
 			#region Magical Skills
 
-			m_propertyTypes[(int)eProperty.Skill_Power_Strikes] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Magnetism] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Aura_Manipulation] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Body] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Chants] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Death_Servant] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_DeathSight] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Earth] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Enhancement] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Fire] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Cold] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Instruments] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Matter] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Mind] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Pain_working] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Rejuvenation] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Smiting] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_SoulRending] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Spirit] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Wind] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Mending] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Augmentation] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Darkness] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Suppression] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Runecarving] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Stormcalling] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_BeastCraft] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Light] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Void] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Mana] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Battlesongs] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Enchantments] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Mentalism] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Regrowth] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Nurture] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Nature] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Music] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Valor] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Subterranean] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_BoneArmy] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Verdant] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Creeping] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Arboreal] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Pacification] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Savagery] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Nightshade] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Pathfinding] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Summoning] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Power_Strikes] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Magnetism] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Aura_Manipulation] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Body] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Chants] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Death_Servant] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_DeathSight] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Earth] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Enhancement] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Fire] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Cold] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Instruments] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Matter] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Mind] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Pain_working] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Rejuvenation] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Smiting] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_SoulRending] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Spirit] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Wind] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Mending] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Augmentation] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Darkness] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Suppression] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Runecarving] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Stormcalling] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_BeastCraft] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Light] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Void] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Mana] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Battlesongs] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Enchantments] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Mentalism] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Regrowth] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Nurture] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Nature] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Music] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Valor] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Subterranean] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_BoneArmy] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Verdant] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Creeping] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Arboreal] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Pacification] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Savagery] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Nightshade] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Pathfinding] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Summoning] = ePropertyType.Skill | ePropertyType.SkillMagical;
 
 			// no idea about these
-			m_propertyTypes[(int)eProperty.Skill_Dementia] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_ShadowMastery] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_VampiiricEmbrace] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_EtherealShriek] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_PhantasmalWail] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_SpectralForce] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_SpectralGuard] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_OdinsWill] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Cursing] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Hexing] = ePropertyType.Skill | ePropertyType.SkillMagical;
-			m_propertyTypes[(int)eProperty.Skill_Witchcraft] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Dementia] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_ShadowMastery] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_VampiiricEmbrace] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_EtherealShriek] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_PhantasmalWail] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_SpectralForce] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_SpectralGuard] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_OdinsWill] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Cursing] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Hexing] = ePropertyType.Skill | ePropertyType.SkillMagical;
+			m_propertyTypes[(int) eProperty.Skill_Witchcraft] = ePropertyType.Skill | ePropertyType.SkillMagical;
 
 			#endregion
 
 			#region Other
 
-			m_propertyTypes[(int)eProperty.Skill_Long_bows] = ePropertyType.Skill | ePropertyType.SkillArchery;
-			m_propertyTypes[(int)eProperty.Skill_Composite] = ePropertyType.Skill | ePropertyType.SkillArchery;
-			m_propertyTypes[(int)eProperty.Skill_RecurvedBow] = ePropertyType.Skill | ePropertyType.SkillArchery;
+			m_propertyTypes[(int) eProperty.Skill_Long_bows] = ePropertyType.Skill | ePropertyType.SkillArchery;
+			m_propertyTypes[(int) eProperty.Skill_Composite] = ePropertyType.Skill | ePropertyType.SkillArchery;
+			m_propertyTypes[(int) eProperty.Skill_RecurvedBow] = ePropertyType.Skill | ePropertyType.SkillArchery;
 
-			m_propertyTypes[(int)eProperty.Skill_Parry] = ePropertyType.Skill;
-			m_propertyTypes[(int)eProperty.Skill_Shields] = ePropertyType.Skill;
+			m_propertyTypes[(int) eProperty.Skill_Parry] = ePropertyType.Skill;
+			m_propertyTypes[(int) eProperty.Skill_Shields] = ePropertyType.Skill;
 
-			m_propertyTypes[(int)eProperty.Skill_Stealth] = ePropertyType.Skill;
-			m_propertyTypes[(int)eProperty.Skill_Cross_Bows] = ePropertyType.Skill;
-			m_propertyTypes[(int)eProperty.Skill_ShortBow] = ePropertyType.Skill;
-			m_propertyTypes[(int)eProperty.Skill_Envenom] = ePropertyType.Skill;
-			m_propertyTypes[(int)eProperty.Skill_Archery] = ePropertyType.Skill | ePropertyType.SkillArchery;
+			m_propertyTypes[(int) eProperty.Skill_Stealth] = ePropertyType.Skill;
+			m_propertyTypes[(int) eProperty.Skill_Cross_Bows] = ePropertyType.Skill;
+			m_propertyTypes[(int) eProperty.Skill_ShortBow] = ePropertyType.Skill;
+			m_propertyTypes[(int) eProperty.Skill_Envenom] = ePropertyType.Skill;
+			m_propertyTypes[(int) eProperty.Skill_Archery] = ePropertyType.Skill | ePropertyType.SkillArchery;
 
 			#endregion
 		}

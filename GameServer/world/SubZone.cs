@@ -7,7 +7,7 @@ namespace DOL.GS
     // A 'SubZone' inside a 'Zone', holding linked lists of 'GameObject'.
     public class SubZone
     {
-        private ConcurrentLinkedList<GameObject>[] _objects = new ConcurrentLinkedList<GameObject>[Enum.GetValues(typeof(eGameObjectType)).Length];
+        private ConcurrentLinkedList<GameObject>[] _objects = new ConcurrentLinkedList<GameObject>[Enum.GetValues<eGameObjectType>().Length];
         public Zone ParentZone { get; }
 
         public SubZone(Zone parentZone)

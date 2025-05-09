@@ -486,9 +486,9 @@ namespace DOL.GS.Spells
 			{
 				tblBonusCat = GetBonusCategory(owner, BonusCat);
 				if (IsSubstracted)
-					tblBonusCat[(int)Property] -= Value;
+					tblBonusCat[Property] -= Value;
 				else
-					tblBonusCat[(int)Property] += Value;
+					tblBonusCat[Property] += Value;
 			}
 		}
 

@@ -1,5 +1,6 @@
 using DOL.AI.Brain;
 using DOL.Language;
+using Newtonsoft.Json.Linq;
 
 namespace DOL.GS.Keeps
 {
@@ -1413,48 +1414,48 @@ namespace DOL.GS.Keeps
         /// <param name="guard">The guard object</param>
         private static void SetGuardResists(GameKeepGuard guard)
         {
-            for (int i = (int)eProperty.Resist_First; i <= (int)eProperty.Resist_Last; i++)
+            for (eProperty property = eProperty.Resist_First; property <= eProperty.Resist_Last; property++)
             {
                 if (guard is GuardLord)
                 {
-                    guard.BaseBuffBonusCategory[i] = 26;
+                    guard.BaseBuffBonusCategory[property] = 26;
                 }
                 else if (guard is GuardFighterRK)
                 {
-                    guard.BaseBuffBonusCategory[i] = 26;
+                    guard.BaseBuffBonusCategory[property] = 26;
                 }
                 else if (guard.Level < 50)
                 {
-                    guard.BaseBuffBonusCategory[i] = guard.Level / 2 + 1;
+                    guard.BaseBuffBonusCategory[property] = guard.Level / 2 + 1;
                 }
                 else if (guard.IsPortalKeepGuard || guard.Level == 255)
                 {
-                    guard.BaseBuffBonusCategory[i] = 75;
+                    guard.BaseBuffBonusCategory[property] = 75;
                 }
                 else
                 {
                     if (guard is GuardFighter)
                     {
-                        guard.BaseBuffBonusCategory[i] = 23;
+                        guard.BaseBuffBonusCategory[property] = 23;
                     }
                     else if (guard is GuardHealer)
                     {
-                        guard.BaseBuffBonusCategory[i] = 17;
+                        guard.BaseBuffBonusCategory[property] = 17;
                     }
                     else if (guard is GuardCaster)
                     {
-                        guard.BaseBuffBonusCategory[i] = 8;
+                        guard.BaseBuffBonusCategory[property] = 8;
                     }
                     else if (guard is GuardArcher)
                     {
-                        guard.BaseBuffBonusCategory[i] = 14;
+                        guard.BaseBuffBonusCategory[property] = 14;
                     }
                     else if (guard is GuardStealther)
                     {
-                        guard.BaseBuffBonusCategory[i] = 10;
+                        guard.BaseBuffBonusCategory[property] = 10;
                     }
                     else
-                        guard.BaseBuffBonusCategory[i] = 13;// 26 changé pour baissé un peu la difficulté.
+                        guard.BaseBuffBonusCategory[property] = 13;
                 }
             }
         }

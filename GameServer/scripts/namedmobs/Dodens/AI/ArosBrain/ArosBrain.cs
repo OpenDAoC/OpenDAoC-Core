@@ -61,27 +61,27 @@ namespace DOL.AI.Brain
             }
             if (nearbyGuardian != null)
             {
-                Body.AbilityBonus[(int)eProperty.Resist_Body] = m_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Heat] = m_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Cold] = m_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Matter] = m_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Energy] = m_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Spirit] = m_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Slash] = m_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Crush] = m_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Thrust] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Body] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Heat] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Cold] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Matter] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Energy] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Spirit] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Slash] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Crush] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Thrust] = m_value;
             }
             else
             {
-                Body.AbilityBonus[(int)eProperty.Resist_Body] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Heat] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Cold] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Matter] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Energy] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Spirit] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Slash] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Crush] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Thrust] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Body] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Heat] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Cold] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Matter] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Energy] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Spirit] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Slash] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Crush] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Thrust] = min_value;
             }
         }
         public void ResistsTwo()
@@ -101,33 +101,33 @@ namespace DOL.AI.Brain
             }
             if (summonedGuardian != null)
             {
-                Body.AbilityBonus[(int)eProperty.Resist_Body] = summonedValue;
-                Body.AbilityBonus[(int)eProperty.Resist_Heat] = summonedValue;
-                Body.AbilityBonus[(int)eProperty.Resist_Cold] = summonedValue;
-                Body.AbilityBonus[(int)eProperty.Resist_Matter] = summonedValue;
-                Body.AbilityBonus[(int)eProperty.Resist_Energy] = summonedValue;
-                Body.AbilityBonus[(int)eProperty.Resist_Spirit] = summonedValue;
-                Body.AbilityBonus[(int)eProperty.Resist_Slash] = summonedValue;
-                Body.AbilityBonus[(int)eProperty.Resist_Crush] = summonedValue;
-                Body.AbilityBonus[(int)eProperty.Resist_Thrust] = summonedValue;
-                Body.AbilityBonus[(int)eProperty.MagicAbsorption] = summonedValue + 100;
-                Body.AbilityBonus[(int)eProperty.ArmorAbsorption] = summonedValue + 100;
-                Body.AbilityBonus[(int)eProperty.StyleAbsorb] = summonedValue + 100;
+                Body.AbilityBonus[eProperty.Resist_Body] = summonedValue;
+                Body.AbilityBonus[eProperty.Resist_Heat] = summonedValue;
+                Body.AbilityBonus[eProperty.Resist_Cold] = summonedValue;
+                Body.AbilityBonus[eProperty.Resist_Matter] = summonedValue;
+                Body.AbilityBonus[eProperty.Resist_Energy] = summonedValue;
+                Body.AbilityBonus[eProperty.Resist_Spirit] = summonedValue;
+                Body.AbilityBonus[eProperty.Resist_Slash] = summonedValue;
+                Body.AbilityBonus[eProperty.Resist_Crush] = summonedValue;
+                Body.AbilityBonus[eProperty.Resist_Thrust] = summonedValue;
+                Body.AbilityBonus[eProperty.MagicAbsorption] = summonedValue + 100;
+                Body.AbilityBonus[eProperty.ArmorAbsorption] = summonedValue + 100;
+                Body.AbilityBonus[eProperty.StyleAbsorb] = summonedValue + 100;
             }
             else
             {
-                Body.AbilityBonus[(int)eProperty.Resist_Body] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Heat] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Cold] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Matter] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Energy] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Spirit] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Slash] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Crush] = min_value;
-                Body.AbilityBonus[(int)eProperty.Resist_Thrust] = min_value;
-                Body.AbilityBonus[(int)eProperty.MagicAbsorption] = 10;
-                Body.AbilityBonus[(int)eProperty.ArmorAbsorption] = 10;
-                Body.AbilityBonus[(int)eProperty.StyleAbsorb] = 10;
+                Body.AbilityBonus[eProperty.Resist_Body] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Heat] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Cold] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Matter] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Energy] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Spirit] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Slash] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Crush] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Thrust] = min_value;
+                Body.AbilityBonus[eProperty.MagicAbsorption] = 10;
+                Body.AbilityBonus[eProperty.ArmorAbsorption] = 10;
+                Body.AbilityBonus[eProperty.StyleAbsorb] = 10;
             }
         }
         protected override void CheckNpcAggro()

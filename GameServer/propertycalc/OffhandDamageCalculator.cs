@@ -34,7 +34,7 @@ namespace DOL.GS.PropertyCalc
 	{
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			return Math.Max(0, living.AbilityBonus[(int) property]);
+			return Math.Max(0, living.AbilityBonus[property]);
 		}
 	}
 	
@@ -52,7 +52,7 @@ namespace DOL.GS.PropertyCalc
 	{
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			return Math.Max(0, living.AbilityBonus[(int) property]);
+			return Math.Max(0, living.AbilityBonus[property]);
 		}
 	}
 	
@@ -70,7 +70,7 @@ namespace DOL.GS.PropertyCalc
 	{
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			return Math.Max(0, living.AbilityBonus[(int) property]);
+			return Math.Max(0, living.AbilityBonus[property]);
 		}
 	}
 }

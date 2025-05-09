@@ -28,12 +28,12 @@ namespace DOL.GS.PropertyCalc
             // From DoL's `5 + (living.Level / 2.75)`.
             // 12 power per tick at level 50 instead of 20.68.
             double regen = 2.5 + living.Level * 0.2;
-            int debuff = living.SpecBuffBonusCategory[(int) property];
+            int debuff = living.SpecBuffBonusCategory[property];
 
             if (debuff < 0)
                 debuff = -debuff;
 
-            regen += living.BaseBuffBonusCategory[(int) property] + living.AbilityBonus[(int) property] + living.ItemBonus[(int) property] - debuff;
+            regen += living.BaseBuffBonusCategory[property] + living.AbilityBonus[property] + living.ItemBonus[property] - debuff;
 
             if (ServerProperties.Properties.MANA_REGEN_AMOUNT_HALVED_BELOW_50_PERCENT &&
                 living is GamePlayer player &&

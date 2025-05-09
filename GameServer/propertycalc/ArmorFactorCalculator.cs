@@ -41,10 +41,10 @@ namespace DOL.GS.PropertyCalc
             static int CalculatePlayerArmorFactor(GameLiving living, eProperty property)
             {
                 // Base AF buffs are calculated in the item's armor calc since they have the same cap.
-                int armorFactor = Math.Min((int) (living.Level * 1.875), living.SpecBuffBonusCategory[(int) property]);
-                armorFactor -= Math.Abs(living.DebuffCategory[(int) property]);
-                armorFactor += Math.Min(living.Level, living.ItemBonus[(int) property]);
-                armorFactor += living.OtherBonus[(int) property];
+                int armorFactor = Math.Min((int) (living.Level * 1.875), living.SpecBuffBonusCategory[property]);
+                armorFactor -= Math.Abs(living.DebuffCategory[property]);
+                armorFactor += Math.Min(living.Level, living.ItemBonus[property]);
+                armorFactor += living.OtherBonus[property];
                 return armorFactor;
             }
 
@@ -55,9 +55,9 @@ namespace DOL.GS.PropertyCalc
                 // We're allowing NPCs to benefit from base AF buffs, but not from spec AF buffs.
                 // For pets, this may be a later change according to a post on Phoenix's forums. Sadly that post doesn't contain more info.
                 // Allowing neither feels bad, and allowing only spec AF buffs only benefit Albion's pet classes.
-                armorFactor += living.BaseBuffBonusCategory[(int) property];
-                armorFactor -= Math.Abs(living.DebuffCategory[(int) property]);
-                armorFactor += living.OtherBonus[(int) property];
+                armorFactor += living.BaseBuffBonusCategory[property];
+                armorFactor -= Math.Abs(living.DebuffCategory[property]);
+                armorFactor += living.OtherBonus[property];
                 return armorFactor;
             }
 

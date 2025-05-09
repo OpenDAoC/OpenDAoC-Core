@@ -5950,14 +5950,14 @@ namespace DOL.GS
                     case ArmorLevel.Plate: abs = 34; break;
                 }
 
-                eaf += BaseBuffBonusCategory[(int)eProperty.ArmorFactor]; // base buff before cap
+                eaf += BaseBuffBonusCategory[eProperty.ArmorFactor]; // base buff before cap
                 int eafcap = (int)(10 * Level * (1 + abs * 0.01));
                 if (eaf > eafcap)
                     eaf = eafcap;
-                eaf += (int)Math.Min(Level * 1.875, SpecBuffBonusCategory[(int)eProperty.ArmorFactor])
-                       - DebuffCategory[(int)eProperty.ArmorFactor]
-                       + OtherBonus[(int)eProperty.ArmorFactor]
-                       + Math.Min(Level, ItemBonus[(int)eProperty.ArmorFactor]);
+                eaf += (int)Math.Min(Level * 1.875, SpecBuffBonusCategory[eProperty.ArmorFactor])
+                       - DebuffCategory[eProperty.ArmorFactor]
+                       + OtherBonus[eProperty.ArmorFactor]
+                       + Math.Min(Level, ItemBonus[eProperty.ArmorFactor]);
 
                 eaf = (int)(eaf * BuffBonusMultCategory1.Get((int)eProperty.ArmorFactor));
 
@@ -6119,7 +6119,7 @@ namespace DOL.GS
 
             int armorFactorCap = characterLevel * 2;
             double armorFactor = Math.Min(item.DPS_AF, (eObjectType) item.Object_Type is eObjectType.Cloth ? characterLevel : armorFactorCap);
-            armorFactor += BaseBuffBonusCategory[(int) eProperty.ArmorFactor] / 6.0; // Base AF buff.
+            armorFactor += BaseBuffBonusCategory[eProperty.ArmorFactor] / 6.0; // Base AF buff.
             armorFactor *= item.Quality * 0.01 * item.Condition / item.MaxCondition; // Apply condition and quality before the second cap. Maybe incorrect, but it makes base AF buffs a little more useful.
             armorFactor = Math.Min(armorFactor, armorFactorCap);
             armorFactor += base.GetArmorAF(slot);
@@ -9562,7 +9562,7 @@ namespace DOL.GS
 
             if (item.Bonus1 != 0)
             {
-                ItemBonus[item.Bonus1Type] += item.Bonus1;
+                ItemBonus[(eProperty) item.Bonus1Type] += item.Bonus1;
 
                 if (item.Bonus1Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus1Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9570,7 +9570,7 @@ namespace DOL.GS
 
             if (item.Bonus2 != 0)
             {
-                ItemBonus[item.Bonus2Type] += item.Bonus2;
+                ItemBonus[(eProperty) item.Bonus2Type] += item.Bonus2;
 
                 if (item.Bonus2Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus2Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9578,7 +9578,7 @@ namespace DOL.GS
 
             if (item.Bonus3 != 0)
             {
-                ItemBonus[item.Bonus3Type] += item.Bonus3;
+                ItemBonus[(eProperty) item.Bonus3Type] += item.Bonus3;
 
                 if (item.Bonus3Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus3Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9586,7 +9586,7 @@ namespace DOL.GS
 
             if (item.Bonus4 != 0)
             {
-                ItemBonus[item.Bonus4Type] += item.Bonus4;
+                ItemBonus[(eProperty) item.Bonus4Type] += item.Bonus4;
 
                 if (item.Bonus4Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus4Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9594,7 +9594,7 @@ namespace DOL.GS
 
             if (item.Bonus5 != 0)
             {
-                ItemBonus[item.Bonus5Type] += item.Bonus5;
+                ItemBonus[(eProperty) item.Bonus5Type] += item.Bonus5;
 
                 if (item.Bonus5Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus5Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9602,7 +9602,7 @@ namespace DOL.GS
 
             if (item.Bonus6 != 0)
             {
-                ItemBonus[item.Bonus6Type] += item.Bonus6;
+                ItemBonus[(eProperty) item.Bonus6Type] += item.Bonus6;
 
                 if (item.Bonus6Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus6Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9610,7 +9610,7 @@ namespace DOL.GS
 
             if (item.Bonus7 != 0)
             {
-                ItemBonus[item.Bonus7Type] += item.Bonus7;
+                ItemBonus[(eProperty) item.Bonus7Type] += item.Bonus7;
 
                 if (item.Bonus7Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus7Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9618,7 +9618,7 @@ namespace DOL.GS
 
             if (item.Bonus8 != 0)
             {
-                ItemBonus[item.Bonus8Type] += item.Bonus8;
+                ItemBonus[(eProperty) item.Bonus8Type] += item.Bonus8;
 
                 if (item.Bonus8Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus8Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9626,7 +9626,7 @@ namespace DOL.GS
 
             if (item.Bonus9 != 0)
             {
-                ItemBonus[item.Bonus9Type] += item.Bonus9;
+                ItemBonus[(eProperty) item.Bonus9Type] += item.Bonus9;
 
                 if (item.Bonus9Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus9Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9634,14 +9634,14 @@ namespace DOL.GS
 
             if (item.Bonus10 != 0)
             {
-                ItemBonus[item.Bonus10Type] += item.Bonus10;
+                ItemBonus[(eProperty) item.Bonus10Type] += item.Bonus10;
 
                 if (item.Bonus10Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemEquipped.Increased", ItemBonusName(item.Bonus10Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
 
             if (item.ExtraBonus != 0)
-                ItemBonus[item.ExtraBonusType] += item.ExtraBonus;
+                ItemBonus[(eProperty) item.ExtraBonusType] += item.ExtraBonus;
 
             if ((ePrivLevel) Client.Account.PrivLevel == ePrivLevel.Player && Client.Player != null && Client.Player.ObjectState == eObjectState.Active)
             {
@@ -9733,7 +9733,7 @@ namespace DOL.GS
 
             if (item.Bonus1 != 0)
             {
-                ItemBonus[item.Bonus1Type] -= item.Bonus1;
+                ItemBonus[(eProperty) item.Bonus1Type] -= item.Bonus1;
 
                 if (item.Bonus1Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus1Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9741,7 +9741,7 @@ namespace DOL.GS
 
             if (item.Bonus2 != 0)
             {
-                ItemBonus[item.Bonus2Type] -= item.Bonus2;
+                ItemBonus[(eProperty) item.Bonus2Type] -= item.Bonus2;
 
                 if (item.Bonus2Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus2Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9749,7 +9749,7 @@ namespace DOL.GS
 
             if (item.Bonus3 != 0)
             {
-                ItemBonus[item.Bonus3Type] -= item.Bonus3;
+                ItemBonus[(eProperty) item.Bonus3Type] -= item.Bonus3;
 
                 if (item.Bonus3Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus3Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9757,7 +9757,7 @@ namespace DOL.GS
 
             if (item.Bonus4 != 0)
             {
-                ItemBonus[item.Bonus4Type] -= item.Bonus4;
+                ItemBonus[(eProperty) item.Bonus4Type] -= item.Bonus4;
 
                 if (item.Bonus4Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus4Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9765,7 +9765,7 @@ namespace DOL.GS
 
             if (item.Bonus5 != 0)
             {
-                ItemBonus[item.Bonus5Type] -= item.Bonus5;
+                ItemBonus[(eProperty) item.Bonus5Type] -= item.Bonus5;
 
                 if (item.Bonus5Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus5Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9773,7 +9773,7 @@ namespace DOL.GS
 
             if (item.Bonus6 != 0)
             {
-                ItemBonus[item.Bonus6Type] -= item.Bonus6;
+                ItemBonus[(eProperty) item.Bonus6Type] -= item.Bonus6;
 
                 if (item.Bonus6Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus6Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9781,7 +9781,7 @@ namespace DOL.GS
 
             if (item.Bonus7 != 0)
             {
-                ItemBonus[item.Bonus7Type] -= item.Bonus7;
+                ItemBonus[(eProperty) item.Bonus7Type] -= item.Bonus7;
 
                 if (item.Bonus7Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus7Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9789,7 +9789,7 @@ namespace DOL.GS
 
             if (item.Bonus8 != 0)
             {
-                ItemBonus[item.Bonus8Type] -= item.Bonus8;
+                ItemBonus[(eProperty) item.Bonus8Type] -= item.Bonus8;
 
                 if (item.Bonus8Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus8Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9797,7 +9797,7 @@ namespace DOL.GS
 
             if (item.Bonus9 != 0)
             {
-                ItemBonus[item.Bonus9Type] -= item.Bonus9;
+                ItemBonus[(eProperty) item.Bonus9Type] -= item.Bonus9;
 
                 if (item.Bonus9Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus9Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
@@ -9805,14 +9805,14 @@ namespace DOL.GS
 
             if (item.Bonus10 != 0)
             {
-                ItemBonus[item.Bonus10Type] -= item.Bonus10;
+                ItemBonus[(eProperty) item.Bonus10Type] -= item.Bonus10;
 
                 if (item.Bonus10Type < 20)
                     Out.SendMessage(string.Format(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnItemUnequipped.Decreased", ItemBonusName(item.Bonus10Type))), eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
             }
 
             if (item.ExtraBonus != 0)
-                ItemBonus[item.ExtraBonusType] -= item.ExtraBonus;
+                ItemBonus[(eProperty) item.ExtraBonusType] -= item.ExtraBonus;
 
             if (item is IGameInventoryItem inventoryItem)
                 inventoryItem.OnUnEquipped(this);
@@ -9888,7 +9888,7 @@ namespace DOL.GS
 
         public virtual void RefreshItemBonuses()
         {
-            ItemBonus = new();
+            ItemBonus.Clear();
             string slotToLoad = string.Empty;
             switch (VisibleActiveWeaponSlots)
             {
@@ -9954,47 +9954,47 @@ namespace DOL.GS
                 {
                     if (item.Bonus1 != 0)
                     {
-                        ItemBonus[item.Bonus1Type] += item.Bonus1;
+                        ItemBonus[(eProperty) item.Bonus1Type] += item.Bonus1;
                     }
                     if (item.Bonus2 != 0)
                     {
-                        ItemBonus[item.Bonus2Type] += item.Bonus2;
+                        ItemBonus[(eProperty) item.Bonus2Type] += item.Bonus2;
                     }
                     if (item.Bonus3 != 0)
                     {
-                        ItemBonus[item.Bonus3Type] += item.Bonus3;
+                        ItemBonus[(eProperty) item.Bonus3Type] += item.Bonus3;
                     }
                     if (item.Bonus4 != 0)
                     {
-                        ItemBonus[item.Bonus4Type] += item.Bonus4;
+                        ItemBonus[(eProperty) item.Bonus4Type] += item.Bonus4;
                     }
                     if (item.Bonus5 != 0)
                     {
-                        ItemBonus[item.Bonus5Type] += item.Bonus5;
+                        ItemBonus[(eProperty) item.Bonus5Type] += item.Bonus5;
                     }
                     if (item.Bonus6 != 0)
                     {
-                        ItemBonus[item.Bonus6Type] += item.Bonus6;
+                        ItemBonus[(eProperty) item.Bonus6Type] += item.Bonus6;
                     }
                     if (item.Bonus7 != 0)
                     {
-                        ItemBonus[item.Bonus7Type] += item.Bonus7;
+                        ItemBonus[(eProperty) item.Bonus7Type] += item.Bonus7;
                     }
                     if (item.Bonus8 != 0)
                     {
-                        ItemBonus[item.Bonus8Type] += item.Bonus8;
+                        ItemBonus[(eProperty) item.Bonus8Type] += item.Bonus8;
                     }
                     if (item.Bonus9 != 0)
                     {
-                        ItemBonus[item.Bonus9Type] += item.Bonus9;
+                        ItemBonus[(eProperty) item.Bonus9Type] += item.Bonus9;
                     }
                     if (item.Bonus10 != 0)
                     {
-                        ItemBonus[item.Bonus10Type] += item.Bonus10;
+                        ItemBonus[(eProperty) item.Bonus10Type] += item.Bonus10;
                     }
                     if (item.ExtraBonus != 0)
                     {
-                        ItemBonus[item.ExtraBonusType] += item.ExtraBonus;
+                        ItemBonus[(eProperty) item.ExtraBonusType] += item.ExtraBonus;
                     }
                 }
             }
@@ -10003,7 +10003,7 @@ namespace DOL.GS
         /// <summary>
         /// Handles a bonus change on an item.
         /// </summary>
-        protected virtual void OnItemBonusChanged(int bonusType, int bonusAmount)
+        protected virtual void OnItemBonusChanged(eProperty bonusType, int bonusAmount)
         {
             if (bonusType == 0 || bonusAmount == 0)
                 return;
@@ -11569,7 +11569,7 @@ namespace DOL.GS
                             range += mos.GetAmountForLevel(CalculateSkillLevel(mos));
                     }*/
 
-                    range += BaseBuffBonusCategory[(int)eProperty.Skill_Stealth];
+                    range += BaseBuffBonusCategory[eProperty.Skill_Stealth];
 
                     // //Buff (Stealth Detection)
                     // //Increases the target's ability to detect stealthed players and monsters.

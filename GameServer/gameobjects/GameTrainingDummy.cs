@@ -62,7 +62,7 @@ namespace DOL.GS
         protected void ApplyBonus(eBuffBonusCategory bonusCategory, eProperty property, int value)
         {
             if (property is not eProperty.Undefined)
-                GetBonusCategory(this, bonusCategory)[(int) property] = value;
+                GetBonusCategory(this, bonusCategory)[property] = value;
         }
 
         private static IPropertyIndexer GetBonusCategory(GameLiving target, eBuffBonusCategory categoryid)

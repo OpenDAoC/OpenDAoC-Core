@@ -608,7 +608,7 @@ namespace DOL.GS.Spells
 
                 int resist = (int)(damage * GetDamageResist(target, (eResist) target.GetResistTypeForDamage(ad.DamageType)) * -0.01);
                 eProperty property = ad.Target.GetResistTypeForDamage(ad.DamageType);
-                int secondaryResistModifier = ad.Target.SpecBuffBonusCategory[(int)property];
+                int secondaryResistModifier = ad.Target.SpecBuffBonusCategory[property];
                 int resistModifier = 0;
                 resistModifier += (int)((ad.Damage + (double)resistModifier) * (double)secondaryResistModifier * -0.01);
                 damage += resist;
@@ -642,7 +642,7 @@ namespace DOL.GS.Spells
                         case eResist.Heat:
                         case eResist.Matter:
                         case eResist.Spirit:
-                            res += living.BaseBuffBonusCategory[(int)eProperty.MagicAbsorption];
+                            res += living.BaseBuffBonusCategory[eProperty.MagicAbsorption];
                             break;
                         default:
                             break;
@@ -675,7 +675,7 @@ namespace DOL.GS.Spells
             base.OnEffectStart(effect);
             GameLiving living = effect.Owner as GameLiving;
             //value should be 15 to reduce Essence resist
-            living.DebuffCategory[(int)eProperty.Resist_Natural] += (int)m_spell.Value;
+            living.DebuffCategory[eProperty.Resist_Natural] += (int)m_spell.Value;
 
             if (effect.Owner is GamePlayer)
             {
@@ -689,7 +689,7 @@ namespace DOL.GS.Spells
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
             GameLiving living = effect.Owner as GameLiving;
-            living.DebuffCategory[(int)eProperty.Resist_Natural] -= (int)m_spell.Value;
+            living.DebuffCategory[eProperty.Resist_Natural] -= (int)m_spell.Value;
 
             if (effect.Owner is GamePlayer)
             {
@@ -768,8 +768,8 @@ namespace DOL.GS.Spells
             DexDebuff = (int)((double)effect.Owner.GetModified(eProperty.Dexterity) * percentValue);
             QuiDebuff = (int)((double)effect.Owner.GetModified(eProperty.Quickness) * percentValue);
             GameLiving living = effect.Owner as GameLiving;
-            living.DebuffCategory[(int)eProperty.Dexterity] += DexDebuff;
-            living.DebuffCategory[(int)eProperty.Quickness] += QuiDebuff;
+            living.DebuffCategory[eProperty.Dexterity] += DexDebuff;
+            living.DebuffCategory[eProperty.Quickness] += QuiDebuff;
 
             if (effect.Owner is GamePlayer)
             {
@@ -782,8 +782,8 @@ namespace DOL.GS.Spells
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
             GameLiving living = effect.Owner as GameLiving;
-            living.DebuffCategory[(int)eProperty.Dexterity] -= DexDebuff;
-            living.DebuffCategory[(int)eProperty.Quickness] -= QuiDebuff;
+            living.DebuffCategory[eProperty.Dexterity] -= DexDebuff;
+            living.DebuffCategory[eProperty.Quickness] -= QuiDebuff;
 
             if (effect.Owner is GamePlayer)
             {
@@ -841,7 +841,7 @@ namespace DOL.GS.PropertyCalc
         public override int CalcValue(GameLiving living, eProperty property)
         {
             int percent = 100
-                +living.BaseBuffBonusCategory[(int)property];
+                +living.BaseBuffBonusCategory[property];
 
             return percent;
         }

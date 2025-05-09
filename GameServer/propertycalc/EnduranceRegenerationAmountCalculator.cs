@@ -29,13 +29,13 @@ namespace DOL.GS.PropertyCalc
                 - Fatigue now regenerates at the standing rate while moving.
             */
 
-            int debuff = living.SpecBuffBonusCategory[(int) property];
+            int debuff = living.SpecBuffBonusCategory[property];
 
             if (debuff < 0)
                 debuff = -debuff;
 
             // Buffs allow to regenerate endurance even in combat and while moving.
-            double regen = living.BaseBuffBonusCategory[(int) property] + living.AbilityBonus[(int) property] + living.ItemBonus[(int) property] - debuff;
+            double regen = living.BaseBuffBonusCategory[property] + living.AbilityBonus[property] + living.ItemBonus[property] - debuff;
 
             if (!living.InCombat)
             {

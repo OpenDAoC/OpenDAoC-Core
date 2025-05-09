@@ -22,12 +22,12 @@ namespace DOL.GS.PropertyCalc
             if (living is GamePlayer player)
             {
                 int hpBase = player.CalculateMaxHealth(player.Level, player.GetModified(eProperty.Constitution));
-                int buffBonus = player.BaseBuffBonusCategory[(int) property];
+                int buffBonus = player.BaseBuffBonusCategory[property];
 
                 if (buffBonus < 0)
                     buffBonus = (int) ((1 + buffBonus / -100.0) * hpBase) - hpBase;
 
-                int itemBonus = player.ItemBonus[(int) property];
+                int itemBonus = player.ItemBonus[property];
                 int cap = GetItemBonusCap(player) + GetItemBonusCapIncrease(player);
                 itemBonus = Math.Min(itemBonus, cap);
 
@@ -37,8 +37,8 @@ namespace DOL.GS.PropertyCalc
                     hpBase = (int) (hpBase * (100 + levelBonus) * 0.01);
                 }
 
-                int flatAbilityBonus = living.AbilityBonus[(int) property]; // New Toughness.
-                int multiplicativeAbilityBonus = living.AbilityBonus[(int) eProperty.Of_Toughness]; // Old Toughness.
+                int flatAbilityBonus = living.AbilityBonus[property]; // New Toughness.
+                int multiplicativeAbilityBonus = living.AbilityBonus[eProperty.Of_Toughness]; // Old Toughness.
 
                 double result = hpBase;
                 result *= 1 + multiplicativeAbilityBonus * 0.01;
@@ -85,12 +85,12 @@ namespace DOL.GS.PropertyCalc
                 int conFromRa = AtlasRAHelpers.GetStatEnhancerAmountForLevel(AtlasRAHelpers.GetAugConLevel(livingOwner));
                 int conFromItems = livingOwner.GetModifiedFromItems(eProperty.Constitution);
 
-                int itemBonus = livingOwner.ItemBonus[(int) property];
+                int itemBonus = livingOwner.ItemBonus[property];
                 int itemCap = GetItemBonusCap(livingOwner) + GetItemBonusCapIncrease(livingOwner);
                 itemBonus = Math.Min(itemBonus, itemCap);
 
-                int flatAbilityBonus = livingOwner.AbilityBonus[(int) property]; // New Toughness.
-                int multiplicativeAbilityBonus = livingOwner.AbilityBonus[(int) eProperty.Of_Toughness]; // Old Toughness.
+                int flatAbilityBonus = livingOwner.AbilityBonus[property]; // New Toughness.
+                int multiplicativeAbilityBonus = livingOwner.AbilityBonus[eProperty.Of_Toughness]; // Old Toughness.
 
                 double result = baseHp;
                 result += (conFromItems + conFromRa) * 3;
@@ -99,9 +99,9 @@ namespace DOL.GS.PropertyCalc
                 return (int) result;
             }
             else if (living is GameSummonedPet pet)
-                return CalculateNpcMaxHealth(pet, 17, 0.535, pet.GetBaseStat(eStat.CON), 25, 3, pet.BaseBuffBonusCategory[(int) property]);
+                return CalculateNpcMaxHealth(pet, 17, 0.535, pet.GetBaseStat(eStat.CON), 25, 3, pet.BaseBuffBonusCategory[property]);
             else if (living is GameNPC npc)
-                return CalculateNpcMaxHealth(npc, 11, 0.6, npc.GetBaseStat(eStat.CON), 25, 1.8, npc.BaseBuffBonusCategory[(int) property]);
+                return CalculateNpcMaxHealth(npc, 11, 0.6, npc.GetBaseStat(eStat.CON), 25, 1.8, npc.BaseBuffBonusCategory[property]);
 
             // Old formula. No idea if it's being used by anything. Leaving it here in case some people want to experiment with it.
             if (living.Level < 10)
@@ -136,7 +136,7 @@ namespace DOL.GS.PropertyCalc
                 return 0;
 
             int itemBonusCapIncreaseCap = GetItemBonusCapIncreaseCap(living);
-            int itemBonusCapIncrease = living.ItemBonus[(int) eProperty.MaxHealthCapBonus];
+            int itemBonusCapIncrease = living.ItemBonus[eProperty.MaxHealthCapBonus];
             return Math.Min(itemBonusCapIncrease, itemBonusCapIncreaseCap);
         }
 

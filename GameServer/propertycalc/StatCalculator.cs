@@ -22,7 +22,6 @@ namespace DOL.GS.PropertyCalc
         // SpecDebuffs (includes Champion's only) have 200% effectiveness against buffs.
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            int propertyIndex = (int) property;
             int abilityBonus = 0;
             int deathConDebuff = 0;
             GameLiving livingToCheck; // Used to get item and ability bonuses from the owner of a Necromancer pet.
@@ -32,7 +31,7 @@ namespace DOL.GS.PropertyCalc
                 if (property == (eProperty) player.CharacterClass.ManaStat)
                 {
                     if (IsClassAffectedByAcuityAbility(player.CharacterClass))
-                        abilityBonus += player.AbilityBonus[(int)eProperty.Acuity];
+                        abilityBonus += player.AbilityBonus[eProperty.Acuity];
                 }
 
                 deathConDebuff = player.TotalConstitutionLostAtDeath;
@@ -46,9 +45,9 @@ namespace DOL.GS.PropertyCalc
             int baseStat = living.GetBaseStat((eStat) property);
             int itemBonus = CalcValueFromItems(livingToCheck, property);
             int buffBonus = CalcValueFromBuffs(living, property);
-            int baseDebuff = Math.Abs(living.DebuffCategory[propertyIndex]);
-            int specDebuff = Math.Abs(living.SpecDebuffCategory[propertyIndex]);
-            abilityBonus += livingToCheck.AbilityBonus[propertyIndex];
+            int baseDebuff = Math.Abs(living.DebuffCategory[property]);
+            int specDebuff = Math.Abs(living.SpecDebuffCategory[property]);
+            abilityBonus += livingToCheck.AbilityBonus[property];
             int baseAndItemStat = baseStat + itemBonus;
             ApplyDebuffs(ref baseDebuff, ref specDebuff, ref buffBonus, ref baseAndItemStat);
             int stat = baseAndItemStat + buffBonus + abilityBonus;
@@ -62,16 +61,15 @@ namespace DOL.GS.PropertyCalc
             if (living == null)
                 return 0;
 
-            int propertyIndex = (int) property;
-            int baseBuffBonus = living.BaseBuffBonusCategory[propertyIndex];
-            int specBuffBonus = living.SpecBuffBonusCategory[propertyIndex];
+            int baseBuffBonus = living.BaseBuffBonusCategory[property];
+            int specBuffBonus = living.SpecBuffBonusCategory[property];
 
             if (living is GamePlayer player)
             {
                 if (property == (eProperty) player.CharacterClass.ManaStat)
                 {
                     if (player.CharacterClass.ClassType == eClassType.ListCaster)
-                        specBuffBonus += player.BaseBuffBonusCategory[(int)eProperty.Acuity];
+                        specBuffBonus += player.BaseBuffBonusCategory[eProperty.Acuity];
                 }
             }
 
@@ -89,7 +87,7 @@ namespace DOL.GS.PropertyCalc
             if (living == null)
                 return 0;
 
-            int itemBonus = living.ItemBonus[(int) property];
+            int itemBonus = living.ItemBonus[property];
             int itemBonusCap = GetItemBonusCap(living);
 
             if (living is GamePlayer player)
@@ -97,7 +95,7 @@ namespace DOL.GS.PropertyCalc
                 if (property == (eProperty) player.CharacterClass.ManaStat)
                 {
                     if (IsClassAffectedByAcuityAbility(player.CharacterClass))
-                        itemBonus += living.ItemBonus[(int)eProperty.Acuity];
+                        itemBonus += living.ItemBonus[eProperty.Acuity];
                 }
             }
 
@@ -117,14 +115,14 @@ namespace DOL.GS.PropertyCalc
                 return 0;
 
             int itemBonusCapIncreaseCap = GetItemBonusCapIncreaseCap(living);
-            int itemBonusCapIncrease = living.ItemBonus[(int)(eProperty.StatCapBonus_First - eProperty.Stat_First + property)];
+            int itemBonusCapIncrease = living.ItemBonus[eProperty.StatCapBonus_First - eProperty.Stat_First + property];
 
             if (living is GamePlayer player)
             {
                 if (property == (eProperty) player.CharacterClass.ManaStat)
                 {
                     if (IsClassAffectedByAcuityAbility(player.CharacterClass))
-                        itemBonusCapIncrease += living.ItemBonus[(int)eProperty.AcuCapBonus];
+                        itemBonusCapIncrease += living.ItemBonus[eProperty.AcuCapBonus];
                 }
             }
 
@@ -137,7 +135,7 @@ namespace DOL.GS.PropertyCalc
                 return 0;
 
             int mythicalItemBonusCapIncreaseCap = GetMythicalItemBonusCapIncreaseCap(living);
-            int mythicalItemBonusCapIncrease = living.ItemBonus[(int) (eProperty.MythicalStatCapBonus_First - eProperty.Stat_First + property)];
+            int mythicalItemBonusCapIncrease = living.ItemBonus[eProperty.MythicalStatCapBonus_First - eProperty.Stat_First + property];
             int itemBonusCapIncrease = GetItemBonusCapIncrease(living, property);
 
             if (living is GamePlayer player)
@@ -145,7 +143,7 @@ namespace DOL.GS.PropertyCalc
                 if (property == (eProperty) player.CharacterClass.ManaStat)
                 {
                     if (IsClassAffectedByAcuityAbility(player.CharacterClass))
-                        mythicalItemBonusCapIncrease += living.ItemBonus[(int) eProperty.MythicalAcuCapBonus];
+                        mythicalItemBonusCapIncrease += living.ItemBonus[eProperty.MythicalAcuCapBonus];
                 }
             }
 

@@ -41,7 +41,7 @@ namespace DOL.GS.PropertyCalc
                 return 0;
             }
 
-            return Math.Min(living.ItemBonus[(int) property], 25);
+            return Math.Min(living.ItemBonus[property], 25);
         }
     }
 }

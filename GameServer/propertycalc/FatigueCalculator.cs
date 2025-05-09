@@ -21,7 +21,7 @@ namespace DOL.GS.PropertyCalc
 				GamePlayer player = living as GamePlayer;
 
 				int endurance = player.DBMaxEndurance;
-				endurance += (int)(endurance * (Math.Min(15, living.ItemBonus[(int)property]) * .01));
+				endurance += (int)(endurance * (Math.Min(15, living.ItemBonus[property]) * .01));
 				return endurance;
 			}
 

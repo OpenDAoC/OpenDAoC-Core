@@ -19,7 +19,7 @@ namespace DOL.GS.Effects
             if (OwnerPlayer == null)
                 return;
 
-            OwnerPlayer.OtherBonus[(int)eProperty.ArmorFactor] += (int)Effectiveness;
+            OwnerPlayer.OtherBonus[eProperty.ArmorFactor] += (int)Effectiveness;
             OwnerPlayer.Out.SendUpdateWeaponAndArmorStats();
         }
 
@@ -28,7 +28,7 @@ namespace DOL.GS.Effects
             if (OwnerPlayer == null)
                 return;
 
-            OwnerPlayer.OtherBonus[(int)eProperty.ArmorFactor] -= (int)Effectiveness;
+            OwnerPlayer.OtherBonus[eProperty.ArmorFactor] -= (int)Effectiveness;
             OwnerPlayer.Out.SendUpdateWeaponAndArmorStats();
         }
     }

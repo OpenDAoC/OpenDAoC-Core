@@ -42,11 +42,11 @@ namespace DOL.GS.PropertyCalc
                 if (player.HasSpecialization(Specs.Parry))
                     chance += (player.Dexterity * 2 - 100) / 4 + (player.GetModifiedSpecLevel(Specs.Parry) - 1) * (10 / 2) + 50;
 
-                chance += player.BaseBuffBonusCategory[(int) property] * 10;
-                chance += player.SpecBuffBonusCategory[(int) property] * 10;
-                chance -= player.DebuffCategory[(int) property] * 10;
-                chance += player.OtherBonus[(int) property] * 10;
-                chance += player.AbilityBonus[(int) property] * 10;
+                chance += player.BaseBuffBonusCategory[property] * 10;
+                chance += player.SpecBuffBonusCategory[property] * 10;
+                chance -= player.DebuffCategory[property] * 10;
+                chance += player.OtherBonus[property] * 10;
+                chance += player.AbilityBonus[property] * 10;
             }
             else if (living is GameNPC npc)
             {
@@ -54,11 +54,11 @@ namespace DOL.GS.PropertyCalc
 
                 if (living is NecromancerPet pet && pet.Brain is IControlledBrain)
                 {
-                    chance += pet.BaseBuffBonusCategory[(int) property] * 10;
-                    chance += pet.SpecBuffBonusCategory[(int) property] * 10;
-                    chance -= pet.DebuffCategory[(int) property] * 10;
-                    chance += pet.OtherBonus[(int) property] * 10;
-                    chance += pet.AbilityBonus[(int) property] * 10;
+                    chance += pet.BaseBuffBonusCategory[property] * 10;
+                    chance += pet.SpecBuffBonusCategory[property] * 10;
+                    chance -= pet.DebuffCategory[property] * 10;
+                    chance += pet.OtherBonus[property] * 10;
+                    chance += pet.AbilityBonus[property] * 10;
                     chance += (pet.GetModified(eProperty.Dexterity) * 2 - 100) / 4;
                 }
             }

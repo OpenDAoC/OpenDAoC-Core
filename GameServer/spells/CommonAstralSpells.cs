@@ -36,16 +36,16 @@ namespace DOL.GS.Spells
             base.OnEffectStart(effect);
             foreach (eProperty property in Stats)
             {
-                m_caster.BaseBuffBonusCategory[(int)property] += (int)m_spell.Value;
-                Target.DebuffCategory[(int)property] -= (int)m_spell.Value;
+                m_caster.BaseBuffBonusCategory[property] += (int)m_spell.Value;
+                Target.DebuffCategory[property] -= (int)m_spell.Value;
             }
         }
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
             foreach (eProperty property in Stats)
             {
-                Target.DebuffCategory[(int)property] += (int)m_spell.Value;
-                m_caster.BaseBuffBonusCategory[(int)property] -= (int)m_spell.Value;
+                Target.DebuffCategory[property] += (int)m_spell.Value;
+                m_caster.BaseBuffBonusCategory[property] -= (int)m_spell.Value;
             }
             return base.OnEffectExpires(effect, noMessages);
         }

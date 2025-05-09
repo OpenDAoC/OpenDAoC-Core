@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
+using Newtonsoft.Json.Linq;
 
 namespace DOL.GS.Spells
 {
@@ -41,11 +42,11 @@ namespace DOL.GS.Spells
             {
                 GamePlayer player = effect.Owner as GamePlayer;
 
-                for (int i = (int)eProperty.Skill_First; i <= (int)eProperty.Skill_Last; i++)
+                for (eProperty property = eProperty.Skill_First; property <= eProperty.Skill_Last; property++)
                 {
-                    if (player.GetModifiedSpecLevel(SkillBase.GetPropertyName((eProperty)(i))) != 0)
+                    if (player.GetModifiedSpecLevel(SkillBase.GetPropertyName(property)) != 0)
                     {
-                        player.BaseBuffBonusCategory[i] = -player.GetModifiedSpecLevel(SkillBase.GetPropertyName((eProperty)(i)));
+                        player.BaseBuffBonusCategory[property] = -player.GetModifiedSpecLevel(SkillBase.GetPropertyName(property));
                     }
                 }
 
@@ -62,9 +63,9 @@ namespace DOL.GS.Spells
 			if (effect.Owner is GamePlayer)
 			{
 				GamePlayer player = effect.Owner as GamePlayer;
-				for (int i=(int)eProperty.Skill_First; i<=(int)eProperty.Skill_Last; i++) 
+				for (eProperty property = eProperty.Skill_First; property <= eProperty.Skill_Last; property++)
 				{
-					player.BaseBuffBonusCategory[i] = 0;
+					player.BaseBuffBonusCategory[property] = 0;
 				}
 				player.PropertiesChanged();
                 player.Out.SendCharStatsUpdate();

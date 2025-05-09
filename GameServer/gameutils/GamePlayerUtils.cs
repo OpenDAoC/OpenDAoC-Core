@@ -234,76 +234,76 @@ namespace DOL.GS
 
 			//AbilityBonus[(int)((eProperty)updateResists[i])]
 			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Resist"));
-			info.Add(string.Format(" {2}:   {0:+0;-0}%/\t{1:+0;-0}%", player.GetModified(eProperty.Resist_Crush) - player.AbilityBonus[(int)eProperty.Resist_Crush], player.AbilityBonus[(int)eProperty.Resist_Crush], SkillBase.GetPropertyName(eProperty.Resist_Crush)));
-			info.Add(string.Format(" {2}:    {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Slash) - player.AbilityBonus[(int)eProperty.Resist_Slash], player.AbilityBonus[(int)eProperty.Resist_Slash], SkillBase.GetPropertyName(eProperty.Resist_Slash)));
-			info.Add(string.Format(" {2}:  {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Thrust) - player.AbilityBonus[(int)eProperty.Resist_Thrust], player.AbilityBonus[(int)eProperty.Resist_Thrust], SkillBase.GetPropertyName(eProperty.Resist_Thrust)));
-			info.Add(string.Format(" {2}:     {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Heat) - player.AbilityBonus[(int)eProperty.Resist_Heat], player.AbilityBonus[(int)eProperty.Resist_Heat], SkillBase.GetPropertyName(eProperty.Resist_Heat)));
-			info.Add(string.Format(" {2}:      {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Cold) - player.AbilityBonus[(int)eProperty.Resist_Cold], player.AbilityBonus[(int)eProperty.Resist_Cold], SkillBase.GetPropertyName(eProperty.Resist_Cold)));
-			info.Add(string.Format(" {2}:  {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Matter) - player.AbilityBonus[(int)eProperty.Resist_Matter], player.AbilityBonus[(int)eProperty.Resist_Matter], SkillBase.GetPropertyName(eProperty.Resist_Matter)));
-			info.Add(string.Format(" {2}:     {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Body) - player.AbilityBonus[(int)eProperty.Resist_Body], player.AbilityBonus[(int)eProperty.Resist_Body], SkillBase.GetPropertyName(eProperty.Resist_Body)));
-			info.Add(string.Format(" {2}:     {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Spirit) - player.AbilityBonus[(int)eProperty.Resist_Spirit], player.AbilityBonus[(int)eProperty.Resist_Spirit], SkillBase.GetPropertyName(eProperty.Resist_Spirit)));
-			info.Add(string.Format(" {2}:  {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Energy) - player.AbilityBonus[(int)eProperty.Resist_Energy], player.AbilityBonus[(int)eProperty.Resist_Energy], SkillBase.GetPropertyName(eProperty.Resist_Energy)));
-			info.Add(string.Format(" {2}: {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Natural) - player.AbilityBonus[(int)eProperty.Resist_Natural], player.AbilityBonus[(int)eProperty.Resist_Natural], SkillBase.GetPropertyName(eProperty.Resist_Natural)));
+			info.Add(string.Format(" {2}:   {0:+0;-0}%/\t{1:+0;-0}%", player.GetModified(eProperty.Resist_Crush) - player.AbilityBonus[eProperty.Resist_Crush], player.AbilityBonus[eProperty.Resist_Crush], SkillBase.GetPropertyName(eProperty.Resist_Crush)));
+			info.Add(string.Format(" {2}:    {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Slash) - player.AbilityBonus[eProperty.Resist_Slash], player.AbilityBonus[eProperty.Resist_Slash], SkillBase.GetPropertyName(eProperty.Resist_Slash)));
+			info.Add(string.Format(" {2}:  {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Thrust) - player.AbilityBonus[eProperty.Resist_Thrust], player.AbilityBonus[eProperty.Resist_Thrust], SkillBase.GetPropertyName(eProperty.Resist_Thrust)));
+			info.Add(string.Format(" {2}:     {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Heat) - player.AbilityBonus[eProperty.Resist_Heat], player.AbilityBonus[eProperty.Resist_Heat], SkillBase.GetPropertyName(eProperty.Resist_Heat)));
+			info.Add(string.Format(" {2}:      {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Cold) - player.AbilityBonus[eProperty.Resist_Cold], player.AbilityBonus[eProperty.Resist_Cold], SkillBase.GetPropertyName(eProperty.Resist_Cold)));
+			info.Add(string.Format(" {2}:  {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Matter) - player.AbilityBonus[eProperty.Resist_Matter], player.AbilityBonus[eProperty.Resist_Matter], SkillBase.GetPropertyName(eProperty.Resist_Matter)));
+			info.Add(string.Format(" {2}:     {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Body) - player.AbilityBonus[eProperty.Resist_Body], player.AbilityBonus[eProperty.Resist_Body], SkillBase.GetPropertyName(eProperty.Resist_Body)));
+			info.Add(string.Format(" {2}:     {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Spirit) - player.AbilityBonus[eProperty.Resist_Spirit], player.AbilityBonus[eProperty.Resist_Spirit], SkillBase.GetPropertyName(eProperty.Resist_Spirit)));
+			info.Add(string.Format(" {2}:  {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Energy) - player.AbilityBonus[eProperty.Resist_Energy], player.AbilityBonus[eProperty.Resist_Energy], SkillBase.GetPropertyName(eProperty.Resist_Energy)));
+			info.Add(string.Format(" {2}: {0:+0;-0}%/{1:+0;-0}%", player.GetModified(eProperty.Resist_Natural) - player.AbilityBonus[eProperty.Resist_Natural], player.AbilityBonus[eProperty.Resist_Natural], SkillBase.GetPropertyName(eProperty.Resist_Natural)));
 
 			info.Add(" ");
 			info.Add(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerBonusesListRequestHandler.HandlePacket.Special"));
 
 			//This is an Array of the bonuses that show up in the Bonus Snapshot on Live, the only ones that really need to be there.
 			int[] bonusToBeDisplayed = new int[37] { 9, 10, 150, 151, 153, 154, 155, 173, 174, 179, 180, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 210, 247, 248, 251, 252, 253, 254};
-			for (int i = 0; i < (int)eProperty.MaxProperty; i++)
+			foreach (eProperty property in Enum.GetValues<eProperty>())
 			{
-				if ((player.ItemBonus[i] > 0) && ((Array.BinarySearch(bonusToBeDisplayed, i)) >= 0)) //Tiny edit here to add the binary serach to weed out the non essential bonuses
+				if ((player.ItemBonus[property] > 0) && ((Array.BinarySearch(bonusToBeDisplayed, property)) >= 0)) //Tiny edit here to add the binary serach to weed out the non essential bonuses
 				{
-					if (player.ItemBonus[i] != 0)
+					if (player.ItemBonus[property] != 0)
 					{
 						//LIFEFLIGHT Add, to correct power pool from showing too much
 						//This is where we need to correct the display, make it cut off at the cap if
 						//Same with hits and hits cap
-						if (i == (int)eProperty.PowerPool)
+						if (property == eProperty.PowerPool)
 						{
-							int powercap = player.ItemBonus[(int)eProperty.PowerPoolCapBonus];
+							int powercap = player.ItemBonus[eProperty.PowerPoolCapBonus];
 							if (powercap > 50)
 							{
 								powercap = 50;
 							}
-							int powerpool = player.ItemBonus[(int)eProperty.PowerPool];
+							int powerpool = player.ItemBonus[eProperty.PowerPool];
 							if (powerpool > 26)
 								powerpool = 26;
 							if (powerpool > powercap + 25)
 							{
 								int tempbonus = powercap + 25;
-								info.Add(ItemBonusDescription(tempbonus, i));
+								info.Add(ItemBonusDescription(tempbonus, (int) property));
 							}
 							else
 							{
 								int tempbonus = powerpool;
-								info.Add(ItemBonusDescription(tempbonus, i));
+								info.Add(ItemBonusDescription(tempbonus, (int) property));
 							}
 
 
 						}
-						else if (i == (int)eProperty.MaxHealth)
+						else if (property == eProperty.MaxHealth)
 						{
-							int hitscap = player.ItemBonus[(int)eProperty.MaxHealthCapBonus];
+							int hitscap = player.ItemBonus[eProperty.MaxHealthCapBonus];
 							if (hitscap > 200)
 							{
 								hitscap = 200;
 							}
-							int hits = player.ItemBonus[(int)eProperty.MaxHealth];
+							int hits = player.ItemBonus[eProperty.MaxHealth];
 							if (hits > hitscap + 200)
 							{
 								int tempbonus = hitscap + 200;
-								info.Add(ItemBonusDescription(tempbonus, i));
+								info.Add(ItemBonusDescription(tempbonus, (int) property));
 							}
 							else
 							{
 								int tempbonus = hits;
-								info.Add(ItemBonusDescription(tempbonus, i));
+								info.Add(ItemBonusDescription(tempbonus, (int) property));
 							}
 						}
 						else
 						{
-							info.Add(ItemBonusDescription(player.ItemBonus[i], i));
+							info.Add(ItemBonusDescription(player.ItemBonus[property], (int) property));
 						}
 					}
 				}

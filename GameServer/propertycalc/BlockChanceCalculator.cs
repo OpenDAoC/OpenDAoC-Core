@@ -38,7 +38,7 @@ namespace DOL.GS.PropertyCalc
             if (living is GamePlayer player)
             {
                 chance += (player.Dexterity * 2 - 100) / 4 + (player.GetModifiedSpecLevel(Specs.Shields) - 1) * (10 / 2) + 50;
-                chance += player.AbilityBonus[(int) property] * 10;
+                chance += player.AbilityBonus[property] * 10;
             }
             else if (living is GameNPC npc)
                 chance += npc.BlockChance * 10;

@@ -14,8 +14,8 @@ namespace DOL.GS
         public override void OnStartEffect()
         {
             // percent category
-            Owner.DebuffCategory[(int)eProperty.ArcheryRange] += (int)SpellHandler.Spell.Value;
-            Owner.DebuffCategory[(int)eProperty.SpellRange] += (int)SpellHandler.Spell.Value;
+            Owner.DebuffCategory[eProperty.ArcheryRange] += (int)SpellHandler.Spell.Value;
+            Owner.DebuffCategory[eProperty.SpellRange] += (int)SpellHandler.Spell.Value;
             //Owner.StartInterruptTimer(Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
             (SpellHandler as NearsightSpellHandler).SendEffectAnimation(Owner, 0, false, 1);
             
@@ -28,8 +28,8 @@ namespace DOL.GS
         public override void OnStopEffect()
         {
             // percent category
-            Owner.DebuffCategory[(int)eProperty.ArcheryRange] -= (int)SpellHandler.Spell.Value;
-            Owner.DebuffCategory[(int)eProperty.SpellRange] -= (int)SpellHandler.Spell.Value;
+            Owner.DebuffCategory[eProperty.ArcheryRange] -= (int)SpellHandler.Spell.Value;
+            Owner.DebuffCategory[eProperty.SpellRange] -= (int)SpellHandler.Spell.Value;
 
             // "Your vision returns to normal."
             // "The blindness recedes from {0}."

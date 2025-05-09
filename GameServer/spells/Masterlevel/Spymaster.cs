@@ -267,7 +267,7 @@ namespace DOL.GS.Spells
             m_target = effect.Owner as GamePlayer;
             if (m_target == null) return;
             if (!m_target.IsAlive || m_target.ObjectState != GameLiving.eObjectState.Active || !m_target.IsSitting) return;
-            Caster.BaseBuffBonusCategory[(int)eProperty.Skill_Stealth] += 100;
+            Caster.BaseBuffBonusCategory[eProperty.Skill_Stealth] += 100;
             GameEventMgr.AddHandler(m_target, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
             GameEventMgr.AddHandler(Caster, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
             new LoockoutOwner().Start(Caster);
@@ -276,7 +276,7 @@ namespace DOL.GS.Spells
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            Caster.BaseBuffBonusCategory[(int)eProperty.Skill_Stealth] -= 100;
+            Caster.BaseBuffBonusCategory[eProperty.Skill_Stealth] -= 100;
             GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
             GameEventMgr.RemoveHandler(m_target, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
             return base.OnEffectExpires(effect, noMessages);
@@ -419,7 +419,7 @@ namespace DOL.GS.Spells
                     playerTarget.Stealth(true);
                     if (effect.Owner != Caster)
                     {
-                        //effect.Owner.BuffBonusCategory1[(int)eProperty.Skill_Stealth] += 80;
+                        //effect.Owner.BuffBonusCategory1[eProperty.Skill_Stealth] += 80;
                         GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.Moving, new DOLEventHandler(PlayerAction));
                         GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.AttackFinished, new DOLEventHandler(PlayerAction));
                         GameEventMgr.AddHandler(playerTarget, GamePlayerEvent.CastStarting, new DOLEventHandler(PlayerAction));
@@ -439,7 +439,7 @@ namespace DOL.GS.Spells
             {
                 if (effect.Owner != Caster && effect.Owner is GamePlayer)
                 {
-                    //effect.Owner.BuffBonusCategory1[(int)eProperty.Skill_Stealth] -= 80;
+                    //effect.Owner.BuffBonusCategory1[eProperty.Skill_Stealth] -= 80;
                     GamePlayer playerTarget = effect.Owner as GamePlayer;
                     GameEventMgr.RemoveHandler(playerTarget, GamePlayerEvent.AttackFinished, new DOLEventHandler(PlayerAction));
                     GameEventMgr.RemoveHandler(playerTarget, GamePlayerEvent.CastStarting, new DOLEventHandler(PlayerAction));

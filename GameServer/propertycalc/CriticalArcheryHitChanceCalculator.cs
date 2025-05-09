@@ -17,7 +17,7 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
-            int chance = living.OtherBonus[(int) property] + living.AbilityBonus[(int) property];
+            int chance = living.OtherBonus[property] + living.AbilityBonus[property];
 
             if (living is GamePlayer)
                 chance += 10;

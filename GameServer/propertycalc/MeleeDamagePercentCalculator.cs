@@ -8,10 +8,10 @@ namespace DOL.GS.PropertyCalc
         public override int CalcValue(GameLiving living, eProperty property)
         {
             int hardCap = 10;
-            int abilityBonus = living.AbilityBonus[(int)property];
-            int itemBonus = Math.Min(hardCap, living.ItemBonus[(int)property]);
-            int buffBonus = living.BaseBuffBonusCategory[(int)property] + living.SpecBuffBonusCategory[(int)property];
-            int debuffMalus = Math.Min(hardCap, Math.Abs(living.DebuffCategory[(int)property]));
+            int abilityBonus = living.AbilityBonus[property];
+            int itemBonus = Math.Min(hardCap, living.ItemBonus[property]);
+            int buffBonus = living.BaseBuffBonusCategory[property] + living.SpecBuffBonusCategory[property];
+            int debuffMalus = Math.Min(hardCap, Math.Abs(living.DebuffCategory[property]));
             return abilityBonus + buffBonus + itemBonus - debuffMalus;
         }
     }

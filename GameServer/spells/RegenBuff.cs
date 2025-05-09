@@ -120,7 +120,7 @@ namespace DOL.GS.Spells
             if (m_concEffects[effect] != null) return; // already enabled
             m_concEffects[effect] = effect;
             IPropertyIndexer bonuscat = GetBonusCategory(effect.Owner, BonusCategory1);
-            bonuscat[(int)Property1] += (int)(Spell.Value * effect.Effectiveness);
+            bonuscat[Property1] += (int)(Spell.Value * effect.Effectiveness);
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace DOL.GS.Spells
             if (m_concEffects[effect] == null) return; // already disabled
             m_concEffects[effect] = null;
             IPropertyIndexer bonuscat = GetBonusCategory(effect.Owner, BonusCategory1);
-            bonuscat[(int)Property1] -= (int)(Spell.Value * effect.Effectiveness);
+            bonuscat[Property1] -= (int)(Spell.Value * effect.Effectiveness);
         }
 
         /// <summary>

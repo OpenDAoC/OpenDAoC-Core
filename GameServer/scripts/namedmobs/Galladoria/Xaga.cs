@@ -322,15 +322,15 @@ namespace DOL.GS
             BeathaBrain.path2 = false;
             BeathaBrain.path3 = false;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = 60;
-            AbilityBonus[(int)eProperty.Resist_Heat] = -20;//weak to heat
-            AbilityBonus[(int)eProperty.Resist_Cold] = 99;//resi to cold
-            AbilityBonus[(int)eProperty.Resist_Matter] = 60;
-            AbilityBonus[(int)eProperty.Resist_Energy] = 60;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = 60;
-            AbilityBonus[(int)eProperty.Resist_Slash] = 40;
-            AbilityBonus[(int)eProperty.Resist_Crush] = 40;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = 40;
+            AbilityBonus[eProperty.Resist_Body] = 60;
+            AbilityBonus[eProperty.Resist_Heat] = -20;//weak to heat
+            AbilityBonus[eProperty.Resist_Cold] = 99;//resi to cold
+            AbilityBonus[eProperty.Resist_Matter] = 60;
+            AbilityBonus[eProperty.Resist_Energy] = 60;
+            AbilityBonus[eProperty.Resist_Spirit] = 60;
+            AbilityBonus[eProperty.Resist_Slash] = 40;
+            AbilityBonus[eProperty.Resist_Crush] = 40;
+            AbilityBonus[eProperty.Resist_Thrust] = 40;
 
             ++BeathaCount;
             Faction = FactionMgr.GetFactionByID(96);
@@ -524,15 +524,15 @@ namespace DOL.GS
             TineBrain.path2_2 = false;
             TineBrain.path3_2 = false;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = 60;
-            AbilityBonus[(int)eProperty.Resist_Heat] = 99;//resi to heat
-            AbilityBonus[(int)eProperty.Resist_Cold] = -20;//weak to cold
-            AbilityBonus[(int)eProperty.Resist_Matter] = 60;
-            AbilityBonus[(int)eProperty.Resist_Energy] = 60;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = 60;
-            AbilityBonus[(int)eProperty.Resist_Slash] = 40;
-            AbilityBonus[(int)eProperty.Resist_Crush] = 40;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = 40;
+            AbilityBonus[eProperty.Resist_Body] = 60;
+            AbilityBonus[eProperty.Resist_Heat] = 99;//resi to heat
+            AbilityBonus[eProperty.Resist_Cold] = -20;//weak to cold
+            AbilityBonus[eProperty.Resist_Matter] = 60;
+            AbilityBonus[eProperty.Resist_Energy] = 60;
+            AbilityBonus[eProperty.Resist_Spirit] = 60;
+            AbilityBonus[eProperty.Resist_Slash] = 40;
+            AbilityBonus[eProperty.Resist_Crush] = 40;
+            AbilityBonus[eProperty.Resist_Thrust] = 40;
 
             ++TineCount;
             TineBrain sBrain = new TineBrain();

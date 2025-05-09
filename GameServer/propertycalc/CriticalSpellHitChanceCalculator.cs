@@ -20,7 +20,7 @@ namespace DOL.GS.PropertyCalc
 
         public override int CalcValue(GameLiving living, eProperty property) 
         {
-            int chance = living.AbilityBonus[(int) property];
+            int chance = living.AbilityBonus[property];
 
             if (living is GamePlayer player)
             {
@@ -30,7 +30,7 @@ namespace DOL.GS.PropertyCalc
             else if (living is NecromancerPet necroPet)
             {
                 chance += 10;
-                chance += necroPet.Owner.AbilityBonus[(int) property];
+                chance += necroPet.Owner.AbilityBonus[property];
             }
 
             // Summoned or Charmed pet.

@@ -49,7 +49,7 @@ namespace DOL.GS.Effects
                     p.Out.SendSpellEffectAnimation(EffectOwner, EffectOwner, ShadowShroudAbility.EFFECT, 0, false, 1);
                 }
 
-                EffectOwner.AbilityBonus[(int)eProperty.MissHit] += ShadowShroudAbility.MISSHITBONUS;
+                EffectOwner.AbilityBonus[eProperty.MissHit] += ShadowShroudAbility.MISSHITBONUS;
                 GameEventMgr.AddHandler(EffectOwner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
                 GameEventMgr.AddHandler(EffectOwner, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
                 GameEventMgr.AddHandler(EffectOwner, GamePlayerEvent.Dying, new DOLEventHandler(PlayerLeftWorld));
@@ -61,7 +61,7 @@ namespace DOL.GS.Effects
         {
             if (EffectOwner != null)
             {
-                EffectOwner.AbilityBonus[(int)eProperty.MissHit] -= ShadowShroudAbility.MISSHITBONUS;
+                EffectOwner.AbilityBonus[eProperty.MissHit] -= ShadowShroudAbility.MISSHITBONUS;
                 GameEventMgr.RemoveHandler(EffectOwner, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
                 GameEventMgr.RemoveHandler(EffectOwner, GamePlayerEvent.Quit, new DOLEventHandler(PlayerLeftWorld));
                 GameEventMgr.RemoveHandler(EffectOwner, GamePlayerEvent.Dying, new DOLEventHandler(PlayerLeftWorld));

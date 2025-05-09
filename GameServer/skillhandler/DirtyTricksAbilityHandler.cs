@@ -208,7 +208,7 @@ namespace DOL.GS.Effects
 			//    Log.Debug("Effect Started from DT detrimental effect on " + m_player.Name);
 			StartTimers(); // start the timers before adding to the list!
 			m_player.EffectList.Add(this);
-			m_player.DebuffCategory[(int)eProperty.FumbleChance] += 50;
+			m_player.DebuffCategory[eProperty.FumbleChance] += 50;
 			//  foreach (GamePlayer visiblePlayer in m_player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 			//  {
 			//  }
@@ -227,7 +227,7 @@ namespace DOL.GS.Effects
 			//  Log.Debug("Effect Canceled from DT Detrimental effect on "+ m_player.Name);
 			StopTimers();
 			m_player.EffectList.Remove(this);
-			m_player.DebuffCategory[(int)eProperty.FumbleChance] -= 50;
+			m_player.DebuffCategory[eProperty.FumbleChance] -= 50;
 			GamePlayer player = m_player as GamePlayer;
 			if (player != null)
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.DirtyTricks.EffectCancel"), eChatType.CT_System, eChatLoc.CL_SystemWindow);

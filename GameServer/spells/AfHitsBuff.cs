@@ -65,8 +65,8 @@ namespace DOL.GS.Spells
             GameLiving living = effect.Owner as GameLiving;
             living.TempProperties.SetProperty("BONUS_HP", bonusHP);
             living.TempProperties.SetProperty("BONUS_AF", bonusAF);
-            living.AbilityBonus[(int)eProperty.MaxHealth] += (int)bonusHP;
-            living.ItemBonus[(int)eProperty.ArmorFactor] += (int)bonusAF;
+            living.AbilityBonus[eProperty.MaxHealth] += (int)bonusHP;
+            living.ItemBonus[eProperty.ArmorFactor] += (int)bonusAF;
 
             SendUpdates(effect.Owner);
         }
@@ -79,8 +79,8 @@ namespace DOL.GS.Spells
             double bonusAF = living.TempProperties.GetProperty<double>("BONUS_AF");
             double bonusHP = living.TempProperties.GetProperty<double>("BONUS_HP");
 
-            living.ItemBonus[(int)eProperty.ArmorFactor] -= (int)bonusAF;
-            living.AbilityBonus[(int)eProperty.MaxHealth] -= (int)bonusHP;
+            living.ItemBonus[eProperty.ArmorFactor] -= (int)bonusAF;
+            living.AbilityBonus[eProperty.MaxHealth] -= (int)bonusHP;
 
             living.TempProperties.RemoveProperty("BONUS_AF");
             living.TempProperties.RemoveProperty("BONUS_HP");

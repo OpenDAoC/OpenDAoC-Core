@@ -46,13 +46,13 @@ namespace DOL.GS.PropertyCalc
             }
 
             int flatItemBonusCap = player.Level / 2 + 1;
-            int poolItemBonusCap = player.Level / 2 + Math.Min(player.ItemBonus[(int) eProperty.PowerPoolCapBonus], player.Level);
+            int poolItemBonusCap = player.Level / 2 + Math.Min(player.ItemBonus[eProperty.PowerPoolCapBonus], player.Level);
 
             int manaBase = player.CalculateMaxMana(player.Level, player.GetModified((eProperty) manaStat));
-            int flatItemBonus = Math.Min(flatItemBonusCap, living.ItemBonus[(int) property]); // Pre-ToA flat bonus.
-            int poolItemBonus = Math.Min(poolItemBonusCap, living.ItemBonus[(int) eProperty.PowerPool]); // ToA bonus.
-            int flatAbilityBonus = living.AbilityBonus[(int) property]; // New Ethereal Bond.
-            int poolAbilityBonus = living.AbilityBonus[(int) eProperty.PowerPool]; // Old Ethereal Bond.
+            int flatItemBonus = Math.Min(flatItemBonusCap, living.ItemBonus[property]); // Pre-ToA flat bonus.
+            int poolItemBonus = Math.Min(poolItemBonusCap, living.ItemBonus[eProperty.PowerPool]); // ToA bonus.
+            int flatAbilityBonus = living.AbilityBonus[property]; // New Ethereal Bond.
+            int poolAbilityBonus = living.AbilityBonus[eProperty.PowerPool]; // Old Ethereal Bond.
 
             // Q: What exactly does the power pool % increase do? Does it increase the amount of power my cleric can generate (like having higher piety)?
             // Or, like the dex cap increase, do I have to put spellcraft points into power to make it worth anything?

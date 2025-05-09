@@ -85,7 +85,7 @@ namespace DOL.GS.RealmAbilities
 			{
 				foreach (eProperty property in m_property)
 				{
-					living.AbilityBonus[(int)property] += GetAmountForLevel(Level);
+					living.AbilityBonus[property] += GetAmountForLevel(Level);
 				}
 				m_activeLiving = living;
 				if (sendUpdates) SendUpdates(living);
@@ -102,7 +102,7 @@ namespace DOL.GS.RealmAbilities
 			{
 				foreach (eProperty property in m_property)
 				{
-					living.AbilityBonus[(int)property] -= GetAmountForLevel(Level);
+					living.AbilityBonus[property] -= GetAmountForLevel(Level);
 				}
 				if (sendUpdates) SendUpdates(living);
 				m_activeLiving = null;
@@ -120,7 +120,7 @@ namespace DOL.GS.RealmAbilities
 
 			foreach (eProperty property in m_property)
 			{
-				m_activeLiving.AbilityBonus[(int)property] += GetAmountForLevel(newLevel) - GetAmountForLevel(oldLevel);
+				m_activeLiving.AbilityBonus[property] += GetAmountForLevel(newLevel) - GetAmountForLevel(oldLevel);
 			}
 			SendUpdates(m_activeLiving);
 		}

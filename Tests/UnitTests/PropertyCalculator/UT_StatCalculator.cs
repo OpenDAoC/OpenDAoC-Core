@@ -216,7 +216,7 @@ namespace DOL.Tests.Unit.Gameserver.PropertyCalc
             var player = NewPlayer();
             player.fakeCharacterClass = new CharacterClassAnimist();
             player.Level = 50;
-            player.BaseBuffBonusCategory[(int)eProperty.Acuity] = 50;
+            player.BaseBuffBonusCategory[eProperty.Acuity] = 50;
 
             int actual = StatCalculator.CalcValue(player, eProperty.Intelligence);
 

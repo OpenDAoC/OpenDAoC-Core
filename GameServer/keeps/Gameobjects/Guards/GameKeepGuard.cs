@@ -770,19 +770,19 @@ namespace DOL.GS.Keeps
 
 		private void SetResists()
 		{
-			for (int i = (int)eProperty.Resist_First; i <= (int)eProperty.Resist_Last; i++)
+			for (eProperty property = eProperty.Resist_First; property <= eProperty.Resist_Last; property++)
 			{
 				if (this is GuardLord)
 				{
-					BaseBuffBonusCategory[i] = 40;
+					BaseBuffBonusCategory[property] = 40;
 				}
 				else if (Level < 50)
 				{
-					BaseBuffBonusCategory[i] = Level / 2 + 1;
+					BaseBuffBonusCategory[property] = Level / 2 + 1;
 				}
 				else
 				{
-					BaseBuffBonusCategory[i] = 26;
+					BaseBuffBonusCategory[property] = 26;
 				}
 			}
 		}

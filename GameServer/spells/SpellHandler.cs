@@ -3145,7 +3145,7 @@ namespace DOL.GS.Spells
 			eDamageType damageType = DetermineSpellDamageType();
 			eProperty property = ad.Target.GetResistTypeForDamage(damageType);
 			int primaryResistModifier = ad.Target.GetResist(damageType);
-			int secondaryResistModifier = Math.Min(80, ad.Target.SpecBuffBonusCategory[(int) property]);
+			int secondaryResistModifier = Math.Min(80, ad.Target.SpecBuffBonusCategory[property]);
 
 			// Resist Pierce is a special bonus which has been introduced with ToA.
 			// It reduces the resistance that the victim receives through items by the specified percentage.
@@ -3154,7 +3154,7 @@ namespace DOL.GS.Spells
 
 			// Subtract max ItemBonus of property of target, but at least 0.
 			if (resistPierce > 0 && Spell.SpellType != eSpellType.Archery)
-				primaryResistModifier -= Math.Max(0, Math.Min(ad.Target.ItemBonus[(int) property], resistPierce));
+				primaryResistModifier -= Math.Max(0, Math.Min(ad.Target.ItemBonus[property], resistPierce));
 
 			double resistModifier = damage * primaryResistModifier * -0.01;
 			resistModifier += (damage + resistModifier) * secondaryResistModifier * -0.01;

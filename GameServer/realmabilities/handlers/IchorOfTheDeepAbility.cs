@@ -212,7 +212,7 @@ namespace DOL.GS.RealmAbilities
 
 			#region Resists and Determination
 			var primaryResistModifier = target.GetResist(eDamageType.Spirit);
-			var secondaryResistModifier = target.SpecBuffBonusCategory[(int)eProperty.Resist_Spirit];
+			var secondaryResistModifier = target.SpecBuffBonusCategory[eProperty.Resist_Spirit];
 			var rootdet = ((target.GetModified(eProperty.SpeedDecreaseDurationReduction) - 100) * -1);
 
 			var resistModifier = 0;

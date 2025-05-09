@@ -2160,20 +2160,20 @@ namespace DOL.GS
 
 		#region Property/Bonus/Buff/PropertyCalculator fields
 
-		public PropertyIndexer BaseBuffBonusCategory { get; protected set; } = new();
-		public PropertyIndexer SpecBuffBonusCategory { get; protected set; } = new();
-		public PropertyIndexer ItemBonus { get; protected set; } = new();
-		public PropertyIndexer AbilityBonus { get; protected set; } = new();
-		public PropertyIndexer OtherBonus { get; protected set; } = new();
-		public MultiplicativePropertiesHybrid BuffBonusMultCategory1 { get; protected set; } = new();
-		public PropertyIndexer DebuffCategory { get; protected set; } = new();
-		public PropertyIndexer SpecDebuffCategory { get; protected set; } = new();
+		public PropertyIndexer BaseBuffBonusCategory { get; } = new();
+		public PropertyIndexer SpecBuffBonusCategory { get; } = new();
+		public PropertyIndexer ItemBonus { get; } = new();
+		public PropertyIndexer AbilityBonus { get; } = new();
+		public PropertyIndexer OtherBonus { get; } = new();
+		public MultiplicativePropertiesHybrid BuffBonusMultCategory1 { get; } = new();
+		public PropertyIndexer DebuffCategory { get;} = new();
+		public PropertyIndexer SpecDebuffCategory { get; } = new();
 
 		/// <summary>
 		/// property calculators for each property
 		/// look at PropertyCalculator class for more description
 		/// </summary>
-		internal static readonly IPropertyCalculator[] m_propertyCalc = new IPropertyCalculator[(int)eProperty.MaxProperty+1];
+		internal static readonly IPropertyCalculator[] m_propertyCalc = new IPropertyCalculator[(int) eProperty.MaxProperty + 1];
 
 		/// <summary>
 		/// retrieve a property value of that living

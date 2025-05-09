@@ -42,22 +42,22 @@ namespace DOL.GS.PropertyCalc
 
 				int itemCap = player.Level/5+1;
 
-				int itemBonus = player.ItemBonus[(int)property];
+				int itemBonus = player.ItemBonus[property];
 
 				if (SkillBase.CheckPropertyType(property, ePropertyType.SkillMeleeWeapon))
-					itemBonus += player.ItemBonus[(int)eProperty.AllMeleeWeaponSkills];
+					itemBonus += player.ItemBonus[eProperty.AllMeleeWeaponSkills];
 				if (SkillBase.CheckPropertyType(property, ePropertyType.SkillMagical))
-					itemBonus += player.ItemBonus[(int)eProperty.AllMagicSkills];
+					itemBonus += player.ItemBonus[eProperty.AllMagicSkills];
 				if (SkillBase.CheckPropertyType(property, ePropertyType.SkillDualWield))
-					itemBonus += player.ItemBonus[(int)eProperty.AllDualWieldingSkills];
+					itemBonus += player.ItemBonus[eProperty.AllDualWieldingSkills];
 				if (SkillBase.CheckPropertyType(property, ePropertyType.SkillArchery))
-					itemBonus += player.ItemBonus[(int)eProperty.AllArcherySkills];
+					itemBonus += player.ItemBonus[eProperty.AllArcherySkills];
 
-				itemBonus += player.ItemBonus[(int)eProperty.AllSkills];
+				itemBonus += player.ItemBonus[eProperty.AllSkills];
 
 				if (itemBonus > itemCap)
 					itemBonus = itemCap;
-				int buffs = player.BaseBuffBonusCategory[(int)property]; // one buff category just in case..
+				int buffs = player.BaseBuffBonusCategory[property]; // one buff category just in case..
 				return itemBonus + buffs + player.RealmLevel/10;
 			}
 

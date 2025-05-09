@@ -34,7 +34,7 @@ namespace DOL.GS.PropertyCalc
 	{
 		public override int CalcValue(GameLiving living, eProperty property)
 		{
-			return Math.Max(0, living.AbilityBonus[(int)property] - living.DebuffCategory[(int)property]);
+			return Math.Max(0, living.AbilityBonus[property] - living.DebuffCategory[property]);
 		}
 	}
 }

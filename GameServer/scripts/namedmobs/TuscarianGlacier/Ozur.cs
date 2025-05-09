@@ -124,27 +124,27 @@ namespace DOL.AI.Brain
         {
             if (isNotZerked)
             {
-                Body.AbilityBonus[(int) eProperty.Resist_Body] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Heat] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Cold] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Matter] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Energy] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Spirit] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Slash] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Crush] = m_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Thrust] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Body] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Heat] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Cold] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Matter] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Energy] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Spirit] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Slash] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Crush] = m_value;
+                Body.AbilityBonus[eProperty.Resist_Thrust] = m_value;
             }
             else
             {
-                Body.AbilityBonus[(int) eProperty.Resist_Body] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Heat] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Cold] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Matter] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Energy] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Spirit] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Slash] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Crush] = min_value;
-                Body.AbilityBonus[(int) eProperty.Resist_Thrust] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Body] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Heat] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Cold] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Matter] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Energy] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Spirit] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Slash] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Crush] = min_value;
+                Body.AbilityBonus[eProperty.Resist_Thrust] = min_value;
             }
         }
 
@@ -152,15 +152,15 @@ namespace DOL.AI.Brain
         {
             if (weak)
             {
-                Body.AbilityBonus[(int) eProperty.Resist_Body] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Heat] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Cold] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Matter] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Energy] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Spirit] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Slash] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Crush] = min_value - 20;
-                Body.AbilityBonus[(int) eProperty.Resist_Thrust] = min_value - 20;
+                Body.AbilityBonus[eProperty.Resist_Body] = min_value - 20;
+                Body.AbilityBonus[eProperty.Resist_Heat] = min_value - 20;
+                Body.AbilityBonus[eProperty.Resist_Cold] = min_value - 20;
+                Body.AbilityBonus[eProperty.Resist_Matter] = min_value - 20;
+                Body.AbilityBonus[eProperty.Resist_Energy] = min_value - 20;
+                Body.AbilityBonus[eProperty.Resist_Spirit] = min_value - 20;
+                Body.AbilityBonus[eProperty.Resist_Slash] = min_value - 20;
+                Body.AbilityBonus[eProperty.Resist_Crush] = min_value - 20;
+                Body.AbilityBonus[eProperty.Resist_Thrust] = min_value - 20;
             }
         }
 

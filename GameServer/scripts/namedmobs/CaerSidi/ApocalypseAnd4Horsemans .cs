@@ -661,15 +661,15 @@ namespace DOL.GS
             BellumUP = true;
             prepareMorbus = false;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = -10;
-            AbilityBonus[(int)eProperty.Resist_Heat] = -10;
-            AbilityBonus[(int)eProperty.Resist_Cold] = -10;
-            AbilityBonus[(int)eProperty.Resist_Matter] = -10;
-            AbilityBonus[(int)eProperty.Resist_Energy] = -10;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = -10;
-            AbilityBonus[(int)eProperty.Resist_Slash] = 99;
-            AbilityBonus[(int)eProperty.Resist_Crush] = 99;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = 99;
+            AbilityBonus[eProperty.Resist_Body] = -10;
+            AbilityBonus[eProperty.Resist_Heat] = -10;
+            AbilityBonus[eProperty.Resist_Cold] = -10;
+            AbilityBonus[eProperty.Resist_Matter] = -10;
+            AbilityBonus[eProperty.Resist_Energy] = -10;
+            AbilityBonus[eProperty.Resist_Spirit] = -10;
+            AbilityBonus[eProperty.Resist_Slash] = 99;
+            AbilityBonus[eProperty.Resist_Crush] = 99;
+            AbilityBonus[eProperty.Resist_Thrust] = 99;
 
             if (spawn_fate2 == false)
             {
@@ -1431,15 +1431,15 @@ namespace DOL.GS
             MorbusUP = true;
             prepareFunus = false;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = 26;
-            AbilityBonus[(int)eProperty.Resist_Heat] = 26;
-            AbilityBonus[(int)eProperty.Resist_Cold] = -15;//weak to cold
-            AbilityBonus[(int)eProperty.Resist_Matter] = 26;
-            AbilityBonus[(int)eProperty.Resist_Energy] = 26;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = 26;
-            AbilityBonus[(int)eProperty.Resist_Slash] = 60;
-            AbilityBonus[(int)eProperty.Resist_Crush] = 60;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = 60;
+            AbilityBonus[eProperty.Resist_Body] = 26;
+            AbilityBonus[eProperty.Resist_Heat] = 26;
+            AbilityBonus[eProperty.Resist_Cold] = -15;//weak to cold
+            AbilityBonus[eProperty.Resist_Matter] = 26;
+            AbilityBonus[eProperty.Resist_Energy] = 26;
+            AbilityBonus[eProperty.Resist_Spirit] = 26;
+            AbilityBonus[eProperty.Resist_Slash] = 60;
+            AbilityBonus[eProperty.Resist_Crush] = 60;
+            AbilityBonus[eProperty.Resist_Thrust] = 60;
 
             if (spawn_fate3 == false)
             {
@@ -1732,15 +1732,15 @@ namespace DOL.GS
             TetherRange = 3000;
             Level = 75;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = 15;
-            AbilityBonus[(int)eProperty.Resist_Heat] = 15;
-            AbilityBonus[(int)eProperty.Resist_Cold] = -15;//weak to cold
-            AbilityBonus[(int)eProperty.Resist_Matter] = 15;
-            AbilityBonus[(int)eProperty.Resist_Energy] = 15;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = 15;
-            AbilityBonus[(int)eProperty.Resist_Slash] = 25;
-            AbilityBonus[(int)eProperty.Resist_Crush] = 25;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = 25;
+            AbilityBonus[eProperty.Resist_Body] = 15;
+            AbilityBonus[eProperty.Resist_Heat] = 15;
+            AbilityBonus[eProperty.Resist_Cold] = -15;//weak to cold
+            AbilityBonus[eProperty.Resist_Matter] = 15;
+            AbilityBonus[eProperty.Resist_Energy] = 15;
+            AbilityBonus[eProperty.Resist_Spirit] = 15;
+            AbilityBonus[eProperty.Resist_Slash] = 25;
+            AbilityBonus[eProperty.Resist_Crush] = 25;
+            AbilityBonus[eProperty.Resist_Thrust] = 25;
 
             Faction = FactionMgr.GetFactionByID(64);
             BodyType = 7;
@@ -1958,15 +1958,15 @@ namespace DOL.GS
             FunusUp = true;
             prepareApoc = false;
 
-            AbilityBonus[(int)eProperty.Resist_Body] = -25;
-            AbilityBonus[(int)eProperty.Resist_Heat] = -25;
-            AbilityBonus[(int)eProperty.Resist_Cold] = -25;
-            AbilityBonus[(int)eProperty.Resist_Matter] = -25;
-            AbilityBonus[(int)eProperty.Resist_Energy] = -25;
-            AbilityBonus[(int)eProperty.Resist_Spirit] = -25;
-            AbilityBonus[(int)eProperty.Resist_Slash] = -25;
-            AbilityBonus[(int)eProperty.Resist_Crush] = -25;
-            AbilityBonus[(int)eProperty.Resist_Thrust] = -25;
+            AbilityBonus[eProperty.Resist_Body] = -25;
+            AbilityBonus[eProperty.Resist_Heat] = -25;
+            AbilityBonus[eProperty.Resist_Cold] = -25;
+            AbilityBonus[eProperty.Resist_Matter] = -25;
+            AbilityBonus[eProperty.Resist_Energy] = -25;
+            AbilityBonus[eProperty.Resist_Spirit] = -25;
+            AbilityBonus[eProperty.Resist_Slash] = -25;
+            AbilityBonus[eProperty.Resist_Crush] = -25;
+            AbilityBonus[eProperty.Resist_Thrust] = -25;
 
             if (spawn_fate4 == false)
             {
@@ -2521,15 +2521,15 @@ namespace DOL.GS
             Size = 90;
             ParryChance = 25;
 
-            this.AbilityBonus[(int)eProperty.Resist_Body] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Heat] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Cold] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Matter] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Energy] = 26;
-            this.AbilityBonus[(int)eProperty.Resist_Spirit] = 25;
-            this.AbilityBonus[(int)eProperty.Resist_Slash] = 30;
-            this.AbilityBonus[(int)eProperty.Resist_Crush] = 30;
-            this.AbilityBonus[(int)eProperty.Resist_Thrust] = 30;
+            this.AbilityBonus[eProperty.Resist_Body] = 25;
+            this.AbilityBonus[eProperty.Resist_Heat] = 25;
+            this.AbilityBonus[eProperty.Resist_Cold] = 25;
+            this.AbilityBonus[eProperty.Resist_Matter] = 25;
+            this.AbilityBonus[eProperty.Resist_Energy] = 26;
+            this.AbilityBonus[eProperty.Resist_Spirit] = 25;
+            this.AbilityBonus[eProperty.Resist_Slash] = 30;
+            this.AbilityBonus[eProperty.Resist_Crush] = 30;
+            this.AbilityBonus[eProperty.Resist_Thrust] = 30;
 
             TetherRange = 3000;
             MaxSpeedBase = 220;

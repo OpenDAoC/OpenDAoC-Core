@@ -226,7 +226,7 @@ namespace DOL.GS.Spells
         {
             m_target.IsStunned = false;
             m_target.DismountSteed(true);
-            m_target.DebuffCategory[(int)eProperty.SpellFumbleChance]-=100;
+            m_target.DebuffCategory[eProperty.SpellFumbleChance]-=100;
             GameEventMgr.RemoveHandler(m_target, GameLivingEvent.AttackedByEnemy, new DOLEventHandler(OnAttack));
             m_npc.StopMoving();
             m_npc.RemoveFromWorld();
@@ -272,7 +272,7 @@ namespace DOL.GS.Spells
                 return;
 
             playerTarget.IsStunned = true;
-            playerTarget.DebuffCategory[(int)eProperty.SpellFumbleChance]+=100;
+            playerTarget.DebuffCategory[eProperty.SpellFumbleChance]+=100;
             playerTarget.attackComponent.StopAttack();
             playerTarget.StopCurrentSpellcast();
             playerTarget.MountSteed(zephyr, true);

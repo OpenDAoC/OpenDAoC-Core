@@ -91,7 +91,7 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
-            Owner.DebuffCategory[(int)eProperty.FumbleChance] += 35;
+            Owner.DebuffCategory[eProperty.FumbleChance] += 35;
 
             if (OwnerPlayer != null)
             {
@@ -106,7 +106,7 @@ namespace DOL.GS
         }
         public override void OnStopEffect()
         {
-            Owner.DebuffCategory[(int)eProperty.FumbleChance] -= 35;
+            Owner.DebuffCategory[eProperty.FumbleChance] -= 35;
 
             if (OwnerPlayer != null)
             {

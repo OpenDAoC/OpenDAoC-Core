@@ -17,7 +17,7 @@ namespace DOL.GS.PropertyCalc
         public override int CalcValue(GameLiving living, eProperty property) 
         {
             int level;
-            int bonus = living.ItemBonus[(int) property] + living.BaseBuffBonusCategory[(int) property];
+            int bonus = living.ItemBonus[property] + living.BaseBuffBonusCategory[property];
 
             // Summoned pets use their owner's level.
             if (living is GameSummonedPet summonedPet && summonedPet.Brain is IControlledBrain brain)

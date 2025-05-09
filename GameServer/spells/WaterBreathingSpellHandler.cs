@@ -24,7 +24,7 @@ namespace DOL.GS.Spells
 			if (player != null)
 			{
                 player.CanBreathUnderWater = true;
-				player.BaseBuffBonusCategory[(int)eProperty.WaterSpeed] += (int)Spell.Value;
+				player.BaseBuffBonusCategory[eProperty.WaterSpeed] += (int)Spell.Value;
 				player.Out.SendUpdateMaxSpeed();
 			}
 
@@ -48,7 +48,7 @@ namespace DOL.GS.Spells
                 {
                     player.CanBreathUnderWater = false;
                 }
-				player.BaseBuffBonusCategory[(int)eProperty.WaterSpeed] -= (int)Spell.Value;
+				player.BaseBuffBonusCategory[eProperty.WaterSpeed] -= (int)Spell.Value;
 				player.Out.SendUpdateMaxSpeed();
 				if (player.IsDiving & player.CanBreathUnderWater == false)
 					MessageToLiving(effect.Owner, "With a gulp and a gasp you realize that you are unable to breathe underwater any longer!", eChatType.CT_SpellExpires);
