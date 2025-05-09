@@ -578,12 +578,9 @@ namespace DOL.GS
             try
             {
                 if (!Instance.Configuration.MetricsEnabled)
-                {
                     return true;
-                }
 
-				MeterRegistry.RegisterMeterProviders();
-
+                MeterRegistry.RegisterMeterProviders();
                 return true;
             }
             catch (Exception e)

@@ -31,10 +31,16 @@ public class RvRMeterProvider : IMeterProvider
     /// <returns></returns>
     private static List<Measurement<int>> OnlinePlayerInRvRZones()
     {
-        try 
+        try
         {
-            List<Measurement<int>> playersInRvR = [];
-            List<GameClient> activePlayers = [.. ClientService.GetClients().Where(client => client.ClientState == GameClient.eClientState.Playing && client.Player.CurrentRegion.IsRvR)];
+            List<GameClient> activePlayers = ClientService.GetClients().Where(IsPlayerInRvRZone).ToList();
+
+            static bool IsPlayerInRvRZone(GameClient client)
+            {
+                return client.ClientState is GameClient.eClientState.Playing &&
+                    (ePrivLevel) client.Account.PrivLevel is ePrivLevel.Player &&
+                    (client.Player.CurrentRegion.IsRvR || client.Player.CurrentZone.IsRvR);
+            }
 
             // Albion players in RvR
             Measurement<int> albionRvRPlayers = new(

@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Reflection;
-using DOL.Database;
 using DOL.Logging;
 using OpenTelemetry.Metrics;
 
@@ -34,38 +32,16 @@ public class CurrencyMeterProvider : IMeterProvider
     {
         try
         {
-            List<DbAccountXMoney> money = [.. GameServer.Database.SelectAllObjects<DbAccountXMoney>()];
-            long copper = money.Sum(m => m.Copper);
-            long silver = money.Sum(m => m.Silver);
-            long gold = money.Sum(m => m.Gold);
-            long platinum = money.Sum(m => m.Platinum);
-            long mithril = money.Sum(m => m.Mithril);
+            return ClientService.GetClients().Where(IsPlayerActive).Select(GetPlayerMoney).Sum();
 
-            platinum += MithrilToPlatinum(mithril);
-            gold += PlatinumToGold(platinum);
-            silver += GoldToSilver(gold);
-            copper += SilverToCopper(silver);
-
-            return copper;
-
-            long MithrilToPlatinum(long mithril)
+            static bool IsPlayerActive(GameClient client)
             {
-                return mithril * 1000L;
+                return client.ClientState is GameClient.eClientState.Playing && (ePrivLevel) client.Account.PrivLevel is ePrivLevel.Player;
             }
 
-            long PlatinumToGold(long platinum)
+            static long GetPlayerMoney(GameClient client)
             {
-                return platinum * 1000L;
-            }
-
-            long GoldToSilver(long gold)
-            {
-                return gold * 100L;
-            }
-
-            long SilverToCopper(long silver)
-            {
-                return silver * 100L;
+                return client.Player.GetCurrentMoney();
             }
         }
         catch (Exception ex)
