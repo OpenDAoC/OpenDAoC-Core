@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using DOL.GS;
-using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
@@ -1212,35 +1211,6 @@ namespace DOL.AI.Brain
             }
         }
 
-        #endregion
-
-        #region DetectDoor
-
-        public virtual void DetectDoor()
-        {
-            ushort range = (ushort) (ThinkInterval / 800 * Body.CurrentWaypoint.MaxSpeed);
-
-            foreach (GameDoorBase door in Body.CurrentRegion.GetDoorsInRadius(Body, range))
-            {
-                if (door is GameKeepDoor)
-                {
-                    if (Body.Realm != door.Realm)
-                        return;
-
-                    door.Open();
-                    //Body.Say("GameKeep Door is near by");
-                    //somebody can insert here another action for GameKeep Doors
-                    return;
-                }
-                else
-                {
-                    door.Open();
-                    return;
-                }
-            }
-
-            return;
-        }
         #endregion
     }
 }

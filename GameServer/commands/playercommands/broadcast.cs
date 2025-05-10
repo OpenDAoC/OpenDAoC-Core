@@ -63,9 +63,8 @@ namespace DOL.GS.Commands
                 otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Broadcast.Message", player.Name, message), eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
         }
 
-        private List<GamePlayer> GetTargets(GamePlayer player)
+        private static IReadOnlyList<GamePlayer> GetTargets(GamePlayer player)
         {
-            List<GamePlayer> players = new();
             eBroadcastType type = (eBroadcastType) ServerProperties.Properties.BROADCAST_TYPE;
 
             switch (type)
@@ -73,6 +72,7 @@ namespace DOL.GS.Commands
                 case eBroadcastType.Area:
                 {
                     bool found = false;
+                    List<GamePlayer> players = new();
 
                     foreach (AbstractArea area in player.CurrentAreas)
                     {
@@ -91,36 +91,21 @@ namespace DOL.GS.Commands
                     if (!found)
                         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Broadcast.NoHere"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
-                    break;
+                    return players;
                 }
                 case eBroadcastType.Realm:
-                {
-                    players = ClientService.GetPlayersForRealmWideChatMessage(player);
-                    break;
-                }
+                    return ClientService.GetPlayersForRealmWideChatMessage(player);
                 case eBroadcastType.Region:
-                {
-                    players = ClientService.GetPlayersOfRegion(player.CurrentRegion);
-                    break;
-                }
+                    return ClientService.GetPlayersOfRegion(player.CurrentRegion);
                 case eBroadcastType.Server:
-                {
-                    players = ClientService.GetPlayers();
-                    break;
-                }
+                    return ClientService.GetPlayers();
                 case eBroadcastType.Visible:
-                {
-                    players = player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
-                    break;
-                }
+                    return player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
                 case eBroadcastType.Zone:
-                {
-                    players = ClientService.GetPlayersOfZone(player.CurrentZone);
-                    break;
-                }
+                    return ClientService.GetPlayersOfZone(player.CurrentZone);
             }
 
-            return players;
+            return new List<GamePlayer>();
         }
     }
 }

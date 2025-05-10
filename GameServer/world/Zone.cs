@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -318,20 +319,20 @@ namespace DOL.GS
 
         /// <summary>
         /// Gets the lists of objects, located in the current Zone and of the given type, that are at most at a 'radius' distance from an observer.
-        /// The found objects are appended to the given 'partialList'.
+        /// The found objects are appended to the given list.
         /// </summary>
-        /// <param name="partialList">a non-null list</param>
-        public void GetObjectsInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> partialList) where T : GameObject
+        /// <param name="listToAppendTo">a non-null list</param>
+        public void GetObjectsInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList listToAppendTo) where T : GameObject
         {
-            GetObjectsInRadius(point.X, point.Y, point.Z, objectType, radius, partialList);
+            GetObjectsInRadius<T>(point.X, point.Y, point.Z, objectType, radius, listToAppendTo);
         }
 
         /// <summary>
         /// Gets the lists of objects, located in the current Zone and of the given type, that are at most at a 'radius' distance from an observer.
-        /// The found objects are appended to the given 'partialList'.
+        /// The found objects are appended to the given list.
         /// </summary>
-        /// <param name="partialList">a non-null list</param>
-        public void GetObjectsInRadius<T>(int x, int y, int z, eGameObjectType objectType, ushort radius, List<T> partialList) where T : GameObject
+        /// <param name="listToAppendTo">a non-null list</param>
+        public void GetObjectsInRadius<T>(int x, int y, int z, eGameObjectType objectType, ushort radius, IList listToAppendTo) where T : GameObject
         {
             uint sqRadius = (uint) radius * radius;
             int referenceSubZoneIndex = GetSubZoneIndex(x, y);
@@ -406,7 +407,7 @@ namespace DOL.GS
                         }
 
                         if (ignoreDistance || IsWithinSquaredRadius(x, y, z, gameObject.X, gameObject.Y, gameObject.Z, sqRadius))
-                            partialList.Add(gameObject as T);
+                            listToAppendTo.Add(gameObject as T);
                     }
                 }
             }

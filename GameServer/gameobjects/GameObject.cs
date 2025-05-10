@@ -1034,68 +1034,102 @@ namespace DOL.GS
 
 		#region ObjectsInRadius
 
-		private Dictionary<eGameObjectType, (object, ushort, long)> _objectsInRadiusCache;
+		private readonly Lock _objectInRadiusCachesLock = new();
+		private readonly Dictionary<eGameObjectType, (IList, ushort, long)> _objectsInRadiusCaches = new();
+		private readonly Dictionary<eGameObjectType, IList> _objectsInRadiusFilteredCaches = new();
 
 		private void ClearObjectsInRadiusCache()
 		{
-			_objectsInRadiusCache = new()
+			lock (_objectInRadiusCachesLock)
 			{
-				{ eGameObjectType.PLAYER, (null, 0, 0) },
-				{ eGameObjectType.NPC, (null, 0, 0) },
-				{ eGameObjectType.ITEM, (null, 0, 0) },
-				{ eGameObjectType.DOOR, (null, 0, 0) }
-			};
+				_objectsInRadiusCaches.Clear();
+				_objectsInRadiusFilteredCaches.Clear();
+			}
 		}
 
-		public List<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck) where T : GameObject
+		public IReadOnlyList<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck) where T : GameObject
 		{
-			List<T> result = new();
-
 			if (CurrentRegion == null)
-				return result;
+				return []; // Should never happen, but just in case.
 
-			var cachedValues = _objectsInRadiusCache[objectType];
-
-			if (cachedValues.Item3 >= GameLoop.GameLoopTime)
+			lock (_objectInRadiusCachesLock)
 			{
-				if (cachedValues.Item2 <= radiusToCheck)
+				if (!_objectsInRadiusCaches.TryGetValue(objectType, out (IList list, ushort radius, long expireTime) cachedList))
 				{
-					if (cachedValues.Item2 == radiusToCheck)
-						return cachedValues.Item1 as List<T>;
+					cachedList = (new List<T>(), 0, 0);
+					_objectsInRadiusCaches[objectType] = cachedList;
 				}
 				else
+					cachedList = _objectsInRadiusCaches[objectType];
+
+				IList filteredCache;
+
+				if (cachedList.expireTime >= GameLoop.GameLoopTime)
 				{
-					foreach (T @object in cachedValues.Item1 as List<T>)
+					// The cache is still valid.
+					if (cachedList.radius > radiusToCheck)
 					{
-						if (IsWithinRadius(@object, radiusToCheck))
-							result.Add(@object);
+						// The cached radius is larger than the one being checked.
+						// Create a filtered cache if needed, or clear the current one.
+						if (_objectsInRadiusFilteredCaches.TryGetValue(objectType, out filteredCache))
+							filteredCache.Clear();
+						else
+						{
+							filteredCache = new List<T>();
+							_objectsInRadiusFilteredCaches[objectType] = filteredCache;
+						}
+
+						if (cachedList.list.Count == 0)
+							return filteredCache as IReadOnlyList<T>;
+
+						// Populate the filtered cache.
+						// While this saves a call to `CurrentRegion.GetInRadius<T>`, it could still be a bit slow.
+						// The alternative would be to sort the cached list by distance and use binary search to find the first object within the radius.
+						// But whether that would be faster or not is debatable, and would depend on how often the cache is hit with a smaller radius.
+						foreach (T obj in cachedList.list)
+						{
+							if (IsWithinRadius(obj, radiusToCheck))
+								filteredCache.Add(obj);
+						}
+
+						return filteredCache as IReadOnlyList<T>;
 					}
-
-					return result;
+					else if (cachedList.radius == radiusToCheck)
+					{
+						// The radiuses are equal, we can return the cached list directly.
+						return cachedList.list as IReadOnlyList<T>;
+					}
 				}
-			}
 
-			result = CurrentRegion.GetInRadius<T>(this, objectType, radiusToCheck);
-			_objectsInRadiusCache[objectType] = (result, radiusToCheck, GameLoop.GameLoopTime + 500);
-			return result;
+				// Either the cache is outdated, or the cached radius is smaller than the one being checked.
+				// We need to get a new list and clear the filtered cache, if there is any.
+				cachedList.list.Clear();
+				CurrentRegion.GetInRadius<T>(this, objectType, radiusToCheck, cachedList.list);
+				_objectsInRadiusCaches[objectType] = (cachedList.list, radiusToCheck, GameLoop.GameLoopTime + 500);
+
+				if (_objectsInRadiusFilteredCaches.TryGetValue(objectType, out filteredCache))
+					filteredCache.Clear();
+
+				return cachedList.list as IReadOnlyList<T>;
+			}
 		}
 
-		public List<GamePlayer> GetPlayersInRadius(ushort radiusToCheck)
+		public IReadOnlyList<GamePlayer> GetPlayersInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GamePlayer>(eGameObjectType.PLAYER, radiusToCheck);
 		}
 
-		public List<GameNPC> GetNPCsInRadius(ushort radiusToCheck)
+		public IReadOnlyList<GameNPC> GetNPCsInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, radiusToCheck);
 		}
 
-		public List<GameStaticItem> GetItemsInRadius(ushort radiusToCheck)
+		public IReadOnlyList<GameStaticItem> GetItemsInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, radiusToCheck);
 		}
 
-		public List<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
+		public IReadOnlyList<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, radiusToCheck);
 		}
@@ -1235,8 +1269,8 @@ namespace DOL.GS
 			m_ObjectState = eObjectState.Inactive;
 			m_boat_ownerid = string.Empty;
 			SubZoneObject = new(this);
-			ClearObjectsInRadiusCache();
 		}
+
 		public static bool PlayerHasItem(GamePlayer player, string str)
 		{
 			DbInventoryItem item = player.Inventory.GetFirstItemByID(str, eInventorySlot.Min_Inv, eInventorySlot.Max_Inv);

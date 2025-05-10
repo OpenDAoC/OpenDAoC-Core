@@ -22,7 +22,7 @@ namespace DOL.GS
         public bool DidFindPath { get; private set; }
 
         private Queue<WrappedPathPoint> _pathNodes = new();
-        private Dictionary<WrappedPathPoint, GameDoorBase> _doorsOnPath = new();
+        private Dictionary<WrappedPathPoint, List<GameDoorBase>> _doorsOnPath = new();
         private Vector3 _lastTarget = Vector3.Zero;
         private int _isReplottingPath = IDLE;
         private PathVisualization _pathVisualization;
@@ -115,9 +115,8 @@ namespace DOL.GS
                             continue;
 
                         Point3D point = new(pathPoint.Position.X, pathPoint.Position.Y, pathPoint.Position.Z);
-
-                        foreach (GameDoorBase door in Owner.CurrentRegion.GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE))
-                            _doorsOnPath[pathPoint] = door;
+                        _doorsOnPath[pathPoint] = new();
+                        Owner.CurrentRegion.GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE, _doorsOnPath[pathPoint]);
                     }
 
                     _pathVisualization?.Visualize(_pathNodes, Owner.CurrentRegion);
@@ -156,12 +155,16 @@ namespace DOL.GS
                 ReplotPath(target);
 
             // Stop right there if the path contains a closed door that we're not allowed to open.
-            foreach (GameDoorBase door in _doorsOnPath.Values)
+            // Ideally, we should check for an alternative path.
+            foreach (List<GameDoorBase> doorsAroundPathPoint in _doorsOnPath.Values)
             {
-                if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
+                foreach (GameDoorBase door in doorsAroundPathPoint)
                 {
-                    noPathReason = ENoPathReason.ClosedDoor;
-                    return null;
+                    if (door.State is eDoorState.Closed && !door.CanBeOpenedViaInteraction)
+                    {
+                        noPathReason = ENoPathReason.ClosedDoor;
+                        return null;
+                    }
                 }
             }
 
@@ -169,8 +172,14 @@ namespace DOL.GS
             while (_pathNodes.TryPeek(out WrappedPathPoint nextNode) && Owner.IsWithinRadius(nextNode.Position, NODE_REACHED_DISTANCE))
             {
                 // Open doors that can be opened (which should be every door if we're here).
-                if (_doorsOnPath.Remove(nextNode, out GameDoorBase door) && door.CanBeOpenedViaInteraction)
-                    door.Open();
+                if (_doorsOnPath.Remove(nextNode, out List<GameDoorBase> doorsAroundPathPoint))
+                {
+                    foreach (GameDoorBase door in doorsAroundPathPoint)
+                    {
+                        if (door.CanBeOpenedViaInteraction && door.State is not eDoorState.Open)
+                            door.Open();
+                    }
+                }
 
                 _pathNodes.Dequeue();
             }

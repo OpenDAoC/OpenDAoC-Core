@@ -6383,7 +6383,7 @@ namespace DOL.GS
                 ((GamePlayer)killer).Out.SendMessage(playerMessage, messageType, eChatLoc.CL_SystemWindow);
             }
 
-            List<GamePlayer> players;
+            IReadOnlyList<GamePlayer> players;
 
             if (messageDistance == 0)
                 players = ClientService.GetPlayersOfRegion(CurrentRegion);

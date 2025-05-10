@@ -1411,31 +1411,28 @@ namespace DOL.GS
 
         #region Get in radius
 
-        public List<T> GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius) where T : GameObject
+        public void GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList list) where T : GameObject
         {
-            // Check if we are around borders of a zone.
+            if (list.Count > 0)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"GetInRadius: list is not empty, clearing it.{Environment.NewLine}{Environment.StackTrace}");
+
+                list.Clear();
+            }
+
             Zone startingZone = GetZone(point.X, point.Y);
 
-            if (startingZone != null)
+            if (startingZone == null)
+                return;
+
+            startingZone.GetObjectsInRadius<T>(point, objectType, radius, list);
+            uint sqRadius = (uint) radius * radius;
+
+            foreach (Zone currentZone in m_zones)
             {
-                List<T> list = new();
-                startingZone.GetObjectsInRadius(point, objectType, radius, list);
-                uint sqRadius = (uint) radius * radius;
-
-                foreach (Zone currentZone in m_zones)
-                {
-                    if (currentZone != startingZone && currentZone.ObjectCount > 0 && CheckShortestDistance(currentZone, point.X, point.Y, sqRadius))
-                        currentZone.GetObjectsInRadius(point, objectType, radius, list);
-                }
-
-                return list;
-            }
-            else
-            {
-                if (log.IsDebugEnabled)
-                    log.Error("GetInRadius starting zone is null for (" + objectType + ", " + point.X + ", " + point.Y + ", " + point.Z + ", " + radius + ") in Region ID=" + ID);
-
-                return new();
+                if (currentZone != startingZone && currentZone.ObjectCount > 0 && CheckShortestDistance(currentZone, point.X, point.Y, sqRadius))
+                    currentZone.GetObjectsInRadius<T>(point, objectType, radius, list);
             }
         }
 
@@ -1479,24 +1476,36 @@ namespace DOL.GS
             return (distance <= squareRadius);
         }
 
+        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList list) instead.")]
         public List<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameStaticItem>(point, eGameObjectType.ITEM, radius);
+            List<GameStaticItem> result = new();
+            GetInRadius<GameStaticItem>(point, eGameObjectType.ITEM, radius, result);
+            return result;
         }
 
+        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList list) instead.")]
         public List<GameNPC> GetNPCsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameNPC>(point, eGameObjectType.NPC, radius);
+            List<GameNPC> result = new();
+            GetInRadius<GameNPC>(point, eGameObjectType.ITEM, radius, result);
+            return result;
         }
 
+        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList list) instead.")]
         public List<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GamePlayer>(point, eGameObjectType.PLAYER, radius);
+            List<GamePlayer> result = new();
+            GetInRadius<GamePlayer>(point, eGameObjectType.ITEM, radius, result);
+            return result;
         }
 
+        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList list) instead.")]
         public List<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius)
         {
-            return GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, radius);
+            List<GameDoorBase> result = new();
+            GetInRadius<GameDoorBase>(point, eGameObjectType.ITEM, radius, result);
+            return result;
         }
 
         #endregion
