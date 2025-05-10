@@ -23,7 +23,7 @@ namespace DOL.GS
             Timer
         }
 
-        private static Dictionary<EntityType, object> _entityArrays = new()
+        private static Dictionary<EntityType, IEntityArray> _entityArrays = new()
         {
             { EntityType.Client, new EntityArray<GameClient>(ServerProperties.Properties.MAX_PLAYERS) },
             { EntityType.Brain, new EntityArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
@@ -76,7 +76,7 @@ namespace DOL.GS
             return array.Entities;
         }
 
-        private class EntityArray<T> where T : class, IManagedEntity
+        private class EntityArray<T> : IEntityArray where T : class, IManagedEntity
         {
             private SortedSet<int> _invalidIndexes = new();
             private Stack<T> _entitiesToAdd  = new();
@@ -222,6 +222,8 @@ namespace DOL.GS
                     cleanUpForReuseAction();
             }
         }
+
+        private interface IEntityArray { }
     }
 
     public class EntityManagerId
