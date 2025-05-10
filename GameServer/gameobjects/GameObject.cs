@@ -1054,18 +1054,6 @@ namespace DOL.GS
 			if (CurrentRegion == null)
 				return result;
 
-			// Avoids server freeze.
-			if (CurrentRegion.GetZone(X, Y) == null)
-			{
-				if (this is GamePlayer player && !player.TempProperties.GetProperty<bool>("isbeingbanned"))
-				{
-					player.TempProperties.SetProperty("isbeingbanned", true);
-					player.MoveToBind();
-				}
-
-				return result;
-			}
-
 			var cachedValues = _objectsInRadiusCache[objectType];
 
 			if (cachedValues.Item3 >= GameLoop.GameLoopTime)

@@ -115,15 +115,16 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (newZone == null)
                 {
-                    if (!client.Player.TempProperties.GetProperty<bool>("isbeingbanned"))
-                    {
-                        log.Error($"{client.Player.Name}'s position in unknown zone! => {zoneId}");
-                        GamePlayer player = client.Player;
-                        player.TempProperties.SetProperty("isbeingbanned", true);
-                        player.MoveToBind();
-                    }
+                    GamePlayer player = client.Player;
 
-                    return; // TODO: what should we do? player lost in space
+                    if (player == null)
+                        return;
+
+                    if (log.IsErrorEnabled)
+                        log.Error($"{client.Player.Name}'s position in unknown zone! => {zoneId}");
+
+                    player.MoveToBind();
+                    return;
                 }
 
                 // move to bind if player fell through the floor
@@ -454,20 +455,16 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (newZone == null)
                 {
-                    if (client.Player==null)
+                    GamePlayer player = client.Player;
+
+                    if (player == null)
                         return;
 
-                    if (!client.Player.TempProperties.GetProperty<bool>("isbeingbanned"))
-                    {
-                        if (log.IsErrorEnabled)
-                            log.Error($"{client.Player.Name}'s position in unknown zone! => {zoneId}");
+                    if (log.IsErrorEnabled)
+                        log.Error($"{client.Player.Name}'s position in unknown zone! => {zoneId}");
 
-                        GamePlayer player=client.Player;
-                        player.TempProperties.SetProperty("isbeingbanned", true);
-                        player.MoveToBind();
-                    }
-
-                    return; // TODO: what should we do? player lost in space
+                    player.MoveToBind();
+                    return;
                 }
 
                 // move to bind if player fell through the floor

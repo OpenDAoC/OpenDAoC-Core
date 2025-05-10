@@ -8376,13 +8376,7 @@ namespace DOL.GS
                 return false;
 
             if (CurrentRegion.GetZone(X, Y) == null)
-            {
-                if (Client.Account.PrivLevel < 3 && !TempProperties.GetProperty<bool>("isbeingbanned"))
-                {
-                    TempProperties.SetProperty("isbeingbanned", true);
-                    MoveToBind();
-                }
-            }
+                MoveToBind();
 
             IsJumping = false;
 
