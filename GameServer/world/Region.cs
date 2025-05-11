@@ -160,21 +160,23 @@ namespace DOL.GS
                         if (r != null)
                         {
                             // Success with requested classtype
-                            log.InfoFormat("Created Region {0} using ClassType '{1}'", r.ID, data.ClassType);
+                            if (log.IsInfoEnabled)
+                                log.InfoFormat("Created Region {0} using ClassType '{1}'", r.ID, data.ClassType);
+
                             return r;
                         }
 
-                        log.ErrorFormat("Failed to Invoke Region {0} using ClassType '{1}'", r.ID, data.ClassType);
+                        if (log.IsErrorEnabled)
+                            log.ErrorFormat("Failed to Invoke Region {0} using ClassType '{1}'", r.ID, data.ClassType);
                     }
-                    else
-                    {
+                    else if (log.IsErrorEnabled)
                         log.ErrorFormat("Failed to find ClassType '{0}' for region {1}!", data.ClassType, data.Id);
-                    }
                 }
             }
             catch (Exception ex)
             {
-                log.ErrorFormat("Failed to start region {0} with requested classtype: {1}.  Exception: {2}!", data.Id, data.ClassType, ex.Message);
+                if (log.IsErrorEnabled)
+                    log.ErrorFormat("Failed to start region {0} with requested classtype: {1}.  Exception: {2}!", data.Id, data.ClassType, ex.Message);
             }
 
             // Create region using default type
@@ -847,8 +849,6 @@ namespace DOL.GS
 
                     myItem.LoadFromDatabase(item);
                     myItem.AddToWorld();
-                    //						if (!myItem.AddToWorld())
-                    //							log.ErrorFormat("Failed to add the item to the world: {0}", myItem.ToString());
                 });
             }
 
@@ -860,9 +860,10 @@ namespace DOL.GS
                 if (log.IsInfoEnabled)
                     log.Info(string.Format("Region: {0} ({1}) loaded {2} mobs, {3} merchants, {4} items {5} bindpoints", Description, ID, myMobCount, myMerchantCount, myItemCount, myBindCount));
 
-                log.Debug("Used Memory: " + GC.GetTotalMemory(false) / 1024 / 1024 + "MB");
+                if (log.IsDebugEnabled)
+                    log.Debug("Used Memory: " + GC.GetTotalMemory(false) / 1024 / 1024 + "MB");
 
-                if (allErrors != string.Empty)
+                if (allErrors != string.Empty && log.IsErrorEnabled)
                     log.Error("Error loading the following NPC ClassType(s), GameNPC used instead:" + allErrors.TrimEnd(','));
             }
 
@@ -1075,20 +1076,29 @@ namespace DOL.GS
                 GameObject inPlace = m_objects[obj.ObjectID - 1];
                 if (inPlace == null)
                 {
-                    log.Error("RemoveObject conflict! OID" + obj.ObjectID + " " + obj.Name + "(" + obj.CurrentRegionID + ") but there was no object at that slot");
-                    log.Error(new StackTrace().ToString());
+                    if (log.IsErrorEnabled)
+                    {
+                        log.Error("RemoveObject conflict! OID" + obj.ObjectID + " " + obj.Name + "(" + obj.CurrentRegionID + ") but there was no object at that slot");
+                        log.Error(new StackTrace().ToString());
+                    }
+
                     return;
                 }
                 if (obj != inPlace)
                 {
-                    log.Error("RemoveObject conflict! OID" + obj.ObjectID + " " + obj.Name + "(" + obj.CurrentRegionID + ") but there was another object already " + inPlace.Name + " region:" + inPlace.CurrentRegionID + " state:" + inPlace.ObjectState);
-                    log.Error(new StackTrace().ToString());
+                    if (log.IsErrorEnabled)
+                    {
+                        log.Error("RemoveObject conflict! OID" + obj.ObjectID + " " + obj.Name + "(" + obj.CurrentRegionID + ") but there was another object already " + inPlace.Name + " region:" + inPlace.CurrentRegionID + " state:" + inPlace.ObjectState);
+                        log.Error(new StackTrace().ToString());
+                    }
+
                     return;
                 }
 
                 if (m_objects[index] != obj)
                 {
-                    log.Error("Object OID is already used by another object! (used by:" + m_objects[index].ToString() + ")");
+                    if (log.IsErrorEnabled)
+                        log.Error("Object OID is already used by another object! (used by:" + m_objects[index].ToString() + ")");
                 }
                 else
                 {
@@ -1348,7 +1358,8 @@ namespace DOL.GS
                     }
                     catch (Exception e)
                     {
-                        log.Error("GetArea exception.Area count " + m_ZoneAreasCount[zoneIndex], e);
+                        if (log.IsErrorEnabled)
+                            log.Error("GetArea exception.Area count " + m_ZoneAreasCount[zoneIndex], e);
                     }
                 }
 
@@ -1376,7 +1387,8 @@ namespace DOL.GS
                     }
                     catch (Exception e)
                     {
-                        log.Error("GetArea exception.Area count " + m_ZoneAreasCount[zoneIndex], e);
+                        if (log.IsErrorEnabled)
+                            log.Error("GetArea exception.Area count " + m_ZoneAreasCount[zoneIndex], e);
                     }
                 }
                 return areas;

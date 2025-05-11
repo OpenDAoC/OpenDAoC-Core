@@ -95,7 +95,9 @@ namespace DOL.GS.PacketHandler
                 }
 
                 _cachedPreprocessorSearchResults.TryGetValue(version, out List<PacketHandlerAttribute> attributes);
-                log.Info($"Loaded {attributes.Count} preprocessors from cache for {version}");
+
+                if (log.IsInfoEnabled)
+                    log.Info($"Loaded {attributes.Count} preprocessors from cache for {version}");
 
                 foreach (PacketHandlerAttribute attribute in attributes)
                     _packetPreprocessor.RegisterPacketDefinition(attribute.Code, attribute.PreprocessorID);
@@ -123,8 +125,11 @@ namespace DOL.GS.PacketHandler
                             int packetCode = packetHandlerAttributes[0].Code;
                             IPacketHandler handler = Activator.CreateInstance(type) as IPacketHandler;
 
-                            if (packetHandlers[packetCode] != null)
-                                log.Info($"Overwriting Client Packet Code {packetCode}, with handler {handler.GetType().FullName}");
+                            if (log.IsDebugEnabled)
+                            {
+                                if (packetHandlers[packetCode] != null)
+                                    log.Debug($"Overwriting Client Packet Code {packetCode}, with handler {handler.GetType().FullName}");
+                            }
 
                             packetHandlers[packetCode] = handler;
 
@@ -187,7 +192,9 @@ namespace DOL.GS.PacketHandler
 
             if (!_packetPreprocessor.CanProcessPacket(_client, packet))
             {
-                log.Info($"Preprocessor prevents handling of a packet with packet.ID={packet.ID}");
+                if (log.IsInfoEnabled)
+                    log.Info($"Preprocessor prevents handling of a packet with packet.ID={packet.ID}");
+
                 return;
             }
 
@@ -197,8 +204,11 @@ namespace DOL.GS.PacketHandler
                 packetHandler.HandlePacket(_client, packet);
                 long stopTick = GameLoop.GetCurrentTime();
 
-                if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {nameof(PacketProcessor)}.{nameof(ProcessInboundPacket)} (code: 0x{packet.ID:X}) for {_client.Player?.Name}({_client.Player?.ObjectID}) Time: {stopTick - startTick}ms");
+                if (log.IsWarnEnabled)
+                {
+                    if (stopTick - startTick > Diagnostics.LongTickThreshold)
+                        log.Warn($"Long {nameof(PacketProcessor)}.{nameof(ProcessInboundPacket)} (code: 0x{packet.ID:X}) for {_client.Player?.Name}({_client.Player?.ObjectID}) Time: {stopTick - startTick}ms");
+                }
             }
             catch (Exception e)
             {

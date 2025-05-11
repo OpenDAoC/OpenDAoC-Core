@@ -55,10 +55,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					conMerchant.TotalMoney -= totalConMoney;
 
-					if (ServerProperties.Properties.MARKET_ENABLE_LOG)
-					{
+					if (ServerProperties.Properties.MARKET_ENABLE_LOG && log.IsDebugEnabled)
 						log.DebugFormat("CM: [{0}:{1}] withdraws {2} from CM on lot {3}.", client.Player.Name, client.Account.Name, totalConMoney, conMerchant.HouseNumber);
-					}
 
 					client.Out.SendConsignmentMerchantMoney(conMerchant.TotalMoney);
 				}

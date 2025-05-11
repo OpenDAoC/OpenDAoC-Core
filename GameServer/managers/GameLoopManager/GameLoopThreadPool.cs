@@ -76,7 +76,9 @@ namespace DOL.GS
                 }
                 catch (ThreadInterruptedException)
                 {
-                    log.Info($"\"{Thread.CurrentThread.Name}\" was interrupted");
+                    if (log.IsInfoEnabled)
+                        log.Info($"\"{Thread.CurrentThread.Name}\" was interrupted");
+
                     return;
                 }
                 catch (Exception e)

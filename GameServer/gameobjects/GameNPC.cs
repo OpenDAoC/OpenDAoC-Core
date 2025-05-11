@@ -1073,7 +1073,8 @@ namespace DOL.GS
 				}
 				catch
 				{
-					log.Error($"GameNPC error in LoadFromDatabase: can not instantiate brain of type {dbMob.Brain} for npc {dbMob.ClassType}, name {dbMob.Name}.");
+					if (log.IsErrorEnabled)
+						log.Error($"GameNPC error in LoadFromDatabase: can not instantiate brain of type {dbMob.Brain} for npc {dbMob.ClassType}, name {dbMob.Name}.");
 				}
 			}
 
@@ -1993,12 +1994,17 @@ namespace DOL.GS
 
 			if (m_houseNumber > 0 && this is not GameConsignmentMerchant)
 			{
-				log.Info("NPC '" + Name + "' added to house " + m_houseNumber);
+				if (log.IsInfoEnabled)
+					log.Info("NPC '" + Name + "' added to house " + m_houseNumber);
+
 				CurrentHouse = HouseMgr.GetHouse(m_houseNumber);
 
 				if (CurrentHouse == null)
-					log.Warn("House " + CurrentHouse + " for NPC " + Name + " doesn't exist");
-				else
+				{
+					if (log.IsWarnEnabled)
+						log.Warn("House " + CurrentHouse + " for NPC " + Name + " doesn't exist");
+				}
+				else if (log.IsInfoEnabled)
 					log.Info("Confirmed number: " + CurrentHouse.HouseNumber.ToString());
 			}
 
@@ -3788,7 +3794,9 @@ namespace DOL.GS
 								StylesFront.Add(s);
 								break;
 							default:
-								log.Warn($"GameNPC.SortStyles(): Invalid OpeningRequirementValue for positional style {s.Name }, ID {s.ID}, ClassId {s.ClassID}");
+								if (log.IsWarnEnabled)
+									log.Warn($"GameNPC.SortStyles(): Invalid OpeningRequirementValue for positional style {s.Name }, ID {s.ID}, ClassId {s.ClassID}");
+
 								break;
 						}
 						break;
@@ -4224,7 +4232,9 @@ namespace DOL.GS
 
 			if (brain == null)
 			{
-				log.Warn("GameNPC.Copy():  Unable to create brain:  " + Brain.GetType().FullName + ", using StandardMobBrain.");
+				if (log.IsWarnEnabled)
+					log.Warn("GameNPC.Copy():  Unable to create brain:  " + Brain.GetType().FullName + ", using StandardMobBrain.");
+
 				brain = new StandardMobBrain();
 			}
 

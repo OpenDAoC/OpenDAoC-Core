@@ -2701,14 +2701,17 @@ namespace DOL.GS.ServerProperties
 			if (!prop.IsPersisted)
 			{
 				GameServer.Database.AddObject(prop);
-				log.DebugFormat("Cannot find server property {0} creating it", key);
+
+				if (log.IsDebugEnabled)
+					log.DebugFormat("Cannot find server property {0} creating it", key);
 			}
 			
-			log.DebugFormat("Loading {0} Value is {1}", key, prop.Value);
+			if (log.IsDebugEnabled)
+				log.DebugFormat("Loading {0} Value is {1}", key, prop.Value);
 			
 			try
 			{
-				if (field.IsInitOnly)
+				if (field.IsInitOnly && log.IsWarnEnabled)
 					log.WarnFormat("Property {0} is ReadOnly, Value won't be changed - {1} !", key, field.GetValue(null));
 				
 				//we do this because we need "1.0" to be considered double sometimes its "1,0" in other countries
@@ -2718,8 +2721,11 @@ namespace DOL.GS.ServerProperties
 			}
 			catch (Exception e)
 			{
-				log.ErrorFormat("Exception in ServerProperties Load: {0}", e);
-				log.ErrorFormat("Trying to load {0} value is {1}", key, prop.Value);
+				if (log.IsErrorEnabled)
+				{
+					log.ErrorFormat("Exception in ServerProperties Load: {0}", e);
+					log.ErrorFormat("Trying to load {0} value is {1}", key, prop.Value);
+				}
 			}
 		}
 
@@ -2728,7 +2734,9 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		public static void Refresh()
 		{
-			log.Info("Refreshing server properties...");
+			if (log.IsInfoEnabled)
+				log.Info("Refreshing server properties...");
+
 			InitProperties();
 		}
 
@@ -2769,11 +2777,14 @@ namespace DOL.GS.ServerProperties
 				try
 				{
 					GameServer.Database.DeleteObject(dbProperty);
-					log.Info($"Removed rogue property: {dbProperty.Key} ({dbProperty.Value}).");
+
+					if (log.IsInfoEnabled)
+						log.Info($"Removed rogue property: {dbProperty.Key} ({dbProperty.Value}).");
 				}
 				catch
 				{
-					log.Error($"Couldn't remove rogue property: {dbProperty.Key} ({dbProperty.Value}).");
+					if (log.IsErrorEnabled)
+						log.Error($"Couldn't remove rogue property: {dbProperty.Key} ({dbProperty.Value}).");
 				}
 			}
 		}

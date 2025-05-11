@@ -370,7 +370,9 @@ namespace DOL.GS
                 }
                 else
                 {
-                    log.Info($"Incoming connection from {TcpEndpointAddress} using client version {version}");
+                    if (log.IsInfoEnabled)
+                        log.Info($"Incoming connection from {TcpEndpointAddress} using client version {version}");
+
                     Version = ver;
                     Out = packetLib;
                     PacketProcessor = new PacketProcessor(this);
@@ -414,19 +416,19 @@ namespace DOL.GS
                         if (log.IsWarnEnabled)
                             log.Warn($"Bad TCP packet checksum (packet:0x{pakCheck:X4} calculated:0x{calcCheck:X4}) -> disconnecting\nclient: {this}\ncurOffset={currentOffset}; packetLength={packetLength}");
 
-                        if (log.IsInfoEnabled)
+                        if (log.IsDebugEnabled)
                         {
                             if (Properties.SAVE_PACKETS)
                             {
-                                log.Info("Last client sent/received packets (from older to newer):");
+                                log.Debug("Last client sent/received packets (from older to newer):");
 
                                 foreach (IPacket prevPak in PacketProcessor.GetLastPackets())
-                                    log.Info(prevPak.ToHumanReadable());
+                                    log.Debug(prevPak.ToHumanReadable());
                             }
                             else
-                                log.Info($"Enable the server property {nameof(Properties.SAVE_PACKETS)} to see the last few sent/received packets.");
+                                log.Debug($"Enable the server property {nameof(Properties.SAVE_PACKETS)} to see the last few sent/received packets.");
 
-                            log.Info(Marshal.ToHexDump("Last received bytes: ", buffer));
+                            log.Debug(Marshal.ToHexDump("Last received bytes: ", buffer));
                         }
 
                         Disconnect();

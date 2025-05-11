@@ -191,7 +191,10 @@ namespace DOL.GS
                                 if (attrib.Cmd.Replace('&', '/') == str)
                                 {
                                     disabled = true;
-                                    log.Info("Will not load command " + attrib.Cmd + " as it is disabled in server properties");
+
+                                    if (log.IsInfoEnabled)
+                                        log.Info("Will not load command " + attrib.Cmd + " as it is disabled in server properties");
+
                                     break;
                                 }
                             }
@@ -201,7 +204,9 @@ namespace DOL.GS
 
                             if (m_gameCommands.ContainsKey(attrib.Cmd))
                             {
-                                log.Info(attrib.Cmd + " from " + script.GetName() + " has been suppressed, a command of that type already exists!");
+                                if (log.IsInfoEnabled)
+                                    log.Info(attrib.Cmd + " from " + script.GetName() + " has been suppressed, a command of that type already exists!");
+
                                 continue;
                             }
                             if (log.IsDebugEnabled && quiet == false)
@@ -230,7 +235,10 @@ namespace DOL.GS
                     }
                 }
             }
-            log.Info("Loaded " + m_gameCommands.Count + " commands!");
+
+            if (log.IsInfoEnabled)
+                log.Info("Loaded " + m_gameCommands.Count + " commands!");
+
             return true;
         }
 

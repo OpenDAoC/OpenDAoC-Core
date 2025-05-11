@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Reflection;
-using DOL.Logging;
 using DOL.GS.Metrics.Meters;
+using DOL.Logging;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -20,7 +19,8 @@ public static class MeterRegistry
     /// </summary>
     public static void RegisterMeterProviders()
     {
-        log.Info("Configuring Meter Providers");
+        if (log.IsInfoEnabled)
+            log.Info("Configuring Meter Providers");
 
         MeterProviderBuilder builder = Sdk.CreateMeterProviderBuilder()
             .ConfigureResource(resource => resource.AddService("GameServer"))
@@ -32,7 +32,9 @@ public static class MeterRegistry
             });
 
         // Get all meters
-        log.Info("Get all meters implementing IMeterProvider");
+        if (log.IsInfoEnabled)
+            log.Info("Get all meters implementing IMeterProvider");
+
         List<IMeterProvider> meters = 
         [..
                 Assembly.GetExecutingAssembly().GetTypes()
@@ -40,10 +42,11 @@ public static class MeterRegistry
             .Select(t => (IMeterProvider)Activator.CreateInstance(t))
         ];
 
-
         foreach (IMeterProvider meter in meters)
         {
-            log.Info($"Registering {meter.MeterName}");
+            if (log.IsInfoEnabled)
+                log.Info($"Registering {meter.MeterName}");
+
             meter.Register(builder);
         }
 

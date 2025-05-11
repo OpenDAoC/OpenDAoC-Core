@@ -97,7 +97,10 @@ namespace DOL.Network
                         return false;
 
                     _listen.Listen(100);
-                    log.Info("Server is now listening to incoming connections!");
+
+                    if (log.IsInfoEnabled)
+                        log.Info($"Server is now listening for incoming connections on {Configuration.IP}:{Configuration.Port}");
+
                     SocketAsyncEventArgs listenArgs = CreateSocketAsyncEventArgs();
 
                     while (!_listen.AcceptAsync(listenArgs))
@@ -306,7 +309,9 @@ namespace DOL.Network
                 {
                     _listen.Close();
                     _listen = null;
-                    log.Info("Server is no longer listening for incoming connections");
+
+                    if (log.IsInfoEnabled)
+                        log.Info("Server is no longer listening for incoming connections");
                 }
             }
             catch (Exception e)

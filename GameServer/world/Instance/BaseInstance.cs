@@ -24,9 +24,6 @@ namespace DOL.GS
         {
             m_regionID = ID;
             m_skinID = data.Id;
-            
-            //Notify we've created an instance.
-            log.Warn("An instance is created! " + Name + ", RegionID: " + ID + ", SkinID: " + Skin);
         }
 
 		/// <summary>
@@ -111,7 +108,9 @@ namespace DOL.GS
 				//If no more players remain, remove and clean up the instance...
 				if (m_destroyWhenEmpty && m_playersInInstance == 0)
 				{
-					log.Info("Instance is empty, destroying instance " + Description + ", ID: " + ID + ".");
+					if (log.IsInfoEnabled)
+						log.Info("Instance is empty, destroying instance " + Description + ", ID: " + ID + ".");
+
 					WorldMgr.RemoveInstance(this);
 				}
 			}
@@ -194,7 +193,9 @@ namespace DOL.GS
             //If no more players remain, remove and clean up the instance...
             if (m_playersInInstance < 1 && DestroyWhenEmpty)
             {
-                log.Warn("Instance now empty, destroying instance " + Description + ", ID: " + ID + ", type=" + GetType().ToString() + ".");
+                if (log.IsWarnEnabled)
+                    log.Warn("Instance now empty, destroying instance " + Description + ", ID: " + ID + ", type=" + GetType().ToString() + ".");
+
                 WorldMgr.RemoveInstance(this);
             }
         }
@@ -249,11 +250,6 @@ namespace DOL.GS
 			m_zoneSkinMap.Clear();
 
 			Areas.Clear();
-		}
-
-		~BaseInstance()
-		{
-			log.Debug("BaseInstance destructor called for " + Description);
 		}
 
         private AutoCloseRegionTimer m_autoCloseRegionTimer;
@@ -320,7 +316,9 @@ namespace DOL.GS
             {
                 if (m_instance == null)
                 {
-                    log.Warn("RegionRemovalTimer is not being stopped once the instance is destroyed!");
+                    if (log.IsWarnEnabled)
+                        log.Warn("RegionRemovalTimer is not being stopped once the instance is destroyed!");
+
                     Stop();
                     return 0;
                 }
@@ -330,11 +328,16 @@ namespace DOL.GS
                 //When this is a case, keep the timer ticking - we will eventually have it cleanup the instance,
                 //it just wont be running at optimum speed.
                 if (ClientService.GetPlayersOfRegion(m_instance).Count > 0)
-                    log.Warn("Players were still in the region on AutoRemoveregionTimer Tick! Please check the overridden voids OnPlayerEnter/Exit to ensure that a 'base.OnPlayerEnter/Exit' is included!");
+                {
+                    if (log.IsWarnEnabled)
+                        log.Warn("Players were still in the region on AutoRemoveregionTimer Tick! Please check the overridden voids OnPlayerEnter/Exit to ensure that a 'base.OnPlayerEnter/Exit' is included!");
+                }
                 else
                 {
                     //Collapse the zone!
-                    log.Info(m_instance.Name + " (ID: " + m_instance.ID + ") just reached the timeout for the removal timer. The region is empty, and will now be demolished and removed from the world. Entering OnCollapse!");
+                    if (log.IsInfoEnabled)
+                        log.Info(m_instance.Name + " (ID: " + m_instance.ID + ") just reached the timeout for the removal timer. The region is empty, and will now be demolished and removed from the world. Entering OnCollapse!");
+
                     Stop();
                     WorldMgr.RemoveInstance(m_instance);
                 }
@@ -361,7 +364,9 @@ namespace DOL.GS
 			{
 				if (m_instance == null)
 				{
-					log.Warn("DelayCloseRegionTimer is not being stopped once the instance is destroyed!");
+					if (log.IsWarnEnabled)
+						log.Warn("DelayCloseRegionTimer is not being stopped once the instance is destroyed!");
+
 					Stop();
 					return 0;
 				}
@@ -426,7 +431,8 @@ namespace DOL.GS
 					}
 					catch (Exception e)
 					{
-						log.Error("GetAreaOfZone: Caught exception for Zone " + zone.Description + ", Area count " + m_ZoneAreasCount[zoneIndex] + ".", e);
+						if (log.IsErrorEnabled)
+							log.Error("GetAreaOfZone: Caught exception for Zone " + zone.Description + ", Area count " + m_ZoneAreasCount[zoneIndex] + ".", e);
 					}
 				}
 			}
@@ -474,7 +480,8 @@ namespace DOL.GS
 					}
 					catch (Exception e)
 					{
-						log.Error("GetArea exception.Area count " + m_ZoneAreasCount[zoneIndex], e);
+						if (log.IsErrorEnabled)
+							log.Error("GetArea exception.Area count " + m_ZoneAreasCount[zoneIndex], e);
 					}
 				}
 			}

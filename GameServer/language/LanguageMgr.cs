@@ -53,7 +53,8 @@ namespace DOL.Language
             }
             catch
             {
-                log.ErrorFormat("[Language-Manager] Parameter number incorrect: {0} for language {1}, Arg count = {2}, sentence = '{3}', args[0] = '{4}'", translationId, language, args.Length, translation, args.Length > 0 ? args[0] : "null");
+                if (log.IsErrorEnabled)
+                    log.ErrorFormat("[Language-Manager] Parameter number incorrect: {0} for language {1}, Arg count = {2}, sentence = '{3}', args[0] = '{4}'", translationId, language, args.Length, translation, args.Length > 0 ? args[0] : "null");
             }
 
             return true;
@@ -138,7 +139,7 @@ namespace DOL.Language
         private static bool LoadTranslations()
         {
             #region Load system translations
-            if (log.IsDebugEnabled)
+            if (log.IsInfoEnabled)
                 log.Info("[Language-Manager] Loading system sentences...");
 
             ArrayList fileSentences = new();
@@ -169,13 +170,17 @@ namespace DOL.Language
 
             if (!defaultLanguageDirectoryFound)
             {
-                log.Error("Could not find default '" + DefaultLanguage + "' language directory, server can't start without it!");
+                if (log.IsErrorEnabled)
+                    log.Error("Could not find default '" + DefaultLanguage + "' language directory, server can't start without it!");
+
                 return false;
             }
 
             if (!defaultLanguageFilesFound)
             {
-                log.Error("Default '" + DefaultLanguage + "' language files missing, server can't start without those files!");
+                if (log.IsErrorEnabled)
+                    log.Error("Default '" + DefaultLanguage + "' language files missing, server can't start without those files!");
+
                 return false;
             }
 
@@ -308,7 +313,7 @@ namespace DOL.Language
             #endregion Load system translations
 
             #region Load object translations
-            if (log.IsDebugEnabled)
+            if (log.IsInfoEnabled)
                 log.Info("[Language-Manager] Loading object translations...");
 
             List<LanguageDataObject> lngObjs = new();
@@ -524,7 +529,8 @@ namespace DOL.Language
             }
             catch (Exception ex)
             {
-                log.Error("Error Getting Translation Error Text for " + lang + ":" + TranslationID, ex);
+                if (log.IsErrorEnabled)
+                    log.Error("Error Getting Translation Error Text for " + lang + ":" + TranslationID, ex);
             }
 
             return lang + " Translation Error!";

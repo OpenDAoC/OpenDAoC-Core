@@ -104,7 +104,10 @@ namespace DOL.GS.Commands
 					client.Out.SendMessage(" /reload teleports - reload all teleport locations", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					client.Out.SendMessage(" /reload npctemplates - reload all NPCTemplates", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				}
-				log.Info("/reload command failed, review parameters.");
+
+				if (log.IsInfoEnabled)
+					log.Info("/reload command failed, review parameters.");
+
 				return;
 			}
 			else if (argLength > 1)
@@ -184,40 +187,65 @@ namespace DOL.GS.Commands
 			{
 				SkillBase.ReloadSpells();
 				SkillBase.ReloadSpellLines();
-				if (client != null) client.Out.SendMessage("Spells and spell lines reloaded", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Info("Spells and spell lines reloaded.");
+
+				if (client != null)
+					client.Out.SendMessage("Spells and spell lines reloaded", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+				if (log.IsInfoEnabled)
+					log.Info("Spells and spell lines reloaded.");
+
 				return;
 			}
 
 			if (args[1].ToLower() == "specs")
 			{
 				int count = SkillBase.LoadSpecializations();
-				if (client != null) client.Out.SendMessage(string.Format("{0} specializations loaded.", count), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Info(string.Format("{0} specializations loaded.", count));
+
+				if (client != null)
+					client.Out.SendMessage(string.Format("{0} specializations loaded.", count), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+				if (log.IsInfoEnabled)
+					log.Info(string.Format("{0} specializations loaded.", count));
+
 				return;
 			}
 			
 			if (args[1].ToLower() == "teleports")
 			{
 				WorldMgr.LoadTeleports();
-				if (client != null) client.Out.SendMessage("Teleport locations reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Info("Teleport locations reloaded.");
+
+				if (client != null)
+					client.Out.SendMessage("Teleport locations reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+				if (log.IsInfoEnabled)
+					log.Info("Teleport locations reloaded.");
+
 				return;
 			}
 			
 			if (args[1].ToLower() == "npctemplates")
 			{
 				NpcTemplateMgr.Reload();
-				if (client != null) client.Out.SendMessage("NPC templates reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Info("NPC templates reloaded.");
+
+				if (client != null)
+					client.Out.SendMessage("NPC templates reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+				if (log.IsInfoEnabled)
+					log.Info("NPC templates reloaded.");
+
 				return;
 			}
 			
 			if (args[1].ToLower() == "doors")
 			{
 				DoorMgr.Init();
-				if (client != null) client.Out.SendMessage("Doors reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				log.Info("Doors reloaded.");
+
+				if (client != null)
+					client.Out.SendMessage("Doors reloaded.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+				if (log.IsInfoEnabled)
+					log.Info("Doors reloaded.");
+
 				return;
 			}
 
@@ -228,7 +256,9 @@ namespace DOL.GS.Commands
 		{
 			if (region == 0)
 			{
-				log.Info("Region reload not supported from console.");
+				if (log.IsInfoEnabled)
+					log.Info("Region reload not supported from console.");
+
 				return;
 			}
 
@@ -316,7 +346,9 @@ namespace DOL.GS.Commands
 		{
 			if (region == 0)
 			{
-				log.Info("Region reload not supported from console.");
+				if (log.IsInfoEnabled)
+					log.Info("Region reload not supported from console.");
+
 				return;
 			}
 

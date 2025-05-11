@@ -59,7 +59,9 @@ namespace DOL.GS
 
                 if (time < 1)
                 {
-                    log.Warn("Time has not changed since last call of PrintStats");
+                    if (log.IsWarnEnabled)
+                        log.Warn("Time has not changed since last call of PrintStats");
+
                     time = 1;
                 }
 
@@ -99,11 +101,13 @@ namespace DOL.GS
                 AppendStatistic(stats, "pg/s", _pageFaultsPerSecond);
                 AppendStatistic(stats, "dsk/s", _diskTransfersPerSecond);
 
-                log.Info(stats.ToString());
+                if (log.IsInfoEnabled)
+                    log.Info(stats.ToString());
             }
             catch (Exception e)
             {
-                log.Error("stats Log callback", e);
+                if (log.IsErrorEnabled)
+                    log.Error("stats Log callback", e);
             }
             finally
             {
@@ -131,7 +135,9 @@ namespace DOL.GS
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                if (log.IsErrorEnabled)
+                    log.Error(ex);
+
                 return null;
             }
         }

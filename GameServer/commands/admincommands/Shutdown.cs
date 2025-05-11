@@ -95,9 +95,10 @@ namespace DOL.GS.Commands
 				foreach (GamePlayer player in ClientService.GetPlayers())
 					player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, msg);
 
-				log.Warn(msg);
+				if (log.IsWarnEnabled)
+					log.Warn(msg);
 			}
-			else
+			else if (log.IsInfoEnabled)
 				log.Info($"Uptime = {uptime.TotalHours:N1}, restart uptime = {Properties.HOURS_UPTIME_BETWEEN_SHUTDOWN} | current hour = {DateTime.Now.Hour}, restart hour = {AUTOMATEDSHUTDOWN_HOURTOSHUTDOWN}");
 		}
 		
@@ -115,10 +116,13 @@ namespace DOL.GS.Commands
 			}
 			else
 			{
-				if (m_counter > 120)
-					log.Warn("Server restart in " + (int)(m_counter / 60) + " minutes!");
-				else
-					log.Warn("Server restart in " + m_counter + " seconds!");
+				if (log.IsWarnEnabled)
+				{
+					if (m_counter > 120)
+						log.Warn("Server restart in " + (int)(m_counter / 60) + " minutes!");
+					else
+						log.Warn("Server restart in " + m_counter + " seconds!");
+				}
 
 				long secs = m_counter;
 				long mins = secs / 60;
@@ -294,10 +298,13 @@ namespace DOL.GS.Commands
 			}
 			else
 			{
-				if (m_counter > 120)
-					log.Warn("Server restart in " + (int)(m_counter / 60) + " minutes!");
-				else
-					log.Warn("Server restart in " + m_counter + " seconds!");
+				if (log.IsWarnEnabled)
+				{
+					if (m_counter > 120)
+						log.Warn("Server restart in " + (int)(m_counter / 60) + " minutes!");
+					else
+						log.Warn("Server restart in " + m_counter + " seconds!");
+				}
 
 				long secs = m_counter;
 				long mins = secs / 60;
@@ -468,8 +475,10 @@ namespace DOL.GS.Commands
 			if (GameServer.Instance.IsRunning)
 			{
 				GameServer.Instance.Stop();
-				log.Info("Executed server shutdown!");
-				Thread.Sleep(2000);
+
+				if (log.IsInfoEnabled)
+					log.Info("Executed server shutdown!");
+
 				Environment.Exit(0);
 			}
 		}
@@ -550,13 +559,13 @@ namespace DOL.GS.Commands
 							GameServer.Instance.Open();
 							// Message: "The server is now open and accepting incoming connections!"
 							ChatUtil.SendDebugMessage(client, "AdminCommands.Shutdown.Msg.ServerOpen", null);
-							log.Info("Shutdown aborted. Server now accepting incoming connections!");
+
+							if (log.IsInfoEnabled)
+								log.Info("Shutdown aborted. Server now accepting incoming connections!");
 						}
-						else
-						{
+						else if (log.IsInfoEnabled)
 							log.Info("Shutdown aborted. Server still accepting incoming connections!");
-						}
-						
+
 						if (Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(Properties.DISCORD_WEBHOOK_ID)))
 						{
 

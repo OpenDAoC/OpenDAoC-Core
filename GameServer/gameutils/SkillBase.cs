@@ -415,9 +415,7 @@ namespace DOL.GS
 				}
 
 				if (log.IsInfoEnabled)
-				{
 					log.InfoFormat("Total abilities loaded: {0}", m_abilityIndex.Count);
-				}
 			}
 			finally
 			{
@@ -465,7 +463,8 @@ namespace DOL.GS
 					}
 				}
 
-				log.Info("Realm Abilities assigned to classes!");
+				if (log.IsInfoEnabled)
+					log.Info("Realm Abilities assigned to classes!");
 			}
 			finally
 			{
@@ -2422,9 +2421,7 @@ namespace DOL.GS
 			if (create)
 			{
 				if (log.IsWarnEnabled)
-				{
 					log.WarnFormat($"Spell-Line {keyname} unknown, creating temporary line.");
-				}
 
 				return new SpellLine(keyname, $"{keyname}?", "", true);
 			}
@@ -2972,11 +2969,7 @@ namespace DOL.GS
 		public static eProperty SpecToSkill(string specKey)
 		{
 			if (!m_specToSkill.TryGetValue(specKey, out eProperty res))
-			{
-				//if (log.IsWarnEnabled)
-				//log.Warn("No skill property found for spec " + specKey);
 				return eProperty.Undefined;
-			}
 
 			return res;
 		}
@@ -2989,11 +2982,7 @@ namespace DOL.GS
 		public static eProperty SpecToFocus(string specKey)
 		{
 			if (!m_specToFocus.TryGetValue(specKey, out eProperty res))
-			{
-				//if (log.IsWarnEnabled)
-				//log.Warn("No skill property found for spec " + specKey);
 				return eProperty.Undefined;
-			}
 
 			return res;
 		}

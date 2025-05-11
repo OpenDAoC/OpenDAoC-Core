@@ -170,7 +170,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (GameServer.Instance.ServerStatus == EGameServerStatus.GSS_Closed)
 			{
 				client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
-				Log.Info(ipAddress + " disconnected because game is closed!");
+
+				if (Log.IsInfoEnabled)
+					Log.Info(ipAddress + " disconnected because game is closed!");
+
 				client.IsConnected = false;
 				return;
 			}
@@ -206,7 +209,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					if (state is not GameClient.eClientState.NotConnected)
 					{
-						Log.DebugFormat($"wrong client state on connect {userName} {state}");
+						if (Log.IsDebugEnabled)
+							Log.DebugFormat($"wrong client state on connect {userName} {state}");
+
 						return;
 					}
 
@@ -256,7 +261,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						if (client != null && client.Out != null)
 							client.Out.SendLoginDenied(eLoginError.AccountInvalid);
-						else
+						else if (Log.IsWarnEnabled)
 							Log.Warn("Client or Client.Out null on invalid name failure.  Disconnecting.");
 
 						client.IsConnected = false;
@@ -294,7 +299,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 									ts = DateTime.Now - ac.CreationDate;
 									if (ts.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION_SAMEIP && totalacc > 1)
 									{
-										Log.Warn("Account creation: too many from same IP within set minutes - " + userName + " : " + ipAddress);
+										if (Log.IsWarnEnabled)
+											Log.Warn("Account creation: too many from same IP within set minutes - " + userName + " : " + ipAddress);
+
 										client.Out.SendLoginDenied(eLoginError.PersonalAccountIsOutOfTime);
 										client.IsConnected = false;
 										return;
@@ -304,7 +311,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 								}
 								if (totalacc >= Properties.TOTAL_ACCOUNTS_ALLOWED_SAMEIP)
 								{
-									Log.Warn("Account creation: too many accounts created from same ip - " + userName + " : " + ipAddress);
+									if (Log.IsWarnEnabled)
+										Log.Warn("Account creation: too many accounts created from same ip - " + userName + " : " + ipAddress);
+
 									client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
 									client.IsConnected = false;
 									return;
@@ -316,7 +325,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 									ts = DateTime.Now - m_lastAccountCreateTime;
 									if (ts.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION)
 									{
-										Log.Warn("Account creation: time between account creation too small - " + userName + " : " + ipAddress);
+										if (Log.IsWarnEnabled)
+											Log.Warn("Account creation: time between account creation too small - " + userName + " : " + ipAddress);
+
 										client.Out.SendLoginDenied(eLoginError.PersonalAccountIsOutOfTime);
 										client.IsConnected = false;
 										return;
@@ -502,13 +513,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <param name="accountName">Name of the account.</param>
 		private void EnterLock(string accountName)
 		{
-			// Safety check
-			if (accountName == null)
-			{
-				accountName = string.Empty;
-				Log.Warn("(Enter) No account name");
-			}
-
 			LockCount lockObj = null;
 			lock (m_locks)
 			{
@@ -521,7 +525,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				if (lockObj == null)
 				{
-					Log.Error("(Enter) No lock object for account: '" + accountName + "'");
+					if (Log.IsErrorEnabled)
+						Log.Error("(Enter) No lock object for account: '" + accountName + "'");
 				}
 				else
 				{
@@ -542,20 +547,14 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// <param name="accountName">Name of the account.</param>
 		private void ExitLock(string accountName)
 		{
-			// Safety check
-			if (accountName == null)
-			{
-				accountName = string.Empty;
-				Log.Warn("(Exit) No account name");
-			}
-
 			LockCount lockObj = null;
 			lock (m_locks)
 			{
 				// Get lock object
 				if (!m_locks.TryGetValue(accountName, out lockObj))
 				{
-					Log.Error("(Exit) No lock object for account: '" + accountName + "'");
+					if (Log.IsErrorEnabled)
+						Log.Error("(Exit) No lock object for account: '" + accountName + "'");
 				}
 
 				// Remove lock object if no more locks on it

@@ -293,10 +293,12 @@ namespace DOL.GS
 				//Manually set ThreadPool min thread count.
 				ThreadPool.GetMinThreads(out int minWorkerThreads, out int minIOCThreads);
 				ThreadPool.GetMaxThreads(out int maxWorkerThreads, out int maxIOCThreads);
-				log.Info($"Default ThreadPool minworkthreads {minWorkerThreads} minIOCThreads {minIOCThreads} maxworkthreads {maxWorkerThreads} maxIOCThreads {maxIOCThreads}");
 
 				if (log.IsDebugEnabled)
+				{
+					log.Debug($"Default ThreadPool minworkthreads {minWorkerThreads} minIOCThreads {minIOCThreads} maxworkthreads {maxWorkerThreads} maxIOCThreads {maxIOCThreads}");
 					log.DebugFormat("Starting Server, Memory is {0}MB", GC.GetTotalMemory(false) / 1024 / 1024);
+				}
 
 				m_status = EGameServerStatus.GSS_Closed;
 				Thread.CurrentThread.Priority = ThreadPriority.Normal;
@@ -484,10 +486,8 @@ namespace DOL.GS
 					if (!InitComponent(QuestMgr.Init(), "Quest Manager"))
 						return false;
 				}
-				else
-				{
+				else if (log.IsInfoEnabled)
 					log.InfoFormat("Not Loading Quest Manager : Obeying Server Property <load_quests> - {0}", Properties.LOAD_QUESTS);
-				}
 
 				//---------------------------------------------------------------
 				//Notify our scripts that everything went fine!
@@ -514,7 +514,8 @@ namespace DOL.GS
 
 				GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 
-				log.Info($"GarbageCollection IsServerGC: {System.Runtime.GCSettings.IsServerGC}" );
+				if (log.IsInfoEnabled)
+					log.Info($"GarbageCollection IsServerGC: {System.Runtime.GCSettings.IsServerGC}" );
 
 				//---------------------------------------------------------------
 				//Open the server, players can now connect if webhook, inform Discord!
@@ -638,7 +639,8 @@ namespace DOL.GS
 			// Check if Configuration Forces to use Pre-Compiled Game Server Scripts Assembly
 			if (!Configuration.EnableCompilation)
 			{
-				log.Info("Script Compilation Disabled in Server Configuration, Loading pre-compiled Assembly...");
+				if (log.IsInfoEnabled)
+					log.Info("Script Compilation Disabled in Server Configuration, Loading pre-compiled Assembly...");
 
 				if (File.Exists(Configuration.ScriptCompilationTarget))
 				{
@@ -646,7 +648,8 @@ namespace DOL.GS
 				}
 				else
 				{
-					log.WarnFormat("Compilation Disabled - Could not find pre-compiled Assembly : {0} - Server starting without Scripts Assembly!", Configuration.ScriptCompilationTarget);
+					if (log.IsWarnEnabled)
+						log.WarnFormat("Compilation Disabled - Could not find pre-compiled Assembly : {0} - Server starting without Scripts Assembly!", Configuration.ScriptCompilationTarget);
 				}
 
 				compiled = true;
@@ -834,11 +837,14 @@ namespace DOL.GS
 
 				if (m_keepManager != null)
 				{
-					log.Warn("No Keep manager found, using " + m_keepManager.GetType().FullName);
+					if (log.IsWarnEnabled)
+						log.Warn("No Keep manager found, using " + m_keepManager.GetType().FullName);
 				}
 				else
 				{
-					log.Error("Cannot create Keep manager!");
+					if (log.IsErrorEnabled)
+						log.Error("Cannot create Keep manager!");
+
 					return false;
 				}
 			}
@@ -855,7 +861,8 @@ namespace DOL.GS
 			bool result = true;
 			try
 			{
-				log.Info("Checking database for updates ...");
+				if (log.IsInfoEnabled)
+					log.Info("Checking database for updates ...");
 
 				foreach (Assembly asm in ScriptMgr.GameServerScripts)
 				{
@@ -888,11 +895,15 @@ namespace DOL.GS
 			}
 			catch (Exception e)
 			{
-				log.Error("Error checking/updating database: ", e);
+				if (log.IsErrorEnabled)
+					log.Error("Error checking/updating database: ", e);
+
 				return false;
 			}
 
-			log.Info("Database update complete.");
+			if (log.IsInfoEnabled)
+				log.Info("Database update complete.");
+
 			return result;
 		}
 
@@ -970,7 +981,8 @@ namespace DOL.GS
 			//Stop new clients from logging in
 			m_status = EGameServerStatus.GSS_Closed;
 
-			log.Info("GameServer.Stop() - enter method");
+			if (log.IsInfoEnabled)
+				log.Info("GameServer.Stop() - enter method");
 
 			//Notify our scripthandlers
 			GameEventMgr.Notify(ScriptEvent.Unloaded);
@@ -1164,9 +1176,7 @@ namespace DOL.GS
 							if (attrib.Any())
 							{
 								if (log.IsInfoEnabled)
-								{
 									log.InfoFormat("Registering table: {0}", type.FullName);
-								}
 
 								m_database.RegisterDataObject(type);
 							}
@@ -1177,11 +1187,14 @@ namespace DOL.GS
 				{
 					if (log.IsErrorEnabled)
 						log.Error("Error registering Tables", e);
+
 					return false;
 				}
 			}
+
 			if (log.IsInfoEnabled)
 				log.Info("Database Initialization: true");
+
 			return true;
 		}
 

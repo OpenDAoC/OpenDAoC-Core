@@ -21,11 +21,14 @@ namespace DOL.GS
 
         public static bool Init()
         {
-            log.Info("Starting PathingMgr");
+            if (log.IsInfoEnabled)
+                log.Info("Starting PathingMgr");
+
             if (LocalPathingMgr.Init())
                 SetPathingMgr(LocalPathingMgr);
             else
                 SetPathingMgr(NullPathingMgr);
+
             return true;
         }
 
@@ -35,13 +38,17 @@ namespace DOL.GS
         /// <param name="mgr"></param>
         public static void SetPathingMgr(IPathingMgr mgr)
         {
-            log.Info($"Setting PathingMgr to {mgr}");
-            Instance = (mgr == null) ? NullPathingMgr : mgr;
+            if (log.IsInfoEnabled)
+                log.Info($"Setting PathingMgr to {mgr}");
+
+            Instance = mgr ?? NullPathingMgr;
         }
 
         public static void Stop()
         {
-            log.Info("Stopping PathingMgr");
+            if (log.IsInfoEnabled)
+                log.Info("Stopping PathingMgr");
+
             LocalPathingMgr.Stop();
         }
 

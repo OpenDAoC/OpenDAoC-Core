@@ -37,7 +37,9 @@ namespace DOL.GS.PacketHandler.Client.v168
             packet.Position = 0x50;
             uint upTime = packet.ReadInt();
             string text = $"Client crash ({client}) dll:{dllName} clientUptime:{upTime}sec";
-            log.Info(text);
+
+            if (log.IsInfoEnabled)
+                log.Info(text);
 
             if (log.IsDebugEnabled)
             {
@@ -46,10 +48,10 @@ namespace DOL.GS.PacketHandler.Client.v168
                     log.Debug("Last client sent/received packets (from older to newer):");
 
                     foreach (IPacket prevPak in client.PacketProcessor.GetLastPackets())
-                        log.Info(prevPak.ToHumanReadable());
+                        log.Debug(prevPak.ToHumanReadable());
                 }
                 else
-                    log.Info($"Enable the server property {nameof(Properties.SAVE_PACKETS)} to see the last few sent/received packets.");
+                    log.Debug($"Enable the server property {nameof(Properties.SAVE_PACKETS)} to see the last few sent/received packets.");
             }
 
             client.Out.SendPlayerQuit(true);

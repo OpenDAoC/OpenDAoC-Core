@@ -6712,7 +6712,6 @@ namespace DOL.GS
             if (price > 0)
             {
                 int playerOrbs = player.Inventory.CountItemTemplate(_currencyID, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack);
-                log.Info("Player Orbs:" + playerOrbs);
 
                 if (playerOrbs < price)
                 {

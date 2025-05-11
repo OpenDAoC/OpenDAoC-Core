@@ -108,9 +108,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             string accountName = packet.ReadString(24);
 
             if (log.IsDebugEnabled)
-            {
                 log.Debug($"CharacterCreateRequestHandler for account {accountName} using version {client.Version}");
-            }
 
             if (!accountName.StartsWith(client.Account.Name)) // TODO more correctly check, client send accountName as account-S, -N, -H (if it not fit in 20, then only account)
             {
@@ -453,9 +451,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             ch.MaxSpeed = GamePlayer.PLAYER_BASE_SPEED;
 
             if (log.IsDebugEnabled)
-            {
                 log.Debug($"Creation {client.Version} character, class:{ch.Class}, realm:{ch.Realm}");
-            }
 
             // Is class disabled ?
             List<string> disabledClasses = Util.SplitCSV(Properties.DISABLED_CLASSES);
@@ -468,9 +464,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (occurences > 0 && (ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player)
             {
                 if (log.IsDebugEnabled)
-                {
                     log.Debug($"Client {client.Account.Name} tried to create a disabled classe: {(eCharacterClass)ch.Class}");
-                }
 
                 return true;
             }
@@ -486,9 +480,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (occurences > 0 && (ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player)
             {
                 if (log.IsDebugEnabled)
-                {
                     log.Debug($"Client {client.Account.Name} tried to create a disabled race: {(eRace)ch.Race}");
-                }
 
                 return true;
             }
@@ -497,9 +489,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (!Enum.IsDefined(typeof(eCharacterClass), (eCharacterClass)ch.Class))
             {
                 if (log.IsErrorEnabled)
-                {
                     log.Error($"{client.Account.Name} tried to create a character with wrong class ID: {ch.Class}, realm:{ch.Realm}");
-                }
 
                 if (Properties.BAN_HACKERS)
                 {
@@ -515,9 +505,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             if (!IsCharacterValid(ch))
             {
                 if (log.IsWarnEnabled)
-                {
                     log.Warn($"{ch.AccountName} tried to create invalid character:\nchar name={ch.Name}, gender={ch.Gender}, race={ch.Race}, realm={ch.Realm}, class={ch.Class}, region={ch.Region}\nstr={ch.Strength}, con={ch.Constitution}, dex={ch.Dexterity}, qui={ch.Quickness}, int={ch.Intelligence}, pie={ch.Piety}, emp={ch.Empathy}, chr={ch.Charisma}");
-                }
 
                 return true;
             }
@@ -538,9 +526,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             client.Account.Characters = null;
 
             if (log.IsInfoEnabled)
-            {
                 log.Info($"Character {pdata.CharName} created on Account {account}!");
-            }
 
             // Reload Account Relations
             GameServer.Database.FillObjectRelations(client.Account);
@@ -639,9 +625,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 character.Charisma = stats[eStat.CHR];
 
                                 if (log.IsInfoEnabled)
-                                {
                                     log.Info($"Character {character.Name} Stats updated in cache!");
-                                }
 
                                 if (client.Player != null)
                                 {
@@ -651,16 +635,12 @@ namespace DOL.GS.PacketHandler.Client.v168
                                     }
 
                                     if (log.IsInfoEnabled)
-                                    {
                                         log.Info($"Character {character.Name} Player Stats updated in cache!");
-                                    }
                                 }
                             }
                         }
                         else if (log.IsErrorEnabled)
-                        {
                             log.Error($"No CharacterClass with ID {character.Class} found");
-                        }
                     }
                 }
 
@@ -688,9 +668,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         }
 
                         if (log.IsInfoEnabled)
-                        {
                             log.Info($"Character {character.Name} face properties configured by account {client.Account.Name}!");
-                        }
                     }
                 }
                 else if (pdata.CustomMode == 3) // auto config -- seems someone thinks this is not possible?
@@ -765,14 +743,19 @@ namespace DOL.GS.PacketHandler.Client.v168
                                 // Hacking attemp ?
                                 if (points > MaxStartingBonusPoints)
                                 {
-                                    log.InfoFormat("Stats above MaxStartingBonusPoints for {0}", character.Name);
+                                    if (log.IsInfoEnabled)
+                                        log.InfoFormat("Stats above MaxStartingBonusPoints for {0}", character.Name);
+
                                     if ((ePrivLevel)client.Account.PrivLevel == ePrivLevel.Player && character.Level == 1)
                                     {
                                         if (Properties.BAN_HACKERS)
                                         {
                                             client.BanAccount(string.Format("Autoban Hack char update : Wrong allowed points:{0}", points));
                                         }
-                                        log.InfoFormat("Disconnecting {0} because the stats  are above expected", character.Name);
+
+                                        if (log.IsInfoEnabled)
+                                            log.InfoFormat("Disconnecting {0} because the stats  are above expected", character.Name);
+
                                         client.Disconnect();
                                         return false;
                                     }
@@ -797,9 +780,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                                     character.Charisma = stats[eStat.CHR];
 
                                     if (log.IsInfoEnabled)
-                                    {
                                         log.InfoFormat("Character {0} Stats updated in cache!", character.Name);
-                                    }
 
                                     if (client.Player != null)
                                     {
@@ -809,17 +790,13 @@ namespace DOL.GS.PacketHandler.Client.v168
                                         }
 
                                         if (log.IsInfoEnabled)
-                                        {
                                             log.InfoFormat("Character {0} Player Stats updated in cache!", character.Name);
-                                        }
                                     }
                                     character.CustomisationStep = 2;
                                 }
                             }
                             else if (log.IsErrorEnabled)
-                            {
                                 log.ErrorFormat("No CharacterClass with ID {0} found", character.Class);
-                            }
                         }
                     }
                 }
@@ -847,9 +824,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                         }
 
                         if (log.IsInfoEnabled)
-                        {
                             log.InfoFormat("Character {0} face properties configured by account {1}!", character.Name, client.Account.Name);
-                        }
                     }
                 }
                 else if (pdata.CustomMode == 3) //auto config -- seems someone thinks this is not possible?
@@ -1009,9 +984,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if ((eRealm)ch.Realm < eRealm._FirstPlayerRealm || (eRealm)ch.Realm > eRealm._LastPlayerRealm)
                 {
                     if (log.IsWarnEnabled)
-                    {
                         log.Warn($"Wrong realm: {ch.Realm} on character creation from Account: {ch.AccountName}");
-                    }
 
                     valid = false;
                 }
@@ -1019,9 +992,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (ch.Level != 1)
                 {
                     if (log.IsWarnEnabled)
-                    {
                         log.Warn($"Wrong level: {ch.Level} on character creation from Account: {ch.AccountName}");
-                    }
 
                     valid = false;
                 }
@@ -1029,9 +1000,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (!GlobalConstants.STARTING_CLASSES_DICT.ContainsKey((eRealm)ch.Realm) || !GlobalConstants.STARTING_CLASSES_DICT[(eRealm)ch.Realm].Contains((eCharacterClass)ch.Class))
                 {
                     if (log.IsWarnEnabled)
-                    {
                         log.Warn($"Wrong class: {ch.Class}, realm:{ch.Realm} on character creation from Account: {ch.AccountName}");
-                    }
 
                     valid = false;
                 }
@@ -1042,6 +1011,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				{
 					if (log.IsWarnEnabled)
 						log.WarnFormat("Wrong race: {0}, class:{1} on character creation from Account: {2}", ch.Race, ch.Class, ch.AccountName);
+
 					valid = false;
 				}
                 
@@ -1054,9 +1024,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (pointsUsed != MaxStartingBonusPoints)
                 {
                     if (log.IsWarnEnabled)
-                    {
                         log.Warn($"Points used: {pointsUsed} on character creation from Account: {ch.AccountName}");
-                    }
 
                     valid = false;
                 }
@@ -1066,9 +1034,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (GlobalConstants.RACE_GENDER_CONSTRAINTS_DICT.ContainsKey((eRace)ch.Race) && GlobalConstants.RACE_GENDER_CONSTRAINTS_DICT[(eRace)ch.Race] != gender)
                 {
                     if (log.IsWarnEnabled)
-                    {
                         log.Warn($"Wrong Race gender: {ch.Gender}, race: {ch.Race} on character creation from Account: {ch.AccountName}");
-                    }
 
                     valid = false;
                 }
@@ -1076,9 +1042,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT.ContainsKey((eCharacterClass)ch.Class) && GlobalConstants.CLASS_GENDER_CONSTRAINTS_DICT[(eCharacterClass)ch.Class] != gender)
                 {
                     if (log.IsWarnEnabled)
-                    {
                         log.Warn($"Wrong class gender: {ch.Gender}, class:{ch.Class} on character creation from Account: {ch.AccountName}");
-                    }
 
                     valid = false;
                 }
@@ -1086,9 +1050,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                {
                     log.Error($"CharacterCreation error on account {ch.AccountName}, slot {ch.AccountSlot}. Exception:{e}");
-                }
 
                 valid = false;
             }

@@ -25,9 +25,7 @@ namespace DOL.GameServerConsole
 		public void SendMessage(string msg, eChatType type, eChatLoc loc)
 		{
 			if (log.IsDebugEnabled)
-			{
 				log.Debug(string.Format("({0}, {1}): {2}", type, loc, msg));
-			}
 		}
 
 		public void SendCustomDialog(string msg, CustomDialogResponse callback)

@@ -112,12 +112,16 @@ namespace DOL.GS
                 }
                 catch (ThreadInterruptedException)
                 {
-                    log.Info($"Thread \"{_gameLoopThread.Name}\" was interrupted");
+                    if (log.IsInfoEnabled)
+                        log.Info($"Thread \"{_gameLoopThread.Name}\" was interrupted");
+
                     return;
                 }
                 catch (Exception e)
                 {
-                    log.Error($"Critical error encountered in {nameof(GameLoop)}: {e}");
+                    if (log.IsErrorEnabled)
+                        log.Error($"Critical error encountered in {nameof(GameLoop)}: {e}");
+
                     GameServer.Instance.Stop();
                     return;
                 }
@@ -202,7 +206,9 @@ namespace DOL.GS
             }
             catch (ThreadInterruptedException)
             {
-                log.Info($"Thread \"{_busyWaitThresholdThread.Name}\" was interrupted");
+                if (log.IsInfoEnabled)
+                    log.Info($"Thread \"{_busyWaitThresholdThread.Name}\" was interrupted");
+
                 return;
             }
         }

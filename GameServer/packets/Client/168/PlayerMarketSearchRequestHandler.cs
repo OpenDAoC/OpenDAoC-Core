@@ -163,9 +163,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			search.clientVersion = client.Version.ToString();
 
-			if (ServerProperties.Properties.MARKET_ENABLE_LOG)
+			if (ServerProperties.Properties.MARKET_ENABLE_LOG && log.IsDebugEnabled)
 			{
-			
 				log.DebugFormat(" ");
 				log.DebugFormat("----- MARKET EXPLORER SEARCH PACKET ANALYSIS ---------------------");
 				log.DebugFormat(" ");

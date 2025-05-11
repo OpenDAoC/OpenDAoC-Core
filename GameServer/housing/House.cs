@@ -565,7 +565,8 @@ namespace DOL.GS.Housing
 				return true;
 			}
 
-			log.Error("[Housing]: HouseHookPointOffset exceeds array size.  Model " + o.HouseModel + ", hookpoint " + o.HookpointID);
+			if (log.IsErrorEnabled)
+				log.Error("[Housing]: HouseHookPointOffset exceeds array size.  Model " + o.HouseModel + ", hookpoint " + o.HookpointID);
 
 			return false;
 		}
@@ -787,27 +788,34 @@ namespace DOL.GS.Housing
 			// check to make sure a consignment merchant doesn't already exist for this house.
 			if (ConsignmentMerchant != null)
 			{
-				log.DebugFormat("Add CM: House {0} already has a consignment merchant.", HouseNumber);
+				if (log.IsDebugEnabled)
+					log.DebugFormat("Add CM: House {0} already has a consignment merchant.", HouseNumber);
+
 				return false;
 			}
 
 			var houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (houseCM != null)
 			{
-				log.DebugFormat("Add CM: Found active consignment merchant in HousingConsignmentMerchant table for house {0}.", HouseNumber);
+				if (log.IsDebugEnabled)
+					log.DebugFormat("Add CM: Found active consignment merchant in HousingConsignmentMerchant table for house {0}.", HouseNumber);
+
 				return false;
 			}
 
 			var obj = DOLDB<DbMob>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
 			if (obj != null)
 			{
-				log.DebugFormat("Add CM: Found consignment merchant in Mob table for house {0} but none in HousingConsignmentMerchant!  Creating a new merchant.", HouseNumber);
+				if (log.IsDebugEnabled)
+					log.DebugFormat("Add CM: Found consignment merchant in Mob table for house {0} but none in HousingConsignmentMerchant!  Creating a new merchant.", HouseNumber);
+
 				GameServer.Database.DeleteObject(obj);
 			}
 
 			if (DatabaseItem.HasConsignment == true)
 			{
-				log.ErrorFormat("Add CM: No Consignment Merchant found but House DB record HasConsignment for house {0}!  Creating a new merchant.", HouseNumber);
+				if (log.IsErrorEnabled)
+					log.ErrorFormat("Add CM: No Consignment Merchant found but House DB record HasConsignment for house {0}!  Creating a new merchant.", HouseNumber);
 			}
 
 			// now let's try to find a CM with this owner ID and no house and if we find it, attach
@@ -815,14 +823,18 @@ namespace DOL.GS.Housing
 
 			if (houseCM != null)
 			{
-				log.Warn($"Re-adding an existing consignment merchant for house {HouseNumber}. The previous house was {houseCM.HouseNumber}");
+				if (log.IsWarnEnabled)
+					log.Warn($"Re-adding an existing consignment merchant for house {HouseNumber}. The previous house was {houseCM.HouseNumber}");
+
 				houseCM.HouseNumber = HouseNumber;
 				GameServer.Database.SaveObject(houseCM);
 			}
 			else
 			{
 				// create a new consignment merchant entry, and add it to the DB
-				log.Warn("Adding a consignment merchant for house " + HouseNumber);
+				if (log.IsWarnEnabled)
+					log.Warn("Adding a consignment merchant for house " + HouseNumber);
+
 				houseCM = new DbHouseConsignmentMerchant { OwnerID = OwnerID, HouseNumber = HouseNumber, Money = startValue };
 				GameServer.Database.AddObject(houseCM);
 			}
@@ -871,8 +883,6 @@ namespace DOL.GS.Housing
 			if (ConsignmentMerchant == null)
 				return false;
 
-			log.Warn("HOUSING: Removing consignment merchant for house " + HouseNumber);
-
 			// If this is a guild house and the house is removed the items still belong to the guild ID and will show up
 			// again if guild purchases another house and CM
 
@@ -882,11 +892,6 @@ namespace DOL.GS.Housing
 				item.OwnerLot = 0;
 				GameServer.Database.SaveObject(item);
 				count++;
-			}
-
-			if (count > 0)
-			{
-				log.Warn("HOUSING: Cleared OwnerLot for " + count + " items on the consignment merchant!");
 			}
 
 			var houseCM = DOLDB<DbHouseConsignmentMerchant>.SelectObject(DB.Column("HouseNumber").IsEqualTo(HouseNumber));
@@ -1479,13 +1484,9 @@ namespace DOL.GS.Housing
 			foreach (DbHousePermissions dbperm in DOLDB<DbHousePermissions>.SelectObjects(DB.Column("HouseNumber").IsEqualTo(HouseNumber)))
 			{
 				if (_permissionLevels.ContainsKey(dbperm.PermissionLevel) == false)
-				{
 					_permissionLevels.Add(dbperm.PermissionLevel, dbperm);
-				}
-				else
-				{
+				else if (log.IsErrorEnabled)
 					log.ErrorFormat("Duplicate permission level {0} for house {1}", dbperm.PermissionLevel, HouseNumber);
-				}
 			}
 
 			HousepointItems.Clear();
@@ -1496,10 +1497,8 @@ namespace DOL.GS.Housing
 					HousepointItems.Add(item.HookpointID, item);
 					FillHookpoint(item.HookpointID, item.ItemTemplateID, item.Heading, item.Index);
 				}
-				else
-				{
+				else if (log.IsErrorEnabled)
 					log.ErrorFormat("Duplicate item {0} attached to hookpoint {1} for house {2}!", item.ItemTemplateID, item.HookpointID, HouseNumber);
-				}
 			}
 		}
 

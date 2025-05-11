@@ -40,7 +40,9 @@ namespace DOL.GS
 
 						if (area == null)
 						{
-							log.Debug("area type " + thisArea.ClassType + " cannot be created, skipping");
+							if (log.IsDebugEnabled)
+								log.Debug("area type " + thisArea.ClassType + " cannot be created, skipping");
+
 							continue;
 						}
 					}
@@ -51,13 +53,17 @@ namespace DOL.GS
 					if (region == null)
 						continue;
 					region.AddArea(area);
-					log.Info("Area added: " + thisArea.Description);
+
+					if (log.IsInfoEnabled)
+						log.Info("Area added: " + thisArea.Description);
 				}
 				return true;
 			}
 			catch (Exception ex)
 			{
-				log.Error("Loading all areas failed", ex);
+				if (log.IsErrorEnabled)
+					log.Error("Loading all areas failed", ex);
+
 				return false;
 			}
 		}

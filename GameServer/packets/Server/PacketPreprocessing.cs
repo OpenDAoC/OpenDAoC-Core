@@ -76,10 +76,12 @@ namespace DOL.GS.PacketHandler
 			}
 			else
 			{
-				log.InfoFormat("Replacing Packet Processor for packet ID {0} with preprocessorId {1}", packetId, preprocessorId);
+				if (log.IsInfoEnabled)
+					log.InfoFormat("Replacing Packet Processor for packet ID {0} with preprocessorId {1}", packetId, preprocessorId);
+
 				_packetIdToPreprocessMap[packetId] = preprocessorId;
 			}
-	}
+		}
 
 		/// <summary>
 		/// Registers a preprocessor.

@@ -20,11 +20,6 @@ namespace DOL.GS
 		{
 		}
 
-		~Instance()
-		{
-			log.Debug("Instance destructor called for " + Description);
-		}
-
 		#region Entrance
 
 		protected GameLocation m_entranceLocation = null;
@@ -122,7 +117,8 @@ namespace DOL.GS
 				count++;
 			}
 
-			log.Info("Successfully loaded a db entry to " + Description + " - Region ID " + ID + ". Loaded Entities: " + count);
+			if (log.IsInfoEnabled)
+				log.Info("Successfully loaded a db entry to " + Description + " - Region ID " + ID + ". Loaded Entities: " + count);
 		}
 
 		#endregion

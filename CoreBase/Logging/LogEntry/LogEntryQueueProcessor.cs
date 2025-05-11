@@ -98,11 +98,13 @@ namespace DOL.Logging
                 }
                 catch (OperationCanceledException)
                 {
-                    _logger.Info($"Thread \"{_thread.Name}\" was cancelled");
+                    if (_logger.IsInfoEnabled)
+                        _logger.Info($"Thread \"{_thread.Name}\" was cancelled");
                 }
                 catch (ThreadInterruptedException)
                 {
-                    _logger.Info($"Thread \"{_thread.Name}\" was interrupted");
+                    if (_logger.IsInfoEnabled)
+                        _logger.Info($"Thread \"{_thread.Name}\" was interrupted");
                 }
                 catch (Exception e)
                 {

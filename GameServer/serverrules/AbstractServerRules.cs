@@ -59,7 +59,10 @@ namespace DOL.GS.ServerRules
             if (objs.Count > 0)
             {
                 client.Out.SendLoginDenied(eLoginError.AccountIsBannedFromThisServerType);
-                log.Debug("IsAllowedToConnect deny access to username " + username);
+
+                if (log.IsDebugEnabled)
+                    log.Debug("IsAllowedToConnect deny access to username " + username);
+
                 client.IsConnected = false;
                 return false;
             }
@@ -70,7 +73,10 @@ namespace DOL.GS.ServerRules
             if (objs.Count > 0)
             {
                 client.Out.SendLoginDenied(eLoginError.AccountIsBannedFromThisServerType);
-                log.Debug("IsAllowedToConnect deny access to IP " + accip);
+
+                if (log.IsDebugEnabled)
+                    log.Debug("IsAllowedToConnect deny access to IP " + accip);
+
                 client.IsConnected = false;
                 return false;
             }
@@ -79,7 +85,10 @@ namespace DOL.GS.ServerRules
             if (min != GameClient.eClientVersion.VersionNotChecked && client.Version < min)
             {
                 client.Out.SendLoginDenied(eLoginError.ClientVersionTooLow);
-                log.Debug("IsAllowedToConnect deny access to client version (too low) " + client.Version);
+
+                if (log.IsDebugEnabled)
+                    log.Debug("IsAllowedToConnect deny access to client version (too low) " + client.Version);
+
                 client.IsConnected = false;
                 return false;
             }
@@ -88,7 +97,10 @@ namespace DOL.GS.ServerRules
             if (max != GameClient.eClientVersion.VersionNotChecked && client.Version > max)
             {
                 client.Out.SendLoginDenied(eLoginError.NotAuthorizedToUseExpansionVersion);
-                log.Debug("IsAllowedToConnect deny access to client version (too high) " + client.Version);
+
+                if (log.IsDebugEnabled)
+                    log.Debug("IsAllowedToConnect deny access to client version (too high) " + client.Version);
+
                 client.IsConnected = false;
                 return false;
             }
@@ -99,7 +111,10 @@ namespace DOL.GS.ServerRules
                 if ((int)client.ClientType > (int)type)
                 {
                     client.Out.SendLoginDenied(eLoginError.ExpansionPacketNotAllowed);
-                    log.Debug("IsAllowedToConnect deny access to expansion pack.");
+
+                    if (log.IsDebugEnabled)
+                        log.Debug("IsAllowedToConnect deny access to expansion pack.");
+
                     client.IsConnected = false;
                     return false;
                 }
@@ -141,7 +156,10 @@ namespace DOL.GS.ServerRules
                     {
                         // Normal Players will not be allowed over the max
                         client.Out.SendLoginDenied(eLoginError.TooManyPlayersLoggedIn);
-                        log.Debug("IsAllowedToConnect deny access due to too many players.");
+
+                        if (log.IsDebugEnabled)
+                            log.Debug("IsAllowedToConnect deny access due to too many players.");
+
                         client.IsConnected = false;
                         return false;
                     }
@@ -156,7 +174,10 @@ namespace DOL.GS.ServerRules
                     // GMs are still allowed to enter server
                     // Normal Players will not be allowed to Log in
                     client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
-                    log.Debug("IsAllowedToConnect deny access; staff only login");
+
+                    if (log.IsDebugEnabled)
+                        log.Debug("IsAllowedToConnect deny access; staff only login");
+
                     client.IsConnected = false;
                     return false;
                 }
@@ -169,7 +190,10 @@ namespace DOL.GS.ServerRules
                     // Admins and Testers are still allowed to enter server
                     // Normal Players will not be allowed to Log in
                     client.Out.SendLoginDenied(eLoginError.GameCurrentlyClosed);
-                    log.Debug("IsAllowedToConnect deny access; tester and staff only login");
+
+                    if (log.IsDebugEnabled)
+                        log.Debug("IsAllowedToConnect deny access; tester and staff only login");
+
                     client.IsConnected = false;
                     return false;
                 }
@@ -182,7 +206,10 @@ namespace DOL.GS.ServerRules
                     // GMs are still allowed to enter server
                     // Normal Players will not be allowed to Log in unless they have linked their Discord
                     client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
-                    log.Debug("Denied access, account is not linked to Discord");
+
+                    if (log.IsDebugEnabled)
+                        log.Debug("Denied access, account is not linked to Discord");
+
                     client.IsConnected = false;
                     return false;
                 }
@@ -197,7 +224,10 @@ namespace DOL.GS.ServerRules
                     if (otherClient != null)
                     {
                         client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIntoOtherServer);
-                        log.Debug("IsAllowedToConnect deny access; dual login not allowed");
+
+                        if (log.IsDebugEnabled)
+                            log.Debug("IsAllowedToConnect deny access; dual login not allowed");
+
                         client.IsConnected = false;
                         return false;
                     }
@@ -2444,7 +2474,8 @@ namespace DOL.GS.ServerRules
 
                 if (npcTemplate == null || string.IsNullOrEmpty(npcTemplate.ClassType))
                 {
-                    log.Warn("[Housing] null classtype in hookpoint attachment, using GAMENPC_DEFAULT_CLASSTYPE instead");
+                    if (log.IsWarnEnabled)
+                        log.Warn("[Housing] null classtype in hookpoint attachment, using GAMENPC_DEFAULT_CLASSTYPE instead");
                 }
                 else
                 {
@@ -2463,7 +2494,9 @@ namespace DOL.GS.ServerRules
 
                 if (npc == null)
                 {
-                    HouseMgr.log.Error("[Housing] Can't create instance of type: " + defaultClassType);
+                    if (log.IsErrorEnabled)
+                        log.Error("[Housing] Can't create instance of type: " + defaultClassType);
+
                     return null;
                 }
 
@@ -2518,7 +2551,8 @@ namespace DOL.GS.ServerRules
             }
             catch (Exception ex)
             {
-                log.Error("Error filling housing hookpoint using npc template ID " + item.Bonus, ex);
+                if (log.IsErrorEnabled)
+                    log.Error("Error filling housing hookpoint using npc template ID " + item.Bonus, ex);
             }
 
             return null;
