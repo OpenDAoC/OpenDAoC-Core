@@ -12,8 +12,8 @@ namespace DOL.GS
     public static class GameLoop
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        public const string THREAD_NAME = "GameLoop";
         private const bool DYNAMIC_BUSY_WAIT_THRESHOLD = true; // Setting it to false disables busy waiting completely unless a default value is given to '_busyWaitThreshold'.
-        private const string THREAD_NAME = "GameLoop";
 
         private static Thread _gameLoopThread; // Main thread.
         private static Thread _busyWaitThresholdThread; // Secondary thread that attempts to calculate by how much `Thread.Sleep` overshoots.
@@ -56,7 +56,7 @@ namespace DOL.GS
             {
                 _busyWaitThresholdThread = new Thread(new ThreadStart(UpdateBusyWaitThreshold))
                 {
-                    Name = "BusyWaitThreshold",
+                    Name = $"{THREAD_NAME}_BusyWaitThreshold",
                     Priority = ThreadPriority.AboveNormal,
                     IsBackground = true
                 };
@@ -81,6 +81,8 @@ namespace DOL.GS
             _busyWaitThresholdThread.Interrupt();
             _busyWaitThresholdThread.Join();
             _busyWaitThresholdThread = null;
+            _workerThreadPool.Dispose();
+            _workerThreadPool = null;
         }
 
         public static List<(int, double)> GetAverageTps()
@@ -88,9 +90,9 @@ namespace DOL.GS
             return _gameLoopStats.GetAverageTicks(GameLoopTime);
         }
 
-        public static void DoWork(int count, Action<int> action)
+        public static void Work(int count, Action<int> action)
         {
-            _workerThreadPool.Run(count, action);
+            _workerThreadPool.Work(count, action);
         }
 
         private static void Run()
