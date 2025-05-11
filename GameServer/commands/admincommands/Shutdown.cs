@@ -474,12 +474,10 @@ namespace DOL.GS.Commands
 		{
 			if (GameServer.Instance.IsRunning)
 			{
-				GameServer.Instance.Stop();
-
 				if (log.IsInfoEnabled)
 					log.Info("Executed server shutdown!");
 
-				Environment.Exit(0);
+				GameServer.Instance.Stop();
 			}
 		}
 

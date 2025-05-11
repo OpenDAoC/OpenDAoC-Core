@@ -1007,19 +1007,10 @@ namespace DOL.GS
 			//Stop all mobMgrs
 			WorldMgr.StopRegionMgrs();
 
-			//Stop the WorldMgr, save all players
-			//WorldMgr.SaveToDatabase();
 			SaveTimerProc(null);
 
 			WorldMgr.Exit();
 			GameLoop.Exit();
-
-			//Save the database
-			// 2008-01-29 Kakuri - Obsolete
-			/*if ( m_database != null )
-				{
-					m_database.WriteDatabaseTables();
-				}*/
 
 			m_serverRules = null;
 
@@ -1034,6 +1025,7 @@ namespace DOL.GS
 				log.Info("Server Stopped");
 
 			LoggerManager.Stop();
+			Environment.Exit(0);
 		}
 
 		#endregion
