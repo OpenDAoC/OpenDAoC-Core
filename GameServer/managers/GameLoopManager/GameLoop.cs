@@ -15,8 +15,9 @@ namespace DOL.GS
         private const bool DYNAMIC_BUSY_WAIT_THRESHOLD = true; // Setting it to false disables busy waiting completely unless a default value is given to '_busyWaitThreshold'.
         private const string THREAD_NAME = "GameLoop";
 
-        private static Thread _gameLoopThread;
-        private static Thread _busyWaitThresholdThread;
+        private static Thread _gameLoopThread; // Main thread.
+        private static Thread _busyWaitThresholdThread; // Secondary thread that attempts to calculate by how much `Thread.Sleep` overshoots.
+        private static IGameLoopThreadPool _workerThreadPool;
         private static int _busyWaitThreshold;
         private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
         private static GameLoopStats _gameLoopStats;
@@ -38,6 +39,11 @@ namespace DOL.GS
 
             TickRate = Properties.GAME_LOOP_TICK_RATE;
             _gameLoopStats = new([60000, 30000, 10000]);
+
+            if (Environment.ProcessorCount == 1)
+                _workerThreadPool = new GameLoopThreadPoolSingleThreaded();
+            else
+                _workerThreadPool = new GameLoopThreadPool(Environment.ProcessorCount);
 
             _gameLoopThread = new Thread(new ThreadStart(Run))
             {
@@ -80,6 +86,11 @@ namespace DOL.GS
         public static List<(int, double)> GetAverageTps()
         {
             return _gameLoopStats.GetAverageTicks(GameLoopTime);
+        }
+
+        public static void DoWork(int count, Action<int> action)
+        {
+            _workerThreadPool.Run(count, action);
         }
 
         private static void Run()

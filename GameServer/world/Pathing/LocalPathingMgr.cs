@@ -135,7 +135,6 @@ namespace DOL.GS
             out int outputPolyCount,
             int maxPolyCount);
 
-
         public bool Init()
         {
             try

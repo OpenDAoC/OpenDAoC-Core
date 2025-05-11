@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -25,7 +24,7 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
             _list = EntityManager.UpdateAndGetAll<ECSGameEffect>(EntityManager.EntityType.Effect, out int lastValidIndex);
-            Parallel.For(0, lastValidIndex + 1, TickInternal);
+            GameLoop.DoWork(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)
                 Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
@@ -140,7 +139,7 @@ namespace DOL.GS
 
             effect.IsDisabled = true;
             effect.RenewEffect = false;
-            HandleCancelEffect(effect);
+            EntityManager.Add(effect);
         }
 
         public static void RequestEnableEffect(ECSGameEffect effect)
@@ -153,7 +152,7 @@ namespace DOL.GS
 
             effect.IsDisabled = false;
             effect.RenewEffect = true;
-            HandleStartEffect(effect);
+            EntityManager.Add(effect);
         }
 
         public static void SendSpellAnimation(ECSGameSpellEffect e)

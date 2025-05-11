@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using DOL.AI;
 using ECS.Debug;
 
@@ -20,7 +19,7 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
             _list = EntityManager.UpdateAndGetAll<ABrain>(EntityManager.EntityType.Brain, out int lastValidIndex);
-            Parallel.For(0, lastValidIndex + 1, TickInternal);
+            GameLoop.DoWork(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)
                 Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
