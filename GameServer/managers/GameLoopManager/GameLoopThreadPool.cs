@@ -13,40 +13,41 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private int _requestedThreadCount;
-        private ConcurrentDictionary<int, Thread> _threads = new();
+        private int _degreeOfParallelism;
+        private int _workerCount;
+        private ConcurrentDictionary<int, Thread> _workers = new();
         private Thread _watchdog;
-        private CountdownEvent _threadStartCountDownEvent;
+        private CountdownEvent _workerStartCountDownEvent;
         private ManualResetEventSlim _workReady = new();
-        private ManualResetEventSlim _workDone = new();
         private Barrier _barrier;
 
-        private int _activeThreadCount; // The amount of active threads at the time `Run()` was called.
+        private int _activeWorkerCount; // The amount of active threads at the time `Run()` was called.
         private int _workCount;
         private Action<int> _action;
         private int _chunk;
         private int _remainder;
 
-        public GameLoopThreadPool(int threadCount)
+        public GameLoopThreadPool(int degreeOfParallelism)
         {
-            _requestedThreadCount = threadCount;
-            _threadStartCountDownEvent = new(_requestedThreadCount);
-            _barrier = new(_requestedThreadCount, PostPhaseAction);
+            _degreeOfParallelism = degreeOfParallelism;
+            _workerCount = _degreeOfParallelism - 1; // We spawn one less thread because the caller thread will also be used.
+            _workerStartCountDownEvent = new(_workerCount);
+            _barrier = new(_degreeOfParallelism, PostPhaseAction);
             StartWorkerThreads();
-            _threadStartCountDownEvent.Wait(); // If for some reason a thread fails to start, we'll be waiting forever.
-            _threadStartCountDownEvent = null; // Not needed anymore.
+            _workerStartCountDownEvent.Wait(); // If for some reason a thread fails to start, we'll be waiting here forever.
+            _workerStartCountDownEvent = null; // Not needed anymore.
             _watchdog = StartWatchdog();
 
             void StartWorkerThreads()
             {
-                for (int i = 0; i < threadCount; i++)
+                for (int i = 0; i < _workerCount; i++)
                 {
-                    _threads[i] = new Thread(new ParameterizedThreadStart(WorkerLoop))
+                    _workers[i] = new Thread(new ParameterizedThreadStart(InitWorker))
                     {
                         IsBackground = true,
                         Name = $"{GameLoop.THREAD_NAME}_Worker_{i}"
                     };
-                    _threads[i].Start(i);
+                    _workers[i].Start(i);
                 }
             }
 
@@ -68,29 +69,34 @@ namespace DOL.GS
             if (count < 0)
                 return;
 
-            _activeThreadCount = _barrier.ParticipantCount;
+            _activeWorkerCount = _barrier.ParticipantCount;
 
-            if (_activeThreadCount == 0)
+            if (_activeWorkerCount == 0)
                 return;
 
             _workCount = count;
             _action = action;
-            _chunk = _workCount / _activeThreadCount;
-            _remainder = _workCount % _activeThreadCount;
+            _chunk = _workCount / _activeWorkerCount;
+            _remainder = _workCount % _activeWorkerCount;
 
-            // Signal the threads to start working and wait for them to finish.
-            _workDone.Reset();
+            // Signal the workers to start working and have this thread join them.
             _workReady.Set();
-            _workDone.Wait();
+            RunWorker(_degreeOfParallelism);
         }
 
-        private void WorkerLoop(object obj)
+        private void InitWorker(object obj)
         {
-            int threadIndex = (int) obj;
-            _threads[threadIndex] = Thread.CurrentThread;
-            _threadStartCountDownEvent?.Signal(); // Null if this thread is started from the watchdog.
+            int workerId = (int) obj;
+            _workers[workerId] = Thread.CurrentThread;
+            _workerStartCountDownEvent?.Signal(); // Null if this thread is started from the watchdog.
+            RunWorker(workerId);
+        }
 
-            while (true)
+        private void RunWorker(int workerId)
+        {
+            bool isWorkerThread = workerId < _degreeOfParallelism;
+
+            do
             {
                 try
                 {
@@ -106,15 +112,15 @@ namespace DOL.GS
                         return;
                     }
 
-                    // `_activeThreadCount` represents the number of participants in the barrier at the time `Run()` was called.
-                    // If a thread was recreated by the watchdog, the number of threads actually active can be superior to that number.
-                    // We must prevent those threads from working during this phase since `_activeThreadCount` is used to calculate the chunk size.
-                    if (_activeThreadCount > threadIndex)
+                    // `_activeWorkerCount` represents the number of participants in the barrier at the time `Run()` was called.
+                    // If a worker was recreated by the watchdog, the number of workers actually active can be superior to that number.
+                    // We must prevent those from working during this phase since `_activeWorkerCount` is used to calculate the chunk size.
+                    if (workerId < _activeWorkerCount)
                     {
-                        int start = threadIndex * _chunk + Math.Min(threadIndex, _remainder);
+                        int start = workerId * _chunk + Math.Min(workerId, _remainder);
                         int end = start + _chunk;
 
-                        if (threadIndex < _remainder)
+                        if (workerId < _remainder)
                             end++;
 
                         for (int i = start; i < end; i++)
@@ -138,7 +144,7 @@ namespace DOL.GS
 
                     return;
                 }
-            }
+            } while (isWorkerThread);
         }
 
         private void PostPhaseAction(Barrier barrier)
@@ -146,9 +152,7 @@ namespace DOL.GS
             try
             {
                 // This method is called by the barrier when all threads have finished their work.
-                // It signals the thread in `Run()` to continue.
                 _workReady.Reset();
-                _workDone.Set();
             }
             catch (Exception e)
             {
@@ -166,25 +170,25 @@ namespace DOL.GS
                 try
                 {
                     // Remove the dead threads from the dictionary, unregister them from the barrier, then replace them.
-                    foreach (var pair in _threads)
+                    foreach (var pair in _workers)
                     {
-                        int threadId = pair.Key;
-                        Thread thread = pair.Value;
+                        int workerId = pair.Key;
+                        Thread worker = pair.Value;
 
-                        if (!thread.Join(100))
+                        if (!worker.Join(100))
                             continue;
 
                         if (log.IsWarnEnabled)
-                            log.Warn($"Watchdog: Thread \"{thread.Name}\" is dead. Restarting...");
+                            log.Warn($"Watchdog: Thread \"{worker.Name}\" is dead. Restarting...");
 
-                        _threads.TryRemove(threadId, out _);
+                        _workers.TryRemove(workerId, out _);
                         _barrier.RemoveParticipant(); // Free the other threads immediately.
                         Thread newThread = new(new ParameterizedThreadStart(WorkerLoopRestart))
                         {
-                            Name = $"{GameLoop.THREAD_NAME}_Worker_{threadId}",
+                            Name = $"{GameLoop.THREAD_NAME}_Worker_{workerId}",
                             IsBackground = true,
                         };
-                        newThread.Start(threadId);
+                        newThread.Start(workerId);
                     }
                 }
                 catch (ThreadInterruptedException)
@@ -208,7 +212,7 @@ namespace DOL.GS
                 // This means any work that wasn't completed by the dead thread is lost. But keeping track of it would be too expensive.
                 _barrier.AddParticipant();
                 _barrier.SignalAndWait();
-                WorkerLoop(obj);
+                InitWorker(obj);
             }
         }
 
@@ -218,18 +222,18 @@ namespace DOL.GS
             _watchdog.Join();
             _watchdog = null;
 
-            foreach (var pair in _threads)
+            foreach (var pair in _workers)
             {
-                Thread thread = pair.Value;
+                Thread worker = pair.Value;
 
-                if (Thread.CurrentThread != thread && thread.IsAlive)
+                if (Thread.CurrentThread != worker && worker.IsAlive)
                 {
-                    thread.Interrupt();
-                    thread.Join();
+                    worker.Interrupt();
+                    worker.Join();
                 }
             }
 
-            _threads.Clear();
+            _workers.Clear();
         }
     }
 
