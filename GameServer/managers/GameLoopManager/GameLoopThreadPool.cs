@@ -35,7 +35,6 @@ namespace DOL.GS
             _barrier = new(_degreeOfParallelism, PostPhaseAction);
             StartWorkerThreads();
             _workerStartCountDownEvent.Wait(); // If for some reason a thread fails to start, we'll be waiting here forever.
-            _workerStartCountDownEvent = null; // Not needed anymore.
             _watchdog = StartWatchdog();
 
             void StartWorkerThreads()
@@ -88,7 +87,7 @@ namespace DOL.GS
         {
             int workerId = (int) obj;
             _workers[workerId] = Thread.CurrentThread;
-            _workerStartCountDownEvent?.Signal(); // Null if this thread is started from the watchdog.
+            _workerStartCountDownEvent.Signal();
             RunWorker(workerId);
         }
 
@@ -183,7 +182,7 @@ namespace DOL.GS
                         if (log.IsWarnEnabled)
                             log.Warn($"Watchdog: Thread \"{worker.Name}\" is dead. Restarting...");
 
-                        _workers.TryRemove(workerId, out _);
+                        _workerStartCountDownEvent.AddCount();
                         Thread newThread = new(new ParameterizedThreadStart(WorkerLoopRestart))
                         {
                             Name = $"{GameLoop.THREAD_NAME}_Worker_{workerId}",
@@ -196,7 +195,6 @@ namespace DOL.GS
                 {
                     if (log.IsInfoEnabled)
                         log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
-
                     return;
                 }
                 catch (Exception e)
@@ -222,6 +220,9 @@ namespace DOL.GS
             _watchdog.Interrupt();
             _watchdog.Join();
             _watchdog = null;
+
+            // Make sure any worker being (re)started have finished doing so before we interrupt them.
+            _workerStartCountDownEvent.Wait();
 
             foreach (var pair in _workers)
             {
