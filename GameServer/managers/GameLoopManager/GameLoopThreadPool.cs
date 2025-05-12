@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Threading;
-using System.Collections.Concurrent;
 
 namespace DOL.GS
 {
@@ -15,7 +14,7 @@ namespace DOL.GS
 
         private int _degreeOfParallelism;
         private int _workerCount;
-        private ConcurrentDictionary<int, Thread> _workers = new();
+        private Thread[] _workers;
         private Thread _watchdog;
         private CountdownEvent _workerStartCountDownEvent;
         private ManualResetEventSlim _workReady = new();
@@ -31,6 +30,7 @@ namespace DOL.GS
         {
             _degreeOfParallelism = degreeOfParallelism;
             _workerCount = _degreeOfParallelism - 1; // We spawn one less thread because the caller thread will also be used.
+            _workers = new Thread[_workerCount];
             _workerStartCountDownEvent = new(_workerCount);
             _barrier = new(_degreeOfParallelism, PostPhaseAction);
             StartWorkerThreads();
@@ -171,24 +171,25 @@ namespace DOL.GS
                 try
                 {
                     // Remove the dead threads from the dictionary, unregister them from the barrier, then replace them.
-                    foreach (var pair in _workers)
+                    for (int i = 0; i < _workers.Length; i++)
                     {
-                        int workerId = pair.Key;
-                        Thread worker = pair.Value;
+                        Thread worker = _workers[i];
 
-                        if (!worker.Join(100))
+                        // Thread is null if it was removed by the watchdog. At this point it's already being replaced, hopefully.
+                        if (worker == null || !worker.Join(100))
                             continue;
 
                         if (log.IsWarnEnabled)
                             log.Warn($"Watchdog: Thread \"{worker.Name}\" is dead. Restarting...");
 
                         _workerStartCountDownEvent.AddCount();
+                        _workers[i] = null;
                         Thread newThread = new(new ParameterizedThreadStart(WorkerLoopRestart))
                         {
-                            Name = $"{GameLoop.THREAD_NAME}_Worker_{workerId}",
+                            Name = $"{GameLoop.THREAD_NAME}_Worker_{i}",
                             IsBackground = true,
                         };
-                        newThread.Start(workerId);
+                        newThread.Start(i);
                     }
                 }
                 catch (ThreadInterruptedException)
@@ -224,18 +225,18 @@ namespace DOL.GS
             // Make sure any worker being (re)started have finished doing so before we interrupt them.
             _workerStartCountDownEvent.Wait();
 
-            foreach (var pair in _workers)
+            for (int i = 0; i < _workers.Length; i++)
             {
-                Thread worker = pair.Value;
+                Thread worker = _workers[i];
 
-                if (Thread.CurrentThread != worker && worker.IsAlive)
+                if (worker != null && Thread.CurrentThread != worker && worker.IsAlive)
                 {
                     worker.Interrupt();
                     worker.Join();
                 }
             }
 
-            _workers.Clear();
+            _workers = null;
         }
     }
 
