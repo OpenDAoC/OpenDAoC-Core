@@ -109,6 +109,7 @@ namespace DOL.GS
                         if (log.IsInfoEnabled)
                             log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted during work wait");
 
+                        _barrier.RemoveParticipant();
                         return;
                     }
 
@@ -142,6 +143,7 @@ namespace DOL.GS
                     if (log.IsInfoEnabled)
                         log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted during barrier");
 
+                    _barrier.RemoveParticipant();
                     return;
                 }
             } while (isWorkerThread);
@@ -182,7 +184,6 @@ namespace DOL.GS
                             log.Warn($"Watchdog: Thread \"{worker.Name}\" is dead. Restarting...");
 
                         _workers.TryRemove(workerId, out _);
-                        _barrier.RemoveParticipant(); // Free the other threads immediately.
                         Thread newThread = new(new ParameterizedThreadStart(WorkerLoopRestart))
                         {
                             Name = $"{GameLoop.THREAD_NAME}_Worker_{workerId}",
