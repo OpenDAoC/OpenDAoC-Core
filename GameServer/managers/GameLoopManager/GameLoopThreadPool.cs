@@ -161,9 +161,6 @@ namespace DOL.GS
 
         private void WatchdogLoop()
         {
-            int threadId;
-            Thread thread;
-
             while (true)
             {
                 try
@@ -171,8 +168,8 @@ namespace DOL.GS
                     // Remove the dead threads from the dictionary, unregister them from the barrier, then replace them.
                     foreach (var pair in _threads)
                     {
-                        threadId = pair.Key;
-                        thread = pair.Value;
+                        int threadId = pair.Key;
+                        Thread thread = pair.Value;
 
                         if (!thread.Join(100))
                             continue;
