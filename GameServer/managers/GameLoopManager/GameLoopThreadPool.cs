@@ -4,9 +4,10 @@ using System.Threading;
 
 namespace DOL.GS
 {
-    // A very specialized and barebone thread pool, meant to be used by the game loop exclusively.
-    // The reasons why we're using this thread pool despite being way less robust than TPL:
-    // * The memory overhead of `Parallel.For` or `Parallel.ForEach` isn't negligible when it's called hundreds of times per second.
+    // A very specialized thread pool, meant to be used by the game loop exclusively.
+    // If you need more than one thread pool, you should be using the TPL instead.
+    // The reasons why we're using this thread pool despite being way less robust, versatile, and sometimes a bit slower than the TPL:
+    // * The memory overhead of the TPL isn't negligible when it's called hundreds of times per second.
     // * A lot easier to debug.
     public sealed class GameLoopThreadPool : IGameLoopThreadPool
     {
@@ -28,7 +29,7 @@ namespace DOL.GS
         private Action<int> _action; // The actual work item.
         private int _workCount; // The number of work items to do. This is the total number of items, not the number of items per worker.
         private int _chunk; // The size of the chunk of work each worker will do.
-        private int _remainder; // The remainder of the chunked work.
+        private int _remainder; // The chunked work that couldn't be evenly divided between the workers.
         private int _sharedWorkCurrentIndex; // The current index of the shared work, modified by the workers.
 
         public GameLoopThreadPool(int degreeOfParallelism)
@@ -66,54 +67,65 @@ namespace DOL.GS
 
         public void Work(int count, Action<int> action)
         {
-            if (count <= 0)
+            try
+            {
+                if (count <= 0)
+                    return;
+
+                _action = action;
+                _workCount = count;
+                int workersToStart;
+                int barrierParticipants;
+
+                if (count < _degreeOfParallelism)
+                {
+                    // If the count is less than the degree of parallelism, only signal the required number of workers.
+                    // Every signaled worker will have a slice of the work to do, and no work will be shared.
+                    // The caller thread will also be used, so we need to subtract one from the worker count.
+
+                    barrierParticipants = count;
+                    workersToStart = count - 1;
+                }
+                else
+                {
+                    // if the count is greater than the degree of parallelism, we split the work into two parts:
+                    // 1. The first part is split into chunks, and each worker will work on its own chunk.
+                    // 2. The second part is shared work, where each worker will take a piece of work from the shared pool in a first-come-first-served manner.
+
+                    if (count != _degreeOfParallelism)
+                        count = count * CHUNKED_WORK_RATIO / 100;
+
+                    barrierParticipants = _degreeOfParallelism;
+                    workersToStart = _workerCount;
+                }
+
+                _chunk = count / _degreeOfParallelism;
+                _remainder = count % _degreeOfParallelism;
+                _sharedWorkCurrentIndex = count;
+                _barrier.AddParticipants(barrierParticipants);
+
+                for (int i = 0; i < workersToStart; i++)
+                    _workReady[i].Release();
+
+                // Assign an id to the caller thread, so it can be used as a worker too.
+                RunMainThread(workersToStart);
+
+                // Clean up the barrier for the next work call.
+                // Remove ourself first to free the workers, then remove the rest if any.
+                // Attempting to remove everyone at once will throw an exception.
+                _barrier.RemoveParticipant();
+
+                if (barrierParticipants > 1)
+                    _barrier.RemoveParticipants(barrierParticipants - 1);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPool)}\"", e);
+
+                GameServer.Instance.Stop();
                 return;
-
-            _action = action;
-            _workCount = count;
-            int workersToStart;
-            int barrierParticipants;
-
-            if (count < _degreeOfParallelism)
-            {
-                // If the count is less than the degree of parallelism, only signal the required number of workers.
-                // Every signaled worker will have a slice of the work to do, and no work will be shared.
-                // The caller thread will also be used, so we need to subtract one from the worker count.
-
-                barrierParticipants = count;
-                workersToStart = count - 1;
             }
-            else
-            {
-                // if the count is greater than the degree of parallelism, we split the work into two parts:
-                // 1. The first part is split into chunks, and each worker will work on its own chunk.
-                // 2. The second part is shared work, where each worker will take a piece of work from the shared pool in a first-come-first-served manner.
-
-                if (count != _degreeOfParallelism)
-                    count = count * CHUNKED_WORK_RATIO / 100;
-
-                barrierParticipants = _degreeOfParallelism;
-                workersToStart = _workerCount;
-            }
-
-            _chunk = count / _degreeOfParallelism;
-            _remainder = count % _degreeOfParallelism;
-            _sharedWorkCurrentIndex = count;
-            _barrier.AddParticipants(barrierParticipants);
-
-            for (int i = 0; i < workersToStart; i++)
-                _workReady[i].Release();
-
-            // Assign an id to the caller thread, so it can be used as a worker too.
-            RunMainThread(workersToStart);
-
-            // Clean up the barrier for the next work call.
-            // Remove ourself first to free the workers, then remove the rest if any.
-            // Attempting to remove everyone at once will throw an exception.
-            _barrier.RemoveParticipant();
-
-            if (barrierParticipants > 1)
-                _barrier.RemoveParticipants(barrierParticipants - 1);
         }
 
         private void InitWorker(object obj)
@@ -144,7 +156,7 @@ namespace DOL.GS
                 catch (Exception e)
                 {
                     if (log.IsErrorEnabled)
-                        log.Error($"Thread \"{Thread.CurrentThread.Name}\" exception: {e.Message}", e);
+                        log.Error($"Thread \"{Thread.CurrentThread.Name}\"", e);
                 }
 
                 PerformWork(workerId);
@@ -180,30 +192,41 @@ namespace DOL.GS
 
         private void PerformWork(int workerId)
         {
-            int work;
-
-            // Perform the chunked work.
-            int start = workerId * _chunk + Math.Min(workerId, _remainder);
-            int end = start + _chunk;
-
-            if (workerId < _remainder)
-                end++;
-
-            for (work = start; work < end; work++)
-                _action(work);
-
-            // Attempt an early exit. May save some CPU cycles.
-            if (Volatile.Read(ref _sharedWorkCurrentIndex) >= _workCount)
-                return;
-
-            // Perform the shared work.
-            do
+            try
             {
-                if ((work = Interlocked.Increment(ref _sharedWorkCurrentIndex) - 1) >= _workCount)
-                    break;
+                int work;
 
-                _action(work);
-            } while (true);
+                // Perform the chunked work.
+                int start = workerId * _chunk + Math.Min(workerId, _remainder);
+                int end = start + _chunk;
+
+                if (workerId < _remainder)
+                    end++;
+
+                for (work = start; work < end; work++)
+                    _action(work);
+
+                // Attempt an early exit. May save some CPU cycles.
+                if (Volatile.Read(ref _sharedWorkCurrentIndex) >= _workCount)
+                    return;
+
+                // Perform the shared work.
+                do
+                {
+                    if ((work = Interlocked.Increment(ref _sharedWorkCurrentIndex) - 1) >= _workCount)
+                        return;
+
+                    _action(work);
+                } while (true);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPool)}\"", e);
+
+                GameServer.Instance.Stop();
+                return;
+            }
         }
 
         private void WatchdogLoop()
@@ -244,7 +267,7 @@ namespace DOL.GS
                 catch (Exception e)
                 {
                     if (log.IsErrorEnabled)
-                        log.Error($"Thread \"{Thread.CurrentThread.Name}\" exception: {e.Message}", e);
+                        log.Error($"Thread \"{Thread.CurrentThread.Name}\"", e);
                 }
             }
         }
