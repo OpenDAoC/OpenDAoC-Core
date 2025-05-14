@@ -45,6 +45,7 @@ namespace DOL.GS
             else
                 _workerThreadPool = new GameLoopThreadPool(Environment.ProcessorCount);
 
+            _workerThreadPool.Init();
             _gameLoopThread = new Thread(new ThreadStart(Run))
             {
                 Name = THREAD_NAME,
