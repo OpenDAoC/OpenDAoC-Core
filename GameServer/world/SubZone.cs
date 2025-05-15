@@ -67,7 +67,7 @@ namespace DOL.GS
                 throw new ArgumentException("Cannot move object to the same subzone", nameof(otherSubZone));
 
             // Acquire locks on both lists. We want the removal and addition to happen at the same time from a reader's point of view.
-            using SimpleDisposableLock thisLock = ValidateListAndGetLock(node.Value.GameObjectType);
+            SimpleDisposableLock thisLock = ValidateListAndGetLock(node.Value.GameObjectType);
             using SimpleDisposableLock otherLock = otherSubZone.ValidateListAndGetLock(node.Value.GameObjectType);
             thisLock.EnterWriteLock();
 
@@ -77,11 +77,13 @@ namespace DOL.GS
                 // Relinquish then reacquire our current lock to prevent dead-locks.
                 thisLock.Dispose();
                 Thread.Sleep(0);
+                thisLock = ValidateListAndGetLock(node.Value.GameObjectType);
                 thisLock.EnterWriteLock();
             }
 
             otherSubZone.RemoveObjectUnsafe(node);
             AddObjectUnsafe(node);
+            thisLock.Dispose();
         }
 
         public SimpleDisposableLock ValidateListAndGetLock(eGameObjectType objectType)
