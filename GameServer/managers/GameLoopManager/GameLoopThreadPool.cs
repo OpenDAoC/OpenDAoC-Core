@@ -23,14 +23,14 @@ namespace DOL.GS
         private int _workerCount; // Should always be one less than `_degreeOfParallelism`.
         private Thread[] _workers; // The worker threads. Does not include the caller thread.
         private Thread _watchdog; // The watchdog thread is used to monitor the worker threads and restart them if they die.
-        private CountdownEvent _workerStartCountDownEvent; // The countdown event is used to wait for all the workers to start before proceeding.
+        private CountdownEvent _workerStartCountDownEvent; // Used to wait for the workers to be initialized.
         private SemaphoreSlim[] _workReady; // One for each worker appears to offer better performance than a shared one.
-        private Barrier _barrier; // The barrier is used to synchronize the workers and the main thread.
         private Action<int> _action; // The actual work item.
         private int _workCount; // The number of work items to do. This is the total number of items, not the number of items per worker.
         private int _chunk; // The size of the chunk of work each worker will do.
         private int _remainder; // The chunked work that couldn't be evenly divided between the workers.
         private int _sharedWorkCurrentIndex; // The current index of the shared work, modified by the workers.
+        private int _workerCompletionCount; // The number of workers that have completed their work.
 
         public GameLoopThreadPool(int degreeOfParallelism)
         {
@@ -43,7 +43,6 @@ namespace DOL.GS
             _workers = new Thread[_workerCount];
             _workerStartCountDownEvent = new(_workerCount);
             _workReady = new SemaphoreSlim[_workerCount];
-            _barrier = new(0);
 
             for (int i = 0; i < _workerCount; i++)
             {
@@ -74,6 +73,7 @@ namespace DOL.GS
 
                 _action = action;
                 _workCount = count;
+                _workerCompletionCount = 0;
                 int workersToStart;
                 int barrierParticipants;
 
@@ -102,21 +102,19 @@ namespace DOL.GS
                 _chunk = count / _degreeOfParallelism;
                 _remainder = count % _degreeOfParallelism;
                 _sharedWorkCurrentIndex = count;
-                _barrier.AddParticipants(barrierParticipants);
 
                 for (int i = 0; i < workersToStart; i++)
                     _workReady[i].Release();
 
-                // Assign an id to the caller thread, so it can be used as a worker too.
-                RunMainThread(workersToStart);
+                // Use the last id for the caller thread.
+                PerformWork(workersToStart);
 
-                // Clean up the barrier for the next work call.
-                // Remove ourself first to free the workers, then remove the rest if any.
-                // Attempting to remove everyone at once will throw an exception.
-                _barrier.RemoveParticipant();
-
-                if (barrierParticipants > 1)
-                    _barrier.RemoveParticipants(barrierParticipants - 1);
+                // Spin very tightly until all the workers have completed their work.
+                // We could adjust the spin wait time if we get here early, but this is hard to predict.
+                // However we really don't want to yield the CPU here, as this could delay the return by a lot.
+                // `Volatile.Read` is fine here because workers use `Interlocked.Increment`, which provides release semantics on write.
+                while (Volatile.Read(ref _workerCompletionCount) < workersToStart)
+                    Thread.SpinWait(1);
             }
             catch (Exception e)
             {
@@ -149,7 +147,7 @@ namespace DOL.GS
                 catch (ThreadInterruptedException)
                 {
                     if (log.IsInfoEnabled)
-                        log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted during work wait");
+                        log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
 
                     return;
                 }
@@ -160,34 +158,8 @@ namespace DOL.GS
                 }
 
                 PerformWork(workerId);
-
-                // The workers signal the barrier when they're done with their work.
-                try
-                {
-                    _barrier.SignalAndWait();
-                }
-                catch (ThreadInterruptedException)
-                {
-                    if (log.IsInfoEnabled)
-                        log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted during barrier");
-
-                    return;
-                }
+                Interlocked.Increment(ref _workerCompletionCount);
             } while (true);
-        }
-
-        private void RunMainThread(int workerId)
-        {
-            PerformWork(workerId);
-
-            // The main thread spins until the workers are done.
-            if (_barrier.ParticipantsRemaining > 1)
-            {
-                SpinWait spinWait = new();
-
-                while (_barrier.ParticipantsRemaining > 1)
-                    spinWait.SpinOnce(-1);
-            }
         }
 
         private void PerformWork(int workerId)
