@@ -13,12 +13,6 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        // The ratio of work that will be chunked (50 = 50%). The rest will be shared.
-        // Chunked work = work that is split into chunks and assigned to each worker.
-        // Shared work = Tail work that is shared between the workers.
-        // 50 tends to give good results, but the sweet spot probably varies depending on the workload.
-        private const int CHUNKED_WORK_RATIO = 50;
-
         private int _degreeOfParallelism; // The desired degree of parallelism. This is the number of threads we want to use, including the caller thread.
         private int _workerCount; // Should always be one less than `_degreeOfParallelism`.
         private Thread[] _workers; // The worker threads. Does not include the caller thread.
@@ -27,10 +21,7 @@ namespace DOL.GS
         private SemaphoreSlim[] _workReady; // One for each worker appears to offer better performance than a shared one.
         private CancellationTokenSource _workersCancellationTokenSource;
         private Action<int> _action; // The actual work item.
-        private int _workCount; // The number of work items to do. This is the total number of items, not the number of items per worker.
-        private int _chunk; // The size of the chunk of work each worker will do.
-        private int _remainder; // The chunked work that couldn't be evenly divided between the workers.
-        private int _sharedWorkCurrentIndex; // The current index of the shared work, modified by the workers.
+        private int _workLeft; // The number of work items to do. This is the total number of items, not the number of items per worker.
         private int _workerCompletionCount; // The number of workers that have completed their work.
         private bool _running;
 
@@ -78,36 +69,23 @@ namespace DOL.GS
                     return;
 
                 _action = action;
-                _workCount = count;
+                _workLeft = count;
                 _workerCompletionCount = 0;
                 int workersToStart;
                 int barrierParticipants;
 
+                // If the count is less than the degree of parallelism, only signal the required number of workers.
+                // The caller thread will also be used, so in this case we need to subtract one from the amount of workers to start.
                 if (count < _degreeOfParallelism)
                 {
-                    // If the count is less than the degree of parallelism, only signal the required number of workers.
-                    // Every signaled worker will have a slice of the work to do, and no work will be shared.
-                    // The caller thread will also be used, so we need to subtract one from the worker count.
-
                     barrierParticipants = count;
                     workersToStart = count - 1;
                 }
                 else
                 {
-                    // if the count is greater than the degree of parallelism, we split the work into two parts:
-                    // 1. The first part is split into chunks, and each worker will work on its own chunk.
-                    // 2. The second part is shared work, where each worker will take a piece of work from the shared pool in a first-come-first-served manner.
-
-                    if (count != _degreeOfParallelism)
-                        count = count * CHUNKED_WORK_RATIO / 100;
-
                     barrierParticipants = _degreeOfParallelism;
                     workersToStart = _workerCount;
                 }
-
-                _chunk = count / _degreeOfParallelism;
-                _remainder = count % _degreeOfParallelism;
-                _sharedWorkCurrentIndex = count;
 
                 for (int i = 0; i < workersToStart; i++)
                     _workReady[i].Release();
@@ -118,7 +96,7 @@ namespace DOL.GS
                 // Spin very tightly until all the workers have completed their work.
                 // We could adjust the spin wait time if we get here early, but this is hard to predict.
                 // However we really don't want to yield the CPU here, as this could delay the return by a lot.
-                // `Volatile.Read` is fine here because workers use `Interlocked.Increment`, which provides release semantics on write.
+                // `Volatile.Read` is fine here because workers use `Interlocked`, which provides release semantics on write.
                 while (Volatile.Read(ref _workerCompletionCount) < workersToStart)
                     Thread.SpinWait(1);
             }
@@ -186,25 +164,12 @@ namespace DOL.GS
             {
                 int work;
 
-                // Perform the chunked work.
-                int start = workerId * _chunk + Math.Min(workerId, _remainder);
-                int end = start + _chunk;
-
-                if (workerId < _remainder)
-                    end++;
-
-                for (work = start; work < end; work++)
-                    _action(work);
-
-                // Attempt an early exit. May save some CPU cycles.
-                if (Volatile.Read(ref _sharedWorkCurrentIndex) >= _workCount)
-                    return;
-
-                // Perform the shared work.
                 do
                 {
-                    if ((work = Interlocked.Increment(ref _sharedWorkCurrentIndex) - 1) >= _workCount)
-                        return;
+                    // First-come-first-served.
+                    // It's also possible to use `Interlocked.Add` to reduce "contention", but it doesn't seem to improve performance.
+                    if ((work = Interlocked.Decrement(ref _workLeft)) < 0)
+                        break;
 
                     _action(work);
                 } while (true);
