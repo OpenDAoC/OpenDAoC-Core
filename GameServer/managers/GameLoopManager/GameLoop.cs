@@ -21,6 +21,7 @@ namespace DOL.GS
         private static int _busyWaitThreshold;
         private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
         private static GameLoopStats _gameLoopStats;
+        private static bool _running;
 
         public static long TickRate { get; private set; }
         public static long GameLoopTime { get; private set; }
@@ -34,7 +35,7 @@ namespace DOL.GS
 
         public static bool Init()
         {
-            if (_gameLoopThread != null)
+            if (Interlocked.CompareExchange(ref _running, true, false))
                 return false;
 
             TickRate = Properties.GAME_LOOP_TICK_RATE;
@@ -69,21 +70,19 @@ namespace DOL.GS
 
         public static void Exit()
         {
-            if (_gameLoopThread == null)
+            if (!Interlocked.CompareExchange(ref _running, false, true))
                 return;
 
-            if (Thread.CurrentThread != _gameLoopThread)
-            {
-                _gameLoopThread.Interrupt();
+            if (Thread.CurrentThread != _gameLoopThread && _gameLoopThread.IsAlive)
                 _gameLoopThread.Join();
+
+            if (_busyWaitThresholdThread.IsAlive)
+            {
+                _busyWaitThresholdThread.Interrupt(); // This thread sleeps for a long time.
+            _busyWaitThresholdThread.Join();
             }
 
-            _gameLoopThread = null;
-            _busyWaitThresholdThread.Interrupt();
-            _busyWaitThresholdThread.Join();
-            _busyWaitThresholdThread = null;
             _workerThreadPool.Dispose();
-            _workerThreadPool = null;
         }
 
         public static List<(int, double)> GetAverageTps()
@@ -103,7 +102,7 @@ namespace DOL.GS
             Stopwatch stopwatch = new();
             stopwatch.Start();
 
-            while (true)
+            while (Volatile.Read(ref _running))
             {
                 try
                 {
@@ -116,7 +115,7 @@ namespace DOL.GS
                 catch (ThreadInterruptedException)
                 {
                     if (log.IsInfoEnabled)
-                        log.Info($"Thread \"{_gameLoopThread.Name}\" was interrupted");
+                        log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
 
                     return;
                 }
@@ -129,6 +128,9 @@ namespace DOL.GS
                     return;
                 }
             }
+
+            if (log.IsInfoEnabled)
+                log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
 
             static void TickServices()
             {
@@ -187,7 +189,7 @@ namespace DOL.GS
 
             try
             {
-                while (true)
+                while (Volatile.Read(ref _running))
                 {
                     double start;
                     double overSleptFor;
@@ -210,10 +212,13 @@ namespace DOL.GS
             catch (ThreadInterruptedException)
             {
                 if (log.IsInfoEnabled)
-                    log.Info($"Thread \"{_busyWaitThresholdThread.Name}\" was interrupted");
+                    log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
 
                 return;
             }
+
+            if (log.IsInfoEnabled)
+                log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
         }
 
         private class GameLoopStats

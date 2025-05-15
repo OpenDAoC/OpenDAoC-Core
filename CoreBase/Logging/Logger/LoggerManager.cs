@@ -79,20 +79,11 @@ namespace DOL.Logging
         {
             lock (_lock)
             {
-                _initialized = false;
+                if (!_initialized)
+                    throw new InvalidOperationException("Logging Manager has not been initialized");
 
-                if (_queueProcessor != null)
-                {
-                    _queueProcessor.Stop();
-                    _queueProcessor = null;
-                }
-
-                if (_loggerFactory != null)
-                {
-                    _loggerFactory.Shutdown();
-                    _loggerFactory = null;
-                }
-
+                _queueProcessor.Stop();
+                _loggerFactory.Shutdown();
                 _loggingLibrary = ELogLibrary.None;
             }
         }

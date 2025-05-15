@@ -25,12 +25,14 @@ namespace DOL.GS
         private Thread _watchdog; // The watchdog thread is used to monitor the worker threads and restart them if they die.
         private CountdownEvent _workerStartCountDownEvent; // Used to wait for the workers to be initialized.
         private SemaphoreSlim[] _workReady; // One for each worker appears to offer better performance than a shared one.
+        private CancellationTokenSource _workersCancellationTokenSource;
         private Action<int> _action; // The actual work item.
         private int _workCount; // The number of work items to do. This is the total number of items, not the number of items per worker.
         private int _chunk; // The size of the chunk of work each worker will do.
         private int _remainder; // The chunked work that couldn't be evenly divided between the workers.
         private int _sharedWorkCurrentIndex; // The current index of the shared work, modified by the workers.
         private int _workerCompletionCount; // The number of workers that have completed their work.
+        private bool _running;
 
         public GameLoopThreadPool(int degreeOfParallelism)
         {
@@ -39,10 +41,14 @@ namespace DOL.GS
 
         public void Init()
         {
+            if (Interlocked.CompareExchange(ref _running, true, false))
+                return;
+
             _workerCount = _degreeOfParallelism - 1;
             _workers = new Thread[_workerCount];
             _workerStartCountDownEvent = new(_workerCount);
             _workReady = new SemaphoreSlim[_workerCount];
+            _workersCancellationTokenSource = new();
 
             for (int i = 0; i < _workerCount; i++)
             {
@@ -138,11 +144,20 @@ namespace DOL.GS
 
         private void RunWorker(int workerId)
         {
-            do
+            CancellationToken cancellationToken = _workersCancellationTokenSource.Token;
+
+            while (Volatile.Read(ref _running))
             {
                 try
                 {
-                    _workReady[workerId].Wait();
+                    _workReady[workerId].Wait(cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    if (log.IsInfoEnabled)
+                        log.Info($"Thread \"{Thread.CurrentThread.Name}\" was cancelled");
+
+                    return;
                 }
                 catch (ThreadInterruptedException)
                 {
@@ -159,7 +174,10 @@ namespace DOL.GS
 
                 PerformWork(workerId);
                 Interlocked.Increment(ref _workerCompletionCount);
-            } while (true);
+            }
+
+            if (log.IsInfoEnabled)
+                log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
         }
 
         private void PerformWork(int workerId)
@@ -203,7 +221,7 @@ namespace DOL.GS
 
         private void WatchdogLoop()
         {
-            while (true)
+            while (Volatile.Read(ref _running))
             {
                 try
                 {
@@ -242,23 +260,28 @@ namespace DOL.GS
                         log.Error($"Thread \"{Thread.CurrentThread.Name}\"", e);
                 }
             }
+
+            if (log.IsInfoEnabled)
+                log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
         }
 
         public void Dispose()
         {
-            _watchdog.Interrupt();
-            _watchdog.Join();
+            if (!Interlocked.CompareExchange(ref _running, false, true))
+                return;
+
+            if (_watchdog.IsAlive)
+                _watchdog.Join();
+
             _workerStartCountDownEvent.Wait(); // Make sure any worker being (re)started has finished.
+            _workersCancellationTokenSource.Cancel();
 
             for (int i = 0; i < _workers.Length; i++)
             {
                 Thread worker = _workers[i];
 
                 if (worker != null && Thread.CurrentThread != worker && worker.IsAlive)
-                {
-                    worker.Interrupt();
                     worker.Join();
-                }
             }
         }
     }
