@@ -79,7 +79,7 @@ namespace DOL.GS
             if (_busyWaitThresholdThread.IsAlive)
             {
                 _busyWaitThresholdThread.Interrupt(); // This thread sleeps for a long time.
-            _busyWaitThresholdThread.Join();
+                _busyWaitThresholdThread.Join();
             }
 
             _workerThreadPool.Dispose();
