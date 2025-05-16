@@ -43,7 +43,7 @@ namespace DOL.GS
                 return;
 
             _workerCount = _degreeOfParallelism - 1;
-            _workDistributionBase = (_workerCount + 1) * WORK_DISTRIBUTION_BASE_FACTOR;
+            _workDistributionBase = _degreeOfParallelism * WORK_DISTRIBUTION_BASE_FACTOR;
             _workers = new Thread[_workerCount];
             _workerStartCountDownEvent = new(_workerCount);
             _workReady = new SemaphoreSlim[_workerCount];
