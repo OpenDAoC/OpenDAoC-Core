@@ -13,8 +13,15 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
+        // Used to calculate the work distribution base.
+        // The higher the number, the less work each worker will do per iteration.
+        // Too high, and the chunk size will need to be adjusted too frequently, potentially wasting CPU time.
+        // Too low, and a worker may reserve too much work, causing the other workers to wait for it.
+        private const int WORK_DISTRIBUTION_BASE_FACTOR = 6;
+
         private int _degreeOfParallelism; // The desired degree of parallelism. This is the number of threads we want to use, including the caller thread.
         private int _workerCount; // Should always be one less than `_degreeOfParallelism`.
+        private int _workDistributionBase; // Used to dynamically calculate the chunk size for each worker.
         private Thread[] _workers; // The worker threads. Does not include the caller thread.
         private Thread _watchdog; // The watchdog thread is used to monitor the worker threads and restart them if they die.
         private CountdownEvent _workerStartCountDownEvent; // Used to wait for the workers to be initialized.
@@ -36,6 +43,7 @@ namespace DOL.GS
                 return;
 
             _workerCount = _degreeOfParallelism - 1;
+            _workDistributionBase = (_workerCount + 1) * WORK_DISTRIBUTION_BASE_FACTOR;
             _workers = new Thread[_workerCount];
             _workerStartCountDownEvent = new(_workerCount);
             _workReady = new SemaphoreSlim[_workerCount];
@@ -90,8 +98,7 @@ namespace DOL.GS
                 for (int i = 0; i < workersToStart; i++)
                     _workReady[i].Release();
 
-                // Use the last id for the caller thread.
-                PerformWork(workersToStart);
+                PerformWork();
 
                 // Spin very tightly until all the workers have completed their work.
                 // We could adjust the spin wait time if we get here early, but this is hard to predict.
@@ -150,7 +157,7 @@ namespace DOL.GS
                         log.Error($"Thread \"{Thread.CurrentThread.Name}\"", e);
                 }
 
-                PerformWork(workerId);
+                PerformWork();
                 Interlocked.Increment(ref _workerCompletionCount);
             }
 
@@ -158,21 +165,39 @@ namespace DOL.GS
                 log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
         }
 
-        private void PerformWork(int workerId)
+        private void PerformWork()
         {
+            int nextWorkLeftOnLastIteration = 0; // Used to calculate the chunk size. May be inaccurate, but it's fine.
+            int chunkSize;
+            int start = 0;
+            int end;
+
             try
             {
-                int work;
-
                 do
                 {
-                    // First-come-first-served.
-                    // It's also possible to use `Interlocked.Add` to reduce "contention", but it doesn't seem to improve performance.
-                    if ((work = Interlocked.Decrement(ref _workLeft)) < 0)
-                        break;
+                    nextWorkLeftOnLastIteration = start - 1;
 
-                    _action(work);
-                } while (true);
+                    if (nextWorkLeftOnLastIteration == -1)
+                        chunkSize = 1; // First iteration, we need to do at least one item.
+                    else
+                    {
+                        chunkSize = nextWorkLeftOnLastIteration / (_workDistributionBase - Volatile.Read(ref _workerCompletionCount));
+
+                        // Prevent infinite loops.
+                        if (chunkSize < 1)
+                            chunkSize = 1;
+                    }
+
+                    start = Interlocked.Add(ref _workLeft, -chunkSize);
+                    end = start + chunkSize;
+
+                    if (start < 0)
+                        start = 0;
+
+                    for (int i = start; i < end; i++)
+                        _action(i);
+                } while (start > 0);
             }
             catch (Exception e)
             {
