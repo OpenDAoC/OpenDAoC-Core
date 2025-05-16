@@ -190,14 +190,15 @@ namespace DOL.GS
                     }
 
                     start = Interlocked.Add(ref _workLeft, -chunkSize);
-                    end = start + chunkSize;
 
                     if (start < 0)
-                        start = 0;
+                        break;
+
+                    end = start + chunkSize;
 
                     for (int i = start; i < end; i++)
                         _action(i);
-                } while (start > 0);
+                } while (true);
             }
             catch (Exception e)
             {
