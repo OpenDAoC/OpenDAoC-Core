@@ -71,7 +71,9 @@ namespace DOL.GS
 
             // Acquire locks on both lists. We want the removal and addition to happen at the same time from a reader's point of view.
             using SimpleDisposableLock firstLock = first._objects[(int) objectType].Lock;
+            @firstLock.EnterWriteLock();
             using SimpleDisposableLock secondLock = second._objects[(int) objectType].Lock;
+            @secondLock.EnterWriteLock();
 
             // Remove from other, add to this.
             otherSubZone.RemoveObjectUnsafe(node);
