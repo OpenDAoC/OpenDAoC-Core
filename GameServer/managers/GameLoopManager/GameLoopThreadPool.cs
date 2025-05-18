@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 
@@ -29,7 +30,7 @@ namespace DOL.GS
         private CancellationTokenSource _workersCancellationTokenSource;
         private Action<int> _action; // The actual work item.
         private int _workLeft; // The number of work items to do. This is the total number of items, not the number of items per worker.
-        private int _workerCompletionCount; // The number of workers that have completed their work.
+        private int _workerCompletionCount; // The number of workers that have completed their work for this iteration.
         private bool _running;
 
         public GameLoopThreadPool(int degreeOfParallelism)
@@ -56,7 +57,7 @@ namespace DOL.GS
                     Name = $"{GameLoop.THREAD_NAME}_Worker_{i}",
                     IsBackground = true
                 };
-                worker.Start(i);
+                worker.Start((i, false));
             }
 
             _workerStartCountDownEvent.Wait(); // If for some reason a thread fails to start, we'll be waiting here forever.
@@ -119,23 +120,26 @@ namespace DOL.GS
 
         private void InitWorker(object obj)
         {
-            int workerId = (int) obj;
-            _workers[workerId] = Thread.CurrentThread;
-            _workReady[workerId]?.Dispose();
-            _workReady[workerId] = new SemaphoreSlim(0, 1);
+            (int Id, bool Restart) param = ((int, bool)) obj;
+            _workers[param.Id] = Thread.CurrentThread;
+            _workReady[param.Id]?.Dispose();
+            _workReady[param.Id] = new SemaphoreSlim(0, 1);
             _workerStartCountDownEvent.Signal();
-            RunWorker(workerId);
+
+            // If this is a restart, we need to free the caller thread.
+            if (param.Restart)
+                Interlocked.Increment(ref _workerCompletionCount);
+
+            RunWorker(_workReady[param.Id], _workersCancellationTokenSource.Token);
         }
 
-        private void RunWorker(int workerId)
+        private void RunWorker(SemaphoreSlim workReady, CancellationToken cancellationToken)
         {
-            CancellationToken cancellationToken = _workersCancellationTokenSource.Token;
-
             while (Volatile.Read(ref _running))
             {
                 try
                 {
-                    _workReady[workerId].Wait(cancellationToken);
+                    workReady.Wait(cancellationToken);
                 }
                 catch (OperationCanceledException)
                 {
@@ -211,6 +215,8 @@ namespace DOL.GS
 
         private void WatchdogLoop()
         {
+            List<int> _workersToRestart = new();
+
             while (Volatile.Read(ref _running))
             {
                 try
@@ -227,15 +233,27 @@ namespace DOL.GS
                         if (log.IsWarnEnabled)
                             log.Warn($"Watchdog: Thread \"{worker.Name}\" is dead. Restarting...");
 
-                        _workerStartCountDownEvent.AddCount();
-                        _workers[i] = null;
+                        _workersToRestart.Add(i);
+                    }
+
+                    if (_workersToRestart.Count == 0)
+                        continue;
+
+                    // Initialize the countdown event before starting any thread.
+                    _workerStartCountDownEvent = new(_workersToRestart.Count);
+
+                    foreach (int id in _workersToRestart)
+                    {
+                        _workers[id] = null;
                         Thread newThread = new(new ParameterizedThreadStart(InitWorker))
                         {
-                            Name = $"{GameLoop.THREAD_NAME}_Worker_{i}",
+                            Name = $"{GameLoop.THREAD_NAME}_Worker_{id}",
                             IsBackground = true,
                         };
-                        newThread.Start(i);
+                        newThread.Start((id, true));
                     }
+
+                    _workersToRestart.Clear();
                 }
                 catch (ThreadInterruptedException)
                 {
