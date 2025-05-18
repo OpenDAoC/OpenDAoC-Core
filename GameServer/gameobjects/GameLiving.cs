@@ -962,15 +962,13 @@ namespace DOL.GS
 		/// </summary>
 		protected virtual void StartWeaponMagicalEffect(DbInventoryItem weapon, AttackData ad, SpellLine spellLine, int spellID, bool ignoreLevel)
 		{
-			if (weapon == null)
+			if (weapon == null || ad == null)
 				return;
 
 			if (spellLine == null)
-			{
 				spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-			}
 
-			if (spellLine != null && ad != null && weapon != null)
+			if (spellLine != null)
 			{
 				Spell procSpell = SkillBase.FindSpell(spellID, spellLine);
 
@@ -1416,7 +1414,7 @@ namespace DOL.GS
             // Note that this function is called whenever an attack is made, regardless of whether that attack was successful.
             // i.e. missed melee swings and resisted spells still trigger this.
 
-            if (effectListComponent is null)
+            if (ad == null)
                 return;
 
             if (this is GamePlayer player)
@@ -1429,12 +1427,12 @@ namespace DOL.GS
                     effect.Stop();
             }
 
-            if (ad != null && ad.Damage > 0)
+            if (ad.Damage > 0)
                 TryCancelMovementSpeedBuffs(true);
 
             var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
             //OffensiveProcs
-            if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell && ad.AttackResult != eAttackResult.Missed)
+            if (ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell && ad.AttackResult != eAttackResult.Missed)
             {
                 for (int i = 0; i < oProcEffects.Count; i++)
                 {
@@ -1562,7 +1560,7 @@ namespace DOL.GS
 				// Handle DefensiveProcs.
 				List<ECSGameSpellEffect> dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
 
-				if (ad != null && ad.Target == this && dProcEffects != null && ad.AttackType != eAttackType.Spell)
+				if (ad.Target == this && dProcEffects != null && ad.AttackType != eAttackType.Spell)
 				{
 					for (int i = 0; i < dProcEffects.Count; i++)
 						(dProcEffects[i].SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
@@ -1577,7 +1575,7 @@ namespace DOL.GS
 		/// </summary>
 		public virtual bool HandleCrowdControlOnAttacked(AttackData ad)
 		{
-			if (effectListComponent == null || ad == null || !ad.IsHit)
+			if (ad == null || !ad.IsHit)
 				return false;
 
 			bool removeMez = false;
@@ -1664,7 +1662,7 @@ namespace DOL.GS
 
         public virtual void HandleMovementSpeedEffectsOnAttacked(AttackData ad)
         {
-            if (effectListComponent == null || ad == null)
+            if (ad == null)
                 return;
 
             // Cancel SpeedOfTheRealm (Hastener Speed)
@@ -1675,7 +1673,7 @@ namespace DOL.GS
             }
 
             // Cancel movement speed buffs when attacked only if damaged
-            if (ad != null & ad.Damage > 0)
+            if (ad.Damage > 0)
                 TryCancelMovementSpeedBuffs(false);
         }
 
