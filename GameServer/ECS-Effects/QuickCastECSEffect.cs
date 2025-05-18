@@ -5,39 +5,42 @@ namespace DOL.GS
 {
     public class QuickCastECSGameEffect : ECSGameAbilityEffect
     {
-        public QuickCastECSGameEffect(ECSGameEffectInitParams initParams)
-            : base(initParams)
+        public QuickCastECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.QuickCast;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public const int DURATION = 3000;
 
-        public override ushort Icon { get { return 0x0190; } }
-        public override string Name { get { return LanguageMgr.GetTranslation(((GamePlayer)Owner).Client, "Effects.QuickCastEffect.Name"); } }
-        public override bool HasPositiveEffect { get { return true; } }
-        public override long GetRemainingTimeForClient() { { return 0; } }
+        public override ushort Icon => 0x0190;
+        public override string Name => LanguageMgr.GetTranslation(((GamePlayer) Owner).Client, "Effects.QuickCastEffect.Name");
+        public override bool HasPositiveEffect => true;
+
+        public override long GetRemainingTimeForClient()
+        {
+            return 0;
+        }
 
         public override void OnStartEffect()
         {
-            if (Owner is GamePlayer)
-                (Owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Owner as GamePlayer).Client, "Effects.QuickCastEffect.YouActivatedQC"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            if (Owner is GamePlayer player)
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Effects.QuickCastEffect.YouActivatedQC"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+
             Owner.TempProperties.RemoveProperty(Spells.SpellHandler.INTERRUPT_TIMEOUT_PROPERTY);
         }
-        public override void OnStopEffect()
-        {
 
-        }
+        public override void OnStopEffect() { }
+
         public void Cancel(bool playerCancel)
         {
             if (playerCancel)
             {
-                if (Owner is GamePlayer)
-                    (Owner as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((Owner as GamePlayer).Client, "Effects.QuickCastEffect.YourNextSpellNoQCed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                if (Owner is GamePlayer player)
+                    player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Effects.QuickCastEffect.YourNextSpellNoQCed"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            EffectService.RequestCancelEffect(this, playerCancel);
+            Stop(playerCancel);
         }
     }
 }

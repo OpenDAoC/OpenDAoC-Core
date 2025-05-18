@@ -242,11 +242,8 @@ namespace DOL.GS.RealmAbilities
 			if (!GameServer.ServerRules.IsAllowedToAttack(caster, target, true))
 				return;
 
-			//GameSpellEffect mez = SpellHandler.FindEffectOnTarget(aeplayer, "Mesmerize");
 			ECSGameEffect mez = EffectListService.GetEffectOnTarget(target, eEffect.Mez);
-			if (mez != null)
-				EffectService.RequestCancelEffect(mez);
-				//mez.Cancel(false);
+			mez?.Stop();
 
 			// Falloff damage
 			int dmgWithFalloff = CalculateDamageWithFalloff(dmgValue, living, target);

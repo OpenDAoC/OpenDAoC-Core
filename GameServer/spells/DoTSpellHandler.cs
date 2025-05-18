@@ -49,7 +49,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(ECSGameEffect compare)
 		{
 			return Spell.SpellType == compare.SpellHandler.Spell.SpellType && Spell.DamageType == compare.SpellHandler.Spell.DamageType && SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine;
 		}

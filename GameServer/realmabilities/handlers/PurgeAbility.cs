@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
+using System.Collections.Generic;
 using DOL.Database;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
-using System.Collections.Generic;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -115,9 +113,9 @@ namespace DOL.GS.RealmAbilities
             }
 
             // Cancel effects
-            foreach (ECSGameEffect e in effectsToRemove)
+            foreach (ECSGameEffect effect in effectsToRemove)
             {
-                EffectService.RequestCancelEffect(e);
+                effect.Stop();
                 removed = true;
             }
 

@@ -92,12 +92,16 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (sk is Spell spell && spell.IsPulsing && player.ActivePulseSpells.ContainsKey(spell.SpellType))
                 {
                     ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(player, spell);
-                    EffectService.RequestCancelConcEffect(effect);
 
-                    if (spell.InstrumentRequirement == 0)
-                        player.Out.SendMessage("You cancel your effect.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
-                    else
-                        player.Out.SendMessage("You stop playing your song.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    if (effect != null)
+                    {
+                        effect.Stop();
+
+                        if (spell.InstrumentRequirement == 0)
+                            player.Out.SendMessage("You cancel your effect.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                        else
+                            player.Out.SendMessage("You stop playing your song.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                    }
                 }
                 else
                     player.Out.SendMessage(string.Format("You must wait {0} seconds to use this ability!", reuseTime / 1000 + 1), eChatType.CT_System, eChatLoc.CL_SystemWindow);

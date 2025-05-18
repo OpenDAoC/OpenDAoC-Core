@@ -4,7 +4,7 @@ namespace DOL.GS
 {
     public class ECSImmunityEffect : ECSGameSpellEffect
     {
-        public ECSImmunityEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
+        public ECSImmunityEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness)
             : base(new ECSGameEffectInitParams(owner, duration, effectiveness, handler))
         {
             // Some of this is already done in the base constructor and should be cleaned up
@@ -13,13 +13,11 @@ namespace DOL.GS
             Duration = duration;
             PulseFreq = pulseFreq;
             Effectiveness = effectiveness;
-            CancelEffect = cancelEffect;
             EffectType = EffectService.GetImmunityEffectFromSpell(handler.Spell);
             ExpireTick = duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             TriggersImmunity = false;
-
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         protected ECSImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
@@ -34,7 +32,7 @@ namespace DOL.GS
             Owner = initParams.Target;
             Duration = 60000;
             EffectType = eEffect.NPCStunImmunity;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public long CalculateStunDuration(long duration)
@@ -54,7 +52,7 @@ namespace DOL.GS
             Owner = initParams.Target;
             Duration = 60000;
             EffectType = eEffect.NPCMezImmunity;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public long CalculateMezDuration(long duration)

@@ -1,9 +1,7 @@
-﻿using DOL.AI.Brain;
-using DOL.Database;
+﻿using System.Collections.Generic;
+using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.PacketHandler;
-using System;
-using System.Collections.Generic;
 
 namespace DOL.GS {
     public class LordOfBattle : GameTrainingDummy {
@@ -23,33 +21,25 @@ namespace DOL.GS {
             return base.AddToWorld(); // Finish up and add him to the world.
         }
 
-		public override bool Interact(GamePlayer player)
-		{
-			if (!base.Interact(player)) return false;
-			TurnTo(player.X, player.Y);
+        public override bool Interact(GamePlayer player)
+        {
+            if (!base.Interact(player))
+                return false;
 
-			
-				player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
+            TurnTo(player.X, player.Y);
+            player.Out.SendMessage("Greetings, " + player.CharacterClass.Name + ".\n\n" + "If you desire, I can port you back to your realm's [event zone]", eChatType.CT_Say, eChatLoc.CL_PopupWindow);
 
-            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
-            {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness));
-            }
+            ECSGameEffect effect = EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness);
+            effect?.Stop();
 
-            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
-            {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
-            }
-
+            effect = EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness);
+            effect?.Stop();
 
             if (player.InCombatPvPInLast(8000))
                 return true;
 
-            if (player.effectListComponent.ContainsEffectForEffectType(eEffect.Disease))
-            {
-                EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.Disease));
-            }
-
+            effect = EffectListService.GetEffectOnTarget(player, eEffect.Disease);
+            effect?.Stop();
 
             player.Health = player.MaxHealth;
             player.Endurance = player.MaxEndurance;
@@ -128,15 +118,11 @@ namespace DOL.GS {
                     playersToRez.Add(player, GameLoop.GameLoopTime);
                 }
 
-                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ResurrectionIllness))
-                {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness));
-                }
+                ECSGameEffect effect = EffectListService.GetEffectOnTarget(player, eEffect.ResurrectionIllness);
+                effect?.Stop();
 
-                if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RvrResurrectionIllness))
-                {
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness));
-                }
+                effect = EffectListService.GetEffectOnTarget(player, eEffect.RvrResurrectionIllness);
+                effect?.Stop();
 
                 if(playersToKill.Contains(player))
                     playersToKill.Remove(player);

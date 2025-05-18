@@ -312,7 +312,7 @@ namespace DOL.GS.Spells
         /// and therefore overwritable by better versions
         /// spells that are overwritable cannot stack
         /// </summary>
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(ECSGameEffect compare)
         {
             if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
                 return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

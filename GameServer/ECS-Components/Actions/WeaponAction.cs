@@ -369,7 +369,7 @@ namespace DOL.GS
             // 1 - Apply the DmgAdds that are unaffected by stacking (usually RA-based DmgAdds, EffectGroup 99999) first regardless of their damage.
             foreach (ECSGameSpellEffect damageAdd in damageAddEffects)
             {
-                if (damageAdd.SpellHandler.Spell.EffectGroup == 99999)
+                if (damageAdd.IsActive && damageAdd.SpellHandler.Spell.EffectGroup == 99999)
                 {
                     damageAddsUnaffectedByStacking.Add(damageAdd);
                     (damageAdd.SpellHandler as DamageAddSpellHandler).Handle(ad, 1);
@@ -382,7 +382,7 @@ namespace DOL.GS
 
             foreach (ECSGameSpellEffect damageAdd in damageAddEffects.Except(damageAddsUnaffectedByStacking).OrderByDescending(e => e.SpellHandler.Spell.Damage))
             {
-                if (damageAdd.IsBuffActive)
+                if (damageAdd.IsActive)
                 {
                     (damageAdd.SpellHandler as DamageAddSpellHandler).Handle(ad, numRegularDmgAddsApplied > 0 ? 0.5 : 1.0);
                     numRegularDmgAddsApplied++;

@@ -24,7 +24,7 @@ namespace DOL.GS
 
                 foreach (ECSGameSpellEffect e in effects)
                 {
-                    if (e.SpellHandler.Spell.ID == SpellHandler.Spell.ID && IsBuffActive)
+                    if (e.SpellHandler.Spell.ID == SpellHandler.Spell.ID && IsActive)
                         return;
                 }
             }
@@ -46,7 +46,7 @@ namespace DOL.GS
                     return;
 
                 foreach (ECSGameSpellEffect effect in speedDebuffs)
-                    EffectService.RequestDisableEffect(effect);
+                    effect.Disable();
 
                 double effectiveValue = SpellHandler.Spell.Value * Effectiveness;
                 Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, EffectType, 1.0 - effectiveValue * 0.01);
@@ -63,7 +63,7 @@ namespace DOL.GS
 
             // "Your agility is suppressed!"
             // "{0} seems uncoordinated!"
-            OnEffectStartsMsg(Owner, true, true, true);
+            OnEffectStartsMsg(true, true, true);
         }
 
         public override void OnStopEffect()
@@ -73,10 +73,7 @@ namespace DOL.GS
             if (EffectType is eEffect.MovementSpeedDebuff)
             {
                 ECSGameSpellEffect speedDebuff = Owner.effectListComponent.GetBestDisabledSpellEffect(eEffect.MovementSpeedDebuff);
-
-                if (speedDebuff != null)
-                    EffectService.RequestEnableEffect(speedDebuff);
-
+                speedDebuff?.Enable();
                 Owner.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, EffectType);
                 Owner.OnMaxSpeedChange();
             }
@@ -96,8 +93,7 @@ namespace DOL.GS
 
             // "Your coordination returns."
             // "{0}'s coordination returns."
-            OnEffectExpiresMsg(Owner, true, false, true);
-            IsBuffActive = false;
+            OnEffectExpiresMsg(true, false, true);
         }
 
         public static void TryDebuffInterrupt(Spell spell, GamePlayer player, GameLiving caster)

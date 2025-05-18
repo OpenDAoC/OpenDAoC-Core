@@ -1,10 +1,5 @@
 ﻿using DOL.GS.PacketHandler;
 using DOL.Language;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -15,7 +10,7 @@ namespace DOL.GS
         {
             m_level = level;
             EffectType = eEffect.Stag;
-			EffectService.RequestStartEffect(this);
+			Start();
 		}
 
         /// <summary>

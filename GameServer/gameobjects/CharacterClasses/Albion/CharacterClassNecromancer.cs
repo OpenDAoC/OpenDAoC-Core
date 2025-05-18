@@ -61,7 +61,7 @@ namespace DOL.GS
                 return false;
 
             effect = new NecromancerShadeECSGameEffect(new ECSGameEffectInitParams(Player, 0, 1));
-            return effect.IsBuffActive;
+            return effect.IsActive;
         }
 
         public override bool Shade(bool makeShade, out ECSGameAbilityEffect effect)

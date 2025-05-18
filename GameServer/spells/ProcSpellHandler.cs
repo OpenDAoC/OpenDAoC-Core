@@ -116,7 +116,7 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(ECSGameEffect compare)
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

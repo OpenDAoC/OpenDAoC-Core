@@ -1,4 +1,3 @@
-
 namespace DOL.GS.Effects
 {
     public class SoldiersBarricadeECSEffect : ECSGameAbilityEffect
@@ -7,7 +6,7 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.SoldiersBarricade;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override ushort Icon { get { return 4241; } }

@@ -14,7 +14,6 @@ namespace DOL.GS
         {
             Client,
             Brain,
-            Effect,
             AttackComponent,
             CastingComponent,
             CraftComponent,
@@ -27,7 +26,6 @@ namespace DOL.GS
         {
             { EntityType.Client, new EntityArray<GameClient>(ServerProperties.Properties.MAX_PLAYERS) },
             { EntityType.Brain, new EntityArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
-            { EntityType.Effect, new EntityArray<ECSGameEffect>(250) },
             { EntityType.AttackComponent, new EntityArray<AttackComponent>(1250) },
             { EntityType.CastingComponent, new EntityArray<CastingComponent>(1250) },
             { EntityType.CraftComponent, new EntityArray<CraftComponent>(100) },

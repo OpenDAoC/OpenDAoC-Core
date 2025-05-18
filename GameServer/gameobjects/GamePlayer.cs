@@ -5469,8 +5469,13 @@ namespace DOL.GS
             {
                 if (spell.InstrumentRequirement != 0)
                 {
-                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    EffectService.RequestCancelConcEffect(EffectListService.GetPulseEffectOnTarget(this, spell));
+                    ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(this, spell);
+
+                    if (effect != null)
+                    {
+                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.SwitchWeapon.SpellCancelled"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                        effect.Stop();
+                    }
                 }
             }
 
@@ -7183,11 +7188,8 @@ namespace DOL.GS
                             GameSpellEffect effects = SpellHandler.FindEffectOnTarget(this, "VampiirSpeedEnhancement");
                             ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedBuff);
 
-                            if (effects != null)
-                                effects.Cancel(false);
-
-                            if (effect != null)
-                                EffectService.RequestCancelEffect(effect);
+                            effects?.Cancel(false);
+                            effect?.Stop();
 
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.UseSlot.WhistleMount"), eChatType.CT_Emote, eChatLoc.CL_SystemWindow);
                             m_whistleMountTimer = new(this, new ECSGameTimer.ECSTimerCallback(WhistleMountTimerCallback), 5000);
@@ -9185,8 +9187,8 @@ namespace DOL.GS
             }
             else
             {
-                if (effectListComponent.ContainsEffectForEffectType(eEffect.Sprint))
-                    EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Sprint), false);
+                ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.Sprint);
+                effect?.Stop();
                 return false;
             }
         }
@@ -9877,7 +9879,7 @@ namespace DOL.GS
 
         private void CancelChargeBuff(int spellID)
         {
-            EffectService.RequestCancelEffect(effectListComponent.GetSpellEffects().FirstOrDefault(x => x.SpellHandler.Spell.ID == spellID));
+            effectListComponent.GetSpellEffects().FirstOrDefault(x => x.SpellHandler.Spell.ID == spellID)?.Stop();
         }
 
         public virtual void RefreshItemBonuses()
@@ -11347,7 +11349,8 @@ namespace DOL.GS
                 return;
             }
 
-            EffectService.RequestCancelEffect(EffectListService.GetEffectOnTarget(this, eEffect.Stealth));
+            ECSGameEffect effect = EffectListService.GetEffectOnTarget(this, eEffect.Stealth);
+            effect?.Stop();
         }
 
         public override void OnMaxSpeedChange()

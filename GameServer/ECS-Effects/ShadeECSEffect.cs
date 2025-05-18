@@ -1,5 +1,4 @@
-﻿using DOL.GS.API;
-using DOL.GS.PacketHandler;
+﻿using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS
@@ -13,7 +12,7 @@ namespace DOL.GS
         public ShadeECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Shade;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override void OnStartEffect()

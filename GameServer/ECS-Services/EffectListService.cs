@@ -92,7 +92,7 @@ namespace DOL.GS
                 if (effectToCancel == null)
                     return false;
 
-                EffectService.RequestCancelEffect(effectToCancel);
+                effectToCancel.Stop();
                 return true;
             }
         }

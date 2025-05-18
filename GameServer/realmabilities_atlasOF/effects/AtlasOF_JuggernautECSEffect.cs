@@ -7,7 +7,7 @@ namespace DOL.GS.Effects
         public AtlasOF_JuggernautECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Juggernaut;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override ushort Icon => 4261;
@@ -35,7 +35,7 @@ namespace DOL.GS.Effects
 
         public void Cancel(bool playerCancel)
         {
-            EffectService.RequestCancelEffect(this, playerCancel);
+            Stop(playerCancel);
             OnStopEffect();
         }
     }

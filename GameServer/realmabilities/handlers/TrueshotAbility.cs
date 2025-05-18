@@ -1,6 +1,4 @@
-using System;
 using DOL.Database;
-using DOL.GS.Effects;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -21,13 +19,11 @@ namespace DOL.GS.RealmAbilities
 			GamePlayer player = living as GamePlayer;
 			if (player != null)
 			{
-				SureShotECSGameEffect sureShot = (SureShotECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot);
-				if (sureShot != null)
-					EffectService.RequestCancelEffect(sureShot);
+				SureShotECSGameEffect sureShot = EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot) as SureShotECSGameEffect;
+				sureShot?.Stop();
 
-				RapidFireECSGameEffect rapidFire = (RapidFireECSGameEffect)EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire);
-				if (rapidFire != null)
-					EffectService.RequestCancelEffect(rapidFire, false);
+				RapidFireECSGameEffect rapidFire = EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire) as RapidFireECSGameEffect;
+				rapidFire?.Stop(false);
 
 				new TrueShotECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));
 			}

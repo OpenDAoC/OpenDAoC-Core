@@ -1175,23 +1175,10 @@ namespace DOL.AI.Brain
                 }
 				if(!CheckProximityAggro())
                 {
-					lock (Body.effectListComponent.EffectsLock)
-					{
-						var effects = Body.effectListComponent.GetAllPulseEffects();
-						for (int i = 0; i < effects.Count; i++)
-						{
-							ECSPulseEffect effect = effects[i];
-							if (effect == null)
-								continue;
+					var effects = Body.effectListComponent.GetAllPulseEffects();
 
-							if (effect == null)
-								continue;
-							if (effect.SpellHandler.Spell.Pulse == 1)
-							{
-								EffectService.RequestCancelConcEffect(effect);//cancel here all pulse effect
-							}
-						}
-					}
+					for (int i = 0; i < effects.Count; i++)
+						effects[i].Stop();//cancel here all pulse effect
 				}
 				if (HasAggro)
 				{

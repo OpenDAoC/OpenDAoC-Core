@@ -22,10 +22,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 EffectListComponent effectListComponent = player.effectListComponent;
                 ECSGameEffect effect = effectListComponent.TryGetEffectFromEffectId(effectId);
-
-                if (effect != null)
-                    EffectService.RequestCancelEffect(effect, true);
-
+                effect?.Stop(true);
                 return;
             }
 

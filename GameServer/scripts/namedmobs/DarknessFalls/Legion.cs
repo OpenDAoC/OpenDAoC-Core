@@ -556,18 +556,21 @@ namespace DOL.AI.Brain
             if (Body.TargetObject != null && HasAggro)
             {
                 GameLiving target = Body.TargetObject as GameLiving;
+
                 if (Util.Chance(100))
                 {
                     if (target.effectListComponent.ContainsEffectForEffectType(eEffect.Bladeturn) && target != null && target.IsAlive)
                     {
-                        var effect = EffectListService.GetEffectOnTarget(target, eEffect.Bladeturn);
+                        ECSGameEffect effect = EffectListService.GetEffectOnTarget(target, eEffect.Bladeturn);
+
                         if (effect != null)
                         {
-                            EffectService.RequestCancelEffect(effect);//remove bladeturn effect here
+                            effect.Stop();//remove bladeturn effect here
                             bladeturnConsumed++;
-                            if(target is GamePlayer player)
+
+                            if (target is GamePlayer player)
                             {
-                                if (player != null && player.IsAlive)
+                                if (player.IsAlive)
                                     player.Out.SendMessage("Legion consume your bladeturn effect!", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
                             }
                         }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
@@ -45,10 +44,8 @@ namespace DOL.GS
             if (Owner is not GameNPC charmNpc)
                 return;
 
-            ECSGameSpellEffect[] immunityEffects = charmNpc.effectListComponent.GetSpellEffects().Where(e => e.TriggersImmunity).ToArray();
-
-            for (int i = 0; i < immunityEffects.Length; i++)
-                EffectService.RequestCancelEffect(immunityEffects[i]);
+            foreach (ECSGameSpellEffect immunityEffect in charmNpc.effectListComponent.GetSpellEffects().Where(e => e.TriggersImmunity && e is ECSImmunityEffect))
+                immunityEffect.Stop();
 
             ControlledMobBrain oldBrain = SpellHandler.Caster.ControlledBrain as ControlledMobBrain;
             SpellHandler.Caster.RemoveControlledBrain(oldBrain);
@@ -112,9 +109,7 @@ namespace DOL.GS
             if (!keepSongAlive)
             {
                 ECSPulseEffect song = EffectListService.GetPulseEffectOnTarget(SpellHandler.Caster, SpellHandler.Spell);
-
-                if (song != null)
-                    EffectService.RequestCancelConcEffect(song);
+                song?.Stop();
             }
         }
     }

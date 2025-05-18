@@ -13,14 +13,14 @@ namespace DOL.GS
         {
             // "You start healing faster."
             // "{0} starts healing faster."
-            OnEffectStartsMsg(Owner, true, true, true);
+            OnEffectStartsMsg(true, true, true);
         }
 
         public override void OnStopEffect()
         {
             //"Your meditative state fades."
             //"{0}'s meditative state fades."
-            OnEffectExpiresMsg(Owner, true, false, true);
+            OnEffectExpiresMsg(true, false, true);
         }
 
         public override void OnEffectPulse()

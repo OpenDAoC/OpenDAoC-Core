@@ -810,25 +810,22 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte((byte)(0x80 | living.GroupIndex));
 
-				lock (living.effectListComponent.EffectsLock)
+				byte i = 0;
+				var effects = living.effectListComponent.GetAllEffects();
+				if (living is GamePlayer necro && (eCharacterClass) necro.CharacterClass.ID is eCharacterClass.Necromancer && necro.HasShadeModel)
+					effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
+				foreach (var effect in effects)
 				{
-					byte i = 0;
-					var effects = living.effectListComponent.GetAllEffects();
-					if (living is GamePlayer necro && (eCharacterClass) necro.CharacterClass.ID is eCharacterClass.Necromancer && necro.HasShadeModel)
-						effects.AddRange(necro.ControlledBrain.Body.effectListComponent.GetAllEffects().Where(e => e.TriggersImmunity));
-					foreach (var effect in effects)
+					if (effect is ECSGameEffect && !effect.IsDisabled)
+						i++;
+				}
+				pak.WriteByte(i);
+				foreach (var effect in effects)
+				{
+					if (effect is ECSGameEffect && !effect.IsDisabled)
 					{
-						if (effect is ECSGameEffect && !effect.IsDisabled)
-							i++;
-					}
-					pak.WriteByte(i);
-					foreach (var effect in effects)
-					{
-						if (effect is ECSGameEffect && !effect.IsDisabled)
-						{
-							pak.WriteByte(0);
-							pak.WriteShort(effect.Icon);
-						}
+						pak.WriteByte(0);
+						pak.WriteShort(effect.Icon);
 					}
 				}
 			}

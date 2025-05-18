@@ -1,5 +1,3 @@
-using System;
-using DOL.Database;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 
@@ -12,7 +10,7 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.Viper;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override ushort Icon { get { return 4283; } }

@@ -20,13 +20,13 @@ namespace DOL.GS
         {
             // "Your mental agony fades."
             // "{0}'s mental agony fades."
-            OnEffectExpiresMsg(Owner, true, false, true);
+            OnEffectExpiresMsg(true, false, true);
         }
 
         public override void OnEffectPulse()
         {
             if (!Owner.IsAlive)
-                EffectService.RequestCancelEffect(this);
+                Stop();
 
             if (SpellHandler is not DoTSpellHandler dotHandler)
                 return;
@@ -34,7 +34,7 @@ namespace DOL.GS
             // "Searing pain fills your mind!"
             // "{0} is wracked with pain!"
             if (OwnerPlayer != null)
-                OnEffectStartsMsg(Owner, true, false, true);
+                OnEffectStartsMsg(true, false, true);
 
             dotHandler.OnDirectEffect(Owner);
             FinalizeEffectPulse();

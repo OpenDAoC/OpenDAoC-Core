@@ -39,7 +39,7 @@ namespace DOL.GS.Effects
         public AtlasOF_VolleyECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Volley;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override void OnStartEffect()
@@ -83,7 +83,7 @@ namespace DOL.GS.Effects
 
         public void Cancel(bool playerCancel)
         {
-            EffectService.RequestCancelEffect(this, playerCancel);
+            Stop(playerCancel);
 
             foreach (GamePlayer playerInRadius in OwnerPlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 playerInRadius.Out.SendInterruptAnimation(OwnerPlayer);

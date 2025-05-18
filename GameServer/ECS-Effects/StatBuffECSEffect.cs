@@ -22,7 +22,7 @@ namespace DOL.GS
                 }
 
                 if (Owner.IsStealthed)
-                    EffectService.RequestDisableEffect(this);
+                    Disable();
             }
             else
             {
@@ -40,7 +40,7 @@ namespace DOL.GS
 
             // "You feel more dexterous!"
             // "{0} looks more agile!"
-            OnEffectStartsMsg(Owner, true, true, true);
+            OnEffectStartsMsg(true, true, true);
         }
 
         public override void OnStopEffect()
@@ -66,8 +66,7 @@ namespace DOL.GS
 
             // "Your agility returns to normal."
             // "{0} loses their graceful edge.""
-            OnEffectExpiresMsg(Owner, true, false, true);
-            IsBuffActive = false;
+            OnEffectExpiresMsg(true, false, true);
         }
     }
 }

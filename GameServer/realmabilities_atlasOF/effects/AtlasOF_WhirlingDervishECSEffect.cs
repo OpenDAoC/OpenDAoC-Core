@@ -1,6 +1,4 @@
 using System;
-using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
 
 namespace DOL.GS.Effects
 {
@@ -10,7 +8,7 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.WhirlingDervish;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
         
         public override ushort Icon { get { return 4282; } }

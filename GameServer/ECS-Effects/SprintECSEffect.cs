@@ -11,7 +11,7 @@ namespace DOL.GS
             EffectType = eEffect.Sprint;
             NextTick = GameLoop.GameLoopTime + 1;
             PulseFreq = 200;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         private int _idleTicks = 0;
@@ -60,7 +60,7 @@ namespace DOL.GS
                 _idleTicks++;
 
             if (Owner.Endurance - 5 <= 0 || _idleTicks >= 30)
-                EffectService.RequestCancelEffect(this);
+                Stop();
         }
     }
 }

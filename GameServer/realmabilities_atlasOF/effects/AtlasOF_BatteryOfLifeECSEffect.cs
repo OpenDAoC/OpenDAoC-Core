@@ -9,7 +9,7 @@ namespace DOL.GS.Effects
         public AtlasOF_BatteryOfLifeECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.BatteryOfLife;
-            EffectService.RequestStartEffect(this);
+            Start();
             PulseFreq = 1000;
         }
 
@@ -29,7 +29,7 @@ namespace DOL.GS.Effects
         public override void OnEffectPulse()
         {
             if (_healthPool <= 0)
-                EffectService.RequestCancelEffect(this);
+                Stop();
 
             if (OwnerPlayer.Group != null)
             {
@@ -52,7 +52,7 @@ namespace DOL.GS.Effects
                     int difference = currentLiving.MaxHealth - currentLiving.Health;
 
                     if (_healthPool <= 0)
-                        EffectService.RequestCancelEffect(this);
+                        Stop();
 
                     if (_healthPool > difference)
                     {

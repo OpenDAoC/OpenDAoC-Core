@@ -1,10 +1,4 @@
 ﻿using DOL.GS.PacketHandler;
-using DOL.GS.Spells;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -23,7 +17,7 @@ namespace DOL.GS
             
             // "A crystal shield covers you."
             // "A crystal shield covers {0}'s skin."
-            OnEffectStartsMsg(Owner, true, false, true);
+            OnEffectStartsMsg(true, false, true);
 
             //GameEventMgr.AddHandler(effect.Owner, EventType, new DOLEventHandler(EventHandler));
         }
@@ -32,7 +26,7 @@ namespace DOL.GS
         {
             // "Your crystal shield fades."
             // "{0}'s crystal shield fades."
-            OnEffectExpiresMsg(Owner, true, false, true);
+            OnEffectExpiresMsg(true, false, true);
 
         }
     }

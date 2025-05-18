@@ -1,4 +1,3 @@
-
 namespace DOL.GS.Effects
 {
     public class MasteryOfConcentrationECSEffect : ECSGameAbilityEffect
@@ -7,7 +6,7 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.MasteryOfConcentration;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override ushort Icon { get { return 4238; } }

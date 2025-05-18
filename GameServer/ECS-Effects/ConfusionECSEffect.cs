@@ -18,7 +18,7 @@ namespace DOL.GS
             // Spell value below 0 means it's 100% chance to confuse.
             if (SpellHandler.Spell.Value >= 0 && !Util.Chance(Convert.ToInt32(SpellHandler.Spell.Value)))
             {
-                EffectService.RequestCancelEffect(this);
+                Stop();
                 return;
             }
 
@@ -30,13 +30,13 @@ namespace DOL.GS
                  */
                 // "You can't focus your knight viking badger helmet... meow!"
                 // "{0} is confused!"
-                OnEffectStartsMsg(Owner, true, false, true);
-                EffectService.RequestCancelEffect(this);
+                OnEffectStartsMsg(true, false, true);
+                Stop();
             }
             else if (Owner is GameNPC npc && npc.Brain is StandardMobBrain brain)
             {
                 // "{0} is confused!"
-                OnEffectStartsMsg(Owner, false, false, true);
+                OnEffectStartsMsg(false, false, true);
 
                 if (npc is GameSummonedPet)
                 {
@@ -47,7 +47,7 @@ namespace DOL.GS
                         ((eCharacterClass) playerowner.CharacterClass.ID is eCharacterClass.Animist && npc.Brain is TurretFNFBrain)))
                     {
                         npc.Die(SpellHandler.Caster);
-                        EffectService.RequestCancelEffect(this);
+                        Stop();
                         return;
                     }
                 }

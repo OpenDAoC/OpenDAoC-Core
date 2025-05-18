@@ -67,7 +67,7 @@ namespace DOL.AI.Brain
                 foreach (ECSGameEffect effect in Body.effectListComponent.GetAllEffects())
                 {
                     if (effect.SpellHandler.Spell.IsHarmful)
-                        EffectService.RequestCancelEffect(effect);
+                        effect.Stop();
                 }
 
                 ClearAggroList();// clear aggro list

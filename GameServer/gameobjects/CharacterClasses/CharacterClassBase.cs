@@ -376,13 +376,13 @@ namespace DOL.GS
 				return false;
 
 			effect = new ShadeECSGameEffect(new ECSGameEffectInitParams(Player, 0, 1));
-			return effect.IsBuffActive;
+			return effect.IsActive;
 		}
 
 		public virtual bool CancelShadeEffect(out ECSGameAbilityEffect effect)
 		{
 			effect = EffectListService.GetAbilityEffectOnTarget(Player, eEffect.Shade);
-			return effect != null && EffectService.RequestCancelEffect(effect);
+			return effect != null && effect.Stop();
 		}
 
 		public virtual bool Shade(bool makeShade, out ECSGameAbilityEffect effect)

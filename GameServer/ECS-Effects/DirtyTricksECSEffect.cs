@@ -1,12 +1,5 @@
 ﻿using DOL.GS.PacketHandler;
-using DOL.GS.SkillHandler;
 using DOL.Language;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DOL.Database;
 
 namespace DOL.GS
 {
@@ -16,7 +9,7 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.DirtyTricks;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override ushort Icon { get { return 478; } }
@@ -70,7 +63,7 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.DirtyTricksDetrimental;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override ushort Icon { get { return 478; } }

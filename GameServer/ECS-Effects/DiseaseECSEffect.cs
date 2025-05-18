@@ -32,7 +32,7 @@ namespace DOL.GS
 
             // "You are diseased!"
             // "{0} is diseased!"
-            OnEffectStartsMsg(Owner, true, true, true);
+            OnEffectStartsMsg(true, true, true);
             //Owner.StartInterruptTimer(Owner.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
 
             if (Owner is GameNPC npcOwner)
@@ -50,7 +50,7 @@ namespace DOL.GS
 
             // "You look healthy."
             // "{0} looks healthy again."
-            OnEffectExpiresMsg(Owner, true, true, true);
+            OnEffectExpiresMsg(true, true, true);
             Owner.OnMaxSpeedChange();
         }
     }

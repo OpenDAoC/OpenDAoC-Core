@@ -83,7 +83,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		bool IsOverwritable(ECSGameSpellEffect compare);
+		bool IsOverwritable(ECSGameEffect compare);
 		/// <summary>
 		/// Determines wether new spell is better than old spell and should disable it
 		/// </summary>

@@ -10,7 +10,7 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.Charge;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         protected ushort m_startModel = 0;

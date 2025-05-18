@@ -140,7 +140,6 @@ namespace DOL.GS
                 NpcService.Tick();
                 AttackService.Tick();
                 CastingService.Tick();
-                EffectService.Tick();
                 ZoneService.Tick();
                 CraftingService.Tick();
                 ReaperService.Tick();

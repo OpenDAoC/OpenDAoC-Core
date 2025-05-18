@@ -1,5 +1,4 @@
 using DOL.GS.Spells;
-using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
@@ -21,7 +20,7 @@ namespace DOL.GS
             
             // "Your combat skills are hampered by blindness!"
             // "{0} stumbles, unable to see!"
-            OnEffectStartsMsg(Owner, true, true, true);
+            OnEffectStartsMsg(true, true, true);
 
         }
 
@@ -33,7 +32,7 @@ namespace DOL.GS
 
             // "Your vision returns to normal."
             // "The blindness recedes from {0}."
-            OnEffectExpiresMsg(Owner, true, false, true);
+            OnEffectExpiresMsg(true, false, true);
 
         }
     }

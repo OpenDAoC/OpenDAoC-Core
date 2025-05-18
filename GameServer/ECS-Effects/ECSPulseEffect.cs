@@ -12,15 +12,14 @@ namespace DOL.GS
         public override string OwnerName => $"Pulse: {SpellHandler.Spell.Name}";
         public Dictionary<GameLiving, ECSGameSpellEffect> ChildEffects { get; } = [];
 
-        public ECSPulseEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness, ushort icon, bool cancelEffect = false)
+        public ECSPulseEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness)
             : base (new ECSGameEffectInitParams(owner, duration, effectiveness, handler))
         {
             PulseFreq = pulseFreq;
-            CancelEffect = cancelEffect;
             EffectType = eEffect.Pulse;
             StartTick = GameLoop.GameLoopTime;
             NextTick = pulseFreq + GameLoop.GameLoopTime;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override void OnStartEffect()
@@ -41,7 +40,7 @@ namespace DOL.GS
                 ECSGameSpellEffect effect = pair.Value;
 
                 if (effect.EffectType is eEffect.FocusShield)
-                    EffectService.RequestCancelEffect(effect);
+                    effect.Stop();
             }
         }
     }

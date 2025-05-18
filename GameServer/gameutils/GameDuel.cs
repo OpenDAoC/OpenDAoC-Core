@@ -86,7 +86,7 @@ namespace DOL.GS
                         if (spellHandler.Caster == caster || (spellHandler.Caster != null && spellHandler.Caster == petCaster))
                         {
                             effect.TriggersImmunity = false;
-                            EffectService.RequestCancelEffect(effect);
+                            effect.Stop();
                         }
                     }
                 }

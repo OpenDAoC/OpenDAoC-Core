@@ -8,7 +8,7 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.ReflexAttack;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override ushort Icon { get { return 4277; } }

@@ -209,7 +209,7 @@ namespace DOL.GS.Effects
 				if (Duration == 0)
 					return 0;
 
-				if (m_timer == null || m_timer.CancelEffect)
+				if (m_timer == null || m_timer.IsStopped)
 					return 0;
 				
 				return (int) (Duration - m_timer.ExpireTick);
@@ -235,7 +235,7 @@ namespace DOL.GS.Effects
 		/// </summary>
 		public bool ImmunityState
 		{
-			get { return IsExpired && m_timer != null && !m_timer.CancelEffect; }
+			get { return IsExpired && m_timer != null && m_timer.IsActive; }
 		}
 		
 		#endregion
@@ -612,7 +612,7 @@ namespace DOL.GS.Effects
 			// Duration => 0 = endless until explicit stop
 			if (Duration > 0 || PulseFreq > 0)
 			{
-				m_timer = new(Owner, m_handler, m_duration, m_pulseFreq, Owner.Effectiveness, SpellHandler.Spell.Icon);
+				m_timer = new(Owner, m_handler, m_duration, m_pulseFreq, Owner.Effectiveness);
 			}
 		}
 
@@ -623,7 +623,7 @@ namespace DOL.GS.Effects
 		{
 			if (m_timer != null)
 			{
-				EffectService.RequestCancelEffect(m_timer);
+				m_timer.Stop();
 				m_timer = null;
 			}
 		}

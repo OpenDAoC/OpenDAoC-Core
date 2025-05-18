@@ -13,7 +13,7 @@ namespace DOL.GS
         {
             // "Lashing energy ripples around you."
             // "Dangerous energy surrounds {0}."
-            OnEffectStartsMsg(Owner, true, true, true);
+            OnEffectStartsMsg(true, true, true);
 
             if (!SpellHandler.Spell.IsPulsing || Owner is not GameNPC npcOwner || npcOwner.Brain is not ControlledMobBrain npcBrain)
                 return;
@@ -33,7 +33,7 @@ namespace DOL.GS
         {
             // "Your energy field dissipates."
             // "{0}'s energy field dissipates."
-            OnEffectExpiresMsg(Owner, true, false, true);
+            OnEffectExpiresMsg(true, false, true);
             _combatCheckTimer?.Stop();
         }
 
@@ -57,7 +57,7 @@ namespace DOL.GS
 
             protected override int OnTick(ECSGameTimer timer)
             {
-                if (!_pulseEffect.IsBuffActive)
+                if (!_pulseEffect.IsActive)
                     return 0;
 
                 bool isOwnerInCombat = _brain.Body.InCombatInLast((int) _pulseEffect.PulseFreq);

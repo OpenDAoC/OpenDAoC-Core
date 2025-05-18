@@ -1408,42 +1408,31 @@ namespace DOL.GS
 
 		private readonly Lock _dieLock = new();
 
-		/// <summary>
-		/// Called on the attacker when attacking an enemy.
-		/// </summary>
-		public virtual void OnAttackEnemy(AttackData ad)
+        /// <summary>
+        /// Called on the attacker when attacking an enemy.
+        /// </summary>
+        public virtual void OnAttackEnemy(AttackData ad)
         {
-			// Note that this function is called whenever an attack is made, regardless of whether that attack was successful.
-			// i.e. missed melee swings and resisted spells still trigger this.
-			
-			if (effectListComponent is null)
+            // Note that this function is called whenever an attack is made, regardless of whether that attack was successful.
+            // i.e. missed melee swings and resisted spells still trigger this.
+
+            if (effectListComponent is null)
                 return;
 
-			if (this is GamePlayer player)
-				player.Stealth(false);
+            if (this is GamePlayer player)
+                player.Stealth(false);
 
-			//Cancel SpeedOfTheRealm (Hastener Speed) 
-			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
-			{
-				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
-
-				for (int i = 0; i < effects.Count; i++)
-				{
-					if (effects[i] is null)
-						continue;
-
-					var spellEffect = effects[i] as ECSGameSpellEffect;
-					if (spellEffect != null && spellEffect.Name.ToLower().Equals("speed of the realm"))
-					{
-						EffectService.RequestCancelEffect(effects[i]);
-					}
-				}
+            // Cancel SpeedOfTheRealm (Hastener Speed)
+            foreach (ECSGameSpellEffect effect in effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
+            {
+                if (effect.SpellHandler.Spell.ID is 2430)
+                    effect.Stop();
             }
 
-			if(ad != null && ad.Damage > 0)
-				TryCancelMovementSpeedBuffs(true);
+            if (ad != null && ad.Damage > 0)
+                TryCancelMovementSpeedBuffs(true);
 
-			var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
+            var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
             //OffensiveProcs
             if (ad != null && ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell && ad.AttackResult != eAttackResult.Missed)
             {
@@ -1454,48 +1443,39 @@ namespace DOL.GS
                     (oProcEffect.SpellHandler as OffensiveProcSpellHandler).EventHandler(ad);
                 }
             }
-			DirtyTricksECSGameEffect dt = (DirtyTricksECSGameEffect)EffectListService.GetAbilityEffectOnTarget(this, eEffect.DirtyTricks);
-			if (dt != null)
+
+            DirtyTricksECSGameEffect dt = EffectListService.GetAbilityEffectOnTarget(this, eEffect.DirtyTricks) as DirtyTricksECSGameEffect;
+            dt?.EventHandler(ad);
+
+            TripleWieldECSGameEffect tw = EffectListService.GetAbilityEffectOnTarget(this, eEffect.TripleWield) as TripleWieldECSGameEffect;
+            tw?.EventHandler(ad);
+
+            if (ad.Target is GamePlayer && ad.Target != this)
+                LastAttackTickPvP = GameLoop.GameLoopTime;
+            else
+                LastAttackTickPvE = GameLoop.GameLoopTime;
+
+            if (this is GameNPC npc)
             {
-				dt.EventHandler(ad);
+                if (npc.Brain is ControlledMobBrain brain)
+                {
+                    if (ad.Target is GamePlayer)
+                    {
+                        LastAttackTickPvP = GameLoop.GameLoopTime;
+                        brain.Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+                    }
+                    else
+                    {
+                        LastAttackTickPvE = GameLoop.GameLoopTime;
+                        brain.Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                    }
+                }
             }
-			TripleWieldECSGameEffect tw = (TripleWieldECSGameEffect)EffectListService.GetAbilityEffectOnTarget(this, eEffect.TripleWield);
-			if (tw != null)
-            {
-				tw.EventHandler(ad);
-            }
 
-			if (ad.Target is GamePlayer && ad.Target != this)
-			{
-				LastAttackTickPvP = GameLoop.GameLoopTime;
-			}
-			else
-			{
-				LastAttackTickPvE = GameLoop.GameLoopTime;
-			}
-
-			if (this is GameNPC npc)
-			{
-				var brain = npc.Brain as ControlledMobBrain;
-
-                if (ad.Target is GamePlayer)
-				{
-					LastAttackTickPvP = GameLoop.GameLoopTime;
-					if (brain != null)
-						brain.Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-				}
-				else
-				{
-					LastAttackTickPvE = GameLoop.GameLoopTime;
-					if (brain != null)
-						brain.Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-				}
-			}
-
-			// Don't cancel offensive focus spell
-			if (ad.AttackType != eAttackType.Spell)
-				castingComponent.CancelFocusSpells(false);
-		}
+            // Don't cancel offensive focus spell
+            if (ad.AttackType != eAttackType.Spell)
+                castingComponent.CancelFocusSpells(false);
+        }
 
 		/// <summary>
 		/// This method is called at the end of the attack sequence to
@@ -1566,14 +1546,14 @@ namespace DOL.GS
 
 						(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
 
-						if (ad.Target is GamePlayer)
-							(ad.Target as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Target as GamePlayer).Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+						if (ad.Target is GamePlayer playerTarget)
+							playerTarget.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
-						if (ad.Attacker is GamePlayer)
-							(ad.Attacker as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((ad.Attacker as GamePlayer).Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+						if (ad.Attacker is GamePlayer playerAttacker)
+							playerAttacker.Out.SendMessage(LanguageMgr.GetTranslation(playerAttacker.Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
 						if (ablativeHp <= 0)
-							EffectService.RequestCancelEffect(effect);
+							effect.Stop();
 						else
 							effect.RemainingValue = ablativeHp;
 					}
@@ -1657,18 +1637,14 @@ namespace DOL.GS
 			if (removeMez)
 			{
 				effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
-
-				if (effect != null)
-					EffectService.RequestCancelEffect(effect);
+				effect?.Stop();
 			}
 
 			// Remove Snare/Root
 			if (removeSnare)
 			{
 				effect = EffectListService.GetEffectOnTarget(this, eEffect.Snare);
-
-				if (effect != null)
-					EffectService.RequestCancelEffect(effect);
+				effect?.Stop();
 			}
 
 			// Remove MovementSpeedDebuff
@@ -1677,12 +1653,10 @@ namespace DOL.GS
 				effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
 
 				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != eSpellType.UnbreakableSpeedDecrease)
-					EffectService.RequestCancelEffect(effect);
+					effect.Stop();
 
 				effect = EffectListService.GetEffectOnTarget(this, eEffect.Ichor);
-
-				if (effect != null)
-					EffectService.RequestCancelEffect(effect);
+				effect?.Stop();
 			}
 
 			return removeMez || removeSnare || removeMovementSpeedDebuff;
@@ -1693,26 +1667,17 @@ namespace DOL.GS
             if (effectListComponent == null || ad == null)
                 return;
 
-			//Cancel SpeedOfTheRealm (Hastener Speed) 
-			if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
-			{
-				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
-
-				for (int i = 0; i < effects.Count; i++)
-				{
-					if (effects[i] is null)
-						continue;
-
-					var spellEffect = effects[i];
-					if (spellEffect != null && spellEffect.SpellHandler.Spell.ID is 2430) // Speed of the Realm
-						EffectService.RequestCancelEffect(effects[i]);
-				}
+            // Cancel SpeedOfTheRealm (Hastener Speed)
+            foreach (ECSGameSpellEffect effect in effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
+            {
+                if (effect.SpellHandler.Spell.ID is 2430)
+                    effect.Stop();
             }
 
             // Cancel movement speed buffs when attacked only if damaged
-			if (ad != null & ad.Damage > 0)
-				TryCancelMovementSpeedBuffs(false);
-		}
+            if (ad != null & ad.Damage > 0)
+                TryCancelMovementSpeedBuffs(false);
+        }
 
         public virtual void TryCancelMovementSpeedBuffs(bool isAttacker)
         {
@@ -1736,7 +1701,7 @@ namespace DOL.GS
 							continue;
 					}
 					
-					EffectService.RequestCancelEffect(effects[i]);
+					effects[i].Stop();
 				}
             }
 
@@ -1754,7 +1719,7 @@ namespace DOL.GS
 				for (int i = 0; i < ownerEffects.Count; i++)
 				{
 					if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target != eSpellTarget.SELF)
-						EffectService.RequestCancelEffect(ownerEffects[i]);
+						ownerEffects[i].Stop();
 				}				
             }
         }
@@ -2750,22 +2715,20 @@ namespace DOL.GS
 		/// </summary>
 		public void CancelAllConcentrationEffects(bool leaveSelf, bool updateplayer)
 		{
-			// cancel conc spells
-			for (int i = 0; i < effectListComponent.ConcentrationEffects.Count; i++)
-            {
-				EffectService.RequestCancelConcEffect(effectListComponent.ConcentrationEffects[i]);
-            }
-
-			//cancel all active conc spell effects from other casters
-			if (effectListComponent != null)
+			// Cancel conc spells.
+			lock (effectListComponent.ConcentrationEffectsLock)
 			{
-				foreach (var effect in effectListComponent.GetSpellEffects().Where(e => e.IsConcentrationEffect()))
-				{
-					if (!leaveSelf || (leaveSelf && effect.SpellHandler.Caster != this))
-						EffectService.RequestCancelConcEffect((IConcentrationEffect)effect, false);
-				}
+				for (int i = 0; i < effectListComponent.ConcentrationEffects.Count; i++)
+					effectListComponent.ConcentrationEffects[i].Stop();
 			}
-        }
+
+			// Cancel all active conc spell effects from other casters.
+			foreach (ECSGameSpellEffect effect in effectListComponent.GetSpellEffects().Where(e => e.IsConcentrationEffect()))
+			{
+				if (!leaveSelf || (leaveSelf && effect.SpellHandler.Caster != this))
+					effect.Stop(false);
+			}
+		}
 
         // 			ArrayList concEffects = new ArrayList();
         // 			lock (EffectList.Lock)

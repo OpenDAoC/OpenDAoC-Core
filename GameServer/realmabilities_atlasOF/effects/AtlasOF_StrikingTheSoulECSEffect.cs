@@ -1,4 +1,3 @@
-
 namespace DOL.GS.Effects
 {
     // It looks like the real name should be "Strike the Soul", but renaming it requires updating the database.
@@ -7,7 +6,7 @@ namespace DOL.GS.Effects
         public StrikingTheSoulECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.StrikingTheSoul;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override ushort Icon => 4271;

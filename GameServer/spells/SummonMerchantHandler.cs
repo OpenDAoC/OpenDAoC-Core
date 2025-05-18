@@ -100,7 +100,7 @@ namespace DOL.GS.Spells
             //return base.OnEffectExpires(effect, noMessages);
         }
 
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(ECSGameEffect compare)
         {
             return false;
         }

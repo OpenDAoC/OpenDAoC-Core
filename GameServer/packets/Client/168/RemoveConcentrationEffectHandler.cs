@@ -14,7 +14,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             lock (player.effectListComponent.ConcentrationEffectsLock)
             {
                 if (index < player.effectListComponent.ConcentrationEffects.Count)
-                    EffectService.RequestCancelConcEffect(player.effectListComponent.ConcentrationEffects[index], true);
+                    player.effectListComponent.ConcentrationEffects[index].Stop(true);
             }
         }
     }

@@ -28,7 +28,7 @@ namespace DOL.GS
             Source = source;
             Target = target;
             EffectType = eEffect.Guard;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override void OnStartEffect()
@@ -80,9 +80,7 @@ namespace DOL.GS
                 playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.GuardEffect.XNoLongerGuardingYoy", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 
-            if (!PairedEffect.CancelEffect)
-                EffectService.RequestCancelEffect(PairedEffect);
-
+            PairedEffect.Stop();
             base.OnStopEffect();
         }
     }

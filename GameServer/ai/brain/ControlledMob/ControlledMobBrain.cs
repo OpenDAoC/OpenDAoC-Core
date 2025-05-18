@@ -401,7 +401,7 @@ namespace DOL.AI.Brain
 								break;
 
 							if (existingEffectFromAnotherSource != null)
-								EffectService.RequestCancelEffect(existingEffectFromAnotherSource);
+								existingEffectFromAnotherSource.Stop();
 
 							new InterceptECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1), Body, playerOwner);
 						}
@@ -420,7 +420,7 @@ namespace DOL.AI.Brain
 								break;
 
 							if (existingEffectFromAnotherSource != null)
-								EffectService.RequestCancelEffect(existingEffectFromAnotherSource);
+								existingEffectFromAnotherSource.Stop();
 
 							new GuardECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1, null), Body, playerOwner);
 						}
@@ -439,7 +439,7 @@ namespace DOL.AI.Brain
 								break;
 
 							if (existingEffectFromAnotherSource != null)
-								EffectService.RequestCancelEffect(existingEffectFromAnotherSource);
+								existingEffectFromAnotherSource.Stop();
 
 							new ProtectECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1, null), Body, playerOwner);
 						}
@@ -928,7 +928,7 @@ namespace DOL.AI.Brain
 			foreach (ECSGameSpellEffect effect in Body.effectListComponent.GetSpellEffects())
 			{
 				if (effect.EffectType is eEffect.Pet or eEffect.Charm)
-					EffectService.RequestCancelEffect(effect);
+					effect.Stop();
 			}
 		}
 
@@ -950,7 +950,7 @@ namespace DOL.AI.Brain
 				foreach (GameLiving living in _buffedTargets)
 				{
 					foreach (ECSGameEffect effect in living.effectListComponent.GetAllEffects().Where(x => x.SpellHandler != null && x.SpellHandler.Caster == Body))
-						EffectService.RequestCancelEffect(effect);
+						effect.Stop();
 				}
 
 				_buffedTargets.Clear();

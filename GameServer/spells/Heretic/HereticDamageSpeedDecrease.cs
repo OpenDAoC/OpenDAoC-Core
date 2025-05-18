@@ -23,7 +23,7 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(ECSGameEffect compare)
         {
             if (base.IsOverwritable(compare) == false) return false;
             if (compare.SpellHandler.Spell.Duration != Spell.Duration) return false;

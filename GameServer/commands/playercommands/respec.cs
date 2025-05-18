@@ -262,7 +262,7 @@ namespace DOL.GS.Commands
                 {
 					if (e is ECSGameSpellEffect eSpell && eSpell.SpellHandler.Caster == player)
                     {
-						EffectService.RequestCancelEffect(e);
+						e.Stop();
 					}
                 }
 
@@ -271,7 +271,7 @@ namespace DOL.GS.Commands
                 {
 					if (e is ECSGameSpellEffect eSpell && eSpell.SpellHandler.Caster == player)
                     {
-						EffectService.RequestCancelEffect(e);
+						e.Stop();
 					}
                 }
             }

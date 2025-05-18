@@ -16,7 +16,7 @@ namespace DOL.GS.Spells
 
         public StyleTaunt(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(ECSGameEffect compare)
         {
             return false;
         }

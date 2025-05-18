@@ -89,7 +89,7 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        public override bool IsOverwritable(ECSGameSpellEffect compare)
+        public override bool IsOverwritable(ECSGameEffect compare)
         {
             return false;
         }

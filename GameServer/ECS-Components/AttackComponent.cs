@@ -2035,7 +2035,7 @@ namespace DOL.GS
 
             if (intercept != null && !stealthStyle)
             {
-                if (intercept.Source is not GamePlayer || EffectService.RequestCancelEffect(intercept))
+                if (intercept.Source is not GamePlayer || intercept.Stop())
                 {
                     ad.Target = intercept.Source;
                     return eAttackResult.HitUnstyled;
@@ -2183,7 +2183,7 @@ namespace DOL.GS
                     effectiveness *= effectivenessAgainstBladeturn;
                 }
 
-                if (EffectService.RequestCancelEffect(bladeturn))
+                if (bladeturn.Stop())
                 {
                     if (penetrate)
                         playerOwner?.Out.SendMessage(LanguageMgr.GetTranslation(playerOwner.Client.Account.Language, "GameLiving.CalculateEnemyAttackResult.BlowPenetrated"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);

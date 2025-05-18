@@ -52,7 +52,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		public override bool IsOverwritable(ECSGameSpellEffect compare)
+		public override bool IsOverwritable(ECSGameEffect compare)
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;

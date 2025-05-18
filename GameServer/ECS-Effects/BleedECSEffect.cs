@@ -10,10 +10,10 @@ namespace DOL.GS
         public BleedECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             _nextTickDamage = (int) SpellHandler.Spell.Damage;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
-        public override bool IsBetterThan(ECSGameSpellEffect effect)
+        public override bool IsBetterThan(ECSGameEffect effect)
         {
             return effect is BleedECSEffect otherBleedEffect && _nextTickDamage > otherBleedEffect._nextTickDamage;
         }
@@ -21,7 +21,7 @@ namespace DOL.GS
         public override void OnEffectPulse()
         {
             if (!Owner.IsAlive)
-                EffectService.RequestCancelEffect(this);
+                Stop();
 
             if (SpellHandler is not StyleBleeding bleedHandler)
                 return;

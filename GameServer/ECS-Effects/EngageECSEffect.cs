@@ -26,7 +26,7 @@ namespace DOL.GS
         public EngageECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Engage;
-            EffectService.RequestStartEffect(this);
+            Start();
         }
 
         public override void OnStartEffect()
@@ -68,7 +68,7 @@ namespace DOL.GS
         public void Cancel(bool manualCancel, bool startAttackAfterCancel)
         {
             _manualCancel = manualCancel;
-            EffectService.RequestCancelEffect(this, manualCancel);
+            Stop(manualCancel);
         }
     }
 }

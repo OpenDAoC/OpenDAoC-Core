@@ -1,9 +1,5 @@
-﻿using DOL.GS.Spells;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using DOL.GS.Spells;
 
 namespace DOL.GS
 {
@@ -14,14 +10,14 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
-            if (!IsBuffActive && !IsDisabled)
+            if (!IsActive)
             {
                 ApplyBonus(Owner, (SpellHandler as AbstractSavageBuff).BonusCategory1,
                     (SpellHandler as AbstractSavageBuff).Property1, SpellHandler.Spell.Value, Effectiveness, false);
                 
                 // "You parry with extra skill!"
                 // "{0} begins parrying faster!"
-                OnEffectStartsMsg(Owner, true, false, true);
+                OnEffectStartsMsg(true, false, true);
             }
             else
                 OnHealthCost();

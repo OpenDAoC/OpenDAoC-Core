@@ -267,40 +267,15 @@ namespace DOL.GS.Spells
 		/// <returns>true if any spells were canceled</returns>
 		public virtual bool CancelPulsingSpell(GameLiving living, eSpellType spellType)
 		{
-			//lock (living.ConcentrationEffects)
-			//{
-			//	for (int i = 0; i < living.ConcentrationEffects.Count; i++)
-			//	{
-			//		PulsingSpellEffect effect = living.ConcentrationEffects[i] as PulsingSpellEffect;
-			//		if (effect == null)
-			//			continue;
-			//		if (effect.SpellHandler.Spell.SpellType == spellType)
-			//		{
-			//			effect.Cancel(false);
-			//			return true;
-			//		}
-			//	}
-			//}
-
-			lock (living.effectListComponent.EffectsLock)
+			foreach (ECSPulseEffect effect in living.effectListComponent.GetAllPulseEffects())
 			{
-				var effects = living.effectListComponent.GetAllPulseEffects();
-
-				for (int i = 0; i < effects.Count; i++)
+				if (effect.SpellHandler.Spell.SpellType == spellType)
 				{
-					ECSPulseEffect effect = effects[i];
-					if (effect == null)
-						continue;
-
-					if (effect == null)
-						continue;
-					if (effect.SpellHandler.Spell.SpellType == spellType)
-					{
-						EffectService.RequestCancelConcEffect(effect);
-						return true;
-					}
+					effect.Stop();
+					return true;
 				}
 			}
+
 			return false;
 		}
 
@@ -314,7 +289,7 @@ namespace DOL.GS.Spells
 		public virtual ECSPulseEffect CreateECSPulseEffect(GameLiving target, double effectiveness)
 		{
 			int freq = Spell != null ? Spell.Frequency : 0;
-			return new ECSPulseEffect(target, this, CalculateEffectDuration(target), freq, effectiveness, Spell.Icon);
+			return new ECSPulseEffect(target, this, CalculateEffectDuration(target), freq, effectiveness);
 		}
 
 		/// <summary>
@@ -477,7 +452,7 @@ namespace DOL.GS.Spells
 			{
 				ECSPulseEffect effect = EffectListService.GetPulseEffectOnTarget(m_caster, m_spell);
 
-				if (EffectService.RequestCancelConcEffect(effect))
+				if (effect != null && effect.Stop())
 				{
 					if (m_spell.InstrumentRequirement == 0)
 						MessageToCaster("You cancel your effect.", eChatType.CT_Spell);
@@ -1397,7 +1372,7 @@ namespace DOL.GS.Spells
 					IEnumerable<ECSPulseEffect> effects = m_caster.effectListComponent.GetAllPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
 
 					foreach (ECSPulseEffect effect in effects)
-						EffectService.RequestCancelConcEffect(effect);
+						effect.Stop();
 				}
 
 				// Prevent `EffectListService` from pulsing flute mez, since it won't handle it correctly.
@@ -2245,7 +2220,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		/// <param name="compare"></param>
 		/// <returns></returns>
-		public virtual bool IsOverwritable(ECSGameSpellEffect compare)
+		public virtual bool IsOverwritable(ECSGameEffect compare)
 		{
 			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
 				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
@@ -2605,7 +2580,7 @@ namespace DOL.GS.Spells
 				if (!pulseSpell.SpellHandler.Spell.IsFocus)
 					continue;
 
-				if (EffectService.RequestCancelEffect(pulseSpell))
+				if (pulseSpell.Stop())
 					cancelled = true;
 			}
 
