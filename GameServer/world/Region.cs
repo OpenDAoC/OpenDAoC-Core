@@ -1516,7 +1516,7 @@ namespace DOL.GS
         public List<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius)
         {
             List<GameDoorBase> result = new();
-            GetInRadius<GameDoorBase>(point, eGameObjectType.ITEM, radius, result);
+            GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, radius, result);
             return result;
         }
 
