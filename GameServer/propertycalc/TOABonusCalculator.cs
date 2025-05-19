@@ -31,6 +31,7 @@ namespace DOL.GS.PropertyCalc
         {
             GameLiving livingToCheck;
 
+            // Use the player's ability and item bonuses if the caster is a necromancer pet.
             if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
                 livingToCheck = playerOwner;
             else
@@ -84,6 +85,7 @@ namespace DOL.GS.PropertyCalc
         {
             GameLiving livingToCheck;
 
+            // Use the player's ability and item bonuses if the caster is a necromancer pet.
             if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
                 livingToCheck = playerOwner;
             else
@@ -117,14 +119,19 @@ namespace DOL.GS.PropertyCalc
     {
         public override int CalcValue(GameLiving living, eProperty property)
         {
+            GameLiving livingToCheck;
+
+            // Use the player's ability and item bonuses if the caster is a necromancer pet.
+            if (living is NecromancerPet necroPet && necroPet.Owner is GamePlayer playerOwner)
+                livingToCheck = playerOwner;
+            else
+                livingToCheck = living;
+
             // Hardcap at 10%
-            int percent = Math.Min(10, living.BaseBuffBonusCategory[property]
-                + living.ItemBonus[property]
-                - living.DebuffCategory[property]);
+            int percent = Math.Min(10, living.BaseBuffBonusCategory[property] + livingToCheck.ItemBonus[property] - living.DebuffCategory[property]);
 
             // Add RA bonus
-            percent += living.AbilityBonus[property];
-
+            percent += livingToCheck.AbilityBonus[property];
             return percent;
         }
     }
