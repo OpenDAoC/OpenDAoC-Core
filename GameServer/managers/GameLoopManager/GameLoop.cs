@@ -265,13 +265,13 @@ namespace DOL.GS
                         }
                     }
 
-                    double actualInterval;
+                    if (tickCount < 2)
+                    {
+                        averages.Add((interval, 0));
+                        continue;
+                    }
 
-                    if (tickCount > 0)
-                        actualInterval = snapshot[^1] - snapshot[startIndex];
-                    else
-                        actualInterval = interval;
-
+                    double actualInterval = snapshot[^1] - snapshot[startIndex];
                     double average = (tickCount - 1) / (actualInterval / 1000.0);
                     averages.Add((interval, average));
                 }
