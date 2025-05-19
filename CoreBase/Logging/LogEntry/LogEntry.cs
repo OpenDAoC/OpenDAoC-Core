@@ -1,53 +1,62 @@
 ﻿using System;
+using Microsoft.Extensions.ObjectPool;
 
 namespace DOL.Logging
 {
-    public class LogEntry
+    public class LogEntry : IResettable
     {
-        public Logger Logger { get; }
-        public ELogLevel Level { get; }
-        public string Message { get; }
+        private Action<LogEntry> _logAction;
 
-        public LogEntry(Logger logger, ELogLevel level, string message)
+        public Logger Logger { get; private set; }
+        public ELogLevel Level { get; private set; }
+        public string Message { get; private set; }
+        public Exception Exception { get; private set; }
+        public object[] Args { get; private set; }
+
+        public LogEntry Initialize(Logger logger, ELogLevel level, string message)
         {
             Logger = logger;
             Level = level;
             Message = message;
+            _logAction = static e => e.Logger.Log(e.Level, e.Message);
+            return this;
         }
 
-        public virtual void Log()
+        public LogEntry Initialize(Logger logger, ELogLevel level, string message, Exception ex)
         {
-            Logger.Log(Level, Message);
-        }
-    }
-
-    public class LogEntryWithException : LogEntry
-    {
-        public Exception Exception { get; }
-
-        public LogEntryWithException(Logger logger, ELogLevel level, string message, Exception exception) : base(logger, level, message)
-        {
-            Exception = exception;
+            Logger = logger;
+            Level = level;
+            Message = message;
+            Exception = ex;
+            _logAction = static e => e.Logger.Log(e.Level, e.Message, e.Exception);
+            return this;
         }
 
-        public override void Log()
+        public LogEntry Initialize(Logger logger, ELogLevel level, string message, object[] args)
         {
-            Logger.Log(Level, Message, Exception);
-        }
-    }
-
-    public class LogEntryWithArgs : LogEntry
-    {
-        public object[] Args { get; }
-
-        public LogEntryWithArgs(Logger logger, ELogLevel level, string message, params object[] args) : base(logger, level, message)
-        {
+            Logger = logger;
+            Level = level;
+            Message = message;
             Args = args;
+            _logAction = static e => e.Logger.Log(e.Level, e.Message, e.Args);
+            return this;
         }
 
-        public override void Log()
+        public void Log()
         {
-            Logger.Log(Level, Message, Args);
+            _logAction(this);
+            LogEntryFactory.Return(this); // Return ourselves to the pool.
+        }
+
+        public bool TryReset()
+        {
+            _logAction = null;
+            Logger = null;
+            Level = default;
+            Message = null;
+            Exception = null;
+            Args = null;
+            return true;
         }
     }
 }
