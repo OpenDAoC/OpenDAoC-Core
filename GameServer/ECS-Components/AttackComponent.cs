@@ -20,7 +20,7 @@ using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
-    public class AttackComponent : IManagedEntity
+    public class AttackComponent : IServiceObject
     {
         public const int CHECK_ATTACKERS_INTERVAL = 1000;
         public const double INHERENT_WEAPON_SKILL = 15.0;
@@ -29,7 +29,7 @@ namespace DOL.GS
         public GameLiving owner;
         public WeaponAction weaponAction; // This represents the current weapon action, which may become outdated when resolving ranged attacks.
         public AttackAction attackAction;
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.AttackComponent);
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.AttackComponent);
 
         /// <summary>
         /// Returns the list of attackers
@@ -101,7 +101,7 @@ namespace DOL.GS
             if (owner.ObjectState is not eObjectState.Active)
             {
                 attackAction.CleanUp();
-                EntityManager.Remove(this);
+                ServiceObjectStore.Remove(this);
                 return;
             }
 
@@ -112,7 +112,7 @@ namespace DOL.GS
             }
 
             if (!attackAction.Tick())
-                EntityManager.Remove(this);
+                ServiceObjectStore.Remove(this);
         }
 
         /// <summary>
@@ -539,7 +539,7 @@ namespace DOL.GS
         {
             _startAttackTarget = attackTarget ?? owner.TargetObject;
             StartAttackRequested = true;
-            EntityManager.Add(this);
+            ServiceObjectStore.Add(this);
         }
 
         private void StartAttack()

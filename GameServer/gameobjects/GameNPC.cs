@@ -1963,7 +1963,7 @@ namespace DOL.GS
 		{
 			m_lastVisibleToPlayerTick = GameLoop.GameLoopTime;
 
-			if (Brain != null && !Brain.EntityManagerId.IsSet)
+			if (Brain != null && !Brain.ServiceObjectId.IsSet)
 				Brain.Start();
 		}
 

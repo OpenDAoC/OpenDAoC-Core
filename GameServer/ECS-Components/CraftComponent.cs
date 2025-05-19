@@ -3,12 +3,12 @@ using System.Threading;
 
 namespace DOL.GS
 {
-    public class CraftComponent : IManagedEntity
+    public class CraftComponent : IServiceObject
     {
         public GamePlayer Owner { get; }
         public CraftAction CraftAction { get; set; }
         public bool CraftState { get; set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.CraftComponent);
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.CraftComponent);
         public List<Recipe> Recipes { get; } = new();
         private readonly Lock _recipesLock = new();
 
@@ -45,7 +45,7 @@ namespace DOL.GS
             CraftAction?.Tick();
 
             if (CraftAction == null)
-                EntityManager.Remove(this);
+                ServiceObjectStore.Remove(this);
         }
 
         public void StartCraft(Recipe recipe, AbstractCraftingSkill skill, int craftingTime)
@@ -53,7 +53,7 @@ namespace DOL.GS
             if (CraftAction == null)
             {
                 CraftAction = new CraftAction(Owner, craftingTime, recipe, skill);
-                EntityManager.Add(this);
+                ServiceObjectStore.Add(this);
             }
         }
 

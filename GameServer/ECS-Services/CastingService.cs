@@ -17,7 +17,7 @@ namespace DOL.GS
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-            _list = EntityManager.UpdateAndGetAll<CastingComponent>(EntityManager.EntityType.CastingComponent, out int lastValidIndex);
+            _list = ServiceObjectStore.UpdateAndGetAll<CastingComponent>(ServiceObjectType.CastingComponent, out int lastValidIndex);
             GameLoop.Work(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)
@@ -32,7 +32,7 @@ namespace DOL.GS
 
             try
             {
-                if (castingComponent?.EntityManagerId.IsSet != true)
+                if (castingComponent?.ServiceObjectId.IsSet != true)
                     return;
 
                 if (Diagnostics.CheckEntityCounts)

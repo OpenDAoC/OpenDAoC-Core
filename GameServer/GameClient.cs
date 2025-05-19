@@ -15,7 +15,7 @@ using DOL.Network;
 
 namespace DOL.GS
 {
-    public class GameClient : BaseClient, ICustomParamsValuable, IManagedEntity
+    public class GameClient : BaseClient, ICustomParamsValuable, IServiceObject
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -102,8 +102,8 @@ namespace DOL.GS
         }
 
         public bool IsPlaying => _clientState is eClientState.Playing or eClientState.Linkdead;
-        public int SessionID => EntityManagerId.Value + 1;
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Client);
+        public int SessionID => ServiceObjectId.Value + 1;
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Client);
         public bool HasSeenPatchNotes { get; set; }
         public List<Tuple<Specialization, List<Tuple<int, int, Skill>>>> TrainerSkillCache { get; set; }
         public long LinkDeathTime { get; set; }

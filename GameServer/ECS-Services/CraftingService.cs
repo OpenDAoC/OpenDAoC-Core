@@ -15,7 +15,7 @@ namespace DOL.GS
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-            _list = EntityManager.UpdateAndGetAll<CraftComponent>(EntityManager.EntityType.CraftComponent, out int lastValidIndex);
+            _list = ServiceObjectStore.UpdateAndGetAll<CraftComponent>(ServiceObjectType.CraftComponent, out int lastValidIndex);
             GameLoop.Work(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)
@@ -30,7 +30,7 @@ namespace DOL.GS
 
             try
             {
-                if (craftComponent?.EntityManagerId.IsSet != true)
+                if (craftComponent?.ServiceObjectId.IsSet != true)
                     return;
 
                 if (Diagnostics.CheckEntityCounts)

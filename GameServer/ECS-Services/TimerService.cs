@@ -17,7 +17,7 @@ namespace DOL.GS
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-            _list = EntityManager.UpdateAndGetAll<ECSGameTimer>(EntityManager.EntityType.Timer, out int lastValidIndex);
+            _list = ServiceObjectStore.UpdateAndGetAll<ECSGameTimer>(ServiceObjectType.Timer, out int lastValidIndex);
             GameLoop.Work(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)
@@ -30,7 +30,7 @@ namespace DOL.GS
         {
             ECSGameTimer timer = _list[index];
 
-            if (timer?.EntityManagerId.IsSet != true)
+            if (timer?.ServiceObjectId.IsSet != true)
                 return;
 
             if (Diagnostics.CheckEntityCounts)
@@ -55,7 +55,7 @@ namespace DOL.GS
         }
     }
 
-    public class ECSGameTimer : IManagedEntity
+    public class ECSGameTimer : IServiceObject
     {
         public delegate int ECSTimerCallback(ECSGameTimer timer);
 
@@ -68,7 +68,7 @@ namespace DOL.GS
         public ref long NextTick => ref _nextTick;
         public bool IsAlive { get; private set; }
         public int TimeUntilElapsed => (int) (_nextTick - GameLoop.GameLoopTime);
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Timer);
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Timer);
         private PropertyCollection _properties;
 
         public ECSGameTimer(GameObject timerOwner)
@@ -101,13 +101,13 @@ namespace DOL.GS
             Interval = interval;
             _nextTick = GameLoop.GameLoopTime + interval;
 
-            if (EntityManager.Add(this))
+            if (ServiceObjectStore.Add(this))
                 IsAlive = true;
         }
 
         public void Stop()
         {
-            if (EntityManager.Remove(this))
+            if (ServiceObjectStore.Remove(this))
                 IsAlive = false;
         }
 

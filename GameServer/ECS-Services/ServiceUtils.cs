@@ -55,9 +55,9 @@ namespace DOL.GS
             return tickTime - GameLoop.GameLoopTime;
         }
 
-        public static void HandleServiceException<T>(Exception exception, string serviceName, T entity, GameObject entityOwner) where T : class, IManagedEntity
+        public static void HandleServiceException<T>(Exception exception, string serviceName, T entity, GameObject entityOwner) where T : class, IServiceObject
         {
-            EntityManager.Remove(entity);
+            ServiceObjectStore.Remove(entity);
             List<string> logMessages = [$"Critical error encountered in {serviceName}: {exception}"];
 
             // Define the actions and log messages.

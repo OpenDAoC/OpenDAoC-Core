@@ -15,7 +15,7 @@ namespace DOL.GS
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-            _list = EntityManager.UpdateAndGetAll<LivingBeingKilled>(EntityManager.EntityType.LivingBeingKilled, out int lastValidIndex);
+            _list = ServiceObjectStore.UpdateAndGetAll<LivingBeingKilled>(ServiceObjectType.LivingBeingKilled, out int lastValidIndex);
             GameLoop.Work(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)
@@ -28,7 +28,7 @@ namespace DOL.GS
         {
             LivingBeingKilled livingBeingKilled = _list[index];
 
-            if (livingBeingKilled?.EntityManagerId.IsSet != true)
+            if (livingBeingKilled?.ServiceObjectId.IsSet != true)
                 return;
 
             if (Diagnostics.CheckEntityCounts)
@@ -37,7 +37,7 @@ namespace DOL.GS
             try
             {
                 livingBeingKilled.Killed.ProcessDeath(livingBeingKilled.Killer);
-                EntityManager.Remove(livingBeingKilled);
+                ServiceObjectStore.Remove(livingBeingKilled);
             }
             catch (Exception e)
             {
@@ -51,30 +51,30 @@ namespace DOL.GS
         }
     }
 
-    // Temporary objects to be added to 'EntityManager' and consumed by 'ReaperService', representing a living object being killed and waiting to be processed.
-    public class LivingBeingKilled : IManagedEntity
+    // Temporary objects to be added to `ServiceObjectStore` and consumed by `ReaperService`, representing a living object being killed and waiting to be processed.
+    public class LivingBeingKilled : IServiceObject
     {
         public GameLiving Killed { get; private set; }
         public GameObject Killer { get; private set; }
-        public EntityManagerId EntityManagerId { get; set; }
+        public ServiceObjectId ServiceObjectId { get; set; }
 
         private LivingBeingKilled(GameLiving killed, GameObject killer)
         {
             Initialize(killed, killer);
-            EntityManagerId = new EntityManagerId(EntityManager.EntityType.LivingBeingKilled, CleanUp);
+            ServiceObjectId = new ServiceObjectId(ServiceObjectType.LivingBeingKilled, CleanUp);
         }
 
         public static void Create(GameLiving killed, GameObject killer)
         {
-            if (EntityManager.TryReuse(EntityManager.EntityType.LivingBeingKilled, out LivingBeingKilled livingBeingKilled, out int index))
+            if (ServiceObjectStore.TryReuse(ServiceObjectType.LivingBeingKilled, out LivingBeingKilled livingBeingKilled, out int index))
             {
                 livingBeingKilled.Initialize(killed, killer);
-                livingBeingKilled.EntityManagerId.Value = index;
+                livingBeingKilled.ServiceObjectId.Value = index;
             }
             else
             {
                 livingBeingKilled = new LivingBeingKilled(killed, killer);
-                EntityManager.Add(livingBeingKilled);
+                ServiceObjectStore.Add(livingBeingKilled);
             }
         }
 

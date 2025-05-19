@@ -10,14 +10,14 @@ using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
-    public class CastingComponent : IManagedEntity
+    public class CastingComponent : IServiceObject
     {
         protected ConcurrentQueue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
 
         public GameLiving Owner { get; }
         public SpellHandler SpellHandler { get; protected set; }
         public SpellHandler QueuedSpellHandler { get; private set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.CastingComponent);
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.CastingComponent);
         public bool IsCasting => SpellHandler != null; // May not be actually casting yet.
 
         protected CastingComponent(GameLiving owner)
@@ -39,7 +39,7 @@ namespace DOL.GS
         {
             if (Owner.ObjectState is not eObjectState.Active)
             {
-                EntityManager.Remove(this);
+                ServiceObjectStore.Remove(this);
                 return;
             }
 
@@ -47,14 +47,14 @@ namespace DOL.GS
             ProcessStartSkillRequests();
 
             if (SpellHandler == null && QueuedSpellHandler == null && _startSkillRequests.IsEmpty)
-                EntityManager.Remove(this);
+                ServiceObjectStore.Remove(this);
         }
 
         public virtual bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
         {
             if (RequestStartCastSpellInternal(new StartCastSpellRequest(this, spell, spellLine, spellCastingAbilityHandler, target)))
             {
-                EntityManager.Add(this);
+                ServiceObjectStore.Add(this);
                 return true;
             }
 
@@ -77,7 +77,7 @@ namespace DOL.GS
         {
             // Always allowed. The handler will check if the ability can be used or not.
             _startSkillRequests.Enqueue(new StartUseAbilityRequest(this, ability));
-            EntityManager.Add(this);
+            ServiceObjectStore.Add(this);
         }
 
         protected virtual void ProcessStartSkillRequests()

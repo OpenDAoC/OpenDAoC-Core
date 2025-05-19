@@ -19,7 +19,7 @@ namespace DOL.GS
 
             if (_playerOwner.ChainedActions.Execute(spell))
             {
-                EntityManager.Add<CastingComponent>(this);
+                ServiceObjectStore.Add<CastingComponent>(this);
                 return true;
             }
 

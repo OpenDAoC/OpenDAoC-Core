@@ -17,7 +17,7 @@ namespace DOL.GS
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-            _list = EntityManager.UpdateAndGetAll<ObjectChangingSubZone>(EntityManager.EntityType.ObjectChangingSubZone, out int lastValidIndex);
+            _list = ServiceObjectStore.UpdateAndGetAll<ObjectChangingSubZone>(ServiceObjectType.ObjectChangingSubZone, out int lastValidIndex);
             GameLoop.Work(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)
@@ -30,13 +30,13 @@ namespace DOL.GS
         {
             ObjectChangingSubZone objectChangingSubZone = _list[index];
 
-            if (objectChangingSubZone?.EntityManagerId.IsSet != true)
+            if (objectChangingSubZone?.ServiceObjectId.IsSet != true)
                 return;
 
             if (Diagnostics.CheckEntityCounts)
                 Interlocked.Increment(ref _entityCount);
 
-            EntityManager.Remove(objectChangingSubZone);
+            ServiceObjectStore.Remove(objectChangingSubZone);
             SubZoneObject subZoneObject = null;
 
             try
@@ -98,31 +98,31 @@ namespace DOL.GS
         }
     }
 
-    // Temporary objects to be added to 'EntityManager' and consumed by 'ZoneService', representing an object to be moved from one 'SubZone' to another.
-    public class ObjectChangingSubZone : IManagedEntity
+    // Temporary objects to be added to `ServiceObjectStore` and consumed by `ZoneService`, representing an object to be moved from one 'SubZone' to another.
+    public class ObjectChangingSubZone : IServiceObject
     {
         public SubZoneObject SubZoneObject { get; private set; }
         public Zone DestinationZone { get; private set; }
         public SubZone DestinationSubZone { get; private set; }
-        public EntityManagerId EntityManagerId { get; set; }
+        public ServiceObjectId ServiceObjectId { get; set; }
 
         private ObjectChangingSubZone(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
             Initialize(subZoneObject, destinationZone, destinationSubZone);
-            EntityManagerId = new EntityManagerId(EntityManager.EntityType.ObjectChangingSubZone, CleanUp);
+            ServiceObjectId = new ServiceObjectId(ServiceObjectType.ObjectChangingSubZone, CleanUp);
         }
 
         public static void Create(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
-            if (EntityManager.TryReuse(EntityManager.EntityType.ObjectChangingSubZone, out ObjectChangingSubZone objectChangingSubZone, out int index))
+            if (ServiceObjectStore.TryReuse(ServiceObjectType.ObjectChangingSubZone, out ObjectChangingSubZone objectChangingSubZone, out int index))
             {
                 objectChangingSubZone.Initialize(subZoneObject, destinationZone, destinationSubZone);
-                objectChangingSubZone.EntityManagerId.Value = index;
+                objectChangingSubZone.ServiceObjectId.Value = index;
             }
             else
             {
                 objectChangingSubZone = new(subZoneObject, destinationZone, destinationSubZone);
-                EntityManager.Add(objectChangingSubZone);
+                ServiceObjectStore.Add(objectChangingSubZone);
             }
         }
 

@@ -35,7 +35,7 @@ namespace DOL.GS
             using (_lock)
             {
                 _lock.EnterWriteLock();
-                _clients = EntityManager.UpdateAndGetAll<GameClient>(EntityManager.EntityType.Client, out _lastValidIndex);
+                _clients = ServiceObjectStore.UpdateAndGetAll<GameClient>(ServiceObjectType.Client, out _lastValidIndex);
             }
 
             GameLoop.Work(_lastValidIndex + 1, BeginTickInternal);
@@ -58,7 +58,7 @@ namespace DOL.GS
         {
             GameClient client = _clients[index];
 
-            if (client?.EntityManagerId.IsSet != true)
+            if (client?.ServiceObjectId.IsSet != true)
                 return;
 
             try
@@ -111,7 +111,7 @@ namespace DOL.GS
         {
             GameClient client = _clients[index];
 
-            if (client?.EntityManagerId.IsSet != true)
+            if (client?.ServiceObjectId.IsSet != true)
                 return;
 
             if (Diagnostics.CheckEntityCounts)
@@ -161,32 +161,32 @@ namespace DOL.GS
 
         public static void OnClientConnect(GameClient client)
         {
-            if (EntityManager.Add(client))
+            if (ServiceObjectStore.Add(client))
                 Interlocked.Increment(ref _clientCount);
             else if (log.IsWarnEnabled)
             {
-                EntityManagerId entityManagerId = client.EntityManagerId;
+                ServiceObjectId serviceObjectId = client.ServiceObjectId;
                 log.Warn($"{nameof(OnClientConnect)} was called but the client couldn't be added to the entity manager." +
                          $"(Client: {client})" +
-                         $"(IsIdSet: {entityManagerId.IsSet})" +
-                         $"(IsPendingAddition: {entityManagerId.IsPendingAddition})" +
-                         $"(IsPendingRemoval: {entityManagerId.IsPendingAddition})" +
+                         $"(IsIdSet: {serviceObjectId.IsSet})" +
+                         $"(IsPendingAddition: {serviceObjectId.IsPendingAddition})" +
+                         $"(IsPendingRemoval: {serviceObjectId.IsPendingAddition})" +
                          $"\n{Environment.StackTrace}");
             }
         }
 
         public static void OnClientDisconnect(GameClient client)
         {
-            if (EntityManager.Remove(client))
+            if (ServiceObjectStore.Remove(client))
                 Interlocked.Decrement(ref _clientCount);
             else if (log.IsWarnEnabled)
             {
-                EntityManagerId entityManagerId = client.EntityManagerId;
+                ServiceObjectId serviceObjectId = client.ServiceObjectId;
                 log.Warn($"{nameof(OnClientDisconnect)} was called but the client couldn't be removed from the entity manager." +
                          $"(Client: {client})" +
-                         $"(IsIdSet: {entityManagerId.IsSet})" +
-                         $"(IsPendingAddition: {entityManagerId.IsPendingAddition})" +
-                         $"(IsPendingRemoval: {entityManagerId.IsPendingAddition})" +
+                         $"(IsIdSet: {serviceObjectId.IsSet})" +
+                         $"(IsPendingAddition: {serviceObjectId.IsPendingAddition})" +
+                         $"(IsPendingRemoval: {serviceObjectId.IsPendingAddition})" +
                          $"\n{Environment.StackTrace}");
             }
         }
@@ -498,7 +498,7 @@ namespace DOL.GS
 
                 Parallel.ForEach(_clients, client =>
                 {
-                    if (client?.EntityManagerId.IsSet != true)
+                    if (client?.ServiceObjectId.IsSet != true)
                         return;
 
                     client.SavePlayer();

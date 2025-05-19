@@ -8,12 +8,12 @@ namespace DOL.AI
     /// <summary>
     /// This class is the base of all artificial intelligence in game objects
     /// </summary>
-    public abstract class ABrain : IManagedEntity
+    public abstract class ABrain : IServiceObject
     {
         private long _nextThinkTick;
 
         public FSM FSM { get; set; }
-        public EntityManagerId EntityManagerId { get; set; } = new(EntityManager.EntityType.Brain);
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Brain);
         public virtual GameNPC Body { get; set; }
         public virtual bool IsActive => Body != null && Body.IsAlive && Body.ObjectState == GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
         public virtual int ThinkInterval { get; set; } = 2500;
@@ -40,7 +40,7 @@ namespace DOL.AI
         /// <returns>true if started</returns>
         public virtual bool Start()
         {
-            if (EntityManager.Add(this))
+            if (ServiceObjectStore.Add(this))
             {
                 // Offset the first think tick by a random amount so that not too many are grouped in one server tick.
                 // We also delay the first think tick a bit because clients tend to send positive LoS checks when they shouldn't.
@@ -57,7 +57,7 @@ namespace DOL.AI
         /// <returns>true if stopped</returns>
         public virtual bool Stop()
         {
-            if (EntityManagerId.IsPendingRemoval)
+            if (ServiceObjectId.IsPendingRemoval)
                 return false; // Prevents overrides from doing any redundant work. Maybe counter intuitive.
 
             bool wasReturningToSpawnPoint = Body.IsReturningToSpawnPoint;
@@ -67,7 +67,7 @@ namespace DOL.AI
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading);
 
             FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
-            return EntityManager.Remove(this);
+            return ServiceObjectStore.Remove(this);
         }
 
         /// <summary>

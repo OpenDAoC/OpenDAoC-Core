@@ -18,7 +18,7 @@ namespace DOL.GS
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-            _list = EntityManager.UpdateAndGetAll<ABrain>(EntityManager.EntityType.Brain, out int lastValidIndex);
+            _list = ServiceObjectStore.UpdateAndGetAll<ABrain>(ServiceObjectType.Brain, out int lastValidIndex);
             GameLoop.Work(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)
@@ -31,7 +31,7 @@ namespace DOL.GS
         {
             ABrain brain = _list[index];
 
-            if (brain?.EntityManagerId.IsSet != true)
+            if (brain?.ServiceObjectId.IsSet != true)
                 return;
 
             if (Diagnostics.CheckEntityCounts)
