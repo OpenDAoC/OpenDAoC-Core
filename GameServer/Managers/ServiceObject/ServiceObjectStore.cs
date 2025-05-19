@@ -160,13 +160,13 @@ namespace DOL.GS
                 return _lastValidIndex;
             }
 
-            private int AddInternal(T entity)
+            private int AddInternal(T item)
             {
                 if (_invalidIndexes.Count > 0)
                 {
                     int index = _invalidIndexes.Min;
                     _invalidIndexes.Remove(index);
-                    Items[index] = entity;
+                    Items[index] = item;
 
                     if (index > _lastValidIndex)
                         _lastValidIndex = index;
@@ -186,7 +186,7 @@ namespace DOL.GS
                     Items.Resize(newCapacity);
                 }
 
-                Items.Add(entity);
+                Items.Add(item);
                 return _lastValidIndex;
             }
 
