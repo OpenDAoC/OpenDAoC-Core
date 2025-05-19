@@ -1,6 +1,6 @@
 ﻿namespace DOL.Logging
 {
-    public enum ELogLibrary
+    public enum LogLibrary
     {
         None,
         Console,

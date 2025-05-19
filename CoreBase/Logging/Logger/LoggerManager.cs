@@ -8,7 +8,7 @@ namespace DOL.Logging
     public abstract class LoggerManager
     {
         private static Lock _lock = new();
-        private static ELogLibrary _loggingLibrary;
+        private static LogLibrary _loggingLibrary;
         private static ILoggerFactory _loggerFactory;
         private static LogEntryQueueProcessor _queueProcessor;
         private static bool _initialized;
@@ -17,10 +17,10 @@ namespace DOL.Logging
         {
             return InitializeWithExplicitLibrary(configurationFilePath, GuessLibraryFromFile());
 
-            ELogLibrary GuessLibraryFromFile()
+            LogLibrary GuessLibraryFromFile()
             {
                 if (string.IsNullOrEmpty(configurationFilePath))
-                    return ELogLibrary.Console;
+                    return LogLibrary.Console;
 
                 using XmlReader reader = XmlReader.Create(configurationFilePath);
 
@@ -29,18 +29,18 @@ namespace DOL.Logging
                     if (reader.NodeType is XmlNodeType.Element)
                     {
                         if (reader.Name.Equals("nlog", StringComparison.OrdinalIgnoreCase))
-                            return ELogLibrary.NLog;
+                            return LogLibrary.NLog;
 
                         if (reader.Name.Equals("log4net", StringComparison.OrdinalIgnoreCase))
-                            return ELogLibrary.Log4net;
+                            return LogLibrary.Log4net;
                     }
                 }
 
-                return ELogLibrary.Console;
+                return LogLibrary.Console;
             }
         }
 
-        public static bool InitializeWithExplicitLibrary(string configurationFilePath, ELogLibrary loggingLibrary)
+        public static bool InitializeWithExplicitLibrary(string configurationFilePath, LogLibrary loggingLibrary)
         {
             lock (_lock)
             {
@@ -55,10 +55,10 @@ namespace DOL.Logging
 
                     _loggerFactory = _loggingLibrary switch
                     {
-                        ELogLibrary.None => new NullLoggerFactory(),
-                        ELogLibrary.Console => new ConsoleLoggerFactory(),
-                        ELogLibrary.NLog => new NLogLoggerFactory(configurationFilePath),
-                        ELogLibrary.Log4net => new Log4netLoggerFactory(configurationFilePath),
+                        LogLibrary.None => new NullLoggerFactory(),
+                        LogLibrary.Console => new ConsoleLoggerFactory(),
+                        LogLibrary.NLog => new NLogLoggerFactory(configurationFilePath),
+                        LogLibrary.Log4net => new Log4netLoggerFactory(configurationFilePath),
                         _ => throw new NotImplementedException($"{_loggingLibrary}")
                     };
                 }
@@ -84,7 +84,7 @@ namespace DOL.Logging
 
                 _queueProcessor.Stop();
                 _loggerFactory.Shutdown();
-                _loggingLibrary = ELogLibrary.None;
+                _loggingLibrary = LogLibrary.None;
             }
         }
 
