@@ -20,18 +20,25 @@ namespace DOL.GS
         // Too low, and a worker may reserve too much work, causing the other workers to wait for it.
         private const int WORK_DISTRIBUTION_BASE_FACTOR = 6;
 
-        private int _degreeOfParallelism; // The desired degree of parallelism. This is the number of threads we want to use, including the caller thread.
-        private int _workerCount; // Should always be one less than `_degreeOfParallelism`.
-        private int _workDistributionBase; // Used to dynamically calculate the chunk size for each worker.
-        private Thread[] _workers; // The worker threads. Does not include the caller thread.
-        private Thread _watchdog; // The watchdog thread is used to monitor the worker threads and restart them if they die.
-        private CountdownEvent _workerStartCountDownEvent; // Used to wait for the workers to be initialized.
-        private SemaphoreSlim[] _workReady; // One for each worker appears to offer better performance than a shared one.
-        private CancellationTokenSource _workersCancellationTokenSource;
-        private Action<int> _action; // The actual work item.
-        private int _workLeft; // The number of work items to do. This is the total number of items, not the number of items per worker.
-        private int _workerCompletionCount; // The number of workers that have completed their work for this iteration.
+        // Thread pool lifecycle.
         private bool _running;
+        private int _degreeOfParallelism;               // Total threads, including caller.
+        private int _workerCount;                       // Number of dedicated worker threads (= _degreeOfParallelism - 1).
+        private int _workDistributionBase;              // Used to calculate chunk size per worker.
+
+        // Thread management.
+        private Thread[] _workers;                      // Worker threads (excludes caller).
+        private Thread _watchdog;                       // Monitors worker health; restarts if needed.
+        private CancellationTokenSource _workersCancellationTokenSource;
+
+        // Startup synchronization.
+        private CountdownEvent _workerStartLatch;       // Signals when all workers are initialized.
+        private SemaphoreSlim[] _workReady;             // Per-worker semaphores to trigger work.
+
+        // Work dispatch.
+        private Action<int> _action;                    // Work delegate.
+        private int _workLeft;                          // Total items left to process.
+        private int _workerCompletionCount;             // Count of workers finished for current iteration.
 
         public GameLoopThreadPool(int degreeOfParallelism)
         {
@@ -46,7 +53,7 @@ namespace DOL.GS
             _workerCount = _degreeOfParallelism - 1;
             _workDistributionBase = _degreeOfParallelism * WORK_DISTRIBUTION_BASE_FACTOR;
             _workers = new Thread[_workerCount];
-            _workerStartCountDownEvent = new(_workerCount);
+            _workerStartLatch = new(_workerCount);
             _workReady = new SemaphoreSlim[_workerCount];
             _workersCancellationTokenSource = new();
 
@@ -60,7 +67,7 @@ namespace DOL.GS
                 worker.Start((i, false));
             }
 
-            _workerStartCountDownEvent.Wait(); // If for some reason a thread fails to start, we'll be waiting here forever.
+            _workerStartLatch.Wait(); // If for some reason a thread fails to start, we'll be waiting here forever.
             _watchdog = new(WatchdogLoop)
             {
                 Name = $"{GameLoop.THREAD_NAME}_Watchdog",
@@ -120,17 +127,17 @@ namespace DOL.GS
 
         private void InitWorker(object obj)
         {
-            (int Id, bool Restart) param = ((int, bool)) obj;
-            _workers[param.Id] = Thread.CurrentThread;
-            _workReady[param.Id]?.Dispose();
-            _workReady[param.Id] = new SemaphoreSlim(0, 1);
-            _workerStartCountDownEvent.Signal();
+            (int Id, bool Restart) = ((int, bool)) obj;
+            _workers[Id] = Thread.CurrentThread;
+            _workReady[Id]?.Dispose();
+            _workReady[Id] = new SemaphoreSlim(0, 1);
+            _workerStartLatch.Signal();
 
             // If this is a restart, we need to free the caller thread.
-            if (param.Restart)
+            if (Restart)
                 Interlocked.Increment(ref _workerCompletionCount);
 
-            RunWorker(_workReady[param.Id], _workersCancellationTokenSource.Token);
+            RunWorker(_workReady[Id], _workersCancellationTokenSource.Token);
         }
 
         private void RunWorker(SemaphoreSlim workReady, CancellationToken cancellationToken)
@@ -240,7 +247,7 @@ namespace DOL.GS
                         continue;
 
                     // Initialize the countdown event before starting any thread.
-                    _workerStartCountDownEvent = new(_workersToRestart.Count);
+                    _workerStartLatch = new(_workersToRestart.Count);
 
                     foreach (int id in _workersToRestart)
                     {
@@ -281,7 +288,7 @@ namespace DOL.GS
             if (_watchdog.IsAlive)
                 _watchdog.Join();
 
-            _workerStartCountDownEvent.Wait(); // Make sure any worker being (re)started has finished.
+            _workerStartLatch.Wait(); // Make sure any worker being (re)started has finished.
             _workersCancellationTokenSource.Cancel();
 
             for (int i = 0; i < _workers.Length; i++)
