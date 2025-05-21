@@ -61,33 +61,19 @@ namespace DOL.GS
         private LivingBeingKilled(GameLiving killed, GameObject killer)
         {
             Initialize(killed, killer);
-            ServiceObjectId = new ServiceObjectId(ServiceObjectType.LivingBeingKilled, CleanUp);
+            ServiceObjectId = new ServiceObjectId(ServiceObjectType.LivingBeingKilled);
         }
 
         public static void Create(GameLiving killed, GameObject killer)
         {
-            if (ServiceObjectStore.TryReuse(ServiceObjectType.LivingBeingKilled, out LivingBeingKilled livingBeingKilled, out int index))
-            {
-                livingBeingKilled.Initialize(killed, killer);
-                livingBeingKilled.ServiceObjectId.Value = index;
-            }
-            else
-            {
-                livingBeingKilled = new LivingBeingKilled(killed, killer);
-                ServiceObjectStore.Add(livingBeingKilled);
-            }
+            LivingBeingKilled livingBeingKilled = new(killed, killer);
+            ServiceObjectStore.Add(livingBeingKilled);
         }
 
         private void Initialize(GameLiving killed, GameObject killer)
         {
             Killed = killed;
             Killer = killer;
-        }
-
-        private void CleanUp()
-        {
-            Killed = null;
-            Killer = null;
         }
     }
 }

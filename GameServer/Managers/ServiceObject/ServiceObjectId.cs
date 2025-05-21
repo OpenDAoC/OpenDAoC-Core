@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DOL.GS
+﻿namespace DOL.GS
 {
     public class ServiceObjectId
     {
@@ -17,16 +15,15 @@ namespace DOL.GS
                 _pendingState = PendingState.None;
             }
         }
+
         public ServiceObjectType Type { get; }
-        public Action CleanupForReuseAction { get; }
         public bool IsSet => _value > UNSET_ID;
         public bool IsPendingAddition => _pendingState == PendingState.Adding;
         public bool IsPendingRemoval => _pendingState == PendingState.Removing;
 
-        public ServiceObjectId(ServiceObjectType type, Action cleanupAction = null)
+        public ServiceObjectId(ServiceObjectType type)
         {
             Type = type;
-            CleanupForReuseAction = cleanupAction;
         }
 
         public void OnPreAdd()

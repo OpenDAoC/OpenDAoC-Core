@@ -109,21 +109,13 @@ namespace DOL.GS
         private ObjectChangingSubZone(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
             Initialize(subZoneObject, destinationZone, destinationSubZone);
-            ServiceObjectId = new ServiceObjectId(ServiceObjectType.ObjectChangingSubZone, CleanUp);
+            ServiceObjectId = new ServiceObjectId(ServiceObjectType.ObjectChangingSubZone);
         }
 
         public static void Create(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
         {
-            if (ServiceObjectStore.TryReuse(ServiceObjectType.ObjectChangingSubZone, out ObjectChangingSubZone objectChangingSubZone, out int index))
-            {
-                objectChangingSubZone.Initialize(subZoneObject, destinationZone, destinationSubZone);
-                objectChangingSubZone.ServiceObjectId.Value = index;
-            }
-            else
-            {
-                objectChangingSubZone = new(subZoneObject, destinationZone, destinationSubZone);
-                ServiceObjectStore.Add(objectChangingSubZone);
-            }
+            ObjectChangingSubZone objectChangingSubZone = new(subZoneObject, destinationZone, destinationSubZone);
+            ServiceObjectStore.Add(objectChangingSubZone);
         }
 
         private void Initialize(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
@@ -131,13 +123,6 @@ namespace DOL.GS
             SubZoneObject = subZoneObject;
             DestinationZone = destinationZone;
             DestinationSubZone = destinationSubZone;
-        }
-
-        private void CleanUp()
-        {
-            SubZoneObject = null;
-            DestinationZone = null;
-            DestinationSubZone = null;
         }
     }
 }

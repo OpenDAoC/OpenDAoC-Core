@@ -34,12 +34,6 @@ namespace DOL.GS
             return true;
         }
 
-        public static bool TryReuse<T>(ServiceObjectType type, out T serviceObject, out int index) where T : class, IServiceObject
-        {
-            // The returned index must be set by the caller, so that the service object can be initialized before being handled by the services.
-            return (_serviceObjectArrays[type] as ServiceObjectArray<T>).TryReuse(out serviceObject, out index);
-        }
-
         public static bool Remove<T>(T serviceObject) where T : class, IServiceObject
         {
             ServiceObjectId id = serviceObject.ServiceObjectId;
@@ -67,7 +61,7 @@ namespace DOL.GS
             private SortedSet<int> _invalidIndexes = new();
             private FanoutBuffer<T> _itemsToAdd  = new();
             private FanoutBuffer<T> _itemsToRemove = new();
-            private readonly Lock _updateLock = new();
+            private int _updating = new();
             private int _lastValidIndex = -1;
 
             public List<T> Items { get; }
@@ -83,27 +77,6 @@ namespace DOL.GS
                 _itemsToAdd.Add(item);
             }
 
-            public bool TryReuse(out T item, out int index)
-            {
-                index = ServiceObjectId.UNSET_ID;
-                item = null;
-
-                lock (_updateLock)
-                {
-                    if (_invalidIndexes.Count == 0)
-                        return false;
-
-                    index = _invalidIndexes.Min;
-                    _invalidIndexes.Remove(index);
-                    item = Items[index];
-
-                    if (_lastValidIndex < index)
-                        _lastValidIndex = index;
-                }
-
-                return true;
-            }
-
             public void Remove(T item)
             {
                 item.ServiceObjectId.OnPreRemove();
@@ -112,7 +85,7 @@ namespace DOL.GS
 
             public int Update()
             {
-                if (!_updateLock.TryEnter())
+                if (Interlocked.Exchange(ref _updating, 1) != 0)
                     throw new InvalidOperationException();
 
                 try
@@ -149,7 +122,7 @@ namespace DOL.GS
                 }
                 finally
                 {
-                    _updateLock.Exit();
+                    _updating = 0;
                 }
 
                 return _lastValidIndex;
@@ -195,12 +168,7 @@ namespace DOL.GS
                 ServiceObjectId serviceObjectId = item.ServiceObjectId;
                 serviceObjectId.Unset();
                 _invalidIndexes.Add(id);
-                Action cleanUpForReuseAction = serviceObjectId.CleanupForReuseAction;
-
-                if (cleanUpForReuseAction == null)
-                    Items[id] = null;
-                else
-                    cleanUpForReuseAction();
+                Items[id] = null;
             }
         }
 
