@@ -241,7 +241,7 @@ namespace DOL.AI.Brain
 
         private ConcurrentDictionary<GameLiving, AggroAmount> _tempAggroList = new();
         protected ConcurrentDictionary<GameLiving, AggroAmount> AggroList { get; private set; } = new();
-        protected List<(GameLiving, long)> OrderedAggroList { get; private set; } = [];
+        protected List<OrderedAggroListElement> OrderedAggroList { get; private set; } = new();
         protected readonly Lock _orderedAggroListLock = new();
         public GameLiving LastHighestThreatInAttackRange { get; private set; }
 
@@ -355,13 +355,13 @@ namespace DOL.AI.Brain
             AggroList.TryRemove(living, out _);
         }
 
-        public List<(GameLiving, long)> GetOrderedAggroList()
+        public List<OrderedAggroListElement> GetOrderedAggroList()
         {
             // Potentially slow, so we cache the result.
             lock (_orderedAggroListLock)
             {
-                if (!OrderedAggroList.Any())
-                    OrderedAggroList = AggroList.OrderByDescending(x => x.Value.Effective).Select(x => (x.Key, x.Value.Effective)).ToList();
+                if (OrderedAggroList.Count == 0)
+                    OrderedAggroList = AggroList.OrderByDescending(x => x.Value.Effective).Select(x => new OrderedAggroListElement(x.Key, x.Value.Effective)).ToList();
 
                 return OrderedAggroList.ToList();
             }
@@ -1212,5 +1212,17 @@ namespace DOL.AI.Brain
         }
 
         #endregion
+
+        public class OrderedAggroListElement
+        {
+            public GameLiving Living { get; }
+            public long AggroAmount { get; }
+
+            public OrderedAggroListElement(GameLiving living, long aggroAmount)
+            {
+                Living = living;
+                AggroAmount = aggroAmount;
+            }
+        }
     }
 }

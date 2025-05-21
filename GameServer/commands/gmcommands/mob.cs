@@ -10,6 +10,7 @@ using DOL.GS.Housing;
 using DOL.GS.Movement;
 using DOL.GS.PacketHandler;
 using DOL.GS.Quests;
+using static DOL.AI.Brain.StandardMobBrain;
 
 namespace DOL.GS.Commands
 {
@@ -2987,15 +2988,15 @@ namespace DOL.GS.Commands
 				if (pendingLosCheckCount != 0)
 					text.Add($"PendingLosCheckCount: {pendingLosCheckCount}");
 
-				List<(GameLiving, long)> aggroList = standardBrain.GetOrderedAggroList();
+				List<OrderedAggroListElement> aggroList = standardBrain.GetOrderedAggroList();
 
 				if (aggroList.Count > 0)
 				{
 					text.Add("");
 					text.Add("Aggro List:");
 
-					foreach ((GameLiving, long) pair in aggroList)
-						text.Add($"{pair.Item1.Name}: {pair.Item2}");
+					foreach (OrderedAggroListElement orderedAggroListElement in aggroList)
+						text.Add($"{orderedAggroListElement.Living.Name}: {orderedAggroListElement.AggroAmount}");
 				}
 			}
 
