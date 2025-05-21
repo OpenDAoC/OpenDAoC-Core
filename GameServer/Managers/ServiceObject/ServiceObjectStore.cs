@@ -65,11 +65,9 @@ namespace DOL.GS
         private class ServiceObjectArray<T> : IServiceObjectArray where T : class, IServiceObject
         {
             private SortedSet<int> _invalidIndexes = new();
-            private Stack<T> _itemsToAdd  = new();
-            private Stack<T> _itemsToRemove = new();
+            private FanoutBuffer<T> _itemsToAdd  = new();
+            private FanoutBuffer<T> _itemsToRemove = new();
             private readonly Lock _updateLock = new();
-            private readonly Lock _itemsToAddLock = new();
-            private readonly Lock _itemsToRemoveLock = new();
             private int _lastValidIndex = -1;
 
             public List<T> Items { get; }
@@ -82,11 +80,7 @@ namespace DOL.GS
             public void Add(T item)
             {
                 item.ServiceObjectId.OnPreAdd();
-
-                lock (_itemsToAddLock)
-                {
-                    _itemsToAdd.Push(item);
-                }
+                _itemsToAdd.Add(item);
             }
 
             public bool TryReuse(out T item, out int index)
@@ -113,27 +107,25 @@ namespace DOL.GS
             public void Remove(T item)
             {
                 item.ServiceObjectId.OnPreRemove();
-
-                lock (_itemsToRemoveLock)
-                {
-                    _itemsToRemove.Push(item);
-                }
+                _itemsToRemove.Add(item);
             }
 
             public int Update()
             {
-                lock (_updateLock)
+                if (!_updateLock.TryEnter())
+                    throw new InvalidOperationException();
+
+                try
                 {
-                    lock (_itemsToRemoveLock)
+                    if (_itemsToRemove.Count > 0)
                     {
-                        while (_itemsToRemove.Count > 0)
+                        _itemsToRemove.DrainTo(static (item, array) =>
                         {
-                            T item = _itemsToRemove.Pop();
                             ServiceObjectId id = item.ServiceObjectId;
 
                             if (id.IsPendingRemoval && id.IsSet)
-                                RemoveInternal(id.Value);
-                        }
+                                array.RemoveInternal(id.Value);
+                        }, this);
                     }
 
                     while (_lastValidIndex > -1)
@@ -144,17 +136,20 @@ namespace DOL.GS
                         _lastValidIndex--;
                     }
 
-                    lock (_itemsToAddLock)
+                    if (_itemsToAdd.Count > 0)
                     {
-                        while (_itemsToAdd.Count > 0)
+                        _itemsToAdd.DrainTo(static (item, array) =>
                         {
-                            T item = _itemsToAdd.Pop();
                             ServiceObjectId id = item.ServiceObjectId;
 
                             if (id.IsPendingAddition && !id.IsSet)
-                                id.Value = AddInternal(item);
-                        }
+                                id.Value = array.AddInternal(item);
+                        }, this);
                     }
+                }
+                finally
+                {
+                    _updateLock.Exit();
                 }
 
                 return _lastValidIndex;
