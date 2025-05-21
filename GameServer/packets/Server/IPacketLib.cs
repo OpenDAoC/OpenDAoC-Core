@@ -608,7 +608,6 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		int BothDualWeaponHit { get; }
 
-		byte GetPacketCode(eServerPackets packetCode);
 		void SendTCP(GSTCPPacketOut packet);
 		void SendUDP(GSUDPPacketOut packet);
 		void SendWarlockChamberEffect(GamePlayer player);
@@ -779,7 +778,6 @@ namespace DOL.GS.PacketHandler
 		void SendMovingObjectCreate(GameMovingObject obj);
 		void SendSetControlledHorse(GamePlayer player);
 		void SendControlledHorse(GamePlayer player, bool flag);
-		void CheckLengthHybridSkillsPacket(ref GSTCPPacketOut pak, ref int maxSkills, ref int first);
 		void SendNonHybridSpellLines();
 		void SendCrash(string str);
 		void SendRegionColorScheme();

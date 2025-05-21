@@ -85,7 +85,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ConcentrationList)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.ConcentrationList))))
 			{
 				lock (m_gameClient.Player.effectListComponent.ConcentrationEffectsLock)
 				{

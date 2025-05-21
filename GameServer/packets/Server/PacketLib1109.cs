@@ -27,7 +27,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player.TradeWindow == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.TradeWindow)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.TradeWindow))))
 			{
 				lock (m_gameClient.Player.TradeWindow.Lock)
 				{

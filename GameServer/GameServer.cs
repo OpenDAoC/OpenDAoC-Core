@@ -28,9 +28,6 @@ using DOL.Logging;
 using DOL.Mail;
 using DOL.Network;
 using JNogueira.Discord.Webhook.Client;
-using OpenTelemetry;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
 
 namespace DOL.GS
 {
@@ -1078,7 +1075,7 @@ namespace DOL.GS
 			if (client == null)
 			{
 				if (log.IsWarnEnabled)
-					log.Warn($"Got an UDP packet from invalid client ID or IP (id: {packet.SessionID}) (ip: {endPoint}) (code: {packet.ID:x2})");
+					log.Warn($"Got an UDP packet from invalid client ID or IP (id: {packet.SessionID}) (ip: {endPoint}) (code: {packet.Code:x2})");
 
 				return;
 			}

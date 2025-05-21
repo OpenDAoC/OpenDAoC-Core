@@ -26,7 +26,7 @@ namespace DOL.GS.PacketHandler
 			if (player == null || player.ObjectState != GameObject.eObjectState.Active)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ControlledHorse)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.ControlledHorse))))
 			{
 				if (player.HasHorse)
 				{
@@ -64,7 +64,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (player == null || player.ObjectState != GameObject.eObjectState.Active)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ControlledHorse)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.ControlledHorse))))
 			{
 				if (!flag || !player.HasHorse)
 				{
@@ -129,7 +129,7 @@ namespace DOL.GS.PacketHandler
 			if (playerToCreate.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PlayerCreate172)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.PlayerCreate172))))
 			{
 
 				pak.WriteShort((ushort)playerToCreate.Client.SessionID);
@@ -199,26 +199,6 @@ namespace DOL.GS.PacketHandler
 			}
 		}
 
-		public override void CheckLengthHybridSkillsPacket(ref GSTCPPacketOut pak, ref int maxSkills, ref int first)
-		{
-			if (pak.Length > 1500)
-			{
-				pak.Position = 4;
-				pak.WriteByte((byte)(maxSkills - first));
-				pak.WriteByte((byte)(first == 0 ? 99 : 0x03)); //subtype
-				pak.WriteByte((byte)first);
-				SendTCP(pak);
-				pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate));
-				pak.WriteByte(0x01); //subcode
-				pak.WriteByte((byte)maxSkills); //number of entry
-				pak.WriteByte(0x03); //subtype
-				pak.WriteByte((byte)first);
-				first = maxSkills;
-			}
-			maxSkills++;
-		}
-
-
 		public override void SendUpdatePlayerSkills(bool updateInternalCache)
 		{
 			if (m_gameClient.Player == null)
@@ -235,7 +215,7 @@ namespace DOL.GS.PacketHandler
 			{
 				int packetEntry = 0; // needed to tell client how much skill we send
 				// using pak
-				using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+				using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
 				{
 					// Write header
 					pak.WriteByte(0x01); //subcode for skill

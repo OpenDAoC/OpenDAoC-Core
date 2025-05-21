@@ -6,21 +6,16 @@ namespace DOL.Network
 	/// <summary>
 	/// Writes primitives data types to an underlying stream.
 	/// </summary>
-	public class PacketOut : MemoryStream, IPacket
+	public abstract class PacketOut : MemoryStream, IPacket
 	{
-		public byte PacketCode { get; protected set; }
+		public byte Code { get; protected set; }
 		public bool IsSizeSet { get; private set; }
 
-		/// <summary>
-		/// Default Constructor
-		/// </summary>
-		protected PacketOut() { }
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="size">Size of the internal buffer</param>
-		public PacketOut(int size) : base(size) { }
+		public virtual void Init(byte code)
+		{
+			Code = code;
+			IsSizeSet = false;
+		}
 
 		#region IPacket Members
 

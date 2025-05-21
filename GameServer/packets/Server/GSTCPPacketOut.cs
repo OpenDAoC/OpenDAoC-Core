@@ -1,3 +1,4 @@
+using System;
 using DOL.Network;
 
 namespace DOL.GS.PacketHandler
@@ -5,20 +6,16 @@ namespace DOL.GS.PacketHandler
     /// <summary>
     /// An outgoing TCP packet
     /// </summary>
-    public class GSTCPPacketOut : PacketOut
+    public class GSTCPPacketOut : PacketOut, IPooledObject<GSTCPPacketOut>
     {
-        public GSTCPPacketOut(byte packetCode)
-        {
-            PacketCode = packetCode;
-            WriteShort(0x00); // Reserved for size.
-            base.WriteByte(packetCode);
-        }
+        public GSTCPPacketOut() { }
 
-        public GSTCPPacketOut(byte packetCode, int startingSize) : base(startingSize + 3)
+        public override void Init(byte code)
         {
-            PacketCode = packetCode;
+            SetLength(0);
+            base.Init(code);
             WriteShort(0x00); // Reserved for size.
-            base.WriteByte(packetCode);
+            base.WriteByte(code);
         }
 
         public override void WritePacketLength()
@@ -29,7 +26,14 @@ namespace DOL.GS.PacketHandler
 
         public override string ToString()
         {
-            return $"{base.ToString()}: Size={Length - 5} ID=0x{PacketCode:X2}";
+            return $"{base.ToString()}: Size={Length - 5} ID=0x{Code:X2}";
+        }
+
+        public static PooledObjectKey PooledObjectKey => PooledObjectKey.TcpOutPacket;
+
+        public static GSTCPPacketOut Rent(Action<GSTCPPacketOut> initializer)
+        {
+            return GameLoop.Rent(PooledObjectKey, initializer);
         }
     }
 }

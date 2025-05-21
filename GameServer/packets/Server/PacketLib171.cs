@@ -29,7 +29,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PositionAndObjectID)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.PositionAndObjectID))))
 			{
 				pak.WriteShort((ushort)m_gameClient.Player.ObjectID); //This is the player's objectid not Sessionid!!!
 				pak.WriteShort((ushort)m_gameClient.Player.Z);
@@ -62,7 +62,7 @@ namespace DOL.GS.PacketHandler
 			if (obj.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ObjectCreate)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.ObjectCreate))))
 			{
 				pak.WriteShort((ushort)obj.ObjectID);
 				if (obj is GameStaticItem)
@@ -141,7 +141,7 @@ namespace DOL.GS.PacketHandler
 				return;
 			}
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.NPCCreate)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.NPCCreate))))
 			{
 				short speed = 0;
 				ushort speedZ = 0;
@@ -251,7 +251,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendFindGroupWindowUpdate(GamePlayer[] list)
 		{
 			if (m_gameClient.Player == null) return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.FindGroupUpdate)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.FindGroupUpdate))))
 			{
 				if (list != null)
 				{
@@ -295,7 +295,7 @@ namespace DOL.GS.PacketHandler
 
 		protected override void SendQuestPacket(AbstractQuest quest, byte index)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.QuestEntry)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.QuestEntry))))
 			{
 				pak.WriteByte(index);
 				if (quest.Step <= 0)
@@ -335,7 +335,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLivingDataUpdate(GameLiving living, bool updateStrings)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ObjectDataUpdate)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.ObjectDataUpdate))))
 			{
 				pak.WriteShort((ushort)living.ObjectID);
 				pak.WriteByte(0);
@@ -363,7 +363,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendPlayerFreeLevelUpdate()
 		{
 			GamePlayer player = m_gameClient.Player;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.VisualEffect))))
 			{
 				pak.WriteShort((ushort)player.ObjectID);
 				pak.WriteByte(0x09); // subcode
@@ -397,7 +397,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendRegionColorScheme(byte color)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.VisualEffect))))
 			{
 				pak.WriteShort(0); // not used
 				pak.WriteByte(0x05); // subcode

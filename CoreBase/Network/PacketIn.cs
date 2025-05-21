@@ -6,25 +6,13 @@ namespace DOL.Network
 	/// <summary>
 	/// Reads primitive data types from an underlying stream.
 	/// </summary>
-	public class PacketIn : MemoryStream, IPacket
+	public abstract class PacketIn : MemoryStream, IPacket
 	{
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="size">Size of the internal buffer</param>
-		public PacketIn(int size) : base(size)
-		{
-		}
+		protected PacketIn() { }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="buf">Buffer containing packet data to read from</param>
-		/// <param name="start">Starting index into buf</param>
-		/// <param name="size">Number of bytes to read from buf</param>
-		public PacketIn(byte[] buf, int start, int size) : base(buf, start, size)
-		{
-		}
+		protected PacketIn(int size) : base(size) { }
+
+		public virtual void Init() { }
 
 		/// <summary>
 		/// Generates a human-readable dump of the packet contents.
@@ -149,6 +137,12 @@ namespace DOL.Network
 		public override string ToString()
 		{
 			return GetType().Name;
+		}
+
+		public override void Close()
+		{
+			// Called by Dispose and normally invalidates the stream.
+			// But this is both pointless (`MemoryStream` doesn't have any unmanaged resource) and undesirable (we always want the buffer to remain accessible)
 		}
 	}
 }

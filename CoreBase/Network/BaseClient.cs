@@ -57,6 +57,7 @@ namespace DOL.Network
 
             void OnAsyncReceiveCompletion(object sender, SocketAsyncEventArgs tcpReceiveArgs)
             {
+                // Processing packets should be done by the game loop.
                 ReceivingAsyncCompleted = true;
             }
         }

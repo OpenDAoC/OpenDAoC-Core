@@ -169,7 +169,7 @@ namespace DOL.GS.PacketHandler
 
         public void ProcessInboundPacket(GSPacketIn packet)
         {
-            int code = packet.ID;
+            int code = packet.Code;
             SavePacket(packet);
 
             if (code >= _packetHandlers.Length)
@@ -193,7 +193,7 @@ namespace DOL.GS.PacketHandler
             if (!_packetPreprocessor.CanProcessPacket(_client, packet))
             {
                 if (log.IsInfoEnabled)
-                    log.Info($"Preprocessor prevents handling of a packet with packet.ID={packet.ID}");
+                    log.Info($"Preprocessor prevents handling of a packet with packet.ID={packet.Code}");
 
                 return;
             }
@@ -207,7 +207,7 @@ namespace DOL.GS.PacketHandler
                 if (log.IsWarnEnabled)
                 {
                     if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                        log.Warn($"Long {nameof(PacketProcessor)}.{nameof(ProcessInboundPacket)} (code: 0x{packet.ID:X}) for {_client.Player?.Name}({_client.Player?.ObjectID}) Time: {stopTick - startTick}ms");
+                        log.Warn($"Long {nameof(PacketProcessor)}.{nameof(ProcessInboundPacket)} (code: 0x{packet.Code:X}) for {_client.Player?.Name}({_client.Player?.ObjectID}) Time: {stopTick - startTick}ms");
                 }
             }
             catch (Exception e)

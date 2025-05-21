@@ -107,7 +107,6 @@ namespace DOL.GS
         public bool HasSeenPatchNotes { get; set; }
         public List<Tuple<Specialization, List<Tuple<int, int, Skill>>>> TrainerSkillCache { get; set; }
         public long LinkDeathTime { get; set; }
-        public GSPacketIn LastPositionUpdatePacketReceived { get; set; }
         public bool IsConnected { get; set; } = true;
         public int ActiveCharIndex { get; set; } = -1;
         public long PingTime { get; set; } = GameLoop.GameLoopTime;
@@ -435,7 +434,7 @@ namespace DOL.GS
                         return;
                     }
 
-                    GSPacketIn packet = new(packetLength - GSPacketIn.HDR_SIZE);
+                    GSPacketIn packet = GSPacketIn.Rent(p => p.Init());
                     packet.Load(buffer, currentOffset, packetLength);
 
                     try
@@ -447,7 +446,7 @@ namespace DOL.GS
                         if (log.IsErrorEnabled)
                             log.Error(e);
                     }
-
+                    
                     currentOffset += packetLength;
                 } while (endPosition - 1 > currentOffset);
 

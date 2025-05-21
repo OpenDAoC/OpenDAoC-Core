@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    // A very specialized thread pool, meant to be used by the game loop exclusively.
+    // A very specialized thread pool, meant to be used by the game loop and its thread exclusively.
     // If you need more than one thread pool, you should be using the TPL instead.
     // The reasons why we're using this thread pool despite being way less robust, versatile, and sometimes a bit slower than the TPL:
     // * The memory overhead of the TPL isn't negligible when it's called hundreds of times per second.
     // * A lot easier to debug.
-    public sealed class GameLoopThreadPool : IGameLoopThreadPool
+    public sealed class GameLoopThreadPoolMultiThreaded : GameLoopThreadPool
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -40,12 +41,12 @@ namespace DOL.GS
         private int _workLeft;                          // Total items left to process.
         private int _workerCompletionCount;             // Count of workers finished for current iteration.
 
-        public GameLoopThreadPool(int degreeOfParallelism)
+        public GameLoopThreadPoolMultiThreaded(int degreeOfParallelism)
         {
             _degreeOfParallelism = degreeOfParallelism;
         }
 
-        public void Init()
+        public override void Init()
         {
             if (Interlocked.CompareExchange(ref _running, true, false))
                 return;
@@ -56,6 +57,7 @@ namespace DOL.GS
             _workerStartLatch = new(_workerCount);
             _workReady = new SemaphoreSlim[_workerCount];
             _workersCancellationTokenSource = new();
+            base.Init();
 
             for (int i = 0; i < _workerCount; i++)
             {
@@ -77,7 +79,7 @@ namespace DOL.GS
             _watchdog.Start();
         }
 
-        public void Work(int count, Action<int> action)
+        public override void Work(int count, Action<int> action)
         {
             try
             {
@@ -118,19 +120,45 @@ namespace DOL.GS
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPool)}\"", e);
+                    log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
 
                 GameServer.Instance.Stop();
                 return;
             }
         }
 
-        private void InitWorker(object obj)
+        public override void PrepareForNextTick()
+        {
+            Work(_degreeOfParallelism, static _ => _localPools.Reset());
+        }
+
+        public override void Dispose()
+        {
+            if (!Interlocked.CompareExchange(ref _running, false, true))
+                return;
+
+            if (_watchdog.IsAlive)
+                _watchdog.Join();
+
+            _workerStartLatch.Wait(); // Make sure any worker being (re)started has finished.
+            _workersCancellationTokenSource.Cancel();
+
+            for (int i = 0; i < _workers.Length; i++)
+            {
+                Thread worker = _workers[i];
+
+                if (worker != null && Thread.CurrentThread != worker && worker.IsAlive)
+                    worker.Join();
+            }
+        }
+
+        protected override void InitWorker(object obj)
         {
             (int Id, bool Restart) = ((int, bool)) obj;
             _workers[Id] = Thread.CurrentThread;
             _workReady[Id]?.Dispose();
             _workReady[Id] = new SemaphoreSlim(0, 1);
+            base.InitWorker(obj);
             _workerStartLatch.Signal();
 
             // If this is a restart, we need to free the caller thread.
@@ -213,7 +241,7 @@ namespace DOL.GS
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPool)}\"", e);
+                    log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
 
                 GameServer.Instance.Stop();
                 return;
@@ -279,46 +307,113 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
         }
-
-        public void Dispose()
-        {
-            if (!Interlocked.CompareExchange(ref _running, false, true))
-                return;
-
-            if (_watchdog.IsAlive)
-                _watchdog.Join();
-
-            _workerStartLatch.Wait(); // Make sure any worker being (re)started has finished.
-            _workersCancellationTokenSource.Cancel();
-
-            for (int i = 0; i < _workers.Length; i++)
-            {
-                Thread worker = _workers[i];
-
-                if (worker != null && Thread.CurrentThread != worker && worker.IsAlive)
-                    worker.Join();
-            }
-        }
     }
 
-    public sealed class GameLoopThreadPoolSingleThreaded : IGameLoopThreadPool
+    public sealed class GameLoopThreadPoolSingleThreaded : GameLoopThreadPool
     {
         public GameLoopThreadPoolSingleThreaded() { }
 
-        public void Init() { }
-
-        public void Work(int count, Action<int> action)
+        public override void Work(int count, Action<int> action)
         {
             for (int i = 0; i < count; i++)
                 action(i);
         }
 
-        public void Dispose() { }
+        public override void PrepareForNextTick()
+        {
+            _localPools.Reset();
+        }
+
+        public override void Dispose() { }
     }
 
-    public interface IGameLoopThreadPool : IDisposable
+    public abstract class GameLoopThreadPool : IDisposable
     {
-        public void Init();
-        public void Work(int count, Action<int> action);
+        [ThreadStatic]
+        protected static LocalPools _localPools;
+
+        public virtual void Init()
+        {
+            _localPools = new();
+        }
+
+        public abstract void Work(int count, Action<int> action);
+
+        public abstract void PrepareForNextTick();
+
+        public abstract void Dispose();
+
+        public T Rent<T>(PooledObjectKey key, Action<T> initializer) where T : IPooledObject<T>, new()
+        {
+            T result = _localPools != null ? _localPools.Rent<T>(key) : new();
+            initializer?.Invoke(result);
+            return result;
+        }
+
+        protected virtual void InitWorker(object obj)
+        {
+            _localPools = new();
+        }
+
+        protected sealed class LocalPools
+        {
+            private Dictionary<PooledObjectKey, IFrameListPool> _localPools = new()
+            {
+                { PooledObjectKey.InPacket, new FrameListPool<GSPacketIn>() },
+                { PooledObjectKey.TcpOutPacket, new FrameListPool<GSTCPPacketOut>() },
+                { PooledObjectKey.UdpOutPacket, new FrameListPool<GSUDPPacketOut>() }
+            };
+
+            public T Rent<T>(PooledObjectKey key) where T : new()
+            {
+                return (_localPools[key] as FrameListPool<T>).Rent();
+            }
+
+            public void Reset()
+            {
+                foreach (var pair in _localPools)
+                    pair.Value.Reset();
+            }
+
+            private sealed class FrameListPool<T> : IFrameListPool where T : new()
+            {
+                private List<T> _items = new();
+                private int _used;
+
+                public T Rent()
+                {
+                    if (_used < _items.Count)
+                        return _items[_used++];
+
+                    T item = new();
+                    _items.Add(item);
+                    _used++;
+                    return item;
+                }
+
+                public void Reset()
+                {
+                    _used = 0;
+                }
+            }
+
+            private interface IFrameListPool
+            {
+                void Reset();
+            }
+        }
+    }
+
+    public enum PooledObjectKey
+    {
+        InPacket,
+        TcpOutPacket,
+        UdpOutPacket
+    }
+
+    public interface IPooledObject<T>
+    {
+        static abstract PooledObjectKey PooledObjectKey { get; }
+        static abstract T Rent(Action<T> initializer);
     }
 }

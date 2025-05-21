@@ -15,7 +15,7 @@ namespace DOL.GS
 
         private static Thread _gameLoopThread; // Main thread.
         private static Thread _busyWaitThresholdThread; // Secondary thread that attempts to calculate by how much `Thread.Sleep` overshoots.
-        private static IGameLoopThreadPool _workerThreadPool;
+        private static GameLoopThreadPool _threadPool;
         private static int _busyWaitThreshold;
         private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
         private static GameLoopStats _gameLoopStats;
@@ -38,13 +38,6 @@ namespace DOL.GS
 
             TickRate = Properties.GAME_LOOP_TICK_RATE;
             _gameLoopStats = new([60000, 30000, 10000]);
-
-            if (Environment.ProcessorCount == 1)
-                _workerThreadPool = new GameLoopThreadPoolSingleThreaded();
-            else
-                _workerThreadPool = new GameLoopThreadPool(Environment.ProcessorCount);
-
-            _workerThreadPool.Init();
             _gameLoopThread = new Thread(new ThreadStart(Run))
             {
                 Name = THREAD_NAME,
@@ -80,7 +73,7 @@ namespace DOL.GS
                 _busyWaitThresholdThread.Join();
             }
 
-            _workerThreadPool.Dispose();
+            _threadPool.Dispose();
         }
 
         public static List<(int, double)> GetAverageTps()
@@ -90,11 +83,18 @@ namespace DOL.GS
 
         public static void Work(int count, Action<int> action)
         {
-            _workerThreadPool.Work(count, action);
+            _threadPool.Work(count, action);
         }
 
         private static void Run()
         {
+            if (Environment.ProcessorCount == 1)
+                _threadPool = new GameLoopThreadPoolSingleThreaded();
+            else
+                _threadPool = new GameLoopThreadPoolMultiThreaded(Environment.ProcessorCount);
+
+            _threadPool.Init(); // Must be done from the game loop thread.
+
             double gameLoopTime = 0;
             double elapsedTime = 0;
             Stopwatch stopwatch = new();
@@ -144,6 +144,7 @@ namespace DOL.GS
                 ClientService.EndTick();
                 DailyQuestService.Tick();
                 WeeklyQuestService.Tick();
+                _threadPool.PrepareForNextTick();
                 ECS.Debug.Diagnostics.Tick();
                 CurrentServiceTick = string.Empty;
                 ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
@@ -174,6 +175,11 @@ namespace DOL.GS
                 GameLoopTime = (long) Math.Round(gameLoopTime);
                 _gameLoopStats.RecordTick(gameLoopTime);
             }
+        }
+
+        public static T Rent<T>(PooledObjectKey poolKey, Action<T> initializer) where T : IPooledObject<T>, new()
+        {
+            return _threadPool.Rent(poolKey, initializer);
         }
 
         private static void UpdateBusyWaitThreshold()

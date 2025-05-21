@@ -25,7 +25,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient?.Account == null)
 				return;
 
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.DupNameCheckReply)))
+			using (var pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.DupNameCheckReply))))
 			{
 				pak.FillString(name, 24);
 				pak.WriteByte(result);
@@ -40,7 +40,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CryptKey)))
+			using (var pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.CryptKey))))
 			{
 				//Disable encryption (1110+ always encrypt)
 				pak.WriteIntLowEndian(0);
@@ -71,7 +71,7 @@ namespace DOL.GS.PacketHandler
 			int firstSlot = (byte)realm * 100;
 
 			var enableRealmSwitcherBit = GameServer.ServerRules.IsAllowedCharsInAllRealms(m_gameClient) ? 1 : 0;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview1126)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.CharacterOverview1126))))
 			{
 				pak.WriteIntLowEndian((uint)enableRealmSwitcherBit); // 0x01 & 0x02 are flags
 				pak.WriteIntLowEndian(0);
@@ -289,7 +289,7 @@ namespace DOL.GS.PacketHandler
 			Region region = WorldMgr.GetRegion(regionId);
 			if (region == null)
 				return;
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.ClientRegion)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.ClientRegion))))
 			{
 				var ip = region.ServerIP;
 				if (ip == "any" || ip == "0.0.0.0" || ip == "127.0.0.1" || ip.StartsWith("10.") || ip.StartsWith("192.168."))
@@ -306,7 +306,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate)))
+			using (var pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
 			{
 				pak.WriteByte(0x05); //subcode
 				pak.WriteByte(6); //number of entries
@@ -337,7 +337,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendAddFriends(string[] friendNames)
 		{
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.AddFriend)))
+			using (var pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.AddFriend))))
 			{
 				pak.WriteByte((byte)friendNames.Length);
 				foreach (string friend in friendNames)
@@ -350,7 +350,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendRemoveFriends(string[] friendNames)
 		{
-			using (var pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.RemoveFriend)))
+			using (var pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.RemoveFriend))))
 			{
 				pak.WriteByte(0x00);
 				foreach (string friend in friendNames)

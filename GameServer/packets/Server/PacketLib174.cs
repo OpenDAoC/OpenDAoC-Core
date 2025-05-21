@@ -1,22 +1,3 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -53,7 +34,7 @@ namespace DOL.GS.PacketHandler
 				default: throw new Exception("CharacterOverview requested for unknown realm " + realm);
 			}
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.CharacterOverview)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.CharacterOverview))))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
 				IList<DbInventoryItem> items;
@@ -271,7 +252,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || playerToCreate.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PlayerCreate172)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.PlayerCreate172))))
 			{
 				pak.WriteShort((ushort)playerToCreate.Client.SessionID);
 				pak.WriteShort((ushort)playerToCreate.ObjectID);
@@ -316,7 +297,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.PositionAndObjectID)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.PositionAndObjectID))))
 			{
 				pak.WriteShort((ushort)m_gameClient.Player.ObjectID); //This is the player's objectid not Sessionid!!!
 				pak.WriteShort((ushort)m_gameClient.Player.Z);
@@ -380,7 +361,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 			SendRegions(m_gameClient.Player.CurrentRegion.Skin);
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.RegionChanged)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.RegionChanged))))
 			{
 				//Dinberg - Changing to allow instances...
 				pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
@@ -402,7 +383,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid, ushort boltTime, bool noSound, byte success)
 		{
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.SpellEffectAnimation)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.SpellEffectAnimation))))
 			{
 				pak.WriteShort((ushort)spellCaster.ObjectID);
 				pak.WriteShort(spellid);
@@ -412,25 +393,6 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(success);
 				SendTCP(pak);
 			}
-		}
-
-		public override void CheckLengthHybridSkillsPacket(ref GSTCPPacketOut pak, ref int maxSkills, ref int first)
-		{
-			if (pak.Length > 1000)
-			{
-				pak.Position = 4;
-				pak.WriteByte((byte)(maxSkills - first));
-				pak.WriteByte(0x03); //subtype
-				pak.WriteByte((byte)first);
-				SendTCP(pak);
-				pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VariousUpdate));
-				pak.WriteByte(0x01); //subcode
-				pak.WriteByte((byte)maxSkills); //number of entry
-				pak.WriteByte(0x03); //subtype
-				pak.WriteByte((byte)first);
-				first = maxSkills;
-			}
-			maxSkills++;
 		}
 
 		public override void SendWarmapBonuses()
@@ -486,7 +448,7 @@ namespace DOL.GS.PacketHandler
 				OwnerDF = eRealm.Hibernia;
 				OwnerDFTowers = HibTowers;
 			}
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.WarmapBonuses)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.WarmapBonuses))))
 			{
 				int RealmKeeps = 0;
 				int RealmTowers = 0;
@@ -521,7 +483,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || living.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.EquipmentUpdate)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.EquipmentUpdate))))
 			{
 
 				ICollection<DbInventoryItem> items = null;
@@ -575,7 +537,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || living == null)
 				return;
 
-			using (GSTCPPacketOut pak = new GSTCPPacketOut(GetPacketCode(eServerPackets.VisualEffect)))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.VisualEffect))))
 			{
 
 				pak.WriteShort((ushort)living.ObjectID);

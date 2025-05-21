@@ -829,11 +829,6 @@ namespace DOL.Tests
 		{
 			if (SendControlledHorseMethod != null) SendControlledHorseMethod(this, player, flag);
 		}
-		public Action<TestPacketLib, GSTCPPacketOut, int, int> CheckLengthHybridSkillsPacketMethod { get; set; }
-		public void CheckLengthHybridSkillsPacket(ref GSTCPPacketOut pak, ref int maxSkills, ref int first)
-		{
-			if (CheckLengthHybridSkillsPacketMethod != null) CheckLengthHybridSkillsPacketMethod(this, pak, maxSkills, first);
-		}
 		public Action<TestPacketLib> SendNonHybridSpellLinesMethod { get; set; }
 		public void SendNonHybridSpellLines()
 		{

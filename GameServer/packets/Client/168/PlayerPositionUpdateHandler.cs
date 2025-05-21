@@ -1004,7 +1004,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 GSUDPPacketOut CreateOutPak1127()
                 {
-                    GSUDPPacketOut outPak = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+                    GSUDPPacketOut outPak = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
                     outPak.WriteFloatLowEndian(player.X);
                     outPak.WriteFloatLowEndian(player.Y);
                     outPak.WriteFloatLowEndian(player.Z);
@@ -1029,7 +1029,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 GSUDPPacketOut CreateOutPak1124()
                 {
-                    GSUDPPacketOut outPak = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+                    GSUDPPacketOut outPak = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
                     outPak.WriteFloatLowEndian(player.X);
                     outPak.WriteFloatLowEndian(player.Y);
                     outPak.WriteFloatLowEndian(player.Z);
@@ -1052,7 +1052,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 GSUDPPacketOut CreateOutPak1112()
                 {
-                    GSUDPPacketOut outPak = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+                    GSUDPPacketOut outPak = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
                     outPak.WriteShort((ushort) client.SessionID);
                     outPak.WriteShort((ushort) (player.CurrentSpeed & 0x1FF));
                     outPak.WriteShort((ushort) player.Z);
@@ -1074,7 +1074,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 GSUDPPacketOut CreateOutPak190()
                 {
-                    GSUDPPacketOut outPak = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+                    GSUDPPacketOut outPak = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
                     outPak.WriteShort((ushort) client.SessionID);
                     outPak.WriteShort((ushort) (player.CurrentSpeed & 0x1FF));
                     outPak.WriteShort((ushort) player.Z);
@@ -1099,7 +1099,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             static void BroadcastPositionPre1124(GameClient client)
             {
                 GamePlayer player = client.Player;
-                GSUDPPacketOut outpak = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+                GSUDPPacketOut outpak = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
                 byte healthByte = GetHealthByte(player);
                 ushort seatPosition = GetSeatPosition(player);
                 outpak.WriteShort((ushort) client.SessionID);
@@ -1174,18 +1174,18 @@ namespace DOL.GS.PacketHandler.Client.v168
                 outpak.WriteByte(player.EndurancePercent);
                 byte[] outpakArr = outpak.ToArray();
 
-                GSUDPPacketOut outpak190 = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+                GSUDPPacketOut outpak190 = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
                 outpak190.Write(outpakArr, 5, outpakArr.Length - 5);
                 outpak190.FillString(player.CharacterClass.Name, 32);
                 outpak190.WriteByte((byte)(player.RPFlag ? 1 : 0)); // roleplay flag, if == 1, show name (RP) with gray color
                 outpak190.WriteByte(0); // send last byte for 190+ packets
 
-                GSUDPPacketOut outpak1112 = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+                GSUDPPacketOut outpak1112 = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
                 outpak1112.Write(outpakArr, 5, outpakArr.Length - 5);
                 outpak1112.WriteByte((byte) (player.RPFlag ? 1 : 0));
                 outpak1112.WriteByte(0); //outpak1112.WriteByte((con168.Length == 22) ? con168[21] : (byte)0);
 
-                GSUDPPacketOut outpak1124 = new(client.Out.GetPacketCode(eServerPackets.PlayerPosition));
+                GSUDPPacketOut outpak1124 = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
                 outpak1124.WriteFloatLowEndian(player.X);
                 outpak1124.WriteFloatLowEndian(player.Y);
                 outpak1124.WriteFloatLowEndian(player.Z);

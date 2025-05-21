@@ -1,3 +1,4 @@
+using System;
 using DOL.Network;
 
 namespace DOL.GS.PacketHandler
@@ -5,14 +6,17 @@ namespace DOL.GS.PacketHandler
     /// <summary>
     /// Outgoing game server UDP packet
     /// </summary>
-    public class GSUDPPacketOut : PacketOut
+    public class GSUDPPacketOut : PacketOut, IPooledObject<GSUDPPacketOut>
     {
-        public GSUDPPacketOut(byte packetCode) : base()
+        public GSUDPPacketOut() { }
+
+        public override void Init(byte code)
         {
-            PacketCode = packetCode;
+            SetLength(0);
+            base.Init(code);
             WriteShort(0x00); // Reserved for size.
             WriteShort(0x00); // Reserved for UDP counter.
-            base.WriteByte(packetCode);
+            base.WriteByte(code);
         }
 
         public override void WritePacketLength()
@@ -23,7 +27,14 @@ namespace DOL.GS.PacketHandler
 
         public override string ToString()
         {
-            return $"{base.ToString()} Size={Length - 5} ID=0x{PacketCode:X2}";
+            return $"{base.ToString()} Size={Length - 5} ID=0x{Code:X2}";
+        }
+
+        public static PooledObjectKey PooledObjectKey => PooledObjectKey.UdpOutPacket;
+
+        public static GSUDPPacketOut Rent(Action<GSUDPPacketOut> initializer)
+        {
+            return GameLoop.Rent(PooledObjectKey, initializer);
         }
     }
 }

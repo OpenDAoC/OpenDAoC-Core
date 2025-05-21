@@ -71,7 +71,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             GSUDPPacketOut CreateOutPak1127()
             {
-                GSUDPPacketOut outPak = new(client.Out.GetPacketCode(eServerPackets.PlayerHeading));
+                GSUDPPacketOut outPak = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerHeading)));
                 outPak.WriteShort((ushort) client.SessionID);
                 outPak.WriteShort(0); // Current target.
                 outPak.WriteShort(heading);
@@ -88,7 +88,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             GSUDPPacketOut CreateOutPak1124()
             {
-                GSUDPPacketOut outPak = new(client.Out.GetPacketCode(eServerPackets.PlayerHeading));
+                GSUDPPacketOut outPak = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerHeading)));
                 outPak.WriteShort((ushort) client.SessionID);
                 outPak.WriteShort(heading);
                 outPak.WriteByte(steedSeatPosition);
@@ -104,7 +104,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             GSUDPPacketOut CreateOutPak190()
             {
-                GSUDPPacketOut outPak = new(client.Out.GetPacketCode(eServerPackets.PlayerHeading));
+                GSUDPPacketOut outPak = GSUDPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerHeading)));
                 outPak.WriteShort((ushort) client.SessionID);
                 outPak.WriteShort(heading);
                 outPak.WriteByte(0); // Unknown.

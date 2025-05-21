@@ -29,7 +29,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		/// <param name="packetCode"></param>
 		/// <returns></returns>
-		public virtual byte GetPacketCode(eServerPackets packetCode)
+		public static byte GetPacketCode(eServerPackets packetCode)
 		{
 			return (byte)packetCode;
 		}
