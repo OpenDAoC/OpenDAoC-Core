@@ -270,15 +270,15 @@ namespace DOL.GS.Styles
 
     public class StyleProcInfo
     {
-        public Spell Spell { get; set; }
-        public int A { get; set; }
-        public int B { get; set; }
+        public Spell Spell { get; }
+        public int ClassId { get; }
+        public int Chance { get; }
 
-        public StyleProcInfo(Spell spell, int a, int b)
+        public StyleProcInfo(Spell spell, int classId, int chance)
         {
             Spell = spell;
-            A = a;
-            B = b;
+            ClassId = classId;
+            Chance = chance;
         }
     }
 }

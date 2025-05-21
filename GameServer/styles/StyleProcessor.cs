@@ -431,21 +431,21 @@ namespace DOL.GS.Styles
 
 							foreach (StyleProcInfo proc in style.Procs)
 							{
-								if (player != null && proc.A == player.CharacterClass.ID)
+								if (player != null && proc.ClassId == player.CharacterClass.ID)
 								{
 									procsToExecute.Add(proc);
 									onlyExecuteClassSpecific = true;
 								}
-								else if (proc.A == style.ClassID || proc.A == 0)
+								else if (proc.ClassId == style.ClassID || proc.ClassId == 0)
 									procsToExecute.Add(proc);
 							}
 
 							foreach (StyleProcInfo procToExecute in procsToExecute)
 							{
-								if (onlyExecuteClassSpecific && procToExecute.A == 0)
+								if (onlyExecuteClassSpecific && procToExecute.ClassId == 0)
 									continue;
 
-								if (Util.Chance(procToExecute.B))
+								if (Util.Chance(procToExecute.Chance))
 								{
 									effect = CreateMagicEffect(living, target, procToExecute.Spell.ID);
 
@@ -837,7 +837,7 @@ namespace DOL.GS.Styles
 					bool hasClassSpecificProc = false;
 					foreach (StyleProcInfo proc in style.Procs)
 					{
-						if (proc.A == player.CharacterClass.ID)
+						if (proc.ClassId == player.CharacterClass.ID)
 						{
 							hasClassSpecificProc = true;
 							break;
@@ -847,9 +847,9 @@ namespace DOL.GS.Styles
 					foreach (StyleProcInfo proc in style.Procs)
 					{
 						// RR4: we added all the procs to the style, now it's time to check for class ID
-						if (hasClassSpecificProc && proc.A != player.CharacterClass.ID)
+						if (hasClassSpecificProc && proc.ClassId != player.CharacterClass.ID)
 							continue;
-						else if (!hasClassSpecificProc && proc.A != 0)
+						else if (!hasClassSpecificProc && proc.ClassId != 0)
 							continue;
 
 						ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(player.Client.Player, proc.Spell, styleLine);

@@ -2122,12 +2122,12 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     foreach (StyleProcInfo proc in style.Procs)
                     {
-                        if (clt.Player.CharacterClass.ID == proc.A)
+                        if (clt.Player.CharacterClass.ID == proc.ClassId)
                         {
                             dw.AddKeyValuePair("SpecialNumber", proc.Spell.InternalID);
                             dw.AddKeyValuePair("SpecialType", 1);
                         }
-                        else if (proc.A == 0 && !dw.Values.ContainsKey("SpecialNumber"))
+                        else if (proc.ClassId == 0 && !dw.Values.ContainsKey("SpecialNumber"))
                         {
                             dw.AddKeyValuePair("SpecialNumber", proc.Spell.InternalID);
                             dw.AddKeyValuePair("SpecialType", 1);
