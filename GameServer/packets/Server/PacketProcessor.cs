@@ -27,13 +27,13 @@ namespace DOL.GS.PacketHandler
         private Queue<IPacket> _savedPackets = new(SAVED_PACKETS_COUNT);
         private readonly Lock _savedPacketsLock = new();
 
-        private ConcurrentQueue<GSTCPPacketOut> _tcpPacketQueue = [];
-        private ConcurrentQueue<GSUDPPacketOut> _udpToTcpPacketQueue = [];
+        private FanoutBuffer<GSTCPPacketOut> _tcpPacketQueue = new();
+        private FanoutBuffer<GSUDPPacketOut> _udpToTcpPacketQueue = new();
         private ConcurrentQueue<SocketAsyncEventArgs> _tcpSendArgsPool = [];
         private SocketAsyncEventArgs _tcpSendArgs;
         private int _tcpSendBufferPosition;
 
-        private ConcurrentQueue<GSUDPPacketOut> _udpPacketQueue = [];
+        private FanoutBuffer<GSUDPPacketOut> _udpPacketQueue = new();
         private ConcurrentQueue<SocketAsyncEventArgs> _udpSendArgsPool = [];
         private SocketAsyncEventArgs _udpSendArgs;
         private int _udpSendBufferPosition;
@@ -160,9 +160,6 @@ namespace DOL.GS.PacketHandler
 
         public void ClearPendingOutboundPackets()
         {
-            _tcpPacketQueue.Clear();
-            _udpPacketQueue.Clear();
-            _udpToTcpPacketQueue.Clear();
             _tcpSendBufferPosition = 0;
             _udpSendBufferPosition = 0;
         }
@@ -229,7 +226,7 @@ namespace DOL.GS.PacketHandler
             if (!packet.IsSizeSet)
                 packet.WritePacketLength();
 
-            _tcpPacketQueue.Enqueue(packet);
+            _tcpPacketQueue.Add(packet);
         }
 
         public void QueuePacket(GSUDPPacketOut packet, bool forced)
@@ -250,24 +247,17 @@ namespace DOL.GS.PacketHandler
 
             // If UDP is unavailable, send via TCP instead.
             if (_udpSendArgs.RemoteEndPoint != null && (forced || _client.UdpConfirm))
-                _udpPacketQueue.Enqueue(packet);
+                _udpPacketQueue.Add(packet);
             else
-                _udpToTcpPacketQueue.Enqueue(packet);
+                _udpToTcpPacketQueue.Add(packet);
         }
 
         public void SendPendingPackets()
         {
-            while (_tcpPacketQueue.TryDequeue(out GSTCPPacketOut packet))
-                AppendTcpPacketToTcpSendBuffer(packet);
-
-            while (_udpToTcpPacketQueue.TryDequeue(out GSUDPPacketOut packet))
-                AppendUdpPacketToTcpSendBuffer(packet);
-
+            _tcpPacketQueue.DrainTo(AppendTcpPacketToTcpSendBuffer);
+            _udpToTcpPacketQueue.DrainTo(AppendUdpPacketToTcpSendBuffer);
             SendTcp();
-
-            while (_udpPacketQueue.TryDequeue(out GSUDPPacketOut packet))
-                AppendUdpPacketToUdpSendBuffer(packet);
-
+            _udpPacketQueue.DrainTo(AppendUdpPacketToUdpSendBuffer);
             SendUdp();
 
             void AppendTcpPacketToTcpSendBuffer(GSTCPPacketOut packet)
