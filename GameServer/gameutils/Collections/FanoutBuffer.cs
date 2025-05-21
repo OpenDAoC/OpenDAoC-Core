@@ -59,5 +59,18 @@ namespace DOL.GS
 
             Volatile.Write(ref _writeIndex, 0);
         }
+
+        public void DrainTo<TState>(Action<T, TState> action, TState state)
+        {
+            int count = Volatile.Read(ref _writeIndex);
+
+            if (count == 0)
+                return;
+
+            for (int i = 0; i < count; i++)
+                action(_buffer[i], state);
+
+            Volatile.Write(ref _writeIndex, 0);
+        }
     }
 }
