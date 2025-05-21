@@ -426,28 +426,28 @@ namespace DOL.GS.Styles
 						// the class-specific proc instead of the ClassID=0 proc
 						if (!style.RandomProc)
 						{
-							List<(Spell, int, int)> procsToExecute = new();
+							List<StyleProcInfo> procsToExecute = new();
 							bool onlyExecuteClassSpecific = false;
 
-							foreach ((Spell, int, int) proc in style.Procs)
+							foreach (StyleProcInfo proc in style.Procs)
 							{
-								if (player != null && proc.Item2 == player.CharacterClass.ID)
+								if (player != null && proc.A == player.CharacterClass.ID)
 								{
 									procsToExecute.Add(proc);
 									onlyExecuteClassSpecific = true;
 								}
-								else if (proc.Item2 == style.ClassID || proc.Item2 == 0)
+								else if (proc.A == style.ClassID || proc.A == 0)
 									procsToExecute.Add(proc);
 							}
 
-							foreach ((Spell, int, int) procToExecute in procsToExecute)
+							foreach (StyleProcInfo procToExecute in procsToExecute)
 							{
-								if (onlyExecuteClassSpecific && procToExecute.Item2 == 0)
+								if (onlyExecuteClassSpecific && procToExecute.A == 0)
 									continue;
 
-								if (Util.Chance(procToExecute.Item3))
+								if (Util.Chance(procToExecute.B))
 								{
-									effect = CreateMagicEffect(living, target, procToExecute.Item1.ID);
+									effect = CreateMagicEffect(living, target, procToExecute.Spell.ID);
 
 									// Effect could be null if the SpellID is bigger than ushort.
 									if (effect != null)
@@ -465,7 +465,7 @@ namespace DOL.GS.Styles
 						{
 							// Add one proc randomly.
 							int random = Util.Random(style.Procs.Count - 1);
-							effect = CreateMagicEffect(living, target, style.Procs[random].Item1.ID);
+							effect = CreateMagicEffect(living, target, style.Procs[random].Spell.ID);
 
 							// Effect could be null if the SpellID is bigger than ushort.
 							if (effect != null)
@@ -835,37 +835,35 @@ namespace DOL.GS.Styles
 				{
 					/*check if there is a class specific style proc*/
 					bool hasClassSpecificProc = false;
-					foreach ((Spell, int, int) proc in style.Procs)
+					foreach (StyleProcInfo proc in style.Procs)
 					{
-						if (proc.Item2 == player.CharacterClass.ID)
+						if (proc.A == player.CharacterClass.ID)
 						{
 							hasClassSpecificProc = true;
 							break;
 						}
 					}
 
-					foreach ((Spell, int, int) proc in style.Procs)
+					foreach (StyleProcInfo proc in style.Procs)
 					{
 						// RR4: we added all the procs to the style, now it's time to check for class ID
-						if (hasClassSpecificProc && proc.Item2 != player.CharacterClass.ID) continue;
-						else if (!hasClassSpecificProc && proc.Item2 != 0) continue;
+						if (hasClassSpecificProc && proc.A != player.CharacterClass.ID)
+							continue;
+						else if (!hasClassSpecificProc && proc.A != 0)
+							continue;
 
-						Spell spell = proc.Item1;
-						if (spell != null)
+						ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(player.Client.Player, proc.Spell, styleLine);
+						if (spellHandler == null)
 						{
-							ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(player.Client.Player, spell, styleLine);
-							if (spellHandler == null)
-							{
-								temp += spell.Name + " (Not implemented yet)";
-								delveInfo.Add(temp);
-							}
-							else
-							{
-								temp += spell.Name;
-								delveInfo.Add(temp);
-								delveInfo.Add(" ");//empty line
-								delveInfo.AddRange(spellHandler.DelveInfo);
-							}
+							temp += proc.Spell.Name + " (Not implemented yet)";
+							delveInfo.Add(temp);
+						}
+						else
+						{
+							temp += proc.Spell.Name;
+							delveInfo.Add(temp);
+							delveInfo.Add(" ");//empty line
+							delveInfo.AddRange(spellHandler.DelveInfo);
 						}
 					}
 				}
@@ -905,12 +903,12 @@ namespace DOL.GS.Styles
 					delveInfo.Add(" ");
 
 					string procs = string.Empty;
-					foreach ((Spell, int, int) spell in style.Procs)
+					foreach (StyleProcInfo spell in style.Procs)
 					{
 						if (procs != string.Empty)
 							procs += ", ";
 
-						procs += spell.Item1.ID;
+						procs += spell.Spell.ID;
 					}
 
 					delveInfo.Add(string.Format("Procs: {0}", procs));

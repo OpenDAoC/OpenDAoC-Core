@@ -132,7 +132,7 @@ namespace DOL.GS.Styles
 
         public int ClassID => baseStyle.ClassId;
 
-        public List<(Spell, int, int)> Procs { get; } = new();
+        public List<StyleProcInfo> Procs { get; } = new();
 
         /// <summary>
         /// (readonly) The Specialization's name required to execute this style
@@ -265,6 +265,20 @@ namespace DOL.GS.Styles
         public override Skill Clone()
         {
             return (Style)MemberwiseClone();
+        }
+    }
+
+    public class StyleProcInfo
+    {
+        public Spell Spell { get; set; }
+        public int A { get; set; }
+        public int B { get; set; }
+
+        public StyleProcInfo(Spell spell, int a, int b)
+        {
+            Spell = spell;
+            A = a;
+            B = b;
         }
     }
 }

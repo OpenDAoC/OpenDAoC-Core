@@ -2120,16 +2120,16 @@ namespace DOL.GS.PacketHandler.Client.v168
                 //.Value("FollowupStyle",style.DelveFollowUpStyles,!string.IsNullOrEmpty(style.DelveFollowUpStyles))
                 if (style.Procs != null && style.Procs.Count > 0)
                 {
-                    foreach ((Spell, int, int) proc in style.Procs)
+                    foreach (StyleProcInfo proc in style.Procs)
                     {
-                        if (clt.Player.CharacterClass.ID == proc.Item2)
+                        if (clt.Player.CharacterClass.ID == proc.A)
                         {
-                            dw.AddKeyValuePair("SpecialNumber", proc.Item1.InternalID);
+                            dw.AddKeyValuePair("SpecialNumber", proc.Spell.InternalID);
                             dw.AddKeyValuePair("SpecialType", 1);
                         }
-                        else if (proc.Item2 == 0 && !dw.Values.ContainsKey("SpecialNumber"))
+                        else if (proc.A == 0 && !dw.Values.ContainsKey("SpecialNumber"))
                         {
-                            dw.AddKeyValuePair("SpecialNumber", proc.Item1.InternalID);
+                            dw.AddKeyValuePair("SpecialNumber", proc.Spell.InternalID);
                             dw.AddKeyValuePair("SpecialType", 1);
                         }
                     }

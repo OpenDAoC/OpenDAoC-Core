@@ -193,8 +193,8 @@ namespace DOL.GS.PacketHandler
 					{
 						if (style.Procs != null && style.Procs.Count > 0)
 						{
-							foreach ((Spell, int, int) proc in style.Procs)
-								SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, proc.Item1));
+							foreach (StyleProcInfo proc in style.Procs)
+								SendDelveInfo(DetailDisplayHandler.DelveSpell(m_gameClient, proc.Spell));
 						}
 
 						SendDelveInfo(DetailDisplayHandler.DelveStyle(m_gameClient, t.InternalID));

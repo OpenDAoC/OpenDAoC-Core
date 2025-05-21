@@ -1074,8 +1074,8 @@ namespace DOL.GS
             };
 
             // Asp style range add.
-            IEnumerable<(Spell, int, int)> rangeProc = style?.Procs.Where(x => x.Item1.SpellType is eSpellType.StyleRange);
-            int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Item1.Value - AttackRange) : 0;
+            IEnumerable<StyleProcInfo> rangeProc = style?.Procs.Where(x => x.Spell.SpellType is eSpellType.StyleRange);
+            int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Spell.Value - AttackRange) : 0;
             ad.AttackType = AttackData.GetAttackType(weapon, dualWield, ad.Attacker);
 
             // No target.

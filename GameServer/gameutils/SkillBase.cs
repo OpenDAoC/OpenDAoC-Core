@@ -619,7 +619,7 @@ namespace DOL.GS
 									foreach (DbStyleXSpell styleProc in specStyle.AttachedProcs)
 									{
 										if (m_spellIndex.TryGetValue(styleProc.SpellID, out Spell spell))
-											newStyle.Procs.Add((spell, styleProc.ClassID, styleProc.Chance));
+											newStyle.Procs.Add(new(spell, styleProc.ClassID, styleProc.Chance));
 									}
 								}
 							}
@@ -2105,7 +2105,7 @@ namespace DOL.GS
 					foreach (DbStyleXSpell styleProc in style.AttachedProcs)
 					{
 						if (m_spellIndex.TryGetValue(styleProc.SpellID, out Spell spell))
-							st.Procs.Add((spell, styleProc.ClassID, styleProc.Chance));
+							st.Procs.Add(new(spell, styleProc.ClassID, styleProc.Chance));
 					}
 				}
 			}

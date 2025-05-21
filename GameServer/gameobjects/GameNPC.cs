@@ -3827,9 +3827,9 @@ namespace DOL.GS
 		{
 			if (TargetObject is GameLiving living && style.Procs.Count > 0)
 			{
-				foreach ((Spell, int, int) t in style.Procs)
+				foreach (StyleProcInfo t in style.Procs)
 				{
-					if (t.Item1.SpellType == eSpellType.StyleStun && living.HasEffect(t.Item1))
+					if (t.Spell.SpellType == eSpellType.StyleStun && living.HasEffect(t.Spell))
 						return false;
 				}
 			}
