@@ -1035,7 +1035,7 @@ namespace DOL.GS
 		#region ObjectsInRadius
 
 		private readonly Lock _objectInRadiusCachesLock = new();
-		private readonly Dictionary<eGameObjectType, (IList, ushort, long)> _objectsInRadiusCaches = new();
+		private readonly Dictionary<eGameObjectType, ObjectsInRadiusCache> _objectsInRadiusCaches = new();
 		private readonly Dictionary<eGameObjectType, IList> _objectsInRadiusFilteredCaches = new();
 
 		private void ClearObjectsInRadiusCache()
@@ -1054,20 +1054,20 @@ namespace DOL.GS
 
 			lock (_objectInRadiusCachesLock)
 			{
-				if (!_objectsInRadiusCaches.TryGetValue(objectType, out (IList list, ushort radius, long expireTime) cachedList))
+				if (!_objectsInRadiusCaches.TryGetValue(objectType, out ObjectsInRadiusCache cache))
 				{
-					cachedList = (new List<T>(), 0, 0);
-					_objectsInRadiusCaches[objectType] = cachedList;
+					cache = new(new List<T>(), 0, 0);
+					_objectsInRadiusCaches[objectType] = cache;
 				}
 				else
-					cachedList = _objectsInRadiusCaches[objectType];
+					cache = _objectsInRadiusCaches[objectType];
 
 				IList filteredCache;
 
-				if (cachedList.expireTime >= GameLoop.GameLoopTime)
+				if (cache.ExpireTime >= GameLoop.GameLoopTime)
 				{
 					// The cache is still valid.
-					if (cachedList.radius > radiusToCheck)
+					if (cache.Radius > radiusToCheck)
 					{
 						// The cached radius is larger than the one being checked.
 						// Create a filtered cache if needed, or clear the current one.
@@ -1079,14 +1079,14 @@ namespace DOL.GS
 							_objectsInRadiusFilteredCaches[objectType] = filteredCache;
 						}
 
-						if (cachedList.list.Count == 0)
+						if (cache.List.Count == 0)
 							return filteredCache as IReadOnlyList<T>;
 
 						// Populate the filtered cache.
 						// While this saves a call to `CurrentRegion.GetInRadius<T>`, it could still be a bit slow.
 						// The alternative would be to sort the cached list by distance and use binary search to find the first object within the radius.
 						// But whether that would be faster or not is debatable, and would depend on how often the cache is hit with a smaller radius.
-						foreach (T obj in cachedList.list)
+						foreach (T obj in cache.List)
 						{
 							if (IsWithinRadius(obj, radiusToCheck))
 								filteredCache.Add(obj);
@@ -1094,23 +1094,23 @@ namespace DOL.GS
 
 						return filteredCache as IReadOnlyList<T>;
 					}
-					else if (cachedList.radius == radiusToCheck)
+					else if (cache.Radius == radiusToCheck)
 					{
 						// The radiuses are equal, we can return the cached list directly.
-						return cachedList.list as IReadOnlyList<T>;
+						return cache.List as IReadOnlyList<T>;
 					}
 				}
 
 				// Either the cache is outdated, or the cached radius is smaller than the one being checked.
 				// We need to get a new list and clear the filtered cache, if there is any.
-				cachedList.list.Clear();
-				CurrentRegion.GetInRadius<T>(this, objectType, radiusToCheck, cachedList.list);
-				_objectsInRadiusCaches[objectType] = (cachedList.list, radiusToCheck, GameLoop.GameLoopTime + 500);
+				cache.List.Clear();
+				CurrentRegion.GetInRadius<T>(this, objectType, radiusToCheck, cache.List);
+				_objectsInRadiusCaches[objectType].Set(cache.List, radiusToCheck, GameLoop.GameLoopTime + 500);
 
 				if (_objectsInRadiusFilteredCaches.TryGetValue(objectType, out filteredCache))
 					filteredCache.Clear();
 
-				return cachedList.list as IReadOnlyList<T>;
+				return cache.List as IReadOnlyList<T>;
 			}
 		}
 
@@ -1132,6 +1132,25 @@ namespace DOL.GS
 		public IReadOnlyList<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, radiusToCheck);
+		}
+
+		private class ObjectsInRadiusCache
+		{
+			public IList List { get; set; }
+			public ushort Radius { get; set; }
+			public long ExpireTime { get; set; }
+
+			public ObjectsInRadiusCache(IList list, ushort radius, long expireTime)
+			{
+				Set(list, radius, expireTime);
+			}
+
+			public void Set(IList list, ushort radius, long expireTime)
+			{
+				List = list;
+				Radius = radius;
+				ExpireTime = expireTime;
+			}
 		}
 
 		#endregion
