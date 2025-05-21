@@ -333,7 +333,7 @@ namespace DOL.GS
 
         #region Object Caches
         public ConcurrentDictionary<GameNPC, ClientService.CachedNpcValues> NpcUpdateCache { get; } = new();
-        public ConcurrentDictionary<GameStaticItem, (long, bool)> ItemUpdateCache { get; } = new();
+        public ConcurrentDictionary<GameStaticItem, ClientService.CachedItemValues> ItemUpdateCache { get; } = new();
         public ConcurrentDictionary<GameDoorBase, long> DoorUpdateCache { get; } = new();
         public ConcurrentDictionary<House, long> HouseUpdateCache { get; } = new();
         #endregion

@@ -513,16 +513,16 @@ namespace DOL.GS
         {
             if (player.NpcUpdateCache.TryGetValue(npc, out CachedNpcValues cachedNpcValues))
             {
-                cachedNpcValues.Time = GameLoop.GameLoopTime;
+                cachedNpcValues.LastUpdateTime = GameLoop.GameLoopTime;
                 cachedNpcValues.HealthPercent =  npc.HealthPercent;
             }
             else
-                player.NpcUpdateCache[npc] = new CachedNpcValues(GameLoop.GameLoopTime, npc.HealthPercent);
+                player.NpcUpdateCache[npc] = new(GameLoop.GameLoopTime, npc.HealthPercent);
         }
 
         private static void AddItemToPlayerCache(GamePlayer player, GameStaticItem item)
         {
-            player.ItemUpdateCache[item] = (GameLoop.GameLoopTime, false);
+            player.ItemUpdateCache[item] = new(GameLoop.GameLoopTime, false);
         }
 
         private static void AddDoorToPlayerCache(GamePlayer player, GameDoorBase door)
@@ -728,9 +728,9 @@ namespace DOL.GS
 
                 if (!npcUpdateCache.TryGetValue(npcInRange, out CachedNpcValues cachedNpcValues))
                     CreateNpcForPlayerInternal(player, npcInRange);
-                else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + Properties.WORLD_NPC_UPDATE_INTERVAL))
+                else if (ServiceUtils.ShouldTick(cachedNpcValues.LastUpdateTime + Properties.WORLD_NPC_UPDATE_INTERVAL))
                     UpdateObjectForPlayerInternal(player, npcInRange, false);
-                else if (ServiceUtils.ShouldTick(cachedNpcValues.Time + 250))
+                else if (ServiceUtils.ShouldTick(cachedNpcValues.LastUpdateTime + 250))
                 {
                     // `GameNPC.HealthPercent` is a bit of an expensive call. Do it last.
                     if (npcInRange == targetObject)
@@ -767,7 +767,7 @@ namespace DOL.GS
             // If the client forgets about the object at <`VISIBILITY_DISTANCE` but >`STATIC_OBJECT_UPDATE_MIN_DISTANCE`, then it will take up to `WORLD_OBJECT_UPDATE_INTERVAL` for it to reappear.
             // We assume the client cannot forget about the object when <`STATIC_OBJECT_UPDATE_MIN_DISTANCE`. If it does, the object won't reappear.
 
-            ConcurrentDictionary<GameStaticItem, (long, bool)> itemUpdateCache = player.ItemUpdateCache;
+            ConcurrentDictionary<GameStaticItem, CachedItemValues> itemUpdateCache = player.ItemUpdateCache;
 
             foreach (var itemInCache in itemUpdateCache)
             {
@@ -776,7 +776,7 @@ namespace DOL.GS
                 if (!item.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || item.ObjectState is not GameObject.eObjectState.Active || !item.IsVisibleTo(player))
                     itemUpdateCache.Remove(item, out _);
                 else if (!item.IsWithinRadius(player, STATIC_OBJECT_UPDATE_MIN_DISTANCE))
-                    itemUpdateCache[item] = (itemUpdateCache[item].Item1, true);
+                    itemUpdateCache[item].AllowFurtherUpdate = true;
             }
 
             IReadOnlyList<GameStaticItem> itemsInRange = player.GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE);
@@ -786,8 +786,8 @@ namespace DOL.GS
                 if (itemInRange.ObjectState is not GameObject.eObjectState.Active || !itemInRange.IsVisibleTo(player))
                     continue;
 
-                if (!itemUpdateCache.TryGetValue(itemInRange, out (long lastUpdate, bool allowFurtherUpdates) value) ||
-                    (value.allowFurtherUpdates && ServiceUtils.ShouldTick(value.lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL)))
+                if (!itemUpdateCache.TryGetValue(itemInRange, out CachedItemValues cachedItemValues) ||
+                    (cachedItemValues.AllowFurtherUpdate && ServiceUtils.ShouldTick(cachedItemValues.LastUpdateTime + Properties.WORLD_OBJECT_UPDATE_INTERVAL)))
                 {
                     CreateObjectForPlayerInternal(player, itemInRange);
                 }
@@ -870,13 +870,25 @@ namespace DOL.GS
 
         public class CachedNpcValues
         {
-            public long Time { get; set; }
+            public long LastUpdateTime { get; set; }
             public byte HealthPercent { get; set; }
 
             public CachedNpcValues(long time, byte healthPercent)
             {
-                Time = time;
+                LastUpdateTime = time;
                 HealthPercent = healthPercent;
+            }
+        }
+
+        public class CachedItemValues
+        {
+            public long LastUpdateTime { get; set; }
+            public bool AllowFurtherUpdate { get; set; }
+
+            public CachedItemValues(long lastUpdate, bool allowFurtherUpdate)
+            {
+                LastUpdateTime = lastUpdate;
+                AllowFurtherUpdate = allowFurtherUpdate;
             }
         }
     }
