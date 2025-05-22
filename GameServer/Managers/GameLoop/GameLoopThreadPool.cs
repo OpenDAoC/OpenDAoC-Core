@@ -6,33 +6,31 @@ using DOL.GS.PacketHandler;
 
 namespace DOL.GS
 {
-    // A very specialized thread pool, meant to be used by the game loop and its thread exclusively.
-    // If you need more than one thread pool, you should be using the TPL instead.
-    // The reasons why we're using this thread pool despite being way less robust, versatile, and sometimes a bit slower than the TPL:
-    // * The memory overhead of the TPL isn't negligible when it's called hundreds of times per second.
-    // * A lot easier to debug.
+    // A very specialized thread pool, meant to be used by the game loop and its dedicated thread exclusively.
     public sealed class GameLoopThreadPoolMultiThreaded : GameLoopThreadPool
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        // Used to calculate the work distribution base.
-        // The higher the number, the less work each worker will do per iteration.
-        // Too high, and the chunk size will need to be adjusted too frequently, potentially wasting CPU time.
-        // Too low, and a worker may reserve too much work, causing the other workers to wait for it.
-        private const int WORK_DISTRIBUTION_BASE_FACTOR = 6;
+        private const int MAX_DEGREE_OF_PARALLELISM = 128;
 
-        // Thread pool lifecycle.
+        // Bias factor that shapes an inverse power-law curve used to scale chunk sizes.
+        // Higher values favor smaller, safer chunks for better load balancing;
+        // lower values produce larger chunks for faster throughput when work is even.
+        // 2.5 appears to be a good default for real-world skew.
+        private const double WORK_SPLIT_BIAS_FACTOR = 2.5;
+
+        // Thread pool configuration and state.
         private bool _running;
         private int _degreeOfParallelism;               // Total threads, including caller.
         private int _workerCount;                       // Number of dedicated worker threads (= _degreeOfParallelism - 1).
-        private int _workDistributionBase;              // Used to calculate chunk size per worker.
+        private double[] _workSplitBiasTable;           // Lookup table for chunk size biasing.
 
         // Thread management.
         private Thread[] _workers;                      // Worker threads (excludes caller).
         private Thread _watchdog;                       // Monitors worker health; restarts if needed.
-        private CancellationTokenSource _workersCancellationTokenSource;
+        private CancellationTokenSource _shutdownToken;
 
-        // Startup synchronization.
+        // Work coordination.
         private CountdownEvent _workerStartLatch;       // Signals when all workers are initialized.
         private ManualResetEventSlim[] _workReady;      // Per-worker event to trigger work.
 
@@ -43,6 +41,7 @@ namespace DOL.GS
 
         public GameLoopThreadPoolMultiThreaded(int degreeOfParallelism)
         {
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(degreeOfParallelism, MAX_DEGREE_OF_PARALLELISM);
             _degreeOfParallelism = degreeOfParallelism;
         }
 
@@ -51,32 +50,56 @@ namespace DOL.GS
             if (Interlocked.CompareExchange(ref _running, true, false))
                 return;
 
-            _workerCount = _degreeOfParallelism - 1;
-            _workDistributionBase = _degreeOfParallelism * WORK_DISTRIBUTION_BASE_FACTOR;
-            _workers = new Thread[_workerCount];
-            _workerStartLatch = new(_workerCount);
-            _workReady = new ManualResetEventSlim[_workerCount];
-            _workersCancellationTokenSource = new();
-            base.Init();
+            Configure();
+            BuildChunkDivisorTable();
+            StartWorkers();
+            StartWatchdog();
 
-            for (int i = 0; i < _workerCount; i++)
+            void Configure()
             {
-                Thread worker = new(new ParameterizedThreadStart(InitWorker))
-                {
-                    Name = $"{GameLoop.THREAD_NAME}_Worker_{i}",
-                    IsBackground = true
-                };
-                worker.Start((i, false));
+                _workerCount = _degreeOfParallelism - 1;
+                _workers = new Thread[_workerCount];
+                _workerStartLatch = new(_workerCount);
+                _workReady = new ManualResetEventSlim[_workerCount];
+                _shutdownToken = new();
+                base.Init();
             }
 
-            _workerStartLatch.Wait(); // If for some reason a thread fails to start, we'll be waiting here forever.
-            _watchdog = new(WatchdogLoop)
+            void BuildChunkDivisorTable()
             {
-                Name = $"{GameLoop.THREAD_NAME}_Watchdog",
-                Priority = ThreadPriority.Lowest,
-                IsBackground = true
-            };
-            _watchdog.Start();
+                _workSplitBiasTable = new double[_degreeOfParallelism + 1];
+
+                for (int i = 1; i <= _degreeOfParallelism; i++)
+                    _workSplitBiasTable[i] = Math.Pow(i, WORK_SPLIT_BIAS_FACTOR);
+
+                _workSplitBiasTable[0] = 1; // Prevent division by zero, fallback.
+            }
+
+            void StartWorkers()
+            {
+                for (int i = 0; i < _workerCount; i++)
+                {
+                    Thread worker = new(new ParameterizedThreadStart(InitWorker))
+                    {
+                        Name = $"{GameLoop.THREAD_NAME}_Worker_{i}",
+                        IsBackground = true
+                    };
+                    worker.Start((i, false));
+                }
+
+                _workerStartLatch.Wait(); // If for some reason a thread fails to start, we'll be waiting here forever.
+            }
+
+            void StartWatchdog()
+            {
+                _watchdog = new(WatchdogLoop)
+                {
+                    Name = $"{GameLoop.THREAD_NAME}_Watchdog",
+                    Priority = ThreadPriority.Lowest,
+                    IsBackground = true
+                };
+                _watchdog.Start();
+            }
         }
 
         public override void Work(int count, Action<int> action)
@@ -102,8 +125,7 @@ namespace DOL.GS
                 // Spin very tightly until all the workers have completed their work.
                 // We could adjust the spin wait time if we get here early, but this is hard to predict.
                 // However we really don't want to yield the CPU here, as this could delay the return by a lot.
-                // `Volatile.Read` is fine here because workers use `Interlocked`, which provides release semantics on write.
-                while (Volatile.Read(ref _workerCompletionCount) < workersToStart)
+                while (Volatile.Read(ref _workerCompletionCount) < workersToStart + 1)
                     Thread.SpinWait(1);
             }
             catch (Exception e)
@@ -130,7 +152,7 @@ namespace DOL.GS
                 _watchdog.Join();
 
             _workerStartLatch.Wait(); // Make sure any worker being (re)started has finished.
-            _workersCancellationTokenSource.Cancel();
+            _shutdownToken.Cancel();
 
             for (int i = 0; i < _workers.Length; i++)
             {
@@ -154,7 +176,7 @@ namespace DOL.GS
             if (Restart)
                 Interlocked.Increment(ref _workerCompletionCount);
 
-            RunWorker(_workReady[Id], _workersCancellationTokenSource.Token);
+            RunWorker(_workReady[Id], _shutdownToken.Token);
         }
 
         private void RunWorker(ManualResetEventSlim workReady, CancellationToken cancellationToken)
@@ -187,7 +209,6 @@ namespace DOL.GS
                 }
 
                 PerformWork();
-                Interlocked.Increment(ref _workerCompletionCount);
             }
 
             if (log.IsInfoEnabled)
@@ -196,37 +217,35 @@ namespace DOL.GS
 
         private void PerformWork()
         {
-            int nextWorkLeftOnLastIteration = 0; // Used to calculate the chunk size. May be inaccurate, but it's fine.
-            int chunkSize;
-            int start = 0;
-            int end;
-
             try
             {
-                do
+                int remainingWork = Volatile.Read(ref _workLeft);
+
+                while (remainingWork > 0)
                 {
-                    nextWorkLeftOnLastIteration = start - 1;
+                    int workersRemaining = _degreeOfParallelism - Volatile.Read(ref _workerCompletionCount);
+                    int chunkSize = (int) (remainingWork / _workSplitBiasTable[workersRemaining]);
 
-                    if (nextWorkLeftOnLastIteration == -1)
-                        chunkSize = 1; // First iteration, we need to do at least one item.
-                    else
-                    {
-                        chunkSize = nextWorkLeftOnLastIteration / (_workDistributionBase - Volatile.Read(ref _workerCompletionCount));
+                    // Prevent infinite loops.
+                    if (chunkSize < 1)
+                        chunkSize = 1;
 
-                        // Prevent infinite loops.
-                        if (chunkSize < 1)
-                            chunkSize = 1;
-                    }
+                    int start = Interlocked.Add(ref _workLeft, -chunkSize);
+                    int end = start + chunkSize;
 
-                    start = Interlocked.Add(ref _workLeft, -chunkSize);
-                    end = start + chunkSize;
+                    if (end < 1)
+                        break;
 
                     if (start < 0)
                         start = 0;
 
                     for (int i = start; i < end; i++)
                         _action(i);
-                } while (start > 0);
+
+                    remainingWork = start - 1;
+                }
+
+                Interlocked.Increment(ref _workerCompletionCount); // Not in a finally block on purpose.
             }
             catch (Exception e)
             {
