@@ -1036,21 +1036,19 @@ namespace DOL.GS
 
 		private readonly Lock _objectInRadiusCachesLock = new();
 		private readonly Dictionary<eGameObjectType, ObjectsInRadiusCache> _objectsInRadiusCaches = new();
-		private readonly Dictionary<eGameObjectType, IList> _objectsInRadiusFilteredCaches = new();
 
 		private void ClearObjectsInRadiusCache()
 		{
 			lock (_objectInRadiusCachesLock)
 			{
 				_objectsInRadiusCaches.Clear();
-				_objectsInRadiusFilteredCaches.Clear();
 			}
 		}
 
 		public IReadOnlyList<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck) where T : GameObject
 		{
 			if (CurrentRegion == null)
-				return []; // Should never happen, but just in case.
+				return []; // Should never happen.
 
 			lock (_objectInRadiusCachesLock)
 			{
@@ -1059,58 +1057,33 @@ namespace DOL.GS
 					cache = new(new List<T>(), 0, 0);
 					_objectsInRadiusCaches[objectType] = cache;
 				}
-				else
-					cache = _objectsInRadiusCaches[objectType];
-
-				IList filteredCache;
 
 				if (cache.ExpireTime >= GameLoop.GameLoopTime)
 				{
-					// The cache is still valid.
 					if (cache.Radius > radiusToCheck)
 					{
-						// The cached radius is larger than the one being checked.
-						// Create a filtered cache if needed, or clear the current one.
-						if (_objectsInRadiusFilteredCaches.TryGetValue(objectType, out filteredCache))
-							filteredCache.Clear();
-						else
-						{
-							filteredCache = new List<T>();
-							_objectsInRadiusFilteredCaches[objectType] = filteredCache;
-						}
+						List<T> filtered = new();
 
-						if (cache.List.Count == 0)
-							return filteredCache as IReadOnlyList<T>;
-
-						// Populate the filtered cache.
 						// While this saves a call to `CurrentRegion.GetInRadius<T>`, it could still be a bit slow.
 						// The alternative would be to sort the cached list by distance and use binary search to find the first object within the radius.
 						// But whether that would be faster or not is debatable, and would depend on how often the cache is hit with a smaller radius.
 						foreach (T obj in cache.List)
 						{
 							if (IsWithinRadius(obj, radiusToCheck))
-								filteredCache.Add(obj);
+								filtered.Add(obj);
 						}
 
-						return filteredCache as IReadOnlyList<T>;
+						return filtered;
 					}
 					else if (cache.Radius == radiusToCheck)
-					{
-						// The radiuses are equal, we can return the cached list directly.
 						return cache.List as IReadOnlyList<T>;
-					}
 				}
 
-				// Either the cache is outdated, or the cached radius is smaller than the one being checked.
-				// We need to get a new list and clear the filtered cache, if there is any.
-				cache.List.Clear();
-				CurrentRegion.GetInRadius<T>(this, objectType, radiusToCheck, cache.List);
-				_objectsInRadiusCaches[objectType].Set(cache.List, radiusToCheck, GameLoop.GameLoopTime + 500);
-
-				if (_objectsInRadiusFilteredCaches.TryGetValue(objectType, out filteredCache))
-					filteredCache.Clear();
-
-				return cache.List as IReadOnlyList<T>;
+				// Build fresh list and swap cache
+				List<T> newList = new();
+				CurrentRegion.GetInRadius<T>(this, objectType, radiusToCheck, newList);
+				_objectsInRadiusCaches[objectType].Set(newList, radiusToCheck, GameLoop.GameLoopTime + 500);
+				return newList;
 			}
 		}
 
