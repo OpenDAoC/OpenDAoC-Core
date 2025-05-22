@@ -89,21 +89,10 @@ namespace DOL.GS
                 _action = action;
                 _workLeft = count;
                 _workerCompletionCount = 0;
-                int workersToStart;
-                int barrierParticipants;
 
                 // If the count is less than the degree of parallelism, only signal the required number of workers.
                 // The caller thread will also be used, so in this case we need to subtract one from the amount of workers to start.
-                if (count < _degreeOfParallelism)
-                {
-                    barrierParticipants = count;
-                    workersToStart = count - 1;
-                }
-                else
-                {
-                    barrierParticipants = _degreeOfParallelism;
-                    workersToStart = _workerCount;
-                }
+                int workersToStart = count < _degreeOfParallelism ? count - 1 : _workerCount;
 
                 for (int i = 0; i < workersToStart; i++)
                     _workReady[i].Release();
