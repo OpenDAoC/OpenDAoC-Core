@@ -34,7 +34,7 @@ namespace DOL.GS
 
         // Startup synchronization.
         private CountdownEvent _workerStartLatch;       // Signals when all workers are initialized.
-        private SemaphoreSlim[] _workReady;             // Per-worker semaphores to trigger work.
+        private ManualResetEventSlim[] _workReady;      // Per-worker event to trigger work.
 
         // Work dispatch.
         private Action<int> _action;                    // Work delegate.
@@ -55,7 +55,7 @@ namespace DOL.GS
             _workDistributionBase = _degreeOfParallelism * WORK_DISTRIBUTION_BASE_FACTOR;
             _workers = new Thread[_workerCount];
             _workerStartLatch = new(_workerCount);
-            _workReady = new SemaphoreSlim[_workerCount];
+            _workReady = new ManualResetEventSlim[_workerCount];
             _workersCancellationTokenSource = new();
             base.Init();
 
@@ -95,7 +95,7 @@ namespace DOL.GS
                 int workersToStart = count < _degreeOfParallelism ? count - 1 : _workerCount;
 
                 for (int i = 0; i < workersToStart; i++)
-                    _workReady[i].Release();
+                    _workReady[i].Set();
 
                 PerformWork();
 
@@ -146,7 +146,7 @@ namespace DOL.GS
             (int Id, bool Restart) = ((int, bool)) obj;
             _workers[Id] = Thread.CurrentThread;
             _workReady[Id]?.Dispose();
-            _workReady[Id] = new SemaphoreSlim(0, 1);
+            _workReady[Id] = new ManualResetEventSlim();
             base.InitWorker(obj);
             _workerStartLatch.Signal();
 
@@ -157,13 +157,14 @@ namespace DOL.GS
             RunWorker(_workReady[Id], _workersCancellationTokenSource.Token);
         }
 
-        private void RunWorker(SemaphoreSlim workReady, CancellationToken cancellationToken)
+        private void RunWorker(ManualResetEventSlim workReady, CancellationToken cancellationToken)
         {
             while (Volatile.Read(ref _running))
             {
                 try
                 {
                     workReady.Wait(cancellationToken);
+                    workReady.Reset();
                 }
                 catch (OperationCanceledException)
                 {
