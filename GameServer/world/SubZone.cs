@@ -8,7 +8,7 @@ namespace DOL.GS
     public class SubZone
     {
         private static int _nextId = 0;
-        private readonly IConcurrentLinkedList<GameObject>[] _objects = new IConcurrentLinkedList<GameObject>[Enum.GetValues<eGameObjectType>().Length];
+        private readonly ConcurrentLinkedList<GameObject>[] _objects = new ConcurrentLinkedList<GameObject>[Enum.GetValues<eGameObjectType>().Length];
         private readonly int _id; // Internal ID for locking order, non-deterministic.
 
         public Zone ParentZone { get; }
@@ -19,7 +19,7 @@ namespace DOL.GS
             ParentZone = parentZone;
 
             for (int i = 0; i < _objects.Length; i++)
-                _objects[i] = ConcurrentLinkedListFactory.Create<GameObject>();
+                _objects[i] = new();
         }
 
         public void AddObject(LinkedListNode<GameObject> node)
@@ -80,7 +80,7 @@ namespace DOL.GS
             AddObjectUnsafe(node);
         }
 
-        public IConcurrentLinkedList<GameObject> this[eGameObjectType objectType] => _objects[(int) objectType];
+        public ConcurrentLinkedList<GameObject> this[eGameObjectType objectType] => _objects[(int) objectType];
 
         private void AddObjectUnsafe(LinkedListNode<GameObject> node)
         {

@@ -1,193 +1,113 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
 namespace DOL.GS
 {
-    public static class ConcurrentLinkedListFactory
+    public class ConcurrentLinkedList<T> : IEnumerable<LinkedListNode<T>> where T : class
     {
-        public static IConcurrentLinkedList<T> Create<T>() where T : class
+        // The enumerator returned by this collection holds a read lock and MUST be disposed.
+        // Do not store the enumerator or pass it around - use only in foreach loops.
+
+        private LinkedList<T> _list = new();
+        private ReaderWriterLockSlim _lock = new();
+
+        public bool IsStaticEmpty => false;
+        public SimpleDisposableLock Lock { get; }
+        public int Count => _list.Count;
+
+        public ConcurrentLinkedList()
         {
-            return new ConcurrentLinkedList<T>();
+            Lock = new(_lock);
         }
 
-        public static IConcurrentLinkedList<T> Empty<T>() where T : class
+        public void AddLast(LinkedListNode<T> node)
         {
-            return EmptyConcurrentLinkedList<T>.Instance;
-        }
-
-        private class ConcurrentLinkedList<T> : IConcurrentLinkedList<T> where T : class
-        {
-            // The enumerator returned by this collection holds a read lock and MUST be disposed.
-            // Do not store the enumerator or pass it around - use only in foreach loops.
-
-            private LinkedList<T> _list = new();
-            private ReaderWriterLockSlim _lock = new();
-
-            public bool IsStaticEmpty => false;
-            public SimpleDisposableLock Lock { get; }
-            public int Count => _list.Count;
-
-            public ConcurrentLinkedList()
+            if (_lock.IsWriteLockHeld)
             {
-                Lock = new(_lock);
+                _list.AddLast(node);
+                return;
             }
 
-            public void AddLast(LinkedListNode<T> node)
+            _lock.EnterWriteLock();
+
+            try
             {
-                if (_lock.IsWriteLockHeld)
-                {
-                    _list.AddLast(node);
-                    return;
-                }
-
-                _lock.EnterWriteLock();
-
-                try
-                {
-                    _list.AddLast(node);
-                }
-                finally
-                {
-                    _lock.ExitWriteLock();
-                }
+                _list.AddLast(node);
             }
-
-            public void Remove(LinkedListNode<T> node)
+            finally
             {
-                if (_lock.IsWriteLockHeld)
-                {
-                    _list.Remove(node);
-                    return;
-                }
-
-                _lock.EnterWriteLock();
-
-                try
-                {
-                    _list.Remove(node);
-                }
-                finally
-                {
-                    _lock.ExitWriteLock();
-                }
-            }
-
-            public Enumerator GetEnumerator()
-            {
-                return new Enumerator(_list, Lock);
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-
-            IEnumerator<LinkedListNode<T>> IEnumerable<LinkedListNode<T>>.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-
-            public struct Enumerator : IEnumerator<LinkedListNode<T>>
-            {
-                private LinkedList<T> _list;
-                private SimpleDisposableLock _lock;
-
-                public LinkedListNode<T> Current { get; private set; }
-                readonly object IEnumerator.Current => Current;
-
-                public Enumerator(LinkedList<T> list, SimpleDisposableLock @lock)
-                {
-                    _list = list;
-                    _lock = @lock;
-                    _lock.EnterReadLock();
-                }
-
-                public bool MoveNext()
-                {
-                    Current = Current == null ? _list.First : Current.Next;
-                    return Current != null;
-                }
-
-                public void Reset()
-                {
-                    Current = null;
-                    _lock.Dispose();
-                }
-
-                public void Dispose()
-                {
-                    _lock.Dispose();
-                    _lock = null;
-                }
+                _lock.ExitWriteLock();
             }
         }
 
-        private class EmptyConcurrentLinkedList<T> : IConcurrentLinkedList<T> where T : class
+        public void Remove(LinkedListNode<T> node)
         {
-            private Enumerator _enumerator = new();
-
-            public bool IsStaticEmpty => true;
-            public SimpleDisposableLock Lock => null;
-            public int Count => 0;
-
-            public static EmptyConcurrentLinkedList<T> Instance => Holder.Instance;
-
-            public void AddLast(LinkedListNode<T> node)
+            if (_lock.IsWriteLockHeld)
             {
-                throw new InvalidOperationException("Cannot add to a static empty list.");
+                _list.Remove(node);
+                return;
             }
 
-            public void Remove(LinkedListNode<T> node)
+            _lock.EnterWriteLock();
+
+            try
             {
-                throw new InvalidOperationException("Cannot remove from a static empty list.");
+                _list.Remove(node);
             }
-
-            public Enumerator GetEnumerator()
+            finally
             {
-                return _enumerator;
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-
-            IEnumerator<LinkedListNode<T>> IEnumerable<LinkedListNode<T>>.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-
-            public struct Enumerator : IEnumerator<LinkedListNode<T>>
-            {
-                public LinkedListNode<T> Current { get; private set; }
-                readonly object IEnumerator.Current => Current;
-
-                public Enumerator() { }
-
-                public readonly bool MoveNext()
-                {
-                    return false;
-                }
-
-                public readonly void Reset() { }
-                public readonly void Dispose() { }
-            }
-
-            private static class Holder
-            {
-                public static readonly EmptyConcurrentLinkedList<T> Instance = new();
+                _lock.ExitWriteLock();
             }
         }
-    }
 
-    public interface IConcurrentLinkedList<T> : IEnumerable<LinkedListNode<T>> where T : class
-    {
-        bool IsStaticEmpty { get; }
-        SimpleDisposableLock Lock { get; }
-        int Count { get; }
-        void AddLast(LinkedListNode<T> node);
-        void Remove(LinkedListNode<T> node);
+        public Enumerator GetEnumerator()
+        {
+            return new Enumerator(_list, Lock);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        IEnumerator<LinkedListNode<T>> IEnumerable<LinkedListNode<T>>.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public struct Enumerator : IEnumerator<LinkedListNode<T>>
+        {
+            private LinkedList<T> _list;
+            private SimpleDisposableLock _lock;
+
+            public LinkedListNode<T> Current { get; private set; }
+            readonly object IEnumerator.Current => Current;
+
+            public Enumerator(LinkedList<T> list, SimpleDisposableLock @lock)
+            {
+                _list = list;
+                _lock = @lock;
+                _lock.EnterReadLock();
+            }
+
+            public bool MoveNext()
+            {
+                Current = Current == null ? _list.First : Current.Next;
+                return Current != null;
+            }
+
+            public void Reset()
+            {
+                Current = null;
+                _lock.Dispose();
+            }
+
+            public void Dispose()
+            {
+                _lock.Dispose();
+                _lock = null;
+            }
+        }
     }
 }
