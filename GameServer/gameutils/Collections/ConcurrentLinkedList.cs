@@ -19,6 +19,9 @@ namespace DOL.GS
 
         private class ConcurrentLinkedList<T> : IConcurrentLinkedList<T> where T : class
         {
+            // The enumerator returned by this collection holds a read lock and MUST be disposed.
+            // Do not store the enumerator or pass it around - use only in foreach loops.
+
             private LinkedList<T> _list = new();
             private ReaderWriterLockSlim _lock = new();
 
