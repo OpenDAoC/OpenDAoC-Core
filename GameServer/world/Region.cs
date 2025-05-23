@@ -429,7 +429,7 @@ namespace DOL.GS
         /// <summary>
         /// An ArrayList of all Zones within this Region
         /// </summary>
-        public IList<Zone> Zones
+        public List<Zone> Zones
         {
             get { return m_zones; }
         }
@@ -1307,7 +1307,7 @@ namespace DOL.GS
         /// Gets the areas for given location,
         /// less performant than getAreasOfZone so use other on if possible
         /// </summary>
-        public virtual IList<IArea> GetAreasOfSpot(IPoint3D point)
+        public virtual List<IArea> GetAreasOfSpot(IPoint3D point)
         {
             Zone zone = GetZone(point.X, point.Y);
             return GetAreasOfZone(zone, point);
@@ -1317,14 +1317,14 @@ namespace DOL.GS
         /// Gets the areas for a certain spot,
         /// less performant than getAreasOfZone so use other on if possible
         /// </summary>
-        public virtual IList<IArea> GetAreasOfSpot(int x, int y, int z)
+        public virtual List<IArea> GetAreasOfSpot(int x, int y, int z)
         {
             Zone zone = GetZone(x, y);
             Point3D p = new Point3D(x, y, z);
             return GetAreasOfZone(zone, p);
         }
 
-        public virtual IList<IArea> GetAreasOfZone(Zone zone, IPoint3D p)
+        public virtual List<IArea> GetAreasOfZone(Zone zone, IPoint3D p)
         {
             return GetAreasOfZone(zone, p, true);
         }
@@ -1336,7 +1336,7 @@ namespace DOL.GS
         /// <param name="p"></param>
         /// <param name="checkZ"></param>
         /// <returns></returns>
-        public virtual IList<IArea> GetAreasOfZone(Zone zone, IPoint3D p, bool checkZ)
+        public virtual List<IArea> GetAreasOfZone(Zone zone, IPoint3D p, bool checkZ)
         {
             lock (_lockAreas)
             {
@@ -1349,7 +1349,7 @@ namespace DOL.GS
                     {
                         for (int i = 0; i < m_ZoneAreasCount[zoneIndex]; i++)
                         {
-                            IArea area = (IArea)m_Areas[m_ZoneAreas[zoneIndex][i]];
+                            IArea area = m_Areas[m_ZoneAreas[zoneIndex][i]];
                             if (area.IsContaining(p, checkZ))
                             {
                                 areas.Add(area);
@@ -1367,7 +1367,7 @@ namespace DOL.GS
             }
         }
 
-        public virtual IList<IArea> GetAreasOfZone(Zone zone, int x, int y, int z)
+        public virtual List<IArea> GetAreasOfZone(Zone zone, int x, int y, int z)
         {
             lock (_lockAreas)
             {
@@ -1380,7 +1380,7 @@ namespace DOL.GS
                     {
                         for (int i = 0; i < m_ZoneAreasCount[zoneIndex]; i++)
                         {
-                            IArea area = (IArea)m_Areas[m_ZoneAreas[zoneIndex][i]];
+                            IArea area = m_Areas[m_ZoneAreas[zoneIndex][i]];
                             if (area.IsContaining(x, y, z))
                                 areas.Add(area);
                         }
@@ -1423,7 +1423,7 @@ namespace DOL.GS
 
         #region Get in radius
 
-        public void GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList list) where T : GameObject
+        public void GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> list) where T : GameObject
         {
             if (list.Count > 0)
             {
@@ -1488,7 +1488,7 @@ namespace DOL.GS
             return (distance <= squareRadius);
         }
 
-        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList list) instead.")]
+        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> list) instead.")]
         public List<GameStaticItem> GetItemsInRadius(Point3D point, ushort radius)
         {
             List<GameStaticItem> result = new();
@@ -1496,7 +1496,7 @@ namespace DOL.GS
             return result;
         }
 
-        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList list) instead.")]
+        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> list) instead.")]
         public List<GameNPC> GetNPCsInRadius(Point3D point, ushort radius)
         {
             List<GameNPC> result = new();
@@ -1504,7 +1504,7 @@ namespace DOL.GS
             return result;
         }
 
-        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList list) instead.")]
+        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> list) instead.")]
         public List<GamePlayer> GetPlayersInRadius(Point3D point, ushort radius)
         {
             List<GamePlayer> result = new();
@@ -1512,7 +1512,7 @@ namespace DOL.GS
             return result;
         }
 
-        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList list) instead.")]
+        [Obsolete("Deprecated. Use GetInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> list) instead.")]
         public List<GameDoorBase> GetDoorsInRadius(Point3D point, ushort radius)
         {
             List<GameDoorBase> result = new();

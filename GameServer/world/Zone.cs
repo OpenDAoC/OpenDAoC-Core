@@ -322,7 +322,7 @@ namespace DOL.GS
         /// The found objects are appended to the given list.
         /// </summary>
         /// <param name="listToAppendTo">a non-null list</param>
-        public void GetObjectsInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, IList listToAppendTo) where T : GameObject
+        public void GetObjectsInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> listToAppendTo) where T : GameObject
         {
             GetObjectsInRadius<T>(point.X, point.Y, point.Z, objectType, radius, listToAppendTo);
         }
@@ -332,7 +332,7 @@ namespace DOL.GS
         /// The found objects are appended to the given list.
         /// </summary>
         /// <param name="listToAppendTo">a non-null list</param>
-        public void GetObjectsInRadius<T>(int x, int y, int z, eGameObjectType objectType, ushort radius, IList listToAppendTo) where T : GameObject
+        public void GetObjectsInRadius<T>(int x, int y, int z, eGameObjectType objectType, ushort radius, List<T> listToAppendTo) where T : GameObject
         {
             uint sqRadius = (uint) radius * radius;
             int referenceSubZoneIndex = GetSubZoneIndex(x, y);
@@ -584,17 +584,17 @@ namespace DOL.GS
         /// <summary>
         /// Convenient method for Region.GetAreasOfZone(), since zone.Region.getAreasOfZone(zone,x,y,z) is a bit confusing.
         /// </summary>
-        public IList<IArea> GetAreasOfSpot(IPoint3D spot)
+        public List<IArea> GetAreasOfSpot(IPoint3D spot)
         {
             return GetAreasOfSpot(spot, true);
         }
 
-        public IList<IArea> GetAreasOfSpot(int x, int y, int z)
+        public List<IArea> GetAreasOfSpot(int x, int y, int z)
         {
             return ZoneRegion.GetAreasOfZone(this, x, y, z);
         }
 
-        public IList<IArea> GetAreasOfSpot(IPoint3D spot, bool checkZ)
+        public List<IArea> GetAreasOfSpot(IPoint3D spot, bool checkZ)
         {
             return ZoneRegion.GetAreasOfZone(this, spot, checkZ);
         }

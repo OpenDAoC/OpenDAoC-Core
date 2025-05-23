@@ -1045,7 +1045,7 @@ namespace DOL.GS
 			}
 		}
 
-		public IReadOnlyList<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck) where T : GameObject
+		public List<T> GetObjectsInRadius<T>(eGameObjectType objectType, ushort radiusToCheck) where T : GameObject
 		{
 			if (CurrentRegion == null)
 				return []; // Should never happen.
@@ -1076,7 +1076,7 @@ namespace DOL.GS
 						return filtered;
 					}
 					else if (cache.Radius == radiusToCheck)
-						return cache.List as IReadOnlyList<T>;
+						return cache.List as List<T>;
 				}
 
 				// Build fresh list and swap cache
@@ -1087,22 +1087,22 @@ namespace DOL.GS
 			}
 		}
 
-		public IReadOnlyList<GamePlayer> GetPlayersInRadius(ushort radiusToCheck)
+		public List<GamePlayer> GetPlayersInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GamePlayer>(eGameObjectType.PLAYER, radiusToCheck);
 		}
 
-		public IReadOnlyList<GameNPC> GetNPCsInRadius(ushort radiusToCheck)
+		public List<GameNPC> GetNPCsInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, radiusToCheck);
 		}
 
-		public IReadOnlyList<GameStaticItem> GetItemsInRadius(ushort radiusToCheck)
+		public List<GameStaticItem> GetItemsInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, radiusToCheck);
 		}
 
-		public IReadOnlyList<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
+		public List<GameDoorBase> GetDoorsInRadius(ushort radiusToCheck)
 		{
 			return GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, radiusToCheck);
 		}

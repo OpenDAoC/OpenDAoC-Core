@@ -2113,7 +2113,7 @@ namespace DOL.GS
 
 			Notify(GameObjectEvent.MoveTo, this, new MoveToEventArgs(regionID, x, y, z, heading));
 
-			IReadOnlyList<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
+			List<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
 			m_x = x;
 			m_y = y;
@@ -3606,7 +3606,7 @@ namespace DOL.GS
 
 			if (LosChecker == null && Brain is StandardMobBrain brain)
 			{
-				IReadOnlyList<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
+				List<GamePlayer> playersInRadius = GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
 
 				if (playersInRadius.Count > 0)
 					LosChecker = playersInRadius[Util.Random(playersInRadius.Count - 1)];

@@ -396,7 +396,7 @@ namespace DOL.GS
 		/// <param name="p"></param>
 		/// <param name="checkZ"></param>
 		/// <returns></returns>
-		public override IList<IArea> GetAreasOfZone(Zone zone, IPoint3D p, bool checkZ)
+		public override List<IArea> GetAreasOfZone(Zone zone, IPoint3D p, bool checkZ)
 		{
 			Zone checkZone = zone;
 			var areas = new List<IArea>();
@@ -447,7 +447,7 @@ namespace DOL.GS
 		/// <param name="p"></param>
 		/// <param name="checkZ"></param>
 		/// <returns></returns>
-		public override IList<IArea> GetAreasOfZone(Zone zone, int x, int y, int z)
+		public override List<IArea> GetAreasOfZone(Zone zone, int x, int y, int z)
 		{
 			Zone checkZone = zone;
 			var areas = new List<IArea>();

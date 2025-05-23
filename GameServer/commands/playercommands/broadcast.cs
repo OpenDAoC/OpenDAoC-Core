@@ -63,7 +63,7 @@ namespace DOL.GS.Commands
                 otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Broadcast.Message", player.Name, message), eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
         }
 
-        private static IReadOnlyList<GamePlayer> GetTargets(GamePlayer player)
+        private static List<GamePlayer> GetTargets(GamePlayer player)
         {
             eBroadcastType type = (eBroadcastType) ServerProperties.Properties.BROADCAST_TYPE;
 

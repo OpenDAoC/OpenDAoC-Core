@@ -715,7 +715,7 @@ namespace DOL.GS
                 }
             }
 
-            IReadOnlyList<GameNPC> npcsInRange = player.GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE);
+            List<GameNPC> npcsInRange = player.GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE);
             GameObject targetObject = player.TargetObject;
             GameNPC pet = player.ControlledBrain?.Body;
             CachedNpcValues cachedTargetValues = null;
@@ -779,7 +779,7 @@ namespace DOL.GS
                     itemUpdateCache[item].AllowFurtherUpdate = true;
             }
 
-            IReadOnlyList<GameStaticItem> itemsInRange = player.GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE);
+            List<GameStaticItem> itemsInRange = player.GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE);
 
             foreach (GameStaticItem itemInRange in itemsInRange)
             {
@@ -806,7 +806,7 @@ namespace DOL.GS
                     doorUpdateCache.Remove(door, out _);
             }
 
-            IReadOnlyList<GameDoorBase> doorsInRange = player.GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE);
+            List<GameDoorBase> doorsInRange = player.GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE);
 
             foreach (GameDoorBase doorInRange in doorsInRange)
             {

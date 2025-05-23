@@ -1511,7 +1511,7 @@ namespace DOL.GS.ServerRules
 
         public virtual void DropLoot(GameNPC killedNpc, GameObject killer, SortedSet<ItemOwnerTotalDamagePair> itemOwners)
         {
-            IReadOnlyList<GamePlayer> playersInRadius = killedNpc.GetPlayersInRadius(WorldMgr.INFO_DISTANCE);
+            List<GamePlayer> playersInRadius = killedNpc.GetPlayersInRadius(WorldMgr.INFO_DISTANCE);
 
             foreach (DbItemTemplate itemTemplate in LootMgr.GetLoot(killedNpc, killer))
             {
@@ -1521,7 +1521,7 @@ namespace DOL.GS.ServerRules
                     CreateItem(killedNpc, itemTemplate, itemOwners, playersInRadius);
             }
 
-            static void CreateMoney(GameNPC killedNpc, DbItemTemplate itemTemplate, SortedSet<ItemOwnerTotalDamagePair> itemOwners, IReadOnlyList<GamePlayer> playersInRadius)
+            static void CreateMoney(GameNPC killedNpc, DbItemTemplate itemTemplate, SortedSet<ItemOwnerTotalDamagePair> itemOwners, List<GamePlayer> playersInRadius)
             {
                 GameMoney money = new(itemTemplate.Price, killedNpc)
                 {
@@ -1541,7 +1541,7 @@ namespace DOL.GS.ServerRules
                 }
             }
 
-            static void CreateItem(GameNPC killedNpc, DbItemTemplate itemTemplate, SortedSet<ItemOwnerTotalDamagePair> itemOwners, IReadOnlyList<GamePlayer> nearbyPlayers)
+            static void CreateItem(GameNPC killedNpc, DbItemTemplate itemTemplate, SortedSet<ItemOwnerTotalDamagePair> itemOwners, List<GamePlayer> nearbyPlayers)
             {
                 GameInventoryItem inventoryItem;
 
@@ -1587,7 +1587,7 @@ namespace DOL.GS.ServerRules
                 }
             }
 
-            static void NotifyNearbyPlayers(GameNPC killedNpc, GameStaticItemTimed item, IReadOnlyList<GamePlayer> nearbyPlayers)
+            static void NotifyNearbyPlayers(GameNPC killedNpc, GameStaticItemTimed item, List<GamePlayer> nearbyPlayers)
             {
                 foreach (GamePlayer player in nearbyPlayers)
                     player.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.DropLoot.Drops", killedNpc.GetName(0, true, player.Client.Account.Language, killedNpc), item.GetName(1, false))), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
