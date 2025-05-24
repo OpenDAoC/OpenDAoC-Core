@@ -121,7 +121,7 @@ namespace DOL.GS.Quests
                 GameLiving target = gArgs.Target as GameLiving;
                 DbInventoryItem item = gArgs.Item;
 
-                if(player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
+                if(player.GameTask.ReceiverName == target.Name && item.Name == player.GameTask.ItemName)
                 {
                     player.Inventory.RemoveItem(item);
                     InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
@@ -165,11 +165,11 @@ namespace DOL.GS.Quests
             {
                 DbInventoryItem TaskItems = GenerateNPCItem(NPC.Name, player.Level);
                 
-                player.Task = new MoneyTask(player);
-                player.Task.TimeOut = DateTime.Now.AddHours(2);
-                player.Task.ItemName = TaskItems.Name;
-                player.Task.ReceiverName = NPC.Name;
-                ((MoneyTask)player.Task).RecieverZone = NPC.CurrentZone.Description;
+                player.GameTask = new MoneyTask(player);
+                player.GameTask.TimeOut = DateTime.Now.AddHours(2);
+                player.GameTask.ItemName = TaskItems.Name;
+                player.GameTask.ReceiverName = NPC.Name;
+                ((MoneyTask)player.GameTask).RecieverZone = NPC.CurrentZone.Description;
                 
                 player.Out.SendMessage("Bring "+TaskItems.GetName(0,false)+" to "+NPC.Name +" in "+ NPC.CurrentZone.Description, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
                 //Player.Out.SendCustomDialog("", new CustomDialogResponse(TaskDialogResponse));

@@ -5231,10 +5231,10 @@ namespace DOL.GS
             }
 
             // Reset taskDone per level.
-            if (Task != null)
+            if (GameTask != null)
             {
-                Task.TasksDone = 0;
-                Task.SaveIntoDatabase();
+                GameTask.TasksDone = 0;
+                GameTask.SaveIntoDatabase();
             }
 
             DBCharacter.PlayedTimeSinceLevel = 0;
@@ -6299,8 +6299,8 @@ namespace DOL.GS
                 IsOnHorse = false;
 
             // cancel task if active
-            if (Task != null && Task.TaskActive)
-                Task.ExpireTask();
+            if (GameTask != null && GameTask.TaskActive)
+                GameTask.ExpireTask();
 
             string playerMessage;
             string publicMessage;
@@ -11638,7 +11638,7 @@ namespace DOL.GS
         /// <summary>
         /// Gets the tasklist of this player
         /// </summary>
-        public AbstractTask Task
+        public AbstractTask GameTask
         {
             get { return m_task; }
             set { m_task = value; }
@@ -11917,8 +11917,8 @@ namespace DOL.GS
                 quest.Notify(e, sender, args);
             }
 
-            if (Task != null)
-                Task.Notify(e, sender, args);
+            if (GameTask != null)
+                GameTask.Notify(e, sender, args);
 
             if (Mission != null)
                 Mission.Notify(e, sender, args);

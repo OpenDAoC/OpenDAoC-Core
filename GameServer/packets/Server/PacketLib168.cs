@@ -3861,7 +3861,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return string.Empty;
 
-			AbstractTask task = m_gameClient.Player.Task;
+			AbstractTask task = m_gameClient.Player.GameTask;
 			AbstractMission pMission = m_gameClient.Player.Mission;
 
 			AbstractMission gMission = null;

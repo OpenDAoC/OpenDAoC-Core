@@ -45,18 +45,18 @@ namespace DOL.GS.Commands
 			{
 				if (args[1] == "abort")
 				{
-					if (client.Player.Task != null && client.Player.Task.TaskActive)
-						client.Player.Task.ExpireTask();
+					if (client.Player.GameTask != null && client.Player.GameTask.TaskActive)
+						client.Player.GameTask.ExpireTask();
 				}
 			}
 			else
 			{
 				GamePlayer player = client.Player;
 				//TaskCommand(client.Player);
-				if (player.Task != null)
-					player.Task.CheckTaskExpired();
+				if (player.GameTask != null)
+					player.GameTask.CheckTaskExpired();
 				
-				AbstractTask task = player.Task;
+				AbstractTask task = player.GameTask;
 				
 				if (task != null && task.TaskActive)
 				{

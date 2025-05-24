@@ -119,7 +119,7 @@ namespace DOL.GS.Quests
                 GameLiving target = gArgs.Target as GameLiving;
                 DbInventoryItem item = gArgs.Item;
 
-                if (player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
+                if (player.GameTask.ReceiverName == target.Name && item.Name == player.GameTask.ItemName)
                 {
                     player.Inventory.RemoveItem(item);
                     InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
@@ -183,7 +183,7 @@ namespace DOL.GS.Quests
 
             craftTask.SetRewardMoney((long)(taskItem.Price * RewardMoneyRatio));
 
-            player.Task = craftTask;
+            player.GameTask = craftTask;
 
             player.Out.SendMessage("Craft " + taskItem.GetName(0, false) + " for " + NPC.Name + " in " + NPC.CurrentZone.Description, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
             return true;

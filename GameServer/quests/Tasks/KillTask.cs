@@ -101,7 +101,7 @@ namespace DOL.GS.Quests
         /// </summary>
         public override string Description
         {
-            get { return ((KillTask)m_taskPlayer.Task).MobKilled == false ? "Find a " + MobName + " and kill it then return to me for your reward." : "Return to " + ReceiverName + " for your reward!"; }
+            get { return ((KillTask)m_taskPlayer.GameTask).MobKilled == false ? "Find a " + MobName + " and kill it then return to me for your reward." : "Return to " + ReceiverName + " for your reward!"; }
         }
         
         /// <summary>
@@ -142,10 +142,10 @@ namespace DOL.GS.Quests
                 GameLiving target = gArgs.Target;
                 if (ServerProperties.Properties.TASK_GIVE_RANDOM_ITEM == false)
                 {
-                    if (((KillTask)player.Task).MobName == target.Name)
+                    if (((KillTask)player.GameTask).MobName == target.Name)
                     {
-                        ((KillTask)player.Task).MobKilled = true;
-                        player.Out.SendMessage("You must now return to " + player.Task.ReceiverName + " to receive your reward!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                        ((KillTask)player.GameTask).MobKilled = true;
+                        player.Out.SendMessage("You must now return to " + player.GameTask.ReceiverName + " to receive your reward!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     }
                 }
                 else
@@ -192,9 +192,9 @@ namespace DOL.GS.Quests
                             ICollection<GamePlayer> group = m_taskPlayer.Group.GetPlayersInTheGroup();
                             foreach (GamePlayer p in group)
                             {
-                                if (p.Task != null && p.Task.GetType() == typeof(KillTask))
+                                if (p.GameTask != null && p.GameTask.GetType() == typeof(KillTask))
                                 {
-                                    if (((KillTask)p.Task).MobName == target.Name)
+                                    if (((KillTask)p.GameTask).MobName == target.Name)
                                         Owners.Add(p);
                                 }
                             }
@@ -231,10 +231,10 @@ namespace DOL.GS.Quests
             }
             else if (e == GameLivingEvent.InteractWith)
             {
-                if (((KillTask)player.Task).MobKilled == true)
+                if (((KillTask)player.GameTask).MobKilled == true)
                 {
                     InteractWithEventArgs myargs = (InteractWithEventArgs)args;
-                    if (myargs.Target.Name == ((KillTask)player.Task).ReceiverName)
+                    if (myargs.Target.Name == ((KillTask)player.GameTask).ReceiverName)
                     {
                         player.Out.SendMessage(myargs.Target.Name + " says, *Good work " + player.Name + ". Here is your reward as promised.*", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                         FinishTask();
@@ -247,7 +247,7 @@ namespace DOL.GS.Quests
                 GameLiving target = gArgs.Target as GameLiving;
                 DbInventoryItem item = gArgs.Item;
 
-                if (player.Task.ReceiverName == target.Name && item.Name == player.Task.ItemName)
+                if (player.GameTask.ReceiverName == target.Name && item.Name == player.GameTask.ItemName)
                 {
                     player.Inventory.RemoveItem(item);
                     InventoryLogging.LogInventoryAction(player, target, eInventoryActionType.Quest, item.Template, item.Count);
@@ -284,12 +284,12 @@ namespace DOL.GS.Quests
             }
             else
             {
-                player.Task = new KillTask(player);
-                player.Task.TimeOut = DateTime.Now.AddHours(2);
-                ((KillTask)player.Task).MobKilled = false;
-                ((KillTask)player.Task).ItemIndex = Util.Random(0, TaskObjects.Length - 1);
-                ((KillTask)player.Task).MobName = Mob.Name;
-                player.Task.ReceiverName = source.Name;
+                player.GameTask = new KillTask(player);
+                player.GameTask.TimeOut = DateTime.Now.AddHours(2);
+                ((KillTask)player.GameTask).MobKilled = false;
+                ((KillTask)player.GameTask).ItemIndex = Util.Random(0, TaskObjects.Length - 1);
+                ((KillTask)player.GameTask).MobName = Mob.Name;
+                player.GameTask.ReceiverName = source.Name;
                 player.Out.SendMessage(source.Name + " says, *Very well " + player.Name + ", it's good to see adventurers willing to help out the realm in such times. Search to the " + GetDirectionFromHeading(Mob.Heading) + " and kill a " + Mob.Name + " and return to me for your reward. Good luck!*", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 player.Out.SendDialogBox(eDialogCode.SimpleWarning, 1, 1, 1, 1, eDialogType.Ok, false, "You have been given a task!");
                 return true;

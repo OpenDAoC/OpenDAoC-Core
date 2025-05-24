@@ -37,7 +37,7 @@ namespace DOL.Tests.Integration.Server
 			// mob for task
 			if (KillTask.BuildTask(player, trainer))
 			{
-				KillTask task = (KillTask)player.Task;
+				KillTask task = (KillTask)player.GameTask;
 
 				ClassicAssert.IsNotNull(task);
 				ClassicAssert.IsTrue(task.TaskActive);
@@ -75,7 +75,7 @@ namespace DOL.Tests.Integration.Server
 				// Now give item tro trainer
 				task.Notify(GamePlayerEvent.GiveItem,player,new GiveItemEventArgs(player,trainer,item));
 
-				if (player.Task.TaskActive || player.Task==null)
+				if (player.GameTask.TaskActive || player.GameTask==null)
 					ClassicAssert.Fail("Task did not finished proper in Notify");
 			}
 		}

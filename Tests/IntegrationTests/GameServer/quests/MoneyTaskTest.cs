@@ -50,7 +50,7 @@ namespace DOL.Tests.Integration.Server
 			{
 				if (MoneyTask.BuildTask(player, merchant))
 				{
-					MoneyTask task = (MoneyTask)player.Task;
+					MoneyTask task = (MoneyTask)player.GameTask;
 
 
 					ClassicAssert.IsNotNull(task);
@@ -67,7 +67,7 @@ namespace DOL.Tests.Integration.Server
 					npc.Name = task.ReceiverName;
 					task.Notify(GamePlayerEvent.GiveItem, player, new GiveItemEventArgs(player, npc, item));
 
-					if (player.Task.TaskActive || player.Task == null)
+					if (player.GameTask.TaskActive || player.GameTask == null)
 						ClassicAssert.Fail("Task did not finished proper in Notify");
 				}
 			}

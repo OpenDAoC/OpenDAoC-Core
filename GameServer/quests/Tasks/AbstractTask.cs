@@ -68,9 +68,9 @@ namespace DOL.GS.Quests
 
             // Check if player already has a task
             // if yes reuse dbtask object to keep TasksDone from old dbtask object.
-            if (taskPlayer.Task != null)
+            if (taskPlayer.GameTask != null)
             {
-                dbTask = taskPlayer.Task.m_dbTask;
+                dbTask = taskPlayer.GameTask.m_dbTask;
             }
             else // if player has no active task, load dbtask an use tasksdone
             {
@@ -513,14 +513,14 @@ namespace DOL.GS.Quests
                 return false;
             }
 
-            if (player.Task is {TaskActive: true})
+            if (player.GameTask is {TaskActive: true})
             {
                 player.Out.SendMessage("You already have a Task. Select yourself and type /Task for more Information.",
                     eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return false;
             }
 
-            if (player.Task != null && player.Task.TasksDone >= MaxTasksDone(player.Level))
+            if (player.GameTask != null && player.GameTask.TasksDone >= MaxTasksDone(player.Level))
             {
                 player.Out.SendMessage(
                     "You cannot do more than " + MaxTasksDone(player.Level) + " tasks at your level!",
