@@ -163,8 +163,8 @@ namespace DOL.Database
 		/// <summary>
 		/// Populate or Refresh Objects Relations
 		/// </summary>
-		/// <param name="dataObject">DataObject to Populate</param>
-		void FillObjectRelations(IEnumerable<DataObject> dataObject);
+		/// <param name="dataObjects">DataObjects to Populate</param>
+		void FillObjectRelations(IEnumerable<DataObject> dataObjects);
 		#endregion
 		
 		#region Utils

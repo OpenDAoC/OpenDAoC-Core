@@ -66,5 +66,35 @@ namespace DOL.GS
                 TaskCreationOptions.DenyChildAttach,
                 TaskScheduler.Default).ConfigureAwait(false);
         }
+
+        public static void FillObjectRelations(T dataObject)
+        {
+            GameServer.Database.FillObjectRelations(dataObject);
+        }
+
+        public static async Task FillObjectRelationsAsync(T dataObject)
+        {
+            await Task.Factory.StartNew(
+                static (state) => GameServer.Database.FillObjectRelations(state as T),
+                dataObject,
+                CancellationToken.None,
+                TaskCreationOptions.DenyChildAttach,
+                TaskScheduler.Default).ConfigureAwait(false);
+        }
+
+        public static void FillObjectRelations(IEnumerable<T> dataObjects)
+        {
+            GameServer.Database.FillObjectRelations(dataObjects);
+        }
+
+        public static async Task FillObjectRelationsAsync(IEnumerable<T> dataObjects)
+        {
+            await Task.Factory.StartNew(
+                static (state) => GameServer.Database.FillObjectRelations(state as IEnumerable<T>),
+                dataObjects,
+                CancellationToken.None,
+                TaskCreationOptions.DenyChildAttach,
+                TaskScheduler.Default).ConfigureAwait(false);
+        }
     }
 }

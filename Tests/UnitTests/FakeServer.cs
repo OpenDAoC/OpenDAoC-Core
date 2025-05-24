@@ -53,7 +53,7 @@ namespace DOL.Tests.Unit.Gameserver
         public string Escape(string rawInput) => throw new NotImplementedException();
         public bool ExecuteNonQuery(string rawQuery) => throw new NotImplementedException();
         public void FillObjectRelations(DataObject dataObject) => throw new NotImplementedException();
-        public void FillObjectRelations(IEnumerable<DataObject> dataObject) => throw new NotImplementedException();
+        public void FillObjectRelations(IEnumerable<DataObject> dataObjects) => throw new NotImplementedException();
         public TObject FindObjectByKey<TObject>(object key) where TObject : DataObject => throw new NotImplementedException();
         public IList<TObject> FindObjectsByKey<TObject>(IEnumerable<object> keys) where TObject : DataObject => throw new NotImplementedException();
         public int GetObjectCount<TObject>() where TObject : DataObject => throw new NotImplementedException();
