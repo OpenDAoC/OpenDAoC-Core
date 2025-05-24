@@ -7,6 +7,21 @@ namespace DOL.GS
 {
     public class DOLDB<T> where T : DataObject
     {
+        public static T FindObjectByKey(object key)
+        {
+            return GameServer.Database.FindObjectByKey<T>(key);
+        }
+
+        public static async Task<T> FindObjectsByKey(object key)
+        {
+            return await Task.Factory.StartNew(
+                static (state) => GameServer.Database.FindObjectByKey<T>(state),
+                key,
+                CancellationToken.None,
+                TaskCreationOptions.DenyChildAttach,
+                TaskScheduler.Default).ConfigureAwait(false);
+        }
+
         public static IList<T> SelectAllObjects()
         {
             return GameServer.Database.SelectAllObjects<T>();
