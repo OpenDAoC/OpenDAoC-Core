@@ -27,20 +27,22 @@ namespace DOL.GS
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
-        public static void RunActionAfterTask(Task task, Action continuation)
+        public static void ScheduleActionAfterTask(Task task, Action continuation, GameObject owner)
         {
-            task.ContinueWith(t =>
+            ContinuationActionTimerState state = new(owner, continuation);
+
+            task.ContinueWith(static (task, state) =>
             {
-                if (t.IsFaulted)
+                if (task.IsFaulted)
                 {
                     if (log.IsErrorEnabled)
-                        log.Error("Async task failed", t.Exception);
+                        log.Error("Async task failed", task.Exception);
 
                     return;
                 }
-            });
 
-            _ = new ContinuationActionTimer(null, continuation);
+                _ = new ContinuationActionTimer(state as ContinuationActionTimerState);
+            }, state);
         }
 
         private static void TickInternal(int index)
@@ -75,9 +77,9 @@ namespace DOL.GS
         {
             private Action _continuationAction;
 
-            public ContinuationActionTimer(GameObject owner, Action continuationAction) : base(owner)
+            public ContinuationActionTimer(ContinuationActionTimerState state) : base(state.Owner)
             {
-                _continuationAction = continuationAction;
+                _continuationAction = state.Continuation;
                 Start(0);
             }
 
@@ -85,6 +87,18 @@ namespace DOL.GS
             {
                 _continuationAction();
                 return 0;
+            }
+        }
+
+        private class ContinuationActionTimerState
+        {
+            public GameObject Owner { get; }
+            public Action Continuation { get; }
+
+            public ContinuationActionTimerState(GameObject owner, Action continuation)
+            {
+                Owner = owner;
+                Continuation = continuation;
             }
         }
     }
