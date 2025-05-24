@@ -1,23 +1,6 @@
-﻿/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using DOL.Database;
 
 namespace DOL.GS
@@ -25,15 +8,63 @@ namespace DOL.GS
     public class DOLDB<T> where T : DataObject
     {
         public static IList<T> SelectAllObjects()
-            => GameServer.Database.SelectAllObjects<T>();
+        {
+            return GameServer.Database.SelectAllObjects<T>();
+        }
 
-        public static T SelectObject(WhereClause whereClause) 
-            => GameServer.Database.SelectObject<T>(whereClause);
+        public static async Task<IList<T>> SelectAllObjectsAsync()
+        {
+            return await Task.Factory.StartNew(
+                static (state) => GameServer.Database.SelectAllObjects<T>(),
+                null,
+                CancellationToken.None,
+                TaskCreationOptions.DenyChildAttach,
+                TaskScheduler.Default).ConfigureAwait(false);
+        }
+
+        public static T SelectObject(WhereClause whereClause)
+        {
+            return GameServer.Database.SelectObject<T>(whereClause);
+        }
+
+        public static async Task<T> SelectObjectAsync(WhereClause whereClause)
+        {
+            return await Task.Factory.StartNew(
+                static (state) => GameServer.Database.SelectObject<T>(state as WhereClause),
+                whereClause,
+                CancellationToken.None,
+                TaskCreationOptions.DenyChildAttach,
+                TaskScheduler.Default).ConfigureAwait(false);
+        }
 
         public static IList<T> SelectObjects(WhereClause whereClause)
-            => GameServer.Database.SelectObjects<T>(whereClause);
+        {
+            return GameServer.Database.SelectObjects<T>(whereClause);
+        }
+
+        public static async Task<IList<T>> SelectObjectsAsync(WhereClause whereClause)
+        {
+            return await Task.Factory.StartNew(
+                static (state) => GameServer.Database.SelectObjects<T>(state as WhereClause),
+                whereClause,
+                CancellationToken.None,
+                TaskCreationOptions.DenyChildAttach,
+                TaskScheduler.Default).ConfigureAwait(false);
+        }
 
         public static IList<IList<T>> MultipleSelectObjects(IEnumerable<WhereClause> whereClauseBatch)
-            => GameServer.Database.MultipleSelectObjects<T>(whereClauseBatch);
+        {
+            return GameServer.Database.MultipleSelectObjects<T>(whereClauseBatch);
+        }
+
+        public static async Task<IList<IList<T>>> MultipleSelectObjectsAsync(IEnumerable<WhereClause> whereClauseBatch)
+        {
+            return await Task.Factory.StartNew(
+                static (state) => GameServer.Database.MultipleSelectObjects<T>(state as IEnumerable<WhereClause>),
+                whereClauseBatch,
+                CancellationToken.None,
+                TaskCreationOptions.DenyChildAttach,
+                TaskScheduler.Default).ConfigureAwait(false);
+        }
     }
 }
