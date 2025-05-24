@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -24,6 +25,22 @@ namespace DOL.GS
                 Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
+
+        public static void RunActionAfterTask(Task task, Action continuation)
+        {
+            task.ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error("Async task failed", t.Exception);
+
+                    return;
+                }
+            });
+
+            _ = new ContinuationActionTimer(null, continuation);
         }
 
         private static void TickInternal(int index)
@@ -51,6 +68,23 @@ namespace DOL.GS
             catch (Exception e)
             {
                 ServiceUtils.HandleServiceException(e, SERVICE_NAME, timer, timer.Owner);
+            }
+        }
+
+        private class ContinuationActionTimer : ECSGameTimerWrapperBase
+        {
+            private Action _continuationAction;
+
+            public ContinuationActionTimer(GameObject owner, Action continuationAction) : base(owner)
+            {
+                _continuationAction = continuationAction;
+                Start(0);
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                _continuationAction();
+                return 0;
             }
         }
     }
