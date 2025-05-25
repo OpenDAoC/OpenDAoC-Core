@@ -1037,7 +1037,7 @@ namespace DOL.GS
 		private readonly Lock _objectInRadiusCachesLock = new();
 		private readonly Dictionary<eGameObjectType, ObjectsInRadiusCache> _objectsInRadiusCaches = new();
 
-		private void ClearObjectsInRadiusCache()
+		public void ClearObjectsInRadiusCache()
 		{
 			lock (_objectInRadiusCachesLock)
 			{

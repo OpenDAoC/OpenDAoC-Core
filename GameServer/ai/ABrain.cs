@@ -66,6 +66,7 @@ namespace DOL.AI
             if (wasReturningToSpawnPoint && !IsActive)
                 Body.MoveTo(Body.CurrentRegionID, Body.SpawnPoint.X, Body.SpawnPoint.Y, Body.SpawnPoint.Z, Body.SpawnHeading);
 
+            Body.ClearObjectsInRadiusCache();
             FSM?.SetCurrentState(eFSMStateType.WAKING_UP);
             return ServiceObjectStore.Remove(this);
         }
