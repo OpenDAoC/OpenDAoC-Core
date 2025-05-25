@@ -1,11 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using DOL.Database;
 
 namespace DOL.GS
 {
-    public abstract class GameLivingInventory : IGameInventory
+	public abstract class GameLivingInventory : IGameInventory
 	{
 		private static readonly Logging.Logger Log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -79,21 +81,22 @@ namespace DOL.GS
 		/// </summary>
 		protected int m_changesCounter;
 
-		/// <summary>
-		/// LoadFromDatabase
-		/// </summary>
-		/// <param name="id"></param>
-		/// <returns></returns>
-		public virtual bool LoadFromDatabase(string id)
+		public virtual bool LoadFromDatabase(string inventoryId)
 		{
 			return false;
 		}
 
-		/// <summary>
-		/// SaveIntoDatabase
-		/// </summary>
-		/// <returns></returns>
-		public virtual bool SaveIntoDatabase(string id)
+		public virtual Task<IList> StartLoadFromDatabaseTask(string inventoryId)
+		{
+			return null;
+		}
+
+		public virtual bool LoadInventory(string inventoryId, IList items)
+		{
+			return false;
+		}
+
+		public virtual bool SaveIntoDatabase(string inventoryId)
 		{
 			return false;
 		}

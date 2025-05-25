@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.Events;
 using DOL.GS.PacketHandler;
@@ -138,26 +139,12 @@ namespace DOL.GS
             return true;
         }
 
-        public void LoadPlayer(int accountIndex)
+        public async Task LoadPlayer(int accountIndex)
         {
-            LoadPlayer(accountIndex, Properties.PLAYER_CLASS);
-        }
-
-        public void LoadPlayer(DbCoreCharacter dolChar)
-        {
-            LoadPlayer(dolChar, Properties.PLAYER_CLASS);
-        }
-
-        public void LoadPlayer(int accountIndex, string playerClass)
-        {
-            GameServer.Database.FillObjectRelations(_account);
+            await DOLDB<DbAccount>.FillObjectRelationsAsync(_account);
             DbCoreCharacter dolChar = _account.Characters[accountIndex];
-            LoadPlayer(dolChar, playerClass);
-        }
-
-        public void LoadPlayer(DbCoreCharacter dolChar, string playerClass)
-        {
             ActiveCharIndex = 0;
+
             foreach (var ch in Account.Characters)
             {
                 if (ch.ObjectId == dolChar.ObjectId)
@@ -165,12 +152,12 @@ namespace DOL.GS
                 ActiveCharIndex++;
             }
 
-            Assembly gasm = Assembly.GetAssembly(typeof(GameServer));
+            Assembly gameServerAssembly = Assembly.GetAssembly(typeof(GameServer));
+            object playerObject = null;
 
-            GamePlayer player = null;
             try
             {
-                player = (GamePlayer)gasm.CreateInstance(playerClass, false, BindingFlags.CreateInstance, null, new object[] { this, dolChar }, null, null);
+                playerObject = gameServerAssembly.CreateInstance(Properties.PLAYER_CLASS, false, BindingFlags.CreateInstance, null, [this, dolChar], null, null);
             }
             catch (Exception e)
             {
@@ -178,34 +165,36 @@ namespace DOL.GS
                     log.Error(e);
             }
 
-            if (player == null)
+            if (playerObject == null)
             {
-                foreach (Assembly asm in ScriptMgr.Scripts)
+                foreach (Assembly assembly in ScriptMgr.Scripts)
                 {
                     try
                     {
-                        player = (GamePlayer)asm.CreateInstance(playerClass, false, BindingFlags.CreateInstance, null, new object[] { this, dolChar }, null, null);
+                        playerObject = assembly.CreateInstance(Properties.PLAYER_CLASS, false, BindingFlags.CreateInstance, null, [this, dolChar], null, null);
                     }
                     catch (Exception e)
                     {
                         if (log.IsErrorEnabled)
                             log.Error( e);
                     }
-                    if (player != null)
+
+                    if (playerObject != null)
                         break;
                 }
             }
 
-            if (player == null)
+            GamePlayer player = playerObject as GamePlayer;
+
+            if (playerObject is null)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"Could not instantiate player class '{playerClass}', using GamePlayer instead!");
+                    log.Error($"Could not instantiate player class '{Properties.PLAYER_CLASS}', using '{nameof(GamePlayer)}' instead!");
 
-                player = new GamePlayer(this, dolChar);
+                player = new(this, dolChar);
             }
 
-            Thread.MemoryBarrier();
-
+            await player.LoadFromDatabaseAsync(dolChar);
             Player = player;
         }
 

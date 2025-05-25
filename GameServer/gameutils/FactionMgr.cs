@@ -65,10 +65,8 @@ namespace DOL.GS
             return count;
         }
 
-        public static void LoadAllAggroToFaction(GamePlayer player)
+        public static void LoadAllAggroToFaction(GamePlayer player, IList<DbFactionAggroLevel> factionRelations)
         {
-            IList<DbFactionAggroLevel> factionRelations = DOLDB<DbFactionAggroLevel>.SelectObjects(DB.Column("CharacterID").IsEqualTo(player.ObjectId));
-
             foreach (DbFactionAggroLevel factionRelation in factionRelations)
             {
                 Faction faction = GetFactionByID(factionRelation.FactionID);

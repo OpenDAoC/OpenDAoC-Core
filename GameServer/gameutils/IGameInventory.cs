@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using DOL.Database;
 
 namespace DOL.GS
@@ -120,8 +122,10 @@ namespace DOL.GS
     /// </summary>
     public interface IGameInventory
     {
-        bool LoadFromDatabase(string inventoryID);
-        bool SaveIntoDatabase(string inventoryID);
+        bool LoadFromDatabase(string inventoryId);
+        Task<IList> StartLoadFromDatabaseTask(string inventoryId);
+        bool LoadInventory(string inventoryId, IList items);
+        bool SaveIntoDatabase(string inventoryId);
 
         bool AddItem(eInventorySlot slot, DbInventoryItem item);
         bool AddItemWithoutDbAddition(eInventorySlot slot, DbInventoryItem item);

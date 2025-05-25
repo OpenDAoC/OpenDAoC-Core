@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.PacketHandler;
 
@@ -30,12 +32,25 @@ namespace DOL.GS
 		{
 			m_player = player;
 		}
-		/// <summary>
-		/// Loads the inventory from the DataBase
-		/// </summary>
-		/// <param name="inventoryID">The inventory ID</param>
-		/// <returns>success</returns>
-		public override bool LoadFromDatabase(string inventoryID)
+
+		public override bool LoadFromDatabase(string inventoryId)
+		{
+			var items = StartLoadFromDatabaseTask(inventoryId).GetAwaiter().GetResult();
+			return LoadInventory(inventoryId, items);
+		}
+
+		public override Task<IList> StartLoadFromDatabaseTask(string inventoryId)
+		{
+			// We only want to cache items in the players personal inventory and personal vault.
+			// If we cache ALL items them all vault code must make sure to update cache, which is not ideal
+			// in addition, a player with a housing vault may still have an item in cache that may have been
+			// removed by another player with the appropriate house permission.
+
+			WhereClause whereClause = DB.Column("SlotPosition").IsLessOrEqualTo((int) eInventorySlot.LastVault).Or(DB.Column("SlotPosition").IsGreaterOrEqualTo(500).And(DB.Column("SlotPosition").IsLessThan(600)));
+			return DOLDB<DbInventoryItem>.SelectObjectsAsync(DB.Column("OwnerID").IsEqualTo(inventoryId).And(whereClause)).ContinueWith(task => task.Result as IList);
+		}
+
+		public override bool LoadInventory(string inventoryId, IList items)
 		{
 			lock (Lock)
 			{
@@ -43,28 +58,19 @@ namespace DOL.GS
 				{
 					m_items.Clear();
 
-					// We only want to cache items in the players personal inventory and personal vault.
-					// If we cache ALL items them all vault code must make sure to update cache, which is not ideal
-					// in addition, a player with a housing vault may still have an item in cache that may have been
-					// removed by another player with the appropriate house permission.  - Tolakram
-					var filterBySlot = DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.LastVault).Or(DB.Column("SlotPosition").IsGreaterOrEqualTo(500).And(DB.Column("SlotPosition").IsLessThan(600)));
-					var items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(inventoryID).And(filterBySlot));
-
 					foreach (DbInventoryItem item in items)
 					{
 						try
 						{
-							var itemSlot = (eInventorySlot)item.SlotPosition;
+							eInventorySlot itemSlot = (eInventorySlot) item.SlotPosition;
 
 							if (item.CanUseEvery > 0)
-							{
 								item.SetCooldown();
-							}
 
-							if (GetValidInventorySlot((eInventorySlot)item.SlotPosition) == eInventorySlot.Invalid)
+							if (GetValidInventorySlot((eInventorySlot) item.SlotPosition) is eInventorySlot.Invalid)
 							{
 								if (Log.IsErrorEnabled)
-									Log.Error("Tried to load an item in invalid slot, ignored. Item id=" + item.ObjectId);
+									Log.Error($"Tried to load an item in invalid slot, ignored. Item id={item.ObjectId}");
 
 								continue;
 							}
@@ -72,10 +78,7 @@ namespace DOL.GS
 							if (m_items.ContainsKey(itemSlot))
 							{
 								if (Log.IsErrorEnabled)
-								{
-									Log.ErrorFormat("Error loading {0}'s ({1}) inventory!\nDuplicate item {2} found in slot {3}; Skipping!",
-									                m_player.Name, inventoryID, item.Name, itemSlot);
-								}
+									Log.Error($"Error loading {m_player.Name}'s ({inventoryId}) inventory!\nDuplicate item {item.Name} found in slot {itemSlot}; Skipping!");
 
 								continue;
 							}
@@ -85,25 +88,22 @@ namespace DOL.GS
 							// up item type checks and implement item delve information in
 							// a natural way, i.e. through inheritance.
 
-							// Tolakram - Leaving this functionality as is for now.  InventoryArtifact now inherits from
-							// GameInventoryItem and utilizes the new Delve system.  No need to set ClassType for all artifacts when
-							// this code works fine as is.
-
-
 							GameInventoryItem playerItem = GameInventoryItem.Create(item);
 
 							if (playerItem.CheckValid(m_player))
-							{
-								m_items.Add(itemSlot, playerItem as DbInventoryItem);
-							}
+								m_items.Add(itemSlot, playerItem);
 							else
 							{
-								Log.ErrorFormat("Item '{0}', ClassType '{1}' failed valid test for player '{2}'!", item.Name, item.ClassType, m_player.Name);
-								GameInventoryItem invalidItem = new GameInventoryItem();
-								invalidItem.Name = "Invalid Item";
-								invalidItem.OwnerID = item.OwnerID;
-								invalidItem.SlotPosition = item.SlotPosition;
-								invalidItem.AllowAdd = false;
+								if (Log.IsErrorEnabled)
+									Log.ErrorFormat($"Item '{item.Name}', ClassType '{item.ClassType}' failed valid test for player '{m_player.Name}'!");
+
+								GameInventoryItem invalidItem = new()
+								{
+									Name = "Invalid Item",
+									OwnerID = item.OwnerID,
+									SlotPosition = item.SlotPosition,
+									AllowAdd = false
+								};
 								m_items.Add(itemSlot, invalidItem);
 							}
 
@@ -112,30 +112,26 @@ namespace DOL.GS
 								// bows don't use damage type - no warning needed
 								if (GlobalConstants.IsWeapon(item.Object_Type)
 								    && item.Type_Damage == 0
-								    && item.Object_Type != (int)eObjectType.CompositeBow
-								    && item.Object_Type != (int)eObjectType.Crossbow
-								    && item.Object_Type != (int)eObjectType.Longbow
-								    && item.Object_Type != (int)eObjectType.Fired
-								    && item.Object_Type != (int)eObjectType.RecurvedBow)
+								    && (eObjectType) item.Object_Type is not eObjectType.CompositeBow
+								    && (eObjectType) item.Object_Type is not eObjectType.Crossbow
+								    && (eObjectType) item.Object_Type is not eObjectType.Longbow
+								    && (eObjectType) item.Object_Type is not eObjectType.Fired
+								    && (eObjectType) item.Object_Type is not eObjectType.RecurvedBow)
 								{
-									Log.Warn(m_player.Name + ": weapon with damage type 0 is loaded \"" + item.Name + "\" (" + item.ObjectId + ")");
+									if (Log.IsWarnEnabled)
+										Log.Warn($"{m_player.Name}: weapon with damage type 0 is loaded '{item.Name}' ({item.ObjectId})");
 								}
 							}
 						}
 						catch (Exception ex)
 						{
-							Log.Error("Error loading player inventory (" + inventoryID + "), Inventory_ID: " +
-							          item.ObjectId +
-							          " (" + (item.ITemplate_Id == null ? "" : item.ITemplate_Id) +
-							          ", " + (item.UTemplate_Id == null ? "" : item.UTemplate_Id) +
-							          "), slot: " + item.SlotPosition, ex);
+							if (Log.IsErrorEnabled)
+								Log.Error($"Error loading player inventory ({inventoryId}), Inventory_ID: {item.ObjectId} ({item.ITemplate_Id ?? ""}, {item.UTemplate_Id ?? ""}), slot: {item.SlotPosition}", ex);
 						}
 					}
 
-					// notify handlers that the item was just equipped
 					foreach (eInventorySlot slot in EQUIP_SLOTS)
 					{
-						// skip weapons. only active weapons should fire equip event, done in player.SwitchWeapon
 						if (slot is >= eInventorySlot.RightHandWeapon and <= eInventorySlot.DistanceWeapon)
 							continue;
 
@@ -149,18 +145,13 @@ namespace DOL.GS
 				catch (Exception e)
 				{
 					if (Log.IsErrorEnabled)
-						Log.Error("Error loading player inventory (" + inventoryID + ").  Load aborted!", e);
+						Log.Error($"Error loading player inventory ({inventoryId}). Load aborted!", e);
 
 					return false;
 				}
 			}
 		}
 
-		/// <summary>
-		/// Saves all dirty items to database
-		/// </summary>
-		/// <param name="inventoryID">The inventory ID</param>
-		/// <returns>success</returns>
 		public override bool SaveIntoDatabase(string inventoryID)
 		{
 			lock (Lock)

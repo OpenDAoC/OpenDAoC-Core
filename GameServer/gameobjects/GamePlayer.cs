@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -10514,167 +10515,6 @@ namespace DOL.GS
         }
 
         /// <summary>
-        /// Loads the Skills from the Character
-        /// Called after the default skills / level have been set!
-        /// </summary>
-        protected virtual void LoadSkillsFromCharacter()
-        {
-            DbCoreCharacter character = DBCharacter; // if its derived and filled with some code
-            if (character == null) return; // no character => exit
-
-            #region load class spec
-
-            // first load spec's career
-            LoadClassSpecializations(false);
-
-            //Load Remaining spec and levels from Database (custom spec can still be added here...)
-            string tmpStr = character.SerializedSpecs;
-            if (tmpStr != null && tmpStr.Length > 0)
-            {
-                foreach (string spec in Util.SplitCSV(tmpStr))
-                {
-                    string[] values = spec.Split('|');
-                    if (values.Length >= 2)
-                    {
-                        Specialization tempSpec = SkillBase.GetSpecialization(values[0], false);
-
-                        if (tempSpec != null)
-                        {
-                            if (tempSpec.AllowSave)
-                            {
-                                int level;
-                                if (int.TryParse(values[1], out level))
-                                {
-                                    if (HasSpecialization(tempSpec.KeyName))
-                                    {
-                                        GetSpecializationByName(tempSpec.KeyName).Level = level;
-                                    }
-                                    else
-                                    {
-                                        tempSpec.Level = level;
-                                        AddSpecialization(tempSpec, false);
-                                    }
-                                }
-                                else if (log.IsErrorEnabled)
-                                {
-                                    log.ErrorFormat("{0} : error in loading specs => '{1}'", Name, tmpStr);
-                                }
-                            }
-                        }
-                        else if (log.IsErrorEnabled)
-                        {
-                            log.ErrorFormat("{0}: can't find spec '{1}'", Name, values[0]);
-                        }
-                    }
-                }
-            }
-
-            // Add Serialized Abilities to keep Database Order
-            // Custom Ability will be disabled as soon as they are not in any specs...
-            tmpStr = character.SerializedAbilities;
-            if (tmpStr != null && tmpStr.Length > 0 && m_usableSkills.Count == 0)
-            {
-                foreach (string abilities in Util.SplitCSV(tmpStr))
-                {
-                    string[] values = abilities.Split('|');
-                    if (values.Length >= 2)
-                    {
-                        int level;
-                        if (int.TryParse(values[1], out level))
-                        {
-                            Ability ability = SkillBase.GetAbility(values[0], level);
-                            if (ability != null)
-                            {
-                                // this is for display order only
-                                m_usableSkills.Add(new Tuple<Skill, Skill>(ability, ability));
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Retrieve Realm Abilities From Database to be handled by Career Spec
-            tmpStr = character.SerializedRealmAbilities;
-            if (tmpStr != null && tmpStr.Length > 0)
-            {
-                foreach (string abilities in Util.SplitCSV(tmpStr))
-                {
-                    string[] values = abilities.Split('|');
-                    if (values.Length >= 2)
-                    {
-                        int level;
-                        if (int.TryParse(values[1], out level))
-                        {
-                            Ability ability = SkillBase.GetAbility(values[0], level);
-                            if (ability != null && ability is RealmAbility)
-                            {
-                                // this enable realm abilities for Career Computing.
-                                m_realmAbilities.Add((RealmAbility)ability);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Load dependent skills
-            RefreshSpecDependantSkills(false);
-
-            #endregion
-
-            #region disable ability
-            //Since we added all the abilities that this character has, let's now disable the disabled ones!
-            tmpStr = character.DisabledAbilities;
-            if (tmpStr != null && tmpStr.Length > 0)
-            {
-                foreach (string str in Util.SplitCSV(tmpStr))
-                {
-                    string[] values = str.Split('|');
-                    if (values.Length >= 2)
-                    {
-                        string keyname = values[0];
-                        int duration;
-                        if (HasAbility(keyname) && int.TryParse(values[1], out duration))
-                        {
-                            DisableSkill(GetAbility(keyname), duration);
-                        }
-                        else if (log.IsErrorEnabled)
-                        {
-                            log.ErrorFormat("{0}: error in loading disabled abilities => '{1}'", Name, tmpStr);
-                        }
-                    }
-                }
-            }
-
-            #endregion
-
-            //Load the disabled spells
-            tmpStr = character.DisabledSpells;
-            if (!string.IsNullOrEmpty(tmpStr))
-            {
-                foreach (string str in Util.SplitCSV(tmpStr))
-                {
-                    string[] values = str.Split('|');
-                    int spellid;
-                    int duration;
-                    if (values.Length >= 2 && int.TryParse(values[0], out spellid) && int.TryParse(values[1], out duration))
-                    {
-                        Spell sp = SkillBase.GetSpellByID(spellid);
-                        // disable
-                        if (sp != null)
-                            DisableSkill(sp, duration);
-                    }
-                    else if (log.IsErrorEnabled)
-                    {
-                        log.ErrorFormat("{0}: error in loading disabled spells => '{1}'", Name, tmpStr);
-                    }
-                }
-            }
-
-            CharacterClass.OnLevelUp(this, Level); // load all skills from DB first to keep the order
-            CharacterClass.OnRealmLevelUp(this);
-        }
-
-        /// <summary>
         /// Load this player Classes Specialization.
         /// </summary>
         public virtual void LoadClassSpecializations(bool sendMessages)
@@ -10768,11 +10608,7 @@ namespace DOL.GS
             return allpoints;
         }
 
-        /// <summary>
-        /// Loads this player from a character table slot
-        /// </summary>
-        /// <param name="obj">DOLCharacter</param>
-        public override void LoadFromDatabase(DataObject obj)
+        public async Task LoadFromDatabaseAsync(DataObject obj)
         {
             base.LoadFromDatabase(obj);
 
@@ -10780,241 +10616,546 @@ namespace DOL.GS
                 return;
 
             m_dbCharacter = dbCoreCharacter;
-            DbAccountXMoney MoneyForRealm = DOLDB<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
+            m_previousLoginDate = DBCharacter.LastPlayed;
+            DBCharacter.LastPlayed = DateTime.Now; // Has to be updated on load to ensure time offline isn't added to character /played.
+            IsMuted = Client.Account.IsMuted; // Account mutes are persistent.
 
-            if (MoneyForRealm == null)
+            // Prepare the tasks.
+            var moneyForRealmTask = DOLDB<DbAccountXMoney>.SelectObjectAsync(DB.Column("AccountID").IsEqualTo(Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(Realm)));
+            var inventoryTask = Inventory.StartLoadFromDatabaseTask(InternalID);
+            var craftingForRealmTask = DOLDB<DbAccountXCrafting>.SelectObjectAsync(DB.Column("AccountID").IsEqualTo(AccountName).And(DB.Column("Realm").IsEqualTo(Realm)));
+            var scriptedQuestsTask = DOLDB<DbQuest>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+            var dataQuestsTask = DOLDB<DbCharacterXDataQuest>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID)).ContinueWith(task =>
             {
-                int realmMithril = 0;
-                int realmPlatinum = 0;
-                int realmGold = 0;
-                int realmSilver = 0;
-                int realmCopper = 0;
-
-                DbAccountXMoney newMoney = new DbAccountXMoney();
-                newMoney.AccountId = this.Client.Account.ObjectId;
-                newMoney.Realm = (int)this.Realm;
-
-                foreach (DbCoreCharacter character in this.Client.Account.Characters) // cycling through their toons
-                {
-                    if ((eRealm)character.Realm == this.Realm) // account money is realm bound
+                var characterDataQuests = task.Result;
+                var innerTasks = characterDataQuests.Select(characterQuest => DOLDB<DbDataQuest>.SelectObjectAsync(DB.Column("DataQuestID").IsEqualTo(characterQuest.DataQuestID))
+                    .ContinueWith(dbDataQuestTask =>
                     {
-                        realmCopper += character.Copper;
-                        realmSilver += character.Silver;
-                        realmGold += character.Gold;
-                        realmPlatinum += character.Platinum;
-                        realmMithril += character.Mithril;
+                        var dbDataQuest = dbDataQuestTask.Result;
 
-                        if (realmCopper > 100)
+                        if (dbDataQuest == null || (DataQuest.eStartType) dbDataQuest.StartType is DataQuest.eStartType.Collection)
+                            return null;
+
+                        return new DataQuest(this, dbDataQuest, characterQuest);
+                    })).ToArray();
+                return Task.WhenAll(innerTasks);
+            }).Unwrap();
+            var factionRelationsTask = DOLDB<DbFactionAggroLevel>.SelectObjectsAsync(DB.Column("CharacterID").IsEqualTo(ObjectId));
+            var tasksTask = DOLDB<DbTask>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(InternalID));
+            var masterLevelsTask = DOLDB<DbCharacterXMasterLevel>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+
+            // Wait for tasks to complete. This may not be necessary.
+            List<Task> tasks =
+            [
+                moneyForRealmTask,
+                inventoryTask,
+                craftingForRealmTask,
+                scriptedQuestsTask,
+                dataQuestsTask,
+                factionRelationsTask,
+                tasksTask,
+                masterLevelsTask
+            ];
+            await Task.WhenAll(tasks);
+
+            SetCharacterClass(DBCharacter.Class);
+            HandleWorldPosition();
+            HandleStats();
+            HandleCharacterModel();
+            HandleGuild();
+            HandleTitles();
+            HandleMoney(await moneyForRealmTask);
+            HandleInventory(await inventoryTask);
+            HandleCharacterSkills();
+            HandleCraftingSkills(await craftingForRealmTask);
+            HandleQuests(await scriptedQuestsTask, await dataQuestsTask);
+            FactionMgr.LoadAllAggroToFaction(this, await factionRelationsTask);
+            HandleTasks(await tasksTask);
+            HandleMasterLevels(await masterLevelsTask);
+
+            VerifySpecPoints();
+            GuildMgr.AddPlayerToGuildMemberViews(this); // Needed for starter guilds since they are forced onto the `DBCharacter`.
+            styleComponent.OnPlayerLoadFromDatabase(); // Sets `AutomaticBackupStyle`.
+
+            void HandleWorldPosition()
+            {
+                m_x = DBCharacter.Xpos;
+                m_y = DBCharacter.Ypos;
+                m_z = DBCharacter.Zpos;
+                Heading = (ushort) DBCharacter.Direction;
+                CurrentRegionID = (ushort) DBCharacter.Region; // Sets `Region` too.
+
+                if (CurrentRegion == null || CurrentRegion.GetZone(m_x, m_y) == null)
+                {
+                    log.WarnFormat("Invalid region/zone on char load ({0}): x={1} y={2} z={3} reg={4}; moving to bind point.", DBCharacter.Name, X, Y, Z, DBCharacter.Region);
+                    m_x = DBCharacter.BindXpos;
+                    m_y = DBCharacter.BindYpos;
+                    m_z = DBCharacter.BindZpos;
+                    Heading = (ushort) DBCharacter.BindHeading;
+                    CurrentRegionID = (ushort) DBCharacter.BindRegion;
+                }
+
+                for (int i = 0; i < m_lastUniqueLocations.Length; i++)
+                    m_lastUniqueLocations[i] = new GameLocation(null, CurrentRegionID, m_x, m_y, m_z);
+            }
+
+            void HandleCharacterModel()
+            {
+                Model = (ushort) DBCharacter.CurrentModel;
+                m_customFaceAttributes[(int) eCharFacePart.EyeSize] = DBCharacter.EyeSize;
+                m_customFaceAttributes[(int) eCharFacePart.LipSize] = DBCharacter.LipSize;
+                m_customFaceAttributes[(int) eCharFacePart.EyeColor] = DBCharacter.EyeColor;
+                m_customFaceAttributes[(int) eCharFacePart.HairColor] = DBCharacter.HairColor;
+                m_customFaceAttributes[(int) eCharFacePart.FaceType] = DBCharacter.FaceType;
+                m_customFaceAttributes[(int) eCharFacePart.HairStyle] = DBCharacter.HairStyle;
+                m_customFaceAttributes[(int) eCharFacePart.MoodType] = DBCharacter.MoodType;
+            }
+
+            void HandleStats()
+            {
+                m_charStat[eStat.STR - eStat._First] = (short) DBCharacter.Strength;
+                m_charStat[eStat.DEX - eStat._First] = (short) DBCharacter.Dexterity;
+                m_charStat[eStat.CON - eStat._First] = (short) DBCharacter.Constitution;
+                m_charStat[eStat.QUI - eStat._First] = (short) DBCharacter.Quickness;
+                m_charStat[eStat.INT - eStat._First] = (short) DBCharacter.Intelligence;
+                m_charStat[eStat.PIE - eStat._First] = (short) DBCharacter.Piety;
+                m_charStat[eStat.EMP - eStat._First] = (short) DBCharacter.Empathy;
+                m_charStat[eStat.CHR - eStat._First] = (short) DBCharacter.Charisma;
+
+                if (MaxSpeedBase == 0)
+                    MaxSpeedBase = PLAYER_BASE_SPEED;
+
+                if (DBCharacter.PlayedTime < 1)
+                {
+                    Health = MaxHealth;
+                    Mana = MaxMana;
+                    Endurance = MaxEndurance;
+                }
+                else
+                {
+                    Health = DBCharacter.Health;
+                    Mana = DBCharacter.Mana;
+                    Endurance = DBCharacter.Endurance;
+                }
+
+                if (Health <= 0)
+                    Health = 1;
+
+                if (RealmLevel == 0)
+                    RealmLevel = CalculateRealmLevelFromRPs(RealmPoints);
+            }
+
+            void HandleGuild()
+            {
+                m_guildId = DBCharacter.GuildID;
+
+                if (m_guildId != null)
+                {
+                    m_guild = GuildMgr.GetGuildByGuildID(m_guildId);
+
+                    // If the guild is not found, we need to refresh the emblem ourselves.
+                    // Otherwise this is done in `AddOnlineMember`.
+                    if (m_guild == null)
+                        GuildMgr.RefreshPersonalHouseEmblem(this);
+                    else
+                    {
+                        foreach (DbGuildRank rank in m_guild.Ranks)
                         {
-                            realmCopper -= 100;
-                            realmSilver += 1;
-                        }
-                        if (realmSilver > 100)
-                        {
-                            realmSilver -= 100;
-                            realmGold += 1;
-                        }
-                        if (realmGold > 1000)
-                        {
-                            realmGold -= 1000;
-                            realmPlatinum += 1;
+                            if (rank == null)
+                                continue;
+
+                            if (rank.RankLevel == DBCharacter.GuildRank)
+                            {
+                                m_guildRank = rank;
+                                break;
+                            }
                         }
 
+                        m_guildName = m_guild.Name;
+                        m_guild.AddOnlineMember(this);
+                    }
+                }
+                else
+                    m_guild = null;
+            }
+
+            void HandleTitles()
+            {
+                m_titles.Clear();
+
+                foreach (IPlayerTitle title in PlayerTitleMgr.GetPlayerTitles(this))
+                    m_titles.Add(title);
+
+                m_currentTitle = PlayerTitleMgr.GetTitleByTypeName(DBCharacter.CurrentTitleType) ?? PlayerTitleMgr.ClearTitle;
+            }
+
+            void HandleMoney(DbAccountXMoney moneyForRealm)
+            {
+                if (moneyForRealm == null)
+                {
+                    int realmMithril = 0;
+                    int realmPlatinum = 0;
+                    int realmGold = 0;
+                    int realmSilver = 0;
+                    int realmCopper = 0;
+
+                    DbAccountXMoney newMoney = new()
+                    {
+                        AccountId = Client.Account.ObjectId,
+                        Realm = (int) Realm
+                    };
+
+                    foreach (DbCoreCharacter character in Client.Account.Characters)
+                    {
+                        if ((eRealm) character.Realm == Realm)
+                        {
+                            realmCopper += character.Copper;
+                            realmSilver += character.Silver;
+                            realmGold += character.Gold;
+                            realmPlatinum += character.Platinum;
+                            realmMithril += character.Mithril;
+
+                            if (realmCopper > 100)
+                            {
+                                realmCopper -= 100;
+                                realmSilver += 1;
+                            }
+
+                            if (realmSilver > 100)
+                            {
+                                realmSilver -= 100;
+                                realmGold += 1;
+                            }
+
+                            if (realmGold > 1000)
+                            {
+                                realmGold -= 1000;
+                                realmPlatinum += 1;
+                            }
+                        }
+                    }
+
+                    newMoney.Copper = realmCopper;
+                    newMoney.Silver = realmSilver;
+                    newMoney.Gold = realmGold;
+                    newMoney.Platinum = realmPlatinum;
+                    newMoney.Mithril = realmMithril;
+
+                    GameServer.Database.AddObject(newMoney);
+                    moneyForRealm = newMoney;
+                }
+
+                m_Copper = moneyForRealm.Copper;
+                m_Silver = moneyForRealm.Silver;
+                m_Gold = moneyForRealm.Gold;
+                m_Platinum = moneyForRealm.Platinum;
+                m_Mithril = moneyForRealm.Mithril;
+            }
+
+            void HandleInventory(IList items)
+            {
+                Inventory.LoadInventory(InternalID, items);
+                SwitchQuiver((eActiveQuiverSlot) (DBCharacter.ActiveWeaponSlot & 0xF0), false);
+                SwitchWeapon((eActiveWeaponSlot) (DBCharacter.ActiveWeaponSlot & 0x0F));
+            }
+
+            void HandleCharacterSkills()
+            {
+                LoadClassSpecializations(false);
+                string tmpStr = DBCharacter.SerializedSpecs;
+
+                if (tmpStr != null && tmpStr.Length > 0)
+                {
+                    foreach (string spec in Util.SplitCSV(tmpStr))
+                    {
+                        string[] values = spec.Split('|');
+
+                        if (values.Length >= 2)
+                        {
+                            Specialization tempSpec = SkillBase.GetSpecialization(values[0], false);
+
+                            if (tempSpec != null)
+                            {
+                                if (tempSpec.AllowSave)
+                                {
+                                    if (int.TryParse(values[1], out int level))
+                                    {
+                                        if (HasSpecialization(tempSpec.KeyName))
+                                            GetSpecializationByName(tempSpec.KeyName).Level = level;
+                                        else
+                                        {
+                                            tempSpec.Level = level;
+                                            AddSpecialization(tempSpec, false);
+                                        }
+                                    }
+                                    else if (log.IsErrorEnabled)
+                                        log.Error($"{Name}: error in loading specs => '{tmpStr}'");
+                                }
+                            }
+                            else if (log.IsErrorEnabled)
+                                log.Error($"{Name}: can't find spec '{values[0]}'");
+                        }
                     }
                 }
 
-                newMoney.Copper = realmCopper;
-                newMoney.Silver = realmSilver;
-                newMoney.Gold = realmGold;
-                newMoney.Platinum = realmPlatinum;
-                newMoney.Mithril = realmMithril;
+                tmpStr = DBCharacter.SerializedAbilities;
 
-                GameServer.Database.AddObject(newMoney);
-                MoneyForRealm = newMoney;
+                if (tmpStr != null && tmpStr.Length > 0 && m_usableSkills.Count == 0)
+                {
+                    foreach (string abilities in Util.SplitCSV(tmpStr))
+                    {
+                        string[] values = abilities.Split('|');
+
+                        if (values.Length >= 2)
+                        {
+                            if (int.TryParse(values[1], out int level))
+                            {
+                                Ability ability = SkillBase.GetAbility(values[0], level);
+
+                                if (ability != null)
+                                    m_usableSkills.Add(new Tuple<Skill, Skill>(ability, ability));
+                            }
+                        }
+                    }
+                }
+
+                tmpStr = DBCharacter.SerializedRealmAbilities;
+
+                if (tmpStr != null && tmpStr.Length > 0)
+                {
+                    foreach (string abilities in Util.SplitCSV(tmpStr))
+                    {
+                        string[] values = abilities.Split('|');
+
+                        if (values.Length >= 2)
+                        {
+                            if (int.TryParse(values[1], out int level))
+                            {
+                                Ability ability = SkillBase.GetAbility(values[0], level);
+
+                                if (ability is RealmAbility realmAbility)
+                                    m_realmAbilities.Add(realmAbility);
+                            }
+                        }
+                    }
+                }
+
+                RefreshSpecDependantSkills(false);
+                tmpStr = DBCharacter.DisabledAbilities;
+
+                if (tmpStr != null && tmpStr.Length > 0)
+                {
+                    foreach (string str in Util.SplitCSV(tmpStr))
+                    {
+                        string[] values = str.Split('|');
+
+                        if (values.Length >= 2)
+                        {
+                            string key= values[0];
+
+                            if (HasAbility(key) && int.TryParse(values[1], out int duration))
+                                DisableSkill(GetAbility(key), duration);
+                            else if (log.IsErrorEnabled)
+                                log.Error($"{Name}: error in loading disabled abilities => '{tmpStr}'");
+                        }
+                    }
+                }
+
+                tmpStr = DBCharacter.DisabledSpells;
+
+                if (!string.IsNullOrEmpty(tmpStr))
+                {
+                    foreach (string str in Util.SplitCSV(tmpStr))
+                    {
+                        string[] values = str.Split('|');
+
+                        if (values.Length >= 2 && int.TryParse(values[0], out int spellId) && int.TryParse(values[1], out int duration))
+                        {
+                            Spell sp = SkillBase.GetSpellByID(spellId);
+
+                            if (sp != null)
+                                DisableSkill(sp, duration);
+                        }
+                        else if (log.IsErrorEnabled)
+                            log.ErrorFormat("{0}: error in loading disabled spells => '{1}'", Name, tmpStr);
+                    }
+                }
+
+                CharacterClass.OnLevelUp(this, Level);
+                CharacterClass.OnRealmLevelUp(this);
             }
 
-            // Money
-            m_Copper = MoneyForRealm.Copper;
-            m_Silver = MoneyForRealm.Silver;
-            m_Gold = MoneyForRealm.Gold;
-            m_Platinum = MoneyForRealm.Platinum;
-            m_Mithril = MoneyForRealm.Mithril;
-
-            Model = (ushort)DBCharacter.CurrentModel;
-
-            m_customFaceAttributes[(int)eCharFacePart.EyeSize] = DBCharacter.EyeSize;
-            m_customFaceAttributes[(int)eCharFacePart.LipSize] = DBCharacter.LipSize;
-            m_customFaceAttributes[(int)eCharFacePart.EyeColor] = DBCharacter.EyeColor;
-            m_customFaceAttributes[(int)eCharFacePart.HairColor] = DBCharacter.HairColor;
-            m_customFaceAttributes[(int)eCharFacePart.FaceType] = DBCharacter.FaceType;
-            m_customFaceAttributes[(int)eCharFacePart.HairStyle] = DBCharacter.HairStyle;
-            m_customFaceAttributes[(int)eCharFacePart.MoodType] = DBCharacter.MoodType;
-
-            #region guild handling
-
-            m_guildId = DBCharacter.GuildID;
-
-            if (m_guildId != null)
+            void HandleCraftingSkills(DbAccountXCrafting craftingForRealm)
             {
-                m_guild = GuildMgr.GetGuildByGuildID(m_guildId);
-
-                // If the guild is not found, we need to refresh the emblem ourselves.
-                // Otherwise this is done in `AddOnlineMember`.
-                if (m_guild == null)
-                    GuildMgr.RefreshPersonalHouseEmblem(this);
-                else
+                if (craftingForRealm == null)
                 {
-                    foreach (DbGuildRank rank in m_guild.Ranks)
+                    DbAccountXCrafting newCrafting = new()
                     {
-                        if (rank == null)
-                            continue;
+                        AccountId = this.AccountName,
+                        Realm = (int) this.Realm,
+                        CraftingPrimarySkill = 15
+                    };
+                    GameServer.Database.AddObject(newCrafting);
+                    craftingForRealm = newCrafting;
+                }
+                try
+                {
+                    CraftingPrimarySkill = (eCraftingSkill) craftingForRealm.CraftingPrimarySkill;
 
-                        if (rank.RankLevel == DBCharacter.GuildRank)
+                    lock (_craftingLock)
+                    {
+                        foreach (string skill in Util.SplitCSV(craftingForRealm.SerializedCraftingSkills))
                         {
-                            m_guildRank = rank;
+                            string[] values = skill.Split('|');
+
+                            if (values[0].Length > 3)
+                            {
+                                // Load by crafting skill name.
+                                int i = 0;
+
+                                switch (values[0])
+                                {
+                                    case "WeaponCrafting": i = 1; break;
+                                    case "ArmorCrafting": i = 2; break;
+                                    case "SiegeCrafting": i = 3; break;
+                                    case "Alchemy": i = 4; break;
+                                    case "MetalWorking": i = 6; break;
+                                    case "LeatherCrafting": i = 7; break;
+                                    case "ClothWorking": i = 8; break;
+                                    case "GemCutting": i = 9; break;
+                                    case "HerbalCrafting": i = 10; break;
+                                    case "Tailoring": i = 11; break;
+                                    case "Fletching": i = 12; break;
+                                    case "SpellCrafting": i = 13; break;
+                                    case "WoodWorking": i = 14; break;
+                                    case "BasicCrafting": i = 15; break;
+                                }
+
+                                if (!m_craftingSkills.ContainsKey((eCraftingSkill)i))
+                                {
+                                    if (IsCraftingSkillDefined(Convert.ToInt32(values[0])))
+                                    {
+                                        if (Properties.CRAFTING_MAX_SKILLS)
+                                            m_craftingSkills.Add((eCraftingSkill) Convert.ToInt32(values[0]), Properties.CRAFTING_MAX_SKILLS_AMOUNT);
+                                        else
+                                            m_craftingSkills.Add((eCraftingSkill) i, Convert.ToInt32(values[1]));
+                                    }
+                                    else
+                                    {
+                                        if (log.IsErrorEnabled)
+                                            log.Error($"Tried to load invalid CraftingSkill: {values[0]}");
+                                    }
+                                }
+                            }
+                            else if (!m_craftingSkills.ContainsKey((eCraftingSkill) Convert.ToInt32(values[0])))
+                            {
+                                // Load by ID.
+                                if (IsCraftingSkillDefined(Convert.ToInt32(values[0])))
+                                {
+                                    if (Properties.CRAFTING_MAX_SKILLS)
+                                        m_craftingSkills.Add((eCraftingSkill) Convert.ToInt32(values[0]), Properties.CRAFTING_MAX_SKILLS_AMOUNT);
+                                    else
+                                        m_craftingSkills.Add((eCraftingSkill) Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
+                                }
+                                else
+                                {
+                                    if (log.IsErrorEnabled)
+                                        log.Error($"Tried to load invalid CraftingSkill: {values[0]}");
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"{Name}: error in loading playerCraftingSkills => {DBCharacter.SerializedCraftingSkills}", e);
+                }
+
+                bool IsCraftingSkillDefined(int craftingSkillToCheck)
+                {
+                    return Enum.IsDefined(typeof(eCraftingSkill), craftingSkillToCheck);
+                }
+            }
+
+            void HandleQuests(IList<DbQuest> scriptedQuests, DataQuest[] dataQuests)
+            {
+                AvailableQuestIndexes.Clear();
+                QuestList.Clear();
+                _questListFinished.Clear();
+                int activeQuestCount = 0;
+
+                foreach (DbQuest dbQuest in scriptedQuests)
+                {
+                    AbstractQuest quest = AbstractQuest.LoadFromDatabase(this, dbQuest);
+
+                    if (quest == null)
+                        continue;
+
+                    if (quest.Step < 0)
+                        AddFinishedQuest(quest);
+                    else
+                        QuestList.TryAdd(quest, (byte) activeQuestCount++);
+
+                    switch (quest)
+                    {
+                        case Quests.DailyQuest dailyQuest:
+                        {
+                            dailyQuest.LoadQuestParameters();
+                            break;
+                        }
+                        case Quests.WeeklyQuest weeklyQuest:
+                        {
+                            weeklyQuest.LoadQuestParameters();
+                            break;
+                        }
+                        case Quests.MonthlyQuest monthlyQuest:
+                        {
+                            monthlyQuest.LoadQuestParameters();
+                            break;
+                        }
+                        case Quests.AtlasQuest atlasQuest:
+                        {
+                            atlasQuest.LoadQuestParameters();
                             break;
                         }
                     }
+                }
 
-                    m_guildName = m_guild.Name;
-                    m_guild.AddOnlineMember(this);
+                foreach (DataQuest dataQuest in dataQuests)
+                {
+                    if (dataQuest.Step > 0)
+                        QuestList.TryAdd(dataQuest, (byte) activeQuestCount++);
+                    else if (dataQuest.Count > 0)
+                        _questListFinished.Add(dataQuest);
                 }
             }
-            else
-                m_guild = null;
 
-            #endregion
-            #region setting world-init-position (delegate to PlayerCharacter dont make sense)
-            m_x = DBCharacter.Xpos;
-            m_y = DBCharacter.Ypos;
-            m_z = DBCharacter.Zpos;
-            Heading = (ushort)DBCharacter.Direction;
-            //important, use CurrentRegion property
-            //instead because it sets the Region too
-            CurrentRegionID = (ushort)DBCharacter.Region;
-            if (CurrentRegion == null || CurrentRegion.GetZone(m_x, m_y) == null)
+            void HandleTasks(IList<DbTask> tasks)
             {
-                log.WarnFormat("Invalid region/zone on char load ({0}): x={1} y={2} z={3} reg={4}; moving to bind point.", DBCharacter.Name, X, Y, Z, DBCharacter.Region);
-                m_x = DBCharacter.BindXpos;
-                m_y = DBCharacter.BindYpos;
-                m_z = DBCharacter.BindZpos;
-                Heading = (ushort)DBCharacter.BindHeading;
-                CurrentRegionID = (ushort)DBCharacter.BindRegion;
+                if (tasks.Count == 1)
+                    m_task = AbstractTask.LoadFromDatabase(this, tasks[0]);
+                else if (tasks.Count > 1)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error("More than one DBTask Object found for player " + Name);
+                }
             }
 
-            for (int i = 0; i < m_lastUniqueLocations.Length; i++)
+            void HandleMasterLevels(IList<DbCharacterXMasterLevel> masterLevels)
             {
-                m_lastUniqueLocations[i] = new GameLocation(null, CurrentRegionID, m_x, m_y, m_z);
+                foreach (DbCharacterXMasterLevel masterLevel in masterLevels)
+                    m_mlSteps.Add(masterLevel);
             }
-            #endregion
+        }
 
-            // stats first
-            m_charStat[eStat.STR - eStat._First] = (short)DBCharacter.Strength;
-            m_charStat[eStat.DEX - eStat._First] = (short)DBCharacter.Dexterity;
-            m_charStat[eStat.CON - eStat._First] = (short)DBCharacter.Constitution;
-            m_charStat[eStat.QUI - eStat._First] = (short)DBCharacter.Quickness;
-            m_charStat[eStat.INT - eStat._First] = (short)DBCharacter.Intelligence;
-            m_charStat[eStat.PIE - eStat._First] = (short)DBCharacter.Piety;
-            m_charStat[eStat.EMP - eStat._First] = (short)DBCharacter.Empathy;
-            m_charStat[eStat.CHR - eStat._First] = (short)DBCharacter.Charisma;
-
-            SetCharacterClass(DBCharacter.Class);
-
-            CurrentSpeed = 0;
-            if (MaxSpeedBase == 0)
-                MaxSpeedBase = PLAYER_BASE_SPEED;
-
-            m_inventory.LoadFromDatabase(InternalID);
-
-            SwitchQuiver((eActiveQuiverSlot)(DBCharacter.ActiveWeaponSlot & 0xF0), false);
-            SwitchWeapon((eActiveWeaponSlot)(DBCharacter.ActiveWeaponSlot & 0x0F));
-
-            if (DBCharacter.PlayedTime < 1) //added to make character start with 100% Health and Mana/Endurance when DB Start Lvl >1 :Loki
-            {
-                Health = MaxHealth;
-                Mana = MaxMana;
-                Endurance = MaxEndurance;
-            }
-            else
-            {
-                Health = DBCharacter.Health;
-                Mana = DBCharacter.Mana;
-                Endurance = DBCharacter.Endurance; // has to be set after max, same applies to other values with max properties
-            }
-
-            if (Health <= 0)
-            {
-                Health = 1;
-            }
-
-            if (RealmLevel == 0)
-                RealmLevel = CalculateRealmLevelFromRPs(RealmPoints);
-
-            //Need to load the skills at the end, so the stored values modify the
-            //existing skill levels for this player
-            LoadSkillsFromCharacter();
-            LoadCraftingSkills();
-            VerifySpecPoints();
-            LoadQuests();
-            FactionMgr.LoadAllAggroToFaction(this);
-
-            // Load Task object of player ...
-            var tasks = DOLDB<DbTask>.SelectObjects(DB.Column("Character_ID").IsEqualTo(InternalID));
-            if (tasks.Count == 1)
-            {
-                m_task = AbstractTask.LoadFromDatabase(this, tasks[0]);
-            }
-            else if (tasks.Count > 1)
-            {
-                if (log.IsErrorEnabled)
-                    log.Error("More than one DBTask Object found for player " + Name);
-            }
-
-            // Load ML steps of player ...
-            var mlsteps = DOLDB<DbCharacterXMasterLevel>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
-            if (mlsteps.Count > 0)
-            {
-                foreach (DbCharacterXMasterLevel mlstep in mlsteps)
-                    m_mlSteps.Add(mlstep);
-            }
-
-            m_previousLoginDate = DBCharacter.LastPlayed;
-
-            // Has to be updated on load to ensure time offline isn't added to character /played.
-            DBCharacter.LastPlayed = DateTime.Now;
-
-            m_titles.Clear();
-            foreach(IPlayerTitle ttl in PlayerTitleMgr.GetPlayerTitles(this))
-                m_titles.Add(ttl);
-
-            IPlayerTitle t = PlayerTitleMgr.GetTitleByTypeName(DBCharacter.CurrentTitleType);
-            if (t == null)
-                t = PlayerTitleMgr.ClearTitle;
-            m_currentTitle = t;
-
-            //let's only check if we can use /level once shall we,
-            //this is nice because i want to check the property often for the new catacombs classes
-
-            // //find all characters in the database
-            // foreach (DOLCharacters plr in Client.Account.Characters)
-            // {
-            //     //where the level of one of the characters if 50
-            //     if (plr.Level == ServerProperties.Properties.SLASH_LEVEL_REQUIREMENT && GameServer.ServerRules.CountsTowardsSlashLevel(plr))
-            //     {
-            //         m_canUseSlashLevel = true;
-            //         break;
-            //     }
-            // }
-
-            // Starter guilds are added to the `DBCharacter` when created, but the guild isn't actually reloaded and won't see it until the next server reboot.
-            // This does nothing if the character is already loaded by the guild.
-            GuildMgr.AddPlayerToGuildMemberViews(this);
-
-            // check the account for the Muted flag
-            if (Client.Account.IsMuted)
-                IsMuted = true;
-
-            styleComponent.OnPlayerLoadFromDatabase();
+        /// <summary>
+        /// Loads this player from a character table slot
+        /// </summary>
+        /// <param name="obj">DOLCharacter</param>
+        public override void LoadFromDatabase(DataObject obj)
+        {
+            LoadFromDatabaseAsync(obj).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -11676,62 +11817,6 @@ namespace DOL.GS
             get { return InternalID; }
         }
 
-        /// <summary>
-        /// Load all the ongoing or completed quests for this player
-        /// </summary>
-        public virtual void LoadQuests()
-        {
-            AvailableQuestIndexes.Clear();
-            QuestList.Clear();
-            _questListFinished.Clear();
-
-            // Scripted quests
-            var quests = DOLDB<DbQuest>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
-            int activeQuestCount = 0;
-
-            foreach (DbQuest dbquest in quests)
-            {
-                AbstractQuest quest = AbstractQuest.LoadFromDatabase(this, dbquest);
-
-                if (quest == null)
-                    continue;
-
-                if (quest.Step < 0)
-                    AddFinishedQuest(quest);
-                else
-                    QuestList.TryAdd(quest, (byte) activeQuestCount++);
-
-                if (quest is Quests.DailyQuest dq)
-                    dq.LoadQuestParameters();
-
-                if (quest is Quests.WeeklyQuest wq)
-                    wq.LoadQuestParameters();
-
-                if (quest is Quests.MonthlyQuest mq)
-                    mq.LoadQuestParameters();
-
-                if (quest is Quests.AtlasQuest aq)
-                    aq.LoadQuestParameters();
-            }
-
-            // Data driven quests for this player
-            var dataQuests = DOLDB<DbCharacterXDataQuest>.SelectObjects(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
-
-            foreach (DbCharacterXDataQuest quest in dataQuests)
-            {
-                DbDataQuest dbDataQuest = GameServer.Database.FindObjectByKey<DbDataQuest>(quest.DataQuestID);
-                if (dbDataQuest != null && dbDataQuest.StartType != (byte)DataQuest.eStartType.Collection)
-                {
-                    DataQuest dataQuest = new DataQuest(this, dbDataQuest, quest);
-
-                    if (quest.Step > 0)
-                        QuestList.TryAdd(dataQuest, (byte) activeQuestCount++);
-                    else if (quest.Count > 0)
-                        _questListFinished.Add(dataQuest);
-                }
-            }
-        }
-
         private List<AbstractQuest> _questListFinished = new();
         private readonly Lock _questListFinishedLock = new();
         public virtual ConcurrentDictionary<AbstractQuest, byte> QuestList { get; } = new(); // Value is the index to send to clients.
@@ -12200,109 +12285,6 @@ namespace DOL.GS
 
                 return PlayerTitleMgr.ClearTitle;
             }
-        }
-
-        /// <summary>
-        /// This function load all player crafting skill from the db
-        /// </summary>
-        protected void LoadCraftingSkills()
-        {
-            if (DBCharacter == null)
-                return;
-
-            DbAccountXCrafting CraftingForRealm = DOLDB<DbAccountXCrafting>.SelectObject(DB.Column("AccountID").IsEqualTo(this.AccountName).And(DB.Column("Realm").IsEqualTo(this.Realm)));
-
-            if (CraftingForRealm == null)
-            {
-                DbAccountXCrafting newCrafting = new DbAccountXCrafting();
-                newCrafting.AccountId = this.AccountName;
-                newCrafting.Realm = (int)this.Realm;
-                newCrafting.CraftingPrimarySkill = 15;
-                GameServer.Database.AddObject(newCrafting);
-                CraftingForRealm = newCrafting;
-            }
-            try
-            {
-                CraftingPrimarySkill = (eCraftingSkill)CraftingForRealm.CraftingPrimarySkill;
-
-                lock (_craftingLock)
-                {
-                    foreach (string skill in Util.SplitCSV(CraftingForRealm.SerializedCraftingSkills))
-                    {
-                        string[] values = skill.Split('|');
-                        //Load by crafting skill name
-                        if (values[0].Length > 3)
-                        {
-                            int i = 0;
-                            switch (values[0])
-                            {
-                                case "WeaponCrafting": i = 1; break;
-                                case "ArmorCrafting": i = 2; break;
-                                case "SiegeCrafting": i = 3; break;
-                                case "Alchemy": i = 4; break;
-                                case "MetalWorking": i = 6; break;
-                                case "LeatherCrafting": i = 7; break;
-                                case "ClothWorking": i = 8; break;
-                                case "GemCutting": i = 9; break;
-                                case "HerbalCrafting": i = 10; break;
-                                case "Tailoring": i = 11; break;
-                                case "Fletching": i = 12; break;
-                                case "SpellCrafting": i = 13; break;
-                                case "WoodWorking": i = 14; break;
-                                case "BasicCrafting": i = 15; break;
-
-                            }
-                            if (!m_craftingSkills.ContainsKey((eCraftingSkill)i))
-                            {
-                                if (IsCraftingSkillDefined(Convert.ToInt32(values[0])))
-                                {
-                                    if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
-                                    {
-                                        m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
-                                    }
-                                    else
-                                    {
-                                        m_craftingSkills.Add((eCraftingSkill)i, Convert.ToInt32(values[1]));
-                                    }
-                                }
-                                else
-                                {
-                                    log.Error("Tried to load invalid CraftingSkill :" + values[0]);
-                                }
-                            }
-                        }
-                        //Load by number
-                        else if (!m_craftingSkills.ContainsKey((eCraftingSkill)Convert.ToInt32(values[0])))
-                        {
-                            if(IsCraftingSkillDefined(Convert.ToInt32(values[0])))
-                            {
-                                if (DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS)
-                                {
-                                    m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), DOL.GS.ServerProperties.Properties.CRAFTING_MAX_SKILLS_AMOUNT);
-                                }
-                                else
-                                {
-                                    m_craftingSkills.Add((eCraftingSkill)Convert.ToInt32(values[0]), Convert.ToInt32(values[1]));
-                                }
-                            }
-                            else
-                            {
-                                log.Error("Tried to load invalid CraftingSkill :"+values[0]);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                if (log.IsErrorEnabled)
-                    log.Error(Name + ": error in loading playerCraftingSkills => " + DBCharacter.SerializedCraftingSkills, e);
-            }
-        }
-
-        private bool IsCraftingSkillDefined(int craftingSkillToCheck)
-        {
-            return Enum.IsDefined(typeof(eCraftingSkill), craftingSkillToCheck);
         }
 
         /// <summary>
@@ -14148,7 +14130,6 @@ namespace DOL.GS
             m_groupIndex = 0xFF;
             m_saveInDB = true;
 
-            LoadFromDatabase(dbChar);
             CreateStatistics();
 
             m_combatTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(_ =>
