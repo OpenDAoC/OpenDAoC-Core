@@ -144,7 +144,7 @@ namespace DOL.GS
         public override void PrepareForNextTick()
         {
             _workerRoutine = static () => _localPools.Reset();
-            ExecuteWork(_degreeOfParallelism, static _ => _localPools.Reset());
+            ExecuteWork(_degreeOfParallelism, null);
             _workerRoutine = ProcessWorkActions;
         }
 
