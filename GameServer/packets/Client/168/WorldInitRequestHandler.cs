@@ -11,13 +11,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
-            // If for some reason a client sends multiple packets in a row, we really don't want to process more than one.
             if (client.ClientState is not GameClient.eClientState.CharScreen and not GameClient.eClientState.Playing)
                 return;
 
             // Only load the player if we're coming from the char screen. This will also update the internal cache of the player's skills.
             bool loadPlayer = client.Account.Characters != null && client.ClientState is GameClient.eClientState.CharScreen;
-            client.ClientState = GameClient.eClientState.WorldEnter;
 
             if (loadPlayer)
                 TimerService.ScheduleActionAfterTask<object>(HandlePacketInternal(client, packet), Continuation, default, null);
@@ -56,7 +54,9 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (player == null || client.Player.ObjectState is not GameObject.eObjectState.Inactive)
                     return false;
 
-                //check emblems at world load before any updates
+                client.ClientState = GameClient.eClientState.WorldEnter;
+
+                // Check emblems at world load before any updates.
                 if (player.Inventory != null)
                 {
                     lock (player.Inventory.Lock)
