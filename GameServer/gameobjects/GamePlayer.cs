@@ -8325,8 +8325,6 @@ namespace DOL.GS
         /// <returns>true if created, false if creation failed</returns>
         public override bool AddToWorld()
         {
-            RandomNumberDeck = new PlayerDeck(this);
-
             if (!base.AddToWorld())
             {
                 log.Error("Failed to add player to world: " + Name);
@@ -10619,6 +10617,7 @@ namespace DOL.GS
             m_previousLoginDate = DBCharacter.LastPlayed;
             DBCharacter.LastPlayed = DateTime.Now; // Has to be updated on load to ensure time offline isn't added to character /played.
             IsMuted = Client.Account.IsMuted; // Account mutes are persistent.
+            RandomNumberDeck = new PlayerDeck(this); // Not async yet, needs to be updated.
 
             // Prepare the tasks.
             var moneyForRealmTask = DOLDB<DbAccountXMoney>.SelectObjectAsync(DB.Column("AccountID").IsEqualTo(Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(Realm)));
