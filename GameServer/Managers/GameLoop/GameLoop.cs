@@ -83,7 +83,7 @@ namespace DOL.GS
 
         public static void Work(int count, Action<int> action)
         {
-            _threadPool.Work(count, action);
+            _threadPool.ExecuteWork(count, action);
         }
 
         private static void Run()

@@ -93,7 +93,7 @@ namespace DOL.GS
 
         public static void KickPlayerToCharScreen(GamePlayer player)
         {
-            if (player.Client.ClientState != GameClient.eClientState.Playing)
+            if (player.Client.ClientState is not GameClient.eClientState.Playing)
                 return;
 
             player.Client.ClientState = GameClient.eClientState.CharScreen;

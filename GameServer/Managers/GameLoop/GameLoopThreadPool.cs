@@ -35,7 +35,8 @@ namespace DOL.GS
         private ManualResetEventSlim[] _workReady;      // Per-worker event to trigger work.
 
         // Work dispatch.
-        private Action<int> _action;                    // Work delegate.
+        private Action<int> _workAction;                // Per-item work action.
+        private Action _workerRoutine;                  // Worker thread routine.
         private int _workLeft;                          // Total items left to process.
         private int _workerCompletionCount;             // Count of workers finished for current iteration.
 
@@ -62,6 +63,7 @@ namespace DOL.GS
                 _workerStartLatch = new(_workerCount);
                 _workReady = new ManualResetEventSlim[_workerCount];
                 _shutdownToken = new();
+                _workerRoutine = ProcessWorkActions;
                 base.Init();
             }
 
@@ -102,14 +104,14 @@ namespace DOL.GS
             }
         }
 
-        public override void Work(int count, Action<int> action)
+        public override void ExecuteWork(int count, Action<int> workAction)
         {
             try
             {
                 if (count <= 0)
                     return;
 
-                _action = action;
+                _workAction = workAction;
                 _workLeft = count;
                 _workerCompletionCount = 0;
 
@@ -120,7 +122,8 @@ namespace DOL.GS
                 for (int i = 0; i < workersToStart; i++)
                     _workReady[i].Set();
 
-                PerformWork();
+                _workerRoutine();
+                Interlocked.Increment(ref _workerCompletionCount);
 
                 // Spin very tightly until all the workers have completed their work.
                 // We could adjust the spin wait time if we get here early, but this is hard to predict.
@@ -140,7 +143,9 @@ namespace DOL.GS
 
         public override void PrepareForNextTick()
         {
-            Work(_degreeOfParallelism, static _ => _localPools.Reset());
+            _workerRoutine = static () => _localPools.Reset();
+            ExecuteWork(_degreeOfParallelism, static _ => _localPools.Reset());
+            _workerRoutine = ProcessWorkActions;
         }
 
         public override void Dispose()
@@ -176,10 +181,10 @@ namespace DOL.GS
             if (Restart)
                 Interlocked.Increment(ref _workerCompletionCount);
 
-            RunWorker(_workReady[Id], _shutdownToken.Token);
+            RunWorkerLoop(_workReady[Id], _shutdownToken.Token);
         }
 
-        private void RunWorker(ManualResetEventSlim workReady, CancellationToken cancellationToken)
+        private void RunWorkerLoop(ManualResetEventSlim workReady, CancellationToken cancellationToken)
         {
             while (Volatile.Read(ref _running))
             {
@@ -208,14 +213,15 @@ namespace DOL.GS
                         log.Error($"Thread \"{Thread.CurrentThread.Name}\"", e);
                 }
 
-                PerformWork();
+                _workerRoutine();
+                 Interlocked.Increment(ref _workerCompletionCount); // Not in a finally block on purpose.
             }
 
             if (log.IsInfoEnabled)
                 log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
         }
 
-        private void PerformWork()
+        private void ProcessWorkActions()
         {
             try
             {
@@ -240,12 +246,10 @@ namespace DOL.GS
                         start = 0;
 
                     for (int i = start; i < end; i++)
-                        _action(i);
+                        _workAction(i);
 
                     remainingWork = start - 1;
                 }
-
-                Interlocked.Increment(ref _workerCompletionCount); // Not in a finally block on purpose.
             }
             catch (Exception e)
             {
@@ -322,10 +326,10 @@ namespace DOL.GS
     {
         public GameLoopThreadPoolSingleThreaded() { }
 
-        public override void Work(int count, Action<int> action)
+        public override void ExecuteWork(int count, Action<int> workAction)
         {
             for (int i = 0; i < count; i++)
-                action(i);
+                workAction(i);
         }
 
         public override void PrepareForNextTick()
@@ -346,7 +350,7 @@ namespace DOL.GS
             _localPools = new();
         }
 
-        public abstract void Work(int count, Action<int> action);
+        public abstract void ExecuteWork(int count, Action<int> workAction);
 
         public abstract void PrepareForNextTick();
 
