@@ -27,9 +27,9 @@ namespace DOL.GS
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
-        public static void ScheduleActionAfterTask(Task task, Action continuation, GameObject owner)
+        public static void ScheduleActionAfterTask<T>(Task task, ContinuationAction<T> continuation, T argument, GameObject owner)
         {
-            ContinuationActionTimerState state = new(owner, continuation);
+            ContinuationActionTimerState<T> state = new(owner, continuation, argument);
 
             task.ContinueWith(static (task, state) =>
             {
@@ -41,7 +41,7 @@ namespace DOL.GS
                     return;
                 }
 
-                _ = new ContinuationActionTimer(state as ContinuationActionTimerState);
+                _ = new ContinuationActionTimer<T>(state as ContinuationActionTimerState<T>);
             }, state);
         }
 
@@ -73,32 +73,38 @@ namespace DOL.GS
             }
         }
 
-        private class ContinuationActionTimer : ECSGameTimerWrapperBase
-        {
-            private Action _continuationAction;
+        public delegate bool ContinuationAction<T>(T argument);
 
-            public ContinuationActionTimer(ContinuationActionTimerState state) : base(state.Owner)
+        private class ContinuationActionTimer<T> : ECSGameTimerWrapperBase
+        {
+            private ContinuationAction<T> _continuationAction;
+            private T _argument;
+
+            public ContinuationActionTimer(ContinuationActionTimerState<T> state) : base(state.Owner)
             {
-                _continuationAction = state.Continuation;
+                _continuationAction = state.ContinuationAction;
+                _argument = state.Argument;
                 Start(0);
             }
 
             protected override int OnTick(ECSGameTimer timer)
             {
-                _continuationAction();
+                _continuationAction(_argument);
                 return 0;
             }
         }
 
-        private class ContinuationActionTimerState
+        private class ContinuationActionTimerState<T>
         {
             public GameObject Owner { get; }
-            public Action Continuation { get; }
+            public ContinuationAction<T> ContinuationAction { get; }
+            public T Argument { get; }
 
-            public ContinuationActionTimerState(GameObject owner, Action continuation)
+            public ContinuationActionTimerState(GameObject owner, ContinuationAction<T> continuationAction, T argument)
             {
                 Owner = owner;
-                Continuation = continuation;
+                ContinuationAction = continuationAction;
+                Argument = argument;
             }
         }
     }

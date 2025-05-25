@@ -856,7 +856,6 @@ namespace DOL.GS
             }
         }
 
-        // Arguments are used to allow the use of more performant static delegates (avoids closures completely).
         public delegate bool CheckPlayerAction<T>(GamePlayer player, T argument);
         public delegate bool CheckClientAction<T>(GameClient client, T argument);
 
