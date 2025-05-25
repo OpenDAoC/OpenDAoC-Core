@@ -702,9 +702,9 @@ namespace DOL.GS
                         if (player.IsStealthed)
                             new ECSGameTimer(player, Unstealth, 1);
 
-                        int Unstealth(ECSGameTimer timer)
+                        static int Unstealth(ECSGameTimer timer)
                         {
-                            player.Stealth(false);
+                            (timer.Owner as GamePlayer).Stealth(false);
                             return 0;
                         }
                     }
