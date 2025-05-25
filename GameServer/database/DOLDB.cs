@@ -23,16 +23,6 @@ namespace DOL.GS
                 TaskScheduler.Default).ConfigureAwait(false);
         }
 
-        public static Func<Task<T>> FindObjectsByKeyDeferred(object key)
-        {
-            return () => Task.Factory.StartNew(
-                static (state) => GameServer.Database.FindObjectByKey<T>(state),
-                key,
-                CancellationToken.None,
-                TaskCreationOptions.DenyChildAttach,
-                TaskScheduler.Default);
-        }
-
         public static IList<T> SelectAllObjects()
         {
             return GameServer.Database.SelectAllObjects<T>();
@@ -46,16 +36,6 @@ namespace DOL.GS
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
                 TaskScheduler.Default).ConfigureAwait(false);
-        }
-
-        public static Func<Task<IList<T>>> SelectAllObjectsDeferred()
-        {
-            return () => Task.Factory.StartNew(
-                static (state) => GameServer.Database.SelectAllObjects<T>(),
-                null,
-                CancellationToken.None,
-                TaskCreationOptions.DenyChildAttach,
-                TaskScheduler.Default);
         }
 
         public static T SelectObject(WhereClause whereClause)
@@ -73,16 +53,6 @@ namespace DOL.GS
                 TaskScheduler.Default).ConfigureAwait(false);
         }
 
-        public static Func<Task<T>> SelectObjectDeferred(WhereClause whereClause)
-        {
-            return () => Task.Factory.StartNew(
-                static (state) => GameServer.Database.SelectObject<T>(state as WhereClause),
-                whereClause,
-                CancellationToken.None,
-                TaskCreationOptions.DenyChildAttach,
-                TaskScheduler.Default);
-        }
-
         public static IList<T> SelectObjects(WhereClause whereClause)
         {
             return GameServer.Database.SelectObjects<T>(whereClause);
@@ -96,16 +66,6 @@ namespace DOL.GS
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
                 TaskScheduler.Default).ConfigureAwait(false);
-        }
-
-        public static Func<Task<IList<T>>> SelectObjectsDeferred(WhereClause clause)
-        {
-            return () => Task.Factory.StartNew(
-                static (state) => GameServer.Database.SelectObjects<T>(state as WhereClause),
-                clause,
-                CancellationToken.None,
-                TaskCreationOptions.DenyChildAttach,
-                TaskScheduler.Default);
         }
 
         public static IList<IList<T>> MultipleSelectObjects(IEnumerable<WhereClause> whereClauseBatch)
@@ -123,16 +83,6 @@ namespace DOL.GS
                 TaskScheduler.Default).ConfigureAwait(false);
         }
 
-        public static Func<Task<IList<IList<T>>>> MultipleSelectObjectsDeferred(IEnumerable<WhereClause> whereClauseBatch)
-        {
-            return () => Task.Factory.StartNew(
-                static (state) => GameServer.Database.MultipleSelectObjects<T>(state as IEnumerable<WhereClause>),
-                whereClauseBatch,
-                CancellationToken.None,
-                TaskCreationOptions.DenyChildAttach,
-                TaskScheduler.Default);
-        }
-
         public static void FillObjectRelations(T dataObject)
         {
             GameServer.Database.FillObjectRelations(dataObject);
@@ -148,16 +98,6 @@ namespace DOL.GS
                 TaskScheduler.Default).ConfigureAwait(false);
         }
 
-        public static Func<Task> FillObjectRelationsDeferred(T dataObject)
-        {
-            return () => Task.Factory.StartNew(
-                static (state) => GameServer.Database.FillObjectRelations(state as T),
-                dataObject,
-                CancellationToken.None,
-                TaskCreationOptions.DenyChildAttach,
-                TaskScheduler.Default);
-        }
-
         public static void FillObjectRelations(IEnumerable<T> dataObjects)
         {
             GameServer.Database.FillObjectRelations(dataObjects);
@@ -171,16 +111,6 @@ namespace DOL.GS
                 CancellationToken.None,
                 TaskCreationOptions.DenyChildAttach,
                 TaskScheduler.Default).ConfigureAwait(false);
-        }
-
-        public static Func<Task> FillObjectRelationsDeferred(IEnumerable<T> dataObjects)
-        {
-            return () => Task.Factory.StartNew(
-                static (state) => GameServer.Database.FillObjectRelations(state as IEnumerable<T>),
-                dataObjects,
-                CancellationToken.None,
-                TaskCreationOptions.DenyChildAttach,
-                TaskScheduler.Default);
         }
     }
 }
