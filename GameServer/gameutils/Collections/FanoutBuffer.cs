@@ -8,6 +8,7 @@ namespace DOL.GS
     // `DrainTo` takes a delegate and automatically resets the internal index for the next consumers.
     // The buffer is never cleared; elements are overwritten but older references remain until replaced.
     // Avoid storing large objects or long-lived references that could hold memory unnecessarily.
+
     public sealed class FanoutBuffer<T>
     {
         private T[] _buffer;
@@ -49,28 +50,24 @@ namespace DOL.GS
 
         public void DrainTo(Action<T> action)
         {
-            int count = Volatile.Read(ref _writeIndex);
+            int count = Interlocked.Exchange(ref _writeIndex, 0);
 
             if (count == 0)
                 return;
 
             for (int i = 0; i < count; i++)
                 action(_buffer[i]);
-
-            Volatile.Write(ref _writeIndex, 0);
         }
 
         public void DrainTo<TState>(Action<T, TState> action, TState state)
         {
-            int count = Volatile.Read(ref _writeIndex);
+            int count = Interlocked.Exchange(ref _writeIndex, 0);
 
             if (count == 0)
                 return;
 
             for (int i = 0; i < count; i++)
                 action(_buffer[i], state);
-
-            Volatile.Write(ref _writeIndex, 0);
         }
     }
 }
