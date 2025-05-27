@@ -38,7 +38,7 @@ namespace DOL.GS
                 _clients = ServiceObjectStore.UpdateAndGetAll<GameClient>(ServiceObjectType.Client, out _lastValidIndex);
             }
 
-            GameLoop.Work(_lastValidIndex + 1, BeginTickInternal);
+            GameLoop.ExecuteWork(_lastValidIndex + 1, BeginTickInternal);
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
@@ -46,7 +46,7 @@ namespace DOL.GS
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-            GameLoop.Work(_lastValidIndex + 1, EndTickInternal);
+            GameLoop.ExecuteWork(_lastValidIndex + 1, EndTickInternal);
 
             if (Diagnostics.CheckEntityCounts)
                 Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _clients.Count);

@@ -83,7 +83,7 @@ namespace DOL.GS
             return _gameLoopStats.GetAverageTicks(GameLoopTime);
         }
 
-        public static void Work(int count, Action<int> action)
+        public static void ExecuteWork(int count, Action<int> action)
         {
             _threadPool.ExecuteWork(count, action);
         }
@@ -158,7 +158,7 @@ namespace DOL.GS
                 WeeklyQuestService.Tick();
                 _threadPool.PrepareForNextTick();
 
-                Work(_postedActions.Count, static _ =>
+                ExecuteWork(_postedActions.Count, static _ =>
                 {
                     if (_postedActions.TryDequeue(out IPostedAction result))
                         result.Invoke();

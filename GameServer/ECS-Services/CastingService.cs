@@ -18,7 +18,7 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
             _list = ServiceObjectStore.UpdateAndGetAll<CastingComponent>(ServiceObjectType.CastingComponent, out int lastValidIndex);
-            GameLoop.Work(lastValidIndex + 1, TickInternal);
+            GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)
                 Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
