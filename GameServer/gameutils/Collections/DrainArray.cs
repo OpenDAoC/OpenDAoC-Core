@@ -43,15 +43,10 @@ namespace DOL.GS
 
         public void DrainTo(Action<T> action)
         {
-            DrainInternal(static (item, act) => act(item), action);
+            DrainTo(static (item, act) => act(item), action);
         }
 
         public void DrainTo<TState>(Action<T, TState> action, TState state)
-        {
-            DrainInternal(action, state);
-        }
-
-        private void DrainInternal<TState>(Action<T, TState> action, TState state)
         {
             if (Interlocked.Exchange(ref _draining, true) != false)
                 throw new InvalidOperationException($"Concurrent {nameof(DrainTo)} detected.");
