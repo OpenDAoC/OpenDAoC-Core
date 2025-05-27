@@ -27,7 +27,7 @@ namespace DOL.GS
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
-        public static void ScheduleActionAfterTask<T>(Task task, ContinuationAction<T> continuation, T argument, GameObject owner)
+        public static void ScheduleTimerAfterTask<T>(Task task, ContinuationAction<T> continuation, T argument, GameObject owner)
         {
             ContinuationActionTimerState<T> state = new(owner, continuation, argument);
 
@@ -41,7 +41,8 @@ namespace DOL.GS
                     return;
                 }
 
-                _ = new ContinuationActionTimer<T>(state as ContinuationActionTimerState<T>);
+                // We can't safely start a timer from within a task continuation, so we post it to the game loop.
+                GameLoop.Post(static (s) => new ContinuationActionTimer<T>(s as ContinuationActionTimerState<T>), state);
             }, state);
         }
 
@@ -75,6 +76,20 @@ namespace DOL.GS
 
         public delegate bool ContinuationAction<T>(T argument);
 
+        private class ContinuationActionTimerState<T>
+        {
+            public GameObject Owner { get; }
+            public ContinuationAction<T> ContinuationAction { get; }
+            public T Argument { get; }
+
+            public ContinuationActionTimerState(GameObject owner, ContinuationAction<T> continuationAction, T argument)
+            {
+                Owner = owner;
+                ContinuationAction = continuationAction;
+                Argument = argument;
+            }
+        }
+
         private class ContinuationActionTimer<T> : ECSGameTimerWrapperBase
         {
             private ContinuationAction<T> _continuationAction;
@@ -91,20 +106,6 @@ namespace DOL.GS
             {
                 _continuationAction(_argument);
                 return 0;
-            }
-        }
-
-        private class ContinuationActionTimerState<T>
-        {
-            public GameObject Owner { get; }
-            public ContinuationAction<T> ContinuationAction { get; }
-            public T Argument { get; }
-
-            public ContinuationActionTimerState(GameObject owner, ContinuationAction<T> continuationAction, T argument)
-            {
-                Owner = owner;
-                ContinuationAction = continuationAction;
-                Argument = argument;
             }
         }
     }

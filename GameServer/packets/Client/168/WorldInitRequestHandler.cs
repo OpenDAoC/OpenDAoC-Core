@@ -18,7 +18,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             bool loadPlayer = client.Account.Characters != null && client.ClientState is GameClient.eClientState.CharScreen;
 
             if (loadPlayer)
-                TimerService.ScheduleActionAfterTask<object>(HandlePacketInternal(client, packet), Continuation, default, null);
+                TimerService.ScheduleTimerAfterTask<object>(HandlePacketInternal(client, packet), Continuation, default, null);
             else
                 Continuation(default);
 
