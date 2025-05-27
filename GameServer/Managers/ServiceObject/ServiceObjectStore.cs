@@ -59,8 +59,8 @@ namespace DOL.GS
         private class ServiceObjectArray<T> : IServiceObjectArray where T : class, IServiceObject
         {
             private SortedSet<int> _invalidIndexes = new();
-            private FanoutBuffer<T> _itemsToAdd  = new();
-            private FanoutBuffer<T> _itemsToRemove = new();
+            private DrainArray<T> _itemsToAdd  = new();
+            private DrainArray<T> _itemsToRemove = new();
             private int _updating = new();
             private int _lastValidIndex = -1;
 
@@ -90,7 +90,7 @@ namespace DOL.GS
 
                 try
                 {
-                    if (_itemsToRemove.Count > 0)
+                    if (_itemsToRemove.Any)
                     {
                         _itemsToRemove.DrainTo(static (item, array) =>
                         {
@@ -109,7 +109,7 @@ namespace DOL.GS
                         _lastValidIndex--;
                     }
 
-                    if (_itemsToAdd.Count > 0)
+                    if (_itemsToAdd.Any)
                     {
                         _itemsToAdd.DrainTo(static (item, array) =>
                         {

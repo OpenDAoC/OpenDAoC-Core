@@ -27,13 +27,13 @@ namespace DOL.GS.PacketHandler
         private Queue<IPacket> _savedPackets = new(SAVED_PACKETS_COUNT);
         private readonly Lock _savedPacketsLock = new();
 
-        private FanoutBuffer<GSTCPPacketOut> _tcpPacketQueue = new();
-        private FanoutBuffer<GSUDPPacketOut> _udpToTcpPacketQueue = new();
+        private DrainArray<GSTCPPacketOut> _tcpPacketQueue = new();
+        private DrainArray<GSUDPPacketOut> _udpToTcpPacketQueue = new();
         private ConcurrentQueue<SocketAsyncEventArgs> _tcpSendArgsPool = [];
         private SocketAsyncEventArgs _tcpSendArgs;
         private int _tcpSendBufferPosition;
 
-        private FanoutBuffer<GSUDPPacketOut> _udpPacketQueue = new();
+        private DrainArray<GSUDPPacketOut> _udpPacketQueue = new();
         private ConcurrentQueue<SocketAsyncEventArgs> _udpSendArgsPool = [];
         private SocketAsyncEventArgs _udpSendArgs;
         private int _udpSendBufferPosition;
