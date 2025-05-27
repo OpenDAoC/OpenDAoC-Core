@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
@@ -20,6 +21,7 @@ namespace DOL.GS
         private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
         private static GameLoopStats _gameLoopStats;
         private static bool _running;
+        private static ConcurrentQueue<IPostedAction> _postedActions = new(); // Actions to be executed at the end of a frame. Single-threaded.
 
         public static long TickRate { get; private set; }
         public static long GameLoopTime { get; private set; }
@@ -86,6 +88,16 @@ namespace DOL.GS
             _threadPool.ExecuteWork(count, action);
         }
 
+        public static T Rent<T>(PooledObjectKey poolKey, Action<T> initializer) where T : IPooledObject<T>, new()
+        {
+            return _threadPool.Rent(poolKey, initializer);
+        }
+
+        public static void Post<TState>(Action<TState> action, TState state) where TState : class
+        {
+            _postedActions.Enqueue(new PostedAction<TState>(action, state));
+        }
+
         private static void Run()
         {
             if (Environment.ProcessorCount == 1)
@@ -145,6 +157,13 @@ namespace DOL.GS
                 DailyQuestService.Tick();
                 WeeklyQuestService.Tick();
                 _threadPool.PrepareForNextTick();
+
+                Work(_postedActions.Count, static _ =>
+                {
+                    if (_postedActions.TryDequeue(out IPostedAction result))
+                        result.Invoke();
+                });
+
                 ECS.Debug.Diagnostics.Tick();
                 CurrentServiceTick = string.Empty;
                 ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
@@ -175,11 +194,6 @@ namespace DOL.GS
                 GameLoopTime = (long) Math.Round(gameLoopTime);
                 _gameLoopStats.RecordTick(gameLoopTime);
             }
-        }
-
-        public static T Rent<T>(PooledObjectKey poolKey, Action<T> initializer) where T : IPooledObject<T>, new()
-        {
-            return _threadPool.Rent(poolKey, initializer);
         }
 
         private static void UpdateBusyWaitThreshold()
@@ -222,6 +236,28 @@ namespace DOL.GS
 
             if (log.IsInfoEnabled)
                 log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
+        }
+
+        private readonly struct PostedAction<T> : IPostedAction
+        {
+            public readonly Action<T> Action;
+            public readonly T State;
+
+            public PostedAction(Action<T> action, T state)
+            {
+                Action = action;
+                State = state;
+            }
+
+            public void Invoke()
+            {
+                Action(State);
+            }
+        }
+
+        private interface IPostedAction
+        {
+            void Invoke();
         }
     }
 }
