@@ -118,8 +118,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (!player.AddToWorld())
                 {
-                    log.ErrorFormat("Failed to add player to the region! {0}", player.ToString());
-
                     if (player.Client != null)
                     {
                         player.Client.Out.SendPlayerQuit(true);
