@@ -145,6 +145,7 @@ namespace DOL.GS
             static void TickServices()
             {
                 ECS.Debug.Diagnostics.StartPerfCounter(THREAD_NAME);
+
                 TimerService.Tick();
                 ClientService.BeginTick();
                 NpcService.Tick();
@@ -156,13 +157,14 @@ namespace DOL.GS
                 ClientService.EndTick();
                 DailyQuestService.Tick();
                 WeeklyQuestService.Tick();
-                _threadPool.PrepareForNextTick();
 
                 ExecuteWork(_postedActions.Count, static _ =>
                 {
                     if (_postedActions.TryDequeue(out IPostedAction result))
                         result.Invoke();
                 });
+
+                _threadPool.PrepareForNextTick();
 
                 ECS.Debug.Diagnostics.Tick();
                 CurrentServiceTick = string.Empty;

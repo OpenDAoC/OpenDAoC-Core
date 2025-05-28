@@ -119,7 +119,7 @@ namespace DOL.GS.PacketHandler
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("GSPacketIn: Size={0} Sequence=0x{1:X4} Session={2} Parameter={3} ID=0x{4:X2}", m_psize, m_sequence, m_sessionID, m_parameter, m_code);
+            return string.Format($"{nameof(GSPacketIn)}: Size={m_psize} Sequence=0x{m_sequence:X4} Session={m_sessionID} Parameter={m_parameter} ID=0x{m_code:X2}");
         }
 
         public static PooledObjectKey PooledObjectKey => PooledObjectKey.InPacket;
