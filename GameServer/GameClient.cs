@@ -423,7 +423,7 @@ namespace DOL.GS
                         return;
                     }
 
-                    GSPacketIn packet = GSPacketIn.Rent(p => p.Init());
+                    GSPacketIn packet = GSPacketIn.GetForTick(p => p.Init());
                     packet.Load(buffer, currentOffset, packetLength);
 
                     try

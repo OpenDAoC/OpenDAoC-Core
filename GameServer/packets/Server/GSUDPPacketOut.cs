@@ -32,7 +32,7 @@ namespace DOL.GS.PacketHandler
 
         public static PooledObjectKey PooledObjectKey => PooledObjectKey.UdpOutPacket;
 
-        public static GSUDPPacketOut Rent(Action<GSUDPPacketOut> initializer)
+        public static GSUDPPacketOut GetForTick(Action<GSUDPPacketOut> initializer)
         {
             return GameLoop.GetForTick(PooledObjectKey, initializer);
         }

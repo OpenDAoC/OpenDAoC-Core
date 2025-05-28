@@ -26,7 +26,7 @@ namespace DOL.GS.PacketHandler
 		{
 			base.SendNonHybridSpellLines();
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
 			{
 				pak.WriteByte(0x02); //subcode
 				pak.WriteByte(0x00);
@@ -41,7 +41,7 @@ namespace DOL.GS.PacketHandler
 			if (text == null)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
 			{
 				pak.WriteByte(0); // new in 1.75
 				pak.WriteByte(0); // new in 1.81
@@ -62,7 +62,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendPlayerTitles()
 		{
 			var titles = m_gameClient.Player.Titles;
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
 			{
 				pak.WriteByte(1); // new in 1.75
 				pak.WriteByte(0); // new in 1.81
@@ -99,7 +99,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, eAggressionState aggroState, eWalkState walkState)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.PetWindow))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PetWindow))))
 			{
 				pak.WriteShort((ushort)(pet == null ? 0 : pet.ObjectID));
 				pak.WriteByte(0x00); //unused

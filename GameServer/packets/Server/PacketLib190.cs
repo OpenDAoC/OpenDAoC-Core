@@ -34,7 +34,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.CharacterPointsUpdate))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterPointsUpdate))))
 			{
 				pak.WriteInt((uint)m_gameClient.Player.RealmPoints);
 				pak.WriteShort(m_gameClient.Player.LevelPermill);
@@ -54,7 +54,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.CharacterStatusUpdate))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterStatusUpdate))))
 			{
 				pak.WriteByte(m_gameClient.Player.HealthPercent);
 				pak.WriteByte(m_gameClient.Player.ManaPercent);
@@ -81,7 +81,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.UpdateIcons))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.UpdateIcons))))
 			{
 				long initPos = pak.Position;
 
@@ -185,7 +185,7 @@ namespace DOL.GS.PacketHandler
 				mlXPPercent = 100.0; // ML10 has no MLXP, so always 100%
 			}
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.MasterLevelWindow))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MasterLevelWindow))))
 			{
 				pak.WriteByte((byte)mlXPPercent); // MLXP (blue bar)
 				pak.WriteByte((byte)Math.Min(mlStepPercent, 100)); // Step percent (red bar)

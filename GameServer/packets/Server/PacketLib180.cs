@@ -26,7 +26,7 @@ namespace DOL.GS.PacketHandler
 			if (player == null || player.ObjectState != GameObject.eObjectState.Active)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.ControlledHorse))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ControlledHorse))))
 			{
 				if (player.HasHorse)
 				{
@@ -64,7 +64,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (player == null || player.ObjectState != GameObject.eObjectState.Active)
 				return;
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.ControlledHorse))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ControlledHorse))))
 			{
 				if (!flag || !player.HasHorse)
 				{
@@ -129,7 +129,7 @@ namespace DOL.GS.PacketHandler
 			if (playerToCreate.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.PlayerCreate172))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PlayerCreate172))))
 			{
 
 				pak.WriteShort((ushort)playerToCreate.Client.SessionID);
@@ -215,7 +215,7 @@ namespace DOL.GS.PacketHandler
 			{
 				int packetEntry = 0; // needed to tell client how much skill we send
 				// using pak
-				using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+				using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
 				{
 					// Write header
 					pak.WriteByte(0x01); //subcode for skill

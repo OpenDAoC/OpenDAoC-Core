@@ -14,7 +14,7 @@ namespace DOL.GS.PacketHandler
         {
             // work around for character screen bugs when server type sent as 00 but player doesnt have a realm
             // 0x07 allows for characters in all realms
-            using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.LoginGranted))))
+            using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.LoginGranted))))
             {
                 pak.WritePascalString(m_gameClient.Account.Name);
                 pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
@@ -31,7 +31,7 @@ namespace DOL.GS.PacketHandler
             if (m_gameClient.ClientState == GameClient.eClientState.CharScreen)
                 return;
 
-            GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.Message)));
+            GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Message)));
             pak.WriteByte((byte) type);
 
             string str;

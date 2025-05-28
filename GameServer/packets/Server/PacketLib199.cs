@@ -58,7 +58,7 @@ namespace DOL.GS.PacketHandler
 					throw new Exception("CharacterOverview requested for unknown realm " + realm);
 			}
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.CharacterOverview))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterOverview))))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
 				IList<DbInventoryItem> items;

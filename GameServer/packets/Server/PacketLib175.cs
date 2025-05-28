@@ -27,7 +27,7 @@ namespace DOL.GS.PacketHandler
 			if (text == null)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
 			{
 				pak.WriteByte(0); // new in 1.75
 				if (caption == null)
@@ -47,7 +47,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendPlayerTitles()
 		{
 			var titles = m_gameClient.Player.Titles;
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
 			{
 				pak.WriteByte(1); // new in 1.75
 				pak.WritePascalString("Player Statistics"); //window caption
@@ -83,7 +83,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendPlayerTitleUpdate(GamePlayer player)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.VisualEffect))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VisualEffect))))
 			{
 				pak.WriteShort((ushort) player.ObjectID);
 				pak.WriteByte(0x0B); // subcode
@@ -111,7 +111,7 @@ namespace DOL.GS.PacketHandler
 			if (player == null)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
 			{
 				pak.WriteByte(0x03); //subcode
 				pak.WriteByte(0x0e); //number of entry
@@ -240,7 +240,7 @@ namespace DOL.GS.PacketHandler
 				itemCaps[i] = Math.Min(cap, itemCap + bonusCap);
 			}
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.StatsUpdate))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.StatsUpdate))))
 			{
 				// base
 				for (int i = 0; i < updateStats.Length; i++)
@@ -370,7 +370,7 @@ namespace DOL.GS.PacketHandler
 				caps[i] = cap;
 			}
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.StatsUpdate))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.StatsUpdate))))
 			{
 
 				// racial resists
@@ -435,7 +435,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || playerToCreate.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.PlayerCreate172))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PlayerCreate172))))
 			{
 				pak.WriteShort((ushort)playerToCreate.Client.SessionID);
 				pak.WriteShort((ushort)playerToCreate.ObjectID);
@@ -480,7 +480,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLoginGranted(byte color)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.LoginGranted))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.LoginGranted))))
 			{
 				pak.WriteByte(0x01); //isSI
 				pak.WriteByte(ParseVersion((int)m_gameClient.Version, true));

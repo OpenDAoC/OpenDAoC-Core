@@ -21,7 +21,7 @@ namespace DOL.GS.PacketHandler
 
 		protected override void SendQuestPacket(AbstractQuest quest, byte index)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.QuestEntry))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.QuestEntry))))
 			{
 				pak.WriteByte(index);
 				if (quest == null)
@@ -62,7 +62,7 @@ namespace DOL.GS.PacketHandler
 		{
 			string name = BuildTaskString();
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.QuestEntry))))
+			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.QuestEntry))))
 			{
 				pak.WriteByte(0); //index
 				pak.WriteShortLowEndian((ushort)name.Length);

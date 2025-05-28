@@ -22,7 +22,7 @@ namespace DOL.GS.PacketHandler
         {
             var titles = m_gameClient.Player.Titles;
 
-            using (GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
+            using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
             {
 
                 pak.WriteByte(1); // new in 1.75

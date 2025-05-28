@@ -28,7 +28,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 			if (!house.CanChangeInterior(client.Player, DecorationPermissions.Add))
 				return;
 
-			using (var pak = GSTCPPacketOut.Rent(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.HouseDecorationRotate))))
+			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.HouseDecorationRotate))))
 			{
 				pak.WriteShort(housenumber);
 				pak.WriteByte(index);

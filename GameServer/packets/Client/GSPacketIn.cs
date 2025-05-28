@@ -124,7 +124,7 @@ namespace DOL.GS.PacketHandler
 
         public static PooledObjectKey PooledObjectKey => PooledObjectKey.InPacket;
 
-        public static GSPacketIn Rent(Action<GSPacketIn> initializer)
+        public static GSPacketIn GetForTick(Action<GSPacketIn> initializer)
         {
             return GameLoop.GetForTick(PooledObjectKey, initializer);
         }

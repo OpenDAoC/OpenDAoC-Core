@@ -427,6 +427,6 @@ namespace DOL.GS
     public interface IPooledObject<T>
     {
         static abstract PooledObjectKey PooledObjectKey { get; }
-        static abstract T Rent(Action<T> initializer);
+        static abstract T GetForTick(Action<T> initializer);
     }
 }
