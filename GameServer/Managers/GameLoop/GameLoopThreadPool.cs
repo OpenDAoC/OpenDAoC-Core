@@ -448,7 +448,7 @@ namespace DOL.GS
     {
         public static bool IsValidForTick<T>(this IPooledObject<T> obj)
         {
-            return obj.IssuedTimestamp == 0 || obj.IssuedTimestamp == GameLoop.GameLoopTime;
+            return obj.IssuedTimestamp == GameLoop.GameLoopTime;
         }
     }
 }
