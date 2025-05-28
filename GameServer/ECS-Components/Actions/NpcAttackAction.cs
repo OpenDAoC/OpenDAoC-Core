@@ -1,4 +1,5 @@
-﻿using DOL.AI.Brain;
+﻿using System;
+using DOL.AI.Brain;
 using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
@@ -150,7 +151,7 @@ namespace DOL.GS
             if (Properties.CHECK_LOS_BEFORE_NPC_RANGED_ATTACK)
             {
                 if (_checkLosTimer == null)
-                    _checkLosTimer = new CheckLosTimer(_npcOwner, _target, LosCheckCallback);
+                    _checkLosTimer = new CheckLosTimer(_npcOwner, _target, OnLosCheck, ForceLos);
                 else if (_losCheckTarget != _target)
                 {
                     _hasLos = false;
@@ -197,7 +198,7 @@ namespace DOL.GS
             _npcOwner.StartAttackWithRangedWeapon(_target);
         }
 
-        private void LosCheckCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+        private void OnLosCheck(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
             _losCheckTarget = _npcOwner.CurrentRegion.GetObject(targetOID);
 
@@ -215,17 +216,25 @@ namespace DOL.GS
             _npcOwner.TurnTo(_losCheckTarget);
         }
 
+        private void ForceLos()
+        {
+            _hasLos = true;
+            _npcOwner.TurnTo(_losCheckTarget);
+        }
+
         public class CheckLosTimer : ECSGameTimerWrapperBase
         {
             private GameNPC _npcOwner;
             private GameObject _target;
             private CheckLosResponse _callback;
+            private Action _forceLos;
             private GamePlayer _losChecker;
 
-            public CheckLosTimer(GameObject owner, GameObject target, CheckLosResponse callback) : base(owner)
+            public CheckLosTimer(GameObject owner, GameObject target, CheckLosResponse callback, Action forceLos) : base(owner)
             {
                 _npcOwner = owner as GameNPC;
                 _callback = callback;
+                _forceLos = forceLos;
                 ChangeTarget(target);
             }
 
@@ -252,7 +261,7 @@ namespace DOL.GS
                 // Don't bother starting the timer if there's no one to perform the LoS check.
                 if (_losChecker == null)
                 {
-                    // _callback(null, eLosCheckResponse.TRUE, 0, 0);
+                    _forceLos();
                     return;
                 }
 
