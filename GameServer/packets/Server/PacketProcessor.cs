@@ -379,10 +379,16 @@ namespace DOL.GS.PacketHandler
             {
                 if (!packet.IsValidForTick())
                 {
-                    if (log.IsErrorEnabled)
-                        log.Error($"Packet was not issued in the current game loop time (Code: 0x{packet.Code:X2}) (Issued at: {packet.IssuedTimestamp}) (Current time: {GameLoop.GameLoopTime})");
+                    if (packet.IssuedTimestamp != 0)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Packet was not issued in the current game loop time (Code: 0x{packet.Code:X2}) (Issued at: {packet.IssuedTimestamp}) (Current time: {GameLoop.GameLoopTime})");
 
-                    return false;
+                        return false;
+                    }
+
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Packet was issued outside the game loop (Code: 0x{packet.Code:X2}) (Current time: {GameLoop.GameLoopTime})");
                 }
 
                 return true;
