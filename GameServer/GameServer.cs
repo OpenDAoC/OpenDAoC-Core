@@ -1069,7 +1069,7 @@ namespace DOL.GS
 			}
 
 			// Post the packet to the game loop for processing.
-			GameLoop.PostBeforeTick(static state =>
+			GameLoopService.PostBeforeTick(static state =>
 			{
 				GSPacketIn packet = GSPacketIn.GetForTick(p => p.Init());
 				packet.Load(state.Buffer, state.Offset, state.Size);

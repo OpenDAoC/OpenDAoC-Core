@@ -42,7 +42,7 @@ namespace DOL.GS
                 }
 
                 // We can't safely start a timer from within a task continuation, so we post it to the game loop.
-                GameLoop.PostAfterTick(static (s) => new ContinuationActionTimer<T>(s as ContinuationActionTimerState<T>), state);
+                GameLoopService.PostAfterTick(static (s) => new ContinuationActionTimer<T>(s as ContinuationActionTimerState<T>), state);
             }, state);
         }
 

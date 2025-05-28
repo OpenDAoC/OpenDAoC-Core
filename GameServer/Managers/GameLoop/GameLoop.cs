@@ -21,10 +21,6 @@ namespace DOL.GS
         private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
         private static GameLoopStats _gameLoopStats;
         private static bool _running;
-        private static int _preTickActionCount;
-        private static int _postTickActionCount;
-        private static ConcurrentQueue<IPostedAction> _preTickActions = new(); // Actions to be executed at the start of a frame.
-        private static ConcurrentQueue<IPostedAction> _postTickActions = new(); // Actions to be executed at the end of a frame.
 
         public static long TickRate { get; private set; }
         public static long GameLoopTime { get; private set; }
@@ -96,18 +92,6 @@ namespace DOL.GS
             return _threadPool.GetForTick(poolKey, initializer);
         }
 
-        public static void PostBeforeTick<TState>(Action<TState> action, TState state) where TState : class
-        {
-            _preTickActions.Enqueue(new PostedAction<TState>(action, state));
-            Interlocked.Increment(ref _preTickActionCount);
-        }
-
-        public static void PostAfterTick<TState>(Action<TState> action, TState state) where TState : class
-        {
-            _postTickActions.Enqueue(new PostedAction<TState>(action, state));
-            Interlocked.Increment(ref _postTickActionCount);
-        }
-
         private static void Run()
         {
             if (Environment.ProcessorCount == 1)
@@ -156,14 +140,7 @@ namespace DOL.GS
             {
                 ECS.Debug.Diagnostics.StartPerfCounter(THREAD_NAME);
 
-                ExecuteWork(_preTickActionCount, static _ =>
-                {
-                    if (_preTickActions.TryDequeue(out IPostedAction result))
-                        result.Invoke();
-
-                    Interlocked.Decrement(ref _preTickActionCount);
-                });
-
+                GameLoopService.BeginTick();
                 TimerService.Tick();
                 ClientService.BeginTick();
                 NpcService.Tick();
@@ -175,14 +152,7 @@ namespace DOL.GS
                 ClientService.EndTick();
                 DailyQuestService.Tick();
                 WeeklyQuestService.Tick();
-
-                ExecuteWork(_postTickActionCount, static _ =>
-                {
-                    if (_postTickActions.TryDequeue(out IPostedAction result))
-                        result.Invoke();
-
-                    Interlocked.Decrement(ref _postTickActionCount);
-                });
+                GameLoopService.EndTick();
 
                 _threadPool.PrepareForNextTick();
 
@@ -258,28 +228,6 @@ namespace DOL.GS
 
             if (log.IsInfoEnabled)
                 log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
-        }
-
-        private readonly struct PostedAction<T> : IPostedAction
-        {
-            public readonly Action<T> Action;
-            public readonly T State;
-
-            public PostedAction(Action<T> action, T state)
-            {
-                Action = action;
-                State = state;
-            }
-
-            public void Invoke()
-            {
-                Action(State);
-            }
-        }
-
-        private interface IPostedAction
-        {
-            void Invoke();
         }
     }
 }

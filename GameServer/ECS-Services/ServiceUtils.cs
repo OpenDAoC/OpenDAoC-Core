@@ -65,15 +65,15 @@ namespace DOL.GS
             {
                 GamePlayer player => () =>
                 {
-                    logMessages.Add($"Calling {nameof(KickPlayerToCharScreen)} with (entityOwner: {player})");
+                    logMessages.Add($"Calling {nameof(KickPlayerToCharScreen)} with ({nameof(entityOwner)}: {player})");
                     KickPlayerToCharScreen(player);
                 },
                 not null => () =>
                 {
-                    logMessages.Add($"Calling {nameof(entityOwner.RemoveFromWorld)} with (entityOwner: {entityOwner})");
+                    logMessages.Add($"Calling {nameof(entityOwner.RemoveFromWorld)} with ({nameof(entityOwner)}: {entityOwner})");
                     entityOwner.RemoveFromWorld();
                 },
-                _ => () => logMessages.Add($"No other action performed (entityOwner: null)")
+                _ => () => logMessages.Add($"No other action performed ({nameof(entityOwner)}: null)")
             };
 
             // Log error messages before executing the action (if any).
