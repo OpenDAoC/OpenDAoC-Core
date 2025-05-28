@@ -1712,8 +1712,10 @@ namespace DOL.GS
 		/// <returns>true if this npc is the last step of one quest, false otherwise</returns>
 		public bool CanFinishOneQuest(GamePlayer player)
 		{
-			foreach (AbstractQuest quest in player.QuestList.Keys)
+			foreach (var pair in player.QuestList)
 			{
+				AbstractQuest quest = pair.Key;
+
 				// Handle Data Quest here.
 				if (quest is DataQuest dataQuest && dataQuest.TargetName == Name && (dataQuest.TargetRegion == 0 || dataQuest.TargetRegion == CurrentRegionID))
 				{
