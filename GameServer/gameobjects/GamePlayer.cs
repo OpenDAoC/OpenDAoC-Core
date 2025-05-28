@@ -10854,8 +10854,6 @@ namespace DOL.GS
             void HandleInventory(IList items)
             {
                 Inventory.LoadInventory(InternalID, items);
-                SwitchQuiver((eActiveQuiverSlot) (DBCharacter.ActiveWeaponSlot & 0xF0), false);
-                SwitchWeapon((eActiveWeaponSlot) (DBCharacter.ActiveWeaponSlot & 0x0F));
             }
 
             void HandleCharacterSkills()

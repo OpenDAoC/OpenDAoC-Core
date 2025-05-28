@@ -177,6 +177,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 player.Out.SendSetControlledHorse(player);
 
+                player.SwitchQuiver((eActiveQuiverSlot) (player.DBCharacter.ActiveWeaponSlot & 0xF0), false);
+                player.SwitchWeapon((eActiveWeaponSlot) (player.DBCharacter.ActiveWeaponSlot & 0x0F));
+
                 if (log.IsDebugEnabled)
                     log.DebugFormat($"Client {player.Client.Account.Name}({player.Name} PID:{player.Client.SessionID} OID:{player.ObjectID}) entering Region {player.CurrentRegion.Description}(ID:{player.CurrentRegionID})");
 
