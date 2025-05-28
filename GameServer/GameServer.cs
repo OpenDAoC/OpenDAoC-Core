@@ -1068,28 +1068,44 @@ namespace DOL.GS
 				return;
 			}
 
-			GSPacketIn packet = new(endPosition - GSPacketIn.HDR_SIZE);
-			packet.Load(buffer, offset, size);
-			GameClient client = ClientService.GetClientFromId(packet.SessionID);
-
-			if (client == null)
+			// Post the packet to the game loop for processing.
+			GameLoop.PostBeforeTick(static state =>
 			{
-				if (log.IsWarnEnabled)
-					log.Warn($"Got an UDP packet from invalid client ID or IP (id: {packet.SessionID}) (ip: {endPoint}) (code: {packet.Code:x2})");
+				GSPacketIn packet = GSPacketIn.GetForTick(p => p.Init());
+				packet.Load(state.Buffer, state.Offset, state.Size);
+				GameClient client = ClientService.GetClientFromId(packet.SessionID);
 
-				return;
-			}
+				if (client == null)
+				{
+					if (log.IsWarnEnabled)
+						log.Warn($"Got an UDP packet from invalid client ID or IP (id: {packet.SessionID}) (ip: {state.EndPoint}) (code: {packet.Code:x2})");
 
-			// If this is the first message from this client, we save the endpoint.
-			if (client.UdpEndPoint == null)
+					return;
+				}
+
+				if (client.UdpEndPoint == null)
+				{
+					client.UdpEndPoint = state.EndPoint as IPEndPoint;
+					client.UdpConfirm = false;
+				}
+
+				if (client.UdpEndPoint.Equals(state.EndPoint))
+					client.PacketProcessor.ProcessInboundPacket(packet);
+			}, new
 			{
-				client.UdpEndPoint = endPoint as IPEndPoint;
-				client.UdpConfirm = false;
-			}
+				Buffer = buffer,
+				Offset = offset,
+				Size = size,
+				EndPoint = endPoint
+			});
+		}
 
-			// Only handle the packet if it comes from a valid client.
-			if (client.UdpEndPoint.Equals(endPoint))
-				client.PacketProcessor.ProcessInboundPacket(packet);
+		private class UdpPacketState
+		{
+			public byte[] Buffer { get; init; }
+			public int Offset { get; init; }
+			public int Size { get; init; }
+			public EndPoint EndPoint { get; init; }
 		}
 
 		#endregion

@@ -142,7 +142,6 @@ namespace DOL.Network
                 // This is probably a bit more complicated than it should be if we consider the fact that clients only send UDP packets to notify the server that they can receive UDP packets.
                 // Since only one buffer is used and shared, this requires some synchronization to prevent `ReceiveFromAsync` from overwriting data that isn't processed yet.
                 // For this reason, the buffer is split in chunks of `UDP_RECEIVE_BUFFER_CHUNK_SIZE` bytes. This assumes no packet can be larger than this.
-                // Keep in mind that this is ran by worker threads, outside of the game loop, which may cause issues if clients start sending other packets this way.
 
                 Task.Run(async () =>
                 {
