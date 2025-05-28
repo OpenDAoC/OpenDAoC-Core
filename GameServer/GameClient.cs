@@ -449,47 +449,59 @@ namespace DOL.GS
 
         protected override void OnDisconnect()
         {
-            lock (_disconnectLock)
+            if (ClientState is eClientState.Disconnected)
+                return;
+
+            // Posting the disconnect logic to the game loop isn't necessary in most cases.
+            // However, this can sometimes be called outside the game loop, for example if a client fails to connect properly.
+            GameLoopService.PostBeforeTick(static state =>
             {
-                if (ClientState == eClientState.Disconnected)
-                    return;
-
-                if (SessionID == 0 || Player == null)
+                lock (state._disconnectLock)
                 {
-                    Quit();
-                    return;
-                }
+                    if (state.ClientState is eClientState.Disconnected)
+                       return;
 
-                try
-                {
-                    if (ClientState == eClientState.Playing)
+                    if (state.SessionID == 0 || state.Player == null)
                     {
-                        if (!Player.IsLinkDeathTimerRunning)
-                            OnLinkDeath(false);
-
+                        state.Quit();
                         return;
                     }
-                    else if (ClientState == eClientState.WorldEnter)
-                        Player.SaveIntoDatabase();
+
+                    try
+                    {
+                        if (state.ClientState is eClientState.Playing)
+                        {
+                            if (!state.Player.IsLinkDeathTimerRunning)
+                                state.OnLinkDeath(false);
+
+                            return;
+                        }
+                        else if (state.ClientState is eClientState.WorldEnter)
+                            state.Player.SaveIntoDatabase();
+                    }
+                    catch (Exception e)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error(e);
+                    }
+                    finally
+                    {
+                        // Make sure the client is disconnected even on errors, but only if there is no link death timer running.
+                        if (!state.Player.IsLinkDeathTimerRunning)
+                            state.Quit();
+                    }
                 }
-                catch (Exception e)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error(e);
-                }
-                finally
-                {
-                    // Make sure the client is disconnected even on errors, but only if there is no link death timer running.
-                    if (!Player.IsLinkDeathTimerRunning)
-                        Quit();
-                }
-            }
+            }, this);
         }
 
         public override void OnConnect()
         {
-            ClientService.OnClientConnect(this);
-            GameEventMgr.Notify(GameClientEvent.Connected, this);
+            // `OnConnect` is exclusively called from outside the game loop.
+            GameLoopService.PostBeforeTick(static state =>
+            {
+                ClientService.OnClientConnect(state);
+                GameEventMgr.Notify(GameClientEvent.Connected, state);
+            }, this);
         }
 
         public override string ToString()
