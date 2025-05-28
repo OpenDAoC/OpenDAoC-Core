@@ -64,13 +64,13 @@ namespace DOL.GS
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
-        public static void PostBeforeTick<TState>(Action<TState> action, TState state) where TState : class
+        public static void PostBeforeTick<TState>(Action<TState> action, TState state)
         {
             _preTickActions.Enqueue(new PostedAction<TState>(action, state));
             Interlocked.Increment(ref _preTickActionCount);
         }
 
-        public static void PostAfterTick<TState>(Action<TState> action, TState state) where TState : class
+        public static void PostAfterTick<TState>(Action<TState> action, TState state)
         {
             _postTickActions.Enqueue(new PostedAction<TState>(action, state));
             Interlocked.Increment(ref _postTickActionCount);
