@@ -18,6 +18,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
+            if (client.Player.ObjectState is not GameObject.eObjectState.Active || client.ClientState is not GameClient.eClientState.Playing)
+                return;
+
             int flagSpeedData;
             int spellLevel;
             int spellLineIndex;

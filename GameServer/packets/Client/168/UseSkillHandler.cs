@@ -16,6 +16,9 @@ namespace DOL.GS.PacketHandler.Client.v168
 
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
+            if (client.Player.ObjectState is not GameObject.eObjectState.Active || client.ClientState is not GameClient.eClientState.Playing)
+                return;
+
             if (client.Version >= GameClient.eClientVersion.Version1124)
             {
                 client.Player.X = (int)packet.ReadFloatLowEndian();
