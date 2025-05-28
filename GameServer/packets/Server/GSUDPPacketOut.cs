@@ -34,7 +34,7 @@ namespace DOL.GS.PacketHandler
 
         public static GSUDPPacketOut Rent(Action<GSUDPPacketOut> initializer)
         {
-            return GameLoop.Rent(PooledObjectKey, initializer);
+            return GameLoop.GetForTick(PooledObjectKey, initializer);
         }
     }
 }

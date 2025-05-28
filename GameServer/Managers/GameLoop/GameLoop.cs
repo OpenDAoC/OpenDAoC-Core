@@ -88,9 +88,9 @@ namespace DOL.GS
             _threadPool.ExecuteWork(count, action);
         }
 
-        public static T Rent<T>(PooledObjectKey poolKey, Action<T> initializer) where T : IPooledObject<T>, new()
+        public static T GetForTick<T>(PooledObjectKey poolKey, Action<T> initializer) where T : IPooledObject<T>, new()
         {
-            return _threadPool.Rent(poolKey, initializer);
+            return _threadPool.GetForTick(poolKey, initializer);
         }
 
         public static void Post<TState>(Action<TState> action, TState state) where TState : class

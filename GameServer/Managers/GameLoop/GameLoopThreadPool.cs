@@ -143,7 +143,7 @@ namespace DOL.GS
 
         public override void PrepareForNextTick()
         {
-            _workerRoutine = static () => _localPools.Reset();
+            _workerRoutine = static () => _tickLocalPools.Reset();
             ExecuteWork(_degreeOfParallelism, null);
             _workerRoutine = ProcessWorkActions;
         }
@@ -334,7 +334,7 @@ namespace DOL.GS
 
         public override void PrepareForNextTick()
         {
-            _localPools.Reset();
+            _tickLocalPools.Reset();
         }
 
         public override void Dispose() { }
@@ -343,11 +343,11 @@ namespace DOL.GS
     public abstract class GameLoopThreadPool : IDisposable
     {
         [ThreadStatic]
-        protected static LocalPools _localPools;
+        protected static TickLocalPools _tickLocalPools;
 
         public virtual void Init()
         {
-            _localPools = new();
+            _tickLocalPools = new();
         }
 
         public abstract void ExecuteWork(int count, Action<int> workAction);
@@ -356,30 +356,30 @@ namespace DOL.GS
 
         public abstract void Dispose();
 
-        public T Rent<T>(PooledObjectKey key, Action<T> initializer) where T : IPooledObject<T>, new()
+        public T GetForTick<T>(PooledObjectKey key, Action<T> initializer) where T : IPooledObject<T>, new()
         {
-            T result = _localPools != null ? _localPools.Rent<T>(key) : new();
+            T result = _tickLocalPools != null ? _tickLocalPools.GetForTick<T>(key) : new();
             initializer?.Invoke(result);
             return result;
         }
 
         protected virtual void InitWorker(object obj)
         {
-            _localPools = new();
+            _tickLocalPools = new();
         }
 
-        protected sealed class LocalPools
+        protected sealed class TickLocalPools
         {
-            private Dictionary<PooledObjectKey, IFrameListPool> _localPools = new()
+            private Dictionary<PooledObjectKey, ITickObjectPool> _localPools = new()
             {
-                { PooledObjectKey.InPacket, new FrameListPool<GSPacketIn>() },
-                { PooledObjectKey.TcpOutPacket, new FrameListPool<GSTCPPacketOut>() },
-                { PooledObjectKey.UdpOutPacket, new FrameListPool<GSUDPPacketOut>() }
+                { PooledObjectKey.InPacket, new TickObjectPool<GSPacketIn>() },
+                { PooledObjectKey.TcpOutPacket, new TickObjectPool<GSTCPPacketOut>() },
+                { PooledObjectKey.UdpOutPacket, new TickObjectPool<GSUDPPacketOut>() }
             };
 
-            public T Rent<T>(PooledObjectKey key) where T : new()
+            public T GetForTick<T>(PooledObjectKey key) where T : new()
             {
-                return (_localPools[key] as FrameListPool<T>).Rent();
+                return (_localPools[key] as TickObjectPool<T>).GetForTick();
             }
 
             public void Reset()
@@ -388,12 +388,12 @@ namespace DOL.GS
                     pair.Value.Reset();
             }
 
-            private sealed class FrameListPool<T> : IFrameListPool where T : new()
+            private sealed class TickObjectPool<T> : ITickObjectPool where T : new()
             {
                 private List<T> _items = new();
                 private int _used;
 
-                public T Rent()
+                public T GetForTick()
                 {
                     if (_used < _items.Count)
                         return _items[_used++];
@@ -410,7 +410,7 @@ namespace DOL.GS
                 }
             }
 
-            private interface IFrameListPool
+            private interface ITickObjectPool
             {
                 void Reset();
             }

@@ -33,7 +33,7 @@ namespace DOL.GS.PacketHandler
 
         public static GSTCPPacketOut Rent(Action<GSTCPPacketOut> initializer)
         {
-            return GameLoop.Rent(PooledObjectKey, initializer);
+            return GameLoop.GetForTick(PooledObjectKey, initializer);
         }
     }
 }

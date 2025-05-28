@@ -126,7 +126,7 @@ namespace DOL.GS.PacketHandler
 
         public static GSPacketIn Rent(Action<GSPacketIn> initializer)
         {
-            return GameLoop.Rent(PooledObjectKey, initializer);
+            return GameLoop.GetForTick(PooledObjectKey, initializer);
         }
     }
 }
