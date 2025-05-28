@@ -262,6 +262,9 @@ namespace DOL.GS.PacketHandler
 
             void AppendTcpPacketToTcpSendBuffer(GSTCPPacketOut packet)
             {
+                if (!ValidatePacketIssuedTimestamp(packet))
+                    return;
+
                 byte[] packetBuffer = packet.GetBuffer();
                 int packetSize = (int) packet.Length;
 
@@ -295,6 +298,9 @@ namespace DOL.GS.PacketHandler
 
             void AppendUdpPacketToTcpSendBuffer(GSUDPPacketOut packet)
             {
+                if (!ValidatePacketIssuedTimestamp(packet))
+                    return;
+
                 byte[] packetBuffer = packet.GetBuffer();
                 int packetSize = (int) packet.Length - 2;
 
@@ -331,6 +337,9 @@ namespace DOL.GS.PacketHandler
 
             void AppendUdpPacketToUdpSendBuffer(GSUDPPacketOut packet)
             {
+                if (!ValidatePacketIssuedTimestamp(packet))
+                    return;
+
                 byte[] packetBuffer = packet.GetBuffer();
                 int packetSize = (int) packet.Length;
 
@@ -364,6 +373,19 @@ namespace DOL.GS.PacketHandler
                 _udpSendArgs.Buffer[_udpSendBufferPosition + 2] = (byte) (_udpCounter >> 8);
                 _udpSendArgs.Buffer[_udpSendBufferPosition + 3] = (byte) _udpCounter;
                 _udpSendBufferPosition = nextPosition;
+            }
+
+            static bool ValidatePacketIssuedTimestamp<T>(T packet) where T : PacketOut, IPooledObject<T>
+            {
+                if (!packet.IsValidForTick())
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"Packet was not issued in the current game loop time (Code: 0x{packet.Code:X2}) (Issued at: {packet.IssuedTimestamp}) (Current time: {GameLoop.GameLoopTime})");
+
+                    return false;
+                }
+
+                return true;
             }
 
             bool ValidatePacketSize(byte[] packetBuffer, int packetSize)

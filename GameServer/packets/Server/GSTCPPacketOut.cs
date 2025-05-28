@@ -35,5 +35,7 @@ namespace DOL.GS.PacketHandler
         {
             return GameLoop.GetForTick(PooledObjectKey, initializer);
         }
+
+        public long IssuedTimestamp { get; set;}
     }
 }
