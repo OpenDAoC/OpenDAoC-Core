@@ -28,16 +28,16 @@
         <AssemblyTrademark>OpenDAoC Development Team</AssemblyTrademark>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <DebugType>Full</DebugType>
         <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <Optimize>False</Optimize>
+        <Optimize>false</Optimize>
+        <DebugType>full</DebugType>
         <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <DebugType>None</DebugType>
         <DefineConstants>TRACE</DefineConstants>
-        <Optimize>True</Optimize>
-        <DebugSymbols>false</DebugSymbols>
+        <Optimize>true</Optimize>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
     </PropertyGroup>
     <ItemGroup>
         <AssemblyMetadata Include="BuildTime" Value="$(BuildTime)" />

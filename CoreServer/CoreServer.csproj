@@ -30,8 +30,8 @@
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <Optimize>False</Optimize>
-        <DebugType>Full</DebugType>
+        <Optimize>false</Optimize>
+        <DebugType>full</DebugType>
         <DebugSymbols>true</DebugSymbols>
         <RemoveIntegerChecks>false</RemoveIntegerChecks>
         <ErrorReport>prompt</ErrorReport>
@@ -39,8 +39,8 @@
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <DefineConstants>TRACE</DefineConstants>
         <Optimize>true</Optimize>
-        <DebugType>None</DebugType>
-        <DebugSymbols>false</DebugSymbols>
+        <DebugType>full</DebugType>
+        <DebugSymbols>true</DebugSymbols>
         <RemoveIntegerChecks>false</RemoveIntegerChecks>
     </PropertyGroup>
     <ItemGroup>
