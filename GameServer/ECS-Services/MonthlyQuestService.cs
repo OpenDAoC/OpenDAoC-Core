@@ -52,10 +52,6 @@ namespace DOL.GS
                 for (int i = 0; i < lastValidIndex + 1; i++)
                 {
                     GameClient client = clients[i];
-
-                    if (client?.ServiceObjectId.IsSet != true)
-                        return;
-
                     client.Player?.RemoveFinishedQuests(x => x is Quests.MonthlyQuest);
                 }
 

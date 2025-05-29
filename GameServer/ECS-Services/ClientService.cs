@@ -57,13 +57,12 @@ namespace DOL.GS
 
         private static void BeginTickInternal(int index)
         {
-            GameClient client = _clients[index];
-
-            if (client?.ServiceObjectId.IsSet != true)
-                return;
+            GameClient client = null;
 
             try
             {
+                client = _clients[index];
+
                 switch (client.ClientState)
                 {
                     case GameClient.eClientState.NotConnected:
@@ -110,16 +109,15 @@ namespace DOL.GS
 
         private static void EndTickInternal(int index)
         {
-            GameClient client = _clients[index];
-
-            if (client?.ServiceObjectId.IsSet != true)
-                return;
-
-            if (Diagnostics.CheckEntityCounts)
-                Interlocked.Increment(ref _entityCount);
+            GameClient client = null;
 
             try
             {
+                if (Diagnostics.CheckEntityCounts)
+                    Interlocked.Increment(ref _entityCount);
+
+                client = _clients[index];
+
                 switch (client.ClientState)
                 {
                     case GameClient.eClientState.Connecting:

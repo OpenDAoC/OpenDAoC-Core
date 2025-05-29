@@ -48,16 +48,15 @@ namespace DOL.GS
 
         private static void TickInternal(int index)
         {
-            ECSGameTimer timer = _list[index];
-
-            if (timer?.ServiceObjectId.IsSet != true)
-                return;
-
-            if (Diagnostics.CheckEntityCounts)
-                Interlocked.Increment(ref _entityCount);
+            ECSGameTimer timer = null;
 
             try
             {
+                if (Diagnostics.CheckEntityCounts)
+                    Interlocked.Increment(ref _entityCount);
+
+                timer = _list[index];
+
                 if (ServiceUtils.ShouldTickAdjust(ref timer.NextTick))
                 {
                     long startTick = GameLoop.GetCurrentTime();

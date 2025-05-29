@@ -26,16 +26,14 @@ namespace DOL.GS
 
         private static void TickInternal(int index)
         {
-            CraftComponent craftComponent = _list[index];
+            CraftComponent craftComponent = null;
 
             try
             {
-                if (craftComponent?.ServiceObjectId.IsSet != true)
-                    return;
-
                 if (Diagnostics.CheckEntityCounts)
                     Interlocked.Increment(ref _entityCount);
 
+                craftComponent = _list[index];
                 craftComponent.Tick();
             }
             catch (Exception e)

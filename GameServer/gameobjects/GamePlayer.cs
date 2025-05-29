@@ -8327,7 +8327,9 @@ namespace DOL.GS
         {
             if (!base.AddToWorld())
             {
-                log.Error("Failed to add player to world: " + Name);
+                if (log.IsErrorEnabled)
+                    log.Error($"Failed to add player to world: {this}");
+
                 return false;
             }
 

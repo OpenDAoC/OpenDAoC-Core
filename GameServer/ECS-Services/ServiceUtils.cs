@@ -57,7 +57,9 @@ namespace DOL.GS
 
         public static void HandleServiceException<T>(Exception exception, string serviceName, T entity, GameObject entityOwner) where T : class, IServiceObject
         {
-            ServiceObjectStore.Remove(entity);
+            if (entity != null)
+                ServiceObjectStore.Remove(entity);
+
             List<string> logMessages = [$"Critical error encountered in {serviceName}: {exception}"];
 
             // Define the actions and log messages.

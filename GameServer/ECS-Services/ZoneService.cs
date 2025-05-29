@@ -28,19 +28,15 @@ namespace DOL.GS
 
         private static void TickInternal(int index)
         {
-            ObjectChangingSubZone objectChangingSubZone = _list[index];
-
-            if (objectChangingSubZone?.ServiceObjectId.IsSet != true)
-                return;
-
-            if (Diagnostics.CheckEntityCounts)
-                Interlocked.Increment(ref _entityCount);
-
-            ServiceObjectStore.Remove(objectChangingSubZone);
+            ObjectChangingSubZone objectChangingSubZone = null;
             SubZoneObject subZoneObject = null;
 
             try
             {
+                if (Diagnostics.CheckEntityCounts)
+                    Interlocked.Increment(ref _entityCount);
+
+                objectChangingSubZone = _list[index];
                 subZoneObject = objectChangingSubZone.SubZoneObject;
                 LinkedListNode<GameObject> node = subZoneObject.Node;
                 SubZone currentSubZone = subZoneObject.CurrentSubZone;
@@ -93,6 +89,9 @@ namespace DOL.GS
             }
             finally
             {
+                if (objectChangingSubZone != null)
+                    ServiceObjectStore.Remove(objectChangingSubZone);
+
                 subZoneObject?.ResetSubZoneChange();
             }
         }

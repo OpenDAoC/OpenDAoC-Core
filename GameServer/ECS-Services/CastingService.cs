@@ -28,16 +28,14 @@ namespace DOL.GS
 
         private static void TickInternal(int index)
         {
-            CastingComponent castingComponent = _list[index];
+            CastingComponent castingComponent = null;
 
             try
             {
-                if (castingComponent?.ServiceObjectId.IsSet != true)
-                    return;
-
                 if (Diagnostics.CheckEntityCounts)
                     Interlocked.Increment(ref _entityCount);
 
+                castingComponent = _list[index];
                 long startTick = GameLoop.GetCurrentTime();
                 castingComponent.Tick();
                 long stopTick = GameLoop.GetCurrentTime();

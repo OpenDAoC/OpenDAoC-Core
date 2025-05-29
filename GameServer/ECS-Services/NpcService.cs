@@ -29,16 +29,14 @@ namespace DOL.GS
 
         private static void TickInternal(int index)
         {
-            ABrain brain = _list[index];
-
-            if (brain?.ServiceObjectId.IsSet != true)
-                return;
-
-            if (Diagnostics.CheckEntityCounts)
-                Interlocked.Increment(ref _entityCount);
+            ABrain brain = null;
 
             try
             {
+                if (Diagnostics.CheckEntityCounts)
+                    Interlocked.Increment(ref _entityCount);
+
+                brain = _list[index];
                 GameNPC npc = brain.Body;
 
                 if (ServiceUtils.ShouldTickAdjust(ref brain.NextThinkTick))

@@ -28,16 +28,14 @@ namespace DOL.GS
 
         private static void TickInternal(int index)
         {
-            AttackComponent attackComponent = _list[index];
+            AttackComponent attackComponent = null;
 
             try
             {
-                if (attackComponent?.ServiceObjectId.IsSet != true)
-                    return;
-
                 if (Diagnostics.CheckEntityCounts)
                     Interlocked.Increment(ref _entityCount);
 
+                attackComponent = _list[index];
                 long startTick = GameLoop.GetCurrentTime();
                 attackComponent.Tick();
                 long stopTick = GameLoop.GetCurrentTime();

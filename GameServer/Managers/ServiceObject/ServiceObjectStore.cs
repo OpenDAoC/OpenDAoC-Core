@@ -39,7 +39,7 @@ namespace DOL.GS
             ServiceObjectId id = serviceObject.ServiceObjectId;
 
             // Return false if the service object is absent and not being added.
-            if (!id.IsSet && !id.IsPendingAddition) 
+            if (!id.IsSet && !id.IsPendingAddition)
                 return false;
 
             (_serviceObjectArrays[serviceObject.ServiceObjectId.Type] as ServiceObjectArray<T>).Remove(serviceObject);
@@ -86,39 +86,19 @@ namespace DOL.GS
             public int Update()
             {
                 if (Interlocked.Exchange(ref _updating, 1) != 0)
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException($"{typeof(T)} is already being updated.");
 
                 try
                 {
                     if (_itemsToRemove.Any)
                     {
-                        _itemsToRemove.DrainTo(static (item, array) =>
-                        {
-                            ServiceObjectId id = item.ServiceObjectId;
-
-                            if (id.IsPendingRemoval && id.IsSet)
-                                array.RemoveInternal(id.Value);
-                        }, this);
-                    }
-
-                    while (_lastValidIndex > -1)
-                    {
-                        if (Items[_lastValidIndex]?.ServiceObjectId.IsSet == true)
-                            break;
-
-                        _lastValidIndex--;
+                        DrainItemsToRemove();
+                        UpdateLastValidIndexAfterRemoval();
+                        OptimizeIndexes();
                     }
 
                     if (_itemsToAdd.Any)
-                    {
-                        _itemsToAdd.DrainTo(static (item, array) =>
-                        {
-                            ServiceObjectId id = item.ServiceObjectId;
-
-                            if (id.IsPendingAddition && !id.IsSet)
-                                id.Value = array.AddInternal(item);
-                        }, this);
-                    }
+                        DrainItemsToAdd();
                 }
                 finally
                 {
@@ -128,8 +108,38 @@ namespace DOL.GS
                 return _lastValidIndex;
             }
 
-            private int AddInternal(T item)
+            private void DrainItemsToRemove()
             {
+                _itemsToRemove.DrainTo(static (item, array) => array.RemoveInternal(item), this);
+            }
+
+            private void RemoveInternal(T item)
+            {
+                ServiceObjectId id = item.ServiceObjectId;
+
+                if (!id.IsPendingRemoval || !id.IsSet)
+                    return;
+
+                if (id.Value == Items.Count)
+                    _lastValidIndex--;
+
+                _invalidIndexes.Add(id.Value);
+                Items[id.Value] = null;
+                id.Unset();
+            }
+
+            private void DrainItemsToAdd()
+            {
+                _itemsToAdd.DrainTo(static (item, array) => array.AddInternal(item), this);
+            }
+
+            private void AddInternal(T item)
+            {
+                ServiceObjectId id = item.ServiceObjectId;
+
+                if (!id.IsPendingAddition || id.IsSet)
+                    return;
+
                 if (_invalidIndexes.Count > 0)
                 {
                     int index = _invalidIndexes.Min;
@@ -139,7 +149,8 @@ namespace DOL.GS
                     if (index > _lastValidIndex)
                         _lastValidIndex = index;
 
-                    return index;
+                    id.Value = index;
+                    return;
                 }
 
                 // Increase the capacity of the list in the event that it's too small. This is a costly operation.
@@ -155,20 +166,50 @@ namespace DOL.GS
                 }
 
                 Items.Add(item);
-                return _lastValidIndex;
+                id.Value = _lastValidIndex;
             }
 
-            private void RemoveInternal(int id)
+            private void UpdateLastValidIndexAfterRemoval()
             {
-                T item = Items[id];
-
-                if (id == Items.Count)
+                while (_lastValidIndex > -1 && Items[_lastValidIndex]?.ServiceObjectId.IsSet != true)
                     _lastValidIndex--;
+            }
 
-                ServiceObjectId serviceObjectId = item.ServiceObjectId;
-                serviceObjectId.Unset();
-                _invalidIndexes.Add(id);
-                Items[id] = null;
+            private void OptimizeIndexes()
+            {
+                // Only compact if there are invalid indexes and at least one valid item above the lowest invalid index.
+                while (_invalidIndexes.Count > 0)
+                {
+                    int lowestInvalidIndex = _invalidIndexes.Min;
+                    bool foundItemToMove = false;
+
+                    for (int i = _lastValidIndex; i > lowestInvalidIndex; i--)
+                    {
+                        if (Items[i]?.ServiceObjectId.IsSet != true)
+                            continue;
+
+                        T item = Items[i];
+                        Items[lowestInvalidIndex] = item;
+                        Items[i] = null;
+                        _invalidIndexes.Remove(lowestInvalidIndex);
+                        _invalidIndexes.Add(i);
+                        item.ServiceObjectId.Value = lowestInvalidIndex;
+
+                        // Update last valid index if we just moved the last item.
+                        if (i == _lastValidIndex)
+                        {
+                            do
+                                _lastValidIndex--;
+                            while (_lastValidIndex > -1 && Items[_lastValidIndex]?.ServiceObjectId.IsSet != true);
+                        }
+
+                        foundItemToMove = true;
+                        break;
+                    }
+
+                    if (!foundItemToMove)
+                        break;
+                }
             }
         }
 

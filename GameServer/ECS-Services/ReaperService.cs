@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using ECS.Debug;
 
@@ -7,6 +8,7 @@ namespace DOL.GS
 {
     public class ReaperService
     {
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(ReaperService);
         private static List<LivingBeingKilled> _list;
         private static int _entityCount;
@@ -26,22 +28,32 @@ namespace DOL.GS
 
         private static void TickInternal(int index)
         {
-            LivingBeingKilled livingBeingKilled = _list[index];
-
-            if (livingBeingKilled?.ServiceObjectId.IsSet != true)
-                return;
-
-            if (Diagnostics.CheckEntityCounts)
-                Interlocked.Increment(ref _entityCount);
+            LivingBeingKilled livingBeingKilled = null;
 
             try
             {
+                if (Diagnostics.CheckEntityCounts)
+                    Interlocked.Increment(ref _entityCount);
+
+                livingBeingKilled = _list[index];
+                long startTick = GameLoop.GetCurrentTime();
+                livingBeingKilled.Killed.ProcessDeath(livingBeingKilled.Killer);
+                long stopTick = GameLoop.GetCurrentTime();
+
+                if (stopTick - startTick > Diagnostics.LongTickThreshold)
+                    log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {livingBeingKilled} Time: {stopTick - startTick}ms");
+
                 livingBeingKilled.Killed.ProcessDeath(livingBeingKilled.Killer);
                 ServiceObjectStore.Remove(livingBeingKilled);
             }
             catch (Exception e)
             {
                 ServiceUtils.HandleServiceException(e, SERVICE_NAME, livingBeingKilled, livingBeingKilled.Killed);
+            }
+            finally
+            {
+                if (livingBeingKilled != null)
+                    ServiceObjectStore.Remove(livingBeingKilled);
             }
         }
 
@@ -74,6 +86,11 @@ namespace DOL.GS
         {
             Killed = killed;
             Killer = killer;
+        }
+
+        public override string ToString()
+        {
+            return $"(Killed: {Killed}) (Killer: {Killer})";
         }
     }
 }
