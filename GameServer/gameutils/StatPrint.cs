@@ -91,7 +91,7 @@ namespace DOL.GS
 
                     if (i > 0)
                     {
-                        stats.Append("".PadRight(6 - length));
+                        stats.Append("".PadRight(Math.Max(0, 6 - length)));
                         stats.Append('|');
                     }
                 }
