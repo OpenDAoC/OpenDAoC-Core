@@ -34,7 +34,7 @@ namespace DOL.GS.Commands
 				try
 				{
 					int sessionID = Convert.ToInt32(args[2][1..]);
-					gc = ClientService.GetClientFromId(sessionID);
+					gc = ClientService.GetClientBySessionId(sessionID);
 				}
 				catch
 				{

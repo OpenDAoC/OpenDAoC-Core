@@ -25,6 +25,7 @@ namespace DOL.Network
         public Socket Socket { get; }
         public byte[] ReceiveBuffer { get; }
         public int ReceiveBufferOffset { get; set; }
+        public SessionId SessionId { get; private set; }
 
         private bool ReceivingAsyncCompleted
         {
@@ -64,7 +65,10 @@ namespace DOL.Network
 
         protected virtual void OnReceive(int size) { }
 
-        public virtual void OnConnect() { }
+        public virtual void OnConnect(SessionId sessionId)
+        {
+            SessionId = sessionId;
+        }
 
         protected virtual void OnDisconnect() { }
 
@@ -154,6 +158,8 @@ namespace DOL.Network
 
         public void Disconnect()
         {
+            SessionId.Dispose();
+
             try
             {
                 OnDisconnect();

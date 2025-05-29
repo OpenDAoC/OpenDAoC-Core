@@ -1010,7 +1010,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     outPak.WriteFloatLowEndian(player.Z);
                     outPak.WriteFloatLowEndian(player.CurrentSpeed);
                     outPak.WriteFloatLowEndian(player.FallSpeed);
-                    outPak.WriteShort((ushort) client.SessionID);
+                    outPak.WriteShort(client.SessionID);
                     outPak.WriteShort((ushort) player.ObjectID);
                     outPak.WriteShort(player.CurrentZone.ID);
                     outPak.WriteByte((byte) stateFlags);
@@ -1035,7 +1035,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     outPak.WriteFloatLowEndian(player.Z);
                     outPak.WriteFloatLowEndian(player.CurrentSpeed);
                     outPak.WriteFloatLowEndian(player.FallSpeed);
-                    outPak.WriteShort((ushort) client.SessionID);
+                    outPak.WriteShort(client.SessionID);
                     outPak.WriteShort(player.CurrentZone.ID);
                     outPak.WriteByte((byte) stateFlags);
                     outPak.WriteByte(0);
@@ -1053,7 +1053,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 GSUDPPacketOut CreateOutPak1112()
                 {
                     GSUDPPacketOut outPak = GSUDPPacketOut.GetForTick(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
-                    outPak.WriteShort((ushort) client.SessionID);
+                    outPak.WriteShort(client.SessionID);
                     outPak.WriteShort((ushort) (player.CurrentSpeed & 0x1FF));
                     outPak.WriteShort((ushort) player.Z);
                     ushort xOffset = (ushort) (player.X - (player.CurrentZone?.XOffset ?? 0));
@@ -1075,7 +1075,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 GSUDPPacketOut CreateOutPak190()
                 {
                     GSUDPPacketOut outPak = GSUDPPacketOut.GetForTick(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
-                    outPak.WriteShort((ushort) client.SessionID);
+                    outPak.WriteShort(client.SessionID);
                     outPak.WriteShort((ushort) (player.CurrentSpeed & 0x1FF));
                     outPak.WriteShort((ushort) player.Z);
                     ushort xOffset = (ushort) (player.X - (player.CurrentZone?.XOffset ?? 0));
@@ -1102,7 +1102,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 GSUDPPacketOut outpak = GSUDPPacketOut.GetForTick(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.PlayerPosition)));
                 byte healthByte = GetHealthByte(player);
                 ushort seatPosition = GetSeatPosition(player);
-                outpak.WriteShort((ushort) client.SessionID);
+                outpak.WriteShort(client.SessionID);
 
                 if (player.Steed != null && player.Steed.ObjectState is GameObject.eObjectState.Active)
                     outpak.WriteShort(0x1800);
@@ -1191,7 +1191,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 outpak1124.WriteFloatLowEndian(player.Z);
                 outpak1124.WriteFloatLowEndian(player.CurrentSpeed);
                 outpak1124.WriteFloatLowEndian(player.FallSpeed);
-                outpak1124.WriteShort((ushort) client.SessionID);
+                outpak1124.WriteShort(client.SessionID);
                 outpak1124.WriteShort(player.CurrentZone.ID);
                 outpak1124.WriteShort(0); // Missing.
                 outpak1124.WriteShort(seatPosition); // fall damage flag coming in, steed seat position going out

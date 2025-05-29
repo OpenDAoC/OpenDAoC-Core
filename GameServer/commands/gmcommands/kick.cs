@@ -42,7 +42,7 @@ namespace DOL.GS.Commands
 				try
 				{
 					int sessionID = Convert.ToInt32(args[1][1..]);
-					clientc = ClientService.GetClientFromId(sessionID);
+					clientc = ClientService.GetClientBySessionId(sessionID);
 				}
 				catch
 				{

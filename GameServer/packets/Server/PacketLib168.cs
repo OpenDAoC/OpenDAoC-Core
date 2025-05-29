@@ -133,7 +133,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.SessionID))))
 			{
-				pak.WriteShortLowEndian((ushort) m_gameClient.SessionID);
+				pak.WriteShortLowEndian(m_gameClient.SessionID);
 				SendTCP(pak);
 			}
 		}
@@ -605,7 +605,7 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Message))))
 			{
-				pak.WriteShort((ushort) m_gameClient.SessionID);
+				pak.WriteShort(m_gameClient.SessionID);
 				pak.WriteShort(0x00);
 				pak.WriteByte((byte) type);
 				pak.Fill(0x0, 3);
@@ -651,7 +651,7 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PlayerCreate))))
 			{
-				pak.WriteShort((ushort) playerToCreate.Client.SessionID);
+				pak.WriteShort(playerToCreate.Client.SessionID);
 				pak.WriteShort((ushort) playerToCreate.ObjectID);
 				//pak.WriteInt(playerToCreate.X);
 				//pak.WriteInt(playerToCreate.Y);
@@ -1342,7 +1342,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x05);
-				pak.WriteShort((ushort) invitingPlayer.Client.SessionID); //data1
+				pak.WriteShort(invitingPlayer.Client.SessionID); //data1
 				pak.Fill(0x00, 6); //data2&data3
 				pak.WriteByte(0x01);
 				pak.WriteByte(0x00);
@@ -1489,7 +1489,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte((byte) eDialogCode.CustomDialog);
-				pak.WriteShort((ushort) m_gameClient.SessionID); //data1
+				pak.WriteShort(m_gameClient.SessionID); //data1
 				pak.WriteShort(0x01); //custom dialog!	  //data2
 				pak.WriteShort(0x00); //data3
 				pak.WriteShort(0x00);

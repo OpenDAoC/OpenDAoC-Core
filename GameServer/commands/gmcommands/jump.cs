@@ -88,7 +88,7 @@ namespace DOL.GS.Commands
 						try
 						{
 							int sessionID = Convert.ToInt32(args[2][1..]);
-							targetPlayer = ClientService.GetClientFromId(sessionID)?.Player;
+							targetPlayer = ClientService.GetClientBySessionId(sessionID)?.Player;
 						}
 						catch
 						{

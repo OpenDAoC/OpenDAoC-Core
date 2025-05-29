@@ -513,7 +513,7 @@ namespace DOL.GS.PacketHandler
 			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Message))))
 			{
 				pak.WriteShort(0xFFFF);
-				pak.WriteShort((ushort)m_gameClient.SessionID);
+				pak.WriteShort(m_gameClient.SessionID);
 				pak.WriteByte((byte)type);
 				pak.Fill(0x0, 3);
 

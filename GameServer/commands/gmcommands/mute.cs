@@ -29,7 +29,7 @@ namespace DOL.GS.Commands
 				try
 				{
 					int sessionID = Convert.ToInt32(args[1][1..]);
-					playerClient = ClientService.GetClientFromId(sessionID);
+					playerClient = ClientService.GetClientBySessionId(sessionID);
 				}
 				catch
 				{

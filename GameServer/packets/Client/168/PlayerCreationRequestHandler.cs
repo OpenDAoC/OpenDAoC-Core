@@ -13,7 +13,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         public void HandlePacket(GameClient client, GSPacketIn packet)
         {
             ushort id = client.Version >= GameClient.eClientVersion.Version1126 ? packet.ReadShortLowEndian() : packet.ReadShort();
-            GameClient target = ClientService.GetClientFromId(id);
+            GameClient target = ClientService.GetClientBySessionId(id);
 
             if (target == null)
             {

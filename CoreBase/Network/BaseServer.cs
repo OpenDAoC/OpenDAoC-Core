@@ -20,6 +20,7 @@ namespace DOL.Network
 
         private Socket _listen;
         private Socket _udpSocket;
+        private SessionIdAllocator _sessionIdAllocator = new();
 
         public BaseServerConfig Configuration { get; }
         public bool IsRunning => _listen != null; // Not a great way to check if the server is running.
@@ -228,8 +229,9 @@ namespace DOL.Network
                     if (listenArgs.SocketError is SocketError.ConnectionReset)
                         return;
 
+                    SessionId sessionId = new(_sessionIdAllocator);
                     baseClient = GetNewClient(socket);
-                    baseClient.OnConnect(); // Must be called before `Receive` since `Receive` ends up calling `OnDisconnect` if it fails.
+                    baseClient.OnConnect(sessionId); // Must be called before `Receive` since `Receive` ends up calling `OnDisconnect` if it fails.
                     // Don't call `Receive` here, the client service may be already doing it and it isn't thread safe.
                 }
                 catch (Exception e)

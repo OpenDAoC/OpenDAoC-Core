@@ -1073,7 +1073,7 @@ namespace DOL.GS
 			{
 				GSPacketIn packet = GSPacketIn.GetForTick(p => p.Init());
 				packet.Load(state.Buffer, state.Offset, state.Size);
-				GameClient client = ClientService.GetClientFromId(packet.SessionID);
+				GameClient client = ClientService.GetClientBySessionId(packet.SessionID);
 
 				if (client == null)
 				{
