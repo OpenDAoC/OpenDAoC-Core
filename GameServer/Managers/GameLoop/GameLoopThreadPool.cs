@@ -390,25 +390,31 @@ namespace DOL.GS
 
             private sealed class TickObjectPool<T> : ITickObjectPool where T : IPooledObject<T>, new()
             {
-                private List<T> _items = new();
+                private T[] _items = new T[64];
                 private int _used;
+                private int _highWaterIndex;
 
                 public T GetForTick()
                 {
                     T item;
 
-                    if (_used < _items.Count)
+                    if (_used < _highWaterIndex && _items[_used] != null)
                     {
-                        item = _items[_used++];
+                        item = _items[_used];
+                        _items[_used] = default;
+                        _used++;
                         item.IssuedTimestamp = GameLoop.GameLoopTime;
                     }
                     else
                     {
-
                         item = new();
                         item.IssuedTimestamp = GameLoop.GameLoopTime;
-                        _items.Add(item);
-                        _used++;
+
+                        if (_used >= _items.Length)
+                            Array.Resize(ref _items, _items.Length * 2);
+
+                        _items[_used++] = item;
+                        _highWaterIndex = Math.Max(_highWaterIndex, _used);
                     }
 
                     return item;
@@ -416,6 +422,17 @@ namespace DOL.GS
 
                 public void Reset()
                 {
+                    // Gradual shrinking by nulling from the end.
+                    if (_highWaterIndex > _used * 2 + 100)
+                    {
+                        int shrinkEnd = Math.Max(_used * 2, _highWaterIndex - 10);
+
+                        for (int i = shrinkEnd; i < _highWaterIndex; i++)
+                            _items[i] = default;
+
+                        _highWaterIndex = shrinkEnd;
+                    }
+
                     _used = 0;
                 }
             }
