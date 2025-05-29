@@ -387,8 +387,8 @@ namespace DOL.GS.PacketHandler
                         return false;
                     }
 
-                    if (log.IsWarnEnabled)
-                        log.Warn($"Packet was issued outside the game loop (Code: 0x{packet.Code:X2}) (Current time: {GameLoop.GameLoopTime})");
+                    if (log.IsDebugEnabled)
+                        log.Debug($"Packet was issued outside the game loop (Code: 0x{packet.Code:X2}) (Current time: {GameLoop.GameLoopTime})");
                 }
 
                 return true;
