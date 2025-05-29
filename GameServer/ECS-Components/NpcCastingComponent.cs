@@ -21,12 +21,12 @@ namespace DOL.GS
             _npcOwner.ApplyInstantHarmfulSpellDelay();
         }
 
-        public override void ClearUpSpellHandlers()
+        public override void ClearSpellHandlers()
         {
             // Make sure NPCs don't start casting pending spells after being told to stop.
             _startSkillRequests.Clear(); // This also clears pending abilities.
             _npcOwner.ClearSpellsWaitingForLosCheck();
-            base.ClearUpSpellHandlers();
+            base.ClearSpellHandlers();
         }
 
         public bool IsAllowedToFollow(GameObject target)
