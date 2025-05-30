@@ -10,17 +10,16 @@ namespace DOL.Network
         private const int ARRAY_LENGTH = (MAX_ID + 1) / BITS_PER_LONG;
 
         private readonly ulong[] bitSet = new ulong[ARRAY_LENGTH];
-        private int nextCandidate = 0;
+        private uint nextCandidate = 0;
 
         public bool TryAllocate(out ushort sessionId)
         {
-            int start = (Interlocked.Increment(ref nextCandidate) - 1) % MAX_ID + 1;
+            uint start = (Interlocked.Increment(ref nextCandidate) - 1) % MAX_ID + 1;
 
-            for (int i = start; i < MAX_ID; i++)
+            for (uint i = 0; i < MAX_ID; i++)
             {
-                int id = (start + i - 1) % MAX_ID + 1; // [1, 65535].
-                int index = id / BITS_PER_LONG;
-                int bit = id % BITS_PER_LONG;
+                int id = (int) ((start + i - 1) % MAX_ID + 1); // [1, 65535].
+                int index = Math.DivRem(id, BITS_PER_LONG, out int bit);
                 ulong mask = (ulong) 1 << bit;
                 ulong oldValue;
                 ulong newValue;
