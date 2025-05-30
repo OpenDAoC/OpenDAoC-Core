@@ -274,6 +274,7 @@ namespace DOL.GS
                 }
 
                 ClientState = eClientState.Disconnected;
+                PacketProcessor?.Dispose();
                 ClientService.OnClientDisconnect(this);
                 GameEventMgr.Notify(GameClientEvent.Disconnected, this);
 

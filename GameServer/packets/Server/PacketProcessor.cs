@@ -158,12 +158,6 @@ namespace DOL.GS.PacketHandler
             }
         }
 
-        public void ClearPendingOutboundPackets()
-        {
-            _tcpSendBufferPosition = 0;
-            _udpSendBufferPosition = 0;
-        }
-
         public void ProcessInboundPacket(GSPacketIn packet)
         {
             int code = packet.Code;
@@ -495,6 +489,33 @@ namespace DOL.GS.PacketHandler
             }
 
             return (ushort) (val2 - ((val1 + val2) << 8));
+        }
+
+        public void ClearPendingOutboundPackets()
+        {
+            _tcpSendBufferPosition = 0;
+            _udpSendBufferPosition = 0;
+        }
+
+        public void Dispose()
+        {
+            while (_tcpSendArgsPool.TryDequeue(out SocketAsyncEventArgs tcpSendArgs))
+                tcpSendArgs.Dispose();
+
+            _tcpSendArgs?.Dispose();
+
+            while (_udpSendArgsPool.TryDequeue(out SocketAsyncEventArgs udpSendArgs))
+                udpSendArgs.Dispose();
+
+            _udpSendArgs?.Dispose();
+
+            // Drain all pending packets on the next game loop tick to avoid concurrent modification issues.
+            GameLoopService.PostAfterTick(static (state) =>
+            {
+                state._tcpPacketQueue.DrainTo(static state => { });
+                state._udpToTcpPacketQueue.DrainTo(static state => { });
+                state._udpPacketQueue.DrainTo(static state => { });
+            }, this);
         }
 
         private void GetAvailableTcpSendArgs()
