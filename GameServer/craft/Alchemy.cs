@@ -1,26 +1,6 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
+using System;
 using DOL.Database;
 using DOL.Language;
-using System;
-using System.Collections.Generic;
 
 namespace DOL.GS
 {
@@ -113,17 +93,17 @@ namespace DOL.GS
 		/// <returns></returns>
 		protected override void ApplyMagicalEffect(GamePlayer player, DbInventoryItem item)
 		{
-			DbInventoryItem tincture = (DbInventoryItem)player.TradeWindow.TradeItems[0];
+			DbInventoryItem tincture = player.TradeWindow.TradeItems[0] as DbInventoryItem;
 
-            // One item each side of the trade window.
+			// One item each side of the trade window.
+			if (item == null || tincture == null)
+				return ;
 
-			if (item == null || tincture == null) 
-                return ;
-			
-			if(tincture.ProcSpellID != 0)
+			if (tincture.ProcSpellID != 0)
 			{
 				item.ProcSpellID = tincture.ProcSpellID;
-				if(tincture.ProcChance != 0)
+
+				if (tincture.ProcChance != 0)
 					item.ProcChance = tincture.ProcChance;
 			}
 			else
@@ -131,23 +111,28 @@ namespace DOL.GS
 				item.MaxCharges = GetItemMaxCharges(item);
 				item.Charges = item.MaxCharges;
 				item.SpellID = tincture.SpellID;
+
+				// Send an item update so that the tooltip shows the charge.
+				GamePlayer playerToSendUpdate = player.TradeWindow.Partner ?? player;
+				playerToSendUpdate.Out.SendInventoryItemsUpdate([item]);
 			}
 
 			item.LevelRequirement = tincture.LevelRequirement;
-			//item.Level = tincture.LevelRequirement;
 
 			player.Inventory.RemoveCountFromStack(tincture, 1);
 			InventoryLogging.LogInventoryAction(player, "(craft)", eInventoryActionType.Craft, tincture.Template);
 
-			if (item.Template is DbItemUnique)
+			if (item.Template is DbItemUnique uniqueTemplate)
 			{
 				GameInventoryObjectExtensions.SaveItem(item);
-				GameServer.Database.SaveObject(item.Template as DbItemUnique);
+				GameServer.Database.SaveObject(uniqueTemplate);
 			}
 			else
 			{
 				ChatUtil.SendErrorMessage(player, "Alchemy crafting error: Item was not an ItemUnique, crafting changes not saved to DB!");
-				log.ErrorFormat("Alchemy crafting error: Item {0} was not an ItemUnique for player {1}, crafting changes not saved to DB!", item.Id_nb, player.Name);
+
+				if (log.IsErrorEnabled)
+					log.ErrorFormat("Alchemy crafting error: Item {item.Id_nb} was not an ItemUnique for player {player.Name}, crafting changes not saved to DB!");
 			}
 		}
 
