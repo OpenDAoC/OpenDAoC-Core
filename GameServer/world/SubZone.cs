@@ -8,7 +8,7 @@ namespace DOL.GS
     public class SubZone
     {
         private static int _nextId = 0;
-        private readonly ConcurrentLinkedList<GameObject>[] _objects = new ConcurrentLinkedList<GameObject>[Enum.GetValues<eGameObjectType>().Length];
+        private readonly WriteLockedLinkedList<GameObject>[] _objects = new WriteLockedLinkedList<GameObject>[Enum.GetValues<eGameObjectType>().Length];
         private readonly int _id; // Internal ID for locking order, non-deterministic.
 
         public Zone ParentZone { get; }
@@ -27,9 +27,12 @@ namespace DOL.GS
             if (node.Value.SubZoneObject.CurrentSubZone == this)
                 throw new ArgumentException("Object already in this subzone", nameof(node));
 
-            using SimpleDisposableLock @lock = _objects[(int) node.Value.GameObjectType].Lock;
-            @lock.EnterWriteLock();
-            AddObjectUnsafe(node);
+            _objects[(int) node.Value.GameObjectType].AddLast(node, OnAddObject);
+
+            void OnAddObject(LinkedListNode<GameObject> node)
+            {
+                node.Value.SubZoneObject.CurrentSubZone = this;
+            }
         }
 
         public void RemoveObject(LinkedListNode<GameObject> node)
@@ -37,9 +40,12 @@ namespace DOL.GS
             if (node.Value.SubZoneObject.CurrentSubZone != this)
                 throw new ArgumentException("Object not in this subzone", nameof(node));
 
-            using SimpleDisposableLock @lock = _objects[(int) node.Value.GameObjectType].Lock;
-            @lock.EnterWriteLock();
-            RemoveObjectUnsafe(node);
+            _objects[(int) node.Value.GameObjectType].Remove(node, OnRemoveObject);
+
+            void OnRemoveObject(LinkedListNode<GameObject> node)
+            {
+                node.Value.SubZoneObject.CurrentSubZone = null;
+            }
         }
 
         public void AddObjectToThisAndRemoveFromOther(LinkedListNode<GameObject> node, SubZone otherSubZone)
@@ -54,45 +60,15 @@ namespace DOL.GS
                 throw new ArgumentException("Cannot move object to the same subzone", nameof(otherSubZone));
 
             eGameObjectType objectType = node.Value.GameObjectType;
-            SubZone first;
-            SubZone second;
+            WriteLockedLinkedList<GameObject>.Move(node, otherSubZone._objects[(int) objectType], _objects[(int) objectType], otherSubZone._id, _id, OnMoveObject);
 
-            // Deadlock prevention: always acquire locks in the same order based on ID.
-            if (_id < otherSubZone._id)
+            void OnMoveObject(LinkedListNode<GameObject> node)
             {
-                first = this;
-                second = otherSubZone;
+                node.Value.SubZoneObject.CurrentSubZone = this;
             }
-            else
-            {
-                first = otherSubZone;
-                second = this;
-            }
-
-            // Acquire locks on both lists. We want the removal and addition to happen at the same time from a reader's point of view.
-            using SimpleDisposableLock firstLock = first._objects[(int) objectType].Lock;
-            @firstLock.EnterWriteLock();
-            using SimpleDisposableLock secondLock = second._objects[(int) objectType].Lock;
-            @secondLock.EnterWriteLock();
-
-            // Remove from other, add to this.
-            otherSubZone.RemoveObjectUnsafe(node);
-            AddObjectUnsafe(node);
         }
 
-        public ConcurrentLinkedList<GameObject> this[eGameObjectType objectType] => _objects[(int) objectType];
-
-        private void AddObjectUnsafe(LinkedListNode<GameObject> node)
-        {
-            _objects[(int) node.Value.GameObjectType].AddLast(node);
-            node.Value.SubZoneObject.CurrentSubZone = this;
-        }
-
-        private void RemoveObjectUnsafe(LinkedListNode<GameObject> node)
-        {
-            _objects[(int) node.Value.GameObjectType].Remove(node);
-            node.Value.SubZoneObject.CurrentSubZone = null;
-        }
+        public WriteLockedLinkedList<GameObject> this[eGameObjectType objectType] => _objects[(int) objectType];
     }
 
     // A wrapper for a 'LinkedListNode<GameObject>'.

@@ -8,7 +8,6 @@ namespace DOL.GS
     // Allows concurrent, lock-free add operations from multiple producer threads.
     // Designed for a single consumer to drain items; draining and adding must not occur simultaneously.
     // If the internal buffer overflows, excess items are temporarily stored in a concurrent queue and the buffer is automatically resized (never shrinks).
-
     public sealed class DrainArray<T>
     {
         private T[] _buffer;
