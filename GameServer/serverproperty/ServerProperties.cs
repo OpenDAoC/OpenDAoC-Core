@@ -1554,13 +1554,13 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Base RP value of a keep
 		/// </summary>
-		[ServerProperty("keeps", "keep_rp_base", "Base RP value of a keep", 4500)]
+		[ServerProperty("keeps", "keep_rp_base", "Base RP value of a keep", 0)] // Previously 4500.
 		public static int KEEP_RP_BASE;
 
 		/// <summary>
 		/// Base RP value of a tower
 		/// </summary>
-		[ServerProperty("keeps", "tower_rp_base", "Base RP value of a tower", 500)]
+		[ServerProperty("keeps", "tower_rp_base", "Base RP value of a tower", 0)] // Previously 500.
 		public static int TOWER_RP_BASE;
 
 		/// <summary>
@@ -1572,13 +1572,13 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Multiplier used to add or subtract RP worth based on keep level difference from 50.
 		/// </summary>
-		[ServerProperty("keeps", "keep_rp_multiplier", "Integer multiplier used to increase/decrease RP worth based on keep level difference from 50.", 50)]
+		[ServerProperty("keeps", "keep_rp_multiplier", "Integer multiplier used to increase/decrease RP worth based on keep level difference from 50.", 0)] // Previously 50.
 		public static int KEEP_RP_MULTIPLIER;
 
 		/// <summary>
 		/// Multiplier used to add or subtract RP worth based on tower level difference from 50.
 		/// </summary>
-		[ServerProperty("keeps", "tower_rp_multiplier", "Integer multiplier used to increase/decrease RP worth based on tower level difference from 50.", 50)]
+		[ServerProperty("keeps", "tower_rp_multiplier", "Integer multiplier used to increase/decrease RP worth based on tower level difference from 50.", 0)] // Previously 50.
 		public static int TOWER_RP_MULTIPLIER;
 
 		/// <summary>

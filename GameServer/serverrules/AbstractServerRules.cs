@@ -1272,17 +1272,16 @@ namespace DOL.GS.ServerRules
             void RewardRealmPoints()
             {
                 int npcRpValue = killedNpc.RealmPointsValue;
-                int rpCap = playerToAward.RealmPointsValue * 2;
                 int realmPoints;
 
-                // Keep and Tower captures reward full RP and BP value to each player.
+                // Keeps and tower captures reward full RP and BP.
                 if (killedNpc is GuardLord)
                     realmPoints = npcRpValue;
                 else
-                    realmPoints = (int) (npcRpValue * damagePercent);
-
-                if (realmPoints > rpCap && killedNpc is not Doppelganger)
-                    realmPoints = rpCap;
+                {
+                    int rpCap = playerToAward.RealmPointsValue * 2;
+                    realmPoints = Math.Min(rpCap, (int) (npcRpValue * damagePercent));
+                }
 
                 if (realmPoints > 0)
                     playerToAward.GainRealmPoints(realmPoints);
@@ -1291,17 +1290,16 @@ namespace DOL.GS.ServerRules
             void RewardBountyPoints()
             {
                 int npcBpValue = killedNpc.BountyPointsValue;
-                int bpCap = playerToAward.BountyPointsValue * 2;
                 int bountyPoints;
 
-                // Keep and Tower captures reward full RP and BP value to each player.
+                // Keeps and tower captures reward full RP and BP.
                 if (killedNpc is GuardLord)
                     bountyPoints = npcBpValue;
                 else
-                    bountyPoints = (int) (npcBpValue * damagePercent);
-
-                if (bountyPoints > bpCap && killedNpc is not Doppelganger)
-                    bountyPoints = bpCap;
+                {
+                    int bpCap = playerToAward.BountyPointsValue * 2;
+                    bountyPoints = Math.Min(bpCap, (int) (npcBpValue * damagePercent));
+                }
 
                 if (bountyPoints > 0)
                     playerToAward.GainBountyPoints(bountyPoints);
@@ -2182,22 +2180,24 @@ namespace DOL.GS.ServerRules
             return 1.0;
         }
 
-        /// <summary>
-        /// Realm points a keep is worth when captured
-        /// </summary>
-        /// <param name="keep"></param>
-        /// <returns></returns>
         public virtual int GetRealmPointsForKeep(AbstractGameKeep keep)
         {
-            int value = 0;
-            
+            int rpBase;
+            int rpMultiplier;
+
             if (keep is GameKeep)
             {
-                value = Properties.KEEP_RP_BASE + (keep.BaseLevel - 50) * Properties.KEEP_RP_MULTIPLIER;
+                rpBase = Properties.KEEP_RP_BASE;
+                rpMultiplier = Properties.KEEP_RP_MULTIPLIER;
+            }
+            else
+            {
+                rpBase = Properties.TOWER_RP_BASE;
+                rpMultiplier = Properties.TOWER_RP_CLAIM_MULTIPLIER;
             }
 
-            value += ((keep.Level - Properties.STARTING_KEEP_LEVEL) * Properties.UPGRADE_MULTIPLIER);
-
+            int value = rpBase + (keep.BaseLevel - 50) * rpMultiplier;
+            value += (keep.Level - Properties.STARTING_KEEP_LEVEL) * Properties.UPGRADE_MULTIPLIER;
             return value;
         }
 
@@ -2257,7 +2257,6 @@ namespace DOL.GS.ServerRules
         {
             return target.GuildName;
         }
-
 
         /// <summary>
         /// Get the items (merchant) list name for a lot marker in the specified region
