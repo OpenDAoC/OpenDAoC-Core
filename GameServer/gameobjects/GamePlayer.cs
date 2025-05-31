@@ -4458,7 +4458,7 @@ namespace DOL.GS
                 // Pre-1.81 formula: https://camelotherald.fandom.com/wiki/Patch_Notes:_Version_1.81
                 // 25 at RR1, level 25.
                 // 225 at RR1, level 35, 245 at RR3, level 35.
-                // 900 at RR1, level 50. 1000 at RR10, level 50.
+                // 900 at RR1, level 50. 990 at RR10, level 50.
                 int modifiedLevel = Level - 20;
                 return Math.Max(1, modifiedLevel * modifiedLevel) + RealmLevel;
             }
