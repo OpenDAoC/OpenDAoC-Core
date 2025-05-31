@@ -169,27 +169,19 @@ namespace DOL.GS
 			return base.IsWithinRadius(obj, radius);
 		}
 
-		/// <summary>
-		/// determines wether a target object is front
-		/// in front is defined as north +- viewangle/2
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="viewangle"></param>
-		/// <param name="rangeCheck"></param>
-		/// <returns></returns>
-		public virtual bool IsObjectInFront(GameObject target, double viewangle, int alwaysTrueRange = 32)
+		public virtual bool IsObjectInFront(GameObject target, double heading, int alwaysTrueRange = 32)
 		{
 			if (target == null)
 				return false;
-			float angle = this.GetAngle(target);
-			if (angle >= 360 - viewangle / 2 || angle < viewangle / 2)
+
+			float angle = GetAngle(target);
+
+			if (angle >= 360 - heading / 2 || angle < heading / 2)
 				return true;
-			// if target is closer than 32 units it is considered always in view
-			// tested and works this way for normal evade, parry, block (in 1.69)
-			if (alwaysTrueRange > 0)
-                return this.IsWithinRadius(target, alwaysTrueRange);
-			else
-                return false;
+
+			// If the target is closer than 32 units, it is considered always in view.
+			// Tested and works this way for normal evade, parry, block (in 1.69).
+			return IsWithinRadius(target, alwaysTrueRange);
 		}
 
 		/// <summary>

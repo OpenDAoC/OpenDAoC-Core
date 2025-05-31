@@ -245,17 +245,6 @@ namespace DOL.GS.Keeps
 		}
 
 		/// <summary>
-		/// Because of Spell issues, we will always return this true
-		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="viewangle"></param>
-		/// <returns></returns>
-		public override bool IsObjectInFront(GameObject target, double viewangle, int alwaysTrueRange = 32)
-		{
-			return true;
-		}
-
-		/// <summary>
 		/// Static archers attack with melee the closest if being engaged in melee
 		/// </summary>
 		/// <param name="ad"></param>
