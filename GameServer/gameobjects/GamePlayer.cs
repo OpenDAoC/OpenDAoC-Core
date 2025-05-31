@@ -4455,15 +4455,12 @@ namespace DOL.GS
         {
             get
             {
-                // http://www.camelotherald.com/more/2275.shtml
-                // new 1.81D formula
-                // Realm point value = (level - 20)squared + (realm rank level x 5) + (champion level x 10) + (master level (squared)x 5)
-                //we use realm level 1L0 = 0, mythic uses 1L0 = 10, so we + 10 the realm level
-                int level = Math.Max(0, Level - 20);
-                if (level == 0)
-                    return Math.Max(1, (RealmLevel + 10) * 5);
-
-                return Math.Max(1, level * level + (RealmLevel + 10) * 5);
+                // Pre-1.81 formula: https://camelotherald.fandom.com/wiki/Patch_Notes:_Version_1.81
+                // 25 at RR1, level 25.
+                // 225 at RR1, level 35, 245 at RR3, level 35.
+                // 900 at RR1, level 50. 1000 at RR10, level 50.
+                int modifiedLevel = Level - 20;
+                return Math.Max(1, modifiedLevel * modifiedLevel) + RealmLevel;
             }
         }
 
