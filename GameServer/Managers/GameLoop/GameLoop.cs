@@ -22,6 +22,7 @@ namespace DOL.GS
         private static bool _running;
 
         public static long TickRate { get; private set; }
+        public static long PreviousGameLoopTime { get; private set; }
         public static long GameLoopTime { get; private set; }
         public static string CurrentServiceTick { get; set; }
 
@@ -181,6 +182,7 @@ namespace DOL.GS
 
             void UpdateStatsAndTime(double elapsed)
             {
+                PreviousGameLoopTime = GameLoopTime;
                 gameLoopTime += elapsed;
                 GameLoopTime = (long) Math.Round(gameLoopTime);
                 _gameLoopStats.RecordTick(gameLoopTime);

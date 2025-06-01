@@ -88,6 +88,7 @@ namespace DOL.GS
             _needBroadcastPosition = true;
             _validateMovementOnNextTick = true;
             _lastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
+            Owner.LastPlayerActivityTime = GameLoop.GameLoopTime;
 
             if (Owner.IsEncumbered)
             {
