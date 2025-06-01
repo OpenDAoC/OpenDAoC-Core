@@ -13,11 +13,15 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             if (client.Version >= GameClient.eClientVersion.Version1124)
             {
-                client.Player.X = (int) packet.ReadFloatLowEndian();
-                client.Player.Y = (int) packet.ReadFloatLowEndian();
-                client.Player.Z = (int) packet.ReadFloatLowEndian();
-                client.Player.CurrentSpeed = (short) packet.ReadFloatLowEndian();
-                client.Player.Heading = packet.ReadShort();
+                if (client.Player.IsPositionUpdateFromPacketAllowed())
+                {
+                    client.Player.X = (int) packet.ReadFloatLowEndian();
+                    client.Player.Y = (int) packet.ReadFloatLowEndian();
+                    client.Player.Z = (int) packet.ReadFloatLowEndian();
+                    client.Player.CurrentSpeed = (short) packet.ReadFloatLowEndian();
+                    client.Player.Heading = packet.ReadShort();
+                    client.Player.OnPositionUpdateFromPacket();
+                }
             }
 
             int flagSpeedData = packet.ReadShort();

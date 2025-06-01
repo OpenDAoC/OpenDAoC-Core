@@ -16,20 +16,20 @@ namespace DOL.GS
         private long _nextPositionBroadcast;
         private bool _needBroadcastPosition;
 
-        private long _lastHeadingUpdatePacketReceivedTime;
         private long _nextHeadingBroadcast;
         private bool _needBroadcastHeading;
 
+        private PlayerMovementMonitor _playerMovementMonitor;
         private bool _isEncumberedMessageSent;
 
         public new GamePlayer Owner { get; }
         public int MaxSpeedPercent => MaxSpeed * 100 / GamePlayer.PLAYER_BASE_SPEED;
         public ref long LastPositionUpdatePacketReceivedTime => ref _lastPositionUpdatePacketReceivedTime;
-        public ref long LastHeadingUpdatePacketReceivedTime => ref _lastHeadingUpdatePacketReceivedTime;
 
         public PlayerMovementComponent(GameLiving owner) : base(owner)
         {
             Owner = owner as GamePlayer;
+            _playerMovementMonitor = new PlayerMovementMonitor(Owner);
         }
 
         protected override void TickInternal()
@@ -50,6 +50,7 @@ namespace DOL.GS
                 if (_needBroadcastPosition && ServiceUtils.ShouldTickAdjust(ref _nextPositionBroadcast))
                 {
                     BroadcastPosition();
+                    _playerMovementMonitor.ValidateMovement();
                     _nextPositionBroadcast += BROADCAST_MINIMUM_INTERVAL;
                     _needBroadcastPosition = false;
                 }
@@ -74,7 +75,7 @@ namespace DOL.GS
             PlayerHeadingUpdateHandler.BroadcastHeading(Owner.Client);
         }
 
-        public void OnPositionPacketReceivedEnd()
+        public void OnPositionUpdateFromPacket()
         {
             _needBroadcastPosition = true;
             _lastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
@@ -85,7 +86,7 @@ namespace DOL.GS
                 {
                     if (!_isEncumberedMessageSent)
                     {
-                        SendEncumberedMessage();
+                        SendEncumberedMessage(Owner);
                         _isEncumberedMessageSent = true;
                     }
                 }
@@ -94,20 +95,26 @@ namespace DOL.GS
                     _isEncumberedMessageSent = false;
 
                     if (MaxSpeedPercent <= 0)
-                        SendEncumberedMessage(); // Allow it to be spammed.
+                        SendEncumberedMessage(Owner); // Allow it to be spammed.
                 }
             }
 
-            void SendEncumberedMessage()
+            _playerMovementMonitor.RecordPosition();
+
+            static void SendEncumberedMessage(GamePlayer player)
             {
-                Owner.Out.SendMessage(LanguageMgr.GetTranslation(Owner.Client.Account.Language, "PlayerMovementComponent.Encumbered"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "PlayerMovementComponent.Encumbered"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
         }
 
         public void OnHeadingPacketReceived()
         {
             _needBroadcastHeading = true;
-            _lastHeadingUpdatePacketReceivedTime = GameLoop.GameLoopTime;
+        }
+
+        public void OnTeleportOrRegionChange()
+        {
+            _playerMovementMonitor.OnTeleportOrRegionChange();
         }
     }
 }

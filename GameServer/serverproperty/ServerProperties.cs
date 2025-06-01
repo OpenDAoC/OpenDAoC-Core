@@ -248,36 +248,6 @@ namespace DOL.GS.ServerProperties
 		public static int MAX_ITEMS_PER_PACKET;
 
 		/// <summary>
-		/// Number of times speed hack detected before banning.  Must be multiples of 5 (20, 25, 30, etc)
-		/// </summary>
-		[ServerProperty("system", "speedhack_tolerance", "Number of times speed hack detected before banning.  Multiples of 5 (20, 25, 30, etc)", 20)]
-		public static int SPEEDHACK_TOLERANCE;
-
-		/// <summary>
-		/// Turn on move detect
-		/// </summary>
-		[ServerProperty("system", "enable_movedetect", "Should the move detect code be enabled to kick possible movement hackers?", false)]
-		public static bool ENABLE_MOVEDETECT;
-
-		/// <summary>
-		/// Coords per second tolerance before player is identified as a hacker?
-		/// </summary>
-		[ServerProperty("system", "cps_tolerance", "Coords per second tolerance before player is identified as a hacker?", 1000)]
-		public static int CPS_TOLERANCE;
-
-		/// <summary>
-		/// Time tolerance before player is identified as move hacker
-		/// </summary>
-		[ServerProperty("system", "cps_time_tolerance", "Time tolerance for CPS before player is identified as a move hacker?", 200)]
-		public static int CPS_TIME_TOLERANCE;
-
-		/// <summary>
-		/// Z distance tolerance before player is identified as a jump hacker
-		/// </summary>
-		[ServerProperty("system", "jump_tolerance", "Z distance tolerance before player is identified as a jump hacker?", 200)]
-		public static int JUMP_TOLERANCE;
-
-		/// <summary>
 		/// Display centered screen messages if a player enters an area.
 		/// </summary>
 		[ServerProperty("system", "display_area_enter_screen_desc", "Display centered screen messages if a player enters an area.", false)]

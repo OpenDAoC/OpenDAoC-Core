@@ -27,11 +27,16 @@ namespace DOL.GS.PacketHandler.Client.v168
 
             if (client.Version >= GameClient.eClientVersion.Version1124)
             {
-                client.Player.X = (int) packet.ReadFloatLowEndian();
-                client.Player.Y = (int) packet.ReadFloatLowEndian();
-                client.Player.Z = (int) packet.ReadFloatLowEndian();
-                client.Player.CurrentSpeed = (short) packet.ReadFloatLowEndian();
-                client.Player.Heading = packet.ReadShort();
+                if (client.Player.IsPositionUpdateFromPacketAllowed())
+                {
+                    client.Player.X = (int) packet.ReadFloatLowEndian();
+                    client.Player.Y = (int) packet.ReadFloatLowEndian();
+                    client.Player.Z = (int) packet.ReadFloatLowEndian();
+                    client.Player.CurrentSpeed = (short) packet.ReadFloatLowEndian();
+                    client.Player.Heading = packet.ReadShort();
+                    client.Player.OnPositionUpdateFromPacket();
+                }
+
                 flagSpeedData = packet.ReadShort();
                 spellLevel = packet.ReadByte();
                 spellLineIndex = packet.ReadByte();
@@ -44,20 +49,25 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 if (client.Version > GameClient.eClientVersion.Version171)
                 {
-                    int xOffsetInZone = packet.ReadShort();
-                    int yOffsetInZone = packet.ReadShort();
-                    int currentZoneID = packet.ReadShort();
-                    int realZ = packet.ReadShort();
-
-                    Zone newZone = WorldMgr.GetZone((ushort) currentZoneID);
-
-                    if (newZone == null)
-                        Log.Warn($"Unknown zone in UseSpellHandler: {currentZoneID} player: {client.Player.Name}");
-                    else
+                    if (client.Player.IsPositionUpdateFromPacketAllowed())
                     {
-                        client.Player.X = newZone.XOffset + xOffsetInZone;
-                        client.Player.Y = newZone.YOffset + yOffsetInZone;
-                        client.Player.Z = realZ;
+                        int xOffsetInZone = packet.ReadShort();
+                        int yOffsetInZone = packet.ReadShort();
+                        int currentZoneID = packet.ReadShort();
+                        int realZ = packet.ReadShort();
+
+                        Zone newZone = WorldMgr.GetZone((ushort) currentZoneID);
+
+                        if (newZone == null)
+                            Log.Warn($"Unknown zone in UseSpellHandler: {currentZoneID} player: {client.Player.Name}");
+                        else
+                        {
+                            client.Player.X = newZone.XOffset + xOffsetInZone;
+                            client.Player.Y = newZone.YOffset + yOffsetInZone;
+                            client.Player.Z = realZ;
+                        }
+
+                        client.Player.OnPositionUpdateFromPacket();
                     }
                 }
 
