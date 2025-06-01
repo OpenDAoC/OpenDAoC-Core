@@ -23,10 +23,7 @@ namespace DOL.GS.Spells
 		{
 			// Half of the damage is magical.
 			// Subtract any spelldamage bonus and re-calculate after half damage is calculated.
-			if (Caster is GamePlayer playerCaster)
-				return CasterEffectiveness * (0.5 - playerCaster.GetModified(eProperty.SpellDamage) * 0.01);
-			else
-				return CasterEffectiveness * 0.5;
+			return CasterEffectiveness * (0.5 - Caster.GetModified(eProperty.SpellDamage) * 0.01);
 		}
 
 		/// <summary>
