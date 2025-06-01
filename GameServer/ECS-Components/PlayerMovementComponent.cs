@@ -86,14 +86,13 @@ namespace DOL.GS
         public void OnPositionUpdateFromPacket()
         {
             _needBroadcastPosition = true;
+            _validateMovementOnNextTick = true;
             _lastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
 
             if (Owner.IsEncumbered)
             {
                 if (Owner.IsMoving)
                 {
-                    _validateMovementOnNextTick = true;
-
                     if (!_isEncumberedMessageSent)
                     {
                         SendEncumberedMessage(Owner);
