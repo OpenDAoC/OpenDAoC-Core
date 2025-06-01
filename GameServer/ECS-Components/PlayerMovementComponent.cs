@@ -22,6 +22,8 @@ namespace DOL.GS
         private PlayerMovementMonitor _playerMovementMonitor;
         private bool _isEncumberedMessageSent;
 
+        private bool _validateMovementOnNextTick;
+
         public new GamePlayer Owner { get; }
         public int MaxSpeedPercent => MaxSpeed * 100 / GamePlayer.PLAYER_BASE_SPEED;
         public ref long LastPositionUpdatePacketReceivedTime => ref _lastPositionUpdatePacketReceivedTime;
@@ -29,7 +31,7 @@ namespace DOL.GS
         public PlayerMovementComponent(GameLiving owner) : base(owner)
         {
             Owner = owner as GamePlayer;
-            _playerMovementMonitor = new PlayerMovementMonitor(Owner);
+            _playerMovementMonitor = new(Owner);
         }
 
         protected override void TickInternal()
@@ -46,11 +48,17 @@ namespace DOL.GS
                     return;
                 }
 
+                // Always validate movement, even if the next position broadcast is not due yet.
+                if (_validateMovementOnNextTick)
+                {
+                    _playerMovementMonitor.ValidateMovement();
+                    _validateMovementOnNextTick = false;
+                }
+
                 // Position and heading broadcasts are mutually exclusive.
                 if (_needBroadcastPosition && ServiceUtils.ShouldTickAdjust(ref _nextPositionBroadcast))
                 {
                     BroadcastPosition();
-                    _playerMovementMonitor.ValidateMovement();
                     _nextPositionBroadcast += BROADCAST_MINIMUM_INTERVAL;
                     _needBroadcastPosition = false;
                 }
@@ -84,6 +92,8 @@ namespace DOL.GS
             {
                 if (Owner.IsMoving)
                 {
+                    _validateMovementOnNextTick = true;
+
                     if (!_isEncumberedMessageSent)
                     {
                         SendEncumberedMessage(Owner);
