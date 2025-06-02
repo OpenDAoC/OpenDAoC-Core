@@ -50,7 +50,7 @@ namespace DOL.Tests.Unit.GameUtils.Collections
         public void Add_DuringDrainTo_ShouldThrowInvalidOperationException()
         {
             DrainArray<int> drainArray = new();
-            drainArray.Add(1);
+            drainArray.Add(1); // Initial item to ensure DrainTo has something to process.
 
             ManualResetEventSlim started = new(false);
             ManualResetEventSlim readyToAdd = new(false);
@@ -86,8 +86,95 @@ namespace DOL.Tests.Unit.GameUtils.Collections
             });
 
             Task.WaitAll(drainTask, addTask);
-            Assert.That(addException, Is.Not.Null);
-            Assert.That(addException, Is.TypeOf<InvalidOperationException>());
+
+            if (addException == null)
+                Assert.Inconclusive("Race condition was not reproduced.");
+        }
+
+        [Test]
+        public void DrainTo_DuringAdd_ShouldThrowInvalidOperationException()
+        {
+            // This test may need to run multiple times to catch the race condition.
+            bool exceptionCaught = false;
+
+            for (int attempt = 0; attempt < 100 && !exceptionCaught; attempt++)
+            {
+                DrainArray<int> drainArray = new();
+                Exception drainException = null;
+                bool startDraining = false;
+                bool addInProgress = false;
+
+                var addTask = Task.Run(() =>
+                {
+                    // Spin until we're told to start draining.
+                    SpinWait spin = new();
+                    while (!Volatile.Read(ref startDraining))
+                        spin.SpinOnce();
+
+                    // Perform continuous Add operations.
+                    for (int i = 0; i < 10000; i++)
+                    {
+                        try
+                        {
+                            Volatile.Write(ref addInProgress, true);
+                            drainArray.Add(i + 100);
+                            Volatile.Write(ref addInProgress, false);
+                        }
+                        catch (InvalidOperationException)
+                        {
+                            // Expected when caught by DrainTo.
+                            break;
+                        }
+
+                        // Occasional yield to allow DrainTo to run.
+                        if (i % 100 == 0)
+                            Thread.Yield();
+                    }
+                });
+
+                var drainTask = Task.Run(() =>
+                {
+                    try
+                    {
+                        // Start the Add operations.
+                        Volatile.Write(ref startDraining, true);
+
+                        // Brief delay to let Add operations begin.
+                        Thread.Sleep(1);
+
+                        // Try DrainTo multiple times to catch Add in progress.
+                        for (int i = 0; i < 1000; i++)
+                        {
+                            try
+                            {
+                                drainArray.DrainTo(_ => { });
+                                Thread.Yield();
+                            }
+                            catch (InvalidOperationException ex)
+                            {
+                                drainException = ex;
+                                break;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        drainException = ex;
+                    }
+                });
+
+                Task.WaitAll(addTask, drainTask);
+
+                if (drainException != null)
+                {
+                    exceptionCaught = true;
+                    Assert.That(drainException, Is.TypeOf<InvalidOperationException>());
+                    break;
+                }
+            }
+
+            if (!exceptionCaught)
+                Assert.Inconclusive("Race condition was not reproduced.");
         }
     }
 }

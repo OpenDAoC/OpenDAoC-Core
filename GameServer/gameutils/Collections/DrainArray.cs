@@ -8,13 +8,14 @@ namespace DOL.GS
     // Allows concurrent, lock-free add operations from multiple producer threads.
     // Designed for a single consumer to drain items; draining and adding must not occur simultaneously.
     // If the internal buffer overflows, excess items are temporarily stored in a concurrent queue and the buffer is automatically resized (never shrinks).
-    public sealed class DrainArray<T>
+    public class DrainArray<T>
     {
         private T[] _buffer;
         private int _writeIndex;
         private ConcurrentQueue<T> _overflowQueue = new();
         private bool _overflowed;
         private bool _draining;
+        private int _adding;
 
         public bool Any => Volatile.Read(ref _writeIndex) > 0; // Not accurate.
 
@@ -29,14 +30,26 @@ namespace DOL.GS
             if (Volatile.Read(ref _draining))
                 throw new InvalidOperationException($"Cannot {nameof(Add)} while {nameof(DrainTo)} is in progress.");
 
-            int index = Interlocked.Increment(ref _writeIndex) - 1;
+            Interlocked.Increment(ref _adding);
 
-            if (index < _buffer.Length)
-                _buffer[index] = item;
-            else
+            try
             {
-                _overflowQueue.Enqueue(item);
-                _overflowed = true;
+                if (Volatile.Read(ref _draining))
+                    throw new InvalidOperationException($"Cannot {nameof(Add)} while {nameof(DrainTo)} is in progress.");
+
+                int index = Interlocked.Increment(ref _writeIndex) - 1;
+
+                if (index < _buffer.Length)
+                    _buffer[index] = item;
+                else
+                {
+                    _overflowQueue.Enqueue(item);
+                    _overflowed = true;
+                }
+            }
+            finally
+            {
+                Interlocked.Decrement(ref _adding);
             }
         }
 
@@ -47,6 +60,9 @@ namespace DOL.GS
 
         public void DrainTo<TState>(Action<T, TState> action, TState state)
         {
+            if (Volatile.Read(ref _adding) > 0)
+                throw new InvalidOperationException($"Cannot {nameof(DrainTo)} while {nameof(Add)} is in progress.");
+
             if (Interlocked.Exchange(ref _draining, true) != false)
                 throw new InvalidOperationException($"Concurrent {nameof(DrainTo)} detected.");
 
