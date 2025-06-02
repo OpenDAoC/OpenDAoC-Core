@@ -86,7 +86,8 @@ namespace DOL.GS
                         action(result, state);
                     }
 
-                    ResizeBuffer(overflowCount);
+                    int newSize = Math.Max(_buffer.Length * 2, _buffer.Length + overflowCount + 1024);
+                    _buffer = new T[newSize];
                     _overflowed = false;
                     return;
                 }
@@ -94,22 +95,12 @@ namespace DOL.GS
                 for (int i = 0; i < count; i++)
                     action(_buffer[i], state);
 
-                Array.Clear(_buffer);
+                Array.Clear(_buffer, 0, count);
             }
             finally
             {
                 Volatile.Write(ref _draining, false);
             }
-        }
-
-        private void ResizeBuffer(int minToAdd)
-        {
-            int newSize = _buffer.Length * 2;
-
-            while (newSize <= minToAdd)
-                newSize *= 2;
-
-            _buffer = new T[newSize];
         }
     }
 }
