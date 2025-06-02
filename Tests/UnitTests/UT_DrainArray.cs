@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using DOL.GS;
@@ -25,6 +26,7 @@ namespace DOL.Tests.Unit.GameUtils.Collections
             drainArray.DrainTo(called.Add);
             Assert.That(called.Count, Is.EqualTo(itemCount));
             CollectionAssert.AreEquivalent(Enumerable.Range(0, itemCount), called);
+            AssertBufferIsCleared(drainArray);
         }
 
         [Test]
@@ -44,6 +46,7 @@ namespace DOL.Tests.Unit.GameUtils.Collections
             drainArray.DrainTo(drained.Add);
             Assert.That(drained.Count, Is.EqualTo(itemCount));
             CollectionAssert.AreEquivalent(added, drained);
+            AssertBufferIsCleared(drainArray);
         }
 
         [Test]
@@ -88,7 +91,10 @@ namespace DOL.Tests.Unit.GameUtils.Collections
             Task.WaitAll(drainTask, addTask);
 
             if (addException == null)
+            {
+                AssertBufferIsCleared(drainArray); // Ensure buffer is cleared if no exception.
                 Assert.Inconclusive("Race condition was not reproduced.");
+            }
         }
 
         [Test]
@@ -171,10 +177,24 @@ namespace DOL.Tests.Unit.GameUtils.Collections
                     Assert.That(drainException, Is.TypeOf<InvalidOperationException>());
                     break;
                 }
+
+                AssertBufferIsCleared(drainArray); // Ensure buffer is cleared if no exception.
             }
 
             if (!exceptionCaught)
                 Assert.Inconclusive("Race condition was not reproduced.");
+        }
+
+        static void AssertBufferIsCleared<T>(DrainArray<T> drainArray)
+        {
+            FieldInfo bufferField = typeof(DrainArray<T>).GetField("_buffer", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.That(bufferField, Is.Not.Null, "Could not find _buffer field via reflection");
+            T[] buffer = bufferField.GetValue(drainArray) as T[];
+            Assert.That(buffer, Is.Not.Null, "Buffer should not be null");
+
+            // Check that all elements in the buffer are default values (null for reference types, 0 for int, etc.)
+            for (int i = 0; i < buffer.Length; i++)
+                Assert.That(buffer[i], Is.EqualTo(default(T)), $"Buffer element at index {i} should be cleared but was {buffer[i]}");
         }
     }
 }
