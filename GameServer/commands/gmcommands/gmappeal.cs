@@ -71,7 +71,7 @@ namespace DOL.GS.Commands
                                 break;
                         }
 
-                        DbAppeal appeal = AppealMgr.GetAppealByPlayerName(targetPlayer.Name);
+                        DbAppeal appeal = AppealMgr.GetAppeal(targetPlayer);
 
                         if (appeal != null)
                         {
@@ -125,7 +125,7 @@ namespace DOL.GS.Commands
                                 break;
                         }
 
-                        DbAppeal appeal = AppealMgr.GetAppealByPlayerName(playerTarget.Name);
+                        DbAppeal appeal = AppealMgr.GetAppeal(playerTarget);
 
                         if (appeal != null)
                         {
@@ -175,7 +175,7 @@ namespace DOL.GS.Commands
                                 break;
                         }
 
-                        DbAppeal appeal = AppealMgr.GetAppealByPlayerName(playerTarget.Name);
+                        DbAppeal appeal = AppealMgr.GetAppeal(playerTarget);
 
                         if (appeal != null)
                         {
@@ -212,12 +212,12 @@ namespace DOL.GS.Commands
                         if (args[1] == "listall")
                         {
                             caption = "Offline and Online Player Appeals";
-                            appeallist = AppealMgr.GetAllAppealsOffline();
+                            appeallist = AppealMgr.GetAppeals(true);
                         }
                         else
                         {
                             caption = "Online Player Appeals";
-                            appeallist = AppealMgr.GetAllAppeals();
+                            appeallist = AppealMgr.GetAppeals(false);
                         }
 
                         if (appeallist.Count < 1 || appeallist == null)
@@ -230,22 +230,22 @@ namespace DOL.GS.Commands
                         {
                             switch (a.Severity)
                             {
-                                case (int)AppealMgr.eSeverity.Low:
+                                case (int)AppealMgr.Severity.Low:
                                     low++;
                                     break;
-                                case (int)AppealMgr.eSeverity.Medium:
+                                case (int)AppealMgr.Severity.Medium:
                                     med++;
                                     break;
-                                case (int)AppealMgr.eSeverity.High:
+                                case (int)AppealMgr.Severity.High:
                                     high++;
                                     break;
-                                case (int)AppealMgr.eSeverity.Critical:
+                                case (int)AppealMgr.Severity.Critical:
                                     crit++;
                                     break;
                             }
                         }
                         int total = appeallist.Count;
-                        msg.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.CurrentStaffAvailable", AppealMgr.StaffList.Count, total) + "\n");
+                        msg.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.CurrentStaffAvailable", AppealMgr.GetAvailableStaffMembers().Count, total) + "\n");
                         msg.Add("Appeals ordered by severity: ");
                         msg.Add("Critical:" + crit + ", High:" + high + " Med:" + med + ", Low:" + low + ".\n");
                         if (crit > 0)
@@ -253,7 +253,7 @@ namespace DOL.GS.Commands
                             msg.Add("Critical priority appeals:\n");
                             foreach (DbAppeal a in appeallist)
                             {
-                                if (a.Severity == (int)AppealMgr.eSeverity.Critical)
+                                if (a.Severity == (int)AppealMgr.Severity.Critical)
                                 {
                                     msg.Add("[Name]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + " [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
                                 }
@@ -264,7 +264,7 @@ namespace DOL.GS.Commands
                             msg.Add("High priority appeals:\n");
                             foreach (DbAppeal a in appeallist)
                             {
-                                if (a.Severity == (int)AppealMgr.eSeverity.High)
+                                if (a.Severity == (int)AppealMgr.Severity.High)
                                 {
                                     msg.Add("[Name]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + ", [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
                                 }
@@ -275,7 +275,7 @@ namespace DOL.GS.Commands
                             msg.Add("Medium priority Appeals:\n");
                             foreach (DbAppeal a in appeallist)
                             {
-                                if (a.Severity == (int)AppealMgr.eSeverity.Medium)
+                                if (a.Severity == (int)AppealMgr.Severity.Medium)
                                 {
                                     msg.Add("[Name]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + ", [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
                                 }
@@ -286,7 +286,7 @@ namespace DOL.GS.Commands
                             msg.Add("Low priority appeals:\n");
                             foreach (DbAppeal a in appeallist)
                             {
-                                if (a.Severity == (int)AppealMgr.eSeverity.Low)
+                                if (a.Severity == (int)AppealMgr.Severity.Low)
                                 {
                                     msg.Add("[Name]: " + a.Name + ", [Status]: " + a.Status + ", [Priority]: " + a.SeverityToName + ", [Issue]: " + a.Text + ", [Time]: " + a.Timestamp + ".\n");
                                 }
@@ -326,7 +326,7 @@ namespace DOL.GS.Commands
                                 break;
                         }
 
-                        DbAppeal appeal = AppealMgr.GetAppealByPlayerName(player.Name);
+                        DbAppeal appeal = AppealMgr.GetAppeal(player);
 
                         if (appeal == null)
                         {
@@ -334,7 +334,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        AppealMgr.CloseAppeal(client.Player.Name, player, appeal);
+                        AppealMgr.CloseAppealOnline(client.Player.Name, player, appeal);
                         client.Player.TempProperties.RemoveProperty("AppealAssist");
                         return;
                     }
@@ -355,32 +355,7 @@ namespace DOL.GS.Commands
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.CantFindAppeal"));
                             return;
                         }
-                        AppealMgr.CloseAppeal(client.Player.Name, appeal);
-
-                        //just incase the player is actually online let's check so we can handle it properly
-                        string targetNameTwo = args[2];
-                        GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(targetNameTwo, out ClientService.PlayerGuessResult resultTwo);
-
-                        switch (resultTwo)
-                        {
-                            case ClientService.PlayerGuessResult.NOT_FOUND:
-                                return; // player isn't online so we're fine.
-                            case ClientService.PlayerGuessResult.FOUND_MULTIPLE:
-                            {
-                                AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NameNotUnique"));
-                                return;
-                            }
-                            case ClientService.PlayerGuessResult.FOUND_EXACT:
-                            case ClientService.PlayerGuessResult.FOUND_PARTIAL:
-                            {
-                                //cleaning up the player since he really was online.
-                                AppealMgr.MessageToClient(targetPlayer.Client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.StaffClosedYourAppeal", client.Player.Name));
-                                targetPlayer.Out.SendPlaySound(eSoundType.Craft, 0x02);
-                                targetPlayer.TempProperties.SetProperty("HasPendingAppeal", false);
-                                break;
-                            }
-                        }
-
+                        AppealMgr.CloseAppealOffline(client.Player.Name, appeal);
                         break;
                     }
 
@@ -426,20 +401,18 @@ namespace DOL.GS.Commands
                 #region gmappeal mute
                 case "mute":
                     {
-                        bool mute = client.Player.TempProperties.GetProperty<bool>("AppealMute");
+                        bool mute = client.Player.TempProperties.GetProperty<bool>(AppealMgr.MUTE_PROPERTY);
                         if (mute == false)
                         {
-                            client.Player.TempProperties.SetProperty("AppealMute", true);
+                            client.Player.TempProperties.SetProperty(AppealMgr.MUTE_PROPERTY, true);
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NoLongerReceiveMsg"));
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.UseCmdTurnBackOn"));
-                            AppealMgr.StaffList.Remove(client.Player);
                         }
                         else
                         {
-                            client.Player.TempProperties.SetProperty("AppealMute", false);
+                            client.Player.TempProperties.SetProperty(AppealMgr.MUTE_PROPERTY, false);
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NowReceiveMsg"));
                             AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.UseCmdTurnBackOff"));
-                            AppealMgr.StaffList.Add(client.Player);
                         }
 
                         break;

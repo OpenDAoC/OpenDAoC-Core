@@ -13,6 +13,7 @@ using DOL.Config;
 using DOL.Database;
 using DOL.Database.Attributes;
 using DOL.Events;
+using DOL.GS.Appeal;
 using DOL.GS.Behaviour;
 using DOL.GS.DatabaseUpdate;
 using DOL.GS.Housing;
@@ -302,10 +303,10 @@ namespace DOL.GS
 
 				AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-                // -----------------------------------------------------------
-                // Init Metrics
-                if (!InitComponent(InitMetrics(), "Setup Metric Server"))
-                    log.Error("Can't setup Metric Server");
+				// -----------------------------------------------------------
+				// Init Metrics
+				if (!InitComponent(InitMetrics(), "Setup Metric Server"))
+					log.Error("Can't setup Metric Server");
 
 				//---------------------------------------------------------------
 				//Try to compile the Scripts
@@ -470,6 +471,11 @@ namespace DOL.GS
 				//---------------------------------------------------------------
 				//Load player titles manager
 				if (!InitComponent(PlayerTitleMgr.Init(), "Player Titles Manager"))
+					return false;
+
+				//---------------------------------------------------------------
+				//Load player titles manager
+				if (!InitComponent(AppealMgr.Init(), "Appeal Manager"))
 					return false;
 
 				//---------------------------------------------------------------
@@ -1214,7 +1220,6 @@ namespace DOL.GS
 			try
 			{
 				long startTick = GameLoop.GetCurrentTime();
-				long startTick2 = GameLoop.GetCurrentTime();
 
 				if (log.IsInfoEnabled)
 					log.Info("Saving database...");
@@ -1225,20 +1230,18 @@ namespace DOL.GS
 				(int count, long elapsed) boats = (0, 0);
 				(int count, long elapsed) factions = (0, 0);
 				(int count, long elapsed) crafting = (0, 0);
+				(int count, long elapsed) appeals = (0, 0);
 
 				if (m_database != null)
 				{
 					Thread.CurrentThread.Priority = ThreadPriority.Lowest;
-
-					// The following line goes through EACH region and EACH object is tested for savability. A real waste of time, so it is commented out.
-					// Only save players instead.
-					//WorldMgr.SaveToDatabase();
 					Save(ClientService.SavePlayers, ref players);
 					Save(DoorMgr.SaveKeepDoors, ref keepDoors);
 					Save(GuildMgr.SaveAllGuilds, ref guilds);
 					Save(BoatMgr.SaveAllBoats, ref boats);
 					Save(FactionMgr.SaveAllAggroToFaction, ref factions);
 					Save(CraftingProgressMgr.Save, ref crafting);
+					Save(AppealMgr.Save, ref appeals);
 				}
 
 				startTick = GameLoop.GetCurrentTime() - startTick;
@@ -1252,9 +1255,11 @@ namespace DOL.GS
 					stringBuilder.Append($"    {nameof(guilds)}: {guilds.count} in {guilds.elapsed}ms\n");
 					stringBuilder.Append($"     {nameof(boats)}: {boats.count} in {boats.elapsed}ms\n");
 					stringBuilder.Append($"  {nameof(factions)}: {factions.count} in {factions.elapsed}ms\n");
-					stringBuilder.Append($"  {nameof(crafting)}: {crafting.count} in {crafting.elapsed}ms");
+					stringBuilder.Append($"  {nameof(crafting)}: {crafting.count} in {crafting.elapsed}ms\n");
+					stringBuilder.Append($"   {nameof(appeals)}: {appeals.count} in {appeals.elapsed}ms");
 
-					log.Info(stringBuilder.ToString());
+					if (log.IsInfoEnabled)
+						log.Info(stringBuilder.ToString());
 				}
 			}
 			catch (Exception e)

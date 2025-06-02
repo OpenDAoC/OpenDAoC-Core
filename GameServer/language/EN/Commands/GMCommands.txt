@@ -11,22 +11,6 @@ GMCommands.HookPoint.Description:			Add hookpoint on a keep component.
 GMCommands.HookPoint.Usage:					'/addhookpoint <skin> <id>' to add a hookpoint (select the GameKeepComponent)
 GMCommands.HookPoint.NoGKCTarget:			You are not targeting a GameKeepComponent!
 
-## /alert
-GMCommands.Header.Syntax.Alert:                     <----- '/alert' Commands (plvl 2) ----->
-GMCommands.Alert.Syntax.All:                        /alert all < on | off >
-GMCommands.Alert.Usage.All:                         Activates/Deactivates sound alerts for all alert types.
-GMCommands.Alert.Description:                       Controls whether sound alerts are triggered when receiving Player messages and appeals.
-GMCommands.Alert.Syntax.Send:                       /alert send < on | off >
-GMCommands.Alert.Usage.Send:                        Activates/Deactivates a sound alert each time a '/send' message is received from a Player.
-GMCommands.Alert.Syntax.Appeal:                     /alert appeal < on | off >
-GMCommands.Alert.Usage.Appeal:                      Activates/Deactivates a sound alert each time an '/appeal' is submitted or pending assistance.
-GMCommands.Alert.Msg.AppealOn:                      You will now receive sound alerts when an appeal is filed or awaiting assistance.
-GMCommands.Alert.Msg.AppealOff:                     You will no longer receive sound alerts regarding appeals.
-GMCommands.Alert.Msg.SendOn:                        You will now receive sound alerts when a player sends you a message.
-GMCommands.Alert.Msg.SendOff:                       You will no longer receive sound alerts for player messages.
-GMCommands.Alert.Msg.AllOn:                         You will now receive sound alerts.
-GMCommands.Alert.Msg.AllOff:                        You will no longer receive sound alerts.
-
 ## /announce
 GMCommands.Announce.Description:			Send message to all players online
 GMCommands.Announce.Usage:					/announce <log|window|send|center|confirm> <message>
@@ -144,7 +128,7 @@ Scripts.Players.Appeal.NoAppealToView:			You currently do not have an appeal to 
 Scripts.Players.Appeal.NoAppealsinQueue:		There are no Appeals currently in queue.
 Scripts.Players.Appeal.CantFindAppeal:			Could not find an appeal under that offline player's name, make sure spelling is correct.
 Scripts.Players.Appeal.NameNotUnique:			Character name is not unique.
-Scripts.Players.Appeal.PlayerNotFound:			{0}  is not in the game.
+Scripts.Players.Appeal.PlayerNotFound:			{0} is not in the game.
 Scripts.Players.Appeal.RandMessage0:			Howdy {0}, thanks for waiting.  How may I help you? 
 Scripts.Players.Appeal.RandMessage1:			Hiya {0}, what can I do for you today?
 Scripts.Players.Appeal.RandMessage2:			Greetings {0}!  I'm here to assist.  How can I be of service?

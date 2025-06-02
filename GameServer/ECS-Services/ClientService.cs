@@ -375,21 +375,41 @@ namespace DOL.GS
 
         public static List<GamePlayer> GetNonGmPlayers()
         {
-            return GetPlayers<object>(Predicate, default);
+            return GetNonGmPlayers<object>(null, default);
+        }
 
-            static bool Predicate(GamePlayer player, object unused)
+        public static List<GamePlayer> GetNonGmPlayers<T>(CheckPlayerAction<T> action)
+        {
+            return GetNonGmPlayers(action, default);
+        }
+
+        public static List<GamePlayer> GetNonGmPlayers<T>(CheckPlayerAction<T> action, T actionArgument)
+        {
+            return GetPlayers(Predicate, (action, actionArgument));
+
+            static bool Predicate(GamePlayer player, (CheckPlayerAction<T> action, T actionArgument) args)
             {
-                return player.Client.Account.PrivLevel == (uint) ePrivLevel.Player;
+                return (ePrivLevel) player.Client.Account.PrivLevel == ePrivLevel.Player && args.action?.Invoke(player, args.actionArgument) != false;
             }
         }
 
         public static List<GamePlayer> GetGmPlayers()
         {
-            return GetPlayers<object>(Predicate, default);
+            return GetGmPlayers<object>(null, default);
+        }
 
-            static bool Predicate(GamePlayer player, object unused)
+        public static List<GamePlayer> GetGmPlayers<T>(CheckPlayerAction<T> action)
+        {
+            return GetGmPlayers(action, default);
+        }
+
+        public static List<GamePlayer> GetGmPlayers<T>(CheckPlayerAction<T> action, T actionArgument)
+        {
+            return GetPlayers(Predicate, (action, actionArgument));
+
+            static bool Predicate(GamePlayer player, (CheckPlayerAction<T> action, T actionArgument) args)
             {
-                return player.Client.Account.PrivLevel > (uint) ePrivLevel.Player;
+                return (ePrivLevel) player.Client.Account.PrivLevel > ePrivLevel.Player && args.action?.Invoke(player, args.actionArgument) != false;
             }
         }
 
@@ -495,7 +515,7 @@ namespace DOL.GS
 
             static bool Predicate(GameClient client, GameClient otherClient)
             {
-                return client.Account != null && client.Account.PrivLevel <= (uint) ePrivLevel.Player && client.TcpEndpointAddress.Equals(otherClient.TcpEndpointAddress) && client != otherClient;
+                return client.Account != null && (ePrivLevel) client.Account.PrivLevel <= ePrivLevel.Player && client.TcpEndpointAddress.Equals(otherClient.TcpEndpointAddress) && client != otherClient;
             }
         }
 

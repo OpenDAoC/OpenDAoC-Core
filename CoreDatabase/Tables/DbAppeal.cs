@@ -41,27 +41,40 @@ namespace DOL.Database
             m_status = status;
             m_timestamp = timestamp;
             m_text = text;
+            Dirty = true;
         }
 
         [DataElement(AllowDbNull = false, Index = true)]
         public string Name
         {
             get { return m_name; }
-            set { m_name = value; }
+            set
+            {
+                m_name = value;
+                Dirty = true;
+            }
         }
 
         [DataElement(AllowDbNull = false, Index = true)]
         public string Account
         {
             get { return m_account; }
-            set { m_account = value; }
+            set
+            {
+                m_account = value;
+                Dirty = true;
+            }
         }
 
         [DataElement(AllowDbNull = false)]
         public int Severity
         {
             get { return m_severity; }
-            set { m_severity = value; }
+            set
+            {
+                m_severity = value;
+                Dirty = true;
+            }
         }
 
         public string SeverityToName
@@ -89,20 +102,32 @@ namespace DOL.Database
         public string Status
         {
             get { return m_status; }
-            set { m_status = value; }
+            set
+            {
+                m_status = value;
+                Dirty = true;
+            }
         }
 
         [DataElement(AllowDbNull = false)]
         public string Timestamp
         {
             get { return m_timestamp; }
-            set { m_timestamp = value; }
+            set
+            {
+                m_timestamp = value;
+                Dirty = true;
+            }
         }
         [DataElement(AllowDbNull = false)]
         public string Text
         {
             get { return m_text; }
-            set { m_text = value; }
+            set
+            {
+                m_text = value;
+                Dirty = true;
+            }
         }
     }
 }

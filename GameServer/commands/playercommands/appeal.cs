@@ -1,22 +1,4 @@
-﻿/* 
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
+﻿using DOL.Database;
 using DOL.GS.Appeal;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -76,8 +58,8 @@ namespace DOL.GS.Commands
             
             if (args.Length > 1)
             {
-                bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
-                if (HasPendingAppeal)
+                DbAppeal appeal = AppealMgr.GetAppeal(client.Player);
+                if (appeal != null)
                 {
                     AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal", client.Player.Name));
                     return;
@@ -92,33 +74,33 @@ namespace DOL.GS.Commands
                 {
                     case "harassment":
                         {
-                            severity = (int)AppealMgr.eSeverity.High;
+                            severity = (int)AppealMgr.Severity.High;
                             args[1] = string.Empty;
                             break;
                         }
                     case "naming":
                         {
-                            severity = (int)AppealMgr.eSeverity.Low;
+                            severity = (int)AppealMgr.Severity.Low;
                             args[1] = string.Empty;
                             break;
                         }
                     case "other":
                     case "conduct":
                         {
-                            severity = (int)AppealMgr.eSeverity.Medium;
+                            severity = (int)AppealMgr.Severity.Medium;
                             args[1] = string.Empty;
                             break;
                         }
                     case "stuck":
                     case "emergency":
                         {
-                            severity = (int)AppealMgr.eSeverity.Critical;
+                            severity = (int)AppealMgr.Severity.Critical;
                             args[1] = string.Empty;
                             break;
                         }
                     default:
                         {
-                            severity = (int)AppealMgr.eSeverity.Medium;
+                            severity = (int)AppealMgr.Severity.Medium;
                             break;
                         }
             
@@ -190,8 +172,8 @@ namespace DOL.GS.Commands
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;
             }
-            bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
-            if (HasPendingAppeal)
+            DbAppeal appeal = AppealMgr.GetAppeal(client.Player);
+            if (appeal != null)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal", client.Player.Name));
                 return;
@@ -217,7 +199,7 @@ namespace DOL.GS.Commands
             }
             string message = string.Join(" ", args, 1, args.Length - 1);
             GamePlayer p = client.Player as GamePlayer;
-            AppealMgr.CreateAppeal(p, (int)AppealMgr.eSeverity.High, "Open", message);
+            AppealMgr.CreateAppeal(p, (int)AppealMgr.Severity.High, "Open", message);
             return;
         }
     }
@@ -236,8 +218,8 @@ namespace DOL.GS.Commands
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;
             }
-            bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
-            if (HasPendingAppeal)
+            DbAppeal appeal = AppealMgr.GetAppeal(client.Player);
+            if (appeal != null)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal", client.Player.Name));
                 return;
@@ -267,7 +249,7 @@ namespace DOL.GS.Commands
                         }
                         string message = string.Join(" ", args, 2, args.Length - 2);
                         GamePlayer p = client.Player as GamePlayer;
-                        AppealMgr.CreateAppeal(p, (int)AppealMgr.eSeverity.Low, "Open", message);
+                        AppealMgr.CreateAppeal(p, (int)AppealMgr.Severity.Low, "Open", message);
                         break;
                     }
                 case "TOS":
@@ -288,7 +270,7 @@ namespace DOL.GS.Commands
                         }
                         string message = string.Join(" ", args, 2, args.Length - 2);
                         GamePlayer p = client.Player as GamePlayer;
-                        AppealMgr.CreateAppeal(p, (int)AppealMgr.eSeverity.Medium, "Open", message);
+                        AppealMgr.CreateAppeal(p, (int)AppealMgr.Severity.Medium, "Open", message);
                         break;
                     }
             }
@@ -310,8 +292,8 @@ namespace DOL.GS.Commands
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;
             }
-            bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
-            if (HasPendingAppeal)
+            DbAppeal appeal = AppealMgr.GetAppeal(client.Player);
+            if (appeal != null)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal", client.Player.Name));
                 return;
@@ -337,7 +319,7 @@ namespace DOL.GS.Commands
             }
             string message = string.Join(" ", args, 1, args.Length - 1);
             GamePlayer p = client.Player as GamePlayer;
-            AppealMgr.CreateAppeal(p, (int)AppealMgr.eSeverity.Critical, "Open", message);
+            AppealMgr.CreateAppeal(p, (int)AppealMgr.Severity.Critical, "Open", message);
             return;
         }
     }
@@ -356,8 +338,8 @@ namespace DOL.GS.Commands
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.SystemDisabled"));
                 return;
             }
-            bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
-            if (HasPendingAppeal)
+            DbAppeal appeal = AppealMgr.GetAppeal(client.Player);
+            if (appeal != null)
             {
                 AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.AlreadyActiveAppeal", client.Player.Name));
                 return;
@@ -383,7 +365,7 @@ namespace DOL.GS.Commands
             }
             string message = string.Join(" ", args, 1, args.Length - 1);
             GamePlayer p = client.Player as GamePlayer;
-            AppealMgr.CreateAppeal(p, (int)AppealMgr.eSeverity.Critical, "Open", message);
+            AppealMgr.CreateAppeal(p, (int)AppealMgr.Severity.Critical, "Open", message);
             return;
         }
     }

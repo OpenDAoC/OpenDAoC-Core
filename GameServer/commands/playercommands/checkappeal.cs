@@ -1,23 +1,4 @@
-﻿/* 
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using DOL.Database;
 using DOL.GS.Appeal;
 using DOL.GS.PacketHandler;
@@ -67,14 +48,7 @@ namespace DOL.GS.Commands
 							DisplaySyntax(client);
 							return;
 						}
-						//if your temporary properties says your a liar, don't even check the DB (prevent DB hammer abuse)
-						bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
-						if (!HasPendingAppeal)
-						{
-							AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.DoNotHaveAppeal"));
-							return;
-						}
-						DbAppeal appeal = AppealMgr.GetAppealByPlayerName(client.Player.Name);
+						DbAppeal appeal = AppealMgr.GetAppeal(client.Player);
 						if (appeal != null)
 						{
 							if (appeal.Status == "Being Helped")
@@ -103,21 +77,14 @@ namespace DOL.GS.Commands
 							DisplaySyntax(client);
 							return;
 						}
-						bool HasPendingAppeal = client.Player.TempProperties.GetProperty<bool>("HasPendingAppeal");
-						if (!HasPendingAppeal)
-						{
-							AppealMgr.MessageToClient(client, LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.NoAppealToView"));
-							return;
-						}
-						DbAppeal appeal = AppealMgr.GetAppealByPlayerName(client.Player.Name);
+						DbAppeal appeal = AppealMgr.GetAppeal(client.Player);
 						if (appeal != null)
 						{
 							//Let's view it.
 							List<string> msg = new List<string>();
 							//note: we do not show the player his Appeals priority.
 							msg.Add("[Player]: " + appeal.Name + ", [Status]: " + appeal.Status + ", [Issue]: " + appeal.Text + ", [Time]: " + appeal.Timestamp + ".\n");
-							AppealMgr.GetAllAppeals(); //refresh the total number of appeals.
-							msg.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.CurrentStaffAvailable", AppealMgr.StaffList.Count, AppealMgr.TotalAppeals) + "\n");
+							msg.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.CurrentStaffAvailable", AppealMgr.GetAvailableStaffMembers().Count + "\n"));
 							msg.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.PleaseBePatient") + "\n");
 							msg.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.IfYouLogOut") + "\n");
 							msg.Add(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Appeal.ToCancelYourAppeal"));

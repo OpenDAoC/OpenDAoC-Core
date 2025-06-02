@@ -11,6 +11,7 @@ using DOL.AI;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
+using DOL.GS.Appeal;
 using DOL.GS.Commands;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
@@ -7953,9 +7954,6 @@ namespace DOL.GS
 
             if (GameServer.ServerRules.IsAllowedToUnderstand(source, this))
             {
-                // If GM/Admin uses '/alert send on', receive audio alert for all sends
-                if (Client != source.Client && Client.Account.PrivLevel != 1 && TempProperties.GetProperty<bool>("SendAlert") == false)
-                    Out.SendSoundEffect(2567, 0, 0, 0, 0, 0); // 2567 = Cat_Meow_08.wav
                 if (source.Client.Account.PrivLevel > 1)
                     // Message: {0} [TEAM] sends, "{1}"
                     ChatUtil.SendGMMessage(Client, "Social.ReceiveMessage.Staff.SendsToYou", source.Name, str);
@@ -8345,8 +8343,8 @@ namespace DOL.GS
                 SpecPointsOk = true;
             }
 
-            //Dinberg, instance change.
             (CurrentRegion as BaseInstance)?.OnPlayerEnterInstance(this);
+            AppealMgr.OnPlayerEnter(this);
             RefreshItemBonuses();
             LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
             LastPlayerActivityTime = GameLoop.GameLoopTime;
