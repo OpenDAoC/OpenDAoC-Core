@@ -15,7 +15,7 @@ namespace DOL.GS
         #region Fields and Properties
 
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private const ushort SUBZONE_NBR_ON_ZONE_SIDE = 32; // MUST BE A POWER OF 2 (current implementation limit is 128 inclusive).
+        private const ushort SUBZONE_NBR_ON_ZONE_SIDE = 16; // MUST BE A POWER OF 2 (current implementation limit is 128 inclusive).
         private const ushort SUBZONE_NBR = SUBZONE_NBR_ON_ZONE_SIDE * SUBZONE_NBR_ON_ZONE_SIDE;
         private const ushort SUBZONE_SIZE = 65536 / SUBZONE_NBR_ON_ZONE_SIDE;
         private static readonly ushort SUBZONE_SHIFT = (ushort)Math.Round(Math.Log(SUBZONE_SIZE) / Math.Log(2)); // To get log in base 2.
@@ -372,17 +372,17 @@ namespace DOL.GS
                     if (subZone[objectType].Count == 0)
                         continue;
 
-                        int xLeft = column << SUBZONE_SHIFT;
-                        int xRight = xLeft + SUBZONE_SIZE;
-                        int yTop = line << SUBZONE_SHIFT;
-                        int yBottom = yTop + SUBZONE_SIZE;
+                    int xLeft = column << SUBZONE_SHIFT;
+                    int xRight = xLeft + SUBZONE_SIZE;
+                    int yTop = line << SUBZONE_SHIFT;
+                    int yBottom = yTop + SUBZONE_SIZE;
 
-                        // Filter out subzones that are too far away.
-                        if (!CheckSubZoneMinDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
-                            continue;
+                    // Filter out subzones that are too far away.
+                    if (!CheckSubZoneMinDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
+                        continue;
 
-                        // If the subzone being checked is fully enclosed within the radius and we don't care about Z, add all objects without checking the distance.
-                        ignoreDistance = CheckSubZoneMaxDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius);
+                    // If the subzone being checked is fully enclosed within the radius and we don't care about Z, add all objects without checking the distance.
+                    ignoreDistance = CheckSubZoneMaxDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius);
 
                     foreach (LinkedListNode<GameObject> node in subZone[objectType])
                     {
