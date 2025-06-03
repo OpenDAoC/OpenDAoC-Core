@@ -63,12 +63,7 @@ namespace DOL.GS
 		public virtual eObjectState ObjectState
 		{
 			get { return m_ObjectState; }
-			set
-			{
-				if (log.IsDebugEnabled)
-					log.Debug("ObjectState: OID" + ObjectID + " " + Name + " " + m_ObjectState + " => " + value);
-				m_ObjectState = value;
-			}
+			set { m_ObjectState = value; }
 		}
 
 		public abstract eGameObjectType GameObjectType { get; }
@@ -592,12 +587,7 @@ namespace DOL.GS
 		public int ObjectID
 		{
 			get { return m_ObjectID; }
-			set
-			{
-				if (log.IsDebugEnabled)
-					log.Debug("ObjectID: " + Name + " " + m_ObjectID + " => " + value);
-				m_ObjectID = value;
-			}
+			set { m_ObjectID = value; }
 		}
 
 		/// <summary>

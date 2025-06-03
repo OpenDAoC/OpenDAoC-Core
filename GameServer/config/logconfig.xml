@@ -123,10 +123,6 @@
 			maxlevel="Info"
 			writeTo="blackHole"
 			final="true" />
-		<logger name="DOL.GS.GameObject"
-			maxlevel="Info"
-			writeTo="blackHole"
-			final="true" />
 		<logger name="DOL.Database.Handlers"
 			maxlevel="Info"
 			writeTo="blackHole"
