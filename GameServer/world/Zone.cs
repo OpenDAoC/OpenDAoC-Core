@@ -334,7 +334,6 @@ namespace DOL.GS
         public void GetObjectsInRadius<T>(int x, int y, int z, eGameObjectType objectType, ushort radius, List<T> listToAppendTo) where T : GameObject
         {
             uint sqRadius = (uint) radius * radius;
-            int referenceSubZoneIndex = GetSubZoneIndex(x, y);
 
             int xInZone = x - XOffset; // x in zone coordinates.
             int yInZone = y - YOffset; // y in zone coordinates.
@@ -373,8 +372,6 @@ namespace DOL.GS
                     if (subZone[objectType].Count == 0)
                         continue;
 
-                    if (subZoneIndex != referenceSubZoneIndex)
-                    {
                         int xLeft = column << SUBZONE_SHIFT;
                         int xRight = xLeft + SUBZONE_SIZE;
                         int yTop = line << SUBZONE_SHIFT;
@@ -386,16 +383,13 @@ namespace DOL.GS
 
                         // If the subzone being checked is fully enclosed within the radius and we don't care about Z, add all objects without checking the distance.
                         ignoreDistance = CheckSubZoneMaxDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius);
-                    }
-                    else
-                        ignoreDistance = false;
 
                     foreach (LinkedListNode<GameObject> node in subZone[objectType])
                     {
                         GameObject gameObject = node.Value;
 
                         // Inactive or deleted objects can't remove themselves.
-                        if (gameObject.ObjectState != GameObject.eObjectState.Active || gameObject.CurrentRegion != ZoneRegion)
+                        if (gameObject.ObjectState is not GameObject.eObjectState.Active || gameObject.CurrentRegion != ZoneRegion)
                         {
                             SubZoneObject subZoneObject = gameObject.SubZoneObject;
 
