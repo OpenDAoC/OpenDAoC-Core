@@ -702,13 +702,6 @@ namespace DOL.GS
 			Notify(GameObjectEvent.AddToWorld, this);
 			ObjectState = eObjectState.Active;
 			m_spawnTick = GameLoop.GameLoopTime;
-
-			if (m_isDataQuestsLoaded == false)
-			{
-				LoadDataQuests();
-				m_isDataQuestsLoaded = true;
-			}
-
 			return true;
 		}
 
@@ -810,106 +803,88 @@ namespace DOL.GS
 		/// <summary>
 		/// A cache of every DBDataQuest object
 		/// </summary>
-		protected static ILookup<ushort, DbDataQuest> m_dataQuestCache = null;
+		protected static Dictionary<ushort, List<DbDataQuest>> _dataQuestCache = null;
 
 		/// <summary>
 		/// List of DataQuests available for this object
 		/// </summary>
-		protected List<DataQuest> m_dataQuests = new List<DataQuest>();
+		protected List<DataQuest> _dataQuests = new();
 		protected readonly Lock _dataQuestsLock = new();
-
-		/// <summary>
-		/// Flag to prevent loading quests on every respawn
-		/// </summary>
-		protected bool m_isDataQuestsLoaded = false;
 
 		/// <summary>
 		/// Fill the data quest cache with all DBDataQuest objects
 		/// </summary>
 		public static void FillDataQuestCache()
 		{
-			if (m_dataQuestCache != null)
+			Dictionary<ushort, List<DbDataQuest>> newCache = new();
+			int count = 0;
+
+			foreach (DbDataQuest quest in GameServer.Database.SelectAllObjects<DbDataQuest>())
 			{
-				m_dataQuestCache = null;
+				if (!newCache.TryGetValue(quest.StartRegionID, out List<DbDataQuest> list))
+				{
+					list = new();
+					newCache[quest.StartRegionID] = list;
+				}
+
+				list.Add(quest);
+				count++;
 			}
 
-			m_dataQuestCache = GameServer.Database.SelectAllObjects<DbDataQuest>()
-				.ToLookup(k => k.StartRegionID);
+			_dataQuestCache = newCache;
+
+			if (log.IsInfoEnabled)
+				log.Info($"Data quest cache initialized with {count} quests for {newCache.Count} regions");
 		}
 
 		/// <summary>
 		/// Get a preloaded list of all data quests
 		/// </summary>
-		public static IList<DbDataQuest> DataQuestCache
-		{
-			get { return m_dataQuestCache.SelectMany(k => k).ToList(); }
-		}
+		public static List<DbDataQuest> DataQuestCache => _dataQuestCache.SelectMany(k => k.Value).ToList();
 
 		/// <summary>
 		/// Load any data driven quests for this object
 		/// </summary>
-		public void LoadDataQuests(GamePlayer player = null)
+		public void LoadDataQuests(GamePlayer loader = null)
 		{
-			if (m_dataQuestCache == null)
+			_dataQuests.Clear();
+			Dictionary<ushort, List<DbDataQuest>> cacheSnapshot = _dataQuestCache; // Thread-safe read.
+
+			if (cacheSnapshot.TryGetValue(CurrentRegionID, out var regionQuests))
 			{
-				FillDataQuestCache();
+				foreach (DbDataQuest quest in regionQuests)
+					LoadQuest(this, quest, loader);
 			}
 
-			m_dataQuests.Clear();
-			
-			try
+			if (cacheSnapshot.TryGetValue(0, out var globalQuests))
 			{
-				foreach (DbDataQuest quest in m_dataQuestCache[CurrentRegionID])
-				{
-					if (quest.StartName == Name)
-					{
-						DataQuest dq = new DataQuest(quest, this);
-						AddDataQuest(dq);
-	
-	                    // if a player forced the reload report any errors
-	                    if (player != null && dq.LastErrorText != string.Empty)
-	                    {
-	                        ChatUtil.SendErrorMessage(player, dq.LastErrorText);
-	                    }
-					}
-				}
-			}
-			catch
-			{
+				foreach (DbDataQuest quest in globalQuests)
+					LoadQuest(this, quest, loader);
 			}
 
-			try
+			static void LoadQuest(GameObject obj, DbDataQuest quest, GamePlayer loader)
 			{
-				foreach (DbDataQuest quest in m_dataQuestCache[0])
-				{
-					if (quest.StartName == Name)
-					{
-						DataQuest dq = new DataQuest(quest, this);
-						AddDataQuest(dq);
-	
-	                    // if a player forced the reload report any errors
-	                    if (player != null && dq.LastErrorText != string.Empty)
-	                    {
-	                        ChatUtil.SendErrorMessage(player, dq.LastErrorText);
-	                    }
-					}
-				}
-			}
-			catch
-			{
+				if (quest.StartName != obj.Name)
+					return;
+
+				DataQuest dq = new(quest, obj);
+				obj.AddDataQuest(dq);
+
+				if (loader != null && !string.IsNullOrEmpty(dq.LastErrorText))
+					ChatUtil.SendErrorMessage(loader, dq.LastErrorText);
 			}
 		}
 
 		public void AddDataQuest(DataQuest quest)
 		{
-			if (m_dataQuests.Contains(quest) == false)
-				m_dataQuests.Add(quest);
+			if (_dataQuests.Contains(quest) == false)
+				_dataQuests.Add(quest);
 		}
 
 		public void RemoveDataQuest(DataQuest quest)
 		{
-			if (m_dataQuests.Contains(quest))
-				m_dataQuests.Remove(quest);
+			if (_dataQuests.Contains(quest))
+				_dataQuests.Remove(quest);
 		}
 
 		/// <summary>
@@ -917,7 +892,7 @@ namespace DOL.GS
 		/// </summary>
 		public List<DataQuest> DataQuestList
 		{
-			get { return m_dataQuests; }
+			get { return _dataQuests; }
 		}
 
 		#endregion Quests
@@ -1239,6 +1214,11 @@ namespace DOL.GS
             get { return eGender.Neutral; }
             set { }
         }
+
+		static GameObject()
+		{
+			FillDataQuestCache();
+		}
 
 		/// <summary>
 		/// Constructs a new empty GameObject
