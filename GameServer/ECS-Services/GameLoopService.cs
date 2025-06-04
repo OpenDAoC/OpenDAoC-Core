@@ -18,6 +18,9 @@ namespace DOL.GS
 
         public static void BeginTick()
         {
+            if (Volatile.Read(ref _preTickActionCount) == 0)
+                return;
+
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
@@ -42,6 +45,9 @@ namespace DOL.GS
 
         public static void EndTick()
         {
+            if (Volatile.Read(ref _postTickActionCount) == 0)
+                return;
+
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
 
