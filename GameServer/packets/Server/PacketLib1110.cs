@@ -67,7 +67,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(Icons); // unknown
 				pak.WriteByte(0); // unknown
 
-				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.GetAllEffects().Where(e => e.EffectType != eEffect.Pulse))
+				foreach (ECSGameEffect effect in m_gameClient.Player.effectListComponent.GetEffects().Where(e => e.EffectType != eEffect.Pulse))
 				{
 					if (effect.Icon == 0)
 						continue;

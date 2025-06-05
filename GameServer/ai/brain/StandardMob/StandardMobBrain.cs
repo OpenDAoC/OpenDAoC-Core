@@ -281,7 +281,7 @@ namespace DOL.AI.Brain
         {
             if (aggroAmount > 0)
             {
-                foreach (ProtectECSGameEffect protect in living.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Protect))
+                foreach (ProtectECSGameEffect protect in living.effectListComponent.GetAbilityEffects(eEffect.Protect))
                 {
                     if (protect.Target != living)
                         continue;
@@ -1192,13 +1192,8 @@ namespace DOL.AI.Brain
             // May not be the right place for that, but without that check NPCs with more than one offensive or defensive proc will only buff themselves once.
             if (spell.SpellType is eSpellType.OffensiveProc or eSpellType.DefensiveProc)
             {
-                if (target.effectListComponent.Effects.TryGetValue(EffectService.GetEffectFromSpell(spell), out List<ECSGameEffect> existingEffects))
-                {
-                    if (existingEffects.FirstOrDefault(e => e.SpellHandler.Spell.ID == spell.ID || (spell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == spell.EffectGroup)) != null)
-                        return true;
-                }
-
-                return false;
+                List<ECSGameSpellEffect> existingEffects = target.effectListComponent.GetSpellEffects(EffectService.GetEffectFromSpell(spell));
+                return existingEffects.FirstOrDefault(e => e.SpellHandler.Spell.ID == spell.ID || (spell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == spell.EffectGroup)) != null;
             }
 
             // True if the target has the effect, or the immunity effect for this effect.

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DOL.Database;
-using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 
@@ -60,7 +58,7 @@ namespace DOL.GS.Spells
 			if (target.EffectList.GetOfType<ArmsLengthEffect>() != null)
 				return;
 
-			if (target.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) != null)
+			if (target.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
 				return;
 
 			if (target is GamePlayer && (target as GamePlayer).IsRiding)
@@ -76,60 +74,6 @@ namespace DOL.GS.Spells
 				return;
 			}
 			base.ApplyEffectOnTarget(target);
-		}
-
-		/// <summary>
-		/// Handles attacks on player/by player
-		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="arguments"></param>
-		private void OnAttack(DOLEvent e, object sender, EventArgs arguments)
-		{
-			GameLiving living = sender as GameLiving;
-			if (living == null) return;
-			AttackedByEnemyEventArgs attackedByEnemy = arguments as AttackedByEnemyEventArgs;
-			AttackFinishedEventArgs attackFinished = arguments as AttackFinishedEventArgs;
-			CastingEventArgs castFinished = arguments as CastingEventArgs;
-			AttackData ad = null;
-			ISpellHandler sp = null;
-
-			if (attackedByEnemy != null)
-			{
-				ad = attackedByEnemy.AttackData;
-			}
-			else if (attackFinished != null)
-			{
-				ad = attackFinished.AttackData;
-			}
-			else if (castFinished != null)
-			{
-				sp = castFinished.SpellHandler;
-				ad = castFinished.LastAttackData;
-			}
-
-			// Speed should drop if the player casts an offensive spell
-			if (sp == null && ad == null)
-			{
-				return;
-			}
-			else if (sp == null && (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
-			{
-				return;
-			}
-			else if (sp != null && (sp.HasPositiveEffect || ad == null))
-			{
-				return;
-			}
-
-			if (living.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) != null)
-				return;
-			
-			//GameSpellEffect speed = SpellHandler.FindEffectOnTarget(living, this);
-			ECSGameEffect speed = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedBuff);
-			if (speed != null)
-				speed.Stop();
-				//speed.Cancel(false);
 		}
 
 		/// <summary>

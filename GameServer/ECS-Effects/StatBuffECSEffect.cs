@@ -10,7 +10,7 @@ namespace DOL.GS
         {
             base.OnStartEffect();
 
-            if (OwnerPlayer != null && OwnerPlayer.SelfBuffChargeIDs.Contains(SpellHandler.Spell.ID))
+            if (OwnerPlayer != null && GamePlayer.SelfBuffChargeIDs.Contains(SpellHandler.Spell.ID))
                 OwnerPlayer.ActiveBuffCharges++;
 
             if (EffectType is eEffect.MovementSpeedBuff)
@@ -47,7 +47,7 @@ namespace DOL.GS
         {
             base.OnStopEffect();
 
-            if (OwnerPlayer != null && OwnerPlayer.SelfBuffChargeIDs.Contains(SpellHandler.Spell.ID))
+            if (OwnerPlayer != null && GamePlayer.SelfBuffChargeIDs.Contains(SpellHandler.Spell.ID))
                 OwnerPlayer.ActiveBuffCharges--;
 
             if (EffectType is eEffect.MovementSpeedBuff)

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Reflection;
 using DOL.GS.Effects;
 
@@ -87,40 +89,34 @@ namespace DOL.GS.PacketHandler
 
 			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ConcentrationList))))
 			{
-				lock (m_gameClient.Player.effectListComponent.ConcentrationEffectsLock)
+				List<ECSGameSpellEffect> concentrationEffects = m_gameClient.Player.effectListComponent.GetConcentrationEffects();
+				pak.WriteByte((byte) concentrationEffects.Count);
+				pak.WriteByte(0); // unknown
+				pak.WriteByte(0); // unknown
+				pak.WriteByte(0); // unknown
+
+				for (int i = 0; i < concentrationEffects.Count; i++)
 				{
-					pak.WriteByte((byte)(m_gameClient.Player.effectListComponent.ConcentrationEffects.Count));
+					IConcentrationEffect effect = concentrationEffects[i];
+					pak.WriteByte((byte) i);
 					pak.WriteByte(0); // unknown
-					pak.WriteByte(0); // unknown
-					pak.WriteByte(0); // unknown
+					pak.WriteByte(effect.Concentration);
+					pak.WriteShort(effect.Icon);
 
-					var effects = m_gameClient.Player?.effectListComponent.ConcentrationEffects;
-
-					if (effects == null)
-						return;
-
-					for (int i = 0; i < effects.Count; i++)
-					{
-						IConcentrationEffect effect = effects[i];
-						pak.WriteByte((byte)i);
-						pak.WriteByte(0); // unknown
-						pak.WriteByte(effect.Concentration);
-						pak.WriteShort(effect.Icon);
-						if (effect.Name.Length > 14)
-							pak.WritePascalString(effect.Name.Substring(0, 12) + "..");
-						else
-							pak.WritePascalString(effect.Name);
-						if (effect.OwnerName.Length > 14)
-							pak.WritePascalString(effect.OwnerName.Substring(0, 12) + "..");
-						else
-							pak.WritePascalString(effect.OwnerName);
-					}
+					if (effect.Name.Length > 14)
+						pak.WritePascalString(string.Concat(effect.Name.AsSpan(0, 12), ".."));
+					else
+						pak.WritePascalString(effect.Name);
+					if (effect.OwnerName.Length > 14)
+						pak.WritePascalString(string.Concat(effect.OwnerName.AsSpan(0, 12), ".."));
+					else
+						pak.WritePascalString(effect.OwnerName);
 				}
 
 				SendTCP(pak);
 			}
 
-			SendStatusUpdate(); // send status update for convenience, mostly the conc has changed
+			SendStatusUpdate();
 		}
 
 		/// <summary>

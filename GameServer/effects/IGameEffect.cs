@@ -26,6 +26,7 @@ namespace DOL.GS.Effects
 	/// <summary>
 	/// 
 	/// </summary>
+	[Obsolete("Old DoL system, newer effects and spell handlers must use ECSGameEffect and EffectListComponent")]
 	public interface IGameEffect
 	{
 		/// <summary>

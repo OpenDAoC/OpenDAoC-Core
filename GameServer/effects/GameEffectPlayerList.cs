@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +10,7 @@ namespace DOL.GS.Effects
 	/// Sends updates only for changed effects
 	/// when iterating over this effect list lock the list!
 	/// </summary>
+	[Obsolete("Old DoL system, newer effects and spell handlers must use ECSGameEffect and EffectListComponent")]
 	public class GameEffectPlayerList : GameEffectList
 	{
 		/// <summary>

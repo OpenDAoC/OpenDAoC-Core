@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Reflection;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -24,7 +23,7 @@ namespace DOL.GS.SkillHandler
 
             if (player.TargetObject is not GameLiving target)
             {
-                foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Protect))
+                foreach (ProtectECSGameEffect protect in player.effectListComponent.GetAbilityEffects(eEffect.Protect))
                 {
                     if (protect.Source == player)
                         protect.Stop();
@@ -67,7 +66,7 @@ namespace DOL.GS.SkillHandler
             foundOurEffect = false;
             effectFromAnotherSource = null;
 
-            foreach (ProtectECSGameEffect protect in target.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Protect))
+            foreach (ProtectECSGameEffect protect in target.effectListComponent.GetAbilityEffects(eEffect.Protect))
             {
                 if (protect.Source == source)
                 {
@@ -84,7 +83,7 @@ namespace DOL.GS.SkillHandler
 
         public static void CancelOurEffectThenAddOnTarget(GameLiving source, GameLiving target)
         {
-            foreach (ProtectECSGameEffect protect in source.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Protect))
+            foreach (ProtectECSGameEffect protect in source.effectListComponent.GetAbilityEffects(eEffect.Protect))
             {
                 if (protect.Source == source)
                     protect.Stop();

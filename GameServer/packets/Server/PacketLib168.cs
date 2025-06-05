@@ -2916,20 +2916,20 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ConcentrationList))))
 			{
-				lock (m_gameClient.Player.effectListComponent.ConcentrationEffectsLock)
-				{
-					pak.WriteByte((byte) (m_gameClient.Player.effectListComponent.ConcentrationEffects.Count));
-					pak.WriteByte(0); // unknown
-					pak.WriteByte(0); // unknown
-					pak.WriteByte(0); // unknown
+				List<ECSGameSpellEffect> concentrationEffects = m_gameClient.Player.effectListComponent.GetConcentrationEffects();
+				pak.WriteByte((byte) concentrationEffects.Count);
+				pak.WriteByte(0); // unknown
+				pak.WriteByte(0); // unknown
+				pak.WriteByte(0); // unknown
 
-					for (int i = 0; i < m_gameClient.Player.effectListComponent.ConcentrationEffects.Count; i++)
-					{
-						IConcentrationEffect effect = m_gameClient.Player.effectListComponent.ConcentrationEffects[i];
-						pak.WriteByte((byte) i);
-						pak.WriteByte(0); // unknown
-						pak.WriteByte(effect.Concentration);
-						pak.WriteShort(effect.Icon);
+				for (int i = 0; i < concentrationEffects.Count; i++)
+				{
+					IConcentrationEffect effect = concentrationEffects[i];
+					pak.WriteByte((byte) i);
+					pak.WriteByte(0); // unknown
+					pak.WriteByte(effect.Concentration);
+					pak.WriteShort(effect.Icon);
+
 					if (effect.Name.Length > 14)
 						pak.WritePascalString(effect.Name.Substring(0, 12) + "..");
 					else
@@ -2938,11 +2938,12 @@ namespace DOL.GS.PacketHandler
 						pak.WritePascalString(effect.OwnerName.Substring(0, 12) + "..");
 					else
 						pak.WritePascalString(effect.OwnerName);
-					}
 				}
+
 				SendTCP(pak);
 			}
-			SendStatusUpdate(); // send status update for convinience, mostly the conc has changed
+
+			SendStatusUpdate();
 		}
 
 		public void SendChangeTarget(GameObject newTarget)

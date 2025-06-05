@@ -19,7 +19,7 @@ namespace DOL.GS
                 return;
 
             // Try to retrieve the focus effect on the caster and create our timer if we find it.
-            foreach (ECSPulseEffect pulseEffect in SpellHandler.Caster.effectListComponent.GetAllPulseEffects())
+            foreach (ECSPulseEffect pulseEffect in SpellHandler.Caster.effectListComponent.GetPulseEffects())
             {
                 if (!pulseEffect.SpellHandler.Spell.IsFocus)
                     continue;

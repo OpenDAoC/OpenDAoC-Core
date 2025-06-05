@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.Effects;
@@ -28,22 +29,24 @@ namespace DOL.GS.Spells
 		}
         public override bool CancelPulsingSpell(GameLiving living, eSpellType spellType)
         {
-            lock (living.effectListComponent.ConcentrationEffectsLock)
+            List<ECSGameSpellEffect> concentrationEffects = living.effectListComponent.GetConcentrationEffects();
+
+            for (int i = 0; i < concentrationEffects.Count; i++)
             {
-                for (int i = 0; i < living.effectListComponent.ConcentrationEffects.Count; i++)
+                PulsingSpellEffect effect = null; // concentrationEffects[i] as PulsingSpellEffect;
+
+                if (effect == null)
+                    continue;
+
+                if (effect.SpellHandler.Spell.SpellType == spellType)
                 {
-					PulsingSpellEffect effect = null; //living.ConcentrationEffects[i] as PulsingSpellEffect;
-                    if (effect == null)
-                        continue;
-                    if (effect.SpellHandler.Spell.SpellType == spellType)
-                    {
-                        effect.Cancel(false);
-                        GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Moving, new DOLEventHandler(EventAction));
-                        GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Dying, new DOLEventHandler(EventAction));
-                        return true;
-                    }
+                    effect.Cancel(false);
+                    GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Moving, new DOLEventHandler(EventAction));
+                    GameEventMgr.RemoveHandler(Caster, GamePlayerEvent.Dying, new DOLEventHandler(EventAction));
+                    return true;
                 }
             }
+
             return false;
         }
         public void EventAction(DOLEvent e, object sender, EventArgs args)

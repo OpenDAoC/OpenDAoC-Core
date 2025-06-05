@@ -150,16 +150,13 @@ namespace DOL.GS.PacketHandler
 				if (pet != null)
 				{
 					ArrayList icons = new ArrayList();
-					foreach (var effects in pet.effectListComponent.Effects.Values)
+					foreach (var effect in pet.effectListComponent.GetEffects())
 					{
-						foreach (ECSGameEffect effect in effects)
-						{
-							if (icons.Count >= 8)
-								break;
-							if (effect.Icon == 0)
-								continue;
-							icons.Add(effect.Icon);
-						}
+						if (icons.Count >= 8)
+							break;
+						if (effect.Icon == 0)
+							continue;
+						icons.Add(effect.Icon);
 					}
 					pak.WriteByte((byte)icons.Count); // effect count
 					// 0x08 - null terminated - (byte) list of shorts - spell icons on pet

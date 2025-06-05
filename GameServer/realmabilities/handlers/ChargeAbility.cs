@@ -1,9 +1,6 @@
 using System.Collections.Generic;
-using System.Reflection;
-using DOL.GS;
-using DOL.GS.PacketHandler;
-using DOL.GS.Effects;
 using DOL.Database;
+using DOL.GS.PacketHandler;
 
 namespace DOL.GS.RealmAbilities
 {
@@ -31,7 +28,7 @@ namespace DOL.GS.RealmAbilities
 				//		}
 				//	}
 				//}
-				var effect = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
+				var effect = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff);
 				if (effect != null && effect.SpellHandler.Spell.Value != 99)
                 {
 					GamePlayer player = living as GamePlayer;

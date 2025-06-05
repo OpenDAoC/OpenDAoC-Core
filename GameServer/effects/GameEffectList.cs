@@ -14,6 +14,7 @@ namespace DOL.GS.Effects
 	/// Holds and manages multiple effects on livings
 	/// when iterating over this effect list lock the list!
 	/// </summary>
+	[Obsolete("Old DoL system, newer effects and spell handlers must use ECSGameEffect and EffectListComponent")]
 	public class GameEffectList : IEnumerable<IGameEffect>
 	{
 		/// <summary>

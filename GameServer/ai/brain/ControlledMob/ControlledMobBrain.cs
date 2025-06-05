@@ -793,7 +793,7 @@ namespace DOL.AI.Brain
 				return true;
 			}
 
-			ECSGameSpellEffect root = EffectListService.GetSpellEffectOnTarget(living, eEffect.MovementSpeedDebuff);
+			ECSGameEffect root = EffectListService.GetEffectOnTarget(living, eEffect.MovementSpeedDebuff);
 			return root != null && root.SpellHandler.Spell.Value == 99;
 		}
 
@@ -949,7 +949,7 @@ namespace DOL.AI.Brain
 			{
 				foreach (GameLiving living in _buffedTargets)
 				{
-					foreach (ECSGameEffect effect in living.effectListComponent.GetAllEffects().Where(x => x.SpellHandler != null && x.SpellHandler.Caster == Body))
+					foreach (ECSGameEffect effect in living.effectListComponent.GetEffects().Where(x => x.SpellHandler != null && x.SpellHandler.Caster == Body))
 						effect.Stop();
 				}
 

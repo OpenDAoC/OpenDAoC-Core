@@ -40,7 +40,7 @@ namespace DOL.GS.Spells
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			// Check for root immunity.
-			if (Spell.Value == 99 && (target.effectListComponent.Effects.ContainsKey(eEffect.SnareImmunity) || target.effectListComponent.Effects.ContainsKey(eEffect.SpeedOfSound)))
+			if (Spell.Value == 99 && (target.effectListComponent.ContainsEffectForEffectType(eEffect.SnareImmunity) || target.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound)))
 				//FindStaticEffectOnTarget(target, typeof(MezzRootImmunityEffect)) != null)
 			{
 				MessageToCaster("Your target is immune!", eChatType.CT_SpellResisted);
@@ -76,7 +76,7 @@ namespace DOL.GS.Spells
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
 			// Cannot apply if the effect owner has a charging effect
-			if (effect.Owner.EffectList.GetOfType<ChargeEffect>() != null || effect.Owner.effectListComponent.Effects.ContainsKey(eEffect.SpeedOfSound) || effect.Owner.TempProperties.GetProperty<bool>("Charging"))
+			if (effect.Owner.EffectList.GetOfType<ChargeEffect>() != null || effect.Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound) || effect.Owner.TempProperties.GetProperty<bool>("Charging"))
 			{
 				MessageToCaster(effect.Owner.Name + " is moving too fast for this spell to have any effect!", eChatType.CT_SpellResisted);
 				return;

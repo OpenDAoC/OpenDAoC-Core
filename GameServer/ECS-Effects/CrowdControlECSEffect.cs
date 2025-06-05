@@ -29,7 +29,7 @@ namespace DOL.GS
             Owner.DisableTurning(true);
             if (Owner is GameNPC npc)
                 npc.StopMoving();
-            if(Owner.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+            if(Owner.effectListComponent.GetEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
                 UpdatePlayerStatus();
         }
 

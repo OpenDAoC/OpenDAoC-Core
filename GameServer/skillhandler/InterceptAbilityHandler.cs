@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Reflection;
 using DOL.GS.PacketHandler;
 using DOL.Language;
@@ -25,7 +24,7 @@ namespace DOL.GS.SkillHandler
 
             if (player.TargetObject is not GameLiving target)
             {
-                foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Intercept))
+                foreach (InterceptECSGameEffect intercept in player.effectListComponent.GetAbilityEffects(eEffect.Intercept))
                 {
                     if (intercept.Source == player)
                         intercept.Stop();
@@ -69,7 +68,7 @@ namespace DOL.GS.SkillHandler
             foundOurEffect = false;
             effectFromAnotherSource = null;
 
-            foreach (InterceptECSGameEffect intercept in target.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Intercept))
+            foreach (InterceptECSGameEffect intercept in target.effectListComponent.GetAbilityEffects(eEffect.Intercept))
             {
                 if (intercept.Source == source)
                 {
@@ -86,7 +85,7 @@ namespace DOL.GS.SkillHandler
 
         public static void CancelOurEffectThenAddOnTarget(GameLiving source, GameLiving target)
         {
-            foreach (InterceptECSGameEffect intercept in source.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Intercept))
+            foreach (InterceptECSGameEffect intercept in source.effectListComponent.GetAbilityEffects(eEffect.Intercept))
             {
                 if (intercept.Source == source)
                     intercept.Stop();

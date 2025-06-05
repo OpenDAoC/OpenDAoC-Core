@@ -3009,7 +3009,7 @@ namespace DOL.GS.Commands
 					text.Add(attacker.Name);
 			}
 
-			List<ECSGameEffect> allEffects = targetMob.effectListComponent.GetAllEffects();
+			List<ECSGameEffect> allEffects = targetMob.effectListComponent.GetEffects();
 
 			if (allEffects.Count > 0)
 			{

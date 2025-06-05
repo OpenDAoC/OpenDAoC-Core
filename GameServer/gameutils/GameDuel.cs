@@ -62,12 +62,12 @@ namespace DOL.GS
 
             static void StopEffects(GamePlayer player, GamePlayer caster)
             {
-                Loop(player.effectListComponent.GetAllEffects(), caster);
+                Loop(player.effectListComponent.GetEffects(), caster);
 
                 IControlledBrain controlledBrain = player.ControlledBrain;
 
                 if (controlledBrain != null)
-                    Loop(controlledBrain.Body.effectListComponent.GetAllEffects(), caster);
+                    Loop(controlledBrain.Body.effectListComponent.GetEffects(), caster);
 
                 static void Loop(List<ECSGameEffect> effects, GamePlayer caster)
                 {

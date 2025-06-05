@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -99,48 +98,46 @@ namespace DOL.GS.Spells
 			AttackData ad = base.CalculateDamageToTarget(target);
 			GamePlayer player;
 			//GameSpellEffect bladeturn = FindEffectOnTarget(target, "Bladeturn");
-            target.effectListComponent.Effects.TryGetValue(eEffect.Bladeturn, out var bladeturn);
+			ECSGameEffect bladeturn = EffectListService.GetEffectOnTarget(target, eEffect.Bladeturn);
 			if (bladeturn != null)
 			{
 				switch (Spell.LifeDrainReturn)
 				{
 					case (int)eShotType.Critical:
-						{
-							if (target is GamePlayer)
-							{
-								player = target as GamePlayer;
-								player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-							}
-							ad.AttackResult = eAttackResult.HitUnstyled;
-						}
-						break;
-
-					case (int)eShotType.Power:
+					{
+						if (target is GamePlayer)
 						{
 							player = target as GamePlayer;
 							player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-							ad.AttackResult = eAttackResult.HitUnstyled;
-                            bladeturn.FirstOrDefault()?.Stop();
-                    }
-                        break;
-
+						}
+						ad.AttackResult = eAttackResult.HitUnstyled;
+						break;
+					}
+					case (int)eShotType.Power:
+					{
+						player = target as GamePlayer;
+						player.Out.SendMessage("A shot penetrated your magic barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+						ad.AttackResult = eAttackResult.HitUnstyled;
+						bladeturn.Stop();
+						break;
+					}
 					case (int)eShotType.Other:
 					default:
+					{
+						if (Caster is GamePlayer)
 						{
-							if (Caster is GamePlayer)
-							{
-								player = Caster as GamePlayer;
-								player.Out.SendMessage("Your strike was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-							}
-							if (target is GamePlayer)
-							{
-								player = target as GamePlayer;
-								player.Out.SendMessage("The blow was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-								ad.AttackResult = eAttackResult.Missed;
-								bladeturn.FirstOrDefault()?.Stop();
-							}
+							player = Caster as GamePlayer;
+							player.Out.SendMessage("Your strike was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+						}
+						if (target is GamePlayer)
+						{
+							player = target as GamePlayer;
+							player.Out.SendMessage("The blow was absorbed by a magical barrier!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+							ad.AttackResult = eAttackResult.Missed;
+							bladeturn.Stop();
 						}
 						break;
+					}
 				}
 			}
 

@@ -18,7 +18,7 @@ namespace DOL.GS
             if (Owner is GamePlayer player)
                 TryDebuffInterrupt(SpellHandler.Spell, player, SpellHandler.Caster);
 
-            if (Owner.effectListComponent.Effects.ContainsKey(EffectType))
+            if (Owner.effectListComponent.ContainsEffectForEffectType(EffectType))
             {
                 List<ECSGameSpellEffect> effects = Owner.effectListComponent.GetSpellEffects(EffectType);
 

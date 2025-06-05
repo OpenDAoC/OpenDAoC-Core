@@ -155,7 +155,7 @@ namespace DOL.GS.Spells
                 earlyResist = true;
             }
 
-            if (target.effectListComponent.Effects.ContainsKey(eEffect.MezImmunity) || target.HasAbility(Abilities.MezzImmunity))
+            if (target.effectListComponent.ContainsEffectForEffectType(eEffect.MezImmunity) || target.HasAbility(Abilities.MezzImmunity))
             {
                 MessageToCaster($"{target.Name} is immune to this effect!", eChatType.CT_SpellResisted);
                 earlyResist = true;
@@ -264,7 +264,7 @@ namespace DOL.GS.Spells
 
         public override void ApplyEffectOnTarget(GameLiving target)
         {
-            if ((target.effectListComponent.Effects.ContainsKey(eEffect.StunImmunity) && this is not UnresistableStunSpellHandler) || (EffectListService.GetEffectOnTarget(target, eEffect.Stun) != null && !(Caster is GameSummonedPet)))//target.HasAbility(Abilities.StunImmunity))
+            if ((target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) && this is not UnresistableStunSpellHandler) || (EffectListService.GetEffectOnTarget(target, eEffect.Stun) != null && !(Caster is GameSummonedPet)))//target.HasAbility(Abilities.StunImmunity))
             {
                 MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
                 target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);

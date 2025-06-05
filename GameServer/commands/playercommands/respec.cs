@@ -258,7 +258,7 @@ namespace DOL.GS.Commands
             DisplayMessage(player, "All self-cast buffs have been removed due to a respec.");
             if (player.effectListComponent != null)
             {
-				foreach (ECSGameEffect e in player.effectListComponent.GetAllEffects())
+				foreach (ECSGameEffect e in player.effectListComponent.GetEffects())
                 {
 					if (e is ECSGameSpellEffect eSpell && eSpell.SpellHandler.Caster == player)
                     {
@@ -267,7 +267,7 @@ namespace DOL.GS.Commands
                 }
 
 				//Remove self-casted pulsing effects
-				foreach (ECSGameEffect e in player.effectListComponent.GetAllPulseEffects())
+				foreach (ECSGameEffect e in player.effectListComponent.GetPulseEffects())
                 {
 					if (e is ECSGameSpellEffect eSpell && eSpell.SpellHandler.Caster == player)
                     {

@@ -1750,7 +1750,7 @@ namespace DOL.GS
 
         public bool CheckGuard(AttackData ad, bool stealthStyle)
         {
-            foreach (GuardECSGameEffect guard in owner.effectListComponent.GetAbilityEffects().Where(e => e.EffectType is eEffect.Guard))
+            foreach (GuardECSGameEffect guard in owner.effectListComponent.GetAbilityEffects(eEffect.Guard))
             {
                 if (guard.Target != owner)
                     continue;
@@ -1959,7 +1959,7 @@ namespace DOL.GS
                 defenseDisabled = true;
 
             // We check if interceptor can intercept.
-            foreach (InterceptECSGameEffect inter in owner.effectListComponent.GetAbilityEffects().Where(e => e is InterceptECSGameEffect))
+            foreach (InterceptECSGameEffect inter in owner.effectListComponent.GetAbilityEffects(eEffect.Intercept))
             {
                 if (inter.Target == owner && !inter.Source.IsIncapacitated && !inter.Source.IsSitting && owner.IsWithinRadius(inter.Source, InterceptAbilityHandler.INTERCEPT_DISTANCE))
                 {
@@ -2159,7 +2159,9 @@ namespace DOL.GS
              * levels of the players involved into account.
              */
 
-            if (EffectListService.GetSpellEffectOnTarget(owner, eEffect.Bladeturn) is BladeturnECSGameEffect bladeturn)
+            ECSGameEffect bladeturn = EffectListService.GetEffectOnTarget(owner, eEffect.Bladeturn);
+
+            if (bladeturn != null)
             {
                 bool penetrate = false;
 
@@ -2202,7 +2204,7 @@ namespace DOL.GS
 
             return eAttackResult.HitUnstyled;
 
-            double CheckEffectivenessAgainstBladeturn(ECSGameSpellEffect bladeturn)
+            double CheckEffectivenessAgainstBladeturn(ECSGameEffect bladeturn)
             {
                 // 1.62: Longshot and Volley always penetrate.
                 if (action.RangedAttackType is eRangedAttackType.Long or eRangedAttackType.Volley)

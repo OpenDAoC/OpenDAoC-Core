@@ -1682,7 +1682,7 @@ namespace DOL.GS
             if (effectListComponent == null)
                 return;
 
-            if (effectListComponent.Effects.ContainsKey(eEffect.MovementSpeedBuff))
+            if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
 			{
 				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 
@@ -2698,53 +2698,18 @@ namespace DOL.GS
 			}
 		}
 
-		
-
 		/// <summary>
 		/// Cancels all concentration effects by this living and on this living
 		/// </summary>
-		public void CancelAllConcentrationEffects(bool updateplayer = true)
-		{
-			CancelAllConcentrationEffects(false, updateplayer);
-		}
-
-		/// <summary>
-		/// Cancels all concentration effects by this living and on this living
-		/// </summary>
-		public void CancelAllConcentrationEffects(bool leaveSelf, bool updateplayer)
+		public void CancelAllConcentrationEffects()
 		{
 			// Cancel conc spells.
-			lock (effectListComponent.ConcentrationEffectsLock)
-			{
-				for (int i = 0; i < effectListComponent.ConcentrationEffects.Count; i++)
-					effectListComponent.ConcentrationEffects[i].Stop();
-			}
+			effectListComponent.StopConcentrationEffects(false);
 
 			// Cancel all active conc spell effects from other casters.
 			foreach (ECSGameSpellEffect effect in effectListComponent.GetSpellEffects().Where(e => e.IsConcentrationEffect()))
-			{
-				if (!leaveSelf || (leaveSelf && effect.SpellHandler.Caster != this))
-					effect.Stop(false);
-			}
+				effect.Stop(false);
 		}
-
-        // 			ArrayList concEffects = new ArrayList();
-        // 			lock (EffectList.Lock)
-        // 			{
-        // 				foreach (IGameEffect effect in EffectList)
-        // 				{
-        // 					if (effect is GameSpellEffect && ((GameSpellEffect)effect).Spell.Concentration > 0)
-        // 					{
-        // 						if (!leaveSelf || leaveSelf && ((GameSpellEffect)effect).SpellHandler.Caster != this)
-        // 							concEffects.Add(effect);
-        // 					}
-        // 				}
-        // 			}
-        // 			foreach (GameSpellEffect effect in concEffects)
-        // 			{
-        // 				effect.Cancel(false);
-        // 			}
-        // 		}
 
         #endregion
         #region Speed/Heading/Target/GroundTarget/GuildName/SitState/Level
@@ -3576,8 +3541,6 @@ namespace DOL.GS
 		/// <summary>
 		/// Returns true if the living has the spell effect, else false.
 		/// </summary>
-		/// <param name="spell"></param>
-		/// <returns></returns>
 		public override bool HasEffect(Spell spell)
 		{
 			lock (EffectList.Lock)
@@ -3601,9 +3564,6 @@ namespace DOL.GS
 		/// <summary>
 		/// Checks if the target has a type of effect
 		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="spell"></param>
-		/// <returns></returns>
 		public override bool HasEffect(Type effectType)
 		{
 			lock (EffectList.Lock)

@@ -267,7 +267,7 @@ namespace DOL.GS.Spells
 		/// <returns>true if any spells were canceled</returns>
 		public virtual bool CancelPulsingSpell(GameLiving living, eSpellType spellType)
 		{
-			foreach (ECSPulseEffect effect in living.effectListComponent.GetAllPulseEffects())
+			foreach (ECSPulseEffect effect in living.effectListComponent.GetPulseEffects())
 			{
 				if (effect.SpellHandler.Spell.SpellType == spellType)
 				{
@@ -788,15 +788,7 @@ namespace DOL.GS.Spells
 				return false;
 			}
 
-			int maxConc = MAX_CONC_SPELLS;
-
-			// Self buff charge IDs should not count against conc cap
-			maxConc += playerCaster.effectListComponent.ConcentrationEffects.Count(concentrationEffect =>
-			{
-				return concentrationEffect.SpellHandler?.Spell?.ID != null && playerCaster.SelfBuffChargeIDs.Contains(concentrationEffect.SpellHandler.Spell.ID);
-			});
-
-			if (m_caster.effectListComponent.ConcentrationEffects.Count >= maxConc)
+			if (m_caster.effectListComponent.GetConcentrationEffects().Count >= MAX_CONC_SPELLS)
 			{
 				if (!quiet)
 					MessageToCaster($"You can only cast up to {MAX_CONC_SPELLS} simultaneous concentration spells!", eChatType.CT_SpellResisted);
@@ -1369,7 +1361,7 @@ namespace DOL.GS.Spells
 			{
 				if (!PulseSpellGroupsIgnoringOtherPulseSpells.Contains(m_spell.Group))
 				{
-					IEnumerable<ECSPulseEffect> effects = m_caster.effectListComponent.GetAllPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
+					IEnumerable<ECSPulseEffect> effects = m_caster.effectListComponent.GetPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
 
 					foreach (ECSPulseEffect effect in effects)
 						effect.Stop();
@@ -2388,7 +2380,7 @@ namespace DOL.GS.Spells
 			}
 
 			GameLiving casterToUse = playerCaster ?? m_caster;
-			List<ECSGameEffect> effects = casterToUse.effectListComponent.GetAllEffects();
+			List<ECSGameEffect> effects = casterToUse.effectListComponent.GetEffects();
 			ECSGameEffect piercingMagic = effects.FirstOrDefault(e => e.EffectType is eEffect.PiercingMagic);
 
 			if (piercingMagic != null)
@@ -2839,27 +2831,6 @@ namespace DOL.GS.Spells
 						return effect;
 			}
 			return null;
-		}
-
-		/// <summary>
-		/// Find pulsing spell by spell handler
-		/// </summary>
-		/// <param name="living"></param>
-		/// <param name="handler"></param>
-		/// <returns>first occurance of spellhandler in targets' conc list or null</returns>
-		public static PulsingSpellEffect FindPulsingSpellOnTarget(GameLiving living, ISpellHandler handler)
-		{
-			lock (living.effectListComponent.ConcentrationEffectsLock)
-			{
-				foreach (IConcentrationEffect concEffect in living.effectListComponent.ConcentrationEffects)
-				{
-					PulsingSpellEffect pulsingSpell = concEffect as PulsingSpellEffect;
-					if (pulsingSpell == null) continue;
-					if (pulsingSpell.SpellHandler == handler)
-						return pulsingSpell;
-				}
-				return null;
-			}
 		}
 
 		#region various helpers

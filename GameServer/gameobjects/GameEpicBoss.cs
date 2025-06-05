@@ -64,7 +64,7 @@ namespace DOL.AI.Brain
                 Body.Z = Body.SpawnPoint.Z;
                 Body.Heading = Body.SpawnHeading;
 
-                foreach (ECSGameEffect effect in Body.effectListComponent.GetAllEffects())
+                foreach (ECSGameEffect effect in Body.effectListComponent.GetEffects())
                 {
                     if (effect.SpellHandler.Spell.IsHarmful)
                         effect.Stop();

@@ -26,9 +26,6 @@ namespace DOL.GS
         public ISpellHandler SpellHandler { get; set; }
     }
 
-    /// <summary>
-    /// Base class for all Effects
-    /// </summary>
     public class ECSGameEffect
     {
         private State _state;
@@ -99,7 +96,9 @@ namespace DOL.GS
                 if (!CanStart)
                     return false;
 
-                return AddUnsafe(TransitionalState.Starting);
+                _transitionalState = TransitionalState.Starting;
+                Owner.effectListComponent.AddPendingEffect(this);
+                return true;
             }
         }
 
@@ -110,7 +109,12 @@ namespace DOL.GS
 
             lock (StartStopLock)
             {
-                return CanBeEnabled && AddUnsafe(TransitionalState.Enabling);
+                if (!CanBeEnabled)
+                    return false;
+
+                _transitionalState = TransitionalState.Enabling;
+                Owner.effectListComponent.AddPendingEffect(this);
+                return true;
             }
         }
 
@@ -121,7 +125,12 @@ namespace DOL.GS
 
             lock (StartStopLock)
             {
-                return CanBeDisabled && RemoveUnsafe(TransitionalState.Disabling);
+                if (!CanBeDisabled)
+                    return false;
+
+                _transitionalState = TransitionalState.Disabling;
+                Owner.effectListComponent.AddPendingEffect(this);
+                return true;
             }
         }
 
@@ -144,7 +153,9 @@ namespace DOL.GS
                     return false;
                 }
 
-                return RemoveUnsafe(TransitionalState.Stopping);
+                _transitionalState = TransitionalState.Stopping;
+                Owner.effectListComponent.AddPendingEffect(this);
+                return true;
             }
         }
 
@@ -196,31 +207,29 @@ namespace DOL.GS
         public virtual void OnEffectPulse() { }
         public virtual DbPlayerXEffect GetSavedEffect() { return null; }
 
-        private bool AddUnsafe(TransitionalState transitionalState)
+        public void OnEffectAddedToEffectList(EffectListComponent.AddEffectResult result)
         {
-            _transitionalState = transitionalState;
-
             try
             {
                 // `AddEffect` handles both starting and enabling effects.
                 // Its result depends on `_transitionalState`.
-                switch (Owner.effectListComponent.AddEffect(this))
+                switch (result)
                 {
                     case EffectListComponent.AddEffectResult.Added:
                     {
                         OnStartEffect();
                         _state = State.Active;
-                        return true;
+                        return;
                     }
                     case EffectListComponent.AddEffectResult.RenewedActive:
                     {
                         _state = State.Active;
-                        return true;
+                        return;
                     }
                     case EffectListComponent.AddEffectResult.Disabled:
                     {
                         _state = State.Disabled;
-                        return true;
+                        return;
                     }
                     case EffectListComponent.AddEffectResult.RenewedDisabled:
                     {
@@ -232,12 +241,10 @@ namespace DOL.GS
                         else
                             _state = State.Disabled;
 
-                            return true;
+                        return;
                     }
-                    case EffectListComponent.AddEffectResult.Failed:
-                        return false;
                     default:
-                        throw new InvalidOperationException($"Unhandled result from {nameof(EffectListComponent.AddEffect)}.");
+                        throw new InvalidOperationException($"Unhandled result: {result}.");
                 }
             }
             finally
@@ -246,15 +253,13 @@ namespace DOL.GS
             }
         }
 
-        private bool RemoveUnsafe(TransitionalState transitionalState)
+        public void OnEffectRemovedFromEffectList(EffectListComponent.RemoveEffectResult result)
         {
-            _transitionalState = transitionalState;
-
             try
             {
                 // `RemoveEffect` handles both stopping and disabling effects, and its result depends on `_transitionalState`.
                 // Only stop effects and attempt to enable the best disabled effect of the same type if this effect was active.
-                switch (Owner.effectListComponent.RemoveEffect(this))
+                switch (result)
                 {
                     case EffectListComponent.RemoveEffectResult.Removed:
                     {
@@ -265,7 +270,7 @@ namespace DOL.GS
                         }
 
                         _state = State.Stopped;
-                        return true;
+                        return;
                     }
                     case EffectListComponent.RemoveEffectResult.Disabled:
                     {
@@ -276,12 +281,10 @@ namespace DOL.GS
                         }
 
                         _state = State.Disabled;
-                        return true;
+                        return;
                     }
-                    case EffectListComponent.RemoveEffectResult.Failed:
-                        return false;
                     default:
-                        throw new InvalidOperationException($"Unhandled result from {nameof(EffectListComponent.RemoveEffect)}.");
+                        throw new InvalidOperationException($"Unhandled result: {result}.");
                 }
             }
             finally

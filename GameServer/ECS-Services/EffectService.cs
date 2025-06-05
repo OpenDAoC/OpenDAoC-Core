@@ -582,7 +582,7 @@ namespace DOL.GS
             if (effs != null)
                 GameServer.Database.DeleteObject(effs);
 
-            foreach (ECSGameEffect eff in player.effectListComponent.GetAllEffects())
+            foreach (ECSGameEffect eff in player.effectListComponent.GetEffects())
             {
                 try
                 {

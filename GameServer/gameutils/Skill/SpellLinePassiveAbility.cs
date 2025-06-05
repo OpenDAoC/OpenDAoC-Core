@@ -34,15 +34,10 @@ namespace DOL.GS
 				
 				if (oldSpell != null)
 				{
-					var pulsing = m_activeLiving.FindPulsingSpellOnTarget(oldSpell);
-
-					if (pulsing != null)
-						pulsing.Cancel(false);
-					
-					var effect = m_activeLiving.FindEffectOnTarget(oldSpell);
+					/*var effect = m_activeLiving.FindEffectOnTarget(oldSpell);
 
 					if (effect != null)
-						effect.Cancel(false);
+						effect.Cancel(false);*/
 				}
 
 				var spell = Spell;
@@ -63,13 +58,9 @@ namespace DOL.GS
 			// deactivate spell
 			if (m_activeLiving != null && line != null && spell != null)
 			{
-					var pulsing = m_activeLiving.FindPulsingSpellOnTarget(spell);
-					if (pulsing != null)
-						pulsing.Cancel(false);
-					
-					var effect = m_activeLiving.FindEffectOnTarget(spell);
+					/*var effect = m_activeLiving.FindEffectOnTarget(spell);
 					if (effect != null)
-						effect.Cancel(false);
+						effect.Cancel(false);*/
 			}
 
 			base.Deactivate(living, sendUpdates);

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Linq;
 using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
@@ -31,8 +30,7 @@ namespace DOL.GS.RealmAbilities
 				 return;
 			 }*/
 
-			if (player.TempProperties.GetProperty<bool>("Charging")
-				|| player.effectListComponent.GetAllEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) != null)
+			if (player.TempProperties.GetProperty<bool>("Charging") || player.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound))
 			{
 				player.Out.SendMessage("You already an effect of that type!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 				return;

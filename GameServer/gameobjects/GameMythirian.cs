@@ -48,11 +48,11 @@ namespace DOL.GS
 
 		public override void OnUnEquipped(GamePlayer player)
 		{
-			if (this.Name.ToLower().Contains("ektaktos") && SpellHelper.FindEffectOnTarget(player, typeof(WaterBreathingSpellHandler)) == null)
+			/*if (this.Name.ToLower().Contains("ektaktos") && SpellHelper.FindEffectOnTarget(player, typeof(WaterBreathingSpellHandler)) == null)
 			{
 				player.CanBreathUnderWater = false;
 				player.Out.SendMessage("With a gulp and a gasp you realize that you are unable to breathe underwater any longer!", eChatType.CT_SpellExpires, eChatLoc.CL_SystemWindow);
-			}
+			}*/
 			base.OnUnEquipped(player);
 		}
 		#endregion

@@ -1037,7 +1037,7 @@ namespace DOL.GS
             try
             {
                 EffectService.SaveAllEffects(this);
-                CancelAllConcentrationEffects(false);
+                CancelAllConcentrationEffects();
                 EffectList.CancelAll();
             }
             catch (Exception e)
@@ -9647,22 +9647,13 @@ namespace DOL.GS
             }
         }
 
-        private List<int> m_selfBuffIds;
-        public List<int> SelfBuffChargeIDs {
-            get
-            {
-                if (m_selfBuffIds == null)
-                {
-                    m_selfBuffIds = new List<int>();
-                    m_selfBuffIds.Add(31133); //str/con charge
-                    m_selfBuffIds.Add(31132); //dex/qui charge
-                    m_selfBuffIds.Add(31131); //acuity charge
-                    m_selfBuffIds.Add(31130); //AF charge
-                }
-
-                return m_selfBuffIds;
-            }
-        }
+        public static List<int> SelfBuffChargeIDs { get; } =
+            [
+                31133, // Strength/Constitution Charge
+                31132, // Dexterity/Quickness Charge
+                31131, // Acuity Charge
+                31130  // AF Charge
+            ];
 
         /// <summary>
         /// Removes magical bonuses whenever item was unequipped

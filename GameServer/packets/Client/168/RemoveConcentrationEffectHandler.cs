@@ -10,12 +10,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         {
             int index = packet.ReadByte();
             GamePlayer player = client.Player;
-
-            lock (player.effectListComponent.ConcentrationEffectsLock)
-            {
-                if (index < player.effectListComponent.ConcentrationEffects.Count)
-                    player.effectListComponent.ConcentrationEffects[index].Stop(true);
-            }
+            player.effectListComponent.StopConcentrationEffect(index, true);
         }
     }
 }
