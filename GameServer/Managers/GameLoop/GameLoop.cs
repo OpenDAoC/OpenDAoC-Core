@@ -38,7 +38,7 @@ namespace DOL.GS
                 return false;
 
             TickRate = Properties.GAME_LOOP_TICK_RATE;
-            _gameLoopStats = new([60000, 30000, 10000]);
+            _gameLoopStats = new([60000, 30000, 10000], 1000.0 / TickRate);
             _gameLoopThread = new Thread(new ThreadStart(Run))
             {
                 Name = THREAD_NAME,
