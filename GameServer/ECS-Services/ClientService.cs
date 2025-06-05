@@ -352,27 +352,51 @@ namespace DOL.GS
 
         public static GamePlayer GetPlayerByPartialName(string playerName, out PlayerGuessResult result)
         {
-            List<GamePlayer> partialMatches = _playerNameTrie.FindByPrefix(playerName);
+            List<GamePlayer> matches = _playerNameTrie.FindByPrefix(playerName);
 
-            if (partialMatches.Count == 1)
+            if (matches.Count == 0)
             {
-                GamePlayer player = partialMatches[0];
-
-                if (!player.Client.IsPlaying || player.ObjectState is not GameObject.eObjectState.Active)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error($"Player was found in the trie, but is not playing or is not active. Removing from trie. (Player: {player})");
-
-                    _playerNameTrie.Remove(playerName, player);
-                    return GetPlayerByPartialName(playerName, out result); // Try again with the updated trie.
-                }
-
-                result = PlayerGuessResult.FOUND_EXACT;
-                return partialMatches[0];
+                result = PlayerGuessResult.NOT_FOUND;
+                return null;
             }
 
-            result = partialMatches.Count == 0 ? PlayerGuessResult.NOT_FOUND : PlayerGuessResult.FOUND_MULTIPLE;
+            GamePlayer player = matches[0];
+
+            // The first element may be an exact match.
+            if (player.Name.Length == playerName.Length)
+            {
+                if (ValidateAndRemoveIfInactive(player))
+                    return GetPlayerByPartialName(playerName, out result);
+
+                result = PlayerGuessResult.FOUND_EXACT;
+                return player;
+            }
+
+            // Partial match found.
+            if (matches.Count == 1)
+            {
+                if (ValidateAndRemoveIfInactive(player))
+                    return GetPlayerByPartialName(playerName, out result);
+
+                result = PlayerGuessResult.FOUND_PARTIAL;
+                return player;
+            }
+
+            // Multiple matches found.
+            result = PlayerGuessResult.FOUND_MULTIPLE;
             return null;
+
+            bool ValidateAndRemoveIfInactive(GamePlayer player)
+            {
+                if (player.Client.IsPlaying && player.ObjectState is GameObject.eObjectState.Active)
+                    return false;
+
+                if (log.IsErrorEnabled)
+                    log.Error($"Player was found in the trie, but is not playing or is not active. Removing from trie. (Player: {player})");
+
+                _playerNameTrie.Remove(playerName, player);
+                return true;
+            }
         }
 
         public static List<GamePlayer> GetNonGmPlayers()
