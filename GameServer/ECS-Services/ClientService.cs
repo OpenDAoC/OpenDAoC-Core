@@ -25,6 +25,7 @@ namespace DOL.GS
         private static int _lastValidIndex;
         private static int _clientCount;
         private static GameClient[] _clientsBySessionId = new GameClient[ushort.MaxValue]; // Fast lookup by session ID.
+        private static Trie<GamePlayer> _playerNameTrie = new();
 
         public static int ClientCount => _clientCount; // `_clients` contains null objects.
 
@@ -209,6 +210,16 @@ namespace DOL.GS
             }
         }
 
+        public static void OnPlayerJoin(GamePlayer player)
+        {
+            _playerNameTrie.Insert(player.Name, player);
+        }
+
+        public static void OnPlayerLeave(GamePlayer player)
+        {
+            _playerNameTrie.Remove(player.Name, player);
+        }
+
         public static GamePlayer GetPlayer<T>(CheckPlayerAction<T> action)
         {
             return GetPlayer(action, default);
@@ -325,52 +336,43 @@ namespace DOL.GS
 
         public static GamePlayer GetPlayerByExactName(string playerName)
         {
-            return GetPlayer(Predicate, playerName);
+            GamePlayer player = _playerNameTrie.FindExact(playerName);
 
-            static bool Predicate(GamePlayer player, string playerName)
+            if (!player.Client.IsPlaying || player.ObjectState is not GameObject.eObjectState.Active)
             {
-                if (!player.Client.IsPlaying || player.ObjectState is not GameObject.eObjectState.Active)
-                    return false;
+                if (log.IsErrorEnabled)
+                    log.Error($"Player was found in the trie, but is not playing or is not active. Removing from trie. (Player: {player})");
 
-                if (player.Name.Equals(playerName, StringComparison.OrdinalIgnoreCase))
-                    return true;
-
-                return false;
+                _playerNameTrie.Remove(playerName, player);
+                return null;
             }
+
+            return player;
         }
 
         public static GamePlayer GetPlayerByPartialName(string playerName, out PlayerGuessResult result)
         {
-            List<GamePlayer> partialMatches = new();
-            GamePlayer targetPlayer = GetPlayer(Predicate, (playerName, partialMatches));
+            List<GamePlayer> partialMatches = _playerNameTrie.FindByPrefix(playerName);
 
-            if (targetPlayer != null)
-                result = PlayerGuessResult.FOUND_EXACT;
-            else if (partialMatches.Count < 1)
-                result = PlayerGuessResult.NOT_FOUND;
-            else if (partialMatches.Count > 1)
-                result = PlayerGuessResult.FOUND_MULTIPLE;
-            else
+            if (partialMatches.Count == 1)
             {
-                result = PlayerGuessResult.FOUND_PARTIAL;
-                targetPlayer = partialMatches[0];
-            }
+                GamePlayer player = partialMatches[0];
 
-            return targetPlayer;
-
-            static bool Predicate(GamePlayer player, (string playerName, List<GamePlayer> partialList) args)
-            {
                 if (!player.Client.IsPlaying || player.ObjectState is not GameObject.eObjectState.Active)
-                    return false;
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"Player was found in the trie, but is not playing or is not active. Removing from trie. (Player: {player})");
 
-                if (player.Name.Equals(args.playerName, StringComparison.OrdinalIgnoreCase))
-                    return true;
+                    _playerNameTrie.Remove(playerName, player);
+                    return GetPlayerByPartialName(playerName, out result); // Try again with the updated trie.
+                }
 
-                if (player.Name.StartsWith(args.playerName, StringComparison.OrdinalIgnoreCase))
-                    args.partialList.Add(player);
-
-                return false;
+                result = PlayerGuessResult.FOUND_EXACT;
+                return partialMatches[0];
             }
+
+            result = partialMatches.Count == 0 ? PlayerGuessResult.NOT_FOUND : PlayerGuessResult.FOUND_MULTIPLE;
+            return null;
         }
 
         public static List<GamePlayer> GetNonGmPlayers()

@@ -8348,6 +8348,7 @@ namespace DOL.GS
             RefreshItemBonuses();
             LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
             LastPlayerActivityTime = GameLoop.GameLoopTime;
+            ClientService.OnPlayerJoin(this);
             return true;
         }
 
@@ -8384,6 +8385,7 @@ namespace DOL.GS
                 instance.OnPlayerLeaveInstance(this);
 
             Duel?.Stop();
+            ClientService.OnPlayerLeave(this);
             return true;
         }
 
