@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.Commands;
@@ -12,7 +12,7 @@ namespace DOL.GS
 {
     public class CastingComponent : IServiceObject
     {
-        protected ConcurrentQueue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
+        protected Queue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
 
         public GameLiving Owner { get; }
         public SpellHandler SpellHandler { get; protected set; }
@@ -46,7 +46,7 @@ namespace DOL.GS
             SpellHandler?.Tick();
             ProcessStartSkillRequests();
 
-            if (SpellHandler == null && QueuedSpellHandler == null && _startSkillRequests.IsEmpty)
+            if (SpellHandler == null && QueuedSpellHandler == null && _startSkillRequests.Count == 0)
                 ServiceObjectStore.Remove(this);
         }
 
