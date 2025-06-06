@@ -58,6 +58,31 @@ namespace DOL.GS
             }
         }
 
+        public T FindExact(string key)
+        {
+            if (string.IsNullOrEmpty(key))
+                return default;
+
+            _lock.EnterReadLock();
+
+            try
+            {
+                TrieNode node = _root;
+
+                foreach (char c in key)
+                {
+                    if (!node.Children.TryGetValue(c, out node))
+                        return default;
+                }
+
+                return node.HasValue ? node.Value : default;
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+        }
+
         public List<T> FindByPrefix(string prefix)
         {
             List<T> results = new();
@@ -87,29 +112,15 @@ namespace DOL.GS
             return results;
         }
 
-        public T FindExact(string key)
+        public void Dispose()
         {
-            if (string.IsNullOrEmpty(key))
-                return default;
-
-            _lock.EnterReadLock();
-
-            try
+            if (!_disposed)
             {
-                TrieNode node = _root;
-
-                foreach (char c in key)
-                {
-                    if (!node.Children.TryGetValue(c, out node))
-                        return default;
-                }
-
-                return node.HasValue ? node.Value : default;
+                _lock?.Dispose();
+                _disposed = true;
             }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
+
+            GC.SuppressFinalize(this);
         }
 
         private static bool RemoveInternal(TrieNode node, string key, int depth, T value)
@@ -139,17 +150,6 @@ namespace DOL.GS
             return false;
         }
 
-        public void Dispose()
-        {
-            if (!_disposed)
-            {
-                _lock?.Dispose();
-                _disposed = true;
-            }
-
-            GC.SuppressFinalize(this);
-        }
-
         private static void CollectInternal(TrieNode node, List<T> results)
         {
             if (node.HasValue)
@@ -161,22 +161,28 @@ namespace DOL.GS
 
         private class TrieNode
         {
-            public Dictionary<char, TrieNode> Children { get; } = new(CaseInsensitiveCharComparer.Instance);
+            public Dictionary<char, TrieNode> Children { get; } = new(new CaseInsensitiveCharComparer());
             public T Value { get; set; }
             public bool HasValue { get; set; }
 
             private class CaseInsensitiveCharComparer : IEqualityComparer<char>
             {
-                public static readonly CaseInsensitiveCharComparer Instance = new();
+                private static readonly char[] _unicodeToLowerTable = new char[65536];
+
+                static CaseInsensitiveCharComparer()
+                {
+                    for (int i = 0; i < 65536; i++)
+                        _unicodeToLowerTable[i] = char.ToLowerInvariant((char) i);
+                }
 
                 public bool Equals(char x, char y)
                 {
-                    return char.ToLowerInvariant(x) == char.ToLowerInvariant(y);
+                    return _unicodeToLowerTable[x] == _unicodeToLowerTable[y];
                 }
 
                 public int GetHashCode(char obj)
                 {
-                    return char.ToLowerInvariant(obj).GetHashCode();
+                    return _unicodeToLowerTable[obj].GetHashCode();
                 }
             }
         }
