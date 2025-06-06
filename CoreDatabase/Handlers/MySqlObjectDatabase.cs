@@ -4,15 +4,12 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using DOL.Database.Connection;
-using Microsoft.Extensions.ObjectPool;
 using MySqlConnector;
 
 namespace DOL.Database.Handlers
 {
     public class MySqlObjectDatabase : SqlObjectDatabase
     {
-        private ObjectPool<DbConnection> _pool;
-
         /// <summary>
         /// Create a new instance of <see cref="MySqlObjectDatabase"/>
         /// </summary>
@@ -35,14 +32,6 @@ namespace DOL.Database.Handlers
             {
                 this.ConnectionString += ";Convert Zero Datetime=True";
             }
-
-            DefaultObjectPoolProvider defaultObjectPoolProvider = new()
-            {
-                MaximumRetained = Environment.ProcessorCount // There aren't many reasons to keep more.
-            };
-
-            // Assumes `DefaultObjectPoolProvider.Create` will correctly return a `DisposableObjectPool`.
-            _pool = defaultObjectPoolProvider.Create(new MySqlConnectionPooledObjectPolicy(ConnectionString));
         }
 
         #region MySQL Implementation
@@ -620,23 +609,17 @@ namespace DOL.Database.Handlers
 
         protected override DbConnection CreateConnection(string connectionsString)
         {
-            return _pool.Get();
+            return new MySqlConnection(connectionsString);
         }
 
         protected override void OpenConnection(DbConnection connection)
         {
-            if (connection.State is ConnectionState.Closed)
-                connection.Open();
-            else if (connection.State is not ConnectionState.Open)
-            {
-                connection.Close();
-                connection.Open();
-            }
+            connection.Open();
         }
 
         protected override void CloseConnection(DbConnection connection)
         {
-            _pool.Return(connection);
+            connection.Close();
         }
 
         protected override DbParameter ConvertToDBParameter(QueryParameter queryParameter)
@@ -672,26 +655,6 @@ namespace DOL.Database.Handlers
                 }
             }
             return false;
-        }
-
-        private class MySqlConnectionPooledObjectPolicy : IPooledObjectPolicy<DbConnection>
-        {
-            private string _connectionString;
-
-            public MySqlConnectionPooledObjectPolicy(string connectionString)
-            {
-                _connectionString = connectionString;
-            }
-
-            public DbConnection Create()
-            {
-                return new MySqlConnection(_connectionString);
-            }
-
-            public bool Return(DbConnection obj)
-            {
-                return true;
-            }
         }
     }
 }
