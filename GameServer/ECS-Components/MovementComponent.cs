@@ -1,10 +1,9 @@
 ﻿using System.Reflection;
 using System.Threading;
-using ECS.Debug;
 
 namespace DOL.GS
 {
-    public class MovementComponent
+    public class MovementComponent : IServiceObject
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 500;
@@ -19,6 +18,7 @@ namespace DOL.GS
         public virtual short MaxSpeed => (short) Owner.GetModified(eProperty.MaxSpeed);
         public bool IsMoving => CurrentSpeed != 0;
         public bool IsTurningDisabled => Interlocked.CompareExchange(ref _turningDisabledCount, 0, 0) > 0 && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound);
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.MovementComponent);
 
         protected MovementComponent(GameLiving owner)
         {
@@ -37,12 +37,21 @@ namespace DOL.GS
 
         public void Tick()
         {
-            long startTick = GameLoop.GetCurrentTime();
-            TickInternal();
-            long stopTick = GameLoop.GetCurrentTime();
+            if (Owner.ObjectState is GameObject.eObjectState.Deleted)
+            {
+                RemoveFromServiceObjectStore();
+                return;
+            }
 
-            if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {nameof(MovementComponent)}.{nameof(TickInternal)} for {Owner.Name}({Owner.ObjectID}) Time: {stopTick - startTick}ms");
+            TickInternal();
+        }
+
+        public virtual void DisableTurning(bool add)
+        {
+            if (add)
+                Interlocked.Increment(ref _turningDisabledCount);
+            else
+                Interlocked.Decrement(ref _turningDisabledCount);
         }
 
         protected virtual void TickInternal()
@@ -56,12 +65,14 @@ namespace DOL.GS
             }
         }
 
-        public virtual void DisableTurning(bool add)
+        protected void AddToServiceObjectStore()
         {
-            if (add)
-                Interlocked.Increment(ref _turningDisabledCount);
-            else
-                Interlocked.Decrement(ref _turningDisabledCount);
+            ServiceObjectStore.Add(this);
+        }
+
+        protected void RemoveFromServiceObjectStore()
+        {
+            ServiceObjectStore.Remove(this);
         }
     }
 }

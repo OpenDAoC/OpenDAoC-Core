@@ -56,8 +56,6 @@ namespace DOL.GS
 
                     brain.NextThinkTick += brain.ThinkInterval;
                 }
-
-                npc.movementComponent.Tick();
             }
             catch (Exception e)
             {

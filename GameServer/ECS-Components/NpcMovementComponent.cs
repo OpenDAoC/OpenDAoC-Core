@@ -124,6 +124,9 @@ namespace DOL.GS
                     ClientService.UpdateNpcForPlayers(Owner);
                     _needsBroadcastUpdate = false;
                 }
+
+                if (_movementState is MovementState.NONE)
+                    RemoveFromServiceObjectStore();
             }
         }
 
@@ -133,6 +136,7 @@ namespace DOL.GS
             destination = new Point3D(destination.X, destination.Y, destination.Z);
             _movementRequest = new(destination, speed, WalkToInternal);
             SetFlag(MovementState.REQUEST);
+            AddToServiceObjectStore();
         }
 
         public void PathTo(Point3D destination, short speed)
@@ -141,6 +145,7 @@ namespace DOL.GS
             destination = new Point3D(destination.X, destination.Y, destination.Z);
             _movementRequest = new(destination, speed, PathToInternal);
             SetFlag(MovementState.REQUEST);
+            AddToServiceObjectStore();
         }
 
         public void StopMoving()
@@ -331,6 +336,7 @@ namespace DOL.GS
 
             _needsBroadcastUpdate = true;
             Owner.Heading = heading;
+            AddToServiceObjectStore();
         }
 
         public override void DisableTurning(bool add)

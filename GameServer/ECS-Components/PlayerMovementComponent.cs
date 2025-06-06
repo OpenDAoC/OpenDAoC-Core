@@ -110,6 +110,7 @@ namespace DOL.GS
             }
 
             _playerMovementMonitor.RecordPosition();
+            AddToServiceObjectStore();
 
             static void SendEncumberedMessage(GamePlayer player)
             {
