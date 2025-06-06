@@ -1,9 +1,8 @@
 ﻿using System;
-using Microsoft.Extensions.ObjectPool;
 
 namespace DOL.Logging
 {
-    public class LogEntry : IResettable
+    public class LogEntry
     {
         private Action<LogEntry> _logAction;
 
@@ -45,18 +44,6 @@ namespace DOL.Logging
         public void Log()
         {
             _logAction(this);
-            LogEntryFactory.Return(this); // Return ourselves to the pool.
-        }
-
-        public bool TryReset()
-        {
-            _logAction = null;
-            Logger = null;
-            Level = default;
-            Message = null;
-            Exception = null;
-            Args = null;
-            return true;
         }
     }
 }
