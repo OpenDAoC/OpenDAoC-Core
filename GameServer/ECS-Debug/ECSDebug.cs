@@ -15,7 +15,6 @@ namespace ECS.Debug
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private const string SERVICE_NAME = nameof(Diagnostics);
         private static StreamWriter _perfStreamWriter;
         private static bool _streamWriterInitialized;
         private static readonly Lock _gameEventMgrNotifyLock = new();
@@ -59,7 +58,6 @@ namespace ECS.Debug
 
         public static void Tick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
             ReportPerfCounters();
 
             if (_gameEventMgrNotifyProfilingEnabled)

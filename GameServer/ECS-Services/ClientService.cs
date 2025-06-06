@@ -15,6 +15,8 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(ClientService);
+        private const string SERVICE_NAME_BEGIN = $"{SERVICE_NAME}_Begin";
+        private const string SERVICE_NAME_END = $"{SERVICE_NAME}_End";
         private const int PING_TIMEOUT = 60000;
         private const int HARD_TIMEOUT = 150000;
         private const int STATIC_OBJECT_UPDATE_MIN_DISTANCE = 4000;
@@ -31,8 +33,8 @@ namespace DOL.GS
 
         public static void BeginTick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            GameLoop.CurrentServiceTick = SERVICE_NAME_BEGIN;
+            Diagnostics.StartPerfCounter(SERVICE_NAME_BEGIN);
 
             using (_lock)
             {
@@ -41,19 +43,19 @@ namespace DOL.GS
             }
 
             GameLoop.ExecuteWork(_lastValidIndex + 1, BeginTickInternal);
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
+            Diagnostics.StopPerfCounter(SERVICE_NAME_BEGIN);
         }
 
         public static void EndTick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            GameLoop.CurrentServiceTick = SERVICE_NAME_END;
+            Diagnostics.StartPerfCounter(SERVICE_NAME_END);
             GameLoop.ExecuteWork(_lastValidIndex + 1, EndTickInternal);
 
             if (Diagnostics.CheckEntityCounts)
                 Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _clients.Count);
 
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
+            Diagnostics.StopPerfCounter(SERVICE_NAME_END);
         }
 
         private static void BeginTickInternal(int index)
@@ -102,7 +104,7 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, client.Player);
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME_BEGIN, client, client.Player);
             }
         }
 
@@ -133,7 +135,7 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                ServiceUtils.HandleServiceException(e, SERVICE_NAME, client, client.Player);
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME_END, client, client.Player);
             }
         }
 
@@ -144,7 +146,7 @@ namespace DOL.GS
             long stopTick = GameLoop.GetCurrentTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {SERVICE_NAME}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+                log.Warn($"Long {SERVICE_NAME_BEGIN}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
         }
 
         private static void Send(GameClient client)
@@ -154,7 +156,7 @@ namespace DOL.GS
             long stopTick = GameLoop.GetCurrentTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {SERVICE_NAME}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+                log.Warn($"Long {SERVICE_NAME_END}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
         }
 
         public static void OnClientConnect(GameClient client)
@@ -748,7 +750,7 @@ namespace DOL.GS
             long stopTick = GameLoop.GetCurrentTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {SERVICE_NAME}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                log.Warn($"Long {SERVICE_NAME_BEGIN}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
         }
 
         private static void UpdateNpcs(GamePlayer player)

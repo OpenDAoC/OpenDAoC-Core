@@ -92,6 +92,11 @@ namespace DOL.GS
             return _threadPool.GetForTick(poolKey, initializer);
         }
 
+        public static void PrepareForNextTick()
+        {
+            _threadPool.PrepareForNextTick();
+        }
+
         private static void Run()
         {
             if (Environment.ProcessorCount == 1)
@@ -138,7 +143,7 @@ namespace DOL.GS
 
             static void TickServices()
             {
-                ECS.Debug.Diagnostics.StartPerfCounter(THREAD_NAME);
+                ECS.Debug.Diagnostics.StartPerfCounter(nameof(GameLoop));
 
                 GameLoopService.BeginTick();
                 TimerService.Tick();
@@ -155,11 +160,9 @@ namespace DOL.GS
                 DailyQuestService.Tick();
                 WeeklyQuestService.Tick();
                 GameLoopService.EndTick();
-
-                _threadPool.PrepareForNextTick();
+                CurrentServiceTick = string.Empty;
 
                 ECS.Debug.Diagnostics.Tick();
-                CurrentServiceTick = string.Empty;
                 ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
             }
 

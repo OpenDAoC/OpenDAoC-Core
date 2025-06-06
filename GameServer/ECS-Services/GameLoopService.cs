@@ -10,6 +10,8 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(GameLoopService);
+        private const string SERVICE_NAME_BEGIN = $"{SERVICE_NAME}_Begin";
+        private const string SERVICE_NAME_END = $"{SERVICE_NAME}_End";
 
         private static int _preTickActionCount;
         private static int _postTickActionCount;
@@ -18,56 +20,57 @@ namespace DOL.GS
 
         public static void BeginTick()
         {
-            if (Volatile.Read(ref _preTickActionCount) == 0)
-                return;
+            GameLoop.CurrentServiceTick = SERVICE_NAME_BEGIN;
+            Diagnostics.StartPerfCounter(SERVICE_NAME_BEGIN);
 
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-            GameLoop.ExecuteWork(Interlocked.Exchange(ref _preTickActionCount, 0), static _ =>
+            if (Volatile.Read(ref _preTickActionCount) > 0)
             {
-                if (_preTickActions.TryDequeue(out IPostedAction result))
+                GameLoop.ExecuteWork(Interlocked.Exchange(ref _preTickActionCount, 0), static _ =>
                 {
-                    try
+                    if (_preTickActions.TryDequeue(out IPostedAction result))
                     {
-                        result.Invoke();
+                        try
+                        {
+                            result.Invoke();
+                        }
+                        catch (Exception e)
+                        {
+                            if (log.IsErrorEnabled)
+                                log.Error($"Critical error encountered in {SERVICE_NAME_BEGIN}: {e}");
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        if (log.IsErrorEnabled)
-                            log.Error($"Critical error encountered in {SERVICE_NAME}: {e}");
-                    }
-                }
-            });
+                });
+            }
 
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
+            GameLoop.PrepareForNextTick();
+            Diagnostics.StopPerfCounter(SERVICE_NAME_BEGIN);
         }
 
         public static void EndTick()
         {
-            if (Volatile.Read(ref _postTickActionCount) == 0)
-                return;
+            GameLoop.CurrentServiceTick = SERVICE_NAME_END;
+            Diagnostics.StartPerfCounter(SERVICE_NAME_END);
 
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-            GameLoop.ExecuteWork(Interlocked.Exchange(ref _postTickActionCount, 0), static _ =>
+            if (Volatile.Read(ref _postTickActionCount) > 0)
             {
-                if (_postTickActions.TryDequeue(out IPostedAction result))
+                GameLoop.ExecuteWork(Interlocked.Exchange(ref _postTickActionCount, 0), static _ =>
                 {
-                    try
+                    if (_postTickActions.TryDequeue(out IPostedAction result))
                     {
-                        result.Invoke();
+                        try
+                        {
+                            result.Invoke();
+                        }
+                        catch (Exception e)
+                        {
+                            if (log.IsErrorEnabled)
+                                log.Error($"Critical error encountered in {SERVICE_NAME_END}: {e}");
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        if (log.IsErrorEnabled)
-                            log.Error($"Critical error encountered in {SERVICE_NAME}: {e}");
-                    }
-                }
-            });
+                });
+            }
 
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
+            Diagnostics.StopPerfCounter(SERVICE_NAME_END);
         }
 
         public static void PostBeforeTick<TState>(Action<TState> action, TState state)
