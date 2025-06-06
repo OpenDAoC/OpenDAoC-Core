@@ -1,10 +1,55 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using ECS.Debug;
+using System.Reflection;
+using System.Threading;
 
 namespace DOL.GS
 {
     public static class EffectListService
     {
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private const string SERVICE_NAME = nameof(EffectListService);
+        private static List<EffectListComponent> _list;
+        private static int _entityCount;
+
+        public static void Tick()
+        {
+            GameLoop.CurrentServiceTick = SERVICE_NAME;
+            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            _list = ServiceObjectStore.UpdateAndGetAll<EffectListComponent>(ServiceObjectType.EffectListComponent, out int lastValidIndex);
+            GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
+
+            if (Diagnostics.CheckEntityCounts)
+                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
+
+            Diagnostics.StopPerfCounter(SERVICE_NAME);
+        }
+
+        private static void TickInternal(int index)
+        {
+            EffectListComponent effectListComponent = null;
+
+            try
+            {
+                if (Diagnostics.CheckEntityCounts)
+                    Interlocked.Increment(ref _entityCount);
+
+                effectListComponent = _list[index];
+                long startTick = GameLoop.GetCurrentTime();
+                effectListComponent.Tick();
+                long stopTick = GameLoop.GetCurrentTime();
+
+                if (stopTick - startTick > Diagnostics.LongTickThreshold)
+                    log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for: {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+            }
+            catch (Exception e)
+            {
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME, effectListComponent, effectListComponent.Owner);
+            }
+        }
+
         public static ECSGameEffect GetEffectOnTarget(GameLiving target, eEffect effectType, eSpellType spellType = eSpellType.None)
         {
             if (spellType is eSpellType.None)

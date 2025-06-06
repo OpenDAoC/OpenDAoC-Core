@@ -7,11 +7,10 @@ using System.Threading;
 using DOL.AI.Brain;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
-using ECS.Debug;
 
 namespace DOL.GS
 {
-    public class EffectListComponent
+    public class EffectListComponent : IServiceObject
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -35,6 +34,7 @@ namespace DOL.GS
 
         public GameLiving Owner { get; }
         public int UsedConcentration => Volatile.Read(ref _usedConcentration);
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.EffectListComponent);
 
         public EffectListComponent(GameLiving owner)
         {
@@ -43,8 +43,6 @@ namespace DOL.GS
 
         public void Tick()
         {
-            long startTick = GameLoop.GetCurrentTime();
-
             if (Volatile.Read(ref _pendingEffectCount) > 0)
             {
                 Interlocked.Exchange(ref _pendingEffectCount, 0);
@@ -68,18 +66,17 @@ namespace DOL.GS
                     }
                 }
             }
+            else
+                ServiceObjectStore.Remove(this);
 
             SendPlayerUpdates();
-            long stopTick = GameLoop.GetCurrentTime();
-
-            if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {nameof(EffectListComponent)}.{nameof(Tick)} for {Owner.Name}({Owner.ObjectID}) Time: {stopTick - startTick}ms");
         }
 
         public void AddPendingEffect(ECSGameEffect effect)
         {
             Interlocked.Increment(ref _pendingEffectCount);
             _pendingEffects.Enqueue(effect);
+            ServiceObjectStore.Add(this);
         }
 
         public void StopConcentrationEffect(int index, bool playerCancelled)
@@ -268,6 +265,7 @@ namespace DOL.GS
             lock (_playerUpdatesLock)
             {
                 _requestedPlayerUpdates |= playerUpdate;
+                ServiceObjectStore.Add(this);
             }
         }
 
