@@ -53,7 +53,7 @@ namespace DOL.GS
 
             if (_effects.Count != 0)
             {
-                if (!Owner.IsAlive)
+                if (Owner.Health <= 0) // Don't check `IsAlive`, since it returns false during region change.
                     CancelAll();
                 else
                 {
