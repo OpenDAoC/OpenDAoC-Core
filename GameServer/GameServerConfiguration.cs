@@ -215,7 +215,6 @@ namespace DOL.GS
             m_dbConnectionString = root["Server"]["DBConnectionString"].GetString(m_dbConnectionString);
             m_autoSave = root["Server"]["DBAutosave"].GetBoolean(m_autoSave);
             m_saveInterval = root["Server"]["DBAutosaveInterval"].GetInt(m_saveInterval);
-            m_maxClientCount = root["Server"]["MaxClientCount"].GetInt(m_maxClientCount);
 
             // Parse UDP out endpoint
             IPAddress address = null;
@@ -388,7 +387,6 @@ namespace DOL.GS
 			                                     Path.Combine(m_rootDirectory, "dol.sqlite3.db"));
 			m_autoSave = true;
 			m_saveInterval = 10;
-			m_maxClientCount = 5000;
         }
 
 		#endregion
@@ -571,15 +569,6 @@ namespace DOL.GS
 		{
 			get { return m_saveInterval; }
 			set { m_saveInterval = value; }
-		}
-
-		/// <summary>
-		/// Gets or sets the max cout of clients allowed
-		/// </summary>
-		public int MaxClientCount
-		{
-			get { return m_maxClientCount; }
-			set { m_maxClientCount = value; }
 		}
 	}
 }

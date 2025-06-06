@@ -427,9 +427,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 					//Save the account table
 					client.Account = playerAccount;
-					
-					// create session ID here to disable double login bug
-					if (ClientService.ClientCount > GameServer.Instance.Configuration.MaxClientCount)
+
+					if (ClientService.ClientCount > Properties.MAX_PLAYERS)
 					{
 						if (Log.IsInfoEnabled)
 							Log.InfoFormat("Too many clients connected, denied login to " + playerAccount.Name);
