@@ -162,8 +162,8 @@ namespace DOL.GS
                 GameLoopService.EndTick();
                 CurrentServiceTick = string.Empty;
 
+                ECS.Debug.Diagnostics.StopPerfCounter(nameof(GameLoop));
                 ECS.Debug.Diagnostics.Tick();
-                ECS.Debug.Diagnostics.StopPerfCounter(THREAD_NAME);
             }
 
             void Sleep()
