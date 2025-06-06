@@ -14,10 +14,10 @@ namespace DOL.GS
         {
             { ServiceObjectType.Client, new ServiceObjectArray<GameClient>(ServerProperties.Properties.MAX_PLAYERS) },
             { ServiceObjectType.Brain, new ServiceObjectArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
-            { ServiceObjectType.MovementComponent, new ServiceObjectArray<MovementComponent>(1250) },
             { ServiceObjectType.AttackComponent, new ServiceObjectArray<AttackComponent>(1250) },
             { ServiceObjectType.CastingComponent, new ServiceObjectArray<CastingComponent>(1250) },
             { ServiceObjectType.EffectListComponent, new ServiceObjectArray<EffectListComponent>(1250) },
+            { ServiceObjectType.MovementComponent, new ServiceObjectArray<MovementComponent>(1250) },
             { ServiceObjectType.CraftComponent, new ServiceObjectArray<CraftComponent>(100) },
             { ServiceObjectType.ObjectChangingSubZone, new ServiceObjectArray<ObjectChangingSubZone>(ServerProperties.Properties.MAX_ENTITIES) },
             { ServiceObjectType.LivingBeingKilled, new ServiceObjectArray<LivingBeingKilled>(200) },
