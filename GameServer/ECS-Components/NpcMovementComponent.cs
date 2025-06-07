@@ -84,12 +84,12 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.FOLLOW))
             {
-                if (ServiceUtils.ShouldTickAdjust(ref _nextFollowTick))
+                if (ServiceUtils.ShouldTick(_nextFollowTick))
                 {
                     _followTickInterval = FollowTick();
 
                     if (_followTickInterval != 0)
-                        _nextFollowTick += _followTickInterval;
+                        _nextFollowTick = GameLoop.GameLoopTime + _followTickInterval;
                     else
                         UnsetFlag(MovementState.WALK_TO);
                 }

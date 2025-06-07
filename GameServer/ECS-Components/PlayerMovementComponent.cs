@@ -12,7 +12,6 @@ namespace DOL.GS
         private const int BROADCAST_MINIMUM_INTERVAL = 200; // Clients send a position or heading update packet every 200ms at most (when moving or rotating).
         private const int SOFT_LINK_DEATH_THRESHOLD = 5000; // How long does it take without receiving a packet for a client to enter the soft link death state.
 
-        private long _lastPositionUpdatePacketReceivedTime;
         private long _nextPositionBroadcast;
         private bool _needBroadcastPosition;
 
@@ -26,7 +25,7 @@ namespace DOL.GS
 
         public new GamePlayer Owner { get; }
         public int MaxSpeedPercent => MaxSpeed * 100 / GamePlayer.PLAYER_BASE_SPEED;
-        public ref long LastPositionUpdatePacketReceivedTime => ref _lastPositionUpdatePacketReceivedTime;
+        public long LastPositionUpdatePacketReceivedTime { get; set; }
 
         public PlayerMovementComponent(GameLiving owner) : base(owner)
         {
@@ -38,7 +37,7 @@ namespace DOL.GS
         {
             if (!Owner.IsLinkDeathTimerRunning)
             {
-                if (ServiceUtils.ShouldTickNoEarly(_lastPositionUpdatePacketReceivedTime + SOFT_LINK_DEATH_THRESHOLD))
+                if (ServiceUtils.ShouldTick(LastPositionUpdatePacketReceivedTime + SOFT_LINK_DEATH_THRESHOLD))
                 {
                     if (log.IsInfoEnabled)
                         log.Info($"Position update timeout on client. Calling link death. ({Owner.Client})");
@@ -56,16 +55,16 @@ namespace DOL.GS
                 }
 
                 // Position and heading broadcasts are mutually exclusive.
-                if (_needBroadcastPosition && ServiceUtils.ShouldTickAdjust(ref _nextPositionBroadcast))
+                if (_needBroadcastPosition && ServiceUtils.ShouldTick(_nextPositionBroadcast))
                 {
                     BroadcastPosition();
-                    _nextPositionBroadcast += BROADCAST_MINIMUM_INTERVAL;
+                    _nextPositionBroadcast = GameLoop.GameLoopTime + BROADCAST_MINIMUM_INTERVAL;
                     _needBroadcastPosition = false;
                 }
-                else if (_needBroadcastHeading && ServiceUtils.ShouldTickAdjust(ref _nextHeadingBroadcast))
+                else if (_needBroadcastHeading && ServiceUtils.ShouldTick(_nextHeadingBroadcast))
                 {
                     BroadcastHeading();
-                    _nextHeadingBroadcast += BROADCAST_MINIMUM_INTERVAL;
+                    _nextHeadingBroadcast = GameLoop.GameLoopTime + BROADCAST_MINIMUM_INTERVAL;
                     _needBroadcastHeading = false;
                 }
             }
@@ -87,8 +86,10 @@ namespace DOL.GS
         {
             _needBroadcastPosition = true;
             _validateMovementOnNextTick = true;
-            _lastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
-            Owner.LastPlayerActivityTime = GameLoop.GameLoopTime;
+            LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
+
+            if (IsMoving)
+                Owner.LastPlayerActivityTime = GameLoop.GameLoopTime;
 
             if (Owner.IsEncumbered)
             {

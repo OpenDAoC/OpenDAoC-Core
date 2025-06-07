@@ -849,17 +849,9 @@ namespace DOL.GS
                             player.Out.SendInterruptAnimation(owner);
                     }
                 }
-
-                RangeAttackComponent rangeAttackComponent = owner.rangeAttackComponent;
-                rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
-
-                if (rangeAttackComponent.RangedAttackState is not eRangedAttackState.None)
-                {
-                    attackAction.OnRangedAttackStop();
-                    rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
-                }
             }
 
+            attackAction.OnStopAttack();
             bool oldAttackState = AttackState;
             AttackState = false;
             owner.CancelEngageEffect();

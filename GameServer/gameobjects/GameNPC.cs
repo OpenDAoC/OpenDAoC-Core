@@ -3350,12 +3350,12 @@ namespace DOL.GS
 		public bool CanCastInstantMiscSpells => InstantMiscSpells != null && InstantMiscSpells.Count > 0;
 
 		private long _nextInstantHarmfulSpell;
-		public virtual bool IsInstantHarmfulSpellCastingLocked => !ServiceUtils.ShouldTickAdjust(ref _nextInstantHarmfulSpell);
+		public virtual bool IsInstantHarmfulSpellCastingLocked => !ServiceUtils.ShouldTick(_nextInstantHarmfulSpell);
 
 		public virtual void ApplyInstantHarmfulSpellDelay()
 		{
 			// Delay the next spell by 1~6 seconds (triangular distribution).
-			_nextInstantHarmfulSpell += 1000 + Util.Random(2500) + Util.Random(2500);;
+			_nextInstantHarmfulSpell = GameLoop.GameLoopTime + 1000 + Util.Random(2500) + Util.Random(2500);
 		}
 
 		/// <summary>

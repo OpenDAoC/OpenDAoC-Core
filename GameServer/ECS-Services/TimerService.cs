@@ -57,11 +57,11 @@ namespace DOL.GS
 
                 timer = _list[index];
 
-                if (ServiceUtils.ShouldTickAdjust(ref timer.NextTick))
+                if (ServiceUtils.ShouldTick(timer.NextTick))
                 {
-                    long startTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoop.GetRealTime();
                     timer.Tick();
-                    long stopTick = GameLoop.GetCurrentTime();
+                    long stopTick = GameLoop.GetRealTime();
 
                     if (stopTick - startTick > Diagnostics.LongTickThreshold)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for Timer Callback: {timer.CallbackInfo?.DeclaringType}:{timer.CallbackInfo?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
@@ -113,15 +113,13 @@ namespace DOL.GS
     {
         public delegate int ECSTimerCallback(ECSGameTimer timer);
 
-        private long _nextTick;
-
         public GameObject Owner { get; }
         public ECSTimerCallback Callback { private get; set; }
         public MethodInfo CallbackInfo => Callback?.GetMethodInfo();
         public int Interval { get; set; }
-        public ref long NextTick => ref _nextTick;
+        public long NextTick { get; protected set; }
         public bool IsAlive { get; private set; }
-        public int TimeUntilElapsed => (int) (_nextTick - GameLoop.GameLoopTime);
+        public int TimeUntilElapsed => (int) (NextTick - GameLoop.GameLoopTime);
         public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Timer);
         private PropertyCollection _properties;
 
@@ -153,7 +151,7 @@ namespace DOL.GS
         public void Start(int interval)
         {
             Interval = interval;
-            _nextTick = GameLoop.GameLoopTime + interval;
+            NextTick = GameLoop.GameLoopTime + interval;
 
             if (ServiceObjectStore.Add(this))
                 IsAlive = true;
@@ -176,7 +174,7 @@ namespace DOL.GS
                 return;
             }
 
-            _nextTick += Interval;
+            NextTick += Interval;
         }
 
         public PropertyCollection Properties

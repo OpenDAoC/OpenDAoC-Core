@@ -191,9 +191,9 @@ namespace DOL.GS.PacketHandler
 
             try
             {
-                long startTick = GameLoop.GetCurrentTime();
+                long startTick = GameLoop.GetRealTime();
                 packetHandler.HandlePacket(_client, packet);
-                long stopTick = GameLoop.GetCurrentTime();
+                long stopTick = GameLoop.GetRealTime();
 
                 if (log.IsWarnEnabled)
                 {

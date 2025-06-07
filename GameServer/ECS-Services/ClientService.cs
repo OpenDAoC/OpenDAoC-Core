@@ -17,7 +17,6 @@ namespace DOL.GS
         private const string SERVICE_NAME = nameof(ClientService);
         private const string SERVICE_NAME_BEGIN = $"{SERVICE_NAME}_Begin";
         private const string SERVICE_NAME_END = $"{SERVICE_NAME}_End";
-        private const int PING_TIMEOUT = 60000;
         private const int HARD_TIMEOUT = 150000;
         private const int STATIC_OBJECT_UPDATE_MIN_DISTANCE = 4000;
 
@@ -74,27 +73,30 @@ namespace DOL.GS
                     case GameClient.eClientState.WorldEnter:
                     {
                         Receive(client);
-                        CheckHardTimeout(client);
+                        CheckPingTimeout(client);
                         break;
                     }
                     case GameClient.eClientState.Playing:
                     {
                         Receive(client);
-                        CheckHardTimeout(client);
+                        CheckPingTimeout(client);
 
                         GamePlayer player = client.Player;
 
                         if (player == null)
                             break;
 
-                        CheckInGameTimeout(client);
+                        CheckInGameActivityTimeout(client);
 
                         // The client state might have been modified by an inbound packet.
                         if (client.ClientState is not GameClient.eClientState.Playing || player.ObjectState is not GameObject.eObjectState.Active)
                             break;
 
                         if (ServiceUtils.ShouldTick(player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL))
+                        {
                             UpdateWorld(player);
+                            player.LastWorldUpdate = GameLoop.GameLoopTime + Properties.WORLD_PLAYER_UPDATE_INTERVAL;
+                        }
 
                         break;
                     }
@@ -141,9 +143,9 @@ namespace DOL.GS
 
         private static void Receive(GameClient client)
         {
-            long startTick = GameLoop.GetCurrentTime();
+            long startTick = GameLoop.GetRealTime();
             client.Receive();
-            long stopTick = GameLoop.GetCurrentTime();
+            long stopTick = GameLoop.GetRealTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {SERVICE_NAME_BEGIN}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
@@ -151,9 +153,9 @@ namespace DOL.GS
 
         private static void Send(GameClient client)
         {
-            long startTick = GameLoop.GetCurrentTime();
+            long startTick = GameLoop.GetRealTime();
             client.PacketProcessor.SendPendingPackets();
-            long stopTick = GameLoop.GetCurrentTime();
+            long stopTick = GameLoop.GetRealTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {SERVICE_NAME_END}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
@@ -703,9 +705,9 @@ namespace DOL.GS
                 CreateObjectForPlayer(player, gameObject);
         }
 
-        private static void CheckHardTimeout(GameClient client)
+        private static void CheckPingTimeout(GameClient client)
         {
-            if (ServiceUtils.ShouldTickNoEarly(client.PingTime + HARD_TIMEOUT))
+            if (ServiceUtils.ShouldTick(client.PingTime + HARD_TIMEOUT))
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Hard timeout on client. Disconnecting. ({client})");
@@ -714,10 +716,10 @@ namespace DOL.GS
             }
         }
 
-        private static void CheckInGameTimeout(GameClient client)
+        private static void CheckInGameActivityTimeout(GameClient client)
         {
             if (Properties.KICK_IDLE_PLAYER_STATUS &&
-                ServiceUtils.ShouldTickNoEarly(client.Player.LastPlayerActivityTime + Properties.KICK_IDLE_PLAYER_TIME * 60000) &&
+                ServiceUtils.ShouldTick(client.Player.LastPlayerActivityTime + Properties.KICK_IDLE_PLAYER_TIME * 60000) &&
                 client.Account.PrivLevel == 1)
             {
                 if (log.IsInfoEnabled)
@@ -730,13 +732,12 @@ namespace DOL.GS
         private static void UpdateWorld(GamePlayer player)
         {
             // Players aren't updated here on purpose.
-            long startTick = GameLoop.GetCurrentTime();
+            long startTick = GameLoop.GetRealTime();
             UpdateNpcs(player);
             UpdateItems(player);
             UpdateDoors(player);
             UpdateHouses(player);
-            player.LastWorldUpdate = GameLoop.GameLoopTime;
-            long stopTick = GameLoop.GetCurrentTime();
+            long stopTick = GameLoop.GetRealTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
                 log.Warn($"Long {SERVICE_NAME_BEGIN}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");

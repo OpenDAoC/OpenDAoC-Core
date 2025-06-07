@@ -11,48 +11,13 @@ namespace DOL.GS
 
         public static bool ShouldTick(long tickTime)
         {
-            return GetDelta(tickTime) - HalfTickRate <= 0;
-        }
-
-        public static bool ShouldTickNoEarly(long tickTime)
-        {
-            return GetDelta(tickTime) <= 0;
-        }
-
-        public static bool ShouldTickAdjust(ref long tickTime)
-        {
-            long delta = GetDelta(tickTime);
-
-            // Consider ticks to be late if the game loop can't keep up with its tick rate.
-            // This is used to adjust services' tick time, allowing them to catch up.
-            if (delta < -GameLoop.TickRate)
-            {
-                tickTime = GameLoop.GameLoopTime;
-                return true;
-            }
-
-            return delta - HalfTickRate <= 0;
-        }
-
-        public static bool ShouldTickAdjustNoEarly(ref long tickTime)
-        {
-            long delta = GetDelta(tickTime);
-
-            // Consider ticks to be late if the game loop can't keep up with its tick rate.
-            // This is used to adjust services' tick time, allowing them to catch up.
-            if (delta < -GameLoop.TickRate)
-            {
-                tickTime = GameLoop.GameLoopTime;
-                return true;
-            }
-
-            return delta <= 0;
-        }
-
-        private static long GetDelta(long tickTime)
-        {
-            // Positive if we're checking early, negative otherwise.
-            return tickTime - GameLoop.GameLoopTime;
+            // This method checks if the current game loop time is within the range of the tick time.
+            // It allows for a half-tick rate tolerance to ensure that ticks are processed the closest to the intended time.
+            // If this is a recurring tick, the tick time will need to be updated by the service that uses it. There are two ways to do this:
+            // 1. Increment the tick time by the tick interval (prevents drifting).
+            // 2. Set the tick time to the current game loop time then add the tick interval (prevents issues if tick time isn't initialized properly).
+            // For most services, drifting is inconsequential, so the second option is preferred.
+            return tickTime - GameLoop.GameLoopTime - HalfTickRate <= 0;
         }
 
         public static void HandleServiceException<T>(Exception exception, string serviceName, T entity, GameObject entityOwner) where T : class, IServiceObject

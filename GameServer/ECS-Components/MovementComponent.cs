@@ -1,11 +1,9 @@
-﻿using System.Reflection;
-using System.Threading;
+﻿using System.Threading;
 
 namespace DOL.GS
 {
     public class MovementComponent : IServiceObject
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 500;
 
         private long _nextSubZoneRelocationCheckTick;
@@ -57,9 +55,9 @@ namespace DOL.GS
         protected virtual void TickInternal()
         {
             // Only check for subzone relocation if we moved.
-            if (!Owner.IsSamePosition(_positionDuringLastSubZoneRelocationCheck) && ServiceUtils.ShouldTickAdjust(ref _nextSubZoneRelocationCheckTick))
+            if (!Owner.IsSamePosition(_positionDuringLastSubZoneRelocationCheck) && ServiceUtils.ShouldTick(_nextSubZoneRelocationCheckTick))
             {
-                _nextSubZoneRelocationCheckTick += SUBZONE_RELOCATION_CHECK_INTERVAL;
+                _nextSubZoneRelocationCheckTick = GameLoop.GameLoopTime + SUBZONE_RELOCATION_CHECK_INTERVAL;
                 _positionDuringLastSubZoneRelocationCheck = new Point2D(Owner.X, Owner.Y);
                 Owner.SubZoneObject.CheckForRelocation();
             }

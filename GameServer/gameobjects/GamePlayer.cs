@@ -8861,18 +8861,11 @@ namespace DOL.GS
             set
             {
                 base.Heading = value;
-                if (DBCharacter != null) DBCharacter.Direction = value;
 
-                if (attackComponent.AttackState && ActiveWeaponSlot != eActiveWeaponSlot.Distance)
-                {
-                    AttackData ad = attackComponent.attackAction.LastAttackData;
+                if (DBCharacter != null)
+                    DBCharacter.Direction = value;
 
-                    if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
-                    {
-                        if (ad.Target != null && IsObjectInFront(ad.Target, 120) && IsWithinRadius(ad.Target, attackComponent.AttackRange))
-                            attackComponent.attackAction.OnEnterMeleeRange();
-                    }
-                }
+                attackComponent.attackAction.OnHeadingUpdate();
             }
         }
 
@@ -9245,7 +9238,7 @@ namespace DOL.GS
                     if (ad != null && ad.IsMeleeAttack && (ad.AttackResult == eAttackResult.TargetNotVisible || ad.AttackResult == eAttackResult.OutOfRange))
                     {
                         if (ad.Target != null && IsObjectInFront(ad.Target, 120) && IsWithinRadius(ad.Target, attackComponent.AttackRange))
-                            attackComponent.attackAction.OnEnterMeleeRange();
+                            attackComponent.attackAction.OnHeadingUpdate();
                     }
                 }
             }

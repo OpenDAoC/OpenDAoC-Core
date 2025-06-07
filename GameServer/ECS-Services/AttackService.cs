@@ -36,9 +36,9 @@ namespace DOL.GS
                     Interlocked.Increment(ref _entityCount);
 
                 attackComponent = _list[index];
-                long startTick = GameLoop.GetCurrentTime();
+                long startTick = GameLoop.GetRealTime();
                 attackComponent.Tick();
-                long stopTick = GameLoop.GetCurrentTime();
+                long stopTick = GameLoop.GetRealTime();
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
                     log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {attackComponent.owner.Name}({attackComponent.owner.ObjectID}) Time: {stopTick - startTick}ms");

@@ -1219,7 +1219,7 @@ namespace DOL.GS
 
 			try
 			{
-				long startTick = GameLoop.GetCurrentTime();
+				long startTick = GameLoop.GetRealTime();
 
 				if (log.IsInfoEnabled)
 					log.Info("Saving database...");
@@ -1244,7 +1244,7 @@ namespace DOL.GS
 					Save(AppealMgr.Save, ref appeals);
 				}
 
-				startTick = GameLoop.GetCurrentTime() - startTick;
+				startTick = GameLoop.GetRealTime() - startTick;
 
 				if (log.IsInfoEnabled)
 				{
@@ -1275,9 +1275,9 @@ namespace DOL.GS
 
 			static void Save(Func<int> save, ref (int count, long elapsed) result)
 			{
-				result.elapsed = GameLoop.GetCurrentTime();
+				result.elapsed = GameLoop.GetRealTime();
 				result.count = save();
-				result.elapsed = GameLoop.GetCurrentTime() - result.elapsed;
+				result.elapsed = GameLoop.GetRealTime() - result.elapsed;
 			}
 		}
 

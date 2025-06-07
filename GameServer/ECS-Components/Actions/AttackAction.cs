@@ -21,6 +21,7 @@ namespace DOL.GS
         private GameLiving _owner;
         private long _nextMeleeTick;
         private long _nextRangedTick;
+        private bool _firstTick = true;
 
         // Set to current time when a round doesn't result in an attack. Used to prevent combat log spam and kept until reset in AttackComponent.SendAttackingCombatMessages().
         public long RoundWithNoAttackTime { get; set; }
@@ -32,8 +33,6 @@ namespace DOL.GS
         protected AttackAction(GameLiving owner)
         {
             _owner = owner;
-            _nextMeleeTick = GameLoop.GameLoopTime;
-            _nextRangedTick = GameLoop.GameLoopTime;
         }
 
         public static AttackAction Create(GameLiving living)
@@ -48,6 +47,13 @@ namespace DOL.GS
 
         public bool Tick()
         {
+            if (_firstTick)
+            {
+                _nextMeleeTick = Math.Max(_nextMeleeTick, GameLoop.GameLoopTime);
+                _nextRangedTick = Math.Max(_nextRangedTick, GameLoop.GameLoopTime);
+                _firstTick = false;
+            }
+
             if (!ShouldTick())
                 return true;
 
@@ -103,17 +109,35 @@ namespace DOL.GS
                 _nextRangedTick += _interval;
         }
 
-        public void OnRangedAttackStop()
+        public void OnStopAttack()
         {
+            if (_owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
+                return;
+
+            RangeAttackComponent rangeAttackComponent = _owner.rangeAttackComponent;
+            rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
+
+            if (rangeAttackComponent.RangedAttackState is eRangedAttackState.None)
+                return;
+
             if (GameLoop.GameLoopTime - _nextMeleeTick > MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK)
                 _nextMeleeTick = GameLoop.GameLoopTime + MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK;
 
-            _nextRangedTick = GameLoop.GameLoopTime;
+            rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
         }
 
-        public void OnEnterMeleeRange()
+        public void OnHeadingUpdate()
         {
-            _nextMeleeTick = GameLoop.GameLoopTime;
+            if (!AttackComponent.AttackState || _owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
+                return;
+
+            AttackData ad = LastAttackData;
+
+            if (ad == null || !ad.IsMeleeAttack || (ad.AttackResult is not eAttackResult.TargetNotVisible and not eAttackResult.OutOfRange))
+                return;
+
+            if (ad.Target != null && _owner.IsObjectInFront(ad.Target, 120) && _owner.IsWithinRadius(ad.Target, AttackComponent.AttackRange))
+                _firstTick = true;
         }
 
         public virtual bool CheckInterruptTimer()
@@ -138,8 +162,8 @@ namespace DOL.GS
         private bool ShouldTick()
         {
             return _owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance
-                ? ServiceUtils.ShouldTickAdjust(ref _nextMeleeTick)
-                : ServiceUtils.ShouldTickAdjust(ref _nextRangedTick);
+                ? ServiceUtils.ShouldTick(_nextMeleeTick)
+                : ServiceUtils.ShouldTick(_nextRangedTick);
         }
 
         protected virtual bool CanPerformAction()
@@ -400,6 +424,7 @@ namespace DOL.GS
         {
             LastAttackData = null;
             _target = null;
+            _firstTick = true;
         }
     }
 }

@@ -39,7 +39,7 @@ namespace DOL.GS
                 brain = _list[index];
                 GameNPC npc = brain.Body;
 
-                if (ServiceUtils.ShouldTickAdjust(ref brain.NextThinkTick))
+                if (ServiceUtils.ShouldTick(brain.NextThinkTick))
                 {
                     if (!brain.IsActive)
                     {
@@ -47,14 +47,14 @@ namespace DOL.GS
                         return;
                     }
 
-                    long startTick = GameLoop.GetCurrentTime();
+                    long startTick = GameLoop.GetRealTime();
                     brain.Think();
-                    long stopTick = GameLoop.GetCurrentTime();
+                    long stopTick = GameLoop.GetRealTime();
 
                     if (stopTick - startTick > Diagnostics.LongTickThreshold)
                         log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
 
-                    brain.NextThinkTick += brain.ThinkInterval;
+                    brain.NextThinkTick = GameLoop.GameLoopTime + brain.ThinkInterval;
                 }
             }
             catch (Exception e)

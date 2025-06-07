@@ -10,14 +10,12 @@ namespace DOL.AI
     /// </summary>
     public abstract class ABrain : IServiceObject
     {
-        private long _nextThinkTick;
-
         public FSM FSM { get; set; }
         public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Brain);
         public virtual GameNPC Body { get; set; }
-        public virtual bool IsActive => Body != null && Body.IsAlive && Body.ObjectState == GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
         public virtual int ThinkInterval { get; set; } = 2500;
-        public virtual ref long NextThinkTick => ref _nextThinkTick;
+        public bool IsActive => Body != null && Body.IsAlive && Body.ObjectState == GameObject.eObjectState.Active && Body.IsVisibleToPlayers;
+        public long NextThinkTick { get; set; }
         protected virtual int ThinkOffsetOnStart => Util.Random(750, 3000);
 
         /// <summary>

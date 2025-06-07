@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace DOL.GS
+namespace DOL.GS 
 {
     public class PlayerMovementMonitor
     {
@@ -23,9 +23,10 @@ namespace DOL.GS
         private long _pausedUntil;                            // Time until which recording is paused after a teleport.
         private long _lastSpeedDecreaseTime;                  // Time when the last speed decrease was recorded, used to handle latency issues.
         private short _previousMaxSpeed;                      // Previous maximum speed of the player, used to determine if speed has decreased.
+        private long _previousTimestamp;                      // Timestamp of the last movement validation, used to adjust time differences between position samples.
 
         // Cached values to avoid recalculating player max speed too often.
-        // This is a workaround the fact that `GamePlayer.MaxSpeed` currently recalculates on every access.
+        // This is a workaround for the fact that `GamePlayer.MaxSpeed` currently recalculates on every access.
         // This assumes that the player's max speed does not change between calls to `RecordPosition` and `ValidateMovement`.
         private short _cachedMaxSpeed;
         private long _cachedMaxSpeedTick;
@@ -37,10 +38,12 @@ namespace DOL.GS
 
         public void RecordPosition()
         {
-            if (_pausedUntil > GameLoop.GameLoopTime)
+            long timestamp = GameLoop.GetRealTime();
+
+            if (_pausedUntil > timestamp)
                 return;
 
-            if (_teleport.Timestamp > 0 && _resetCountersTime <= GameLoop.GameLoopTime)
+            if (_teleport.Timestamp > 0 && _resetCountersTime <= timestamp)
             {
                 _speedHackCount = 0;
                 _teleportCount = 0;
@@ -52,15 +55,15 @@ namespace DOL.GS
             // Detect speed decrease.
             if (_current.MaxSpeed > 0 && currentMaxSpeed < _current.MaxSpeed)
             {
-                _lastSpeedDecreaseTime = GameLoop.GameLoopTime;
+                _lastSpeedDecreaseTime = timestamp;
                 _previousMaxSpeed = _current.MaxSpeed;
             }
 
-            PositionSample sample = new(_player.X, _player.Y, _player.Z, GameLoop.GameLoopTime, currentMaxSpeed);
+            PositionSample sample = new(_player.X, _player.Y, _player.Z, GameLoop.GameLoopTime, timestamp, currentMaxSpeed);
 
-            // Check if this is a duplicate timestamp (same tick).
+            // Check if more than one position sample is being recorded in the same game loop tick.
             // If so, we replace the current sample with the new one.
-            if (_current.Timestamp == GameLoop.GameLoopTime)
+            if (_current.GameLoopTime == GameLoop.GameLoopTime)
                 _current = sample;
             else
             {
@@ -77,16 +80,19 @@ namespace DOL.GS
             if (timeDiff <= 0)
                 return;
 
+            long timestamp = GameLoop.GetRealTime();
+
             // Account for processing delay uncertainty.
             // We don't know when the position update was actually received, only when it was processed by the game loop.
             // However, we know how much time has passed since the last game loop tick, and we can be safe by assuming the previous packet was processed late.
-            // In practice, this means adding the difference between the current game loop time and the previous game loop time to the time difference.
-            timeDiff += GameLoop.GameLoopTime - GameLoop.PreviousGameLoopTime;
+            // In practice, this means adding the difference between the current time and the previous time to the time difference.
+            timeDiff += timestamp - _previousTimestamp;
+            _previousTimestamp = timestamp;
             bool distancedViolationDetected = false;
             long dx = _current.X - _previous.X;
             long dy = _current.Y - _previous.Y;
             long squaredDistance = dx * dx + dy * dy;
-            double allowedMaxSpeed = CalculateAllowedMaxSpeed(_current) + BASE_SPEED_TOLERANCE;
+            double allowedMaxSpeed = CalculateAllowedMaxSpeed(_current, timestamp) + BASE_SPEED_TOLERANCE;
             double allowedMaxDistance = allowedMaxSpeed * timeDiff / 1000.0;
             double allowedMaxDistanceSquared = allowedMaxDistance * allowedMaxDistance;
 
@@ -95,7 +101,7 @@ namespace DOL.GS
 
             if (distancedViolationDetected)
             {
-                _resetCountersTime = GameLoop.GameLoopTime + RESET_COUNTER_DELAY;
+                _resetCountersTime = timestamp + RESET_COUNTER_DELAY;
 
                 // Set the teleport position on the first speed violation.
                 if (_teleport.Timestamp == 0)
@@ -131,15 +137,15 @@ namespace DOL.GS
         {
             _previous = default;
             _current = default;
-            _pausedUntil = GameLoop.GameLoopTime + LATENCY_BUFFER;
+            _pausedUntil = GameLoop.GetRealTime() + LATENCY_BUFFER;
         }
 
-        private double CalculateAllowedMaxSpeed(PositionSample current)
+        private double CalculateAllowedMaxSpeed(PositionSample current, long timestamp)
         {
             double newerSpeed = current.MaxSpeed;
 
             // If within latency buffer after a speed decrease, allow previous max speed.
-            if (_lastSpeedDecreaseTime > 0 && (GameLoop.GameLoopTime - _lastSpeedDecreaseTime) <= LATENCY_BUFFER)
+            if (_lastSpeedDecreaseTime > 0 && (timestamp - _lastSpeedDecreaseTime) <= LATENCY_BUFFER)
                 return Math.Max(_previousMaxSpeed, newerSpeed);
 
             return newerSpeed;
@@ -177,14 +183,14 @@ namespace DOL.GS
 
         private string BuildSpeedHackMessage(string action, double actualDistance, double allowedMaxDistance, double actualSpeed, double allowedMaxSpeed, int teleportCount)
         {
-            return $"Speed hack ({action}):" +
-                   $"CharName={_player.Name}" +
-                   $"Account={_player.Client?.Account?.Name}" +
-                   $"IP={_player.Client?.TcpEndpointAddress}" +
-                   $"Distance={actualDistance:0.##}" +
+            return $"Speed hack ({action}): " +
+                   $"CharName={_player.Name} " +
+                   $"Account={_player.Client?.Account?.Name} " +
+                   $"IP={_player.Client?.TcpEndpointAddress} " +
+                   $"Distance={actualDistance:0.##} " +
                    $"AllowedDistance={allowedMaxDistance:0.##} " +
-                   $"Speed={actualSpeed:0.##}" +
-                   $"AllowedSpeed={allowedMaxSpeed:0.##}" +
+                   $"Speed={actualSpeed:0.##} " +
+                   $"AllowedSpeed={allowedMaxSpeed:0.##} " +
                    $"TeleportCount={teleportCount}";
         }
 
@@ -206,14 +212,16 @@ namespace DOL.GS
             public readonly int X;
             public readonly int Y;
             public readonly int Z;
+            public readonly long GameLoopTime;
             public readonly long Timestamp;
             public readonly short MaxSpeed;
 
-            public PositionSample(int x, int y, int z, long timestamp, short maxSpeed)
+            public PositionSample(int x, int y, int z, long gameLoopTime, long timestamp, short maxSpeed)
             {
                 X = x;
                 Y = y;
                 Z = z;
+                GameLoopTime = gameLoopTime;
                 Timestamp = timestamp;
                 MaxSpeed = maxSpeed;
             }

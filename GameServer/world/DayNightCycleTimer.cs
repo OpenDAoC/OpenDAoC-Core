@@ -54,10 +54,10 @@ namespace DOL.GS
             {
                 UpdateGameTime();
 
-                if (ServiceUtils.ShouldTickAdjust(ref _nextClientResync))
+                if (ServiceUtils.ShouldTick(_nextClientResync))
                 {
                     ResyncClients();
-                    _nextClientResync += CLIENT_RESYNC_INTERVAL;
+                    _nextClientResync = GameLoop.GameLoopTime + CLIENT_RESYNC_INTERVAL;
                 }
             }
 

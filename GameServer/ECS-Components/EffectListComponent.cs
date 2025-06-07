@@ -288,7 +288,7 @@ namespace DOL.GS
 
             static void TickAbilityEffect(ECSGameAbilityEffect abilityEffect)
             {
-                if (abilityEffect.NextTick != 0 && ServiceUtils.ShouldTickAdjust(ref abilityEffect.NextTick))
+                if (abilityEffect.NextTick != 0 && ServiceUtils.ShouldTick(abilityEffect.NextTick))
                 {
                     abilityEffect.OnEffectPulse();
                     abilityEffect.NextTick += abilityEffect.PulseFreq;
@@ -325,7 +325,7 @@ namespace DOL.GS
 
                 static void TickConcentrationEffect(ECSGameSpellEffect spellEffect)
                 {
-                    if (!ServiceUtils.ShouldTickAdjust(ref spellEffect.NextTick))
+                    if (!ServiceUtils.ShouldTick(spellEffect.NextTick))
                         return;
 
                     ISpellHandler spellHandler = spellEffect.SpellHandler;
@@ -388,7 +388,7 @@ namespace DOL.GS
 
                 static void TickPulsingEffect(ECSGameSpellEffect spellEffect, Spell spell, ISpellHandler spellHandler, GameLiving caster)
                 {
-                    if (!ServiceUtils.ShouldTickAdjust(ref spellEffect.NextTick))
+                    if (!ServiceUtils.ShouldTick(spellEffect.NextTick))
                         return;
 
                     // Not every pulsing effect is a `ECSPulseEffect`. Snares and roots decreasing effect are also handled as pulsing spells for example.
@@ -427,7 +427,7 @@ namespace DOL.GS
                             {
                                 ECSGameSpellEffect childEffect = pair.Value;
 
-                                if (ServiceUtils.ShouldTickNoEarly(childEffect.ExpireTick))
+                                if (ServiceUtils.ShouldTick(childEffect.ExpireTick))
                                 {
                                     livings ??= new();
                                     livings.Add(pair.Key);

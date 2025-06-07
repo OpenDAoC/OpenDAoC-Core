@@ -162,10 +162,10 @@ namespace DOL.AI.Brain
                 if (!_nextRoamingTickSet)
                 {
                     _nextRoamingTickSet = true;
-                    _nextRoamingTick += Util.Random(MinCooldown, MaxCooldown) * 1000;
+                    _nextRoamingTick = GameLoop.GameLoopTime + Util.Random(MinCooldown, MaxCooldown) * 1000;
                 }
 
-                if (ServiceUtils.ShouldTickAdjust(ref _nextRoamingTick))
+                if (ServiceUtils.ShouldTick(_nextRoamingTick))
                 {
                     // We're not updating `_nextRoamingTick` here because we want it to be set after the NPC stopped moving.
                     _nextRoamingTickSet = false;

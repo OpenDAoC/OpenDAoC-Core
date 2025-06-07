@@ -36,9 +36,9 @@ namespace DOL.GS
                     Interlocked.Increment(ref _entityCount);
 
                 castingComponent = _list[index];
-                long startTick = GameLoop.GetCurrentTime();
+                long startTick = GameLoop.GetRealTime();
                 castingComponent.Tick();
-                long stopTick = GameLoop.GetCurrentTime();
+                long stopTick = GameLoop.GetRealTime();
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
                     log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for: {castingComponent.Owner.Name}({castingComponent.Owner.ObjectID}) Spell: {castingComponent.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");

@@ -36,9 +36,9 @@ namespace DOL.GS
                     Interlocked.Increment(ref _entityCount);
 
                 livingBeingKilled = _list[index];
-                long startTick = GameLoop.GetCurrentTime();
+                long startTick = GameLoop.GetRealTime();
                 livingBeingKilled.Killed.ProcessDeath(livingBeingKilled.Killer);
-                long stopTick = GameLoop.GetCurrentTime();
+                long stopTick = GameLoop.GetRealTime();
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
                     log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {livingBeingKilled} Time: {stopTick - startTick}ms");
