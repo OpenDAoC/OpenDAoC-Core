@@ -703,17 +703,6 @@ namespace DOL.GS
                 CreateObjectForPlayer(player, gameObject);
         }
 
-        private static void CheckCharScreenTimeout(GameClient client)
-        {
-            if (ServiceUtils.ShouldTickNoEarly(client.PingTime + PING_TIMEOUT))
-            {
-                if (log.IsInfoEnabled)
-                    log.Info($"Ping timeout on client. Disconnecting. ({client})");
-
-                client.Disconnect();
-            }
-        }
-
         private static void CheckHardTimeout(GameClient client)
         {
             if (ServiceUtils.ShouldTickNoEarly(client.PingTime + HARD_TIMEOUT))
