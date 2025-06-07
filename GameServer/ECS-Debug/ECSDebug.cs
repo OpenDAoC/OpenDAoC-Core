@@ -128,9 +128,7 @@ namespace ECS.Debug
                     foreach (var counter in _perfCounters)
                     {
                         string counterName = counter.Key;
-                        float elapsed = (float)counter.Value.Elapsed.TotalMilliseconds;
-                        string elapsedString = elapsed.ToString();
-                        elapsedString = Util.TruncateString(elapsedString, 4);
+                        string elapsedString = $"{counter.Value.Elapsed.TotalMilliseconds:0.##}";
                         logString += $"{counterName} {elapsedString}ms | ";
                     }
 
