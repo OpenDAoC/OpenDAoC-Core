@@ -171,6 +171,7 @@ namespace DOL.GS
             FollowMinDistance = minDistance;
             FollowMaxDistance = maxDistance;
             SetFlag(MovementState.FOLLOW);
+            AddToServiceObjectStore();
         }
 
         public void StopFollowing()
