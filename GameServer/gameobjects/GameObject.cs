@@ -1019,7 +1019,10 @@ namespace DOL.GS
 				{
 					if (cache.Radius > radiusToCheck)
 					{
-						List<T> filtered = new();
+						// Build a filtered list from the cached list.
+						// The new list's initial capacity is based on the ratio of the radius being checked to the cached radius, plus a 5% buffer.
+						double radiusRatio = radiusToCheck / cache.Radius;
+						List<T> filtered = new((int) (cache.List.Count * radiusRatio * radiusRatio * 1.05));
 
 						// While this saves a call to `CurrentRegion.GetInRadius<T>`, it could still be a bit slow.
 						// The alternative would be to sort the cached list by distance and use binary search to find the first object within the radius.
@@ -1036,9 +1039,10 @@ namespace DOL.GS
 						return cache.List as List<T>;
 				}
 
-				// Build fresh list and swap cache
-				List<T> newList = new();
-				CurrentRegion.GetInRadius<T>(this, objectType, radiusToCheck, newList);
+				// Build a fresh list and swap cache.
+				// The new list has an initial capacity 5% bigger than the current list's size.
+				List<T> newList = new((int) (cache.List.Count * 1.05));
+				CurrentRegion.GetInRadius(this, objectType, radiusToCheck, newList);
 				_objectsInRadiusCaches[objectType].Set(newList, radiusToCheck, GameLoop.GameLoopTime + 500);
 				return newList;
 			}
