@@ -27,29 +27,39 @@ namespace DOL.GS
 
             List<string> logMessages = [$"Critical error encountered in {serviceName}: {exception}"];
 
-            // Define the actions and log messages.
-            Action action = entityOwner switch
-            {
-                GamePlayer player => () =>
-                {
-                    logMessages.Add($"Calling {nameof(KickPlayerToCharScreen)} with ({nameof(entityOwner)}: {player})");
-                    KickPlayerToCharScreen(player);
-                },
-                not null => () =>
-                {
-                    logMessages.Add($"Calling {nameof(entityOwner.RemoveFromWorld)} with ({nameof(entityOwner)}: {entityOwner})");
-                    entityOwner.RemoveFromWorld();
-                },
-                _ => () => logMessages.Add($"No other action performed ({nameof(entityOwner)}: null)")
-            };
+            Action action;
+            string actionMessage;
 
-            // Log error messages before executing the action (if any).
+            switch (entityOwner)
+            {
+                case GamePlayer player:
+                {
+                    action = () => KickPlayerToCharScreen(player);
+                    actionMessage = $"Calling {nameof(KickPlayerToCharScreen)} with ({nameof(entityOwner)}: {player})";
+                    break;
+                }
+                case not null:
+                {
+                    action = () => entityOwner.RemoveFromWorld();
+                    actionMessage = $"Calling {nameof(entityOwner.RemoveFromWorld)} with ({nameof(entityOwner)}: {entityOwner})";
+                    break;
+                }
+                default:
+                {
+                    action = static () => { }; // No-op
+                    actionMessage = $"No other action performed ({nameof(entityOwner)}: null)";
+                    break;
+                }
+            }
+
+            logMessages.Add(actionMessage);
+
             if (log.IsErrorEnabled)
                 log.Error(string.Join(Environment.NewLine, logMessages));
 
             try
             {
-                action?.Invoke();
+                action();
             }
             catch (Exception e)
             {
