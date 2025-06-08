@@ -390,9 +390,11 @@ namespace DOL.GS
 
             private sealed class TickObjectPool<T> : ITickObjectPool where T : IPooledObject<T>, new()
             {
+                private const float DECAY_FACTOR = 0.9f;
                 private T[] _items = new T[64];
                 private int _used;
                 private int _highWaterIndex;
+                private int _smoothedHighWater = 64;
 
                 public T GetForTick()
                 {
@@ -407,7 +409,7 @@ namespace DOL.GS
                     }
                     else
                     {
-                        item = new();
+                        item = new T();
                         item.IssuedTimestamp = GameLoop.GameLoopTime;
 
                         if (_used >= _items.Length)
@@ -422,15 +424,17 @@ namespace DOL.GS
 
                 public void Reset()
                 {
-                    // Gradual shrinking by nulling from the end.
-                    if (_highWaterIndex > _used * 2 + 100)
-                    {
-                        int shrinkEnd = Math.Max(_used * 2, _highWaterIndex - 10);
+                    // Shrink (by nulling) only if we're consistently way over used capacity.
+                    _smoothedHighWater = (int) (_smoothedHighWater * DECAY_FACTOR + _highWaterIndex * (1 - DECAY_FACTOR));
 
-                        for (int i = shrinkEnd; i < _highWaterIndex; i++)
+                    if (_items.Length > _smoothedHighWater * 2 + 100)
+                    {
+                        int newSize = Math.Max(_smoothedHighWater * 2, 64);
+
+                        for (int i = newSize; i < _items.Length; i++)
                             _items[i] = default;
 
-                        _highWaterIndex = shrinkEnd;
+                        _highWaterIndex = newSize;
                     }
 
                     _used = 0;
