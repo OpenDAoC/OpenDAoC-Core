@@ -403,13 +403,12 @@ namespace DOL.GS
                     if (_used < _highWaterIndex && _items[_used] != null)
                     {
                         item = _items[_used];
-                        _items[_used] = default;
                         _used++;
                         item.IssuedTimestamp = GameLoop.GameLoopTime;
                     }
                     else
                     {
-                        item = new T();
+                        item = new();
                         item.IssuedTimestamp = GameLoop.GameLoopTime;
 
                         if (_used >= _items.Length)
