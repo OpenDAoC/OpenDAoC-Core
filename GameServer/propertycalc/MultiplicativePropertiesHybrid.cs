@@ -1,101 +1,70 @@
-using System.Collections;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace DOL.GS.PropertyCalc
 {
-	/// <summary>
-	/// Implements multiplicative properties using HybridDictionary
-	/// </summary>
-	public sealed class MultiplicativePropertiesHybrid : IMultiplicativeProperties
-	{
-		private readonly Lock _lock = new();
+    public sealed class MultiplicativePropertiesHybrid : IMultiplicativeProperties
+    {
+        private readonly Lock _lock = new();
+        private Dictionary<int, PropertyEntry> m_properties = new();
 
-		private sealed class PropertyEntry
-		{
-			public double cachedValue = 1.0;
-			public HybridDictionary values;
-			public void CalculateCachedValue()
-			{
-				if (values == null)
-				{
-					cachedValue = 1.0;
-					return;
-				}
+        public void Set(int index, object key, double value)
+        {
+            lock (_lock)
+            {
+                if (!m_properties.TryGetValue(index, out PropertyEntry entry))
+                {
+                    entry = new PropertyEntry();
+                    m_properties[index] = entry;
+                }
 
-				IDictionaryEnumerator de = values.GetEnumerator();
-				double res = 1.0;
-				while(de.MoveNext())
-				{
-					res *= (double)de.Value;
-				}
-				cachedValue = res;
-			}
-		}
+                entry.values ??= new();
+                entry.values[key] = value;
+                entry.CalculateCachedValue();
+            }
+        }
 
-		private HybridDictionary m_properties = new HybridDictionary();
+        public void Remove(int index, object key)
+        {
+            lock (_lock)
+            {
+                if (!m_properties.TryGetValue(index, out PropertyEntry entry) || entry.values == null)
+                    return;
 
-		/// <summary>
-		/// Adds new value, if key exists value will be overwriten
-		/// </summary>
-		/// <param name="index">The property index</param>
-		/// <param name="key">The key used to remove value later</param>
-		/// <param name="value">The value added</param>
-		public void Set(int index, object key, double value)
-		{
-			lock (_lock)
-			{
-				PropertyEntry entry = (PropertyEntry)m_properties[index];
-				if (entry == null)
-				{
-					entry = new PropertyEntry();
-					m_properties[index] = entry;
-				}
+                entry.values.Remove(key);
 
-				if (entry.values == null)
-					entry.values = new HybridDictionary();
+                if (entry.values.Count == 0)
+                    m_properties.Remove(index);
+                else
+                    entry.CalculateCachedValue();
+            }
+        }
 
-				entry.values[key] = value;
-				entry.CalculateCachedValue();
-			}
-		}
+        public double Get(int index)
+        {
+            return m_properties.TryGetValue(index, out PropertyEntry entry) ? entry.cachedValue : 1.0;
+        }
 
-		/// <summary>
-		/// Removes stored value
-		/// </summary>
-		/// <param name="index">The property index</param>
-		/// <param name="key">The key use to add the value</param>
-		public void Remove(int index, object key)
-		{
-			lock (_lock)
-			{
-				PropertyEntry entry = (PropertyEntry)m_properties[index];
-				if (entry == null) return;
-				if (entry.values == null) return;
+        private sealed class PropertyEntry
+        {
+            public double cachedValue = 1.0;
+            public Dictionary<object, double> values;
 
-				entry.values.Remove(key);
+            public void CalculateCachedValue()
+            {
+                if (values == null || values.Count == 0)
+                {
+                    cachedValue = 1.0;
+                    return;
+                }
 
-				// remove entry if it's empty
-				if (entry.values.Count < 1)
-				{
-					m_properties.Remove(index);
-					return;
-				}
+                double res = 1.0;
 
-				entry.CalculateCachedValue();
-			}
-		}
+                foreach (double value in values.Values)
+                    res *= value;
 
-		/// <summary>
-		/// Gets the property value
-		/// </summary>
-		/// <param name="index">The property index</param>
-		/// <returns>The property value (1.0 = 100%)</returns>
-		public double Get(int index)
-		{
-			PropertyEntry entry = (PropertyEntry)m_properties[index];
-			if (entry == null) return 1.0;
-			return entry.cachedValue;
-		}
-	}
+                cachedValue = res;
+            }
+        }
+    }
 }
