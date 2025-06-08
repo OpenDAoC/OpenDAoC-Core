@@ -103,14 +103,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (log.IsErrorEnabled)
                         log.Error($"{client.Player.Name}'s position in unknown zone! => {zoneId}");
 
-                    player.MoveToBind();
-                    return;
-                }
-
-                // move to bind if player fell through the floor
-                if (z == 0)
-                {
-                    client.Player.MoveToBind();
+                    ServiceUtils.KickPlayerToCharScreen(player);
                     return;
                 }
 
@@ -276,22 +269,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                 ushort yOffsetInZone = packet.ReadShort();
                 ushort zoneId = packet.ReadShort();
 
-                try
-                {
-                    Zone grabZone = WorldMgr.GetZone(zoneId);
-                }
-                catch (Exception)
-                {
-                    //if we get a zone that doesn't exist, move player to their bindstone
-                    client.Player.MoveTo((ushort) client.Player.BindRegion,
-                                          client.Player.BindXpos,
-                                          client.Player.BindYpos,
-                                          (ushort) client.Player.BindZpos,
-                                          (ushort) client.Player.BindHeading);
-                    return;
-            
-                }
-
                 //Dinberg - Instance considerations.
                 //Now this gets complicated, so listen up! We have told the client a lie when it comes to the zoneID.
                 //As a result, every movement update, they are sending a lie back to us. Two liars could get confusing!
@@ -320,18 +297,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (log.IsErrorEnabled)
                         log.Error($"{client.Player.Name}'s position in unknown zone! => {zoneId}");
 
-                    player.MoveToBind();
-                    return;
-                }
-
-                // move to bind if player fell through the floor
-                if (realZ == 0)
-                {
-                    client.Player.MoveTo((ushort)client.Player.BindRegion,
-                                         client.Player.BindXpos,
-                                         client.Player.BindYpos,
-                                         (ushort)client.Player.BindZpos,
-                                         (ushort)client.Player.BindHeading);
+                    ServiceUtils.KickPlayerToCharScreen(player);
                     return;
                 }
 
