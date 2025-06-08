@@ -248,247 +248,11 @@ namespace DOL.GS.PacketHandler
 
         public void SendPendingPackets()
         {
-            _tcpPacketQueue.DrainTo(AppendTcpPacketToTcpSendBuffer);
-            _udpToTcpPacketQueue.DrainTo(AppendUdpPacketToTcpSendBuffer);
+            _tcpPacketQueue.DrainTo(static (packet, processor) => processor.AppendTcpPacketToTcpSendBuffer(packet), this);
+            _udpToTcpPacketQueue.DrainTo(static (packet, processor) => processor.AppendUdpPacketToTcpSendBuffer(packet), this);
             SendTcp();
-            _udpPacketQueue.DrainTo(AppendUdpPacketToUdpSendBuffer);
+            _udpPacketQueue.DrainTo(static (packet, processor) => processor.AppendUdpPacketToUdpSendBuffer(packet), this);
             SendUdp();
-
-            void AppendTcpPacketToTcpSendBuffer(GSTCPPacketOut packet)
-            {
-                if (!ValidatePacketIssuedTimestamp(packet))
-                    return;
-
-                byte[] packetBuffer = packet.GetBuffer();
-                int packetSize = (int) packet.Length;
-
-                if (!ValidatePacketSize(packetBuffer, packetSize))
-                    return;
-
-                if (_tcpSendArgs.Buffer == null)
-                    return;
-
-                SavePacket(packet);
-                int nextPosition = _tcpSendBufferPosition + packetSize;
-
-                // If the send buffer is full, send whatever we have.
-                if (nextPosition > _tcpSendArgs.Buffer.Length)
-                {
-                    if (!SendTcp())
-                        return;
-
-                    nextPosition = _tcpSendBufferPosition + packetSize;
-
-                    // If there still isn't enough room, we'll have to discard the packet.
-                    if (nextPosition > _tcpSendArgs.Buffer.Length)
-                        return;
-
-                    nextPosition = packetSize;
-                }
-
-                Buffer.BlockCopy(packetBuffer, 0, _tcpSendArgs.Buffer, _tcpSendBufferPosition, packetSize);
-                _tcpSendBufferPosition = nextPosition;
-            }
-
-            void AppendUdpPacketToTcpSendBuffer(GSUDPPacketOut packet)
-            {
-                if (!ValidatePacketIssuedTimestamp(packet))
-                    return;
-
-                byte[] packetBuffer = packet.GetBuffer();
-                int packetSize = (int) packet.Length - 2;
-
-                if (!ValidatePacketSize(packetBuffer, packetSize))
-                    return;
-
-                if (_tcpSendArgs.Buffer == null)
-                    return;
-
-                SavePacket(packet);
-                int nextPosition = _tcpSendBufferPosition + packetSize;
-
-                // If the send buffer is full, send whatever we have.
-                if (nextPosition > _tcpSendArgs.Buffer.Length)
-                {
-                    if (!SendTcp())
-                        return;
-
-                    nextPosition = _tcpSendBufferPosition + packetSize;
-
-                    // If there still isn't enough room, we'll have to discard the packet.
-                    if (nextPosition > _tcpSendArgs.Buffer.Length)
-                        return;
-
-                    nextPosition = packetSize;
-                }
-
-                // Transform the UDP packet into a TCP one.
-                Buffer.BlockCopy(packetBuffer, 4, _tcpSendArgs.Buffer, _tcpSendBufferPosition + 2, packetSize - 2);
-                _tcpSendArgs.Buffer[_tcpSendBufferPosition] = packetBuffer[0];
-                _tcpSendArgs.Buffer[_tcpSendBufferPosition + 1] = packetBuffer[1];
-                _tcpSendBufferPosition = nextPosition;
-            }
-
-            void AppendUdpPacketToUdpSendBuffer(GSUDPPacketOut packet)
-            {
-                if (!ValidatePacketIssuedTimestamp(packet))
-                    return;
-
-                byte[] packetBuffer = packet.GetBuffer();
-                int packetSize = (int) packet.Length;
-
-                if (!ValidatePacketSize(packetBuffer, packetSize))
-                    return;
-
-                if (_udpSendArgs.Buffer == null)
-                    return;
-
-                SavePacket(packet);
-                int nextPosition = _udpSendBufferPosition + packetSize;
-
-                // If the send buffer is full, send whatever we have.
-                if (nextPosition > _udpSendArgs.Buffer.Length)
-                {
-                    if (!SendUdp())
-                        return;
-
-                    nextPosition = _udpSendBufferPosition + packetSize;
-
-                    // If there still isn't enough room, we'll have to discard the packet.
-                    if (nextPosition > _udpSendArgs.Buffer.Length)
-                        return;
-
-                    nextPosition = packetSize;
-                }
-
-                // Add `_udpCounter` to the packet's content.
-                Buffer.BlockCopy(packetBuffer, 0, _udpSendArgs.Buffer, _udpSendBufferPosition, packetSize);
-                _udpCounter++; // Let it overflow.
-                _udpSendArgs.Buffer[_udpSendBufferPosition + 2] = (byte) (_udpCounter >> 8);
-                _udpSendArgs.Buffer[_udpSendBufferPosition + 3] = (byte) _udpCounter;
-                _udpSendBufferPosition = nextPosition;
-            }
-
-            static bool ValidatePacketIssuedTimestamp<T>(T packet) where T : PacketOut, IPooledObject<T>
-            {
-                if (!packet.IsValidForTick())
-                {
-                    if (packet.IssuedTimestamp != 0)
-                    {
-                        if (log.IsErrorEnabled)
-                            log.Error($"Packet was not issued in the current game loop time (Code: 0x{packet.Code:X2}) (Issued at: {packet.IssuedTimestamp}) (Current time: {GameLoop.GameLoopTime})");
-
-                        return false;
-                    }
-
-                    if (log.IsDebugEnabled)
-                        log.Debug($"Packet was issued outside the game loop (Code: 0x{packet.Code:X2}) (Current time: {GameLoop.GameLoopTime})");
-                }
-
-                return true;
-            }
-
-            bool ValidatePacketSize(byte[] packetBuffer, int packetSize)
-            {
-                if (packetSize <= 2048)
-                    return true;
-
-                if (log.IsErrorEnabled)
-                {
-                    string account = _client.Account != null ? _client.Account.Name : _client.TcpEndpointAddress;
-                    string description = $"Discarding oversized packet. Packet code: 0x{packetBuffer[2]:X2}, account: {account}, packet size: {packetSize}.";
-                    log.Error($"{Marshal.ToHexDump(description, packetBuffer)}\n{Environment.StackTrace}");
-                }
-
-                _client.Out.SendMessage($"Oversized packet detected and discarded (code: 0x{packetBuffer[2]:X2}) (size: {packetSize}). Please report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-                return false;
-            }
-
-            bool SendTcp()
-            {
-                if (!_client.Socket.Connected)
-                    return false;
-
-                try
-                {
-                    if (_tcpSendBufferPosition > 0)
-                    {
-                        _tcpSendArgs.SetBuffer(0, _tcpSendBufferPosition);
-
-                        if (_client.SendAsync(_tcpSendArgs))
-                            GetAvailableTcpSendArgs();
-
-                        _tcpSendBufferPosition = 0;
-                    }
-
-                    return true;
-                }
-                catch (ObjectDisposedException) { }
-                catch (SocketException e)
-                {
-                    if (log.IsDebugEnabled)
-                        log.Debug($"Socket exception on TCP send (Client: {_client}) (Code: {e.SocketErrorCode})");
-                }
-                catch (Exception e)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error($"Unhandled exception on TCP send (Client: {_client}): {e}");
-                }
-
-                return false;
-            }
-
-            bool SendUdp()
-            {
-                // Not technically needed to send UDP.
-                if (!_client.Socket.Connected)
-                    return false;
-
-                try
-                {
-                    if (_udpSendBufferPosition > 0)
-                    {
-                        _udpSendArgs.SetBuffer(0, _udpSendBufferPosition);
-
-                        if (GameServer.Instance.SendUdp(_udpSendArgs))
-                            GetAvailableUdpSendArgs();
-
-                        _udpSendBufferPosition = 0;
-                    }
-
-                    return true;
-                }
-                catch (ObjectDisposedException) { }
-                catch (SocketException e)
-                {
-                    if (log.IsDebugEnabled)
-                        log.Debug($"Socket exception on UDP send (Client: {_client}) (Code: {e.SocketErrorCode})");
-                }
-                catch (Exception e)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error($"Unhandled exception on UDP send (Client: {_client}): {e}");
-                }
-
-                _client.UdpConfirm = false;
-                return false;
-            }
-        }
-
-        public static ushort CalculateChecksum(byte[] packet, int dataOffset, int dataSize)
-        {
-            byte val1 = 0x7E;
-            byte val2 = 0x7E;
-            int i = dataOffset;
-            int length = i + dataSize;
-
-            while (i < length)
-            {
-                val1 += packet[i++];
-                val2 += val1;
-            }
-
-            return (ushort) (val2 - ((val1 + val2) << 8));
         }
 
         public void ClearPendingOutboundPackets()
@@ -516,6 +280,242 @@ namespace DOL.GS.PacketHandler
                 state._udpToTcpPacketQueue.DrainTo(static state => { });
                 state._udpPacketQueue.DrainTo(static state => { });
             }, this);
+        }
+
+        private void AppendTcpPacketToTcpSendBuffer(GSTCPPacketOut packet)
+        {
+            if (!ValidatePacketIssuedTimestamp(packet))
+                return;
+
+            byte[] packetBuffer = packet.GetBuffer();
+            int packetSize = (int) packet.Length;
+
+            if (!ValidatePacketSize(packetBuffer, packetSize))
+                return;
+
+            if (_tcpSendArgs.Buffer == null)
+                return;
+
+            SavePacket(packet);
+            int nextPosition = _tcpSendBufferPosition + packetSize;
+
+            // If the send buffer is full, send whatever we have.
+            if (nextPosition > _tcpSendArgs.Buffer.Length)
+            {
+                if (!SendTcp())
+                    return;
+
+                nextPosition = _tcpSendBufferPosition + packetSize;
+
+                // If there still isn't enough room, we'll have to discard the packet.
+                if (nextPosition > _tcpSendArgs.Buffer.Length)
+                    return;
+
+                nextPosition = packetSize;
+            }
+
+            Buffer.BlockCopy(packetBuffer, 0, _tcpSendArgs.Buffer, _tcpSendBufferPosition, packetSize);
+            _tcpSendBufferPosition = nextPosition;
+        }
+
+        private void AppendUdpPacketToTcpSendBuffer(GSUDPPacketOut packet)
+        {
+            if (!ValidatePacketIssuedTimestamp(packet))
+                return;
+
+            byte[] packetBuffer = packet.GetBuffer();
+            int packetSize = (int) packet.Length - 2;
+
+            if (!ValidatePacketSize(packetBuffer, packetSize))
+                return;
+
+            if (_tcpSendArgs.Buffer == null)
+                return;
+
+            SavePacket(packet);
+            int nextPosition = _tcpSendBufferPosition + packetSize;
+
+            // If the send buffer is full, send whatever we have.
+            if (nextPosition > _tcpSendArgs.Buffer.Length)
+            {
+                if (!SendTcp())
+                    return;
+
+                nextPosition = _tcpSendBufferPosition + packetSize;
+
+                // If there still isn't enough room, we'll have to discard the packet.
+                if (nextPosition > _tcpSendArgs.Buffer.Length)
+                    return;
+
+                nextPosition = packetSize;
+            }
+
+            // Transform the UDP packet into a TCP one.
+            Buffer.BlockCopy(packetBuffer, 4, _tcpSendArgs.Buffer, _tcpSendBufferPosition + 2, packetSize - 2);
+            _tcpSendArgs.Buffer[_tcpSendBufferPosition] = packetBuffer[0];
+            _tcpSendArgs.Buffer[_tcpSendBufferPosition + 1] = packetBuffer[1];
+            _tcpSendBufferPosition = nextPosition;
+        }
+
+        private void AppendUdpPacketToUdpSendBuffer(GSUDPPacketOut packet)
+        {
+            if (!ValidatePacketIssuedTimestamp(packet))
+                return;
+
+            byte[] packetBuffer = packet.GetBuffer();
+            int packetSize = (int) packet.Length;
+
+            if (!ValidatePacketSize(packetBuffer, packetSize))
+                return;
+
+            if (_udpSendArgs.Buffer == null)
+                return;
+
+            SavePacket(packet);
+            int nextPosition = _udpSendBufferPosition + packetSize;
+
+            // If the send buffer is full, send whatever we have.
+            if (nextPosition > _udpSendArgs.Buffer.Length)
+            {
+                if (!SendUdp())
+                    return;
+
+                nextPosition = _udpSendBufferPosition + packetSize;
+
+                // If there still isn't enough room, we'll have to discard the packet.
+                if (nextPosition > _udpSendArgs.Buffer.Length)
+                    return;
+
+                nextPosition = packetSize;
+            }
+
+            // Add `_udpCounter` to the packet's content.
+            Buffer.BlockCopy(packetBuffer, 0, _udpSendArgs.Buffer, _udpSendBufferPosition, packetSize);
+            _udpCounter++; // Let it overflow.
+            _udpSendArgs.Buffer[_udpSendBufferPosition + 2] = (byte) (_udpCounter >> 8);
+            _udpSendArgs.Buffer[_udpSendBufferPosition + 3] = (byte) _udpCounter;
+            _udpSendBufferPosition = nextPosition;
+        }
+
+        private static bool ValidatePacketIssuedTimestamp<T>(T packet) where T : PacketOut, IPooledObject<T>
+        {
+            if (!packet.IsValidForTick())
+            {
+                if (packet.IssuedTimestamp != 0)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"Packet was not issued in the current game loop time (Code: 0x{packet.Code:X2}) (Issued at: {packet.IssuedTimestamp}) (Current time: {GameLoop.GameLoopTime})");
+
+                    return false;
+                }
+
+                if (log.IsDebugEnabled)
+                    log.Debug($"Packet was issued outside the game loop (Code: 0x{packet.Code:X2}) (Current time: {GameLoop.GameLoopTime})");
+            }
+
+            return true;
+        }
+
+        private bool ValidatePacketSize(byte[] packetBuffer, int packetSize)
+        {
+            if (packetSize <= 2048)
+                return true;
+
+            if (log.IsErrorEnabled)
+            {
+                string account = _client.Account != null ? _client.Account.Name : _client.TcpEndpointAddress;
+                string description = $"Discarding oversized packet. Packet code: 0x{packetBuffer[2]:X2}, account: {account}, packet size: {packetSize}.";
+                log.Error($"{Marshal.ToHexDump(description, packetBuffer)}\n{Environment.StackTrace}");
+            }
+
+            _client.Out.SendMessage($"Oversized packet detected and discarded (code: 0x{packetBuffer[2]:X2}) (size: {packetSize}). Please report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+            return false;
+        }
+
+        private bool SendTcp()
+        {
+            if (!_client.Socket.Connected)
+                return false;
+
+            try
+            {
+                if (_tcpSendBufferPosition > 0)
+                {
+                    _tcpSendArgs.SetBuffer(0, _tcpSendBufferPosition);
+
+                    if (_client.SendAsync(_tcpSendArgs))
+                        GetAvailableTcpSendArgs();
+
+                    _tcpSendBufferPosition = 0;
+                }
+
+                return true;
+            }
+            catch (ObjectDisposedException) { }
+            catch (SocketException e)
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug($"Socket exception on TCP send (Client: {_client}) (Code: {e.SocketErrorCode})");
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Unhandled exception on TCP send (Client: {_client}): {e}");
+            }
+
+            return false;
+        }
+
+        private bool SendUdp()
+        {
+            // Not technically needed to send UDP.
+            if (!_client.Socket.Connected)
+                return false;
+
+            try
+            {
+                if (_udpSendBufferPosition > 0)
+                {
+                    _udpSendArgs.SetBuffer(0, _udpSendBufferPosition);
+
+                    if (GameServer.Instance.SendUdp(_udpSendArgs))
+                        GetAvailableUdpSendArgs();
+
+                    _udpSendBufferPosition = 0;
+                }
+
+                return true;
+            }
+            catch (ObjectDisposedException) { }
+            catch (SocketException e)
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug($"Socket exception on UDP send (Client: {_client}) (Code: {e.SocketErrorCode})");
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Unhandled exception on UDP send (Client: {_client}): {e}");
+            }
+
+            _client.UdpConfirm = false;
+            return false;
+        }
+
+        public static ushort CalculateChecksum(byte[] packet, int dataOffset, int dataSize)
+        {
+            byte val1 = 0x7E;
+            byte val2 = 0x7E;
+            int i = dataOffset;
+            int length = i + dataSize;
+
+            while (i < length)
+            {
+                val1 += packet[i++];
+                val2 += val1;
+            }
+
+            return (ushort) (val2 - ((val1 + val2) << 8));
         }
 
         private void GetAvailableTcpSendArgs()
