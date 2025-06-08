@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.IO;
 
 namespace DOL.Network
@@ -111,8 +112,11 @@ namespace DOL.Network
 		/// </summary>
 		public void WriteFloatLowEndian(float val)
 		{
-			var bytes = BitConverter.GetBytes(val);
-			Write(bytes, 0, bytes.Length);
+			uint intValue = BitConverter.SingleToUInt32Bits(val);
+			WriteByte((byte) (intValue & 0xFF));
+			WriteByte((byte) ((intValue >> 8) & 0xFF));
+			WriteByte((byte) ((intValue >> 16) & 0xFF));
+			WriteByte((byte) ((intValue >> 24) & 0xFF));
 		}
 		
 		/// <summary>
@@ -202,7 +206,6 @@ namespace DOL.Network
 			WriteByte(0x0);
 		}
 
-
 		/// <summary>
 		/// Writes exactly the bytes from the string without any trailing 0
 		/// </summary>
@@ -212,8 +215,29 @@ namespace DOL.Network
 			if (str.Length <= 0)
 				return;
 
-			byte[] bytes = BaseServer.defaultEncoding.GetBytes(str);
-			Write(bytes, 0, bytes.Length);
+			int maxByteCount = BaseServer.defaultEncoding.GetMaxByteCount(str.Length);
+
+			// Stack for small strings, ArrayPool for large strings.
+			if (maxByteCount <= 1024)
+			{
+				Span<byte> buffer = stackalloc byte[maxByteCount];
+				int bytesWritten = BaseServer.defaultEncoding.GetBytes(str, buffer);
+				Write(buffer[..bytesWritten]);
+			}
+			else
+			{
+				byte[] buffer = ArrayPool<byte>.Shared.Rent(maxByteCount);
+
+				try
+				{
+					int bytesWritten = BaseServer.defaultEncoding.GetBytes(str, 0, str.Length, buffer, 0);
+					Write(buffer, 0, bytesWritten);
+				}
+				finally
+				{
+					ArrayPool<byte>.Shared.Return(buffer);
+				}
+			}
 		}
 
 		/// <summary>
