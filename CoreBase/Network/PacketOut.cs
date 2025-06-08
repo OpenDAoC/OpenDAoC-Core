@@ -212,25 +212,36 @@ namespace DOL.Network
 		/// <param name="str">the string to write</param>
 		public void WriteStringBytes(string str)
 		{
-			if (str.Length <= 0)
+			WriteString(str, int.MaxValue);
+		}
+
+		/// <summary>
+		/// Writes up to maxlen bytes to the stream from the supplied string
+		/// </summary>
+		/// <param name="str">String to write</param>
+		/// <param name="maxByteLen">Maximum number of bytes to be written</param>
+		public void WriteString(string str, int maxByteLen)
+		{
+			if (str.Length == 0 || maxByteLen <= 0)
 				return;
 
 			int maxByteCount = BaseServer.defaultEncoding.GetMaxByteCount(str.Length);
+			int bufferSize = Math.Min(maxByteCount, maxByteLen);
 
-			// Stack for small strings, ArrayPool for large strings.
-			if (maxByteCount <= 1024)
+			// Stack for small buffers, ArrayPool for large buffers.
+			if (bufferSize <= 1024)
 			{
-				Span<byte> buffer = stackalloc byte[maxByteCount];
+				Span<byte> buffer = stackalloc byte[bufferSize];
 				int bytesWritten = BaseServer.defaultEncoding.GetBytes(str, buffer);
 				Write(buffer[..bytesWritten]);
 			}
 			else
 			{
-				byte[] buffer = ArrayPool<byte>.Shared.Rent(maxByteCount);
+				byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
 
 				try
 				{
-					int bytesWritten = BaseServer.defaultEncoding.GetBytes(str, 0, str.Length, buffer, 0);
+					int bytesWritten = BaseServer.defaultEncoding.GetBytes(str, buffer.AsSpan(0, bufferSize));
 					Write(buffer, 0, bytesWritten);
 				}
 				finally
@@ -241,20 +252,6 @@ namespace DOL.Network
 		}
 
 		/// <summary>
-		/// Writes up to maxlen bytes to the stream from the supplied string
-		/// </summary>
-		/// <param name="str">String to write</param>
-		/// <param name="maxlen">Maximum number of bytes to be written</param>
-		public void WriteString(string str, int maxlen)
-		{
-			if (str.Length <= 0)
-				return;
-
-			byte[] bytes = BaseServer.defaultEncoding.GetBytes(str);
-			Write(bytes, 0, bytes.Length < maxlen ? bytes.Length : maxlen);
-		}
-
-		/// <summary>
 		/// Writes len number of bytes from str to the stream
 		/// </summary>
 		/// <param name="str">String to write</param>
@@ -262,22 +259,9 @@ namespace DOL.Network
 		public void FillString(string str, int len)
 		{
 			long pos = Position;
-
 			Fill(0x0, len);
-
-			if (str == null)
-				return;
-
 			Position = pos;
-
-			if (str.Length <= 0)
-			{
-				Position = pos + len;
-				return;
-			}
-
-			byte[] bytes = BaseServer.defaultEncoding.GetBytes(str);
-			Write(bytes, 0, len > bytes.Length ? bytes.Length : len);
+			WriteString(str, len);
 			Position = pos + len;
 		}
 
