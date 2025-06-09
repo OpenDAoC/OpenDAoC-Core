@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using DOL.GS.PacketHandler;
 
@@ -37,8 +38,16 @@ namespace DOL.GS
         // Work dispatch.
         private Action<int> _workAction;                // Per-item work action.
         private Action _workerRoutine;                  // Worker thread routine.
-        private int _workLeft;                          // Total items left to process.
-        private int _workerCompletionCount;             // Count of workers finished for current iteration.
+        private readonly WorkState _workState = new();
+
+        [StructLayout(LayoutKind.Explicit)]
+        private class WorkState
+        {
+            [FieldOffset(0)]
+            public int RemainingWork;                   // Total items left to process.
+            [FieldOffset(128)]
+            public int CompletedWorkerCount;            // Count of workers finished for current iteration.
+        }
 
         public GameLoopThreadPoolMultiThreaded(int degreeOfParallelism)
         {
@@ -112,8 +121,8 @@ namespace DOL.GS
                     return;
 
                 _workAction = workAction;
-                _workLeft = count;
-                _workerCompletionCount = 0;
+                _workState.RemainingWork = count;
+                _workState.CompletedWorkerCount = 0;
 
                 // If the count is less than the degree of parallelism, only signal the required number of workers.
                 // The caller thread will also be used, so in this case we need to subtract one from the amount of workers to start.
@@ -123,12 +132,12 @@ namespace DOL.GS
                     _workReady[i].Set();
 
                 _workerRoutine();
-                Interlocked.Increment(ref _workerCompletionCount);
+                Interlocked.Increment(ref _workState.CompletedWorkerCount);
 
                 // Spin very tightly until all the workers have completed their work.
                 // We could adjust the spin wait time if we get here early, but this is hard to predict.
                 // However we really don't want to yield the CPU here, as this could delay the return by a lot.
-                while (Volatile.Read(ref _workerCompletionCount) < workersToStart + 1)
+                while (Volatile.Read(ref _workState.CompletedWorkerCount) < workersToStart + 1)
                     Thread.SpinWait(1);
             }
             catch (Exception e)
@@ -179,7 +188,7 @@ namespace DOL.GS
 
             // If this is a restart, we need to free the caller thread.
             if (Restart)
-                Interlocked.Increment(ref _workerCompletionCount);
+                Interlocked.Increment(ref _workState.CompletedWorkerCount);
 
             RunWorkerLoop(_workReady[Id], _shutdownToken.Token);
         }
@@ -214,7 +223,7 @@ namespace DOL.GS
                 }
 
                 _workerRoutine();
-                 Interlocked.Increment(ref _workerCompletionCount); // Not in a finally block on purpose.
+                 Interlocked.Increment(ref _workState.CompletedWorkerCount); // Not in a finally block on purpose.
             }
 
             if (log.IsInfoEnabled)
@@ -225,18 +234,18 @@ namespace DOL.GS
         {
             try
             {
-                int remainingWork = Volatile.Read(ref _workLeft);
+                int remainingWork = Volatile.Read(ref _workState.RemainingWork);
 
                 while (remainingWork > 0)
                 {
-                    int workersRemaining = _degreeOfParallelism - Volatile.Read(ref _workerCompletionCount);
+                    int workersRemaining = _degreeOfParallelism - Volatile.Read(ref _workState.CompletedWorkerCount);
                     int chunkSize = (int) (remainingWork / _workSplitBiasTable[workersRemaining]);
 
                     // Prevent infinite loops.
                     if (chunkSize < 1)
                         chunkSize = 1;
 
-                    int start = Interlocked.Add(ref _workLeft, -chunkSize);
+                    int start = Interlocked.Add(ref _workState.RemainingWork, -chunkSize);
                     int end = start + chunkSize;
 
                     if (end < 1)
