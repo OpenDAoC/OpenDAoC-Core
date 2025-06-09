@@ -259,12 +259,14 @@ namespace DOL.GS
                                     break; // Flight +25%
                             }
 
+                        // 1.70m: The maximum range bonus given to archery attacks from elevation has been set to 500.
                         if (target != null)
-                            range += Math.Min((player.Z - target.Z) / 2.0, 500);
+                            range += (player.Z - target.Z) / 2.0;
+
                         if (range < 32)
                             range = 32;
 
-                        return (int)range;
+                        return (int) range;
                     }
 
                     return owner.MeleeAttackRange;
