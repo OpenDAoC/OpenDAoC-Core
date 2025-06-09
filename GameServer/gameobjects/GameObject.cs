@@ -1219,14 +1219,12 @@ namespace DOL.GS
 		/// </summary>
 		public GameObject()
 		{
-			//Objects should NOT be saved back to the DB
-			//as standard! We want our mobs/items etc. at
-			//the same startingspots when we restart!
 			m_saveInDB = false;
 			m_name = string.Empty;
 			m_ObjectState = eObjectState.Inactive;
 			m_boat_ownerid = string.Empty;
 			SubZoneObject = new(this);
+			LoadDataQuests();
 		}
 
 		public static bool PlayerHasItem(GamePlayer player, string str)
