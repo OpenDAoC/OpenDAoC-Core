@@ -776,7 +776,12 @@ namespace DOL.GS
                 owner.CancelEngageEffect();
 
             if (owner.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
+            {
+                if (owner.rangeAttackComponent.RangedAttackState is not eRangedAttackState.Aim && attackAction.CheckInterruptTimer())
+                    return false;
+
                 owner.rangeAttackComponent.AttackStartTime = GameLoop.GameLoopTime;
+            }
 
             AttackState = true;
             return true;
