@@ -1438,13 +1438,13 @@ namespace DOL.GS
             if (startingZone == null)
                 return;
 
-            startingZone.GetObjectsInRadius<T>(point, objectType, radius, list);
+            startingZone.GetObjectsInRadius(point, objectType, radius, list);
             uint sqRadius = (uint) radius * radius;
 
             foreach (Zone currentZone in m_zones)
             {
                 if (currentZone != startingZone && currentZone.ObjectCount > 0 && CheckShortestDistance(currentZone, point.X, point.Y, sqRadius))
-                    currentZone.GetObjectsInRadius<T>(point, objectType, radius, list);
+                    currentZone.GetObjectsInRadius(point, objectType, radius, list);
             }
         }
 

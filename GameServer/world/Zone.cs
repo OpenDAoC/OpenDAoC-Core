@@ -323,7 +323,7 @@ namespace DOL.GS
         /// <param name="listToAppendTo">a non-null list</param>
         public void GetObjectsInRadius<T>(Point3D point, eGameObjectType objectType, ushort radius, List<T> listToAppendTo) where T : GameObject
         {
-            GetObjectsInRadius<T>(point.X, point.Y, point.Z, objectType, radius, listToAppendTo);
+            GetObjectsInRadius(point.X, point.Y, point.Z, objectType, radius, listToAppendTo);
         }
 
         /// <summary>
@@ -358,6 +358,8 @@ namespace DOL.GS
             if (maxLine > (SUBZONE_NBR_ON_ZONE_SIDE - 1))
                 maxLine = SUBZONE_NBR_ON_ZONE_SIDE - 1;
 
+            int referenceSubZoneIndex = GetSubZoneIndex(x, y);
+
             int subZoneIndex;
             SubZone subZone;
             bool ignoreDistance;
@@ -378,7 +380,7 @@ namespace DOL.GS
                     int yBottom = yTop + SUBZONE_SIZE;
 
                     // Filter out subzones that are too far away.
-                    if (!CheckSubZoneMinDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
+                    if (referenceSubZoneIndex != subZoneIndex && !CheckSubZoneMinDistance(xInZone, yInZone, xLeft, xRight, yTop, yBottom, sqRadius))
                         continue;
 
                     // If the subzone being checked is fully enclosed within the radius and we don't care about Z, add all objects without checking the distance.
