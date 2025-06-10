@@ -92,10 +92,10 @@ namespace DOL.GS
                         if (client.ClientState is not GameClient.eClientState.Playing || player.ObjectState is not GameObject.eObjectState.Active)
                             break;
 
-                        if (ServiceUtils.ShouldTick(player.LastWorldUpdate + Properties.WORLD_PLAYER_UPDATE_INTERVAL))
+                        if (ServiceUtils.ShouldTick(player.NextWorldUpdate))
                         {
                             UpdateWorld(player);
-                            player.LastWorldUpdate = GameLoop.GameLoopTime + Properties.WORLD_PLAYER_UPDATE_INTERVAL;
+                            player.NextWorldUpdate = GameLoop.GameLoopTime + Properties.WORLD_PLAYER_UPDATE_INTERVAL;
                         }
 
                         break;

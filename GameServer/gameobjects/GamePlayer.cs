@@ -48,7 +48,7 @@ namespace DOL.GS
         public override eGameObjectType GameObjectType => eGameObjectType.PLAYER;
         public ChainedActions ChainedActions { get; }
         public double SpecLock { get; set; }
-        public long LastWorldUpdate { get; set; }
+        public long NextWorldUpdate { get; set; }
 
         public ECSGameTimer PredatorTimeoutTimer
         {
