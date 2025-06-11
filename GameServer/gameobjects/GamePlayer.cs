@@ -334,10 +334,15 @@ namespace DOL.GS
         public ConcurrentDictionary<(ushort, ushort), CheckLosResponseHandler.TimeoutTimer> LosCheckTimers { get; } = new();
 
         #region Object Caches
-        public ConcurrentDictionary<GameNPC, ClientService.CachedNpcValues> NpcUpdateCache { get; } = new();
-        public ConcurrentDictionary<GameStaticItem, ClientService.CachedItemValues> ItemUpdateCache { get; } = new();
-        public ConcurrentDictionary<GameDoorBase, long> DoorUpdateCache { get; } = new();
-        public ConcurrentDictionary<House, long> HouseUpdateCache { get; } = new();
+        // Used by the client service.
+        public Dictionary<GameNPC, ClientService.CachedNpcValues> NpcUpdateCache { get; } = new();
+        public Dictionary<GameStaticItem, ClientService.CachedItemValues> ItemUpdateCache { get; } = new();
+        public Dictionary<GameDoorBase, long> DoorUpdateCache { get; } = new();
+        public Dictionary<House, long> HouseUpdateCache { get; } = new();
+        public Lock NpcUpdateCacheLock { get; } = new();
+        public Lock ItemUpdateCacheLock { get; } = new();
+        public Lock DoorUpdateCacheLock { get; } = new();
+        public Lock HouseUpdateCacheLock { get; } = new();
         #endregion
 
         #region Database Accessor

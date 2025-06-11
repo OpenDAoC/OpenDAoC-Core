@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -570,28 +569,40 @@ namespace DOL.GS
 
         private static void AddNpcToPlayerCache(GamePlayer player, GameNPC npc)
         {
-            if (player.NpcUpdateCache.TryGetValue(npc, out CachedNpcValues cachedNpcValues))
+            lock (player.NpcUpdateCacheLock)
             {
-                cachedNpcValues.LastUpdateTime = GameLoop.GameLoopTime;
-                cachedNpcValues.HealthPercent =  npc.HealthPercent;
+                if (player.NpcUpdateCache.TryGetValue(npc, out CachedNpcValues cachedNpcValues))
+                {
+                    cachedNpcValues.LastUpdateTime = GameLoop.GameLoopTime;
+                    cachedNpcValues.HealthPercent =  npc.HealthPercent;
+                }
+                else
+                    player.NpcUpdateCache[npc] = new(GameLoop.GameLoopTime, npc.HealthPercent);
             }
-            else
-                player.NpcUpdateCache[npc] = new(GameLoop.GameLoopTime, npc.HealthPercent);
         }
 
         private static void AddItemToPlayerCache(GamePlayer player, GameStaticItem item)
         {
-            player.ItemUpdateCache[item] = new(GameLoop.GameLoopTime, false);
+            lock (player.ItemUpdateCacheLock)
+            {
+                player.ItemUpdateCache[item] = new(GameLoop.GameLoopTime, false);
+            }
         }
 
         private static void AddDoorToPlayerCache(GamePlayer player, GameDoorBase door)
         {
-            player.DoorUpdateCache[door] = GameLoop.GameLoopTime;
+            lock (player.DoorUpdateCacheLock)
+            {
+                player.DoorUpdateCache[door] = GameLoop.GameLoopTime;
+            }
         }
 
         private static void AddHouseToPlayerCache(GamePlayer player, House house)
         {
-            player.HouseUpdateCache[house] = GameLoop.GameLoopTime;
+            lock (player.HouseUpdateCacheLock)
+            {
+                player.HouseUpdateCache[house] = GameLoop.GameLoopTime;
+            }
         }
 
         private static void AddObjectToPlayerCache(GamePlayer player, GameObject gameObject)
@@ -733,10 +744,27 @@ namespace DOL.GS
         {
             // Players aren't updated here on purpose.
             long startTick = GameLoop.GetRealTime();
-            UpdateNpcs(player);
-            UpdateItems(player);
-            UpdateDoors(player);
-            UpdateHouses(player);
+
+            lock (player.NpcUpdateCacheLock)
+            {
+                UpdateNpcs(player);
+            }
+
+            lock (player.ItemUpdateCacheLock)
+            {
+                UpdateItems(player);
+            }
+
+            lock (player.DoorUpdateCacheLock)
+            {
+                UpdateDoors(player);
+            }
+
+            lock (player.HouseUpdateCacheLock)
+            {
+                UpdateHouses(player);
+            }
+
             long stopTick = GameLoop.GetRealTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
@@ -745,7 +773,7 @@ namespace DOL.GS
 
         private static void UpdateNpcs(GamePlayer player)
         {
-            ConcurrentDictionary<GameNPC, CachedNpcValues> npcUpdateCache = player.NpcUpdateCache;
+            Dictionary<GameNPC, CachedNpcValues> npcUpdateCache = player.NpcUpdateCache;
 
             foreach (var npcInCache in npcUpdateCache)
             {
@@ -814,7 +842,7 @@ namespace DOL.GS
             // If the client forgets about the object at <`VISIBILITY_DISTANCE` but >`STATIC_OBJECT_UPDATE_MIN_DISTANCE`, then it will take up to `WORLD_OBJECT_UPDATE_INTERVAL` for it to reappear.
             // We assume the client cannot forget about the object when <`STATIC_OBJECT_UPDATE_MIN_DISTANCE`. If it does, the object won't reappear.
 
-            ConcurrentDictionary<GameStaticItem, CachedItemValues> itemUpdateCache = player.ItemUpdateCache;
+            Dictionary<GameStaticItem, CachedItemValues> itemUpdateCache = player.ItemUpdateCache;
 
             foreach (var itemInCache in itemUpdateCache)
             {
@@ -843,7 +871,7 @@ namespace DOL.GS
 
         private static void UpdateDoors(GamePlayer player)
         {
-            ConcurrentDictionary<GameDoorBase, long> doorUpdateCache = player.DoorUpdateCache;
+            Dictionary<GameDoorBase, long> doorUpdateCache = player.DoorUpdateCache;
 
             foreach (var doorInCache in doorUpdateCache)
             {
