@@ -10,7 +10,9 @@ using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
+using DOL.GS.Styles;
 using DOL.Language;
+using DOL.Logging;
 
 namespace DOL.GS.Spells
 {
@@ -20,6 +22,8 @@ namespace DOL.GS.Spells
 	/// </summary>
 	public class SpellHandler : ISpellHandler
 	{
+		private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
 		// Maximum number of sub-spells to get delve info for.
 		protected const byte MAX_DELVE_RECURSION = 5;
 
@@ -2341,8 +2345,17 @@ namespace DOL.GS.Spells
 
 				if (m_spellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
 				{
-					AttackData lastAD = playerCaster.TempProperties.GetProperty<AttackData>("LastAttackData");
-					spellLevel = (lastAD != null && lastAD.Style != null) ? lastAD.Style.Level : Math.Min(playerCaster.MaxLevel, target.Level);
+					Style style = playerCaster.attackComponent.attackAction.LastAttackData?.Style;
+
+					if (style == null)
+					{
+						if (log.IsDebugEnabled)
+							log.Debug($"Style is null for {playerCaster.Name} while calculating ToHitChance for spell {Spell.Name}.");
+
+						spellLevel = playerCaster.Level; // Fallback to caster's level.
+					}
+					else
+						spellLevel = style.Level;
 				}
 			}
 
