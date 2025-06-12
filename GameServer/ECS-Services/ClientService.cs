@@ -548,23 +548,12 @@ namespace DOL.GS
 
         public static int SavePlayers()
         {
-            int count = 0;
+            List<GamePlayer> players = GetPlayers();
 
-            using (_lock)
-            {
-                _lock.EnterReadLock();
+            foreach (GamePlayer player in players)
+                player.SaveIntoDatabase();
 
-                Parallel.ForEach(_clients, client =>
-                {
-                    if (client?.ServiceObjectId.IsSet != true)
-                        return;
-
-                    client.SavePlayer();
-                    Interlocked.Increment(ref count);
-                });
-            }
-
-            return count;
+            return players.Count;
         }
 
         private static void AddNpcToPlayerCache(GamePlayer player, GameNPC npc)
