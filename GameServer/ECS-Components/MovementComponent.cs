@@ -35,7 +35,7 @@ namespace DOL.GS
 
         public void Tick()
         {
-            if (Owner.ObjectState is GameObject.eObjectState.Deleted)
+            if (Owner.ObjectState is not GameObject.eObjectState.Active)
             {
                 RemoveFromServiceObjectStore();
                 return;
