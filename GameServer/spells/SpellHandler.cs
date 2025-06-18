@@ -2338,11 +2338,6 @@ namespace DOL.GS.Spells
 				spellLevel = m_caster.EffectiveLevel; // NPCs go there too.
 			else
 			{
-				spellLevel = Spell.Level + playerCaster.GetModified(eProperty.SpellLevel);
-
-				if (spellLevel > playerCaster.MaxLevel)
-					spellLevel = playerCaster.MaxLevel;
-
 				if (m_spellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect || m_spellLine.KeyName.StartsWith(GlobalSpellsLines.Champion_Lines_StartWith))
 				{
 					Style style = playerCaster.attackComponent.attackAction.LastAttackData?.Style;
@@ -2357,6 +2352,10 @@ namespace DOL.GS.Spells
 					else
 						spellLevel = style.Level;
 				}
+				else
+					spellLevel = Spell.Level;
+
+				spellLevel = Math.Min(playerCaster.MaxLevel, spellLevel + playerCaster.GetModified(eProperty.SpellLevel));
 			}
 
 			/*
