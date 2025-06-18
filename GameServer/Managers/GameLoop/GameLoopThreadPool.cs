@@ -12,13 +12,14 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private const int MAX_DEGREE_OF_PARALLELISM = 128;
-
         // Bias factor that shapes an inverse power-law curve used to scale chunk sizes.
         // Higher values favor smaller, safer chunks for better load balancing;
         // lower values produce larger chunks for faster throughput when work is even.
         // 2.5 appears to be a good default for real-world skew.
         private const double WORK_SPLIT_BIAS_FACTOR = 2.5;
+        private const int MAX_DEGREE_OF_PARALLELISM = 128;
+        private const int WORKER_TIMEOUT_MS = 7500;     // Timeout for worker threads to finish their work before being interrupted and restarted.
+        private const long IDLE_CYCLE = -1;             // Represents an idle worker thread cycle, used to detect stuck threads.
 
         // Thread pool configuration and state.
         private bool _running;
@@ -28,6 +29,7 @@ namespace DOL.GS
 
         // Thread management.
         private Thread[] _workers;                      // Worker threads (excludes caller).
+        private long[] _workerCycle;                    // Worker cycle phase, used to detect stuck threads.
         private Thread _watchdog;                       // Monitors worker health; restarts if needed.
         private CancellationTokenSource _shutdownToken;
 
@@ -69,6 +71,7 @@ namespace DOL.GS
             {
                 _workerCount = _degreeOfParallelism - 1;
                 _workers = new Thread[_workerCount];
+                _workerCycle = new long[_workerCount];
                 _workerStartLatch = new(_workerCount);
                 _workReady = new ManualResetEventSlim[_workerCount];
                 _shutdownToken = new();
@@ -146,7 +149,6 @@ namespace DOL.GS
                     log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
 
                 GameServer.Instance.Stop();
-                return;
             }
         }
 
@@ -162,7 +164,7 @@ namespace DOL.GS
             if (!Interlocked.CompareExchange(ref _running, false, true))
                 return;
 
-            if (_watchdog.IsAlive)
+            if (_watchdog != null && _watchdog != Thread.CurrentThread && _watchdog.IsAlive)
                 _watchdog.Join();
 
             _workerStartLatch.Wait(); // Make sure any worker being (re)started has finished.
@@ -181,6 +183,7 @@ namespace DOL.GS
         {
             (int Id, bool Restart) = ((int, bool)) obj;
             _workers[Id] = Thread.CurrentThread;
+            _workerCycle[Id] = IDLE_CYCLE;
             _workReady[Id]?.Dispose();
             _workReady[Id] = new ManualResetEventSlim();
             base.InitWorker(obj);
@@ -190,17 +193,24 @@ namespace DOL.GS
             if (Restart)
                 Interlocked.Increment(ref _workState.CompletedWorkerCount);
 
-            RunWorkerLoop(_workReady[Id], _shutdownToken.Token);
+            RunWorkerLoop(Id, _shutdownToken.Token);
         }
 
-        private void RunWorkerLoop(ManualResetEventSlim workReady, CancellationToken cancellationToken)
+        private void RunWorkerLoop(int id, CancellationToken cancellationToken)
         {
+            ManualResetEventSlim workReady = _workReady[id];
+            ref long workerCycle = ref _workerCycle[id];
+            long cycle = IDLE_CYCLE;
+
             while (Volatile.Read(ref _running))
             {
                 try
                 {
                     workReady.Wait(cancellationToken);
+                    workerCycle = ++cycle;
                     workReady.Reset();
+                    _workerRoutine();
+                     Interlocked.Increment(ref _workState.CompletedWorkerCount); // Not in the finally block on purpose.
                 }
                 catch (OperationCanceledException)
                 {
@@ -209,21 +219,24 @@ namespace DOL.GS
 
                     return;
                 }
-                catch (ThreadInterruptedException)
+                catch (ThreadInterruptedException e)
                 {
-                    if (log.IsInfoEnabled)
-                        log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted", e);
 
                     return;
                 }
                 catch (Exception e)
                 {
                     if (log.IsErrorEnabled)
-                        log.Error($"Thread \"{Thread.CurrentThread.Name}\"", e);
-                }
+                        log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
 
-                _workerRoutine();
-                 Interlocked.Increment(ref _workState.CompletedWorkerCount); // Not in a finally block on purpose.
+                    GameServer.Instance.Stop();
+                }
+                finally
+                {
+                    workerCycle = IDLE_CYCLE;
+                }
             }
 
             if (log.IsInfoEnabled)
@@ -232,41 +245,30 @@ namespace DOL.GS
 
         private void ProcessWorkActions()
         {
-            try
+            int remainingWork = Volatile.Read(ref _workState.RemainingWork);
+
+            while (remainingWork > 0)
             {
-                int remainingWork = Volatile.Read(ref _workState.RemainingWork);
+                int workersRemaining = _degreeOfParallelism - Volatile.Read(ref _workState.CompletedWorkerCount);
+                int chunkSize = (int) (remainingWork / _workSplitBiasTable[workersRemaining]);
 
-                while (remainingWork > 0)
-                {
-                    int workersRemaining = _degreeOfParallelism - Volatile.Read(ref _workState.CompletedWorkerCount);
-                    int chunkSize = (int) (remainingWork / _workSplitBiasTable[workersRemaining]);
+                // Prevent infinite loops.
+                if (chunkSize < 1)
+                    chunkSize = 1;
 
-                    // Prevent infinite loops.
-                    if (chunkSize < 1)
-                        chunkSize = 1;
+                int start = Interlocked.Add(ref _workState.RemainingWork, -chunkSize);
+                int end = start + chunkSize;
 
-                    int start = Interlocked.Add(ref _workState.RemainingWork, -chunkSize);
-                    int end = start + chunkSize;
+                if (end < 1)
+                    break;
 
-                    if (end < 1)
-                        break;
+                if (start < 0)
+                    start = 0;
 
-                    if (start < 0)
-                        start = 0;
+                for (int i = start; i < end; i++)
+                    _workAction(i);
 
-                    for (int i = start; i < end; i++)
-                        _workAction(i);
-
-                    remainingWork = start - 1;
-                }
-            }
-            catch (Exception e)
-            {
-                if (log.IsErrorEnabled)
-                    log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
-
-                GameServer.Instance.Stop();
-                return;
+                remainingWork = start - 1;
             }
         }
 
@@ -284,13 +286,42 @@ namespace DOL.GS
                         Thread worker = _workers[i];
 
                         // Thread is null if it was removed by the watchdog. At this point it's already being replaced, hopefully.
-                        if (worker == null || !worker.Join(100))
+                        if (worker == null)
                             continue;
 
-                        if (log.IsWarnEnabled)
-                            log.Warn($"Watchdog: Thread \"{worker.Name}\" is dead. Restarting...");
+                        // Make sure the thread is still alive.
+                        if (worker.Join(100))
+                        {
+                            if (log.IsWarnEnabled)
+                                log.Warn($"Watchdog: Thread \"{worker.Name}\" has exited unexpectedly. Restarting...");
 
-                        _workersToRestart.Add(i);
+                            _workersToRestart.Add(i);
+                        }
+                        else
+                        {
+                            long cycle = Volatile.Read(ref _workerCycle[i]);
+
+                            if (cycle > IDLE_CYCLE)
+                            {
+                                // If the thread takes more than a couple of seconds to finish its work, interrupt and restart it.
+                                if (worker.Join(WORKER_TIMEOUT_MS))
+                                {
+                                    if (log.IsWarnEnabled)
+                                        log.Warn($"Watchdog: Thread \"{worker.Name}\" has exited unexpectedly. Restarting...");
+
+                                    _workersToRestart.Add(i);
+                                }
+                                else if (Volatile.Read(ref _workerCycle[i]) == cycle)
+                                {
+                                    if (log.IsWarnEnabled)
+                                        log.Warn($"Watchdog: Thread \"{worker.Name}\" is taking too long. Attempting to restart it...");
+
+                                    worker.Interrupt();
+                                    worker.Join(); // Will never return if the thread is stuck in an infinite loop.
+                                    _workersToRestart.Add(i);
+                                }
+                            }
+                        }
                     }
 
                     if (_workersToRestart.Count == 0)
@@ -301,6 +332,9 @@ namespace DOL.GS
 
                     foreach (int id in _workersToRestart)
                     {
+                        if (log.IsWarnEnabled)
+                            log.Warn($"Watchdog: Restarting thread \"{_workers[id].Name}\"");
+
                         _workers[id] = null;
                         Thread newThread = new(new ParameterizedThreadStart(InitWorker))
                         {
@@ -314,8 +348,8 @@ namespace DOL.GS
                 }
                 catch (ThreadInterruptedException)
                 {
-                    if (log.IsInfoEnabled)
-                        log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
 
                     return;
                 }

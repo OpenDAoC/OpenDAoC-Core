@@ -121,8 +121,8 @@ namespace DOL.GS
                 }
                 catch (ThreadInterruptedException)
                 {
-                    if (log.IsInfoEnabled)
-                        log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
 
                     return;
                 }
@@ -228,8 +228,8 @@ namespace DOL.GS
             }
             catch (ThreadInterruptedException)
             {
-                if (log.IsInfoEnabled)
-                    log.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
+                if (log.IsWarnEnabled)
+                    log.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
 
                 return;
             }

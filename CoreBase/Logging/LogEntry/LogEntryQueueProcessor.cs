@@ -86,8 +86,8 @@ namespace DOL.Logging
                 }
                 catch (ThreadInterruptedException)
                 {
-                    if (_logger.IsInfoEnabled)
-                        _logger.Info($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
+                    if (_logger.IsWarnEnabled)
+                        _logger.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
 
                     ClearQueue();
                     return;
