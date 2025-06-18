@@ -1253,13 +1253,15 @@ namespace DOL.GS
 				if (leftHand != null)
 					shieldSize = Math.Max(leftHand.Type_Damage, 1);
 
-				// Possibly intended to be applied in RvR only.
-				if (shieldSize == 1 && blockChance > 0.8)
+				// This was added in 1.74, then superseded in 1.96 with a 60% cap.
+				// Leaving it here for reference.
+				// Possibly intended to be applied in RvR or PvE only.
+				/*if (shieldSize == 1 && blockChance > 0.8)
 					blockChance = 0.8;
 				else if (shieldSize == 2 && blockChance > 0.9)
 					blockChance = 0.9;
 				else if (shieldSize == 3 && blockChance > 0.99)
-					blockChance = 0.99;
+					blockChance = 0.99;*/
 
 				if (IsEngaging)
 				{
