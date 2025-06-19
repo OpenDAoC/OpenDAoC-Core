@@ -145,8 +145,8 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                if (log.IsErrorEnabled)
-                    log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
+                if (log.IsFatalEnabled)
+                    log.Fatal($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
 
                 GameServer.Instance.Stop();
             }
@@ -214,24 +214,22 @@ namespace DOL.GS
                 }
                 catch (OperationCanceledException)
                 {
-                    if (log.IsInfoEnabled)
-                        log.Info($"Thread \"{Thread.CurrentThread.Name}\" was cancelled");
-
-                    return;
+                    break;
                 }
-                catch (ThreadInterruptedException e)
+                catch (ThreadInterruptedException)
                 {
                     if (log.IsWarnEnabled)
-                        log.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted", e);
+                        log.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
 
-                    return;
+                    break;
                 }
                 catch (Exception e)
                 {
-                    if (log.IsErrorEnabled)
-                        log.Error($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
+                    if (log.IsFatalEnabled)
+                        log.Fatal($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
 
                     GameServer.Instance.Stop();
+                    break;
                 }
                 finally
                 {
@@ -350,8 +348,6 @@ namespace DOL.GS
                 {
                     if (log.IsWarnEnabled)
                         log.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
-
-                    return;
                 }
                 catch (Exception e)
                 {

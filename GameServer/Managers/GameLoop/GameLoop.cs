@@ -119,20 +119,13 @@ namespace DOL.GS
                     Sleep();
                     UpdateStatsAndTime();
                 }
-                catch (ThreadInterruptedException)
-                {
-                    if (log.IsWarnEnabled)
-                        log.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
-
-                    return;
-                }
                 catch (Exception e)
                 {
-                    if (log.IsErrorEnabled)
-                        log.Error($"Critical error encountered in {nameof(GameLoop)}: {e}");
+                    if (log.IsFatalEnabled)
+                        log.Fatal($"Critical error encountered in {nameof(GameLoop)}: {e}");
 
                     GameServer.Instance.Stop();
-                    return;
+                    break;
                 }
             }
 
@@ -230,8 +223,11 @@ namespace DOL.GS
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
-
-                return;
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Critical error encountered in {nameof(GameLoop)}: {e}");
             }
 
             if (log.IsInfoEnabled)

@@ -52,7 +52,6 @@ namespace DOL.Logging
             {
                 _loggingQueue.Add(logEntry);
             }
-            catch (NullReferenceException) { }
             catch (ObjectDisposedException) { }
         }
 
@@ -62,7 +61,6 @@ namespace DOL.Logging
             {
                 _loggingQueue.TryAdd(logEntry);
             }
-            catch (NullReferenceException) { }
             catch (ObjectDisposedException) { }
         }
 
@@ -78,19 +76,14 @@ namespace DOL.Logging
                 }
                 catch (OperationCanceledException)
                 {
-                    if (_logger.IsInfoEnabled)
-                        _logger.Info($"Thread \"{Thread.CurrentThread.Name}\" was cancelled");
-
-                    ClearQueue();
-                    return;
+                    break;
                 }
                 catch (ThreadInterruptedException)
                 {
                     if (_logger.IsWarnEnabled)
                         _logger.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
 
-                    ClearQueue();
-                    return;
+                    break;
                 }
                 catch (Exception e)
                 {
@@ -102,14 +95,8 @@ namespace DOL.Logging
             if (_logger.IsInfoEnabled)
                 _logger.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
 
-            ClearQueue();
-
-            // Clear the queue.
-            void ClearQueue()
-            {
-                while (_loggingQueue.TryTake(out LogEntry logEntry))
-                    logEntry.Log();
-            }
+            while (_loggingQueue.TryTake(out LogEntry logEntry))
+                logEntry.Log();
         }
     }
 }
