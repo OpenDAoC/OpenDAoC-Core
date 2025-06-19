@@ -210,7 +210,7 @@ namespace DOL.GS
                     workerCycle = ++cycle;
                     workReady.Reset();
                     _workerRoutine();
-                     Interlocked.Increment(ref _workState.CompletedWorkerCount); // Not in the finally block on purpose.
+                    Interlocked.Increment(ref _workState.CompletedWorkerCount); // Not in the finally block on purpose.
                 }
                 catch (OperationCanceledException)
                 {
@@ -429,50 +429,56 @@ namespace DOL.GS
 
             private sealed class TickObjectPool<T> : ITickObjectPool where T : IPooledObject<T>, new()
             {
-                private const float DECAY_FACTOR = 0.9f;
-                private T[] _items = new T[64];
-                private int _used;
-                private int _highWaterIndex;
-                private int _smoothedHighWater = 64;
+                private const int INITIAL_CAPACITY = 64;       // Initial capacity of the pool.
+                private const double TRIM_SAFETY_FACTOR = 2.5; // Trimming allowed when size > smoothed usage * this factor.
+                private const int HALF_LIFE = 300_000;         // Half-life (ms) for EMA decay.
+                private static double DECAY_FACTOR;            // EMA decay factor based on HALF_LIFE and tick rate.
+
+                private T[] _items = new T[INITIAL_CAPACITY];  // Backing pool array.
+                private int _used;                             // Objects rented this tick.
+                private double _smoothedUsage;                 // Smoothed recent peak usage.
+                private int _logicalSize;                      // Highest non-null index in use.
+
+                static TickObjectPool()
+                {
+                    DECAY_FACTOR = Math.Exp(-Math.Log(2) / (GameLoop.TickRate* HALF_LIFE / 1000.0));
+                }
 
                 public T GetForTick()
                 {
                     T item;
 
-                    if (_used < _highWaterIndex && _items[_used] != null)
+                    if (_used < _logicalSize)
                     {
                         item = _items[_used];
                         _used++;
-                        item.IssuedTimestamp = GameLoop.GameLoopTime;
                     }
                     else
                     {
                         item = new();
-                        item.IssuedTimestamp = GameLoop.GameLoopTime;
 
                         if (_used >= _items.Length)
                             Array.Resize(ref _items, _items.Length * 2);
 
                         _items[_used++] = item;
-                        _highWaterIndex = Math.Max(_highWaterIndex, _used);
+                        _logicalSize = Math.Max(_logicalSize, _used);
                     }
 
+                    item.IssuedTimestamp = GameLoop.GameLoopTime;
                     return item;
                 }
 
                 public void Reset()
                 {
-                    // Shrink (by nulling) only if we're consistently way over used capacity.
-                    _smoothedHighWater = (int) (_smoothedHighWater * DECAY_FACTOR + _highWaterIndex * (1 - DECAY_FACTOR));
+                    _smoothedUsage = Math.Max(_used, _smoothedUsage * DECAY_FACTOR + _used * (1 - DECAY_FACTOR));
+                    int newLogicalSize = (int) (_smoothedUsage * TRIM_SAFETY_FACTOR);
 
-                    if (_items.Length > _smoothedHighWater * 2 + 100)
+                    if (_logicalSize > newLogicalSize)
                     {
-                        int newSize = Math.Max(_smoothedHighWater * 2, 64);
-
-                        for (int i = newSize; i < _items.Length; i++)
+                        for (int i = newLogicalSize; i < _logicalSize; i++)
                             _items[i] = default;
 
-                        _highWaterIndex = newSize;
+                        _logicalSize = newLogicalSize;
                     }
 
                     _used = 0;
