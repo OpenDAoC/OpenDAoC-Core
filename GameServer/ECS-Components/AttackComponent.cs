@@ -1067,9 +1067,16 @@ namespace DOL.GS
                 IsOffHand = weapon != null && weapon.SlotPosition is Slot.LEFTHAND
             };
 
-            // Asp style range add.
-            IEnumerable<StyleProcInfo> rangeProc = style?.Procs.Where(x => x.Spell.SpellType is eSpellType.StyleRange);
-            int addRange = rangeProc?.Any() == true ? (int) (rangeProc.First().Spell.Value - AttackRange) : 0;
+            int attackRange = AttackRange;
+
+            if (style != null)
+            {
+                StyleProcInfo styleProcInfo = style?.Procs.Where(x => x.Spell.SpellType is eSpellType.StyleRange).FirstOrDefault();
+
+                if (styleProcInfo != null)
+                    attackRange = (int) styleProcInfo.Spell.Value; // Fixed range for some reason, don't add to attack range.
+            }
+
             ad.AttackType = AttackData.GetAttackType(weapon, dualWield, ad.Attacker);
 
             // No target.
@@ -1109,7 +1116,7 @@ namespace DOL.GS
             // Melee range check (ranged is already done at this point).
             if (ad.AttackType is not AttackData.eAttackType.Ranged)
             {
-                if (!owner.IsWithinRadius(ad.Target, AttackRange + addRange))
+                if (!owner.IsWithinRadius(ad.Target, attackRange))
                 {
                     ad.AttackResult = eAttackResult.OutOfRange;
                     SendAttackingCombatMessages(action, ad);
