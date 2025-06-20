@@ -2882,7 +2882,7 @@ namespace DOL.GS.Spells
 					// Nightshade spells aren't tied to any trainable specialization and thus require a fixed variance.
 					// Lower bound is similar to what the variance calculation would return if we used 31 for the specialization and 50 for the target level.
 					max = 1.0;
-					min = 0.6;
+					min = UseMinVariance ? max : 0.6;
 					break;
 				}
 				case GlobalSpellsLines.Item_Effects:
@@ -2890,7 +2890,7 @@ namespace DOL.GS.Spells
 				{
 					// Procs and charges normally aren't modified by any stat, but are shown to be able to do about 25% more damage than their base value.
 					max = 1.25;
-					min = UseMinVariance ? 1.25 : 0.75; // 0.6 * 1.25
+					min = UseMinVariance ? max : 0.75; // 1.25 * 0.6.
 					break;
 				}
 				case GlobalSpellsLines.Reserved_Spells:
