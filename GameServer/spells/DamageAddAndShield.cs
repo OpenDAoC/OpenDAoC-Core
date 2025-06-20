@@ -53,6 +53,13 @@ namespace DOL.GS.Spells
             foreach (GamePlayer player in ad.Attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 player.Out.SendCombatAnimation(null, target, 0, 0, 0, 0, 0x0A, target.HealthPercent);
         }
+
+        public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
+        {
+            // See base method for details.
+            min = 0.85;
+            max = min * (5 / 3.0);
+        }
     }
 
     [SpellHandler(eSpellType.DamageShield)]
@@ -99,6 +106,13 @@ namespace DOL.GS.Spells
             foreach (GamePlayer player in attacker.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 player.Out.SendCombatAnimation(null, target, 0, 0, 0, 0, 0x14, target.HealthPercent);
         }
+
+        public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
+        {
+            // See base method for details.
+            min = 0.9;
+            max = min * (5 / 3.0);
+        }
     }
 
     public abstract class AbstractDamageAddSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : SpellHandler(caster, spell, spellLine)
@@ -107,16 +121,15 @@ namespace DOL.GS.Spells
 
         public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {
-            // Placeholder. According to live tests, this should be (or close to) the best variance possible.
+            // According to live tests, a min bound of 1.0 should be (or close to) the best variance possible.
+            // However, lower bound is supposed to be allowed to go below 1 for both damage adds and damage shields.
             // Damage adds are supposed to scale with weaponskill / armor, but independently from the attack's damage.
             // Damage shields are supposed to scale with spec to some extent.
-            // Lower bound is supposed to be allowed to be below 1 for both.
-            // Upper bound is equal to lower*(5/3) most of the time.
+            // Upper bound is equal to lower*(5/3) most of the time, but doesn't seem to be the case for damage adds when weaponskill is very low for example.
             // A similar effectiveness bonus as buffs may be used.
-            // In practice, a damage add generally does less damage than a damage shield of the same value.
+            // In practice, a damage add seems to do less damage than a damage shield of the same value, probably due to the different way they scale.
             // We may want to take level difference into account despite not being live like.
-            min = 1;
-            max = min * (5 / 3.0);
+            base.CalculateDamageVariance(target, out min, out max);
         }
 
         protected static bool AreArgumentsValid(AttackData attackData, out GameLiving attacker, out GameLiving target)
