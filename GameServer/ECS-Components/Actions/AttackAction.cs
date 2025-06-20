@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using DOL.Database;
 using DOL.GS.Styles;
 
@@ -210,9 +211,9 @@ namespace DOL.GS
             {
                 // Cancel the styles if they were registered too long ago.
                 // Nature's Shield stays active forever and falls back to a non-backup style.
-                if (StyleComponent.NextCombatBackupStyle?.ID == 394)
+                if (StyleComponent.NextCombatBackupStyle?.Procs.Where(x => x.Spell.SpellType is eSpellType.NaturesShield).FirstOrDefault() != null)
                     StyleComponent.NextCombatStyle = StyleComponent.NextCombatBackupStyle;
-                else if (StyleComponent.NextCombatStyle?.ID != 394)
+                else if (StyleComponent.NextCombatStyle?.Procs.Where(x => x.Spell.SpellType is eSpellType.NaturesShield).FirstOrDefault() == null)
                     StyleComponent.NextCombatStyle = null;
 
                 StyleComponent.NextCombatBackupStyle = null;

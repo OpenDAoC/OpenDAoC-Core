@@ -1744,9 +1744,13 @@ namespace DOL.GS
             if (ad.AttackType is AttackData.eAttackType.Ranged or AttackData.eAttackType.Spell)
             {
                 // Nature's shield, 100% block chance, 120° frontal angle.
-                if (owner.IsObjectInFront(ad.Attacker, 120) && (owner.styleComponent.NextCombatStyle?.ID == 394 || owner.styleComponent.NextCombatBackupStyle?.ID == 394))
+                StyleProcInfo styleProcInfo =
+                    owner.styleComponent.NextCombatStyle?.Procs.Where(x => x.Spell.SpellType is eSpellType.NaturesShield).FirstOrDefault() ??
+                    owner.styleComponent.NextCombatBackupStyle?.Procs.Where(x => x.Spell.SpellType is eSpellType.NaturesShield).FirstOrDefault();
+
+                if (styleProcInfo != null && owner.IsObjectInFront(ad.Attacker, 120))
                 {
-                    ad.BlockChance = 100;
+                    ad.BlockChance = styleProcInfo.Spell.Value;
                     return true;
                 }
             }
