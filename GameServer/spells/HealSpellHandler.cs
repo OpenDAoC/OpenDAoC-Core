@@ -252,12 +252,7 @@ namespace DOL.GS.Spells
             {
                 if (m_spell.Value > 0)
                 {
-                    if (UseMinVariance)
-                        min = (int) (spellValue * 1.25);
-                    else
-                        min = (int) (spellValue * 0.75);
-
-                    max = (int) (spellValue * 1.25);
+                    min = max = (int) (spellValue * 1.25);
                     return;
                 }
             }

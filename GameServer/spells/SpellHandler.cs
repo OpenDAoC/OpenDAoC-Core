@@ -109,17 +109,6 @@ namespace DOL.GS.Spells
 		public const string INTERRUPT_TIMEOUT_PROPERTY = "CAST_INTERRUPT_TIMEOUT";
 
 		private long _lastDuringCastLosCheckTime;
-		protected bool m_useMinVariance = false;
-
-		/// <summary>
-		/// Should this spell use the minimum variance for the type?
-		/// Followup style effects, for example, always use the minimum variance
-		/// </summary>
-		public bool UseMinVariance
-		{
-			get { return m_useMinVariance; }
-			set { m_useMinVariance = value; }
-		}
 
 		/// <summary>
 		/// Can this SpellHandler Coexist with other Overwritable Spell Effect
@@ -2874,15 +2863,13 @@ namespace DOL.GS.Spells
 				// Further research should be done on these.
 				// The variance range is tied to the base damage calculation.
 				case GlobalSpellsLines.Mob_Spells:
-				case GlobalSpellsLines.Combat_Styles_Effect:
 				case GlobalSpellsLines.Nightshade:
 				{
 					// Mob spells are modified by acuity stats.
-					// Style effects use a custom damage calculation currently expecting the upper bound to be 1.0.
 					// Nightshade spells aren't tied to any trainable specialization and thus require a fixed variance.
 					// Lower bound is similar to what the variance calculation would return if we used 31 for the specialization and 50 for the target level.
 					max = 1.0;
-					min = UseMinVariance ? max : 0.6;
+					min = 0.6;
 					break;
 				}
 				case GlobalSpellsLines.Item_Effects:
@@ -2890,11 +2877,13 @@ namespace DOL.GS.Spells
 				{
 					// Procs and charges normally aren't modified by any stat, but are shown to be able to do about 25% more damage than their base value.
 					max = 1.25;
-					min = UseMinVariance ? max : 0.75; // 1.25 * 0.6.
+					min = 0.75; // 1.25 * 0.6.
 					break;
 				}
+				case GlobalSpellsLines.Combat_Styles_Effect:
 				case GlobalSpellsLines.Reserved_Spells:
 				{
+					// Style effects use a custom damage calculation currently expecting the upper bound to be 1.0, but are not affected by variance.
 					max = 1.0;
 					min = 1.0;
 					break;

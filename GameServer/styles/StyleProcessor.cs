@@ -439,10 +439,7 @@ namespace DOL.GS.Styles
 
 								// Effect could be null if the SpellID is bigger than ushort.
 								if (effect != null)
-								{
-									effect.UseMinVariance = ShouldUseMinVariance(style);
 									styleEffects.Add(effect);
-								}
 							}
 						}
 					}
@@ -454,10 +451,7 @@ namespace DOL.GS.Styles
 
 						// Effect could be null if the SpellID is bigger than ushort.
 						if (effect != null)
-						{
-							effect.UseMinVariance = ShouldUseMinVariance(style);
 							styleEffects.Add(effect);
-						}
 					}
 				}
 
@@ -475,13 +469,6 @@ namespace DOL.GS.Styles
 				#endregion Animation
 
 				return true;
-
-				static bool ShouldUseMinVariance(Style style)
-				{
-					return (style.OpeningRequirementType is Style.eOpening.Offensive && style.OpeningRequirementValue > 0) ||
-						style.OpeningRequirementType is Style.eOpening.Defensive ||
-						style.ClassID == 19; // Reaver styles have no variance.
-				}
 			}
 		}
 

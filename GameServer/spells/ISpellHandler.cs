@@ -106,11 +106,6 @@ namespace DOL.GS.Spells
 		bool AllowCoexisting { get; }
 
 		long CastStartTick { get; }
-		/// <summary>
-		/// Should this spell use the minimum variance for the type?
-		/// Followup style effects, for example, always use the minimum variance
-		/// </summary>
-		bool UseMinVariance { get; set; }
 
 		/// <summary>
 		/// Actions to take when the effect starts
