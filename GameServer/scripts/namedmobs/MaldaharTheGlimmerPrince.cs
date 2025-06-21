@@ -42,10 +42,7 @@ namespace DOL.GS
         {
             get { return ServerProperties.Properties.SET_DIFFICULTY_ON_EPIC_ENCOUNTERS; }
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int MeleeAttackRange => 450;
         public override bool HasAbility(string keyName)
         {

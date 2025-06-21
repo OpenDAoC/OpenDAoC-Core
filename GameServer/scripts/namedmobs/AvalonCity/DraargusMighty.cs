@@ -39,10 +39,7 @@ namespace DOL.GS
 		{
 			get { return 30000; }
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 100;
-		}
+
 		public override void StartAttack(GameObject target)
 		{
 			if (DraugynSphere.SphereCount > 0)

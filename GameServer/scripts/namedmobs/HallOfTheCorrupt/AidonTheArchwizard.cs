@@ -65,10 +65,7 @@ namespace DOL.GS
                 }
             }
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int MeleeAttackRange => 350;
         public override bool HasAbility(string keyName)
         {
@@ -431,10 +428,7 @@ namespace DOL.GS
         public AidonCopyFire() : base()
         {
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int MeleeAttackRange => 350;
         public override double GetArmorAF(eArmorSlot slot)
         {
@@ -557,10 +551,6 @@ namespace DOL.GS
     {
         public AidonCopyIce() : base()
         {
-        }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
         }
         public override int MeleeAttackRange => 350;
         public override double GetArmorAF(eArmorSlot slot)
@@ -685,10 +675,7 @@ namespace DOL.GS
         public AidonCopyAir() : base()
         {
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int MeleeAttackRange => 350;
         public override double GetArmorAF(eArmorSlot slot)
         {
@@ -810,10 +797,7 @@ namespace DOL.GS
         public AidonCopyEarth() : base()
         {
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int MeleeAttackRange => 350;
         public override double GetArmorAF(eArmorSlot slot)
         {

@@ -24,10 +24,7 @@ namespace DOL.GS.Scripts
             get { return 100000; }
         }
         
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
-        }
+
         public override bool HasAbility(string keyName)
         {         
             if (IsAlive && keyName == "CCImmunity")

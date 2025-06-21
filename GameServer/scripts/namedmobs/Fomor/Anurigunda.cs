@@ -284,10 +284,7 @@ namespace DOL.GS
 				default: return 25;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 70;
-		}
+
 		List<int> Id_npctemplates = new List<int>()
 		{
 			60160948,60160946,60160979,60161009

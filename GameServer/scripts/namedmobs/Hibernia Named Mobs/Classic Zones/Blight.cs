@@ -27,10 +27,7 @@ namespace DOL.GS
 				default: return 70;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 100;
-		}
+
 		public override int MeleeAttackRange => 350;
 		public override void StartAttack(GameObject target)
 		{
@@ -251,10 +248,7 @@ namespace DOL.GS
 				default: return 15;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 100;
-		}
+
 		public override int MaxHealth
 		{
 			get { return 2500; }
@@ -361,10 +355,7 @@ namespace DOL.GS
 				default: return 15;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 100;
-		}
+
 		public override int MaxHealth
 		{
 			get { return 5000; }
@@ -470,10 +461,7 @@ namespace DOL.GS
 				default: return 15;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 100;
-		}
+
 		public override int MaxHealth
 		{
 			get { return 10000; }

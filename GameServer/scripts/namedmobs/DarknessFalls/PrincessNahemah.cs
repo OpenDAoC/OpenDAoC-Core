@@ -39,10 +39,7 @@ namespace DOL.GS
             return 0.20;
         }
         
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
-        }
+
         public override int MaxHealth
         {
             get { return 100000; }

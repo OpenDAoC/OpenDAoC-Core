@@ -26,10 +26,7 @@ namespace DOL.GS
 				default: return 30;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 100;
-		}
+
 		public override void OnAttackEnemy(AttackData ad) //on enemy actions
 		{
 			if (Util.Chance(45))

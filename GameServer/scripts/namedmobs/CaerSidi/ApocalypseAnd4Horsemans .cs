@@ -376,10 +376,7 @@ namespace DOL.GS
                 return false;
             return true;
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
-        }
+
         public override int MeleeAttackRange => 350;
         public override bool HasAbility(string keyName)
         {
@@ -556,10 +553,7 @@ namespace DOL.GS
 
             return base.HasAbility(keyName);
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int MeleeAttackRange => 350;
         public override double GetArmorAF(eArmorSlot slot)
         {
@@ -1334,10 +1328,7 @@ namespace DOL.GS
                 }
             }
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int MeleeAttackRange => 350;
         public override double GetArmorAF(eArmorSlot slot)
         {
@@ -1631,10 +1622,7 @@ namespace DOL.GS
     public class MorbusSwarm : GameNPC
     {
         public MorbusSwarm() : base() { }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int MeleeAttackRange => 350;
         public override double GetArmorAF(eArmorSlot slot)
         {
@@ -1868,10 +1856,7 @@ namespace DOL.GS
                 return;
             }
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int MeleeAttackRange => 350;
         public override bool HasAbility(string keyName)
         {
@@ -2061,10 +2046,7 @@ namespace DOL.GS
                 default: return 70; // dmg reduction for rest resists
             }
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100; 
-        }
+
         public override int MeleeAttackRange => 450;
         public override bool HasAbility(string keyName)
         {
@@ -2474,10 +2456,7 @@ namespace DOL.GS
     public class HarbringerOfFate : GameEpicNPC
     {
         public HarbringerOfFate() : base() { }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 90;
-        }
+
         public override int MeleeAttackRange => 350;
         public override double GetArmorAF(eArmorSlot slot)
         {
@@ -2578,10 +2557,7 @@ namespace DOL.GS
     public class RainOfFire : GameEpicNPC
     {
         public RainOfFire() : base() { }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)

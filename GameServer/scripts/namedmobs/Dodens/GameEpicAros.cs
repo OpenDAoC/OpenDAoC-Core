@@ -81,10 +81,7 @@ namespace DOL.GS.Scripts
 
             return base.HasAbility(keyName);
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         /// <summary>
         /// Invoked when Aros the Spiritmaster dies.
         /// </summary>

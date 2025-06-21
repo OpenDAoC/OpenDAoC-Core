@@ -40,10 +40,7 @@ namespace DOL.GS
         {
             get { return 100000; }
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100; //more str more dmg will he deal, modify ingame for easier adjust
-        }
+
         public override int MeleeAttackRange => 350;
         public override bool HasAbility(string keyName)
         {
@@ -677,10 +674,7 @@ namespace DOL.GS
 {
     public class GKTrees : GameNPC
     {
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int MaxHealth
         {
             //trees got low hp, because they spawn preaty often. Modify here to adjust hp

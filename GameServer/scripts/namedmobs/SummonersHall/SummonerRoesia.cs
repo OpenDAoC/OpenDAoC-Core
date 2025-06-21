@@ -59,10 +59,7 @@ namespace DOL.GS
 					base.TakeDamage(source, damageType, damageAmount, criticalAmount);
 			}
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 100;
-		}
+
 		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{

@@ -43,10 +43,7 @@ namespace DOL.GS
         {
             get { return 40000; }
         }
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
 
         public override int MeleeAttackRange => 450;
         public override bool HasAbility(string keyName)
@@ -209,10 +206,7 @@ namespace DOL.GS
         {
         }
 
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
 
         public override int MaxHealth
         {
@@ -274,10 +268,7 @@ namespace DOL.GS
         {
         }
 
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
 
         public override int MaxHealth
         {
@@ -339,10 +330,7 @@ namespace DOL.GS
         {
         }
 
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
 
         public override int MaxHealth
         {

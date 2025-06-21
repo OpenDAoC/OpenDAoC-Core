@@ -66,10 +66,7 @@ namespace DOL.GS
 				}
 			}
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 100;
-		}
+
 		public override int MeleeAttackRange => 350;
 		public override bool HasAbility(string keyName)
 		{
@@ -368,10 +365,7 @@ namespace DOL.GS
 				default: return 25;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 500;
-		}
+
 		public static int TorturedSoulCount = 0;
 		public static int TorturedSoulKilled = 0;
 		public override void Die(GameObject killer)
@@ -534,10 +528,7 @@ namespace DOL.GS
 				default: return 25;// dmg reduction for rest resists
 			}
 		}
-		public override double AttackDamage(DbInventoryItem weapon)
-		{
-			return base.AttackDamage(weapon) * Strength / 150;
-		}
+
 		public static int ExplodeZombieCount = 0;
 		public override void Die(GameObject killer)
 		{

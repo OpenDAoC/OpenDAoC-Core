@@ -26,10 +26,7 @@ namespace DOL.GS
             }
         }
 
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
-        }
+
 
         public override int MaxHealth
         {
@@ -438,10 +435,7 @@ namespace DOL.GS
             get { return 8000; }
         }
 
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override short Quickness { get => base.Quickness; set => base.Quickness = 80; }
         public override short Strength { get => base.Strength; set => base.Strength = 250; }
         public override bool AddToWorld()
@@ -541,10 +535,7 @@ namespace DOL.GS
             get { return 800; }
         }
 
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override bool AddToWorld()
         {
             Model = 904;

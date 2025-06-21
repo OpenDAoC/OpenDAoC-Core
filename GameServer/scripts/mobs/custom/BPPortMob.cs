@@ -37,10 +37,7 @@ namespace DOL.GS.Scripts
             }
         }
 
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * 2.5;
-        }
+
 
         /// <summary>
         /// Gets or sets the base maxspeed of this living

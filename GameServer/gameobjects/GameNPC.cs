@@ -2767,16 +2767,6 @@ namespace DOL.GS
 		}
 
 		/// <summary>
-		/// Returns the Damage this NPC does on an attack, adding 2H damage bonus if appropriate
-		/// </summary>
-		/// <param name="weapon">the weapon used for attack</param>
-		/// <returns></returns>
-		public virtual double AttackDamage(DbInventoryItem weapon)
-		{
-			return attackComponent.AttackDamage(weapon, null, out _);
-		}
-
-		/// <summary>
 		/// Gets/sets the object health
 		/// </summary>
 		public override int Health

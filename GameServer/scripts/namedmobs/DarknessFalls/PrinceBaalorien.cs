@@ -67,10 +67,7 @@ namespace DOL.GS
             return true;
         }
 
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100 * ServerProperties.Properties.EPICS_DMG_MULTIPLIER;
-        }
+
         public override int MeleeAttackRange => 450;
         public override bool HasAbility(string keyName)
         {

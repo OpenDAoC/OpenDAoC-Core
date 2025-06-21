@@ -17,10 +17,7 @@ namespace DOL.GS
         {
         }
         
-        public override double AttackDamage(DbInventoryItem weapon)
-        {
-            return base.AttackDamage(weapon) * Strength / 100;
-        }
+
         public override int GetResist(eDamageType damageType)
         {
             switch (damageType)
