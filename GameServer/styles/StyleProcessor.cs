@@ -364,8 +364,8 @@ namespace DOL.GS.Styles
 					}
 
 					// Styles with a static growth don't use unstyled damage, so armor has to be taken into account here.
-					DbInventoryItem armor = target.Inventory?.GetItem((eInventorySlot) armorHitLocation);
-					styleDamage = styleDamage * (1.0 - target.GetArmorAbsorb(armorHitLocation));
+					// AF isn't taken into account because we don't have a weaponskill to compare it to. This may be a problem.
+					styleDamage *= 1.0 - target.GetArmorAbsorb(armorHitLocation);
 					styleDamageCap = -1; // Uncapped. Is there supposed to be one?
 				}
 				else
@@ -384,9 +384,6 @@ namespace DOL.GS.Styles
 						styleDamageCap = 0;
 					}
 				}
-
-				if (player != null)
-					styleDamage = styleDamage * player.GetModified(eProperty.StyleDamage) * 0.01;
 
 				// Style absorb bonus.
 				if (target is GamePlayer)

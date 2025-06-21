@@ -571,7 +571,7 @@ namespace DOL.GS.Spells
                     break;
             }
 
-            double effectiveness = CalculateDamageEffectiveness();
+            double effectiveness = CalculateDamageEffectiveness(); // Spell damage? Seems wrong.
 
             //Throw Weapon is subject to all the conventional attack results, parry, evade, block, etc.
             ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(null, ad, weapon, ref effectiveness);
