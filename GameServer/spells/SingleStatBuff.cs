@@ -40,10 +40,7 @@ namespace DOL.GS.Spells
                     if (Spell.SpellType is eSpellType.ArmorFactorDebuff)
                         effectiveness *= 1 + Target.GetArmorAbsorb(eArmorSlot.TORSO);
                 }
-                else
-                    playerCaster = Caster as GamePlayer;
-
-                if (playerCaster != null && playerCaster.CharacterClass.ClassType is eClassType.ListCaster)
+                else if (playerCaster != null && playerCaster.CharacterClass.ClassType is eClassType.ListCaster)
                     effectiveness = CalculateEffectivenessFromSpec(playerCaster); // List caster debuffs.
                 else
                     effectiveness = 1.0; // Non list caster debuffs or NPC (necromancer pet excluded).
