@@ -1556,27 +1556,22 @@ namespace DOL.GS
 
         public double CalculateEffectiveness(DbInventoryItem weapon)
         {
-            double effectiveness = 1.0;
+            double effectiveness = 100;
 
-            if (weapon.Item_Type is Slot.RANGED)
+            if (weapon == null || weapon.Item_Type is Slot.RIGHTHAND or Slot.LEFTHAND or Slot.TWOHAND)
+                effectiveness += owner.GetModified(eProperty.MeleeDamage);
+            else if (weapon.Item_Type is Slot.RANGED)
             {
+                effectiveness += owner.GetModified(eProperty.RangedDamage);
+
                 if ((eObjectType) weapon.Object_Type is eObjectType.Longbow or eObjectType.RecurvedBow or eObjectType.CompositeBow)
                 {
-                    if (Properties.ALLOW_OLD_ARCHERY)
-                        effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
-                    else
-                    {
-                        effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
-                        effectiveness += owner.GetModified(eProperty.SpellDamage) * 0.01;
-                    }
+                    if (!Properties.ALLOW_OLD_ARCHERY)
+                        effectiveness += owner.GetModified(eProperty.SpellDamage);
                 }
-                else
-                    effectiveness += owner.GetModified(eProperty.RangedDamage) * 0.01;
             }
-            else if (weapon.Item_Type is Slot.RIGHTHAND or Slot.LEFTHAND or Slot.TWOHAND)
-                effectiveness += owner.GetModified(eProperty.MeleeDamage) * 0.01;
 
-            return effectiveness;
+            return effectiveness * 0.01;
         }
 
         public double CalculateWeaponSkill(DbInventoryItem weapon, GameLiving target, out int spec, out (double, double) varianceRange, out double specModifier, out double baseWeaponSkill)
