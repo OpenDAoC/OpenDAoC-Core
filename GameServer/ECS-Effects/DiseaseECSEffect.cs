@@ -26,8 +26,8 @@ namespace DOL.GS
                 }
             }*/
 
-            Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, EffectType, 1.0 - baseSpeedDebuff);
-            Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, EffectType, 1.0 - baseStrDebuff);
+            Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, 1.0 - baseSpeedDebuff);
+            Owner.BuffBonusMultCategory1.Set((int) eProperty.Strength, this, 1.0 - baseStrDebuff);
             Owner.OnMaxSpeedChange();
 
             // "You are diseased!"
@@ -45,8 +45,8 @@ namespace DOL.GS
         public override void OnStopEffect()
         {
             Owner.Disease(false);
-            Owner.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, EffectType);
-            Owner.BuffBonusMultCategory1.Remove((int)eProperty.Strength, EffectType);
+            Owner.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, this);
+            Owner.BuffBonusMultCategory1.Remove((int) eProperty.Strength, this);
 
             // "You look healthy."
             // "{0} looks healthy again."

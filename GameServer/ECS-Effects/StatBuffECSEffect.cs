@@ -17,7 +17,7 @@ namespace DOL.GS
             {
                 if (!Owner.IsStealthed)
                 {
-                    Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, EffectType, SpellHandler.Spell.Value / 100.0);
+                    Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, SpellHandler.Spell.Value / 100.0);
                     Owner.OnMaxSpeedChange();
                 }
 
@@ -52,7 +52,7 @@ namespace DOL.GS
 
             if (EffectType is eEffect.MovementSpeedBuff)
             {
-                Owner.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, EffectType);
+                Owner.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, this);
                 Owner.OnMaxSpeedChange();
             }
             else

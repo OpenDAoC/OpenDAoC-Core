@@ -15,6 +15,7 @@ namespace DOL.GS.RealmAbilities
 		private int dmgValue = 0;
 		private int duration = 0;
 		private GamePlayer caster;
+		private ECSGameEffect _ichorEffect;
 
 		public override void Execute(GameLiving living)
 		{
@@ -166,12 +167,12 @@ namespace DOL.GS.RealmAbilities
 
 		protected virtual int RootExpires(ECSGameTimer timer)
 		{
-			GameLiving living = timer.Owner as GameLiving;
-			if (living != null)
+			if (timer.Owner is GameLiving living && _ichorEffect != null)
 			{
-				living.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
+				living.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, _ichorEffect);
 				living.OnMaxSpeedChange();
 			}
+
 			timer.Stop();
 			return 0;
 		}
@@ -179,21 +180,22 @@ namespace DOL.GS.RealmAbilities
 		/// <summary>
 		/// Handles attack on buff owner
 		/// </summary>
-		/// <param name="e"></param>
-		/// <param name="sender"></param>
-		/// <param name="arguments"></param>
 		protected virtual void OnAttacked(DOLEvent e, object sender, EventArgs arguments)
 		{
-			AttackedByEnemyEventArgs attackArgs = arguments as AttackedByEnemyEventArgs;
-			GameLiving living = sender as GameLiving;
-			if (attackArgs == null) return;
-			if (living == null) return;
+			if (arguments is not AttackedByEnemyEventArgs attackArgs)
+				return;
+
+			if (sender is not GameLiving living)
+				return;
+
+			if (_ichorEffect == null)
+				return;
 
 			switch (attackArgs.AttackData.AttackResult)
 			{
 				case eAttackResult.HitStyle:
 				case eAttackResult.HitUnstyled:
-					living.BuffBonusMultCategory1.Remove((int)eProperty.MaxSpeed, this);
+					living.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, _ichorEffect);
 					living.OnMaxSpeedChange();
 					break;
 			}

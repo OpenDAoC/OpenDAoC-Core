@@ -49,7 +49,7 @@ namespace DOL.GS
                     effect.Disable();
 
                 double effectiveValue = SpellHandler.Spell.Value * Effectiveness;
-                Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, EffectType, 1.0 - effectiveValue * 0.01);
+                Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, 1.0 - effectiveValue * 0.01);
                 Owner.OnMaxSpeedChange();
             }
             else
@@ -74,7 +74,7 @@ namespace DOL.GS
             {
                 ECSGameSpellEffect speedDebuff = Owner.effectListComponent.GetBestDisabledSpellEffect(eEffect.MovementSpeedDebuff);
                 speedDebuff?.Enable();
-                Owner.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, EffectType);
+                Owner.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, this);
                 Owner.OnMaxSpeedChange();
             }
             else

@@ -1,48 +1,47 @@
-/*
- * DAWN OF LIGHT - The first free open source DAoC server emulator
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- */
+using DOL.GS.Effects;
+
 namespace DOL.GS.PropertyCalc
 {
-	/// <summary>
-	/// Interface for properties that are multiplied to get final value (like max speed)
-	/// </summary>
-	public interface IMultiplicativeProperties
-	{
-		/// <summary>
-		/// Adds new value, if key exists value will be overwriten
-		/// </summary>
-		/// <param name="index">The property index</param>
-		/// <param name="key">The key used to remove value later</param>
-		/// <param name="value">The value added</param>
-		void Set(int index, object key, double value);
+    /// <summary>
+    /// Interface for properties that are multiplied to get final value (like max speed)
+    /// </summary>
+    public interface IMultiplicativeProperties
+    {
+        /// <summary>
+        /// Adds new value, if key exists value will be overwritten
+        /// </summary>
+        /// <param name="index">The property index</param>
+        /// <param name="effect">The key used to remove value later</param>
+        /// <param name="value">The value added</param>
+        void Set(int index, ECSGameEffect effect, double value);
 
-		/// <summary>
-		/// Removes stored value
-		/// </summary>
-		/// <param name="index">The property index</param>
-		/// <param name="key">The key use to add the value</param>
-		void Remove(int index, object key);
+        /// <summary>
+        /// Adds new value, if key exists value will be overwritten
+        /// </summary>
+        /// <param name="index">The property index</param>
+        /// <param name="effect">The key used to remove value later</param>
+        /// <param name="value">The value added</param>
+        void Set(int index, IGameEffect effect, double value);
 
-		/// <summary>
-		/// Gets the property value
-		/// </summary>
-		/// <param name="index">The property index</param>
-		/// <returns>The property value (1.0 = 100%)</returns>
-		double Get(int index);
-	}
+        /// <summary>
+        /// Removes stored value
+        /// </summary>
+        /// <param name="index">The property index</param>
+        /// <param name="effect">The key use to add the value</param>
+        void Remove(int index, ECSGameEffect effect);
+
+        /// <summary>
+        /// Removes stored value
+        /// </summary>
+        /// <param name="index">The property index</param>
+        /// <param name="effect">The key use to add the value</param>
+        void Remove(int index, IGameEffect effect);
+
+        /// <summary>
+        /// Gets the property value
+        /// </summary>
+        /// <param name="index">The property index</param>
+        /// <returns>The property value (1.0 = 100%)</returns>
+        double Get(int index);
+    }
 }

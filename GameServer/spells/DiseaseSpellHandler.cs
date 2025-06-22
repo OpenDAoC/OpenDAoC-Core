@@ -127,8 +127,8 @@ namespace DOL.GS.Spells
 		public override void OnEffectRestored(GameSpellEffect effect, int[] vars)
 		{
 			effect.Owner.Disease(true);
-			effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.0 - 0.15);
-			effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, this, 1.0 - 0.075);
+			effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, effect, 1.0 - 0.15);
+			effect.Owner.BuffBonusMultCategory1.Set((int)eProperty.Strength, effect, 1.0 - 0.075);
 		}
 
 		public override int OnRestoredEffectExpires(GameSpellEffect effect, int[] vars, bool noMessages)
