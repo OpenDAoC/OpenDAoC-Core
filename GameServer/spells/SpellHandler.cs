@@ -2883,7 +2883,7 @@ namespace DOL.GS.Spells
 				case GlobalSpellsLines.Combat_Styles_Effect:
 				case GlobalSpellsLines.Reserved_Spells:
 				{
-					// Style effects use a custom damage calculation currently expecting the upper bound to be 1.0, but are not affected by variance.
+					// Neither RAs or combat styles have any variance.
 					max = 1.0;
 					min = 1.0;
 					break;
@@ -2920,29 +2920,43 @@ namespace DOL.GS.Spells
 		{
 			double spellDamage = Spell.Damage;
 
+			// Life drain spells receive a bonus based on the life drain return value.
 			if (Spell.SpellType is eSpellType.Lifedrain)
 				spellDamage *= 1 + Spell.LifeDrainReturn * 0.001;
 
-			// Combat style effects have their own calculation, using weapon spec and stat.
-			// Item effects (procs, charges), potion effects, and poisons don't use stats.
+			// Item effects (procs, charges), potion effects, and poisons don't scale with anything.
+			if (SpellLine.KeyName is GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Mundane_Poisons or GlobalSpellsLines.Realm_Spells)
+				return Math.Max(0, spellDamage);
+
+			double stat = 0.0;
+			double spec = 0.0;
+
+			// Special handling for combat styles.
+			// Based on live testing, June 2025.
+			// Test parameters:
+			// Class: Valewalker.
+			// Level: 50.
+			// Delve: 125, 150, 198.
+			// Strength: 149~343.
+			// Skill bonus: 0, 4, 8.
+			// Target: Dummy.
+			// No ToA or relic bonus.
+			// Scales with weapon skill (not weapon stat directly) and specialization bonus from items.
+			// Results overestimated damage by 0.1% on average.
 			if (SpellLine.KeyName is GlobalSpellsLines.Combat_Styles_Effect)
 			{
-				int weaponStat = Caster.GetWeaponStat(Caster.ActiveWeapon);
-				double weaponSkillScalar = (3 + 0.02 * weaponStat) / (1 + 0.005 * weaponStat);
-				spellDamage *= (Caster.GetWeaponSkill(Caster.ActiveWeapon) * weaponSkillScalar / 3.0 + 100) / 200.0;
+				stat = Caster.GetWeaponSkill(Caster.ActiveWeapon);
+				spec = Caster.ItemBonus[SkillBase.SpecToSkill(m_spellLine.Spec)]; // Only item bonus increases damage.
+				spellDamage = stat * (spellDamage / 124 + 1 / 23) * (1 + spec * 0.004);
 				return Math.Max(0, spellDamage);
 			}
-			else if (SpellLine.KeyName is GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Mundane_Poisons or GlobalSpellsLines.Realm_Spells)
-				return Math.Max(0, spellDamage);
 
 			// Stats are only partially transferred to the necromancer pet, so we don't use its intelligence at all.
 			// Other pets use their own stats and level.
 			GameLiving modifiedCaster = Caster is NecromancerPet necromancerPet ? necromancerPet.Owner : Caster;
-			double acuity = 0.0;
-			double specBonus = 0.0;
 
 			if (modifiedCaster is GameNPC)
-				acuity = modifiedCaster.GetModified(eProperty.Intelligence);
+				stat = modifiedCaster.GetModified(eProperty.Intelligence);
 			else if (modifiedCaster is GamePlayer playerCaster)
 			{
 				switch ((eCharacterClass) playerCaster.CharacterClass.ID)
@@ -2957,15 +2971,15 @@ namespace DOL.GS.Spells
 						// Special rule for Nightshade.
 						// Spell damage seems to be based on strength around 1.65, but the mana stat is dexterity.
 						// 1.62 made them benefit from Augmented Acuity, but the calculator isn't adding it to prevent melee damage from increasing too, so we have to do it here.
-						acuity = playerCaster.GetModified((eProperty) playerCaster.Strength) + playerCaster.AbilityBonus[eProperty.Acuity];
+						stat = playerCaster.GetModified((eProperty) playerCaster.Strength) + playerCaster.AbilityBonus[eProperty.Acuity];
 						break;
 					}
 					default:
 					{
 						if (playerCaster.CharacterClass.ManaStat is not eStat.UNDEFINED)
-							acuity = playerCaster.GetModified((eProperty) playerCaster.CharacterClass.ManaStat);
+							stat = playerCaster.GetModified((eProperty) playerCaster.CharacterClass.ManaStat);
 
-						specBonus = playerCaster.ItemBonus[SkillBase.SpecToSkill(m_spellLine.Spec)]; // Only item bonus increases damage.
+						spec = playerCaster.ItemBonus[SkillBase.SpecToSkill(m_spellLine.Spec)]; // Only item bonus increases damage.
 						break;
 					}
 				}
@@ -2973,7 +2987,7 @@ namespace DOL.GS.Spells
 
 			// A nerf of about 10% to spell damage was supposedly applied around 2014. We are not applying it.
 			// This formula is also somewhat inaccurate. Even with that nerf applied, the intelligence modifier is too high when comparing damage on live at low level.
-			spellDamage *= (1 + acuity * 0.005) * (1 + specBonus * 0.005);
+			spellDamage *= (1 + stat * 0.005) * (1 + spec * 0.005);
 			return Math.Max(0, spellDamage);
 		}
 
