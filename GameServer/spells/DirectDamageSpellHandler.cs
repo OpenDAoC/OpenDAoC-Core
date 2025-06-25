@@ -137,54 +137,6 @@ namespace DOL.GS.Spells
 			target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
 		}
 
-		/*
-		 * We need to send resist spell los check packets because spell resist is calculated first, and
-		 * so you could be inside keep and resist the spell and be interrupted when not in view
-		 */
-		protected override void OnSpellResisted(GameLiving target)
-		{
-			// 1.65 compliance. No LoS check on PBAoE or AoE spells.
-			if (Spell.Target is eSpellTarget.CONE)
-			{
-				GamePlayer checkPlayer = null;
-
-				if (target is GamePlayer)
-					checkPlayer = target as GamePlayer;
-				else
-				{
-					if (Caster is GamePlayer)
-						checkPlayer = Caster as GamePlayer;
-					else if (Caster is GameNPC npcCaster && npcCaster.Brain is IControlledBrain npcCasterBrain)
-						checkPlayer = npcCasterBrain.GetPlayerOwner();
-				}
-
-				if (checkPlayer != null)
-					checkPlayer.Out.SendCheckLos(Caster, target, new CheckLosResponse(ResistSpellCheckLos));
-				else
-					base.OnSpellResisted(target);
-			}
-			else
-				base.OnSpellResisted(target);
-		}
-
-		private void ResistSpellCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			if (response is eLosCheckResponse.TRUE)
-			{
-				try
-				{
-					GameLiving target = Caster.CurrentRegion.GetObject(targetOID) as GameLiving;
-					if (target != null)
-						base.OnSpellResisted(target);
-				}
-				catch (Exception e)
-				{
-					if (log.IsErrorEnabled)
-						log.Error(string.Format("targetOID:{0} caster:{1} exception:{2}", targetOID, Caster, e));
-				}
-			}
-		}
-
 		// constructor
 		public DirectDamageSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) {}
 	}

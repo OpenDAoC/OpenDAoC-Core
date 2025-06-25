@@ -2431,7 +2431,7 @@ namespace DOL.GS.Spells
 
 				if (spellResistChance > spellResistRoll)
 				{
-					OnSpellResisted(target);
+					OnSpellNegated(target, SpellNegatedReason.Resisted);
 					return true;
 				}
 			}
@@ -2439,16 +2439,17 @@ namespace DOL.GS.Spells
 			return false;
 		}
 
-		/// <summary>
-		/// When spell was resisted
-		/// </summary>
-		protected virtual void OnSpellResisted(GameLiving target)
+		protected virtual void OnSpellNegated(GameLiving target, SpellNegatedReason reason)
 		{
+			if (reason is SpellNegatedReason.Resisted)
+			{
 			SendSpellResistAnimation(target);
 			SendSpellResistMessages(target);
-			SendSpellResistNotification(target);
-			StartSpellResistInterruptTimer(target);
-			StartSpellResistLastAttackTimer(target);
+		}
+
+			SendSpellNegatedNotification(target);
+			StartSpellNegatedInterruptTimer(target);
+			StartSpellNegatedLastAttackTimer(target);
 		}
 
 		/// <summary>
@@ -2486,7 +2487,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Send Spell Attack Data Notification to Target when Spell is Resisted
 		/// </summary>
-		public virtual void SendSpellResistNotification(GameLiving target)
+		public virtual void SendSpellNegatedNotification(GameLiving target)
 		{
 			// Report resisted spell attack data to any type of living object, no need
 			// to decide here what to do. For example, NPCs will use their brain.
@@ -2505,7 +2506,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Start Spell Interrupt Timer when Spell is Resisted
 		/// </summary>
-		public virtual void StartSpellResistInterruptTimer(GameLiving target)
+		public virtual void StartSpellNegatedInterruptTimer(GameLiving target)
 		{
 			// Spells that would have caused damage or are not instant will still
 			// interrupt a casting player.
@@ -2516,7 +2517,7 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Start Last Attack Timer when Spell is Resisted
 		/// </summary>
-		public virtual void StartSpellResistLastAttackTimer(GameLiving target)
+		public virtual void StartSpellNegatedLastAttackTimer(GameLiving target)
 		{
 			if (target.Realm == 0 || Caster.Realm == 0)
 			{
@@ -3941,5 +3942,11 @@ namespace DOL.GS.Spells
 		}
 
 		#endregion
+
+		protected enum SpellNegatedReason
+		{
+			Resisted,
+			Immune
+		}
 	}
 }

@@ -28,7 +28,7 @@ namespace DOL.GS.Spells
 			{
 				//EffectService.RequestCancelEffect(effect);
 				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
-				OnSpellResisted(target);
+				OnSpellNegated(target, SpellNegatedReason.Immune);
 				return;
 			}
 			if (target.EffectList.GetOfType<ChargeEffect>() != null)

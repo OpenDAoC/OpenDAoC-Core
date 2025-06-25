@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
 			{
 				MessageToCaster("Your target is immune!", eChatType.CT_SpellResisted);
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
-				OnSpellResisted(target);
+				OnSpellNegated(target, SpellNegatedReason.Immune);
 				return;
 			}
 

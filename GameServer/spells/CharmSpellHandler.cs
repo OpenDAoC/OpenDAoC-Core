@@ -49,7 +49,7 @@ namespace DOL.GS.Spells
             target ??= Target;
 
             if (Util.ChanceDouble(CalculateSpellResistChance(target)))
-                OnSpellResisted(target);
+                OnSpellNegated(target, SpellNegatedReason.Resisted);
             else
                 ApplyEffectOnTarget(target);
 

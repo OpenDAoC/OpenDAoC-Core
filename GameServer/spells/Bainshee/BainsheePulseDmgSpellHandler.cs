@@ -120,38 +120,6 @@ namespace DOL.GS.Spells
 			SendDamageMessages(ad);
 			target.StartInterruptTimer(target.SpellInterruptDuration, ad.AttackType, Caster);
 		}
-		/*
-		 * We need to send resist spell los check packets because spell resist is calculated first, and
-		 * so you could be inside keep and resist the spell and be interupted when not in view
-		 */
-		protected override void OnSpellResisted(GameLiving target)
-		{
-			if (target is GamePlayer && Caster.TempProperties.GetProperty<bool>("player_in_keep_property"))
-			{
-				GamePlayer player = target as GamePlayer;
-				player.Out.SendCheckLos(Caster, player, new CheckLosResponse(ResistSpellCheckLos));
-			}
-			else
-				base.OnSpellResisted(target);
-		}
-
-		private void ResistSpellCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
-		{
-			if (response is eLosCheckResponse.TRUE)
-			{
-				try
-				{
-					GameLiving target = Caster.CurrentRegion.GetObject(targetOID) as GameLiving;
-					if (target != null)
-						base.OnSpellResisted(target);
-				}
-				catch (Exception e)
-				{
-					if (log.IsErrorEnabled)
-						log.Error(string.Format("targetOID:{0} caster:{1} exception:{2}", targetOID, Caster, e));
-				}
-			}
-		}
 
 		#endregion
 

@@ -186,9 +186,9 @@ namespace DOL.GS.Spells
             if (earlyResist)
             {
                 SendSpellResistAnimation(target);
-                SendSpellResistNotification(target);
-                StartSpellResistInterruptTimer(target);
-                StartSpellResistLastAttackTimer(target);
+                SendSpellNegatedNotification(target);
+                StartSpellNegatedInterruptTimer(target);
+                StartSpellNegatedLastAttackTimer(target);
                 return true;
             }
 
@@ -262,7 +262,7 @@ namespace DOL.GS.Spells
             {
                 MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
                 target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
-                base.OnSpellResisted(target);
+                base.OnSpellNegated(target, SpellNegatedReason.Immune);
                 return;
             }
 
@@ -276,7 +276,7 @@ namespace DOL.GS.Spells
                     stunblock.Cancel(false);
                     if (target is GamePlayer)
                         (target as GamePlayer).Out.SendMessage("Your item effect intercepts the stun spell and fades!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-                    base.OnSpellResisted(target);
+                    base.OnSpellNegated(target);
                     return;
                 }*/
             }

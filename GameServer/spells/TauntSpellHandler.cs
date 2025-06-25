@@ -42,9 +42,9 @@ namespace DOL.GS.Spells
 		/// When spell was resisted
 		/// </summary>
 		/// <param name="target">the target that resisted the spell</param>
-		protected override void OnSpellResisted(GameLiving target)
+		protected override void OnSpellNegated(GameLiving target, SpellNegatedReason reason)
 		{
-			base.OnSpellResisted(target);
+			base.OnSpellNegated(target, reason);
 
 			// Interrupt only if target is actually casting
 			if (target.IsCasting && Spell.Target != eSpellTarget.CONE)

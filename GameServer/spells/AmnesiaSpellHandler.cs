@@ -45,13 +45,9 @@ namespace DOL.GS.Spells
 
         }
 
-        /// <summary>
-        /// When spell was resisted
-        /// </summary>
-        /// <param name="target">the target that resisted the spell</param>
-        protected override void OnSpellResisted(GameLiving target)
+        protected override void OnSpellNegated(GameLiving target, SpellNegatedReason reason)
         {
-            base.OnSpellResisted(target);
+            base.OnSpellNegated(target, reason);
 
             // Start interrupt even for resisted instant amnesia.
             if (Spell.CastTime == 0)

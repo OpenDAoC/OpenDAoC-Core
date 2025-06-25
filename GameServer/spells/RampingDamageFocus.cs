@@ -10,7 +10,6 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.RampingDamageFocus)]
 	public class RampingDamageFocus : SpellHandler
 	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 		private int pulseCount = 0;
 		private ISpellHandler snareSubSpell;
 
@@ -86,7 +85,7 @@ namespace DOL.GS.Spells
 			{
 				if (Util.ChanceDouble(CalculateSpellResistChance(t)))
 				{
-					OnSpellResisted(t);
+					OnSpellNegated(target, SpellNegatedReason.Resisted);
 					continue;
 				}
 				
