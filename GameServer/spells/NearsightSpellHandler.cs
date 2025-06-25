@@ -22,20 +22,20 @@ namespace DOL.GS.Spells
 			//Nearsight Immunity check
 			if (target.HasAbility(Abilities.NSImmunity))
 			{
-				MessageToCaster(target.Name + " can't be nearsighted!", eChatType.CT_SpellResisted);
+				MessageToCaster("Your target can't be nearsighted!", eChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);
 				return;
 			}
 			if (EffectListService.GetEffectOnTarget(target, eEffect.Nearsight) != null)
             {
-				MessageToCaster(target.Name + " already has this effect!", eChatType.CT_SpellResisted);
+				MessageToCaster("Your target already has this effect!", eChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);
 				//target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 				return;
 			}
 			if (EffectListService.GetEffectOnTarget(target, eEffect.NearsightImmunity) != null)
 			{
-				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+				MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
 				SendEffectAnimation(target, 0, false, 0);
 				
 				return;

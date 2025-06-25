@@ -513,7 +513,7 @@ namespace DOL.GS.Spells
 			if (Target !=null && Target.HasAbility("DamageImmunity") && Spell.SpellType == eSpellType.DirectDamage && Spell.Radius == 0)
 			{
 				if (!quiet)
-					MessageToCaster(Target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+					MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
 
 				return false;
 			}

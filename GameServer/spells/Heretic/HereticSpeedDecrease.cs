@@ -32,12 +32,12 @@ namespace DOL.GS.Spells
 			}
             if (target.HasAbility(Abilities.CCImmunity))
             {
-                MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+                MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
                 return;
             }
             if (target.TempProperties.GetProperty<bool>("Charging"))
             {
-                MessageToCaster(target.Name + " is moving to fast for this spell to have any effect!", eChatType.CT_SpellResisted);
+                MessageToCaster("Your target is moving to fast for this spell to have any effect!", eChatType.CT_SpellResisted);
                 return;
             }
 			base.ApplyEffectOnTarget(target);

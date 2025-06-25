@@ -27,7 +27,7 @@ namespace DOL.GS.Spells
 				&& !Spell.Name.Equals("Prevent Flight"))
 			{
 				//EffectService.RequestCancelEffect(effect);
-				MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+				MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
 				OnSpellNegated(target, SpellNegatedReason.Immune);
 				return;
 			}

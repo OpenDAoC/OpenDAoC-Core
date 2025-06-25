@@ -174,7 +174,7 @@ namespace DOL.GS.Spells
 				}
 				if (Target.HasAbility(Abilities.DamageImmunity))
 				{
-					MessageToCaster(Target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+					MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
 					return false;
 				}
 				if (GameServer.ServerRules.IsAllowedToAttack(Caster, Target, true) && chamber.PrimarySpell.Target == eSpellTarget.REALM)

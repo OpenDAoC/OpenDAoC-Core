@@ -234,7 +234,7 @@ namespace DOL.GS.Spells
         {
             if (target.HasAbility(Abilities.CCImmunity)||target.HasAbility(Abilities.StunImmunity))
             {
-                MessageToCaster(target.Name + " is immune to this effect!", eChatType.CT_SpellResisted);
+                MessageToCaster("Your target is immune to this effect!", eChatType.CT_SpellResisted);
                 return;
             }
 
