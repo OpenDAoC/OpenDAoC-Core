@@ -1,3 +1,4 @@
+using System;
 using DOL.GS.Effects;
 
 namespace DOL.GS.Spells
@@ -20,14 +21,13 @@ namespace DOL.GS.Spells
 
 		protected override int CalculateEffectDuration(GameLiving target)
 		{
-			NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
-			if (npcImmune != null)
-			{
-				int duration = (int)npcImmune.CalculateStunDuration(Spell.Duration);
-				return  duration > 1 ? duration : 1;
-			}
-			else
-				return Spell.Duration;
+			// Override to ignore eProperty.StunDurationReduction.
+			double duration = Spell.Duration;
+
+			if (EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity) is NPCECSStunImmunityEffect immunityEffect)
+				duration = immunityEffect.CalculateStunDuration((long) duration);
+
+			return (int) Math.Max(duration, 1);
 		}
 
 		/// <summary>

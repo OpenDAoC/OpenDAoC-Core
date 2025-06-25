@@ -199,17 +199,11 @@ namespace DOL.GS.Spells
         {
             double duration = base.CalculateEffectDuration(target);
             duration *= target.GetModified(eProperty.MesmerizeDurationReduction) * 0.01;
-            NPCECSMezImmunityEffect npcImmune = (NPCECSMezImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCMezImmunity);
 
-            if (npcImmune != null)
-                duration = npcImmune.CalculateMezDuration((long)duration);
+            if (EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity) is NPCECSMezImmunityEffect immunityEffect)
+                duration = immunityEffect.CalculateMezDuration((long) duration);
 
-            if (duration < 1)
-                duration = 1;
-            else if (duration > (Spell.Duration * 4))
-                duration = Spell.Duration * 4;
-
-            return (int)duration;
+            return (int) Math.Clamp(duration, 1, Spell.Duration * 4);
         }
 
         public MesmerizeSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
@@ -294,17 +288,11 @@ namespace DOL.GS.Spells
         {
             double duration = base.CalculateEffectDuration(target);
             duration *= target.GetModified(eProperty.StunDurationReduction) * 0.01;
-            NPCECSStunImmunityEffect npcImmune = (NPCECSStunImmunityEffect)EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity);
 
-            if (npcImmune != null)
-                duration = npcImmune.CalculateStunDuration((long)duration); //target.GetModified(eProperty.StunDurationReduction) * 0.01;
+            if (EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity) is NPCECSStunImmunityEffect immunityEffect)
+                duration = immunityEffect.CalculateStunDuration((long) duration);
 
-            if (duration < 1)
-                duration = 1;
-            else if (duration > (Spell.Duration * 4))
-                duration = Spell.Duration * 4;
-
-            return (int)duration;
+            return (int) Math.Clamp(duration, 1, Spell.Duration * 4);
         }
 
         /// <summary>
