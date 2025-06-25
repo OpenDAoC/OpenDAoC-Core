@@ -2443,9 +2443,9 @@ namespace DOL.GS.Spells
 		{
 			if (reason is SpellNegatedReason.Resisted)
 			{
-			SendSpellResistAnimation(target);
-			SendSpellResistMessages(target);
-		}
+				SendSpellResistAnimation(target);
+				SendSpellResistMessages(target);
+			}
 
 			SendSpellNegatedNotification(target);
 			StartSpellNegatedInterruptTimer(target);
@@ -2508,9 +2508,8 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void StartSpellNegatedInterruptTimer(GameLiving target)
 		{
-			// Spells that would have caused damage or are not instant will still
-			// interrupt a casting player.
-			if(!(Spell.SpellType.ToString().IndexOf("debuff", StringComparison.OrdinalIgnoreCase) >= 0 && Spell.CastTime == 0))
+			// Spells that would have caused damage or are not instant will still interrupt.
+			if (Spell.Damage > 0 || Spell.CastTime != 0)
 				target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}
 
