@@ -1,0 +1,3 @@
+alright, let's begin laying out our unit tests. 
+go through the game rules, and start to work through each individual system of our game rules. for each component, analyze what functionality it handles and what role it serves for the game rules, and then create tests for it that cover the use cases that the component serves. always consider our interface-first architecture, and build your unit tests using interfaces. 
+reference the interface design document for interface examples, and expand it with other interfaces that you discover are needed.

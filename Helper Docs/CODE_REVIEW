@@ -1,0 +1,1108 @@
+# OpenDAoC Code Review Guide
+
+This guide provides comprehensive criteria for conducting code reviews on the OpenDAoC (Dark Age of Camelot) server emulator project. Each section outlines specific aspects to examine, common issues to identify, and project-specific requirements to enforce.
+
+## Quick Navigation
+
+1. **Architecture & Design Patterns** - ECS, interfaces, service layer
+2. **SOLID Principles & Clean Code** - Engineering best practices
+3. **Game Rule Compliance** - DAoC mechanics accuracy
+4. **Performance & Optimization** - Critical performance targets
+5. **Interface-First Design** - Contract-driven development
+6. **Testing & Quality** - TDD and coverage standards
+7. **Code Organization** - Structure and maintainability
+8. **Documentation** - Game rules and API documentation
+9. **Legacy Code Migration** - Modernization patterns
+10. **Security & Stability** - Server reliability
+
+## Project Context
+
+**Game System**: Dark Age of Camelot Server Emulator
+**Framework**: .NET 9.0 with modern C# features (Lock, etc.)
+**Architecture**: Interface-first, ECS (Entity Component System), Service Layer
+**Core Principles**: SOLID, DRY, performance-critical gaming server
+**Critical Requirements**: Sub-millisecond combat calculations, authentic DAoC mechanics
+
+---
+
+## 1. Architecture & Design Patterns
+
+### Core Architecture Requirements
+
+#### Entity Component System (ECS)
+```csharp
+// ✅ GOOD: Proper ECS separation
+public class AttackComponent : IComponent
+{
+    public int WeaponSkill { get; set; }
+    public IWeapon ActiveWeapon { get; set; }
+    // Data only - no behavior
+}
+
+public class CombatService : IGameService
+{
+    public void ProcessCombatRound() 
+    {
+        // Logic operates on components
+    }
+}
+
+// ❌ BAD: Mixing data and behavior
+public class Character
+{
+    public int WeaponSkill { get; set; }
+    public void ProcessAttack() { } // Behavior mixed with data
+}
+```
+
+#### Interface-First Design
+```csharp
+// ✅ GOOD: Interface defines contract first
+public interface ICombatSystem
+{
+    AttackResult ProcessAttack(IAttacker attacker, IDefender defender, AttackContext context);
+    DamageResult CalculateDamage(AttackData attackData);
+}
+
+// ❌ BAD: Direct implementation without interface
+public class CombatCalculator
+{
+    // No interface - violates interface-first principle
+}
+```
+
+#### Service Layer Pattern
+```csharp
+// ✅ GOOD: Business logic in services
+public class CharacterProgressionService : ICharacterProgressionService
+{
+    private readonly IExperienceCalculator _experienceCalculator;
+    private readonly ISpecializationService _specializationService;
+    
+    public void LevelUp(ICharacter character) 
+    {
+        // Stateless service with injected dependencies
+    }
+}
+
+// ❌ BAD: Business logic in entities
+public class Character
+{
+    public void LevelUp() 
+    {
+        // Business logic in entity - violates service layer pattern
+    }
+}
+```
+
+### Design Pattern Requirements
+
+#### Repository Pattern for Data Access
+```csharp
+// ✅ GOOD: Abstracted data access
+public interface ICharacterRepository : IRepository<ICharacter>
+{
+    ICharacter GetByName(string name);
+    IList<ICharacter> GetByGuild(string guildId);
+}
+
+// ❌ BAD: Direct database access
+public class CharacterService
+{
+    public void SaveCharacter(Character character)
+    {
+        Database.Execute("INSERT INTO..."); // Direct DB access
+    }
+}
+```
+
+#### Factory Pattern for Object Creation
+```csharp
+// ✅ GOOD: Centralized creation logic
+public interface IItemFactory
+{
+    IItem CreateFromTemplate(string templateId);
+    IItem CreateRandom(int level, ItemType type);
+    IItem CreateUnique(string uniqueId);
+}
+
+// ❌ BAD: Scattered object creation
+public class SomeClass
+{
+    public void DoWork()
+    {
+        var item = new Item(); // Direct instantiation
+    }
+}
+```
+
+#### Observer Pattern for Events
+```csharp
+// ✅ GOOD: Decoupled event handling
+public interface IEventManager
+{
+    void Subscribe<T>(IEventHandler<T> handler) where T : IGameEvent;
+    void Publish<T>(T gameEvent) where T : IGameEvent;
+}
+
+// ❌ BAD: Tight coupling via direct calls
+public class CombatSystem
+{
+    public void ProcessAttack()
+    {
+        // Direct coupling to multiple systems
+        uiSystem.UpdateHealthBar();
+        logSystem.WriteLog();
+        networkSystem.SendUpdate();
+    }
+}
+```
+
+---
+
+## 2. SOLID Principles & Clean Code
+
+### Single Responsibility Principle (SRP) - CRITICAL ENFORCEMENT
+
+#### Class Size Limits (STRICTLY ENFORCED)
+```csharp
+// ❌ CRITICAL VIOLATION: Class > 500 lines
+public class GamePlayer : GameLiving  // 7,000+ lines - IMMEDIATE REFACTORING REQUIRED
+{
+    // Multiple responsibilities violating SRP
+}
+
+// ✅ GOOD: Decomposed responsibilities
+public class GamePlayer : ICharacter  // ~200 lines
+{
+    private readonly IPlayerInventory _inventory;
+    private readonly IPlayerStats _stats;
+    private readonly IPlayerCombat _combat;
+    // Single responsibility: coordinate player state
+}
+```
+
+**Review Actions**:
+- **300+ lines**: Requires architectural review
+- **500+ lines**: CANNOT be approved - must refactor
+- **1000+ lines**: CRITICAL - halt development until fixed
+
+#### Method Complexity Limits
+```csharp
+// ✅ GOOD: Single responsibility method
+public double CalculateEvadeChance(IDefender defender, int attackerCount)
+{
+    double baseChance = GetBaseEvadeChance(defender);
+    double attackerPenalty = CalculateMultiAttackerPenalty(attackerCount);
+    return ApplyBonusesAndCaps(baseChance - attackerPenalty, defender);
+}
+
+// ❌ BAD: Method doing too many things (>50 lines, complexity >10)
+public void ProcessCombatRound()
+{
+    // 200+ lines handling multiple responsibilities
+}
+```
+
+### Open/Closed Principle (OCP)
+```csharp
+// ✅ GOOD: Extensible via interface
+public interface IPropertyCalculator
+{
+    Property TargetProperty { get; }
+    int Calculate(IPropertySource source);
+}
+
+public class PropertyService
+{
+    public void RegisterCalculator(Property property, IPropertyCalculator calculator)
+    {
+        _calculators[property] = calculator; // Extends without modification
+    }
+}
+
+// ❌ BAD: Requires modification for extension
+public class PropertyCalculator
+{
+    public int Calculate(Property property, IPropertySource source)
+    {
+        switch (property) // Must modify for new properties
+        {
+            case Property.Strength: return CalculateStrength(source);
+            // Must add cases here for new properties
+        }
+    }
+}
+```
+
+### Interface Segregation Principle (ISP)
+```csharp
+// ✅ GOOD: Focused, role-based interfaces
+public interface IAttacker
+{
+    AttackData PrepareAttack(IDefender target, AttackType type);
+}
+
+public interface IDefender
+{
+    DefenseResult TryDefend(AttackData attack);
+}
+
+// ❌ BAD: Fat interface forcing unnecessary dependencies
+public interface ICombatant
+{
+    AttackData PrepareAttack();
+    DefenseResult TryDefend();
+    void CastSpell(); // Not all combatants cast spells
+    void PickLock();  // Not all combatants pick locks
+    void Trade();     // Not all combatants trade
+}
+```
+
+### Dependency Inversion Principle (DIP)
+```csharp
+// ✅ GOOD: Depends on abstractions
+public class CombatService
+{
+    private readonly IDamageCalculator _damageCalculator;
+    private readonly IHitChanceCalculator _hitCalculator;
+    
+    public CombatService(IDamageCalculator damageCalc, IHitChanceCalculator hitCalc)
+    {
+        _damageCalculator = damageCalc;
+        _hitCalculator = hitCalc;
+    }
+}
+
+// ❌ BAD: Depends on concrete implementations
+public class CombatService
+{
+    private readonly DamageCalculator _damageCalculator = new DamageCalculator();
+    private readonly HitChanceCalculator _hitCalculator = new HitChanceCalculator();
+}
+```
+
+### DRY Principle Implementation
+```csharp
+// ✅ GOOD: Extracted common logic
+public static class LevelDifferenceCalculator
+{
+    public static double GetLevelModifier(int attackerLevel, int defenderLevel)
+    {
+        return (attackerLevel - defenderLevel) * 0.0133;
+    }
+}
+
+// Usage across multiple systems
+var hitModifier = LevelDifferenceCalculator.GetLevelModifier(attacker.Level, defender.Level);
+var damageModifier = LevelDifferenceCalculator.GetLevelModifier(caster.Level, target.Level);
+
+// ❌ BAD: Repeated calculation logic
+public class HitCalculator
+{
+    public double Calculate() => (attackerLevel - defenderLevel) * 0.0133; // Repeated
+}
+
+public class DamageCalculator  
+{
+    public double Calculate() => (casterLevel - targetLevel) * 0.0133; // Duplicate logic
+}
+```
+
+---
+
+## 3. Game Rule Compliance
+
+### Combat System Rules (CRITICAL - Must Match Live DAoC)
+
+#### Attack Resolution Order
+```csharp
+// ✅ GOOD: Correct DAoC attack resolution sequence
+public AttackResult ProcessAttack(AttackData attackData)
+{
+    if (CheckIntercept(attackData)) return AttackResult.Intercepted;
+    if (CheckEvade(attackData)) return AttackResult.Evaded;
+    if (CheckParry(attackData)) return AttackResult.Parried;
+    if (CheckBlock(attackData)) return AttackResult.Blocked;
+    if (CheckGuard(attackData)) return AttackResult.Guarded;
+    if (CheckMiss(attackData)) return AttackResult.Missed;
+    if (CheckBladeturn(attackData)) return AttackResult.Bladeturned;
+    
+    return ProcessHit(attackData);
+}
+
+// ❌ BAD: Incorrect order or missing checks
+public AttackResult ProcessAttack(AttackData attackData)
+{
+    if (CheckMiss(attackData)) return AttackResult.Missed; // Wrong order
+    // Missing intercept, guard checks, etc.
+}
+```
+
+#### Hit/Miss Calculation (Exact Formula Required)
+```csharp
+// ✅ GOOD: Correct DAoC hit chance formula
+public double CalculateHitChance(AttackData attackData)
+{
+    double baseMissChance = 0.18; // 18% base miss (patch 1.117C)
+    double levelMod = CalculateLevelDifference(attackData); // ±1.33% per level (PvE only)
+    double multiAttackerPenalty = CalculateMultiAttackerPenalty(attackData); // -0.5% per additional
+    double toHitBonus = CalculateToHitBonus(attackData);
+    
+    return 1.0 - Math.Max(0, baseMissChance + levelMod + multiAttackerPenalty - toHitBonus);
+}
+
+// ❌ BAD: Incorrect formula or missing components
+public double CalculateHitChance(AttackData attackData)
+{
+    return 0.85; // Hardcoded value - violates DAoC mechanics
+}
+```
+
+#### Damage Calculation (Exact Formula Required)
+```csharp
+// ✅ GOOD: Correct DAoC damage formula
+public int CalculateBaseDamage(IWeapon weapon)
+{
+    double baseDamage = weapon.DPS * weapon.Speed * 0.1;
+    double slowWeaponBonus = 1 + (weapon.Speed - 20) * 0.003;
+    return (int)(baseDamage * slowWeaponBonus);
+}
+
+// ❌ BAD: Simplified or incorrect formula
+public int CalculateBaseDamage(IWeapon weapon)
+{
+    return weapon.DPS; // Missing speed calculations and bonuses
+}
+```
+
+### Character Progression Rules
+
+#### Experience and Leveling
+```csharp
+// ✅ GOOD: Correct experience table and calculations
+public class ExperienceCalculator : IExperienceCalculator
+{
+    // Must match live DAoC experience requirements per level
+    private readonly Dictionary<int, long> _experienceTable = LoadOfficialExperienceTable();
+    
+    public long GetExperienceForLevel(int level)
+    {
+        return _experienceTable[level]; // Official values only
+    }
+}
+
+// ❌ BAD: Custom or estimated values
+public long GetExperienceForLevel(int level)
+{
+    return level * 1000; // Simplified - doesn't match live DAoC
+}
+```
+
+#### Specialization Point Allocation
+```csharp
+// ✅ GOOD: Correct spec point formula
+public double CalculateSpecPoints(ICharacter character, int level)
+{
+    return level * character.Class.SpecializationMultiplier / 10.0;
+    // Must match official DAoC spec point progression
+}
+
+// ❌ BAD: Incorrect multiplier or formula
+public double CalculateSpecPoints(ICharacter character, int level)
+{
+    return level * 2; // Wrong formula - doesn't account for class differences
+}
+```
+
+### Property and Bonus System Rules
+
+#### Bonus Caps by Level
+```csharp
+// ✅ GOOD: Official DAoC bonus caps
+public int GetBonusCapForLevel(int level)
+{
+    if (level < 15) return 0;
+    if (level < 20) return 5;
+    if (level < 25) return 10;
+    if (level < 30) return 15;
+    if (level < 35) return 20;
+    if (level < 40) return 25;
+    if (level < 45) return 30;
+    return 35; // Level 45+
+}
+
+// ❌ BAD: Custom caps not matching live DAoC
+public int GetBonusCapForLevel(int level)
+{
+    return level; // Incorrect - too generous
+}
+```
+
+---
+
+## 4. Performance & Optimization (CRITICAL)
+
+### Performance Targets (STRICTLY ENFORCED)
+
+#### Combat System Performance
+```csharp
+// ✅ REQUIRED: Combat calculations must be < 1ms
+[Benchmark]
+public AttackResult ProcessAttack_Performance_Test()
+{
+    var stopwatch = Stopwatch.StartNew();
+    var result = _combatSystem.ProcessAttack(attacker, defender, context);
+    stopwatch.Stop();
+    
+    Assert.That(stopwatch.ElapsedMilliseconds, Is.LessThan(1), 
+        "Combat calculation exceeded 1ms performance target");
+    return result;
+}
+
+// ❌ CRITICAL: Expensive operations in hot paths
+public AttackResult ProcessAttack(AttackData data)
+{
+    // Database query in combat calculation - PERFORMANCE VIOLATION
+    var weaponData = Database.GetWeaponData(data.Weapon.ID);
+    
+    // String operations in hot path - AVOID
+    var logMessage = $"Processing attack from {data.Attacker.Name}";
+    
+    // Complex LINQ in performance-critical code - OPTIMIZE
+    var modifiers = data.Modifiers.Where(m => m.Active).Select(m => m.Value).ToList();
+}
+```
+
+#### Property Calculation Performance
+```csharp
+// ✅ GOOD: Cached property calculations
+public class PropertyService : IPropertyService
+{
+    private readonly Dictionary<string, int> _propertyCache = new();
+    
+    public int GetModifiedValue(IPropertySource source, Property property)
+    {
+        string cacheKey = $"{source.ID}_{property}";
+        if (_propertyCache.TryGetValue(cacheKey, out int cachedValue))
+            return cachedValue;
+            
+        int calculated = CalculateProperty(source, property);
+        _propertyCache[cacheKey] = calculated;
+        return calculated;
+    }
+}
+
+// ❌ BAD: Recalculating properties every access
+public int GetModifiedValue(IPropertySource source, Property property)
+{
+    return CalculateProperty(source, property); // No caching - performance hit
+}
+```
+
+#### Memory Management
+```csharp
+// ✅ GOOD: Object pooling for frequent allocations
+public class AttackDataPool
+{
+    private readonly ConcurrentQueue<AttackData> _pool = new();
+    
+    public AttackData Rent()
+    {
+        if (_pool.TryDequeue(out var data))
+            return data;
+        return new AttackData();
+    }
+    
+    public void Return(AttackData data)
+    {
+        data.Reset();
+        _pool.Enqueue(data);
+    }
+}
+
+// ❌ BAD: Frequent allocations in hot paths
+public AttackResult ProcessAttack()
+{
+    var attackData = new AttackData(); // Allocation on every attack
+    var result = new AttackResult();   // More unnecessary allocations
+    return result;
+}
+```
+
+### Database Performance
+```csharp
+// ✅ GOOD: Async database operations
+public async Task<ICharacter> GetCharacterAsync(string name)
+{
+    return await _characterRepository.GetByNameAsync(name);
+}
+
+// ❌ BAD: Synchronous database calls blocking game loop
+public ICharacter GetCharacter(string name)
+{
+    return _characterRepository.GetByName(name); // Blocking call
+}
+```
+
+---
+
+## 5. Interface-First Design (CORE PRINCIPLE)
+
+### Interface Definition Requirements
+```csharp
+// ✅ GOOD: Interface defined before implementation
+public interface ICombatSystem
+{
+    /// <summary>
+    /// Processes an attack between attacker and defender according to DAoC rules.
+    /// Must complete within 1ms performance target.
+    /// </summary>
+    /// <param name="attacker">The attacking entity</param>
+    /// <param name="defender">The defending entity</param>
+    /// <param name="context">Attack context (multi-attacker, etc.)</param>
+    /// <returns>Result of the attack including hit/miss and damage</returns>
+    AttackResult ProcessAttack(IAttacker attacker, IDefender defender, AttackContext context);
+}
+
+// Implementation follows interface
+public class CombatSystem : ICombatSystem
+{
+    public AttackResult ProcessAttack(IAttacker attacker, IDefender defender, AttackContext context)
+    {
+        // Implementation
+    }
+}
+
+// ❌ BAD: Implementation without interface
+public class CombatCalculator // No interface - violates interface-first
+{
+    public AttackResult ProcessAttack() { }
+}
+```
+
+### Dependency Injection Setup
+```csharp
+// ✅ GOOD: Proper DI registration
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddScoped<ICombatSystem, CombatSystem>();
+    services.AddScoped<IDamageCalculator, DamageCalculator>();
+    services.AddScoped<IPropertyService, PropertyService>();
+}
+
+// ✅ GOOD: Constructor injection
+public class CharacterService
+{
+    private readonly ICombatSystem _combatSystem;
+    private readonly IPropertyService _propertyService;
+    
+    public CharacterService(ICombatSystem combatSystem, IPropertyService propertyService)
+    {
+        _combatSystem = combatSystem;
+        _propertyService = propertyService;
+    }
+}
+
+// ❌ BAD: Service locator anti-pattern
+public class CharacterService
+{
+    public void DoWork()
+    {
+        var combatSystem = ServiceLocator.Get<CombatSystem>(); // Anti-pattern
+    }
+}
+```
+
+### Interface Segregation
+```csharp
+// ✅ GOOD: Focused, single-purpose interfaces
+public interface IHealthManagement
+{
+    void TakeDamage(int amount);
+    void Heal(int amount);
+    int CurrentHealth { get; }
+}
+
+public interface IConditionable
+{
+    void ApplyCondition(ConditionType type, int duration);
+    void RemoveCondition(ConditionType type);
+    bool HasCondition(ConditionType type);
+}
+
+// ❌ BAD: Monolithic interface
+public interface IGameObject
+{
+    void TakeDamage(int amount);
+    void Move(Vector3 position);
+    void CastSpell(ISpell spell);
+    void OpenContainer();
+    void StartTrade();
+    // Too many unrelated responsibilities
+}
+```
+
+---
+
+## 6. Testing & Quality Standards
+
+### Test-Driven Development (TDD)
+```csharp
+// ✅ GOOD: Test-first development
+[Test]
+public void ProcessAttack_ShouldHit_WhenAttackerLevelHigher()
+{
+    // Arrange
+    var attacker = CreateMockAttacker(level: 50);
+    var defender = CreateMockDefender(level: 45);
+    var context = new AttackContext();
+    
+    // Act
+    var result = _combatSystem.ProcessAttack(attacker, defender, context);
+    
+    // Assert
+    result.Hit.Should().BeTrue();
+    result.Damage.Should().BeGreaterThan(0);
+}
+
+// Test written BEFORE implementation
+public class CombatSystem : ICombatSystem
+{
+    public AttackResult ProcessAttack(IAttacker attacker, IDefender defender, AttackContext context)
+    {
+        // Implementation to make test pass
+    }
+}
+```
+
+### Mock Usage Guidelines
+```csharp
+// ✅ GOOD: Mock external dependencies only
+[Test]
+public void LevelUp_ShouldGrantSpecPoints_WhenCharacterEligible()
+{
+    // Arrange
+    var mockCharacter = new Mock<ICharacter>();
+    var mockCalculator = new Mock<ISpecializationCalculator>();
+    mockCalculator.Setup(x => x.CalculatePointsForLevel(It.IsAny<ICharacter>(), 10))
+               .Returns(20);
+    
+    var service = new CharacterProgressionService(mockCalculator.Object);
+    
+    // Act & Assert
+    service.LevelUp(mockCharacter.Object);
+    mockCharacter.Verify(x => x.AddSpecializationPoints(20), Times.Once);
+}
+
+// ❌ BAD: Mocking value objects
+[Test]
+public void Test()
+{
+    var mockAttackData = new Mock<AttackData>(); // Value object - use real instance
+}
+```
+
+### Test Data Builders
+```csharp
+// ✅ GOOD: Fluent test builders
+public class CharacterBuilder
+{
+    private readonly MockCharacter _character = new();
+    
+    public CharacterBuilder WithLevel(int level)
+    {
+        _character.Level = level;
+        return this;
+    }
+    
+    public CharacterBuilder WithClass(ICharacterClass characterClass)
+    {
+        _character.Class = characterClass;
+        return this;
+    }
+    
+    public CharacterBuilder WithWeapon(IWeapon weapon)
+    {
+        _character.ActiveWeapon = weapon;
+        return this;
+    }
+    
+    public MockCharacter Build() => _character;
+}
+
+// Usage
+var character = new CharacterBuilder()
+    .WithLevel(50)
+    .WithClass(warriorClass)
+    .WithWeapon(sword)
+    .Build();
+```
+
+### Coverage Requirements
+- **Business Logic**: 80%+ test coverage required
+- **Combat System**: 95%+ coverage (critical path)
+- **Character Progression**: 90%+ coverage
+- **Property Calculations**: 85%+ coverage
+
+---
+
+## 7. Code Organization & Structure
+
+### Project Structure Requirements
+```
+GameServer/
+├── Interfaces/
+│   ├── Core/           # Core game interfaces
+│   ├── Combat/         # Combat system interfaces  
+│   ├── Character/      # Character system interfaces
+│   └── Items/          # Item system interfaces
+├── Services/           # Business logic implementations
+├── Components/         # ECS components (data only)
+├── Systems/           # ECS systems (logic only)
+└── Legacy/            # Legacy code being migrated
+```
+
+### File Organization
+```csharp
+// ✅ GOOD: Proper class organization
+namespace DOL.GS.Services.Combat
+{
+    /// <summary>
+    /// Handles combat calculations according to DAoC rules.
+    /// Reference: Core_Systems_Game_Rules.md - Combat System section
+    /// </summary>
+    public class CombatService : ICombatService
+    {
+        #region Private Fields
+        private readonly IDamageCalculator _damageCalculator;
+        private readonly IHitChanceCalculator _hitChanceCalculator;
+        #endregion
+
+        #region Constructor
+        public CombatService(IDamageCalculator damageCalculator, IHitChanceCalculator hitChanceCalculator)
+        {
+            _damageCalculator = damageCalculator;
+            _hitChanceCalculator = hitChanceCalculator;
+        }
+        #endregion
+
+        #region Public Methods
+        public AttackResult ProcessAttack(IAttacker attacker, IDefender defender, AttackContext context)
+        {
+            // Implementation
+        }
+        #endregion
+
+        #region Private Methods
+        private bool CheckHitRoll(AttackData attackData)
+        {
+            // Implementation
+        }
+        #endregion
+    }
+}
+```
+
+### Naming Conventions (STRICTLY ENFORCED)
+```csharp
+// ✅ GOOD: Consistent naming
+public interface ICombatSystem          // Interface: I + PascalCase
+public class CombatSystem              // Class: PascalCase
+private readonly IService _service;    // Private field: underscore + camelCase
+public int PropertyName { get; set; }  // Property: PascalCase
+public void MethodName()               // Method: PascalCase
+private void PrivateMethod()           // Private method: PascalCase
+
+// ❌ BAD: Inconsistent naming
+public interface combatSystem          // Wrong case
+public class combat_system             // Underscore not allowed
+private IService service;              // Missing underscore
+public int propertyname { get; set; }  // Wrong case
+```
+
+### Region Standards
+```csharp
+#region Constructor/Destructor  
+#region Public Properties
+#region Public Methods
+#region Protected Methods
+#region Private Methods
+#region Event Handlers
+#region Helper Methods
+```
+
+---
+
+## 8. Documentation Requirements
+
+### XML Documentation (REQUIRED)
+```csharp
+/// <summary>
+/// Calculates damage according to DAoC combat rules.
+/// Formula: BaseDamage = WeaponDPS * WeaponSpeed * 0.1 * SlowWeaponModifier
+/// </summary>
+/// <param name="weapon">The weapon being used for the attack</param>
+/// <param name="attackData">Additional attack context data</param>
+/// <returns>Calculated base damage before modifiers</returns>
+/// <remarks>
+/// Reference: Core_Systems_Game_Rules.md - Combat System - Damage Calculation
+/// Performance target: < 0.1ms execution time
+/// </remarks>
+public int CalculateBaseDamage(IWeapon weapon, AttackData attackData)
+{
+    // Implementation with DAoC-accurate formula
+}
+```
+
+### Game Rule Documentation
+```csharp
+/// <summary>
+/// Implements DAoC evade chance calculation.
+/// 
+/// DAoC Rule: Base Evade = ((Dex + Qui) / 2 - 50) * 0.05 + EvadeAbilityLevel * 5
+/// Modified by buffs/debuffs/items, then divided by (number of attackers / 2)
+/// 
+/// Reference: Core_Systems_Game_Rules.md - Combat System - Defense Mechanics - Evade
+/// </summary>
+public double CalculateEvadeChance(IDefender defender, int attackerCount)
+{
+    // Must implement exact DAoC formula
+}
+```
+
+---
+
+## 9. Legacy Code Migration Patterns
+
+### Adapter Pattern for Legacy Integration
+```csharp
+// ✅ GOOD: Adapter for legacy code
+public class LegacyCharacterAdapter : ICharacter
+{
+    private readonly GamePlayer _legacyPlayer;
+    
+    public LegacyCharacterAdapter(GamePlayer legacyPlayer)
+    {
+        _legacyPlayer = legacyPlayer;
+    }
+    
+    public int Level => _legacyPlayer.Level;
+    public string Name => _legacyPlayer.Name;
+    
+    // Adapt legacy interface to new interface
+}
+
+// ❌ BAD: Direct modification of legacy code
+public class GamePlayer : ICharacter // Don't modify legacy classes directly
+{
+    // 7000+ lines of legacy code
+    // Adding interface implementation here creates more coupling
+}
+```
+
+### Strangler Fig Pattern
+```csharp
+// ✅ GOOD: Gradually replace legacy functionality
+public class CombatSystemFacade : ICombatSystem
+{
+    private readonly LegacyCombatSystem _legacySystem;
+    private readonly NewCombatService _newService;
+    private readonly IFeatureToggle _featureToggle;
+    
+    public AttackResult ProcessAttack(IAttacker attacker, IDefender defender, AttackContext context)
+    {
+        if (_featureToggle.IsEnabled("NewCombatSystem"))
+        {
+            return _newService.ProcessAttack(attacker, defender, context);
+        }
+        
+        // Fallback to legacy system during migration
+        return _legacySystem.ProcessAttack(AdaptToLegacy(attacker, defender, context));
+    }
+}
+```
+
+### Migration Guidelines
+1. **Don't modify legacy classes directly** - use adapters
+2. **Migrate by bounded context** - one system at a time  
+3. **Maintain backward compatibility** during transition
+4. **Use feature toggles** for gradual rollout
+5. **Comprehensive testing** of both old and new paths
+
+---
+
+## 10. Security & Stability
+
+### Input Validation
+```csharp
+// ✅ GOOD: Proper validation
+public void SetLevel(int level)
+{
+    if (level < 1 || level > 50)
+        throw new ArgumentOutOfRangeException(nameof(level), "Level must be between 1 and 50");
+    
+    _level = level;
+}
+
+// ❌ BAD: No validation
+public void SetLevel(int level)
+{
+    _level = level; // Could be negative or exceed limits
+}
+```
+
+### Error Handling
+```csharp
+// ✅ GOOD: Specific exception handling
+public void ProcessSpellCast(ISpell spell, ICharacter caster)
+{
+    try
+    {
+        ValidateSpellCast(spell, caster);
+        ExecuteSpell(spell, caster);
+    }
+    catch (InsufficientManaException ex)
+    {
+        _logger.LogWarning(ex, "Spell cast failed due to insufficient mana for {Character}", caster.Name);
+        NotifyPlayerOfFailure(caster, "You don't have enough mana");
+    }
+    catch (SpellOnCooldownException ex)
+    {
+        _logger.LogWarning(ex, "Spell cast failed due to cooldown for {Character}", caster.Name);
+        NotifyPlayerOfFailure(caster, "That spell is still on cooldown");
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Unexpected error during spell cast for {Character}", caster.Name);
+        // Don't expose internal errors to client
+        NotifyPlayerOfFailure(caster, "Spell cast failed");
+        throw; // Re-throw for system stability
+    }
+}
+
+// ❌ BAD: Generic catch-all
+public void ProcessSpellCast(ISpell spell, ICharacter caster)
+{
+    try
+    {
+        ExecuteSpell(spell, caster);
+    }
+    catch (Exception)
+    {
+        // Swallowing exceptions - bad for debugging
+    }
+}
+```
+
+### Logging Best Practices
+```csharp
+// ✅ GOOD: Structured logging with context
+_logger.LogInformation("Combat attack processed: {Attacker} -> {Defender}, Result: {Result}, Damage: {Damage}", 
+    attacker.Name, defender.Name, result.Type, result.Damage);
+
+// ❌ BAD: String concatenation logging
+_logger.LogInformation("Attack: " + attacker.Name + " hit " + defender.Name + " for " + damage);
+```
+
+---
+
+## Review Checklist Template
+
+### Architecture & Design ✅
+- [ ] Follows interface-first design pattern
+- [ ] Implements ECS architecture (data in components, logic in services)
+- [ ] Uses dependency injection properly
+- [ ] Follows established design patterns (Repository, Factory, Observer)
+- [ ] No circular dependencies
+
+### SOLID Principles ✅
+- [ ] Single Responsibility: Classes < 500 lines, methods < 50 lines
+- [ ] Open/Closed: Extensions via interfaces, not modifications
+- [ ] Liskov Substitution: Derived classes properly substitutable
+- [ ] Interface Segregation: Focused, role-based interfaces
+- [ ] Dependency Inversion: Depends on abstractions, not concretions
+
+### Game Rule Compliance ✅
+- [ ] Combat formulas match DAoC mechanics exactly
+- [ ] Character progression follows official progression tables
+- [ ] Property calculations use correct bonuses and caps
+- [ ] All game rules documented with references
+
+### Performance ✅
+- [ ] Combat calculations < 1ms execution time
+- [ ] Property calculations < 0.5ms execution time
+- [ ] No blocking database calls in hot paths
+- [ ] Appropriate caching strategies implemented
+- [ ] Memory allocations minimized in performance-critical code
+
+### Code Quality ✅
+- [ ] Test coverage meets requirements (80%+ business logic)
+- [ ] Proper error handling with specific exceptions
+- [ ] Consistent naming conventions
+- [ ] XML documentation for public APIs
+- [ ] No code duplication (DRY principle)
+
+### Security & Stability ✅
+- [ ] Input validation on all public methods
+- [ ] Proper exception handling and logging
+- [ ] No security vulnerabilities (SQL injection, etc.)
+- [ ] Graceful degradation on errors
+
+---
+
+## Common Code Smells in OpenDAoC Context
+
+### Legacy Integration Issues
+```csharp
+// ❌ SMELL: Modifying legacy classes directly
+public class GamePlayer : GameLiving, ICharacter
+{
+    // Adding interface to 7000+ line legacy class
+}
+
+// ✅ FIX: Use adapter pattern
+public class GamePlayerAdapter : ICharacter
+{
+    private readonly GamePlayer _legacyPlayer;
+}
+```
+
+### Performance Anti-Patterns
+```csharp
+// ❌ SMELL: Database queries in combat calculations
+public int CalculateDamage()
+{
+    var weaponData = Database.GetWeaponData(weapon.ID); // Blocking DB call
+}
+
+// ✅ FIX: Pre-load or cache data
+private readonly Dictionary<int, WeaponData> _weaponCache;
+```
+
+### Interface Violations
+```csharp
+// ❌ SMELL: Concrete dependencies
+public class CombatService
+{
+    private DamageCalculator calculator = new DamageCalculator();
+}
+
+// ✅ FIX: Interface dependencies
+public class CombatService
+{
+    private readonly IDamageCalculator _calculator;
+    public CombatService(IDamageCalculator calculator) => _calculator = calculator;
+}
+```
+
+---
+
+## Conclusion
+
+This code review guide ensures OpenDAoC maintains high code quality while preserving authentic DAoC gameplay mechanics. Focus on interface-first design, performance targets, and accurate game rule implementation. Remember: **The goal is not to change the game, but to improve the code that runs it.**
+
+For any questions about specific requirements or edge cases, refer to:
+- `Core_Systems_Game_Rules.md` for game mechanics
+- `Core_Systems_Interface_Design.md` for architecture patterns  
+- `Development_Standards_Rule.md` for coding standards 

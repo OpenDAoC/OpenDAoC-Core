@@ -1,0 +1,2 @@
+When expanding our testing and interface coverage, assume that our current implementations are a 100% accurate rule source. 
+Document each aspect of the rule interactions that our current implementations handle alongside the test that covers them.
