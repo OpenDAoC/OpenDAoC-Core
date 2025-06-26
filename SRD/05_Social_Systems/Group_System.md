@@ -1,8 +1,10 @@
 # Group System
 
 ## Document Status
-- Status: Comprehensive
-- Implementation: Complete
+- **Last Updated**: 2025-01-20
+- **Status**: Complete
+- **Verification**: Code-verified from Group.cs, AbstractServerRules.cs, and related files
+- **Implementation**: Complete
 
 ## Overview
 The group system allows players to form parties for shared experience, loot distribution, and coordinated gameplay. Groups support up to 8 members with automated loot/coin splitting and experience sharing mechanics.
@@ -15,75 +17,123 @@ The group system allows players to form parties for shared experience, loot dist
 - **Maximum Members**: 8 players (`GROUP_MAX_MEMBER`)
 - **Minimum for Group**: 2 players
 - **Leader Required**: Yes (first member becomes leader)
+- **Cross-Realm**: Not allowed
 
 #### Invitation Process
-1. Target player or use `/invite <name>`
-2. Target must not be in another group
-3. Server rules must allow grouping
-4. Recipient accepts/declines invitation
+```csharp
+public class Group : IGameStaticItemOwner
+{
+    protected readonly ReaderWriterList<GameLiving> m_groupMembers;
+    protected readonly Lock _groupMembersLock = new();
+    
+    public Group(GameLiving leader)
+    {
+        LivingLeader = leader;
+        m_groupMembers = new ReaderWriterList<GameLiving>(8);
+    }
+}
+```
+
+#### Joining Restrictions
+- Target must not be in another group
+- Must be same realm
+- Must accept invitation
+- Server rules must allow grouping
 
 ### Leadership & Management
 
 #### Leader Privileges
 - Invite new members
-- Remove members
+- Remove members  
 - Set loot rules
 - Promote new leader
 - Disband group
+- Set group status (LFG)
 
 #### Leader Commands
 ```
 /invite <player>     - Invite player to group
-/disband             - Disband entire group
+/disband             - Disband entire group  
 /makeleader <player> - Transfer leadership
 /remove <player>     - Remove from group
+/autosplit loot      - Toggle item autosplit
+/autosplit coins     - Toggle coin autosplit
+/autosplit self      - Toggle personal autosplit
 ```
 
 ### Experience Sharing
 
-#### Level Range Requirements
+#### Con Color System
 ```csharp
-// Color range calculation
-int levelRange = Level / 10 + 1;
+// Level range for same con color
+int levelDiff = Math.Abs(level1 - level2);
+int levelRange = higherLevel / 10 + 1;
 
-// Example: Level 40 player
-// Yellow: 36-40
-// Blue: 31-35
-// Green: 26-30
-// Grey: 25 and below
+if (levelDiff <= levelRange)
+    return ConColor.YELLOW; // Same range
+else if (levelDiff <= levelRange * 2)
+    return ConColor.BLUE;   // One range below
+else if (levelDiff <= levelRange * 3)
+    return ConColor.GREEN;  // Two ranges below
+else
+    return ConColor.GREY;   // Too low
 ```
 
 #### Challenge Code
+Groups must meet minimum challenge to get full XP:
 ```csharp
-// Minimum con color by group size
+ConColor conColorThreshold;
+
 if (memberCount >= 8)
-    conColorThreshold = ConColor.RED;
+    conColorThreshold = ConColor.RED;    // Need red+ mobs
 else if (memberCount >= 4)
-    conColorThreshold = ConColor.ORANGE;
+    conColorThreshold = ConColor.ORANGE; // Need orange+ mobs
 else
-    conColorThreshold = ConColor.YELLOW;
+    conColorThreshold = ConColor.YELLOW; // Need yellow+ mobs
 ```
 
 #### Experience Distribution
-- **Same Color Range**: Split evenly
-- **Challenge Met**: Full XP / member count
-- **Challenge Not Met**: Reduced as if soloing lower con
-- **Grey Con to Highest**: No XP for anyone
+```csharp
+// Check highest level player's con to mob
+ConColor conColorForHighestLevel = GetConColor(highestPlayer, killedNpc);
+
+if (conColorForHighestLevel == ConColor.GREY)
+    return 0; // No XP for anyone
+
+// If challenge met
+if (conColorForHighestLevel >= conColorThreshold)
+    return killedNpc.ExperienceValue / memberCount;
+
+// If challenge not met and player could get better XP solo
+if (highestPlayer != playerToAward && 
+    GetConColor(playerToAward, killedNpc) > conColorForHighestLevel)
+{
+    // Treat as if fighting lower con mob
+    return CalculateReducedXP(playerToAward, conColorForHighestLevel);
+}
+```
+
+#### Group Bonus
+```csharp
+// 12.5% bonus per extra group member
+long groupBonus = (long)(baseXpReward * (groupSize - 1) * 0.125);
+```
 
 ### Loot Distribution
 
 #### Autosplit Settings
-- **Loot**: Items distributed to random eligible member
-- **Coins**: Money split evenly among nearby members
-- **Self**: Individual opts out of item autosplit
+```csharp
+public class Group
+{
+    protected bool m_autosplitLoot = true;   // Items
+    protected bool m_autosplitCoins = true;  // Money
+    
+    public bool AutosplitLoot { get; set; }
+    public bool AutosplitCoins { get; set; }
+}
+```
 
-#### Eligibility Requirements
-- Must be active (not linkdead)
-- Must be within visual range of item
-- Must have `AutoSplitLoot` enabled (for items)
-- Must have inventory space
-
-#### Loot Distribution Process
+#### Item Distribution
 ```csharp
 public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item)
 {
@@ -95,146 +145,286 @@ public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item)
     foreach (GamePlayer member in GetPlayersInTheGroup())
     {
         if (member.ObjectState is eObjectState.Active && 
-            member.AutoSplitLoot && 
-            member.CanSeeObject(item))
+            member.AutoSplitLoot &&     // Personal setting
+            member.CanSeeObject(item))  // Visual range
         {
             eligibleMembers.Add(member);
         }
     }
 
-    // Random selection from eligible
-    // Check inventory space
-    // Award to selected member
+    if (eligibleMembers.Count == 0)
+    {
+        source.Out.SendMessage("No one in group wants this", ...);
+        return TryPickUpResult.FAILED;
+    }
+
+    // Random selection with inventory check
+    eligibleMembers = Util.ShuffleList(eligibleMembers);
+    
+    foreach (GamePlayer member in eligibleMembers)
+    {
+        if (member.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, item.Item))
+        {
+            member.Out.SendMessage($"You receive {item.Name}", ...);
+            return TryPickUpResult.SUCCESS;
+        }
+    }
+    
+    // No one has space
+    source.Out.SendMessage("No one has room", ...);
+    return TryPickUpResult.FAILED;
 }
 ```
 
 #### Coin Distribution
 ```csharp
-// Split calculation
-long splitMoney = (long) Math.Ceiling((double) money.Value / eligibleMembers.Count);
+public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
+{
+    if (!AutosplitCoins)
+        return TryPickUpResult.DOES_NOT_HANDLE;
 
-// Apply guild dues
-moneyToPlayer = eligibleMember.ApplyGuildDues(splitMoney);
+    List<GamePlayer> eligibleMembers = new(8);
 
-// Award to each eligible member
-eligibleMember.AddMoney(moneyToPlayer, ...);
+    // Members must be in visible range (ignores AutoSplitLoot setting)
+    foreach (GamePlayer member in GetPlayersInTheGroup())
+    {
+        if (member.ObjectState is eObjectState.Active && 
+            member.CanSeeObject(money))
+        {
+            eligibleMembers.Add(member);
+        }
+    }
+
+    // Split evenly
+    long splitMoney = (long)Math.Ceiling((double)money.Value / eligibleMembers.Count);
+    
+    foreach (GamePlayer member in eligibleMembers)
+    {
+        // Apply guild dues
+        long moneyToPlayer = member.ApplyGuildDues(splitMoney);
+        
+        if (moneyToPlayer > 0)
+        {
+            member.AddMoney(moneyToPlayer, "Your loot share");
+            InventoryLogging.LogInventoryAction("(ground)", member, 
+                eInventoryActionType.Loot, splitMoney);
+        }
+    }
+    
+    money.RemoveFromWorld();
+    return TryPickUpResult.SUCCESS;
+}
 ```
 
 ### Group Window & Status
 
-#### Member Information
-- Name and class
+#### Member Information Display
+- Name and class icon
 - Level
-- Current/Max health
-- Current/Max mana  
-- Current/Max endurance
-- Location (zone)
-- Status effects
+- Current/Max health (bar + percentage)
+- Current/Max mana (bar)
+- Current/Max endurance (bar)
+- Location (zone name)
+- Status effects (icons)
+- Connection status
 
 #### Update Triggers
+```csharp
+public void UpdateGroupWindow()
+{
+    foreach (GamePlayer player in GetPlayersInTheGroup())
+        player.Out.SendGroupWindowUpdate();
+}
+```
+
+Triggered by:
 - Member joins/leaves
 - Health/mana/endurance changes
 - Status effect changes
 - Zone transitions
 - Level changes
+- Connection state changes
 
-### Battlegroup Integration
+#### Status Byte
+```csharp
+protected byte m_status = 0x0A; // Default status
 
-#### Battlegroup vs Group
-- Groups remain within battlegroups
-- Battlegroup for large-scale coordination
-- Groups for experience/loot sharing
-- Maximum 8 per group still applies
+// Status bits:
+// Bit 0-3: Looking for members class filter
+// Bit 4: Looking for members flag
+// Bit 5-7: Reserved
+```
 
 ### Mission System
 
 #### Group Missions
-- Shared mission objectives
-- All members see same mission
-- Progress shared across group
-- Rewards may be individual or shared
-
-## System Interactions
-
-### Combat System
-- Shared kill credit
-- Group consideration for aggro
-- BAF (Bring A Friend) affects whole group
-
-### Spell System
-- Group buffs affect all members in range
-- Group heals prioritize members
-- Resurrection priority for group members
-
-### RvR System
-- Group members share realm point proximity bonus
-- Keep capture credit shared
-- Relic capture coordination
-
-### Chat System
-- `/g` or `/group` for group chat
-- `/p` or `/party` as alternatives
-- Group chat visible to all members
-
-## Implementation Notes
-
-### Class Structure
 ```csharp
-public class Group
+private Quests.AbstractMission m_mission = null;
+
+public Quests.AbstractMission Mission
 {
-    private HybridDictionary m_groupMembers;
-    private GameLiving m_groupLeader;
-    private bool m_autosplitLoot = true;
-    private bool m_autosplitCoins = true;
-    private byte m_status = 0x0A;
-    private AbstractMission m_mission = null;
+    get { return m_mission; }
+    set
+    {
+        m_mission = value;
+        foreach (GamePlayer player in m_groupMembers.OfType<GamePlayer>())
+        {
+            player.Out.SendQuestListUpdate();
+            if (value != null)
+                player.Out.SendMessage(m_mission.Description, ...);
+        }
+    }
 }
 ```
 
-### Thread Safety
-- Synchronized member list access
-- Atomic leadership transfers
-- Thread-safe status updates
+### ROG (Random Object Generation) Integration
 
-### Performance
-- Lazy update propagation
-- Cached member arrays
-- Efficient distance checks
+#### Group-Based Loot Generation
+```csharp
+// Atlas loot system considers group composition
+if (player.Group != null)
+{
+    var MaxDropCap = Math.Round((decimal)(player.Group.MemberCount) / 3);
+    if (MaxDropCap < 1) MaxDropCap = 1;
+    if (MaxDropCap > 3) MaxDropCap = 3;
+    
+    // Higher level mobs increase cap
+    if (mob.Level > 65) MaxDropCap++;
+    
+    // Roll for each group member in range
+    foreach (var groupPlayer in player.Group.GetPlayersInTheGroup())
+    {
+        if (groupPlayer.GetDistance(player) > WorldMgr.VISIBILITY_DISTANCE)
+            continue;
+            
+        if (Util.Chance(chance) && numDrops < MaxDropCap)
+        {
+            // Generate item for random group member's class
+            classForLoot = GetRandomClassFromGroup(player.Group);
+            var item = GenerateItemTemplate(player, classForLoot, ...);
+            loot.AddFixed(item, 1);
+            numDrops++;
+        }
+    }
+}
+```
+
+## System Interactions
+
+### With Battlegroup System
+- Groups remain intact within battlegroups
+- Experience still shared by group, not battlegroup
+- Loot rules follow group settings
+- Maximum 8 per group still enforced
+
+### With Combat System
+- Shared kill credit for group members
+- Damage tracking per group for rewards
+- Group-wide threat management
+
+### With Quest System
+- Some quests require groups
+- Kill credit shared for quest objectives
+- Mission progress synchronized
+
+### With Guild System
+- Guild dues applied to coin splits
+- Guild bonuses may affect group XP
+
+### With Property System
+- Group bonuses calculated by property system
+- Buff sharing within visual range
+- Group-wide effect considerations
+
+## Implementation Notes
+
+### Thread Safety
+```csharp
+protected readonly ReaderWriterList<GameLiving> m_groupMembers;
+protected readonly Lock _groupMembersLock = new();
+```
+- Uses reader/writer locks for member list
+- Thread-safe collection operations
+
+### Performance Considerations
+- Member updates batched when possible
+- Range checks limit update frequency
+- Efficient member iteration patterns
+
+### Network Protocol
+- Group window updates use specific packets
+- Member status compressed to single byte
+- Updates sent only to affected players
 
 ## Test Scenarios
 
-### Formation Tests
-- Create 2-player group
-- Expand to 8 players
-- Attempt 9th player (should fail)
-- Leader disconnect handling
+### Basic Group Formation
+```
+1. Player A invites Player B
+2. Player B accepts
+3. Group forms with A as leader
+4. Both see group window
+```
 
-### Experience Tests
-- Same level party XP split
-- Mixed level with color ranges
-- Challenge code thresholds
-- Grey con mob XP denial
+### Experience Sharing Test
+```
+Group of 4 kills orange mob:
+- Base XP: 1000
+- Per member: 250
+- Group bonus: 250 * 3 * 0.125 = 93.75
+- Total per member: 343.75
+```
 
-### Loot Tests
-- Item autosplit with eligible members
-- Coin distribution with guild dues
-- Out-of-range member exclusion
-- Inventory full scenarios
+### Loot Distribution Test
+```
+Item drops with autosplit on:
+1. Check eligible members in range
+2. Filter by AutoSplitLoot setting
+3. Random selection
+4. Inventory space check
+5. Award to selected member
+```
 
-### Edge Cases
-- Leader linkdeath
-- Simultaneous invites
-- Cross-realm grouping attempts
-- Zone transition updates
+### Challenge Code Test
+```
+8-person group fighting yellow mob:
+- Threshold: RED
+- Mob con: YELLOW
+- Result: Reduced XP as if solo
+```
+
+## Edge Cases
+
+### Leader Disconnect
+- Leadership transfers to next member
+- Group persists if 2+ members remain
+- All settings maintained
+
+### Full Inventory
+- Item distribution tries all eligible members
+- If none have space, item stays on ground
+- Clear message to group
+
+### Mixed Level Groups
+- XP based on highest member's con
+- Lower members may get reduced XP
+- Grey con = no XP for anyone
+
+### Range Limitations
+- Must be in visual range for loot
+- Must be within XP range for experience
+- Zone transitions don't break group
 
 ## Change Log
-- Initial documentation created
-- Added experience sharing formulas
-- Detailed loot distribution
-- Added battlegroup integration
+
+### 2025-01-20
+- Complete rewrite with detailed mechanics
+- Added code examples and formulas
+- Included Atlas ROG integration
+- Added thread safety notes
 
 ## References
-- GameServer/gameutils/Group.cs
-- GameServer/packets/Client/168/InviteToGroupHandler.cs
-- GameServer/commands/playercommands/invite.cs
-- ServerProperties.Properties.GROUP_MAX_MEMBER 
+- Group.cs: Core group implementation
+- AbstractServerRules.cs: XP distribution logic
+- AtlasMobLoot.cs: Group-aware loot generation
+- BattleGroup.cs: Battlegroup interactions 

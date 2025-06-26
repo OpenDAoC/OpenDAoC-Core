@@ -829,5 +829,137 @@ Healing generates aggro on all NPCs attacking the heal target:
 - Damage interrupts based on SpellInterruptDuration
 - Some abilities grant uninterruptible casting
 
+### Sound & Music System
+- **Instruments**: Required for Bard/Minstrel/Skald songs
+- **Song Duration**: Enhanced by instrument quality/level
+- **Pulsing Songs**: Continuous effects with power cost
+- **Universal Instruments**: Any instrument plays any song (post-1.97)
+
+*See SRD/03_Magic_Systems/Sound_Music_System.md for detailed information*
+
+## Social Systems
+
+### Emote System
+- **Standard Emotes**: 30+ character animations
+- **Horse Emotes**: Special mount animations
+- **Custom Emotes**: `/emote <text>` with realm restrictions
+- **Range**: 2048 units for targeted, 512 for area
+
+*See SRD/05_Social_Systems/Emote_System.md for detailed information*
+
+### Trade System
+- **Window Interface**: 10 slots per player
+- **Safety Features**: Double confirmation required
+- **Validation**: Weight, space, and tradability checks
+- **Logging**: All trades recorded for security
+
+*See SRD/05_Social_Systems/Trade_System.md for detailed information*
+
+### Language System
+- **Realm Separation**: Cross-realm text scrambled
+- **Channels Affected**: Say, Yell, Emote
+- **Special NPCs**: Merchants understood by all
+- **GM Override**: Staff can understand all
+
+*See SRD/05_Social_Systems/Language_System.md for detailed information*
+
+### Duel System
+- **Same Realm Only**: No cross-realm duels
+- **Victory Condition**: 10% health threshold
+- **No Penalties**: No death penalty or loot
+- **Commands**: `/duel`, `/yield`
+
+*See SRD/05_Social_Systems/Duel_System.md for detailed information*
+
+### Group System
+- **Size**: Maximum 8 players
+- **XP Sharing**: Level-based distribution
+- **Loot Rules**: Leader-controlled options
+- **Buffs**: Group-only spell targets
+
+*See SRD/05_Social_Systems/Group_System.md for detailed information*
+
+## World Systems
+
+### Region & Zone System
+- **Region Structure**: Multiple zones per region
+- **Zone Types**: Normal, City, Dungeon, RvR
+- **SubZones**: Areas within zones for special rules
+- **Water Zones**: Swimming and diving mechanics
+
+*See SRD/06_World_Systems/Region_Zone_Mechanics.md for detailed information*
+
+### Movement & Speed
+- **Base Speed**: 100% (191 units/second)
+- **Sprint**: 130% speed, endurance drain
+- **Stealth**: Speed penalties based on spec
+- **Encumbrance**: Weight-based speed reduction
+
+*See SRD/06_World_Systems/Movement_Speed_Mechanics.md for detailed information*
+
+### Horse Route System
+- **Ticket System**: Purchase from stable masters
+- **Automated Travel**: Fixed paths between locations
+- **Mount Scaling**: Size based on player race
+- **Route Types**: Horse and boat routes available
+
+*See SRD/06_World_Systems/Horse_Route_System.md for detailed information*
+
+### Boat System
+- **Player Boats**: 9 types, various capacities
+- **Summoning**: Requires water and boat item
+- **Control**: Ground-target navigation
+- **Persistence**: Saved between sessions
+
+*See SRD/06_World_Systems/Boat_System.md for detailed information*
+
+### Battleground System
+- **Level Brackets**: 20-24, 25-29, 30-34, 35-39, 45-49
+- **Entry Restrictions**: Strict level enforcement
+- **Keep Warfare**: Capturable objectives
+- **Rewards**: Enhanced RP/BP gains
+
+*See SRD/06_World_Systems/Battleground_System.md for detailed information*
+
+### Teleportation System
+- **Portal Stones**: Fixed destination networks
+- **Personal Binds**: Respawn locations
+- **Summoning**: Group member summoning
+- **Restrictions**: Combat and RvR limitations
+
+*See SRD/06_World_Systems/Teleportation_System.md for detailed information*
+
+### Door System
+- **Types**: Keep, Postern, Interior, House
+- **Permissions**: Realm, Guild, Personal
+- **Health**: Destructible in RvR
+- **States**: Open, Closed, Locked
+
+*See SRD/06_World_Systems/Door_System.md for detailed information*
+
+### Time System
+- **Game Time**: 24x real time speed
+- **Day/Night**: Affects visibility and spawns
+- **Seasonal**: Some events time-based
+- **Synchronization**: All zones use same time
+
+*See SRD/06_World_Systems/Time_System.md for detailed information*
+
+### Weather System
+- **Types**: Clear, Cloudy, Fog, Rain, Storm
+- **Effects**: Visibility reduction in fog/storm
+- **Regional**: Weather varies by zone
+- **Duration**: Random periods
+
+*See SRD/06_World_Systems/Weather_System.md for detailed information*
+
+### Line of Sight System
+- **Checks**: Required for targeted abilities
+- **Obstacles**: Terrain and objects block LoS
+- **Calculation**: Ray-casting algorithm
+- **Updates**: Continuous validation
+
+*See SRD/06_World_Systems/Line_of_Sight_System.md for detailed information*
+
 ---
 *This document is a living reference and should be updated as new mechanics are discovered or changed.* 

@@ -1,227 +1,284 @@
 # OpenDAoC System Reference Document (SRD)
 
 ## Overview
-
-Welcome to the **OpenDAoC System Reference Document (SRD)** - the definitive, authoritative reference for all Dark Age of Camelot game mechanics, rules, and systems. This living document serves as the single source of truth for authentic DAoC gameplay implementation.
+The OpenDAoC SRD is a comprehensive documentation of all game mechanics, formulas, and systems in the Dark Age of Camelot server emulator. This living document serves as the authoritative reference for developers, testers, and contributors.
 
 ## Purpose
-
-The SRD ensures that OpenDAoC preserves the authentic Dark Age of Camelot experience by providing:
-
-- **Exact game mechanics** with mathematical formulas and edge cases
-- **Implementation guidance** for developers coding these systems  
-- **Test specifications** for validating correct behavior
-- **Cross-system interactions** to understand complex dependencies
-- **Performance requirements** for server stability
-
-## Quick Start
-
-### For Developers
-1. **Implementing a feature?** Check the relevant SRD section first
-2. **Found missing info?** Research and update the SRD as part of your work
-3. **Discovered new mechanics?** Document them following the SRD template
-4. **Need test cases?** Use the SRD test scenarios as your starting point
-
-### For Testers
-1. **Writing tests?** Reference SRD specifications for expected behavior
-2. **Found discrepancies?** Check if SRD needs updating or code needs fixing
-3. **Testing edge cases?** SRD documents known edge cases and special conditions
-
-### For Contributors
-1. **Community research?** Contributions to SRD are highly valued
-2. **Rules clarification?** Submit updates with your sources and verification
-3. **Implementation feedback?** Help improve SRD based on practical experience
+- **Preserve Game Mechanics**: Document authentic DAoC gameplay rules and formulas
+- **Development Reference**: Provide clear specifications for implementation
+- **Testing Guide**: Define expected behaviors for quality assurance
+- **Knowledge Base**: Centralize game mechanics understanding
 
 ## Document Structure
 
-### Primary Categories
+### Categories
+1. **01_Combat_Systems** - Attack resolution, damage calculation, defense mechanics
+2. **02_Character_Systems** - Progression, classes, stats, abilities
+3. **03_Magic_Systems** - Spells, effects, casting mechanics
+4. **04_Item_Systems** - Equipment, bonuses, artifacts
+5. **05_Social_Systems** - Guilds, groups, alliances
+6. **06_World_Systems** - Regions, zones, movement
+7. **07_Economy_Systems** - Currency, trading, crafting
+8. **08_Quest_Systems** - Quest mechanics, rewards
+9. **09_Performance_Systems** - Server optimization, timing
+10. **10_Cross_System_Interactions** - How systems work together
 
-```
-01_Combat_Systems/     - Attack resolution, damage, defense mechanics
-02_Character_Systems/  - Progression, stats, classes, specializations  
-03_Magic_Systems/      - Spells, resistance, crowd control, healing
-04_Item_Systems/       - Equipment, bonuses, quality, artifacts
-05_Social_Systems/     - Guilds, alliances, chat, player titles
-06_World_Systems/      - Housing, keeps, relics, territory control
-07_Economy_Systems/    - Crafting, trade, consignment, economy balance
-08_Quest_Systems/      - Quests, tasks, missions, reward calculations
-09_Performance_Systems/ - Server mechanics, network, optimization rules
-10_Cross_System_Interactions/ - Dependencies, events, integration points
-```
+### Document Format
+Each system document follows this template:
 
-### Document Template
+```markdown
+# System Name
 
-Each SRD document follows a standardized template:
+## Document Status
+- **Last Updated**: YYYY-MM-DD
+- **Status**: [Draft/In Progress/Stable]
+- **Verification**: [Unverified/Code-verified/Live-tested]
+- **Implementation**: [Not started/Partial/In Development/Stable]
 
-- **Document Status**: Completeness, verification status, implementation status
-- **Overview**: System purpose and role in DAoC
-- **Core Mechanics**: Detailed formulas, sources, requirements, edge cases
-- **System Interactions**: How this system affects/is affected by others
-- **Implementation Notes**: Performance, architecture, common pitfalls
-- **Test Scenarios**: Specific test cases for validation
-- **Change Log**: Track all updates and modifications
-- **References**: Sources, documentation, implementation links
+## Overview
+Brief description of the system and its purpose.
 
-## How to Use This SRD
+## Core Mechanics
+Detailed mechanics, formulas, and rules.
 
-### Reading SRD Documents
+## System Interactions
+How this system interacts with others.
 
-Each document provides multiple levels of detail:
+## Implementation Notes
+Technical details for developers.
 
-1. **Overview** - Quick understanding of the system
-2. **Core Mechanics** - Implementation-ready specifications  
-3. **Edge Cases** - Special conditions and exceptions
-4. **Test Scenarios** - Validation requirements
-5. **References** - Additional information sources
+## Test Scenarios
+Example test cases and expected outcomes.
 
-### Updating SRD Documents
+## Change Log
+History of significant updates.
 
-#### When to Update
-- **New rule discovery** - Found previously unknown mechanic
-- **Rule clarification** - Existing rule needs correction/completion
-- **Gap identification** - Missing information identified
-- **Implementation feedback** - Code reveals new details or edge cases
-
-#### Update Process
-1. Research and verify the information
-2. Update the appropriate SRD section
-3. Add detailed change log entry
-4. Update affected test scenarios
-5. Review cross-system impacts
-6. Commit with "SRD:" prefix
-
-### Example SRD Usage
-
-#### For Implementation
-```csharp
-// Developer implementing attack resolution
-// References: SRD/01_Combat_Systems/Attack_Resolution.md
-
-public AttackResult ProcessAttack(IAttacker attacker, IDefender defender, AttackContext context)
-{
-    // SRD Section: Attack Resolution Order
-    if (CheckIntercept(attacker, defender)) return AttackResult.Intercepted;
-    if (CheckEvade(defender, context.AttackerCount)) return AttackResult.Evaded;
-    if (CheckParry(defender, attacker.Weapon)) return AttackResult.Parried;
-    // ... continue following SRD specification
-}
+## References
+Source code files and external documentation.
 ```
 
-#### For Testing
-```csharp
-// Tester validating implementation
-// References: SRD/01_Combat_Systems/Attack_Resolution.md - Test Scenario 3
+### Document Status Definitions
+- **Draft**: Initial documentation, may have gaps
+- **In Progress**: Active documentation with known TODOs
+- **Stable**: Comprehensive documentation, may still receive updates
+- **Verification Status**: Level of confidence in accuracy
+- **Implementation Status**: Current state in codebase
 
-[Test]
-public void AttackResolution_ShouldCheckEvadeBeforeParry_WhenBothAvailable()
-{
-    // Test validates SRD Attack Resolution Order specification
-    // Expected: Evade checked first, parry only if evade fails
-}
-```
+## Using the SRD
 
-## Quality Standards
+### For Developers
+1. Check relevant system documentation before implementing features
+2. Update documentation when discovering undocumented mechanics
+3. Add test scenarios for new edge cases
+4. Cross-reference with source code
 
-### Documentation Requirements
-- **Accuracy**: All information verified against authentic DAoC behavior
+### For Testers
+1. Use test scenarios as verification checklist
+2. Report discrepancies between documentation and behavior
+3. Suggest additional test cases
+4. Validate formulas with in-game testing
+
+### For Contributors
+1. Follow the document template for consistency
+2. Include code references and verification sources
+3. Document edge cases and exceptions
+4. Update change logs
+
+## Contribution Process
+
+### Adding New Documentation
+1. **Identify gap** - Find undocumented system or mechanic
+2. **Research** - Study source code and test in-game
+3. **Document** - Follow template structure
+4. **Verify** - Test documented behavior
+5. **Submit** - Create pull request with changes
+
+### Updating Existing Documentation
+1. **Rule clarification** - Existing rule needs correction/expansion
+2. **New discovery** - Additional mechanics found
+3. **Implementation change** - Code changes affect mechanics
+4. **Bug documentation** - Document known issues
+
+### Quality Standards
+- **Accuracy**: All formulas and mechanics must be verified
+- **Clarity**: Use clear language and examples
+- **Consistency**: Follow established formatting
 - **Completeness**: Cover all aspects of the system including edge cases
-- **Clarity**: Written for developers who need to implement the system
-- **Testability**: Provide specific test scenarios for validation
-- **Traceability**: Link to sources and references
+- **Testability**: Include concrete test scenarios
 
-### Maintenance Standards
-- **Currency**: Keep up-to-date with latest discoveries
-- **Consistency**: Use standardized terminology across all documents
-- **Cross-references**: Link related systems and dependencies
-- **Change tracking**: Document all modifications with rationale
+## Key Systems Overview
 
-## Integration with Development
+### Combat Systems
+Core combat mechanics including:
+- **Attack Resolution**: Hit/miss calculation, defense checks, multi-attacker formulas
+- **Damage Calculation**: Base damage, modifiers, resistances, critical strikes
+- **Defense Mechanics**: Evade, parry, block formulas with all modifiers
+- **Style Mechanics**: Combat styles, positional requirements, follow-ups
+- **Attack Speed & Timing**: Weapon speeds, haste effects, swing timers
+- **Melee Attack System**: Complete attack flow and component interactions
+- **Ranged Attack System**: Archery mechanics, draw/aim/release phases
+- **Interrupt System**: Spell/ability interruption mechanics
+- **Damage Add & Shield System**: Proc effects and reactive damage
+- **Proc System**: Weapon and armor proc chances
+- **Critical Strike System**: Crit calculations for all damage types
+- **Resistance System**: Two-layer resist system
+- **Aggro/Hate System**: NPC target selection
+- **Siege Warfare**: Keep and siege mechanics
 
-### Code Reviews
-- Check SRD compliance during code review
-- Flag discrepancies between implementation and SRD
-- Require SRD updates for new features
+### Character Systems
+Player character mechanics:
+- **Character Progression**: Levels, experience, stats
+- **Character Class System**: All classes, attributes, capabilities
+- **Property System**: Stat calculations and bonuses
+- **Specialization & Skills**: Skill training and effects
+- **Realm Points & Ranks**: RvR progression system
+- **Death & Resurrection**: Death penalties and recovery
+- **Stealth & Detection**: Stealth mechanics and counter-stealth
+- **Realm Abilities System**: RA types, costs, effects
+- **Master Levels System**: ML progression and abilities
 
-### Testing
-- Reference SRD specifications in test documentation
-- Use SRD test scenarios as test case templates
-- Update SRD when tests reveal new information
+### Magic Systems
+Spell and effect mechanics:
+- **Spell Mechanics**: Casting, ranges, resistances
+- **Spell Effects System**: 80+ effect types and categories
+- **Effect Stacking Logic**: Complex stacking rules
+- **Spell Component System**: Baseline vs spec components
+- **Casting Mechanics System**: Cast times and interrupts
+- **Area Effect & Targeting System**: AoE mechanics
+- **Spell Lines & Schools System**: Spell organization
+- **Buff Effect System**: Buff/debuff management
+- **Pet & Summoning System**: Pet controls and AI
 
-### Issue Tracking
-- Check SRD for expected behavior when investigating bugs
-- Update SRD as part of feature implementation
-- Document performance requirements from SRD
+### Item Systems
+Equipment and inventory:
+- **Item Mechanics**: Stats, bonuses, requirements
+- **Artifact System**: Artifact progression
+- **Inventory System**: Storage and management
 
-## Contributing to the SRD
+### Social Systems
+Group and guild mechanics:
+- **Guild System**: Ranks, permissions, management
+- **Housing System**: House types, permissions, merchants
+- **Group System**: Formation, experience, loot distribution
 
-### Research Guidelines
-- **Verify sources**: Use multiple sources when possible
-- **Test thoroughly**: Validate mechanics through testing
-- **Document process**: Explain how you verified the information
-- **Community input**: Leverage collective DAoC knowledge
+### World Systems
+Game world mechanics:
+- **Region & Zone Mechanics**: Zone structure, properties
+- **Movement & Speed Mechanics**: Speed calculations, movement states
 
-### Writing Guidelines
-- **Be specific**: Provide exact formulas and calculations
-- **Include edge cases**: Document special conditions and exceptions
-- **Implementation focus**: Write for developers coding the system
-- **Test scenarios**: Provide concrete validation examples
+### Economy Systems
+Economic mechanics:
+- **Money & Currency System**: Currency tiers and exchange
+- **Crafting System**: All crafting skills and success formulas
+- **Loot System**: Drop rates and distribution
+
+### Quest Systems
+Quest and task mechanics:
+- **Quest Mechanics**: Types, requirements, rewards
+
+### Performance Systems
+Server performance and optimization:
+- **Server Performance System**: Game loop, threading, optimization
+- **AI Brain System**: NPC behavior and FSM
+
+### Cross-System Interactions
+How systems work together:
+- **Zone Transition System**: Seamless world navigation
+
+## Maintenance
+
+### Regular Updates
+- Document new discoveries as they're found
+- Update formulas when implementation changes
+- Add test scenarios for bugs
+- Improve clarity based on questions
 
 ### Review Process
-- Technical review for accuracy and completeness
-- Implementation review for feasibility and performance
-- Community review for authenticity (when applicable)
+- Technical review for accuracy
+- Formatting review for consistency
+- Cross-reference with related systems
+- Validate with current implementation
 
-## Current Status
+## Current Coverage
 
-### Coverage Overview
-- **Combat Systems**: 85% complete - Attack resolution, damage, defense, aggro, siege warfare documented
-- **Character Systems**: 80% complete - Progression, death/resurrection, stealth systems documented
-- **Magic Systems**: 90% complete - Spell mechanics, effects system, component system, effect stacking logic, pet summoning documented
-- **Item Systems**: 65% complete - Equipment basics done, artifact systems pending
-- **Social Systems**: 70% complete - Guild, housing, group systems documented
-- **World Systems**: 60% complete - Region/zone, movement/speed mechanics documented
-- **Economy Systems**: 75% complete - Money system, crafting documented, economy balance needed
-- **Quest Systems**: 60% complete - Quest mechanics documented, advanced rewards pending
-- **Performance Systems**: 30% complete - Basic optimization strategies
-- **Cross-System Interactions**: 25% complete - Some integration points documented
+### Combat Systems
+Attack resolution, damage, defense, aggro, siege warfare, style mechanics, attack speed documented. Additional systems include melee/ranged attack flow, interrupts, procs, critical strikes, and resistances.
 
-### Priority Areas
-1. **Performance specifications** - Ensuring server stability
-2. **Cross-system interactions** - Understanding complex dependencies
-3. **Item system completeness** - Artifact and special item mechanics
-4. **Advanced quest rewards** - Complex reward calculations
+### Character Systems
+Progression, death/resurrection, stealth, realm abilities, master levels documented. Includes complete class system and property calculations.
 
-## Getting Help
+### Magic Systems
+Spell system documented including mechanics, effects, stacking, casting, targeting, lines, and pet summoning.
 
-### Questions
-- Check existing SRD documents first
-- Review change logs for recent updates
-- Consult references section for additional sources
+### Item Systems
+Equipment mechanics, artifact system, item generation, and inventory management documented.
 
-### Issues
-- Report missing information as GitHub issues
-- Suggest corrections with supporting evidence
-- Request clarification for unclear specifications
+### Social Systems
+Guild, housing, and group systems documented with complete mechanics.
 
-### Community
-- Engage with DAoC community experts
-- Participate in research initiatives
-- Share discoveries and verifications
+### World Systems
+Region/zone and movement/speed mechanics documented.
 
-## Future Vision
+### Economy Systems
+Money system, crafting system, and loot distribution documented.
 
-The OpenDAoC SRD aims to become:
+### Quest Systems
+Quest mechanics documented with various quest types and rewards.
 
-- **The definitive reference** for DAoC server emulation
-- **A preservation tool** for authentic DAoC mechanics
-- **A collaboration platform** for community knowledge
-- **An implementation guide** for future developers
-- **A testing foundation** for quality assurance
+### Performance Systems
+Server performance, optimization, game loop, and AI brain system documented.
 
-**Remember**: The SRD is not just documentation—it's the blueprint for preserving DAoC's authentic gameplay for future generations of players.
+### Cross-System Interactions
+Zone transitions, area management, and system coordination documented.
 
----
+## Major Discoveries
 
-*"The goal is not to change the game, but to improve the code that runs it."*
+### Magic Systems
+- Effect stacking uses complex IsBetterThan algorithm
+- Spell components have baseline vs specialization variants
+- 80+ unique effect types with 6 buff bonus categories
+
+### Character Systems
+- Realm abilities have complex prerequisite chains
+- Master levels use fixed MLXP requirements
+- Stealth detection uses multi-factor formulas
+
+### Item Systems
+- Artifacts require encounter credit system
+- Unique level-based progression mechanics
+
+### Performance Systems
+- 10ms game loop with ECS architecture
+- Object pooling with EMA sizing
+- Multi-threaded service processing
+
+### Cross-System Interactions
+- Complex validation chains for transitions
+- Security layers prevent exploits
+- State management across systems
+
+## Appendix
+
+### Glossary
+- **AF**: Armor Factor
+- **ABS**: Absorption
+- **DPS**: Damage Per Second
+- **RvR**: Realm vs Realm
+- **RA**: Realm Ability
+- **ML**: Master Level
+- **CL**: Champion Level
+
+### Common Formulas
+- **Weapon Skill**: BaseSkill * RelicBonus * SpecModifier
+- **Armor Factor**: ItemAF + 12.5 + (Level * 20 / 50)
+- **Damage Cap**: WeaponSkill * EnemyArmor * 3
+- **Experience**: BasedOnLevel * GroupBonus * ServerBonus
+
+### Known Issues
+- Document any confirmed bugs or inconsistencies
+- Note differences from live DAoC
+- Track pending investigations
+
+## Contact
 
 For questions or contributions, see [Helper Docs/OpenDAoC_SRD_Structure_Plan.md](../Helper%20Docs/OpenDAoC_SRD_Structure_Plan.md) for detailed processes and guidelines. 
