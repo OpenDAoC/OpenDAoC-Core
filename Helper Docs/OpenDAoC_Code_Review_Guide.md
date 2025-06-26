@@ -22,6 +22,7 @@ This guide provides comprehensive criteria for conducting code reviews on the Op
 **Architecture**: Interface-first, ECS (Entity Component System), Service Layer
 **Core Principles**: SOLID, DRY, performance-critical gaming server
 **Critical Requirements**: Sub-millisecond combat calculations, authentic DAoC mechanics
+**Reference Documentation**: SRD (System Reference Document) for all game mechanics
 
 ---
 
@@ -157,15 +158,20 @@ public class PropertyCalculator
 
 ---
 
-## 3. Game Rule Compliance (CRITICAL - Must Match Live DAoC)
+## 3. Game Rule Compliance (CRITICAL - Must Match SRD)
 
-### Combat System Rules
+### SRD Compliance Requirements
+All game mechanics MUST match the specifications in the OpenDAoC System Reference Document (SRD).
 
-#### Attack Resolution Order
 ```csharp
-// ✅ GOOD: Correct DAoC attack resolution sequence
+// ✅ GOOD: Implementation matches SRD specification
+/// <summary>
+/// Implements attack resolution according to SRD specification.
+/// Reference: SRD/01_Combat_Systems/Attack_Resolution.md
+/// </summary>
 public AttackResult ProcessAttack(AttackData attackData)
 {
+    // Implementation follows exact SRD attack resolution order
     if (CheckIntercept(attackData)) return AttackResult.Intercepted;
     if (CheckEvade(attackData)) return AttackResult.Evaded;
     if (CheckParry(attackData)) return AttackResult.Parried;
@@ -177,48 +183,51 @@ public AttackResult ProcessAttack(AttackData attackData)
     return ProcessHit(attackData);
 }
 
-// ❌ BAD: Incorrect order or missing checks
+// ❌ BAD: Implementation differs from SRD
 public AttackResult ProcessAttack(AttackData attackData)
 {
-    if (CheckMiss(attackData)) return AttackResult.Missed; // Wrong order
-    // Missing intercept, guard checks, etc.
+    if (CheckMiss(attackData)) return AttackResult.Missed; // Wrong order per SRD
+    // Missing required checks from SRD specification
+}
+```
+
+### SRD Update Requirements
+When reviewing code that implements game mechanics:
+1. **Verify against SRD**: Check that implementation matches SRD specifications
+2. **Update SRD if needed**: If new mechanics are discovered, update the SRD
+3. **Document SRD references**: Code should reference relevant SRD sections
+4. **Flag discrepancies**: Any deviation from SRD must be justified or corrected
+
+### Combat System Rules (Per SRD)
+
+#### Attack Resolution Order
+```csharp
+// ✅ GOOD: Correct DAoC attack resolution sequence per SRD
+// Reference: SRD/01_Combat_Systems/Attack_Resolution.md
+public AttackResult ProcessAttack(AttackData attackData)
+{
+    // Must follow exact order specified in SRD
 }
 ```
 
 #### Hit/Miss Calculation (Exact Formula Required)
 ```csharp
-// ✅ GOOD: Correct DAoC hit chance formula
+// ✅ GOOD: Formula matches SRD specification
+// Reference: SRD/01_Combat_Systems/Attack_Resolution.md - Base Miss Chance Calculation
 public double CalculateHitChance(AttackData attackData)
 {
-    double baseMissChance = 0.18; // 18% base miss (patch 1.117C)
-    double levelMod = CalculateLevelDifference(attackData); // ±1.33% per level (PvE only)
-    double multiAttackerPenalty = CalculateMultiAttackerPenalty(attackData); // -0.5% per additional
+    double baseMissChance = 0.15; // 15% base miss per SRD
+    double levelMod = CalculateLevelDifference(attackData); // ±0.33% per level per SRD
+    double multiAttackerPenalty = CalculateMultiAttackerPenalty(attackData);
     double toHitBonus = CalculateToHitBonus(attackData);
     
     return 1.0 - Math.Max(0, baseMissChance + levelMod + multiAttackerPenalty - toHitBonus);
 }
 
-// ❌ BAD: Incorrect formula or missing components
+// ❌ BAD: Incorrect formula not matching SRD
 public double CalculateHitChance(AttackData attackData)
 {
-    return 0.85; // Hardcoded value - violates DAoC mechanics
-}
-```
-
-#### Damage Calculation (Exact Formula Required)
-```csharp
-// ✅ GOOD: Correct DAoC damage formula
-public int CalculateBaseDamage(IWeapon weapon)
-{
-    double baseDamage = weapon.DPS * weapon.Speed * 0.1;
-    double slowWeaponBonus = 1 + (weapon.Speed - 20) * 0.003;
-    return (int)(baseDamage * slowWeaponBonus);
-}
-
-// ❌ BAD: Simplified or incorrect formula
-public int CalculateBaseDamage(IWeapon weapon)
-{
-    return weapon.DPS; // Missing speed calculations and bonuses
+    return 0.85; // Hardcoded value - violates SRD mechanics
 }
 ```
 
@@ -276,10 +285,11 @@ public AttackResult ProcessAttack(AttackData data)
 - [ ] Dependency Inversion: Depends on abstractions, not concretions
 
 ### Game Rule Compliance ✅
-- [ ] Combat formulas match DAoC mechanics exactly
-- [ ] Character progression follows official progression tables
-- [ ] Property calculations use correct bonuses and caps
-- [ ] All game rules documented with references
+- [ ] **SRD Compliance**: Implementation matches SRD specifications exactly
+- [ ] **SRD References**: Code references relevant SRD sections
+- [ ] **SRD Updates**: Any new mechanics discovered are added to SRD
+- [ ] **Formula Accuracy**: All calculations match SRD formulas
+- [ ] **Edge Cases**: Implementation handles all SRD-documented edge cases
 
 ### Performance ✅
 - [ ] Combat calculations < 1ms execution time
@@ -301,15 +311,21 @@ public AttackResult ProcessAttack(AttackData data)
 - [ ] No security vulnerabilities (SQL injection, etc.)
 - [ ] Graceful degradation on errors
 
+### SRD Integration ✅
+- [ ] **New Features**: Documented in SRD before implementation
+- [ ] **Bug Fixes**: Verified against SRD expected behavior
+- [ ] **Discoveries**: New mechanics added to SRD with source documentation
+- [ ] **Test Alignment**: Tests reference SRD specifications
+
 ---
 
 ## Conclusion
 
-This code review guide ensures OpenDAoC maintains high code quality while preserving authentic DAoC gameplay mechanics. Focus on interface-first design, performance targets, and accurate game rule implementation. 
+This code review guide ensures OpenDAoC maintains high code quality while preserving authentic DAoC gameplay mechanics as documented in the SRD. Focus on interface-first design, performance targets, and accurate game rule implementation per SRD specifications.
 
 **Remember: The goal is not to change the game, but to improve the code that runs it.**
 
 For detailed requirements, refer to:
-- `Core_Systems_Game_Rules.md` for game mechanics
+- `SRD/` for authoritative game mechanics specifications
 - `Core_Systems_Interface_Design.md` for architecture patterns  
 - `Development_Standards_Rule.md` for coding standards 

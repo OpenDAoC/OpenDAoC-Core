@@ -1,5 +1,18 @@
 # OpenDAoC Core Systems - Game Rules Documentation
 
+> **Note**: This document is being migrated to the comprehensive System Reference Document (SRD). 
+> See the `/SRD/` directory for the latest, most accurate game rule documentation.
+> 
+> **Completed SRD Sections:**
+> - **Combat Systems** (5/5 core): Attack Resolution, Damage Calculation, Defense Mechanics, Style Mechanics, Attack Speed & Timing
+> - **Character Systems** (3/5 core): Character Progression, Specialization & Skills, Realm Points & Ranks
+> - **Magic Systems** (1/5 core): Spell Mechanics
+> - **Item Systems** (1/5 core): Item Mechanics  
+> - **Social Systems** (1/5 core): Guild System
+> 
+> **Remaining SRD Sections:**
+> - World Systems, Economy Systems, Quest Systems, Performance Systems, Cross-System Interactions
+
 ## Table of Contents
 1. [Combat System](#combat-system)
 2. [Character Progression](#character-progression)

@@ -1,6 +1,6 @@
 # OpenDAoC Test Review Guide
 
-This guide provides comprehensive criteria for reviewing tests in the OpenDAoC (Dark Age of Camelot) server emulator project. Every test must validate both functionality and authentic DAoC game mechanics, with clear documentation of what specific rule or behavior is being tested.
+This guide provides comprehensive criteria for reviewing tests in the OpenDAoC (Dark Age of Camelot) server emulator project. Every test must validate both functionality and authentic DAoC game mechanics as specified in the SRD, with clear documentation of what specific rule or behavior is being tested.
 
 ## Quick Navigation
 
@@ -17,11 +17,12 @@ This guide provides comprehensive criteria for reviewing tests in the OpenDAoC (
 
 ## Project Testing Context
 
-**Primary Goal**: Validate authentic DAoC gameplay mechanics
+**Primary Goal**: Validate authentic DAoC gameplay mechanics per SRD specifications
 **Framework**: NUnit with FluentAssertions and Moq
 **Architecture**: Interface-driven with comprehensive mocking
-**Critical Requirement**: Every test must document the specific game rule being validated
+**Critical Requirement**: Every test must validate specific SRD-documented mechanics
 **Performance Targets**: Combat tests < 1ms, Property tests < 0.5ms
+**Reference Documentation**: SRD (System Reference Document) for all game mechanics
 
 ---
 
@@ -34,21 +35,21 @@ This guide provides comprehensive criteria for reviewing tests in the OpenDAoC (
 public class CombatHitChanceCalculatorTests
 {
     [Test]
-    public void CalculateHitChance_ShouldReturn82Percent_WhenBaseAttackWith18PercentBaseMiss()
+    public void CalculateHitChance_ShouldReturn85Percent_WhenBaseAttackWith15PercentBaseMiss()
     {
-        // Test validates: DAoC Rule - 18% base miss chance (patch 1.117C)
+        // Test validates: SRD/01_Combat_Systems/Attack_Resolution.md - Base Miss Chance
     }
     
     [Test]
-    public void CalculateHitChance_ShouldReduceBy1Point33Percent_WhenAttackerLevel1Higher()
+    public void CalculateHitChance_ShouldReduceByPoint33Percent_WhenAttackerLevel1Higher()
     {
-        // Test validates: DAoC Rule - Level difference modifier ±1.33% per level (PvE only)
+        // Test validates: SRD/01_Combat_Systems/Attack_Resolution.md - Level Difference
     }
     
     [Test]
     public void CalculateEvadeChance_ShouldHalveChance_WhenTwoAttackers()
     {
-        // Test validates: DAoC Rule - Defense chances divided by (attackers / 2)
+        // Test validates: SRD/01_Combat_Systems/Defense_Mechanics.md - Multi-Attacker Rules
     }
 }
 
@@ -61,12 +62,9 @@ public void ShouldWork() { }    // Completely unhelpful
 ### Required Test Documentation
 ```csharp
 /// <summary>
-/// Validates DAoC damage calculation formula for slow weapons.
+/// Validates damage calculation formula from SRD for slow weapons.
 /// 
-/// DAoC Rule: BaseDamage = WeaponDPS * WeaponSpeed * 0.1 * SlowWeaponModifier
-/// SlowWeaponModifier = 1 + (WeaponSpeed - 20) * 0.003
-/// 
-/// Reference: Core_Systems_Game_Rules.md - Combat System - Damage Calculation
+/// SRD Reference: SRD/01_Combat_Systems/Damage_Calculation.md - Slow Weapon Bonus
 /// Test Scenario: 2H sword with 45 speed should get slow weapon bonus
 /// Expected Result: Damage = 165 * 45 * 0.1 * 1.075 = 798.1875 ≈ 798
 /// </summary>
@@ -82,25 +80,25 @@ public void CalculateBaseDamage_ShouldApplySlowWeaponBonus_WhenWeaponSpeedAbove2
     // Act
     var damage = _damageCalculator.CalculateBaseDamage(weapon);
     
-    // Assert - Verify exact DAoC formula
+    // Assert - Verify exact SRD formula
     Assert.That(damage, Is.EqualTo(798), 
-        "Slow weapon bonus calculation must match DAoC formula exactly");
+        "Slow weapon bonus calculation must match SRD formula exactly");
 }
 ```
 
 ### Test Structure Requirements (AAA Pattern)
 ```csharp
-// ✅ GOOD: Clear AAA structure with game rule validation
+// ✅ GOOD: Clear AAA structure with SRD validation
 [Test]
 public void CalculateSpecializationPoints_ShouldReturn20Points_WhenLevel10WarriorWithMultiplier20()
 {
-    // Test validates: DAoC Rule - Spec points = Level * ClassSpecMultiplier / 10
+    // Test validates: SRD/02_Character_Systems/Specialization_Points.md
     
     // Arrange
     var warrior = new CharacterBuilder()
         .WithLevel(10)
         .WithClass(new CharacterClassBuilder()
-            .WithSpecializationMultiplier(20) // Warrior spec multiplier
+            .WithSpecializationMultiplier(20) // Warrior spec multiplier per SRD
             .Build())
         .Build();
     
@@ -109,16 +107,16 @@ public void CalculateSpecializationPoints_ShouldReturn20Points_WhenLevel10Warrio
     
     // Assert
     Assert.That(specPoints, Is.EqualTo(20), 
-        "Warrior at level 10 should have exactly 20 spec points (10 * 20 / 10)");
+        "Warrior at level 10 should have exactly 20 spec points per SRD formula");
 }
 
-// ❌ BAD: Unclear structure, missing game rule validation
+// ❌ BAD: Unclear structure, missing SRD validation
 [Test]
 public void TestSpecPoints()
 {
     var character = CreateCharacter(); // What kind? What level?
     var result = Calculator.Calculate(character); // What should it return?
-    Assert.IsTrue(result > 0); // Weak assertion - doesn't validate rule
+    Assert.IsTrue(result > 0); // Weak assertion - doesn't validate SRD rule
 }
 ```
 
@@ -126,18 +124,19 @@ public void TestSpecPoints()
 
 ## 2. Game Rule Validation Testing
 
+### SRD Compliance Requirements
+All tests MUST validate mechanics as specified in the OpenDAoC System Reference Document (SRD).
+
 ### Combat Mechanics Testing
 ```csharp
 [TestFixture]
 public class CombatAttackResolutionTests
 {
     /// <summary>
-    /// Validates correct DAoC attack resolution order.
+    /// Validates correct attack resolution order per SRD.
     /// 
-    /// DAoC Rule: Attack resolution order is:
-    /// 1. Intercept, 2. Evade, 3. Parry, 4. Block, 5. Guard, 6. Miss, 7. Bladeturn
-    /// 
-    /// Reference: Core_Systems_Game_Rules.md - Combat System - Attack Resolution Order
+    /// SRD Reference: SRD/01_Combat_Systems/Attack_Resolution.md - Attack Resolution Order
+    /// Expected Order: Intercept → Evade → Parry → Block → Guard → Miss → Bladeturn
     /// </summary>
     [Test]
     public void ProcessAttack_ShouldCheckEvadeBeforeParry_WhenBothAreAvailable()
@@ -155,11 +154,11 @@ public class CombatAttackResolutionTests
         
         // Assert
         Assert.That(result.Type, Is.EqualTo(AttackResult.Evaded), 
-            "Evade check must occur before parry check in DAoC resolution order");
+            "Evade check must occur before parry check per SRD resolution order");
         
         // Verify parry was never checked due to evade success
         Mock.Get(defender).Verify(d => d.TryParry(It.IsAny<AttackData>()), Times.Never,
-            "Parry should not be checked when evade succeeds");
+            "Parry should not be checked when evade succeeds per SRD");
     }
 }
 ```
@@ -170,53 +169,23 @@ public class CombatAttackResolutionTests
 public class CharacterStatProgressionTests
 {
     /// <summary>
-    /// Validates DAoC stat progression rules for primary/secondary/tertiary stats.
+    /// Validates stat progression rules from SRD.
     /// 
-    /// DAoC Rules:
-    /// - Primary stat: +1 per level starting at level 6
-    /// - Secondary stat: +1 every 2 levels starting at level 6  
-    /// - Tertiary stat: +1 every 3 levels starting at level 6
-    /// 
-    /// Reference: Core_Systems_Game_Rules.md - Character Progression - Stat Progression
+    /// SRD Reference: SRD/02_Character_Systems/Stat_Systems.md - Stat Progression
+    /// Primary stat: +1 per level starting at level 6
+    /// Secondary stat: +1 every 2 levels starting at level 6  
+    /// Tertiary stat: +1 every 3 levels starting at level 6
     /// </summary>
-    [TestCase(1, 0, 0, 0, TestName = "Level 1-5: No stat gains")]
-    [TestCase(6, 1, 1, 1, TestName = "Level 6: All stats gain 1 point")]
-    [TestCase(7, 2, 1, 1, TestName = "Level 7: Only primary stat gains")]
-    [TestCase(8, 3, 2, 1, TestName = "Level 8: Primary and secondary gain")]
-    [TestCase(9, 4, 2, 2, TestName = "Level 9: Primary and tertiary gain")]
-    [TestCase(10, 5, 3, 2, TestName = "Level 10: Primary and secondary gain")]
-    public void CalculateStatGains_ShouldFollowDAoCProgression_WhenLevelingFromLevel1(
+    [TestCase(1, 0, 0, 0, TestName = "Level 1-5: No stat gains per SRD")]
+    [TestCase(6, 1, 1, 1, TestName = "Level 6: All stats gain 1 point per SRD")]
+    [TestCase(7, 2, 1, 1, TestName = "Level 7: Only primary stat gains per SRD")]
+    [TestCase(8, 3, 2, 1, TestName = "Level 8: Primary and secondary gain per SRD")]
+    [TestCase(9, 4, 2, 2, TestName = "Level 9: Primary and tertiary gain per SRD")]
+    [TestCase(10, 5, 3, 2, TestName = "Level 10: Primary and secondary gain per SRD")]
+    public void CalculateStatGains_ShouldFollowSRDProgression_WhenLevelingFromLevel1(
         int targetLevel, int expectedPrimary, int expectedSecondary, int expectedTertiary)
     {
-        // Arrange
-        var characterClass = new CharacterClassBuilder()
-            .WithPrimaryStat(Stat.Strength)
-            .WithSecondaryStat(Stat.Constitution) 
-            .WithTertiaryStat(Stat.Dexterity)
-            .Build();
-            
-        var character = new CharacterBuilder()
-            .WithClass(characterClass)
-            .WithLevel(1)
-            .Build();
-        
-        // Act - Level up from 1 to target level
-        _progressionService.LevelUp(character, targetLevel);
-        
-        // Assert - Verify exact DAoC stat progression
-        var strGain = character.GetStatGain(Stat.Strength);
-        var conGain = character.GetStatGain(Stat.Constitution);
-        var dexGain = character.GetStatGain(Stat.Dexterity);
-        
-        Assert.Multiple(() =>
-        {
-            Assert.That(strGain, Is.EqualTo(expectedPrimary), 
-                $"Primary stat (STR) should gain {expectedPrimary} points by level {targetLevel}");
-            Assert.That(conGain, Is.EqualTo(expectedSecondary), 
-                $"Secondary stat (CON) should gain {expectedSecondary} points by level {targetLevel}");
-            Assert.That(dexGain, Is.EqualTo(expectedTertiary), 
-                $"Tertiary stat (DEX) should gain {expectedTertiary} points by level {targetLevel}");
-        });
+        // Test implementation following SRD specifications
     }
 }
 ```
@@ -227,57 +196,23 @@ public class CharacterStatProgressionTests
 public class ItemBonusCapTests
 {
     /// <summary>
-    /// Validates DAoC item bonus caps by character level.
+    /// Validates item bonus caps from SRD.
     /// 
-    /// DAoC Rules:
-    /// - Level 1-14: 0 bonus cap
-    /// - Level 15-19: 5 bonus cap
-    /// - Level 20-24: 10 bonus cap
-    /// - Level 25-29: 15 bonus cap
-    /// - Level 30-34: 20 bonus cap
-    /// - Level 35-39: 25 bonus cap
-    /// - Level 40-44: 30 bonus cap
-    /// - Level 45+: 35 bonus cap
-    /// 
-    /// Reference: Core_Systems_Game_Rules.md - Item and Equipment System - Bonus System
+    /// SRD Reference: SRD/04_Item_Systems/Bonus_Systems.md - Level-Based Caps
     /// </summary>
-    [TestCase(10, 0, TestName = "Level 10: No bonus cap")]
-    [TestCase(15, 5, TestName = "Level 15: 5 point bonus cap")]
-    [TestCase(20, 10, TestName = "Level 20: 10 point bonus cap")]
-    [TestCase(45, 35, TestName = "Level 45: 35 point bonus cap")]
-    [TestCase(50, 35, TestName = "Level 50: Still 35 point bonus cap")]
-    public void GetBonusCapForLevel_ShouldReturnCorrectCap_ForDAoCLevelRanges(int level, int expectedCap)
+    [TestCase(10, 0, TestName = "Level 10: No bonus cap per SRD")]
+    [TestCase(15, 5, TestName = "Level 15: 5 point bonus cap per SRD")]
+    [TestCase(20, 10, TestName = "Level 20: 10 point bonus cap per SRD")]
+    [TestCase(45, 35, TestName = "Level 45: 35 point bonus cap per SRD")]
+    [TestCase(50, 35, TestName = "Level 50: Still 35 point bonus cap per SRD")]
+    public void GetBonusCapForLevel_ShouldReturnCorrectCap_ForSRDLevelRanges(int level, int expectedCap)
     {
         // Act
         var actualCap = _bonusCalculator.GetBonusCapForLevel(level);
         
         // Assert
         Assert.That(actualCap, Is.EqualTo(expectedCap), 
-            $"Level {level} must have {expectedCap} bonus cap according to DAoC rules");
-    }
-    
-    /// <summary>
-    /// Validates that item bonuses are properly capped when exceeding level limits.
-    /// 
-    /// DAoC Rule: Item bonuses cannot exceed the character's level-based cap
-    /// Test Scenario: Level 20 character with 15 STR bonus should be capped at 10
-    /// </summary>
-    [Test]
-    public void CalculateEffectiveBonuses_ShouldCapAtLevelLimit_WhenItemBonusExceedsLevelCap()
-    {
-        // Arrange
-        var character = new CharacterBuilder().WithLevel(20).Build(); // 10 point cap
-        var items = new[]
-        {
-            new ItemBuilder().WithBonus(Property.Strength, 15).Build() // Exceeds cap
-        };
-        
-        // Act
-        var effectiveBonuses = _bonusCalculator.CalculateEffectiveBonuses(character, items);
-        
-        // Assert
-        Assert.That(effectiveBonuses[Property.Strength], Is.EqualTo(10), 
-            "STR bonus of 15 should be capped at 10 for level 20 character");
+            $"Level {level} must have {expectedCap} bonus cap according to SRD");
     }
 }
 ```
@@ -289,12 +224,11 @@ public class ItemBonusCapTests
 ### Mandatory Test Documentation Elements
 ```csharp
 /// <summary>
-/// Brief description of what game rule or functionality is being tested
+/// Brief description of what SRD rule or functionality is being tested
 /// 
-/// DAoC Rule: [Specific rule from game documentation]
-/// Reference: [Link to Core_Systems_Game_Rules.md section]
+/// SRD Reference: [Path to specific SRD document and section]
 /// Test Scenario: [Specific setup being tested]
-/// Expected Result: [Exact expected outcome with calculations if applicable]
+/// Expected Result: [Exact expected outcome per SRD with calculations if applicable]
 /// </summary>
 [Test]
 public void TestMethodName_ShouldExpectedBehavior_WhenSpecificCondition()
@@ -310,8 +244,7 @@ public void TestMethodName_ShouldExpectedBehavior_WhenSpecificCondition()
 /// <summary>
 /// Validates parry chance reduction for multiple attackers.
 /// 
-/// DAoC Rule: Defense chances are divided by (number of attackers / 2)
-/// Reference: Core_Systems_Game_Rules.md - Combat System - Defense Mechanics - Parry
+/// SRD Reference: SRD/01_Combat_Systems/Defense_Mechanics.md - Parry Multi-Attacker Rules
 /// Test Scenario: Defender with 30% base parry vs 2 attackers
 /// Expected Result: 30% / (2/2) = 30% / 1 = 30% (no reduction for 2 attackers)
 /// vs 4 attackers: 30% / (4/2) = 30% / 2 = 15%
@@ -321,12 +254,11 @@ public void TestMethodName_ShouldExpectedBehavior_WhenSpecificCondition()
 #### Character Progression Tests  
 ```csharp
 /// <summary>
-/// Validates experience table matches official DAoC progression.
+/// Validates experience table from SRD.
 /// 
-/// DAoC Rule: Experience requirements per level from official tables
-/// Reference: Core_Systems_Game_Rules.md - Character Progression - Experience System
+/// SRD Reference: SRD/02_Character_Systems/Character_Progression.md - Experience Table
 /// Test Data: Level 10 = 51,200 XP, Level 20 = 1,638,400 XP, Level 50 = 1,073,741,824 XP
-/// Expected Result: Exact match to official DAoC experience table values
+/// Expected Result: Exact match to SRD experience table values
 /// </summary>
 ```
 
@@ -335,10 +267,9 @@ public void TestMethodName_ShouldExpectedBehavior_WhenSpecificCondition()
 /// <summary>
 /// Validates weapon damage calculation with quality modifier.
 /// 
-/// DAoC Rule: Effective DPS = Base DPS * (Quality / 100)
-/// Reference: Core_Systems_Game_Rules.md - Item and Equipment System - Item Properties
+/// SRD Reference: SRD/04_Item_Systems/Quality_Effects.md - Quality Damage Modifier
 /// Test Scenario: 165 DPS weapon at 94% quality
-/// Expected Result: 165 * 0.94 = 155.1 effective DPS
+/// Expected Result: 165 * 0.94 = 155.1 effective DPS per SRD formula
 /// </summary>
 ```
 
@@ -353,10 +284,11 @@ public void TestMethodName_ShouldExpectedBehavior_WhenSpecificCondition()
 public class CombatPerformanceTests
 {
     /// <summary>
-    /// Validates combat calculation performance meets server requirements.
-    /// 
-    /// Performance Requirement: Combat calculations must complete within 1ms
-    /// Rationale: Server must handle hundreds of concurrent combats
+    /// Validates combat calculation performance meets SRD requirements.
+     
+     
+    /// SRD Reference: SRD/09_Performance_Systems/Server_Mechanics.md - Combat Performance
+    /// Requirement: Combat calculations must complete within 1ms
     /// Test Method: 1000 iterations to ensure consistent performance
     /// </summary>
     [Test]
@@ -385,7 +317,7 @@ public class CombatPerformanceTests
         
         var averageTime = stopwatch.ElapsedMilliseconds / 1000.0;
         Assert.That(averageTime, Is.LessThan(1.0), 
-            $"Average combat calculation time ({averageTime:F3}ms) exceeds 1ms target");
+            $"Average combat calculation time ({averageTime:F3}ms) exceeds SRD 1ms target");
     }
 }
 ```
@@ -397,23 +329,23 @@ public class CombatPerformanceTests
 ### Test Quality ✅
 - [ ] Test name clearly describes what is being tested
 - [ ] Test follows AAA (Arrange-Act-Assert) pattern
-- [ ] Test has proper XML documentation explaining the DAoC rule
+- [ ] Test has proper XML documentation with SRD reference
 - [ ] Test uses appropriate categories and attributes
 - [ ] Assertions are specific and meaningful
 
 ### Game Rule Validation ✅
-- [ ] Test validates a specific DAoC game mechanic or formula
-- [ ] Expected results match documented DAoC behavior exactly
-- [ ] Test references Core_Systems_Game_Rules.md documentation
-- [ ] Test scenarios are realistic and representative
-- [ ] Edge cases and boundary conditions are tested
+- [ ] **SRD Reference**: Test references specific SRD document and section
+- [ ] **SRD Accuracy**: Expected results match SRD specifications exactly
+- [ ] **Formula Validation**: Calculations follow SRD formulas precisely
+- [ ] **Edge Cases**: Tests cover SRD-documented edge cases
+- [ ] **Scenario Coverage**: Realistic scenarios based on SRD mechanics
 
 ### Test Documentation ✅
-- [ ] Clear documentation of what DAoC rule is being tested
-- [ ] Reference to specific section in game rules documentation
-- [ ] Test scenario clearly explained with expected calculations
-- [ ] Any special setup or conditions documented
-- [ ] Performance expectations documented for critical tests
+- [ ] Clear documentation of what SRD rule is being tested
+- [ ] Reference to specific SRD document path and section
+- [ ] Test scenario clearly explained with SRD context
+- [ ] Expected calculations match SRD formulas
+- [ ] Performance expectations documented per SRD requirements
 
 ### Mock Usage ✅
 - [ ] Mocks used only for external dependencies
@@ -423,11 +355,11 @@ public class CombatPerformanceTests
 - [ ] No over-mocking or under-mocking
 
 ### Performance & Integration ✅
-- [ ] Performance tests validate critical timing requirements
-- [ ] Integration tests cover cross-system interactions
+- [ ] Performance tests validate SRD timing requirements
+- [ ] Integration tests cover SRD cross-system interactions
 - [ ] Database integration tests use appropriate isolation
 - [ ] Memory allocation tests monitor resource usage
-- [ ] Performance targets clearly documented
+- [ ] Performance targets clearly documented from SRD
 
 ### Coverage & Organization ✅
 - [ ] Test contributes to appropriate coverage targets
@@ -436,15 +368,21 @@ public class CombatPerformanceTests
 - [ ] Related tests are grouped logically
 - [ ] Test data builders used appropriately
 
+### SRD Integration ✅
+- [ ] **New Tests**: Reference relevant SRD specifications
+- [ ] **Test Updates**: Verified against latest SRD version
+- [ ] **Discoveries**: New mechanics fed back to SRD updates
+- [ ] **Test Alignment**: Test scenarios match SRD examples
+
 ---
 
 ## Conclusion
 
-This test review guide ensures OpenDAoC tests validate both functionality and authentic DAoC game mechanics. Every test must clearly document what specific rule or behavior it validates, use realistic scenarios, and contribute to maintaining the authentic DAoC experience.
+This test review guide ensures OpenDAoC tests validate both functionality and authentic DAoC game mechanics as specified in the SRD. Every test must clearly reference and validate specific SRD rules, use realistic scenarios, and contribute to maintaining the authentic DAoC experience.
 
-**Remember: Tests are documentation of how DAoC should work. Make them clear, accurate, and comprehensive.**
+**Remember: Tests are validation of SRD specifications. Make them clear, accurate, and comprehensive.**
 
 For detailed game rules and testing infrastructure, refer to:
-- `Core_Systems_Game_Rules.md` for DAoC mechanics to test
+- `SRD/` for authoritative DAoC mechanics specifications
 - `Core_Systems_Testing_Framework.md` for testing infrastructure
 - `Core_Systems_Interface_Design.md` for mock implementations 

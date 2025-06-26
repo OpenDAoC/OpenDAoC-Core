@@ -263,19 +263,23 @@ public interface IPropertyCalculator
 ## Development Workflow
 
 ### For New Features
-1. **Start with interface definition** - Design the contract first
-2. **Write tests first** (TDD) - Define expected behavior
-3. **Use established patterns** - Follow existing architecture
-4. **Document thoroughly** - Update specifications
-5. **Review carefully** - Ensure consistency
+1. **Check SRD first** - Verify if mechanics are already documented
+2. **Update SRD if needed** - Document any missing mechanics before coding
+3. **Start with interface definition** - Design the contract first
+4. **Write tests first** (TDD) - Define expected behavior per SRD
+5. **Use established patterns** - Follow existing architecture
+6. **Document thoroughly** - Reference SRD in code comments
+7. **Review carefully** - Ensure SRD compliance
 
 ### For Refactoring Existing Code
 1. **Document current behavior** - Capture existing logic
-2. **Write tests** - Cover edge cases and existing functionality
-3. **Create interfaces** - Define new contracts
-4. **Build adapters** - Bridge old and new code
-5. **Migrate gradually** - One component at a time
-6. **Validate thoroughly** - Run all tests
+2. **Verify against SRD** - Ensure current behavior matches specifications
+3. **Update SRD if needed** - Document any discovered mechanics
+4. **Write tests** - Cover edge cases per SRD specifications
+5. **Create interfaces** - Define new contracts
+6. **Build adapters** - Bridge old and new code
+7. **Migrate gradually** - One component at a time
+8. **Validate thoroughly** - Run all tests against SRD specs
 
 ### Code Review Checklist
 - [ ] Follows SOLID principles
