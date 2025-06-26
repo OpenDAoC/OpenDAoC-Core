@@ -1,30 +1,34 @@
 ﻿using DOL.GS.PacketHandler;
+using DOL.GS.RealmAbilities;
 
 namespace DOL.GS
 {
     public class TrueShotECSGameEffect : ECSGameAbilityEffect
     {
-        public TrueShotECSGameEffect(ECSGameEffectInitParams initParams)
-            : base(initParams)
+        public override ushort Icon => 3004;
+        public override string Name => "Trueshot";
+        public override bool HasPositiveEffect => true;
+
+        private TimedRealmAbility _ability;
+
+        public TrueShotECSGameEffect(TimedRealmAbility ability, ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.TrueShot;
+            _ability = ability;
             Start();
         }
 
-        public override ushort Icon { get { return 3004; } }
-        public override string Name { get { return "Trueshot"; } }
-        public override bool HasPositiveEffect { get { return true; } }
-
         public override void OnStartEffect()
         {
-            if (OwnerPlayer != null)
-            {
-                OwnerPlayer.Out.SendMessage("You prepare a Trueshot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            }
+            OwnerPlayer?.Out.SendMessage("You prepare a Trueshot!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
-        public override void OnStopEffect()
-        {
 
+        public void Cancel(bool disableAbility)
+        {
+            if (disableAbility)
+                _ability?.DisableSkill(Owner);
+
+            Stop();
         }
     }
 }

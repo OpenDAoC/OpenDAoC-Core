@@ -9248,12 +9248,11 @@ namespace DOL.GS
                 }
             }
 
+            // Volley is weird and doesn't activate attack mode.
             if (effectListComponent.ContainsEffectForEffectType(eEffect.Volley))
             {
-                AtlasOF_VolleyECSEffect volley = (AtlasOF_VolleyECSEffect)EffectListService.GetEffectOnTarget(this, eEffect.Volley);
-
-                if (volley != null)
-                    volley.OnPlayerMoved();
+                AtlasOF_VolleyECSEffect volley = EffectListService.GetEffectOnTarget(this, eEffect.Volley) as AtlasOF_VolleyECSEffect;
+                volley?.OnPlayerMoved();
             }
         }
 

@@ -814,6 +814,9 @@ namespace DOL.GS
                             player.Out.SendInterruptAnimation(owner);
                     }
                 }
+
+                if (owner.effectListComponent.ContainsEffectForEffectType(eEffect.TrueShot))
+                    EffectListService.GetEffectOnTarget(owner, eEffect.TrueShot).Stop();
             }
 
             attackAction.OnStopAttack();
