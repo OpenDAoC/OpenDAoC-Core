@@ -174,20 +174,22 @@ public void AttackResolution_ShouldCheckEvadeBeforeParry_WhenBothAvailable()
 ## Current Status
 
 ### Coverage Overview
-- **Combat Systems**: 75% complete - Core mechanics documented, some edge cases pending
-- **Character Systems**: 60% complete - Basic progression done, advanced systems needed
-- **Magic Systems**: 80% complete - Most spell mechanics covered, some gaps in interactions
+- **Combat Systems**: 85% complete - Attack resolution, damage, defense, aggro, siege warfare documented
+- **Character Systems**: 80% complete - Progression, death/resurrection, stealth systems documented
+- **Magic Systems**: 90% complete - Spell mechanics, effects system, component system, pet summoning documented
 - **Item Systems**: 65% complete - Equipment basics done, artifact systems pending
-- **Social Systems**: 40% complete - Guild basics covered, alliance details needed
-- **World Systems**: 30% complete - Housing documented, keep warfare pending
-- **Economy Systems**: 50% complete - Crafting basics done, economy balance needed
-- **Quest Systems**: 45% complete - Quest mechanics covered, reward calculations pending
+- **Social Systems**: 70% complete - Guild, housing, group systems documented
+- **World Systems**: 60% complete - Region/zone, movement/speed mechanics documented
+- **Economy Systems**: 75% complete - Money system, crafting documented, economy balance needed
+- **Quest Systems**: 60% complete - Quest mechanics documented, advanced rewards pending
+- **Performance Systems**: 0% complete - Not yet documented
+- **Cross-System Interactions**: 0% complete - Not yet documented
 
 ### Priority Areas
-1. **Combat System completeness** - Critical for authentic gameplay
+1. **Performance specifications** - Ensuring server stability
 2. **Cross-system interactions** - Understanding complex dependencies
-3. **Performance specifications** - Ensuring server stability
-4. **Edge case documentation** - Handling special conditions
+3. **Item system completeness** - Artifact and special item mechanics
+4. **Advanced quest rewards** - Complex reward calculations
 
 ## Getting Help
 

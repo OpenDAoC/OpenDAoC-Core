@@ -1,3 +1,7 @@
+# Core Systems and Game Rules
+
+> **Note**: This document contains legacy rule documentation. For comprehensive and up-to-date game mechanics documentation, please refer to the `/SRD` (System Reference Document) directory. The SRD contains detailed documentation of all game systems including formulas, edge cases, and implementation notes.
+
 # OpenDAoC Core Systems - Game Rules Documentation
 
 > **Note**: This document is being migrated to the comprehensive System Reference Document (SRD). 
