@@ -611,13 +611,12 @@ namespace DOL.GS
                         return;
                     }
 
-                    if (EffectListService.GetAbilityEffectOnTarget(player, eEffect.SureShot) != null)
+                    // This shouldn't be done here. Is this for safety?
+                    if (player.effectListComponent.ContainsEffectForEffectType(eEffect.SureShot))
                         player.rangeAttackComponent.RangedAttackType = eRangedAttackType.SureShot;
-
-                    if (EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire) != null)
+                    else if (player.effectListComponent.ContainsEffectForEffectType(eEffect.RapidFire))
                         player.rangeAttackComponent.RangedAttackType = eRangedAttackType.RapidFire;
-
-                    if (EffectListService.GetAbilityEffectOnTarget(player, eEffect.TrueShot) != null)
+                    else if (player.effectListComponent.ContainsEffectForEffectType(eEffect.TrueShot))
                         player.rangeAttackComponent.RangedAttackType = eRangedAttackType.Long;
 
                     if (player.rangeAttackComponent?.RangedAttackType is eRangedAttackType.Critical &&
