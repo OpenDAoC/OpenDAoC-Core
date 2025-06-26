@@ -7,6 +7,7 @@
 - Create clear contracts that specify behavior, not implementation
 - Enable dependency injection and testability
 - Support multiple implementations and easy mocking
+- **ALWAYS** check the OpenDAoC interfaces for an existing implementation to use. Make a new one only if no other option exists.
 
 ```csharp
 // ✅ Good - Interface defines contract

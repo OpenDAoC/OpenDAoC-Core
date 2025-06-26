@@ -12,42 +12,51 @@
 9. [Keep and Siege System](#keep-and-siege-system)
 10. [Crafting System](#crafting-system)
 11. [Quest and Task System](#quest-and-task-system)
+12. [Magic System](#magic-system)
 
 ## Combat System
 
-### Attack Resolution Order
-1. Intercept check
-2. Evade check
-3. Parry check
-4. Block (Shield) check
-5. Guard check
-6. Hit/Miss determination
-7. Bladeturn check
+### Attack Resolution
+The combat system follows this order of checks:
+1. **Range Check**: Verify target is within weapon range
+2. **Line of Sight Check**: Ensure clear path to target  
+3. **Defense Checks** (if not disabled):
+   - Evade
+   - Parry (melee only)
+   - Block
+   - Guard
+4. **Hit/Miss Calculation**
+5. **Fumble Check** (subset of miss)
+6. **Damage Calculation** (if hit)
+7. **Critical Strike Check**
+8. **Damage Application**
 
-### Hit/Miss Calculation
-- **Base miss chance**: 18% (reduced from 23% in patch 1.117C)
-- **To-Hit bonus**: Reduces miss chance directly
-- **Level difference**: ±1.33% per level (PvE only)
-- **Multiple attackers**: -0.5% miss per additional attacker (configurable via MISSRATE_REDUCTION_PER_ATTACKERS)
-- **Weapon bonus**: Capped by attacker level
-- **Armor bonus**: Capped by defender level, applied differently for PvP vs PvE
-  - PvP: Direct addition/subtraction to miss chance
-  - PvE: Percentage modification of miss chance
-- **Style bonuses**: Applied from attack style and previous defensive style
-- **Ammo modifiers** (multiplicative with base miss chance):
-  - Rough: +15% miss chance
-  - Standard: No modification  
-  - Footed: -25% miss chance
+### Base Damage Calculation
 
-### Damage Calculation
+Base damage is calculated using multiple factors:
 
-#### Base Damage Formula
-```
-BaseDamage = WeaponDPS * WeaponSpeed * 0.1 * SlowWeaponModifier
-SlowWeaponModifier = 1 + (WeaponSpeed - 20) * 0.003
-```
+1. **Weapon Damage**:
+   ```
+   BaseDamage = WeaponDPS * Speed * SlowWeaponModifier
+   SlowWeaponModifier = 1 + (WeaponSpeed - 2.0) * 0.03
+   ```
 
-#### Damage Modifiers
+2. **Stat Damage Bonus**:
+   - Strength for melee (Str/1.2 capped at level+1)
+   - Dexterity for ranged
+   
+3. **Two-Handed Weapon Bonus**:
+   ```
+   TwoHandBonus = 1.1 + (SpecLevel * 0.005)
+   ```
+
+4. **Damage Cap**:
+   ```
+   DamageCap = WeaponSkill * EnemyArmor * 3 * ServerModifier
+   ```
+
+### Damage Modifiers
+
 1. **Weapon Skill Modifier**:
    ```
    WeaponSkill = BaseWeaponSkill * RelicBonus * SpecModifier
@@ -71,9 +80,18 @@ SlowWeaponModifier = 1 + (WeaponSpeed - 20) * 0.003
    - PvE damage modifier: Configurable server setting (PVE_MELEE_DAMAGE)
 
 4. **Critical Hits**:
-   - Minimum critical damage: 10% of base damage
-   - Maximum critical damage: 50% vs players, 100% vs NPCs
-   - Critical chance from items/abilities, capped at 50%
+   - **Chance**: From items/abilities (eProperty.CriticalMeleeHitChance or CriticalArcheryHitChance)
+   - **Damage Range**:
+     - Players: 10% to 100% of base damage vs NPCs, 10% to 50% vs players
+     - NPCs: Same ranges (10-100% vs NPCs, 10-50% vs players)
+   - **Berserk Modifiers**:
+     - Level 1: 10-25% of base damage
+     - Level 2: 10-50% of base damage
+     - Level 3: 10-75% of base damage
+     - Level 4: 10-99% of base damage
+   - **Special Cases**:
+     - Critical Shot (archery) cannot critically hit
+     - Triple Wield prevents receiving critical hits
 
 5. **Two-Handed Weapon Bonus**: Scales with specialization level
 6. **Left-Hand (Dual Wield) Damage**: 62.5% base + 0.34% per Left Axe spec point
@@ -106,59 +124,117 @@ Base Parry = (Dex * 2 - 100) / 40 + ParrySpec / 2 + MasteryOfParry * 3 + 5
 ```
 Base Block = 5% + 0.5% * ShieldSpec
 ```
-- Modified by Dex (0.1% per point above 60)
-- Modified by shield quality and condition
-- 60% cap in RvR only (BLOCK_CAP property)
-- Shield size determines max simultaneous blocks:
-  - Small: 1 attacker
-  - Medium: 2 attackers
-  - Large: 3 attackers
-- Halved vs dual wield attacks
-- Only works from front (120 degree arc)
+- Modified by buffs/debuffs/items (Dex, Mastery of Blocking)
+- Requires shield equipped
+- Only works from front (120 degree arc) unless Engage
+- Engage: Works 360 degrees vs single target, normal arc vs others
+- Block cap depends on shield size:
+  - Small Shield: 45% + 5% per tier = 60% max
+  - Medium Shield: 50% + 5% per tier = 65% max
+  - Large Shield: 60% + 5% per tier = 75% max
 
-### Style Combat
-- **Positional requirements**: Side (90°), back (90°), front (180°)
-- **Opening requirements**: Parry, block, evade, hit, miss, etc.
-- **Attack result requirements**: Must match previous attack result
-- **Growth rate for style damage**: 
-  ```
-  StyleDamage = GrowthRate * Spec * AttackSpeed / UnstyledDamageCap * UnstyledDamage
-  ```
-- **Minimum style damage**: 1 for styles with positive growth rate
-- **Endurance cost**: Based on weapon speed
-- **Style effects and procs**: Chance-based spell effects
-- **To-hit bonus**: Reduces miss chance directly
-- **Defense bonus**: Increases attacker's miss chance on next attack
+#### Fumble Mechanics
+- **Base Chance**: Max(51 - level, debuffs + abilities) / 1000
+  - Level 1: 5.0% chance
+  - Level 50: 0.1% chance
+- **Only applies to melee attacks** (ranged cannot fumble)
+- **Fumbles are a subset of misses** - can't fumble without missing
+- **Miss chance is adjusted** to be at least fumble chance
+- **On Fumble**:
+  - Attack interval is doubled
+  - Combat styles are cleared
+- **Spell Fumble**: Separate mechanic, capped at 100%
 
-#### Stealth Opener Damage (Static Formulas)
-- **Backstab I**: Cap = ~5 + Critical Strike Spec * 14/3
-- **Backstab II**: Cap = 45 + Critical Strike Spec * 6
-- **Perforate Artery (1H)**: Cap = 75 + Critical Strike Spec * 9
-- **Perforate Artery (2H)**: Cap = 75 + Critical Strike Spec * 12
+### Hit/Miss Calculation
 
-### Spell Damage
-
-#### Base Spell Damage
+#### Base Miss Chance
 ```
-SpellDamage = DelveValue * (1 + StatModifier * 0.005) * (1 + SpecBonus * 0.005)
-StatModifier = Primary stat (INT/PIE/etc) based on class
-SpecBonus = Item bonuses to spell line (casters only)
+Miss% = 15% + LevelDifference * 0.33% + ArmorBonus
 ```
+- **Level Difference**: Target Level - Attacker Level (min 0)
+- **Armor Bonus**: 
+  - PvP: Flat addition to miss chance
+  - PvE: Percentage increase of miss chance
 
-#### Spell Resistance
-```
-HitChance = 87.5% base
-+/- (SpellLevel - TargetLevel) / 2
-+ ToHitBonus
-+ PiercingMagic effects
-Modified by level difference (PvE)
-Modified by multiple attackers (PvE)
-```
+#### Style Modifiers
+- Style BonusToHit: Reduces miss chance
+- Previous style BonusToDefense: Increases miss chance
 
-#### Damage Variance
-- Baseline: 75-125% of spell damage
-- Mastery of Magic: Reduces lower bound
-- Wild Power: Increases variance range
+#### Ammo Modifiers (Archery)
+Arrow/bolt quality affects accuracy:
+- Rough: +15% miss chance
+- Standard: No modifier
+- Footed: -25% miss chance
+
+#### Special Cases
+- **Strafing**: 30% chance to force a miss (PvP only)
+- **Bladeturn**: Can deflect attacks based on level difference
+
+### Armor System
+
+#### Armor Factor (AF)
+- **Base Item AF**: Capped at 2 * level (1 * level for cloth)
+- **Inherent AF**: +12.5 for all calculations
+- **Player Bonus**: +Level * 20 / 50 (level 50 = +20 AF)
+- **Quality/Condition**: AF * Quality% * Condition%
+- **Buffs**: 
+  - Base buffs capped with item AF
+  - Spec buffs capped at Level * 1.875
+  - Item bonuses capped at Level
+  
+#### Armor Absorption
+Base absorption by armor type:
+- Cloth: 0%
+- Leather: 10%
+- Reinforced/Studded: 19%
+- Scale/Chain: 27%
+- Plate: 34%
+
+**Modifiers**:
+- +X% from items/abilities (capped at 50%)
+- Cannot go below 0% even with debuffs
+- NPCs: Base = Level * 0.0054 (27% at level 50)
+- Necro pets: Base = Owner Level * 0.0068 (34% at level 50)
+
+#### Armor Effectiveness Formula
+```
+EffectiveArmor = ArmorFactor / (1 - Absorption)
+```
+At 100% absorption, armor provides infinite protection.
+
+### Attack Speed and Timing
+
+#### Base Attack Speed
+Weapon speed in milliseconds = SPD_ABS * 100
+
+#### Player Speed Modifiers
+**Melee Weapons**:
+```
+Speed * (1 - (Quickness - 60) * 0.002) * MeleeSpeed / 100
+```
+- Minimum: 1500ms (1.5 seconds)
+
+**Ranged Weapons (Old Archery)**:
+```
+Speed * (1 - (Quickness - 60) * 0.002) - (Speed * ArcherySpeed / 100)
+```
+- Critical Shot: Speed * 2 - (AbilityLevel - 1) * Speed / 10
+- Rapid Fire: Speed * 0.5 (minimum 900ms)
+
+**Ranged Weapons (New Archery)**:
+Uses Casting Speed instead of Archery Speed
+
+#### NPC Speed
+- One-hand weapons: 3.0 seconds
+- Two-hand weapons: 4.0 seconds
+- Ranged weapons: 4.5 seconds
+- Modified by: Speed * MeleeSpeed / 100
+
+#### Special Timing Rules
+- **Fumble**: Doubles next attack interval
+- **Self-interrupt on melee**: Half of attack speed
+- **Ranged to melee switch**: 750ms minimum delay
+- **Non-attack rounds**: 100ms tick interval
 
 ## Character Progression
 
@@ -509,3 +585,224 @@ Crafting time = BaseTime * MaterialCount / Speed
 - Update frequency scaling
 - Component pooling
 - Lazy evaluation 
+
+## Magic System
+
+### Spell Hit Chance
+Base spell hit chance calculation:
+```
+BaseHitChance = 87.5%
+```
+
+**Modifiers**:
+- **Dual Component Spells**: -2.5% penalty
+- **Spell/Target Level Difference**: (spellLevel - targetLevel) / 2.0
+- **PvE Level Difference**: Additional (casterEffectiveLevel - targetEffectiveLevel)
+- **Multiple Attackers**: Reduces by MISSRATE_REDUCTION_PER_ATTACKERS per extra attacker
+- **ToHitBonus Property**: Direct addition to hit chance
+- **Piercing Magic RA**: Adds spell value to hit chance
+- **Majestic Will RA**: Adds effectiveness * 5 to hit chance
+
+**Hit Chance Penalties**:
+- Below 55% hit chance: Damage reduced by (hitChance - 55) * SPELL_HITCHANCE_DAMAGE_REDUCTION_MULTIPLIER * 0.01
+- Minimum effective hit chance: 55%
+
+### Spell Damage Calculation
+
+#### Base Damage
+```
+BaseDamage = Spell.Damage * StatModifier * SpecModifier
+StatModifier = 1 + (ManaStat * 0.005)
+SpecModifier = 1 + (ItemSpecBonus * 0.005)
+```
+
+**Special Cases**:
+- **Item/Potion Effects**: No stat/spec scaling
+- **Nightshade**: Uses STR + AcuityBonus instead of mana stat
+- **Life Drain**: Damage * (1 + LifeDrainReturn * 0.001)
+
+#### Damage Variance
+Variance determines the random damage range:
+
+**Standard Spells**:
+```
+Min = (CasterSpec - 1) / TargetLevel
+Max = 1.0
+```
+
+**Special Spell Lines**:
+- **Mob Spells/Nightshade**: Min = 0.6, Max = 1.0
+- **Item Effects/Potions**: Min = 0.75, Max = 1.25
+- **Combat Styles/RAs**: Min = 1.0, Max = 1.0 (no variance)
+
+**Level Difference Modifier**:
+```
+VarianceOffset = (CasterLevel - TargetLevel) * Modifier * 0.01
+Modifier = Max(2, 10 - CasterLevel * 0.16)
+```
+- At level 0: 10% per level difference
+- At level 50+: 2% per level difference
+
+#### Effectiveness
+```
+SpellDamageEffectiveness = 1 + SpellDamage% * 0.01
+BuffEffectiveness = 1 + BuffEffectiveness% * 0.01 (buffs only)
+DebuffEffectiveness = 1 + DebuffEffectiveness% * 0.01 * CriticalModifier (debuffs only)
+```
+
+#### Final Damage Calculation
+```
+1. SpellDamage = BaseDamage * (1 + RelicBonus) * Effectiveness * Variance
+2. Apply hit chance penalty if < 55%
+3. Apply PvP/PvE damage modifiers
+4. Apply resistance reduction
+5. Apply damage cap: Min(Damage, Spell.Damage * 3.0 * Effectiveness)
+6. Apply critical damage
+```
+
+#### Critical Damage
+- **Chance**: SpellCriticalChance property (capped at 50%)
+- **Damage Range**:
+  - vs NPCs: 10% to 100% of base damage
+  - vs Players: 10% to 50% of base damage
+- **DoTs**: Can only crit with Wild Arcana RA
+
+### Resistance System
+
+#### Two-Layer System
+Resistances are calculated in two separate layers:
+
+**Primary Resists** (Layer 1):
+- Item bonuses
+- Racial resists
+- Buff resists
+- RvR banner bonuses
+- **Resist Pierce**: Reduces target's item bonus resists by pierce value
+
+**Secondary Resists** (Layer 2):
+- Realm ability resists (Avoidance of Magic, etc.)
+- Spec buff bonuses
+- Capped at 80%
+
+**Damage Reduction**:
+```
+Layer1Reduction = Damage * PrimaryResist * 0.01
+Layer2Reduction = (Damage - Layer1Reduction) * SecondaryResist * 0.01
+FinalDamage = Damage - Layer1Reduction - Layer2Reduction
+```
+
+### Crowd Control
+
+#### Duration Calculation
+Base duration is modified by:
+1. **Target Resists**: Duration * (1 - ResistPercent/100)
+2. **Duration Reduction Properties**:
+   - MesmerizeDurationReduction
+   - StunDurationReduction
+3. **Duration Limits**:
+   - Minimum: 1ms
+   - Maximum: Spell.Duration * 4
+
+#### Immunity Timers
+After CC expires, immunity is granted:
+- **Standard CC**: 60 seconds (configurable)
+- **Style Stuns**: 5x stun duration
+- **Pet Stuns**: No immunity
+
+#### Special Rules
+- **NPCs < 75% Health**: Immune to mezz
+- **Charge/Speed of Sound**: Immune to CC while active
+- **CCImmunity Ability**: Complete immunity to CC
+
+#### NPC Diminishing Returns
+NPCs have cumulative CC resistance:
+```
+Duration = BaseDuration / (2 * ApplicationCount)
+```
+- 1st CC: 100% duration
+- 2nd CC: 50% duration
+- 3rd CC: 25% duration
+- etc.
+
+### Healing
+
+#### Heal Variance
+Healing has variance similar to damage spells:
+
+**Standard Heals**:
+```
+MinEfficiency = 0.25 + (CasterSpec - 1) / SpellLevel
+MaxEfficiency = 1.25
+```
+- Efficiency capped at 1.25
+
+**Special Heal Types**:
+- **Item Effects**: Min = 75%, Max = 125%
+- **Potion Effects**: Min = 100%, Max = 125%
+- **Combat Styles**: Fixed 125%
+- **RA Heals**: No variance (100%)
+
+#### Heal Modifiers
+1. **Relic Bonus**: Same as spell damage
+2. **Effectiveness**: 1 + BuffEffectiveness% * 0.01
+3. **HealingEffectiveness**: Additional property modifier
+
+#### Critical Heals
+- **Chance**: CriticalHealHitChance property (capped at 50%)
+- **Amount**: 10% to 100% of heal value
+- Applied after all other modifiers
+
+#### Heal Aggro
+Healing generates aggro on all NPCs attacking the heal target:
+- Aggro amount = Effective heal value
+- Added to each attacker's aggro list
+
+#### Spread Heal
+- Prioritizes most injured group member
+- Distributes healing to bring all members to same health percentage
+- Total heal cap = Base heal * group member count
+- Individual heal cap = Base heal * 2
+
+### Spell Types and Special Rules
+
+#### Bolts
+- 50% magic damage, 50% physical damage
+- Magic portion affected by spell resists
+- Physical portion affected by target's armor
+- Can be blocked (negates physical portion)
+
+#### Damage Adds/Shields
+**Variance**: Min = 0.9, Max = 0.9 * (5/3) = 1.5
+
+**Damage Calculation**:
+- Fixed damage: Spell.Damage * variance * effectiveness * interval / 1000
+- Percentage damage: AttackDamage * Spell.Damage / -100
+
+#### Life Drain
+- Damage boosted by LifeDrainReturn value
+- Returns percentage of damage as health to caster
+
+#### Power Drain/Tap
+- Drains target's power
+- Can return power to caster based on spell configuration
+
+### Buff/Debuff System
+
+#### Buff Stacking
+- Only highest value in each category applies
+- Categories: Base buffs, Spec buffs, Item bonuses
+- Base buffs and item AF capped together
+- Spec AF buffs capped separately
+
+#### Concentration
+- Concentration buffs have limited range
+- Range determined by BUFF_RANGE property
+- Buffs drop if target moves out of range
+
+### Spell Interruption
+- Melee attacks interrupt casting
+- Damage interrupts based on SpellInterruptDuration
+- Some abilities grant uninterruptible casting
+
+---
+*This document is a living reference and should be updated as new mechanics are discovered or changed.* 

@@ -2,9 +2,7 @@ using NUnit.Framework;
 using FluentAssertions;
 using Moq;
 using System.Collections.Generic;
-using DOL.GS.Interfaces.PropertyCalculators;
-using DOL.GS.Interfaces.Core;
-using DOL.GS.Interfaces.Character;
+using DOL.GS;
 
 namespace DOL.Tests.Unit.PropertyCalculators
 {
