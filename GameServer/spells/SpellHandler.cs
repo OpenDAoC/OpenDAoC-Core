@@ -2243,7 +2243,7 @@ namespace DOL.GS.Spells
 			return false;
 		}
 
-		public void OnDurationEffectApply(GameLiving target)
+		public virtual void OnDurationEffectApply(GameLiving target)
 		{
 			if (!target.IsAlive || target.effectListComponent == null)
 				return;

@@ -64,29 +64,18 @@ namespace DOL.GS
 
         public override void TryApplyImmunity()
         {
-            if (TriggersImmunity)
-            {
-                if (OwnerPlayer != null)
-                {
-                    if ((EffectType == eEffect.Stun && SpellHandler.Caster is GameSummonedPet) || SpellHandler is UnresistableStunSpellHandler)
-                        return;
+            // Only handle players. NPCs have their own immunity logic.
+            if (!TriggersImmunity || OwnerPlayer == null)
+                return;
 
-                    new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int)PulseFreq, Effectiveness);
-                }
-                else if (Owner is GameNPC)
-                {
-                    if (EffectType == eEffect.Stun)
-                    {
-                        if (EffectListService.GetEffectOnTarget(Owner, eEffect.NPCStunImmunity) is not NPCECSStunImmunityEffect)
-                            new NPCECSStunImmunityEffect(new ECSGameEffectInitParams(Owner, ImmunityDuration, Effectiveness, SpellHandler));
-                    }
-                    else if (EffectType == eEffect.Mez)
-                    {
-                        if (EffectListService.GetEffectOnTarget(Owner, eEffect.NPCMezImmunity) is not NPCECSMezImmunityEffect)
-                            new NPCECSMezImmunityEffect(new ECSGameEffectInitParams(Owner, ImmunityDuration, Effectiveness, SpellHandler));
-                    }
-                }
-            }
+            // Summoned pets don't give stun immunities (maybe tweak their spells instead?)
+            if (EffectType is eEffect.Stun && SpellHandler.Caster is GameSummonedPet)
+                return;
+
+            if (SpellHandler is UnresistableStunSpellHandler)
+                return;
+
+            new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int) PulseFreq, Effectiveness);
         }
 
         public override DbPlayerXEffect GetSavedEffect()

@@ -24,8 +24,8 @@ namespace DOL.GS.Spells
 			// Override to ignore eProperty.StunDurationReduction.
 			double duration = Spell.Duration;
 
-			if (EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity) is NPCECSStunImmunityEffect immunityEffect)
-				duration = immunityEffect.CalculateStunDuration((long) duration);
+			if (EffectListService.GetEffectOnTarget(target, eEffect.NPCStunImmunity) is NpcStunImmunityEffect immunityEffect)
+				duration = immunityEffect.CalculateNewEffectDuration((long) duration);
 
 			return (int) Math.Max(duration, 1);
 		}

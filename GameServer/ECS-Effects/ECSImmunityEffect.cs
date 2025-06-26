@@ -1,4 +1,5 @@
-﻿using DOL.GS.Spells;
+﻿using System;
+using DOL.GS.Spells;
 
 namespace DOL.GS
 {
@@ -23,43 +24,51 @@ namespace DOL.GS
         protected ECSImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
     }
 
-    public class NPCECSStunImmunityEffect : ECSImmunityEffect
+    public abstract class NpcImmunityEffect : ECSImmunityEffect
     {
-        private int _timesStunned = 1;
+        private int _count = 1;
 
-        public NPCECSStunImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        protected NpcImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
             Owner = initParams.Target;
             Duration = 60000;
-            EffectType = eEffect.NPCStunImmunity;
             Start();
         }
 
-        public long CalculateStunDuration(long duration)
+        public bool CanApplyNewEffect(long duration)
         {
-            var retVal = duration / (2 * _timesStunned);
-            _timesStunned++;
-            return retVal;
+            // Whether a new effect can be applied depends on its duration.
+            // This is equivalent to `_count < duration / 2000 + 1`.
+            // This seems to be correct for stuns. Mez are untested and may have a different threshold.
+            return CalculateNewEffectDuration(duration) >= 1000;
+        }
+
+        public long CalculateNewEffectDuration(long duration)
+        {
+            // Duration is reduced for every new application.
+            duration /= 2 * _count;
+            return duration;
+        }
+
+        public void OnApplyNewEffect()
+        {
+            _count++;
         }
     }
 
-    public class NPCECSMezImmunityEffect : ECSImmunityEffect
+    public class NpcStunImmunityEffect : NpcImmunityEffect
     {
-        private int _timesMezzed = 1;
-
-        public NPCECSMezImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public NpcStunImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
-            Owner = initParams.Target;
-            Duration = 60000;
-            EffectType = eEffect.NPCMezImmunity;
-            Start();
+            EffectType = eEffect.NPCStunImmunity;
         }
+    }
 
-        public long CalculateMezDuration(long duration)
+    public class NpcMezImmunityEffect : NpcImmunityEffect
+    {
+        public NpcMezImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
         {
-            var retVal = duration / (2 * _timesMezzed);
-            _timesMezzed++;
-            return retVal;
+            EffectType = eEffect.NPCMezImmunity;
         }
     }
 }

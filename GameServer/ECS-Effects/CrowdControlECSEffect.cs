@@ -81,11 +81,14 @@ namespace DOL.GS
             Owner.IsStunned = true;
             OnHardCCStart();
             UpdatePlayerStatus();
-            
+
+            // Immediately start the immunity effect for NPCs. This is used for diminishing returns.
+            if (Owner is GameNPC npc && !npc.effectListComponent.ContainsEffectForEffectType(eEffect.NPCStunImmunity))
+                new NpcStunImmunityEffect(new ECSGameEffectInitParams(Owner, ImmunityDuration, Effectiveness, SpellHandler));
+
             // "You are stunned!"
             // "{0} is stunned!"
             OnEffectStartsMsg(true, true, true);
-
         }
 
         public override void OnStopEffect()
@@ -93,11 +96,10 @@ namespace DOL.GS
             Owner.IsStunned = false;
             OnHardCCStop();
             UpdatePlayerStatus();
-            
+
             // "You recover from the stun.."
             // "{0} recovers from the stun."
             OnEffectExpiresMsg(true, false, true);
-
         }
     }
 
@@ -117,7 +119,11 @@ namespace DOL.GS
             Owner.IsMezzed = true;
             OnHardCCStart();
             UpdatePlayerStatus();
-            
+
+            // Immediately start the immunity effect for NPCs. This is used for diminishing returns.
+            if (Owner is GameNPC npc && !npc.effectListComponent.ContainsEffectForEffectType(eEffect.NPCMezImmunity))
+                new NpcMezImmunityEffect(new ECSGameEffectInitParams(Owner, ImmunityDuration, Effectiveness, SpellHandler));
+
             // "You are entranced!"
             // "You are mesmerized!"
             OnEffectStartsMsg(true, true, true);
@@ -128,7 +134,7 @@ namespace DOL.GS
             Owner.IsMezzed = false;
             OnHardCCStop();
             UpdatePlayerStatus();
-            
+
             // "You are no longer entranced."
             // "You recover from the mesmerize."
             OnEffectExpiresMsg(true, false, true);
