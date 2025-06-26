@@ -4,11 +4,19 @@
 > See the `/SRD/` directory for the latest, most accurate game rule documentation.
 > 
 > **Completed SRD Sections:**
-> - **Combat Systems** (5/5 core): Attack Resolution, Damage Calculation, Defense Mechanics, Style Mechanics, Attack Speed & Timing
+> - **Combat Systems** (5/5 core - COMPLETE): 
+>   - Attack Resolution (expanded with intercept, guard, multi-attacker formulas)
+>   - Damage Calculation (expanded with damage adds, shields, conversion)
+>   - Defense Mechanics (expanded with penetration factors, block rounds)
+>   - Style Mechanics
+>   - Attack Speed & Timing
 > - **Character Systems** (3/5 core): Character Progression, Specialization & Skills, Realm Points & Ranks
 > - **Magic Systems** (1/5 core): Spell Mechanics
-> - **Item Systems** (1/5 core): Item Mechanics  
+> - **Item Systems** (1/5 core): Item Mechanics
 > - **Social Systems** (1/5 core): Guild System
+> - **World Systems** (2/5 core): Region & Zone Mechanics, Movement & Speed Mechanics
+> - **Economy Systems** (1/5 core): Money & Currency System
+> - **Quest Systems** (1/5 core): Quest Mechanics
 > 
 > **Remaining SRD Sections:**
 > - World Systems, Economy Systems, Quest Systems, Performance Systems, Cross-System Interactions
