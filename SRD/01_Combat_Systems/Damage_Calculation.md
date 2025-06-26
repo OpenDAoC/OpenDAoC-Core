@@ -12,6 +12,8 @@ Damage calculation in DAoC is a multi-step process that considers weapon propert
 
 ### 1. Base Damage Calculation
 
+**Game Rule Summary**: When you hit someone, the damage starts with your weapon's DPS (damage per second) multiplied by how fast it swings. Slower weapons hit harder per strike to balance out their speed. Your character's stats like Strength (for melee) or Dexterity (for archery) add extra damage on top of this.
+
 #### Player Weapon Damage
 ```
 BaseDamage = WeaponDPS * WeaponSpeed * 0.1 * SlowWeaponModifier
@@ -34,6 +36,8 @@ BaseDamage = (1.0 + Level / F1 + Level² / F2) * WeaponSpeed * 0.1
 - **Weapon Speed**: 30 (1H), 40 (2H), 45 (ranged)
 
 ### 2. Damage Modifiers
+
+**Game Rule Summary**: Different fighting styles and weapon types give bonuses to damage. Two-handed weapons hit harder because they're bigger and harder to use. Fighting with two weapons gives a penalty to the off-hand weapon but lets you attack more often. Better crafted weapons (higher quality) and well-maintained ones (good condition) deal more damage.
 
 #### Slow Weapon Bonus
 Weapons with speed > 2.0 seconds receive a damage bonus:
@@ -71,6 +75,9 @@ Ammo type affects damage based on SPD_ABS bits 0-1:
 - **Broadhead/X-Heavy** (3): 125% damage
 
 ### 3. Damage Cap
+
+**Game Rule Summary**: There's a maximum amount of damage any single hit can do, even with the best gear and perfect conditions. This prevents one-shot kills and keeps combat balanced. The cap is three times what your weapon would normally do at perfect quality and condition.
+
 ```
 DamageCap = BaseDamage * Quality * Condition * 3
 ```
@@ -78,6 +85,8 @@ DamageCap = BaseDamage * Quality * Condition * 3
 - Prevents extreme damage spikes
 
 ### 4. Stat Contributions
+
+**Game Rule Summary**: Your character's natural abilities add to weapon damage. Strong warriors hit harder with melee weapons, while agile characters are more effective with bows and crossbows. There's a limit to how much your stats can help based on your level.
 
 #### Melee Weapons
 ```
@@ -92,6 +101,8 @@ StatDamage = Dexterity / 2
 - Same cap as melee
 
 ### 5. Weapon Skill Calculation
+
+**Game Rule Summary**: How skilled you are with a weapon type affects your damage. Training in weapon specializations makes you much more effective against enemies of similar level, but the benefit varies depending on what you're fighting. Fighting creatures much weaker than you doesn't benefit as much from high specialization.
 
 #### Base Weapon Skill
 ```
@@ -112,6 +123,8 @@ FinalWeaponSkill = BaseWeaponSkill * RelicBonus * SpecModifier
 ```
 
 ### 6. Armor Mitigation
+
+**Game Rule Summary**: Armor protects you by absorbing some damage and deflecting attacks. Heavy armor like plate mail absorbs more damage than light armor like cloth robes. Everyone has some natural toughness (inherent armor) that helps protect against attacks, and experienced fighters develop better defensive instincts over time.
 
 #### Armor Factor
 ```
@@ -135,10 +148,15 @@ DamageMod = WeaponSkill / (ArmorFactor / (1 - Absorption))
 ```
 
 ### 7. PvP/PvE Modifiers
+
+**Game Rule Summary**: The server can adjust how much damage players do against monsters versus other players. This lets administrators balance PvE content difficulty separately from PvP combat balance.
+
 - **PvP**: `Properties.PVP_MELEE_DAMAGE` (server configurable)
 - **PvE**: `Properties.PVE_MELEE_DAMAGE` (server configurable)
 
 ### 8. Critical Damage
+
+**Game Rule Summary**: Sometimes you get lucky and land a devastating blow that does extra damage. This happens more often if you have items or abilities that increase your critical hit chance. Critical hits do between 10% and 100% extra damage against monsters, but only 10% to 50% extra against other players to keep PvP balanced.
 
 #### Critical Chance
 From items/abilities:
@@ -156,6 +174,8 @@ From items/abilities:
 - Level 4: 10-99% critical damage
 
 ### 9. Resistance Calculation
+
+**Game Rule Summary**: Different types of damage (heat, cold, etc.) can be resisted by appropriate protection. Resistance works in two layers - first your gear and natural resistances reduce damage, then any special magical protections get another chance to reduce what's left. This prevents resistance from being too powerful while still making it worthwhile.
 
 #### Primary Resistance Layer
 ```
@@ -175,6 +195,8 @@ FinalDamage = Damage - DamageReduction1 - DamageReduction2
 ```
 
 ### 10. Style Damage
+
+**Game Rule Summary**: Combat styles are special attack techniques that do extra damage beyond your normal swing. The damage bonus depends on how much you've trained in the weapon specialization. More skilled fighters get bigger bonuses from their combat styles, making specialization very important for damage output.
 
 #### Growth Rate
 ```

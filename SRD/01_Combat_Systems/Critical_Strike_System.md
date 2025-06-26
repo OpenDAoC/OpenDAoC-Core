@@ -7,11 +7,16 @@
 - **Implementation**: Complete
 
 ## Overview
+
+**Game Rule Summary**: Critical strikes let you deal extra damage when you get lucky. Every attack or spell has a chance to "crit" for bonus damage - melee and archery crits do 10-100% extra damage against monsters but only 10-50% against other players to keep PvP balanced. The more critical hit items and abilities you have, the more often you'll land these devastating strikes.
+
 The critical strike system provides a chance for attacks and spells to deal additional damage. Different systems exist for melee, archery, and spell critical strikes with distinct caps, calculations, and modifiers.
 
 ## Core Mechanics
 
 ### Critical Strike Types
+
+**Game Rule Summary**: There are different types of critical strikes for different combat styles. Melee fighters crit with weapons, archers crit with bows, spellcasters crit with damage spells, and some can even crit with debuffs to make them more effective. Each type has its own chance calculation but they all follow similar damage rules.
 
 #### 1. Melee Critical Strikes
 ```csharp
@@ -102,6 +107,8 @@ public class CriticalDebuffHitChanceCalculator : PropertyCalculator
 
 ## Critical Damage Calculation
 
+**Game Rule Summary**: When you score a critical hit, the extra damage is random within a range. The minimum is always 10% of your base damage, but the maximum depends on what you're fighting. Against monsters you can do up to 100% extra damage (doubling your hit), but against other players it's capped at 50% extra to prevent one-shot kills in PvP.
+
 ### Melee/Archery Critical Damage
 ```csharp
 public int CalculateCriticalDamage(AttackData ad)
@@ -179,6 +186,9 @@ if (criticalChance > randNum && finalDamage > 0)
 ```
 
 ### Debuff Critical Effects
+
+**Game Rule Summary**: Debuff critical strikes don't do extra damage, but instead make the debuff more effective. A critical debuff might slow someone more, reduce their stats more severely, or last longer. This makes debuff-focused characters more unpredictable and dangerous in the right hands.
+
 ```csharp
 protected virtual double GetDebuffEffectivenessCriticalModifier()
 {
@@ -202,6 +212,8 @@ protected virtual double GetDebuffEffectivenessCriticalModifier()
 
 ## Critical Strike Sources
 
+**Game Rule Summary**: Critical strike chance comes from several sources that all stack together. You can get it from special realm abilities trained at high levels, from magical items and equipment, and some character classes have natural advantages. The total from all sources is capped at 50% so you can't guarantee critical hits.
+
 ### Realm Abilities
 - **Wild Power**: Spell critical chance
 - **Wild Arcana**: DoT/Debuff critical chance
@@ -220,12 +232,18 @@ protected virtual double GetDebuffEffectivenessCriticalModifier()
 - **Necromancer Pets**: +10% inherent crit
 
 ### Special Effects
+
+**Game Rule Summary**: Some abilities completely change how critical strikes work. Berserk gives you 100% critical chance but makes you vulnerable. Triple Wield makes you immune to receiving critical hits but you also can't critically hit others. These create interesting tactical trade-offs.
+
 - **Berserk**: 100% melee crit chance while active
 - **Triple Wield**: Target immune to critical hits
 
 ## Special Cases
 
 ### Critical Shot
+
+**Game Rule Summary**: The archer ability Critical Shot guarantees a hit but ironically cannot itself critically hit. This prevents it from being overpowered since it already provides guaranteed accuracy at the cost of slower attack speed.
+
 ```csharp
 // Critical Shot archery style cannot critically hit
 if (action.RangedAttackType is eRangedAttackType.Critical)
@@ -233,6 +251,9 @@ if (action.RangedAttackType is eRangedAttackType.Critical)
 ```
 
 ### DoT Critical Strikes
+
+**Game Rule Summary**: Damage-over-time spells normally cannot critically hit, but certain realm abilities can change this. This keeps DoTs from being too powerful while still giving specialized characters ways to enhance them.
+
 ```csharp
 // DoTs can only crit with Wild Arcana RA
 // Handled by DoTSpellHandler directly
@@ -245,6 +266,9 @@ int criticalChance = this is not DoTSpellHandler ?
 - Each hit rolls independently for critical
 
 ### Pet Critical Strikes
+
+**Game Rule Summary**: Pets can score critical hits using their own base chances plus bonuses from their master's abilities. Necromancer pets are especially good at this, getting natural critical bonuses that other pets don't have.
+
 ```csharp
 // Pets inherit owner's Wild Minion bonus
 if (npc.Brain is IControlledBrain petBrain && 
@@ -261,6 +285,8 @@ if (npc.Brain is IControlledBrain petBrain &&
 ```
 
 ## Caps and Limits
+
+**Game Rule Summary**: Critical strikes are capped to prevent them from becoming overpowered. No matter how much critical gear you have, you can never exceed 50% critical chance. Damage is also limited - you can never do more than double damage to monsters or 1.5x damage to players, keeping combat balanced.
 
 ### Hard Caps
 - **All Critical Types**: 50% maximum chance

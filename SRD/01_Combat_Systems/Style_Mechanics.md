@@ -6,11 +6,16 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: Combat styles are special attack techniques that do extra damage when used in the right situation. Some require attacking from behind, others work after your enemy blocks you, and many form chains where one style leads to another. Mastering these attack combinations separates skilled fighters from novices, as styles can do much more damage than regular attacks.
+
 Combat styles are special attacks that provide bonus damage and effects when executed under specific conditions. They form chains of attacks that reward skillful play and positioning.
 
 ## Core Mechanics
 
 ### Style Requirements
+
+**Game Rule Summary**: Every combat style has specific requirements to use it. Some work anytime, others only work after certain things happen (like your enemy parrying your attack), and positional styles only work when you're in the right spot relative to your target. Understanding these requirements is key to using styles effectively.
 
 #### Opening Types
 1. **Offensive** (0): Based on attacker's previous action
@@ -33,6 +38,9 @@ Used with Offensive/Defensive openings:
 **Source**: `Style.cs:eAttackResultRequirement`
 
 #### Positional Requirements
+
+**Game Rule Summary**: Positional styles require you to be in the right place relative to your target. Back styles (like assassin backstabs) only work from directly behind, side styles work from the flanks, and front styles work when facing your enemy. Position matters because different angles give different combat advantages.
+
 For positional styles:
 - **Back** (0): 60° arc (150° to 210°)
 - **Side** (1): 105° arc (45°-150° OR 210°-315°)
@@ -41,6 +49,8 @@ For positional styles:
 **Source**: `StyleProcessor.cs:CanUseStyle()`
 
 ### Style Damage Calculation
+
+**Game Rule Summary**: Style damage is calculated based on your weapon specialization level and how fast your weapon is. The more you've trained in a weapon, the more bonus damage your styles do. Slower weapons get bigger style bonuses to balance out their speed disadvantage. This makes specialization very important for effective combat.
 
 #### Standard Styles
 ```
@@ -63,6 +73,9 @@ if (styleDamage < 1 && growthRate > 0)
 ```
 
 #### Stealth Openers
+
+**Game Rule Summary**: Stealth classes have special opening attacks that do massive damage when attacking from stealth. These attacks use fixed damage formulas instead of the normal style system, and they ignore normal damage caps. The trade-off is that using them breaks your stealth, so timing and positioning are crucial.
+
 Stealth styles use fixed formulas:
 
 **Backstab I (ID: 335)**
@@ -85,6 +98,8 @@ Damage = Min(45, Spec) + Spec * 6
 
 ### Style Bonuses
 
+**Game Rule Summary**: Some styles make your attacks more accurate (bonus to hit) while others make it harder for your enemy to hit you back (bonus to defense). These tactical bonuses can swing the tide of combat, especially in longer fights where accuracy and defensive positioning matter.
+
 #### To-Hit Bonus
 ```
 MissChance -= Style.BonusToHit
@@ -101,6 +116,8 @@ NextAttackMissChance += Style.BonusToDefense
 
 ### Endurance Cost
 
+**Game Rule Summary**: Using combat styles costs endurance (stamina), and slower weapons cost more endurance per style because you're putting more effort into each swing. Running out of endurance means you can't use styles anymore, so managing your stamina is important in long fights.
+
 #### Base Cost Calculation
 ```
 EnduranceCost = BaseEnduranceCost * WeaponSpeed / 10
@@ -111,6 +128,8 @@ EnduranceCost = BaseEnduranceCost * WeaponSpeed / 10
 - Some styles have 0 endurance cost
 
 ### Style Effects and Procs
+
+**Game Rule Summary**: Many styles have special effects beyond just doing damage. They might cause bleeding, stun the target, or apply debuffs like movement snares. These effects are what make styles tactically interesting - the right style at the right time can completely change a fight.
 
 #### Style Procs
 - Can have multiple procs per style
@@ -127,6 +146,8 @@ EnduranceCost = BaseEnduranceCost * WeaponSpeed / 10
 
 ### Style Chains
 
+**Game Rule Summary**: Style chains are sequences of attacks where using one style opens up the opportunity to use another more powerful style. These chains reward skillful play and timing, as you need to successfully land the first style to access the follow-up. Mastering chains is essential for advanced combat.
+
 #### Chain Validation
 ```csharp
 // Style required before this one?
@@ -141,6 +162,8 @@ if (style.OpeningRequirementValue != 0
 - Must execute required style immediately before
 
 ### Special Requirements
+
+**Game Rule Summary**: Some styles have additional requirements beyond positioning and chains. Certain styles only work with specific weapon types, others require you to be stealthed, and all styles require a minimum specialization level to learn and use.
 
 #### Weapon Type
 - Style may require specific weapon type

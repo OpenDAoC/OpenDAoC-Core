@@ -16,6 +16,8 @@ The Attack Resolution System determines the outcome of all combat attacks in Dar
 **Source**: Live DAoC observation and legacy server analysis
 **Implementation Requirements**: Must process in exact order, short-circuit on first success
 
+**Game Rule Summary**: When a player attacks someone, the game checks various defenses in a specific order. The first defense that works stops the attack completely - this prevents stacking multiple defenses unfairly. Think of it like layers of armor where each layer gets a chance to stop the attack.
+
 The combat system follows this **exact** order of checks:
 1. **Bodyguard Check**: Redirects attacks to bodyguard
 2. **Phase Shift Check**: 100% miss if active
@@ -50,6 +52,8 @@ The combat system follows this **exact** order of checks:
 **Formula**: `MissChance = 18 - ToHitBonus - LevelDiff * 1.33 - MultiAttacker * REDUCTION + ArmorBonus + StyleModifiers`
 **Source**: `AttackComponent.cs:GetMissChance()`
 **Implementation Requirements**: Must cap at reasonable bounds
+
+**Game Rule Summary**: Your chance to miss an attack depends on several factors. Generally, higher level characters hit more reliably, better weapons and gear help you hit, and wearing heavy armor makes you harder to hit. Fighting multiple enemies at once makes each individual attack more likely to connect.
 
 **Components**:
 - **Base Miss Rate**: 18% (reduced from 20% in patch 1.117C)
@@ -86,6 +90,8 @@ else
 **Source**: Live DAoC mechanics analysis
 **Implementation Requirements**: Fumbles are subset of misses, double attack interval
 
+**Game Rule Summary**: Sometimes warriors mess up their attacks so badly they stumble or drop their weapon. This happens more often to new players and rarely to experienced fighters. When you fumble, your next attack takes twice as long because you need time to recover your stance.
+
 **Base Fumble Rates**:
 - Level 1: 5.0% chance
 - Level 50: 0.1% chance  
@@ -115,6 +121,8 @@ else
 **Source**: `InterceptECSEffect.cs`, `AttackComponent.cs:CalculateAttackResult()`
 **Ability**: Realm ability that redirects attacks to the interceptor
 
+**Game Rule Summary**: Some players can learn to jump in front of attacks meant for their allies. This heroic ability lets you protect weaker party members by taking the hit yourself. Different character types are better or worse at this - magical pets are extremely good at it, while regular players only succeed about half the time.
+
 **Intercept Chance**:
 - Players: 50%
 - Brittle Guard Pets: 100%
@@ -141,6 +149,8 @@ if (intercept != null && !stealthStyle)
 ### Guard Mechanics
 **Source**: `AttackComponent.cs:CheckGuard()`
 **Ability**: Allows a player to block attacks for another player
+
+**Game Rule Summary**: Experienced warriors can learn to protect nearby allies by extending their shield defense to cover them. This works like normal blocking but protects someone else instead. You need a shield, must be facing the right direction, and your ally needs to be close enough for you to cover them.
 
 **Requirements**:
 - Guard source must be active and alive
@@ -176,6 +186,8 @@ guardChance *= 1 - ad.DefensePenetration;
 **Source**: `AttackComponent.cs:CalculateAttackResult()`
 **Effect**: Redirects melee attacks to designated bodyguard
 
+**Game Rule Summary**: Some magical effects can designate a protector who automatically draws attacks away from the protected person. Unlike intercept which requires a chance roll, bodyguard completely redirects the attack to the protector. Only works against close-range attacks, not arrows or spells.
+
 **Requirements**:
 - Attacker must be melee (not ranged)
 - Target must have active bodyguard
@@ -189,6 +201,8 @@ guardChance *= 1 - ad.DefensePenetration;
 ### Strafing Mechanics
 **Source**: `AttackComponent.cs:action.Execute()`
 **PvP Only**: 30% chance to force a miss when strafing
+
+**Game Rule Summary**: When fighting other players, moving sideways while attacking (strafing) makes you harder to hit but also makes it harder for you to land clean hits. There's a 30% chance your own attack will miss simply because you're moving awkwardly while trying to fight.
 
 ```csharp
 if (playerOwner != null && playerOwner.IsStrafing && ad.Target is GamePlayer && Util.Chance(30))

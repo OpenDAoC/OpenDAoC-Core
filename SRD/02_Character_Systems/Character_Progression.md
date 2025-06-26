@@ -8,9 +8,13 @@
 ## Overview
 Character progression in DAoC encompasses level advancement, stat gains, and specialization points. Players advance from level 1 to 50, gaining power through increased stats, health, mana, and skill specializations.
 
+**Game Rule Summary**: Your character grows stronger by gaining experience from killing monsters and completing quests. As you level up, your core stats (like Strength and Constitution) increase automatically, you get more health and mana, and you earn points to specialize in weapons and abilities. The progression is designed so early levels are quick but later levels take much longer, encouraging both new and veteran players.
+
 ## Core Mechanics
 
 ### Experience System
+
+**Game Rule Summary**: Experience is the currency of character growth. You need increasingly large amounts to reach each new level - early levels might take minutes, but the final levels require many hours of gameplay. Different activities give different amounts of experience, and some zones provide bonuses to help players catch up.
 
 #### Experience Requirements
 Experience needed for each level (cumulative):
@@ -99,6 +103,8 @@ LevelPermill = 1000 * (Experience - ExperienceForCurrentLevel) /
 
 ### Stat Progression
 
+**Game Rule Summary**: Starting at level 6, your character automatically gets stronger in their class's favored attributes. Warriors get stronger (Strength) every level, moderately tougher (Constitution) every other level, and slightly more agile (Dexterity) every third level. This ensures your character naturally grows in the right direction for their role.
+
 #### Stat Gain Schedule
 Stats begin increasing at **level 6**:
 
@@ -133,6 +139,8 @@ for (int i = Level; i > Math.Max(previouslevel, 5); i--)
 
 ### Specialization Points
 
+**Game Rule Summary**: These are the points you spend to train your character's skills - weapons, spells, and special abilities. You earn more specialization points each level, and at higher levels you get much more per level. Pure fighters get fewer points but focus them better, while versatile classes get more points spread across many skills.
+
 #### Point Allocation
 ```
 Levels 1-5:   Level points per level (1+2+3+4+5 = 15 total)
@@ -152,6 +160,8 @@ At level 40, players gain a "half-level":
 
 ### Health Progression
 
+**Game Rule Summary**: Your hit points determine how much damage you can take before dying. Tougher classes start with more health, and everyone gains more as they level up. Your Constitution stat significantly affects your health - characters with high Constitution are much harder to kill than those with low Constitution.
+
 #### Base Health Formula
 ```
 HP = BaseHP * Level
@@ -170,6 +180,8 @@ If ExtraHP > 0: TotalHP += TotalHP * ExtraHP / 100
 - Varies by specific class
 
 ### Mana Progression
+
+**Game Rule Summary**: Mana is your magical energy for casting spells. Only spellcasting classes have significant mana pools. Your mana increases with level and is boosted by your casting stat (Intelligence, Piety, or Empathy depending on your class). Non-magical classes have little or no mana since they don't cast spells.
 
 #### Base Mana Formula
 For classes with mana:

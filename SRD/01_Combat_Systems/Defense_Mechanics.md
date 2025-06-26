@@ -6,11 +6,17 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: When someone attacks you, you have three main ways to avoid taking damage: dodging out of the way (evade), deflecting with your weapon (parry), or stopping it with your shield (block). The game checks these defenses in order, and only one can work per attack. Fighting multiple enemies makes all your defenses less effective because you can't focus on everyone at once.
+
 Defense mechanics in DAoC provide multiple layers of avoiding damage through evade, parry, and block. These defenses are checked in a specific order and are affected by factors like attacker count, weapon types, and positioning.
 
 ## Core Mechanics
 
 ### Defense Resolution Order
+
+**Game Rule Summary**: Your defenses are checked in a specific order when attacked. The first defense that works stops the attack completely - you can't stack multiple defenses on the same attack. This prevents defensive characters from becoming impossible to hit while still giving them strong protection.
+
 Defense checks occur in this exact order:
 1. **Bodyguard** (redirects attack to bodyguard)
 2. **Phase Shift** (100% miss if active)
@@ -26,6 +32,8 @@ Defense checks occur in this exact order:
 **Source**: `AttackComponent.cs:CalculateEnemyAttackResult()`
 
 ### Defense Penetration Factors
+
+**Game Rule Summary**: Some weapons and fighting styles are better at getting through defenses. Two-handed weapons are harder to parry because of their size and weight. Dual wielding makes it harder for enemies to defend because you're attacking from multiple angles rapidly. More skilled fighters can penetrate defenses better than novices.
 
 #### Base Defense Penetration
 All attacks have base defense penetration calculated as:
@@ -47,6 +55,8 @@ TwoHandedDefensePenetrationFactor = 0.5    // 50% defense effectiveness
 - **Penetrating Arrow**: 25% + (AbilityLevel * 25%) reduction
 
 ### 1. Evade
+
+**Game Rule Summary**: Evade is your ability to dodge out of the way of attacks through speed and agility. Fast, agile characters are much better at evading than slow, clumsy ones. You can't evade attacks from behind unless you have special training. Fighting multiple enemies makes evading much harder since you can't watch everyone at once.
 
 #### Base Evade Calculation
 ```
@@ -87,6 +97,8 @@ FinalEvadeChance = BaseEvadeChance * (1 - DefensePenetration)
 
 ### 2. Parry
 
+**Game Rule Summary**: Parry is using your weapon to deflect incoming attacks. You need to be skilled with your weapon and quick enough to react. You can only parry attacks coming from in front of you, and you can't parry if you're using a bow. Two-handed weapons are much harder to parry because of their size and power.
+
 #### Base Parry Calculation
 ```
 BaseParry = (Dex * 2 - 100) / 40 + ParrySpec / 2 + MasteryOfParry * 3 + 5
@@ -120,6 +132,8 @@ ParryChance *= 0.5
 
 ### 3. Block
 
+**Game Rule Summary**: Blocking uses your shield to stop incoming attacks. Larger shields can block more attacks at once but are heavier to carry. You need to face your attacker to block effectively, and the quality and condition of your shield affects how well it works. You can even learn to use your shield to protect nearby allies.
+
 #### Base Block Calculation  
 ```
 BaseBlock = 5% + 0.5% * ShieldSpec + (Dex * 2 - 100) / 40 + MasteryOfBlocking * 3
@@ -132,6 +146,9 @@ BaseBlock = 5% + 0.5% * ShieldSpec + (Dex * 2 - 100) / 40 + MasteryOfBlocking * 
 - **Quality/Condition**: `BlockChance *= Quality * 0.01 * Condition / MaxCondition`
 
 #### Shield Size Mechanics
+
+**Game Rule Summary**: Different shield sizes can handle different numbers of simultaneous attacks. A small buckler can only block one attack at a time, while a massive tower shield can block three attacks happening at the same moment. This prevents shield users from being overwhelmed by multiple fast attackers.
+
 Shield size affects block effectiveness:
 - **Small Shield (1)**: Blocks 1 simultaneous attack
 - **Medium Shield (2)**: Blocks 2 simultaneous attacks  
@@ -167,6 +184,9 @@ Large Shield: 99% max
 - **Current Cap**: Properties.BLOCK_CAP (default 100%)
 
 #### Engage Ability
+
+**Game Rule Summary**: Engage is a special combat stance where you focus entirely on one enemy, giving you amazing blocking ability against them but making you vulnerable to others. You can block attacks from any direction against your engaged target, but it costs endurance and prevents you from moving freely.
+
 When engaging a target:
 - Block chance increased to 95% minimum
 - Works 360° against engaged target
@@ -182,6 +202,8 @@ When engaging a target:
 - **Nature's Shield**: 100% block vs ranged/spell (120° arc)
 
 ### 4. Guard
+
+**Game Rule Summary**: Guard is an advanced technique that lets you use your shield to protect nearby allies. You extend your shield to cover a friend who's close enough, taking the hit meant for them. This heroic ability requires good positioning and a strong shield arm, but it can save your allies' lives.
 
 Guard allows blocking attacks for nearby allies.
 
@@ -212,6 +234,8 @@ Large Shield: 99% max
 ```
 
 ### 5. Positional Requirements
+
+**Game Rule Summary**: Most defenses only work if you can see the attack coming. You can't parry or block someone stabbing you in the back because you don't know it's happening. Some advanced training lets you defend from all directions, but normally you need to face your attacker to have any chance of stopping their attack.
 
 #### Front Arc
 - **Evade**: 180° (360° with Advanced Evade)

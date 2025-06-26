@@ -7,11 +7,17 @@
 - **Implementation**: Complete
 
 ## Overview
+
+**Game Rule Summary**: Resistance protects you from different types of damage like fire, cold, body, spirit, and physical attacks. There are two layers of resistance that stack together - the first layer comes from your gear and buffs, while the second layer comes from special abilities. Higher resistance reduces the damage you take from those damage types, but there are caps to prevent complete immunity.
+
 The resistance system provides damage mitigation against both physical and magical damage types. It uses a two-layer calculation system with primary resists (items, buffs, racial) and secondary resists (realm abilities) that stack multiplicatively.
 
 ## Core Mechanics
 
 ### Damage Types and Resist Types
+
+**Game Rule Summary**: Different attacks use different damage types, and you need the matching resistance to protect against each one. Physical weapons do crush, slash, or thrust damage, while magical spells do elemental damage like heat, cold, energy, matter, body, or spirit. Having fire resistance won't help against a cold spell - you need the right resistance for each damage type.
+
 ```csharp
 public enum eDamageType : byte
 {
@@ -49,7 +55,12 @@ protected static readonly eProperty[] m_damageTypeToResistBonusConversion =
 
 ## Two-Layer Resistance System
 
+**Game Rule Summary**: Resistance works in two separate layers that stack together for maximum protection. The first layer includes your gear, buffs, and racial bonuses - these are capped to prevent them from getting too powerful. The second layer comes from high-level abilities and applies on top of the first layer, giving additional protection even if your first layer is maxed out.
+
 ### Layer 1: Primary Resists
+
+**Game Rule Summary**: Primary resists come from your equipment, magical buffs, and your character's natural resistances. Items have caps based on their level, and buffs are limited to prevent stacking too many resistance spells. Debuffs can reduce your resistances, but they're less effective against players than against monsters.
+
 ```csharp
 // Primary resists include:
 int itemBonus = CalcValueFromItems(living, property);
@@ -75,6 +86,9 @@ int result = itemBonus + buffBonus;
 ```
 
 ### Layer 2: Secondary Resists
+
+**Game Rule Summary**: Secondary resists come from high-level realm abilities and special powers. These apply after your primary resists, giving you additional protection even when your gear and buffs are maxed out. Some abilities like Magic Absorption protect against all magical damage types at once.
+
 ```csharp
 // Secondary resists (realm abilities, etc.)
 int abilityBonus = livingToCheck.AbilityBonus[property];
@@ -104,6 +118,8 @@ return Math.Min(result, HardCap);
 ```
 
 ## Damage Calculation
+
+**Game Rule Summary**: When you take damage, your resistance reduces the amount based on percentage. If you have 30% heat resistance and take 100 heat damage, you only take 70 damage. Physical and magical damage use slightly different calculations, but both follow the same basic principle of percentage reduction.
 
 ### Physical Damage Resistance
 ```csharp
@@ -150,6 +166,9 @@ public virtual double ModifyDamageWithTargetResist(AttackData ad, double damage)
 ## Special Resist Mechanics
 
 ### Resist Pierce
+
+**Game Rule Summary**: Some casters can learn to pierce through resistances, making their spells more effective against heavily protected targets. Resist pierce only affects resistance from items and gear - it doesn't reduce natural racial resistances or high-level ability bonuses, so those remain reliable protection.
+
 ```csharp
 // Resist Pierce reduces target's item bonus resists
 // Does not affect racial, buff, or ability resists
@@ -161,6 +180,9 @@ if (resistPierce > 0 && Spell.SpellType != eSpellType.Archery)
 ```
 
 ### Magic Absorption
+
+**Game Rule Summary**: Magic Absorption is a special type of resistance that protects against all magical damage types at once. Instead of needing separate heat, cold, and energy resistances, one Magic Absorption ability protects against everything magical. This makes it very valuable but harder to obtain.
+
 ```csharp
 // Magic Absorption provides resist to all magic damage types
 switch (property)
@@ -178,6 +200,9 @@ switch (property)
 ```
 
 ### Racial Resists
+
+**Game Rule Summary**: Each race has natural resistances that can't be removed by debuffs or piercing abilities. These racial bonuses are added at the very end of resistance calculations, making them extremely valuable as reliable base protection that enemies can't easily overcome.
+
 ```csharp
 // Racial resists are added after multiplicative calculation
 // This makes them more valuable as they're not reduced
@@ -186,6 +211,8 @@ result += racialBonus; // Added after all percentage calculations
 ```
 
 ## Resist Debuffs
+
+**Game Rule Summary**: Enemy casters can cast debuffs that lower your resistances, making you more vulnerable to that damage type. The duration of these debuffs depends on your existing resistance - if you already have good resistance to that type, the debuff won't last as long. Players are more resistant to debuffs than monsters.
 
 ### Duration Calculation
 ```csharp
@@ -221,6 +248,8 @@ if (buff < 0 && living is GamePlayer)
 
 ## Spell Resistance (Hit Chance)
 
+**Game Rule Summary**: Besides reducing damage, resistances also make spells more likely to miss entirely. This is separate from damage reduction - even if a spell hits, it might do reduced damage due to your resistances. Spells have a base chance to be resisted, modified by the caster's skill and the target's magical defenses.
+
 ### Base Hit Chance
 ```csharp
 // Base hit chance calculation
@@ -244,6 +273,9 @@ if (playerCaster == null || target is not GamePlayer)
 ```
 
 ### Spell Penetration
+
+**Game Rule Summary**: High-level casters can learn abilities that help their spells penetrate magical defenses and resist chances. These abilities make spells more likely to hit and land their effects, countering targets with high magical resistances or spell resistance.
+
 ```csharp
 // Piercing Magic RA
 ECSGameEffect piercingMagic = effects.FirstOrDefault(
@@ -259,6 +291,8 @@ if (majesticWill != null)
 ```
 
 ## Resist Caps
+
+**Game Rule Summary**: There are limits to how much resistance you can stack to prevent complete immunity to damage. Different sources have different caps, but racial resistances and high-level abilities often bypass these limits. This ensures that resistance provides strong protection without making characters completely invulnerable.
 
 ### Hard Caps
 - **Primary + Secondary**: No hard cap on total

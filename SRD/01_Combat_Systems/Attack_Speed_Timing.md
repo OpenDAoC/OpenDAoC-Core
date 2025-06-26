@@ -6,11 +6,16 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: Attack speed determines how fast you can swing your weapon or shoot your bow. Faster characters (high Quickness) attack more frequently, and lighter weapons are naturally quicker than heavy ones. Various magical effects can make you attack faster or slower. There are minimum speed limits to prevent attacks from becoming impossibly fast.
+
 Attack speed determines how quickly a character can perform consecutive attacks. The system considers weapon speed, character stats (primarily Quickness), and various modifiers to calculate the actual attack interval.
 
 ## Core Mechanics
 
 ### Base Attack Speed
+
+**Game Rule Summary**: Every weapon has a base speed that determines how long it takes to swing. This is measured in seconds - a 3.0 second sword means you can attack every 3 seconds with that weapon. Heavier weapons like two-handed swords and crossbows naturally take longer to use than lighter weapons like daggers and shortbows.
 
 #### Weapon Speed
 All weapon speeds are stored in SPD_ABS as tenths of seconds:
@@ -26,6 +31,8 @@ Ranged: 45 (4.5 seconds)
 **Source**: `AttackComponent.cs:NpcWeaponSpeed()`
 
 #### Speed Formula for Players
+
+**Game Rule Summary**: Your actual attack speed is faster than the weapon's base speed if you have high Quickness. Agile characters can use weapons much more efficiently than clumsy ones. Magical speed enhancements further reduce the time between attacks, but there are limits to prevent impossibly fast attacking.
 
 **Melee Weapons**:
 ```
@@ -48,6 +55,8 @@ Uses Casting Speed property instead of Archery Speed
 
 ### Quickness Modifiers
 
+**Game Rule Summary**: Quickness makes you attack faster in a predictable way. Characters with 60 Quickness attack at normal weapon speed, while characters with higher Quickness get proportionally faster. The benefit caps at 250 Quickness to prevent excessive speed advantages.
+
 #### Formula Breakdown
 ```
 QuicknessModifier = 1 - (Quickness - 60) * 0.002
@@ -64,6 +73,8 @@ int quickness = Math.Min(250, player.Quickness);
 
 ### Speed Modifiers
 
+**Game Rule Summary**: Magical effects can make you attack faster through haste spells and speed enchantments. These stack with your natural Quickness to make you even faster. Items have caps on how much speed they can provide, but spell effects can exceed these limits.
+
 #### Melee Speed Property
 From items and buffs:
 ```
@@ -73,6 +84,8 @@ FinalSpeed = BaseSpeed * MeleeSpeed / 100
 - Buffs can exceed this cap
 
 #### Archery Speed Modifiers
+
+**Game Rule Summary**: Archers have special abilities that dramatically change their attack timing. Critical Shot makes you draw much more slowly for a guaranteed hit, while Rapid Fire lets you shoot much faster but with normal accuracy. These abilities trade speed for accuracy or vice versa.
 
 **Critical Shot**:
 ```
@@ -91,6 +104,9 @@ Minimum = 900ms
 ### Special Cases
 
 #### Dual Wield Speed
+
+**Game Rule Summary**: When fighting with two weapons, your attack speed alternates between your main weapon and off-hand weapon. Sometimes you attack with both weapons simultaneously, which uses the average speed of both weapons. This creates a unique rhythm for dual wielders.
+
 When dual wielding, speed alternates between weapons:
 ```csharp
 switch (UsedHandOnLastDualWieldAttack)
@@ -116,6 +132,8 @@ Ruby/Sapphire/Jade Simulacrum: 95% speed (faster)
 
 ### Interrupt Timing
 
+**Game Rule Summary**: After making a melee attack, there's a brief period where you can't start casting spells because you're recovering from the swing. This prevents instant spell-casting after weapon attacks and makes combat timing more tactical.
+
 #### Self-Interrupt on Melee
 ```
 InterruptDuration = AttackSpeed / 2
@@ -124,6 +142,9 @@ InterruptDuration = AttackSpeed / 2
 - **Source**: `GameLiving.SelfInterruptDurationOnMeleeAttack`
 
 #### Ranged Interrupt Window
+
+**Game Rule Summary**: When drawing a bow or crossbow, you can be interrupted up to the halfway point of your draw. After that, you're committed to the shot and can't be stopped. This creates tactical timing for both archers and their enemies.
+
 Ranged attacks can be interrupted up to halfway through draw:
 ```csharp
 long halfwayPoint = attackComponent.AttackSpeed(ActiveWeapon) / 2;
@@ -132,6 +153,8 @@ if (elapsedTime > halfwayPoint)
 ```
 
 ### Combat Round Timing
+
+**Game Rule Summary**: Combat operates on a rhythm based on your weapon speed. Normal attacks happen at regular intervals, but fumbling your attack doubles the time until your next swing because you need to recover. The game processes combat in small 100ms increments between major actions.
 
 #### Attack Intervals
 - **Successful Attack**: Next attack at weapon speed
@@ -146,6 +169,8 @@ Block effectiveness tied to attacker's speed:
 
 ### Speed Caps and Limits
 
+**Game Rule Summary**: There are minimum attack speeds to prevent weapons from becoming impossibly fast. No matter how much Quickness and speed bonuses you have, melee weapons can't swing faster than 1.5 seconds and ranged weapons have their own limits. This maintains combat balance and prevents extreme speed builds.
+
 #### Minimum Attack Speeds
 - **Melee**: 1500ms (1.5 seconds)
 - **Ranged (Rapid Fire)**: 900ms (0.9 seconds)
@@ -156,6 +181,8 @@ Block effectiveness tied to attacker's speed:
 - Practical cap depends on available buffs/items
 
 ### Projectile Flight Time
+
+**Game Rule Summary**: Arrows and bolts take time to travel to their target based on distance. This means there's a delay between when you release the shot and when the damage is applied. Skilled players can use this to time their movements and defenses against incoming projectiles.
 
 #### Calculation
 ```
