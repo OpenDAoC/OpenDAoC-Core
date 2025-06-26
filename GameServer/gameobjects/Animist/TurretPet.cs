@@ -25,21 +25,16 @@ namespace DOL.GS
             if (attackTarget == null)
                 return;
 
-            if (attackTarget is GameLiving livingTarget && GameServer.ServerRules.IsAllowedToAttack(this, livingTarget, true) == false)
+            if (attackTarget is GameLiving livingTarget && !GameServer.ServerRules.IsAllowedToAttack(this, livingTarget, true))
                 return;
 
             if (Brain is IControlledBrain brain)
             {
-                if (brain.AggressionState == eAggressionState.Passive)
+                if (brain.AggressionState is eAggressionState.Passive)
                     return;
             }
 
             TargetObject = attackTarget;
-
-            if (TargetObject.Realm == 0 || Realm == 0)
-                LastAttackTickPvE = GameLoop.GameLoopTime;
-            else
-                LastAttackTickPvP = GameLoop.GameLoopTime;
 
             if (Brain is TurretMainPetTankBrain)
                 attackComponent.RequestStartAttack();
