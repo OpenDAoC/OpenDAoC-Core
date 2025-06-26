@@ -124,6 +124,7 @@ namespace DOL.GS
             if (GameLoop.GameLoopTime - _nextMeleeTick > MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK)
                 _nextMeleeTick = GameLoop.GameLoopTime + MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK;
 
+            _nextRangedTick = GameLoop.GameLoopTime;
             rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
         }
 
