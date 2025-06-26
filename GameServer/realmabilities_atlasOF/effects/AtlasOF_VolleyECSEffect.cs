@@ -27,12 +27,13 @@ namespace DOL.GS.Effects
         }
 
         private const ushort EFFECT_RADIUS = 350;
+        private const int MAX_SHOTS = 5; // The code doesn't support more than 5 shots in a volley.
 
         public override ushort Icon => 4281;
         public override string Name => "Volley";
         public override bool HasPositiveEffect => true;
 
-        private int _remainingShots = 5; // The code doesn't support more than 5.
+        private int _remainingShots = MAX_SHOTS;
         private bool _isReadyToShoot;
         ConcurrentDictionary<ECSGameTimer, WeaponActionData> _weaponActionData = new();
 
@@ -81,14 +82,6 @@ namespace DOL.GS.Effects
             base.OnStopEffect();
         }
 
-        public void Cancel(bool playerCancel)
-        {
-            Stop(playerCancel);
-
-            foreach (GamePlayer playerInRadius in OwnerPlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                playerInRadius.Out.SendInterruptAnimation(OwnerPlayer);
-        }
-
         private void PrepareBow(bool firstShot)
         {
             // Volley currently ignores Quickness and uses only the bow's speed for the first shot. Other shots have a 1.5 second preparation time.
@@ -122,11 +115,9 @@ namespace DOL.GS.Effects
             if (volley == null || !OwnerPlayer.IsAlive)
                 return 0;
 
-            Cancel(false);
+            Cancel();
             OwnerPlayer.Out.SendMessage("You are too tired to hold your volley any longer!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             OwnerPlayer.attackComponent.StopAttack();
-            // TODO: Prepare normal attack?
-
             return 0;
         }
 
@@ -187,10 +178,8 @@ namespace DOL.GS.Effects
 
             if (_remainingShots == 0)
             {
+                Cancel();
                 OwnerPlayer.Out.SendMessage("Your volley is finished!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                Cancel(false);
-                AtlasOF_Volley volley = OwnerPlayer.GetAbility<AtlasOF_Volley>();
-                OwnerPlayer.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
             }
         }
 
@@ -200,7 +189,7 @@ namespace DOL.GS.Effects
 
             if (player.IsBeingInterrupted)
             {
-                Cancel(false);
+                Cancel();
                 return;
             }
 
@@ -341,31 +330,38 @@ namespace DOL.GS.Effects
 
         private void OnPlayerLeftWorld(DOLEvent e, object sender, EventArgs arguments)
         {
-            Cancel(false);
+            Cancel();
         }
 
         public void OnPlayerMoved()
         {
-            Cancel(false);
-            AtlasOF_Volley volley = OwnerPlayer.GetAbility<AtlasOF_Volley>();
-            OwnerPlayer.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
+            Cancel();
             OwnerPlayer.Out.SendMessage("You move and interrupt your volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
 
         public void OnPlayerSwitchedWeapon()
         {
-            Cancel(false);
-            AtlasOF_Volley volley = OwnerPlayer.GetAbility<AtlasOF_Volley>();
-            OwnerPlayer.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
+            Cancel();
             OwnerPlayer.Out.SendMessage("You put away your bow and interrupt your volley!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
         }
 
         public void OnAttacked()
         {
-            Cancel(false);
-            AtlasOF_Volley volley = OwnerPlayer.GetAbility<AtlasOF_Volley>();
-            OwnerPlayer.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
+            Cancel();
             OwnerPlayer.Out.SendMessage("You have been attacked and your volley is interrupted!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+        }
+
+        private void Cancel()
+        {
+            AtlasOF_Volley volley = OwnerPlayer.GetAbility<AtlasOF_Volley>();
+
+            if (_remainingShots < MAX_SHOTS)
+                OwnerPlayer.DisableSkill(volley, AtlasOF_Volley.DISABLE_DURATION);
+
+            Stop();
+
+            foreach (GamePlayer playerInRadius in OwnerPlayer.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                playerInRadius.Out.SendInterruptAnimation(OwnerPlayer);
         }
     }
 
