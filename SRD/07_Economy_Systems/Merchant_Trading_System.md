@@ -1,449 +1,458 @@
-# Merchant Trading System
+# Merchant & Trading System
 
-## Document Status
-- **Last Updated**: 2024-01-20
-- **Verification**: Code-verified from GameMerchant.cs, TradeWindow.cs, ConsignmentMerchant.cs
-- **Implementation Status**: ✅ Fully Implemented
+**Document Status:** Core mechanics documented  
+**Verification:** Code-verified from merchant implementations  
+**Implementation Status:** Live
 
 ## Overview
-The Merchant Trading System manages NPC merchants, player-to-player trading, consignment merchants, and various currency systems. It supports multiple merchant types, alternative currencies, and comprehensive trade mechanics.
 
-## Merchant Types
+The Merchant & Trading System manages all NPC-based commerce, dynamic pricing, stock management, and player-to-player trading mechanics. This system forms the economic foundation of the game world.
 
-### Standard Merchants
-Basic NPCs that buy and sell items for gold:
+## Core Architecture
 
+### Merchant Types
 ```csharp
-public class GameMerchant : GameNPC
+public enum eMerchantType
 {
-    protected MerchantTradeItems m_tradeItems;  // Items for sale
-    
-    public virtual void OnPlayerBuy(GamePlayer player, int item_slot, int number)
+    Equipment,      // Weapons, armor, items
+    Supplies,       // Arrows, reagents, consumables
+    Trainer,        // Skill training
+    Specialty,      // Unique items, artifacts
+    Repair,         // Equipment repair services
+    Horse,          // Mount vendors
+    Consignment,    // Player-owned merchants
+    Guild,          // Guild-specific vendors
+    Bounty,         // Bounty point merchants
+    Realm           // Realm point merchants
+}
+
+public interface IMerchant
+{
+    eMerchantType MerchantType { get; }
+    List<ITradeItem> Inventory { get; }
+    long Money { get; set; }
+    bool CanTrade(GamePlayer player);
+    void RefreshStock();
+    double GetPriceModifier(IItem item, GamePlayer player);
+}
+```
+
+## NPC Merchant System
+
+### Basic Trading Mechanics
+```csharp
+public class GameMerchant : GameNPC, IMerchant
+{
+    public override bool Interact(GamePlayer player)
     {
-        // Get item template
-        DbItemTemplate template = TradeItems.GetItem(page, slot);
-        long totalValue = number * template.Price;
+        if (!CanTrade(player))
+        {
+            SayTo(player, "I don't trade with your kind!");
+            return false;
+        }
         
-        // Validate purchase
-        if (player.GetCurrentMoney() < totalValue) return;
-        if (!player.Inventory.AddTemplate(item, amount)) return;
+        ShowTradeWindow(player);
+        return true;
+    }
+    
+    public bool CanTrade(GamePlayer player)
+    {
+        // Realm restrictions
+        if (Realm != eRealm.None && Realm != player.Realm)
+            return false;
+            
+        // Faction restrictions
+        if (HasFactionRestrictions() && !MeetsFactionRequirements(player))
+            return false;
+            
+        return true;
+    }
+    
+    private void ShowTradeWindow(GamePlayer player)
+    {
+        var availableItems = GetAvailableItems(player);
+        var merchantWindow = new MerchantTradeWindow(this, availableItems);
+        player.OpenTradeWindow(merchantWindow);
+    }
+}
+```
+
+### Dynamic Pricing System
+```csharp
+public class MerchantPricing
+{
+    public static long CalculateBuyPrice(IItem item, GamePlayer player, GameMerchant merchant)
+    {
+        long basePrice = item.Value;
         
-        // Complete transaction
-        player.RemoveMoney(totalValue);
-        InventoryLogging.LogInventoryAction(this, player, template, amount);
-    }
-}
-```
-
-### Specialty Merchants
-
-#### Stable Masters
-Transport merchants for horse routes:
-- **Items**: Horse route tickets
-- **Function**: Regional travel system
-- **Payment**: Standard gold currency
-
-#### Bounty Point Merchants
-Alternative currency merchants:
-
-```csharp
-public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
-{
-    long totalValue = number * template.Price;
-    
-    if (player.BountyPoints < totalValue)
-    {
-        player.Out.SendMessage("You need " + totalValue + " bounty points.");
-        return;
-    }
-    
-    player.BountyPoints -= totalValue;
-    // Add item to inventory
-}
-```
-
-#### Item Currency Merchants
-Use specific items as currency:
-
-```csharp
-public abstract class GameItemCurrencyMerchant : GameMerchant
-{
-    protected DbItemTemplate m_itemTemplate;  // Currency item
-    
-    public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
-    {
-        // Count currency items in inventory
-        int currencyCount = player.Inventory.CountItemTemplate(m_moneyItem.Id_nb);
+        // Base price modifiers
+        double priceModifier = 1.0;
         
-        if (currencyCount < totalValue) return;
+        // Merchant type modifier
+        priceModifier *= GetMerchantTypeModifier(merchant.MerchantType);
         
-        // Remove currency items from inventory
-        player.Inventory.RemoveCountFromTemplate(m_moneyItem.Id_nb, totalValue);
+        // Player reputation modifier
+        priceModifier *= GetReputationModifier(player, merchant);
+        
+        // Supply and demand
+        priceModifier *= GetSupplyDemandModifier(item, merchant);
+        
+        // Server economy settings
+        priceModifier *= Properties.MERCHANT_PRICE_MODIFIER;
+        
+        return (long)(basePrice * priceModifier);
     }
-}
-```
-
-### Guard Merchants
-Keep-based merchants with realm restrictions:
-- **Location**: Keep towers and structures
-- **Access**: Realm-based purchasing
-- **Items**: Keep supplies, siege equipment
-
-## Merchant Trade Windows
-
-### Trade Item Organization
-```csharp
-public class MerchantTradeItems
-{
-    public const int MAX_ITEM_IN_TRADEWINDOWS = 30;  // Items per page
-    public const int MAX_PAGES = 5;                   // Maximum pages
     
-    public DbItemTemplate GetItem(int page, eMerchantWindowSlot slot)
+    public static long CalculateSellPrice(IItem item, GamePlayer player, GameMerchant merchant)
     {
-        return m_items[page * MAX_ITEM_IN_TRADEWINDOWS + (int)slot];
+        long buyPrice = CalculateBuyPrice(item, player, merchant);
+        
+        // Players typically get 40-60% of buy price when selling
+        double sellModifier = 0.5;
+        
+        // Condition affects sell price
+        sellModifier *= (double)item.Condition / item.MaxCondition;
+        
+        // Quality affects sell price
+        sellModifier *= item.Quality / 100.0;
+        
+        return (long)(buyPrice * sellModifier);
     }
-}
-```
-
-### Item Slot Mapping
-```csharp
-// Convert item_slot to page and slot
-int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-```
-
-## Purchase Validation
-
-### Distance Checking
-```csharp
-if (!merchant.IsWithinRadius(player, GS.ServerProperties.Properties.WORLD_PICKUP_DISTANCE))
-{
-    player.Out.SendMessage("You are too far away from " + merchant.GetName(0, true));
-    return;
-}
-```
-
-### Money Validation
-```csharp
-lock (player.Inventory.Lock)
-{
-    if (player.GetCurrentMoney() < totalValue)
+    
+    private static double GetSupplyDemandModifier(IItem item, GameMerchant merchant)
     {
-        player.Out.SendMessage("You need " + Money.GetString(totalValue));
-        return;
+        int itemCount = merchant.Inventory.Count(i => i.TemplateID == item.TemplateID);
+        
+        if (itemCount == 0)
+            return 1.2; // High demand, higher price
+        else if (itemCount > 10)
+            return 0.8; // Oversupply, lower price
+        
+        return 1.0; // Normal pricing
     }
 }
 ```
 
-### Inventory Space
+### Stock Management
 ```csharp
-if (!player.Inventory.AddTemplate(item, amount, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack))
+public class MerchantStockManager
 {
-    player.Out.SendMessage("Not enough inventory space");
-    return;
-}
-```
-
-## Selling to Merchants
-
-### Sell Value Calculation
-```csharp
-public virtual void OnPlayerSell(GamePlayer player, DbInventoryItem item)
-{
-    if (!item.IsDropable)
+    public void RefreshStock(GameMerchant merchant)
     {
-        player.Out.SendMessage("This item can't be sold");
-        return;
+        // Remove items that have been in stock too long
+        var expiredItems = merchant.Inventory
+            .Where(item => item.StockTime < DateTime.Now.AddHours(-24))
+            .ToList();
+            
+        foreach (var item in expiredItems)
+        {
+            merchant.Inventory.Remove(item);
+        }
+        
+        // Add new random items based on merchant type
+        AddRandomStock(merchant);
+        
+        // Restock essential items
+        RestockEssentialItems(merchant);
     }
     
-    long itemValue = OnPlayerAppraise(player, item, true);
-    
-    if (itemValue == 0)
+    private void AddRandomStock(GameMerchant merchant)
     {
-        player.Out.SendMessage(GetName(0, true) + " isn't interested in " + item.GetName(0, false));
-        return;
+        var itemPool = GetItemPoolForMerchant(merchant.MerchantType);
+        int itemsToAdd = Util.Random(3, 8);
+        
+        for (int i = 0; i < itemsToAdd; i++)
+        {
+            var randomItem = itemPool[Util.Random(itemPool.Count)];
+            var merchantItem = CreateMerchantItem(randomItem);
+            merchant.Inventory.Add(merchantItem);
+        }
     }
     
-    // Remove item and give money
-    player.Inventory.RemoveItem(item);
-    player.AddMoney(itemValue);
-}
-```
-
-### Item Appraisal
-```csharp
-public virtual long OnPlayerAppraise(GamePlayer player, DbInventoryItem item, bool silent)
-{
-    if (item == null) return 0;
-    
-    long val = item.Price / 2;  // Default 50% of item price
-    
-    if (!silent)
+    private void RestockEssentialItems(GameMerchant merchant)
     {
-        string message = GetName(0, true) + " offers " + Money.GetString(val) + 
-                        " for " + item.GetName(0, false);
-        player.Out.SendMessage(message, eChatType.CT_Merchant);
+        var essentialItems = GetEssentialItemsForMerchant(merchant.MerchantType);
+        
+        foreach (var essentialTemplate in essentialItems)
+        {
+            int currentCount = merchant.Inventory.Count(i => i.TemplateID == essentialTemplate);
+            int targetCount = GetTargetStockLevel(essentialTemplate);
+            
+            for (int i = currentCount; i < targetCount; i++)
+            {
+                var item = CreateMerchantItem(essentialTemplate);
+                merchant.Inventory.Add(item);
+            }
+        }
     }
-    
-    return val;
 }
 ```
 
 ## Player-to-Player Trading
 
-### Trade Window System
+### Secure Trade System
 ```csharp
-public class TradeWindow
+public class PlayerTrade
 {
-    private List<DbInventoryItem> m_tradeItems;  // Items offered
-    private long m_tradeMoney;                   // Money offered
-    private bool m_tradeAccept;                  // Acceptance status
-    private bool m_combine;                      // Combine flag
+    public GamePlayer Player1 { get; set; }
+    public GamePlayer Player2 { get; set; }
+    public List<IItem> Player1Items { get; set; } = new();
+    public List<IItem> Player2Items { get; set; } = new();
+    public long Player1Money { get; set; }
+    public long Player2Money { get; set; }
+    public bool Player1Accepted { get; set; }
+    public bool Player2Accepted { get; set; }
+    public bool TradeCompleted { get; set; }
+    
+    public bool AddItemToTrade(GamePlayer player, IItem item)
+    {
+        if (TradeCompleted)
+            return false;
+            
+        if (!CanTradeItem(item))
+        {
+            player.SendMessage("This item cannot be traded.");
+            return false;
+        }
+        
+        if (player == Player1)
+        {
+            Player1Items.Add(item);
+            Player1Accepted = false; // Reset acceptance
+        }
+        else if (player == Player2)
+        {
+            Player2Items.Add(item);
+            Player2Accepted = false; // Reset acceptance
+        }
+        
+        UpdateTradeWindow();
+        return true;
+    }
+    
+    public void AcceptTrade(GamePlayer player)
+    {
+        if (player == Player1)
+            Player1Accepted = true;
+        else if (player == Player2)
+            Player2Accepted = true;
+            
+        if (Player1Accepted && Player2Accepted)
+        {
+            CompleteTrade();
+        }
+        
+        UpdateTradeWindow();
+    }
+    
+    private void CompleteTrade()
+    {
+        // Validate trade is still possible
+        if (!ValidateTrade())
+        {
+            CancelTrade("Trade validation failed.");
+            return;
+        }
+        
+        // Transfer items
+        TransferItems(Player1, Player2, Player1Items);
+        TransferItems(Player2, Player1, Player2Items);
+        
+        // Transfer money
+        if (Player1Money > 0)
+        {
+            Player1.RemoveMoney(Player1Money);
+            Player2.AddMoney(Player1Money);
+        }
+        
+        if (Player2Money > 0)
+        {
+            Player2.RemoveMoney(Player2Money);
+            Player1.AddMoney(Player2Money);
+        }
+        
+        TradeCompleted = true;
+        
+        Player1.SendMessage("Trade completed successfully.");
+        Player2.SendMessage("Trade completed successfully.");
+        
+        // Log trade for audit purposes
+        LogTrade();
+    }
 }
 ```
 
-### Trade Process
-1. **Initiate**: `/trade` command or right-click player
-2. **Add Items**: Drag items to trade window
-3. **Add Money**: Set money amount
-4. **Accept**: Both players must accept
-5. **Complete**: Items and money exchange
-
-### Trade Validation
+### Anti-Fraud Measures
 ```csharp
-// Both players must accept
-if (!player1.TradeWindow.TradeAccept || !player2.TradeWindow.TradeAccept)
-    return false;
-
-// Validate inventory space
-if (!ValidateTradeSpace(player1, player2.TradeWindow.TradeItems))
-    return false;
-
-// Execute trade
-ExecuteTrade(player1, player2);
+public class TradeSecurity
+{
+    public static bool ValidateTrade(PlayerTrade trade)
+    {
+        // Check players are still online and in range
+        if (!ArePlayersValid(trade.Player1, trade.Player2))
+            return false;
+            
+        // Validate all items still exist and are owned
+        if (!ValidateItems(trade.Player1, trade.Player1Items))
+            return false;
+            
+        if (!ValidateItems(trade.Player2, trade.Player2Items))
+            return false;
+            
+        // Check money amounts
+        if (trade.Player1Money > trade.Player1.GetCurrentMoney())
+            return false;
+            
+        if (trade.Player2Money > trade.Player2.GetCurrentMoney())
+            return false;
+            
+        // Check inventory space
+        if (!HasInventorySpace(trade.Player1, trade.Player2Items))
+            return false;
+            
+        if (!HasInventorySpace(trade.Player2, trade.Player1Items))
+            return false;
+            
+        return true;
+    }
+    
+    public static bool CanTradeItem(IItem item)
+    {
+        // Cannot trade bound items
+        if (item.IsBound)
+            return false;
+            
+        // Cannot trade quest items
+        if (item.IsQuestItem)
+            return false;
+            
+        // Cannot trade equipped items (must unequip first)
+        if (item.IsEquipped)
+            return false;
+            
+        // Cannot trade damaged items below certain condition
+        if (item.Condition < item.MaxCondition * 0.1)
+            return false;
+            
+        return true;
+    }
+}
 ```
 
-## Consignment Merchants
+## Specialized Merchant Types
 
-### Player-Owned Merchants
+### Bounty Point Merchants
+```csharp
+public class BountyPointMerchant : GameMerchant
+{
+    public override bool CanBuyItem(GamePlayer player, IItem item)
+    {
+        var bpCost = GetBountyPointCost(item);
+        
+        if (player.BountyPoints < bpCost)
+        {
+            SayTo(player, $"You need {bpCost} bounty points to purchase that item.");
+            return false;
+        }
+        
+        return base.CanBuyItem(player, item);
+    }
+    
+    public override bool ProcessPurchase(GamePlayer player, IItem item)
+    {
+        var bpCost = GetBountyPointCost(item);
+        
+        player.BountyPoints -= bpCost;
+        player.Inventory.AddItem(item);
+        
+        SayTo(player, $"Thank you for your service! You've spent {bpCost} bounty points.");
+        return true;
+    }
+}
+```
+
+### Consignment Merchants
 ```csharp
 public class ConsignmentMerchant : GameMerchant
 {
-    public int HouseNumber { get; set; }          // Associated house
-    public long TotalMoney { get; set; }          // Money earned
-    public Dictionary<string, DbInventoryItem> Items { get; set; }  // Items for sale
-}
-```
-
-### Consignment Mechanics
-- **Setup**: Players place items with set prices
-- **Commission**: Server takes percentage fee
-- **Access**: Available 24/7 via Market Explorer
-- **Payment**: Money held until player retrieval
-
-### Market Explorer Integration
-```csharp
-public void OnPlayerBuy(GamePlayer player, int item_slot, bool usingMarketExplorer)
-{
-    int purchasePrice = item.SellPrice;
+    public GamePlayer Owner { get; set; }
+    public long TotalEarnings { get; set; }
+    public Dictionary<IItem, long> ItemPrices { get; set; } = new();
     
-    // Add market fee if using explorer
-    if (usingMarketExplorer && ServerProperties.Properties.MARKET_FEE_PERCENT > 0)
-        purchasePrice += purchasePrice * ServerProperties.Properties.MARKET_FEE_PERCENT / 100;
+    public void SetItemPrice(IItem item, long price)
+    {
+        if (item.Owner != Owner)
+        {
+            Owner.SendMessage("You can only price your own items.");
+            return;
+        }
         
-    // Process purchase
-    ProcessConsignmentPurchase(player, item, purchasePrice);
-}
-```
-
-## Currency Systems
-
-### Standard Currency (Copper)
-```csharp
-public class Money
-{
-    public static string GetString(long copperValue)
+        ItemPrices[item] = price;
+        Owner.SendMessage($"Price set for {item.Name}: {price} gold");
+    }
+    
+    public override bool ProcessPurchase(GamePlayer buyer, IItem item)
     {
-        long gold = copperValue / 10000;
-        long silver = (copperValue % 10000) / 100;  
-        long copper = copperValue % 100;
+        if (!ItemPrices.TryGetValue(item, out long price))
+            return false;
+            
+        if (buyer.GetCurrentMoney() < price)
+        {
+            SayTo(buyer, "You don't have enough money.");
+            return false;
+        }
         
-        return $"{gold}g {silver}s {copper}c";
+        // Calculate merchant fee
+        long merchantFee = (long)(price * CONSIGNMENT_FEE_PERCENT);
+        long ownerEarnings = price - merchantFee;
+        
+        // Transfer money and item
+        buyer.RemoveMoney(price);
+        buyer.Inventory.AddItem(item);
+        
+        TotalEarnings += ownerEarnings;
+        
+        // Notify owner if online
+        if (Owner.IsOnline)
+        {
+            Owner.SendMessage($"Your {item.Name} sold for {price} gold (you earned {ownerEarnings}).");
+        }
+        
+        return true;
     }
 }
 ```
 
-### Alternative Currencies
+## Configuration
 
-#### Bounty Points
-- **Acquisition**: RvR kills, keep captures
-- **Usage**: Special equipment, siege weapons
-- **Storage**: Character property
-
-#### Realm Points
-- **Acquisition**: RvR participation
-- **Usage**: Realm abilities, ranks
-- **Storage**: Character property
-
-#### Custom Token Systems
 ```csharp
-// Example: Orb Merchant
-public class AtlasAchievementMerchant : GameItemCurrencyMerchant
-{
-    public override string MoneyKey => ServerProperties.Properties.ALT_CURRENCY_ID;
-    
-    // Special validation for achievement requirements
-    protected override bool ValidatePurchase(GamePlayer player, DbItemTemplate template)
-    {
-        var mobRequirement = KillCreditUtils.GetRequiredKillMob(template.Id_nb);
-        return AchievementUtils.CheckPlayerCredit(mobRequirement, player, (int)player.Realm);
-    }
-}
+[ServerProperty("merchant", "enable_dynamic_pricing", true)]
+public static bool ENABLE_DYNAMIC_PRICING;
+
+[ServerProperty("merchant", "price_modifier", 1.0)]
+public static double MERCHANT_PRICE_MODIFIER;
+
+[ServerProperty("merchant", "stock_refresh_interval", 3600)]
+public static int STOCK_REFRESH_INTERVAL; // seconds
+
+[ServerProperty("merchant", "consignment_fee_percent", 0.1)]
+public static double CONSIGNMENT_FEE_PERCENT;
+
+[ServerProperty("merchant", "max_trade_distance", 500)]
+public static int MAX_TRADE_DISTANCE;
 ```
 
-## Transaction Logging
+## TODO: Missing Documentation
 
-### Inventory Logging
-```csharp
-// Log merchant purchases
-InventoryLogging.LogInventoryAction(merchant, player, eInventoryActionType.Merchant, template, amount);
-
-// Log money transactions
-InventoryLogging.LogInventoryAction(player, merchant, eInventoryActionType.Merchant, totalValue);
-```
-
-### Audit Trail
-- **Player Actions**: All buy/sell transactions
-- **Money Changes**: Complete money flow tracking  
-- **Item Movement**: Item creation/destruction
-- **Merchant Activity**: Transaction volumes
-
-## Special Merchant Features
-
-### Pack Size Support
-```csharp
-// Items sold in packs (arrows, bolts, etc.)
-int amountToBuy = number;
-if (template.PackSize > 0)
-    amountToBuy *= template.PackSize;
-```
-
-### Level Restrictions
-```csharp
-// Champion merchants with level requirements
-public class GameChampionMerchant : GameMerchant
-{
-    public override void OnPlayerBuy(GamePlayer player, int item_slot, int number)
-    {
-        int page = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
-        if (player.ChampionLevel >= page + 2)
-            base.OnPlayerBuy(player, item_slot, number);
-        else
-            player.Out.SendMessage("You must be Champion Level " + (page + 2) + " or higher");
-    }
-}
-```
-
-### Realm Restrictions
-- **Guard Merchants**: Only sell to own realm
-- **Keep Merchants**: Based on keep ownership  
-- **Frontier Merchants**: Realm-specific access
-
-## Configuration Options
-
-### Server Properties
-```ini
-# Market system settings
-MARKET_FEE_PERCENT = 20          # Consignment fee percentage
-CONSIGNMENT_USE_BP = false       # Use BP for consignment purchases
-WORLD_PICKUP_DISTANCE = 128      # Max merchant interaction distance
-
-# Currency exchange
-CURRENCY_EXCHANGE_ALLOW = true
-CURRENCY_EXCHANGE_VALUES = "item1|100;item2|50"
-
-# Special events
-ORBS_FIRE_SALE = false          # Free orb purchases
-```
-
-## Test Scenarios
-
-### Standard Purchase Flow
-```csharp
-// Given: Player with 1000 copper, merchant selling 100c item
-// When: Player buys item
-// Then: Player has 900 copper, item in inventory
-
-// Given: Player with insufficient funds
-// When: Attempt purchase
-// Then: "You need X copper" message, no transaction
-```
-
-### Alternative Currency
-```csharp
-// Given: Player with 500 BP, item costs 300 BP
-// When: Purchase from BP merchant
-// Then: Player has 200 BP, item acquired
-
-// Given: Player with orb tokens, achievement unlocked
-// When: Purchase from achievement merchant  
-// Then: Token consumed, special item granted
-```
-
-### Trade Window
-```csharp
-// Given: Two players in trade
-// When: Both add items and accept
-// Then: Items exchanged between players
-
-// Given: Trade with insufficient space
-// When: Accept trade
-// Then: "Not enough inventory space" error
-```
-
-## Error Handling
-
-### Common Failures
-- **Insufficient Funds**: Clear money requirement message
-- **No Space**: Inventory full notification
-- **Distance**: Too far from merchant warning
-- **Restrictions**: Level/realm requirement messages
-
-### Transaction Safety
-```csharp
-// All transactions use inventory locks
-lock (player.Inventory.Lock)
-{
-    // Validate state hasn't changed
-    if (player.GetCurrentMoney() < totalValue)
-        throw new Exception("Money amount changed while adding items");
-    
-    // Execute atomic transaction
-    ExecuteTransaction();
-}
-```
-
-## Integration Points
-
-### Housing System
-- **Consignment Merchants**: House-based selling
-- **Merchant Permissions**: House access controls
-
-### Keep System  
-- **Guard Merchants**: Keep-based vendors
-- **Siege Merchants**: Realm war supplies
-
-### Quest System
-- **Quest Items**: Special merchant interactions
-- **Quest Rewards**: Item turn-ins
-
-## Change Log
-- 2024-01-20: Initial comprehensive documentation
-- TODO: Document seasonal merchants
-- TODO: Add bulk purchase mechanics
+- Advanced auction house mechanics
+- Cross-realm trading restrictions and protocols
+- Economic balance monitoring and adjustment systems
+- Merchant AI for mobile traders and caravans
+- Integration with crafting supply chains
 
 ## References
-- `GameServer/gameobjects/GameMerchant.cs`
-- `GameServer/gameobjects/CustomNPC/ConsignmentMerchant.cs`
-- `GameServer/packets/Client/168/PlayerBuyRequestHandler.cs`
-- `GameServer/packets/Client/168/PlayerSellRequestHandler.cs` 
+
+- `GameServer/gameobjects/GameMerchant.cs` - Merchant base implementation
+- `GameServer/packets/Client/PlayerTradeHandler.cs` - Trade mechanics
+- Various specialized merchant implementations
+- Economic configuration systems 

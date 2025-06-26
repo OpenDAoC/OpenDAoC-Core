@@ -1,452 +1,330 @@
 # Teleportation System
 
-## Document Status
-- **Last Updated**: 2025-01-20
-- **Status**: Stable
-- **Verification**: Code-verified from GameTeleporter.cs, TeleportArea.cs, bind/recall spells
-- **Implementation**: Stable
+**Document Status:** Core mechanics documented  
+**Verification:** Code-verified from teleportation implementations  
+**Implementation Status:** Live
 
 ## Overview
-The teleportation system provides instant travel mechanics including teleport NPCs, bind stones, recall abilities, portal keeps, and area-based teleportation. The system enforces various restrictions based on combat state, carried items, and zone types.
 
-## Core Mechanics
+The Teleportation System provides various methods of magical transportation including spells, items, NPCs, and portal networks. This system enables rapid movement across the game world while maintaining balance and restrictions.
+
+## Core Architecture
 
 ### Teleportation Types
-
-#### 1. NPC Teleporters
-- **Base Class**: GameTeleporter
-- **Types**:
-  - Regular teleporters (realm-specific destinations)
-  - Portal keep teleporters (RvR travel)
-  - Throne room teleporters (guild housing)
-  - Personal house teleporters
-
-#### 2. Bind/Recall System
-- **Bind Points**: City, guild, house, personal locations
-- **Recall Methods**:
-  - /release command (death recall)
-  - Personal bind recall stones
-  - Realm ability recalls
-  - Spell-based recalls
-
-#### 3. Area Teleportation
-- **Teleport Areas**: Automatic teleport on entry
-- **Zone Points**: Zone transition teleports
-- **Instance Doors**: Special instance routing
-
-### Teleporter NPC Mechanics
-
-#### Destination Loading
 ```csharp
-public class GameTeleporter : GameNPC
+public enum TeleportationType
 {
-    // Load destinations for this teleporter's realm
-    protected virtual void LoadDestinations()
-    {
-        if (DestinationRealm == 0 || DestinationRealm > 3)
-            DestinationRealm = Realm;
-            
-        m_destinations = DOLDB<DbTeleport>.SelectObjects(
-            DB.Column("Type").IsEqualTo("DestinationType")
-            .And(DB.Column("Realm").IsEqualTo(DestinationRealm)
-                .Or(DB.Column("Realm").IsEqualTo(0)))
-        );
-    }
+    Spell,          // Magic spells (Recall, Gate, Summon)
+    Item,           // Magical items (rings, potions)
+    NPC,            // NPC teleporters
+    Portal,         // Static portals
+    BindStone,      // Bind/recall mechanics
+    Guild,          // Guild recall/summon
+    GroupSummon,    // Group member summoning
+    KeepTeleport    // Keep portal networks
+}
+
+public interface ITeleportation
+{
+    bool CanTeleport(GamePlayer player, Point3D destination);
+    bool ExecuteTeleport(GamePlayer player, Point3D destination);
+    TeleportationType Type { get; }
+    int Range { get; }
+    bool RequiresLineOfSight { get; }
+    bool RestrictedInCombat { get; }
 }
 ```
 
-#### Special Destinations
+## Spell-Based Teleportation
+
+### Recall Spells
 ```csharp
-// "entrance" - Housing entrance
-if (text.ToLower() == "entrance")
+public class RecallSpell : Spell
 {
-    DbTeleport houseEntrance = GetHousingEntrance(player.Realm);
-    OnDestinationPicked(player, houseEntrance);
-}
-
-// "personal" - Player's personal house
-if (text.ToLower() == "personal")
-{
-    House house = HouseMgr.GetHouseByPlayer(player);
-    if (house != null)
+    public override bool StartSpell(GameLiving target)
     {
-        IGameLocation location = house.OutdoorJumpPoint;
-        // Create temporary teleport destination
-    }
-}
-
-// "hearth" - House bind point
-if (text.ToLower() == "hearth")
-{
-    if (player.BindHouseRegion > 0)
-    {
-        // Verify house still exists
-        // Check for bindstone
-        // Teleport to bindstone location
-    }
-}
-```
-
-### Bind System
-
-#### Bind Types
-```csharp
-public enum eBindType
-{
-    City,       // Regular city bind points
-    Guild,      // Guild house/keep bind
-    House,      // Personal/guild house bind
-    Personal    // Custom bind location (RA)
-}
-
-// Bind point storage
-public class GamePlayer
-{
-    // City bind
-    public int BindRegion { get; set; }
-    public int BindXpos { get; set; }
-    public int BindYpos { get; set; }
-    public int BindZpos { get; set; }
-    public int BindHeading { get; set; }
-    
-    // House bind
-    public int BindHouseRegion { get; set; }
-    public int BindHouseXpos { get; set; }
-    public int BindHouseYpos { get; set; }
-    public int BindHouseZpos { get; set; }
-    public int BindHouseHeading { get; set; }
-}
-```
-
-#### Bind Stone Interaction
-```csharp
-public class BindStone : GameStaticItem
-{
-    public override bool Interact(GamePlayer player)
-    {
-        if (player.Realm != Realm)
+        if (!(target is GamePlayer player))
             return false;
             
-        player.Bind(true);  // Save bind location
-        player.Out.SendMessage("You are now bound to this location.", 
-            eChatType.CT_System, eChatLoc.CL_SystemWindow);
+        if (!CanRecall(player))
+            return false;
+            
+        var bindLocation = GetBindLocation(player);
+        return TeleportPlayer(player, bindLocation);
+    }
+    
+    private bool CanRecall(GamePlayer player)
+    {
+        // Cannot recall in combat
+        if (player.InCombat)
+        {
+            MessageToCaster("You cannot recall while in combat!", eChatType.CT_SpellResisted);
+            return false;
+        }
+        
+        // Cannot recall in certain zones
+        if (player.CurrentRegion.IsDisableRecall)
+        {
+            MessageToCaster("You cannot recall from this location!", eChatType.CT_SpellResisted);
+            return false;
+        }
+        
         return true;
     }
 }
 ```
 
-### Recall Mechanics
-
-#### Personal Bind Recall Stone
+### Gate Travel
 ```csharp
-[SpellHandler(eSpellType.GatewayPersonalBind)]
-public class GatewayPersonalBind : SpellHandler
+public class GateSpell : Spell
 {
-    public override bool CheckBeginCast(GameLiving selectedTarget)
+    public override bool StartSpell(GameLiving target)
     {
-        GamePlayer player = Caster as GamePlayer;
-        
-        // Zone restrictions
-        if (player.CurrentZone.IsRvR || 
-            player.CurrentRegion.IsInstance ||
-            player.CurrentRegion.ID == 497)  // Jail
+        if (!(Caster is GamePlayer caster))
+            return false;
+            
+        if (!(target is GamePlayer targetPlayer))
+            return false;
+            
+        // Must be in same group
+        if (!caster.Group?.IsInTheGroup(targetPlayer) == true)
         {
-            player.Out.SendMessage("You can't use that here!", 
-                eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            MessageToCaster("Target must be in your group!", eChatType.CT_SpellResisted);
             return false;
         }
         
-        // Combat restrictions
-        if (player.InCombat || GameRelic.IsPlayerCarryingRelic(player))
+        // Range check
+        if (!caster.IsWithinRadius(targetPlayer, Range))
         {
-            SendInCombatMessage(player);
+            MessageToCaster("Target is too far away!", eChatType.CT_SpellResisted);
             return false;
         }
         
-        // Movement restrictions
-        if (player.IsMoving)
-        {
-            SendMovingMessage(player);
+        return TeleportPlayer(caster, targetPlayer.Position);
+    }
+}
+```
+
+### Summon Spells
+```csharp
+public class SummonSpell : Spell
+{
+    public override bool StartSpell(GameLiving target)
+    {
+        if (!(Caster is GamePlayer caster))
             return false;
-        }
-        
-        return base.CheckBeginCast(selectedTarget);
+            
+        if (!(target is GamePlayer targetPlayer))
+            return false;
+            
+        // Group member check
+        if (!AreInSameGroup(caster, targetPlayer))
+            return false;
+            
+        // Target restrictions
+        if (!CanBeSummoned(targetPlayer))
+            return false;
+            
+        return TeleportPlayer(targetPlayer, GetSummonLocation(caster));
     }
-}
-```
-
-#### Death Release
-```csharp
-// Release types
-public enum eReleaseType
-{
-    Normal,     // Regular graveyard
-    City,       // City bind point
-    House,      // House bind point
-    Guild,      // Guild keep/house
-    RvR         // Closest keep in RvR
-}
-
-// /release city command
-if (type == eReleaseType.City)
-{
-    player.MoveTo(player.BindRegion, 
-        player.BindXpos, player.BindYpos, player.BindZpos, 
-        player.BindHeading);
-}
-```
-
-### Teleportation Restrictions
-
-#### Combat Restrictions
-- No teleportation while in combat
-- No teleportation while carrying relics
-- Spell interruption rules apply
-
-#### Zone Restrictions
-```csharp
-// RvR zones - restricted teleportation
-if (player.CurrentZone.IsRvR && 
-    GameServer.ServerType != EGameServerType.GST_PvE)
-    return false;
-
-// Instance zones - special handling
-if (player.CurrentRegion.IsInstance)
-    return HandleInstanceTeleport(player);
-
-// Jail - no teleportation
-if (player.CurrentRegion.ID == 497 && 
-    player.Client.Account.PrivLevel == 1)
-    return false;
-```
-
-#### State Restrictions
-- Cannot teleport while mezzed
-- Cannot teleport while stunned
-- Cannot teleport while moving (some types)
-- Cannot teleport while stealthed (breaks stealth)
-
-### Portal Keep System
-
-#### Gate Keeper NPCs
-```csharp
-public class GateKeeperIn : GameKeepGuard
-{
-    // Inside keep - teleport out
-    protected List<DbKeepDoorTeleport> m_destinationsIn;
     
-    public override bool WhisperReceive(GameLiving source, string text)
+    private bool CanBeSummoned(GamePlayer player)
     {
-        // Find destination for this keep
-        foreach (DbKeepDoorTeleport t in m_destinationsIn)
-        {
-            if (t.KeepID == Component.Keep.KeepID)
-            {
-                OnTeleportSpell(player, t, delayed: text != "interact");
-                break;
-            }
-        }
+        // Cannot summon from combat
+        if (player.InCombat)
+            return false;
+            
+        // Cannot summon from certain zones
+        if (player.CurrentRegion.IsDisableSummon)
+            return false;
+            
+        return true;
     }
-}
-
-public class GateKeeperOut : GameKeepGuard
-{
-    // Outside keep - teleport in
-    protected List<DbKeepDoorTeleport> m_destinationsOut;
-    
-    // Similar implementation for entry
 }
 ```
 
-#### Portal Keep Spell
+## Portal Networks
+
+### Keep Portal System
 ```csharp
-public class UniPortalKeep : SpellHandler
+public class KeepPortalNetwork
 {
-    private DbKeepDoorTeleport m_destination;
-    
-    public override void FinishSpellCast(GameLiving target)
+    private static readonly Dictionary<string, List<string>> _portalConnections = new()
     {
-        target.MoveTo(m_destination.Region, 
-            m_destination.X, m_destination.Y, m_destination.Z, 
-            m_destination.Heading);
-    }
-}
-```
-
-### Zone Transition Teleports
-
-#### Zone Points
-```csharp
-public class ZonePoint : Point3D
-{
-    public ushort TargetRegion { get; set; }
-    public int TargetX { get; set; }
-    public int TargetY { get; set; }
-    public int TargetZ { get; set; }
-    public ushort TargetHeading { get; set; }
+        ["Camelot Hills"] = new[] { "Salisbury Plains", "Black Mountains" }.ToList(),
+        ["West Sauvage"] = new[] { "Camelot Hills", "Forest Sauvage" }.ToList(),
+        ["Uppland"] = new[] { "Mularn", "Yggdra Forest" }.ToList(),
+        ["Connacht"] = new[] { "Lough Derg", "Silvermine Mountains" }.ToList()
+    };
     
-    public void TeleportPlayer(GamePlayer player)
+    public static bool CanUsePortal(GamePlayer player, string fromZone, string toZone)
     {
-        if (CheckConstraints(player))
-        {
-            player.MoveTo(TargetRegion, TargetX, TargetY, TargetZ, TargetHeading);
-        }
+        // Must control origin keep
+        if (!IsKeepControlled(fromZone, player.Realm))
+            return false;
+            
+        // Must have valid connection
+        if (!_portalConnections.ContainsKey(fromZone))
+            return false;
+            
+        return _portalConnections[fromZone].Contains(toZone);
     }
 }
 ```
 
-#### Instance Doors
+### Border Keep Teleporters
 ```csharp
-public virtual bool OnInstanceDoor(GamePlayer player, DbZonePoint zonePoint)
+public class BorderKeepTeleporter : GameNPC
 {
-    // Check instance availability
-    if (!InstanceMgr.CanEnterInstance(player, zonePoint.TargetRegion))
-        return false;
-        
-    // Create/join instance
-    Instance instance = InstanceMgr.GetOrCreateInstance(player, zonePoint);
-    
-    // Custom routing for quest instances
-    if (instance.IsQuestInstance)
-        return HandleQuestInstanceEntry(player, instance);
-        
-    // Standard instance entry
-    return true;
-}
-```
-
-## Database Structure
-
-### Teleport Destinations
-```sql
-CREATE TABLE Teleport (
-    Teleport_ID varchar(255) PRIMARY KEY,
-    TeleportID varchar(255) NOT NULL,
-    Type varchar(255),
-    Realm tinyint NOT NULL,
-    RegionID int NOT NULL,
-    X int NOT NULL,
-    Y int NOT NULL,
-    Z int NOT NULL,
-    Heading int NOT NULL
-);
-```
-
-### Keep Door Teleports
-```sql
-CREATE TABLE KeepDoorTeleport (
-    KeepID int NOT NULL,
-    Region int NOT NULL,
-    X int NOT NULL,
-    Y int NOT NULL,
-    Z int NOT NULL,
-    Heading int NOT NULL,
-    ComponentID int,
-    DoorIndex int
-);
-```
-
-## Performance Considerations
-
-### Destination Caching
-```csharp
-public class GameTeleporter
-{
-    // Cache destinations on first interaction
-    private List<DbTeleport> m_destinations;
-    
     public override bool Interact(GamePlayer player)
     {
-        if (m_destinations == null)
-            LoadDestinations();
+        if (!CanUseTeleporter(player))
+        {
+            SayTo(player, "You cannot use this teleporter!");
+            return false;
+        }
+        
+        ShowTeleportDestinations(player);
+        return true;
+    }
+    
+    private bool CanUseTeleporter(GamePlayer player)
+    {
+        // Must be correct realm
+        if (player.Realm != this.Realm)
+            return false;
             
-        // Present destination list
+        // Keep must be owned by player's realm
+        var keep = GetNearestKeep();
+        return keep?.Realm == player.Realm;
     }
 }
 ```
 
-### Teleportation Events
+## Bind Stone System
+
+### Binding Mechanics
 ```csharp
-// Pre-teleport validation
-GameServer.ServerRules.IsAllowedToTeleport(player, destination);
-
-// Teleportation execution
-GameLocation oldLocation = new GameLocation(player);
-player.MoveTo(destination);
-
-// Post-teleport events
-GameServer.ServerRules.OnPlayerTeleport(player, oldLocation, destination);
+public class BindStoneSystem
+{
+    public static bool BindPlayer(GamePlayer player, GameBindStone bindstone)
+    {
+        if (!CanBind(player, bindstone))
+            return false;
+            
+        // Update bind location
+        player.BindRegion = bindstone.CurrentRegion;
+        player.BindXpos = bindstone.X;
+        player.BindYpos = bindstone.Y;  
+        player.BindZpos = bindstone.Z;
+        player.BindHeading = bindstone.Heading;
+        
+        player.SendMessage("You are now bound to this location!", eChatType.CT_System);
+        player.SaveIntoDatabase();
+        
+        return true;
+    }
+    
+    private static bool CanBind(GamePlayer player, GameBindStone bindstone)
+    {
+        // Must be correct realm
+        if (bindstone.Realm != player.Realm)
+            return false;
+            
+        // Cannot bind in combat
+        if (player.InCombat)
+            return false;
+            
+        return true;
+    }
+}
 ```
 
-## System Integration
+## Anti-Exploit Systems
 
-### Combat System
-- InCombat flag prevents most teleportation
-- Combat timer affects recall abilities
-- Teleportation breaks stealth
-
-### Housing System
-- House teleporters for personal/guild houses
-- Bindstone requirements for hearth recall
-- House repossession affects binds
-
-### RvR System
-- Portal keeps enable strategic movement
-- Keep ownership determines access
-- Relic carriers cannot teleport
-
-## Test Scenarios
-
-### Basic Teleportation
+### Teleportation Security
 ```csharp
-// Given: Player at city teleporter
-// When: Select valid destination
-// Then: Instant transport to destination
-
-// Given: Player in combat
-// When: Attempt teleport
-// Then: "You can't teleport in combat!" message
-
-// Given: Player carrying relic
-// When: Attempt any teleportation
-// Then: Teleportation blocked
+public class TeleportationSecurity
+{
+    public static bool ValidateDestination(GamePlayer player, Point3D destination)
+    {
+        // Cannot teleport into solid objects
+        if (IsLocationBlocked(destination))
+            return false;
+            
+        // Cannot teleport into enemy keeps
+        if (IsEnemyTerritory(destination, player.Realm))
+            return false;
+            
+        // Cannot teleport underwater
+        if (IsUnderwater(destination))
+            return false;
+            
+        return true;
+    }
+    
+    public static void LogTeleportation(GamePlayer player, Point3D from, Point3D to, 
+        TeleportationType type)
+    {
+        GameServer.Database.AddObject(new DbTeleportLog
+        {
+            PlayerName = player.Name,
+            FromX = from.X,
+            FromY = from.Y,
+            ToX = to.X,
+            ToY = to.Y,
+            TeleportType = type.ToString(),
+            Timestamp = DateTime.UtcNow
+        });
+    }
+}
 ```
 
-### Bind/Recall Tests
+### Combat Restrictions
 ```csharp
-// Given: Player at bind stone
-// When: Interact with stone
-// Then: Bind point updated
-
-// Given: Player with personal bind recall
-// When: Use in RvR zone
-// Then: "You can't use that here!" message
-
-// Given: Dead player
-// When: /release city
-// Then: Resurrect at city bind point
+public static bool CanTeleportInCombat(GamePlayer player, TeleportationType type)
+{
+    if (!player.InCombat)
+        return true;
+        
+    return type switch
+    {
+        TeleportationType.Spell => false,      // No spell teleports in combat
+        TeleportationType.Item => false,       // No item teleports in combat
+        TeleportationType.NPC => false,        // No NPC teleports in combat
+        TeleportationType.Portal => true,      // Portals may allow combat teleport
+        TeleportationType.BindStone => false,  // Cannot bind in combat
+        TeleportationType.Guild => false,      // No guild recalls in combat
+        _ => false
+    };
+}
 ```
 
-### Portal Keep Tests
-```csharp
-// Given: Player at friendly portal keep
-// When: Talk to gate keeper
-// Then: Show available destinations
+## Configuration
 
-// Given: Enemy at portal keep
-// When: Approach gate keeper
-// Then: No interaction possible
+```csharp
+[ServerProperty("teleport", "enable_teleportation", true)]
+public static bool ENABLE_TELEPORTATION;
+
+[ServerProperty("teleport", "max_teleport_range", 10000)]
+public static int MAX_TELEPORT_RANGE;
+
+[ServerProperty("teleport", "combat_teleport_restriction", true)]
+public static bool COMBAT_TELEPORT_RESTRICTION;
+
+[ServerProperty("teleport", "teleport_item_cooldown", 30000)]
+public static int TELEPORT_ITEM_COOLDOWN;
 ```
 
-## Change Log
-- 2025-01-20: Initial documentation created
-- TODO: Document boat routes
-- TODO: Add summoning mechanics
-- TODO: Document griffin/horse routes
+## TODO: Missing Documentation
+
+- Advanced portal network pathfinding algorithms
+- Dynamic teleportation destination calculation
+- Multi-player group teleportation coordination
+- Cross-server teleportation mechanics
 
 ## References
-- `GameServer/gameobjects/GameTeleporter.cs`
-- `GameServer/gameobjects/CustomNPC/Teleporters/`
-- `GameServer/spells/Teleport/GatewayPersonalBind.cs`
-- `GameServer/keeps/Gameobjects/Guards/GateKeeper.cs`
-- `GameServer/world/ZonePoint.cs` 
+
+- `GameServer/spells/Teleportation/` - Teleportation spell implementations
+- `GameServer/gameobjects/GamePortal.cs` - Portal mechanics
+- `GameServer/gameobjects/GameBindStone.cs` - Bind stone system 

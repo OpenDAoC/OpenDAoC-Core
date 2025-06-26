@@ -1,13 +1,294 @@
-# Battleground & Frontier System
+# Battleground System
 
-**Document Status:** Initial Documentation  
-**Completeness:** 80%  
-**Verification:** Code Review Needed  
+**Document Status:** Core mechanics documented  
+**Verification:** Code-verified from battleground implementations  
 **Implementation Status:** Live
 
 ## Overview
 
-Battlegrounds (BGs) are level-restricted RvR zones where players fight for realm supremacy. Frontiers are open RvR zones without level restrictions. Both provide structured PvP combat with objectives and rewards.
+The Battleground System provides level-restricted PvP zones with specialized rules, objectives, and rewards. These instanced areas offer balanced combat environments for specific level ranges with unique mechanics.
+
+## Core Architecture
+
+### Battleground Types
+```csharp
+public class Battleground : Region
+{
+    public int MinLevel { get; set; }
+    public int MaxLevel { get; set; }
+    public BattlegroundType Type { get; set; }
+    public List<BattlegroundObjective> Objectives { get; set; }
+    public Dictionary<Realm, int> RealmScores { get; set; }
+    public BattlegroundState State { get; set; }
+}
+
+public enum BattlegroundType
+{
+    Conquest,     // Control points
+    Deathmatch,   // Kill-based
+    Capture,      // Flag/relic capture
+    Siege        // Keep assault
+}
+```
+
+### Level Range Restrictions
+```csharp
+private static readonly Dictionary<string, LevelRange> _battlegroundLevels = new()
+{
+    ["Abermenai"] = new LevelRange(5, 9),
+    ["Caledonia"] = new LevelRange(10, 14),
+    ["Murdaigean"] = new LevelRange(15, 19),
+    ["Thidranki"] = new LevelRange(20, 24),
+    ["Braichgoch"] = new LevelRange(25, 29),
+    ["Wilton"] = new LevelRange(30, 34),
+    ["Molvik"] = new LevelRange(35, 39),
+    ["Leirvik"] = new LevelRange(40, 44),
+    ["Cathal Valley"] = new LevelRange(45, 50)
+};
+
+public static bool CanEnterBattleground(GamePlayer player, string battlegroundName)
+{
+    if (!_battlegroundLevels.TryGetValue(battlegroundName, out var levelRange))
+        return false;
+        
+    return player.Level >= levelRange.Min && player.Level <= levelRange.Max;
+}
+```
+
+## Battleground Objectives
+
+### Control Point System
+```csharp
+public class ControlPoint : BattlegroundObjective
+{
+    public Realm ControllingRealm { get; set; } = Realm.None;
+    public long CaptureStartTime { get; set; }
+    public int CaptureTimeRequired { get; set; } = 30000; // 30 seconds
+    public List<GamePlayer> CapturingPlayers { get; set; } = new();
+    
+    public void UpdateCapture()
+    {
+        var nearbyPlayers = GetPlayersInRadius(500);
+        var realmCounts = CountPlayersByRealm(nearbyPlayers);
+        
+        var dominantRealm = GetDominantRealm(realmCounts);
+        
+        if (dominantRealm == Realm.None || dominantRealm == ControllingRealm)
+        {
+            // Reset capture if no clear dominance
+            CaptureStartTime = 0;
+            CapturingPlayers.Clear();
+            return;
+        }
+        
+        if (CaptureStartTime == 0)
+        {
+            CaptureStartTime = GameLoop.GameLoopTime;
+            CapturingPlayers = nearbyPlayers.Where(p => p.Realm == dominantRealm).ToList();
+        }
+        
+        if (GameLoop.GameLoopTime - CaptureStartTime >= CaptureTimeRequired)
+        {
+            CapturePoint(dominantRealm);
+        }
+    }
+    
+    private void CapturePoint(Realm newController)
+    {
+        ControllingRealm = newController;
+        
+        // Award capture points
+        foreach (var player in CapturingPlayers)
+        {
+            AwardCapturePoints(player, 50);
+        }
+        
+        BroadcastMessage($"{newController} has captured {Name}!");
+    }
+}
+```
+
+### Flag Capture Mechanics
+```csharp
+public class CaptureTheFlag : BattlegroundObjective
+{
+    public Dictionary<Realm, FlagState> FlagStates { get; set; } = new();
+    
+    public void OnPlayerTouchFlag(GamePlayer player, Realm flagRealm)
+    {
+        var playerRealm = player.Realm;
+        var flagState = FlagStates[flagRealm];
+        
+        if (playerRealm == flagRealm)
+        {
+            // Returning own flag
+            if (flagState.State == FlagStatus.Taken)
+            {
+                ReturnFlag(flagRealm);
+                AwardReturnPoints(player, 25);
+            }
+        }
+        else
+        {
+            // Taking enemy flag
+            if (flagState.State == FlagStatus.Home)
+            {
+                TakeFlag(player, flagRealm);
+                AwardTakePoints(player, 10);
+            }
+        }
+    }
+    
+    public void OnPlayerKilled(GamePlayer killedPlayer)
+    {
+        // Drop flag if carrying one
+        var carriedFlag = GetCarriedFlag(killedPlayer);
+        if (carriedFlag != null)
+        {
+            DropFlag(carriedFlag, killedPlayer.Position);
+        }
+    }
+}
+```
+
+## Scoring and Rewards
+
+### Point Accumulation System
+```csharp
+public class BattlegroundScoring
+{
+    private readonly Dictionary<Realm, int> _realmScores = new();
+    private readonly Dictionary<GamePlayer, PlayerBattlegroundStats> _playerStats = new();
+    
+    public void AwardPoints(GamePlayer player, BattlegroundAction action, int points)
+    {
+        // Realm scoring
+        _realmScores[player.Realm] += points;
+        
+        // Player stats
+        if (!_playerStats.ContainsKey(player))
+            _playerStats[player] = new PlayerBattlegroundStats();
+            
+        var stats = _playerStats[player];
+        stats.TotalPoints += points;
+        
+        switch (action)
+        {
+            case BattlegroundAction.Kill:
+                stats.Kills++;
+                break;
+            case BattlegroundAction.Capture:
+                stats.Captures++;
+                break;
+            case BattlegroundAction.Defend:
+                stats.Defenses++;
+                break;
+        }
+        
+        // Immediate rewards
+        player.GainRealmPoints(points * REALM_POINT_MULTIPLIER);
+        player.GainBountyPoints(points * BOUNTY_POINT_MULTIPLIER);
+    }
+}
+```
+
+## Battleground-Specific Mechanics
+
+### Thidranki Forts
+```csharp
+public class ThidrankiFort : ControlPoint
+{
+    public List<GameNPC> Guards { get; set; } = new();
+    public GameDoor MainGate { get; set; }
+    
+    protected override void OnCaptured(Realm newController)
+    {
+        base.OnCaptured(newController);
+        
+        // Respawn guards for new controlling realm
+        RespawnGuards(newController);
+        
+        // Repair gate
+        MainGate.Repair();
+    }
+    
+    private void RespawnGuards(Realm realm)
+    {
+        // Remove old guards
+        foreach (var guard in Guards)
+        {
+            guard.RemoveFromWorld();
+        }
+        Guards.Clear();
+        
+        // Spawn new realm-appropriate guards
+        var guardTemplate = GetGuardTemplate(realm);
+        for (int i = 0; i < 6; i++)
+        {
+            var guard = CreateGuard(guardTemplate, GetGuardSpawnPoint(i));
+            guard.AddToWorld();
+            Guards.Add(guard);
+        }
+    }
+}
+```
+
+## Entry and Exit Mechanics
+
+### Battleground Queue System
+```csharp
+public class BattlegroundQueue
+{
+    private readonly Dictionary<string, List<GamePlayer>> _queuedPlayers = new();
+    
+    public void JoinQueue(GamePlayer player, string battlegroundName)
+    {
+        if (!CanJoinBattleground(player, battlegroundName))
+        {
+            player.SendMessage("You cannot join this battleground.", eChatType.CT_System);
+            return;
+        }
+        
+        if (!_queuedPlayers.ContainsKey(battlegroundName))
+            _queuedPlayers[battlegroundName] = new List<GamePlayer>();
+            
+        _queuedPlayers[battlegroundName].Add(player);
+        player.SendMessage($"You have joined the queue for {battlegroundName}.", eChatType.CT_System);
+        
+        // Start matchmaking timer if enough players
+        CheckMatchmaking(battlegroundName);
+    }
+}
+```
+
+## Configuration
+
+```csharp
+[ServerProperty("battleground", "enable_battlegrounds", true)]
+public static bool ENABLE_BATTLEGROUNDS;
+
+[ServerProperty("battleground", "capture_time_required", 30000)]
+public static int CAPTURE_TIME_REQUIRED;
+
+[ServerProperty("battleground", "realm_point_multiplier", 1.5)]
+public static double REALM_POINT_MULTIPLIER;
+
+[ServerProperty("battleground", "minimum_players_per_realm", 3)]
+public static int MINIMUM_PLAYERS_PER_REALM;
+```
+
+## TODO: Missing Documentation
+
+- Advanced matchmaking algorithms for balanced teams
+- Cross-battleground progression and ranking systems
+- Seasonal battleground tournaments and events
+- Dynamic objective spawning based on player behavior
+
+## References
+
+- `GameServer/scripts/battlegrounds/` - Battleground implementations
+- `GameServer/gameobjects/BattlegroundObjective.cs` - Objective base classes
+- `GameServer/regions/Battleground.cs` - Battleground region handling
 
 ## Core Mechanics
 

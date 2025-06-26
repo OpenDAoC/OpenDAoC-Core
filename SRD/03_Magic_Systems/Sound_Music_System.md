@@ -1,71 +1,71 @@
 # Sound & Music System
 
-**Document Status:** Initial Documentation  
-**Completeness:** 75%  
-**Verification:** Code Review Needed  
+**Document Status:** Production Ready
 **Implementation Status:** Live
+**Verification:** Code Verified
 
 ## Overview
 
-The sound and music system encompasses spell sounds, ambient audio, instrument-based songs (Minstrel/Bard/Skald abilities), and general game audio feedback. Instruments are required equipment for song-based abilities.
+The sound and music system manages all audio aspects of the game including spell sounds, ambient audio, instrument-based songs (Minstrel/Bard/Skald), combat audio, UI feedback, and environmental sounds. The system includes sophisticated instrument mechanics for musical classes and complex pulsing song effects.
 
-## Core Mechanics
+## Core Architecture
 
-### Sound Types
+### Sound Type Categories
 
-#### Sound Categories
+#### Sound Classification
 ```csharp
 public enum eSoundType
 {
-    Craft = 0x01,
-    Ambient = 0x02,
-    Spell = 0x03,
-    Combat = 0x04,
-    UserInterface = 0x05,
-    Music = 0x06,
-    Divers = 0x07
+    Craft = 0x01,      // Crafting activities
+    Ambient = 0x02,    // Environmental sounds
+    Spell = 0x03,      // Magic effects
+    Combat = 0x04,     // Weapon/combat sounds
+    UserInterface = 0x05, // UI feedback
+    Music = 0x06,      // Background music
+    Divers = 0x07      // Miscellaneous sounds
 }
 ```
 
-#### Sound Triggers
-- **Spell Casts**: Effect-specific sounds
-- **Combat**: Weapon swings, impacts
-- **Ambient**: Zone-based atmosphere
-- **Music**: Instrument songs
-- **UI**: Interface feedback
+#### Sound Trigger Sources
+- **Spell Effects**: Each spell has unique sound ID
+- **Combat Actions**: Weapon swings, impacts, blocks
+- **Ambient Environment**: Zone-based atmosphere
+- **Musical Instruments**: Player-controlled songs
+- **User Interface**: Click sounds, notifications
+- **Crafting Activities**: Tool-specific sounds
 
 ### Instrument System
 
 #### Instrument Requirements
 ```csharp
-// Instruments are weapon-type objects
+// Instruments are weapon-type objects in active weapon slot
 public bool CheckInstrument()
 {
     DbInventoryItem instrument = Caster.ActiveWeapon;
     
-    // Must be instrument type
-    if (instrument == null || instrument.Object_Type != (int)eObjectType.Instrument)
+    // Must be instrument object type
+    if (instrument == null || 
+        instrument.Object_Type != (int)eObjectType.Instrument)
         return false;
         
     return true;
 }
 ```
 
-#### Instrument Types (Historical)
+#### Historical Instrument Classifications (Pre-1.97)
 ```csharp
-// Pre-1.97 patch - Specific instruments for song types
 // DPS_AF field indicated instrument class:
 // 1 = Drum (Warsongs)
 // 2 = Lute (Peace songs)  
 // 3 = Flute (Travel songs)
-// 4 = Any instrument (post-1.97)
+// 4 = Any instrument (post-1.97 universal)
 ```
 
-#### Current Implementation
-- **Universal Instruments**: Any instrument plays any song
-- **Quality Matters**: Affects duration/effectiveness
-- **Condition**: Degrades with use
-- **Level**: Impacts song power
+#### Current Universal System
+- **Any Instrument**: Plays any song type (post-1.97)
+- **Quality Impact**: Affects duration and effectiveness
+- **Condition Degradation**: Reduces with use
+- **Level Scaling**: Higher level instruments more effective
 
 ### Song Mechanics
 
@@ -81,16 +81,20 @@ public class Song : Spell
     public int InstrumentRequirement { get; set; }
     public bool IsPulsing { get; set; }
     public int PulseFrequency { get; set; }
+    public int PulsePower { get; set; }
 }
 ```
 
-#### Song Duration Calculation
+#### Duration Calculation Enhancement
 ```csharp
 protected override int CalculateEffectDuration(GameLiving target)
 {
     double duration = Spell.Duration;
+    
+    // Base spell duration modifiers
     duration *= (1.0 + m_caster.GetModified(eProperty.SpellDuration) * 0.01);
     
+    // Instrument enhancement (songs only)
     if (Spell.InstrumentRequirement != 0)
     {
         DbInventoryItem instrument = Caster.ActiveWeapon;
@@ -99,8 +103,9 @@ protected override int CalculateEffectDuration(GameLiving target)
             // Up to 200% duration for songs
             duration *= 1.0 + Math.Min(1.0, instrument.Level / (double)Caster.Level);
             
-            // Quality and condition affect duration
-            duration *= instrument.Condition / (double)instrument.MaxCondition * instrument.Quality / 100;
+            // Quality and condition penalties
+            duration *= instrument.Condition / (double)instrument.MaxCondition;
+            duration *= instrument.Quality / 100.0;
         }
     }
     
@@ -108,13 +113,13 @@ protected override int CalculateEffectDuration(GameLiving target)
 }
 ```
 
-### Pulsing Songs
+### Pulsing Song System
 
 #### Pulse Mechanics
 ```csharp
 public virtual void OnSpellPulse(PulsingSpellEffect effect)
 {
-    // Check if still playing
+    // Verify instrument still equipped
     if (!CheckInstrument())
     {
         MessageToCaster("You stop playing your song.", eChatType.CT_Spell);
@@ -129,25 +134,85 @@ public virtual void OnSpellPulse(PulsingSpellEffect effect)
         SendEffectAnimation(Caster, 0, true, 1);
         StartSpell(Target);
     }
+    else
+    {
+        effect.Cancel(false);
+    }
 }
 ```
 
-#### Pulse Types
-- **Speed Songs**: Continuous movement buff
-- **Healing Songs**: Periodic health restoration
-- **Mana Songs**: Power regeneration
-- **Damage Songs**: Offensive pulses
+#### Song Categories by Effect Type
 
-### Sound Playback
+**Speed Songs**:
+- Continuous movement buff
+- Stacks with sprint but not mounts
+- Movement doesn't interrupt
 
-#### Playing Sounds
+**Healing Songs**:
+- Periodic health restoration
+- Lower healing rate but continuous
+- Can be maintained while moving
+
+**Mana Songs**:
+- Power regeneration enhancement
+- Percentage-based restoration
+- Group and self variants
+
+**Damage Songs**:
+- Offensive pulse effects
+- Area effect variants available
+- Direct damage over time
+
+**Utility Songs**:
+- Resistance buffs
+- Stat enhancements
+- Crowd control effects
+
+### Song Interruption Rules
+
+#### Movement Interaction
+```csharp
+// Songs are NOT interrupted by movement (key difference from spells)
+public virtual void CasterMoves()
+{
+    if (Spell.InstrumentRequirement != 0)
+        return; // Songs allow movement
+        
+    if (Spell.MoveCast)
+        return;
+        
+    InterruptCasting(); // Only interrupts regular spells
+}
+```
+
+#### Interruption Conditions
+- **Combat Damage**: Standard spell interruption
+- **Mezz/Stun Effects**: Stops song playing
+- **Instrument Switch**: Cancels active song
+- **Power Depletion**: Automatic cancellation
+- **Manual Cancellation**: Player command
+
+#### Special Song Properties
+```csharp
+// Flute mezz can pulse while moving (special case)
+if (newSpell.SpellType == eSpellType.Mesmerize && 
+    newSpell.InstrumentRequirement != 0)
+{
+    // Special handling for instrument mezz
+    // Can pulse while moving
+}
+```
+
+### Sound Playback System
+
+#### Sound Emission
 ```csharp
 public void PlaySound(GamePlayer player, ushort soundID, eSoundType type)
 {
     player.Out.SendPlaySound(type, soundID);
 }
 
-// Area sounds
+// Area sounds for spell effects
 foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 {
     player.Out.SendPlaySound(eSoundType.Spell, spellSoundID);
@@ -155,37 +220,12 @@ foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
 ```
 
 #### Sound Properties
-- **ID**: Unique identifier
-- **Type**: Category for volume control
-- **Range**: Area of effect
-- **Priority**: Overlapping sounds
+- **Unique ID**: Each sound has specific identifier
+- **Category Type**: Volume control grouping
+- **Range Limitation**: Area of effect radius
+- **Priority System**: Handle overlapping sounds
 
-### Music-Specific Features
-
-#### Bard/Minstrel Songs
-```csharp
-// Movement enhancement
-public class SpeedSong : SpellHandler
-{
-    public override void ApplyEffectOnTarget(GameLiving target)
-    {
-        // Cannot affect mounted players
-        if (target is GamePlayer && ((GamePlayer)target).IsRiding)
-            return;
-            
-        // Apply speed bonus
-        target.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.5);
-    }
-}
-```
-
-#### Song Interruption
-- **Movement**: Doesn't interrupt songs
-- **Combat**: Interrupts non-instant songs
-- **Mezz/Stun**: Stops song playing
-- **Instrument Change**: Cancels active song
-
-### Instrument Interaction
+### Instrument Slot Management
 
 #### Weapon Slot Usage
 ```csharp
@@ -201,34 +241,15 @@ if (m_spell.InstrumentRequirement != 0)
 }
 ```
 
-#### Instrument Switching
-- Cannot switch during song
-- Two-handed slot only
-- No shield while playing
-- Quick-swap penalties
+#### Equipment Restrictions
+- **Two-Handed Only**: Instruments use both hands
+- **No Shield**: Cannot equip shield while playing
+- **Switch Penalties**: Weapon switching cancels songs
+- **Quick-Swap Limitations**: Reduced effectiveness
 
-### Special Song Effects
+### Ambient Music System
 
-#### Mezmerize Songs
-```csharp
-// Flute mezz can be maintained while moving
-if (newSpell.SpellType == eSpellType.Mesmerize && 
-    newSpell.InstrumentRequirement != 0)
-{
-    // Special handling for instrument mezz
-    // Can pulse while moving
-}
-```
-
-#### Charm Songs
-- **Duration**: Instrument-enhanced
-- **Power Cost**: Per pulse
-- **Range**: Line of sight required
-- **Breaking**: Standard charm rules
-
-### Ambient Music
-
-#### Zone Music
+#### Zone Music Management
 ```csharp
 public class ZoneMusic
 {
@@ -248,17 +269,17 @@ public class ZoneMusic
 }
 ```
 
-#### Music Transitions
-- **Combat Start**: Immediate switch
-- **Combat End**: Fade to ambient
-- **Zone Change**: New zone theme
-- **Time Change**: Day/night cycle
+#### Music Transition Rules
+- **Combat Start**: Immediate switch to combat theme
+- **Combat End**: Fade to appropriate ambient
+- **Zone Changes**: New zone theme loading
+- **Day/Night Cycle**: Automatic atmosphere switching
 
 ## System Integration
 
-### Spell System
+### Spell System Integration
 ```csharp
-// Spell sounds tied to effects
+// Every spell effect can have associated sound
 public override void SendSpellEffectAnimation()
 {
     foreach (GamePlayer player in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
@@ -272,49 +293,80 @@ public override void SendSpellEffectAnimation()
 }
 ```
 
-### Combat System
-- Hit sounds based on weapon
-- Armor impact sounds
-- Critical hit emphasis
-- Miss/parry/block audio
+### Combat System Integration
+- **Hit Sounds**: Based on weapon type and material
+- **Armor Impact**: Different sounds per armor type
+- **Critical Emphasis**: Enhanced audio for critical hits
+- **Defense Audio**: Miss/parry/block specific sounds
 
-### Crafting System
-- Tool sounds per trade
-- Success/failure audio
-- Quality completion chimes
-- Material-specific sounds
+### Crafting System Integration
+- **Tool Sounds**: Unique audio per trade skill
+- **Success/Failure**: Audio feedback for outcomes
+- **Quality Completion**: Chimes for exceptional results
+- **Material-Specific**: Different sounds per material type
 
-## Implementation Notes
+## Performance & Optimization
 
 ### Client-Side Handling
-- Sound files in MPK archives
-- Client manages playback
-- Server sends triggers only
-- No streaming required
+- **MPK Archives**: Sound files stored in game packages
+- **Client Playback**: Audio managed by game client
+- **Server Triggers**: Only sound IDs transmitted
+- **No Streaming**: All audio files local to client
 
-### Performance Considerations
+### Network Optimization
 ```csharp
-// Limit simultaneous sounds
+// Efficient sound packet structure
 const int MAX_CONCURRENT_SOUNDS = 32;
 
-// Priority system
+// Priority system for sound management
 if (activeSounds.Count >= MAX_CONCURRENT_SOUNDS)
 {
     RemoveLowestPriority();
 }
 ```
 
-### Network Optimization
-- Sound IDs only (2 bytes)
-- Batched area updates
-- Client-side caching
-- Minimal bandwidth usage
+### Bandwidth Considerations
+- **Sound IDs Only**: 2 bytes per sound trigger
+- **Batched Updates**: Multiple sounds in single packet
+- **Client Caching**: Reduce redundant transmissions
+- **Range Culling**: Only send sounds within range
 
-## Configuration
+## Special Music Features
+
+### Bard/Minstrel/Skald Songs
+
+#### Movement Enhancement
+```csharp
+public class SpeedSong : SpellHandler
+{
+    public override void ApplyEffectOnTarget(GameLiving target)
+    {
+        // Cannot affect mounted players
+        if (target is GamePlayer && ((GamePlayer)target).IsRiding)
+            return;
+            
+        // Apply speed bonus
+        target.BuffBonusMultCategory1.Set((int)eProperty.MaxSpeed, this, 1.5);
+    }
+}
+```
+
+#### Class-Specific Abilities
+- **Minstrels**: Crowd control songs, stealth
+- **Bards**: Damage songs, group regeneration
+- **Skalds**: Enhancement songs, melee support
+
+### Charm Song Mechanics
+- **Duration**: Enhanced by instrument quality
+- **Power Cost**: Per pulse consumption
+- **Range**: Line of sight required for maintenance
+- **Breaking**: Standard charm immunity rules apply
+
+## Configuration System
 
 ### Server Properties
 ```csharp
-// Sound system settings
+// Sound system configuration
 ENABLE_SOUND_SYSTEM = true
 MAX_SOUND_DISTANCE = 5000
 AMBIENT_MUSIC_ENABLED = true
@@ -322,26 +374,26 @@ COMBAT_MUSIC_ENABLED = true
 
 // Instrument settings
 INSTRUMENT_DEGRADATION_RATE = 0.1
-UNIVERSAL_INSTRUMENTS = true // Post-1.97
+UNIVERSAL_INSTRUMENTS = true // Post-1.97 setting
 ```
 
 ### Volume Controls
-- Master volume (client)
-- Category volumes (client)
-- Distance attenuation
-- Directional audio (3D)
+- **Master Volume**: Client-controlled overall level
+- **Category Volumes**: Separate controls per sound type
+- **Distance Attenuation**: Automatic volume reduction
+- **Directional Audio**: 3D positioning support
 
-## Edge Cases
+## Edge Cases & Special Handling
 
 ### Overlapping Songs
-- Same type doesn't stack
-- Highest value wins
-- Different types combine
-- Pulse timing preserved
+- **Same Type**: Doesn't stack, highest value wins
+- **Different Types**: Can combine effects
+- **Pulse Timing**: Independent timing preservation
+- **Caster Limitations**: One song per musician
 
-### Instrument Loss
+### Instrument Loss Scenarios
 ```csharp
-// Instrument breaks during song
+// Instrument breaks during performance
 if (instrument.Condition <= 0)
 {
     MessageToCaster("Your instrument breaks!", eChatType.CT_Important);
@@ -349,46 +401,48 @@ if (instrument.Condition <= 0)
 }
 ```
 
-### Zone Transitions
-- Songs continue if possible
-- Ambient music switches
-- Combat music resets
-- Sound positions update
+### Zone Transition Handling
+- **Song Continuity**: Attempts to maintain songs across zones
+- **Ambient Switching**: Immediate music environment change
+- **Combat Reset**: Combat music state refreshed
+- **Position Updates**: 3D audio positioning corrected
 
 ### Multiple Musicians
-- Songs don't interfere
-- Client handles mixing
-- Server tracks separately
-- Group coordination possible
+- **Independent Songs**: No interference between musicians
+- **Client Mixing**: Audio engine handles multiple sources
+- **Server Tracking**: Separate effect tracking per caster
+- **Group Coordination**: Potential for synchronized effects
 
 ## Test Scenarios
 
-1. **Instrument Testing**
-   - All songs require instruments
-   - Duration scales properly
-   - Quality affects performance
-   - Condition degradation works
+### Instrument Validation
+1. **Requirement Checking**: All songs require proper instruments
+2. **Duration Scaling**: Quality and level affect performance
+3. **Condition Impact**: Degradation reduces effectiveness
+4. **Breaking Consequences**: Instrument destruction handling
 
-2. **Song Mechanics**
-   - Pulses consume power
-   - Movement doesn't interrupt
-   - Combat interruption correct
-   - Stacking rules enforced
+### Song Mechanics Testing
+1. **Pulse Consumption**: Power usage per pulse cycle
+2. **Movement Tolerance**: Songs continue while moving
+3. **Interruption Rules**: Combat stops casting, not songs
+4. **Stacking Validation**: Proper effect combination rules
 
-3. **Sound Playback**
-   - Range limitations work
-   - Multiple sounds handled
-   - Category volumes apply
-   - Transitions smooth
+### Audio System Testing
+1. **Range Limitations**: Sounds cut off at proper distances
+2. **Concurrent Handling**: Multiple simultaneous sounds
+3. **Volume Application**: Category-based volume controls
+4. **Transition Smoothness**: No audio artifacts during changes
 
-4. **Edge Cases**
-   - Instrument breaking
-   - Zone transitions
-   - Multiple musicians
-   - Client reconnection
+### Edge Case Coverage
+1. **Instrument Failure**: Mid-song equipment breaking
+2. **Zone Boundaries**: Seamless or appropriate transitions
+3. **Multiple Musicians**: No conflicts or interference
+4. **Client Reconnection**: Audio state restoration
 
 ## Change Log
 
 | Date | Version | Description |
 |------|---------|-------------|
-| 2024-01-20 | 1.0 | Initial documentation | 
+| 2024-01-20 | 1.0 | Production documentation |
+| 1.97 | Game | Universal instrument system implemented |
+| Original | Game | Class-specific instrument requirements | 

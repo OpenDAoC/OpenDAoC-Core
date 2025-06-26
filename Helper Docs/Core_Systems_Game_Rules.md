@@ -1,29 +1,4 @@
-# Core Systems and Game Rules
-
-> **Note**: This document contains legacy rule documentation. For comprehensive and up-to-date game mechanics documentation, please refer to the `/SRD` (System Reference Document) directory. The SRD contains detailed documentation of all game systems including formulas, edge cases, and implementation notes.
-
 # OpenDAoC Core Systems - Game Rules Documentation
-
-> **Note**: This document is being migrated to the comprehensive System Reference Document (SRD). 
-> See the `/SRD/` directory for the latest, most accurate game rule documentation.
-> 
-> **Completed SRD Sections:**
-> - **Combat Systems** (5/5 core - COMPLETE): 
->   - Attack Resolution (expanded with intercept, guard, multi-attacker formulas)
->   - Damage Calculation (expanded with damage adds, shields, conversion)
->   - Defense Mechanics (expanded with penetration factors, block rounds)
->   - Style Mechanics
->   - Attack Speed & Timing
-> - **Character Systems** (3/5 core): Character Progression, Specialization & Skills, Realm Points & Ranks
-> - **Magic Systems** (1/5 core): Spell Mechanics
-> - **Item Systems** (1/5 core): Item Mechanics
-> - **Social Systems** (1/5 core): Guild System
-> - **World Systems** (2/5 core): Region & Zone Mechanics, Movement & Speed Mechanics
-> - **Economy Systems** (1/5 core): Money & Currency System
-> - **Quest Systems** (1/5 core): Quest Mechanics
-> 
-> **Remaining SRD Sections:**
-> - World Systems, Economy Systems, Quest Systems, Performance Systems, Cross-System Interactions
 
 ## Table of Contents
 1. [Combat System](#combat-system)
@@ -264,33 +239,198 @@ Uses Casting Speed instead of Archery Speed
 ## Character Progression
 
 ### Experience System
-- Level 1-50 progression
-- Experience needed per level stored in database
-- Group experience bonuses
-- Camp/challenge bonuses
-- Rested experience
+
+#### Experience Calculation
+Experience gain is based on several factors:
+
+**Base Experience**:
+```
+BaseXP = MobType.BaseXP * MobLevel
+```
+
+**Level Difference Modifiers**:
+- Same level: 100% XP
+- Higher level mobs: +15% per level above player
+- Lower level mobs: -10% per level below player (minimum 5%)
+
+**Group Experience**:
+- Group bonus: +5% per additional group member
+- Level spread penalty if level difference > 8 within group
+- Experience shared based on level contribution
+
+**Challenge/Camp Bonuses**:
+- Challenge bonus: Additional XP for difficult encounters
+- Camp bonus: Increased XP for extended hunting in same area
+
+**Death Penalty**:
+- Constitution loss on death (-5% per death, max -50%)
+- Experience debt system (optional per server config)
+
+#### Experience to Level
+Experience requirements increase exponentially:
+```
+XPToLevel(n) = BaseXP * (Level^ExperienceMultiplier)
+```
+Where ExperienceMultiplier varies by server configuration.
 
 ### Stat Progression
-- **Primary stat**: +1 per level starting at level 6
-- **Secondary stat**: +1 every 2 levels starting at level 6
-- **Tertiary stat**: +1 every 3 levels starting at level 6
-- **Starting stats**: Race and class dependent
+
+#### Base Stat Increases
+**Primary Stat** (highest class focus):
+- +1 per level starting at level 6
+- Total: +45 stats at level 50
+
+**Secondary Stat** (moderate class focus):
+- +1 every 2 levels starting at level 6
+- Total: +22 stats at level 50
+
+**Tertiary Stat** (minor class focus):
+- +1 every 3 levels starting at level 6
+- Total: +14 stats at level 50
+
+#### Starting Stats
+Starting stats are race and class dependent:
+- **Race bonuses**: Each race has stat modifiers
+- **Class bonuses**: Base stats vary by class type
+- **Point allocation**: Limited point buy system
+
+#### Stat Caps
+**Base Stats**: 101 (base 50 + 51 from items/buffs)
+**Acuity Bonus**: Additional mana stat from items
+**Hit Points**: Constitution-based, class modifier applies
+**Power**: Mana stat-based, class modifier applies
 
 ### Specialization Points
-- Points per level = Level * SpecMultiplier / 10
-- SpecMultiplier varies by class (10-20)
-- Bonus spec points from realm ranks
 
-### Champion Levels
-- 1-10 champion levels post-50
-- Mini-lines for specialization
-- Class-specific champion abilities
+#### Specialization Point Gain
+```
+SpecPointsPerLevel = Level * ClassSpecMultiplier / 10
+ClassSpecMultiplier = 10-20 (varies by class)
+```
 
-### Realm Ranks
-- RR1-RR13 progression
-- Realm points from RvR combat
-- Realm abilities purchasable with points
-- RR5 ability at realm rank 5
+**Examples**:
+- Fighter classes: Usually 10 multiplier (2 points/level at level 20)
+- Hybrid classes: Usually 15 multiplier (3 points/level at level 20)
+- Pure casters: Usually 20 multiplier (4 points/level at level 20)
+
+#### Specialization Cost
+Cost to train specialization points:
+```
+CostToLevel = Sum(1 to TargetLevel) of level
+```
+- Level 1: 1 point
+- Level 10: 55 points total
+- Level 25: 325 points total
+- Level 50: 1275 points total
+
+#### Composite Specialization
+Some specializations are composite (combine multiple skills):
+- Combined training cost
+- Shared training pool
+- Cross-spec bonuses
+
+### Skill Point Allocation
+
+#### Skill Point Gain
+```
+SkillPointsPerLevel = BaseSkillPoints + (Level - 1) * SkillMultiplier
+```
+Where SkillMultiplier varies by class (typically 2-4).
+
+#### Skill Types
+**Weapon Skills**:
+- Trained with skill points
+- Cap at 5 * (level + 1)
+- Modified by specialization bonus
+
+**Magic Skills**:
+- Trained with specialization points
+- Baseline + specialization level
+- Focus bonus from items
+
+**Other Skills**:
+- Class abilities (Evade, Parry, etc.)
+- Craft skills
+- Language skills
+
+### Champion Levels (Post-50 Progression)
+
+#### Champion Experience
+Separate experience pool for levels 51-60:
+- Much higher XP requirements
+- PvE and RvR sources
+- Diminishing returns after 55
+
+#### Champion Benefits
+**Champion Level 1-5**:
+- +1 Specialization point per level
+- +5 Hit points per level
+- Access to champion abilities
+
+**Champion Level 6-10**:
+- +2 Specialization points per level
+- +10 Hit points per level
+- Enhanced champion abilities
+
+#### Champion Abilities
+- **ML 1-5**: First champion ability line
+- **ML 6-10**: Second champion ability line
+- **Prerequisites**: Must complete champion quest line
+
+### Realm Rank Progression
+
+#### Realm Point Gain
+Realm points awarded for:
+- Player kills (modified by level difference)
+- Keep captures and defenses
+- Relic captures
+- Tower/outpost captures
+
+#### Realm Rank Benefits
+**Realm Ranks 1-5**:
+- +1 to all resists per rank
+- +5% Hit points per rank
+- Access to realm abilities
+
+**Realm Ranks 6-10**:
+- +2 to all resists per rank
+- +10% Hit points per rank
+- Higher tier realm abilities
+
+**Realm Ranks 11-13**:
+- +3 to all resists per rank
+- +15% Hit points per rank
+- Master level realm abilities
+
+#### Realm Abilities
+**Passive Abilities**:
+- Augmented stats (Aug STR, Aug CON, etc.)
+- Resistances (Magic Resistance, etc.)
+- Regeneration (Toughness, etc.)
+
+**Active Abilities**:
+- Realm rank 5+ abilities
+- Long cooldowns (5-30 minutes)
+- Powerful effects for RvR
+
+### Master Level Progression
+
+#### Master Level Steps
+Each Master Level (1-10) requires:
+1. **Credit farming**: Kill specific encounters
+2. **Artifact encounter**: Defeat ML boss
+3. **Step completion**: Various requirements
+
+#### Master Level Benefits
+**ML 1-5**:
+- Primary ML line abilities
+- Stat bonuses
+- Special item abilities
+
+**ML 6-10**:
+- Secondary ML line abilities
+- Enhanced stat bonuses
+- Powerful capstone abilities
 
 ## Class System
 
@@ -368,30 +508,247 @@ Uses Casting Speed instead of Archery Speed
 
 ## Property Calculator System
 
-### Calculator Types
-Each property has a dedicated calculator that determines the final value:
-- Base value (from stats/skills)
-- Item bonuses
-- Buff bonuses (base and spec)
-- Debuff penalties
+### Calculator Architecture
+
+#### Base Calculator Interface
+All property calculators implement `IPropertyCalculator`:
+```csharp
+public interface IPropertyCalculator
+{
+    int CalcValue(GameLiving living, eProperty property);
+    int CalcValueBase(GameLiving living, eProperty property);
+}
+```
+
+#### Property Sources
+Property values are calculated from multiple sources:
+- **Base values**: Character stats, skill levels
+- **Item bonuses**: Equipment stat bonuses
+- **Buff bonuses**: Spell effects (base and specialization categories)
+- **Debuff penalties**: Negative spell effects
+- **Ability bonuses**: Realm abilities, class abilities
+- **Other bonuses**: Realm bonuses, guild bonuses
+
+### Core Property Calculators
+
+#### Armor Factor Calculator
+Calculates effective armor factor based on target type:
+
+**Players**:
+```
+ArmorFactor = Min(Level * 1.875, SpecBuffBonus) + 
+              Min(Level, ItemBonus) + 
+              OtherBonus - 
+              Abs(DebuffPenalty)
+```
+
+**NPCs**:
+```
+ArmorFactor = ((1 + Level/Divisor) * (Level * Factor)) + 
+              BaseBuffBonus - 
+              Abs(DebuffPenalty) + 
+              OtherBonus
+```
+
+**Special Cases**:
+- **GameKeep Components**: `KeepLevel * KeepMod * TypeMod`
+- **Necromancer Pets**: Level 50 equivalent (121 AF)
+- **Summoned Pets**: Enhanced AF (175)
+
+#### Armor Absorption Calculator
+```
+Absorption = BaseBuffBonus + ItemBonus + AbilityBonus - Abs(DebuffPenalty)
+Maximum = 50% (hard cap)
+```
+
+**NPC Base Absorption**:
+- Standard NPCs: `Level * 0.0054` (27% at level 50)
+- Necromancer pets: `OwnerLevel * 0.0068` (34% at level 50)
+
+#### Damage Modifier Calculators
+
+**Melee Damage Calculator**:
+```
+MeleeDamage = AbilityBonus + BuffBonus + Min(10, ItemBonus) - Min(10, Abs(DebuffPenalty))
+```
+
+**Ranged Damage Calculator**:
+- Uses identical formula to melee damage
+- Separate property tracking
+
+**Critical Hit Calculators**:
+```
+CriticalChance = ItemBonus + BuffBonus
+Maximum = 50% (hard cap)
+```
+
+#### Resistance Calculators
+Each resistance type (Heat, Cold, Matter, Body, Spirit, Energy) has a dedicated calculator:
+
+**Primary Resistance**:
+```
+Resistance = BaseValue + ItemBonus + BuffBonus - DebuffPenalty
+Maximum = 70% (configurable per server)
+```
+
+**Secondary Resistance**:
+```
+SecondaryResist = SpecBuffBonusCategory[ResistType]
+Maximum = 80% (uncapped in most cases)
+```
+
+#### Stat Calculators
+For each primary stat (STR, CON, DEX, QUI, INT, PIE, EMP, CHA):
+
+**Base Calculation**:
+```
+FinalStat = BaseStat + 
+            ItemBonus + 
+            BaseBuffBonus + 
+            SpecBuffBonus - 
+            DebuffPenalty + 
+            OtherBonus
+```
+
+**Acuity (Mana Stat) Calculation**:
+```
+Acuity = BaseManastat + AcuityBonus + ItemBonus + BuffBonus - DebuffPenalty
+```
+
+#### Defense Calculators
+
+**Parry Chance Calculator**:
+```
+ParryChance = ((Dexterity * 2 - 100) / 4) + 
+              ((ParrySpec - 1) * 5) + 
+              MasteryOfParry * 3 + 
+              50
+```
+
+**Block Chance Calculator**:
+```
+BaseBlock = 5% + 0.5% * ShieldSpec
+Modified by: Dexterity, Mastery of Blocking, shield size
+```
+
+**Evade Chance Calculator**:
+```
+BaseEvade = ((Dex + Qui) / 2 - 50) * 0.05 + EvadeLevel * 5
+```
+
+#### Speed Calculators
+
+**Melee Speed Calculator**:
+```
+FinalSpeed = BaseSpeed * (1 - (Quickness - 60) * 0.002) * MeleeSpeedModifier / 100
+Minimum = 1500ms
+```
+
+**Casting Speed Calculator**:
+```
+CastTime = Spell.CastTime * DexterityModifier * BonusModifier
+DexterityModifier = 1 - (Dexterity - 60) / 600
+BonusModifier = 1 - CastingSpeedBonus * 0.01
+Minimum = 40% of base cast time
+```
+
+### Bonus Categories and Stacking
+
+#### Buff Bonus Categories
+**Category 1 (BaseBuffBonusCategory)**:
+- Single stat buffs
+- Base enhancement spells
+- Stacks with item bonuses for AF (shared cap)
+
+**Category 2 (SpecBuffBonusCategory)**:
+- Specialization line buffs
+- Separate caps per property
+- AF capped at Level * 1.875
+
+**Category 3 (DebuffCategory)**:
+- All debuff effects
+- Negative values expected
+- Can exceed positive bonus caps
+
+**Category 4 (OtherBonus)**:
 - Realm bonuses
-- Multiplicative modifiers
+- Guild bonuses
+- Uncapped modifications
 
-### Stacking Rules
-- **Buffs**: Highest value in each category wins
-- **Item bonuses**: Additive up to caps
-- **Debuffs**: Generally subtractive
-- **Multiplicative**: Applied after additive
+#### Item Bonus Rules
+**Bonus Caps by Level**:
+- Level 1-14: 0 cap
+- Level 15-19: 5 cap
+- Level 20-24: 10 cap
+- Level 25-29: 15 cap
+- Level 30-34: 20 cap
+- Level 35-39: 25 cap
+- Level 40-44: 30 cap
+- Level 45-50: 35 cap
 
-### Common Properties
-- Armor Factor (AF)
-- Armor Absorption
-- Melee/Magic resists
-- Stat bonuses (STR/CON/DEX/QUI/INT/PIE/EMP/CHA)
-- Skill bonuses (+Parry, +Shield, etc.)
-- Speed modifiers (melee/cast/archery)
-- Critical hit chances
-- Power/endurance regeneration
+**Special Item Caps**:
+- **Hit Points**: BonusCap * 4
+- **Power**: BonusCap * 2
+- **Resistances**: BonusCap * 2
+
+#### Multiplicative Modifiers
+Some properties support multiplicative modifiers:
+```
+FinalValue = (AdditiveTotal) * MultiplicativeModifier
+```
+Applied after all additive bonuses are calculated.
+
+### Property-Specific Rules
+
+#### ToHit Bonus
+```
+ToHitBonus = BaseBuffBonus + SpecBuffBonus + OtherBonus - DebuffPenalty
+```
+- Directly affects hit chance calculations
+- No hard caps (soft caps via diminishing returns)
+
+#### Power Regeneration
+```
+PowerRegen = BasePowerRegen + ItemBonus + BuffBonus - DebuffPenalty
+Minimum = 0 (cannot go negative)
+```
+
+#### Spell Penetration
+```
+ResistPierce = ItemBonus + AbilityBonus
+```
+- Reduces target's primary resistances
+- Applied before resistance calculations
+
+#### Archery/Melee Speed Modifiers
+**Legacy Archery Speed**:
+```
+ArcherySpeed = BaseSpeed * (1 - (Qui - 60) * 0.002) - (BaseSpeed * ArcherySpeedBonus / 100)
+```
+
+**New Archery (Casting Speed)**:
+```
+ArcherySpeed = BaseSpeed * DexterityMod * CastingSpeedMod
+```
+
+### Integration Points
+
+#### Combat System Integration
+Property calculators are called during:
+- Damage calculations (armor, damage bonuses)
+- Hit chance calculations (ToHit, defense chances)
+- Speed calculations (attack intervals)
+- Resistance calculations (damage mitigation)
+
+#### Character Sheet Display
+- Real-time calculation for UI display
+- Caching for performance optimization
+- Update triggers on stat/equipment changes
+
+#### Buff/Debuff Application
+- Immediate recalculation on effect changes
+- Category validation and stacking rules
+- Temporary vs permanent modifications
 
 ## Realm and Faction System
 
@@ -828,138 +1185,6 @@ Healing generates aggro on all NPCs attacking the heal target:
 - Melee attacks interrupt casting
 - Damage interrupts based on SpellInterruptDuration
 - Some abilities grant uninterruptible casting
-
-### Sound & Music System
-- **Instruments**: Required for Bard/Minstrel/Skald songs
-- **Song Duration**: Enhanced by instrument quality/level
-- **Pulsing Songs**: Continuous effects with power cost
-- **Universal Instruments**: Any instrument plays any song (post-1.97)
-
-*See SRD/03_Magic_Systems/Sound_Music_System.md for detailed information*
-
-## Social Systems
-
-### Emote System
-- **Standard Emotes**: 30+ character animations
-- **Horse Emotes**: Special mount animations
-- **Custom Emotes**: `/emote <text>` with realm restrictions
-- **Range**: 2048 units for targeted, 512 for area
-
-*See SRD/05_Social_Systems/Emote_System.md for detailed information*
-
-### Trade System
-- **Window Interface**: 10 slots per player
-- **Safety Features**: Double confirmation required
-- **Validation**: Weight, space, and tradability checks
-- **Logging**: All trades recorded for security
-
-*See SRD/05_Social_Systems/Trade_System.md for detailed information*
-
-### Language System
-- **Realm Separation**: Cross-realm text scrambled
-- **Channels Affected**: Say, Yell, Emote
-- **Special NPCs**: Merchants understood by all
-- **GM Override**: Staff can understand all
-
-*See SRD/05_Social_Systems/Language_System.md for detailed information*
-
-### Duel System
-- **Same Realm Only**: No cross-realm duels
-- **Victory Condition**: 10% health threshold
-- **No Penalties**: No death penalty or loot
-- **Commands**: `/duel`, `/yield`
-
-*See SRD/05_Social_Systems/Duel_System.md for detailed information*
-
-### Group System
-- **Size**: Maximum 8 players
-- **XP Sharing**: Level-based distribution
-- **Loot Rules**: Leader-controlled options
-- **Buffs**: Group-only spell targets
-
-*See SRD/05_Social_Systems/Group_System.md for detailed information*
-
-## World Systems
-
-### Region & Zone System
-- **Region Structure**: Multiple zones per region
-- **Zone Types**: Normal, City, Dungeon, RvR
-- **SubZones**: Areas within zones for special rules
-- **Water Zones**: Swimming and diving mechanics
-
-*See SRD/06_World_Systems/Region_Zone_Mechanics.md for detailed information*
-
-### Movement & Speed
-- **Base Speed**: 100% (191 units/second)
-- **Sprint**: 130% speed, endurance drain
-- **Stealth**: Speed penalties based on spec
-- **Encumbrance**: Weight-based speed reduction
-
-*See SRD/06_World_Systems/Movement_Speed_Mechanics.md for detailed information*
-
-### Horse Route System
-- **Ticket System**: Purchase from stable masters
-- **Automated Travel**: Fixed paths between locations
-- **Mount Scaling**: Size based on player race
-- **Route Types**: Horse and boat routes available
-
-*See SRD/06_World_Systems/Horse_Route_System.md for detailed information*
-
-### Boat System
-- **Player Boats**: 9 types, various capacities
-- **Summoning**: Requires water and boat item
-- **Control**: Ground-target navigation
-- **Persistence**: Saved between sessions
-
-*See SRD/06_World_Systems/Boat_System.md for detailed information*
-
-### Battleground System
-- **Level Brackets**: 20-24, 25-29, 30-34, 35-39, 45-49
-- **Entry Restrictions**: Strict level enforcement
-- **Keep Warfare**: Capturable objectives
-- **Rewards**: Enhanced RP/BP gains
-
-*See SRD/06_World_Systems/Battleground_System.md for detailed information*
-
-### Teleportation System
-- **Portal Stones**: Fixed destination networks
-- **Personal Binds**: Respawn locations
-- **Summoning**: Group member summoning
-- **Restrictions**: Combat and RvR limitations
-
-*See SRD/06_World_Systems/Teleportation_System.md for detailed information*
-
-### Door System
-- **Types**: Keep, Postern, Interior, House
-- **Permissions**: Realm, Guild, Personal
-- **Health**: Destructible in RvR
-- **States**: Open, Closed, Locked
-
-*See SRD/06_World_Systems/Door_System.md for detailed information*
-
-### Time System
-- **Game Time**: 24x real time speed
-- **Day/Night**: Affects visibility and spawns
-- **Seasonal**: Some events time-based
-- **Synchronization**: All zones use same time
-
-*See SRD/06_World_Systems/Time_System.md for detailed information*
-
-### Weather System
-- **Types**: Clear, Cloudy, Fog, Rain, Storm
-- **Effects**: Visibility reduction in fog/storm
-- **Regional**: Weather varies by zone
-- **Duration**: Random periods
-
-*See SRD/06_World_Systems/Weather_System.md for detailed information*
-
-### Line of Sight System
-- **Checks**: Required for targeted abilities
-- **Obstacles**: Terrain and objects block LoS
-- **Calculation**: Ray-casting algorithm
-- **Updates**: Continuous validation
-
-*See SRD/06_World_Systems/Line_of_Sight_System.md for detailed information*
 
 ---
 *This document is a living reference and should be updated as new mechanics are discovered or changed.* 
