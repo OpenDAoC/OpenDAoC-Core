@@ -217,108 +217,33 @@ namespace DOL.GS
 		{
 		}
 
-		/// <summary>
-		/// last attack tick in either pve or pvp
-		/// </summary>
-		public virtual long LastAttackTick
+		public virtual long LastAttackTickPvE { get; set; }
+		public virtual long LastAttackTickPvP { get; set; }
+		public virtual long LastAttackedByEnemyTickPvE { get; set; }
+		public virtual long LastAttackedByEnemyTickPvP { get; set; }
+
+		public long LastAttackTick => Math.Max(LastAttackTickPvE, LastAttackTickPvP);
+		public long LastAttackedByEnemyTick => Math.Max(LastAttackedByEnemyTickPvE, LastAttackedByEnemyTickPvP);
+		public long LastCombatTickPvP => Math.Max(LastAttackTickPvP, LastAttackedByEnemyTickPvP);
+		public long LastCombatTickPvE => Math.Max(LastAttackTickPvE, LastAttackedByEnemyTickPvE);
+
+		public virtual bool InCombatPvE => LastCombatTickPvE > 0 && LastCombatTickPvE + IN_COMBAT_DURATION >= GameLoop.GameLoopTime;
+		public virtual bool InCombatPvP => LastCombatTickPvP > 0 && LastCombatTickPvP + IN_COMBAT_DURATION >= GameLoop.GameLoopTime;
+		public virtual bool InCombat => InCombatInLast(IN_COMBAT_DURATION);
+
+		public virtual bool InCombatInLast(int milliseconds)
 		{
-			get
-			{
-				if (m_lastAttackTickPvE > m_lastAttackTickPvP)
-					return m_lastAttackTickPvE;
-				return m_lastAttackTickPvP;
-			}
+			return InCombatPvEInLast(milliseconds) || InCombatPvPInLast(milliseconds);
 		}
 
-		/// <summary>
-		/// last attack tick for pve
-		/// </summary>
-		protected long m_lastAttackTickPvE;
-		/// <summary>
-		/// gets/sets gametick when this living has attacked its target in pve
-		/// </summary>
-		public virtual long LastAttackTickPvE
+		public virtual bool InCombatPvPInLast(int milliseconds)
 		{
-			get => m_lastAttackTickPvE;
-			set => m_lastAttackTickPvE = value;
+			return LastCombatTickPvP > 0 && LastCombatTickPvP + milliseconds >= GameLoop.GameLoopTime;
 		}
 
-		/// <summary>
-		/// last attack tick for pvp
-		/// </summary>
-		protected long m_lastAttackTickPvP;
-		/// <summary>
-		/// gets/sets gametick when this living has attacked its target in pvp
-		/// </summary>
-		public virtual long LastAttackTickPvP
+		public virtual bool InCombatPvEInLast(int milliseconds)
 		{
-			get => m_lastAttackTickPvP;
-			set => m_lastAttackTickPvP = value;
-		}
-
-		/// <summary>
-		/// gets the last attack or attackedbyenemy tick in pvp
-		/// </summary>
-		public long LastCombatTickPvP
-		{
-			get
-			{
-				if (m_lastAttackTickPvP > m_lastAttackedByEnemyTickPvP)
-					return m_lastAttackTickPvP;
-				else return m_lastAttackedByEnemyTickPvP;
-			}
-		}
-
-		/// <summary>
-		/// gets the last attack or attackedbyenemy tick in pve
-		/// </summary>
-		public long LastCombatTickPvE
-		{
-			get
-			{
-				if (m_lastAttackTickPvE > m_lastAttackedByEnemyTickPvE)
-					return m_lastAttackTickPvE;
-				else return m_lastAttackedByEnemyTickPvE;
-			}
-		}
-
-		/// <summary>
-		/// last attacked by enemy tick in either pvp or pve
-		/// </summary>
-		public virtual long LastAttackedByEnemyTick
-		{
-			get
-			{
-				if (m_lastAttackedByEnemyTickPvP > m_lastAttackedByEnemyTickPvE)
-					return m_lastAttackedByEnemyTickPvP;
-				return m_lastAttackedByEnemyTickPvE;
-			}
-		}
-
-		/// <summary>
-		/// last attacked by enemy tick in pve
-		/// </summary>
-		protected long m_lastAttackedByEnemyTickPvE;
-		/// <summary>
-		/// gets/sets gametick when this living was last time attacked by an enemy in pve
-		/// </summary>
-		public virtual long LastAttackedByEnemyTickPvE
-		{
-			get => m_lastAttackedByEnemyTickPvE;
-			set => m_lastAttackedByEnemyTickPvE = value;
-		}
-
-		/// <summary>
-		/// last attacked by enemy tick in pve
-		/// </summary>
-		protected long m_lastAttackedByEnemyTickPvP;
-		/// <summary>
-		/// gets/sets gametick when this living was last time attacked by an enemy in pvp
-		/// </summary>
-		public virtual long LastAttackedByEnemyTickPvP
-		{
-			get => m_lastAttackedByEnemyTickPvP;
-			set => m_lastAttackedByEnemyTickPvP = value;
+			return LastCombatTickPvE > 0 && LastCombatTickPvE + milliseconds >= GameLoop.GameLoopTime;
 		}
 
         /// <summary>
@@ -547,45 +472,6 @@ namespace DOL.GS
 			{
 				m_isMuted = value;
 			}
-		}
-
-		/// <summary>
-		/// Check this flag to see if this living is involved in combat
-		/// </summary>
-		public virtual bool InCombat => InCombatPvE || InCombatPvP;
-
-		/// <summary>
-		/// Check this flag to see if this living has been involved in combat in the given milliseconds
-		/// </summary>
-		public virtual bool InCombatInLast(int milliseconds)
-		{
-			return InCombatPvEInLast(milliseconds) || InCombatPvPInLast(milliseconds);
-		}
-
-		/// <summary>
-		/// checks if the living is involved in pvp combat
-		/// </summary>
-		public virtual bool InCombatPvP => LastCombatTickPvP > 0 && LastCombatTickPvP + IN_COMBAT_DURATION >= GameLoop.GameLoopTime;
-
-		/// <summary>
-		/// checks if the living is involved in pvp combat in the given milliseconds
-		/// </summary>
-		public virtual bool InCombatPvPInLast(int milliseconds)
-		{
-			return LastCombatTickPvP > 0 && LastCombatTickPvP + milliseconds >= GameLoop.GameLoopTime;
-		}
-
-		/// <summary>
-		/// checks if the living is involved in pve combat
-		/// </summary>
-		public virtual bool InCombatPvE => LastCombatTickPvE > 0 && LastCombatTickPvE + IN_COMBAT_DURATION >= GameLoop.GameLoopTime;
-
-		/// <summary>
-		/// checks if the living is involved in pve combat in the given milliseconds
-		/// </summary>
-		public virtual bool InCombatPvEInLast(int milliseconds)
-		{
-			return LastCombatTickPvE > 0 && LastCombatTickPvE + milliseconds >= GameLoop.GameLoopTime;
 		}
 
 		/// <summary>

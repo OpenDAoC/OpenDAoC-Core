@@ -6603,20 +6603,9 @@ namespace DOL.GS
             base.EnemyKilled(enemy);
         }
 
-
-        /// <summary>
-        /// Check this flag to see wether this living is involved in combat
-        /// </summary>
-        public override bool InCombat
-        {
-            get
-            {
-                IControlledBrain npc = ControlledBrain;
-                if (npc != null && npc.Body.InCombat)
-                    return true;
-                return base.InCombat;
-            }
-        }
+        public override bool InCombatPvE => base.InCombatPvE || ControlledBrain?.Body.InCombatPvE == true;
+        public override bool InCombatPvP => base.InCombatPvP || ControlledBrain?.Body.InCombatPvP == true;
+        public override bool InCombat => base.InCombat || ControlledBrain?.Body.InCombat == true;
 
         #endregion
 

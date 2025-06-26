@@ -2761,9 +2761,9 @@ namespace DOL.GS
 		public void SetLastMeleeAttackTick()
 		{
 			if (TargetObject?.Realm == 0 || Realm == 0)
-				m_lastAttackTickPvE = GameLoop.GameLoopTime;
+				LastAttackTickPvE = GameLoop.GameLoopTime;
 			else
-				m_lastAttackTickPvP = GameLoop.GameLoopTime;
+				LastAttackTickPvP = GameLoop.GameLoopTime;
 		}
 
 		/// <summary>
