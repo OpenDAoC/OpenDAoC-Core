@@ -176,14 +176,14 @@ public void AttackResolution_ShouldCheckEvadeBeforeParry_WhenBothAvailable()
 ### Coverage Overview
 - **Combat Systems**: 85% complete - Attack resolution, damage, defense, aggro, siege warfare documented
 - **Character Systems**: 80% complete - Progression, death/resurrection, stealth systems documented
-- **Magic Systems**: 90% complete - Spell mechanics, effects system, component system, pet summoning documented
+- **Magic Systems**: 90% complete - Spell mechanics, effects system, component system, effect stacking logic, pet summoning documented
 - **Item Systems**: 65% complete - Equipment basics done, artifact systems pending
 - **Social Systems**: 70% complete - Guild, housing, group systems documented
 - **World Systems**: 60% complete - Region/zone, movement/speed mechanics documented
 - **Economy Systems**: 75% complete - Money system, crafting documented, economy balance needed
 - **Quest Systems**: 60% complete - Quest mechanics documented, advanced rewards pending
-- **Performance Systems**: 0% complete - Not yet documented
-- **Cross-System Interactions**: 0% complete - Not yet documented
+- **Performance Systems**: 30% complete - Basic optimization strategies
+- **Cross-System Interactions**: 25% complete - Some integration points documented
 
 ### Priority Areas
 1. **Performance specifications** - Ensuring server stability

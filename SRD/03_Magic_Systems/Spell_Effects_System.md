@@ -184,24 +184,36 @@ public enum eBuffBonusCategory
 
 ### Effect Stacking Algorithm
 
+#### Stacking Decision Process
+For detailed stacking logic, see: [`Effect_Stacking_Logic.md`](Effect_Stacking_Logic.md)
+
+**Quick Reference**:
+1. Dead owners cannot receive effects
+2. Ability effects always stack without restriction
+3. Same spell ID or effect group: renew or replace
+4. Overwritable effects: use IsBetterThan comparison
+5. Non-overwritable effects: fail or add as disabled
+
+#### IsBetterThan Comparison
 ```csharp
-// When adding a new effect:
-1. Check if effect type already exists
-2. If exists and same spell ID or effect group:
-   a. Compare effectiveness (spell value * effectiveness)
-   b. If new is better:
-      - Disable/stop old effect
-      - Add new effect
-   c. If old is better:
-      - Add new as disabled (if different caster)
-      - Or reject (if same caster)
-3. If different spell type but same effect group:
-   - Follow overwrite rules
-4. Special cases:
-   - Concentration effects cannot stack
-   - Pulse effects check active pulses
-   - Ablative armor compares remaining value
+public virtual bool IsBetterThan(ECSGameEffect effect)
+{
+    return SpellHandler.Spell.Value * Effectiveness > effect.SpellHandler.Spell.Value * effect.Effectiveness ||
+           SpellHandler.Spell.Damage * Effectiveness > effect.SpellHandler.Spell.Damage * effect.Effectiveness;
+}
 ```
+
+#### Disabled Effects Management
+- Worse effects from different casters become disabled
+- Concentration effects disabled when out of range
+- Best disabled effect automatically re-enabled when better effect expires
+- Potion effects have special disabled state handling
+
+#### Silent Renewal System
+- Prevents OnStop/OnStart calls for same effect renewal
+- Maintains effect state without triggering animations
+- Critical for speed debuffs and concentration effects
+- Uses pending effects queue for complex state management
 
 ### Effect Groups
 
