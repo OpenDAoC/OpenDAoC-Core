@@ -1198,24 +1198,32 @@ namespace DOL.GS
                     double modifier = Math.Min(baseDamageCap, preResistDamage * primarySecondaryResistConversionMod) - damage;
                     damage += modifier;
 
-                    if (StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, preEffectivenessDamage, preEffectivenessBaseDamageCap, ad.ArmorHitLocation, ad.StyleEffects, out double styleDamage, out double styleDamageCap, out int animationId))
+                    // Outside the style execution block because we need it for the detailed combat log.
+                    double styleDamageCap = 0;
+
+                    if (style != null)
                     {
-                        double styleDamageBonus = preResistDamage * owner.GetModified(eProperty.StyleDamage) * 0.01;
-                        styleDamage += styleDamageBonus;
-                        styleDamageCap += styleDamageBonus;
+                        if (StyleProcessor.ExecuteStyle(owner, ad.Target, ad.Style, weapon, preEffectivenessDamage, preEffectivenessBaseDamageCap, ad.ArmorHitLocation, ad.StyleEffects, out double styleDamage, out styleDamageCap, out int animationId))
+                        {
+                            double styleDamageBonus = preResistDamage * owner.GetModified(eProperty.StyleDamage) * 0.01;
+                            styleDamage += styleDamageBonus;
+                            styleDamageCap += styleDamageBonus;
 
-                        double preResistStyleDamage = styleDamage;
-                        ad.StyleDamage = (int) preResistStyleDamage; // We show uncapped and unmodified by resistances style damage. This should only be used by the combat log.
-                        // We have to calculate damage reduction again because `ExecuteStyle` works with pre resist base damage. Static growth styles also don't use it.
-                        styleDamage = preResistStyleDamage * primarySecondaryResistConversionMod;
+                            double preResistStyleDamage = styleDamage;
+                            ad.StyleDamage = (int) preResistStyleDamage; // We show uncapped and unmodified by resistances style damage. This should only be used by the combat log.
+                            // We have to calculate damage reduction again because `ExecuteStyle` works with pre resist base damage. Static growth styles also don't use it.
+                            styleDamage = preResistStyleDamage * primarySecondaryResistConversionMod;
 
-                        if (styleDamageCap > 0)
-                            styleDamage = Math.Min(styleDamageCap, styleDamage);
+                            if (styleDamageCap > 0)
+                                styleDamage = Math.Min(styleDamageCap, styleDamage);
 
-                        damage += styleDamage;
-                        modifier += styleDamage - preResistStyleDamage;
+                            damage += styleDamage;
+                            modifier += styleDamage - preResistStyleDamage;
+                            ad.AttackResult = eAttackResult.HitStyle;
+                        }
+
+                        // Play the style animation even on imperfect execution.
                         ad.AnimationId = animationId;
-                        ad.AttackResult = eAttackResult.HitStyle;
                     }
 
                     ad.Damage = (int) damage;

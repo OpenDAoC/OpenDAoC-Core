@@ -300,10 +300,6 @@ namespace DOL.GS.Styles
 			// This way it makes sure the objects are not modified by several different threads at the same time.
 			GamePlayer player = living as GamePlayer;
 
-			// Does the player want to execute a style at all?
-			if (style == null)
-				return false;
-
 			// Used to disable RA styles when they're actually firing.
 			style.OnStyleExecuted?.Invoke(living);
 
@@ -318,15 +314,17 @@ namespace DOL.GS.Styles
 			}
 
 			AttackData lastAttackData = living.attackComponent.attackAction.LastAttackData;
+			bool perfect; // Whether this is a perfectly executed style or not.
 
 			// Did primary and backup style fail?
 			if (!CanUseStyle(lastAttackData, living, style, weapon))
 			{
+				perfect = false;
 				player?.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "StyleProcessor.ExecuteStyle.ExecuteFail", style.Name), eChatType.CT_YouHit, eChatLoc.CL_SystemWindow);
-				return false;
 			}
 			else
 			{
+				perfect = true;
 				double spec = living.GetModifiedSpecLevel(style.Spec);
 
 				// Stealth openers are unaffected by weapon speed.
@@ -400,8 +398,7 @@ namespace DOL.GS.Styles
 					}
 				}
 
-				#region StyleProcs
-
+				// Handle style procs.
 				if (style.Procs.Count > 0)
 				{
 					ISpellHandler effect;
@@ -451,22 +448,17 @@ namespace DOL.GS.Styles
 							styleEffects.Add(effect);
 					}
 				}
-
-				#endregion StyleProcs
-
-				#region Animation
-
-				if (weapon != null)
-					animationId = (weapon.Hand != 1) ? style.Icon : style.TwoHandAnimation; // special animation for two-hand
-				else if (living.Inventory != null)
-					animationId = (living.Inventory.GetItem(eInventorySlot.RightHandWeapon) != null) ? style.Icon : style.TwoHandAnimation; // special animation for two-hand
-				else
-					animationId = style.Icon;
-
-				#endregion Animation
-
-				return true;
 			}
+
+			// Set animation ID.
+			if (weapon != null)
+				animationId = (weapon.Hand != 1) ? style.Icon : style.TwoHandAnimation; // Special animation for two-hand.
+			else if (living.Inventory != null)
+				animationId = (living.Inventory.GetItem(eInventorySlot.RightHandWeapon) != null) ? style.Icon : style.TwoHandAnimation; // Special animation for two-hand.
+			else
+				animationId = style.Icon;
+
+			return perfect;
 		}
 
 		/// <summary>
