@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace DOL.GS.Interfaces.Core
@@ -399,5 +400,74 @@ namespace DOL.GS.Interfaces.Core
         int ProcChance { get; }
         int ProcSpellID { get; }
         string Effect { get; }
+    }
+
+    // Core game object interfaces
+    /// <summary>
+    /// Base interface for all game objects with identification
+    /// </summary>
+    public interface IIdentifiable
+    {
+        string ObjectId { get; }
+        string Name { get; }
+        string InternalId { get; }
+        eObjectType ObjectType { get; }
+        bool IsValid { get; }
+    }
+
+    /// <summary>
+    /// Interface for objects with position in the game world
+    /// </summary>
+    public interface IPositionable
+    {
+        int X { get; }
+        int Y { get; }
+        int Z { get; }
+        ushort Heading { get; }
+        ushort CurrentRegionId { get; }
+        double GetDistanceTo(IPositionable other);
+        bool IsWithinRadius(IPositionable other, int radius);
+        void MoveTo(int x, int y, int z, ushort heading, ushort regionId);
+    }
+
+    /// <summary>
+    /// Core game object interface combining identification and position
+    /// </summary>
+    public interface IGameObject : IIdentifiable, IPositionable
+    {
+    }
+
+    // Event system interfaces for adapter support
+    /// <summary>
+    /// Base interface for all game events
+    /// </summary>
+    public interface IGameEvent
+    {
+        string EventType { get; }
+        DateTime TimeStamp { get; }
+        object Source { get; }
+        object Target { get; }
+        object EventArgs { get; }
+    }
+
+    /// <summary>
+    /// Interface for event handlers
+    /// </summary>
+    public interface IEventHandler
+    {
+        void HandleEvent(IGameEvent gameEvent);
+        bool CanHandle(Type eventType);
+        int Priority { get; }
+    }
+
+    /// <summary>
+    /// Interface for objects that can receive and notify events
+    /// </summary>
+    public interface IEventNotifier
+    {
+        void NotifyEvent(IGameEvent gameEvent);
+        void Subscribe(Type eventType, IEventHandler handler);
+        void Unsubscribe(Type eventType, IEventHandler handler);
+        bool HasSubscription(Type eventType);
     }
 } 
