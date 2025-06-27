@@ -6,11 +6,16 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: Realm Points and Realm Ranks are your progression in player vs player combat. Every time you kill an enemy player or capture objectives, you earn Realm Points. As you accumulate points, you advance through Realm Ranks that give you prestigious titles and access to powerful Realm Abilities - special attacks and defenses that make you more effective in PvP combat. Unlike regular levels, there's no cap on Realm Ranks, so dedicated PvP players can continue advancing indefinitely.
+
 Realm Points (RP) and Realm Ranks (RR) represent a character's progression in Realm vs Realm combat. Players earn RP from PvP kills and objectives, advancing through ranks that grant access to powerful Realm Abilities.
 
 ## Core Mechanics
 
 ### Realm Point Acquisition
+
+**Game Rule Summary**: The realm points you earn from killing an enemy player depend on their level and realm rank. Higher level targets are worth more points, with the biggest reward coming from other level 50 players. Their realm rank also adds bonus points - killing an experienced PvP veteran is worth much more than killing a newcomer. This system encourages fighting worthy opponents rather than picking on weak targets.
 
 #### Player Kill Value
 ```csharp
@@ -30,6 +35,9 @@ RPValue = Max(1, ModifiedLevel * ModifiedLevel) + TargetRealmLevel
 **Source**: `GamePlayer.cs:RealmPointsValue`
 
 #### RP Modifiers
+
+**Game Rule Summary**: Your realm point gain can be increased by server bonuses, special zones, and magical items. Some areas give bonus RP to encourage fighting there, and certain items can boost your RP gain by up to 10%. However, you can turn off RP gain if you want to practice PvP without advancing your rank.
+
 ```csharp
 // Server rate modifier
 Amount *= RP_RATE
@@ -43,6 +51,8 @@ Amount += Amount * Min(10, RPBonus) / 100
 ```
 
 ### Realm Rank Progression
+
+**Game Rule Summary**: Realm Ranks require increasingly massive amounts of realm points. Getting your first few ranks is relatively quick, but reaching the highest ranks requires dedication and skill over many months or years. Each rank has 10 levels (like RR5L0 to RR5L9), and advancing 10 levels gives you a new rank with a new title. The progression gets much steeper after RR10, separating casual PvP players from the true veterans.
 
 #### RP Requirements Table
 | Rank | Level | Total RP | RP to Next |
@@ -84,6 +94,8 @@ else
 
 ### Realm Titles
 
+**Game Rule Summary**: Each realm rank gives you a prestigious title that shows your PvP accomplishment to other players. The titles are different for each realm and gender, reflecting the lore and culture of your faction. Advancing from one major rank to the next (like RR1 to RR2) changes your title, making your experience visible to everyone you encounter.
+
 #### Title System
 - **Rank 0**: No title
 - **Rank 1-13**: Unique titles per realm/gender
@@ -96,6 +108,8 @@ Example: "Albion.RR1.Male" = "Guardian"
 ```
 
 ### Realm Abilities
+
+**Game Rule Summary**: Realm Abilities are special powers you can buy with your earned realm points, giving you advantages in PvP combat. Some are passive benefits like being tougher or more accurate, while others are active abilities you trigger in combat like powerful attacks or defensive moves. The most prestigious abilities require high realm ranks to unlock, giving veteran players access to unique tactical options.
 
 #### RA Points
 ```csharp
@@ -113,6 +127,9 @@ Most abilities follow standard cost progression:
 - Costs vary by ability type
 
 #### RA Types
+
+**Game Rule Summary**: There are three types of Realm Abilities. Passive abilities are always working in the background, like increased health or resistances. Active abilities must be triggered during combat, like special attacks or defensive moves with cooldowns. RR5 abilities are unique powers each class gets at Realm Rank 5, defining their specialized role in group PvP.
+
 1. **Passive Abilities**: Always active
    - Augmented stats
    - Toughness

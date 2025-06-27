@@ -6,11 +6,15 @@
 
 ## Overview
 
+**Game Rule Summary**: Champion Levels are an alternative endgame progression system for level 50 players, offering 10 additional levels (CL1-CL10) focused on gaining specialized abilities through mini-lines. Unlike Master Levels which require group content, Champion Levels can be advanced through regular solo play and PvP. Each Champion Level gives you one point to spend on mini-line abilities that enhance your class in unique ways, creating more diverse character builds within the same class.
+
 The Champion Level (CL) system provides additional character advancement beyond level 50, offering 10 champion levels (CL1-CL10) with specialized mini-lines that grant unique abilities and enhancements based on class type.
 
 ## Core Mechanics
 
 ### Champion Level Activation
+
+**Game Rule Summary**: To become a Champion, you must visit your realm's King once you reach level 50. This is a one-time activation that unlocks the Champion Level system permanently for that character. Pure tank classes also gain a mana pool at this point, allowing them to use abilities that normally require power.
 
 #### Requirements
 - **Character Level**: Must be level 50
@@ -25,6 +29,8 @@ if (!player.Champion && player.Level == 50)
 ```
 
 ### Experience System
+
+**Game Rule Summary**: Champion Experience works differently from regular experience - it's earned by converting your normal experience gain at a reduced rate. PvE activities give less Champion XP, while RvR combat gives much better conversion rates, encouraging PvP participation. Each Champion Level requires progressively more experience, but the amounts are fixed and predictable rather than exponentially increasing.
 
 #### XP Requirements
 ```csharp
@@ -46,6 +52,9 @@ public static readonly long[] CLXPLevel =
 ```
 
 #### XP Gain Rates
+
+**Game Rule Summary**: The conversion rates heavily favor RvR combat over PvE grinding. In PvE zones, it takes 2 million regular experience to earn 1 Champion XP, making solo advancement very slow. In RvR zones, you only need 333,000 regular experience per Champion XP, making PvP combat about 6 times more efficient for Champion progression.
+
 ```csharp
 // PvE zones: 1 CLXP per 2 million regular XP
 experience = (long)((double)experience * modifier / 2000000);
@@ -83,6 +92,9 @@ public virtual void ChampionLevelUp()
 ```
 
 #### Champion Points
+
+**Game Rule Summary**: Each Champion Level gives you one Champion Point to spend on mini-line abilities. You can spread these points across multiple mini-lines or focus them in one area. Unlike specialization points, Champion Points are limited - you'll only ever get 10 total, so you must choose carefully which abilities matter most for your playstyle.
+
 ```csharp
 public virtual int ChampionSpecialtyPoints
 {
@@ -97,6 +109,8 @@ public virtual int ChampionSpecialtyPoints
 ```
 
 ### Champion Mini-Lines
+
+**Game Rule Summary**: Mini-lines are specialized ability paths based on your base class, offering abilities that complement or expand your class role. Each base class (like Fighter, Mage, Rogue) has access to different mini-lines with unique themes. You can train multiple mini-lines simultaneously, allowing for creative character builds that mix different ability types within your class family.
 
 #### Line Types by Class
 ```csharp
@@ -119,12 +133,17 @@ public class LiveCLVikingSpec : LiveChampionsLineSpec { }         // Vikings
 ```
 
 #### Training System
+
+**Game Rule Summary**: Champion abilities are trained at special Champion Weapon Master NPCs found in your realm. Unlike regular specializations, each Champion Point unlocks exactly one ability in a mini-line. You can train different mini-lines simultaneously, allowing you to customize your character's capabilities based on your preferred playstyle and group role.
+
 - Visit Champion Weapon Master NPCs
 - Each point unlocks one ability in a mini-line
 - Multiple paths available per class
 - Can train different lines up to CL total
 
 ### Champion Titles
+
+**Game Rule Summary**: Each Champion Level grants you a unique title that displays your Champion progression to other players. These titles are prestigious markers of your endgame advancement, progressing from "Seeker" at CL1 to "Labyrinthian" at CL10. The titles replace your class title while equipped, showing other players that you've achieved Champion status.
 
 #### Title Progression
 ```csharp
@@ -145,6 +164,8 @@ switch (player.ChampionLevel)
 ```
 
 ### Respecialization
+
+**Game Rule Summary**: You get one free respec of your Champion abilities when you reach CL5, allowing you to experiment early and then settle on a final build. After that, you need special respec stones to change your Champion abilities. This system encourages experimentation while making your final choices meaningful.
 
 #### CL Respec Options
 1. **Free Respec at CL5**: Talk to CL Weapon Master

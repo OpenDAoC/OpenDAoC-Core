@@ -7,11 +7,17 @@
 - **Implementation**: Complete
 
 ## Overview
+
+**Game Rule Summary**: Your character class determines everything about how your character plays - what weapons you can use, what spells you can cast, how tough you are, and how you gain power as you level up. Each class is designed for a specific role like tank, healer, caster, or stealth, and your choice shapes your entire gameplay experience. Classes are grouped by realm (Albion, Midgard, Hibernia) and you can only play with others from your realm.
+
 The character class system defines the fundamental attributes, capabilities, and progression mechanics for all playable classes in DAoC. Classes are organized by realm and type, with inheritance hierarchies from base classes to advanced specializations.
 
 ## Core Architecture
 
 ### Class Interface
+
+**Game Rule Summary**: Every class has core properties that define how it works - which stats are most important, how much health they start with, how many skill points they get, and what type of combat style they use. These properties determine whether you'll be a tough fighter, a fragile but powerful wizard, or something in between.
+
 ```csharp
 public interface ICharacterClass
 {
@@ -40,6 +46,9 @@ public interface ICharacterClass
 ```
 
 ### Class Types
+
+**Game Rule Summary**: Classes fall into three main combat styles. List Casters are pure spellcasters with powerful magic but weak melee combat. Pure Tanks are the opposite - excellent fighters with no magic at all. Hybrids combine both fighting and magic, but aren't as good at either as the specialists.
+
 ```csharp
 public enum eClassType : int
 {
@@ -50,6 +59,8 @@ public enum eClassType : int
 ```
 
 ## Class Categories
+
+**Game Rule Summary**: Every character starts as a base class and advances to a specialized class at level 5. Base classes like Fighter, Mage, or Rogue represent broad combat styles, while advanced classes like Armsman, Wizard, or Infiltrator are specialized versions with unique abilities. This system lets new players learn the basics before committing to a specific specialization.
 
 ### Base Classes
 Base classes are the starting point for character creation:
@@ -76,6 +87,9 @@ Base classes are the starting point for character creation:
 ## Class Attributes
 
 ### Primary Stats
+
+**Game Rule Summary**: Every class has three stats that matter most for their role. Your primary stat goes up every level and determines your main effectiveness - Strength for fighters, Intelligence for wizards, etc. Secondary stats go up every other level and provide important support. Tertiary stats go up every third level and give minor benefits. This automatic progression ensures your character develops properly for their role.
+
 ```csharp
 // Stat progression by level
 public virtual void OnLevelUp(GamePlayer player, int previousLevel)
@@ -95,6 +109,9 @@ public virtual void OnLevelUp(GamePlayer player, int previousLevel)
 ```
 
 ### Hit Point Calculation
+
+**Game Rule Summary**: Different classes start with different amounts of health based on their role. Heavy armored tanks have the most health to absorb damage in combat, while fragile casters have much less health but rely on armor spells and staying out of melee range. This creates natural strengths and weaknesses for each class type.
+
 ```csharp
 // Base HP varies by class
 protected int m_baseHP = 700;  // Default
@@ -108,6 +125,9 @@ protected int m_baseHP = 700;  // Default
 ```
 
 ### Specialization Points
+
+**Game Rule Summary**: Specialization points determine how many skills you can train and how far you can advance them. Pure fighters get fewer points but focus them for maximum effectiveness, while versatile classes get more points to spread across many different skills. This creates meaningful choices about whether to specialize deeply or diversify broadly.
+
 ```csharp
 // Points per level in tenths
 protected int m_specializationMultiplier = 10;
@@ -122,6 +142,9 @@ protected int m_specializationMultiplier = 10;
 ```
 
 ### Weapon Skill Base
+
+**Game Rule Summary**: Your base weapon skill determines how accurately you hit with melee weapons and ranged attacks. Fighter classes have high weapon skill and hit reliably, while casters have low weapon skill and often miss with physical attacks. This encourages each class to use their intended combat style.
+
 ```csharp
 // Base weapon skill affects melee accuracy
 protected int m_wsbase = 400;      // Default
@@ -137,6 +160,9 @@ protected int m_wsbaseRanged = 360; // Ranged default
 ## Mana Stats
 
 ### Mana Stat by Class Type
+
+**Game Rule Summary**: Different magical classes use different stats to power their spells. Wizards use Intelligence for raw magical power, healers use Piety for divine magic, druids use Empathy for nature magic, and some unusual classes like archers use Dexterity for their magical arrows. This means different casters need to focus on different stats to be effective.
+
 ```csharp
 // Determines which stat affects power pool
 protected eStat m_manaStat = eStat.UNDEFINED;
@@ -153,6 +179,9 @@ protected eStat m_manaStat = eStat.UNDEFINED;
 ## Class Capabilities
 
 ### Left-Handed Weapons
+
+**Game Rule Summary**: Some classes can fight with two weapons at once (dual wielding), giving them more attacks but each individual hit does less damage. Only certain classes have trained in this fighting style - most characters use a weapon and shield, or a single two-handed weapon.
+
 ```csharp
 public virtual bool CanUseLefthandedWeapon
 {
@@ -167,6 +196,9 @@ public virtual bool CanUseLefthandedWeapon
 ```
 
 ### Special Flags
+
+**Game Rule Summary**: Some classes have special abilities that others don't. Assassin classes can use stealth and poisons, while focus casters can use magical staffs for enhanced spellcasting. These special abilities define the unique playstyle of each class beyond their basic stats and skills.
+
 ```csharp
 // Assassin classes (special stealth/poison mechanics)
 public virtual bool IsAssassin => false;
@@ -180,6 +212,9 @@ public virtual bool IsFocusCaster => false;
 ```
 
 ### Multiple Pulsing Spells
+
+**Game Rule Summary**: Most casters can only maintain one ongoing spell effect at a time, but some classes like Theurgists can maintain multiple summoned creatures simultaneously. This gives them unique tactical advantages in managing multiple magical effects.
+
 ```csharp
 public virtual ushort MaxPulsingSpells
 {
@@ -190,6 +225,8 @@ public virtual ushort MaxPulsingSpells
 ```
 
 ## Advanced Classes
+
+**Game Rule Summary**: Here are examples of how different class types work in practice. Heavy tanks like Armsmen get lots of specialization points and health to be effective frontline fighters. Hybrids like Thanes balance fighting and magic with moderate points in both areas. Pure casters like Eldritches get fewer specialization points but focus entirely on magical power.
 
 ### Realm-Specific Examples
 
@@ -245,6 +282,9 @@ public class ClassEldritch : ClassMagician
 ## Class Attribute Distribution
 
 ### Stat Growth Patterns
+
+**Game Rule Summary**: From level 6 to 50, your character automatically gains 91 stat points distributed according to your class design. This ensures that fighters become stronger and tougher while casters become smarter and more magically powerful, without you having to manually assign points each level.
+
 ```
 Primary Stat: +1 every level (50 total)
 Secondary Stat: +1 every 2 levels (25 total)

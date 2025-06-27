@@ -6,11 +6,16 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: Specializations are your character's training in different combat skills like sword fighting, magic schools, or stealth techniques. As you level up, you earn specialization points to spend on improving these skills. Higher specialization levels unlock new abilities, spells, and combat styles, making you more effective in your chosen areas. You have limited points, so you must choose whether to specialize deeply in a few skills or spread your training across many areas.
+
 Specializations are trainable skill lines that define a character's combat abilities, spells, and styles. Players allocate specialization points gained through leveling to increase their effectiveness in chosen areas.
 
 ## Core Mechanics
 
 ### Specialization Points
+
+**Game Rule Summary**: Every time you level up, you earn specialization points to spend on training. Fighter classes get more points than casters because they need to train multiple weapon skills, while casters get fewer points but can focus them on powerful magic schools. The higher you want to train a skill, the more expensive each level becomes, forcing you to make strategic choices about your character build.
 
 #### Point Formula
 ```
@@ -28,6 +33,9 @@ Level 40.5:  Level * SpecPointsMultiplier / 20 (half-level bonus)
 **Source**: `CharacterClassBase.cs:SpecPointsMultiplier`
 
 #### Total Points Available
+
+**Game Rule Summary**: By level 50, pure fighters have earned about 95 specialization points total, while pure casters only get about 62 points. This means fighters can train multiple weapon skills to high levels, while casters must focus on fewer magic schools but can max them out more easily. Hybrid classes fall somewhere in between.
+
 At level 50 with standard multiplier (10):
 - Base: 15 + (6-50) * 1.0 = 15 + 45 = 60
 - Plus half-level at 40: +2 = 62 total
@@ -35,6 +43,8 @@ At level 50 with standard multiplier (10):
 - Pure melee (2.0x): ~95 points
 
 ### Specialization Training
+
+**Game Rule Summary**: Training specializations gets expensive fast. Training from level 0 to 1 costs just 1 point, but training from level 49 to 50 costs 50 points. This means the last few levels of a specialization are extremely expensive, encouraging you to train multiple skills to moderate levels rather than maxing out just one skill early.
 
 #### Training Requirements
 - Cannot train above character level
@@ -56,6 +66,8 @@ Total = (Level * (Level + 1) - 2) / 2
 
 ### Autotrain System
 
+**Game Rule Summary**: The autotrain system gives you free training in some specializations based on your level. For every 4 levels you gain, you get one free level in autotrain specializations, which helps offset the basic training costs and lets you focus your earned points on advanced skills. This system ensures you're not completely helpless if you make poor specialization choices early on.
+
 #### Autotrain Levels
 ```
 AutotrainLevel = PlayerLevel / 4 (rounded down)
@@ -73,6 +85,8 @@ if (spec.Level < max_autotrain)
 
 ### Modified Spec Level
 
+**Game Rule Summary**: Your effective specialization level can be higher than what you've actually trained thanks to bonuses from magical items and realm abilities. This lets you meet requirements for higher-level equipment or gain the benefits of advanced training without spending all your points. However, these bonuses don't unlock new spells or abilities - only your actual trained level does that.
+
 #### Calculation
 ```csharp
 ModifiedLevel = BaseLevel + ItemBonus + RealmAbilityBonus
@@ -86,6 +100,8 @@ ModifiedLevel = BaseLevel + ItemBonus + RealmAbilityBonus
 **Source**: `GamePlayer.cs:GetModifiedSpecLevel()`
 
 ### Specialization Types
+
+**Game Rule Summary**: There are three types of specializations. Trainable specs are the normal ones you spend points on like weapon skills and magic schools. Untrainable specs are automatically granted by your class and level. Career specs like Master Level abilities automatically scale with your character level and don't require points.
 
 #### Trainable Specializations
 - Standard weapon/magic skills
@@ -105,6 +121,8 @@ ModifiedLevel = BaseLevel + ItemBonus + RealmAbilityBonus
 - Examples: Some ML abilities
 
 ### Skill Acquisition
+
+**Game Rule Summary**: Training specializations doesn't just give you numbers - it unlocks practical abilities. Weapon specializations give you new combat styles and techniques. Magic specializations unlock new spell lines and more powerful spells. Special skills like stealth give you unique abilities like hiding and poisoning weapons. The higher you train, the more powerful tools you gain for your role.
 
 #### Abilities
 Granted at specific spec levels:

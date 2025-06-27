@@ -5,11 +5,16 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: Master Levels are advanced character progression for level 50 players, offering 10 additional levels of growth (ML1-ML10) with powerful new abilities. Unlike regular levels, MLs focus on gaining unique magical abilities that cross class boundaries - fighters can learn some spells, casters can gain combat techniques, and everyone gets access to special utilities. Advancing through Master Levels requires completing challenging group content and raid encounters designed for experienced players.
+
 The Master Levels (ML) system provides advanced character progression beyond level 50, offering unique abilities and enhancements through 10 master level tiers (ML1-ML10). Players gain Master Level Experience (MLXP) to advance through each tier and unlock powerful abilities.
 
 ## Core Mechanics
 
 ### Master Level Progression
+
+**Game Rule Summary**: Master Levels require exactly 32,000 experience each, making progression predictable but challenging. Unlike regular levels that get exponentially harder, each ML takes the same amount of effort, but the experience comes from difficult group content rather than solo play. You must be level 50 to start, and ML progression is completely separate from regular levels and champion levels.
 
 #### Level Range
 - **ML1-ML10**: 10 master levels total
@@ -42,6 +47,8 @@ private static readonly long[] MLXPLevel =
 
 ### Master Level Lines
 
+**Game Rule Summary**: Each Master Level focuses on a specific theme or playstyle, giving you abilities related to that theme. For example, ML1 (Convoker) is about summoning and pets, while ML4 (Battlemaster) enhances melee combat. This thematic approach means each ML feels distinct and adds different tactical options to your character.
+
 #### Line Structure
 Each Master Level has specific ability lines:
 ```csharp
@@ -63,6 +70,8 @@ Champion_Lines_StartWith = "ML";
 
 ### Master Level Abilities
 
+**Game Rule Summary**: Master Level abilities break normal class rules, giving you powers you normally couldn't have. A warrior might learn magical spells, a wizard might gain combat techniques, and everyone gets access to unique utility abilities. These abilities are much more powerful than normal spells and often have effects you can't get anywhere else in the game.
+
 #### Ability Types
 
 **Passive Abilities**:
@@ -81,6 +90,8 @@ Champion_Lines_StartWith = "ML";
 - Higher ML lines offer more powerful versions
 
 #### Example Master Level Lines
+
+**Game Rule Summary**: Here are the themes for each Master Level to help you understand what kind of abilities you'll gain. Early MLs focus on basic concepts like summoning and damage, while later MLs offer advanced capabilities like leadership, siege warfare, and realm-specific ultimate abilities.
 
 **ML1 - Convoker**:
 - Theme: Summoning and pet enhancement
@@ -126,6 +137,8 @@ Champion_Lines_StartWith = "ML";
 
 ### MLXP Acquisition
 
+**Game Rule Summary**: Master Level experience comes from challenging group content like raids and special encounters, not from regular monster hunting. You'll need to organize with other players to tackle Master Level dungeons, artifact encounters, and special events. The content is designed to require teamwork and skill, making ML progression a significant accomplishment.
+
 #### MLXP Sources
 - **PvE Content**: Specific master level encounters
 - **Raid Content**: Group-based master level dungeons
@@ -139,6 +152,8 @@ GroupMLXP = BaseMLXP * GroupBonus * LevelDifference
 ```
 
 ### Master Level Encounters
+
+**Game Rule Summary**: Master Level content includes some of the most challenging encounters in the game. Some require small coordinated groups, while others need large raids with multiple groups working together. Many encounters are scheduled events that happen at specific times, and some even require temporary cooperation between enemy realms to complete.
 
 #### Encounter Types
 - **Single Group**: 8-person encounters for specific ML abilities
