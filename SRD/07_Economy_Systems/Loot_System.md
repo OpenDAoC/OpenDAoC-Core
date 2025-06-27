@@ -7,6 +7,9 @@
 - **Implementation**: Complete
 
 ## Overview
+
+**Game Rule Summary**: The loot system determines what items and money drop when you kill monsters. Different creatures have different loot tables that define what they can drop and how often. When you kill something, the game checks various loot generators to see what drops - some items are guaranteed, others have a chance. The person or group that did the most damage gets first pick at the loot, and items on the ground have ownership timers before anyone can take them. Higher level monsters generally drop better loot and more money, and there are special loot systems for unique items, currencies like dragon scales, and group-based random item generation.
+
 The loot system manages item and currency drops from NPCs, including generator registration, drop calculations, ownership rules, and distribution mechanics. It supports multiple generator types including template-based, random, money, and special generators.
 
 ## Core Architecture

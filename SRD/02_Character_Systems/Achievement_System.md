@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Achievement System tracks and rewards your accomplishments across all aspects of DAoC, creating permanent records of your progress that span your entire account. Every time you kill a dragon, defeat other players in RvR, capture a keep, or master a craft, the system records these achievements and may unlock special titles, merchant access, or other rewards. Unlike character progression that's tied to individual characters, achievements are account-wide, so all your characters benefit from your accomplishments. The system recognizes both PvE achievements (like slaying epic monsters) and PvP achievements (like becoming a "Master Soldier" with 2,000+ player kills), providing long-term goals and recognition that extend far beyond reaching level 50. This creates a sense of permanent progression and accomplishment that persists across characters and play sessions.
+
 The Achievement System tracks player accomplishments across PvE, RvR, and social activities. It provides permanent account-level progress tracking with various categories including combat achievements, time-based milestones, and special accomplishments that can unlock titles, rewards, and recognition.
 
 ## Core Architecture

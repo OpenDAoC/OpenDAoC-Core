@@ -7,6 +7,9 @@
 - **Implementation**: Complete
 
 ## Overview
+
+**Game Rule Summary**: The property system calculates your final stats by combining your base abilities, equipment bonuses, magical buffs, and debuffs. It ensures everything stacks properly and respects caps, so the strongest buff of each type applies while weaker ones are ignored.
+
 The property system manages all character attributes, bonuses, and modifiers in DAoC. It provides a unified interface for calculating final values considering base stats, item bonuses, buffs, debuffs, and caps.
 
 ## Core Architecture

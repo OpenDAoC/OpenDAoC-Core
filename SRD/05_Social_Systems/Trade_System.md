@@ -7,11 +7,15 @@
 
 ## Overview
 
+**Game Rule Summary**: The trade system lets you safely exchange items and money with other players through a secure trade window. Both players must agree to the trade before anything actually changes hands, preventing scams and accidents. You can see exactly what the other player is offering, and either player can cancel at any time before the final confirmation. This system makes it safe to trade valuable items with other players.
+
 The trade system allows secure player-to-player item and money exchanges through a synchronized trade window interface. Both players must confirm the trade for it to complete.
 
 ## Core Mechanics
 
 ### Trade Initiation
+
+**Game Rule Summary**: To start a trade, target another player and use the trade command. You must be close enough to the other player (about two player-lengths away), both players must be alive and not in combat, and neither can already be trading with someone else. If any of these conditions aren't met, the trade request will fail with an explanation.
 
 #### Starting a Trade
 ```csharp
@@ -47,6 +51,8 @@ public enum eTradeWindowType : byte
 
 ### Trade Window Interface
 
+**Game Rule Summary**: The trade window shows what each player is offering. You get 10 slots to place items and a separate field for money. Both sides of the trade are visible so you can see exactly what you're getting in return. Once you're happy with the trade, you click accept, but the trade won't complete until the other player also accepts.
+
 #### Window Layout
 - **Slots**: 10 trade slots per player
 - **Money Field**: Separate field for currency
@@ -77,6 +83,8 @@ public bool AddTradeItem(eInventorySlot slot, int page)
 
 ### Trade Validation
 
+**Game Rule Summary**: The game prevents you from trading certain types of items to protect valuable or character-specific equipment. Quest items, soul-bound equipment, and broken items (0% condition) can't be traded. The game also checks if the receiving player has enough inventory space and carrying capacity before allowing the trade to complete.
+
 #### Item Restrictions
 - **Not Tradable**: Items marked as non-tradable
 - **Not Droppable**: Items that cannot be dropped
@@ -101,6 +109,8 @@ if (toPlayer.Inventory.FindFirstEmptySlot(eInventorySlot.FirstBackpack,
 ```
 
 ### Trade Execution
+
+**Game Rule Summary**: The trade uses a two-step acceptance process for safety. First, you click accept to lock in your items - after this, you can't change what you're offering. Once both players have accepted, the trade executes automatically. If anything goes wrong (like someone disconnecting), the trade cancels and everyone keeps their original items.
 
 #### Acceptance Process
 1. **First Accept**: Locks trade items
@@ -153,6 +163,8 @@ target.Name + " accepts your trade offer."
 - "That item cannot be traded!"
 
 ### Safety Features
+
+**Game Rule Summary**: The trade system has multiple safety features to prevent scams and accidents. Both players must explicitly accept before anything happens, and if either player changes their offer, both acceptance buttons reset. You can see everything the other player is offering, and either player can cancel at any time. This makes trading safe even with strangers.
 
 #### Double Confirmation
 - Both players must click accept

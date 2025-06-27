@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: Spells are organized into baseline and specialization components that determine how magical effects stack together. You can have both a baseline strength buff and a specialization strength buff active at the same time, but you can't stack multiple buffs of the same type from the same category. Non-specialist casters get weaker versions of buffs unless they specialize heavily in the magic line.
+
 The spell component system determines how different types of spell effects stack and interact. Spells are categorized into baseline and specialization components, with specific rules governing which effects can coexist and which overwrite each other.
 
 ## Core Mechanics

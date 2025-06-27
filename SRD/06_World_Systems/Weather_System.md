@@ -7,6 +7,9 @@
 - **Implementation**: Stable
 
 ## Overview
+
+**Game Rule Summary**: Weather creates dynamic atmospheric effects like rain, fog, and storms that move across outdoor regions from west to east. While weather is purely visual and doesn't affect gameplay mechanics, it adds immersion and variety to the world. Different regions can have different weather patterns, with storms having varying intensity, width, and movement speed.
+
 The weather system simulates dynamic weather patterns in outdoor regions including fog, rain, and storm effects. Weather moves across regions from west to east with configurable intensity, speed, and coverage area.
 
 ## Core Mechanics

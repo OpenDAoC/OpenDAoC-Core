@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The Area of Effect & Targeting System determines how spells select and affect multiple targets, making the difference between hitting one enemy or devastating an entire group. Area spells work in several ways: you can target the ground to create explosions that hit everyone in a circle, cast "point-blank" spells that blast outward from you, or use cone spells that hit enemies in front of you. The farther targets are from the center of the effect, the less damage they take (called "distance falloff"). Understanding targeting is crucial for effective spellcasting - knowing when to use group buffs versus single-target spells, how to position for maximum area damage, and which spells require line of sight versus those that don't. Mastering these mechanics separates good casters from great ones.
+
 The area of effect (AoE) and targeting system manages how spells select and affect multiple targets. It includes ground-targeted area effects, point-blank area effects, cone effects, and single-target selection with complex rules for target validation and distance falloff.
 
 ## Core Targeting Types

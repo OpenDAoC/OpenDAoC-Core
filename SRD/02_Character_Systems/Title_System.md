@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Title System provides hundreds of titles that let you display your achievements and progression to other players. As you level up, you automatically earn class-specific titles every 5 levels (like "Soldier" at level 20 or "General" at level 50 for Armsmen). Beyond class progression, you can earn achievement titles for PvP accomplishments (like "Master Soldier" for 2,000+ player kills), time-based titles (like "Veteran" for long-lived characters), and special titles for rare accomplishments (like "Dragon Slayer" for killing many dragons). You can set any earned title as your active title, and it will appear above your character's name for all players to see. The system supports different title versions for male and female characters and multiple languages, making titles a key part of character identity and recognition in the community.
+
 The Title System provides extensive character recognition through hundreds of titles based on class progression, achievements, time played, RvR accomplishments, and special events. The system supports multi-language localization, gender-specific titles, and dynamic title granting based on real-time achievements.
 
 ## Core Architecture

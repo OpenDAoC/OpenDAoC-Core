@@ -6,7 +6,7 @@
 
 ## Overview
 
-The ECS GameLoop Service System provides a mechanism for safely posting actions to be executed before or after tick processing in the main game loop. This system enables thread-safe communication between asynchronous operations and the main game thread, ensuring proper timing and state consistency.
+**Game Rule Summary**: The GameLoop Service System coordinates timing between different parts of the game, ensuring actions happen in the right order and at the right time. This prevents issues like spells casting before the game registers you clicked a target, or items disappearing before the trade completes. It keeps everything synchronized for smooth, predictable gameplay.
 
 ## Core GameLoopService Architecture
 

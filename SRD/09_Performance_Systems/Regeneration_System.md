@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Your character automatically recovers health, mana, and endurance over time. Higher Constitution increases health recovery, sitting doubles most regeneration rates, and being in combat slows recovery. Casters regenerate mana faster with higher mental stats and meditation skill.
+
 The Regeneration System manages automatic recovery of Health, Power (mana), and Endurance for all living entities. This system operates on regular tick intervals with various modifiers affecting regeneration rates.
 
 ## Core Architecture

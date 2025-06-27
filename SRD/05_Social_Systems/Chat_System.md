@@ -6,11 +6,15 @@
 
 ## Overview
 
+**Game Rule Summary**: The chat system gives you many different ways to communicate with other players depending on the situation. Local chat lets you talk to nearby players, while private messages reach specific people anywhere in your realm. Guild and group channels keep your team coordinated, and public channels like advice let you ask questions to everyone. Different channels have different ranges and restrictions, so you can choose the right way to communicate for each situation.
+
 The chat system provides multiple communication channels for players to interact. Channels range from local proximity chat to realm-wide broadcasts, with various permission and range restrictions.
 
 ## Core Mechanics
 
 ### Chat Types
+
+**Game Rule Summary**: The game has many different chat channels, each designed for specific purposes. System messages give you game information, local say chat reaches nearby players, private messages go to specific people, and group/guild channels keep your teams organized. Each channel has different rules about who can hear you and how far your message travels.
 
 #### Basic Chat Types
 ```csharp
@@ -45,6 +49,8 @@ public enum eChatLoc : byte
 ```
 
 ### Channel Descriptions
+
+**Game Rule Summary**: Each chat channel works differently depending on who you want to reach. Say chat only reaches nearby players, yell goes a bit further, private messages reach anyone in your realm, and group/guild channels reach your team members anywhere. Public channels like broadcast and advice let you talk to many people but may have restrictions to prevent spam.
 
 #### Say (Local Chat)
 - **Range**: 512 units
@@ -108,6 +114,8 @@ public enum eChatLoc : byte
 
 ### Permission System
 
+**Game Rule Summary**: Guild and alliance chat channels use permission systems to control who can speak and listen. Your guild rank determines whether you can speak in guild chat, hear officer discussions, or participate in alliance channels. This prevents new or untrusted members from disrupting important communications.
+
 #### Guild Permissions
 ```csharp
 public enum Guild.eRank
@@ -132,6 +140,8 @@ if (!client.Player.Guild.HasRank(client.Player, Guild.eRank.GcSpeak))
 
 ### Language System Integration
 
+**Game Rule Summary**: Players from different realms speak different languages, so when enemies try to talk to you in local chat, their words appear as gibberish. This maintains the faction warfare atmosphere while preventing cross-realm coordination. However, some NPCs like merchants can be understood by everyone regardless of realm.
+
 #### Cross-Realm Scrambling
 ```csharp
 // Say/Yell between different realms
@@ -148,6 +158,8 @@ if (!GameServer.ServerRules.IsSameRealm(speaker, listener, true))
 - Guards speak realm language
 
 ### Spam Protection
+
+**Game Rule Summary**: The game has built-in protection against chat spam to keep channels usable. If you send messages too quickly, you'll be temporarily blocked with a "slow down" message. Some channels like advice have longer cooldowns to prevent flooding. These restrictions help maintain a civil chat environment for everyone.
 
 #### Command Throttling
 ```csharp
@@ -169,6 +181,8 @@ if (GameLoop.GameLoopTime - lastAdviceTick < slowModeLength)
 ```
 
 ### Mute System
+
+**Game Rule Summary**: Players who violate chat rules can be muted by staff, preventing them from speaking in public channels. Muted players can still receive messages and may be allowed to use private group/guild channels depending on the punishment. This system helps maintain appropriate behavior in public chat spaces.
 
 #### Mute Effects
 - Cannot speak in public channels
@@ -205,6 +219,8 @@ string message = $"[Officers] {player.Name}: \"{text}\"";
 ```
 
 ### Chat Groups
+
+**Game Rule Summary**: Chat groups are custom channels that players can create for specific purposes like trade, roleplay, or coordinating activities. You can make them public for anyone to join or private with password protection. Chat groups let you organize conversations with specific groups of people beyond the standard guild and alliance channels.
 
 #### Chat Group Features
 - Player-created channels

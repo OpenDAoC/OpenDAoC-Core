@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: When multiple magical effects interact, the game follows complex rules to determine which effects stay active, get disabled, or are replaced entirely. Generally, stronger effects replace weaker ones, but effects from different categories can stack together. Some effects get temporarily disabled when a better one is active, then automatically re-enable when the better effect wears off.
+
 The effect stacking logic manages how spell effects interact, overwrite, disable, and re-enable each other. This is one of the most complex systems in OpenDAoC with intricate rules for handling multiple scenarios.
 
 ## Core Stacking Algorithm

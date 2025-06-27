@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Poisons and diseases are damage-over-time effects that slowly harm you while active. You can apply poisons to your weapons to hurt enemies, but beware of environmental hazards and monsters with venoms. Diseases can spread between nearby players, while poisons from weapons consume charges. Both can be cured with spells or antidote items, though diseases are generally harder to cure than poisons.
+
 The Poison & Disease System manages damage-over-time effects, contagion mechanics, and environmental hazards. This system provides tactical depth through persistent effects that require different treatment strategies.
 
 ## Core Architecture

@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The ECS Integration Patterns explain how all the different systems in DAoC work together seamlessly behind the scenes. When you attack someone, the combat system automatically stops any spells you're casting, applies weapon bonuses from your equipment, calculates damage using your stats, and then triggers the appropriate visual and sound effects. Similarly, when you cast a spell, it checks your mana, interrupts any attacks, applies casting speed bonuses from buffs, and then creates the spell effect that integrates with the resistance system. This coordination happens automatically for every action - moving between zones stops combat and casting, leveling up recalculates all your properties, and equipping new gear instantly updates your combat effectiveness. The ECS system ensures that all these interactions happen smoothly without conflicts or errors.
+
 OpenDAoC's Entity Component System (ECS) serves as the central coordination hub for all game systems. This document details how ECS integrates with every major system, the interaction patterns used, and the sophisticated coordination mechanisms that ensure consistent game state across all systems.
 
 ## Combat System Integration

@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The error handling system protects against crashes, connection problems, and various technical issues that could disrupt gameplay. When problems occur, it automatically saves your character data, attempts recovery, and ensures the server remains stable so you don't lose progress or get disconnected unexpectedly.
+
 The Error Handling & Recovery System provides comprehensive exception management, crash detection, automated recovery, and system stability features. It includes client crash reporting, database error recovery, network error handling, and graceful degradation mechanisms.
 
 ## Core Architecture

@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Your equipment gradually wears out through combat use and environmental exposure, reducing its effectiveness until it eventually breaks and becomes unusable. You can repair damaged items at NPC blacksmiths for gold, or learn crafting skills to repair items yourself using materials. Keeping your gear in good condition is essential - broken weapons deal less damage and damaged armor provides less protection.
+
 The Repair & Durability System manages item degradation through use and provides mechanisms for restoration. This system creates economic sinks, encourages maintenance, and adds tactical considerations to equipment management.
 
 ## Core Architecture

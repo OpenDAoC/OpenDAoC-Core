@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Battlegrounds are special PvP zones designed for specific level ranges, giving you balanced combat experience as you progress through the game. Each battleground has a minimum and maximum level (like 20-24 for Thidranki), and you can only enter if you're within that range. Inside battlegrounds, you'll fight for control points, capture flags, or assault keeps against the other two realms. Successfully capturing objectives, killing enemies, and defending your realm's positions earns you realm points and bounty points. Battlegrounds are instanced, so they won't be overcrowded, and they often have special rules like equipment scaling to keep combat fair. This system lets you experience large-scale RvR warfare at your character's level without being overwhelmed by max-level players.
+
 The Battleground System provides level-restricted PvP zones with specialized rules, objectives, and rewards. These instanced areas offer balanced combat environments for specific level ranges with unique mechanics.
 
 ## Core Architecture

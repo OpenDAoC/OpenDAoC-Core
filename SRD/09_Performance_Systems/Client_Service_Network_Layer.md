@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: The client service and network layer handles all communication between your game client and the server, ensuring your actions are transmitted reliably and your character responds quickly to commands. It manages connections, prevents cheating, and maintains smooth gameplay even during peak server activity.
+
 The Client Service and Network Layer provides comprehensive client connection management, packet processing, and session handling. It supports TCP/UDP dual protocol communication, spam protection, packet validation, and efficient client lifecycle management through ECS architecture.
 
 ## Core Architecture

@@ -6,11 +6,16 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: Guilds are player-run organizations that let you form lasting groups with friends and allies. They provide private communication channels, shared resources like a guild bank, and organized hierarchy with customizable ranks and permissions. Guilds are essential for realm warfare, housing, and coordinating group activities. Being in a guild gives you access to special buffs, shared emblems, and alliance partnerships with other guilds.
+
 Guilds in DAoC are player-run organizations that provide social structure, shared resources, and realm warfare coordination. The system supports hierarchical ranks, permissions, emblems, and various guild activities.
 
 ## Core Mechanics
 
 ### Guild Structure
+
+**Game Rule Summary**: Guilds have 10 ranks numbered 0-9, where 0 is the guild leader and 9 is the lowest rank. Each rank can have custom titles and specific permissions. This system lets guild leaders create organized hierarchies where officers have more responsibilities than regular members, and new recruits can be given limited permissions until they prove trustworthy.
 
 #### Rank System
 - **10 Ranks**: 0 (Leader) through 9 (Lowest)
@@ -36,6 +41,8 @@ Guilds in DAoC are player-run organizations that provide social structure, share
 **Source**: `GuildMgr.cs:CreateRank()`
 
 ### Permission System
+
+**Game Rule Summary**: Guild permissions control what each rank can do within the guild. Basic permissions include speaking in different chat channels, inviting new members, promoting/demoting people, and managing guild resources. Higher ranks get more permissions, while lower ranks might only be able to listen to guild chat or wear the guild emblem. This system prevents new or untrusted members from disrupting the guild.
 
 #### Permission Types
 ```csharp
@@ -72,6 +79,8 @@ bool HasPermission = member.GuildRank.[Permission]
 
 ### Guild Creation
 
+**Game Rule Summary**: To form a guild, you need to gather a minimum number of players (usually 8) who aren't already in other guilds. The group leader uses a command to create the guild, automatically becoming the guildmaster with full permissions. This requirement ensures guilds start with an active player base rather than being created by solo players.
+
 #### Requirements
 - Group of minimum players (server configurable)
 - Not already in a guild
@@ -94,11 +103,16 @@ bool HasPermission = member.GuildRank.[Permission]
 - **Email**: Contact information
 
 #### Messages
+
+**Game Rule Summary**: Guilds have different message systems to communicate with members. The Message of the Day (MOTD) is seen by all guild members when they log in. Officer MOTD is only for officers and leaders. Alliance MOTD is shared between allied guilds. These messages help coordinate activities and share important information.
+
 - **MOTD**: Message of the Day (all members)
 - **OMOTD**: Officer Message of the Day
 - **AMOTD**: Alliance Message of the Day
 
 ### Guild Bank
+
+**Game Rule Summary**: The guild bank is a shared pool of money that any member can contribute to, but only those with withdrawal permissions can take from. Guild leaders can set a tax rate that automatically takes a percentage of money you loot and puts it in the guild bank. This creates a shared resource for guild activities like buying buffs or funding keep upgrades.
 
 #### Deposits
 - Any member can deposit
@@ -113,6 +127,8 @@ Destination: Guild bank
 ```
 
 ### Guild Buffs
+
+**Game Rule Summary**: Guilds can purchase temporary buffs that benefit all members using merit points earned from member activities. These buffs might increase experience gain, crafting speed, or realm point rewards. The buffs last for a limited time and must be renewed, creating an ongoing benefit for active guilds that accumulate merit points.
 
 #### Bonus Types
 ```csharp
@@ -134,6 +150,8 @@ public enum eBonusType
 - Affects all guild members
 
 ### Merit Points
+
+**Game Rule Summary**: Merit points are earned automatically when guild members accomplish various activities like leveling up, gaining realm ranks, or mastering crafting skills. These points accumulate in the guild treasury and can be spent on guild buffs that benefit everyone. This system rewards active guilds whose members are constantly progressing.
 
 #### Acquisition
 Merit points earned from member activities:
@@ -160,6 +178,8 @@ Points = (3 * (RR - 1))²
 
 ### Guild Emblems
 
+**Game Rule Summary**: Guild emblems are visual symbols that appear on cloaks and shields to identify guild members. Only players with emblem permission can display the guild emblem. The guild leader can set or change the emblem design, usually for a gold cost. This creates a visible identity that helps allies and enemies recognize guild members in the field.
+
 #### System
 - Visual display on cloaks/shields
 - Set by guild leader
@@ -170,6 +190,8 @@ Points = (3 * (RR - 1))²
 - Change emblem: 100g
 
 ### Alliance System
+
+**Game Rule Summary**: Multiple guilds can form alliances to create larger organized groups. Allied guilds share a common chat channel and can coordinate activities together. One guild serves as the alliance leader and controls who can join or leave the alliance. This system allows smaller guilds to work together while maintaining their individual identities.
 
 #### Structure
 - Multiple guilds allied together

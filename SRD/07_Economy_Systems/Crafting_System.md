@@ -5,6 +5,9 @@
 - Implementation: Partial
 
 ## Overview
+
+**Game Rule Summary**: The crafting system lets you create weapons, armor, and other useful items from raw materials. There are primary crafts like weaponcrafting and armorcrafting that make finished items, and secondary crafts like metalworking and leatherworking that process raw materials. Your success chance depends on your skill level versus the recipe difficulty - green and blue recipes almost always succeed, yellow recipes have some failure chance, and red recipes are quite difficult. Higher skill also improves the quality and reduces the crafting time. You'll need access to appropriate tools like forges for metalworking, and capital cities provide bonuses to skill gain and crafting speed.
+
 The crafting system allows players to create items using gathered materials. It includes primary crafts (weaponcrafting, armorcrafting, tailoring, fletching, siegecrafting), secondary crafts (material processing), and advanced crafts (alchemy, spellcrafting).
 
 ## Core Mechanics

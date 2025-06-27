@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: The quest system provides structured adventures with stories, objectives, and rewards. Most quests start by talking to NPCs with yellow exclamation marks (!) above their heads, accepting the quest, and following the objectives like killing monsters, delivering items, or searching areas. When you complete all objectives, return to NPCs with yellow question marks (?) to turn in the quest and get your rewards. You can have up to 25 active quests at once, and many quests have level requirements or need other quests completed first. Some special quests like collection quests give immediate rewards when you turn in items, while reward quests let you choose from multiple reward options.
+
 DAoC's quest system provides narrative structure and rewards through various quest types including standard quests, collection quests, and reward quests. The system supports complex quest chains, conditional requirements, and dynamic content.
 
 ## Core Mechanics

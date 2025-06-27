@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The Server Performance System ensures DAoC runs smoothly for all players by carefully managing the game's timing, memory, and processing power. The server runs at exactly 100 "ticks" per second (every 10 milliseconds), processing all combat, movement, spells, and interactions in precise order. When the server is running well, your attacks hit exactly when they should, spells cast on time, and movement feels responsive. The system uses advanced techniques like object pooling (reusing memory instead of creating new objects) and parallel processing to handle hundreds of players simultaneously without lag. Performance monitoring tracks everything to ensure the game maintains consistent timing even during large battles or high player counts.
+
 The server performance system manages game loop timing, multi-threading, memory optimization, packet processing, and performance monitoring. It uses an Entity Component System (ECS) architecture with service-based processing and advanced optimization techniques to handle hundreds of concurrent players.
 
 ## Core Architecture

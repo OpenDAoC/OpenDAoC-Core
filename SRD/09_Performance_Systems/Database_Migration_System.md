@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The database migration system safely updates the game's data storage without losing your character information, items, or progress. When the server adds new features or fixes bugs that require database changes, this system ensures everything transfers correctly while creating backups in case of problems.
+
 The Database Migration System provides sophisticated schema evolution capabilities for OpenDAoC, enabling seamless database updates, table migrations, data preservation, and backward compatibility. It supports complex schema transformations, data type conversions, and automated backup/recovery during migration operations.
 
 ## Core Architecture

@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The game loop is the heartbeat of DAoC, running exactly 100 times per second to ensure everything happens at precisely the right time. It coordinates all game systems in the correct order - processing your commands, updating combat, casting spells, moving characters, and sending updates to your client - all within 10 milliseconds to maintain smooth, lag-free gameplay.
+
 OpenDAoC employs a sophisticated Entity Component System (ECS) architecture tightly integrated with a high-performance game loop to handle hundreds of concurrent players. This document provides a comprehensive analysis of the ECS implementation, parallel processing optimizations, memory management strategies, and complex system interactions.
 
 ## Game Loop Architecture

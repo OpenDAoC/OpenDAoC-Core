@@ -7,6 +7,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Each realm speaks its own language, so when you talk to enemies from other realms, they see scrambled gibberish instead of your actual words. This prevents cross-realm coordination in PvP while maintaining the fantasy of separate cultures. Everyone can understand merchants and system messages, but player chat, emotes, and most communication appears as nonsense to enemies.
+
 The language system manages cross-realm communication barriers, ensuring players from different realms cannot understand each other's text while maintaining game immersion through filtered messages.
 
 ## Core Mechanics

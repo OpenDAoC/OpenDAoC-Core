@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The game tracks temporary information about your character for things like spell effects, item cooldowns, and special abilities. This system remembers short-term conditions that aren't permanent parts of your character, like whether you're under the effect of a speed boost or if you've recently used a potion.
+
 The Temporary Properties System provides flexible key-value storage for tracking temporary state across all game objects. This foundational system enables complex behaviors without requiring database persistence or permanent object modifications.
 
 ## Core Architecture

@@ -7,6 +7,9 @@
 - **Implementation**: Stable
 
 ## Overview
+
+**Game Rule Summary**: The time system in DAoC runs much faster than real time, creating accelerated day and night cycles that affect your gameplay experience. Most servers run at 12x speed, meaning a full 24-hour game day passes in just 2 real hours, giving you multiple day/night cycles during each play session. Game time affects various mechanics: some spells only work at night (6 PM to 6 AM), certain NPCs may only be available during specific hours, and the visual atmosphere changes dramatically between day and night. You can see the current game time in your interface, and it's synchronized across all players on the server. Understanding the time system helps you plan activities that require specific time conditions and adds immersion to the game world.
+
 The time system manages in-game time progression including day/night cycles, time-based conditions, and time display. Game time runs faster than real time, allowing multiple day/night cycles within a play session.
 
 ## Core Mechanics

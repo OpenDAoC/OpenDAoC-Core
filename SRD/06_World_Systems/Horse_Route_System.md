@@ -7,6 +7,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Horse routes provide fast automated travel between major locations using NPC-controlled mounts. You purchase tickets from stable masters, get automatically mounted on a horse, and ride along predefined paths to your destination without any player control. The journey is safe but you'll be dismounted if you take any damage during the ride.
+
 The horse route system provides automated travel between major locations using NPC-controlled mounts. Players purchase tickets from stable masters and ride along predefined paths.
 
 ## Core Mechanics

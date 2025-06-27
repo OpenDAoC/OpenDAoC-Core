@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Timer Service System controls the precise timing of everything in DAoC. It ensures your attack speed is exactly right, spell effects last the correct duration, NPCs think at proper intervals, and all game mechanics run smoothly. When you swing a weapon, cast a spell, or trigger an ability, timers coordinate the exact moment each effect happens. This system prevents lag from affecting game balance by keeping all timing consistent regardless of server load. Whether it's a 2.5-second spell cast, a 30-minute guild buff, or checking if you're still in combat, the timer system makes sure everything happens when it should.
+
 The Timer Service System provides high-performance, ECS-integrated timing functionality for all game mechanics in OpenDAoC. It manages everything from combat timing to spell durations, movement actions, and periodic game events through a sophisticated timer architecture built on the service object system.
 
 ## Core Architecture

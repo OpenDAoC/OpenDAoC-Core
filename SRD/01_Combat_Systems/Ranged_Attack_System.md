@@ -7,6 +7,9 @@
 - **Implementation**: Complete
 
 ## Overview
+
+**Game Rule Summary**: Ranged combat with bows, crossbows, and thrown weapons requires you to draw, aim, and fire in sequence. Your archery skill and quickness determine how fast you can shoot, while ammunition type affects your damage, range, and accuracy. Taking any damage while drawing interrupts your shot, making positioning and timing crucial for effective ranged combat.
+
 The ranged attack system handles all projectile-based combat including bows, crossbows, and thrown weapons. It features a multi-phase attack sequence (draw, aim, fire), ammunition mechanics, and complex range/accuracy calculations.
 
 ## Core Mechanics

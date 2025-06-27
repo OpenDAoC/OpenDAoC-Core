@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: The Authentication and Security System is your protection against hackers and ensures fair play for everyone. When you log in, it verifies your account name and password, tracks your IP address for security, and prevents multiple logins from the same account. The system has different privilege levels - normal players (level 1), Game Masters who help with problems (level 2), and Administrators who manage the server (level 3). It constantly monitors for cheating like speed hacking, item duplication, and packet spam, automatically banning serious offenders while giving warnings for minor violations. The system also tracks everything in detailed logs, so GMs can investigate problems and ensure fair play. All of this happens invisibly in the background to keep the game secure while letting you focus on playing.
+
 The Authentication and Security System provides comprehensive account management, privilege level enforcement, anti-cheat detection, and security monitoring. It integrates with all game systems to ensure proper authorization and prevent exploitation.
 
 ## Core Architecture

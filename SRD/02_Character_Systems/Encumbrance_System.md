@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Encumbrance limits how much you can carry before becoming slow and clumsy. Strong characters can carry more weight, and carrying too much will slow your movement or stop you entirely. Keep your load light for maximum mobility in combat and travel.
+
 The encumbrance system limits how much weight a character can carry before suffering movement penalties. Carrying capacity is based on strength, with penalties that range from reduced movement speed to complete immobilization when severely overloaded.
 
 ## Core Mechanics

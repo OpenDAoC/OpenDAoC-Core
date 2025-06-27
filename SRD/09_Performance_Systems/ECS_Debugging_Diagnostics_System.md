@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The ECS debugging system monitors game performance in real-time, tracking how long different actions take and identifying potential problems before they affect players. Game Masters can use these tools to diagnose lag issues, monitor server health, and ensure optimal performance during peak usage times.
+
 OpenDAoC's ECS Debugging and Diagnostics System provides comprehensive monitoring, performance tracking, and troubleshooting capabilities for the Entity Component System. This system enables real-time performance analysis, entity counting, long tick detection, and detailed profiling of all ECS services.
 
 ## Core Diagnostics Architecture

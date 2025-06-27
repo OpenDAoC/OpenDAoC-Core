@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The Stealth & Detection System governs how stealth classes like Infiltrators, Shadowblades, and Nightshades can become invisible and how other players can detect them. To stealth successfully, you need to be out of combat and away from enemies - the higher your stealth skill, the closer you can be to enemies before they prevent you from stealthing. Once stealthed, detection depends on the viewer's level versus your stealth skill: higher-level enemies can see you from farther away, while lower-level enemies might not detect you even when close. Special abilities dramatically affect detection - "Detect Hidden" roughly doubles detection range, while "See Hidden" allows very long-range detection against non-assassin classes. Understanding stealth and detection mechanics is crucial for playing stealth classes effectively and for protecting yourself against stealthy enemies in RvR combat.
+
 The stealth system allows certain classes to become invisible to enemies. Detection mechanics determine when stealthed players can be seen, involving complex calculations based on level, stealth skill, abilities, and distance.
 
 ## Core Mechanics

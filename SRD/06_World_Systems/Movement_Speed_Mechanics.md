@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: Your movement speed depends on many factors like what you're wearing, what buffs you have, whether you're in combat, and what you're doing. Heavier equipment slows you down, speed buffs make you faster, and certain actions like stealth or carrying heavy items reduce your speed. The game also gives you a speed bonus when you're not fighting, making travel between battles faster and more convenient.
+
 Movement in DAoC involves complex speed calculations based on character state, buffs, encumbrance, and environmental factors. The system balances realistic movement with gameplay requirements.
 
 ## Core Mechanics

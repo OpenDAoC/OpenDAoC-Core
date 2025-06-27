@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The communication system manages all player chat through different channels with built-in language barriers between realms - enemy players see scrambled text when you speak, maintaining faction identity and preventing cross-realm coordination. The system includes spam protection, emote actions, and special channels like guild, group, and realm chat, each with their own rules and ranges.
+
 The Language & Communication System manages all forms of player interaction including chat channels, language barriers, translation mechanics, and communication restrictions. This system creates immersion and realm identity while enabling necessary communication.
 
 ## Core Architecture

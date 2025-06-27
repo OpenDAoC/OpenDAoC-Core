@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The proc system allows your weapons and armor to trigger magical effects during combat, adding an element of chance and excitement to every fight. When you hit an enemy with a weapon that has a "proc," there's a chance it will cast a spell automatically - this could be extra damage, a debuff on your target, or even a beneficial effect on yourself. Similarly, some armor pieces have "reactive procs" that trigger when you're hit, potentially stunning your attacker or healing you. The chance for procs to trigger depends on your weapon's speed (slower weapons have higher per-hit chances but attack less often), and some weapons can have multiple different procs. Understanding procs helps you choose equipment that complements your fighting style and adds unpredictable elements that can turn the tide of battle.
+
 The proc (procedure) system allows weapons and armor to trigger magical effects during combat. Procs can be offensive (triggering when attacking) or defensive (triggering when being attacked). The system includes weapon procs, armor reactive procs, spell-based procs, and style procs with specific chance calculations and stacking rules.
 
 ## Core Mechanics

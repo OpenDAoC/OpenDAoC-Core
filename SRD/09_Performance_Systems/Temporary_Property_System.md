@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: This system tracks all the temporary information about your character that the game needs to remember but doesn't permanently save. It handles things like spell effect timers, item cooldowns, event bonuses, and other short-term conditions that affect your gameplay experience.
+
 The Temporary Property System provides a flexible key-value storage mechanism for tracking temporary state across all game objects. This system enables complex behaviors by storing transient data without requiring database persistence or permanent object modifications.
 
 ## Core Architecture

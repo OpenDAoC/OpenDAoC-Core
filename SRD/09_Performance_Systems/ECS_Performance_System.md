@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The ECS performance system is the engine that makes DAoC run smoothly with hundreds of players online simultaneously. It organizes all game activities into efficient "components" and processes them in parallel across multiple CPU cores, ensuring your actions feel responsive even during massive battles or peak server activity.
+
 The Entity Component System (ECS) Performance System manages the efficient processing of game entities through component-based architecture, parallel processing, and optimized update cycles. It provides the foundation for high-performance game loop execution with hundreds of concurrent players.
 
 ## Core ECS Architecture

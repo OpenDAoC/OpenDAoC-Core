@@ -6,9 +6,8 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
-The Logging and Audit System provides comprehensive tracking of player actions, GM activities, inventory transactions, and system events. It supports multiple log types, automated archival, and database-backed audit trails for accountability and debugging.
 
-## Core Architecture
+**Game Rule Summary**: The logging and audit system keeps detailed records of all important player actions, GM commands, and server events for security and support purposes. This helps Game Masters assist with issues, investigate problems, track item transfers, and ensure fair play by maintaining comprehensive logs of what happens in the game.
 
 ### Logger System
 

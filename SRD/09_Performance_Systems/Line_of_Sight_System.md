@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Line of sight determines what you can target with spells and attacks. Walls, doors, terrain, and other obstacles block your view, preventing you from casting spells or shooting arrows through them. You must have a clear path to your target to interact with them.
+
 The Line of Sight (LoS) System determines whether objects can "see" each other for combat, spells, and interaction purposes. This system prevents exploitation through walls and obstacles while ensuring fair gameplay mechanics.
 
 ## Core LoS Checking

@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: Melee combat is the foundation of close-quarters fighting, managing everything from attack timing and dual wielding to combat styles and defense resolution. Your attack speed depends on weapon speed, quickness, and magical effects, while each attack goes through a complex sequence of defense checks - evade, parry, block, and guard - before determining if you hit and for how much damage.
+
 The melee attack system manages all aspects of close-combat attacks including timing, damage calculation, defense resolution, and special attack mechanics like combat styles and dual wielding. It uses an Entity Component System (ECS) architecture with attack components coordinating the complex interactions between attackers and defenders.
 
 ## Core Architecture

@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The backup and recovery system protects your character data by automatically creating safety copies during important operations like character transfers or server maintenance. If something goes wrong, Game Masters can restore your character exactly as it was, ensuring you never permanently lose progress due to technical issues.
+
 The Backup & Recovery System provides comprehensive data protection for character information, ensuring data integrity during critical operations like character moves, database maintenance, and error recovery. It includes automated backup creation, database schema evolution, and recovery procedures.
 
 ## Core Architecture

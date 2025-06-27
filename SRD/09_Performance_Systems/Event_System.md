@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: The event system lets different parts of the game respond to things that happen to your character. When you level up, die, cast a spell, or perform other actions, the game automatically triggers related effects like title checks, quest updates, and bonuses without you having to do anything extra.
+
 The Event System provides a robust observer pattern implementation that enables decoupled communication between game systems. It supports both global and object-specific event handlers with weak reference patterns to prevent memory leaks and thread-safe operations.
 
 ## Core Architecture

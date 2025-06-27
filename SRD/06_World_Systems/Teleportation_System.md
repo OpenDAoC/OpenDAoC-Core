@@ -6,11 +6,15 @@
 
 ## Overview
 
+**Game Rule Summary**: Teleportation is the magical art of traveling instantly across great distances. You can teleport using spells, magical items, NPC teleporters, and portal networks scattered throughout the world. Each method has different restrictions - some don't work in combat, others require you to be in the same group as your target, and many are blocked in enemy territory. Teleportation is essential for getting around DAoC's vast world quickly, but the restrictions prevent it from being abused in combat situations.
+
 The Teleportation System provides various methods of magical transportation including spells, items, NPCs, and portal networks. This system enables rapid movement across the game world while maintaining balance and restrictions.
 
 ## Core Architecture
 
 ### Teleportation Types
+
+**Game Rule Summary**: There are many different ways to teleport, each with their own rules and limitations. Spells are the most common but don't work in combat. Items can be used more freely but have cooldowns. NPCs provide fixed routes between important locations. Portals offer instant travel but only work when your realm controls the connected keeps. Understanding which type to use in different situations is key to mastering movement in DAoC.
 ```csharp
 public enum TeleportationType
 {
@@ -38,6 +42,8 @@ public interface ITeleportation
 ## Spell-Based Teleportation
 
 ### Recall Spells
+
+**Game Rule Summary**: Recall spells teleport you back to your bind point - the location where you last bound your soul at a bind stone. You can't recall while in combat or from certain restricted areas like dungeons or enemy keeps. This spell is your emergency escape route and primary way to return home quickly when adventuring far from civilization.
 ```csharp
 public class RecallSpell : Spell
 {
@@ -75,6 +81,8 @@ public class RecallSpell : Spell
 ```
 
 ### Gate Travel
+
+**Game Rule Summary**: Gate travel teleports you to another group member's location, letting you quickly reunite with scattered allies. Both you and your target must be in the same group, within range of each other, and not in combat. This spell is perfect for rescuing lost group members or gathering everyone at a rally point before a dangerous encounter.
 ```csharp
 public class GateSpell : Spell
 {
@@ -106,6 +114,8 @@ public class GateSpell : Spell
 ```
 
 ### Summon Spells
+
+**Game Rule Summary**: Summon spells bring a group member to your location, which is the opposite of gate travel. The target can't be in combat and must be in a zone that allows summoning. This is ideal when one person has found something interesting and wants to bring the whole group quickly, or when rescuing someone who is stuck or lost.
 ```csharp
 public class SummonSpell : Spell
 {
@@ -146,6 +156,8 @@ public class SummonSpell : Spell
 ## Portal Networks
 
 ### Keep Portal System
+
+**Game Rule Summary**: Portal networks connect your realm's keeps and major cities, providing rapid transportation across the frontiers. You can only use portals between areas your realm controls, and the connections follow logical geographical paths. This system is crucial for RvR warfare, letting you quickly respond to attacks on distant keeps or redeploy forces where needed.
 ```csharp
 public class KeepPortalNetwork
 {
@@ -173,6 +185,8 @@ public class KeepPortalNetwork
 ```
 
 ### Border Keep Teleporters
+
+**Game Rule Summary**: Border keep teleporters are NPCs that provide fixed travel routes between major strategic locations. You can only use teleporters controlled by your realm, and they typically connect frontier zones to safer homeland areas. These are reliable travel options that don't require spells or items, but they only work when your realm holds the territory.
 ```csharp
 public class BorderKeepTeleporter : GameNPC
 {
@@ -204,6 +218,8 @@ public class BorderKeepTeleporter : GameNPC
 ## Bind Stone System
 
 ### Binding Mechanics
+
+**Game Rule Summary**: Bind stones let you set your recall destination by binding your soul to that location. You can only bind at stones controlled by your realm and not while in combat. Choose your bind location carefully - it's where you'll appear when you die or use recall spells. Most players bind in their realm's main city, but strategic binding near adventure areas can save lots of travel time.
 ```csharp
 public class BindStoneSystem
 {
@@ -243,6 +259,8 @@ public class BindStoneSystem
 ## Anti-Exploit Systems
 
 ### Teleportation Security
+
+**Game Rule Summary**: The teleportation system has many built-in protections to prevent cheating and exploitation. You can't teleport into solid walls, underwater, or into enemy territory where you don't belong. All teleportation is logged for security purposes. These restrictions ensure teleportation enhances gameplay without breaking immersion or providing unfair advantages.
 ```csharp
 public class TeleportationSecurity
 {
@@ -281,6 +299,8 @@ public class TeleportationSecurity
 ```
 
 ### Combat Restrictions
+
+**Game Rule Summary**: Most forms of teleportation are blocked while you're in combat to prevent cheap escapes from fights. You can't use recall spells, teleport items, or NPC teleporters when enemies are attacking you. However, some portals may still work during combat since they represent permanent magical gateways. Plan your retreats carefully - once a fight starts, your teleportation options become very limited.
 ```csharp
 public static bool CanTeleportInCombat(GamePlayer player, TeleportationType type)
 {

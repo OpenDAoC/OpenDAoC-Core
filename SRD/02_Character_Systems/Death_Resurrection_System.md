@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: Death in PvE costs experience and constitution, making you weaker until healed by an NPC. RvR deaths have no experience penalty but may cause resurrection sickness. You can return to your gravestone to pray and recover lost experience, or have another player resurrect you before releasing.
+
 The death and resurrection system handles player death, respawn mechanics, penalties, and revival options. Death penalties vary based on the cause of death (PvE, PvP, RvR) and player level.
 
 ## Core Mechanics

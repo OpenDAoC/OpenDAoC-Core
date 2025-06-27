@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The data management system calculates your character's final stats by combining your base abilities, equipment bonuses, spell effects, and other modifiers. It ensures that when you equip new gear or receive buffs, all your stats update correctly and consistently throughout the game without conflicting with each other.
+
 OpenDAoC's ECS Data Management system handles the complex data flow between components, property calculations, and game state management. This document covers the sophisticated data management patterns, property calculation systems, and data persistence mechanisms that ensure consistent game state across all systems.
 
 ## Property Management Architecture

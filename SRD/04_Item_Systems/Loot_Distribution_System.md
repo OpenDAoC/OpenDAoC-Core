@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Loot Distribution System determines what items drop from monsters and how they're shared among group members. When you kill a creature, the system rolls for each possible drop based on the monster's loot table, your level difference, and your luck bonuses. Higher-level monsters generally drop better loot, while fighting creatures far below your level reduces drop chances significantly. In groups, you can choose different loot rules: "Free for All" lets anyone grab items, "Round Robin" takes turns giving loot to each member, "Need/Greed" lets players roll dice for items they want, and "Master Looter" gives the leader control over distribution. Understanding loot mechanics helps you optimize your farming efficiency and ensures fair distribution in groups, making the difference between successful and frustrating hunting sessions.
+
 The Loot Distribution System manages item drops from NPCs, treasure generation, and group loot sharing mechanics. This system determines what items are dropped, their quality, and how they're distributed among players.
 
 ## Core Architecture

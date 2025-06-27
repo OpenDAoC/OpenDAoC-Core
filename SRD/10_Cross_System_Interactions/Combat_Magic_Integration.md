@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Combat and Magic work together seamlessly in DAoC through many interconnected systems. When you get hit while casting a spell, there's a chance your spell will be interrupted based on your concentration skill and the attacker's level. Some spells do both physical and magical damage (like bolt spells), where the physical portion can be blocked but the magical portion is reduced by resist. Weapon procs add magical effects to your melee attacks, while damage-add spells boost your weapon damage. Buffs and debuffs directly affect your combat effectiveness - strength buffs increase melee damage, dexterity affects casting speed, and disease prevents healing. Critical hits work the same way for both spells and weapons, and the resistance system protects against magical damage using a two-layer calculation that can be pierced by certain abilities.
+
 The Combat and Magic systems are tightly integrated in DAoC, with spells affecting combat calculations, combat interrupting spellcasting, and shared mechanics for damage, resistance, and critical hits. This document details the complex interactions between these core systems.
 
 ## Spell Combat Integration

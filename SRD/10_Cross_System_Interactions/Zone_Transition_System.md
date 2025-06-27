@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The Zone Transition System manages how you move between different areas of the game world. When you walk through doors, click on teleporters, use portal stones, or cross zone boundaries, this system coordinates all the complex interactions needed to move you safely from one place to another. It checks if you're allowed to go where you're trying to go (based on your realm, level, combat status, or whether you're carrying a relic), handles loading screens when moving between regions, and makes sure all the different game systems (like quests, guilds, and housing) know about your location change. The system also prevents exploits like teleporting while in combat or entering enemy areas you shouldn't have access to.
+
 The zone transition system manages complex interactions between multiple game systems when players move between zones, regions, and instances. It coordinates with region management, door systems, teleportation mechanics, keep systems, and instance management to provide seamless world navigation.
 
 ## Core Mechanics

@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Keeps are the strategic heart of Realm vs Realm warfare. These massive fortresses control territory and provide your realm with powerful benefits when captured. Taking an enemy keep requires coordinated assault to breach walls, kill guards, and defeat the Lord. Capturing keeps gives your realm teleportation access, experience bonuses, and control over valuable areas like Darkness Falls. The more keeps your realm controls, the stronger you become in the ongoing war between Albion, Midgard, and Hibernia.
+
 The Realm vs Realm (RvR) Keep System manages the conquest and defense of strategic fortifications in frontier zones. Keeps provide teleportation access, realm bonuses, and territorial control, forming the backbone of large-scale PvP warfare in DAoC.
 
 ## Core Architecture

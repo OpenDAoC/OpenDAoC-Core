@@ -7,6 +7,9 @@
 - **Implementation**: Stable
 
 ## Overview
+
+**Game Rule Summary**: The task system provides simple, short objectives for new and low-level players (levels 1-20). You can get tasks from Town Criers by whispering "task" to them. Tasks are much simpler than quests - usually just "kill 10 wolves" or "deliver this item" - and give quick experience and money rewards. You can do multiple tasks per day equal to your level (so level 5 = 5 tasks per day), and you can have as many active tasks as your level allows. Tasks automatically expire after 2 hours if not completed, and you can abandon them by whispering "abandon" to any Town Crier. This system helps new players learn the game without complex quest chains.
+
 The task system provides short, repeatable objectives for low-level players (1-20). Tasks offer an alternative advancement method through simple kill or delivery objectives with scaled rewards based on player level.
 
 ## Core Mechanics

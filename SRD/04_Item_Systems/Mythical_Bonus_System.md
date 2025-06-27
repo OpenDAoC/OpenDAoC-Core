@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Mythical Bonus System provides special stat and resist bonuses that allow your character to exceed normal limits, representing the most powerful equipment enhancements in DAoC. While regular items are capped at specific stat bonuses based on your level, mythical bonuses can push your stats beyond these caps by up to 52 additional points. For example, if your normal strength cap is 126, mythical strength cap bonuses could potentially push your effective cap to 178, allowing you to benefit from much higher strength values. These bonuses are typically found on high-level artifacts, rare drops, and special crafted items. Mythical bonuses also apply to resistances, helping you achieve higher protection against damage types. Understanding mythical bonuses is crucial for endgame character optimization and maximizing your character's potential in high-level PvE and RvR content.
+
 The Mythical Bonus system (sometimes called Mythirian bonuses) provides enhanced stat and resist cap increases beyond normal item bonuses. These special properties allow players to exceed standard stat and resist caps through specific item slots.
 
 ## Core Mechanics

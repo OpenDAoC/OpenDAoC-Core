@@ -7,6 +7,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Relics are the most powerful artifacts in DAoC, providing massive bonuses to your entire realm when captured from enemies. There are two types: Strength relics boost all melee combat by 10% per relic, while Magic relics boost all spellcasting by 10% per relic. To steal an enemy relic, your realm must first control your own relic of that type. Players can carry relics but become extremely vulnerable - they can't teleport, can't stealth, and can't mount horses. Successfully capturing relics can give your realm up to a 40% advantage in combat, making relic raids some of the most important and exciting battles in the game.
+
 The Relic System provides realm-wide bonuses through the capture and control of magical artifacts. Two types of relics exist: Strength relics (melee bonus) and Magic relics (spell bonus). Controlling relics grants significant combat advantages to the entire realm.
 
 ## Core Mechanics

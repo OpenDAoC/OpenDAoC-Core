@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The caching system improves game performance by remembering frequently needed information instead of recalculating it every time. This makes the game run smoother and respond faster when you interact with NPCs, use items, or move around the world, especially in busy areas with many players.
+
 The Caching System provides comprehensive performance optimization through strategic caching of frequently accessed data, calculations, and objects. It includes multiple specialized cache implementations for different data types and access patterns, significantly reducing computational overhead and database queries.
 
 ## Core Caching Architecture

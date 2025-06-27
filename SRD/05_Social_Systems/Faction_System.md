@@ -6,11 +6,16 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: The faction system tracks your reputation with different groups of NPCs throughout the game world. Your actions affect how various NPC factions view you - kill their friends and they'll become hostile, help them and they'll be friendlier. This reputation determines whether NPCs will attack you on sight, trade with you, or offer special services. Different factions have alliances and enemies, so your actions can have wide-reaching consequences across multiple groups.
+
 The Faction System manages relationships between NPCs and players, controlling aggression, interaction availability, and faction-based rewards. Each NPC can belong to a faction with dynamic standing based on player actions.
 
 ## Core Mechanics
 
 ### Faction Structure
+
+**Game Rule Summary**: Each faction is a group of NPCs that share relationships and reputation with players. Every faction has friends (allies) and enemies, so when you help or harm one faction, it affects your standing with their allies and enemies too. Most NPCs belong to one primary faction, but some complex NPCs might be connected to multiple groups.
 
 #### Faction Properties
 ```csharp
@@ -30,6 +35,8 @@ public class Faction
 - **Realm Override**: Same-realm NPCs are always friendly regardless of faction
 
 ### Standing Calculation
+
+**Game Rule Summary**: Your reputation with each faction ranges from friendly to aggressive. Friendly NPCs won't attack you and offer full services, neutral ones are cautious, hostile ones are unfriendly but won't always attack, and aggressive ones will attack you on sight. Your starting reputation with new factions depends on the faction's base attitude toward outsiders.
 
 #### Standing Levels
 | Standing | Aggro Range | Behavior |
@@ -56,6 +63,8 @@ const int DECREASE_AGGRO_AMOUNT = -1;
 
 ### Faction Changes
 
+**Game Rule Summary**: When you kill NPCs, there's about a 20% chance it will affect your faction reputation. Killing someone makes their friends like you less and their enemies like you more. These reputation changes spread through faction networks, so one action can affect multiple groups. The game will notify you when your standing with a faction changes.
+
 #### Triggering Events
 1. **Kill Faction Member**: +1 aggro to friend factions, -1 to enemy factions
 2. **20% Chance**: Only 20% chance of aggro change per kill
@@ -79,6 +88,8 @@ public void OnMemberKilled(GamePlayer killer)
 - **Message Type**: CT_System to system window
 
 ### Faction Relationships
+
+**Game Rule Summary**: Factions form complex webs of alliances and rivalries. When you help or harm one faction, the effects ripple through their entire network of friends and enemies. This creates meaningful consequences for your actions - you can't just kill anyone without affecting your relationships with multiple NPC groups throughout the world.
 
 #### Friend Factions
 - **Auto-Friend**: Every faction is friend to itself

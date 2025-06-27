@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Object Pool System is like a recycling center for the game's memory - instead of constantly creating and destroying objects (which would slow things down), the game reuses the same objects over and over. When you cast a spell, attack, or send a message, the game grabs a pre-made object from the pool, uses it, then cleans it up and puts it back in the pool for the next player. This prevents lag spikes and keeps the game running smoothly even during large battles with hundreds of spells and attacks happening simultaneously. You won't notice this system working, but it's essential for maintaining consistent performance.
+
 The Object Pool System provides high-performance memory management for frequently allocated and deallocated objects in OpenDAoC. It reduces garbage collection pressure and improves performance by reusing object instances across game ticks and operations.
 
 ## Core Architecture

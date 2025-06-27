@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Administrative tools provide Game Masters and admins with powerful commands to help players, manage the game world, and create content. GMs can assist with stuck characters, restore lost items, investigate cheating, run events, and maintain fair gameplay through comprehensive management and support systems.
+
 The Administrative Tools System provides comprehensive server management capabilities for GameMasters (GMs) and Administrators. It includes extensive command frameworks, player management tools, object manipulation systems, scripting utilities, and server monitoring capabilities that enable efficient server administration and player support.
 
 ## Core Architecture

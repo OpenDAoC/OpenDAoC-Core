@@ -7,11 +7,15 @@
 
 ## Overview
 
+**Game Rule Summary**: Emotes let you express emotions and actions through animated gestures that other players can see. You can wave, bow, dance, cheer, and perform many other animations to communicate without words. Some emotes can be targeted at specific players, while others just show your character performing the action. When you're mounted on a horse, you get access to special horse emotes like making your mount rear or graze. Emotes are a fun way to roleplay and interact socially with other players.
+
 The emote system allows players to express emotions and actions through animated gestures. Emotes include both simple animations and horse-specific emotes for mounted players.
 
 ## Core Mechanics
 
 ### Basic Emote System
+
+**Game Rule Summary**: Emotes work by typing slash commands like `/wave` or `/bow`, and your character will perform the animation. If you target another player first, some emotes will be directed specifically at them, like bowing to someone or pointing at them. Other players near you will see the animation and might get a text message describing what you're doing.
 
 #### Command Structure
 - **Format**: `/emote_name` or through emote menu
@@ -30,6 +34,8 @@ foreach (GamePlayer player in sourcePlayer.GetPlayersInRadius(WorldMgr.VISIBILIT
 ```
 
 ### Emote Types
+
+**Game Rule Summary**: There are dozens of different emotes covering all kinds of expressions and actions. You can show emotions (happy, sad, angry), perform actions (dance, salute, flex), or interact socially (hug, wave, bow). If you're riding a horse, you get access to special mounted emotes that show you and your horse performing actions together.
 
 #### Standard Player Emotes
 | Command | Emote ID | Description |
@@ -70,6 +76,9 @@ foreach (GamePlayer player in sourcePlayer.GetPlayersInRadius(WorldMgr.VISIBILIT
 | /yes | eEmote.Yes | Nodding |
 
 #### Horse/Mount Emotes
+
+**Game Rule Summary**: When you're riding a horse, you get access to special emotes that show both you and your mount performing actions. You can make your horse rear up dramatically, graze peacefully, or perform tricks. These emotes only work when you're actually mounted and add a lot of character to mounted roleplay.
+
 | Command | Emote ID | Description |
 |---------|----------|-------------|
 | /lookfar | eEmote.Rider_LookFar | Look into distance |
@@ -94,6 +103,8 @@ foreach (GamePlayer player in sourcePlayer.GetPlayersInRadius(WorldMgr.VISIBILIT
 
 ### Message System
 
+**Game Rule Summary**: When you use emotes, other players see both the animation and text messages describing what you're doing. If you target someone specifically, they'll get a personal message that you're emoting at them. Players from other realms might not understand your custom emote text, but they'll still see you "making strange motions."
+
 #### Message Types
 1. **No Target Messages**:
    - To Source: Direct message
@@ -105,6 +116,9 @@ foreach (GamePlayer player in sourcePlayer.GetPlayersInRadius(WorldMgr.VISIBILIT
    - To Others: "{0} emotes at {1}"
 
 #### Custom Emote System
+
+**Game Rule Summary**: Besides the preset emotes, you can create custom emotes by typing `/emote <your action>`, `/em <your action>`, or `/e <your action>`. This lets you describe any action you want, like "checks his sword for nicks" or "looks around nervously." Players from your own realm will see exactly what you type, but players from enemy realms will just see that you're "making strange motions."
+
 ```csharp
 // /emote <text> or /em <text> or /e <text>
 if (GameServer.ServerRules.IsAllowedToUnderstand(source, target))
@@ -121,6 +135,8 @@ else
 ```
 
 ### Restrictions
+
+**Game Rule Summary**: You can't emote when you're dead, and most emotes are blocked while you're actively fighting. If you're stunned, mesmerized, or otherwise incapacitated, you also can't emote. There's also anti-spam protection to prevent people from flooding the area with rapid-fire emotes. If someone has you on their ignore list, they won't see your emotes.
 
 #### State Restrictions
 - **Dead**: Cannot emote while dead
@@ -140,6 +156,8 @@ if (changeTime < ServerProperties.Properties.EMOTE_DELAY && Tick > 0)
 
 ### Range and Visibility
 
+**Game Rule Summary**: Emotes have limited range - you need to be reasonably close to other players for them to see your emotes. If you're targeting someone specifically with an emote, they can be a bit further away than the general viewing distance. Players who have you on their ignore list won't see your emotes at all.
+
 #### Range Checks
 - **Target Range**: 2048 units (EMOTE_RANGE_TO_TARGET)
 - **Area Broadcast**: 512 units (EMOTE_RANGE_TO_OTHERS)
@@ -152,11 +170,17 @@ if (changeTime < ServerProperties.Properties.EMOTE_DELAY && Tick > 0)
 ## System Interactions
 
 ### Cross-Realm Communication
+
+**Game Rule Summary**: The language barrier affects emotes just like speech. Players from your own realm can see exactly what your custom emotes say, but players from enemy realms only see that you're "making strange motions." The animations still work for everyone regardless of realm, but the text is filtered by the language system.
+
 - Same realm: Full emote text visible
 - Different realm: Generic "makes strange motions"
 - Follows IsAllowedToUnderstand rules
 
 ### Combat Integration
+
+**Game Rule Summary**: Most emotes are disabled while you're in active combat to prevent them from interfering with fighting. However, some emotes can still be used while mounted, and the special horse emotes require you to actually be riding a horse to work.
+
 - Attack state blocks most emotes
 - Some emotes usable while mounted
 - Horse emotes require being on horse
@@ -187,6 +211,9 @@ public virtual void Emote(eEmote emote)
 ## Edge Cases
 
 ### Mount-Specific Emotes
+
+**Game Rule Summary**: Horse emotes are special - they only work when you're actually mounted on a horse. If you try to use them while on foot, they simply won't work. Different types of mounts might have different emote sets available.
+
 - Only work when mounted
 - Different message sets for horse emotes
 - Some require specific mount types
@@ -196,6 +223,9 @@ public virtual void Emote(eEmote emote)
 - Lost if player zones during animation
 
 ### Realm Restrictions
+
+**Game Rule Summary**: While the animations for preset emotes work across all realms, the text messages for custom emotes are filtered by the language barrier system. This means enemy realm players can see you waving or bowing, but can't understand what you're saying when you use custom emotes.
+
 - Language barriers affect custom emotes
 - Animation still plays regardless of realm
 

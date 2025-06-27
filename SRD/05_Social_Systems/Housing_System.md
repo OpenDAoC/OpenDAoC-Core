@@ -5,11 +5,16 @@
 - Implementation: Partial
 
 ## Overview
+
+**Game Rule Summary**: Houses are private properties you can purchase to have your own space in the game world. They provide storage through personal vaults, decoration opportunities to show off trophies and furniture, and can host a merchant to sell items to other players. Houses require weekly rent payments to maintain ownership, and you can give other players limited access through a permission system. Guild houses allow entire guilds to share resources and meet in a private location.
+
 The housing system allows players to purchase and customize personal or guild houses. Houses provide storage, display space, and social features including consignment merchants and crafting facilities.
 
 ## Core Mechanics
 
 ### House Types
+
+**Game Rule Summary**: Houses come in four different sizes from cottage (smallest and cheapest) to mansion (largest and most expensive). Each realm has its own architectural style, so Albion houses look different from Midgard or Hibernia houses. Larger houses cost more rent but provide more space for decorations and storage. Your choice depends on your budget and how much space you need.
 
 #### Models by Size
 ```
@@ -25,6 +30,8 @@ Mansion:  Model 4/8/12  (Extra Large)
 - **Hibernia**: Models 9-12
 
 ### Rent System
+
+**Game Rule Summary**: Houses require weekly rent payments to maintain ownership. You pay rent by putting money in a lockbox inside your house - the system automatically deducts rent every week. If you have a consignment merchant, it can also pay rent from its earnings. If you can't pay rent, your house gets repossessed, but your items are saved and can be reclaimed. You can prepay up to 4 weeks of rent in advance.
 
 #### Rent Costs
 ```csharp
@@ -48,6 +55,8 @@ MaxLockbox = RentAmount * RENT_LOCKBOX_PAYMENTS
 - House contents preserved for later reclaim
 
 ### Permission System
+
+**Game Rule Summary**: You can give other players limited access to your house through a 9-level permission system. Each level can have different permissions like entering the house, decorating, using vaults, or paying rent. This lets you control exactly what friends, guild members, or visitors can do in your house. Guild houses use guild ranks to determine permissions automatically.
 
 #### Permission Levels
 - **Levels 1-9**: Configurable permissions per level
@@ -83,6 +92,8 @@ ConsignmentPermissions:
 
 ### Vault System
 
+**Game Rule Summary**: Each house comes with 4 personal vaults plus 4 account vaults that work across all your characters. Each vault holds 100 items, giving you massive storage space compared to character inventory. You can set different permissions for each vault, so you might let friends add items to one vault but only let officers remove from another. Account vaults are especially useful for moving items between your characters.
+
 #### Vault Configuration
 - **House Vaults**: 4 per house
 - **Account Vaults**: 4 additional (account-wide)
@@ -94,6 +105,8 @@ ConsignmentPermissions:
 - Account vaults accessible from any owned house
 
 ### Decoration System
+
+**Game Rule Summary**: Houses can be customized with furniture and decorations both inside and outside. Interior items go on specific hookpoints (predefined spots) and can be rotated to face different directions. Garden decorations let you customize the outdoor area. You can display trophies from your adventures, functional items like crafting stations, and decorative furniture to make the house uniquely yours.
 
 #### Interior Decorations
 - **Hookpoints**: Predefined placement locations
@@ -118,6 +131,8 @@ ID Ranges:
 
 ### Consignment Merchant
 
+**Game Rule Summary**: A consignment merchant is an NPC you can place in your house to sell items to other players automatically. Players can browse your merchant and buy items at the prices you set, even when you're offline. The merchant requires a porch to place, stores up to 100 items, and keeps the money from sales separate from your house funds. You can control who can add items or withdraw money through permissions.
+
 #### Setup Requirements
 - Requires porch to place merchant
 - Uses "housing_consignment_deed" item
@@ -137,6 +152,9 @@ consignmentMerchant.TotalMoney
 ```
 
 ### Market Explorer Integration
+
+**Game Rule Summary**: If the server enables the market system, your consignment merchant items can be searched by players throughout the region. This makes it much easier for buyers to find what they want and for you to reach more customers. Players can even buy items remotely and have them delivered for an extra fee, making your merchant accessible from anywhere.
+
 - Searchable if `MARKET_ENABLED` = true
 - Items indexed for region-wide searches
 - Buy remotely with delivery fee

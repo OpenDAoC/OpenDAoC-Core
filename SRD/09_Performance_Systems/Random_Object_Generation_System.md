@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Random Object Generation (ROG) System creates unique, randomly-generated equipment that drops from monsters throughout the game. When you kill a creature, the ROG system can generate custom items tailored to your character class and level with random combinations of useful stats and bonuses. For example, if you're playing a warrior, the system is more likely to generate strength-based armor and melee weapons, while a caster would receive intelligence-based robes and staves. The quality and power of these generated items scale with the monster's level and difficulty. ROG items provide an exciting element of unpredictability to loot drops and ensure that even familiar monsters can surprise you with potentially valuable upgrades. This system supplements the standard loot tables with procedurally-created content that adapts to your character's needs.
+
 The Random Object Generation (ROG) System provides sophisticated procedural content generation for OpenDAoC, creating randomized items, loot distributions, and unique equipment. It supports Atlas-style random generation, class-specific loot targeting, and configurable generation parameters for balanced gameplay.
 
 ## Core Architecture

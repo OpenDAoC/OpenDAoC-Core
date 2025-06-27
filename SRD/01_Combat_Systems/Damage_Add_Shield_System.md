@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: Damage adds and damage shields are magical effects that enhance your combat. Damage adds give you extra damage whenever you successfully hit an enemy, while damage shields reflect damage back to anyone who hits you. Multiple damage adds have reduced effectiveness when stacked, but damage shields all work together at full power. Both scale with your weapon speed - faster weapons get less bonus damage per hit.
+
 Damage adds and damage shields are supplemental damage effects that trigger during combat. Damage adds provide additional damage when attacking, while damage shields reflect damage back to attackers. Both systems use similar mechanics but differ in their trigger conditions and stacking behavior.
 
 ## Core Mechanics

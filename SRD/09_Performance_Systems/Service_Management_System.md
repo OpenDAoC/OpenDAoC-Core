@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Service management coordinates all the behind-the-scenes systems that make the game run smoothly. This includes managing combat calculations, spell effects, movement, and other core systems to ensure everything happens at the right time with optimal performance. Players benefit from lag-free gameplay and responsive actions.
+
 The Service Management System coordinates all Entity Component System (ECS) services, managing their lifecycle, performance monitoring, and inter-service communication. This system forms the backbone of OpenDAoC's high-performance architecture.
 
 ## Core Architecture

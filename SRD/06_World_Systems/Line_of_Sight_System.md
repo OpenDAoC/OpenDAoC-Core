@@ -7,6 +7,9 @@
 - **Implementation**: Stable
 
 ## Overview
+
+**Game Rule Summary**: The Line of Sight (LoS) system determines whether you can "see" your target for spells, attacks, and abilities by checking if there are walls, trees, or other obstacles blocking your view. When you try to cast a spell or attack someone, your client checks if you have a clear line of sight to your target - if there's a wall in the way, the action will fail with a "target is not in view" message. This prevents you from shooting arrows or casting spells through solid walls, making positioning and terrain important tactical elements. The system uses your client's 3D collision data to calculate these checks quickly, and objects that are very close to you (within about 32 units) are always considered in view regardless of obstacles.
+
 The Line of Sight system determines whether one game object can "see" another by checking for obstructions like walls, terrain, and other obstacles. LoS checks are performed client-side using the game's collision data, making them asynchronous operations.
 
 ## Core Mechanics

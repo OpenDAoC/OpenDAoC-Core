@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: NPCs move intelligently through the world using sophisticated pathfinding to navigate around obstacles, follow set patrol routes, and chase players. They can follow targets while maintaining proper distance, roam randomly within their spawn area, and use advanced AI to find the best path to their destination even through complex terrain. Guard patrols follow scripted routes while wild creatures roam naturally.
+
 The NPC Movement and Pathing System provides sophisticated AI movement capabilities including patrol routes, intelligent pathfinding, following behavior, and complex navigation around obstacles. It supports both scripted paths and dynamic pathfinding.
 
 ## Core Components

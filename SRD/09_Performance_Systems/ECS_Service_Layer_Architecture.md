@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The service layer architecture coordinates all the different game systems (combat, magic, movement, etc.) to process in the correct order every game tick. This ensures that actions happen logically - like spells interrupting when you move, or attacks stopping when you start casting - maintaining consistent and predictable gameplay behavior.
+
 OpenDAoC's service layer provides the behavioral logic for the Entity Component System, processing components in coordinated phases to maintain game state consistency. This document covers the complete service architecture, coordination patterns, and all service implementations.
 
 ## Service Architecture

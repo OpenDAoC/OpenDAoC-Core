@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The Spell Lines & Schools System organizes all spells in DAoC into logical groups that determine how you learn and access magic. Every spell belongs to a "spell line" (like "Fire Magic" or "Enhancement"), and these lines are tied to your specializations. There are two main types: baseline spells that any class can learn from trainers just by leveling up, and specialization spells that require you to invest specialization points. For example, a wizard can learn basic fire spells (baseline) from any trainer, but the powerful high-level fire spells require investing points in the Fire Magic specialization. This system ensures spell progression feels natural and gives you meaningful choices about which magical paths to pursue.
+
 The spell lines and schools system organizes spells into logical groups based on specialization, class, and access method. It distinguishes between baseline spells (available to multiple classes) and specialization spells (class-specific), managing spell progression and access through different specializations.
 
 ## Core System Architecture

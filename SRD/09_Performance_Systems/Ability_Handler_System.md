@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The ability handler system processes every special action you can perform - from combat abilities like Berserk and Sprint to realm abilities and class-specific skills. It manages cooldowns, checks prerequisites, and applies effects, ensuring each ability works correctly and fairly within the game's rules.
+
 The Ability Handler System manages all player abilities, realm abilities, and skill-based actions in OpenDAoC. It provides a unified framework for executing abilities, managing cooldowns, checking prerequisites, and handling ability effects through a sophisticated interface-based architecture.
 
 ## Core Architecture

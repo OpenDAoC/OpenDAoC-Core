@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: Trainers are NPCs who teach your character new abilities and let you allocate specialization points. Each class has dedicated trainers in their home cities who unlock combat styles, spells, and skills as you invest points. You get one free respec at level 5 to fix early mistakes.
+
 The Trainer System manages NPC trainers who provide specialization training, level 5 respec, and champion level training. Each class has dedicated trainers in their realm's starting cities and major towns.
 
 ## Core Mechanics

@@ -7,6 +7,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Salvaging System lets you break down equipment and crafted items into raw materials that can be used for crafting or sold for profit. When you salvage an item, you recover approximately 45% of its value in materials, though this is reduced if the item is damaged or was player-crafted. Your skill level in the appropriate craft affects how much material you get back - at minimum skill you get about 25% of the maximum possible yield, while at maximum skill you get the full amount. Items must be specially tagged as salvageable (most crafted gear qualifies), and you need the right salvage kit for the material type. This system provides a valuable way to recycle old equipment into useful resources, making it an essential part of DAoC's crafting economy and helping you clear inventory space while recovering value from outdated gear.
+
 The Salvaging System allows players to break down crafted items and equipment into raw materials. The system uses complex formulas to determine yield based on item properties, player skill, and salvage configuration.
 
 ## Core Mechanics

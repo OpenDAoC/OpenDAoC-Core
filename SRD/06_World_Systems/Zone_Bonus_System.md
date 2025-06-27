@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Zone Bonus System creates rotating hotspots across the game world to encourage players to explore different areas and balance server population. Every few hours, different zones get experience bonuses, and RvR realms get rotating bonuses for realm points and bounty points. When your PvE zone has a bonus, you'll earn extra experience there. When your realm has the RvR bonus, you'll get extra rewards for PvP activities. This system keeps the world feeling dynamic and gives you incentives to try new areas or participate in RvR during your realm's bonus periods.
+
 The Zone Bonus System provides dynamic, rotating experience and reward bonuses across different game zones. It cycles between PvE zone bonuses (experience) and RvR realm bonuses (experience, RP, and BP) to encourage player activity in specific areas and maintain balanced population distribution.
 
 ## Core Architecture

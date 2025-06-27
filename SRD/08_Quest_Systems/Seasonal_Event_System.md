@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Seasonal Event System brings special limited-time celebrations and content throughout the year. During events like Halloween, Christmas, or special boss encounters, you'll see unique NPCs, special merchants selling exclusive items, modified drop rates, and temporary bonuses. Events automatically start and end on specific dates, with server-wide announcements when they begin. You can earn event-specific achievements, collect special currencies, and obtain unique cosmetic items that show you participated. Some events provide gameplay bonuses like double experience weekends, while others add atmospheric changes like snow weather or haunted areas. These events create memorable shared experiences and give you exclusive rewards you can't get any other time.
+
 The Seasonal Event System manages time-limited events, special encounters, and holiday celebrations. It provides dynamic content activation, special rewards, achievement tracking, and seasonal modifications to game mechanics during specific periods throughout the year.
 
 ## Core Architecture

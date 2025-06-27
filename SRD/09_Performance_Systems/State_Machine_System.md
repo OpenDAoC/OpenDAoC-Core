@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The State Machine System controls how NPCs behave by organizing their actions into different "states" like idle, aggressive, returning to spawn, or roaming. Each NPC is always in exactly one state, and they switch between states based on what's happening around them. For example, a peaceful NPC in "idle" state will switch to "aggressive" state when a player gets too close, then switch to "return to spawn" state if the player runs too far away. This system makes NPC behavior predictable and logical - guards will always chase intruders but return to their posts, pets will follow their owners, and monsters will patrol their territory. Understanding these behavioral patterns helps you predict how NPCs will react in different situations.
+
 The State Machine System provides sophisticated Finite State Machine (FSM) functionality for managing NPC AI behavior in OpenDAoC. It enables complex behavior trees through hierarchical state management, transition logic, and specialized state implementations for different NPC types.
 
 ## Core Architecture

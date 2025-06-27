@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Player Movement Validation System constantly monitors how fast you're moving to detect and prevent speed hacking and other movement cheats. It remembers your recent positions and calculates how fast you should be able to move based on your character's speed, mount speed, and any speed buffs you have. If you move faster than should be possible more than 3 times in a row, the system will first teleport you back to your last valid position as a warning. If you continue to trigger speed violations, you'll eventually be disconnected from the game. The system accounts for network lag and gives reasonable tolerance, so normal players with connection issues won't be falsely flagged. This protection keeps the game fair by preventing players from using speed hacks to gain unfair advantages in combat or travel.
+
 The Player Movement Validation System provides sophisticated real-time monitoring and validation of player movement to detect and prevent speed hacking, teleportation exploits, and position manipulation. It uses advanced position sampling, tolerance calculations, and progressive enforcement to maintain game integrity.
 
 ## Core Architecture

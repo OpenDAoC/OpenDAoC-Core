@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The mail system enables automated server communication including bug reports you submit, server logs for administrators, and email notifications about important server events. Players can set their email address to receive important updates and to authenticate bug reports, while administrators use the system to monitor server health and respond to player issues.
+
 The Mail System provides automated email functionality for server administration, bug reports, and server logs. It handles SMTP configuration, queued mail delivery, attachment management, and email validation for player accounts.
 
 ## Core Architecture

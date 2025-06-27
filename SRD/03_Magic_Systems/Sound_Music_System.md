@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Sound and music create the audio experience of DAoC, from combat sounds and spell effects to the powerful songs of Bards, Minstrels, and Skalds. Musical classes use instruments as weapons to play continuous songs that provide group benefits while consuming power over time. Unlike spells, songs can be maintained while moving, making them ideal for mobile group support.
+
 The sound and music system manages all audio aspects of the game including spell sounds, ambient audio, instrument-based songs (Minstrel/Bard/Skald), combat audio, UI feedback, and environmental sounds. The system includes sophisticated instrument mechanics for musical classes and complex pulsing song effects.
 
 ## Core Architecture

@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Entity Management system is the foundation that makes all game objects work - your character, NPCs, items, doors, pets, and everything else you interact with. Every object in the game has a unique ID and belongs to a specific hierarchy: your character is a living entity, NPCs are living entities with AI brains, and static objects like doors just sit in the world until activated. When you die, all your active components (like attack or casting) are automatically cleaned up. Pets have special relationships with their owners and follow inheritance rules - if you die, your pets die too. This system ensures thousands of players and NPCs can exist simultaneously without conflicts or performance issues.
+
 OpenDAoC's Entity Management system provides the foundation for all game objects within the ECS architecture. This document covers entity lifecycle, GameObject hierarchy, entity relationships, and the sophisticated management systems that handle thousands of concurrent entities efficiently.
 
 ## Entity Architecture

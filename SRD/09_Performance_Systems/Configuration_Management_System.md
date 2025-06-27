@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Configuration Management System controls all the server settings that affect your gameplay experience, from combat damage multipliers to experience rates to weather patterns. These settings let server administrators adjust how the game feels - they can increase experience gain for faster leveling, modify PvP damage for more balanced combat, or change loot drop rates for better rewards. Many settings can be changed while the server is running, so administrators can fine-tune the game based on player feedback without requiring restarts. Understanding these configurations helps explain why different servers might feel different - one server might have 2x experience while another focuses on challenging, slower progression.
+
 The Configuration Management System provides comprehensive settings management for OpenDAoC through server properties, XML configuration files, and runtime configuration updates. It handles everything from combat parameters to database connections with type safety, validation, and hot-reloading capabilities.
 
 ## Core Architecture

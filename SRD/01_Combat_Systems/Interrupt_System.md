@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The interrupt system prevents you from casting spells or using abilities immediately after being attacked, creating tactical depth in combat. When an enemy hits you while you're casting a spell, there's a chance your spell will be interrupted and you'll be unable to cast again for several seconds (usually 3-4 seconds). This makes positioning, timing, and protection crucial for spellcasters. After making a melee attack, you also can't immediately cast spells due to "self-interrupt." The interrupt chance is reduced if you're higher level than your attacker, and some abilities like Mastery of Concentration make you immune to interruption. Understanding interrupts helps you time your attacks to disrupt enemy casters and protect your own spellcasting through proper positioning and defensive abilities.
+
 The interrupt system prevents characters from performing certain actions after being attacked or taking other disruptive actions. It affects spell casting, ranged attacks, and ability usage with complex timing mechanics based on attack type and character state.
 
 ## Core Mechanics

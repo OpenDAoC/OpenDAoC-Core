@@ -7,6 +7,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Sometimes your melee attacks fumble - a critical failure that leaves you vulnerable with doubled attack speed for your next swing. Fumbles happen more often to low-level characters and when you're already likely to miss. While embarrassing, fumbles can actually set up special combat styles that take advantage of your opponent's guard being down.
+
 The Fumble System adds a chance for melee attacks to critically fail, resulting in doubled attack intervals and potential style chain breaks. Fumbles are a subset of misses that only affect melee attacks, providing tactical depth to combat.
 
 ## Core Mechanics

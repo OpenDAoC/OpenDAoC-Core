@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The instance system creates private copies of dungeons and adventure areas just for you and your group, ensuring you won't be interrupted by other players competing for the same content. When you enter an instance, you get your own personal version of that zone that looks identical to the original but exists separately. Instances are perfect for group adventures, quest completion, and exploring challenging content without overcrowding. They automatically close after a set time (usually 10 minutes if empty) to keep server resources available. Some instances are tied to specific tasks or missions, while others are general adventure areas. This system ensures everyone gets a fair chance to experience content at their own pace without interference from other players.
+
 The instance system creates dynamic, isolated copies of existing regions for specific groups of players. Instances share the same visual appearance (skin) as regular regions but exist as separate entities, allowing multiple groups to adventure in the same content without interference.
 
 ## Core Mechanics

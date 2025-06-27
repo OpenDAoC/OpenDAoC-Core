@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The Pet & Summoning System lets certain classes summon magical creatures to fight alongside them as loyal companions. Different classes have unique pet styles: Necromancers get permanent undead pets that share damage with their shade, Theurgists summon temporary elemental turrets, Spiritmasters have wolf spirits that follow them everywhere, and Bonedancers command entire armies of skeleton minions. You control your pets through commands like "aggressive" (attack everything), "defensive" (only fight back), or "passive" (don't fight at all), plus movement commands like "stay," "follow," and "go there." Pets are powerful allies that significantly boost your combat effectiveness, but they require management and understanding of their unique behaviors to use effectively.
+
 The pet system allows certain classes to summon and control creatures to fight alongside them. Different classes have unique pet mechanics including permanent pets, temporary summons, and specialized control systems.
 
 ## Core Mechanics

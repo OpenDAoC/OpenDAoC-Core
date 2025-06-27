@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Security & Anti-Cheat System works silently in the background to keep the game fair for everyone by detecting and preventing cheating. It constantly monitors player movement to catch speed hacking, teleport hacking, or flying when you shouldn't be able to. If you move faster than your character's maximum speed too many times, the system will first warn you, then teleport you back to a safe location, and eventually disconnect repeat offenders. It also protects against chat spam by limiting how fast you can send messages or use commands. The system uses a graduated response - minor violations get warnings, while serious or repeated violations result in automatic bans. This ensures that legitimate players can enjoy the game without interference from cheaters, while giving fair warnings to players who might have connection issues.
+
 The Security & Anti-Cheat System provides comprehensive protection against player exploitation through real-time monitoring, violation detection, and automated response mechanisms.
 
 ## Core Components

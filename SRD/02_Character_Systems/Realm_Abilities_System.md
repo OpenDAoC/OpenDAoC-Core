@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: Realm Abilities are your endgame character advancement after reaching level 50. Earned through RvR combat, you spend Realm Points to buy powerful passive bonuses like increased stats and damage, or active abilities like temporary speed boosts and crowd control immunity. Every class gets a unique RR5 ability at realm rank 5.
+
 The Realm Abilities (RA) system provides character advancement beyond level 50 through Realm Points earned in RvR combat. Players can purchase passive and active abilities that enhance their characters' capabilities across all aspects of gameplay.
 
 ## Core Mechanics

@@ -7,6 +7,9 @@
 - **Implementation**: Stable
 
 ## Overview
+
+**Game Rule Summary**: The door system manages all the interactive doors you encounter throughout DAoC, from simple dungeon doors to massive keep gates. Most doors open when you interact with them and automatically close after 5 seconds. Some doors can be locked (requiring keys) or damaged by attacks - if a door takes enough damage, it will break open and stay open until it repairs itself over time. Keep doors are special: friendly players can use them as teleporters to quickly move inside keeps, while enemy doors can be attacked and destroyed during sieges. Relic doors are the strongest and protect the most valuable artifacts in the game. Understanding door mechanics is essential for dungeon exploration, keep warfare, and general navigation throughout the world.
+
 The door system manages all interactive doors in the game including regular doors, keep doors, and special relic gates. Doors can be opened/closed, damaged, locked, and have specific behaviors based on their type and location.
 
 ## Core Mechanics

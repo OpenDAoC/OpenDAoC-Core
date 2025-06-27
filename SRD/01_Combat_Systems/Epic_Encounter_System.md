@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Epic bosses are the ultimate raid challenges with multiple phases, environmental hazards, and coordinated mechanics that require large groups to defeat. These encounters feature complex behaviors like spawning minions, changing abilities as they take damage, and creating environmental dangers that test your group's coordination and positioning skills.
+
 The Epic Encounter System provides sophisticated boss mechanics for high-level raid content. This system implements complex multi-phase encounters with custom AI, environmental effects, and coordinated mechanics requiring group coordination.
 
 ## Core Architecture

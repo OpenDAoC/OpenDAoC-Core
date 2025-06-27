@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The component system is the foundation that allows your character to do multiple things at once - like casting a spell while moving, or having buffs active during combat. Each activity (attacking, casting, moving) gets its own "component" that tracks its progress independently, making gameplay smooth and responsive.
+
 OpenDAoC's Entity Component System (ECS) architecture separates data (components) from behavior (services), enabling high-performance parallel processing of game entities. This document covers the complete component system, lifecycle management, and all component types used throughout the server.
 
 ## Component Architecture

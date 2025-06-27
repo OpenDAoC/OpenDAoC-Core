@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Merchant & Trading System lets you buy items from NPCs and trade safely with other players. Different types of merchants sell different things - equipment merchants have weapons and armor, supplies merchants sell arrows and reagents, and special merchants accept alternative currencies like bounty points. Prices can vary based on your reputation and supply/demand. Player-to-player trading uses a secure trade window where both players must accept before anything changes hands, preventing scams. You can also set up consignment merchants in houses to sell items to other players even when you're offline, with the merchant taking a small commission on sales.
+
 The Merchant & Trading System manages all NPC-based commerce, dynamic pricing, stock management, and player-to-player trading mechanics. This system forms the economic foundation of the game world.
 
 ## Core Architecture

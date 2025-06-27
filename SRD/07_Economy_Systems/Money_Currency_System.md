@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: DAoC uses a traditional tiered money system with copper, silver, gold, platinum, and mithril coins. 100 copper equals 1 silver, 100 silver equals 1 gold, 1000 gold equals 1 platinum, and 1000 platinum equals 1 mithril. Besides regular money, there are special currencies like bounty points (earned in RvR), realm points (also from RvR), and various item-based currencies like aurulite and dragon scales. Money drops from monsters, quest rewards, and selling items to merchants. The game also has guild dues that automatically take a percentage of your earnings for your guild's bank account.
+
 DAoC uses a multi-tiered currency system with standard money (copper through mithril) and various alternative currencies for special purchases. The system handles conversion, trading, and various economic interactions.
 
 ## Core Mechanics

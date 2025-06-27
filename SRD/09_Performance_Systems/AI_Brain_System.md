@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The AI Brain system controls how NPCs behave and react to players. Each NPC has a "brain" that determines if they're aggressive, how they detect enemies, and what they do in combat. Aggressive NPCs will attack you when you get within their aggro range, and they remember who has done the most damage to them (threat/aggro). NPCs follow priority rules: they target whoever has done the most damage recently, but being closer makes you more threatening. When you attack an NPC, nearby NPCs of the same type might join the fight (bring-a-friend). Pets and guards have special AI that makes them follow commands or protect areas. The smarter the NPC, the more often their brain "thinks" about what to do next.
+
 The AI Brain system manages NPC behavior through Finite State Machines (FSM) and intelligent target selection. Each NPC has a brain that controls movement, combat decisions, spell casting, and social interactions with players and other NPCs.
 
 ## Core Architecture

@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Your character has eight core attributes that determine everything from combat damage to spell power. Strength affects melee damage, Constitution gives hit points, Dexterity helps with casting speed, and Quickness increases attack speed. Your race and class determine which stats grow fastest as you level.
+
 The character stat system manages eight primary attributes that affect combat effectiveness, spell power, and survivability. Stats are determined by race, increased through leveling, and modified by items, buffs, and abilities.
 
 ## Core Mechanics

@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: Server rules and configuration determine the core gameplay experience - from experience rates and PvP rules to death penalties and cross-realm interaction. Administrators can customize these settings to create different server types like pure PvE, hardcore PvP, or casual-friendly servers that match their community's preferences.
+
 The Server Rules and Configuration System provides flexible server behavior control through property-based configuration and rule-based server types. It enables administrators to customize gameplay mechanics, damage rates, progression speed, and server-specific features.
 
 ## Core Architecture

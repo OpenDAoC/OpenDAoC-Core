@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The siege warfare system provides the massive weapons and tactics needed to assault and defend keeps in Realm vs Realm warfare. To break into an enemy keep, you'll need rams to smash down the heavy doors - the more players helping push the ram, the faster it moves and hits harder. For long-range destruction, siege weapons like catapults and trebuchets can devastate enemy fortifications and siege equipment from a safe distance, while ballistas provide precise targeting. Defenders can use the keep's built-in siege weapons to rain destruction on attackers. Siege weapons require coordination, positioning, and protection since they're vulnerable to enemy attacks. Mastering siege warfare is essential for successful keep captures and creating the epic large-scale battles that define DAoC's RvR experience.
+
 The siege warfare system allows players to attack and defend keeps using specialized siege weapons. These include rams for doors, and ranged siege weapons like catapults, trebuchets, and ballistas for destroying fortifications and enemy siege equipment.
 
 ## Core Mechanics

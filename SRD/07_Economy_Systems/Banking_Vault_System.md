@@ -7,6 +7,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Banking & Vault System provides secure storage for your money and items through various vault types. Personal vaults store 40 items and are accessible from any vault keeper. Guild banks hold shared money that officers can deposit and withdraw, with automatic dues collection from member earnings. House vaults provide large storage (400 items across 4 vaults) that can be shared with friends and guild members based on permissions. Account vaults let you share 200 items between all your characters. Consignment merchants in houses let you sell items to other players even when offline, keeping the money safe until you collect it. All vault operations are logged and protected against duplication or loss.
+
 The Banking & Vault System provides secure storage for player money and items through multiple vault types including personal vaults, guild banks, housing vaults, account vaults, and specialized storage systems.
 
 ## Core Mechanics

@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Service utilities handle timing coordination and error recovery across all game systems, ensuring consistent performance and preventing crashes. When something goes wrong with combat, spells, or movement, these utilities safely stop the broken action and keep the game running smoothly without affecting other players.
+
 The ECS Service Utils System provides essential utilities for service management, timing coordination, exception handling, and tick validation across all ECS services. This system ensures consistent behavior, error recovery, and timing accuracy throughout the Entity Component System.
 
 ## Core ServiceUtils Functions

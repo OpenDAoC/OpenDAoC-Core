@@ -7,6 +7,9 @@
 - **Implementation**: Stable
 
 ## Overview
+
+**Game Rule Summary**: The mission system provides dynamic, repeatable adventures that scale with your level and group size. Mission Masters in major cities offer three types of missions: personal missions for solo players, group missions for parties, and realm missions for large-scale objectives. Most missions involve clearing dungeons, killing specific creatures, or defeating bosses. Unlike regular quests, missions are generated content that changes each time, offering consistent experience and money rewards. Group missions scale up the difficulty but provide better rewards for all members. Missions have time limits (usually 2 hours) and you can only have one active mission at a time.
+
 The mission system provides dynamic, repeatable objectives for solo players, groups, and realms. Missions are generated content that scales with player level and party composition, offering alternative advancement paths.
 
 ## Core Mechanics

@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: The Property Calculator System is the mathematical engine that determines all your character's stats - your strength, hit points, resistances, and every other number you see on your character sheet. It combines your base racial stats, level progression, equipment bonuses, spell buffs, realm abilities, and debuffs using complex formulas to calculate your final values. Understanding this system helps explain why your strength might show as 150 (combining your base 75, +35 from equipment, and +40 from buffs), or why resistances from different sources stack differently than damage bonuses. The system ensures that different types of bonuses interact properly - for example, debuffs are most effective against your buffs but only half as effective against your base stats and equipment. This creates the strategic depth where buff management and equipment choices significantly impact your character's effectiveness.
+
 The Property Calculator System is the core engine for all statistical calculations in OpenDAoC. It provides a modular, extensible framework for computing character stats, combat values, resistances, and special properties with proper bonus stacking, capping, and interaction rules.
 
 ## Core Architecture

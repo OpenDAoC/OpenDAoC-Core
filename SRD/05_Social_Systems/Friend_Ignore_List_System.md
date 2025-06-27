@@ -6,11 +6,15 @@
 
 ## Overview
 
+**Game Rule Summary**: The friend and ignore list systems help you manage your social connections in the game. Adding someone to your friend list lets you see when they're online or offline and easily find them. Adding someone to your ignore list blocks them from sending you private messages, which is useful for dealing with harassment or spam. These tools help you build positive relationships while filtering out unwanted communication.
+
 The Friend & Ignore List system allows players to manage social connections and control communication. Friends receive online/offline notifications and can be easily tracked, while ignored players cannot send messages to the ignoring player.
 
 ## Core Mechanics
 
 ### Friend List System
+
+**Game Rule Summary**: Your friend list tracks people you want to stay connected with. When friends log in or out, you get notifications so you know when they're available to play. You can see their current level, class, and location, making it easy to coordinate activities. There's no limit to how many friends you can have, and you can add people even when they're offline if you know their exact name.
 
 #### Storage & Management
 ```csharp
@@ -104,6 +108,8 @@ private void NotifyPlayerFriendsExitingGame(GamePlayer player)
 
 ### Ignore List System
 
+**Game Rule Summary**: The ignore list lets you block unwanted communication from specific players. When you ignore someone, they can't send you private messages, but you can still see their public chat in areas like broadcast or advice channels. This system helps you deal with harassment, spam, or just people you don't want to interact with. Guild and group chat aren't affected by ignore lists, so you can still work together when necessary.
+
 #### Storage & Management
 ```csharp
 // Stored as ArrayList, serialized to string array
@@ -167,6 +173,8 @@ public bool IsIgnoring(GamePlayer player)
 ```
 
 ### Commands
+
+**Game Rule Summary**: Simple commands let you manage your social lists. Type `/friend` to see who's online, `/friend playername` to add or remove someone, and `/ignore playername` to block or unblock someone. You can also use `/friend window` to open a more detailed social interface that shows more information about your friends and their status.
 
 #### Friend Commands
 | Command | Description |

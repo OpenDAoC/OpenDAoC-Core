@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The Transportation System provides multiple ways to travel efficiently around DAoC's vast world. You can summon your own personal mount for faster overland travel, buy horse route tickets from stable masters for automated rides between cities, summon boats for water travel, and use taxi services for convenient point-to-point transport. Each method has different speeds, costs, and restrictions - personal mounts are versatile but can't be used in combat or while carrying relics, while taxi services are automated but follow fixed routes. Understanding when and how to use each transport option greatly improves your mobility and gameplay experience.
+
 The Transportation System provides automated and player-controlled travel options including personal mounts, horse route tickets, boat systems, and taxi services. The system integrates multiple transport modes to facilitate efficient movement across the game world.
 
 ## Core Architecture

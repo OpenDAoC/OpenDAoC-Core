@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Server administration provides Game Masters and administrators with tools to help players, manage the game world, and maintain fair play. GMs can assist with stuck characters, investigate cheating, create events, and ensure everyone has a positive gaming experience through various support and management commands.
+
 The Server Administration System provides comprehensive management tools for GameMasters and Administrators to maintain server operations, manage players, create content, and monitor server health. It includes command frameworks, player management, object manipulation, and audit logging capabilities.
 
 ## Core Architecture

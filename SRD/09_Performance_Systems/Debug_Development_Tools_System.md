@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Debug and development tools help Game Masters and administrators monitor server performance and diagnose issues that affect gameplay. These tools track system health, identify lag sources, and ensure the game runs smoothly for all players. Most debugging happens invisibly behind the scenes to maintain optimal performance.
+
 The Debug & Development Tools System provides comprehensive diagnostic capabilities for OpenDAoC server development, testing, and performance optimization. It includes real-time performance monitoring, ECS debugging, script diagnostics, and advanced profiling tools that enable developers to analyze server behavior and optimize performance.
 
 ## Core Architecture

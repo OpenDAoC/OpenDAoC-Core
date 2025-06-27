@@ -6,6 +6,9 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: The database system saves all your character information, items, guild data, and game progress permanently. It ensures that when you log out and back in, everything is exactly as you left it - your level, equipment, money, and achievements are all safely stored and quickly retrieved.
+
 The Database ORM System provides a sophisticated Object-Relational Mapping layer for OpenDAoC data persistence. It supports multiple database backends (MySQL, SQLite), automated table management, transaction handling, and asynchronous operations with comprehensive caching and performance optimizations.
 
 ## Core Architecture

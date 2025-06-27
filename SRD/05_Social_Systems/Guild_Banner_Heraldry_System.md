@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: Guilds can design custom emblems displayed on cloaks and shields, and high-level guilds can purchase powerful guild banners that provide combat bonuses to group members in RvR zones. These banners make your group a high-priority target but offer significant tactical advantages - if the banner carrier dies, enemies can capture it as a trophy while your guild faces a cooldown before purchasing a new one.
+
 The Guild Banner & Heraldry System manages visual guild representation through emblems and banners. Guilds can design custom emblems displayed on equipment and summon powerful guild banners in RvR combat that provide group benefits and serve as tactical objectives.
 
 ## Core Architecture

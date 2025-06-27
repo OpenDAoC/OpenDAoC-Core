@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The script extension system allows server administrators to add custom content, events, and features without restarting the server. This enables dynamic updates like special events, new quests, custom NPCs, and unique server features that enhance gameplay while maintaining server stability and performance.
+
 The Script Extension System enables dynamic loading, compilation, and execution of C# scripts at runtime, providing extensibility for OpenDAoC without requiring server restarts. It supports hot-reloading of scripts, event handling, command creation, and complete game logic customization through a sophisticated compilation and execution framework.
 
 ## Core Architecture

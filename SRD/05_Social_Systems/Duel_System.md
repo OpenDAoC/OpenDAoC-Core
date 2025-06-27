@@ -7,11 +7,15 @@
 
 ## Overview
 
+**Game Rule Summary**: The duel system lets you challenge other players from your own realm to safe, consensual combat. Duels are a way to test your fighting skills, settle disputes, or just have fun without the risks of real PvP. When you duel, there are no death penalties, no item loss, and both players get fully healed afterward. The duel ends when someone reaches 10% health or gives up, making it a honorable contest rather than a fight to the death.
+
 The duel system allows players to engage in consensual one-on-one combat without death penalties. Duels provide a safe way to test skills and settle disputes within the same realm.
 
 ## Core Mechanics
 
 ### Duel Initiation
+
+**Game Rule Summary**: To start a duel, you must be close to another player from your realm and both of you must be alive and not already fighting. You send a challenge with `/duel <playername>` and they must accept with `/duel accept`. Duels can only happen between players from the same realm - you can't challenge enemies from other realms.
 
 #### Challenge Command
 ```csharp
@@ -45,6 +49,8 @@ public void DuelChallenge(GamePlayer target)
 
 ### Duel States
 
+**Game Rule Summary**: Duels go through several stages from challenge to completion. First you challenge someone, then they accept, then there's a countdown period where you can prepare, then the actual fighting begins. During the countdown, you can buff yourself and get ready, but you can't move or attack until the "FIGHT!" message appears.
+
 #### Player Duel Status
 ```csharp
 public enum eDuelStatus
@@ -66,6 +72,8 @@ public enum eDuelStatus
 5. **Duel Ending** → Reset → **No Duel**
 
 ### Duel Rules
+
+**Game Rule Summary**: During a duel, you can only attack your opponent and they can only attack you. Other players can't interfere or help either side. You can use all your normal abilities, items, and pets, but you can't do things like join groups, trade, or go invisible again if you're a stealth class. The duel is meant to be a fair one-on-one test of skill.
 
 #### Combat Restrictions
 ```csharp
@@ -97,6 +105,8 @@ public bool CanAttack(GameLiving target)
 
 ### Duel Countdown
 
+**Game Rule Summary**: After both players accept the duel, there's a 10-second countdown where you're positioned facing each other. During this time, you can cast buffs and prepare for battle, but you can't move or attack. When the countdown reaches zero, the duel officially begins and you can start fighting.
+
 #### Start Sequence
 ```csharp
 private void StartDuelCountdown()
@@ -120,6 +130,8 @@ private void StartDuelCountdown()
 - Buffs/preparations allowed
 
 ### Victory Conditions
+
+**Game Rule Summary**: A duel ends when one player reaches 10% health, not when they die. You can also surrender at any time by typing `/yield`. If either player leaves the area, disconnects, or accidentally dies, the duel ends automatically. This keeps duels honorable and prevents cheap victories through tricks or technical problems.
 
 #### Duel Ends When
 1. **Health Threshold**: Player reaches 10% health
@@ -145,6 +157,8 @@ public void CheckDuelVictory()
 ```
 
 ### Duel Completion
+
+**Game Rule Summary**: When a duel ends, both players are immediately restored to full health and mana. The winner is announced to everyone nearby, but there are no other rewards or penalties. The loser doesn't lose experience, items, or anything else - it's purely for sport and honor. You can duel again after a short cooldown period.
 
 #### End of Duel Process
 ```csharp

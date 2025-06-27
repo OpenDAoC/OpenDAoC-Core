@@ -6,11 +6,17 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: The command system is how you interact with the game through typed commands that start with a slash (/). Every player can use basic commands like `/say` to talk, `/who` to see who's online, or `/quit` to leave the game. Game Masters and Administrators have access to additional powerful commands for managing the game world and helping players. Commands are automatically protected against spam and have built-in help systems to show you how to use them properly.
+
 The Command System provides a flexible framework for handling slash commands with privilege level enforcement, spam protection, and automatic command discovery. It supports player commands, GM commands, and admin commands with comprehensive help and syntax validation.
 
 ## Core Architecture
 
 ### Command Attributes
+
+**Game Rule Summary**: Commands are organized by privilege level - what you can access depends on whether you're a regular player, Game Master, or Administrator. Each command has built-in help text that explains what it does and how to use it. The system automatically prevents you from using commands you don't have permission for.
+
 Commands are registered using attributes that define their properties:
 
 ```csharp
@@ -47,6 +53,9 @@ public class PlayerCommandHandler : AbstractCommandHandler, ICommandHandler
 ```
 
 ### Privilege Levels
+
+**Game Rule Summary**: There are three main levels of access in the game. Regular players (Level 1) can use basic social and gameplay commands. Game Masters (Level 2) can help other players and manage NPCs and events. Administrators (Level 3) have full control over the server and can manage accounts and system settings. You can't use commands above your privilege level.
+
 ```csharp
 public enum ePrivLevel : uint
 {
@@ -57,6 +66,9 @@ public enum ePrivLevel : uint
 ```
 
 ### Command Handler Interface
+
+**Game Rule Summary**: All commands include spam protection to prevent flooding the chat with repeated commands. Most commands have a half-second delay between uses, though Game Masters and Administrators can bypass these restrictions when needed for their duties.
+
 ```csharp
 public interface ICommandHandler
 {
@@ -78,7 +90,8 @@ public abstract class AbstractCommandHandler
 ## Command Discovery and Registration
 
 ### Automatic Registration
-Commands are automatically discovered and registered during server startup:
+
+**Game Rule Summary**: The game automatically discovers and loads all available commands when the server starts. You don't need to manually register new commands - they're detected and made available as soon as the server loads them.
 
 ```csharp
 public static bool LoadCommands()
@@ -115,7 +128,8 @@ public static bool LoadCommands()
 ```
 
 ### Command Guessing
-Supports partial command matching:
+
+**Game Rule Summary**: You don't have to type complete command names. If you type `/who` it works, but you can also just type `/wh` if there's no other command that starts with those letters. The system will find the command you meant and execute it, making commands faster and easier to use.
 
 ```csharp
 public static GameCommand GuessCommand(string cmd)
@@ -139,6 +153,9 @@ public static GameCommand GuessCommand(string cmd)
 ## Command Processing
 
 ### Command Parsing
+
+**Game Rule Summary**: Commands can handle complex arguments including quoted text. If you need to include spaces in a command argument, just put quotes around it. For example, `/tell "Player Name" hello there` will work even if the player's name has spaces.
+
 ```csharp
 public static string[] ParseCmdLine(string cmdLine)
 {
@@ -176,6 +193,9 @@ public static string[] ParseCmdLine(string cmdLine)
 ```
 
 ### Permission Checking
+
+**Game Rule Summary**: When you try to use a command, the system first checks if you have the right privilege level. If you don't have access, it acts like the command doesn't exist rather than telling you it's forbidden. This prevents players from discovering admin commands by trial and error.
+
 ```csharp
 public static bool HandleCommand(GameClient client, string cmdLine)
 {
@@ -203,6 +223,9 @@ public static bool HandleCommand(GameClient client, string cmdLine)
 ```
 
 ### Command Execution
+
+**Game Rule Summary**: All GM and Admin commands are automatically logged for security and auditing purposes. This helps track what staff members are doing and can help diagnose problems or investigate issues. Regular player commands are not logged to preserve privacy.
+
 ```csharp
 private static void ExecuteCommand(GameClient client, GameCommand myCommand, string[] pars)
 {
@@ -227,6 +250,9 @@ private static void ExecuteCommand(GameClient client, GameCommand myCommand, str
 ## Spam Protection
 
 ### Command Spam Detection
+
+**Game Rule Summary**: To prevent spam and flooding, most commands have a built-in delay between uses. Regular players must wait about half a second between commands, but Game Masters and Administrators can bypass this restriction when they need to perform their duties quickly.
+
 ```csharp
 public static bool IsSpammingCommand(GamePlayer player, string commandName, int delay = 500)
 {
@@ -263,6 +289,9 @@ COMMAND_SPAM_DELAY = 500  # Default 500ms between commands
 ## Command Categories
 
 ### Player Commands
+
+**Game Rule Summary**: Every player has access to dozens of basic commands for communication, information, and gameplay. You can talk in various channels, check game status, manage your character, and interact socially with other players. These commands cover everything you need for normal gameplay.
+
 Available to all players (ePrivLevel.Player):
 
 ```csharp
@@ -291,6 +320,9 @@ Available to all players (ePrivLevel.Player):
 ```
 
 ### GM Commands
+
+**Game Rule Summary**: Game Masters get access to additional commands for helping players and managing game events. They can modify player characters, create items and NPCs, teleport around the world, and control various game systems. These commands are meant for customer service and event management.
+
 Available to Game Masters (ePrivLevel.GM):
 
 ```csharp
@@ -315,6 +347,9 @@ Available to Game Masters (ePrivLevel.GM):
 ```
 
 ### Admin Commands
+
+**Game Rule Summary**: Administrators have the most powerful commands for managing the entire server. They can shut down the server, manage player accounts, broadcast messages to everyone, and modify core game settings. These commands can affect the entire game world and all players.
+
 Available to Administrators (ePrivLevel.Admin):
 
 ```csharp
@@ -339,7 +374,8 @@ Available to Administrators (ePrivLevel.Admin):
 ## Single Permission System
 
 ### Individual Command Access
-Allows granting specific commands to players regardless of privilege level:
+
+**Game Rule Summary**: Sometimes specific players need access to individual commands without getting full GM or Admin privileges. The permission system allows granting single commands to specific players. For example, a player might get access to `/broadcast` for special events without getting all Admin powers.
 
 ```csharp
 public class SinglePermission
@@ -377,7 +413,8 @@ public class SinglePermission
 ```
 
 ### Account-Wide Permissions
-Permissions can be granted to entire accounts:
+
+**Game Rule Summary**: Permissions can be granted to entire accounts rather than individual characters. This means if you have permission to use a command, all your characters on that account can use it. This is convenient for players who have multiple characters but need the same special permissions.
 
 ```csharp
 public static void addPermissionAccount(GamePlayer player, string command)
@@ -393,6 +430,9 @@ public static void addPermissionAccount(GamePlayer player, string command)
 ## Help System
 
 ### Command Help
+
+**Game Rule Summary**: You can get help with any command by typing `/cmdhelp` to see all available commands, or `/cmdhelp <command>` to get detailed help for a specific command. The help system only shows you commands you actually have permission to use, so you won't see GM commands if you're a regular player.
+
 ```csharp
 [CmdAttribute("&cmdhelp", ePrivLevel.Player, "Show command help", "/cmdhelp [command]")]
 public class CmdHelpCommandHandler : AbstractCommandHandler, ICommandHandler
@@ -427,6 +467,9 @@ public class CmdHelpCommandHandler : AbstractCommandHandler, ICommandHandler
 ```
 
 ### Syntax Display
+
+**Game Rule Summary**: Every command includes built-in help that shows you the correct syntax and examples of how to use it. If you use a command incorrectly, it will often show you the proper format automatically.
+
 ```csharp
 public virtual void DisplaySyntax(GameClient client)
 {
@@ -447,7 +490,8 @@ public virtual void DisplaySyntax(GameClient client)
 ## Localization Support
 
 ### Translated Commands
-Commands support localized descriptions and usage text:
+
+**Game Rule Summary**: The command system supports multiple languages. Command descriptions and help text can be translated into different languages based on your account settings. This makes the game more accessible to international players who might not speak English as their primary language.
 
 ```csharp
 [CmdAttribute("&advice", new[] {"&adv"}, ePrivLevel.Player,
@@ -467,7 +511,8 @@ public class AdviceCommandHandler : AbstractCommandHandler, ICommandHandler
 ```
 
 ### Language Files
-Command text stored in language files:
+
+**Game Rule Summary**: All command text is stored in language files that can be translated. When you see command help or error messages, they're pulled from these files in your preferred language. This system allows the game to support multiple languages without changing the core code.
 
 ```ini
 # EN/Commands/PlayerCommands.txt
@@ -479,6 +524,9 @@ PLCommands.Advice.Msg.Welcome = Welcome to the advice system!
 ## Error Handling
 
 ### Command Not Found
+
+**Game Rule Summary**: If you type a command that doesn't exist, the game will tell you "No such command" rather than trying to guess what you meant. This prevents confusion and makes it clear when you've made a typo or tried to use a command that doesn't exist.
+
 ```csharp
 if (!ScriptMgr.HandleCommand(client, cmdLine))
 {
@@ -490,6 +538,9 @@ if (!ScriptMgr.HandleCommand(client, cmdLine))
 ```
 
 ### Permission Denied
+
+**Game Rule Summary**: If you try to use a command you don't have permission for, the game responds as if the command doesn't exist. This security feature prevents players from discovering what admin commands are available by trying them all. Only commands you can actually use will show up in help or error messages.
+
 ```csharp
 if (client.Account.PrivLevel < myCommand.m_lvl)
 {

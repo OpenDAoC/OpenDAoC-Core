@@ -7,6 +7,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The boat system lets you own and control personal watercraft for traveling across lakes, rivers, and seas in DAoC. You need a boat item in your inventory to summon your vessel, and you must be swimming in water to call it. Once summoned, you become the captain and can invite other players to board as passengers. You control the boat by clicking on the water where you want to go - the boat will automatically sail there. Different boat types have different speeds and passenger capacities, from small personal skiffs to large guild warships. Boats are persistent, so when you unsummon yours, it remembers its position for next time. This system provides an immersive way to travel across water zones and creates opportunities for group adventures and naval coordination.
+
 The boat system allows players to own, summon, and control various watercraft for travel across water zones. Boats range from small personal skiffs to large guild warships.
 
 ## Core Mechanics

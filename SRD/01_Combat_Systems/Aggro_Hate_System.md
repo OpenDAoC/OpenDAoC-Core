@@ -5,6 +5,9 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: Every monster keeps a "hate list" of everyone who has attacked or threatened it, with the person who has done the most damage (adjusted for distance) becoming the primary target. You can use taunts to force monsters to attack you, or use abilities like Protect to reduce how much other players appear to threaten the monster.
+
 The aggro/hate system determines which targets NPCs will attack. Aggro is tracked per-target and modified by distance, with the highest effective aggro determining the current attack target.
 
 ## Core Mechanics

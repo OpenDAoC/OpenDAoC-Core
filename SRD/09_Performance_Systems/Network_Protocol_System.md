@@ -6,6 +6,8 @@
 
 ## Overview
 
+**Game Rule Summary**: The network protocol system handles all communication between your game client and the server, ensuring your actions are transmitted quickly and reliably. It manages data compression, security, and error correction to provide smooth, responsive gameplay with minimal lag, even during large battles or busy server periods.
+
 The Network Protocol System provides high-performance, bidirectional client-server communication for OpenDAoC. It manages packet encoding/decoding, reliability, security, and protocol versioning through a sophisticated packet handler architecture with support for both TCP and UDP protocols.
 
 ## Core Architecture
