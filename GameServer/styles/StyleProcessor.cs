@@ -304,14 +304,7 @@ namespace DOL.GS.Styles
 			style.OnStyleExecuted?.Invoke(living);
 
 			if (weapon != null)
-			{
-				if (weapon.Object_Type == (int) eObjectType.Shield)
-					animationId = (weapon.Hand != 1) ? style.Icon : style.TwoHandAnimation; // 2h shield?
-
-				// Reduce players endurance. Full endurance cost if conditions aren't met too.
-				if (player != null)
-					player.Endurance -= CalculateEnduranceCost(living, style, weapon.SPD_ABS);
-			}
+				living.Endurance -= CalculateEnduranceCost(living, style, weapon.SPD_ABS);
 
 			AttackData lastAttackData = living.attackComponent.attackAction.LastAttackData;
 			bool perfect; // Whether this is a perfectly executed style or not.
