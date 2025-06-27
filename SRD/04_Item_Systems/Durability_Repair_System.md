@@ -6,11 +6,15 @@
 
 ## Overview
 
+**Game Rule Summary**: Every time you use equipment in combat, it takes damage and becomes less effective. Items have both condition (current damage) and durability (how many times they can be repaired). When your gear gets damaged, you must visit a blacksmith or repair it yourself to restore its effectiveness. Items that reach 0 condition stop working entirely until repaired. Understanding durability helps you maintain your equipment and avoid being caught with broken gear in important situations.
+
 The durability system tracks item wear and degradation through use. Items have both Condition (current state) and Durability (maximum possible repairs), requiring maintenance through NPC smiths or player repairs.
 
 ## Core Mechanics
 
 ### Durability Properties
+
+**Game Rule Summary**: Items have two important numbers for damage tracking. Condition represents the current state of the item - new items start at 100% and go down to 0% as they're used. Durability represents how many times the item can be repaired - each repair uses some durability, and when it reaches zero, the item can never be repaired again and becomes permanently damaged.
 
 #### Item Condition
 ```csharp
@@ -32,6 +36,8 @@ public bool IsNotLosingDur { get; set; }
 ```
 
 ### Condition Loss
+
+**Game Rule Summary**: Your equipment takes damage every time you fight, with about a 5% chance per hit to lose condition. Weapons take damage when you attack, while armor takes damage when you get hit. The amount of damage depends on the level difference between you and your opponent - fighting higher level enemies damages your gear faster. Items below 91% condition take double damage, so it's important to repair them before they get too damaged.
 
 #### Combat Damage (Weapons)
 ```csharp
@@ -62,6 +68,9 @@ public virtual void OnStruckByEnemy(GameLiving owner, GameLiving enemy)
 ```
 
 #### Condition Thresholds
+
+**Game Rule Summary**: The game warns you when your equipment needs attention. At 90% condition, items "could be in better condition." At 80%, they're "in need of repairs." At 70%, they're "in dire need of repairs." When items reach 0% condition, they stop working completely until repaired, so don't ignore these warnings.
+
 - **90%**: "could be in better condition"
 - **80%**: "in need of repairs"
 - **70%**: "in dire need of repairs"
@@ -70,6 +79,8 @@ public virtual void OnStruckByEnemy(GameLiving owner, GameLiving enemy)
 ### Repair System
 
 #### NPC Repair (Blacksmith)
+
+**Game Rule Summary**: NPC blacksmiths can fully repair your items for a gold cost based on the item's value and how damaged it is. More expensive items cost more to repair, and more damaged items cost more. Each repair uses up some of the item's durability - when durability reaches zero, the blacksmith will warn you that they can't repair the item again. You can also use "repair all" to fix all your damaged equipment at once, but this adds a 20% tax to the total cost.
 
 **Repair Cost Formula**:
 ```csharp
@@ -106,6 +117,8 @@ else
 
 #### Player Repair (Crafting)
 
+**Game Rule Summary**: Players with appropriate crafting skills can repair items themselves, but it's much less effective than NPC repair. You need the right secondary crafting skill for the item type, and your success chance depends on your skill level versus the item level. Player repairs only restore about 1% of the item's condition per attempt, so it takes many attempts to fully repair an item. However, player repair still uses durability, so it's mainly useful for emergency repairs.
+
 **Success Chance**:
 ```csharp
 protected static int CalculateSuccessChances(GamePlayer player, DbInventoryItem item)
@@ -128,6 +141,8 @@ int toRecoverCond = (int)((item.MaxCondition - item.Condition) * 0.01 / item.Max
 
 ### Repair All Feature
 
+**Game Rule Summary**: The "repair all" feature lets you fix all your damaged equipment with one command, but charges a 20% tax on top of the normal repair costs. This is convenient when you have multiple damaged items, but costs more than repairing each item individually. It's a trade-off between convenience and cost.
+
 #### Cost Calculation
 ```csharp
 private long CalculateCost(DbInventoryItem item)
@@ -144,6 +159,8 @@ private long CalculateCost(DbInventoryItem item)
 ```
 
 ### Keep/Siege Repair
+
+**Game Rule Summary**: Keep doors, walls, and siege equipment can be repaired by players using wooden boards. Higher level structures require more wood and better quality wood types. Your woodworking skill determines success chance and how much damage you can repair. This is crucial for maintaining defenses during sieges and keeping your realm's fortifications in good condition.
 
 #### Wood Requirements
 | Object Level | Wood Units Needed |
@@ -192,6 +209,8 @@ GameSiegeWeapon: 15% of max health (max 3 repairs)
 
 ### Item Effectiveness
 
+**Game Rule Summary**: Damaged items are less effective than undamaged ones. Both quality and condition multiply together to determine how well an item works. A 50% quality, 80% condition item only works at 40% effectiveness. This affects weapon damage, armor protection, and sometimes magical bonuses. Keeping your gear repaired is essential for peak performance.
+
 #### Quality and Condition Impact
 ```csharp
 // Item effectiveness calculation
@@ -216,6 +235,8 @@ else if (ConditionPercent == 70)
 ```
 
 ### Special Cases
+
+**Game Rule Summary**: Some special items never lose durability when repaired, meaning they can be maintained indefinitely. Most normal items will eventually become unrepairable after many repair cycles. Stacked items must be unstacked before repair, and some item types like consumables and instruments cannot be repaired at all.
 
 #### Non-Decaying Items
 ```csharp

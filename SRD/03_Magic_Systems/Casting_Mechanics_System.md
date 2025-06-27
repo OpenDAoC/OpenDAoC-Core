@@ -5,11 +5,16 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The casting system controls how you actually cast spells - how long they take, how much mana they cost, whether you can be interrupted, and how far they can reach. Unlike swinging a weapon which happens instantly, spells require time to cast and can be disrupted by taking damage or moving. You also have limited concentration to maintain ongoing spells, and some spells have special requirements like instruments for songs or focus items for reduced mana costs.
+
 The casting mechanics system manages all aspects of spell casting including cast time calculation, power costs, interruption mechanics, concentration management, and spell range calculations. It handles both player and NPC casting with various modifiers and special cases.
 
 ## Core Mechanics
 
 ### Cast Time Calculation
+
+**Game Rule Summary**: Cast time is how long you must stand still and channel before a spell takes effect. Your Dexterity and casting speed bonuses from items make you cast faster, but there's a limit - spells can't be cast faster than 40% of their base time. Some spells are instant, while special abilities like Quick Cast let you cast any spell instantly at the cost of double mana.
 
 #### Base Cast Time
 ```csharp
@@ -39,6 +44,8 @@ FinalCastTime = Max(FinalCastTime, MinCastTime)
 **Source**: `GameLiving.cs:CalculateCastingTime()`
 
 ### Power Cost System
+
+**Game Rule Summary**: Every spell consumes mana (power) to cast. Some spells cost a percentage of your total mana pool (dangerous for high-level casters), while others cost a fixed amount. Focus casters can specialize in staff magic to reduce the mana cost of spells in their chosen schools. Special abilities and realm abilities can occasionally make spells cost no mana at all, while Quick Cast always doubles the mana cost.
 
 #### Base Power Calculation
 ```csharp
@@ -70,6 +77,9 @@ if (FocusProperty != eProperty.Undefined)
 ```
 
 #### Power Cost Modifiers
+
+**Game Rule Summary**: Several special abilities can modify mana costs. Quick Cast always doubles the cost, while certain realm abilities like Valhalla's Blessing or Fungal Union can occasionally make spells free. Some Warlock secondary spells are always free when used in combination with primary spells.
+
 1. **Quick Cast**: Doubles power cost
 2. **Valhalla's Blessing**: 75% chance of 0 cost
 3. **Fungal Union**: 50% chance of 0 cost
@@ -79,6 +89,8 @@ if (FocusProperty != eProperty.Undefined)
 **Source**: `SpellHandler.cs:PowerCost()`
 
 ### Concentration System
+
+**Game Rule Summary**: Concentration represents your ability to maintain ongoing magical effects. You have a limited concentration pool that increases with level, and each active spell that requires concentration uses some of it. If you don't have enough concentration, you can't cast new concentration spells. Some concentration spells also require you to stay within range of your target or they'll drop automatically.
 
 #### Concentration Requirements
 ```csharp
@@ -104,6 +116,8 @@ if (Spell.Concentration > 0 && Caster is GamePlayer)
 
 ### Spell Range System
 
+**Game Rule Summary**: Each spell has a maximum range beyond which it won't work. Magical bonuses can extend your spell range, letting you cast from further away. There's always a minimum range of 32 units even with penalties. Self-targeted spells work from any distance, while group spells have a fixed long range to affect party members across the battlefield.
+
 #### Range Calculation
 ```csharp
 Range = Max(32, Spell.Range * GetModified(eProperty.SpellRange) * 0.01)
@@ -124,6 +138,8 @@ Range = Max(32, Spell.Range * GetModified(eProperty.SpellRange) * 0.01)
 **Source**: `SpellHandler.cs:CalculateSpellRange()`
 
 ## Interruption Mechanics
+
+**Game Rule Summary**: Most spells can be interrupted by taking damage, forcing you to start over and waste the mana. Melee attacks always interrupt unless you have special protection, while ranged attacks and spell damage have chances to disrupt your casting. Some spells are uninterruptible, and certain abilities like Mastery of Concentration can make you immune to interruption during casting.
 
 ### Interrupt Timer System
 
@@ -147,6 +163,9 @@ InterruptDuration = Target.SpellInterruptDuration
 - **Distance**: Some spells uninterruptible beyond 200 units
 
 ### Interrupt Timer Mechanics
+
+**Game Rule Summary**: When your spell is interrupted, you enter an interrupt timer during which you cannot start casting new spells. This prevents you from immediately trying to cast again after being disrupted. The timer length depends on what interrupted you and your interrupt duration bonuses.
+
 ```csharp
 if (!Spell.Uninterruptible && !Spell.IsInstantCast)
 {
@@ -164,17 +183,26 @@ if (!Spell.Uninterruptible && !Spell.IsInstantCast)
 ## Special Casting Mechanics
 
 ### Quick Cast System
+
+**Game Rule Summary**: Quick Cast is a special ability that lets you cast your next spell instantly, bypassing the normal cast time. However, it costs double the normal mana and has a long cooldown, so it should be saved for crucial moments when you need to get a spell off immediately despite being under attack.
+
 - **Activation**: Uses QuickCast ability
 - **Benefits**: 0 cast time on next spell
 - **Costs**: Double power consumption
 - **Limitations**: One use per ability cooldown
 
 ### Moving While Casting
+
+**Game Rule Summary**: Normally, moving during a spell's cast time will interrupt it and waste the mana. However, some special spells allow you to move while casting them, giving you tactical mobility during the casting process. These are typically shorter-range or self-targeted spells.
+
 - **Move Cast Property**: `Spell.MoveCast = true`
 - **Restrictions**: Only certain spells allow movement
 - **Interruption**: Moving interrupts normal spells
 
 ### Instrument Requirements (Songs)
+
+**Game Rule Summary**: Bard and Minstrel songs require instruments to reach their full potential. Higher quality and better condition instruments extend song durations significantly, while broken or poor instruments reduce their effectiveness. The instrument's level compared to your character level also affects the bonus, encouraging you to upgrade your instruments as you advance.
+
 ```csharp
 if (Spell.InstrumentRequirement != 0)
 {
@@ -190,6 +218,9 @@ if (Spell.InstrumentRequirement != 0)
 ```
 
 ### Endurance Costs
+
+**Game Rule Summary**: Most spells use mana, but some classes like Savages use endurance instead. These physical-magic hybrids have different resource management, typically using endurance for their magical abilities. Archery spells also use endurance, representing the physical effort of drawing and aiming magical arrows.
+
 ```csharp
 // For non-mana casters (e.g., Savages)
 EnduranceCost = Spell.IsPulsing ? 0 : 5; // Base endurance cost

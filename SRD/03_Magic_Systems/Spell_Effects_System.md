@@ -5,11 +5,16 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: The spell effects system controls how magical enhancements, debuffs, and ongoing spells work on characters. When you cast a buff, debuff, or damage-over-time spell, this system determines whether it stacks with existing effects, how long it lasts, and when it gets replaced by better versions. Understanding effect stacking is crucial for optimizing your magical support and avoiding conflicts between different casters in groups.
+
 The spell effects system manages the application, duration, stacking, and removal of all spell-based effects in the game. It handles buff/debuff stacking through a component-based system, manages concentration effects, and controls effect timers.
 
 ## Core Mechanics
 
 ### Effect Types (eEffect Enum)
+
+**Game Rule Summary**: Effects are organized into categories based on what they do. Positive effects like buffs and healing help you, while negative effects like debuffs and damage-over-time hurt you. Special effects include crowd control that disables you and utility effects that change how other systems work. Each type has its own rules for stacking and interaction with other effects.
 
 #### Positive Effects
 ```csharp
@@ -133,6 +138,8 @@ NPCMezImmunity          // NPC mezz resistance
 
 ### Buff Component System
 
+**Game Rule Summary**: The game organizes buffs and debuffs into different categories that have specific stacking rules. Base buffs like single stat bonuses can be overridden by better versions but don't stack with each other. Spec buffs work differently and can exist alongside base buffs. Debuffs reduce your effectiveness and only the worst one of each type affects you. Understanding these categories helps you know which spells will stack and which will conflict.
+
 #### Bonus Categories
 ```csharp
 public enum eBuffBonusCategory
@@ -147,6 +154,8 @@ public enum eBuffBonusCategory
 ```
 
 #### Component Stacking Rules
+
+**Game Rule Summary**: Different types of magical enhancements follow different stacking rules. Base buffs like single stat increases compete with each other - only the best one applies. Spec buffs stack with base buffs but not with other spec buffs. Debuffs always apply but only the worst one of each type affects you. Special buffs like Paladin chants bypass normal limits and stack with everything. This system prevents players from becoming overpowered by stacking unlimited buffs while still allowing meaningful combinations.
 
 **1. Base Buffs (BaseBuff)**
 - Single stat buffs (Str, Con, Dex, etc.)
@@ -184,6 +193,8 @@ public enum eBuffBonusCategory
 
 ### Effect Stacking Algorithm
 
+**Game Rule Summary**: When multiple casters try to put the same type of effect on you, the game uses specific rules to decide which effect wins. Generally, stronger effects replace weaker ones, and effects from the same caster refresh their duration. If a weaker effect can't replace a stronger one, it becomes "disabled" and waits in the background to activate when the stronger effect ends. This prevents effect spam while ensuring you always have the best possible enhancement.
+
 #### Stacking Decision Process
 For detailed stacking logic, see: [`Effect_Stacking_Logic.md`](Effect_Stacking_Logic.md)
 
@@ -204,6 +215,9 @@ public virtual bool IsBetterThan(ECSGameEffect effect)
 ```
 
 #### Disabled Effects Management
+
+**Game Rule Summary**: When a weaker effect can't replace a stronger one, it goes into a "disabled" state instead of being completely rejected. This means if someone casts a weaker buff on you while you have a stronger one, the weaker buff waits invisibly until the stronger one expires, then automatically activates. This prevents gaps in your magical protection when effects from different casters overlap.
+
 - Worse effects from different casters become disabled
 - Concentration effects disabled when out of range
 - Best disabled effect automatically re-enabled when better effect expires
@@ -216,6 +230,8 @@ public virtual bool IsBetterThan(ECSGameEffect effect)
 - Uses pending effects queue for complex state management
 
 ### Effect Groups
+
+**Game Rule Summary**: Effect groups allow different spells that do similar things to be treated as the same effect for stacking purposes. For example, different strength buffs from different spell lines all belong to the same effect group, so only the best one will apply even if they have different names. This prevents players from stacking multiple similar buffs from different sources.
 
 Effect groups allow different spells to be treated as the same for stacking:
 
@@ -232,6 +248,8 @@ Effect groups allow different spells to be treated as the same for stacking:
 
 ### Concentration Effects
 
+**Game Rule Summary**: Concentration effects are spells that the caster must actively maintain, using their limited concentration points. These effects automatically drop if the caster moves too far away from the target (usually about 5000 units). Casters have a limited number of concentration points, so they can only maintain a few concentration effects at once. This creates strategic choices about which effects to maintain and requires casters to stay relatively close to their allies.
+
 #### Mechanics
 - Limited by caster's concentration points
 - Range check every 2.5 seconds (2500ms)
@@ -247,6 +265,8 @@ Effect groups allow different spells to be treated as the same for stacking:
 ```
 
 ### Pulse Effects
+
+**Game Rule Summary**: Pulse effects are ongoing spells that repeatedly apply their effect over time, like damage-over-time spells or regeneration effects. Each pulse happens at regular intervals - most effects pulse based on their spell definition, but speed debuffs pulse very quickly (4 times per second) to provide smooth movement changes. Some pulse effects like area spells affect multiple targets and are managed by a parent-child system to optimize performance.
 
 #### Pulse Timing
 ```csharp
@@ -270,6 +290,8 @@ NextTick = StartTick + PulseFreq
 - Prevents effect refresh spam
 
 ### Effect Duration
+
+**Game Rule Summary**: Effect duration depends on the base spell duration, your spell duration bonuses, and the target's resistances. Debuffs and crowd control effects last shorter on targets with appropriate resistances. There are minimum and maximum duration limits to prevent effects from being too brief or lasting forever. In RvR, area effect spells have reduced duration on targets further from the center of the effect.
 
 #### Duration Calculation
 ```csharp
@@ -298,6 +320,8 @@ Duration *= DistanceFactor
 - Critical debuffs: Random 10-100% bonus duration
 
 ### Immunity Effects
+
+**Game Rule Summary**: After certain crowd control effects end, you gain temporary immunity to prevent being permanently disabled by repeated applications. Most immunities last 60 seconds (configurable by server), while style-based stuns give immunity for 5 times the stun duration. NPCs have diminishing returns instead of immunity - each successive crowd control effect lasts half as long as the previous one, eventually becoming very brief.
 
 #### Standard Immunities
 ```csharp

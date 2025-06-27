@@ -7,9 +7,14 @@
 - **Implementation**: Stable
 
 ## Overview
+
+**Game Rule Summary**: The inventory system is how you manage all your items - from equipment to consumables to crafting materials. Your inventory includes your backpack, equipment slots, vaults for storage, and special containers like quivers. Items can be moved between slots, stacked together when identical, and organized to fit your needs. Understanding how inventory works helps you manage space efficiently and keep your gear organized.
+
 The inventory system manages all item storage and movement for players, NPCs, vaults, and merchants. It provides a unified interface for backpacks, equipment slots, vaults, housing storage, and special containers with complex validation and stacking mechanics.
 
 ## Core Architecture
+
+**Game Rule Summary**: Behind the scenes, all inventories work the same way whether they're your backpack, a vault, or a merchant's shop. Each inventory slot has a number, and the game tracks which items are in which slots. This unified system lets you move items between different types of storage and ensures everything works consistently.
 
 ### Inventory Interface
 ```csharp
@@ -31,6 +36,9 @@ public interface IGameInventory
 ```
 
 ### Inventory Slots
+
+**Game Rule Summary**: Every item storage location has a specific slot number. Your equipment slots have fixed numbers (weapon slots, armor slots, jewelry slots), while storage areas like backpacks and vaults use ranges of numbers. The game also has special "find empty" slots that automatically locate the first available space when you pick up items or need to unequip something.
+
 ```csharp
 public enum eInventorySlot : int
 {
@@ -89,7 +97,9 @@ public enum eInventorySlot : int
 }
 ```
 
-## Inventory Types
+### Inventory Types
+
+**Game Rule Summary**: There are several types of inventory storage with different purposes. Your personal backpack holds 40 items, vaults provide long-term storage, horse bags give extra carrying capacity when mounted, and special containers like quivers automatically supply ammunition. Each type has its own rules about what can be stored there and how much space is available.
 
 ### Player Inventory
 ```csharp
@@ -220,6 +230,8 @@ public virtual bool MoveItem(eInventorySlot fromSlot, eInventorySlot toSlot, int
 
 ## Stacking System
 
+**Game Rule Summary**: Identical items can stack together to save inventory space. Arrows, potions, and crafting materials typically stack up to certain limits. When you move stackable items, the game tries to combine them automatically. If a stack is full, only the amount that fits will transfer. This system helps manage limited inventory space efficiently.
+
 ### Stack Validation
 ```csharp
 public bool IsStackable => Count > 1 || MaxCount > 1;
@@ -260,6 +272,8 @@ protected bool StackItems(eInventorySlot fromSlot, eInventorySlot toSlot, int co
 ```
 
 ## Equipment System
+
+**Game Rule Summary**: Equipment slots are special inventory locations that provide bonuses when items are placed there. Each slot has restrictions on what types of items can go there - you can't put a sword in your boot slot. The game validates that items match their intended slots and that you have the required skills and level to use them. Only equipped items provide their stat bonuses and visual appearance.
 
 ### Equipment Slots
 ```csharp
@@ -343,6 +357,8 @@ public bool IsEquippedSlot(eInventorySlot slot)
 
 ## Special Item Types
 
+**Game Rule Summary**: Some items have special properties beyond basic equipment. Combinable items can be merged together for crafting or alchemy. Items with charges have limited uses before they're consumed - like poison vials or magical scrolls. Understanding these special properties helps you use items effectively and avoid wasting valuable resources.
+
 ### Combinable Items
 ```csharp
 public interface IGameInventoryItem
@@ -370,6 +386,8 @@ public int MaxCharges { get; set; } // Maximum charges
 ```
 
 ## Inventory Updates
+
+**Game Rule Summary**: When you move items around, the game tracks what changed and updates your client display and other players who might be looking at your equipment. The system batches multiple changes together for efficiency, so you can move several items quickly without causing lag. Your inventory automatically saves to the database so your items persist between logins.
 
 ### Change Tracking
 ```csharp
@@ -415,6 +433,8 @@ player.Out.SendUpdateMaxEncumbrance();
 
 ## Inventory Windows
 
+**Game Rule Summary**: Different types of storage open different inventory windows in your interface. Your backpack, equipment, vaults, merchants, and trade windows all display inventory contents differently but use the same underlying system. When you're looking at a shared container like a vault, other players can see when items are added or removed in real-time.
+
 ### Window Types
 ```csharp
 public enum eInventoryWindowType : byte
@@ -448,6 +468,8 @@ public class GameVault : GameStaticItem, IGameInventoryObject
 ```
 
 ## Database Persistence
+
+**Game Rule Summary**: All your items are automatically saved to the database whenever you make changes. When you log in, your character loads all their items back into the same slots where you left them. Items that are deleted or consumed are permanently removed from the database, while items you drop go to the ground temporarily.
 
 ### Save Strategy
 ```csharp

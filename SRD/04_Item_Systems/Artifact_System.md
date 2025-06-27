@@ -5,11 +5,16 @@
 - Implementation: Complete
 
 ## Overview
+
+**Game Rule Summary**: Artifacts are some of the most powerful and unique items in the game, but they require significant effort to obtain. You must participate in specific encounters, complete associated quests, and collect special materials to activate them. Each artifact provides unique abilities or creates powerful weapons that can't be obtained any other way. Once you have an artifact, it's permanently bound to your character and can't be traded, dropped, or lost.
+
 The artifact system provides powerful, unique items that players can obtain through specialized encounters and quests. Artifacts have unique bonuses, abilities, and often special activation requirements including encounter participation and credit systems.
 
 ## Core Mechanics
 
 ### Artifact Structure
+
+**Game Rule Summary**: Artifacts are stored in a special database system that tracks which encounters you've completed, what materials you've collected, and which artifacts you're eligible to obtain. Each artifact has specific requirements including participating in certain encounters, completing quests, and gathering materials like scrolls and books from the scholar NPCs.
 
 #### Database Schema
 ```csharp
@@ -56,6 +61,8 @@ public enum ID
 
 ### Artifact Acquisition
 
+**Game Rule Summary**: Getting an artifact requires several steps that must be completed in order. First, you must participate in specific encounters to earn credit. Then you need to complete the associated quest line. Finally, you must collect the required scrolls and books, which you combine and turn in to scholar NPCs. This ensures that artifacts remain rare and are only obtained by players who put in significant effort.
+
 #### Encounter System
 **Prerequisites**:
 1. **Encounter Participation**: Must complete specific encounters
@@ -73,6 +80,9 @@ public string Credit { get; set; } // Credit requirements for artifact
 - **Time Limits**: Credit may expire after certain periods
 
 #### Material System
+
+**Game Rule Summary**: Artifact materials come in the form of books and scrolls that drop from encounters or are given as quest rewards. Some scrolls can be combined together to form more powerful scrolls. You need to collect all the required materials before you can activate the artifact with the scholar NPC.
+
 **Book and Scroll Components**:
 ```csharp
 public string BookID { get; set; }        // Book item template
@@ -85,6 +95,8 @@ public string Scroll23 { get; set; }     // Combined scroll 2+3
 ```
 
 ### Artifact Properties
+
+**Game Rule Summary**: Artifacts have special properties that make them different from normal items. They can't be picked up by other players, dropped, traded, or sold. Each character can only have one of each artifact, and they're permanently bound to you once obtained. This makes artifacts truly personal achievements that showcase your accomplishments.
 
 #### Special Item Properties
 ```csharp
@@ -115,6 +127,8 @@ public int GetBonusAmount(DbArtifactBonus.ID bonusID)
 ```
 
 ### Artifact Abilities
+
+**Game Rule Summary**: Artifacts don't just provide stat bonuses like normal items - they often have unique abilities that create weapons, cast spells, or provide effects that aren't available anywhere else in the game. Some artifacts create different items based on your class, while others provide the same effect to everyone. These abilities often have cooldowns to prevent overuse.
 
 #### Spell Integration
 Artifacts can have multiple spell effects:
@@ -152,6 +166,8 @@ private DbItemTemplate GetWeaponForClass(string weaponType)
 
 ### Example Artifacts
 
+**Game Rule Summary**: Each artifact has its own unique theme and abilities. The Belt of Sun creates powerful melee weapons appropriate to your class with fire-based effects. The Belt of Moon creates magical weapons with spell enhancements. Aten's Shield creates the Golden Trident of Flame, a powerful weapon with fire-based procs. Each artifact fills a different role and appeals to different character builds.
+
 #### Belt of Sun
 **Effect**: Creates powerful weapons based on character class
 **Bonuses**: 
@@ -177,6 +193,8 @@ private DbItemTemplate GetWeaponForClass(string weaponType)
 
 ### Reuse and Cooldowns
 
+**Game Rule Summary**: Most artifacts have cooldown timers to prevent spam usage and maintain game balance. You can't use the same artifact ability repeatedly - you must wait for the cooldown to expire. Some artifacts are also limited by encounter availability, meaning you can only obtain them when specific encounters are available or active.
+
 #### Reuse Timer System
 ```csharp
 public int ReuseTimer { get; set; } // Cooldown in seconds
@@ -191,6 +209,8 @@ public int ReuseTimer { get; set; } // Cooldown in seconds
 - **Group Requirements**: Credit may require group participation
 
 ### Guild Integration
+
+**Game Rule Summary**: Guilds can purchase buffs using merit points that increase artifact experience gain for all guild members. This makes artifact acquisition easier for organized guilds and provides another benefit of guild membership. These buffs are temporary and must be renewed periodically.
 
 #### Guild Buffs
 Artifacts affected by guild bonuses:

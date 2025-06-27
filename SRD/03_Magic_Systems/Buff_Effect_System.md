@@ -7,11 +7,16 @@
 - **Implementation**: Complete
 
 ## Overview
+
+**Game Rule Summary**: The buff effect system manages all temporary magical effects on characters - from stat enhancements and speed boosts to debuffs and damage-over-time effects. When you cast or receive magical effects, this system determines how they stack with existing effects, how long they last, and whether stronger effects replace weaker ones. Understanding how effects interact helps you optimize your magical support and avoid conflicts when multiple players are casting similar spells.
+
 The buff effect system manages all temporary effects on game entities including buffs, debuffs, auras, and damage over time effects. It uses an Entity Component System (ECS) architecture with complex stacking rules and effect management.
 
 ## Core Architecture
 
 ### Effect System Components
+
+**Game Rule Summary**: Every magical effect in the game is created from a standard template that defines what it does, how long it lasts, and how effective it is. Effects track their caster, target, duration, and all the information needed to apply their benefits or penalties. This consistent structure allows the game to handle thousands of different spells and abilities using the same underlying system.
 
 #### Base Effect Class
 ```csharp
@@ -43,6 +48,8 @@ public class ECSGameSpellEffect : ECSGameEffect, IConcentrationEffect
 ```
 
 ### Effect Categories
+
+**Game Rule Summary**: Effects are organized into specific types based on what they do to you. Buffs improve your abilities (like strength or armor), debuffs weaken you (like reducing stats or slowing movement), and special effects control your actions (like stuns or mezmerize). Each type has its own rules for how it interacts with other effects and how long it lasts.
 
 #### Primary Effect Types
 ```csharp
@@ -91,6 +98,8 @@ public class EffectListComponent
 
 ## Effect Stacking System
 
+**Game Rule Summary**: When multiple people try to cast similar effects on you, the game uses specific rules to decide which effects stay active. Generally, stronger effects replace weaker ones, and effects from the same caster refresh their duration. If a weaker effect can't replace a stronger one, it waits in the background to activate when the stronger effect ends. This prevents effect spam while ensuring you always have the best possible magical enhancement.
+
 ### Stacking Decision Tree
 
 ```
@@ -135,6 +144,9 @@ public enum AddEffectResult
 ```
 
 ### Disabled Effects
+
+**Game Rule Summary**: When someone casts a weaker version of an effect you already have, it doesn't just disappear - it goes into a "disabled" state waiting its turn. If the stronger effect expires or gets dispelled, the disabled effect automatically activates so you don't lose your magical protection. This prevents gaps in your buffs when multiple casters are helping you.
+
 Effects that are worse than currently active effects are added as disabled:
 - Tracked separately from active effects
 - Automatically re-enabled when better effect expires
@@ -142,6 +154,8 @@ Effects that are worse than currently active effects are added as disabled:
 - Prevents effect loss in competitive casting scenarios
 
 ## Concentration System
+
+**Game Rule Summary**: Concentration represents your ability to maintain ongoing magical effects that require constant mental focus. You have limited concentration points (usually around 20-35 depending on level), and each concentration spell uses some of them. Concentration effects also have a maximum range - if the caster moves too far away from you, the effect temporarily disables until they return to range. This creates tactical decisions about positioning and which effects to maintain.
 
 ### Concentration Management
 ```csharp
@@ -190,6 +204,8 @@ else if (spellEffect.IsDisabled)
 
 ## Pulse Effects
 
+**Game Rule Summary**: Pulse effects are spells that repeatedly affect multiple targets over time, like area damage spells or group regeneration effects. The caster creates a "pulse container" that manages individual effects on each target within range. When you cancel the pulse spell or move out of range, all the individual effects end immediately. These spells are efficient for affecting many targets but require the caster to maintain concentration and positioning.
+
 ### Pulse Effect Architecture
 ```csharp
 public class ECSPulseEffect : ECSGameSpellEffect
@@ -212,6 +228,9 @@ public class ECSPulseEffect : ECSGameSpellEffect
 ## Special Effect Types
 
 ### Speed Debuffs
+
+**Game Rule Summary**: Speed debuffs like snares pulse very frequently (4 times per second) to provide smooth movement changes rather than jerky updates. These effects also trigger immunity timers when they expire, preventing you from being permanently slowed by repeated applications.
+
 ```csharp
 // Special handling for speed effects
 if (spell.SpellType is eSpellType.SpeedDecrease)
@@ -223,24 +242,35 @@ if (spell.SpellType is eSpellType.SpeedDecrease)
 ```
 
 ### Damage Over Time
+
+**Game Rule Summary**: Damage-over-time spells tick at regular intervals for their full damage amount. Unlike direct damage spells, DoTs can't normally critically hit (except with special abilities like Wild Arcana). Multiple DoTs from different casters can stack on the same target, making them effective for sustained damage in group combat.
+
 - Ticks at spell-defined frequency
 - Can critically hit with Wild Arcana RA
 - Stacks from different casters
 - Refreshes duration on reapplication
 
 ### Heal Over Time
+
+**Game Rule Summary**: Heal-over-time effects work like damage spells but in reverse, providing steady healing over their duration. They can't critically hit but they do generate aggro on each tick, making them useful for tanks who want to maintain threat. Overhealing is tracked separately and doesn't provide additional benefit.
+
 - Cannot critically hit
 - Generates aggro on tick
 - Overhealing tracked separately
 - Stacks with different spell lines
 
 ### Crowd Control
+
+**Game Rule Summary**: Crowd control effects like stuns and mezmerize have special immunity rules to prevent permanent lockdown. After a CC effect ends naturally, you gain immunity to that type of control for a period (usually 60 seconds). NPCs use diminishing returns instead - each successive CC effect lasts half as long as the previous one.
+
 - Immunity granted on expiration
 - Standard immunity: 60 seconds
 - Style stun immunity: 5x duration
 - Diminishing returns for NPCs
 
 ## Buff Categories and Stacking
+
+**Game Rule Summary**: Buffs are organized into categories that determine how they stack with each other and with item bonuses. Base buffs compete with each other and share caps with your equipment bonuses. Spec buffs stack with base buffs but not with other spec buffs. Debuffs always apply but only the worst one of each type affects you. Special "other" buffs like Paladin chants bypass normal limits and stack with everything.
 
 ### Property Buff Categories
 ```csharp
@@ -275,6 +305,8 @@ public enum eBuffBonusCategory
 - Different effectiveness vs buffs/stats
 
 ## Effect Groups
+
+**Game Rule Summary**: Effect groups allow different spells that do similar things to be treated as the same effect for stacking purposes. For example, all strength buffs from different spell lines belong to the same effect group, so only the best one applies even if they have different names and come from different classes. This prevents stacking multiple similar buffs from different sources.
 
 Effect groups allow different spells to stack as same type:
 

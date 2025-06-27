@@ -6,11 +6,16 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: Spells in DAoC work like advanced weapon attacks - they have cast times instead of swing speeds, use mana instead of endurance, and can miss or be resisted instead of being blocked or parried. Your magical skill level, stats, and equipment all affect how fast you cast, how much damage you deal, and how reliable your spells are. Different spell types like damage, healing, and crowd control each have their own mechanics and limitations.
+
 Spell mechanics in DAoC govern how magic is cast, its cost, range, damage, and effectiveness. The system balances power consumption, cast time, and specialization to create strategic magical combat.
 
 ## Core Mechanics
 
 ### Cast Time
+
+**Game Rule Summary**: Cast time is how long it takes to cast a spell, similar to weapon speed for fighters. Higher Dexterity makes you cast faster, and magical items can provide casting speed bonuses. However, spells can't be cast faster than 40% of their base time no matter how much speed you have. Quick Cast abilities let you cast instantly but cost double the mana.
 
 #### Base Cast Time
 ```
@@ -33,6 +38,8 @@ FinalCastTime = Max(CastTime, BaseCastTime * 0.4) // 40% minimum
 **Source**: `GameLiving.cs:CalculateCastingTime()`
 
 ### Power Cost
+
+**Game Rule Summary**: Spells consume mana (power) to cast, with more powerful spells costing more. Some spells cost a percentage of your total mana pool, while others cost a fixed amount. Focus specialization reduces the mana cost of spells in that magic school. Special abilities like Quick Cast double the mana cost, while some realm abilities can occasionally make spells cost no mana at all.
 
 #### Base Power Calculation
 ```csharp
@@ -68,6 +75,8 @@ PowerCost *= 1.2 - FocusBonus // 80%-120% of base
 
 ### Spell Range
 
+**Game Rule Summary**: Each spell has a maximum range beyond which it cannot be cast. Magical items can extend your spell range, making you more effective at longer distances. Self-targeted spells have no range limit, while area effect spells use their radius instead of range. The minimum spell range is always at least 32 units, even if range penalties would reduce it further.
+
 #### Base Range Calculation
 ```csharp
 Range = Max(32, Spell.Range * GetModified(eProperty.SpellRange) / 100)
@@ -80,6 +89,8 @@ Range = Max(32, Spell.Range * GetModified(eProperty.SpellRange) / 100)
 - Item/Artifact spells: Fixed range
 
 ### Spell Damage
+
+**Game Rule Summary**: Spell damage is based on the spell's base power, your magical stat (Intelligence, Piety, etc.), and your specialization level in that magic school. Higher magic stats make all your spells hit harder, while specialization makes spells in that school more effective. Damage spells have random variance, so they don't always hit for exactly the same amount - higher specialization gives more consistent damage.
 
 #### Base Damage Calculation
 ```csharp
@@ -101,6 +112,9 @@ FinalBaseDamage = BaseDamage * Modifier * SpecBonus
 **Source**: `SpellHandler.cs:CalculateDamageBase()`
 
 #### Damage Variance
+
+**Game Rule Summary**: Most spells don't do exactly the same damage every time - there's a random range from minimum to maximum damage. Higher specialization in the spell's school gives you a higher minimum damage, making your spells more reliable. Some special spells like item effects or combat styles have different variance ranges, and a few have no variance at all.
+
 ```csharp
 // Standard spells
 MaxVariance = 1.0
@@ -126,12 +140,17 @@ MinVariance = Clamp(MinVariance + Offset, 0.2, MaxVariance)
 **Source**: `SpellHandler.cs:CalculateDamageVariance()`
 
 #### Hit Chance Adjustment
+
+**Game Rule Summary**: If your spell has a low chance to hit, the game reduces its damage to compensate. This prevents spells with very poor hit chances from being overpowered when they do occasionally connect. Spells with less than 55% hit chance deal progressively less damage, with very unreliable spells hitting for only 25% of their normal damage.
+
 ```csharp
 if (HitChance < 55)
     Damage *= 0.25 + 0.5 / 55 * HitChance
 ```
 
 ### To-Hit Calculation
+
+**Game Rule Summary**: Spells can miss just like weapon attacks, but they use different calculations. Higher level casters are more accurate against lower level targets, while casting spells above your level makes them less reliable. Your target's magic resistances reduce your hit chance, and there are hard limits preventing spells from being either completely reliable or completely useless.
 
 #### Base Formula
 ```csharp
@@ -151,6 +170,8 @@ HitChance = Clamp(HitChance, 0, 100)
 **Source**: `SpellHandler.cs:CalculateToHitChance()`
 
 ### Duration and Concentration
+
+**Game Rule Summary**: Spell effects last for a specific duration, which can be extended by magical bonuses. Some spells require concentration to maintain - these spells stay active until you cast something else or lose concentration. You have a limited concentration pool, so you can only maintain a few concentration spells at once. Instruments can extend song durations based on the quality and condition of your instrument.
 
 #### Duration Calculation
 ```csharp
@@ -173,6 +194,8 @@ Duration -= Duration * ResistBase / 100
 
 ### Resist Calculation
 
+**Game Rule Summary**: Targets can resist your spells based on their magic resistances, reducing the spell's effectiveness or negating it entirely. Higher level targets are naturally harder to affect with magic, while targets with specific resistances (like fire resistance against fire spells) are much harder to damage. The level of your spell compared to the target's resistances determines how often your magic will be resisted.
+
 #### Magic Resists
 ```csharp
 ResistChance = GetResist(DamageType) - SpellLevel
@@ -188,6 +211,8 @@ if (TargetLevel > CasterLevel)
 ```
 
 ### Spell Types and Special Rules
+
+**Game Rule Summary**: Different types of spells work in unique ways. Direct damage spells hit instantly and can critically strike. Damage over time spells tick for their full damage reliably but can't critically hit. Healing spells have variance like damage spells but generally favor higher amounts. Crowd control spells create immunity timers to prevent permanent lockdown, and buffs/debuffs can be dispelled or have their durations reduced by resistance.
 
 #### Direct Damage
 - Instant effect

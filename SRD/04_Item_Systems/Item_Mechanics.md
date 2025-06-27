@@ -6,11 +6,16 @@
 - **Implementation Status**: ✅ Fully Implemented
 
 ## Overview
+
+**Game Rule Summary**: Items are the primary way to increase your character's power beyond leveling up. Every piece of equipment has quality (how well it was made) and condition (how damaged it is), both of which affect how effective the item is. Higher level items are more powerful but require you to reach that level to equip them. Understanding item mechanics helps you evaluate loot, plan upgrades, and make informed decisions about repairs and replacements.
+
 Items in DAoC form the foundation of character power through weapons, armor, and magical jewelry. The system uses quality, condition, level requirements, and various caps to balance item effectiveness.
 
 ## Core Mechanics
 
 ### Item Quality and Condition
+
+**Game Rule Summary**: Quality represents how well an item was made and can never be changed after creation. Condition represents how damaged the item is from use and decreases every time you fight, but can be restored by repairing. Both quality and condition directly multiply your item's effectiveness - a 50% quality, 50% condition item only works at 25% effectiveness. Always keep your gear repaired for maximum performance.
 
 #### Quality System
 - Range: 0-100%
@@ -34,6 +39,8 @@ Effectiveness = Quality% * ConditionPercent%
 
 ### Level Requirements
 
+**Game Rule Summary**: Items have level requirements that determine when you can equip them and how powerful their magical bonuses can be. You must reach the item's level to wear it, and higher level items can have stronger magical properties. The bonus level determines how powerful the magical bonuses are - a level 51 item can have much stronger stat bonuses than a level 20 item.
+
 #### Base Requirements
 - Item Level: Determines caps and requirements
 - Character must meet level to equip
@@ -49,6 +56,8 @@ Maximum: Based on item level
 - Used for spellcraft calculations
 
 ### Weapon Mechanics
+
+**Game Rule Summary**: Weapons have damage per second (DPS) and speed that determine how much damage they deal. Faster weapons hit more often but for less damage per swing, while slower weapons hit harder but less frequently. Your weapon's effective damage depends on its quality and condition, and there are level-based caps that prevent you from using overpowered weapons. Two-handed weapons get bonus damage to compensate for not having a shield.
 
 #### DPS (Damage Per Second)
 ```
@@ -87,6 +96,8 @@ SlowWeaponBonus = 1 + (WeaponSpeed - 20) * 0.003
 
 ### Armor Mechanics
 
+**Game Rule Summary**: Armor provides protection through Armor Factor (AF) which reduces incoming damage, and Absorption which blocks a percentage of physical damage completely. Heavier armor types provide more protection but may restrict which classes can wear them. Like weapons, armor effectiveness depends on quality and condition, and there are level-based caps to prevent overpowered equipment. Keeping armor repaired is crucial for survival in combat.
+
 #### Armor Factor (AF)
 ```
 AF = Base armor protection value
@@ -116,6 +127,9 @@ FinalAF = Min(EffectiveAF, AFCap)
 **Source**: `GamePlayer.cs:GetArmorAF()`
 
 #### Absorption (ABS)
+
+**Game Rule Summary**: Absorption is the percentage of physical damage that your armor completely blocks before it even hits your health. Heavier armor types have higher absorption - plate armor blocks 34% of all physical damage while cloth armor blocks none. This makes armor choice crucial for survival, as the difference between cloth and plate armor can mean taking 34% less physical damage from every hit.
+
 Percentage of physical damage absorbed:
 
 | Armor Type | Base ABS% |
@@ -134,6 +148,8 @@ FinalABS = Clamp((ItemABS + ArmorAbsorptionBonus) * 0.01, 0, 1)
 
 ### Magical Properties
 
+**Game Rule Summary**: Items can have magical bonuses to stats, resistances, skills, and special properties. These bonuses are subject to level-based caps - higher level characters can benefit from stronger magical bonuses than low level characters. This system ensures that items remain relevant as you level up, since a high-level item with weak magical bonuses might be worse than a lower-level item with strong bonuses that you can actually use.
+
 #### Bonus Types
 - **Stats**: STR, CON, DEX, QUI, INT, PIE, EMP, CHA
 - **Resists**: Slash, Thrust, Crush, Heat, Cold, Matter, Body, Spirit, Energy
@@ -151,6 +167,8 @@ ResistCap = Level * 2 + 1
 
 ### Unique and Artifact Items
 
+**Game Rule Summary**: Unique items are special pieces of equipment that you can only have one of per character, often with properties that normal items can't have. Artifacts are even more special - they require completing specific encounters to activate and can grow more powerful as you advance them. These items often define character builds and provide unique tactical options not available through normal equipment.
+
 #### Unique Items
 - One per character restriction
 - Special properties beyond normal items
@@ -162,6 +180,8 @@ ResistCap = Level * 2 + 1
 - Special abilities and bonuses
 
 ### Crafting and Imbuing
+
+**Game Rule Summary**: Player-crafted items can be enhanced through spellcrafting (imbuing), which adds magical properties using gems and materials. Higher quality items can hold more magical power, while overcharging (exceeding the safe limit) risks destroying the item but allows for more powerful bonuses. This system lets players customize their equipment and create items specifically suited to their build and playstyle.
 
 #### Item Creation
 - Quality determines base effectiveness
@@ -189,6 +209,8 @@ Below 95:    0.2 * ItemLevel
 
 ### Item Types
 
+**Game Rule Summary**: Different equipment types serve different roles in combat. Weapons determine your damage output and attack speed, armor protects you from harm, and jewelry provides magical bonuses without taking up armor slots. Understanding which slots are available to your class and how different item types work together is crucial for building an effective character.
+
 #### Weapons
 - **One-Handed**: Standard damage/speed
 - **Two-Handed**: Higher damage, slower
@@ -213,6 +235,8 @@ Below 95:    0.2 * ItemLevel
 - **Wrists**: 2 bracer slots
 
 ### Inventory Management
+
+**Game Rule Summary**: Your inventory has limited space and carrying too much weight will slow you down. Items take up specific inventory slots and have weight that counts toward encumbrance. Managing your inventory efficiently and staying under the weight limit is important for maintaining mobility in combat and exploration.
 
 #### Slot Locations
 ```
