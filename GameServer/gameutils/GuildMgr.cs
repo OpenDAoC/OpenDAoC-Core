@@ -215,7 +215,7 @@ namespace DOL.GS
 
                 if (oldEmblem != 0)
                 {
-                    player.RemoveMoney(COST_RE_EMBLEM, null);
+                    player.Wallet.RemoveMoney(COST_RE_EMBLEM, null);
                     InventoryLogging.LogInventoryAction(player, $"(GUILD;{guild.Name})", eInventoryActionType.Other, COST_RE_EMBLEM);
 
                     // Update guild house emblem.

@@ -65,7 +65,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				for (int i = 0; i < 5; i++)
 					tradeMoney[i] = packet.ReadShort();
 
-				long money = Money.GetMoney(tradeMoney[0], tradeMoney[1], tradeMoney[2], tradeMoney[3], tradeMoney[4]);
+				long money = WalletHelper.ToMoney(tradeMoney[0], tradeMoney[1], tradeMoney[2], tradeMoney[3], tradeMoney[4]);
 				trade.TradeMoney = money;
 
 				trade.TradeUpdate();

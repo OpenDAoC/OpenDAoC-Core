@@ -1164,11 +1164,12 @@ namespace DOL.GS.PacketHandler
 				return;
 			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MoneyUpdate))))
 			{
-				pak.WriteByte((byte) m_gameClient.Player.Copper);
-				pak.WriteByte((byte) m_gameClient.Player.Silver);
-				pak.WriteShort((ushort) m_gameClient.Player.Gold);
-				pak.WriteShort((ushort) m_gameClient.Player.Mithril);
-				pak.WriteShort((ushort) m_gameClient.Player.Platinum);
+				var (mithril, platinum, gold, silver, copper) = WalletHelper.ToMoneyParts(m_gameClient.Player.Wallet.GetMoney());
+				pak.WriteByte(copper);
+				pak.WriteByte(silver);
+				pak.WriteShort(gold);
+				pak.WriteShort(mithril);
+				pak.WriteShort(platinum);
 				SendTCP(pak);
 			}
 		}
@@ -1959,19 +1960,21 @@ namespace DOL.GS.PacketHandler
 					}
 					pak.Fill(0x00, 10 - m_gameClient.Player.TradeWindow.TradeItems.Count);
 
+					var (mithril, platinum, gold, silver, copper) = WalletHelper.ToMoneyParts(m_gameClient.Player.TradeWindow.TradeMoney);
 					pak.WriteShort(0x0000);
-					pak.WriteShort((ushort) Money.GetMithril(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort) Money.GetPlatinum(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort) Money.GetGold(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort) Money.GetSilver(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort) Money.GetCopper(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort(mithril);
+					pak.WriteShort(platinum);
+					pak.WriteShort(gold);
+					pak.WriteShort(silver);
+					pak.WriteShort(copper);
 
+					(mithril, platinum, gold, silver, copper) = WalletHelper.ToMoneyParts(m_gameClient.Player.TradeWindow.PartnerTradeMoney);
 					pak.WriteShort(0x0000);
-					pak.WriteShort((ushort) Money.GetMithril(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort) Money.GetPlatinum(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort) Money.GetGold(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort) Money.GetSilver(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort) Money.GetCopper(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort(mithril);
+					pak.WriteShort(platinum);
+					pak.WriteShort(gold);
+					pak.WriteShort(silver);
+					pak.WriteShort(copper);
 
 					pak.WriteShort(0x0000);
 					ArrayList items = m_gameClient.Player.TradeWindow.PartnerTradeItems;
@@ -3743,14 +3746,12 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ConsignmentMerchantMoney))))
 			{
-				pak.WriteByte((byte)Money.GetCopper(money));
-				pak.WriteByte((byte)Money.GetSilver(money));
-				pak.WriteShort((ushort)Money.GetGold(money));
-
-				// Yes, these are sent in reverse order! - tolakram confirmed 1.98 - 1.109
-				pak.WriteShort((ushort)Money.GetMithril(money));
-				pak.WriteShort((ushort)Money.GetPlatinum(money));
-
+				var (mithril, platinum, gold, silver, copper) = WalletHelper.ToMoneyParts(money);
+				pak.WriteByte(copper);
+				pak.WriteByte(silver);
+				pak.WriteShort(gold);
+				pak.WriteShort(mithril);
+				pak.WriteShort(platinum);
 				SendTCP(pak);
 			}
 		}
@@ -4057,7 +4058,7 @@ namespace DOL.GS.PacketHandler
 							if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 								name += "[" + item.SellPrice + " BP]";
 							else
-								name += "[" + Money.GetString(item.SellPrice) + "]";
+								name += "[" + WalletHelper.ToString(item.SellPrice) + "]";
 						}
 						pak.WritePascalString(name);
 					}

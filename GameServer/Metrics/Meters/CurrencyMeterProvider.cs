@@ -41,7 +41,7 @@ public class CurrencyMeterProvider : IMeterProvider
 
             static long GetPlayerMoney(GameClient client)
             {
-                return client.Player.GetCurrentMoney();
+                return client.Player.Wallet.GetMoney();
             }
         }
         catch (Exception ex)

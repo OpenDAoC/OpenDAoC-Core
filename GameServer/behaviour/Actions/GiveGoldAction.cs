@@ -44,7 +44,7 @@ namespace DOL.GS.Behaviour.Actions
         public override void Perform(DOLEvent e, object sender, EventArgs args)
         {
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
-            player.AddMoney(P);
+            player.Wallet.AddMoney(P);
             InventoryLogging.LogInventoryAction(NPC, player, eInventoryActionType.Quest, P);
         }
     }

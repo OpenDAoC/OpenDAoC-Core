@@ -186,7 +186,7 @@ namespace DOL.GS.PacketHandler
 							if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 	                            name += "[" + item.SellPrice.ToString() + " BP]";
 	                        else
-	                            name += "[" + Money.GetString(item.SellPrice) + "]";
+	                            name += "[" + WalletHelper.ToString(item.SellPrice) + "]";
 	                    }
 						pak.WritePascalString(name);
 					}
@@ -268,19 +268,21 @@ namespace DOL.GS.PacketHandler
 					}
 					pak.Fill(0x00, 10 - m_gameClient.Player.TradeWindow.TradeItems.Count);
 
+					var (mithril, platinum, gold, silver, copper) = WalletHelper.ToMoneyParts(m_gameClient.Player.TradeWindow.TradeMoney);
 					pak.WriteShort(0x0000);
-					pak.WriteShort((ushort)Money.GetMithril(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetPlatinum(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetGold(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetSilver(m_gameClient.Player.TradeWindow.TradeMoney));
-					pak.WriteShort((ushort)Money.GetCopper(m_gameClient.Player.TradeWindow.TradeMoney));
+					pak.WriteShort(mithril);
+					pak.WriteShort(platinum);
+					pak.WriteShort(gold);
+					pak.WriteShort(silver);
+					pak.WriteShort(copper);
 
+					(mithril, platinum, gold, silver, copper) = WalletHelper.ToMoneyParts(m_gameClient.Player.TradeWindow.PartnerTradeMoney);
 					pak.WriteShort(0x0000);
-					pak.WriteShort((ushort)Money.GetMithril(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetPlatinum(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetGold(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetSilver(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
-					pak.WriteShort((ushort)Money.GetCopper(m_gameClient.Player.TradeWindow.PartnerTradeMoney));
+					pak.WriteShort(mithril);
+					pak.WriteShort(platinum);
+					pak.WriteShort(gold);
+					pak.WriteShort(silver);
+					pak.WriteShort(copper);
 
 					pak.WriteShort(0x0000);
 					ArrayList items = m_gameClient.Player.TradeWindow.PartnerTradeItems;

@@ -415,8 +415,8 @@ namespace DOL.GS
 					logTrade = true;
 
 				//Test if we and our partner have enough money
-				bool enoughMoney        = m_owner.RemoveMoney(TradeMoney);
-				bool partnerEnoughMoney = partner.RemoveMoney(m_partnerWindow.TradeMoney);
+				bool enoughMoney        = m_owner.Wallet.RemoveMoney(TradeMoney);
+				bool partnerEnoughMoney = partner.Wallet.RemoveMoney(m_partnerWindow.TradeMoney);
 
 				//Check the preconditions
 				if (!enoughMoney || !partnerEnoughMoney)
@@ -427,7 +427,7 @@ namespace DOL.GS
 						TradeMoney = 0;
                         if (partnerEnoughMoney)
                         {
-                            partner.AddMoney(m_partnerWindow.TradeMoney);
+                            partner.Wallet.AddMoney(m_partnerWindow.TradeMoney);
                             InventoryLogging.LogInventoryAction(partner, m_owner, eInventoryActionType.Trade, m_partnerWindow.TradeMoney);
                         }
 
@@ -440,7 +440,7 @@ namespace DOL.GS
 						m_partnerWindow.TradeMoney = 0;
                         if (enoughMoney)
                         {
-                            m_owner.AddMoney(TradeMoney);
+                            m_owner.Wallet.AddMoney(TradeMoney);
                             InventoryLogging.LogInventoryAction(m_owner, partner, eInventoryActionType.Trade, TradeMoney);
                         }
 
@@ -528,8 +528,8 @@ namespace DOL.GS
 						TradeUpdate();
 
                         //This was already removed above, needs to be returned to the players on trade failure.
-                        m_owner.AddMoney(TradeMoney);
-                        partner.AddMoney(m_partnerWindow.TradeMoney);
+                        m_owner.Wallet.AddMoney(TradeMoney);
+                        partner.Wallet.AddMoney(m_partnerWindow.TradeMoney);
 
 						return false;
 					}
@@ -688,8 +688,8 @@ namespace DOL.GS
 				if (TradeMoney > 0 || m_partnerWindow.TradeMoney > 0)
 				{
 					//Now add the money
-					m_owner.AddMoney(m_partnerWindow.TradeMoney, "You get {0}.");
-					partner.AddMoney(TradeMoney, "You get {0}.");
+					m_owner.Wallet.AddMoney(m_partnerWindow.TradeMoney, "You get {0}.");
+					partner.Wallet.AddMoney(TradeMoney, "You get {0}.");
                     InventoryLogging.LogInventoryAction(m_owner, partner, eInventoryActionType.Trade, TradeMoney);
                     InventoryLogging.LogInventoryAction(partner, m_owner, eInventoryActionType.Trade, m_partnerWindow.TradeMoney);
 					m_owner.SaveIntoDatabase();

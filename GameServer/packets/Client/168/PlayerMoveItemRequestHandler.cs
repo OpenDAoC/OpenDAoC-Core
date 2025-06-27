@@ -222,7 +222,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             {
                 int[] money = new int[5];
                 money[fromClientSlot - eInventorySlot.Mithril] = itemCount;
-                long flatMoney = Money.GetMoney(money[0], money[1], money[2], money[3], money[4]);
+                long flatMoney = WalletHelper.ToMoney(money[0], money[1], money[2], money[3], money[4]);
 
                 if (client.Version >= GameClient.eClientVersion.Version178)
                     fromClientSlot += eInventorySlot.Mithril178 - eInventorySlot.Mithril;
@@ -238,7 +238,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     return;
                 }
 
-                if (flatMoney > client.Player.GetCurrentMoney())
+                if (flatMoney > client.Player.Wallet.GetMoney())
                 {
                     client.Out.SendInventorySlotsUpdate([fromClientSlot]);
                     return;

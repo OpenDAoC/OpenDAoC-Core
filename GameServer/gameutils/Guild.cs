@@ -253,7 +253,7 @@ namespace DOL.GS
 				}
 			}
 
-			if (!player.RemoveMoney(amount))
+			if (!player.Wallet.RemoveMoney(amount))
 			{
 				player.Out.SendMessage("You don't have this amount of money !", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				return;
@@ -297,7 +297,7 @@ namespace DOL.GS
 				}
 			}
 
-			string stringAmount = Money.GetString(amount);
+			string stringAmount = WalletHelper.ToString(amount);
 			player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "Scripts.Player.Guild.WithdrawAmount", stringAmount), eChatType.CT_Loot, eChatLoc.CL_SystemWindow);
 
 			foreach (GamePlayer guildPlayer in GetListOfOnlineMembers())
@@ -307,7 +307,7 @@ namespace DOL.GS
 			}
 
 			ChangeBank(newBank, true);
-			player.AddMoney(amount);
+			player.Wallet.AddMoney(amount);
 			InventoryLogging.LogInventoryAction($"(GUILD;{Name})", player, eInventoryActionType.Other, amount);
 			player.SaveIntoDatabase();
 			return;

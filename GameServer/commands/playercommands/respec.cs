@@ -227,7 +227,7 @@ namespace DOL.GS.Commands
 			if (player.TempProperties.GetProperty<bool>(BUY_RESPEC))
 			{
 				player.TempProperties.RemoveProperty(BUY_RESPEC);
-				if (player.RespecCost >= 0 && player.RemoveMoney(player.RespecCost * 10000))
+				if (player.RespecCost >= 0 && player.Wallet.RemoveMoney(player.RespecCost * 10000))
 				{
                     InventoryLogging.LogInventoryAction(player, "(respec)", eInventoryActionType.Merchant, player.RespecCost * 10000);
 					player.RespecAmountSingleSkill++;
