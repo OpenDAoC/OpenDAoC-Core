@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Threading;
-using DOL.GS.API;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
@@ -10,9 +9,8 @@ namespace DOL.GS
 {
     public class Wallet
     {
+        private readonly GamePlayer _player;
         private readonly Lock _lock = new();
-
-        private GamePlayer _player;
         private long _amount;
 
         public Wallet(GamePlayer player)
