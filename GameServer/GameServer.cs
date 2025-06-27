@@ -29,6 +29,10 @@ using DOL.Logging;
 using DOL.Mail;
 using DOL.Network;
 using JNogueira.Discord.Webhook.Client;
+using DOL.GS.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace DOL.GS
 {
@@ -115,6 +119,16 @@ namespace DOL.GS
 		}
 
 		public List<String> PatchNotes;
+
+		/// <summary>
+		/// The dependency injection host for clean architecture
+		/// </summary>
+		private GameServerHost m_diHost;
+
+		/// <summary>
+		/// Service provider for dependency injection
+		/// </summary>
+		private IServiceProvider m_serviceProvider;
 
 		#endregion
 
@@ -224,6 +238,22 @@ namespace DOL.GS
 		}
 
 		/// <summary>
+		/// Gets the dependency injection service provider
+		/// </summary>
+		public IServiceProvider ServiceProvider
+		{
+			get { return m_serviceProvider; }
+		}
+
+		/// <summary>
+		/// Gets a service from the dependency injection container
+		/// </summary>
+		public T GetService<T>() where T : class
+		{
+			return m_serviceProvider?.GetService<T>();
+		}
+
+		/// <summary>
 		/// Gets or sets the world save interval
 		/// </summary>
 		public int SaveInterval
@@ -302,6 +332,11 @@ namespace DOL.GS
 				Thread.CurrentThread.Priority = ThreadPriority.Normal;
 
 				AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+				// -----------------------------------------------------------
+				// Initialize Dependency Injection Container
+				if (!InitComponent(InitializeDependencyInjection(), "Dependency Injection Setup"))
+					return false;
 
 				// -----------------------------------------------------------
 				// Init Metrics
@@ -571,6 +606,73 @@ namespace DOL.GS
 				return false;
 			}
 		}
+
+        /// <summary>
+        /// Initializes the dependency injection container with all required services
+        /// </summary>
+        private bool InitializeDependencyInjection()
+        {
+            try
+            {
+                if (log.IsInfoEnabled)
+                    log.Info("Initializing Dependency Injection container...");
+
+                // Create the DI host builder
+                var hostBuilder = new GameServerHostBuilder();
+
+                // Configure core services
+                hostBuilder.ConfigureServices(services =>
+                {
+                    // Register core infrastructure services
+                    services.AddGameServerServices();
+                    services.AddPerformanceServices();
+                    services.AddObjectPooling();
+
+                    // Register legacy adapters for gradual migration
+                    services.AddSingleton<ILegacyGameServer, LegacyGameServerAdapter>();
+
+                    // Register existing singletons with DI container
+                    RegisterLegacyServices(services);
+                });
+
+                // Build the host
+                m_diHost = hostBuilder.Build();
+                m_serviceProvider = m_diHost.Services;
+
+                // Start the DI host services
+                m_diHost.StartAsync().Wait();
+
+                if (log.IsInfoEnabled)
+                    log.Info("Dependency Injection container initialized successfully");
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error("Failed to initialize Dependency Injection container", ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Registers existing legacy services with the DI container
+        /// This provides a bridge during the migration period
+        /// </summary>
+        private void RegisterLegacyServices(IServiceCollection services)
+        {
+            // Register database instance when it becomes available
+            if (m_database != null)
+            {
+                services.AddSingleton<IObjectDatabase>(m_database);
+            }
+
+            // Register this GameServer instance for legacy compatibility
+            services.AddSingleton<GameServer>(this);
+
+            // Additional legacy services will be registered here as we progress
+            // through the refactoring phases
+        }
 
         /// <summary>
         /// Setup Metrics, this includes running a dedicated Kestrel Server for prometheus endpoints
@@ -1006,6 +1108,26 @@ namespace DOL.GS
 
 			//Stop the base server
 			base.Stop();
+
+			//Stop the dependency injection host
+			if (m_diHost != null)
+			{
+				try
+				{
+					m_diHost.StopAsync().Wait();
+					m_diHost.Dispose();
+					m_diHost = null;
+					m_serviceProvider = null;
+
+					if (log.IsInfoEnabled)
+						log.Info("Dependency Injection host stopped successfully");
+				}
+				catch (Exception ex)
+				{
+					if (log.IsErrorEnabled)
+						log.Error("Error stopping Dependency Injection host", ex);
+				}
+			}
 
 			//Stop all mobMgrs
 			WorldMgr.StopRegionMgrs();

@@ -189,7 +189,7 @@ namespace DOL.Language
                 int newEntries = 0;
                 int updatedEntries = 0;
 
-                IList<DbLanguageSystem> dbos = GameServer.Database.SelectAllObjects<DbLanguageSystem>();
+                IList<DbLanguageSystem> dbos = DOL.GS.GameServer.Database.SelectAllObjects<DbLanguageSystem>();
 
                 if (GS.ServerProperties.Properties.UPDATE_EXISTING_DB_SYSTEM_SENTENCES_FROM_FILES)
                 {
@@ -207,7 +207,7 @@ namespace DOL.Language
                             if (dbo.Text != sentence[TEXT])
                             {
                                 dbo.Text = sentence[TEXT];
-                                GameServer.Database.SaveObject(dbo); // Please be sure to use the UTF-8 format for your language files, otherwise
+                                DOL.GS.GameServer.Database.SaveObject(dbo); // Please be sure to use the UTF-8 format for your language files, otherwise
                                 // some database rows will be updated on each server start, because one char
                                 // differs from the one within the database.
                                 updatedEntries++;
@@ -229,7 +229,7 @@ namespace DOL.Language
                                 Language = sentence[LANGUAGE]
                             };
 
-                            GameServer.Database.AddObject(dbo);
+                            DOL.GS.GameServer.Database.AddObject(dbo);
                             RegisterLanguageDataObject(dbo);
                             newEntries++;
 
@@ -264,7 +264,7 @@ namespace DOL.Language
                                 Language = sentence[LANGUAGE]
                             };
 
-                            GameServer.Database.AddObject(dbo);
+                            DOL.GS.GameServer.Database.AddObject(dbo);
                             RegisterLanguageDataObject(dbo);
                             newEntries++;
 
@@ -317,10 +317,10 @@ namespace DOL.Language
                 log.Info("[Language-Manager] Loading object translations...");
 
             List<LanguageDataObject> lngObjs = new();
-            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageArea>());
-            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageGameObject>());
-            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageGameNpc>());
-            lngObjs.AddRange(GameServer.Database.SelectAllObjects<DbLanguageZone>());
+            lngObjs.AddRange(DOL.GS.GameServer.Database.SelectAllObjects<DbLanguageArea>());
+            lngObjs.AddRange(DOL.GS.GameServer.Database.SelectAllObjects<DbLanguageGameObject>());
+            lngObjs.AddRange(DOL.GS.GameServer.Database.SelectAllObjects<DbLanguageGameNpc>());
+            lngObjs.AddRange(DOL.GS.GameServer.Database.SelectAllObjects<DbLanguageZone>());
 
             foreach (LanguageDataObject lngObj in lngObjs)
                 RegisterLanguageDataObject(lngObj);

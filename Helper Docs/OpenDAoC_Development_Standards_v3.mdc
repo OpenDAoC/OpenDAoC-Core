@@ -1,0 +1,599 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# OpenDAoC Development Standards and Architecture Rule v3.0
+
+## Executive Summary
+
+These standards ensure all OpenDAoC development follows clean architecture principles, interface-driven design, and dependency injection patterns while maintaining performance targets for 10,000+ concurrent players. Every code change must satisfy both architectural cleanliness AND performance requirements.
+
+## Core Architecture Principles
+
+### 1. Clean Architecture Layers (MANDATORY)
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ Presentation │ GameClient, PacketHandlers, API Controllers    │
+├─────────────────────────────────────────────────────────────────┤
+│ Application  │ Use Cases, Application Services, DTOs          │
+├─────────────────────────────────────────────────────────────────┤
+│ Domain       │ Entities, Value Objects, Domain Services       │
+├─────────────────────────────────────────────────────────────────┤
+│ Infrastructure │ Repositories, Database, Cache, Network      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**Dependency Rule**: Dependencies ONLY point inward. Domain layer has ZERO dependencies.
+
+```csharp
+// ✅ Good - Follows dependency rule
+namespace OpenDAoC.Domain.Combat
+{
+    public interface ICombatService // Domain interface - no dependencies
+    {
+        AttackResult ProcessAttack(IAttacker attacker, IDefender defender);
+    }
+}
+
+namespace OpenDAoC.Application.Combat
+{
+    public class CombatUseCase // Application depends on domain only
+    {
+        private readonly ICombatService _combatService;
+        
+        public CombatUseCase(ICombatService combatService)
+        {
+            _combatService = combatService;
+        }
+    }
+}
+
+// ❌ Bad - Violates dependency rule
+namespace OpenDAoC.Domain.Combat
+{
+    public class CombatService
+    {
+        private readonly IDatabase _database; // Domain depending on infrastructure!
+    }
+}
+```
+
+### 2. Interface-First Design (100% COVERAGE)
+- **ALL public APIs must have interfaces**
+- **Define interfaces before implementations**
+- **Use Interface Segregation Principle (ISP)**
+- **Maximum 5 methods per interface**
+
+```csharp
+// ✅ Good - Segregated interfaces
+public interface IAttackable
+{
+    bool CanBeAttacked();
+    void OnAttacked(IAttackContext context);
+}
+
+public interface IAttacker
+{
+    bool CanAttack(IAttackable target);
+    IAttackContext PrepareAttack(IAttackable target);
+}
+
+public interface IDamageable
+{
+    void TakeDamage(IDamageContext damage);
+    int CurrentHealth { get; }
+    int MaxHealth { get; }
+}
+
+// ❌ Bad - Fat interface violating ISP
+public interface ICombatant
+{
+    AttackData PrepareAttack();
+    DefenseResult TryDefend();
+    void UseAbility();
+    void CastSpell();
+    void Trade();
+    void SendMessage(); // Violates ISP - not combat related
+}
+```
+
+### 3. Comprehensive Dependency Injection (NO EXCEPTIONS)
+- **Constructor injection for ALL dependencies**
+- **NO static dependencies (GameServer.Instance BANNED)**
+- **NO service locator pattern**
+- **Use Microsoft.Extensions.DependencyInjection**
+
+```csharp
+// ✅ Good - Pure dependency injection
+public class CombatService : ICombatService
+{
+    private readonly IDamageCalculator _damageCalculator;
+    private readonly IHitChanceCalculator _hitCalculator;
+    private readonly ILogger<CombatService> _logger;
+    
+    public CombatService(
+        IDamageCalculator damageCalculator,
+        IHitChanceCalculator hitCalculator,
+        ILogger<CombatService> logger)
+    {
+        _damageCalculator = damageCalculator;
+        _hitCalculator = hitCalculator;
+        _logger = logger;
+    }
+}
+
+// ❌ Bad - Static dependencies (FORBIDDEN)
+public class BadCombatService
+{
+    public void ProcessAttack()
+    {
+        var db = GameServer.Instance.Database; // FORBIDDEN
+        var logger = Logger.Instance; // FORBIDDEN
+        var manager = ServiceLocator.Get<ICombatManager>(); // FORBIDDEN
+    }
+}
+```
+
+### 4. Performance-Aware Architecture
+- **Zero allocations in hot paths**
+- **Use struct-based DTOs for frequent operations**
+- **Object pooling for heavy objects**
+- **Compile-time DI for hot paths**
+
+```csharp
+// ✅ Good - Zero allocation hot path
+public readonly struct CombatContext
+{
+    public readonly int AttackerId;
+    public readonly int DefenderId;
+    public readonly CombatType Type;
+    public readonly long Timestamp;
+    
+    public CombatContext(int attackerId, int defenderId, CombatType type)
+    {
+        AttackerId = attackerId;
+        DefenderId = defenderId;
+        Type = type;
+        Timestamp = GameLoop.GameLoopTime;
+    }
+}
+
+// ✅ Good - Pooled objects for performance
+public class CombatService : ICombatService
+{
+    private readonly ObjectPool<AttackResult> _resultPool;
+    
+    public void ProcessAttack(IAttacker attacker, IDefender defender, AttackResult result)
+    {
+        // Use pre-allocated result object to avoid allocation
+        result.Reset();
+        // ... process attack logic
+    }
+}
+
+// ❌ Bad - Allocations in hot path
+public AttackResult ProcessAttack()
+{
+    return new AttackResult(); // Allocation in hot path!
+}
+```
+
+## SOLID Principles Implementation (Enhanced)
+
+### Single Responsibility Principle (SRP)
+- **Each class has exactly ONE reason to change**
+- **Maximum 200 lines per class**
+- **Extract responsibilities early**
+
+```csharp
+// ✅ Good - Single responsibility
+public class CombatDamageCalculator : IDamageCalculator
+{
+    public int CalculateDamage(IWeapon weapon, ITarget target) 
+    {
+        // Only calculates damage - single responsibility
+    }
+}
+
+public class CombatHitCalculator : IHitCalculator
+{
+    public bool CalculateHit(IAttacker attacker, IDefender defender) 
+    {
+        // Only calculates hit chance - single responsibility
+    }
+}
+
+// ❌ Bad - Multiple responsibilities (like current GameLiving)
+public class CombatManager
+{
+    public int CalculateDamage() { }      // Responsibility 1
+    public bool CalculateHit() { }        // Responsibility 2
+    public void SaveToDatabase() { }      // Responsibility 3
+    public void SendNetworkPackets() { }  // Responsibility 4
+    public void UpdateUI() { }            // Responsibility 5
+}
+```
+
+### Open/Closed Principle (OCP)
+- **Open for extension via interfaces**
+- **Closed for modification**
+- **Use strategy pattern for algorithms**
+
+```csharp
+// ✅ Good - Extensible without modification
+public interface IPropertyCalculator
+{
+    eProperty TargetProperty { get; }
+    int Calculate(IPropertySource source);
+}
+
+public class PropertyService
+{
+    private readonly Dictionary<eProperty, IPropertyCalculator> _calculators;
+    
+    public void RegisterCalculator(eProperty property, IPropertyCalculator calculator)
+    {
+        _calculators[property] = calculator; // Extends without modifying existing code
+    }
+}
+
+// Add new calculator without modifying PropertyService
+public class CriticalHitChanceCalculator : IPropertyCalculator
+{
+    public eProperty TargetProperty => eProperty.CriticalMeleeHitChance;
+    public int Calculate(IPropertySource source) { /* implementation */ }
+}
+```
+
+### Interface Segregation Principle (ISP)
+- **Small, focused interfaces**
+- **Split by client needs**
+- **Separate hot/cold path interfaces**
+
+```csharp
+// ✅ Good - Segregated by usage pattern
+public interface ICharacterCore // Hot path - frequently accessed
+{
+    int Level { get; }
+    int Health { get; }
+    IStats Stats { get; }
+}
+
+public interface ICharacterDetails // Cold path - rarely accessed
+{
+    string Biography { get; }
+    DateTime Created { get; }
+    IList<IAchievement> Achievements { get; }
+}
+
+public interface ICharacter : ICharacterCore, ICharacterDetails 
+{
+    // Combines both but allows clients to depend only on what they need
+}
+```
+
+### Dependency Inversion Principle (DIP)
+- **Depend on abstractions, never concretions**
+- **High-level modules don't depend on low-level modules**
+- **Both depend on abstractions**
+
+```csharp
+// ✅ Good - Depends on abstractions
+public class CharacterService // High-level module
+{
+    private readonly ICharacterRepository _repository; // Abstraction
+    private readonly IEventPublisher _eventPublisher; // Abstraction
+    
+    public CharacterService(ICharacterRepository repository, IEventPublisher eventPublisher)
+    {
+        _repository = repository;
+        _eventPublisher = eventPublisher;
+    }
+}
+
+// ❌ Bad - High-level depending on low-level
+public class CharacterService
+{
+    private readonly MySqlCharacterRepository _repository; // Concrete implementation
+    private readonly RabbitMqEventPublisher _eventPublisher; // Concrete implementation
+}
+```
+
+## Performance Standards (MANDATORY)
+
+### Performance Targets (Non-Negotiable)
+- **Combat calculations**: <0.5ms p99
+- **Property calculations**: <0.1ms with caching
+- **Service resolution**: <100ns (compiled DI)
+- **Memory allocation**: 0 bytes in hot paths
+- **GC pressure**: <0.1 Gen2 collections/sec
+
+### Zero-Allocation Patterns (Required)
+```csharp
+// ✅ Required patterns for hot paths
+public interface ICombatService
+{
+    // Struct return for zero allocation
+    CombatOutcome ProcessAttackFast(in CombatContext context);
+    
+    // Pre-allocated result parameter
+    void ProcessAttack(IAttacker attacker, IDefender defender, AttackResult result);
+    
+    // Span<T> for collections to avoid allocation
+    void ProcessMultipleAttacks(ReadOnlySpan<AttackRequest> requests, Span<AttackResult> results);
+}
+
+// ✅ Use ArrayPool for temporary allocations
+public class NetworkService
+{
+    private static readonly ArrayPool<byte> _bytePool = ArrayPool<byte>.Shared;
+    
+    public void ProcessData()
+    {
+        var buffer = _bytePool.Rent(1024);
+        try
+        {
+            // Use buffer for processing
+        }
+        finally
+        {
+            _bytePool.Return(buffer);
+        }
+    }
+}
+```
+
+## Code Quality Standards (Enhanced)
+
+### Metrics Requirements
+- **Cyclomatic complexity**: <7 per method (was 10)
+- **Code duplication**: <3% across codebase (was 5%)
+- **Test coverage**: >90% for business logic (was 80%)
+- **Interface coverage**: 95% of public APIs
+- **DI coverage**: 100% (no static dependencies)
+
+### Architecture Quality Gates
+- **Layer violations**: 0 (automated enforcement)
+- **Static dependencies**: 0 (automated detection)
+- **Service locator usage**: 0 (banned pattern)
+- **God objects**: 0 (>200 lines flagged)
+- **Fat interfaces**: 0 (>5 methods flagged)
+
+## Testing Standards (Enhanced)
+
+### Test-Driven Development (MANDATORY)
+- **Write tests BEFORE implementation**
+- **100% interface coverage in tests**
+- **Red-Green-Refactor cycle**
+- **No untested public methods**
+
+### Test Architecture with DI
+```csharp
+// ✅ Required test structure with DI
+[TestFixture]
+public class CombatServiceTests
+{
+    private IServiceProvider _serviceProvider;
+    private ICombatService _combatService;
+    
+    [SetUp]
+    public void Setup()
+    {
+        var services = new ServiceCollection();
+        
+        // Register test doubles with DI
+        services.AddSingleton<IDamageCalculator, MockDamageCalculator>();
+        services.AddSingleton<IHitChanceCalculator, MockHitChanceCalculator>();
+        services.AddSingleton<ICombatService, CombatService>();
+        
+        _serviceProvider = services.BuildServiceProvider();
+        _combatService = _serviceProvider.GetRequiredService<ICombatService>();
+    }
+    
+    [Test]
+    public void ProcessAttack_ShouldHit_WhenValidConditions()
+    {
+        // Test validates: DAoC Rule - Base hit chance calculation
+        // Reference: Core_Systems_Game_Rules.md - Combat System
+        
+        // Arrange
+        var attacker = CreateTestAttacker(level: 50);
+        var defender = CreateTestDefender(level: 45);
+        
+        // Act
+        var result = _combatService.ProcessAttack(attacker, defender);
+        
+        // Assert
+        result.Hit.Should().BeTrue("Level 50 vs 45 should hit according to DAoC rules");
+    }
+}
+```
+
+### Performance Testing (Required)
+```csharp
+// ✅ All services need performance tests
+[MemoryDiagnoser]
+[SimpleJob(RuntimeMoniker.Net80)]
+public class CombatServiceBenchmarks
+{
+    private ICombatService _service;
+    
+    [GlobalSetup]
+    public void Setup()
+    {
+        // Setup with DI container
+        var services = new ServiceCollection();
+        services.AddCombatServices();
+        var provider = services.BuildServiceProvider();
+        _service = provider.GetRequiredService<ICombatService>();
+    }
+    
+    [Benchmark]
+    public void ProcessAttack_PerformanceTest()
+    {
+        _service.ProcessAttack(_attacker, _defender, _result);
+    }
+}
+```
+
+## Migration Strategy for Legacy Code
+
+### Adapter Pattern (Required for Migration)
+```csharp
+// ✅ Bridge pattern for gradual migration from static dependencies
+public interface ILegacyGameServer
+{
+    IObjectDatabase Database { get; }
+    WorldManager WorldManager { get; }
+}
+
+public class LegacyGameServerAdapter : ILegacyGameServer
+{
+    public IObjectDatabase Database => GameServer.Database;
+    public WorldManager WorldManager => GameServer.Instance.WorldManager;
+}
+
+// Migration path:
+// Step 1: GameServer.Instance.Database (current)
+// Step 2: _legacyServer.Database (intermediate)
+// Step 3: _repository.GetByIdAsync() (final)
+```
+
+### Strangler Fig Pattern
+```csharp
+// ✅ Incrementally replace old systems
+public class HybridCombatService : ICombatService
+{
+    private readonly INewCombatService _newService;
+    private readonly ILegacyCombatService _legacyService;
+    private readonly IFeatureFlag _featureFlag;
+    
+    public AttackResult ProcessAttack(IAttacker attacker, IDefender defender)
+    {
+        return _featureFlag.IsEnabled("NewCombatSystem")
+            ? _newService.ProcessAttack(attacker, defender)
+            : _legacyService.ProcessAttack(attacker, defender);
+    }
+}
+```
+
+## Monitoring and Metrics (Required)
+
+### Service Instrumentation
+```csharp
+// ✅ All services must be instrumented
+public class InstrumentedCombatService : ICombatService
+{
+    private readonly ICombatService _inner;
+    private readonly IMetrics _metrics;
+    
+    public AttackResult ProcessAttack(IAttacker attacker, IDefender defender)
+    {
+        using var timer = _metrics.Measure.Timer.Time("combat.attack.duration");
+        
+        var result = _inner.ProcessAttack(attacker, defender);
+        
+        _metrics.Measure.Counter.Increment("combat.attacks.total");
+        if (result.Hit)
+            _metrics.Measure.Counter.Increment("combat.attacks.hit");
+            
+        return result;
+    }
+}
+```
+
+### Architecture Validation (Automated)
+```csharp
+// ✅ Automated architecture tests (required in CI/CD)
+[Test]
+public void Domain_ShouldNotDependOn_Infrastructure()
+{
+    var domainAssembly = typeof(Character).Assembly;
+    var infraAssembly = typeof(MySqlRepository).Assembly;
+    
+    domainAssembly.Should().NotReference(infraAssembly);
+}
+
+[Test]
+public void AllServices_ShouldHaveInterfaces()
+{
+    var services = GetAllServiceClasses();
+    
+    foreach (var service in services)
+    {
+        service.Should().ImplementInterface($"I{service.Name}");
+    }
+}
+
+[Test]
+public void NoStaticDependencies_ShouldExist()
+{
+    var violations = FindStaticDependencies("GameServer.Instance");
+    violations.Should().BeEmpty("No static dependencies allowed");
+}
+```
+
+## Anti-Patterns (STRICTLY FORBIDDEN)
+
+### Architectural Anti-Patterns
+- ❌ **Service Locator**: `ServiceLocator.Get<T>()`
+- ❌ **Static Dependencies**: `GameServer.Instance`
+- ❌ **God Objects**: >200 lines per class
+- ❌ **Anemic Domain**: Logic-less entities
+- ❌ **Layer Violations**: Domain depending on Infrastructure
+- ❌ **Fat Interfaces**: >5 methods per interface
+- ❌ **Primitive Obsession**: Using strings/ints for domain concepts
+
+### Performance Anti-Patterns
+- ❌ **Allocations in Hot Paths**: `new` in game loop
+- ❌ **LINQ in Hot Paths**: Deferred execution overhead
+- ❌ **Boxing Value Types**: Performance penalty
+- ❌ **Reflection in Hot Paths**: Runtime overhead
+- ❌ **String Concatenation**: Use StringBuilder or interpolation
+- ❌ **Recursive Calls**: Stack overflow risk
+
+## Success Metrics (Measurable)
+
+### Architecture Quality Gates
+- **Interface Coverage**: 95%+ (Target: 98%)
+- **DI Coverage**: 100% (No exceptions)
+- **Layer Violations**: 0 (Automated detection)
+- **Test Coverage**: 90%+ business logic
+- **Code Duplication**: <3%
+
+### Performance Quality Gates
+- **Combat Processing**: <0.5ms p99
+- **Property Calculation**: <0.1ms with cache
+- **Memory Allocation**: 0 bytes in hot paths
+- **GC Pressure**: <0.1 Gen2/sec
+- **Service Resolution**: <100ns
+
+## Code Review Checklist (Enhanced)
+
+### Mandatory Checks
+- [ ] **Clean Architecture**: Follows layer boundaries
+- [ ] **Interface Coverage**: All public APIs have interfaces
+- [ ] **DI Usage**: 100% dependency injection
+- [ ] **Performance**: Meets performance targets
+- [ ] **Tests**: Full test coverage with performance tests
+- [ ] **Documentation**: Game rules documented
+- [ ] **Architecture Tests**: Pass all validation tests
+- [ ] **Zero Allocations**: Hot paths allocation-free
+- [ ] **SOLID Principles**: All principles followed
+- [ ] **Domain Events**: Cross-aggregate communication
+
+## Final Reminders
+
+1. **Architecture First**: Clean architecture enables performance
+2. **Measure Everything**: Can't improve what you don't measure
+3. **Interface-First**: Contracts before implementations
+4. **DI Everywhere**: No exceptions to dependency injection
+5. **Performance Always**: Every change must improve or maintain performance
+6. **Test Everything**: Architecture, functionality, and performance
+7. **Document Rules**: Game mechanics must be documented
+8. **Gradual Migration**: Use adapters and feature flags
+9. **Fail Fast**: Architecture violations stop development
+10. **Team Standards**: Everyone follows these rules
+
+**Remember**: The goal is not to change the game, but to build a platform that can scale to support thousands of players while maintaining the authentic DAoC experience. Clean architecture is the foundation for this scalability.

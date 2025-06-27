@@ -31,7 +31,7 @@ namespace DOL.AI.Brain
 						continue; //do not attack players on steed
 					if(player == m_spellHandler.Caster)
 						continue;
-					if (!GameServer.ServerRules.IsAllowedToAttack(m_spellHandler.Caster, player, true))
+					if (!DOL.GS.GameServer.ServerRules.IsAllowedToAttack(m_spellHandler.Caster, player, true))
 						continue;
 
 					AddToAggroList(player, 1);
@@ -45,7 +45,7 @@ namespace DOL.AI.Brain
 			{
 				foreach (GameNPC npc in Body.GetNPCsInRadius((ushort)AggroRange))
 				{
-					if (GameServer.ServerRules.IsAllowedToAttack(m_spellHandler.Caster, npc, true))
+					if (DOL.GS.GameServer.ServerRules.IsAllowedToAttack(m_spellHandler.Caster, npc, true))
 					{
 						AddToAggroList(npc, npc.Level<<1);
 						return;
