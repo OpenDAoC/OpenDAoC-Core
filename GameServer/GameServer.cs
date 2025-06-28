@@ -269,8 +269,6 @@ namespace DOL.GS
 			if (!LoggerManager.Initialize(logConfig.FullName))
 				return;
 
-			log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
 			//Create the instance
 			m_instance = new GameServer(config);
 		}
@@ -1296,6 +1294,8 @@ namespace DOL.GS
 		/// <param name="config">A valid game server configuration</param>
 		protected GameServer(GameServerConfiguration config) : base(config)
 		{
+			log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
 			m_gmLog = LoggerManager.Create(Configuration.GMActionsLoggerName);
 			m_cheatLog = LoggerManager.Create(Configuration.CheatLoggerName);
 			m_dualIPLog = LoggerManager.Create(Configuration.DualIPLoggerName);

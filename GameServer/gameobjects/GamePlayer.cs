@@ -4099,7 +4099,7 @@ namespace DOL.GS
                     int zoneBonus = (((int)amount * ZoneBonus.GetRPBonus(this)) / 100);
                     if (zoneBonus > 0)
                     {
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.RP_RATE), ZoneBonus.eZoneBonusType.RP),
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.RP_RATE), ZoneBonusType.Rp),
                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                         GainRealmPoints((long)(zoneBonus * ServerProperties.Properties.RP_RATE), false, false, false);
                     }
@@ -4245,7 +4245,7 @@ namespace DOL.GS
                     int zoneBonus = (((int)amount * ZoneBonus.GetBPBonus(this)) / 100);
                     if (zoneBonus > 0)
                     {
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.BP_RATE), ZoneBonus.eZoneBonusType.BP),
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int)(zoneBonus * ServerProperties.Properties.BP_RATE), ZoneBonusType.Bp),
                             eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                         GainBountyPoints((long)(zoneBonus * ServerProperties.Properties.BP_RATE), false, false, false);
                     }
@@ -4787,7 +4787,7 @@ namespace DOL.GS
                     if (zoneBonus > 0)
                     {
                         zoneBonus = (long) (zoneBonus * Properties.XP_RATE);
-                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int) zoneBonus, ZoneBonus.eZoneBonusType.XP), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                        Out.SendMessage(ZoneBonus.GetBonusMessage(this, (int) zoneBonus, ZoneBonusType.Xp), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                         GainExperience(new(zoneBonus, 0, 0, 0, 0, 0, false, false, eXPSource.Other), false);
                     }
                 }
