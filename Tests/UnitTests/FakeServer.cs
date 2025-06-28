@@ -20,6 +20,7 @@ namespace DOL.Tests.Unit.Gameserver
         public override void SendUpdateMaxSpeed() { }
         public override void SendEncumbrance() { }
         public override void SendStatusUpdate() { }
+        public override void SendUpdateMoney() { }
     }
 
     public class FakeRegion : Region
