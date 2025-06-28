@@ -901,7 +901,7 @@ namespace DOL.GS
 					player.Out.SendMessage(message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
 				}
 			}
-			if (isBounty == false) //...pay with Money.
+			if (isBounty == false) //...pay with money.
 			{
 				int pagenumber = item_slot / MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
 				int slotnumber = item_slot % MerchantTradeItems.MAX_ITEM_IN_TRADEWINDOWS;
@@ -920,9 +920,9 @@ namespace DOL.GS
 				lock (player.Inventory.Lock)
 				{
 
-					if (player.GetCurrentMoney() < totalValue)
+					if (player.Wallet.GetMoney() < totalValue)
 					{
-						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", Money.GetString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+						player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed", WalletHelper.ToString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 						return;
 					}
 
@@ -935,11 +935,11 @@ namespace DOL.GS
 
 					string message;
 					if (amountToBuy > 1)
-						message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), Money.GetString(totalValue));
+						message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false), WalletHelper.ToString(totalValue));
 					else
-						message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), Money.GetString(totalValue));
+						message = LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), WalletHelper.ToString(totalValue));
 
-					if (!player.RemoveMoney(totalValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
+					if (!player.Wallet.RemoveMoney(totalValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
 					{
 						throw new Exception("Money amount changed while adding items.");
 					}

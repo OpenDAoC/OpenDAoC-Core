@@ -313,7 +313,7 @@ namespace DOL.GS.Commands
 					info.Add("  - Model ID : " + target.Model);
 					info.Add("  - AFK Message: " + target.TempProperties.GetProperty<string>(GamePlayer.AFK_MESSAGE) + "");
 					info.Add(" ");
-                    info.Add("  - Money : " + Money.GetString(target.GetCurrentMoney()) + "\n");
+                    info.Add("  - Money : " + WalletHelper.ToString(target.Wallet.GetMoney()) + "\n");
 					info.Add("  - XPs : " + target.Experience);
 					info.Add("  - RPs : " + target.RealmPoints);
 					info.Add("  - BPs : " + target.BountyPoints);
@@ -355,7 +355,7 @@ namespace DOL.GS.Commands
 					info.Add("  --------------------------------------");
 					////////////// Inventaire /////////////
 					info.Add("  ----- Money:");
-					info.Add(Money.GetShortString(target.GetCurrentMoney()));
+					info.Add(WalletHelper.ToShortString(target.Wallet.GetMoney()));
 					info.Add(" ");
 
 					info.Add("  ----- Wearing:");
@@ -638,9 +638,9 @@ namespace DOL.GS.Commands
 					if (house.Rug4Color != 0)
 						info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.Rug4Color", Color(house.Rug4Color)));
 					info.Add(" ");
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.Lockbox", Money.GetString(house.KeptMoney)));
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.RentalPrice", Money.GetString(HouseMgr.GetRentByModel(house.Model))));
-					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.MaxLockbox", Money.GetString(HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)));
+					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.Lockbox", WalletHelper.ToString(house.KeptMoney)));
+					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.RentalPrice", WalletHelper.ToString(HouseMgr.GetRentByModel(house.Model))));
+					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.MaxLockbox", WalletHelper.ToString(HouseMgr.GetRentByModel(house.Model) * ServerProperties.Properties.RENT_LOCKBOX_PAYMENTS)));
 					info.Add(LanguageMgr.GetTranslation(client.Account.Language, "House.SendHouseInfo.RentDueIn", due.Days, due.Hours));
 
 					#endregion House

@@ -127,7 +127,7 @@ namespace DOL.GS
 				return;
 			}
 
-			if (!player.RemoveMoney(EMBLEM_COST))
+			if (!player.Wallet.RemoveMoney(EMBLEM_COST))
 			{
                 InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, EMBLEM_COST);
 				player.Out.SendMessage("You don't have enough money.", eChatType.CT_System, eChatLoc.CL_SystemWindow);

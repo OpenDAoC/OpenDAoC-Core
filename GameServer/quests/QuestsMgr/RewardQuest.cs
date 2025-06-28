@@ -237,7 +237,7 @@ namespace DOL.GS.Quests
 				base.FinishQuest();
 				QuestPlayer.Out.SendSoundEffect(11, 0, 0, 0, 0, 0);
 				QuestPlayer.ForceGainExperience(Rewards.Experience);
-				QuestPlayer.AddMoney(Rewards.Money);
+				QuestPlayer.Wallet.AddMoney(Rewards.Money);
                 InventoryLogging.LogInventoryAction("(QUEST;" + Name + ")", QuestPlayer, eInventoryActionType.Quest, Rewards.Money);
 				if (Rewards.GiveBountyPoints > 0)
 					QuestPlayer.GainBountyPoints(Rewards.GiveBountyPoints);

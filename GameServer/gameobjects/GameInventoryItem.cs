@@ -1778,7 +1778,7 @@ namespace DOL.GS
             }
 
             delve.Add("");
-            delve.Add("   Value/Price: " + Money.GetShortString(Price) + " / " + Money.GetShortString((long)(Price * (long)ServerProperties.Properties.ITEM_SELL_RATIO * .01)));
+            delve.Add("   Value/Price: " + WalletHelper.ToShortString(Price) + " / " + WalletHelper.ToShortString((long)(Price * (long)ServerProperties.Properties.ITEM_SELL_RATIO * .01)));
             delve.Add("Count/MaxCount: " + Count + " / " + MaxCount);
             delve.Add("        Weight: " + (Weight / 10.0f) + "lbs");
             delve.Add("       Quality: " + Quality + "%");

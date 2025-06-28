@@ -8,7 +8,7 @@ using DOL.GS;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 
-namespace DOL.Tests.Unit.GameUtils.Collections
+namespace DOL.Tests.Unit.Gameserver
 {
     [TestFixture]
     public class UT_DrainArray

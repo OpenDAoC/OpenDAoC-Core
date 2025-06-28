@@ -1,0 +1,6 @@
+﻿WalletHelper.GetString.Text1:	0 Kupfer
+WalletHelper.GetString.Text2:	Mithril,
+WalletHelper.GetString.Text3:	Platinum,
+WalletHelper.GetString.Text4:	Gold,
+WalletHelper.GetString.Text5:	Silber,
+WalletHelper.GetString.Text6:	Kupfer,

@@ -140,7 +140,7 @@ public class Blacksmith : GameNPC
             // Message: It will cost {0} to repair {1}. Do you accept?
             player.Client.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client.Account.Language,
                 "GameNPC.Blacksmith.RepairCostAccept",
-                Money.GetString(item.RepairCost), item.GetName(0, false)), BlacksmithDialogResponse);
+                WalletHelper.ToString(item.RepairCost), item.GetName(0, false)), BlacksmithDialogResponse);
         }
         else
         {
@@ -188,13 +188,13 @@ public class Blacksmith : GameNPC
 
         var ToRecoverCond = item.MaxCondition - item.Condition;
 
-        if (!player.RemoveMoney(item.RepairCost))
+        if (!player.Wallet.RemoveMoney(item.RepairCost))
         {
             InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.RepairCost);
             // Message: {0} says, "It costs {1} to repair {2}. You don't have that much."
             ChatUtil.SendSayMessage(player, "GameNPC.Blacksmith.NotEnoughMoney",
                 GetName(0, true),
-                Money.GetString(item.RepairCost),
+                WalletHelper.ToString(item.RepairCost),
                 item.GetName(0, false));
 
             return;
@@ -202,7 +202,7 @@ public class Blacksmith : GameNPC
 
         // Message: You pay {0} {1}.
         ChatUtil.SendSystemMessage(player, "GameNPC.Blacksmith.YouPay", GetName(0, false),
-            Money.GetString(item.RepairCost));
+            WalletHelper.ToString(item.RepairCost));
 
         // Items with IsNotLosingDur are not....losing DUR.
         if (ToRecoverCond + 1 >= item.Durability)
@@ -240,7 +240,7 @@ public class Blacksmith : GameNPC
 
         if (TotalCost > 0)
             player.Client.Out.SendCustomDialog(
-                $"It will cost {Money.GetString(TotalCost)} to repair everything. Do you accept?", RepairAll);
+                $"It will cost {WalletHelper.ToString(TotalCost)} to repair everything. Do you accept?", RepairAll);
         else
             SayTo(player, eChatLoc.CL_PopupWindow,
                 "All items are fully repaired already.");
@@ -285,11 +285,11 @@ public class Blacksmith : GameNPC
             cost += CalculateCost(inventoryItem);
         }
 
-        if (!player.RemoveMoney(cost))
+        if (!player.Wallet.RemoveMoney(cost))
         {
             SayTo(player, eChatLoc.CL_PopupWindow,
                 LanguageMgr.GetTranslation(player.Client.Account.Language,
-                    "GameNPC.Blacksmith.NotEnoughMoney", Money.GetString(cost), "everything"));
+                    "GameNPC.Blacksmith.NotEnoughMoney", WalletHelper.ToString(cost), "everything"));
             return;
         }
 
@@ -297,7 +297,7 @@ public class Blacksmith : GameNPC
         InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, cost);
 
         ChatUtil.SendSystemMessage(player, "GameNPC.Blacksmith.YouPay", GetName(0, false),
-            Money.GetString(cost));
+            WalletHelper.ToString(cost));
 
 
         foreach (var inventoryItem in player.Inventory.AllItems)

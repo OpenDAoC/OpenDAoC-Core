@@ -603,7 +603,7 @@ namespace DOL.GS.AtlasQuest.Hibernia
 		
 		public override void FinishQuest()
 		{
-			m_questPlayer.AddMoney(Money.GetMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
+			m_questPlayer.Wallet.AddMoney(WalletHelper.ToMoney(0, 0, m_questPlayer.Level * 8, 32, Util.Random(50)),
 				"You receive {0} as a reward.");
 			AtlasROGManager.GenerateReward(m_questPlayer, 5000);
 			_grandSummonerKilled = 0;

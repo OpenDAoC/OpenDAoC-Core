@@ -1,0 +1,7 @@
+﻿WalletHelper.GetString.Text1:	0 pièce de cuivre
+WalletHelper.GetString.Text2:	mithril,
+WalletHelper.GetString.Text3:	platine,
+WalletHelper.GetString.Text4:	or,
+WalletHelper.GetString.Text5:	argent,
+WalletHelper.GetString.Text6:	cuivre,
+WalletHelper.GetString.Text7:	pièces,

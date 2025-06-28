@@ -1843,7 +1843,7 @@ namespace DOL.GS.ServerRules
 
                 if (money > 0)
                 {
-                    playerToAward.AddMoney(money, "You receive {0}");
+                    playerToAward.Wallet.AddMoney(money, "You receive {0}");
                     InventoryLogging.LogInventoryAction(killedPlayer, playerToAward, eInventoryActionType.Other, money);
                 }
             }

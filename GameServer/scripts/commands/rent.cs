@@ -81,7 +81,7 @@ namespace DOL.GS.Commands
                             return;
                         }
                         
-                        if(!client.Player.RemoveMoney(goldToAdd))
+                        if(!client.Player.Wallet.RemoveMoney(goldToAdd))
                         {
                             client.Out.SendMessage(LanguageMgr.GetTranslation(client.Account.Language, "Scripts.Players.Rent.NotEnoughMoney"),
                                 eChatType.CT_System, eChatLoc.CL_SystemWindow);

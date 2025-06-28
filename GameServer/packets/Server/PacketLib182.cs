@@ -192,7 +192,7 @@ namespace DOL.GS.PacketHandler
 							if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 	                            name += "[" + item.SellPrice.ToString() + " BP]";
 	                        else
-	                            name += "[" + Money.GetString(item.SellPrice) + "]";
+	                            name += "[" + WalletHelper.ToString(item.SellPrice) + "]";
 	                    }
 						pak.WritePascalString(name);
 					}

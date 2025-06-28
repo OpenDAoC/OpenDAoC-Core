@@ -458,9 +458,9 @@ namespace DOL.GS
                     }
                     else
                     {
-                        if (player.GetCurrentMoney() < purchasePrice)
+                        if (player.Wallet.GetMoney() < purchasePrice)
                         {
-                            ChatUtil.SendSystemMessage(player, "GameMerchant.OnPlayerBuy.YouNeed", Money.GetString(purchasePrice));
+                            ChatUtil.SendSystemMessage(player, "GameMerchant.OnPlayerBuy.YouNeed", WalletHelper.ToString(purchasePrice));
                             return;
                         }
                     }
@@ -481,10 +481,10 @@ namespace DOL.GS
                     }
                     else
                     {
-                        if (player.RemoveMoney(purchasePrice))
+                        if (player.Wallet.RemoveMoney(purchasePrice))
                         {
                             InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, purchasePrice);
-                            ChatUtil.SendMerchantMessage(player, "GameMerchant.OnPlayerBuy.Bought", item.GetName(1, false), Money.GetString(purchasePrice));
+                            ChatUtil.SendMerchantMessage(player, "GameMerchant.OnPlayerBuy.Bought", item.GetName(1, false), WalletHelper.ToString(purchasePrice));
                         }
                         else
                             return;

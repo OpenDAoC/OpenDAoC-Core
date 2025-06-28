@@ -72,7 +72,7 @@ namespace DOL.GS.Behaviour.Requirements
 			bool result = true;
             GamePlayer player = BehaviourUtils.GuessGamePlayerFromNotify(e, sender, args);
             
-            result = compare(player.GetCurrentMoney(), N, Comparator);
+            result = compare(player.Wallet.GetMoney(), N, Comparator);
 
 			return result;
 		}
