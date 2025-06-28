@@ -28,7 +28,30 @@ namespace DOL.GS
             if (GetMoney() > 0)
                 throw new InvalidOperationException("Money has already been loaded into the wallet.");
 
-            ChangeMoney(amount, null);
+            if (amount < 0)
+                throw new ArgumentOutOfRangeException(nameof(amount), "Amount cannot be negative.");
+
+            if (amount > 0)
+                ChangeMoney(amount, null);
+        }
+
+        public void PickUpMoney(long amount, bool isSplitMoney)
+        {
+            if (amount < 0)
+                throw new ArgumentOutOfRangeException(nameof(amount), "Amount cannot be negative.");
+
+            long zoneBonus = GetZoneBonus(amount); // Zone bonus is calculated before guild dues are applied.
+            amount = ApplyGuildDues(amount);
+            long totalMoney = zoneBonus + amount;
+
+            if (zoneBonus > 0)
+                AddMoney(zoneBonus, ZoneBonus.GetBonusMessage(_player, zoneBonus, ZoneBonusType.Money), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+
+            if (amount > 0)
+                AddMoney(amount, LanguageMgr.GetTranslation(_player.Client.Account.Language, isSplitMoney ? "GamePlayer.PickupObject.YourLootShare" : "GamePlayer.PickupObject.YouPickUp", WalletHelper.ToString(amount)));
+
+            if (totalMoney > 0)
+                InventoryLogging.LogInventoryAction("(ground)", _player, eInventoryActionType.Loot, totalMoney);
         }
 
         public void AddMoney(long money)
@@ -95,6 +118,22 @@ namespace DOL.GS
 
             return true;
         }
+
+        private long GetZoneBonus(long money)
+        {
+            return Properties.ENABLE_ZONE_BONUSES ? (long) (money * ZoneBonus.GetCoinBonus(_player) * 0.01) : 0;
+        }
+
+        private long ApplyGuildDues(long money)
+        {
+            Guild guild = _player.Guild;
+
+            if (guild == null || !guild.IsGuildDuesOn())
+                return money;
+
+            long moneyToGuild = money * guild.GetGuildDuesPercent() / 100;
+            return moneyToGuild <= 0 || !guild.AddToBank(moneyToGuild, false) ? money : money - moneyToGuild;
+        }
     }
 
     public static class WalletHelper
@@ -122,15 +161,6 @@ namespace DOL.GS
             return (mithril, platinum, gold, silver, copper);
         }
 
-        public static long ApplyGuildDues(long money, Guild guild)
-        {
-            if (guild == null || !guild.IsGuildDuesOn())
-                return money;
-
-            long moneyToGuild = money * guild.GetGuildDuesPercent() / 100;
-            return moneyToGuild <= 0 || !guild.AddToBank(moneyToGuild, false) ? money : money - moneyToGuild;
-        }
-
         public static long CalculateAutoPrice(int level, int quality)
         {
             double qualityMod = quality / 100.0;
@@ -149,53 +179,53 @@ namespace DOL.GS
                 return LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text1");
 
             var (mithril, platinum, gold, silver, copper) = ToMoneyParts(money);
-            StringBuilder res = new();
+            StringBuilder result = new();
 
             if (mithril != 0)
             {
-                res.Append(mithril);
-                res.Append(' ');
-                res.Append(LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text2"));
-                res.Append(' ');
+                result.Append(mithril);
+                result.Append(' ');
+                result.Append(LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text2"));
+                result.Append(' ');
             }
 
             if (platinum != 0)
             {
-                res.Append(platinum);
-                res.Append(' ');
-                res.Append(LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text3"));
-                res.Append(' ');
+                result.Append(platinum);
+                result.Append(' ');
+                result.Append(LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text3"));
+                result.Append(' ');
             }
 
             if (gold != 0)
             {
-                res.Append(gold);
-                res.Append(' ');
-                res.Append(LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text4"));
-                res.Append(' ');
+                result.Append(gold);
+                result.Append(' ');
+                result.Append(LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text4"));
+                result.Append(' ');
             }
 
             if (silver != 0)
             {
-                res.Append(silver);
-                res.Append(' ');
-                res.Append(LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text5"));
-                res.Append(' ');
+                result.Append(silver);
+                result.Append(' ');
+                result.Append(LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text5"));
+                result.Append(' ');
             }
 
             if (copper != 0)
             {
-                res.Append(copper);
-                res.Append(' ');
-                res.Append(LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text6"));
-                res.Append(' ');
+                result.Append(copper);
+                result.Append(' ');
+                result.Append(LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text6"));
+                result.Append(' ');
             }
 
             // Remove last comma.
-            if (res.Length > 1)
-                res.Length -= 2;
+            if (result.Length > 1)
+                result.Length -= 2;
 
-            return res.ToString();
+            return result.ToString();
         }
 
         public static string ToShortString(long money)
@@ -204,43 +234,43 @@ namespace DOL.GS
                 return LanguageMgr.GetTranslation(Properties.SERV_LANGUAGE, "WalletHelper.GetString.Text1");
 
             var (mithril, platinum, gold, silver, copper) = ToMoneyParts(money);
-            StringBuilder res = new();
+            StringBuilder result = new();
 
             if (mithril != 0)
             {
-                res.Append(mithril);
-                res.Append("m, ");
+                result.Append(mithril);
+                result.Append("m, ");
             }
 
             if (platinum != 0)
             {
-                res.Append(platinum);
-                res.Append("p, ");
+                result.Append(platinum);
+                result.Append("p, ");
             }
 
             if (gold != 0)
             {
-                res.Append(gold);
-                res.Append("g, ");
+                result.Append(gold);
+                result.Append("g, ");
             }
 
             if (silver != 0)
             {
-                res.Append(silver);
-                res.Append("s, ");
+                result.Append(silver);
+                result.Append("s, ");
             }
 
             if (copper != 0)
             {
-                res.Append(copper);
-                res.Append("c, ");
+                result.Append(copper);
+                result.Append("c, ");
             }
 
             // Remove last comma.
-            if (res.Length > 1)
-                res.Length -= 2;
+            if (result.Length > 1)
+                result.Length -= 2;
 
-            return res.ToString();
+            return result.ToString();
         }
     }
 }

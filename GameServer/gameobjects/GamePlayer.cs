@@ -10132,14 +10132,7 @@ namespace DOL.GS
                 return TryPickUpResult.DOES_NOT_HANDLE;
             }
 
-            long moneyToPlayer = WalletHelper.ApplyGuildDues(money.Value, Guild);
-
-            if (moneyToPlayer > 0)
-            {
-                Wallet.AddMoney(moneyToPlayer, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouPickUp", WalletHelper.ToString(moneyToPlayer)));
-                InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, moneyToPlayer);
-            }
-
+            Wallet.PickUpMoney(money.Value, false);
             money.RemoveFromWorld();
             return TryPickUpResult.SUCCESS;
         }

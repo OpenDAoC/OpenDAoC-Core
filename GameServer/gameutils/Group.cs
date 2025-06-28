@@ -664,18 +664,9 @@ namespace DOL.GS
 			static void SplitMoneyBetweenEligibleMembers(List<GamePlayer> eligibleMembers, GameMoney money)
 			{
 				long splitMoney = (long) Math.Ceiling((double) money.Value / eligibleMembers.Count);
-				long moneyToPlayer;
 
 				foreach (GamePlayer eligibleMember in eligibleMembers)
-				{
-					moneyToPlayer = WalletHelper.ApplyGuildDues(splitMoney, eligibleMember.Guild);
-
-					if (moneyToPlayer > 0)
-					{
-						eligibleMember.Wallet.AddMoney(moneyToPlayer, LanguageMgr.GetTranslation(eligibleMember.Client.Account.Language, eligibleMembers.Count > 1 ? "GamePlayer.PickupObject.YourLootShare" : "GamePlayer.PickupObject.YouPickUp", WalletHelper.ToString(splitMoney)));
-						InventoryLogging.LogInventoryAction("(ground)", eligibleMember, eInventoryActionType.Loot, splitMoney);
-					}
-				}
+					eligibleMember.Wallet.PickUpMoney(splitMoney, true);
 			}
 		}
 
