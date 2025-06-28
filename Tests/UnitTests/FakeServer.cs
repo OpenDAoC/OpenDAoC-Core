@@ -4,6 +4,7 @@ using System.Linq;
 using DOL.Database;
 using DOL.GS;
 using DOL.GS.PacketHandler;
+using DOL.Logging;
 
 namespace DOL.Tests.Unit.Gameserver
 {
@@ -40,7 +41,11 @@ namespace DOL.Tests.Unit.Gameserver
         protected override void CheckAndInitDB() { }
         public void SetDatabase(IObjectDatabase database) { this.database = database; }
 
-        public static void Load() => LoadTestDouble(new FakeServer());
+        public static void Load()
+        {
+            LoggerManager.InitializeWithExplicitLibrary(null, LogLibrary.None);
+            LoadTestDouble(new FakeServer());
+        }
     }
 
     public class FakeDatabase : IObjectDatabase
