@@ -267,7 +267,7 @@ namespace DOL.GS.Spells
         {
             bool isImmune = false;
 
-            if (target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity) && this is not UnresistableStunSpellHandler && target.HasAbility(Abilities.StunImmunity))
+            if ((this is not UnresistableStunSpellHandler && target.effectListComponent.ContainsEffectForEffectType(eEffect.StunImmunity)) || target.HasAbility(Abilities.StunImmunity))
                 isImmune = true;
             else
             {

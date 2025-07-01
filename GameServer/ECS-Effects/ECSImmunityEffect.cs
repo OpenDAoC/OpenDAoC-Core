@@ -1,5 +1,4 @@
-﻿using System;
-using DOL.GS.Spells;
+﻿using DOL.GS.Spells;
 
 namespace DOL.GS
 {
