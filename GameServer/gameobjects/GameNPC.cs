@@ -1500,6 +1500,10 @@ namespace DOL.GS
 		/// <param name="slot">the new eActiveWeaponSlot</param>
 		public override void SwitchWeapon(eActiveWeaponSlot slot)
 		{
+			// `AttackState` is normally false here, unless `SwitchWeapon` was called directly. This is the case with scripted NPCs.
+			// We use `wasInAttackState` and `OnForcedWeaponSwitch so that automatic weapon switch works as intended.
+			// Eventually, this behavior should be able to be disabled for scripted NPCs. but for now, they must comply.
+
 			bool wasInAttackState = attackComponent.AttackState;
 
 			// Stop attack before changing weapon so that animations play correctly.
@@ -1509,8 +1513,6 @@ namespace DOL.GS
 			eActiveWeaponSlot previousActiveWeaponSlot = ActiveWeaponSlot;
 			base.SwitchWeapon(slot);
 
-			// Resume attack and notify `attackAction` (disables or reenables automatic ranged weapon switch for NPCs).
-			// This is to comply with scripted NPCs and doesn't happen if `StartAttackWithMeleeWeapon` was called instead.
 			if (wasInAttackState)
 			{
 				attackComponent.attackAction.OnForcedWeaponSwitch();

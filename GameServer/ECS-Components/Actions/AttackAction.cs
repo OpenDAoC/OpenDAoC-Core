@@ -48,6 +48,12 @@ namespace DOL.GS
 
         public bool Tick()
         {
+            if (!AttackComponent.AttackState)
+            {
+                CleanUp();
+                return false;
+            }
+
             if (_firstTick)
             {
                 _nextMeleeTick = Math.Max(_nextMeleeTick, GameLoop.GameLoopTime);
@@ -62,12 +68,6 @@ namespace DOL.GS
             {
                 _interval = TICK_INTERVAL_FOR_NON_ATTACK;
                 return true;
-            }
-
-            if (!AttackComponent.AttackState)
-            {
-                CleanUp();
-                return false;
             }
 
             _weapon = _owner.ActiveWeapon;
@@ -112,6 +112,14 @@ namespace DOL.GS
 
         public void OnStopAttack()
         {
+            // This method serves two purposes:
+            // * Delay the next melee attack a little after aborting a ranged attack, or getting interrupted.
+            // * Ensure we're not buffering. For this, we need to explicitly set `_firstTick` to true,
+            // because NPCs are able to stop and start an attack during the same tick, which prevents `CleanUp` from being called by `Tick`.
+            // * Ensure we're not delaying the next ranged attack's preparation. This means resetting `_nextRangedTick`.
+
+            _firstTick = true;
+
             if (_owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
                 return;
 
@@ -265,7 +273,6 @@ namespace DOL.GS
             else if (rangeCheckResult == eCheckRangeAttackStateResult.Stop || _target == null)
             {
                 AttackComponent.StopAttack();
-                AttackComponent.attackAction.CleanUp();
                 return false;
             }
 
