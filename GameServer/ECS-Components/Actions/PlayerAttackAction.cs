@@ -77,10 +77,7 @@ namespace DOL.GS
             bool stopAttack = false;
 
             if (_playerOwner.rangeAttackComponent.RangedAttackState is not eRangedAttackState.AimFireReload)
-            {
-                _playerOwner.rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
                 stopAttack = true;
-            }
             else if (_playerOwner.Endurance < RangeAttackComponent.DEFAULT_ENDURANCE_COST)
             {
                 stopAttack = true;
@@ -96,6 +93,7 @@ namespace DOL.GS
 
             if (stopAttack)
             {
+                _playerOwner.rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
                 AttackComponent.StopAttack();
                 return false;
             }
