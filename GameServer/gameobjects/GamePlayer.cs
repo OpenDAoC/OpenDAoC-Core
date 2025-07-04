@@ -10627,7 +10627,6 @@ namespace DOL.GS
             HandleStats();
             HandleCharacterModel();
             HandleGuild();
-            HandleTitles();
             HandleMoney(await moneyForRealmTask);
             HandleInventory(await inventoryTask);
             HandleCharacterSkills();
@@ -10636,6 +10635,7 @@ namespace DOL.GS
             FactionMgr.LoadAllAggroToFaction(this, await factionRelationsTask);
             HandleTasks(await tasksTask);
             HandleMasterLevels(await masterLevelsTask);
+            HandleTitles();
 
             VerifySpecPoints();
             GuildMgr.AddPlayerToGuildMemberViews(this); // Needed for starter guilds since they are forced onto the `DBCharacter`.
