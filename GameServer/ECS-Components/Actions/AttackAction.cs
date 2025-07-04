@@ -112,7 +112,7 @@ namespace DOL.GS
 
         public void OnStopAttack()
         {
-            // This method serves two purposes:
+            // This method serves three purposes:
             // * Delay the next melee attack a little after aborting a ranged attack, or getting interrupted.
             // * Ensure we're not buffering. For this, we need to explicitly set `_firstTick` to true,
             // because NPCs are able to stop and start an attack during the same tick, which prevents `CleanUp` from being called by `Tick`.
@@ -124,15 +124,15 @@ namespace DOL.GS
                 return;
 
             RangeAttackComponent rangeAttackComponent = _owner.rangeAttackComponent;
-            rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
 
-            if (rangeAttackComponent.RangedAttackState is eRangedAttackState.None)
-                return;
-
-            if (GameLoop.GameLoopTime - _nextMeleeTick > MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK)
-                _nextMeleeTick = GameLoop.GameLoopTime + MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK;
+            if (rangeAttackComponent.RangedAttackState is not eRangedAttackState.None)
+            {
+                long _nextDelayedMeleeTick = GameLoop.GameLoopTime + MINIMUM_MELEE_DELAY_AFTER_RANGED_ATTACK;
+                _nextMeleeTick = Math.Max(_nextMeleeTick, _nextDelayedMeleeTick);
+            }
 
             _nextRangedTick = GameLoop.GameLoopTime;
+            rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
             rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
         }
 
