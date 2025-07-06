@@ -51,23 +51,20 @@ namespace DOL.GS
                     TickPendingEffect(effect);
             }
 
-            if (_effects.Count != 0)
+            if (_effects.Count == 0 || Owner.ObjectState is GameObject.eObjectState.Deleted)
+                ServiceObjectStore.Remove(this); // Keep ticking even if `ObjectState == Inactive` (region change).
+            else if (Owner.Health <= 0)
+                CancelAll(); // Don't check `IsAlive`, since it returns false during region change.
+            else
             {
-                if (Owner.Health <= 0) // Don't check `IsAlive`, since it returns false during region change.
-                    CancelAll();
-                else
+                foreach (var pair in _effects)
                 {
-                    foreach (var pair in _effects)
-                    {
-                        List<ECSGameEffect> list = pair.Value;
+                    List<ECSGameEffect> list = pair.Value;
 
-                        for (int i = list.Count - 1; i >= 0; i--)
-                            TickEffect(list[i]);
-                    }
+                    for (int i = list.Count - 1; i >= 0; i--)
+                        TickEffect(list[i]);
                 }
             }
-            else
-                ServiceObjectStore.Remove(this);
 
             SendPlayerUpdates();
         }
