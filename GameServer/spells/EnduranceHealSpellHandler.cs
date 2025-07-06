@@ -114,15 +114,5 @@ namespace DOL.GS.Spells
 			}
 			return true;
 		}
-
-		public override bool CheckBeginCast(GameLiving selectedTarget)
-		{
-			if (selectedTarget != null && selectedTarget.EndurancePercent >= 90)
-			{
-				MessageToCaster("You cannot cast an endurance heal the target has above 90% endurance!", eChatType.CT_SpellResisted);
-				return false;
-			}
-			return base.CheckBeginCast(selectedTarget);
-		}
 	}
 }
