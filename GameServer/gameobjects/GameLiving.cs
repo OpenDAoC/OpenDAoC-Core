@@ -887,6 +887,44 @@ namespace DOL.GS
 			}
 		}
 
+		public virtual void OnArmorHit(AttackData ad, DbInventoryItem armor)
+		{
+			if (ad == null || armor == null)
+				return;
+
+			(armor as GameInventoryItem)?.OnStruckByEnemy(this, ad.Attacker);
+			CheckArmorMagicalEffect(ad, armor);
+		}
+
+		protected virtual void CheckArmorMagicalEffect(AttackData ad, DbInventoryItem armor)
+		{
+			int requiredLevel = armor.Template.LevelRequirement > 0 ? armor.Template.LevelRequirement : Math.Min(50, armor.Level);
+
+			if (requiredLevel > Level)
+				return;
+
+			int chance = armor.ProcChance > 0 ? armor.ProcChance : 10;
+			SpellLine spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+
+			if (armor.ProcSpellID != 0 && Util.Chance(chance))
+				StartArmorMagicalEffect(armor, ad.Attacker, SkillBase.FindSpell(armor.ProcSpellID, spellLine), spellLine);
+
+			if (armor.ProcSpellID1 != 0 && Util.Chance(chance))
+				StartArmorMagicalEffect(armor, ad.Attacker, SkillBase.FindSpell(armor.ProcSpellID1, spellLine), spellLine);
+		}
+
+		protected virtual void StartArmorMagicalEffect(DbInventoryItem armor, GameLiving attacker, Spell spell, SpellLine spellLine)
+		{
+			if (armor == null || attacker == null || spell == null)
+				return;
+
+			if (spellLine == null)
+				spellLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
+
+			ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, spellLine);
+			spellHandler?.StartSpell(attacker, armor);
+		}
+
 		/// <summary>
 		/// Remove engage effect on this living if it is present.
 		/// </summary>

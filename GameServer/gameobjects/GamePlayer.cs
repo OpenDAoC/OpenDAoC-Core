@@ -5651,8 +5651,6 @@ namespace DOL.GS
                             Stealth(false);
                     }
 
-                    #region Messages
-
                     string hitLocName = null;
                     switch (ad.ArmorHitLocation)
                     {
@@ -5696,41 +5694,10 @@ namespace DOL.GS
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Attack.HitsYouCritical", ad.Attacker.GetName(0, true), ad.CriticalDamage), eChatType.CT_Damaged, eChatLoc.CL_SystemWindow);
                     }
 
-
-                    #endregion
-
-                    // decrease condition of hitted armor piece
-                    if (ad.ArmorHitLocation != eArmorSlot.NOTSET)
-                    {
-                        DbInventoryItem item = Inventory.GetItem((eInventorySlot)ad.ArmorHitLocation);
-
-                        if (item != null)
-                        {
-                            TryReactiveEffect(item, ad.Attacker);
-
-                            if (item is GameInventoryItem)
-                            {
-                                (item as GameInventoryItem).OnStruckByEnemy(this, ad.Attacker);
-                            }
-                        }
-                    }
-                    break;
-                }
-                case eAttackResult.Blocked:
-                {
-                    DbInventoryItem reactiveItem = ActiveLeftWeapon;
-                    if (reactiveItem != null && reactiveItem.Object_Type == (int)eObjectType.Shield)
-                    {
-                        TryReactiveEffect(reactiveItem, ad.Attacker);
-
-                        if (reactiveItem is GameInventoryItem)
-                        {
-                            (reactiveItem as GameInventoryItem).OnStruckByEnemy(this, ad.Attacker);
-                        }
-                    }
                     break;
                 }
             }
+
             // vampiir
             if (CharacterClass is PlayerClass.ClassVampiir)
             {
@@ -5756,66 +5723,6 @@ namespace DOL.GS
                 Out.SendCloseTimerWindow();
             }
         }
-
-        /// <summary>
-        /// Launch any reactive effect on an item
-        /// </summary>
-        /// <param name="reactiveItem"></param>
-        /// <param name="target"></param>
-        protected virtual void TryReactiveEffect(DbInventoryItem reactiveItem, GameLiving target)
-        {
-            if (reactiveItem != null)
-            {
-                int requiredLevel = reactiveItem.Template.LevelRequirement > 0 ? reactiveItem.Template.LevelRequirement : Math.Min(MaxLevel, reactiveItem.Level);
-
-                if (requiredLevel <= Level)
-                {
-                    SpellLine reactiveEffectLine = SkillBase.GetSpellLine(GlobalSpellsLines.Item_Effects);
-
-                    if (reactiveEffectLine != null)
-                    {
-                        if (reactiveItem.ProcSpellID != 0)
-                        {
-                            Spell spell = SkillBase.FindSpell(reactiveItem.ProcSpellID, reactiveEffectLine);
-
-                            if (spell != null)
-                            {
-                                int chance = reactiveItem.ProcChance > 0 ? reactiveItem.ProcChance : 10;
-
-                                if (Util.Chance(chance))
-                                {
-                                    ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, reactiveEffectLine);
-                                    if (spellHandler != null)
-                                    {
-                                        spellHandler.StartSpell(target, reactiveItem);
-                                    }
-                                }
-                            }
-                        }
-
-                        if (reactiveItem.ProcSpellID1 != 0)
-                        {
-                            Spell spell = SkillBase.FindSpell(reactiveItem.ProcSpellID1, reactiveEffectLine);
-
-                            if (spell != null)
-                            {
-                                int chance = reactiveItem.ProcChance > 0 ? reactiveItem.ProcChance : 10;
-
-                                if (Util.Chance(chance))
-                                {
-                                    ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(this, spell, reactiveEffectLine);
-                                    if (spellHandler != null)
-                                    {
-                                        spellHandler.StartSpell(target, reactiveItem);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Does needed interrupt checks and interrupts if needed
         /// </summary>

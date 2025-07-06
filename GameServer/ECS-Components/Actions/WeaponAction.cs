@@ -338,18 +338,23 @@ namespace DOL.GS
 
         private void MakeAttack(AttackData attackData)
         {
-            // Notify the target of our attack (sends damage messages, should be before damage)
-            attackData.Target.OnAttackedByEnemy(attackData);
+            GameLiving target = attackData.Target;
+
+            // Notify the target of our attack (sends damage messages, should be before damage).
+            target.OnAttackedByEnemy(attackData);
 
             // Deal damage and start effects.
+            // `AttackData` doesn't contain the armor / shield hit, so we must again fetch it from the target's inventory.
             if (attackData.AttackResult is eAttackResult.HitUnstyled or eAttackResult.HitStyle)
             {
                 _owner.DealDamage(attackData);
                 _owner.CheckWeaponMagicalEffect(attackData);
                 HandleDamageAdd(_owner, attackData);
+                target.OnArmorHit(attackData, target.Inventory?.GetItem((eInventorySlot) attackData.ArmorHitLocation));
+                HandleDamageShields(attackData);
             }
-
-            HandleDamageShields(attackData);
+            else if (attackData.AttackResult is eAttackResult.Blocked)
+                target.OnArmorHit(attackData, target.ActiveLeftWeapon);
 
             if (_target is GameLiving livingTarget && livingTarget.effectListComponent.ContainsEffectForEffectType(eEffect.ReflexAttack))
                 HandleReflexAttack(_owner, attackData.Target, attackData.AttackResult, _interval);
