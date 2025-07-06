@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.Spells
@@ -14,17 +13,6 @@ namespace DOL.GS.Spells
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
         {
             return new SavageBuffECSGameEffect(initParams);
-        }
-
-        public override bool CheckBeginCast(GameLiving selectedTarget)
-        {
-            if (Caster.Health < PowerCost(Caster))
-            {
-                MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SavageEnduranceHeal.CheckBeginCast.InsufficientHealth"), eChatType.CT_SpellResisted);
-                return false;
-            }
-
-            return base.CheckBeginCast(selectedTarget);
         }
 
         public override int PowerCost(GameLiving target)

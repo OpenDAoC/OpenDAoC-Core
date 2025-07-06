@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
 
         protected override void RemoveFromStat(int value)
         {
-            m_caster.Health -= value;
+            m_caster.ChangeHealth(m_caster, eHealthChangeType.Spell, -value);
         }
 
         public override int PowerCost(GameLiving target)
