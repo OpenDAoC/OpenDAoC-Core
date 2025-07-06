@@ -48,12 +48,6 @@ namespace DOL.GS
 
         public bool Tick()
         {
-            if (!AttackComponent.AttackState)
-            {
-                CleanUp();
-                return false;
-            }
-
             if (_firstTick)
             {
                 _nextMeleeTick = Math.Max(_nextMeleeTick, GameLoop.GameLoopTime);
@@ -63,6 +57,13 @@ namespace DOL.GS
 
             if (!ShouldTick())
                 return true;
+
+            // This must be checked after `ShouldTick` so that the last attack data remains valid for the whole attack interval.
+            if (!AttackComponent.AttackState)
+            {
+                CleanUp();
+                return false;
+            }
 
             if (!CanPerformAction())
             {
@@ -74,7 +75,7 @@ namespace DOL.GS
             _leftWeapon = _owner.ActiveLeftWeapon;
             _effectiveness = _owner.Effectiveness;
 
-            if (_owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance)
+            if (_owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
                 TickMeleeAttack();
             else
                 TickRangedAttack();
@@ -113,12 +114,11 @@ namespace DOL.GS
         public void OnStopAttack()
         {
             // This method serves three purposes:
+            // * Ensure we're not buffering (NPCs) or delaying (players) ranged attacks. For this, we need to update `_nextRangedTick` so that it's never higher than `GameLoop.GameLoopTime`.
             // * Delay the next melee attack a little after aborting a ranged attack, or getting interrupted.
-            // * Ensure we're not buffering. For this, we need to explicitly set `_firstTick` to true,
-            // because NPCs are able to stop and start an attack during the same tick, which prevents `CleanUp` from being called by `Tick`.
-            // * Ensure we're not delaying the next ranged attack's preparation. This means resetting `_nextRangedTick`.
+            // * Clean up ranged attack type and state.
 
-            _firstTick = true;
+            _nextRangedTick = GameLoop.GameLoopTime;
 
             if (_owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance)
                 return;
@@ -131,7 +131,6 @@ namespace DOL.GS
                 _nextMeleeTick = Math.Max(_nextMeleeTick, _nextDelayedMeleeTick);
             }
 
-            _nextRangedTick = GameLoop.GameLoopTime;
             rangeAttackComponent.RangedAttackType = eRangedAttackType.Normal;
             rangeAttackComponent.RangedAttackState = eRangedAttackState.None;
         }
