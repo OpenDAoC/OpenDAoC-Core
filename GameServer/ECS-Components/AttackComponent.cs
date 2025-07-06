@@ -2728,6 +2728,9 @@ namespace DOL.GS
 
         public (double, double, double) CalculateHthSwingChances(DbInventoryItem leftWeapon)
         {
+            if (leftWeapon == null)
+                return (0, 0, 0);
+
             int specLevel = owner.GetModifiedSpecLevel(Specs.HandToHand);
 
             if (specLevel <= 0 || (eObjectType) leftWeapon.Object_Type is not eObjectType.HandToHand)
@@ -2786,26 +2789,26 @@ namespace DOL.GS
                 return random < leftHandSwingChance ? 1 : 0;
             }
 
-            (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) hthSwingChances = CalculateHthSwingChances(leftWeapon);
+            (double doubleSwingChance, double tripleSwingChance, double quadSwingChance) = CalculateHthSwingChances(leftWeapon);
 
-            if (hthSwingChances.doubleSwingChance > 0)
+            if (doubleSwingChance > 0)
             {
                 double random = Util.RandomDouble() * 100;
 
                 if (playerOwner != null && playerOwner.UseDetailedCombatLog)
-                    playerOwner.Out.SendMessage( $"Chance for 2 swings: {hthSwingChances.doubleSwingChance:0.##}% | 3 swings: {hthSwingChances.tripleSwingChance:0.##}% | 4 swings: {hthSwingChances.quadSwingChance:0.##}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                    playerOwner.Out.SendMessage( $"Chance for 2 swings: {doubleSwingChance:0.##}% | 3 swings: {tripleSwingChance:0.##}% | 4 swings: {quadSwingChance:0.##}% \n", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-                if (random < hthSwingChances.doubleSwingChance)
+                if (random < doubleSwingChance)
                     return 1;
 
-                hthSwingChances.tripleSwingChance += hthSwingChances.doubleSwingChance;
+                tripleSwingChance += doubleSwingChance;
 
-                if (random < hthSwingChances.tripleSwingChance)
+                if (random < tripleSwingChance)
                     return 2;
 
-                hthSwingChances.quadSwingChance += hthSwingChances.tripleSwingChance;
+                quadSwingChance += tripleSwingChance;
 
-                if (random < hthSwingChances.quadSwingChance)
+                if (random < quadSwingChance)
                     return 3;
             }
 
