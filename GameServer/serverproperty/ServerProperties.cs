@@ -1291,13 +1291,13 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// PvP Immunity Timer - Killed by Mobs
 		/// </summary>
-		[ServerProperty("pvp", "Timer_Killed_By_Mob", "Immunity Timer When player killed in PvP, in seconds", 30)]
+		[ServerProperty("pvp", "Timer_Killed_By_Mob", "Immunity Timer When player killed in PvP, in seconds", 10)]
 		public static int TIMER_KILLED_BY_MOB;
 
 		/// <summary>
 		/// PvP Immunity Timer - Killed by Player
 		/// </summary>
-		[ServerProperty("pvp", "Timer_Killed_By_Player", "Immunity Timer When player killed in PvP, in seconds", 120)]
+		[ServerProperty("pvp", "Timer_Killed_By_Player", "Immunity Timer When player killed in PvP, in seconds", 10)]
 		public static int TIMER_KILLED_BY_PLAYER;
 
 		/// <summary>
@@ -1315,7 +1315,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// PvP Immunity Timer - Teleport
 		/// </summary>
-		[ServerProperty("pvp", "Timer_PvP_Teleport", "Immunity Timer when player teleports within the same region, in seconds", 30)]
+		[ServerProperty("pvp", "Timer_PvP_Teleport", "Immunity Timer when player teleports within the same region, in seconds", 10)]
 		public static int TIMER_PVP_TELEPORT;
 
 		/// <summary>
