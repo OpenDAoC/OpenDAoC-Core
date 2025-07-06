@@ -585,18 +585,6 @@ namespace DOL.GS
 
                             return AddEffectResult.Added;
                         }
-                        else if (effect.EffectType is eEffect.SavageBuff or eEffect.ArmorAbsorptionBuff)
-                        {
-                            // Player doesn't have this buff yet.
-                            if (!existingGameEffects.Where(e => e.SpellHandler.Spell.SpellType == effect.SpellHandler.Spell.SpellType).Any())
-                            {
-                                _effects.TryAdd(effect.EffectType, [effect]);
-                                _effectIdToEffect[effect.Icon] = effect;
-                                return AddEffectResult.Added;
-                            }
-                            else
-                                return AddEffectResult.Failed;
-                        }
                         else
                         {
                             AddEffectResult result = AddEffectResult.Failed;
