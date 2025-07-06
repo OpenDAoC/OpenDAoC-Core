@@ -774,10 +774,10 @@ namespace DOL.GS
 		/// <summary>
 		/// Check if we can make a proc on a weapon go off.  Weapon Procs
 		/// </summary>
-		/// <param name="ad"></param>
-		/// <param name="weapon"></param>
-		public virtual void CheckWeaponMagicalEffect(AttackData ad, DbInventoryItem weapon)
+		public virtual void CheckWeaponMagicalEffect(AttackData ad)
 		{
+			DbInventoryItem weapon = ad.Weapon;
+
 			if (weapon == null || (ad.AttackResult != eAttackResult.HitStyle && ad.AttackResult != eAttackResult.HitUnstyled))
 				return;
 
@@ -1443,15 +1443,6 @@ namespace DOL.GS
 						else
 							effect.RemainingValue = ablativeHp;
 					}
-				}
-
-				// Handle DefensiveProcs.
-				List<ECSGameSpellEffect> dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
-
-				if (ad.Target == this && dProcEffects != null && ad.AttackType != eAttackType.Spell)
-				{
-					for (int i = 0; i < dProcEffects.Count; i++)
-						(dProcEffects[i].SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
 				}
 			}
 			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)

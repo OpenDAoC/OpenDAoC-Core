@@ -345,7 +345,7 @@ namespace DOL.GS
             if (attackData.AttackResult is eAttackResult.HitUnstyled or eAttackResult.HitStyle)
             {
                 _owner.DealDamage(attackData);
-                _owner.CheckWeaponMagicalEffect(attackData, attackData.Weapon);
+                _owner.CheckWeaponMagicalEffect(attackData);
                 HandleDamageAdd(_owner, attackData);
             }
 

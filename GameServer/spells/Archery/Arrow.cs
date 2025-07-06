@@ -321,7 +321,7 @@ namespace DOL.GS.Spells
 				{
 					if (ad.AttackResult == eAttackResult.HitUnstyled || ad.AttackResult == eAttackResult.HitStyle)
 					{
-						caster.CheckWeaponMagicalEffect(ad, m_handler.Caster.ActiveWeapon);
+						caster.CheckWeaponMagicalEffect(ad);
 					}
 				}
 

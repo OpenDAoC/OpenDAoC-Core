@@ -3009,6 +3009,7 @@ namespace DOL.GS.Spells
 				Attacker = m_caster,
 				Target = target,
 				AttackType = AttackData.eAttackType.Spell,
+				Weapon = m_caster.ActiveWeapon,
 				SpellHandler = this,
 				AttackResult = eAttackResult.HitUnstyled
 			};
