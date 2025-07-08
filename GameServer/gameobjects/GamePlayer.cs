@@ -10531,7 +10531,6 @@ namespace DOL.GS
 
             SetCharacterClass(DBCharacter.Class);
             HandleWorldPosition();
-            HandleStats();
             HandleCharacterModel();
             HandleGuild();
             HandleMoney(await moneyForRealmTask);
@@ -10542,7 +10541,8 @@ namespace DOL.GS
             FactionMgr.LoadAllAggroToFaction(this, await factionRelationsTask);
             HandleTasks(await tasksTask);
             HandleMasterLevels(await masterLevelsTask);
-            HandleTitles();
+            HandleStats(); // Should be done after loading gear, abilities, buffs.
+            HandleTitles(); // Should be done after loading crafting skills.
 
             VerifySpecPoints();
             GuildMgr.AddPlayerToGuildMemberViews(this); // Needed for starter guilds since they are forced onto the `DBCharacter`.
@@ -10582,40 +10582,6 @@ namespace DOL.GS
                 m_customFaceAttributes[(int) eCharFacePart.MoodType] = DBCharacter.MoodType;
             }
 
-            void HandleStats()
-            {
-                m_charStat[eStat.STR - eStat._First] = (short) DBCharacter.Strength;
-                m_charStat[eStat.DEX - eStat._First] = (short) DBCharacter.Dexterity;
-                m_charStat[eStat.CON - eStat._First] = (short) DBCharacter.Constitution;
-                m_charStat[eStat.QUI - eStat._First] = (short) DBCharacter.Quickness;
-                m_charStat[eStat.INT - eStat._First] = (short) DBCharacter.Intelligence;
-                m_charStat[eStat.PIE - eStat._First] = (short) DBCharacter.Piety;
-                m_charStat[eStat.EMP - eStat._First] = (short) DBCharacter.Empathy;
-                m_charStat[eStat.CHR - eStat._First] = (short) DBCharacter.Charisma;
-
-                if (MaxSpeedBase == 0)
-                    MaxSpeedBase = PLAYER_BASE_SPEED;
-
-                if (DBCharacter.PlayedTime < 1)
-                {
-                    Health = MaxHealth;
-                    Mana = MaxMana;
-                    Endurance = MaxEndurance;
-                }
-                else
-                {
-                    Health = DBCharacter.Health;
-                    Mana = DBCharacter.Mana;
-                    Endurance = DBCharacter.Endurance;
-                }
-
-                if (Health <= 0)
-                    Health = 1;
-
-                if (RealmLevel == 0)
-                    RealmLevel = CalculateRealmLevelFromRPs(RealmPoints);
-            }
-
             void HandleGuild()
             {
                 m_guildId = DBCharacter.GuildID;
@@ -10648,16 +10614,6 @@ namespace DOL.GS
                 }
                 else
                     m_guild = null;
-            }
-
-            void HandleTitles()
-            {
-                m_titles.Clear();
-
-                foreach (IPlayerTitle title in PlayerTitleMgr.GetPlayerTitles(this))
-                    m_titles.Add(title);
-
-                m_currentTitle = PlayerTitleMgr.GetTitleByTypeName(DBCharacter.CurrentTitleType) ?? PlayerTitleMgr.ClearTitle;
             }
 
             void HandleMoney(DbAccountXMoney moneyForRealm)
@@ -11015,6 +10971,50 @@ namespace DOL.GS
             {
                 foreach (DbCharacterXMasterLevel masterLevel in masterLevels)
                     m_mlSteps.Add(masterLevel);
+            }
+
+            void HandleStats()
+            {
+                m_charStat[eStat.STR - eStat._First] = (short) DBCharacter.Strength;
+                m_charStat[eStat.DEX - eStat._First] = (short) DBCharacter.Dexterity;
+                m_charStat[eStat.CON - eStat._First] = (short) DBCharacter.Constitution;
+                m_charStat[eStat.QUI - eStat._First] = (short) DBCharacter.Quickness;
+                m_charStat[eStat.INT - eStat._First] = (short) DBCharacter.Intelligence;
+                m_charStat[eStat.PIE - eStat._First] = (short) DBCharacter.Piety;
+                m_charStat[eStat.EMP - eStat._First] = (short) DBCharacter.Empathy;
+                m_charStat[eStat.CHR - eStat._First] = (short) DBCharacter.Charisma;
+
+                if (MaxSpeedBase == 0)
+                    MaxSpeedBase = PLAYER_BASE_SPEED;
+
+                if (DBCharacter.PlayedTime < 1)
+                {
+                    Health = MaxHealth;
+                    Mana = MaxMana;
+                    Endurance = MaxEndurance;
+                }
+                else
+                {
+                    Health = DBCharacter.Health;
+                    Mana = DBCharacter.Mana;
+                    Endurance = DBCharacter.Endurance;
+                }
+
+                if (Health <= 0)
+                    Health = 1;
+
+                if (RealmLevel == 0)
+                    RealmLevel = CalculateRealmLevelFromRPs(RealmPoints);
+            }
+
+            void HandleTitles()
+            {
+                m_titles.Clear();
+
+                foreach (IPlayerTitle title in PlayerTitleMgr.GetPlayerTitles(this))
+                    m_titles.Add(title);
+
+                m_currentTitle = PlayerTitleMgr.GetTitleByTypeName(DBCharacter.CurrentTitleType) ?? PlayerTitleMgr.ClearTitle;
             }
         }
 
