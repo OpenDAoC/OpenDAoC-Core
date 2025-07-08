@@ -99,16 +99,18 @@ namespace DOL.GS
                         player.Out.SendInterruptAnimation(Owner);
                 }
 
-                CancelFocusSpells(moving);
+                bool focusSpell = spellHandler.Spell.IsFocus;
+
+                if (focusSpell)
+                    spellHandler.CancelFocusSpells();
+
+                SendSpellCancelMessage(moving, focusSpell);
             }
 
             ClearSpellHandlers();
         }
 
-        public void CancelFocusSpells(bool moving)
-        {
-            SpellHandler?.CancelFocusSpells();
-        }
+        protected virtual void SendSpellCancelMessage(bool moving, bool focusSpell) { }
 
         public virtual void ClearSpellHandlers()
         {

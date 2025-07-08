@@ -45,7 +45,7 @@ namespace DOL.GS.Spells
 			else
 			{
 				MessageToCaster("You do not have enough power and your spell was canceled.", eChatType.CT_SpellExpires);
-				CancelFocusSpells(false);
+				CancelFocusSpells();
 				effect.Cancel(false);
 			}
 		}

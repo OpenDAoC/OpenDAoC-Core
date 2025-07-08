@@ -84,7 +84,7 @@ namespace DOL.GS
                     return Interval;
                 }
 
-                (_pulseEffect.SpellHandler as SpellHandler).CancelFocusSpells(false);
+                (_pulseEffect.SpellHandler as SpellHandler).CancelFocusSpells();
                 return 0;
             }
         }

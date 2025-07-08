@@ -456,7 +456,7 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			CancelFocusSpells(false);
+			CancelFocusSpells();
 			_quickcast = EffectListService.GetAbilityEffectOnTarget(m_caster, eEffect.QuickCast) as QuickCastECSGameEffect;
 
 			if (IsQuickCasting)
@@ -1981,7 +1981,7 @@ namespace DOL.GS.Spells
 			{
 				if (Spell.IsFocus && (!Target.IsAlive || !Caster.IsWithinRadius(Target, Spell.Range)))
 				{
-					CancelFocusSpells(false);
+					CancelFocusSpells();
 					return false;
 				}
 
@@ -2560,26 +2560,16 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		public virtual void CancelFocusSpells(bool moving)
+		public virtual void CancelFocusSpells()
 		{
 			CastState = eCastState.Cleanup;
-			bool cancelled = false;
 
 			foreach (ECSGameSpellEffect pulseSpell in Caster.effectListComponent.GetSpellEffects(eEffect.Pulse))
 			{
 				if (!pulseSpell.SpellHandler.Spell.IsFocus)
 					continue;
 
-				if (pulseSpell.Stop())
-					cancelled = true;
-			}
-
-			if (cancelled)
-			{
-				if (moving)
-					MessageToCaster("You move and interrupt your focus!", eChatType.CT_Important);
-				else
-					MessageToCaster($"You lose your focus on your {Spell.Name} spell.", eChatType.CT_SpellExpires);
+				pulseSpell.Stop();
 			}
 		}
 
