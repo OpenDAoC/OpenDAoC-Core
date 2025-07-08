@@ -88,11 +88,16 @@ namespace DOL.GS
 
         public void InterruptCasting(bool moving)
         {
-            // A race condition can occur here.
-            if (SpellHandler?.IsInCastingPhase == true)
+            // A race condition can happen here.
+            SpellHandler spellHandler = SpellHandler;
+
+            if (spellHandler != null)
             {
-                foreach (GamePlayer player in Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                    player.Out.SendInterruptAnimation(Owner);
+                if (spellHandler.IsInCastingPhase)
+                {
+                    foreach (GamePlayer player in Owner.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                        player.Out.SendInterruptAnimation(Owner);
+                }
 
                 CancelFocusSpells(moving);
             }
@@ -102,7 +107,7 @@ namespace DOL.GS
 
         public void CancelFocusSpells(bool moving)
         {
-            SpellHandler?.CancelFocusSpells(moving);
+            SpellHandler?.CancelFocusSpells();
         }
 
         public virtual void ClearSpellHandlers()
