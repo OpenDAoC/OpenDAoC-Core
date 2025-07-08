@@ -83,7 +83,7 @@ namespace DOL.GS
             UpdatePlayerStatus();
 
             // Immediately start the immunity effect for NPCs. This is used for diminishing returns.
-            if (Owner is GameNPC npc && !npc.effectListComponent.ContainsEffectForEffectType(eEffect.NPCStunImmunity))
+            if (TriggersImmunity && Owner is GameNPC npc && !npc.effectListComponent.ContainsEffectForEffectType(eEffect.NPCStunImmunity))
                 new NpcStunImmunityEffect(new ECSGameEffectInitParams(Owner, ImmunityDuration, Effectiveness, SpellHandler));
 
             // "You are stunned!"
@@ -121,7 +121,7 @@ namespace DOL.GS
             UpdatePlayerStatus();
 
             // Immediately start the immunity effect for NPCs. This is used for diminishing returns.
-            if (Owner is GameNPC npc && !npc.effectListComponent.ContainsEffectForEffectType(eEffect.NPCMezImmunity))
+            if (TriggersImmunity && Owner is GameNPC npc && !npc.effectListComponent.ContainsEffectForEffectType(eEffect.NPCMezImmunity))
                 new NpcMezImmunityEffect(new ECSGameEffectInitParams(Owner, ImmunityDuration, Effectiveness, SpellHandler));
 
             // "You are entranced!"
