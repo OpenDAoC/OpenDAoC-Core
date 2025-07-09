@@ -1082,8 +1082,9 @@ namespace DOL.GS
 				{
 					parryChance *= 0.001;
 
-					if (attackerCount > 0)
-						parryChance /= (attackerCount + 1) / 2.0;
+					// Parry chance is divided by the number of attackers.
+					// The penalty was reduced in 1.87.
+					parryChance /= attackerCount;
 
 					// Tribal Wrath 25% evade.
 					if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 381)
