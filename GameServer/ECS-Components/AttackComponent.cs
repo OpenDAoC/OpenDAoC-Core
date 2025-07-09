@@ -2043,7 +2043,7 @@ namespace DOL.GS
 
                 if (ad.IsMeleeAttack)
                 {
-                    double parryChance = owner.TryParry(ad, lastAttackData, AttackerTracker.Count);
+                    double parryChance = owner.TryParry(ad, lastAttackData, AttackerTracker.MeleeCount);
                     ad.ParryChance = parryChance * 100;
                     double parryRoll;
 
