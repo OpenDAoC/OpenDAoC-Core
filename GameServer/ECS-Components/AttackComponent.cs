@@ -2062,7 +2062,7 @@ namespace DOL.GS
                 if (lastAttackData != null && lastAttackData.AttackResult is not eAttackResult.HitStyle)
                     lastAttackData = null;
 
-                double evadeChance = owner.TryEvade(ad, lastAttackData, Attackers.Count);
+                double evadeChance = owner.TryEvade(ad, lastAttackData);
                 ad.EvadeChance = evadeChance * 100;
                 double evadeRoll;
 

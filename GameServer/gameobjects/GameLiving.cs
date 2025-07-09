@@ -956,7 +956,7 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual double TryEvade(AttackData ad, AttackData lastAD, int attackerCount)
+		public virtual double TryEvade(AttackData ad, AttackData lastAD)
 		{
 			// 1. A: It isn't possible to give a simple answer. The formula includes such elements
 			// as your level, your target's level, your level of evade, your QUI, your DEX, your
@@ -989,9 +989,6 @@ namespace DOL.GS
 			if (evadeChance > 0)
 			{
 				evadeChance *= 0.001;
-
-				if (attackerCount > 1)
-					evadeChance -= (attackerCount - 1) * 0.03;
 
 				// Kelgor's Claw 15% evade.
 				if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 380)
