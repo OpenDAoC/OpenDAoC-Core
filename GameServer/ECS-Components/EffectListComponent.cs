@@ -21,6 +21,7 @@ namespace DOL.GS
         // Pending effects.
         private ConcurrentQueue<ECSGameEffect> _pendingEffects = new();     // Queue for pending effects to be processed in the next tick.
         private int _pendingEffectCount;                                    // Number of pending effects to be processed.
+        private List<eEffect> _effectTypesToRemove = new();                 // List of effect types to be removed from the effects dictionary.
 
         // Concentration.
         private List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -61,8 +62,18 @@ namespace DOL.GS
                 {
                     List<ECSGameEffect> list = pair.Value;
 
+                    // Reverse loop to allow removing effects in `TickEffect` while iterating.
+                    // To remove from `_effects`, we use `_effectTypesToRemove` as an intermediate list.
                     for (int i = list.Count - 1; i >= 0; i--)
                         TickEffect(list[i]);
+                }
+
+                if (_effectTypesToRemove.Count > 0)
+                {
+                    for (int i = 0; i < _effectTypesToRemove.Count; i++)
+                        _effects.Remove(_effectTypesToRemove[i]);
+
+                    _effectTypesToRemove.Clear();
                 }
             }
 
@@ -830,7 +841,7 @@ namespace DOL.GS
                         _effectIdToEffect.Remove(effect.Icon);
 
                         if (existingEffects.Count == 0)
-                            _effects.Remove(effect.EffectType);
+                            _effectTypesToRemove.Add(effect.EffectType);
 
                         HandleConcentration(effect as ECSGameSpellEffect);
                         return RemoveEffectResult.Removed;
