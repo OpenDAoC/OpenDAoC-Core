@@ -76,7 +76,7 @@ namespace DOL.GS.Spells
 			{
 				// 1.33 per level difference.
 				hitChance += (Caster.EffectiveLevel - target.EffectiveLevel) * (1 + 1 / 3.0);
-				hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+				hitChance += Math.Max(0, target.attackComponent.AttackerTracker.Count - 1) * ServerProperties.Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
 			}
 
 			return hitChance;

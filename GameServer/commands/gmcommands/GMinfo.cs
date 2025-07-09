@@ -109,8 +109,9 @@ namespace DOL.GS.Commands
 					info.Add(" + Size " + target.Size);
 					info.Add(string.Format(" + Flags: {0} (0x{1})", ((GameNPC.eFlags)target.Flags).ToString("G"), target.Flags.ToString("X")));
 					info.Add(" ");
-					info.Add(" + Attacker Count: " + target.attackComponent.Attackers.Count);
-					
+					info.Add(" + Attacker count: " + target.attackComponent.AttackerTracker.Count);
+					info.Add(" + Melee attacker count: " + target.attackComponent.AttackerTracker.MeleeCount);
+
 					IOldAggressiveBrain aggroBrain = target.Brain as IOldAggressiveBrain;
 					if (aggroBrain != null)
 					{
@@ -245,12 +246,12 @@ namespace DOL.GS.Commands
 						}
 					}
 
-					if (target.attackComponent.Attackers != null && !target.attackComponent.Attackers.IsEmpty)
+					if (target.attackComponent.AttackerTracker.Count > 0)
 					{
 						info.Add("");
 						info.Add("Attacker List:");
 
-						foreach (GameObject attacker in target.attackComponent.Attackers.Keys)
+						foreach (GameObject attacker in target.attackComponent.AttackerTracker.Attackers)
 							info.Add(attacker.Name);
 					}
 

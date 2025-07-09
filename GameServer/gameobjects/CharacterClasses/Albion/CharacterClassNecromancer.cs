@@ -80,7 +80,7 @@ namespace DOL.GS
                     return true;
 
                 // Necromancer has become a shade. Have any previous NPC attacker aggro the pet now, as they can't attack the necromancer any longer.
-                foreach (GameObject attacker in Player.attackComponent.Attackers.Keys)
+                foreach (GameObject attacker in Player.attackComponent.AttackerTracker.Attackers)
                 {
                     if (attacker is not GameNPC npcAttacker || !npcAttacker.attackComponent.AttackState || npcAttacker.Brain is not IOldAggressiveBrain npcAttackerBrain)
                         continue;

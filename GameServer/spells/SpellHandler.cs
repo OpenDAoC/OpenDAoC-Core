@@ -2377,7 +2377,7 @@ namespace DOL.GS.Spells
 			{
 				// 1 per level difference.
 				hitChance += m_caster.EffectiveLevel - target.EffectiveLevel;
-				hitChance += Math.Max(0, target.attackComponent.Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+				hitChance += Math.Max(0, target.attackComponent.AttackerTracker.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
 			}
 
 			GameLiving casterToUse = playerCaster ?? m_caster;

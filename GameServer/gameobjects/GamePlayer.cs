@@ -6499,7 +6499,7 @@ namespace DOL.GS
                     if (player == this)
                         continue;
 
-                    if (enemy.attackComponent.Attackers.ContainsKey(player))
+                    if (enemy.attackComponent.AttackerTracker.ContainsAttacker(player))
                         continue;
 
                     if (IsWithinRadius(player, WorldMgr.MAX_EXPFORKILL_DISTANCE))

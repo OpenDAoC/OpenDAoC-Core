@@ -1422,7 +1422,7 @@ namespace DOL.GS
 				if (this is GameNPC gameNpc && ActiveWeaponSlot is eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
 					gameNpc.StartAttackWithMeleeWeapon(ad.Attacker);
 
-				attackComponent.AddAttacker(ad.Attacker, ad.Interval);
+				attackComponent.AddAttacker(ad);
 
 				if (ad.SpellHandler == null || (ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler))
 				{
@@ -1684,7 +1684,7 @@ namespace DOL.GS
 			{
 				EnemyHealedEventArgs args = new(this, changeSource, healthChangeType, healthChanged);
 
-				foreach (GameLiving attacker in attackComponent.Attackers.Keys)
+				foreach (GameLiving attacker in attackComponent.AttackerTracker.Attackers)
 				{
 					if (attacker is not GameLiving attackerLiving)
 						continue;
@@ -1752,13 +1752,9 @@ namespace DOL.GS
 			try
 			{
 				attackComponent.StopAttack();
-
-				if (killer is GameLiving livingKiller)
-					attackComponent.Attackers.TryAdd(livingKiller, long.MaxValue);
-
 				List<GamePlayer> playerAttackers = new();
 
-				foreach (GameObject attacker in attackComponent.Attackers.Keys)
+				foreach (GameObject attacker in attackComponent.AttackerTracker.Attackers)
 				{
 					if (attacker is not GameLiving livingAttacker)
 						continue;
@@ -1772,7 +1768,7 @@ namespace DOL.GS
 
 						if (player != null)
 						{
-							if (!attackComponent.Attackers.ContainsKey(player))
+							if (!attackComponent.AttackerTracker.ContainsAttacker(player))
 							{
 								if (!playerAttackers.Contains(player))
 									playerAttackers.Add(player);
@@ -1807,7 +1803,7 @@ namespace DOL.GS
 				foreach (Quests.DataQuest q in DataQuestList)
 					q.Notify(GameLivingEvent.Dying, this, new DyingEventArgs(killer, playerAttackers));
 
-				attackComponent.Attackers.Clear();
+				attackComponent.AttackerTracker.Clear();
 
 				// clear all of our targets
 				rangeAttackComponent.AutoFireTarget = null;
@@ -3418,7 +3414,7 @@ namespace DOL.GS
 
 			attackComponent.StopAttack();
 
-			foreach (GameObject attacker in attackComponent.Attackers.Keys)
+			foreach (GameObject attacker in attackComponent.AttackerTracker.Attackers)
 			{
 				if (attacker is not GameLiving attackerLiving)
 					continue;
@@ -3426,7 +3422,7 @@ namespace DOL.GS
 				attackerLiving.EnemyKilled(this);
 			}
 
-			attackComponent.Attackers.Clear();
+			attackComponent.AttackerTracker.Clear();
 			StopHealthRegeneration();
 			StopPowerRegeneration();
 			StopEnduranceRegeneration();

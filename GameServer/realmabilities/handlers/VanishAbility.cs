@@ -65,7 +65,7 @@ namespace DOL.GS.RealmAbilities
 				}
 			}
 
-			foreach (GameObject attacker in living.attackComponent.Attackers.Keys)
+			foreach (GameObject attacker in living.attackComponent.AttackerTracker.Attackers)
 			{
 				if (attacker is not GameLiving livingAttacker)
 					continue;

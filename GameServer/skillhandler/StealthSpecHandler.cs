@@ -129,7 +129,7 @@ namespace DOL.GS.SkillHandler
 
 			//since 1.88 (?), players which stealth, doesn't be followed by mobs [by Suncheck]
 			//TODO: Some further checks need?
-			foreach (GameObject attacker in player.attackComponent.Attackers.Keys)
+			foreach (GameObject attacker in player.attackComponent.AttackerTracker.Attackers)
 			{
 				if (attacker is not GameLiving livingAttacker)
 					continue;

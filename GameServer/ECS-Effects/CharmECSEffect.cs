@@ -77,7 +77,7 @@ namespace DOL.GS
                 }
 
                 // Remove NPC with new brain from all attackers aggro list.
-                foreach (GameLiving attacker in charmNpc.attackComponent.Attackers.Keys)
+                foreach (GameLiving attacker in charmNpc.attackComponent.AttackerTracker.Attackers)
                 {
                     if (attacker is GameNPC npcAttacker && npcAttacker.Brain is IOldAggressiveBrain attackerAggroBrain)
                     {

@@ -3000,12 +3000,12 @@ namespace DOL.GS.Commands
 				}
 			}
 
-			if (targetMob.attackComponent.Attackers != null && !targetMob.attackComponent.Attackers.IsEmpty)
+			if (targetMob.attackComponent.AttackerTracker.Count > 0)
 			{
 				text.Add("");
 				text.Add("Attacker List:");
 
-				foreach (GameLiving attacker in targetMob.attackComponent.Attackers.Keys)
+				foreach (GameLiving attacker in targetMob.attackComponent.AttackerTracker.Attackers)
 					text.Add(attacker.Name);
 			}
 

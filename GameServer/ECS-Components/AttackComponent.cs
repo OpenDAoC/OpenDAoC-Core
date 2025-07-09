@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +21,6 @@ namespace DOL.GS
 {
     public class AttackComponent : IServiceObject
     {
-        public const int CHECK_ATTACKERS_INTERVAL = 1000;
         public const double INHERENT_WEAPON_SKILL = 15.0;
         public const double INHERENT_ARMOR_FACTOR = 12.5;
 
@@ -30,56 +28,10 @@ namespace DOL.GS
         public WeaponAction weaponAction; // This represents the current weapon action, which may become outdated when resolving ranged attacks.
         public AttackAction attackAction;
         public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.AttackComponent);
+        public AttackerTracker AttackerTracker { get; private set; }
 
-        /// <summary>
-        /// Returns the list of attackers
-        /// </summary>
-        public ConcurrentDictionary<GameLiving, long> Attackers { get; } = new();
-
-        private AttackersCheckTimer _attackersCheckTimer;
         private BlockRoundHandler _blockRoundHandler;
-
-        public void AddAttacker(GameLiving attacker, long duration)
-        {
-            if (attacker == owner)
-                return;
-
-            if (!_attackersCheckTimer.IsAlive)
-            {
-                lock (_attackersCheckTimer.Lock)
-                {
-                    if (!_attackersCheckTimer.IsAlive)
-                    {
-                       _attackersCheckTimer.Interval = CHECK_ATTACKERS_INTERVAL;
-                       _attackersCheckTimer.Start();
-                    }
-                }
-            }
-
-            if (duration <= 0)
-                duration = Properties.SPELL_INTERRUPT_DURATION;
-
-            Attackers.AddOrUpdate(attacker, Add, Update, GameLoop.GameLoopTime + duration);
-
-            static long Add(GameLiving key, long arg)
-            {
-                return arg;
-            }
-
-            static long Update(GameLiving key, long oldValue, long arg)
-            {
-                return arg;
-            }
-        }
-
-        /// <summary>
-        /// The target that was passed when 'StartAttackRequest' was called and the request accepted.
-        /// </summary>
         private GameObject _startAttackTarget;
-
-        /// <summary>
-        /// Actually a boolean. Use 'StartAttackRequested' to preserve thread safety.
-        /// </summary>
         private int _startAttackRequested;
 
         public bool StartAttackRequested
@@ -92,7 +44,7 @@ namespace DOL.GS
         {
             this.owner = owner;
             attackAction = AttackAction.Create(owner);
-            _attackersCheckTimer = AttackersCheckTimer.Create(owner);
+            AttackerTracker = new(owner);
             _blockRoundHandler = new(owner);
         }
 
@@ -113,6 +65,12 @@ namespace DOL.GS
 
             if (!attackAction.Tick())
                 ServiceObjectStore.Remove(this);
+        }
+
+        public void AddAttacker(AttackData attackData)
+        {
+            long expireTime = GameLoop.GameLoopTime + (attackData.Interval > 0 ? attackData.Interval : Properties.SPELL_INTERRUPT_DURATION);
+            AttackerTracker.AddOrUpdate(attackData.Attacker, attackData.IsMeleeAttack, expireTime);
         }
 
         /// <summary>
@@ -1124,7 +1082,7 @@ namespace DOL.GS
             }
 
             // Add ourselves to the target's attackers list before going further.
-            ad.Target.attackComponent.AddAttacker(owner, ad.Interval);
+            ad.Target.attackComponent.AddAttacker(ad);
 
             // Calculate our attack result and attack damage.
             ad.AttackResult = ad.Target.attackComponent.CalculateEnemyAttackResult(action, ad, weapon, ref effectiveness);
@@ -1886,8 +1844,8 @@ namespace DOL.GS
                 if (leftHand != null)
                     shieldSize = leftHand.Type_Damage;
 
-                if (Attackers.Count > shieldSize)
-                    guardchance *= shieldSize / (double) Attackers.Count;
+                if (AttackerTracker.Count > shieldSize)
+                    guardchance *= shieldSize / (double) AttackerTracker.Count;
 
                 if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
                     guardchance /= 2;
@@ -1901,8 +1859,8 @@ namespace DOL.GS
                     if (parrychance > 0.99)
                         parrychance = 0.99;
 
-                    if (Attackers.Count > 1)
-                        parrychance /= Attackers.Count / 2;
+                    if (AttackerTracker.Count > 1)
+                        parrychance /= AttackerTracker.Count / 2;
                 }
 
                 if (Util.ChanceDouble(guardchance))
@@ -1929,8 +1887,8 @@ namespace DOL.GS
                     if (parrychance > 0.99)
                         parrychance = 0.99;
 
-                    if (Attackers.Count > 1)
-                        parrychance /= Attackers.Count / 2;
+                    if (AttackerTracker.Count > 1)
+                        parrychance /= AttackerTracker.Count / 2;
                 }
 
                 if (Util.ChanceDouble(parrychance))
@@ -2085,7 +2043,7 @@ namespace DOL.GS
 
                 if (ad.IsMeleeAttack)
                 {
-                    double parryChance = owner.TryParry(ad, lastAttackData, Attackers.Count);
+                    double parryChance = owner.TryParry(ad, lastAttackData, AttackerTracker.Count);
                     ad.ParryChance = parryChance * 100;
                     double parryRoll;
 
@@ -2606,7 +2564,7 @@ namespace DOL.GS
             {
                 // 1.33 per level difference.
                 missChance -= (ad.Attacker.EffectiveLevel - owner.EffectiveLevel) * (1 + 1 / 3.0);
-                missChance -= Math.Max(0, Attackers.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
+                missChance -= Math.Max(0, AttackerTracker.Count - 1) * Properties.MISSRATE_REDUCTION_PER_ATTACKERS;
             }
 
             // Weapon and armor bonuses.
@@ -2885,85 +2843,6 @@ namespace DOL.GS
                     _decrementBlockRoundCount();
                     return 0;
                 }
-            }
-        }
-
-        public class StandardAttackersCheckTimer : AttackersCheckTimer
-        {
-            public StandardAttackersCheckTimer(GameObject owner) : base(owner) { }
-
-            protected override int OnTick(ECSGameTimer timer)
-            {
-                foreach (var pair in _owner.attackComponent.Attackers)
-                    TryRemoveAttacker(pair);
-
-                return base.OnTick(timer);
-            }
-        }
-
-        public class EpicNpcAttackersCheckTimer : AttackersCheckTimer
-        {
-            private IGameEpicNpc _epicNpc;
-
-            public EpicNpcAttackersCheckTimer(GameObject owner) : base(owner)
-            {
-                _epicNpc = owner as IGameEpicNpc;
-            }
-
-            protected override int OnTick(ECSGameTimer timer)
-            {
-                // Update `ArmorFactorScalingFactor`.
-                double armorFactorScalingFactor = _epicNpc.DefaultArmorFactorScalingFactor;
-                int petCount = 0;
-
-                foreach (var pair in _owner.attackComponent.Attackers)
-                {
-                    if (TryRemoveAttacker(pair))
-                        continue;
-
-                    if (pair.Key is GamePlayer)
-                        armorFactorScalingFactor -= 0.04;
-                    else if (pair.Key is GameSummonedPet && petCount <= _epicNpc.ArmorFactorScalingFactorPetCap)
-                    {
-                        armorFactorScalingFactor -= 0.01;
-                        petCount++;
-                    }
-
-                    if (armorFactorScalingFactor < 0.4)
-                    {
-                        armorFactorScalingFactor = 0.4;
-                        break;
-                    }
-                }
-
-                _epicNpc.ArmorFactorScalingFactor = armorFactorScalingFactor;
-                return base.OnTick(timer);
-            }
-        }
-
-        public abstract class AttackersCheckTimer : ECSGameTimerWrapperBase
-        {
-            public readonly Lock Lock = new();
-            protected GameLiving _owner;
-
-            public AttackersCheckTimer(GameObject owner) : base(owner)
-            {
-                _owner = owner as GameLiving;
-            }
-
-            public static AttackersCheckTimer Create(GameLiving owner)
-            {
-                return owner is IGameEpicNpc ? new EpicNpcAttackersCheckTimer(owner) : new StandardAttackersCheckTimer(owner);
-            }
-
-            protected override int OnTick(ECSGameTimer timer)
-            {
-                return _owner.attackComponent.Attackers.IsEmpty ? 0 : CHECK_ATTACKERS_INTERVAL;
-            }
-
-            protected bool TryRemoveAttacker(in KeyValuePair<GameLiving, long> pair)
-            {
-                return pair.Value < GameLoop.GameLoopTime && _owner.attackComponent.Attackers.TryRemove(pair);
             }
         }
     }

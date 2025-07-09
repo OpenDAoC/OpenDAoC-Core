@@ -191,7 +191,7 @@ namespace DOL.GS.Spells
             if (effectiveAmount > 0 && criticalAmount > 0)
                 MessageToCaster($"You heal for an extra {criticalAmount:0} hit points! ({criticalChance:0.##}%)", eChatType.CT_Spell);
 
-            foreach (GameLiving attacker in target.attackComponent.Attackers.Keys)
+            foreach (GameLiving attacker in target.attackComponent.AttackerTracker.Attackers)
             {
                 if (attacker is GameNPC npc)
                 {

@@ -184,7 +184,7 @@ namespace DOL.GS.Spells
 				RezDmgImmunityEffect rezImmune = new RezDmgImmunityEffect();
 				rezImmune.Start(player);
 
-				foreach (GameObject attacker in player.attackComponent.Attackers.Keys)
+				foreach (GameObject attacker in player.attackComponent.AttackerTracker.Attackers)
 				{
 					if (attacker is GameLiving && attacker != living.TargetObject)
 						attacker.Notify(GameLivingEvent.EnemyHealed, attacker, new EnemyHealedEventArgs(living, m_caster, eHealthChangeType.Spell, living.Health));
