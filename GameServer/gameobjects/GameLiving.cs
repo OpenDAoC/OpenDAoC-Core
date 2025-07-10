@@ -1146,19 +1146,10 @@ namespace DOL.GS
 			GamePlayer player = this as GamePlayer;
 
 			if (IsObjectInFront(ad.Attacker, 120))
-			{
-				if (player != null)
-				{
-					if (player.HasAbility(Abilities.Shield) && leftHand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type is Slot.RIGHTHAND || player.ActiveWeapon.Item_Type is Slot.LEFTHAND))
-						blockChance = GetModified(eProperty.BlockChance) * (leftHand.Quality * 0.01) * (leftHand.Condition / (double) leftHand.MaxCondition);
-				}
-				else
-					blockChance = GetModified(eProperty.BlockChance);
-			}
+				blockChance = CalculateBaseBlockChance(player, leftHand, ad);
 
 			if (blockChance > 0)
 			{
-				blockChance *= 0.001;
 				blockChance *= 1 - ad.DefensePenetration;
 
 				shieldSize = 1;
@@ -1178,27 +1169,6 @@ namespace DOL.GS
 						blockChance = Math.Max(blockChance - OverwhelmAbility.BONUS, 0);
 				}
 
-				if (IsEngaging)
-				{
-					EngageECSGameEffect engage = (EngageECSGameEffect) EffectListService.GetEffectOnTarget(this, eEffect.Engage);
-
-					if (engage != null && attackComponent.AttackState && engage.EngageTarget == ad.Attacker)
-					{
-						if (engage.EngageTarget.LastAttackedByEnemyTick > GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
-							player?.Out.SendMessage($"{engage.EngageTarget.GetName(0, true)} has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-						else if (Endurance < EngageAbilityHandler.ENGAGE_ENDURANCE_COST)
-							engage.Cancel(false, true);
-						else
-						{
-							Endurance -= EngageAbilityHandler.ENGAGE_ENDURANCE_COST;
-							player?.Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
-
-							if (blockChance < 0.95)
-								blockChance = 0.95;
-						}
-					}
-				}
-
 				// This was added in 1.74, then superseded in 1.96 with a 60% cap.
 				// Leaving it here for reference.
 				// Possibly intended to be applied in RvR or PvE only.
@@ -1214,6 +1184,96 @@ namespace DOL.GS
 			}
 
 			return blockChance;
+		}
+
+		private static bool IsValidEngageState(EngageECSGameEffect engage, AttackComponent attackComponent, AttackData ad)
+		{
+			return engage != null && attackComponent.AttackState && engage.EngageTarget == ad.Attacker;
+		}
+
+		private static bool CanEngageTarget(EngageECSGameEffect engage, GamePlayer player)
+		{
+			if (engage.EngageTarget.LastAttackedByEnemyTick <= GameLoop.GameLoopTime - EngageAbilityHandler.ENGAGE_ATTACK_DELAY_TICK)
+				return true;
+
+			player?.Out.SendMessage($"{engage.EngageTarget.GetName(0, true)} has been attacked recently and you are unable to engage.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+			return false;
+		}
+
+		private bool HasSufficientEndurance()
+		{
+			return Endurance >= EngageAbilityHandler.ENGAGE_ENDURANCE_COST;
+		}
+
+		private void ConsumeEngageEndurance(GamePlayer player)
+		{
+			Endurance -= EngageAbilityHandler.ENGAGE_ENDURANCE_COST;
+			player?.Out.SendMessage("You concentrate on blocking the blow!", eChatType.CT_Skill, eChatLoc.CL_SystemWindow);
+		}
+
+		private double CalculateBaseBlockChance(GamePlayer player, DbInventoryItem leftHand, AttackData ad)
+		{
+			// From Prima guide:
+			// "Your chance to block arrows from a same-level
+			// archer with your shield is 30%. This is modified
+			// by Shield spec, quality and condition of the
+			// shield, and the Engage skill."
+
+			// From 1.34 patch notes:
+			// The base chance to block a same-level archer is 30%, if your shield specialization is maxed for your level this can reach 60%.
+			// Quality and condition act as modifiers to this chance, if your skill-based chance was 50%,
+			// your Shield had a quality of 90% and a condition of 88%,then your actual chance to block would be 40%.
+
+			// From 1.34 patch notes:
+			// Using the Engage skill gives a base 95% chance to block arrows fired by your target.
+			// How many archers you can block attacks from is determined by the size of the shield, the same as Melee targets.
+			// You can Engage one archer and still get normal blocking chances against other archers you are facing, if you have a Medium or Large shield.
+			// Essentially, Engage works exactly the same against arrows as it does against melee attacks.
+
+			double baseBlockChance = 0.0;
+
+			if (player != null)
+			{
+				if (player.HasAbility(Abilities.Shield))
+				{
+					bool hasValidWeaponSetup = leftHand != null && (player.ActiveWeapon == null || player.ActiveWeapon.Item_Type is Slot.RIGHTHAND || player.ActiveWeapon.Item_Type is Slot.LEFTHAND);
+
+					if (hasValidWeaponSetup)
+					{
+						baseBlockChance = GetModified(eProperty.BlockChance);
+						baseBlockChance *= leftHand.Quality * 0.01 * (leftHand.Condition / (double) leftHand.MaxCondition);
+					}
+				}
+			}
+			else
+				baseBlockChance = GetModified(eProperty.BlockChance);
+
+			baseBlockChance /= 1000; // Not a typo.
+
+			// Increase block chance by 25% if the attack is ranged, which simulates a base of 30%.
+			if (ad.AttackType is eAttackType.Ranged)
+				baseBlockChance += 0.25;
+
+			// Engage mechanics are not fully known, but traditionally people would sometimes put only a few points in Shield to get it, hinting that it provided a good block chance even at low spec.
+			if (IsEngaging)
+			{
+				EngageECSGameEffect engage = EffectListService.GetEffectOnTarget(this, eEffect.Engage) as EngageECSGameEffect;
+
+				if (IsValidEngageState(engage, attackComponent, ad) && CanEngageTarget(engage, player))
+				{
+					if (!HasSufficientEndurance())
+						engage.Cancel(false, true);
+					else
+					{
+						// This is a guess, and is based on the patch notes stating that the base block chance against arrows is 30% (so +25% from the normal base), and is 95% with engage.
+						// 65% is the difference between both, and gives a base block chance of 70% against melee attacks, before spec and stats.
+						baseBlockChance += 0.65;
+						ConsumeEngageEndurance(player);
+					}
+				}
+			}
+
+			return baseBlockChance;
 		}
 
 		/// <summary>
