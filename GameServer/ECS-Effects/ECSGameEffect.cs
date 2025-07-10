@@ -134,8 +134,10 @@ namespace DOL.GS
             }
         }
 
-        public bool Stop(bool playerCanceled = false)
+        public bool Stop(bool playerCanceled = false, bool addToPendingEffects = true)
         {
+            // `addToPendingEffects` should only be set to false when the effect is intended to be removed immediately and manually.
+
             if (!CanBeStopped)
                 return false;
 
@@ -154,7 +156,10 @@ namespace DOL.GS
                 }
 
                 _transitionalState = TransitionalState.Stopping;
-                Owner.effectListComponent.AddPendingEffect(this);
+
+                if (addToPendingEffects)
+                    Owner.effectListComponent.AddPendingEffect(this);
+
                 return true;
             }
         }
