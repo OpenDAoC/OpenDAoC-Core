@@ -1000,23 +1000,20 @@ namespace DOL.GS
 				if (ad.AttackType == eAttackType.Ranged)
 					evadeChance /= 5.0;
 
-				if (evadeChance > Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
-					evadeChance = Properties.EVADE_CAP; // 50% evade cap RvR only. http://www.camelotherald.com/more/664.shtml
-
-				if (evadeChance > 0.99)
-					evadeChance = 0.99;
-				
 				if (ad.AttackType is eAttackType.MeleeDualWield)
 					evadeChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
-			}
 
-			// Infiltrator RR5.
-			if (player != null)
-			{
-				OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
+				// Infiltrator RR5.
+				if (player != null)
+				{
+					OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
 
-				if (Overwhelm != null)
-					evadeChance = Math.Max(evadeChance - OverwhelmAbility.BONUS, 0);
+					if (Overwhelm != null)
+						evadeChance = Math.Max(evadeChance - OverwhelmAbility.BONUS, 0);
+				}
+
+				if (evadeChance > Properties.EVADE_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+					evadeChance = Properties.EVADE_CAP;
 			}
 
 			return evadeChance;
@@ -1093,24 +1090,21 @@ namespace DOL.GS
 					// Reduce chance by attacker's defense penetration.
 					parryChance *= 1 - ad.DefensePenetration;
 
+					if (ad.AttackType is eAttackType.MeleeTwoHand)
+						parryChance *= ad.Attacker.TwoHandedDefensePenetrationFactor;
+
+					// Infiltrator RR5.
+					if (player != null)
+					{
+						OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
+
+						if (Overwhelm != null)
+							parryChance = Math.Max(parryChance - OverwhelmAbility.BONUS, 0);
+					}
+
 					if (parryChance > Properties.PARRY_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 						parryChance = Properties.PARRY_CAP;
-
-					if (parryChance > 0.99)
-						parryChance = 0.99;
 				}
-			}
-
-			if (ad.AttackType is eAttackType.MeleeTwoHand)
-				parryChance *= ad.Attacker.TwoHandedDefensePenetrationFactor;
-
-			// Infiltrator RR5.
-			if (player != null)
-			{
-				OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
-
-				if (Overwhelm != null)
-					parryChance = Math.Max(parryChance - OverwhelmAbility.BONUS, 0);
 			}
 
 			return parryChance;
@@ -1167,23 +1161,22 @@ namespace DOL.GS
 				blockChance *= 0.001;
 				blockChance *= 1 - ad.DefensePenetration;
 
-				if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
-					blockChance = Properties.BLOCK_CAP;
-
 				shieldSize = 1;
 
 				if (leftHand != null)
 					shieldSize = Math.Max(leftHand.Type_Damage, 1);
 
-				// This was added in 1.74, then superseded in 1.96 with a 60% cap.
-				// Leaving it here for reference.
-				// Possibly intended to be applied in RvR or PvE only.
-				/*if (shieldSize == 1 && blockChance > 0.8)
-					blockChance = 0.8;
-				else if (shieldSize == 2 && blockChance > 0.9)
-					blockChance = 0.9;
-				else if (shieldSize == 3 && blockChance > 0.99)
-					blockChance = 0.99;*/
+				if (ad.AttackType is eAttackType.MeleeDualWield)
+					blockChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
+
+				// Infiltrator RR5.
+				if (player != null)
+				{
+					OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
+
+					if (Overwhelm != null)
+						blockChance = Math.Max(blockChance - OverwhelmAbility.BONUS, 0);
+				}
 
 				if (IsEngaging)
 				{
@@ -1206,17 +1199,18 @@ namespace DOL.GS
 					}
 				}
 
-				if (ad.AttackType is eAttackType.MeleeDualWield)
-					blockChance *= ad.Attacker.DualWieldDefensePenetrationFactor;
-			}
+				// This was added in 1.74, then superseded in 1.96 with a 60% cap.
+				// Leaving it here for reference.
+				// Possibly intended to be applied in RvR or PvE only.
+				/*if (shieldSize == 1 && blockChance > 0.8)
+					blockChance = 0.8;
+				else if (shieldSize == 2 && blockChance > 0.9)
+					blockChance = 0.9;
+				else if (shieldSize == 3 && blockChance > 0.99)
+					blockChance = 0.99;*/
 
-			// Infiltrator RR5.
-			if (player != null)
-			{
-				OverwhelmEffect Overwhelm = player.EffectList.GetOfType<OverwhelmEffect>();
-
-				if (Overwhelm != null)
-					blockChance = Math.Max(blockChance - OverwhelmAbility.BONUS, 0);
+				if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+					blockChance = Properties.BLOCK_CAP;
 			}
 
 			return blockChance;
