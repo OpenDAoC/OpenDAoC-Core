@@ -127,12 +127,11 @@ namespace DOL.GS.PropertyCalc
             else
                 livingToCheck = living;
 
-            // Hardcap at 10%
-            int percent = Math.Min(10, living.BaseBuffBonusCategory[property] + livingToCheck.ItemBonus[property] - living.DebuffCategory[property]);
-
-            // Add RA bonus
-            percent += livingToCheck.AbilityBonus[property];
-            return percent;
+            int abilityBonus = living.AbilityBonus[property];
+            int itemBonus = Math.Min(10, livingToCheck.ItemBonus[property]);
+            int buffBonus = living.BaseBuffBonusCategory[property] + living.SpecBuffBonusCategory[property];
+            int debuffMalus = Math.Abs(livingToCheck.DebuffCategory[property]);
+            return abilityBonus + buffBonus + itemBonus - debuffMalus;
         }
     }
 }
