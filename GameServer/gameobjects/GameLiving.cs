@@ -1179,7 +1179,8 @@ namespace DOL.GS
 				else if (shieldSize == 3 && blockChance > 0.99)
 					blockChance = 0.99;*/
 
-				if (blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
+				// Engage shouldn't be affected by the cap: https://darkageofcamelot.com/article/friday-grab-bag-11032017
+				if (!IsEngaging && blockChance > Properties.BLOCK_CAP && ad.Attacker is GamePlayer && ad.Target is GamePlayer)
 					blockChance = Properties.BLOCK_CAP;
 			}
 
