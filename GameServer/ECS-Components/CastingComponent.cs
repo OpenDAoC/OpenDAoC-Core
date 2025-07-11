@@ -12,6 +12,9 @@ namespace DOL.GS
 {
     public class CastingComponent : IServiceObject
     {
+        private const string ALREADY_CASTING_MESSAGE = "You are already casting a spell!";
+        private const int NO_QUEUE_INPUT_BUFFER = 250; // 250ms is roughly equivalent to the delay between inputs imposed by the client.
+
         protected Queue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
 
         public GameLiving Owner { get; }
@@ -131,7 +134,7 @@ namespace DOL.GS
             {
                 if (currentSpell.CastTime > 0)
                 {
-                    if (QueuedSpellHandler != null && player.SpellQueue)
+                    if (QueuedSpellHandler != null)
                     {
                         SpellHandler = QueuedSpellHandler;
                         QueuedSpellHandler = null;
@@ -220,26 +223,26 @@ namespace DOL.GS
                             return;
                         }
 
-                        string message = "You are already casting a spell!";
-
                         // Focus spells aren't allowed to have any spell be queued after them.
                         if (currentSpell.IsFocus)
                         {
                             if (currentSpellHandler.CastState is eCastState.Focusing)
                                 CastingComponent.SpellHandler = newSpellHandler;
                             else
-                                player.Out.SendMessage(message, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                                player.Out.SendMessage(ALREADY_CASTING_MESSAGE, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
 
                             return;
                         }
 
                         if (player.SpellQueue)
                         {
-                            player.Out.SendMessage($"{message} You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage($"{ALREADY_CASTING_MESSAGE} You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                             CastingComponent.QueuedSpellHandler = newSpellHandler;
                         }
+                        else if (currentSpellHandler.IsInCastingPhase && currentSpellHandler.IsCastEndingSoon((int) (NO_QUEUE_INPUT_BUFFER + GameLoop.TickRate / 2)))
+                            CastingComponent.QueuedSpellHandler = newSpellHandler; // Spell queue is disabled. Silently queue the spell.
                         else
-                            player.Out.SendMessage(message, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+                            player.Out.SendMessage(ALREADY_CASTING_MESSAGE, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                     }
                 }
                 else
@@ -257,8 +260,7 @@ namespace DOL.GS
                 {
                     SpellHandler spellHandler = ScriptMgr.CreateSpellHandler(CastingComponent.Owner, Spell, SpellLine) as SpellHandler;
 
-                    // 'GameLiving.TargetObject' is used by 'SpellHandler.Tick()' but is likely to change during LoS checks or for queued spells (affects NPCs only).
-                    // So we pre-initialize 'SpellHandler.Target' with the passed down target, if there's any.
+                    // Pre-initialize 'SpellHandler.Target' with the passed down target, if there's any.
                     if (Target != null)
                         spellHandler.Target = Target;
 
