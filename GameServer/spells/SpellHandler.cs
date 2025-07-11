@@ -431,6 +431,7 @@ namespace DOL.GS.Spells
 			}
 
 			// Initial LoS state.
+			// Note: This may be wrong for players. This is the LoS state for the currently selected target, not necessarily for the one the spell will be casted on.
 			HasLos = Caster.TargetInView;
 
 			if (Caster is GameNPC npcOwner)
