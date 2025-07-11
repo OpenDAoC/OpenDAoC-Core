@@ -239,7 +239,7 @@ namespace DOL.GS
                             player.Out.SendMessage($"{ALREADY_CASTING_MESSAGE} You prepare this spell as a follow up!", eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
                             CastingComponent.QueuedSpellHandler = newSpellHandler;
                         }
-                        else if (currentSpellHandler.IsInCastingPhase && currentSpellHandler.IsCastEndingSoon((int) (NO_QUEUE_INPUT_BUFFER + GameLoop.TickRate / 2)))
+                        else if (currentSpellHandler.IsInCastingPhase && currentSpellHandler.IsCastEndingSoon(NO_QUEUE_INPUT_BUFFER))
                             CastingComponent.QueuedSpellHandler = newSpellHandler; // Spell queue is disabled. Silently queue the spell.
                         else
                             player.Out.SendMessage(ALREADY_CASTING_MESSAGE, eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
