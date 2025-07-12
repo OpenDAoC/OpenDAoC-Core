@@ -1,35 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DOL.GS
+﻿namespace DOL.GS
 {
     public class ResurrectionIllnessECSGameEffect : ECSGameSpellEffect
     {
-        public ResurrectionIllnessECSGameEffect(ECSGameEffectInitParams initParams)
-            : base(initParams) { }
+        public ResurrectionIllnessECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        {
+            if (Owner is not GamePlayer player)
+                return;
+
+            // Overwrite Duration. Higher level rez spells reduce duration of rez sick.
+            if (player.TempProperties.GetAllProperties().Contains(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS))
+            {
+                double rezSickEffectiveness = player.TempProperties.GetProperty<double>(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS);
+                player.TempProperties.RemoveProperty(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS);
+                Duration = (int) (initParams.Duration * rezSickEffectiveness);
+            }
+
+            if (player.GetModified(eProperty.ResIllnessReduction) > 0)
+                Duration = initParams.Duration * (100 - player.GetModified(eProperty.ResIllnessReduction)) / 100;
+        }
 
         public override void OnStartEffect()
         {
-            GamePlayer gPlayer = Owner as GamePlayer;
-            if (gPlayer != null)
+            if (Owner is GamePlayer player)
             {
-                gPlayer.Effectiveness -= SpellHandler.Spell.Value * 0.01;
-                gPlayer.Out.SendUpdateWeaponAndArmorStats();
-                gPlayer.Out.SendStatusUpdate();
+                player.Effectiveness -= SpellHandler.Spell.Value * 0.01;
+                player.Out.SendUpdateWeaponAndArmorStats();
+                player.Out.SendStatusUpdate();
             }
         }
 
         public override void OnStopEffect()
         {
-            GamePlayer gPlayer = Owner as GamePlayer;
-            if (gPlayer != null)
+            if (Owner is GamePlayer player)
             {
-                gPlayer.Effectiveness += SpellHandler.Spell.Value * 0.01;
-                gPlayer.Out.SendUpdateWeaponAndArmorStats();
-                gPlayer.Out.SendStatusUpdate();
+                player.Effectiveness += SpellHandler.Spell.Value * 0.01;
+                player.Out.SendUpdateWeaponAndArmorStats();
+                player.Out.SendStatusUpdate();
             }
         }
     }

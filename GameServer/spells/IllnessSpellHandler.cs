@@ -12,23 +12,6 @@ namespace DOL.GS.Spells
 	{
 		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
 		{
-			GamePlayer targetPlayer = Target as GamePlayer;
-			if (targetPlayer != null)
-            {
-                // Higher level rez spells reduce duration of rez sick.
-                if (targetPlayer.TempProperties.GetAllProperties().Contains(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS))
-                {
-					double rezSickEffectiveness = targetPlayer.TempProperties.GetProperty<double>(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS);
-                    targetPlayer.TempProperties.RemoveProperty(GamePlayer.RESURRECT_REZ_SICK_EFFECTIVENESS);
-                    initParams.Duration = (int)(initParams.Duration * rezSickEffectiveness);
-                }
-                
-                if (targetPlayer.GetModified(eProperty.ResIllnessReduction) > 0)
-                {
-	                initParams.Duration = initParams.Duration * (100-targetPlayer.GetModified(eProperty.ResIllnessReduction))/100;
-                }
-            }
-
 			return new ResurrectionIllnessECSGameEffect(initParams);
 		}
 

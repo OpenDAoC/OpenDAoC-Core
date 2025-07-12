@@ -10,8 +10,13 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-    public struct ECSGameEffectInitParams
+    public readonly struct ECSGameEffectInitParams
     {
+        public readonly GameLiving Target { get; }
+        public readonly int Duration { get; }
+        public readonly double Effectiveness { get; }
+        public readonly ISpellHandler SpellHandler { get; }
+
         public ECSGameEffectInitParams(GameLiving target, int duration, double effectiveness, ISpellHandler spellHandler = null)
         {
             Target = target;
@@ -19,11 +24,6 @@ namespace DOL.GS
             Effectiveness = effectiveness;
             SpellHandler = spellHandler;
         }
-
-        public GameLiving Target { get; set; }
-        public int Duration { get; set; }
-        public double Effectiveness { get; set; }
-        public ISpellHandler SpellHandler { get; set; }
     }
 
     public class ECSGameEffect
@@ -36,6 +36,7 @@ namespace DOL.GS
         public long Duration;
         public long PulseFreq;
         public double Effectiveness;
+        public bool Critical;
         public eEffect EffectType;
         public GameLiving Owner;
         public GamePlayer OwnerPlayer;
