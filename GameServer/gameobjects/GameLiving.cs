@@ -1640,44 +1640,33 @@ namespace DOL.GS
 
         public virtual void TryCancelMovementSpeedBuffs(bool isAttacker)
         {
-            if (effectListComponent == null)
-                return;
-
+            // Cancel most movement speed buffs.
             if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
             {
                 var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 
-                for (int i = 0; i < effects.Count; i++)
+                foreach (ECSGameSpellEffect effect in effects)
                 {
-                    if (effects[i] is null)
-                        continue;
-
-                    var spellEffect = effects[i];
-                    if (spellEffect != null && spellEffect.SpellHandler.Spell.Target == eSpellTarget.PET)
+                    if (effect.SpellHandler.Spell.Target is eSpellTarget.PET)
                     {
-                        if (spellEffect.SpellHandler.Spell.ID is 305 // Whip of Encouragement
-                            or (>= 895 and <= 897)) // Tracker, Chaser, Pursuer Enhancement
+                        // Ignore Whip of Encouragement; Tracker, Chaser, Pursuer Enhancement.
+                        if (effect.SpellHandler.Spell.ID is 305 or (>= 895 and <= 897))
                             continue;
                     }
 
-                    effects[i].Stop();
+                    effect.Stop();
                 }
             }
 
-            if (this is GameNPC npc && npc.Brain is ControlledMobBrain || this is GameSummonedPet)
+            // Cancel movement speed buffs on the owner of a controlled mob that is attacking.
+            if (isAttacker && this is GameNPC npc && npc.Brain is ControlledMobBrain npcBrain)
             {
-                List<ECSGameSpellEffect> ownerEffects;
-                GameSummonedPet pet = this as GameSummonedPet;
+                var ownerEffects = npcBrain.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 
-                if ((this as GameNPC).Brain is ControlledMobBrain pBrain)
-                    ownerEffects = pBrain.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
-                else
-                    ownerEffects = pet.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
-
-                for (int i = 0; i < ownerEffects.Count; i++)
+                foreach (ECSGameSpellEffect effect in ownerEffects)
                 {
-                    if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target is not eSpellTarget.SELF)
-                        ownerEffects[i].Stop();
+                    if (effect.SpellHandler.Spell.Target is not eSpellTarget.SELF)
+                        effect.Stop();
                 }
             }
         }
