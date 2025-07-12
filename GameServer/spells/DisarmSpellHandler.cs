@@ -27,16 +27,6 @@ namespace DOL.GS.Spells
 		public override void OnEffectStart(GameSpellEffect effect)
 		{
 			base.OnEffectStart(effect);
-			if (effect.Owner.Realm == 0 || Caster.Realm == 0)
-			{
-				effect.Owner.LastAttackedByEnemyTickPvE = effect.Owner.CurrentRegion.Time;
-				Caster.LastAttackTickPvE = Caster.CurrentRegion.Time;
-			}
-			else
-			{
-				effect.Owner.LastAttackedByEnemyTickPvP = effect.Owner.CurrentRegion.Time;
-				Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
-			}
             effect.Owner.DisarmedTime = effect.Owner.CurrentRegion.Time + CalculateEffectDuration(effect.Owner);
 			effect.Owner.attackComponent.StopAttack();
 			MessageToLiving(effect.Owner, Spell.Message1, eChatType.CT_Spell);

@@ -42,6 +42,7 @@ namespace DOL.GS
 
         protected void FinalizeEffectPulse()
         {
+            // DoTs subsequent ticks set `AttackData.CausesCombat` to false, but we need them to keep the victim (and only the victim) in combat.
             if (Owner.Realm == 0 || SpellHandler.Caster.Realm == 0)
                 Owner.LastAttackTickPvE = GameLoop.GameLoopTime;
             else

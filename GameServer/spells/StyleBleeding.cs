@@ -3,8 +3,6 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.StyleBleeding)]
     public class StyleBleeding : SpellHandler
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public StyleBleeding(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
         public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)

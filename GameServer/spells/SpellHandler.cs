@@ -2199,9 +2199,7 @@ namespace DOL.GS.Spells
 				Caster.OnAttackEnemy(ad);
 
 				// Harmful spells that deal no damage (ie. debuffs) should still trigger OnAttackedByEnemy.
-				// Exception for DoTs here since the initial landing of the DoT spell reports 0 damage
-				// and the first tick damage is done by the pulsing effect, which takes care of firing OnAttackedByEnemy.
-				if (ad.Damage == 0 && ad.SpellHandler.Spell.SpellType is not eSpellType.DamageOverTime)
+				if (ad.Damage == 0)
 					target.OnAttackedByEnemy(ad);
 			}
 		}
@@ -2529,7 +2527,7 @@ namespace DOL.GS.Spells
 		/// </summary>
 		public virtual void StartSpellNegatedLastAttackTimer(GameLiving target)
 		{
-			if (target.Realm == 0 || Caster.Realm == 0)
+			if (target.Realm is eRealm.None || Caster.Realm is eRealm.None)
 			{
 				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
 				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
@@ -3188,20 +3186,6 @@ namespace DOL.GS.Spells
 			{
 				if (targetNpc.Brain is IOldAggressiveBrain brain)
 					brain.AddToAggroList(Caster, 1);
-
-				if (this is not DoTSpellHandler and not StyleBleeding)
-				{
-					if (Caster.Realm == 0 || ad.Target.Realm == 0)
-					{
-						ad.Target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-						Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
-					}
-					else
-					{
-						ad.Target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-						Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
-					}
-				}
 			}
 
 			if (ad.Damage > 0)

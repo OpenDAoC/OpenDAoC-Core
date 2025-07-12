@@ -21,17 +21,6 @@ namespace DOL.GS.Spells
 			if (target == null || target.CurrentRegion == null)
 				return;
 
-			if (target.Realm == 0 || Caster.Realm == 0)
-			{
-				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
-			}
-			else
-			{
-				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
-			}
-
 			base.ApplyEffectOnTarget(target);
 			target.StartInterruptTimer(target.SpellInterruptDuration, AttackData.eAttackType.Spell, Caster);
 		}

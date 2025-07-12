@@ -37,9 +37,6 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-			target.LastAttackedByEnemyTickPvP = target.CurrentRegion.Time;
-			Caster.LastAttackTickPvP = Caster.CurrentRegion.Time;
-
 			base.FinishSpellCast(target);
 		}
 

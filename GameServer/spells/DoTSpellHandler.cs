@@ -3,6 +3,7 @@ using DOL.AI.Brain;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
+using static DOL.GS.GameObject;
 
 namespace DOL.GS.Spells
 {
@@ -13,7 +14,7 @@ namespace DOL.GS.Spells
 	public class DoTSpellHandler : SpellHandler
 	{
 		public int CriticalDamage { get; protected set; } = 0;
-		private bool firstTick = true;
+		private bool _firstTick = true;
 
 		public DoTSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
@@ -199,46 +200,22 @@ namespace DOL.GS.Spells
 
 		public override void OnDirectEffect(GameLiving target)
 		{
-			if (target == null) return;
-			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
+			if (target == null || !target.IsAlive || target.ObjectState is not eObjectState.Active)
+				return;
 
-			// no interrupts on DoT direct effect
-			// calc damage
 			AttackData ad = CalculateDamageToTarget(target);
-
 			ad.CriticalDamage = CalculateCriticalDamage(ad);
-
-			//ad.CausesCombat = true;
-			SendDamageMessages(ad);
-			if (ad.Attacker.Realm == 0)
-			{
-				ad.Target.LastAttackTickPvE = GameLoop.GameLoopTime;
-			}
-			else
-			{
-				ad.Target.LastAttackTickPvP = GameLoop.GameLoopTime;
-			}
-			DamageTarget(ad, false);
-
-			if (firstTick) firstTick = false;
-		}
-
-		public void OnDirectEffect(GameLiving target, double effectiveness, bool causesCombat)
-		{
-			if (target == null) return;
-			if (!target.IsAlive || target.ObjectState != GameLiving.eObjectState.Active) return;
-
-			// no interrupts on DoT direct effect
-			// calc damage
-			AttackData ad = CalculateDamageToTarget(target);
-			ad.CausesCombat = causesCombat;
+			ad.CausesCombat = _firstTick;
 			SendDamageMessages(ad);
 			DamageTarget(ad, false);
+
+			if (_firstTick)
+				_firstTick = false;
 		}
 
 		private int CalculateCriticalDamage(AttackData ad)
-        {
-			if (CriticalDamage > 0 || !firstTick)
+		{
+			if (CriticalDamage > 0 || !_firstTick)
 				return CriticalDamage;
 
 			ad.CriticalChance = Caster.DebuffCriticalChance;

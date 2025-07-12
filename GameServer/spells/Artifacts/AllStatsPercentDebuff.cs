@@ -83,16 +83,7 @@ namespace DOL.GS.Spells
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
 			base.ApplyEffectOnTarget(target);
-			if (target.Realm == 0 || Caster.Realm == 0)
-			{
-				target.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvE = GameLoop.GameLoopTime;
-			}
-			else
-			{
-				target.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-				Caster.LastAttackTickPvP = GameLoop.GameLoopTime;
-			}
+
 			if (target is GameNPC)
 			{
 				IOldAggressiveBrain aggroBrain = ((GameNPC)target).Brain as IOldAggressiveBrain;

@@ -1410,13 +1410,13 @@ namespace DOL.GS
                 TryCancelMovementSpeedBuffs(true);
 
             var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
-            //OffensiveProcs
-            if (ad.Attacker == this && oProcEffects != null && ad.AttackType != AttackData.eAttackType.Spell && ad.AttackResult != eAttackResult.Missed)
+
+            // Offensive procs.
+            if (ad.Attacker == this && oProcEffects != null && ad.AttackType != eAttackType.Spell && ad.AttackResult != eAttackResult.Missed)
             {
                 for (int i = 0; i < oProcEffects.Count; i++)
                 {
-                    var oProcEffect = oProcEffects[i];
-
+                    ECSGameSpellEffect oProcEffect = oProcEffects[i];
                     (oProcEffect.SpellHandler as OffensiveProcSpellHandler).EventHandler(ad);
                 }
             }
@@ -1427,208 +1427,186 @@ namespace DOL.GS
             TripleWieldECSGameEffect tw = EffectListService.GetAbilityEffectOnTarget(this, eEffect.TripleWield) as TripleWieldECSGameEffect;
             tw?.EventHandler(ad);
 
-            if (ad.Target is GamePlayer && ad.Target != this)
-                LastAttackTickPvP = GameLoop.GameLoopTime;
-            else
-                LastAttackTickPvE = GameLoop.GameLoopTime;
-
-            if (this is GameNPC npc)
+            if (ad.Target != this)
             {
-                if (npc.Brain is ControlledMobBrain brain)
-                {
-                    if (ad.Target is GamePlayer)
-                    {
-                        LastAttackTickPvP = GameLoop.GameLoopTime;
-                        brain.Owner.LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-                    }
-                    else
-                    {
-                        LastAttackTickPvE = GameLoop.GameLoopTime;
-                        brain.Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-                    }
-                }
+                if (ad.Target.Realm is eRealm.None || Realm is eRealm.None)
+                    LastAttackTickPvE = GameLoop.GameLoopTime;
+                else
+                    LastAttackTickPvP = GameLoop.GameLoopTime;
             }
 
-            // Don't cancel offensive focus spell
-            if (ad.AttackType != eAttackType.Spell)
+            // Don't cancel offensive focus spell.
+            if (ad.AttackType is not eAttackType.Spell)
                 castingComponent.InterruptCasting(false);
         }
 
-		/// <summary>
-		/// This method is called at the end of the attack sequence to
-		/// notify objects if they have been attacked/hit by an attack
-		/// </summary>
-		/// <param name="ad">information about the attack</param>
-		public virtual void OnAttackedByEnemy(AttackData ad)
-		{
-			// Note that this function is called whenever an attack is received, regardless of whether that attack was successful.
-			// i.e. missed melee swings and resisted spells still trigger this.
+        /// <summary>
+        /// This method is called at the end of the attack sequence to
+        /// notify objects if they have been attacked/hit by an attack
+        /// </summary>
+        /// <param name="ad">information about the attack</param>
+        public virtual void OnAttackedByEnemy(AttackData ad)
+        {
+            // Note that this function is called whenever an attack is received, regardless of whether that attack was successful.
+            // i.e. missed melee swings and resisted spells still trigger this.
 
-			if (ad == null)
-				return;
+            if (ad == null)
+                return;
 
-			// Must be above the IsHit/Combat check below since things like subsequent DoT ticks don't cause combat but should still break CC.
-			HandleCrowdControlOnAttacked(ad);
+            // Must be above the IsHit/Combat check below, since things like subsequent DoT ticks don't cause combat but should still break CC.
+            HandleCrowdControlOnAttacked(ad);
 
-			if (ad.IsHit && ad.CausesCombat)
-			{
-				HandleMovementSpeedEffectsOnAttacked(ad);
+            if (ad.IsHit && ad.CausesCombat)
+            {
+                HandleMovementSpeedEffectsOnAttacked(ad);
 
-				if (this is GameNPC gameNpc && ActiveWeaponSlot is eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
-					gameNpc.StartAttackWithMeleeWeapon(ad.Attacker);
+                if (this is GameNPC gameNpc && ActiveWeaponSlot is eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
+                    gameNpc.StartAttackWithMeleeWeapon(ad.Attacker);
 
-				attackComponent.AddAttacker(ad);
+                attackComponent.AddAttacker(ad);
 
-				if (ad.SpellHandler == null || (ad.SpellHandler != null && ad.SpellHandler is not DoTSpellHandler))
-				{
-					if (ad.Attacker.Realm == 0 || Realm == 0)
-					{
-						LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-						ad.Attacker.LastAttackTickPvE = GameLoop.GameLoopTime;
-					}
-					else if (ad.Attacker != this) //Check if the attacker is not this living (some things like Res Sickness have attacker/target the same)
-					{
-						LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-						ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
-					}
-				}
+                if (ad.Attacker != this)
+                {
+                    if (ad.Attacker.Realm is eRealm.None || Realm is eRealm.None)
+                        LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
+                    else
+                        LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
+                }
 
-				// Melee Attack that actually caused damage.
-				if (ad.IsMeleeAttack && ad.Damage > 0)
-				{
-					// Handle Ablatives.
-					List<ECSGameSpellEffect> effects = effectListComponent.GetSpellEffects(eEffect.AblativeArmor);
+                // Melee attack that actually caused damage.
+                if (ad.IsMeleeAttack && ad.Damage > 0)
+                {
+                    // Handle ablatives.
+                    List<ECSGameSpellEffect> effects = effectListComponent.GetSpellEffects(eEffect.AblativeArmor);
 
-					for (int i = 0; i < effects.Count; i++)
-					{
-						AblativeArmorECSGameEffect effect = effects[i] as AblativeArmorECSGameEffect;
+                    for (int i = 0; i < effects.Count; i++)
+                    {
+                        if (effects[i] is not AblativeArmorECSGameEffect effect)
+                            continue;
 
-						if (effect == null)
-							continue;
+                        AblativeArmorSpellHandler ablativeArmorSpellHandler = effect.SpellHandler as AblativeArmorSpellHandler;
 
-						AblativeArmorSpellHandler ablativeArmorSpellHandler = effect.SpellHandler as AblativeArmorSpellHandler;
+                        if (!ablativeArmorSpellHandler.MatchingDamageType(ref ad))
+                            continue;
 
-						if (!ablativeArmorSpellHandler.MatchingDamageType(ref ad))
-							continue;
+                        int ablativeHp = effect.RemainingValue;
+                        double absorbPercent = AblativeArmorSpellHandler.ValidateSpellDamage((int)effect.SpellHandler.Spell.Damage);
+                        int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
 
-						int ablativeHp = effect.RemainingValue;
-						double absorbPercent = AblativeArmorSpellHandler.ValidateSpellDamage((int)effect.SpellHandler.Spell.Damage);
-						int damageAbsorbed = (int)(0.01 * absorbPercent * (ad.Damage + ad.CriticalDamage));
+                        if (damageAbsorbed > ablativeHp)
+                            damageAbsorbed = ablativeHp;
 
-						if (damageAbsorbed > ablativeHp)
-							damageAbsorbed = ablativeHp;
+                        ablativeHp -= damageAbsorbed;
+                        ad.Damage -= damageAbsorbed;
 
-						ablativeHp -= damageAbsorbed;
-						ad.Damage -= damageAbsorbed;
+                        (effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
 
-						(effect.SpellHandler as AblativeArmorSpellHandler).OnDamageAbsorbed(ad, damageAbsorbed);
+                        if (ad.Target is GamePlayer playerTarget)
+                            playerTarget.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
-						if (ad.Target is GamePlayer playerTarget)
-							playerTarget.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "AblativeArmor.Target", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                        if (ad.Attacker is GamePlayer playerAttacker)
+                            playerAttacker.Out.SendMessage(LanguageMgr.GetTranslation(playerAttacker.Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
 
-						if (ad.Attacker is GamePlayer playerAttacker)
-							playerAttacker.Out.SendMessage(LanguageMgr.GetTranslation(playerAttacker.Client, "AblativeArmor.Attacker", damageAbsorbed), eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
+                        if (ablativeHp <= 0)
+                            effect.Stop();
+                        else
+                            effect.RemainingValue = ablativeHp;
+                    }
+                }
+            }
+            else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
+                npc.CancelReturnToSpawnPoint();
+        }
 
-						if (ablativeHp <= 0)
-							effect.Stop();
-						else
-							effect.RemainingValue = ablativeHp;
-					}
-				}
-			}
-			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
-				npc.CancelReturnToSpawnPoint();
-		}
+        /// <summary>
+        /// Attempt to break/remove CC spells on this living. Returns true if any CC spells were removed.
+        /// </summary>
+        public virtual bool HandleCrowdControlOnAttacked(AttackData ad)
+        {
+            if (ad == null || !ad.IsHit)
+                return false;
 
-		/// <summary>
-		/// Attempt to break/remove CC spells on this living. Returns true if any CC spells were removed.
-		/// </summary>
-		public virtual bool HandleCrowdControlOnAttacked(AttackData ad)
-		{
-			if (ad == null || !ad.IsHit)
-				return false;
+            bool removeMez = false;
+            bool removeSnare = false; // Immunity-triggering snare/root spells
+            bool removeMovementSpeedDebuff = false; // Non-immunity snares like focus snare, melee snares, DD+Snare spells, etc.
 
-			bool removeMez = false;
-			bool removeSnare = false; // Immunity-triggering snare/root spells
-			bool removeMovementSpeedDebuff = false; // Non-immunity snares like focus snare, melee snares, DD+Snare spells, etc.
+            // Attack was Melee
+            if (ad.AttackType != AttackData.eAttackType.Spell)
+            {
+                switch (ad.AttackResult)
+                {
+                    case eAttackResult.HitStyle:
+                    case eAttackResult.HitUnstyled:
+                        removeSnare = true;
+                        removeMez = true;
+                        removeMovementSpeedDebuff = true;
+                        break;
+                    case eAttackResult.Blocked:
+                    case eAttackResult.Evaded:
+                    case eAttackResult.Fumbled:
+                    case eAttackResult.Missed:
+                    case eAttackResult.Parried:
+                        // Missed melee swings still break mez.
+                        removeMez = true;
+                        break;
+                }
+            }
+            // Attack was a Spell. Note that a spell being resisted does not mean it does not break mez.
+            else
+            {
+                if (ad.Damage > 0)
+                {
+                    // Any damage breaks mez and snare/root.
+                    removeMez = true;
+                    removeSnare = true;
+                    removeMovementSpeedDebuff = true;
+                }
+                else if (ad.SpellHandler is
+                        NearsightSpellHandler or
+                        AmnesiaSpellHandler or
+                        DiseaseSpellHandler or
+                        SpeedDecreaseSpellHandler or
+                        StunSpellHandler or
+                        ConfusionSpellHandler or
+                        AbstractResistDebuff)
+                {
+                    // Non-damaging spells that always break mez.
+                    removeMez = true;
+                }
+                else if ((ad.IsSpellResisted || this is GameNPC) && ad.SpellHandler is not MesmerizeSpellHandler)
+                    removeMez = true;
+            }
 
-			// Attack was Melee
-			if (ad.AttackType != AttackData.eAttackType.Spell)
-			{
-				switch (ad.AttackResult)
-				{
-					case eAttackResult.HitStyle:
-					case eAttackResult.HitUnstyled:
-						removeSnare = true;
-						removeMez = true;
-						removeMovementSpeedDebuff = true;
-						break;
-					case eAttackResult.Blocked:
-					case eAttackResult.Evaded:
-					case eAttackResult.Fumbled:
-					case eAttackResult.Missed:
-					case eAttackResult.Parried:
-						// Missed melee swings still break mez.
-						removeMez = true;
-						break;
-				}
-			}
-			// Attack was a Spell. Note that a spell being resisted does not mean it does not break mez.
-			else
-			{
-				if (ad.Damage > 0)
-				{
-					// Any damage breaks mez and snare/root.
-					removeMez = true;
-					removeSnare = true;
-					removeMovementSpeedDebuff = true;
-				}
-				else if (ad.SpellHandler is
-						NearsightSpellHandler or
-						AmnesiaSpellHandler or
-						DiseaseSpellHandler or
-						SpeedDecreaseSpellHandler or
-						StunSpellHandler or
-						ConfusionSpellHandler or
-						AbstractResistDebuff)
-				{
-					// Non-damaging spells that always break mez.
-					removeMez = true;
-				}
-				else if ((ad.IsSpellResisted || this is GameNPC) && ad.SpellHandler is not MesmerizeSpellHandler)
-					removeMez = true;
-			}
+            ECSGameEffect effect;
 
-			ECSGameEffect effect;
+            // Remove Mez
+            if (removeMez)
+            {
+                effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
+                effect?.Stop();
+            }
 
-			// Remove Mez
-			if (removeMez)
-			{
-				effect = EffectListService.GetEffectOnTarget(this, eEffect.Mez);
-				effect?.Stop();
-			}
+            // Remove Snare/Root
+            if (removeSnare)
+            {
+                effect = EffectListService.GetEffectOnTarget(this, eEffect.Snare);
+                effect?.Stop();
+            }
 
-			// Remove Snare/Root
-			if (removeSnare)
-			{
-				effect = EffectListService.GetEffectOnTarget(this, eEffect.Snare);
-				effect?.Stop();
-			}
+            // Remove MovementSpeedDebuff
+            if (removeMovementSpeedDebuff)
+            {
+                effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
 
-			// Remove MovementSpeedDebuff
-			if (removeMovementSpeedDebuff)
-			{
-				effect = EffectListService.GetEffectOnTarget(this, eEffect.MovementSpeedDebuff);
+                if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != eSpellType.UnbreakableSpeedDecrease)
+                    effect.Stop();
 
-				if (effect != null && effect is ECSGameSpellEffect spellEffect && spellEffect.SpellHandler.Spell.SpellType != eSpellType.UnbreakableSpeedDecrease)
-					effect.Stop();
+                effect = EffectListService.GetEffectOnTarget(this, eEffect.Ichor);
+                effect?.Stop();
+            }
 
-				effect = EffectListService.GetEffectOnTarget(this, eEffect.Ichor);
-				effect?.Stop();
-			}
-
-			return removeMez || removeSnare || removeMovementSpeedDebuff;
-		}
+            return removeMez || removeSnare || removeMovementSpeedDebuff;
+        }
 
         public virtual void HandleMovementSpeedEffectsOnAttacked(AttackData ad)
         {
@@ -1653,42 +1631,41 @@ namespace DOL.GS
                 return;
 
             if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
-			{
-				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
+            {
+                var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 
-				for (int i = 0; i < effects.Count; i++)
-				{
-					if (effects[i] is null)
-						continue;
+                for (int i = 0; i < effects.Count; i++)
+                {
+                    if (effects[i] is null)
+                        continue;
 
-					var spellEffect = effects[i];
-					if (spellEffect != null && spellEffect.SpellHandler.Spell.Target == eSpellTarget.PET)
-					{
-						if (spellEffect.SpellHandler.Spell.ID is 305 // Whip of Encouragement
-							or (>= 895 and <= 897)) // Tracker, Chaser, Pursuer Enhancement
-							continue;
-					}
-					
-					effects[i].Stop();
-				}
+                    var spellEffect = effects[i];
+                    if (spellEffect != null && spellEffect.SpellHandler.Spell.Target == eSpellTarget.PET)
+                    {
+                        if (spellEffect.SpellHandler.Spell.ID is 305 // Whip of Encouragement
+                            or (>= 895 and <= 897)) // Tracker, Chaser, Pursuer Enhancement
+                            continue;
+                    }
+
+                    effects[i].Stop();
+                }
             }
 
-			if (this is GameNPC npc && npc.Brain is ControlledMobBrain || this is GameSummonedPet)
+            if (this is GameNPC npc && npc.Brain is ControlledMobBrain || this is GameSummonedPet)
             {
-				List<ECSGameSpellEffect> ownerEffects;
-				ControlledMobBrain pBrain = (this as GameNPC).Brain as ControlledMobBrain;
-				GameSummonedPet pet = this as GameSummonedPet;
+                List<ECSGameSpellEffect> ownerEffects;
+                GameSummonedPet pet = this as GameSummonedPet;
 
-				if (pBrain != null)
-					ownerEffects = pBrain.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
-				else
-					ownerEffects = pet.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
+                if ((this as GameNPC).Brain is ControlledMobBrain pBrain)
+                    ownerEffects = pBrain.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
+                else
+                    ownerEffects = pet.Owner.effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 
-				for (int i = 0; i < ownerEffects.Count; i++)
-				{
-					if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target != eSpellTarget.SELF)
-						ownerEffects[i].Stop();
-				}				
+                for (int i = 0; i < ownerEffects.Count; i++)
+                {
+                    if (isAttacker || ownerEffects[i] is not ECSGameSpellEffect spellEffect || spellEffect.SpellHandler.Spell.Target is not eSpellTarget.SELF)
+                        ownerEffects[i].Stop();
+                }
             }
         }
 
@@ -1698,9 +1675,9 @@ namespace DOL.GS
         /// </summary>
         /// <param name="ad">AttackData</param>
         public virtual void DealDamage(AttackData ad)
-		{
-			ad.Target.TakeDamage(ad);
-		}
+        {
+            ad.Target.TakeDamage(ad);
+        }
 
 		/// <summary>
 		/// Adds a object to the list of objects that will gain xp
