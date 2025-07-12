@@ -1453,19 +1453,32 @@ namespace DOL.GS
             if (ad == null)
                 return;
 
+            // Dead attackers (typically from DoTs) don't put the target in combat, break CC or stealth.
+            bool attackerAlive = ad.Attacker.IsAlive;
+
             // Must be above the IsHit/Combat check below, since things like subsequent DoT ticks don't cause combat but should still break CC.
-            HandleCrowdControlOnAttacked(ad);
+            if (attackerAlive)
+                HandleCrowdControlOnAttacked(ad);
 
             if (ad.IsHit && ad.CausesCombat)
             {
-                HandleMovementSpeedEffectsOnAttacked(ad);
+                if (attackerAlive)
+                {
+                    HandleMovementSpeedEffectsOnAttacked(ad);
+
+                    if (ad.AttackType is not eAttackType.Spell || ad.Damage != 0)
+                    {
+                        if (IsStealthed && !effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
+                            Stealth(false);
+                    }
+                }
 
                 if (this is GameNPC gameNpc && ActiveWeaponSlot is eActiveWeaponSlot.Distance && IsWithinRadius(ad.Attacker, 150))
                     gameNpc.StartAttackWithMeleeWeapon(ad.Attacker);
 
                 attackComponent.AddAttacker(ad);
 
-                if (ad.Attacker != this)
+                if (attackerAlive && ad.Attacker != this)
                 {
                     if (ad.Attacker.Realm is eRealm.None || Realm is eRealm.None)
                         LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;

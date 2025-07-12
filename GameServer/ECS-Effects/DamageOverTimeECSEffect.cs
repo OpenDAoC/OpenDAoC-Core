@@ -9,12 +9,7 @@ namespace DOL.GS
             NextTick = GameLoop.GameLoopTime;
         }
 
-        public override void OnStartEffect()
-        {
-            // Remove stealth on first application.
-            if (OwnerPlayer != null && !OwnerPlayer.effectListComponent.ContainsEffectForEffectType(eEffect.Vanish))
-                OwnerPlayer.Stealth(false);
-        }
+        public override void OnStartEffect() { }
 
         public override void OnStopEffect()
         {
@@ -43,6 +38,10 @@ namespace DOL.GS
         protected void FinalizeEffectPulse()
         {
             // DoTs subsequent ticks set `AttackData.CausesCombat` to false, but we need them to keep the victim (and only the victim) in combat.
+            // We however respect the `IsAlive` check.
+            if (!SpellHandler.Caster.IsAlive)
+                return;
+
             if (Owner.Realm == 0 || SpellHandler.Caster.Realm == 0)
                 Owner.LastAttackTickPvE = GameLoop.GameLoopTime;
             else
