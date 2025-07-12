@@ -18,6 +18,10 @@ namespace DOL.GS.Spells
 
 		protected override double GetDebuffEffectivenessCriticalModifier()
 		{
+			// Roots are not allowed to crit, since the lack of walking animation is very confusing.
+			if (Spell.Value == 99)
+				return 1.0;
+
 			int criticalChance = Caster.DebuffCriticalChance;
 
 			if (criticalChance <= 0)
