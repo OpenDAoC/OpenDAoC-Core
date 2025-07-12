@@ -36,9 +36,6 @@ namespace DOL.GS.Spells
                 {
                     playerCaster = playerOwner;
                     effectiveness = CalculateEffectivenessFromSpec(playerCaster);
-
-                    if (Spell.SpellType is eSpellType.ArmorFactorDebuff)
-                        effectiveness *= 1 + Target.GetArmorAbsorb(eArmorSlot.TORSO);
                 }
                 if (playerCaster != null)
                     effectiveness = CalculateEffectivenessFromSpec(playerCaster);
