@@ -4,7 +4,12 @@ namespace DOL.GS
 {
     public class DiseaseECSGameEffect : ECSGameSpellEffect
     {
-        public DiseaseECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        private bool _critical;
+
+        public DiseaseECSGameEffect(ECSGameEffectInitParams initParams, bool critical) : base(initParams)
+        {
+            _critical = critical;
+        }
 
         public override void OnStartEffect()
         {
@@ -12,7 +17,10 @@ namespace DOL.GS
             double baseSpeedDebuff = 0.15;
             double baseStrDebuff = 0.075;
 
-            Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, 1.0 - baseSpeedDebuff * Effectiveness);
+            if (_critical)
+                baseSpeedDebuff *= 2;
+
+            Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, 1.0 - baseSpeedDebuff);
             Owner.BuffBonusMultCategory1.Set((int) eProperty.Strength, this, 1.0 - baseStrDebuff * Effectiveness);
             Owner.OnMaxSpeedChange();
 
