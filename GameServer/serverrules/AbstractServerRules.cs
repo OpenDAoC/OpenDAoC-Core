@@ -442,26 +442,26 @@ namespace DOL.GS.ServerRules
             // 	}
             // }
 
-            if (attacker is GameNPC attacknpc && defender is GameNPC defendnpc)
+            if (attacker is GameNPC npcAttacker && defender is GameNPC npcDefender)
             {
-                // Mobs can't attack keep guards
-                if (defender is GameKeepGuard && attacker.Realm == 0)
+                // Mobs can't attack keep guards or training dummies.
+                if (npcAttacker.Realm is eRealm.None && npcDefender is GameKeepGuard or GameTrainingDummy)
                     return false;
 
-                // Town guards however can attack mobs
-                if (attacknpc is GameGuard)
+                // Town guards however can attack mobs, but not training dummies.
+                if (npcDefender.Realm is eRealm.None && npcAttacker is GameGuard && npcDefender is not GameTrainingDummy)
                     return true;
 
-                // Anything can attack pets
-                if (defender is GameSummonedPet || defendnpc.Brain is ControlledMobBrain)
+                // Anything can attack pets.
+                if (npcDefender is GameSummonedPet || npcDefender.Brain is ControlledMobBrain)
                     return true;
 
-                // Pets can attack everything else
-                if (attacknpc is GameSummonedPet || attacknpc.Brain is ControlledMobBrain)
+                // Pets can attack everything.
+                if (npcAttacker is GameSummonedPet || npcAttacker.Brain is ControlledMobBrain)
                     return true;
 
                 // Mobs can attack mobs only if they both have a faction or if any is confused.
-                if ((defendnpc.Faction == null || attacknpc.Faction == null) && !defendnpc.IsConfused && !attacknpc.IsConfused)
+                if ((npcDefender.Faction == null || npcAttacker.Faction == null) && !npcDefender.IsConfused && !npcAttacker.IsConfused)
                     return false;
             }
 
