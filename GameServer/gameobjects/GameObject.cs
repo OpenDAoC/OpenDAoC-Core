@@ -372,63 +372,27 @@ namespace DOL.GS
         protected int m_health;
         public virtual int Health
         {
-            get { return m_health; }
+            get => m_health;
             set
             {
+                int maxHealth = MaxHealth;
 
-                int maxhealth = MaxHealth;
-                if (value >= maxhealth)
-                {
-                    m_health = maxhealth;
-                }
-                else if (value > 0)
-                {
-                    m_health = value;
-                }
+                if (value >= maxHealth)
+                    m_health = maxHealth;
                 else
-                {
-                    m_health = 0;
-                }
-
-                /*    if (IsAlive && m_health < maxhealth)
-                    {
-                        StartHealthRegeneration();
-                    }*/
+                    m_health = value > 0 ? value : 0;
             }
         }
 
-        /// <summary>
-        /// Gets/sets the maximum amount of health
-        /// </summary>
         protected int m_maxHealth;
         public virtual int MaxHealth
         {
-            get { return m_maxHealth; }
-            set
-            {
-                m_maxHealth = value;
-                //Health = Health; //cut extra hit points if there are any or start regeneration
-            }
+            get => m_maxHealth;
+            set => m_maxHealth = value;
         }
 
-        /// <summary>
-        /// Gets the Health in percent 0..100
-        /// </summary>
-        public virtual byte HealthPercent
-        {
-            get
-            {
-                return (byte)(MaxHealth <= 0 ? 0 : Health * 100 / MaxHealth);
-            }
-        }
-
-        /// <summary>
-        /// Health as it should display in the group window.
-        /// </summary>
-        public virtual byte HealthPercentGroupWindow
-        {
-            get { return HealthPercent; }
-        }
+        public virtual byte HealthPercent => (byte) (MaxHealth <= 0 ? 0 : Health * 100 / MaxHealth);
+        public virtual byte HealthPercentGroupWindow => HealthPercent;
 
         public virtual string GetName(int article, bool firstLetterUppercase, string lang, ITranslatableObject obj)
         {

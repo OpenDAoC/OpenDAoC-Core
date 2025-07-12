@@ -1728,7 +1728,6 @@ namespace DOL.GS
 		/// <returns>the amount really changed</returns>
 		public virtual int ChangeHealth(GameObject changeSource, eHealthChangeType healthChangeType, int changeAmount)
 		{
-			//TODO fire event that might increase or reduce the amount
 			int oldHealth = Health;
 			Health += changeAmount;
 			int healthChanged = Health - oldHealth;
@@ -1760,7 +1759,6 @@ namespace DOL.GS
 		/// <returns>the amount really changed</returns>
 		public virtual int ChangeMana(GameObject changeSource, eManaChangeType manaChangeType, int changeAmount)
 		{
-			//TODO fire event that might increase or reduce the amount
 			int oldMana = Mana;
 			Mana += changeAmount;
 			return Mana - oldMana;
@@ -1775,7 +1773,6 @@ namespace DOL.GS
 		/// <returns>the amount really changed</returns>
 		public virtual int ChangeEndurance(GameObject changeSource, eEnduranceChangeType enduranceChangeType, int changeAmount)
 		{
-			//TODO fire event that might increase or reduce the amount
 			int oldEndurance = Endurance;
 			Endurance += changeAmount;
 			return Endurance - oldEndurance;
@@ -2423,11 +2420,12 @@ namespace DOL.GS
 
 		protected virtual int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
 		{
-			if (Health < MaxHealth)
-				ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationAmount));
+			int maxHealth = MaxHealth;
 
-			if (Health >= MaxHealth)
+			if (Health >= maxHealth)
 			{
+				Health = maxHealth;
+
 				lock (XpGainersLock)
 				{
 					m_xpGainers.Clear();
@@ -2435,6 +2433,9 @@ namespace DOL.GS
 
 				return 0;
 			}
+
+			ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationAmount));
+
 
 			if (InCombat)
 				return HealthRegenerationPeriod * 5;
@@ -2444,9 +2445,11 @@ namespace DOL.GS
 
 		protected virtual int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
+			int maxMana = MaxMana;
+
 			if (IsVampiirOrMauler())
 			{
-				double onePercMana = Math.Ceiling(MaxMana * 0.01);
+				double onePercMana = Math.Ceiling(maxMana * 0.01);
 
 				if (!InCombat)
 				{
@@ -2456,11 +2459,13 @@ namespace DOL.GS
 			}
 			else
 			{
-				if (Mana < MaxMana)
-					ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationAmount));
-
-				if (Mana >= MaxMana)
+				if (Mana >= maxMana)
+				{
+					Mana = maxMana;
 					return 0;
+				}
+
+				ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationAmount));
 			}
 
 			int totalRegenPeriod = PowerRegenerationPeriod;
@@ -2485,21 +2490,23 @@ namespace DOL.GS
 
 		protected virtual int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
 		{
-			if (Endurance < MaxEndurance)
-			{
-				int regen = GetModified(eProperty.EnduranceRegenerationAmount);
+			int maxEndurance = MaxEndurance;
 
-				if (regen > 0)
-					ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
+			if (Endurance >= maxEndurance)
+			{
+				Endurance = maxEndurance;
+				return 0;
 			}
 
-			if (Endurance >= MaxEndurance)
-				return 0;
+			int regen = GetModified(eProperty.EnduranceRegenerationAmount);
+
+			if (regen > 0)
+				ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
 
 			return EnduranceRegenerationPeriod;
 		}
 
-        #endregion
+		#endregion
 
 		#region Components
 
@@ -2513,19 +2520,15 @@ namespace DOL.GS
 
 		#endregion
 
-        #region Mana/Health/Endurance/Concentration/Delete
-        /// <summary>
-        /// Amount of mana
-        /// </summary>
-        protected int m_mana;
+		#region Mana/Health/Endurance/Concentration/Delete
+		/// <summary>
+		/// Amount of mana
+		/// </summary>
+		protected int m_mana;
 		/// <summary>
 		/// Amount of endurance
 		/// </summary>
 		protected int m_endurance;
-		/// <summary>
-		/// Maximum value that can be in m_endurance
-		/// </summary>
-		protected int m_maxEndurance;
 
 		/// <summary>
 		/// Gets/sets the object health
@@ -2536,6 +2539,9 @@ namespace DOL.GS
 			set
 			{
 				int maxHealth = MaxHealth;
+
+				if (m_health > maxHealth)
+					m_health = maxHealth;
 
 				if (value >= maxHealth)
 				{
@@ -2556,117 +2562,53 @@ namespace DOL.GS
 			}
 		}
 
-		public override int MaxHealth
-		{
-			get {	return GetModified(eProperty.MaxHealth); }
-		}
+		public override int MaxHealth => GetModified(eProperty.MaxHealth);
 
 		public virtual int Mana
 		{
-			get
-			{
-				return m_mana;
-			}
+			get => m_mana;
 			set
 			{
-				int maxmana = MaxMana;
-				m_mana = Math.Min(value, maxmana);
-				m_mana = Math.Max(m_mana, 0);
-				if (IsAlive && (m_mana < maxmana || (this is GamePlayer && ((GamePlayer)this).CharacterClass.ID == (int)eCharacterClass.Vampiir)
-				                || (this is GamePlayer && ((GamePlayer)this).CharacterClass.ID > 59 && ((GamePlayer)this).CharacterClass.ID < 63)))
-				{
+				int maxMana = MaxMana;
+				m_mana = Math.Clamp(value, 0, maxMana);
+
+				if (IsAlive && (m_mana < maxMana || IsSpecialClass(this as GamePlayer)))
 					StartPowerRegeneration();
+
+				static bool IsSpecialClass(GamePlayer player)
+				{
+					if (player == null)
+						return false;
+
+					int classId = player.CharacterClass.ID;
+					return (eCharacterClass) classId is eCharacterClass.Vampiir || (classId > 59 && classId < 63);
 				}
 			}
 		}
 
-		public virtual int MaxMana
-		{
-			get
-			{
-				return GetModified(eProperty.MaxMana);
-			}
-		}
+		public virtual int MaxMana => GetModified(eProperty.MaxMana);
+		public virtual byte ManaPercent => (byte) (MaxMana <= 0 ? 0 : (Mana * 100 / MaxMana));
 
-		public virtual byte ManaPercent
-		{
-			get
-			{
-				return (byte)(MaxMana <= 0 ? 0 : ((Mana * 100) / MaxMana));
-			}
-		}
-
-		/// <summary>
-		/// Gets/sets the object endurance
-		/// </summary>
 		public virtual int Endurance
 		{
-			get { return m_endurance; }
+			get => m_endurance;
 			set
 			{
-				m_endurance = Math.Min(value, m_maxEndurance);
-				m_endurance = Math.Max(m_endurance, 0);
-				if (IsAlive && m_endurance < m_maxEndurance)
-				{
+				int maxEndurance = MaxEndurance;
+				m_endurance = Math.Clamp(value, 0, maxEndurance);
+
+				if (IsAlive && m_endurance < maxEndurance)
 					StartEnduranceRegeneration();
-				}
 			}
 		}
 
-		/// <summary>
-		/// Gets or sets the maximum endurance of this living
-		/// </summary>
-		public virtual int MaxEndurance
-		{
-			get { return m_maxEndurance; }
-			set
-			{
-				m_maxEndurance = value;
-				Endurance = Endurance; //cut extra end points if there are any or start regeneration
-			}
-		}
+		public virtual int MaxEndurance => GetModified(eProperty.Fatigue);
+		public virtual byte EndurancePercent => (byte) (MaxEndurance <= 0 ? 0 : (Endurance * 100 / MaxEndurance));
 
-		/// <summary>
-		/// Gets the endurance in percent of maximum
-		/// </summary>
-		public virtual byte EndurancePercent
-		{
-			get
-			{
-				return (byte)(MaxEndurance <= 0 ? 0 : ((Endurance * 100) / MaxEndurance));
-			}
-		}
+		public virtual int Concentration => 0;
+		public virtual int MaxConcentration => 0;
+		public virtual byte ConcentrationPercent => (byte) (MaxConcentration <= 0 ? 0 : (Concentration * 100 / MaxConcentration));
 
-		/// <summary>
-		/// Gets/sets the object concentration
-		/// </summary>
-		public virtual int Concentration
-		{
-			get { return 0; }
-		}
-
-		/// <summary>
-		/// Gets/sets the object maxconcentration
-		/// </summary>
-		public virtual int MaxConcentration
-		{
-			get { return 0; }
-		}
-
-		/// <summary>
-		/// Gets the concentration in percent of maximum
-		/// </summary>
-		public virtual byte ConcentrationPercent
-		{
-			get
-			{
-				return (byte)(MaxConcentration <= 0 ? 0 : ((Concentration * 100) / MaxConcentration));
-			}
-		}
-
-		/// <summary>
-		/// Cancels all concentration effects by this living and on this living
-		/// </summary>
 		public void CancelAllConcentrationEffects()
 		{
 			// Cancel conc spells.
@@ -2677,8 +2619,8 @@ namespace DOL.GS
 				effect.Stop(false);
 		}
 
-        #endregion
-        #region Speed/Heading/Target/GroundTarget/GuildName/SitState/Level
+		#endregion
+		#region Speed/Heading/Target/GroundTarget/GuildName/SitState/Level
 
 		/// <summary>
 		/// Holds the Living's Coordinate inside the current Region
@@ -2755,17 +2697,29 @@ namespace DOL.GS
 		#region Movement
 		public virtual void UpdateHealthManaEndu()
 		{
-			if (IsAlive)
-			{
-				if (Health < MaxHealth) StartHealthRegeneration();
-				else if (Health > MaxHealth) Health = MaxHealth;
+			if (!IsAlive)
+				return;
 
-				if (Mana < MaxMana) StartPowerRegeneration();
-				else if (Mana > MaxMana) Mana = MaxMana;
+			int maxHealth = MaxHealth;
 
-				if (Endurance < MaxEndurance) StartEnduranceRegeneration();
-				else if (Endurance > MaxEndurance) Endurance = MaxEndurance;
-			}
+			if (Health < maxHealth)
+				StartHealthRegeneration();
+			else if (Health > maxHealth)
+				Health = maxHealth;
+
+			int maxMana = MaxMana;
+
+			if (Mana < maxMana)
+				StartPowerRegeneration();
+			else if (Mana > maxMana)
+				Mana = maxMana;
+
+			int maxEndurance = MaxEndurance;
+
+			if (Endurance < maxEndurance)
+				StartEnduranceRegeneration();
+			else if (Endurance > maxEndurance)
+				Endurance = maxEndurance;
 		}
 
 		public virtual short CurrentSpeed
@@ -3755,7 +3709,6 @@ namespace DOL.GS
 			m_health = 1;
 			m_mana = 1;
 			m_endurance = 1;
-			m_maxEndurance = 1;
 		}
 	}
 }

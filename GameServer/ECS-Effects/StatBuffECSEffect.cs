@@ -34,6 +34,7 @@ namespace DOL.GS
             }
 
             // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
+            // This will also update health, endurance, and power if they're above their max amount.
             Owner.StartHealthRegeneration();
             Owner.StartEnduranceRegeneration();
             Owner.StartPowerRegeneration();
@@ -63,6 +64,12 @@ namespace DOL.GS
                 foreach (eProperty property in EffectService.GetPropertiesFromEffect(EffectType))
                     ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, true);
             }
+
+            // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
+            // This will also update health, endurance, and power if they're above their max amount.
+            Owner.StartHealthRegeneration();
+            Owner.StartEnduranceRegeneration();
+            Owner.StartPowerRegeneration();
 
             // "Your agility returns to normal."
             // "{0} loses their graceful edge.""

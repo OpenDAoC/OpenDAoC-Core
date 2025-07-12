@@ -2487,11 +2487,12 @@ namespace DOL.GS
 
         protected override int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
         {
-            if (Health < MaxHealth)
-                ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationAmount));
+            int maxHealth = MaxHealth;
 
-            if (Health >= MaxHealth)
+            if (Health >= maxHealth)
             {
+                Health = maxHealth;
+
                 lock (XpGainersLock)
                 {
                     m_xpGainers.Clear();
@@ -2499,6 +2500,8 @@ namespace DOL.GS
 
                 return 0;
             }
+
+            ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationAmount));
 
             if (InCombat)
                 return HealthRegenerationPeriod * 2;
@@ -2511,45 +2514,49 @@ namespace DOL.GS
 
         protected override int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
         {
+            int maxEndurance = MaxEndurance;
             bool sprinting = IsSprinting;
 
-            if (Endurance < MaxEndurance || sprinting)
+            if (Endurance >= maxEndurance)
             {
-                int regen = GetModified(eProperty.EnduranceRegenerationAmount);
-                int endChant = GetModified(eProperty.FatigueConsumption);
-                ECSGameEffect charge = EffectListService.GetEffectOnTarget(this, eEffect.Charge);
-                int longWind = 5;
+                Endurance = maxEndurance;
 
-                if (sprinting && IsMoving)
-                {
-                    if (charge is null)
-                    {
-                        AtlasOF_LongWindAbility raLongWind = GetAbility<AtlasOF_LongWindAbility>();
-
-                        if (raLongWind != null)
-                            longWind -= raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100;
-
-                        regen -= longWind;
-
-                        if (endChant > 1)
-                            regen = (int) Math.Ceiling(regen * endChant * 0.01);
-
-                        if (Endurance + regen > MaxEndurance - longWind)
-                            regen -= Endurance + regen - (MaxEndurance - longWind);
-                    }
-                }
-
-                if (regen != 0)
-                    ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
+                if (!sprinting)
+                    return 0;
             }
+
+            int regen = GetModified(eProperty.EnduranceRegenerationAmount);
+            int endChant = GetModified(eProperty.FatigueConsumption);
+            ECSGameEffect charge = EffectListService.GetEffectOnTarget(this, eEffect.Charge);
+            int longWind = 5;
+
+            if (sprinting && IsMoving)
+            {
+                if (charge is null)
+                {
+                    AtlasOF_LongWindAbility raLongWind = GetAbility<AtlasOF_LongWindAbility>();
+
+                    if (raLongWind != null)
+                        longWind -= raLongWind.GetAmountForLevel(CalculateSkillLevel(raLongWind)) * 5 / 100;
+
+                    regen -= longWind;
+
+                    if (endChant > 1)
+                        regen = (int) Math.Ceiling(regen * endChant * 0.01);
+
+                    if (Endurance + regen > maxEndurance - longWind)
+                        regen -= Endurance + regen - (maxEndurance - longWind);
+                }
+            }
+
+            if (regen != 0)
+                ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
 
             if (sprinting)
             {
                 if (Endurance - 5 <= 0)
                     Sprint(false);
             }
-            else if (Endurance >= MaxEndurance)
-                return 0;
 
             ushort rate = EnduranceRegenerationPeriod;
 
@@ -2564,26 +2571,18 @@ namespace DOL.GS
         /// </summary>
         public override int Health
         {
-            get { return DBCharacter != null ? DBCharacter.Health : base.Health; }
+            get => DBCharacter != null ? DBCharacter.Health : base.Health;
             set
             {
-                value = Math.Clamp(value, 0, MaxHealth);
-                //If it is already set, don't do anything
-                if (Health == value)
-                {
-                    base.Health = value; //needed to start regeneration
-                    return;
-                }
-
                 int oldPercent = HealthPercent;
-                if (DBCharacter != null)
-                    DBCharacter.Health = value;
                 base.Health = value;
+
+                if (DBCharacter != null)
+                    DBCharacter.Health = base.Health;
 
                 if (oldPercent != HealthPercent)
                 {
-                    if (Group != null)
-                        Group.UpdateMember(this, false, false);
+                    Group?.UpdateMember(this, false, false);
                     UpdatePlayerStatus();
                 }
             }
@@ -2616,13 +2615,7 @@ namespace DOL.GS
             return Math.Max(1, (int)hp4);
         }
 
-        public override byte HealthPercentGroupWindow
-        {
-            get
-            {
-                return CharacterClass.HealthPercentGroupWindow;
-            }
-        }
+        public override byte HealthPercentGroupWindow => CharacterClass.HealthPercentGroupWindow;
 
         /// <summary>
         /// Calculate max mana for this player based on level and mana stat level
@@ -2658,109 +2651,49 @@ namespace DOL.GS
             return Math.Max(0, maxPower);
         }
 
-        /// <summary>
-        /// Gets/sets the object mana
-        /// </summary>
         public override int Mana
         {
-            get { return DBCharacter != null ? DBCharacter.Mana : base.Mana; }
+            get => DBCharacter != null ? DBCharacter.Mana : base.Mana;
             set
             {
-                value = Math.Min(value, MaxMana);
-                value = Math.Max(value, 0);
-                //If it is already set, don't do anything
-                if (Mana == value)
-                {
-                    base.Mana = value; //needed to start regeneration
-                    return;
-                }
                 int oldPercent = ManaPercent;
                 base.Mana = value;
+
                 if (DBCharacter != null)
                     DBCharacter.Mana = value;
+
                 if (oldPercent != ManaPercent)
                 {
-                    if (Group != null)
-                        Group.UpdateMember(this, false, false);
+                    Group?.UpdateMember(this, false, false);
                     UpdatePlayerStatus();
                 }
             }
         }
 
-        /// <summary>
-        /// Gets/sets the object max mana
-        /// </summary>
-        public override int MaxMana
-        {
-            get { return GetModified(eProperty.MaxMana); }
-        }
+        public override int MaxMana => base.MaxMana;
 
-        /// <summary>
-        /// Gets/sets the object endurance
-        /// </summary>
         public override int Endurance
         {
-            get { return DBCharacter != null ? DBCharacter.Endurance : base.Endurance; }
+            get => DBCharacter != null ? DBCharacter.Endurance : base.Endurance;
             set
             {
-                value = Math.Min(value, MaxEndurance);
-                value = Math.Max(value, 0);
-                //If it is already set, don't do anything
-                //if (Endurance == value)
-                //{
-                //    base.Endurance = value; //needed to start regeneration
-                //    return;
-                //}
-                //else
-                if (IsAlive && value < MaxEndurance)
-                    StartEnduranceRegeneration();
                 int oldPercent = EndurancePercent;
                 base.Endurance = value;
+
                 if (DBCharacter != null)
                     DBCharacter.Endurance = value;
+
                 if (oldPercent != EndurancePercent)
                 {
-                    //ogre: 1.69+ endurance is displayed on group window
-                    if (Group != null)
-                        Group.UpdateMember(this, false, false);
-                    //end ogre
+                    Group?.UpdateMember(this, false, false);
                     UpdatePlayerStatus();
                 }
             }
         }
 
-        /// <summary>
-        /// Gets/sets the objects maximum endurance
-        /// </summary>
-        public override int MaxEndurance
-        {
-            get { return GetModified(eProperty.Fatigue); }
-            set
-            {
-                //If it is already set, don't do anything
-                if (MaxEndurance == value)
-                    return;
-                base.MaxEndurance = value;
-                DBMaxEndurance = value;
-                UpdatePlayerStatus();
-            }
-        }
-
-        /// <summary>
-        /// Gets the concentration left
-        /// </summary>
-        public override int Concentration
-        {
-            get { return MaxConcentration - effectListComponent.UsedConcentration; }
-        }
-
-        /// <summary>
-        /// Gets the maximum concentration for this player
-        /// </summary>
-        public override int MaxConcentration
-        {
-            get { return GetModified(eProperty.MaxConcentration); }
-        }
+        public override int MaxEndurance => base.MaxEndurance;
+        public override int Concentration => MaxConcentration - effectListComponent.UsedConcentration;
+        public override int MaxConcentration => GetModified(eProperty.MaxConcentration);
 
         #region Calculate Fall Damage
 

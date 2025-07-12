@@ -5,8 +5,6 @@ using DOL.Database;
 using DOL.Events;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
-using DOL.GS.PropertyCalc;
-using DOL.GS.RealmAbilities;
 using DOL.GS.ServerProperties;
 
 namespace DOL.GS
@@ -96,17 +94,9 @@ namespace DOL.GS
 			get => base.Health;
 			set
 			{
-				value = Math.Min(value, MaxHealth);
-				value = Math.Max(value, 0);
-
-				if (Health == value)
-				{
-					base.Health = value; // Needed to start regeneration.
-					return;
-				}
-
 				int oldPercent = HealthPercent;
 				base.Health = value;
+
 				if (oldPercent != HealthPercent)
 				{
 					// Update pet health in group window.
