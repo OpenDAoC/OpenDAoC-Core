@@ -16,6 +16,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.StrengthConstitutionBuff)]
     public class StrengthConBuff : DualStatBuff
     {
+        public override bool BuffReceivesSpecBonus => true;
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.SpecBuff;
 
         public override void ApplyEffectOnTarget(GameLiving target)
@@ -38,6 +39,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DexterityQuicknessBuff)]
     public class DexterityQuiBuff : DualStatBuff
     {
+        public override bool BuffReceivesSpecBonus => true;
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.SpecBuff;
 
         public override void ApplyEffectOnTarget(GameLiving target)

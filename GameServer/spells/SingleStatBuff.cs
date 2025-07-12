@@ -9,6 +9,7 @@ namespace DOL.GS.Spells
     /// </summary>
     public abstract class SingleStatBuff(GameLiving caster, Spell spell, SpellLine line) : PropertyChangingSpell(caster, spell, line)
     {
+        public virtual bool BuffReceivesSpecBonus => false;
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
 
         protected override void SendUpdates(GameLiving target)
@@ -23,20 +24,11 @@ namespace DOL.GS.Spells
 
             if (SpellLine.KeyName is GlobalSpellsLines.Potions_Effects or GlobalSpellsLines.Item_Effects or GlobalSpellsLines.Combat_Styles_Effect or GlobalSpellsLines.Realm_Spells || Spell.Level <= 0)
                 effectiveness = 1.0;
-            else if (Spell.IsBuff)
-            {
-                if (playerCaster != null && playerCaster.CharacterClass.ClassType is not eClassType.ListCaster && (eCharacterClass) playerCaster.CharacterClass.ID is not eCharacterClass.Savage)
-                    effectiveness = CalculateEffectivenessFromSpec(playerCaster); // Non list caster buffs (savage excluded).
-                else
-                    effectiveness = 1.0; // List caster buffs or NPC.
-            }
-            else if (Spell.IsDebuff)
+            else if ((Spell.IsBuff && BuffReceivesSpecBonus) || Spell.IsDebuff)
             {
                 if (Caster is NecromancerPet necromancerPet && necromancerPet.Owner is GamePlayer playerOwner)
-                {
                     playerCaster = playerOwner;
-                    effectiveness = CalculateEffectivenessFromSpec(playerCaster);
-                }
+
                 if (playerCaster != null)
                     effectiveness = CalculateEffectivenessFromSpec(playerCaster);
                 else
@@ -85,6 +77,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.StrengthBuff)]
     public class StrengthBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override bool BuffReceivesSpecBonus => true;
         public override eProperty Property1 => eProperty.Strength;
 
         public override void ApplyEffectOnTarget(GameLiving target)
@@ -102,6 +95,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DexterityBuff)]
     public class DexterityBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override bool BuffReceivesSpecBonus => true;
         public override eProperty Property1 => eProperty.Dexterity;
 
         public override void ApplyEffectOnTarget(GameLiving target)
@@ -119,6 +113,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.ConstitutionBuff)]
     public class ConstitutionBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override bool BuffReceivesSpecBonus => true;
         public override eProperty Property1 => eProperty.Constitution;
 
         public override void ApplyEffectOnTarget(GameLiving target)
@@ -136,12 +131,15 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.ArmorFactorBuff)]
     public abstract class ArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override bool BuffReceivesSpecBonus => true;
         public override eProperty Property1 => eProperty.ArmorFactor;
     }
 
     [SpellHandler(eSpellType.BaseArmorFactorBuff)]
     public class BaseArmorFactorBuff(GameLiving caster, Spell spell, SpellLine line) : ArmorFactorBuff(caster, spell, line)
     {
+        // List caster AF buffs use their delve value as is.
+        public override bool BuffReceivesSpecBonus => Caster is GamePlayer player ? player.CharacterClass.ClassType is not eClassType.ListCaster : true;
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.BaseBuff;
     }
 
@@ -207,12 +205,14 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.AcuityBuff)]
     public class AcuityBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override bool BuffReceivesSpecBonus => true;
         public override eProperty Property1 => eProperty.Acuity;
     }
 
     [SpellHandler(eSpellType.QuicknessBuff)]
     public class QuicknessBuff(GameLiving caster, Spell spell, SpellLine line) : SingleStatBuff(caster, spell, line)
     {
+        public override bool BuffReceivesSpecBonus => true;
         public override eProperty Property1 => eProperty.Quickness;
     }
 

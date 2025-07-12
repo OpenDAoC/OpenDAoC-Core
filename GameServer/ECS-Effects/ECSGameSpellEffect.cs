@@ -123,7 +123,7 @@ namespace DOL.GS
             int effectiveValue = (int) (value * effectiveness);
 
             if (owner is GamePlayer player && player.UseDetailedCombatLog)
-                player.Out.SendMessage($"BonusCategory: {bonusCategory} | Property: {property}\nValue: {value} | Effectiveness: {effectiveness} | EffectiveValue: {effectiveValue}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                player.Out.SendMessage($"BonusCategory: {bonusCategory} | Property: {property}\nValue: {value:0.##} | Effectiveness: {effectiveness:0.##} | EffectiveValue: {effectiveValue}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
             GetPropertyIndexer(owner, bonusCategory)[property] += effectiveValue;
         }
