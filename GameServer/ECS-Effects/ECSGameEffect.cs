@@ -10,7 +10,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-    public readonly struct ECSGameEffectInitParams
+    public readonly ref struct ECSGameEffectInitParams
     {
         public readonly GameLiving Target { get; }
         public readonly int Duration { get; }
