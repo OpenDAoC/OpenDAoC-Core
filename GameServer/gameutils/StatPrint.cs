@@ -85,7 +85,7 @@ namespace DOL.GS
 
                 for (int i = averageTps.Count - 1; i >= 0; i--)
                 {
-                    string percent = $"{averageTps[i].Item2 / (10.0 / GameLoop.TickRate):0.0}%";
+                    string percent = $"{averageTps[i].Item2 / (10.0 / GameLoop.TickDuration):0.0}%";
                     int length = percent.Length;
                     stats.Append(percent);
 

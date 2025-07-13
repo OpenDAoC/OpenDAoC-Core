@@ -7,7 +7,7 @@ namespace DOL.GS
     public static class ServiceUtils
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private static long HalfTickRate => GameLoop.TickRate / 2;
+        private static long HalfTickDuration => GameLoop.TickDuration / 2;
 
         public static bool ShouldTick(long tickTime)
         {
@@ -17,7 +17,7 @@ namespace DOL.GS
             // 1. Increment the tick time by the tick interval (prevents drifting).
             // 2. Set the tick time to the current game loop time then add the tick interval (prevents issues if tick time isn't initialized properly).
             // For most services, drifting is inconsequential, so the second option is preferred.
-            return tickTime - GameLoop.GameLoopTime - HalfTickRate <= 0;
+            return tickTime - GameLoop.GameLoopTime - HalfTickDuration <= 0;
         }
 
         public static void HandleServiceException<T>(Exception exception, string serviceName, T entity, GameObject entityOwner) where T : class, IServiceObject

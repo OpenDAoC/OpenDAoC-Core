@@ -83,7 +83,7 @@ namespace DOL.GS
             if (timeDiff <= 0)
                 return;
 
-            timeDiff += GameLoop.TickRate;
+            timeDiff += GameLoop.TickDuration;
             bool distancedViolationDetected = false;
             long dx = _current.X - _previous.X;
             long dy = _current.Y - _previous.Y;

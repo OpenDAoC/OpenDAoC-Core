@@ -441,7 +441,7 @@ namespace DOL.GS
 
                 static TickObjectPool()
                 {
-                    DECAY_FACTOR = Math.Exp(-Math.Log(2) / (GameLoop.TickRate * HALF_LIFE / 1000.0));
+                    DECAY_FACTOR = Math.Exp(-Math.Log(2) / (GameLoop.TickDuration * HALF_LIFE / 1000.0));
                 }
 
                 public T GetForTick()

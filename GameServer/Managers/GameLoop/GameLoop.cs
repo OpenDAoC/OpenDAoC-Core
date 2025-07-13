@@ -21,7 +21,7 @@ namespace DOL.GS
         private static GameLoopStats _gameLoopStats;
         private static bool _running;
 
-        public static long TickRate { get; private set; }
+        public static long TickDuration { get; private set; }
         public static long GameLoopTime { get; private set; }
         public static string CurrentServiceTick { get; set; }
 
@@ -36,8 +36,8 @@ namespace DOL.GS
             if (Interlocked.CompareExchange(ref _running, true, false))
                 return false;
 
-            TickRate = Properties.GAME_LOOP_TICK_RATE;
-            _gameLoopStats = new([60000, 30000, 10000], 1000.0 / TickRate);
+            TickDuration = Properties.GAME_LOOP_TICK_RATE;
+            _gameLoopStats = new([60000, 30000, 10000], 1000.0 / TickDuration);
             _gameLoopThread = new Thread(new ThreadStart(Run))
             {
                 Name = THREAD_NAME,
@@ -159,7 +159,7 @@ namespace DOL.GS
 
             void Sleep()
             {
-                int sleepFor = (int) (TickRate - stopwatch.Elapsed.TotalMilliseconds);
+                int sleepFor = (int) (TickDuration - stopwatch.Elapsed.TotalMilliseconds);
                 int busyWaitThreshold = _busyWaitThreshold;
 
                 if (sleepFor >= busyWaitThreshold)
@@ -167,11 +167,11 @@ namespace DOL.GS
                 else
                     Thread.Yield();
 
-                if (TickRate > stopwatch.Elapsed.TotalMilliseconds)
+                if (TickDuration > stopwatch.Elapsed.TotalMilliseconds)
                 {
                     SpinWait spinWait = new();
 
-                    while (TickRate > stopwatch.Elapsed.TotalMilliseconds)
+                    while (TickDuration > stopwatch.Elapsed.TotalMilliseconds)
                         spinWait.SpinOnce(-1);
                 }
             }
@@ -183,7 +183,7 @@ namespace DOL.GS
                 stopwatch.Restart();
 
                 // In case the game loop is running faster than the tick rate. We don't want things to run faster than intended.
-                gameLoopTime += elapsedTime < TickRate ? elapsedTime : TickRate;
+                gameLoopTime += elapsedTime < TickDuration ? elapsedTime : TickDuration;
                 GameLoopTime = (long) gameLoopTime;
                 _gameLoopStats.RecordTick(totalElapsedTime);
             }

@@ -35,9 +35,9 @@ namespace DOL.GS
                 DayIncrement = Math.Max(1, dayIncrement); // Clients do odd things if we try to stop time.
                 _updateInterval = (int) (30000.0 / DayIncrement); // Aim for two updates per in-game minute to avoid breaking scripts expecting minute-accurate timings.
 
-                if (_updateInterval < GameLoop.TickRate && log.IsWarnEnabled)
+                if (_updateInterval < GameLoop.TickDuration && log.IsWarnEnabled)
                 {
-                    log.Warn($"The update interval ({_updateInterval}) had to be set to a value lower than the server tick rate ({GameLoop.TickRate}) when trying to ensure two updates happen per in-game minute. " +
+                    log.Warn($"The update interval ({_updateInterval}) had to be set to a value lower than the server tick duration ({GameLoop.TickDuration}) when trying to ensure two updates happen per in-game minute. " +
                              $"This may break scripts expecting minute-accurate timings. Consider using a lower day increment ({dayIncrement})\".");
                 }
 
