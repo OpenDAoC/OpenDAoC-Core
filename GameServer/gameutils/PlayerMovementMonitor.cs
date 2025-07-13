@@ -23,7 +23,6 @@ namespace DOL.GS
         private long _pausedUntil;                            // Time until which recording is paused after a teleport.
         private long _lastSpeedDecreaseTime;                  // Time when the last speed decrease was recorded, used to handle latency issues.
         private short _previousMaxSpeed;                      // Previous maximum speed of the player, used to determine if speed has decreased.
-        private long _previousTimestamp;                      // Timestamp of the last movement validation, used to adjust time differences between position samples.
 
         // Cached values to avoid recalculating player max speed too often.
         // This is a workaround for the fact that `GamePlayer.MaxSpeed` currently recalculates on every access.
@@ -74,25 +73,22 @@ namespace DOL.GS
 
         public void ValidateMovement()
         {
+            // We don't know when the position update was actually received, only when it was processed by the game loop.
+            // We account for processing delay uncertainty by adding a small buffer to the time difference, equal to one game loop tick.
+            // Ad a side effect, if the server is lagging, the speed hack detection becomes more lenient.
+
             long timeDiff = _current.Timestamp - _previous.Timestamp;
 
             // Skip if timestamps are invalid (should not happen).
             if (timeDiff <= 0)
                 return;
 
-            long timestamp = GameLoop.GetRealTime();
-
-            // Account for processing delay uncertainty.
-            // We don't know when the position update was actually received, only when it was processed by the game loop.
-            // However, we know how much time has passed since the last game loop tick, and we can be safe by assuming the previous packet was processed late.
-            // In practice, this means adding the difference between the current time and the previous time to the time difference.
-            timeDiff += timestamp - _previousTimestamp;
-            _previousTimestamp = timestamp;
+            timeDiff += GameLoop.TickRate;
             bool distancedViolationDetected = false;
             long dx = _current.X - _previous.X;
             long dy = _current.Y - _previous.Y;
             long squaredDistance = dx * dx + dy * dy;
-            double allowedMaxSpeed = CalculateAllowedMaxSpeed(_current, timestamp) + BASE_SPEED_TOLERANCE;
+            double allowedMaxSpeed = CalculateAllowedMaxSpeed(_current) + BASE_SPEED_TOLERANCE;
             double allowedMaxDistance = allowedMaxSpeed * timeDiff / 1000.0;
             double allowedMaxDistanceSquared = allowedMaxDistance * allowedMaxDistance;
 
@@ -101,7 +97,7 @@ namespace DOL.GS
 
             if (distancedViolationDetected)
             {
-                _resetCountersTime = timestamp + RESET_COUNTER_DELAY;
+                _resetCountersTime = _current.Timestamp + RESET_COUNTER_DELAY;
 
                 // Set the teleport position on the first speed violation.
                 if (_teleport.Timestamp == 0)
@@ -140,12 +136,12 @@ namespace DOL.GS
             _pausedUntil = GameLoop.GetRealTime() + LATENCY_BUFFER;
         }
 
-        private double CalculateAllowedMaxSpeed(PositionSample current, long timestamp)
+        private double CalculateAllowedMaxSpeed(PositionSample current)
         {
             double newerSpeed = current.MaxSpeed;
 
             // If within latency buffer after a speed decrease, allow previous max speed.
-            if (_lastSpeedDecreaseTime > 0 && (timestamp - _lastSpeedDecreaseTime) <= LATENCY_BUFFER)
+            if (_lastSpeedDecreaseTime > 0 && (current.Timestamp - _lastSpeedDecreaseTime) <= LATENCY_BUFFER)
                 return Math.Max(_previousMaxSpeed, newerSpeed);
 
             return newerSpeed;
