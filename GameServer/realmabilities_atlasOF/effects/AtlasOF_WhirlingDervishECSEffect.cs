@@ -4,7 +4,7 @@ namespace DOL.GS.Effects
 {
     public class AtlasOF_WhirlingDervishECSEffect : ECSGameAbilityEffect
     {
-        public AtlasOF_WhirlingDervishECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_WhirlingDervishECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.WhirlingDervish;

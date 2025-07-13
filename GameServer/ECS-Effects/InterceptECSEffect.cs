@@ -43,7 +43,7 @@ namespace DOL.GS
         }
         public override bool HasPositiveEffect => true;
 
-        public InterceptECSGameEffect(ECSGameEffectInitParams initParams, GameLiving source, GameLiving target) : base(initParams)
+        public InterceptECSGameEffect(in ECSGameEffectInitParams initParams, GameLiving source, GameLiving target) : base(initParams)
         {
             Source = source;
             Target = target;

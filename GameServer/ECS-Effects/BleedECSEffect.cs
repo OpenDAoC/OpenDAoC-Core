@@ -7,7 +7,7 @@ namespace DOL.GS
     {
         private int _nextTickDamage;
 
-        public BleedECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public BleedECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             _nextTickDamage = (int) SpellHandler.Spell.Damage;
             Start();

@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.Bladeturn)]
 	public class BladeturnSpellHandler : SpellHandler
 	{
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new BladeturnECSGameEffect(initParams);
         }

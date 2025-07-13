@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
 
         public DiseaseSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : base(caster, spell, spellLine) { }
 
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new DiseaseECSGameEffect(initParams, _critical);
         }

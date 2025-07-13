@@ -4,7 +4,7 @@ namespace DOL.GS.Effects
 {
     public class AtlasOF_JuggernautECSEffect : ECSGameAbilityEffect
     {
-        public AtlasOF_JuggernautECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public AtlasOF_JuggernautECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Juggernaut;
             Start();

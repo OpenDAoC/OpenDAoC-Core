@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.FocusShell)]
 	public class FocusShellHandler : SpellHandler
 	{
-		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return new FocusECSEffect(initParams);
 		}

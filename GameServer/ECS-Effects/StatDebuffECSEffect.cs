@@ -9,7 +9,7 @@ namespace DOL.GS
     {
         private bool _isForcedToSpecDebuff;
 
-        public StatDebuffECSEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        public StatDebuffECSEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
         {

@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DamageAdd)]
     public class DamageAddSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : AbstractDamageAddSpellHandler(caster, spell, spellLine)
     {
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new DamageAddECSEffect(initParams);
         }
@@ -65,7 +65,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DamageShield)]
     public class DamageShieldSpellHandler(GameLiving caster, Spell spell, SpellLine spellLine) : AbstractDamageAddSpellHandler(caster, spell, spellLine)
     {
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new DamageShieldECSEffect(initParams);
         }

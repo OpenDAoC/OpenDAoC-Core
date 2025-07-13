@@ -2,7 +2,7 @@ namespace DOL.GS.Effects
 {
     public class SpeedOfSoundECSEffect : ECSGameAbilityEffect
     {
-        public SpeedOfSoundECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public SpeedOfSoundECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.SpeedOfSound;
             Start();

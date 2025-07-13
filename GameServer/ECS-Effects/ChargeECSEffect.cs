@@ -6,7 +6,7 @@ namespace DOL.GS
 {
     public class ChargeECSGameEffect : ECSGameAbilityEffect
     {
-        public ChargeECSGameEffect(ECSGameEffectInitParams initParams)
+        public ChargeECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.Charge;

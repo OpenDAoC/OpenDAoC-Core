@@ -20,14 +20,14 @@ namespace DOL.GS
             Start();
         }
 
-        protected ECSImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        protected ECSImmunityEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
     }
 
     public abstract class NpcImmunityEffect : ECSImmunityEffect
     {
         private int _count = 1;
 
-        protected NpcImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        protected NpcImmunityEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             Owner = initParams.Target;
             Duration = 60000;
@@ -57,7 +57,7 @@ namespace DOL.GS
 
     public class NpcStunImmunityEffect : NpcImmunityEffect
     {
-        public NpcStunImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public NpcStunImmunityEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.NPCStunImmunity;
         }
@@ -65,7 +65,7 @@ namespace DOL.GS
 
     public class NpcMezImmunityEffect : NpcImmunityEffect
     {
-        public NpcMezImmunityEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public NpcMezImmunityEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.NPCMezImmunity;
         }

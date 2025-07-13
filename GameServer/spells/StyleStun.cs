@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.StyleStun)]
 	public class StyleStun : StunSpellHandler
 	{
-		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return new StunECSGameEffect(initParams);
 		}

@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class SavageBuffECSGameEffect : StatBuffECSEffect
     {
-        public SavageBuffECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        public SavageBuffECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
         {

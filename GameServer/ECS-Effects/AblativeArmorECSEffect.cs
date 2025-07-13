@@ -4,7 +4,7 @@
     {
         public int RemainingValue { get; set; }
 
-        public AblativeArmorECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public AblativeArmorECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             RemainingValue = (int)SpellHandler.Spell.Value;
         }

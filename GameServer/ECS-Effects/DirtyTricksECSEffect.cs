@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class DirtyTricksECSGameEffect : ECSGameAbilityEffect
     {
-        public DirtyTricksECSGameEffect(ECSGameEffectInitParams initParams)
+        public DirtyTricksECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.DirtyTricks;
@@ -59,7 +59,7 @@ namespace DOL.GS
 {
     public class DirtyTricksDetrimentalECSGameEffect : ECSGameAbilityEffect
     {
-        public DirtyTricksDetrimentalECSGameEffect(ECSGameEffectInitParams initParams)
+        public DirtyTricksDetrimentalECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.DirtyTricksDetrimental;

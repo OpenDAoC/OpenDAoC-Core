@@ -49,7 +49,7 @@ namespace DOL.GS.Spells
             }
         }
 
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new StatBuffECSEffect(initParams);
         }

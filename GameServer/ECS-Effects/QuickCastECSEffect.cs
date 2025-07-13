@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class QuickCastECSGameEffect : ECSGameAbilityEffect
     {
-        public QuickCastECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public QuickCastECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.QuickCast;
             Start();

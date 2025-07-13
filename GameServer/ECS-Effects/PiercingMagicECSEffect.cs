@@ -2,7 +2,7 @@
 {
     public class PiercingMagicECSGameEffect : ECSGameSpellEffect
     {
-        public PiercingMagicECSGameEffect(ECSGameEffectInitParams initParams)
+        public PiercingMagicECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.PiercingMagic;

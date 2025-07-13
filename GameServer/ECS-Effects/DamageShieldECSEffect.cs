@@ -7,7 +7,7 @@ namespace DOL.GS
     {
         private CombatCheckTimer _combatCheckTimer;
 
-        public DamageShieldECSEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        public DamageShieldECSEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
         {

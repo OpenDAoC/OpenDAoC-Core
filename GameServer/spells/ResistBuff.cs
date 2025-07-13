@@ -5,7 +5,7 @@ namespace DOL.GS.Spells
     /// </summary>
     public abstract class AbstractResistBuff(GameLiving caster, Spell spell, SpellLine line) : PropertyChangingSpell(caster, spell, line)
     {
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new StatBuffECSEffect(initParams);
         }

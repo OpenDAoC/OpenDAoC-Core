@@ -23,7 +23,7 @@ namespace DOL.GS
         }
         public override bool HasPositiveEffect => true;
 
-        public EngageECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public EngageECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Engage;
             Start();

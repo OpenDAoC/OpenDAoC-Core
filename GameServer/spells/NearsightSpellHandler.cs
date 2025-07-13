@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.Nearsight)]
 	public class NearsightSpellHandler : ImmunityEffectSpellHandler
 	{
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new NearsightECSGameEffect(initParams);
         }

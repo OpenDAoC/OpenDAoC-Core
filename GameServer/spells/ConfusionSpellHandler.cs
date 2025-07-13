@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 
         public List<GameLiving> targetList = [];
 
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new ConfusionECSGameEffect(initParams);
         }

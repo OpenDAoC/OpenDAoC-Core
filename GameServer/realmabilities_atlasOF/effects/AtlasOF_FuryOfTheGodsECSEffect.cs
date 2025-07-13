@@ -4,7 +4,7 @@ namespace DOL.GS.Effects
 {
     public class AtlasOF_FuryOfTheGodsECSEffect : DamageAddECSEffect
     {
-        public AtlasOF_FuryOfTheGodsECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_FuryOfTheGodsECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
         }

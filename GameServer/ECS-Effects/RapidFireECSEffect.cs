@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class RapidFireECSGameEffect : ECSGameAbilityEffect
     {
-        public RapidFireECSGameEffect(ECSGameEffectInitParams initParams)
+        public RapidFireECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.RapidFire;

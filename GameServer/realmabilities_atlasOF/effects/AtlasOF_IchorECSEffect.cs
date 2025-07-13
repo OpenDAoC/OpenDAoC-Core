@@ -6,7 +6,7 @@ namespace DOL.GS.Effects
     public class AtlasOF_IchorECSEffect : ECSGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_IchorECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_IchorECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.Ichor;

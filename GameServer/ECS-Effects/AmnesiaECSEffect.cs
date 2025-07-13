@@ -2,7 +2,7 @@
 {
     public class AmnesiaECSEffect : ECSGameSpellEffect
     {
-        public AmnesiaECSEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        public AmnesiaECSEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
         {

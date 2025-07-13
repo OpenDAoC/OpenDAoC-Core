@@ -3,7 +3,7 @@ namespace DOL.GS.Effects
     // It looks like the real name should be "Strike the Soul", but renaming it requires updating the database.
     public class StrikingTheSoulECSEffect : ECSGameAbilityEffect
     {
-        public StrikingTheSoulECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public StrikingTheSoulECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.StrikingTheSoul;
             Start();

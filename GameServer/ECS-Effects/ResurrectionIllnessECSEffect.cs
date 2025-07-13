@@ -2,7 +2,7 @@
 {
     public class ResurrectionIllnessECSGameEffect : ECSGameSpellEffect
     {
-        public ResurrectionIllnessECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public ResurrectionIllnessECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             if (Owner is not GamePlayer player)
                 return;

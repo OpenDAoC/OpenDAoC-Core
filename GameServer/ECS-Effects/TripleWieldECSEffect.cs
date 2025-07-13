@@ -9,7 +9,7 @@ namespace DOL.GS
         public override string Name => LanguageMgr.GetTranslation(Owner is GamePlayer playerOwner ? playerOwner.Client : null, "Effects.TripleWieldEffect.Name");
         public override bool HasPositiveEffect => true;
 
-        public TripleWieldECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public TripleWieldECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.TripleWield;
             Start();

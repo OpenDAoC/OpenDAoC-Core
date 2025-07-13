@@ -6,7 +6,7 @@ namespace DOL.GS
     {
         private bool _critical;
 
-        public DiseaseECSGameEffect(ECSGameEffectInitParams initParams, bool critical) : base(initParams)
+        public DiseaseECSGameEffect(in ECSGameEffectInitParams initParams, bool critical) : base(initParams)
         {
             _critical = critical;
         }

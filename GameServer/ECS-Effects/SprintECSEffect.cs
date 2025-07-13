@@ -6,7 +6,7 @@ namespace DOL.GS
 {
     public class SprintECSGameEffect : ECSGameAbilityEffect
     {
-        public SprintECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) 
+        public SprintECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams) 
         {
             EffectType = eEffect.Sprint;
             NextTick = GameLoop.GameLoopTime + 1;

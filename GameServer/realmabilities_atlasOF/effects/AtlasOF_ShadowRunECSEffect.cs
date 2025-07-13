@@ -5,7 +5,7 @@ namespace DOL.GS.Effects
     public class AtlasOF_ShadowRunECSEffect : ECSGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_ShadowRunECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_ShadowRunECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.ShadowRun;

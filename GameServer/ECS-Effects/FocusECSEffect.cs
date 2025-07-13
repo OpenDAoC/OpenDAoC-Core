@@ -2,7 +2,7 @@
 {
     public class FocusECSEffect : ECSGameSpellEffect
     {
-        public FocusECSEffect(ECSGameEffectInitParams initParams)
+        public FocusECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams) { }
 
         public override void OnStartEffect()

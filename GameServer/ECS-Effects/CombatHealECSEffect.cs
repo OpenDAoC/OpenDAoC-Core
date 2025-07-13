@@ -2,7 +2,7 @@
 {
     public class CombatHealECSEffect : ECSGameSpellEffect
     {
-        public CombatHealECSEffect(ECSGameEffectInitParams initParams) : base(initParams) 
+        public CombatHealECSEffect(in ECSGameEffectInitParams initParams) : base(initParams) 
         {
             NextTick = StartTick;
         }

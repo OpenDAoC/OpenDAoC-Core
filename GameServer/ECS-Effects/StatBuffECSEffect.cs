@@ -4,7 +4,7 @@ namespace DOL.GS
 {
     public class StatBuffECSEffect : ECSGameSpellEffect
     {
-        public StatBuffECSEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        public StatBuffECSEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
         {

@@ -8,7 +8,7 @@ namespace DOL.GS.Effects
         private const int RANGE = 1500;
         private int _heal;
 
-        public AmelioratingMelodiesECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public AmelioratingMelodiesECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.AmelioratingMelodies;
             PulseFreq = 1500; // 1.5s. Effect lasts 30s so that is 20 ticks.

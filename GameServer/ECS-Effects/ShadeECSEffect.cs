@@ -9,7 +9,7 @@ namespace DOL.GS
         public override string Name => LanguageMgr.GetTranslation(OwnerPlayer.Client, "Effects.ShadeEffect.Name");
         public override bool HasPositiveEffect => false;
 
-        public ShadeECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public ShadeECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Shade;
             Start();

@@ -2,7 +2,7 @@
 {
     public class FacilitatePainworkingECSGameEffect : ECSGameSpellEffect
     {
-        public FacilitatePainworkingECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        public FacilitatePainworkingECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect() { }
 

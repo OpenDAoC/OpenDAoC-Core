@@ -4,7 +4,7 @@ namespace DOL.GS
 {
     public class PetECSGameEffect : ECSGameSpellEffect
     {
-        public PetECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        public PetECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStopEffect()
         {

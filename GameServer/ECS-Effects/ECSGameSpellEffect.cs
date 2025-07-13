@@ -21,7 +21,7 @@ namespace DOL.GS
         public override bool HasPositiveEffect => SpellHandler != null && SpellHandler.HasPositiveEffect;
         public bool IsAllowedToPulse => NextTick > 0 && PulseFreq > 0;
 
-        public ECSGameSpellEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public ECSGameSpellEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             SpellHandler = initParams.SpellHandler;
             Spell spell = SpellHandler.Spell;

@@ -18,7 +18,7 @@ namespace DOL.GS.Spells
 		public override string DebuffTypeName => GlobalConstants.DamageTypeToName(Spell.DamageType);
 		protected override bool IsDualComponentSpell => true;
 
-		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return new StatDebuffECSEffect(initParams);
 		}

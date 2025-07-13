@@ -11,7 +11,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.SpeedDecrease)]
 	public class SpeedDecreaseSpellHandler : UnbreakableSpeedDecreaseSpellHandler
 	{
-		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return new StatDebuffECSEffect(initParams);
 		}

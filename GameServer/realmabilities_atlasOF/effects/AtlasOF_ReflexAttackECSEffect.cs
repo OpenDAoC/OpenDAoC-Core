@@ -4,7 +4,7 @@ namespace DOL.GS.Effects
 {
     public class ReflexAttackECSEffect : ECSGameAbilityEffect
     {
-        public ReflexAttackECSEffect(ECSGameEffectInitParams initParams)
+        public ReflexAttackECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.ReflexAttack;

@@ -6,7 +6,7 @@ namespace DOL.GS.Effects
         public override string Name => "Bunker of Faith";
         public override bool HasPositiveEffect => true;
 
-        public BunkerOfFaithECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public BunkerOfFaithECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.ArmorAbsorptionBuff;
         }

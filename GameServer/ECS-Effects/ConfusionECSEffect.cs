@@ -7,7 +7,7 @@ namespace DOL.GS
 {
     public class ConfusionECSGameEffect : ECSGameSpellEffect
     {
-        public ConfusionECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public ConfusionECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             NextTick = 1;
             PulseFreq = 6000;

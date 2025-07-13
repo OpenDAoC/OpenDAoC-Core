@@ -2,7 +2,7 @@ namespace DOL.GS
 {
     public class BladeturnECSGameEffect : ECSGameSpellEffect
     {
-        public BladeturnECSGameEffect(ECSGameEffectInitParams initParams)
+        public BladeturnECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams) { }
 
         public override void OnStartEffect()

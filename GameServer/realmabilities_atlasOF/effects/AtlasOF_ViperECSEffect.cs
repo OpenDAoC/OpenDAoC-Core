@@ -6,7 +6,7 @@ namespace DOL.GS.Effects
     public class AtlasOF_ViperECSEffect : ECSGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_ViperECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_ViperECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.Viper;

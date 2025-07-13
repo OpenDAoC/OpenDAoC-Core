@@ -4,7 +4,7 @@ namespace DOL.GS
 {
     public class NearsightECSGameEffect : ECSGameSpellEffect
     {
-        public NearsightECSGameEffect(ECSGameEffectInitParams initParams)
+        public NearsightECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             TriggersImmunity = true;

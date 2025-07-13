@@ -16,7 +16,7 @@ namespace DOL.GS.Spells
         public abstract string DebuffTypeName { get; }
         public override eBuffBonusCategory BonusCategory1 => eBuffBonusCategory.Debuff;
 
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new StatDebuffECSEffect(initParams);
         }

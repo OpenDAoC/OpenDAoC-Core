@@ -4,7 +4,7 @@
     {
         protected int _timeRemaining = -1;
 
-        public NecromancerShadeECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        public NecromancerShadeECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override long GetRemainingTimeForClient()
         {

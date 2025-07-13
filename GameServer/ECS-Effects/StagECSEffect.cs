@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class StagECSGameEffect : ECSGameAbilityEffect
     {
-        public StagECSGameEffect(ECSGameEffectInitParams initParams, int level)
+        public StagECSGameEffect(in ECSGameEffectInitParams initParams, int level)
             : base(initParams)
         {
             m_level = level;

@@ -17,7 +17,7 @@ namespace DOL.GS.Spells
 			return spellDamage > 100 ? 100 : spellDamage < 1 ? 25 : spellDamage;
 		}
 
-		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return new AblativeArmorECSGameEffect(initParams);
 		}

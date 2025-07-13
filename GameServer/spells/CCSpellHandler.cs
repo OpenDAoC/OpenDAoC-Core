@@ -134,7 +134,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Mesmerize)]
     public class MesmerizeSpellHandler : AbstractCCSpellHandler
     {
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new MezECSGameEffect(initParams);
         }
@@ -222,7 +222,7 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.Stun)]
     public class StunSpellHandler : AbstractCCSpellHandler
     {
-        public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
             return new StunECSGameEffect(initParams);
         }

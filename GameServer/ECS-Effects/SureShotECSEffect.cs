@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class SureShotECSGameEffect : ECSGameAbilityEffect
     {
-        public SureShotECSGameEffect(ECSGameEffectInitParams initParams)
+        public SureShotECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.Berserk;

@@ -8,7 +8,7 @@ namespace DOL.GS.Spells
 	{
 		GameLiving Target { get; }
 
-		ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams);
+		ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams);
 
 		/// <summary>
 		/// Starts the spell, without displaying cast message etc.

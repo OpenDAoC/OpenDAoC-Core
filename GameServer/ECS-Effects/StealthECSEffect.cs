@@ -6,7 +6,7 @@ namespace DOL.GS
 {
     public class StealthECSGameEffect : ECSGameAbilityEffect
     {
-        public StealthECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public StealthECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Stealth;
             Start();

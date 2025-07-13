@@ -5,7 +5,7 @@ namespace DOL.GS.Effects
     public class AtlasOF_TrueSightECSEffect : ECSGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_TrueSightECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_TrueSightECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.TrueSight;

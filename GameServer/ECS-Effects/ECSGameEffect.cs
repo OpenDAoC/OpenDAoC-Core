@@ -73,7 +73,7 @@ namespace DOL.GS
 
         public ECSGameEffect() { }
 
-        public ECSGameEffect(ECSGameEffectInitParams initParams)
+        public ECSGameEffect(in ECSGameEffectInitParams initParams)
         {
             Owner = initParams.Target;
             Duration = initParams.Duration;

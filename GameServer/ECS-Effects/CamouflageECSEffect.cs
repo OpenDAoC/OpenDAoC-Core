@@ -5,7 +5,7 @@ namespace DOL.GS
 {
     public class CamouflageECSGameEffect : ECSGameAbilityEffect
     {
-        public CamouflageECSGameEffect(ECSGameEffectInitParams initParams)
+        public CamouflageECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.Camouflage;

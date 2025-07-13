@@ -9,7 +9,7 @@ namespace DOL.GS
 {
     public abstract class AbstractCrowdControlECSEffect : ECSGameSpellEffect
     {
-        public AbstractCrowdControlECSEffect(ECSGameEffectInitParams initParams)
+        public AbstractCrowdControlECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             if (Properties.IMMUNITY_TIMER_USE_ADAPTIVE)
@@ -67,7 +67,7 @@ namespace DOL.GS
     /// </summary>
     public class StunECSGameEffect : AbstractCrowdControlECSEffect
     {
-        public StunECSGameEffect(ECSGameEffectInitParams initParams)
+        public StunECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             if (initParams.SpellHandler.Caster is GameSummonedPet)
@@ -108,7 +108,7 @@ namespace DOL.GS
     /// </summary>
     public class MezECSGameEffect : AbstractCrowdControlECSEffect
     {
-        public MezECSGameEffect(ECSGameEffectInitParams initParams)
+        public MezECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             TriggersImmunity = true;

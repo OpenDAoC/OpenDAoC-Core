@@ -8,7 +8,7 @@ namespace DOL.GS
 {
     public class CharmECSGameEffect : ECSGameSpellEffect
     {
-        public CharmECSGameEffect(ECSGameEffectInitParams initParams) : base(initParams) { }
+        public CharmECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
         {

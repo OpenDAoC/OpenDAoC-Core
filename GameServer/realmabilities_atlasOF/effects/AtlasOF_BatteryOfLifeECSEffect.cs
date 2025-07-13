@@ -6,7 +6,7 @@ namespace DOL.GS.Effects
 {
     public class AtlasOF_BatteryOfLifeECSEffect : ECSGameAbilityEffect
     {
-        public AtlasOF_BatteryOfLifeECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public AtlasOF_BatteryOfLifeECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.BatteryOfLife;
             Start();

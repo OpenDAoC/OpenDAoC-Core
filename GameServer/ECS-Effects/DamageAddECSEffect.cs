@@ -2,7 +2,7 @@
 {
     public class DamageAddECSEffect : ECSGameSpellEffect
     {
-        public DamageAddECSEffect(ECSGameEffectInitParams initParams)
+        public DamageAddECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams) { }
 
         public override void OnStartEffect()

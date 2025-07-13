@@ -4,7 +4,7 @@ namespace DOL.GS
 {
     public class ProcECSGameEffect : ECSGameSpellEffect
     {
-        public ProcECSGameEffect(ECSGameEffectInitParams initParams)
+        public ProcECSGameEffect(in ECSGameEffectInitParams initParams)
             : base(initParams) { }
 
         public override void OnStartEffect()

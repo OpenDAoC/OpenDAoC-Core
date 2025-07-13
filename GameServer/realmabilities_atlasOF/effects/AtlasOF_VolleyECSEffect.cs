@@ -37,7 +37,7 @@ namespace DOL.GS.Effects
         private bool _isReadyToShoot;
         ConcurrentDictionary<ECSGameTimer, WeaponActionData> _weaponActionData = new();
 
-        public AtlasOF_VolleyECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public AtlasOF_VolleyECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Volley;
             Start();

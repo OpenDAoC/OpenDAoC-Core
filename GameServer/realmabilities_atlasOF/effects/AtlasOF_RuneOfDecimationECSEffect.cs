@@ -6,7 +6,7 @@ namespace DOL.GS.Effects
 {
     public class AtlasOF_RuneOfDecimationECSEffect : ECSGameSpellEffect
     {
-        public AtlasOF_RuneOfDecimationECSEffect(ECSGameEffectInitParams initParams) : base(initParams)
+        public AtlasOF_RuneOfDecimationECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.RuneOfDecimation;
             NextTick = 1;

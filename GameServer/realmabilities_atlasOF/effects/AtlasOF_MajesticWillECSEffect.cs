@@ -5,7 +5,7 @@ namespace DOL.GS.Effects
     public class AtlasOF_MajesticWillECSEffect : ECSGameAbilityEffect
     {
         public new SpellHandler SpellHandler;
-        public AtlasOF_MajesticWillECSEffect(ECSGameEffectInitParams initParams)
+        public AtlasOF_MajesticWillECSEffect(in ECSGameEffectInitParams initParams)
             : base(initParams)
         {
             EffectType = eEffect.MajesticWill;

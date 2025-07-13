@@ -274,7 +274,7 @@ namespace DOL.GS.Spells
 
 		#endregion
 
-		public virtual ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+		public virtual ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return new ECSGameSpellEffect(initParams);
 		}

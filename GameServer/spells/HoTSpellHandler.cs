@@ -9,7 +9,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.HealOverTime)]
 	public class HoTSpellHandler : SpellHandler
 	{
-		public override ECSGameSpellEffect CreateECSEffect(ECSGameEffectInitParams initParams)
+		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
 			return new HealOverTimeECSGameEffect(initParams);
 		}
