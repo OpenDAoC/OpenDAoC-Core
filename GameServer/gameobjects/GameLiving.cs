@@ -1399,13 +1399,6 @@ namespace DOL.GS
             if (this is GamePlayer player)
                 player.Stealth(false);
 
-            // Cancel SpeedOfTheRealm (Hastener Speed)
-            foreach (ECSGameSpellEffect effect in effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
-            {
-                if (effect.SpellHandler.Spell.ID is 2430)
-                    effect.Stop();
-            }
-
             if (ad.Damage > 0)
                 TryCancelMovementSpeedBuffs(true);
 
@@ -1464,7 +1457,9 @@ namespace DOL.GS
             {
                 if (attackerAlive)
                 {
-                    HandleMovementSpeedEffectsOnAttacked(ad);
+                    // Cancel movement speed buffs when attacked only if damaged
+                    if (ad.Damage > 0)
+                        TryCancelMovementSpeedBuffs(false);
 
                     if (ad.AttackType is not eAttackType.Spell || ad.Damage != 0)
                     {
@@ -1619,23 +1614,6 @@ namespace DOL.GS
             }
 
             return removeMez || removeSnare || removeMovementSpeedDebuff;
-        }
-
-        public virtual void HandleMovementSpeedEffectsOnAttacked(AttackData ad)
-        {
-            if (ad == null)
-                return;
-
-            // Cancel SpeedOfTheRealm (Hastener Speed)
-            foreach (ECSGameSpellEffect effect in effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff))
-            {
-                if (effect.SpellHandler.Spell.ID is 2430)
-                    effect.Stop();
-            }
-
-            // Cancel movement speed buffs when attacked only if damaged
-            if (ad.Damage > 0)
-                TryCancelMovementSpeedBuffs(false);
         }
 
         public virtual void TryCancelMovementSpeedBuffs(bool isAttacker)
