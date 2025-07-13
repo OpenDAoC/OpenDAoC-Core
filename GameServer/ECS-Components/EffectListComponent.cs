@@ -254,7 +254,7 @@ namespace DOL.GS
 
         public bool ContainsEffectForEffectType(eEffect effectType)
         {
-            return _effects.ContainsKey(effectType);
+            return _effects.TryGetValue(effectType, out var effects) && effects.Count > 0;
         }
 
         public void CancelAll()
