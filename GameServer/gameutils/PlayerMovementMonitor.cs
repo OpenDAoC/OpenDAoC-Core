@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace DOL.GS 
@@ -11,9 +12,8 @@ namespace DOL.GS
         private PositionSample _previous;                      // Previous position sample recorded.
         private PositionSample _current;                       // Current position sample being recorded.
         private PositionSample _teleport;                      // Position sample to use to teleport the player back to if a speed hack is detected.
-        private int _speedHackCount;                           // Counter for consecutive speed hack detections.
+        private readonly Queue<long> _violationTimestamps;     // Queue of timestamps for recent violations.
         private int _teleportCount;                            // Counter for consecutive teleports due to speed hacks.
-        private long _resetCountersTime;                       // Time when the counters were last reset, used to determine if they should be reset again.
         private long _pausedUntil;                             // Time until which recording is paused after a teleport.
         private long _lastSpeedDecreaseTime;                   // Time when the last speed decrease was recorded, used to handle latency issues.
         private short _previousMaxSpeed;                       // Previous maximum speed of the player, used to determine if speed has decreased.
@@ -24,15 +24,16 @@ namespace DOL.GS
         private short _cachedMaxSpeed;
         private long _cachedMaxSpeedTick;
 
-        public static int SpeedHackActionThreshold { get; set; } = 3; // Number of consecutive speed hack detections before action is taken.
-        public static int TeleportThreshold { get; set; } = 3;        // Number of consecutive teleports before kicking.
-        public static int BaseSpeedTolerance { get; set; } = 25;      // Base tolerance in units/second for measurement errors.
-        public static int LatencyBuffer { get; set; } = 650;          // Buffer time to account for latency when checking speed changes.
-        public static int ResetCounterDelay { get; set; } = 1250;     // Delay in milliseconds since the last speed hack detection to reset counters.
+        public static int ViolationThreshold { get; set; } = 3;           // Number of consecutive speed hack detections before action is taken.
+        public static int ViolationValidityDuration { get; set; } = 1000; // Duration in milliseconds for which speed hack violations are considered valid.
+        public static int TeleportThreshold { get; set; } = 3;            // Number of consecutive teleports before kicking.
+        public static int BaseSpeedTolerance { get; set; } = 25;          // Base tolerance in units/second for measurement errors.
+        public static int LatencyBuffer { get; set; } = 650;              // Buffer time to account for latency when checking speed changes.
 
         public PlayerMovementMonitor(GamePlayer player)
         {
             _player = player ?? throw new ArgumentNullException(nameof(player));
+            _violationTimestamps = new();
         }
 
         public void RecordPosition()
@@ -41,13 +42,6 @@ namespace DOL.GS
 
             if (_pausedUntil > timestamp)
                 return;
-
-            if (_teleport.Timestamp > 0 && _resetCountersTime <= timestamp)
-            {
-                _speedHackCount = 0;
-                _teleportCount = 0;
-                _teleport = default;
-            }
 
             short currentMaxSpeed = GetCachedPlayerMaxSpeed();
 
@@ -97,7 +91,7 @@ namespace DOL.GS
 
             if (distancedViolationDetected)
             {
-                _resetCountersTime = _current.Timestamp + ResetCounterDelay;
+                _violationTimestamps.Enqueue(_current.Timestamp);
 
                 // Set the teleport position on the first speed violation.
                 if (_teleport.Timestamp == 0)
@@ -115,7 +109,7 @@ namespace DOL.GS
                     }
                 }
 
-                if (++_speedHackCount >= SpeedHackActionThreshold)
+                if (GetAndUpdateValidViolationCount(_current.Timestamp) >= ViolationThreshold)
                 {
                     if (!_player.IsAllowedToFly && (ePrivLevel) _player.Client.Account.PrivLevel <= ePrivLevel.Player)
                     {
@@ -124,7 +118,7 @@ namespace DOL.GS
                         HandleSpeedHack(actualDistance, allowedMaxDistance, actualSpeed, allowedMaxSpeed);
                     }
 
-                    _speedHackCount = 0;
+                    _violationTimestamps.Clear();
                 }
             }
         }
@@ -145,6 +139,15 @@ namespace DOL.GS
                 return Math.Max(_previousMaxSpeed, newerSpeed);
 
             return newerSpeed;
+        }
+
+        private int GetAndUpdateValidViolationCount(long currentTimestamp)
+        {
+            // Remove expired violations from the front of the queue.
+            while (_violationTimestamps.Count > 0 && currentTimestamp - _violationTimestamps.Peek() > ViolationValidityDuration)
+                _violationTimestamps.Dequeue();
+
+            return _violationTimestamps.Count;
         }
 
         private void HandleSpeedHack(double actualDistance, double allowedMaxDistance, double actualSpeed, double allowedMaxSpeed)
