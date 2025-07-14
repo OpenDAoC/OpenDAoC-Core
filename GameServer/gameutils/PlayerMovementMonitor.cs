@@ -7,28 +7,28 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private const int SPEEDHACK_ACTION_THRESHOLD = 3;     // Number of consecutive speed hack detections before action is taken.
-        private const int TELEPORT_THRESHOLD = 3;             // Number of consecutive teleports before kicking.
-        private const int BASE_SPEED_TOLERANCE = 25;          // Base tolerance in units/second for measurement errors.
-        private const int LATENCY_BUFFER = 650;               // Buffer time to account for latency when checking speed changes.
-        private const int RESET_COUNTER_DELAY = 1250;         // Delay in milliseconds since the last speed hack detection to reset counters.
-
-        private readonly GamePlayer _player;                  // Player being monitored for movement and speed hacks.
-        private PositionSample _previous;                     // Previous position sample recorded.
-        private PositionSample _current;                      // Current position sample being recorded.
-        private PositionSample _teleport;                     // Position sample to use to teleport the player back to if a speed hack is detected.
-        private int _speedHackCount;                          // Counter for consecutive speed hack detections.
-        private int _teleportCount;                           // Counter for consecutive teleports due to speed hacks.
-        private long _resetCountersTime;                      // Time when the counters were last reset, used to determine if they should be reset again.
-        private long _pausedUntil;                            // Time until which recording is paused after a teleport.
-        private long _lastSpeedDecreaseTime;                  // Time when the last speed decrease was recorded, used to handle latency issues.
-        private short _previousMaxSpeed;                      // Previous maximum speed of the player, used to determine if speed has decreased.
+        private readonly GamePlayer _player;                   // Player being monitored for movement and speed hacks.
+        private PositionSample _previous;                      // Previous position sample recorded.
+        private PositionSample _current;                       // Current position sample being recorded.
+        private PositionSample _teleport;                      // Position sample to use to teleport the player back to if a speed hack is detected.
+        private int _speedHackCount;                           // Counter for consecutive speed hack detections.
+        private int _teleportCount;                            // Counter for consecutive teleports due to speed hacks.
+        private long _resetCountersTime;                       // Time when the counters were last reset, used to determine if they should be reset again.
+        private long _pausedUntil;                             // Time until which recording is paused after a teleport.
+        private long _lastSpeedDecreaseTime;                   // Time when the last speed decrease was recorded, used to handle latency issues.
+        private short _previousMaxSpeed;                       // Previous maximum speed of the player, used to determine if speed has decreased.
 
         // Cached values to avoid recalculating player max speed too often.
         // This is a workaround for the fact that `GamePlayer.MaxSpeed` currently recalculates on every access.
         // This assumes that the player's max speed does not change between calls to `RecordPosition` and `ValidateMovement`.
         private short _cachedMaxSpeed;
         private long _cachedMaxSpeedTick;
+
+        public static int SpeedHackActionThreshold { get; set; } = 3; // Number of consecutive speed hack detections before action is taken.
+        public static int TeleportThreshold { get; set; } = 3;        // Number of consecutive teleports before kicking.
+        public static int BaseSpeedTolerance { get; set; } = 25;      // Base tolerance in units/second for measurement errors.
+        public static int LatencyBuffer { get; set; } = 650;          // Buffer time to account for latency when checking speed changes.
+        public static int ResetCounterDelay { get; set; } = 1250;     // Delay in milliseconds since the last speed hack detection to reset counters.
 
         public PlayerMovementMonitor(GamePlayer player)
         {
@@ -88,7 +88,7 @@ namespace DOL.GS
             long dx = _current.X - _previous.X;
             long dy = _current.Y - _previous.Y;
             long squaredDistance = dx * dx + dy * dy;
-            double allowedMaxSpeed = CalculateAllowedMaxSpeed(_current) + BASE_SPEED_TOLERANCE;
+            double allowedMaxSpeed = CalculateAllowedMaxSpeed(_current) + BaseSpeedTolerance;
             double allowedMaxDistance = allowedMaxSpeed * timeDiff / 1000.0;
             double allowedMaxDistanceSquared = allowedMaxDistance * allowedMaxDistance;
 
@@ -97,7 +97,7 @@ namespace DOL.GS
 
             if (distancedViolationDetected)
             {
-                _resetCountersTime = _current.Timestamp + RESET_COUNTER_DELAY;
+                _resetCountersTime = _current.Timestamp + ResetCounterDelay;
 
                 // Set the teleport position on the first speed violation.
                 if (_teleport.Timestamp == 0)
@@ -115,7 +115,7 @@ namespace DOL.GS
                     }
                 }
 
-                if (++_speedHackCount >= SPEEDHACK_ACTION_THRESHOLD)
+                if (++_speedHackCount >= SpeedHackActionThreshold)
                 {
                     if (!_player.IsAllowedToFly && (ePrivLevel) _player.Client.Account.PrivLevel <= ePrivLevel.Player)
                     {
@@ -133,7 +133,7 @@ namespace DOL.GS
         {
             _previous = default;
             _current = default;
-            _pausedUntil = GameLoop.GetRealTime() + LATENCY_BUFFER;
+            _pausedUntil = GameLoop.GetRealTime() + LatencyBuffer;
         }
 
         private double CalculateAllowedMaxSpeed(PositionSample current)
@@ -141,7 +141,7 @@ namespace DOL.GS
             double newerSpeed = current.MaxSpeed;
 
             // If within latency buffer after a speed decrease, allow previous max speed.
-            if (_lastSpeedDecreaseTime > 0 && (current.Timestamp - _lastSpeedDecreaseTime) <= LATENCY_BUFFER)
+            if (_lastSpeedDecreaseTime > 0 && (current.Timestamp - _lastSpeedDecreaseTime) <= LatencyBuffer)
                 return Math.Max(_previousMaxSpeed, newerSpeed);
 
             return newerSpeed;
@@ -153,12 +153,12 @@ namespace DOL.GS
             if (_previous.Timestamp == 0)
                 return;
 
-            string action = _teleportCount >= TELEPORT_THRESHOLD ? "kick" : "teleport";
+            string action = _teleportCount >= TeleportThreshold ? "kick" : "teleport";
             string msg = BuildSpeedHackMessage(action, actualDistance, allowedMaxDistance, actualSpeed, allowedMaxSpeed, _teleportCount);
             GameServer.Instance.LogCheatAction(msg);
 
             // If we've teleported too many times consecutively, kick the player.
-            if (_teleportCount >= TELEPORT_THRESHOLD)
+            if (_teleportCount >= TeleportThreshold)
             {
                 _player.Out.SendPlayerQuit(true);
                 _player.SaveIntoDatabase();
