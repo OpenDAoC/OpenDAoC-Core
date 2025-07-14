@@ -578,8 +578,7 @@ namespace DOL.GS
                         else
                         {
                             AddEffectResult result = AddEffectResult.Failed;
-                            // foundIsOverwritableEffect is a bool for if we find an overwritable effect when looping over existing effects. Will be used to later to add effects that are not in same effect group.
-                            bool foundIsOverwritableEffect = false;
+                            bool foundConflictingEffect = false;
 
                             for (int i = 0; i < existingGameEffects.Count; i++)
                             {
@@ -587,10 +586,10 @@ namespace DOL.GS
                                 ISpellHandler existingSpellHandler = existingEffect.SpellHandler;
                                 Spell existingSpell = existingSpellHandler.Spell;
 
-                                // Check if existingEffect is overwritable by new effect.
-                                if (existingSpellHandler.IsOverwritable(effect) || effect.EffectType is eEffect.MovementSpeedDebuff)
+                                // Check if the existing effect is compatible with the new effect.
+                                if (existingSpellHandler.HasConflictingEffectWith(effect.SpellHandler) || effect.EffectType is eEffect.MovementSpeedDebuff)
                                 {
-                                    foundIsOverwritableEffect = true;
+                                    foundConflictingEffect = true;
 
                                     if (effect.EffectType is eEffect.Bladeturn)
                                     {
@@ -654,8 +653,8 @@ namespace DOL.GS
                                 }
                             }
 
-                            // No overwritable effects found that match new spell effect, so add it.
-                            if (!foundIsOverwritableEffect)
+                            // No incompatible effect found, so add the new one.
+                            if (!foundConflictingEffect)
                                 result = AddEffectResult.Added;
 
                             if (result is AddEffectResult.Failed)

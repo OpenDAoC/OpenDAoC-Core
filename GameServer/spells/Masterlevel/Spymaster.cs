@@ -27,7 +27,7 @@ namespace DOL.GS.Spells
             m_caster.Mana -= PowerCost(target);
             base.FinishSpellCast(target);
         }
-        public override bool IsOverwritable(ECSGameEffect compare)
+        public override bool HasConflictingEffectWith(ISpellHandler compare)
         {
             return false;
         }

@@ -3,7 +3,7 @@ namespace DOL.GS.Spells
 	[SpellHandler(eSpellType.Facilis)]
 	public class FacilisSpellHandler : SpellHandler
 	{
-		public override bool IsOverwritable(ECSGameEffect compare)
+		public override bool HasConflictingEffectWith(ISpellHandler compare)
 		{
 			return true;
 		}

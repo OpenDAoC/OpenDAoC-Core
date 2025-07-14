@@ -120,7 +120,7 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        public override bool IsOverwritable(ECSGameEffect compare)
+        public override bool HasConflictingEffectWith(ISpellHandler compare)
         {
             return false;
         }

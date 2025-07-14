@@ -45,19 +45,12 @@ namespace DOL.GS.Spells
 			return Spell.Duration * 5;
 		}
 
-		/// <summary>
-		/// Determines wether this spell is compatible with given spell
-		/// and therefore overwritable by better versions
-		/// spells that are overwritable cannot stack
-		/// </summary>
-		/// <param name="compare"></param>
-		/// <returns></returns>
-		public override bool IsOverwritable(ECSGameEffect compare)
+		public override bool HasConflictingEffectWith(ISpellHandler compare)
 		{
-			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
-				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
-			if (compare.SpellHandler.Spell.SpellType == eSpellType.Stun) return true;
-			return base.IsOverwritable(compare);
+			if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
+				return Spell.EffectGroup == compare.Spell.EffectGroup;
+			if (compare.Spell.SpellType == eSpellType.Stun) return true;
+			return base.HasConflictingEffectWith(compare);
 		}
 
 		// constructor

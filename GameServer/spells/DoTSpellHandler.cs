@@ -43,16 +43,9 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 
-		/// <summary>
-		/// Determines wether this spell is compatible with given spell
-		/// and therefore overwritable by better versions
-		/// spells that are overwritable cannot stack
-		/// </summary>
-		/// <param name="compare"></param>
-		/// <returns></returns>
-		public override bool IsOverwritable(ECSGameEffect compare)
+		public override bool HasConflictingEffectWith(ISpellHandler compare)
 		{
-			return Spell.SpellType == compare.SpellHandler.Spell.SpellType && Spell.DamageType == compare.SpellHandler.Spell.DamageType && SpellLine.IsBaseLine == compare.SpellHandler.SpellLine.IsBaseLine;
+			return Spell.SpellType == compare.Spell.SpellType && Spell.DamageType == compare.Spell.DamageType && SpellLine.IsBaseLine == compare.SpellLine.IsBaseLine;
 		}
 
         public override AttackData CalculateDamageToTarget(GameLiving target)
@@ -119,7 +112,7 @@ namespace DOL.GS.Spells
 
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
-			//((compare.SpellHandler is DoTSpellHandler dot) && Spell.Damage + this.CriticalDamage < compare.Spell.Damage + dot.CriticalDamage)
+			//((compare is DoTSpellHandler dot) && Spell.Damage + this.CriticalDamage < compare.Spell.Damage + dot.CriticalDamage)
 			// var dots = target.effectListComponent.GetSpellEffects(eEffect.DamageOverTime)
 			// 									 .Where(x => x.SpellHandler?.Spell != null)
 			// 									 .Select(x => x.SpellHandler)

@@ -2204,18 +2204,11 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		/// <summary>
-		/// Determines wether this spell is compatible with given spell
-		/// and therefore overwritable by better versions
-		/// spells that are overwritable cannot stack
-		/// </summary>
-		/// <param name="compare"></param>
-		/// <returns></returns>
-		public virtual bool IsOverwritable(ECSGameEffect compare)
+		public virtual bool HasConflictingEffectWith(ISpellHandler compare)
 		{
-			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
-				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
-			if (compare.SpellHandler.Spell.SpellType != Spell.SpellType)
+			if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
+				return Spell.EffectGroup == compare.Spell.EffectGroup;
+			if (compare.Spell.SpellType != Spell.SpellType)
 				return false;
 			return true;
 		}

@@ -23,10 +23,10 @@ namespace DOL.GS.Spells
             return 0;
         }
 
-        public override bool IsOverwritable(ECSGameEffect compare)
+        public override bool HasConflictingEffectWith(ISpellHandler compare)
         {
-            if (base.IsOverwritable(compare) == false) return false;
-            if (compare.SpellHandler.Spell.Duration != Spell.Duration) return false;
+            if (base.HasConflictingEffectWith(compare) == false) return false;
+            if (compare.Spell.Duration != Spell.Duration) return false;
             return true;
         }
 

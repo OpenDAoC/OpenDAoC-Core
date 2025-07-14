@@ -54,23 +54,18 @@ namespace DOL.GS.Spells
             return new StatBuffECSEffect(initParams);
         }
 
-        /// <summary>
-        /// Determines wether this spell is compatible with given spell
-        /// and therefore overwritable by better versions
-        /// spells that are overwritable cannot stack
-        /// </summary>
-        public override bool IsOverwritable(ECSGameEffect compare)
+        public override bool HasConflictingEffectWith(ISpellHandler compare)
         {
-            if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
-                return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
+            if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
+                return Spell.EffectGroup == compare.Spell.EffectGroup;
 
-            if (!base.IsOverwritable(compare))
+            if (!base.HasConflictingEffectWith(compare))
                 return false;
 
-            if (Spell.Duration > 0 && compare.SpellHandler.Spell.Concentration > 0)
-                return compare.SpellHandler.Spell.Value >= Spell.Value;
+            if (Spell.Duration > 0 && compare.Spell.Concentration > 0)
+                return compare.Spell.Value >= Spell.Value;
 
-            return compare.SpellHandler.SpellLine.IsBaseLine == SpellLine.IsBaseLine;
+            return compare.SpellLine.IsBaseLine == SpellLine.IsBaseLine;
         }
     }
 

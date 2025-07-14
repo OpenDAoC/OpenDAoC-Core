@@ -116,14 +116,14 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 
-		public override bool IsOverwritable(ECSGameEffect compare)
+		public override bool HasConflictingEffectWith(ISpellHandler compare)
 		{
-			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
-				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
-			if (compare.SpellHandler.Spell.SpellType != Spell.SpellType)
+			if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
+				return Spell.EffectGroup == compare.Spell.EffectGroup;
+			if (compare.Spell.SpellType != Spell.SpellType)
 				return false;
 			Spell oldProcSpell = SkillBase.GetSpellByID((int)Spell.Value);
-			Spell newProcSpell = SkillBase.GetSpellByID((int)compare.SpellHandler.Spell.Value);
+			Spell newProcSpell = SkillBase.GetSpellByID((int)compare.Spell.Value);
 			if (oldProcSpell == null || newProcSpell == null)
 				return true;
 			if (oldProcSpell.SpellType != newProcSpell.SpellType)

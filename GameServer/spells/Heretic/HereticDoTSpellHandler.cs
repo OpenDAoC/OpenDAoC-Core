@@ -18,12 +18,12 @@ namespace DOL.GS.Spells
 			return 0;
 		}
 
-		public override bool IsOverwritable(ECSGameEffect compare)
+		public override bool HasConflictingEffectWith(ISpellHandler compare)
 		{
-			if (Spell.EffectGroup != 0 || compare.SpellHandler.Spell.EffectGroup != 0)
-				return Spell.EffectGroup == compare.SpellHandler.Spell.EffectGroup;
-			if (base.IsOverwritable(compare) == false) return false;
-			if (compare.SpellHandler.Spell.Duration != Spell.Duration) return false;
+			if (Spell.EffectGroup != 0 || compare.Spell.EffectGroup != 0)
+				return Spell.EffectGroup == compare.Spell.EffectGroup;
+			if (base.HasConflictingEffectWith(compare) == false) return false;
+			if (compare.Spell.Duration != Spell.Duration) return false;
 			return true;
 		}
 

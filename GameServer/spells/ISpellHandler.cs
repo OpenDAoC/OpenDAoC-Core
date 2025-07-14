@@ -77,13 +77,10 @@ namespace DOL.GS.Spells
 		ECSPulseEffect PulseEffect { get; }
 
 		/// <summary>
-		/// Determines wether this spell is compatible with given spell
-		/// and therefore overwritable by better versions
-		/// spells that are overwritable do not stack
+		/// Determines whether effects created by this and compare are allowed to stack.
 		/// </summary>
-		/// <param name="compare"></param>
-		/// <returns></returns>
-		bool IsOverwritable(ECSGameEffect compare);
+		bool HasConflictingEffectWith(ISpellHandler compare);
+
 		/// <summary>
 		/// Determines wether new spell is better than old spell and should disable it
 		/// </summary>
