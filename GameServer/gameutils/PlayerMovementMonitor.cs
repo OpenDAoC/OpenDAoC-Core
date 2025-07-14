@@ -91,7 +91,16 @@ namespace DOL.GS
 
             if (distancedViolationDetected)
             {
+                int validViolationCount = GetAndUpdateValidViolationCount(_current.Timestamp);
+
+                if (validViolationCount == 0)
+                {
+                    _teleportCount = 0;
+                    _teleport = default;
+                }
+
                 _violationTimestamps.Enqueue(_current.Timestamp);
+                validViolationCount++;
 
                 // Set the teleport position on the first speed violation.
                 if (_teleport.Timestamp == 0)
@@ -109,7 +118,7 @@ namespace DOL.GS
                     }
                 }
 
-                if (GetAndUpdateValidViolationCount(_current.Timestamp) >= ViolationThreshold)
+                if (validViolationCount >= ViolationThreshold)
                 {
                     if (!_player.IsAllowedToFly && (ePrivLevel) _player.Client.Account.PrivLevel <= ePrivLevel.Player)
                     {
