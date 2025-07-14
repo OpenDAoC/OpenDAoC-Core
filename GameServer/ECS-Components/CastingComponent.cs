@@ -102,15 +102,24 @@ namespace DOL.GS
                         player.Out.SendInterruptAnimation(Owner);
                 }
 
-                bool focusSpell = spellHandler.Spell.IsFocus;
-
-                if (focusSpell)
-                    spellHandler.CancelFocusSpells();
-
-                SendSpellCancelMessage(moving, focusSpell);
+                // Only send a spell cancel message if we're not cancelling a focus spell (already handled by `CancelFocusSpells`).
+                if (!CancelFocusSpells(moving))
+                    SendSpellCancelMessage(moving, false);
             }
 
             ClearSpellHandlers();
+        }
+
+        public bool CancelFocusSpells(bool moving)
+        {
+            SpellHandler spellHandler = SpellHandler;
+
+            if (spellHandler == null || !spellHandler.Spell.IsFocus)
+                return false;
+
+            spellHandler.CancelFocusSpells();
+            SendSpellCancelMessage(moving, true);
+            return true;
         }
 
         protected virtual void SendSpellCancelMessage(bool moving, bool focusSpell) { }

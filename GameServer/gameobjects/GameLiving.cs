@@ -1430,7 +1430,7 @@ namespace DOL.GS
 
             // Don't cancel offensive focus spell.
             if (ad.AttackType is not eAttackType.Spell)
-                castingComponent.InterruptCasting(false);
+                castingComponent.CancelFocusSpells(false);
         }
 
         /// <summary>
