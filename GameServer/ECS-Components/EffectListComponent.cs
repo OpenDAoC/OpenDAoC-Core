@@ -323,8 +323,11 @@ namespace DOL.GS
                 {
                     // A pulse effect cancels its own child effects to prevent them from being cancelled and immediately reapplied.
                     // So only cancel them if their source is no longer active.
-                    if (!spell.IsPulsing || spellHandler.PulseEffect?.IsActive != true)
+                    if (spellHandler.PulseEffect?.IsActive != true)
+                    {
                         spellEffect.Stop();
+                        return;
+                    }
                 }
 
                 // Make sure the effect actually has a next tick scheduled since some spells are marked as pulsing but actually don't.
