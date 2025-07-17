@@ -339,6 +339,9 @@ namespace DOL.GS
         {
             GamePlayer player = _playerNameTrie.FindExact(playerName);
 
+            if (player == null)
+                return null;
+
             if (!player.Client.IsPlaying || player.ObjectState is not GameObject.eObjectState.Active)
             {
                 if (log.IsErrorEnabled)
