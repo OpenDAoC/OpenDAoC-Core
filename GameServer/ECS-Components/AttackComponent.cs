@@ -403,7 +403,12 @@ namespace DOL.GS
 
                 damageCap = player.WeaponDamageWithoutQualityAndCondition(weapon) * weapon.SPD_ABS * 0.1 * CalculateSlowWeaponDamageModifier(weapon);
 
-                if (weapon.Item_Type == Slot.RANGED)
+                if (player.ActiveLeftWeapon != null)
+                {
+                    if (weapon.Item_Type is Slot.RIGHTHAND or Slot.LEFTHAND or Slot.TWOHAND)
+                        damageCap *= CalculateLeftAxeModifier();
+                }
+                else if (weapon.Item_Type is Slot.RANGED)
                 {
                     damageCap *= CalculateTwoHandedDamageModifier(weapon);
                     DbInventoryItem ammo = GetAttackAmmo(action);
@@ -426,13 +431,8 @@ namespace DOL.GS
                         }
                     }
                 }
-                else if (weapon.Item_Type is Slot.RIGHTHAND or Slot.LEFTHAND or Slot.TWOHAND)
-                {
-                    if (weapon.Item_Type == Slot.TWOHAND)
-                        damageCap *= CalculateTwoHandedDamageModifier(weapon);
-                    else if (player.ActiveLeftWeapon != null)
-                        damageCap *= CalculateLeftAxeModifier();
-                }
+                else if (weapon.Item_Type is Slot.TWOHAND)
+                    damageCap *= CalculateTwoHandedDamageModifier(weapon);
 
                 double damage = GamePlayer.ApplyWeaponQualityAndConditionToDamage(weapon, damageCap);
                 damageCap *= 3;
@@ -444,6 +444,9 @@ namespace DOL.GS
 
                 if (owner is GameNPC npc)
                     damage *= npc.DamageFactor;
+
+                if (weapon?.SlotPosition is Slot.TWOHAND or Slot.RANGED)
+                    damage *= CalculateTwoHandedDamageModifier(weapon);
 
                 damageCap = damage * 3;
 
