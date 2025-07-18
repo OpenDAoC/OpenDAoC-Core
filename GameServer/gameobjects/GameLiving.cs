@@ -1081,7 +1081,8 @@ namespace DOL.GS
 
 					// Parry chance is divided by the number of attackers.
 					// The penalty was reduced in 1.87.
-					parryChance /= attackerCount;
+					if (attackerCount > 0)
+						parryChance /= attackerCount;
 
 					// Tribal Wrath 25% evade.
 					if (lastAD != null && lastAD.Style != null && lastAD.Style.ID == 381)
@@ -1143,21 +1144,21 @@ namespace DOL.GS
 			if (shield == null)
 				return 0;
 
-				if (player != null)
-				{
-					if ((eObjectType) shield.Object_Type is not eObjectType.Shield)
-						return 0;
-				}
-				else if (this is GameNPC npc)
-				{
-					// This is a bit of a hack.
-					// NPC items don't use `Object_Type`, so we typically use `SlotPosition` instead.
-					// But `SlotPosition` is the same between a shield and a left hand weapon.
-					// So to prevent dual wielding NPCs from blocking, we have no choice but rely on this property.
-					// This assumes that a NPC cannot have a positive `LeftHandSwingChance` and a positive `BlockChance` at the same time.
-					if (npc.LeftHandSwingChance > 0)
-						return 0;
-				}
+			if (player != null)
+			{
+				if ((eObjectType) shield.Object_Type is not eObjectType.Shield)
+					return 0;
+			}
+			else if (this is GameNPC npc)
+			{
+				// This is a bit of a hack.
+				// NPC items don't use `Object_Type`, so we typically use `SlotPosition` instead.
+				// But `SlotPosition` is the same between a shield and a left hand weapon.
+				// So to prevent dual wielding NPCs from blocking, we have no choice but rely on this property.
+				// This assumes that a NPC cannot have a positive `LeftHandSwingChance` and a positive `BlockChance` at the same time.
+				if (npc.LeftHandSwingChance > 0)
+					return 0;
+			}
 
 			if (!IsObjectInFront(ad.Attacker, 120))
 				return 0;
