@@ -560,6 +560,10 @@ namespace DOL.GS.PacketHandler
 
         private void SavePacket(IPacket packet)
         {
+            // Temporarily disabled. Packets should no longer be stored since they're rented for one game loop tick.
+            // A copy would need to be made, but that's expensive.
+            return;
+
             if (!Properties.SAVE_PACKETS)
                 return;
 
