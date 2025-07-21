@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DOL.AI;
 using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
@@ -27,9 +28,11 @@ namespace DOL.GS
             Owner.attackComponent.StopAttack();
             Owner.StopCurrentSpellcast();
             Owner.DisableTurning(true);
+
             if (Owner is GameNPC npc)
                 npc.StopMoving();
-            if(Owner.effectListComponent.GetEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
+
+            if (Owner.effectListComponent.GetEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
                 UpdatePlayerStatus();
         }
 
@@ -37,6 +40,10 @@ namespace DOL.GS
         {
             Owner.DisableTurning(false);
             UpdatePlayerStatus();
+
+            // Re-schedule the next think so that the NPC can resume its attack immediately for example.
+            if (Owner is GameNPC npc && npc.Brain is ABrain brain)
+                brain.NextThinkTick = GameLoop.GameLoopTime;
 
             if (SpellHandler.Caster.Realm == 0 || Owner.Realm == 0)
                 Owner.LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
