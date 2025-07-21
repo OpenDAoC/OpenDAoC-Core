@@ -464,6 +464,7 @@ namespace DOL.GS
                         else if (factor > 1)
                             factor = 1;
 
+                        factor *= spellEffect.Effectiveness; // Includes critical hit.
                         spellEffect.Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, spellEffect, 1.0 - spellEffect.SpellHandler.Spell.Value * factor * 0.01);
                         spellEffect.Owner.OnMaxSpeedChange();
 
