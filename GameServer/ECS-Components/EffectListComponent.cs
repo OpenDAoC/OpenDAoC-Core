@@ -536,12 +536,10 @@ namespace DOL.GS
                                     // To give some examples:
                                     // * Effectiveness changes from resurrection illness expiring.
                                     // * Champion debuffs being forced to spec debuffs in `OnStartEffect`.
-                                    // * Movement speed debuffs effectiveness decreasing over time.
                                     // This doesn't work will pulsing charm spells, and it's probably safer to exclude every pulsing spell for now.
                                     // This should also ignore effects currently disabled, or being reenabled.
                                     // `IsDisabled` is set to false before this is called, so both need to be checked.
-                                    if ((!existingEffect.IsDisabled && !effect.IsEnabling && !newSpell.IsPulsing) ||
-                                        existingSpell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
+                                    if (!existingEffect.IsDisabled && !effect.IsEnabling && !newSpell.IsPulsing)
                                     {
                                         // This is ugly, but we really want to stop the effect first and there isn't really any elegant way to do it.
                                         // The call to stop updates the effect's internal state and should add it to the queue.
