@@ -543,13 +543,17 @@ namespace DOL.GS
 			{
 				switch (ID)
 				{
+					case 8096: // Weak Essence of Weariness
+					case 8097: // Essence of Weariness
+					case 8100: // Weak Essence of Lethargy
+					case 8101: // Essence of Lethargy
 					case 30000: // Minor Lethal Poison
 					case 30001: // Minor Weakening Poison
 					case 30002: // Minor Imbalancing Poison
 					case 30003: // Minor Infectious Serum
 					case 30004: // Lesser Lethal Poison
 					case 30005: // Lesser Weakening Poison
-					// case 30006: // Lethal Strike
+					case 30006: // Lethal Strike
 					case 30007: // Lesser Imbalancing Poison
 					case 30008: // Lethal Poison
 					case 30009: // Major Weakening Poison
@@ -576,14 +580,10 @@ namespace DOL.GS
 					case 30046: // Greater Enervating Poison
 					case 30047: // Greater Infectious Serum
 					case 30049: // Lifebane
-					case 30050: // Weak Essence of Lethargy
-					case 30051: // Essence of Lethargy
-					case 30052: // Weak Essence of Weariness
-					case 30053: // Essence of Weariness
-					case 300211: // Greater Enervating Poison
-					case 300281: // Major Enervating Poison
-					case 300411: // Lesser Enervating Poison
-					case 300461: // Minor Enervating Poison
+					case 300211: // Minor Enervating Poison
+					case 300281: // Lesser Enervating Poison
+					case 300311: // Major Enervating Poison
+					case 300461: // Greater Enervating Poison
 						return true;
 					default:
 						return false;
