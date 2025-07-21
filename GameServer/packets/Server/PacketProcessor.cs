@@ -428,7 +428,16 @@ namespace DOL.GS.PacketHandler
                 log.Error($"{Marshal.ToHexDump(description, packetBuffer)}\n{Environment.StackTrace}");
             }
 
-            _client.Out.SendMessage($"Oversized packet detected and discarded (code: 0x{packetBuffer[2]:X2}) (size: {packetSize}). Please report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+            GameLoopService.PostBeforeTick(static state =>
+            {
+                state.Client.Out.SendMessage($"Oversized packet detected and discarded (code: 0x{state.Code:X2}) (size: {state.Size}). Please report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+            }, new
+            {
+                Client = _client,
+                Code = packetBuffer[2],
+                Size = packetSize
+            });
+
             return false;
         }
 
