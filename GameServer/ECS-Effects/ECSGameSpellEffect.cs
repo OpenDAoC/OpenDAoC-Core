@@ -28,11 +28,11 @@ namespace DOL.GS
             EffectType = EffectService.GetEffectFromSpell(SpellHandler.Spell);
             PulseFreq = spell.Frequency;
 
-            if (spell.SpellType is eSpellType.SpeedDecrease or eSpellType.StyleSpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
+            if (spell.IsSnare)
             {
                 PulseFreq = 250;
                 NextTick = 1 + Duration / 2 + StartTick + PulseFreq;
-                TriggersImmunity = spell.SpellType is not eSpellType.StyleSpeedDecrease && !spell.IsFocus && !spell.IsPoison && !spell.Name.Equals("Prevent Flight", StringComparison.OrdinalIgnoreCase);
+                TriggersImmunity = spell.IsTriggeringImmunitySnare;
             }
             else if (spell.IsConcentration)
             {
