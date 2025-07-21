@@ -65,12 +65,6 @@ namespace DOL.GS
                 return false;
             }
 
-            if (!CanPerformAction())
-            {
-                _interval = TICK_INTERVAL_FOR_NON_ATTACK;
-                return true;
-            }
-
             _weapon = _owner.ActiveWeapon;
             _leftWeapon = _owner.ActiveLeftWeapon;
             _effectiveness = _owner.Effectiveness;
@@ -170,20 +164,19 @@ namespace DOL.GS
 
         private bool ShouldTick()
         {
-            return _owner.ActiveWeaponSlot != eActiveWeaponSlot.Distance
-                ? ServiceUtils.ShouldTick(_nextMeleeTick)
-                : ServiceUtils.ShouldTick(_nextRangedTick);
-        }
+            return isTickDue() && isAllowedToTick();
 
-        protected virtual bool CanPerformAction()
-        {
-            if (_owner.IsMezzed || _owner.IsStunned || _owner.IsEngaging)
-                return false;
+            bool isTickDue()
+            {
+                return _owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance ? ServiceUtils.ShouldTick(_nextMeleeTick) : ServiceUtils.ShouldTick(_nextRangedTick);
+            }
 
-            if (_owner.CurrentSpellHandler?.Spell.Uninterruptible == false)
-                return false;
-
-            return true;
+            bool isAllowedToTick()
+            {
+                // 1.82 changed the reactionary window to a fixed 3 seconds. This made placing reactionary styles easier against fast attacks,
+                // but it's also suspected that this is when it became impossible to spam them when the target is stunned.
+                return !_owner.IsCrowdControlled && !_owner.IsEngaging && (_owner.CurrentSpellHandler?.Spell.Uninterruptible) != false;
+            }
         }
 
         protected virtual bool PrepareMeleeAttack()
