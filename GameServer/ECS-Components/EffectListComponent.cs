@@ -529,50 +529,42 @@ namespace DOL.GS
                                     || (existingSpell.IsConcentration && existingEffect == effect)
                                     || existingSpell.ID == newSpell.ID)
                                 {
-                                    if (newSpell.IsPoisonEffect && effect.EffectType is eEffect.DamageOverTime)
+                                    AddEffectResult result;
+
+                                    // Most of the time, we want to stop the current effect and let the new one be started normally but silently.
+                                    // Not calling `OnStopEffect` on the current effect and `OnStartEffect` on the new effect means some initialization may not be performed.
+                                    // To give some examples:
+                                    // * Effectiveness changes from resurrection illness expiring.
+                                    // * Champion debuffs being forced to spec debuffs in `OnStartEffect`.
+                                    // * Movement speed debuffs effectiveness decreasing over time.
+                                    // This doesn't work will pulsing charm spells, and it's probably safer to exclude every pulsing spell for now.
+                                    // This should also ignore effects currently disabled, or being reenabled.
+                                    // `IsDisabled` is set to false before this is called, so both need to be checked.
+                                    if ((!existingEffect.IsDisabled && !effect.IsEnabling && !newSpell.IsPulsing) ||
+                                        existingSpell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
                                     {
-                                        existingEffect.ExpireTick = effect.ExpireTick;
-                                        return AddEffectResult.RenewedActive;
+                                        // This is ugly, but we really want to stop the effect first and there isn't really any elegant way to do it.
+                                        // The call to stop updates the effect's internal state and should add it to the queue.
+                                        // Abort the process if anything doesn't work as expected.
+                                        if (!existingEffect.Stop(false, false) || !existingEffect.IsStopping)
+                                            return AddEffectResult.Failed;
+
+                                        existingEffect.IsSilent = true;
+                                        TickPendingEffect(existingEffect);
+                                        effect.IsSilent = true;
+                                        existingGameEffects.Add(effect);
+                                        result = AddEffectResult.Added;
                                     }
                                     else
                                     {
-                                        AddEffectResult result;
-
-                                        // Most of the time, we want to stop the current effect and let the new one be started normally but silently.
-                                        // Not calling `OnStopEffect` on the current effect and `OnStartEffect` on the new effect means some initialization may not be performed.
-                                        // To give some examples:
-                                        // * Effectiveness changes from resurrection illness expiring.
-                                        // * Champion debuffs being forced to spec debuffs in `OnStartEffect`.
-                                        // * Movement speed debuffs effectiveness decreasing over time.
-                                        // This doesn't work will pulsing charm spells, and it's probably safer to exclude every pulsing spell for now.
-                                        // This should also ignore effects currently disabled, or being reenabled.
-                                        // `IsDisabled` is set to false before this is called, so both need to be checked.
-                                        if ((!existingEffect.IsDisabled && !effect.IsEnabling && !newSpell.IsPulsing) ||
-                                            existingSpell.SpellType is eSpellType.SpeedDecrease or eSpellType.UnbreakableSpeedDecrease)
-                                        {
-                                            // This is ugly, but we really want to stop the effect first and there isn't really any elegant way to do it.
-                                            // The call to stop updates the effect's internal state and should add it to the queue.
-                                            // Abort the process if anything doesn't work as expected.
-                                            if (!existingEffect.Stop(false, false) || !existingEffect.IsStopping)
-                                                return AddEffectResult.Failed;
-
-                                            existingEffect.IsSilent = true;
-                                            TickPendingEffect(existingEffect);
-                                            effect.IsSilent = true;
-                                            existingGameEffects.Add(effect);
-                                            result = AddEffectResult.Added;
-                                        }
-                                        else
-                                        {
-                                            effect.PreviousPosition = GetEffects().IndexOf(existingEffect);
-                                            existingGameEffects[i] = effect;
-                                            result = existingEffect.IsActive ? AddEffectResult.RenewedActive : AddEffectResult.RenewedDisabled;
-                                        }
-
-                                        _effects.TryAdd(effect.EffectType, existingGameEffects);
-                                        _effectIdToEffect[effect.Icon] = effect;
-                                        return result;
+                                        effect.PreviousPosition = GetEffects().IndexOf(existingEffect);
+                                        existingGameEffects[i] = effect;
+                                        result = existingEffect.IsActive ? AddEffectResult.RenewedActive : AddEffectResult.RenewedDisabled;
                                     }
+
+                                    _effects.TryAdd(effect.EffectType, existingGameEffects);
+                                    _effectIdToEffect[effect.Icon] = effect;
+                                    return result;
                                 }
                             }
 
