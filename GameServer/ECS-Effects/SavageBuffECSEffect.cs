@@ -43,7 +43,10 @@ namespace DOL.GS
 
             // Costs at least 1 HP, leaves at least 1 HP.
             cost = Math.Min(Math.Max(1, cost), Owner.Health - 1);
-            Owner.ChangeHealth(Owner, eHealthChangeType.Spell, -cost);
+
+            // This can be negative if the owner is dead.
+            if (cost > 0)
+                Owner.ChangeHealth(Owner, eHealthChangeType.Spell, -cost);
         }
     }
 }
