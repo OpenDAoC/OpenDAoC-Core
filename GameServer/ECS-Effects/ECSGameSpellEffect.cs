@@ -32,9 +32,7 @@ namespace DOL.GS
             {
                 PulseFreq = 250;
                 NextTick = 1 + Duration / 2 + StartTick + PulseFreq;
-
-                if (!spell.Name.Equals("Prevent Flight", StringComparison.OrdinalIgnoreCase) && !spell.IsFocus)
-                    TriggersImmunity = true;
+                TriggersImmunity = spell.SpellType is not eSpellType.StyleSpeedDecrease && !spell.IsFocus && !spell.Name.Equals("Prevent Flight", StringComparison.OrdinalIgnoreCase);
             }
             else if (spell.IsConcentration)
             {
