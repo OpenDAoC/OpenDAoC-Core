@@ -537,30 +537,6 @@ namespace DOL.GS
 			!IsPoisonEffect &&
 			!Name.Equals("Prevent Flight", StringComparison.OrdinalIgnoreCase);
 
-		public bool IsPoison
-		{
-			get
-			{
-				switch (ID)
-				{
-					case 30000:
-					case 30004:
-					case 30009:
-					case 30014:
-					case 30019:
-					case 30024:
-					case 30029:
-					case 30034:
-					case 30039:
-					case 30044:
-					case 30049:
-						return true;
-					default:
-						return false;
-				}
-			}
-		}
-		
 		public bool IsPoisonEffect
 		{
 			get
