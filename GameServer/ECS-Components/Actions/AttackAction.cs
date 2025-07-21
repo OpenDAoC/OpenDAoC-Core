@@ -164,14 +164,23 @@ namespace DOL.GS
 
         private bool ShouldTick()
         {
-            return isTickDue() && isAllowedToTick();
+            if (!IsTickDue())
+                return false;
 
-            bool isTickDue()
+            if (!IsAllowedToTick())
+            {
+                _firstTick = true; // Important to not buffer attacks.
+                return false;
+            }
+
+            return true;
+
+            bool IsTickDue()
             {
                 return _owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance ? ServiceUtils.ShouldTick(_nextMeleeTick) : ServiceUtils.ShouldTick(_nextRangedTick);
             }
 
-            bool isAllowedToTick()
+            bool IsAllowedToTick()
             {
                 // 1.82 changed the reactionary window to a fixed 3 seconds. This made placing reactionary styles easier against fast attacks,
                 // but it's also suspected that this is when it became impossible to spam them when the target is stunned.
