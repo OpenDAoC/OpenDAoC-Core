@@ -15,7 +15,7 @@ namespace DOL.GS
         private const string ALREADY_CASTING_MESSAGE = "You are already casting a spell!";
         private const int NO_QUEUE_INPUT_BUFFER = 250; // 250ms is roughly equivalent to the delay between inputs imposed by the client.
 
-        protected Queue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
+        private Queue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
 
         public GameLiving Owner { get; }
         public SpellHandler SpellHandler { get; protected set; }

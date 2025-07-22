@@ -25,7 +25,6 @@ namespace DOL.GS
         public override void ClearSpellHandlers()
         {
             // Make sure NPCs don't start casting pending spells after being told to stop.
-            _startSkillRequests.Clear();
             _npcOwner.ClearSpellsWaitingForLosCheck();
 
             if (_npcOwner.Brain is NecromancerPetBrain necromancerPetBrain)
