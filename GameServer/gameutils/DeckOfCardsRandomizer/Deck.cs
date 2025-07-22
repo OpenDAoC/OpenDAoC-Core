@@ -10,8 +10,8 @@ namespace DOL.GS.Utils
     public class PlayerDeck
     {
         private const int DECKS_COUNT = 1;             // The final deck is a concatenation of 1 or more decks.
-        private const int CARDS_PER_DECK_COUNT = 100;  // Should not be changed, this controls the max value of the cards too.
-        private const int NUM_BUCKETS = 10;            // Amount of bucket in a deck. Should not be too high. Used for the anti-cluster mechanism.
+        private const int CARDS_PER_DECK_COUNT = 100;  // Also represents the highest value + 1.
+        private const int NUM_BUCKETS = 10;            // Amount of bucket in a deck. Affects performance a lot, and should not be too high. Used for the anti-cluster mechanism.
         private const double AGGRESSIVENESS = 0.05;    // Higher aggressiveness forces cards to be more separated by value. Used for the anti-cluster mechanism.
 
         private GamePlayer _player;
@@ -128,21 +128,21 @@ namespace DOL.GS.Utils
         {
             lock (_cardsLock)
             {
-                // Build a new deck.
+                // Start with a fresh pool of all possible cards.
                 for (int i = 0; i < DECKS_COUNT; i++)
                 {
                     for (int j = 0; j < CARDS_PER_DECK_COUNT; j++)
                         _cards[i + j] = j;
                 }
 
-                // Use the Fisher-Yates shuffle to randomize the order of card placement. This is critical to prevent bias.
+                // Shuffle the cards. This is critical to allow 0 to be placed in the same bucket as 1 for example.
                 for (int i = _cards.Length - 1; i > 0; i--)
                 {
                     int j = Util.Random(i);
                     (_cards[j], _cards[i]) = (_cards[i], _cards[j]);
                 }
 
-                // Clear various arrays for the next step.
+                // Clear bucket states for reuse.
                 for (int i = 0; i < _buckets.Length; i++)
                 {
                     _buckets[i].Clear();
@@ -152,32 +152,36 @@ namespace DOL.GS.Utils
                 // Value-aware distribution.
                 foreach (int card in _cards)
                 {
+                    double totalWeight = 0;
+
                     // Calculate the "attraction score" and weight for each bucket.
                     for (int i = 0; i < NUM_BUCKETS; i++)
                     {
                         // Use a neutral midpoint for empty buckets.
-                        double average = _buckets[i].Count == 0 ? 50.0 : (double) _bucketSums[i] / _buckets[i].Count;
+                        double average = _buckets[i].Count == 0 ? (CARDS_PER_DECK_COUNT - 1) / 2.0 : (double) _bucketSums[i] / _buckets[i].Count;
                         double attractionScore = Math.Abs(average - card);
                         _bucketWeights[i] = Math.Exp(attractionScore * AGGRESSIVENESS);
+                        totalWeight += _bucketWeights[i];
                     }
 
                     // Perform a weighted random choice to select a bucket.
                     int chosenIndex = 0;
-                    double totalWeight = _bucketWeights.Sum();
 
                     if (totalWeight > 0)
                     {
                         double roll = Util.RandomDouble() * totalWeight;
+                        double cumulativeWeight = 0;
 
                         for (int i = 0; i < NUM_BUCKETS; i++)
                         {
-                            if (roll < _bucketWeights[i])
+                            cumulativeWeight += _bucketWeights[i];
+
+                            // Found our bucket.
+                            if (roll <= cumulativeWeight)
                             {
                                 chosenIndex = i;
                                 break;
                             }
-
-                            roll -= _bucketWeights[i];
                         }
                     }
                     else
@@ -193,6 +197,15 @@ namespace DOL.GS.Utils
 
                 foreach (var bucket in _buckets)
                 {
+                    // Post-bucket shuffling to reduce bias inside each bucket.
+                    // This may reintroduce some clusters, but it makes the series inside each bucket a lot more natural.
+                    // I don't fully understand the mechanism at play here, but without this last shuffle, odd patterns are obvious on a scatter plot.
+                    for (int i = bucket.Count - 1; i > 0; i--)
+                    {
+                        int j = Util.Random(i);
+                        (bucket[j], bucket[i]) = (bucket[i], bucket[j]);
+                    }
+
                     foreach (int card in bucket)
                         _cards[index++] = card;
                 }
