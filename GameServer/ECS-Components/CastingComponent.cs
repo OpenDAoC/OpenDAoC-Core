@@ -168,9 +168,6 @@ namespace DOL.GS
                         }
                         else
                             SpellHandler = null;
-
-                        if (necroBrain.HasSpellsQueued())
-                            necroBrain.CheckSpellQueue();
                     }
                 }
             }

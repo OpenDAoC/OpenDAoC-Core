@@ -1,4 +1,5 @@
-﻿using DOL.GS.Keeps;
+﻿using DOL.AI.Brain;
+using DOL.GS.Keeps;
 
 namespace DOL.GS
 {
@@ -24,8 +25,15 @@ namespace DOL.GS
         public override void ClearSpellHandlers()
         {
             // Make sure NPCs don't start casting pending spells after being told to stop.
-            _startSkillRequests.Clear(); // This also clears pending abilities.
+            _startSkillRequests.Clear();
             _npcOwner.ClearSpellsWaitingForLosCheck();
+
+            if (_npcOwner.Brain is NecromancerPetBrain necromancerPetBrain)
+            {
+                necromancerPetBrain.ClearSpellQueue();
+                necromancerPetBrain.ClearAttackSpellQueue();
+            }
+
             base.ClearSpellHandlers();
         }
 
