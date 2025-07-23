@@ -220,7 +220,15 @@ namespace DOL.GS.PacketHandler
             if (!packet.IsSizeSet)
                 packet.WritePacketLength();
 
-            _tcpPacketQueue.Add(packet);
+            try
+            {
+                _tcpPacketQueue.Add(packet);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"{nameof(QueuePacket)} failed when adding to ({nameof(_tcpPacketQueue)}. Skipping this packet.", e);
+            }
         }
 
         public void QueuePacket(GSUDPPacketOut packet, bool forced)
@@ -241,17 +249,65 @@ namespace DOL.GS.PacketHandler
 
             // If UDP is unavailable, send via TCP instead.
             if (_udpSendArgs.RemoteEndPoint != null && (forced || _client.UdpConfirm))
-                _udpPacketQueue.Add(packet);
+            {
+                try
+                {
+                    _udpPacketQueue.Add(packet);
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"{nameof(QueuePacket)} failed when adding to ({nameof(_udpPacketQueue)}. Skipping this packet.", e);
+                }
+            }
             else
-                _udpToTcpPacketQueue.Add(packet);
+            {
+                try
+                {
+                    _udpToTcpPacketQueue.Add(packet);
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"{nameof(QueuePacket)} failed when adding to ({nameof(_udpToTcpPacketQueue)}. Skipping this packet.", e);
+                }
+            }
         }
 
         public void SendPendingPackets()
         {
-            _tcpPacketQueue.DrainTo(static (packet, processor) => processor.AppendTcpPacketToTcpSendBuffer(packet), this);
-            _udpToTcpPacketQueue.DrainTo(static (packet, processor) => processor.AppendUdpPacketToTcpSendBuffer(packet), this);
+            try
+            {
+                _tcpPacketQueue.DrainTo(static (packet, processor) => processor.AppendTcpPacketToTcpSendBuffer(packet), this);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"{nameof(SendPendingPackets)} failed when draining ({nameof(_tcpPacketQueue)}. Skipping this tick.", e);
+            }
+
+            try
+            {
+                _udpToTcpPacketQueue.DrainTo(static (packet, processor) => processor.AppendUdpPacketToTcpSendBuffer(packet), this);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"{nameof(SendPendingPackets)} failed when draining ({nameof(_udpToTcpPacketQueue)}. Skipping this tick.", e);
+            }
+
             SendTcp();
-            _udpPacketQueue.DrainTo(static (packet, processor) => processor.AppendUdpPacketToUdpSendBuffer(packet), this);
+
+            try
+            {
+                _udpPacketQueue.DrainTo(static (packet, processor) => processor.AppendUdpPacketToUdpSendBuffer(packet), this);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"{nameof(SendPendingPackets)} failed when draining ({nameof(_udpPacketQueue)}. Skipping this tick.", e);
+            }
+
             SendUdp();
         }
 
@@ -276,9 +332,13 @@ namespace DOL.GS.PacketHandler
             // Drain all pending packets on the next game loop tick to avoid concurrent modification issues.
             GameLoopService.PostAfterTick(static (state) =>
             {
-                state._tcpPacketQueue.DrainTo(static state => { });
-                state._udpToTcpPacketQueue.DrainTo(static state => { });
-                state._udpPacketQueue.DrainTo(static state => { });
+                try
+                {
+                    state._tcpPacketQueue.DrainTo(static state => { });
+                    state._udpToTcpPacketQueue.DrainTo(static state => { });
+                    state._udpPacketQueue.DrainTo(static state => { });
+                }
+                catch { }
             }, this);
         }
 
