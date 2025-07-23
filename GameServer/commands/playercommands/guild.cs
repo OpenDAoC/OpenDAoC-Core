@@ -3044,19 +3044,23 @@ namespace DOL.GS.Commands
 					if (allGuildMembers.TryGetValue(player.InternalID, out GuildMgr.GuildMemberView memberDisplay))
 					{
 						memberDisplay.UpdateMember(player);
-						string key = memberDisplay[sortColumn];
+						string key = $"{memberDisplay[sortColumn]}_{memberDisplay.InternalID}";
 
-						if (sortedWindowList.ContainsKey(key))
-							key += sortedWindowList.Count.ToString();
-
-						sortedWindowList.Add(key, memberDisplay);
+						try
+						{
+							sortedWindowList.Add(key, memberDisplay);
+						}
+						catch
+						{
+							if (log.IsErrorEnabled)
+								log.Error(string.Format("Sorted List duplicate entry - Key: {0} Member: {1}. Replacing - Member: {2}.  Sorted count: {3}.  Guild ID: {4}", key, memberDisplay.Name, sortedWindowList[key].Name, sortedWindowList.Count, client.Player.GuildID));
+						}
 					}
 				}
 			}
 			else // sort and display entire list
 			{
 				sortedWindowList = new SortedList<string, GuildMgr.GuildMemberView>();
-				int keyIncrement = 0;
 
 				foreach (GuildMgr.GuildMemberView memberDisplay in allGuildMembers.Values)
 				{
@@ -3071,13 +3075,9 @@ namespace DOL.GS.Commands
 						//Make sure that since they are offline they get the offline flag!
 						memberDisplay.GroupSize = "0";
 					}
-					//Add based on the new index
-					string key = memberDisplay[sortColumn];
 
-					if (sortedWindowList.ContainsKey(key))
-					{
-						key += keyIncrement++;
-					}
+					//Add based on the new index
+					string key = $"{memberDisplay[sortColumn]}_{memberDisplay.InternalID}";
 
 					try
 					{
