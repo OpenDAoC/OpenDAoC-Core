@@ -1139,15 +1139,20 @@ namespace DOL.GS
 			//your friend is most likely using a player crafted shield. The quality of the player crafted item will make a significant difference  try it and see.
 
 			DbInventoryItem shield = ActiveLeftWeapon;
-			GamePlayer player = this as GamePlayer;
 
+			// NPCs too require a shield (left hand weapon) to block.
 			if (shield == null)
 				return 0;
+;
+			GamePlayer player = this as GamePlayer;
 
 			if (player != null)
 			{
 				if ((eObjectType) shield.Object_Type is not eObjectType.Shield)
 					return 0;
+
+				// Only players require a shield size. NPCs don't use block rounds.
+				shieldSize = Math.Max(shield.Type_Damage, 1);
 			}
 			else if (this is GameNPC npc)
 			{
@@ -1185,9 +1190,7 @@ namespace DOL.GS
 			// This was added in 1.74, then superseded in 1.96 with a 60% cap.
 			// Leaving it here for reference.
 			// Possibly intended to be applied in RvR or PvE only.
-			/* shieldSize = shield != null ? Math.Max(shield.Type_Damage, 1) : 1;
-
-			if (shieldSize == 1 && blockChance > 0.8)
+			/*if (shieldSize == 1 && blockChance > 0.8)
 				blockChance = 0.8;
 			else if (shieldSize == 2 && blockChance > 0.9)
 				blockChance = 0.9;
