@@ -1695,24 +1695,17 @@ namespace DOL.GS
                 else
                     blockRoll = Util.RandomDouble();
 
+                if (ad.Attacker is GamePlayer attacker && attacker.UseDetailedCombatLog)
+                    attacker.Out.SendMessage($"target block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                if (ad.Target is GamePlayer defender && defender.UseDetailedCombatLog)
+                    defender.Out.SendMessage($"your block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
                 // The order here matters a lot. Either we consume attempts (by calling `Consume` first`) or blocks (by checking the roll first; the current implementation).
                 // If we consume attempts, the effective block rate changes according to this formula: "if (shieldSize < attackerCount) blockChance *= (shieldSize / attackerCount)".
                 // If we consume blocks, then the reduction is lower the lower the base block chance, and identical with a theoretical 100% block chance.
-                if (blockChance > blockRoll)
-                {
-                    // Make sure we don't show a positive block chance in detailed combat log if the target has exhausted its block rounds.
-                    if (!_blockRoundHandler.Consume(shieldSize, ad))
-                        blockChance = 0;
-
-                    if (ad.Attacker is GamePlayer attacker && attacker.UseDetailedCombatLog)
-                        attacker.Out.SendMessage($"target block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
-                    if (ad.Target is GamePlayer defender && defender.UseDetailedCombatLog)
-                        defender.Out.SendMessage($"your block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
-                    if (blockChance > 0)
-                        return true;
-                }
+                if (blockChance > blockRoll && _blockRoundHandler.Consume(shieldSize, ad))
+                    return true;
             }
 
             if (ad.AttackType is AttackData.eAttackType.Ranged or AttackData.eAttackType.Spell)
