@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading;
 using ECS.Debug;
 
@@ -7,6 +8,7 @@ namespace DOL.GS
 {
     public static class CraftingService
     {
+        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(CraftingService);
         private static List<CraftComponent> _list;
         private static int _entityCount;
@@ -15,7 +17,22 @@ namespace DOL.GS
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-            _list = ServiceObjectStore.UpdateAndGetAll<CraftComponent>(ServiceObjectType.CraftComponent, out int lastValidIndex);
+
+            int lastValidIndex;
+
+            try
+            {
+                _list = ServiceObjectStore.UpdateAndGetAll<CraftComponent>(ServiceObjectType.CraftComponent, out lastValidIndex);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
+
+                Diagnostics.StopPerfCounter(SERVICE_NAME);
+                return;
+            }
+
             GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)

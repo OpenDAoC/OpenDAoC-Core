@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
@@ -37,7 +36,19 @@ namespace DOL.GS
             using (_lock)
             {
                 _lock.EnterWriteLock();
-                _clients = ServiceObjectStore.UpdateAndGetAll<GameClient>(ServiceObjectType.Client, out _lastValidIndex);
+
+                try
+                {
+                    _clients = ServiceObjectStore.UpdateAndGetAll<GameClient>(ServiceObjectType.Client, out _lastValidIndex);
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
+
+                    Diagnostics.StopPerfCounter(SERVICE_NAME);
+                    return;
+                }
             }
 
             GameLoop.ExecuteWork(_lastValidIndex + 1, BeginTickInternal);

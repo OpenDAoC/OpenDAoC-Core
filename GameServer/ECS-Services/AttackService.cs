@@ -17,7 +17,22 @@ namespace DOL.GS
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME;
             Diagnostics.StartPerfCounter(SERVICE_NAME);
-            _list = ServiceObjectStore.UpdateAndGetAll<AttackComponent>(ServiceObjectType.AttackComponent, out int lastValidIndex);
+
+            int lastValidIndex;
+
+            try
+            {
+                _list = ServiceObjectStore.UpdateAndGetAll<AttackComponent>(ServiceObjectType.AttackComponent, out lastValidIndex);
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
+
+                Diagnostics.StopPerfCounter(SERVICE_NAME);
+                return;
+            }
+
             GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckEntityCounts)
