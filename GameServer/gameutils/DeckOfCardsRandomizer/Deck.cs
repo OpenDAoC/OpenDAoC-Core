@@ -58,6 +58,9 @@ namespace DOL.GS.Utils
 
             bool DeserializeCards(DbCoreCharacterXDeck dbDeck)
             {
+                if (dbDeck == null)
+                    return false;
+
                 string serializedDeck = dbDeck.Deck;
 
                 if (string.IsNullOrEmpty(serializedDeck))
