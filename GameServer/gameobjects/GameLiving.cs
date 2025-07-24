@@ -2561,7 +2561,7 @@ namespace DOL.GS
 		}
 
 		public virtual int MaxMana => GetModified(eProperty.MaxMana);
-		public virtual byte ManaPercent => (byte) (MaxMana <= 0 ? 0 : (Mana * 100 / MaxMana));
+		public virtual byte ManaPercent => (byte) (MaxMana <= 0 ? 0 : Math.Clamp(Mana * 100 / MaxMana, 0, 100));
 
 		public virtual int Endurance
 		{
@@ -2577,11 +2577,11 @@ namespace DOL.GS
 		}
 
 		public virtual int MaxEndurance => GetModified(eProperty.Fatigue);
-		public virtual byte EndurancePercent => (byte) (MaxEndurance <= 0 ? 0 : (Endurance * 100 / MaxEndurance));
+		public virtual byte EndurancePercent => (byte) (MaxEndurance <= 0 ? 0 : Math.Clamp(Endurance * 100 / MaxEndurance, 0, 100));
 
 		public virtual int Concentration => 0;
 		public virtual int MaxConcentration => 0;
-		public virtual byte ConcentrationPercent => (byte) (MaxConcentration <= 0 ? 0 : (Concentration * 100 / MaxConcentration));
+		public virtual byte ConcentrationPercent => (byte) (MaxConcentration <= 0 ? 0 : Math.Clamp(Concentration * 100 / MaxConcentration, 0, 100));
 
 		public void CancelAllConcentrationEffects()
 		{
