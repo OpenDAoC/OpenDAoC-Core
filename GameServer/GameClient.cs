@@ -141,7 +141,6 @@ namespace DOL.GS
 
         public async Task LoadPlayer(int accountIndex)
         {
-            await DOLDB<DbAccount>.FillObjectRelationsAsync(_account);
             DbCoreCharacter dolChar = _account.Characters[accountIndex];
             ActiveCharIndex = 0;
 
@@ -152,6 +151,7 @@ namespace DOL.GS
                 ActiveCharIndex++;
             }
 
+            await DOLDB<DbCoreCharacter>.FillObjectRelationsAsync(dolChar);
             Assembly gameServerAssembly = Assembly.GetAssembly(typeof(GameServer));
             object playerObject = null;
 
