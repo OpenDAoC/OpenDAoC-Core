@@ -2578,7 +2578,7 @@ namespace DOL.GS
                 base.Health = value;
 
                 if (DBCharacter != null)
-                    DBCharacter.Health = base.Health;
+                    DBCharacter.Health = base.Health; // Base clamps between 0 and max value.
 
                 if (oldPercent != HealthPercent)
                 {
@@ -2660,7 +2660,7 @@ namespace DOL.GS
                 base.Mana = value;
 
                 if (DBCharacter != null)
-                    DBCharacter.Mana = value;
+                    DBCharacter.Mana = base.Mana; // Base clamps between 0 and max value.
 
                 if (oldPercent != ManaPercent)
                 {
@@ -2681,7 +2681,7 @@ namespace DOL.GS
                 base.Endurance = value;
 
                 if (DBCharacter != null)
-                    DBCharacter.Endurance = value;
+                    DBCharacter.Endurance = base.Endurance; // Base clamps between 0 and max value.
 
                 if (oldPercent != EndurancePercent)
                 {
