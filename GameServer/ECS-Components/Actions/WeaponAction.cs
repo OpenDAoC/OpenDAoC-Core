@@ -374,11 +374,11 @@ namespace DOL.GS
             // 1 - Apply the DmgAdds that are unaffected by stacking (usually RA-based DmgAdds, EffectGroup 99999) first regardless of their damage.
             foreach (ECSGameSpellEffect damageAdd in damageAddEffects)
             {
-                if (damageAdd.IsActive && damageAdd.SpellHandler.Spell.EffectGroup == 99999)
-                {
-                    damageAddsUnaffectedByStacking.Add(damageAdd);
-                    (damageAdd.SpellHandler as DamageAddSpellHandler).Handle(ad, 1);
-                }
+                if (!damageAdd.IsActive || damageAdd.SpellHandler.Spell.EffectGroup != 99999)
+                    continue;
+
+                damageAddsUnaffectedByStacking.Add(damageAdd);
+                (damageAdd.SpellHandler as DamageAddSpellHandler).Handle(ad, 1);
             }
 
             // 2 - Apply regular damage adds. We only start reducing to 50% effectiveness if there is more than one regular damage add being applied.
@@ -387,11 +387,11 @@ namespace DOL.GS
 
             foreach (ECSGameSpellEffect damageAdd in damageAddEffects.Except(damageAddsUnaffectedByStacking).OrderByDescending(e => e.SpellHandler.Spell.Damage))
             {
-                if (damageAdd.IsActive)
-                {
-                    (damageAdd.SpellHandler as DamageAddSpellHandler).Handle(ad, numRegularDmgAddsApplied > 0 ? 0.5 : 1.0);
-                    numRegularDmgAddsApplied++;
-                }
+                if (!damageAdd.IsActive)
+                    continue;
+
+                (damageAdd.SpellHandler as DamageAddSpellHandler).Handle(ad, numRegularDmgAddsApplied > 0 ? 0.5 : 1.0);
+                numRegularDmgAddsApplied++;
             }
         }
 
@@ -403,7 +403,12 @@ namespace DOL.GS
                 return;
 
             foreach (ECSGameSpellEffect damageShield in damageShieldEffects)
+            {
+                if (!damageShield.IsActive)
+                    continue;
+
                 (damageShield.SpellHandler as DamageShieldSpellHandler).Handle(ad, 1);
+            }
         }
 
         private static void HandleReflexAttack(GameLiving attacker, GameLiving target, eAttackResult attackResult, int interval)
