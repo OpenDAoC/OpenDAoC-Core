@@ -1693,6 +1693,12 @@ namespace DOL.GS
 			}
 		}
 
+		// Temporary locks to help a little with the race condition mess around health, endurance, and power.
+		// This is mainly helpful for concurrent heals / regen ticks. Attacks don't do damage via `ChangeHealth`.
+		private Lock _changeHealthLock = new();
+		private Lock _changeManaLock = new();
+		private Lock _changeEnduranceLock = new();
+
 		/// <summary>
 		/// Changes the health
 		/// </summary>
@@ -1702,26 +1708,29 @@ namespace DOL.GS
 		/// <returns>the amount really changed</returns>
 		public virtual int ChangeHealth(GameObject changeSource, eHealthChangeType healthChangeType, int changeAmount)
 		{
-			int oldHealth = Health;
-			Health += changeAmount;
-			int healthChanged = Health - oldHealth;
-
-			//Notify our enemies that we were healed by other means than
-			//natural regeneration, this allows for aggro on healers!
-			if (healthChanged > 0 && healthChangeType != eHealthChangeType.Regenerate)
+			lock (_changeHealthLock)
 			{
-				EnemyHealedEventArgs args = new(this, changeSource, healthChangeType, healthChanged);
+				int oldHealth = Health;
+				Health += changeAmount;
+				int healthChanged = Health - oldHealth;
 
-				foreach (GameLiving attacker in attackComponent.AttackerTracker.Attackers)
+				//Notify our enemies that we were healed by other means than
+				//natural regeneration, this allows for aggro on healers!
+				if (healthChanged > 0 && healthChangeType != eHealthChangeType.Regenerate)
 				{
-					if (attacker is not GameLiving attackerLiving)
-						continue;
+					EnemyHealedEventArgs args = new(this, changeSource, healthChangeType, healthChanged);
 
-					attackerLiving.Notify(GameLivingEvent.EnemyHealed, attacker, args);
+					foreach (GameLiving attacker in attackComponent.AttackerTracker.Attackers)
+					{
+						if (attacker is not GameLiving attackerLiving)
+							continue;
+
+						attackerLiving.Notify(GameLivingEvent.EnemyHealed, attacker, args);
+					}
 				}
-			}
 
-			return healthChanged;
+				return healthChanged;
+			}
 		}
 
 		/// <summary>
@@ -1733,9 +1742,12 @@ namespace DOL.GS
 		/// <returns>the amount really changed</returns>
 		public virtual int ChangeMana(GameObject changeSource, eManaChangeType manaChangeType, int changeAmount)
 		{
-			int oldMana = Mana;
-			Mana += changeAmount;
-			return Mana - oldMana;
+			lock (_changeManaLock)
+			{
+				int oldMana = Mana;
+				Mana += changeAmount;
+				return Mana - oldMana;
+			}
 		}
 
 		/// <summary>
@@ -1747,9 +1759,12 @@ namespace DOL.GS
 		/// <returns>the amount really changed</returns>
 		public virtual int ChangeEndurance(GameObject changeSource, eEnduranceChangeType enduranceChangeType, int changeAmount)
 		{
-			int oldEndurance = Endurance;
-			Endurance += changeAmount;
-			return Endurance - oldEndurance;
+			lock (_changeEnduranceLock)
+			{
+				int oldEndurance = Endurance;
+				Endurance += changeAmount;
+				return Endurance - oldEndurance;
+			}
 		}
 
 		/// <summary>
