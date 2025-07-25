@@ -54,7 +54,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 		private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
 		private static DateTime m_lastAccountCreateTime;
-		private readonly Dictionary<string, LockCount> m_locks = new Dictionary<string, LockCount>();
 		private static HttpClient _httpClient = new HttpClient();
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
@@ -194,9 +193,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (Log.IsErrorEnabled)
 					Log.Error("Error shutting down Client after IsAllowedToConnect failed!", e);
 			}
-
-			// Handle connection.
-			EnterLock(userName);
 
 			try
 			{
@@ -479,8 +475,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 				if (client.IsConnected == false)
 					client.Disconnect();
-
-				ExitLock(userName);
 			}
 		}
 
@@ -504,83 +498,5 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			return stringBuilder.ToString();
 		}
-
-		/// <summary>
-		/// Acquires the lock on account.
-		/// </summary>
-		/// <param name="accountName">Name of the account.</param>
-		private void EnterLock(string accountName)
-		{
-			LockCount lockObj = null;
-			lock (m_locks)
-			{
-				// Get/create lock object
-				if (!m_locks.TryGetValue(accountName, out lockObj))
-				{
-					lockObj = new LockCount();
-					m_locks.Add(accountName, lockObj);
-				}
-
-				if (lockObj == null)
-				{
-					if (Log.IsErrorEnabled)
-						Log.Error("(Enter) No lock object for account: '" + accountName + "'");
-				}
-				else
-				{
-					// Increase count of locks
-					lockObj.count++;
-				}
-			}
-
-			if (lockObj != null)
-			{
-				Monitor.Enter(lockObj);
-			}
-		}
-
-		/// <summary>
-		/// Releases the lock on account.
-		/// </summary>
-		/// <param name="accountName">Name of the account.</param>
-		private void ExitLock(string accountName)
-		{
-			LockCount lockObj = null;
-			lock (m_locks)
-			{
-				// Get lock object
-				if (!m_locks.TryGetValue(accountName, out lockObj))
-				{
-					if (Log.IsErrorEnabled)
-						Log.Error("(Exit) No lock object for account: '" + accountName + "'");
-				}
-
-				// Remove lock object if no more locks on it
-				if (lockObj != null)
-				{
-					if (--lockObj.count <= 0)
-					{
-						m_locks.Remove(accountName);
-					}
-				}
-			}
-
-			Monitor.Exit(lockObj);
-		}
-
-		#region Nested type: LockCount
-
-		/// <summary>
-		/// This class is used as lock object. Contains the count of locks held.
-		/// </summary>
-		private class LockCount
-		{
-			/// <summary>
-			/// Count of locks held.
-			/// </summary>
-			public int count;
-		}
-
-		#endregion
 	}
 }
