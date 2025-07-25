@@ -204,57 +204,104 @@ namespace DOL.Database
         /// <returns>True if objects were saved successfully; false otherwise</returns>
         protected override IEnumerable<bool> SaveObjectImpl(DataTableHandler tableHandler, IEnumerable<DataObject> dataObjects)
         {
-            var success = new List<bool>();
-            if (!dataObjects.Any())
+            List<bool> success = new();
+
+            // Pre-filter to only process objects that have been marked as Dirty.
+            List<DataObject> dataObjectList = dataObjects.Where(obj => obj.Dirty).ToList();
+
+            if (dataObjectList.Count == 0)
                 return success;
+
+            // Get Primary Key info once. This is used for the WHERE clause on every UPDATE.
+            List<ElementBinding> primaryKeyBindings = tableHandler.FieldElementBindings.Where(bind => bind.PrimaryKey != null).ToList();
+
+            if (primaryKeyBindings.Count == 0)
+                throw new DatabaseException($"Table {tableHandler.TableName} has no primary key for saving...");
+
+            DbConnection conn = null;
+            DbTransaction transaction = null;
 
             try
             {
-                // Columns Filtering out ReadOnly
-                var columns = tableHandler.FieldElementBindings.Where(bind => bind.PrimaryKey == null && bind.ReadOnly == null)
-                    .Select(bind => new { Binding = bind, ColumnName = string.Format("`{0}`", bind.ColumnName), ParamName = string.Format("@{0}", bind.ColumnName) }).ToArray();
-                // Primary Key
-                var primary = tableHandler.FieldElementBindings.Where(bind => bind.PrimaryKey != null)
-                    .Select(bind => new { Binding = bind, ColumnName = string.Format("`{0}`", bind.ColumnName), ParamName = string.Format("@{0}", bind.ColumnName) }).ToArray();
+                conn = CreateConnection(ConnectionString);
+                OpenConnection(conn);
+                transaction = conn.BeginTransaction();
 
-                if (!primary.Any())
-                    throw new DatabaseException(string.Format("Table {0} has no primary key for saving...", tableHandler.TableName));
-
-                var command = string.Format("UPDATE `{0}` SET {1} WHERE {2}", tableHandler.TableName,
-                                            string.Join(", ", columns.Select(col => string.Format("{0} = {1}", col.ColumnName, col.ParamName))),
-                                            string.Join(" AND ", primary.Select(col => string.Format("{0} = {1}", col.ColumnName, col.ParamName))));
-
-                var objs = dataObjects.ToArray();
-                var parameters = objs.Select(obj => columns.Concat(primary).Select(col => new QueryParameter(col.ParamName, col.Binding.GetValue(obj), col.Binding.ValueType)));
-
-                var affected = ExecuteNonQueryImpl(command, parameters);
-                var resultByObjects = affected.Select((result, index) => new { Result = result, DataObject = objs[index] });
-
-                foreach (var result in resultByObjects)
+                foreach (DataObject dataObject in dataObjectList)
                 {
-                    if (result.Result > 0)
+                    bool wasSuccessful = false;
+
+                    try
                     {
-                        result.DataObject.Dirty = false;
-                        result.DataObject.IsPersisted = true;
-                        success.Add(true);
+                        // Get the list of bindings for properties that have actually changed.
+                        List<ElementBinding> dirtyBindings = dataObject.GetDirtyBindings(tableHandler);
+
+                        // If nothing changed, just mark it clean and continue.
+                        if (dirtyBindings.Count == 0)
+                        {
+                            dataObject.Dirty = false;
+                            dataObject.IsPersisted = true;
+                            success.Add(true);
+                            continue;
+                        }
+
+                        // Build the dynamic update statement for this object.
+                        string setClause = string.Join(", ", dirtyBindings.Select(b => $"`{b.ColumnName}` = @{b.ColumnName}"));
+                        string whereClause = string.Join(" AND ", primaryKeyBindings.Select(b => $"`{b.ColumnName}` = @{b.ColumnName}"));
+                        string commandText = $"UPDATE `{tableHandler.TableName}` SET {setClause} WHERE {whereClause}";
+
+                        using DbCommand cmd = conn.CreateCommand();
+                        cmd.Transaction = transaction;
+                        cmd.CommandText = commandText;
+
+                        // Add only the required parameters for this specific command.
+                        var dirtyParameters = dirtyBindings.Select(b => new QueryParameter($"@{b.ColumnName}", b.GetValue(dataObject), b.ValueType));
+                        var primaryParameters = primaryKeyBindings.Select(b => new QueryParameter($"@{b.ColumnName}", b.GetValue(dataObject), b.ValueType));
+
+                        FillSQLParameter(dirtyParameters.Concat(primaryParameters), cmd.Parameters);
+
+                        if (cmd.ExecuteNonQuery() > 0)
+                        {
+                            dataObject.Dirty = false;
+                            dataObject.TakeSnapshot(); // Important: Take a new snapshot of the now-saved state.
+                            wasSuccessful = true;
+                        }
+                        else
+                        {
+                            if (log.IsErrorEnabled)
+                                log.Error($"Error saving data object (0 rows affected) in table {tableHandler.TableName} Object = {dataObject}");
+
+                            wasSuccessful = false;
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
                         if (log.IsErrorEnabled)
-                        {
-                            if (result.Result < 0)
-                                log.ErrorFormat("Error saving data object in table {0} Object = {1} --- constraint failed? {2}", tableHandler.TableName, result.DataObject, command);
-                            else
-                                log.ErrorFormat("Error saving data object in table {0} Object = {1} --- keyvalue changed? {2}\n{3}", tableHandler.TableName, result.DataObject, command, Environment.StackTrace);
-                        }
-                        success.Add(false);
+                            log.Error($"Exception while saving data object in table: {tableHandler.TableName}, Object = {dataObject}", ex);
+
+                        wasSuccessful = false;
                     }
+
+                    success.Add(wasSuccessful);
                 }
+
+                transaction.Commit();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                transaction?.Rollback();
+
                 if (log.IsErrorEnabled)
-                    log.ErrorFormat("Error while saving data object in table: {0}\n{1}", tableHandler.TableName, e);
+                    log.Error($"Catastrophic error during batch save for table: {tableHandler.TableName}. Transaction was rolled back.", ex);
+
+                // Ensure the success list matches the input list count, marking unprocessed as failed.
+                while (success.Count < dataObjectList.Count)
+                    success.Add(false);
+            }
+            finally
+            {
+                if (conn != null)
+                    CloseConnection(conn);
             }
 
             return success;
@@ -442,6 +489,7 @@ namespace DOL.Database
                 list.Add(obj);
                 obj.Dirty = false;
                 obj.IsPersisted = true;
+                obj.TakeSnapshot();
             }
 
             resultList.Add(list.ToArray());
