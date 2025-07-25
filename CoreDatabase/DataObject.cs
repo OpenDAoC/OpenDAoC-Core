@@ -15,6 +15,7 @@ namespace DOL.Database
         private DataObject _snapshot;
         private bool _allowAdd = true;
         private bool _allowDelete = true;
+        private DateTime _lastTimeRowUpdated;
 
         public virtual bool UsesPreCaching => AttributeUtil.GetPreCachedFlag(GetType());
 
@@ -50,8 +51,8 @@ namespace DOL.Database
         [DataElement(AllowDbNull = false, Index = false)]
         public DateTime LastTimeRowUpdated
         {
-            get => DateTime.UtcNow;
-            set => Dirty = true;
+            get => Dirty ? DateTime.UtcNow : _lastTimeRowUpdated;
+            set => _lastTimeRowUpdated = value;
         }
 
         protected DataObject()
@@ -68,6 +69,7 @@ namespace DOL.Database
             // Called when an object as been created and its properties initialized.
             // Creates a copy of itself to be able to keep track of dirty properties.
             _snapshot = (DataObject) MemberwiseClone();
+            _snapshot.Dirty = false;
         }
 
         public List<ElementBinding> GetDirtyBindings(DataTableHandler tableHandler)
