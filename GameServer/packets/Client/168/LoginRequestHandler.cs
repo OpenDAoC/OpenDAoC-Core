@@ -53,7 +53,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 		/// </summary>
 		private static readonly Logging.Logger Log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-		private static DateTime m_lastAccountCreateTime;
+		private static DateTime _lastAccountCreateTime;
+		private static Lock _accountCreateLock = new();
 		private static HttpClient _httpClient = new HttpClient();
 
 		public void HandlePacket(GameClient client, GSPacketIn packet)
@@ -270,11 +271,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 						if (playerAccount == null)
 						{
-							//check autocreate ...
-
 							if (GameServer.Instance.Configuration.AutoAccountCreation && Properties.ALLOW_AUTO_ACCOUNT_CREATION)
 							{
-								// autocreate account
 								if (string.IsNullOrEmpty(password))
 								{
 									client.Out.SendLoginDenied(eLoginError.AccountInvalid);
@@ -286,51 +284,58 @@ namespace DOL.GS.PacketHandler.Client.v168
 									return;
 								}
 
-								// check for account bombing
-								TimeSpan ts;
-								var allAccByIp = DOLDB<DbAccount>.SelectObjects(DB.Column("LastLoginIP").IsEqualTo(ipAddress));
-								int totalacc = 0;
-								foreach (DbAccount ac in allAccByIp)
+								// Try to prevent account creation bombing.
+								// This should eventually be made async.
+								lock (_accountCreateLock)
 								{
-									ts = DateTime.Now - ac.CreationDate;
-									if (ts.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION_SAMEIP && totalacc > 1)
+									TimeSpan timeSpan;
+									int totalAccount = 0;
+									var accountsFromSameIp = DOLDB<DbAccount>.SelectObjects(DB.Column("LastLoginIP").IsEqualTo(ipAddress));
+
+									foreach (DbAccount ac in accountsFromSameIp)
+									{
+										timeSpan = DateTime.Now - ac.CreationDate;
+
+										if (timeSpan.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION_SAMEIP)
+										{
+											if (Log.IsWarnEnabled)
+												Log.Warn($"Account creation: too many from same IP within set minutes - {userName}:{ipAddress}");
+
+											client.Out.SendLoginDenied(eLoginError.PersonalAccountIsOutOfTime);
+											client.IsConnected = false;
+											return;
+										}
+
+										totalAccount++;
+									}
+
+									if (totalAccount >= Properties.TOTAL_ACCOUNTS_ALLOWED_SAMEIP)
 									{
 										if (Log.IsWarnEnabled)
-											Log.Warn("Account creation: too many from same IP within set minutes - " + userName + " : " + ipAddress);
+											Log.Warn($"Account creation: too many accounts created from same ip - {userName}:{ipAddress}");
 
-										client.Out.SendLoginDenied(eLoginError.PersonalAccountIsOutOfTime);
+										client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
 										client.IsConnected = false;
 										return;
 									}
 
-									totalacc++;
-								}
-								if (totalacc >= Properties.TOTAL_ACCOUNTS_ALLOWED_SAMEIP)
-								{
-									if (Log.IsWarnEnabled)
-										Log.Warn("Account creation: too many accounts created from same ip - " + userName + " : " + ipAddress);
-
-									client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
-									client.IsConnected = false;
-									return;
-								}
-
-								// per timeslice - for preventing account bombing via different ip
-								if (Properties.TIME_BETWEEN_ACCOUNT_CREATION > 0)
-								{
-									ts = DateTime.Now - m_lastAccountCreateTime;
-									if (ts.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION)
+									if (Properties.TIME_BETWEEN_ACCOUNT_CREATION > 0)
 									{
-										if (Log.IsWarnEnabled)
-											Log.Warn("Account creation: time between account creation too small - " + userName + " : " + ipAddress);
+										timeSpan = DateTime.Now - _lastAccountCreateTime;
 
-										client.Out.SendLoginDenied(eLoginError.PersonalAccountIsOutOfTime);
-										client.IsConnected = false;
-										return;
+										if (timeSpan.TotalMinutes < Properties.TIME_BETWEEN_ACCOUNT_CREATION)
+										{
+											if (Log.IsWarnEnabled)
+												Log.Warn($"Account creation: time between account creation too small - {userName}:{ipAddress}");
+
+											client.Out.SendLoginDenied(eLoginError.PersonalAccountIsOutOfTime);
+											client.IsConnected = false;
+											return;
+										}
 									}
-								}
 
-								m_lastAccountCreateTime = DateTime.Now;
+									_lastAccountCreateTime = DateTime.Now;
+								}
 
 								playerAccount = new DbAccount();
 								playerAccount.Name = userName;

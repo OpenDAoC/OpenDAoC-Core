@@ -2436,7 +2436,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Account IP bombing prevention
 		/// </summary>
-		[ServerProperty("account", "time_between_account_creation_sameip", "The time in minutes between accounts creation from the same ip after 2 creations.", 15)]
+		[ServerProperty("account", "time_between_account_creation_sameip", "The time in minutes between accounts creation from the same ip.", 15)]
 		public static int TIME_BETWEEN_ACCOUNT_CREATION_SAMEIP;
 
 		/// <summary>
