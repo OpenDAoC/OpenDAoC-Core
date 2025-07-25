@@ -29,7 +29,7 @@ namespace DOL.GS.PropertyCalc
                 case IGameEpicNpc epicNpc:
                     return CalculateLivingArmorFactor(living, property, 12 * epicNpc.ArmorFactorScalingFactor, 50);
                 case NecromancerPet:
-                    return CalculateLivingArmorFactor(living, property, 12, 121); // Should be equal to a level 50 player in 102 AF 100% qual armor.
+                    return CalculateLivingArmorFactor(living, property, 12, 121);
                 case GameSummonedPet:
                     return CalculateLivingArmorFactor(living, property, 12, 175);
                 case GuardLord:
