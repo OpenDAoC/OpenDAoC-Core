@@ -1,13 +1,13 @@
 using System;
-using System.Linq;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
-
 using DOL.Database.Attributes;
 using DOL.Database.Connection;
 using DOL.Database.Handlers;
-
 
 namespace DOL.Database
 {
@@ -25,6 +25,8 @@ namespace DOL.Database
 		/// Number Format Info to Use for Database
 		/// </summary>
 		protected static readonly NumberFormatInfo Nfi = new CultureInfo("en-US", false).NumberFormat;
+
+		private static readonly ConcurrentDictionary<Type, Func<IEnumerable<object>, Array>> _castToArrayCache = new();
 
 		/// <summary>
 		/// Data Table Handlers for this Database Handler
@@ -626,9 +628,8 @@ namespace DOL.Database
 				{
 					if (result.Results.Any())
 					{
-						MethodInfo castMethod = typeof(Enumerable).GetMethod("OfType").MakeGenericMethod(type);
-						MethodInfo methodToArray = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(type);
-						relationBind.SetValue(result.DataObject, methodToArray.Invoke(null, new object[] { castMethod.Invoke(null, new object[] { result.Results }) }));
+						Array array = CastAndToArray(result.Results.Cast<object>(), type);
+						relationBind.SetValue(result.DataObject, array);
 					}
 					else
 					{
@@ -643,6 +644,20 @@ namespace DOL.Database
 			
 			// Fill Sub Relations
 			FillObjectRelations(resultByObjs.SelectMany(result => result.Results), false);
+		}
+
+		private static Array CastAndToArray(IEnumerable<object> source, Type targetType)
+		{
+			var func = _castToArrayCache.GetOrAdd(targetType, static t =>
+			{
+				ParameterExpression param = Expression.Parameter(typeof(IEnumerable<object>), "source");
+				MethodCallExpression castCall = Expression.Call(typeof(Enumerable), "OfType", [t], param);
+				MethodCallExpression toArrayCall = Expression.Call(typeof(Enumerable), "ToArray", [t], castCall);
+				Expression<Func<IEnumerable<object>, Array>> lambda = Expression.Lambda<Func<IEnumerable<object>, Array>>(toArrayCall, param);
+				return lambda.Compile();
+			});
+
+			return func(source);
 		}
 		#endregion
 		#region Public Object Select with Key API
