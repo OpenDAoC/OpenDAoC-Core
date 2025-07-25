@@ -153,7 +153,7 @@ namespace DOL.GS
 
         public override int TargetInViewAlwaysTrueMinRange => (TargetObject is GamePlayer targetPlayer && targetPlayer.IsMoving) ? 100 : 64;
 
-        public PlayerDeck RandomNumberDeck { get; set; }
+        public RandomDeck RandomDeck { get; set; }
 
         /// <summary>
         /// Holds the ground target visibility flag
@@ -10416,7 +10416,7 @@ namespace DOL.GS
             m_previousLoginDate = DBCharacter.LastPlayed;
             DBCharacter.LastPlayed = DateTime.Now; // Has to be updated on load to ensure time offline isn't added to character /played.
             IsMuted = Client.Account.IsMuted; // Account mutes are persistent.
-            RandomNumberDeck = new PlayerDeck(this); // Not async yet, needs to be updated.
+            RandomDeck = new RandomDeck(this); // Not async yet, needs to be updated.
 
             // Prepare the tasks.
             var moneyForRealmTask = DOLDB<DbAccountXMoney>.SelectObjectAsync(DB.Column("AccountID").IsEqualTo(Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(Realm)));
@@ -10961,7 +10961,7 @@ namespace DOL.GS
         {
             try
             {
-                RandomNumberDeck.SaveDeck();
+                RandomDeck.SaveDeck();
 
                 DbAccountXMoney MoneyForRealm = DOLDB<DbAccountXMoney>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo(this.Realm)));
 

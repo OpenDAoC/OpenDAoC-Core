@@ -1691,7 +1691,7 @@ namespace DOL.GS
             if (blockChance > 0)
             {
                 if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
-                    blockRoll = player.RandomNumberDeck.GetPseudoDouble();
+                    blockRoll = player.RandomDeck.GetPseudoDouble();
                 else
                     blockRoll = Util.RandomDouble();
 
@@ -1788,7 +1788,7 @@ namespace DOL.GS
                     double guardRoll;
 
                     if (!Properties.OVERRIDE_DECK_RNG && owner is GamePlayer player)
-                        guardRoll = player.RandomNumberDeck.GetPseudoDouble();
+                        guardRoll = player.RandomDeck.GetPseudoDouble();
                     else
                         guardRoll = Util.RandomDouble();
 
@@ -1943,7 +1943,7 @@ namespace DOL.GS
                     double interceptRoll;
 
                     if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
-                        interceptRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
+                        interceptRoll = playerOwner.RandomDeck.GetPseudoDouble();
                     else
                         interceptRoll = Util.RandomDouble();
 
@@ -2028,7 +2028,7 @@ namespace DOL.GS
                 double evadeRoll;
 
                 if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
-                    evadeRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
+                    evadeRoll = playerOwner.RandomDeck.GetPseudoDouble();
                 else
                     evadeRoll = Util.RandomDouble();
 
@@ -2051,7 +2051,7 @@ namespace DOL.GS
                     double parryRoll;
 
                     if (!Properties.OVERRIDE_DECK_RNG && playerOwner != null)
-                        parryRoll = playerOwner.RandomNumberDeck.GetPseudoDouble();
+                        parryRoll = playerOwner.RandomDeck.GetPseudoDouble();
                     else
                         parryRoll = Util.RandomDouble();
 
@@ -2104,7 +2104,7 @@ namespace DOL.GS
                 double missRoll;
 
                 if (!Properties.OVERRIDE_DECK_RNG && playerAttacker != null)
-                    missRoll = playerAttacker.RandomNumberDeck.GetPseudoDouble();
+                    missRoll = playerAttacker.RandomDeck.GetPseudoDouble();
                 else
                     missRoll = Util.RandomDouble();
 

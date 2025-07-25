@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace DOL.GS.Utils
 {
-    public class PlayerDeck
+    public class RandomDeck
     {
         private const int DECKS_COUNT = 1;             // The final deck is a concatenation of 1 or more decks.
         private const int CARDS_PER_DECK_COUNT = 100;  // Also represents the highest value + 1.
@@ -22,7 +22,7 @@ namespace DOL.GS.Utils
         private double[] _bucketWeights = new double[NUM_BUCKETS];
         private readonly Lock _cardsLock = new();
 
-        public PlayerDeck(GamePlayer player)
+        public RandomDeck(GamePlayer player)
         {
             for (int i = 0; i < NUM_BUCKETS; i++)
                 _buckets[i] = new();

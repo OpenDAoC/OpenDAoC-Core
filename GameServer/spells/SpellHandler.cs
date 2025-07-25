@@ -2419,7 +2419,7 @@ namespace DOL.GS.Spells
 				double spellResistRoll;
 
 				if (!Properties.OVERRIDE_DECK_RNG && Caster is GamePlayer player)
-					spellResistRoll = player.RandomNumberDeck.GetPseudoDouble();
+					spellResistRoll = player.RandomDeck.GetPseudoDouble();
 				else
 					spellResistRoll = Util.RandomDouble();
 
