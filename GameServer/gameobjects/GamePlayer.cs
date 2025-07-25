@@ -6754,152 +6754,8 @@ namespace DOL.GS
 
         #region Money
 
-        /// <summary>
-        /// Player Mithril Amount
-        /// </summary>
-        public virtual int Mithril { get { return m_Mithril; } protected set { m_Mithril = value; if (DBCharacter != null) DBCharacter.Mithril = m_Mithril; }}
-        protected int m_Mithril = 0;
+        public Wallet Wallet { get; private set; }
 
-        /// <summary>
-        /// Player Platinum Amount
-        /// </summary>
-        public virtual int Platinum { get { return m_Platinum; } protected set { m_Platinum = value; if (DBCharacter != null) DBCharacter.Platinum = m_Platinum; }}
-        protected int m_Platinum = 0;
-
-        /// <summary>
-        /// Player Gold Amount
-        /// </summary>
-        public virtual int Gold { get { return m_Gold; } protected set { m_Gold = value; if (DBCharacter != null) DBCharacter.Gold = m_Gold; }}
-        protected int m_Gold = 0;
-
-        /// <summary>
-        /// Player Silver Amount
-        /// </summary>
-        public virtual int Silver { get { return m_Silver; } protected set { m_Silver = value; if (DBCharacter != null) DBCharacter.Silver = m_Silver; }}
-        protected int m_Silver = 0;
-
-        /// <summary>
-        /// Player Copper Amount
-        /// </summary>
-        public virtual int Copper { get { return m_Copper; } protected set { m_Copper = value; if (DBCharacter != null) DBCharacter.Copper = m_Copper; }}
-        protected int m_Copper = 0;
-
-        /// <summary>
-        /// Gets the money value this player owns
-        /// </summary>
-        /// <returns></returns>
-        public virtual long GetCurrentMoney()
-        {
-            return Money.GetMoney(Mithril, Platinum, Gold, Silver, Copper);
-        }
-
-        public long ApplyGuildDues(long money)
-        {
-            Guild guild = Guild;
-
-            if (guild == null || !guild.IsGuildDuesOn())
-                return money;
-
-            long moneyToGuild = money * guild.GetGuildDuesPercent() / 100;
-
-            if (moneyToGuild <= 0 || !guild.AddToBank(moneyToGuild, false))
-                return money;
-
-            return money - moneyToGuild;
-        }
-
-        /// <summary>
-        /// Adds money to this player
-        /// </summary>
-        /// <param name="money">money to add</param>
-        public virtual void AddMoney(long money)
-        {
-            AddMoney(money, null, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-        }
-
-        /// <summary>
-        /// Adds money to this player
-        /// </summary>
-        /// <param name="money">money to add</param>
-        /// <param name="messageFormat">null if no message or "text {0} text"</param>
-        public virtual void AddMoney(long money, string messageFormat)
-        {
-            AddMoney(money, messageFormat, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-        }
-
-        /// <summary>
-        /// Adds money to this player
-        /// </summary>
-        /// <param name="money">money to add</param>
-        /// <param name="messageFormat">null if no message or "text {0} text"</param>
-        /// <param name="ct">message chat type</param>
-        /// <param name="cl">message chat location</param>
-        public virtual void AddMoney(long money, string messageFormat, eChatType ct, eChatLoc cl)
-        {
-            long newMoney = GetCurrentMoney() + money;
-
-            Copper = Money.GetCopper(newMoney);
-            Silver = Money.GetSilver(newMoney);
-            Gold = Money.GetGold(newMoney);
-            Platinum = Money.GetPlatinum(newMoney);
-            Mithril = Money.GetMithril(newMoney);
-
-            Out.SendUpdateMoney();
-
-            if (messageFormat != null)
-                Out.SendMessage(string.Format(messageFormat, Money.GetString(money)), ct, cl);
-        }
-
-        /// <summary>
-        /// Removes money from the player
-        /// </summary>
-        /// <param name="money">money value to subtract</param>
-        /// <returns>true if successfull, false if player doesn't have enough money</returns>
-        public virtual bool RemoveMoney(long money)
-        {
-            return RemoveMoney(money, null, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-        }
-
-        /// <summary>
-        /// Removes money from the player
-        /// </summary>
-        /// <param name="money">money value to subtract</param>
-        /// <param name="messageFormat">null if no message or "text {0} text"</param>
-        /// <returns>true if successfull, false if player doesn't have enough money</returns>
-        public virtual bool RemoveMoney(long money, string messageFormat)
-        {
-            return RemoveMoney(money, messageFormat, eChatType.CT_System, eChatLoc.CL_SystemWindow);
-        }
-
-        /// <summary>
-        /// Removes money from the player
-        /// </summary>
-        /// <param name="money">money value to subtract</param>
-        /// <param name="messageFormat">null if no message or "text {0} text"</param>
-        /// <param name="ct">message chat type</param>
-        /// <param name="cl">message chat location</param>
-        /// <returns>true if successfull, false if player doesn't have enough money</returns>
-        public virtual bool RemoveMoney(long money, string messageFormat, eChatType ct, eChatLoc cl)
-        {
-            if (money > GetCurrentMoney())
-                return false;
-
-            long newMoney = GetCurrentMoney() - money;
-
-            Mithril = Money.GetMithril(newMoney);
-            Platinum = Money.GetPlatinum(newMoney);
-            Gold = Money.GetGold(newMoney);
-            Silver = Money.GetSilver(newMoney);
-            Copper = Money.GetCopper(newMoney);
-
-            Out.SendUpdateMoney();
-
-            if (messageFormat != null && money != 0)
-            {
-                Out.SendMessage(string.Format(messageFormat, Money.GetString(money)), ct, cl);
-            }
-            return true;
-        }
         #endregion
 
         private DbInventoryItem m_useItem;
@@ -10110,14 +9966,7 @@ namespace DOL.GS
                 return TryPickUpResult.DOES_NOT_HANDLE;
             }
 
-            long moneyToPlayer = ApplyGuildDues(money.Value);
-
-            if (moneyToPlayer > 0)
-            {
-                AddMoney(moneyToPlayer, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouPickUp", Money.GetString(moneyToPlayer)));
-                InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, moneyToPlayer);
-            }
-
+            Wallet.PickUpMoney(money.Value, false);
             money.RemoveFromWorld();
             return TryPickUpResult.SUCCESS;
         }
@@ -10599,11 +10448,12 @@ namespace DOL.GS
                     moneyForRealm = newMoney;
                 }
 
-                m_Copper = moneyForRealm.Copper;
-                m_Silver = moneyForRealm.Silver;
-                m_Gold = moneyForRealm.Gold;
-                m_Platinum = moneyForRealm.Platinum;
-                m_Mithril = moneyForRealm.Mithril;
+                int copper = moneyForRealm.Copper;
+                int silver = moneyForRealm.Silver;
+                int gold = moneyForRealm.Gold;
+                int platinum = moneyForRealm.Platinum;
+                int mithril = moneyForRealm.Mithril;
+                Wallet.LoadMoney(WalletHelper.ToMoney(mithril, platinum, gold, silver, copper));
             }
 
             void HandleInventory(IList items)
@@ -10979,11 +10829,12 @@ namespace DOL.GS
                 }
                 else
                 {
-                    MoneyForRealm.Copper = Copper;
-                    MoneyForRealm.Silver = Silver;
-                    MoneyForRealm.Gold = Gold;
-                    MoneyForRealm.Platinum = Platinum;
-                    MoneyForRealm.Mithril = Mithril;
+                    var (mithril, platinum, gold, silver, copper) = WalletHelper.ToMoneyParts(Wallet.GetMoney());
+                    MoneyForRealm.Copper = copper;
+                    MoneyForRealm.Silver = silver;
+                    MoneyForRealm.Gold = gold;
+                    MoneyForRealm.Platinum = platinum;
+                    MoneyForRealm.Mithril = mithril;
                     GameServer.Database.SaveObject(MoneyForRealm);
                 }
 
@@ -12768,62 +12619,9 @@ namespace DOL.GS
 
         #endregion
 
-        #region Achievements
+        #region KillStatsAndAchievement
 
-        public void Achieve(string achievementName, int count = 1)
-        {
-            //DOL.Database.Achievement
-            DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
-
-            if (achievement == null)
-            {
-                achievement = new DbAchievement();
-                achievement.AccountId = this.Client.Account.ObjectId;
-                achievement.AchievementName = achievementName;
-                achievement.Realm = (int) this.Realm;
-                achievement.Count = count;
-                GameServer.Database.AddObject(achievement);
-                return;
-            }
-
-            achievement.Count += count;
-            GameServer.Database.SaveObject(achievement);
-        }
-
-        public void SetAchievementTo(string achievementName, int value)
-        {
-            //DOL.Database.Achievement
-            DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
-
-            if (achievement == null)
-            {
-                achievement = new DbAchievement();
-                achievement.AccountId = this.Client.Account.ObjectId;
-                achievement.AchievementName = achievementName;
-                achievement.Realm = (int) this.Realm;
-                achievement.Count = value;
-                GameServer.Database.AddObject(achievement);
-                return;
-            }
-
-            achievement.Count = value;
-            GameServer.Database.SaveObject(achievement);
-        }
-
-        public int GetAchievementProgress(string achievementName)
-        {
-            DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID")
-                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
-
-            if (achievement == null)
-                return 0;
-            else
-                return achievement.Count;
-        }
-
-        #endregion
-
-        #region Statistics
+        private readonly Lock _killStatsAndAchievementLock = new();
 
         public virtual int KillsAlbionPlayers
         {
@@ -13017,11 +12815,64 @@ namespace DOL.GS
             }
         }
 
-        private readonly Lock _killStatsOnPlayerKillLock = new();
+        public void Achieve(string achievementName, int count = 1)
+        {
+            lock (_killStatsAndAchievementLock)
+            {
+                DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+                if (achievement == null)
+                {
+                    achievement = new DbAchievement();
+                    achievement.AccountId = this.Client.Account.ObjectId;
+                    achievement.AchievementName = achievementName;
+                    achievement.Realm = (int) this.Realm;
+                    achievement.Count = count;
+                    GameServer.Database.AddObject(achievement);
+                    return;
+                }
+
+                achievement.Count += count;
+                GameServer.Database.SaveObject(achievement);
+            }
+        }
+
+        public void SetAchievementTo(string achievementName, int value)
+        {
+            lock (_killStatsAndAchievementLock)
+            {
+                DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID").IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+                if (achievement == null)
+                {
+                    achievement = new DbAchievement();
+                    achievement.AccountId = this.Client.Account.ObjectId;
+                    achievement.AchievementName = achievementName;
+                    achievement.Realm = (int) this.Realm;
+                    achievement.Count = value;
+                    GameServer.Database.AddObject(achievement);
+                    return;
+                }
+
+                achievement.Count = value;
+                GameServer.Database.SaveObject(achievement);
+            }
+        }
+
+        public int GetAchievementProgress(string achievementName)
+        {
+            DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID")
+                .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
+
+            if (achievement == null)
+                return 0;
+            else
+                return achievement.Count;
+        }
 
         public void UpdateKillStatsOnPlayerKill(eRealm killedPlayerRealm, bool deathBlow, bool soloKill, int realmPointsEarned)
         {
-            lock (_killStatsOnPlayerKillLock)
+            lock (_killStatsAndAchievementLock)
             {
                 if (realmPointsEarned > 0)
                     m_statistics.AddToRealmPointsEarnedFromKills((uint) realmPointsEarned);
@@ -13915,6 +13766,7 @@ namespace DOL.GS
             m_lastUniqueLocations = new GameLocation[4];
 
             CreateInventory();
+            Wallet = new(this);
 
             m_characterClass = new DefaultCharacterClass();
             m_groupIndex = 0xFF;

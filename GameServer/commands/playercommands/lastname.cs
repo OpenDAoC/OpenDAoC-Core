@@ -36,9 +36,9 @@ namespace DOL.GS.Commands
 			}
 
 			/* When you don't have a lastname, change is for free, otherwise you need money */
-			if (client.Player.LastName != string.Empty && client.Player.GetCurrentMoney() < Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0))
+			if (client.Player.LastName != string.Empty && client.Player.Wallet.GetMoney() < WalletHelper.ToMoney(0, 0, LASTNAME_FEE, 0, 0))
 			{
-				client.Out.SendMessage("Changing your last name costs " + Money.GetString(Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0)) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				client.Out.SendMessage("Changing your last name costs " + WalletHelper.ToString(WalletHelper.ToMoney(0, 0, LASTNAME_FEE, 0, 0)) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -131,9 +131,9 @@ namespace DOL.GS.Commands
 			}
 
 			/* Check money only if your lastname is not blank */
-			if (player.LastName != string.Empty && player.GetCurrentMoney() < Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0))
+			if (player.LastName != string.Empty && player.Wallet.GetMoney() < WalletHelper.ToMoney(0, 0, LASTNAME_FEE, 0, 0))
 			{
-				player.Out.SendMessage("Changing your last name costs " + Money.GetString(Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0)) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+				player.Out.SendMessage("Changing your last name costs " + WalletHelper.ToString(WalletHelper.ToMoney(0, 0, LASTNAME_FEE, 0, 0)) + "!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 				return;
 			}
 
@@ -146,7 +146,7 @@ namespace DOL.GS.Commands
 			/* Remove money only if your lastname is not blank and is different from the previous one */
             if (player.LastName != string.Empty && player.LastName != NewLastName)
             {
-                player.RemoveMoney(Money.GetMoney(0, 0, LASTNAME_FEE, 0, 0), null);
+                player.Wallet.RemoveMoney(WalletHelper.ToMoney(0, 0, LASTNAME_FEE, 0, 0), null);
                 InventoryLogging.LogInventoryAction(player, player.TargetObject, eInventoryActionType.Merchant, LASTNAME_FEE * 10000);
             }
 

@@ -222,15 +222,15 @@ namespace DOL.GS.PacketHandler.Client.v168
                         if (!player.RemoveBountyPoints(currencyToUse))
                             return;
                     }
-                    else if (!player.RemoveMoney(currencyToUse))
+                    else if (!player.Wallet.RemoveMoney(currencyToUse))
                         return;
 
                     InventoryLogging.LogInventoryAction(player, $"(HOUSE;{house.HouseNumber})", eInventoryActionType.Other, currencyToUse);
                     house.KeptMoney += currencyToUse;
                     house.SaveIntoDatabase();
                     player.SaveIntoDatabase();
-                    player.Out.SendMessage($"You deposit {Money.GetString(currencyToUse)} in the lockbox.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                    player.Out.SendMessage($"The lockbox now has {Money.GetString(house.KeptMoney)} in it. The weekly payment is {Money.GetString(HouseMgr.GetRentByModel(house.Model))}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"You deposit {WalletHelper.ToString(currencyToUse)} in the lockbox.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    player.Out.SendMessage($"The lockbox now has {WalletHelper.ToString(house.KeptMoney)} in it. The weekly payment is {WalletHelper.ToString(HouseMgr.GetRentByModel(house.Model))}.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     player.Out.SendMessage($"The house is now prepaid for the next {house.KeptMoney / HouseMgr.GetRentByModel(house.Model)} payments.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     player.TempProperties.RemoveProperty(HousingConstants.MoneyForHouseRent);
                     return;

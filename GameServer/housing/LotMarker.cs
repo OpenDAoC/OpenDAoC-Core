@@ -30,7 +30,7 @@ namespace DOL.GS.Housing
 
 			if (string.IsNullOrEmpty(DatabaseItem.OwnerID))
 			{
-				list.Add(" It can be bought for " + Money.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + ".");
+				list.Add(" It can be bought for " + WalletHelper.ToString(HouseTemplateMgr.GetLotPrice(DatabaseItem)) + ".");
 			}
 			else if (!string.IsNullOrEmpty(DatabaseItem.Name))
 			{
@@ -58,7 +58,7 @@ namespace DOL.GS.Housing
 			}
 
 			if (string.IsNullOrEmpty(DatabaseItem.OwnerID))
-				player.Out.SendCustomDialog($"Do you want to buy this lot?\nIt costs {Money.GetString(HouseTemplateMgr.GetLotPrice(DatabaseItem))}.\nYou won't be able to delete this character.", BuyLot);
+				player.Out.SendCustomDialog($"Do you want to buy this lot?\nIt costs {WalletHelper.ToString(HouseTemplateMgr.GetLotPrice(DatabaseItem))}.\nYou won't be able to delete this character.", BuyLot);
 			else
 			{
 				if (HouseMgr.IsOwner(DatabaseItem, player))
@@ -87,7 +87,7 @@ namespace DOL.GS.Housing
 				}
 
 			    long totalCost = HouseTemplateMgr.GetLotPrice(DatabaseItem);
-				if (player.RemoveMoney(totalCost, "You just bought this lot for {0}.",
+				if (player.Wallet.RemoveMoney(totalCost, "You just bought this lot for {0}.",
 				                       eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
 				{
                     InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, totalCost);

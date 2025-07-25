@@ -1008,7 +1008,7 @@ namespace DOL.GS.PacketHandler
 				if (ServerProperties.Properties.CONSIGNMENT_USE_BP)
 					name += "[" + item.SellPrice.ToString() + " BP]";
 				else
-					name += "[" + Money.GetString(item.SellPrice) + "]";
+					name += "[" + WalletHelper.ToString(item.SellPrice) + "]";
 			}
 			if (name == null) name = string.Empty;
 			if (name.Length > 55)

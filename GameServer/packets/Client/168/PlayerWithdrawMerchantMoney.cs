@@ -48,8 +48,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 					}
 					else
 					{
-						ChatUtil.SendMerchantMessage(client, "GameMerchant.OnPlayerWithdraw", Money.GetString(totalConMoney));
-						client.Player.AddMoney(totalConMoney);
+						ChatUtil.SendMerchantMessage(client, "GameMerchant.OnPlayerWithdraw", WalletHelper.ToString(totalConMoney));
+						client.Player.Wallet.AddMoney(totalConMoney);
 						InventoryLogging.LogInventoryAction(conMerchant, client.Player, eInventoryActionType.Merchant, totalConMoney);
 					}
 

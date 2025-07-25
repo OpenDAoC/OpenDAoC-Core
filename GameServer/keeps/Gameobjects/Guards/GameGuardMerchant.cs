@@ -113,11 +113,11 @@ namespace DOL.GS
 			lock (player.Inventory.Lock)
 			{
 
-				if (player.GetCurrentMoney() < totalValue)
+				if (player.Wallet.GetMoney() < totalValue)
 				{
 					player.Out.SendMessage(
 						LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed",
-							Money.GetString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							WalletHelper.ToString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
 				}
 
@@ -146,13 +146,13 @@ namespace DOL.GS
 				if (amountToBuy > 1)
 					message = LanguageMgr.GetTranslation(player.Client.Account.Language,
 						"GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false),
-						Money.GetString(totalValue));
+						WalletHelper.ToString(totalValue));
 				else
 					message = LanguageMgr.GetTranslation(player.Client.Account.Language,
-						"GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), Money.GetString(totalValue));
+						"GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), WalletHelper.ToString(totalValue));
 
 				// Check if player has enough money and subtract the money
-				if (!player.RemoveMoney(totalValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
+				if (!player.Wallet.RemoveMoney(totalValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
 				{
 					throw new Exception("Money amount changed while adding items.");
 				}
@@ -182,11 +182,11 @@ namespace DOL.GS
 			lock (player.Inventory.Lock)
 			{
 
-				if (player.GetCurrentMoney() < totalValue)
+				if (player.Wallet.GetMoney() < totalValue)
 				{
 					player.Out.SendMessage(
 						LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed",
-							Money.GetString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							WalletHelper.ToString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
 				}
 
@@ -215,13 +215,13 @@ namespace DOL.GS
 				if (amountToBuy > 1)
 					message = LanguageMgr.GetTranslation(player.Client.Account.Language,
 						"GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false),
-						Money.GetString(totalValue));
+						WalletHelper.ToString(totalValue));
 				else
 					message = LanguageMgr.GetTranslation(player.Client.Account.Language,
-						"GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), Money.GetString(totalValue));
+						"GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), WalletHelper.ToString(totalValue));
 
 				// Check if player has enough money and subtract the money
-				if (!player.RemoveMoney(totalValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
+				if (!player.Wallet.RemoveMoney(totalValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
 				{
 					throw new Exception("Money amount changed while adding items.");
 				}
@@ -261,11 +261,11 @@ namespace DOL.GS
 			lock (player.Inventory.Lock)
 			{
 
-				if (player.GetCurrentMoney() < totalValue)
+				if (player.Wallet.GetMoney() < totalValue)
 				{
 					player.Out.SendMessage(
 						LanguageMgr.GetTranslation(player.Client.Account.Language, "GameMerchant.OnPlayerBuy.YouNeed",
-							Money.GetString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+							WalletHelper.ToString(totalValue)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
 					return;
 				}
 
@@ -286,13 +286,13 @@ namespace DOL.GS
 				if (amountToBuy > 1)
 					message = LanguageMgr.GetTranslation(player.Client.Account.Language,
 						"GameMerchant.OnPlayerBuy.BoughtPieces", amountToBuy, template.GetName(1, false),
-						Money.GetString(totalValue));
+						WalletHelper.ToString(totalValue));
 				else
 					message = LanguageMgr.GetTranslation(player.Client.Account.Language,
-						"GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), Money.GetString(totalValue));
+						"GameMerchant.OnPlayerBuy.Bought", template.GetName(1, false), WalletHelper.ToString(totalValue));
 
 				// Check if player has enough money and subtract the money
-				if (!player.RemoveMoney(totalValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
+				if (!player.Wallet.RemoveMoney(totalValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow))
 				{
 					throw new Exception("Money amount changed while adding items.");
 				}
@@ -341,9 +341,9 @@ namespace DOL.GS
 			if (player.Inventory.RemoveItem(item))
 			{
 				string message = LanguageMgr.GetTranslation(player.Client.Account.Language,
-					"GameMerchant.OnPlayerSell.GivesYou", GetName(0, true), Money.GetString(itemValue),
+					"GameMerchant.OnPlayerSell.GivesYou", GetName(0, true), WalletHelper.ToString(itemValue),
 					item.GetName(0, false));
-				player.AddMoney(itemValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
+				player.Wallet.AddMoney(itemValue, message, eChatType.CT_Merchant, eChatLoc.CL_SystemWindow);
 				InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, item.Template,
 					item.Count);
 				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Merchant, itemValue);
@@ -391,7 +391,7 @@ namespace DOL.GS
 				else
 				{
 					message = LanguageMgr.GetTranslation(player.Client.Account.Language,
-						"GameMerchant.OnPlayerAppraise.Offers", GetName(0, true), Money.GetString(val),
+						"GameMerchant.OnPlayerAppraise.Offers", GetName(0, true), WalletHelper.ToString(val),
 						item.GetName(0, false));
 				}
 

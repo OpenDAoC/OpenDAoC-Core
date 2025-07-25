@@ -572,7 +572,7 @@ namespace DOL.GS.Quests
                     Item_Type = 40,
                     IsPickable = true,
                     IsDropable = true,
-                    Price = Money.GetMoney(0, 0, 0, 5, 3),
+                    Price = WalletHelper.ToMoney(0, 0, 0, 5, 3),
                     PackSize = 1,
                     Weight = 0
                 };

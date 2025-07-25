@@ -99,20 +99,20 @@ public class Recharger : GameNPC
         if (item.Charges < item.MaxCharges)
         {
             player.TempProperties.SetProperty(RECHARGE_ITEM_WEAK, new WeakRef(item));
-            NeededMoney += (item.MaxCharges - item.Charges) * Money.GetMoney(0, 0, 10, 0, 0);
+            NeededMoney += (item.MaxCharges - item.Charges) * WalletHelper.ToMoney(0, 0, 10, 0, 0);
         }
 
         if (item.Charges1 < item.MaxCharges1)
         {
             player.TempProperties.SetProperty(RECHARGE_ITEM_WEAK, new WeakRef(item));
-            NeededMoney += (item.MaxCharges1 - item.Charges1) * Money.GetMoney(0, 0, 10, 0, 0);
+            NeededMoney += (item.MaxCharges1 - item.Charges1) * WalletHelper.ToMoney(0, 0, 10, 0, 0);
         }
 
         if (NeededMoney > 0)
         {
             player.Client.Out.SendCustomDialog(
                 LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Recharger.ReceiveItem.Cost",
-                    Money.GetString(NeededMoney)), RechargerDialogResponse);
+                    WalletHelper.ToString(NeededMoney)), RechargerDialogResponse);
             return true;
         }
 
@@ -146,12 +146,12 @@ public class Recharger : GameNPC
         }
 
         long cost = 0;
-        if (item.Charges < item.MaxCharges) cost += (item.MaxCharges - item.Charges) * Money.GetMoney(0, 0, 10, 0, 0);
+        if (item.Charges < item.MaxCharges) cost += (item.MaxCharges - item.Charges) * WalletHelper.ToMoney(0, 0, 10, 0, 0);
 
         if (item.Charges1 < item.MaxCharges1)
-            cost += (item.MaxCharges1 - item.Charges1) * Money.GetMoney(0, 0, 10, 0, 0);
+            cost += (item.MaxCharges1 - item.Charges1) * WalletHelper.ToMoney(0, 0, 10, 0, 0);
 
-        if (!player.RemoveMoney(cost))
+        if (!player.Wallet.RemoveMoney(cost))
         {
             player.Out.SendMessage(
                 LanguageMgr.GetTranslation(player.Client.Account.Language,
@@ -164,7 +164,7 @@ public class Recharger : GameNPC
 
         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                 "Scripts.Recharger.RechargerDialogResponse.GiveMoney",
-                GetName(0, false, player.Client.Account.Language, this), Money.GetString(cost)),
+                GetName(0, false, player.Client.Account.Language, this), WalletHelper.ToString(cost)),
             eChatType.CT_System, eChatLoc.CL_SystemWindow);
         item.Charges = item.MaxCharges;
         item.Charges1 = item.MaxCharges1;
@@ -192,7 +192,7 @@ public class Recharger : GameNPC
         if (TotalCost > 0)
             player.Client.Out.SendCustomDialog(
             LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Recharger.ReceiveItem.Cost",
-                Money.GetString(TotalCost)), RechargeAll);
+                WalletHelper.ToString(TotalCost)), RechargeAll);
         else
             SayTo(player, eChatLoc.CL_PopupWindow,
                 "All items are fully charged already.");
@@ -216,7 +216,7 @@ public class Recharger : GameNPC
             cost += CalculateCost(inventoryItem);
         }
 
-        if (!player.RemoveMoney(cost))
+        if (!player.Wallet.RemoveMoney(cost))
         {
             SayTo(player,eChatLoc.CL_PopupWindow,
                 LanguageMgr.GetTranslation(player.Client.Account.Language,
@@ -228,7 +228,7 @@ public class Recharger : GameNPC
 
         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language,
                 "Scripts.Recharger.RechargerDialogResponse.GiveMoney",
-                GetName(0, false, player.Client.Account.Language, this), Money.GetString(cost)),
+                GetName(0, false, player.Client.Account.Language, this), WalletHelper.ToString(cost)),
             eChatType.CT_System, eChatLoc.CL_SystemWindow);
 
         foreach (var inventoryItem in player.Inventory.AllItems)
@@ -257,11 +257,11 @@ public class Recharger : GameNPC
         long NeededMoney = 0;
         if (item.Charges < item.MaxCharges)
         {
-            NeededMoney += (item.MaxCharges - item.Charges) * Money.GetMoney(0, 0, 10, 0, 0);
+            NeededMoney += (item.MaxCharges - item.Charges) * WalletHelper.ToMoney(0, 0, 10, 0, 0);
         }
         if (item.Charges1 < item.MaxCharges1)
         {
-            NeededMoney += (item.MaxCharges1 - item.Charges1) * Money.GetMoney(0, 0, 10, 0, 0);
+            NeededMoney += (item.MaxCharges1 - item.Charges1) * WalletHelper.ToMoney(0, 0, 10, 0, 0);
         }
 
         var tax = NeededMoney * RECHARGE_ALL_TAX;

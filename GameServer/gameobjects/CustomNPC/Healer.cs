@@ -76,7 +76,7 @@ namespace DOL.GS
 				
 				// Trigger custom ACCEPT/DECLINE dialog
 				// Message: It will cost {0} to have your lost constitution restored. Do you accept?
-				player.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Dialog.AcceptDecline.Healer", Money.GetString(player.TotalConstitutionLostAtDeath * (long)oneConCost)), new CustomDialogResponse(HealerDialogResponse));
+				player.Out.SendCustomDialog(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameNPC.Dialog.AcceptDecline.Healer", WalletHelper.ToString(player.TotalConstitutionLostAtDeath * (long)oneConCost)), new CustomDialogResponse(HealerDialogResponse));
             }
 			else // No Con is missing
 			{
@@ -107,13 +107,13 @@ namespace DOL.GS
             long cost = player.TempProperties.GetProperty<long>(COST_BY_PTS);
             player.TempProperties.RemoveProperty(COST_BY_PTS);
             if (cost <= 0) cost = 1;
-            int restorePoints = (int)Math.Min(player.TotalConstitutionLostAtDeath, player.GetCurrentMoney() / cost);
+            int restorePoints = (int)Math.Min(player.TotalConstitutionLostAtDeath, player.Wallet.GetMoney() / cost);
             if (restorePoints < 1)
                 restorePoints = 1; // Constitution reduced by 1 at minimum
             long totalCost = restorePoints * cost; // Total cost to restore full Con lost
             
             // Trigger if player has sufficient money to "donate"
-            if (player.RemoveMoney(totalCost))
+            if (player.Wallet.RemoveMoney(totalCost))
             {
                 InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Merchant, totalCost); // Deduct the cost from the player
                 if (restorePoints == 1)
@@ -123,14 +123,14 @@ namespace DOL.GS
 	                // Message: {0} restores {1} points of your lost constitution.
 	                ChatUtil.SendErrorMessage(player, "GameNPC.Interact.RestoresMoreCon.Healer", Name, restorePoints);
                 // Message: You give {0} a donation of {1}.
-                ChatUtil.SendSystemMessage(player, "GameNPC.Interact.YouGiveDonation.Healer", GetPronoun(2, false, player.Client.Account.Language), Money.GetString(totalCost));
+                ChatUtil.SendSystemMessage(player, "GameNPC.Interact.YouGiveDonation.Healer", GetPronoun(2, false, player.Client.Account.Language), WalletHelper.ToString(totalCost));
                 player.TotalConstitutionLostAtDeath -= restorePoints; // Restore lost Con
                 player.Out.SendCharStatsUpdate(); // Update the character with the change
             }
             else // If insufficient funds available, throw "error"
             {
 	            // Message: {0} says, "It costs {1} to restore {2} lost constitution. You don't have that much."
-	            ChatUtil.SendSayMessage(player, "GameNPC.Interact.NeedMoney.Healer", GetName(0, true, player.Client.Account.Language, this), Money.GetString(totalCost), restorePoints);
+	            ChatUtil.SendSayMessage(player, "GameNPC.Interact.NeedWalletHelper.Healer", GetName(0, true, player.Client.Account.Language, this), WalletHelper.ToString(totalCost), restorePoints);
             }
             return;
         }
