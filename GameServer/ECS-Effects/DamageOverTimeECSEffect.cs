@@ -47,7 +47,8 @@ namespace DOL.GS
             else
                 Owner.LastAttackTickPvP = GameLoop.GameLoopTime;
 
-            if (SpellHandler.Caster is GameSummonedPet)
+            // NPCs interrupt with every DoT tick.
+            if (SpellHandler.Caster is GameNPC)
                 Owner.StartInterruptTimer(SpellHandler.Caster.SpellInterruptDuration, AttackData.eAttackType.Spell, SpellHandler.Caster);
         }
     }
