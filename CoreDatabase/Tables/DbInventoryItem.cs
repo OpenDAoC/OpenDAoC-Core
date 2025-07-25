@@ -357,8 +357,8 @@ namespace DOL.Database
 			m_cooldown = dbInventoryItem.Cooldown;
 			m_charges = dbInventoryItem.Charges;
 			m_charges1 = dbInventoryItem.Charges1;
-			m_poisonCharges = dbInventoryItem.PoisonCharges ;
-			m_poisonMaxCharges = dbInventoryItem.PoisonMaxCharges ;
+			m_poisonCharges = dbInventoryItem.PoisonCharges;
+			m_poisonMaxCharges = dbInventoryItem.PoisonMaxCharges;
 			m_poisonSpellID = dbInventoryItem.PoisonSpellID;
 			m_experience = dbInventoryItem.Experience;
 			m_ownerLot = dbInventoryItem.OwnerLot;
