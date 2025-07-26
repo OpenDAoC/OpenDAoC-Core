@@ -512,16 +512,18 @@ namespace DOL.Database
 			{
 				var dataType = grp.Key;
 				var tableName = AttributeUtil.GetTableOrViewName(dataType);
+
 				try
 				{
-					
-					DataTableHandler tableHandler;
-					if (!TableDatasets.TryGetValue(tableName, out tableHandler))
+					if (!TableDatasets.TryGetValue(tableName, out DataTableHandler tableHandler))
 						throw new DatabaseException(string.Format("Table {0} is not registered for Database Connection...", tableName));
-					
+
 					if (!tableHandler.HasRelations)
-						return;
-					
+					{
+						TakeSnapshots(grp);
+						continue;
+					}
+
 					var relations = tableHandler.ElementBindings.Where(bind => bind.Relation != null);
 					foreach (var relation in relations)
 					{
@@ -529,7 +531,7 @@ namespace DOL.Database
 						if (!(relation.Relation.AutoLoad || force))
 							continue;
 						
-						var remoteName = AttributeUtil.GetTableOrViewName(relation.ValueType);						
+						var remoteName = AttributeUtil.GetTableOrViewName(relation.ValueType);
 						try
 						{
 							DataTableHandler remoteHandler;
@@ -549,12 +551,20 @@ namespace DOL.Database
 								                relation.Relation.LocalField, AttributeUtil.GetTableOrViewName(relation.ValueType), relation.Relation.RemoteField, re);
 						}
 					}
+
+					TakeSnapshots(grp);
 				}
 				catch (Exception e)
 				{
 					if (log.IsErrorEnabled)
 						log.ErrorFormat("Could not Resolve Relations for Table {0}\n{1}", tableName, e);
 				}
+			}
+
+			static void TakeSnapshots(IGrouping<Type, DataObject> group)
+			{
+				foreach (DataObject dataObject in group)
+					dataObject.TakeSnapshot();
 			}
 		}
 		

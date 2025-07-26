@@ -489,7 +489,7 @@ namespace DOL.Database
                 list.Add(obj);
                 obj.Dirty = false;
                 obj.IsPersisted = true;
-                obj.TakeSnapshot();
+                // Don't call `TakeSnapshot` here, `FillObjectRelations` must be called first.
             }
 
             resultList.Add(list.ToArray());
