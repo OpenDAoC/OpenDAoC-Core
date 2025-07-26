@@ -12815,11 +12815,8 @@ namespace DOL.GS
 
         public int GetAchievementProgress(string achievementName)
         {
-            Stopwatch sw = new();
-            sw.Start();
             DbAchievement achievement = DOLDB<DbAchievement>.SelectObject(DB.Column("AccountID")
                 .IsEqualTo(this.Client.Account.ObjectId).And(DB.Column("Realm").IsEqualTo((int)this.Realm)).And(DB.Column("AchievementName").IsEqualTo(achievementName)));
-            Console.WriteLine($"{sw.Elapsed.TotalMilliseconds} {achievementName}");
 
             if (achievement == null)
                 return 0;
