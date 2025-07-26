@@ -51,7 +51,7 @@ namespace DOL.GS
         /// <summary>
         /// List of items in this objects inventory
         /// </summary>
-        public virtual IList<DbInventoryItem> DBItems(GamePlayer player = null)
+        public virtual IList<DbInventoryItem> GetDbItems(GamePlayer player)
         {
             return MarketCache.Items;
         }
@@ -95,7 +95,7 @@ namespace DOL.GS
         {
             MarketSearch marketSearch = new(player);
 
-            if (marketSearch.FindItemsInList(DBItems(), searchData) is List<DbInventoryItem> items)
+            if (marketSearch.FindItemsInList(GetDbItems(player), searchData) is List<DbInventoryItem> items)
             {
                 int maxPerPage = 20;
                 byte maxPages = (byte) (Math.Ceiling((double) items.Count / maxPerPage) - 1);
@@ -178,17 +178,22 @@ namespace DOL.GS
             return false;
         }
 
-        public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item)
+        public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item, int previousSlot)
+        {
+            return true;
+        }
+
+        public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItem item, int previousSlot)
+        {
+            return true;
+        }
+
+        public virtual bool OnMoveItem(GamePlayer player, DbInventoryItem firstItem, int previousFirstSlot, DbInventoryItem secondItem, int previousSecondSlot)
         {
             return true;
         }
 
         public virtual bool SetSellPrice(GamePlayer player, eInventorySlot clientSlot, uint price)
-        {
-            return true;
-        }
-
-        public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItem item)
         {
             return true;
         }

@@ -19,12 +19,13 @@ namespace DOL.GS
         int LastDbSlot { get; }
         Lock Lock { get; }
         string GetOwner(GamePlayer player);
-        IList<DbInventoryItem> DBItems(GamePlayer player = null);
+        IList<DbInventoryItem> GetDbItems(GamePlayer player);
         Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player);
         bool CanHandleMove(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot);
         bool MoveItem(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort itemCount);
-        bool OnAddItem(GamePlayer player, DbInventoryItem item);
-        bool OnRemoveItem(GamePlayer player, DbInventoryItem item);
+        bool OnAddItem(GamePlayer player, DbInventoryItem item, int previousSlot);
+        bool OnRemoveItem(GamePlayer player, DbInventoryItem item, int previousSlot);
+        bool OnMoveItem(GamePlayer player, DbInventoryItem firstItem, int previousFirstSlot, DbInventoryItem secondItem, int previousSecondSlot);
         bool SetSellPrice(GamePlayer player, eInventorySlot clientSlot, uint sellPrice);
         bool SearchInventory(GamePlayer player, MarketSearch.SearchData searchData);
         void AddObserver(GamePlayer player);
@@ -41,20 +42,6 @@ namespace DOL.GS
         public static bool CanHandleRequest(this IGameInventoryObject thisObject, eInventorySlot fromClientSlot, eInventorySlot toClientSlot)
         {
             return (fromClientSlot >= thisObject.FirstClientSlot && fromClientSlot <= thisObject.LastClientSlot) || (toClientSlot >= thisObject.FirstClientSlot && toClientSlot <= thisObject.LastClientSlot);
-        }
-
-        public static Dictionary<int, DbInventoryItem> GetClientItems(this IGameInventoryObject thisObject, GamePlayer player)
-        {
-            Dictionary<int, DbInventoryItem> inventory = [];
-            int slotOffset = (int) thisObject.FirstClientSlot - thisObject.FirstDbSlot;
-
-            foreach (DbInventoryItem item in thisObject.DBItems(player))
-            {
-                if (item != null && !inventory.ContainsKey(item.SlotPosition + slotOffset))
-                    inventory.Add(item.SlotPosition + slotOffset, item);
-            }
-
-            return inventory;
         }
 
         public static IDictionary<int, DbInventoryItem> MoveItem(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, ushort count)
@@ -102,7 +89,7 @@ namespace DOL.GS
                         return updatedItems;
                     }
 
-                    StackItems(player, fromClientSlot, toClientSlot, fromItem, toItem, updatedItems);
+                    StackItems(thisObject, player, fromClientSlot, toClientSlot, fromItem, toItem, updatedItems);
                 }
                 else
                     SwapItems(thisObject, player, fromClientSlot, toClientSlot, fromItem, toItem, updatedItems);
@@ -214,7 +201,7 @@ namespace DOL.GS
                     player.Inventory.OnItemMove(fromItem, null, fromClientSlot, toClientSlot);
                     fromItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
                     fromItem.OwnerID = thisObject.GetOwner(player);
-                    thisObject.OnAddItem(player, fromItem);
+                    thisObject.OnAddItem(player, fromItem, (int) fromClientSlot);
 
                     if (!SaveItem(fromItem))
                     {
@@ -228,8 +215,10 @@ namespace DOL.GS
 
                 bool MoveWholeStackFromHousingInventoryToHousingInventory()
                 {
+                    int previousSlot = fromItem.SlotPosition;
                     fromItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
                     fromItem.OwnerID = thisObject.GetOwner(player);
+                    thisObject.OnMoveItem(player, fromItem, previousSlot, null, fromItem.SlotPosition);
 
                     if (!SaveItem(fromItem))
                     {
@@ -245,13 +234,15 @@ namespace DOL.GS
                     if (!player.Inventory.CheckItemsBeforeMovingFromOrToExternalInventory(fromItem, null, fromClientSlot, toClientSlot, count))
                         return false;
 
+                    int previousSlot = fromItem.SlotPosition;
+
                     if (!player.Inventory.AddItemWithoutDbAddition(toClientSlot, fromItem))
                     {
                         SendErrorMessage(player, nameof(MoveWholeStackFromHousingInventoryToCharacterInventory), fromClientSlot, toClientSlot, fromItem, null, count);
                         return false;
                     }
 
-                    thisObject.OnRemoveItem(player, fromItem);
+                    thisObject.OnRemoveItem(player, fromItem, previousSlot);
                     player.Inventory.OnItemMove(fromItem, null, fromClientSlot, toClientSlot);
                     player.Inventory.SaveIntoDatabase(player.InternalID);
                     return true;
@@ -314,7 +305,7 @@ namespace DOL.GS
 
                     toItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
                     toItem.OwnerID = thisObject.GetOwner(player);
-                    thisObject.OnAddItem(player, toItem);
+                    thisObject.OnAddItem(player, toItem, fromItem.SlotPosition);
 
                     if (!SaveItem(toItem))
                     {
@@ -338,7 +329,7 @@ namespace DOL.GS
 
                     toItem.SlotPosition = toClientSlot - thisObject.FirstClientSlot + thisObject.FirstDbSlot;
                     toItem.OwnerID = thisObject.GetOwner(player);
-                    thisObject.OnAddItem(player, toItem);
+                    thisObject.OnAddItem(player, toItem, fromItem.SlotPosition);
 
                     if (!SaveItem(toItem))
                     {
@@ -365,7 +356,7 @@ namespace DOL.GS
             }
         }
 
-        private static void StackItems(GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, DbInventoryItem fromItem, DbInventoryItem toItem, Dictionary<int, DbInventoryItem> updatedItems)
+        private static void StackItems(this IGameInventoryObject thisObject, GamePlayer player, eInventorySlot fromClientSlot, eInventorySlot toClientSlot, DbInventoryItem fromItem, DbInventoryItem toItem, Dictionary<int, DbInventoryItem> updatedItems)
         {
             // Assumes that neither stacks are full. If that's the case, `SwapItems` should have been called instead.
             int count = fromItem.Count + toItem.Count > fromItem.MaxCount ? toItem.MaxCount - toItem.Count : fromItem.Count;
@@ -445,6 +436,7 @@ namespace DOL.GS
                 if (fromItem.Count - count <= 0)
                 {
                     fromItem.Count = 0;
+                    thisObject.OnRemoveItem(player, fromItem, fromItem.SlotPosition);
 
                     if (!SaveItem(fromItem))
                     {
@@ -481,6 +473,7 @@ namespace DOL.GS
                 if (fromItem.Count - count <= 0)
                 {
                     fromItem.Count = 0;
+                    thisObject.OnRemoveItem(player, fromItem, fromItem.SlotPosition);
 
                     if (!SaveItem(fromItem))
                     {
@@ -567,17 +560,16 @@ namespace DOL.GS
                     return false;
                 }
 
+                int characterInventoryItemPreviousSlotPosition = characterInventoryItem.SlotPosition;
                 characterInventoryItem.SlotPosition = vaultItem.SlotPosition;
                 characterInventoryItem.OwnerID = thisObject.GetOwner(player);
-                thisObject.OnAddItem(player, characterInventoryItem);
+                thisObject.OnMoveItem(player, characterInventoryItem, characterInventoryItemPreviousSlotPosition, vaultItem, vaultItem.SlotPosition);
 
                 if (!SaveItem(characterInventoryItem))
                 {
                     SendErrorMessage(player, nameof(SwapItemsFromOrToCharacterInventory), fromClientSlot, toClientSlot, fromItem, toItem, 0);
                     return false;
                 }
-
-                thisObject.OnRemoveItem(player, vaultItem);
 
                 if (!player.Inventory.AddItemWithoutDbAddition(characterInventorySlot, vaultItem) || !SaveItem(vaultItem))
                 {
@@ -593,6 +585,7 @@ namespace DOL.GS
             bool SwapItemsFromAndToHousingInventory()
             {
                 (toItem.SlotPosition, fromItem.SlotPosition) = (fromItem.SlotPosition, toItem.SlotPosition);
+                thisObject.OnMoveItem(player, fromItem, toItem.SlotPosition, toItem, fromItem.SlotPosition);
 
                 if (!SaveItem(fromItem) || !SaveItem(toItem))
                 {

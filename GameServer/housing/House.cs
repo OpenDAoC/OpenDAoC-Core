@@ -887,7 +887,7 @@ namespace DOL.GS.Housing
 			// again if guild purchases another house and CM
 
 			int count = 0;
-			foreach(DbInventoryItem item in ConsignmentMerchant.DBItems(null))
+			foreach(DbInventoryItem item in ConsignmentMerchant.GetDbItems(null))
 			{
 				item.OwnerLot = 0;
 				GameServer.Database.SaveObject(item);

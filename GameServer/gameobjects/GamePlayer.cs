@@ -6628,6 +6628,8 @@ namespace DOL.GS
 
         private IGameInventoryObject m_activeInventoryObject;
 
+        public AccountVault AccountVault { get; private set; }
+
         /// <summary>
         /// The currently active InventoryObject
         /// </summary>
@@ -13919,6 +13921,7 @@ namespace DOL.GS
             m_lastUniqueLocations = new GameLocation[4];
 
             CreateInventory();
+            AccountVault = new(this, 0, AccountVaultKeeper.GetDummyVaultItem(this));
 
             m_characterClass = new DefaultCharacterClass();
             m_groupIndex = 0xFF;

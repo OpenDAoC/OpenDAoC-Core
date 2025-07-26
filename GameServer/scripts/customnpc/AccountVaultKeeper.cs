@@ -23,10 +23,8 @@ namespace DOL.GS
             message += "I am happy to offer you my services.\n\n";
             message += "You can browse the [first] or [second] page of your Account Vault.";
             player.Out.SendMessage(message, eChatType.CT_Say, eChatLoc.CL_PopupWindow);
-            DbItemTemplate vaultItem = GetDummyVaultItem(player);
-            AccountVault vault = new(player, 0, vaultItem);
-            player.ActiveInventoryObject = vault;
-            player.Out.SendInventoryItemsUpdate(vault.GetClientInventory(player), eInventoryWindowType.HouseVault);
+            player.ActiveInventoryObject = player.AccountVault;
+            player.Out.SendInventoryItemsUpdate(player.ActiveInventoryObject.GetClientInventory(player), eInventoryWindowType.HouseVault);
             return true;
         }
 
@@ -55,7 +53,7 @@ namespace DOL.GS
             return true;
         }
 
-        private static DbItemTemplate GetDummyVaultItem(GamePlayer player)
+        public static DbItemTemplate GetDummyVaultItem(GamePlayer player)
         {
             DbItemTemplate vaultItem = new()
             {
@@ -151,7 +149,7 @@ namespace DOL.GS
         /// <summary>
         /// List of items in the vault.
         /// </summary>
-        public override IList<DbInventoryItem> DBItems(GamePlayer player = null)
+        public override IList<DbInventoryItem> GetDbItems(GamePlayer player)
         {
             return GameServer.Database.SelectObjects<DbInventoryItem>(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDbSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDbSlot))));
         }

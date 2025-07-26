@@ -127,13 +127,22 @@ namespace DOL.GS
         /// </summary>
         public virtual Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player)
         {
-            return this.GetClientItems(player);
+            Dictionary<int, DbInventoryItem> inventory = [];
+            int slotOffset = (int) FirstClientSlot - FirstDbSlot;
+
+            foreach (DbInventoryItem item in GetDbItems(player))
+            {
+                if (item != null && !inventory.ContainsKey(item.SlotPosition + slotOffset))
+                    inventory.Add(item.SlotPosition + slotOffset, item);
+            }
+
+            return inventory;
         }
 
         /// <summary>
         /// List of items in the consignment merchants Inventory.
         /// </summary>
-        public virtual IList<DbInventoryItem> DBItems(GamePlayer player = null)
+        public virtual IList<DbInventoryItem> GetDbItems(GamePlayer player)
         {
             House house = HouseMgr.GetHouse(CurrentRegionID, HouseNumber);
             return house == null ? null : MarketCache.Items.Where(item => item?.OwnerID == house?.OwnerID).ToList();
@@ -273,7 +282,7 @@ namespace DOL.GS
             return true;
         }
 
-        public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item)
+        public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item, int previousSlot)
         {
             player.TempProperties.SetProperty(ITEM_BEING_ADDED, item); // For objects that support doing something when added (setting a price, for example).
 
@@ -283,7 +292,7 @@ namespace DOL.GS
             return MarketCache.AddItem(item);
         }
 
-        public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItem item)
+        public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItem item, int previousSlot)
         {
             if (ServerProperties.Properties.MARKET_ENABLE_LOG)
                 log.Debug($"CM: {player.Name}:{player.Client.Account.Name} removing '{item.Name}' from consignment merchant on lot {HouseNumber}.");
@@ -291,6 +300,11 @@ namespace DOL.GS
             item.OwnerLot = 0;
             item.SellPrice = 0;
             return MarketCache.RemoveItem(item);
+        }
+
+        public virtual bool OnMoveItem(GamePlayer player, DbInventoryItem firstItem, int previousFirstSlot, DbInventoryItem secondItem, int previousSecondSlot)
+        {
+            return true;
         }
 
         /// <summary>

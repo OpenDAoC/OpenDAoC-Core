@@ -24,6 +24,8 @@ namespace DOL.GS
         /// </summary>
         protected Dictionary<string, GamePlayer> _observers = [];
 
+        private ItemCache _itemCache;
+
         public int Index { get; protected set; }
 
         /// <summary>
@@ -54,6 +56,11 @@ namespace DOL.GS
         private readonly Lock _lock = new();
         public Lock Lock => _lock;
 
+        public GameVault() : base()
+        {
+            _itemCache = new(this);
+        }
+
         public virtual string GetOwner(GamePlayer player = null)
         {
             if (player == null)
@@ -80,18 +87,7 @@ namespace DOL.GS
         /// </summary>
         public virtual Dictionary<int, DbInventoryItem> GetClientInventory(GamePlayer player)
         {
-            Dictionary<int, DbInventoryItem> inventory = [];
-            int slotOffset = -FirstDbSlot + (int) eInventorySlot.HousingInventory_First;
-
-            foreach (DbInventoryItem item in DBItems(player))
-            {
-                int slot = item.SlotPosition + slotOffset;
-
-                if (!inventory.TryAdd(slot, item))
-                    log.Error($"GAMEVAULT: Duplicate item {item.Name}, owner {item.OwnerID}, position {item.SlotPosition + slotOffset}");
-            }
-
-            return inventory;
+            return _itemCache.GetItems(player);
         }
 
         public virtual eInventorySlot GetFirstEmptyClientSlot(GamePlayer player)
@@ -150,7 +146,7 @@ namespace DOL.GS
         /// <summary>
         /// List of items in the vault.
         /// </summary>
-        public virtual IList<DbInventoryItem> DBItems(GamePlayer player = null)
+        public virtual IList<DbInventoryItem> GetDbItems(GamePlayer player)
         {
             WhereClause filterBySlot = DB.Column("SlotPosition").IsGreaterOrEqualTo(FirstDbSlot).And(DB.Column("SlotPosition").IsLessOrEqualTo(LastDbSlot));
             return DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsEqualTo(GetOwner(player)).And(filterBySlot));
@@ -266,7 +262,7 @@ namespace DOL.GS
 
                     var updatedItems = GameInventoryObjectExtensions.MoveItem(this, player, fromSlot, toSlot, count);
 
-                    if (updatedItems.Count > 0)
+                    if (updatedItems != null && updatedItems.Count > 0)
                         GameInventoryObjectExtensions.NotifyObservers(this, player, _observers, updatedItems);
                 }
                 finally
@@ -279,14 +275,19 @@ namespace DOL.GS
             return true;
         }
 
-        public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item)
+        public virtual bool OnAddItem(GamePlayer player, DbInventoryItem item, int previousSlot)
         {
-            return true;
+            return _itemCache.AddItem(player, item);
         }
 
-        public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItem item)
+        public virtual bool OnRemoveItem(GamePlayer player, DbInventoryItem item, int previousSlot)
         {
-            return true;
+            return _itemCache.RemoveItem(player, item, previousSlot);
+        }
+
+        public virtual bool OnMoveItem(GamePlayer player, DbInventoryItem firstItem, int previousFirstSlot, DbInventoryItem secondItem, int previousSecondSlot)
+        {
+            return _itemCache.MoveItems(player, firstItem, previousFirstSlot, secondItem, previousSecondSlot);
         }
 
         public virtual bool SetSellPrice(GamePlayer player, eInventorySlot clientSlot, uint price)
@@ -317,6 +318,166 @@ namespace DOL.GS
         public virtual void RemoveObserver(GamePlayer player)
         {
             _observers.Remove(player.Name);
+        }
+
+        protected class ItemCache : ECSGameTimerWrapperBase
+        {
+            private const int EXPIRES_AFTER = 600000;
+
+            private readonly GameVault _vault;
+            private Dictionary<int, DbInventoryItem> _items; // Uses client slots, not DB slots.
+
+            public ItemCache(GameVault vault) : base(vault)
+            {
+                _vault = vault;
+            }
+
+            public bool AddItem(GamePlayer player, DbInventoryItem item)
+            {
+                lock (_vault.Lock)
+                {
+                    ValidateCache(player);
+                    int newSlot = GetClientSlotPosition(item.SlotPosition);
+
+                    if (!GameInventoryObjectExtensions.IsHousingInventorySlot((eInventorySlot) newSlot) ||
+                        !_items.TryAdd(newSlot, item))
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error("Error when adding item to cache.");
+
+                        _items = null;
+                        return false;
+                    }
+
+                    Start(EXPIRES_AFTER);
+                    return true;
+                }
+            }
+
+            public bool RemoveItem(GamePlayer player, DbInventoryItem item, int previousSlot)
+            {
+                lock (_vault.Lock)
+                {
+                    ValidateCache(player);
+                    previousSlot = GetClientSlotPosition(previousSlot);
+
+                    if (!GameInventoryObjectExtensions.IsHousingInventorySlot((eInventorySlot) previousSlot) ||
+                        !_items.Remove(previousSlot, out DbInventoryItem existingItem) ||
+                        existingItem != item)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error("Error when removing item from cache.");
+
+                        _items = null;
+                        return false;
+                    }
+
+                    Start(EXPIRES_AFTER);
+                    return true;
+                }
+            }
+
+            public bool MoveItems(GamePlayer player, DbInventoryItem firstItem, int previousFirstSlot, DbInventoryItem secondItem, int previousSecondSlot)
+            {
+                lock (_vault.Lock)
+                {
+                    ValidateCache(player);
+
+                    if (previousFirstSlot == previousSecondSlot)
+                    {
+                        Start(EXPIRES_AFTER);
+                        return true;
+                    }
+
+                    DbInventoryItem existingFirstItem = null;
+                    DbInventoryItem existingSecondItem = null;
+
+                    previousFirstSlot = GetClientSlotPosition(previousFirstSlot);
+                    previousSecondSlot = GetClientSlotPosition(previousSecondSlot);
+
+                    if (GameInventoryObjectExtensions.IsHousingInventorySlot((eInventorySlot) previousFirstSlot))
+                        _items.TryGetValue(previousFirstSlot, out existingFirstItem);
+
+                    if (GameInventoryObjectExtensions.IsHousingInventorySlot((eInventorySlot) previousSecondSlot))
+                        _items.TryGetValue(previousSecondSlot, out existingSecondItem);
+
+                    if ((existingFirstItem != null && existingFirstItem != firstItem) || (existingSecondItem != null && existingSecondItem != secondItem))
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error("Error when moving items inside cache.");
+
+                        _items = null;
+                        return false;
+                    }
+
+                    if (firstItem != null && secondItem != null)
+                    {
+                        _items[previousFirstSlot] = secondItem;
+                        _items[previousSecondSlot] = firstItem;
+                    }
+                    else if (firstItem != null && secondItem == null)
+                    {
+                        _items.Remove(previousFirstSlot);
+                        _items[previousSecondSlot] = firstItem;
+                    }
+                    else if (firstItem == null && secondItem != null)
+                    {
+                        _items.Remove(previousSecondSlot);
+                        _items[previousFirstSlot] = secondItem;
+                    }
+
+                    Start(EXPIRES_AFTER);
+                }
+
+                return true;
+            }
+
+            public Dictionary<int, DbInventoryItem> GetItems(GamePlayer player)
+            {
+                lock (_vault.Lock)
+                {
+                    ValidateCache(player);
+                }
+
+                return _items;
+            }
+
+            protected override int OnTick(ECSGameTimer timer)
+            {
+                lock (_vault.Lock)
+                {
+                    // Simply discard the list in case `GetItems` is called from the timer service.
+                    _items = null;
+                }
+
+                return 0;
+            }
+
+            private void ValidateCache(GamePlayer player)
+            {
+                if (_items != null)
+                    return;
+
+                _items = new();
+                bool success = true;
+
+                foreach (DbInventoryItem item in _vault.GetDbItems(player))
+                {
+                    int slotPosition = GetClientSlotPosition(item.SlotPosition);
+
+                    if (!_items.TryAdd(slotPosition, item))
+                        success = false;
+                }
+
+                if (!success && log.IsErrorEnabled)
+                    log.Error($"Error during cache validation.");
+            }
+
+            private int GetClientSlotPosition(int slot)
+            {
+                int offset = -_vault.FirstDbSlot + (int) eInventorySlot.HousingInventory_First;
+                return offset + slot;
+            }
         }
     }
 }

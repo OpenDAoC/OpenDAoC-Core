@@ -93,7 +93,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 if (GameInventoryObjectExtensions.IsCharacterInventorySlot(fromClientSlot) || GameInventoryObjectExtensions.IsCharacterVaultSlot(fromClientSlot))
                     item = client.Player.Inventory.GetItem(fromClientSlot);
                 else
-                    item = client.Player.ActiveInventoryObject?.GetClientItems(client.Player)[(int) fromClientSlot];
+                    item = client.Player.ActiveInventoryObject?.GetClientInventory(client.Player)[(int) fromClientSlot];
 
                 if (item == null)
                 {
