@@ -89,10 +89,6 @@
 			archiveDateFormat="yyyy-MM-dd"
 			archiveAboveSize="104857600"
 			archiveEvery="Day" />
-		
-		<!-- Black Hole -->
-		<target name="blackHole"
-			xsi:type="Null" />
 	</targets>
 
 	<rules>
@@ -117,23 +113,18 @@
 		<!-- Filters -->
 		<logger name="DOL.GS.PacketHandler.PacketProcessor"
 			maxlevel="Info"
-			writeTo="blackHole"
 			final="true" />
 		<logger name="DOL.Database.ObjectDatabase"
 			maxlevel="Info"
-			writeTo="blackHole"
 			final="true" />
 		<logger name="DOL.Database.Handlers"
 			maxlevel="Info"
-			writeTo="blackHole"
 			final="true" />
 		<logger name="DOL.GS.Zone"
 			maxlevel="Info"
-			writeTo="blackHole"
 			final="true" />
 		<logger name="DOL.GS.GameTimer"
 			maxlevel="Debug"
-			writeTo="blackHole"
 			final="true" />
 		
 		<!-- Global Loggers -->
@@ -144,10 +135,10 @@
 			minLevel="Debug"
 			writeTo="gameServerFile" />
 		<logger name="*"
-			Level="Warn"
+			level="Warn"
 			writeTo="warnFile" />
 		<logger name="*"
-			Level="Error"
+			level="Error"
 			writeTo="errorFile" />
 	</rules>
 </nlog>
