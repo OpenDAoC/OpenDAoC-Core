@@ -62,53 +62,29 @@ namespace DOL.GS.Spells
             return ad;
         }
 
-		/// <summary>
-		/// Sends damage text messages but makes no damage
-		/// </summary>
-		/// <param name="ad"></param>
-		public override void SendDamageMessages(AttackData ad)
-		{
-			// Graveen: only GamePlayer should receive messages :p
-			GamePlayer PlayerReceivingMessages = null;
-			if (m_caster is GamePlayer)
-				PlayerReceivingMessages = m_caster as GamePlayer;
-            if ( m_caster is GameSummonedPet)
-                if ((m_caster as GameSummonedPet).Brain is IControlledBrain)
-                    PlayerReceivingMessages = ((m_caster as GameSummonedPet).Brain as IControlledBrain).GetPlayerOwner();
-            if (PlayerReceivingMessages == null) 
+        /// <summary>
+        /// Sends damage text messages but makes no damage
+        /// </summary>
+        public override void SendDamageMessages(AttackData ad)
+        {
+            GamePlayer player = null;
+
+            if (m_caster is GamePlayer)
+                player = m_caster as GamePlayer;
+            else if (m_caster is GameNPC npc && npc.Brain is IControlledBrain brain)
+                player = brain.GetPlayerOwner();
+
+            if (player == null)
                 return;
-				
-            if (Spell.Name.StartsWith("Proc"))
-            {
-                MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YouHitFor",
-                    ad.Target.GetName(0, false), ad.Damage)), eChatType.CT_YouHit);
-            }
+
+            if (SpellLine.KeyName is GlobalSpellsLines.Item_Effects)
+                MessageToCaster(string.Format(LanguageMgr.GetTranslation(player.Client, "DoTSpellHandler.SendDamageMessages.YouHitFor", ad.Target.GetName(0, false), ad.Damage)), eChatType.CT_Spell);
             else
-            {
-                MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YourHitsFor",
-                    Spell.Name, ad.Target.GetName(0, false), ad.Damage)), eChatType.CT_YouHit);
-            }
-            //if (ad.CriticalDamage > 0)
-            //    MessageToCaster(String.Format(LanguageMgr.GetTranslation(PlayerReceivingMessages.Client, "DoTSpellHandler.SendDamageMessages.YourCriticallyHits",
-            //        Spell.Name, ad.Target.GetName(0, false), ad.CriticalDamage)) + " (" + (ad.Attacker.SpellCriticalChance - 10) + "%)", eChatType.CT_YouHit);
+                MessageToCaster(string.Format(LanguageMgr.GetTranslation(player.Client, "DoTSpellHandler.SendDamageMessages.YourHitsFor", Spell.Name, ad.Target.GetName(0, false), ad.Damage)), eChatType.CT_Spell);
 
-			if (this.CriticalDamage > 0)
-				MessageToCaster("You critically hit for an additional " + this.CriticalDamage + " damage!" + " (" + m_caster.DebuffCriticalChance + "%)", eChatType.CT_YouHit);
-
-			//			if (ad.Damage > 0)
-			//			{
-			//				string modmessage = string.Empty;
-			//				if (ad.Modifier > 0) modmessage = " (+"+ad.Modifier+")";
-			//				if (ad.Modifier < 0) modmessage = " ("+ad.Modifier+")";
-			//				MessageToCaster("You hit "+ad.Target.GetName(0, false)+" for " + ad.Damage + " damage!", eChatType.CT_Spell);
-			//			}
-			//			else
-			//			{
-			//				MessageToCaster("You hit "+ad.Target.GetName(0, false)+" for " + ad.Damage + " damage!", eChatType.CT_Spell);
-			//				MessageToCaster(ad.Target.GetName(0, true) + " resists the effect!", eChatType.CT_SpellResisted);
-			//				MessageToLiving(ad.Target, "You resist the effect!", eChatType.CT_SpellResisted);
-			//			}
-		}
+            if (CriticalDamage > 0)
+                MessageToCaster($"You critically hit for an additional {CriticalDamage} damage! ({m_caster.DebuffCriticalChance}%)", eChatType.CT_Spell);
+        }
 
 		public override void ApplyEffectOnTarget(GameLiving target)
 		{
