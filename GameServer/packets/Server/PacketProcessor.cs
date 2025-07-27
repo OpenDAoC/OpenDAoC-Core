@@ -227,7 +227,7 @@ namespace DOL.GS.PacketHandler
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"{nameof(QueuePacket)} failed when adding to ({nameof(_tcpPacketQueue)}. Skipping this packet.", e);
+                    log.Error($"{nameof(QueuePacket)} failed when adding to {nameof(_tcpPacketQueue)}. Skipping this packet.", e);
             }
         }
 
@@ -257,7 +257,7 @@ namespace DOL.GS.PacketHandler
                 catch (Exception e)
                 {
                     if (log.IsErrorEnabled)
-                        log.Error($"{nameof(QueuePacket)} failed when adding to ({nameof(_udpPacketQueue)}. Skipping this packet.", e);
+                        log.Error($"{nameof(QueuePacket)} failed when adding to {nameof(_udpPacketQueue)}. Skipping this packet.", e);
                 }
             }
             else
@@ -269,7 +269,7 @@ namespace DOL.GS.PacketHandler
                 catch (Exception e)
                 {
                     if (log.IsErrorEnabled)
-                        log.Error($"{nameof(QueuePacket)} failed when adding to ({nameof(_udpToTcpPacketQueue)}. Skipping this packet.", e);
+                        log.Error($"{nameof(QueuePacket)} failed when adding to {nameof(_udpToTcpPacketQueue)}. Skipping this packet.", e);
                 }
             }
         }
@@ -283,7 +283,7 @@ namespace DOL.GS.PacketHandler
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"{nameof(SendPendingPackets)} failed when draining ({nameof(_tcpPacketQueue)}. Skipping this tick.", e);
+                    log.Error($"{nameof(SendPendingPackets)} failed when draining {nameof(_tcpPacketQueue)}. Skipping this tick.", e);
             }
 
             try
@@ -293,7 +293,7 @@ namespace DOL.GS.PacketHandler
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"{nameof(SendPendingPackets)} failed when draining ({nameof(_udpToTcpPacketQueue)}. Skipping this tick.", e);
+                    log.Error($"{nameof(SendPendingPackets)} failed when draining {nameof(_udpToTcpPacketQueue)}. Skipping this tick.", e);
             }
 
             SendTcp();
@@ -305,7 +305,7 @@ namespace DOL.GS.PacketHandler
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"{nameof(SendPendingPackets)} failed when draining ({nameof(_udpPacketQueue)}. Skipping this tick.", e);
+                    log.Error($"{nameof(SendPendingPackets)} failed when draining {nameof(_udpPacketQueue)}. Skipping this tick.", e);
             }
 
             SendUdp();
