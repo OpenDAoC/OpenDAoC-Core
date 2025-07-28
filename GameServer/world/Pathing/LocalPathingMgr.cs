@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
@@ -83,43 +84,43 @@ namespace DOL.GS
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus PathStraight(
             IntPtr queryPtr,
-            [In] float[] start,
-            [In] float[] end,
-            [In] float[] polyPickExt,
-            [In] EDtPolyFlags[] queryFilter,
+            ReadOnlySpan<float> start,
+            ReadOnlySpan<float> end,
+            ReadOnlySpan<float> polyPickExt,
+            ReadOnlySpan<EDtPolyFlags> queryFilter,
             EDtStraightPathOptions pathOptions,
             out int pointCount,
-            [Out] float[] pointBuffer,
-            [Out] EDtPolyFlags[] pointFlags);
+            Span<float> pointBuffer,
+            Span<EDtPolyFlags> pointFlags);
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus FindRandomPointAroundCircle(
             IntPtr queryPtr,
-            [In] float[] center,
+            ReadOnlySpan<float> center,
             float radius,
-            [In] float[] polyPickExt,
-            [In] EDtPolyFlags[] queryFilter,
-            [Out] float[] outputVector);
+            ReadOnlySpan<float> polyPickExt,
+            ReadOnlySpan<EDtPolyFlags> queryFilter,
+            Span<float> outputVector);
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus FindClosestPoint(
             IntPtr queryPtr,
-            [In] float[] center,
-            [In] float[] polyPickExt,
-            [In] EDtPolyFlags[] queryFilter,
-            [Out] float[] outputVector);
+            ReadOnlySpan<float> center,
+            ReadOnlySpan<float> polyPickExt,
+            ReadOnlySpan<EDtPolyFlags> queryFilter,
+            Span<float> outputVector);
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus GetPolyAt(
             IntPtr queryPtr,
-            [In] float[] center,
-            [In] float[] polyPickExt,
-            [In] EDtPolyFlags[] queryFilter,
+            ReadOnlySpan<float> center,
+            ReadOnlySpan<float> polyPickExt,
+            ReadOnlySpan<EDtPolyFlags> queryFilter,
             out uint outputPolyRef,
-            [Out] float[] outputVector);
+            Span<float> outputVector);
 
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
@@ -128,10 +129,10 @@ namespace DOL.GS
         [LibraryImport("lib/Detour")]
         [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
         private static partial EDtStatus QueryPolygons(IntPtr queryPtr,
-            [In] float[] center,
-            [In] float[] polyPickExt,
-            [In] EDtPolyFlags[] queryFilter,
-            [Out] uint[] outputPolyRefs,
+            ReadOnlySpan<float> center,
+            ReadOnlySpan<float> polyPickExt,
+            ReadOnlySpan<EDtPolyFlags> queryFilter,
+            Span<uint> outputPolyRefs,
             out int outputPolyCount,
             int maxPolyCount);
 
@@ -214,111 +215,112 @@ namespace DOL.GS
             _navmeshPtrs.Clear();
         }
 
-        private static float[] ToRecastFloats(Vector3 value)
+        private static void FillRecastFloats(Vector3 value, Span<float> destination)
         {
-            return [value.X * CONVERSION_FACTOR, value.Z * CONVERSION_FACTOR, value.Y * CONVERSION_FACTOR];
+            destination[0] = value.X * CONVERSION_FACTOR;
+            destination[1] = value.Z * CONVERSION_FACTOR;
+            destination[2] = value.Y * CONVERSION_FACTOR;
+        }
+
+        private static bool TryGetQuery(Zone zone, out NavMeshQuery query)
+        {
+            if (!_navmeshPtrs.TryGetValue(zone.ID, out nint ptr))
+            {
+                query = null;
+                return false;
+            }
+
+            if (!_navmeshQueries.Value.TryGetValue(zone.ID, out query))
+            {
+                query = new(ptr);
+                _navmeshQueries.Value.Add(zone.ID, query);
+            }
+
+            return true;
         }
 
         public WrappedPathingResult GetPathStraightAsync(Zone zone, Vector3 start, Vector3 end)
         {
-            if (!_navmeshPtrs.TryGetValue(zone.ID, out nint ptr))
-                return new WrappedPathingResult(EPathingError.NoPathFound, []);
+            if (!TryGetQuery(zone, out NavMeshQuery query))
+                return new(EPathingError.NoPathFound, []);
 
-            if (!_navmeshQueries.Value.TryGetValue(zone.ID, out NavMeshQuery query))
-            {
-                query = new NavMeshQuery(ptr);
-                _navmeshQueries.Value.Add(zone.ID, query);
-            }
+            Span<float> startFloats = stackalloc float[3];
+            FillRecastFloats(start + Vector3.UnitZ * 8, startFloats);
 
-            float[] startFloats = ToRecastFloats(start + Vector3.UnitZ * 8);
-            float[] endFloats = ToRecastFloats(end + Vector3.UnitZ * 8);
+            Span<float> endFloats = stackalloc float[3];
+            FillRecastFloats(end + Vector3.UnitZ * 8, endFloats);
 
-            int numNodes = 0;
-            float[] buffer = new float[MAX_POLY * 3];
-            EDtPolyFlags[] flags = new EDtPolyFlags[MAX_POLY];
+            Span<float> polyExt = stackalloc float[3];
+            FillRecastFloats(new(64, 64, 256), polyExt);
+
             EDtPolyFlags includeFilter = EDtPolyFlags.ALL ^ EDtPolyFlags.DISABLED;
-            EDtPolyFlags excludeFilter = 0;
-            float[] polyExt = ToRecastFloats(new Vector3(64, 64, 256));
+            ReadOnlySpan<EDtPolyFlags> filter = [includeFilter, 0];
             EDtStraightPathOptions options = EDtStraightPathOptions.DT_STRAIGHTPATH_ALL_CROSSINGS;
-            EDtPolyFlags[] filter = [includeFilter, excludeFilter];
-            EDtStatus status = PathStraight(query, startFloats, endFloats, polyExt, filter, options, out numNodes, buffer, flags);
 
-            if ((status & EDtStatus.DT_SUCCESS) == 0)
-                return new WrappedPathingResult(EPathingError.NoPathFound, []);
+            float[] rentedBuffer = ArrayPool<float>.Shared.Rent(MAX_POLY * 3);
+            EDtPolyFlags[] rentedFlags = ArrayPool<EDtPolyFlags>.Shared.Rent(MAX_POLY);
 
-            WrappedPathPoint[] points = new WrappedPathPoint[numNodes];
-            Vector3[] positions = Vector3ArrayFromRecastFloats(buffer, numNodes);
+            try
+            {
+                Span<float> buffer = rentedBuffer.AsSpan(0, MAX_POLY * 3);
+                Span<EDtPolyFlags> flags = rentedFlags.AsSpan(0, MAX_POLY);
 
-            for (int i = 0; i < numNodes; i++)
-                points[i] = new(positions[i], flags[i]);
+                EDtStatus status = PathStraight(query, startFloats, endFloats, polyExt, filter, options, out int numNodes, buffer, flags);
 
-            return new WrappedPathingResult(EPathingError.PartialPathFound, points);
+                if ((status & EDtStatus.DT_SUCCESS) == 0)
+                    return new(EPathingError.NoPathFound, []);
+
+                WrappedPathPoint[] points = new WrappedPathPoint[numNodes];
+
+                for (int i = 0; i < numNodes; i++)
+                    points[i] = new(new(buffer[i * 3 + 0] * INV_FACTOR, buffer[i * 3 + 2] * INV_FACTOR, buffer[i * 3 + 1] * INV_FACTOR), flags[i]);
+
+                return new(EPathingError.PartialPathFound, points);
+            }
+            finally
+            {
+                ArrayPool<float>.Shared.Return(rentedBuffer);
+                ArrayPool<EDtPolyFlags>.Shared.Return(rentedFlags);
+            }
         }
 
         public Vector3? GetRandomPointAsync(Zone zone, Vector3 position, float radius)
         {
-            if (!_navmeshPtrs.TryGetValue(zone.ID, out nint ptr))
+            if (!TryGetQuery(zone, out NavMeshQuery query))
                 return null;
 
-            Vector3? result = null;
+            Span<float> center = stackalloc float[3];
+            FillRecastFloats(position + Vector3.UnitZ * 8, center);
 
-            if (!_navmeshQueries.Value.TryGetValue(zone.ID, out NavMeshQuery query))
-            {
-                query = new NavMeshQuery(ptr);
-                _navmeshQueries.Value.Add(zone.ID, query);
-            }
-
-            float[] center = ToRecastFloats(position + Vector3.UnitZ * 8);
-            float cRadius = radius * CONVERSION_FACTOR;
-            float[] outVec = new float[3];
             EDtPolyFlags defaultInclude = EDtPolyFlags.ALL ^ EDtPolyFlags.DISABLED;
-            EDtPolyFlags defaultExclude = 0;
-            EDtPolyFlags[] filter = [defaultInclude, defaultExclude];
-            float[] polyPickEx = [2.0f, 4.0f, 2.0f];
-            EDtStatus status = FindRandomPointAroundCircle(query, center, cRadius, polyPickEx, filter, outVec);
+            ReadOnlySpan<EDtPolyFlags> filter = [defaultInclude, 0];
+            ReadOnlySpan<float> polyPickEx = [2.0f, 4.0f, 2.0f];
 
-            if ((status & EDtStatus.DT_SUCCESS) != 0)
-                result = new Vector3(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
+            Span<float> outVec = stackalloc float[3];
+            EDtStatus status = FindRandomPointAroundCircle(query, center, radius * CONVERSION_FACTOR, polyPickEx, filter, outVec);
 
-            return result;
+            return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
         public Vector3? GetClosestPointAsync(Zone zone, Vector3 position, float xRange = 256f, float yRange = 256f, float zRange = 256f)
         {
             // Assume the point is safe if we don't have a navmesh.
-            if (!_navmeshPtrs.TryGetValue(zone.ID, out nint ptr))
-                return position; 
+            if (!TryGetQuery(zone, out NavMeshQuery query))
+                return position;
 
-            Vector3? result = null;
+            Span<float> center = stackalloc float[3];
+            FillRecastFloats(position + Vector3.UnitZ * 8, center);
 
-            if (!_navmeshQueries.Value.TryGetValue(zone.ID, out NavMeshQuery query))
-            {
-                query = new NavMeshQuery(ptr);
-                _navmeshQueries.Value.Add(zone.ID, query);
-            }
-
-            float[] center = ToRecastFloats(position + Vector3.UnitZ * 8);
-            float[] outVec = new float[3];
             EDtPolyFlags defaultInclude = EDtPolyFlags.ALL ^ EDtPolyFlags.DISABLED;
-            EDtPolyFlags defaultExclude = 0;
-            EDtPolyFlags[] filter = [defaultInclude, defaultExclude];
-            float[] polyPickEx = ToRecastFloats(new Vector3(xRange, yRange, zRange));
+            ReadOnlySpan<EDtPolyFlags> filter = [defaultInclude, 0];
+
+            Span<float> polyPickEx = stackalloc float[3];
+            FillRecastFloats(new Vector3(xRange, yRange, zRange), polyPickEx);
+
+            Span<float> outVec = stackalloc float[3];
             EDtStatus status = FindClosestPoint(query, center, polyPickEx, filter, outVec);
 
-            if ((status & EDtStatus.DT_SUCCESS) != 0)
-                result = new Vector3(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
-
-            return result;
-        }
-
-        private static Vector3[] Vector3ArrayFromRecastFloats(float[] buffer, int numNodes)
-        {
-            Vector3[] result = new Vector3[numNodes];
-
-            for (int i = 0; i < numNodes; i++)
-                result[i] = new Vector3(buffer[i * 3 + 0] * INV_FACTOR, buffer[i * 3 + 2] * INV_FACTOR, buffer[i * 3 + 1] * INV_FACTOR);
-
-            return result;
+            return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
         public bool HasNavmesh(Zone zone)

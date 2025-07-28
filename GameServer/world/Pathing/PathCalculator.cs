@@ -114,9 +114,9 @@ namespace DOL.GS
                         if (!isDoor)
                             continue;
 
-                        Point3D point = new(pathPoint.Position.X, pathPoint.Position.Y, pathPoint.Position.Z);
+                        Point3D point = new(pathPoint.Position.X, pathPoint.Position.Y, pathPoint.Position.Z); // Should find a way to avoid this conversion.
                         _doorsOnPath[pathPoint] = new();
-                        Owner.CurrentRegion.GetInRadius<GameDoorBase>(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE, _doorsOnPath[pathPoint]);
+                        Owner.CurrentRegion.GetInRadius(point, eGameObjectType.DOOR, DOOR_SEARCH_DISTANCE, _doorsOnPath[pathPoint]);
                     }
 
                     _pathVisualization?.Visualize(_pathNodes, Owner.CurrentRegion);

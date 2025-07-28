@@ -3,12 +3,10 @@ using System.Numerics;
 
 namespace DOL.GS
 {
-    public class WrappedPathingResult
+    public readonly struct WrappedPathingResult
     {
-        public EPathingError Error;
-        public WrappedPathPoint[] Points;
-
-        public WrappedPathingResult() { }
+        public EPathingError Error { get; }
+        public WrappedPathPoint[] Points { get; }
 
         public WrappedPathingResult(EPathingError error, WrappedPathPoint[] points)
         {
@@ -17,12 +15,10 @@ namespace DOL.GS
         }
     }
 
-    public class WrappedPathPoint
+    public readonly struct WrappedPathPoint : IEquatable<WrappedPathPoint>
     {
-        public Vector3 Position;
-        public EDtPolyFlags Flags;
-
-        public WrappedPathPoint() { }
+        public Vector3 Position { get; }
+        public EDtPolyFlags Flags { get; }
 
         public WrappedPathPoint(Vector3 position, EDtPolyFlags flags)
         {
@@ -33,6 +29,31 @@ namespace DOL.GS
         public override string ToString()
         {
             return $"({Position}, {Flags})";
+        }
+
+        public bool Equals(WrappedPathPoint other)
+        {
+            return Position.Equals(other.Position) && Flags == other.Flags;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is WrappedPathPoint other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Position, Flags);
+        }
+
+        public static bool operator ==(WrappedPathPoint left, WrappedPathPoint right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(WrappedPathPoint left, WrappedPathPoint right)
+        {
+            return !(left == right);
         }
     }
 
