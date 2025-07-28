@@ -99,15 +99,10 @@ namespace DOL.GS
 		// The DOL Heading grid is 0 at the bottom of the Y-axis and increases clockwise.
 		// General trigonometry and the System.Math library use the Cartesian grid.
 
-		/// <summary>
-		/// Get the heading to a point
-		/// </summary>
-		/// <param name="point">Target point</param>
-		/// <returns>Heading to target point</returns>
-		public ushort GetHeading(IPoint2D point)
+		public ushort GetHeading(int x, int y)
 		{
-			float dx = point.X - X;
-			float dy = point.Y - Y;
+			float dx = x - X;
+			float dy = y - Y;
 
 			double heading = Math.Atan2(-dx, dy) * RADIAN_TO_HEADING;
 
@@ -115,6 +110,16 @@ namespace DOL.GS
 				heading += 4096;
 
 			return (ushort) heading;
+		}
+
+		/// <summary>
+		/// Get the heading to a point
+		/// </summary>
+		/// <param name="point">Target point</param>
+		/// <returns>Heading to target point</returns>
+		public ushort GetHeading(IPoint2D point)
+		{
+			return GetHeading(point.X, point.Y);
 		}
 
 		/// <summary>

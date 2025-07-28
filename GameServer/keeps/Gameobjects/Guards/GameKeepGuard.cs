@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Linq;
+using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
@@ -650,7 +650,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// Adding special handling for walking to a point for patrol guards to be in a formation
 		/// </summary>
-		public override void WalkTo(Point3D target, short speed)
+		public override void WalkTo(Vector3 target, short speed)
 		{
 			int offX = 0;
 			int offY = 0;
@@ -658,7 +658,7 @@ namespace DOL.GS.Keeps
 			if (IsMovingOnPath && PatrolGroup != null)
 				PatrolGroup.GetMovementOffset(this, out offX, out offY);
 
-			base.WalkTo(new Point3D(target.X - offX, target.Y - offY, target.Z), speed);
+			base.WalkTo(new Vector3(target.X - offX, target.Y - offY, target.Z), speed);
 		}
 
 		public override void ReturnToSpawnPoint(short speed)

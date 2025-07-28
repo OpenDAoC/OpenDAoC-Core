@@ -787,7 +787,7 @@ namespace DOL.GS.PacketHandler
 
 					if (npc.IsDestinationValid)
 					{
-						Zone targetZone = npc.CurrentRegion.GetZone(npc.movementComponent.DestinationForClient.X, npc.movementComponent.DestinationForClient.Y);
+						Zone targetZone = npc.CurrentRegion.GetZone((int) npc.movementComponent.DestinationForClient.X, (int) npc.movementComponent.DestinationForClient.Y);
 
 						if (targetZone != null)
 						{

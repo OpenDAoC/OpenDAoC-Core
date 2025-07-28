@@ -16,23 +16,27 @@ namespace DOL.GS
         public const int MIN_ALLOWED_FOLLOW_DISTANCE = 100;
         public const int MIN_ALLOWED_PET_FOLLOW_DISTANCE = 90;
 
+        private Vector3 _ownerPosition;
         private MovementState _movementState;
+        private Vector3 _velocity;
+        private Vector3 _destination;
         private long _nextFollowTick;
         private int _followTickInterval;
         private short _moveOnPathSpeed;
         private long _stopAtWaypointUntil;
         private long _walkingToEstimatedArrivalTime;
-        private MovementRequest _movementRequest;
+        private MovementRequest _movementRequest = new();
         private PathCalculator _pathCalculator;
         private ResetHeadingAction _resetHeadingAction;
-        private Point3D _positionForUpdatePackets;
-        private bool _needsBroadcastUpdate;
+        private Vector3 _positionForClient;
+        private Vector3 _destinationForClient;
+        private bool _needsBroadcastUpdate = true;
         private short _currentMovementDesiredSpeed;
         private PathVisualization _pathVisualization;
 
         public new GameNPC Owner { get; }
-        public Vector3 Velocity { get; private set; }
-        public Point3D Destination { get; private set; }
+        public ref Vector3 Velocity => ref _velocity;
+        public ref Vector3 Destination => ref _destination;
         public GameLiving FollowTarget { get; private set; }
         public int FollowMinDistance { get; private set; } = 100;
         public int FollowMaxDistance { get; private set; } = 3000;
@@ -47,22 +51,23 @@ namespace DOL.GS
         public bool IsMovingOnPath => IsFlagSet(MovementState.ON_PATH);
         public bool IsNearSpawn => Owner.IsWithinRadius(Owner.SpawnPoint, 25);
         public bool IsDestinationValid { get; private set; }
-        public bool IsAtDestination => !IsDestinationValid || (Destination.X == Owner.X && Destination.Y == Owner.Y && Destination.Z == Owner.Z);
+        public bool IsAtDestination => !IsDestinationValid || (_destination - _ownerPosition).LengthSquared() < 1.0f;
         public bool CanRoam => Properties.ALLOW_ROAM && RoamingRange > 0 && string.IsNullOrWhiteSpace(PathID);
         public double HorizontalVelocityForClient { get; private set; }
-        public Point3D PositionForClient => _needsBroadcastUpdate ? _positionForUpdatePackets : Owner;
         public bool HasActiveResetHeadingAction => _resetHeadingAction != null && _resetHeadingAction.IsAlive;
-        public Point3D DestinationForClient { get; private set; }
+        public ref Vector3 PositionForClient => ref _needsBroadcastUpdate ? ref _positionForClient : ref _ownerPosition;
+        public ref Vector3 DestinationForClient => ref _destinationForClient;
 
         public NpcMovementComponent(GameNPC owner) : base(owner)
         {
             Owner = owner;
             _pathCalculator = new(owner);
-            _positionForUpdatePackets = Owner;
         }
 
         protected override void TickInternal()
         {
+            _ownerPosition = new(Owner.X, Owner.Y, Owner.Z);
+
             if (IsFlagSet(MovementState.TURN_TO))
             {
                 if (!Owner.IsAttacking)
@@ -130,20 +135,16 @@ namespace DOL.GS
             }
         }
 
-        public void WalkTo(Point3D destination, short speed)
+        public void WalkTo(Vector3 destination, short speed)
         {
-            // The copy is intentional. `Point3D` can be moving objects.
-            destination = new Point3D(destination.X, destination.Y, destination.Z);
-            _movementRequest = new(destination, speed, WalkToInternal);
+            _movementRequest.Set(destination, speed, WalkToInternal);
             SetFlag(MovementState.REQUEST);
             AddToServiceObjectStore();
         }
 
-        public void PathTo(Point3D destination, short speed)
+        public void PathTo(Vector3 destination, short speed)
         {
-            // The copy is intentional. `Point3D` can be moving objects.
-            destination = new Point3D(destination.X, destination.Y, destination.Z);
-            _movementRequest = new(destination, speed, PathToInternal);
+            _movementRequest.Set(destination, speed, PathToInternal);
             SetFlag(MovementState.REQUEST);
             AddToServiceObjectStore();
         }
@@ -156,7 +157,7 @@ namespace DOL.GS
             CancelReturnToSpawnPoint();
 
             if (IsMoving)
-                UpdateMovement(null, 0.0, 0);
+                UpdateMovement(0);
         }
 
         public void Follow(GameLiving target, int minDistance, int maxDistance)
@@ -208,7 +209,7 @@ namespace DOL.GS
                 }
 
                 SetFlag(MovementState.ON_PATH);
-                PathTo(CurrentWaypoint, Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
+                PathTo(new(CurrentWaypoint.X, CurrentWaypoint.Y, CurrentWaypoint.Z), Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
                 return;
             }
             else if (!IsFlagSet(MovementState.ON_PATH))
@@ -229,7 +230,7 @@ namespace DOL.GS
                 else if (CurrentWaypoint.Prev != null)
                     CurrentWaypoint = CurrentWaypoint.Prev;
 
-                PathTo(CurrentWaypoint, Owner.MaxSpeed);
+                PathTo(new(CurrentWaypoint.X, CurrentWaypoint.Y, CurrentWaypoint.Z), Owner.MaxSpeed);
             }
             else if (log.IsErrorEnabled)
                 log.Error($"Called {nameof(MoveOnPath)} but both CurrentWaypoint and ON_PATH are already set. (NPC: {Owner})");
@@ -259,7 +260,7 @@ namespace DOL.GS
             Owner.attackComponent.StopAttack();
             (Owner.Brain as StandardMobBrain)?.ClearAggroList();
             IsReturningToSpawnPoint = true;
-            PathTo(Owner.SpawnPoint, speed);
+            PathTo(new(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), speed);
         }
 
         public void CancelReturnToSpawnPoint()
@@ -274,10 +275,10 @@ namespace DOL.GS
 
             if (Owner.CurrentZone.IsPathingEnabled)
             {
-                Vector3? target = PathingMgr.Instance.GetRandomPointAsync(Owner.CurrentZone, new Vector3(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), maxRoamingRadius);
+                Vector3? target = PathingMgr.Instance.GetRandomPointAsync(Owner.CurrentZone, new(Owner.SpawnPoint.X, Owner.SpawnPoint.Y, Owner.SpawnPoint.Z), maxRoamingRadius);
 
                 if (target.HasValue)
-                    PathTo(new Point3D(target.Value.X, target.Value.Y, target.Value.Z), speed);
+                    PathTo(target.Value, speed);
 
                 return;
             }
@@ -286,13 +287,13 @@ namespace DOL.GS
             double angle = Util.RandomDouble() * Math.PI * 2;
             double targetX = Owner.SpawnPoint.X + maxRoamingRadius * Math.Cos(angle);
             double targetY = Owner.SpawnPoint.Y + maxRoamingRadius * Math.Sin(angle);
-            WalkTo(new Point3D((int) targetX, (int) targetY, Owner.SpawnPoint.Z), speed);
+            WalkTo(new Vector3((float) targetX, (float) targetY, Owner.SpawnPoint.Z), speed);
         }
 
         public void RestartCurrentMovement()
         {
             if (IsDestinationValid && !IsAtDestination)
-                WalkToInternal(Destination, _currentMovementDesiredSpeed);
+                WalkToInternal(new(_destination.X, _destination.Y, _destination.Z), _currentMovementDesiredSpeed);
         }
 
         public void TurnTo(GameObject target, int duration = 0)
@@ -305,7 +306,7 @@ namespace DOL.GS
 
         public void TurnTo(int x, int y, int duration = 0)
         {
-            TurnTo(Owner.GetHeading(new Point2D(x, y)), duration);
+            TurnTo(Owner.GetHeading(x, y), duration);
         }
 
         public void TurnTo(ushort heading, int duration = 0)
@@ -367,41 +368,35 @@ namespace DOL.GS
                 _pathVisualization.Visualize(MovementMgr.FindFirstPathPoint(CurrentWaypoint), Owner.CurrentRegion);
         }
 
-        private void UpdateVelocity(double distanceToTarget)
+        private void UpdateVelocity(float distanceToTarget)
         {
             MovementStartTick = GameLoop.GameLoopTime;
 
             if (!IsMoving || distanceToTarget < 1)
             {
-                Velocity = Vector3.Zero;
+                _velocity = Vector3.Zero;
                 HorizontalVelocityForClient = 0.0;
                 return;
             }
 
-            float velocityX;
-            float velocityY;
-            float velocityZ;
-
             if (!IsDestinationValid)
             {
                 double heading = Owner.Heading * Point2D.HEADING_TO_RADIAN;
-                velocityX = (float) -Math.Sin(heading);
-                velocityY = (float) Math.Cos(heading);
-                velocityZ = 0.0f;
+                _velocity = new((float) -Math.Sin(heading), (float) Math.Cos(heading), 0.0f);
             }
             else
             {
-                velocityX = (float) ((Destination.X - Owner.RealX) / distanceToTarget * CurrentSpeed);
-                velocityY = (float) ((Destination.Y - Owner.RealY) / distanceToTarget * CurrentSpeed);
-                velocityZ = (float) ((Destination.Z - Owner.RealZ) / distanceToTarget * CurrentSpeed);
+                Vector3 ownerRealPos = new(Owner.RealX, Owner.RealY, Owner.RealZ);
+                Vector3 direction = _destination - ownerRealPos;
+                float scale = CurrentSpeed / distanceToTarget;
+                _velocity = direction * scale;
             }
 
-            Velocity = new(velocityX, velocityY, velocityZ);
-            HorizontalVelocityForClient = Math.Sqrt(velocityX * velocityX + velocityY * velocityY);
+            HorizontalVelocityForClient =  new Vector2(_velocity.X, _velocity.Y).Length();
             return;
         }
 
-        private void WalkToInternal(Point3D destination, short speed)
+        private void WalkToInternal(Vector3 destination, short speed)
         {
             if (IsTurningDisabled)
                 return;
@@ -411,48 +406,45 @@ namespace DOL.GS
             if (speed > MaxSpeed)
                 speed = MaxSpeed;
 
-            if (destination == null || speed <= 0)
+            if (speed <= 0)
             {
-                UpdateMovement(null, 0.0, speed);
+                UpdateMovement(0);
                 return;
             }
 
-            int distanceToTarget = Owner.GetDistanceTo(destination);
-            int ticksToArrive = distanceToTarget * 1000 / speed;
+            float distanceToTarget = Owner.GetDistanceTo(destination);
+            int ticksToArrive = (int) (distanceToTarget * 1000 / speed);
 
             if (ticksToArrive > 0)
             {
                 if (distanceToTarget > 25)
-                    TurnTo(destination.X, destination.Y);
+                    TurnTo((int) destination.X, (int) destination.Y);
 
                 UpdateMovement(destination, distanceToTarget, speed);
                 SetFlag(MovementState.WALK_TO);
                 _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
             }
             else
-                UpdateMovement(null, 0.0, 0);
+                UpdateMovement(0);
         }
 
-        private void PathToInternal(Point3D destination, short speed)
+        private void PathToInternal(Vector3 destination, short speed)
         {
-            // Pathing with no target position isn't currently supported.
-            if (_pathCalculator == null || destination == null)
+            if (_pathCalculator == null)
             {
                 UnsetFlag(MovementState.PATHING);
                 WalkToInternal(destination, speed);
                 return;
             }
 
-            Vector3 destinationForPathCalculator = new(destination.X, destination.Y, destination.Z);
-
-            if (!PathCalculator.ShouldPath(Owner, destinationForPathCalculator))
+            if (!PathCalculator.ShouldPath(Owner, destination))
             {
                 UnsetFlag(MovementState.PATHING);
                 WalkToInternal(destination, speed);
                 return;
             }
 
-            Vector3? nextNode = _pathCalculator.CalculateNextTarget(destinationForPathCalculator, out ENoPathReason noPathReason);
+            Vector3? nextNode = _pathCalculator.CalculateNextTarget(destination, out ENoPathReason noPathReason);
 
             // Fall back to normal walking method if no path is found.
             if (noPathReason is ENoPathReason.NoPath or ENoPathReason.End)
@@ -465,25 +457,25 @@ namespace DOL.GS
             // Pause movement and turn toward the destination the path contains a closed door.
             if (noPathReason is ENoPathReason.ClosedDoor)
             {
-                TurnTo(destination.X, destination.Y);
+                TurnTo((int) destination.X, (int) destination.Y);
                 UnsetFlag(MovementState.PATHING);
 
                 if (IsMoving)
-                    UpdateMovement(null, 0.0, 0);
+                    UpdateMovement(0);
 
                 return;
             }
 
             // Walk towards the next pathing node.
-            _movementRequest = new(destination, speed, PathToInternal);
+            _movementRequest.Set(destination, speed, PathToInternal);
             SetFlag(MovementState.PATHING);
-            WalkToInternal(new Point3D(nextNode.Value.X, nextNode.Value.Y, nextNode.Value.Z), speed);
+            WalkToInternal(nextNode.Value, speed);
             return;
         }
 
         private int FollowTick()
         {
-            // Stop moving if the NPC is casting or attacking with a ranged weapon.
+            // Stop moving if the NPC is casting or using ranged weapons.
             if (Owner.IsCasting || (Owner.IsAttacking && Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance))
             {
                 if (IsMoving)
@@ -498,69 +490,52 @@ namespace DOL.GS
                 return 0;
             }
 
-            int targetX = FollowTarget.X;
-            int targetY = FollowTarget.Y;
-            int targetZ = FollowTarget.Z;
-            float relativeX;
-            float relativeY;
-            float relativeZ;
-            double distance;
-            bool isInFormation;
+            Vector3 targetPos = new(FollowTarget.X, FollowTarget.Y, FollowTarget.Z);
+            bool isInFormation = false;
 
-            if (Owner.Brain is StandardMobBrain brain && Owner.FollowTarget.Realm == Owner.Realm)
+            if (Owner.Brain is StandardMobBrain brain && FollowTarget.Realm == Owner.Realm)
             {
-                if (brain.CheckFormation(ref targetX, ref targetY, ref targetZ))
+                int tx = (int) targetPos.X, ty = (int) targetPos.Y, tz = (int) targetPos.Z;
+
+                // Update to formation-adjusted position.
+                if (brain.CheckFormation(ref tx, ref ty, ref tz))
+                {
                     isInFormation = true;
-                else
-                    isInFormation = false;
-
-                relativeX = targetX - Owner.X;
-                relativeY = targetY - Owner.Y;
-                relativeZ = targetZ - Owner.Z;
-            }
-            else
-            {
-                relativeX = FollowTarget.X - Owner.X;
-                relativeY = FollowTarget.Y - Owner.Y;
-                relativeZ = FollowTarget.Z - Owner.Z;
-                isInFormation = false;
+                    targetPos = new(tx, ty, tz);
+                }
             }
 
-            distance = Math.Sqrt(relativeX * relativeX + relativeY * relativeY + relativeZ * relativeZ);
+            Vector3 relative = targetPos - _ownerPosition;
+            float distanceSquared = relative.LengthSquared();
+            long followMaxDistanceSquared = FollowMaxDistance * FollowMaxDistance;
 
-            // If distance is greater then the max follow distance, stop following and return home.
-            if (distance > FollowMaxDistance)
+            if (distanceSquared > followMaxDistanceSquared)
             {
                 ReturnToSpawnPoint();
                 return 0;
             }
 
-            int minAllowedFollowDistance;
+            int minAllowedFollowDistance = isInFormation ? 0 : Math.Max(FollowMinDistance, MIN_ALLOWED_FOLLOW_DISTANCE);
 
-            if (isInFormation)
-                minAllowedFollowDistance = 0;
-            else
+            if (!isInFormation && distanceSquared <= minAllowedFollowDistance * minAllowedFollowDistance)
             {
-                minAllowedFollowDistance = Math.Max(FollowMinDistance, MIN_ALLOWED_FOLLOW_DISTANCE);
+                TurnTo(FollowTarget);
 
-                if (distance <= minAllowedFollowDistance)
-                {
-                    TurnTo(FollowTarget);
+                if (IsMoving)
+                    UpdateMovement(0);
 
-                    if (IsMoving)
-                        UpdateMovement(null, 0.0, 0);
-
-                    return Properties.GAMENPC_FOLLOWCHECK_TIME;
-                }
+                return Properties.GAMENPC_FOLLOWCHECK_TIME;
             }
 
-            // Use a slightly lower follow distance for destination calculation. This helps with heading at low speed.
-            minAllowedFollowDistance = Math.Max(0, minAllowedFollowDistance - 10);
-            relativeX = (float) (relativeX / distance * minAllowedFollowDistance);
-            relativeY = (float) (relativeY / distance * minAllowedFollowDistance);
-            relativeZ = (float) (relativeZ / distance * minAllowedFollowDistance);
-            Point3D destination = new((int) (targetX - relativeX), (int) (targetY - relativeY), (int) (targetZ - relativeZ));
-            short speed = (short) ((distance - minAllowedFollowDistance) * (1000.0 / Properties.GAMENPC_FOLLOWCHECK_TIME));
+            // Reduce follow distance slightly for smoother heading.
+            int preferredDistance = Math.Max(0, minAllowedFollowDistance - 10);
+            float distance = MathF.Sqrt(distanceSquared);
+
+            Vector3 direction = Vector3.Normalize(relative);
+            Vector3 offset = direction * preferredDistance;
+            Vector3 destination = targetPos - offset;
+
+            short speed = (short) ((distance - preferredDistance) * (1000.0 / Properties.GAMENPC_FOLLOWCHECK_TIME));
             PathToInternal(destination, Math.Min(MaxSpeed, speed));
             return Properties.GAMENPC_FOLLOWCHECK_TIME;
         }
@@ -609,10 +584,10 @@ namespace DOL.GS
 
             void SetPositionToDestination()
             {
-                Owner.X = Destination.X;
-                Owner.Y = Destination.Y;
-                Owner.Z = Destination.Z;
-                UpdateMovement(null, 0.0, 0);
+                Owner.X = (int) _destination.X;
+                Owner.Y = (int) _destination.Y;
+                Owner.Z = (int) _destination.Z;
+                UpdateMovement(0);
             }
         }
 
@@ -621,7 +596,7 @@ namespace DOL.GS
             PathPoint oldPathPoint = CurrentWaypoint;
             PathPoint nextPathPoint = CurrentWaypoint.Next;
 
-            if ((CurrentWaypoint.Type == EPathType.Path_Reverse) && CurrentWaypoint.FiredFlag)
+            if ((CurrentWaypoint.Type is EPathType.Path_Reverse) && CurrentWaypoint.FiredFlag)
                 nextPathPoint = CurrentWaypoint.Prev;
 
             if (nextPathPoint == null)
@@ -647,12 +622,12 @@ namespace DOL.GS
                 }
             }
             else
-                CurrentWaypoint = CurrentWaypoint.Type == EPathType.Path_Reverse && CurrentWaypoint.FiredFlag ? CurrentWaypoint.Prev : CurrentWaypoint.Next;
+                CurrentWaypoint = CurrentWaypoint.Type is EPathType.Path_Reverse && CurrentWaypoint.FiredFlag ? CurrentWaypoint.Prev : CurrentWaypoint.Next;
 
             oldPathPoint.FiredFlag = !oldPathPoint.FiredFlag;
 
             if (CurrentWaypoint != null)
-                PathTo(CurrentWaypoint, Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
+                PathTo(new(CurrentWaypoint.X, CurrentWaypoint.Y, CurrentWaypoint.Z), Math.Min(_moveOnPathSpeed, CurrentWaypoint.MaxSpeed));
             else
                 StopMovingOnPath();
         }
@@ -665,66 +640,65 @@ namespace DOL.GS
 
             if (!IsDestinationValid)
             {
-                _positionForUpdatePackets = Owner;
-                DestinationForClient = Destination;
+                _positionForClient = _ownerPosition;
+                _destinationForClient = Destination;
                 return;
             }
 
-            double magic;
-            double ratio;
-            double complementRatio;
-
             if (wasMoving)
-                _positionForUpdatePackets = Owner;
+                _positionForClient = _ownerPosition;
             else
             {
-                magic = CurrentSpeed * 0.15;
-                ratio = (distanceToTarget + magic) / distanceToTarget;
-                complementRatio = 1 - ratio;
-
-                _positionForUpdatePackets = new()
-                {
-                    X = (int) (complementRatio * Destination.X + ratio * Owner.RealX),
-                    Y = (int) (complementRatio * Destination.Y + ratio * Owner.RealY),
-                    Z = (int) (complementRatio * Destination.Z + ratio * Owner.RealZ)
-                };
+                float magic = (float) (CurrentSpeed * 0.15);
+                float ratio = (float) ((distanceToTarget + magic) / distanceToTarget);
+                _positionForClient = Vector3.Lerp(_destination, _ownerPosition, ratio);
             }
 
             if (distanceToTarget < 1)
-                DestinationForClient = Owner;
+                _destinationForClient = _ownerPosition;
             else
             {
-                magic = Math.Max(15, CurrentSpeed * 0.1);
-                ratio = (distanceToTarget + magic) / distanceToTarget;
-                complementRatio = 1 - ratio;
-
-                DestinationForClient = new()
-                {
-                    X = (int) (complementRatio * Owner.RealX + ratio * Destination.X),
-                    Y = (int) (complementRatio * Owner.RealY + ratio * Destination.Y),
-                    Z = (int) (complementRatio * Owner.RealZ + ratio * Destination.Z)
-                };
+                float magic = (float)Math.Max(15, CurrentSpeed * 0.1);
+                float ratio = (float)((distanceToTarget + magic) / distanceToTarget);
+                _destinationForClient = Vector3.Lerp(_ownerPosition, _destination, ratio);
             }
         }
 
-        private void UpdateMovement(Point3D destination, double distanceToTarget, short speed)
+        private void UpdateMovement(short speed)
         {
             // Save current position.
             Owner.X = Owner.X;
             Owner.Y = Owner.Y;
             Owner.Z = Owner.Z;
 
-            if (destination == null || distanceToTarget < 1)
+            _needsBroadcastUpdate = true;
+            IsDestinationValid = false;
+            bool wasMoving = IsMoving;
+            CurrentSpeed = speed;
+            UpdateVelocity(0);
+            PrepareValuesForClient(wasMoving, 0);
+        }
+
+        private void UpdateMovement(Vector3 destination, float distanceToTarget, short speed)
+        {
+            // Save current position.
+            Owner.X = Owner.X;
+            Owner.Y = Owner.Y;
+            Owner.Z = Owner.Z;
+
+            if (distanceToTarget < 1)
             {
                 _needsBroadcastUpdate = true;
                 IsDestinationValid = false;
             }
             else
             {
-                if (CurrentSpeed != speed || !Destination.IsSamePosition(destination))
+                if (CurrentSpeed != speed)
                     _needsBroadcastUpdate = true;
 
-                Destination = destination;
+                _destination.X = (int) destination.X;
+                _destination.Y = (int) destination.Y;
+                _destination.Z = (int) destination.Z;
                 IsDestinationValid = true;
             }
 
@@ -758,15 +732,17 @@ namespace DOL.GS
             _movementState &= ~flag;
         }
 
-        private delegate void MovementRequestAction(Point3D destination, short speed);
+        private delegate void MovementRequestAction(Vector3 destination, short speed);
 
         private class MovementRequest
         {
-            public Point3D Destination { get; }
-            public short Speed { get; }
-            public MovementRequestAction Action { get; }
+            public Vector3 Destination { get; private set; }
+            public short Speed { get; private set; }
+            public MovementRequestAction Action { get; private set; }
 
-            public MovementRequest(Point3D destination, short speed, MovementRequestAction action)
+            public MovementRequest() { }
+
+            public void Set(Vector3 destination, short speed, MovementRequestAction action)
             {
                 Destination = destination;
                 Speed = speed;
@@ -775,7 +751,7 @@ namespace DOL.GS
 
             public void Execute()
             {
-                Action(Destination, Speed);
+                Action?.Invoke(Destination, Speed);
             }
         }
 
@@ -801,7 +777,7 @@ namespace DOL.GS
                 if (_oldMovementStartTick == _movementComponent.MovementStartTick &&
                     !_movementComponent.IsMoving &&
                     owner.IsAlive &&
-                    owner.ObjectState == eObjectState.Active &&
+                    owner.ObjectState is eObjectState.Active &&
                     !owner.attackComponent.AttackState)
                 {
                     _movementComponent.TurnTo(_oldHeading);

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Threading;
 using DOL.AI;
@@ -721,7 +722,7 @@ namespace DOL.GS
 					return (int) Math.Round(m_x + movementAmount);
 
 				double absMovementAmount = Math.Abs(movementAmount);
-				return Math.Abs(Destination.X - m_x) < absMovementAmount ? Destination.X : (int) Math.Round(m_x + movementAmount);
+				return (int) (Math.Abs(Destination.X - m_x) < absMovementAmount ? Destination.X : Math.Round(m_x + movementAmount));
 			}
 		}
 
@@ -745,7 +746,7 @@ namespace DOL.GS
 					return (int) Math.Round(m_y + movementAmount);
 
 				double absMovementAmount = Math.Abs(movementAmount);
-				return Math.Abs(Destination.Y - m_y) < absMovementAmount ? Destination.Y : (int) Math.Round(m_y + movementAmount);
+				return (int) (Math.Abs(Destination.Y - m_y) < absMovementAmount ? Destination.Y : Math.Round(m_y + movementAmount));
 			}
 		}
 
@@ -769,7 +770,7 @@ namespace DOL.GS
 					return (int) Math.Round(m_z + movementAmount);
 
 				double absMovementAmount = Math.Abs(movementAmount);
-				return Math.Abs(Destination.Z - m_z) < absMovementAmount ? Destination.Z : (int) Math.Round(m_z + movementAmount);
+				return (int) (Math.Abs(Destination.Z - m_z) < absMovementAmount ? Destination.Z : Math.Round(m_z + movementAmount));
 			}
 		}
 
@@ -832,7 +833,7 @@ namespace DOL.GS
 
 		public long LastVisibleToPlayersTickCount => m_lastVisibleToPlayerTick;
 
-		public IPoint3D Destination => movementComponent.Destination;
+		public ref Vector3 Destination => ref movementComponent.Destination;
 		public GameObject FollowTarget => movementComponent.FollowTarget;
 		public string PathID
 		{
@@ -856,12 +857,22 @@ namespace DOL.GS
 		public bool IsAtDestination => movementComponent.IsAtDestination;
 		public bool CanRoam => movementComponent.CanRoam;
 
-		public virtual void WalkTo(Point3D target, short speed)
+		public void WalkTo(Point3D target, short speed)
+		{
+			WalkTo(new Vector3(target.X, target.Y, target.Z), speed);
+		}
+
+		public virtual void WalkTo(Vector3 target, short speed)
 		{
 			movementComponent.WalkTo(target, speed);
 		}
 
-		public virtual void PathTo(Point3D target, short speed)
+		public void PathTo(Point3D target, short speed)
+		{
+			PathTo(new Vector3(target.X, target.Y, target.Z), speed);
+		}
+
+		public virtual void PathTo(Vector3 target, short speed)
 		{
 			movementComponent.PathTo(target, speed);
 		}
@@ -2042,6 +2053,7 @@ namespace DOL.GS
 			if (IsStealthed)
 				WasStealthed = true;
 
+			movementComponent.PositionForClient = new(X, Y, Z); // Ensure a correct initial state. Movement component can't do it itself.
 			return true;
 		}
 
