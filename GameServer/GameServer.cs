@@ -979,52 +979,39 @@ namespace DOL.GS
 		/// </summary>
 		public override void Stop()
 		{
-			//Stop new clients from logging in
+			if (log.IsInfoEnabled)
+				log.Info("Stopping server...");
+
+			// Stop new clients from logging in.
 			m_status = EGameServerStatus.GSS_Closed;
 
 			if (log.IsInfoEnabled)
-				log.Info("GameServer.Stop() - enter method");
+				log.Info("No longer accepting incoming connections");
 
-			//Notify our scripthandlers
+			GameLoop.Exit();
 			GameEventMgr.Notify(ScriptEvent.Unloaded);
-
-			//Notify of the global server stop event
-			//We notify before we shutdown the database
-			//so that event handlers can use the datbase too
 			GameEventMgr.Notify(GameServerEvent.Stopped, this);
 			GameEventMgr.RemoveAllHandlers(true);
+			WorldMgr.Exit();
+			Scheduler?.Shutdown();
+			Scheduler = null;
+			m_serverRules = null;
 
-			//Stop the World Save timer
+			// Stop the save timer and save manually.
 			if (m_timer != null)
 			{
 				m_timer.Change(Timeout.Infinite, Timeout.Infinite);
 				m_timer.Dispose();
 				m_timer = null;
+				SaveTimerProc(null);
 			}
 
-			//Stop the base server
 			base.Stop();
 
-			//Stop all mobMgrs
-			WorldMgr.StopRegionMgrs();
-
-			SaveTimerProc(null);
-
-			WorldMgr.Exit();
-			GameLoop.Exit();
-
-			m_serverRules = null;
-
-			// Stop Server Scheduler
-			if (Scheduler != null)
-				Scheduler.Shutdown();
-			Scheduler = null;
-
-			Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-
 			if (log.IsInfoEnabled)
-				log.Info("Server Stopped");
+				log.Info("Stopped");
 
+			// Stop the logger manager last, so that all logs are flushed.
 			LoggerManager.Stop();
 			Environment.Exit(0);
 		}

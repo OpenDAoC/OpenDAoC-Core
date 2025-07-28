@@ -68,10 +68,7 @@ namespace DOL.GS
                 _gameLoopThread.Join();
 
             if (_busyWaitThresholdThread.IsAlive)
-            {
-                _busyWaitThresholdThread.Interrupt(); // This thread sleeps for a long time.
-                _busyWaitThresholdThread.Join();
-            }
+                _busyWaitThresholdThread.Interrupt(); // This thread sleeps for a long time, let's not wait for it to finish.
 
             _threadPool.Dispose();
         }

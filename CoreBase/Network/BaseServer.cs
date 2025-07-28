@@ -310,9 +310,6 @@ namespace DOL.Network
                 {
                     _listen.Close();
                     _listen = null;
-
-                    if (log.IsInfoEnabled)
-                        log.Info("Server is no longer listening for incoming connections");
                 }
             }
             catch (Exception e)
@@ -334,9 +331,6 @@ namespace DOL.Network
                 if (log.IsErrorEnabled)
                     log.Error(e);
             }
-
-            if (log.IsInfoEnabled)
-                log.Info("Server stopped");
         }
 
         protected virtual void OnUdpReceive(byte[] buffer, int offset, int size, EndPoint endPoint) { }
