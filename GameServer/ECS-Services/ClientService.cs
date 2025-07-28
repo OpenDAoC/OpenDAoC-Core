@@ -46,6 +46,7 @@ namespace DOL.GS
                     if (log.IsErrorEnabled)
                         log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
 
+                    _lastValidIndex = -1;
                     Diagnostics.StopPerfCounter(SERVICE_NAME);
                     return;
                 }

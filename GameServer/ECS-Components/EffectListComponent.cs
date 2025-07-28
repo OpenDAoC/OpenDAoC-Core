@@ -21,7 +21,6 @@ namespace DOL.GS
         // Pending effects.
         private ConcurrentQueue<ECSGameEffect> _pendingEffects = new();     // Queue for pending effects to be processed in the next tick.
         private int _pendingEffectCount;                                    // Number of pending effects to be processed.
-        private HashSet<eEffect> _effectTypesToRemove = new();              // Set of effect types to be removed from the effects dictionary.
 
         // Concentration.
         private List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -42,8 +41,11 @@ namespace DOL.GS
             Owner = owner;
         }
 
-        public void Tick()
+        public void BeginTick()
         {
+            // `TickPendingEffect` writes to `_effects` and `_effectIdToEffect`.
+            // Effects being started or stopped aren't intended to call getter methods on `EffectListComponent` other than their own.
+
             if (Volatile.Read(ref _pendingEffectCount) > 0)
             {
                 Interlocked.Exchange(ref _pendingEffectCount, 0);
@@ -51,30 +53,37 @@ namespace DOL.GS
                 while (_pendingEffects.TryDequeue(out ECSGameEffect effect))
                     TickPendingEffect(effect);
             }
+        }
 
+        public void EndTick()
+        {
+            // `TickEffect` isn't intended to write to `_effects` or `_effectIdToEffect`.
+            // When an effect is stopped (if it expires), it's enqueued to `_pendingEffects` and processed on the next game loop tick.
+
+            // Keep ticking even if `ObjectState == Inactive` (region change).
             if (_effects.Count == 0 || Owner.ObjectState is GameObject.eObjectState.Deleted)
-                ServiceObjectStore.Remove(this); // Keep ticking even if `ObjectState == Inactive` (region change).
-            else if (Owner.Health <= 0)
-                CancelAll(); // Don't check `IsAlive`, since it returns false during region change.
-            else
             {
-                foreach (var pair in _effects)
-                {
-                    List<ECSGameEffect> list = pair.Value;
+                ServiceObjectStore.Remove(this);
+                SendPlayerUpdates();
+                return;
+            }
 
-                    // Reverse loop to allow removing effects in `TickEffect` while iterating.
-                    // To remove from `_effects`, we use `_effectTypesToRemove` as an intermediate list.
-                    for (int i = list.Count - 1; i >= 0; i--)
-                        TickEffect(list[i]);
-                }
+            // Don't check `IsAlive`, since it returns false during region change.
+            if (Owner.Health <= 0)
+            {
+                CancelAll();
+                SendPlayerUpdates();
+                return;
+            }
 
-                if (_effectTypesToRemove.Count > 0)
-                {
-                    foreach (eEffect effectType in _effectTypesToRemove)
-                        _effects.Remove(effectType);
+            foreach (var pair in _effects)
+            {
+                List<ECSGameEffect> list = pair.Value;
 
-                    _effectTypesToRemove.Clear();
-                }
+                // Reverse loop to allow removing effects in `TickEffect` while iterating.
+                // To remove from `_effects`, we use `_effectTypesToRemove` as an intermediate list.
+                for (int i = list.Count - 1; i >= 0; i--)
+                    TickEffect(list[i]);
             }
 
             SendPlayerUpdates();
@@ -181,8 +190,10 @@ namespace DOL.GS
         {
             List<ECSGameSpellEffect> temp = new();
 
-            foreach (List<ECSGameEffect> effects in _effects.Values)
+            foreach (var pair in _effects)
             {
+                List<ECSGameEffect> effects = pair.Value;
+
                 for (int i = effects.Count - 1; i >= 0; i--)
                 {
                     if (effects[i] is ECSGameSpellEffect spellEffect)
@@ -213,8 +224,10 @@ namespace DOL.GS
         {
             List<ECSGameAbilityEffect> temp = new();
 
-            foreach (List<ECSGameEffect> effects in _effects.Values)
+            foreach (var pair in _effects)
             {
+                List<ECSGameEffect> effects = pair.Value;
+
                 for (int i = effects.Count - 1; i >= 0; i--)
                 {
                     if (effects[i] is ECSGameAbilityEffect abilityEffect)
@@ -722,7 +735,6 @@ namespace DOL.GS
             {
                 try
                 {
-                    _effectTypesToRemove.Remove(effect.EffectType); // In case the type was added by another effect being processed during the same tick.
                     RequestPlayerUpdate(EffectService.GetPlayerUpdateFromEffect(effect.EffectType));
 
                     if (effect is ECSGameSpellEffect spellEffect)
@@ -746,6 +758,7 @@ namespace DOL.GS
                         }
                         else if (spellEffect is not ECSImmunityEffect)
                             EffectService.SendSpellAnimation(spellEffect);
+
                         if (effect is StatDebuffECSEffect && spell.CastTime == 0)
                             StatDebuffECSEffect.TryDebuffInterrupt(spell, effect.OwnerPlayer, spellHandler?.Caster);
                     }
@@ -814,7 +827,7 @@ namespace DOL.GS
                         _effectIdToEffect.Remove(effect.Icon);
 
                         if (existingEffects.Count == 0)
-                            _effectTypesToRemove.Add(effect.EffectType);
+                            _effects.Remove(effect.EffectType);
 
                         HandleConcentration(effect as ECSGameSpellEffect);
                         return RemoveEffectResult.Removed;

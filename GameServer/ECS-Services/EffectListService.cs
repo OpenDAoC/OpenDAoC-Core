@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ECS.Debug;
 using System.Reflection;
 using System.Threading;
+using ECS.Debug;
 
 namespace DOL.GS
 {
@@ -11,38 +11,70 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
         private const string SERVICE_NAME = nameof(EffectListService);
-        private static List<EffectListComponent> _list;
+        private const string SERVICE_NAME_BEGIN = $"{SERVICE_NAME}_Begin";
+        private const string SERVICE_NAME_END = $"{SERVICE_NAME}_End";
+        private static List<EffectListComponent> _effectListComponents;
         private static int _entityCount;
+        private static int _lastValidIndex;
 
-        public static void Tick()
+        public static void BeginTick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
-
-            int lastValidIndex;
+            GameLoop.CurrentServiceTick = SERVICE_NAME_BEGIN;
+            Diagnostics.StartPerfCounter(SERVICE_NAME_BEGIN);
 
             try
             {
-                _list = ServiceObjectStore.UpdateAndGetAll<EffectListComponent>(ServiceObjectType.EffectListComponent, out lastValidIndex);
+                _effectListComponents = ServiceObjectStore.UpdateAndGetAll<EffectListComponent>(ServiceObjectType.EffectListComponent, out _lastValidIndex);
             }
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
                     log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
 
-                Diagnostics.StopPerfCounter(SERVICE_NAME);
+                _lastValidIndex = -1;
+                Diagnostics.StopPerfCounter(SERVICE_NAME_BEGIN);
                 return;
             }
 
-            GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
-
-            if (Diagnostics.CheckEntityCounts)
-                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
+            GameLoop.ExecuteWork(_lastValidIndex + 1, BeginTickInternal);
+            Diagnostics.StopPerfCounter(SERVICE_NAME_BEGIN);
         }
 
-        private static void TickInternal(int index)
+        public static void EndTick()
+        {
+            GameLoop.CurrentServiceTick = SERVICE_NAME_END;
+            Diagnostics.StartPerfCounter(SERVICE_NAME_END);
+
+            GameLoop.ExecuteWork(_lastValidIndex + 1, EndTickInternal);
+
+            if (Diagnostics.CheckEntityCounts)
+                Diagnostics.PrintEntityCount(SERVICE_NAME_END, ref _entityCount, _effectListComponents.Count);
+
+            Diagnostics.StopPerfCounter(SERVICE_NAME_END);
+        }
+
+        private static void BeginTickInternal(int index)
+        {
+            EffectListComponent effectListComponent = null;
+
+            try
+            {
+                effectListComponent = _effectListComponents[index];
+
+                long startTick = GameLoop.GetRealTime();
+                effectListComponent.BeginTick();
+                long stopTick = GameLoop.GetRealTime();
+
+                if (stopTick - startTick > Diagnostics.LongTickThreshold)
+                    log.Warn($"Long {SERVICE_NAME_BEGIN}.{nameof(BeginTickInternal)} for: {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+            }
+            catch (Exception e)
+            {
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME_BEGIN, effectListComponent, effectListComponent.Owner);
+            }
+        }
+
+        private static void EndTickInternal(int index)
         {
             EffectListComponent effectListComponent = null;
 
@@ -51,17 +83,18 @@ namespace DOL.GS
                 if (Diagnostics.CheckEntityCounts)
                     Interlocked.Increment(ref _entityCount);
 
-                effectListComponent = _list[index];
+                effectListComponent = _effectListComponents[index];
+
                 long startTick = GameLoop.GetRealTime();
-                effectListComponent.Tick();
+                effectListComponent.EndTick();
                 long stopTick = GameLoop.GetRealTime();
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for: {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+                    log.Warn($"Long {SERVICE_NAME_END}.{nameof(EndTickInternal)} for: {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
             }
             catch (Exception e)
             {
-                ServiceUtils.HandleServiceException(e, SERVICE_NAME, effectListComponent, effectListComponent.Owner);
+                ServiceUtils.HandleServiceException(e, SERVICE_NAME_END, effectListComponent, effectListComponent.Owner);
             }
         }
 
