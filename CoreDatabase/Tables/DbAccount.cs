@@ -318,7 +318,7 @@ namespace DOL.Database
 		/// <summary>
 		/// List of characters on this account
 		/// </summary>
-		[Relation(LocalField = "Name", RemoteField = "AccountName", AutoLoad = true, AutoDelete=true)]
+		[Relation(LocalField = "Name", RemoteField = "AccountName", AutoLoad = true, AutoDelete = true)]
 		public DbCoreCharacter[] Characters;
 
 		/// <summary>

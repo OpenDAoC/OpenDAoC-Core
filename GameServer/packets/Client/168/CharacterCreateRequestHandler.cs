@@ -520,16 +520,15 @@ namespace DOL.GS.PacketHandler.Client.v168
             // write changes
             GameServer.Database.SaveObject(ch);
 
-            // Log creation
-            AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.CharacterCreate, string.Empty, pdata.CharName);
-
+            // Do we really have to do this?
             client.Account.Characters = null;
+            GameServer.Database.FillObjectRelations(client.Account);
 
             if (log.IsInfoEnabled)
                 log.Info($"Character {pdata.CharName} created on Account {account}!");
 
-            // Reload Account Relations
-            GameServer.Database.FillObjectRelations(client.Account);
+            // Log creation
+            AuditMgr.AddAuditEntry(client, AuditType.Account, AuditSubtype.CharacterCreate, string.Empty, pdata.CharName);
 
             return true;
         }
@@ -892,6 +891,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 
                 GameServer.Database.AddObject(backupCharacter);
                 GameServer.Database.DeleteObject(character);
+
+                // Do we really have to do this?
                 client.Account.Characters = null;
                 GameServer.Database.FillObjectRelations(client.Account);
 
