@@ -40,11 +40,16 @@ namespace DOL.GS.Spells
         /// <returns>'true' if the effect should be applied to the target</returns>
         public override bool StartSpell(GameLiving target)
         {
-            // The argument is null when the effect is pulsing.
+            // The argument is null when the effect is pulsing (not the application tick).
             // In which case we don't call base, since pulses are technically offensive spells applied on friendly NPCs.
-
             if (target != null)
-                return base.StartSpell(target);
+            {
+                // We also don't call base if the target is already charmed by the same caster.
+                ECSGameEffect charm = EffectListService.GetEffectOnTarget(target, eEffect.Charm, eSpellType.Charm);
+
+                if (charm == null || charm.SpellHandler.Caster != Caster)
+                     return base.StartSpell(target);
+            }
 
             target ??= Target;
 
