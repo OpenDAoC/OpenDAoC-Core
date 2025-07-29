@@ -50,7 +50,8 @@ namespace DOL.GS
 
             try
             {
-                return RemoveInternal(_root, key, 0, value);
+                RemoveInternal(_root, key, 0, value, out bool wasFound);
+                return wasFound;
             }
             finally
             {
@@ -123,7 +124,7 @@ namespace DOL.GS
             GC.SuppressFinalize(this);
         }
 
-        private static bool RemoveInternal(TrieNode node, string key, int depth, T value)
+        private static bool RemoveInternal(TrieNode node, string key, int depth, T value, out bool wasFound)
         {
             if (depth == key.Length)
             {
@@ -131,9 +132,11 @@ namespace DOL.GS
                 {
                     node.HasValue = false;
                     node.Value = default;
+                    wasFound = true;
                     return node.Children.Count == 0;
                 }
 
+                wasFound = false;
                 return false;
             }
 
@@ -141,12 +144,13 @@ namespace DOL.GS
 
             if (node.Children.TryGetValue(c, out TrieNode child))
             {
-                if (RemoveInternal(child, key, depth + 1, value))
+                if (RemoveInternal(child, key, depth + 1, value, out wasFound))
                     node.Children.Remove(c);
 
                 return !node.HasValue && node.Children.Count == 0;
             }
 
+            wasFound = false;
             return false;
         }
 
