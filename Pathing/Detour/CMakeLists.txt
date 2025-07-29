@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 3.0...4.1)
+project(Detour)
+
 file(GLOB SOURCES Source/*.cpp)
 add_library(Detour SHARED ${SOURCES})
 
