@@ -1093,7 +1093,7 @@ namespace DOL.GS
             GamePlayer playerOwner = owner as GamePlayer;
 
             // Strafing miss.
-            if (playerOwner != null && playerOwner.IsStrafing && ad.Target is GamePlayer && Util.Chance(30))
+            if (playerOwner != null && playerOwner.IsStrafing && ad.IsMeleeAttack && ad.Target is GamePlayer && Util.Chance(30))
             {
                 // Used to tell the difference between a normal miss and a strafing miss.
                 // Ugly, but we shouldn't add a new field to 'AttackData' just for that purpose.
