@@ -376,42 +376,51 @@ namespace DOL.GS
                 return null;
             }
 
-            GamePlayer player = matches[0];
+            GamePlayer candidate = matches[0];
 
-            // The first element may be an exact match.
-            if (player.Name.Length == playerName.Length)
+            // If the player is found but inactive, remove them from the trie and try the search again.
+            // This handles the case for both exact and partial matches in one place.
+            if (!ValidateAndRemoveIfInactive(candidate))
+                return GetPlayerByPartialName(playerName, out result);
+
+            // Exact match: the found player's name is the same length as the search query.
+            if (candidate.Name.Length == playerName.Length)
             {
-                if (ValidateAndRemoveIfInactive(player))
-                    return GetPlayerByPartialName(playerName, out result);
-
                 result = PlayerGuessResult.FOUND_EXACT;
-                return player;
+                return candidate;
             }
 
-            // Partial match found.
+            // A single, partial match was found.
             if (matches.Count == 1)
             {
-                if (ValidateAndRemoveIfInactive(player))
-                    return GetPlayerByPartialName(playerName, out result);
-
                 result = PlayerGuessResult.FOUND_PARTIAL;
-                return player;
+                return candidate;
             }
 
-            // Multiple matches found.
+            // Multiple partial matches were found.
             result = PlayerGuessResult.FOUND_MULTIPLE;
             return null;
 
-            bool ValidateAndRemoveIfInactive(GamePlayer player)
+            static bool ValidateAndRemoveIfInactive(GamePlayer player)
             {
                 if (player.Client.IsPlaying && player.ObjectState is GameObject.eObjectState.Active)
-                    return false;
+                    return true;
 
                 if (log.IsErrorEnabled)
                     log.Error($"Player was found in the trie, but is not playing or is not active. Removing from trie. (Player: {player})");
 
-                _playerNameTrie.Remove(playerName, player);
-                return true;
+                bool removed = _playerNameTrie.Remove(player.Name, player);
+
+                if (!removed)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error($"Failed to remove inactive player from trie: (Player: {player})");
+
+                    // If removal failed, treat the player as valid to prevent infinite recursion.
+                    return true;
+                }
+
+                return false;
             }
         }
 
