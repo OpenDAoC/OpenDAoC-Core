@@ -33,7 +33,7 @@ namespace DOL.GS
                 return new MovementComponent(living);
         }
 
-        public void Tick()
+        public virtual void Tick()
         {
             if (Owner.ObjectState is not GameObject.eObjectState.Active)
             {

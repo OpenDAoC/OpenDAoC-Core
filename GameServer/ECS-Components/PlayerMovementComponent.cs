@@ -33,6 +33,17 @@ namespace DOL.GS
             _playerMovementMonitor = new(Owner);
         }
 
+        public override void Tick()
+        {
+            if (Owner.Client.ClientState is not GameClient.eClientState.Playing)
+            {
+                RemoveFromServiceObjectStore();
+                return;
+            }
+
+            base.Tick();
+        }
+
         protected override void TickInternal()
         {
             if (!Owner.IsLinkDeathTimerRunning)
