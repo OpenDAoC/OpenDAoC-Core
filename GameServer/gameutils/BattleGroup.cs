@@ -318,7 +318,8 @@ namespace DOL.GS
 			// A battlegroup is only able to pick up items if it has a treasurer, otherwise it's supposed to fallback to group then solo logic.
 			// There is no range check. If you're in a BG, every item goes to the treasurer or stay on the ground.
 			// If his inventory is full, the item should simply stay on the ground until he makes some room, or another treasurer is appointed.
-			if (!GetBGLootType() || battlegroupTreasurer == null)
+			// Items discarded by players can only be picked up by those same players.
+			if (!GetBGLootType() || battlegroupTreasurer == null || item.IsPlayedDiscarded)
 				return TryPickUpResult.DOES_NOT_HANDLE;
 
 			if (!GiveItem(battlegroupTreasurer, item.Item))

@@ -10,9 +10,11 @@ namespace DOL.GS
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         private ECSGameTimer _pickupTimer;
+
         public int GetPickupTime => _pickupTimer == null ? 0 : _pickupTimer.TimeUntilElapsed;
         public DbInventoryItem Item { get; private set; }
         public override LanguageDataObject.eTranslationIdentifier TranslationIdentifier => LanguageDataObject.eTranslationIdentifier.eItem;
+        public virtual bool IsPlayedDiscarded => false;
 
         public WorldInventoryItem() : base() { }
 
@@ -30,7 +32,7 @@ namespace DOL.GS
 
         public static WorldInventoryItem CreateFromTemplate(DbInventoryItem item)
         {
-            return item.Template is DbItemUnique ?  null : CreateFromTemplate(item.Id_nb);
+            return item.Template is DbItemUnique ? null : CreateFromTemplate(item.Id_nb);
         }
 
         public static WorldInventoryItem CreateFromTemplate(string templateID)
@@ -152,5 +154,12 @@ namespace DOL.GS
                 return ObjectState is eObjectState.Active ? itemOwner.TryPickUpItem(source, this) : TryPickUpResult.FAILED;
             }
         }
+    }
+
+    public class PlayerDiscardedWorldInventoryItem : WorldInventoryItem
+    {
+        public override bool IsPlayedDiscarded => true;
+
+        public PlayerDiscardedWorldInventoryItem(DbInventoryItem item) : base(item) { }
     }
 }

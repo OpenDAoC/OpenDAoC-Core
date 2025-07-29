@@ -9967,7 +9967,7 @@ namespace DOL.GS
             }
             else
             {
-                gameItem = new WorldInventoryItem(item);
+                gameItem = new PlayerDiscardedWorldInventoryItem(item);
 
                 Point2D itemloc = this.GetPointFromHeading(this.Heading, 30);
                 gameItem.X = itemloc.X;

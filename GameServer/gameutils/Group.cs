@@ -687,7 +687,8 @@ namespace DOL.GS
 			// Group members are filtered to exclude far away players or players with auto split solo enabled.
 			// A player with enough room in his inventory is chosen randomly.
 			// If there is none, the item should simply stays on the ground.
-			if (!AutosplitLoot)
+			// Items discarded by players can only be picked up by those same players.
+			if (!AutosplitLoot || item.IsPlayedDiscarded)
 				return TryPickUpResult.DOES_NOT_HANDLE;
 
 			List<GamePlayer> eligibleMembers = new(8);

@@ -202,7 +202,7 @@ namespace DOL.GS
         /// <returns></returns>
         public virtual WorldInventoryItem Drop(GamePlayer player)
         {
-            WorldInventoryItem worldItem = new WorldInventoryItem(this);
+            PlayerDiscardedWorldInventoryItem worldItem = new(this);
 
             Point2D itemloc = player.GetPointFromHeading(player.Heading, 30);
             worldItem.X = itemloc.X;
