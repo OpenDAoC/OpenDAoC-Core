@@ -95,11 +95,7 @@ namespace DOL.GS
         public Dictionary<string, List<string>> CustomParamsDictionary
         {
             get => _customParams;
-            set
-            {
-                Account.CustomParams = value.SelectMany(kv => kv.Value.Select(val => new DbAccountXCustomParam(Account.Name, kv.Key, val))).ToArray();
-                _customParams = value;
-            }
+            set => _customParams = value;
         }
 
         public bool IsPlaying => _clientState is eClientState.Playing or eClientState.Linkdead;
