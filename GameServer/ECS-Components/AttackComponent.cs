@@ -1571,98 +1571,10 @@ namespace DOL.GS
             return false;
         }
 
-        public bool CheckDashingDefense(AttackData ad, bool stealthStyle, out eAttackResult result)
+        public static bool CheckDashingDefense(AttackData ad, bool stealthStyle, out eAttackResult result)
         {
             // Not implemented.
-            // Very outdated and needs to be rewritten.
             result = eAttackResult.Any;
-            return false;
-            DashingDefenseEffect dashing = null;
-
-            if (dashing == null ||
-                dashing.GuardSource.ObjectState != eObjectState.Active ||
-                dashing.GuardSource.IsStunned != false ||
-                dashing.GuardSource.IsMezzed != false ||
-                dashing.GuardSource.ActiveWeaponSlot is eActiveWeaponSlot.Distance ||
-                !dashing.GuardSource.IsAlive ||
-                stealthStyle)
-                return false;
-
-            if (!dashing.GuardSource.IsWithinRadius(dashing.GuardTarget, DashingDefenseEffect.GUARD_DISTANCE))
-                return false;
-
-            DbInventoryItem rightHand = dashing.GuardSource.ActiveWeapon;
-            DbInventoryItem leftHand = dashing.GuardSource.ActiveLeftWeapon;
-
-            if ((rightHand == null || rightHand.Hand != 1) && leftHand != null && leftHand.Object_Type == (int) eObjectType.Shield)
-            {
-                int guardLevel = dashing.GuardSource.GetAbilityLevel(Abilities.Guard);
-                double guardchance = dashing.GuardSource.GetModified(eProperty.BlockChance) * leftHand.Quality * 0.00001;
-                guardchance *= guardLevel * 0.25 + 0.05;
-
-                if (guardchance > 0.99)
-                    guardchance = 0.99;
-
-                int shieldSize = 0;
-
-                if (leftHand != null)
-                    shieldSize = leftHand.Type_Damage;
-
-                if (AttackerTracker.Count > shieldSize)
-                    guardchance *= shieldSize / (double) AttackerTracker.Count;
-
-                if (ad.AttackType == AttackData.eAttackType.MeleeDualWield)
-                    guardchance /= 2;
-
-                double parrychance = dashing.GuardSource.GetModified(eProperty.ParryChance);
-
-                if (parrychance != double.MinValue)
-                {
-                    parrychance *= 0.001;
-
-                    if (parrychance > 0.99)
-                        parrychance = 0.99;
-
-                    if (AttackerTracker.Count > 1)
-                        parrychance /= AttackerTracker.Count / 2;
-                }
-
-                if (Util.ChanceDouble(guardchance))
-                {
-                    ad.Target = dashing.GuardSource;
-                    result = eAttackResult.Blocked;
-                    return true;
-                }
-                else if (Util.ChanceDouble(parrychance))
-                {
-                    ad.Target = dashing.GuardSource;
-                    result = eAttackResult.Parried;
-                    return true;
-                }
-            }
-            else
-            {
-                double parrychance = dashing.GuardSource.GetModified(eProperty.ParryChance);
-
-                if (parrychance != double.MinValue)
-                {
-                    parrychance *= 0.001;
-
-                    if (parrychance > 0.99)
-                        parrychance = 0.99;
-
-                    if (AttackerTracker.Count > 1)
-                        parrychance /= AttackerTracker.Count / 2;
-                }
-
-                if (Util.ChanceDouble(parrychance))
-                {
-                    ad.Target = dashing.GuardSource;
-                    result = eAttackResult.Parried;
-                    return true;
-                }
-            }
-
             return false;
         }
 
