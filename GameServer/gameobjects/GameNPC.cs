@@ -170,82 +170,109 @@ namespace DOL.GS
 			set
 			{
 				base.Level = value;
-				AutoSetStats();
+				SetStats();
 
 				if (m_health > MaxHealth)
 					m_health = MaxHealth;
 			}
 		}
 
-		/// <summary>
-		/// Auto set stats based on DB entry, npcTemplate, and level.
-		/// </summary>
-		/// <param name="dbMob">Mob DB entry to load stats from, retrieved from DB if null</param>
-		public virtual void AutoSetStats(DbMob dbMob = null)
+		public virtual void SetStats(DbMob dbMob = null)
 		{
-			// Don't set stats for mobs until their level is set
-			if (Level < 1)
-				return;
+			bool autoSetStats = Properties.FORCE_MOB_AUTOSET_STATS;
 
-			// We have to check both the DB and template values to account for mobs changing levels.
-			// Otherwise, high level mobs retain their stats when their level is lowered by a GM.
-			if (NPCTemplate != null && NPCTemplate.ReplaceMobValues)
+			if (!autoSetStats)
 			{
-				Strength = NPCTemplate.Strength;
-				Constitution = NPCTemplate.Constitution;
-				Quickness = NPCTemplate.Quickness;
-				Dexterity = NPCTemplate.Dexterity;
-				Intelligence = NPCTemplate.Intelligence;
-				Empathy = NPCTemplate.Empathy;
-				Piety = NPCTemplate.Piety;
-				Charisma = NPCTemplate.Charisma;
-			}
-			else
-			{
-				DbMob mob = dbMob;
-
-				if (mob == null && !string.IsNullOrEmpty(InternalID))
-					// This should only happen when a GM command changes level on a mob with no npcTemplate,
-					mob = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
-
-				if (mob != null)
+				// Use either the NPCTemplate or the DbMob to set stats.
+				if (NPCTemplate != null && NPCTemplate.ReplaceMobValues)
 				{
-					Strength = mob.Strength;
-					Constitution = mob.Constitution;
-					Quickness = mob.Quickness;
-					Dexterity = mob.Dexterity;
-					Intelligence = mob.Intelligence;
-					Empathy = mob.Empathy;
-					Piety = mob.Piety;
-					Charisma = mob.Charisma;
+					Strength = NPCTemplate.Strength;
+					Constitution = NPCTemplate.Constitution;
+					Dexterity = NPCTemplate.Dexterity;
+					Quickness = NPCTemplate.Quickness;
+					Intelligence = NPCTemplate.Intelligence;
+					Empathy = NPCTemplate.Empathy;
+					Piety = NPCTemplate.Piety;
+					Charisma = NPCTemplate.Charisma;
+				}
+				else
+				{
+					DbMob mob = dbMob;
+
+					if (mob == null && !string.IsNullOrEmpty(InternalID))
+						mob = GameServer.Database.FindObjectByKey<DbMob>(InternalID);
+
+					if (mob != null)
+					{
+						Strength = mob.Strength;
+						Constitution = mob.Constitution;
+						Dexterity = mob.Dexterity;
+						Quickness = mob.Quickness;
+						Intelligence = mob.Intelligence;
+						Empathy = mob.Empathy;
+						Piety = mob.Piety;
+						Charisma = mob.Charisma;
+					}
 				}
 			}
 
+			// Handle auto-setting stats for NPCs that don't have them set.
 			int levelMinusOne = Level - 1;
+			double martialStatPenaltyFactor = CalculateMartialStatPenaltyFactor();
 
-			if (Strength < 1)
-				Strength = (short) (Properties.MOB_AUTOSET_STR_BASE + levelMinusOne * Properties.MOB_AUTOSET_STR_MULTIPLIER);
+			if (autoSetStats || Strength < 1)
+				Strength = (short) Math.Max(1, (Properties.MOB_AUTOSET_STR_BASE + levelMinusOne * Properties.MOB_AUTOSET_STR_MULTIPLIER) * martialStatPenaltyFactor);
 
-			if (Constitution < 1)
-				Constitution = (short) (Properties.MOB_AUTOSET_CON_BASE + levelMinusOne * Properties.MOB_AUTOSET_CON_MULTIPLIER);
+			if (autoSetStats || Constitution < 1)
+				Constitution = (short) Math.Max(1, (Properties.MOB_AUTOSET_CON_BASE + levelMinusOne * Properties.MOB_AUTOSET_CON_MULTIPLIER) * martialStatPenaltyFactor);
 
-			if (Quickness < 1)
-				Quickness = (short) (Properties.MOB_AUTOSET_QUI_BASE + levelMinusOne * Properties.MOB_AUTOSET_QUI_MULTIPLIER);
+			// NPCs only use their dexterity for casting speed, and thus doesn't count as a martial stat.
+			if (autoSetStats || Dexterity < 1)
+				Dexterity = (short) Math.Max(1, Properties.MOB_AUTOSET_DEX_BASE + levelMinusOne * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
 
-			if (Dexterity < 1)
-				Dexterity = (short) (Properties.MOB_AUTOSET_DEX_BASE + levelMinusOne * Properties.MOB_AUTOSET_DEX_MULTIPLIER);
+			if (autoSetStats || Quickness < 1)
+				Quickness = (short) Math.Max(1, (Properties.MOB_AUTOSET_QUI_BASE + levelMinusOne * Properties.MOB_AUTOSET_QUI_MULTIPLIER) * martialStatPenaltyFactor);
 
-			if (Intelligence < 1)
-				Intelligence = (short) (Properties.MOB_AUTOSET_INT_BASE + levelMinusOne * Properties.MOB_AUTOSET_INT_MULTIPLIER);
+			if (autoSetStats || Intelligence < 1)
+				Intelligence = (short) Math.Max(1, Properties.MOB_AUTOSET_INT_BASE + levelMinusOne * Properties.MOB_AUTOSET_INT_MULTIPLIER);
 
-			if (Empathy < 1)
+			if (autoSetStats || Empathy < 1)
 				Empathy = (short) (30 + levelMinusOne);
 
-			if (Piety < 1)
+			if (autoSetStats || Piety < 1)
 				Piety = (short) (30 + levelMinusOne);
 
-			if (Charisma < 1)
+			if (autoSetStats || Charisma < 1)
 				Charisma = (short) (30 + levelMinusOne);
+
+			double CalculateMartialStatPenaltyFactor()
+			{
+				// Intended to be used only when auto-setting stats for NPCs.
+				int spellCount = 0;
+
+				if (CanCastHarmfulSpells)
+					spellCount += 2;
+
+				if (CanCastInstantHarmfulSpells)
+					spellCount += InstantHarmfulSpells.Count;
+
+				if (CanCastHealSpells)
+					spellCount += 1;
+
+				if (CanCastInstantHealSpells)
+					spellCount += InstantHealSpells.Count;
+
+				if (CanCastMiscSpells)
+					spellCount += MiscSpells.Count;
+
+				if (CanCastInstantMiscSpells)
+					spellCount += InstantMiscSpells.Count;
+
+				if (spellCount == 1)
+					return 1.0;
+
+				return Math.Pow(0.85, spellCount);
+			}
 		}
 
 		/*
@@ -476,11 +503,12 @@ namespace DOL.GS
 		/// </summary>
 		public virtual short Constitution
 		{
-			get
+			get => m_charStat[eStat.CON - eStat._First];
+			set
 			{
-				return m_charStat[eStat.CON - eStat._First];
+				m_charStat[eStat.CON - eStat._First] = value;
+				m_health = MaxHealth;
 			}
-			set { m_charStat[eStat.CON - eStat._First] = value; }
 		}
 
 		/// <summary>
@@ -488,8 +516,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual short Dexterity
 		{
-			get { return m_charStat[eStat.DEX - eStat._First]; }
-			set { m_charStat[eStat.DEX - eStat._First] = value; }
+			get => m_charStat[eStat.DEX - eStat._First];
+			set => m_charStat[eStat.DEX - eStat._First] = value;
 		}
 
 		/// <summary>
@@ -497,8 +525,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual short Strength
 		{
-			get { return m_charStat[eStat.STR - eStat._First]; }
-			set { m_charStat[eStat.STR - eStat._First] = value; }
+			get => m_charStat[eStat.STR - eStat._First];
+			set => m_charStat[eStat.STR - eStat._First] = value;
 		}
 
 		/// <summary>
@@ -506,8 +534,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual short Quickness
 		{
-			get { return m_charStat[eStat.QUI - eStat._First]; }
-			set { m_charStat[eStat.QUI - eStat._First] = value; }
+			get => m_charStat[eStat.QUI - eStat._First];
+			set => m_charStat[eStat.QUI - eStat._First] = value;
 		}
 
 		/// <summary>
@@ -515,8 +543,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual short Intelligence
 		{
-			get { return m_charStat[eStat.INT - eStat._First]; }
-			set { m_charStat[eStat.INT - eStat._First] = value; }
+			get => m_charStat[eStat.INT - eStat._First];
+			set => m_charStat[eStat.INT - eStat._First] = value;
 		}
 
 		/// <summary>
@@ -524,8 +552,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual short Piety
 		{
-			get { return m_charStat[eStat.PIE - eStat._First]; }
-			set { m_charStat[eStat.PIE - eStat._First] = value; }
+			get => m_charStat[eStat.PIE - eStat._First];
+			set => m_charStat[eStat.PIE - eStat._First] = value;
 		}
 
 		/// <summary>
@@ -533,8 +561,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual short Empathy
 		{
-			get { return m_charStat[eStat.EMP - eStat._First]; }
-			set { m_charStat[eStat.EMP - eStat._First] = value; }
+			get => m_charStat[eStat.EMP - eStat._First];
+			set => m_charStat[eStat.EMP - eStat._First] = value;
 		}
 
 		/// <summary>
@@ -542,8 +570,8 @@ namespace DOL.GS
 		/// </summary>
 		public virtual short Charisma
 		{
-			get { return m_charStat[eStat.CHR - eStat._First]; }
-			set { m_charStat[eStat.CHR - eStat._First] = value; }
+			get => m_charStat[eStat.CHR - eStat._First];
+			set => m_charStat[eStat.CHR - eStat._First] = value;
 		}
 		#endregion
 
@@ -1047,8 +1075,7 @@ namespace DOL.GS
 			Flags = (eFlags)dbMob.Flags;
 			m_packageID = dbMob.PackageID;
 			m_level = dbMob.Level;
-			AutoSetStats(); // Uses level and npctemplate (should be null at this point).
-			m_health = MaxHealth;
+			SetStats(); // Uses level and npctemplate (should be null at this point).
 			MeleeDamageType = (eDamageType)dbMob.MeleeDamageType;
 
 			if (MeleeDamageType == 0)
@@ -1278,18 +1305,18 @@ namespace DOL.GS
 				NPCTemplate = template as NpcTemplate;
 				HandleTemplateOnlyProperties();
 				HandleLevelFromNewTemplate();
-				AutoSetStats();
 				HandleSpells();
 				HandleStyles();
 				HandleAbilities();
+				SetStats(); // Must be set after spells, in case auto set stats are used.
 			}
 			else
 			{
 				if (HandleLevel())
 				{
 					// If the level has changed.
-					AutoSetStats();
 					HandleSpells();
+					SetStats();
 					// Styles and abilities currently don't need to be refreshed.
 				}
 			}
@@ -3311,12 +3338,12 @@ namespace DOL.GS
 			}
 		}
 
-		public List<Spell> HarmfulSpells { get; set; } = null;
-		public List<Spell> InstantHarmfulSpells { get; set; } = null;
-		public List<Spell> HealSpells { get; set; } = null;
-		public List<Spell> InstantHealSpells { get; set; } = null;
-		public List<Spell> MiscSpells { get; set; } = null;
-		public List<Spell> InstantMiscSpells { get; set; } = null;
+		public List<Spell> HarmfulSpells { get; set; }
+		public List<Spell> InstantHarmfulSpells { get; set; }
+		public List<Spell> HealSpells { get; set; }
+		public List<Spell> InstantHealSpells { get; set; }
+		public List<Spell> MiscSpells { get; set; }
+		public List<Spell> InstantMiscSpells { get; set; }
 
 		// These should only be used to check if the lists have something in them.
 		public bool CanCastHarmfulSpells => HarmfulSpells != null && HarmfulSpells.Count > 0;

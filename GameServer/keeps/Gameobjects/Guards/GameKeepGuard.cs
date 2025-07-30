@@ -695,7 +695,7 @@ namespace DOL.GS.Keeps
 			SetLevel();
 			SetSpells();
 			SetResists();
-			AutoSetStats();
+			SetStats();
 			SetAggression();
 			ClothingMgr.EquipGuard(this);
 			ClothingMgr.SetEmblem(this);
@@ -776,13 +776,13 @@ namespace DOL.GS.Keeps
 			}
 		}
 
-		public override void AutoSetStats(DbMob dbMob = null)
+		public override void SetStats(DbMob dbMob = null)
 		{
-			Strength = (short) (Properties.GUARD_AUTOSET_STR_BASE + Level * Properties.GUARD_AUTOSET_STR_MULTIPLIER);
-			Constitution = (short) (Properties.GUARD_AUTOSET_CON_BASE + Level * Properties.GUARD_AUTOSET_CON_MULTIPLIER);
-			Dexterity = (short) (Properties.GUARD_AUTOSET_DEX_BASE + Level * Properties.GUARD_AUTOSET_DEX_MULTIPLIER);
-			Quickness = (short) (Properties.GUARD_AUTOSET_QUI_BASE + Level * Properties.GUARD_AUTOSET_QUI_MULTIPLIER);
-			Intelligence = (short) (Properties.GUARD_AUTOSET_INT_BASE + Level * Properties.GUARD_AUTOSET_INT_MULTIPLIER);
+			Strength = (short) Math.Max(1, Properties.GUARD_AUTOSET_STR_BASE + Level * Properties.GUARD_AUTOSET_STR_MULTIPLIER);
+			Constitution = (short) Math.Max(1, Properties.GUARD_AUTOSET_CON_BASE + Level * Properties.GUARD_AUTOSET_CON_MULTIPLIER);
+			Dexterity = (short) Math.Max(1, Properties.GUARD_AUTOSET_DEX_BASE + Level * Properties.GUARD_AUTOSET_DEX_MULTIPLIER);
+			Quickness = (short) Math.Max(1, Properties.GUARD_AUTOSET_QUI_BASE + Level * Properties.GUARD_AUTOSET_QUI_MULTIPLIER);
+			Intelligence = (short) Math.Max(1, Properties.GUARD_AUTOSET_INT_BASE + Level * Properties.GUARD_AUTOSET_INT_MULTIPLIER);
 		}
 
 		private void SetRealm()

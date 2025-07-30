@@ -1643,11 +1643,11 @@ namespace DOL.GS
             base.Die(killer);
         }
 
-        public override void AutoSetStats(DbMob dbMob = null)
+        public override void SetStats(DbMob dbMob = null)
         {
             if (PackageID == "MorbusBaf")
                 return;
-            base.AutoSetStats(dbMob);
+            base.SetStats(dbMob);
         }
         public override bool AddToWorld()
         {         
@@ -2476,11 +2476,11 @@ namespace DOL.GS
             base.Die(killer);
         }
 
-        public override void AutoSetStats(DbMob dbMob = null)
+        public override void SetStats(DbMob dbMob = null)
         {
             if (this.PackageID == "ApocBaf")
                 return;
-            base.AutoSetStats(dbMob);
+            base.SetStats(dbMob);
         }
         public static int HarbringersCount = 0;
         public override short Quickness { get => base.Quickness; set => base.Quickness = 50; }
@@ -2584,11 +2584,11 @@ namespace DOL.GS
         {
             base.Die(killer);
         }
-        public override void AutoSetStats(DbMob dbMob = null)
+        public override void SetStats(DbMob dbMob = null)
         {
             if (this.PackageID == "RainOfFire")
                 return;
-            base.AutoSetStats(dbMob);
+            base.SetStats(dbMob);
         }
         public override short Dexterity { get => base.Dexterity; set => base.Dexterity = 200; }
         public override short Intelligence { get => base.Intelligence; set => base.Intelligence = 300; }

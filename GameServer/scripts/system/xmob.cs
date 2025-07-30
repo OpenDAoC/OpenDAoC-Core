@@ -439,7 +439,7 @@ namespace DOL.GS.Commands
                                         if (npc.Realm == eRealm.None)
                                         {
                                             npc.Level = (byte)Util.Random(min, max);
-                                            npc.AutoSetStats();
+                                            npc.SetStats();
                                             npc.SaveIntoDatabase();
                                         }
                                 }
@@ -457,7 +457,7 @@ namespace DOL.GS.Commands
                                         if (npc.Realm == eRealm.None)
                                         {
                                             npc.Level = nlvl;
-                                            npc.AutoSetStats();
+                                            npc.SetStats();
                                             npc.SaveIntoDatabase();
                                         }
                                     }

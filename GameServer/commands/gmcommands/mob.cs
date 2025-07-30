@@ -1379,7 +1379,7 @@ namespace DOL.GS.Commands
 			{
 				level = Convert.ToByte(args[2]);
 				targetMob.Level = level;
-				targetMob.AutoSetStats();
+				targetMob.SetStats();
 				targetMob.SaveIntoDatabase();
 				client.Out.SendMessage("Mob level changed to: " + targetMob.Level + " and stats adjusted", eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}
@@ -1394,7 +1394,7 @@ namespace DOL.GS.Commands
 
 			try
 			{
-				targetMob.AutoSetStats();
+				targetMob.SetStats();
 				targetMob.SaveIntoDatabase();
 				client.Out.SendMessage("Mob stats adjusted to level " + targetMob.Level, eChatType.CT_System, eChatLoc.CL_SystemWindow);
 			}

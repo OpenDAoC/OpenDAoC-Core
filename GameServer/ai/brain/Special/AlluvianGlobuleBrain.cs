@@ -136,7 +136,7 @@ namespace DOL.AI.Brain
 		{
 			Body.Size = 95;
 			Body.Level = (byte)Util.Random(10, 11);
-			Body.AutoSetStats();
+			Body.SetStats();
 			hasGrown = true;
 		}
 	}

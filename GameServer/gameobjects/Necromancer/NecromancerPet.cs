@@ -109,11 +109,14 @@ namespace DOL.GS
 		/// <summary>
 		/// Set stats according to necro pet server properties.
 		/// </summary>
-		public override void AutoSetStats(DbMob dbMob = null)
+		public override void SetStats(DbMob dbMob = null)
 		{
+			// Summoned pets use their template differently from standard NPCs.
+			// Stats are always automatically set based on the server properties and their level, then scaled using their template.
+
 			int levelMinusOne = Level - 1;
 
-			if (Name.ToUpper() == "GREATER NECROSERVANT")
+			if (Name.Equals("GREATER NECROSERVANT", StringComparison.OrdinalIgnoreCase))
 			{
 				Strength = Properties.NECRO_GREATER_PET_STR_BASE;
 				Constitution = Properties.NECRO_GREATER_PET_CON_BASE;
@@ -123,11 +126,11 @@ namespace DOL.GS
 
 				if (Level > 1)
 				{
-					Strength += (short) Math.Round(levelMinusOne * Properties.NECRO_GREATER_PET_STR_MULTIPLIER);
-					Constitution += (short) Math.Round(levelMinusOne * Properties.NECRO_GREATER_PET_CON_MULTIPLIER);
-					Dexterity += (short) Math.Round(levelMinusOne * Properties.NECRO_GREATER_PET_DEX_MULTIPLIER);
-					Quickness += (short) Math.Round(levelMinusOne * Properties.NECRO_GREATER_PET_QUI_MULTIPLIER);
-					Intelligence += (short) Math.Round(levelMinusOne * Properties.NECRO_GREATER_PET_INT_MULTIPLIER);
+					Strength += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_STR_MULTIPLIER);
+					Constitution += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_CON_MULTIPLIER);
+					Dexterity += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_DEX_MULTIPLIER);
+					Quickness += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_QUI_MULTIPLIER);
+					Intelligence += (short) Math.Max(1, levelMinusOne * Properties.NECRO_GREATER_PET_INT_MULTIPLIER);
 				}
 			}
 			else
@@ -140,11 +143,11 @@ namespace DOL.GS
 
 				if (Level > 1)
 				{
-					Strength += (short) Math.Round(levelMinusOne * Properties.NECRO_PET_STR_MULTIPLIER);
-					Constitution += (short) Math.Round(levelMinusOne * Properties.NECRO_PET_CON_MULTIPLIER);
-					Dexterity += (short) Math.Round(levelMinusOne * Properties.NECRO_PET_DEX_MULTIPLIER);
-					Quickness += (short) Math.Round(levelMinusOne * Properties.NECRO_PET_QUI_MULTIPLIER);
-					Intelligence += (short) Math.Round(levelMinusOne * Properties.NECRO_PET_INT_MULTIPLIER);
+					Strength += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_STR_MULTIPLIER);
+					Constitution += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_CON_MULTIPLIER);
+					Dexterity += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_DEX_MULTIPLIER);
+					Quickness += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_QUI_MULTIPLIER);
+					Intelligence += (short) Math.Max(1, levelMinusOne * Properties.NECRO_PET_INT_MULTIPLIER);
 				}
 			}
 
@@ -152,23 +155,29 @@ namespace DOL.GS
 			Piety = 30;
 			Charisma = 30;
 
-			// Stats are scaled using the current template.
 			if (NPCTemplate != null)
 			{
 				if (NPCTemplate.Strength > 0)
-					Strength = (short) Math.Round(Strength * (NPCTemplate.Strength / 100.0));
+					Strength = (short) Math.Max(1, Strength * (NPCTemplate.Strength / 100.0));
+
 				if (NPCTemplate.Constitution > 0)
-					Constitution = (short) Math.Round(Constitution * (NPCTemplate.Constitution / 100.0));
-				if (NPCTemplate.Quickness > 0)
-					Quickness = (short) Math.Round(Quickness * (NPCTemplate.Quickness / 100.0));
+					Constitution = (short) Math.Max(1, Constitution * (NPCTemplate.Constitution / 100.0));
+
 				if (NPCTemplate.Dexterity > 0)
-					Dexterity = (short) Math.Round(Dexterity * (NPCTemplate.Dexterity / 100.0));
+					Dexterity = (short) Math.Max(1, Dexterity * (NPCTemplate.Dexterity / 100.0));
+
+				if (NPCTemplate.Quickness > 0)
+					Quickness = (short) Math.Max(1, Quickness * (NPCTemplate.Quickness / 100.0));
+
 				if (NPCTemplate.Intelligence > 0)
-					Intelligence = (short) Math.Round(Intelligence * (NPCTemplate.Intelligence / 100.0));
+					Intelligence = (short) Math.Max(1, Intelligence * (NPCTemplate.Intelligence / 100.0));
+
 				if (NPCTemplate.Empathy > 0)
 					Empathy = NPCTemplate.Empathy;
+
 				if (NPCTemplate.Piety > 0)
 					Piety = NPCTemplate.Piety;
+
 				if (NPCTemplate.Charisma > 0)
 					Charisma = NPCTemplate.Charisma;
 			}

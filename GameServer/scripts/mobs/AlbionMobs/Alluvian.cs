@@ -55,7 +55,7 @@ namespace DOL.GS
 			brain.AggroLevel = 70;
 			brain.AggroRange = 500;
 			globulespawn.SetOwnBrain(brain);
-			globulespawn.AutoSetStats();
+			globulespawn.SetStats();
 			globulespawn.AddToWorld();
 			GlobuleNumber++;
 			brain.WalkFromSpawn();
