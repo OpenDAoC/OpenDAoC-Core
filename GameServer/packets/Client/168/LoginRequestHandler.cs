@@ -158,7 +158,6 @@ namespace DOL.GS.PacketHandler.Client.v168
 				password = packet.ReadIntPascalStringLowEndian();
 			}
 
-			
 			/*
 			if (c2 == 0 && c3 == 0x05000000 && c4 == 0xF4000000)
 			{
@@ -257,7 +256,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							Log.Info("Invalid symbols in account name \"" + userName + "\" found!");
 
 						if (client != null && client.Out != null)
-							client.Out.SendLoginDenied(eLoginError.AccountInvalid);
+							client.Out.SendLoginDenied(eLoginError.InvalidAccount);
 						else if (Log.IsWarnEnabled)
 							Log.Warn("Client or Client.Out null on invalid name failure.  Disconnecting.");
 
@@ -275,7 +274,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 							{
 								if (string.IsNullOrEmpty(password))
 								{
-									client.Out.SendLoginDenied(eLoginError.AccountInvalid);
+									client.Out.SendLoginDenied(eLoginError.InvalidAccount);
 									client.IsConnected = false;
 
 									if (Log.IsInfoEnabled)
@@ -301,7 +300,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 											if (Log.IsWarnEnabled)
 												Log.Warn($"Account creation: too many from same IP within set minutes - {userName}:{ipAddress}");
 
-											client.Out.SendLoginDenied(eLoginError.PersonalAccountIsOutOfTime);
+											client.Out.SendLoginDenied(eLoginError.ServiceNotAvailable);
 											client.IsConnected = false;
 											return;
 										}
@@ -314,7 +313,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 										if (Log.IsWarnEnabled)
 											Log.Warn($"Account creation: too many accounts created from same ip - {userName}:{ipAddress}");
 
-										client.Out.SendLoginDenied(eLoginError.AccountNoAccessThisGame);
+										client.Out.SendLoginDenied(eLoginError.ServiceNotAvailable);
 										client.IsConnected = false;
 										return;
 									}
@@ -328,7 +327,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 											if (Log.IsWarnEnabled)
 												Log.Warn($"Account creation: time between account creation too small - {userName}:{ipAddress}");
 
-											client.Out.SendLoginDenied(eLoginError.PersonalAccountIsOutOfTime);
+											client.Out.SendLoginDenied(eLoginError.ServiceNotAvailable);
 											client.IsConnected = false;
 											return;
 										}
@@ -379,7 +378,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								if (Log.IsInfoEnabled)
 									Log.Info("(" + client.TcpEndpointAddress + ") Wrong password!");
 
-								client.Out.SendLoginDenied(eLoginError.WrongPassword);
+								client.Out.SendLoginDenied(eLoginError.IncorrectPassword);
 								client.IsConnected = false;
 
 								// Log failure
@@ -389,11 +388,11 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 							// QUEUE SERVICE :^)
 							if (!playerAccount.IsTester && playerAccount.PrivLevel == 1 && !string.IsNullOrEmpty(Properties.QUEUE_API_URI))
-                            {
+							{
 								var data = new Dictionary<string, string>()
-                                {
+								{
 									{ "name", playerAccount.Name }
-                                };
+								};
 								var payload = new FormUrlEncodedContent(data);
 								var webRequest = new HttpRequestMessage(HttpMethod.Post, Properties.QUEUE_API_URI + "/api/v1/whitelist/check")
 								{
@@ -403,7 +402,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 								var statusCode = response.StatusCode;
 
 								if (statusCode != HttpStatusCode.OK)
-                                {
+								{
 									if (Log.IsInfoEnabled)
 										Log.Info("No such account found in queue service whitelist!");
 
@@ -463,7 +462,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (Log.IsErrorEnabled)
 					Log.Error("LoginRequestHandler", e);
 
-				client.Out.SendLoginDenied(eLoginError.CannotAccessUserAccount);
+				client.Out.SendLoginDenied(eLoginError.Error);
 				client.IsConnected = false;
 			}
 			catch (Exception e)
@@ -471,7 +470,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 				if (Log.IsErrorEnabled)
 					Log.Error("LoginRequestHandler", e);
 
-				client.Out.SendLoginDenied(eLoginError.CannotAccessUserAccount);
+				client.Out.SendLoginDenied(eLoginError.Error);
 				client.IsConnected = false;
 			}
 			finally

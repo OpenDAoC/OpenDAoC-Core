@@ -58,7 +58,7 @@ namespace DOL.GS.ServerRules
             objs = DOLDB<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("A").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Account").IsEqualTo(username)));
             if (objs.Count > 0)
             {
-                client.Out.SendLoginDenied(eLoginError.AccountIsBannedFromThisServerType);
+                client.Out.SendLoginDenied(eLoginError.BannedAccount);
 
                 if (log.IsDebugEnabled)
                     log.Debug("IsAllowedToConnect deny access to username " + username);
@@ -72,7 +72,7 @@ namespace DOL.GS.ServerRules
             objs = DOLDB<DbBans>.SelectObjects(DB.Column("Type").IsEqualTo("I").Or(DB.Column("Type").IsEqualTo("B")).And(DB.Column("Ip").IsLike(accip)));
             if (objs.Count > 0)
             {
-                client.Out.SendLoginDenied(eLoginError.AccountIsBannedFromThisServerType);
+                client.Out.SendLoginDenied(eLoginError.BannedAccount);
 
                 if (log.IsDebugEnabled)
                     log.Debug("IsAllowedToConnect deny access to IP " + accip);
@@ -84,7 +84,7 @@ namespace DOL.GS.ServerRules
             GameClient.eClientVersion min = (GameClient.eClientVersion)Properties.CLIENT_VERSION_MIN;
             if (min != GameClient.eClientVersion.VersionNotChecked && client.Version < min)
             {
-                client.Out.SendLoginDenied(eLoginError.ClientVersionTooLow);
+                client.Out.SendLoginDenied(eLoginError.IncorrectClientVersion);
 
                 if (log.IsDebugEnabled)
                     log.Debug("IsAllowedToConnect deny access to client version (too low) " + client.Version);
@@ -96,7 +96,7 @@ namespace DOL.GS.ServerRules
             GameClient.eClientVersion max = (GameClient.eClientVersion)Properties.CLIENT_VERSION_MAX;
             if (max != GameClient.eClientVersion.VersionNotChecked && client.Version > max)
             {
-                client.Out.SendLoginDenied(eLoginError.NotAuthorizedToUseExpansionVersion);
+                client.Out.SendLoginDenied(eLoginError.IncorrectClientVersion);
 
                 if (log.IsDebugEnabled)
                     log.Debug("IsAllowedToConnect deny access to client version (too high) " + client.Version);
@@ -110,7 +110,7 @@ namespace DOL.GS.ServerRules
                 GameClient.eClientType type = (GameClient.eClientType)Properties.CLIENT_TYPE_MAX;
                 if ((int)client.ClientType > (int)type)
                 {
-                    client.Out.SendLoginDenied(eLoginError.ExpansionPacketNotAllowed);
+                    client.Out.SendLoginDenied(eLoginError.NotAuthorizedToUseExpansionVersion);
 
                     if (log.IsDebugEnabled)
                         log.Debug("IsAllowedToConnect deny access to expansion pack.");
@@ -223,7 +223,7 @@ namespace DOL.GS.ServerRules
                     
                     if (otherClient != null)
                     {
-                        client.Out.SendLoginDenied(eLoginError.AccountAlreadyLoggedIntoOtherServer);
+                        client.Out.SendLoginDenied(eLoginError.ServiceNotAvailable);
 
                         if (log.IsDebugEnabled)
                             log.Debug("IsAllowedToConnect deny access; dual login not allowed");
