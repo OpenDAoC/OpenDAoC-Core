@@ -9,7 +9,14 @@ namespace DOL.GS
             NextTick = GameLoop.GameLoopTime;
         }
 
-        public override void OnStartEffect() { }
+        public override void OnStartEffect()
+        {
+            // Tick on application.
+            // This allows two poisons to do damage when being applied during the same server tick.
+            // Otherwise, only one will call `OnEffectPulse`.
+            OnEffectPulse();
+            NextTick += PulseFreq;
+        }
 
         public override void OnStopEffect()
         {
