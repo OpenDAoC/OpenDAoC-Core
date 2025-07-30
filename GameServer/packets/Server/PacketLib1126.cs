@@ -161,7 +161,12 @@ namespace DOL.GS.PacketHandler
 					Region region = WorldMgr.GetRegion((ushort) character.Region);
 
 					if (region != null)
+					{
 						locationDescription = m_gameClient.GetTranslatedSpotDescription(region, character.Xpos, character.Ypos, character.Zpos);
+
+						if (locationDescription.Length > 22)
+							locationDescription = locationDescription[..22];
+					}
 
 					string className = string.Empty;
 
