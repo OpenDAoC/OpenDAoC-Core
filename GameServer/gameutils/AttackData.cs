@@ -9,6 +9,7 @@ namespace DOL.GS
     {
         public GameLiving Attacker { get; set; }
         public GameLiving Target { get; set; }
+        public GameLiving OriginalTarget { get; set; } // Non-null if the attack was redirected to a different target.
         public eDamageType DamageType { get; set; }
         public eAttackType AttackType { get; set; } = eAttackType.Unknown;
         public eAttackResult AttackResult { get; set; } = eAttackResult.Any;
