@@ -11,11 +11,22 @@ namespace DOL.GS.PacketHandler
 	public class PacketLib1126 : PacketLib1125
 	{
 		private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+		private static readonly eInventorySlot[] _visibleEquipmentSlots =
+		[
+			eInventorySlot.RightHandWeapon,
+			eInventorySlot.LeftHandWeapon,
+			eInventorySlot.TwoHandWeapon,
+			eInventorySlot.DistanceWeapon,
+			eInventorySlot.HeadArmor,
+			eInventorySlot.HandsArmor,
+			eInventorySlot.FeetArmor,
+			eInventorySlot.TorsoArmor,
+			eInventorySlot.Cloak,
+			eInventorySlot.LegsArmor,
+			eInventorySlot.ArmsArmor,
+		];
 
-		public PacketLib1126(GameClient client)
-			: base(client)
-		{
-		}
+		public PacketLib1126(GameClient client) : base(client) { }
 
 		/// <summary>
 		/// 1126 update - less info / shorter packet sent back
@@ -65,95 +76,99 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendCharacterOverview(eRealm realm)
 		{
-			if (realm < eRealm._FirstPlayerRealm || realm > eRealm._LastPlayerRealm)
+			if (realm is < eRealm._FirstPlayerRealm or > eRealm._LastPlayerRealm)
 				throw new Exception($"CharacterOverview requested for unknown realm {realm}");
 
-			int firstSlot = (byte)realm * 100;
+			int firstSlot = (int) realm * 100;
+			int lastSlot = firstSlot + 9;
+			uint enableRealmSwitcherBit = (uint) (GameServer.ServerRules.IsAllowedCharsInAllRealms(m_gameClient) ? 1 : 0);
 
-			var enableRealmSwitcherBit = GameServer.ServerRules.IsAllowedCharsInAllRealms(m_gameClient) ? 1 : 0;
 			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterOverview1126))))
 			{
-				pak.WriteIntLowEndian((uint)enableRealmSwitcherBit); // 0x01 & 0x02 are flags
+				pak.WriteIntLowEndian(enableRealmSwitcherBit); // 0x01 & 0x02 are flags
 				pak.WriteIntLowEndian(0);
 				pak.WriteIntLowEndian(0);
 				pak.WriteIntLowEndian(0);
+
 				if (m_gameClient.Account.Characters == null || m_gameClient.Account.Characters.Length == 0)
 				{
 					SendTCP(pak);
 					return;
 				}
 
-				Dictionary<int, DbCoreCharacter> charsBySlot = new Dictionary<int, DbCoreCharacter>();
-				foreach (DbCoreCharacter c in m_gameClient.Account.Characters)
+				Dictionary<int, DbCoreCharacter> charsBySlot = new();
+
+				foreach (DbCoreCharacter character in m_gameClient.Account.Characters)
 				{
-					try
-					{
-						charsBySlot.Add(c.AccountSlot, c);
-					}
-					catch (Exception ex)
-					{
-						log.Error($"SendCharacterOverview - Duplicate char in slot? Slot: {c.AccountSlot}, Account: {c.AccountName}", ex);
-					}
+					if (character.AccountSlot < firstSlot || character.AccountSlot > lastSlot)
+						continue;
+
+					if (charsBySlot.TryAdd(character.AccountSlot, character))
+						continue;
+
+					if (log.IsErrorEnabled)
+						log.Error($"SendCharacterOverview - Duplicate char in slot? Slot: {character.AccountSlot}, Account: {character.AccountName}");
 				}
-				var itemsByOwnerID = new Dictionary<string, Dictionary<eInventorySlot, DbInventoryItem>>();
 
-				if (charsBySlot.Any())
+				Dictionary<string, Dictionary<eInventorySlot, DbInventoryItem>> itemsByOwnerID = new();
+
+				if (charsBySlot.Count != 0)
 				{
-					var filterBySlotPosition = DB.Column("SlotPosition").IsGreaterOrEqualTo((int)eInventorySlot.MinEquipable)
-						.And(DB.Column("SlotPosition").IsLessOrEqualTo((int)eInventorySlot.MaxEquipable));
-					var allItems = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(filterBySlotPosition));
+					var items = DOLDB<DbInventoryItem>.SelectObjects(DB.Column("OwnerID").IsIn(charsBySlot.Values.Select(c => c.ObjectId)).And(DB.Column("SlotPosition").IsIn(_visibleEquipmentSlots)));
 
-					foreach (DbInventoryItem item in allItems)
+					foreach (DbInventoryItem item in items)
 					{
 						try
 						{
 							if (!itemsByOwnerID.ContainsKey(item.OwnerID))
-								itemsByOwnerID.Add(item.OwnerID, new Dictionary<eInventorySlot, DbInventoryItem>());
+								itemsByOwnerID.Add(item.OwnerID, new());
 
 							itemsByOwnerID[item.OwnerID].Add((eInventorySlot)item.SlotPosition, item);
 						}
 						catch (Exception ex)
 						{
-							log.Error($"SendCharacterOverview - Duplicate item on character? OwnerID: {item.OwnerID}, SlotPosition: {item.SlotPosition}, Account: {m_gameClient.Account.Name}", ex);
+							if (log.IsErrorEnabled)
+								log.Error($"SendCharacterOverview - Duplicate item on character? OwnerID: {item.OwnerID}, SlotPosition: {item.SlotPosition}, Account: {m_gameClient.Account.Name}", ex);
 						}
 					}
 				}
 
-				// send each characters
-				for (int i = firstSlot; i < (firstSlot + 10); i++)
+				for (int i = firstSlot; i <= lastSlot; i++)
 				{
-					DbCoreCharacter c = null;
-					if (!charsBySlot.TryGetValue(i, out c))
+					if (!charsBySlot.TryGetValue(i, out DbCoreCharacter character))
 					{
 						pak.WriteByte(0);
 						continue;
 					}
 
-					Dictionary<eInventorySlot, DbInventoryItem> charItems = null;
-
-					if (!itemsByOwnerID.TryGetValue(c.ObjectId, out charItems))
-						charItems = new Dictionary<eInventorySlot, DbInventoryItem>();
+					if (!itemsByOwnerID.TryGetValue(character.ObjectId, out Dictionary<eInventorySlot, DbInventoryItem> charItems))
+						charItems = new();
 
 					byte extensionTorso = 0;
 					byte extensionGloves = 0;
 					byte extensionBoots = 0;
 
-					DbInventoryItem item = null;
-					if (charItems.TryGetValue(eInventorySlot.TorsoArmor, out item))
+					if (charItems.TryGetValue(eInventorySlot.TorsoArmor, out DbInventoryItem item))
 						extensionTorso = item.Extension;
+
 					if (charItems.TryGetValue(eInventorySlot.HandsArmor, out item))
 						extensionGloves = item.Extension;
+
 					if (charItems.TryGetValue(eInventorySlot.FeetArmor, out item))
 						extensionBoots = item.Extension;
 
 					string locationDescription = string.Empty;
-					Region region = WorldMgr.GetRegion((ushort)c.Region);
+					Region region = WorldMgr.GetRegion((ushort) character.Region);
+
 					if (region != null)
-						locationDescription = m_gameClient.GetTranslatedSpotDescription(region, c.Xpos, c.Ypos, c.Zpos);
-					string classname = string.Empty;
-					if (c.Class != 0)
-						classname = ((eCharacterClass)c.Class).ToString();
-					string racename = m_gameClient.RaceToTranslatedName(c.Race, c.Gender);
+						locationDescription = m_gameClient.GetTranslatedSpotDescription(region, character.Xpos, character.Ypos, character.Zpos);
+
+					string className = string.Empty;
+
+					if (character.Class != 0)
+						className = ((eCharacterClass) character.Class).ToString();
+
+					string raceName = m_gameClient.RaceToTranslatedName(character.Race, character.Gender);
 
 					charItems.TryGetValue(eInventorySlot.RightHandWeapon, out DbInventoryItem rightHandWeapon);
 					charItems.TryGetValue(eInventorySlot.LeftHandWeapon, out DbInventoryItem leftHandWeapon);
@@ -168,67 +183,76 @@ namespace DOL.GS.PacketHandler
 					charItems.TryGetValue(eInventorySlot.ArmsArmor, out DbInventoryItem arms);
 
 					ushort rightHandColor = 0;
-					if (rightHandWeapon != null)
-						rightHandColor = (ushort)(rightHandWeapon.Emblem != 0 ? rightHandWeapon.Emblem : rightHandWeapon.Color);
 					ushort helmetColor = 0;
-					if (helmet != null)
-						helmetColor = (ushort)(helmet.Emblem != 0 ? helmet.Emblem : helmet.Color);
 					ushort glovesColor = 0;
-					if (gloves != null)
-						glovesColor = (ushort)(gloves.Emblem != 0 ? gloves.Emblem : gloves.Color);
 					ushort bootsColor = 0;
-					if (boots != null)
-						bootsColor = (ushort)(boots.Emblem != 0 ? boots.Emblem : boots.Color);
 					ushort leftHandWeaponColor = 0;
-					if (leftHandWeapon != null)
-						leftHandWeaponColor = (ushort)(leftHandWeapon.Emblem != 0 ? leftHandWeapon.Emblem : leftHandWeapon.Color);
 					ushort torsoColor = 0;
-					if (torso != null)
-						torsoColor = (ushort)(torso.Emblem != 0 ? torso.Emblem : torso.Color);
 					ushort cloakColor = 0;
-					if (cloak != null)
-						cloakColor = (ushort)(cloak.Emblem != 0 ? cloak.Emblem : cloak.Color);
 					ushort legsColor = 0;
-					if (legs != null)
-						legsColor = (ushort)(legs.Emblem != 0 ? legs.Emblem : legs.Color);
 					ushort armsColor = 0;
-					if (arms != null)
-						armsColor = (ushort)(arms.Emblem != 0 ? arms.Emblem : arms.Color);
 
-					pak.WriteByte((byte)c.Level);
-					pak.WritePascalStringIntLE(c.Name);
+					if (rightHandWeapon != null)
+						rightHandColor = (ushort) (rightHandWeapon.Emblem != 0 ? rightHandWeapon.Emblem : rightHandWeapon.Color);
+
+					if (helmet != null)
+						helmetColor = (ushort) (helmet.Emblem != 0 ? helmet.Emblem : helmet.Color);
+
+					if (gloves != null)
+						glovesColor = (ushort) (gloves.Emblem != 0 ? gloves.Emblem : gloves.Color);
+
+					if (boots != null)
+						bootsColor = (ushort) (boots.Emblem != 0 ? boots.Emblem : boots.Color);
+
+					if (leftHandWeapon != null)
+						leftHandWeaponColor = (ushort) (leftHandWeapon.Emblem != 0 ? leftHandWeapon.Emblem : leftHandWeapon.Color);
+
+					if (torso != null)
+						torsoColor = (ushort) (torso.Emblem != 0 ? torso.Emblem : torso.Color);
+
+					if (cloak != null)
+						cloakColor = (ushort) (cloak.Emblem != 0 ? cloak.Emblem : cloak.Color);
+
+					if (legs != null)
+						legsColor = (ushort) (legs.Emblem != 0 ? legs.Emblem : legs.Color);
+
+					if (arms != null)
+						armsColor = (ushort) (arms.Emblem != 0 ? arms.Emblem : arms.Color);
+
+					pak.WriteByte((byte) character.Level);
+					pak.WritePascalStringIntLE(character.Name);
 					pak.WriteIntLowEndian(0x18);
 					pak.WriteByte(1); // always 1 ?
-					pak.WriteByte(c.EyeSize); // seems to be : 0xF0 = eyes, 0x0F = nose
-					pak.WriteByte(c.LipSize); // seems to be : 0xF0 = lips, 0xF = jaw
-					pak.WriteByte(c.EyeColor); // seems to be : 0xF0 = eye color, 0x0F = skin tone
-					pak.WriteByte(c.HairColor);
-					pak.WriteByte(c.FaceType); // seems to be : 0xF0 = face
-					pak.WriteByte(c.HairStyle); // seems to be : 0xF0 = hair
-					pak.WriteByte((byte)((extensionBoots << 4) | extensionGloves));
-					pak.WriteByte((byte)((extensionTorso << 4) | (c.IsCloakHoodUp ? 0x1 : 0x0)));
-					pak.WriteByte(c.CustomisationStep); //1 = auto generate config, 2= config ended by player, 3= enable config to player
-					pak.WriteByte(c.MoodType);
+					pak.WriteByte(character.EyeSize); // seems to be : 0xF0 = eyes, 0x0F = nose
+					pak.WriteByte(character.LipSize); // seems to be : 0xF0 = lips, 0xF = jaw
+					pak.WriteByte(character.EyeColor); // seems to be : 0xF0 = eye color, 0x0F = skin tone
+					pak.WriteByte(character.HairColor);
+					pak.WriteByte(character.FaceType); // seems to be : 0xF0 = face
+					pak.WriteByte(character.HairStyle); // seems to be : 0xF0 = hair
+					pak.WriteByte((byte) ((extensionBoots << 4) | extensionGloves));
+					pak.WriteByte((byte) ((extensionTorso << 4) | (character.IsCloakHoodUp ? 0x1 : 0x0)));
+					pak.WriteByte(character.CustomisationStep); // 1 = auto generate config, 2= config ended by player, 3= enable config to player
+					pak.WriteByte(character.MoodType);
 					pak.Fill(0x0, 13);
 					pak.WritePascalStringIntLE(locationDescription);
-					pak.WritePascalStringIntLE(classname);
-					pak.WritePascalStringIntLE(racename);
-					pak.WriteShortLowEndian((ushort)c.CurrentModel);
+					pak.WritePascalStringIntLE(className);
+					pak.WritePascalStringIntLE(raceName);
+					pak.WriteShortLowEndian((ushort) character.CurrentModel);
+					pak.WriteByte((byte) character.Region);
 
-					pak.WriteByte((byte)c.Region);
-					if (region == null || (int)m_gameClient.ClientType > region.Expansion)
+					if (region == null || (int) m_gameClient.ClientType > region.Expansion)
 						pak.WriteByte(0x00);
 					else
-						pak.WriteByte((byte)(region.Expansion + 1)); //0x04-Cata zone, 0x05 - DR zone
+						pak.WriteByte((byte) (region.Expansion + 1)); //0x04-Cata zone, 0x05 - DR zone
 
-					pak.WriteShortLowEndian((ushort)(helmet != null ? helmet.Model : 0));
-					pak.WriteShortLowEndian((ushort)(gloves != null ? gloves.Model : 0));
-					pak.WriteShortLowEndian((ushort)(boots != null ? boots.Model : 0));
+					pak.WriteShortLowEndian((ushort) (helmet != null ? helmet.Model : 0));
+					pak.WriteShortLowEndian((ushort) (gloves != null ? gloves.Model : 0));
+					pak.WriteShortLowEndian((ushort) (boots != null ? boots.Model : 0));
 					pak.WriteShortLowEndian(rightHandColor);
-					pak.WriteShortLowEndian((ushort)(torso != null ? torso.Model : 0));
-					pak.WriteShortLowEndian((ushort)(cloak != null ? cloak.Model : 0));
-					pak.WriteShortLowEndian((ushort)(legs != null ? legs.Model : 0));
-					pak.WriteShortLowEndian((ushort)(arms != null ? arms.Model : 0));
+					pak.WriteShortLowEndian((ushort) (torso != null ? torso.Model : 0));
+					pak.WriteShortLowEndian((ushort) (cloak != null ? cloak.Model : 0));
+					pak.WriteShortLowEndian((ushort) (legs != null ? legs.Model : 0));
+					pak.WriteShortLowEndian((ushort) (arms != null ? arms.Model : 0));
 
 					pak.WriteShortLowEndian(helmetColor);
 					pak.WriteShortLowEndian(glovesColor);
@@ -239,41 +263,42 @@ namespace DOL.GS.PacketHandler
 					pak.WriteShortLowEndian(legsColor);
 					pak.WriteShortLowEndian(armsColor);
 
-					//weapon models
-					pak.WriteShortLowEndian((ushort)(rightHandWeapon != null ? rightHandWeapon.Model : 0));
-					pak.WriteShortLowEndian((ushort)(leftHandWeapon != null ? leftHandWeapon.Model : 0));
-					pak.WriteShortLowEndian((ushort)(twoHandWeapon != null ? twoHandWeapon.Model : 0));
-					pak.WriteShortLowEndian((ushort)(distanceWeapon != null ? distanceWeapon.Model : 0));
+					pak.WriteShortLowEndian((ushort) (rightHandWeapon != null ? rightHandWeapon.Model : 0));
+					pak.WriteShortLowEndian((ushort) (leftHandWeapon != null ? leftHandWeapon.Model : 0));
+					pak.WriteShortLowEndian((ushort) (twoHandWeapon != null ? twoHandWeapon.Model : 0));
+					pak.WriteShortLowEndian((ushort) (distanceWeapon != null ? distanceWeapon.Model : 0));
 
-					pak.WriteByte((byte)c.Strength);
-					pak.WriteByte((byte)c.Quickness);
-					pak.WriteByte((byte)c.Constitution);
-					pak.WriteByte((byte)c.Dexterity);
-					pak.WriteByte((byte)c.Intelligence);
-					pak.WriteByte((byte)c.Piety);
-					pak.WriteByte((byte)c.Empathy); // ?
-					pak.WriteByte((byte)c.Charisma); // ?
+					pak.WriteByte((byte) character.Strength);
+					pak.WriteByte((byte) character.Quickness);
+					pak.WriteByte((byte) character.Constitution);
+					pak.WriteByte((byte) character.Dexterity);
+					pak.WriteByte((byte) character.Intelligence);
+					pak.WriteByte((byte) character.Piety);
+					pak.WriteByte((byte) character.Empathy);
+					pak.WriteByte((byte) character.Charisma);
 
-					pak.WriteByte((byte)c.Class);
-					pak.WriteByte((byte)c.Realm); // ok?
-					pak.WriteByte((byte)((((c.Race & 0x10) << 2) + (c.Race & 0x0F)) | (c.Gender << 7)));
-					if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.TwoHanded)
+					pak.WriteByte((byte) character.Class);
+					pak.WriteByte((byte) character.Realm);
+					pak.WriteByte((byte) ((((character.Race & 0x10) << 2) + (character.Race & 0x0F)) | (character.Gender << 7)));
+
+					if ((eActiveWeaponSlot) character.ActiveWeaponSlot is eActiveWeaponSlot.TwoHanded)
 					{
 						pak.WriteByte(0x02);
 						pak.WriteByte(0x02);
 					}
-					else if (c.ActiveWeaponSlot == (byte)eActiveWeaponSlot.Distance)
+					else if ((eActiveWeaponSlot) character.ActiveWeaponSlot is eActiveWeaponSlot.Distance)
 					{
 						pak.WriteByte(0x03);
 						pak.WriteByte(0x03);
 					}
 					else
 					{
-						pak.WriteByte((byte)(rightHandWeapon != null ? 0x00 : 0xFF));
-						pak.WriteByte((byte)(leftHandWeapon != null ? 0x01 : 0xFF));
+						pak.WriteByte((byte) (rightHandWeapon != null ? 0x00 : 0xFF));
+						pak.WriteByte((byte) (leftHandWeapon != null ? 0x01 : 0xFF));
 					}
+
 					pak.WriteByte(0); // SI = 1, Classic = 0
-					pak.WriteByte((byte)c.Constitution); // ok
+					pak.WriteByte((byte) character.Constitution);
 					pak.WriteByte(0); // unknown
 				}
 
