@@ -1212,7 +1212,7 @@ namespace DOL.GS.Spells
 
 		public virtual int CalculateEnduranceCost()
 		{
-			return Spell.IsPulsing ? 0 : 5;
+			return 5;
 		}
 
 		/// <summary>
