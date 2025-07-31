@@ -127,7 +127,7 @@ namespace DOL.GS.PropertyCalc
             else
                 livingToCheck = living;
 
-            int abilityBonus = living.AbilityBonus[property];
+            int abilityBonus = livingToCheck.AbilityBonus[property];
             int itemBonus = Math.Min(10, livingToCheck.ItemBonus[property]);
             int buffBonus = living.BaseBuffBonusCategory[property] + living.SpecBuffBonusCategory[property];
             int debuffMalus = Math.Abs(livingToCheck.DebuffCategory[property]);
