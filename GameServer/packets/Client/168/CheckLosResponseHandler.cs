@@ -11,12 +11,13 @@ namespace DOL.GS.PacketHandler.Client.v168
             ushort checkerObjectId = packet.ReadShort();
             ushort targetObjectId = packet.ReadShort();
 
-            if (client.Player.LosCheckTimers.TryGetValue((checkerObjectId, targetObjectId), out TimeoutTimer timer))
-            {
-                eLosCheckResponse response = (packet.ReadShort() & 0x100) == 0x100 ? eLosCheckResponse.TRUE : eLosCheckResponse.FALSE;
-                packet.ReadShort();
-                timer.SetResponse(response); // Let the timer service invoke the callbacks.
-            }
+            if (!client.Player.LosCheckTimers.TryGetValue((checkerObjectId, targetObjectId), out TimeoutTimer timer))
+                return;
+
+            eLosCheckResponse response = (packet.ReadShort() & 0x100) == 0x100 ? eLosCheckResponse.TRUE : eLosCheckResponse.FALSE;
+            packet.ReadShort();
+            timer.SetResponse(response);
+            timer.Tick(); // Tick the timer immediately to save time.
         }
 
         public class TimeoutTimer : ECSGameTimerWrapperBase
@@ -60,7 +61,6 @@ namespace DOL.GS.PacketHandler.Client.v168
             public void SetResponse(eLosCheckResponse response)
             {
                 _response = response;
-                NextTick = 0;
             }
 
             protected override int OnTick(ECSGameTimer timer)
