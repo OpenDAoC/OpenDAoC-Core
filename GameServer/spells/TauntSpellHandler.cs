@@ -16,7 +16,7 @@ namespace DOL.GS.Spells
 
         public override void OnDirectEffect(GameLiving target)
         {
-            if (target == null || !target.IsAlive || target.ObjectState is GameObject.eObjectState.Active)
+            if (target == null || !target.IsAlive || target.ObjectState is not GameObject.eObjectState.Active)
                 return;
 
             SendEffectAnimation(target, 0, false, 1);
