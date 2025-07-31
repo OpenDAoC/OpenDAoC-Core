@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using DOL.AI.Brain;
 using DOL.Events;
 using DOL.GS.Commands;
@@ -16,6 +17,7 @@ namespace DOL.GS
         private const int NO_QUEUE_INPUT_BUFFER = 250; // 250ms is roughly equivalent to the delay between inputs imposed by the client.
 
         private Queue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
+        private Lock _startSkillRequestsLock = new();
 
         public GameLiving Owner { get; }
         public SpellHandler SpellHandler { get; protected set; }
@@ -47,7 +49,9 @@ namespace DOL.GS
             }
 
             SpellHandler?.Tick();
-            ProcessStartSkillRequests();
+
+            while (_startSkillRequests.TryDequeue(out StartSkillRequest startSkillRequest))
+                startSkillRequest.StartSkill();
 
             if (SpellHandler == null && QueuedSpellHandler == null && _startSkillRequests.Count == 0)
                 ServiceObjectStore.Remove(this);
@@ -72,21 +76,25 @@ namespace DOL.GS
             if (!CanCastSpell())
                 return false;
 
-            _startSkillRequests.Enqueue(startCastSpellRequest);
+            lock (_startSkillRequestsLock)
+            {
+                _startSkillRequests.Enqueue(startCastSpellRequest);
+            }
+
             return true;
         }
 
         public virtual void RequestStartUseAbility(Ability ability)
         {
             // Always allowed. The handler will check if the ability can be used or not.
-            _startSkillRequests.Enqueue(new StartUseAbilityRequest(this, ability));
-            ServiceObjectStore.Add(this);
-        }
+            StartUseAbilityRequest startUseAbilityRequest = new(this, ability);
 
-        protected virtual void ProcessStartSkillRequests()
-        {
-            while (_startSkillRequests.TryDequeue(out StartSkillRequest startSkillRequest))
-                startSkillRequest.StartSkill();
+            lock (_startSkillRequestsLock)
+            {
+                _startSkillRequests.Enqueue(startUseAbilityRequest);
+            }
+
+            ServiceObjectStore.Add(this);
         }
 
         public int CalculateSpellRange(Spell spell)
