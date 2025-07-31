@@ -152,7 +152,7 @@ namespace DOL.GS.Spells
 						return false;
 					}
 				}
-				if (!caster.IsWithinRadius(Target, ((SpellHandler)spellhandler).CalculateSpellRange()))
+				if (!caster.IsWithinRadius(Target, Spell.CalculateEffectiveRange(caster)))
 				{
 					MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
 					return false;

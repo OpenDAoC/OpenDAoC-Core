@@ -540,7 +540,7 @@ namespace DOL.AI.Brain
                         GameLiving owner = (this as IControlledBrain).Owner;
 
                         // Buff owner.
-                        if (!LivingHasEffect(owner, spell) && Body.IsWithinRadius(owner, spell.Range))
+                        if (!LivingHasEffect(owner, spell) && Body.IsWithinRadius(owner, spell.CalculateEffectiveRange(Body)))
                         {
                             target = owner;
                             break;
@@ -549,12 +549,13 @@ namespace DOL.AI.Brain
                         if (owner is GameNPC npc)
                         {
                             //Buff other minions
-                            foreach (IControlledBrain icb in npc.ControlledNpcList)
+                            foreach (IControlledBrain brain in npc.ControlledNpcList)
                             {
-                                if (icb != null && icb.Body != null && !LivingHasEffect(icb.Body, spell) 
-                                    && Body.IsWithinRadius(icb.Body, spell.Range))
+                                if (brain?.Body != null &&
+                                    !LivingHasEffect(brain.Body, spell) &&
+                                    Body.IsWithinRadius(brain.Body, spell.CalculateEffectiveRange(Body)))
                                 {
-                                    target = icb.Body;
+                                    target = brain.Body;
                                     break;
                                 }
                             }
@@ -575,7 +576,7 @@ namespace DOL.AI.Brain
                             {
                                 foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
                                 {
-                                    if (!LivingHasEffect(member, spell) && Body.IsWithinRadius(member, spell.Range))
+                                    if (!LivingHasEffect(member, spell) && Body.IsWithinRadius(member, spell.CalculateEffectiveRange(Body)))
                                     {
                                         target = member;
                                         break;
@@ -617,7 +618,7 @@ namespace DOL.AI.Brain
                     {
                         foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
                         {
-                            if (member.IsDiseased && Body.IsWithinRadius(member, spell.Range))
+                            if (member.IsDiseased && Body.IsWithinRadius(member, spell.CalculateEffectiveRange(Body)))
                             {
                                 target = member;
                                 break;
@@ -652,7 +653,7 @@ namespace DOL.AI.Brain
                     {
                         foreach (GamePlayer member in player.Group.GetPlayersInTheGroup())
                         {
-                            if (member.IsPoisoned && Body.IsWithinRadius(member, spell.Range))
+                            if (member.IsPoisoned && Body.IsWithinRadius(member, spell.CalculateEffectiveRange(Body)))
                             {
                                 target = member;
                                 break;
@@ -696,7 +697,7 @@ namespace DOL.AI.Brain
                     int ownerPercent = Owner.HealthPercent;
 
                     // Heal owner.
-                    if (ownerPercent < emergencyThreshold && !LivingHasEffect(Owner, spell) && Body.IsWithinRadius(Owner, spell.Range))
+                    if (ownerPercent < emergencyThreshold && !LivingHasEffect(Owner, spell) && Body.IsWithinRadius(Owner, spell.CalculateEffectiveRange(Body)))
                     {
                         target = Owner;
                         break;
@@ -719,7 +720,7 @@ namespace DOL.AI.Brain
 
                         foreach (GamePlayer member in playerGroup)
                         {
-                            if (member.HealthPercent < emergencyThreshold && !LivingHasEffect(member, spell) && Body.IsWithinRadius(member, spell.Range))
+                            if (member.HealthPercent < emergencyThreshold && !LivingHasEffect(member, spell) && Body.IsWithinRadius(member, spell.CalculateEffectiveRange(Body)))
                             {
                                 target = member;
                                 break;
@@ -739,7 +740,7 @@ namespace DOL.AI.Brain
                     }
 
                     // Heal owner
-                    if (ownerPercent < healThreshold && !LivingHasEffect(Owner, spell) && Body.IsWithinRadius(Owner, spell.Range))
+                    if (ownerPercent < healThreshold && !LivingHasEffect(Owner, spell) && Body.IsWithinRadius(Owner, spell.CalculateEffectiveRange(Body)))
                     {
                         target = Owner;
                         break;
@@ -757,7 +758,7 @@ namespace DOL.AI.Brain
                     {
                         foreach (GamePlayer member in playerGroup)
                         {
-                            if (member.HealthPercent < healThreshold && !LivingHasEffect(member, spell) && Body.IsWithinRadius(member, spell.Range))
+                            if (member.HealthPercent < healThreshold && !LivingHasEffect(member, spell) && Body.IsWithinRadius(member, spell.CalculateEffectiveRange(Body)))
                             {
                                 target = member;
                                 break;

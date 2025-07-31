@@ -51,7 +51,7 @@ namespace DOL.GS.Spells
                 return false;
 			}
 
-			if (!Caster.IsWithinRadius(Caster.GroundTarget, CalculateSpellRange()))
+			if (!Caster.IsWithinRadius(Caster.GroundTarget, Spell.CalculateEffectiveRange(Caster)))
 			{
                 if (Caster is GamePlayer)
                     MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistPet.CheckBeginCast.GroundTargetNotInSpellRange"), eChatType.CT_SpellResisted);
@@ -84,7 +84,7 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-			if (!Caster.IsWithinRadius(Caster.GroundTarget, CalculateSpellRange()))
+			if (!Caster.IsWithinRadius(Caster.GroundTarget, Spell.CalculateEffectiveRange(Caster)))
 			{
                 if (Caster is GamePlayer)
                     MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistPet.CheckBeginCast.GroundTargetNotInSpellRange"), eChatType.CT_SpellResisted);

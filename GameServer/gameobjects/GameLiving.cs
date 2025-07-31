@@ -867,10 +867,9 @@ namespace DOL.GS
 
 						if (requiredLevel > Level)
 						{
-							if (this is GamePlayer)
-							{
-								(this as GamePlayer).Out.SendMessage(LanguageMgr.GetTranslation((this as GamePlayer).Client.Account.Language, "GameLiving.StartWeaponMagicalEffect.NotPowerful"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
-							}
+							if (this is GamePlayer player)
+								player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameLiving.StartWeaponMagicalEffect.NotPowerful"), eChatType.CT_SpellResisted, eChatLoc.CL_SystemWindow);
+
 							return;
 						}
 					}
@@ -881,7 +880,7 @@ namespace DOL.GS
 					{
 						bool rangeCheck = spellHandler.Spell.Target == eSpellTarget.ENEMY && spellHandler.Spell.Range > 0;
 
-						if (!rangeCheck || ad.Attacker.IsWithinRadius(ad.Target, spellHandler.CalculateSpellRange()))
+						if (!rangeCheck || ad.Attacker.IsWithinRadius(ad.Target, procSpell.CalculateEffectiveRange(ad.Attacker)))
 							spellHandler.StartSpell(ad.Target, weapon);
 					}
 				}

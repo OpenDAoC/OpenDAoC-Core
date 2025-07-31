@@ -57,7 +57,7 @@ namespace DOL.GS.Spells
 				return;
 			}
 
-			if (!Caster.IsWithinRadius(m_originalTarget, CalculateSpellRange()))
+			if (!Caster.IsWithinRadius(m_originalTarget, Spell.CalculateEffectiveRange(Caster)))
 			{
 				MessageToCaster("Your target is no longer in range.", eChatType.CT_SpellExpires);
 				effect.Cancel(false);

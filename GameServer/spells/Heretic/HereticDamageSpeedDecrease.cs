@@ -112,7 +112,14 @@ namespace DOL.GS.Spells
                 RemoveEffect();
                 return;
             }
-            if ( !m_caster.IsAlive || !effect.Owner.IsAlive || m_caster.Mana < Spell.PulsePower || !m_caster.IsWithinRadius( effect.Owner, Spell.Range ) || m_caster.IsMezzed || m_caster.IsStunned || ( m_caster.TargetObject is GameLiving ? effect.Owner != m_caster.TargetObject as GameLiving : true ) )
+            if ( !m_caster.IsAlive ||
+                !effect.Owner.IsAlive ||
+                m_caster.Mana < Spell.PulsePower ||
+                !m_caster.IsWithinRadius(effect.Owner, Spell.CalculateEffectiveRange(m_caster)) ||
+                m_caster.IsMezzed ||
+                m_caster.IsStunned ||
+                m_caster.TargetObject is not GameLiving ||
+                effect.Owner != (m_caster.TargetObject as GameLiving))
             {
                 RemoveEffect();
             }

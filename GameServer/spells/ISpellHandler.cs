@@ -189,11 +189,6 @@ namespace DOL.GS.Spells
 		bool CheckBeginCast(GameLiving selectedTarget);
 		bool CheckConcentrationCost(bool quiet);
 
-		/// <summary>
-		/// Calculates the range to target needed to cast the spell
-		/// </summary>
-		/// <returns>Modified Spell Range</returns>
-		int CalculateSpellRange();
 		void TooltipDelve(ref DOL.GS.PacketHandler.MiniDelveWriter dw);
 	}
 

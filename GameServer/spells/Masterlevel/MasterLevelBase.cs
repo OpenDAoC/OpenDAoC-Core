@@ -132,7 +132,7 @@ namespace DOL.GS.Spells
                 case eSpellTarget.GROUP:
                 {
                     Group group = caster.Group;
-                    int spellRange = spellHandler.CalculateSpellRange();
+                    int spellRange = spell.CalculateEffectiveRange(caster);
 
                     if (spellRange == 0)
                         spellRange = spell.Radius;

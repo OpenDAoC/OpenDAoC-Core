@@ -896,7 +896,7 @@ namespace DOL.AI.Brain
                     }
 
                     return Body.TargetObject is GameLiving target &&
-                           Body.IsWithinRadius(target, spell.Range) &&
+                           Body.IsWithinRadius(target, spell.CalculateEffectiveRange(Body)) &&
                            ((spell.Duration <= 0 && !spell.IsConcentration) || !LivingHasEffect(target, spell) || spell.SpellType is eSpellType.DirectDamageWithDebuff or eSpellType.DamageSpeedDecrease);
                 }
             }
@@ -1003,13 +1003,16 @@ namespace DOL.AI.Brain
                 case eSpellType.DamageShield:
                 case eSpellType.Bladeturn:
                 {
-                    if (!LivingHasEffect(Body, spell) && !Body.attackComponent.AttackState && spell.Target != eSpellTarget.PET)
+                    if (!LivingHasEffect(Body, spell) && !Body.attackComponent.AttackState && spell.Target is not eSpellTarget.PET)
                     {
                         target = Body;
                         break;
                     }
 
-                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && !LivingHasEffect(Body.ControlledBrain.Body, spell) && spell.Target != eSpellTarget.SELF)
+                    if (Body.ControlledBrain?.Body != null &&
+                        spell.Target is not eSpellTarget.SELF &&
+                        Body.IsWithinRadius(target, spell.CalculateEffectiveRange(Body)) &&
+                        !LivingHasEffect(Body.ControlledBrain.Body, spell))
                     {
                         target = Body.ControlledBrain.Body;
                         break;
@@ -1030,8 +1033,10 @@ namespace DOL.AI.Brain
                         break;
                     }
 
-                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null && Body.ControlledBrain.Body.IsDiseased
-                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target != eSpellTarget.SELF)
+                    if (Body.ControlledBrain?.Body != null &&
+                        Body.ControlledBrain.Body.IsDiseased &&
+                        spell.Target is not eSpellTarget.SELF &&
+                        Body.IsWithinRadius(Body.ControlledBrain.Body, spell.CalculateEffectiveRange(Body)))
                     {
                         target = Body.ControlledBrain.Body;
                         break;
@@ -1047,10 +1052,10 @@ namespace DOL.AI.Brain
                         break;
                     }
 
-                    if (Body.ControlledBrain != null &&
-                        Body.ControlledBrain.Body != null &&
+                    if (Body.ControlledBrain?.Body != null &&
                         Body.ControlledBrain.Body.IsPoisoned &&
-                        Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range && spell.Target != eSpellTarget.SELF)
+                        spell.Target is not eSpellTarget.SELF &&
+                        Body.IsWithinRadius(Body.ControlledBrain.Body, spell.CalculateEffectiveRange(Body)))
                     {
                         target = Body.ControlledBrain.Body;
                         break;
@@ -1107,10 +1112,10 @@ namespace DOL.AI.Brain
                         break;
                     }
 
-                    if (Body.ControlledBrain != null && Body.ControlledBrain.Body != null
-                        && Body.GetDistanceTo(Body.ControlledBrain.Body) <= spell.Range
-                        && Body.ControlledBrain.Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD
-                        && spell.Target != eSpellTarget.SELF)
+                    if (Body.ControlledBrain?.Body != null &&
+                        spell.Target is not eSpellTarget.SELF &&
+                        Body.IsWithinRadius(Body.ControlledBrain.Body, spell.CalculateEffectiveRange(Body)) &&
+                        Body.ControlledBrain.Body.HealthPercent < Properties.NPC_HEAL_THRESHOLD)
                     {
                         target = Body.ControlledBrain.Body;
                         break;

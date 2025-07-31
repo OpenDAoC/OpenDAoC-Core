@@ -618,7 +618,7 @@ namespace DOL.GS.Spells
 				}
 				case eSpellTarget.AREA:
 				{
-					if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
+					if (!m_caster.IsWithinRadius(m_caster.GroundTarget, Spell.CalculateEffectiveRange(m_caster)))
 					{
 						if (!quiet)
 							MessageToCaster("Your area target is out of range. Select a closer target.", eChatType.CT_SpellResisted);
@@ -644,7 +644,7 @@ namespace DOL.GS.Spells
 						return false;
 					}
 
-					if (!m_caster.IsWithinRadius(Target, CalculateSpellRange()))
+					if (!m_caster.IsWithinRadius(Target, Spell.CalculateEffectiveRange(m_caster)))
 					{
 						if (Caster is GamePlayer && !quiet)
 							MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
@@ -652,7 +652,7 @@ namespace DOL.GS.Spells
 						Caster.Notify(GameLivingEvent.CastFailed, new CastFailedEventArgs(this, CastFailedEventArgs.Reasons.TargetTooFarAway));
 
 						if (Caster is GameNPC npc)
-							npc.Follow(Target, Spell.Range - 100, npc.StickMaximumRange);
+							npc.Follow(Target, m_spell.CalculateEffectiveRange(npc) - 100, npc.StickMaximumRange);
 
 						return false;
 					}
@@ -870,7 +870,7 @@ namespace DOL.GS.Spells
 
 			if (m_spell.Target is eSpellTarget.AREA)
 			{
-				if (!m_caster.IsWithinRadius(m_caster.GroundTarget, CalculateSpellRange()))
+				if (!m_caster.IsWithinRadius(m_caster.GroundTarget, Spell.CalculateEffectiveRange(m_caster)))
 				{
 					if (verbose)
 						MessageToCaster("Your area target is out of range. Select a closer target.", eChatType.CT_SpellResisted);
@@ -900,7 +900,7 @@ namespace DOL.GS.Spells
 					}
 				}
 
-				if (!m_caster.IsWithinRadius(target, CalculateSpellRange()))
+				if (!m_caster.IsWithinRadius(target, Spell.CalculateEffectiveRange(m_caster)))
 				{
 					if (verbose)
 						MessageToCaster("That target is too far away!", eChatType.CT_SpellResisted);
@@ -1213,18 +1213,6 @@ namespace DOL.GS.Spells
 		public virtual int CalculateEnduranceCost()
 		{
 			return Spell.IsPulsing ? 0 : 5;
-		}
-
-		/// <summary>
-		/// Calculates the range to target needed to cast the spell
-		/// NOTE: This method returns a minimum value of 32
-		/// </summary>
-		/// <returns></returns>
-		public virtual int CalculateSpellRange()
-		{
-			int range = Math.Max(32, (int)(Spell.Range * Caster.GetModified(eProperty.SpellRange) * 0.01));
-			return range;
-			//Dinberg: add for warlock range primer
 		}
 
 		/// <summary>
@@ -1552,7 +1540,7 @@ namespace DOL.GS.Spells
 
 					GameNPC pet = target as GameNPC;
 
-					if (pet != null && Caster.IsWithinRadius(pet, Spell.Range))
+					if (pet != null && Caster.IsWithinRadius(pet, Spell.CalculateEffectiveRange(Caster)))
 					{
 						if (Caster.IsControlledNPC(pet))
 							list.Add(pet);
@@ -1561,16 +1549,16 @@ namespace DOL.GS.Spells
 					// Check 'ControlledBrain' if 'target' isn't a valid target.
 					if (list.Count == 0 && Caster.ControlledBrain != null)
 					{
-						if (Caster is GamePlayer player && player.CharacterClass.Name.Equals("bonedancer", StringComparison.OrdinalIgnoreCase))
+						if (Caster is GamePlayer player && (eCharacterClass) player.CharacterClass.ID is eCharacterClass.Bonedancer)
 						{
-							foreach (GameNPC npcInRadius in player.GetNPCsInRadius((ushort) Spell.Range))
+							foreach (GameNPC npcInRadius in player.GetNPCsInRadius((ushort) Spell.CalculateEffectiveRange(player)))
 							{
 								if (npcInRadius is CommanderPet commander && commander.Owner == player)
 									list.Add(commander);
-								else if (npcInRadius is BdSubPet {Brain: IControlledBrain brain} subpet && brain.GetPlayerOwner() == player)
+								else if (npcInRadius is BdSubPet subPet && subPet.Brain is IControlledBrain brain && brain.GetPlayerOwner() == player)
 								{
 									if (!Spell.IsHealing)
-										list.Add(subpet);
+										list.Add(subPet);
 								}
 							}
 						}
@@ -1578,7 +1566,7 @@ namespace DOL.GS.Spells
 						{
 							pet = Caster.ControlledBrain.Body;
 
-							if (pet != null && Caster.IsWithinRadius(pet, Spell.Range))
+							if (pet != null && Caster.IsWithinRadius(pet, Spell.CalculateEffectiveRange(Caster)))
 								list.Add(pet);
 						}
 					}
@@ -1768,7 +1756,7 @@ namespace DOL.GS.Spells
 					if (Spell.Range == 0)
 						spellRange = modifiedRadius;
 					else
-						spellRange = CalculateSpellRange();
+						spellRange = Spell.CalculateEffectiveRange(m_caster);
 
 					if (group == null)
 					{
@@ -1856,9 +1844,7 @@ namespace DOL.GS.Spells
 				}
 				case eSpellTarget.CONE:
 				{
-					target = Caster;
-
-					foreach (GamePlayer player in target.GetPlayersInRadius((ushort) Spell.Range))
+					foreach (GamePlayer player in Caster.GetPlayersInRadius((ushort) Spell.CalculateEffectiveRange(Caster)))
 					{
 						if (player == Caster)
 							continue;
@@ -1872,7 +1858,7 @@ namespace DOL.GS.Spells
 						list.Add(player);
 					}
 
-					foreach (GameNPC npc in target.GetNPCsInRadius((ushort) Spell.Range))
+					foreach (GameNPC npc in Caster.GetNPCsInRadius((ushort) Spell.CalculateEffectiveRange(Caster)))
 					{
 						if (npc == Caster)
 							continue;
@@ -1946,17 +1932,17 @@ namespace DOL.GS.Spells
 
 				if (subControlledBrains != null)
 				{
-					foreach (IControlledBrain subControlledBrain in subControlledBrains.Where(x => x != null && Caster.IsWithinRadius(x.Body, spell.Range)))
+					foreach (IControlledBrain subControlledBrain in subControlledBrains.Where(x => x != null && Caster.IsWithinRadius(x.Body, Spell.CalculateEffectiveRange(Caster))))
 						livingsInRange.Add(subControlledBrain.Body);
 				}
 
 				if (controlledBrain != null)
 				{
-					if (Caster.IsWithinRadius(controlledBrain.Body, spell.Range))
+					if (Caster.IsWithinRadius(controlledBrain.Body, Spell.CalculateEffectiveRange(Caster)))
 						livingsInRange.Add(controlledBrain.Body);
 				}
 
-				if (Caster == living || Caster.IsWithinRadius(living, spell.Range))
+				if (Caster == living || Caster.IsWithinRadius(living, Spell.CalculateEffectiveRange(Caster)))
 					livingsInRange.Add(living);
 			}
 
@@ -1990,7 +1976,7 @@ namespace DOL.GS.Spells
 
 			if (Target != null)
 			{
-				if (Spell.IsFocus && (!Target.IsAlive || !Caster.IsWithinRadius(Target, Spell.Range)))
+				if (Spell.IsFocus && (!Target.IsAlive || !Caster.IsWithinRadius(Target, Spell.CalculateEffectiveRange(Caster))))
 				{
 					CancelFocusSpells();
 					return false;
@@ -2063,7 +2049,7 @@ namespace DOL.GS.Spells
 					if (Spell.Target == eSpellTarget.AREA)
 						DistanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster.GroundTarget), Spell.Radius);
 					else if (Spell.Target == eSpellTarget.CONE)
-						DistanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster), Spell.Range);
+						DistanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Caster), Spell.CalculateEffectiveRange(Caster));
 					else
 						DistanceFallOff = CalculateDistanceFallOff(targetInList.GetDistanceTo(Target), Spell.Radius);
 

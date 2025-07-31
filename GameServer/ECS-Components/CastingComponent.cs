@@ -89,6 +89,12 @@ namespace DOL.GS
                 startSkillRequest.StartSkill();
         }
 
+        public int CalculateSpellRange(Spell spell)
+        {
+            const int minRange = 32;
+            return spell == null ? minRange : Math.Max(minRange, (int) (spell.Range * Owner.GetModified(eProperty.SpellRange) * 0.01));
+        }
+
         public void InterruptCasting(bool moving)
         {
             // A race condition can happen here.
