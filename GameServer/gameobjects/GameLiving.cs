@@ -1867,6 +1867,10 @@ namespace DOL.GS
 			lock (_changeHealthLock)
 			{
 				int oldHealth = Health;
+
+				if (oldHealth <= 0)
+					return 0;
+
 				Health += changeAmount;
 				int healthChanged = Health - oldHealth;
 
