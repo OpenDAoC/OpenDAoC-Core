@@ -6,6 +6,15 @@ namespace DOL.GS
     {
         public StatBuffECSEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
+        public override void OnEffectAddedToEffectList(EffectListComponent.AddEffectResult result)
+        {
+            // Movement speed buffs are always disabled when applied to a stealthed target.
+            if (EffectType is eEffect.MovementSpeedBuff && result is EffectListComponent.AddEffectResult.Added && Owner.IsStealthed)
+                base.OnEffectAddedToEffectList(EffectListComponent.AddEffectResult.Disabled);
+            else
+                base.OnEffectAddedToEffectList(result);
+        }
+
         public override void OnStartEffect()
         {
             base.OnStartEffect();
@@ -15,14 +24,8 @@ namespace DOL.GS
 
             if (EffectType is eEffect.MovementSpeedBuff)
             {
-                if (!Owner.IsStealthed)
-                {
-                    Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, SpellHandler.Spell.Value / 100.0);
-                    Owner.OnMaxSpeedChange();
-                }
-
-                if (Owner.IsStealthed)
-                    Disable();
+                Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, SpellHandler.Spell.Value / 100.0);
+                Owner.OnMaxSpeedChange();
             }
             else
             {

@@ -213,7 +213,7 @@ namespace DOL.GS
         public virtual void OnEffectPulse() { }
         public virtual DbPlayerXEffect GetSavedEffect() { return null; }
 
-        public void OnEffectAddedToEffectList(EffectListComponent.AddEffectResult result)
+        public virtual void OnEffectAddedToEffectList(EffectListComponent.AddEffectResult result)
         {
             try
             {
