@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Linq;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Keeps;
@@ -22,43 +21,51 @@ namespace DOL.GS.ServerRules
 			if (!base.IsAllowedToAttack(attacker, defender, quiet))
 				return false;
 
-			// if controlled NPC - do checks for owner instead
-			if (attacker is GameNPC)
+			GameNPC npcAttacker = attacker as GameNPC;
+
+			if (npcAttacker != null && npcAttacker.Brain is IControlledBrain attackerBrain)
 			{
-				IControlledBrain controlled = ((GameNPC)attacker).Brain as IControlledBrain;
-				if (controlled != null)
-				{
-                    attacker = controlled.GetLivingOwner();
-					quiet = true; // silence all attacks by controlled npc
-				}
-			}
-			if (defender is GameNPC)
-			{
-				IControlledBrain controlled = ((GameNPC)defender).Brain as IControlledBrain;
-				if (controlled != null)
-                    defender = controlled.GetLivingOwner();
+				attacker = attackerBrain.GetLivingOwner();
+				quiet = true; // Silence all attacks by controlled npcs.
 			}
 
-			//"You can't attack yourself!"
-			if(attacker == defender)
+			if (defender is GameNPC npcDefender)
 			{
-				if (quiet == false) MessageToLiving(attacker, "You can't attack yourself!");
+				if (npcDefender.Brain is IControlledBrain defenderBrain)
+					defender = defenderBrain.GetLivingOwner();
+			}
+
+			// "You can't attack yourself!"
+			if (attacker == defender)
+			{
+				if (!quiet)
+					MessageToLiving(attacker, "You can't attack yourself!");
+
 				return false;
 			}
 
-			//Don't allow attacks on same realm members on Normal Servers
-			if (attacker.Realm == defender.Realm && !(attacker is GamePlayer && ((GamePlayer) attacker).IsDuelPartner(defender)))
+			// Don't allow attacks on same realm members.
+			if (attacker.Realm == defender.Realm)
 			{
-				// allow confused mobs to attack same realm
-				if (attacker is GameNPC && (attacker as GameNPC).IsConfused)
+				// Allow players to attack their duel partner.
+				if (attacker is GamePlayer player && player.IsDuelPartner(defender))
 					return true;
 
-				if (attacker.Realm == 0)
+				if (npcAttacker != null)
 				{
-					return FactionMgr.CanLivingAttack(attacker, defender);
+					// Allow confused NPCs to attack realm mates.
+					// Pets can't attack their owner however, since attacker == defender.
+					if (npcAttacker.IsConfused)
+						return true;
+
+					// If the NPC is neutral, delegate to `FactionMgr`.
+					if (attacker.Realm == 0)
+						return FactionMgr.CanLivingAttack(attacker, defender);
 				}
 
-				if(quiet == false) MessageToLiving(attacker, "You can't attack a member of your realm!");
+				if (!quiet)
+					MessageToLiving(attacker, "You can't attack a member of your realm!");
+
 				return false;
 			}
 
