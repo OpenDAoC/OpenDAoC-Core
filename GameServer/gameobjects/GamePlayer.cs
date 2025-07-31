@@ -6111,6 +6111,16 @@ namespace DOL.GS
             client.SendToDiscord(discordMessage);
         }
 
+        public override void AddXPGainer(GameLiving xpGainer, double damageAmount)
+        {
+            // In case a player is attacked by a player of the same realm (e.g. in a duel, due to a confusion spell, a bug, etc.).
+            // This also means the amount of damage dealt by the xp gainer won't be taken into account when awarding XP, RPs, BPs.
+            if (xpGainer.Realm == Realm)
+                return;
+
+            base.AddXPGainer(xpGainer, damageAmount);
+        }
+
         /// <summary>
         /// Called when the player dies
         /// </summary>
