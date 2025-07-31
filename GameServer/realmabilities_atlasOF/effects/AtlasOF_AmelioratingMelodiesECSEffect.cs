@@ -43,7 +43,7 @@ namespace DOL.GS.Effects
                     if (player.Health + heal > player.MaxHealth)
                         heal = player.MaxHealth - player.Health;
 
-                    player.ChangeHealth(OwnerPlayer, eHealthChangeType.Regenerate, heal);
+                    heal = player.ChangeHealth(OwnerPlayer, eHealthChangeType.Regenerate, heal);
                     OwnerPlayer.Out.SendMessage($"Your Ameliorating Melodies heal {player.Name} for {heal} hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
                     player.Out.SendMessage($"{OwnerPlayer.Name} 's Ameliorating Melodies heals you for {heal} hit points.", eChatType.CT_Spell, eChatLoc.CL_SystemWindow);
                 }
