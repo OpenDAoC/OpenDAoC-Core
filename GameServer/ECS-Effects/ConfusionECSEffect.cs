@@ -9,8 +9,9 @@ namespace DOL.GS
     {
         public ConfusionECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
-            NextTick = 1;
+            // Confusion spells don't have a frequency set in the database.
             PulseFreq = 6000;
+            NextTick = GameLoop.GameLoopTime;
         }
 
         public override void OnStartEffect()

@@ -9,8 +9,8 @@ namespace DOL.GS.Effects
         public AtlasOF_RuneOfDecimationECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.RuneOfDecimation;
-            NextTick = 1;
             PulseFreq = 1000;
+            NextTick = GameLoop.GameLoopTime;
         }
 
         public override ushort Icon => 7153;

@@ -4,10 +4,7 @@ namespace DOL.GS
 {
     public class DamageOverTimeECSGameEffect : ECSGameSpellEffect
     {
-        public DamageOverTimeECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
-        {
-            NextTick = GameLoop.GameLoopTime;
-        }
+        public DamageOverTimeECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
         {

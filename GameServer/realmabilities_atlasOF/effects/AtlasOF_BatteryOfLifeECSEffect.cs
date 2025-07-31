@@ -11,6 +11,7 @@ namespace DOL.GS.Effects
             EffectType = eEffect.BatteryOfLife;
             Start();
             PulseFreq = 1000;
+            NextTick = GameLoop.GameLoopTime;
         }
 
         private int _healthPool = 0;
@@ -22,7 +23,6 @@ namespace DOL.GS.Effects
         public override void OnStartEffect()
         {
             _healthPool = (int) (1000 * (1 + OwnerPlayer.GetModified(eProperty.BuffEffectiveness) * 0.01));
-            NextTick = 1;
             base.OnStartEffect();
         }
 

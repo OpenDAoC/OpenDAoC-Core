@@ -12,7 +12,7 @@ namespace DOL.GS.Effects
         {
             EffectType = eEffect.AmelioratingMelodies;
             PulseFreq = 1500; // 1.5s. Effect lasts 30s so that is 20 ticks.
-            NextTick = StartTick;
+            NextTick = GameLoop.GameLoopTime;
             _heal = (int) Effectiveness; // Effectiveness value is used as a heal value per tick.
             Start();
         }

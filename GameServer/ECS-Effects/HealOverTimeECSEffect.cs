@@ -4,10 +4,7 @@ namespace DOL.GS
 {
     public class HealOverTimeECSGameEffect : ECSGameSpellEffect
     {
-        public HealOverTimeECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams) 
-        {
-            NextTick = StartTick;
-        }
+        public HealOverTimeECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
         public override void OnStartEffect()
         {

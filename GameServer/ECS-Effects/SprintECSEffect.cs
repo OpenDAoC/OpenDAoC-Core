@@ -9,8 +9,8 @@ namespace DOL.GS
         public SprintECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams) 
         {
             EffectType = eEffect.Sprint;
-            NextTick = GameLoop.GameLoopTime + 1;
             PulseFreq = 200;
+            NextTick = GameLoop.GameLoopTime;
             Start();
         }
 

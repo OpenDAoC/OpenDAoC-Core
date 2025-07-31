@@ -38,6 +38,8 @@ namespace DOL.GS
                 PulseFreq = 2500;
                 NextTick = StartTick + PulseFreq;
             }
+            else if (PulseFreq > 0)
+                NextTick = StartTick;
 
             // These classes start their effects themselves.
             if (this is not ECSImmunityEffect and not ECSPulseEffect and not BleedECSEffect)
