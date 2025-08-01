@@ -6,15 +6,6 @@ namespace DOL.GS
     {
         public StatBuffECSEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
 
-        public override bool FinalizeAddedState(EffectListComponent.AddEffectResult result)
-        {
-            // Movement speed buffs are always disabled when applied to a stealthed target.
-            if (EffectType is eEffect.MovementSpeedBuff && result is EffectListComponent.AddEffectResult.Added && Owner.IsStealthed)
-                return base.FinalizeAddedState(EffectListComponent.AddEffectResult.Disabled);
-            else
-                return base.FinalizeAddedState(result);
-        }
-
         public override void OnStartEffect()
         {
             base.OnStartEffect();
@@ -22,19 +13,11 @@ namespace DOL.GS
             if (OwnerPlayer != null && GamePlayer.SelfBuffChargeIDs.Contains(SpellHandler.Spell.ID))
                 OwnerPlayer.ActiveBuffCharges++;
 
-            if (EffectType is eEffect.MovementSpeedBuff)
-            {
-                Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, this, SpellHandler.Spell.Value / 100.0);
-                Owner.OnMaxSpeedChange();
-            }
-            else
-            {
-                if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
-                    return;
+            if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
+                return;
 
-                foreach (eProperty property in EffectService.GetPropertiesFromEffect(EffectType))
-                    ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, false);
-            }
+            foreach (eProperty property in EffectService.GetPropertiesFromEffect(EffectType))
+                ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, false);
 
             // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
             // This will also update health, endurance, and power if they're above their max amount.
@@ -54,19 +37,11 @@ namespace DOL.GS
             if (OwnerPlayer != null && GamePlayer.SelfBuffChargeIDs.Contains(SpellHandler.Spell.ID))
                 OwnerPlayer.ActiveBuffCharges--;
 
-            if (EffectType is eEffect.MovementSpeedBuff)
-            {
-                Owner.BuffBonusMultCategory1.Remove((int) eProperty.MaxSpeed, this);
-                Owner.OnMaxSpeedChange();
-            }
-            else
-            {
-                if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
-                    return;
+            if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
+                return;
 
-                foreach (eProperty property in EffectService.GetPropertiesFromEffect(EffectType))
-                    ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, true);
-            }
+            foreach (eProperty property in EffectService.GetPropertiesFromEffect(EffectType))
+                ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, true);
 
             // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
             // This will also update health, endurance, and power if they're above their max amount.

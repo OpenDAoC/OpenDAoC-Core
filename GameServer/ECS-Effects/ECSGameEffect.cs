@@ -101,7 +101,7 @@ namespace DOL.GS
             }
         }
 
-        public bool Enable()
+        public virtual bool Enable()
         {
             if (!CanBeEnabled)
                 return false;

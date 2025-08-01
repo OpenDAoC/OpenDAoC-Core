@@ -21,10 +21,10 @@ namespace DOL.GS.Spells
 			base.FinishSpellCast(target);
 		}
 
-        public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
-        {
-            return new StatBuffECSEffect(initParams);
-        }
+		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
+		{
+			return new SpeedEnhancementECSEffect(initParams);
+		}
 
 		protected override int CalculateEffectDuration(GameLiving target)
 		{
