@@ -21,8 +21,8 @@ namespace DOL.GS
         // Pending effects.
         private ConcurrentQueue<ECSGameEffect> _pendingEffects = new();     // Queue for pending effects to be processed in the next tick.
         private int _pendingEffectCount;                                    // Number of pending effects to be processed.
-        private Queue<ECSGameEffect> _effectsToStop = new();                // Queue for effects to be stopped after their state has been finalized following a removal or disabling.
-        private Queue<ECSGameEffect> _effectsToStart = new();               // Queue for effects to be started after their state has been finalized following an addition or enabling.
+        private Queue<ECSGameEffect> _effectsToStop = new();                // Queue for effects to stop after their state has been finalized following removal or disabling.
+        private Queue<ECSGameEffect> _effectsToStart = new();               // Queue for effects to start after their state has been finalized following addition or enabling.
 
         // Concentration.
         private List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -46,7 +46,6 @@ namespace DOL.GS
         public void BeginTick()
         {
             // Process pending effects. This modifies local collections and finalizes the effect's immediate state.
-            // External interactions are queued for `ApplyEffectChanges`.
             if (Volatile.Read(ref _pendingEffectCount) > 0)
             {
                 Interlocked.Exchange(ref _pendingEffectCount, 0);
@@ -86,8 +85,7 @@ namespace DOL.GS
                 return;
             }
 
-            // `Tick` isn't intended to write to `_effects` or `_effectIdToEffect`.
-            // When an effect is stopped (if it expires), it's enqueued to `_pendingEffects` and processed on the next game loop tick.
+            // When an effect expires in `TickEffect`, it is enqueued to `_pendingEffects` and processed on the next game loop tick.
             foreach (var pair in _effects)
             {
                 List<ECSGameEffect> list = pair.Value;
