@@ -21,6 +21,8 @@ namespace DOL.GS
         // Pending effects.
         private ConcurrentQueue<ECSGameEffect> _pendingEffects = new();     // Queue for pending effects to be processed in the next tick.
         private int _pendingEffectCount;                                    // Number of pending effects to be processed.
+        private Queue<ECSGameEffect> _effectsToStop = new();                // Queue for effects to be stopped after their state has been finalized following a removal or disabling.
+        private Queue<ECSGameEffect> _effectsToStart = new();               // Queue for effects to be started after their state has been finalized following an addition or enabling.
 
         // Concentration.
         private List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -43,9 +45,8 @@ namespace DOL.GS
 
         public void BeginTick()
         {
-            // `TickPendingEffect` writes to `_effects` and `_effectIdToEffect`.
-            // Effects being started or stopped aren't intended to call getter methods on `EffectListComponent` other than their own.
-
+            // Process pending effects. This modifies local collections and finalizes the effect's immediate state.
+            // External interactions are queued for `ApplyEffectChanges`.
             if (Volatile.Read(ref _pendingEffectCount) > 0)
             {
                 Interlocked.Exchange(ref _pendingEffectCount, 0);
@@ -57,8 +58,17 @@ namespace DOL.GS
 
         public void EndTick()
         {
-            // `TickEffect` isn't intended to write to `_effects` or `_effectIdToEffect`.
-            // When an effect is stopped (if it expires), it's enqueued to `_pendingEffects` and processed on the next game loop tick.
+            // Every effect that had its state changed during `BeginTick` is actually started or stopped here.
+            // This allows these effects to call getters on other `EffectListComponent` in a thread-safe manner.
+            while (_effectsToStop.TryDequeue(out ECSGameEffect effect))
+            {
+                effect.OnStopEffect();
+                effect.TryApplyImmunity();
+                TryEnableBestEffectOfSameType(effect);
+            }
+
+            while (_effectsToStart.TryDequeue(out ECSGameEffect effect))
+                effect.OnStartEffect();
 
             // Keep ticking even if `ObjectState == Inactive` (region change).
             if (_effects.Count == 0 || Owner.ObjectState is GameObject.eObjectState.Deleted)
@@ -76,17 +86,45 @@ namespace DOL.GS
                 return;
             }
 
+            // `Tick` isn't intended to write to `_effects` or `_effectIdToEffect`.
+            // When an effect is stopped (if it expires), it's enqueued to `_pendingEffects` and processed on the next game loop tick.
             foreach (var pair in _effects)
             {
                 List<ECSGameEffect> list = pair.Value;
 
-                // Reverse loop to allow removing effects in `TickEffect` while iterating.
-                // To remove from `_effects`, we use `_effectTypesToRemove` as an intermediate list.
                 for (int i = list.Count - 1; i >= 0; i--)
                     TickEffect(list[i]);
             }
 
             SendPlayerUpdates();
+
+            void TryEnableBestEffectOfSameType(ECSGameEffect effect)
+            {
+                if (_effects.TryGetValue(effect.EffectType, out var effects))
+                {
+                    if (effects.Count == 0)
+                        return;
+
+                    ECSGameEffect disabledEffect = null;
+                    double highestSpellValue = double.MinValue;
+
+                    foreach (ECSGameEffect existingEffect in effects)
+                    {
+                        if (!existingEffect.IsDisabled || existingEffect == effect || existingEffect is not ECSGameSpellEffect)
+                            continue;
+
+                        double spellValue = existingEffect.SpellHandler.Spell.Value;
+
+                        if (spellValue <= highestSpellValue)
+                            continue;
+
+                        highestSpellValue = spellValue;
+                        disabledEffect = existingEffect;
+                    }
+
+                    disabledEffect?.Enable();
+                }
+            }
         }
 
         public void AddPendingEffect(ECSGameEffect effect)
@@ -499,7 +537,12 @@ namespace DOL.GS
             AddEffectResult result = AddEffectInternal(effect);
 
             if (result is not AddEffectResult.Failed)
-                OnEffectAdded(effect);
+            {
+                bool shouldStart = OnEffectAdded(effect);
+
+                if (shouldStart)
+                    _effectsToStart.Enqueue(effect);
+            }
             else
                 OnEffectNotAdded(effect);
 
@@ -731,7 +774,7 @@ namespace DOL.GS
                 }
             }
 
-            void OnEffectAdded(ECSGameEffect effect)
+            bool OnEffectAdded(ECSGameEffect effect)
             {
                 try
                 {
@@ -763,16 +806,18 @@ namespace DOL.GS
                             StatDebuffECSEffect.TryDebuffInterrupt(spell, effect.OwnerPlayer, spellHandler?.Caster);
                     }
 
-                    effect.OnEffectAddedToEffectList(result);
+                    return effect.FinalizeAddedState(result);
                 }
                 catch (Exception e)
                 {
                     if (log.IsErrorEnabled)
                         log.Error($"Failed processing an effect added to {effect.Owner}'s effect list", e);
+
+                    return false;
                 }
             }
 
-            void OnEffectNotAdded(ECSGameEffect effect)
+            static void OnEffectNotAdded(ECSGameEffect effect)
             {
                 try
                 {
@@ -807,7 +852,12 @@ namespace DOL.GS
             RemoveEffectResult result = RemoveEffectInternal(effect);
 
             if (result is not RemoveEffectResult.Failed)
-                OnEffectRemoved(effect);
+            {
+                bool shouldBeStopped = OnEffectRemoved(effect);
+
+                if (shouldBeStopped)
+                    _effectsToStop.Enqueue(effect);
+            }
 
             RemoveEffectResult RemoveEffectInternal(ECSGameEffect effect)
             {
@@ -858,20 +908,20 @@ namespace DOL.GS
                 }
             }
 
-            void OnEffectRemoved(ECSGameEffect effect)
+            bool OnEffectRemoved(ECSGameEffect effect)
             {
                 try
                 {
                     RequestPlayerUpdate(EffectService.GetPlayerUpdateFromEffect(effect.EffectType));
-                    effect.TryApplyImmunity();
+                    return effect.FinalizeRemovedState(result);
                 }
                 catch (Exception e)
                 {
                     if (log.IsErrorEnabled)
                         log.Error($"Failed processing an effect removed from {effect.Owner}'s effect list", e);
-                }
 
-                effect.OnEffectRemovedFromEffectList(result);
+                    return false;
+                }
             }
         }
 

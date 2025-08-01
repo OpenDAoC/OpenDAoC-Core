@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
@@ -49,7 +47,7 @@ namespace DOL.GS
         public virtual string OwnerName => Owner != null ? Owner.Name : string.Empty;
         public virtual bool HasPositiveEffect => false;
         public bool TriggersImmunity { get; set; } = false;
-        public int ImmunityDuration { get; protected set; }= 60000;
+        public int ImmunityDuration { get; protected set; } = 60000;
         public bool IsSilent { get; set; } // Used externally to force an effect to be silent before being enabled or disabled. Resets itself.
 
         // State properties.
@@ -213,42 +211,43 @@ namespace DOL.GS
         public virtual void OnEffectPulse() { }
         public virtual DbPlayerXEffect GetSavedEffect() { return null; }
 
-        public virtual void OnEffectAddedToEffectList(EffectListComponent.AddEffectResult result)
+        public virtual bool FinalizeAddedState(EffectListComponent.AddEffectResult result)
         {
+            // Returns true if the effect needs to be started.
             try
             {
-                // `AddEffect` handles both starting and enabling effects.
-                // Its result depends on `_transitionalState`.
                 switch (result)
                 {
                     case EffectListComponent.AddEffectResult.Added:
                     {
-                        OnStartEffect();
                         _state = State.Active;
-                        return;
+                        return true;
                     }
                     case EffectListComponent.AddEffectResult.RenewedActive:
                     {
                         _state = State.Active;
-                        return;
+                        return false;
                     }
                     case EffectListComponent.AddEffectResult.Disabled:
                     {
                         _state = State.Disabled;
-                        return;
+                        return false;
                     }
                     case EffectListComponent.AddEffectResult.RenewedDisabled:
                     {
                         if (IsDisabled)
                         {
-                            OnStartEffect();
                             _state = State.Active;
+                            return true;
                         }
                         else
+                        {
                             _state = State.Disabled;
-
-                        return;
+                            return false;
+                        }
                     }
+                    case EffectListComponent.AddEffectResult.Failed:
+                        return false;
                     default:
                         throw new InvalidOperationException($"Unhandled result: {result}.");
                 }
@@ -259,36 +258,27 @@ namespace DOL.GS
             }
         }
 
-        public void OnEffectRemovedFromEffectList(EffectListComponent.RemoveEffectResult result)
+        public bool FinalizeRemovedState(EffectListComponent.RemoveEffectResult result)
         {
+            // Returns true if the effect needs to be stopped.
             try
             {
-                // `RemoveEffect` handles both stopping and disabling effects, and its result depends on `_transitionalState`.
-                // Only stop effects and attempt to enable the best disabled effect of the same type if this effect was active.
                 switch (result)
                 {
                     case EffectListComponent.RemoveEffectResult.Removed:
                     {
-                        if (IsActive)
-                        {
-                            OnStopEffect();
-                            TryEnableBestEffectOfSameType();
-                        }
-
+                        bool shouldBeStopped = IsActive;
                         _state = State.Stopped;
-                        return;
+                        return shouldBeStopped;
                     }
                     case EffectListComponent.RemoveEffectResult.Disabled:
                     {
-                        if (IsActive)
-                        {
-                            OnStopEffect();
-                            TryEnableBestEffectOfSameType();
-                        }
-
+                        bool shouldBeStopped = IsActive;
                         _state = State.Disabled;
-                        return;
+                        return shouldBeStopped;
                     }
+                    case EffectListComponent.RemoveEffectResult.Failed:
+                        return false;
                     default:
                         throw new InvalidOperationException($"Unhandled result: {result}.");
                 }
@@ -296,19 +286,6 @@ namespace DOL.GS
             finally
             {
                 _transitionalState = TransitionalState.None;
-            }
-
-            void TryEnableBestEffectOfSameType()
-            {
-                List<ECSGameSpellEffect> spellEffects = Owner.effectListComponent.GetSpellEffects(EffectType);
-
-                if (spellEffects.Count <= 0)
-                    return;
-
-                ECSGameSpellEffect disabledEffect = spellEffects.OrderByDescending(e => e.SpellHandler.Spell.Value).FirstOrDefault();
-
-                if (disabledEffect != null && disabledEffect.IsDisabled)
-                    disabledEffect.Enable();
             }
         }
 
