@@ -9,17 +9,11 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
-            if (!IsActive)
-            {
-                ApplyBonus(Owner, (SpellHandler as AbstractSavageBuff).BonusCategory1,
-                    (SpellHandler as AbstractSavageBuff).Property1, SpellHandler.Spell.Value, Effectiveness, false);
-                
-                // "You parry with extra skill!"
-                // "{0} begins parrying faster!"
-                OnEffectStartsMsg(true, false, true);
-            }
-            else
-                OnHealthCost();
+            ApplyBonus(Owner, (SpellHandler as AbstractSavageBuff).BonusCategory1, (SpellHandler as AbstractSavageBuff).Property1, SpellHandler.Spell.Value, Effectiveness, false);
+
+            // "You parry with extra skill!"
+            // "{0} begins parrying faster!"
+            OnEffectStartsMsg(true, false, true);
         }
 
         public override void OnStopEffect()

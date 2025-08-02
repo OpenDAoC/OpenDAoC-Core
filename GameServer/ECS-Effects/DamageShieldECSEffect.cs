@@ -46,7 +46,6 @@ namespace DOL.GS
             private ControlledMobBrain _brain;
             private ECSPulseEffect _pulseEffect;
             private bool _hasOwnerBeenInCombat; // Set to true once and never changes again.
-            private long _cancelEffectDueTime;
 
             public CombatCheckTimer(ControlledMobBrain brain, ECSPulseEffect pulseEffect) : base(brain.Owner)
             {

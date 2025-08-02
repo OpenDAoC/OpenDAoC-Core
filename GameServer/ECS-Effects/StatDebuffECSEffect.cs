@@ -18,17 +18,6 @@ namespace DOL.GS
             if (Owner is GamePlayer player)
                 TryDebuffInterrupt(SpellHandler.Spell, player, SpellHandler.Caster);
 
-            if (Owner.effectListComponent.ContainsEffectForEffectType(EffectType))
-            {
-                List<ECSGameSpellEffect> effects = Owner.effectListComponent.GetSpellEffects(EffectType);
-
-                foreach (ECSGameSpellEffect e in effects)
-                {
-                    if (e.SpellHandler.Spell.ID == SpellHandler.Spell.ID && IsActive)
-                        return;
-                }
-            }
-
             // Force Champion's stat debuffs to be applied as spec debuffs (see `StatCalculator`).
             if (SpellHandler.Caster is GamePlayer playerCaster &&
                 playerCaster.CharacterClass is ClassChampion &&
