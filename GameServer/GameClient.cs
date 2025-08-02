@@ -402,19 +402,7 @@ namespace DOL.GS
                             log.Warn($"Bad TCP packet checksum (packet:0x{pakCheck:X4} calculated:0x{calcCheck:X4}) -> disconnecting\nclient: {this}\ncurOffset={currentOffset}; packetLength={packetLength}");
 
                         if (log.IsDebugEnabled)
-                        {
-                            if (Properties.SAVE_PACKETS)
-                            {
-                                log.Debug("Last client sent/received packets (from older to newer):");
-
-                                foreach (IPacket prevPak in PacketProcessor.GetLastPackets())
-                                    log.Debug(prevPak.ToHumanReadable());
-                            }
-                            else
-                                log.Debug($"Enable the server property {nameof(Properties.SAVE_PACKETS)} to see the last few sent/received packets.");
-
                             log.Debug(Marshal.ToHexDump("Last received bytes: ", buffer));
-                        }
 
                         Disconnect();
                         return;

@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
-using DOL.GS.ServerProperties;
 using DOL.Network;
 using ECS.Debug;
 using static DOL.GS.GameClient;
@@ -16,7 +15,6 @@ namespace DOL.GS.PacketHandler
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private const int SAVED_PACKETS_COUNT = 16;
         private static Dictionary<string, IPacketHandler[]> _cachedPacketHandlerSearchResults = [];
         private static Dictionary<string, List<PacketHandlerAttribute>> _cachedPreprocessorSearchResults = [];
         private static Lock _loadPacketHandlersLock = new();
@@ -24,8 +22,6 @@ namespace DOL.GS.PacketHandler
         private GameClient _client;
         private IPacketHandler[] _packetHandlers = new IPacketHandler[256];
         private PacketPreprocessing _packetPreprocessor = new();
-        private Queue<IPacket> _savedPackets = new(SAVED_PACKETS_COUNT);
-        private readonly Lock _savedPacketsLock = new();
 
         private DrainArray<GSTCPPacketOut> _tcpPacketQueue = new();
         private DrainArray<GSUDPPacketOut> _udpToTcpPacketQueue = new();
@@ -40,12 +36,6 @@ namespace DOL.GS.PacketHandler
         private uint _udpCounter;
 
         public IPacketEncoding Encoding { get; } = new PacketEncoding168();
-
-        static PacketProcessor()
-        {
-            if (Properties.SAVE_PACKETS && log.IsWarnEnabled)
-                log.Warn($"\"{nameof(Properties.SAVE_PACKETS)}\" is true. This reduces performance and should only be enabled for debugging a specific issue.");
-        }
 
         public PacketProcessor(GameClient client)
         {
@@ -150,18 +140,9 @@ namespace DOL.GS.PacketHandler
             _udpSendArgs.RemoteEndPoint = endPoint;
         }
 
-        public IPacket[] GetLastPackets()
-        {
-            lock (_savedPacketsLock)
-            {
-                return _savedPackets.ToArray();
-            }
-        }
-
         public void ProcessInboundPacket(GSPacketIn packet)
         {
             int code = packet.Code;
-            SavePacket(packet);
 
             if (code >= _packetHandlers.Length)
             {
@@ -356,7 +337,6 @@ namespace DOL.GS.PacketHandler
             if (_tcpSendArgs.Buffer == null)
                 return;
 
-            SavePacket(packet);
             int nextPosition = _tcpSendBufferPosition + packetSize;
 
             // If the send buffer is full, send whatever we have.
@@ -392,7 +372,6 @@ namespace DOL.GS.PacketHandler
             if (_tcpSendArgs.Buffer == null)
                 return;
 
-            SavePacket(packet);
             int nextPosition = _tcpSendBufferPosition + packetSize;
 
             // If the send buffer is full, send whatever we have.
@@ -431,7 +410,6 @@ namespace DOL.GS.PacketHandler
             if (_udpSendArgs.Buffer == null)
                 return;
 
-            SavePacket(packet);
             int nextPosition = _udpSendBufferPosition + packetSize;
 
             // If the send buffer is full, send whatever we have.
@@ -624,24 +602,6 @@ namespace DOL.GS.PacketHandler
             void OnUdpSendCompletion(object sender, SocketAsyncEventArgs udpSendArgs)
             {
                 _udpSendArgsPool.Enqueue(udpSendArgs);
-            }
-        }
-
-        private void SavePacket(IPacket packet)
-        {
-            // Temporarily disabled. Packets should no longer be stored since they're rented for one game loop tick.
-            // A copy would need to be made, but that's expensive.
-            return;
-
-            if (!Properties.SAVE_PACKETS)
-                return;
-
-            lock (_savedPacketsLock)
-            {
-                while (_savedPackets.Count >= SAVED_PACKETS_COUNT)
-                    _savedPackets.Dequeue();
-
-                _savedPackets.Enqueue(packet);
             }
         }
     }
