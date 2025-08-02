@@ -15,6 +15,7 @@ namespace DOL.GS
         private readonly Queue<long> _violationTimestamps;     // Queue of timestamps for recent violations.
         private int _teleportCount;                            // Counter for consecutive teleports due to speed hacks.
         private long _pausedUntil;                             // Time until which recording is paused after a teleport.
+        private long _accumulatedPauseTime;                    // Accumulated time for which recording is paused, used to increase violation validity duration after a teleport.
         private long _lastSpeedDecreaseTime;                   // Time when the last speed decrease was recorded, used to handle latency issues.
         private short _previousMaxSpeed;                       // Previous maximum speed of the player, used to determine if speed has decreased.
 
@@ -95,6 +96,7 @@ namespace DOL.GS
 
                 if (validViolationCount == 0)
                 {
+                    _accumulatedPauseTime = 0;
                     _teleportCount = 0;
                     _teleport = default;
                 }
@@ -126,8 +128,6 @@ namespace DOL.GS
                         double actualSpeed = actualDistance * 1000.0 / timeDiff;
                         HandleSpeedHack(actualDistance, allowedMaxDistance, actualSpeed, allowedMaxSpeed);
                     }
-
-                    _violationTimestamps.Clear();
                 }
             }
         }
@@ -136,7 +136,11 @@ namespace DOL.GS
         {
             _previous = default;
             _current = default;
-            _pausedUntil = GameLoop.GetRealTime() + LatencyBuffer;
+
+            long now = GameLoop.GetRealTime();
+            long previousPauseUntil = Math.Max(_pausedUntil, now);
+            _pausedUntil = now + LatencyBuffer;
+            _accumulatedPauseTime += _pausedUntil - previousPauseUntil;
         }
 
         private double CalculateAllowedMaxSpeed(PositionSample current)
@@ -152,8 +156,8 @@ namespace DOL.GS
 
         private int GetAndUpdateValidViolationCount(long currentTimestamp)
         {
-            // Remove expired violations from the front of the queue.
-            while (_violationTimestamps.Count > 0 && currentTimestamp - _violationTimestamps.Peek() > ViolationValidityDuration)
+            // Is the violation older than the allowed window?
+            while (_violationTimestamps.Count > 0 && currentTimestamp - _violationTimestamps.Peek() > ViolationValidityDuration + _accumulatedPauseTime)
                 _violationTimestamps.Dequeue();
 
             return _violationTimestamps.Count;
