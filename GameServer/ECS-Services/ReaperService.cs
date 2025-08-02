@@ -57,8 +57,6 @@ namespace DOL.GS
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
                     log.Warn($"Long {SERVICE_NAME}.{nameof(Tick)} for {livingBeingKilled} Time: {stopTick - startTick}ms");
-
-                ServiceObjectStore.Remove(livingBeingKilled);
             }
             catch (Exception e)
             {
