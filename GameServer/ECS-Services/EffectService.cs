@@ -11,6 +11,11 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
+        public static int GetConcentrationEffectActivationRange(eSpellType spellType)
+        {
+            return spellType is not eSpellType.EnduranceRegenBuff ? ServerProperties.Properties.BUFF_RANGE > 0 ? ServerProperties.Properties.BUFF_RANGE : 5000 : 1500;
+        }
+
         public static void SendSpellAnimation(ECSGameSpellEffect e)
         {
             if (e != null)
