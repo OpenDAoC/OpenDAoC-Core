@@ -28,8 +28,9 @@ namespace DOL.GS
         private MovementRequest _movementRequest = new();
         private PathCalculator _pathCalculator;
         private ResetHeadingAction _resetHeadingAction;
-        private Vector3 _positionForClient;
         private Vector3 _destinationForClient;
+        private long _positionForClientTick;
+        private Vector3 _positionForClient;
         private bool _needsBroadcastUpdate = true;
         private short _currentMovementDesiredSpeed;
         private PathVisualization _pathVisualization;
@@ -55,8 +56,21 @@ namespace DOL.GS
         public bool CanRoam => Properties.ALLOW_ROAM && RoamingRange > 0 && string.IsNullOrWhiteSpace(PathID);
         public double HorizontalVelocityForClient { get; private set; }
         public bool HasActiveResetHeadingAction => _resetHeadingAction != null && _resetHeadingAction.IsAlive;
-        public ref Vector3 PositionForClient => ref _needsBroadcastUpdate ? ref _positionForClient : ref _ownerPosition;
         public ref Vector3 DestinationForClient => ref _destinationForClient;
+        public ref Vector3 PositionForClient
+        {
+            get
+            {
+                // The component doesn't tick if the NPC is not moving, and neither `_positionForClientTick` nor `_ownerPosition` will be updated.
+                if (_positionForClientTick == 0)
+                {
+                    _ownerPosition = new(Owner.X, Owner.Y, Owner.Z);
+                    return ref _ownerPosition;
+                }
+
+                return ref _positionForClientTick == GameLoop.GameLoopTime ? ref _positionForClient : ref _ownerPosition;
+            }
+        }
 
         public NpcMovementComponent(GameNPC owner) : base(owner)
         {
@@ -637,6 +651,7 @@ namespace DOL.GS
             // Use slightly modified object position and target position to smooth movement out client-side.
             // The real target position makes NPCs stop before it. The real object position makes NPCs teleport a bit ahead when initiating movement.
             // The reasons why it happens and the expected values by the client are unknown.
+            _positionForClientTick = GameLoop.GameLoopTime;
 
             if (!IsDestinationValid)
             {
