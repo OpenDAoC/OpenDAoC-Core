@@ -25,11 +25,11 @@ namespace DOL.GS
         private short _cachedMaxSpeed;
         private long _cachedMaxSpeedTick;
 
-        public static int ViolationThreshold { get; set; } = 3;           // Number of consecutive speed hack detections before action is taken.
-        public static int ViolationValidityDuration { get; set; } = 1000; // Duration in milliseconds for which speed hack violations are considered valid.
-        public static int TeleportThreshold { get; set; } = 3;            // Number of consecutive teleports before kicking.
-        public static int BaseSpeedTolerance { get; set; } = 25;          // Base tolerance in units/second for measurement errors.
-        public static int LatencyBuffer { get; set; } = 650;              // Buffer time to account for latency when checking speed changes.
+        public static int ViolationThreshold { get; set; } = 3;             // Number of consecutive speed hack detections before action is taken.
+        public static int ViolationValidityDuration { get; set; } = 1000;   // Duration in milliseconds for which speed hack violations are considered valid.
+        public static int TeleportThreshold { get; set; } = 3;              // Number of consecutive teleports before kicking.
+        public static double MaxSpeedToleranceFactor { get; set; } = 1.125; // Factor to allow for some tolerance in speed checks (measurement errors, lag, etc.).
+        public static int LatencyBuffer { get; set; } = 650;                // Buffer time to account for latency when checking speed changes.
 
         public PlayerMovementMonitor(GamePlayer player)
         {
@@ -83,7 +83,7 @@ namespace DOL.GS
             long dx = _current.X - _previous.X;
             long dy = _current.Y - _previous.Y;
             long squaredDistance = dx * dx + dy * dy;
-            double allowedMaxSpeed = CalculateAllowedMaxSpeed(_current) + BaseSpeedTolerance;
+            double allowedMaxSpeed = CalculateAllowedMaxSpeed(_current) * MaxSpeedToleranceFactor;
             double allowedMaxDistance = allowedMaxSpeed * timeDiff / 1000.0;
             double allowedMaxDistanceSquared = allowedMaxDistance * allowedMaxDistance;
 
