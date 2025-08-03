@@ -81,7 +81,7 @@ namespace DOL.GS.Commands
                 AttackData.eAttackType attackType = AttackData.GetAttackType(mainWeapon, isDualWieldAttack, target);
 
                 if (target is GameNPC || mainWeapon != null)
-                    AddMainHandInfo(info, client, target, leftWeapon, attackType);
+                    AddMainHandInfo(info, client, target, mainWeapon, attackType);
 
                 if (target.attackComponent.CanUseLefthandedWeapon)
                     AddOffHandInfo(info, client, target, leftWeapon, attackType);
