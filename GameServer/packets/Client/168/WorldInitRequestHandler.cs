@@ -84,8 +84,11 @@ namespace DOL.GS.PacketHandler.Client.v168
                     }
                 }
 
-                player.SwitchQuiver((eActiveQuiverSlot) (player.DBCharacter.ActiveWeaponSlot & 0xF0), false);
-                player.SwitchWeapon((eActiveWeaponSlot) (player.DBCharacter.ActiveWeaponSlot & 0x0F));
+                if (loadPlayer)
+                {
+                    player.SwitchQuiver((eActiveQuiverSlot) (player.DBCharacter.ActiveWeaponSlot & 0xF0), false);
+                    player.SwitchWeapon((eActiveWeaponSlot) (player.DBCharacter.ActiveWeaponSlot & 0x0F));
+                }
 
                 // 0x88 - Position
                 // 0x6D - FriendList
