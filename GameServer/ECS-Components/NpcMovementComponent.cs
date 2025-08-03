@@ -13,8 +13,6 @@ namespace DOL.GS
         public static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public const short DEFAULT_WALK_SPEED = 70;
-        public const int MIN_ALLOWED_FOLLOW_DISTANCE = 100;
-        public const int MIN_ALLOWED_PET_FOLLOW_DISTANCE = 90;
 
         private Vector3 _ownerPosition;
         private MovementState _movementState;
@@ -39,8 +37,8 @@ namespace DOL.GS
         public ref Vector3 Velocity => ref _velocity;
         public ref Vector3 Destination => ref _destination;
         public GameLiving FollowTarget { get; private set; }
-        public int FollowMinDistance { get; private set; } = 100;
-        public int FollowMaxDistance { get; private set; } = 3000;
+        public int MinFollowDistance { get; private set; } = 100;
+        public int MaxFollowDistance { get; private set; } = 3000;
         public string PathID { get; set; }
         public PathPoint CurrentWaypoint { get; set; }
         public bool IsReturningToSpawnPoint { get; private set; }
@@ -183,8 +181,8 @@ namespace DOL.GS
                 _nextFollowTick = 0;
 
             FollowTarget = target;
-            FollowMinDistance = minDistance;
-            FollowMaxDistance = maxDistance;
+            MinFollowDistance = minDistance;
+            MaxFollowDistance = maxDistance;
             SetFlag(MovementState.FOLLOW);
             AddToServiceObjectStore();
         }
@@ -521,17 +519,15 @@ namespace DOL.GS
 
             Vector3 relative = targetPos - _ownerPosition;
             float distanceSquared = relative.LengthSquared();
-            long followMaxDistanceSquared = FollowMaxDistance * FollowMaxDistance;
+            long maxFollowDistanceSquared = MaxFollowDistance * MaxFollowDistance;
 
-            if (distanceSquared > followMaxDistanceSquared)
+            if (distanceSquared > maxFollowDistanceSquared)
             {
                 ReturnToSpawnPoint();
                 return 0;
             }
 
-            int minAllowedFollowDistance = isInFormation ? 0 : Math.Max(FollowMinDistance, MIN_ALLOWED_FOLLOW_DISTANCE);
-
-            if (!isInFormation && distanceSquared <= minAllowedFollowDistance * minAllowedFollowDistance)
+            if (!isInFormation && distanceSquared <= MinFollowDistance * MinFollowDistance)
             {
                 TurnTo(FollowTarget);
 
@@ -541,17 +537,30 @@ namespace DOL.GS
                 return Properties.GAMENPC_FOLLOWCHECK_TIME;
             }
 
-            // Reduce follow distance slightly for smoother heading.
-            int preferredDistance = Math.Max(0, minAllowedFollowDistance - 10);
             float distance = MathF.Sqrt(distanceSquared);
 
             Vector3 direction = Vector3.Normalize(relative);
-            Vector3 offset = direction * preferredDistance;
+            Vector3 offset = direction * MinFollowDistance;
             Vector3 destination = targetPos - offset;
 
-            short speed = (short) ((distance - preferredDistance) * (1000.0 / Properties.GAMENPC_FOLLOWCHECK_TIME));
+            int interval;
+            short speed;
+
+            if (Owner.IsAttacking && distance > Owner.MeleeAttackRange)
+            {
+                // No smoothing if the NPC is attacking and is out of melee range.
+                speed = MaxSpeed;
+                interval = 100;
+            }
+            else
+            {
+                // Reduce follow distance slightly for speed calculation for even smoother movement.
+                speed = (short) Math.Min(MaxSpeed, (distance - MinFollowDistance - 10) * 2);
+                interval = Properties.GAMENPC_FOLLOWCHECK_TIME;
+            }
+
             PathToInternal(destination, Math.Min(MaxSpeed, speed));
-            return Properties.GAMENPC_FOLLOWCHECK_TIME;
+            return interval;
         }
 
         private void OnArrival()
@@ -563,10 +572,7 @@ namespace DOL.GS
             }
 
             if (IsFlagSet(MovementState.FOLLOW))
-            {
-                FollowTick();
                 return;
-            }
 
             if (IsReturningToSpawnPoint)
             {

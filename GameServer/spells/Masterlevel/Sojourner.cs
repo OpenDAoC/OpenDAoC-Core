@@ -210,7 +210,7 @@ namespace DOL.GS.Spells
             npc.Flags |= GameNPC.eFlags.CANTTARGET;
             npc.SetOwnBrain(new ZephyrBrain(ArriveAtTarget));
             npc.AddToWorld();
-            npc.Follow(target, npc.movementComponent.FollowMinDistance, npc.movementComponent.FollowMaxDistance);
+            npc.Follow(target, npc.movementComponent.MinFollowDistance, npc.movementComponent.MaxFollowDistance);
             m_npc = npc;
             m_target = target;
             StartTimer();

@@ -153,7 +153,7 @@ namespace DOL.GS
 
         public void OnSpellHandlerCleanUp(Spell currentSpell)
         {
-            if (Owner is GamePlayer player)
+            if (Owner is GamePlayer)
             {
                 if (currentSpell.CastTime > 0)
                 {

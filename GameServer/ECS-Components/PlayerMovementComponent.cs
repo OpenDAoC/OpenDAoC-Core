@@ -19,9 +19,9 @@ namespace DOL.GS
         private bool _needBroadcastHeading;
 
         private PlayerMovementMonitor _playerMovementMonitor;
-        private bool _isEncumberedMessageSent;
-
         private bool _validateMovementOnNextTick;
+
+        private bool _isEncumberedMessageSent;
 
         public new GamePlayer Owner { get; }
         public int MaxSpeedPercent => MaxSpeed * 100 / GamePlayer.PLAYER_BASE_SPEED;
