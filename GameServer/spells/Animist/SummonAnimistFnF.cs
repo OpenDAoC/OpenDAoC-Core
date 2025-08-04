@@ -44,7 +44,7 @@ namespace DOL.GS.Spells
             {
                 foreach (GameNPC npc in Caster.CurrentRegion.GetNPCsInRadius(Caster.GroundTarget, (ushort) Properties.TURRET_AREA_CAP_RADIUS))
                 {
-                    if (npc.Brain is TurretFNFBrain && count++ >= Properties.TURRET_AREA_CAP_COUNT)
+                    if (npc.Brain is TurretFNFBrain && ++count >= Properties.TURRET_AREA_CAP_COUNT)
                     {
                         if (Caster is GamePlayer)
                             MessageToCaster(LanguageMgr.GetTranslation((Caster as GamePlayer).Client, "SummonAnimistFnF.CheckBeginCast.TurretAreaCap"), eChatType.CT_SpellResisted);

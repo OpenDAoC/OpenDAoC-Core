@@ -139,8 +139,8 @@ namespace DOL.GS
 
         private readonly struct LosCheckKey : IEquatable<LosCheckKey>
         {
-            public ushort SourceObjectId { get; }
-            public ushort TargetObjectId { get; }
+            public readonly ushort SourceObjectId;
+            public readonly ushort TargetObjectId;
 
             public LosCheckKey(ushort sourceObjectId, ushort targetObjectId)
             {
