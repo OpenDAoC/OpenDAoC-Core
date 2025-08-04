@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using DOL.GS.PacketHandler;
 using DOL.Logging;
 
 namespace DOL.GS
@@ -57,6 +58,13 @@ namespace DOL.GS
                 _activeTimers[key] = newTimer;
                 newTimer.Start();
             }
+
+            using var pak = GSTCPPacketOut.GetForTick(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.CheckLOSRequest)));
+            pak.WriteShort(sourceObjectId);
+            pak.WriteShort(targetObjectId);
+            pak.WriteShort(0x00); // ?
+            pak.WriteShort(0x00); // ?
+            _owner.Out.SendTCP(pak);
         }
 
         private void ReturnTimerToPool(TimeoutTimer timer)

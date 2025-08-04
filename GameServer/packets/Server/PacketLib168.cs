@@ -1521,16 +1521,6 @@ namespace DOL.GS.PacketHandler
 			ushort sourceObjectId = (ushort) source.ObjectID;
 			ushort targetObjectId = (ushort) target.ObjectID;
 			m_gameClient.Player.LosCheckHandler.StartLosCheck(sourceObjectId, targetObjectId, callback);
-
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CheckLOSRequest))))
-			{
-				pak.WriteShort(sourceObjectId);
-				pak.WriteShort(targetObjectId);
-				pak.WriteShort(0x00); // ?
-				pak.WriteShort(0x00); // ?
-				SendTCP(pak);
-			}
-
 			return true;
 		}
 
