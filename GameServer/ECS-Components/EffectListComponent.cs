@@ -69,8 +69,7 @@ namespace DOL.GS
             while (_effectsToStart.TryDequeue(out ECSGameEffect effect))
                 effect.OnStartEffect();
 
-            // Keep ticking even if `ObjectState == Inactive` (region change).
-            if (_effects.Count == 0 || Owner.ObjectState is GameObject.eObjectState.Deleted)
+            if (_effects.Count == 0)
             {
                 ServiceObjectStore.Remove(this);
                 SendPlayerUpdates();
@@ -78,7 +77,8 @@ namespace DOL.GS
             }
 
             // Don't check `IsAlive`, since it returns false during region change.
-            if (Owner.Health <= 0)
+            // Keep ticking even if `ObjectState == Inactive` (region change).
+            if (Owner.Health <= 0 || Owner.ObjectState is GameObject.eObjectState.Deleted)
             {
                 CancelAll();
                 SendPlayerUpdates();
