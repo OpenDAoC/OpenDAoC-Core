@@ -2180,7 +2180,7 @@ namespace DOL.GS.ServerProperties
 		/// <summary>
 		/// Sets the Cap for Player Turrets
 		/// </summary>
-		[ServerProperty("classes", "turret_player_cap_count", "Sets the cap of turrets for a Player", 5)]
+		[ServerProperty("classes", "turret_player_cap_count", "Sets the cap of turrets for a Player", 12)]
 		public static int TURRET_PLAYER_CAP_COUNT;
 
 		/// <summary>
