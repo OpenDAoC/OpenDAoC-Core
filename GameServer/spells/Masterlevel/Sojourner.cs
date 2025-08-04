@@ -288,9 +288,9 @@ namespace DOL.GS.Spells
             }
         }
 
-        public void ZephyrCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+        public void ZephyrCheckLos(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
-            if (response is eLosCheckResponse.TRUE)
+            if (response is LosCheckResponse.True)
                 m_npc.WalkTo(m_loc, 100);
         }
 

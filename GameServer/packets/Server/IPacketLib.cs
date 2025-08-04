@@ -507,16 +507,6 @@ namespace DOL.GS.PacketHandler
 
     public delegate void CustomDialogResponse(GamePlayer player, byte response);
 
-    public delegate void CheckLosResponse(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID);
-
-    public enum eLosCheckResponse
-    {
-        NONE,
-        TRUE,
-        FALSE,
-        TIMEOUT
-    }
-
     public enum eSoundType : ushort
     {
         Craft = 0x01,

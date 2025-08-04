@@ -1,7 +1,6 @@
 ﻿using System;
 using DOL.AI.Brain;
 using DOL.GS.Keeps;
-using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using static DOL.GS.GameObject;
 
@@ -198,14 +197,14 @@ namespace DOL.GS
             _npcOwner.StartAttackWithRangedWeapon(_target);
         }
 
-        private void OnLosCheck(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+        private void OnLosCheck(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
             _losCheckTarget = _npcOwner.CurrentRegion.GetObject(targetOID);
 
             if (_losCheckTarget == null || _losCheckTarget != _target)
                 _hasLos = false;
             else
-                _hasLos = response is eLosCheckResponse.TRUE;
+                _hasLos = response is LosCheckResponse.True;
 
             if (!_hasLos)
             {

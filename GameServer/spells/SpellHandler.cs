@@ -798,9 +798,9 @@ namespace DOL.GS.Spells
 			return true;
 		}
 
-		private void CheckPlayerLosDuringCastCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+		private void CheckPlayerLosDuringCastCallback(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
-			HasLos = response is eLosCheckResponse.TRUE;
+			HasLos = response is LosCheckResponse.True;
 
 			if (!HasLos && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
 			{
@@ -811,9 +811,9 @@ namespace DOL.GS.Spells
 			}
 		}
 
-		private void CheckPetLosDuringCastCallback(GameLiving living, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+		private void CheckPetLosDuringCastCallback(GameLiving living, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
-			HasLos = response is eLosCheckResponse.TRUE;
+			HasLos = response is LosCheckResponse.True;
 
 			if (!HasLos && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
 				InterruptCasting();

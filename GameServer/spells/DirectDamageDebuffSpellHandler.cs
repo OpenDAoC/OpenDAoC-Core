@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using DOL.Events;
-using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS.Spells
@@ -58,9 +57,9 @@ namespace DOL.GS.Spells
 			else DealDamage(target);
 		}
 
-		private void DealDamageCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+		private void DealDamageCheckLos(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
-			if (response is eLosCheckResponse.TRUE)
+			if (response is LosCheckResponse.True)
 			{
 				try
 				{

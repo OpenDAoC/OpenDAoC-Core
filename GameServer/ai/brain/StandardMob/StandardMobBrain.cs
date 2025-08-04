@@ -459,10 +459,10 @@ namespace DOL.AI.Brain
                 Interlocked.Increment(ref _pendingLosCheckCount);
         }
 
-        protected void LosCheckForAggroCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+        protected void LosCheckForAggroCallback(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
             // This method should not be allowed to be executed at the same time as `CheckPlayerAggro` or `CheckNPCAggro`.
-            if (response is eLosCheckResponse.TRUE)
+            if (response is LosCheckResponse.True)
             {
                 if (!HasAggro || CanAddToAggroListFromMultipleLosChecks)
                 {

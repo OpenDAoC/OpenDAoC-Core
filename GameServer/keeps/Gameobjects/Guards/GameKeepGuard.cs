@@ -4,7 +4,6 @@ using System.Numerics;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
 using DOL.Language;
 
@@ -135,9 +134,9 @@ namespace DOL.GS.Keeps
 
 		#region Combat
 
-		public void GuardStartSpellHealCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+		public void GuardStartSpellHealCheckLos(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
-			if (response is eLosCheckResponse.TRUE && HealTarget != null)
+			if (response is LosCheckResponse.True && HealTarget != null)
 			{
 				Spell healSpell = GetGuardHealSmallSpell(Realm);
 

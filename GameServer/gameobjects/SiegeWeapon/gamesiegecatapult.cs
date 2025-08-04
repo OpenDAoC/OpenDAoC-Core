@@ -138,11 +138,11 @@ namespace DOL.GS
 			}
 		}
 
-		private void CheckGTLosCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+		private void CheckGTLosCallback(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
 			log.Debug($"LOSCallback {player} {response} {targetOID}");
 
-			if (response is eLosCheckResponse.TRUE)
+			if (response is LosCheckResponse.True)
 			{
 				log.Debug($"LOSCheck Succeeded {response} GroundTarget set to: {tempLOSGTChecker.X} {tempLOSGTChecker.Y} {tempLOSGTChecker.Z}");
 				loschecks=0;

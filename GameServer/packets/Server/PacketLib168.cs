@@ -9,7 +9,6 @@ using DOL.Database;
 using DOL.GS.Effects;
 using DOL.GS.Housing;
 using DOL.GS.Keeps;
-using DOL.GS.PacketHandler.Client.v168;
 using DOL.GS.PlayerTitles;
 using DOL.GS.Quests;
 using DOL.GS.RealmAbilities;
@@ -1521,7 +1520,7 @@ namespace DOL.GS.PacketHandler
 
 			ushort sourceObjectId = (ushort) source.ObjectID;
 			ushort targetObjectId = (ushort) target.ObjectID;
-			HandleCallback(m_gameClient, sourceObjectId, targetObjectId, callback);
+			m_gameClient.Player.LosCheckHandler.StartLosCheck(sourceObjectId, targetObjectId, callback);
 
 			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CheckLOSRequest))))
 			{
@@ -1533,29 +1532,6 @@ namespace DOL.GS.PacketHandler
 			}
 
 			return true;
-
-			static void HandleCallback(GameClient client, ushort sourceObjectId, ushort targetObjectId, CheckLosResponse callback)
-			{
-				CheckLosResponseHandler.TimeoutTimer timer;
-
-				// If there's already a timer running, don't send a new packet. Instead, try to add the callback to its list.
-				// Loop until we can do something with this callback. `TryAddCallback` may return false if the timer was being processed.
-				do
-				{
-					timer = client.Player.LosCheckTimers.GetOrAdd((sourceObjectId, targetObjectId), CreateTimer, (client.Player, callback));
-
-					if (!timer.IsAlive)
-					{
-						timer.Start();
-						return; // Don't add the callback here. It's already done in the timer's constructor.
-					}
-				} while (!timer.TryAddCallback(callback));
-
-				static CheckLosResponseHandler.TimeoutTimer CreateTimer((ushort sourceObjectId, ushort targetObjectId) key, (GamePlayer player, CheckLosResponse callback) args)
-				{
-					return new(args.player, args.callback, key.sourceObjectId, key.targetObjectId);
-				}
-			}
 		}
 
 		public virtual void SendQuestListUpdate()

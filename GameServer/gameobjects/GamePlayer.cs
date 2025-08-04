@@ -331,7 +331,7 @@ namespace DOL.GS
             set { m_wasmovedbycorpsesummoner = value; }
         }
 
-        public ConcurrentDictionary<(ushort, ushort), CheckLosResponseHandler.TimeoutTimer> LosCheckTimers { get; } = new();
+        public LosCheckHandler LosCheckHandler { get; }
 
         #region Object Caches
         // Used by the client service.
@@ -11438,14 +11438,14 @@ namespace DOL.GS
         /// <summary>
         /// This handler is called by the unstealth check of mobs
         /// </summary>
-        public void UncoverLosHandler(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+        public void UncoverLosHandler(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
             GameObject target = CurrentRegion.GetObject(targetOID);
 
             if (target == null || !player.IsStealthed)
                 return;
 
-            if (response is eLosCheckResponse.TRUE)
+            if (response is LosCheckResponse.True)
             {
                 player.Out.SendMessage(target.GetName(0, true) + " uncovers you!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 player.Stealth(false);
@@ -13934,6 +13934,7 @@ namespace DOL.GS
 
             CreateInventory();
             AccountVault = new(this, 0, AccountVaultKeeper.GetDummyVaultItem(this));
+            LosCheckHandler = new(this);
 
             m_characterClass = new DefaultCharacterClass();
             m_groupIndex = 0xFF;

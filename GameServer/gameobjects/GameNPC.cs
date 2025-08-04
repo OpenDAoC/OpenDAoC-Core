@@ -3640,7 +3640,7 @@ namespace DOL.GS
 			}
 		}
 
-		public virtual void CastSpellLosCheckReply(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+		public virtual void CastSpellLosCheckReply(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
 			GameObject target = CurrentRegion.GetObject(targetOID);
 
@@ -3650,7 +3650,7 @@ namespace DOL.GS
 			if (!_spellsWaitingForLosCheck.TryRemove(target, out List<SpellWaitingForLosCheck> list))
 				return;
 
-			bool success = response is eLosCheckResponse.TRUE;
+			bool success = response is LosCheckResponse.True;
 			List<SpellWaitingForLosCheck> spellsWaitingForLosCheck;
 
 			lock (((ICollection) list).SyncRoot)

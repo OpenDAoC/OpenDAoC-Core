@@ -91,9 +91,9 @@ namespace DOL.GS.Spells
 			else DealDamage(target);
 		}
 
-		private void DealDamageCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+		private void DealDamageCheckLos(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
-			if (response is eLosCheckResponse.TRUE)
+			if (response is LosCheckResponse.True)
 			{
 				try
 				{

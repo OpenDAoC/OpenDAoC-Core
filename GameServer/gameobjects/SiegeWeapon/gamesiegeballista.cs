@@ -16,10 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-using System;
-using DOL.GS.Spells;
 using DOL.GS.PacketHandler;
-using System.Collections;
 /*1,Ballista,1,ammo,0.46,1
 2,Catapult,2,ammo,0.39,1
 3,Trebuchet,2,ammo,1.03,1
@@ -92,9 +89,9 @@ namespace DOL.GS
 		/// <summary>
 		/// FireCheckLOS is called after Fire method. Will check for LOS between siege and target
 		/// </summary>
-		private void FireCheckLos(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+		private void FireCheckLos(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
 		{
-			if (response is eLosCheckResponse.TRUE)
+			if (response is LosCheckResponse.True)
 				base.Fire();
 
 			Owner?.Out.SendMessage("Target is not in view!", eChatType.CT_Say, eChatLoc.CL_SystemWindow);

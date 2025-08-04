@@ -130,9 +130,9 @@ namespace DOL.GS.Spells
             base.StartSpell(target);
         }
 
-        private void LosCheckCallback(GamePlayer player, eLosCheckResponse response, ushort sourceOID, ushort targetOID)
+        private void LosCheckCallback(GamePlayer player, LosCheckResponse response, ushort sourceOID, ushort targetOID)
         {
-            if (response is eLosCheckResponse.TRUE)
+            if (response is LosCheckResponse.True)
             {
                 if (Caster.CurrentRegion.GetObject(targetOID) is GameLiving target)
                     LaunchBolt(target);
