@@ -31,27 +31,6 @@ namespace DOL.GS
         /// </summary>
         public override bool IsAlive => true;
 
-        /// <summary>
-        /// Training Dummies never attack
-        /// </summary>
-        /// <param name="ad"></param>
-        public override void OnAttackedByEnemy(AttackData ad)
-        {
-            if (ad.IsHit && ad.CausesCombat)
-            {
-                if (ad.Attacker.Realm == 0 || Realm == 0)
-                {
-                    LastAttackedByEnemyTickPvE = GameLoop.GameLoopTime;
-                    ad.Attacker.LastAttackTickPvE = GameLoop.GameLoopTime;
-                }
-                else
-                {
-                    LastAttackedByEnemyTickPvP = GameLoop.GameLoopTime;
-                    ad.Attacker.LastAttackTickPvP = GameLoop.GameLoopTime;
-                }
-            }
-        }
-
         public override bool Interact(GamePlayer player)
         {
             Notify(GameObjectEvent.Interact, this, new InteractEventArgs(player));

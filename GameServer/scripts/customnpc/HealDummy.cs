@@ -23,10 +23,7 @@ namespace DOL.GS
             return true;
         }
 
-        public override void OnAttackedByEnemy(AttackData ad)
-        {
-                       
-        }
+        public override void OnAttackedByEnemy(AttackData ad) { }
 
         public override int ChangeHealth(GameObject changeSource, eHealthChangeType healthChangeType, int changeAmount)
         {

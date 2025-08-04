@@ -1686,8 +1686,6 @@ namespace DOL.GS
                     ad.Target = intercept.Source;
                     return eAttackResult.HitUnstyled;
                 }
-
-                intercept = null;
             }
 
             ad.DefensePenetration = ad.Attacker.attackComponent.CalculateDefensePenetration(ad.Weapon, ad.Target.Level);

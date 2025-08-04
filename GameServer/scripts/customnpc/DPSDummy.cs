@@ -329,6 +329,8 @@ namespace DOL.GS
 
         public override void OnAttackedByEnemy(AttackData ad)
         {
+            base.OnAttackedByEnemy(ad);
+
             if (_startCheck)
             {
                 _startTime = DateTime.Now;
