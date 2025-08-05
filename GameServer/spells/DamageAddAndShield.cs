@@ -56,7 +56,7 @@ namespace DOL.GS.Spells
 
         public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {
-            // See base method for details.
+            // Incomplete implementation. See base method for details.
             min = 0.85;
             max = min * (5 / 3.0);
         }
@@ -109,7 +109,7 @@ namespace DOL.GS.Spells
 
         public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {
-            // See base method for details.
+            // Incomplete implementation. See base method for details.
             min = 0.9;
             max = min * (5 / 3.0);
         }
@@ -121,7 +121,7 @@ namespace DOL.GS.Spells
 
         public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {
-            // According to live tests, a min bound of 1.0 should be (or close to) the best variance possible.
+            // According to live tests, a lower bound of 1.0 should be (or close to) the best variance possible.
             // However, lower bound is supposed to be allowed to go below 1 for both damage adds and damage shields.
             // Damage adds are supposed to scale with weaponskill / armor, but independently from the attack's damage.
             // Damage shields are supposed to scale with spec to some extent.

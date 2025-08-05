@@ -27,6 +27,9 @@ namespace DOL.GS.Spells
 		// Maximum number of sub-spells to get delve info for.
 		protected const byte MAX_DELVE_RECURSION = 5;
 
+		// Minimum lower variance bound. Not supposed to be changed.
+		private const double MIN_LOWER_VARIANCE_BOUND = 0.208;
+
 		// Maximum number of Concentration spells that a single caster is allowed to cast.
 		private const int MAX_CONC_SPELLS = 20;
 		private const int PULSING_SPELL_END_OF_CAST_MESSAGE_INTERVAL = 2000;
@@ -2822,6 +2825,23 @@ namespace DOL.GS.Spells
 			return (caster.Level - target.Level) * Math.Max(2, 10 - caster.Level * 0.16) * 0.01;
 		}
 
+		protected static double CalculateLowerVarianceBound(int specLevel, int targetLevel)
+		{
+			// Vanesyra outlines the variance calculations here: https://www.ignboards.com/threads/melee-speed-melee-and-style-damage-or-why-pure-grothrates-are-wrong.452406879/page-3
+			// However, the formula only works at level 50 and results in extremely low variance at lower levels, meaning the step count (one step = 0.8%) is too low.
+			// Our adjusted formula corrects this and ensures a logical minimum variance across all levels.
+			// The absolute minimum variance is 20.8%.
+			// On live, steps represent the number of possible values. That isn't the case here: we're only interested in the minimum variance and allow any value between min and max.
+
+			if (targetLevel < 1)
+				targetLevel = 1;
+
+			double levelDiff = targetLevel + 1 - specLevel;
+			int steps = (int) (levelDiff * 100 / targetLevel) - 1;
+			double minBound = 1 - 0.008 * steps;
+			return Math.Clamp(minBound, MIN_LOWER_VARIANCE_BOUND, 1);
+		}
+
 		/// <summary>
 		/// Calculates min damage variance %
 		/// </summary>
@@ -2830,10 +2850,6 @@ namespace DOL.GS.Spells
 		/// <param name="max">returns max variance</param>
 		public virtual void CalculateDamageVariance(GameLiving target, out double min, out double max)
 		{
-			// Vanesyra lays out variance calculations here: https://www.ignboards.com/threads/melee-speed-melee-and-style-damage-or-why-pure-grothrates-are-wrong.452406879/page-3
-			// However, this results in an extremely low variance at low level without adjusting some parameters, and it doesn't seem to match live results.
-			// It's possible live changed how variance is calculated at some point, but this would need to be proven.
-
 			GameLiving casterToUse = m_caster;
 
 			switch (m_spellLine.KeyName)
@@ -2845,7 +2861,7 @@ namespace DOL.GS.Spells
 				{
 					// Mob spells are modified by acuity stats.
 					// Nightshade spells aren't tied to any trainable specialization and thus require a fixed variance.
-					// Lower bound is similar to what the variance calculation would return if we used 31 for the specialization and 50 for the target level.
+					// Lower bound is similar to what the variance calculation would return if we used 26 for the specialization and 50 for the target level.
 					max = 1.0;
 					min = 0.6;
 					break;
@@ -2870,25 +2886,22 @@ namespace DOL.GS.Spells
 				{
 					max = 1.0;
 
-					if (target.Level <= 0)
-						min = max;
-					else
-					{
-						// Spells casted by a necromancer pet use the owner's spec.
-						if (m_caster is NecromancerPet necromancerPet && necromancerPet.Brain is IControlledBrain brain)
-							casterToUse = brain.GetPlayerOwner();
+					// Spells casted by a necromancer pet use the owner's spec.
+					if (m_caster is NecromancerPet necromancerPet && necromancerPet.Brain is IControlledBrain brain)
+						casterToUse = brain.GetPlayerOwner();
 
-						min = (casterToUse.GetModifiedSpecLevel(m_spellLine.Spec) - 1) / (double) target.Level;
-					}
-
+					min = CalculateLowerVarianceBound(casterToUse.GetModifiedSpecLevel(m_spellLine.Spec), target.Level);
 					break;
 				}
 			}
 
-			// 0.2 is a guess.
+			// Apply variance offset based on level difference.
 			double varianceOffset = CalculateDamageVarianceOffsetFromLevelDifference(casterToUse, target);
-			max = Math.Max(0.2, max + varianceOffset);
-			min = Math.Clamp(min + varianceOffset, 0.2, max);
+			min += varianceOffset;
+			max += varianceOffset;
+
+			max = Math.Max(MIN_LOWER_VARIANCE_BOUND, max);
+			min = Math.Clamp(min, MIN_LOWER_VARIANCE_BOUND, max);
 		}
 
 		/// <summary>
@@ -3053,7 +3066,7 @@ namespace DOL.GS.Spells
 				if (criticalChance > 0)
 					playerCaster.Out.SendMessage($"Spell crit chance: {criticalChance:0.##} random: {randNum:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 
-				playerCaster.Out.SendMessage($"BaseDamage: {baseDamage:0.##} | Variance: {variance:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+				playerCaster.Out.SendMessage($"BaseDamage: {baseDamage:0.##} | SpecMod: {variance:0.##} ({minVariance:0.00}~{maxVariance:0.00})", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
 			}
 
 			if (criticalChance > randNum && finalDamage > 0)
