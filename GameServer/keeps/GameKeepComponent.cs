@@ -457,52 +457,45 @@ namespace DOL.GS.Keeps
 
 		public override void ModifyAttack(AttackData attackData)
 		{
-			// Allow a GM to use commands to damage components, regardless of toughness setting
-			if (attackData.DamageType == eDamageType.GM)
+			if (attackData.DamageType is eDamageType.GM)
 				return;
 
 			int toughness = Properties.SET_STRUCTURES_TOUGHNESS;
+			GameLiving source = attackData.Attacker;
 			int baseDamage = attackData.Damage;
 			int styleDamage = attackData.StyleDamage;
-			int criticalDamage = 0;
-
-			GameLiving source = attackData.Attacker;
+			int criticalDamage = attackData.CriticalDamage;
 
 			if (source is GamePlayer)
 			{
-				baseDamage = (baseDamage - (baseDamage * 5 * Keep.Level / 100)) * toughness / 100;
-				styleDamage = (styleDamage - (styleDamage * 5 * Keep.Level / 100)) * toughness / 100;
+				baseDamage = GetAdjustedDamage(baseDamage, toughness, Keep.Level);
+				styleDamage = GetAdjustedDamage(styleDamage, toughness, Keep.Level);
+				criticalDamage = GetAdjustedDamage(criticalDamage, toughness, Keep.Level);
 			}
-			else if (source is GameNPC)
+			else if (source is GameNPC npcSource)
 			{
 				if (!Properties.STRUCTURES_ALLOWPETATTACK)
 				{
+					attackData.AttackResult = eAttackResult.NotAllowed_ServerRules;
 					baseDamage = 0;
 					styleDamage = 0;
-					attackData.AttackResult = eAttackResult.NotAllowed_ServerRules;
+					criticalDamage = 0;
 				}
 				else
 				{
-					baseDamage = (baseDamage - (baseDamage * 5 * Keep.Level / 100)) * toughness / 100;
-					styleDamage = (styleDamage - (styleDamage * 5 * Keep.Level / 100)) * toughness / 100;
+					baseDamage = GetAdjustedDamage(baseDamage, toughness, Keep.Level);
+					styleDamage = GetAdjustedDamage(styleDamage, toughness, Keep.Level);
+					criticalDamage = GetAdjustedDamage(criticalDamage, toughness, Keep.Level);
 
-					if (((GameNPC)source).Brain is AI.Brain.IControlledBrain)
+					if (npcSource.Brain is AI.Brain.IControlledBrain brain && brain.Owner is GamePlayer player)
 					{
-						GamePlayer player = (((AI.Brain.IControlledBrain)((GameNPC)source).Brain).Owner as GamePlayer);
-						if (player != null)
-						{
-							// special considerations for pet spam classes
-							if (player.CharacterClass.ID == (int)eCharacterClass.Theurgist || player.CharacterClass.ID == (int)eCharacterClass.Animist)
-							{
-								baseDamage = (int)(baseDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
-								styleDamage = (int)(styleDamage * Properties.PET_SPAM_DAMAGE_MULTIPLIER);
-							}
-							else
-							{
-								baseDamage = (int)(baseDamage * Properties.PET_DAMAGE_MULTIPLIER);
-								styleDamage = (int)(styleDamage * Properties.PET_DAMAGE_MULTIPLIER);
-							}
-						}
+						double multiplier = (eCharacterClass) player.CharacterClass.ID is eCharacterClass.Theurgist or eCharacterClass.Animist ?
+							Properties.PET_SPAM_DAMAGE_MULTIPLIER :
+							Properties.PET_DAMAGE_MULTIPLIER;
+
+						baseDamage = (int) (baseDamage * multiplier);
+						styleDamage = (int) (styleDamage * multiplier);
+						criticalDamage = (int) (criticalDamage * multiplier);
 					}
 				}
 			}
@@ -510,6 +503,11 @@ namespace DOL.GS.Keeps
 			attackData.Damage = baseDamage;
 			attackData.StyleDamage = styleDamage;
 			attackData.CriticalDamage = criticalDamage;
+
+			static int GetAdjustedDamage(int damage, int toughness, int level)
+			{
+				return (damage - damage * 5 * level / 100) * toughness / 100;
+			}
 		}
 
 		public override void Die(GameObject killer)

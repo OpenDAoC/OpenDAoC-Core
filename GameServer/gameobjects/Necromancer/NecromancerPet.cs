@@ -215,17 +215,6 @@ namespace DOL.GS
 		/// </summary>
 		public static string PetInstaSpellLine => "Necro Pet Insta Spells";
 
-		public override void ModifyAttack(AttackData attackData)
-		{
-			base.ModifyAttack(attackData);
-
-			if ((Owner as GamePlayer).Client.Account.PrivLevel > (int)ePrivLevel.Player)
-			{
-				attackData.Damage = 0;
-				attackData.CriticalDamage = 0;
-			}
-		}
-
 		private void Empower()
 		{
 			if (attackComponent.AttackState)
