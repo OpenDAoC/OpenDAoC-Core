@@ -555,10 +555,27 @@ namespace DOL.GS
                 {
                     List<ECSGameEffect> existingEffects;
 
-                    if (effect is ECSGameAbilityEffect)
+                    // Special handling for ability effects. They don't have a spell handler, and there's not much to validate.
+                    if (effect is ECSGameAbilityEffect newAbilityEffect)
                     {
                         if (_effects.TryGetValue(effect.EffectType, out existingEffects))
-                            existingEffects.Add(effect);
+                        {
+                            foreach (ECSGameEffect existingEffect in existingEffects)
+                            {
+                                if (existingEffect is not ECSGameAbilityEffect existingAbilityEffect)
+                                    continue;
+
+                                // Guard, Intercept, and Protect use the names of both the source and the target.
+                                // We currently allow two players to mutually benefit from these abilities.
+                                if (existingAbilityEffect.Name != effect.Name)
+                                    continue;
+
+                                existingAbilityEffect.ExpireTick = newAbilityEffect.ExpireTick;
+                                return existingAbilityEffect.IsActive ? AddEffectResult.RenewedActive : AddEffectResult.RenewedDisabled;
+                            }
+
+                            existingEffects.Add(newAbilityEffect);
+                        }
                         else
                             _effects.TryAdd(effect.EffectType, [effect]);
 

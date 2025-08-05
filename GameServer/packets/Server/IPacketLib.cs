@@ -219,7 +219,7 @@ namespace DOL.GS.PacketHandler
         IncorrectPassword = 0x01,                   // Your password is incorrect.
         InvalidAccount = 0x02,                      // Your account is invalid.
         AuthorizationServerUnavailable = 0x03,      // The authorization server is unavailable!
-        IncorrectClientVersion = 0x05,              // Incorrect Camelot client version.\n\nPlease try pathing again.
+        IncorrectClientVersion = 0x05,              // Incorrect Camelot client version.\n\nPlease try patching again.
         Error = 0x06,                               // Error accessing user account.
         AccountNotFound = 0x07,                     // No record for user found.
         AccountNoAccessAnyGame = 0x08,              // Your account has no access to any games.
