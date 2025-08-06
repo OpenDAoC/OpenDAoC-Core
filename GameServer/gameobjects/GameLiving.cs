@@ -1540,6 +1540,15 @@ namespace DOL.GS
 							effect.RemainingValue = ablativeHp;
 					}
 				}
+
+				// Handle DefensiveProcs.
+				List<ECSGameSpellEffect> dProcEffects = effectListComponent.GetSpellEffects(eEffect.DefensiveProc);
+
+				if (ad.Target == this && dProcEffects != null && ad.AttackType is not eAttackType.Spell)
+				{
+					for (int i = 0; i < dProcEffects.Count; i++)
+						(dProcEffects[i].SpellHandler as DefensiveProcSpellHandler).EventHandler(ad);
+				}
 			}
 			else if (ad.IsSpellResisted && ad.Target is GameNPC npc)
 				npc.CancelReturnToSpawnPoint();
