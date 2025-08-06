@@ -1455,16 +1455,30 @@ namespace DOL.GS
                 else
                     blockRoll = Util.RandomDouble();
 
-                if (ad.Attacker is GamePlayer attacker && attacker.UseDetailedCombatLog)
-                    attacker.Out.SendMessage($"target block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
-
-                if (ad.Target is GamePlayer defender && defender.UseDetailedCombatLog)
-                    defender.Out.SendMessage($"your block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+                bool blockSucceeded = blockChance > blockRoll;
+                string message = $"block%: {blockChance * 100:0.##} rand: {blockRoll * 100:0.##}";
 
                 // The order here matters a lot. Either we consume attempts (by calling `Consume` first`) or blocks (by checking the roll first; the current implementation).
                 // If we consume attempts, the effective block rate changes according to this formula: "if (shieldSize < attackerCount) blockChance *= (shieldSize / attackerCount)".
                 // If we consume blocks, then the reduction is lower the lower the base block chance, and identical with a theoretical 100% block chance.
-                if (blockChance > blockRoll && _blockRoundHandler.Consume(shieldSize, ad))
+                if (blockSucceeded)
+                {
+                    if (!_blockRoundHandler.Consume(shieldSize, ad, out int usedBlockRoundCount))
+                        blockSucceeded = false;
+
+                    // `usedBlockRoundCount` is 0 if the block was allowed without consuming a round.
+                    // It can also be higher than the shield size, so we need to cap the result.
+                    if (usedBlockRoundCount > 0)
+                        message += $" rounds: {Math.Max(0, shieldSize - --usedBlockRoundCount)}/{shieldSize}";
+                }
+
+                if (ad.Attacker is GamePlayer attacker && attacker.UseDetailedCombatLog)
+                    attacker.Out.SendMessage($"target {message}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                if (ad.Target is GamePlayer defender && defender.UseDetailedCombatLog)
+                    defender.Out.SendMessage($"your {message}", eChatType.CT_DamageAdd, eChatLoc.CL_SystemWindow);
+
+                if (blockSucceeded)
                     return true;
             }
 
@@ -2442,21 +2456,29 @@ namespace DOL.GS
                 _owner = owner;
             }
 
-            public bool Consume(int shieldSize, AttackData attackData)
+            public bool Consume(int shieldSize, AttackData attackData, out int usedBlockRoundCount)
             {
                 // Block rounds work from the point of view of the attacker and use their attack speed, similar to how interrupts work.
                 // However, according to grab bags, it's supposed to be based on the defender's swing speed. But this sounds very wrong, since it implies haste buffs should make blocking more effective.
 
                 if (attackData.Target is not GamePlayer)
+                {
+                    usedBlockRoundCount = 0;
                     return true;
+                }
 
                 // There is no need to make dual wield even more effective against shields.
-                // Returning true allow the off-hand of dual wield attacks to be blocked without consuming a block.
+                // Returning true allows the off-hand of dual wield attacks to be blocked without consuming a block.
                 if (attackData.AttackType is AttackData.eAttackType.MeleeDualWield && attackData.IsOffHand)
+                {
+                    usedBlockRoundCount = 0;
                     return true;
+                }
 
                 // Many threads can enter this block simultaneously, so we increment the count first, then decrement if we've overshot the shield size.
-                if (Interlocked.Increment(ref _usedBlockRoundCount) > shieldSize)
+                usedBlockRoundCount = Interlocked.Increment(ref _usedBlockRoundCount);
+
+                if (usedBlockRoundCount > shieldSize)
                 {
                     Relinquish();
                     return false;
