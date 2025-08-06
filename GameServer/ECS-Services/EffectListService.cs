@@ -47,8 +47,8 @@ namespace DOL.GS
 
             GameLoop.ExecuteWork(_lastValidIndex + 1, EndTickInternal);
 
-            if (Diagnostics.CheckEntityCounts)
-                Diagnostics.PrintEntityCount(SERVICE_NAME_END, ref _entityCount, _effectListComponents.Count);
+            if (Diagnostics.CheckServiceObjectCount)
+                Diagnostics.PrintServiceObjectCount(SERVICE_NAME_END, ref _entityCount, _effectListComponents.Count);
 
             Diagnostics.StopPerfCounter(SERVICE_NAME_END);
         }
@@ -80,7 +80,7 @@ namespace DOL.GS
 
             try
             {
-                if (Diagnostics.CheckEntityCounts)
+                if (Diagnostics.CheckServiceObjectCount)
                     Interlocked.Increment(ref _entityCount);
 
                 effectListComponent = _effectListComponents[index];

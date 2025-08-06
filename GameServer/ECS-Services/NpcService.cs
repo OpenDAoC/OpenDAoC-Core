@@ -36,8 +36,8 @@ namespace DOL.GS
 
             GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
 
-            if (Diagnostics.CheckEntityCounts)
-                Diagnostics.PrintEntityCount(SERVICE_NAME, ref _entityCount, _list.Count);
+            if (Diagnostics.CheckServiceObjectCount)
+                Diagnostics.PrintServiceObjectCount(SERVICE_NAME, ref _entityCount, _list.Count);
 
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
@@ -48,7 +48,7 @@ namespace DOL.GS
 
             try
             {
-                if (Diagnostics.CheckEntityCounts)
+                if (Diagnostics.CheckServiceObjectCount)
                     Interlocked.Increment(ref _entityCount);
 
                 brain = _list[index];
