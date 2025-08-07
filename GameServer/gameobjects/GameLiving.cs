@@ -17,7 +17,6 @@ using DOL.GS.ServerProperties;
 using DOL.GS.SkillHandler;
 using DOL.GS.Spells;
 using DOL.Language;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using static DOL.GS.AttackData;
 
 namespace DOL.GS

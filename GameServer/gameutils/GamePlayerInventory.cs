@@ -100,24 +100,8 @@ namespace DOL.GS
 
                                 continue;
                             }
-                            else
-                                m_items.Add(itemSlot, playerItem);
 
-                            if (Log.IsWarnEnabled)
-                            {
-                                // bows don't use damage type - no warning needed
-                                if (GlobalConstants.IsWeapon(item.Object_Type)
-                                    && item.Type_Damage == 0
-                                    && (eObjectType) item.Object_Type is not eObjectType.CompositeBow
-                                    && (eObjectType) item.Object_Type is not eObjectType.Crossbow
-                                    && (eObjectType) item.Object_Type is not eObjectType.Longbow
-                                    && (eObjectType) item.Object_Type is not eObjectType.Fired
-                                    && (eObjectType) item.Object_Type is not eObjectType.RecurvedBow)
-                                {
-                                    if (Log.IsWarnEnabled)
-                                        Log.Warn($"{m_player.Name}: weapon with damage type 0 is loaded '{item.Name}' ({item.ObjectId})");
-                                }
-                            }
+                            m_items.Add(itemSlot, playerItem);
                         }
                         catch (Exception ex)
                         {
