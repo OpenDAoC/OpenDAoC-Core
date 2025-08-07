@@ -50,8 +50,8 @@
 			archiveEvery="Day"
 			maxArchiveDays="7" />
 		<target name="gmActionFile" xsi:type="File"
-			layout="${date:format=MM/dd HH\:mm\:ss} | ${message}}"
-			fileName="${logDirectory}/gm-action.log" 
+			layout="${date:format=MM/dd HH\:mm\:ss} | ${message}"
+			fileName="${logDirectory}/gm-action.log"
 			keepFileOpen="true"
 			cleanupFileName="false"
 			archiveFileName="${logDirectory}/gm-action.{#}.log"
@@ -60,7 +60,7 @@
 			archiveAboveSize="104857600"
 			archiveEvery="Day" />
 		<target name="cheatFile" xsi:type="File"
-			layout="${date:format=MM/dd HH\:mm\:ss} | ${message}}"
+			layout="${date:format=MM/dd HH\:mm\:ss} | ${message}"
 			fileName="${logDirectory}/cheat.log"
 			keepFileOpen="true"
 			cleanupFileName="false"
