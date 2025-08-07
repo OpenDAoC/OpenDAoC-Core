@@ -190,7 +190,7 @@ namespace DOL.GS
             }
 
             if (log.IsInfoEnabled)
-                log.Info(BuildSpeedHackMessage("detected", actualDistance, allowedMaxDistance, actualSpeed, allowedMaxSpeed, _teleportCount));
+                log.Info(msg);
         }
 
         private string BuildSpeedHackMessage(string action, double actualDistance, double allowedMaxDistance, double actualSpeed, double allowedMaxSpeed, int teleportCount)
