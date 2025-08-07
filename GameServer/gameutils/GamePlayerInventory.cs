@@ -93,22 +93,15 @@ namespace DOL.GS
                             // The snapshot is used to ensure we're not saving every column on the next save.
                             playerItem.TakeSnapshot();
 
-                            if (playerItem.CheckValid(m_player))
-                                m_items.Add(itemSlot, playerItem);
-                            else
+                            if (!playerItem.CheckValid(m_player))
                             {
                                 if (Log.IsErrorEnabled)
                                     Log.ErrorFormat($"Item '{item.Name}', ClassType '{item.ClassType}' failed valid test for player '{m_player.Name}'!");
 
-                                GameInventoryItem invalidItem = new()
-                                {
-                                    Name = "Invalid Item",
-                                    OwnerID = item.OwnerID,
-                                    SlotPosition = item.SlotPosition,
-                                    AllowAdd = false
-                                };
-                                m_items.Add(itemSlot, invalidItem);
+                                continue;
                             }
+                            else
+                                m_items.Add(itemSlot, playerItem);
 
                             if (Log.IsWarnEnabled)
                             {
