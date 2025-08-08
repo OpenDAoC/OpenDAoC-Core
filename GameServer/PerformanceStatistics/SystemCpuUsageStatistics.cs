@@ -1,20 +1,22 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
 namespace DOL.GS.PerformanceStatistics
 {
     public class SystemCpuUsagePercent : IPerformanceStatistic
     {
-        private IPerformanceStatistic _processorTimeRatioStatistic;
+        private readonly IPerformanceStatistic _processorTimeRatioStatistic;
 
         public SystemCpuUsagePercent()
         {
-            _processorTimeRatioStatistic = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
-                                           new PerformanceCounterStatistic("Processor", "% processor time", "_total") :
-                                           new LinuxSystemCpuUsagePercent();
+            if (OperatingSystem.IsWindows())
+                _processorTimeRatioStatistic = new PerformanceCounterStatistic("Processor", "% Processor Time", "_Total");
+            else if (OperatingSystem.IsLinux())
+                _processorTimeRatioStatistic = new LinuxSystemCpuUsagePercent();
+            else
+                throw new PlatformNotSupportedException("System CPU usage percent statistic is not supported on this platform.");
         }
 
         public double GetNextValue()
@@ -23,49 +25,51 @@ namespace DOL.GS.PerformanceStatistics
         }
     }
 
-#if NET
-    [UnsupportedOSPlatform("Windows")]
-#endif
+    [SupportedOSPlatform("linux")]
     public class LinuxSystemCpuUsagePercent : IPerformanceStatistic
     {
-        private IPerformanceStatistic _processorTimeStatistic;
-        private IPerformanceStatistic _idleTimeStatistic;
+        private long _previousIdleTime;
+        private long _previousTotalTime;
 
         public LinuxSystemCpuUsagePercent()
         {
-            _processorTimeStatistic = new PerSecondStatistic(new LinuxTotalProcessorTimeInSeconds());
-            _idleTimeStatistic = new PerSecondStatistic(new LinuxSystemIdleProcessorTimeInSeconds());
+            GetNextValue();
         }
 
         public double GetNextValue()
         {
-            double cpuUsage = 1 - _idleTimeStatistic.GetNextValue() / _processorTimeStatistic.GetNextValue();
-            return cpuUsage * 100;
-        }
-    }
+            long currentIdleTime;
+            long currentTotalTime;
 
-#if NET
-    [UnsupportedOSPlatform("Windows")]
-#endif
-    public class LinuxTotalProcessorTimeInSeconds : IPerformanceStatistic
-    {
-        public double GetNextValue()
-        {
-            double cpuTimeInSeconds = File.ReadAllText("/proc/stat").Split(Environment.NewLine).First().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Skip(1).Select(c => Convert.ToInt64(c)).Aggregate(0L, (a, b) => a + b) * 0.001;
-            return cpuTimeInSeconds;
-        }
-    }
+            try
+            {
+                string cpuLine = File.ReadLines("/proc/stat").First();
 
-#if NET
-    [UnsupportedOSPlatform("Windows")]
-#endif
-    public class LinuxSystemIdleProcessorTimeInSeconds : IPerformanceStatistic
-    {
-        public double GetNextValue()
-        {
-            string cpuIdleTimeString = File.ReadAllText("/proc/stat").Split('\n').First().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[4];
-            double cpuIdleTimeInSeconds = Convert.ToInt64(cpuIdleTimeString) * 0.001;
-            return cpuIdleTimeInSeconds;
+                var cpuNumbers = cpuLine.Split([' '], StringSplitOptions.RemoveEmptyEntries)
+                                        .Skip(1) 
+                                        .Select(long.Parse)
+                                        .ToList();
+
+                currentIdleTime = cpuNumbers[3] + cpuNumbers[4];
+                currentTotalTime = cpuNumbers.Sum();
+            }
+            catch (Exception)
+            {
+                return 0.0;
+            }
+
+            long totalTimeDelta = currentTotalTime - _previousTotalTime;
+            long idleTimeDelta = currentIdleTime - _previousIdleTime;
+
+            _previousTotalTime = currentTotalTime;
+            _previousIdleTime = currentIdleTime;
+
+            if (totalTimeDelta <= 0)
+                return 0.0;
+
+            double busyTime = totalTimeDelta - idleTimeDelta;
+            double cpuUsagePercent = busyTime / totalTimeDelta * 100.0;
+            return Math.Clamp(cpuUsagePercent, 0, 100);
         }
     }
 }
