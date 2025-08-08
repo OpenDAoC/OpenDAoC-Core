@@ -3,9 +3,7 @@ using System.Runtime.Versioning;
 
 namespace DOL.GS.PerformanceStatistics
 {
-#if NET
-    [SupportedOSPlatform("Windows")]
-#endif
+    [SupportedOSPlatform("windows")]
     public class PerformanceCounterStatistic : IPerformanceStatistic
     {
         private PerformanceCounter _performanceCounter;
