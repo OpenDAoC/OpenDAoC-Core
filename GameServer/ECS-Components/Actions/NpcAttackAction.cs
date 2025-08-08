@@ -91,6 +91,10 @@ namespace DOL.GS
 
         protected override bool PrepareMeleeAttack()
         {
+            // Necromancer pets are not allowed to interrupt their melee attack round by casting, so we have to check for queued spells when it's trying to attack.
+            if (_npcOwner.Brain is NecromancerPetBrain brain && brain.CheckSpellQueue())
+                return false;
+
             int meleeAttackRange = _npcOwner.MeleeAttackRange;
             int maxSpeed = _npcOwner.MaxSpeed;
 

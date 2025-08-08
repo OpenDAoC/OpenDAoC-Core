@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using DOL.Events;
 using DOL.GS;
-using DOL.GS.Effects;
 using DOL.GS.PacketHandler;
 using DOL.Language;
 
@@ -16,14 +13,7 @@ namespace DOL.AI.Brain
     /// <author>Aredhel</author>
     public class NecromancerPetBrain : ControlledMobBrain
     {
-        public NecromancerPetBrain(GameLiving owner) : base(owner)
-        {
-            FSM.ClearStates();
-            FSM.Add(new ControlledMobState_WAKING_UP(this));
-            FSM.Add(new NecromancerPetState_DEFENSIVE(this));
-            FSM.Add(new NecromancerPetState_AGGRO(this));
-            FSM.Add(new NecromancerPetState_PASSIVE(this));
-        }
+        public NecromancerPetBrain(GameLiving owner) : base(owner) { }
 
         public override int ThinkInterval => 500;
 
@@ -46,13 +36,8 @@ namespace DOL.AI.Brain
 
         public void OnOwnerFinishPetSpellCast(Spell spell, SpellLine spellLine, GameLiving target)
         {
-            bool hadQueuedSpells = false;
-
-            if (!m_spellQueue.IsEmpty)
-            {
+            if (Body.IsCasting)
                 MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.CastSpellAfterAction", Body.Name), eChatType.CT_System, Owner as GamePlayer);
-                hadQueuedSpells = true;
-            }
 
             if (Body.attackComponent.AttackState || Body.IsCasting)
             {
@@ -71,9 +56,8 @@ namespace DOL.AI.Brain
                     AddToSpellQueue(spell, spellLine, target);
             }
 
-            // Immediately cast if this was the first spell added.
-            if (hadQueuedSpells == false && !Body.IsCasting)
-                CheckSpellQueue();
+            // Immediately try to cast.
+            CheckSpellQueue();
         }
 
         public void OnPetBeginCast(Spell spell, SpellLine spellLine)
@@ -154,16 +138,24 @@ namespace DOL.AI.Brain
         /// See if there are any spells queued up and if so, get the first one
         /// and cast it.
         /// </summary>
-        public void CheckSpellQueue()
+        public bool CheckSpellQueue()
         {
+            // Only start casting if the pet has finished his attack round.
+            // This will be false most of the time, unless called from the attack component directly.
+            if (!ServiceUtils.ShouldTick(Body.attackComponent.attackAction.NextTick))
+            {
+                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.CastSpellAfterAction", Body.Name), eChatType.CT_System, Owner as GamePlayer);
+                return false;
+            }
+
             SpellQueueEntry entry = GetSpellFromQueue();
 
-            if (entry != null)
-            {
-                // If the spell can be cast, remove it from the queue.
-                if (CastSpell(entry.Spell, entry.SpellLine, entry.Target, true))
-                    RemoveSpellFromQueue();
-            }
+            if (entry == null || !CastSpell(entry.Spell, entry.SpellLine, entry.Target, true))
+                return false;
+
+            // If the spell can be cast, remove it from the queue.
+            RemoveSpellFromQueue();
+            return true;
         }
 
         public GameLiving GetSpellTarget()
