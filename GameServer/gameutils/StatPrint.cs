@@ -164,7 +164,7 @@ namespace DOL.GS
                 if (log.IsErrorEnabled)
                     log.Error(ex);
 
-                return null;
+                return DummyPerformanceStatistic.Instance;
             }
         }
     }
