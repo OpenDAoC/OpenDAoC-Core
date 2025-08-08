@@ -1,20 +1,21 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
 namespace DOL.GS.PerformanceStatistics
 {
     public class PageFaultsPerSecondStatistic : IPerformanceStatistic
     {
-        IPerformanceStatistic _performanceStatistic;
+        private readonly IPerformanceStatistic _performanceStatistic;
 
         public PageFaultsPerSecondStatistic()
         {
-            _performanceStatistic = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ?
-                                    new PerformanceCounterStatistic("Memory", "Pages/sec", null) :
-                                    new LinuxPageFaultsPerSecondStatistic();
+            if (OperatingSystem.IsWindows())
+                _performanceStatistic = new PerformanceCounterStatistic("Memory", "Pages/sec", null);
+            else if (OperatingSystem.IsLinux())
+                _performanceStatistic = new PerSecondStatistic(new LinuxTotalMajorPageFaults());
+            else
+                throw new PlatformNotSupportedException("Page faults per second statistic is not supported on this platform.");
         }
 
         public double GetNextValue()
@@ -23,32 +24,32 @@ namespace DOL.GS.PerformanceStatistics
         }
     }
 
-#if NET
-    [UnsupportedOSPlatform("Windows")]
-#endif
-    public class LinuxPageFaultsPerSecondStatistic : IPerformanceStatistic
-    {
-        private IPerformanceStatistic _memoryFaultsPerSecondStatistic;
-
-        public LinuxPageFaultsPerSecondStatistic()
-        {
-            _memoryFaultsPerSecondStatistic = new PerSecondStatistic(new LinuxTotalPageFaults());
-        }
-
-        public double GetNextValue()
-        {
-            return _memoryFaultsPerSecondStatistic.GetNextValue();
-        }
-    }
-
-#if NET
-    [UnsupportedOSPlatform("Windows")]
-#endif
-    public class LinuxTotalPageFaults : IPerformanceStatistic
+    [SupportedOSPlatform("linux")]
+    public class LinuxTotalMajorPageFaults : IPerformanceStatistic
     {
         public double GetNextValue()
         {
-            return Convert.ToInt64(File.ReadAllText("/proc/vmstat").Split(Environment.NewLine).Where(s => s.StartsWith("pgfault")).First().Split(' ')[1]);
+            try
+            {
+                const string key = "pgmajfault";
+
+                foreach (string line in File.ReadLines("/proc/vmstat"))
+                {
+                    if (line.StartsWith(key))
+                    {
+                        string[] parts = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                        if (parts.Length >= 2)
+                            return Convert.ToInt64(parts[1]);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+            return 0;
         }
     }
 }
