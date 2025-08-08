@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using DOL.AI.Brain;
 using DOL.GS.Effects;
@@ -16,18 +17,20 @@ namespace DOL.GS.PropertyCalc
     [PropertyCalculator(eProperty.MaxSpeed)]
     public class MaxSpeedCalculator : PropertyCalculator
     {
-        public static readonly double SPEED1 = 1.44;
-        public static readonly double SPEED2 = 1.59;
-        public static readonly double SPEED3 = 1.74;
-        public static readonly double SPEED4 = 1.89;
-        public static readonly double SPEED5 = 2.04;
+        public const double SPEED1 = 1.44;
+        public const double SPEED2 = 1.59;
+        public const double SPEED3 = 1.74;
+        public const double SPEED4 = 1.89;
+        public const double SPEED5 = 2.04;
+        private const double SPRINT = 1.3;
 
         public override int CalcValue(GameLiving living, eProperty property)
         {
             if ((living.IsMezzed || living.IsStunned) && living.effectListComponent.GetEffects().FirstOrDefault(x => x.GetType() == typeof(SpeedOfSoundECSEffect)) == null)
                 return 0;
 
-            double speed = living.BuffBonusMultCategory1.Get((int)property);
+            double speedIncrease = living.BuffBonusMultCategory1.Get((int)property);
+            double maxSpeedBase = living.MaxSpeedBase;
 
             if (living is GamePlayer player)
             {
@@ -43,22 +46,22 @@ namespace DOL.GS.PropertyCalc
 
                 double horseSpeed = player.IsOnHorse ? player.ActiveHorse.Speed * 0.01 : 1.0;
 
-                if (speed > horseSpeed)
+                if (speedIncrease > horseSpeed)
                     horseSpeed = 1.0;
 
                 if (ServerProperties.Properties.ENABLE_PVE_SPEED)
                 {
                     // OF zones technically aren't in a RvR region.
-                    if (speed == 1 && !player.InCombat && !player.IsStealthed && !player.CurrentRegion.IsRvR && !player.CurrentZone.IsRvR)
-                        speed *= 1.25; // New run speed is 125% when no buff.
+                    if (speedIncrease == 1 && !player.InCombat && !player.IsStealthed && !player.CurrentRegion.IsRvR && !player.CurrentZone.IsRvR)
+                        speedIncrease *= 1.25; // New run speed is 125% when no buff.
                 }
 
                 if (player.IsEncumbered && player.Client.Account.PrivLevel == 1 && ServerProperties.Properties.ENABLE_ENCUMBERANCE_SPEED_LOSS)
                 {
-                    speed *= player.MaxSpeedModifierFromEncumbrance;
+                    speedIncrease *= player.MaxSpeedModifierFromEncumbrance;
 
-                    if (speed <= 0)
-                        speed = 0;
+                    if (speedIncrease <= 0)
+                        speedIncrease = 0;
                 }
 
                 if (player.IsStealthed && player.Client.Account.PrivLevel == 1)
@@ -71,70 +74,68 @@ namespace DOL.GS.PropertyCalc
                     if (stealthSpec > player.Level)
                         stealthSpec = player.Level;
 
-                    speed *= 0.3 + (stealthSpec + 10) * 0.3 / (player.Level + 10);
+                    speedIncrease *= 0.3 + (stealthSpec + 10) * 0.3 / (player.Level + 10);
 
                     //if (vanish != null)
                     //    speed *= vanish.SpeedBonus;
 
                     if (mos != null)
-                        speed *= 1 + mos.GetAmountForLevel(mos.Level) / 100.0;
+                        speedIncrease *= 1 + mos.GetAmountForLevel(mos.Level) / 100.0;
 
                     //if (bloodrage != null)
                     //    speed *= 1 + (bloodrage.Spell.Value * 0.01); // 25 * 0.01 = 0.25 (a.k 25%) value should be 25.5
 
                     if (player.effectListComponent.ContainsEffectForEffectType(eEffect.ShadowRun))
-                        speed *= 2;
+                        speedIncrease *= 2;
                 }
 
                 if (GameRelic.IsPlayerCarryingRelic(player))
                 {
-                    if (speed > 1.0)
-                        speed = 1.0;
+                    if (speedIncrease > 1.0)
+                        speedIncrease = 1.0;
 
                     horseSpeed = 1.0;
                 }
 
                 if (player.IsSprinting)
-                    speed *= 1.3;
+                    speedIncrease *= SPRINT;
 
-                speed *= horseSpeed;
+                speedIncrease *= horseSpeed;
             }
             else if (living is GameNPC npc)
             {
-                if (!living.InCombat && npc.Brain is IControlledBrain brain)
+                // Special handling for pets.
+                if (npc.Brain is IControlledBrain brain)
                 {
                     GameLiving owner = brain.Owner;
 
                     if (owner != null && owner == brain.Body.FollowTarget)
                     {
-                        GamePlayer playerOwner = brain.GetPlayerOwner();
-
-                        if (!living.InCombat)
+                        // A pet following its owner always moves at at least its own sprint speed, even in combat (this should probably ignore Severing the Tether).
+                        // This behavior has been confirmed on Uthgard for Necromancer and Cabalist pets.
+                        // When out of combat, we use the mount speed if any, or we increase the pet's base speed to match its owner's, multiplied by any speed increase.
+                        if (living.InCombat)
+                            speedIncrease *= SPRINT;
+                        else
                         {
+                            GamePlayer playerOwner = brain.GetPlayerOwner();
+
                             if (playerOwner != null)
                             {
                                 owner = playerOwner;
-                                GameNPC ownerSteed = playerOwner.Steed;
+                                GameNPC steed = playerOwner.Steed;
 
-                                if (ownerSteed != null)
-                                    return ownerSteed.MaxSpeed;
+                                if (steed != null)
+                                    return steed.MaxSpeed; // Bypasses low health speed reduction.
                             }
 
-                            int distance = brain.Body.GetDistanceTo(owner);
-
-                            if (playerOwner != null && playerOwner.IsSprinting)
-                                speed *= 1.3;
-
-                            if (distance > 20)
-                                speed *= 1.25;
-
-                            if (living is NecromancerPet && distance > 700)
-                                speed *= 1.25;
+                            if (owner.MaxSpeedBase > maxSpeedBase)
+                                maxSpeedBase = owner.MaxSpeedBase;
 
                             double ownerSpeedAdjust = (double) owner.MaxSpeed / owner.MaxSpeedBase;
 
                             if (ownerSpeedAdjust > 1.0)
-                                speed *= ownerSpeedAdjust;
+                                speedIncrease *= ownerSpeedAdjust;
                         }
                     }
                 }
@@ -142,15 +143,10 @@ namespace DOL.GS.PropertyCalc
                 double healthPercent = living.Health / (double) living.MaxHealth;
 
                 if (healthPercent < 0.33)
-                    speed *= 0.2 + healthPercent * (0.8 / 0.33); // 33% HP = full speed, 0% HP = 20% speed
+                    speedIncrease *= 0.2 + healthPercent * (0.8 / 0.33); // 33% HP = full speed, 0% HP = 20% speed
             }
 
-            speed = living.MaxSpeedBase * speed + 0.5; // 0.5 is to fix the rounding error when converting to int so root results in speed 2 ((191 * 0.01 = 1.91) + 0.5 = 2.41).
-
-            if (speed <= 0.5) // Fix for the rounding fix above. (???)
-                return 0;
-
-            return (int)speed;
+            return (int) Math.Round(maxSpeedBase * speedIncrease);
         }
     }
 }
