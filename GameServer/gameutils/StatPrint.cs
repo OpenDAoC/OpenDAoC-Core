@@ -15,6 +15,9 @@ namespace DOL.GS
         private static volatile Timer _timer;
 
         private static long _lastMeasureTick = DateTime.Now.Ticks;
+        private static long _prevGen0;
+        private static long _prevGen1;
+        private static long _prevGen2;
         private static IPerformanceStatistic _systemCpuUsagePercent;
         private static IPerformanceStatistic _programCpuUsagePercent;
         private static IPerformanceStatistic _pageFaultsPerSecond;
@@ -52,6 +55,9 @@ namespace DOL.GS
                 if (!log.IsInfoEnabled)
                     return;
 
+                ThreadPriority oldPriority = Thread.CurrentThread.Priority;
+                Thread.CurrentThread.Priority = ThreadPriority.Lowest;
+
                 long newTick = DateTime.Now.Ticks;
                 long time = newTick - _lastMeasureTick;
                 _lastMeasureTick = newTick;
@@ -65,18 +71,36 @@ namespace DOL.GS
                     time = 1;
                 }
 
-                // Get thread pool info.
+                // Memory usage.
+                long memUsedMb = GC.GetTotalMemory(false) / 1024 / 1024;
+                long memCommittedMb = GC.GetGCMemoryInfo().TotalCommittedBytes / 1024 / 1024;
+
+                // Collection counts.
+                long gen0Total = GC.CollectionCount(0);
+                long gen1Total = GC.CollectionCount(1);
+                long gen2Total = GC.CollectionCount(2);
+                long gen0Delta = gen0Total - _prevGen0;
+                long gen1Delta = gen1Total - _prevGen1;
+                long gen2Delta = gen2Total - _prevGen2;
+                _prevGen0 = gen0Total;
+                _prevGen1 = gen1Total;
+                _prevGen2 = gen2Total;
+
+                // Thread pool info.
                 ThreadPool.GetAvailableThreads(out int poolCurrent, out int iocpCurrent);
                 ThreadPool.GetMinThreads(out int poolMin, out int iocpMin);
                 ThreadPool.GetMaxThreads(out int poolMax, out int iocpMax);
 
+                // DoL event handlers.
                 int globalHandlers = GameEventMgr.NumGlobalHandlers;
                 int objectHandlers = GameEventMgr.NumObjectHandlers;
 
+                // Game loop average TPS.
                 List<(int, double)> averageTps = GameLoop.GetAverageTps();
 
                 StringBuilder stats = new StringBuilder(256)
-                    .Append($"-stats-  Mem={GC.GetTotalMemory(false) / 1024 / 1024}MB")
+                    .Append($"-stats-  Mem={memUsedMb}MB/{memCommittedMb}MB")
+                    .Append($"  GC={gen0Delta}/{gen1Delta}/{gen2Delta}")
                     .Append($"  Clients={ClientService.ClientCount}")
                     .AppendFormat($"  Pool={poolCurrent}/{poolMax}({poolMin})")
                     .AppendFormat($"  IOCP={iocpCurrent}/{iocpMax}({iocpMin})")
@@ -97,12 +121,14 @@ namespace DOL.GS
                 }
 
                 AppendStatistic(stats, "CPU(sys)", _systemCpuUsagePercent, "%");
-                //AppendStatistic(stats, "CPU(proc)", _programCpuUsagePercent, "%"); // This is pretty slow, at least on Windows. (over 6ms)
+                AppendStatistic(stats, "CPU(proc)", _programCpuUsagePercent, "%"); // This is pretty slow, at least on Windows. (over 6ms)
                 AppendStatistic(stats, "pg/s", _pageFaultsPerSecond);
                 AppendStatistic(stats, "dsk/s", _diskTransfersPerSecond);
 
                 if (log.IsInfoEnabled)
                     log.Info(stats.ToString());
+
+                Thread.CurrentThread.Priority = oldPriority;
             }
             catch (Exception e)
             {
