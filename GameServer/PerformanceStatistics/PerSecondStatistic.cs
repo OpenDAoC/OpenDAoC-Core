@@ -5,36 +5,34 @@ namespace DOL.GS.PerformanceStatistics
     public class PerSecondStatistic : IPerformanceStatistic
     {
         private DateTime _lastMeasurementTime;
-        private IPerformanceStatistic _totalValueStatistic;
+        private readonly IPerformanceStatistic _totalValueStatistic;
         private double _lastTotal;
-        private double _cachedLastStatisticValue;
 
         public PerSecondStatistic(IPerformanceStatistic totalValueStatistic)
         {
-            _lastMeasurementTime = DateTime.UtcNow;
             _totalValueStatistic = totalValueStatistic;
-            _lastTotal = totalValueStatistic.GetNextValue();
-            _cachedLastStatisticValue = -1;
+            _lastMeasurementTime = DateTime.UtcNow;
+            _lastTotal = _totalValueStatistic.GetNextValue();
         }
 
         public double GetNextValue()
         {
             if (_totalValueStatistic == null)
-                return -1;
+                return 0.0;
 
             DateTime currentTime = DateTime.UtcNow;
+            double currentTotal = _totalValueStatistic.GetNextValue();
             double secondsPassed = (currentTime - _lastMeasurementTime).TotalSeconds;
 
-            if (secondsPassed < 1)
-                return _cachedLastStatisticValue;
+            if (secondsPassed <= 0)
+                return 0.0;
 
-            double currentTotal = _totalValueStatistic.GetNextValue();
-            double valuePerSecond = (currentTotal - _lastTotal) / secondsPassed;
+            double valueChange = currentTotal - _lastTotal;
+            double valuePerSecond = valueChange / secondsPassed;
 
             _lastMeasurementTime = currentTime;
             _lastTotal = currentTotal;
-            _cachedLastStatisticValue = valuePerSecond;
-            return _cachedLastStatisticValue;
+            return Math.Max(0, valuePerSecond);
         }
     }
 }
