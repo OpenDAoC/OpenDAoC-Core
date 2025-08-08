@@ -154,7 +154,7 @@ namespace DOL.GS
             Owner = timerOwner;
             Callback = callback;
             Interval = interval;
-            Start();
+            Start(interval);
         }
 
         public void Start()
@@ -198,7 +198,7 @@ namespace DOL.GS
             {
                 if (_properties == null)
                 {
-                    lock(this)
+                    lock (this)
                     {
                         _properties ??= new();
                     }

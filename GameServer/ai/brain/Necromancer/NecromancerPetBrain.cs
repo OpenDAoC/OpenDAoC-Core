@@ -145,29 +145,6 @@ namespace DOL.AI.Brain
                 Owner.Notify(GameLivingEvent.AttackFinished, Owner, args);
         }
 
-        /// <summary>
-        /// Set the tether timer if pet gets out of range or comes back into range.
-        /// </summary>
-        /// <param name="seconds"></param>
-        public void SetTetherTimer(int seconds)
-        {
-            NecromancerShadeEffect shadeEffect = Owner.EffectList.GetOfType<NecromancerShadeEffect>();
-
-            if (shadeEffect != null)
-            {
-                shadeEffect.SetTetherTimer(seconds);
-
-                ArrayList effectList = new(1)
-                {
-                    shadeEffect
-                };
-
-                int effectsCount = 1;
-
-                (Owner as GamePlayer)?.Out.SendUpdateIcons(effectList, ref effectsCount);
-            }
-        }
-
         #endregion
 
         #region Spell Queue
@@ -389,40 +366,30 @@ namespace DOL.AI.Brain
 
         #region Tether
 
-        private const int m_softTether = 750; // TODO: Check on Pendragon
-        private const int m_hardTether = 2000;
-        private TetherTimer m_tetherTimer = null;
+        private const int SOFT_TETHER_RANGE = 1500;
+        private const int HARD_TETHER_RANGE = 2000;
+        private TetherTimer _tetherTimer = null;
 
         private void CheckTether()
         {
-            // Check if pet is past hard tether range, if so, despawn it right away.
-            if (!Body.IsWithinRadius(Owner, m_hardTether))
+            // Check if pet is past hard tether range. If so, cut it right away.
+            if (!Body.IsWithinRadius(Owner, HARD_TETHER_RANGE))
             {
-                m_tetherTimer?.Stop();
+                _tetherTimer?.Stop();
                 (Body as NecromancerPet).CutTether();
                 return;
             }
 
             // Check if pet is out of soft tether range.
-            if (!Body.IsWithinRadius(Owner, m_softTether))
-            {
-                if (m_tetherTimer == null)
-                {
-                    // Pet just went out of range, start the timer.
-                    m_tetherTimer = new TetherTimer(Body as NecromancerPet);
-                    m_tetherTimer.Callback = new ECSGameTimer.ECSTimerCallback(FollowCallback);
-                    m_tetherTimer.Start(1);
-                    followSeconds = 10;
-                }
-            }
+            if (!Body.IsWithinRadius(Owner, SOFT_TETHER_RANGE))
+                _tetherTimer ??= new(Body as NecromancerPet);
             else
             {
-                if (m_tetherTimer != null)
+                if (_tetherTimer != null)
                 {
                     // Pet is back in range, stop the timer.
-                    m_tetherTimer.Stop();
-                    m_tetherTimer = null;
-                    SetTetherTimer(-1);
+                    _tetherTimer.Stop();
+                    _tetherTimer = null;
                 }
             }
         }
@@ -430,62 +397,63 @@ namespace DOL.AI.Brain
         /// <summary>
         /// Timer for pet out of tether range.
         /// </summary>
-        private class TetherTimer : ECSGameTimer
+        private class TetherTimer : ECSGameTimerWrapperBase
         {
-            private NecromancerPet m_pet;
-            private int m_seconds = 10;
+            private NecromancerPet _pet;
+            private GamePlayer _playerOwner;
+            public int SecondsRemaining { get; set; } = 10;
 
-            public TetherTimer(NecromancerPet pet) : base(pet) 
+            public TetherTimer(NecromancerPet pet) : base(pet)
             {
-                m_pet = pet;
+                _pet = pet;
+                _playerOwner = pet.Owner as GamePlayer;
+                Start(0);
             }
 
-            protected void OnTick()
+            protected override int OnTick(ECSGameTimer timer)
             {
-                Interval = 1000;
-
-                if (m_seconds > 0)
-                    m_seconds -= 1;
-                else
+                if (SecondsRemaining > 0)
                 {
-                    Stop();
-                    m_pet.CutTether();
+                    OutOfTetherCheck();
+                    SecondsRemaining -= 1;
+                    return 1000;
                 }
-            }
-        }
 
-        private int followSeconds = 10;
-
-        private int FollowCallback(ECSGameTimer timer)
-        {
-            if (followSeconds > 0)
-            {
-                OutOfTetherCheck(followSeconds);
-                followSeconds -= 1;
-            }
-            else
-            {
                 Stop();
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                    "AI.Brain.Necromancer.HaveLostBondToPet"), eChatType.CT_System, Owner as GamePlayer);
-                (Body as NecromancerPet)?.CutTether();
+
+                if (_playerOwner != null)
+                    MessageToOwner(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "AI.Brain.Necromancer.HaveLostBondToPet"), eChatType.CT_System, _playerOwner);
+
+                _pet.CutTether();
                 return 0;
             }
 
-            return 1000;
-        }
+            private void OutOfTetherCheck()
+            {
+                // Pet past its tether, update effect icon (remaining time) and send warnings to owner at t = 10 seconds and t = 5 seconds.
+                SetTetherTimer();
 
-        private void OutOfTetherCheck(int secondsRemaining)
-        {
-            // Pet past its tether, update effect icon (remaining time) and send warnings to owner at t = 10 seconds and t = 5 seconds.
-            SetTetherTimer(secondsRemaining);
+                if (_playerOwner == null)
+                    return;
 
-            if (secondsRemaining == 10)
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                    "AI.Brain.Necromancer.PetTooFarBeLostSecIm", secondsRemaining), eChatType.CT_System, Owner as GamePlayer);
-            else if (secondsRemaining == 5)
-                MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language,
-                    "AI.Brain.Necromancer.PetTooFarBeLostSec", secondsRemaining), eChatType.CT_System, Owner as GamePlayer);
+                if (SecondsRemaining == 10)
+                    MessageToOwner(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "AI.Brain.Necromancer.PetTooFarBeLostSecIm", SecondsRemaining), eChatType.CT_System, _playerOwner);
+                else if (SecondsRemaining == 5)
+                    MessageToOwner(LanguageMgr.GetTranslation(_playerOwner.Client.Account.Language, "AI.Brain.Necromancer.PetTooFarBeLostSec", SecondsRemaining), eChatType.CT_System, _playerOwner);
+            }
+
+            public void SetTetherTimer()
+            {
+                NecromancerShadeEffect shadeEffect = _pet.Owner.EffectList.GetOfType<NecromancerShadeEffect>();
+
+                if (shadeEffect == null)
+                    return;
+
+                shadeEffect.SetTetherTimer(SecondsRemaining);
+                ArrayList effectList = [shadeEffect];
+                int effectsCount = 1;
+                _playerOwner?.Out.SendUpdateIcons(effectList, ref effectsCount);
+            }
         }
 
         /// <summary>
