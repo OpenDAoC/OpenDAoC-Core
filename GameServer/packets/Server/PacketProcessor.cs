@@ -229,7 +229,7 @@ namespace DOL.GS.PacketHandler
                 packet.WritePacketLength();
 
             // If UDP is unavailable, send via TCP instead.
-            if (_udpSendArgs.RemoteEndPoint != null && (forced || _client.UdpConfirm))
+            if (_udpSendArgs.RemoteEndPoint != null && (_client.UdpConfirm || forced) && GameServer.Instance.IsUdpSocketBound())
             {
                 try
                 {

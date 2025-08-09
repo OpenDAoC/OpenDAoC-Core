@@ -297,6 +297,11 @@ namespace DOL.Network
             return true;
         }
 
+        public bool IsUdpSocketBound()
+        {
+            return _udpSocket != null && _udpSocket.IsBound;
+        }
+
         public bool SendUdp(SocketAsyncEventArgs socketAsyncEventArgs)
         {
             return _udpSocket.SendToAsync(socketAsyncEventArgs);
