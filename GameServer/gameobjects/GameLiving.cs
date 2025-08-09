@@ -1415,9 +1415,7 @@ namespace DOL.GS
 			if (this is GamePlayer player)
 				player.Stealth(false);
 
-			if (ad.Damage > 0)
-				TryCancelMovementSpeedBuffs(true);
-
+			TryCancelMovementSpeedBuffs(ad, true);
 			var oProcEffects = effectListComponent.GetSpellEffects(eEffect.OffensiveProc);
 
 			// Offensive procs.
@@ -1473,11 +1471,10 @@ namespace DOL.GS
 
 			if (ad.IsHit && ad.CausesCombat)
 			{
+				// Dead attackers don't break speed or unstealth.
 				if (attackerAlive)
 				{
-					// Cancel movement speed buffs when attacked only if damaged
-					if (ad.Damage > 0)
-						TryCancelMovementSpeedBuffs(false);
+					TryCancelMovementSpeedBuffs(ad, false);
 
 					if (ad.AttackType is not eAttackType.Spell || ad.Damage != 0)
 					{
@@ -1797,23 +1794,24 @@ namespace DOL.GS
 			return removeMez || removeSnare || removeMovementSpeedDebuff;
 		}
 
-		public virtual void TryCancelMovementSpeedBuffs(bool isAttacker)
+		public virtual void TryCancelMovementSpeedBuffs(AttackData attackData, bool isAttacker)
 		{
-			// Cancel most movement speed buffs.
+			// Cancel movement speed buffs on the attacker and the target of the attack.
 			if (effectListComponent.ContainsEffectForEffectType(eEffect.MovementSpeedBuff))
 			{
 				var effects = effectListComponent.GetSpellEffects(eEffect.MovementSpeedBuff);
 
 				foreach (ECSGameSpellEffect effect in effects)
 				{
+					// Ignore Whip of Encouragement; Tracker, Chaser, Pursuer Enhancement.
 					if (effect.SpellHandler.Spell.Target is eSpellTarget.PET)
 					{
-						// Ignore Whip of Encouragement; Tracker, Chaser, Pursuer Enhancement.
 						if (effect.SpellHandler.Spell.ID is 305 or (>= 895 and <= 897))
 							continue;
 					}
 
-					effect.Stop();
+					if (ShouldBeCancelled(attackData, effect))
+						effect.Stop();
 				}
 			}
 
@@ -1824,9 +1822,16 @@ namespace DOL.GS
 
 				foreach (ECSGameSpellEffect effect in ownerEffects)
 				{
-					if (effect.SpellHandler.Spell.Target is not eSpellTarget.SELF)
+					if (ShouldBeCancelled(attackData, effect))
 						effect.Stop();
 				}
+			}
+
+			static bool ShouldBeCancelled(AttackData attackData, ECSGameSpellEffect effect)
+			{
+				// Cancel most movement speed buffs if the attack did any damage.
+				// Otherwise, only cancel non-pulsing ones.
+				return attackData.Damage > 0 || !effect.SpellHandler.Spell.IsPulsing;
 			}
 		}
 
