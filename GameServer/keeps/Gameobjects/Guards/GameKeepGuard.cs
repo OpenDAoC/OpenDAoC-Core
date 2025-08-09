@@ -677,7 +677,7 @@ namespace DOL.GS.Keeps
 				return;
 			}
 
-			base.ReturnToSpawnPoint(MaxSpeed);
+			base.ReturnToSpawnPoint(MaxSpeedBase);
 		}
 
 		public void RefreshTemplate()

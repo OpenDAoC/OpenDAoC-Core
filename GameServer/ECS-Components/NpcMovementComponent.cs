@@ -421,7 +421,7 @@ namespace DOL.GS
             if (speed <= 0)
             {
                 if (CurrentSpeed > 0)
-                UpdateMovement(0);
+                    UpdateMovement(0);
 
                 return;
             }
@@ -437,14 +437,14 @@ namespace DOL.GS
                 return;
             }
 
-                if (distanceToTarget > 25)
-                    TurnTo((int) destination.X, (int) destination.Y);
+            if (distanceToTarget > 25)
+                TurnTo((int) destination.X, (int) destination.Y);
 
             // Assume either the destination or speed has changed.
-                UpdateMovement(destination, distanceToTarget, speed);
-                SetFlag(MovementState.WALK_TO);
-                _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
-            }
+            UpdateMovement(destination, distanceToTarget, speed);
+            SetFlag(MovementState.WALK_TO);
+            _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
+        }
 
         private void PathToInternal(Vector3 destination, short speed)
         {
