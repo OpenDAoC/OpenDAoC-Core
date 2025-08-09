@@ -58,7 +58,7 @@ namespace DOL.GS
             if (owner.GetDistanceTo(target) < MIN_PATHING_DISTANCE)
                 return false;
 
-            if (owner.Flags.HasFlag(GameNPC.eFlags.FLYING))
+            if (owner.Flags.HasFlag(GameNPC.eFlags.FLYING) || owner is GameTaxi)
                 return false;
 
             // This will probably result in some really awkward paths otherwise.
