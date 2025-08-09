@@ -128,7 +128,7 @@ namespace DOL.Network
 
             void StartUdpThread()
             {
-                if (!_udpSocket.IsBound)
+                if (!IsUdpSocketBound())
                     return;
 
                 ConcurrentQueue<int> availablePositions = [];
