@@ -182,7 +182,7 @@ namespace DOL.GS.PacketHandler
         LookingForGroup = 0x85,              // 0x2D ^ 168
         CraftRequest = 0xED,                 // 0x45 ^ 168
         MinotaurRelicWindow = 0x4C,          // 0xE4 ^ 168
-        CreateNPCRequest = 0xBE,             // 0x16 ^ 168
+        CreateObjectRequest = 0xBE,             // 0x16 ^ 168
         ObjectUpdateRequest = 0xA5,          // 0x0D ^ 168
         PingRequest = 0xA3,                  // 0x0B ^ 168
         BonusesListRequest = 0xCA,           // 0x62 ^ 168

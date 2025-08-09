@@ -695,20 +695,6 @@ namespace DOL.GS
             OnObjectCreateOrUpdateForPlayer(player, npc);
         }
 
-        public static void CreateNpcForPlayer(GamePlayer player, GameNPC npc)
-        {
-            if (player.Client.ClientState is not GameClient.eClientState.Playing || !player.CanDetect(npc))
-                return;
-
-            CreateNpcForPlayerInternal(player, npc);
-        }
-
-        public static void CreateNpcForPlayers(GameNPC npc)
-        {
-            foreach (GamePlayer playerInRadius in npc.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-                CreateNpcForPlayer(playerInRadius, npc);
-        }
-
         private static void CreateObjectForPlayerInternal(GamePlayer player, GameObject gameObject)
         {
             player.Out.SendObjectCreate(gameObject);
@@ -720,7 +706,15 @@ namespace DOL.GS
             if (player.Client.ClientState is not GameClient.eClientState.Playing)
                 return;
 
-            CreateObjectForPlayerInternal(player, gameObject);
+            if (gameObject.GameObjectType is eGameObjectType.NPC)
+            {
+                if (!player.CanDetect(gameObject))
+                    return;
+
+                CreateNpcForPlayerInternal(player, gameObject as GameNPC);
+            }
+            else
+                CreateObjectForPlayerInternal(player, gameObject);
         }
 
         public static void CreateObjectForPlayers(GameObject gameObject)

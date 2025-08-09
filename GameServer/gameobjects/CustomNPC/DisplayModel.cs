@@ -57,7 +57,7 @@ namespace DOL.GS
         {
             ObjectState = eObjectState.Active;
             m_spawnTick = GameLoop.GameLoopTime + 120*1000;
-            ClientService.CreateNpcForPlayer(m_displayedPlayer, this);
+            ClientService.CreateObjectForPlayer(m_displayedPlayer, this);
             return true;
         }
     }

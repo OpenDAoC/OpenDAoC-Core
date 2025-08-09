@@ -35,7 +35,7 @@ namespace DOL.GS
                 playerCaster.AddControlledBrain(newBrain);
             }
 
-            ClientService.CreateNpcForPlayers(charmNpc);
+            ClientService.CreateObjectForPlayers(charmNpc);
             charmSpellHandler.SendEffectAnimation(charmNpc, 0, false, 1);
         }
 

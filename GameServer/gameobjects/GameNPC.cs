@@ -307,7 +307,7 @@ namespace DOL.GS
 				base.Realm = value;
 
 				if (ObjectState == eObjectState.Active)
-					ClientService.CreateNpcForPlayers(this);
+					ClientService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -322,7 +322,7 @@ namespace DOL.GS
 				base.Name = value;
 
 				if (ObjectState == eObjectState.Active)
-					ClientService.CreateNpcForPlayers(this);
+					ClientService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -361,7 +361,7 @@ namespace DOL.GS
 				base.GuildName = value;
 
 				if (ObjectState == eObjectState.Active)
-					ClientService.CreateNpcForPlayers(this);
+					ClientService.CreateObjectForPlayers(this);
 			}
 		}
 
@@ -664,7 +664,7 @@ namespace DOL.GS
 				if (ObjectState == eObjectState.Active)
 				{
 					if (oldflags != m_flags)
-						ClientService.CreateNpcForPlayers(this);
+						ClientService.CreateObjectForPlayers(this);
 				}
 			}
 		}
@@ -2021,7 +2021,7 @@ namespace DOL.GS
 			if (MAX_PASSENGERS > 0)
 				Riders = new GamePlayer[MAX_PASSENGERS];
 
-			ClientService.CreateNpcForPlayers(this);
+			ClientService.CreateObjectForPlayers(this);
 			m_spawnPoint.X = X;
 			m_spawnPoint.Y = Y;
 			m_spawnPoint.Z = Z;
@@ -2168,7 +2168,7 @@ namespace DOL.GS
 				player.Out.SendObjectRemove(this);
 
 			// New position.
-			ClientService.CreateNpcForPlayers(this);
+			ClientService.CreateObjectForPlayers(this);
 			return true;
 		}
 
