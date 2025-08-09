@@ -41,4 +41,4 @@ About Linux, you can use your package manager to install theses tools: cmake, g+
 1. Open a terminal in this path
 2. `mkdir build && cd build`
 3. `cmake -DCMAKE_BUILD_TYPE=Release .. && make`
-4. Copy `libDetour.so` to your server's `/lib` folder
+4. Copy `Detour.so` to your server's `/lib` folder
