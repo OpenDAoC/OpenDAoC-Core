@@ -708,21 +708,16 @@ namespace DOL.GS
             Owner.Z = Owner.Z;
 
             if (distanceToTarget < 1)
-            {
-                _needsBroadcastUpdate = true;
                 IsDestinationValid = false;
-            }
             else
             {
-                if (CurrentSpeed != speed)
-                    _needsBroadcastUpdate = true;
-
                 _destination.X = (int) destination.X;
                 _destination.Y = (int) destination.Y;
                 _destination.Z = (int) destination.Z;
                 IsDestinationValid = true;
             }
 
+            _needsBroadcastUpdate = true;
             bool wasMoving = IsMoving;
             CurrentSpeed = speed;
             UpdateVelocity(distanceToTarget);
