@@ -420,25 +420,31 @@ namespace DOL.GS
 
             if (speed <= 0)
             {
+                if (CurrentSpeed > 0)
                 UpdateMovement(0);
+
                 return;
             }
 
             float distanceToTarget = Owner.GetDistanceTo(destination);
             int ticksToArrive = (int) (distanceToTarget * 1000 / speed);
 
-            if (ticksToArrive > 0)
+            if (ticksToArrive <= 0)
             {
+                if (CurrentSpeed > 0)
+                    UpdateMovement(0);
+
+                return;
+            }
+
                 if (distanceToTarget > 25)
                     TurnTo((int) destination.X, (int) destination.Y);
 
+            // Assume either the destination or speed has changed.
                 UpdateMovement(destination, distanceToTarget, speed);
                 SetFlag(MovementState.WALK_TO);
                 _walkingToEstimatedArrivalTime = GameLoop.GameLoopTime + ticksToArrive;
             }
-            else
-                UpdateMovement(0);
-        }
 
         private void PathToInternal(Vector3 destination, short speed)
         {
