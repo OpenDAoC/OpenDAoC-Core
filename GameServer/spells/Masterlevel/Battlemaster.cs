@@ -215,10 +215,10 @@ namespace DOL.GS.Spells
 
             if (Util.Chance(baseChance))
             {
-                ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, m_procSpell, m_procSpellLine);
+                ISpellHandler handler = ScriptMgr.CreateSpellHandler((GameLiving)sender, _procSpell, _procSpellLine);
                 if (handler != null)
                 {
-                    switch (m_procSpell.Target)
+                    switch (_procSpell.Target)
                     {
                         case eSpellTarget.ENEMY:
                         {
@@ -238,7 +238,7 @@ namespace DOL.GS.Spells
                                 {
                                     foreach (GameLiving groupPlayer in player.Group.GetMembersInTheGroup())
                                     {
-                                        if (player.IsWithinRadius(groupPlayer, m_procSpell.Range))
+                                        if (player.IsWithinRadius(groupPlayer, _procSpell.Range))
                                         {
                                             handler.StartSpell(groupPlayer);
                                         }
@@ -252,7 +252,7 @@ namespace DOL.GS.Spells
                         }
                         default:
                         {
-                            log.Warn("Skipping " + m_procSpell.Target + " proc " + m_procSpell.Name + " on " + ad.Target.Name + "; Realm = " + ad.Target.Realm);
+                            log.Warn("Skipping " + _procSpell.Target + " proc " + _procSpell.Name + " on " + ad.Target.Name + "; Realm = " + ad.Target.Realm);
                             break;
                         }
                     }

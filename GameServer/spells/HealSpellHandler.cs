@@ -10,8 +10,6 @@ namespace DOL.GS.Spells
     {
         public HealSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         public override bool StartSpell(GameLiving target)
         {
             if (target is null && Spell.Target is eSpellTarget.PET)
@@ -23,10 +21,10 @@ namespace DOL.GS.Spells
                 return false;
 
             bool healed = false;
-            CalculateHealVariance(out int minHeal, out int maxHeal);
+            CalculateDamageVariance(null, out double minHealVariance, out double maxHealVariance);
 
             foreach (GameLiving healTarget in targets)
-                healed |= HealTarget(healTarget, Util.Random(minHeal, maxHeal));
+                healed |= HealTarget(healTarget, minHealVariance + Util.RandomDoubleIncl() * (maxHealVariance - minHealVariance));
 
             // Group heals seem to use full power even if no heal happens.
             if (!healed && Spell.Target is eSpellTarget.REALM)
@@ -219,12 +217,7 @@ namespace DOL.GS.Spells
             return true;
         }
 
-        /// <summary>
-        /// Calculates heal variance based on spec
-        /// </summary>
-        /// <param name="min">store min variance here</param>
-        /// <param name="max">store max variance here</param>
-        public virtual void CalculateHealVariance(out int min, out int max)
+        public override void CalculateDamageVariance(GameLiving target, out double min, out double max)
         {
             double spellValue = m_spell.Value;
 
@@ -257,7 +250,7 @@ namespace DOL.GS.Spells
                 }
             }
 
-            if (m_spellLine.KeyName == GlobalSpellsLines.Reserved_Spells)
+            if (m_spellLine.KeyName is GlobalSpellsLines.Reserved_Spells)
             {
                 min = max = (int) spellValue;
                 return;
