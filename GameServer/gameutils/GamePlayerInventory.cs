@@ -309,7 +309,7 @@ namespace DOL.GS
             if (item.OwnerID != m_player.InternalID)
             {
                 if (Log.IsErrorEnabled)
-                    Log.Error($"{m_player.Name} tried to remove item with wrong owner ({item.OwnerID})\n{Environment.StackTrace}");
+                    Log.Error($"{m_player.Name} tried to remove item with wrong owner ({item})\n{Environment.StackTrace}");
 
                 return false;
             }
