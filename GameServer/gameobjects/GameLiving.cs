@@ -2488,43 +2488,20 @@ namespace DOL.GS
 		/// </summary>
 		protected ECSGameTimer m_enduRegenerationTimer;
 
-		/// <summary>
-		/// The default frequency of regenerating health in milliseconds
-		/// </summary>
-		protected const ushort m_healthRegenerationPeriod = 6000;
-
-		/// <summary>
-		/// Interval for health regeneration tics
-		/// </summary>
-		protected virtual ushort HealthRegenerationPeriod
+		protected virtual int GetHealthRegenerationInterval()
 		{
-			get { return m_healthRegenerationPeriod; }
+			// Not sure if 30 is correct, but it's supposed to be very slow.
+			return InCombat ? 30 : 6;
 		}
 
-		/// <summary>
-		/// The default frequency of regenerating power in milliseconds
-		/// </summary>
-		protected const ushort m_powerRegenerationPeriod = 6000;
-
-		/// <summary>
-		/// Interval for power regeneration tics
-		/// </summary>
-		protected virtual ushort PowerRegenerationPeriod
+		protected virtual int GetPowerRegenerationInterval()
 		{
-			get { return m_powerRegenerationPeriod; }
+			return 0;
 		}
 
-		/// <summary>
-		/// The default frequency of regenerating endurance in milliseconds
-		/// </summary>
-		protected const ushort m_enduranceRegenerationPeriod = 1500;
-
-		/// <summary>
-		/// Interval for endurance regeneration tics
-		/// </summary>
-		protected virtual ushort EnduranceRegenerationPeriod
+		protected virtual int GetEnduranceRegenerationInterval()
 		{
-			get { return m_enduranceRegenerationPeriod; }
+			return 0;
 		}
 
 		/// <summary>
@@ -2540,7 +2517,7 @@ namespace DOL.GS
 			else if (m_healthRegenerationTimer.IsAlive)
 				return;
 
-			m_healthRegenerationTimer.Start(m_healthRegenerationPeriod);
+			m_healthRegenerationTimer.Start(GetHealthRegenerationInterval());
 		}
 
 		/// <summary>
@@ -2594,12 +2571,7 @@ namespace DOL.GS
 			}
 
 			ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationAmount));
-
-
-			if (InCombat)
-				return HealthRegenerationPeriod * 5;
-
-			return HealthRegenerationPeriod;
+			return GetHealthRegenerationInterval();
 		}
 
 		protected virtual int PowerRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
@@ -2627,15 +2599,7 @@ namespace DOL.GS
 				ChangeMana(this, eManaChangeType.Regenerate, GetModified(eProperty.PowerRegenerationAmount));
 			}
 
-			int totalRegenPeriod = PowerRegenerationPeriod;
-
-			if (InCombat)
-				totalRegenPeriod *= 2;
-
-			if (IsSitting)
-				totalRegenPeriod /= 2;
-
-			return totalRegenPeriod;
+			return GetPowerRegenerationInterval();
 
 			bool IsVampiirOrMauler()
 			{
@@ -2662,7 +2626,7 @@ namespace DOL.GS
 			if (regen > 0)
 				ChangeEndurance(this, eEnduranceChangeType.Regenerate, regen);
 
-			return EnduranceRegenerationPeriod;
+			return GetEnduranceRegenerationInterval();
 		}
 
 		#endregion

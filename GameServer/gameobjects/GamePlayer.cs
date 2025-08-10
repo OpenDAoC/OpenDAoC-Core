@@ -2459,6 +2459,31 @@ namespace DOL.GS
 
         #region Health/Mana/Endurance/Regeneration
 
+        private int GetHealthAndPowerRegenerationInterval()
+        {
+            // From Uthgard.
+            // 6s normal, 3s sitting, 14s combat, 10s sitting combat.
+            // There is no elegant formula for this. Sitting + in-combat might have been caused by rounding errors on Live.
+            bool inCombat = InCombat;
+            bool isSitting = IsSitting;
+            return 6 - (isSitting ? 3 : 0) + (inCombat ? 8 : 0) - (isSitting && inCombat ? 1 : 0);
+        }
+
+        protected override int GetHealthRegenerationInterval()
+        {
+            return GetHealthAndPowerRegenerationInterval();
+        }
+
+        protected override int GetPowerRegenerationInterval()
+        {
+            return GetHealthAndPowerRegenerationInterval();
+        }
+
+        protected override int GetEnduranceRegenerationInterval()
+        {
+            return 1000;
+        }
+
         public override void StartPowerRegeneration()
         {
             if (!IsAlive || ObjectState is not eObjectState.Active)
@@ -2469,7 +2494,7 @@ namespace DOL.GS
             else if (m_powerRegenerationTimer.IsAlive)
                 return;
 
-            m_powerRegenerationTimer.Start(m_powerRegenerationPeriod);
+            m_powerRegenerationTimer.Start(GetPowerRegenerationInterval());
         }
 
         public override void StartEnduranceRegeneration()
@@ -2482,7 +2507,7 @@ namespace DOL.GS
             else if (m_enduRegenerationTimer.IsAlive)
                 return;
 
-            m_enduRegenerationTimer.Start(m_enduranceRegenerationPeriod);
+            m_enduRegenerationTimer.Start(GetEnduranceRegenerationInterval());
         }
 
         protected override int HealthRegenerationTimerCallback(ECSGameTimer callingTimer)
@@ -2502,14 +2527,7 @@ namespace DOL.GS
             }
 
             ChangeHealth(this, eHealthChangeType.Regenerate, GetModified(eProperty.HealthRegenerationAmount));
-
-            if (InCombat)
-                return HealthRegenerationPeriod * 2;
-
-            if (IsSitting)
-                return HealthRegenerationPeriod / 2;
-
-            return HealthRegenerationPeriod;
+            return GetHealthRegenerationInterval();
         }
 
         protected override int EnduranceRegenerationTimerCallback(ECSGameTimer selfRegenerationTimer)
@@ -2558,12 +2576,7 @@ namespace DOL.GS
                     Sprint(false);
             }
 
-            ushort rate = EnduranceRegenerationPeriod;
-
-            if (IsSitting)
-                rate /= 2;
-
-            return rate;
+            return GetEnduranceRegenerationInterval();
         }
 
         /// <summary>
