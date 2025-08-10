@@ -35,15 +35,31 @@ namespace DOL.GS.PerformanceStatistics
             {
                 foreach (string line in File.ReadLines("/proc/diskstats"))
                 {
-                    string[] columns = line.Split([' '], StringSplitOptions.RemoveEmptyEntries);
+                    string[] columns = line.Split([' '], 20, StringSplitOptions.RemoveEmptyEntries);
 
-                    if (columns.Length < 14 || char.IsDigit(columns[2][^1]))
+                    if (columns.Length < 14)
+                        continue;
+
+                    string deviceName = columns[2];
+
+                    // Skip virtual, memory-based, and other unwanted devices.
+                    if (deviceName.StartsWith("loop") || deviceName.StartsWith("ram") || deviceName.StartsWith("zram"))
+                        continue;
+
+                    // Check if the device is a whole block device. This correctly includes sda, nvme0n1, md0, etc., while excluding partitions.
+                    if (!Directory.Exists($"/sys/block/{deviceName}"))
+                        continue;
+
+                    // Avoid double-counting RAID. If a device is part of an MD-RAID array, it will have an 'md' subdirectory.
+                    // We skip these members and only count the top-level 'mdX' device itself (which passes the above check).
+                    if (Directory.Exists($"/sys/block/{deviceName}/md"))
                         continue;
 
                     long readIO = Convert.ToInt64(columns[3]);
                     long writeIO = Convert.ToInt64(columns[7]);
                     long discardIO = 0L;
 
+                    // Discards are in field 15 (index 14) on kernels 4.18+.
                     if (columns.Length >= 18)
                         discardIO = Convert.ToInt64(columns[14]);
 
