@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using ECS.Debug;
@@ -13,33 +14,42 @@ namespace DOL.GS
         private const string SERVICE_NAME_BEGIN = $"{SERVICE_NAME}_Begin";
         private const string SERVICE_NAME_END = $"{SERVICE_NAME}_End";
 
-        private static int _preTickActionCount;
-        private static int _postTickActionCount;
-        private static ConcurrentQueue<IPostedAction> _preTickActions = new();
-        private static ConcurrentQueue<IPostedAction> _postTickActions = new();
+        // Queues for actions that are posted to be executed before and after the game loop tick.
+        private static readonly ConcurrentQueue<IPostedAction> _preTickActions = new();
+        private static readonly ConcurrentQueue<IPostedAction> _postTickActions = new();
+
+        // Used to avoid having to call `TryPeek` or `IsEmpty` on the concurrent queues, which can be particularly slow under contention.
+        private static bool _hasPreTickActions;
+        private static bool _hasPostTickActions;
+
+        // Lists to drain the concurrent queues into, to avoid contention during execution.
+        private static readonly List<IPostedAction> _preTickWork = new();
+        private static readonly List<IPostedAction> _postTickWork = new();
 
         public static void BeginTick()
         {
             GameLoop.CurrentServiceTick = SERVICE_NAME_BEGIN;
             Diagnostics.StartPerfCounter(SERVICE_NAME_BEGIN);
 
-            if (Volatile.Read(ref _preTickActionCount) > 0)
+            if (Interlocked.Exchange(ref _hasPreTickActions, false))
             {
-                GameLoop.ExecuteWork(Interlocked.Exchange(ref _preTickActionCount, 0), static _ =>
+                while (_preTickActions.TryDequeue(out IPostedAction action))
+                    _preTickWork.Add(action);
+
+                GameLoop.ExecuteWork(_preTickWork.Count, static i =>
                 {
-                    if (_preTickActions.TryDequeue(out IPostedAction result))
+                    try
                     {
-                        try
-                        {
-                            result.Invoke();
-                        }
-                        catch (Exception e)
-                        {
-                            if (log.IsErrorEnabled)
-                                log.Error($"Critical error encountered in {SERVICE_NAME_BEGIN}: {e}");
-                        }
+                        _preTickWork[i].Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Critical error encountered in {SERVICE_NAME_BEGIN}: {e}");
                     }
                 });
+
+                _preTickWork.Clear();
             }
 
             GameLoop.PrepareForNextTick();
@@ -51,23 +61,25 @@ namespace DOL.GS
             GameLoop.CurrentServiceTick = SERVICE_NAME_END;
             Diagnostics.StartPerfCounter(SERVICE_NAME_END);
 
-            if (Volatile.Read(ref _postTickActionCount) > 0)
+            if (Interlocked.Exchange(ref _hasPostTickActions, false))
             {
-                GameLoop.ExecuteWork(Interlocked.Exchange(ref _postTickActionCount, 0), static _ =>
+                while (_postTickActions.TryDequeue(out IPostedAction action))
+                    _postTickWork.Add(action);
+
+                GameLoop.ExecuteWork(_postTickWork.Count, static i =>
                 {
-                    if (_postTickActions.TryDequeue(out IPostedAction result))
+                    try
                     {
-                        try
-                        {
-                            result.Invoke();
-                        }
-                        catch (Exception e)
-                        {
-                            if (log.IsErrorEnabled)
-                                log.Error($"Critical error encountered in {SERVICE_NAME_END}: {e}");
-                        }
+                        _postTickWork[i].Invoke();
+                    }
+                    catch (Exception e)
+                    {
+                        if (log.IsErrorEnabled)
+                            log.Error($"Critical error encountered in {SERVICE_NAME_END}: {e}");
                     }
                 });
+
+                _postTickWork.Clear();
             }
 
             Diagnostics.StopPerfCounter(SERVICE_NAME_END);
@@ -76,13 +88,13 @@ namespace DOL.GS
         public static void PostBeforeTick<TState>(Action<TState> action, TState state)
         {
             _preTickActions.Enqueue(new PostedAction<TState>(action, state));
-            Interlocked.Increment(ref _preTickActionCount);
+            Volatile.Write(ref _hasPreTickActions, true);
         }
 
         public static void PostAfterTick<TState>(Action<TState> action, TState state)
         {
             _postTickActions.Enqueue(new PostedAction<TState>(action, state));
-            Interlocked.Increment(ref _postTickActionCount);
+            Volatile.Write(ref _hasPostTickActions, true);
         }
 
         private readonly struct PostedAction<T> : IPostedAction
