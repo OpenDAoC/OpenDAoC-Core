@@ -1,5 +1,4 @@
-﻿using System;
-using DOL.GS.PacketHandler;
+﻿using DOL.GS.PacketHandler;
 using DOL.Language;
 
 namespace DOL.GS
@@ -29,14 +28,6 @@ namespace DOL.GS
         {
             if (OwnerPlayer != null)
             {
-                int regen = OwnerPlayer.GetModified(eProperty.EnduranceRegenerationAmount);
-                var enduranceChant = OwnerPlayer.GetModified(eProperty.FatigueConsumption);
-                var cost = -5 + regen;
-
-                if (enduranceChant > 1)
-                    cost = (int) Math.Ceiling(cost * enduranceChant * 0.01);
-
-                OwnerPlayer.Endurance += cost;
                 OwnerPlayer.Out.SendUpdateMaxSpeed();
                 OwnerPlayer.Out.SendMessage(LanguageMgr.GetTranslation(OwnerPlayer.Client.Account.Language, "GamePlayer.Sprint.PrepareSprint"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 Owner.StartEnduranceRegeneration();
