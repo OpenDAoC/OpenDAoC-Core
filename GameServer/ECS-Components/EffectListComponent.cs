@@ -401,6 +401,16 @@ namespace DOL.GS
 
                     ISpellHandler spellHandler = spellEffect.SpellHandler;
                     GameLiving caster = spellHandler.Caster;
+
+                    // We normally keep effects active on paused NPCs and let them expire naturally.
+                    // Concentration effects however should probably be stopped since they keep the effect list component permanently active for no good reason.
+                    // Checking `IsVisibleToPlayers` should be enough for this purpose.
+                    if (caster is GameNPC npcCaster && !npcCaster.IsVisibleToPlayers)
+                    {
+                        effect.Stop();
+                        return;
+                    }
+
                     GameLiving effectOwner = spellEffect.Owner;
 
                     if (effectOwner != caster)
