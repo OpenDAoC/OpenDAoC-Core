@@ -320,40 +320,31 @@ namespace DOL.GS.Styles
 				perfect = true;
 				double spec = living.GetModifiedSpecLevel(style.Spec);
 
-				// Stealth openers are unaffected by weapon speed.
+				// Two-handed weapons received a damage bonus in 1.82.
+				// For Perforate Artery, the multiplier was 12 instead of 9. The multipliers for Backstab I and II are unknown.
+				// This apparently also worked on staves and benefited Nightshade and Infiltrator too.
 				if (style.StealthRequirement)
 				{
 					switch (style.ID)
 					{
-						case 335: //Backstab I
+						case 335: // Backstab I.
 						{
-							//Backstab I Cap = ~5 + Critical Strike Spec *14 / 3 + Nonstyle Cap
 							styleDamage = Math.Min(5, spec / 10.0) + spec * 14 / 3.0;
 							break;
 						}
-						case 339: //Backstab II
+						case 339: // Backstab II.
 						{
-							//Backstab II Cap = 45 + Critical Strike Spec *6 + Nonstyle Cap
 							styleDamage = Math.Min(45, spec) + spec * 6;
 							break;
 						}
-						case 343: //Perforate Artery
+						case 343: // Perforate Artery.
 						{
-							if (living.ActiveWeapon.Item_Type == Slot.TWOHAND)
-							{
-								//Perforate Artery 2h Cap = 75 + Critical Strike Spec * 12 + Nonstyle Cap
-								styleDamage = Math.Min(75, spec * 1.5) + spec * 12;
-							}
-							else
-							{
-								//Perforate Artery Cap = 75 + Critical Strike Spec *9 + Nonstyle Cap
-								styleDamage = Math.Min(75, spec * 1.5) + spec * 9;
-							}
-
+							styleDamage = Math.Min(75, spec * 1.5) + spec * 9;
 							break;
 						}
 					}
 
+					// Stealth openers are unaffected by weapon speed.
 					// Styles with a static growth don't use unstyled damage, so armor has to be taken into account here.
 					// AF isn't taken into account because we don't have a weaponskill to compare it to. This may be a problem.
 					styleDamage *= 1.0 - target.GetArmorAbsorb(armorHitLocation);
