@@ -2466,7 +2466,8 @@ namespace DOL.GS
             // There is no elegant formula for this. Sitting + in-combat might have been caused by rounding errors on Live.
             bool inCombat = InCombat;
             bool isSitting = IsSitting;
-            return 6 - (isSitting ? 3 : 0) + (inCombat ? 8 : 0) - (isSitting && inCombat ? 1 : 0);
+            int interval = 6 - (isSitting ? 3 : 0) + (inCombat ? 8 : 0) - (isSitting && inCombat ? 1 : 0);
+            return interval * 1000;
         }
 
         protected override int GetHealthRegenerationInterval()
