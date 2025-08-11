@@ -56,18 +56,16 @@ namespace DOL.GS
         public bool IsStopped => _state is State.Stopped;
 
         // Transitional state properties.
-        public bool CanChangeState => _transitionalState is TransitionalState.None;
         public bool IsStarting => _transitionalState is TransitionalState.Starting;
         public bool IsEnabling => _transitionalState is TransitionalState.Enabling;
         public bool IsDisabling => _transitionalState is TransitionalState.Disabling;
         public bool IsStopping => _transitionalState is TransitionalState.Stopping;
 
         // Actionability properties.
-        // Checking `CanChangeState` helps preventing stack overflows when two effects are trying to modify each other (e.g. Protect).
-        public bool CanStart => _state is State.None && CanChangeState;
-        public bool CanBeDisabled => IsActive && CanChangeState;
-        public bool CanBeEnabled => IsDisabled && CanChangeState;
-        public bool CanBeStopped => (IsActive || IsDisabled) && CanChangeState;
+        public bool CanStart => _state is State.None;
+        public bool CanBeDisabled => IsActive;
+        public bool CanBeEnabled => IsDisabled;
+        public bool CanBeStopped => IsActive || IsDisabled;
 
         public ECSGameEffect() { }
 
@@ -77,7 +75,7 @@ namespace DOL.GS
             Duration = initParams.Duration;
             Effectiveness = initParams.Effectiveness;
             OwnerPlayer = Owner as GamePlayer; // will be null on NPCs, but here for convenience.
-            EffectType = eEffect.Unknown; // should be overridden in subclasses
+            EffectType = eEffect.Unknown; // Should be overridden in subclasses.
             ExpireTick = Duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             SpellHandler = initParams.SpellHandler;
@@ -95,8 +93,10 @@ namespace DOL.GS
                 if (!CanStart)
                     return false;
 
+                if (_transitionalState is TransitionalState.None)
+                    Owner.effectListComponent.AddPendingEffect(this);
+
                 _transitionalState = TransitionalState.Starting;
-                Owner.effectListComponent.AddPendingEffect(this);
                 return true;
             }
         }
@@ -111,8 +111,10 @@ namespace DOL.GS
                 if (!CanBeEnabled)
                     return false;
 
+                if (_transitionalState is TransitionalState.None)
+                    Owner.effectListComponent.AddPendingEffect(this);
+
                 _transitionalState = TransitionalState.Enabling;
-                Owner.effectListComponent.AddPendingEffect(this);
                 return true;
             }
         }
@@ -127,8 +129,10 @@ namespace DOL.GS
                 if (!CanBeDisabled)
                     return false;
 
+                if (_transitionalState is TransitionalState.None)
+                    Owner.effectListComponent.AddPendingEffect(this);
+
                 _transitionalState = TransitionalState.Disabling;
-                Owner.effectListComponent.AddPendingEffect(this);
                 return true;
             }
         }
@@ -154,11 +158,10 @@ namespace DOL.GS
                     return false;
                 }
 
-                _transitionalState = TransitionalState.Stopping;
-
-                if (addToPendingEffects)
+                if (addToPendingEffects && _transitionalState is TransitionalState.None)
                     Owner.effectListComponent.AddPendingEffect(this);
 
+                _transitionalState = TransitionalState.Stopping;
                 return true;
             }
         }
