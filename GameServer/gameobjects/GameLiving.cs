@@ -2491,7 +2491,8 @@ namespace DOL.GS
 		protected virtual int GetHealthRegenerationInterval()
 		{
 			// Not sure if 30 is correct, but it's supposed to be very slow.
-			return InCombat ? 30 : 6;
+			int interval = InCombat ? 30 : 6;
+			return interval * 1000;
 		}
 
 		protected virtual int GetPowerRegenerationInterval()
