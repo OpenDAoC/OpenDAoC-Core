@@ -12,7 +12,7 @@ namespace DOL.GS
             _playerOwner = playerOwner;
         }
 
-        public override bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
+        public override bool RequestCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
         {
             if (!_playerOwner.ChainedActions.CheckCommandInput(spell, spellLine))
                 return false;
@@ -23,7 +23,7 @@ namespace DOL.GS
                 return true;
             }
 
-            return base.RequestStartCastSpell(spell, spellLine, spellCastingAbilityHandler, target);
+            return base.RequestCastSpell(spell, spellLine, spellCastingAbilityHandler, target);
         }
 
         protected override bool CanCastSpell()

@@ -6561,7 +6561,7 @@ namespace DOL.GS
         public override bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
         {
             // Don't pass the current target to the casting component. It's supposed to be the one at cast time, not the one at queue time.
-            return castingComponent.RequestStartCastSpell(spell, line, spellCastingAbilityHandler);
+            return castingComponent.RequestCastSpell(spell, line, spellCastingAbilityHandler);
         }
 
         public override bool CastSpell(ISpellCastingAbilityHandler ab)

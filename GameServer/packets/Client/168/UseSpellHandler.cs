@@ -111,7 +111,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             else if (sk is Styles.Style style)
                 player.styleComponent.ExecuteWeaponStyle(style);
             else if (sk is Ability ability)
-                player.castingComponent.RequestStartUseAbility(ability);
+                player.castingComponent.RequestUseAbility(ability);
             else
             {
                 if (Log.IsWarnEnabled)

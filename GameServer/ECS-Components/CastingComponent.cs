@@ -16,8 +16,10 @@ namespace DOL.GS
         private const string ALREADY_CASTING_MESSAGE = "You are already casting a spell!";
         private const int NO_QUEUE_INPUT_BUFFER = 250; // 250ms is roughly equivalent to the delay between inputs imposed by the client.
 
-        private Queue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
-        private Lock _startSkillRequestsLock = new();
+        private readonly Queue<StartSkillRequest> _startSkillRequests = new(); // This isn't the actual spell queue. Also contains abilities.
+        private readonly Queue<CastSpellRequest> _castSpellRequestPool = new();
+        private readonly Queue<UseAbilityRequest> _useAbilityRequestPool = new();
+        private readonly Lock _startSkillRequestsLock = new();
 
         public GameLiving Owner { get; }
         public SpellHandler SpellHandler { get; protected set; }
@@ -51,24 +53,25 @@ namespace DOL.GS
             SpellHandler?.Tick();
 
             while (_startSkillRequests.TryDequeue(out StartSkillRequest startSkillRequest))
+            {
                 startSkillRequest.StartSkill();
+                startSkillRequest.ResetAndReturn();
+            }
 
             if (SpellHandler == null && QueuedSpellHandler == null && _startSkillRequests.Count == 0)
                 ServiceObjectStore.Remove(this);
         }
 
-        public virtual bool RequestStartCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
+        public virtual bool RequestCastSpell(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
         {
-            if (RequestStartCastSpellInternal(new StartCastSpellRequest(this, spell, spellLine, spellCastingAbilityHandler, target)))
-            {
-                ServiceObjectStore.Add(this);
-                return true;
-            }
+            if (!RequestCastSpellInternal(spell, spellLine, spellCastingAbilityHandler, target))
+                return false;
 
-            return false;
+            ServiceObjectStore.Add(this);
+            return true;
         }
 
-        protected bool RequestStartCastSpellInternal(StartCastSpellRequest startCastSpellRequest)
+        protected bool RequestCastSpellInternal(Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler = null, GameLiving target = null)
         {
             if (Owner.IsIncapacitated)
                 Owner.Notify(GameLivingEvent.CastFailed, this, new CastFailedEventArgs(null, CastFailedEventArgs.Reasons.CrowdControlled));
@@ -78,19 +81,25 @@ namespace DOL.GS
 
             lock (_startSkillRequestsLock)
             {
-                _startSkillRequests.Enqueue(startCastSpellRequest);
+                if (!_castSpellRequestPool.TryDequeue(out CastSpellRequest request))
+                    request = new();
+
+                request.Init(this, spell, spellLine, spellCastingAbilityHandler, target);
+                _startSkillRequests.Enqueue(request);
             }
 
             return true;
         }
 
-        public virtual void RequestStartUseAbility(Ability ability)
+        public virtual void RequestUseAbility(Ability ability)
         {
             // Always allowed. The handler will check if the ability can be used or not.
-            StartUseAbilityRequest startUseAbilityRequest = new(this, ability);
-
             lock (_startSkillRequestsLock)
             {
+                if (!_useAbilityRequestPool.TryDequeue(out UseAbilityRequest startUseAbilityRequest))
+                    startUseAbilityRequest = new();
+
+                startUseAbilityRequest.Init(this, ability);
                 _startSkillRequests.Enqueue(startUseAbilityRequest);
             }
 
@@ -202,19 +211,47 @@ namespace DOL.GS
             return !Owner.IsStunned && !Owner.IsMezzed && !Owner.IsSilenced;
         }
 
-        public class StartCastSpellRequest : StartSkillRequest
+        public void ReturnToPool(CastSpellRequest request)
         {
-            public Spell Spell { get; }
-            public SpellLine SpellLine { get; private set ; }
-            public ISpellCastingAbilityHandler SpellCastingAbilityHandler { get; }
-            public GameLiving Target { get; }
+            // A few classes can cast many instant spells simultaneously.
+            if (_castSpellRequestPool.Count > 10)
+                return;
 
-            public StartCastSpellRequest(CastingComponent castingComponent, Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler, GameLiving target) : base(castingComponent)
+            _castSpellRequestPool.Enqueue(request);
+        }
+
+        public void ReturnToPool(UseAbilityRequest request)
+        {
+            if (_useAbilityRequestPool.Count > 2)
+                return;
+
+            _useAbilityRequestPool.Enqueue(request);
+        }
+
+        public class CastSpellRequest : StartSkillRequest
+        {
+            public Spell Spell { get; private set; }
+            public SpellLine SpellLine { get; private set ; }
+            public ISpellCastingAbilityHandler SpellCastingAbilityHandler { get; private set; }
+            public GameLiving Target { get; private set; }
+
+            public void Init(CastingComponent castingComponent, Spell spell, SpellLine spellLine, ISpellCastingAbilityHandler spellCastingAbilityHandler, GameLiving target)
             {
+                Init(castingComponent);
                 Spell = spell;
                 SpellLine = spellLine;
                 SpellCastingAbilityHandler = spellCastingAbilityHandler;
                 Target = target;
+            }
+
+            public override void ResetAndReturn()
+            {
+                Spell = null;
+                SpellLine = null;
+                SpellCastingAbilityHandler = null;
+                Target = null;
+                CastingComponent.ReturnToPool(this);
+                base.ResetAndReturn();
             }
 
             public override void StartSkill()
@@ -323,13 +360,21 @@ namespace DOL.GS
             }
         }
 
-        public class StartUseAbilityRequest : StartSkillRequest
+        public class UseAbilityRequest : StartSkillRequest
         {
-            public Ability Ability { get; }
+            public Ability Ability { get; private set; }
 
-            public StartUseAbilityRequest(CastingComponent castingComponent, Ability ability) : base(castingComponent)
+            public void Init(CastingComponent castingComponent, Ability ability)
             {
+                Init(castingComponent);
                 Ability = ability;
+            }
+
+            public override void ResetAndReturn()
+            {
+                Ability = null;
+                CastingComponent.ReturnToPool(this);
+                base.ResetAndReturn();
             }
 
             public override void StartSkill()
@@ -349,31 +394,37 @@ namespace DOL.GS
 
         public abstract class StartSkillRequest
         {
-            protected CastingComponent CastingComponent { get; }
+            protected CastingComponent CastingComponent { get; private set; }
 
-            public StartSkillRequest(CastingComponent castingComponent)
+            public void Init(CastingComponent castingComponent)
             {
                 CastingComponent = castingComponent;
+            }
+
+            public virtual void ResetAndReturn()
+            {
+                CastingComponent = null;
             }
 
             public virtual void StartSkill() { }
         }
 
-        public class ChainedSpell : ChainedAction<Func<StartCastSpellRequest, bool>>
+        public class ChainedSpell : ChainedAction<Func<Spell, SpellLine, ISpellCastingAbilityHandler, GameLiving, bool>>
         {
-            private StartCastSpellRequest _startCastSpellRequest;
-            public override Skill Skill => Spell;
-            public Spell Spell => _startCastSpellRequest.Spell;
-            public SpellLine SpellLine => _startCastSpellRequest.SpellLine;
+            public SpellLine _spellLine;
 
-            public ChainedSpell(StartCastSpellRequest startCastSpellRequest, GamePlayer player) : base(player.castingComponent.RequestStartCastSpellInternal)
+            public Spell Spell { get; private set; }
+            public override Skill Skill => Spell;
+
+            public ChainedSpell(GamePlayer player, Spell spell, SpellLine spellLine) : base(player.castingComponent.RequestCastSpellInternal)
             {
-                _startCastSpellRequest = startCastSpellRequest;
+                Spell = spell;
+                _spellLine = spellLine;
             }
 
             public override void Execute()
             {
-                Handler.Invoke(_startCastSpellRequest);
+                Handler.Invoke(Spell, _spellLine, null, null);
             }
         }
     }

@@ -3635,14 +3635,14 @@ namespace DOL.GS
 
 		public virtual bool CastSpell(Spell spell, SpellLine line, ISpellCastingAbilityHandler spellCastingAbilityHandler = null)
 		{
-			return castingComponent.RequestStartCastSpell(spell, line, spellCastingAbilityHandler, TargetObject as GameLiving);
+			return castingComponent.RequestCastSpell(spell, line, spellCastingAbilityHandler, TargetObject as GameLiving);
 		}
 
 		// Should only be used when the target of the spell is different than the currently selected one.
 		// Which can happen during LoS checks, since we're not waiting for the check to complete to perform other actions.
 		protected bool CastSpell(Spell spell, SpellLine line, GameLiving target, ISpellCastingAbilityHandler spellCastingAbilityHandle = null)
 		{
-			return castingComponent.RequestStartCastSpell(spell, line, spellCastingAbilityHandle, target);
+			return castingComponent.RequestCastSpell(spell, line, spellCastingAbilityHandle, target);
 		}
 
 		public virtual bool CastSpell(ISpellCastingAbilityHandler ab)
