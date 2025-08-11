@@ -37,12 +37,8 @@ namespace DOL.GS.PropertyCalc
             // Buffs allow to regenerate endurance even in combat and while moving.
             double regen = living.BaseBuffBonusCategory[property] + living.AbilityBonus[property] + living.ItemBonus[property] - debuff;
 
-            if (!living.InCombat)
-            {
-
-                if (living is not GamePlayer player || !player.IsSprinting)
-                    regen += 5;
-            }
+            if (!living.InCombat && living is GamePlayer player && !player.IsMoving)
+                regen += player.IsSitting ? 4 : 1;
 
             regen *= ServerProperties.Properties.ENDURANCE_REGEN_AMOUNT_MODIFIER;
             return Math.Max(0, (int) regen);
