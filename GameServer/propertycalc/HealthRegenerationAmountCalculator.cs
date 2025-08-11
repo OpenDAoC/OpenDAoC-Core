@@ -48,11 +48,6 @@ namespace DOL.GS.PropertyCalc
                 else if (npc is not NecromancerPet && (npc.Brain is not StandardMobBrain brain || !brain.HasAggro))
                     regen = npc.MaxHealth * 0.125;
             }
-            else if (living is GamePlayer)
-            {
-                if (living.IsSitting)
-                    regen *= 1.75;
-            }
 
             regen *= ServerProperties.Properties.HEALTH_REGEN_AMOUNT_MODIFIER;
             return Math.Max(1, (int) regen);
