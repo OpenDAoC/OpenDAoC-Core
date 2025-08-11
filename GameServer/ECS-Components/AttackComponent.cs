@@ -1964,24 +1964,38 @@ namespace DOL.GS
 
                 bool wasIntercepted = ad.OriginalTarget != null && ad.OriginalTarget != ad.Target;
 
-                // Message: "You attack <OriginalTarget>, but <FinalTarget> steps in the way!"
-                if (wasIntercepted)
-                    SendLocalizedMessage(player, "GamePlayer.Attack.Intercepted", ad.OriginalTarget.GetName(0, true), ad.Target.GetName(0, false));
-
                 // Build and send the main hit message.
                 string attackTypeMsg = GetAttackVerb(player, action);
                 string hitWeapon = GetWeaponNameForMessage(player, ad.Weapon);
                 string modMessage = ad.Modifier == 0 ? string.Empty : $" ({(ad.Modifier > 0 ? "+" : "")}{ad.Modifier})";
 
-                // Use a different key for intercepted hits vs direct hits.
-                string hitMessageKey = wasIntercepted ? "GamePlayer.Attack.InterceptedHit" : "GamePlayer.Attack.InterceptHit";
-
-                SendLocalizedMessage(player, hitMessageKey,
-                    attackTypeMsg,
-                    ad.Target.GetName(0, false, player.Client.Account.Language, ad.Target as GameNPC),
-                    hitWeapon,
-                    ad.Damage,
-                    modMessage);
+                if (wasIntercepted)
+                {
+                    // Message: "You attack <OriginalTarget>, but <FinalTarget> steps in the way!"
+                    SendLocalizedMessage(player,
+                        "GamePlayer.Attack.Intercepted",
+                        ad.Target.GetName(0, true),
+                        ad.OriginalTarget.GetName(0, false, player.Client.Account.Language,
+                        ad.Target as GameNPC));
+                    SendLocalizedMessage(player,
+                        "GamePlayer.Attack.InterceptedHit",
+                        attackTypeMsg,
+                        ad.OriginalTarget.GetName(0, false),
+                        hitWeapon,
+                        ad.Target.GetName(0, false),
+                        ad.Damage,
+                        modMessage);
+                }
+                else
+                {
+                    SendLocalizedMessage(player,
+                        "GamePlayer.Attack.InterceptHit",
+                        attackTypeMsg,
+                        ad.Target.GetName(0, false),
+                        hitWeapon,
+                        ad.Damage,
+                        modMessage);
+                }
 
                 // Send critical hit message if applicable.
                 if (ad.CriticalDamage > 0)
