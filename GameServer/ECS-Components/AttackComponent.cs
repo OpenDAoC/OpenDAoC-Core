@@ -1975,8 +1975,7 @@ namespace DOL.GS
                     SendLocalizedMessage(player,
                         "GamePlayer.Attack.Intercepted",
                         ad.Target.GetName(0, true),
-                        ad.OriginalTarget.GetName(0, false, player.Client.Account.Language,
-                        ad.Target as GameNPC));
+                        ad.OriginalTarget.GetName(0, false));
                     SendLocalizedMessage(player,
                         "GamePlayer.Attack.InterceptedHit",
                         attackTypeMsg,

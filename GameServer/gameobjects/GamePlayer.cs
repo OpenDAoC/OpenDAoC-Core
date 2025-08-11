@@ -1885,20 +1885,6 @@ namespace DOL.GS
             }
 
             TempProperties.RemoveProperty(DEATH_CONSTITUTION_LOSS_PROPERTY);
-
-            //Reset last valide position array to prevent /stuck avec /release
-            lock (_lastUniqueLocationsLock)
-            {
-                for (int i = 0; i < m_lastUniqueLocations.Length; i++)
-                {
-                    GameLocation loc = m_lastUniqueLocations[i];
-                    loc.X = X;
-                    loc.Y = Y;
-                    loc.Z = Z;
-                    loc.Heading = Heading;
-                    loc.RegionID = CurrentRegionID;
-                }
-            }
         }
 
         /// <summary>
@@ -8774,24 +8760,6 @@ namespace DOL.GS
             }
         }
 
-        /// <summary>
-        /// The stuck state of this player
-        /// </summary>
-        private bool m_stuckFlag = false;
-
-        /// <summary>
-        /// Gets/sets the current stuck state
-        /// </summary>
-        public virtual bool Stuck
-        {
-            get { return m_stuckFlag; }
-            set
-            {
-                if (value == m_stuckFlag) return;
-                m_stuckFlag = value;
-            }
-        }
-
         protected long m_beginDrowningTick;
         protected eWaterBreath m_currentWaterBreathState;
 
@@ -9177,7 +9145,6 @@ namespace DOL.GS
                 {
                     _quitTimer.Stop();
                     _quitTimer = null;
-                    Stuck = false;
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Sit.NoLongerWaitingQuit"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
 
@@ -9213,20 +9180,6 @@ namespace DOL.GS
                 if (SiegeWeapon != null)
                     SiegeWeapon.SetGroundTarget(groundX, groundY, groundZ);
             }
-        }
-
-        /// <summary>
-        /// Holds unique locations array
-        /// </summary>
-        protected readonly GameLocation[] m_lastUniqueLocations;
-        protected readonly Lock _lastUniqueLocationsLock = new();
-
-        /// <summary>
-        /// Gets unique locations array
-        /// </summary>
-        public GameLocation[] LastUniqueLocations
-        {
-            get { return m_lastUniqueLocations; }
         }
 
         /// <summary>
@@ -10524,9 +10477,6 @@ namespace DOL.GS
                     Heading = (ushort) DBCharacter.BindHeading;
                     CurrentRegionID = (ushort) DBCharacter.BindRegion;
                 }
-
-                for (int i = 0; i < m_lastUniqueLocations.Length; i++)
-                    m_lastUniqueLocations[i] = new GameLocation(null, CurrentRegionID, m_x, m_y, m_z);
             }
 
             void HandleCharacterModel()
@@ -11029,25 +10979,12 @@ namespace DOL.GS
                 RealmTimer.SaveRealmTimer(this);
 
                 SaveSkillsToCharacter();
-                //SaveCraftingSkills();
                 DBCharacter.PlayedTime = PlayedTime;  //We have to set the PlayedTime on the character before setting the LastPlayed
                 DBCharacter.PlayedTimeSinceLevel = PlayedTimeSinceLevel;
                 DBCharacter.LastLevelUp = DateTime.Now;
                 DBCharacter.LastPlayed = DateTime.Now;
-
                 DBCharacter.ActiveWeaponSlot = (byte)((byte)ActiveWeaponSlot | (byte)rangeAttackComponent.ActiveQuiverSlot);
-                if (m_stuckFlag)
-                {
-                    lock (_lastUniqueLocationsLock)
-                    {
-                        GameLocation loc = m_lastUniqueLocations[m_lastUniqueLocations.Length - 1];
-                        DBCharacter.Xpos = loc.X;
-                        DBCharacter.Ypos = loc.Y;
-                        DBCharacter.Zpos = loc.Z;
-                        DBCharacter.Region = loc.RegionID;
-                        DBCharacter.Direction = loc.Heading;
-                    }
-                }
+
                 styleComponent.OnPlayerSaveIntoDatabase();
                 GameServer.Database.SaveObject(DBCharacter);
                 Inventory.SaveIntoDatabase(InternalID);
@@ -13944,7 +13881,6 @@ namespace DOL.GS
             m_client = client;
             m_dbCharacter = dbChar;
             m_controlledHorse = new ControlledHorse(this);
-            m_lastUniqueLocations = new GameLocation[4];
 
             CreateInventory();
             AccountVault = new(this, 0, AccountVaultKeeper.GetDummyVaultItem(this));

@@ -195,21 +195,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                     client.Player.AreaUpdateTick = client.Player.CurrentRegion.Time + 2000; // update every 2 seconds
                 }
 
-                GameLocation[] locations = client.Player.LastUniqueLocations;
-                GameLocation loc = locations[0];
-
-                if (loc.X != (int) x || loc.Y != (int) y || loc.Z != (int) z || loc.RegionID != client.Player.CurrentRegionID)
-                {
-                    loc = locations[^1];
-                    Array.Copy(locations, 0, locations, 1, locations.Length - 1);
-                    locations[0] = loc;
-                    loc.X = (int) x;
-                    loc.Y = (int) y;
-                    loc.Z = (int) z;
-                    loc.Heading = client.Player.Heading;
-                    loc.RegionID = client.Player.CurrentRegionID;
-                }
-
                 // Fall damage.
                 if (GameServer.ServerRules.CanTakeFallDamage(client.Player) && !client.Player.IsSwimming)
                 {
@@ -451,21 +436,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                         client.Disconnect();
                         return;
                     }
-                }
-
-                GameLocation[] locations = client.Player.LastUniqueLocations;
-                GameLocation loc = locations[0];
-
-                if (loc.X != realX || loc.Y != realY || loc.Z != realZ || loc.RegionID != client.Player.CurrentRegionID)
-                {
-                    loc = locations[^1];
-                    Array.Copy(locations, 0, locations, 1, locations.Length - 1);
-                    locations[0] = loc;
-                    loc.X = realX;
-                    loc.Y = realY;
-                    loc.Z = realZ;
-                    loc.Heading = client.Player.Heading;
-                    loc.RegionID = client.Player.CurrentRegionID;
                 }
 
                 //**************//
