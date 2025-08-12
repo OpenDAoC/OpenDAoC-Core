@@ -1097,7 +1097,7 @@ namespace DOL.GS
             {
                 // Used to tell the difference between a normal miss and a strafing miss.
                 // Ugly, but we shouldn't add a new field to 'AttackData' just for that purpose.
-                ad.MissChance = 0;
+                ad.MissChance = -1;
                 ad.AttackResult = eAttackResult.Missed;
             }
 
@@ -1945,7 +1945,7 @@ namespace DOL.GS
 
             static void SendMissMessage(GamePlayer player, AttackData ad)
             {
-                string baseKey = ad.MissChance > 0 ? "GamePlayer.Attack.Miss" : "GamePlayer.Attack.StrafMiss";
+                string baseKey = ad.MissChance >= 0 ? "GamePlayer.Attack.Miss" : "GamePlayer.Attack.StrafMiss";
                 string message = LanguageMgr.GetTranslation(player.Client.Account.Language, baseKey);
 
                 if (ad.MissChance > 0)
