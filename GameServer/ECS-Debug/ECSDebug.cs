@@ -80,7 +80,9 @@ namespace ECS.Debug
 
             lock (_perfCountersLock)
             {
-                if (!_perfCounters.ContainsKey(uniqueID))
+                if (_perfCounters.TryGetValue(uniqueID, out Stopwatch stopwatch))
+                    stopwatch.Restart();
+                else
                     _perfCounters.Add(uniqueID, Stopwatch.StartNew());
             }
 
@@ -173,6 +175,7 @@ namespace ECS.Debug
                         _perfStreamWriterInitialized = false;
                     }
 
+                    _perfCounters.Clear();
                     _perfCountersEnabled = false;
                 }
 
@@ -220,13 +223,12 @@ namespace ECS.Debug
             {
                 if (_perfCounters.Count > 0)
                 {
-                    string logString = "[PerfCounters] ";
+                    string logString = string.Empty;
 
                     foreach (var counter in _perfCounters)
                         logString += $"{counter.Key} {counter.Value.Elapsed.TotalMilliseconds:0.##}ms | ";
 
-                    _perfStreamWriter.WriteLine(logString);
-                    _perfCounters.Clear();
+                    _perfStreamWriter.WriteLine($"[PerfCounters] {logString}");
                 }
 
                 if (ServiceUtils.ShouldTick(_perfCountersEndTick))
