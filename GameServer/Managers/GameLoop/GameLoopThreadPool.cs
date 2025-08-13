@@ -365,8 +365,8 @@ namespace DOL.GS
 
     public abstract class GameLoopThreadPool : IDisposable
     {
-        [ThreadStatic] protected static TickLocalPools _tickLocalPools;
-        [ThreadStatic] protected static long _lastResetTick;
+        [ThreadStatic] private static TickLocalPools _tickLocalPools;
+        [ThreadStatic] private static long _lastResetTick;
 
         public virtual void Init()
         {
@@ -450,6 +450,7 @@ namespace DOL.GS
                     else
                     {
                         item = new();
+
                         if (_used >= _items.Length)
                             Array.Resize(ref _items, _items.Length * 2);
 
