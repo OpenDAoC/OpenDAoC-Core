@@ -18,6 +18,7 @@ namespace ECS.Debug
         // Perf counter fields.
         private static Dictionary<string, Stopwatch> _perfCounters = new();
         private static bool _perfCountersEnabled;
+        private static long _perfCountersEndTick;
         private static StreamWriter _perfStreamWriter;
         private static bool _perfStreamWriterInitialized;
         private static readonly Lock _perfCountersLock = new();
@@ -133,9 +134,10 @@ namespace ECS.Debug
             }
         }
 
-        public static void RequestPerfCounters(bool enable)
+        public static void RequestPerfCounters(bool enable, long endTick = long.MaxValue)
         {
             _perfCountersStateRequest = enable ? StateChangeRequest.Start : StateChangeRequest.Stop;
+            _perfCountersEndTick = endTick;
         }
 
         public static void RequestServiceObjectCount()
@@ -226,6 +228,9 @@ namespace ECS.Debug
                     _perfStreamWriter.WriteLine(logString);
                     _perfCounters.Clear();
                 }
+
+                if (ServiceUtils.ShouldTick(_perfCountersEndTick))
+                    _perfCountersStateRequest = StateChangeRequest.Stop;
             }
         }
 
@@ -289,9 +294,9 @@ namespace DOL.GS.Commands
     "&diag",
     ePrivLevel.GM,
     "Toggle server logging of performance diagnostics.",
-    "/diag perf <on|off> to toggle performance diagnostics logging on server.",
+    "/diag perf <on|off> [duration] to toggle performance diagnostics logging on server with an optional duration (in minutes).",
     "/diag notify <on|off> <interval> to toggle GameEventMgr Notify profiling, where interval is the period of time in milliseconds during which to accumulate stats.",
-    "/diag object to count non-null service objects in ServiceObjectStore arrays")]
+    "/diag object to count non-null service objects in ServiceObjectStore arrays.")]
     public class ECSDiagnosticsCommandHandler : AbstractCommandHandler, ICommandHandler
     {
         public void OnCommand(GameClient client, string[] args)
@@ -331,13 +336,21 @@ namespace DOL.GS.Commands
 
                     if (args[2].Equals("on", StringComparison.OrdinalIgnoreCase))
                     {
-                        Diagnostics.RequestPerfCounters(true);
-                        DisplayMessage(client, "Performance diagnostics logging will be turned on next tick.");
+                        if (args.Length > 3 && int.TryParse(args[3], out int duration) && duration > 0)
+                        {
+                            Diagnostics.RequestPerfCounters(true, GameLoop.GameLoopTime + duration * 60000);
+                            DisplayMessage(client, $"Performance diagnostics logging turned on for {duration} minutes.");
+                        }
+                        else
+                        {
+                            Diagnostics.RequestPerfCounters(true);
+                            DisplayMessage(client, "Performance diagnostics logging turned on.");
+                        }
                     }
                     else if (args[2].Equals("off", StringComparison.OrdinalIgnoreCase))
                     {
                         Diagnostics.RequestPerfCounters(false);
-                        DisplayMessage(client, "Performance diagnostics logging will be turned off next tick.");
+                        DisplayMessage(client, "Performance diagnostics logging turned off.");
                     }
                     else
                         DisplaySyntax(client);
@@ -361,12 +374,12 @@ namespace DOL.GS.Commands
                         }
 
                         Diagnostics.RequestGameEventMgrNotifyTimeReporting(true, interval);
-                        DisplayMessage(client, "GameEventMgr Notify() logging will be turned on next tick.");
+                        DisplayMessage(client, "GameEventMgr Notify() logging turned on.");
                     }
                     else if (args[2].Equals("off", StringComparison.OrdinalIgnoreCase))
                     {
                         Diagnostics.RequestGameEventMgrNotifyTimeReporting(false);
-                        DisplayMessage(client, "GameEventMgr Notify() logging will be turned off next tick.");
+                        DisplayMessage(client, "GameEventMgr Notify() logging turned off.");
                     }
                     else
                         DisplaySyntax(client);
