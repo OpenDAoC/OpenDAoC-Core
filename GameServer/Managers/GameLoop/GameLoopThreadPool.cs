@@ -39,7 +39,6 @@ namespace DOL.GS
 
         // Work dispatch.
         private Action<int> _workAction;                // Per-item work action.
-        private Action _workerRoutine;                  // Worker thread routine.
         private readonly WorkState _workState = new();
 
         [StructLayout(LayoutKind.Explicit)]
@@ -75,7 +74,6 @@ namespace DOL.GS
                 _workerStartLatch = new(_workerCount);
                 _workReady = new ManualResetEventSlim[_workerCount];
                 _shutdownToken = new();
-                _workerRoutine = ProcessWorkActions;
                 base.Init();
             }
 
@@ -134,7 +132,7 @@ namespace DOL.GS
                 for (int i = 0; i < workersToStart; i++)
                     _workReady[i].Set();
 
-                _workerRoutine();
+                ProcessWorkActions();
                 Interlocked.Increment(ref _workState.CompletedWorkerCount);
 
                 // Spin very tightly until all the workers have completed their work.
@@ -150,13 +148,6 @@ namespace DOL.GS
 
                 GameServer.Instance.Stop();
             }
-        }
-
-        public override void PrepareForNextTick()
-        {
-            _workerRoutine = static () => _tickLocalPools.Reset();
-            ExecuteWork(_degreeOfParallelism, null);
-            _workerRoutine = ProcessWorkActions;
         }
 
         public override void Dispose()
@@ -209,7 +200,7 @@ namespace DOL.GS
                     workReady.Wait(cancellationToken);
                     workerCycle = ++cycle;
                     workReady.Reset();
-                    _workerRoutine();
+                    ProcessWorkActions();
                     Interlocked.Increment(ref _workState.CompletedWorkerCount); // Not in the finally block on purpose.
                 }
                 catch (OperationCanceledException)
@@ -243,6 +234,7 @@ namespace DOL.GS
 
         private void ProcessWorkActions()
         {
+            CheckResetTick(); // Placed here, it runs for the main thread and all worker threads.
             int remainingWork = Volatile.Read(ref _workState.RemainingWork);
 
             while (remainingWork > 0)
@@ -250,7 +242,6 @@ namespace DOL.GS
                 int workersRemaining = _degreeOfParallelism - Volatile.Read(ref _workState.CompletedWorkerCount);
                 int chunkSize = (int) (remainingWork / _workSplitBiasTable[workersRemaining]);
 
-                // Prevent infinite loops.
                 if (chunkSize < 1)
                     chunkSize = 1;
 
@@ -278,7 +269,6 @@ namespace DOL.GS
             {
                 try
                 {
-                    // Remove the dead threads from the dictionary, then replace them.
                     for (int i = 0; i < _workers.Length; i++)
                     {
                         Thread worker = _workers[i];
@@ -287,12 +277,10 @@ namespace DOL.GS
                         if (worker == null)
                             continue;
 
-                        // Make sure the thread is still alive.
                         if (worker.Join(100))
                         {
                             if (log.IsWarnEnabled)
                                 log.Warn($"Watchdog: Thread \"{worker.Name}\" has exited unexpectedly. Restarting...");
-
                             _workersToRestart.Add(i);
                         }
                         else
@@ -325,7 +313,6 @@ namespace DOL.GS
                     if (_workersToRestart.Count == 0)
                         continue;
 
-                    // Initialize the countdown event before starting any thread.
                     _workerStartLatch = new(_workersToRestart.Count);
 
                     foreach (int id in _workersToRestart)
@@ -367,13 +354,10 @@ namespace DOL.GS
 
         public override void ExecuteWork(int count, Action<int> workAction)
         {
+            CheckResetTick();
+
             for (int i = 0; i < count; i++)
                 workAction(i);
-        }
-
-        public override void PrepareForNextTick()
-        {
-            _tickLocalPools.Reset();
         }
 
         public override void Dispose() { }
@@ -381,17 +365,15 @@ namespace DOL.GS
 
     public abstract class GameLoopThreadPool : IDisposable
     {
-        [ThreadStatic]
-        protected static TickLocalPools _tickLocalPools;
+        [ThreadStatic] protected static TickLocalPools _tickLocalPools;
+        [ThreadStatic] protected static long _lastResetTick;
 
         public virtual void Init()
         {
-            _tickLocalPools = new();
+            InitThreadStatics();
         }
 
         public abstract void ExecuteWork(int count, Action<int> workAction);
-
-        public abstract void PrepareForNextTick();
 
         public abstract void Dispose();
 
@@ -404,7 +386,22 @@ namespace DOL.GS
 
         protected virtual void InitWorker(object obj)
         {
+            InitThreadStatics();
+        }
+
+        private void InitThreadStatics()
+        {
             _tickLocalPools = new();
+            _lastResetTick = -1;
+        }
+
+        protected void CheckResetTick()
+        {
+            if (_lastResetTick == GameLoop.GameLoopTime)
+                return;
+
+            _tickLocalPools.Reset();
+            _lastResetTick = GameLoop.GameLoopTime;
         }
 
         protected sealed class TickLocalPools
@@ -432,7 +429,7 @@ namespace DOL.GS
                 private const int INITIAL_CAPACITY = 64;       // Initial capacity of the pool.
                 private const double TRIM_SAFETY_FACTOR = 2.5; // Trimming allowed when size > smoothed usage * this factor.
                 private const int HALF_LIFE = 300_000;         // Half-life (ms) for EMA decay.
-                private static double DECAY_FACTOR;            // EMA decay factor based on HALF_LIFE and tick rate.
+                private static readonly double DECAY_FACTOR;   // EMA decay factor based on HALF_LIFE and tick rate.
 
                 private T[] _items = new T[INITIAL_CAPACITY];  // Backing pool array.
                 private int _used;                             // Objects rented this tick.
@@ -449,14 +446,10 @@ namespace DOL.GS
                     T item;
 
                     if (_used < _logicalSize)
-                    {
-                        item = _items[_used];
-                        _used++;
-                    }
+                        item = _items[_used++];
                     else
                     {
                         item = new();
-
                         if (_used >= _items.Length)
                             Array.Resize(ref _items, _items.Length * 2);
 

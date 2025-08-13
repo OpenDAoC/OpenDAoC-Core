@@ -88,11 +88,6 @@ namespace DOL.GS
             return _threadPool.GetForTick(poolKey, initializer);
         }
 
-        public static void PrepareForNextTick()
-        {
-            _threadPool.PrepareForNextTick();
-        }
-
         private static void Run()
         {
             if (Environment.ProcessorCount == 1)

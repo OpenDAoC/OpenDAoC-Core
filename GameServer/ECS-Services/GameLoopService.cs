@@ -52,7 +52,6 @@ namespace DOL.GS
                 _preTickWork.Clear();
             }
 
-            GameLoop.PrepareForNextTick();
             Diagnostics.StopPerfCounter(SERVICE_NAME_BEGIN);
         }
 
