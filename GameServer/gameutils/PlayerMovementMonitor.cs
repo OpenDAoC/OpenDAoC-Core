@@ -177,8 +177,6 @@ namespace DOL.GS
             if (_teleportCount >= TeleportThreshold)
             {
                 _player.Out.SendPlayerQuit(true);
-                _player.SaveIntoDatabase();
-                _player.Quit(true);
                 _player.Client.Disconnect();
             }
             else

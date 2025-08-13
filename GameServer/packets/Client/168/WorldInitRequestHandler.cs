@@ -127,8 +127,6 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (player.Client != null)
                     {
                         player.Client.Out.SendPlayerQuit(true);
-                        player.Client.Player.SaveIntoDatabase();
-                        player.Client.Player.Quit(true);
                         player.Client.Disconnect();
                     }
 

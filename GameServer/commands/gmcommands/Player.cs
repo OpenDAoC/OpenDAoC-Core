@@ -1387,8 +1387,7 @@ namespace DOL.GS.Commands
                                 return;
                             }
                             player.Client.Out.SendPlayerQuit(true);
-                            player.Client.Player.SaveIntoDatabase();
-                            player.Client.Player.Quit(true);
+                            player.Client.Disconnect();
                             return;
                         }
 
@@ -1402,8 +1401,7 @@ namespace DOL.GS.Commands
                                         {
                                             otherPlayer.Out.SendMessage($"{client.Player.Name} (PrivLevel: {client.Account.PrivLevel}) has kicked all players!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                             otherPlayer.Out.SendPlayerQuit(true);
-                                            otherPlayer.SaveIntoDatabase();
-                                            otherPlayer.Quit(true);
+                                            otherPlayer.Client.Disconnect();
                                             continue;
                                         }
                                     }

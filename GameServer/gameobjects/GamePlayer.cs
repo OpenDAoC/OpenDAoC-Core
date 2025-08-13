@@ -8360,8 +8360,7 @@ namespace DOL.GS
                     log.Error("Player: " + Name + " unknown bind point : (R/X/Y) " + BindRegion + "/" + BindXpos + "/" + BindYpos);
                 //Kick the player, avoid server freeze
                 Client.Out.SendPlayerQuit(true);
-                SaveIntoDatabase();
-                Quit(true);
+                Client.Disconnect();
                 //now ban him
                 if (ServerProperties.Properties.BAN_HACKERS)
                 {

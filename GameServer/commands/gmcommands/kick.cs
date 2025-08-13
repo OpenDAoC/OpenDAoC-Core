@@ -83,8 +83,7 @@ namespace DOL.GS.Commands
 			}
 
 			clientc.Out.SendPlayerQuit(true);
-			clientc.Player.SaveIntoDatabase();
-			clientc.Player.Quit(true);
+			clientc.Disconnect();
 		}
 	}
 }
