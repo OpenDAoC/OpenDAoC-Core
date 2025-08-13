@@ -987,34 +987,22 @@ namespace DOL.GS
                 QuestActionTimer = null;
             }
 
-            if (Group != null)
-                Group.RemoveMember(this);
-
-            BattleGroup myBattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-            if (myBattlegroup != null)
-                myBattlegroup.RemoveBattlePlayer(this);
-
-            if (TradeWindow != null)
-                TradeWindow.CloseTrade();
-
-            if (m_guild != null)
-                m_guild.RemoveOnlineMember(this);
-
-            if (Mission != null)
-                Mission.ExpireMission();
-
-            ChatGroup mychatgroup = TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY);
-            if (mychatgroup != null)
-                mychatgroup.RemovePlayer(this);
+            TradeWindow?.CloseTrade();
+            Mission?.ExpireMission();
+            TempProperties.GetProperty<ChatGroup>(ChatGroup.CHATGROUP_PROPERTY)?.RemovePlayer(this);
 
             if (ControlledBrain != null)
                 CommandNpcRelease();
 
-            if (SiegeWeapon != null)
-                SiegeWeapon.ReleaseControl();
+            SiegeWeapon?.ReleaseControl();
 
             if (InHouse)
                 LeaveHouse();
+
+            Group?.RemoveMember(this);
+            TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY)?.RemoveBattlePlayer(this);
+            m_guild?.RemoveOnlineMember(this);
+            GroupMgr.RemovePlayerLooking(this);
 
             // Dinberg: this will eventually need to be changed so that it moves them to the location they TP'ed in.
             // DamienOphyr: Overwrite current position with Bind position in database, MoveTo() is inoperant
@@ -1028,14 +1016,11 @@ namespace DOL.GS
             }
 
             // Check for battleground caps.
-            DbBattleground bg = GameServer.KeepManager.GetBattleground(CurrentRegionID);
-            if (bg != null)
+            DbBattleground battleground = GameServer.KeepManager.GetBattleground(CurrentRegionID);
+            if (battleground != null && (ePrivLevel) Client.Account.PrivLevel is ePrivLevel.Player)
             {
-                if (Level > bg.MaxLevel || RealmLevel >= bg.MaxRealmLevel)
-                {
-                    if (Client.Account.PrivLevel == (int)ePrivLevel.Player)
-                        GameServer.KeepManager.ExitBattleground(this);
-                }
+                if (Level > battleground.MaxLevel || RealmLevel >= battleground.MaxRealmLevel)
+                    GameServer.KeepManager.ExitBattleground(this);
             }
 
             // Cancel all effects until saving of running effects is done.
@@ -1090,12 +1075,6 @@ namespace DOL.GS
                     log.Debug("Error in TempProproperties Manager when saving TempProp: " + e.ToString());
                 }
             }
-
-            Group?.RemoveMember(this);
-            BattleGroup mybattlegroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-            mybattlegroup?.RemoveBattlePlayer(this);
-            m_guild?.RemoveOnlineMember(this);
-            GroupMgr.RemovePlayerLooking(this);
 
             if (log.IsDebugEnabled)
                 log.DebugFormat("({0}) player.Delete()", Name);
