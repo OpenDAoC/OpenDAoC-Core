@@ -14,6 +14,10 @@ namespace DOL.GS
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
+        // Array of pulse spell groups allowed to exist with others.
+        // Used to allow players to have more than one pulse spell refreshing itself automatically.
+        private static readonly int[] PulseSpellGroupsIgnoringOtherPulseSpells = [];
+
         // Active effects.
         private Dictionary<eEffect, List<ECSGameEffect>> _effects = new();  // Dictionary of effects by their type.
         private Dictionary<int, ECSGameEffect> _effectIdToEffect = new();   // Dictionary of effects by their icon ID.
@@ -328,6 +332,17 @@ namespace DOL.GS
             }
         }
 
+        public void CancelIncompatiblePulseEffects(ISpellHandler spellHandler)
+        {
+            if (!PulseSpellGroupsIgnoringOtherPulseSpells.Contains(spellHandler.Spell.Group))
+            {
+                IEnumerable<ECSPulseEffect> otherPulseEffects = GetPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
+
+                foreach (ECSPulseEffect otherPulseEffect in otherPulseEffects)
+                    otherPulseEffect.Stop();
+            }
+        }
+
         public void RequestPlayerUpdate(EffectService.PlayerUpdate playerUpdate)
         {
             lock (_playerUpdatesLock)
@@ -566,7 +581,7 @@ namespace DOL.GS
                     List<ECSGameEffect> existingEffects;
 
                     // Special handling for ability effects. They don't have a spell handler, and there's not much to validate.
-                    if (effect is ECSGameAbilityEffect newAbilityEffect)
+                    if (effect is ECSGameAbilityEffect abilityEffect)
                     {
                         if (_effects.TryGetValue(effect.EffectType, out existingEffects))
                         {
@@ -580,11 +595,11 @@ namespace DOL.GS
                                 if (existingAbilityEffect.Name != effect.Name)
                                     continue;
 
-                                existingAbilityEffect.ExpireTick = newAbilityEffect.ExpireTick;
+                                existingAbilityEffect.ExpireTick = abilityEffect.ExpireTick;
                                 return existingAbilityEffect.IsActive ? AddEffectResult.RenewedActive : AddEffectResult.RenewedDisabled;
                             }
 
-                            existingEffects.Add(newAbilityEffect);
+                            existingEffects.Add(abilityEffect);
                         }
                         else
                             _effects.TryAdd(effect.EffectType, [effect]);
@@ -592,6 +607,10 @@ namespace DOL.GS
                         _effectIdToEffect[effect.Icon] = effect;
                         return AddEffectResult.Added;
                     }
+
+                    // Cancel any incompatible pulse effect.
+                    if (effect is ECSPulseEffect pulseEffect)
+                        CancelIncompatiblePulseEffects(pulseEffect.SpellHandler);
 
                     // Completely new effect.
                     if (!_effects.TryGetValue(effect.EffectType, out existingEffects))

@@ -56,16 +56,17 @@ namespace DOL.GS
         public bool IsStopped => _state is State.Stopped;
 
         // Transitional state properties.
+        public bool CanChangeState => _transitionalState is TransitionalState.None;
         public bool IsStarting => _transitionalState is TransitionalState.Starting;
         public bool IsEnabling => _transitionalState is TransitionalState.Enabling;
         public bool IsDisabling => _transitionalState is TransitionalState.Disabling;
         public bool IsStopping => _transitionalState is TransitionalState.Stopping;
 
         // Actionability properties.
-        public bool CanStart => _state is State.None;
-        public bool CanBeDisabled => IsActive;
-        public bool CanBeEnabled => IsDisabled;
-        public bool CanBeStopped => IsActive || IsDisabled;
+        public bool CanStart => _state is State.None && CanChangeState;
+        public bool CanBeDisabled => IsActive && CanChangeState;
+        public bool CanBeEnabled => IsDisabled && CanChangeState;
+        public bool CanBeStopped => (IsActive || IsDisabled) && CanChangeState;
 
         public ECSGameEffect() { }
 
@@ -93,9 +94,7 @@ namespace DOL.GS
                 if (!CanStart)
                     return false;
 
-                if (_transitionalState is TransitionalState.None)
-                    Owner.effectListComponent.AddPendingEffect(this);
-
+                Owner.effectListComponent.AddPendingEffect(this);
                 _transitionalState = TransitionalState.Starting;
                 return true;
             }
@@ -111,9 +110,7 @@ namespace DOL.GS
                 if (!CanBeEnabled)
                     return false;
 
-                if (_transitionalState is TransitionalState.None)
-                    Owner.effectListComponent.AddPendingEffect(this);
-
+                Owner.effectListComponent.AddPendingEffect(this);
                 _transitionalState = TransitionalState.Enabling;
                 return true;
             }
@@ -129,9 +126,7 @@ namespace DOL.GS
                 if (!CanBeDisabled)
                     return false;
 
-                if (_transitionalState is TransitionalState.None)
-                    Owner.effectListComponent.AddPendingEffect(this);
-
+                Owner.effectListComponent.AddPendingEffect(this);
                 _transitionalState = TransitionalState.Disabling;
                 return true;
             }
@@ -158,7 +153,7 @@ namespace DOL.GS
                     return false;
                 }
 
-                if (addToPendingEffects && _transitionalState is TransitionalState.None)
+                if (addToPendingEffects)
                     Owner.effectListComponent.AddPendingEffect(this);
 
                 _transitionalState = TransitionalState.Stopping;

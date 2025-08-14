@@ -34,10 +34,6 @@ namespace DOL.GS.Spells
 		private const int MAX_CONC_SPELLS = 20;
 		private const int PULSING_SPELL_END_OF_CAST_MESSAGE_INTERVAL = 2000;
 
-		// Array of pulse spell groups allowed to exist with others.
-		// Used to allow players to have more than one pulse spell refreshing itself automatically.
-		private static readonly int[] PulseSpellGroupsIgnoringOtherPulseSpells = [];
-
 		public GameLiving Target { get; set; }
 		public eCastState CastState { get; private set; }
 		protected bool HasLos { get; private set; }
@@ -1351,20 +1347,14 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			// Cancel existing pulse effects, using 'SpellGroupsCancellingOtherPulseSpells'.
+			// Always create the pulse effect and let the effect list component keep the latest one alive, since there may be already pending ones.
+			// We exclude flute mez, since `EffectListService` won't handle it correctly.
 			if (m_spell.IsPulsing)
 			{
-				if (!PulseSpellGroupsIgnoringOtherPulseSpells.Contains(m_spell.Group))
-				{
-					IEnumerable<ECSPulseEffect> effects = m_caster.effectListComponent.GetPulseEffects().Where(x => !PulseSpellGroupsIgnoringOtherPulseSpells.Contains(x.SpellHandler.Spell.Group));
-
-					foreach (ECSPulseEffect effect in effects)
-						effect.Stop();
-				}
-
-				// Prevent `EffectListService` from pulsing flute mez, since it won't handle it correctly.
 				if (m_spell.SpellType is not eSpellType.Mesmerize)
 					PulseEffect = CreateECSPulseEffect(Caster, CasterEffectiveness);
+				else
+					Caster.effectListComponent.CancelIncompatiblePulseEffects(this);
 			}
 
 			if (playerWeapon != null)
