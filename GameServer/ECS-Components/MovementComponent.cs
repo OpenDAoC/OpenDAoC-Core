@@ -6,8 +6,9 @@ namespace DOL.GS
     {
         private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 500;
 
-        private long _nextSubZoneRelocationCheckTick;
-        private Point2D _positionDuringLastSubZoneRelocationCheck = new();
+        private Point2D _lastPosition = new();
+        private bool _relocationPending;
+        private long _nextRelocationCheckTick;
         private int _turningDisabledCount;
 
         public GameLiving Owner { get; }
@@ -54,14 +55,23 @@ namespace DOL.GS
 
         protected virtual void TickInternal()
         {
-            // Only check for subzone relocation if we moved.
-            if (!Owner.IsSamePosition(_positionDuringLastSubZoneRelocationCheck) && ServiceUtils.ShouldTick(_nextSubZoneRelocationCheckTick))
+            if (!Owner.IsSamePosition(_lastPosition))
             {
-                _nextSubZoneRelocationCheckTick = GameLoop.GameLoopTime + SUBZONE_RELOCATION_CHECK_INTERVAL;
-                _positionDuringLastSubZoneRelocationCheck = new Point2D(Owner.X, Owner.Y);
+                _lastPosition.X = Owner.X;
+                _lastPosition.Y = Owner.Y;
+                _relocationPending = true;
+                OnOwnerMoved();
+            }
+
+            if (_relocationPending && ServiceUtils.ShouldTick(_nextRelocationCheckTick))
+            {
                 Owner.SubZoneObject.CheckForRelocation();
+                _nextRelocationCheckTick = GameLoop.GameLoopTime + SUBZONE_RELOCATION_CHECK_INTERVAL;
+                _relocationPending = false;
             }
         }
+
+        protected virtual void OnOwnerMoved() { }
 
         protected void AddToServiceObjectStore()
         {

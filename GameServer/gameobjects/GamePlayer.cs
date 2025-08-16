@@ -8589,13 +8589,7 @@ namespace DOL.GS
         /// </summary>
         public override short CurrentSpeed
         {
-            set
-            {
-                base.CurrentSpeed = value;
-
-                if (value != 0)
-                    OnPlayerMove();
-            }
+            set => base.CurrentSpeed = value;
         }
 
         public short FallSpeed { get; set; }
@@ -8950,13 +8944,7 @@ namespace DOL.GS
         public override bool IsStrafing
         {
             get => m_strafing;
-            set
-            {
-                m_strafing = value;
-
-                if (value)
-                    OnPlayerMove();
-            }
+            set => m_strafing = value;
         }
 
         public virtual void OnPlayerMove()

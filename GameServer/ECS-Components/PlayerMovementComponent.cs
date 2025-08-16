@@ -83,6 +83,12 @@ namespace DOL.GS
             base.TickInternal();
         }
 
+        protected override void OnOwnerMoved()
+        {
+            Owner.OnPlayerMove();
+            base.OnOwnerMoved();
+        }
+
         public void BroadcastPosition()
         {
             PlayerPositionUpdateHandler.BroadcastPosition(Owner.Client);
