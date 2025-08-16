@@ -187,6 +187,7 @@ namespace DOL.GS
 
 		#region Melee
 
+		// Necromancer pets queue spells and cast them when their current action ends instead of using the self-interrupt logic.
 		public override int SelfInterruptDurationOnMeleeAttack => 0;
 
 		private void ToggleTauntMode()

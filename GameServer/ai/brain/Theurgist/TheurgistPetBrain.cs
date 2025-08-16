@@ -21,7 +21,9 @@ namespace DOL.AI.Brain
                 return;
             }
 
-            if (!CheckSpells(eCheckSpellType.Offensive))
+            if (CheckSpells(eCheckSpellType.Offensive))
+                Body.StopAttack();
+            else
                 Body.StartAttack(_target);
         }
 

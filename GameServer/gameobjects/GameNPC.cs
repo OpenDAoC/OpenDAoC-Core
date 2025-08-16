@@ -3014,7 +3014,7 @@ namespace DOL.GS
 			return interrupted;
 		}
 
-		public override int SelfInterruptDurationOnMeleeAttack => AttackSpeed(ActiveWeapon) / 2;
+		public override int SelfInterruptDurationOnMeleeAttack => AttackSpeed(ActiveWeapon);
 
 		/// <summary>
 		/// The time to wait before each mob respawn
@@ -3622,7 +3622,7 @@ namespace DOL.GS
 				return base.CastSpell(spellToCast, line, spellCastingAbilityHandler);
 
 			_spellsWaitingForLosCheck.AddOrUpdate(TargetObject, Add, Update, new SpellWaitingForLosCheck(spellToCast, line, GameLoop.GameLoopTime));
-			return false;
+			return true; // Consider the NPC is casting while waiting for the reply to prevent it from moving.
 
 			List<SpellWaitingForLosCheck> Add(GameObject key, SpellWaitingForLosCheck arg)
 			{
@@ -3682,6 +3682,10 @@ namespace DOL.GS
 			// In case the NPC changes target while casting on the current one and the first LoS check was positive.
 			if (castingComponent.QueuedSpellHandler?.Target == target)
 				castingComponent.ClearUpQueuedSpellHandler();
+
+			// Start following the target if there is no LoS.
+			if (TargetObject == target)
+				Follow(target, StickMinimumRange, StickMaximumRange);
 		}
 
 		#endregion

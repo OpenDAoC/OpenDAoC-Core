@@ -79,32 +79,7 @@ namespace DOL.AI.Brain
         {
             base.Notify(e, sender, args);
 
-            if (e == GameLivingEvent.CastFinished)
-            {
-                // Instant cast spells bypass the queue.
-                if (args is CastingEventArgs cArgs && !cArgs.SpellHandler.Spell.IsInstantCast)
-                {
-                    // Remove the spell that has finished casting from the queue, if there are more, keep casting.
-                    RemoveSpellFromQueue();
-                    AttackMostWanted();
-
-                    if (!m_spellQueue.IsEmpty)
-                    {
-                        DebugMessageToOwner("+ Cast finished, more spells to cast");
-                        CheckSpellQueue();
-                    }
-                    else
-                        DebugMessageToOwner("- Cast finished, no more spells to cast");
-                }
-                else
-                {
-                    RemoveSpellFromAttackQueue();
-                    AttackMostWanted();
-                }
-
-                Owner.Notify(GameLivingEvent.CastFinished, Owner, args);
-            }
-            else if (e == GameLivingEvent.CastFailed)
+            if (e == GameLivingEvent.CastFailed)
             {
                 // Tell owner why cast has failed.
                 switch ((args as CastFailedEventArgs).Reason)
@@ -153,7 +128,6 @@ namespace DOL.AI.Brain
             if (entry == null || !CastSpell(entry.Spell, entry.SpellLine, entry.Target, true))
                 return false;
 
-            // If the spell can be cast, remove it from the queue.
             RemoveSpellFromQueue();
             return true;
         }
@@ -179,12 +153,10 @@ namespace DOL.AI.Brain
             {
                 SpellQueueEntry entry = GetSpellFromAttackQueue();
 
-                if (entry != null)
-                {
-                    // If the spell can be cast, remove it from the queue.
-                    if (CastSpell(entry.Spell, entry.SpellLine, entry.Target, false))
-                        RemoveSpellFromAttackQueue();
-                }
+                if (entry == null || !CastSpell(entry.Spell, entry.SpellLine, entry.Target, false))
+                    continue;
+
+                RemoveSpellFromAttackQueue();
             }
         }
 
@@ -205,7 +177,7 @@ namespace DOL.AI.Brain
                 Body.TargetObject = spellTarget;
                 Body.CastSpell(spell, line, checkLos);
 
-                // Assume that the spell can always be casted, otherwise the same spell will be queued in the casting component if LoS checks are enabled.
+                // Assume that the spell can always be cast, otherwise the same spell will be queued in the casting component if LoS checks are enabled.
                 return true;
             }
             else

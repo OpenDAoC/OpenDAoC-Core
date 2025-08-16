@@ -875,7 +875,9 @@ namespace DOL.AI.Brain
 						effect.Cancel(false);
 				}
 
-				if (!CheckSpells(eCheckSpellType.Offensive))
+				if (CheckSpells(eCheckSpellType.Offensive))
+					Body.StopAttack();
+				else
 					Body.StartAttack(target);
 			}
 			else
@@ -889,7 +891,6 @@ namespace DOL.AI.Brain
 				{
 					Body.StopFollowing();
 					Body.WalkTo(new Point3D(m_tempX, m_tempY, m_tempZ), Body.MaxSpeed);
-					// TODO: Should the cached position be cleared?
 				}
 			}
 		}

@@ -91,8 +91,17 @@ namespace DOL.GS
 
         protected override bool PrepareMeleeAttack()
         {
-            // Necromancer pets are not allowed to interrupt their melee attack round by casting, so we have to check for queued spells when it's trying to attack.
-            if (_npcOwner.Brain is NecromancerPetBrain brain && brain.CheckSpellQueue())
+            // Call `Think` before attacking to allow spell casting opportunity.
+            // The NPC service's think cycles are not synchronized with attack cycles,
+            // so without this call, melee-attacking NPCs cannot reliably cast spells
+            // due to self-interrupt timing conflicts.
+            // Special handling for Necromancer pets.
+            if (_npcOwner.Brain is NecromancerPetBrain necroBrain && necroBrain.CheckSpellQueue())
+                return false;
+
+            _npcOwner.Brain.Think();
+
+            if (!_npcOwner.IsAttacking)
                 return false;
 
             int meleeAttackRange = _npcOwner.MeleeAttackRange;
