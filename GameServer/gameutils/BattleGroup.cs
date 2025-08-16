@@ -319,7 +319,7 @@ namespace DOL.GS
 			// There is no range check. If you're in a BG, every item goes to the treasurer or stay on the ground.
 			// If his inventory is full, the item should simply stay on the ground until he makes some room, or another treasurer is appointed.
 			// Items discarded by players can only be picked up by those same players.
-			if (!GetBGLootType() || battlegroupTreasurer == null || item.IsPlayedDiscarded)
+			if (!GetBGLootType() || battlegroupTreasurer == null || item.IsPlayerDiscarded)
 				return TryPickUpResult.DOES_NOT_HANDLE;
 
 			if (!GiveItem(battlegroupTreasurer, item.Item))

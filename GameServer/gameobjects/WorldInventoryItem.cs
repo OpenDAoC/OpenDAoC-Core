@@ -14,7 +14,7 @@ namespace DOL.GS
         public int GetPickupTime => _pickupTimer == null ? 0 : _pickupTimer.TimeUntilElapsed;
         public DbInventoryItem Item { get; private set; }
         public override LanguageDataObject.eTranslationIdentifier TranslationIdentifier => LanguageDataObject.eTranslationIdentifier.eItem;
-        public virtual bool IsPlayedDiscarded => false;
+        public virtual bool IsPlayerDiscarded => false;
 
         public WorldInventoryItem() : base() { }
 
@@ -158,7 +158,7 @@ namespace DOL.GS
 
     public class PlayerDiscardedWorldInventoryItem : WorldInventoryItem
     {
-        public override bool IsPlayedDiscarded => true;
+        public override bool IsPlayerDiscarded => true;
 
         public PlayerDiscardedWorldInventoryItem(DbInventoryItem item) : base(item) { }
     }

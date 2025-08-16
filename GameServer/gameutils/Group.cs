@@ -688,7 +688,7 @@ namespace DOL.GS
 			// A player with enough room in his inventory is chosen randomly.
 			// If there is none, the item should simply stays on the ground.
 			// Items discarded by players can only be picked up by those same players.
-			if (!AutosplitLoot || item.IsPlayedDiscarded)
+			if (!AutosplitLoot || item.IsPlayerDiscarded)
 				return TryPickUpResult.DOES_NOT_HANDLE;
 
 			List<GamePlayer> eligibleMembers = new(8);
