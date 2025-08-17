@@ -112,7 +112,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			var buildItemsByOwnerIdTask = BuildItemsByOwnerId(charsBySlot, firstSlot, lastSlot);
-			TimerService.ScheduleTimerAfterTask(buildItemsByOwnerIdTask, Continuation, buildItemsByOwnerIdTask, null);
+			ServiceUtils.ScheduleActionAfterTask(buildItemsByOwnerIdTask, Continuation, buildItemsByOwnerIdTask, null);
 
 			async Task<Dictionary<string, Dictionary<eInventorySlot, DbInventoryItem>>> BuildItemsByOwnerId(Dictionary<int, DbCoreCharacter> charsBySlot, int firstSlot, int lastSlot)
 			{

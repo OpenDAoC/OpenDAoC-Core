@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 using ECS.Debug;
 
 namespace DOL.GS
@@ -42,25 +41,6 @@ namespace DOL.GS
             Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
 
-        public static void ScheduleTimerAfterTask<T>(Task task, ContinuationAction<T> continuation, T argument, GameObject owner)
-        {
-            ContinuationActionTimerState<T> state = new(owner, continuation, argument);
-
-            task.ContinueWith(static (task, state) =>
-            {
-                if (task.IsFaulted)
-                {
-                    if (log.IsErrorEnabled)
-                        log.Error("Async task failed", task.Exception);
-
-                    return;
-                }
-
-                // We can't safely start a timer from within a task continuation, so we post it to the game loop.
-                GameLoopService.PostAfterTick(static (s) => new ContinuationActionTimer<T>(s as ContinuationActionTimerState<T>), state);
-            }, state);
-        }
-
         private static void TickInternal(int index)
         {
             ECSGameTimer timer = null;
@@ -85,41 +65,6 @@ namespace DOL.GS
             catch (Exception e)
             {
                 ServiceUtils.HandleServiceException(e, SERVICE_NAME, timer, timer.Owner);
-            }
-        }
-
-        public delegate bool ContinuationAction<T>(T argument);
-
-        private class ContinuationActionTimerState<T>
-        {
-            public GameObject Owner { get; }
-            public ContinuationAction<T> ContinuationAction { get; }
-            public T Argument { get; }
-
-            public ContinuationActionTimerState(GameObject owner, ContinuationAction<T> continuationAction, T argument)
-            {
-                Owner = owner;
-                ContinuationAction = continuationAction;
-                Argument = argument;
-            }
-        }
-
-        private class ContinuationActionTimer<T> : ECSGameTimerWrapperBase
-        {
-            private ContinuationAction<T> _continuationAction;
-            private T _argument;
-
-            public ContinuationActionTimer(ContinuationActionTimerState<T> state) : base(state.Owner)
-            {
-                _continuationAction = state.ContinuationAction;
-                _argument = state.Argument;
-                Start(0);
-            }
-
-            protected override int OnTick(ECSGameTimer timer)
-            {
-                _continuationAction(_argument);
-                return 0;
             }
         }
     }

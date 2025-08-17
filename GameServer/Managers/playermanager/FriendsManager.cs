@@ -320,7 +320,7 @@ namespace DOL.GS.Friends
 			if (sender is not GameClient client || client.ClientState is not GameClient.eClientState.Playing || client.Player == null)
 				return;
 
-			TimerService.ScheduleTimerAfterTask(AddPlayerFriendsListToCache(client.Player), SendPlayerFriendsList, client.Player, client.Player);
+			ServiceUtils.ScheduleActionAfterTask(AddPlayerFriendsListToCache(client.Player), SendPlayerFriendsList, client.Player, client.Player);
 		}
 
 		/// <summary>

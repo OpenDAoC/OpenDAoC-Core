@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -82,6 +83,46 @@ namespace DOL.GS
             player.Quit(true);
             CraftingProgressMgr.FlushAndSaveInstance(player);
             player.SaveIntoDatabase();
+        }
+
+        public static void ScheduleActionAfterTask<T>(Task task, ContinuationAction<T> continuation, T argument, GameObject owner)
+        {
+            task.ContinueWith(ContinueWithHandler, new ContinuationActionState<T>(owner, continuation, argument));
+
+            static void ContinueWithHandler(Task task, object stateObj)
+            {
+                if (task.IsFaulted)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error("Async task failed", task.Exception);
+
+                    return;
+                }
+
+                GameLoopService.PostBeforeTick(ActionHandler, stateObj);
+
+                static void ActionHandler(object stateObj)
+                {
+                    ContinuationActionState<T> state = (ContinuationActionState<T>) stateObj;
+                    state.ContinuationAction(state.Argument);
+                }
+            }
+        }
+
+        public delegate bool ContinuationAction<T>(T argument);
+
+        private class ContinuationActionState<T>
+        {
+            public GameObject Owner { get; }
+            public ContinuationAction<T> ContinuationAction { get; }
+            public T Argument { get; }
+
+            public ContinuationActionState(GameObject owner, ContinuationAction<T> continuationAction, T argument)
+            {
+                Owner = owner;
+                ContinuationAction = continuationAction;
+                Argument = argument;
+            }
         }
     }
 }
