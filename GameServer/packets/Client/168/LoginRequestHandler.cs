@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.ServerProperties;
 
@@ -54,14 +55,26 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 		private static DateTime _lastAccountCreateTime;
 		private static HttpClient _httpClient = new HttpClient();
+		private static HashSet<GameClient> _clientsLoggingIn = new();
 
 		public async void HandlePacket(GameClient client, GSPacketIn packet)
 		{
-			if (client == null)
+			// Prevent multiple concurrent logins for the same client.
+			if (client == null || !_clientsLoggingIn.Add(client))
 				return;
 
-			string ipAddress = client.TcpEndpointAddress;
+			try
+			{
+				await HandlePacketInternal(client, packet);
+			}
+			finally
+			{
+				_clientsLoggingIn.Remove(client);
+			}
+		}
 
+		private static async Task HandlePacketInternal(GameClient client, GSPacketIn packet)
+		{
 			byte major;
 			byte minor;
 			byte build;
@@ -162,6 +175,8 @@ namespace DOL.GS.PacketHandler.Client.v168
 				loggerUsing = true;
 				Log.Warn("logger detected (" + username + ")");
 			}*/
+
+			string ipAddress = client.TcpEndpointAddress;
 
 			// check server status
 			if (GameServer.Instance.ServerStatus == EGameServerStatus.GSS_Closed)
