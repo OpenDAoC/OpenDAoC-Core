@@ -12,7 +12,7 @@ namespace DOL.GS
             return GameServer.Database.FindObjectByKey<T>(key);
         }
 
-        public static async Task<T> FindObjectsByKeyAsync(object key)
+        public static async Task<T> FindObjectByKeyAsync(object key)
         {
             return await Task.Factory.StartNew(
                 static (state) => GameServer.Database.FindObjectByKey<T>(state),
