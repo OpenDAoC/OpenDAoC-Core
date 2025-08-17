@@ -128,7 +128,7 @@ namespace DOL.GS
             {
                 ECS.Debug.Diagnostics.StartPerfCounter(nameof(GameLoop));
 
-                GameLoopService.BeginTick();
+                GameLoopService.Tick();
                 TimerService.Tick();
                 ClientService.BeginTick();
                 NpcService.Tick();
@@ -143,7 +143,6 @@ namespace DOL.GS
                 ClientService.EndTick();
                 DailyQuestService.Tick();
                 WeeklyQuestService.Tick();
-                GameLoopService.EndTick();
                 CurrentServiceTick = string.Empty;
 
                 ECS.Debug.Diagnostics.StopPerfCounter(nameof(GameLoop));

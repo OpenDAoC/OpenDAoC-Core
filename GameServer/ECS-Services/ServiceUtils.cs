@@ -99,7 +99,7 @@ namespace DOL.GS
                     return;
                 }
 
-                GameLoopService.PostBeforeTick(ActionHandler, stateObj);
+                GameLoopService.Post(ActionHandler, stateObj);
 
                 static void ActionHandler(object stateObj)
                 {

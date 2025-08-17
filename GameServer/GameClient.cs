@@ -439,7 +439,7 @@ namespace DOL.GS
 
             // Posting the disconnect logic to the game loop isn't necessary in most cases.
             // However, this can sometimes be called outside the game loop, for example if a client fails to connect properly.
-            GameLoopService.PostBeforeTick(static state =>
+            GameLoopService.Post(static state =>
             {
                 lock (state._disconnectLock)
                 {
@@ -484,7 +484,7 @@ namespace DOL.GS
             base.OnConnect(sessionId);
 
             // `OnConnect` is exclusively called from outside the game loop.
-            GameLoopService.PostBeforeTick(static state =>
+            GameLoopService.Post(static state =>
             {
                 ClientService.OnClientConnect(state);
                 GameEventMgr.Notify(GameClientEvent.Connected, state);

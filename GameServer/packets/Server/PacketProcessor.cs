@@ -311,7 +311,7 @@ namespace DOL.GS.PacketHandler
             _udpSendArgs?.Dispose();
 
             // Drain all pending packets on the next game loop tick to avoid concurrent modification issues.
-            GameLoopService.PostAfterTick(static (state) =>
+            GameLoopService.Post(static (state) =>
             {
                 try
                 {
@@ -466,7 +466,7 @@ namespace DOL.GS.PacketHandler
                 log.Error($"{Marshal.ToHexDump(description, packetBuffer)}\n{Environment.StackTrace}");
             }
 
-            GameLoopService.PostBeforeTick(static state =>
+            GameLoopService.Post(static state =>
             {
                 state.Client.Out.SendMessage($"Oversized packet detected and discarded (code: 0x{state.Code:X2}) (size: {state.Size}). Please report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
             }, new
