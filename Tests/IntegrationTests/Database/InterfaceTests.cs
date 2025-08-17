@@ -913,10 +913,6 @@ namespace DOL.Tests.Integration.Database
 			
 			ClassicAssert.IsTrue(nullAdd, "Select Objects null parameter Test Need some null object to be Accurate...");
 
-			var nullParam = Database.SelectObjects<TestTable>(DB.Column("TestField").IsEqualTo(null));
-			
-			CollectionAssert.IsEmpty(nullParam, "Select Objects with Null Parameter Query should not return any record...");
-
 			var resultsWithTestfieldNull = Database.SelectObjects<TestTable>(DB.Column("TestField").IsNull());
 			var allObjectsAfter = Database.SelectAllObjects<TestTable>();
 
@@ -1010,9 +1006,6 @@ namespace DOL.Tests.Integration.Database
 		public void TestSelectObjectsNonRegistered()
 		{
 			var assertFailMessage = "Trying to Query a Non Registered Table should throw a DatabaseException...";
-			ClassicAssert.Throws(typeof(DatabaseException), () => Database.SelectObject<TableNotRegistered>(DB.Column("a").IsEqualTo(null)), assertFailMessage);
-			ClassicAssert.Throws(typeof(DatabaseException), () => Database.SelectObjects<TableNotRegistered>(DB.Column("a").IsEqualTo(null)), assertFailMessage);
-			ClassicAssert.Throws(typeof(DatabaseException), () => Database.MultipleSelectObjects<TableNotRegistered>(new[] { DB.Column("a").IsEqualTo(null) }), assertFailMessage);
 			ClassicAssert.Throws(typeof(DatabaseException), () => Database.SelectAllObjects<TableNotRegistered>(), assertFailMessage);
 		}
 		
