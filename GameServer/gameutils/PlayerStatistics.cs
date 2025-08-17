@@ -169,7 +169,7 @@ namespace DOL.GS
             List<StatToCount> allStatsRes = new();
             List<StatToCount> allStatsRpEarnedFromHeal = new();
 
-            foreach (GamePlayer otherPlayer in ClientService.GetNonGmPlayers())
+            foreach (GamePlayer otherPlayer in ClientService.Instance.GetNonGmPlayers())
             {
                 if (!otherPlayer.IgnoreStatistics && otherPlayer.Statistics is PlayerStatistics stats)
                 {
@@ -350,7 +350,7 @@ namespace DOL.GS
                 }
                 case "player":
                 {
-                    GamePlayer otherPlayer = ClientService.GetPlayerByPartialName(playerName, out _);
+                    GamePlayer otherPlayer = ClientService.Instance.GetPlayerByPartialName(playerName, out _);
 
                     if (otherPlayer == null)
                     {

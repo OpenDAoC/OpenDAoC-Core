@@ -271,7 +271,7 @@ namespace DOL.GS
 
                 ClientState = eClientState.Disconnected;
                 PacketProcessor?.Dispose();
-                ClientService.OnClientDisconnect(this);
+                ClientService.Instance.OnClientDisconnect(this);
                 GameEventMgr.Notify(GameClientEvent.Disconnected, this);
 
                 if (Account != null)
@@ -439,7 +439,7 @@ namespace DOL.GS
 
             // Posting the disconnect logic to the game loop isn't necessary in most cases.
             // However, this can sometimes be called outside the game loop, for example if a client fails to connect properly.
-            GameLoopService.Post(static state =>
+            GameLoopService.Instance.Post(static state =>
             {
                 lock (state._disconnectLock)
                 {
@@ -484,9 +484,9 @@ namespace DOL.GS
             base.OnConnect(sessionId);
 
             // `OnConnect` is exclusively called from outside the game loop.
-            GameLoopService.Post(static state =>
+            GameLoopService.Instance.Post(static state =>
             {
-                ClientService.OnClientConnect(state);
+                ClientService.Instance.OnClientConnect(state);
                 GameEventMgr.Notify(GameClientEvent.Connected, state);
             }, this);
         }

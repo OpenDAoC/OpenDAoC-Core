@@ -183,7 +183,7 @@ namespace DOL.GS
 				/* Sending broadcast */
 				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.MountRelic.Stored", relic.CurrentCarrier.Name, GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name, Name);
 
-				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
+				foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
 				{
 					otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(otherPlayer.Client.Account.Language, "GameRelicPad.MountRelic.Captured", GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name), eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
 					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -244,7 +244,7 @@ namespace DOL.GS
 				// relic returned to pad, probably because it was dropped on ground and timer expired.
 				string message = string.Format("The {0} has been returned to {1}.", relic.Name, Name);
 
-				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
+				foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
 					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 			}
 		}
@@ -257,7 +257,7 @@ namespace DOL.GS
 			{
 				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.RemoveRelic.Removed", relic.CurrentCarrier.Name, GlobalConstants.RealmToName((eRealm)relic.CurrentCarrier.Realm), relic.Name, Name);
 
-				foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
+				foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
 					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
 				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);

@@ -88,7 +88,7 @@ namespace DOL.GS.Commands
 						try
 						{
 							int sessionID = Convert.ToInt32(args[2][1..]);
-							targetPlayer = ClientService.GetClientBySessionId(sessionID)?.Player;
+							targetPlayer = ClientService.Instance.GetClientBySessionId(sessionID)?.Player;
 						}
 						catch
 						{
@@ -96,7 +96,7 @@ namespace DOL.GS.Commands
 					}
 					else
 					{
-						targetPlayer = ClientService.GetPlayerByPartialName(args[2], out _);
+						targetPlayer = ClientService.Instance.GetPlayerByPartialName(args[2], out _);
 					}
 
 					if (targetPlayer == null)
@@ -151,7 +151,7 @@ namespace DOL.GS.Commands
 				#region Jump to Name Realm
 				else if (args.Length == 4 && args[1] == "to")
 				{
-					GamePlayer targetPlayer= ClientService.GetPlayerByPartialName(args[2], out _);
+					GamePlayer targetPlayer= ClientService.Instance.GetPlayerByPartialName(args[2], out _);
 
 					if (targetPlayer == null)
 					{
@@ -202,7 +202,7 @@ namespace DOL.GS.Commands
 				#region Jump above PlayerName
 				else if (args.Length == 3 && args[1].ToLower() == "above")
 				{
-					GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[2], out _);
+					GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(args[2], out _);
 
 					if (targetPlayer == null)
 					{
@@ -226,7 +226,7 @@ namespace DOL.GS.Commands
 				#region Jump Name to Jail
 				else if (args.Length == 4 && args[2] == "to" && args[3] == "jail")
 				{
-					GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[1], out _);
+					GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(args[1], out _);
 
 					if (targetPlayer == null)
 					{
@@ -273,7 +273,7 @@ namespace DOL.GS.Commands
 				#region Jump PlayerName to X Y Z
 				else if (args.Length == 6 && args[2] == "to")
 				{
-					GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[1], out _);
+					GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(args[1], out _);
 
 					if (targetPlayer == null)
 					{
@@ -287,7 +287,7 @@ namespace DOL.GS.Commands
 				#region Jump PlayerName to X Y Z RegionID
 				else if (args.Length == 7 && args[2] == "to")
 				{
-					GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[1], out _);
+					GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(args[1], out _);
 
 					if (targetPlayer == null)
 					{
@@ -305,7 +305,7 @@ namespace DOL.GS.Commands
 				#region Jump PlayerName to PlayerCible
 				else if (args.Length == 4 && args[2] == "to")
 				{
-					GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[1], out _);
+					GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(args[1], out _);
 					GamePlayer destinationPlayer;
 
 					if (targetPlayer == null)
@@ -319,7 +319,7 @@ namespace DOL.GS.Commands
 					}
 					else
 					{
-						destinationPlayer = ClientService.GetPlayerByPartialName(args[3], out _);
+						destinationPlayer = ClientService.Instance.GetPlayerByPartialName(args[3], out _);
 					}
 
 					if (destinationPlayer == null)

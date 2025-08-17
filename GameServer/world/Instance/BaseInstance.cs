@@ -327,7 +327,7 @@ namespace DOL.GS
                 //a base in one of their OnPlayerEnter/Exit overrides.
                 //When this is a case, keep the timer ticking - we will eventually have it cleanup the instance,
                 //it just wont be running at optimum speed.
-                if (ClientService.GetPlayersOfRegion(m_instance).Count > 0)
+                if (ClientService.Instance.GetPlayersOfRegion(m_instance).Count > 0)
                 {
                     if (log.IsWarnEnabled)
                         log.Warn("Players were still in the region on AutoRemoveregionTimer Tick! Please check the overridden voids OnPlayerEnter/Exit to ensure that a 'base.OnPlayerEnter/Exit' is included!");

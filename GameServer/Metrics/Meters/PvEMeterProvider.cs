@@ -33,7 +33,7 @@ public class PvEMeterProvider : IMeterProvider
     {
         try
         {
-            List<GameClient> activePlayers = ClientService.GetClients().Where(IsPlayerInPvEZone).ToList();
+            List<GameClient> activePlayers = ClientService.Instance.GetClients().Where(IsPlayerInPvEZone).ToList();
 
             static bool IsPlayerInPvEZone(GameClient client)
             {

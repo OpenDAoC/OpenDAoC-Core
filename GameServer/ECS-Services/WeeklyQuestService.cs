@@ -2,18 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
-using ECS.Debug;
+using DOL.Logging;
 
 namespace DOL.GS
 {
-    public class WeeklyQuestService
+    public sealed class WeeklyQuestService : GameServiceBase
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "WeeklyQuestService";
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
         private const string WEEKLY_INTERVAL_KEY = "WEEKLY";
         private static DateTime lastWeeklyRollover;
 
+        public static WeeklyQuestService Instance { get; private set; }
+
         static WeeklyQuestService()
+        {
+            Instance = new();
+        }
+
+        private WeeklyQuestService()
         {
             IList<DbTaskRefreshInterval> loadQuestsProp = GameServer.Database.SelectAllObjects<DbTaskRefreshInterval>();
 
@@ -24,11 +31,9 @@ namespace DOL.GS
             }
         }
 
-        public static void Tick()
+        public override void Tick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
-            //.WriteLine($"daily:{lastDailyRollover.Date.DayOfYear} weekly:{lastWeeklyRollover.Date.DayOfYear+7} now:{DateTime.Now.Date.DayOfYear}");
+            ProcessPostedActions();
 
             // This is where the weekly check will go once testing is finished.
             if (lastWeeklyRollover.Date.DayOfYear + 7 < DateTime.Now.Date.DayOfYear || lastWeeklyRollover.Year < DateTime.Now.Year)
@@ -61,7 +66,6 @@ namespace DOL.GS
                     if (log.IsErrorEnabled)
                         log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
 
-                    Diagnostics.StopPerfCounter(SERVICE_NAME);
                     return;
                 }
 
@@ -81,8 +85,6 @@ namespace DOL.GS
                         GameServer.Database.DeleteObject(existingWeeklyQuest);
                 }
             }
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
     }
 }

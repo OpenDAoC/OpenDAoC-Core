@@ -46,7 +46,7 @@ namespace DOL.GS.Commands
 			ArrayList clientsList = new ArrayList();
 			ArrayList resultMessages = new ArrayList();
 
-			foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
+			foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
 			{
 				if (otherPlayer.Client.Account.PrivLevel > (uint) ePrivLevel.Player && otherPlayer.IsAnonymous == false)
 				{

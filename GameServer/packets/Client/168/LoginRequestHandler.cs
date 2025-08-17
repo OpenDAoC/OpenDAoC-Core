@@ -214,7 +214,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					if (Log.IsInfoEnabled)
 						Log.Info(string.Format($"({ipAddress}) User {userName} logging on! ({client.Version} type:{client.ClientType} add:{client.ClientAddons:G})"));
 
-					GameClient otherClient = ClientService.GetClientFromAccountName(userName);
+					GameClient otherClient = ClientService.Instance.GetClientFromAccountName(userName);
 
 					if (otherClient != null)
 					{
@@ -428,7 +428,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 					//Save the account table
 					client.Account = playerAccount;
 
-					if (ClientService.ClientCount > Properties.MAX_PLAYERS)
+					if (ClientService.Instance.ClientCount > Properties.MAX_PLAYERS)
 					{
 						if (Log.IsInfoEnabled)
 							Log.InfoFormat("Too many clients connected, denied login to " + playerAccount.Name);

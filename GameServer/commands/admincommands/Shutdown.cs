@@ -92,7 +92,7 @@ namespace DOL.GS.Commands
 				date = date.AddSeconds(m_counter);
 				string msg = $"Automated server restart in {m_counter / 60} mins! (Restart at {date:HH:mm \"GMT\" zzz})";
 
-				foreach (GamePlayer player in ClientService.GetPlayers())
+				foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 					player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, msg);
 
 				if (log.IsWarnEnabled)
@@ -241,7 +241,7 @@ namespace DOL.GS.Commands
 
 				if (translationID != string.Empty)
 				{
-					foreach (GamePlayer player in ClientService.GetPlayers())
+					foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 					{
 						if (args2 == -1)
 							ChatUtil.SendServerMessage(player.Client, translationID, args1);
@@ -254,7 +254,7 @@ namespace DOL.GS.Commands
 				{
 					GameServer.Instance.Close();
 
-					foreach (GamePlayer player in ClientService.GetPlayers())
+					foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 					{
 						// Message: "The server is now closed to all incoming connections! The server will shut down in {0} seconds!"
 						ChatUtil.SendDebugMessage(player.Client, "AdminCommands.Account.Msg.ServerClosed", secs);
@@ -423,7 +423,7 @@ namespace DOL.GS.Commands
 
 				if (translationID != string.Empty)
 				{
-					foreach (GamePlayer player in ClientService.GetPlayers())
+					foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 					{
 						if (args2 == -1)
 							ChatUtil.SendServerMessage(player.Client, translationID, args1);
@@ -436,7 +436,7 @@ namespace DOL.GS.Commands
 				{
 					GameServer.Instance.Close();
 
-					foreach (GamePlayer player in ClientService.GetPlayers())
+					foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 					{
 						// Message: "The server is now closed to all incoming connections! The server will shut down in {0} seconds!"
 						ChatUtil.SendDebugMessage(player.Client, "AdminCommands.Account.Msg.ServerClosed", secs);
@@ -542,7 +542,7 @@ namespace DOL.GS.Commands
 						ChatUtil.SendDebugMessage(client, "AdminCommands.Shutdown.Msg.YouCancel", null);
 						
 						// Send message to all players letting them know the shutdown isn't occurring
-						foreach (GamePlayer player in ClientService.GetPlayers())
+						foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 						{
 							// Message: "{0} stopped the server shutdown!"
 							ChatUtil.SendDebugMessage(player.Client, "AdminCommands.Shutdown.Msg.StaffCancel", user.Name);
@@ -722,7 +722,7 @@ namespace DOL.GS.Commands
 			bool popup = (m_counter / 60) < 60;
 			long counter = m_counter / 60;
 			
-			foreach (GamePlayer player in ClientService.GetPlayers())
+			foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 			{
 				if (popup)
 				{

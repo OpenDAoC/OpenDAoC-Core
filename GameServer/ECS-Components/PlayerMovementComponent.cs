@@ -48,7 +48,7 @@ namespace DOL.GS
         {
             if (!Owner.IsLinkDeathTimerRunning)
             {
-                if (ServiceUtils.ShouldTick(LastPositionUpdatePacketReceivedTime + SOFT_LINK_DEATH_THRESHOLD))
+                if (GameServiceUtils.ShouldTick(LastPositionUpdatePacketReceivedTime + SOFT_LINK_DEATH_THRESHOLD))
                 {
                     if (log.IsInfoEnabled)
                         log.Info($"Position update timeout on client. Calling link death. ({Owner.Client})");
@@ -66,13 +66,13 @@ namespace DOL.GS
                 }
 
                 // Position and heading broadcasts are mutually exclusive.
-                if (_needBroadcastPosition && ServiceUtils.ShouldTick(_nextPositionBroadcast))
+                if (_needBroadcastPosition && GameServiceUtils.ShouldTick(_nextPositionBroadcast))
                 {
                     BroadcastPosition();
                     _nextPositionBroadcast = GameLoop.GameLoopTime + BROADCAST_MINIMUM_INTERVAL;
                     _needBroadcastPosition = false;
                 }
-                else if (_needBroadcastHeading && ServiceUtils.ShouldTick(_nextHeadingBroadcast))
+                else if (_needBroadcastHeading && GameServiceUtils.ShouldTick(_nextHeadingBroadcast))
                 {
                     BroadcastHeading();
                     _nextHeadingBroadcast = GameLoop.GameLoopTime + BROADCAST_MINIMUM_INTERVAL;

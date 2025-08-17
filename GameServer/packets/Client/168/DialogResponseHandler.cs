@@ -116,7 +116,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 {
                     if (response == 0x01)
                     {
-                        GameClient otherClient = ClientService.GetClientBySessionId(data1);
+                        GameClient otherClient = ClientService.Instance.GetClientBySessionId(data1);
 
                         if (otherClient == null)
                             return;

@@ -1025,7 +1025,7 @@ namespace DOL.GS.Spells
 
 		public bool IsCastEndingSoon(int millisecondsBeforeEnd)
 		{
-			return ServiceUtils.ShouldTick(_castEndTick - millisecondsBeforeEnd);
+			return GameServiceUtils.ShouldTick(_castEndTick - millisecondsBeforeEnd);
 		}
 
 		#endregion
@@ -1081,7 +1081,7 @@ namespace DOL.GS.Spells
 					if (!CheckDuringCast(Target))
 						CastState = eCastState.Interrupted;
 
-					if (ServiceUtils.ShouldTick(_castEndTick))
+					if (GameServiceUtils.ShouldTick(_castEndTick))
 					{
 						if (!CheckEndCast(Target))
 						{

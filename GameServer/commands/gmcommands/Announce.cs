@@ -28,7 +28,7 @@ namespace DOL.GS.Commands
             {
                 case "log":
                 {
-                    foreach (GamePlayer player in ClientService.GetPlayers())
+                    foreach (GamePlayer player in ClientService.Instance.GetPlayers())
                         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.LogAnnounce", message), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
                     break;
@@ -40,28 +40,28 @@ namespace DOL.GS.Commands
                         message
                     };
 
-                    foreach (GamePlayer player in ClientService.GetPlayers())
+                    foreach (GamePlayer player in ClientService.Instance.GetPlayers())
                         player.Out.SendCustomTextWindow(LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.WindowAnnounce", client.Player.Name), messages);
 
                     break;
                 }
                 case "send":
                 {
-                    foreach (GamePlayer player in ClientService.GetPlayers())
+                    foreach (GamePlayer player in ClientService.Instance.GetPlayers())
                         player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.SendAnnounce", message), eChatType.CT_Send, eChatLoc.CL_ChatWindow);
 
                     break;
                 }
                 case "center":
                 {
-                    foreach (GamePlayer player in ClientService.GetPlayers())
+                    foreach (GamePlayer player in ClientService.Instance.GetPlayers())
                         player.Out.SendMessage(message, eChatType.CT_ScreenCenter, eChatLoc.CL_SystemWindow);
 
                     break;
                 }
                 case "confirm":
                 {
-                    foreach (GamePlayer player in ClientService.GetPlayers())
+                    foreach (GamePlayer player in ClientService.Instance.GetPlayers())
                         player.Out.SendDialogBox(eDialogCode.SimpleWarning, 0, 0, 0, 0, eDialogType.Ok, true, LanguageMgr.GetTranslation(player.Client, "GMCommands.Announce.ConfirmAnnounce", client.Player.Name, message));
 
                     break;

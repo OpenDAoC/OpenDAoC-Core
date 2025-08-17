@@ -82,7 +82,7 @@ namespace DOL.GS.Commands
                 if (args.Length == 2)
                     return false;
 
-                GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[2], out ClientService.PlayerGuessResult result);
+                GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(args[2], out ClientService.PlayerGuessResult result);
 
                 if (client.Player == targetPlayer)
                 {

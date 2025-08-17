@@ -170,7 +170,7 @@ namespace DOL.GS.Appeal
                 return _appealCache.Values.ToList();
 
             List<DbAppeal> result = new();
-            List<GamePlayer> onlinePlayers = ClientService.GetPlayers();
+            List<GamePlayer> onlinePlayers = ClientService.Instance.GetPlayers();
 
             foreach (GamePlayer player in onlinePlayers)
             {
@@ -286,7 +286,7 @@ namespace DOL.GS.Appeal
 
         public static List<GamePlayer> GetAvailableStaffMembers()
         {
-            return ClientService.GetGmPlayers<object>(static (player, arg) => !player.TempProperties.GetProperty<bool>(MUTE_PROPERTY));
+            return ClientService.Instance.GetGmPlayers<object>(static (player, arg) => !player.TempProperties.GetProperty<bool>(MUTE_PROPERTY));
         }
 
         public static void MessageToAllStaff(string message)

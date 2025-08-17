@@ -87,7 +87,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						GamePlayer inviteePlayer = ClientService.GetPlayerByPartialName(args[2], out _);
+						GamePlayer inviteePlayer = ClientService.Instance.GetPlayerByPartialName(args[2], out _);
 
 						if (inviteePlayer == null || !GameServer.ServerRules.IsSameRealm(inviteePlayer, client.Player, true)) // allow priv level>1 to invite anyone
 						{
@@ -164,7 +164,7 @@ namespace DOL.GS.Commands
 							PrintHelp(client);
 						}
 
-						GamePlayer inviteePlayer = ClientService.GetPlayerByPartialName(args[2], out _);
+						GamePlayer inviteePlayer = ClientService.Instance.GetPlayerByPartialName(args[2], out _);
 
 						if (inviteePlayer == null)
 						{
@@ -224,7 +224,7 @@ namespace DOL.GS.Commands
 							PrintHelp(client);
 						}
 						string invitename = String.Join(" ", args, 2, args.Length - 2);
-						GamePlayer inviteePlayer = ClientService.GetPlayerByPartialName(invitename, out _);
+						GamePlayer inviteePlayer = ClientService.Instance.GetPlayerByPartialName(invitename, out _);
 
 						if (inviteePlayer == null)
 						{
@@ -305,7 +305,7 @@ namespace DOL.GS.Commands
 							return;
 						}
 
-						GamePlayer inviteePlayer = ClientService.GetPlayerByPartialName(args[2], out _);
+						GamePlayer inviteePlayer = ClientService.Instance.GetPlayerByPartialName(args[2], out _);
 
 						if (inviteePlayer == null || !GameServer.ServerRules.IsSameRealm(client.Player, inviteePlayer, true)) // allow priv level>1 to join anywhere
 						{

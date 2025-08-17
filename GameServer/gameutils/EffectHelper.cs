@@ -7,7 +7,7 @@ using DOL.GS.Spells;
 
 namespace DOL.GS
 {
-    public static class EffectService
+    public static class EffectHelper
     {
         private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 

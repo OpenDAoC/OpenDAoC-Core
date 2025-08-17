@@ -29,7 +29,7 @@ namespace DOL.GS.Commands
             string nameToDisplay = string.IsNullOrEmpty(targetName) ? string.Empty : char.ToUpper(targetName[0]) + targetName[1..];
             string message = string.Join(" ", args, 2, args.Length - 2);
             ClientService.PlayerGuessResult result;
-            GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(targetName, out result);
+            GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(targetName, out result);
 
             if (targetPlayer != null && !GameServer.ServerRules.IsAllowedToUnderstand(client.Player, targetPlayer))
                 targetPlayer = null;

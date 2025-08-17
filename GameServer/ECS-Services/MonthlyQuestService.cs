@@ -2,18 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
-using ECS.Debug;
+using DOL.Logging;
 
 namespace DOL.GS
 {
-    public class MonthlyQuestService
+    public sealed class MonthlyQuestService : GameServiceBase
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "MonthlyQuestService";
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
         private const string MONTHLY_INTERVAL_KEY = "MONTHLY";
-        private static DateTime lastMonthlyRollover;
+        private DateTime lastMonthlyRollover;
+
+        public static MonthlyQuestService Instance { get; private set; }
 
         static MonthlyQuestService()
+        {
+            Instance = new();
+        }
+
+        private MonthlyQuestService()
         {
             IList<DbTaskRefreshInterval> loadQuestsProp = GameServer.Database.SelectAllObjects<DbTaskRefreshInterval>();
 
@@ -24,11 +31,8 @@ namespace DOL.GS
             }
         }
 
-        public static void Tick()
+        public override void Tick()
         {
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
-            //.WriteLine($"daily:{lastDailyRollover.Date.DayOfYear} weekly:{lastWeeklyRollover.Date.DayOfYear+7} now:{DateTime.Now.Date.DayOfYear}");
-
             // This is where the weekly check will go once testing is finished.
             if (lastMonthlyRollover.Date.Month < DateTime.Now.Date.Month || lastMonthlyRollover.Year < DateTime.Now.Year)
             {
@@ -60,7 +64,6 @@ namespace DOL.GS
                     if (log.IsErrorEnabled)
                         log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
 
-                    Diagnostics.StopPerfCounter(SERVICE_NAME);
                     return;
                 }
 
@@ -80,8 +83,6 @@ namespace DOL.GS
                         GameServer.Database.DeleteObject(existingMonthlyQuest);
                 }
             }
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
     }
 }

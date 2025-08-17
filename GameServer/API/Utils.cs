@@ -103,10 +103,10 @@ public class Utils
 
         if (!_cache.TryGetValue(_playerCountCacheKey, out PlayerCount playerCount))
         {
-            var clients = ClientService.ClientCount;
-            var albPlayers = ClientService.GetPlayersOfRealm(eRealm.Albion).Count;
-            var midPlayers = ClientService.GetPlayersOfRealm(eRealm.Midgard).Count;
-            var hibPlayers = ClientService.GetPlayersOfRealm(eRealm.Hibernia).Count;
+            var clients = ClientService.Instance.ClientCount;
+            var albPlayers = ClientService.Instance.GetPlayersOfRealm(eRealm.Albion).Count;
+            var midPlayers = ClientService.Instance.GetPlayersOfRealm(eRealm.Midgard).Count;
+            var hibPlayers = ClientService.Instance.GetPlayersOfRealm(eRealm.Hibernia).Count;
             var now = DateTime.Now;
 
             playerCount = new PlayerCount
@@ -158,7 +158,7 @@ public class Utils
     {
         Dictionary<string, ClientStatus> playersOnline = new();
 
-        foreach (GameClient client in ClientService.GetClients())
+        foreach (GameClient client in ClientService.Instance.GetClients())
         {
             ClientStatus clientStatus = new()
             {

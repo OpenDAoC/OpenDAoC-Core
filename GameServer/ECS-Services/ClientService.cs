@@ -5,33 +5,37 @@ using System.Threading;
 using DOL.Database;
 using DOL.GS.Housing;
 using DOL.GS.ServerProperties;
+using DOL.Logging;
 using ECS.Debug;
 
 namespace DOL.GS
 {
-    public static class ClientService
+    public sealed class ClientService : GameServiceBase
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = nameof(ClientService);
-        private const string SERVICE_NAME_BEGIN = $"{SERVICE_NAME}_Begin";
-        private const string SERVICE_NAME_END = $"{SERVICE_NAME}_End";
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
         private const int HARD_TIMEOUT = 150000;
         private const int STATIC_OBJECT_UPDATE_MIN_DISTANCE = 4000;
 
-        private static List<GameClient> _clients = new();
-        private static int _entityCount; // For diagnostics.
-        private static SimpleDisposableLock _lock = new(LockRecursionPolicy.SupportsRecursion);
-        private static int _lastValidIndex;
-        private static int _clientCount;
-        private static GameClient[] _clientsBySessionId = new GameClient[ushort.MaxValue]; // Fast lookup by session ID.
-        private static Trie<GamePlayer> _playerNameTrie = new();
+        private List<GameClient> _clients = new();
+        private int _entityCount; // For diagnostics only.
+        private SimpleDisposableLock _lock = new(LockRecursionPolicy.SupportsRecursion);
+        private int _lastValidIndex;
+        private int _clientCount;
+        private GameClient[] _clientsBySessionId = new GameClient[ushort.MaxValue];
+        private Trie<GamePlayer> _playerNameTrie = new();
 
-        public static int ClientCount => _clientCount; // `_clients` contains null objects.
+        public int ClientCount => _clientCount;
+        public static ClientService Instance { get; private set; }
 
-        public static void BeginTick()
+        static ClientService()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME_BEGIN;
-            Diagnostics.StartPerfCounter(SERVICE_NAME_BEGIN);
+            Instance = new();
+        }
+
+        public override void BeginTick()
+        {
+            ProcessPostedActions();
 
             using (_lock)
             {
@@ -47,28 +51,22 @@ namespace DOL.GS
                         log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
 
                     _lastValidIndex = -1;
-                    Diagnostics.StopPerfCounter(SERVICE_NAME);
                     return;
                 }
             }
 
             GameLoop.ExecuteWork(_lastValidIndex + 1, BeginTickInternal);
-            Diagnostics.StopPerfCounter(SERVICE_NAME_BEGIN);
         }
 
-        public static void EndTick()
+        public override void EndTick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME_END;
-            Diagnostics.StartPerfCounter(SERVICE_NAME_END);
             GameLoop.ExecuteWork(_lastValidIndex + 1, EndTickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(SERVICE_NAME, ref _entityCount, _clients.Count);
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME_END);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref _entityCount, _clients.Count);
         }
 
-        private static void BeginTickInternal(int index)
+        private void BeginTickInternal(int index)
         {
             GameClient client = null;
 
@@ -103,7 +101,7 @@ namespace DOL.GS
                         if (client.ClientState is not GameClient.eClientState.Playing || player.ObjectState is not GameObject.eObjectState.Active)
                             break;
 
-                        if (ServiceUtils.ShouldTick(player.NextWorldUpdate))
+                        if (GameServiceUtils.ShouldTick(player.NextWorldUpdate))
                         {
                             UpdateWorld(player);
                             player.NextWorldUpdate = GameLoop.GameLoopTime + Properties.WORLD_PLAYER_UPDATE_INTERVAL;
@@ -117,11 +115,11 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                ServiceUtils.HandleServiceException(e, SERVICE_NAME_BEGIN, client, client.Player);
+                GameServiceUtils.HandleServiceException(e, ServiceName, client, client.Player);
             }
         }
 
-        private static void EndTickInternal(int index)
+        private void EndTickInternal(int index)
         {
             GameClient client = null;
 
@@ -148,39 +146,39 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                ServiceUtils.HandleServiceException(e, SERVICE_NAME_END, client, client.Player);
+                GameServiceUtils.HandleServiceException(e, ServiceName, client, client.Player);
             }
         }
 
-        private static void Receive(GameClient client)
+        private void Receive(GameClient client)
         {
             long startTick = GameLoop.GetRealTime();
             client.Receive();
             long stopTick = GameLoop.GetRealTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {SERVICE_NAME_BEGIN}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+                log.Warn($"Long {ServiceName}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
         }
 
-        private static void Send(GameClient client)
+        private void Send(GameClient client)
         {
             long startTick = GameLoop.GetRealTime();
             client.PacketProcessor.SendPendingPackets();
             long stopTick = GameLoop.GetRealTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {SERVICE_NAME_END}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+                log.Warn($"Long {ServiceName}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
         }
 
-        public static void OnClientConnect(GameClient client)
+        public void OnClientConnect(GameClient client)
         {
             GameClient registeredClient = _clientsBySessionId[client.SessionId.Value];
 
             if (registeredClient != null && log.IsWarnEnabled)
             {
                 log.Warn($"A client with the same session ID ({client.SessionId.Value}) was already registered." +
-                            $"(Client: {client})" +
-                            $"(Existing Client: {registeredClient})");
+                    $"(Client: {client})" +
+                    $"(Existing Client: {registeredClient})");
             }
 
             // Let's just overwrite the existing client. Most likely `OnClientDisconnect` was not called for some reason.
@@ -192,15 +190,15 @@ namespace DOL.GS
             {
                 ServiceObjectId serviceObjectId = client.ServiceObjectId;
                 log.Warn($"{nameof(OnClientConnect)} was called but the client couldn't be added to the entity manager." +
-                         $"(Client: {client})" +
-                         $"(IsIdSet: {serviceObjectId.IsSet})" +
-                         $"(IsPendingAddition: {serviceObjectId.IsPendingAddition})" +
-                         $"(IsPendingRemoval: {serviceObjectId.IsPendingAddition})" +
-                         $"\n{Environment.StackTrace}");
+                    $"(Client: {client})" +
+                    $"(IsIdSet: {serviceObjectId.IsSet})" +
+                    $"(IsPendingAddition: {serviceObjectId.IsPendingAddition})" +
+                    $"(IsPendingRemoval: {serviceObjectId.IsPendingAddition})" +
+                    $"\n{Environment.StackTrace}");
             }
         }
 
-        public static void OnClientDisconnect(GameClient client)
+        public void OnClientDisconnect(GameClient client)
         {
             GameClient registeredClient = _clientsBySessionId[client.SessionId.Value];
 
@@ -223,22 +221,22 @@ namespace DOL.GS
             }
         }
 
-        public static void OnPlayerJoin(GamePlayer player)
+        public void OnPlayerJoin(GamePlayer player)
         {
             _playerNameTrie.Insert(player.Name, player);
         }
 
-        public static void OnPlayerLeave(GamePlayer player)
+        public void OnPlayerLeave(GamePlayer player)
         {
             _playerNameTrie.Remove(player.Name, player);
         }
 
-        public static GamePlayer GetPlayer<T>(CheckPlayerAction<T> action)
+        public GamePlayer GetPlayer<T>(CheckPlayerAction<T> action)
         {
             return GetPlayer(action, default);
         }
 
-        public static GamePlayer GetPlayer<T>(CheckPlayerAction<T> action, T actionArgument)
+        public GamePlayer GetPlayer<T>(CheckPlayerAction<T> action, T actionArgument)
         {
             using (_lock)
             {
@@ -259,17 +257,17 @@ namespace DOL.GS
             return null;
         }
 
-        public static List<GamePlayer> GetPlayers()
+        public List<GamePlayer> GetPlayers()
         {
             return GetPlayers<object>(null, null);
         }
 
-        public static List<GamePlayer> GetPlayers<T>(CheckPlayerAction<T> action)
+        public List<GamePlayer> GetPlayers<T>(CheckPlayerAction<T> action)
         {
             return GetPlayers(action, default);
         }
 
-        public static List<GamePlayer> GetPlayers<T>(CheckPlayerAction<T> action, T actionArgument)
+        public List<GamePlayer> GetPlayers<T>(CheckPlayerAction<T> action, T actionArgument)
         {
             List<GamePlayer> players = new();
 
@@ -292,12 +290,12 @@ namespace DOL.GS
             return players;
         }
 
-        public static GameClient GetClient<T>(CheckClientAction<T> action)
+        public GameClient GetClient<T>(CheckClientAction<T> action)
         {
             return GetClient(action, default);
         }
 
-        public static GameClient GetClient<T>(CheckClientAction<T> action, T actionArgument)
+        public GameClient GetClient<T>(CheckClientAction<T> action, T actionArgument)
         {
             using (_lock)
             {
@@ -316,17 +314,17 @@ namespace DOL.GS
             return null;
         }
 
-        public static List<GameClient> GetClients()
+        public List<GameClient> GetClients()
         {
             return GetClients<object>(null, null);
         }
 
-        public static List<GameClient> GetClients<T>(CheckClientAction<T> action)
+        public List<GameClient> GetClients<T>(CheckClientAction<T> action)
         {
             return GetClients(action, default);
         }
 
-        public static List<GameClient> GetClients<T>(CheckClientAction<T> action, T actionArgument)
+        public List<GameClient> GetClients<T>(CheckClientAction<T> action, T actionArgument)
         {
             List<GameClient> clients = new();
 
@@ -347,7 +345,7 @@ namespace DOL.GS
             return clients;
         }
 
-        public static GamePlayer GetPlayerByExactName(string playerName)
+        public GamePlayer GetPlayerByExactName(string playerName)
         {
             GamePlayer player = _playerNameTrie.FindExact(playerName);
 
@@ -366,7 +364,7 @@ namespace DOL.GS
             return player;
         }
 
-        public static GamePlayer GetPlayerByPartialName(string playerName, out PlayerGuessResult result)
+        public GamePlayer GetPlayerByPartialName(string playerName, out PlayerGuessResult result)
         {
             List<GamePlayer> matches = _playerNameTrie.FindByPrefix(playerName);
 
@@ -401,7 +399,7 @@ namespace DOL.GS
             result = PlayerGuessResult.FOUND_MULTIPLE;
             return null;
 
-            static bool ValidateAndRemoveIfInactive(GamePlayer player)
+            bool ValidateAndRemoveIfInactive(GamePlayer player)
             {
                 if (player.Client.IsPlaying && player.ObjectState is GameObject.eObjectState.Active)
                     return true;
@@ -424,17 +422,17 @@ namespace DOL.GS
             }
         }
 
-        public static List<GamePlayer> GetNonGmPlayers()
+        public List<GamePlayer> GetNonGmPlayers()
         {
             return GetNonGmPlayers<object>(null, default);
         }
 
-        public static List<GamePlayer> GetNonGmPlayers<T>(CheckPlayerAction<T> action)
+        public List<GamePlayer> GetNonGmPlayers<T>(CheckPlayerAction<T> action)
         {
             return GetNonGmPlayers(action, default);
         }
 
-        public static List<GamePlayer> GetNonGmPlayers<T>(CheckPlayerAction<T> action, T actionArgument)
+        public List<GamePlayer> GetNonGmPlayers<T>(CheckPlayerAction<T> action, T actionArgument)
         {
             return GetPlayers(Predicate, (action, actionArgument));
 
@@ -444,17 +442,17 @@ namespace DOL.GS
             }
         }
 
-        public static List<GamePlayer> GetGmPlayers()
+        public List<GamePlayer> GetGmPlayers()
         {
             return GetGmPlayers<object>(null, default);
         }
 
-        public static List<GamePlayer> GetGmPlayers<T>(CheckPlayerAction<T> action)
+        public List<GamePlayer> GetGmPlayers<T>(CheckPlayerAction<T> action)
         {
             return GetGmPlayers(action, default);
         }
 
-        public static List<GamePlayer> GetGmPlayers<T>(CheckPlayerAction<T> action, T actionArgument)
+        public List<GamePlayer> GetGmPlayers<T>(CheckPlayerAction<T> action, T actionArgument)
         {
             return GetPlayers(Predicate, (action, actionArgument));
 
@@ -464,17 +462,17 @@ namespace DOL.GS
             }
         }
 
-        public static List<GamePlayer> GetPlayersOfRealm(eRealm realm)
+        public List<GamePlayer> GetPlayersOfRealm(eRealm realm)
         {
             return GetPlayersOfRealm<object>((realm, default, default));
         }
 
-        public static List<GamePlayer> GetPlayersOfRealm<T>(eRealm realm, CheckPlayerAction<T> action)
+        public List<GamePlayer> GetPlayersOfRealm<T>(eRealm realm, CheckPlayerAction<T> action)
         {
             return GetPlayersOfRealm((realm, action, default));
         }
 
-        public static List<GamePlayer> GetPlayersOfRealm<T>((eRealm, CheckPlayerAction<T>, T) args)
+        public List<GamePlayer> GetPlayersOfRealm<T>((eRealm, CheckPlayerAction<T>, T) args)
         {
             return GetPlayers(Predicate, args);
 
@@ -484,17 +482,17 @@ namespace DOL.GS
             }
         }
 
-        public static List<GamePlayer> GetPlayersOfRegion(Region region)
+        public List<GamePlayer> GetPlayersOfRegion(Region region)
         {
             return GetPlayersOfRegion<object>((region, default, default));
         }
 
-        public static List<GamePlayer> GetPlayersOfRegion<T>(Region region, CheckPlayerAction<T> action)
+        public List<GamePlayer> GetPlayersOfRegion<T>(Region region, CheckPlayerAction<T> action)
         {
             return GetPlayersOfRegion((region, action, default));
         }
 
-        public static List<GamePlayer> GetPlayersOfRegion<T>((Region, CheckPlayerAction<T>, T) args)
+        public List<GamePlayer> GetPlayersOfRegion<T>((Region, CheckPlayerAction<T>, T) args)
         {
             return GetPlayers(Predicate, args);
 
@@ -504,7 +502,7 @@ namespace DOL.GS
             }
         }
 
-        public static List<GamePlayer> GetPlayersOfRegionAndRealm(Region region, eRealm realm)
+        public List<GamePlayer> GetPlayersOfRegionAndRealm(Region region, eRealm realm)
         {
             return GetPlayersOfRegion((region, Predicate, realm));
 
@@ -514,7 +512,7 @@ namespace DOL.GS
             }
         }
 
-        public static List<GamePlayer> GetPlayersOfZone(Zone zone)
+        public List<GamePlayer> GetPlayersOfZone(Zone zone)
         {
             return GetPlayers(Predicate, zone);
 
@@ -525,7 +523,7 @@ namespace DOL.GS
         }
 
         // Advice, Broadcast, LFG, Trade.
-        public static List<GamePlayer> GetPlayersForRealmWideChatMessage(GamePlayer sender)
+        public List<GamePlayer> GetPlayersForRealmWideChatMessage(GamePlayer sender)
         {
             return GetPlayers(Predicate, sender);
 
@@ -535,12 +533,12 @@ namespace DOL.GS
             }
         }
 
-        public static GameClient GetClientBySessionId(int id)
+        public GameClient GetClientBySessionId(int id)
         {
             return id < 1 || id >= _clientsBySessionId.Length ? null : _clientsBySessionId[id];
         }
 
-        public static GameClient GetClientFromAccount(DbAccount account)
+        public GameClient GetClientFromAccount(DbAccount account)
         {
             return GetClient(Predicate, account);
 
@@ -550,7 +548,7 @@ namespace DOL.GS
             }
         }
 
-        public static GameClient GetClientFromAccountName(string accountName)
+        public GameClient GetClientFromAccountName(string accountName)
         {
             return GetClient(Predicate, accountName);
 
@@ -560,7 +558,7 @@ namespace DOL.GS
             }
         }
 
-        public static GameClient GetClientWithSameIp(GameClient otherClient)
+        public GameClient GetClientWithSameIp(GameClient otherClient)
         {
             return GetClient(Predicate, otherClient);
 
@@ -570,7 +568,7 @@ namespace DOL.GS
             }
         }
 
-        public static int SavePlayers()
+        public int SavePlayers()
         {
             List<GamePlayer> players = GetPlayers();
 
@@ -725,7 +723,7 @@ namespace DOL.GS
 
         private static void CheckPingTimeout(GameClient client)
         {
-            if (ServiceUtils.ShouldTick(client.PingTime + HARD_TIMEOUT))
+            if (GameServiceUtils.ShouldTick(client.PingTime + HARD_TIMEOUT))
             {
                 if (log.IsWarnEnabled)
                     log.Warn($"Hard timeout on client. Disconnecting. ({client})");
@@ -737,13 +735,13 @@ namespace DOL.GS
         private static void CheckInGameActivityTimeout(GameClient client)
         {
             if (Properties.KICK_IDLE_PLAYER_STATUS &&
-                ServiceUtils.ShouldTick(client.Player.LastPlayerActivityTime + Properties.KICK_IDLE_PLAYER_TIME * 60000) &&
+                GameServiceUtils.ShouldTick(client.Player.LastPlayerActivityTime + Properties.KICK_IDLE_PLAYER_TIME * 60000) &&
                 client.Account.PrivLevel == 1)
             {
                 if (log.IsInfoEnabled)
                     log.Info($"Kicking inactive client to char screen. ({client})");
 
-                ServiceUtils.KickPlayerToCharScreen(client.Player);
+                GameServiceUtils.KickPlayerToCharScreen(client.Player);
             }
         }
 
@@ -775,7 +773,7 @@ namespace DOL.GS
             long stopTick = GameLoop.GetRealTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {SERVICE_NAME_BEGIN}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                log.Warn($"Long {ClientService.Instance.ServiceName}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
         }
 
         private static void UpdateNpcs(GamePlayer player)
@@ -810,9 +808,9 @@ namespace DOL.GS
 
                 if (!npcUpdateCache.TryGetValue(npcInRange, out CachedNpcValues cachedNpcValues))
                     CreateNpcForPlayerInternal(player, npcInRange);
-                else if (ServiceUtils.ShouldTick(cachedNpcValues.LastUpdateTime + Properties.WORLD_NPC_UPDATE_INTERVAL))
+                else if (GameServiceUtils.ShouldTick(cachedNpcValues.LastUpdateTime + Properties.WORLD_NPC_UPDATE_INTERVAL))
                     UpdateObjectForPlayerInternal(player, npcInRange, false);
-                else if (ServiceUtils.ShouldTick(cachedNpcValues.LastUpdateTime + 250))
+                else if (GameServiceUtils.ShouldTick(cachedNpcValues.LastUpdateTime + 250))
                 {
                     // `GameNPC.HealthPercent` is a bit of an expensive call. Do it last.
                     if (npcInRange == targetObject)
@@ -869,7 +867,7 @@ namespace DOL.GS
                     continue;
 
                 if (!itemUpdateCache.TryGetValue(itemInRange, out CachedItemValues cachedItemValues) ||
-                    (cachedItemValues.AllowFurtherUpdate && ServiceUtils.ShouldTick(cachedItemValues.LastUpdateTime + Properties.WORLD_OBJECT_UPDATE_INTERVAL)))
+                    (cachedItemValues.AllowFurtherUpdate && GameServiceUtils.ShouldTick(cachedItemValues.LastUpdateTime + Properties.WORLD_OBJECT_UPDATE_INTERVAL)))
                 {
                     CreateObjectForPlayerInternal(player, itemInRange);
                 }
@@ -900,7 +898,7 @@ namespace DOL.GS
                     CreateObjectForPlayerInternal(player, doorInRange);
                     player.Out.SendDoorState(doorInRange.CurrentRegion, doorInRange); // Not handled by `CreateObjectForPlayer`.
                 }
-                else if (ServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
+                else if (GameServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
                     UpdateObjectForPlayerInternal(player, doorInRange, false);
             }
         }
@@ -931,7 +929,7 @@ namespace DOL.GS
                     player.Client.Out.SendGarden(house);
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
                 }
-                else if (ServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
+                else if (GameServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
                     player.Client.Out.SendHouseOccupied(house, house.IsOccupied);
 
                 AddHouseToPlayerCache(player, house);

@@ -51,7 +51,7 @@ namespace DOL.GS.Commands
             else //Setting by name
             {
                 string targetName = args[1];
-                target = ClientService.GetPlayerByPartialName(targetName, out _);
+                target = ClientService.Instance.GetPlayerByPartialName(targetName, out _);
 
                 if(target==null || client.Player.Group != target.Group)
                 { // Invalid target

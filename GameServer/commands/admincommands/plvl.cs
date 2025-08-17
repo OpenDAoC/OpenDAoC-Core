@@ -85,7 +85,7 @@ namespace DOL.GS.Commands
 						// Player name specified
 						case >= 4:
 						{
-							target = ClientService.GetPlayerByExactName(args[3]);
+							target = ClientService.Instance.GetPlayerByExactName(args[3]);
 
 							if (target == null)
 							{
@@ -145,7 +145,7 @@ namespace DOL.GS.Commands
 						// If full command is entered
 						case >= 4:
 						{
-							target = ClientService.GetPlayerByExactName(args[3]);
+							target = ClientService.Instance.GetPlayerByExactName(args[3]);
 
 							if (target == null)
 							{
@@ -203,7 +203,7 @@ namespace DOL.GS.Commands
 						// If full command is entered
 						case >= 4:
 						{
-							target = ClientService.GetPlayerByExactName(args[3]);
+							target = ClientService.Instance.GetPlayerByExactName(args[3]);
 
 							// If the account doesn't exist
 							if (target == null)
@@ -279,7 +279,7 @@ namespace DOL.GS.Commands
 						// If full command is entered
 						case >= 4:
 						{
-							target = ClientService.GetPlayerByExactName(args[3]);
+							target = ClientService.Instance.GetPlayerByExactName(args[3]);
 
 							// If the account doesn't exist
 							if (target == null)
@@ -342,7 +342,7 @@ namespace DOL.GS.Commands
 						// If a player name is specified
 						if (args.Length > 2)
 						{
-							target = ClientService.GetPlayerByExactName(args[2]);
+							target = ClientService.Instance.GetPlayerByExactName(args[2]);
 
 							if (target == null) 
 							{

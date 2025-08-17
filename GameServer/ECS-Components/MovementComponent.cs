@@ -63,7 +63,7 @@ namespace DOL.GS
                 OnOwnerMoved();
             }
 
-            if (_relocationPending && ServiceUtils.ShouldTick(_nextRelocationCheckTick))
+            if (_relocationPending && GameServiceUtils.ShouldTick(_nextRelocationCheckTick))
             {
                 Owner.SubZoneObject.CheckForRelocation();
                 _nextRelocationCheckTick = GameLoop.GameLoopTime + SUBZONE_RELOCATION_CHECK_INTERVAL;

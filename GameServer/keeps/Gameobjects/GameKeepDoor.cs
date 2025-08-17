@@ -189,7 +189,7 @@ namespace DOL.GS.Keeps
         {
             string message = $"{Component.Keep.Name} is under attack!";
 
-            foreach (GamePlayer player in ClientService.GetPlayersOfRealm(Realm))
+            foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRealm(Realm))
             {
                 player.Out.SendMessage(message, eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
                 player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);

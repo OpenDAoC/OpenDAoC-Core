@@ -51,7 +51,7 @@ namespace DOL.GS.Commands
             else
             {
                 // Inviting by name
-                target = ClientService.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
+                target = ClientService.Instance.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
 
                 switch (result)
                 {

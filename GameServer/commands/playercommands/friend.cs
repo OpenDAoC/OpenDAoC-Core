@@ -30,7 +30,7 @@ namespace DOL.GS.Commands
             if (RemoveFriend(name, client.Player))
                 return;
 
-            GamePlayer otherPlayer = ClientService.GetPlayerByPartialName(name, out ClientService.PlayerGuessResult result);
+            GamePlayer otherPlayer = ClientService.Instance.GetPlayerByPartialName(name, out ClientService.PlayerGuessResult result);
 
             // abort if the returned player is from a hostile realm
             if (result is ClientService.PlayerGuessResult.FOUND_PARTIAL or ClientService.PlayerGuessResult.FOUND_EXACT)

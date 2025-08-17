@@ -576,7 +576,7 @@ namespace DOL.GS.Quests
                     npc.Level = (byte) m_level;
                 }
 
-                foreach (GamePlayer player in ClientService.GetPlayersOfRegion(this))
+                foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRegion(this))
                     player.Out.SendMessage($"This instance is now level {m_level}.", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
             }
         }

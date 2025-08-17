@@ -679,13 +679,13 @@ namespace DOL.GS.Commands
 					}
 
 					info.Add(" ");
-					info.Add(" Server players: " + ClientService.ClientCount);
+					info.Add(" Server players: " + ClientService.Instance.ClientCount);
                     info.Add(" ");
                     info.Add(" Region Players:");
-                    info.Add(" All players: " + ClientService.GetPlayersOfRegion(client.Player.CurrentRegion).Count);
-                    info.Add(" Alb players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Albion).Count);
-                    info.Add(" Hib players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Hibernia).Count);
-                    info.Add(" Mid players: " + ClientService.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Midgard).Count);
+                    info.Add(" All players: " + ClientService.Instance.GetPlayersOfRegion(client.Player.CurrentRegion).Count);
+                    info.Add(" Alb players: " + ClientService.Instance.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Albion).Count);
+                    info.Add(" Hib players: " + ClientService.Instance.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Hibernia).Count);
+                    info.Add(" Mid players: " + ClientService.Instance.GetPlayersOfRegionAndRealm(client.Player.CurrentRegion, eRealm.Midgard).Count);
 
 					info.Add(" ");
 					info.Add(" Total objects in region: " + client.Player.CurrentRegion.TotalNumberOfObjects);

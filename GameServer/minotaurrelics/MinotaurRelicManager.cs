@@ -112,7 +112,7 @@ namespace DOL.GS
                 relicsInRegion.Add(relic);
             }
 
-            foreach (GamePlayer player in ClientService.GetPlayers(Predicate, relics))
+            foreach (GamePlayer player in ClientService.Instance.GetPlayers(Predicate, relics))
             {
                 foreach (MinotaurRelic relic in relics[player.CurrentRegionID])
                 {

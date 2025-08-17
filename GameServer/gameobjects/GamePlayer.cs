@@ -1026,7 +1026,7 @@ namespace DOL.GS
             // Cancel all effects until saving of running effects is done.
             try
             {
-                EffectService.SaveAllEffects(this);
+                EffectHelper.SaveAllEffects(this);
                 CancelAllConcentrationEffects();
                 EffectList.CancelAll();
             }
@@ -1158,7 +1158,7 @@ namespace DOL.GS
                 if (_playerOwner.ObjectState is eObjectState.Active)
                     _playerOwner.movementComponent.BroadcastPosition();
 
-                if (!ServiceUtils.ShouldTick(_playerOwner.Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000))
+                if (!GameServiceUtils.ShouldTick(_playerOwner.Client.LinkDeathTime + SECONDS_TO_QUIT_ON_LINKDEATH * 1000))
                     return Interval;
 
                 if (!_playerOwner.IsAlive)
@@ -6191,7 +6191,7 @@ namespace DOL.GS
             List<GamePlayer> players;
 
             if (messageDistance == 0)
-                players = ClientService.GetPlayersOfRegion(CurrentRegion);
+                players = ClientService.Instance.GetPlayersOfRegion(CurrentRegion);
             else
                 players = GetPlayersInRadius(messageDistance);
 
@@ -8152,7 +8152,7 @@ namespace DOL.GS
             RefreshItemBonuses();
             LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
             LastPlayerActivityTime = GameLoop.GameLoopTime;
-            ClientService.OnPlayerJoin(this);
+            ClientService.Instance.OnPlayerJoin(this);
             return true;
         }
 
@@ -8189,7 +8189,7 @@ namespace DOL.GS
                 instance.OnPlayerLeaveInstance(this);
 
             Duel?.Stop();
-            ClientService.OnPlayerLeave(this);
+            ClientService.Instance.OnPlayerLeave(this);
             return true;
         }
 

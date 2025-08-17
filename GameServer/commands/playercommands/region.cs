@@ -50,7 +50,7 @@ namespace DOL.GS.Commands
 
         private static void Broadcast(GamePlayer player, string message)
         {
-            foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(player.CurrentRegion))
+            foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersOfRegion(player.CurrentRegion))
             {
                 if (GameServer.ServerRules.IsAllowedToUnderstand(otherPlayer, player))
                     otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Scripts.Players.Region.Message", player.Name, message), eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);

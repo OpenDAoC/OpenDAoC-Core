@@ -52,7 +52,7 @@ namespace DOL.GS.Commands
                         }
 
                         string targetName = args[2];
-                        GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
+                        GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
 
                         switch (result)
                         {
@@ -106,7 +106,7 @@ namespace DOL.GS.Commands
                         }
 
                         string targetName = args[2];
-                        GamePlayer playerTarget = ClientService.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
+                        GamePlayer playerTarget = ClientService.Instance.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
 
                         switch (result)
                         {
@@ -156,7 +156,7 @@ namespace DOL.GS.Commands
                         }
 
                         string targetName = args[2];
-                        GamePlayer playerTarget = ClientService.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
+                        GamePlayer playerTarget = ClientService.Instance.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
 
                         switch (result)
                         {
@@ -307,7 +307,7 @@ namespace DOL.GS.Commands
                         }
 
                         string targetName = args[2];
-                        GamePlayer player = ClientService.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
+                        GamePlayer player = ClientService.Instance.GetPlayerByPartialName(targetName, out ClientService.PlayerGuessResult result);
 
                         switch (result)
                         {

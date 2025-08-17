@@ -79,7 +79,7 @@ namespace DOL.GS.Commands
                     string advisorName = args[1];
                     string name = !string.IsNullOrWhiteSpace(advisorName) && char.IsLower(advisorName, 0) ? advisorName.Replace(advisorName[0],char.ToUpper(advisorName[0])) : advisorName; // If first character in args[1] is lowercase, replace with uppercase character
                     string message = string.Join(" ", args, 2, args.Length - 2); // Separate message from other args
-                    GamePlayer advisorPlayer = ClientService.GetPlayerByPartialName(name, out ClientService.PlayerGuessResult result); // Figure out advisor name
+                    GamePlayer advisorPlayer = ClientService.Instance.GetPlayerByPartialName(name, out ClientService.PlayerGuessResult result); // Figure out advisor name
 
                     // Players cannot communicate with members of another realm
                     if (!GameServer.ServerRules.IsAllowedToUnderstand(client.Player, advisorPlayer))

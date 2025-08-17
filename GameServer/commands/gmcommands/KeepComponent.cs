@@ -227,7 +227,7 @@ namespace DOL.GS.Commands
 						}
 						component.Skin = skin;
 
-						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
+						foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
 							otherPlayer.Out.SendKeepComponentInfo(component);
 							otherPlayer.Out.SendKeepComponentDetailUpdate(component);
@@ -288,7 +288,7 @@ namespace DOL.GS.Commands
                         component.ComponentHeading = dbcomponent.Heading;
 						component.Skin = dbcomponent.Skin;
 
-						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
+						foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
 							otherPlayer.Out.SendKeepComponentInfo(component);
 							otherPlayer.Out.SendKeepComponentDetailUpdate(component);

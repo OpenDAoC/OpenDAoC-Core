@@ -22,7 +22,7 @@ namespace DOL.GS
             if (SpellHandler.Caster is GamePlayer playerCaster &&
                 playerCaster.CharacterClass is ClassChampion &&
                 SpellHandler.SpellLine.KeyName is GlobalSpellsLines.Valor &&
-                (EffectService.GetPlayerUpdateFromEffect(EffectType) & EffectService.PlayerUpdate.STATS) != 0)
+                (EffectHelper.GetPlayerUpdateFromEffect(EffectType) & EffectHelper.PlayerUpdate.STATS) != 0)
             {
                 _isForcedToSpecDebuff = true;
             }
@@ -46,7 +46,7 @@ namespace DOL.GS
                 if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
                     return;
 
-                foreach (eProperty property in EffectService.GetPropertiesFromEffect(EffectType))
+                foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
                     ApplyBonus(Owner, _isForcedToSpecDebuff ? eBuffBonusCategory.SpecDebuff : propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, true);
             }
 
@@ -71,7 +71,7 @@ namespace DOL.GS
                 if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
                     return;
 
-                foreach (eProperty property in EffectService.GetPropertiesFromEffect(EffectType))
+                foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
                     ApplyBonus(Owner, _isForcedToSpecDebuff ? eBuffBonusCategory.SpecDebuff : propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, false);
             }
 

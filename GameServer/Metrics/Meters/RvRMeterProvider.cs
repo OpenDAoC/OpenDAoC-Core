@@ -33,7 +33,7 @@ public class RvRMeterProvider : IMeterProvider
     {
         try
         {
-            List<GameClient> activePlayers = ClientService.GetClients().Where(IsPlayerInRvRZone).ToList();
+            List<GameClient> activePlayers = ClientService.Instance.GetClients().Where(IsPlayerInRvRZone).ToList();
 
             static bool IsPlayerInRvRZone(GameClient client)
             {

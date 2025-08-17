@@ -54,7 +54,7 @@ namespace DOL.GS
             {
                 UpdateGameTime();
 
-                if (ServiceUtils.ShouldTick(_nextClientResync))
+                if (GameServiceUtils.ShouldTick(_nextClientResync))
                 {
                     ResyncClients();
                     _nextClientResync = GameLoop.GameLoopTime + CLIENT_RESYNC_INTERVAL;
@@ -102,7 +102,7 @@ namespace DOL.GS
 
             void ResyncClients()
             {
-                foreach (GamePlayer player in ClientService.GetPlayers<object>(Predicate))
+                foreach (GamePlayer player in ClientService.Instance.GetPlayers<object>(Predicate))
                     player.Out.SendTime();
 
                 static bool Predicate(GamePlayer player, object unused)

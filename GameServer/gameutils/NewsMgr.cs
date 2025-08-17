@@ -45,7 +45,7 @@ namespace DOL.GS
         {
             if (sendMessage)
             {
-                foreach (GamePlayer player in ClientService.GetPlayersOfRealm(realm))
+                foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRealm(realm))
                     player.Out.SendMessage(message, eChatType.CT_System, eChatLoc.CL_SystemWindow);
             }
 

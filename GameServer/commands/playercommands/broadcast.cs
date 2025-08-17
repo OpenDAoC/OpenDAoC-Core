@@ -80,7 +80,7 @@ namespace DOL.GS.Commands
                         {
                             found = true;
 
-                            foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(player.CurrentRegion))
+                            foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersOfRegion(player.CurrentRegion))
                             {
                                 if (otherPlayer.CurrentAreas.Contains(area) && GameServer.ServerRules.IsAllowedToUnderstand(otherPlayer, player))
                                     players.Add(otherPlayer);
@@ -94,15 +94,15 @@ namespace DOL.GS.Commands
                     return players;
                 }
                 case eBroadcastType.Realm:
-                    return ClientService.GetPlayersForRealmWideChatMessage(player);
+                    return ClientService.Instance.GetPlayersForRealmWideChatMessage(player);
                 case eBroadcastType.Region:
-                    return ClientService.GetPlayersOfRegion(player.CurrentRegion);
+                    return ClientService.Instance.GetPlayersOfRegion(player.CurrentRegion);
                 case eBroadcastType.Server:
-                    return ClientService.GetPlayers();
+                    return ClientService.Instance.GetPlayers();
                 case eBroadcastType.Visible:
                     return player.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE);
                 case eBroadcastType.Zone:
-                    return ClientService.GetPlayersOfZone(player.CurrentZone);
+                    return ClientService.Instance.GetPlayersOfZone(player.CurrentZone);
             }
 
             return new List<GamePlayer>();

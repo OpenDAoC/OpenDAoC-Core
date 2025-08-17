@@ -47,7 +47,7 @@ namespace DOL.GS.Behaviour.Actions
                 }
                 case eTextType.Broadcast:
                 {
-                    foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
+                    foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
                         otherPlayer.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
 
                     break;

@@ -118,7 +118,7 @@ namespace DOL.AI.Brain
         {
             if (_brain.Body.IsCrowdControlled || EffectListService.GetEffectOnTarget(_brain.Body, eEffect.MovementSpeedDebuff)?.SpellHandler.Spell.Value == 99)
                 _aggroEndTime = GameLoop.GameLoopTime + LEAVE_WHEN_OUT_OF_COMBAT_FOR;
-            else if (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && ServiceUtils.ShouldTick(_aggroEndTime))
+            else if (!_brain.Body.InCombatInLast(LEAVE_WHEN_OUT_OF_COMBAT_FOR) && GameServiceUtils.ShouldTick(_aggroEndTime))
             {
                 _brain.FSM.SetCurrentState(eFSMStateType.IDLE);
                 return;
@@ -165,7 +165,7 @@ namespace DOL.AI.Brain
                     _nextRoamingTick = GameLoop.GameLoopTime + Util.Random(MinCooldown, MaxCooldown) * 1000;
                 }
 
-                if (ServiceUtils.ShouldTick(_nextRoamingTick))
+                if (GameServiceUtils.ShouldTick(_nextRoamingTick))
                 {
                     // We're not updating `_nextRoamingTick` here because we want it to be set after the NPC stopped moving.
                     _nextRoamingTickSet = false;

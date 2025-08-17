@@ -177,7 +177,7 @@ namespace DOL.GS
 
             bool IsTickDue()
             {
-                return _owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance ? ServiceUtils.ShouldTick(_nextMeleeTick) : ServiceUtils.ShouldTick(_nextRangedTick);
+                return _owner.ActiveWeaponSlot is not eActiveWeaponSlot.Distance ? GameServiceUtils.ShouldTick(_nextMeleeTick) : GameServiceUtils.ShouldTick(_nextRangedTick);
             }
 
             bool IsAllowedToTick()
@@ -204,7 +204,7 @@ namespace DOL.GS
                     {
                         // We allow styles to stay registered for about 250 milliseconds on out of range / not visible attack result.
                         // Live doesn't seem to be very consistent in that regard, but neither are we because of `TICK_INTERVAL_FOR_NON_ATTACK`.
-                        clearOldStyles = ServiceUtils.ShouldTick(StyleComponent.NextCombatStyleTime + 250);
+                        clearOldStyles = GameServiceUtils.ShouldTick(StyleComponent.NextCombatStyleTime + 250);
                         break;
                     }
                     case eAttackResult.NotAllowed_ServerRules:

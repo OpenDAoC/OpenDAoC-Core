@@ -44,7 +44,7 @@ namespace DOL.GS.Commands
 
         private static void Broadcast(GamePlayer player, string message)
         {
-            foreach (GamePlayer otherPlayer in ClientService.GetPlayersForRealmWideChatMessage(player))
+            foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersForRealmWideChatMessage(player))
                 otherPlayer.Out.SendMessage($"[Trade] {player.Name}: {message}", eChatType.CT_Trade, eChatLoc.CL_ChatWindow);
 
             if (Properties.DISCORD_ACTIVE)

@@ -70,7 +70,7 @@ namespace DOL.AI.Brain
                 base.Think();
             else if (_state is ScoutMobState.FACING_TARGET)
             {
-                if (ServiceUtils.ShouldTick(_staringEndTime))
+                if (GameServiceUtils.ShouldTick(_staringEndTime))
                     LookForFriends();
                 else
                     StareAtTarget();

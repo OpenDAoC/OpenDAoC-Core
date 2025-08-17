@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using DOL.GS.ServerProperties;
+using ECS.Debug;
 
 namespace DOL.GS
 {
@@ -20,10 +21,11 @@ namespace DOL.GS
         private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
         private static GameLoopStats _gameLoopStats;
         private static bool _running;
+        private static List<(IGameService Service, Action TickAction, string ProfileKey)> _tickSequence;
 
         public static long TickDuration { get; private set; }
         public static long GameLoopTime { get; private set; }
-        public static string CurrentServiceTick { get; set; }
+        public static string ActiveService { get; set; }
 
         // This is unrelated to the game loop and should probably be moved elsewhere.
         public static long GetRealTime()
@@ -96,6 +98,7 @@ namespace DOL.GS
                 _threadPool = new GameLoopThreadPoolMultiThreaded(Environment.ProcessorCount);
 
             _threadPool.Init(); // Must be done from the game loop thread.
+            BuildTickSequence();
 
             double gameLoopTime = 0;
             double totalElapsedTime = 0;
@@ -124,29 +127,61 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
 
+            static void BuildTickSequence()
+            {
+                _tickSequence = new();
+                AddStep(GameLoopService.Instance, GameLoopService.Instance.Tick);
+                AddStep(TimerService.Instance, TimerService.Instance.Tick);
+                AddStep(ClientService.Instance, ClientService.Instance.BeginTick);
+                AddStep(NpcService.Instance, NpcService.Instance.Tick);
+                AddStep(AttackService.Instance, AttackService.Instance.Tick);
+                AddStep(CastingService.Instance, CastingService.Instance.Tick);
+                AddStep(EffectListService.Instance, EffectListService.Instance.BeginTick);
+                AddStep(EffectListService.Instance, EffectListService.Instance.EndTick);
+                AddStep(MovementService.Instance, MovementService.Instance.Tick);
+                AddStep(ZoneService.Instance, ZoneService.Instance.Tick);
+                AddStep(CraftingService.Instance, CraftingService.Instance.Tick);
+                AddStep(ReaperService.Instance, ReaperService.Instance.Tick);
+                AddStep(ClientService.Instance, ClientService.Instance.EndTick);
+                AddStep(DailyQuestService.Instance, DailyQuestService.Instance.Tick);
+                AddStep(WeeklyQuestService.Instance, WeeklyQuestService.Instance.Tick);
+                AddStep(MonthlyQuestService.Instance, MonthlyQuestService.Instance.Tick);
+
+                static void AddStep(IGameService service, Action action)
+                {
+                    string methodName = action.Method.Name;
+                    string profileKey = methodName == nameof(IGameService.Tick) ? service.ServiceName : $"{service.ServiceName}.{methodName}";
+                    _tickSequence.Add((service, action, profileKey));
+                }
+            }
+
             static void TickServices()
             {
-                ECS.Debug.Diagnostics.StartPerfCounter(nameof(GameLoop));
+                Diagnostics.StartPerfCounter(nameof(GameLoop));
 
-                GameLoopService.Tick();
-                TimerService.Tick();
-                ClientService.BeginTick();
-                NpcService.Tick();
-                AttackService.Tick();
-                CastingService.Tick();
-                EffectListService.BeginTick();
-                EffectListService.EndTick();
-                MovementService.Tick();
-                ZoneService.Tick();
-                CraftingService.Tick();
-                ReaperService.Tick();
-                ClientService.EndTick();
-                DailyQuestService.Tick();
-                WeeklyQuestService.Tick();
-                CurrentServiceTick = string.Empty;
+                foreach (var (service, tickAction, profileKey) in _tickSequence)
+                    TickServiceAction(service, tickAction, profileKey);
 
-                ECS.Debug.Diagnostics.StopPerfCounter(nameof(GameLoop));
-                ECS.Debug.Diagnostics.Tick();
+                Diagnostics.StopPerfCounter(nameof(GameLoop));
+                Diagnostics.Tick();
+
+                static void TickServiceAction(IGameService service, Action tickAction, string profileKey)
+                {
+                    ActiveService = profileKey;
+                    GameServiceContext.Current.Value = service;
+                    Diagnostics.StartPerfCounter(ActiveService);
+
+                    try
+                    {
+                        tickAction();
+                    }
+                    finally
+                    {
+                        Diagnostics.StopPerfCounter(ActiveService);
+                        GameServiceContext.Current.Value = null;
+                        ActiveService = string.Empty;
+                    }
+                }
             }
 
             void Sleep()

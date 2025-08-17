@@ -149,7 +149,7 @@ namespace DOL.GS.ServerRules
 
             if (Properties.MAX_PLAYERS > 0 && string.IsNullOrEmpty(Properties.QUEUE_API_URI))
             {
-                if (ClientService.ClientCount >= Properties.MAX_PLAYERS)
+                if (ClientService.Instance.ClientCount >= Properties.MAX_PLAYERS)
                 {
                     // GMs are still allowed to enter server
                     if (account == null || (account.PrivLevel == 1 && account.Status <= 0))
@@ -219,7 +219,7 @@ namespace DOL.GS.ServerRules
             {
                 if ((account == null || account.PrivLevel == 1) && client.Socket?.RemoteEndPoint != null)
                 {
-                    GameClient otherClient = ClientService.GetClientWithSameIp(client);
+                    GameClient otherClient = ClientService.Instance.GetClientWithSameIp(client);
                     
                     if (otherClient != null)
                     {

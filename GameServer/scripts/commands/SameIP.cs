@@ -18,7 +18,7 @@ namespace DOL.GS.Commands
             Hashtable ip = new();
             string accountIp;
 
-            foreach (GameClient otherClient in ClientService.GetClients())
+            foreach (GameClient otherClient in ClientService.Instance.GetClients())
             {
                 if (otherClient.Account.PrivLevel > 1)
                     continue;

@@ -366,7 +366,7 @@ namespace DOL.GS.Commands
                             return;
                         }
 
-                        GamePlayer player = ClientService.GetPlayerByExactName(cha.Name);
+                        GamePlayer player = ClientService.Instance.GetPlayerByExactName(cha.Name);
 
                         // Kick the player from the server to complete the character move
                         if (player != null)
@@ -549,7 +549,7 @@ namespace DOL.GS.Commands
 		/// <returns>The matching account name or 'null'</returns>
 		private static DbAccount GetAccount(string accountName)
 		{
-			GameClient client = ClientService.GetClientFromAccountName(accountName);
+			GameClient client = ClientService.Instance.GetClientFromAccountName(accountName);
 			return client != null ? client.Account : GameServer.Database.FindObjectByKey<DbAccount>(accountName);
 		}
 
@@ -560,7 +560,7 @@ namespace DOL.GS.Commands
 		/// <returns>The matching character name or 'null'</returns>
 		private static DbCoreCharacter GetCharacter(string characterName)
 		{
-			GamePlayer player = ClientService.GetPlayerByExactName(characterName);
+			GamePlayer player = ClientService.Instance.GetPlayerByExactName(characterName);
 			return player != null ? player.DBCharacter : DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(characterName));
 		}
 
@@ -570,7 +570,7 @@ namespace DOL.GS.Commands
 		/// <param name="acc">The account</param>
 		private static void KickAccount(DbAccount account)
 		{
-			GameClient client = ClientService.GetClientFromAccount(account);
+			GameClient client = ClientService.Instance.GetClientFromAccount(account);
 
 			if (client != null)
 			{
@@ -585,7 +585,7 @@ namespace DOL.GS.Commands
 		/// <param name="cha">The character</param>
 		private static void KickCharacter(DbCoreCharacter character)
 		{
-			GamePlayer player = ClientService.GetPlayerByExactName(character.Name);
+			GamePlayer player = ClientService.Instance.GetPlayerByExactName(character.Name);
 
 			if (player != null)
 			{
@@ -601,7 +601,7 @@ namespace DOL.GS.Commands
 		/// <returns>The account name or 'null'</returns>
 		private static string GetAccountName(string characterName)
 		{
-			GamePlayer player = ClientService.GetPlayerByExactName(characterName);
+			GamePlayer player = ClientService.Instance.GetPlayerByExactName(characterName);
 
 			if (player != null)
 				return player.Client.Account.Name;

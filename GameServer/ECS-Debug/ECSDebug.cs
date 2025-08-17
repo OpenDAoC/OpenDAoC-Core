@@ -231,7 +231,7 @@ namespace ECS.Debug
                     _perfStreamWriter.WriteLine($"[PerfCounters] {logString}");
                 }
 
-                if (ServiceUtils.ShouldTick(_perfCountersEndTick))
+                if (GameServiceUtils.ShouldTick(_perfCountersEndTick))
                     _perfCountersStateRequest = StateChangeRequest.Stop;
             }
         }

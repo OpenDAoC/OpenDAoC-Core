@@ -34,7 +34,7 @@ namespace DOL.GS
         private readonly Lock _concentrationEffectsLock = new();            // Lock for synchronizing access to the concentration effects list.
 
         // Player updates.
-        private EffectService.PlayerUpdate _requestedPlayerUpdates;         // Player updates requested by the effects, to be sent in the next tick.
+        private EffectHelper.PlayerUpdate _requestedPlayerUpdates;         // Player updates requested by the effects, to be sent in the next tick.
         private int _lastUpdateEffectsCount;                                // Number of effects sent in the last player update, used externally.
         private readonly Lock _playerUpdatesLock = new();                   // Lock for synchronizing access to the requested player updates.
 
@@ -126,7 +126,7 @@ namespace DOL.GS
                     if (existingEffect.IsConcentrationEffect())
                     {
                         ISpellHandler spellHandler = existingEffect.SpellHandler;
-                        int radiusToCheck = EffectService.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
+                        int radiusToCheck = EffectHelper.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
 
                         if (!spellHandler.Caster.IsWithinRadius(effect.Owner, radiusToCheck))
                             continue;
@@ -343,7 +343,7 @@ namespace DOL.GS
             }
         }
 
-        public void RequestPlayerUpdate(EffectService.PlayerUpdate playerUpdate)
+        public void RequestPlayerUpdate(EffectHelper.PlayerUpdate playerUpdate)
         {
             lock (_playerUpdatesLock)
             {
@@ -371,13 +371,13 @@ namespace DOL.GS
 
             static void TickAbilityEffect(ECSGameAbilityEffect abilityEffect)
             {
-                if (abilityEffect.NextTick != 0 && ServiceUtils.ShouldTick(abilityEffect.NextTick))
+                if (abilityEffect.NextTick != 0 && GameServiceUtils.ShouldTick(abilityEffect.NextTick))
                 {
                     abilityEffect.OnEffectPulse();
                     abilityEffect.NextTick += abilityEffect.PulseFreq;
                 }
 
-                if (abilityEffect.Duration > 0 && ServiceUtils.ShouldTick(abilityEffect.ExpireTick))
+                if (abilityEffect.Duration > 0 && GameServiceUtils.ShouldTick(abilityEffect.ExpireTick))
                     abilityEffect.Stop();
             }
 
@@ -394,7 +394,7 @@ namespace DOL.GS
                     return;
                 }
 
-                if (ServiceUtils.ShouldTick(spellEffect.ExpireTick))
+                if (GameServiceUtils.ShouldTick(spellEffect.ExpireTick))
                 {
                     // A pulse effect cancels its own child effects to prevent them from being cancelled and immediately reapplied.
                     // So only cancel them if their source is no longer active.
@@ -411,7 +411,7 @@ namespace DOL.GS
 
                 void TickConcentrationEffect(ECSGameSpellEffect spellEffect)
                 {
-                    if (!ServiceUtils.ShouldTick(spellEffect.NextTick))
+                    if (!GameServiceUtils.ShouldTick(spellEffect.NextTick))
                         return;
 
                     ISpellHandler spellHandler = spellEffect.SpellHandler;
@@ -430,7 +430,7 @@ namespace DOL.GS
 
                     if (effectOwner != caster)
                     {
-                        int radiusToCheck = EffectService.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
+                        int radiusToCheck = EffectHelper.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
 
                         // Check if the concentration buff needs to be enabled or disabled, based on its current state and the distance between the player and the caster.
                         if (caster.IsWithinRadius(effectOwner, radiusToCheck))
@@ -478,7 +478,7 @@ namespace DOL.GS
 
                 static void TickPulsingEffect(ECSGameSpellEffect spellEffect, Spell spell, ISpellHandler spellHandler, GameLiving caster)
                 {
-                    if (!ServiceUtils.ShouldTick(spellEffect.NextTick))
+                    if (!GameServiceUtils.ShouldTick(spellEffect.NextTick))
                         return;
 
                     // Not every pulsing effect is a `ECSPulseEffect`. Snares and roots decreasing effect are also handled as pulsing spells for example.
@@ -517,7 +517,7 @@ namespace DOL.GS
                             {
                                 ECSGameSpellEffect childEffect = pair.Value;
 
-                                if (ServiceUtils.ShouldTick(childEffect.ExpireTick))
+                                if (GameServiceUtils.ShouldTick(childEffect.ExpireTick))
                                 {
                                     livings ??= new();
                                     livings.Add(pair.Key);
@@ -849,7 +849,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    RequestPlayerUpdate(EffectService.GetPlayerUpdateFromEffect(effect.EffectType));
+                    RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
                     bool shouldStart = effect.FinalizeAddedState(result);
 
                     if (shouldStart && effect is ECSGameSpellEffect spellEffect)
@@ -866,13 +866,13 @@ namespace DOL.GS
                             if (spellEffect is ECSPulseEffect)
                             {
                                 if (!spell.IsHarmful && spell.SpellType is not eSpellType.Charm && !spellEffect.IsEnabling)
-                                    EffectService.SendSpellAnimation(spellEffect);
+                                    EffectHelper.SendSpellAnimation(spellEffect);
                             }
                             else if (spell.IsHarmful)
-                                EffectService.SendSpellAnimation(spellEffect);
+                                EffectHelper.SendSpellAnimation(spellEffect);
                         }
                         else if (spellEffect is not ECSImmunityEffect)
-                            EffectService.SendSpellAnimation(spellEffect);
+                            EffectHelper.SendSpellAnimation(spellEffect);
 
                         if (effect is StatDebuffECSEffect && spell.CastTime == 0)
                             StatDebuffECSEffect.TryDebuffInterrupt(spell, effect.OwnerPlayer, spellHandler?.Caster);
@@ -900,7 +900,7 @@ namespace DOL.GS
                     if (spellEffect.SpellHandler.Spell.IsPulsing && spellEffect is not BleedECSEffect)
                         return;
 
-                    EffectService.SendSpellResistAnimation(spellEffect);
+                    EffectHelper.SendSpellResistAnimation(spellEffect);
                     GamePlayer playerToNotify = null;
 
                     if (spellEffect.SpellHandler.Caster is GamePlayer playerCaster)
@@ -984,7 +984,7 @@ namespace DOL.GS
             {
                 try
                 {
-                    RequestPlayerUpdate(EffectService.GetPlayerUpdateFromEffect(effect.EffectType));
+                    RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
                     return effect.FinalizeRemovedState(result);
                 }
                 catch (Exception e)
@@ -1005,7 +1005,7 @@ namespace DOL.GS
                 _concentrationEffects.Add(spellEffect);
             }
 
-            RequestPlayerUpdate(EffectService.PlayerUpdate.CONCENTRATION);
+            RequestPlayerUpdate(EffectHelper.PlayerUpdate.CONCENTRATION);
         }
 
         private void RemoveFromConcentrationEffectList(ECSGameSpellEffect spellEffect)
@@ -1016,49 +1016,49 @@ namespace DOL.GS
                 _concentrationEffects.Remove(spellEffect);
             }
 
-            RequestPlayerUpdate(EffectService.PlayerUpdate.CONCENTRATION);
+            RequestPlayerUpdate(EffectHelper.PlayerUpdate.CONCENTRATION);
         }
 
         private void SendPlayerUpdates()
         {
-            if (_requestedPlayerUpdates is EffectService.PlayerUpdate.NONE)
+            if (_requestedPlayerUpdates is EffectHelper.PlayerUpdate.NONE)
                 return;
 
             lock (_playerUpdatesLock)
             {
                 if (Owner is GamePlayer playerOwner)
                 {
-                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.ICONS) != 0)
+                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.ICONS) != 0)
                     {
                         playerOwner.Group?.UpdateMember(playerOwner, true, false);
                         playerOwner.Out.SendUpdateIcons(GetEffects(), ref GetLastUpdateEffectsCount());
                     }
 
-                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.STATUS) != 0)
+                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.STATUS) != 0)
                         playerOwner.Out.SendStatusUpdate();
 
-                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.STATS) != 0)
+                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.STATS) != 0)
                         playerOwner.Out.SendCharStatsUpdate();
 
-                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.RESISTS) != 0)
+                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.RESISTS) != 0)
                         playerOwner.Out.SendCharResistsUpdate();
 
-                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.WEAPON_ARMOR) != 0)
+                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.WEAPON_ARMOR) != 0)
                         playerOwner.Out.SendUpdateWeaponAndArmorStats();
 
-                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.ENCUMBERANCE) != 0)
+                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.ENCUMBERANCE) != 0)
                         playerOwner.UpdateEncumbrance();
 
-                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.CONCENTRATION) != 0)
+                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.CONCENTRATION) != 0)
                         playerOwner.Out.SendConcentrationList();
                 }
                 else if (Owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain npcOwnerBrain)
                 {
-                    if ((_requestedPlayerUpdates & EffectService.PlayerUpdate.ICONS) != 0)
+                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.ICONS) != 0)
                         npcOwnerBrain.UpdatePetWindow();
                 }
 
-                _requestedPlayerUpdates = EffectService.PlayerUpdate.NONE;
+                _requestedPlayerUpdates = EffectHelper.PlayerUpdate.NONE;
             }
         }
 

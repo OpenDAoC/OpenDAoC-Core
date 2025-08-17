@@ -64,11 +64,11 @@ namespace DOL.GS.GameEvents
                 DbServerStat newStat = new()
                 {
                     CPU = (float) (serverCpuUsage >= 0 ? serverCpuUsage : 0),
-                    Clients = ClientService.ClientCount,
+                    Clients = ClientService.Instance.ClientCount,
                     Memory = GC.GetTotalMemory(false) / 1024,
-                    AlbionPlayers = ClientService.GetPlayersOfRealm(eRealm.Albion).Count,
-                    MidgardPlayers = ClientService.GetPlayersOfRealm(eRealm.Midgard).Count,
-                    HiberniaPlayers = ClientService.GetPlayersOfRealm(eRealm.Hibernia).Count
+                    AlbionPlayers = ClientService.Instance.GetPlayersOfRealm(eRealm.Albion).Count,
+                    MidgardPlayers = ClientService.Instance.GetPlayersOfRealm(eRealm.Midgard).Count,
+                    HiberniaPlayers = ClientService.Instance.GetPlayersOfRealm(eRealm.Hibernia).Count
                 };
 
                 GameServer.Database.AddObject(newStat);

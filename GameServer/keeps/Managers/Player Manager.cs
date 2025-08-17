@@ -129,7 +129,7 @@ namespace DOL.GS.Keeps
 		/// <param name="realm">The realm</param>
 		public static void BroadcastMessage(string message, eRealm realm)
 		{
-			foreach (GamePlayer player in ClientService.GetPlayersOfRealm(realm))
+			foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRealm(realm))
 				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 		}
 
@@ -141,7 +141,7 @@ namespace DOL.GS.Keeps
 		/// <param name="capturingrealm">The realm that captured the keep</param>
 		public static void BroadcastKeepTakeMessage(string message, eRealm capturingrealm)
 		{
-			foreach (GamePlayer player in ClientService.GetPlayers())
+			foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 			{
 				player.Out.SendMessage(message, eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 				player.Out.SendMessage(message, eChatType.CT_ScreenCenter,  eChatLoc.CL_SystemWindow);

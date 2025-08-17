@@ -543,7 +543,7 @@ namespace DOL.GS
 			Z = living.Z;
 			Heading = living.Heading;
 
-			foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
+			foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRegion(CurrentRegion))
 			{
 				if (XP > 0)
 					player.Out.SendMinotaurRelicMapUpdate((byte)RelicID, CurrentRegionID, X, Y, Z);

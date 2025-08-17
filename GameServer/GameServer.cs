@@ -1060,11 +1060,11 @@ namespace DOL.GS
 			}
 
 			// Post the packet to the game loop for processing.
-			GameLoopService.Post(static state =>
+			GameLoopService.Instance.Post(static state =>
 			{
 				GSPacketIn packet = GSPacketIn.GetForTick(p => p.Init());
 				packet.Load(state.Buffer, state.Offset, state.Size);
-				GameClient client = ClientService.GetClientBySessionId(packet.SessionID);
+				GameClient client = ClientService.Instance.GetClientBySessionId(packet.SessionID);
 
 				if (client == null)
 				{
@@ -1220,7 +1220,7 @@ namespace DOL.GS
 				if (m_database != null)
 				{
 					Thread.CurrentThread.Priority = ThreadPriority.Lowest;
-					Save(ClientService.SavePlayers, ref players);
+					Save(ClientService.Instance.SavePlayers, ref players);
 					Save(DoorMgr.SaveKeepDoors, ref keepDoors);
 					Save(GuildMgr.SaveAllGuilds, ref guilds);
 					Save(BoatMgr.SaveAllBoats, ref boats);

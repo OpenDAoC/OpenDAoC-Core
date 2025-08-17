@@ -52,7 +52,7 @@ namespace DOL.AI.Brain
 
 		public void BroadcastMessage(string message)
 		{
-			foreach (GamePlayer player in ClientService.GetPlayersOfZone(Body.CurrentZone))
+			foreach (GamePlayer player in ClientService.Instance.GetPlayersOfZone(Body.CurrentZone))
 				player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_SystemWindow);
 		}
 

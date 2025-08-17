@@ -1958,7 +1958,7 @@ namespace DOL.GS.Commands
 
 						log.Debug("Keep creation: check of components complete");
 
-						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
+						foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
 							otherPlayer.Out.SendKeepInfo(keep);
 
@@ -2035,7 +2035,7 @@ namespace DOL.GS.Commands
 						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Keep.TowerCreate.CreatedSaved"));
 
 						//send the creation packets
-						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
+						foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
 							otherPlayer.Out.SendKeepInfo(k);
 							otherPlayer.Out.SendKeepComponentUpdate(k, false);
@@ -2160,7 +2160,7 @@ namespace DOL.GS.Commands
 						DisplayMessage(client, LanguageMgr.GetTranslation(client.Account.Language, "GMCommands.Keep.FastCreate.KeepCreated"));
 
 						//send the creation packets
-						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
+						foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
 							otherPlayer.Out.SendKeepInfo(k);
 
@@ -2542,7 +2542,7 @@ namespace DOL.GS.Commands
 							}
 						}
 
-						foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfRegion(client.Player.CurrentRegion))
+						foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersOfRegion(client.Player.CurrentRegion))
 						{
 							otherPlayer.Out.SendKeepRemove(myKeep);
 							otherPlayer.Out.SendKeepInfo(myKeep);

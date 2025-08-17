@@ -156,7 +156,7 @@ namespace DOL.GS.Scripts
 			int gm = 0;
 			int admin = 0;
 
-			foreach (GamePlayer player in ClientService.GetPlayers())
+			foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 			{
 				if (player.Client.Account.PrivLevel == (int) ePrivLevel.GM)
 					gm++;
@@ -165,7 +165,7 @@ namespace DOL.GS.Scripts
 					admin++;
 			}
 
-			m_js.AppendFormat("var numClientsConnected = {0}", ClientService.ClientCount);
+			m_js.AppendFormat("var numClientsConnected = {0}", ClientService.Instance.ClientCount);
 			m_js.Append(nl.NewLine);
 
 			m_js.AppendFormat("var numGMsConnected = {0}", gm);
@@ -323,7 +323,7 @@ namespace DOL.GS.Scripts
 			m_js.Append(nl.NewLine);
 			m_js.Append(nl.NewLine);
 
-			foreach (GamePlayer player in ClientService.GetPlayers())
+			foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 			{
 				m_js.Append("document.write(\"<tr>\")");
 				m_js.Append(nl.NewLine);

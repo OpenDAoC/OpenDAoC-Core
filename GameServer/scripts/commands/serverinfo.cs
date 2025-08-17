@@ -12,7 +12,7 @@ namespace DOL.GS.Commands
         public void OnCommand(GameClient client, string[] args)
         {
             client.Out.SendMessage("Server information", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-            client.Out.SendMessage($"Online: {ClientService.ClientCount}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+            client.Out.SendMessage($"Online: {ClientService.Instance.ClientCount}", eChatType.CT_System, eChatLoc.CL_SystemWindow);
             TimeSpan uptime = DateTime.Now.Subtract(GameServer.Instance.StartupTime);
             double sec = uptime.TotalSeconds;
             long min = Convert.ToInt64(sec) / 60;

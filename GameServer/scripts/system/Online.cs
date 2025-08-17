@@ -60,7 +60,7 @@ namespace DOL.GS.Commands
         public IList<string> GetOnlineInfo(bool bGM)
         {
             List<string> output = new();
-            List<GameClient> clients = ClientService.GetClients();
+            List<GameClient> clients = ClientService.Instance.GetClients();
 
             int gms = 0, connecting = 0, charscreen = 0, enterworld = 0,
                 playing = 0, linkdeath = 0, disconnecting = 0, frontiers = 0;
@@ -362,7 +362,7 @@ namespace DOL.GS.Commands
 
                     zone = WorldMgr.GetZone(zoneIDs[r]);
 
-                    foreach (GamePlayer player in ClientService.GetPlayersOfZone(zone))
+                    foreach (GamePlayer player in ClientService.Instance.GetPlayersOfZone(zone))
                     {
                         if (player.Client.Account.PrivLevel >= (uint)ePrivLevel.GM)
                             continue;

@@ -43,7 +43,7 @@ public class PlayerMeterProvider : IMeterProvider
     {
         try
         {
-            return ClientService.GetClients().Count(client => client.ClientState == GameClient.eClientState.Playing);
+            return ClientService.Instance.GetClients().Count(client => client.ClientState == GameClient.eClientState.Playing);
         }
         catch (Exception e)
         {
@@ -62,7 +62,7 @@ public class PlayerMeterProvider : IMeterProvider
         try
         {
             List<Measurement<int>> classes = [];
-            List<GameClient> clients = [.. ClientService.GetClients().Where(client => client.ClientState == GameClient.eClientState.Playing)];
+            List<GameClient> clients = [.. ClientService.Instance.GetClients().Where(client => client.ClientState == GameClient.eClientState.Playing)];
 
             if (clients.Count == 0)
             {

@@ -21,7 +21,7 @@ namespace DOL.GS.GameEvents
 
 		/// <summary>
 		/// Gets player count - Don't edit this one.
-		protected static string ClientCount = ClientService.ClientCount.ToString();
+		protected static string ClientCount = ClientService.Instance.ClientCount.ToString();
         /// </summary>
 
         /// <summary>

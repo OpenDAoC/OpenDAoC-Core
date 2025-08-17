@@ -2,18 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DOL.Database;
-using ECS.Debug;
+using DOL.Logging;
 
 namespace DOL.GS
 {
-    public class DailyQuestService
+    public sealed class DailyQuestService : GameServiceBase
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = "DailyQuestService";
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
         private const string DAILY_INTERVAL_KEY = "DAILY";
-        private static DateTime lastDailyRollover;
+        private DateTime lastDailyRollover;
+
+        public static DailyQuestService Instance { get; private set; }
 
         static DailyQuestService()
+        {
+            Instance = new();
+        }
+
+        private DailyQuestService()
         {
             IList<DbTaskRefreshInterval> loadQuestsProp = GameServer.Database.SelectAllObjects<DbTaskRefreshInterval>();
 
@@ -24,11 +31,9 @@ namespace DOL.GS
             }
         }
 
-        public static void Tick()
+        public override void Tick()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
-            //.WriteLine($"daily:{lastDailyRollover.Date.DayOfYear} weekly:{lastWeeklyRollover.Date.DayOfYear+7} now:{DateTime.Now.Date.DayOfYear}");
+            ProcessPostedActions();
 
             if (lastDailyRollover.Date.DayOfYear < DateTime.Now.Date.DayOfYear || lastDailyRollover.Year < DateTime.Now.Year)
             {
@@ -60,7 +65,6 @@ namespace DOL.GS
                     if (log.IsErrorEnabled)
                         log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
 
-                    Diagnostics.StopPerfCounter(SERVICE_NAME);
                     return;
                 }
 
@@ -80,8 +84,6 @@ namespace DOL.GS
                         GameServer.Database.DeleteObject(existingDailyQuest);
                 }
             }
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
         }
     }
 }

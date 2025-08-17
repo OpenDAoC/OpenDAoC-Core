@@ -2138,7 +2138,7 @@ namespace DOL.GS
             ApocUP = true;
 
 
-            foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
+            foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRegion(CurrentRegion))
                 player.Out.SendSoundEffect(2452, 0, 0, 0, 0, 0);//play sound effect for every player in boss currentregion
 
             KilledEnemys = 0;

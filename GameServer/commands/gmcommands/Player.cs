@@ -1099,7 +1099,7 @@ namespace DOL.GS.Commands
                         }
 
                         string name = string.Join(" ", args, 2, args.Length - 2);
-                        GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(name, out ClientService.PlayerGuessResult result);;
+                        GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(name, out ClientService.PlayerGuessResult result);;
 
                         if (targetPlayer != null && !GameServer.ServerRules.IsSameRealm(targetPlayer, player.Client.Player, true))
                             targetPlayer = null;
@@ -1341,7 +1341,7 @@ namespace DOL.GS.Commands
                             {
                                 case "all":
                                 {
-                                    foreach (GamePlayer otherPlayer in ClientService.GetPlayers())
+                                    foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
                                         otherPlayer.SaveIntoDatabase();
 
                                     client.Out.SendMessage("Saved all characters!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
@@ -1397,7 +1397,7 @@ namespace DOL.GS.Commands
                             {
                                 case "all":
                                     {
-                                        foreach (GamePlayer otherPlayer in ClientService.GetNonGmPlayers())
+                                        foreach (GamePlayer otherPlayer in ClientService.Instance.GetNonGmPlayers())
                                         {
                                             otherPlayer.Out.SendMessage($"{client.Player.Name} (PrivLevel: {client.Account.PrivLevel}) has kicked all players!", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
                                             otherPlayer.Out.SendPlayerQuit(true);
@@ -1465,7 +1465,7 @@ namespace DOL.GS.Commands
                             {
                                 case "albs":
                                     {
-                                        foreach (GamePlayer albPlayer in ClientService.GetPlayersOfRealm(eRealm.Albion))
+                                        foreach (GamePlayer albPlayer in ClientService.Instance.GetPlayersOfRealm(eRealm.Albion))
                                         {
                                             if (!albPlayer.IsAlive)
                                             {
@@ -1485,7 +1485,7 @@ namespace DOL.GS.Commands
 
                                 case "hibs":
                                     {
-                                        foreach (GamePlayer hibPlayer in ClientService.GetPlayersOfRealm(eRealm.Hibernia))
+                                        foreach (GamePlayer hibPlayer in ClientService.Instance.GetPlayersOfRealm(eRealm.Hibernia))
                                         {
                                             if (!hibPlayer.IsAlive)
                                             {
@@ -1504,7 +1504,7 @@ namespace DOL.GS.Commands
                                     break;
                                 case "mids":
                                     {
-                                        foreach (GamePlayer midPlayer in ClientService.GetPlayersOfRealm(eRealm.Midgard))
+                                        foreach (GamePlayer midPlayer in ClientService.Instance.GetPlayersOfRealm(eRealm.Midgard))
                                         {
                                             if (!midPlayer.IsAlive)
                                             {
@@ -1548,7 +1548,7 @@ namespace DOL.GS.Commands
 
                                 case "all":
                                     {
-                                        foreach (GamePlayer otherPlayer in ClientService.GetPlayers<object>(Predicate, default))
+                                        foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers<object>(Predicate, default))
                                         {
                                             otherPlayer.Health = otherPlayer.MaxHealth;
                                             otherPlayer.Mana = otherPlayer.MaxMana;
@@ -1621,7 +1621,7 @@ namespace DOL.GS.Commands
                         {
                             case "albs":
                                 {
-                                    foreach (GamePlayer albPlayer in ClientService.GetPlayersOfRealm(eRealm.Albion))
+                                    foreach (GamePlayer albPlayer in ClientService.Instance.GetPlayersOfRealm(eRealm.Albion))
                                     {
                                         if (albPlayer.IsAlive && albPlayer.Client.Account.PrivLevel == 1)
                                             KillPlayer(client.Player, albPlayer);
@@ -1631,7 +1631,7 @@ namespace DOL.GS.Commands
 
                             case "mids":
                                 {
-                                    foreach (GamePlayer midPlayer in ClientService.GetPlayersOfRealm(eRealm.Midgard))
+                                    foreach (GamePlayer midPlayer in ClientService.Instance.GetPlayersOfRealm(eRealm.Midgard))
                                     {
                                         if (midPlayer.IsAlive && midPlayer.Client.Account.PrivLevel == 1)
                                             KillPlayer(client.Player, midPlayer);
@@ -1641,7 +1641,7 @@ namespace DOL.GS.Commands
 
                             case "hibs":
                                 {
-                                    foreach (GamePlayer hibPlayer in ClientService.GetPlayersOfRealm(eRealm.Hibernia))
+                                    foreach (GamePlayer hibPlayer in ClientService.Instance.GetPlayersOfRealm(eRealm.Hibernia))
                                     {
                                         if (hibPlayer.IsAlive && hibPlayer.Client.Account.PrivLevel == 1)
                                             KillPlayer(client.Player, hibPlayer);
@@ -1668,7 +1668,7 @@ namespace DOL.GS.Commands
 
                             case "all":
                                 {
-                                    foreach (GamePlayer otherPlayer in ClientService.GetNonGmPlayers())
+                                    foreach (GamePlayer otherPlayer in ClientService.Instance.GetNonGmPlayers())
                                     {
                                         if (otherPlayer.IsAlive)
                                             KillPlayer(client.Player, otherPlayer);
@@ -1710,7 +1710,7 @@ namespace DOL.GS.Commands
 
                                     short count = 0;
                                     string guildName = string.Join(" ", args, 3, args.Length - 3);
-                                    List<GamePlayer> players = ClientService.GetPlayers(Predicate, guildName);
+                                    List<GamePlayer> players = ClientService.Instance.GetPlayers(Predicate, guildName);
 
                                     foreach (GamePlayer guildMember in players)
                                     {
@@ -1737,7 +1737,7 @@ namespace DOL.GS.Commands
 
                                     short count = 0;
                                     string name = args[3];
-                                    GamePlayer player = ClientService.GetPlayerByExactName(name);
+                                    GamePlayer player = ClientService.Instance.GetPlayerByExactName(name);
 
                                     if (player != null)
                                     {
@@ -1762,7 +1762,7 @@ namespace DOL.GS.Commands
 
                                     short count = 0;
                                     string name = args[3];
-                                    GamePlayer player = ClientService.GetPlayerByExactName(name);
+                                    GamePlayer player = ClientService.Instance.GetPlayerByExactName(name);
 
                                     if (player != null)
                                     {
@@ -1792,7 +1792,7 @@ namespace DOL.GS.Commands
 
                                     short count = 0;
                                     string name = args[3];
-                                    GamePlayer player = ClientService.GetPlayerByExactName(name);
+                                    GamePlayer player = ClientService.Instance.GetPlayerByExactName(name);
 
                                     if (player != null)
                                     {
@@ -2081,7 +2081,7 @@ namespace DOL.GS.Commands
                        GamePlayer targetPlayer;
 
                         if (args.Length > 2)
-                            targetPlayer = ClientService.GetPlayerByExactName(args[2]);
+                            targetPlayer = ClientService.Instance.GetPlayerByExactName(args[2]);
                         else
                             targetPlayer = client.Player.TargetObject as GamePlayer;
 

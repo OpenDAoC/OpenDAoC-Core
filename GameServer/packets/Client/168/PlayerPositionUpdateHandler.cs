@@ -103,7 +103,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (log.IsErrorEnabled)
                         log.Error($"{client.Player.Name}'s position in unknown zone! => {zoneId}");
 
-                    ServiceUtils.KickPlayerToCharScreen(player);
+                    GameServiceUtils.KickPlayerToCharScreen(player);
                     return;
                 }
 
@@ -282,7 +282,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     if (log.IsErrorEnabled)
                         log.Error($"{client.Player.Name}'s position in unknown zone! => {zoneId}");
 
-                    ServiceUtils.KickPlayerToCharScreen(player);
+                    GameServiceUtils.KickPlayerToCharScreen(player);
                     return;
                 }
 

@@ -32,7 +32,7 @@ public class CurrencyMeterProvider : IMeterProvider
     {
         try
         {
-            return ClientService.GetClients().Where(IsPlayerActive).Select(GetPlayerMoney).Sum();
+            return ClientService.Instance.GetClients().Where(IsPlayerActive).Select(GetPlayerMoney).Sum();
 
             static bool IsPlayerActive(GameClient client)
             {

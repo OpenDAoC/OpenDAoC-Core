@@ -108,7 +108,7 @@ namespace DOL.GS.GameEvents
 		private static void StartList()
 		{
 			//Set up our URI to be passed to the WebClient.
-			string Updater = UrlEncode($"{UpdateURL}&username={Properties.SERVER_LIST_UPDATE_USER}&password={Properties.SERVER_LIST_UPDATE_PASS}&totalclients={ClientService.ClientCount}&version={ScriptVersion}");
+			string Updater = UrlEncode($"{UpdateURL}&username={Properties.SERVER_LIST_UPDATE_USER}&password={Properties.SERVER_LIST_UPDATE_PASS}&totalclients={ClientService.Instance.ClientCount}&version={ScriptVersion}");
 
 			if (!ListUpdater(Updater))
 			{

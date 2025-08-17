@@ -42,7 +42,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 player.EnteredGame = true;
                 player.Notify(GamePlayerEvent.GameEntered, player);
                 ShowPatchNotes(player);
-                EffectService.RestoreAllEffects(player);
+                EffectHelper.RestoreAllEffects(player);
                 checkInstanceLogin = true;
             }
             else

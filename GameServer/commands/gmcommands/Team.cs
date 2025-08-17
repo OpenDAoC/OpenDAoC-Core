@@ -35,7 +35,7 @@ namespace DOL.GS.Commands
             // Identify message body
             string message = string.Join(" ", args, 1, args.Length - 1);
 
-            foreach (GamePlayer otherPlayer in ClientService.GetGmPlayers())
+            foreach (GamePlayer otherPlayer in ClientService.Instance.GetGmPlayers())
             {
                 // Message: [TEAM] {0}: {1}
                 ChatUtil.SendTeamMessage(otherPlayer.Client, "Social.ReceiveMessage.Staff.Channel", client.Player.Name, message);

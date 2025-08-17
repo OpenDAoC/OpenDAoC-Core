@@ -13,7 +13,7 @@ namespace DOL.GS.Commands
         {
             List<string> message = new();
 
-            foreach (GamePlayer player in ClientService.GetPlayers())
+            foreach (GamePlayer player in ClientService.Instance.GetPlayers())
             {
                 if (args.Length > 1 && args[1].Equals("full", System.StringComparison.OrdinalIgnoreCase))
                     message.Add($"({player.Client.SessionID}) {player.Client.TcpEndpointAddress}, {player.Client.Account.Name}, {player.Name}, {player.Client.Version}");

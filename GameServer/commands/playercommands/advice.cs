@@ -62,7 +62,7 @@ namespace DOL.GS.Commands
                 // Message: The following players are flagged as Advisors:
                 ChatUtil.SendSystemMessage(client, "PLCommands.Advice.List.TheFollowing", null);
 
-                foreach (GamePlayer otherPlayer in ClientService.GetPlayers(Predicate, (client.Player.Realm, client.Account.PrivLevel > 1)))
+                foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers(Predicate, (client.Player.Realm, client.Account.PrivLevel > 1)))
                 {
                     total++;
 
@@ -88,7 +88,7 @@ namespace DOL.GS.Commands
                 return;
             }
 
-            foreach (GamePlayer otherPlayer in ClientService.GetPlayersForRealmWideChatMessage(client.Player))
+            foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersForRealmWideChatMessage(client.Player))
             {
                 // Message: [ADVICE {0}] {1}: {2}
                 ChatUtil.SendAdviceMessage(otherPlayer, "Social.SendAdvice.Msg.Channel", GetRealmString(client.Player.Realm), client.Player.Name, msg);

@@ -101,7 +101,7 @@ namespace DOL.GS
                 StringBuilder stats = new StringBuilder(256)
                     .Append($"-stats-  Mem={memUsedMb}MB/{memCommittedMb}MB")
                     .Append($"  GC={gen0Delta}/{gen1Delta}/{gen2Delta}")
-                    .Append($"  Clients={ClientService.ClientCount}")
+                    .Append($"  Clients={ClientService.Instance.ClientCount}")
                     .AppendFormat($"  Pool={poolCurrent}/{poolMax}({poolMin})")
                     .AppendFormat($"  IOCP={iocpCurrent}/{iocpMax}({iocpMin})")
                     .AppendFormat($"  GH/OH={globalHandlers}/{objectHandlers}")

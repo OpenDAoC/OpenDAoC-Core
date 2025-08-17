@@ -101,7 +101,7 @@ namespace DOL.GS.Commands
             else
             {
                 targetName = args[2];
-                target = ClientService.GetPlayerByPartialName(targetName, out _);
+                target = ClientService.Instance.GetPlayerByPartialName(targetName, out _);
 
                 if (target == null)
                 {

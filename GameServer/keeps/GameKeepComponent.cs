@@ -446,7 +446,7 @@ namespace DOL.GS.Keeps
 				{
 					m_oldHealthPercent = HealthPercent;
 
-					foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
+					foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRegion(CurrentRegion))
 					{
 						ClientService.UpdateObjectForPlayer(player, this);
 						player.Out.SendKeepComponentDetailUpdate(this); // I know this works, not sure if ObjectUpdate is needed - Tolakram
@@ -529,7 +529,7 @@ namespace DOL.GS.Keeps
 				}
 			}
 
-			foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
+			foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRegion(CurrentRegion))
 				player.Out.SendKeepComponentDetailUpdate(this);
 		}
 
@@ -653,7 +653,7 @@ namespace DOL.GS.Keeps
 				m_oldHealthPercent = HealthPercent;
 				if (oldStatus != Status)
 				{
-					foreach (GamePlayer player in ClientService.GetPlayersOfRegion(CurrentRegion))
+					foreach (GamePlayer player in ClientService.Instance.GetPlayersOfRegion(CurrentRegion))
 						player.Out.SendKeepComponentDetailUpdate(this);
 				}
 

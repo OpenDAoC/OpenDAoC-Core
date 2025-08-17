@@ -51,7 +51,7 @@ namespace DOL.GS
                 return;
             }
 
-            if (ServiceUtils.ShouldTick(EndTime))
+            if (GameServiceUtils.ShouldTick(EndTime))
                 MakeItem();
 
             if (_finishedCraft)

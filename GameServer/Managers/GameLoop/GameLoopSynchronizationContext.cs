@@ -2,18 +2,31 @@
 
 namespace DOL.GS
 {
+    public static class GameServiceContext
+    {
+        public static readonly AsyncLocal<IGameService> Current = new();
+    }
+
     public class GameLoopSynchronizationContext : SynchronizationContext
     {
         public override void Post(SendOrPostCallback d, object state)
         {
-            GameLoopService.Post(static state => state.d(state.state), (d, state));
+            IGameService targetService = GameServiceContext.Current.Value ?? GameLoopService.Instance;
+            targetService.Post(static state => state.d(state.state), (d, state));
         }
 
         public override void Send(SendOrPostCallback d, object state)
         {
-            ManualResetEvent completed = new(false);
+            if (Current == this)
+            {
+                d(state);
+                return;
+            }
 
-            GameLoopService.Post(static state =>
+            IGameService targetService = GameServiceContext.Current.Value ?? GameLoopService.Instance;
+            using ManualResetEvent completed = new(false);
+
+            GameLoopService.Instance.Post(static state =>
             {
                 try
                 {

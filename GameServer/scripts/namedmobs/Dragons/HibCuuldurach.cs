@@ -248,7 +248,7 @@ namespace DOL.GS
 		{
 			if (enemy is GamePlayer player)
 			{
-				foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfZone(CurrentZone))
+				foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersOfZone(CurrentZone))
 					otherPlayer.Out.SendMessage($"{Name} laughs at the {player.CharacterClass.Name} who has fallen beneath his crushing blow.", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
 			}
 
@@ -413,7 +413,7 @@ namespace DOL.AI.Brain
 				_lastRoamIndex = 0;
 				LockEndRoute = false;
 
-				foreach (GamePlayer player in ClientService.GetPlayersOfZone(Body.CurrentZone))
+				foreach (GamePlayer player in ClientService.Instance.GetPlayersOfZone(Body.CurrentZone))
 				{
 					player.Out.SendSoundEffect(2467, 0, 0, 0, 0, 0);//play sound effect for every player in boss currentregion
 					player.Out.SendMessage($"{Body.Name} bellows from the skies, 'Let all who intrude into my domain pay heed. I will seek you out and cast you into the arms of Death if you remain here!'", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);

@@ -101,7 +101,7 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.FOLLOW))
             {
-                if (ServiceUtils.ShouldTick(_nextFollowTick))
+                if (GameServiceUtils.ShouldTick(_nextFollowTick))
                 {
                     _followTickInterval = FollowTick();
 
@@ -114,7 +114,7 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.WALK_TO))
             {
-                if (ServiceUtils.ShouldTick(_walkingToEstimatedArrivalTime))
+                if (GameServiceUtils.ShouldTick(_walkingToEstimatedArrivalTime))
                 {
                     UnsetFlag(MovementState.WALK_TO);
                     OnArrival();
@@ -123,7 +123,7 @@ namespace DOL.GS
 
             if (IsFlagSet(MovementState.AT_WAYPOINT))
             {
-                if (ServiceUtils.ShouldTick(_stopAtWaypointUntil))
+                if (GameServiceUtils.ShouldTick(_stopAtWaypointUntil))
                 {
                     UnsetFlag(MovementState.AT_WAYPOINT);
                     MoveToNextWaypoint();

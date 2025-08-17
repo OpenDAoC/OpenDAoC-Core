@@ -220,7 +220,7 @@ namespace DOL.GS.PacketHandler
             if (_client.ClientState is eClientState.Playing)
             {
                 // The rate at which clients send `UDPInitRequestHandler` may vary depending on their version (1.127 = 65 seconds).
-                if (ServiceUtils.ShouldTick(_client.UdpPingTime + 70000))
+                if (GameServiceUtils.ShouldTick(_client.UdpPingTime + 70000))
                     _client.UdpConfirm = false;
             }
 
@@ -311,7 +311,7 @@ namespace DOL.GS.PacketHandler
             _udpSendArgs?.Dispose();
 
             // Drain all pending packets on the next game loop tick to avoid concurrent modification issues.
-            GameLoopService.Post(static state =>
+            GameLoopService.Instance.Post(static state =>
             {
                 try
                 {
@@ -466,7 +466,7 @@ namespace DOL.GS.PacketHandler
                 log.Error($"{Marshal.ToHexDump(description, packetBuffer)}\n{Environment.StackTrace}");
             }
 
-            GameLoopService.Post(static state =>
+            GameLoopService.Instance.Post(static state =>
             {
                 state.Client.Out.SendMessage($"Oversized packet detected and discarded (code: 0x{state.Code:X2}) (size: {state.Size}). Please report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
             }, new

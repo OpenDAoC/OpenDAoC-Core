@@ -13,7 +13,7 @@ namespace DOL.GS
             Duration = duration;
             PulseFreq = pulseFreq;
             Effectiveness = effectiveness;
-            EffectType = EffectService.GetImmunityEffectFromSpell(handler.Spell);
+            EffectType = EffectHelper.GetImmunityEffectFromSpell(handler.Spell);
             ExpireTick = duration + GameLoop.GameLoopTime;
             StartTick = GameLoop.GameLoopTime;
             TriggersImmunity = false;

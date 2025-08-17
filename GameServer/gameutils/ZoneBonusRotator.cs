@@ -194,7 +194,7 @@ namespace DOL.GS.Scripts
             WorldMgr.Zones[(ushort)currentHiberniaZone].BonusExperience = PvEExperienceBonusAmount;
             WorldMgr.Zones[(ushort)currentHiberniaZoneSI].BonusExperience = PvEExperienceBonusAmount;
 
-            foreach (GamePlayer player in ClientService.GetPlayers())
+            foreach (GamePlayer player in ClientService.Instance.GetPlayers())
                 TellPlayer(player);
 
             scheduler.Start(UpdatePvEZones, PvETimer);
@@ -257,7 +257,7 @@ namespace DOL.GS.Scripts
                     break;
             }
 
-            foreach (GamePlayer player in ClientService.GetPlayers())
+            foreach (GamePlayer player in ClientService.Instance.GetPlayers())
                 TellPlayer(player);
 
             scheduler.Start(UpdateRvRZones, RvRTimer);

@@ -2,22 +2,28 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
+using DOL.Logging;
 using ECS.Debug;
 
 namespace DOL.GS
 {
-    public static class CraftingService
+    public sealed class CraftingService : GameServiceBase
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-        private const string SERVICE_NAME = nameof(CraftingService);
-        private static List<CraftComponent> _list;
-        private static int _entityCount;
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        public static void Tick()
+        private List<CraftComponent> _list;
+        private int _entityCount;
+
+        public static CraftingService Instance { get; private set; }
+
+        static CraftingService()
         {
-            GameLoop.CurrentServiceTick = SERVICE_NAME;
-            Diagnostics.StartPerfCounter(SERVICE_NAME);
+            Instance = new();
+        }
 
+        public override void Tick()
+        {
+            ProcessPostedActions();
             int lastValidIndex;
 
             try
@@ -29,19 +35,16 @@ namespace DOL.GS
                 if (log.IsErrorEnabled)
                     log.Error($"{nameof(ServiceObjectStore.UpdateAndGetAll)} failed. Skipping this tick.", e);
 
-                Diagnostics.StopPerfCounter(SERVICE_NAME);
                 return;
             }
 
             GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(SERVICE_NAME, ref _entityCount, _list.Count);
-
-            Diagnostics.StopPerfCounter(SERVICE_NAME);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref _entityCount, _list.Count);
         }
 
-        private static void TickInternal(int index)
+        private void TickInternal(int index)
         {
             CraftComponent craftComponent = null;
 
@@ -55,7 +58,7 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                ServiceUtils.HandleServiceException(e, SERVICE_NAME, craftComponent, craftComponent.Owner);
+                GameServiceUtils.HandleServiceException(e, ServiceName, craftComponent, craftComponent.Owner);
             }
         }
     }

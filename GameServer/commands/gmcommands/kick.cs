@@ -29,7 +29,7 @@ namespace DOL.GS.Commands
 				{
 					try
 					{
-						clientc = ClientService.GetClientFromAccountName(args[2]);
+						clientc = ClientService.Instance.GetClientFromAccountName(args[2]);
 					}
 					catch
 					{
@@ -42,7 +42,7 @@ namespace DOL.GS.Commands
 				try
 				{
 					int sessionID = Convert.ToInt32(args[1][1..]);
-					clientc = ClientService.GetClientBySessionId(sessionID);
+					clientc = ClientService.Instance.GetClientBySessionId(sessionID);
 				}
 				catch
 				{
@@ -51,7 +51,7 @@ namespace DOL.GS.Commands
 			}
 			else
 			{
-				clientc = ClientService.GetPlayerByExactName(args[1])?.Client;
+				clientc = ClientService.Instance.GetPlayerByExactName(args[1])?.Client;
 			}
 
 			if (clientc == null)

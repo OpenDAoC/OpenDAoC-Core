@@ -246,7 +246,7 @@ namespace DOL.GS
 		{
 			if (enemy is GamePlayer player)
 			{
-				foreach (GamePlayer otherPlayer in ClientService.GetPlayersOfZone(CurrentZone))
+				foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersOfZone(CurrentZone))
 					otherPlayer.Out.SendMessage($"{Name} shouts, 'Your soul now belongs to me, {player.CharacterClass.Name}!'", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
 			}
 
@@ -410,7 +410,7 @@ namespace DOL.AI.Brain
 				_lastRoamIndex = 0;
 				LockEndRoute = false;
 
-				foreach (GamePlayer player in ClientService.GetPlayersOfZone(Body.CurrentZone))
+				foreach (GamePlayer player in ClientService.Instance.GetPlayersOfZone(Body.CurrentZone))
 				{
 					player.Out.SendSoundEffect(2467, 0, 0, 0, 0, 0);//play sound effect for every player in boss currentregion
 					player.Out.SendMessage("A booming voice echoes through the canyons, 'I grow restless. Who has dared to enter my domain? I shall freeze their flesh and grind their bones to dust!'", eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);

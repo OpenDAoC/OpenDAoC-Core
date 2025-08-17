@@ -255,7 +255,7 @@ namespace DOL.GS.Scripts
 
 				si.Time = DateTime.Now.ToString();
 				si.ServerName = GameServer.Instance.Configuration.ServerName;
-				si.NumClients = ClientService.ClientCount;
+				si.NumClients = ClientService.Instance.ClientCount;
 				si.NumAccounts = GameServer.Database.GetObjectCount<DbAccount>();
 				si.NumMobs = GameServer.Database.GetObjectCount<DbMob>();
 				si.NumInventoryItems = GameServer.Database.GetObjectCount<DbInventoryItem>();
@@ -271,7 +271,7 @@ namespace DOL.GS.Scripts
 
 				PlayerInfo pi = new PlayerInfo();
 
-				foreach (GamePlayer player in ClientService.GetPlayers())
+				foreach (GamePlayer player in ClientService.Instance.GetPlayers())
 				{
 					pi.Name = player.Name;
 					pi.LastName = player.LastName;

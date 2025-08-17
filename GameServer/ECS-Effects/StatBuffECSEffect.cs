@@ -16,7 +16,7 @@ namespace DOL.GS
             if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
                 return;
 
-            foreach (eProperty property in EffectService.GetPropertiesFromEffect(EffectType))
+            foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
                 ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, false);
 
             // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.
@@ -40,7 +40,7 @@ namespace DOL.GS
             if (SpellHandler is not PropertyChangingSpell propertyChangingSpell)
                 return;
 
-            foreach (eProperty property in EffectService.GetPropertiesFromEffect(EffectType))
+            foreach (eProperty property in EffectHelper.GetPropertiesFromEffect(EffectType))
                 ApplyBonus(Owner, propertyChangingSpell.BonusCategory1, property, SpellHandler.Spell.Value, Effectiveness, true);
 
             // Let's not bother checking the effect type and simply attempt to start every regeneration timer instead.

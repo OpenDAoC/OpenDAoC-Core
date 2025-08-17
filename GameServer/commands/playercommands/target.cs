@@ -12,7 +12,7 @@ namespace DOL.GS.Commands
 
             if (args.Length == 2)
             {
-                GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[1], out ClientService.PlayerGuessResult result);
+                GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(args[1], out ClientService.PlayerGuessResult result);
 
                 if (result is ClientService.PlayerGuessResult.FOUND_PARTIAL or ClientService.PlayerGuessResult.FOUND_EXACT)
                 {

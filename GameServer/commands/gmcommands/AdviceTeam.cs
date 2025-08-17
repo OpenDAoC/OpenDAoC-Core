@@ -25,7 +25,7 @@ namespace DOL.GS.Commands
                     msg += $"{args[i]} ";
             }
 
-            foreach (GamePlayer otherPlayer in ClientService.GetPlayersForRealmWideChatMessage(client.Player))
+            foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayersForRealmWideChatMessage(client.Player))
             {
                 var name = "STAFF";
                 // Message: [ADVICE {0}] {1}: {2}

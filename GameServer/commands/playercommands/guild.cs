@@ -297,7 +297,7 @@ namespace DOL.GS.Commands
 							string playername = String.Join(" ", args, 2, i - 2);
 							string guildname = String.Join(" ", args, i + 1, args.Length - i - 1);
 
-							GuildMgr.GetGuildByName(guildname).AddPlayer(ClientService.GetPlayerByExactName(playername));
+							GuildMgr.GetGuildByName(guildname).AddPlayer(ClientService.Instance.GetPlayerByExactName(playername));
 						}
 						break;
 						#endregion
@@ -332,7 +332,7 @@ namespace DOL.GS.Commands
 								return;
 							}
 
-							GuildMgr.GetGuildByName(guildname).RemovePlayer("gamemaster", ClientService.GetPlayerByExactName(playername));
+							GuildMgr.GetGuildByName(guildname).RemovePlayer("gamemaster", ClientService.Instance.GetPlayerByExactName(playername));
 						}
 						break;
 						#endregion
@@ -358,7 +358,7 @@ namespace DOL.GS.Commands
 							GamePlayer obj = client.Player.TargetObject as GamePlayer;
 							if (args.Length > 2)
 							{
-								obj = ClientService.GetPlayerByExactName(args[2]);
+								obj = ClientService.Instance.GetPlayerByExactName(args[2]);
 							}
 							if (obj == null)
 							{
@@ -426,7 +426,7 @@ namespace DOL.GS.Commands
 								obj = client.Player.TargetObject as GamePlayer;
 							else
 							{
-								obj = ClientService.GetPlayerByExactName(playername);
+								obj = ClientService.Instance.GetPlayerByExactName(playername);
 								obj ??= DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playername));
 							}
 							if (obj == null)
@@ -503,7 +503,7 @@ namespace DOL.GS.Commands
 							var chs = DOLDB<DbCoreCharacter>.SelectObjects(DB.Column("AccountName").IsEqualTo(accountName).And(DB.Column("GuildID").IsEqualTo(client.Player.GuildID)));
 							if (chs.Count > 0)
 							{
-								GameClient myclient = ClientService.GetClientFromAccountName(accountName);
+								GameClient myclient = ClientService.Instance.GetClientFromAccountName(accountName);
 								string plys = string.Empty;
 								bool isOnline = (myclient != null);
 								foreach (DbCoreCharacter ch in chs)
@@ -1246,7 +1246,7 @@ namespace DOL.GS.Commands
 							}
 							else
 							{
-								obj = ClientService.GetPlayerByExactName(playerName);
+								obj = ClientService.Instance.GetPlayerByExactName(playerName);
 								if (obj == null)
 								{
 									obj = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playerName));
@@ -1401,7 +1401,7 @@ namespace DOL.GS.Commands
 							}
 							else
 							{
-								obj = ClientService.GetPlayerByExactName(playername);
+								obj = ClientService.Instance.GetPlayerByExactName(playername);
 								if (obj == null)
 								{
 									obj = DOLDB<DbCoreCharacter>.SelectObject(DB.Column("Name").IsEqualTo(playername));
@@ -1620,7 +1620,7 @@ namespace DOL.GS.Commands
 							GamePlayer newLeader = client.Player.TargetObject as GamePlayer;
 							if (args.Length > 2)
 							{
-								GamePlayer player = ClientService.GetPlayerByExactName(args[2]);
+								GamePlayer player = ClientService.Instance.GetPlayerByExactName(args[2]);
 								if (player != null && GameServer.ServerRules.IsAllowedToGroup(client.Player, player, true))
 									newLeader = player;
 							}
@@ -1700,7 +1700,7 @@ namespace DOL.GS.Commands
 								string playername = args[3];
 								string accountId = string.Empty;
 
-								GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[3], out _);
+								GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(args[3], out _);
 								if (targetPlayer != null)
 								{
 									OnCommand(client, new string[] { "gc", "remove", args[3] });
@@ -1732,7 +1732,7 @@ namespace DOL.GS.Commands
 							}
 							else if (args.Length == 3)
 							{
-								GamePlayer targetPlayer = ClientService.GetPlayerByPartialName(args[2], out _);
+								GamePlayer targetPlayer = ClientService.Instance.GetPlayerByPartialName(args[2], out _);
 								if (targetPlayer != null)
 								{
 									OnCommand(client, new string[] { "gc", "remove", args[2] });

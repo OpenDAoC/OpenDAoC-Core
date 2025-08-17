@@ -25,7 +25,7 @@ namespace DOL.GS.Commands
             }
 
             string name = string.Join(" ", args, 1, args.Length - 1);
-            GamePlayer otherPlayer = ClientService.GetPlayerByPartialName(name, out ClientService.PlayerGuessResult result);
+            GamePlayer otherPlayer = ClientService.Instance.GetPlayerByPartialName(name, out ClientService.PlayerGuessResult result);
 
             if (result == ClientService.PlayerGuessResult.NOT_FOUND)
             {
