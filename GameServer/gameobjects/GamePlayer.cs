@@ -10341,38 +10341,10 @@ namespace DOL.GS
             var inventoryTask = Inventory.StartLoadFromDatabaseTask(InternalID);
             var craftingForRealmTask = DOLDB<DbAccountXCrafting>.SelectObjectAsync(DB.Column("AccountID").IsEqualTo(AccountName).And(DB.Column("Realm").IsEqualTo(Realm)));
             var scriptedQuestsTask = DOLDB<DbQuest>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
-            var dataQuestsTask = DOLDB<DbCharacterXDataQuest>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID)).ContinueWith(task =>
-            {
-                var characterDataQuests = task.Result;
-                var innerTasks = characterDataQuests.Select(characterQuest => DOLDB<DbDataQuest>.SelectObjectAsync(DB.Column("DataQuestID").IsEqualTo(characterQuest.DataQuestID))
-                    .ContinueWith(dbDataQuestTask =>
-                    {
-                        var dbDataQuest = dbDataQuestTask.Result;
-
-                        if (dbDataQuest == null || (DataQuest.eStartType) dbDataQuest.StartType is DataQuest.eStartType.Collection)
-                            return null;
-
-                        return new DataQuest(this, dbDataQuest, characterQuest);
-                    })).ToArray();
-                return Task.WhenAll(innerTasks);
-            }).Unwrap();
+            var dataQuestsTask = LoadDataQuestsAsync();
             var factionRelationsTask = DOLDB<DbFactionAggroLevel>.SelectObjectsAsync(DB.Column("CharacterID").IsEqualTo(ObjectId));
             var tasksTask = DOLDB<DbTask>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(InternalID));
             var masterLevelsTask = DOLDB<DbCharacterXMasterLevel>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
-
-            // Wait for tasks to complete. This may not be necessary.
-            List<Task> tasks =
-            [
-                moneyForRealmTask,
-                inventoryTask,
-                craftingForRealmTask,
-                scriptedQuestsTask,
-                dataQuestsTask,
-                factionRelationsTask,
-                tasksTask,
-                masterLevelsTask
-            ];
-            await Task.WhenAll(tasks);
 
             SetCharacterClass(DBCharacter.Class);
             HandleWorldPosition();
@@ -10392,6 +10364,24 @@ namespace DOL.GS
             VerifySpecPoints();
             GuildMgr.AddPlayerToGuildMemberViews(this); // Needed for starter guilds since they are forced onto the `DBCharacter`.
             styleComponent.OnPlayerLoadFromDatabase(); // Sets `AutomaticBackupStyle`.
+
+            async Task<DataQuest[]> LoadDataQuestsAsync()
+            {
+                var characterDataQuests = await DOLDB<DbCharacterXDataQuest>.SelectObjectsAsync(DB.Column("Character_ID").IsEqualTo(QuestPlayerID));
+
+                var innerTasks = characterDataQuests.Select(async characterQuest =>
+                {
+                    var dbDataQuest = await DOLDB<DbDataQuest>.SelectObjectAsync(DB.Column("DataQuestID").IsEqualTo(characterQuest.DataQuestID));
+
+                    if (dbDataQuest == null || (DataQuest.eStartType)dbDataQuest.StartType is DataQuest.eStartType.Collection)
+                        return null;
+
+                    return new DataQuest(this, dbDataQuest, characterQuest);
+                });
+
+                DataQuest[] completedQuests = await Task.WhenAll(innerTasks);
+                return completedQuests.Where(q => q != null).ToArray();
+            }
 
             void HandleWorldPosition()
             {
