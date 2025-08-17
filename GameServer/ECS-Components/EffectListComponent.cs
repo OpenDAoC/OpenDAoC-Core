@@ -82,7 +82,8 @@ namespace DOL.GS
                 effect.IsBeingReplaced = false;
             }
 
-            if (_effects.Count == 0)
+            // Also check for pending effects since `TryApplyImmunity` for example may queue one.
+            if (_effects.Count == 0 && Volatile.Read(ref _pendingEffectCount) == 0)
             {
                 ServiceObjectStore.Remove(this);
                 SendPlayerUpdates();
@@ -556,6 +557,8 @@ namespace DOL.GS
                         spellEffect.Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, spellEffect, 1.0 - spellEffect.SpellHandler.Spell.Value * factor * 0.01);
                         spellEffect.Owner.OnMaxSpeedChange();
 
+                        foreach (var a in ClientService.Instance.GetPlayers())
+                            a.Out.SendMessage($"{spellEffect.Owner.MaxSpeed}", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
                         if (factor <= 0)
                         {
                             spellEffect.Stop();
