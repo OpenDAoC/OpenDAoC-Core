@@ -315,12 +315,13 @@ namespace DOL.GS.Friends
 		/// <summary>
 		/// Trigger Player Friend List Update on World Enter
 		/// </summary>
-		private void OnClientStateChanged(DOLEvent e, object sender, EventArgs arguments)
+		private async void OnClientStateChanged(DOLEvent e, object sender, EventArgs arguments)
 		{
 			if (sender is not GameClient client || client.ClientState is not GameClient.eClientState.Playing || client.Player == null)
 				return;
 
-			ServiceUtils.ScheduleActionAfterTask(AddPlayerFriendsListToCache(client.Player), SendPlayerFriendsList, client.Player, client.Player);
+			await AddPlayerFriendsListToCache(client.Player);
+			SendPlayerFriendsList(client.Player);
 		}
 
 		/// <summary>

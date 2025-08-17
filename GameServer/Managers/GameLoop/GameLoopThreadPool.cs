@@ -365,6 +365,7 @@ namespace DOL.GS
 
     public abstract class GameLoopThreadPool : IDisposable
     {
+        private static readonly GameLoopSynchronizationContext _gameLoopContext = new();
         [ThreadStatic] private static TickLocalPools _tickLocalPools;
         [ThreadStatic] private static long _lastResetTick;
 
@@ -391,6 +392,7 @@ namespace DOL.GS
 
         private void InitThreadStatics()
         {
+            SynchronizationContext.SetSynchronizationContext(_gameLoopContext);
             _tickLocalPools = new();
             _lastResetTick = -1;
         }

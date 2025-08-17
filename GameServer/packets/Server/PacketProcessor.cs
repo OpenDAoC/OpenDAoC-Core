@@ -311,7 +311,7 @@ namespace DOL.GS.PacketHandler
             _udpSendArgs?.Dispose();
 
             // Drain all pending packets on the next game loop tick to avoid concurrent modification issues.
-            GameLoopService.Post(static (state) =>
+            GameLoopService.Post(static state =>
             {
                 try
                 {
