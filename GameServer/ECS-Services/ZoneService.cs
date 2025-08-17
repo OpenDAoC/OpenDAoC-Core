@@ -12,9 +12,8 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private List<ObjectChangingSubZone> _list;
-        private int _entityCount;
 
-        public static ZoneService Instance { get; private set; }
+        public static new ZoneService Instance { get; }
 
         static ZoneService()
         {
@@ -38,23 +37,21 @@ namespace DOL.GS
                 return;
             }
 
-            GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
+            GameLoop.ExecuteForEach(_list, lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref _entityCount, _list.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _list.Count);
         }
 
-        private void TickInternal(int index)
+        private static void TickInternal(ObjectChangingSubZone objectChangingSubZone)
         {
-            ObjectChangingSubZone objectChangingSubZone = null;
             SubZoneObject subZoneObject = null;
 
             try
             {
                 if (Diagnostics.CheckServiceObjectCount)
-                    Interlocked.Increment(ref _entityCount);
+                    Interlocked.Increment(ref Instance.EntityCount);
 
-                objectChangingSubZone = _list[index];
                 subZoneObject = objectChangingSubZone.SubZoneObject;
                 LinkedListNode<GameObject> node = subZoneObject.Node;
                 SubZone currentSubZone = subZoneObject.CurrentSubZone;
@@ -103,7 +100,7 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                GameServiceUtils.HandleServiceException(e, ServiceName, objectChangingSubZone, objectChangingSubZone.SubZoneObject?.Node?.Value);
+                GameServiceUtils.HandleServiceException(e, Instance.ServiceName, objectChangingSubZone, objectChangingSubZone.SubZoneObject?.Node?.Value);
             }
             finally
             {

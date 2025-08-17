@@ -12,10 +12,9 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private static List<ABrain> _list;
-        private static int _entityCount;
+        private List<ABrain> _list;
 
-        public static NpcService Instance { get; private set; }
+        public static new NpcService Instance { get; }
 
         static NpcService()
         {
@@ -39,22 +38,19 @@ namespace DOL.GS
                 return;
             }
 
-            GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
+            GameLoop.ExecuteForEach(_list, lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref _entityCount, _list.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _list.Count);
         }
 
-        private void TickInternal(int index)
+        private static void TickInternal(ABrain brain)
         {
-            ABrain brain = null;
-
             try
             {
                 if (Diagnostics.CheckServiceObjectCount)
-                    Interlocked.Increment(ref _entityCount);
+                    Interlocked.Increment(ref Instance.EntityCount);
 
-                brain = _list[index];
                 GameNPC npc = brain.Body;
 
                 if (GameServiceUtils.ShouldTick(brain.NextThinkTick))
@@ -70,14 +66,14 @@ namespace DOL.GS
                     long stopTick = GameLoop.GetRealTime();
 
                     if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                        log.Warn($"Long {ServiceName}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
+                        log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for {npc.Name}({npc.ObjectID}) Interval: {brain.ThinkInterval} BrainType: {brain.GetType()} Time: {stopTick - startTick}ms");
 
                     brain.NextThinkTick = GameLoop.GameLoopTime + brain.ThinkInterval;
                 }
             }
             catch (Exception e)
             {
-                GameServiceUtils.HandleServiceException(e, ServiceName, brain, brain.Body);
+                GameServiceUtils.HandleServiceException(e, Instance.ServiceName, brain, brain.Body);
             }
         }
     }

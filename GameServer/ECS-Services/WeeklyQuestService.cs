@@ -11,9 +11,9 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private const string WEEKLY_INTERVAL_KEY = "WEEKLY";
-        private static DateTime lastWeeklyRollover;
+        private static DateTime _lastWeeklyRollover;
 
-        public static WeeklyQuestService Instance { get; private set; }
+        public static new WeeklyQuestService Instance { get; }
 
         static WeeklyQuestService()
         {
@@ -27,7 +27,7 @@ namespace DOL.GS
             foreach (DbTaskRefreshInterval interval in loadQuestsProp)
             {
                 if (interval.RolloverInterval.Equals(WEEKLY_INTERVAL_KEY))
-                    lastWeeklyRollover = interval.LastRollover;
+                    _lastWeeklyRollover = interval.LastRollover;
             }
         }
 
@@ -36,7 +36,7 @@ namespace DOL.GS
             ProcessPostedActions();
 
             // This is where the weekly check will go once testing is finished.
-            if (lastWeeklyRollover.Date.DayOfYear + 7 < DateTime.Now.Date.DayOfYear || lastWeeklyRollover.Year < DateTime.Now.Year)
+            if (_lastWeeklyRollover.Date.DayOfYear + 7 < DateTime.Now.Date.DayOfYear || _lastWeeklyRollover.Year < DateTime.Now.Year)
             {
                 DbTaskRefreshInterval loadQuestsProp = GameServer.Database.SelectObject<DbTaskRefreshInterval>(DB.Column("RolloverInterval").IsEqualTo(WEEKLY_INTERVAL_KEY));
 
@@ -69,7 +69,7 @@ namespace DOL.GS
                     return;
                 }
 
-                lastWeeklyRollover = DateTime.Now;
+                _lastWeeklyRollover = DateTime.Now;
 
                 for (int i = 0; i < lastValidIndex + 1; i++)
                 {

@@ -12,9 +12,8 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private List<CastingComponent> _list;
-        private int _entityCount;
 
-        public static CastingService Instance { get; private set; }
+        public static new CastingService Instance { get; }
 
         static CastingService()
         {
@@ -38,32 +37,29 @@ namespace DOL.GS
                 return;
             }
 
-            GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
+            GameLoop.ExecuteForEach(_list, lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref _entityCount, _list.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _list.Count);
         }
 
-        private void TickInternal(int index)
+        private static void TickInternal(CastingComponent castingComponent)
         {
-            CastingComponent castingComponent = null;
-
             try
             {
                 if (Diagnostics.CheckServiceObjectCount)
-                    Interlocked.Increment(ref _entityCount);
+                    Interlocked.Increment(ref Instance.EntityCount);
 
-                castingComponent = _list[index];
                 long startTick = GameLoop.GetRealTime();
                 castingComponent.Tick();
                 long stopTick = GameLoop.GetRealTime();
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {ServiceName}.{nameof(Tick)} for: {castingComponent.Owner.Name}({castingComponent.Owner.ObjectID}) Spell: {castingComponent.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for: {castingComponent.Owner.Name}({castingComponent.Owner.ObjectID}) Spell: {castingComponent.SpellHandler?.Spell?.Name} Time: {stopTick - startTick}ms");
             }
             catch (Exception e)
             {
-                GameServiceUtils.HandleServiceException(e, ServiceName, castingComponent, castingComponent.Owner);
+                GameServiceUtils.HandleServiceException(e, Instance.ServiceName, castingComponent, castingComponent.Owner);
             }
         }
     }

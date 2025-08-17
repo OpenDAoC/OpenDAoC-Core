@@ -37,9 +37,9 @@ namespace DOL.GS
         private CountdownEvent _workerStartLatch;       // Signals when all workers are initialized.
         private ManualResetEventSlim[] _workReady;      // Per-worker event to trigger work.
 
-        // Work dispatch.
-        private Action<int> _workAction;                // Per-item work action.
-        private readonly WorkState _workState = new();
+        // Work processing.
+        private WorkProcessor _workProcessor;           // Current work processor instance, reused for each execution.
+        private readonly WorkState _workState = new();  // Shared state for work distribution and completion tracking.
 
         [StructLayout(LayoutKind.Explicit)]
         private class WorkState
@@ -114,14 +114,19 @@ namespace DOL.GS
             }
         }
 
-        public override void ExecuteWork(int count, Action<int> workAction)
+        public override void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)
         {
             try
             {
+                int count = Math.Min(items.Count, toExclusive);
+
                 if (count <= 0)
                     return;
 
-                _workAction = workAction;
+                WorkProcessor<T> processor = WorkProcessorCache<T>.Instance;
+                processor.Set(items, action);
+
+                _workProcessor = processor;
                 _workState.RemainingWork = count;
                 _workState.CompletedWorkerCount = 0;
 
@@ -147,6 +152,10 @@ namespace DOL.GS
                     log.Fatal($"Critical error encountered in \"{nameof(GameLoopThreadPoolMultiThreaded)}\"", e);
 
                 GameServer.Instance.Stop();
+            }
+            finally
+            {
+                (_workProcessor as WorkProcessor<T>)?.Clear();
             }
         }
 
@@ -255,7 +264,7 @@ namespace DOL.GS
                     start = 0;
 
                 for (int i = start; i < end; i++)
-                    _workAction(i);
+                    _workProcessor.Process(i);
 
                 remainingWork = start - 1;
             }
@@ -346,18 +355,53 @@ namespace DOL.GS
             if (log.IsInfoEnabled)
                 log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
         }
+
+        private static class WorkProcessorCache<T>
+        {
+            public static readonly WorkProcessor<T> Instance = new();
+        }
+
+        private sealed class WorkProcessor<T> : WorkProcessor
+        {
+            private List<T> _items;
+            private Action<T> _action;
+
+            public WorkProcessor() { }
+
+            public void Set(List<T> items, Action<T> action)
+            {
+                _items = items;
+                _action = action;
+            }
+
+            public override void Process(int index)
+            {
+                _action(_items[index]);
+            }
+
+            public void Clear()
+            {
+                _items = default;
+                _action = null;
+            }
+        }
+
+        private abstract class WorkProcessor
+        {
+            public abstract void Process(int index);
+        }
     }
 
     public sealed class GameLoopThreadPoolSingleThreaded : GameLoopThreadPool
     {
         public GameLoopThreadPoolSingleThreaded() { }
 
-        public override void ExecuteWork(int count, Action<int> workAction)
+        public override void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)
         {
             CheckResetTick();
 
-            for (int i = 0; i < count; i++)
-                workAction(i);
+            for (int i = 0; i < toExclusive; i++)
+                action(items[i]);
         }
 
         public override void Dispose() { }
@@ -374,7 +418,7 @@ namespace DOL.GS
             InitThreadStatics();
         }
 
-        public abstract void ExecuteWork(int count, Action<int> workAction);
+        public abstract void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action);
 
         public abstract void Dispose();
 

@@ -80,9 +80,9 @@ namespace DOL.GS
             return _gameLoopStats.GetAverageTicks(GameLoopTime);
         }
 
-        public static void ExecuteWork(int count, Action<int> action)
+        public static void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)
         {
-            _threadPool.ExecuteWork(count, action);
+            _threadPool.ExecuteForEach(items, toExclusive, action);
         }
 
         public static T GetForTick<T>(PooledObjectKey poolKey, Action<T> initializer) where T : IPooledObject<T>, new()

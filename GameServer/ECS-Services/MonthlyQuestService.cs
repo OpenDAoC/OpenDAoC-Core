@@ -11,9 +11,9 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private const string MONTHLY_INTERVAL_KEY = "MONTHLY";
-        private DateTime lastMonthlyRollover;
+        private DateTime _lastMonthlyRollover;
 
-        public static MonthlyQuestService Instance { get; private set; }
+        public static new MonthlyQuestService Instance { get; }
 
         static MonthlyQuestService()
         {
@@ -27,14 +27,14 @@ namespace DOL.GS
             foreach (DbTaskRefreshInterval interval in loadQuestsProp)
             {
                 if (interval.RolloverInterval.Equals(MONTHLY_INTERVAL_KEY))
-                    lastMonthlyRollover = interval.LastRollover;
+                    _lastMonthlyRollover = interval.LastRollover;
             }
         }
 
         public override void Tick()
         {
             // This is where the weekly check will go once testing is finished.
-            if (lastMonthlyRollover.Date.Month < DateTime.Now.Date.Month || lastMonthlyRollover.Year < DateTime.Now.Year)
+            if (_lastMonthlyRollover.Date.Month < DateTime.Now.Date.Month || _lastMonthlyRollover.Year < DateTime.Now.Year)
             {
                 DbTaskRefreshInterval loadQuestsProp = GameServer.Database.SelectObject<DbTaskRefreshInterval>(DB.Column("RolloverInterval").IsEqualTo(MONTHLY_INTERVAL_KEY));
 
@@ -67,7 +67,7 @@ namespace DOL.GS
                     return;
                 }
 
-                lastMonthlyRollover = DateTime.Now;
+                _lastMonthlyRollover = DateTime.Now;
 
                 for (int i = 0; i < lastValidIndex + 1; i++)
                 {

@@ -12,11 +12,10 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
-        private List<EffectListComponent> _effectListComponents;
-        private int _entityCount;
+        private List<EffectListComponent> _list;
         private int _lastValidIndex;
 
-        public static EffectListService Instance { get; private set; }
+        public static new EffectListService Instance { get; }
 
         static EffectListService()
         {
@@ -28,7 +27,7 @@ namespace DOL.GS
             ProcessPostedActions();
             try
             {
-                _effectListComponents = ServiceObjectStore.UpdateAndGetAll<EffectListComponent>(ServiceObjectType.EffectListComponent, out _lastValidIndex);
+                _list = ServiceObjectStore.UpdateAndGetAll<EffectListComponent>(ServiceObjectType.EffectListComponent, out _lastValidIndex);
             }
             catch (Exception e)
             {
@@ -39,59 +38,51 @@ namespace DOL.GS
                 return;
             }
 
-            GameLoop.ExecuteWork(_lastValidIndex + 1, BeginTickInternal);
+            GameLoop.ExecuteForEach(_list, _lastValidIndex + 1, BeginTickInternal);
         }
 
         public override void EndTick()
         {
-            GameLoop.ExecuteWork(_lastValidIndex + 1, EndTickInternal);
+            GameLoop.ExecuteForEach(_list, _lastValidIndex + 1, EndTickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref _entityCount, _effectListComponents.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _list.Count);
         }
 
-        private void BeginTickInternal(int index)
+        private static void BeginTickInternal(EffectListComponent effectListComponent)
         {
-            EffectListComponent effectListComponent = null;
-
             try
             {
-                effectListComponent = _effectListComponents[index];
-
                 long startTick = GameLoop.GetRealTime();
                 effectListComponent.BeginTick();
                 long stopTick = GameLoop.GetRealTime();
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {ServiceName}.{nameof(BeginTickInternal)} for: {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(BeginTickInternal)} for: {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
             }
             catch (Exception e)
             {
-                GameServiceUtils.HandleServiceException(e, ServiceName, effectListComponent, effectListComponent.Owner);
+                GameServiceUtils.HandleServiceException(e, Instance.ServiceName, effectListComponent, effectListComponent.Owner);
             }
         }
 
-        private void EndTickInternal(int index)
+        private static void EndTickInternal(EffectListComponent effectListComponent)
         {
-            EffectListComponent effectListComponent = null;
-
             try
             {
                 if (Diagnostics.CheckServiceObjectCount)
-                    Interlocked.Increment(ref _entityCount);
-
-                effectListComponent = _effectListComponents[index];
+                    Interlocked.Increment(ref Instance.EntityCount);
 
                 long startTick = GameLoop.GetRealTime();
                 effectListComponent.EndTick();
                 long stopTick = GameLoop.GetRealTime();
 
                 if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                    log.Warn($"Long {ServiceName}.{nameof(EndTickInternal)} for: {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
+                    log.Warn($"Long {Instance.ServiceName}.{nameof(EndTickInternal)} for: {effectListComponent.Owner.Name}({effectListComponent.Owner.ObjectID}) Time: {stopTick - startTick}ms");
             }
             catch (Exception e)
             {
-                GameServiceUtils.HandleServiceException(e, ServiceName, effectListComponent, effectListComponent.Owner);
+                GameServiceUtils.HandleServiceException(e, Instance.ServiceName, effectListComponent, effectListComponent.Owner);
             }
         }
 

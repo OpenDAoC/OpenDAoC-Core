@@ -12,9 +12,8 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private List<ECSGameTimer> _list;
-        private int _entityCount;
 
-        public static TimerService Instance { get; private set; }
+        public static new TimerService Instance { get; }
 
         static TimerService()
         {
@@ -38,22 +37,18 @@ namespace DOL.GS
                 return;
             }
 
-            GameLoop.ExecuteWork(lastValidIndex + 1, TickInternal);
+            GameLoop.ExecuteForEach(_list, lastValidIndex + 1, TickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref _entityCount, _list.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _list.Count);
         }
 
-        private void TickInternal(int index)
+        private static void TickInternal(ECSGameTimer timer)
         {
-            ECSGameTimer timer = null;
-
             try
             {
                 if (Diagnostics.CheckServiceObjectCount)
-                    Interlocked.Increment(ref _entityCount);
-
-                timer = _list[index];
+                    Interlocked.Increment(ref Instance.EntityCount);
 
                 if (GameServiceUtils.ShouldTick(timer.NextTick))
                 {
@@ -62,12 +57,12 @@ namespace DOL.GS
                     long stopTick = GameLoop.GetRealTime();
 
                     if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                        log.Warn($"Long {ServiceName}.{nameof(Tick)} for Timer Callback: {timer.CallbackInfo?.DeclaringType}:{timer.CallbackInfo?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
+                        log.Warn($"Long {Instance.ServiceName}.{nameof(Tick)} for Timer Callback: {timer.CallbackInfo?.DeclaringType}:{timer.CallbackInfo?.Name}  Owner: {timer.Owner?.Name} Time: {stopTick - startTick}ms");
                 }
             }
             catch (Exception e)
             {
-                GameServiceUtils.HandleServiceException(e, ServiceName, timer, timer.Owner);
+                GameServiceUtils.HandleServiceException(e, Instance.ServiceName, timer, timer.Owner);
             }
         }
     }

@@ -18,7 +18,6 @@ namespace DOL.GS
         private const int STATIC_OBJECT_UPDATE_MIN_DISTANCE = 4000;
 
         private List<GameClient> _clients = new();
-        private int _entityCount; // For diagnostics only.
         private SimpleDisposableLock _lock = new(LockRecursionPolicy.SupportsRecursion);
         private int _lastValidIndex;
         private int _clientCount;
@@ -26,7 +25,7 @@ namespace DOL.GS
         private Trie<GamePlayer> _playerNameTrie = new();
 
         public int ClientCount => _clientCount;
-        public static ClientService Instance { get; private set; }
+        public static new ClientService Instance { get; }
 
         static ClientService()
         {
@@ -55,25 +54,21 @@ namespace DOL.GS
                 }
             }
 
-            GameLoop.ExecuteWork(_lastValidIndex + 1, BeginTickInternal);
+            GameLoop.ExecuteForEach(_clients, _lastValidIndex + 1, BeginTickInternal);
         }
 
         public override void EndTick()
         {
-            GameLoop.ExecuteWork(_lastValidIndex + 1, EndTickInternal);
+            GameLoop.ExecuteForEach(_clients, _lastValidIndex + 1, EndTickInternal);
 
             if (Diagnostics.CheckServiceObjectCount)
-                Diagnostics.PrintServiceObjectCount(ServiceName, ref _entityCount, _clients.Count);
+                Diagnostics.PrintServiceObjectCount(ServiceName, ref EntityCount, _clients.Count);
         }
 
-        private void BeginTickInternal(int index)
+        private static void BeginTickInternal(GameClient client)
         {
-            GameClient client = null;
-
             try
             {
-                client = _clients[index];
-
                 switch (client.ClientState)
                 {
                     case GameClient.eClientState.NotConnected:
@@ -115,20 +110,16 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                GameServiceUtils.HandleServiceException(e, ServiceName, client, client.Player);
+                GameServiceUtils.HandleServiceException(e, Instance.ServiceName, client, client.Player);
             }
         }
 
-        private void EndTickInternal(int index)
+        private static void EndTickInternal(GameClient client)
         {
-            GameClient client = null;
-
             try
             {
                 if (Diagnostics.CheckServiceObjectCount)
-                    Interlocked.Increment(ref _entityCount);
-
-                client = _clients[index];
+                    Interlocked.Increment(ref Instance.EntityCount);
 
                 switch (client.ClientState)
                 {
@@ -146,28 +137,28 @@ namespace DOL.GS
             }
             catch (Exception e)
             {
-                GameServiceUtils.HandleServiceException(e, ServiceName, client, client.Player);
+                GameServiceUtils.HandleServiceException(e, Instance.ServiceName, client, client.Player);
             }
         }
 
-        private void Receive(GameClient client)
+        private static void Receive(GameClient client)
         {
             long startTick = GameLoop.GetRealTime();
             client.Receive();
             long stopTick = GameLoop.GetRealTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {ServiceName}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+                log.Warn($"Long {Instance.ServiceName}.{nameof(Receive)} for {client.Account?.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
         }
 
-        private void Send(GameClient client)
+        private static void Send(GameClient client)
         {
             long startTick = GameLoop.GetRealTime();
             client.PacketProcessor.SendPendingPackets();
             long stopTick = GameLoop.GetRealTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {ServiceName}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
+                log.Warn($"Long {Instance.ServiceName}.{nameof(Send)} for {client.Account.Name}({client.SessionID}) Time: {stopTick - startTick}ms");
         }
 
         public void OnClientConnect(GameClient client)

@@ -11,9 +11,9 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         private const string DAILY_INTERVAL_KEY = "DAILY";
-        private DateTime lastDailyRollover;
+        private DateTime _lastDailyRollover;
 
-        public static DailyQuestService Instance { get; private set; }
+        public static new DailyQuestService Instance { get; }
 
         static DailyQuestService()
         {
@@ -27,7 +27,7 @@ namespace DOL.GS
             foreach (DbTaskRefreshInterval interval in loadQuestsProp)
             {
                 if (interval.RolloverInterval.Equals(DAILY_INTERVAL_KEY))
-                    lastDailyRollover = interval.LastRollover;
+                    _lastDailyRollover = interval.LastRollover;
             }
         }
 
@@ -35,7 +35,7 @@ namespace DOL.GS
         {
             ProcessPostedActions();
 
-            if (lastDailyRollover.Date.DayOfYear < DateTime.Now.Date.DayOfYear || lastDailyRollover.Year < DateTime.Now.Year)
+            if (_lastDailyRollover.Date.DayOfYear < DateTime.Now.Date.DayOfYear || _lastDailyRollover.Year < DateTime.Now.Year)
             {
                 DbTaskRefreshInterval loadQuestsProp = GameServer.Database.SelectObject<DbTaskRefreshInterval>(DB.Column("RolloverInterval").IsEqualTo(DAILY_INTERVAL_KEY));
 
@@ -68,7 +68,7 @@ namespace DOL.GS
                     return;
                 }
 
-                lastDailyRollover = DateTime.Now;
+                _lastDailyRollover = DateTime.Now;
 
                 for (int i = 0; i < lastValidIndex + 1; i++)
                 {

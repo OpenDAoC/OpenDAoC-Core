@@ -11,14 +11,17 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
+        public int EntityCount; // Used for diagnostics.
         private readonly ConcurrentQueue<IPostedAction> _actions = new();
         private readonly List<IPostedAction> _work = new();
         private bool _hasActions;
 
+        public static GameServiceBase Instance { get; private set; }
         public string ServiceName { get; }
 
         protected GameServiceBase()
         {
+            Instance = this;
             ServiceName = GetType().Name;
         }
 
@@ -30,43 +33,35 @@ namespace DOL.GS
 
         protected void ProcessPostedActions()
         {
-            if (!Volatile.Read(ref _hasActions))
+            if (!Interlocked.Exchange(ref _hasActions, false))
                 return;
 
-            // Use Interlocked to be safe, though only the game loop thread should call this
-            if (Interlocked.Exchange(ref _hasActions, false))
+            while (_actions.TryDequeue(out IPostedAction action))
+                _work.Add(action);
+
+            if (_work.Count <= 0)
+                return;
+
+            GameLoop.ExecuteForEach(_work, _work.Count, ProcessPostedActionInternal);
+            _work.Clear();
+        }
+
+        private static void ProcessPostedActionInternal(IPostedAction action)
+        {
+            try
             {
-                while (_actions.TryDequeue(out IPostedAction action))
-                    _work.Add(action);
-
-                if (_work.Count > 0)
-                {
-                    GameLoop.ExecuteWork(_work.Count, i =>
-                    {
-                        try
-                        {
-                            _work[i].Invoke();
-                        }
-                        catch (Exception e)
-                        {
-                            if (log.IsErrorEnabled)
-                                log.Error($"Error executing posted action in {ServiceName}", e);
-                        }
-                    });
-
-                    _work.Clear();
-                }
+                action.Invoke();
+            }
+            catch (Exception e)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Error executing posted action in {Instance.ServiceName}", e);
             }
         }
 
         public virtual void BeginTick() { }
         public virtual void Tick() { }
         public virtual void EndTick() { }
-
-        private interface IPostedAction
-        {
-            void Invoke();
-        }
 
         private readonly struct PostedAction<T> : IPostedAction
         {
@@ -80,6 +75,11 @@ namespace DOL.GS
             }
 
             public void Invoke() => _action(_state);
+        }
+
+        private interface IPostedAction
+        {
+            void Invoke();
         }
     }
 
