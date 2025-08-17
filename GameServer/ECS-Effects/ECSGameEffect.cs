@@ -48,7 +48,7 @@ namespace DOL.GS
         public virtual bool HasPositiveEffect => false;
         public bool TriggersImmunity { get; set; } = false;
         public int ImmunityDuration { get; protected set; } = 60000;
-        public bool IsSilent { get; set; } // Used externally to force an effect to be silent before being enabled or disabled. Resets itself.
+        public bool IsBeingReplaced { get; set; } // Used externally to force an effect to be silent (no message, no immunity) when being refreshed.
 
         // State properties.
         public bool IsActive => _state is State.Active;
@@ -169,10 +169,8 @@ namespace DOL.GS
         /// <param name="msgArea">If 'true', the system sends a third-person message to all players within range of the target.</param>
         public void OnEffectStartsMsg(bool msgTarget, bool msgSelf, bool msgArea)
         {
-            if (!IsSilent)
+            if (!IsBeingReplaced)
                 SendMessages(msgTarget, msgSelf, msgArea, SpellHandler.Spell.Message1, SpellHandler.Spell.Message2);
-            else
-                IsSilent = false;
         }
 
         /// <summary>
@@ -183,10 +181,8 @@ namespace DOL.GS
         /// <param name="msgArea">If 'true', the system sends a third-person message to all players within range of the target.</param>
         public void OnEffectExpiresMsg(bool msgTarget, bool msgSelf, bool msgArea)
         {
-            if (!IsSilent)
+            if (!IsBeingReplaced)
                 SendMessages(msgTarget, msgSelf, msgArea, SpellHandler.Spell.Message3, SpellHandler.Spell.Message4);
-            else
-                IsSilent = false;
         }
 
         public virtual long GetRemainingTimeForClient()

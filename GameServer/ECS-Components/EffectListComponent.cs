@@ -34,7 +34,7 @@ namespace DOL.GS
         private readonly Lock _concentrationEffectsLock = new();            // Lock for synchronizing access to the concentration effects list.
 
         // Player updates.
-        private EffectHelper.PlayerUpdate _requestedPlayerUpdates;         // Player updates requested by the effects, to be sent in the next tick.
+        private EffectHelper.PlayerUpdate _requestedPlayerUpdates;          // Player updates requested by the effects, to be sent in the next tick.
         private int _lastUpdateEffectsCount;                                // Number of effects sent in the last player update, used externally.
         private readonly Lock _playerUpdatesLock = new();                   // Lock for synchronizing access to the requested player updates.
 
@@ -66,12 +66,21 @@ namespace DOL.GS
             while (_effectsToStop.TryDequeue(out ECSGameEffect effect))
             {
                 effect.OnStopEffect();
-                effect.TryApplyImmunity();
-                TryEnableBestEffectOfSameType(effect);
+
+                if (!effect.IsBeingReplaced)
+                {
+                    effect.TryApplyImmunity();
+                    TryEnableBestEffectOfSameType(effect);
+                }
+                else
+                    effect.IsBeingReplaced = false;
             }
 
             while (_effectsToStart.TryDequeue(out ECSGameEffect effect))
+            {
                 effect.OnStartEffect();
+                effect.IsBeingReplaced = false;
+            }
 
             if (_effects.Count == 0)
             {
@@ -663,9 +672,9 @@ namespace DOL.GS
                                     if (!existingEffect.Stop(false, false) || !existingEffect.IsStopping)
                                         return AddEffectResult.Failed;
 
-                                    existingEffect.IsSilent = true;
+                                    existingEffect.IsBeingReplaced = true;
                                     TickPendingEffect(existingEffect);
-                                    effect.IsSilent = true;
+                                    effect.IsBeingReplaced = true;
                                     existingEffects.Add(effect);
                                     result = AddEffectResult.Added;
                                 }
