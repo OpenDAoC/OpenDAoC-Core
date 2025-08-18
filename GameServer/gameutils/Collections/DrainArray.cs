@@ -11,11 +11,11 @@ namespace DOL.GS
     public class DrainArray<T>
     {
         private T[] _buffer;
-        private int _writeIndex;
         private ConcurrentQueue<T> _overflowQueue = new();
-        private bool _overflowed;
-        private bool _draining;
-        private int _adding;
+        public int _writeIndex;
+        public int _adding;
+        public bool _draining;
+        public bool _overflowed;
 
         public bool Any => Volatile.Read(ref _writeIndex) > 0; // Not accurate.
 
@@ -27,9 +27,6 @@ namespace DOL.GS
 
         public void Add(T item)
         {
-            if (Volatile.Read(ref _draining))
-                throw new InvalidOperationException($"Cannot {nameof(Add)} while {nameof(DrainTo)} is in progress.");
-
             Interlocked.Increment(ref _adding);
 
             try
@@ -60,24 +57,29 @@ namespace DOL.GS
 
         public void DrainTo<TState>(Action<T, TState> action, TState state)
         {
-            if (Volatile.Read(ref _adding) > 0)
-                throw new InvalidOperationException($"Cannot {nameof(DrainTo)} while {nameof(Add)} is in progress.");
-
             if (Interlocked.Exchange(ref _draining, true) != false)
                 throw new InvalidOperationException($"Concurrent {nameof(DrainTo)} detected.");
 
             try
             {
-                int count = Interlocked.Exchange(ref _writeIndex, 0);
+                if (Volatile.Read(ref _adding) > 0)
+                {
+                    SpinWait spinner = new();
+
+                    while (Volatile.Read(ref _adding) > 0)
+                        spinner.SpinOnce(-1);
+                }
+
+                int count = Math.Min(_buffer.Length, Interlocked.Exchange(ref _writeIndex, 0));
 
                 if (count == 0)
                     return;
 
+                for (int i = 0; i < count; i++)
+                    action(_buffer[i], state);
+
                 if (_overflowed)
                 {
-                    for (int i = 0; i < _buffer.Length; i++)
-                        action(_buffer[i], state);
-
                     int overflowCount = 0;
 
                     while (_overflowQueue.TryDequeue(out T result))
@@ -91,9 +93,6 @@ namespace DOL.GS
                     _overflowed = false;
                     return;
                 }
-
-                for (int i = 0; i < count; i++)
-                    action(_buffer[i], state);
 
                 Array.Clear(_buffer, 0, count);
             }

@@ -42,13 +42,8 @@ namespace DOL.GS
         [StructLayout(LayoutKind.Explicit)]
         private class WorkState
         {
-            // Padded to a separate cache line to prevent false sharing between cores.
-            // Core A writes to RemainingWork while Core B writes to CompletedWorkerCount.
-            // Without padding, these two variables could be on the same cache line, causing cache invalidations.
-            [FieldOffset(0)]
-            public int RemainingWork;                   // Total items left to process.
-            [FieldOffset(128)]
-            public int CompletedWorkerCount;            // Count of workers finished for current iteration.
+            [FieldOffset(0)]   public int RemainingWork;         // Total items left to process.
+            [FieldOffset(128)] public int CompletedWorkerCount;  // Count of workers finished for current iteration.
         }
 
         public GameLoopThreadPoolMultiThreaded(int degreeOfParallelism)
