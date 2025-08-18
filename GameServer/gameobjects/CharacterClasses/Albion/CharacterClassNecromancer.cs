@@ -20,10 +20,10 @@ namespace DOL.GS
 
         public override void SetControlledBrain(IControlledBrain controlledNpcBrain)
         {
-            base.SetControlledBrain(controlledNpcBrain);
-
             if (controlledNpcBrain == null)
                 OnPetReleased();
+
+            base.SetControlledBrain(controlledNpcBrain);
         }
 
         public override void CommandNpcRelease()
@@ -34,7 +34,12 @@ namespace DOL.GS
 
         public override void OnPetReleased()
         {
-            _petHealthPercentAfterBrainSet = Player.ControlledBrain != null ? Player.ControlledBrain.Body.HealthPercent : 0;
+            IControlledBrain controlledBrain = Player.ControlledBrain;
+
+            if (controlledBrain == null)
+                return;
+
+            _petHealthPercentAfterBrainSet = controlledBrain.Body.HealthPercent;
 
             if (Player.HasShadeModel)
                 Player.Shade(false);
