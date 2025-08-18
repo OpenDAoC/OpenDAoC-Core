@@ -557,8 +557,6 @@ namespace DOL.GS
                         spellEffect.Owner.BuffBonusMultCategory1.Set((int) eProperty.MaxSpeed, spellEffect, 1.0 - spellEffect.SpellHandler.Spell.Value * factor * 0.01);
                         spellEffect.Owner.OnMaxSpeedChange();
 
-                        foreach (var a in ClientService.Instance.GetPlayers())
-                            a.Out.SendMessage($"{spellEffect.Owner.MaxSpeed}", eChatType.CT_Say, eChatLoc.CL_ChatWindow);
                         if (factor <= 0)
                         {
                             spellEffect.Stop();
