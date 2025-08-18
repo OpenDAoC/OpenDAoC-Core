@@ -17,6 +17,9 @@ namespace DOL.GS
 
         public override void Send(SendOrPostCallback d, object state)
         {
+            // Calling Send from a GameLoop thread will cause a deadlock.
+            // This method is only safe to call from external threads (e.g., network I/O).
+
             if (Current == this)
             {
                 d(state);

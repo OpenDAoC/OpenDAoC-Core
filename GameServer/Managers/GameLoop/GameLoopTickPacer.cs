@@ -127,7 +127,7 @@ namespace DOL.GS
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"Critical error encountered in {nameof(GameLoop)}: {e}");
+                    log.Error($"Critical error encountered in {nameof(GameLoopTickPacer)}: {e}");
             }
 
             if (log.IsInfoEnabled)
