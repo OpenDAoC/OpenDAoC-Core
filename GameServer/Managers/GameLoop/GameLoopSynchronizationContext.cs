@@ -26,7 +26,7 @@ namespace DOL.GS
             IGameService targetService = GameServiceContext.Current.Value ?? GameLoopService.Instance;
             using ManualResetEvent completed = new(false);
 
-            GameLoopService.Instance.Post(static state =>
+            targetService.Post(static state =>
             {
                 try
                 {

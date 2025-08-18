@@ -74,7 +74,10 @@ namespace DOL.GS
                 _state = state;
             }
 
-            public void Invoke() => _action(_state);
+            public void Invoke()
+            {
+                _action(_state);
+            }
         }
 
         private interface IPostedAction
