@@ -14,7 +14,6 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public const string THREAD_NAME = "GameLoop";
-        private const bool DYNAMIC_BUSY_WAIT_THRESHOLD = true; // Setting it to false disables busy waiting completely unless a default value is given to '_busyWaitThreshold'.
 
         private static Thread _gameLoopThread;
         private static GameLoopThreadPool _threadPool;
@@ -47,12 +46,8 @@ namespace DOL.GS
             };
             _gameLoopThread.Start();
 
-            if (DYNAMIC_BUSY_WAIT_THRESHOLD)
-            {
-                _tickPacer = new(TickDuration);
-                _tickPacer.Start();
-            }
-
+            _tickPacer = new(TickDuration);
+            _tickPacer.Start();
             return true;
         }
 
@@ -116,12 +111,12 @@ namespace DOL.GS
 
         private static void TickServices()
         {
-            Diagnostics.StartPerfCounter(nameof(GameLoop));
+            Diagnostics.StartPerfCounter(THREAD_NAME);
 
             foreach (var (service, tickAction, profileKey) in _tickSequence)
                 TickServiceAction(service, tickAction, profileKey);
 
-            Diagnostics.StopPerfCounter(nameof(GameLoop));
+            Diagnostics.StopPerfCounter(THREAD_NAME);
             Diagnostics.Tick();
 
             static void TickServiceAction(IGameService service, Action tickAction, string profileKey)

@@ -10,6 +10,8 @@ namespace DOL.GS
     {
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
+        private const bool DYNAMIC_BUSY_WAIT_THRESHOLD = true;
+
         private long _tickDuration;
         private bool _running;
         private Thread _busyWaitThresholdThread;
@@ -36,13 +38,16 @@ namespace DOL.GS
 
             _running = true;
 
-            _busyWaitThresholdThread = new Thread(new ThreadStart(UpdateBusyWaitThreshold))
+            if (DYNAMIC_BUSY_WAIT_THRESHOLD)
             {
-                Name = $"{GameLoop.THREAD_NAME}_BusyWaitThreshold",
-                Priority = ThreadPriority.AboveNormal,
-                IsBackground = true
-            };
-            _busyWaitThresholdThread.Start();
+                _busyWaitThresholdThread = new Thread(new ThreadStart(UpdateBusyWaitThreshold))
+                {
+                    Name = $"{GameLoop.THREAD_NAME}_BusyWaitThreshold",
+                    Priority = ThreadPriority.AboveNormal,
+                    IsBackground = true
+                };
+                _busyWaitThresholdThread.Start();
+            }
 
             Stats = new([60000, 30000, 10000], 1000.0 / _tickDuration);
             _stopwatch = Stopwatch.StartNew();
