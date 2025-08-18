@@ -29,8 +29,8 @@ namespace DOL.GS
             private const int INITIAL_CAPACITY = 64;       // Initial capacity of the pool.
             private const double TRIM_SAFETY_FACTOR = 2.5; // Trimming allowed when size > smoothed usage * this factor.
             private const int HALF_LIFE = 300_000;         // Half-life (ms) for EMA decay.
-            private static readonly double DECAY_FACTOR;   // EMA decay factor based on HALF_LIFE and tick rate.
 
+            private static readonly double _decayFactor;   // EMA decay factor based on HALF_LIFE and tick rate.
             private T[] _items = new T[INITIAL_CAPACITY];  // Backing pool array.
             private int _used;                             // Objects rented this tick.
             private double _smoothedUsage;                 // Smoothed recent peak usage.
@@ -38,7 +38,8 @@ namespace DOL.GS
 
             static TickObjectPool()
             {
-                DECAY_FACTOR = Math.Exp(-Math.Log(2) / (GameLoop.TickDuration * HALF_LIFE / 1000.0));
+                // Will become outdated if `GameLoop.TickDuration` is changed at runtime.
+                _decayFactor = Math.Exp(-Math.Log(2) / (GameLoop.TickDuration * HALF_LIFE / 1000.0));
             }
 
             public T GetForTick()
@@ -64,7 +65,7 @@ namespace DOL.GS
 
             public void Reset()
             {
-                _smoothedUsage = Math.Max(_used, _smoothedUsage * DECAY_FACTOR + _used * (1 - DECAY_FACTOR));
+                _smoothedUsage = Math.Max(_used, _smoothedUsage * _decayFactor + _used * (1 - _decayFactor));
                 int newLogicalSize = (int) (_smoothedUsage * TRIM_SAFETY_FACTOR);
 
                 if (_logicalSize > newLogicalSize)

@@ -6,7 +6,7 @@ namespace DOL.GS
 {
     public abstract class GameLoopThreadPool : IDisposable
     {
-        private static readonly GameLoopSynchronizationContext _context = new();
+        public static GameLoopSynchronizationContext Context { get; } = new();
         [ThreadStatic] private static GameLoopTickObjectPool _tickObjectPool;
         [ThreadStatic] private static long _lastResetTick;
 
@@ -33,7 +33,7 @@ namespace DOL.GS
 
         private void InitThreadStatics()
         {
-            SynchronizationContext.SetSynchronizationContext(_context);
+            SynchronizationContext.SetSynchronizationContext(Context);
             _tickObjectPool = new();
             _lastResetTick = -1;
         }

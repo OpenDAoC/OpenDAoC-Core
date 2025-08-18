@@ -65,7 +65,7 @@ namespace DOL.GS
 
         public static List<(int, double)> GetAverageTps()
         {
-            return _tickPacer.Stats.GetAverageTicks(GameLoopTime);
+            return _tickPacer.Stats.GetAverageTicks();
         }
 
         public static void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)

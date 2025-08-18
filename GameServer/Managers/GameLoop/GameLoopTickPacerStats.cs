@@ -24,7 +24,6 @@ namespace DOL.GS
             _intervals = intervals.OrderByDescending(x => x).ToList();
             _capacity = BitOperations.RoundUpToPowerOf2((uint) (_intervals[0] / 1000.0 * tickDuration * 2));
             _buffer = new double[_capacity];
-            _writeIndex = 0;
         }
 
         public void RecordTick(double gameLoopTime)
@@ -33,31 +32,45 @@ namespace DOL.GS
             _buffer[index & (_capacity - 1)] = gameLoopTime;
         }
 
-        public List<(int, double)> GetAverageTicks(long currentTime)
+        public List<(int, double)> GetAverageTicks()
         {
-            double[] snapshot = new double[_capacity];
+            List<(int, double)> result = new(_intervals.Count);
 
-            // Take a snapshot of the buffer and write index.
-            uint currentWriteIndex = Volatile.Read(ref _writeIndex);
-            Array.Copy(_buffer, snapshot, _capacity);
+            // Fast-path: We are on the game loop, run directly.
+            if (SynchronizationContext.Current == GameLoopThreadPool.Context)
+            {
+                GetAverageTicksInternal(GameLoop.GameLoopTime, result);
+                return result;
+            }
 
+            // Slow-path: We are on an external thread. Use Send to marshal the call.
+            GameLoopThreadPool.Context.Send(static state =>
+            {
+                var (result, tickPacer) = ((List<(int, double)>, GameLoopTickPacerStats)) state;
+                tickPacer.GetAverageTicksInternal(GameLoop.GameLoopTime, result);
+            }, (result, this));
+
+            return result;
+        }
+
+        private void GetAverageTicksInternal(long currentTime, List<(int, double)> result)
+        {
             List<double> ticks = new((int) _capacity);
 
             // Calculate how many valid entries we have and determine the range of valid indices in the ring buffer.
-            uint start = currentWriteIndex >= _capacity ? (currentWriteIndex & (_capacity - 1)) : 0;
-            uint end = Math.Min(currentWriteIndex, _capacity);
+            uint start = _writeIndex >= _capacity ? (_writeIndex & (_capacity - 1)) : 0;
+            uint end = Math.Min(_writeIndex, _capacity);
 
             // Collect valid ticks from the ring buffer.
             for (uint i = 0; i < end; i++)
             {
                 uint index = (start + i) & (_capacity - 1);
-                double tick = snapshot[index];
+                double tick = _buffer[index];
 
                 if (tick > 0)
                     ticks.Add(tick);
             }
 
-            List<(int, double)> averages = new();
             int startIndex = 0;
 
             // Count ticks per interval and calculate averages.
@@ -79,16 +92,14 @@ namespace DOL.GS
 
                 if (tickCount < 2)
                 {
-                    averages.Add((interval, 0));
+                    result.Add((interval, 0));
                     continue;
                 }
 
                 double actualInterval = ticks[^1] - ticks[startIndex];
                 double average = (tickCount - 1) / (actualInterval / 1000.0);
-                averages.Add((interval, average));
+                result.Add((interval, average));
             }
-
-            return averages;
         }
     }
 }

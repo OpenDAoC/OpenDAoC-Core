@@ -256,7 +256,7 @@ namespace DOL.GS
 
         private void ProcessWorkActions()
         {
-            CheckResetTick(); // Placed here, it runs for the main thread and all worker threads.
+            CheckResetTick();
             int remainingWork = Volatile.Read(ref _workState.RemainingWork);
 
             while (remainingWork > 0)
