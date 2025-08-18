@@ -175,10 +175,7 @@ namespace DOL.AI.Brain
                     Body.attackComponent.StopAttack();
 
                 Body.TargetObject = spellTarget;
-                Body.CastSpell(spell, line, checkLos);
-
-                // Assume that the spell can always be cast, otherwise the same spell will be queued in the casting component if LoS checks are enabled.
-                return true;
+                return Body.CastSpell(spell, line, checkLos);
             }
             else
             {

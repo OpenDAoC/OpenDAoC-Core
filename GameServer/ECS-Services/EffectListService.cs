@@ -25,6 +25,7 @@ namespace DOL.GS
         public override void BeginTick()
         {
             ProcessPostedActions();
+
             try
             {
                 _list = ServiceObjectStore.UpdateAndGetAll<EffectListComponent>(ServiceObjectType.EffectListComponent, out _lastValidIndex);
