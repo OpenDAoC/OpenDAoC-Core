@@ -6,17 +6,23 @@ using System.Threading;
 
 namespace DOL.GS
 {
-    public class GameLoopStats
+    public class GameLoopTickPacerStats
     {
         private readonly double[] _buffer;
         private readonly uint _capacity;
         private readonly List<int> _intervals;
         private uint _writeIndex;
 
-        public GameLoopStats(List<int> intervals, double expectedTickRate)
+        public GameLoopTickPacerStats(List<int> intervals, double tickDuration)
         {
+            if (intervals == null || intervals.Count == 0)
+                throw new ArgumentNullException(nameof(intervals), "Intervals cannot be null or empty.");
+
+            if (tickDuration <= 0)
+                throw new ArgumentOutOfRangeException(nameof(tickDuration), "Tick duration must be a positive value.");
+
             _intervals = intervals.OrderByDescending(x => x).ToList();
-            _capacity = BitOperations.RoundUpToPowerOf2((uint) (_intervals[0] / 1000.0 * expectedTickRate * 2));
+            _capacity = BitOperations.RoundUpToPowerOf2((uint) (_intervals[0] / 1000.0 * tickDuration * 2));
             _buffer = new double[_capacity];
             _writeIndex = 0;
         }

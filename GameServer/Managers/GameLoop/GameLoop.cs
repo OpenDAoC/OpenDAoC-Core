@@ -4,22 +4,22 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using DOL.GS.ServerProperties;
+using DOL.Logging;
 using ECS.Debug;
 
 namespace DOL.GS
 {
     public static class GameLoop
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
         public const string THREAD_NAME = "GameLoop";
         private const bool DYNAMIC_BUSY_WAIT_THRESHOLD = true; // Setting it to false disables busy waiting completely unless a default value is given to '_busyWaitThreshold'.
 
-        private static Thread _gameLoopThread; // Main thread.
-        private static Thread _busyWaitThresholdThread; // Secondary thread that attempts to calculate by how much `Thread.Sleep` overshoots.
+        private static Thread _gameLoopThread;
         private static GameLoopThreadPool _threadPool;
-        private static int _busyWaitThreshold;
+        private static GameLoopTickPacer _tickPacer;
         private static long _stopwatchFrequencyMilliseconds = Stopwatch.Frequency / 1000;
-        private static GameLoopStats _gameLoopStats;
         private static bool _running;
         private static List<(IGameService Service, Action TickAction, string ProfileKey)> _tickSequence;
 
@@ -39,7 +39,7 @@ namespace DOL.GS
                 return false;
 
             TickDuration = Properties.GAME_LOOP_TICK_RATE;
-            _gameLoopStats = new([60000, 30000, 10000], 1000.0 / TickDuration);
+
             _gameLoopThread = new Thread(new ThreadStart(Run))
             {
                 Name = THREAD_NAME,
@@ -49,13 +49,8 @@ namespace DOL.GS
 
             if (DYNAMIC_BUSY_WAIT_THRESHOLD)
             {
-                _busyWaitThresholdThread = new Thread(new ThreadStart(UpdateBusyWaitThreshold))
-                {
-                    Name = $"{THREAD_NAME}_BusyWaitThreshold",
-                    Priority = ThreadPriority.AboveNormal,
-                    IsBackground = true
-                };
-                _busyWaitThresholdThread.Start();
+                _tickPacer = new(TickDuration);
+                _tickPacer.Start();
             }
 
             return true;
@@ -69,15 +64,13 @@ namespace DOL.GS
             if (Thread.CurrentThread != _gameLoopThread && _gameLoopThread.IsAlive)
                 _gameLoopThread.Join();
 
-            if (_busyWaitThresholdThread.IsAlive)
-                _busyWaitThresholdThread.Interrupt(); // This thread sleeps for a long time, let's not wait for it to finish.
-
+            _tickPacer.Stop();
             _threadPool.Dispose();
         }
 
         public static List<(int, double)> GetAverageTps()
         {
-            return _gameLoopStats.GetAverageTicks(GameLoopTime);
+            return _tickPacer.Stats.GetAverageTicks(GameLoopTime);
         }
 
         public static void ExecuteForEach<T>(List<T> items, int toExclusive, Action<T> action)
@@ -100,19 +93,12 @@ namespace DOL.GS
             _threadPool.Init(); // Must be done from the game loop thread.
             BuildTickSequence();
 
-            double gameLoopTime = 0;
-            double totalElapsedTime = 0;
-            double elapsedTime = 0;
-            Stopwatch stopwatch = new();
-            stopwatch.Start();
-
             while (Volatile.Read(ref _running))
             {
                 try
                 {
                     TickServices();
-                    Sleep();
-                    UpdateStatsAndTime();
+                    GameLoopTime = _tickPacer.WaitForNextTick();
                 }
                 catch (Exception e)
                 {
@@ -126,139 +112,63 @@ namespace DOL.GS
 
             if (log.IsInfoEnabled)
                 log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
+        }
 
-            static void BuildTickSequence()
+        private static void TickServices()
+        {
+            Diagnostics.StartPerfCounter(nameof(GameLoop));
+
+            foreach (var (service, tickAction, profileKey) in _tickSequence)
+                TickServiceAction(service, tickAction, profileKey);
+
+            Diagnostics.StopPerfCounter(nameof(GameLoop));
+            Diagnostics.Tick();
+
+            static void TickServiceAction(IGameService service, Action tickAction, string profileKey)
             {
-                _tickSequence = new();
-                AddStep(GameLoopService.Instance, GameLoopService.Instance.Tick);
-                AddStep(TimerService.Instance, TimerService.Instance.Tick);
-                AddStep(ClientService.Instance, ClientService.Instance.BeginTick);
-                AddStep(NpcService.Instance, NpcService.Instance.Tick);
-                AddStep(AttackService.Instance, AttackService.Instance.Tick);
-                AddStep(CastingService.Instance, CastingService.Instance.Tick);
-                AddStep(EffectListService.Instance, EffectListService.Instance.BeginTick);
-                AddStep(EffectListService.Instance, EffectListService.Instance.EndTick);
-                AddStep(MovementService.Instance, MovementService.Instance.Tick);
-                AddStep(ZoneService.Instance, ZoneService.Instance.Tick);
-                AddStep(CraftingService.Instance, CraftingService.Instance.Tick);
-                AddStep(ReaperService.Instance, ReaperService.Instance.Tick);
-                AddStep(ClientService.Instance, ClientService.Instance.EndTick);
-                AddStep(DailyQuestService.Instance, DailyQuestService.Instance.Tick);
-                AddStep(WeeklyQuestService.Instance, WeeklyQuestService.Instance.Tick);
-                AddStep(MonthlyQuestService.Instance, MonthlyQuestService.Instance.Tick);
+                ActiveService = profileKey;
+                GameServiceContext.Current.Value = service;
+                Diagnostics.StartPerfCounter(ActiveService);
 
-                static void AddStep(IGameService service, Action action)
+                try
                 {
-                    string methodName = action.Method.Name;
-                    string profileKey = methodName == nameof(IGameService.Tick) ? service.ServiceName : $"{service.ServiceName}.{methodName}";
-                    _tickSequence.Add((service, action, profileKey));
+                    tickAction();
                 }
-            }
-
-            static void TickServices()
-            {
-                Diagnostics.StartPerfCounter(nameof(GameLoop));
-
-                foreach (var (service, tickAction, profileKey) in _tickSequence)
-                    TickServiceAction(service, tickAction, profileKey);
-
-                Diagnostics.StopPerfCounter(nameof(GameLoop));
-                Diagnostics.Tick();
-
-                static void TickServiceAction(IGameService service, Action tickAction, string profileKey)
+                finally
                 {
-                    ActiveService = profileKey;
-                    GameServiceContext.Current.Value = service;
-                    Diagnostics.StartPerfCounter(ActiveService);
-
-                    try
-                    {
-                        tickAction();
-                    }
-                    finally
-                    {
-                        Diagnostics.StopPerfCounter(ActiveService);
-                        GameServiceContext.Current.Value = null;
-                        ActiveService = string.Empty;
-                    }
+                    Diagnostics.StopPerfCounter(ActiveService);
+                    GameServiceContext.Current.Value = null;
+                    ActiveService = string.Empty;
                 }
-            }
-
-            void Sleep()
-            {
-                int sleepFor = (int) (TickDuration - stopwatch.Elapsed.TotalMilliseconds);
-                int busyWaitThreshold = _busyWaitThreshold;
-
-                if (sleepFor >= busyWaitThreshold)
-                    Thread.Sleep(sleepFor - busyWaitThreshold);
-                else
-                    Thread.Yield();
-
-                if (TickDuration > stopwatch.Elapsed.TotalMilliseconds)
-                {
-                    SpinWait spinWait = new();
-
-                    while (TickDuration > stopwatch.Elapsed.TotalMilliseconds)
-                        spinWait.SpinOnce(-1);
-                }
-            }
-
-            void UpdateStatsAndTime()
-            {
-                elapsedTime = stopwatch.Elapsed.TotalMilliseconds;
-                totalElapsedTime += elapsedTime;
-                stopwatch.Restart();
-
-                // In case the game loop is running faster than the tick rate. We don't want things to run faster than intended.
-                gameLoopTime += elapsedTime < TickDuration ? elapsedTime : TickDuration;
-                GameLoopTime = (long) gameLoopTime;
-                _gameLoopStats.RecordTick(totalElapsedTime);
             }
         }
 
-        private static void UpdateBusyWaitThreshold()
+        private static void BuildTickSequence()
         {
-            int maxIteration = 10;
-            int sleepFor = 1;
-            int pauseFor = 10000;
-            Stopwatch stopwatch = new();
-            stopwatch.Start();
+            _tickSequence = new();
+            AddStep(GameLoopService.Instance, GameLoopService.Instance.Tick);
+            AddStep(TimerService.Instance, TimerService.Instance.Tick);
+            AddStep(ClientService.Instance, ClientService.Instance.BeginTick);
+            AddStep(NpcService.Instance, NpcService.Instance.Tick);
+            AddStep(AttackService.Instance, AttackService.Instance.Tick);
+            AddStep(CastingService.Instance, CastingService.Instance.Tick);
+            AddStep(EffectListService.Instance, EffectListService.Instance.BeginTick);
+            AddStep(EffectListService.Instance, EffectListService.Instance.EndTick);
+            AddStep(MovementService.Instance, MovementService.Instance.Tick);
+            AddStep(ZoneService.Instance, ZoneService.Instance.Tick);
+            AddStep(CraftingService.Instance, CraftingService.Instance.Tick);
+            AddStep(ReaperService.Instance, ReaperService.Instance.Tick);
+            AddStep(ClientService.Instance, ClientService.Instance.EndTick);
+            AddStep(DailyQuestService.Instance, DailyQuestService.Instance.Tick);
+            AddStep(WeeklyQuestService.Instance, WeeklyQuestService.Instance.Tick);
+            AddStep(MonthlyQuestService.Instance, MonthlyQuestService.Instance.Tick);
 
-            try
+            static void AddStep(IGameService service, Action action)
             {
-                while (Volatile.Read(ref _running))
-                {
-                    double start;
-                    double overSleptFor;
-                    double highest = 0;
-
-                    for (int i = 0; i < maxIteration; i++)
-                    {
-                        start = stopwatch.Elapsed.TotalMilliseconds;
-                        Thread.Sleep(sleepFor);
-                        overSleptFor = stopwatch.Elapsed.TotalMilliseconds - start - sleepFor;
-
-                        if (highest < overSleptFor)
-                            highest = overSleptFor;
-                    }
-
-                    _busyWaitThreshold = Math.Max(0, (int) highest);
-                    Thread.Sleep(pauseFor);
-                }
+                string methodName = action.Method.Name;
+                string profileKey = methodName == nameof(IGameService.Tick) ? service.ServiceName : $"{service.ServiceName}.{methodName}";
+                _tickSequence.Add((service, action, profileKey));
             }
-            catch (ThreadInterruptedException)
-            {
-                if (log.IsWarnEnabled)
-                    log.Warn($"Thread \"{Thread.CurrentThread.Name}\" was interrupted");
-            }
-            catch (Exception e)
-            {
-                if (log.IsErrorEnabled)
-                    log.Error($"Critical error encountered in {nameof(GameLoop)}: {e}");
-            }
-
-            if (log.IsInfoEnabled)
-                log.Info($"Thread \"{Thread.CurrentThread.Name}\" is stopping");
         }
     }
 }
