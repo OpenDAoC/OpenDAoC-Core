@@ -3545,7 +3545,8 @@ namespace DOL.GS
 		{
 			bool casted;
 
-			if (checkLos)
+			// Don't check for LoS if the spell has no range.
+			if (checkLos && spell.Range > 0)
 				casted = CastSpell(spell, line);
 			else
 			{
