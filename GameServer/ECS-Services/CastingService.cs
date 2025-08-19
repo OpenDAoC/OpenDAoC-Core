@@ -13,7 +13,7 @@ namespace DOL.GS
 
         private List<CastingComponent> _list;
 
-        public static new CastingService Instance { get; }
+        public static CastingService Instance { get; }
 
         static CastingService()
         {

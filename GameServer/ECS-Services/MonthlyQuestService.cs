@@ -13,7 +13,7 @@ namespace DOL.GS
         private const string MONTHLY_INTERVAL_KEY = "MONTHLY";
         private DateTime _lastMonthlyRollover;
 
-        public static new MonthlyQuestService Instance { get; }
+        public static MonthlyQuestService Instance { get; }
 
         static MonthlyQuestService()
         {

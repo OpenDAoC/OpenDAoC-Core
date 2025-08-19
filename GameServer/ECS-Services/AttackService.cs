@@ -13,7 +13,7 @@ namespace DOL.GS
 
         private List<AttackComponent> _list;
 
-        public static new AttackService Instance { get; }
+        public static AttackService Instance { get; }
 
         static AttackService()
         {

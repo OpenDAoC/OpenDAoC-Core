@@ -13,7 +13,7 @@ namespace DOL.GS
 
         private List<LivingBeingKilled> _list;
 
-        public static new ReaperService Instance { get; }
+        public static ReaperService Instance { get; }
 
         static ReaperService()
         {

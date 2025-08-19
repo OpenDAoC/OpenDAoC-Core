@@ -13,7 +13,7 @@ namespace DOL.GS
         private const string DAILY_INTERVAL_KEY = "DAILY";
         private DateTime _lastDailyRollover;
 
-        public static new DailyQuestService Instance { get; }
+        public static DailyQuestService Instance { get; }
 
         static DailyQuestService()
         {

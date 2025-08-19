@@ -13,7 +13,7 @@ namespace DOL.GS
         private const string WEEKLY_INTERVAL_KEY = "WEEKLY";
         private static DateTime _lastWeeklyRollover;
 
-        public static new WeeklyQuestService Instance { get; }
+        public static WeeklyQuestService Instance { get; }
 
         static WeeklyQuestService()
         {

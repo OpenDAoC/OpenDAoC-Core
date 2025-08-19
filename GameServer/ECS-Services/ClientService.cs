@@ -25,7 +25,7 @@ namespace DOL.GS
         private Trie<GamePlayer> _playerNameTrie = new();
 
         public int ClientCount => _clientCount;
-        public static new ClientService Instance { get; }
+        public static ClientService Instance { get; }
 
         static ClientService()
         {

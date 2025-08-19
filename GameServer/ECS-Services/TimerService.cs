@@ -13,7 +13,7 @@ namespace DOL.GS
 
         private List<ECSGameTimer> _list;
 
-        public static new TimerService Instance { get; }
+        public static TimerService Instance { get; }
 
         static TimerService()
         {

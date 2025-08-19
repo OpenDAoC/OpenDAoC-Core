@@ -2,7 +2,7 @@
 {
     public sealed class GameLoopService : GameServiceBase
     {
-        public static new GameLoopService Instance { get; }
+        public static GameLoopService Instance { get; }
 
         static GameLoopService()
         {

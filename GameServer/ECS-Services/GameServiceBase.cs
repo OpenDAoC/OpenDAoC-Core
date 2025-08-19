@@ -12,22 +12,25 @@ namespace DOL.GS
         private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
 
         public int EntityCount; // Used for diagnostics.
-        private readonly ConcurrentQueue<IPostedAction> _actions = new();
-        private readonly List<IPostedAction> _work = new();
+        private readonly ConcurrentBag<PostedAction> _actionPool = new();
+        private readonly ConcurrentQueue<PostedAction> _actions = new();
+        private readonly List<PostedAction> _work = new();
         private bool _hasActions;
 
-        public static GameServiceBase Instance { get; private set; }
         public string ServiceName { get; }
 
         protected GameServiceBase()
         {
-            Instance = this;
             ServiceName = GetType().Name;
         }
 
         public void Post<TState>(Action<TState> action, TState state)
         {
-            _actions.Enqueue(new PostedAction<TState>(action, state));
+            if (!_actionPool.TryTake(out PostedAction pooledAction))
+                pooledAction = new PostedAction();
+
+            pooledAction.Init(this, action, state, Invoker<TState>.Invoke);
+            _actions.Enqueue(pooledAction);
             Volatile.Write(ref _hasActions, true);
         }
 
@@ -36,7 +39,7 @@ namespace DOL.GS
             if (!Interlocked.Exchange(ref _hasActions, false))
                 return;
 
-            while (_actions.TryDequeue(out IPostedAction action))
+            while (_actions.TryDequeue(out PostedAction action))
                 _work.Add(action);
 
             if (_work.Count <= 0)
@@ -46,7 +49,7 @@ namespace DOL.GS
             _work.Clear();
         }
 
-        private static void ProcessPostedActionInternal(IPostedAction action)
+        private static void ProcessPostedActionInternal(PostedAction action)
         {
             try
             {
@@ -55,7 +58,13 @@ namespace DOL.GS
             catch (Exception e)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"Error executing posted action in {Instance.ServiceName}", e);
+                    log.Error($"Error executing posted action in {action.Service.ServiceName}", e);
+            }
+            finally
+            {
+                GameServiceBase service = action.Service;
+                action.Reset();
+                service._actionPool.Add(action);
             }
         }
 
@@ -63,26 +72,39 @@ namespace DOL.GS
         public virtual void Tick() { }
         public virtual void EndTick() { }
 
-        private readonly struct PostedAction<T> : IPostedAction
+        private static class Invoker<T>
         {
-            private readonly Action<T> _action;
-            private readonly T _state;
+            public static readonly Action<object, object> Invoke = static (action, state) => ((Action<T>) action)((T) state);
+        }
 
-            public PostedAction(Action<T> action, T state)
+        private sealed class PostedAction
+        {
+            private object _action;
+            private object _state;
+            private Action<object, object> _invoker;
+
+            public GameServiceBase Service { get; private set; }
+
+            public void Init<TState>(GameServiceBase service, Action<TState> action, TState state, Action<object, object> invoker)
             {
+                Service = service;
                 _action = action;
                 _state = state;
+                _invoker = invoker;
             }
 
             public void Invoke()
             {
-                _action(_state);
+                _invoker(_action, _state);
             }
-        }
 
-        private interface IPostedAction
-        {
-            void Invoke();
+            public void Reset()
+            {
+                Service = null;
+                _action = null;
+                _state = null;
+                _invoker = null;
+            }
         }
     }
 

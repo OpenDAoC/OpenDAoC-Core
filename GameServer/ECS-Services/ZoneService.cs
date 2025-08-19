@@ -13,7 +13,7 @@ namespace DOL.GS
 
         private List<ObjectChangingSubZone> _list;
 
-        public static new ZoneService Instance { get; }
+        public static ZoneService Instance { get; }
 
         static ZoneService()
         {

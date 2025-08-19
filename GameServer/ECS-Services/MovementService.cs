@@ -13,7 +13,7 @@ namespace DOL.GS
 
         private List<MovementComponent> _list;
 
-        public static new MovementService Instance { get; }
+        public static MovementService Instance { get; }
 
         static MovementService()
         {

@@ -13,7 +13,7 @@ namespace DOL.GS
 
         private List<CraftComponent> _list;
 
-        public static new CraftingService Instance { get; }
+        public static CraftingService Instance { get; }
 
         static CraftingService()
         {

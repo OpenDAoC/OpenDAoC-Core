@@ -14,7 +14,7 @@ namespace DOL.GS
 
         private List<ABrain> _list;
 
-        public static new NpcService Instance { get; }
+        public static NpcService Instance { get; }
 
         static NpcService()
         {

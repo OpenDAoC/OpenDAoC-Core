@@ -15,7 +15,7 @@ namespace DOL.GS
         private List<EffectListComponent> _list;
         private int _lastValidIndex;
 
-        public static new EffectListService Instance { get; }
+        public static EffectListService Instance { get; }
 
         static EffectListService()
         {
