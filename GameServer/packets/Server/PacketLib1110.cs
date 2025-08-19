@@ -136,6 +136,7 @@ namespace DOL.GS.PacketHandler
 
 				if (entriesCount == 0)
 				{
+					GSTCPPacketOut.Release(pak);
 					return; // nothing changed - no update is needed
 				}
 
