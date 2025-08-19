@@ -713,17 +713,10 @@ namespace DOL.GS
             Owner.Y = Owner.Y;
             Owner.Z = Owner.Z;
 
-            if (distanceToTarget < 1)
-                IsDestinationValid = false;
-            else
-            {
-                _destination.X = (int) destination.X;
-                _destination.Y = (int) destination.Y;
-                _destination.Z = (int) destination.Z;
-                IsDestinationValid = true;
-            }
-
+            IsDestinationValid = distanceToTarget >= 1;
+            _destination = destination;
             _needsBroadcastUpdate = true;
+
             bool wasMoving = IsMoving;
             CurrentSpeed = speed;
             UpdateVelocity(distanceToTarget);
