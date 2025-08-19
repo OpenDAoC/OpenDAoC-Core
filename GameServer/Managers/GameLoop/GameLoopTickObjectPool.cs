@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using DOL.GS.PacketHandler;
+using DOL.Logging;
 
 namespace DOL.GS
 {
     public sealed class GameLoopTickObjectPool
     {
+        private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
         private Dictionary<PooledObjectKey, ITickObjectPool> _pools = new()
         {
             { PooledObjectKey.InPacket, new TickObjectPool<GSPacketIn>() },
@@ -15,7 +19,10 @@ namespace DOL.GS
 
         public T GetForTick<T>(PooledObjectKey key) where T : IPooledObject<T>, new()
         {
-            return (_pools[key] as TickObjectPool<T>).GetForTick();
+            if (_pools[key] is not TickObjectPool<T> typedPool)
+                throw new InvalidCastException($"The pool for key '{key}' is not of the expected type '{typeof(T).Name}'.");
+
+            return typedPool.GetForTick();
         }
 
         public void Reset()
@@ -59,6 +66,16 @@ namespace DOL.GS
                     _logicalSize = Math.Max(_logicalSize, _used);
                 }
 
+                // Create a new item if this one wasn't released last tick.
+                if (item.IssuedTimestamp != 0)
+                {
+                    if (log.IsWarnEnabled)
+                        log.Warn($"Item {item} was not released last tick (IssuedTimestamp: {item.IssuedTimestamp}) (CurrentTime: {GameLoop.GameLoopTime}).");
+
+                    item = new();
+                    _items[_used - 1] = item;
+                }
+
                 item.IssuedTimestamp = GameLoop.GameLoopTime;
                 return item;
             }
@@ -97,17 +114,10 @@ namespace DOL.GS
     {
         static abstract PooledObjectKey PooledObjectKey { get; }
         static abstract T GetForTick(Action<T> initializer);
+        static abstract void Release(T packet);
 
         // The game loop tick timestamp when this object was issued.
         // Will be 0 if created outside the game loop (e.g., by a .NET worker thread without local object pools).
         long IssuedTimestamp { get; set; }
-    }
-
-    public static class PooledObjectExtensions
-    {
-        public static bool IsValidForTick<T>(this IPooledObject<T> obj)
-        {
-            return obj.IssuedTimestamp == GameLoop.GameLoopTime;
-        }
     }
 }

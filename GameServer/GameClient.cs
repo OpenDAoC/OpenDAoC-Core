@@ -420,7 +420,11 @@ namespace DOL.GS
                         if (log.IsErrorEnabled)
                             log.Error(e);
                     }
-                    
+                    finally
+                    {
+                        GSPacketIn.Release(packet);
+                    }
+
                     currentOffset += packetLength;
                 } while (endPosition - 1 > currentOffset);
 

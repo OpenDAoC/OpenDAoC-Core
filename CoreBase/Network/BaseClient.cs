@@ -146,7 +146,7 @@ namespace DOL.Network
             if (received <= 0)
             {
                 if (log.IsDebugEnabled)
-                    log.Debug($"Disconnecting client because of 0 bytes received. (Client: {this}");
+                    log.Debug($"Disconnecting client because of 0 bytes received. (Client: {this})");
 
                 Disconnect();
                 return false;

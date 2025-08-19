@@ -1080,8 +1080,22 @@ namespace DOL.GS
 					client.UdpConfirm = false;
 				}
 
-				if (client.UdpEndPoint.Equals(state.EndPoint))
+				if (!client.UdpEndPoint.Equals(state.EndPoint))
+					return;
+
+				try
+				{
 					client.PacketProcessor.ProcessInboundPacket(packet);
+				}
+				catch (Exception e)
+				{
+					if (log.IsErrorEnabled)
+						log.Error(e);
+				}
+				finally
+				{
+					GSPacketIn.Release(packet);
+				}
 			}, new
 			{
 				Buffer = buffer,

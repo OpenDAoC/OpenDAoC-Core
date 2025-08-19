@@ -31,11 +31,16 @@ namespace DOL.GS.PacketHandler
 
         public static PooledObjectKey PooledObjectKey => PooledObjectKey.TcpOutPacket;
 
+        public long IssuedTimestamp { get; set; }
+
         public static GSTCPPacketOut GetForTick(Action<GSTCPPacketOut> initializer)
         {
             return GameLoop.GetForTick(PooledObjectKey, initializer);
         }
 
-        public long IssuedTimestamp { get; set;}
+        public static void Release(GSTCPPacketOut packet)
+        {
+            packet.IssuedTimestamp = 0;
+        }
     }
 }

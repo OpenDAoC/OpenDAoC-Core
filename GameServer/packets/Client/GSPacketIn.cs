@@ -124,11 +124,16 @@ namespace DOL.GS.PacketHandler
 
         public static PooledObjectKey PooledObjectKey => PooledObjectKey.InPacket;
 
+        public long IssuedTimestamp { get; set;}
+
         public static GSPacketIn GetForTick(Action<GSPacketIn> initializer)
         {
             return GameLoop.GetForTick(PooledObjectKey, initializer);
         }
 
-        public long IssuedTimestamp { get; set;}
+        public static void Release(GSPacketIn packet)
+        {
+            packet.IssuedTimestamp = 0;
+        }
     }
 }

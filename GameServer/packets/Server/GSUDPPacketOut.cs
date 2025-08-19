@@ -32,11 +32,16 @@ namespace DOL.GS.PacketHandler
 
         public static PooledObjectKey PooledObjectKey => PooledObjectKey.UdpOutPacket;
 
+        public long IssuedTimestamp { get; set;}
+
         public static GSUDPPacketOut GetForTick(Action<GSUDPPacketOut> initializer)
         {
             return GameLoop.GetForTick(PooledObjectKey, initializer);
         }
 
-        public long IssuedTimestamp { get; set;}
+        public static void Release(GSUDPPacketOut packet)
+        {
+            packet.IssuedTimestamp = 0;
+        }
     }
 }
