@@ -115,7 +115,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             //TODO 0xDD - Conc Buffs // 0 0 0 0
             //Now find the friends that are online
             player.Out.SendUpdateMaxSpeed(); // Speed after conc buffs
-            player.Out.SendStatusUpdate();
+            // player.Out.SendStatusUpdate(); // Doesn't seem work.
             player.Out.SendInventoryItemsUpdate(eInventoryWindowType.Equipment, player.Inventory.EquippedItems);
             player.Out.SendInventoryItemsUpdate(eInventoryWindowType.Inventory, player.Inventory.GetItemRange(eInventorySlot.FirstBackpack, eInventorySlot.LastBagHorse));
             player.Out.SendUpdatePlayerSkills(loadPlayer);   //TODO Insert 0xBE - 08 Various in SendUpdatePlayerSkills() before send spells
@@ -128,7 +128,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             player.Out.SendUpdateIcons(null, ref effectsCount);
             player.Out.SendUpdateWeaponAndArmorStats();
             player.Out.SendQuestListUpdate();
-            player.Out.SendStatusUpdate();
+            // player.Out.SendStatusUpdate(); // Doesn't seem to work and is redundant.
             player.Out.SendUpdatePoints();
             player.Out.SendConcentrationList();
             // Visual 0x4C - Color Name style (0 0 5 0 0 0 0 0) for RvR or (0 0 5 1 0 0 0 0) for PvP
