@@ -83,9 +83,7 @@ namespace DOL.GS
             long dx = _current.X - _previous.X;
             long dy = _current.Y - _previous.Y;
             long squaredDistance = dx * dx + dy * dy;
-            var a = CalculateAllowedMaxSpeed(_current);
-            double allowedMaxSpeed = a * MaxSpeedToleranceFactor;
-            _player.Out.SendMessage($"{(int)a} {(int)allowedMaxSpeed}", PacketHandler.eChatType.CT_Say, PacketHandler.eChatLoc.CL_ChatWindow);
+            double allowedMaxSpeed = CalculateAllowedMaxSpeed(_current) * MaxSpeedToleranceFactor;
             double allowedMaxDistance = allowedMaxSpeed * timeDiff / 1000.0;
             double allowedMaxDistanceSquared = allowedMaxDistance * allowedMaxDistance;
 
