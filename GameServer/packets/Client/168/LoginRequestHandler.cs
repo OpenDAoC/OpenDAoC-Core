@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using DOL.Database;
 using DOL.GS.ServerProperties;
@@ -56,12 +57,19 @@ namespace DOL.GS.PacketHandler.Client.v168
 		private static DateTime _lastAccountCreateTime;
 		private static HttpClient _httpClient = new HttpClient();
 		private static HashSet<GameClient> _clientsLoggingIn = new();
+		private static Lock _lock = new();
 
 		public async void HandlePacket(GameClient client, GSPacketIn packet)
 		{
 			// Prevent multiple concurrent logins for the same client.
-			if (client == null || !_clientsLoggingIn.Add(client))
+			if (client == null)
 				return;
+
+			lock (_lock)
+			{
+				if (!_clientsLoggingIn.Add(client))
+					return;
+			}
 
 			try
 			{
@@ -69,7 +77,10 @@ namespace DOL.GS.PacketHandler.Client.v168
 			}
 			finally
 			{
-				_clientsLoggingIn.Remove(client);
+				lock (_lock)
+				{
+					_clientsLoggingIn.Remove(client);
+				}
 			}
 		}
 
