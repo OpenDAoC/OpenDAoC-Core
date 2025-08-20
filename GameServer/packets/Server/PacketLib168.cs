@@ -1518,9 +1518,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || source == null || target == null)
 				return false;
 
-			ushort sourceObjectId = (ushort) source.ObjectID;
-			ushort targetObjectId = (ushort) target.ObjectID;
-			m_gameClient.Player.LosCheckHandler.StartLosCheck(sourceObjectId, targetObjectId, callback);
+			m_gameClient.Player.LosCheckHandler.StartLosCheck(source, target, callback);
 			return true;
 		}
 

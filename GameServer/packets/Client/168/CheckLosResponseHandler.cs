@@ -10,7 +10,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             LosCheckResponse response = (packet.ReadShort() & 0x100) == 0x100 ? LosCheckResponse.True : LosCheckResponse.False;
             // packet.ReadShort(); ?
 
-            client.Player.LosCheckHandler.SetResponse(checkerObjectId, targetObjectId, response);
+            client.Player.LosCheckHandler.HandleLosResponse(checkerObjectId, targetObjectId, response);
         }
     }
 }

@@ -126,7 +126,7 @@ namespace DOL.GS
             if (Callback != null)
                 Interval = Callback.Invoke(this);
 
-            if (Interval == 0)
+            if (Interval <= 0)
             {
                 Stop();
                 return;

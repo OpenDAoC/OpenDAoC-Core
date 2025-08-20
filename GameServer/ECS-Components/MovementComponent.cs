@@ -14,6 +14,7 @@ namespace DOL.GS
         public GameLiving Owner { get; }
         public short CurrentSpeed { get; set; }
         public short MaxSpeedBase { get; set; } // Currently unused for players.
+        public long LastMovementTick { get; private set; }
         public virtual short MaxSpeed => (short) Owner.GetModified(eProperty.MaxSpeed);
         public bool IsMoving => CurrentSpeed != 0;
         public bool IsTurningDisabled => Interlocked.CompareExchange(ref _turningDisabledCount, 0, 0) > 0 && !Owner.effectListComponent.ContainsEffectForEffectType(eEffect.SpeedOfSound);
@@ -60,6 +61,7 @@ namespace DOL.GS
                 _lastPosition.X = Owner.X;
                 _lastPosition.Y = Owner.Y;
                 _relocationPending = true;
+                LastMovementTick = GameLoop.GameLoopTime;
                 OnOwnerMoved();
             }
 
