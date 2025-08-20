@@ -38,6 +38,7 @@ namespace DOL.GS
         // Work processing.
         private WorkProcessor _workProcessor;           // Current work processor instance, reused for each execution.
         private readonly WorkState _workState = new();  // Shared state for work distribution and completion tracking.
+        private ExecutionContext _workContext;          // Execution context captured from the thread entering ExecuteForEach.
 
         [StructLayout(LayoutKind.Explicit)]
         private class WorkState
@@ -114,10 +115,8 @@ namespace DOL.GS
                 if (count <= 0)
                     return;
 
-                WorkProcessor<T> processor = WorkProcessorCache<T>.Instance;
-                processor.Set(items, action);
-
-                _workProcessor = processor;
+                _workContext = ExecutionContext.Capture();
+                _workProcessor = WorkProcessorCache<T>.Instance.Set(items, action);
                 _workState.RemainingWork = count;
                 _workState.CompletedWorkerCount = 0;
 
@@ -217,7 +216,7 @@ namespace DOL.GS
                     workReady.Wait(cancellationToken);
                     workerCycle = ++cycle;
                     workReady.Reset();
-                    ProcessWorkActions();
+                    ExecutionContext.Run(_workContext, static state => ((GameLoopThreadPoolMultiThreaded) state).ProcessWorkActions(), this);
                     Interlocked.Increment(ref _workState.CompletedWorkerCount); // Not in the finally block on purpose.
                 }
                 catch (OperationCanceledException)
@@ -290,10 +289,11 @@ namespace DOL.GS
 
             public WorkProcessor() { }
 
-            public void Set(List<T> items, Action<T> action)
+            public WorkProcessor<T> Set(List<T> items, Action<T> action)
             {
                 _items = items;
                 _action = action;
+                return this;
             }
 
             public override void Process(int index)

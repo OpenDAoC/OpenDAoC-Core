@@ -172,7 +172,7 @@ namespace DOL.GS
             }
         }
 
-        private readonly struct TickStep
+        private sealed class TickStep
         {
             public readonly TickState State;
             public readonly ExecutionContext Context;
