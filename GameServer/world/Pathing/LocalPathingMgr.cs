@@ -239,7 +239,7 @@ namespace DOL.GS
             return true;
         }
 
-        public WrappedPathingResult GetPathStraightAsync(Zone zone, Vector3 start, Vector3 end)
+        public WrappedPathingResult GetPathStraight(Zone zone, Vector3 start, Vector3 end)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return new(EPathingError.NoPathFound, []);
@@ -284,7 +284,7 @@ namespace DOL.GS
             }
         }
 
-        public Vector3? GetRandomPointAsync(Zone zone, Vector3 position, float radius)
+        public Vector3? GetRandomPoint(Zone zone, Vector3 position, float radius)
         {
             if (!TryGetQuery(zone, out NavMeshQuery query))
                 return null;
@@ -302,7 +302,7 @@ namespace DOL.GS
             return (status & EDtStatus.DT_SUCCESS) == 0 ? null : new(outVec[0] * INV_FACTOR, outVec[2] * INV_FACTOR, outVec[1] * INV_FACTOR);
         }
 
-        public Vector3? GetClosestPointAsync(Zone zone, Vector3 position, float xRange = 256f, float yRange = 256f, float zRange = 256f)
+        public Vector3? GetClosestPoint(Zone zone, Vector3 position, float xRange = 256f, float yRange = 256f, float zRange = 256f)
         {
             // Assume the point is safe if we don't have a navmesh.
             if (!TryGetQuery(zone, out NavMeshQuery query))

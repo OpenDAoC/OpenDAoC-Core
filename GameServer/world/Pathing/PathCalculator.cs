@@ -87,7 +87,7 @@ namespace DOL.GS
             {
                 Zone currentZone = Owner.CurrentZone;
                 Vector3 currentPos = new(Owner.X, Owner.Y, Owner.Z);
-                WrappedPathingResult pathingResult = PathingMgr.Instance.GetPathStraightAsync(currentZone, currentPos, target);
+                WrappedPathingResult pathingResult = PathingMgr.Instance.GetPathStraight(currentZone, currentPos, target);
                 _pathNodes.Clear();
                 _doorsOnPath.Clear();
 
