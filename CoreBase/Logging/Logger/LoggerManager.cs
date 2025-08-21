@@ -45,7 +45,7 @@ namespace DOL.Logging
             lock (_lock)
             {
                 if (_initialized)
-                    throw new InvalidOperationException($"Logging Manager has already been initialized (file: {configurationFilePath}) (library: {_loggingLibrary})");
+                    return false;
 
                 _loggingLibrary = loggingLibrary;
 
@@ -80,7 +80,7 @@ namespace DOL.Logging
             lock (_lock)
             {
                 if (!_initialized)
-                    throw new InvalidOperationException("Logging Manager has not been initialized");
+                    return;
 
                 _queueProcessor.Stop();
                 _loggerFactory.Shutdown();
@@ -95,10 +95,7 @@ namespace DOL.Logging
 
         public static Logger Create(string name)
         {
-            if (!_initialized)
-                throw new InvalidOperationException("Logging Manager has not been initialized");
-
-            return _loggerFactory.Create(name);
+            return !_initialized ?  new NullLogger(null) : _loggerFactory.Create(name);
         }
 
         public interface ILoggerFactory
