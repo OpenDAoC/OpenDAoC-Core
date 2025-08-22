@@ -195,7 +195,10 @@ namespace DOL.GS.PacketHandler
         public void QueuePacket(GSTCPPacketOut packet)
         {
             if (_client.ClientState is eClientState.Disconnected or eClientState.Linkdead)
+            {
+                GSTCPPacketOut.Release(packet);
                 return;
+            }
 
             // This is dangerous if the same packet is passed down to multiple `PacketProcessor` at the same time.
             if (!packet.IsSizeSet)
@@ -215,7 +218,10 @@ namespace DOL.GS.PacketHandler
         public void QueuePacket(GSUDPPacketOut packet, bool forced)
         {
             if (_client.ClientState is eClientState.Disconnected or eClientState.Linkdead)
+            {
+                GSUDPPacketOut.Release(packet);
                 return;
+            }
 
             if (_client.ClientState is eClientState.Playing)
             {
