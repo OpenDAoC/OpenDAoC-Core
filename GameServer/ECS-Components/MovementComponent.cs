@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Numerics;
+using System.Threading;
 
 namespace DOL.GS
 {
@@ -6,8 +7,8 @@ namespace DOL.GS
     {
         private const int SUBZONE_RELOCATION_CHECK_INTERVAL = 500;
 
-        private Point2D _lastPosition = new();
-        private bool _relocationPending;
+        protected Vector3 _ownerPosition;
+        private bool _relocationCheckPending;
         private long _nextRelocationCheckTick;
         private int _turningDisabledCount;
 
@@ -46,6 +47,22 @@ namespace DOL.GS
             TickInternal();
         }
 
+        protected virtual void TickInternal()
+        {
+            if (!_relocationCheckPending || !GameServiceUtils.ShouldTick(_nextRelocationCheckTick))
+                return;
+
+            Owner.SubZoneObject.CheckForRelocation();
+            _nextRelocationCheckTick = GameLoop.GameLoopTime + SUBZONE_RELOCATION_CHECK_INTERVAL;
+            _relocationCheckPending = false;
+        }
+
+        public virtual void OnPositionUpdate()
+        {
+            _relocationCheckPending = true;
+            LastMovementTick = GameLoop.GameLoopTime;
+        }
+
         public virtual void DisableTurning(bool add)
         {
             if (add)
@@ -54,26 +71,17 @@ namespace DOL.GS
                 Interlocked.Decrement(ref _turningDisabledCount);
         }
 
-        protected virtual void TickInternal()
+        protected bool UpdatePosition()
         {
-            if (!Owner.IsSamePosition(_lastPosition))
-            {
-                _lastPosition.X = Owner.X;
-                _lastPosition.Y = Owner.Y;
-                _relocationPending = true;
-                LastMovementTick = GameLoop.GameLoopTime;
-                OnOwnerMoved();
-            }
+            // _ownerPosition is currently only used by the movement component.
+            Vector3 newPosition = new(Owner.X, Owner.Y, Owner.Z);
 
-            if (_relocationPending && GameServiceUtils.ShouldTick(_nextRelocationCheckTick))
-            {
-                Owner.SubZoneObject.CheckForRelocation();
-                _nextRelocationCheckTick = GameLoop.GameLoopTime + SUBZONE_RELOCATION_CHECK_INTERVAL;
-                _relocationPending = false;
-            }
+            if (newPosition.Equals(_ownerPosition))
+                return false;
+
+            _ownerPosition = newPosition;
+            return true;
         }
-
-        protected virtual void OnOwnerMoved() { }
 
         protected void AddToServiceObjectStore()
         {

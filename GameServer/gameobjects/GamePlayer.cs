@@ -904,12 +904,12 @@ namespace DOL.GS
 
         public void OnPositionUpdateFromPacket()
         {
-            movementComponent.OnPositionUpdateFromPacket();
+            movementComponent.OnPositionUpdate();
         }
 
         public void OnHeadingPacketReceived()
         {
-            movementComponent.OnHeadingPacketReceived();
+            movementComponent.OnHeadingUpdate();
         }
 
         public void OnLinkDeath()

@@ -83,12 +83,6 @@ namespace DOL.GS
             base.TickInternal();
         }
 
-        protected override void OnOwnerMoved()
-        {
-            Owner.OnPlayerMove();
-            base.OnOwnerMoved();
-        }
-
         public void BroadcastPosition()
         {
             PlayerPositionUpdateHandler.BroadcastPosition(Owner.Client);
@@ -99,11 +93,19 @@ namespace DOL.GS
             PlayerHeadingUpdateHandler.BroadcastHeading(Owner.Client);
         }
 
-        public void OnPositionUpdateFromPacket()
+        public override void OnPositionUpdate()
         {
-            _needBroadcastPosition = true;
-            _validateMovementOnNextTick = true;
-            LastPositionUpdatePacketReceivedTime = GameLoop.GameLoopTime;
+            base.OnPositionUpdate();
+
+            if (UpdatePosition())
+            {
+                Owner.OnPlayerMove();
+                _playerMovementMonitor.RecordPosition();
+                _validateMovementOnNextTick = true;
+                Owner.LastPlayerActivityTime = GameLoop.GameLoopTime;
+            }
+            else
+                _needBroadcastPosition = true;
 
             if (IsMoving)
                 Owner.LastPlayerActivityTime = GameLoop.GameLoopTime;
@@ -127,7 +129,6 @@ namespace DOL.GS
                 }
             }
 
-            _playerMovementMonitor.RecordPosition();
             AddToServiceObjectStore();
 
             static void SendEncumberedMessage(GamePlayer player)
@@ -136,7 +137,7 @@ namespace DOL.GS
             }
         }
 
-        public void OnHeadingPacketReceived()
+        public void OnHeadingUpdate()
         {
             _needBroadcastHeading = true;
         }

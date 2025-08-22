@@ -1014,12 +1014,6 @@ namespace DOL.GS.Spells
 				}
 			}
 
-			if ((m_caster.IsMoving || m_caster.IsStrafing) && !Spell.MoveCast)
-			{
-				CasterMoves();
-				return false;
-			}
-
 			return true;
 		}
 
@@ -1093,16 +1087,6 @@ namespace DOL.GS.Spells
 						}
 						else
 							CastState = eCastState.Finished;
-					}
-
-					break;
-				}
-				case eCastState.Focusing:
-				{
-					if (Caster.IsStrafing || Caster.IsMoving)
-					{
-						CasterMoves();
-						CastState = eCastState.Cleanup;
 					}
 
 					break;
