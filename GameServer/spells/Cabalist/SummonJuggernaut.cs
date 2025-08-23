@@ -8,14 +8,14 @@ namespace DOL.GS.Spells
 	{
 		public SummonJuggernaut(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
-		public override void OnPetReleased(GameSummonedPet pet)
+		public override void OnPetReleased()
 		{
-			if (pet.Brain is not JuggernautBrain juggernautBrain)
+			if (Pet.Brain is not JuggernautBrain juggernautBrain)
 				return;
 
 			AtlasOF_JuggernautECSEffect effect = EffectListService.GetEffectOnTarget(Target, eEffect.Juggernaut) as AtlasOF_JuggernautECSEffect;
 			effect?.Cancel(false);
-			base.OnPetReleased(pet);
+			base.OnPetReleased();
 		}
 
 		protected override IControlledBrain GetPetBrain(GameLiving owner)

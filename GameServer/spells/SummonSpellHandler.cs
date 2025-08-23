@@ -154,9 +154,9 @@ namespace DOL.GS.Spells
 			Caster.OnPetSummoned(m_pet);
 		}
 
-		public virtual void OnPetReleased(GameSummonedPet pet)
+		public virtual void OnPetReleased()
 		{
-			if (pet.Brain is not IControlledBrain petBrain)
+			if (Pet.Brain is not IControlledBrain petBrain)
 				return;
 
 			GameLiving petOwner = petBrain.Owner;

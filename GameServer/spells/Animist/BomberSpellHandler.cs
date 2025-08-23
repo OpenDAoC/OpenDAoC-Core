@@ -41,7 +41,7 @@ namespace DOL.GS.Spells
             }
         }
 
-        public override void OnPetReleased(GameSummonedPet pet) { }
+        public override void OnPetReleased() { }
 
         protected override IControlledBrain GetPetBrain(GameLiving owner)
         {

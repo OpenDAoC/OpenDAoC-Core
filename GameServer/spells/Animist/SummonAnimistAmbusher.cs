@@ -22,14 +22,14 @@ namespace DOL.GS.Spells
 			((ControlledMobBrain) m_pet.Brain).Stay();
 		}
 
-		public override void OnPetReleased(GameSummonedPet pet)
+		public override void OnPetReleased()
 		{
-			if (pet.Brain is not ForestheartAmbusherBrain forestheartAmbusherBrain)
+			if (Pet.Brain is not ForestheartAmbusherBrain forestheartAmbusherBrain)
 				return;
 
 			AtlasOF_ForestheartAmbusherECSEffect effect = EffectListService.GetEffectOnTarget(Caster, eEffect.ForestheartAmbusher) as AtlasOF_ForestheartAmbusherECSEffect;
 			effect?.Cancel(false);
-			base.OnPetReleased(pet);
+			base.OnPetReleased();
 		}
 
 		protected override GameSummonedPet GetGamePet(INpcTemplate template)

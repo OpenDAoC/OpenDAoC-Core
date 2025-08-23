@@ -9,8 +9,7 @@ namespace DOL.GS
         public override void OnStopEffect()
         {
             // `GameObject.Die` shouldn't be called here, since it messes up with Necromancer HP.
-            SpellHandler.Caster.UpdatePetCount(false);
-            (SpellHandler as SummonSpellHandler)?.OnPetReleased(Owner as GameSummonedPet); // Should be done before setting health to 0.
+            (SpellHandler as SummonSpellHandler)?.OnPetReleased(); // Should be done before setting health to 0.
             Owner.effectListComponent.CancelAll();
             Owner.Health = 0; // To send proper remove packet.
             Owner.Delete();

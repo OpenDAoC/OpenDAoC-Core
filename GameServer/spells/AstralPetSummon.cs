@@ -17,9 +17,9 @@ namespace DOL.GS.Spells
 
         }
 
-        public override void OnPetReleased(GameSummonedPet pet)
+        public override void OnPetReleased()
         {
-            Effects.GameSpellEffect effect = FindEffectOnTarget(pet, this);
+            Effects.GameSpellEffect effect = FindEffectOnTarget(Pet, this);
             effect?.Cancel(false);
         }
 
