@@ -310,7 +310,7 @@ namespace DOL.GS
             if (subZoneObject != null)
             {
                 if (subZoneObject.CurrentSubZone != subZone && subZoneObject.StartSubZoneChange)
-                    CreateSubZoneRelocation(subZoneObject, null, subZone);
+                    CreateSubZoneRelocation(subZoneObject, this, subZone);
             }
 
             return true;
