@@ -12,10 +12,11 @@ namespace DOL.Network
 		public byte Code { get; protected set; }
 		public bool IsSizeSet { get; private set; }
 
-		public virtual void Init(byte code)
+		public virtual PacketOut Init(byte code)
 		{
 			Code = code;
 			IsSizeSet = false;
+			return this;
 		}
 
 		#region IPacket Members

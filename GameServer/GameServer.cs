@@ -1062,7 +1062,7 @@ namespace DOL.GS
 			// Post the packet to the game loop for processing.
 			GameLoopService.Instance.Post(static state =>
 			{
-				GSPacketIn packet = GSPacketIn.GetForTick(p => p.Init());
+				var packet = PooledObjectFactory.GetForTick<GSPacketIn>().Init();
 				packet.Load(state.Buffer, state.Offset, state.Size);
 				GameClient client = ClientService.Instance.GetClientBySessionId(packet.SessionID);
 
@@ -1094,7 +1094,7 @@ namespace DOL.GS
 				}
 				finally
 				{
-					GSPacketIn.Release(packet);
+					packet.ReleasePooledObject();
 				}
 			}, new
 			{

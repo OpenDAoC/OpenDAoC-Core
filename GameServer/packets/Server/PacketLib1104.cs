@@ -29,7 +29,7 @@ namespace DOL.GS.PacketHandler
 
 			int firstSlot = (byte)realm * 100;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterOverview))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CharacterOverview)))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
 
@@ -306,7 +306,7 @@ namespace DOL.GS.PacketHandler
 
 			// This presents the user with Name Not Allowed which may not be correct but at least it prevents duplicate char creation
 			// - tolakram
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DupNameCheckReply))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.DupNameCheckReply)))
 			{
 				pak.FillString(name, 30);
 				pak.FillString(m_gameClient.Account.Name, 24);

@@ -10,13 +10,14 @@ namespace DOL.GS.PacketHandler
     {
         public GSUDPPacketOut() { }
 
-        public override void Init(byte code)
+        public override GSUDPPacketOut Init(byte code)
         {
             SetLength(0);
             base.Init(code);
             WriteShort(0x00); // Reserved for size.
             WriteShort(0x00); // Reserved for UDP counter.
             base.WriteByte(code);
+            return this;
         }
 
         public override void WritePacketLength()
@@ -30,18 +31,8 @@ namespace DOL.GS.PacketHandler
             return $"{base.ToString()}: Size={Length - 5} ID=0x{Code:X2}";
         }
 
+        // IPooledObject<T> implementation.
+        public long IssuedTimestamp { get; set; }
         public static PooledObjectKey PooledObjectKey => PooledObjectKey.UdpOutPacket;
-
-        public long IssuedTimestamp { get; set;}
-
-        public static GSUDPPacketOut GetForTick(Action<GSUDPPacketOut> initializer)
-        {
-            return GameLoop.GetForTick(PooledObjectKey, initializer);
-        }
-
-        public static void Release(GSUDPPacketOut packet)
-        {
-            packet.IssuedTimestamp = 0;
-        }
     }
 }

@@ -14,7 +14,8 @@ namespace DOL.GS
         {
             { PooledObjectKey.InPacket, new TickObjectPool<GSPacketIn>() },
             { PooledObjectKey.TcpOutPacket, new TickObjectPool<GSTCPPacketOut>() },
-            { PooledObjectKey.UdpOutPacket, new TickObjectPool<GSUDPPacketOut>() }
+            { PooledObjectKey.UdpOutPacket, new TickObjectPool<GSUDPPacketOut>() },
+            { PooledObjectKey.SubZoneTransition, new TickObjectPool<SubZoneTransition>() }
         };
 
         public T GetForTick<T>(PooledObjectKey key) where T : IPooledObject<T>, new()
@@ -107,17 +108,31 @@ namespace DOL.GS
     {
         InPacket,
         TcpOutPacket,
-        UdpOutPacket
+        UdpOutPacket,
+        SubZoneTransition
     }
 
     public interface IPooledObject<T>
     {
-        static abstract PooledObjectKey PooledObjectKey { get; }
-        static abstract T GetForTick(Action<T> initializer);
-        static abstract void Release(T packet);
-
         // The game loop tick timestamp when this object was issued.
         // Will be 0 if created outside the game loop (e.g., by a .NET worker thread without local object pools).
         long IssuedTimestamp { get; set; }
+        static abstract PooledObjectKey PooledObjectKey { get; }
+    }
+
+    public static class PooledObjectFactory
+    {
+        public static T GetForTick<T>() where T : IPooledObject<T>, new()
+        {
+            return GameLoop.GetForTick<T>(T.PooledObjectKey);
+        }
+    }
+
+    public static class PooledObjectExtensions
+    {
+        public static void ReleasePooledObject<T>(this IPooledObject<T> pooledObject)
+        {
+            pooledObject.IssuedTimestamp = 0;
+        }
     }
 }

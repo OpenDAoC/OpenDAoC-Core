@@ -87,10 +87,11 @@ namespace DOL.GS.PacketHandler
                 log.Debug(Marshal.ToHexDump(ToString(), ToArray()));
         }
 
-        public override void Init()
+        public override GSPacketIn Init()
         {
             SetLength(0);
             base.Init();
+            return this;
         }
 
         /// <summary>
@@ -122,18 +123,8 @@ namespace DOL.GS.PacketHandler
             return string.Format($"{nameof(GSPacketIn)}: Size={m_psize} Sequence=0x{m_sequence:X4} Session={m_sessionID} Parameter={m_parameter} ID=0x{m_code:X2}");
         }
 
+        // IPooledObject<T> implementation.
+        public long IssuedTimestamp { get; set; }
         public static PooledObjectKey PooledObjectKey => PooledObjectKey.InPacket;
-
-        public long IssuedTimestamp { get; set;}
-
-        public static GSPacketIn GetForTick(Action<GSPacketIn> initializer)
-        {
-            return GameLoop.GetForTick(PooledObjectKey, initializer);
-        }
-
-        public static void Release(GSPacketIn packet)
-        {
-            packet.IssuedTimestamp = 0;
-        }
     }
 }

@@ -27,7 +27,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepInfo(IGameKeep keep)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepInfo))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepInfo)))
 			{
 
 				pak.WriteShort((ushort)keep.KeepID);
@@ -46,7 +46,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepRealmUpdate(IGameKeep keep)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepRealmUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepRealmUpdate)))
 			{
 
 				pak.WriteShort((ushort)keep.KeepID);
@@ -58,7 +58,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepRemove(IGameKeep keep)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepRemove))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepRemove)))
 			{
 				pak.WriteShort((ushort)keep.KeepID);
 				SendTCP(pak);
@@ -67,7 +67,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentInfo(IGameKeepComponent keepComponent)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepComponentInfo))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepComponentInfo)))
 			{
 				pak.WriteShort((ushort)keepComponent.Keep.KeepID);
 				pak.WriteShort((ushort)keepComponent.ID);
@@ -91,7 +91,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentDetailUpdate(IGameKeepComponent keepComponent)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepComponentDetailUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepComponentDetailUpdate)))
 			{
 				pak.WriteShort((ushort)keepComponent.Keep.KeepID);
 				pak.WriteShort((ushort)keepComponent.ID);
@@ -113,7 +113,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentRemove(IGameKeepComponent keepComponent)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepComponentRemove))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepComponentRemove)))
 			{
 				pak.WriteShort((ushort)keepComponent.Keep.KeepID);
 				pak.WriteShort((ushort)keepComponent.ID);
@@ -123,7 +123,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentUpdate(IGameKeep keep, bool LevelUp)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepComponentUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepComponentUpdate)))
 			{
 				pak.WriteShort((ushort)keep.KeepID);
 				pak.WriteByte((byte)keep.Realm);
@@ -154,7 +154,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || keep == null)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepClaim))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepClaim)))
 			{
 
 				pak.WriteShort((ushort)keep.KeepID);
@@ -168,7 +168,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentInteract(IGameKeepComponent component)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepComponentInteractResponse))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepComponentInteractResponse)))
 			{
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteByte((byte)component.Keep.Realm);
@@ -190,7 +190,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepComponentHookpointUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepComponentHookpointUpdate)))
 			{
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteShort((ushort)component.ID);
@@ -211,7 +211,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendClearKeepComponentHookPoint(IGameKeepComponent component, int selectedHookPointIndex)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepComponentHookpointUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepComponentHookpointUpdate)))
 			{
 				pak.WriteShort((ushort)component.Keep.KeepID);
 				pak.WriteShort((ushort)component.ID);
@@ -223,7 +223,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendHookPointStore(GameKeepHookPoint hookPoint)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepComponentHookpointStore))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepComponentHookpointStore)))
 			{
 				pak.WriteShort((ushort)hookPoint.Component.Keep.KeepID);
 				pak.WriteShort((ushort)hookPoint.Component.ID);
@@ -270,7 +270,7 @@ namespace DOL.GS.PacketHandler
 
 		protected override void SendQuestPacket(AbstractQuest quest, byte index)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.QuestEntry))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.QuestEntry)))
 			{
 				pak.WriteByte(index);
 				if (quest.Step <= 0)
@@ -307,7 +307,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.WarMapClaimedKeeps))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.WarMapClaimedKeeps)))
 			{
 				int KeepCount = 0;
 				int TowerCount = 0;
@@ -499,7 +499,7 @@ namespace DOL.GS.PacketHandler
 					break;
 			}
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.WarmapBonuses))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.WarmapBonuses)))
 			{
 				pak.WriteByte((byte)RealmKeeps);
 				int magic = RelicMgr.GetRelicCount(m_gameClient.Player.Realm, eRelicType.Magic);
@@ -513,7 +513,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendWarmapDetailUpdate(List<List<byte>> fights, List<List<byte>> groups)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.WarMapDetailUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.WarMapDetailUpdate)))
 			{
 				pak.WriteByte((byte)fights.Count);// count - Fights (Byte)
 				pak.WriteByte((byte)groups.Count);// count - Groups (Byte)

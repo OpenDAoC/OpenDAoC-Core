@@ -1,4 +1,3 @@
-using System;
 using DOL.Network;
 
 namespace DOL.GS.PacketHandler
@@ -10,12 +9,13 @@ namespace DOL.GS.PacketHandler
     {
         public GSTCPPacketOut() { }
 
-        public override void Init(byte code)
+        public override GSTCPPacketOut Init(byte code)
         {
             SetLength(0);
             base.Init(code);
             WriteShort(0x00); // Reserved for size.
             base.WriteByte(code);
+            return this;
         }
 
         public override void WritePacketLength()
@@ -29,18 +29,8 @@ namespace DOL.GS.PacketHandler
             return $"{base.ToString()}: Size={Length - 5} ID=0x{Code:X2}";
         }
 
-        public static PooledObjectKey PooledObjectKey => PooledObjectKey.TcpOutPacket;
-
+        // IPooledObject<T> implementation.
         public long IssuedTimestamp { get; set; }
-
-        public static GSTCPPacketOut GetForTick(Action<GSTCPPacketOut> initializer)
-        {
-            return GameLoop.GetForTick(PooledObjectKey, initializer);
-        }
-
-        public static void Release(GSTCPPacketOut packet)
-        {
-            packet.IssuedTimestamp = 0;
-        }
+        public static PooledObjectKey PooledObjectKey => PooledObjectKey.TcpOutPacket;
     }
 }

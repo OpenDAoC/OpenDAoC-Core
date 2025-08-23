@@ -19,7 +19,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLoginGranted(byte color)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.LoginGranted))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.LoginGranted)))
 			{
 				pak.WritePascalString(m_gameClient.Account.Name);
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name

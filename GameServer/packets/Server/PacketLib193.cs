@@ -21,7 +21,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendBlinkPanel(byte flag)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VisualEffect))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VisualEffect)))
 			{
 				GamePlayer player = m_gameClient.Player;
 

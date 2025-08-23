@@ -13,7 +13,10 @@ namespace DOL.Network
 
 		protected PacketIn(int size) : base(size) { }
 
-		public virtual void Init() { }
+		public virtual PacketIn Init()
+		{
+			return this;
+		}
 
 		/// <summary>
 		/// Generates a human-readable dump of the packet contents.

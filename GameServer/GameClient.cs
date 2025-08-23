@@ -408,7 +408,7 @@ namespace DOL.GS
                         return;
                     }
 
-                    GSPacketIn packet = GSPacketIn.GetForTick(p => p.Init());
+                    var packet = PooledObjectFactory.GetForTick<GSPacketIn>().Init();
                     packet.Load(buffer, currentOffset, packetLength);
 
                     try
@@ -422,7 +422,7 @@ namespace DOL.GS
                     }
                     finally
                     {
-                        GSPacketIn.Release(packet);
+                        packet.ReleasePooledObject();
                     }
 
                     currentOffset += packetLength;

@@ -196,7 +196,7 @@ namespace DOL.GS.PacketHandler
         {
             if (_client.ClientState is eClientState.Disconnected or eClientState.Linkdead)
             {
-                GSTCPPacketOut.Release(packet);
+                packet.ReleasePooledObject();
                 return;
             }
 
@@ -219,7 +219,7 @@ namespace DOL.GS.PacketHandler
         {
             if (_client.ClientState is eClientState.Disconnected or eClientState.Linkdead)
             {
-                GSUDPPacketOut.Release(packet);
+                packet.ReleasePooledObject();
                 return;
             }
 
@@ -319,9 +319,9 @@ namespace DOL.GS.PacketHandler
             // Drain all pending packets on the next game loop tick to avoid concurrent modification issues.
             GameLoopService.Instance.Post(static state =>
             {
-                state._tcpPacketQueue.DrainTo(static packet => GSTCPPacketOut.Release(packet));
-                state._udpToTcpPacketQueue.DrainTo(static packet => GSUDPPacketOut.Release(packet));
-                state._udpPacketQueue.DrainTo(static packet => GSUDPPacketOut.Release(packet));
+                state._tcpPacketQueue.DrainTo(static packet => packet.ReleasePooledObject());
+                state._udpToTcpPacketQueue.DrainTo(static packet => packet.ReleasePooledObject());
+                state._udpPacketQueue.DrainTo(static packet => packet.ReleasePooledObject());
             }, this);
         }
 
@@ -360,7 +360,7 @@ namespace DOL.GS.PacketHandler
             }
             finally
             {
-                GSTCPPacketOut.Release(packet);
+                packet.ReleasePooledObject();
             }
         }
 
@@ -402,7 +402,7 @@ namespace DOL.GS.PacketHandler
             }
             finally
             {
-                GSUDPPacketOut.Release(packet);
+                packet.ReleasePooledObject();
             }
         }
 
@@ -445,7 +445,7 @@ namespace DOL.GS.PacketHandler
             }
             finally
             {
-                GSUDPPacketOut.Release(packet);
+                packet.ReleasePooledObject();
             }
         }
 

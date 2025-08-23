@@ -19,11 +19,9 @@ namespace DOL.GS
 
         public abstract void Dispose();
 
-        public T GetForTick<T>(PooledObjectKey key, Action<T> initializer) where T : IPooledObject<T>, new()
+        public T GetForTick<T>(PooledObjectKey key) where T : IPooledObject<T>, new()
         {
-            T result = _tickObjectPool != null ? _tickObjectPool.GetForTick<T>(key) : new();
-            initializer?.Invoke(result);
-            return result;
+            return _tickObjectPool != null ? _tickObjectPool.GetForTick<T>(key) : new();
         }
 
         protected virtual void InitWorker(object obj)

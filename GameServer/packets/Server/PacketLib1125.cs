@@ -28,7 +28,7 @@ namespace DOL.GS.PacketHandler
 		public override void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CryptKey))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CryptKey)))
 			{
 				pak.WritePascalStringIntLE((((int)m_gameClient.Version) / 1000) + "." + (((int)m_gameClient.Version) - 1000) + m_gameClient.MinorRev);
 				//// Same as the trailing two bytes sent in first client to server packet
@@ -44,7 +44,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendLoginGranted(byte color)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.LoginGranted))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.LoginGranted)))
 			{
 				pak.WritePascalString(m_gameClient.Account.Name);
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
@@ -60,7 +60,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendRealm(eRealm realm)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Realm))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Realm)))
 			{
 				pak.WriteByte((byte)realm);
 				pak.Fill(0, 12);
@@ -80,7 +80,7 @@ namespace DOL.GS.PacketHandler
 
 			int firstSlot = (byte)realm * 100;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterOverview))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CharacterOverview)))
 			{
 				//pak.Fillstring(GameClient.Account.Name, 24);
 				pak.Fill(0, 8);
@@ -370,7 +370,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendUDPInitReply()
 		{
-			using (var pak = GSUDPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.UDPInitReply))))
+			using (var pak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(GetPacketCode(eServerPackets.UDPInitReply)))
 			{
 
 				if (!m_gameClient.Socket.Connected) // not using RC4, wont accept UDP packets anyway.
@@ -389,7 +389,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x06); // subcode - player group window
 									 // a 06 00 packet is sent when logging in.
@@ -486,7 +486,7 @@ namespace DOL.GS.PacketHandler
 		/// </summary>
 		public override void SendMarketExplorerWindow(IList<DbInventoryItem> items, byte page, byte maxpage)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MarketExplorerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MarketExplorerWindow)))
 			{
 				pak.WriteByte((byte)items.Count);
 				pak.WriteByte(page);
@@ -615,7 +615,7 @@ namespace DOL.GS.PacketHandler
 						continue;
 					}
 
-					using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MerchantWindow))))
+					using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MerchantWindow)))
 					{
 						pak.WriteByte((byte)itemsInPage.Count); //Item count on this page
 						pak.WriteByte((byte)windowType);
@@ -718,7 +718,7 @@ namespace DOL.GS.PacketHandler
 			}
 			else
 			{
-				using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MerchantWindow))))
+				using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MerchantWindow)))
 				{
 					pak.WriteByte(0); //Item count on this page
 					pak.WriteByte((byte)windowType); //Unknown 0x00
@@ -733,7 +733,7 @@ namespace DOL.GS.PacketHandler
         /// </summary>
         public override void SendFurniture(House house)
         {
-            using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HousingItem))))
+            using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HousingItem)))
             {
                 pak.WriteShortLowEndian((ushort)house.HouseNumber);
                 pak.WriteByte((byte)house.IndoorItems.Count);
@@ -754,7 +754,7 @@ namespace DOL.GS.PacketHandler
         /// </summary>
         public override void SendFurniture(House house, int i)
         {
-            using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HousingItem))))
+            using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HousingItem)))
             {
                 pak.WriteShortLowEndian((ushort)house.HouseNumber);
                 pak.WriteByte(0x01); //cnt

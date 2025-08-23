@@ -82,7 +82,7 @@ namespace DOL.GS
                 }
             }
 
-            using var pak = GSTCPPacketOut.GetForTick(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.CheckLOSRequest)));
+            using var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(AbstractPacketLib.GetPacketCode(eServerPackets.CheckLOSRequest));
             pak.WriteShort(sourceObjectId);
             pak.WriteShort(targetObjectId);
             pak.WriteShort(0x00); // ?

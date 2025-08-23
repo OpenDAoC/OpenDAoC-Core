@@ -27,7 +27,7 @@ namespace DOL.GS.PacketHandler
         public override void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CryptKey))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CryptKey)))
 			{
 				pak.WriteByte((byte)m_gameClient.ClientType);
 
@@ -50,7 +50,7 @@ namespace DOL.GS.PacketHandler
 
 		public override void SendLoginGranted(byte color)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.LoginGranted))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.LoginGranted)))
 			{
 				pak.WritePascalString(m_gameClient.Account.Name);
 				pak.WritePascalString(GameServer.Instance.Configuration.ServerNameShort); //server name
@@ -108,7 +108,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.KeepInfo))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.KeepInfo)))
 			{
 				pak.WriteShort((ushort)keep.KeepID);
 				pak.WriteShort(0);
@@ -129,7 +129,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null) return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.WarMapClaimedKeeps))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.WarMapClaimedKeeps)))
 			{
 				int KeepCount = 0;
 				int TowerCount = 0;

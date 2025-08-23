@@ -49,7 +49,7 @@ namespace DOL.GS.PacketHandler
 
 		protected override void SendQuestWindow(GameNPC questNPC, GamePlayer player, DataQuest quest, bool offer)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Dialog))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Dialog)))
 			{
 				ushort QuestID = quest.ClientQuestID;
 				pak.WriteShort((offer) ? (byte)0x22 : (byte)0x21); // Dialog
@@ -135,7 +135,7 @@ namespace DOL.GS.PacketHandler
 
 		protected override void SendQuestWindow(GameNPC questNPC, GamePlayer player, RewardQuest quest,	bool offer)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Dialog))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Dialog)))
 			{
 				ushort QuestID = QuestMgr.GetIDForQuestType(quest.GetType());
 				pak.WriteShort((offer) ? (byte)0x22 : (byte)0x21); // Dialog

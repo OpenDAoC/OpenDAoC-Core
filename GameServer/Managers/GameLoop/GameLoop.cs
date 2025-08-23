@@ -73,9 +73,9 @@ namespace DOL.GS
             _threadPool.ExecuteForEach(items, toExclusive, action);
         }
 
-        public static T GetForTick<T>(PooledObjectKey poolKey, Action<T> initializer) where T : IPooledObject<T>, new()
+        public static T GetForTick<T>(PooledObjectKey pooledObjectKey) where T : IPooledObject<T>, new()
         {
-            return _threadPool.GetForTick(poolKey, initializer);
+            return _threadPool.GetForTick<T>(pooledObjectKey);
         }
 
         private static void Run()

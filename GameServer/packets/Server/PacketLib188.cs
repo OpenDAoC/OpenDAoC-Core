@@ -23,7 +23,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient == null || m_gameClient.Player == null)
 				return;
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init((byte) eServerPackets.XFire)))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init((byte) eServerPackets.XFire))
 			{
 				pak.WriteShort((ushort)m_gameClient.Player.ObjectID);
 				pak.WriteByte(flag);

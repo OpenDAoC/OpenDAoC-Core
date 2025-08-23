@@ -46,7 +46,7 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendVersionAndCryptKey()
 		{
 			//Construct the new packet
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CryptKey))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CryptKey)))
 			{
 				//Enable encryption
 				pak.WriteByte((byte)(Properties.CLIENT_ENABLE_ENCRYPTION_RC4 ? 0x01 : 0x00));
@@ -81,7 +81,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendLoginDenied(eLoginError et)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.LoginDenied))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.LoginDenied)))
 			{
 				pak.WriteByte((byte)et); // Error Code
 				/*
@@ -106,7 +106,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendLoginGranted(byte color)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.LoginGranted))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.LoginGranted)))
 			{
 				/*
 				if(is_si)
@@ -130,7 +130,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendSessionID()
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.SessionID))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SessionID)))
 			{
 				pak.WriteShortLowEndian(m_gameClient.SessionID);
 				SendTCP(pak);
@@ -139,7 +139,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendPingReply(ulong timestamp, ushort sequence)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PingReply))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PingReply)))
 			{
 				pak.WriteInt((uint) timestamp);
 				pak.Fill(0x00, 4);
@@ -151,7 +151,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendRealm(eRealm realm)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Realm))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Realm)))
 			{
 				pak.WriteByte((byte) realm);
 				SendTCP(pak);
@@ -176,7 +176,7 @@ namespace DOL.GS.PacketHandler
 					throw new Exception("CharacterOverview requested for unknown realm " + realm);
 			}
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterOverview))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CharacterOverview)))
 			{
 				pak.FillString(m_gameClient.Account.Name, 24);
 				DbCoreCharacter[] characters = m_gameClient.Account.Characters;
@@ -344,7 +344,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient == null || m_gameClient.Account == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DupNameCheckReply))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.DupNameCheckReply)))
 			{
 				pak.FillString(name, 30);
 				pak.FillString(m_gameClient.Account.Name, 20);
@@ -356,7 +356,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendBadNameCheckReply(string name, bool bad)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.BadNameCheckReply))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.BadNameCheckReply)))
 			{
 				pak.FillString(name, 30);
 				pak.FillString(m_gameClient.Account.Name, 20);
@@ -371,7 +371,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.AttackMode))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.AttackMode)))
 			{
 				pak.WriteByte((byte) (attackState ? 0x01 : 0x00));
 				pak.Fill(0x00, 3);
@@ -382,7 +382,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendCharCreateReply(string name)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterCreateReply))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CharacterCreateReply)))
 			{
 				pak.FillString(name, 24);
 				SendTCP(pak);
@@ -394,7 +394,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.StatsUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.StatsUpdate)))
 			{
 				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(eStat.STR));
 				pak.WriteShort((ushort) m_gameClient.Player.GetBaseStat(eStat.DEX));
@@ -445,7 +445,7 @@ namespace DOL.GS.PacketHandler
 			int count = entries.Length;
 			while (count > index)
 			{
-				using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ClientRegions))))
+				using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ClientRegions)))
 				{
 					for (int i = 0; i < 4; i++)
 					{
@@ -484,7 +484,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendGameOpenReply()
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.GameOpenReply))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.GameOpenReply)))
 			{
 				pak.WriteByte(0x00);
 				SendTCP(pak);
@@ -496,7 +496,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PositionAndObjectID))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PositionAndObjectID)))
 			{
 				pak.WriteShort((ushort) m_gameClient.Player.ObjectID); //This is the player's objectid not Sessionid!!!
 				pak.WriteShort((ushort) m_gameClient.Player.Z);
@@ -519,7 +519,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterJump))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CharacterJump)))
 			{
 				pak.WriteInt((uint) (headingOnly ? 0 : m_gameClient.Player.X));
 				pak.WriteInt((uint) (headingOnly ? 0 : m_gameClient.Player.Y));
@@ -540,7 +540,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendPlayerInitFinished(byte mobs)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterInitFinished))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CharacterInitFinished)))
 			{
 				pak.WriteByte(mobs);
 				SendTCP(pak);
@@ -549,7 +549,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendUDPInitReply()
 		{
-			using (var pak = GSUDPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.UDPInitReply))))
+			using (var pak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(GetPacketCode(eServerPackets.UDPInitReply)))
 			{
 				Region playerRegion = null;
 				if (!m_gameClient.Socket.Connected)
@@ -573,7 +573,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendTime()
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Time))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Time)))
 			{
 				if (m_gameClient != null && m_gameClient.Player != null)
 				{
@@ -602,7 +602,7 @@ namespace DOL.GS.PacketHandler
 					return;
 			}
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Message))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Message)))
 			{
 				pak.WriteShort(m_gameClient.SessionID);
 				pak.WriteShort(0x00);
@@ -648,7 +648,7 @@ namespace DOL.GS.PacketHandler
 				return;
 
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PlayerCreate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PlayerCreate)))
 			{
 				pak.WriteShort(playerToCreate.Client.SessionID);
 				pak.WriteShort((ushort) playerToCreate.ObjectID);
@@ -694,7 +694,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendObjectGuildID(GameObject obj, Guild guild)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ObjectGuildID))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectGuildID)))
 			{
 				pak.WriteShort((ushort) obj.ObjectID);
 				if (guild == null)
@@ -822,13 +822,13 @@ namespace DOL.GS.PacketHandler
 
 			if (udp)
 			{
-				using GSUDPPacketOut pak = GSUDPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ObjectUpdate)));
+				using var pak = PooledObjectFactory.GetForTick<GSUDPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectUpdate));
 				Write(pak);
 				SendUDP(pak);
 			}
 			else
 			{
-				using GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ObjectUpdate)));
+				using var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectUpdate));
 				Write(pak);
 				SendTCP(pak);
 			}
@@ -865,7 +865,7 @@ namespace DOL.GS.PacketHandler
 			// Prevents the client from entering the game when this is called when the player is changing region.
 			m_gameClient.PacketProcessor.ClearPendingOutboundPackets();
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Quit))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Quit)))
 			{
 				pak.WriteByte((byte)(totalOut ? 0x01 : 0x00));
 				if (m_gameClient.Player == null)
@@ -885,7 +885,7 @@ namespace DOL.GS.PacketHandler
 			else if (obj is GameNPC npc)
 				oType = npc.Health > 0 ? 1 : 0;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.RemoveObject))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.RemoveObject)))
 			{
 				pak.WriteShort((ushort) obj.ObjectID);
 				pak.WriteShort((ushort) oType);
@@ -901,7 +901,7 @@ namespace DOL.GS.PacketHandler
 			if (obj.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ObjectCreate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectCreate)))
 			{
 				pak.WriteShort((ushort) obj.ObjectID);
 				if (obj is GameStaticItem)
@@ -961,7 +961,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendDebugMode(bool on)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DebugMode))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.DebugMode)))
 			{
 				if (m_gameClient.Account.PrivLevel == 1)
 				{
@@ -991,7 +991,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendModelAndSizeChange(ushort objectId, ushort newModel, byte newSize)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ModelChange))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ModelChange)))
 			{
 				pak.WriteShort(objectId);
 				pak.WriteShort(newModel);
@@ -1002,7 +1002,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendEmoteAnimation(GameObject obj, eEmote emote)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.EmoteAnimation))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.EmoteAnimation)))
 			{
 				pak.WriteShort((ushort) obj.ObjectID);
 				pak.WriteByte((byte) emote);
@@ -1022,7 +1022,7 @@ namespace DOL.GS.PacketHandler
 				return;
 			}
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.NPCCreate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.NPCCreate)))
 			{
 				short speed = 0;
 				ushort speedZ = 0;
@@ -1098,7 +1098,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || living.IsVisibleTo(m_gameClient.Player) == false)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.EquipmentUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.EquipmentUpdate)))
 			{
 				pak.WriteShort((ushort) living.ObjectID);
 				pak.WriteByte((byte) ((living.IsCloakHoodUp ? 0x01 : 0x00) | (int) living.rangeAttackComponent.ActiveQuiverSlot));
@@ -1144,7 +1144,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.RegionChanged))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.RegionChanged)))
 			{
 				//Dinberg - Changing to allow instances...
 				pak.WriteShort(m_gameClient.Player.CurrentRegion.Skin);
@@ -1157,7 +1157,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterPointsUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CharacterPointsUpdate)))
 			{
 				pak.WriteInt((uint) m_gameClient.Player.RealmPoints);
 				pak.WriteShort(m_gameClient.Player.LevelPermill);
@@ -1173,7 +1173,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MoneyUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MoneyUpdate)))
 			{
 				pak.WriteByte((byte) m_gameClient.Player.Copper);
 				pak.WriteByte((byte) m_gameClient.Player.Silver);
@@ -1190,7 +1190,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MaxSpeed))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MaxSpeed)))
 			{
 				ushort maxSpeedPercent = (ushort) m_gameClient.Player.movementComponent.MaxSpeedPercent;
 				pak.WriteShort(maxSpeedPercent);
@@ -1203,7 +1203,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendCombatAnimation(GameObject attacker, GameObject defender, ushort weaponID, ushort shieldID, int style, byte stance, byte result, byte targetHealthPercent)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CombatAnimation))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CombatAnimation)))
 			{
 				if (attacker != null)
 					pak.WriteShort((ushort) attacker.ObjectID);
@@ -1247,7 +1247,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.CharacterStatusUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CharacterStatusUpdate)))
 			{
 				pak.WriteByte(m_gameClient.Player.HealthPercent);
 				pak.WriteByte(m_gameClient.Player.ManaPercent);
@@ -1262,7 +1262,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendSpellCastAnimation(GameLiving spellCaster, ushort spellID, ushort castingTime)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.SpellCastAnimation))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SpellCastAnimation)))
 			{
 				pak.WriteShort((ushort) spellCaster.ObjectID);
 				pak.WriteShort(spellID);
@@ -1275,7 +1275,7 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendSpellEffectAnimation(GameObject spellCaster, GameObject spellTarget, ushort spellid,
 		                                             ushort boltTime, bool noSound, byte success)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.SpellEffectAnimation))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SpellEffectAnimation)))
 			{
 				pak.WriteShort((ushort) spellCaster.ObjectID);
 				pak.WriteShort(spellid);
@@ -1297,7 +1297,7 @@ namespace DOL.GS.PacketHandler
 			}
 			if (slot == -1)
 				log.Error("SendRiding error, slot is -1 with rider " + rider.Name + " steed " + steed.Name);
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Riding))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Riding)))
 			{
 				pak.WriteShort((ushort) rider.ObjectID);
 				pak.WriteShort((ushort) steed.ObjectID);
@@ -1312,7 +1312,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.FindGroupUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.FindGroupUpdate)))
 			{
 				if (list != null)
 				{
@@ -1349,7 +1349,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendGroupInviteCommand(GamePlayer invitingPlayer, string inviteMessage)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Dialog))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Dialog)))
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x05);
@@ -1366,7 +1366,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendGuildInviteCommand(GamePlayer invitingPlayer, string inviteMessage)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Dialog))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Dialog)))
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x03);
@@ -1383,7 +1383,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendGuildLeaveCommand(GamePlayer invitingPlayer, string inviteMessage)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Dialog))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Dialog)))
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x08);
@@ -1426,7 +1426,7 @@ namespace DOL.GS.PacketHandler
 		// data 3 defines wether it's subscribe or abort
 		public virtual void SendQuestSubscribeCommand(GameNPC invitingNPC, ushort questid, string inviteMessage)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Dialog))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Dialog)))
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x64);
@@ -1447,7 +1447,7 @@ namespace DOL.GS.PacketHandler
 		// data 3 defines wether it's subscribe or abort
 		public virtual void SendQuestAbortCommand(GameNPC abortingNPC, ushort questid, string abortMessage)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Dialog))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Dialog)))
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x64);
@@ -1467,7 +1467,7 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendDialogBox(eDialogCode code, ushort data1, ushort data2, ushort data3, ushort data4,
 		                                  eDialogType type, bool autoWrapText, string message)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Dialog))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Dialog)))
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte((byte) code);
@@ -1496,7 +1496,7 @@ namespace DOL.GS.PacketHandler
 				m_gameClient.Player.CustomDialogCallback = callback;
 			}
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Dialog))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Dialog)))
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte((byte) eDialogCode.CustomDialog);
@@ -1613,7 +1613,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x06);
 
@@ -1685,7 +1685,7 @@ namespace DOL.GS.PacketHandler
 			if (group == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.GroupMemberUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.GroupMemberUpdate)))
 			{
 				if (living.Group != group)
 					return;
@@ -1703,7 +1703,7 @@ namespace DOL.GS.PacketHandler
 			Group group = m_gameClient.Player.Group;
 			if (group == null)
 				return;
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.GroupMemberUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.GroupMemberUpdate)))
 			{
 				foreach (GameLiving living in group.GetMembersInTheGroup())
 					WriteGroupMemberUpdate(pak, updateIcons, living);
@@ -1790,7 +1790,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendDoorState(Region region, GameDoorBase door)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DoorState))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.DoorState)))
 			{
 				ushort zone = (ushort)(door.DoorId / 1000000);
 				int doorType = door.DoorId / 100000000;
@@ -1821,7 +1821,7 @@ namespace DOL.GS.PacketHandler
 					if (itemsInPage == null || itemsInPage.Count == 0)
 						continue;
 
-					using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MerchantWindow))))
+					using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MerchantWindow)))
 					{
 						pak.WriteByte((byte) itemsInPage.Count); //Item count on this page
 						pak.WriteByte((byte) windowType);
@@ -1910,7 +1910,7 @@ namespace DOL.GS.PacketHandler
 			}
 			else
 			{
-				using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MerchantWindow))))
+				using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MerchantWindow)))
 				{
 					pak.WriteByte(0); //Item count on this page
 					pak.WriteByte((byte) windowType); //Unknown 0x00
@@ -1925,7 +1925,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (m_gameClient.Player == null)
 				return;
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TradeWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TradeWindow)))
 			{
 				lock (m_gameClient.Player.TradeWindow.Lock)
 				{
@@ -1997,7 +1997,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendCloseTradeWindow()
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TradeWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TradeWindow)))
 			{
 				pak.Fill(0x00, 40);
 				SendTCP(pak);
@@ -2006,7 +2006,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendPlayerDied(GamePlayer killedPlayer, GameObject killer)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PlayerDeath))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PlayerDeath)))
 			{
 				pak.WriteShort((ushort) killedPlayer.ObjectID);
 				if (killer != null)
@@ -2020,7 +2020,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendPlayerRevive(GamePlayer revivedPlayer)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PlayerRevive))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PlayerRevive)))
 			{
 				pak.WriteShort((ushort) revivedPlayer.ObjectID);
 				pak.WriteShort(0x00);
@@ -2034,7 +2034,7 @@ namespace DOL.GS.PacketHandler
 			if (player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x03); //subcode
 				pak.WriteByte(0x0d); //number of entry
@@ -2102,7 +2102,7 @@ namespace DOL.GS.PacketHandler
 			{
 				int packetEntry = 0; // needed to tell client how much skill we send
 				// using pak
-				using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+				using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 				{
 					// Write header
 					pak.WriteByte(0x01); //subcode for skill
@@ -2260,7 +2260,7 @@ namespace DOL.GS.PacketHandler
 			foreach (var spXsl in spellsXLines)
 			{
 				// Prepare packet
-				using(var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+				using(var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 				{
 					// Add Line Header
 					pak.WriteByte(0x02); //subcode
@@ -2301,7 +2301,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x08); //subcode
 				pak.WriteByte((byte) m_gameClient.Player.CraftingSkills.Count); //count
@@ -2325,7 +2325,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 			{
 				pak.WriteByte(0x05); //subcode
 				pak.WriteByte(6); //number of entries
@@ -2360,7 +2360,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Encumberance))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Encumberance)))
 			{
 				pak.WriteShort((ushort) m_gameClient.Player.MaxCarryingCapacity);
 				pak.WriteShort((ushort) m_gameClient.Player.Inventory.InventoryWeight);
@@ -2373,7 +2373,7 @@ namespace DOL.GS.PacketHandler
 			if (text == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DetailWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.DetailWindow)))
 			{
 				if (caption == null)
 					caption = string.Empty;
@@ -2410,7 +2410,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendAddFriends(string[] friendNames)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.AddFriend))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.AddFriend)))
 			{
 				foreach (string friend in friendNames)
 					pak.WritePascalString(friend);
@@ -2421,7 +2421,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendRemoveFriends(string[] friendNames)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.RemoveFriend))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.RemoveFriend)))
 			{
 				foreach (string friend in friendNames)
 					pak.WritePascalString(friend);
@@ -2432,7 +2432,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendTimerWindow(string title, int seconds)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TimerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TimerWindow)))
 			{
 				pak.WriteShort((ushort) seconds);
 				pak.WriteByte((byte) title.Length);
@@ -2444,7 +2444,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendCloseTimerWindow()
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TimerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TimerWindow)))
 			{
 				pak.WriteShort(0);
 				pak.WriteByte(0);
@@ -2460,7 +2460,7 @@ namespace DOL.GS.PacketHandler
 
 			GamePlayer player = m_gameClient.Player;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TrainerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TrainerWindow)))
 			{
 				if (tree != null && tree.Count > 0)
 				{
@@ -2538,7 +2538,7 @@ namespace DOL.GS.PacketHandler
 
 			GamePlayer player = m_gameClient.Player;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TrainerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TrainerWindow)))
 			{
 				// Get Player CL Spec
 				var clspec = player.GetSpecList().Where(sp => sp is LiveChampionsSpecialization).Cast<LiveChampionsSpecialization>().FirstOrDefault();
@@ -2620,7 +2620,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendTrainerWindow()
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TrainerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TrainerWindow)))
 			{
 				IList<Specialization> specs = m_gameClient.Player.GetSpecList().Where(it => it.Trainable).ToList();
 				pak.WriteByte((byte) specs.Count);
@@ -2642,7 +2642,7 @@ namespace DOL.GS.PacketHandler
 
 			// send RA usable by this class
 			var raList = SkillBase.GetClassRealmAbilities(m_gameClient.Player.CharacterClass.ID).Where(ra => !(ra is RR5RealmAbility));
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TrainerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TrainerWindow)))
 			{
 				pak.WriteByte((byte) raList.Count());
 				pak.WriteByte((byte) m_gameClient.Player.RealmSpecialtyPoints);
@@ -2666,7 +2666,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendInterruptAnimation(GameLiving living)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.InterruptSpellCast))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.InterruptSpellCast)))
 			{
 				pak.WriteShort((ushort) living.ObjectID);
 				pak.WriteShort(1);
@@ -2714,7 +2714,7 @@ namespace DOL.GS.PacketHandler
 			if (disabledSkills.Count > 0)
 			{
 				// Send matching hybrid spell match
-				using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DisableSkills))))
+				using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.DisableSkills)))
 				{
 					byte countskill = (byte)Math.Min(disabledSkills.Count, 255);
 					if (countskill > 0)
@@ -2740,7 +2740,7 @@ namespace DOL.GS.PacketHandler
 				foreach (var groups in groupedDuration)
 				{
 					// Send matching list spell match
-					using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.DisableSkills))))
+					using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.DisableSkills)))
 					{
 						byte total = (byte)Math.Min(groups.Count(), 255);
 						if (total > 0)
@@ -2767,7 +2767,7 @@ namespace DOL.GS.PacketHandler
 			byte fxcount = 0;
 			if (m_gameClient.Player == null)
 				return;
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.UpdateIcons))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.UpdateIcons)))
 			{
 				lock (m_gameClient.Player.EffectList)
 				{
@@ -2803,7 +2803,7 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendLevelUpSound()
 		{
 			// not sure what package this is, but it triggers the mob color update
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.RegionSound))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.RegionSound)))
 			{
 				pak.WriteShort((ushort) m_gameClient.Player.ObjectID);
 				pak.WriteByte(1); //level up sounds
@@ -2814,7 +2814,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendRegionEnterSound(byte soundId)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.RegionSound))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.RegionSound)))
 			{
 				pak.WriteShort((ushort) m_gameClient.Player.ObjectID);
 				pak.WriteByte(2); //region enter sounds
@@ -2837,7 +2837,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendEmblemDialogue()
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.EmblemDialogue))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.EmblemDialogue)))
 			{
 				pak.Fill(0x00, 4);
 				SendTCP(pak);
@@ -2847,7 +2847,7 @@ namespace DOL.GS.PacketHandler
 		//FOR GM to test param and see min and max of each param
 		public virtual void SendWeather(uint x, uint width, ushort speed, ushort fogdiffusion, ushort intensity)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Weather))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Weather)))
 			{
 				pak.WriteInt(x);
 				pak.WriteInt(width);
@@ -2861,7 +2861,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendPlayerModelTypeChange(GamePlayer player, byte modelType)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PlayerModelTypeChange))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PlayerModelTypeChange)))
 			{
 				pak.WriteShort((ushort) player.ObjectID);
 				pak.WriteByte(modelType);
@@ -2877,7 +2877,7 @@ namespace DOL.GS.PacketHandler
 
 		public void SendObjectDelete(ushort oid)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ObjectDelete))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectDelete)))
 			{
 				pak.WriteShort(oid);
 				pak.WriteShort(1); //TODO: unknown
@@ -2890,7 +2890,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ConcentrationList))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ConcentrationList)))
 			{
 				List<ECSGameSpellEffect> concentrationEffects = m_gameClient.Player.effectListComponent.GetConcentrationEffects();
 				pak.WriteByte((byte) concentrationEffects.Count);
@@ -2924,7 +2924,7 @@ namespace DOL.GS.PacketHandler
 
 		public void SendChangeTarget(GameObject newTarget)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ChangeTarget))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ChangeTarget)))
 			{
 				pak.WriteShort((ushort) (newTarget == null ? 0 : newTarget.ObjectID));
 				pak.WriteShort(0); // unknown
@@ -2934,7 +2934,7 @@ namespace DOL.GS.PacketHandler
 
 		public void SendChangeGroundTarget(Point3D newTarget)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ChangeGroundTarget))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ChangeGroundTarget)))
 			{
 				pak.WriteInt((uint) (newTarget == null ? 0 : newTarget.X));
 				pak.WriteInt((uint) (newTarget == null ? 0 : newTarget.Y));
@@ -2946,7 +2946,7 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendPetWindow(GameLiving pet, ePetWindowAction windowAction, eAggressionState aggroState,
 		                                  eWalkState walkState)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PetWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PetWindow)))
 			{
 				pak.WriteShort((ushort) (pet == null ? 0 : pet.ObjectID));
 				pak.WriteByte(0x00); //unused
@@ -3057,7 +3057,7 @@ namespace DOL.GS.PacketHandler
 		//housing
 		public virtual void SendHouse(House house)
 		{
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HouseCreate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HouseCreate)))
 			{
 				pak.WriteShort((ushort) house.HouseNumber);
 				pak.WriteShort((ushort) house.Z);
@@ -3083,7 +3083,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendRemoveHouse(House house)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HouseCreate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HouseCreate)))
 			{
 				pak.WriteShort((ushort) house.HouseNumber);
 				pak.WriteShort((ushort) house.Z);
@@ -3099,7 +3099,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendHousePayRentDialog(string title)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.Dialog))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Dialog)))
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte((byte) eDialogCode.HousePayRent);
@@ -3115,7 +3115,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendGarden(House house)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HouseChangeGarden))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HouseChangeGarden)))
 			{
 				pak.WriteShort((ushort) house.HouseNumber);
 				pak.WriteByte((byte) house.OutdoorItems.Count);
@@ -3136,7 +3136,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendGarden(House house, int i)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HouseChangeGarden))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HouseChangeGarden)))
 			{
 				pak.WriteShort((ushort) house.HouseNumber);
 				pak.WriteByte(0x01);
@@ -3152,7 +3152,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendHouseOccupied(House house, bool flagHouseOccuped)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HouseChangeGarden))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HouseChangeGarden)))
 			{
 				pak.WriteShort((ushort) house.HouseNumber);
 				pak.WriteByte(0x00);
@@ -3164,7 +3164,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendEnterHouse(House house)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HouseEnter))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HouseEnter)))
 			{
 				pak.WriteShort((ushort) house.HouseNumber);
 				pak.WriteShort(25000); //constant!
@@ -3195,7 +3195,7 @@ namespace DOL.GS.PacketHandler
 			// do not send anything if client is leaving house due to linkdeath
 			if (m_gameClient != null && m_gameClient.Player != null && m_gameClient.ClientState != GameClient.eClientState.Linkdead)
 			{
-				using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HouseExit))))
+				using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HouseExit)))
 				{
 					pak.WriteShort((ushort)house.HouseNumber);
 					pak.WriteShort(unknown);
@@ -3206,7 +3206,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendToggleHousePoints(House house)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HouseTogglePoints))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HouseTogglePoints)))
 			{
 				pak.WriteShort((ushort) house.HouseNumber);
 				pak.WriteByte(0x04);
@@ -3221,7 +3221,7 @@ namespace DOL.GS.PacketHandler
 			if(house == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HouseUserPermissions))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HouseUserPermissions)))
 			{
 				pak.WriteByte((byte)house.HousePermissions.Count()); // number of permissions
 				pak.WriteByte(0x00); // ?
@@ -3246,7 +3246,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendFurniture(House house)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HousingItem))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HousingItem)))
 			{
 				pak.WriteShort((ushort) house.HouseNumber);
 				pak.WriteByte((byte) house.IndoorItems.Count);
@@ -3264,7 +3264,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendFurniture(House house, int i)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HousingItem))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HousingItem)))
 			{
 				pak.WriteShort((ushort) house.HouseNumber);
 				pak.WriteByte(0x01); //cnt
@@ -3278,7 +3278,7 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendRentReminder(House house)
 		{
 			//0:00:58.047 S=>C 0xF7 show help window (topicIndex:106 houseLot?:4281)
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HelpWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HelpWindow)))
 			{
 				pak.WriteShort(106); //short index
 				pak.WriteShort((ushort) house.HouseNumber); //short lot
@@ -3289,7 +3289,7 @@ namespace DOL.GS.PacketHandler
 		public virtual void SendStarterHelp()
 		{
 			//* 0:00:57.984 S=>C 0xF7 show help window (topicIndex:1 houseLot?:0)
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.HelpWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.HelpWindow)))
 			{
 				pak.WriteShort(1); //short index
 				pak.WriteShort(0); //short lot
@@ -3299,7 +3299,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendPlaySound(eSoundType soundType, ushort soundID)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.PlaySound))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PlaySound)))
 			{
 				pak.WriteShort((ushort) soundType);
 				pak.WriteShort(soundID);
@@ -3334,7 +3334,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendMovingObjectCreate(GameMovingObject obj)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MovingObjectCreate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MovingObjectCreate)))
 			{
 				pak.WriteShort((ushort) obj.ObjectID);
 				pak.WriteShort(0);
@@ -3366,7 +3366,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendSiegeWeaponInterface(GameSiegeWeapon siegeWeapon, int time)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.SiegeWeaponInterface))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SiegeWeaponInterface)))
 			{
 				var flag = (ushort) ((siegeWeapon.EnableToMove ? 1 : 0) | siegeWeapon.AmmoType << 8);
 				pak.WriteShort(flag); //byte Ammo,  byte SiegeMoving(1/0)
@@ -3420,7 +3420,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendSiegeWeaponCloseInterface()
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.SiegeWeaponInterface))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SiegeWeaponInterface)))
 			{
 				pak.WriteShort(0);
 				pak.WriteShort(1);
@@ -3433,7 +3433,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (siegeWeapon == null)
 				return;
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.SiegeWeaponAnimation))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SiegeWeaponAnimation)))
 			{
 				pak.WriteInt((uint) siegeWeapon.ObjectID);
 				pak.WriteInt(
@@ -3464,7 +3464,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (siegeWeapon == null)
 				return;
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.SiegeWeaponAnimation))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SiegeWeaponAnimation)))
 			{
 				pak.WriteInt((uint) siegeWeapon.ObjectID);
 				pak.WriteInt((uint) (siegeWeapon.TargetObject == null ? 0 : siegeWeapon.TargetObject.X));
@@ -3510,7 +3510,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendSoundEffect(ushort soundId, ushort zoneId, ushort x, ushort y, ushort z, ushort radius)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.SoundEffect))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SoundEffect)))
 			{
 				pak.WriteShort(soundId);
 				pak.WriteShort(zoneId);
@@ -3532,7 +3532,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendCrash(string str)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(0x86)))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(0x86))
 			{
 				pak.WriteByte(0xFF);
 				pak.WritePascalString(str);
@@ -3567,7 +3567,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendMarketExplorerWindow()
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MarketExplorerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MarketExplorerWindow)))
 			{
 				pak.WriteByte(255);
 				pak.Fill(0, 3);
@@ -3580,7 +3580,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient == null || m_gameClient.Player == null)
 				return;
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MarketExplorerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MarketExplorerWindow)))
 			{
 				pak.WriteByte((byte)items.Count);
 				pak.WriteByte(page);
@@ -3688,7 +3688,7 @@ namespace DOL.GS.PacketHandler
 				mlXPPercent = 100.0; // ML10 has no MLXP, so always 100%
 			}
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.MasterLevelWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MasterLevelWindow)))
 			{
 				pak.WriteByte((byte) mlXPPercent); // MLXP (displayed in window)
 				pak.WriteByte(0x64);
@@ -3717,7 +3717,7 @@ namespace DOL.GS.PacketHandler
 
 		public virtual void SendConsignmentMerchantMoney(long money)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.ConsignmentMerchantMoney))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ConsignmentMerchantMoney)))
 			{
 				pak.WriteByte((byte)Money.GetCopper(money));
 				pak.WriteByte((byte)Money.GetSilver(money));
@@ -3792,7 +3792,7 @@ namespace DOL.GS.PacketHandler
 
 		protected virtual void SendQuestPacket(AbstractQuest quest, byte index)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.QuestEntry))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.QuestEntry)))
 			{
 				pak.WriteByte(index);
 
@@ -3947,7 +3947,7 @@ namespace DOL.GS.PacketHandler
 
 		protected virtual void SendInventorySlotsUpdateRange(ICollection<eInventorySlot> slots, eInventoryWindowType windowType)
 		{
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.InventoryUpdate))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.InventoryUpdate)))
 			{
 				pak.WriteByte((byte) (slots == null ? 0 : slots.Count));
 				pak.WriteByte(

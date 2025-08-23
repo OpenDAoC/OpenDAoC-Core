@@ -37,7 +37,7 @@ namespace DOL.GS.PacketHandler
 			IList<string> autotrains = player.CharacterClass.GetAutotrainableSkills();
 
 			// Send Trainer Window with Trainable Specs
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TrainerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TrainerWindow)))
 			{
 				pak.WriteByte((byte)specs.Count);
 				pak.WriteByte((byte)player.SkillSpecialtyPoints);
@@ -57,7 +57,7 @@ namespace DOL.GS.PacketHandler
 
 			// send RA usable by this class
 			var raList = SkillBase.GetClassRealmAbilities(m_gameClient.Player.CharacterClass.ID).Where(ra => !(ra is RR5RealmAbility));
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TrainerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TrainerWindow)))
 			{
 				pak.WriteByte((byte)raList.Count());
 				pak.WriteByte((byte)player.RealmSpecialtyPoints);
@@ -121,7 +121,7 @@ namespace DOL.GS.PacketHandler
 			int index = 0;
 			for (int skindex = 0; skindex < skillDictCache.Count; skindex++)
 			{
-				using (GSTCPPacketOut pakindex = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TrainerWindow))))
+				using (var pakindex = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TrainerWindow)))
 				{
 					pakindex.WriteByte((byte)skillDictCache[skindex].Item2.Count); //size
 					pakindex.WriteByte((byte)player.SkillSpecialtyPoints);
@@ -141,9 +141,8 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Send Skill Secondly
-			using (GSTCPPacketOut pakskill = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TrainerWindow))))
+			using (var pakskill = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TrainerWindow)))
 			{
-
 				pakskill.WriteByte((byte)skillDictCache.Count); //size we send for all specs
 				pakskill.WriteByte((byte)player.SkillSpecialtyPoints);
 				pakskill.WriteByte(3); // Skill description code
@@ -251,7 +250,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// type 5 (realm abilities)
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TrainerWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TrainerWindow)))
 			{
 				pak.WriteByte((byte)raList.Count());
 				pak.WriteByte((byte)player.RealmSpecialtyPoints);

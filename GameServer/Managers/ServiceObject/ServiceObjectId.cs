@@ -3,6 +3,7 @@
     public class ServiceObjectId
     {
         public const int UNSET_ID = -1;
+
         private int _value = UNSET_ID;
         private PendingState _pendingState = PendingState.None;
 

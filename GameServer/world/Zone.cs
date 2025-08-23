@@ -310,7 +310,7 @@ namespace DOL.GS
             if (subZoneObject != null)
             {
                 if (subZoneObject.CurrentSubZone != subZone && subZoneObject.StartSubZoneChange)
-                    ObjectChangingSubZone.Create(subZoneObject, this, subZone);
+                    CreateSubZoneRelocation(subZoneObject, null, subZone);
             }
 
             return true;
@@ -396,7 +396,7 @@ namespace DOL.GS
                             SubZoneObject subZoneObject = gameObject.SubZoneObject;
 
                             if (subZoneObject.StartSubZoneChange)
-                                ObjectChangingSubZone.Create(subZoneObject, null, null);
+                                CreateSubZoneRelocation(subZoneObject, null, null);
 
                             continue;
                         }
@@ -465,13 +465,13 @@ namespace DOL.GS
                     SubZone newSubZone = newZone.GetSubZone(newSubZoneIndex);
 
                     if (subZoneObject.StartSubZoneChange)
-                        ObjectChangingSubZone.Create(subZoneObject, newZone, newSubZone);
+                        CreateSubZoneRelocation(subZoneObject, newZone, newSubZone);
                 }
                 else if (subZoneObject.StartSubZoneChange)
-                    ObjectChangingSubZone.Create(subZoneObject, this, _subZones[newSubZoneIndex]);
+                    CreateSubZoneRelocation(subZoneObject, this, _subZones[newSubZoneIndex]);
             }
             else if (subZoneObject.StartSubZoneChange)
-                ObjectChangingSubZone.Create(subZoneObject, null, null);
+                CreateSubZoneRelocation(subZoneObject, null, null);
 
             void AbortRelocation()
             {
@@ -572,6 +572,20 @@ namespace DOL.GS
             return distance <= squareRadius;
         }
 
+        private static void CreateSubZoneRelocation(SubZoneObject subZoneObject, Zone destinationZone, SubZone destinationSubZone)
+        {
+            ArgumentNullException.ThrowIfNull(subZoneObject);
+
+            // Work around the fact that AddObject is called during server startup, when the game loop thread pool isn't initialized yet.
+            var subZoneTransition = GameLoop.GameLoopTime == 0 ? new() : PooledObjectFactory.GetForTick<SubZoneTransition>();
+
+            if (!ServiceObjectStore.Add(subZoneTransition.Init(subZoneObject, destinationZone, destinationSubZone)))
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"SubZoneTransition couldn't be added to ServiceObjectStore. {subZoneObject.Node.Value}");
+            }
+        }
+
         #endregion
 
         #region Area
@@ -603,7 +617,7 @@ namespace DOL.GS
         /// </summary>
         public GameNPC GetRandomNPC(eRealm realm)
         {
-            return GetRandomNPC(new eRealm[] { realm }, 0, 0);
+            return GetRandomNPC([realm], 0, 0);
         }
 
         /// <summary>
@@ -611,7 +625,7 @@ namespace DOL.GS
         /// </summary>
         public GameNPC GetRandomNPC(eRealm realm, int minLevel, int maxLevel)
         {
-            return GetRandomNPC(new eRealm[] { realm }, minLevel, maxLevel);
+            return GetRandomNPC([realm], minLevel, maxLevel);
         }
 
         /// <summary>
@@ -637,7 +651,7 @@ namespace DOL.GS
         /// </summary>
         public List<GameNPC> GetNPCsOfZone(eRealm realm)
         {
-            return GetNPCsOfZone(new eRealm[] { realm }, 0, 0, 0, 0, false);
+            return GetNPCsOfZone([realm], 0, 0, 0, 0, false);
         }
 
         /// <summary>

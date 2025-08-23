@@ -37,7 +37,7 @@ namespace DOL.GS.PacketHandler
 			{
 				int packetEntry = 0; // needed to tell client how much skill we send
 									 // using pak
-				using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+				using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 				{
 					// Write header
 					pak.WriteByte(0x01); //subcode for skill
@@ -201,7 +201,7 @@ namespace DOL.GS.PacketHandler
 			foreach (var spXsl in spellsXLines)
 			{
 				// Prepare packet
-				using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+				using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 				{
 					// Add Line Header
 					pak.WriteByte(0x02); //subcode
@@ -248,7 +248,7 @@ namespace DOL.GS.PacketHandler
 			}
 
 			// Footer packet
-			using (GSTCPPacketOut pak3 = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.VariousUpdate))))
+			using (var pak3 = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VariousUpdate)))
 			{
 				pak3.WriteByte(0x02); //subcode
 				pak3.WriteByte(0x00);

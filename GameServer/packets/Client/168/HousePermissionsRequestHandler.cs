@@ -25,7 +25,7 @@ namespace DOL.GS.PacketHandler.Client.v168
 
 			// send out the house permissions
 
-			using (var pak = GSTCPPacketOut.GetForTick(p => p.Init(AbstractPacketLib.GetPacketCode(eServerPackets.HousingPermissions))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(AbstractPacketLib.GetPacketCode(eServerPackets.HousingPermissions)))
 			{
 				pak.WriteByte(HousingConstants.MaxPermissionLevel); // number of permissions ?
 				pak.WriteByte(0x00); // unknown

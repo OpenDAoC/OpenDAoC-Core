@@ -27,7 +27,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player.TradeWindow == null)
 				return;
 
-			using (GSTCPPacketOut pak = GSTCPPacketOut.GetForTick(p => p.Init(GetPacketCode(eServerPackets.TradeWindow))))
+			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.TradeWindow)))
 			{
 				lock (m_gameClient.Player.TradeWindow.Lock)
 				{
