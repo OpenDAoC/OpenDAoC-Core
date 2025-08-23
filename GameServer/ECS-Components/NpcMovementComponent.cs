@@ -497,15 +497,13 @@ namespace DOL.GS
             // Stop moving if the NPC is casting or using ranged weapons.
             if (Owner.IsCasting || (Owner.IsAttacking && Owner.ActiveWeaponSlot == eActiveWeaponSlot.Distance))
             {
-                if (IsMoving)
-                    StopMoving();
-
+                StopMoving();
                 return Properties.GAMENPC_FOLLOWCHECK_TIME;
             }
 
-            if (!FollowTarget.IsAlive || FollowTarget.ObjectState != eObjectState.Active || Owner.CurrentRegionID != FollowTarget.CurrentRegionID)
+            if (!FollowTarget.IsAlive || FollowTarget.ObjectState is not eObjectState.Active || Owner.CurrentRegionID != FollowTarget.CurrentRegionID)
             {
-                StopFollowing();
+                StopMoving();
                 return 0;
             }
 
