@@ -3302,8 +3302,6 @@ namespace DOL.GS
                     list.Add(ability);
                 }
             });
-
-            RefreshSpecDependantSkills(true);
         }
 
         #endregion Abilities
@@ -3779,21 +3777,6 @@ namespace DOL.GS
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Called by trainer when specialization points were added to a skill
-        /// </summary>
-        /// <param name="skill"></param>
-        public void OnSkillTrained(Specialization skill)
-        {
-            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnSkillTrained.YouSpend", skill.Level, skill.Name), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnSkillTrained.YouHave", SkillSpecialtyPoints), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-            Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.OnSkillTrained.TrainsInVarious", GetName(0, true)), eChatType.CT_System);
-            CharacterClass.OnSkillTrained(this, skill);
-            RefreshSpecDependantSkills(true);
-
-            Out.SendUpdatePlayerSkills(true);
         }
 
         /// <summary>

@@ -182,7 +182,7 @@ namespace DOL.GS.PacketHandler
         LookingForGroup = 0x85,              // 0x2D ^ 168
         CraftRequest = 0xED,                 // 0x45 ^ 168
         MinotaurRelicWindow = 0x4C,          // 0xE4 ^ 168
-        CreateObjectRequest = 0xBE,             // 0x16 ^ 168
+        CreateObjectRequest = 0xBE,          // 0x16 ^ 168
         ObjectUpdateRequest = 0xA5,          // 0x0D ^ 168
         PingRequest = 0xA3,                  // 0x0B ^ 168
         BonusesListRequest = 0xCA,           // 0x62 ^ 168
@@ -195,7 +195,7 @@ namespace DOL.GS.PacketHandler
         PositionUpdate = 0xA9,               // 0x01 ^ 168
         SellRequest = 0x79,                  // 0xD1 ^ 168
         SetMarketPrice = 0x1A,               // 0xB2 ^ 168
-        TrainRequest = 0x7C,                 // 0xD4 ^ 168
+        TrainHandlerOld = 0x7C,              // 0xD4 ^ 168
         TrainHandler = 0x53,                 // 0xFB ^ 168
         TrainWindowHandler = 0x7B,           // 0xD3 ^ 168
         WithDrawMerchantMoney = 0x1C,        // 0xB4 ^ 168
