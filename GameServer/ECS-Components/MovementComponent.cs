@@ -76,7 +76,7 @@ namespace DOL.GS
             // _ownerPosition is currently only used by the movement component.
             Vector3 newPosition = new(Owner.X, Owner.Y, Owner.Z);
 
-            if (newPosition.Equals(_ownerPosition))
+            if (newPosition.EqualsXY(_ownerPosition))
                 return false;
 
             _ownerPosition = newPosition;

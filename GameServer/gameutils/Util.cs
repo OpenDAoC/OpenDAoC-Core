@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace DOL.GS
@@ -137,6 +138,8 @@ namespace DOL.GS
 
     public static class Extensions
     {
+        private static readonly Vector3 _xyMask = new(1.0f, 1.0f, 0.0f);
+
         public static void Resize<T>(this List<T> list, int size, bool fill = false, T element = default)
         {
             int count = list.Count;
@@ -156,14 +159,22 @@ namespace DOL.GS
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInRange(this Vector3 value, Vector3 target, float range)
         {
             return Vector3.DistanceSquared(value, target) <= range * range;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 ToVector2(this Vector3 value)
         {
-            return new Vector2(value.X, value.Y);
+            return new(value.X, value.Y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool EqualsXY(this Vector3 a, Vector3 b)
+        {
+            return (a - b) * _xyMask == Vector3.Zero;
         }
 
         public static void SwapRemoveAt<T>(this IList<T> list, int index)
