@@ -317,11 +317,12 @@ namespace DOL.GS.PacketHandler
             _udpSendArgs?.Dispose();
 
             // Drain all pending packets on the next game loop tick to avoid concurrent modification issues.
-            GameLoopService.Instance.Post(static state =>
+            GameLoopThreadPool.Context.Post(static state =>
             {
-                state._tcpPacketQueue.DrainTo(static packet => packet.ReleasePooledObject());
-                state._udpToTcpPacketQueue.DrainTo(static packet => packet.ReleasePooledObject());
-                state._udpPacketQueue.DrainTo(static packet => packet.ReleasePooledObject());
+                PacketProcessor packetProcessor = state as PacketProcessor;
+                packetProcessor._tcpPacketQueue.DrainTo(static packet => packet.ReleasePooledObject());
+                packetProcessor._udpToTcpPacketQueue.DrainTo(static packet => packet.ReleasePooledObject());
+                packetProcessor._udpPacketQueue.DrainTo(static packet => packet.ReleasePooledObject());
             }, this);
         }
 
@@ -461,15 +462,12 @@ namespace DOL.GS.PacketHandler
                 log.Error($"{Marshal.ToHexDump(description, packetBuffer)}\n{Environment.StackTrace}");
             }
 
-            GameLoopService.Instance.Post(static state =>
+            // Cannot enqueue packets here.
+            GameLoopThreadPool.Context.Post(static state =>
             {
-                state.Client.Out.SendMessage($"Oversized packet detected and discarded (code: 0x{state.Code:X2}) (size: {state.Size}). Please report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
-            }, new
-            {
-                Client = _client,
-                Code = packetBuffer[2],
-                Size = packetSize
-            });
+                var s = ((GameClient Client, byte Code, int Size)) state;
+                s.Client.Out.SendMessage($"Oversized packet detected and discarded (code: 0x{s.Code:X2}) (size: {s.Size}). Please report this issue!", eChatType.CT_Staff, eChatLoc.CL_SystemWindow);
+            }, (_client, packetBuffer[2], packetSize));
 
             return false;
         }

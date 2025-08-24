@@ -26,6 +26,11 @@ namespace DOL.GS
 
         public void Post<TState>(Action<TState> action, TState state)
         {
+            // Posting across services is allowed, but can deadlock if the caller blocks on a Task.
+            // Example: a Task continuation is posted to a different service while the original
+            // service waits for it to complete. Since the target service cannot process posted
+            // actions until it ticks, neither side can make progress.
+
             if (!_actionPool.TryTake(out PostedAction pooledAction))
                 pooledAction = new PostedAction();
 

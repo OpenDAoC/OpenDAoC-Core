@@ -9,7 +9,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             client.UdpPingTime = GameLoop.GameLoopTime;
             client.UdpConfirm = flag == 1;
             client.Out.SendGameOpenReply();
-            GameLoopService.Instance.Post(client => client.Out.SendStatusUpdate(), client); // Dirty hack. Doesn't seem to work if sent immediately.
+            GameLoopThreadPool.Context.Post(static state => (state as GameClient).Out.SendStatusUpdate(), client); // Dirty hack. Doesn't seem to work if sent immediately.
             client.Out.SendUpdatePoints();
             client.Player?.UpdateDisabledSkills();
         }
