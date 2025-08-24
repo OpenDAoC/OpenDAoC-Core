@@ -10839,7 +10839,7 @@ namespace DOL.GS
         /// <param name="obj">DOLCharacter</param>
         public override void LoadFromDatabase(DataObject obj)
         {
-            LoadFromDatabaseAsync(obj).GetAwaiter().GetResult();
+            GameLoopAsyncHelper.Wait(LoadFromDatabaseAsync(obj));
         }
 
         /// <summary>

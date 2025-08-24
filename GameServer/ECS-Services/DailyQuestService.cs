@@ -33,7 +33,7 @@ namespace DOL.GS
 
         public override void Tick()
         {
-            ProcessPostedActions();
+            ProcessPostedActionsParallel();
 
             if (_lastDailyRollover.Date.DayOfYear < DateTime.Now.Date.DayOfYear || _lastDailyRollover.Year < DateTime.Now.Year)
             {

@@ -34,7 +34,16 @@ namespace DOL.GS
             Volatile.Write(ref _hasActions, true);
         }
 
-        protected void ProcessPostedActions()
+        public void ProcessPostedActions()
+        {
+            if (!Interlocked.Exchange(ref _hasActions, false))
+                return;
+
+            while (_actions.TryDequeue(out PostedAction action))
+                ProcessPostedActionInternal(action);
+        }
+
+        protected void ProcessPostedActionsParallel()
         {
             if (!Interlocked.Exchange(ref _hasActions, false))
                 return;
@@ -112,6 +121,7 @@ namespace DOL.GS
     {
         string ServiceName { get; }
         void Post<TState>(Action<TState> action, TState state);
+        void ProcessPostedActions();
 
         void BeginTick() { }
         void Tick() { }

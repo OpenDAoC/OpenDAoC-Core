@@ -75,6 +75,7 @@ namespace DOL.GS
                         {
                             if (log.IsWarnEnabled)
                                 log.Warn($"Watchdog: Thread \"{worker.Name}\" has exited unexpectedly. Restarting...");
+
                             _workersToRestart.Add(i);
                         }
                         else

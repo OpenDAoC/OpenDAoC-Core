@@ -35,7 +35,7 @@ namespace DOL.GS
 
         public override bool LoadFromDatabase(string inventoryId)
         {
-            var items = StartLoadFromDatabaseTask(inventoryId).GetAwaiter().GetResult();
+            var items = GameLoopAsyncHelper.GetResult(StartLoadFromDatabaseTask(inventoryId));
             return LoadInventory(inventoryId, items);
         }
 

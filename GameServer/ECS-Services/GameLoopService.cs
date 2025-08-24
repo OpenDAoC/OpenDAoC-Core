@@ -11,7 +11,7 @@
 
         public override void Tick()
         {
-            ProcessPostedActions();
+            ProcessPostedActionsParallel();
         }
     }
 }

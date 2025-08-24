@@ -34,7 +34,7 @@ namespace DOL.GS
 
         public override void BeginTick()
         {
-            ProcessPostedActions();
+            ProcessPostedActionsParallel();
 
             using (_lock)
             {

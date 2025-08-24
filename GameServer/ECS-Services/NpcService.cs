@@ -23,7 +23,7 @@ namespace DOL.GS
 
         public override void Tick()
         {
-            ProcessPostedActions();
+            ProcessPostedActionsParallel();
             int lastValidIndex;
 
             try

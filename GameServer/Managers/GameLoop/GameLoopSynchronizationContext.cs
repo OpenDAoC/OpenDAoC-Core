@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DOL.GS
 {
@@ -11,7 +13,15 @@ namespace DOL.GS
     {
         public override void Post(SendOrPostCallback d, object state)
         {
-            IGameService targetService = GameServiceContext.Current.Value ?? GameLoopService.Instance;
+            IGameService targetService = GameServiceContext.Current.Value;
+
+            // Typically, a continuation from a Task on which ConfigureAwait(false) was called.
+            if (targetService == null)
+            {
+                d(state);
+                return;
+            }
+
             targetService.Post(static state => state.d(state.state), (d, state));
         }
 
@@ -40,6 +50,38 @@ namespace DOL.GS
             }, (d, state, completed));
 
             completed.WaitOne();
+        }
+    }
+
+    public static class GameLoopAsyncHelper
+    {
+        public static T GetResult<T>(Task<T> task)
+        {
+            if (SynchronizationContext.Current is GameLoopSynchronizationContext && !task.IsCompleted)
+                ProcessServicePostedActionsUntilCompletion(task);
+
+            return task.GetAwaiter().GetResult();
+        }
+
+        public static void Wait(Task task)
+        {
+            if (SynchronizationContext.Current is GameLoopSynchronizationContext && !task.IsCompleted)
+                ProcessServicePostedActionsUntilCompletion(task);
+
+            task.GetAwaiter().GetResult();
+            return;
+        }
+
+        private static void ProcessServicePostedActionsUntilCompletion(Task task)
+        {
+            IGameService targetService = GameServiceContext.Current.Value ?? throw new InvalidOperationException();
+            SpinWait spinWait = new();
+
+            while (!task.IsCompleted)
+            {
+                targetService.ProcessPostedActions();
+                spinWait.SpinOnce(-1);
+            }
         }
     }
 }

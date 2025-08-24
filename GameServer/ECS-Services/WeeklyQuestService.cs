@@ -33,7 +33,7 @@ namespace DOL.GS
 
         public override void Tick()
         {
-            ProcessPostedActions();
+            ProcessPostedActionsParallel();
 
             // This is where the weekly check will go once testing is finished.
             if (_lastWeeklyRollover.Date.DayOfYear + 7 < DateTime.Now.Date.DayOfYear || _lastWeeklyRollover.Year < DateTime.Now.Year)
