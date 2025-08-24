@@ -41,7 +41,7 @@ namespace DOL.GS
         {
             lock (_pickUpLock)
             {
-                return ObjectState is eObjectState.Active && itemOwner.TryAutoPickUpMoney(this);
+                return ObjectState is not eObjectState.Deleted && itemOwner.TryAutoPickUpMoney(this);
             }
         }
 
@@ -49,7 +49,7 @@ namespace DOL.GS
         {
             lock (_pickUpLock)
             {
-                return ObjectState is eObjectState.Active ? itemOwner.TryPickUpMoney(source, this) : TryPickUpResult.FAILED;
+                return ObjectState is not eObjectState.Deleted ? itemOwner.TryPickUpMoney(source, this) : TryPickUpResult.FAILED;
             }
         }
     }
