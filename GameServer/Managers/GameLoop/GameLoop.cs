@@ -153,9 +153,9 @@ namespace DOL.GS
             AddStep(EffectListService.Instance, EffectListService.Instance.BeginTick);
             AddStep(EffectListService.Instance, EffectListService.Instance.EndTick);
             AddStep(MovementService.Instance, MovementService.Instance.Tick);
-            AddStep(ZoneService.Instance, ZoneService.Instance.Tick);
             AddStep(CraftingService.Instance, CraftingService.Instance.Tick);
             AddStep(ReaperService.Instance, ReaperService.Instance.Tick);
+            AddStep(ZoneService.Instance, ZoneService.Instance.Tick);
             AddStep(ClientService.Instance, ClientService.Instance.EndTick);
             AddStep(DailyQuestService.Instance, DailyQuestService.Instance.Tick);
             AddStep(WeeklyQuestService.Instance, WeeklyQuestService.Instance.Tick);

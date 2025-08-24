@@ -71,7 +71,7 @@ namespace DOL.GS
                 if (item.IssuedTimestamp != 0)
                 {
                     if (log.IsWarnEnabled)
-                        log.Warn($"Item {item} was not released last tick (IssuedTimestamp: {item.IssuedTimestamp}) (CurrentTime: {GameLoop.GameLoopTime}).");
+                        log.Warn($"Item '{item}' was not released last tick (IssuedTimestamp: {item.IssuedTimestamp}) (CurrentTime: {GameLoop.GameLoopTime}).");
 
                     item = new();
                     _items[_used - 1] = item;
