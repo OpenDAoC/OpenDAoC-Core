@@ -3578,18 +3578,15 @@ namespace DOL.GS
 			{
 				List<SpellWaitingForLosCheck> list = pair.Value;
 
-				lock (((ICollection) list).SyncRoot)
+				for (int i = list.Count - 1; i >= 0; i--)
 				{
-					for (int i = list.Count - 1; i >= 0; i--)
-					{
-						if (GameServiceUtils.ShouldTick(list[i].RequestTime + 2000))
-							list.SwapRemoveAt(i);
-					}
-
-					// We can keep the list if we're about to add anything to it.
-					if (list.Count == 0 && TargetObject != pair.Key)
-						_spellsWaitingForLosCheck.TryRemove(pair.Key, out _);
+					if (GameServiceUtils.ShouldTick(list[i].RequestTime + 2000))
+						list.SwapRemoveAt(i);
 				}
+
+				// We can keep the list if we're about to add something to it.
+				if (list.Count == 0 && TargetObject != pair.Key)
+					_spellsWaitingForLosCheck.TryRemove(pair.Key, out _);
 			}
 
 			Spell spellToCast = null;
@@ -3623,19 +3620,16 @@ namespace DOL.GS
 				return base.CastSpell(spellToCast, line, spellCastingAbilityHandler);
 
 			_spellsWaitingForLosCheck.AddOrUpdate(TargetObject, Add, Update, new SpellWaitingForLosCheck(spellToCast, line, GameLoop.GameLoopTime));
+			LosChecker.Out.SendCheckLos(this, TargetObject, new(CastSpellLosCheckReply));
 			return true; // Consider the NPC is casting while waiting for the reply to prevent it from moving.
 
 			List<SpellWaitingForLosCheck> Add(GameObject key, SpellWaitingForLosCheck arg)
 			{
-				LosChecker.Out.SendCheckLos(this, TargetObject, new CheckLosResponse(CastSpellLosCheckReply));
-				List<SpellWaitingForLosCheck> list = [arg];
-				return list;
+				return [arg];
 			}
 
 			List<SpellWaitingForLosCheck> Update(GameObject key, List<SpellWaitingForLosCheck> oldValue, SpellWaitingForLosCheck arg)
 			{
-				// This LoS check will not necessarily result in an actual packet being sent to the client, but it will trigger a second call to the callback.
-				LosChecker.Out.SendCheckLos(this, TargetObject, new CheckLosResponse(CastSpellLosCheckReply));
 				oldValue.Add(arg);
 				return oldValue;
 			}
@@ -3648,20 +3642,14 @@ namespace DOL.GS
 			if (target == null)
 				return;
 
-			if (!_spellsWaitingForLosCheck.TryRemove(target, out List<SpellWaitingForLosCheck> list))
+			List<SpellWaitingForLosCheck> list;
+
+			if (!_spellsWaitingForLosCheck.TryGetValue(target, out list))
 				return;
 
 			bool success = response is LosCheckResponse.True;
-			List<SpellWaitingForLosCheck> spellsWaitingForLosCheck;
 
-			lock (((ICollection) list).SyncRoot)
-			{
-				spellsWaitingForLosCheck = list.ToList();
-				// Don't bother removing the list here. It'll be done by `CastSpell`.
-				list.Clear();
-			}
-
-			foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in spellsWaitingForLosCheck)
+			foreach (SpellWaitingForLosCheck spellWaitingForLosCheck in list)
 			{
 				Spell spell = spellWaitingForLosCheck.Spell;
 				SpellLine spellLine = spellWaitingForLosCheck.SpellLine;
@@ -3671,6 +3659,8 @@ namespace DOL.GS
 				else
 					OnCastSpellLosCheckFail(target);
 			}
+
+			list.Clear();
 		}
 
 		public virtual void OnCastSpellLosCheckSuccess(GameObject target, Spell spell, SpellLine spellLine)
