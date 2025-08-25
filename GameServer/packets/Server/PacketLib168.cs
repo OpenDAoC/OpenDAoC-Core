@@ -1518,8 +1518,7 @@ namespace DOL.GS.PacketHandler
 			if (m_gameClient.Player == null || source == null || target == null)
 				return false;
 
-			m_gameClient.Player.LosCheckHandler.StartLosCheck(source, target, callback);
-			return true;
+			return m_gameClient.Player.LosCheckHandler.StartLosCheck(source, target, callback);
 		}
 
 		public virtual void SendQuestListUpdate()

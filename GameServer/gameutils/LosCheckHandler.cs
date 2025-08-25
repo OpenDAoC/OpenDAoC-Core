@@ -38,10 +38,14 @@ namespace DOL.GS
             timer.Tick();
         }
 
-        public void StartLosCheck(GameObject source, GameObject target, CheckLosResponse callback)
+        public bool StartLosCheck(GameObject source, GameObject target, CheckLosResponse callback)
         {
             ushort sourceObjectId = (ushort) source.ObjectID;
             ushort targetObjectId = (ushort) target.ObjectID;
+
+            if (sourceObjectId == 0 || targetObjectId == 0)
+                return false;
+
             long sourceObjectLastMovementTick = source is not GameLiving livingSource ? 0 : livingSource.movementComponent.LastMovementTick;
             long targetObjectLastMovementTick = target is not GameLiving livingTarget ? 0 : livingTarget.movementComponent.LastMovementTick;
 
@@ -59,7 +63,7 @@ namespace DOL.GS
                     if (!timer.HasCachedResponse)
                     {
                         timer.AddCallback(callback);
-                        return;
+                        return true;
                     }
 
                     if (sourceObjectLastMovementTick <= timer.SourceLastMovementTick &&
@@ -67,7 +71,7 @@ namespace DOL.GS
                     {
                         callback(_owner, timer.Response, sourceObjectId, targetObjectId);
                         timer.UpdateResponseExpireTime();
-                        return;
+                        return true;
                     }
 
                     timer.Setup(sourceObjectId, targetObjectId, sourceObjectLastMovementTick, targetObjectLastMovementTick, callback);
@@ -88,6 +92,7 @@ namespace DOL.GS
             pak.WriteShort(0x00); // ?
             pak.WriteShort(0x00); // ?
             _owner.Out.SendTCP(pak);
+            return true;
         }
 
         private void ReturnTimerToPool(LosCheckTimer timer)
