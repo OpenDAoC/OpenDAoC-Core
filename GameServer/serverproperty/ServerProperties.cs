@@ -625,7 +625,7 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "disable_tutorial", "should the server disable the tutorial zone", false)]
 		public static bool DISABLE_TUTORIAL;
 
-		[ServerProperty("world", "world_item_decay_time", "How long (milliseconds) will an item dropped on the ground stay in the world.", (uint)180000)]
+		[ServerProperty("world", "world_item_decay_time", "How long (milliseconds) will an item dropped on the ground stay in the world.", (uint) 180000)]
 		public static uint WORLD_ITEM_DECAY_TIME;
 
 		[ServerProperty("world", "world_pickup_distance", "How far before you can no longer pick up an object (loot for example).", 256)]
@@ -634,13 +634,13 @@ namespace DOL.GS.ServerProperties
 		[ServerProperty("world", "world_day_increment", "Larger increments make shorter days. Because night time is 25% faster, it should ideally be a multiple of 4.", (uint) 24)]
 		public static uint WORLD_DAY_INCREMENT;
 
-		[ServerProperty("world", "world_npc_update_interval", "How often (milliseconds) will npc's broadcast updates to the clients.", (uint)5000)]
+		[ServerProperty("world", "world_npc_update_interval", "How often (milliseconds) will npc's broadcast updates to the clients.", (uint) 5000)]
 		public static uint WORLD_NPC_UPDATE_INTERVAL;
 
-		[ServerProperty("world", "world_object_update_interval", "How often (milliseconds) will objects (static, housing, doors) broadcast updates to the clients.", (uint)30000)]
+		[ServerProperty("world", "world_object_update_interval", "How often (milliseconds) will objects (static, housing, doors) broadcast updates to the clients.", (uint) 30000)]
 		public static uint WORLD_OBJECT_UPDATE_INTERVAL;
 
-		[ServerProperty("world", "world_player_update_interval", "How often (milliseconds) will players be checked for updates.", (uint)300)]
+		[ServerProperty("world", "world_player_update_interval", "How often (milliseconds) will players be checked for updates.", (uint) 1000)]
 		public static uint WORLD_PLAYER_UPDATE_INTERVAL;
 
 		[ServerProperty("world", "weather_check_interval", "How often (milliseconds) will weather be checked for a chance to start a storm.", 5 * 60 * 1000)]

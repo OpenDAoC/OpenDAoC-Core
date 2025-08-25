@@ -333,17 +333,8 @@ namespace DOL.GS
 
         public LosCheckHandler LosCheckHandler { get; }
 
-        #region Object Caches
-        // Used by the client service.
-        public Dictionary<GameNPC, ClientService.CachedNpcValues> NpcUpdateCache { get; } = new();
-        public Dictionary<GameStaticItem, ClientService.CachedItemValues> ItemUpdateCache { get; } = new();
-        public Dictionary<GameDoorBase, long> DoorUpdateCache { get; } = new();
-        public Dictionary<House, long> HouseUpdateCache { get; } = new();
-        public Lock NpcUpdateCacheLock { get; } = new();
-        public Lock ItemUpdateCacheLock { get; } = new();
-        public Lock DoorUpdateCacheLock { get; } = new();
-        public Lock HouseUpdateCacheLock { get; } = new();
-        #endregion
+        // Used by the client service exclusively.
+        public PlayerObjectCache PlayerObjectCache { get; } = new();
 
         #region Database Accessor
 
@@ -958,7 +949,7 @@ namespace DOL.GS
         /// </summary>
         protected virtual void CleanupOnDisconnect()
         {
-            ClearUpdateCaches();
+            PlayerObjectCache.Clear();
             attackComponent.StopAttack();
             Stealth(false);
 
@@ -8301,17 +8292,6 @@ namespace DOL.GS
             return true;
         }
 
-        /// <summary>
-        /// Refresh all objects around the player
-        /// </summary>
-        public virtual void ClearUpdateCaches()
-        {
-            NpcUpdateCache.Clear();
-            ItemUpdateCache.Clear();
-            DoorUpdateCache.Clear();
-            HouseUpdateCache.Clear();
-        }
-
         //Eden - Move to bind, and check if the loc is allowed
         public virtual bool MoveToBind()
         {
@@ -13928,5 +13908,33 @@ namespace DOL.GS
             }
         }
         #endregion
+    }
+
+    public class PlayerObjectCache
+    {
+        public readonly Dictionary<GameNPC, ClientService.CachedNpcValues> NpcUpdateCache = new();
+        public readonly Dictionary<GameStaticItem, ClientService.CachedItemValues> ItemUpdateCache = new();
+        public readonly Dictionary<GameDoorBase, long> DoorUpdateCache = new();
+        public readonly Dictionary<House, long> HouseUpdateCache = new();
+        public readonly HashSet<GameNPC> NpcInRangeCache = new();
+        public readonly HashSet<GameStaticItem> ItemInRangeCache = new();
+        public readonly HashSet<GameDoorBase> DoorInRangeCache = new();
+        public readonly HashSet<House> HouseInRangeCache = new();
+        public readonly Lock NpcUpdateCacheLock = new();
+        public readonly Lock ItemUpdateCacheLock = new();
+        public readonly Lock DoorUpdateCacheLock = new();
+        public readonly Lock HouseUpdateCacheLock = new();
+
+        public void Clear()
+        {
+            NpcUpdateCache.Clear();
+            ItemUpdateCache.Clear();
+            DoorUpdateCache.Clear();
+            HouseUpdateCache.Clear();
+            NpcInRangeCache.Clear();
+            ItemInRangeCache.Clear();
+            DoorUpdateCache.Clear();
+            HouseUpdateCache.Clear();
+        }
     }
 }

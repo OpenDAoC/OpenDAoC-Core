@@ -571,39 +571,39 @@ namespace DOL.GS
 
         private static void AddNpcToPlayerCache(GamePlayer player, GameNPC npc)
         {
-            lock (player.NpcUpdateCacheLock)
+            lock (player.PlayerObjectCache.NpcUpdateCacheLock)
             {
-                if (player.NpcUpdateCache.TryGetValue(npc, out CachedNpcValues cachedNpcValues))
+                if (player.PlayerObjectCache.NpcUpdateCache.TryGetValue(npc, out CachedNpcValues cachedNpcValues))
                 {
                     cachedNpcValues.LastUpdateTime = GameLoop.GameLoopTime;
                     cachedNpcValues.HealthPercent =  npc.HealthPercent;
                 }
                 else
-                    player.NpcUpdateCache[npc] = new(GameLoop.GameLoopTime, npc.HealthPercent);
+                    player.PlayerObjectCache.NpcUpdateCache[npc] = new(GameLoop.GameLoopTime, npc.HealthPercent);
             }
         }
 
         private static void AddItemToPlayerCache(GamePlayer player, GameStaticItem item)
         {
-            lock (player.ItemUpdateCacheLock)
+            lock (player.PlayerObjectCache.ItemUpdateCacheLock)
             {
-                player.ItemUpdateCache[item] = new(GameLoop.GameLoopTime, false);
+                player.PlayerObjectCache.ItemUpdateCache[item] = new(GameLoop.GameLoopTime, false);
             }
         }
 
         private static void AddDoorToPlayerCache(GamePlayer player, GameDoorBase door)
         {
-            lock (player.DoorUpdateCacheLock)
+            lock (player.PlayerObjectCache.DoorUpdateCacheLock)
             {
-                player.DoorUpdateCache[door] = GameLoop.GameLoopTime;
+                player.PlayerObjectCache.DoorUpdateCache[door] = GameLoop.GameLoopTime;
             }
         }
 
         private static void AddHouseToPlayerCache(GamePlayer player, House house)
         {
-            lock (player.HouseUpdateCacheLock)
+            lock (player.PlayerObjectCache.HouseUpdateCacheLock)
             {
-                player.HouseUpdateCache[house] = GameLoop.GameLoopTime;
+                player.PlayerObjectCache.HouseUpdateCache[house] = GameLoop.GameLoopTime;
             }
         }
 
@@ -741,22 +741,22 @@ namespace DOL.GS
             // Players aren't updated here on purpose.
             long startTick = GameLoop.GetRealTime();
 
-            lock (player.NpcUpdateCacheLock)
+            lock (player.PlayerObjectCache.NpcUpdateCacheLock)
             {
                 UpdateNpcs(player);
             }
 
-            lock (player.ItemUpdateCacheLock)
+            lock (player.PlayerObjectCache.ItemUpdateCacheLock)
             {
                 UpdateItems(player);
             }
 
-            lock (player.DoorUpdateCacheLock)
+            lock (player.PlayerObjectCache.DoorUpdateCacheLock)
             {
                 UpdateDoors(player);
             }
 
-            lock (player.HouseUpdateCacheLock)
+            lock (player.PlayerObjectCache.HouseUpdateCacheLock)
             {
                 UpdateHouses(player);
             }
@@ -764,64 +764,45 @@ namespace DOL.GS
             long stopTick = GameLoop.GetRealTime();
 
             if (stopTick - startTick > Diagnostics.LongTickThreshold)
-                log.Warn($"Long {ClientService.Instance.ServiceName}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
+                log.Warn($"Long {Instance.ServiceName}.{nameof(UpdateWorld)} for {player.Name}({player.ObjectID}) Time: {stopTick - startTick}ms");
         }
 
         private static void UpdateNpcs(GamePlayer player)
         {
-            Dictionary<GameNPC, CachedNpcValues> npcUpdateCache = player.NpcUpdateCache;
+            HashSet<GameNPC> inRangeSet = player.PlayerObjectCache.NpcInRangeCache;
+            Dictionary<GameNPC, CachedNpcValues> npcUpdateCache = player.PlayerObjectCache.NpcUpdateCache;
 
-            foreach (var npcInCache in npcUpdateCache)
+            foreach (GameNPC npc in player.GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE))
             {
-                GameNPC npc = npcInCache.Key;
-
-                if (!npc.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || npc.ObjectState is not GameObject.eObjectState.Active || !npc.IsVisibleTo(player))
-                    npcUpdateCache.Remove(npc, out _);
-                else if (!player.CanDetect(npc))
-                {
-                    // Prevents NPCs from staying visible for a few seconds after getting out of range.
-                    // Not really needed in other cases.
-                    player.Out.SendObjectRemove(npc);
-                    npcUpdateCache.Remove(npc, out _);
-                }
+                if (npc.ObjectState is GameObject.eObjectState.Active && npc.IsVisibleTo(player) && player.CanDetect(npc))
+                    inRangeSet.Add(npc);
             }
 
-            List<GameNPC> npcsInRange = player.GetObjectsInRadius<GameNPC>(eGameObjectType.NPC, WorldMgr.VISIBILITY_DISTANCE);
+            foreach (var pair in npcUpdateCache)
+            {
+                GameNPC cachedNpc = pair.Key;
+
+                if (!inRangeSet.Contains(cachedNpc))
+                    npcUpdateCache.Remove(cachedNpc);
+            }
+
             GameObject targetObject = player.TargetObject;
             GameNPC pet = player.ControlledBrain?.Body;
-            CachedNpcValues cachedTargetValues = null;
-            CachedNpcValues cachedPetValues = null;
 
-            foreach (GameNPC npcInRange in npcsInRange)
+            foreach (GameNPC npcInRange in inRangeSet)
             {
-                if (npcInRange.ObjectState is not GameObject.eObjectState.Active || !npcInRange.IsVisibleTo(player) || !player.CanDetect(npcInRange))
-                    continue;
-
                 if (!npcUpdateCache.TryGetValue(npcInRange, out CachedNpcValues cachedNpcValues))
                     CreateNpcForPlayerInternal(player, npcInRange);
                 else if (GameServiceUtils.ShouldTick(cachedNpcValues.LastUpdateTime + Properties.WORLD_NPC_UPDATE_INTERVAL))
                     UpdateObjectForPlayerInternal(player, npcInRange, false);
-                else if (GameServiceUtils.ShouldTick(cachedNpcValues.LastUpdateTime + 250))
+                else if (npcInRange == targetObject || npcInRange == pet)
                 {
-                    // `GameNPC.HealthPercent` is a bit of an expensive call. Do it last.
-                    if (npcInRange == targetObject)
-                    {
-                        if (npcInRange.HealthPercent > cachedNpcValues.HealthPercent)
-                            cachedTargetValues = cachedNpcValues;
-                    }
-                    else if (npcInRange == pet)
-                    {
-                        if (npcInRange.HealthPercent > cachedNpcValues.HealthPercent)
-                            cachedPetValues = cachedNpcValues;
-                    }
+                    if (GameServiceUtils.ShouldTick(cachedNpcValues.LastUpdateTime + 250) && npcInRange.HealthPercent != cachedNpcValues.HealthPercent)
+                        UpdateObjectForPlayerInternal(player, npcInRange);
                 }
             }
 
-            if (cachedTargetValues != null)
-                UpdateObjectForPlayerInternal(player, targetObject);
-
-            if (cachedPetValues != null)
-                UpdateObjectForPlayerInternal(player, pet);
+            inRangeSet.Clear();
         }
 
         private static void UpdateItems(GamePlayer player)
@@ -829,61 +810,58 @@ namespace DOL.GS
             // The client is pretty stupid. It never forgets about static objects unless it moves too far away, but the distance seems to be anything between ~4500 and ~7500.
             // Not only that, but it forgets about objects even though it allows them to reappear after receiving a new packet while being at the same distance.
             // This means there's no way for us to know when the client actually needs a new packet.
-            // We can send one at regular intervals, but this is wasteful, and the interval shouldn't be too long.
-            // We can also assume the client doesn't need one if it's closer than ~4000 and has already received one.
-            // The boolean keeps track of that. It becomes true (allowing further updates) if the client moves further than `STATIC_OBJECT_UPDATE_MIN_DISTANCE`, and becomes false on every update.
-            // When true, updates are sent every `WORLD_OBJECT_UPDATE_INTERVAL`, as usual.
-            // In short:
-            // If the client forgets about the object at >`VISIBILITY_DISTANCE`, then it will reappear immediately when it gets back in range.
-            // If the client forgets about the object at <`VISIBILITY_DISTANCE` but >`STATIC_OBJECT_UPDATE_MIN_DISTANCE`, then it will take up to `WORLD_OBJECT_UPDATE_INTERVAL` for it to reappear.
-            // We assume the client cannot forget about the object when <`STATIC_OBJECT_UPDATE_MIN_DISTANCE`. If it does, the object won't reappear.
 
-            Dictionary<GameStaticItem, CachedItemValues> itemUpdateCache = player.ItemUpdateCache;
+            HashSet<GameStaticItem> inRangeSet = player.PlayerObjectCache.ItemInRangeCache;
+            Dictionary<GameStaticItem, CachedItemValues> itemUpdateCache = player.PlayerObjectCache.ItemUpdateCache;
 
-            foreach (var itemInCache in itemUpdateCache)
+            foreach (GameStaticItem item in player.GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE))
             {
-                GameStaticItem item = itemInCache.Key;
-
-                if (!item.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || item.ObjectState is not GameObject.eObjectState.Active || !item.IsVisibleTo(player))
-                    itemUpdateCache.Remove(item, out _);
-                else if (!item.IsWithinRadius(player, STATIC_OBJECT_UPDATE_MIN_DISTANCE))
-                    itemUpdateCache[item].AllowFurtherUpdate = true;
+                if (item.ObjectState is GameObject.eObjectState.Active && item.IsVisibleTo(player))
+                    inRangeSet.Add(item);
             }
 
-            List<GameStaticItem> itemsInRange = player.GetObjectsInRadius<GameStaticItem>(eGameObjectType.ITEM, WorldMgr.VISIBILITY_DISTANCE);
-
-            foreach (GameStaticItem itemInRange in itemsInRange)
+            foreach (var item in itemUpdateCache)
             {
-                if (itemInRange.ObjectState is not GameObject.eObjectState.Active || !itemInRange.IsVisibleTo(player))
-                    continue;
+                GameStaticItem cachedItem = item.Key;
 
+                if (!inRangeSet.Contains(cachedItem))
+                    itemUpdateCache.Remove(cachedItem);
+            }
+
+            foreach (GameStaticItem itemInRange in inRangeSet)
+            {
                 if (!itemUpdateCache.TryGetValue(itemInRange, out CachedItemValues cachedItemValues) ||
-                    (cachedItemValues.AllowFurtherUpdate && GameServiceUtils.ShouldTick(cachedItemValues.LastUpdateTime + Properties.WORLD_OBJECT_UPDATE_INTERVAL)))
+                    GameServiceUtils.ShouldTick(cachedItemValues.LastUpdateTime + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
                 {
+                    // There'is no update packet for items.
                     CreateObjectForPlayerInternal(player, itemInRange);
                 }
             }
+
+            inRangeSet.Clear();
         }
 
         private static void UpdateDoors(GamePlayer player)
         {
-            Dictionary<GameDoorBase, long> doorUpdateCache = player.DoorUpdateCache;
+            HashSet<GameDoorBase> inRangeSet = player.PlayerObjectCache.DoorInRangeCache;
+            Dictionary<GameDoorBase, long> doorUpdateCache = player.PlayerObjectCache.DoorUpdateCache;
 
-            foreach (var doorInCache in doorUpdateCache)
+            foreach (GameDoorBase door in player.GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE))
             {
-                GameDoorBase door = doorInCache.Key;
-
-                if (!door.IsWithinRadius(player, WorldMgr.VISIBILITY_DISTANCE) || door.ObjectState is not GameObject.eObjectState.Active || !door.IsVisibleTo(player))
-                    doorUpdateCache.Remove(door, out _);
+                if (door.ObjectState is GameObject.eObjectState.Active && door.IsVisibleTo(player))
+                    inRangeSet.Add(door);
             }
 
-            List<GameDoorBase> doorsInRange = player.GetObjectsInRadius<GameDoorBase>(eGameObjectType.DOOR, WorldMgr.VISIBILITY_DISTANCE);
-
-            foreach (GameDoorBase doorInRange in doorsInRange)
+            foreach (var door in doorUpdateCache)
             {
-                if (doorInRange.ObjectState is not GameObject.eObjectState.Active || !doorInRange.IsVisibleTo(player))
-                    continue;
+                GameDoorBase doorInCache = door.Key;
 
+                if (!inRangeSet.Contains(doorInCache))
+                    doorUpdateCache.Remove(doorInCache);
+            }
+
+            foreach (GameDoorBase doorInRange in inRangeSet)
+            {
                 if (!doorUpdateCache.TryGetValue(doorInRange, out long lastUpdate))
                 {
                     CreateObjectForPlayerInternal(player, doorInRange);
@@ -892,29 +870,35 @@ namespace DOL.GS
                 else if (GameServiceUtils.ShouldTick(lastUpdate + Properties.WORLD_OBJECT_UPDATE_INTERVAL))
                     UpdateObjectForPlayerInternal(player, doorInRange, false);
             }
+
+            inRangeSet.Clear();
         }
 
         private static void UpdateHouses(GamePlayer player)
         {
-            foreach (var houseEntry in player.HouseUpdateCache)
-            {
-                House house = houseEntry.Key;
-
-                if (house.RegionID != player.CurrentRegionID || !house.IsWithinRadius(player, HousingConstants.HouseViewingDistance))
-                    player.HouseUpdateCache.Remove(house, out _);
-            }
-
-            if (player.CurrentRegion == null || !player.CurrentRegion.HousingEnabled)
+            if (!player.CurrentRegion.HousingEnabled)
                 return;
 
-            ICollection<House> houses = HouseMgr.GetHouses(player.CurrentRegionID).Values;
+            HashSet<House> inRangeSet = player.PlayerObjectCache.HouseInRangeCache;
+            Dictionary<House, long> houseUpdateCache = player.PlayerObjectCache.HouseUpdateCache;
 
-            foreach (House house in houses)
+            foreach (House house in HouseMgr.GetHouses(player.CurrentRegionID).Values)
             {
-                if (!player.IsWithinRadius(house, HousingConstants.HouseViewingDistance))
-                    continue;
+                if (house.RegionID == player.CurrentRegionID && house.IsWithinRadius(player, HousingConstants.HouseViewingDistance))
+                    inRangeSet.Add(house);
+            }
 
-                if (!player.HouseUpdateCache.TryGetValue(house, out long lastUpdate))
+            foreach (var house in houseUpdateCache)
+            {
+                House houseInCache = house.Key;
+
+                if (!inRangeSet.Contains(houseInCache))
+                    houseUpdateCache.Remove(houseInCache);
+            }
+
+            foreach (House house in inRangeSet)
+            {
+                if (!player.PlayerObjectCache.HouseUpdateCache.TryGetValue(house, out long lastUpdate))
                 {
                     player.Client.Out.SendHouse(house);
                     player.Client.Out.SendGarden(house);
@@ -925,6 +909,8 @@ namespace DOL.GS
 
                 AddHouseToPlayerCache(player, house);
             }
+
+            inRangeSet.Clear();
         }
 
         public delegate bool CheckPlayerAction<T>(GamePlayer player, T argument);
@@ -953,12 +939,10 @@ namespace DOL.GS
         public class CachedItemValues
         {
             public long LastUpdateTime { get; set; }
-            public bool AllowFurtherUpdate { get; set; }
 
             public CachedItemValues(long lastUpdate, bool allowFurtherUpdate)
             {
                 LastUpdateTime = lastUpdate;
-                AllowFurtherUpdate = allowFurtherUpdate;
             }
         }
     }

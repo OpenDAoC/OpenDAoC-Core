@@ -38,7 +38,7 @@ namespace DOL.GS.Commands
 				if (args.Length == 2 && args[1].ToLower() == "refresh")
 				{
 					client.Player.LeaveHouse();
-					client.Player.ClearUpdateCaches();
+					client.Player.PlayerObjectCache.Clear();
 					return;
 				}
 				#endregion Refresh
