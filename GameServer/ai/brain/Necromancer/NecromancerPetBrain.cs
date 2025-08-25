@@ -121,6 +121,10 @@ namespace DOL.AI.Brain
                 return false;
             }
 
+            // Check the attack spell queue before casting spells.
+            // This allows instant spells such as FP to be activated first.
+            CheckAttackSpellQueue();
+
             SpellQueueEntry entry = GetSpellFromQueue();
 
             if (entry == null || !CastSpell(entry.Spell, entry.SpellLine, entry.Target, true))

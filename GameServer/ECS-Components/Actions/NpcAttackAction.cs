@@ -108,7 +108,7 @@ namespace DOL.GS
             int maxSpeed = _npcOwner.MaxSpeed;
 
             if (maxSpeed > 0)
-                meleeAttackRange = meleeAttackRange + (int) (TIME_TO_TARGET_THRESHOLD_BEFORE_RANGED_SWITCH * maxSpeed * 0.001);
+                meleeAttackRange += (int) (TIME_TO_TARGET_THRESHOLD_BEFORE_RANGED_SWITCH * maxSpeed * 0.001);
 
             // NPCs try to switch to their ranged weapon whenever possible.
             if (!_npcOwner.IsBeingInterrupted &&
