@@ -41,12 +41,10 @@ namespace DOL.AI.Brain
 
             if (Body.attackComponent.AttackState || Body.IsCasting)
             {
-                if (spell.IsInstantCast && !spell.IsHarmful)
-                    CastSpell(spell, spellLine, target, true);
-                else if (!spell.IsInstantCast)
-                    AddToSpellQueue(spell, spellLine, target);
-                else
+                if (spell.IsInstantCast)
                     AddToAttackSpellQueue(spell, spellLine, target);
+                else
+                    AddToSpellQueue(spell, spellLine, target);
             }
             else
             {
