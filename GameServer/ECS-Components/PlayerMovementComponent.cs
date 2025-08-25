@@ -104,8 +104,8 @@ namespace DOL.GS
                 _validateMovementOnNextTick = true;
                 Owner.LastPlayerActivityTime = GameLoop.GameLoopTime;
             }
-            else
-                _needBroadcastPosition = true;
+
+            _needBroadcastPosition = true;
 
             if (IsMoving)
                 Owner.LastPlayerActivityTime = GameLoop.GameLoopTime;
