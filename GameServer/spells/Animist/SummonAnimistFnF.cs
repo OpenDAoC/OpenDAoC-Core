@@ -76,15 +76,14 @@ namespace DOL.GS.Spells
                 (m_pet as TurretPet).TurretSpell = m_pet.Spells[0];
 
             (m_pet.Brain as TurretBrain).IsMainPet = false;
-            m_pet.CountsTowardsPetLimit = true;
-            Caster.UpdatePetCount(true);
+            Caster.UpdatePetCount(m_pet, true);
         }
 
         protected override void SetBrainToOwner(IControlledBrain brain) { }
 
         public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
         {
-            Caster.UpdatePetCount(false);
+            Caster.UpdatePetCount(m_pet, false);
             return base.OnEffectExpires(effect, noMessages);
         }
 

@@ -83,8 +83,7 @@ namespace DOL.GS.Spells
 			m_pet.TargetObject = target;
 			(m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);
 			m_pet.Brain.Think();
-			m_pet.CountsTowardsPetLimit = true;
-			Caster.UpdatePetCount(true);
+			Caster.UpdatePetCount(m_pet, true);
 		}
 
 		/// <summary>
@@ -93,7 +92,7 @@ namespace DOL.GS.Spells
 		/// <returns>Immunity timer (in milliseconds).</returns>
 		public override int OnEffectExpires(GameSpellEffect effect, bool noMessages)
 		{
-			Caster.UpdatePetCount(false);
+			Caster.UpdatePetCount(m_pet, false);
 			return base.OnEffectExpires(effect, noMessages);
 		}
 

@@ -3707,12 +3707,27 @@ namespace DOL.GS
 		private int m_petCount;
 		public int PetCount => m_petCount;
 
-		public void UpdatePetCount(bool add)
+		public void UpdatePetCount(GameSummonedPet pet, bool add)
 		{
+			if (pet == null)
+				return;
+
 			if (add)
+			{
+				if (pet.CountsTowardsPetLimit)
+					return;
+
+				pet.CountsTowardsPetLimit = true;
 				Interlocked.Increment(ref m_petCount);
+			}
 			else
+			{
+				if (!pet.CountsTowardsPetLimit)
+					return;
+
+				pet.CountsTowardsPetLimit = false;
 				Interlocked.Decrement(ref m_petCount);
+			}
 		}
 
 		/// <summary>
