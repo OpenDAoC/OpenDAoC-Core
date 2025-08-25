@@ -295,7 +295,7 @@ namespace DOL.GS.Spells
 			if (Spell.MoveCast)
 				return;
 
-			InterruptCasting();
+			InterruptCasting(true);
 		}
 
 		/// <summary>
@@ -357,7 +357,7 @@ namespace DOL.GS.Spells
 					MessageToLiving(playerCaster, playerCaster.LastInterruptMessage, eChatType.CT_SpellResisted);
 				}
 
-				InterruptCasting(); // Always interrupt at the moment.
+				InterruptCasting(false); // Always interrupt at the moment.
 				return true;
 			}
 
@@ -806,7 +806,7 @@ namespace DOL.GS.Spells
 				if (IsInCastingPhase)
 					MessageToCaster("You can't see your target from here!", eChatType.CT_SpellResisted);
 
-				InterruptCasting();
+				InterruptCasting(false);
 			}
 		}
 
@@ -815,7 +815,7 @@ namespace DOL.GS.Spells
 			HasLos = response is LosCheckResponse.True;
 
 			if (!HasLos && Properties.CHECK_LOS_DURING_CAST_INTERRUPT)
-				InterruptCasting();
+				InterruptCasting(false);
 		}
 
 		/// <summary>
@@ -1098,7 +1098,7 @@ namespace DOL.GS.Spells
 			{
 				case eCastState.Interrupted:
 				{
-					InterruptCasting();
+					InterruptCasting(false);
 					CastState = eCastState.Cleanup;
 					break;
 				}
@@ -1201,13 +1201,13 @@ namespace DOL.GS.Spells
 		/// <summary>
 		/// Called whenever the casters casting sequence is to interrupt immediately
 		/// </summary>
-		protected virtual void InterruptCasting()
+		protected virtual void InterruptCasting(bool isMoving)
 		{
 			if (m_interrupted)
 				return;
 
 			m_interrupted = true;
-			Caster.castingComponent.InterruptCasting(Caster.IsMoving);
+			Caster.castingComponent.InterruptCasting(isMoving);
 			CastState = eCastState.Interrupted;
 			m_startReuseTimer = false;
 		}

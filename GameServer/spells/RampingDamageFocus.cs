@@ -69,7 +69,7 @@ namespace DOL.GS.Spells
 			{
 				Caster.LastInterruptMessage = attacker.GetName(0, true) + " attacks you and your spell is interrupted!";
 				MessageToLiving(Caster, Caster.LastInterruptMessage, eChatType.CT_SpellResisted);
-				InterruptCasting(); // always interrupt at the moment
+				InterruptCasting(false); // always interrupt at the moment
 				return true;
 			}
 			return false;

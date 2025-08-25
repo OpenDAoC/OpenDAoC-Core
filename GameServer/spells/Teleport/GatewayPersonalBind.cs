@@ -93,7 +93,7 @@ namespace DOL.GS.Spells
 
         public override void CasterMoves()
         {
-            InterruptCasting();
+            InterruptCasting(true);
         }
 
         public override IList<string> DelveInfo

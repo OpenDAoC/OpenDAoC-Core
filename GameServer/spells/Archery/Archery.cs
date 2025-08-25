@@ -258,7 +258,7 @@ namespace DOL.GS.Spells
 				{
 					Caster.TempProperties.SetProperty(INTERRUPT_TIMEOUT_PROPERTY, GameLoop.GameLoopTime + Caster.SpellInterruptDuration);
 					MessageToLiving(Caster, attacker.GetName(0, true) + " attacks you and your shot is interrupted!", eChatType.CT_SpellResisted);
-					InterruptCasting();
+					InterruptCasting(false);
 					return true;
 				}
 			}
