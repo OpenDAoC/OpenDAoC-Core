@@ -27,11 +27,9 @@ namespace DOL.GS
             // Make sure NPCs don't start casting pending spells after being told to stop.
             _npcOwner.ClearSpellsWaitingForLosCheck();
 
+            // Don't clear the attack spell queue here.
             if (_npcOwner.Brain is NecromancerPetBrain necromancerPetBrain)
-            {
                 necromancerPetBrain.ClearSpellQueue();
-                necromancerPetBrain.ClearAttackSpellQueue();
-            }
 
             base.ClearSpellHandlers();
         }
