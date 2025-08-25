@@ -223,13 +223,6 @@ namespace DOL.GS.PacketHandler
                 return;
             }
 
-            if (_client.ClientState is eClientState.Playing)
-            {
-                // The rate at which clients send `UDPInitRequestHandler` may vary depending on their version (1.127 = 65 seconds).
-                if (GameServiceUtils.ShouldTick(_client.UdpPingTime + 70000))
-                    _client.UdpConfirm = false;
-            }
-
             // This is dangerous if the same packet is passed down to multiple `PacketProcessor` at the same time.
             if (!packet.IsSizeSet)
                 packet.WritePacketLength();

@@ -96,6 +96,10 @@ namespace DOL.GS
                         if (client.ClientState is not GameClient.eClientState.Playing || player.ObjectState is not GameObject.eObjectState.Active)
                             break;
 
+                        // The rate at which clients send `UDPInitRequestHandler` may vary depending on their version (1.127 = 65 seconds).
+                        if (GameServiceUtils.ShouldTick(client.UdpPingTime + 70000))
+                            client.UdpConfirm = false;
+
                         if (GameServiceUtils.ShouldTick(player.NextWorldUpdate))
                         {
                             UpdateWorld(player);
