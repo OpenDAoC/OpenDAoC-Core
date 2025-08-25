@@ -849,7 +849,12 @@ namespace DOL.GS
 						if (Brain is IControlledBrain commanderBrain)
 							controlledBrain.SetAggressionState(commanderBrain.AggressionState);
 
-						UpdatePetCount(true);
+						if (controlledBrain.Body is GameSummonedPet pet)
+						{
+							UpdatePetCount(true);
+							pet.CountsTowardsPetLimit = true;
+						}
+
 						break;
 					}
 				}

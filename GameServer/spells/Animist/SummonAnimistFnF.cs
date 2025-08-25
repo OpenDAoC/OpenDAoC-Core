@@ -76,6 +76,7 @@ namespace DOL.GS.Spells
                 (m_pet as TurretPet).TurretSpell = m_pet.Spells[0];
 
             (m_pet.Brain as TurretBrain).IsMainPet = false;
+            m_pet.CountsTowardsPetLimit = true;
             Caster.UpdatePetCount(true);
         }
 

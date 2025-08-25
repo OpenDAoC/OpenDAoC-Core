@@ -21,6 +21,8 @@ namespace DOL.GS
 			set { m_targetInView = value; }
 		}
 
+		public bool CountsTowardsPetLimit { get; set; }
+
 		public GameSummonedPet(INpcTemplate template) : base(template) { }
 
 		public GameSummonedPet(ABrain brain) : base(brain) { }

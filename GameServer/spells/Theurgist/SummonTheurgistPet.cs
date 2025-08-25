@@ -83,6 +83,7 @@ namespace DOL.GS.Spells
 			m_pet.TargetObject = target;
 			(m_pet.Brain as IOldAggressiveBrain).AddToAggroList(target, 1);
 			m_pet.Brain.Think();
+			m_pet.CountsTowardsPetLimit = true;
 			Caster.UpdatePetCount(true);
 		}
 
