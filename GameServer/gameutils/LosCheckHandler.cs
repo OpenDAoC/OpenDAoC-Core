@@ -190,13 +190,12 @@ namespace DOL.GS
                 // We don't cache a timeout. Invoke the callbacks and remove the timer.
                 if (Response is LosCheckResponse.None)
                 {
-                    Response = LosCheckResponse.Timeout;
-                    InvokeCallbacks();
-                    _completionCallback(this);
-
                     if (log.IsDebugEnabled)
                         log.Debug($"LoS check timeout ({this}) ({Owner})");
 
+                    Response = LosCheckResponse.Timeout;
+                    InvokeCallbacks();
+                    _completionCallback(this);
                     return 0;
                 }
 
