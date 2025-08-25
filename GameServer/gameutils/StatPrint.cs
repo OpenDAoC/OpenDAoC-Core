@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using DOL.Events;
+using DOL.GS.PacketHandler;
 using DOL.GS.PerformanceStatistics;
 
 namespace DOL.GS
@@ -102,9 +103,9 @@ namespace DOL.GS
                     .Append($"-stats-  Mem={memUsedMb}MB/{memCommittedMb}MB")
                     .Append($"  GC={gen0Delta}/{gen1Delta}/{gen2Delta}")
                     .Append($"  Clients={ClientService.Instance.ClientCount}")
-                    .AppendFormat($"  Pool={poolCurrent}/{poolMax}({poolMin})")
-                    .AppendFormat($"  IOCP={iocpCurrent}/{iocpMax}({iocpMin})")
-                    .AppendFormat($"  GH/OH={globalHandlers}/{objectHandlers}")
+                    .Append($"  Pool={poolCurrent}/{poolMax}({poolMin})")
+                    .Append($"  IOCP={iocpCurrent}/{iocpMax}({iocpMin})")
+                    .Append($"  GH/OH={globalHandlers}/{objectHandlers}")
                     .Append($"  TPS=");
 
                 for (int i = averageTps.Count - 1; i >= 0; i--)
@@ -125,9 +126,12 @@ namespace DOL.GS
                 AppendStatistic(stats, "pg/s", _pageFaultsPerSecond);
                 AppendStatistic(stats, "dsk/s", _diskTransfersPerSecond);
 
-                if (log.IsInfoEnabled)
-                    log.Info(stats.ToString());
+                long sendBufferPoolExhaustedCount = PacketProcessor.SendBufferPoolExhaustedCount;
 
+                if (sendBufferPoolExhaustedCount > 0)
+                    stats.Append($"  PckPoolMiss={sendBufferPoolExhaustedCount}");
+
+                log.Info(stats.ToString());
                 Thread.CurrentThread.Priority = oldPriority;
             }
             catch (Exception e)

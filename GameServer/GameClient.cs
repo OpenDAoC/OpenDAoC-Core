@@ -85,11 +85,7 @@ namespace DOL.GS
         public IPEndPoint UdpEndPoint
         {
             get => _udpEndpoint;
-            set
-            {
-                _udpEndpoint = value;
-                PacketProcessor.OnUdpEndpointSet(value);
-            }
+            set => _udpEndpoint = value;
         }
 
         public Dictionary<string, List<string>> CustomParamsDictionary
