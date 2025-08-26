@@ -39,20 +39,10 @@ namespace DOL.AI.Brain
             if (Body.IsCasting)
                 MessageToOwner(LanguageMgr.GetTranslation((Owner as GamePlayer).Client.Account.Language, "AI.Brain.Necromancer.CastSpellAfterAction", Body.Name), eChatType.CT_System, Owner as GamePlayer);
 
-            if (Body.attackComponent.AttackState || Body.IsCasting)
-            {
-                if (spell.IsInstantCast)
-                    AddToAttackSpellQueue(spell, spellLine, target);
-                else
-                    AddToSpellQueue(spell, spellLine, target);
-            }
+            if (spell.IsInstantCast)
+                AddToAttackSpellQueue(spell, spellLine, target);
             else
-            {
-                if (spell.IsInstantCast)
-                    CastSpell(spell, spellLine, target, true);
-                else
-                    AddToSpellQueue(spell, spellLine, target);
-            }
+                AddToSpellQueue(spell, spellLine, target);
 
             // Immediately try to cast.
             CheckSpellQueue();
