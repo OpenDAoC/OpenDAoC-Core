@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Movement;
@@ -31,6 +32,8 @@ namespace DOL.GS
         private bool _needsBroadcastUpdate = true;
         private short _currentMovementDesiredSpeed;
         private PathVisualization _pathVisualization;
+        private long _interpolatedPositionTick = -1;
+        private Vector3 _interpolatedPosition;
 
         public new GameNPC Owner { get; }
         public ref Vector3 Velocity => ref _velocity;
@@ -54,6 +57,7 @@ namespace DOL.GS
         public double HorizontalVelocityForClient { get; private set; }
         public bool HasActiveResetHeadingAction => _resetHeadingAction != null && _resetHeadingAction.IsAlive;
         public ref Vector3 DestinationForClient => ref _destinationForClient;
+
         public ref Vector3 PositionForClient
         {
             get
@@ -69,6 +73,33 @@ namespace DOL.GS
             }
         }
 
+        public int X
+        {
+            get
+            {
+                CheckInterpolatedPosition();
+                return (int) Math.Round(_interpolatedPosition.X);
+            }
+        }
+
+        public int Y
+        {
+            get
+            {
+                CheckInterpolatedPosition();
+                return (int) Math.Round(_interpolatedPosition.Y);
+            }
+        }
+
+        public int Z
+        {
+            get
+            {
+                CheckInterpolatedPosition();
+                return (int) Math.Round(_interpolatedPosition.Z);
+            }
+        }
+
         public NpcMovementComponent(GameNPC owner) : base(owner)
         {
             Owner = owner;
@@ -77,7 +108,7 @@ namespace DOL.GS
 
         protected override void TickInternal()
         {
-            // Update the component's position first for correct calculations, since NPCs position (GameNPC X,Y,Z) is interpolated.
+            // Update the component's position first for correct calculations.
             UpdatePosition();
 
             if (IsFlagSet(MovementState.TURN_TO))
@@ -357,7 +388,8 @@ namespace DOL.GS
         public override void DisableTurning(bool add)
         {
             // Trigger an update to make sure the NPC properly starts or stops auto facing client side.
-            // May technically be only necessary if the count is going from 0 to 1 or 1 to 0, but we're skipping that because it would needs to be thread safe.
+            // May technically be only necessary if the count is going from 0 to 1 or 1 to 0, but we're skipping that because it would need to be thread safe.
+
             _needsBroadcastUpdate = true;
             base.DisableTurning(add);
         }
@@ -720,6 +752,42 @@ namespace DOL.GS
             CurrentSpeed = speed;
             UpdateVelocity(distanceToTarget);
             PrepareValuesForClient(wasMoving, distanceToTarget);
+        }
+
+        public void CheckInterpolatedPosition()
+        {
+            if (_interpolatedPositionTick == GameLoop.GameLoopTime)
+                return;
+
+            if (!IsMoving)
+                _interpolatedPosition = new(Owner.RealX, Owner.RealY, Owner.RealZ);
+            else
+            {
+                Vector3 startPosition = new(Owner.RealX, Owner.RealY, Owner.RealZ);
+                Vector3 movementDelta = _velocity * (MovementElapsedTicks * 0.001f);
+                Vector3 potentialPosition = startPosition + movementDelta;
+
+                if (!IsDestinationValid)
+                    _interpolatedPosition = potentialPosition;
+                else
+                {
+                    Vector3 absToDestination = Vector3.Abs(_destination - startPosition);
+                    Vector3 absMovementDelta = Vector3.Abs(movementDelta);
+
+                    // Create a "mask" vector (1.0f or 0.0f) for each axis.
+                    // 1.0f means we use the potential position.
+                    // 0.0f means we have overshot and should clamp to destination.
+                    Vector3 usePotential = new(
+                        absToDestination.X >= absMovementDelta.X ? 1.0f : 0.0f,
+                        absToDestination.Y >= absMovementDelta.Y ? 1.0f : 0.0f,
+                        absToDestination.Z >= absMovementDelta.Z ? 1.0f : 0.0f
+                    );
+
+                    _interpolatedPosition = potentialPosition * usePotential + _destination * (Vector3.One - usePotential);
+                }
+            }
+
+            _interpolatedPositionTick = GameLoop.GameLoopTime;
         }
 
         private ResetHeadingAction CreateResetHeadingAction()

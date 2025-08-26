@@ -732,76 +732,14 @@ namespace DOL.GS
 			set { m_spawnHeading = value; }
 		}
 
-		/// <summary>
-		/// Gets the current X of this living. Don't modify this property
-		/// to try to change position of the mob while active. Use the
-		/// MoveTo function instead
-		/// </summary>
-		public override int X
-		{
-			get
-			{
-				if (!IsMoving)
-					return m_x;
+		// Delegate to the movement component for position interpolation and caching.
+		public override int X => movementComponent.X;
+		public override int Y => movementComponent.Y;
+		public override int Z => movementComponent.Z;
 
-				double movementAmount = MovementElapsedTicks * movementComponent.Velocity.X * 0.001;
-
-				if (!IsDestinationValid)
-					return (int) Math.Round(m_x + movementAmount);
-
-				double absMovementAmount = Math.Abs(movementAmount);
-				return (int) (Math.Abs(Destination.X - m_x) < absMovementAmount ? Destination.X : Math.Round(m_x + movementAmount));
-			}
-		}
-
+		// Only meant to be used by the movement component.
 		public int RealX => m_x;
-
-		/// <summary>
-		/// Gets the current Y of this NPC. Don't modify this property
-		/// to try to change position of the mob while active. Use the
-		/// MoveTo function instead
-		/// </summary>
-		public override int Y
-		{
-			get
-			{
-				if (!IsMoving)
-					return m_y;
-
-				double movementAmount = MovementElapsedTicks * movementComponent.Velocity.Y * 0.001;
-
-				if (!IsDestinationValid)
-					return (int) Math.Round(m_y + movementAmount);
-
-				double absMovementAmount = Math.Abs(movementAmount);
-				return (int) (Math.Abs(Destination.Y - m_y) < absMovementAmount ? Destination.Y : Math.Round(m_y + movementAmount));
-			}
-		}
-
 		public int RealY => m_y;
-
-		/// <summary>
-		/// Gets the current Z of this NPC. Don't modify this property
-		/// to try to change position of the mob while active. Use the
-		/// MoveTo function instead
-		/// </summary>
-		public override int Z
-		{
-			get
-			{
-				if (!IsMoving)
-					return m_z;
-
-				double movementAmount = MovementElapsedTicks * movementComponent.Velocity.Z * 0.001;
-
-				if (!IsDestinationValid)
-					return (int) Math.Round(m_z + movementAmount);
-
-				double absMovementAmount = Math.Abs(movementAmount);
-				return (int) (Math.Abs(Destination.Z - m_z) < absMovementAmount ? Destination.Z : Math.Round(m_z + movementAmount));
-			}
-		}
-
 		public int RealZ => m_z;
 
 		/// <summary>
