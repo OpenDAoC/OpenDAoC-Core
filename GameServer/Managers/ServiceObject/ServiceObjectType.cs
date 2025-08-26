@@ -6,6 +6,7 @@
         Brain,
         AttackComponent,
         CastingComponent,
+        Effect,
         EffectListComponent,
         MovementComponent,
         CraftComponent,

@@ -24,7 +24,7 @@ namespace DOL.GS
         }
     }
 
-    public class ECSGameEffect
+    public class ECSGameEffect : IServiceObject
     {
         private State _state;
         private TransitionalState _transitionalState;
@@ -49,6 +49,7 @@ namespace DOL.GS
         public bool TriggersImmunity { get; set; } = false;
         public int ImmunityDuration { get; protected set; } = 60000;
         public bool IsBeingReplaced { get; set; } // Used externally to force an effect to be silent (no message, no immunity) when being refreshed.
+        public ServiceObjectId ServiceObjectId { get; set; } = new(ServiceObjectType.Effect);
 
         // State properties.
         public bool IsActive => _state is State.Active;
@@ -82,9 +83,9 @@ namespace DOL.GS
             SpellHandler = initParams.SpellHandler;
         }
 
-        public bool Start()
+        protected bool Start()
         {
-            // Automatically called by the constructor.
+            // Only meant to be called by the constructor.
 
             if (!CanStart)
                 return false;
@@ -94,8 +95,8 @@ namespace DOL.GS
                 if (!CanStart)
                     return false;
 
-                Owner.effectListComponent.AddPendingEffect(this);
                 _transitionalState = TransitionalState.Starting;
+                Owner.effectListComponent.ProcessEffect(this);
                 return true;
             }
         }
@@ -110,8 +111,8 @@ namespace DOL.GS
                 if (!CanBeEnabled)
                     return false;
 
-                Owner.effectListComponent.AddPendingEffect(this);
                 _transitionalState = TransitionalState.Enabling;
+                Owner.effectListComponent.ProcessEffect(this);
                 return true;
             }
         }
@@ -126,16 +127,14 @@ namespace DOL.GS
                 if (!CanBeDisabled)
                     return false;
 
-                Owner.effectListComponent.AddPendingEffect(this);
                 _transitionalState = TransitionalState.Disabling;
+                Owner.effectListComponent.ProcessEffect(this);
                 return true;
             }
         }
 
-        public bool Stop(bool playerCanceled = false, bool addToPendingEffects = true)
+        public bool Stop(bool playerCanceled = false)
         {
-            // `addToPendingEffects` should only be set to false when the effect is intended to be removed immediately and manually.
-
             if (!CanBeStopped)
                 return false;
 
@@ -153,10 +152,8 @@ namespace DOL.GS
                     return false;
                 }
 
-                if (addToPendingEffects)
-                    Owner.effectListComponent.AddPendingEffect(this);
-
                 _transitionalState = TransitionalState.Stopping;
+                Owner.effectListComponent.ProcessEffect(this);
                 return true;
             }
         }
@@ -205,7 +202,7 @@ namespace DOL.GS
         public virtual void OnEffectPulse() { }
         public virtual DbPlayerXEffect GetSavedEffect() { return null; }
 
-        public virtual bool FinalizeAddedState(EffectListComponent.AddEffectResult result)
+        public virtual bool FinalizeState(EffectListComponent.AddEffectResult result)
         {
             // Returns true if the effect needs to be started.
             try
@@ -252,7 +249,7 @@ namespace DOL.GS
             }
         }
 
-        public bool FinalizeRemovedState(EffectListComponent.RemoveEffectResult result)
+        public bool FinalizeState(EffectListComponent.RemoveEffectResult result)
         {
             // Returns true if the effect needs to be stopped.
             try

@@ -16,6 +16,7 @@ namespace DOL.GS
             { ServiceObjectType.Brain, new ServiceObjectArray<ABrain>(ServerProperties.Properties.MAX_ENTITIES) },
             { ServiceObjectType.AttackComponent, new ServiceObjectArray<AttackComponent>(1250) },
             { ServiceObjectType.CastingComponent, new ServiceObjectArray<CastingComponent>(1250) },
+            { ServiceObjectType.Effect, new ServiceObjectArray<ECSGameEffect>(10000) },
             { ServiceObjectType.EffectListComponent, new ServiceObjectArray<EffectListComponent>(1250) },
             { ServiceObjectType.MovementComponent, new ServiceObjectArray<MovementComponent>(1250) },
             { ServiceObjectType.CraftComponent, new ServiceObjectArray<CraftComponent>(100) },

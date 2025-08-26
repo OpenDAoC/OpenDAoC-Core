@@ -24,13 +24,13 @@
             Owner.OnMaxSpeedChange();
         }
 
-        public override bool FinalizeAddedState(EffectListComponent.AddEffectResult result)
+        public override bool FinalizeState(EffectListComponent.AddEffectResult result)
         {
             // Movement speed buffs are always disabled when applied to a stealthed target.
             if (EffectType is eEffect.MovementSpeedBuff && result is EffectListComponent.AddEffectResult.Added && Owner.IsStealthed)
-                return base.FinalizeAddedState(EffectListComponent.AddEffectResult.Disabled);
+                return base.FinalizeState(EffectListComponent.AddEffectResult.Disabled);
             else
-                return base.FinalizeAddedState(result);
+                return base.FinalizeState(result);
         }
     }
 }
