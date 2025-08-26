@@ -26,6 +26,14 @@ namespace DOL.AI.Brain
             FSM.Think();
         }
 
+        public override void Attack(GameObject target)
+        {
+            if (m_orderAttackTarget == null && !Body.InCombat)
+                ClearAttackSpellQueue();
+
+            base.Attack(target);
+        }
+
         public override void Disengage()
         {
             base.Disengage();
