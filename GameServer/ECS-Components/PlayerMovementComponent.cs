@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Numerics;
+using System.Reflection;
 using DOL.GS.PacketHandler;
 using DOL.GS.PacketHandler.Client.v168;
 using DOL.Language;
@@ -97,7 +98,10 @@ namespace DOL.GS
         {
             base.OnPositionUpdate();
 
-            if (UpdatePosition())
+            Vector3 oldPosition = _ownerPosition;
+            UpdatePosition();
+
+            if (!oldPosition.EqualsXY(_ownerPosition))
             {
                 Owner.OnPlayerMove();
                 _playerMovementMonitor.RecordPosition();
@@ -145,6 +149,11 @@ namespace DOL.GS
         public void OnTeleportOrRegionChange()
         {
             _playerMovementMonitor.OnTeleportOrRegionChange();
+        }
+
+        protected override void UpdatePosition()
+        {
+            _ownerPosition = new(Owner.X, Owner.Y, Owner.Z);
         }
     }
 }

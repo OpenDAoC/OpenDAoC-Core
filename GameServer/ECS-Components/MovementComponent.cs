@@ -71,17 +71,7 @@ namespace DOL.GS
                 Interlocked.Decrement(ref _turningDisabledCount);
         }
 
-        protected bool UpdatePosition()
-        {
-            // _ownerPosition is currently only used by the movement component.
-            Vector3 newPosition = new(Owner.X, Owner.Y, Owner.Z);
-
-            if (newPosition.EqualsXY(_ownerPosition))
-                return false;
-
-            _ownerPosition = newPosition;
-            return true;
-        }
+        protected virtual void UpdatePosition() { }
 
         protected void AddToServiceObjectStore()
         {

@@ -1959,7 +1959,6 @@ namespace DOL.GS
 			if (MAX_PASSENGERS > 0)
 				Riders = new GamePlayer[MAX_PASSENGERS];
 
-			ClientService.CreateObjectForPlayers(this);
 			m_spawnPoint.X = m_x;
 			m_spawnPoint.Y = m_y;
 			m_spawnPoint.Z = m_z;
@@ -2018,7 +2017,8 @@ namespace DOL.GS
 			if (IsStealthed)
 				WasStealthed = true;
 
-			movementComponent.PositionForClient = new(X, Y, Z); // Ensure a correct initial state. Movement component can't do it itself.
+			movementComponent.ForceUpdatePosition(); // Ensure a correct initial state. Movement component can't do it itself.
+			ClientService.CreateObjectForPlayers(this);
 			return true;
 		}
 
@@ -2106,6 +2106,7 @@ namespace DOL.GS
 				player.Out.SendObjectRemove(this);
 
 			// New position.
+			movementComponent.ForceUpdatePosition();
 			ClientService.CreateObjectForPlayers(this);
 			return true;
 		}
