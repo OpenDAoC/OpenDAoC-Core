@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Numerics;
-using System.Threading;
 using DOL.AI.Brain;
 using DOL.Database;
 using DOL.GS.Movement;
 using DOL.GS.ServerProperties;
+using DOL.Logging;
 using static DOL.GS.GameObject;
 
 namespace DOL.GS
 {
     public class NpcMovementComponent : MovementComponent
     {
-        public static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        public static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public const short DEFAULT_WALK_SPEED = 70;
 
