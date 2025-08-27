@@ -43,7 +43,7 @@ namespace DOL.Tests.Integration.Server
 			for (int i = 0; i < count; i++)
 			{
 				GameNPC mob = mobs[i] = new GameNPC();
-				ClassicAssert.IsTrue(mob.ObjectID == -1, "mob {0} oid={1}, should be -1", i, mob.ObjectID);
+				ClassicAssert.IsTrue(mob.ObjectID == 0, "mob {0} oid={1}, should be -1", i, mob.ObjectID);
 				ClassicAssert.IsFalse(mob.ObjectState == GameObject.eObjectState.Active, "mob {0} state={1}, should be not Active", i, mob.ObjectState);
 				mob.Name = "test mob " + i;
 				mob.CurrentRegion = m_reg;
@@ -78,7 +78,7 @@ namespace DOL.Tests.Integration.Server
 					GameNPC mob = mobs[i];
 					int oid = mob.ObjectID;
 					ClassicAssert.IsTrue(mob.RemoveFromWorld(), "failed to remove {0}", mob.Name);
-					ClassicAssert.IsTrue(mob.ObjectID == -1, "{0}: oid is not -1 (oid={1})", mob.Name, mob.ObjectID);
+					ClassicAssert.IsTrue(mob.ObjectID == 0, "{0}: oid is not -1 (oid={1})", mob.Name, mob.ObjectID);
 					ClassicAssert.IsFalse(mob.ObjectState == GameObject.eObjectState.Active, "{0} is still active after remove", mob.Name);
 					GameNPC regMob = (GameNPC)m_reg.GetObject((ushort)oid);
 					ClassicAssert.IsNull(regMob, "{0} was removed from the region but oid {1} is still used by {2}", mob.Name, oid, regMob==null?"null":regMob.Name);

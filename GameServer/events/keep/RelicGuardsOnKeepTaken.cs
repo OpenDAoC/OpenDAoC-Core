@@ -218,7 +218,7 @@ namespace DOL.GS.GameEvents
                     RemoveGuardFromWorld(guard2, ref addedGuardsCount, $"{guardName}(2)");
                 }
 
-                bool IsGuardNotInWorld(GuardFighterRK guard) => guard != null && guard.ObjectID == -1;
+                bool IsGuardNotInWorld(GuardFighterRK guard) => guard != null && guard.ObjectState is not GameObject.eObjectState.Active;
 
                 void AddGuardToWorld(GuardFighterRK guard, ref int count, int max, string name)
                 {
