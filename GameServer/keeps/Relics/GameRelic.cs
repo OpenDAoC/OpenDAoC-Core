@@ -2,632 +2,482 @@ using System;
 using System.Collections;
 using DOL.Database;
 using DOL.Events;
-using DOL.GS.Keeps;
 using DOL.GS.PacketHandler;
 using DOL.GS.ServerProperties;
+using DOL.Logging;
 
 namespace DOL.GS
 {
-	public enum eRelicType : int
-	{
-		Invalid = -1,
-		Strength = 0,
-		Magic = 1
-	}
-
-	public class GameRelic : GameStaticItem
-	{
-		private static readonly Logging.Logger log = Logging.LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-		public const string PLAYER_CARRY_RELIC_WEAK = "IAmCarryingARelic";
-		protected const int RelicEffectInterval = 4000;
-
-		#region declarations
-		DbInventoryItem m_item;
-		GamePlayer m_currentCarrier = null;
-		GameRelicPad m_currentRelicPad = null;
-		GameRelicPad m_returnRelicPad = null;
-		DateTime m_lastCapturedDate = DateTime.Now;
-		ECSGameTimer m_currentCarrierTimer;
-		DbRelic m_dbRelic;
-		eRelicType m_relicType;
-		ECSGameTimer m_returnRelicTimer;
-		long m_timeRelicOnGround = 0;
-
-		protected int ReturnRelicInterval
-		{
-			get { return ServerProperties.Properties.RELIC_RETURN_TIME * 1000; }
-		}
-
-		/// <summary>
-		/// The place were the relic should go if it is lost by players
-		/// after the expiration timer
-		/// </summary>
-		public virtual GameRelicPad ReturnRelicPad
-		{
-			get { return m_returnRelicPad; }
-			set { m_returnRelicPad = value; }
-		}
-		
-		/// <summary>
-		/// Get the RelicType (melee or magic)
-		/// </summary>
-		public eRelicType RelicType
-		{
-			get
-			{
-				return m_relicType;
-			}
-		}
-
-		private eRealm m_originalRealm;
-
-		/// <summary>
-		/// Get the original Realm of the relict (can only be 1(alb),2(mid) or 3(hibernia))
-		/// </summary>
-		public eRealm OriginalRealm
-		{
-			get
-			{
-				return m_originalRealm;
-			}
-		}
-
-		private eRealm m_lastRealm = eRealm.None;
-
-		/// <summary>
-		/// Get the Realm who last owned this relic
-		/// </summary>
-		public eRealm LastRealm
-		{
-			get
-			{
-				return m_lastRealm;
-			}
-			set
-			{
-				m_lastRealm = value;
-			}
-		}
-
-		public DateTime LastCaptureDate
-		{
-			get { return m_lastCapturedDate; }
-			set { m_lastCapturedDate = value; }
-		}
-
-		/// <summary>
-		/// Returns the carriing player if there is one.
-		/// </summary>
-		public GameRelicPad CurrentRelicPad
-		{
-			get
-			{
-				return m_currentRelicPad;
-			}
-		}
-
-		/// <summary>
-		/// Returns the carriing player if there is one.
-		/// </summary>
-		public GamePlayer CurrentCarrier
-		{
-			get
-			{
-				return m_currentCarrier;
-			}
-		}
-
-		public bool IsMounted
-		{
-			get
-			{
-				return (m_currentRelicPad != null);
-			}
-		}
-
-		public static bool IsPlayerCarryingRelic(GamePlayer player)
-		{
-			return player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) != null;
-		}
-
-		#endregion
-
-		#region constructor
-		public GameRelic() : base() { m_saveInDB = true; }
-
-
-		public GameRelic(DbRelic obj)
-			: this()
-		{
-			LoadFromDatabase(obj);
-		}
-		#endregion
-
-		#region behavior
-		/// <summary>
-		/// This method is called whenever a player tries to interact with this object
-		/// </summary>
-		/// <param name="player"></param>
-		/// <returns></returns>
-		public override bool Interact(GamePlayer player)
-		{
-			if (!base.Interact(player)) return false;
-
-			if (!player.IsAlive)
-			{
-				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You are dead!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return false;
-			}
-
-			if (IsMounted && player.Realm == Realm)
-			{
-				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". It is owned by your realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return false;
-			}
-
-			if (IsMounted && !RelicMgr.CanPickupRelicFromShrine(player, this))
-			{
-				player.Out.SendMessage("You cannot pickup " + GetName(0, false) + ". You need to capture your realms " + (Enum.GetName(typeof(eRelicType), RelicType)) + " relic first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return false;
-			}
-
-			PlayerTakesRelic(player);
-			return true;
-		}
-
-		public virtual void RelicPadTakesOver(GameRelicPad pad, bool returning)
-		{
-			m_currentRelicPad = pad;
-			Realm = pad.Realm;
-			LastRealm = pad.Realm;
-			pad.MountRelic(this, returning);
-			CurrentRegionID = pad.CurrentRegionID;
-			PlayerLoosesRelic(true);
-			X = pad.X;
-			Y = pad.Y;
-			Z = pad.Z;
-			Heading = pad.Heading;
-			SaveIntoDatabase();
-			AddToWorld();
-		}
-
-
-		#region protected stuff
-
-		protected virtual void Update()
-		{
-			if (m_item == null || m_currentCarrier == null)
-				return;
-			CurrentRegionID = m_currentCarrier.CurrentRegionID;
-			X = m_currentCarrier.X;
-			Y = m_currentCarrier.Y;
-			Z = m_currentCarrier.Z;
-			Heading = m_currentCarrier.Heading;
-		}
-
-
-		/// <summary>
-		/// This method is called from the Interaction with the GameStaticItem
-		/// </summary>
-		/// <param name="player"></param>
-		protected virtual void PlayerTakesRelic(GamePlayer player)
-		{
-			if (player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) != null)
-			{
-				player.Out.SendMessage("You are already carrying a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-
-			if (player.IsStealthed)
-			{
-				player.Out.SendMessage("You cannot carry a relic while stealthed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-
-			if (!player.IsAlive)
-			{
-				player.Out.SendMessage("You are dead!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-				return;
-			}
-
-			if (IsMounted)
-			{
-				AbstractGameKeep keep = GameServer.KeepManager.GetKeepCloseToSpot(m_currentRelicPad.CurrentRegionID, m_currentRelicPad, WorldMgr.VISIBILITY_DISTANCE);
-
-				log.DebugFormat("keep {0}", keep);
-				
-				if (m_currentRelicPad.GetEnemiesOnPad() < Properties.RELIC_PLAYERS_REQUIRED_ON_PAD)
-				{
-					player.Out.SendMessage($"You must have {Properties.RELIC_PLAYERS_REQUIRED_ON_PAD} players nearby the pad before taking a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-					return;
-				}
-			}
-
-			if (player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, m_item))
-			{
-				if (m_item == null)
-					log.Warn("GameRelic: Could not retrieve " + Name + " as InventoryItem on player " + player.Name);
-				InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Other, m_item.Template, m_item.Count);
-
-
-				m_currentCarrier = player;
-				player.TempProperties.SetProperty(PLAYER_CARRY_RELIC_WEAK, this);
-				player.Out.SendUpdateMaxSpeed();
-
-				if (IsMounted)
-				{
-					m_currentRelicPad.RemoveRelic(this);
-					ReturnRelicPad = m_currentRelicPad;
-					LastRealm = m_currentRelicPad.Realm; // save who owned this in case of server restart while relic is off pad
-					m_currentRelicPad = null;
-				}
-
-				RemoveFromWorld();
-				SaveIntoDatabase();
-				Realm = 0;
-				SetHandlers(player, true);
-				StartPlayerTimer(player);
-				if (m_returnRelicTimer != null)
-				{
-					m_returnRelicTimer.Stop();
-					m_returnRelicTimer = null;
-				}
-
-			}
-			else
-			{
-				player.Out.SendMessage("You dont have enough space in your backpack to carry this.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
-			}
-		}
-
-
-		/// <summary>
-		/// Is called whenever the CurrentCarrier is supposed to loose the relic.
-		/// </summary>
-		/// <param name="removeFromInventory">Defines wheater the Item in the Inventory should be removed.</param>
-		protected virtual void PlayerLoosesRelic(bool removeFromInventory)
-		{
-			if (m_currentCarrier == null)
-			{
-				return;
-			}
-
-			GamePlayer player = m_currentCarrier;
-
-			if (player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) == null)
-			{
-				log.Warn("GameRelic: " + player.Name + " has already lost" + Name);
-				return;
-			}
-			if (removeFromInventory)
-			{
-				lock (player.Inventory.Lock)
-				{
-					bool success = player.Inventory.RemoveItem(m_item);
-					InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Other, m_item.Template, m_item.Count);
-					log.Debug("Remove " + m_item.Name + " from " + player.Name + "'s Inventory " + ((success) ? "successfully." : "with errors."));
-				}
-			}
-
-			// remove the handlers from the player
-			SetHandlers(player, false);
-			//kill the pulsingEffectTimer on the player
-			StartPlayerTimer(null);
-
-			player.TempProperties.RemoveProperty(PLAYER_CARRY_RELIC_WEAK);
-			m_currentCarrier = null;
-			player.Out.SendUpdateMaxSpeed();
-			//CurrentRegion.Time;
-
-			if (IsMounted == false)
-			{
-				// launch the reset timer if this relic is not dropped on a pad
-				m_timeRelicOnGround = GameLoop.GameLoopTime;
-				m_returnRelicTimer = new ECSGameTimer(this, new ECSGameTimer.ECSTimerCallback(ReturnRelicTick), RelicEffectInterval);
-				log.DebugFormat("{0} dropped, return timer for relic set to {1} seconds.", Name, ReturnRelicInterval / 1000);
-
-				// update the position of the worldObject Relic
-				Update();
-				SaveIntoDatabase();
-				AddToWorld();
-			}
-		}
-
-		/// <summary>
-		/// when the relic is lost and ReturnRelicInterval is elapsed
-		/// </summary>
-		protected virtual int ReturnRelicTick(ECSGameTimer timer)
-		{
-			if (GameLoop.GameLoopTime - m_timeRelicOnGround < ReturnRelicInterval)
-			{
-				// Note: This does not show up, possible issue with SendSpellEffect
-				ushort effectID = (ushort)Util.Random(5811, 5815);
-				foreach (GamePlayer ppl in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				{
-					ppl.Out.SendSpellEffectAnimation(this, this, effectID, 0, false, 0x01);
-				}
-				return RelicEffectInterval;
-			}
-
-			if (ReturnRelicPad != null)
-			{
-				log.Debug("Relic " + this.Name + " is lost and returns to " + ReturnRelicPad.ToString());
-				RemoveFromWorld();
-				RelicPadTakesOver(ReturnRelicPad, true);
-				SaveIntoDatabase();
-				AddToWorld();
-			}
-			else
-			{
-				log.Error("Relic " + this.Name + " is lost and ReturnRelicPad is null!");
-			}
-			m_returnRelicTimer.Stop();
-			m_returnRelicTimer = null;
-			return 0;
-		}
-		
-		/// <summary>
-		/// Starts the "signalising effect" sequence on the carrier.
-		/// </summary>
-		/// <param name="player">Player to set the timer on. Timer stops if param is null</param>
-		protected virtual void StartPlayerTimer(GamePlayer player)
-		{
-			if (player != null)
-			{
-				if (m_currentCarrierTimer != null)
-				{
-					log.Warn("GameRelic: PlayerTimer already set on a player, stopping timer!");
-					m_currentCarrierTimer.Stop();
-					m_currentCarrierTimer = null;
-				}
-				m_currentCarrierTimer = new ECSGameTimer(player, new ECSGameTimer.ECSTimerCallback(CarrierTimerTick));
-				m_currentCarrierTimer.Start(RelicEffectInterval);
-
-			}
-			else
-			{
-				if (m_currentCarrierTimer != null)
-				{
-					m_currentCarrierTimer.Stop();
-					m_currentCarrierTimer = null;
-				}
-			}
-
-
-		}
-
-		/// <summary>
-		/// The callback for the pulsing spelleffect
-		/// </summary>
-		/// <param name="timer">The ObjectTimerCallback object</param>
-		private int CarrierTimerTick(ECSGameTimer timer)
-		{
-			//update the relic position
-			Update();
-
-			// check to make sure relic is in a legal region and still in the players backpack
-
-			if (GameServer.KeepManager.FrontierRegionsList.Contains(CurrentRegionID) == false)
-			{
-				log.DebugFormat("{0} taken out of frontiers, relic returned to previous pad.", Name);
-				RelicPadTakesOver(ReturnRelicPad, true);
-				SaveIntoDatabase();
-				AddToWorld();
-				return 0;
-			}
-
-			if (CurrentCarrier != null && CurrentCarrier.Inventory.GetFirstItemByID(m_item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
-			{
-				log.DebugFormat("{0} not found in carriers backpack, relic returned to previous pad.", Name);
-				RelicPadTakesOver(ReturnRelicPad, true);
-				SaveIntoDatabase();
-				AddToWorld();
-				return 0;
-			}
-
-			//fireworks spells temp
-			ushort effectID = (ushort)Util.Random(5811, 5815);
-			foreach (GamePlayer ppl in m_currentCarrier.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
-				ppl.Out.SendSpellEffectAnimation(m_currentCarrier, m_currentCarrier, effectID, 0, false, 0x01);
-
-			return RelicEffectInterval;
-		}
-
-
-		/// <summary>
-		/// Enables or Deactivate the handlers for the carrying player behavior
-		/// </summary>
-		/// <param name="player"></param>
-		/// <param name="activate"></param>
-		protected virtual void SetHandlers(GamePlayer player, bool activate)
-		{
-			if (activate)
-			{
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.AddHandler(player, PlayerInventoryEvent.ItemDropped, new DOLEventHandler(PlayerAbsence));
-
-			}
-			else
-			{
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Quit, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Dying, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, GamePlayerEvent.Linkdeath, new DOLEventHandler(PlayerAbsence));
-				GameEventMgr.RemoveHandler(player, PlayerInventoryEvent.ItemDropped, new DOLEventHandler(PlayerAbsence));
-			}
-
-
-		}
-		protected void PlayerAbsence(DOLEvent e, object sender, EventArgs args)
-		{
-			Realm=0;
-			if (e == PlayerInventoryEvent.ItemDropped)
-			{
-				ItemDroppedEventArgs idArgs = args as ItemDroppedEventArgs;
-				if (idArgs.SourceItem.Name != m_item.Name) return;
-				idArgs.GroundItem.RemoveFromWorld();
-				PlayerLoosesRelic(false);
-				return;
-			}
-			PlayerLoosesRelic(true);
-		}
-
-
-		#endregion
-
-
-		#endregion
-
-		public override IList GetExamineMessages(GamePlayer player)
-		{
-
-			IList messages = base.GetExamineMessages(player);
-			messages.Add((IsMounted) ? ("It is owned by " + ((player.Realm == Realm) ? "your realm" : GlobalConstants.RealmToName((eRealm)Realm)) + ".") : "It is without owner, take it!");
-			return messages;
-		}
-
-		#region database load/save
-		/// <summary>
-		/// Loads the GameRelic from Database
-		/// </summary>
-		/// <param name="obj">The DBRelic-object for this relic</param>
-		public override void LoadFromDatabase(DataObject obj)
-		{
-			InternalID = obj.ObjectId;
-			m_dbRelic = obj as DbRelic;
-			CurrentRegionID = (ushort)m_dbRelic.Region;
-			X = m_dbRelic.X;
-			Y = m_dbRelic.Y;
-			Z = m_dbRelic.Z;
-			Heading = (ushort)m_dbRelic.Heading;
-			m_relicType = (eRelicType)m_dbRelic.relicType;
-			Realm = (eRealm)m_dbRelic.Realm;
-			m_originalRealm = (eRealm)m_dbRelic.OriginalRealm;
-			m_lastRealm = (eRealm)m_dbRelic.LastRealm;
-			m_lastCapturedDate = m_dbRelic.LastCaptureDate;
-
-
-			//get constant values
-			MiniTemp template = GetRelicTemplate(m_originalRealm, m_relicType);
-			m_name = template.Name;
-			m_model = template.Model;
-			template = null;
-
-			//set still empty fields
-			Emblem = 0;
-			Level = 99;
-
-			//generate itemtemplate for inventoryitem
-			DbItemTemplate m_itemTemp;
-			m_itemTemp = new DbItemTemplate();
-			m_itemTemp.Name = Name;
-			m_itemTemp.Object_Type = (int)eObjectType.Magical;
-			m_itemTemp.Model = Model;
-			m_itemTemp.IsDropable = true;
-			m_itemTemp.IsPickable = false;
-			m_itemTemp.Level = 99;
-			m_itemTemp.Quality = 100;
-			m_itemTemp.Price = 0;
-			m_itemTemp.PackSize = 1;
-			m_itemTemp.AllowAdd = false;
-			m_itemTemp.Weight = 1000;
-			m_itemTemp.Id_nb = "GameRelic";
-			m_itemTemp.IsTradable = false;
-			m_itemTemp.ClassType = "DOL.GS.GameInventoryRelic";
-			m_item = GameInventoryItem.Create(m_itemTemp);
-		}
-		/// <summary>
-		/// Saves the current GameRelic to the database
-		/// </summary>
-		public override void SaveIntoDatabase()
-		{
-			m_dbRelic.Realm = (int)Realm;
-			m_dbRelic.OriginalRealm = (int)OriginalRealm;
-			m_dbRelic.LastRealm = (int)m_lastRealm;
-			m_dbRelic.Heading = (int)Heading;
-			m_dbRelic.Region = (int)CurrentRegionID;
-			m_dbRelic.relicType = (int)RelicType;
-			m_dbRelic.X = X;
-			m_dbRelic.Y = Y;
-			m_dbRelic.Z = Z;
-			m_dbRelic.LastCaptureDate = m_lastCapturedDate;
-
-			if (InternalID == null)
-			{
-				GameServer.Database.AddObject(m_dbRelic);
-				InternalID = m_dbRelic.ObjectId;
-			}
-			else
-				GameServer.Database.SaveObject(m_dbRelic);
-		}
-		#endregion
-
-		#region utils
-
-		/// <summary>
-		/// Returns a Template for Name and Model for the relic
-		/// </summary>
-		/// <returns>this object has only set Realm and Name</returns>
-		public class MiniTemp
-		{
-			public MiniTemp() { }
-			public string Name;
-			public ushort Model;
-		}
-
-		public static MiniTemp GetRelicTemplate(eRealm Realm, eRelicType RelicType)
-		{
-			MiniTemp m_template = new MiniTemp();
-			switch (Realm)
-			{
-				case eRealm.Albion:
-					if (RelicType == eRelicType.Magic)
-					{
-						m_template.Name = "Merlin's Staff";
-						m_template.Model = 630;
-					}
-					else
-					{
-						m_template.Name = "Scabbard of Excalibur";
-						m_template.Model = 631;
-					}
-					break;
-				case eRealm.Midgard:
-					if (RelicType == eRelicType.Magic)
-					{
-						m_template.Name = "Horn of Valhalla";
-						m_template.Model = 635;
-					}
-					else
-					{
-						m_template.Name = "Thor's Hammer";
-						m_template.Model = 634;
-					}
-					break;
-				case eRealm.Hibernia:
-					if (RelicType == eRelicType.Magic)
-					{
-						m_template.Name = "Cauldron of Dagda";
-						m_template.Model = 632;
-					}
-					else
-					{
-						m_template.Name = "Lug's Spear of Lightning";
-						m_template.Model = 633;
-					}
-					break;
-				default:
-					m_template.Name = "Unknown Relic";
-					m_template.Model = 633;
-					break;
-
-			}
-			return m_template;
-		}
-		#endregion
-	}
+    public enum eRelicType : int
+    {
+        Invalid = -1,
+        Strength = 0,
+        Magic = 1
+    }
+
+    public class GameRelic : GameStaticItem
+    {
+        private static readonly Logger log = LoggerManager.Create(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
+        public const string PLAYER_CARRY_RELIC_WEAK = "IAmCarryingARelic";
+        private const int RELIC_EFFECT_INTERVAL = 4000;
+
+        private GameInventoryItem _item;
+        private ECSGameTimer _currentCarrierTimer;
+        private DbRelic _dbRelic;
+        private ECSGameTimer _returnRelicTimer;
+        private long _timeRelicOnGround;
+        private GameRelicPad _returnRelicPad;
+
+        public DateTime LastCaptureDate { get; set; } = DateTime.Now;
+        public eRelicType RelicType { get; private set; }
+        public eRealm OriginalRealm { get; private set; }
+        public eRealm LastRealm { get; private set; } = eRealm.None;
+        public GameRelicPad CurrentRelicPad { get; private set; }
+        public GamePlayer CurrentCarrier { get; private set; }
+        public bool IsMounted => CurrentRelicPad != null;
+        public static int ReturnRelicInterval => Properties.RELIC_RETURN_TIME * 1000;
+
+        public GameRelic() : base()
+        {
+            m_saveInDB = true;
+        }
+
+        public GameRelic(DbRelic obj) : this()
+        {
+            LoadFromDatabase(obj);
+        }
+
+        public override bool Interact(GamePlayer player)
+        {
+            if (!base.Interact(player))
+                return false;
+
+            if (player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) != null)
+            {
+                player.Out.SendMessage("You are already carrying a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return false;
+            }
+
+            if (!player.IsAlive)
+            {
+                player.Out.SendMessage($"You cannot pickup {GetName(0, false)}. You are dead!", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return false;
+            }
+
+            if (player.IsStealthed)
+            {
+                player.Out.SendMessage("You cannot carry a relic while stealthed.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return false;
+            }
+
+            if (IsMounted)
+            {
+                if (player.Realm == Realm)
+                {
+                    player.Out.SendMessage($"You cannot pickup {GetName(0, false)}. It is owned by your realm.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+
+                if (!RelicMgr.CanPickupRelicFromShrine(player, this))
+                {
+                    player.Out.SendMessage($"You cannot pickup {GetName(0, false)}. You need to capture your realm's {Enum.GetName(RelicType)} relic first.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+            }
+
+            if ((ePrivLevel)player.Client.Account.PrivLevel == ePrivLevel.Player)
+            {
+                if (IsMounted && CurrentRelicPad.GetEnemiesOnPad() < Properties.RELIC_PLAYERS_REQUIRED_ON_PAD)
+                {
+                    player.Out.SendMessage($"You must have {Properties.RELIC_PLAYERS_REQUIRED_ON_PAD} players nearby the pad before taking a relic.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    return false;
+                }
+            }
+
+            if (!player.Inventory.AddItem(eInventorySlot.FirstEmptyBackpack, _item))
+            {
+                player.Out.SendMessage("You don't have enough space in your backpack to carry this.", eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                return false;
+            }
+
+            InventoryLogging.LogInventoryAction(this, player, eInventoryActionType.Other, _item.Template, _item.Count);
+            CurrentCarrier = player;
+            player.TempProperties.SetProperty(PLAYER_CARRY_RELIC_WEAK, this);
+            player.Out.SendUpdateMaxSpeed();
+
+            if (IsMounted)
+            {
+                CurrentRelicPad.RemoveRelic(this);
+                _returnRelicPad = CurrentRelicPad;
+                LastRealm = CurrentRelicPad.Realm;
+                CurrentRelicPad = null;
+            }
+
+            RemoveFromWorld();
+            SaveIntoDatabase();
+            Realm = 0;
+            SetHandlers(player, true);
+            StartPlayerTimer(player);
+
+            if (_returnRelicTimer != null)
+            {
+                _returnRelicTimer.Stop();
+                _returnRelicTimer = null;
+            }
+
+            return true;
+        }
+
+        public virtual void RelicPadTakesOver(GameRelicPad pad, bool returning)
+        {
+            CurrentRelicPad = pad;
+            Realm = pad.Realm;
+            LastRealm = pad.Realm;
+            pad.MountRelic(this, returning);
+            CurrentRegionID = pad.CurrentRegionID;
+            PlayerLoosesRelic(true);
+            X = pad.X;
+            Y = pad.Y;
+            Z = pad.Z;
+            Heading = pad.Heading;
+            SaveIntoDatabase();
+            AddToWorld();
+        }
+
+        public override IList GetExamineMessages(GamePlayer player)
+        {
+            IList messages = base.GetExamineMessages(player);
+            messages.Add(IsMounted ? $"It is owned by {(player.Realm == Realm ? "your realm" : GlobalConstants.RealmToName(Realm))}." : "It is without owner, take it!");
+            return messages;
+        }
+
+        public override void LoadFromDatabase(DataObject obj)
+        {
+            InternalID = obj.ObjectId;
+            _dbRelic = obj as DbRelic;
+            CurrentRegionID = (ushort) _dbRelic.Region;
+            X = _dbRelic.X;
+            Y = _dbRelic.Y;
+            Z = _dbRelic.Z;
+            Heading = (ushort) _dbRelic.Heading;
+            RelicType = (eRelicType) _dbRelic.relicType;
+            Realm = (eRealm) _dbRelic.Realm;
+            OriginalRealm = (eRealm) _dbRelic.OriginalRealm;
+            LastRealm = (eRealm) _dbRelic.LastRealm;
+            LastCaptureDate = _dbRelic.LastCaptureDate;
+            Emblem = 0;
+            Level = 99;
+
+            MiniTemp template = GetRelicTemplate(OriginalRealm, RelicType);
+            m_name = template.Name;
+            m_model = template.Model;
+
+            DbItemTemplate itemTemplate = new()
+            {
+                Name = Name,
+                Object_Type = (int) eObjectType.Magical,
+                Model = Model,
+                IsDropable = true,
+                IsPickable = false,
+                Level = 99,
+                Quality = 100,
+                Price = 0,
+                PackSize = 1,
+                AllowAdd = false,
+                Weight = 1000,
+                Id_nb = "GameRelic",
+                IsTradable = false,
+                ClassType = "DOL.GS.GameInventoryRelic"
+            };
+
+            _item = GameInventoryItem.Create(itemTemplate);
+        }
+
+        public override void SaveIntoDatabase()
+        {
+            _dbRelic.Realm = (int) Realm;
+            _dbRelic.OriginalRealm = (int) OriginalRealm;
+            _dbRelic.LastRealm = (int) LastRealm;
+            _dbRelic.Heading = Heading;
+            _dbRelic.Region = CurrentRegionID;
+            _dbRelic.relicType = (int) RelicType;
+            _dbRelic.X = X;
+            _dbRelic.Y = Y;
+            _dbRelic.Z = Z;
+            _dbRelic.LastCaptureDate = LastCaptureDate;
+
+            if (InternalID == null)
+            {
+                GameServer.Database.AddObject(_dbRelic);
+                InternalID = _dbRelic.ObjectId;
+            }
+            else
+                GameServer.Database.SaveObject(_dbRelic);
+        }
+
+        protected virtual void Update()
+        {
+            if (_item == null || CurrentCarrier == null)
+                return;
+
+            CurrentRegionID = CurrentCarrier.CurrentRegionID;
+            X = CurrentCarrier.X;
+            Y = CurrentCarrier.Y;
+            Z = CurrentCarrier.Z;
+            Heading = CurrentCarrier.Heading;
+        }
+
+        protected virtual void PlayerLoosesRelic(bool removeFromInventory)
+        {
+            if (CurrentCarrier == null)
+                return;
+
+            GamePlayer player = CurrentCarrier;
+
+            if (player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) == null)
+            {
+                if (log.IsWarnEnabled)
+                    log.Warn($"GameRelic: {player.Name} has already lost {Name}");
+
+                return;
+            }
+
+            if (removeFromInventory)
+            {
+                lock (player.Inventory.Lock)
+                {
+                    bool success = player.Inventory.RemoveItem(_item);
+                    InventoryLogging.LogInventoryAction(player, this, eInventoryActionType.Other, _item.Template, _item.Count);
+
+                    if (log.IsDebugEnabled)
+                        log.Debug($"Remove {_item.Name} from {player.Name}'s Inventory {(success ? "successfully." : "with errors.")}");
+                }
+            }
+
+            SetHandlers(player, false);
+            StartPlayerTimer(null);
+            player.TempProperties.RemoveProperty(PLAYER_CARRY_RELIC_WEAK);
+            CurrentCarrier = null;
+            player.Out.SendUpdateMaxSpeed();
+
+            if (IsMounted == false)
+            {
+                _timeRelicOnGround = GameLoop.GameLoopTime;
+                _returnRelicTimer = new(this, ReturnRelicTick, RELIC_EFFECT_INTERVAL);
+
+                if (log.IsDebugEnabled)
+                    log.Debug($"{Name} dropped, return timer for relic set to {ReturnRelicInterval / 1000} seconds.");
+
+                Update();
+                SaveIntoDatabase();
+                AddToWorld();
+            }
+        }
+
+        protected virtual int ReturnRelicTick(ECSGameTimer timer)
+        {
+            if (GameLoop.GameLoopTime - _timeRelicOnGround < ReturnRelicInterval)
+            {
+                ushort effectID = (ushort) Util.Random(5811, 5815);
+
+                foreach (GamePlayer ppl in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                    ppl.Out.SendSpellEffectAnimation(this, this, effectID, 0, false, 0x01);
+
+                return RELIC_EFFECT_INTERVAL;
+            }
+
+            if (_returnRelicPad != null)
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug($"Relic {Name} is lost and returns to {_returnRelicPad}");
+
+                RemoveFromWorld();
+                RelicPadTakesOver(_returnRelicPad, true);
+                SaveIntoDatabase();
+                AddToWorld();
+            }
+            else
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Relic {Name} is lost and ReturnRelicPad is null!");
+            }
+
+            _returnRelicTimer.Stop();
+            _returnRelicTimer = null;
+            return 0;
+        }
+
+        protected virtual void StartPlayerTimer(GamePlayer player)
+        {
+            if (player != null)
+            {
+                if (_currentCarrierTimer != null)
+                {
+                    if (log.IsWarnEnabled)
+                        log.Warn("PlayerTimer already set on a player, stopping timer!");
+
+                    _currentCarrierTimer.Stop();
+                    _currentCarrierTimer = null;
+                }
+                
+                _currentCarrierTimer = new(player, CarrierTimerTick);
+                _currentCarrierTimer.Start(RELIC_EFFECT_INTERVAL);
+            }
+            else
+            {
+                if (_currentCarrierTimer != null)
+                {
+                    _currentCarrierTimer.Stop();
+                    _currentCarrierTimer = null;
+                }
+            }
+        }
+
+        private int CarrierTimerTick(ECSGameTimer timer)
+        {
+            Update();
+
+            if (GameServer.KeepManager.FrontierRegionsList.Contains(CurrentRegionID) == false)
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug($"{Name} taken out of frontiers, relic returned to previous pad.");
+
+                RelicPadTakesOver(_returnRelicPad, true);
+                SaveIntoDatabase();
+                AddToWorld();
+                return 0;
+            }
+
+            if (CurrentCarrier != null && CurrentCarrier.Inventory.GetFirstItemByID(_item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
+            {
+                if (log.IsDebugEnabled)
+                    log.Debug($"{Name} not found in carriers backpack, relic returned to previous pad.");
+
+                RelicPadTakesOver(_returnRelicPad, true);
+                SaveIntoDatabase();
+                AddToWorld();
+                return 0;
+            }
+
+            ushort effectID = (ushort) Util.Random(5811, 5815);
+
+            foreach (GamePlayer player in CurrentCarrier.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
+                player.Out.SendSpellEffectAnimation(CurrentCarrier, CurrentCarrier, effectID, 0, false, 0x01);
+
+            return RELIC_EFFECT_INTERVAL;
+        }
+
+        protected virtual void SetHandlers(GamePlayer player, bool activate)
+        {
+            if (activate)
+            {
+                GameEventMgr.AddHandler(player, GamePlayerEvent.Quit, new(PlayerAbsence));
+                GameEventMgr.AddHandler(player, GameLivingEvent.Dying, new(PlayerAbsence));
+                GameEventMgr.AddHandler(player, GamePlayerEvent.StealthStateChanged, new(PlayerAbsence));
+                GameEventMgr.AddHandler(player, GamePlayerEvent.Linkdeath, new(PlayerAbsence));
+                GameEventMgr.AddHandler(player, PlayerInventoryEvent.ItemDropped, new(PlayerAbsence));
+            }
+            else
+            {
+                GameEventMgr.RemoveHandler(player, GamePlayerEvent.Quit, new(PlayerAbsence));
+                GameEventMgr.RemoveHandler(player, GameLivingEvent.Dying, new(PlayerAbsence));
+                GameEventMgr.RemoveHandler(player, GamePlayerEvent.StealthStateChanged, new(PlayerAbsence));
+                GameEventMgr.RemoveHandler(player, GamePlayerEvent.Linkdeath, new(PlayerAbsence));
+                GameEventMgr.RemoveHandler(player, PlayerInventoryEvent.ItemDropped, new(PlayerAbsence));
+            }
+        }
+
+        protected void PlayerAbsence(DOLEvent e, object sender, EventArgs args)
+        {
+            Realm = 0;
+
+            if (e == PlayerInventoryEvent.ItemDropped)
+            {
+                ItemDroppedEventArgs idArgs = args as ItemDroppedEventArgs;
+
+                if (idArgs.SourceItem.Name != _item.Name)
+                    return;
+
+                idArgs.GroundItem.RemoveFromWorld();
+                PlayerLoosesRelic(false);
+                return;
+            }
+
+            PlayerLoosesRelic(true);
+        }
+
+        public static bool IsPlayerCarryingRelic(GamePlayer player)
+        {
+            return player.TempProperties.GetProperty<GameRelic>(PLAYER_CARRY_RELIC_WEAK) != null;
+        }
+
+        public static MiniTemp GetRelicTemplate(eRealm realm, eRelicType relicType)
+        {
+            MiniTemp template = new();
+
+            switch (realm)
+            {
+                case eRealm.Albion:
+                {
+                    if (relicType is eRelicType.Magic)
+                    {
+                        template.Name = "Merlin's Staff";
+                        template.Model = 630;
+                    }
+                    else
+                    {
+                        template.Name = "Scabbard of Excalibur";
+                        template.Model = 631;
+                    }
+
+                    break;
+                }
+                case eRealm.Midgard:
+                {
+                    if (relicType is eRelicType.Magic)
+                    {
+                        template.Name = "Horn of Valhalla";
+                        template.Model = 635;
+                    }
+                    else
+                    {
+                        template.Name = "Thor's Hammer";
+                        template.Model = 634;
+                    }
+
+                    break;
+                }
+                case eRealm.Hibernia:
+                {
+                    if (relicType is eRelicType.Magic)
+                    {
+                        template.Name = "Cauldron of Dagda";
+                        template.Model = 632;
+                    }
+                    else
+                    {
+                        template.Name = "Lug's Spear of Lightning";
+                        template.Model = 633;
+                    }
+
+                    break;
+                }
+                default:
+                {
+                    template.Name = "Unknown Relic";
+                    template.Model = 633;
+                    break;
+                }
+            }
+
+            return template;
+        }
+
+        public class MiniTemp
+        {
+            public string Name;
+            public ushort Model;
+        }
+    }
 }

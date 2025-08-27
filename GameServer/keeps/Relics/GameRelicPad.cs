@@ -4,343 +4,259 @@ using System.Reflection;
 using DOL.Events;
 using DOL.GS.PacketHandler;
 using DOL.Language;
+using DOL.Logging;
 using JNogueira.Discord.Webhook.Client;
 
 namespace DOL.GS
 {
-	public class GameRelicPad : GameStaticItem
-	{
-		const int PAD_AREA_RADIUS = 250;
+    public class GameRelicPad : GameStaticItem
+    {
+        private const int PAD_AREA_RADIUS = 250;
 
-		PadArea m_area = null;
-		GameRelic m_mountedRelic = null;
+        private PadArea _area;
 
-		#region constructor
-		public GameRelicPad()
-			: base()
-		{
-		}
-		#endregion
+        public override ushort Model
+        {
+            get => 2655;
+            set => base.Model = value;
+        }
 
-		#region Add/remove from world
-		/// <summary>
-		/// add the relicpad to world
-		/// </summary>
-		/// <returns></returns>
-		public override bool AddToWorld()
-		{
-			m_area = new PadArea(this);
-			CurrentRegion.AddArea(m_area);
-			bool success = base.AddToWorld();
-			if (success)
-			{
-				/*
-				 * <[RF][BF]Cerian> mid: mjolnerr faste (str)
-					<[RF][BF]Cerian> mjollnerr
-					<[RF][BF]Cerian> grallarhorn faste (magic)
-					<[RF][BF]Cerian> alb: Castle Excalibur (str)
-					<[RF][BF]Cerian> Castle Myrddin (magic)
-					<[RF][BF]Cerian> Hib: Dun Lamfhota (str), Dun Dagda (magic)
-				 */
-				//Name = GlobalConstants.RealmToName((DOL.GS.PacketHandler.eRealm)Realm)+ " Relic Pad";
-				RelicMgr.AddRelicPad(this);
-			}
+        public override eRealm Realm
+        {
+            get => Emblem switch
+            {
+                1 or 11 => eRealm.Albion,
+                2 or 12 => eRealm.Midgard,
+                3 or 13 => eRealm.Hibernia,
+                _ => eRealm.None,
+            };
+            set => base.Realm = value;
+        }
 
-			return success;
-		}
+        public virtual eRelicType PadType => Emblem switch
+        {
+            1 or 2 or 3 => eRelicType.Strength,
+            11 or 12 or 13 => eRelicType.Magic,
+            _ => eRelicType.Invalid,
+        };
 
-		public override ushort Model
-		{
-			get
-			{
-				return 2655;
-			}
-			set
-			{
-				base.Model = value;
-			}
-		}
+        public GameRelic MountedRelic { get; private set; }
 
-		public override eRealm Realm
-		{
-			get
-			{
-				switch (Emblem)
-				{
-					case 1:
-					case 11:
-						return eRealm.Albion;
-					case 2:
-					case 12:
-						return eRealm.Midgard;
-					case 3:
-					case 13:
-						return eRealm.Hibernia;
-					default:
-						return eRealm.None;
-				}
-			}
-			set
-			{
-				base.Realm = value;
-			}
-		}
+        public GameRelicPad() : base() { }
 
-		public virtual eRelicType PadType
-		{
-			get
-			{
-				switch (Emblem)
-				{
-					case 1:
-					case 2:
-					case 3:
-						return eRelicType.Strength;
-					case 11:
-					case 12:
-					case 13:
-						return eRelicType.Magic;
-					default:
-						return eRelicType.Invalid;
+        public override bool AddToWorld()
+        {
+            _area = new(this);
+            CurrentRegion.AddArea(_area);
+            bool success = base.AddToWorld();
 
-				}
-			}
-		}
+            if (success)
+                RelicMgr.AddRelicPad(this);
 
-		/// <summary>
-		/// removes the relicpad from the world
-		/// </summary>
-		/// <returns></returns>
-		public override bool RemoveFromWorld()
-		{
-			if (m_area != null)
-				CurrentRegion.RemoveArea(m_area);
+            return success;
+        }
 
-			return base.RemoveFromWorld();
-		}
-		#endregion
+        public override bool RemoveFromWorld()
+        {
+            if (_area != null)
+                CurrentRegion.RemoveArea(_area);
 
-		/// <summary>
-		/// Checks if a GameRelic is mounted at this GameRelicPad
-		/// </summary>
-		/// <param name="relic"></param>
-		/// <returns></returns>
-		public bool IsMountedHere(GameRelic relic)
-		{
-			return m_mountedRelic == relic;
-		}
-		
-		/// <summary>
-		/// Method to broadcast RvR messages over Discord
-		/// </summary>
-		/// <param name="message">The message</param>
-		/// <param name="realm">The realm</param>
-		public static void BroadcastDiscordRelic(string message, eRealm realm, string keepName)
-		{
-			int color = 0;
-			string avatarUrl = string.Empty;
-			switch (realm)
-			{
-				case eRealm._FirstPlayerRealm:
-					color = 16711680;
-					avatarUrl = string.Empty;
-					break;
-				case eRealm._LastPlayerRealm:
-					color = 32768;
-					avatarUrl = string.Empty;
-					break;
-				default:
-					color = 255;
-					avatarUrl = string.Empty;
-					break;
-			}
-			var client = new DiscordWebhookClient(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
-			// Create your DiscordMessage with all parameters of your message.
-			var discordMessage = new DiscordMessage(
-				"",
-				username: "RvR",
-				avatarUrl: avatarUrl,
-				tts: false,
-				embeds: new[]
-				{
-					new DiscordMessageEmbed(
-						author: new DiscordMessageEmbedAuthor(keepName),
-						color: color,
-						description: message
-					)
-				}
-			);
-			
-			client.SendToDiscord(discordMessage);
-		}
+            return base.RemoveFromWorld();
+        }
 
-		public void MountRelic(GameRelic relic, bool returning)
-		{
-			m_mountedRelic = relic;
+        public bool IsMountedHere(GameRelic relic)
+        {
+            return MountedRelic == relic;
+        }
 
-			if (relic.CurrentCarrier != null && returning == false)
-			{
-				/* Sending broadcast */
-				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.MountRelic.Stored", relic.CurrentCarrier.Name, GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name, Name);
+        public static void BroadcastDiscordRelic(string message, eRealm realm, string keepName)
+        {
+            int color;
+            string avatarUrl;
 
-				foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
-				{
-					otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(otherPlayer.Client.Account.Language, "GameRelicPad.MountRelic.Captured", GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name), eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
-					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-				}
+            switch (realm)
+            {
+                case eRealm._FirstPlayerRealm:
+                {
+                    color = 16711680;
+                    avatarUrl = string.Empty;
+                    break;
+                }
+                case eRealm._LastPlayerRealm:
+                {
+                    color = 32768;
+                    avatarUrl = string.Empty;
+                    break;
+                }
+                default:
+                {
+                    color = 255;
+                    avatarUrl = string.Empty;
+                    break;
+                }
+            }
 
-				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
-				
-				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
-				{
-					BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
-				}
+            DiscordWebhookClient client = new(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID);
 
-				/* Increasing of CapturedRelics */
-				//select targets to increase CapturedRelics
-				//TODO increase stats
-				
-				BattleGroup relicBG = relic.CurrentCarrier?.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
-				List<GamePlayer> targets = new List<GamePlayer>();
+            DiscordMessage discordMessage = new(
+                "",
+                username: "RvR",
+                avatarUrl: avatarUrl,
+                tts: false,
+                embeds:
+                [
+                    new(
+                        author: new(keepName),
+                        color: color,
+                        description: message
+                    )
+                ]
+            );
 
-				if (relicBG != null)
-				{
-					lock (relicBG.Members)
-					{
-						foreach (GamePlayer bgPlayer in relicBG.Members.Keys)
-						{
-							if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
-							{
-								targets.Add(bgPlayer);
-							}
-						}
-					}
-				}
-				else 
-				if (relic.CurrentCarrier.Group != null)
-				{
-					foreach (GamePlayer p in relic.CurrentCarrier.Group.GetPlayersInTheGroup())
-					{
-						targets.Add(p);
-					}
-				}
-				else
-				{
-					targets.Add(relic.CurrentCarrier);
-				}
+            client.SendToDiscord(discordMessage);
+        }
 
-				foreach (GamePlayer target in targets)
-				{
-					target.CapturedRelics++;
-					target.Achieve(AchievementUtils.AchievementNames.Relic_Captures);
-				}
+        public void MountRelic(GameRelic relic, bool returning)
+        {
+            MountedRelic = relic;
 
-				relic.LastCaptureDate = DateTime.Now;
+            if (relic.CurrentCarrier != null && !returning)
+            {
+                string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.MountRelic.Stored", relic.CurrentCarrier.Name, GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name, Name);
 
-				Notify(RelicPadEvent.RelicMounted, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));
-			}
-			else
-			{
-				// relic returned to pad, probably because it was dropped on ground and timer expired.
-				string message = string.Format("The {0} has been returned to {1}.", relic.Name, Name);
+                foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
+                {
+                    otherPlayer.Out.SendMessage(LanguageMgr.GetTranslation(otherPlayer.Client.Account.Language, "GameRelicPad.MountRelic.Captured", GlobalConstants.RealmToName(relic.CurrentCarrier.Realm), relic.Name), eChatType.CT_ScreenCenterSmaller, eChatLoc.CL_SystemWindow);
+                    otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                }
 
-				foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
-					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-			}
-		}
+                NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
 
-		public void RemoveRelic(GameRelic relic)
-		{
-			m_mountedRelic = null;
+                if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID))
+                    BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
 
-			if (relic.CurrentCarrier != null)
-			{
-				string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.RemoveRelic.Removed", relic.CurrentCarrier.Name, GlobalConstants.RealmToName((eRealm)relic.CurrentCarrier.Realm), relic.Name, Name);
+                BattleGroup relicBG = relic.CurrentCarrier?.TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
+                List<GamePlayer> targets = new();
 
-				foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
-					otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+                if (relicBG != null)
+                {
+                    lock (relicBG.Members)
+                    {
+                        foreach (GamePlayer bgPlayer in relicBG.Members.Keys)
+                        {
+                            if (bgPlayer.IsWithinRadius(this, WorldMgr.MAX_EXPFORKILL_DISTANCE))
+                                targets.Add(bgPlayer);
+                        }
+                    }
+                }
+                else if (relic.CurrentCarrier.Group != null)
+                {
+                    foreach (GamePlayer p in relic.CurrentCarrier.Group.GetPlayersInTheGroup())
+                        targets.Add(p);
+                }
+                else
+                    targets.Add(relic.CurrentCarrier);
 
-				NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
-				
-				if (ServerProperties.Properties.DISCORD_ACTIVE && (!string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID)))
-				{
-					BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
-				}
+                foreach (GamePlayer target in targets)
+                {
+                    target.CapturedRelics++;
+                    target.Achieve(AchievementUtils.AchievementNames.Relic_Captures);
+                }
 
-				Notify(RelicPadEvent.RelicStolen, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));
-			}
-		}
-		
-		public int GetEnemiesOnPad()
-		{
-			var players = GetPlayersInRadius(500);
-			var enemyNearby = 0;
-				
-			foreach (GamePlayer p in players)
-			{
-				if (p.Realm == Realm) continue;
-				enemyNearby++;
-			}
-			return enemyNearby;
-		}
+                relic.LastCaptureDate = DateTime.Now;
+                Notify(RelicPadEvent.RelicMounted, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));
+            }
+            else
+            {
+                string message = $"The {relic.Name} has been returned to {Name}.";
 
-		public void RemoveRelic()
-		{
-			m_mountedRelic = null;
-		}
+                foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
+                    otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
+            }
+        }
 
-		public GameRelic MountedRelic
-		{
-			get { return m_mountedRelic; }
-		}
+        public void RemoveRelic(GameRelic relic)
+        {
+            MountedRelic = null;
 
-		/// <summary>
-		/// Area around the pit that checks if a player brings a GameRelic
-		/// </summary>
-		public class PadArea : Area.Circle
-		{
-			private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+            if (relic.CurrentCarrier != null)
+            {
+                string message = LanguageMgr.GetTranslation(ServerProperties.Properties.SERV_LANGUAGE, "GameRelicPad.RemoveRelic.Removed", relic.CurrentCarrier.Name, GlobalConstants.RealmToName((eRealm)relic.CurrentCarrier.Realm), relic.Name, Name);
 
-			GameRelicPad m_parent;
+                foreach (GamePlayer otherPlayer in ClientService.Instance.GetPlayers())
+                    otherPlayer.Out.SendMessage($"{message}\n{message}\n{message}", eChatType.CT_Important, eChatLoc.CL_SystemWindow);
 
-			public PadArea(GameRelicPad parentPad)
-				: base("", parentPad.X, parentPad.Y, parentPad.Z, PAD_AREA_RADIUS)
-			{
-				m_parent = parentPad;
-			}
+                NewsMgr.CreateNews(message, relic.CurrentCarrier.Realm, eNewsType.RvRGlobal, false);
 
-			public override void OnPlayerEnter(GamePlayer player)
-			{
-				GameRelic relicOnPlayer = player.TempProperties.GetProperty<GameRelic>(GameRelic.PLAYER_CARRY_RELIC_WEAK);
-				if (relicOnPlayer == null)
-				{
-					return;
-				}
+                if (ServerProperties.Properties.DISCORD_ACTIVE && !string.IsNullOrEmpty(ServerProperties.Properties.DISCORD_RVR_WEBHOOK_ID))
+                    BroadcastDiscordRelic(message, relic.CurrentCarrier.Realm, relic.Name);
 
-				if (relicOnPlayer.RelicType != m_parent.PadType
-				    // || m_parent.MountedRelic != null
-				    )
-				{
+                Notify(RelicPadEvent.RelicStolen, this, new RelicPadEventArgs(relic.CurrentCarrier, relic));
+            }
+        }
+
+        public int GetEnemiesOnPad()
+        {
+            ICollection<GamePlayer> players = GetPlayersInRadius(500);
+            int enemyNearby = 0;
+
+            foreach (GamePlayer player in players)
+            {
+                if (player.Realm == Realm)
+                    continue;
+
+                enemyNearby++;
+            }
+
+            return enemyNearby;
+        }
+
+        public void RemoveRelic()
+        {
+            MountedRelic = null;
+        }
+
+        public class PadArea : Area.Circle
+        {
+            private static readonly Logger log = LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
+
+            private readonly GameRelicPad _parent;
+
+            public PadArea(GameRelicPad parentPad) : base("", parentPad.X, parentPad.Y, parentPad.Z, PAD_AREA_RADIUS)
+            {
+                _parent = parentPad;
+            }
+
+            public override void OnPlayerEnter(GamePlayer player)
+            {
+                GameRelic relicOnPlayer = player.TempProperties.GetProperty<GameRelic>(GameRelic.PLAYER_CARRY_RELIC_WEAK);
+
+                if (relicOnPlayer == null)
+                    return;
+
+                if (relicOnPlayer.RelicType != _parent.PadType)
+                {
                     player.Client.Out.SendMessage(string.Format(LanguageMgr.GetTranslation(player.Client.Account.Language, "GameRelicPad.OnPlayerEnter.EmptyRelicPad"), relicOnPlayer.RelicType), eChatType.CT_Important, eChatLoc.CL_SystemWindow);
-					log.DebugFormat("Player {0} needs to find an empty {1} relic pad in order to place {2}.", player.Name, relicOnPlayer.RelicType, relicOnPlayer.Name);
-					return;
-				}
 
-				if (player.Realm == m_parent.Realm)
-				{
-					log.DebugFormat("Player {0} captured relic {1}.", player.Name, relicOnPlayer.Name);
-					relicOnPlayer.RelicPadTakesOver(m_parent, false);
-				}
-				else
-				{
-					log.DebugFormat("Player realm {0} wrong realm on attempt to capture relic {1} of realm {2} on pad of realm {3}.",
-					                GlobalConstants.RealmToName(player.Realm),
-					                relicOnPlayer.Name,
-					                GlobalConstants.RealmToName(relicOnPlayer.Realm),
-					                GlobalConstants.RealmToName(m_parent.Realm));
-				}
-			}
-		}
+                    if (log.IsDebugEnabled)
+                        log.Debug($"Player {player.Name} needs to find an empty {relicOnPlayer.RelicType} relic pad in order to place {relicOnPlayer.Name}");
 
-	}
+                    return;
+                }
+
+                if (player.Realm == _parent.Realm)
+                {
+                    if (log.IsDebugEnabled)
+                        log.Debug($"Player {player.Name} captured relic {relicOnPlayer.Name}");
+
+                    relicOnPlayer.RelicPadTakesOver(_parent, false);
+                }
+                else
+                {
+                    if (log.IsDebugEnabled)
+                        log.Debug($"Player realm {GlobalConstants.RealmToName(player.Realm)} wrong realm on attempt to capture relic {relicOnPlayer.Name} of realm {GlobalConstants.RealmToName(relicOnPlayer.Realm)} on pad of realm {GlobalConstants.RealmToName(_parent.Realm)}");
+                }
+            }
+        }
+    }
 }
