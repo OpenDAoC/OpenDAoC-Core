@@ -522,7 +522,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 ushort heading;
 
                 if (player.Steed != null && player.Steed.ObjectState is GameObject.eObjectState.Active)
-                    heading = (ushort) client.Player.Steed.ObjectID;
+                    heading = client.Player.Steed.ObjectID;
                 else
                     heading = player.RawHeading;
 
@@ -575,7 +575,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                     outPak.WriteFloatLowEndian(player.CurrentSpeed);
                     outPak.WriteFloatLowEndian(player.FallSpeed);
                     outPak.WriteShort(client.SessionID);
-                    outPak.WriteShort((ushort) player.ObjectID);
+                    outPak.WriteShort(player.ObjectID);
                     outPak.WriteShort(player.CurrentZone.ID);
                     outPak.WriteByte((byte) stateFlags);
                     outPak.WriteByte(0);
@@ -709,7 +709,7 @@ namespace DOL.GS.PacketHandler.Client.v168
                 // Copy Heading && Falling or Write Steed
                 if (player.Steed != null && player.Steed.ObjectState is GameObject.eObjectState.Active)
                 {
-                    outpak.WriteShort((ushort) player.Steed.ObjectID);
+                    outpak.WriteShort(player.Steed.ObjectID);
                     outpak.WriteShort(seatPosition);
                 }
                 else

@@ -534,12 +534,12 @@ namespace DOL.GS
 		protected bool m_saveInDB;
 
 		/// <summary>
-		/// The objectID. This is -1 as long as the object is not added to a region!
+		/// The objectID. This is 0 as long as the object is not added to a region
 		/// </summary>
-		protected int m_ObjectID = -1;
+		protected ushort m_ObjectID;
 
 		/// <summary>
-		/// The internalID. This is the unique ID of the object in the DB!
+		/// The internalID. This is the unique ID of the object in the DB
 		/// </summary>
 		protected string m_InternalID;
 
@@ -548,7 +548,7 @@ namespace DOL.GS
 		/// This is done automatically by the Region and should
 		/// not be done manually!!!
 		/// </summary>
-		public int ObjectID
+		public ushort ObjectID
 		{
 			get { return m_ObjectID; }
 			set { m_ObjectID = value; }

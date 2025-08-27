@@ -46,7 +46,7 @@ namespace DOL.GS.Keeps
 		/// <summary>
 		/// GameObject ObjectID.
 		/// </summary>
-		int ObjectID { get; }
+		ushort ObjectID { get; }
 		
 		/// <summary>
 		/// Keep Component Skin ID.

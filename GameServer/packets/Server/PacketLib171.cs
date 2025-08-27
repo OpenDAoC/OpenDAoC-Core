@@ -152,7 +152,7 @@ namespace DOL.GS.PacketHandler
 					speedZ = (ushort) npc.movementComponent.Velocity.Z;
 				}
 
-				pak.WriteShort((ushort) npc.ObjectID);
+				pak.WriteShort(npc.ObjectID);
 				pak.WriteShort((ushort) speed);
 				pak.WriteShort(npc.Heading);
 				pak.WriteShort((ushort) npc.Z);

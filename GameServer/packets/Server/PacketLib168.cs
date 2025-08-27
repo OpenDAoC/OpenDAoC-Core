@@ -498,7 +498,7 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PositionAndObjectID)))
 			{
-				pak.WriteShort((ushort) m_gameClient.Player.ObjectID); //This is the player's objectid not Sessionid!!!
+				pak.WriteShort(m_gameClient.Player.ObjectID); //This is the player's objectid not Sessionid!!!
 				pak.WriteShort((ushort) m_gameClient.Player.Z);
 				pak.WriteInt((uint) m_gameClient.Player.X);
 				pak.WriteInt((uint) m_gameClient.Player.Y);
@@ -523,7 +523,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteInt((uint) (headingOnly ? 0 : m_gameClient.Player.X));
 				pak.WriteInt((uint) (headingOnly ? 0 : m_gameClient.Player.Y));
-				pak.WriteShort((ushort) m_gameClient.Player.ObjectID);
+				pak.WriteShort(m_gameClient.Player.ObjectID);
 				pak.WriteShort((ushort) (headingOnly ? 0 : m_gameClient.Player.Z));
 				pak.WriteShort(m_gameClient.Player.Heading);
 				if (m_gameClient.Player.InHouse == false || m_gameClient.Player.CurrentHouse == null)
@@ -651,7 +651,7 @@ namespace DOL.GS.PacketHandler
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PlayerCreate)))
 			{
 				pak.WriteShort(playerToCreate.Client.SessionID);
-				pak.WriteShort((ushort) playerToCreate.ObjectID);
+				pak.WriteShort(playerToCreate.ObjectID);
 				//pak.WriteInt(playerToCreate.X);
 				//pak.WriteInt(playerToCreate.Y);
 				pak.WriteShort((ushort) playerRegion.GetXOffInZone(playerToCreate.X, playerToCreate.Y));
@@ -696,7 +696,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectGuildID)))
 			{
-				pak.WriteShort((ushort) obj.ObjectID);
+				pak.WriteShort(obj.ObjectID);
 				if (guild == null)
 					pak.WriteInt(0x00);
 				else
@@ -843,7 +843,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteShort(yOffsetInTargetZone);
 				pak.WriteShort(z);
 				pak.WriteShort(zOffsetInTargetZone);
-				pak.WriteShort((ushort) obj.ObjectID);
+				pak.WriteShort(obj.ObjectID);
 				pak.WriteShort((ushort) targetOID);
 
 				if (obj is GameLiving)
@@ -884,7 +884,7 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.RemoveObject)))
 			{
-				pak.WriteShort((ushort) obj.ObjectID);
+				pak.WriteShort(obj.ObjectID);
 				pak.WriteShort((ushort) oType);
 				SendTCP(pak);
 			}
@@ -900,7 +900,7 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ObjectCreate)))
 			{
-				pak.WriteShort((ushort) obj.ObjectID);
+				pak.WriteShort(obj.ObjectID);
 				if (obj is GameStaticItem)
 					pak.WriteShort((ushort) (obj as GameStaticItem).Emblem);
 				else pak.WriteShort(0);
@@ -983,7 +983,7 @@ namespace DOL.GS.PacketHandler
 
 		public void SendModelAndSizeChange(GameObject obj, ushort newModel, byte newSize)
 		{
-			SendModelAndSizeChange((ushort) obj.ObjectID, newModel, newSize);
+			SendModelAndSizeChange(obj.ObjectID, newModel, newSize);
 		}
 
 		public virtual void SendModelAndSizeChange(ushort objectId, ushort newModel, byte newSize)
@@ -1001,7 +1001,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.EmoteAnimation)))
 			{
-				pak.WriteShort((ushort) obj.ObjectID);
+				pak.WriteShort(obj.ObjectID);
 				pak.WriteByte((byte) emote);
 				pak.WriteByte(0x00);
 				SendTCP(pak);
@@ -1030,7 +1030,7 @@ namespace DOL.GS.PacketHandler
 					speedZ = (ushort) npc.movementComponent.Velocity.Z;
 				}
 
-				pak.WriteShort((ushort) npc.ObjectID);
+				pak.WriteShort(npc.ObjectID);
 				pak.WriteShort((ushort) speed);
 				pak.WriteShort(npc.Heading);
 				pak.WriteShort((ushort) npc.Z);
@@ -1097,7 +1097,7 @@ namespace DOL.GS.PacketHandler
 
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.EquipmentUpdate)))
 			{
-				pak.WriteShort((ushort) living.ObjectID);
+				pak.WriteShort(living.ObjectID);
 				pak.WriteByte((byte) ((living.IsCloakHoodUp ? 0x01 : 0x00) | (int) living.rangeAttackComponent.ActiveQuiverSlot));
 				//bit0 is hood up bit4 to 7 is active quiver
 				pak.WriteByte(living.VisibleActiveWeaponSlots);
@@ -1203,12 +1203,12 @@ namespace DOL.GS.PacketHandler
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.CombatAnimation)))
 			{
 				if (attacker != null)
-					pak.WriteShort((ushort) attacker.ObjectID);
+					pak.WriteShort(attacker.ObjectID);
 				else
 					pak.WriteShort(0x00);
 
 				if (defender != null)
-					pak.WriteShort((ushort) defender.ObjectID);
+					pak.WriteShort(defender.ObjectID);
 				else
 					pak.WriteShort(0x00);
 
@@ -1261,7 +1261,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SpellCastAnimation)))
 			{
-				pak.WriteShort((ushort) spellCaster.ObjectID);
+				pak.WriteShort(spellCaster.ObjectID);
 				pak.WriteShort(spellID);
 				pak.WriteShort(castingTime);
 				pak.WriteShort(0x00);
@@ -1274,9 +1274,9 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.SpellEffectAnimation)))
 			{
-				pak.WriteShort((ushort) spellCaster.ObjectID);
+				pak.WriteShort(spellCaster.ObjectID);
 				pak.WriteShort(spellid);
-				pak.WriteShort((ushort) (spellTarget == null ? 0 : spellTarget.ObjectID));
+				pak.WriteShort(spellTarget == null ? (ushort) 0 : spellTarget.ObjectID);
 				pak.WriteShort(boltTime);
 				pak.WriteByte((byte) (noSound ? 1 : 0));
 				pak.WriteByte(success);
@@ -1296,8 +1296,8 @@ namespace DOL.GS.PacketHandler
 				log.Error("SendRiding error, slot is -1 with rider " + rider.Name + " steed " + steed.Name);
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Riding)))
 			{
-				pak.WriteShort((ushort) rider.ObjectID);
-				pak.WriteShort((ushort) steed.ObjectID);
+				pak.WriteShort(rider.ObjectID);
+				pak.WriteShort(steed.ObjectID);
 				pak.WriteByte((byte) (dismount ? 0x00 : 0x01));
 				pak.WriteByte((byte) slot);
 				pak.WriteShort(0x00);
@@ -1367,7 +1367,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x03);
-				pak.WriteShort((ushort) invitingPlayer.ObjectID); //data1
+				pak.WriteShort(invitingPlayer.ObjectID); //data1
 				pak.Fill(0x00, 6); //data2&data3
 				pak.WriteByte(0x01);
 				pak.WriteByte(0x00);
@@ -1384,7 +1384,7 @@ namespace DOL.GS.PacketHandler
 			{
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x08);
-				pak.WriteShort((ushort) invitingPlayer.ObjectID); //data1
+				pak.WriteShort(invitingPlayer.ObjectID); //data1
 				pak.Fill(0x00, 6); //data2&data3
 				pak.WriteByte(0x01);
 				pak.WriteByte(0x00);
@@ -1428,7 +1428,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x64);
 				pak.WriteShort(questid); //questid, data1
-				pak.WriteShort((ushort) invitingNPC.ObjectID); //data2
+				pak.WriteShort(invitingNPC.ObjectID); //data2
 				pak.WriteShort(0x00); // 0x00 means subscribe data3
 				pak.WriteShort(0x00);
 				pak.WriteByte(0x01); // yes/no response
@@ -1449,7 +1449,7 @@ namespace DOL.GS.PacketHandler
 				pak.WriteByte(0x00);
 				pak.WriteByte(0x64);
 				pak.WriteShort(questid); //questid, data1
-				pak.WriteShort((ushort) abortingNPC.ObjectID); //data2
+				pak.WriteShort(abortingNPC.ObjectID); //data2
 				pak.WriteShort(0x01); // 0x01 means abort data3
 				pak.WriteShort(0x00);
 				pak.WriteByte(0x01); // yes/no response
@@ -1657,7 +1657,7 @@ namespace DOL.GS.PacketHandler
 							// 0x00 = Normal , 0x01 = Dead , 0x02 = Mezzed , 0x04 = Diseased ,
 							// 0x08 = Poisoned , 0x10 = Link Dead , 0x20 = In Another Region
 
-							pak.WriteShort((ushort) updateLiving.ObjectID); //or session id?
+							pak.WriteShort(updateLiving.ObjectID); //or session id?
 						}
 						else
 						{
@@ -2004,9 +2004,9 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PlayerDeath)))
 			{
-				pak.WriteShort((ushort) killedPlayer.ObjectID);
+				pak.WriteShort(killedPlayer.ObjectID);
 				if (killer != null)
-					pak.WriteShort((ushort) killer.ObjectID);
+					pak.WriteShort(killer.ObjectID);
 				else
 					pak.WriteShort(0x00);
 				pak.Fill(0x0, 4);
@@ -2018,7 +2018,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PlayerRevive)))
 			{
-				pak.WriteShort((ushort) revivedPlayer.ObjectID);
+				pak.WriteShort(revivedPlayer.ObjectID);
 				pak.WriteShort(0x00);
 				SendTCP(pak);
 			}
@@ -2664,7 +2664,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.InterruptSpellCast)))
 			{
-				pak.WriteShort((ushort) living.ObjectID);
+				pak.WriteShort(living.ObjectID);
 				pak.WriteShort(1);
 				SendTCP(pak);
 			}
@@ -2801,7 +2801,7 @@ namespace DOL.GS.PacketHandler
 			// not sure what package this is, but it triggers the mob color update
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.RegionSound)))
 			{
-				pak.WriteShort((ushort) m_gameClient.Player.ObjectID);
+				pak.WriteShort(m_gameClient.Player.ObjectID);
 				pak.WriteByte(1); //level up sounds
 				pak.WriteByte((byte) m_gameClient.Player.Realm);
 				SendTCP(pak);
@@ -2812,7 +2812,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.RegionSound)))
 			{
-				pak.WriteShort((ushort) m_gameClient.Player.ObjectID);
+				pak.WriteShort(m_gameClient.Player.ObjectID);
 				pak.WriteByte(2); //region enter sounds
 				pak.WriteByte(soundId);
 				SendTCP(pak);
@@ -2859,7 +2859,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PlayerModelTypeChange)))
 			{
-				pak.WriteShort((ushort) player.ObjectID);
+				pak.WriteShort(player.ObjectID);
 				pak.WriteByte(modelType);
 				pak.WriteByte((byte) (modelType == 3 ? 0x08 : 0x00)); //unused?
 				SendTCP(pak);
@@ -2922,7 +2922,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.ChangeTarget)))
 			{
-				pak.WriteShort((ushort) (newTarget == null ? 0 : newTarget.ObjectID));
+				pak.WriteShort(newTarget == null ? (ushort) 0 : newTarget.ObjectID);
 				pak.WriteShort(0); // unknown
 				SendTCP(pak);
 			}
@@ -2944,7 +2944,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.PetWindow)))
 			{
-				pak.WriteShort((ushort) (pet == null ? 0 : pet.ObjectID));
+				pak.WriteShort(pet == null ? (ushort) 0 : pet.ObjectID);
 				pak.WriteByte(0x00); //unused
 				pak.WriteByte(0x00); //unused
 				switch (windowAction)
@@ -3332,7 +3332,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.MovingObjectCreate)))
 			{
-				pak.WriteShort((ushort) obj.ObjectID);
+				pak.WriteShort(obj.ObjectID);
 				pak.WriteShort(0);
 				pak.WriteShort(obj.Heading);
 				pak.WriteShort((ushort) obj.Z);

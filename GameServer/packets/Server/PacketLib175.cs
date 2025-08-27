@@ -85,7 +85,7 @@ namespace DOL.GS.PacketHandler
 		{
 			using (var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.VisualEffect)))
 			{
-				pak.WriteShort((ushort) player.ObjectID);
+				pak.WriteShort(player.ObjectID);
 				pak.WriteByte(0x0B); // subcode
 				IPlayerTitle title = player.CurrentTitle;
 				if (title == PlayerTitleMgr.ClearTitle)

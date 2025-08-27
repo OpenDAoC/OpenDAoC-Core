@@ -39,7 +39,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             ushort heading;
 
             if (player.Steed != null && player.Steed.ObjectState is GameObject.eObjectState.Active)
-                heading = (ushort) client.Player.Steed.ObjectID;
+                heading = client.Player.Steed.ObjectID;
             else
                 heading = player.RawHeading;
 

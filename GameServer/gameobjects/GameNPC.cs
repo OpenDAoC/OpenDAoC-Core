@@ -3578,12 +3578,7 @@ namespace DOL.GS
 		{
 			GameObject target = CurrentRegion.GetObject(targetOID);
 
-			if (target == null)
-				return;
-
-			List<SpellWaitingForLosCheck> list;
-
-			if (!_spellsWaitingForLosCheck.TryGetValue(target, out list))
+			if (target == null || !_spellsWaitingForLosCheck.TryGetValue(target, out List<SpellWaitingForLosCheck> list))
 				return;
 
 			bool success = response is LosCheckResponse.True;

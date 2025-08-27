@@ -322,7 +322,7 @@ namespace DOL.GS.PacketHandler
 		{
 			if (player == null) return;
 			GSTCPPacketOut pak = GSTCPPacketOut.Rent(p => p.Init(GetPacketCode(eServerPackets.VisualEffect)));
-			pak.WriteShort((ushort) player.ObjectID);
+			pak.WriteShort(player.ObjectID);
 			pak.WriteByte(12);
 			if (GuildEmblem == 0)
 			{

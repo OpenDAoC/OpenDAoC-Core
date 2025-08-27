@@ -49,8 +49,8 @@ namespace DOL.GS
 
         public bool StartLosCheck(GameObject source, GameObject target, CheckLosResponse callback)
         {
-            ushort sourceObjectId = (ushort) source.ObjectID;
-            ushort targetObjectId = (ushort) target.ObjectID;
+            ushort sourceObjectId = source.ObjectID;
+            ushort targetObjectId = target.ObjectID;
 
             if (sourceObjectId == 0 || targetObjectId == 0)
                 return false;

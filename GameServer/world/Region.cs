@@ -883,7 +883,7 @@ namespace DOL.GS
             //Assign a new id
             lock (ObjectsSyncLock)
             {
-                if (obj.ObjectID != -1)
+                if (obj.ObjectID != 0)
                 {
                     if (obj.ObjectID < m_objects.Length && obj == m_objects[obj.ObjectID - 1])
                     {
@@ -1011,7 +1011,7 @@ namespace DOL.GS
                     objectsRef[objID] = obj;
                     m_nextObjectSlot = objID + 1;
                     m_objectsInRegion++;
-                    obj.ObjectID = objID + 1;
+                    obj.ObjectID = (ushort) (objID + 1); // Safe.
                     m_objectsAllocatedSlots[objID / 32] |= (uint)1 << (objID % 32);
                     Thread.MemoryBarrier();
                     m_objects = objectsRef;
@@ -1106,7 +1106,7 @@ namespace DOL.GS
                     m_nextObjectSlot = index;
                     m_objectsAllocatedSlots[index / 32] &= ~(uint)(1 << (index % 32));
                 }
-                obj.ObjectID = -1; // invalidate object id
+                obj.ObjectID = 0; // invalidate object id
                 m_objectsInRegion--;
             }
         }
