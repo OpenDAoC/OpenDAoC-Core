@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using DOL.Logging;
 using ECS.Debug;
 
@@ -48,6 +49,9 @@ namespace DOL.GS
         {
             try
             {
+                if (Diagnostics.CheckServiceObjectCount)
+                    Interlocked.Increment(ref Instance.EntityCount);
+
                 long startTick = GameLoop.GetRealTime();
                 effectListComponent.Tick();
                 long stopTick = GameLoop.GetRealTime();
