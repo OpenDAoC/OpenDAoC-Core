@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using DOL.GS.PacketHandler;
 using DOL.GS.Spells;
 using DOL.Logging;
@@ -49,6 +50,9 @@ namespace DOL.GS
         {
             try
             {
+                if (Diagnostics.CheckServiceObjectCount)
+                    Interlocked.Increment(ref Instance.EntityCount);
+
                 long startTick = GameLoop.GetRealTime();
                 TickEffect(effect);
                 long stopTick = GameLoop.GetRealTime();
