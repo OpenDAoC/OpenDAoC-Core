@@ -28,7 +28,16 @@ namespace DOL.GS
             {
                 // If there is no active timer for this check, it may have already timed out or never existed.
                 if (!_timers.TryGetValue(new(sourceObjectId, targetObjectId), out timer))
+                {
+                    if (log.IsDebugEnabled)
+                    {
+                        log.Debug($"Discarding late or incorrect LoS check response" +
+                            $" ({nameof(sourceObjectId)}: {sourceObjectId}, {nameof(targetObjectId)}: {targetObjectId}, {nameof(response)}: {response})" +
+                            $" ({_owner})");
+                    }
+
                     return;
+                }
             }
 
             // Execute the callbacks immediately to reduce latency.
@@ -223,12 +232,12 @@ namespace DOL.GS
 
             public override string ToString()
             {
-                return $"{nameof(SourceObjectId)} = {SourceObjectId}," +
-                    $"{nameof(TargetObjectId)} = {TargetObjectId}, " +
-                    $"{nameof(Response)} = {Response}, " +
-                    $"{nameof(_responseExpireTime)} = {_responseExpireTime}, " +
-                    $"{nameof(GameLoop.GameLoopTime)} = {GameLoop.GameLoopTime}, " +
-                    $"{nameof(_callbacks)} = {_callbacks.Count}";
+                return $"{nameof(SourceObjectId)}: {SourceObjectId}, " +
+                    $"{nameof(TargetObjectId)}: {TargetObjectId}, " +
+                    $"{nameof(Response)}: {Response}, " +
+                    $"{nameof(_responseExpireTime)}: {_responseExpireTime}, " +
+                    $"{nameof(GameLoop.GameLoopTime)}: {GameLoop.GameLoopTime}, " +
+                    $"{nameof(_callbacks)}: {_callbacks.Count}";
             }
         }
 
