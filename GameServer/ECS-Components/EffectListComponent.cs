@@ -703,28 +703,31 @@ namespace DOL.GS
                 {
                     RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
 
-                    if (!effect.FinalizeState(result) || effect is not ECSGameSpellEffect spellEffect)
+                    if (!effect.FinalizeState(result))
                         return;
 
-                    ISpellHandler spellHandler = spellEffect.SpellHandler;
-                    Spell spell = spellHandler?.Spell;
-
-                    if (spell.IsPulsing)
+                    if (effect is ECSGameSpellEffect spellEffect)
                     {
-                        // This should allow the caster to see the effect of the first tick of a beneficial pulse effect, even when recasted before the existing effect expired.
-                        // It means they can spam some spells, but I consider it a good feedback for the player (example: Paladin's endurance chant).
-                        // It should also allow harmful effects to be played on the targets, but not the caster (example: Reaver's PBAEs -- the flames, not the waves).
-                        // It should prevent double animations too (only checking 'IsHarmful' and 'RenewEffect' would make resist chants play twice).
-                        if (spellEffect is ECSPulseEffect)
+                        ISpellHandler spellHandler = spellEffect.SpellHandler;
+                        Spell spell = spellHandler?.Spell;
+
+                        if (spell.IsPulsing)
                         {
-                            if (!spell.IsHarmful && spell.SpellType is not eSpellType.Charm && !spellEffect.IsEnabling)
+                            // This should allow the caster to see the effect of the first tick of a beneficial pulse effect, even when recasted before the existing effect expired.
+                            // It means they can spam some spells, but I consider it a good feedback for the player (example: Paladin's endurance chant).
+                            // It should also allow harmful effects to be played on the targets, but not the caster (example: Reaver's PBAEs -- the flames, not the waves).
+                            // It should prevent double animations too (only checking 'IsHarmful' and 'RenewEffect' would make resist chants play twice).
+                            if (spellEffect is ECSPulseEffect)
+                            {
+                                if (!spell.IsHarmful && spell.SpellType is not eSpellType.Charm && !spellEffect.IsEnabling)
+                                    EffectHelper.SendSpellAnimation(spellEffect);
+                            }
+                            else if (spell.IsHarmful)
                                 EffectHelper.SendSpellAnimation(spellEffect);
                         }
-                        else if (spell.IsHarmful)
+                        else if (spellEffect is not ECSImmunityEffect)
                             EffectHelper.SendSpellAnimation(spellEffect);
                     }
-                    else if (spellEffect is not ECSImmunityEffect)
-                        EffectHelper.SendSpellAnimation(spellEffect);
 
                     _effectsToStart.Enqueue(effect);
                 }
