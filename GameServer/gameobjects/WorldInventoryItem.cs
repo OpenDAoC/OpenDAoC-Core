@@ -139,11 +139,11 @@ namespace DOL.GS
             _pickupTimer = null;
         }
 
-        public override bool TryAutoPickUp(IGameStaticItemOwner itemOwner)
+        public override TryPickUpResult TryAutoPickUp(IGameStaticItemOwner itemOwner)
         {
             lock (_pickUpLock)
             {
-                return ObjectState is not eObjectState.Deleted && itemOwner.TryAutoPickUpItem(this);
+                return ObjectState is eObjectState.Deleted ? TryPickUpResult.DoesNotWant : itemOwner.TryAutoPickUpItem(this);
             }
         }
 
@@ -151,7 +151,7 @@ namespace DOL.GS
         {
             lock (_pickUpLock)
             {
-                return ObjectState is not eObjectState.Deleted ? itemOwner.TryPickUpItem(source, this) : TryPickUpResult.FAILED;
+                return ObjectState is eObjectState.Deleted ? TryPickUpResult.DoesNotWant : itemOwner.TryPickUpItem(source, this);
             }
         }
     }

@@ -1534,9 +1534,14 @@ namespace DOL.GS.ServerRules
                 foreach (ItemOwnerTotalDamagePair itemOwner in itemOwners)
                 {
                     money.AddOwner(itemOwner.Owner);
+                    TryPickUpResult result = money.TryAutoPickUp(itemOwner.Owner);
 
-                    if (money.TryAutoPickUp(itemOwner.Owner))
+                    if (result is TryPickUpResult.Success)
                         return;
+                    else if (result is TryPickUpResult.DoesNotWant)
+                        continue;
+                    else if (result is TryPickUpResult.Blocked)
+                        break;
                 }
 
                 money.AddToWorld();
@@ -1581,9 +1586,14 @@ namespace DOL.GS.ServerRules
                 foreach (ItemOwnerTotalDamagePair itemOwner in itemOwners)
                 {
                     item.AddOwner(itemOwner.Owner);
+                    TryPickUpResult result = item.TryAutoPickUp(itemOwner.Owner);
 
-                    if (item.TryAutoPickUp(itemOwner.Owner))
+                    if (result is TryPickUpResult.Success)
                         return;
+                    else if (result is TryPickUpResult.DoesNotWant)
+                        continue;
+                    else if (result is TryPickUpResult.Blocked)
+                        break;
                 }
 
                 item.AddToWorld();

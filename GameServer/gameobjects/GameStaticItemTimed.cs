@@ -79,7 +79,7 @@ namespace DOL.GS
                 throw new InvalidOperationException($"{Name} is not locked by the current thread.");
         }
 
-        public abstract bool TryAutoPickUp(IGameStaticItemOwner itemOwner);
+        public abstract TryPickUpResult TryAutoPickUp(IGameStaticItemOwner itemOwner);
         public abstract TryPickUpResult TryPickUp(GamePlayer source, IGameStaticItemOwner itemOwner);
 
         protected class RemoveItemAction : ECSGameTimerWrapperBase
@@ -100,8 +100,8 @@ namespace DOL.GS
 
         string Name { get; }
         object GameStaticItemOwnerComparand { get; } // Used by `GameStaticItemOwnerEqualityComparer`. Can be null, in which case it will defer to the object's `Equals` and `GetHashCode`.
-        bool TryAutoPickUpMoney(GameMoney money);
-        bool TryAutoPickUpItem(WorldInventoryItem item);
+        TryPickUpResult TryAutoPickUpMoney(GameMoney money);
+        TryPickUpResult TryAutoPickUpItem(WorldInventoryItem item);
         TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money); // Expected to return false only if the object shouldn't try to pick up the item at all.
         TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item); // Expected to return false only if the object shouldn't try to pick up the item at all.
 
@@ -139,8 +139,8 @@ namespace DOL.GS
 
     public enum TryPickUpResult
     {
-        SUCCESS,               // The item was picked up.
-        DOES_NOT_HANDLE,       // The item cannot be handled by this owner and we should fall back to the next one.
-        FAILED                 // The item can be handled by this owner, but failed (inventory full, no one in range, already picked up, etc.)
+        Success,    // The item was picked up.
+        Blocked,    // The item couldn't be picked up due to inventory being full, player not in range, etc.
+        DoesNotWant // The item is rejected due to player, group, or battlegroup settings.
     }
 }

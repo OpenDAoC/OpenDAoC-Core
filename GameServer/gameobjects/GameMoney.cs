@@ -37,11 +37,11 @@ namespace DOL.GS
             return _names.Contains(name);
         }
 
-        public override bool TryAutoPickUp(IGameStaticItemOwner itemOwner)
+        public override TryPickUpResult TryAutoPickUp(IGameStaticItemOwner itemOwner)
         {
             lock (_pickUpLock)
             {
-                return ObjectState is not eObjectState.Deleted && itemOwner.TryAutoPickUpMoney(this);
+                return ObjectState is eObjectState.Deleted ? TryPickUpResult.DoesNotWant : itemOwner.TryAutoPickUpMoney(this);
             }
         }
 
@@ -49,7 +49,7 @@ namespace DOL.GS
         {
             lock (_pickUpLock)
             {
-                return ObjectState is not eObjectState.Deleted ? itemOwner.TryPickUpMoney(source, this) : TryPickUpResult.FAILED;
+                return ObjectState is eObjectState.Deleted ? TryPickUpResult.DoesNotWant : itemOwner.TryPickUpMoney(source, this);
             }
         }
     }

@@ -9899,11 +9899,11 @@ namespace DOL.GS
 
                 BattleGroup battleGroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
-                if (battleGroup == null || floorItem.TryPickUp(this, battleGroup) is TryPickUpResult.DOES_NOT_HANDLE)
+                if (battleGroup == null || floorItem.TryPickUp(this, battleGroup) is TryPickUpResult.DoesNotWant)
                 {
                     Group group = Group;
 
-                    if (group == null || floorItem.TryPickUp(this, group) is TryPickUpResult.DOES_NOT_HANDLE)
+                    if (group == null || floorItem.TryPickUp(this, group) is TryPickUpResult.DoesNotWant)
                         floorItem.TryPickUp(this, this);
                 }
 
@@ -9914,11 +9914,11 @@ namespace DOL.GS
             {
                 BattleGroup battleGroup = TempProperties.GetProperty<BattleGroup>(BattleGroup.BATTLEGROUP_PROPERTY);
 
-                if (battleGroup == null || money.TryPickUp(this, battleGroup) is TryPickUpResult.DOES_NOT_HANDLE)
+                if (battleGroup == null || money.TryPickUp(this, battleGroup) is TryPickUpResult.DoesNotWant)
                 {
                     Group group = Group;
 
-                    if (group == null || money.TryPickUp(this, group) is TryPickUpResult.DOES_NOT_HANDLE)
+                    if (group == null || money.TryPickUp(this, group) is TryPickUpResult.DoesNotWant)
                         money.TryPickUp(this, this);
                 }
 
@@ -9969,14 +9969,14 @@ namespace DOL.GS
 
         public object GameStaticItemOwnerComparand => AccountName;
 
-        public bool TryAutoPickUpMoney(GameMoney money)
+        public TryPickUpResult TryAutoPickUpMoney(GameMoney money)
         {
-            return Autoloot && TryPickUpMoney(this, money) is not TryPickUpResult.DOES_NOT_HANDLE;
+            return Autoloot ? TryPickUpMoney(this, money) : TryPickUpResult.DoesNotWant;
         }
 
-        public bool TryAutoPickUpItem(WorldInventoryItem inventoryItem)
+        public TryPickUpResult TryAutoPickUpItem(WorldInventoryItem inventoryItem)
         {
-            return Autoloot && TryPickUpItem(this, inventoryItem) is not TryPickUpResult.DOES_NOT_HANDLE;
+            return Autoloot ? TryPickUpItem(this, inventoryItem) : TryPickUpResult.DoesNotWant;
         }
 
         public TryPickUpResult TryPickUpMoney(GamePlayer source, GameMoney money)
@@ -9988,7 +9988,7 @@ namespace DOL.GS
                 if (log.IsErrorEnabled)
                     log.Error($"The passed down {nameof(source)} isn't equal to 'this'. Money pick up aborted. ({nameof(source)}: {source}) (this: {this})");
 
-                return TryPickUpResult.DOES_NOT_HANDLE;
+                return TryPickUpResult.DoesNotWant;
             }
 
             long moneyToPlayer = ApplyGuildDues(money.Value);
@@ -10000,7 +10000,7 @@ namespace DOL.GS
             }
 
             money.RemoveFromWorld();
-            return TryPickUpResult.SUCCESS;
+            return TryPickUpResult.Success;
         }
 
         public TryPickUpResult TryPickUpItem(GamePlayer source, WorldInventoryItem item)
@@ -10012,20 +10012,20 @@ namespace DOL.GS
                 if (log.IsErrorEnabled)
                     log.Error($"The passed down {nameof(source)} isn't equal to 'this'. Item pick up aborted. ({nameof(source)}: {source}) (this: {this})");
 
-                return TryPickUpResult.DOES_NOT_HANDLE;
+                return TryPickUpResult.DoesNotWant;
             }
 
             if (!GiveItem(this, item.Item))
             {
                 Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.BackpackFull"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                return TryPickUpResult.FAILED;
+                return TryPickUpResult.Blocked;
             }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.YouGet", item.Item.GetName(1, false)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
             Message.SystemToOthers(this, LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.PickupObject.GroupMemberPicksUp", Name, item.Item.GetName(1, false)), eChatType.CT_System);
             InventoryLogging.LogInventoryAction("(ground)", this, eInventoryActionType.Loot, item.Item.Template, item.Item.IsStackable ? item.Item.Count : 1);
             item.RemoveFromWorld();
-            return TryPickUpResult.SUCCESS;
+            return TryPickUpResult.Success;
 
             static bool GiveItem(GamePlayer player, DbInventoryItem item)
             {
