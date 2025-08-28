@@ -338,7 +338,8 @@ namespace DOL.GS
         {
             Update();
 
-            if (GameServer.KeepManager.FrontierRegionsList.Contains(CurrentRegionID) == false)
+            // Disabled for OF.
+            /*if (!GameServer.KeepManager.FrontierRegionsList.Contains(CurrentRegionID) == false)
             {
                 if (log.IsDebugEnabled)
                     log.Debug($"{Name} taken out of frontiers, relic returned to previous pad.");
@@ -347,7 +348,7 @@ namespace DOL.GS
                 SaveIntoDatabase();
                 AddToWorld();
                 return 0;
-            }
+            }*/
 
             if (CurrentCarrier != null && CurrentCarrier.Inventory.GetFirstItemByID(_item.Id_nb, eInventorySlot.FirstBackpack, eInventorySlot.LastBackpack) == null)
             {

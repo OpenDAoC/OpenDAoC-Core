@@ -53,18 +53,12 @@ namespace DOL.GS.Keeps
 			foreach (Region r in WorldMgr.Regions.Values)
 			{
 				if (r.IsFrontier)
-				{
 					m_frontierRegionsList.Add(r.ID);
-				}
 			}
 
 			// default to NF if no frontier regions found
 			if (m_frontierRegionsList.Count == 0)
-			{
-				m_frontierRegionsList.Add(1);
-				m_frontierRegionsList.Add(100);
-				m_frontierRegionsList.Add(200);
-			}
+				m_frontierRegionsList.Add(DEFAULT_FRONTIERS_REGION);
 
 			ClothingMgr.LoadTemplates();
 
