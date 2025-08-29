@@ -690,69 +690,66 @@ namespace DOL.GS.Keeps
 			return 0;
 		}
 
-		public virtual void GetBorderKeepLocation(int keepid, out int x, out int y, out int z, out ushort heading)
+		public virtual bool GetBorderKeepLocation(int keepid, out int x, out int y, out int z, out ushort heading)
 		{
 			x = 0;
 			y = 0;
 			z = 0;
 			heading = 0;
+
 			switch (keepid)
 			{
-				//sauvage
-				case 1:
-					{
-						x = 653811;
-						y = 616998;
-						z = 9560;
-						heading = 2040;
-						break;
-					}
-				//snowdonia
-				case 2:
-					{
-						x = 616149;
-						y = 679042;
-						z = 9560;
-						heading = 1611;
-						break;
-					}
-				//svas
-				case 3:
-					{
-						x = 651460;
-						y = 313758;
-						z = 9432;
-						heading = 1004;
-						break;
-					}
-				//vind
-				case 4:
-					{
-						x = 715179;
-						y = 365101;
-						z = 9432;
-						heading = 314;
-						break;
-					}
-				//ligen
-				case 5:
-					{
-						x = 396519;
-						y = 618017;
-						z = 9838;
-						heading = 2159;
-						break;
-					}
-				//cain
-				case 6:
-					{
-						x = 432841;
-						y = 680032;
-						z = 9747;
-						heading = 2585;
-						break;
-					}
+				case 1: // Castle Sauvage.
+				{
+					x = 653811;
+					y = 616998;
+					z = 9560;
+					heading = 2040;
+					return true;
+				}
+				case 2: // Snowdonia Fortress.
+				{
+					x = 616149;
+					y = 679042;
+					z = 9560;
+					heading = 1611;
+					return true;
+				}
+				case 3: // Svasud Faste.
+				{
+					x = 651460;
+					y = 313758;
+					z = 9432;
+					heading = 1004;
+					return true;
+				}
+				case 4: // Vindsaul Faste.
+				{
+					x = 715179;
+					y = 365101;
+					z = 9432;
+					heading = 314;
+					return true;
+				}
+				case 5: // Druim Ligen.
+				{
+					x = 396519;
+					y = 618017;
+					z = 9838;
+					heading = 2159;
+					return true;
+				}
+				case 6: // Druim Cain.
+				{
+					x = 432841;
+					y = 680032;
+					z = 9747;
+					heading = 2585;
+					return true;
+				}
 			}
+
+			return false;
 		}
 
 		public virtual int GetRealmKeepBonusLevel(eRealm realm)

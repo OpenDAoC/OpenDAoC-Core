@@ -1373,7 +1373,13 @@ namespace DOL.GS.ServerProperties
 		/// PvP Realm Timer. # of minutes an account must wait to change realms after pvp combat. 0 disables the timer
 		/// </summary>
 		[ServerProperty("pvp", "pvp_realm_timer_minutes", "# of minutes an account must wait to change realms after PvP combat. 0 disables the timer", 0)]
-		public static int PVP_REALM_TIMER_MINUTES; 
+		public static int PVP_REALM_TIMER_MINUTES;
+
+		/// <summary>
+		/// Whether releasing in a battleground should teleport the player to the portal keep
+		/// </summary>
+		[ServerProperty("pvp", "bg_release_to_portal_keep", "Whether releasing in a battleground should teleport the player to the portal keep", false)]
+		public static bool BG_RELEASE_TO_PORTAL_KEEP;
 
 		#endregion
 

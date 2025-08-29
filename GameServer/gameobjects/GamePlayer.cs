@@ -1445,26 +1445,13 @@ namespace DOL.GS
         /// Releases this player after death ... subtracts xp etc etc...
         /// </summary>
         /// <param name="releaseCommand">The type of release used for this player</param>
-        /// <param name="forced">if true, will release even if not dead</param>
+        /// <param name="forced">if true, will skip duel check and timer</param>
         public virtual void Release(eReleaseType releaseCommand, bool forced)
         {
             DbCoreCharacter character = DBCharacter;
-            if (character == null) return;
 
-            // check if valid housebind
-            if (releaseCommand == eReleaseType.House && character.BindHouseRegion < 1)
-            {
-                Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.NoValidBindpoint"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
-                releaseCommand = eReleaseType.Bind;
-            }
-
-            //battlegrounds caps
-            DbBattleground bg = GameServer.KeepManager.GetBattleground(CurrentRegionID);
-            if (bg != null && releaseCommand == eReleaseType.RvR)
-            {
-                if (Level > bg.MaxLevel)
-                    releaseCommand = eReleaseType.Normal;
-            }
+            if (character == null)
+                return;
 
             if (IsAlive)
             {
@@ -1472,16 +1459,42 @@ namespace DOL.GS
                 return;
             }
 
+            if (releaseCommand is eReleaseType.House)
+            {
+                if (character.BindHouseRegion < 1)
+                {
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.NoValidBindpoint"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
+                    releaseCommand = eReleaseType.Bind;
+                }
+            }
+            else if (releaseCommand is eReleaseType.Normal)
+            {
+                // Check for NF or battleground (RvR release).
+                if (CurrentRegionID is 163)
+                    releaseCommand = eReleaseType.NewFrontiers;
+                else
+                {
+                    DbBattleground battleground = GameServer.KeepManager.GetBattleground(CurrentRegionID);
+
+                    // Battlegrounds caps.
+                    if (Properties.BG_RELEASE_TO_PORTAL_KEEP && battleground != null && Level <= battleground.MaxLevel && RealmLevel <= battleground.MaxRealmLevel)
+                        releaseCommand = eReleaseType.Battleground;
+                    else
+                        releaseCommand = eReleaseType.Bind;
+                }
+            }
+
             if (!forced)
             {
-                if (m_releaseType == eReleaseType.Duel)
+                if (m_releaseType is eReleaseType.Duel)
                 {
                     Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.CantReleaseDuel"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                     return;
                 }
+
                 m_releaseType = releaseCommand;
-                // we use realtime, because timer window is realtime
                 long diff = m_deathTick - GameLoop.GameLoopTime + RELEASE_MINIMUM_WAIT * 1000;
+
                 if (diff >= 1000)
                 {
                     if (m_automaticRelease)
@@ -1493,6 +1506,7 @@ namespace DOL.GS
                     }
 
                     m_automaticRelease = true;
+
                     switch (releaseCommand)
                     {
                         default:
@@ -1505,7 +1519,8 @@ namespace DOL.GS
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.WillReleaseAutoCity", diff / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return;
                         }
-                        case eReleaseType.RvR:
+                        case eReleaseType.NewFrontiers:
+                        case eReleaseType.Battleground:
                         {
                             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.ReleaseToPortalKeep", diff / 1000), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                             return;
@@ -1519,17 +1534,19 @@ namespace DOL.GS
                 }
             }
             else
-            {
                 m_releaseType = releaseCommand;
-            }
 
-            int relX = 0, relY = 0, relZ = 0;
-            ushort relRegion = 0, relHeading = 0;
+            int relX = 0;
+            int relY = 0;
+            int relZ = 0;
+            ushort relRegion = 0;
+            ushort relHeading = 0;
+
             switch (m_releaseType)
             {
                 case eReleaseType.Duel:
                 {
-                    relRegion = (ushort)character.Region;
+                    relRegion = (ushort) character.Region;
                     relX = character.Xpos;
                     relY = character.Ypos;
                     relZ = character.Zpos;
@@ -1538,257 +1555,187 @@ namespace DOL.GS
                 }
                 case eReleaseType.House:
                 {
-                    relRegion = (ushort)BindHouseRegion;
+                    relRegion = (ushort) BindHouseRegion;
                     relX = BindHouseXpos;
                     relY = BindHouseYpos;
                     relZ = BindHouseZpos;
-                    relHeading = (ushort)BindHouseHeading;
+                    relHeading = (ushort) BindHouseHeading;
                     break;
                 }
-
                 case eReleaseType.City:
                 {
-                    if (Realm == eRealm.Hibernia)
+                    switch (Realm)
                     {
-                        relRegion = 201; // Tir Na Nog
-                        relX = 34149;
-                        relY = 32063;
-                        relZ = 8047;
-                        relHeading = 1025;
+                        case eRealm.Albion:
+                        {
+                            relRegion = 10; // City of Camelot.
+                            relX = 36240;
+                            relY = 29695;
+                            relZ = 7985;
+                            relHeading = 4095;
+                            break;
+                        }
+                        case eRealm.Midgard:
+                        {
+                            relRegion = 101; // Jordheim.
+                            relX = 30094;
+                            relY = 27589;
+                            relZ = 8763;
+                            relHeading = 3468;
+                            break;
+                        }
+                        case eRealm.Hibernia:
+                        {
+                            relRegion = 201; // Tir Na Nog.
+                            relX = 34149;
+                            relY = 32063;
+                            relZ = 8047;
+                            relHeading = 1025;
+                            break;
+                        }
+                        default:
+                        {
+                            ValidateAndGetBind(out relRegion, out relX, out relY, out relZ, out relHeading);
+                            break;
+                        }
                     }
-                    else if (Realm == eRealm.Midgard)
-                    {
-                        relRegion = 101; // Jordheim
-                        relX = 30094;
-                        relY = 27589;
-                        relZ = 8763;
-                        relHeading = 3468;
-                    }
-                    else
-                    {
-                        relRegion = 10; // City of Camelot
-                        relX = 36240;
-                        relY = 29695;
-                        relZ = 7985;
-                        relHeading = 4095;
-                    }
-                    relHeading = 2048;
+
                     break;
                 }
-                case eReleaseType.RvR:
+                case eReleaseType.NewFrontiers:
                 {
-                    GamePlayer player = Client.Player as GamePlayer;
-
-                    if (player.CurrentRegionID == 27)
+                    // `GetBorderKeepLocation` works with NF only.
+                    if (GameServer.KeepManager.GetBorderKeepLocation((byte) Realm * 2 - 1, out relX, out relY, out relZ, out relHeading))
                     {
-                        relRegion = 27;
-                        relX = 342521;
-                        relY = 385230;
-                        relZ = 5410;
-                        relHeading = 1756;
+                        relRegion = CurrentRegion.ID;
                         break;
                     }
 
-                    foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
+                    // Fall back to bind.
+                    ValidateAndGetBind(out relRegion, out relX, out relY, out relZ, out relHeading);
+                    break;
+                }
+                case eReleaseType.Battleground:
+                {
+                    bool foundPortalKeep = false;
+                    DbBattleground battleground = GameServer.KeepManager.GetBattleground(CurrentRegionID);
+
+                    if (battleground != null && Properties.BG_RELEASE_TO_PORTAL_KEEP)
                     {
-                        if (keep.IsPortalKeep && keep.OriginalRealm == Realm)
+                        // Use the friendly portal keep in the current region. There should be only one.
+                        foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
                         {
+                            if (!keep.IsPortalKeep || keep.OriginalRealm != Realm)
+                                continue;
+
                             relRegion = keep.CurrentRegion.ID;
                             relX = keep.X;
                             relY = keep.Y;
                             relZ = keep.Z;
+                            foundPortalKeep = true;
+                            break;
                         }
                     }
 
-                    //if we aren't releasing anywhere, release to the border keeps
-                    if (relX == 0)
-                    {
-                        relRegion = CurrentRegion.ID;
-                        GameServer.KeepManager.GetBorderKeepLocation(((byte)Realm * 2) / 1, out relX, out relY, out relZ, out relHeading);
-                    }
+                    // Fall back to bind.
+                    if (!foundPortalKeep)
+                        ValidateAndGetBind(out relRegion, out relX, out relY, out relZ, out relHeading);
+
                     break;
                 }
                 default:
                 {
-                    if (!ServerProperties.Properties.DISABLE_TUTORIAL)
+                    // Tutorial.
+                    if (!Properties.DISABLE_TUTORIAL && BindRegion == 27)
                     {
-                        //Tutorial
-                        if (BindRegion == 27)
+                        switch (Realm)
                         {
-                            switch (Realm)
+                            case eRealm.Albion:
                             {
-                                case eRealm.Albion:
-                                {
-                                    relRegion = 1; // Cotswold
-                                    relX = 8192 + 553251;
-                                    relY = 8192 + 502936;
-                                    relZ = 2280;
-                                    break;
-                                }
-                                case eRealm.Midgard:
-                                {
-                                    relRegion = 100; // Mularn
-                                    relX = 8192 + 795621;
-                                    relY = 8192 + 719590;
-                                    relZ = 4680;
-                                    break;
-                                }
-                                case eRealm.Hibernia:
-                                {
-                                    relRegion = 200; // MagMell
-                                    relX = 8192 + 338652;
-                                    relY = 8192 + 482335;
-                                    relZ = 5200;
-                                    break;
-                                }
-                            }
-                            break;
-                        }
-                    }
-                    switch (CurrentRegionID)
-                    {
-                        //battlegrounds
-                        case 234:
-                        case 235:
-                        case 236:
-                        case 237:
-                        case 238:
-                        case 239:
-                        case 240:
-                        case 241:
-                        case 242:
-                        {
-                            //get the bg cap
-                            byte cap = 50;
-                            foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
-                            {
-                                if (keep.DBKeep.BaseLevel < cap)
-                                {
-                                    cap = keep.DBKeep.BaseLevel;
-                                    break;
-                                }
-                            }
-                            //get the portal location
-                            foreach (AbstractGameKeep keep in GameServer.KeepManager.GetKeepsOfRegion(CurrentRegionID))
-                            {
-                                if (keep.DBKeep.BaseLevel > 50 && keep.Realm == Realm)
-                                {
-                                    relRegion = (ushort)keep.Region;
-                                    relX = keep.X;
-                                    relY = keep.Y;
-                                    relZ = keep.Z;
-                                    break;
-                                }
-                            }
-                            break;
-                        }
-                        //nf
-                        case 163:
-                        {
-                            if (BindRegion != 163)
-                            {
-                                relRegion = 163;
-                                switch (Realm)
-                                {
-                                    case eRealm.Albion:
-                                    {
-                                        GameServer.KeepManager.GetBorderKeepLocation(1, out relX, out relY, out relZ, out relHeading);
-                                        break;
-                                    }
-                                    case eRealm.Midgard:
-                                    {
-                                        GameServer.KeepManager.GetBorderKeepLocation(3, out relX, out relY, out relZ, out relHeading);
-                                        break;
-                                    }
-                                    case eRealm.Hibernia:
-                                    {
-                                        GameServer.KeepManager.GetBorderKeepLocation(5, out relX, out relY, out relZ, out relHeading);
-                                        break;
-                                    }
-                                }
+                                relRegion = 1; // Cotswold.
+                                relX = 8192 + 553251;
+                                relY = 8192 + 502936;
+                                relZ = 2280;
                                 break;
                             }
-                            else
+                            case eRealm.Midgard:
                             {
-                                relRegion = (ushort)BindRegion;
-                                relX = BindXpos;
-                                relY = BindYpos;
-                                relZ = BindZpos;
-                                relHeading = (ushort)BindHeading;
+                                relRegion = 100; // Mularn.
+                                relX = 8192 + 795621;
+                                relY = 8192 + 719590;
+                                relZ = 4680;
+                                break;
                             }
-                            break;
-                        }/*
-                        //bg45-49
-                        case 165:
-                        {
-                            break;
-                        }*/
-                        default:
-                        {
-                            ValidateBind();
-                            relRegion = (ushort) BindRegion;
-                            relX = BindXpos;
-                            relY = BindYpos;
-                            relZ = BindZpos;
-                            relHeading = (ushort) BindHeading;
-                            break;
+                            case eRealm.Hibernia:
+                            {
+                                relRegion = 200; // Mag Mell.
+                                relX = 8192 + 338652;
+                                relY = 8192 + 482335;
+                                relZ = 5200;
+                                break;
+                            }
+                            default:
+                            {
+                                ValidateAndGetBind(out relRegion, out relX, out relY, out relZ, out relHeading);
+                                break;
+                            }
                         }
                     }
+                    else
+                        ValidateAndGetBind(out relRegion, out relX, out relY, out relZ, out relHeading);
+
                     break;
                 }
             }
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.YouRelease"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
             Out.SendCloseTimerWindow();
+
             if (m_releaseTimer != null)
             {
                 m_releaseTimer.Stop();
                 m_releaseTimer = null;
             }
 
-            if (Realm != eRealm.None)
+            if (Level >= Properties.PVE_EXP_LOSS_LEVEL && !HCFlag)
             {
-                if (Level >= ServerProperties.Properties.PVE_EXP_LOSS_LEVEL && !HCFlag)
+                // Actual lost exp, needed for 2nd stage deaths.
+                long lostExp = Experience;
+                long lastDeathExpLoss = TempProperties.GetProperty<long>(DEATH_EXP_LOSS_PROPERTY);
+                TempProperties.RemoveProperty(DEATH_EXP_LOSS_PROPERTY);
+
+                GainExperience(eXPSource.Other, -lastDeathExpLoss);
+                lostExp -= Experience;
+
+                if (lostExp > 0)
                 {
-                    // actual lost exp, needed for 2nd stage deaths
-                    long lostExp = Experience;
-                    long lastDeathExpLoss = TempProperties.GetProperty<long>(DEATH_EXP_LOSS_PROPERTY);
-                    TempProperties.RemoveProperty(DEATH_EXP_LOSS_PROPERTY);
-
-                    GainExperience(eXPSource.Other, -lastDeathExpLoss);
-                    lostExp -= Experience;
-
-                    // raise only the gravestone if xp has to be stored in it
-                    if (lostExp > 0)
+                    // Find old gravestone of player and remove it.
+                    if (character.HasGravestone)
                     {
-                        // find old gravestone of player and remove it
-                        if (character.HasGravestone)
+                        Region reg = WorldMgr.GetRegion((ushort) character.GravestoneRegion);
+
+                        if (reg != null)
                         {
-                            Region reg = WorldMgr.GetRegion((ushort)character.GravestoneRegion);
-                            if (reg != null)
-                            {
-                                GameGravestone oldgrave = reg.FindGraveStone(this);
-                                if (oldgrave != null)
-                                {
-                                    oldgrave.Delete();
-                                }
-                            }
-                            character.HasGravestone = false;
+                            GameGravestone oldGrave = reg.FindGraveStone(this);
+                            oldGrave?.Delete();
                         }
 
-                        GameGravestone gravestone = new GameGravestone(this, lostExp);
-                        gravestone.AddToWorld();
-                        character.GravestoneRegion = gravestone.CurrentRegionID;
-                        character.HasGravestone = true;
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.GraveErected"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
-                        Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.ReturnToPray"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+                        character.HasGravestone = false;
                     }
+
+                    GameGravestone gravestone = new GameGravestone(this, lostExp);
+                    gravestone.AddToWorld();
+                    character.GravestoneRegion = gravestone.CurrentRegionID;
+                    character.HasGravestone = true;
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.GraveErected"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
+                    Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.ReturnToPray"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
                 }
             }
 
-            if (Level >= ServerProperties.Properties.PVE_CON_LOSS_LEVEL)
+            if (Level >= Properties.PVE_CON_LOSS_LEVEL)
             {
-                int deathConLoss = TempProperties.GetProperty<int>(DEATH_CONSTITUTION_LOSS_PROPERTY); // get back constitution lost at death
+                int deathConLoss = TempProperties.GetProperty<int>(DEATH_CONSTITUTION_LOSS_PROPERTY);
+
                 if (deathConLoss > 0)
                 {
                     TotalConstitutionLostAtDeath += deathConLoss;
@@ -1803,37 +1750,43 @@ namespace DOL.GS
             StartPowerRegeneration();
             StartEnduranceRegeneration();
             LastDeathPvP = false;
-
-            var maxChargeItems = ServerProperties.Properties.MAX_CHARGE_ITEMS;
             UpdatePlayerStatus();
 
             Out.SendMessage(LanguageMgr.GetTranslation(Client.Account.Language, "GamePlayer.Release.SurroundingChange"), eChatType.CT_YouDied, eChatLoc.CL_SystemWindow);
 
             int oldRegion = CurrentRegionID;
 
-            //Call MoveTo after new GameGravestone(this...
-            //or the GraveStone will be located at the player's bindpoint
+            // If region is 0, assume no valid release location was found.
+            if (relRegion == 0)
+            {
+                if (log.IsErrorEnabled)
+                    log.Error($"Could not find valid release location for player {this})");
+            }
+            else
+                MoveTo(relRegion, relX, relY, relZ, relHeading);
 
-            MoveTo(relRegion, relX, relY, relZ, relHeading);
-            //It is enough if we revive the player on this client only here
-            //because for other players the player will be removed in the MoveTo
-            //method and added back again (if in view) with full health ... so no
-            //revive needed for others...
             Out.SendPlayerRevive(this);
-            //			Out.SendUpdatePlayer();
             Out.SendUpdatePoints();
 
-            //Set property indicating that we are releasing to another region; used for Released event
             if (oldRegion != CurrentRegionID)
                 TempProperties.SetProperty(RELEASING_PROPERTY, true);
             else
             {
-                // fire the player revive event
                 Notify(GamePlayerEvent.Revive, this);
                 Notify(GamePlayerEvent.Released, this);
             }
 
             TempProperties.RemoveProperty(DEATH_CONSTITUTION_LOSS_PROPERTY);
+
+            void ValidateAndGetBind(out ushort relRegion, out int relX, out int relY, out int relZ, out ushort relHeading)
+            {
+                ValidateBind();
+                relRegion = (ushort) BindRegion;
+                relX = BindXpos;
+                relY = BindYpos;
+                relZ = BindZpos;
+                relHeading = (ushort) BindHeading;
+            }
         }
 
         /// <summary>

@@ -35,6 +35,8 @@ namespace DOL.GS
 				m_model = 636; //Midgard Gravestone
 			else if (player.Realm == eRealm.Hibernia)
 				m_model = 637; //Hibernia Gravestone
+			else
+				m_model = 1681; // Some rock.
 
 			m_xpValue = xpValue;
 

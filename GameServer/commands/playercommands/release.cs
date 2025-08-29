@@ -1,7 +1,9 @@
+using System;
+
 namespace DOL.GS.Commands
 {
-    [CmdAttribute(
-        "&release", new string[] { "&rel" },
+    [Cmd(
+        "&release", ["&rel"],
         ePrivLevel.Player,
         "When you are dead you can '/release'. This will bring you back to your bindpoint!",
         "/release")]
@@ -9,25 +11,31 @@ namespace DOL.GS.Commands
     {
         public void OnCommand(GameClient client, string[] args)
         {
-            if (client.Player.CurrentRegion.IsRvR && !client.Player.CurrentRegion.IsDungeon)
+            if (args.Length <= 1)
             {
-                client.Player.Release(eReleaseType.RvR, false);
+                client.Player.Release(eReleaseType.Normal, false);
                 return;
             }
 
-            if (args.Length > 1 && args[1].ToLower() == "city")
+            string toArgument = args[1];
+
+            if (toArgument.Equals("city", StringComparison.OrdinalIgnoreCase))
             {
                 client.Player.Release(eReleaseType.City, false);
-                    return;
+                return;
             }
 
-            if (args.Length > 1 && args[1].ToLower() == "house")
+            if (toArgument.Equals("house", StringComparison.OrdinalIgnoreCase))
             {
                 client.Player.Release(eReleaseType.House, false);
                 return;
             }
 
-            client.Player.Release(eReleaseType.Normal, false);
+            if (toArgument.Equals("bind", StringComparison.OrdinalIgnoreCase))
+            {
+                client.Player.Release(eReleaseType.Bind, false);
+                return;
+            }
         }
     }
 }
