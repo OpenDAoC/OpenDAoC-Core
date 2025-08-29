@@ -347,10 +347,10 @@ namespace DOL.GS
             if (player == null)
                 return null;
 
-            if (!player.Client.IsPlaying || player.ObjectState is not GameObject.eObjectState.Active)
+            if (player.ObjectState is GameObject.eObjectState.Deleted)
             {
                 if (log.IsErrorEnabled)
-                    log.Error($"Player was found in the trie, but is not playing or is not active. Removing from trie. (Player: {player})");
+                    log.Error($"Player was found in the trie, but is not active. Removing from trie. (Player: {player})");
 
                 _playerNameTrie.Remove(playerName, player);
                 return null;
@@ -396,11 +396,11 @@ namespace DOL.GS
 
             bool ValidateAndRemoveIfInactive(GamePlayer player)
             {
-                if (player.Client.IsPlaying && player.ObjectState is GameObject.eObjectState.Active)
+                if (player.ObjectState is not GameObject.eObjectState.Deleted)
                     return true;
 
                 if (log.IsErrorEnabled)
-                    log.Error($"Player was found in the trie, but is not playing or is not active. Removing from trie. (Player: {player})");
+                    log.Error($"Player was found in the trie, but is not active. Removing from trie. (Player: {player})");
 
                 bool removed = _playerNameTrie.Remove(player.Name, player);
 
