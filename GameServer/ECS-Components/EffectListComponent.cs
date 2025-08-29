@@ -22,8 +22,7 @@ namespace DOL.GS
         private readonly Dictionary<int, ECSGameEffect> _effectIdToEffect = new();   // Dictionary of effects by their icon ID.
 
         // Pending effects.
-        private readonly Queue<ECSGameEffect> _effectsToStop = new();                // Queue for effects to stop after their state has been finalized following removal or disabling.
-        private readonly Queue<ECSGameEffect> _effectsToStart = new();               // Queue for effects to start after their state has been finalized following addition or enabling.
+        private readonly Queue<ECSGameEffect> _effectsToStartOrStop = new();         // Queue for effects to start or stop after their state has been finalized.
 
         // Concentration.
         private readonly List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -48,29 +47,28 @@ namespace DOL.GS
 
         public void Tick()
         {
-            while (_effectsToStart.TryDequeue(out ECSGameEffect effect))
+            while (_effectsToStartOrStop.TryDequeue(out ECSGameEffect effect))
             {
                 if (effect.IsActive)
-                    ServiceObjectStore.Add(effect);
-
-                effect.OnStartEffect();
-                effect.IsBeingReplaced = false;
-            }
-
-            while (_effectsToStop.TryDequeue(out ECSGameEffect effect))
-            {
-                if (effect.IsStopped)
-                    ServiceObjectStore.Remove(effect);
-
-                effect.OnStopEffect();
-
-                if (!effect.IsBeingReplaced)
                 {
-                    effect.TryApplyImmunity();
-                    TryEnableBestEffectOfSameType(effect);
+                    ServiceObjectStore.Add(effect);
+                    effect.OnStartEffect();
                 }
-                else
-                    effect.IsBeingReplaced = false;
+                else if (effect.IsStopped)
+                {
+                    ServiceObjectStore.Remove(effect);
+                    effect.OnStopEffect();
+
+                    if (!effect.IsBeingReplaced)
+                    {
+                        effect.TryApplyImmunity();
+                        TryEnableBestEffectOfSameType(effect);
+                    }
+                }
+                else if (log.IsErrorEnabled)
+                    log.Error($"Effect was enqueued to start or stop but is neither active nor stopped: {effect.Name} ({effect.EffectType}) on {Owner}");
+
+                effect.IsBeingReplaced = false;
             }
 
             if (_effects.Count == 0)
@@ -729,7 +727,7 @@ namespace DOL.GS
                             EffectHelper.SendSpellAnimation(spellEffect);
                     }
 
-                    _effectsToStart.Enqueue(effect);
+                    _effectsToStartOrStop.Enqueue(effect);
                 }
                 catch (Exception e)
                 {
@@ -831,7 +829,7 @@ namespace DOL.GS
                     RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
 
                     if (effect.FinalizeState(result))
-                        _effectsToStop.Enqueue(effect);
+                        _effectsToStartOrStop.Enqueue(effect);
                 }
                 catch (Exception e)
                 {
