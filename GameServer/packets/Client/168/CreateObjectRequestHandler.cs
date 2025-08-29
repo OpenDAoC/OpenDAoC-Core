@@ -23,10 +23,7 @@ namespace DOL.GS.PacketHandler.Client.v168
             GameObject obj = region.GetObject(id);
 
             if (obj == null || !client.Player.IsWithinRadius(obj, WorldMgr.VISIBILITY_DISTANCE))
-            {
-                client.Out.SendObjectDelete(id);
                 return;
-            }
 
             ClientService.CreateObjectForPlayer(client.Player, obj);
         }
