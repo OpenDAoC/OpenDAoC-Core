@@ -111,7 +111,7 @@ namespace DOL.AI.Brain
 
         public void BroadcastMessage(String message)
         {
-            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+            foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
             {
                 player.Out.SendMessage(message, eChatType.CT_Broadcast, eChatLoc.CL_ChatWindow);
             }
@@ -172,7 +172,7 @@ namespace DOL.AI.Brain
             if (Body.TargetObject != null && Body.InCombat && Body.Health != Body.MaxHealth && HasAggro)
             {
                 int countPlayer = 0;
-                foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+                foreach (GamePlayer player in Body.GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                 {
                     countPlayer++;
                 }

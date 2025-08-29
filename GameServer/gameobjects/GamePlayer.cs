@@ -13197,7 +13197,7 @@ namespace DOL.GS
 
                 if (value != null)
                 {
-                    foreach (GamePlayer playerToUpdate in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+                    foreach (GamePlayer playerToUpdate in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     {
                         if (playerToUpdate == null) continue;
 
@@ -13209,7 +13209,7 @@ namespace DOL.GS
                 }
                 else
                 {
-                    foreach (GamePlayer playerToUpdate in GetPlayersInRadius(WorldMgr.OBJ_UPDATE_DISTANCE))
+                    foreach (GamePlayer playerToUpdate in GetPlayersInRadius(WorldMgr.VISIBILITY_DISTANCE))
                     {
                         if (playerToUpdate == null) continue;
 

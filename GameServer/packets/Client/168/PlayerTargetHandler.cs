@@ -22,7 +22,7 @@ namespace DOL.GS.PacketHandler.Client.v168
         {
             GameObject target = actionSource.CurrentRegion.GetObject(newTargetId);
 
-            if (newTargetId > 0 && !actionSource.IsWithinRadius(target, WorldMgr.OBJ_UPDATE_DISTANCE))
+            if (newTargetId > 0 && !actionSource.IsWithinRadius(target, WorldMgr.VISIBILITY_DISTANCE))
             {
                 actionSource.Out.SendObjectDelete(newTargetId);
                 target = null;

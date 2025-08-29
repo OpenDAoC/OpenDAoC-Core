@@ -62,10 +62,6 @@ namespace DOL.GS
 		/// Is the square distance a player can see
 		/// </summary>
 		public const int VISIBILITY_SQUARE_DISTANCE = 36000000;
-		/// <summary>
-		/// Holds the distance at which objects are updated
-		/// </summary>
-		public const int OBJ_UPDATE_DISTANCE = 6144;
 
 		/// <summary>
 		/// This will store available teleport destinations as read from the 'teleport' table.  These are
