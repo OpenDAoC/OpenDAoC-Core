@@ -72,7 +72,11 @@ namespace DOL.GS.Spells
 
         public override void Handle(AttackData attackData, double effectiveness)
         {
-            // Inverts attacker and target.
+            // Damage shields only work on melee attacks.
+            if (!attackData.IsMeleeAttack)
+                return;
+
+            // Swap attacker and target.
             if (!AreArgumentsValid(attackData, out GameLiving target, out GameLiving attacker))
                 return;
 
