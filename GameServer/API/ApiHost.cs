@@ -178,8 +178,6 @@ namespace DOL.GS.API
 
             #region Misc
 
-            api.MapGet("/bread", () => Properties.BREAD);
-
             api.MapGet("/utils/discordstatus/{accountName}", (string accountName) =>
             {
                 var discordStatus = Player.GetDiscord(accountName);

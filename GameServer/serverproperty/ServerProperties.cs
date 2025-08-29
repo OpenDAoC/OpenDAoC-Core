@@ -2450,13 +2450,7 @@ namespace DOL.GS.ServerProperties
 		/// </summary>
 		[ServerProperty("atlas", "allow_bg_claim", "Allow claiming of BG keeps", false)]
 		public static bool ALLOW_BG_CLAIM;
-		
-		/// <summary>
-		/// Text breadcrumbs for players
-		/// </summary>
-		[ServerProperty("atlas", "atlas_bread", "Text breadcrumbs for players", "")]
-		public static string BREAD;
-		
+
 		/// <summary>
 		/// Atlas Orbs reward for epic boss kills
 		/// </summary>
