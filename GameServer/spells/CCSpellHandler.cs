@@ -286,7 +286,7 @@ namespace DOL.GS.Spells
             }
 
             // Ceremonial bracer doesn't intercept physical stun.
-            if(Spell.SpellType is not eSpellType.StyleStun)
+            if (Spell.SpellType is not eSpellType.StyleStun)
             {
                 /* GameSpellEffect stunblock = SpellHandler.FindEffectOnTarget(target, "CeremonialBracerStun");
                 if (stunblock != null)
@@ -299,7 +299,7 @@ namespace DOL.GS.Spells
                 }*/
             }
 
-            return false;
+            return base.CheckSpellResist(target);
         }
 
         public override void OnDurationEffectApply(GameLiving target)
