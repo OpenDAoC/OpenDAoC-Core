@@ -211,21 +211,26 @@ namespace DOL.GS
                 {
                     case EffectListComponent.AddEffectResult.Added:
                     {
+                        ServiceObjectStore.Add(this);
                         _state = State.Active;
                         return true;
                     }
                     case EffectListComponent.AddEffectResult.RenewedActive:
                     {
+                        ServiceObjectStore.Add(this);
                         _state = State.Active;
                         return false;
                     }
                     case EffectListComponent.AddEffectResult.Disabled:
                     {
+                        ServiceObjectStore.Add(this);
                         _state = State.Disabled;
                         return false;
                     }
                     case EffectListComponent.AddEffectResult.RenewedDisabled:
                     {
+                        ServiceObjectStore.Add(this);
+
                         if (IsDisabled)
                         {
                             _state = State.Active;
@@ -238,7 +243,6 @@ namespace DOL.GS
                         }
                     }
                     case EffectListComponent.AddEffectResult.Failed:
-                        return false;
                     default:
                         throw new InvalidOperationException($"Unhandled result: {result}.");
                 }
@@ -258,18 +262,19 @@ namespace DOL.GS
                 {
                     case EffectListComponent.RemoveEffectResult.Removed:
                     {
+                        ServiceObjectStore.Remove(this);
                         bool shouldBeStopped = IsActive;
                         _state = State.Stopped;
                         return shouldBeStopped;
                     }
                     case EffectListComponent.RemoveEffectResult.Disabled:
                     {
+                        ServiceObjectStore.Add(this);
                         bool shouldBeStopped = IsActive;
                         _state = State.Disabled;
                         return shouldBeStopped;
                     }
                     case EffectListComponent.RemoveEffectResult.Failed:
-                        return false;
                     default:
                         throw new InvalidOperationException($"Unhandled result: {result}.");
                 }

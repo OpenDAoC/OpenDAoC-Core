@@ -50,13 +50,9 @@ namespace DOL.GS
             while (_effectsToStartOrStop.TryDequeue(out ECSGameEffect effect))
             {
                 if (effect.IsActive)
-                {
-                    ServiceObjectStore.Add(effect);
                     effect.OnStartEffect();
-                }
-                else if (effect.IsStopped)
+                else if (effect.IsDisabled || effect.IsStopped)
                 {
-                    ServiceObjectStore.Remove(effect);
                     effect.OnStopEffect();
 
                     if (!effect.IsBeingReplaced)
@@ -704,6 +700,8 @@ namespace DOL.GS
                     if (!effect.FinalizeState(result))
                         return;
 
+                    _effectsToStartOrStop.Enqueue(effect);
+
                     if (effect is ECSGameSpellEffect spellEffect)
                     {
                         ISpellHandler spellHandler = spellEffect.SpellHandler;
@@ -726,8 +724,6 @@ namespace DOL.GS
                         else if (spellEffect is not ECSImmunityEffect)
                             EffectHelper.SendSpellAnimation(spellEffect);
                     }
-
-                    _effectsToStartOrStop.Enqueue(effect);
                 }
                 catch (Exception e)
                 {
