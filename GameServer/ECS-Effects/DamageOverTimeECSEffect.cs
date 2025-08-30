@@ -8,9 +8,12 @@ namespace DOL.GS
 
         public override void OnStartEffect()
         {
-            // Tick on application.
+            // Tick here if the effect hasn't ticked yet.
             // This allows two poisons to do damage when being applied during the same server tick.
             // Otherwise, only one will call `OnEffectPulse`.
+            if (SpellHandler is not DoTSpellHandler dotHandler || !dotHandler.FirstTick)
+                return;
+
             OnEffectPulse();
             NextTick += PulseFreq;
         }

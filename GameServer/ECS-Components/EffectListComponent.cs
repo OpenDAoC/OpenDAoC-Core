@@ -22,7 +22,7 @@ namespace DOL.GS
         private readonly Dictionary<int, ECSGameEffect> _effectIdToEffect = new();   // Dictionary of effects by their icon ID.
 
         // Pending effects.
-        private readonly Queue<ECSGameEffect> _effectsToStartOrStop = new();         // Queue for effects to start or stop after their state has been finalized.
+        private readonly Queue<PendingEffect> _effectsToStartOrStop = new();         // Queue for effects to start or stop after their state has been finalized.
 
         // Concentration.
         private readonly List<ECSGameSpellEffect> _concentrationEffects = new(20);   // List of concentration effects currently active on the player.
@@ -47,25 +47,8 @@ namespace DOL.GS
 
         public void Tick()
         {
-            while (_effectsToStartOrStop.TryDequeue(out ECSGameEffect effect))
-            {
-                if (effect.IsActive)
-                    effect.OnStartEffect();
-                else if (effect.IsDisabled || effect.IsStopped)
-                {
-                    effect.OnStopEffect();
-
-                    if (!effect.IsBeingReplaced)
-                    {
-                        effect.TryApplyImmunity();
-                        TryEnableBestEffectOfSameType(effect);
-                    }
-                }
-                else if (log.IsErrorEnabled)
-                    log.Error($"Effect was enqueued to start or stop but is neither active nor stopped: {effect.Name} ({effect.EffectType}) on {Owner}");
-
-                effect.IsBeingReplaced = false;
-            }
+            while (_effectsToStartOrStop.TryDequeue(out PendingEffect pendingEffect))
+                pendingEffect.Process();
 
             if (_effects.Count == 0)
             {
@@ -80,50 +63,50 @@ namespace DOL.GS
                 CancelAll();
 
             SendPlayerUpdates();
+        }
 
-            void TryEnableBestEffectOfSameType(ECSGameEffect effect)
+        public void TryEnableBestEffectOfSameType(ECSGameEffect effect)
+        {
+            if (!_effects.TryGetValue(effect.EffectType, out var effects) || effects.Count == 0)
+                return;
+
+            ECSGameEffect bestActiveEffect = null;
+            ECSGameEffect disabledEffect = null;
+
+            foreach (ECSGameEffect existingEffect in effects)
             {
-                if (!_effects.TryGetValue(effect.EffectType, out var effects) || effects.Count == 0)
-                    return;
+                if (existingEffect == effect || existingEffect is not ECSGameSpellEffect)
+                    continue;
 
-                ECSGameEffect bestActiveEffect = null;
-                ECSGameEffect disabledEffect = null;
-
-                foreach (ECSGameEffect existingEffect in effects)
+                // Keep track of the best active effect.
+                if (!existingEffect.IsDisabled)
                 {
-                    if (existingEffect == effect || existingEffect is not ECSGameSpellEffect)
-                        continue;
+                    if (bestActiveEffect == null || existingEffect.IsBetterThan(bestActiveEffect))
+                        bestActiveEffect = existingEffect;
 
-                    // Keep track of the best active effect.
-                    if (!existingEffect.IsDisabled)
-                    {
-                        if (bestActiveEffect == null || existingEffect.IsBetterThan(bestActiveEffect))
-                            bestActiveEffect = existingEffect;
-
-                        continue;
-                    }
-
-                    // If this is a disabled concentration effect, check the activation range.
-                    if (existingEffect.IsConcentrationEffect())
-                    {
-                        ISpellHandler spellHandler = existingEffect.SpellHandler;
-                        int radiusToCheck = EffectHelper.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
-
-                        if (!spellHandler.Caster.IsWithinRadius(effect.Owner, radiusToCheck))
-                            continue;
-                    }
-
-                    // Keep track of the best disabled effect.
-                    if (disabledEffect == null || existingEffect.IsBetterThan(disabledEffect))
-                        disabledEffect = existingEffect;
+                    continue;
                 }
 
-                // Only enable the best disabled effect if it's better than the best active effect.
-                if (bestActiveEffect == null)
-                    disabledEffect?.Enable();
-                else if (disabledEffect != null && disabledEffect.IsBetterThan(bestActiveEffect))
-                    disabledEffect.Enable();
+                // If this is a disabled concentration effect, check the activation range.
+                if (existingEffect.IsConcentrationEffect())
+                {
+                    ISpellHandler spellHandler = existingEffect.SpellHandler;
+                    int radiusToCheck = EffectHelper.GetConcentrationEffectActivationRange(spellHandler.Spell.SpellType);
+
+                    if (!spellHandler.Caster.IsWithinRadius(effect.Owner, radiusToCheck))
+                        continue;
+                }
+
+                // Keep track of the best disabled effect.
+                if (disabledEffect == null || existingEffect.IsBetterThan(disabledEffect))
+                    disabledEffect = existingEffect;
             }
+
+            // Only enable the best disabled effect if it's better than the best active effect.
+            if (bestActiveEffect == null)
+                disabledEffect?.Enable();
+            else if (disabledEffect != null && disabledEffect.IsBetterThan(bestActiveEffect))
+                disabledEffect.Enable();
         }
 
         public void StopConcentrationEffect(int index, bool playerCancelled)
@@ -700,7 +683,7 @@ namespace DOL.GS
                     if (!effect.FinalizeState(result))
                         return;
 
-                    _effectsToStartOrStop.Enqueue(effect);
+                    _effectsToStartOrStop.Enqueue(new(effect, true));
 
                     if (effect is ECSGameSpellEffect spellEffect)
                     {
@@ -825,7 +808,7 @@ namespace DOL.GS
                     RequestPlayerUpdate(EffectHelper.GetPlayerUpdateFromEffect(effect.EffectType));
 
                     if (effect.FinalizeState(result))
-                        _effectsToStartOrStop.Enqueue(effect);
+                        _effectsToStartOrStop.Enqueue(new(effect, false));
                 }
                 catch (Exception e)
                 {
@@ -916,6 +899,36 @@ namespace DOL.GS
             Removed,
             Disabled,
             Failed
+        }
+
+        private readonly struct PendingEffect
+        {
+            private readonly ECSGameEffect _effect;
+            private readonly bool _start;
+
+            public PendingEffect(ECSGameEffect effect, bool start)
+            {
+                _effect = effect;
+                _start = start;
+            }
+
+            public void Process()
+            {
+                if (_start)
+                    _effect.OnStartEffect();
+                else
+                {
+                    _effect.OnStopEffect();
+
+                    if (!_effect.IsBeingReplaced)
+                    {
+                        _effect.TryApplyImmunity();
+                        _effect.Owner.effectListComponent.TryEnableBestEffectOfSameType(_effect);
+                    }
+                    else
+                        _effect.IsBeingReplaced = false;
+                }
+            }
         }
     }
 }

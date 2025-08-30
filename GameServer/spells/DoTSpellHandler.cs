@@ -10,9 +10,8 @@ namespace DOL.GS.Spells
     [SpellHandler(eSpellType.DamageOverTime)]
     public class DoTSpellHandler : SpellHandler
     {
-        private bool _firstTick = true;
-
-        public int CriticalDamage { get; protected set; } = 0;
+        public int CriticalDamage { get; protected set; }
+        public bool FirstTick { get; private set; } = true;
 
         public DoTSpellHandler(GameLiving caster, Spell spell, SpellLine line) : base(caster, spell, line) { }
 
@@ -129,17 +128,17 @@ namespace DOL.GS.Spells
 
             AttackData ad = CalculateDamageToTarget(target);
             ad.CriticalDamage = CalculateCriticalDamage(ad);
-            ad.CausesCombat = _firstTick;
+            ad.CausesCombat = FirstTick;
             SendDamageMessages(ad);
             DamageTarget(ad, false);
 
-            if (_firstTick)
-                _firstTick = false;
+            if (FirstTick)
+                FirstTick = false;
         }
 
         private int CalculateCriticalDamage(AttackData ad)
         {
-            if (CriticalDamage > 0 || !_firstTick)
+            if (CriticalDamage > 0 || !FirstTick)
                 return CriticalDamage;
 
             ad.CriticalChance = Caster.DebuffCriticalChance;
