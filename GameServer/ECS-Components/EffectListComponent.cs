@@ -764,9 +764,7 @@ namespace DOL.GS
 
                     if (effect.IsStopping)
                     {
-                        // Get the effectToRemove from the Effects list. Had issues trying to remove the effect directly from the list if it wasn't the same object.
-                        ECSGameEffect effectToRemove = existingEffects.FirstOrDefault(e => e.Name == effect.Name);
-                        existingEffects.Remove(effectToRemove);
+                        existingEffects.Remove(effect);
                         _effectIdToEffect.Remove(effect.Icon);
 
                         if (existingEffects.Count == 0)
