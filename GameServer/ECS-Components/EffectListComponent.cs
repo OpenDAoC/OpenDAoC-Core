@@ -455,7 +455,7 @@ namespace DOL.GS
 
                     // First block handles effects with the same spell ID as an already present effect (and something about poisons).
                     // Second block handles effects with a different spell ID.
-                    if (existingEffects.FirstOrDefault(e => e.SpellHandler.Spell.ID == newSpell.ID || (newSpell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == newSpell.EffectGroup && newSpell.IsPoisonEffect)) != null)
+                    if (existingEffects.Any(e => e.SpellHandler.Spell.ID == newSpell.ID || (newSpell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == newSpell.EffectGroup && newSpell.IsPoisonEffect)))
                     {
                         if (effect.IsConcentrationEffect() && !effect.IsEnabling)
                             return AddEffectResult.Failed;
