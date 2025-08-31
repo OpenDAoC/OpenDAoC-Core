@@ -6,7 +6,6 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.SoldiersBarricade;
-            Start();
         }
 
         public override ushort Icon { get { return 4241; } }

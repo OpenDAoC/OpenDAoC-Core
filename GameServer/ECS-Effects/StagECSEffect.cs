@@ -10,7 +10,6 @@ namespace DOL.GS
         {
             m_level = level;
             EffectType = eEffect.Stag;
-			Start();
 		}
 
         /// <summary>

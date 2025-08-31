@@ -13,7 +13,7 @@ namespace DOL.GS.Spells
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return new FacilitatePainworkingECSGameEffect(initParams);
+            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new FacilitatePainworkingECSGameEffect(i));
         }
 
         protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)

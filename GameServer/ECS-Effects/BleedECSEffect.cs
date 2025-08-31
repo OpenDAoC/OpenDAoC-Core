@@ -10,7 +10,6 @@ namespace DOL.GS
         public BleedECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             _nextTickDamage = (int) SpellHandler.Spell.Damage;
-            Start();
         }
 
         public override bool IsBetterThan(ECSGameEffect effect)

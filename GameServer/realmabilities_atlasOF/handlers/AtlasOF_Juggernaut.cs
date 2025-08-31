@@ -37,7 +37,7 @@ namespace DOL.GS.RealmAbilities
 
         protected virtual void CreateSpell()
         {
-            new AtlasOF_JuggernautECSEffect(new ECSGameEffectInitParams(_caster, duration, Level));
+            ECSGameEffectFactory.Create(new(_caster, duration, Level), static (in ECSGameEffectInitParams i) => new AtlasOF_JuggernautECSEffect(i));
         }
 
         public override void Execute(GameLiving living)

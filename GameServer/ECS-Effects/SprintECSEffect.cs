@@ -10,7 +10,6 @@ namespace DOL.GS
             EffectType = eEffect.Sprint;
             PulseFreq = 200;
             NextTick = GameLoop.GameLoopTime;
-            Start();
         }
 
         private int _idleTicks = 0;

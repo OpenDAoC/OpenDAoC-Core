@@ -10,7 +10,6 @@ namespace DOL.GS.Effects
         public AtlasOF_BatteryOfLifeECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.BatteryOfLife;
-            Start();
             PulseFreq = 1000;
             NextTick = GameLoop.GameLoopTime;
         }

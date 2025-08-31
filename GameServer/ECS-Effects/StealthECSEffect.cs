@@ -9,7 +9,6 @@ namespace DOL.GS
         public StealthECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Stealth;
-            Start();
         }
 
         public override ushort Icon => 0x193;

@@ -111,7 +111,7 @@ namespace DOL.GS.RealmAbilities
                 ClientService.CreateObjectForPlayer(player, trap);
             }
 
-            new AtlasOF_RuneOfDecimationECSEffect(new ECSGameEffectInitParams(trap, m_duration, 1, tmpHandler));
+            ECSGameEffectFactory.Create(new(trap, m_duration, 1, tmpHandler), static (in ECSGameEffectInitParams i) => new AtlasOF_RuneOfDecimationECSEffect(i));
             DisableSkill(living);
         }
     }

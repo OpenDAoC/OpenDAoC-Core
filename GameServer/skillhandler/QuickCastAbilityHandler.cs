@@ -81,7 +81,7 @@ namespace DOL.GS.SkillHandler
 
 			//player.DisableSkill(ab,DURATION / 10);
 
-			new QuickCastECSGameEffect(new ECSGameEffectInitParams(player, QuickCastECSGameEffect.DURATION, 1));
+			ECSGameEffectFactory.Create(new(player, QuickCastECSGameEffect.DURATION, 1), static (in ECSGameEffectInitParams i) => new QuickCastECSGameEffect(i));
 		}
 	}
 }

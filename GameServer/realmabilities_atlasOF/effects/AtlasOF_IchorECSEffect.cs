@@ -10,7 +10,6 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.Ichor;
-            Start();
         }
 
         public override ushort Icon { get { return 7029; } }

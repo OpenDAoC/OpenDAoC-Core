@@ -19,7 +19,7 @@ namespace DOL.GS.Spells
 
 		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
-			return new AblativeArmorECSGameEffect(initParams);
+			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new AblativeArmorECSGameEffect(i));
 		}
 
 		public override void OnEffectStart(GameSpellEffect effect) { }

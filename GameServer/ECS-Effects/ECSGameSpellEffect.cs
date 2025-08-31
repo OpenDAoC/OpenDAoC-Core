@@ -40,10 +40,6 @@ namespace DOL.GS
             }
             else if (PulseFreq > 0)
                 NextTick = StartTick;
-
-            // These classes start their effects themselves.
-            if (this is not ECSImmunityEffect and not ECSPulseEffect and not BleedECSEffect)
-                Start();
         }
 
         public override bool IsConcentrationEffect()
@@ -74,7 +70,7 @@ namespace DOL.GS
             if (SpellHandler is UnresistableStunSpellHandler)
                 return;
 
-            new ECSImmunityEffect(Owner, SpellHandler, ImmunityDuration, (int) PulseFreq, Effectiveness);
+            ECSGameEffectFactory.Create(new(Owner, ImmunityDuration, Effectiveness, SpellHandler), (int) PulseFreq, static (in ECSGameEffectInitParams i, int pulseFreq) => new ECSImmunityEffect(i, pulseFreq));
         }
 
         public override DbPlayerXEffect GetSavedEffect()

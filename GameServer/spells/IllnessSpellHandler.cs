@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 	{
 		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
-			return new ResurrectionIllnessECSGameEffect(initParams);
+			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new ResurrectionIllnessECSGameEffect(i));
 		}
 
 		/// <summary>

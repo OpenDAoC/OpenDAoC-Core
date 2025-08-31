@@ -37,7 +37,7 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 
-            new RapidFireECSGameEffect(new ECSGameEffectInitParams(player, 0, 1));
+            ECSGameEffectFactory.Create(new(player, 0, 1), static (in ECSGameEffectInitParams i) => new RapidFireECSGameEffect(i));
         }
     }
 }

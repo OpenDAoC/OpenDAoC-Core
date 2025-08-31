@@ -10,7 +10,7 @@ namespace DOL.GS.Spells
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return new AmnesiaECSEffect(initParams);
+            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new AmnesiaECSEffect(i));
         }
 
         public override void FinishSpellCast(GameLiving target)

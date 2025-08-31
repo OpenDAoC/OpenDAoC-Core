@@ -136,7 +136,7 @@ namespace DOL.GS.Spells
     {
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return new MezECSGameEffect(initParams);
+            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new MezECSGameEffect(i));
         }
 
         public override void OnEffectPulse(GameSpellEffect effect)
@@ -224,7 +224,7 @@ namespace DOL.GS.Spells
     {
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return new StunECSGameEffect(initParams);
+            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new StunECSGameEffect(i));
         }
 
         protected override GameSpellEffect CreateSpellEffect(GameLiving target, double effectiveness)

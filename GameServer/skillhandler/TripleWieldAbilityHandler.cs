@@ -64,8 +64,8 @@ namespace DOL.GS.SkillHandler
                 player.Out.SendMessage(LanguageMgr.GetTranslation(player.Client.Account.Language, "Skill.Ability.CannotUseAlreadyActive"), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 return;
 			}
-			new TripleWieldECSGameEffect(new ECSGameEffectInitParams(player, DURATION * 1000, 1));
 
+			ECSGameEffectFactory.Create(new(player, DURATION * 1000, 1), static (in ECSGameEffectInitParams i) => new TripleWieldECSGameEffect(i));
 			player.DisableSkill(ab, REUSE_TIMER * 1000);
 		}
 	}

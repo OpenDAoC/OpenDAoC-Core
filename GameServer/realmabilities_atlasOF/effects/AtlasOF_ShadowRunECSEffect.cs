@@ -9,7 +9,6 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.ShadowRun;
-            Start();
         }
 
         public override void OnStartEffect()

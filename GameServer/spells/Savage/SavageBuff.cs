@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return new SavageBuffECSGameEffect(initParams);
+            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new SavageBuffECSGameEffect(i));
         }
 
         public override int PowerCost(GameLiving target)

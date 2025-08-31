@@ -85,7 +85,7 @@ namespace DOL.GS.SkillHandler
 			}
 			player.DisableSkill(ab, REUSE_TIMER);
 
-			new StagECSGameEffect(new ECSGameEffectInitParams(player, DURATION, 1), ab.Level);
+			ECSGameEffectFactory.Create(new(player, DURATION, 1), ab.Level, static (in ECSGameEffectInitParams i, int level) => new StagECSGameEffect(i, level));
 		}
 	}
 }

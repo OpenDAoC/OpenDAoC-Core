@@ -39,7 +39,7 @@ namespace DOL.GS.Spells
 
 		public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
-			return new PetECSGameEffect(initParams);
+			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new PetECSGameEffect(i));
 		}
 
 		/// <summary>
@@ -150,7 +150,7 @@ namespace DOL.GS.Spells
 			m_pet.Spells = template.Spells; // Have to sort spells again now that the pet level has been assigned.
 
 			SetBrainToOwner(brain);
-			CreateECSEffect(new ECSGameEffectInitParams(m_pet, CalculateEffectDuration(target), CasterEffectiveness, this));
+			CreateECSEffect(new(m_pet, CalculateEffectDuration(target), CasterEffectiveness, this));
 			Caster.OnPetSummoned(m_pet);
 		}
 

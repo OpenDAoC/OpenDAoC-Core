@@ -123,7 +123,6 @@ namespace DOL.GS.SkillHandler
 			DistractTimer.Start();
 
 			player.DisableSkill(ab, REUSE_TIMER);
-			//new DirtyTricksECSGameEffect(new ECSGameEffectInitParams(player, DURATION * 1000, 1));
 		}
 		
 		protected virtual int TurnBackToNormal(ECSGameTimer timer)

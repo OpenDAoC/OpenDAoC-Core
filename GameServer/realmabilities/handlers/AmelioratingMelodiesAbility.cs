@@ -37,7 +37,7 @@ namespace DOL.GS.RealmAbilities
 
 			int heal = GetHealAmountPerTick();
 
-			new AmelioratingMelodiesECSEffect(new ECSGameEffectInitParams(player, 30000, heal));
+			ECSGameEffectFactory.Create(new(player, 30000, heal), static (in ECSGameEffectInitParams i) => new AmelioratingMelodiesECSEffect(i));
 
 			DisableSkill(living);
 		}

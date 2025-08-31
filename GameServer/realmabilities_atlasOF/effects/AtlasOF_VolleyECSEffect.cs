@@ -40,7 +40,6 @@ namespace DOL.GS.Effects
         public AtlasOF_VolleyECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Volley;
-            Start();
         }
 
         public override void OnStartEffect()

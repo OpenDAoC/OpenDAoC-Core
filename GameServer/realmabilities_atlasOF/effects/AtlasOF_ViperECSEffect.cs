@@ -10,7 +10,6 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.Viper;
-            Start();
         }
 
         public override ushort Icon { get { return 4283; } }

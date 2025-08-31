@@ -7,7 +7,6 @@ namespace DOL.GS.Effects
         public AtlasOF_ForestheartAmbusherECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.ForestheartAmbusher;
-            Start();
         }
 
         public override ushort Icon => 4268;

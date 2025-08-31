@@ -7,7 +7,7 @@
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return new PiercingMagicECSGameEffect(initParams);
+            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new PiercingMagicECSGameEffect(i));
         }
     }
 }

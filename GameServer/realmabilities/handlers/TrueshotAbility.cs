@@ -25,7 +25,7 @@ namespace DOL.GS.RealmAbilities
 				RapidFireECSGameEffect rapidFire = EffectListService.GetAbilityEffectOnTarget(player, eEffect.RapidFire) as RapidFireECSGameEffect;
 				rapidFire?.Stop(false);
 
-				new TrueShotECSGameEffect(null, new ECSGameEffectInitParams(player, 0, 1));
+				ECSGameEffectFactory.Create(new(player, 0, 1), this, static (in ECSGameEffectInitParams i, TrueshotAbility trueshot) => new TrueShotECSGameEffect(trueshot, i));
 			}
 			DisableSkill(living);
 		}

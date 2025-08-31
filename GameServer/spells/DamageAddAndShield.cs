@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
     {
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return new DamageAddECSEffect(initParams);
+            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new DamageAddECSEffect(i));
         }
 
         public override void Handle(AttackData attackData, double effectiveness)
@@ -67,7 +67,7 @@ namespace DOL.GS.Spells
     {
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return new DamageShieldECSEffect(initParams);
+            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new DamageShieldECSEffect(i));
         }
 
         public override void Handle(AttackData attackData, double effectiveness)

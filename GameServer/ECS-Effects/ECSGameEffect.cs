@@ -8,23 +8,7 @@ using DOL.Language;
 
 namespace DOL.GS
 {
-    public readonly ref struct ECSGameEffectInitParams
-    {
-        public readonly GameLiving Target { get; }
-        public readonly int Duration { get; }
-        public readonly double Effectiveness { get; }
-        public readonly ISpellHandler SpellHandler { get; }
-
-        public ECSGameEffectInitParams(GameLiving target, int duration, double effectiveness, ISpellHandler spellHandler = null)
-        {
-            Target = target;
-            Duration = duration;
-            Effectiveness = effectiveness;
-            SpellHandler = spellHandler;
-        }
-    }
-
-    public class ECSGameEffect : IServiceObject
+    public abstract class ECSGameEffect : IServiceObject
     {
         private State _state;
         private TransitionalState _transitionalState;
@@ -69,8 +53,6 @@ namespace DOL.GS
         public bool CanBeEnabled => IsDisabled && CanChangeState;
         public bool CanBeStopped => (IsActive || IsDisabled) && CanChangeState;
 
-        public ECSGameEffect() { }
-
         public ECSGameEffect(in ECSGameEffectInitParams initParams)
         {
             Owner = initParams.Target;
@@ -83,10 +65,8 @@ namespace DOL.GS
             SpellHandler = initParams.SpellHandler;
         }
 
-        protected bool Start()
+        public bool Start()
         {
-            // Only meant to be called by the constructor.
-
             if (!CanStart)
                 return false;
 

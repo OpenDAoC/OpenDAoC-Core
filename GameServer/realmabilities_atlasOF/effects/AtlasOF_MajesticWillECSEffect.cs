@@ -9,7 +9,6 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.MajesticWill;
-            Start();
         }
 
         public override ushort Icon { get { return 4239; } }

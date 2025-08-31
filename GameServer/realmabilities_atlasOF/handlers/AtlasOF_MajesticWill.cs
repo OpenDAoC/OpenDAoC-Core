@@ -22,7 +22,7 @@ namespace DOL.GS.RealmAbilities
 
             DisableSkill(living);
 
-            new AtlasOF_MajesticWillECSEffect(new ECSGameEffectInitParams(player, m_duration, Level, CreateSpell(living)));
+            ECSGameEffectFactory.Create(new(player, m_duration, Level, CreateSpell(living)), static (in ECSGameEffectInitParams i) => new AtlasOF_MajesticWillECSEffect(i));
         }
         
         private SpellHandler CreateSpell(GameLiving owner)

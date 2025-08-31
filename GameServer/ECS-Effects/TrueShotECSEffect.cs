@@ -15,7 +15,6 @@ namespace DOL.GS
         {
             EffectType = eEffect.TrueShot;
             _ability = ability;
-            Start();
         }
 
         public override void OnStartEffect()

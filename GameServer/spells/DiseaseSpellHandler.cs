@@ -12,7 +12,7 @@ namespace DOL.GS.Spells
 
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return new DiseaseECSGameEffect(initParams, _critical);
+            return ECSGameEffectFactory.Create(initParams, _critical, static (in ECSGameEffectInitParams i, bool critical) => new DiseaseECSGameEffect(i, critical));
         }
 
         protected override double GetDebuffEffectivenessCriticalModifier()

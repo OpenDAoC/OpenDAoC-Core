@@ -12,7 +12,6 @@ namespace DOL.GS
         public ShadeECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Shade;
-            Start();
         }
 
         public override void OnStartEffect()

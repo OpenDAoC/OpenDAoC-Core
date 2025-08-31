@@ -9,7 +9,6 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.RapidFire;
-            Start();
         }
 
 

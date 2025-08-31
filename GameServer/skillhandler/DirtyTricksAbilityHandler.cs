@@ -84,7 +84,7 @@ namespace DOL.GS.SkillHandler
 			}
 
 			player.DisableSkill(ab, REUSE_TIMER);
-			new DirtyTricksECSGameEffect(new ECSGameEffectInitParams(player, DURATION * 1000, 1));
+			ECSGameEffectFactory.Create(new(player, DURATION * 1000, 1), static (in ECSGameEffectInitParams i) => new DirtyTricksECSGameEffect(i));
 		}
 	}
 }

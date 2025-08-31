@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using DOL.GS.Effects;
-using DOL.GS.Spells;
 
 namespace DOL.GS
 {
@@ -12,14 +11,13 @@ namespace DOL.GS
         public override string OwnerName => $"Pulse: {SpellHandler.Spell.Name}";
         public Dictionary<GameLiving, ECSGameSpellEffect> ChildEffects { get; } = [];
 
-        public ECSPulseEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness)
-            : base (new ECSGameEffectInitParams(owner, duration, effectiveness, handler))
+        public ECSPulseEffect(in ECSGameEffectInitParams initParams, int pulseFreq)
+            : base (initParams)
         {
             PulseFreq = pulseFreq;
             EffectType = eEffect.Pulse;
             StartTick = GameLoop.GameLoopTime;
             NextTick = pulseFreq + GameLoop.GameLoopTime;
-            Start();
         }
 
         public override void OnStartEffect()

@@ -12,7 +12,6 @@ namespace DOL.GS
         public TripleWieldECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.TripleWield;
-            Start();
         }
 
         public override void OnStartEffect()

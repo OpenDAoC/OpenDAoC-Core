@@ -103,7 +103,7 @@ namespace DOL.GS.SkillHandler
                 return;
             }
 
-            new EngageECSGameEffect(new ECSGameEffectInitParams(player, 0, 1, null));
+            ECSGameEffectFactory.Create(new(player, 0, 1, null), static (in ECSGameEffectInitParams i) => new EngageECSGameEffect(i));
         }
     }
 }

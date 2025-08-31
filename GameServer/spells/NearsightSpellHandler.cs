@@ -13,7 +13,7 @@ namespace DOL.GS.Spells
 	{
         public override ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
         {
-            return new NearsightECSGameEffect(initParams);
+            return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new NearsightECSGameEffect(i));
         }
 
         public override void ApplyEffectOnTarget(GameLiving target)

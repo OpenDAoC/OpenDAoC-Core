@@ -6,7 +6,6 @@ namespace DOL.GS.Effects
         public StrikingTheSoulECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.StrikingTheSoul;
-            Start();
         }
 
         public override ushort Icon => 4271;

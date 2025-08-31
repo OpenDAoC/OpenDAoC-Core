@@ -28,7 +28,6 @@ namespace DOL.GS
             Source = source;
             Target = target;
             EffectType = eEffect.Protect;
-            Start();
         }
 
         public override void OnStartEffect()
@@ -63,7 +62,7 @@ namespace DOL.GS
                     playerTarget?.Out.SendMessage(LanguageMgr.GetTranslation(playerTarget.Client, "Effects.ProtectEffect.XProtectingYou", Source.GetName(0, true)), eChatType.CT_System, eChatLoc.CL_SystemWindow);
                 }
 
-                PairedEffect = new ProtectECSGameEffect(new ECSGameEffectInitParams(Target, 0, 1), Source, Target);
+                PairedEffect = ECSGameEffectFactory.Create(new(Target, 0, 1), Source, Target, static (in ECSGameEffectInitParams i, GameLiving source, GameLiving target) => new ProtectECSGameEffect(i, source, target));
                 PairedEffect.PairedEffect = this;
             }
 

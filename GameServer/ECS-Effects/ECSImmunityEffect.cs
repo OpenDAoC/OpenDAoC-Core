@@ -4,20 +4,13 @@ namespace DOL.GS
 {
     public class ECSImmunityEffect : ECSGameSpellEffect
     {
-        public ECSImmunityEffect(GameLiving owner, ISpellHandler handler, int duration, int pulseFreq, double effectiveness)
-            : base(new ECSGameEffectInitParams(owner, duration, effectiveness, handler))
+        public ECSImmunityEffect(in ECSGameEffectInitParams initParams, int pulseFreq)
+            : base(initParams)
         {
-            // Some of this is already done in the base constructor and should be cleaned up
-            Owner = owner;
-            SpellHandler = handler;
-            Duration = duration;
             PulseFreq = pulseFreq;
-            Effectiveness = effectiveness;
-            EffectType = EffectHelper.GetImmunityEffectFromSpell(handler.Spell);
-            ExpireTick = duration + GameLoop.GameLoopTime;
+            EffectType = EffectHelper.GetImmunityEffectFromSpell(SpellHandler.Spell);
             StartTick = GameLoop.GameLoopTime;
             TriggersImmunity = false;
-            Start();
         }
 
         protected ECSImmunityEffect(in ECSGameEffectInitParams initParams) : base(initParams) { }
@@ -31,7 +24,6 @@ namespace DOL.GS
         {
             Owner = initParams.Target;
             Duration = 60000;
-            Start();
         }
 
         public bool CanApplyNewEffect(long duration)

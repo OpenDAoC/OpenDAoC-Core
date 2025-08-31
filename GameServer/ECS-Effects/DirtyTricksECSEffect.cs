@@ -9,7 +9,6 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.DirtyTricks;
-            Start();
         }
 
         public override ushort Icon { get { return 478; } }
@@ -49,7 +48,7 @@ namespace DOL.GS
             DirtyTricksDetrimentalECSGameEffect dt = (DirtyTricksDetrimentalECSGameEffect)EffectListService.GetAbilityEffectOnTarget(target, eEffect.DirtyTricksDetrimental);
 			if (dt == null)
 			{
-                new DirtyTricksDetrimentalECSGameEffect(new ECSGameEffectInitParams(target, 10000, 1));
+                ECSGameEffectFactory.Create(new(target, 10000, 1), static (in ECSGameEffectInitParams i) => new DirtyTricksDetrimentalECSGameEffect(i));
 			}
 		}
 	}
@@ -63,7 +62,6 @@ namespace DOL.GS
             : base(initParams)
         {
             EffectType = eEffect.DirtyTricksDetrimental;
-            Start();
         }
 
         public override ushort Icon { get { return 478; } }

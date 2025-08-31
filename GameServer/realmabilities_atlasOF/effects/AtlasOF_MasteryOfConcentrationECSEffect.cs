@@ -6,7 +6,6 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.MasteryOfConcentration;
-            Start();
         }
 
         public override ushort Icon { get { return 4238; } }

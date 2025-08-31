@@ -35,7 +35,7 @@ namespace DOL.GS.RealmAbilities
         
         public virtual void CreateSpell()
         {
-            new AtlasOF_WhirlingDervishECSEffect(new ECSGameEffectInitParams(m_player, duration, Level));
+            ECSGameEffectFactory.Create(new(m_player, duration, Level), static (in ECSGameEffectInitParams i) => new AtlasOF_WhirlingDervishECSEffect(i));
         }
 
         public override void Execute(GameLiving living)

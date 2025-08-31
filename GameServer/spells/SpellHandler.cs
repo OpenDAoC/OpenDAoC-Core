@@ -275,13 +275,13 @@ namespace DOL.GS.Spells
 
 		public virtual ECSGameSpellEffect CreateECSEffect(in ECSGameEffectInitParams initParams)
 		{
-			return new ECSGameSpellEffect(initParams);
+			return ECSGameEffectFactory.Create(initParams, static (in ECSGameEffectInitParams i) => new ECSGameSpellEffect(i));
 		}
 
 		public virtual ECSPulseEffect CreateECSPulseEffect(GameLiving target, double effectiveness)
 		{
-			int freq = Spell != null ? Spell.Frequency : 0;
-			return new ECSPulseEffect(target, this, CalculateEffectDuration(target), freq, effectiveness);
+			int frequency = Spell != null ? Spell.Frequency : 0;
+			return ECSGameEffectFactory.Create(new(target, CalculateEffectDuration(target), effectiveness, this), frequency, static (in ECSGameEffectInitParams i, int pulseFreq) => new ECSPulseEffect(i, pulseFreq));
 		}
 
 		/// <summary>
@@ -2213,7 +2213,7 @@ namespace DOL.GS.Spells
 			if (!target.IsAlive || target.effectListComponent == null)
 				return;
 
-			ECSGameSpellEffect effect = CreateECSEffect(new ECSGameEffectInitParams(target, CalculateEffectDuration(target), CalculateBuffDebuffEffectiveness(), this));
+			ECSGameSpellEffect effect = CreateECSEffect(new(target, CalculateEffectDuration(target), CalculateBuffDebuffEffectiveness(), this));
 
 			if (PulseEffect != null)
 				PulseEffect.ChildEffects[target] = effect;

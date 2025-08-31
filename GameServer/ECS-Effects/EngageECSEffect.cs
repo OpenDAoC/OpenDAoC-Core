@@ -26,7 +26,6 @@ namespace DOL.GS
         public EngageECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Engage;
-            Start();
         }
 
         public override void OnStartEffect()

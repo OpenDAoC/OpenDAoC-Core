@@ -7,7 +7,6 @@ namespace DOL.GS.Effects
         public AtlasOF_JuggernautECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.Juggernaut;
-            Start();
         }
 
         public override ushort Icon => 4261;

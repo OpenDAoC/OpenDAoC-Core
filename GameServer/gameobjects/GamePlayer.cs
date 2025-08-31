@@ -8845,7 +8845,7 @@ namespace DOL.GS
                     return false;
                 }
 
-                new SprintECSGameEffect(new ECSGameEffectInitParams(this, 0, 1, null));
+                ECSGameEffectFactory.Create(new(this, 0, 1), static (in ECSGameEffectInitParams i) => new SprintECSGameEffect(i));
                 return true;
             }
             else
@@ -11090,7 +11090,7 @@ namespace DOL.GS
                 if (IsOnHorse || IsSummoningMount)
                     IsOnHorse = false;
 
-                new StealthECSGameEffect(new ECSGameEffectInitParams(this, 0, 1));
+                ECSGameEffectFactory.Create(new(this, 0, 1), static (in ECSGameEffectInitParams i) => new StealthECSGameEffect(i));
                 return;
             }
 

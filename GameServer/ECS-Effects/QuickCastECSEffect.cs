@@ -8,7 +8,6 @@ namespace DOL.GS
         public QuickCastECSGameEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.QuickCast;
-            Start();
         }
 
         public const int DURATION = 3000;

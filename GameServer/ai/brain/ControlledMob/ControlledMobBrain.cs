@@ -401,7 +401,7 @@ namespace DOL.AI.Brain
 							if (existingEffectFromAnotherSource != null)
 								existingEffectFromAnotherSource.Stop();
 
-							new InterceptECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1), Body, playerOwner);
+							ECSGameEffectFactory.Create(new(Body, 0, 1, null), Body, playerOwner, static (in ECSGameEffectInitParams i, GameNPC body, GamePlayer owner) => new InterceptECSGameEffect(i, body, owner));
 						}
 
 						break;
@@ -420,7 +420,7 @@ namespace DOL.AI.Brain
 							if (existingEffectFromAnotherSource != null)
 								existingEffectFromAnotherSource.Stop();
 
-							new GuardECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1, null), Body, playerOwner);
+							ECSGameEffectFactory.Create(new(Body, 0, 1), Body, playerOwner, static (in ECSGameEffectInitParams i, GameNPC body, GamePlayer owner) => new GuardECSGameEffect(i, body, owner));
 						}
 
 						break;
@@ -439,7 +439,7 @@ namespace DOL.AI.Brain
 							if (existingEffectFromAnotherSource != null)
 								existingEffectFromAnotherSource.Stop();
 
-							new ProtectECSGameEffect(new ECSGameEffectInitParams(Body, 0, 1, null), Body, playerOwner);
+							ECSGameEffectFactory.Create(new(Body, 0, 1), Body, playerOwner, static (in ECSGameEffectInitParams i, GameNPC body, GamePlayer owner) => new ProtectECSGameEffect(i, body, owner));
 						}
 
 						break;

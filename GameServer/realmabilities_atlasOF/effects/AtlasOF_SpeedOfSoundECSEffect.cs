@@ -5,7 +5,6 @@ namespace DOL.GS.Effects
         public SpeedOfSoundECSEffect(in ECSGameEffectInitParams initParams) : base(initParams)
         {
             EffectType = eEffect.SpeedOfSound;
-            Start();
         }
 
         public override ushort Icon => 4249;

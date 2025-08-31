@@ -8,7 +8,6 @@ namespace DOL.GS.Effects
             : base(initParams)
         {
             EffectType = eEffect.WhirlingDervish;
-            Start();
         }
         
         public override ushort Icon { get { return 4282; } }

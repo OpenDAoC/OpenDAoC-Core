@@ -38,7 +38,7 @@ namespace DOL.GS.RealmAbilities
                 CreateSpell(name, icon, clientEffect, damageType, GetDamageAddAmount(living));
 
             ISpellHandler spellHandler = ScriptMgr.CreateSpellHandler(living, m_spell, m_spellline);
-            new AtlasOF_RainOfBaseECSEffect(new ECSGameEffectInitParams(living, duration, 1, spellHandler));
+            ECSGameEffectFactory.Create(new(living, duration, 1, spellHandler), static (in ECSGameEffectInitParams i) => new AtlasOF_RainOfBaseECSEffect(i));
             DisableSkill(living);
         }
 
