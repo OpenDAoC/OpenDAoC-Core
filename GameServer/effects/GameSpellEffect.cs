@@ -605,7 +605,7 @@ namespace DOL.GS.Effects
 			// Duration => 0 = endless until explicit stop
 			if (Duration > 0 || PulseFreq > 0)
 			{
-				m_timer = new(Owner, m_handler, m_duration, m_pulseFreq, Owner.Effectiveness);
+				m_timer = new(new(Owner, m_duration, Owner.Effectiveness, m_handler), m_pulseFreq);
 			}
 		}
 
