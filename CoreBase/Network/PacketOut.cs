@@ -207,6 +207,11 @@ namespace DOL.Network
 			WriteByte(0x0);
 		}
 
+		public void WriteNonNullTerminatedString(string str)
+		{
+			WriteStringBytes(str);
+		}
+
 		/// <summary>
 		/// Writes exactly the bytes from the string without any trailing 0
 		/// </summary>
@@ -223,7 +228,7 @@ namespace DOL.Network
 		/// <param name="maxByteLen">Maximum number of bytes to be written</param>
 		public void WriteString(string str, int maxByteLen)
 		{
-			if (str.Length == 0 || maxByteLen <= 0)
+			if (string.IsNullOrEmpty(str) || maxByteLen <= 0)
 				return;
 
 			int maxByteCount = BaseServer.defaultEncoding.GetMaxByteCount(str.Length);

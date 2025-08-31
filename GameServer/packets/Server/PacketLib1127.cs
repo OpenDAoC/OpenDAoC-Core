@@ -1,12 +1,8 @@
-﻿using System.Reflection;
-
-namespace DOL.GS.PacketHandler
+﻿namespace DOL.GS.PacketHandler
 {
     [PacketLib(1127, GameClient.eClientVersion.Version1127)]
     public class PacketLib1127 : PacketLib1126
     {
-        private static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-
         public PacketLib1127(GameClient client) : base(client) { }
 
         /// 1127 login granted packet unchanged, work around for server type
@@ -28,21 +24,16 @@ namespace DOL.GS.PacketHandler
 
         public override void SendMessage(string msg, eChatType type, eChatLoc loc)
         {
-            if (m_gameClient.ClientState == GameClient.eClientState.CharScreen)
+            if (m_gameClient.ClientState is GameClient.eClientState.CharScreen)
                 return;
 
             var pak = PooledObjectFactory.GetForTick<GSTCPPacketOut>().Init(GetPacketCode(eServerPackets.Message));
             pak.WriteByte((byte) type);
 
-            string str;
-            if (loc == eChatLoc.CL_ChatWindow)
-                str = "@@";
-            else if (loc == eChatLoc.CL_PopupWindow)
-                str = "##";
-            else
-                str = string.Empty;
+            if (loc is eChatLoc.CL_PopupWindow)
+                pak.WriteNonNullTerminatedString("##");
 
-            pak.WriteString(str + msg);
+            pak.WriteString(msg);
             SendTCP(pak);
         }
     }

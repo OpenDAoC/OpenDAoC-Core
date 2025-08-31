@@ -247,14 +247,15 @@ namespace DOL.GS.PacketHandler
     };
 
     /// <summary>
-    /// Chat locations on the client window
+    /// Chat locations on the client window.
+    /// In 1.127 (maybe earlier), CL_ChatWindow and CL_SystemWindow are basically unused, the client instead relies on eChatType.
     /// </summary>
     public enum eChatLoc : byte
     {
         CL_ChatWindow = 0x0,
         CL_PopupWindow = 0x1,
         CL_SystemWindow = 0x2
-    } ;
+    };
 
     /// <summary>
     /// Types of chat messages
