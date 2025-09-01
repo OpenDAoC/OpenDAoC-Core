@@ -34,7 +34,7 @@ namespace DOL.GS
             }
         }
 
-        public static void Move(LinkedListNode<T> node, WriteLockedLinkedList<T> from, WriteLockedLinkedList<T> to, int fromId, int toId, Action<LinkedListNode<T>> callback)
+        public static void Move<TState>(LinkedListNode<T> node, WriteLockedLinkedList<T> from, WriteLockedLinkedList<T> to, int fromId, int toId, TState state, Action<LinkedListNode<T>, TState> callback)
         {
             WriteLockedLinkedList<T> first;
             WriteLockedLinkedList<T> second;
@@ -57,7 +57,7 @@ namespace DOL.GS
                 {
                     from.RemoveUnsafe(node);
                     to.AddLastUnsafe(node);
-                    callback(node);
+                    callback(node, state);
                 }
             }
         }
