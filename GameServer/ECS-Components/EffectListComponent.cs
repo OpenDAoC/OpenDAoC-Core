@@ -871,41 +871,47 @@ namespace DOL.GS
             if (_requestedPlayerUpdates is EffectHelper.PlayerUpdate.NONE)
                 return;
 
+            EffectHelper.PlayerUpdate requestedUpdates;
+
             lock (_playerUpdatesLock)
             {
-                if (Owner is GamePlayer playerOwner)
-                {
-                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.ICONS) != 0)
-                    {
-                        playerOwner.Group?.UpdateMember(playerOwner, true, false);
-                        playerOwner.Out.SendUpdateIcons(GetEffects(), ref GetLastUpdateEffectsCount());
-                    }
+                if (_requestedPlayerUpdates is EffectHelper.PlayerUpdate.NONE)
+                    return;
 
-                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.STATUS) != 0)
-                        playerOwner.Out.SendStatusUpdate();
-
-                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.STATS) != 0)
-                        playerOwner.Out.SendCharStatsUpdate();
-
-                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.RESISTS) != 0)
-                        playerOwner.Out.SendCharResistsUpdate();
-
-                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.WEAPON_ARMOR) != 0)
-                        playerOwner.Out.SendUpdateWeaponAndArmorStats();
-
-                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.ENCUMBERANCE) != 0)
-                        playerOwner.UpdateEncumbrance();
-
-                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.CONCENTRATION) != 0)
-                        playerOwner.Out.SendConcentrationList();
-                }
-                else if (Owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain npcOwnerBrain)
-                {
-                    if ((_requestedPlayerUpdates & EffectHelper.PlayerUpdate.ICONS) != 0)
-                        npcOwnerBrain.UpdatePetWindow();
-                }
-
+                requestedUpdates = _requestedPlayerUpdates;
                 _requestedPlayerUpdates = EffectHelper.PlayerUpdate.NONE;
+            }
+
+            if (Owner is GamePlayer playerOwner)
+            {
+                if ((requestedUpdates & EffectHelper.PlayerUpdate.ICONS) != 0)
+                {
+                    playerOwner.Group?.UpdateMember(playerOwner, true, false);
+                    playerOwner.Out.SendUpdateIcons(GetEffects(), ref GetLastUpdateEffectsCount());
+                }
+
+                if ((requestedUpdates & EffectHelper.PlayerUpdate.STATUS) != 0)
+                    playerOwner.Out.SendStatusUpdate();
+
+                if ((requestedUpdates & EffectHelper.PlayerUpdate.STATS) != 0)
+                    playerOwner.Out.SendCharStatsUpdate();
+
+                if ((requestedUpdates & EffectHelper.PlayerUpdate.RESISTS) != 0)
+                    playerOwner.Out.SendCharResistsUpdate();
+
+                if ((requestedUpdates & EffectHelper.PlayerUpdate.WEAPON_ARMOR) != 0)
+                    playerOwner.Out.SendUpdateWeaponAndArmorStats();
+
+                if ((requestedUpdates & EffectHelper.PlayerUpdate.ENCUMBERANCE) != 0)
+                    playerOwner.UpdateEncumbrance();
+
+                if ((requestedUpdates & EffectHelper.PlayerUpdate.CONCENTRATION) != 0)
+                    playerOwner.Out.SendConcentrationList();
+            }
+            else if (Owner is GameNPC npcOwner && npcOwner.Brain is IControlledBrain npcOwnerBrain)
+            {
+                if ((requestedUpdates & EffectHelper.PlayerUpdate.ICONS) != 0)
+                    npcOwnerBrain.UpdatePetWindow();
             }
         }
 
