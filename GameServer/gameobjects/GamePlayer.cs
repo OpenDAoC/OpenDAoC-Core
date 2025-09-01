@@ -3459,17 +3459,13 @@ namespace DOL.GS
         /// <returns></returns>
         public virtual List<Tuple<SpellLine, List<Skill>>> GetAllUsableListSpells(bool update = false)
         {
-            List<Tuple<SpellLine, List<Skill>>> results = new List<Tuple<SpellLine, List<Skill>>>();
-
             if (!update)
             {
                 if (m_usableListSpells.Count > 0)
-                    results = new List<Tuple<SpellLine, List<Skill>>>(m_usableListSpells);
-
-                // return results if cache is valid.
-                if (results.Count > 0)
-                    return results;
+                    return [.. m_usableListSpells];
             }
+
+            List<Tuple<SpellLine, List<Skill>>> results = new List<Tuple<SpellLine, List<Skill>>>();
 
             // lock during all update, even if replace only take place at end...
             m_usableListSpells.FreezeWhile(innerList => {
