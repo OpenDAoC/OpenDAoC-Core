@@ -156,7 +156,8 @@ namespace DOL.GS
                 }
             }
 
-            return temp.OrderBy(e => e.StartTick).ToList();
+            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
+            return temp;
         }
 
         public List<ECSGameEffect> GetEffects(eEffect effectType)
@@ -172,7 +173,8 @@ namespace DOL.GS
                 }
             }
 
-            return temp.OrderBy(e => e.StartTick).ToList();
+            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
+            return temp;
         }
 
         public List<ECSPulseEffect> GetPulseEffects()
@@ -237,7 +239,8 @@ namespace DOL.GS
                 }
             }
 
-            return temp.OrderBy(e => e.StartTick).ToList();
+            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
+            return temp;
         }
 
         public List<ECSGameSpellEffect> GetSpellEffects(eEffect effectType)
@@ -253,7 +256,8 @@ namespace DOL.GS
                 }
             }
 
-            return temp.OrderBy(e => e.StartTick).ToList();
+            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
+            return temp;
         }
 
         public List<ECSGameAbilityEffect> GetAbilityEffects()
@@ -271,7 +275,8 @@ namespace DOL.GS
                 }
             }
 
-            return temp.OrderBy(e => e.StartTick).ToList();
+            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
+            return temp;
         }
 
         public List<ECSGameAbilityEffect> GetAbilityEffects(eEffect effectType)
@@ -287,7 +292,8 @@ namespace DOL.GS
                 }
             }
 
-            return temp.OrderBy(e => e.StartTick).ToList();
+            temp.Sort(static (e1, e2) => e1.StartTick.CompareTo(e2.StartTick));
+            return temp;
         }
 
         public ECSGameEffect TryGetEffectFromEffectId(int effectId)
