@@ -1179,14 +1179,14 @@ namespace DOL.AI.Brain
                 }
             }*/
 
-            ISpellHandler spellHandler = Body.castingComponent.SpellHandler;
+            SpellHandler spellHandler = Body.castingComponent.SpellHandler;
 
             // If we're currently casting 'spell' on 'target', assume it already has the effect.
             // This allows spell queuing while preventing casting on the same target more than once.
             if (spellHandler != null && spellHandler.Spell.ID == spell.ID && spellHandler.Target == target)
                 return true;
 
-            ISpellHandler queuedSpellHandler = Body.castingComponent.QueuedSpellHandler;
+            SpellHandler queuedSpellHandler = Body.castingComponent.QueuedSpellHandler;
 
             // Do the same for our queued up spell.
             // This can happen on charmed pets having two buffs that they're trying to cast on their owner.
@@ -1196,15 +1196,24 @@ namespace DOL.AI.Brain
             // May not be the right place for that, but without that check NPCs with more than one offensive or defensive proc will only buff themselves once.
             if (spell.SpellType is eSpellType.OffensiveProc or eSpellType.DefensiveProc)
             {
-                List<ECSGameSpellEffect> existingEffects = target.effectListComponent.GetSpellEffects(EffectHelper.GetEffectFromSpell(spell));
-                return existingEffects.FirstOrDefault(e => e.SpellHandler.Spell.ID == spell.ID || (spell.EffectGroup > 0 && e.SpellHandler.Spell.EffectGroup == spell.EffectGroup)) != null;
+                List<ECSGameSpellEffect> existingEffects = target.effectListComponent.GetSpellEffects(spellEffect);
+
+                foreach (ECSGameSpellEffect effect in existingEffects)
+                {
+                    if (effect.SpellHandler.Spell.ID == spell.ID || (spell.EffectGroup > 0 && effect.SpellHandler.Spell.EffectGroup == spell.EffectGroup))
+                        return true;
+                }
+
+                return false;
             }
 
             // True if the target has the effect, or the immunity effect for this effect.
             // Treat NPC immunity effects as full immunity effects.
-            return EffectListService.GetEffectOnTarget(target, spellEffect) != null || HasImmunityEffect(EffectHelper.GetImmunityEffectFromSpell(spell)) || HasImmunityEffect(EffectHelper.GetNpcImmunityEffectFromSpell(spell));
+            return EffectListService.GetEffectOnTarget(target, spellEffect) != null ||
+                HasImmunityEffect(target, EffectHelper.GetImmunityEffectFromSpell(spell)) ||
+                HasImmunityEffect(target, EffectHelper.GetNpcImmunityEffectFromSpell(spell));
 
-            bool HasImmunityEffect(eEffect immunityEffect)
+            static bool HasImmunityEffect(GameLiving target, eEffect immunityEffect)
             {
                 return immunityEffect is not eEffect.Unknown && EffectListService.GetEffectOnTarget(target, immunityEffect) != null;
             }
